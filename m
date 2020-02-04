@@ -2,100 +2,89 @@ Return-Path: <SRS0=uPGH=3Y=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35080C3524A
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Feb 2020 06:04:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24878C3524A
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Feb 2020 07:21:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8F8F32084E
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Feb 2020 06:04:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A2B472166E
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Feb 2020 07:21:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CjPurWgA";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iXUE6ebm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F8F32084E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="d1NG+KAp";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="AP0yEZk4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A2B472166E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DCE16166D;
-	Tue,  4 Feb 2020 07:03:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DCE16166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id DDFC01654;
+	Tue,  4 Feb 2020 08:20:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DDFC01654
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580796257;
-	bh=TkOZse+TN07umVugg5Xz3kNxj+z5EEQZm1SVkmCPl+c=;
+	s=default; t=1580800902;
+	bh=oOsavM2fFEh5KYWiT5g+ISPQLlKzujDEnClJNdIba8Q=;
 	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=CjPurWgAR4WrLzv3PVottMlxkOVZe9NiBkF5WAqI2kxPiQFgSuBbEHisUPThvSJFX
-	 w2bQePXPOE6HTmqMyPZSf2LljxYZHHv3TfNKOayUpzkIQO6ibPtU2NnhHAN2BjWJDX
-	 vKjw2Y7IG/p8X2UcvWPwOC4aMB6rR062fU4m1ZcY=
+	b=d1NG+KApxKD9fgIB9bRVwUGpOhUTaKGmQXg402kvvct6icGSjFk29TTCoD82hfpUo
+	 iqbdOhBtaae2Mz8nqBLHYxxEBTMXQvYDQRLBg9Qz7iMvvURud1AcbBa+QtDkGsJ/lY
+	 PrgabfZ40FK1ofiQbA8TI0mrLXKOR3caEvJci2Es=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E9E74F8015B;
-	Tue,  4 Feb 2020 07:03:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 76C7AF801DB;
+	Tue,  4 Feb 2020 08:20:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C881DF80162; Tue,  4 Feb 2020 07:03:24 +0100 (CET)
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com
- [IPv6:2607:f8b0:4864:20::242])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 27235F800F4; Tue,  4 Feb 2020 08:20:45 +0100 (CET)
+Received: from hqnvemgate26.nvidia.com (hqnvemgate26.nvidia.com
+ [216.228.121.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C19C8F80051
- for <alsa-devel@alsa-project.org>; Tue,  4 Feb 2020 07:03:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C19C8F80051
+ by alsa1.perex.cz (Postfix) with ESMTPS id 58EB9F800F4
+ for <alsa-devel@alsa-project.org>; Tue,  4 Feb 2020 08:20:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58EB9F800F4
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="iXUE6ebm"
-Received: by mail-oi1-x242.google.com with SMTP id i1so17303556oie.8
- for <alsa-devel@alsa-project.org>; Mon, 03 Feb 2020 22:03:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=XMN+K684Z/eVZ2yqWGF8j0z6j6M569qkTkBF8k40oto=;
- b=iXUE6ebm4DNRaybXe8E5MJV+zuFNTp8YtrjhZBJpVahnRtRlo/wlsroYUWsbzOcqpB
- ZrD9bBlQE23F5TGK2maz/caplkgCljAVe/NWWPzOTvJESIZqSQ0tLvEinV0j79S2sgCh
- NqGXfWe/nIqgwPvone2XLITAudSxoARaNlFO2Rw7eFWcs0zfv+F6Qw4SfiTNwxppZVXg
- yX32n16CFb5WLXAm05/f0NiNfKnbSCdfAsBJC1tdAgIWD7NHiUe9pDBtj8WHq4e7pY61
- 0wZn9jjAC0bAWM31CCckaMxVAePFzTxouLcpqwRCJaT/8E98hn+W/cygJo9iH7G5hRsH
- IfGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=XMN+K684Z/eVZ2yqWGF8j0z6j6M569qkTkBF8k40oto=;
- b=R1i0wKvmucoYYiCF+N+/WTv4sWB7XKnEYK9QQbL7EEDKUTl6yaZrLrurOOAC+SXBFu
- JlkSwj36xeVZDyha47m71dudIXV43omrqH69fH7WKZaf3tsfZSAXaFnH9pdC6N+VrHnR
- d4dFDNZLBojNYLpYdYOpdeMVYHOZkH17y8I+MZpj24IInD+4eCSGjTz0T4R9Ac/kBszw
- zV74UVmtu2rehVWrP+t7Sr37OsAWJA7c9ngBXpnYGPUhL38gWkw3NThoskfBzyftpj5h
- exglBVVpTrXW3HpdZxS/PZYcDJ9r86Tb+vRmv3+LghmCvcpM12IpSmSsMFjF9d+JeoLp
- IxoA==
-X-Gm-Message-State: APjAAAVb9vmalolILuao/f6mO9Qthdmle3cr1/uZ87QHwPfLa217fEj/
- t5y8wDXmp7PChvDwm/Y6hos=
-X-Google-Smtp-Source: APXvYqzmORnsr5YKAbx545QjhZhcUKYFi/BJlFYlcOrBRtot49y/1d6gwfVV0ShbmWEKuNCpqRV6Nw==
-X-Received: by 2002:aca:fc0c:: with SMTP id a12mr2264517oii.118.1580796193543; 
- Mon, 03 Feb 2020 22:03:13 -0800 (PST)
-Received: from localhost.localdomain ([2604:1380:4111:8b00::1])
- by smtp.gmail.com with ESMTPSA id d131sm6501708oia.36.2020.02.03.22.03.11
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 03 Feb 2020 22:03:11 -0800 (PST)
-From: Nathan Chancellor <natechancellor@gmail.com>
-To: Mark Brown <broonie@kernel.org>,
-	Liam Girdwood <lgirdwood@gmail.com>
-Date: Mon,  3 Feb 2020 23:01:44 -0700
-Message-Id: <20200204060143.23393-1-natechancellor@gmail.com>
-X-Mailer: git-send-email 2.25.0
+ dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
+ header.b="AP0yEZk4"
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by
+ hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+ id <B5e391b360000>; Mon, 03 Feb 2020 23:20:22 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+ by hqpgpgate101.nvidia.com (PGP Universal service);
+ Mon, 03 Feb 2020 23:20:36 -0800
+X-PGP-Universal: processed;
+ by hqpgpgate101.nvidia.com on Mon, 03 Feb 2020 23:20:36 -0800
+Received: from nvidia.com (10.124.1.5) by HQMAIL107.nvidia.com (172.20.187.13)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3;
+ Tue, 4 Feb 2020 07:20:34 +0000
+From: Nikhil Mahale <nmahale@nvidia.com>
+To: <tiwai@suse.com>, <kai.vehmanen@linux.intel.com>
+Date: Tue, 4 Feb 2020 12:50:14 +0530
+Message-ID: <20200204072017.9554-1-nmahale@nvidia.com>
+X-Mailer: git-send-email 2.16.4
+X-NVConfidentiality: public
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Cc: Nathan Chancellor <natechancellor@gmail.com>,
- clang-built-linux@googlegroups.com, alsa-devel@alsa-project.org,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- linux-kernel@vger.kernel.org
-Subject: [alsa-devel] [PATCH] ASoC: wcd934x: Remove some unnecessary NULL
-	checks
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+ t=1580800822; bh=xvt3tfy6ExBkChYGhZPd52BKQr/0+XIUH4nSPItatfc=;
+ h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+ X-NVConfidentiality:MIME-Version:X-Originating-IP:
+ X-ClientProxiedBy:Content-Type;
+ b=AP0yEZk4gPUPYm2cPLhAHvYaJKptBlvfd1M1P31UiSkPCLQltjj65eK9wuYVaWX6z
+ W1VC2fnSfbedOAah8X5t9Uy9CanTWKaZ8hMk/yEIVoQTCQ0SzaE6XPmAVuQZNfll+7
+ Zp1FcRfDddiIrAZo7ORahtwJvq5DJfFfuYfqt01Z3FpT31T0IhgA94nAaQt89aKKih
+ +6WhSe1RObPrZS/HXDdFPcA8DtQujnBIsneqgrURVy7ybUsM0UZiHW85H+L3wd6mbJ
+ B1/DJfMJGx5ZjBOUq92F5hVlhzxhSVwzXXq6UFKrDhs9JDfMfvGErNbLpuHbpLxkqW
+ CDpaRy6I7Ff+A==
+Cc: alsa-devel@alsa-project.org, martin@larkos.de,
+ Nikhil Mahale <nmahale@nvidia.com>, aplattner@nvidia.com
+Subject: [alsa-devel] [PATCH v1 1/4] ALSA: hda - Simplify
+	hdmi_present_sense_via_verbs()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -113,68 +102,49 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Clang warns:
+The jack report block, was added by commit 464837a7bc0a ("ALSA: hda
+- block HDMI jack reports while repolling"), to avoid race condition
+with repolling.
 
-../sound/soc/codecs/wcd934x.c:1886:11: warning: address of array
-'wcd->rx_chs' will always evaluate to 'true' [-Wpointer-bool-conversion]
-        if (wcd->rx_chs) {
-        ~~  ~~~~~^~~~~~
-../sound/soc/codecs/wcd934x.c:1894:11: warning: address of array
-'wcd->tx_chs' will always evaluate to 'true' [-Wpointer-bool-conversion]
-        if (wcd->tx_chs) {
-        ~~  ~~~~~^~~~~~
-2 warnings generated.
-
-Arrays that are in the middle of a struct are never NULL so they don't
-need a check like this.
-
-Fixes: a61f3b4f476e ("ASoC: wcd934x: add support to wcd9340/wcd9341 codec")
-Link: https://github.com/ClangBuiltLinux/linux/issues/854
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Signed-off-by: Nikhil Mahale <nmahale@nvidia.com>
 ---
+ sound/pci/hda/patch_hdmi.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-Also, turns out this was fixed in the wcd9335 driver in
-commit d22b4117538d ("ASoC: wcd9335: remove some unnecessary
-NULL checks")...
-
- sound/soc/codecs/wcd934x.c | 20 ++++++++------------
- 1 file changed, 8 insertions(+), 12 deletions(-)
-
-diff --git a/sound/soc/codecs/wcd934x.c b/sound/soc/codecs/wcd934x.c
-index 158e878abd6c..e780ecd554d2 100644
---- a/sound/soc/codecs/wcd934x.c
-+++ b/sound/soc/codecs/wcd934x.c
-@@ -1883,20 +1883,16 @@ static int wcd934x_set_channel_map(struct snd_soc_dai *dai,
- 		return -EINVAL;
- 	}
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 48bddc218829..ee084676f625 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -1569,7 +1569,6 @@ static bool hdmi_present_sense_via_verbs(struct hdmi_spec_per_pin *per_pin,
+ 	 * the unsolicited response to avoid custom WARs.
+ 	 */
+ 	int present;
+-	bool ret;
+ 	bool do_repoll = false;
  
--	if (wcd->rx_chs) {
--		wcd->num_rx_port = rx_num;
--		for (i = 0; i < rx_num; i++) {
--			wcd->rx_chs[i].ch_num = rx_slot[i];
--			INIT_LIST_HEAD(&wcd->rx_chs[i].list);
--		}
-+	wcd->num_rx_port = rx_num;
-+	for (i = 0; i < rx_num; i++) {
-+		wcd->rx_chs[i].ch_num = rx_slot[i];
-+		INIT_LIST_HEAD(&wcd->rx_chs[i].list);
- 	}
+ 	present = snd_hda_jack_pin_sense(codec, pin_nid, dev_id);
+@@ -1603,16 +1602,15 @@ static bool hdmi_present_sense_via_verbs(struct hdmi_spec_per_pin *per_pin,
+ 	else
+ 		update_eld(codec, per_pin, eld);
  
--	if (wcd->tx_chs) {
--		wcd->num_tx_port = tx_num;
--		for (i = 0; i < tx_num; i++) {
--			wcd->tx_chs[i].ch_num = tx_slot[i];
--			INIT_LIST_HEAD(&wcd->tx_chs[i].list);
--		}
-+	wcd->num_tx_port = tx_num;
-+	for (i = 0; i < tx_num; i++) {
-+		wcd->tx_chs[i].ch_num = tx_slot[i];
-+		INIT_LIST_HEAD(&wcd->tx_chs[i].list);
+-	ret = !repoll || !eld->monitor_present || eld->eld_valid;
+-
+ 	jack = snd_hda_jack_tbl_get_mst(codec, pin_nid, per_pin->dev_id);
+ 	if (jack) {
+-		jack->block_report = !ret;
++		jack->block_report = do_repoll;
+ 		jack->pin_sense = (eld->monitor_present && eld->eld_valid) ?
+ 			AC_PINSENSE_PRESENCE : 0;
  	}
+ 	mutex_unlock(&per_pin->lock);
+-	return ret;
++
++	return !do_repoll;
+ }
  
- 	return 0;
+ static struct snd_jack *pin_idx_to_jack(struct hda_codec *codec,
 -- 
-2.25.0
+2.16.4
 
 _______________________________________________
 Alsa-devel mailing list
