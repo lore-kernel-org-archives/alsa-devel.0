@@ -2,81 +2,96 @@ Return-Path: <SRS0=uPGH=3Y=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FA42C2D0B1
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Feb 2020 11:05:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B0420C3524D
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Feb 2020 11:13:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BFEF62051A
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Feb 2020 11:05:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3E62020674
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Feb 2020 11:13:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RmWX+FIL";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="MOxQIAQi"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BFEF62051A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IfIpyVEx";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QR9hOFh8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3E62020674
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1D3E1167A;
-	Tue,  4 Feb 2020 12:04:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D3E1167A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9E9E6167A;
+	Tue,  4 Feb 2020 12:12:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E9E6167A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580814330;
-	bh=91AquUzVW6V0V2n/b5e+tkWC9M+xZOfVpVAV8U53wdY=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=RmWX+FILQFk+J/4MrFqoZ8+dkJxdqIO94LpSMA2wKw496EnKHqaRUrjt3hcbJYxs2
-	 7OWhSb9abphpvljyu2UcdSUpL4Mqlz5M6th1XF88IzROWUN0Us+JrgGw/uQDWlCGgW
-	 rLZiJVDq3uAVjAlc+2fp6WtTb04Ejr0Fj+3cowZY=
+	s=default; t=1580814826;
+	bh=Lc0pdooCcRHdKuR7YkCUAV03KdnZ3arOE4WAAZOldlI=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=IfIpyVExPxQnXfdiCWnJmdSLyDyj3ovhKCBMs09QzQsCUHRQ69AFL3rAwIccW1fA5
+	 iEFfLUAErKX/5kUQPj4tpRZJiOasUOGM56jjbxlA+lx146sQaZxVtxo15pCCUq6Q6T
+	 V3dMdyCGp1EkolGV/GSo8z7212dkyMYQ3S+fmB4c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7873BF8015B;
-	Tue,  4 Feb 2020 12:04:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2DA61F8015B;
+	Tue,  4 Feb 2020 12:12:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B9DE7F80162; Tue,  4 Feb 2020 12:04:38 +0100 (CET)
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 9FBC5F80162; Tue,  4 Feb 2020 12:12:53 +0100 (CET)
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
+ [IPv6:2a00:1450:4864:20::444])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 80255F800F4
- for <alsa-devel@alsa-project.org>; Tue,  4 Feb 2020 12:04:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80255F800F4
+ by alsa1.perex.cz (Postfix) with ESMTPS id D0BC5F800AB
+ for <alsa-devel@alsa-project.org>; Tue,  4 Feb 2020 12:12:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0BC5F800AB
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="MOxQIAQi"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
- MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
- List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=vY3Qq+U7Jn5c6tt2grI3S9+S5kIDQYwY4zy6sNCZABs=; b=MOxQIAQicikK15Kj0qop8iY1C
- g5bDWw+WyvmkNNXYQWpVnXHKpJEIwDQ6I3XgKA3rkOAXFL3vmkmU8huVXdo1mghxMVl4cQmb4SiDZ
- Hh3CphlWzl3rDRmIPIUNYmR308WNmMF4KJTQafrd3OOTXo8qhBQXJw0qnU4Val6hZH09c=;
-Received: from fw-tnat-cam2.arm.com ([217.140.106.50]
- helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.org.uk>)
- id 1iyw0O-0007Ky-Je; Tue, 04 Feb 2020 11:04:32 +0000
-Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id EE06DD01A54; Tue,  4 Feb 2020 11:04:31 +0000 (GMT)
-Date: Tue, 4 Feb 2020 11:04:31 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <20200204110431.GC3897@sirena.org.uk>
-References: <20200204102428.26021-1-srinivas.kandagatla@linaro.org>
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="QR9hOFh8"
+Received: by mail-wr1-x444.google.com with SMTP id z7so22392363wrl.13
+ for <alsa-devel@alsa-project.org>; Tue, 04 Feb 2020 03:12:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=euRgUOHMwfJN66fku2jYxRm29ftSwRr6fu8SbqY0eAc=;
+ b=QR9hOFh8+DQ+Wvt/lNZuDlLWHuHNVU2IaRasepwiUHsedECyFbyY48yqEPWM46xj2j
+ s8MB5JYLY6Q60MBOot/ORXhodw2GJm/Ox/iyFC68DjNH/LpQhF6OUWUQJj9EEcZMU2q1
+ /4bBog0EPt0RpSrgYJtvESydtn3pYJhLHVOd+2Cuw9PatT8UMB3jEd4pPUEbzA7wwHWt
+ mIOQLUGGL/hIULvoI7fl9eW0jSpDoVgoaUphCna44YwSA91qE5XxSRTjyZ7rZN0VM4Ud
+ V0ghFEnNcZFYzVPsNQCN8LWBp6RQNHomFMKolXW61dReQbALB/w7HuQMJztKGg8UxxiN
+ ToaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=euRgUOHMwfJN66fku2jYxRm29ftSwRr6fu8SbqY0eAc=;
+ b=DMZEOWYUwAHjdLy4QasZEMSAxlZBV5G+9W+VZbQk9aTnPurHcmTnpc9Xmo/0pf015h
+ 2DyBYquh474j2R/qz05o9Jj1oFWgFZu8PhS4ZbeVaEClj6i11c3FBW8B75lMlF+NsA11
+ BgpDbBdU7g7uhs37p+uMqPSASOPvcCMYSLRVbitxB1yc+qFSZ6YBRWchACiBUiMWTDVH
+ RT7Uuei5g1tHYqTga9vy7NDrWzHkixvQoKcoklB/Bt9rOWyAbg1Jolnj6r5uKb/X1TXv
+ DxCiiv1+9ghKO9laYmHyaL8IuORaxFObWx6vkGikCXC8pOXSRvuTnUVBho/5KB7WWrhf
+ OhdA==
+X-Gm-Message-State: APjAAAXOgirwfxYmXLb1kV8qMh+DmIdFdgZTJ3wnbbz+Zs3gn4LzRPV6
+ A6t2iMvz8OAs6TspUzXRJm1g4A==
+X-Google-Smtp-Source: APXvYqxJ3p0f3NqaYyzd6dHvDo+rS6RPnTDwxFF8uIb22oszcbFEPq5OjqcdifqgHTlmhog/UyIEhw==
+X-Received: by 2002:adf:ce86:: with SMTP id r6mr4772043wrn.327.1580814766507; 
+ Tue, 04 Feb 2020 03:12:46 -0800 (PST)
+Received: from srini-hackbox.lan
+ (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
+ by smtp.gmail.com with ESMTPSA id v12sm3239378wru.23.2020.02.04.03.12.45
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 04 Feb 2020 03:12:45 -0800 (PST)
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: broonie@kernel.org
+Date: Tue,  4 Feb 2020 11:12:41 +0000
+Message-Id: <20200204111241.6927-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <20200204102428.26021-1-srinivas.kandagatla@linaro.org>
-X-Cookie: Programming is an unnatural act.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: sfr@canb.auug.org.au, alsa-devel@alsa-project.org, lee.jones@linaro.org,
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, sfr@canb.auug.org.au,
+ alsa-devel@alsa-project.org, lee.jones@linaro.org,
  linux-kernel@vger.kernel.org
-Subject: Re: [alsa-devel] [PATCH] ASoC: wcd934x: Add missing COMMON_CLK
+Subject: [alsa-devel] [PATCH v2] ASoC: wcd934x: Add missing COMMON_CLK
 	dependency
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -90,55 +105,52 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1734064704706657214=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Looks like some platforms are not yet using COMMON CLK.
 
---===============1734064704706657214==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="3m6ZAtymzEdXvUYk"
-Content-Disposition: inline
+PowerPC allyesconfig failed with below error in next
 
+ld: sound/soc/codecs/wcd934x.o:(.toc+0x0):
+	 undefined reference to `of_clk_src_simple_get'
+ld: sound/soc/codecs/wcd934x.o: in function `.wcd934x_codec_probe':
+wcd934x.c:(.text.wcd934x_codec_probe+0x3d4):
+	 undefined reference to `.__clk_get_name'
+ld: wcd934x.c:(.text.wcd934x_codec_probe+0x438):
+	 undefined reference to `.clk_hw_register'
+ld: wcd934x.c:(.text.wcd934x_codec_probe+0x474):
+	 undefined reference to `.of_clk_add_provider'
 
---3m6ZAtymzEdXvUYk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Add the missing COMMON_CLK dependency to fix this errors.
 
-On Tue, Feb 04, 2020 at 10:24:28AM +0000, Srinivas Kandagatla wrote:
-> Looks like some platforms are not yet using COMMON CLK.
->=20
-> PowerPC allyesconfig failed with below error in next
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+Changes since v1:
+	- Rebased on top of git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git next branch
 
-This doesn't apply against current code, please check and resend.
+ sound/soc/codecs/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
---3m6ZAtymzEdXvUYk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl45T78ACgkQJNaLcl1U
-h9CV4gf8DoN1L+3ztg3WWNOFL83oV1ry1PG0ADTcRk9kGu6Bvgko4UJq906Df5Or
-eptXPYaalkBhWiCTSb8BVHB4zyOCgMRqdOIBa6II2emQStrWOtbP5PEdMuPxuuie
-1jMV5D3Tio6GZ/RWQmNhSEZrmizFtKqF9iLFGl21FIu3NtCvrPR7+8V1G8GUsoR8
-UntEZCkHvy+QKycJgrZHrAlbRi7fguvG/dVHV7GsKLg9PKkobU1NGVXYfa5hqDTf
-oi8gg1xK0Sparvh223uvCYST/QX/w3a+/dvWAJIqPcG0ke9hjtTUPfIxkZMT7W5U
-GbzCVPWpVOvL3xQB2yyd5h+h3zH/5g==
-=42ud
------END PGP SIGNATURE-----
-
---3m6ZAtymzEdXvUYk--
-
---===============1734064704706657214==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index c9eb683bd1b0..286514865960 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -1334,6 +1334,7 @@ config SND_SOC_WCD9335
+ 
+ config SND_SOC_WCD934X
+ 	tristate "WCD9340/WCD9341 Codec"
++	depends on COMMON_CLK
+ 	depends on MFD_WCD934X
+ 	help
+ 	  The WCD9340/9341 is a audio codec IC Integrated in
+-- 
+2.21.0
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============1734064704706657214==--
