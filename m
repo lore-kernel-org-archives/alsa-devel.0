@@ -2,67 +2,67 @@ Return-Path: <SRS0=uPGH=3Y=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB9B5C3524A
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Feb 2020 07:49:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6AFD8C3524A
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Feb 2020 07:56:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 26D1920730
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Feb 2020 07:49:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E196B21582
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Feb 2020 07:56:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lnJqumwb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 26D1920730
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EcHQRJTn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E196B21582
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 867EB166D;
-	Tue,  4 Feb 2020 08:48:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 867EB166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3EF81166D;
+	Tue,  4 Feb 2020 08:56:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3EF81166D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580802582;
-	bh=+GQL4KZedhnxZtkeR7jDQbhDdMHVqJHFU4bT+kTKcvg=;
+	s=default; t=1580803010;
+	bh=N10A+unH/CFFtpIwYCo72aCeeobA9YHXXE5Owaxn2WQ=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lnJqumwbt6711nPJIyTGnvqKqCHe32P1tLMhwRS1edo+YSDF7zP+pq/ziZSbzMJQO
-	 jLDPQLsvmI+rb8RwvXlhsp1jMlg/OFxCdpgfzMIfXB8FYwGIDIuLXyQ82gtd6theFI
-	 mElw8hmGQ9fkKG53IAad2X+D+kb6nuvl2ZltJItQ=
+	b=EcHQRJTnka/rwGwbdIgOUbo8SOqm3zMMMg4ZXxQv9yDiPPXg6MBIPSYgndaCOi0cl
+	 xPXUkcLACCFHpP4gSaHTNGL59zZHqBSyAVbR7icJ5pLGuMwSyXWYNRgbVLFADZqXmP
+	 mtqHHI5BOYyHEj46N/d+hWH1zwcGKnQnxnu/6Pq4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 086A5F8015B;
-	Tue,  4 Feb 2020 08:48:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A16F4F8015B;
+	Tue,  4 Feb 2020 08:55:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7DA2FF80162; Tue,  4 Feb 2020 08:48:50 +0100 (CET)
+ id 03602F80162; Tue,  4 Feb 2020 08:55:58 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F2913F800F4
- for <alsa-devel@alsa-project.org>; Tue,  4 Feb 2020 08:48:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2913F800F4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1DFA4F80051
+ for <alsa-devel@alsa-project.org>; Tue,  4 Feb 2020 08:55:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1DFA4F80051
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id CE682AD4F;
- Tue,  4 Feb 2020 07:48:45 +0000 (UTC)
-Date: Tue, 04 Feb 2020 08:48:45 +0100
-Message-ID: <s5hy2ti7pya.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id EE9DAAF86;
+ Tue,  4 Feb 2020 07:55:51 +0000 (UTC)
+Date: Tue, 04 Feb 2020 08:55:51 +0100
+Message-ID: <s5hwo927pmg.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Nikhil Mahale <nmahale@nvidia.com>
-In-Reply-To: <20200204072017.9554-4-nmahale@nvidia.com>
+In-Reply-To: <20200204072017.9554-1-nmahale@nvidia.com>
 References: <20200204072017.9554-1-nmahale@nvidia.com>
- <20200204072017.9554-4-nmahale@nvidia.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
- aplattner@nvidia.com, martin@larkos.de, tiwai@suse.com
-Subject: Re: [alsa-devel] [PATCH v1 4/4] ALSA: hda - Fix DP-MST support for
-	NVIDIA codecs
+Cc: alsa-devel@alsa-project.org, martin@larkos.de, kai.vehmanen@linux.intel.com,
+ aplattner@nvidia.com
+Subject: Re: [alsa-devel] [PATCH v1 1/4] ALSA: hda - Simplify
+	hdmi_present_sense_via_verbs()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,37 +80,63 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 04 Feb 2020 08:20:17 +0100,
+On Tue, 04 Feb 2020 08:20:14 +0100,
 Nikhil Mahale wrote:
 > 
-> If dyn_pcm_assign is set, different jack objects are being created
-> for pcm and pins.
-> 
-> If dyn_pcm_assign is set, generic_hdmi_build_jack() calls into
-> add_hdmi_jack_kctl() to create and track separate jack object for
-> pcm. Like sync_eld_via_acomp(), hdmi_present_sense_via_verbs() also
-> need to report status change of the pcm jack.
-> 
-> Rename pin_idx_to_jack() to pin_idx_to_pcm_jack(). Update
-> hdmi_present_sense_via_verbs() to report plug state of pcm jack
-> object. Unlike sync_eld_via_acomp(), for !acomp drivers the pcm
-> jack's plug state must be consistent with plug state
-> of pin's jack.
-> 
-> Fixes: 5398e94fb753 ALSA: hda - Add DP-MST support for NVIDIA codecs
+> The jack report block, was added by commit 464837a7bc0a ("ALSA: hda
+> - block HDMI jack reports while repolling"), to avoid race condition
+> with repolling.
 
-It's a wrong format.  It should be Fixes: xxxx ("blah blah")
-
-> Signed-off-by: Nikhil Mahale <nmahale@nvidia.com>
-
-As mentioned in the previous post, the fix must be applicable to 5.5
-kernel as it's a clear regression.  Get it fixed at first, then go for
-cleanup the rest.
+This text doesn't explain what and why you're changing.
+Describe that it's nothing but a cleanup, and no behavior change is
+intended here.
 
 
 thanks,
 
 Takashi
+
+
+> Signed-off-by: Nikhil Mahale <nmahale@nvidia.com>
+> ---
+>  sound/pci/hda/patch_hdmi.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+> 
+> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+> index 48bddc218829..ee084676f625 100644
+> --- a/sound/pci/hda/patch_hdmi.c
+> +++ b/sound/pci/hda/patch_hdmi.c
+> @@ -1569,7 +1569,6 @@ static bool hdmi_present_sense_via_verbs(struct hdmi_spec_per_pin *per_pin,
+>  	 * the unsolicited response to avoid custom WARs.
+>  	 */
+>  	int present;
+> -	bool ret;
+>  	bool do_repoll = false;
+>  
+>  	present = snd_hda_jack_pin_sense(codec, pin_nid, dev_id);
+> @@ -1603,16 +1602,15 @@ static bool hdmi_present_sense_via_verbs(struct hdmi_spec_per_pin *per_pin,
+>  	else
+>  		update_eld(codec, per_pin, eld);
+>  
+> -	ret = !repoll || !eld->monitor_present || eld->eld_valid;
+> -
+>  	jack = snd_hda_jack_tbl_get_mst(codec, pin_nid, per_pin->dev_id);
+>  	if (jack) {
+> -		jack->block_report = !ret;
+> +		jack->block_report = do_repoll;
+>  		jack->pin_sense = (eld->monitor_present && eld->eld_valid) ?
+>  			AC_PINSENSE_PRESENCE : 0;
+>  	}
+>  	mutex_unlock(&per_pin->lock);
+> -	return ret;
+> +
+> +	return !do_repoll;
+>  }
+>  
+>  static struct snd_jack *pin_idx_to_jack(struct hda_codec *codec,
+> -- 
+> 2.16.4
+> 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
