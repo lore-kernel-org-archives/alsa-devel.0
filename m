@@ -2,95 +2,69 @@ Return-Path: <SRS0=uPGH=3Y=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 187A9C3524D
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Feb 2020 08:19:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2862CC2D0B1
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Feb 2020 09:04:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9A11421744
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Feb 2020 08:19:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A87E82087E
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Feb 2020 09:04:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fwkfnKKu";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="a69167y0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9A11421744
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kE8t8655"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A87E82087E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F11F11662;
-	Tue,  4 Feb 2020 09:18:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F11F11662
+	by alsa0.perex.cz (Postfix) with ESMTPS id F3E3D1662;
+	Tue,  4 Feb 2020 10:03:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F3E3D1662
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580804378;
-	bh=IhalYax4KqnQ2EljIGekOB1OCSP2Ws0RfvdQ8Hb5DQQ=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1580807051;
+	bh=hgzqv2j3U8KzOh84WqLOJijUy8xMQyPxA0X8n++LKOg=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fwkfnKKukCtBpatqvNOiZiZPz6A4uJ76TXPYluBhPFjR05+dl8QONw0lNkncEA3YR
-	 GBpPEdJOh2VQ3gkq9fAyuf3ikEzT83Hj82Mzy+d5QbI3WZdiQYtXtySpThpeyW+coz
-	 J0KNbxu9Brfejh641L/wLncWn+ei7GRt++zZK9wk=
+	b=kE8t8655iTo+S0eyDKGv71yYs9el6W19m6N2QX2MUY03FZMdiIGUs1ykYlH1EfOVf
+	 wDu6fy1VufCjRR2rIEXPO/by7TXP5WdJc4DQYdDknx1uz5YAUY5FD0RulmR2YmspLQ
+	 nAEpE1hD/27WV8Ksh+Ql3JL7YmG3mwp4UT3soCwc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5FE96F8015B;
-	Tue,  4 Feb 2020 09:18:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 74287F8015B;
+	Tue,  4 Feb 2020 10:03:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E4D15F80162; Tue,  4 Feb 2020 09:18:45 +0100 (CET)
-Received: from hqnvemgate26.nvidia.com (hqnvemgate26.nvidia.com
- [216.228.121.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id DCB49F80162; Tue,  4 Feb 2020 10:03:18 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2020BF800AB
- for <alsa-devel@alsa-project.org>; Tue,  4 Feb 2020 09:18:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2020BF800AB
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
- header.b="a69167y0"
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by
- hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
- id <B5e3928d00000>; Tue, 04 Feb 2020 00:18:24 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
- by hqpgpgate101.nvidia.com (PGP Universal service);
- Tue, 04 Feb 2020 00:18:38 -0800
-X-PGP-Universal: processed;
- by hqpgpgate101.nvidia.com on Tue, 04 Feb 2020 00:18:38 -0800
-Received: from [10.24.218.119] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 4 Feb
- 2020 08:18:36 +0000
-To: Takashi Iwai <tiwai@suse.de>
-References: <20200204072017.9554-1-nmahale@nvidia.com>
- <20200204072017.9554-4-nmahale@nvidia.com> <s5hy2ti7pya.wl-tiwai@suse.de>
-From: Nikhil Mahale <nmahale@nvidia.com>
-Message-ID: <7381723b-655f-e0e4-590b-c053ec016382@nvidia.com>
-Date: Tue, 4 Feb 2020 13:48:32 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
-MIME-Version: 1.0
-In-Reply-To: <s5hy2ti7pya.wl-tiwai@suse.de>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Language: en-US
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
- t=1580804304; bh=PQwmLsGW6DuVMIhYk/1sivskWxYTjNIHlOL6mUpm/Ec=;
- h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
- User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
- X-ClientProxiedBy:Content-Type:Content-Language:
- Content-Transfer-Encoding;
- b=a69167y0hLKcKYMtMxsdMedpjtHcIrshcWzypDGfZy2eVYGAGw7VZ28jLN29uaLJl
- YwlZtFNy2hNiegf6eo/FzkejjQ7tqLtkzFkWymGLW2ln/WHkFOSKc84JA3sshzSJjM
- KenXnetvO0eXLX+iVem17pu9AUYGBrnzsZd5h0lZ3JmsgXjqXgT5UOBTmt5f3BLBaQ
- 2UqQZR00D1PYr+pXJIoVZs5lpoiBu8bEOq/GaCN76PHJWiqX+9vG8QMu3i8ogyecGy
- pBEuIyELHZpS8OmwQKYnAvqkunuzF/my8/hkEx4BcpFXmQMQ3IOL7BhxkVwqIGGYUB
- j5z/SyzWnhx8Q==
-Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
- aplattner@nvidia.com, martin@larkos.de, tiwai@suse.com
-Subject: Re: [alsa-devel] [PATCH v1 4/4] ALSA: hda - Fix DP-MST support for
-	NVIDIA codecs
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4D87FF80051
+ for <alsa-devel@alsa-project.org>; Tue,  4 Feb 2020 10:03:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D87FF80051
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 5788BAFE1;
+ Tue,  4 Feb 2020 09:03:14 +0000 (UTC)
+Date: Tue, 04 Feb 2020 10:03:14 +0100
+Message-ID: <s5hpneu7mi5.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Nikhil Mahale <nmahale@nvidia.com>
+In-Reply-To: <s5hzhdy7q2e.wl-tiwai@suse.de>
+References: <20200203100617.3856-1-nmahale@nvidia.com>
+ <s5hk154rm2f.wl-tiwai@suse.de>
+ <acd84229-07f8-46c5-fe5b-e027e918c56c@nvidia.com>
+ <s5hzhdy7q2e.wl-tiwai@suse.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: alsa-devel@alsa-project.org, martin@larkos.de, kai.vehmanen@linux.intel.com,
+ aplattner@nvidia.com
+Subject: Re: [alsa-devel] [PATCH] ALSA: hda - Fix DP-MST support for NVIDIA
+	codecs
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,54 +82,100 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 2/4/20 1:18 PM, Takashi Iwai wrote:
-> External email: Use caution opening links or attachments
+On Tue, 04 Feb 2020 08:46:17 +0100,
+Takashi Iwai wrote:
 > 
-> 
-> On Tue, 04 Feb 2020 08:20:17 +0100,
+> On Tue, 04 Feb 2020 06:08:19 +0100,
 > Nikhil Mahale wrote:
->>
->> If dyn_pcm_assign is set, different jack objects are being created
->> for pcm and pins.
->>
->> If dyn_pcm_assign is set, generic_hdmi_build_jack() calls into
->> add_hdmi_jack_kctl() to create and track separate jack object for
->> pcm. Like sync_eld_via_acomp(), hdmi_present_sense_via_verbs() also
->> need to report status change of the pcm jack.
->>
->> Rename pin_idx_to_jack() to pin_idx_to_pcm_jack(). Update
->> hdmi_present_sense_via_verbs() to report plug state of pcm jack
->> object. Unlike sync_eld_via_acomp(), for !acomp drivers the pcm
->> jack's plug state must be consistent with plug state
->> of pin's jack.
->>
->> Fixes: 5398e94fb753 ALSA: hda - Add DP-MST support for NVIDIA codecs
+> > 
+> > On 2/3/20 4:10 PM, Takashi Iwai wrote:
+> > > External email: Use caution opening links or attachments
+> > > 
+> > > 
+> > > On Mon, 03 Feb 2020 11:06:17 +0100,
+> > > Nikhil Mahale wrote:
+> > >>
+> > >> If dyn_pcm_assign is set, different jack objects are being created
+> > >> for pcm and pins.
+> > >>
+> > >> If dyn_pcm_assign is set, generic_hdmi_build_jack() calls into
+> > >> add_hdmi_jack_kctl() to create and track separate jack object for
+> > >> pcm. Like sync_eld_via_acomp(), hdmi_present_sense_via_verbs() also
+> > >> need to report status change of the pcm jack.
+> > >>
+> > >> Rename pin_idx_to_jack() to pin_idx_to_pcm_jack(). The code to
+> > >> report status change of pcm jack, move it to update_eld() which is
+> > >> common for acomp and !acomp code paths.
+> > > 
+> > > Thanks, that's the cause of the regression.
+> > > However, this needs yet more careful handling, I'm afraid.
+> > > 
+> > > - hdmi_present_sense_via_verbs() may return true, and its callers
+> > > (both check_presence_and_report() and hdmi_repoll_eld()) do call
+> > > snd_hda_jack_report_sync() again.
+> > > 
+> > > - For non-dyn_pcm_assign case, we shouldn't call jack report there,
+> > > but rather simply return true for calling report sync.
+> > > 
+> > > - There is another workaround to block the jack report in
+> > > hdmi_present_sense_via_verbs() which is applied after update_eld(),
+> > > and this will be ignored.
+> > > 
+> > > So, I guess that we need the conditional application of the individual
+> > > snd_jack_report() only for spec->dyn_pcm_assign==true, and assure that
+> > > hdmi_present() returns false.
+> > Yeah, you are right. But I don't think we should return false from
+> > hdmi_present().
+> > 
+> > Before dyn_pcm_assign support for non-acomp drivers:
+> > 1) pcm and pin plug detection were controlled by same jack object, and
+> > 2) change in plug status was reported from snd_hda_jack_report_sync().
+> > 
+> > If dyn_pcm_assign support is enabled for non-acomp drivers, then pcm
+> > and pin detection are controlled by different jack object. Now, report
+> > for plug status change of both jack object, requires to be in sync.
 > 
-> It's a wrong format.  It should be Fixes: xxxx ("blah blah")
-> 
->> Signed-off-by: Nikhil Mahale <nmahale@nvidia.com>
-> 
-> As mentioned in the previous post, the fix must be applicable to 5.5
-> kernel as it's a clear regression.  Get it fixed at first, then go for
-> cleanup the rest.
-Okey, first I send patch to fix the issue. But are you agree with
-logic/direction of this patch? Here, I simply keep plug status
-of pcm jack consistent with that of pin jack.
+> That's my concern.  Basically we're seeing two different jacks for a
+> single hotplug.  OTOH, from the user-space POV, it must be one jack
+> that should report back.  IOW, with dyn_pcm_assign, you should ignore
+> the jack triggered from the unsol handler but report back only for the
+> jack that is assigned to the PCM.
 
-Thanks,
-Nikhil Mahale
+Scratch this.  The code is so complex and fuzzing me.  Oh well.
 
-> thanks,
-> 
-> Takashi
-> 
+For dyn_pcm_assign, the snd_hda_jack stuff is used only for the unsol
+event notification but it's not bound with snd_jack object.  Hence
+snd_hda_jack_report_sync() is harmless -- but it's also useless for
+dyn_pcm_assign, too.
 
------------------------------------------------------------------------------------
-This email message is for the sole use of the intended recipient(s) and may contain
-confidential information.  Any unauthorized review, use, disclosure or distribution
-is prohibited.  If you are not the intended recipient, please contact the sender by
-reply email and destroy all copies of the original message.
------------------------------------------------------------------------------------
+So basically the logic of your patch 4 is OK.  But it's still
+misleading in a few points.
+
+- The snd_hda_jack state was already updated via
+  snd_hda_jack_pin_sense() call at the beginning of
+  hdmi_present_sense_via_verbs() before calling
+  snd_hda_jack_report_sync().
+
+  That implies that what's jack->pinse_sense assignment at the end
+  of this function does is to override the jack->pin_sense value that
+  was already updated.
+
+- snd_hda_jack_report_sync() is superfluous for dyn_pcm_assign case.
+  The jack update was already performed, as mentioned in the above,
+  and hda_jack->jack is NULL for dyn_pcm_assign.
+
+  Moreover, snd_hda_jack_report_sync() can be replaced with the
+  individual snd_jack_report() call even for non-dyn_pcm_assign case,
+  too.  The difference is only how to get snd_jack object; for
+  dyn_pcm_assign, it's pin_idx_to_jack() while non-dyn_pcm_assign,
+  it's hda_jack->jack.  I guess the call of snd_jack_report() can be
+  unified in a helper (that can be called from sync_eld_via_acomp()
+  too).
+
+
+thanks,
+
+Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
