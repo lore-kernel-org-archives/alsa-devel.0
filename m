@@ -2,81 +2,69 @@ Return-Path: <SRS0=uPGH=3Y=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A54B4C2D0B1
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Feb 2020 13:22:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10E85C3524B
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Feb 2020 16:11:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 26FAD2082E
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Feb 2020 13:22:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 91CBF21D7D
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Feb 2020 16:11:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lWr/Vu05"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 26FAD2082E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eyXguhtZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 91CBF21D7D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=larkos.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7732A1612;
-	Tue,  4 Feb 2020 14:21:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7732A1612
+	by alsa0.perex.cz (Postfix) with ESMTPS id E79AB1616;
+	Tue,  4 Feb 2020 17:10:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E79AB1616
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580822530;
-	bh=2XsFPcw9+ZQbsApWOqd8sw3h8qIA87GmIs8o+NlwD3Y=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	s=default; t=1580832710;
+	bh=YNJeDB+9c90eTj+JnK84Z9Wap549ZF/VAIQIDUt3Jgw=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lWr/Vu0522TduX5CSQcW2qXvbnLLISZuXqsiuAhGHA9G+9/dMse+/Taa4N7Ec7JI6
-	 Y6nTq51QUFq+8ghablU5s99arQ0Xh0US9upqNVmQHjivXZPb8FJPyishoIWEo8QhZ+
-	 a58+TpluxGAJOYYwlw0aIQqNRbdPSsg46tYV2oS0=
+	b=eyXguhtZQ4tAcUtdZKn/EBZRDLOrL+yeiLfx2N1hJZSBRfQ2CkFVsTlKc6V0WEWKn
+	 7iuJXrnTFVOgkW1wdILoDmqvrbjR0QG/PhCb9J+0+BJsydd+f92YA0/ualATKvff+D
+	 jvQcBV2TiIQvj4TnYkcYkRirDDOa5o91bIYbqJ5w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 18ECFF8015B;
-	Tue,  4 Feb 2020 14:21:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5B3C2F800AB;
+	Tue,  4 Feb 2020 17:10:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2BAA0F80162; Tue,  4 Feb 2020 14:21:18 +0100 (CET)
-Received: from mail-ot1-f68.google.com (mail-ot1-f68.google.com
- [209.85.210.68])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id BEBCBF80162; Tue,  4 Feb 2020 17:10:57 +0100 (CET)
+Received: from larkos.de (larkos.de [188.68.52.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B842DF800F4
- for <alsa-devel@alsa-project.org>; Tue,  4 Feb 2020 14:21:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B842DF800F4
-Received: by mail-ot1-f68.google.com with SMTP id 59so17026001otp.12
- for <alsa-devel@alsa-project.org>; Tue, 04 Feb 2020 05:21:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=KVrKWveR9k4x9vzNOToq7s3NXA+2AZmIcAe2EfBCbPo=;
- b=GyGNLajTXwmsYWc6v/jc7MqODevWaIcD6sNp6XH02PoG5ZNiFOt/a1GMSBTEhUF0nG
- lvG4v+K08rWrmWGZZmuaiqRWaHrHzmmxr9lg3+SDNYZB+WKu6UmhyOBeJgcRi5ddH4Z8
- 05Kdhnn1+6KFH6lZK+E7dujbomHgHSoWocgqlq/f5354t30twZbZ3Hh8U3B7v1UbIiuc
- cc/nJh+ohP0jhkVlZlVKh8pFltGhW2EodaeyPmsf5uPOPDVeIYizFGevFygN6UL0egqx
- I4OCJe4RJ3dtNbqb4AH8R0tazoJrUlshND/0xBI64ThRkbH14Sn4NECecLkvpegegaKd
- RIhg==
-X-Gm-Message-State: APjAAAXqfix0UFvNQdZCTZGSR84src67gehJmUQsSb5Pbb3qmlRx4q3y
- 0OTvmKqyS/x82zzXXGX8I6cTmTdudHw7d6sOSro=
-X-Google-Smtp-Source: APXvYqw1c/0MBx6lPDtFz9lgiWXHqMXu8272JmBs2BMg2EB4RC2X8iQqu+sRw2BpYMZVaSewmKj+LKnWEmjz+AHpD+I=
-X-Received: by 2002:a05:6830:1d55:: with SMTP id
- p21mr22138743oth.145.1580822472473; 
- Tue, 04 Feb 2020 05:21:12 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C0AD0F800AB
+ for <alsa-devel@alsa-project.org>; Tue,  4 Feb 2020 17:10:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0AD0F800AB
+Received: from a89-182-229-123.net-htp.de ([89.182.229.123]
+ helo=[192.168.178.12])
+ by larkos.de with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+ (Exim 4.90_1) (envelope-from <martin@larkos.de>)
+ id 1iz0mj-0000G3-TW; Tue, 04 Feb 2020 17:10:46 +0100
+To: Takashi Iwai <tiwai@suse.de>, Nikhil Mahale <nmahale@nvidia.com>
+References: <20200204102746.1356-1-nmahale@nvidia.com>
+ <s5hblqer46q.wl-tiwai@suse.de>
+From: Martin Regner <martin@larkos.de>
+Message-ID: <76637766-5ba9-5590-9bc5-1e25ea186b04@larkos.de>
+Date: Tue, 4 Feb 2020 17:10:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
-References: <20200204111241.6927-1-srinivas.kandagatla@linaro.org>
-In-Reply-To: <20200204111241.6927-1-srinivas.kandagatla@linaro.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 4 Feb 2020 14:21:01 +0100
-Message-ID: <CAMuHMdVw0crXH+=7e9GGLUR-c-SxZDz9kQdeWxkZyZ9Jx7CVig@mail.gmail.com>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
- ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [alsa-devel] [PATCH v2] ASoC: wcd934x: Add missing COMMON_CLK
-	dependency
+In-Reply-To: <s5hblqer46q.wl-tiwai@suse.de>
+Content-Language: de-DE
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com, kai.vehmanen@linux.intel.com,
+ aplattner@nvidia.com
+Subject: Re: [alsa-devel] [PATCH] ALSA: hda - Fix DP-MST support for NVIDIA
+	codecs
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,53 +77,53 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Srinivas,
+Applied the new patch. The device is detected correctly by pulseaudio.
+Thanks for your efforts.
 
-On Tue, Feb 4, 2020 at 12:14 PM Srinivas Kandagatla
-<srinivas.kandagatla@linaro.org> wrote:
-> Looks like some platforms are not yet using COMMON CLK.
+On 04.02.20 12:18, Takashi Iwai wrote:
+> On Tue, 04 Feb 2020 11:27:46 +0100,
+> Nikhil Mahale wrote:
+>> If dyn_pcm_assign is set, different jack objects are being created
+>> for pcm and pins.
+>>
+>> If dyn_pcm_assign is set, generic_hdmi_build_jack() calls into
+>> add_hdmi_jack_kctl() to create and track separate jack object for
+>> pcm. Like sync_eld_via_acomp(), hdmi_present_sense_via_verbs() also
+>> need to report status change of the pcm jack.
+>>
+>> Rename pin_idx_to_jack() to pin_idx_to_pcm_jack(). Update
+>> hdmi_present_sense_via_verbs() to report plug state of pcm jack
+>> object. Unlike sync_eld_via_acomp(), for !acomp drivers the pcm
+>> jack's plug state must be consistent with plug state
+>> of pin's jack.
+> Thanks, the new patch looks better.
 >
-> PowerPC allyesconfig failed with below error in next
+>> Fixes: 5398e94fb753 ("ALSA: hda - Add DP-MST support for NVIDIA codecs")
+>> Signed-off-by: Nikhil Mahale <nmahale@nvidia.com>
+> We need Cc to stable here.  I'll add it when applying.
 >
-> ld: sound/soc/codecs/wcd934x.o:(.toc+0x0):
->          undefined reference to `of_clk_src_simple_get'
-> ld: sound/soc/codecs/wcd934x.o: in function `.wcd934x_codec_probe':
-> wcd934x.c:(.text.wcd934x_codec_probe+0x3d4):
->          undefined reference to `.__clk_get_name'
-> ld: wcd934x.c:(.text.wcd934x_codec_probe+0x438):
->          undefined reference to `.clk_hw_register'
-> ld: wcd934x.c:(.text.wcd934x_codec_probe+0x474):
->          undefined reference to `.of_clk_add_provider'
+> Also, it deserves Reported-by from Martin.
+> Martin, could you retest with this patch?  I'll queue the patch once
+> after confirmation.
 >
-> Add the missing COMMON_CLK dependency to fix this errors.
+> Just one minor nitpick:
 >
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>> +		if (spec->dyn_pcm_assign && pcm_jack && !do_repoll) {
+>> +			int state = 0;
+>> +
+>> +			if (!!(jack->pin_sense & AC_PINSENSE_PRESENCE))
+>> +				state = SND_JACK_AVOUT;
+> The "!!" is superfluous.  I'll drop it.
+>
+>
+> Takashi
 
-Thanks for your patch!
 
-But did this change really fix your PowerPC allyesconfig build?
-SND_SOC_ALL_CODECS will still select it...
-
-Fix sent.
-
-Disclaimer: tested with m68k/allmodconfig only ;-)
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
