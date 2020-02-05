@@ -2,59 +2,59 @@ Return-Path: <SRS0=flyq=3Z=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 75E8BC35254
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Feb 2020 11:47:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AC041C35254
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Feb 2020 11:48:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D4007217F4
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Feb 2020 11:47:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2E69121927
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Feb 2020 11:48:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JNb5wSKI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D4007217F4
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZJkuJUkM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2E69121927
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2F6DB1616;
-	Wed,  5 Feb 2020 12:46:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F6DB1616
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4E8C6168A;
+	Wed,  5 Feb 2020 12:47:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E8C6168A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580903261;
-	bh=YWpZZOS0MMwIb4w3cmdJ4Z3b8yFh2i5AZlmWEOIOqe0=;
+	s=default; t=1580903315;
+	bh=ZZ0Q3eyrqAravKo3SF5kQwc3WPwmd6EDaprH9UvwxLg=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JNb5wSKIcHB+1/DQC6gPQGeNaMdt14AgrUUub+S0ijMAHtCjILOwuPqujo4R4hO36
-	 ICdqQXjiCVbMLO1YshR6sAOUw2fTc1znaYzIfQGX7cK9OfAgjByHBupsq726lhZsgv
-	 YfJ1XTBmIOVonDWJw3f0dJ9XQX8V57vLcseaIIf4=
+	b=ZJkuJUkM1ve+Ypym7hHdSp7nBbHgL4XA2boz8sGHrhTsSBLduPGZjUzy7aMpzrWlR
+	 NJtiIT6XtQRkMmgBV+3B+DItkLra76azXWyCjaUZ9i3OgIM9PQdp5e0/ysIQrfIc1C
+	 2CHoLrnKq9KxsayXNVlKK92k5QFzrWYsnG9kxouI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 97029F800E2;
-	Wed,  5 Feb 2020 12:46:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2465DF80150;
+	Wed,  5 Feb 2020 12:47:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E75E2F80148; Wed,  5 Feb 2020 12:46:47 +0100 (CET)
+ id B3D5CF8019B; Wed,  5 Feb 2020 12:47:31 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0199CF80051
- for <alsa-devel@alsa-project.org>; Wed,  5 Feb 2020 12:46:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0199CF80051
+ by alsa1.perex.cz (Postfix) with ESMTPS id 41E0DF80051
+ for <alsa-devel@alsa-project.org>; Wed,  5 Feb 2020 12:47:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41E0DF80051
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id F2C8FACC6;
- Wed,  5 Feb 2020 11:46:42 +0000 (UTC)
-Date: Wed, 05 Feb 2020 12:46:42 +0100
-Message-ID: <s5h4kw5b6jh.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 89151ADC8;
+ Wed,  5 Feb 2020 11:47:28 +0000 (UTC)
+Date: Wed, 05 Feb 2020 12:47:28 +0100
+Message-ID: <s5h36bpb6i7.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Mark Brown <broonie@kernel.org>
-In-Reply-To: <20200205094707.GD3897@sirena.org.uk>
+In-Reply-To: <20200205102025.GA31084@sirena.org.uk>
 References: <20200205094707.GD3897@sirena.org.uk>
+ <20200205102025.GA31084@sirena.org.uk>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -79,30 +79,22 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 05 Feb 2020 10:47:07 +0100,
+On Wed, 05 Feb 2020 11:20:25 +0100,
 Mark Brown wrote:
 > 
-> The following changes since commit d8e2e0d2491e78f3f7b451c3a93ba29950efe2cf:
+> On Wed, Feb 05, 2020 at 09:47:07AM +0000, Mark Brown wrote:
 > 
->   ASoC: soc-core: remove null_snd_soc_ops (2020-01-23 12:20:06 +0000)
+> > A collection of updates for bugs fixed since the initial pull
+> > request, the most important one being the addition of COMMON_CLK
+> > for wcd934x which is needed for MFD to be merged.
 > 
-> are available in the Git repository at:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-v5.6-2
-> 
-> for you to fetch changes up to 42b716359beca10684195fd6e93a74ecd8ca8003:
-> 
->   ASoC: wcd934x: Add missing COMMON_CLK dependency (2020-02-04 11:22:30 +0000)
-> 
-> ----------------------------------------------------------------
-> ASoC: Fixes for v5.6
-> 
-> A collection of updates for bugs fixed since the initial pull
-> request, the most important one being the addition of COMMON_CLK
-> for wcd934x which is needed for MFD to be merged.
+> There'll be another patch on top of that which fixes some
+> additional cases.
 
-Pulled now.  Thanks.
+Is the additional PR planned in this week, or later?
 
+
+thanks,
 
 Takashi
 _______________________________________________
