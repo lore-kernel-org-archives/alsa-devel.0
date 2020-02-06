@@ -2,70 +2,79 @@ Return-Path: <SRS0=zIiJ=32=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C00F0C2D0B1
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 10:48:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B07A9C2D0B1
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 10:56:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4E08D20730
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 10:48:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3AF88214AF
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 10:56:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ULpzanF7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4E08D20730
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Id0vDLLe";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="X30RJVCQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3AF88214AF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 836BE1699;
-	Thu,  6 Feb 2020 11:47:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 836BE1699
+	by alsa0.perex.cz (Postfix) with ESMTPS id 889F7169A;
+	Thu,  6 Feb 2020 11:56:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 889F7169A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580986124;
-	bh=HL/lE5h5++jVCBKS3d9JNC/qo+Va4GB30fIPExX/tnc=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=ULpzanF7NdpqHcZkuUGJKQaxaMZp4n16J/uU4dKOmYcVRPi5esJdeNJZlMDFYogi6
-	 2YIvJkVhAnEQpFyWXee9idM7/Q3WP6EfoPJ+Cl3RKwmek4bbPWE4LH5hcBYeXCDiUC
-	 iFy5o7hmT1j2biB2jaQd4JEKI5j7RpOB4APBv6jo=
+	s=default; t=1580986615;
+	bh=aAy3gri5303HhD059PuMxQwpGVcLLyajRbuj4Y8ubgE=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Id0vDLLeaKW4UC71iGyQw1OBQxE/gucd7GC67ZEjBcwYa/ujHf9IpOVJocWMimlRh
+	 t7TVLqK+bj1HmJr/3+Ee2kaEzgoDllcgNgduJludr9RfSOpDFt6vlWprHry+80DROr
+	 XCvGqpmW4B0SbbQcgeuQHaKkHf+FtQTwHdWpCGmc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F259FF800AB;
-	Thu,  6 Feb 2020 11:47:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 097EFF8015B;
+	Thu,  6 Feb 2020 11:56:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 358CEF80162; Thu,  6 Feb 2020 11:47:52 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id A8A4AF80162; Thu,  6 Feb 2020 11:56:03 +0100 (CET)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3AF4AF800AB
- for <alsa-devel@alsa-project.org>; Thu,  6 Feb 2020 11:47:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3AF4AF800AB
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 2B9E1AC4B;
- Thu,  6 Feb 2020 10:47:47 +0000 (UTC)
-Date: Thu, 06 Feb 2020 11:47:46 +0100
-Message-ID: <s5hzhdw8019.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Viswanath L <viswanathl@nvidia.com>
-In-Reply-To: <1580983853-351-1-git-send-email-viswanathl@nvidia.com>
-References: <1580983853-351-1-git-send-email-viswanathl@nvidia.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: kstewart@linuxfoundation.org, alsa-devel@alsa-project.org,
- rlokhande@nvidia.com, arnd@arndb.de, baolin.wang@linaro.org,
- linux-kernel@vger.kernel.org, spujar@nvidia.com, tiwai@suse.com,
- jonathanh@nvidia.com, Julia.Lawall@inria.fr, atalambedu@nvidia.com,
- sharadg@nvidia.com, tglx@linutronix.de, yung-chuan.liao@linux.intel.com,
- mkumard@nvidia.com, DRAMESH@nvidia.com
-Subject: Re: [alsa-devel] [PATCH] ALSA: hda: Clear RIRB status before
-	reading WP
+ by alsa1.perex.cz (Postfix) with ESMTPS id 148D0F800AB
+ for <alsa-devel@alsa-project.org>; Thu,  6 Feb 2020 11:55:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 148D0F800AB
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
+ header.b="X30RJVCQ"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sirena.org.uk; s=20170815-heliosphere; h=Content-Type:MIME-Version:
+ Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:
+ Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+ Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+ List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=J9xllZKt1IhPl7glWcbq8oAXrBVtvpBdfKmUoLWj0m8=; b=X30RJVCQM9REJklAmprM0JsUJ
+ f7pzhBM5znbU+v3MrRtsb2t+vde4iy8SyEb847/rvARAyq6IsVtEZp3BHTc0yIbcdTl9Wusjj0QBE
+ /192QEViy+ceFhlMoZmQ/Ay0h+l09WbYDHWNrSEZGrEAadjLkgxXzhPzlTYJh84Omb7ug=;
+Received: from fw-tnat-cam3.arm.com ([217.140.106.51]
+ helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <broonie@sirena.org.uk>)
+ id 1izep9-0001LA-W6; Thu, 06 Feb 2020 10:55:56 +0000
+Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
+ id 2C4EAD01D7F; Thu,  6 Feb 2020 10:55:55 +0000 (GMT)
+Date: Thu, 6 Feb 2020 10:55:55 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Message-ID: <20200206105555.GI3897@sirena.org.uk>
+MIME-Version: 1.0
+X-Cookie: Programming is an unnatural act.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: alsa-devel@alsa-project.org, Lee Jones <lee.jones@linaro.org>,
+ Liam Girdwood <lgirdwood@gmail.com>
+Subject: [alsa-devel] [GIT PULL] ASoC fix for v5.6
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,30 +87,71 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8809419979317701634=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 06 Feb 2020 11:10:53 +0100,
-Viswanath L wrote:
-> 
-> From: Mohan Kumar <mkumard@nvidia.com>
-> 
-> RIRB interrupt status getting cleared after the write pointer is read
-> causes a race condition, where last response(s) into RIRB may remain
-> unserviced by IRQ, eventually causing azx_rirb_get_response to fall
-> back to polling mode. Clearing the RIRB interrupt status ahead of
-> write pointer access ensures that this condition is avoided.
-> 
-> Signed-off-by: Mohan Kumar <mkumard@nvidia.com>
-> Signed-off-by: Viswanath L <viswanathl@nvidia.com>
 
-Applied, thanks.
+--===============8809419979317701634==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="N9w8F9fpXfXEoJS4"
+Content-Disposition: inline
 
 
-Takashi
+--N9w8F9fpXfXEoJS4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+The following changes since commit 42b716359beca10684195fd6e93a74ecd8ca8003:
+
+  ASoC: wcd934x: Add missing COMMON_CLK dependency (2020-02-04 11:22:30 +0000)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-v5.6-3
+
+for you to fetch changes up to 13426feaf46c48fcddb591e89d35120fcc90527f:
+
+  ASoC: wcd934x: Add missing COMMON_CLK dependency to SND_SOC_ALL_CODECS (2020-02-05 10:05:19 +0000)
+
+----------------------------------------------------------------
+ASoC: Fix for v5.6
+
+An incremental fix for the Qualcomm COMMON_CLK issue.
+
+----------------------------------------------------------------
+Geert Uytterhoeven (1):
+      ASoC: wcd934x: Add missing COMMON_CLK dependency to SND_SOC_ALL_CODECS
+
+ sound/soc/codecs/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--N9w8F9fpXfXEoJS4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl478LoACgkQJNaLcl1U
+h9D3rQf/fcBhUOJByO8apVbexigYF3DCBq8K4AYbV1S5hDxkzzFyjXvSHfw1A7X2
+V72zNU4sJtWEe+QQVrTtX+K3cnNVnPNgRYY29joaCeHvYKHgbC9D1EqbgncpA/ra
+HXPSYdBhisFWUv6uEnIY5vdUVC/UllzenK57vQpG13WzSrQ5SJJ1ZGQc6QgeYvh9
+2ymssmj7666B4MCswMR09QggKCxcHMKiBBymisyNhSUqrzDqDdS3LpmKzwRl/mH6
+s/Yu8t/zQydS4omGqB4WVLhAGLF5WHeott1rvDRTn4j938NrNtda4MF04SdMIH4d
+PdJ4ATfDiRAc35aOe4ZEtpvLkIVdSw==
+=r3+f
+-----END PGP SIGNATURE-----
+
+--N9w8F9fpXfXEoJS4--
+
+--===============8809419979317701634==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============8809419979317701634==--
