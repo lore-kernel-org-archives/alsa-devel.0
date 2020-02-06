@@ -2,94 +2,74 @@ Return-Path: <SRS0=zIiJ=32=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0ED2C35247
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 20:48:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 291FBC35247
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 21:39:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6985121775
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 20:48:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A7940217BA
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 21:39:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RokeUKcb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6985121775
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Wa6Jpf7S"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A7940217BA
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arm.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AA36416D8;
-	Thu,  6 Feb 2020 21:47:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA36416D8
+	by alsa0.perex.cz (Postfix) with ESMTPS id AB33116D1;
+	Thu,  6 Feb 2020 22:38:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB33116D1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581022101;
-	bh=B4X6o5IjFZVyEBNDFJHvhV5dLwfZHDZywwSW0IAyZt8=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1581025159;
+	bh=yWdiE8YQZ03YtkQPcr4TPMWOQj0qGvk5GTfe0uuqnzo=;
+	h=From:To:References:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RokeUKcbgv5EnTwRQkTQZ92VK+kgRdKcnzFF9151zB9id1AvDiZzx098IoDVszQu6
-	 TGusiz4NdBcLPxOO7/wEmYUWe/zEdUAmvfdU57OE69MAWbVEfD915aA+IvbfWX/rdG
-	 6YEpW9B7qO6a47YrqWCqLi6oRSltm80WX+41V6gE=
+	b=Wa6Jpf7SJ3Y46ByMYHPrxsQgVVaBL3ws51spCHh3jAL6yYPFrUgOZ5mxji4DDwR8M
+	 boQ8yrKTeZrxnTfjrn4npD53iSkxqCDCAi9Z/g9rEyVlN6YO8BQvW44/9cVVUSom63
+	 QyTzlqzIJ89hibcH5Yz+rjsDSaP5+mV0Z3Qr7JqM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 97DA7F80248;
-	Thu,  6 Feb 2020 21:46:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1958DF8015B;
+	Thu,  6 Feb 2020 22:38:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A4AEEF80162; Thu,  6 Feb 2020 21:46:31 +0100 (CET)
-Received: from mail-pl1-f195.google.com (mail-pl1-f195.google.com
- [209.85.214.195])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0F071F800AB
- for <alsa-devel@alsa-project.org>; Thu,  6 Feb 2020 21:46:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F071F800AB
-Received: by mail-pl1-f195.google.com with SMTP id c23so41039plz.4
- for <alsa-devel@alsa-project.org>; Thu, 06 Feb 2020 12:46:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=5OOXYFIqEU+LJl0CSasuKCfoYnWm1dEiiEdMWamRXfA=;
- b=GDFnZlhGcv5TrmmxAo7xaYzJDRLg8nqoz05bmKGUTimYUSl3+Z4TJ+wcToQtoK2Y4B
- 6nz2vr3JxBZB7lpeJLnKGwTpND/oMX9l67uhMVaAoXxRlQoyuPAgyDsBP23W+KAKcLBT
- JR8yBMUITSRVxRuadfFkUTf9S2xM+j2PrJB3Vm8UBAzi2f74lJN+T8hN2rafiv7xuQJw
- troSOfSJs9UARpZCOdLXXyFexBYq76O+AwEJE3LMA3OTGclgGBO5dVouI9p/CYjWYQMU
- /liALjY+lPXfFSlr3guYT4WW7waaxcjVZcu6kbSAGlNWEL6+KP5xAKSuVHHznXRSZyu7
- 5khA==
-X-Gm-Message-State: APjAAAU/Qc6LGlgJToErLZQv8LOVZXTdLekJ3xJFBJyJy0SpzZN9CR7n
- 03iElmRXB804hD8qF/ITgg==
-X-Google-Smtp-Source: APXvYqxMKyyGgfS4SNqE734iihQ1ZSY1xsIAJkFzRqu4B/i+hbGP+oW2VzzUFxFzAEqoHOJ1wkbqVA==
-X-Received: by 2002:a17:902:7203:: with SMTP id
- ba3mr5720574plb.249.1581021985220; 
- Thu, 06 Feb 2020 12:46:25 -0800 (PST)
-Received: from rob-hp-laptop (63-158-47-182.dia.static.qwest.net.
- [63.158.47.182])
- by smtp.gmail.com with ESMTPSA id x11sm283522pfn.53.2020.02.06.12.46.23
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 06 Feb 2020 12:46:24 -0800 (PST)
-Received: (nullmailer pid 21869 invoked by uid 1000);
- Thu, 06 Feb 2020 18:10:45 -0000
-Date: Thu, 6 Feb 2020 18:10:45 +0000
-From: Rob Herring <robh@kernel.org>
-To: Sameer Pujar <spujar@nvidia.com>
-Message-ID: <20200206181045.GA31521@bogus>
-References: <1580380422-3431-1-git-send-email-spujar@nvidia.com>
- <1580380422-3431-2-git-send-email-spujar@nvidia.com>
+ id B073CF80162; Thu,  6 Feb 2020 22:38:26 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 0396CF800C6
+ for <alsa-devel@alsa-project.org>; Thu,  6 Feb 2020 22:38:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0396CF800C6
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5932F30E;
+ Thu,  6 Feb 2020 13:38:20 -0800 (PST)
+Received: from [192.168.1.123] (unknown [172.31.20.19])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 03C7C3F52E;
+ Thu,  6 Feb 2020 13:38:18 -0800 (PST)
+From: Robin Murphy <robin.murphy@arm.com>
+To: Peter Geis <pgwipeout@gmail.com>, Mark Brown <broonie@kernel.org>
+References: <cover.1580950046.git.robin.murphy@arm.com>
+ <29a846da33c02df64eca62b5fa0f3884652f788f.1580950046.git.robin.murphy@arm.com>
+ <20200206114606.GM3897@sirena.org.uk>
+ <ad2c941a-9724-510e-959f-3cca3cab1dc2@arm.com>
+ <20200206135718.GQ3897@sirena.org.uk>
+ <CAMdYzYqTEnG_Q-8SvO2R6PeaPXQ3VBKu6iVYhYvb=wK7tT7c3A@mail.gmail.com>
+Message-ID: <bca13994-a8b1-fa21-fdf0-9f362d693f39@arm.com>
+Date: Thu, 6 Feb 2020 21:38:11 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1580380422-3431-2-git-send-email-spujar@nvidia.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAMdYzYqTEnG_Q-8SvO2R6PeaPXQ3VBKu6iVYhYvb=wK7tT7c3A@mail.gmail.com>
+Content-Language: en-GB
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- atalambedu@nvidia.com, linux-kernel@vger.kernel.org, tiwai@suse.com,
- lgirdwood@gmail.com, jonathanh@nvidia.com, viswanathl@nvidia.com,
- sharadg@nvidia.com, broonie@kernel.org, thierry.reding@gmail.com,
- linux-tegra@vger.kernel.org, digetx@gmail.com, rlokhande@nvidia.com,
- mkumard@nvidia.com, dramesh@nvidia.com
-Subject: Re: [alsa-devel] [PATCH v2 1/9] dt-bindings: sound: tegra: add DT
-	binding for AHUB
+ Heiko Stuebner <heiko@sntech.de>, lgirdwood@gmail.com,
+ "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+ linux-arm-kernel@lists.infradead.org
+Subject: [alsa-devel] [PATCH v2 2/3] ASoC: rockchip: Make RK3328 GPIO_MUTE
+	control explicit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,260 +87,142 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Jan 30, 2020 at 04:03:34PM +0530, Sameer Pujar wrote:
-> Audio Hub (AHUB) comprises a collection of hardware accelerators for audio
-> pre-processing and post-processing and a programmable full crossbar for
-> audio routing across these accelerators. This patch adds YAML schema for DT
-> binding of AHUB and few of its following components. These devices will be
-> registered as ASoC components.
->  * ADMAIF
->  * I2S
->  * DMIC
->  * DSPK
+On 2020-02-06 6:05 pm, Peter Geis wrote:
+> On Thu, Feb 6, 2020 at 8:57 AM Mark Brown <broonie@kernel.org> wrote:
+>>
+>> On Thu, Feb 06, 2020 at 12:36:04PM +0000, Robin Murphy wrote:
+>>> On 2020-02-06 11:46 am, Mark Brown wrote:
+>>
+>>>> This makes sense but it is an ABI break so is going to need
+>>>> quirking for existing boards that unfortunately rely on the
+>>>> existing behaviour.
+>>
+>>> I guess the existing (mis)behaviour could be predicated on an
+>>> of_machine_is_compatible() check for Rock64 boards - it's ugly, but should
+>>> do the job if you feel it's more important to be 100% strict about not
+>>> regressing supported systems for any possible kernel/DTB combination.
+>>
+>> Yes, that's what I'm suggesting - we don't need to be exhaustive
+>> but having an obvious place for people to put the quirk in if
+>> they are affected is much better practice than just silently
+>> letting things break.
 > 
-> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-> ---
->  .../bindings/sound/nvidia,tegra186-dspk.yaml       | 105 +++++++++++++
->  .../bindings/sound/nvidia,tegra210-admaif.yaml     | 165 +++++++++++++++++++++
->  .../bindings/sound/nvidia,tegra210-ahub.yaml       | 130 ++++++++++++++++
->  .../bindings/sound/nvidia,tegra210-dmic.yaml       | 105 +++++++++++++
->  .../bindings/sound/nvidia,tegra210-i2s.yaml        | 112 ++++++++++++++
->  5 files changed, 617 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra186-dspk.yaml
->  create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra210-admaif.yaml
->  create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml
->  create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra210-dmic.yaml
->  create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra210-i2s.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra186-dspk.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra186-dspk.yaml
-> new file mode 100644
-> index 0000000..dc9fef3
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/nvidia,tegra186-dspk.yaml
-> @@ -0,0 +1,105 @@
-> +# SPDX-License-Identifier: (GPL-2.0)
+> Might want to put a warning in there too, so that if someone is paying
+> attention they will see that they are using an out of date device
+> tree.
 
-Dual license new bindings:
+Of course, that much is a given :)
 
-(GPL-2.0-only OR BSD-2-Clause)
+Having thought it over some more, I reckon there's a reasonable
+compromise that isn't too hideous, preserves the logical cleanup but
+at least prevents audio going silent with old DTBs (plus handling GPIO
+probe deferral properly which I forgot about first time around). How
+does this look?
 
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/sound/nvidia,tegra186-dspk.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Tegra186 DSPK Controller Device Tree Bindings
-> +
-> +description: |
-> +  The Digital Speaker Controller (DSPK) can be viewed as a Pulse
-> +  Density Modulation (PDM) transmitter that up-samples the input to
-> +  the desired sampling rate by interpolation and then converts the
-> +  over sampled Pulse Code Modulation (PCM) input to the desired 1-bit
-> +  output via Delta Sigma Modulation (DSM).
-> +
-> +maintainers:
-> +  - Jon Hunter <jonathanh@nvidia.com>
-> +  - Sameer Pujar <spujar@nvidia.com>
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - items:
+Robin.
 
-Drop 'items' for a single entry.
+----->8-----
 
-> +          const: nvidia,tegra186-dspk
-> +      - items:
-> +          - enum:
-> +              - nvidia,tegra194-dspk
-> +          - enum:
-> +              - nvidia,tegra186-dspk
+The RK3328 reference design uses an external line driver IC as a buffer
+on the analog codec output, enabled by the GPIO_MUTE pin, and such a
+configuration is currently assumed in the codec driver's direct poking
+of GRF_SOC_CON10 to control the GPIO_MUTE output value. However, some
+boards wire up analog audio yet use that pin for some other purpose, so
+that assumption doesn't always hold. Update this functionality to rely
+on an explicit GPIO descriptor, such that it can be managed at the
+board level.
 
-This can be a 'const'
+Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+---
+ sound/soc/codecs/rk3328_codec.c | 31 ++++++++++++++++---------------
+ 1 file changed, 16 insertions(+), 15 deletions(-)
 
-> +
-> +  reg:
-> +    description: offset and length of the register set for the device.
+diff --git a/sound/soc/codecs/rk3328_codec.c b/sound/soc/codecs/rk3328_codec.c
+index 287c962ba00d..115706a55577 100644
+--- a/sound/soc/codecs/rk3328_codec.c
++++ b/sound/soc/codecs/rk3328_codec.c
+@@ -7,6 +7,7 @@
+ #include <linux/clk.h>
+ #include <linux/delay.h>
+ #include <linux/device.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+ #include <linux/platform_device.h>
+@@ -31,7 +32,7 @@
 
-That's every 'reg'. Drop.
+ struct rk3328_codec_priv {
+ 	struct regmap *regmap;
+-	struct regmap *grf;
++	struct gpio_desc *mute;
+ 	struct clk *mclk;
+ 	struct clk *pclk;
+ 	unsigned int sclk;
+@@ -106,16 +107,6 @@ static int rk3328_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	return 0;
+ }
 
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    description: must contain an entry for each entry in clock-names.
-> +      See ../clocks/clocks-bindings.txt for details.
-> +    minItems: 1
+-static void rk3328_analog_output(struct rk3328_codec_priv *rk3328, int mute)
+-{
+-	unsigned int val = BIT(17);
+-
+-	if (mute)
+-		val |= BIT(1);
+-
+-	regmap_write(rk3328->grf, RK3328_GRF_SOC_CON10, val);
+-}
+-
+ static int rk3328_digital_mute(struct snd_soc_dai *dai, int mute)
+ {
+ 	struct rk3328_codec_priv *rk3328 =
+@@ -205,7 +196,7 @@ static int rk3328_codec_open_playback(struct rk3328_codec_priv *rk3328)
+ 	}
 
-Drop description and minItems. minItems is implied by the length of 
-'items'.
+ 	msleep(rk3328->spk_depop_time);
+-	rk3328_analog_output(rk3328, 1);
++	gpiod_set_value(rk3328->mute, 0);
 
-> +    items:
-> +      - description: Module clock
-> +
-> +  clock-names:
-> +    description: must contain clock names for each corresponding entry in clocks.
-> +      See ../clocks/clocks-bindings.txt for details.
-> +    minItems: 1
+ 	regmap_update_bits(rk3328->regmap, HPOUTL_GAIN_CTRL,
+ 			   HPOUTL_GAIN_MASK, OUT_VOLUME);
+@@ -246,7 +237,7 @@ static int rk3328_codec_close_playback(struct rk3328_codec_priv *rk3328)
+ {
+ 	size_t i;
 
-ditto
+-	rk3328_analog_output(rk3328, 0);
++	gpiod_set_value(rk3328->mute, 1);
 
-> +    items:
-> +      - const: dspk
-> +
-> +  assigned-clocks:
-> +    description: list of input clocks and dividers for the audio system.
-> +      See ../clocks/clock-bindings.txt for details.
-> +    minItems: 1
+ 	regmap_update_bits(rk3328->regmap, HPOUTL_GAIN_CTRL,
+ 			   HPOUTL_GAIN_MASK, 0);
+@@ -446,7 +437,6 @@ static int rk3328_platform_probe(struct platform_device *pdev)
+ 		dev_err(&pdev->dev, "missing 'rockchip,grf'\n");
+ 		return PTR_ERR(grf);
+ 	}
+-	rk3328->grf = grf;
+ 	/* enable i2s_acodec_en */
+ 	regmap_write(grf, RK3328_GRF_SOC_CON2,
+ 		     (BIT(14) << 16 | BIT(14)));
+@@ -458,7 +448,18 @@ static int rk3328_platform_probe(struct platform_device *pdev)
+ 		rk3328->spk_depop_time = 200;
+ 	}
 
-ditto
+-	rk3328_analog_output(rk3328, 0);
++	rk3328->mute = gpiod_get_optional(&pdev->dev, "mute", GPIOD_OUT_HIGH);
++	if (IS_ERR(rk3328->mute))
++		return PTR_ERR(rk3328->mute);
++	/*
++	 * Rock64 is the only supported platform to have widely relied on
++	 * this; if we do happen to come across an old DTB, just leave the
++	 * external mute forced off.
++	 */
++	if (!rk3328->mute && of_machine_is_compatible("pine64,rock64")) {
++		dev_warn(&pdev->dev, "assuming implicit control of GPIO_MUTE; update devicetree if possible\n");
++		regmap_write(grf, RK3328_GRF_SOC_CON10, BIT(17) | BIT(1));
++	}
 
-> +    items:
-> +      - description: Module clock
-> +
-> +  assigned-clock-parents:
-> +    description: parent clock for each entry in assigned-clocks
-> +      See ../clocks/clock-bindings.txt for details.
-> +    minItems: 1
-
-ditto
-
-> +    items:
-> +      - description: Parent for module clock
-> +
-> +  assigned-clock-rates:
-> +    description: clock rate for each entry in assigned-clocks
-> +      See ../clocks/clock-bindings.txt for details.
-
-ditto
-
-> +    items:
-> +      - description: initial module clock rate
-> +
-> +  "#sound-dai-cells":
-> +    const: 1
-> +
-> +  sound-name-prefix:
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +    description:
-> +      Used as prefix for sink/source names of the component. Must be a
-> +      unique string among multiple instances of the same component.
-> +      The name can be "DSPK1" or "DSPKx", where x depends on the maximum
-
-Sounds like a constraint.
-
-> +      available instances on a Tegra SoC.
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +  - assigned-clocks
-> +  - assigned-clock-parents
-> +  - "#sound-dai-cells"
-> +
-> +examples:
-> +  - |
-> +    #include<dt-bindings/clock/tegra186-clock.h>
-> +
-> +    tegra_dspk1: dspk@2905000 {
-> +        compatible = "nvidia,tegra186-dspk";
-> +        reg = <0x2905000 0x100>;
-> +        clocks = <&bpmp TEGRA186_CLK_DSPK1>;
-> +        clock-names = "dspk";
-> +        assigned-clocks = <&bpmp TEGRA186_CLK_DSPK1>;
-> +        assigned-clock-parents = <&bpmp TEGRA186_CLK_PLL_A_OUT0>;
-> +        assigned-clock-rates = <12288000>;
-> +        #sound-dai-cells = <1>;
-> +        sound-name-prefix = "DSPK1";
-> +    };
-> +
-> +...
-> diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra210-admaif.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra210-admaif.yaml
-> new file mode 100644
-> index 0000000..a8a41ba
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/nvidia,tegra210-admaif.yaml
-> @@ -0,0 +1,165 @@
-> +# SPAT-License-Identifier: (GPL-2.0)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/sound/nvidia,tegra210-admaif.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Tegra210 ADMAIF Device Tree Bindings
-> +
-> +description: |
-> +  ADMAIF is the interface between ADMA and AHUB. Each ADMA channel
-> +  that sends/receives data to/from AHUB must interface through an
-> +  ADMAIF channel. ADMA channel sending data to AHUB pairs with ADMAIF
-> +  Tx channel and ADMA channel receiving data from AHUB pairs with
-> +  ADMAIF Rx channel.
-> +
-> +maintainers:
-> +  - Jon Hunter <jonathanh@nvidia.com>
-> +  - Sameer Pujar <spujar@nvidia.com>
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +          const: nvidia,tegra210-admaif
-> +      - items:
-> +          const: nvidia,tegra186-admaif
-
-These 2 can be a single enum.
-
-> +      - items:
-> +          - enum:
-> +             - nvidia,tegra194-admaif
-> +          - enum:
-> +             - nvidia,tegra186-admaif
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  dmas: true
-> +
-> +  dma-names: true
-> +
-> +  "#sound-dai-cells":
-> +    const: 1
-> +
-> +if:
-> +  properties:
-> +    compatible:
-> +      contains:
-> +        const: nvidia,tegra210-admaif
-> +
-> +then:
-> +  properties:
-> +    dmas:
-> +      $ref: /schemas/types.yaml#/definitions/phandle-array
-
-Drop. Common properties already have a type.
-
-Plus this is wrong. A '$ref' means all other keywords are ignored (until 
-we move to draft8).
-
-> +      description:
-> +        Two or more DMA channel specifiers, equally divided for Tx and Rx.
-> +      minItems: 2
-> +      maxItems: 20
-> +    dma-names:
-> +      $ref: /schemas/types.yaml#/definitions/string-array
-
-drop
-
-> +      description:
-> +        There must be at least one channel named "tx1" for transmit and "rx1"
-> +        for receive. If more channels need to be specified then "tx1",
-> +        "tx2" ... "tx10" can be used. Similarly for Rx channels as well.
-
-Sounds like constraints.
-
-
-Stopping there. Similar issues on the rest...
+ 	rk3328->mclk = devm_clk_get(&pdev->dev, "mclk");
+ 	if (IS_ERR(rk3328->mclk))
+-- 
+2.17.1
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
