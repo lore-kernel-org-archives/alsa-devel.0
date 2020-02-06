@@ -2,82 +2,65 @@ Return-Path: <SRS0=zIiJ=32=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D5812C2D0B1
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 06:50:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11E62C2D0B1
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 07:04:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 44DFC20720
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 06:50:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B16AD214AF
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 07:04:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FPDweBcG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 44DFC20720
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GG6papKI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B16AD214AF
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AB305166C;
-	Thu,  6 Feb 2020 07:49:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB305166C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 03D7486E;
+	Thu,  6 Feb 2020 08:03:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 03D7486E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580971849;
-	bh=mIMyolj1eI0yd5L5s4mR6zNRXR2N8HVEFM42S505TM0=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=FPDweBcGF5FeXFE85+164Sc9AjR9eMP9jjc9FGNqZh2hddqVepApEeRJnZeyxHMkt
-	 jIMJUpDekBG1EMU9EGlu+BnLoCi+ao94+v5JKwXRoiVQVTLo7lS5Y+huoqpBHR/T17
-	 hxjltfb6BEWvv/ajv0u5o47/0ugxJ2kNLxpVglnQ=
+	s=default; t=1580972650;
+	bh=nC1UqOCszExHJjoHBlh2a98fTJ5o+sPkt3kdXPAM4q4=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=GG6papKIkMKF0OXJS4MF3GHV+kQA+1vMzKBR1fhAFwG6tMtsp3z4N5+rkyP3UbsPw
+	 oCAJpqKqdr9xkxBExvp0fZcrqsFNq7b826b9g8lNqJZLBDSu/YEXXMh18zRu1DAsIf
+	 9zu3whomKUcHnYSwk00oTkleVoyxxFMp4zqz2Hu8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 27EF1F800AB;
-	Thu,  6 Feb 2020 07:49:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5D2E0F8015B;
+	Thu,  6 Feb 2020 08:03:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4F7A2F80212; Thu,  6 Feb 2020 07:49:58 +0100 (CET)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 84318F80162; Thu,  6 Feb 2020 08:03:18 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 47C30F800AB
- for <alsa-devel@alsa-project.org>; Thu,  6 Feb 2020 07:49:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47C30F800AB
-Authenticated-By: 
-X-SpamFilter-By: BOX Solutions SpamTrap 5.62 with qID 0166nmkP022421,
- This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (RTEXMB06.realtek.com.tw[172.21.6.99])
- by rtits2.realtek.com.tw (8.15.2/2.57/5.78) with ESMTPS id 0166nmkP022421
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 6 Feb 2020 14:49:48 +0800
-Received: from RTEXMB02.realtek.com.tw (172.21.6.95) by
- RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 6 Feb 2020 14:49:48 +0800
-Received: from RTEXMB01.realtek.com.tw (172.21.6.94) by
- RTEXMB02.realtek.com.tw (172.21.6.95) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 6 Feb 2020 14:49:48 +0800
-Received: from RTEXMB01.realtek.com.tw ([fe80::1832:8abc:ec2d:974f]) by
- RTEXMB01.realtek.com.tw ([fe80::1832:8abc:ec2d:974f%6]) with mapi id
- 15.01.1779.005; Thu, 6 Feb 2020 14:49:48 +0800
-From: Kailang <kailang@realtek.com>
-To: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>
-Thread-Topic: HP ALC671 Platform update (again)
-Thread-Index: AdXcuZHEf2QQCXbVQp6WS7OVCa8CCg==
-Date: Thu, 6 Feb 2020 06:49:48 +0000
-Message-ID: <74636ccb700a4cbda24c58a99dc430ce@realtek.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: yes
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.22.105.211]
-Content-Type: multipart/mixed;
- boundary="_002_74636ccb700a4cbda24c58a99dc430cerealtekcom_"
-MIME-Version: 1.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1F6F0F800C6
+ for <alsa-devel@alsa-project.org>; Thu,  6 Feb 2020 08:03:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F6F0F800C6
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id EDDABADE3;
+ Thu,  6 Feb 2020 07:03:13 +0000 (UTC)
+Date: Thu, 06 Feb 2020 08:03:13 +0100
+Message-ID: <s5h4kw4b3ke.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Kailang <kailang@realtek.com>
+In-Reply-To: <74636ccb700a4cbda24c58a99dc430ce@realtek.com>
+References: <74636ccb700a4cbda24c58a99dc430ce@realtek.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Cc: Hui Wang <hui.wang@canonical.com>,
  " \(alsa-devel@alsa-project.org\)" <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] HP ALC671 Platform update (again)
+Subject: Re: [alsa-devel] HP ALC671 Platform update (again)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,62 +73,25 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
---_002_74636ccb700a4cbda24c58a99dc430cerealtekcom_
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+On Thu, 06 Feb 2020 07:49:48 +0100,
+Kailang wrote:
+> 
+> Hi Takashi,
+> 
+> HP want to keep BIOS verb table setting for release platform.
+> So, one of platform need to add 0x19 pin for verb quirk.
+> This patch was verified by Canonical.
 
-Hi Takashi,
+Applied now.  Thanks.
 
-HP want to keep BIOS verb table setting for release platform.
-So, one of platform need to add 0x19 pin for verb quirk.
-This patch was verified by Canonical.
 
-Many Thanks.
-
-BR,
-Kailang
-
---_002_74636ccb700a4cbda24c58a99dc430cerealtekcom_
-Content-Type: application/octet-stream;
-	name="0000-hp-alc671-add-0x19-pin-verb.patch"
-Content-Description: 0000-hp-alc671-add-0x19-pin-verb.patch
-Content-Disposition: attachment;
-	filename="0000-hp-alc671-add-0x19-pin-verb.patch"; size=1017;
-	creation-date="Wed, 05 Feb 2020 07:44:01 GMT";
-	modification-date="Wed, 05 Feb 2020 07:55:24 GMT"
-Content-Transfer-Encoding: base64
-
-RnJvbSBmYWZmODY0MmFjNWE1ZGY1ZTRiZmE5NGU0MzI2NmI5N2ZkM2E3YjQxIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CkRh
-dGU6IFdlZCwgNSBGZWIgMjAyMCAxNTo0MDowMSArMDgwMApTdWJqZWN0OiBbUEFUQ0hdIEFMU0E6
-IGhkYS9yZWFsdGVrIC0gRml4ZWQgb25lIG9mIEhQIEFMQzY3MSBwbGF0Zm9ybSBIZWFkc2V0IE1p
-YyBzdXBwb3J0ZWQKCkhQIHdhbnQgdG8ga2VlcCBCSU9TIHZlcmIgdGFibGUgZm9yIHJlbGVhc2Ug
-cGxhdGZvcm0uClNvLCBpdCBuZWVkIHRvIGFkZCAweDE5IHBpbiBmb3IgcXVpcmsuCgpGaXhlczog
-NWFmMjkwMjhmZDZkICgiQUxTQTogaGRhL3JlYWx0ZWsgLSBBZGQgSGVhZHNldCBNaWMgc3VwcG9y
-dGVkIGZvciBIUCBjUEMiKQpTaWduZWQtb2ZmLWJ5OiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVh
-bHRlay5jb20+CgpkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMgYi9z
-b3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYwppbmRleCAzYjM4YTEzYWJiN2EuLjQ3NzBmYjNm
-NTFmYiAxMDA2NDQKLS0tIGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKKysrIGIvc291
-bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKQEAgLTkxMTEsNiArOTExMSw3IEBAIHN0YXRpYyBj
-b25zdCBzdHJ1Y3Qgc25kX2hkYV9waW5fcXVpcmsgYWxjNjYyX3Bpbl9maXh1cF90YmxbXSA9IHsK
-IAlTTkRfSERBX1BJTl9RVUlSSygweDEwZWMwNjcxLCAweDEwM2MsICJIUCBjUEMiLCBBTEM2NzFf
-RklYVVBfSFBfSEVBRFNFVF9NSUMyLAogCQl7MHgxNCwgMHgwMTAxNDAxMH0sCiAJCXsweDE3LCAw
-eDkwMTcwMTUwfSwKKwkJezB4MTksIDB4MDJhMTEwNjB9LAogCQl7MHgxYiwgMHgwMTgxMzAzMH0s
-CiAJCXsweDIxLCAweDAyMjExMDIwfSksCiAJU05EX0hEQV9QSU5fUVVJUksoMHgxMGVjMDY3MSwg
-MHgxMDNjLCAiSFAgY1BDIiwgQUxDNjcxX0ZJWFVQX0hQX0hFQURTRVRfTUlDMiwK
-
---_002_74636ccb700a4cbda24c58a99dc430cerealtekcom_
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---_002_74636ccb700a4cbda24c58a99dc430cerealtekcom_--
