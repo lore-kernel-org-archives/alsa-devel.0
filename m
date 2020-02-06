@@ -2,62 +2,57 @@ Return-Path: <SRS0=zIiJ=32=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 061F1C33CAC
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 16:43:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 74417C35247
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 16:43:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8270820720
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 16:43:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E829821775
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 16:43:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kzAzWpL9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8270820720
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OabwrmeA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E829821775
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D88CD16BA;
-	Thu,  6 Feb 2020 17:42:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D88CD16BA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4C4EB16A3;
+	Thu,  6 Feb 2020 17:42:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4C4EB16A3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581007390;
-	bh=xxcRQzuNggVxqf7dsVyYzG5YLpyqX6yH0FUoe39UXq0=;
-	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=kzAzWpL9iePHQ91xS4mTDSNxFqmDtmMwJ+G68BMs3pL3BUZVLM97MGn2IGt0VVuKU
-	 G7WtpZ1emDXW/XPAUwSYdC4kK7JW2ikFYg+ALTv7pNdIjTPp1jxng6HE/0wkpCbnvh
-	 Yhnl+xjhKsmczcvhIYPEW5GWeVjQ93LmJFqEGAbM=
+	s=default; t=1581007409;
+	bh=SsE25Jcp9nTGqbMpb8u/uTvarPYICBZvRc+cZOhgINw=;
+	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=OabwrmeAdBgF8GgcHa9rSvDiNb2XGq0r98p8HdeysQxiDmbaeVuU4YMMPt5b5NtkR
+	 bqKTB7/7RgXgZ5/4C8AW1pRc7fsth6tDoN8refXNA+Yd6IbeJNiPvjLceMhgF1LC6Y
+	 i38k3m0GeqyhAv923Dit0RWvc+TqwUYN3WZxJsAs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4716BF8028B;
-	Thu,  6 Feb 2020 17:40:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 97EA4F8028C;
+	Thu,  6 Feb 2020 17:40:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 28B03F80277; Thu,  6 Feb 2020 17:39:56 +0100 (CET)
+ id CFEB2F80278; Thu,  6 Feb 2020 17:39:56 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D76A4F80212
+ by alsa1.perex.cz (Postfix) with ESMTPS id D0440F80162
  for <alsa-devel@alsa-project.org>; Thu,  6 Feb 2020 17:39:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D76A4F80212
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0440F80162
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 17D02AEE7
- for <alsa-devel@alsa-project.org>; Thu,  6 Feb 2020 16:39:47 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id E3F22AB92
+ for <alsa-devel@alsa-project.org>; Thu,  6 Feb 2020 16:39:46 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Thu,  6 Feb 2020 17:39:40 +0100
-Message-Id: <20200206163945.6797-4-tiwai@suse.de>
+Date: Thu,  6 Feb 2020 17:39:37 +0100
+Message-Id: <20200206163945.6797-1-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20200206163945.6797-1-tiwai@suse.de>
-References: <20200206163945.6797-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 3/8] ALSA: usb-audio: Use pcm_for_each_format()
-	macro for PCM format iterations
+Subject: [alsa-devel] [PATCH 0/8] ALSA: Another sparse warning fix round
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,31 +71,41 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The new macro can fix the sparse warnings gracefully:
-  sound/usb/proc.c:73:31: warning: restricted snd_pcm_format_t degrades to integer
-  sound/usb/proc.c:73:38: warning: restricted snd_pcm_format_t degrades to integer
-  sound/usb/proc.c:73:61: warning: restricted snd_pcm_format_t degrades to integer
+Hi,
 
-No functional changes, just sparse warning fixes.
+this is another pile of patches to fix sparse warnings, at this time,
+about the strong-types like snd_pcm_format_t.  The patch 2 introduces
+a new macro for the iteration loop and some other tasks so that the
+driver doesn't need to use ugly __force cast.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/proc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/usb/proc.c b/sound/usb/proc.c
-index ffbf4bd9208c..4174ad11fca6 100644
---- a/sound/usb/proc.c
-+++ b/sound/usb/proc.c
-@@ -70,7 +70,7 @@ static void proc_dump_substream_formats(struct snd_usb_substream *subs, struct s
- 		snd_iprintf(buffer, "  Interface %d\n", fp->iface);
- 		snd_iprintf(buffer, "    Altset %d\n", fp->altsetting);
- 		snd_iprintf(buffer, "    Format:");
--		for (fmt = 0; fmt <= SNDRV_PCM_FORMAT_LAST; ++fmt)
-+		pcm_for_each_format(fmt)
- 			if (fp->formats & pcm_format_to_bits(fmt))
- 				snd_iprintf(buffer, " %s",
- 					    snd_pcm_format_name(fmt));
+Takashi
+
+===
+
+Takashi Iwai (8):
+  ALSA: aloop: Fix PCM format assignment
+  ALSA: pcm: More helper macros for reducing snd_pcm_format_t cast
+  ALSA: usb-audio: Use pcm_for_each_format() macro for PCM format
+    iterations
+  ALSA: dummy: Use standard macros for fixing PCM format cast
+  ALSA: pcm: Use standard macros for fixing PCM format cast
+  ALSA: pcm: Use a macro for parameter masks to reduce the needed cast
+  ALSA: pcm_dmaengine: Use pcm_for_each_format() macro for PCM format
+    iteration
+  ALSA: pcm: Minor refactoring
+
+ include/sound/pcm.h        |  9 +++++++++
+ include/sound/pcm_params.h |  7 +++++++
+ sound/core/oss/pcm_oss.c   | 19 ++++++++-----------
+ sound/core/pcm_dmaengine.c |  2 +-
+ sound/core/pcm_misc.c      | 17 +++++++++++------
+ sound/core/pcm_native.c    | 47 +++++++++++++++++++++++++---------------------
+ sound/drivers/aloop.c      |  6 +++---
+ sound/drivers/dummy.c      |  6 +++---
+ sound/usb/proc.c           |  2 +-
+ 9 files changed, 69 insertions(+), 46 deletions(-)
+
 -- 
 2.16.4
 
