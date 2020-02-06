@@ -7,125 +7,100 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 640AFC2D0B1
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 07:05:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A88AC2D0B1
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 08:14:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BC817214AF
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 07:05:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EA210214AF
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 08:14:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MndRifGU";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="WUYDJw1n"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BC817214AF
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iL624ciy";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=in.bosch.com header.i=@in.bosch.com header.b="iItXR6TE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EA210214AF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=in.bosch.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 150FD1689;
-	Thu,  6 Feb 2020 08:05:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 150FD1689
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2D25D823;
+	Thu,  6 Feb 2020 09:13:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D25D823
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580972751;
-	bh=1AtDdSqSpxIuW+Y7X7qZrdvXJ8IbMBnurl7eZcbm/6A=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=MndRifGU4M6huJeQwKknAvnt6QsoLy7qIJN/LkYL3yOJs1wjoPMMtcK33uvuzKVqV
-	 5yGSVlFd8Es0PdZhqJDj7l6bFWWk8F4QJBMuSjcQ/gijkQlJd/E+XOgsjCTkR0AQAk
-	 mpkK7z4oPp+4DKIskv1OgOT8IvpU/Ak3eeyLm84E=
+	s=default; t=1580976858;
+	bh=7+daM/hpGmKp292QE9EcLpF8TIxjl2XD5MArXJjlDA4=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=iL624ciyXmYaBascKuiaVUhVhd8booTrjXI3WEOJk38znZo9R4QvCLNBBqP1d5R2L
+	 3TPKW+hPIp/kSFdzYhA6fRkXHkct7ERtXO7vbjPukV6oafZpO2dlJktR+5Brje2osO
+	 Jyb09vB4Zkh9IOS0FeQ8MMNVPb2Oi547KwgpF/MA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2DB4FF80255;
-	Thu,  6 Feb 2020 08:03:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AD94AF80051;
+	Thu,  6 Feb 2020 09:13:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C98BAF80148; Wed,  5 Feb 2020 20:03:34 +0100 (CET)
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com
- [IPv6:2607:f8b0:4864:20::543])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 904ACF80162; Thu,  6 Feb 2020 09:13:25 +0100 (CET)
+Received: from de-out1.bosch-org.com (de-out1.bosch-org.com [139.15.230.186])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ADC2AF800AB
- for <alsa-devel@alsa-project.org>; Wed,  5 Feb 2020 20:03:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ADC2AF800AB
+ by alsa1.perex.cz (Postfix) with ESMTPS id B1C2EF80051;
+ Thu,  6 Feb 2020 09:13:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1C2EF80051
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="WUYDJw1n"
-Received: by mail-pg1-x543.google.com with SMTP id j4so1423629pgi.1
- for <alsa-devel@alsa-project.org>; Wed, 05 Feb 2020 11:03:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=U0hDZ/T3s6jenHRShy6wdmjO1R+/oIqX00gnqVLCe8o=;
- b=WUYDJw1nn5RPuLuDrh5Z6KXJbadPmb+K+AxD04NEZFS7MR2WwJfS7hLZgZlIoi371U
- fn1g0F1rK/X9slqqB0ppOY8AVHNMDNmBXC4FgZuR94QXYSZrC5Z0HYHXqAYGz/TfxHLv
- rZqYxhU/mFuED5u7inNxP/LSMaRw6rmpb//Uk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=U0hDZ/T3s6jenHRShy6wdmjO1R+/oIqX00gnqVLCe8o=;
- b=bzf9axyWIft4f++3l1hWwVYZ3YHLhKH1dfLRCiRSr2qkkyj58XfxPVwF3wkb8FdnU/
- jK6Fzq15HahApbKhGwKe5kJuVCUzI14+qXP3mawJYsjnygk7gZnOIrRbHlNneDkTJVBt
- VYQ5CjiHLyVf45gmZJvFjheSqX/NnHMtRqg62XBji+UFciXa8et2uGG2TJdcbJiWOl2Q
- eEycZqG6CPdY7korVC6R4U0NgJVsTTrEQedaAbJNjHY49EqfvXAuqF9M2A9wT5AivpWF
- 9Gl7S3S+LzRLOLejK6F/C0gZhcst+8ZdKesuwaMeNezOPstTbHPrUxuWkZzT1qlIbAow
- aU7g==
-X-Gm-Message-State: APjAAAXdOVmcK+HE7VxSFGGvkgefuzMpnAH5XYY9i2mzUhNrsaEv9cKx
- RxbXz40/SmTa33kZXJfFtu+SGA==
-X-Google-Smtp-Source: APXvYqz226eTOZbYc/vDVh0iaMg6CVQ5WyVJUyf723entXT5ro1cbWZK+HmRsxBagvdpPHZDRBsyzQ==
-X-Received: by 2002:a63:7053:: with SMTP id a19mr36139371pgn.377.1580929407989; 
- Wed, 05 Feb 2020 11:03:27 -0800 (PST)
-Received: from pmalani2.mtv.corp.google.com
- ([2620:15c:202:201:172e:4646:c089:ce59])
- by smtp.gmail.com with ESMTPSA id u23sm257224pfm.29.2020.02.05.11.03.26
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 05 Feb 2020 11:03:27 -0800 (PST)
-From: Prashant Malani <pmalani@chromium.org>
-To: linux-kernel@vger.kernel.org
-Date: Wed,  5 Feb 2020 10:59:55 -0800
-Message-Id: <20200205190028.183069-2-pmalani@chromium.org>
-X-Mailer: git-send-email 2.25.0.341.g760bfbb309-goog
-In-Reply-To: <20200205190028.183069-1-pmalani@chromium.org>
-References: <20200205190028.183069-1-pmalani@chromium.org>
+ dkim=pass (1024-bit key) header.d=in.bosch.com header.i=@in.bosch.com
+ header.b="iItXR6TE"
+Received: from si0vm1947.rbesz01.com (unknown [139.15.230.188])
+ by si0vms0217.rbdmz01.com (Postfix) with ESMTPS id 48Crly2S41z4f3lwJ;
+ Thu,  6 Feb 2020 09:13:18 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=in.bosch.com;
+ s=key3-intmail; t=1580976798;
+ bh=j9ghyqlcIsq1VvBEl8XAwe9fmi0UKdHNOBlJj7mLn+I=; l=10;
+ h=From:Subject:From:Reply-To:Sender;
+ b=iItXR6TEz/AuZiY5qNxYinDDRX9CrFbjuBLncfAYmNLZMxELElonTmisA8jvZSk60
+ cxQXAg/+Eu9P8v0HWNgxyNhblDC0c4R8EMXS5gwJz1Qc6RPvt47FXTnAI+uSAmd5EM
+ s9X35NQr+TtXKPWUkGCaA8hJ+swyXnVOpZikCWcg=
+Received: from fe0vm7918.rbesz01.com (unknown [10.58.172.176])
+ by si0vm1947.rbesz01.com (Postfix) with ESMTPS id 48Crly1s64z6CjR46;
+ Thu,  6 Feb 2020 09:13:18 +0100 (CET)
+X-AuditID: 0a3aad10-8b5ff70000004724-64-5e3bca9e47ca
+Received: from si0vm1950.rbesz01.com ( [10.58.173.29])
+ (using TLS with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (Client did not present a certificate)
+ by fe0vm7918.rbesz01.com (SMG Outbound) with SMTP id 74.C9.18212.E9ACB3E5;
+ Thu,  6 Feb 2020 09:13:18 +0100 (CET)
+Received: from SI-HUB2000.de.bosch.com (si-hub2000.de.bosch.com [10.4.103.108])
+ by si0vm1950.rbesz01.com (Postfix) with ESMTPS id 48Crly07bNzW7H;
+ Thu,  6 Feb 2020 09:13:18 +0100 (CET)
+Received: from vchannaiah-VirtualBox.bmh.apac.bosch.com (10.168.128.129) by
+ SI-HUB2000.de.bosch.com (10.4.103.108) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.1847.3; Thu, 6 Feb 2020 09:13:16 +0100
+From: <vanitha.channaiah@in.bosch.com>
+To: <vanitha.channaiah@in.bosch.com>, <patch@alsa-project.org>
+Date: Thu, 6 Feb 2020 13:43:01 +0530
+Message-ID: <1580976781-6642-1-git-send-email-vanitha.channaiah@in.bosch.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-X-Mailman-Approved-At: Thu, 06 Feb 2020 08:03:55 +0100
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Wolfram Sang <wsa@the-dreams.de>,
- "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
- "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
- <alsa-devel@alsa-project.org>,
- Benjamin Tissoires <benjamin.tissoires@redhat.com>,
- "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
- Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
- Guenter Roeck <groeck@chromium.org>,
- Fabien Lahoudere <fabien.lahoudere@collabora.com>,
- Cheng-Yi Chiang <cychiang@chromium.org>,
- "open list:REAL TIME CLOCK RTC SUBSYSTEM" <linux-rtc@vger.kernel.org>,
- Lars-Peter Clausen <lars@metafoo.de>, Lee Jones <lee.jones@linaro.org>,
- Takashi Iwai <tiwai@suse.com>,
- Sebastian Reichel <sebastian.reichel@collabora.com>,
- Evan Green <evgreen@chromium.org>, Chanwoo Choi <cw00.choi@samsung.com>,
- MyungJoo Ham <myungjoo.ham@samsung.com>,
- "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
- =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- "open list:MEDIA INPUT INFRASTRUCTURE V4L/DVB" <linux-media@vger.kernel.org>,
- "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
- "open list:POWER SUPPLY CLASS/SUBSYSTEM and DRIVERS"
- <linux-pm@vger.kernel.org>, Mauro Carvalho Chehab <mchehab@kernel.org>,
- Jiri Kosina <jikos@kernel.org>,
- Enric Balletbo i Serra <enric.balletbo@collabora.com>,
- Mark Brown <broonie@kernel.org>, Sebastian Reichel <sre@kernel.org>,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>,
- Gwendal Grignou <gwendal@chromium.org>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Benson Leung <bleung@chromium.org>, Alessandro Zummo <a.zummo@towertech.it>,
- Enrico Granata <egranata@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Akshu Agrawal <akshu.agrawal@amd.com>,
- Thierry Reding <thierry.reding@gmail.com>,
- Prashant Malani <pmalani@chromium.org>, Hartmut Knaack <knaack.h@gmx.de>,
- Hans Verkuil <hverkuil-cisco@xs4all.nl>, Jonathan Cameron <jic23@kernel.org>
-Subject: [alsa-devel] [PATCH v2 01/17] platform/chrome: Add EC command msg
-	wrapper
+X-Originating-IP: [10.168.128.129]
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpgl+LIzCtJLcpLzFFi42LhslorqzvvlHWcwd3rbBZXLh5isli7vIHV
+ YtG0mUwOzB4bPjexecxqX80ewBTFZZOSmpNZllqkb5fAlfFizznmgjVCFT9fvWFrYOzi72Lk
+ 5JAQMJF413OArYuRi0NIYDqTxNETJ5ggnN2MEuu+nmaGcBqZJB5um88O0sImoCZx5NoHMFtE
+ wE5i0t3VjF2MHBzMAjYSc/uzQcLCAkkS57fdZAMJswioSLROYgQJ8wr4Spy9eZsZYrGcxM1z
+ ncwQcUGJkzOfsIDYzAISEgdfvICqUZJ4c/Ix4wRGvllIymYhKVvAyLSKUTQt1aAs19zS0EKv
+ KCm1uMrAUC85P3cTIySwBHYw7jyVdoiRiYPxEKMpB5OSKC9HrXWcEF9SfkplRmJxRnxRaU5q
+ sZIUb/2bzlghYbhwcWlSbmZxcWZ+3iFGCQ5mJRHe8/qWcUK8KYmVValF+RBthxilOViUxHnT
+ OfxjhATSE0tSs1NTC1KLYLLWHBxKEryHjgMtFCxKTU+tSMvMKYFJK8nyMjIwMAiJIcsgW8vE
+ wXmI0ZiDB2i310mgEbzFBYm5xZnpUO2SEO1CMFGE1lOM5lLivI0ngHoEQLIZpXlwW6VkeNcH
+ WsUJiSJJIHS+YrzJyMGoJMybBbKQB5jyEPZJ8DaAgkgQKojQZLQUqEfgLIfE4Q+7GCWmrF/I
+ JjH57RMuidVv5nFLLL4zl0dix5f1fBKX+jYLSty6OF1IYufJS0ISZ5YeF5aYsKZRTGLlloli
+ El9mXxSX2PJqiYTElakLpSXWPDwnLXGv64uMxPmD/YoSZ65u0pL4c32ptsS9Ka16IPP0JCb/
+ 3aAn8XvrPAOJl3P3Gkic/PfSCGj8fROgUUetgbIfrCX2rLxoI7H51DtbiXvHJju+AgYmEzAw
+ pb0tQIFZkliCJTChogjfSTUwupoUaLRPmGLenVt5/7hw5cxv0pUhX9/qfdKTnxlQdjuo4uba
+ OW8uvf7NyuDu/3HnDK0zi5kF4h6FZ6lWZjULvjJUiCm/cSzg56z6pckLdBzb/4isunB8yspU
+ Scu4kxyv9c+9+3k8L/+vwdSlUYY3VAP+2bZsd5A8UVQQfE6jT+rL2uw+nbc9SizFGYmGWsxF
+ xYkAW5M+zRMEAAA=
+Cc: twischer@de.adit-jv.com, alsa-devel@alsa-project.org
+Subject: [alsa-devel] [PATCH - 1/1] pcm: direct: Round down of slave_hw_ptr
+	when buffer size is two period size
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -143,113 +118,65 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Many callers of cros_ec_cmd_xfer_status() use a similar set up of
-allocating and filling a message buffer and then copying any received
-data to a target buffer.
+From: Vanitha Channaiah <vanitha.channaiah@in.bosch.com>
 
-Create a utility function cros_ec_cmd() that performs this setup so that
-callers can use this function instead. Subsequent patches will convert
-callers of cros_ec_cmd_xfer_status() to the new function instead.
+For buffer size equal to two period size, the start position
+of slave_hw_ptr is rounded down in order to avoid xruns
 
-Signed-off-by: Prashant Malani <pmalani@chromium.org>
----
+For e.g.:
+Considering below parameters and its values:
+Period size = 96 (0x60)
+Buffer size = 192 (0xC0)
+Timer ticks = 1
+avail_min = 0x60
+slave_hw_ptr = unaligned value during dmix_start()
 
-Changes in v2:
-- Renamed function to cros_ec_cmd()
-- Added result pointer parameter.
-- Removed references to cros_ec_cmd_xfer() or cros_ec_cmd_xfer_status()
-  from documentation.
+Issue:
+- Initial, app_ptr = hw_ptr = 0
+- Application fills buffer size of data. so app_ptr = 0xC0, hw_ptr = 0
+- During dmix_start(), current slave_hw_ptr is not rounded down. current slave_hw_ptr would be 0x66
+- slave_hw_ptr is keep on updating at the hardware 0x67, 0x68, 0x69
+- The diff calculation between old_slave_hw_ptr(0x66) and new_slave_hw_ptr(0x69)
+  results in avail = 0x6
+- After 1 snd_pcm_period_elapsed(), slave_hw_ptr = 0xC0
+- The result of avail = 0x5A which is less than avail_min(0x60)
+- Here, xruns will be observed
 
- drivers/platform/chrome/cros_ec_proto.c     | 58 +++++++++++++++++++++
- include/linux/platform_data/cros_ec_proto.h |  4 ++
- 2 files changed, 62 insertions(+)
+Fix:
+- Initial, app_ptr = hw_ptr = 0
+- Application fills buffer size of data. so app_ptr = 0xC0, hw_ptr = 0
+- Round down of slave_hw_ptr during dmix_start() leads to below calculation:
+- During dmix_start(), slave_hw_ptr rounded to 0x60 (old slave_hw_ptr)
+- The diff calculation between old_slave_hw_ptr(0x60) and new_slave_hw_ptr(0x69)
+  results in avail = 0x9
+- After 1 snd_pcm_period_elapsed(), slave_hw_ptr = 0xC0
+- The result of avail = 0x60 which is avail_min(0x60)
+- Here, xruns can be avoided
 
-diff --git a/drivers/platform/chrome/cros_ec_proto.c b/drivers/platform/chrome/cros_ec_proto.c
-index 3cfa643f1d073d..b3d5368f596813 100644
---- a/drivers/platform/chrome/cros_ec_proto.c
-+++ b/drivers/platform/chrome/cros_ec_proto.c
-@@ -572,6 +572,64 @@ int cros_ec_cmd_xfer_status(struct cros_ec_device *ec_dev,
- }
- EXPORT_SYMBOL(cros_ec_cmd_xfer_status);
+Signed-off-by: Vanitha Channaiah <vanitha.channaiah@in.bosch.com>
+
+diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
+index 54d9900..a201fa3 100644
+--- a/src/pcm/pcm_direct.c
++++ b/src/pcm/pcm_direct.c
+@@ -2043,10 +2043,14 @@ int snd_pcm_direct_parse_open_conf(snd_config_t *root, snd_config_t *conf,
  
-+/**
-+ * cros_ec_cmd() - Utility function to send commands to ChromeOS EC.
-+ * @ec: EC device struct.
-+ * @version: Command version number (often 0).
-+ * @command: Command ID including offset.
-+ * @outdata: Data to be sent to the EC.
-+ * @outsize: Size of the &outdata buffer.
-+ * @indata: Data to be received from the EC.
-+ * @insize: Size of the &indata buffer.
-+ * @result: Result of the transfer command.
-+ *
-+ * This function sends a command to the EC and also performs some of the common
-+ * setup involved in doing so. This includes allocating and filling up a
-+ * &struct cros_ec_command message buffer, and copying the received data to
-+ * another buffer.
-+ *
-+ * Return: The number of bytes transferred on success or negative error code.
-+ */
-+int cros_ec_cmd(struct cros_ec_device *ec, u32 version, u32 command,
-+		void *outdata, u32 outsize, void *indata,
-+		u32 insize, u32 *result)
-+{
-+	struct cros_ec_command *msg;
-+	int ret;
-+
-+	msg = kzalloc(sizeof(*msg) + max(outsize, insize), GFP_KERNEL);
-+	if (!msg)
-+		return -ENOMEM;
-+
-+	msg->version = version;
-+	msg->command = command;
-+	msg->outsize = outsize;
-+	msg->insize = insize;
-+
-+	if (outdata && outsize > 0)
-+		memcpy(msg->data, outdata, outsize);
-+
-+	ret = cros_ec_cmd_xfer(ec, msg);
-+	if (result)
-+		*result = msg->result;
-+	if (ret < 0) {
-+		dev_err(ec->dev, "Command xfer error (err:%d)\n", ret);
-+		goto cleanup;
-+	} else if (msg->result != EC_RES_SUCCESS) {
-+		dev_dbg(ec->dev, "Command result (err: %d)\n", msg->result);
-+		ret = -EPROTO;
-+		goto cleanup;
-+	}
-+
-+	if (insize)
-+		memcpy(indata, msg->data, insize);
-+
-+cleanup:
-+	kfree(msg);
-+	return ret;
-+}
-+EXPORT_SYMBOL(cros_ec_cmd);
-+
- static int get_next_event_xfer(struct cros_ec_device *ec_dev,
- 			       struct cros_ec_command *msg,
- 			       struct ec_response_get_next_event_v1 *event,
-diff --git a/include/linux/platform_data/cros_ec_proto.h b/include/linux/platform_data/cros_ec_proto.h
-index ba591477019180..54b9bbf9a07c0c 100644
---- a/include/linux/platform_data/cros_ec_proto.h
-+++ b/include/linux/platform_data/cros_ec_proto.h
-@@ -218,6 +218,10 @@ int cros_ec_cmd_xfer(struct cros_ec_device *ec_dev,
- int cros_ec_cmd_xfer_status(struct cros_ec_device *ec_dev,
- 			    struct cros_ec_command *msg);
+ void snd_pcm_direct_reset_slave_ptr(snd_pcm_t *pcm, snd_pcm_direct_t *dmix)
+ {
++    /*
++     * For buffer size equal to two period size, slave_hw_ptr is rounded down
++     * to avoid xruns
++     */
  
-+int cros_ec_cmd(struct cros_ec_device *ec_dev, u32 version, u32 command,
-+		void *outdata, u32 outsize, void *indata, u32 insize,
-+		u32 *result);
-+
- int cros_ec_query_all(struct cros_ec_device *ec_dev);
- 
- int cros_ec_get_next_event(struct cros_ec_device *ec_dev,
+ 	if (dmix->hw_ptr_alignment == SND_PCM_HW_PTR_ALIGNMENT_ROUNDUP ||
+ 		(dmix->hw_ptr_alignment == SND_PCM_HW_PTR_ALIGNMENT_AUTO &&
+-		pcm->buffer_size <= pcm->period_size * 2))
++		pcm->buffer_size < pcm->period_size * 2))
+ 		dmix->slave_appl_ptr =
+ 			((dmix->slave_appl_ptr + dmix->slave_period_size - 1) /
+ 			dmix->slave_period_size) * dmix->slave_period_size;
 -- 
-2.25.0.341.g760bfbb309-goog
+2.7.4
 
 _______________________________________________
 Alsa-devel mailing list
