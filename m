@@ -2,94 +2,100 @@ Return-Path: <SRS0=zIiJ=32=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4D12C2D0B1
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 11:55:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53EB0C2D0B1
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 11:57:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5E35821775
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 11:55:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D1B1620661
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 11:57:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="d49qy5Km";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="LXI/VJlT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E35821775
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="B0dQZwae";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="UNGce86v"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D1B1620661
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6374D16A4;
-	Thu,  6 Feb 2020 12:54:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6374D16A4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 382BB827;
+	Thu,  6 Feb 2020 12:57:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 382BB827
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580990124;
-	bh=yO2ZofGIJ6qJ2iM3kZn/QSw5tOdoDyVtnEcWFvi3wic=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=d49qy5KmTDm+r+/kiJy3GnP/kqVpq2iSw1IBsczrPY3uQRM/EwmgPvNIDkqAsdY9a
-	 w8LQYQSlIGFkKLmbrUuDmkw+uu9w8s0ONsKLvfstzNh/sooFkQBKpWzUO3sVOrUBlw
-	 oiAvROXoKaQ7TIVjRyQAwDfeP4FZmWn5EgsljXIg=
+	s=default; t=1580990274;
+	bh=92hfVIlKXieGYMfnqSfr8ZFU1sNjqlkbz3qdC51BCbU=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=B0dQZwaeT1Uxh3RT4dGUf4BP/BHfEN9lTDp0Ga9WuGiAOtq1gL3U05vqfDyHNPwyE
+	 chxz60L6/SYRcxAZDK7P8vfxI7re6aWJwIr4A1OyIpxnkVUcguNrWgEgWFjLlgcX3w
+	 xvIyO0RRQNj5nCr3aSgmqiCwbvvk97JPd1IDBu5s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0574DF80212;
-	Thu,  6 Feb 2020 12:54:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BE9CDF8015B;
+	Thu,  6 Feb 2020 12:57:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 22081F80162; Thu,  6 Feb 2020 11:11:08 +0100 (CET)
+ id D04A0F80162; Thu,  6 Feb 2020 12:57:01 +0100 (CET)
 Received: from hqnvemgate24.nvidia.com (hqnvemgate24.nvidia.com
  [216.228.121.143])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BC3B9F80059
- for <alsa-devel@alsa-project.org>; Thu,  6 Feb 2020 11:11:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC3B9F80059
+ by alsa1.perex.cz (Postfix) with ESMTPS id E916CF80059
+ for <alsa-devel@alsa-project.org>; Thu,  6 Feb 2020 12:56:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E916CF80059
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
- header.b="LXI/VJlT"
+ header.b="UNGce86v"
 Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by
  hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
- id <B5e3be5fb0000>; Thu, 06 Feb 2020 02:10:03 -0800
+ id <B5e3bfecd0002>; Thu, 06 Feb 2020 03:55:57 -0800
 Received: from hqmail.nvidia.com ([172.20.161.6])
  by hqpgpgate101.nvidia.com (PGP Universal service);
- Thu, 06 Feb 2020 02:11:01 -0800
+ Thu, 06 Feb 2020 03:56:55 -0800
 X-PGP-Universal: processed;
- by hqpgpgate101.nvidia.com on Thu, 06 Feb 2020 02:11:01 -0800
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 6 Feb
- 2020 10:11:01 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Thu, 6 Feb 2020 10:11:01 +0000
-Received: from viswanathl-pc.nvidia.com (Not Verified[10.24.34.161]) by
- hqnvemgw03.nvidia.com with Trustwave SEG (v7, 5, 8, 10121)
- id <B5e3be6300014>; Thu, 06 Feb 2020 02:11:00 -0800
-From: Viswanath L <viswanathl@nvidia.com>
-To: <perex@perex.cz>, <tiwai@suse.com>, <mkumard@nvidia.com>,
- <jonathanh@nvidia.com>
-Date: Thu, 6 Feb 2020 15:40:53 +0530
-Message-ID: <1580983853-351-1-git-send-email-viswanathl@nvidia.com>
-X-Mailer: git-send-email 2.7.4
+ by hqpgpgate101.nvidia.com on Thu, 06 Feb 2020 03:56:55 -0800
+Received: from [10.24.44.92] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 6 Feb
+ 2020 11:56:50 +0000
+To: Dmitry Osipenko <digetx@gmail.com>, <perex@perex.cz>, <tiwai@suse.com>,
+ <robh+dt@kernel.org>
+References: <1580380422-3431-1-git-send-email-spujar@nvidia.com>
+ <1580380422-3431-3-git-send-email-spujar@nvidia.com>
+ <7239e858-16b7-609f-c4e3-8135bee8450b@gmail.com>
+From: Sameer Pujar <spujar@nvidia.com>
+Message-ID: <1305a6db-a492-eec2-111e-ddc801d58d86@nvidia.com>
+Date: Thu, 6 Feb 2020 17:26:47 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
+In-Reply-To: <7239e858-16b7-609f-c4e3-8135bee8450b@gmail.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Language: en-GB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
- t=1580983803; bh=e4WVFXFb11pvmP/iVTw7vCwJBQPl0YB7s5fvN/Yezig=;
- h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
- MIME-Version:Content-Type;
- b=LXI/VJlTfRMnqKotrPgGFLP7jUgGKNtuPKaFhO8xs+IcYprI8zYs1sTn5GpySaymv
- ddgrweVLLJmAslI1JIDx8VTGguKZxEobTjrRnIz588CL5L5B7q2XjqM45RCvL1Oabi
- 6+j1C68e9+suKLkjwal5b8jJNQH7+RpGjiVBSfzpYy5Q+SQTCieCCB5S/YhnLzLWbn
- 5f1MX8W8fuK6t3rgUtXjhPR1wrmEGO0DkHrSGB/Rb0pfLzo0+All6i91mnnP29Ol5z
- 7438x1vXkfD1NsAMtz+Egy+60lF9/GeLTywRYaY5NVmUfra7md6MLScvJ1MCUwGMpR
- XkzCEsofI0YLQ==
-X-Mailman-Approved-At: Thu, 06 Feb 2020 12:54:00 +0100
-Cc: kstewart@linuxfoundation.org, Viswanath L <viswanathl@nvidia.com>,
- alsa-devel@alsa-project.org, arnd@arndb.de, baolin.wang@linaro.org,
- rlokhande@nvidia.com, spujar@nvidia.com, linux-kernel@vger.kernel.org,
- atalambedu@nvidia.com, Julia.Lawall@inria.fr, sharadg@nvidia.com,
- tglx@linutronix.de, yung-chuan.liao@linux.intel.com, DRAMESH@nvidia.com
-Subject: [alsa-devel] [PATCH] ALSA: hda: Clear RIRB status before reading WP
+ t=1580990157; bh=iUPSM/V3A6BDAos6dKxs2BKrINIHdwVPZkEK84cY18A=;
+ h=X-PGP-Universal:CC:Subject:To:References:From:Message-ID:Date:
+ User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+ X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
+ Content-Language;
+ b=UNGce86vrwf7dXG5TzHsshBC2TH6e5MSnJTd0nTqelKJky6+SVbyxdoLrNIywYqJx
+ rhXe+cpscMFAV0uoL/m2pt3cOeQvGqlouFD/A01FtR1cKyHHS1HnsNCT0K2Bf5NcqK
+ d8x7+/4ERSIGioKxr9qLmuiQ8EFkW49PPQQA4GNTJgiI732PtsthfhGWQVUPlk0tFj
+ Y3GhITrPqld7KVF7lt7HYlb9MTIFrHAv2W0VLKb2KeRvTCaaBm7NjfbqdFCO3sAOkR
+ ID1mc05uhPU0BNbJBHX+9UFq5aakQ4CvYCKMaLff9YIosSJ1A7Es2QKZlvrXYPsT4f
+ KVHvK31ejK+Yg==
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ atalambedu@nvidia.com, linux-kernel@vger.kernel.org, spujar@nvidia.com,
+ lgirdwood@gmail.com, jonathanh@nvidia.com, viswanathl@nvidia.com,
+ sharadg@nvidia.com, broonie@kernel.org, thierry.reding@gmail.com,
+ linux-tegra@vger.kernel.org, rlokhande@nvidia.com, mkumard@nvidia.com,
+ dramesh@nvidia.com
+Subject: Re: [alsa-devel] [PATCH v2 2/9] ASoC: tegra: add support for CIF
+	programming
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,59 +108,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Mohan Kumar <mkumard@nvidia.com>
-
-RIRB interrupt status getting cleared after the write pointer is read
-causes a race condition, where last response(s) into RIRB may remain
-unserviced by IRQ, eventually causing azx_rirb_get_response to fall
-back to polling mode. Clearing the RIRB interrupt status ahead of
-write pointer access ensures that this condition is avoided.
-
-Signed-off-by: Mohan Kumar <mkumard@nvidia.com>
-Signed-off-by: Viswanath L <viswanathl@nvidia.com>
----
- sound/pci/hda/hda_controller.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
-index 9757667..2609e39 100644
---- a/sound/pci/hda/hda_controller.c
-+++ b/sound/pci/hda/hda_controller.c
-@@ -1110,16 +1110,23 @@ irqreturn_t azx_interrupt(int irq, void *dev_id)
- 		if (snd_hdac_bus_handle_stream_irq(bus, status, stream_update))
- 			active = true;
- 
--		/* clear rirb int */
- 		status = azx_readb(chip, RIRBSTS);
- 		if (status & RIRB_INT_MASK) {
-+			/*
-+			 * Clearing the interrupt status here ensures that no
-+			 * interrupt gets masked after the RIRB wp is read in
-+			 * snd_hdac_bus_update_rirb. This avoids a possible
-+			 * race condition where codec response in RIRB may
-+			 * remain unserviced by IRQ, eventually falling back
-+			 * to polling mode in azx_rirb_get_response.
-+			 */
-+			azx_writeb(chip, RIRBSTS, RIRB_INT_MASK);
- 			active = true;
- 			if (status & RIRB_INT_RESPONSE) {
- 				if (chip->driver_caps & AZX_DCAPS_CTX_WORKAROUND)
- 					udelay(80);
- 				snd_hdac_bus_update_rirb(bus);
- 			}
--			azx_writeb(chip, RIRBSTS, RIRB_INT_MASK);
- 		}
- 	} while (active && ++repeat < 10);
- 
--- 
-2.7.4
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+CgpPbiAyLzUvMjAyMCAxMDozMiBQTSwgRG1pdHJ5IE9zaXBlbmtvIHdyb3RlOgo+IEV4dGVybmFs
+IGVtYWlsOiBVc2UgY2F1dGlvbiBvcGVuaW5nIGxpbmtzIG9yIGF0dGFjaG1lbnRzCj4KPgo+IDMw
+LjAxLjIwMjAgMTM6MzMsIFNhbWVlciBQdWphciDQv9C40YjQtdGCOgo+IC4uLgo+PiArI2luY2x1
+ZGUgPGxpbnV4L21vZHVsZS5oPgo+PiArI2luY2x1ZGUgPGxpbnV4L3JlZ21hcC5oPgo+PiArI2lu
+Y2x1ZGUgInRlZ3JhX2NpZi5oIgo+PiArCj4+ICt2b2lkIHRlZ3JhX3NldF9jaWYoc3RydWN0IHJl
+Z21hcCAqcmVnbWFwLCB1bnNpZ25lZCBpbnQgcmVnLAo+PiArICAgICAgICAgICAgICAgIHN0cnVj
+dCB0ZWdyYV9jaWZfY29uZiAqY29uZikKPj4gK3sKPj4gKyAgICAgdW5zaWduZWQgaW50IHZhbHVl
+Owo+PiArCj4+ICsgICAgIHZhbHVlID0gKGNvbmYtPnRocmVzaG9sZCA8PCBURUdSQV9BQ0lGX0NU
+UkxfRklGT19USF9TSElGVCkgfAo+PiArICAgICAgICAgICAgICgoY29uZi0+YXVkaW9fY2ggLSAx
+KSA8PCBURUdSQV9BQ0lGX0NUUkxfQVVESU9fQ0hfU0hJRlQpIHwKPj4gKyAgICAgICAgICAgICAo
+KGNvbmYtPmNsaWVudF9jaCAtIDEpIDw8IFRFR1JBX0FDSUZfQ1RSTF9DTElFTlRfQ0hfU0hJRlQp
+IHwKPj4gKyAgICAgICAgICAgICAoY29uZi0+YXVkaW9fYml0cyA8PCBURUdSQV9BQ0lGX0NUUkxf
+QVVESU9fQklUU19TSElGVCkgfAo+PiArICAgICAgICAgICAgIChjb25mLT5jbGllbnRfYml0cyA8
+PCBURUdSQV9BQ0lGX0NUUkxfQ0xJRU5UX0JJVFNfU0hJRlQpIHwKPj4gKyAgICAgICAgICAgICAo
+Y29uZi0+ZXhwYW5kIDw8IFRFR1JBX0FDSUZfQ1RSTF9FWFBBTkRfU0hJRlQpIHwKPj4gKyAgICAg
+ICAgICAgICAoY29uZi0+c3RlcmVvX2NvbnYgPDwgVEVHUkFfQUNJRl9DVFJMX1NURVJFT19DT05W
+X1NISUZUKSB8Cj4+ICsgICAgICAgICAgICAgKGNvbmYtPnJlcGxpY2F0ZSA8PCBURUdSQV9BQ0lG
+X0NUUkxfUkVQTElDQVRFX1NISUZUKSB8Cj4+ICsgICAgICAgICAgICAgKGNvbmYtPnRydW5jYXRl
+IDw8IFRFR1JBX0FDSUZfQ1RSTF9UUlVOQ0FURV9TSElGVCkgfAo+PiArICAgICAgICAgICAgIChj
+b25mLT5tb25vX2NvbnYgPDwgVEVHUkFfQUNJRl9DVFJMX01PTk9fQ09OVl9TSElGVCk7Cj4+ICsK
+Pj4gKyAgICAgcmVnbWFwX3VwZGF0ZV9iaXRzKHJlZ21hcCwgcmVnLCBURUdSQV9BQ0lGX1VQREFU
+RV9NQVNLLCB2YWx1ZSk7Cj4+ICt9Cj4+ICtFWFBPUlRfU1lNQk9MX0dQTCh0ZWdyYV9zZXRfY2lm
+KTsKPiBBcmUgeW91IGdvaW5nIHRvIGFkZCBtb3JlIHN0dWZmIGludG8gdGhpcyBzb3VyY2UgZmls
+ZSBsYXRlciBvbj8KClllcyBJIHBsYW4gdG8gYWRkIFRlZ3JhMzAgYW5kIFRlZ3JhMTI0IENJRiBm
+dW5jdGlvbnMgaW4gdGhpcy4gQW55dGhpbmcgCnJlbGF0ZWQgdG8gQ0lGIGNhbiBiZSBtb3ZlZCBo
+ZXJlLgo+Cj4gSWYgbm90LCB0aGVuIGl0J3MgdG9vIG11Y2ggdG8gaGF2ZSBhIHNlcGFyYXRlIGRy
+aXZlciBtb2R1bGUganVzdCBmb3IgYQo+IHNpbmdsZSB0aW55IGZ1bmN0aW9uLCB5b3Ugc2hvdWxk
+IG1vdmUgaXQgaW50byB0aGUgaGVhZGVyIGZpbGUgKG1ha2UgaXQKPiBpbmxpbmUpLgoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
+aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNh
+LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
