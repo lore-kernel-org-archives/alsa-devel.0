@@ -2,100 +2,70 @@ Return-Path: <SRS0=zIiJ=32=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 53EB0C2D0B1
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 11:57:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 38C84C2D0B1
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 12:37:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D1B1620661
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 11:57:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B6A9B20661
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 12:37:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="B0dQZwae";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="UNGce86v"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D1B1620661
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="o9prtRQ8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B6A9B20661
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arm.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 382BB827;
-	Thu,  6 Feb 2020 12:57:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 382BB827
+	by alsa0.perex.cz (Postfix) with ESMTPS id F2F411685;
+	Thu,  6 Feb 2020 13:36:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F2F411685
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580990274;
-	bh=92hfVIlKXieGYMfnqSfr8ZFU1sNjqlkbz3qdC51BCbU=;
+	s=default; t=1580992619;
+	bh=AvxCFg6wrMOSLPvSEGRenEwb6WRGod2EJ2Psov+MtFI=;
 	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=B0dQZwaeT1Uxh3RT4dGUf4BP/BHfEN9lTDp0Ga9WuGiAOtq1gL3U05vqfDyHNPwyE
-	 chxz60L6/SYRcxAZDK7P8vfxI7re6aWJwIr4A1OyIpxnkVUcguNrWgEgWFjLlgcX3w
-	 xvIyO0RRQNj5nCr3aSgmqiCwbvvk97JPd1IDBu5s=
+	b=o9prtRQ8VjE+s/jHDuX4sbnXB7+3SByUMce4WA1I0t51Mbs+Gaj+hx9knjPg4Ecgx
+	 S1tl6BOc7krylibgJrANq6L0B3GDF74/UCDIBlynIM6LQHgt1zxr3TQfrHWTrVrawi
+	 Ljkx9KOfTSihfgGiFgCrPhvbnp8GVFGngtacC7T0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BE9CDF8015B;
-	Thu,  6 Feb 2020 12:57:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5D46CF80059;
+	Thu,  6 Feb 2020 13:36:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D04A0F80162; Thu,  6 Feb 2020 12:57:01 +0100 (CET)
-Received: from hqnvemgate24.nvidia.com (hqnvemgate24.nvidia.com
- [216.228.121.143])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E916CF80059
- for <alsa-devel@alsa-project.org>; Thu,  6 Feb 2020 12:56:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E916CF80059
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
- header.b="UNGce86v"
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by
- hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
- id <B5e3bfecd0002>; Thu, 06 Feb 2020 03:55:57 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
- by hqpgpgate101.nvidia.com (PGP Universal service);
- Thu, 06 Feb 2020 03:56:55 -0800
-X-PGP-Universal: processed;
- by hqpgpgate101.nvidia.com on Thu, 06 Feb 2020 03:56:55 -0800
-Received: from [10.24.44.92] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 6 Feb
- 2020 11:56:50 +0000
-To: Dmitry Osipenko <digetx@gmail.com>, <perex@perex.cz>, <tiwai@suse.com>,
- <robh+dt@kernel.org>
-References: <1580380422-3431-1-git-send-email-spujar@nvidia.com>
- <1580380422-3431-3-git-send-email-spujar@nvidia.com>
- <7239e858-16b7-609f-c4e3-8135bee8450b@gmail.com>
-From: Sameer Pujar <spujar@nvidia.com>
-Message-ID: <1305a6db-a492-eec2-111e-ddc801d58d86@nvidia.com>
-Date: Thu, 6 Feb 2020 17:26:47 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ id 42017F80162; Thu,  6 Feb 2020 13:36:07 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 9EAC4F800AB
+ for <alsa-devel@alsa-project.org>; Thu,  6 Feb 2020 13:36:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9EAC4F800AB
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2A7B630E;
+ Thu,  6 Feb 2020 04:36:01 -0800 (PST)
+Received: from [192.168.1.123] (unknown [172.31.20.19])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 03BE73F68E;
+ Thu,  6 Feb 2020 04:35:59 -0800 (PST)
+To: Mark Brown <broonie@kernel.org>
+References: <cover.1580950046.git.robin.murphy@arm.com>
+ <29a846da33c02df64eca62b5fa0f3884652f788f.1580950046.git.robin.murphy@arm.com>
+ <20200206114606.GM3897@sirena.org.uk>
+From: Robin Murphy <robin.murphy@arm.com>
+Message-ID: <ad2c941a-9724-510e-959f-3cca3cab1dc2@arm.com>
+Date: Thu, 6 Feb 2020 12:36:04 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
  Thunderbird/68.4.2
 MIME-Version: 1.0
-In-Reply-To: <7239e858-16b7-609f-c4e3-8135bee8450b@gmail.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
+In-Reply-To: <20200206114606.GM3897@sirena.org.uk>
 Content-Language: en-GB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
- t=1580990157; bh=iUPSM/V3A6BDAos6dKxs2BKrINIHdwVPZkEK84cY18A=;
- h=X-PGP-Universal:CC:Subject:To:References:From:Message-ID:Date:
- User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
- X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
- Content-Language;
- b=UNGce86vrwf7dXG5TzHsshBC2TH6e5MSnJTd0nTqelKJky6+SVbyxdoLrNIywYqJx
- rhXe+cpscMFAV0uoL/m2pt3cOeQvGqlouFD/A01FtR1cKyHHS1HnsNCT0K2Bf5NcqK
- d8x7+/4ERSIGioKxr9qLmuiQ8EFkW49PPQQA4GNTJgiI732PtsthfhGWQVUPlk0tFj
- Y3GhITrPqld7KVF7lt7HYlb9MTIFrHAv2W0VLKb2KeRvTCaaBm7NjfbqdFCO3sAOkR
- ID1mc05uhPU0BNbJBHX+9UFq5aakQ4CvYCKMaLff9YIosSJ1A7Es2QKZlvrXYPsT4f
- KVHvK31ejK+Yg==
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- atalambedu@nvidia.com, linux-kernel@vger.kernel.org, spujar@nvidia.com,
- lgirdwood@gmail.com, jonathanh@nvidia.com, viswanathl@nvidia.com,
- sharadg@nvidia.com, broonie@kernel.org, thierry.reding@gmail.com,
- linux-tegra@vger.kernel.org, rlokhande@nvidia.com, mkumard@nvidia.com,
- dramesh@nvidia.com
-Subject: Re: [alsa-devel] [PATCH v2 2/9] ASoC: tegra: add support for CIF
-	programming
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, heiko@sntech.de,
+ lgirdwood@gmail.com, linux-rockchip@lists.infradead.org, pgwipeout@gmail.com,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [alsa-devel] [PATCH 2/3] ASoC: rockchip: Make RK3328 GPIO_MUTE
+ control explicit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,39 +78,50 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-CgpPbiAyLzUvMjAyMCAxMDozMiBQTSwgRG1pdHJ5IE9zaXBlbmtvIHdyb3RlOgo+IEV4dGVybmFs
-IGVtYWlsOiBVc2UgY2F1dGlvbiBvcGVuaW5nIGxpbmtzIG9yIGF0dGFjaG1lbnRzCj4KPgo+IDMw
-LjAxLjIwMjAgMTM6MzMsIFNhbWVlciBQdWphciDQv9C40YjQtdGCOgo+IC4uLgo+PiArI2luY2x1
-ZGUgPGxpbnV4L21vZHVsZS5oPgo+PiArI2luY2x1ZGUgPGxpbnV4L3JlZ21hcC5oPgo+PiArI2lu
-Y2x1ZGUgInRlZ3JhX2NpZi5oIgo+PiArCj4+ICt2b2lkIHRlZ3JhX3NldF9jaWYoc3RydWN0IHJl
-Z21hcCAqcmVnbWFwLCB1bnNpZ25lZCBpbnQgcmVnLAo+PiArICAgICAgICAgICAgICAgIHN0cnVj
-dCB0ZWdyYV9jaWZfY29uZiAqY29uZikKPj4gK3sKPj4gKyAgICAgdW5zaWduZWQgaW50IHZhbHVl
-Owo+PiArCj4+ICsgICAgIHZhbHVlID0gKGNvbmYtPnRocmVzaG9sZCA8PCBURUdSQV9BQ0lGX0NU
-UkxfRklGT19USF9TSElGVCkgfAo+PiArICAgICAgICAgICAgICgoY29uZi0+YXVkaW9fY2ggLSAx
-KSA8PCBURUdSQV9BQ0lGX0NUUkxfQVVESU9fQ0hfU0hJRlQpIHwKPj4gKyAgICAgICAgICAgICAo
-KGNvbmYtPmNsaWVudF9jaCAtIDEpIDw8IFRFR1JBX0FDSUZfQ1RSTF9DTElFTlRfQ0hfU0hJRlQp
-IHwKPj4gKyAgICAgICAgICAgICAoY29uZi0+YXVkaW9fYml0cyA8PCBURUdSQV9BQ0lGX0NUUkxf
-QVVESU9fQklUU19TSElGVCkgfAo+PiArICAgICAgICAgICAgIChjb25mLT5jbGllbnRfYml0cyA8
-PCBURUdSQV9BQ0lGX0NUUkxfQ0xJRU5UX0JJVFNfU0hJRlQpIHwKPj4gKyAgICAgICAgICAgICAo
-Y29uZi0+ZXhwYW5kIDw8IFRFR1JBX0FDSUZfQ1RSTF9FWFBBTkRfU0hJRlQpIHwKPj4gKyAgICAg
-ICAgICAgICAoY29uZi0+c3RlcmVvX2NvbnYgPDwgVEVHUkFfQUNJRl9DVFJMX1NURVJFT19DT05W
-X1NISUZUKSB8Cj4+ICsgICAgICAgICAgICAgKGNvbmYtPnJlcGxpY2F0ZSA8PCBURUdSQV9BQ0lG
-X0NUUkxfUkVQTElDQVRFX1NISUZUKSB8Cj4+ICsgICAgICAgICAgICAgKGNvbmYtPnRydW5jYXRl
-IDw8IFRFR1JBX0FDSUZfQ1RSTF9UUlVOQ0FURV9TSElGVCkgfAo+PiArICAgICAgICAgICAgIChj
-b25mLT5tb25vX2NvbnYgPDwgVEVHUkFfQUNJRl9DVFJMX01PTk9fQ09OVl9TSElGVCk7Cj4+ICsK
-Pj4gKyAgICAgcmVnbWFwX3VwZGF0ZV9iaXRzKHJlZ21hcCwgcmVnLCBURUdSQV9BQ0lGX1VQREFU
-RV9NQVNLLCB2YWx1ZSk7Cj4+ICt9Cj4+ICtFWFBPUlRfU1lNQk9MX0dQTCh0ZWdyYV9zZXRfY2lm
-KTsKPiBBcmUgeW91IGdvaW5nIHRvIGFkZCBtb3JlIHN0dWZmIGludG8gdGhpcyBzb3VyY2UgZmls
-ZSBsYXRlciBvbj8KClllcyBJIHBsYW4gdG8gYWRkIFRlZ3JhMzAgYW5kIFRlZ3JhMTI0IENJRiBm
-dW5jdGlvbnMgaW4gdGhpcy4gQW55dGhpbmcgCnJlbGF0ZWQgdG8gQ0lGIGNhbiBiZSBtb3ZlZCBo
-ZXJlLgo+Cj4gSWYgbm90LCB0aGVuIGl0J3MgdG9vIG11Y2ggdG8gaGF2ZSBhIHNlcGFyYXRlIGRy
-aXZlciBtb2R1bGUganVzdCBmb3IgYQo+IHNpbmdsZSB0aW55IGZ1bmN0aW9uLCB5b3Ugc2hvdWxk
-IG1vdmUgaXQgaW50byB0aGUgaGVhZGVyIGZpbGUgKG1ha2UgaXQKPiBpbmxpbmUpLgoKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
-aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNh
-LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On 2020-02-06 11:46 am, Mark Brown wrote:
+> On Thu, Feb 06, 2020 at 01:07:12AM +0000, Robin Murphy wrote:
+>> The RK3328 reference design uses an external line driver IC as a buffer
+>> on the analog codec output, enabled by the GPIO_MUTE pin, and such a
+>> configuration is currently assumed in the codec driver's direct poking
+>> of GRF_SOC_CON10 to control the GPIO_MUTE output value. However, some
+> 
+> This makes sense but it is an ABI break so is going to need
+> quirking for existing boards that unfortunately rely on the
+> existing behaviour.
+
+Yeah, that's where it gets tricky - there doesn't seem to be a nice way 
+to differentiate between "no GPIO because old DT" and "no GPIO because 
+the enable is hard-wired/irrelevant and GPIO_MUTE doesn't do what you 
+think it does", and it seems really improper to introduce a DT property 
+for the sole purpose of telling a Linux driver not to assume something 
+it shouldn't really have in the first place.
+
+My opinion fell on the side of a minor ABI break being the lesser of two 
+evils, given that the worst case once people start enabling this codec 
+on Renegade/ROC-CC boards (which I was only anticipating, but have just 
+discovered is happening already[1]) results in unexpectedly stuffing 
+3.3V into the SD card and SoC I/O domain while both are in 1.8V mode, 
+and that the change would only really affect one other current board 
+(Rock64), where most mainline users are likely to be upgrading their DTB 
+in lock-step with the kernel anyway.
+
+I guess the existing (mis)behaviour could be predicated on an 
+of_machine_is_compatible() check for Rock64 boards - it's ugly, but 
+should do the job if you feel it's more important to be 100% strict 
+about not regressing supported systems for any possible kernel/DTB 
+combination.
+
+Thanks,
+Robin.
+
+[1] 
+https://github.com/armbian/build/commit/18b24717be9639b65b86db3dbcf2b42fe73ca12c
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
