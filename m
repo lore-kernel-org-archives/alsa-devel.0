@@ -2,67 +2,70 @@ Return-Path: <SRS0=zIiJ=32=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB520C35247
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 20:03:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A483C35247
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 20:04:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 68209218AC
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 20:03:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A898E22B48
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 20:04:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hscB4QWF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 68209218AC
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gRccMq9S"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A898E22B48
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B384F16CA;
-	Thu,  6 Feb 2020 21:02:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B384F16CA
+	by alsa0.perex.cz (Postfix) with ESMTPS id C7F4D16D9;
+	Thu,  6 Feb 2020 21:03:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7F4D16D9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581019408;
-	bh=wnz8+304PDfZoEuK6oSw3mYXSECglltLGygofn8lkwg=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=hscB4QWFqjVfudgumjYrq6ZdYuF6uaAqo6MHN7t1lVPJI9FEJpN/R8YybE9ZfXham
-	 SSVnQGslBd9bGP1S6o2bwNmON95VOIAoSAF9EDa150B9T0OclL+lDLorLdkWGZ135D
-	 AGVhqt2u2saKfkiZLCb6vwYcBp3IPxrn+2sVUqPs=
+	s=default; t=1581019462;
+	bh=YFfrztoNigSFXbunzb8k5OEpxv1b0VoKTRHlvGuirKk=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=gRccMq9SKxXS6YSMSjR4iFvpdS0QgtBldj4PDyI3aacep1dlr41ESxU+ye3g8roGq
+	 /aTMj/k1cP6zkQjmCYlnWIOAXlIea/VtzsBRGPZl6wqKMSI+Zac3bl6161Sf+hvGv+
+	 wzCkXNzm9lE3tz8Y3t82gtOc5KX+Dk2JPKH7HLNM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 440F3F8015B;
-	Thu,  6 Feb 2020 21:02:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 45BFDF80212;
+	Thu,  6 Feb 2020 21:02:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 63277F80162; Thu,  6 Feb 2020 21:02:36 +0100 (CET)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ id 44A25F80255; Thu,  6 Feb 2020 21:02:48 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3E48FF800C6
- for <alsa-devel@alsa-project.org>; Thu,  6 Feb 2020 21:02:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E48FF800C6
+ by alsa1.perex.cz (Postfix) with ESMTPS id E9923F800C6
+ for <alsa-devel@alsa-project.org>; Thu,  6 Feb 2020 21:02:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9923F800C6
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 06 Feb 2020 12:02:29 -0800
+ by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 06 Feb 2020 12:02:42 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,410,1574150400"; d="scan'208";a="255197680"
+X-IronPort-AV: E=Sophos;i="5.70,410,1574150400"; d="scan'208";a="255197721"
 Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by fmsmga004.fm.intel.com with ESMTP; 06 Feb 2020 12:02:28 -0800
+ by fmsmga004.fm.intel.com with ESMTP; 06 Feb 2020 12:02:38 -0800
 From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Date: Thu,  6 Feb 2020 22:02:21 +0200
-Message-Id: <20200206200223.7715-1-kai.vehmanen@linux.intel.com>
+Date: Thu,  6 Feb 2020 22:02:23 +0200
+Message-Id: <20200206200223.7715-3-kai.vehmanen@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200206200223.7715-1-kai.vehmanen@linux.intel.com>
+References: <20200206200223.7715-1-kai.vehmanen@linux.intel.com>
 Cc: tiwai@suse.de, pierre-louis.bossart@linux.intel.com,
  Kai Vehmanen <kai.vehmanen@linux.intel.com>, ranjani.sridharan@linux.intel.com
-Subject: [alsa-devel] [PATCH 1/3] ALSA: hda: do not override bus codec_mask
-	in link_get()
+Subject: [alsa-devel] [PATCH 3/3] ASoC: SOF: Intel: hda: move i915 init
+	earlier
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,51 +84,69 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-snd_hdac_ext_bus_link_get() does not work correctly in case
-there are multiple codecs on the bus. It unconditionally
-resets the bus->codec_mask value. As per documentation in
-hdaudio.h and existing use in client code, this field should
-be used to store bit flag of detected codecs on the bus.
+To be compliant with i915 display driver requirements, i915 power-up
+must be done before any HDA communication takes place, including
+parsing the bus capabilities. Otherwise the initial codec probe
+may fail.
 
-By overwriting value of the codec_mask, information on all
-detected codecs is lost. No current user of hdac is impacted,
-but use of bus->codec_mask is planned in future patches
-for SOF.
+Move i915 initialization earlier in the SOF HDA sequence. This
+sequence is now aligned with the snd-hda-intel driver where the
+display_power() call is before snd_hdac_bus_parse_capabilities()
+and rest of the capability parsing.
+
+Also remove unnecessary ifdef around hda_codec_i915_init(). There's
+a dummy implementation provided if CONFIG_SND_SOC_SOF_HDA is not
+enabled.
 
 Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/hda/ext/hdac_ext_controller.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ sound/soc/sof/intel/hda.c | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
 
-diff --git a/sound/hda/ext/hdac_ext_controller.c b/sound/hda/ext/hdac_ext_controller.c
-index cfab60d88c92..09ff209df4a3 100644
---- a/sound/hda/ext/hdac_ext_controller.c
-+++ b/sound/hda/ext/hdac_ext_controller.c
-@@ -254,6 +254,7 @@ EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_link_power_down_all);
- int snd_hdac_ext_bus_link_get(struct hdac_bus *bus,
- 				struct hdac_ext_link *link)
- {
-+	unsigned long codec_mask;
- 	int ret = 0;
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index 8fddafb5c1d4..25946a1c2822 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -286,6 +286,13 @@ static int hda_init(struct snd_sof_dev *sdev)
+ 	/* HDA base */
+ 	sdev->bar[HDA_DSP_HDA_BAR] = bus->remap_addr;
  
- 	mutex_lock(&bus->lock);
-@@ -280,9 +281,11 @@ int snd_hdac_ext_bus_link_get(struct hdac_bus *bus,
- 		 *  HDA spec section 4.3 - Codec Discovery
- 		 */
- 		udelay(521);
--		bus->codec_mask = snd_hdac_chip_readw(bus, STATESTS);
--		dev_dbg(bus->dev, "codec_mask = 0x%lx\n", bus->codec_mask);
--		snd_hdac_chip_writew(bus, STATESTS, bus->codec_mask);
-+		codec_mask = snd_hdac_chip_readw(bus, STATESTS);
-+		dev_dbg(bus->dev, "codec_mask = 0x%lx\n", codec_mask);
-+		snd_hdac_chip_writew(bus, STATESTS, codec_mask);
-+		if (!bus->codec_mask)
-+			bus->codec_mask = codec_mask;
- 	}
++	/* init i915 and HDMI codecs */
++	ret = hda_codec_i915_init(sdev);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: init i915 and HDMI codec failed\n");
++		return ret;
++	}
++
+ 	/* get controller capabilities */
+ 	ret = hda_dsp_ctrl_get_caps(sdev);
+ 	if (ret < 0)
+@@ -353,15 +360,6 @@ static int hda_init_caps(struct snd_sof_dev *sdev)
+ 	if (bus->ppcap)
+ 		dev_dbg(sdev->dev, "PP capability, will probe DSP later.\n");
  
- 	mutex_unlock(&bus->lock);
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
+-	/* init i915 and HDMI codecs */
+-	ret = hda_codec_i915_init(sdev);
+-	if (ret < 0) {
+-		dev_err(sdev->dev, "error: init i915 and HDMI codec failed\n");
+-		return ret;
+-	}
+-#endif
+-
+ 	/* Init HDA controller after i915 init */
+ 	ret = hda_dsp_ctrl_init_chip(sdev, true);
+ 	if (ret < 0) {
+@@ -611,6 +609,7 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
+ 	iounmap(sdev->bar[HDA_DSP_BAR]);
+ hdac_bus_unmap:
+ 	iounmap(bus->remap_addr);
++	hda_codec_i915_exit(sdev);
+ err:
+ 	return ret;
+ }
 -- 
 2.17.1
 
