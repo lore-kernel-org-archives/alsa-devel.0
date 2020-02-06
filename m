@@ -1,101 +1,98 @@
-Return-Path: <SRS0=flyq=3Z=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=zIiJ=32=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 43AD6C35247
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Feb 2020 19:16:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E8C0AC35247
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 00:02:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C769721741
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Feb 2020 19:16:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 72251214AF
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 00:02:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oDKBjDLw";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="UPgujWka"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C769721741
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Hjfn/A9W";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=mforney-org.20150623.gappssmtp.com header.i=@mforney-org.20150623.gappssmtp.com header.b="tEHiUvvG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 72251214AF
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mforney.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 144D41662;
-	Wed,  5 Feb 2020 20:15:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 144D41662
+	by alsa0.perex.cz (Postfix) with ESMTPS id CEEAD1662;
+	Thu,  6 Feb 2020 01:01:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CEEAD1662
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580930163;
-	bh=brFDpvNwh2CRaA3np61nRW9l3COK6b8ajpOv5WQeNxU=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1580947319;
+	bh=cQAqFL+iamg8XEYVuV6Tp8/7sTv7XpYxLJOd1G+77XQ=;
+	h=In-Reply-To:References:From:Date:To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oDKBjDLwiOJAETsXkMF1+k4yBJ/NsQ64p6DTzgyneHCOk+yFdek34bEOEf8q0C+Wa
-	 e3QYM74PKNJkGWqr7Ewte1q8ANuGWmdPlcZn6+qbIaxUQmhcSf1inWC1hJwk56udXG
-	 kdQ0PUowKGyqpNPzGAn7DPn6J0B28H1qkYIkQyMY=
+	b=Hjfn/A9WowfbYLpZ2tzzbifUs4Nf//VpBDiIPtkB33Xbf+aHkbp3cqaw0QqfZFaZr
+	 RPJj7UtOyQ3V3xwjCbyU9MIMtv//FZTWKZMdsV1gP0mO6WGeZZVvWln0RWeNeoYjvA
+	 O5WXN/oX/I8Ar9CaXhdnIycWuXOHC62jQzTZAkEA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4B180F80142;
-	Wed,  5 Feb 2020 20:15:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5B899F80051;
+	Thu,  6 Feb 2020 01:01:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9207EF80148; Wed,  5 Feb 2020 20:15:08 +0100 (CET)
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com
- [IPv6:2607:f8b0:4864:20::642])
+ id 63317F80148; Thu,  6 Feb 2020 01:01:07 +0100 (CET)
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com
+ [IPv6:2607:f8b0:4864:20::b44])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A8116F80051
- for <alsa-devel@alsa-project.org>; Wed,  5 Feb 2020 20:15:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8116F80051
+ by alsa1.perex.cz (Postfix) with ESMTPS id BE70CF80051
+ for <alsa-devel@alsa-project.org>; Thu,  6 Feb 2020 01:00:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE70CF80051
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="UPgujWka"
-Received: by mail-pl1-x642.google.com with SMTP id y8so1255079pll.13
- for <alsa-devel@alsa-project.org>; Wed, 05 Feb 2020 11:15:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=/Au7vyzp7l2LzZghmAjt7fLaBwN+1gtH+DoV5Fi0iNs=;
- b=UPgujWkaUyq4Fm2bZm8MTevViA78PsBnVMJ846OvkIxXtx11SQcVqrHnDP9xn8xzqk
- AwZ6C9psjdQhnF21RL15+d/RXPMvQm+s0DFdbFPopibDyysyg5tya+HZWfbfWMTenljB
- OP9PLi4qjb+OWavPkCmeUfE+c9hPXD46Y9B8g=
+ dkim=pass (2048-bit key) header.d=mforney-org.20150623.gappssmtp.com
+ header.i=@mforney-org.20150623.gappssmtp.com header.b="tEHiUvvG"
+Received: by mail-yb1-xb44.google.com with SMTP id w17so31825ybm.1
+ for <alsa-devel@alsa-project.org>; Wed, 05 Feb 2020 16:00:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mforney-org.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+ :cc; bh=pPii7izgLeXNoTf4vn7SExy/Mmwr5HNXv8oU9Opje24=;
+ b=tEHiUvvGK0e+ApLHxYtGtw5i0/bwOUyHOZo8xtR4o0hAhc1dyrqk0KmlDQGR4/fHwn
+ cpPDwiOMoEVp3ZLSiGeLamApaMuQZMFxSJHyIVw/RpY0zJpYxVpurXueZMrmquOnIFbI
+ FwM9fKLPyu9UujV8Ld3w2t2l0bMj/pzNWgJX6BoLJ0TUpEMmcDQpgj9aYTY3aDJ0kZzt
+ 11U0i+tFThGntyV+woR8Nbo1/8roZA9pjE1OlpycsC0DyP1yznyp1S26voEP3nMg3ULO
+ xRdHO5/isswbySVfgHOAZ46WIIv5JlqgMHY22riBJ6x4wyCx40xhIpfQ0aQ+GVSMkXR4
+ dXtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=/Au7vyzp7l2LzZghmAjt7fLaBwN+1gtH+DoV5Fi0iNs=;
- b=a0tzUcAtDUCWVvXeeegCQJpYXjWs5GfUYONL4WIiYGeP1aXTuDiKVkt6RZm7f2vX9t
- wrFYGV+EZloaxvqKjAWbFu8W9EYPf54NVhm2OCX28j2W7jPOhyXhM+nvf1mssbu9dHtG
- xf4u+t8j4gKcYroZpfqbuCBCx+7va5bf1ikcqaYD8srcs1/AomR6kP/zSo8GygaC6q3f
- SYjPtj2AOHGelYs2sH50Gb3bgZFo1yas7AkYRj+aRwodsLheMBF3kN+neyXmy57fSY7h
- uaP8OxS+5yOcp+7xOrePDIp5elmp/xjCp4deaHXrWtyTXNTQD8qxTwsFwnGBtKN+Gtcr
- /zWA==
-X-Gm-Message-State: APjAAAWbO1CvHDjvl8bezAjYIq83RhYRcNyB/kj/8mW/xwIRUw95ryll
- PXl7h5VXjKQyeblMiaaksRjDyA==
-X-Google-Smtp-Source: APXvYqzsjFJdUq2dQRQEBZgCnMW+01KFo+QQdIKRxFr72pSEntwurTGr8lW0FWH4D1quKkcvS6AfVQ==
-X-Received: by 2002:a17:90b:4004:: with SMTP id
- ie4mr7299409pjb.49.1580930101392; 
- Wed, 05 Feb 2020 11:15:01 -0800 (PST)
-Received: from pmalani2.mtv.corp.google.com
- ([2620:15c:202:201:172e:4646:c089:ce59])
- by smtp.gmail.com with ESMTPSA id u23sm257224pfm.29.2020.02.05.11.15.00
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 05 Feb 2020 11:15:00 -0800 (PST)
-From: Prashant Malani <pmalani@chromium.org>
-To: linux-kernel@vger.kernel.org
-Date: Wed,  5 Feb 2020 11:00:16 -0800
-Message-Id: <20200205190028.183069-12-pmalani@chromium.org>
-X-Mailer: git-send-email 2.25.0.341.g760bfbb309-goog
-In-Reply-To: <20200205190028.183069-1-pmalani@chromium.org>
-References: <20200205190028.183069-1-pmalani@chromium.org>
+ h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+ :message-id:subject:to:cc;
+ bh=pPii7izgLeXNoTf4vn7SExy/Mmwr5HNXv8oU9Opje24=;
+ b=C/oycy+oQVbfB0WpN7g1GQLXpjmpQ9N8czawkJbw0tFRDPwtVuXytXUvvD88/uhuat
+ KEgN35mbF6Y19o29KWobsz6+AikP7mCZbI6VjumjYQaAGGgEavoJDda1cOdAZiz+6fET
+ bKnIYy1qFC9T/McNEUuoPZROJqrL5t5VwuSaTMaEb+1bdMulLDx1TQ/P93RP0GHndenL
+ la1efCgFhCMjm2PhNMs8YI6Pz/uoMxLkdiVY51/4v3PDIi4uCk7Z3kJ+W97NvRdZaf4A
+ zx2GHCbO10+SU9qQaz6bb/m/AGQ4gXq0IlpS2k1BD8mhdTquvvrD2WxPvQP9IFvzgLhB
+ exSA==
+X-Gm-Message-State: APjAAAXkMMi51pBEGDcKPOYhppLK9P4BNfYC418qevJTyfhCtU/7wibs
+ Dat5Y7SGbNVGmYTH+h3nCTHI1KyP7WEknml++qhXdg==
+X-Google-Smtp-Source: APXvYqyS3ejLPd2BLocg/vkqA6I4UBktAZfCG/KP1MYvB7vzaEi+De5zhUDcfE/qy82XLddfhUidrf6WyptlpLXgcVU=
+X-Received: by 2002:a05:6902:4c8:: with SMTP id
+ v8mr570844ybs.451.1580947257532; 
+ Wed, 05 Feb 2020 16:00:57 -0800 (PST)
 MIME-Version: 1.0
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
- <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Guenter Roeck <groeck@chromium.org>,
- Mark Brown <broonie@kernel.org>, Prashant Malani <pmalani@chromium.org>,
- Enric Balletbo i Serra <enric.balletbo@collabora.com>,
- Benson Leung <bleung@chromium.org>, Cheng-Yi Chiang <cychiang@chromium.org>
-Subject: [alsa-devel] [PATCH v2 11/17] ASoC: cros_ec_codec: Use cros_ec_cmd()
+Received: by 2002:a0d:e186:0:0:0:0:0 with HTTP;
+ Wed, 5 Feb 2020 16:00:57 -0800 (PST)
+X-Originating-IP: [73.70.188.119]
+In-Reply-To: <cefeff1a-a35d-7d00-1f49-7c0dfa746ad1@ladisch.de>
+References: <20200205081221.18665-1-mforney@mforney.org>
+ <20200205081221.18665-2-mforney@mforney.org>
+ <cefeff1a-a35d-7d00-1f49-7c0dfa746ad1@ladisch.de>
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 5 Feb 2020 16:00:57 -0800
+Message-ID: <CAGw6cBuk4DhL033W+PusF2LBb=pg-FczR7nWUU_gnrtr1HM=gQ@mail.gmail.com>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] [PATCH alsa-utils 2/4] Avoid pointer arithmetic on
+ `void *`
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -113,277 +110,17 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Replace send_ec_host_command() with cros_ec_cmd() which does the same
-thing, but is defined in a common location in platform/chrome and
-exposed for other modules to use. This allows us to remove
-send_ec_host_command() entirely.
+On 2020-02-05, Clemens Ladisch <clemens@ladisch.de> wrote:
+> Michael Forney wrote:
+>> The pointer operand to the binary `+` operator must be to a complete
+>> object type.
+>
+> Why are you making this change?  Are you trying to compile alsa-utils
+> with MSVC?
 
-Signed-off-by: Prashant Malani <pmalani@chromium.org>
----
+I'm trying to compile alsa-utils with cproc[0], which is my C compiler project.
 
-Changes in v2:
-- Updated to use new function name and parameter list.
-
- sound/soc/codecs/cros_ec_codec.c | 119 +++++++++++--------------------
- 1 file changed, 42 insertions(+), 77 deletions(-)
-
-diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/codecs/cros_ec_codec.c
-index 6a24f570c5e86f..8516ba5f7624f8 100644
---- a/sound/soc/codecs/cros_ec_codec.c
-+++ b/sound/soc/codecs/cros_ec_codec.c
-@@ -69,38 +69,6 @@ static int ec_codec_capable(struct cros_ec_codec_priv *priv, uint8_t cap)
- 	return priv->ec_capabilities & BIT(cap);
- }
- 
--static int send_ec_host_command(struct cros_ec_device *ec_dev, uint32_t cmd,
--				uint8_t *out, size_t outsize,
--				uint8_t *in, size_t insize)
--{
--	int ret;
--	struct cros_ec_command *msg;
--
--	msg = kmalloc(sizeof(*msg) + max(outsize, insize), GFP_KERNEL);
--	if (!msg)
--		return -ENOMEM;
--
--	msg->version = 0;
--	msg->command = cmd;
--	msg->outsize = outsize;
--	msg->insize = insize;
--
--	if (outsize)
--		memcpy(msg->data, out, outsize);
--
--	ret = cros_ec_cmd_xfer_status(ec_dev, msg);
--	if (ret < 0)
--		goto error;
--
--	if (insize)
--		memcpy(in, msg->data, insize);
--
--	ret = 0;
--error:
--	kfree(msg);
--	return ret;
--}
--
- static int calculate_sha256(struct cros_ec_codec_priv *priv,
- 			    uint8_t *buf, uint32_t size, uint8_t *digest)
- {
-@@ -149,18 +117,18 @@ static int dmic_get_gain(struct snd_kcontrol *kcontrol,
- 
- 	p.cmd = EC_CODEC_DMIC_GET_GAIN_IDX;
- 	p.get_gain_idx_param.channel = EC_CODEC_DMIC_CHANNEL_0;
--	ret = send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_DMIC,
--				   (uint8_t *)&p, sizeof(p),
--				   (uint8_t *)&r, sizeof(r));
-+	ret = cros_ec_cmd(priv->ec_device, 0, EC_CMD_EC_CODEC_DMIC,
-+			  (uint8_t *)&p, sizeof(p), (uint8_t *)&r, sizeof(r),
-+			  NULL);
- 	if (ret < 0)
- 		return ret;
- 	ucontrol->value.integer.value[0] = r.gain;
- 
- 	p.cmd = EC_CODEC_DMIC_GET_GAIN_IDX;
- 	p.get_gain_idx_param.channel = EC_CODEC_DMIC_CHANNEL_1;
--	ret = send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_DMIC,
--				   (uint8_t *)&p, sizeof(p),
--				   (uint8_t *)&r, sizeof(r));
-+	ret = cros_ec_cmd(priv->ec_device, 0, EC_CMD_EC_CODEC_DMIC,
-+			  (uint8_t *)&p, sizeof(p), (uint8_t *)&r, sizeof(r),
-+			  NULL);
- 	if (ret < 0)
- 		return ret;
- 	ucontrol->value.integer.value[1] = r.gain;
-@@ -191,16 +159,16 @@ static int dmic_put_gain(struct snd_kcontrol *kcontrol,
- 	p.cmd = EC_CODEC_DMIC_SET_GAIN_IDX;
- 	p.set_gain_idx_param.channel = EC_CODEC_DMIC_CHANNEL_0;
- 	p.set_gain_idx_param.gain = left;
--	ret = send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_DMIC,
--				   (uint8_t *)&p, sizeof(p), NULL, 0);
-+	ret = cros_ec_cmd(priv->ec_device, 0, EC_CMD_EC_CODEC_DMIC,
-+			  (uint8_t *)&p, sizeof(p), NULL, 0, NULL);
- 	if (ret < 0)
- 		return ret;
- 
- 	p.cmd = EC_CODEC_DMIC_SET_GAIN_IDX;
- 	p.set_gain_idx_param.channel = EC_CODEC_DMIC_CHANNEL_1;
- 	p.set_gain_idx_param.gain = right;
--	return send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_DMIC,
--				    (uint8_t *)&p, sizeof(p), NULL, 0);
-+	return cros_ec_cmd(priv->ec_device, 0, EC_CMD_EC_CODEC_DMIC,
-+			   (uint8_t *)&p, sizeof(p), NULL, 0, NULL);
- }
- 
- static const DECLARE_TLV_DB_SCALE(dmic_gain_tlv, 0, 100, 0);
-@@ -231,9 +199,9 @@ static int dmic_probe(struct snd_soc_component *component)
- 
- 	p.cmd = EC_CODEC_DMIC_GET_MAX_GAIN;
- 
--	ret = send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_DMIC,
--				   (uint8_t *)&p, sizeof(p),
--				   (uint8_t *)&r, sizeof(r));
-+	ret = cros_ec_cmd(priv->ec_device, 0, EC_CMD_EC_CODEC_DMIC,
-+			  (uint8_t *)&p, sizeof(p), (uint8_t *)&r, sizeof(r),
-+			  NULL);
- 	if (ret < 0) {
- 		dev_warn(dev, "get_max_gain() unsupported\n");
- 		return 0;
-@@ -279,8 +247,8 @@ static int i2s_rx_hw_params(struct snd_pcm_substream *substream,
- 
- 	p.cmd = EC_CODEC_I2S_RX_SET_SAMPLE_DEPTH;
- 	p.set_sample_depth_param.depth = depth;
--	ret = send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_I2S_RX,
--				   (uint8_t *)&p, sizeof(p), NULL, 0);
-+	ret = cros_ec_cmd(priv->ec_device, 0, EC_CMD_EC_CODEC_I2S_RX,
-+			  (uint8_t *)&p, sizeof(p), NULL, 0, NULL);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -289,8 +257,8 @@ static int i2s_rx_hw_params(struct snd_pcm_substream *substream,
- 
- 	p.cmd = EC_CODEC_I2S_RX_SET_BCLK;
- 	p.set_bclk_param.bclk = snd_soc_params_to_bclk(params);
--	return send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_I2S_RX,
--				    (uint8_t *)&p, sizeof(p), NULL, 0);
-+	return cros_ec_cmd(priv->ec_device, 0, EC_CMD_EC_CODEC_I2S_RX,
-+			   (uint8_t *)&p, sizeof(p), NULL, 0, NULL);
- }
- 
- static int i2s_rx_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
-@@ -333,8 +301,8 @@ static int i2s_rx_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 
- 	p.cmd = EC_CODEC_I2S_RX_SET_DAIFMT;
- 	p.set_daifmt_param.daifmt = daifmt;
--	return send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_I2S_RX,
--				    (uint8_t *)&p, sizeof(p), NULL, 0);
-+	return cros_ec_cmd(priv->ec_device, 0, EC_CMD_EC_CODEC_I2S_RX,
-+			   (uint8_t *)&p, sizeof(p), NULL, 0, NULL);
- }
- 
- static const struct snd_soc_dai_ops i2s_rx_dai_ops = {
-@@ -364,8 +332,8 @@ static int i2s_rx_event(struct snd_soc_dapm_widget *w,
- 		return 0;
- 	}
- 
--	return send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_I2S_RX,
--				    (uint8_t *)&p, sizeof(p), NULL, 0);
-+	return cros_ec_cmd(priv->ec_device, 0, EC_CMD_EC_CODEC_I2S_RX,
-+			   (uint8_t *)&p, sizeof(p), NULL, 0, NULL);
- }
- 
- static struct snd_soc_dapm_widget i2s_rx_dapm_widgets[] = {
-@@ -415,9 +383,8 @@ static void *wov_map_shm(struct cros_ec_codec_priv *priv,
- 
- 	p.cmd = EC_CODEC_GET_SHM_ADDR;
- 	p.get_shm_addr_param.shm_id = shm_id;
--	if (send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC,
--				 (uint8_t *)&p, sizeof(p),
--				 (uint8_t *)&r, sizeof(r)) < 0) {
-+	if (cros_ec_cmd(priv->ec_device, 0, EC_CMD_EC_CODEC, (uint8_t *)&p,
-+			sizeof(p), (uint8_t *)&r, sizeof(r), NULL) < 0) {
- 		dev_err(priv->dev, "failed to EC_CODEC_GET_SHM_ADDR\n");
- 		return NULL;
- 	}
-@@ -453,9 +420,8 @@ static void *wov_map_shm(struct cros_ec_codec_priv *priv,
- 		p.set_shm_addr_param.phys_addr = priv->ap_shm_last_alloc;
- 		p.set_shm_addr_param.len = req;
- 		p.set_shm_addr_param.shm_id = shm_id;
--		if (send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC,
--					 (uint8_t *)&p, sizeof(p),
--					 NULL, 0) < 0) {
-+		if (cros_ec_cmd(priv->ec_device, 0, EC_CMD_EC_CODEC,
-+				(uint8_t *)&p, sizeof(p), NULL, 0, NULL) < 0) {
- 			dev_err(priv->dev, "failed to EC_CODEC_SET_SHM_ADDR\n");
- 			return NULL;
- 		}
-@@ -571,9 +537,9 @@ static int wov_read_audio_shm(struct cros_ec_codec_priv *priv)
- 	int ret;
- 
- 	p.cmd = EC_CODEC_WOV_READ_AUDIO_SHM;
--	ret = send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_WOV,
--				   (uint8_t *)&p, sizeof(p),
--				   (uint8_t *)&r, sizeof(r));
-+	ret = cros_ec_cmd(priv->ec_device, 0, EC_CMD_EC_CODEC_WOV,
-+			  (uint8_t *)&p, sizeof(p), (uint8_t *)&r, sizeof(r),
-+			  NULL);
- 	if (ret) {
- 		dev_err(priv->dev, "failed to EC_CODEC_WOV_READ_AUDIO_SHM\n");
- 		return ret;
-@@ -596,9 +562,9 @@ static int wov_read_audio(struct cros_ec_codec_priv *priv)
- 
- 	while (remain >= 0) {
- 		p.cmd = EC_CODEC_WOV_READ_AUDIO;
--		ret = send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_WOV,
--					   (uint8_t *)&p, sizeof(p),
--					   (uint8_t *)&r, sizeof(r));
-+		ret = cros_ec_cmd(priv->ec_device, 0, EC_CMD_EC_CODEC_WOV,
-+				  (uint8_t *)&p, sizeof(p), (uint8_t *)&r,
-+				  sizeof(r), NULL);
- 		if (ret) {
- 			dev_err(priv->dev,
- 				"failed to EC_CODEC_WOV_READ_AUDIO\n");
-@@ -669,8 +635,8 @@ static int wov_enable_put(struct snd_kcontrol *kcontrol,
- 		else
- 			p.cmd = EC_CODEC_WOV_DISABLE;
- 
--		ret = send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_WOV,
--					   (uint8_t *)&p, sizeof(p), NULL, 0);
-+		ret = cros_ec_cmd(priv->ec_device, 0, EC_CMD_EC_CODEC_WOV,
-+				  (uint8_t *)&p, sizeof(p), NULL, 0, NULL);
- 		if (ret) {
- 			dev_err(priv->dev, "failed to %s wov\n",
- 				enabled ? "enable" : "disable");
-@@ -716,8 +682,8 @@ static int wov_set_lang_shm(struct cros_ec_codec_priv *priv,
- 	p.cmd = EC_CODEC_WOV_SET_LANG_SHM;
- 	memcpy(pp->hash, digest, SHA256_DIGEST_SIZE);
- 	pp->total_len = size;
--	ret = send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_WOV,
--				   (uint8_t *)&p, sizeof(p), NULL, 0);
-+	ret = cros_ec_cmd(priv->ec_device, 0, EC_CMD_EC_CODEC_WOV,
-+			  (uint8_t *)&p, sizeof(p), NULL, 0, NULL);
- 	if (ret) {
- 		dev_err(priv->dev, "failed to EC_CODEC_WOV_SET_LANG_SHM\n");
- 		return ret;
-@@ -743,8 +709,8 @@ static int wov_set_lang(struct cros_ec_codec_priv *priv,
- 		pp->offset = i;
- 		memcpy(pp->buf, buf + i, req);
- 		pp->len = req;
--		ret = send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_WOV,
--					   (uint8_t *)&p, sizeof(p), NULL, 0);
-+		ret = cros_ec_cmd(priv->ec_device, 0, EC_CMD_EC_CODEC_WOV,
-+				  (uint8_t *)&p, sizeof(p), NULL, 0, NULL);
- 		if (ret) {
- 			dev_err(priv->dev, "failed to EC_CODEC_WOV_SET_LANG\n");
- 			return ret;
-@@ -782,9 +748,9 @@ static int wov_hotword_model_put(struct snd_kcontrol *kcontrol,
- 		goto leave;
- 
- 	p.cmd = EC_CODEC_WOV_GET_LANG;
--	ret = send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_WOV,
--				   (uint8_t *)&p, sizeof(p),
--				   (uint8_t *)&r, sizeof(r));
-+	ret = cros_ec_cmd(priv->ec_device, 0, EC_CMD_EC_CODEC_WOV,
-+			  (uint8_t *)&p, sizeof(p), (uint8_t *)&r, sizeof(r),
-+			  NULL);
- 	if (ret)
- 		goto leave;
- 
-@@ -1020,9 +986,8 @@ static int cros_ec_codec_platform_probe(struct platform_device *pdev)
- 	atomic_set(&priv->dmic_probed, 0);
- 
- 	p.cmd = EC_CODEC_GET_CAPABILITIES;
--	ret = send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC,
--				   (uint8_t *)&p, sizeof(p),
--				   (uint8_t *)&r, sizeof(r));
-+	ret = cros_ec_cmd(priv->ec_device, 0, EC_CMD_EC_CODEC, (uint8_t *)&p,
-+			  sizeof(p), (uint8_t *)&r, sizeof(r), NULL);
- 	if (ret) {
- 		dev_err(dev, "failed to EC_CODEC_GET_CAPABILITIES\n");
- 		return ret;
--- 
-2.25.0.341.g760bfbb309-goog
-
+[0] https://git.sr.ht/~mcf/cproc
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
