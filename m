@@ -2,95 +2,107 @@ Return-Path: <SRS0=zIiJ=32=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-2.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AD80C33CAC
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 17:08:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 265C6C33CAC
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 17:16:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B5B29214AF
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 17:08:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A4237214AF
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 17:16:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rH0dZ5ve"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B5B29214AF
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=ACULAB.COM
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IiRpLcCI";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZyWX4Emr"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A4237214AF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1A7FE16BD;
-	Thu,  6 Feb 2020 18:07:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A7FE16BD
+	by alsa0.perex.cz (Postfix) with ESMTPS id E1D6D16BD;
+	Thu,  6 Feb 2020 18:15:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1D6D16BD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581008880;
-	bh=3/N3AIjmzgenJDIcBLno4kBjkciip1mvoyyWRVx7atQ=;
-	h=From:To:Date:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1581009400;
+	bh=xdrY09A5oLj/iTU1CdriSH/LvxNLCpZEJM+tTz/CuYw=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rH0dZ5veOh+lTq7R9kGw1pKBakXBpWWHzmB2XEwRTFy7pQ+orMxjeHvUBNm/xGzuP
-	 Gs/k62PxlLJgUwuHl/zvJL0Gr48VX7Y2d9c+FZ0AG8uaJVhkvTgn0Hq8UhdV4uyht4
-	 y4m0ltbrs4zB8RL24SIxzyYCLy8d+gkKdzpiiYds=
+	b=IiRpLcCI8ir1Tdn4Ed5NJt1T/m22WiQxQ8CneCFj78WHpQHW6AjuAwB3vB2RlXYXe
+	 Bi/L5jSk5pdP8puDjIhTXDWJ5BW/Xoqfj3YGPecOxHapv5Gn2fHBCGy+4gDVbQuo2x
+	 bha/agNGKrzRO6mN8dL9KSI8kwOmIOewqwR/OFCU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 91BDCF80059;
-	Thu,  6 Feb 2020 18:07:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 63B18F80059;
+	Thu,  6 Feb 2020 18:15:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 96D7DF8015B; Thu,  6 Feb 2020 18:07:08 +0100 (CET)
-Received: from eu-smtp-delivery-151.mimecast.com
- (eu-smtp-delivery-151.mimecast.com [207.82.80.151])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ id 26088F8015B; Thu,  6 Feb 2020 18:15:48 +0100 (CET)
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com
+ [IPv6:2a00:1450:4864:20::142])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2EF13F80059
- for <alsa-devel@alsa-project.org>; Thu,  6 Feb 2020 18:06:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2EF13F80059
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-244-k3KJlLTsOyOEt3BxP61xAA-1; Thu, 06 Feb 2020 17:06:48 +0000
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Thu, 6 Feb 2020 17:06:47 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000; 
- Thu, 6 Feb 2020 17:06:47 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Dmitry Osipenko' <digetx@gmail.com>, Sameer Pujar <spujar@nvidia.com>
-Thread-Topic: [PATCH v2 4/9] ASoC: tegra: add Tegra210 based I2S driver
-Thread-Index: AQHV3Q7P9u0Xi3sD8kGXpD/1/LgEEKgOY//Q
-Date: Thu, 6 Feb 2020 17:06:47 +0000
-Message-ID: <90ae7badcb3441daa8144233de8f6825@AcuMS.aculab.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id D0CBAF80059
+ for <alsa-devel@alsa-project.org>; Thu,  6 Feb 2020 18:15:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0CBAF80059
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="ZyWX4Emr"
+Received: by mail-lf1-x142.google.com with SMTP id 203so4649961lfa.12
+ for <alsa-devel@alsa-project.org>; Thu, 06 Feb 2020 09:15:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=IDKiaCf3ZWSIx1zkWLA7ZSXVihlqFh0aVDFgMk5ixMo=;
+ b=ZyWX4Emr9pFEoNGFD10TYSRW9qYN1c0ShrFQ9dDXuoXtdOE373z6p4ixyACSxD17O1
+ 8cGGIY1nQWNoeSg1jdsHgYymI2+Pxf4Glnb/uELxUoCq7ttHEuGwip+n82hWBI3aOwCv
+ FYWbVuWr7GNGi+E6FAlb2PTVpG16vozdDmCkLcsnmZ7Q7TQqr5NOUEpmG8un463GyUOx
+ avXpZBsfb72tETgKHz2yOVvvk0T3256DIiMdslHAlYYjovJ4byxd2zbkY9nbOZQkJDnY
+ XcEUxuOrkKrlUzagQ6X15E19vgfjZBdRONNZ29uaLDgEsv773bjcpf+N1rIJKZTnBUSE
+ wgXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=IDKiaCf3ZWSIx1zkWLA7ZSXVihlqFh0aVDFgMk5ixMo=;
+ b=YBNj2R+HIdwrC5t4pJwuypsTHDy8xsr0i3v8A095FjdIAKun41ua6oKStpCsxAdJA7
+ L7L3swSF47A4L6lKhuONXgujewM6g/Ho21w5uzvgQJH/YyUoWOzaW6wj+jAQNcjssQsr
+ q0HvOVPw8hvwlOM7K5s4myRk0l9A/asQoQo6lwALrIQARF5acvWf9fEbbUiEQMqowQ23
+ Cpq7p15PNHByz7M8TUyS8QEar5+9tzDDZceR7LKUrazzGkHmuuLpgRUFi9SfSHIg/AdZ
+ NJqOjugjn2r+RM5rJRi1+7ecGV2zshfVdvQB8MoBHuC5kE477nXAVN++zBtFo8dI+98Z
+ Harw==
+X-Gm-Message-State: APjAAAWW3eileacGamVv17PVcmQZSWtPuCPodlQId2m0S8w8gSYHvPEO
+ sbHYs90zWJpx/4pwVJlBlH4=
+X-Google-Smtp-Source: APXvYqzfPy8cc2Cd7kvDWo09wusjOhcwxocF4Z8NcvdXhaSCd8XBCArT0CfOOeEwmm5lKmtRonx8Dw==
+X-Received: by 2002:ac2:43a7:: with SMTP id t7mr2362606lfl.125.1581009344755; 
+ Thu, 06 Feb 2020 09:15:44 -0800 (PST)
+Received: from [192.168.2.145] (79-139-233-37.dynamic.spd-mgts.ru.
+ [79.139.233.37])
+ by smtp.googlemail.com with ESMTPSA id y11sm26174lfc.27.2020.02.06.09.15.43
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 06 Feb 2020 09:15:44 -0800 (PST)
+To: Sameer Pujar <spujar@nvidia.com>
 References: <1580380422-3431-1-git-send-email-spujar@nvidia.com>
- <1580380422-3431-5-git-send-email-spujar@nvidia.com>
- <3a586a6b-5f53-dc44-b9fc-67c633c626ef@gmail.com>
-In-Reply-To: <3a586a6b-5f53-dc44-b9fc-67c633c626ef@gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+ <1580380422-3431-7-git-send-email-spujar@nvidia.com>
+From: Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <f8ed8c4a-af40-44b2-b720-4d3a9b660fda@gmail.com>
+Date: Thu, 6 Feb 2020 20:15:43 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-X-MC-Unique: k3KJlLTsOyOEt3BxP61xAA-1
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Cc: "jonathanh@nvidia.com" <jonathanh@nvidia.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "atalambedu@nvidia.com" <atalambedu@nvidia.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
- "robh+dt@kernel.org" <robh+dt@kernel.org>, "tiwai@suse.com" <tiwai@suse.com>,
- "viswanathl@nvidia.com" <viswanathl@nvidia.com>,
- "sharadg@nvidia.com" <sharadg@nvidia.com>,
- "broonie@kernel.org" <broonie@kernel.org>,
- "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
- "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
- "rlokhande@nvidia.com" <rlokhande@nvidia.com>,
- "mkumard@nvidia.com" <mkumard@nvidia.com>,
- "dramesh@nvidia.com" <dramesh@nvidia.com>
-Subject: Re: [alsa-devel] [PATCH v2 4/9] ASoC: tegra: add Tegra210 based I2S
-	driver
+In-Reply-To: <1580380422-3431-7-git-send-email-spujar@nvidia.com>
+Content-Language: en-US
+Cc: jonathanh@nvidia.com, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, atalambedu@nvidia.com,
+ linux-kernel@vger.kernel.org, lgirdwood@gmail.com, robh+dt@kernel.org,
+ tiwai@suse.com, viswanathl@nvidia.com, sharadg@nvidia.com, broonie@kernel.org,
+ thierry.reding@gmail.com, linux-tegra@vger.kernel.org, rlokhande@nvidia.com,
+ mkumard@nvidia.com, dramesh@nvidia.com
+Subject: Re: [alsa-devel] [PATCH v2 6/9] ASoC: tegra: add Tegra186 based
+	DSPK driver
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,20 +120,13 @@ Content-Transfer-Encoding: base64
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-RnJvbTogZiBEbWl0cnkgT3NpcGVua28NCj4gU2VudDogMDYgRmVicnVhcnkgMjAyMCAxNjo1OQ0K
-PiANCj4gMzAuMDEuMjAyMCAxMzozMywgU2FtZWVyIFB1amFyINC/0LjRiNC10YI6DQo+IC4uLg0K
-PiA+ICtzdGF0aWMgY29uc3QgaW50IHRlZ3JhMjEwX2NpZl9mbXRbXSA9IHsNCj4gPiArCTAsDQo+
-ID4gKwlURUdSQV9BQ0lGX0JJVFNfMTYsDQo+ID4gKwlURUdSQV9BQ0lGX0JJVFNfMzIsDQo+ID4g
-K307DQo+ID4gKw0KPiA+ICtzdGF0aWMgY29uc3QgaW50IHRlZ3JhMjEwX2kyc19iaXRfZm10W10g
-PSB7DQo+ID4gKwkwLA0KPiA+ICsJSTJTX0JJVFNfMTYsDQo+ID4gKwlJMlNfQklUU18zMiwNCj4g
-PiArfTsNCj4gPiArDQo+ID4gK3N0YXRpYyBjb25zdCBpbnQgdGVncmEyMTBfaTJzX3NhbXBsZV9z
-aXplW10gPSB7DQo+ID4gKwkwLA0KPiA+ICsJMTYsDQo+ID4gKwkzMiwNCj4gPiArfTsNCj4gDQo+
-IHN0YXRpYyBjb25zdCAqdW5zaWduZWQqIGludD8NCg0KT3IgZ2V0IHJpZCBvZiB0aGUgdGFibGUg
-bG9va3VwcyBjb21wbGV0ZWx5Lg0KQXNzdW1pbmcgdGhlIGluZGV4IGlzIG5ldmVyIHplcm8gdGhl
-biB0aGUgdmFsdWUNCmNhbiBiZSBjYWxjdWxhdGVkIGFzIChjb25zdF9hICsgY29uc3RfYiAqIGlu
-ZGV4KS4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxl
-eSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0
-aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1w
-cm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2Fsc2EtZGV2ZWwK
+MzAuMDEuMjAyMCAxMzozMywgU2FtZWVyIFB1amFyINC/0LjRiNC10YI6Cj4gK3N0YXRpYyBjb25z
+dCBzdHJ1Y3QgZGV2X3BtX29wcyB0ZWdyYTE4Nl9kc3BrX3BtX29wcyA9IHsKPiArCVNFVF9SVU5U
+SU1FX1BNX09QUyh0ZWdyYTE4Nl9kc3BrX3J1bnRpbWVfc3VzcGVuZCwKPiArCQkJICAgdGVncmEx
+ODZfZHNwa19ydW50aW1lX3Jlc3VtZSwgTlVMTCkKPiArCVNFVF9MQVRFX1NZU1RFTV9TTEVFUF9Q
+TV9PUFMocG1fcnVudGltZV9mb3JjZV9zdXNwZW5kLAo+ICsJCQkJICAgICBwbV9ydW50aW1lX2Zv
+cmNlX3Jlc3VtZSkKPiArfTsKCkNvdWxkIHlvdSBwbGVhc2UgZXhwbGFpbiB3aHkgZHJpdmVycyBu
+ZWVkIHRoZSAibGF0ZSIgc3lzdGVtIHNsZWVwPwpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
+c2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hbHNhLWRldmVsCg==
