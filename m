@@ -7,93 +7,92 @@ X-Spam-Status: No, score=-2.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 265C6C33CAC
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 17:16:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AF11C33CAC
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 18:01:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A4237214AF
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 17:16:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9205521741
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 18:01:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IiRpLcCI";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZyWX4Emr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A4237214AF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="p96GAfTs";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BPHy2zld"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9205521741
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E1D6D16BD;
-	Thu,  6 Feb 2020 18:15:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1D6D16BD
+	by alsa0.perex.cz (Postfix) with ESMTPS id A96F116C7;
+	Thu,  6 Feb 2020 18:36:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A96F116C7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581009400;
-	bh=xdrY09A5oLj/iTU1CdriSH/LvxNLCpZEJM+tTz/CuYw=;
+	s=default; t=1581010622;
+	bh=8blrsPWTeEAwreTC5NdocbroiUy5zG+ia9LmG8SDVas=;
 	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IiRpLcCI8ir1Tdn4Ed5NJt1T/m22WiQxQ8CneCFj78WHpQHW6AjuAwB3vB2RlXYXe
-	 Bi/L5jSk5pdP8puDjIhTXDWJ5BW/Xoqfj3YGPecOxHapv5Gn2fHBCGy+4gDVbQuo2x
-	 bha/agNGKrzRO6mN8dL9KSI8kwOmIOewqwR/OFCU=
+	b=p96GAfTsWGyzBBJlyCEXtJoMmSiK2wV5pgMOXj21b3UHZIJ5iJjfcTmy407RdOeO3
+	 5vKV/13FPnoND7j7uqGvqHxkk4iGXe849bSPc5gKlbveP5Gux9n4OGn/x2zbD5Rw5m
+	 LelQktgmVtb5HF2WqvWihfrwO27cq+2dfWlPEICs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 63B18F80059;
-	Thu,  6 Feb 2020 18:15:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 28740F800AB;
+	Thu,  6 Feb 2020 18:36:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 26088F8015B; Thu,  6 Feb 2020 18:15:48 +0100 (CET)
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com
- [IPv6:2a00:1450:4864:20::142])
+ id 704D3F8015B; Thu,  6 Feb 2020 18:36:10 +0100 (CET)
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com
+ [IPv6:2a00:1450:4864:20::243])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D0CBAF80059
- for <alsa-devel@alsa-project.org>; Thu,  6 Feb 2020 18:15:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0CBAF80059
+ by alsa1.perex.cz (Postfix) with ESMTPS id BE83FF800AB
+ for <alsa-devel@alsa-project.org>; Thu,  6 Feb 2020 18:36:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE83FF800AB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="ZyWX4Emr"
-Received: by mail-lf1-x142.google.com with SMTP id 203so4649961lfa.12
- for <alsa-devel@alsa-project.org>; Thu, 06 Feb 2020 09:15:45 -0800 (PST)
+ header.b="BPHy2zld"
+Received: by mail-lj1-x243.google.com with SMTP id o15so6991589ljg.6
+ for <alsa-devel@alsa-project.org>; Thu, 06 Feb 2020 09:36:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=subject:to:cc:references:from:message-id:date:user-agent
  :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=IDKiaCf3ZWSIx1zkWLA7ZSXVihlqFh0aVDFgMk5ixMo=;
- b=ZyWX4Emr9pFEoNGFD10TYSRW9qYN1c0ShrFQ9dDXuoXtdOE373z6p4ixyACSxD17O1
- 8cGGIY1nQWNoeSg1jdsHgYymI2+Pxf4Glnb/uELxUoCq7ttHEuGwip+n82hWBI3aOwCv
- FYWbVuWr7GNGi+E6FAlb2PTVpG16vozdDmCkLcsnmZ7Q7TQqr5NOUEpmG8un463GyUOx
- avXpZBsfb72tETgKHz2yOVvvk0T3256DIiMdslHAlYYjovJ4byxd2zbkY9nbOZQkJDnY
- XcEUxuOrkKrlUzagQ6X15E19vgfjZBdRONNZ29uaLDgEsv773bjcpf+N1rIJKZTnBUSE
- wgXg==
+ bh=99COUShDb8aW8HJQ86DZUh+rAFpSeu/Mbihks46FJLY=;
+ b=BPHy2zldSziVYVCUKXNFslpdpUmxMJCyizD6jhE/aCDcuC7x8UUBKGA/UK5pLK3LkS
+ HlkYo10eHEbI9t6ikDq/9rbtORbcWJgipP5cvfETYPSn7ubHJ60AiYykp9WWHie0ZMr5
+ L9HMghLYgv2Vnm0KvHUWZSGer4Pa69mbVQf7/4lM/EC1ycQHInmiHU3QBgeftthoZbgH
+ tX2q2U1qaRiXNcmBQDCwUBeuI9P6xcyV6k8QFQcrQQXNkRm826iczGsJBUMrjrMmnyjq
+ cDzHUrE1Zeu17OyMjX1Lm/wFrlS/2E85GyXSQ6V5NWpswbqpLgOMVomJQR4JHrUy1gOh
+ OegQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:subject:to:cc:references:from:message-id:date
  :user-agent:mime-version:in-reply-to:content-language
  :content-transfer-encoding;
- bh=IDKiaCf3ZWSIx1zkWLA7ZSXVihlqFh0aVDFgMk5ixMo=;
- b=YBNj2R+HIdwrC5t4pJwuypsTHDy8xsr0i3v8A095FjdIAKun41ua6oKStpCsxAdJA7
- L7L3swSF47A4L6lKhuONXgujewM6g/Ho21w5uzvgQJH/YyUoWOzaW6wj+jAQNcjssQsr
- q0HvOVPw8hvwlOM7K5s4myRk0l9A/asQoQo6lwALrIQARF5acvWf9fEbbUiEQMqowQ23
- Cpq7p15PNHByz7M8TUyS8QEar5+9tzDDZceR7LKUrazzGkHmuuLpgRUFi9SfSHIg/AdZ
- NJqOjugjn2r+RM5rJRi1+7ecGV2zshfVdvQB8MoBHuC5kE477nXAVN++zBtFo8dI+98Z
- Harw==
-X-Gm-Message-State: APjAAAWW3eileacGamVv17PVcmQZSWtPuCPodlQId2m0S8w8gSYHvPEO
- sbHYs90zWJpx/4pwVJlBlH4=
-X-Google-Smtp-Source: APXvYqzfPy8cc2Cd7kvDWo09wusjOhcwxocF4Z8NcvdXhaSCd8XBCArT0CfOOeEwmm5lKmtRonx8Dw==
-X-Received: by 2002:ac2:43a7:: with SMTP id t7mr2362606lfl.125.1581009344755; 
- Thu, 06 Feb 2020 09:15:44 -0800 (PST)
+ bh=99COUShDb8aW8HJQ86DZUh+rAFpSeu/Mbihks46FJLY=;
+ b=elhf037wiVHZHsU4GbHpALFLk4OAZf78Bg6+IkEAiJeyCKPE9aQ/Xr+N/GRyWknieS
+ /bkaxymz36Ymn0V7t3mhxBOAm22rgifXEOK1e8MCGVP1wE6cSjnwYG0zYCHk0GEDHjUd
+ lk4aZCHeqZG+SRWZQNU+JYS6yC37/IzOPqwjbWTu+1xaQhBAOor4pgF2tc4hGwOUuKSo
+ D4/129HUQa7VjvCpS0g/Kdcz8QCURxu7BsK27wCpUFLtOOapSC9QVvL5CvUykKM3aXOG
+ sJTSztrA+oo5eLAoVR5TrGLCp1LUyqSB7n2f9g5kqr6mKZyUTRbmQ+YLXbapk6FRA6jr
+ aUyw==
+X-Gm-Message-State: APjAAAVi50qNI0Ha+LDCsUXRMO4YOOtMW5/4rYAAPweTVFM8mZU4rTtH
+ Ba8i+j5Qvovp902YSoCgo4M=
+X-Google-Smtp-Source: APXvYqy8VlPo21S7t8VY9LztJyOrQWk44mVu443sV8IZkmAYtKR96arFx6ZYroi+0UqGtHS0U0bKvg==
+X-Received: by 2002:a2e:761a:: with SMTP id r26mr2776605ljc.135.1581010566382; 
+ Thu, 06 Feb 2020 09:36:06 -0800 (PST)
 Received: from [192.168.2.145] (79-139-233-37.dynamic.spd-mgts.ru.
  [79.139.233.37])
- by smtp.googlemail.com with ESMTPSA id y11sm26174lfc.27.2020.02.06.09.15.43
+ by smtp.googlemail.com with ESMTPSA id u9sm364lji.49.2020.02.06.09.36.04
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 06 Feb 2020 09:15:44 -0800 (PST)
+ Thu, 06 Feb 2020 09:36:05 -0800 (PST)
 To: Sameer Pujar <spujar@nvidia.com>
 References: <1580380422-3431-1-git-send-email-spujar@nvidia.com>
- <1580380422-3431-7-git-send-email-spujar@nvidia.com>
 From: Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <f8ed8c4a-af40-44b2-b720-4d3a9b660fda@gmail.com>
-Date: Thu, 6 Feb 2020 20:15:43 +0300
+Message-ID: <fcab0af1-fe84-6028-701b-ab101feaa8de@gmail.com>
+Date: Thu, 6 Feb 2020 20:36:04 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.3.0
 MIME-Version: 1.0
-In-Reply-To: <1580380422-3431-7-git-send-email-spujar@nvidia.com>
+In-Reply-To: <1580380422-3431-1-git-send-email-spujar@nvidia.com>
 Content-Language: en-US
 Cc: jonathanh@nvidia.com, devicetree@vger.kernel.org,
  alsa-devel@alsa-project.org, atalambedu@nvidia.com,
@@ -101,8 +100,7 @@ Cc: jonathanh@nvidia.com, devicetree@vger.kernel.org,
  tiwai@suse.com, viswanathl@nvidia.com, sharadg@nvidia.com, broonie@kernel.org,
  thierry.reding@gmail.com, linux-tegra@vger.kernel.org, rlokhande@nvidia.com,
  mkumard@nvidia.com, dramesh@nvidia.com
-Subject: Re: [alsa-devel] [PATCH v2 6/9] ASoC: tegra: add Tegra186 based
-	DSPK driver
+Subject: Re: [alsa-devel] [PATCH v2 0/9] add ASoC components for AHUB
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -120,13 +118,10 @@ Content-Transfer-Encoding: base64
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-MzAuMDEuMjAyMCAxMzozMywgU2FtZWVyIFB1amFyINC/0LjRiNC10YI6Cj4gK3N0YXRpYyBjb25z
-dCBzdHJ1Y3QgZGV2X3BtX29wcyB0ZWdyYTE4Nl9kc3BrX3BtX29wcyA9IHsKPiArCVNFVF9SVU5U
-SU1FX1BNX09QUyh0ZWdyYTE4Nl9kc3BrX3J1bnRpbWVfc3VzcGVuZCwKPiArCQkJICAgdGVncmEx
-ODZfZHNwa19ydW50aW1lX3Jlc3VtZSwgTlVMTCkKPiArCVNFVF9MQVRFX1NZU1RFTV9TTEVFUF9Q
-TV9PUFMocG1fcnVudGltZV9mb3JjZV9zdXNwZW5kLAo+ICsJCQkJICAgICBwbV9ydW50aW1lX2Zv
-cmNlX3Jlc3VtZSkKPiArfTsKCkNvdWxkIHlvdSBwbGVhc2UgZXhwbGFpbiB3aHkgZHJpdmVycyBu
-ZWVkIHRoZSAibGF0ZSIgc3lzdGVtIHNsZWVwPwpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
-c2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hbHNhLWRldmVsCg==
+MzAuMDEuMjAyMCAxMzozMywgU2FtZWVyIFB1amFyINC/0LjRiNC10YI6Ci4uLgo+ICBzb3VuZC9z
+b2MvdGVncmEvS2NvbmZpZyAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICA1NiArKwoKUHJv
+YmFibHkgd29uJ3QgaHVydCB0byBlbmFibGUgdGhlIG5ldyBkcml2ZXJzIGluIHRoZQphcmNoL2Fy
+bTY0L2NvbmZpZ3MvZGVmY29uZmlnPwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
+amVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hbHNhLWRldmVsCg==
