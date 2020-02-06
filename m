@@ -2,70 +2,91 @@ Return-Path: <SRS0=zIiJ=32=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DF16C35247
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 20:05:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F14C8C35247
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 20:47:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8E2C6218AC
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 20:05:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7B7B721775
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 20:47:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iwB+yP+5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8E2C6218AC
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="q7u/w34K"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7B7B721775
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D58FF16E7;
-	Thu,  6 Feb 2020 21:04:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D58FF16E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9DFD616CC;
+	Thu,  6 Feb 2020 21:46:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9DFD616CC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581019510;
-	bh=OnzuZkLDJVDDbhixUiMg/7IgV87TS63rINtntR6dbfM=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1581022047;
+	bh=JGOWcq/bRA5huNG6SA4YeDbMtwQOZMBsf9SIk277MI0=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iwB+yP+5B4LeR3I8ffdHrut4hQYgYNvh+4Q8LFP4BlCAkADphqV9crFVSu3jG7iQV
-	 2fi3wzSrO+Q/T1aC1KfDRC9Ltqdb7fiWkX5a2+v0/Ee3tT9kS0RpYsgFlvHYyNS6rp
-	 St8JHtziAbs6Kbtfm8ko0ddwqao45xu9m//GSEwE=
+	b=q7u/w34KoxR3I+5M9t9BW2+reCOQsD8fhLFhJ+MzPcvhqoeXK7ploI/rtW6rO/3XC
+	 n6MXE1PRUm4KbOi2P6/jRGEWdKOrVC/oKykToFnQUf/l3klN74/R6Bh43+3Ifp0r4n
+	 BP9uUAEuS3gfxZzr4L7Ts+q0GpwMsyaQU+PcmgH0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 158AAF80255;
-	Thu,  6 Feb 2020 21:02:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 14F1FF8015B;
+	Thu,  6 Feb 2020 21:46:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C0AF9F80248; Thu,  6 Feb 2020 21:02:49 +0100 (CET)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 870FAF801DB; Thu,  6 Feb 2020 21:46:35 +0100 (CET)
+Received: from mail-pl1-f196.google.com (mail-pl1-f196.google.com
+ [209.85.214.196])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BE43CF80162
- for <alsa-devel@alsa-project.org>; Thu,  6 Feb 2020 21:02:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE43CF80162
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 06 Feb 2020 12:02:36 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,410,1574150400"; d="scan'208";a="255197704"
-Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by fmsmga004.fm.intel.com with ESMTP; 06 Feb 2020 12:02:35 -0800
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	broonie@kernel.org
-Date: Thu,  6 Feb 2020 22:02:22 +0200
-Message-Id: <20200206200223.7715-2-kai.vehmanen@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200206200223.7715-1-kai.vehmanen@linux.intel.com>
-References: <20200206200223.7715-1-kai.vehmanen@linux.intel.com>
-Cc: tiwai@suse.de, pierre-louis.bossart@linux.intel.com,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, ranjani.sridharan@linux.intel.com
-Subject: [alsa-devel] [PATCH 2/3] ASoC: SOF: Intel: hda: fix ordering bug in
-	resume flow
+ by alsa1.perex.cz (Postfix) with ESMTPS id D86ADF80059
+ for <alsa-devel@alsa-project.org>; Thu,  6 Feb 2020 21:46:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D86ADF80059
+Received: by mail-pl1-f196.google.com with SMTP id t6so39530plj.5
+ for <alsa-devel@alsa-project.org>; Thu, 06 Feb 2020 12:46:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=+JpCejRz9cTdKzvN/s1Lqz/r+3bLOvKPVHP2ixVIjaA=;
+ b=WUcS3tHfVKlUD8APq9LPTkuda5ZyyKSxmQ3897q+133CRx0OI7Eb2sYQlSKjsKI13Y
+ DUn3y+IqiV2SUJ1joVFEoQRm7wfdajx4XP/WBi4b/aK2+o1gPxO61thkBh2CDGPis7nW
+ qPA7EfNuDNeYtC31ZGPFaJD6AwZO+JR5wmbnmiNhCMccgKFLqNByjI1ghSeUP/QAHxht
+ y8Pn3ogji0xCm4lTkn4SYiR1tGpLoRWIV30ST5qAuil4f2zr9QEHtjczzquO2kzwkLZG
+ VrLuWnX2bRggUvTqUlWwVqRdoqzZSxNm7UGjIYy9lAYr3ipOTORnfWU4kZY8YESmPSvR
+ m4cA==
+X-Gm-Message-State: APjAAAWNMyV34n6elxMlZCBObXfnmQ6+u1X4Q1974tJNXqQembvVKgkw
+ Pn6A/5D5ZDT/Vo1celZ1kQ==
+X-Google-Smtp-Source: APXvYqwbC73hm+Agme/rCp48d6/0xYRA1eDWiKJsCgthOldvBiGk6RxTKAWpaJjx1M145Mgn2+p7Ag==
+X-Received: by 2002:a17:902:504:: with SMTP id 4mr5425237plf.276.1581021989698; 
+ Thu, 06 Feb 2020 12:46:29 -0800 (PST)
+Received: from rob-hp-laptop (63-158-47-182.dia.static.qwest.net.
+ [63.158.47.182])
+ by smtp.gmail.com with ESMTPSA id g7sm288861pfq.33.2020.02.06.12.46.28
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 06 Feb 2020 12:46:29 -0800 (PST)
+Received: (nullmailer pid 9682 invoked by uid 1000);
+ Thu, 06 Feb 2020 18:21:25 -0000
+Date: Thu, 6 Feb 2020 18:21:25 +0000
+From: Rob Herring <robh@kernel.org>
+To: Olivier Moysan <olivier.moysan@st.com>
+Message-ID: <20200206182125.GA23274@bogus>
+References: <20200130135040.22575-1-olivier.moysan@st.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20200130135040.22575-1-olivier.moysan@st.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, alexandre.torgue@st.com,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com,
+ broonie@kernel.org, mcoquelin.stm32@gmail.com,
+ linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org
+Subject: Re: [alsa-devel] [PATCH] ASoC: dt-bindings: stm32: convert sai to
+	json-schema
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,153 +99,238 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When HDA controller is resumed from suspend, i915 HDMI/DP
-codec requires that following order of actions is kept:
+On Thu, Jan 30, 2020 at 02:50:40PM +0100, Olivier Moysan wrote:
+> Convert the STM32 SAI bindings to DT schema format using json-schema.
+> 
+> Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+> ---
+>  .../bindings/sound/st,stm32-sai.txt           | 107 ----------
+>  .../bindings/sound/st,stm32-sai.yaml          | 193 ++++++++++++++++++
+>  2 files changed, 193 insertions(+), 107 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/sound/st,stm32-sai.txt
+>  create mode 100644 Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
 
- - i915 display power up and configuration of link params
- - hda link reset and setup
 
-Current SOF HDA code delegates display codec power control
-to the codec driver. This works most of the time, but in
-runtime PM sequences, the above constraint may be violated.
-On platforms where BIOS values for HDA link parameters do
-not match hardware reset defaults, this may lead to errors
-in HDA verb transactions after resume.
+> diff --git a/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml b/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
+> new file mode 100644
+> index 000000000000..33dca007fc86
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
+> @@ -0,0 +1,193 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/sound/st,stm32-sai.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: STMicroelectronics STM32 Serial Audio Interface (SAI)
+> +
+> +maintainers:
+> +  - Olivier Moysan <olivier.moysan@st.com>
+> +
+> +description:
+> +  The SAI interface (Serial Audio Interface) offers a wide set of audio
+> +  protocols as I2S standards, LSB or MSB-justified, PCM/DSP, TDM, and AC'97.
+> +  The SAI contains two independent audio sub-blocks. Each sub-block has
+> +  its own clock generator and I/O lines controller.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - st,stm32f4-sai
+> +      - st,stm32h7-sai
+> +
+> +  reg:
+> +    items:
+> +      - description: Base address and size of SAI common register set.
+> +      - description: Base address and size of SAI identification register set.
+> +    minItems: 1
+> +    maxItems: 2
+> +
+> +  ranges:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +  "#address-cells":
+> +    const: 1
+> +
+> +  "#size-cells":
+> +    const: 1
+> +
+> +  clocks:
+> +    items:
+> +      - description: pclk feeds the peripheral bus interface.
+> +      - description: x8k, SAI parent clock for sampling rates multiple of 8kHz.
+> +      - description: x11k, SAI parent clock for sampling rates multiple of 11.025kHz.
+> +
+> +  clock-names:
+> +    items:
+> +      enum: [ pclk, x8k, x11k ]
+> +    minItems: 3
+> +    maxItems: 3
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - ranges
+> +  - "#address-cells"
+> +  - "#size-cells"
+> +  - clocks
+> +  - clock-names
+> +
+> +patternProperties:
+> +  "^audio-controller@[0-9a-f]+$":
+> +    type: object
+> +    description:
+> +      Two subnodes corresponding to SAI sub-block instances A et B
+> +      can be defined. Subnode can be omitted for unsused sub-block.
+> +
+> +    properties:
+> +      compatible:
+> +        description: Compatible for SAI sub-block A or B.
+> +        enum:
+> +          - st,stm32-sai-sub-a
+> +          - st,stm32-sai-sub-b
 
-Fix the issue by explicitly powering the display codec
-in the HDA controller resume/suspend calls, thus ensuring
-correct ordering. Special handling is needed for the D0i3
-flow, where display power must be turned off even though
-DSP is left powered.
+pattern: 'st,stm32-sai-sub-[ab]'
 
-Now that we have more invocations of the display power helper
-functions, the conditional checks surrounding each call have
-been moved inside hda_codec_i915_display_power(). The two
-special cases of display powering at initial probe are handled
-separately. The intent is to avoid powering the display whenever
-no display codecs are used.
+> +
+> +      "#sound-dai-cells":
+> +        const: 0
+> +
+> +      reg:
+> +        maxItems: 1
+> +
+> +      clocks:
+> +        items:
+> +          - description: sai_ck clock feeding the internal clock generator.
+> +          - description: MCLK clock from a SAI set as master clock provider.
+> +        minItems: 1
+> +        maxItems: 2
+> +
+> +      clock-names:
+> +        items:
+> +          - const: sai_ck
+> +          - const: MCLK
+> +        minItems: 1
+> +        maxItems: 2
+> +
+> +      dmas:
+> +        items:
+> +          - description: SAI sub-block is configured as a capture DAI.
+> +          - description: SAI sub-block is configured as a playback DAI.
+> +        minItems: 1
+> +        maxItems: 1
 
-Note that early powering of display was removed in
-commit 687ae9e287b3 ("ASoC: intel: skl: Fix display power regression").
-This change was also copied to the SOF driver. No failures
-have resulted as hardware default values for link parameters
-have worked out of the box. However with recent i915 driver
-changes like done in commit 87c1694533c9 ("drm/i915: save
-AUD_FREQ_CNTRL state at audio domain suspend"), this does not
-hold anymore and errors are hit.
+This is defining that dmas has 2 entries, but then limits it to the 1st 
+entry only.
 
-Cc: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/sof/intel/hda-codec.c | 12 ++++++++----
- sound/soc/sof/intel/hda-dsp.c   | 11 +++++++++++
- sound/soc/sof/intel/hda.c       |  2 +-
- 3 files changed, 20 insertions(+), 5 deletions(-)
+> +
+> +      dma-names:
+> +        items:
+> +          - enum: [ rx, tx ]
+> +
+> +      st,sync:
+> +        description:
+> +          Configure the SAI sub-block as slave of another SAI sub-block.
+> +          By default SAI sub-block is in asynchronous mode.
+> +          Must contain the phandle and index of the SAI sub-block providing
+> +          the synchronization.
+> +        allOf:
+> +          - $ref: /schemas/types.yaml#definitions/phandle-array
+> +          - maxItems: 1
+> +
+> +      st,iec60958:
+> +        description:
+> +          If set, support S/PDIF IEC6958 protocol for playback.
+> +          IEC60958 protocol is not available for capture.
+> +          By default, custom protocol is assumed, meaning that protocol is
+> +          configured according to protocol defined in related DAI link node,
+> +          such as i2s, left justified, right justified, dsp and pdm protocols.
+> +        allOf:
+> +          - $ref: /schemas/types.yaml#definitions/flag
+> +
+> +      "#clock-cells":
+> +        description: Configure the SAI device as master clock provider.
+> +        const: 0
+> +
+> +    required:
+> +      - compatible
+> +      - "#sound-dai-cells"
+> +      - reg
+> +      - clocks
+> +      - clock-names
+> +      - dmas
+> +      - dma-names
 
-diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
-index 9106ab8dac6f..ff45075ef720 100644
---- a/sound/soc/sof/intel/hda-codec.c
-+++ b/sound/soc/sof/intel/hda-codec.c
-@@ -174,8 +174,10 @@ void hda_codec_i915_display_power(struct snd_sof_dev *sdev, bool enable)
- {
- 	struct hdac_bus *bus = sof_to_bus(sdev);
- 
--	dev_dbg(bus->dev, "Turning i915 HDAC power %d\n", enable);
--	snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, enable);
-+	if (HDA_IDISP_CODEC(bus->codec_mask)) {
-+		dev_dbg(bus->dev, "Turning i915 HDAC power %d\n", enable);
-+		snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, enable);
-+	}
- }
- EXPORT_SYMBOL_NS(hda_codec_i915_display_power, SND_SOC_SOF_HDA_AUDIO_CODEC_I915);
- 
-@@ -189,7 +191,8 @@ int hda_codec_i915_init(struct snd_sof_dev *sdev)
- 	if (ret < 0)
- 		return ret;
- 
--	hda_codec_i915_display_power(sdev, true);
-+	/* codec_mask not yet known, power up for probe */
-+	snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, true);
- 
- 	return 0;
- }
-@@ -200,7 +203,8 @@ int hda_codec_i915_exit(struct snd_sof_dev *sdev)
- 	struct hdac_bus *bus = sof_to_bus(sdev);
- 	int ret;
- 
--	hda_codec_i915_display_power(sdev, false);
-+	/* power down unconditionally */
-+	snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, false);
- 
- 	ret = snd_hdac_i915_exit(bus);
- 
-diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
-index 4a4d318f97ff..0848b79967a9 100644
---- a/sound/soc/sof/intel/hda-dsp.c
-+++ b/sound/soc/sof/intel/hda-dsp.c
-@@ -428,6 +428,9 @@ static int hda_suspend(struct snd_sof_dev *sdev, bool runtime_suspend)
- 		return ret;
- 	}
- 
-+	/* display codec can powered off after link reset */
-+	hda_codec_i915_display_power(sdev, false);
-+
- 	return 0;
- }
- 
-@@ -439,6 +442,9 @@ static int hda_resume(struct snd_sof_dev *sdev, bool runtime_resume)
- #endif
- 	int ret;
- 
-+	/* display codec must be powered before link reset */
-+	hda_codec_i915_display_power(sdev, true);
-+
- 	/*
- 	 * clear TCSEL to clear playback on some HD Audio
- 	 * codecs. PCI TCSEL is defined in the Intel manuals.
-@@ -482,6 +488,8 @@ int hda_dsp_resume(struct snd_sof_dev *sdev)
- 	struct pci_dev *pci = to_pci_dev(sdev->dev);
- 
- 	if (sdev->s0_suspend) {
-+		hda_codec_i915_display_power(sdev, true);
-+
- 		/* restore L1SEN bit */
- 		if (hda->l1_support_changed)
- 			snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR,
-@@ -531,6 +539,9 @@ int hda_dsp_suspend(struct snd_sof_dev *sdev)
- 	int ret;
- 
- 	if (sdev->s0_suspend) {
-+		/* we can't keep a wakeref to display driver at suspend */
-+		hda_codec_i915_display_power(sdev, false);
-+
- 		/* enable L1SEN to make sure the system can enter S0Ix */
- 		hda->l1_support_changed =
- 			snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR,
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 65b86dd044f1..8fddafb5c1d4 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -381,7 +381,7 @@ static int hda_init_caps(struct snd_sof_dev *sdev)
- 	hda_codec_probe_bus(sdev, hda_codec_use_common_hdmi);
- 
- 	if (!HDA_IDISP_CODEC(bus->codec_mask))
--		hda_codec_i915_display_power(sdev, false);
-+		hda_codec_i915_exit(sdev);
- 
- 	/*
- 	 * we are done probing so decrement link counts
--- 
-2.17.1
+       additionalProperties: false.
 
+> +
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: st,stm32f4-sai
+> +
+> +  - then:
+> +      properties:
+> +        clocks:
+> +          minItems: 2
+> +          maxItems: 2
+> +
+> +        clock-names:
+> +          items:
+> +            enum: [ x8k, x11k ]
+
+Define the order.
+
+> +          minItems: 2
+> +          maxItems: 2
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/clock/stm32mp1-clks.h>
+> +    #include <dt-bindings/reset/stm32mp1-resets.h>
+> +    sai1: sai@4400a000 {
+> +      compatible = "st,stm32h7-sai";
+> +      #address-cells = <1>;
+> +      #size-cells = <1>;
+> +      ranges = <0 0x4400a000 0x400>;
+> +      reg = <0x4400a000 0x4>, <0x4400a3f0 0x10>;
+> +      interrupts = <GIC_SPI 87 IRQ_TYPE_LEVEL_HIGH>;
+> +      clocks = <&rcc SAI1>, <&rcc PLL1_Q>, <&rcc PLL2_P>;
+> +      clock-names = "pclk", "x8k", "x11k";
+> +      resets = <&rcc SAI1_R>;
+> +
+> +      sai1a: audio-controller@4400a004 {
+> +        compatible = "st,stm32-sai-sub-a";
+> +        #sound-dai-cells = <0>;
+> +        reg = <0x4 0x1c>;
+> +        clocks = <&rcc SAI1_K>;
+> +        clock-names = "sai_ck";
+> +        dmas = <&dmamux1 87 0x400 0x01>;
+> +        dma-names = "tx";
+> +      };
+> +    };
+> +
+> +...
+> -- 
+> 2.17.1
+> 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
