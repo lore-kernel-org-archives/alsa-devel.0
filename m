@@ -2,94 +2,62 @@ Return-Path: <SRS0=zIiJ=32=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 75A5CC35247
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 00:03:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FE04C35247
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 01:08:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F1259214AF
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 00:03:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AD9A42082E
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Feb 2020 01:08:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VkX6fWiE";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=mforney-org.20150623.gappssmtp.com header.i=@mforney-org.20150623.gappssmtp.com header.b="pOlkEbd7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F1259214AF
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mforney.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jOSGf5ff"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AD9A42082E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arm.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 41BBE166D;
-	Thu,  6 Feb 2020 01:03:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41BBE166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id EA0881668;
+	Thu,  6 Feb 2020 02:07:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA0881668
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580947435;
-	bh=q7GkbH5t0o2g8+r78UH/12KGRuhBhc3WNzj2NFHj+eg=;
-	h=In-Reply-To:References:From:Date:To:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=VkX6fWiEqfjAikzg7jm7Lou/Hs0GB2EbhrnudFqlMMxqQnKNzN8wBYJNW5vu1LRNc
-	 Zfr4aCnbYIJAYQZdJFmXFDqLax324opQsEHnloxD4uopaO87BiOjGrWe30llLKh8aY
-	 gaPmIdzTtleXe1XAu5Qaqf+QUBtVB9tDNoaxXDOI=
+	s=default; t=1580951294;
+	bh=H9v5xvl1/G9/rqklzfDSwIo+05DH/pl0b1SeElbM9Ps=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=jOSGf5ffG7v86tb2+mTQtnZ8RDwvhpxPhXYc+GRHQWe1QTqfbuPT59J4siNNI7A9b
+	 1vZbzqQkNQjiTb0iYMbpeAGjDZYqcOL0errdfwSld6sUKO/KSs3Sp4q7AYGqnG3G1V
+	 oje1F1ZJH6iZfHzGU0sbG1ucfHknx1YWyyZbg4kM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C2855F80142;
-	Thu,  6 Feb 2020 01:03:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 50A42F80148;
+	Thu,  6 Feb 2020 02:07:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 10DEAF80148; Thu,  6 Feb 2020 01:03:03 +0100 (CET)
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com
- [IPv6:2607:f8b0:4864:20::b41])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 18757F80142
- for <alsa-devel@alsa-project.org>; Thu,  6 Feb 2020 01:02:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18757F80142
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=mforney-org.20150623.gappssmtp.com
- header.i=@mforney-org.20150623.gappssmtp.com header.b="pOlkEbd7"
-Received: by mail-yb1-xb41.google.com with SMTP id f21so33344ybg.11
- for <alsa-devel@alsa-project.org>; Wed, 05 Feb 2020 16:02:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mforney-org.20150623.gappssmtp.com; s=20150623;
- h=mime-version:in-reply-to:references:from:date:message-id:subject:to;
- bh=p/hAx7ykwozfbDkJFRb2sFhR7F8ihh/2GRzXDRxUrwk=;
- b=pOlkEbd7b/kho2grFcMA2tCxz0eUn/fw+PZhdkj35huCmfKj0lTjvgTekStJRb9PrM
- yFvTMUqNpQfm184evOGg4dzGUAKPaw5cYO84VcjJYsIX2pxCU8ZKKNme/iFwrxjkKaNv
- etkVcROBmLwNg0RFRJP5IQtqCV5SnFtgdPJOpSZFMdJcKezHSn0C8rZvToiEGamOKl0c
- Q+go5iGH4q/eD4ng+9Z3PKOK60cvqUL8OVl6jk5CQWJCcl2ClvPYqj/erEb2dnqPFHSM
- mg02B2wPYGEKihO9shH8vquit6R2i9C1ulWHKsL+zChWr/Ap+3QxTbhhPgCT9jKa9YcW
- ljnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:in-reply-to:references:from:date
- :message-id:subject:to;
- bh=p/hAx7ykwozfbDkJFRb2sFhR7F8ihh/2GRzXDRxUrwk=;
- b=Y4ja8nlUaUEnZVOFMVS6+rhK08VA8OFgHsWfi1WidK9e+nHjagWzkHD2H1f53t8Ghi
- UgofBWo14gkiKYOM8n22vip3FR+OWL/ofbinO6rzEgCqZ+7pcbxNcAp6ks/N1jm+N+F+
- CbZYJ//WN+Wzvt2aCahw73j2geq7wpizLAuZDwWkiKFEI+ku2IfsDy6hbcoa6P9e9k1K
- d2Kz1VveSGkxZi/+Rvz9XEy8Ovhbi+wgKFCWfzWnXWWkBnZZX5y/D8+EnheWnz2ORVCD
- rofoFRZLgQr09cxn71Dx2N1wDCGnRuAhIeIFq5NxqUD7RxmVWy6evKiZd8c7vLPoaMhX
- qO0A==
-X-Gm-Message-State: APjAAAVPZOA8L6HADUCQtzVLBKLK2ewb/9Qv2QfGJNd8j/2rTTZGbECY
- 0VZaX/2n2H4kLEFUtXZqZU06cKL6jinfMWGtdVcGtzaKiNM=
-X-Google-Smtp-Source: APXvYqzQDDjGhMTv95sUWy/8iqVp0bKmqT37uZw34jcpDQYLmdIMPDXDOMGEErRr31XesdSJ+pRBqRfuZvxeV3s++aw=
-X-Received: by 2002:a5b:88e:: with SMTP id e14mr647178ybq.338.1580947374524;
- Wed, 05 Feb 2020 16:02:54 -0800 (PST)
-MIME-Version: 1.0
-Received: by 2002:a0d:e186:0:0:0:0:0 with HTTP;
- Wed, 5 Feb 2020 16:02:54 -0800 (PST)
-X-Originating-IP: [73.70.188.119]
-In-Reply-To: <20200205102553.GD9810@workstation>
-References: <20200205081221.18665-1-mforney@mforney.org>
- <20200205081221.18665-4-mforney@mforney.org>
- <20200205102553.GD9810@workstation>
-From: Michael Forney <mforney@mforney.org>
-Date: Wed, 5 Feb 2020 16:02:54 -0800
-Message-ID: <CAGw6cBsYot=_AZRKkctate=CczPuy0kk10133c8-e3NhZXYE3Q@mail.gmail.com>
-To: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] [PATCH alsa-utils 4/4] Avoid empty initializer list
+ id E587EF8019B; Thu,  6 Feb 2020 02:07:19 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id C3C17F80051
+ for <alsa-devel@alsa-project.org>; Thu,  6 Feb 2020 02:07:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3C17F80051
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5B36A30E;
+ Wed,  5 Feb 2020 17:07:12 -0800 (PST)
+Received: from DESKTOP-VLO843J.lan (unknown [172.31.20.19])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id DBC7A3F68E;
+ Wed,  5 Feb 2020 17:07:10 -0800 (PST)
+From: Robin Murphy <robin.murphy@arm.com>
+To: lgirdwood@gmail.com,
+	broonie@kernel.org,
+	heiko@sntech.de
+Date: Thu,  6 Feb 2020 01:07:10 +0000
+Message-Id: <cover.1580950046.git.robin.murphy@arm.com>
+X-Mailer: git-send-email 2.17.1
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ pgwipeout@gmail.com, linux-arm-kernel@lists.infradead.org,
+ linux-rockchip@lists.infradead.org
+Subject: [alsa-devel] [PATCH 0/3] Clean up RK3328 audio codec GPIO control
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,20 +70,38 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 2020-02-05, Takashi Sakamoto <o-takashi@sakamocchi.jp> wrote:
-> Good to me.
+Hi all,
 
-Thanks for reviewing.
+Investigating the RK3328 GPIO_MUTE pin in the context of boards that use
+it to control a regulator has highlighted that the audio codec driver
+currently has some hard-coded implicit control of that pin. Fortunately
+those boards don't currently enable the audio codec, because it would be
+pretty terrible if playing audio changed the SD card I/O voltage. This
+is a first crack at making things better.
 
-> I think it better for you to generate cover-letter (--cover-letter
-> option for git-send-email) when posting a batch of patches.
+Robin.
 
-Sorry about that. I'll make sure to add a cover letter next time.
+
+Robin Murphy (3):
+  ASoC: dt-bindings: Make RK3328 codec GPIO explicit
+  ASoC: rockchip: Make RK3328 GPIO_MUTE control explicit
+  arm64: dts: rockchip: Describe RK3328 GPIO_MUTE users
+
+ .../bindings/sound/rockchip,rk3328-codec.txt  |  7 ++++++-
+ arch/arm64/boot/dts/rockchip/rk3328-a1.dts    |  1 +
+ .../arm64/boot/dts/rockchip/rk3328-rock64.dts |  1 +
+ sound/soc/codecs/rk3328_codec.c               | 20 +++++--------------
+ 4 files changed, 13 insertions(+), 16 deletions(-)
+
+-- 
+2.17.1
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
