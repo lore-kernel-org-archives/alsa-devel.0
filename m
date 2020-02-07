@@ -4,79 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BB95C352A3
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 10:21:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 20AAEC352A3
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 10:21:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 126BC20733
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 10:21:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9D5D32080C
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 10:21:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oNgYS/dS";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=serbinski.com header.i=@serbinski.com header.b="h0NDVPuH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 126BC20733
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="upK3kmOD";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=serbinski.com header.i=@serbinski.com header.b="zDLhEbgV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9D5D32080C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=serbinski.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D58791607;
-	Mon, 10 Feb 2020 11:20:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D58791607
+	by alsa0.perex.cz (Postfix) with ESMTPS id EC5101678;
+	Mon, 10 Feb 2020 11:21:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC5101678
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581330059;
-	bh=peRCY2d/zZqcscyWExr4wxbZ3lC/C1PcsySqMx0wI1A=;
+	s=default; t=1581330113;
+	bh=4R3vvGbmpx8/Ye5Zzz+QK3fBI6XJgaKQNlweOi/Jt+4=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oNgYS/dSXgdxNtB+CIXBTaC98oaKhMY+SnIGs4odAmCp4QjQYMm3hCcKKmE7s/lOM
-	 kFWiumaXJP0Lr0ideYzPGiNUepOcAyzYKRIvgYKyTd6HcRcjxhPUZSc736M+9nPnC2
-	 dGO8Q6Vn9NzyoaNZCOiL1+mwm1U/c3fYpwP3dGn0=
+	b=upK3kmODX9mexomalmgo7KWvDuN46oYMqBQ3KOYJMOGziKxvzrHsiEhSz8lB+/q6u
+	 PPGgMUzX1/cVlBz2ZN3sYevq21x7MS4/696IlWcrv4zbtbXDXxa+/3I2qQkrQceOiV
+	 ZDT78rg5KPTh4sICYFDb5qi8oLRyZJMlbgL61zhs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 00FDDF80118;
-	Mon, 10 Feb 2020 11:20:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 25B59F8020B;
+	Mon, 10 Feb 2020 11:20:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C35E1F8014C; Fri,  7 Feb 2020 21:50:41 +0100 (CET)
+ id CCE4BF80148; Fri,  7 Feb 2020 21:50:42 +0100 (CET)
 Received: from mail.serbinski.com (mail.serbinski.com [162.218.126.2])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 79B46F800AB
- for <alsa-devel@alsa-project.org>; Fri,  7 Feb 2020 21:50:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79B46F800AB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 24D45F800B2
+ for <alsa-devel@alsa-project.org>; Fri,  7 Feb 2020 21:50:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24D45F800B2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=serbinski.com header.i=@serbinski.com
- header.b="h0NDVPuH"
+ header.b="zDLhEbgV"
 Received: from localhost (unknown [127.0.0.1])
- by mail.serbinski.com (Postfix) with ESMTP id 94808D00723;
- Fri,  7 Feb 2020 20:50:34 +0000 (UTC)
+ by mail.serbinski.com (Postfix) with ESMTP id 678D2D00724;
+ Fri,  7 Feb 2020 20:50:36 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at serbinski.com
 Received: from mail.serbinski.com ([127.0.0.1])
  by localhost (mail.serbinski.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id RYQe4sNuTc_o; Fri,  7 Feb 2020 15:50:27 -0500 (EST)
+ with ESMTP id ZJ5C-OgcaS6q; Fri,  7 Feb 2020 15:50:27 -0500 (EST)
 Received: from anet
  (ipagstaticip-7ac5353e-e7de-3a0d-ff65-4540e9bc137f.sdsl.bell.ca
  [142.112.15.192]) (using TLSv1 with cipher AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mail.serbinski.com (Postfix) with ESMTPSA id 0D866D006F9;
+ by mail.serbinski.com (Postfix) with ESMTPSA id B61C4D00715;
  Fri,  7 Feb 2020 15:50:27 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.serbinski.com 0D866D006F9
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.serbinski.com B61C4D00715
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=serbinski.com;
  s=default; t=1581108627;
- bh=ETimvPxlhSv3UnHdR3sMFlCASzRDsVkv5A46uX4f778=;
+ bh=eajbKqGkxZ7eyaNOIY0gFw9T3e78d/CAluEu3zjDsX8=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=h0NDVPuHG5BrYyomgj6lbDXKJoOpSpwmhTw4xpD+Rq8tk/kTCiTyCcHCMC7ELF7qi
- D4U+5b/XVaaghNQ/RrklZ3Kx0LspwU8Vn49AQbpxECRUC0pbo68x4xR/TBg2AKqLH5
- KYSqFZ6iC+Y6hvf+6kLg3XIcVXfd/0ujEDFt2MQE=
+ b=zDLhEbgVMI9cwanTA4iacMKYO0m+m5NLNPig3nyH93LVmvenmj+QjFQ15dv2O6hhg
+ 69sOvVJhhGn/flAXbwCBAEiFzgIPsp2uqgvvNC3APAhZ0qsGuNz4vU/cpOWZDMDRAR
+ iR0soFBa31TC+g5rcoLYBSWnU7U7BNfQyv4vvPrI=
 From: Adam Serbinski <adam@serbinski.com>
 To: Mark Brown <broonie@kernel.org>,
  Srini Kandagatla <srinivas.kandagatla@linaro.org>,
  Rob Herring <robh+dt@kernel.org>,
  Bjorn Andersson <bjorn.andersson@linaro.org>
-Date: Fri,  7 Feb 2020 15:50:11 -0500
-Message-Id: <20200207205013.12274-7-adam@serbinski.com>
+Date: Fri,  7 Feb 2020 15:50:09 -0500
+Message-Id: <20200207205013.12274-5-adam@serbinski.com>
 X-Mailer: git-send-email 2.21.1
 In-Reply-To: <20200207205013.12274-1-adam@serbinski.com>
 References: <20200207205013.12274-1-adam@serbinski.com>
@@ -88,8 +88,8 @@ Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
  Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
  Andy Gross <agross@kernel.org>, Adam Serbinski <adam@serbinski.com>,
  linux-kernel@vger.kernel.org
-Subject: [alsa-devel] [PATCH 6/8] ASoC: qcom/common: Use snd-soc-dummy-dai
-	when codec is not specified
+Subject: [alsa-devel] [PATCH 4/8] ASoC: qdsp6: q6routing: add pcm port
+	routing
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,9 +107,8 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When not specifying a codec, use snd-soc-dummy-dai. This supports
-the case where a fixed configuration codec is attached, such as
-bluetooth hfp.
+This patch adds support to PCM_PORT mixers required to
+select path between ASM stream and AFE ports.
 
 Signed-off-by: Adam Serbinski <adam@serbinski.com>
 CC: Andy Gross <agross@kernel.org>
@@ -124,49 +123,92 @@ CC: linux-arm-msm@vger.kernel.org
 CC: devicetree@vger.kernel.org
 CC: linux-kernel@vger.kernel.org
 ---
- sound/soc/qcom/common.c | 22 +++++++++++++++++-----
- 1 file changed, 17 insertions(+), 5 deletions(-)
+ sound/soc/qcom/qdsp6/q6routing.c | 44 ++++++++++++++++++++++++++++++++
+ 1 file changed, 44 insertions(+)
 
-diff --git a/sound/soc/qcom/common.c b/sound/soc/qcom/common.c
-index 6c20bdd850f3..aa2f2238aca0 100644
---- a/sound/soc/qcom/common.c
-+++ b/sound/soc/qcom/common.c
-@@ -84,7 +84,7 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
- 			goto err;
- 		}
+diff --git a/sound/soc/qcom/qdsp6/q6routing.c b/sound/soc/qcom/qdsp6/q6routing.c
+index 20724102e85a..3a81d2161707 100644
+--- a/sound/soc/qcom/qdsp6/q6routing.c
++++ b/sound/soc/qcom/qdsp6/q6routing.c
+@@ -67,6 +67,10 @@
+ 	{ mix_name, "SEC_MI2S_TX", "SEC_MI2S_TX" },	\
+ 	{ mix_name, "QUAT_MI2S_TX", "QUAT_MI2S_TX" },	\
+ 	{ mix_name, "TERT_MI2S_TX", "TERT_MI2S_TX" },		\
++	{ mix_name, "PRI_PCM_TX", "PRI_PCM_TX" },		\
++	{ mix_name, "SEC_PCM_TX", "SEC_PCM_TX" },		\
++	{ mix_name, "TERT_PCM_TX", "TERT_PCM_TX" },		\
++	{ mix_name, "QUAT_PCM_TX", "QUAT_PCM_TX" },		\
+ 	{ mix_name, "SLIMBUS_0_TX", "SLIMBUS_0_TX" },		\
+ 	{ mix_name, "SLIMBUS_1_TX", "SLIMBUS_1_TX" },		\
+ 	{ mix_name, "SLIMBUS_2_TX", "SLIMBUS_2_TX" },		\
+@@ -128,6 +132,18 @@
+ 	SOC_SINGLE_EXT("QUAT_MI2S_TX", QUATERNARY_MI2S_TX,		\
+ 		id, 1, 0, msm_routing_get_audio_mixer,			\
+ 		msm_routing_put_audio_mixer),				\
++	SOC_SINGLE_EXT("PRI_PCM_TX", PRIMARY_PCM_TX,			\
++		id, 1, 0, msm_routing_get_audio_mixer,			\
++		msm_routing_put_audio_mixer),				\
++	SOC_SINGLE_EXT("SEC_PCM_TX", SECONDARY_PCM_TX,			\
++		id, 1, 0, msm_routing_get_audio_mixer,			\
++		msm_routing_put_audio_mixer),				\
++	SOC_SINGLE_EXT("TERT_PCM_TX", TERTIARY_PCM_TX,			\
++		id, 1, 0, msm_routing_get_audio_mixer,			\
++		msm_routing_put_audio_mixer),				\
++	SOC_SINGLE_EXT("QUAT_PCM_TX", QUATERNARY_PCM_TX,		\
++		id, 1, 0, msm_routing_get_audio_mixer,			\
++		msm_routing_put_audio_mixer),				\
+ 	SOC_SINGLE_EXT("SLIMBUS_0_TX", SLIMBUS_0_TX,			\
+ 		id, 1, 0, msm_routing_get_audio_mixer,			\
+ 		msm_routing_put_audio_mixer),				\
+@@ -468,6 +484,18 @@ static const struct snd_kcontrol_new quaternary_mi2s_rx_mixer_controls[] = {
+ static const struct snd_kcontrol_new tertiary_mi2s_rx_mixer_controls[] = {
+ 	Q6ROUTING_RX_MIXERS(TERTIARY_MI2S_RX) };
  
--		if (codec && platform) {
-+		if (platform) {
- 			link->platforms->of_node = of_parse_phandle(platform,
- 					"sound-dai",
- 					0);
-@@ -94,10 +94,22 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
- 				goto err;
- 			}
- 
--			ret = snd_soc_of_get_dai_link_codecs(dev, codec, link);
--			if (ret < 0) {
--				dev_err(card->dev, "%s: codec dai not found\n", link->name);
--				goto err;
-+			if (codec) {
-+				ret = snd_soc_of_get_dai_link_codecs(dev, codec, link);
-+				if (ret < 0) {
-+					dev_err(card->dev, "%s: codec dai not found\n", link->name);
-+					goto err;
-+				}
-+			} else {
-+				dlc = devm_kzalloc(dev,
-+						   sizeof(*dlc), GFP_KERNEL);
-+				if (!dlc)
-+					return -ENOMEM;
++static const struct snd_kcontrol_new primary_pcm_rx_mixer_controls[] = {
++	Q6ROUTING_RX_MIXERS(PRIMARY_PCM_RX) };
 +
-+				link->codecs = dlc;
-+				link->num_codecs = 1;
-+				link->codecs->dai_name = "snd-soc-dummy-dai";
-+				link->codecs->name = "snd-soc-dummy";
- 			}
- 			link->no_pcm = 1;
- 			link->ignore_pmdown_time = 1;
++static const struct snd_kcontrol_new secondary_pcm_rx_mixer_controls[] = {
++	Q6ROUTING_RX_MIXERS(SECONDARY_PCM_RX) };
++
++static const struct snd_kcontrol_new tertiary_pcm_rx_mixer_controls[] = {
++	Q6ROUTING_RX_MIXERS(TERTIARY_PCM_RX) };
++
++static const struct snd_kcontrol_new quaternary_pcm_rx_mixer_controls[] = {
++	Q6ROUTING_RX_MIXERS(QUATERNARY_PCM_RX) };
++
+ static const struct snd_kcontrol_new slimbus_rx_mixer_controls[] = {
+ 	Q6ROUTING_RX_MIXERS(SLIMBUS_0_RX) };
+ 
+@@ -695,6 +723,18 @@ static const struct snd_soc_dapm_widget msm_qdsp6_widgets[] = {
+ 	SND_SOC_DAPM_MIXER("TERT_MI2S_RX Audio Mixer", SND_SOC_NOPM, 0, 0,
+ 			   tertiary_mi2s_rx_mixer_controls,
+ 			   ARRAY_SIZE(tertiary_mi2s_rx_mixer_controls)),
++	SND_SOC_DAPM_MIXER("PRI_PCM_RX Audio Mixer", SND_SOC_NOPM, 0, 0,
++			   primary_pcm_rx_mixer_controls,
++			   ARRAY_SIZE(primary_pcm_rx_mixer_controls)),
++	SND_SOC_DAPM_MIXER("SEC_PCM_RX Audio Mixer", SND_SOC_NOPM, 0, 0,
++			   secondary_pcm_rx_mixer_controls,
++			   ARRAY_SIZE(secondary_pcm_rx_mixer_controls)),
++	SND_SOC_DAPM_MIXER("TERT_PCM_RX Audio Mixer", SND_SOC_NOPM, 0, 0,
++			   tertiary_pcm_rx_mixer_controls,
++			   ARRAY_SIZE(tertiary_pcm_rx_mixer_controls)),
++	SND_SOC_DAPM_MIXER("QUAT_PCM_RX Audio Mixer", SND_SOC_NOPM, 0, 0,
++			   quaternary_pcm_rx_mixer_controls,
++			   ARRAY_SIZE(quaternary_pcm_rx_mixer_controls)),
+ 	SND_SOC_DAPM_MIXER("PRIMARY_TDM_RX_0 Audio Mixer", SND_SOC_NOPM, 0, 0,
+ 				pri_tdm_rx_0_mixer_controls,
+ 				ARRAY_SIZE(pri_tdm_rx_0_mixer_controls)),
+@@ -853,6 +893,10 @@ static const struct snd_soc_dapm_route intercon[] = {
+ 	Q6ROUTING_RX_DAPM_ROUTE("TERT_MI2S_RX Audio Mixer", "TERT_MI2S_RX"),
+ 	Q6ROUTING_RX_DAPM_ROUTE("SEC_MI2S_RX Audio Mixer", "SEC_MI2S_RX"),
+ 	Q6ROUTING_RX_DAPM_ROUTE("PRI_MI2S_RX Audio Mixer", "PRI_MI2S_RX"),
++	Q6ROUTING_RX_DAPM_ROUTE("PRI_PCM_RX Audio Mixer", "PRI_PCM_RX"),
++	Q6ROUTING_RX_DAPM_ROUTE("SEC_PCM_RX Audio Mixer", "SEC_PCM_RX"),
++	Q6ROUTING_RX_DAPM_ROUTE("TERT_PCM_RX Audio Mixer", "TERT_PCM_RX"),
++	Q6ROUTING_RX_DAPM_ROUTE("QUAT_PCM_RX Audio Mixer", "QUAT_PCM_RX"),
+ 	Q6ROUTING_RX_DAPM_ROUTE("PRIMARY_TDM_RX_0 Audio Mixer",
+ 				"PRIMARY_TDM_RX_0"),
+ 	Q6ROUTING_RX_DAPM_ROUTE("PRIMARY_TDM_RX_1 Audio Mixer",
 -- 
 2.21.1
 
