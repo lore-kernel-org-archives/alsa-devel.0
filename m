@@ -2,81 +2,81 @@ Return-Path: <SRS0=5/4N=36=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E300C352A3
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 10:25:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 200E7C352A3
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 10:25:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A60FF2080C
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 10:25:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9D0402080C
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 10:25:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bmogyrrc";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=serbinski.com header.i=@serbinski.com header.b="IHBSBgrP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A60FF2080C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lsoAuiuC";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=serbinski.com header.i=@serbinski.com header.b="YmszpOIY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9D0402080C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=serbinski.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 00F8715E5;
-	Mon, 10 Feb 2020 11:24:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00F8715E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id DD31A16A4;
+	Mon, 10 Feb 2020 11:25:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DD31A16A4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581330318;
-	bh=tEM4YbdnTGxoSkFU5H6WhoZUTkhh5FTpPgfw+8uHxBo=;
+	s=default; t=1581330357;
+	bh=G4r1mJGFO2PFJeOi4mXqd793cp+1FZMSwphFJ4MKGHo=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bmogyrrcRDbKWdmWQD9KAWEdFphyHp+BKMJQNgsEN4ehhPYUH61tJrdSNdvgG/vMb
-	 7jTbwZfZtdos5Pl2yZ1x1GjW9hJi03EPuQbWYy0VhBX5itmFQrYaU6HAOplmp6ctdQ
-	 sX0WwVJwSaQosUK55DjYhdntw1QygcnHj15aoIOU=
+	b=lsoAuiuCSkN/hXb4NsiY7TxCnAuN9jcnOw2DSRAn4OuQWg+pxwLppKSQwALkrq/Am
+	 mXmrfebHOp96snLPd2xPeGDnksrjoa7ecpKOpkO2CkaixZ9Q9qPlWM4aRvtAVzQ8Dx
+	 kTuGrh65yQCl88q9IZlEhzK6Yjjuk+lwcmm5eIkA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 56554F80299;
-	Mon, 10 Feb 2020 11:20:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 14930F802A7;
+	Mon, 10 Feb 2020 11:20:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AED60F8014C; Fri,  7 Feb 2020 21:51:10 +0100 (CET)
+ id 55B4BF80148; Fri,  7 Feb 2020 21:51:15 +0100 (CET)
 Received: from mail.serbinski.com (mail.serbinski.com [162.218.126.2])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7A3B0F800B2
- for <alsa-devel@alsa-project.org>; Fri,  7 Feb 2020 21:51:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A3B0F800B2
+ by alsa1.perex.cz (Postfix) with ESMTPS id C5026F800B2
+ for <alsa-devel@alsa-project.org>; Fri,  7 Feb 2020 21:51:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5026F800B2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=serbinski.com header.i=@serbinski.com
- header.b="IHBSBgrP"
+ header.b="YmszpOIY"
 Received: from localhost (unknown [127.0.0.1])
- by mail.serbinski.com (Postfix) with ESMTP id 4FE9DD00730;
- Fri,  7 Feb 2020 20:51:06 +0000 (UTC)
+ by mail.serbinski.com (Postfix) with ESMTP id 783A0D00732;
+ Fri,  7 Feb 2020 20:51:08 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at serbinski.com
 Received: from mail.serbinski.com ([127.0.0.1])
  by localhost (mail.serbinski.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id 3-cR2t8IMy7X; Fri,  7 Feb 2020 15:50:58 -0500 (EST)
+ with ESMTP id aw0PiKosRpDL; Fri,  7 Feb 2020 15:50:56 -0500 (EST)
 Received: from anet
  (ipagstaticip-7ac5353e-e7de-3a0d-ff65-4540e9bc137f.sdsl.bell.ca
  [142.112.15.192]) (using TLSv1 with cipher AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mail.serbinski.com (Postfix) with ESMTPSA id 3857ED00722;
- Fri,  7 Feb 2020 15:50:30 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.serbinski.com 3857ED00722
+ by mail.serbinski.com (Postfix) with ESMTPSA id D9218D0071B;
+ Fri,  7 Feb 2020 15:50:29 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.serbinski.com D9218D0071B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=serbinski.com;
- s=default; t=1581108630;
- bh=zaw40z+MaGqwmP6pGRzvLwtGTChRHBQ2BFqSPCd0RK0=;
+ s=default; t=1581108629;
+ bh=Li+7uO9ANVGhw/mLvHKkrDnYRFTrSj70ZU/KaJjHjjc=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=IHBSBgrPp7NjCE+SYir4MW129yCnJg0ZsVRCM5c9gTqOE82etvekyCyLCKmT5tCES
- Ca25IAzboLRMS7cT8Tf8JbusehE3YCFukWuHgCxxPu5SCWofoMH/RVdq0yPO9rEUli
- U27MwfMPlauSHMu/DvIzy0559cdeqVtZHE/WXuHY=
+ b=YmszpOIYsuFlKSA30erbiFhMiDo442nZhtP3XnqleqhzpuyZseknQuy5nTjQfCqAn
+ MegrA4ojKOX4BBZQnmwO9aFGF4zWdS8gaNJyueaDgng68Gbwc5fXMqAKYsos8MidX2
+ tuIhKxBwRfO03R9nfmd17zuzk/te04cHSeembVJs=
 From: Adam Serbinski <adam@serbinski.com>
 To: Mark Brown <broonie@kernel.org>,
  Srini Kandagatla <srinivas.kandagatla@linaro.org>,
  Rob Herring <robh+dt@kernel.org>,
  Bjorn Andersson <bjorn.andersson@linaro.org>
-Date: Fri,  7 Feb 2020 15:50:10 -0500
-Message-Id: <20200207205013.12274-6-adam@serbinski.com>
+Date: Fri,  7 Feb 2020 15:50:08 -0500
+Message-Id: <20200207205013.12274-4-adam@serbinski.com>
 X-Mailer: git-send-email 2.21.1
 In-Reply-To: <20200207205013.12274-1-adam@serbinski.com>
 References: <20200207205013.12274-1-adam@serbinski.com>
@@ -88,8 +88,8 @@ Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
  Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
  Andy Gross <agross@kernel.org>, Adam Serbinski <adam@serbinski.com>,
  linux-kernel@vger.kernel.org
-Subject: [alsa-devel] [PATCH 5/8] ASoC: qcom: apq8096: add support for
-	primary and quaternary I2S/PCM
+Subject: [alsa-devel] [PATCH 3/8] ASoC: qdsp6: q6afe-dai: add support to pcm
+	port dais
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,7 +107,7 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This adds support to primary and quarternary I2S and PCM ports.
+This patch adds support of AFE DAI for PCM port.
 
 Signed-off-by: Adam Serbinski <adam@serbinski.com>
 CC: Andy Gross <agross@kernel.org>
@@ -122,137 +122,279 @@ CC: linux-arm-msm@vger.kernel.org
 CC: devicetree@vger.kernel.org
 CC: linux-kernel@vger.kernel.org
 ---
- sound/soc/qcom/apq8096.c | 86 +++++++++++++++++++++++++++++++++-------
- 1 file changed, 71 insertions(+), 15 deletions(-)
+ sound/soc/qcom/qdsp6/q6afe-dai.c | 198 ++++++++++++++++++++++++++++++-
+ 1 file changed, 197 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/qcom/apq8096.c b/sound/soc/qcom/apq8096.c
-index 94363fd6846a..1edcaa15234f 100644
---- a/sound/soc/qcom/apq8096.c
-+++ b/sound/soc/qcom/apq8096.c
-@@ -8,24 +8,13 @@
- #include <sound/soc-dapm.h>
- #include <sound/pcm.h>
- #include "common.h"
-+#include "qdsp6/q6afe.h"
- 
- #define SLIM_MAX_TX_PORTS 16
- #define SLIM_MAX_RX_PORTS 16
- #define WCD9335_DEFAULT_MCLK_RATE	9600000
--
--static int apq8096_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
--				      struct snd_pcm_hw_params *params)
--{
--	struct snd_interval *rate = hw_param_interval(params,
--					SNDRV_PCM_HW_PARAM_RATE);
--	struct snd_interval *channels = hw_param_interval(params,
--					SNDRV_PCM_HW_PARAM_CHANNELS);
--
--	rate->min = rate->max = 48000;
--	channels->min = channels->max = 2;
--
--	return 0;
--}
-+#define MI2S_BCLK_RATE			1536000
-+#define PCM_BCLK_RATE			1024000
- 
- static int msm_snd_hw_params(struct snd_pcm_substream *substream,
- 			     struct snd_pcm_hw_params *params)
-@@ -33,10 +22,32 @@ static int msm_snd_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_interval *rate = hw_param_interval(params,
-+					SNDRV_PCM_HW_PARAM_RATE);
-+	struct snd_interval *channels = hw_param_interval(params,
-+					SNDRV_PCM_HW_PARAM_CHANNELS);
- 	u32 rx_ch[SLIM_MAX_RX_PORTS], tx_ch[SLIM_MAX_TX_PORTS];
- 	u32 rx_ch_cnt = 0, tx_ch_cnt = 0;
- 	int ret = 0;
- 
-+	switch (cpu_dai->id) {
-+	case PRIMARY_PCM_RX:
-+	case PRIMARY_PCM_TX:
-+	case QUATERNARY_PCM_RX:
-+	case QUATERNARY_PCM_TX:
-+		rate->min = 16000;
-+		rate->max = 16000;
-+		channels->min = 1;
-+		channels->max = 1;
-+		break;
-+	default:
-+		rate->min = 48000;
-+		rate->max = 48000;
-+		channels->min = 1;
-+		channels->max = 2;
-+		break;
-+	}
-+
- 	ret = snd_soc_dai_get_channel_map(codec_dai,
- 				&tx_ch_cnt, tx_ch, &rx_ch_cnt, rx_ch);
- 	if (ret != 0 && ret != -ENOTSUPP) {
-@@ -60,8 +71,54 @@ static int msm_snd_hw_params(struct snd_pcm_substream *substream,
- 	return ret;
+diff --git a/sound/soc/qcom/qdsp6/q6afe-dai.c b/sound/soc/qcom/qdsp6/q6afe-dai.c
+index c1a7624eaf17..23b29591ef47 100644
+--- a/sound/soc/qcom/qdsp6/q6afe-dai.c
++++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
+@@ -151,6 +151,28 @@ static int q6hdmi_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
  }
  
-+static int msm_snd_startup(struct snd_pcm_substream *substream)
++static int q6pcm_hw_params(struct snd_pcm_substream *substream,
++			   struct snd_pcm_hw_params *params,
++			   struct snd_soc_dai *dai)
 +{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct q6afe_dai_data *dai_data = dev_get_drvdata(dai->dev);
++	struct q6afe_pcm_cfg *pcm = &dai_data->port_config[dai->id].pcm_cfg;
 +
-+	switch (cpu_dai->id) {
-+	case PRIMARY_MI2S_RX:
-+	case PRIMARY_MI2S_TX:
-+		snd_soc_dai_set_sysclk(cpu_dai,
-+			Q6AFE_LPASS_CLK_ID_PRI_MI2S_IBIT,
-+			MI2S_BCLK_RATE, SNDRV_PCM_STREAM_PLAYBACK);
-+		snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_CBS_CFS);
-+		snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_CBS_CFS);
-+		break;
-+	case QUATERNARY_MI2S_RX:
-+	case QUATERNARY_MI2S_TX:
-+		snd_soc_dai_set_sysclk(cpu_dai,
-+			Q6AFE_LPASS_CLK_ID_QUAD_MI2S_IBIT,
-+			MI2S_BCLK_RATE, SNDRV_PCM_STREAM_PLAYBACK);
-+		snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_CBS_CFS);
-+		snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_CBS_CFS);
-+		break;
-+	case PRIMARY_PCM_RX:
-+	case PRIMARY_PCM_TX:
-+		snd_soc_dai_set_sysclk(cpu_dai,
-+			Q6AFE_LPASS_CLK_ID_PRI_PCM_IBIT,
-+			PCM_BCLK_RATE, SNDRV_PCM_STREAM_PLAYBACK);
-+		snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_CBS_CFS);
-+		snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_CBS_CFS);
-+		break;
-+	case QUATERNARY_PCM_RX:
-+	case QUATERNARY_PCM_TX:
-+		snd_soc_dai_set_sysclk(cpu_dai,
-+			Q6AFE_LPASS_CLK_ID_QUAD_PCM_IBIT,
-+			PCM_BCLK_RATE, SNDRV_PCM_STREAM_PLAYBACK);
-+		snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_CBS_CFS);
-+		snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_CBS_CFS);
-+		break;
-+	default:
-+		return -1;
-+	}
++	pcm->sample_rate = params_rate(params);
++
 +	return 0;
 +}
 +
- static struct snd_soc_ops apq8096_ops = {
- 	.hw_params = msm_snd_hw_params,
-+	.startup = msm_snd_startup,
++static int q6pcm_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
++{
++	struct q6afe_dai_data *dai_data = dev_get_drvdata(dai->dev);
++	struct q6afe_pcm_cfg *pcm = &dai_data->port_config[dai->id].pcm_cfg;
++
++	pcm->fmt = fmt;
++
++	return 0;
++}
++
+ static int q6i2s_hw_params(struct snd_pcm_substream *substream,
+ 			   struct snd_pcm_hw_params *params,
+ 			   struct snd_soc_dai *dai)
+@@ -358,6 +380,15 @@ static int q6afe_dai_prepare(struct snd_pcm_substream *substream,
+ 			return rc;
+ 		}
+ 		break;
++	case PRIMARY_PCM_RX ... QUATERNARY_PCM_TX:
++		rc = q6afe_pcm_port_prepare(dai_data->port[dai->id],
++				&dai_data->port_config[dai->id].pcm_cfg);
++		if (rc < 0) {
++			dev_err(dai->dev, "fail to prepare AFE port %x\n",
++				dai->id);
++			return rc;
++		}
++		break;
+ 	case PRIMARY_TDM_RX_0 ... QUINARY_TDM_TX_7:
+ 		q6afe_tdm_port_prepare(dai_data->port[dai->id],
+ 					&dai_data->port_config[dai->id].tdm);
+@@ -429,11 +460,32 @@ static int q6afe_mi2s_set_sysclk(struct snd_soc_dai *dai,
+ 					     Q6AFE_LPASS_CLK_ROOT_DEFAULT,
+ 					     freq, dir);
+ 	case Q6AFE_LPASS_CLK_ID_PRI_MI2S_IBIT ... Q6AFE_LPASS_CLK_ID_QUI_MI2S_OSR:
++	case Q6AFE_LPASS_CLK_ID_PRI_PCM_IBIT ... Q6AFE_LPASS_CLK_ID_QUI_PCM_OSR:
+ 	case Q6AFE_LPASS_CLK_ID_MCLK_1 ... Q6AFE_LPASS_CLK_ID_INT_MCLK_1:
+ 		return q6afe_port_set_sysclk(port, clk_id,
+ 					     Q6AFE_LPASS_CLK_ATTRIBUTE_COUPLE_NO,
+ 					     Q6AFE_LPASS_CLK_ROOT_DEFAULT,
+ 					     freq, dir);
++	}
++
++	return 0;
++}
++
++static int q6afe_tdm_set_sysclk(struct snd_soc_dai *dai,
++		int clk_id, unsigned int freq, int dir)
++{
++	struct q6afe_dai_data *dai_data = dev_get_drvdata(dai->dev);
++	struct q6afe_port *port = dai_data->port[dai->id];
++
++	switch (clk_id) {
++	case LPAIF_DIG_CLK:
++		return q6afe_port_set_sysclk(port, clk_id, 0, 5, freq, dir);
++	case LPAIF_BIT_CLK:
++	case LPAIF_OSR_CLK:
++		return q6afe_port_set_sysclk(port, clk_id,
++					     Q6AFE_LPASS_CLK_SRC_INTERNAL,
++					     Q6AFE_LPASS_CLK_ROOT_DEFAULT,
++					     freq, dir);
+ 	case Q6AFE_LPASS_CLK_ID_PRI_TDM_IBIT ... Q6AFE_LPASS_CLK_ID_QUIN_TDM_EBIT:
+ 		return q6afe_port_set_sysclk(port, clk_id,
+ 					     Q6AFE_LPASS_CLK_ATTRIBUTE_INVERT_COUPLE_NO,
+@@ -468,6 +520,11 @@ static const struct snd_soc_dapm_route q6afe_dapm_routes[] = {
+ 	{"Tertiary MI2S Playback", NULL, "TERT_MI2S_RX"},
+ 	{"Quaternary MI2S Playback", NULL, "QUAT_MI2S_RX"},
+ 
++	{"Primary PCM Playback", NULL, "PRI_PCM_RX"},
++	{"Secondary PCM Playback", NULL, "SEC_PCM_RX"},
++	{"Tertiary PCM Playback", NULL, "TERT_PCM_RX"},
++	{"Quaternary PCM Playback", NULL, "QUAT_PCM_RX"},
++
+ 	{"Primary TDM0 Playback", NULL, "PRIMARY_TDM_RX_0"},
+ 	{"Primary TDM1 Playback", NULL, "PRIMARY_TDM_RX_1"},
+ 	{"Primary TDM2 Playback", NULL, "PRIMARY_TDM_RX_2"},
+@@ -562,6 +619,11 @@ static const struct snd_soc_dapm_route q6afe_dapm_routes[] = {
+ 	{"PRI_MI2S_TX", NULL, "Primary MI2S Capture"},
+ 	{"SEC_MI2S_TX", NULL, "Secondary MI2S Capture"},
+ 	{"QUAT_MI2S_TX", NULL, "Quaternary MI2S Capture"},
++
++	{"PRI_PCM_TX", NULL, "Primary PCM Capture"},
++	{"SEC_PCM_TX", NULL, "Secondary PCM Capture"},
++	{"TERT_PCM_TX", NULL, "Tertiary PCM Capture"},
++	{"QUAT_PCM_TX", NULL, "Quaternary PCM Capture"},
  };
  
- static int apq8096_init(struct snd_soc_pcm_runtime *rtd)
-@@ -96,7 +153,6 @@ static void apq8096_add_be_ops(struct snd_soc_card *card)
+ static const struct snd_soc_dai_ops q6hdmi_ops = {
+@@ -578,6 +640,14 @@ static const struct snd_soc_dai_ops q6i2s_ops = {
+ 	.set_sysclk	= q6afe_mi2s_set_sysclk,
+ };
  
- 	for_each_card_prelinks(card, i, link) {
- 		if (link->no_pcm == 1) {
--			link->be_hw_params_fixup = apq8096_be_hw_params_fixup;
- 			link->init = apq8096_init;
- 			link->ops = &apq8096_ops;
- 		}
++static const struct snd_soc_dai_ops q6pcm_ops = {
++	.prepare	= q6afe_dai_prepare,
++	.hw_params	= q6pcm_hw_params,
++	.set_fmt	= q6pcm_set_fmt,
++	.shutdown	= q6afe_dai_shutdown,
++	.set_sysclk	= q6afe_mi2s_set_sysclk,
++};
++
+ static const struct snd_soc_dai_ops q6slim_ops = {
+ 	.prepare	= q6afe_dai_prepare,
+ 	.hw_params	= q6slim_hw_params,
+@@ -588,7 +658,7 @@ static const struct snd_soc_dai_ops q6slim_ops = {
+ static const struct snd_soc_dai_ops q6tdm_ops = {
+ 	.prepare	= q6afe_dai_prepare,
+ 	.shutdown	= q6afe_dai_shutdown,
+-	.set_sysclk	= q6afe_mi2s_set_sysclk,
++	.set_sysclk	= q6afe_tdm_set_sysclk,
+ 	.set_tdm_slot     = q6tdm_set_tdm_slot,
+ 	.set_channel_map  = q6tdm_set_channel_map,
+ 	.hw_params        = q6tdm_hw_params,
+@@ -1012,6 +1082,115 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
+ 		.ops = &q6i2s_ops,
+ 		.probe = msm_dai_q6_dai_probe,
+ 		.remove = msm_dai_q6_dai_remove,
++	}, {
++		.playback = {
++			.stream_name = "Primary PCM Playback",
++			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
++			.formats = SNDRV_PCM_FMTBIT_S16_LE |
++				   SNDRV_PCM_FMTBIT_S24_LE,
++			.rate_min =     8000,
++			.rate_max =     16000,
++		},
++		.id = PRIMARY_PCM_RX,
++		.name = "PRI_PCM_RX",
++		.ops = &q6pcm_ops,
++		.probe = msm_dai_q6_dai_probe,
++		.remove = msm_dai_q6_dai_remove,
++	}, {
++		.capture = {
++			.stream_name = "Primary PCM Capture",
++			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
++			.formats = SNDRV_PCM_FMTBIT_S16_LE |
++				   SNDRV_PCM_FMTBIT_S24_LE,
++			.rate_min =     8000,
++			.rate_max =     16000,
++		},
++		.id = PRIMARY_PCM_TX,
++		.name = "PRI_PCM_TX",
++		.ops = &q6pcm_ops,
++		.probe = msm_dai_q6_dai_probe,
++		.remove = msm_dai_q6_dai_remove,
++	}, {
++		.playback = {
++			.stream_name = "Secondary PCM Playback",
++			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
++			.formats = SNDRV_PCM_FMTBIT_S16_LE,
++			.rate_min =     8000,
++			.rate_max =     16000,
++		},
++		.name = "SEC_PCM_RX",
++		.id = SECONDARY_PCM_RX,
++		.ops = &q6pcm_ops,
++		.probe = msm_dai_q6_dai_probe,
++		.remove = msm_dai_q6_dai_remove,
++	}, {
++		.capture = {
++			.stream_name = "Secondary PCM Capture",
++			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
++			.formats = SNDRV_PCM_FMTBIT_S16_LE |
++				   SNDRV_PCM_FMTBIT_S24_LE,
++			.rate_min =     8000,
++			.rate_max =     16000,
++		},
++		.id = SECONDARY_PCM_TX,
++		.name = "SEC_PCM_TX",
++		.ops = &q6pcm_ops,
++		.probe = msm_dai_q6_dai_probe,
++		.remove = msm_dai_q6_dai_remove,
++	}, {
++		.playback = {
++			.stream_name = "Tertiary PCM Playback",
++			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
++			.formats = SNDRV_PCM_FMTBIT_S16_LE,
++			.rate_min =     8000,
++			.rate_max =     16000,
++		},
++		.name = "TERT_PCM_RX",
++		.id = TERTIARY_PCM_RX,
++		.ops = &q6pcm_ops,
++		.probe = msm_dai_q6_dai_probe,
++		.remove = msm_dai_q6_dai_remove,
++	}, {
++		.capture = {
++			.stream_name = "Tertiary PCM Capture",
++			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
++			.formats = SNDRV_PCM_FMTBIT_S16_LE |
++				   SNDRV_PCM_FMTBIT_S24_LE,
++			.rate_min =     8000,
++			.rate_max =     16000,
++		},
++		.id = TERTIARY_PCM_TX,
++		.name = "TERT_PCM_TX",
++		.ops = &q6pcm_ops,
++		.probe = msm_dai_q6_dai_probe,
++		.remove = msm_dai_q6_dai_remove,
++	}, {
++		.playback = {
++			.stream_name = "Quaternary PCM Playback",
++			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
++			.formats = SNDRV_PCM_FMTBIT_S16_LE,
++			.rate_min =     8000,
++			.rate_max =     16000,
++		},
++		.name = "QUAT_PCM_RX",
++		.id = QUATERNARY_PCM_RX,
++		.ops = &q6pcm_ops,
++		.probe = msm_dai_q6_dai_probe,
++		.remove = msm_dai_q6_dai_remove,
++	}, {
++		.capture = {
++			.stream_name = "Quaternary PCM Capture",
++			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
++			.formats = SNDRV_PCM_FMTBIT_S16_LE |
++				   SNDRV_PCM_FMTBIT_S24_LE,
++			.rate_min =     8000,
++			.rate_max =     16000,
++		},
++		.id = QUATERNARY_PCM_TX,
++		.name = "QUAT_PCM_TX",
++		.ops = &q6pcm_ops,
++		.probe = msm_dai_q6_dai_probe,
++		.remove = msm_dai_q6_dai_remove,
+ 	},
+ 	Q6AFE_TDM_PB_DAI("Primary", 0, PRIMARY_TDM_RX_0),
+ 	Q6AFE_TDM_PB_DAI("Primary", 1, PRIMARY_TDM_RX_1),
+@@ -1169,6 +1348,23 @@ static const struct snd_soc_dapm_widget q6afe_dai_widgets[] = {
+ 	SND_SOC_DAPM_AIF_OUT("PRI_MI2S_TX", NULL,
+ 						0, 0, 0, 0),
+ 
++	SND_SOC_DAPM_AIF_IN("QUAT_PCM_RX", NULL,
++			    0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_OUT("QUAT_PCM_TX", NULL,
++			     0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_IN("TERT_PCM_RX", NULL,
++			    0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_OUT("TERT_PCM_TX", NULL,
++			     0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_IN("SEC_PCM_RX", NULL,
++			    0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_OUT("SEC_PCM_TX", NULL,
++			     0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_IN("PRI_PCM_RX", NULL,
++			    0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_OUT("PRI_PCM_TX", NULL,
++			     0, 0, 0, 0),
++
+ 	SND_SOC_DAPM_AIF_IN("PRIMARY_TDM_RX_0", NULL,
+ 			     0, 0, 0, 0),
+ 	SND_SOC_DAPM_AIF_IN("PRIMARY_TDM_RX_1", NULL,
 -- 
 2.21.1
 
