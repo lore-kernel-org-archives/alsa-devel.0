@@ -2,66 +2,66 @@ Return-Path: <SRS0=rQAG=33=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8AB52C2BA83
-	for <alsa-devel@archiver.kernel.org>; Fri,  7 Feb 2020 18:56:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 676FDC2BA83
+	for <alsa-devel@archiver.kernel.org>; Fri,  7 Feb 2020 18:56:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1738420726
-	for <alsa-devel@archiver.kernel.org>; Fri,  7 Feb 2020 18:56:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E8C3621775
+	for <alsa-devel@archiver.kernel.org>; Fri,  7 Feb 2020 18:56:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BZmCABbl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1738420726
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CiS4YOSb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E8C3621775
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mentor.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6FCF016CA;
-	Fri,  7 Feb 2020 19:55:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6FCF016CA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3B22D16CF;
+	Fri,  7 Feb 2020 19:55:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B22D16CF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581101761;
-	bh=rQ6MOJBY+KH/oDfc7JuM97CsEj/ajN7FO9k9OM36qZo=;
+	s=default; t=1581101801;
+	bh=hlIWTn6YQQ3007KXfReXcvwe/KZdudCdLXwl93kqr9o=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BZmCABbl+4ZoSC2DXUI4htA2PRIOzva4fZRSF1hxY1SoQ0rtmF/FHUvVxQlSPnNXF
-	 +1Rfsylt0Tzr0Ku4j6iKDq7hjEvAx8gCZxv4o2g6CTetj3Png7zD/ZTeQHlioX1U/u
-	 0n4Pk8WyH/va5v6NwgbwEFcR0cI2WkQNhNpKHzcY=
+	b=CiS4YOSbQyz4KqRgfBUcHXvdtMLyO2bfx3Gb0yKW0lmzMHmUbogYAyzsxQSoStClo
+	 U56argnWYT084W6GJddp4Oiqd8tyuvu9TYT9PHR4LYdnhRjrO4m6Gu+MxutK17qI0R
+	 kXbjjVQXVOEvWqcLzqmHDQR8zL67R8RheUaUy+QQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6B7DAF8014C;
-	Fri,  7 Feb 2020 19:54:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4D2A9F80278;
+	Fri,  7 Feb 2020 19:54:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A3AAFF80279; Fri,  7 Feb 2020 19:54:11 +0100 (CET)
+ id A0AE9F80142; Fri,  7 Feb 2020 19:54:09 +0100 (CET)
 Received: from esa2.mentor.iphmx.com (esa2.mentor.iphmx.com [68.232.141.98])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6B4C6F800B2
- for <alsa-devel@alsa-project.org>; Fri,  7 Feb 2020 19:54:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B4C6F800B2
-IronPort-SDR: sQw6DRcn13MV4oNDNucyAI0IeEmIh/0Gzj4k88I73Q4YI0oWeCXtm1V0Ycrmee9BKxsHQSRBsE
- c8BIkn6MObES8FcXOOPahM4lXpiLt2kggpNc496gH5F+5Rdz3TZTyM1LZxACibPsv3UTq6JlWx
- r5t3ogrdtZT/2V9XHgn1XkGWrzOosdqCYZPZz0w3FQCMVmYN8U3XTF/OVFo6FsjF23zx4g9d9z
- w1MFci0UeDPIVR9f5ltlAorUPEKhBRmv+KOgzKgy49nNTgcABAISBbsMZGlh27kitIBcgy1aBm
- dEk=
-X-IronPort-AV: E=Sophos;i="5.70,414,1574150400"; d="scan'208";a="45570444"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 86041F800AB
+ for <alsa-devel@alsa-project.org>; Fri,  7 Feb 2020 19:54:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86041F800AB
+IronPort-SDR: rw4iGKdpLjMBcEGPDDnzjZ0EejeIdSL+BwXtcPxLHbcVUIFQO5Oy4QPB0eCXuhBSpz/wFpEu00
+ L1CQVrU1vM+qmjMalxfc7HWMXuq6yegEIxmzRKpE4HEt5H8y1fi37OdSBccAcDSWE/weYaleXQ
+ W6ejQZfFYa2uA2Uh+W2q/dRBP/pDbUaBkhGMqdrqyOtnbXzl1bc953gVKDpFPj1W+jvCS8L6zA
+ 4soPrQK/gFR5i73RFjbXsF2Mujq/ieZgozN69hn9mExqKPmMSIdGsdxhShbCovwNPU9RVozWNU
+ OsM=
+X-IronPort-AV: E=Sophos;i="5.70,414,1574150400"; d="scan'208";a="45570440"
 Received: from orw-gwy-01-in.mentorg.com ([192.94.38.165])
- by esa2.mentor.iphmx.com with ESMTP; 07 Feb 2020 10:54:07 -0800
-IronPort-SDR: TM+SJCQYLKejof88kUV6smGWRTAkIGSExsv2ZBMUGdEa4Mh/PqrtvJkL9AYDnBnNYOQzmU0FL3
- KR1U/OKoEi4PsQzfFT+lMy9cifF5C9BK/cNOm1Cj0i1rE8WLPhgVo5gcBWHGt9rACkwEvuovme
- Rr/Cgu9WwMUMw9f+3cPfNA+M62R7NWHRMTQGBIxjDZ09YgCF+pkYdN8KMo29nTP7fSVVVRFLAC
- CCGc5ago9L73qhhoiEERngAdmQ7GW8RHp3sDvwTLS1fkondktjRIEnwW5OsV7LPEhkzEg2GEXi
- KrY=
+ by esa2.mentor.iphmx.com with ESMTP; 07 Feb 2020 10:54:03 -0800
+IronPort-SDR: D8WspUu5GRJUOHRPjtLHtz9FdtjmNZzLhNVQRqv/eC+AHkPXirh8XXLnHZNQk2QTI30hOXgY/f
+ nOFk8Q1SKq6+gTbSJbaSzKUFLsRrrj1IP57CBHofehkJJHz/TUAoAUJNgtrV2pWjaCzQu58Rle
+ fsfGuntvyw4+9BKhnpnpkUA09/YoVzWpLQX+Ju1jXTjK/C9iGxwHSlfGOzoPzGrQcxzXYrjpwj
+ pH4q6bbYHcMVnsbdDRxL3Mb5jJEvBhAtsY3IJcUJCWy1suNEmPfurpyhwspGMdt1xFjJMfVPX2
+ 3qQ=
 From: Dragos Tarcatu <dragos_tarcatu@mentor.com>
 To: <alsa-devel@alsa-project.org>
-Date: Fri, 7 Feb 2020 20:53:25 +0200
-Message-ID: <20200207185325.22320-3-dragos_tarcatu@mentor.com>
+Date: Fri, 7 Feb 2020 20:53:24 +0200
+Message-ID: <20200207185325.22320-2-dragos_tarcatu@mentor.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200207185325.22320-1-dragos_tarcatu@mentor.com>
 References: <20200207185325.22320-1-dragos_tarcatu@mentor.com>
@@ -71,8 +71,8 @@ X-ClientProxiedBy: svr-ies-mbx-01.mgc.mentorg.com (139.181.222.1) To
  svr-ies-mbx-02.mgc.mentorg.com (139.181.222.2)
 Cc: Dragos Tarcatu <dragos_tarcatu@mentor.com>, mengdong.lin@linux.intel.com,
  pierre-louis.bossart@linux.intel.com, tiwai@suse.com, broonie@kernel.org
-Subject: [alsa-devel] [PATCH 2/2] ASoC: topology: Fix memleak in
-	soc_tplg_manifest_load()
+Subject: [alsa-devel] [PATCH 1/2] ASoC: topology: Fix memleak in
+	soc_tplg_link_elems_load()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,56 +90,34 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-In case of ABI version mismatch, _manifest needs to be freed as
-it is just a copy of the original topology manifest. However, if
-a driver manifest handler is defined, that would get executed and
-the cleanup is never reached. Fix that by getting the return status
-of manifest() instead of returning directly.
+If soc_tplg_link_config() fails, _link needs to be freed in case of
+topology ABI version mismatch. However the current code is returning
+directly and ends up leaking memory in this case.
+This patch fixes that.
 
-Fixes: 583958fa2e52 ("ASoC: topology: Make manifest backward compatible from ABI v4")
+Fixes: 593d9e52f9bb ("ASoC: topology: Add support to configure existing physical DAI links")
 Signed-off-by: Dragos Tarcatu <dragos_tarcatu@mentor.com>
 ---
- sound/soc/soc-topology.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/soc-topology.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 69069f70e745..575da6aba807 100644
+index d2ee6ad20e83..69069f70e745 100644
 --- a/sound/soc/soc-topology.c
 +++ b/sound/soc/soc-topology.c
-@@ -2545,7 +2545,7 @@ static int soc_tplg_manifest_load(struct soc_tplg *tplg,
- {
- 	struct snd_soc_tplg_manifest *manifest, *_manifest;
- 	bool abi_match;
--	int err;
-+	int ret = 0;
+@@ -2377,8 +2377,11 @@ static int soc_tplg_link_elems_load(struct soc_tplg *tplg,
+ 		}
  
- 	if (tplg->pass != SOC_TPLG_PASS_MANIFEST)
- 		return 0;
-@@ -2558,19 +2558,19 @@ static int soc_tplg_manifest_load(struct soc_tplg *tplg,
- 		_manifest = manifest;
- 	} else {
- 		abi_match = false;
--		err = manifest_new_ver(tplg, manifest, &_manifest);
--		if (err < 0)
--			return err;
-+		ret = manifest_new_ver(tplg, manifest, &_manifest);
-+		if (ret < 0)
-+			return ret;
- 	}
+ 		ret = soc_tplg_link_config(tplg, _link);
+-		if (ret < 0)
++		if (ret < 0) {
++			if (!abi_match)
++				kfree(_link);
+ 			return ret;
++		}
  
- 	/* pass control to component driver for optional further init */
- 	if (tplg->comp && tplg->ops && tplg->ops->manifest)
--		return tplg->ops->manifest(tplg->comp, tplg->index, _manifest);
-+		ret = tplg->ops->manifest(tplg->comp, tplg->index, _manifest);
- 
- 	if (!abi_match)	/* free the duplicated one */
- 		kfree(_manifest);
- 
--	return 0;
-+	return ret;
- }
- 
- /* validate header magic, size and type */
+ 		/* offset by version-specific struct size and
+ 		 * real priv data size
 -- 
 2.17.1
 
