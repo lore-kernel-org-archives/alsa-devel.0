@@ -2,80 +2,84 @@ Return-Path: <SRS0=5/4N=36=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B918C352A3
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 10:23:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DE3AAC352A3
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 10:23:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 153D32080C
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 10:23:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 67BA52080C
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 10:23:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Sq5f1uTm";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=serbinski.com header.i=@serbinski.com header.b="mMdBltuh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 153D32080C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="phLud9kn";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=serbinski.com header.i=@serbinski.com header.b="2UePYZR8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 67BA52080C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=serbinski.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 695EA1664;
-	Mon, 10 Feb 2020 11:22:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 695EA1664
+	by alsa0.perex.cz (Postfix) with ESMTPS id C178016A8;
+	Mon, 10 Feb 2020 11:22:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C178016A8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581330198;
-	bh=3X2SqatlM8vrQHC/uXLWZ1wqSa7sJIcvDvAVjR5vpFU=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Sq5f1uTm2rG71XwW1HUD8MgVlfOJCt7to9EBJl34raEV5UYbSHtjVb3cKf+xYGOWw
-	 JsuHWIHiiLsc8alrmtWJD5HDWTG5ywbmoA5jlJp9TBPxk4+0DWTq7NQac2vspskFnF
-	 58Sey83RjTPV4hfKjH6kgYyv+aHXF1fiIaVcJpLM=
+	s=default; t=1581330214;
+	bh=PpyO3O9OBGZBZ1lP8jQfjDdtHmX0GaxVOElI7bi+WWo=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=phLud9knp96REI/XNwH0VPRivnF6hzu0b5iugnxgOZEfbLzDWAXEMP0pVLqDdMy+g
+	 W5jrtMOvw//COYKl/qzrnmnivNqAH3INWkBBy0vVZKZx2ZTr3qm4tTNK/Cv8H+wyPN
+	 OcMGmaSHFOIyVJ9OCU1ofG1ReuVHZhQ7y253MVBQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C1B30F80279;
-	Mon, 10 Feb 2020 11:20:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E15C6F8027D;
+	Mon, 10 Feb 2020 11:20:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B3163F8019B; Fri,  7 Feb 2020 21:50:47 +0100 (CET)
+ id D0B05F8014C; Fri,  7 Feb 2020 21:50:51 +0100 (CET)
 Received: from mail.serbinski.com (mail.serbinski.com [162.218.126.2])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 78755F800AB
- for <alsa-devel@alsa-project.org>; Fri,  7 Feb 2020 21:50:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78755F800AB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0C04AF800B2
+ for <alsa-devel@alsa-project.org>; Fri,  7 Feb 2020 21:50:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C04AF800B2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=serbinski.com header.i=@serbinski.com
- header.b="mMdBltuh"
+ header.b="2UePYZR8"
 Received: from localhost (unknown [127.0.0.1])
- by mail.serbinski.com (Postfix) with ESMTP id 854DCD00727;
- Fri,  7 Feb 2020 20:50:42 +0000 (UTC)
+ by mail.serbinski.com (Postfix) with ESMTP id DE9CCD00726;
+ Fri,  7 Feb 2020 20:50:47 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at serbinski.com
 Received: from mail.serbinski.com ([127.0.0.1])
  by localhost (mail.serbinski.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id j-EbtHU13np8; Fri,  7 Feb 2020 15:50:36 -0500 (EST)
+ with ESMTP id CmXjl-noarjk; Fri,  7 Feb 2020 15:50:42 -0500 (EST)
 Received: from anet
  (ipagstaticip-7ac5353e-e7de-3a0d-ff65-4540e9bc137f.sdsl.bell.ca
  [142.112.15.192]) (using TLSv1 with cipher AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mail.serbinski.com (Postfix) with ESMTPSA id 854D1D00717;
- Fri,  7 Feb 2020 15:50:28 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.serbinski.com 854D1D00717
+ by mail.serbinski.com (Postfix) with ESMTPSA id 307BDD00719;
+ Fri,  7 Feb 2020 15:50:29 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.serbinski.com 307BDD00719
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=serbinski.com;
- s=default; t=1581108628;
- bh=MlElQX8UGSNGpk/B5oaMq2Wl0cfEBed5ksQ493alu7Y=;
- h=From:To:Cc:Subject:Date:From;
- b=mMdBltuhTPxNolWE+/ZrxcYY8ll4FHCgyjB84nIXrIXYSM75RY5Jdk5HyGxdb7fef
- vVRVYkL41HHJXLd3mE/0qrR7VziDpq925OlaUDSASqoUuOBeup1j53QiRkfDMkCFIS
- nQDV9jKtn2W/4OcmZJQQBLR4RosJY0mly17QQ5z0=
+ s=default; t=1581108629;
+ bh=UQULhBFsFv/7KduXszLvTWU0rPWyMPBaOu3wrDjbjjw=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=2UePYZR8IyiFtcwSsUCCNyfJiJ/4RPykXWiqz9fedCovaK20fK5EUsi3qigyExoj3
+ iC/7GNwe0CO+epWwxaqfkTRN8mUFNJ2Gs5ypuYrGN44yrKs1MWBiiogrsGZI2Gv3zL
+ Kb+sfM0H6MU6bVBgTAXUx5Pbqa0/OSWboyl/lofc=
 From: Adam Serbinski <adam@serbinski.com>
 To: Mark Brown <broonie@kernel.org>,
  Srini Kandagatla <srinivas.kandagatla@linaro.org>,
  Rob Herring <robh+dt@kernel.org>,
  Bjorn Andersson <bjorn.andersson@linaro.org>
-Date: Fri,  7 Feb 2020 15:50:05 -0500
-Message-Id: <20200207205013.12274-1-adam@serbinski.com>
+Date: Fri,  7 Feb 2020 15:50:06 -0500
+Message-Id: <20200207205013.12274-2-adam@serbinski.com>
 X-Mailer: git-send-email 2.21.1
+In-Reply-To: <20200207205013.12274-1-adam@serbinski.com>
+References: <20200207205013.12274-1-adam@serbinski.com>
 MIME-Version: 1.0
 X-Mailman-Approved-At: Mon, 10 Feb 2020 11:20:06 +0100
 Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
@@ -84,8 +88,8 @@ Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
  Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
  Andy Gross <agross@kernel.org>, Adam Serbinski <adam@serbinski.com>,
  linux-kernel@vger.kernel.org
-Subject: [alsa-devel] [PATCH 0/8] ASoC: qdsp6: db820c: Add support for
-	external and bluetooth audio
+Subject: [alsa-devel] [PATCH 1/8] ASoC: qdsp6: dt-bindings: Add q6afe pcm dt
+	binding
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -103,14 +107,9 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch set implements PCM audio support in qdsp6 and
-PCM and MI2S in apq8096/db820c to enable use of bluetooth
-audio codec and external MI2S port on db820c.
+This patch adds bindings required for PCM ports on AFE.
 
-The db820c uses qca6174a for bluetooth, which by default
-is configured to use what qualcomm refers to as "PCM"
-format, which is a variation of TDM.
-
+Signed-off-by: Adam Serbinski <adam@serbinski.com>
 CC: Andy Gross <agross@kernel.org>
 CC: Mark Rutland <mark.rutland@arm.com>
 CC: Liam Girdwood <lgirdwood@gmail.com>
@@ -122,28 +121,29 @@ CC: alsa-devel@alsa-project.org
 CC: linux-arm-msm@vger.kernel.org
 CC: devicetree@vger.kernel.org
 CC: linux-kernel@vger.kernel.org
+---
+ include/dt-bindings/sound/qcom,q6afe.h | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-Adam Serbinski (8):
-  ASoC: qdsp6: dt-bindings: Add q6afe pcm dt binding
-  ASoC: qdsp6: q6afe: add support to pcm ports
-  ASoC: qdsp6: q6afe-dai: add support to pcm port dais
-  ASoC: qdsp6: q6routing: add pcm port routing
-  ASoC: qcom: apq8096: add support for primary and quaternary I2S/PCM
-  ASoC: qcom/common: Use snd-soc-dummy-dai when codec is not specified
-  dts: msm8996/db820c: enable primary pcm and quaternary i2s
-  ASoC: qcom: apq8096: add kcontrols to set PCM rate
-
- arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi | 113 +++++++++
- arch/arm64/boot/dts/qcom/msm8996-pins.dtsi   | 162 ++++++++++++
- include/dt-bindings/sound/qcom,q6afe.h       |   8 +
- sound/soc/qcom/apq8096.c                     | 172 +++++++++++--
- sound/soc/qcom/common.c                      |  22 +-
- sound/soc/qcom/qdsp6/q6afe-dai.c             | 198 ++++++++++++++-
- sound/soc/qcom/qdsp6/q6afe.c                 | 246 +++++++++++++++++++
- sound/soc/qcom/qdsp6/q6afe.h                 |   9 +-
- sound/soc/qcom/qdsp6/q6routing.c             |  44 ++++
- 9 files changed, 953 insertions(+), 21 deletions(-)
-
+diff --git a/include/dt-bindings/sound/qcom,q6afe.h b/include/dt-bindings/sound/qcom,q6afe.h
+index 1df06f8ad5c3..f3a435a112cb 100644
+--- a/include/dt-bindings/sound/qcom,q6afe.h
++++ b/include/dt-bindings/sound/qcom,q6afe.h
+@@ -107,6 +107,14 @@
+ #define QUINARY_TDM_RX_7	102
+ #define QUINARY_TDM_TX_7	103
+ #define DISPLAY_PORT_RX		104
++#define PRIMARY_PCM_RX		105
++#define PRIMARY_PCM_TX		106
++#define SECONDARY_PCM_RX	107
++#define SECONDARY_PCM_TX	108
++#define TERTIARY_PCM_RX		109
++#define TERTIARY_PCM_TX		110
++#define QUATERNARY_PCM_RX	111
++#define QUATERNARY_PCM_TX	112
+ 
+ #endif /* __DT_BINDINGS_Q6_AFE_H__ */
+ 
 -- 
 2.21.1
 
