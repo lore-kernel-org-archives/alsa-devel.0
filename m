@@ -3,128 +3,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MSGID_FROM_MTA_HEADER,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 31FF5C3B186
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 10:02:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BB95C352A3
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 10:21:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B270220863
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 10:02:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 126BC20733
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 10:21:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Dqhdszb0";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="DQNgSiiP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B270220863
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oss.nxp.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oNgYS/dS";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=serbinski.com header.i=@serbinski.com header.b="h0NDVPuH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 126BC20733
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=serbinski.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8DB68168A;
-	Mon, 10 Feb 2020 11:01:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8DB68168A
+	by alsa0.perex.cz (Postfix) with ESMTPS id D58791607;
+	Mon, 10 Feb 2020 11:20:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D58791607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581328936;
-	bh=8PxW6aC4uyATRfe0OrDYvQKEqAGjp6Zk4pXN17qYNOk=;
+	s=default; t=1581330059;
+	bh=peRCY2d/zZqcscyWExr4wxbZ3lC/C1PcsySqMx0wI1A=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Dqhdszb0tfqETxfLfESH8PJzmutgRnU4RyjPVHrHMGj8fK2GOL3mRLjsWxUNb+y2N
-	 jTLuL4zoVNSsonqESkPnpbzgrzM8/vSMNggZZuMAkchCWdaIVOsYkCbsJbfIwx0RB4
-	 9VRRbEyBW4gfeQo/0SXPFe2hJjZaSbg4jXflQHSA=
+	b=oNgYS/dSXgdxNtB+CIXBTaC98oaKhMY+SnIGs4odAmCp4QjQYMm3hCcKKmE7s/lOM
+	 kFWiumaXJP0Lr0ideYzPGiNUepOcAyzYKRIvgYKyTd6HcRcjxhPUZSc736M+9nPnC2
+	 dGO8Q6Vn9NzyoaNZCOiL1+mwm1U/c3fYpwP3dGn0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2C341F8028D;
-	Mon, 10 Feb 2020 10:58:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 00FDDF80118;
+	Mon, 10 Feb 2020 11:20:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 60BCFF800FD; Mon, 10 Feb 2020 10:58:45 +0100 (CET)
-Received: from EUR02-AM5-obe.outbound.protection.outlook.com
- (mail-eopbgr00083.outbound.protection.outlook.com [40.107.0.83])
+ id C35E1F8014C; Fri,  7 Feb 2020 21:50:41 +0100 (CET)
+Received: from mail.serbinski.com (mail.serbinski.com [162.218.126.2])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 08EEEF800FD
- for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2020 10:58:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 08EEEF800FD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 79B46F800AB
+ for <alsa-devel@alsa-project.org>; Fri,  7 Feb 2020 21:50:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79B46F800AB
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com
- header.i=@NXP1.onmicrosoft.com header.b="DQNgSiiP"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ESMkRwGppluJDuD6ytF+EpC+n/goV/aQqVpBVHmLm5YyeuB8iaGK99oTNJZlHaFUz59YMgeGGMyfOmWqpaHa+THQYqB3Tx7M27erBg/hIJqHq1tzGbrCLadIw2d9vOA89ojoHMFvZ75GiKunASTl3ZzwZr8vKj/K0qIpgjV54cvJtsZJ9nYXJlEuQujwyDXpM0kluxg+0O4jQ0KkWuucbmE/vma1GOD1vUf61K0ioZebJUTkyibmslColqwcZASWYZ297zbcaWe8Sv9g80R3wiyRLHk6Yi7CbTrsYUyPQZyHgEVHeK6hFZXp39Sv7PIYHJu7AxJfTqGxhjSEcVsDmg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=T+QA1YSM6T6NusxwnbWRJCIoo6V643ml0FFpPb+ARMU=;
- b=g6ZWC9mxj5trXGARQYVZTzGT6ybE4slRFeLMRCbrpA/f8QLuTMqgVAgq5Mb81WTLXVp4hr4tesvQXOuaoKnSBJdeFO+6lK/pztpqHXuZKBb4FWkuCLrcKlV6KwEVPsrZ0ey8mhSVn7EkcmUkd0y6sFgngbbQKgcDRrWicYTbWWM6JGtz8p5GI4Qi9aNJT2tU1p1IY+8lmFrpEUShn+jlMo+14UyFmwrHvyKeLnNz5lJeoCj5QVbQr1w94aGb4ZlNH+rvh87EN9C7Priesq8fvcGRNBuaCt+nqnMWBhmoXQSUqQsvQio8nzTWGpRQ2Uv0mQiBGtnm6Oy9PjGup1vRHw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com; 
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=T+QA1YSM6T6NusxwnbWRJCIoo6V643ml0FFpPb+ARMU=;
- b=DQNgSiiPBOKdOKXQYVu1hF8qvZjumfV6uJl8XKPS/lqK3YY23scGDwxR6oPQ0nxdH3pJ3p5jgirQN7va5EeesPcrSAiP2c2x0gxxI7Ej7Z3Y+Fd1zW+gZfB0cOSu9RKzukAAghCAzcnhLj2ifV5DOHSdbVbtFIT59JHQQGgJklM=
-Authentication-Results: spf=none (sender IP is )
- smtp.mailfrom=daniel.baluta@oss.nxp.com; 
-Received: from VI1PR0402MB3839.eurprd04.prod.outlook.com (52.134.16.147) by
- VI1PR0402MB3599.eurprd04.prod.outlook.com (52.134.1.13) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2707.26; Mon, 10 Feb 2020 09:58:38 +0000
-Received: from VI1PR0402MB3839.eurprd04.prod.outlook.com
- ([fe80::8881:e155:f058:c0d1]) by VI1PR0402MB3839.eurprd04.prod.outlook.com
- ([fe80::8881:e155:f058:c0d1%4]) with mapi id 15.20.2707.028; Mon, 10 Feb 2020
- 09:58:38 +0000
-From: Daniel Baluta <daniel.baluta@oss.nxp.com>
-To: broonie@kernel.org,
-	robh+dt@kernel.org
-Date: Mon, 10 Feb 2020 11:58:17 +0200
-Message-Id: <20200210095817.13226-5-daniel.baluta@oss.nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200210095817.13226-1-daniel.baluta@oss.nxp.com>
-References: <20200210095817.13226-1-daniel.baluta@oss.nxp.com>
-X-ClientProxiedBy: AM3PR07CA0076.eurprd07.prod.outlook.com
- (2603:10a6:207:4::34) To VI1PR0402MB3839.eurprd04.prod.outlook.com
- (2603:10a6:803:21::19)
+ dkim=pass (1024-bit key) header.d=serbinski.com header.i=@serbinski.com
+ header.b="h0NDVPuH"
+Received: from localhost (unknown [127.0.0.1])
+ by mail.serbinski.com (Postfix) with ESMTP id 94808D00723;
+ Fri,  7 Feb 2020 20:50:34 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at serbinski.com
+Received: from mail.serbinski.com ([127.0.0.1])
+ by localhost (mail.serbinski.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id RYQe4sNuTc_o; Fri,  7 Feb 2020 15:50:27 -0500 (EST)
+Received: from anet
+ (ipagstaticip-7ac5353e-e7de-3a0d-ff65-4540e9bc137f.sdsl.bell.ca
+ [142.112.15.192]) (using TLSv1 with cipher AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mail.serbinski.com (Postfix) with ESMTPSA id 0D866D006F9;
+ Fri,  7 Feb 2020 15:50:27 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.serbinski.com 0D866D006F9
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=serbinski.com;
+ s=default; t=1581108627;
+ bh=ETimvPxlhSv3UnHdR3sMFlCASzRDsVkv5A46uX4f778=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=h0NDVPuHG5BrYyomgj6lbDXKJoOpSpwmhTw4xpD+Rq8tk/kTCiTyCcHCMC7ELF7qi
+ D4U+5b/XVaaghNQ/RrklZ3Kx0LspwU8Vn49AQbpxECRUC0pbo68x4xR/TBg2AKqLH5
+ KYSqFZ6iC+Y6hvf+6kLg3XIcVXfd/0ujEDFt2MQE=
+From: Adam Serbinski <adam@serbinski.com>
+To: Mark Brown <broonie@kernel.org>,
+ Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>
+Date: Fri,  7 Feb 2020 15:50:11 -0500
+Message-Id: <20200207205013.12274-7-adam@serbinski.com>
+X-Mailer: git-send-email 2.21.1
+In-Reply-To: <20200207205013.12274-1-adam@serbinski.com>
+References: <20200207205013.12274-1-adam@serbinski.com>
 MIME-Version: 1.0
-Received: from fsr-ub1864-103.ro-buh02.nxp.com (89.37.124.34) by
- AM3PR07CA0076.eurprd07.prod.outlook.com (2603:10a6:207:4::34) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2729.9 via Frontend Transport; Mon, 10 Feb 2020 09:58:37 +0000
-X-Mailer: git-send-email 2.17.1
-X-Originating-IP: [89.37.124.34]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: c78cdf9a-243a-4e31-3326-08d7ae0fccc6
-X-MS-TrafficTypeDiagnostic: VI1PR0402MB3599:|VI1PR0402MB3599:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR0402MB3599D434531AC7A3E73B7868B8190@VI1PR0402MB3599.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
-X-Forefront-PRVS: 03094A4065
-X-Forefront-Antispam-Report: SFV:NSPM;
- SFS:(10009020)(4636009)(346002)(39860400002)(376002)(396003)(136003)(366004)(199004)(189003)(956004)(2616005)(54906003)(16526019)(44832011)(6506007)(186003)(26005)(6486002)(66556008)(66946007)(66476007)(86362001)(4326008)(2906002)(478600001)(6512007)(81156014)(81166006)(8676002)(8936002)(316002)(4744005)(1076003)(5660300002)(6666004)(52116002)(142933001);
- DIR:OUT; SFP:1101; SCL:1; SRVR:VI1PR0402MB3599;
- H:VI1PR0402MB3839.eurprd04.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; A:0; MX:1; 
-Received-SPF: None (protection.outlook.com: oss.nxp.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8bRFm1tUey/GL6h2qjN3Ry4Vb+lyMNQyWXQjzNJCuL4Q+Of+10htYZhrAdjN7rq1ekKMc6Dirhgt6H/b8E7pQ9ssCheza5LxHpEq+aX9ED2yWe6a1HuPCgHxBowNn8VLLQCTyninV6r5Pj8pIIarrpYJBgWUdONzHX6AGNZzAmHfNjZh9bcTedq9ZnjMZPkKjk1rArNM2AP1n7VqwxpJ5/pVK/M3VWNCeR8CkW1AGZJijlty4vuvs2EBU3rdTz0BiNEj5ck+GnL0wOiZZmvGw8r48eskA/f1KT9IEODQvim6EL8/4SAIvHbIHsSKAqDxcDPEK+G3QGOlS+3yZMB0k/a7idFUwAc2Y2y14Nox5J/B9ZtYL9zeiB8BRlFUu2/QJg9gZQKerm4O58CDZVsfQnXwqf1Xa97qT0fbw6xZihPF9kDn10TfJ7XMb7hkL5UjLkMlHnMIQB7fl0JJTBwqNptVuL7u3tAcaT1bxQmmoCy9UGjujEIBR1W2EFAIRGou
-X-MS-Exchange-AntiSpam-MessageData: Kv0UYy8Z9hG7n0dOrLgjkac4XVfelzURe1w2XfxRxuYe+5arRwdQP6w6Wv6ni0mVOUhRCNqxTrNekhx/CV3pD2/aIEkXai7ScyvzFgKkPOZWbK20HlKue3DPwIWmZJIf8KbPNumJLSR1jgPEF2V51A==
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c78cdf9a-243a-4e31-3326-08d7ae0fccc6
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Feb 2020 09:58:38.1517 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: c6I9FuetUnJevu+dbuxEJMRIuI/c9+S1vB1p541xQWGnSmEfmu6+aR/uVP2FMusv0ywKj9S2gXzFosA+oMknSw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3599
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Daniel Baluta <daniel.baluta@nxp.com>, linux-kernel@vger.kernel.org,
- Paul Olaru <paul.olaru@nxp.com>, linux-imx@nxp.com, festevam@gmail.com
-Subject: [alsa-devel] [RESEND 4/4] dt-bindings: dsp: fsl: Add fsl,
-	imx8qm-dsp entry
+X-Mailman-Approved-At: Mon, 10 Feb 2020 11:20:06 +0100
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
+ linux-arm-msm@vger.kernel.org, Patrick Lai <plai@codeaurora.org>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Andy Gross <agross@kernel.org>, Adam Serbinski <adam@serbinski.com>,
+ linux-kernel@vger.kernel.org
+Subject: [alsa-devel] [PATCH 6/8] ASoC: qcom/common: Use snd-soc-dummy-dai
+	when codec is not specified
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -142,32 +107,68 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Paul Olaru <paul.olaru@nxp.com>
+When not specifying a codec, use snd-soc-dummy-dai. This supports
+the case where a fixed configuration codec is attached, such as
+bluetooth hfp.
 
-This is the same DSP from the hardware point of view, but it gets a
-different compatible string due to usage in a separate platform.
-
-Signed-off-by: Paul Olaru <paul.olaru@nxp.com>
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Adam Serbinski <adam@serbinski.com>
+CC: Andy Gross <agross@kernel.org>
+CC: Mark Rutland <mark.rutland@arm.com>
+CC: Liam Girdwood <lgirdwood@gmail.com>
+CC: Patrick Lai <plai@codeaurora.org>
+CC: Banajit Goswami <bgoswami@codeaurora.org>
+CC: Jaroslav Kysela <perex@perex.cz>
+CC: Takashi Iwai <tiwai@suse.com>
+CC: alsa-devel@alsa-project.org
+CC: linux-arm-msm@vger.kernel.org
+CC: devicetree@vger.kernel.org
+CC: linux-kernel@vger.kernel.org
 ---
- Documentation/devicetree/bindings/dsp/fsl,dsp.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/qcom/common.c | 22 +++++++++++++++++-----
+ 1 file changed, 17 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
-index f04870d84542..30bc0db7f539 100644
---- a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
-+++ b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
-@@ -17,6 +17,7 @@ properties:
-   compatible:
-     enum:
-       - fsl,imx8qxp-dsp
-+      - fsl,imx8qm-dsp
+diff --git a/sound/soc/qcom/common.c b/sound/soc/qcom/common.c
+index 6c20bdd850f3..aa2f2238aca0 100644
+--- a/sound/soc/qcom/common.c
++++ b/sound/soc/qcom/common.c
+@@ -84,7 +84,7 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
+ 			goto err;
+ 		}
  
-   reg:
-     description: Should contain register location and length
+-		if (codec && platform) {
++		if (platform) {
+ 			link->platforms->of_node = of_parse_phandle(platform,
+ 					"sound-dai",
+ 					0);
+@@ -94,10 +94,22 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
+ 				goto err;
+ 			}
+ 
+-			ret = snd_soc_of_get_dai_link_codecs(dev, codec, link);
+-			if (ret < 0) {
+-				dev_err(card->dev, "%s: codec dai not found\n", link->name);
+-				goto err;
++			if (codec) {
++				ret = snd_soc_of_get_dai_link_codecs(dev, codec, link);
++				if (ret < 0) {
++					dev_err(card->dev, "%s: codec dai not found\n", link->name);
++					goto err;
++				}
++			} else {
++				dlc = devm_kzalloc(dev,
++						   sizeof(*dlc), GFP_KERNEL);
++				if (!dlc)
++					return -ENOMEM;
++
++				link->codecs = dlc;
++				link->num_codecs = 1;
++				link->codecs->dai_name = "snd-soc-dummy-dai";
++				link->codecs->name = "snd-soc-dummy";
+ 			}
+ 			link->no_pcm = 1;
+ 			link->ignore_pmdown_time = 1;
 -- 
-2.17.1
+2.21.1
 
 _______________________________________________
 Alsa-devel mailing list
