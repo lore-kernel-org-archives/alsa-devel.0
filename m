@@ -7,89 +7,92 @@ X-Spam-Status: No, score=-3.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FA84C352A2
-	for <alsa-devel@archiver.kernel.org>; Fri,  7 Feb 2020 13:29:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B8B1C352A2
+	for <alsa-devel@archiver.kernel.org>; Fri,  7 Feb 2020 13:30:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1C67220715
-	for <alsa-devel@archiver.kernel.org>; Fri,  7 Feb 2020 13:29:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1532520715
+	for <alsa-devel@archiver.kernel.org>; Fri,  7 Feb 2020 13:30:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sZtOM8yF";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YPsqhK1v"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1C67220715
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Dcq24sNU";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qj3OJ5o+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1532520715
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 634691662;
-	Fri,  7 Feb 2020 14:29:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 634691662
+	by alsa0.perex.cz (Postfix) with ESMTPS id 68DCB1683;
+	Fri,  7 Feb 2020 14:29:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 68DCB1683
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581082195;
-	bh=bfGn7SQVzroQ41W+Zu0QA4zaBXtMhy71i4tkrH2sRzE=;
+	s=default; t=1581082232;
+	bh=u7qio39YOeBCDUU9hl80YcDdLa6gVz2bAvotoBFtEf8=;
 	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sZtOM8yF4OdEiY+bXHorGCxYf3CxY7sTWzM6bDdkUoKFSFw8zcxiFjdLs16kTMOOB
-	 aUYZEioSumfgI75c+a/plLjvwll/1SN9BFyk+713ob61NM0Miu7JjhSwD2VnCAfEaW
-	 L3oe1Rdb/KeDx2YjcHNQYg8NDPNpVRUgJJtiIXuY=
+	b=Dcq24sNUrRTuiIVTfUjSz8Je2VVCwUTlD4yOogyo9wT+2IcBu/QgDafUGORv19uZ4
+	 nz7LthLizQna4597/56j/nDBVn+7scrAEaW93jzXbkvGIHJwpbpYr0ZlgIWHK+KAdH
+	 UJVVowBdk8Dy/+hzjPkKGyaPE6bEjVxsh3h3mLBs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 98738F80274;
-	Fri,  7 Feb 2020 14:27:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C8DBCF80278;
+	Fri,  7 Feb 2020 14:27:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A8428F80162; Fri,  7 Feb 2020 00:55:28 +0100 (CET)
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com
- [IPv6:2a00:1450:4864:20::441])
+ id 616AAF80162; Fri,  7 Feb 2020 01:20:14 +0100 (CET)
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com
+ [IPv6:2a00:1450:4864:20::344])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1C9A3F800C6
- for <alsa-devel@alsa-project.org>; Fri,  7 Feb 2020 00:55:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C9A3F800C6
+ by alsa1.perex.cz (Postfix) with ESMTPS id DD9A4F80059
+ for <alsa-devel@alsa-project.org>; Fri,  7 Feb 2020 01:20:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD9A4F80059
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="YPsqhK1v"
-Received: by mail-wr1-x441.google.com with SMTP id y11so531122wrt.6
- for <alsa-devel@alsa-project.org>; Thu, 06 Feb 2020 15:55:25 -0800 (PST)
+ header.b="Qj3OJ5o+"
+Received: by mail-wm1-x344.google.com with SMTP id t23so803317wmi.1
+ for <alsa-devel@alsa-project.org>; Thu, 06 Feb 2020 16:20:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=hG9QLDrHnieJvdgoYjUy2r02+eenvwZoinClBv74dLU=;
- b=YPsqhK1vyNF8prHN2Jch/olJ+zIsuxpb/M7wPkG2UK+oGbTDx0fFNknkQNvlEwuWlC
- av4RZCzYWGZ/5QhMYfur8Jw5mtW9pCxAhX2Cb2WgpwdaAyhxJSrGStvpSA6zfYFO5NKl
- AWbVnI6NLEa99GCtRCKv3NCyhyavZL7iq9aN4oZ1ATcreUBorTzg2Th8XKeuf/rxdJtg
- JKqyzZ7za7UVCHHnGw7HKYfwhUGL4nQVzMVrmeOHHQfGFmwJEGIFIA6s37CKbBTQgQGX
- MBc5fqtI/iCb1JAzf0RTjapBBf9MnnNYfGBYbI0azDoOu0YCucMuS+yO/vW0gSASbIkp
- RGTg==
+ :cc; bh=CoKbncYciVD/U0lXsVtX7zMw7+64OYjcPIBvVRn+6s0=;
+ b=Qj3OJ5o+NZYQqiNpwhkHY6NkuDOWN2WRHGvAESwIPHvALrAwukfBresMJmpJXKm+RL
+ hC761V+ZxgFXQ2clScIMgNLNnq4/2AsWbaOwyZXwwHGo/Ec4XqTYFXvq/gRxREfho6qk
+ Zt89/SHhCUmd/v5EmIzxa/MyEGhONkIc+SJvTo0eCHdMuPCtvLnmYzCnz22eY7InpZjP
+ nQxDE6wYNdlmBPXVjkVanaSK1I1qRX7Y5/ly8PNs2P0bdWcWCYcgabLmfyQoEsaAp0Lo
+ C5DMWWdN9MG9LLSR4oUyFsFszJ5uaBxEHtl/iiks5u4TpGl007Cx+5mjrk+9k1UxeGrS
+ TuNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=hG9QLDrHnieJvdgoYjUy2r02+eenvwZoinClBv74dLU=;
- b=tDlApa/LYlM3obm30qZXUvZuqFLGXwKLW0RYzyYPiBDaAuk0wf9N0sQpSGos6YAWL/
- MTEIhdYPqwvfcvT7mB3SIH70ZfZ8C736aBGLOAcrgZCYDFsWTRE2RW1WhwTF855AGsLf
- YRHHUmUIj/qimKiu0YOQP+sBTWgSfOIImhM9z2ygE6Gqvr+sDxsO9MLlZaLkL2Ny9tfb
- v/EnYGFcWlyKqpwdEXw7Delxp/oXyLhIcaefFk7uCfDr/BkaElL2mW62bhGhWULxIhvz
- c/vhCiZKKd7kmoAEzl5r/npRy7qMDCzX8aCU0kQph9GsfbbuAanoWZ/9yyGn1TJa2EZ5
- QL4g==
-X-Gm-Message-State: APjAAAV05Sz4yBDtPg8az5zNDsmFs9WR+3X/yHkDCKtG42DabMyTWkpX
- lpwH6U3mspIouq+XDytMvDH5mZZMurtezx3SS/M=
-X-Google-Smtp-Source: APXvYqwmEZi81d4luCjG1xyPRP+e7bDhMkryh9Mt/gVnn0kkHoGKBQb2UQjX6Q47QHUaOWuh9GNOUw6cpbCY3UurYYw=
-X-Received: by 2002:adf:ed09:: with SMTP id a9mr552068wro.350.1581033325102;
- Thu, 06 Feb 2020 15:55:25 -0800 (PST)
+ bh=CoKbncYciVD/U0lXsVtX7zMw7+64OYjcPIBvVRn+6s0=;
+ b=N17Pze9t1vbuP4tKbcz/KMVGF4JxlCucTOuZMnuXAXZZiYfBkoNxrLgXDBK49HXdks
+ 5YTjruyYdst0JVMBJcQ+3I9+JMfjlcWTZDw6EiSV8Z7Y0NHDEBYYJ4HtN8tO5XTBLjcr
+ K77X+9L/kpAJUoGFW9u7mG3cthzZfBv9YShbMmBkcyxr0Cbb2rr64s0unhIkZcJghpZ6
+ TjrFEw5W0Dn9tYAQXQ0ReIg7w3BJOD2MVKOpz16ZPDjroHG1ZVlithZdKfGrSbkkBkKi
+ zKSEHCkbzDusRiEQ8dShz/B0isczzpzYPLPippncORT9Q/C4Xin8U0xUNWTN7iJSrqj7
+ IOFw==
+X-Gm-Message-State: APjAAAVnNKcZbIi3IihyF6bLl52Bg4xID/S56lBO6IIJfAh4pZ6as49L
+ CyjJDnsKrbymOve5pzvxvnYvIgI8y5y359IZ2m0=
+X-Google-Smtp-Source: APXvYqzIXRjuSZxTb33abfAb+H/njTbl0nEKpgWqOqkYgZ+CNxE/mVsT6oRBXG3M2VYM0yV8Hfepdj13NX/56V6/zAs=
+X-Received: by 2002:a1c:964f:: with SMTP id y76mr454472wmd.62.1581034809466;
+ Thu, 06 Feb 2020 16:20:09 -0800 (PST)
 MIME-Version: 1.0
 References: <20200206200345.175344-1-caij2003@gmail.com>
  <20200206232840.227705-1-ndesaulniers@google.com>
-In-Reply-To: <20200206232840.227705-1-ndesaulniers@google.com>
+ <CAOHxzjGiO54BwUDR4zz6MwvFT3-XXDx830cQcQAcVUPA1N_emA@mail.gmail.com>
+ <CAKwvOdkaQJrXt3y_QDyZpQpeJqB0nYsV_p21h63SS1k2Q3Da=w@mail.gmail.com>
+In-Reply-To: <CAKwvOdkaQJrXt3y_QDyZpQpeJqB0nYsV_p21h63SS1k2Q3Da=w@mail.gmail.com>
 From: Jian Cai <caij2003@gmail.com>
-Date: Thu, 6 Feb 2020 15:55:14 -0800
-Message-ID: <CAOHxzjGiO54BwUDR4zz6MwvFT3-XXDx830cQcQAcVUPA1N_emA@mail.gmail.com>
+Date: Thu, 6 Feb 2020 16:19:58 -0800
+Message-ID: <CAOHxzjGmqM2F=U23M7hFm6+dumsdDi8g1HFm3t3vQV2fozFz+w@mail.gmail.com>
 To: Nick Desaulniers <ndesaulniers@google.com>
 X-Mailman-Approved-At: Fri, 07 Feb 2020 14:27:21 +0100
 X-Content-Filtered-By: Mailman/MimeDel 2.1.15
 Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- clang-built-linux@googlegroups.com, Mark Brown <broonie@kernel.org>
+ LKML <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ clang-built-linux <clang-built-linux@googlegroups.com>,
+ Mark Brown <broonie@kernel.org>
 Subject: Re: [alsa-devel] [PATCH] ASoC: soc-core: fix an uninitialized use
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -108,49 +111,77 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Nick,
+Thanks for the pointers. You are absolutely right (despite working late),
+this is not an issue upstream anymore. I was looking at 4.14 and 4.19 on
+ChromeOS. I did double check the upstream code but stopped right after
+seeing 'ret' was still uninitialized. Thanks again for the information.
 
-'ret' is only defined in if branches and for loops (e.g.
-for_each_component_dais). If none of these branches or loops get executed,
-then eventually we end up having
-
-int ret;
-
-err_probe:
-        if (ret < 0)
-                soc_cleanup_component(component);
-
-With -ftrivial-auto-var-init=pattern, this code becomes
-
-int ret;
-
-err_probe:
-       ret = 0xAAAAAAAA;
-        if (ret < 0)
-                soc_cleanup_component(component);
-
-So soc_cleanup_component gets called unintentionally this case, which
-causes the built kernel to miss some files.
-
-
-
-On Thu, Feb 6, 2020 at 3:28 PM Nick Desaulniers <ndesaulniers@google.com>
+On Thu, Feb 6, 2020 at 4:04 PM Nick Desaulniers <ndesaulniers@google.com>
 wrote:
 
-> > Fixed the uninitialized use of a signed integer variable ret in
-> > soc_probe_component when all its definitions are not executed. This
-> > caused  -ftrivial-auto-var-init=pattern to initialize the variable to
-> > repeated 0xAA (i.e. a negative value) and triggered the following code
-> > unintentionally.
+> On Fri, Feb 7, 2020 at 12:55 AM Jian Cai <caij2003@gmail.com> wrote:
+> >
+> > Hi Nick,
+> >
+> > 'ret' is only defined in if branches and for loops (e.g.
+> for_each_component_dais). If none of these branches or loops get executed,
+> then eventually we end up having
 >
-> > Signed-off-by: Jian Cai <caij2003@gmail.com>
+> https://elixir.bootlin.com/linux/latest/source/sound/soc/soc-core.c#L1276
+> and
+> https://elixir.bootlin.com/linux/latest/source/sound/soc/soc-core.c#L1287
+> both assign to `ret` before any `goto` is taken.  Are you perhaps
+> looking at an older branch of the LTS tree, but not the master branch
+> of the mainline tree? (Or it's possible that it's 1am here in Zurich,
+> and I should go to bed).
 >
-> Hi Jian,
-> I don't quite follow; it looks like `ret` is assigned to multiple times in
-> `soc_probe_component`. Are one of the return values of one of the functions
-> that are called then assigned to `ret` undefined? What control flow path
-> leaves
-> `ret` unitialized?
+>
+> >
+> > int ret;
+> >
+> > err_probe:
+> >         if (ret < 0)
+> >                 soc_cleanup_component(component);
+> >
+> > With -ftrivial-auto-var-init=pattern, this code becomes
+> >
+> > int ret;
+> >
+> > err_probe:
+> >        ret = 0xAAAAAAAA;
+> >         if (ret < 0)
+> >                 soc_cleanup_component(component);
+> >
+> > So soc_cleanup_component gets called unintentionally this case, which
+> causes the built kernel to miss some files.
+> >
+> >
+> >
+> > On Thu, Feb 6, 2020 at 3:28 PM Nick Desaulniers <ndesaulniers@google.com>
+> wrote:
+> >>
+> >> > Fixed the uninitialized use of a signed integer variable ret in
+> >> > soc_probe_component when all its definitions are not executed. This
+> >> > caused  -ftrivial-auto-var-init=pattern to initialize the variable to
+> >> > repeated 0xAA (i.e. a negative value) and triggered the following code
+> >> > unintentionally.
+> >>
+> >> > Signed-off-by: Jian Cai <caij2003@gmail.com>
+> >>
+> >> Hi Jian,
+> >> I don't quite follow; it looks like `ret` is assigned to multiple times
+> in
+> >> `soc_probe_component`. Are one of the return values of one of the
+> functions
+> >> that are called then assigned to `ret` undefined? What control flow
+> path leaves
+> >> `ret` unitialized?
+>
+>
+>
+> --
+> Thanks,
+> ~Nick Desaulniers
 >
 _______________________________________________
 Alsa-devel mailing list
