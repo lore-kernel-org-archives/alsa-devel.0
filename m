@@ -7,61 +7,65 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6400BC35242
-	for <alsa-devel@archiver.kernel.org>; Sat,  8 Feb 2020 21:56:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 97C72C35242
+	for <alsa-devel@archiver.kernel.org>; Sat,  8 Feb 2020 22:08:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E764E20720
-	for <alsa-devel@archiver.kernel.org>; Sat,  8 Feb 2020 21:56:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1D3D222522
+	for <alsa-devel@archiver.kernel.org>; Sat,  8 Feb 2020 22:08:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fOb3JEdt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E764E20720
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JtpqRA58"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1D3D222522
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4DFB3168B;
-	Sat,  8 Feb 2020 22:55:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4DFB3168B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 83A6E168A;
+	Sat,  8 Feb 2020 23:07:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 83A6E168A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581198990;
-	bh=AQ1WzkK1OZyTvqb9GiIuj2jgRMyWMrFkVimlA4y/QRI=;
+	s=default; t=1581199707;
+	bh=qngwTkn8kyrAIeXjKQNhrZt2mrpMOwpeV7aJcMBfBHg=;
 	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=fOb3JEdtByEFOGlaSlNSiK1Zc4g0an1D5P3JHuP7jVxcRQmSEumPpF29qITcAXXJn
-	 NinqRJ2Z0uDxJp4xO/u+8w5Qfew6CyXX0ns0AgBqbgGzk947Svo0rS3eO7diczCHvW
-	 F6/NhVEMBamL/R4U1T4SMxJsqEssNc0oj+uifhOU=
+	b=JtpqRA58Hbo0ZmiiPrkQKr0//BlKbdUnD/zX0/ojrX+gFytPlA80wOnhC4jw3Gv5A
+	 JJ1Ngwc7//XNXmC1SYOfdbNSowoSxg0bbJ0/YXmDSG6C91rHHEb4aGYdvvkOr+Crwy
+	 LEcYVN2+B2Dos2hnqkWFk9Z3ANBYdvebr+AKTQEg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B0D88F8015B;
-	Sat,  8 Feb 2020 22:55:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 06D01F8015B;
+	Sat,  8 Feb 2020 23:07:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0D85AF80162; Sat,  8 Feb 2020 22:55:36 +0100 (CET)
+ id 1EF23F80162; Sat,  8 Feb 2020 23:07:35 +0100 (CET)
 Received: from youngberry.canonical.com (youngberry.canonical.com
  [91.189.89.112])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9A0ECF80085
- for <alsa-devel@alsa-project.org>; Sat,  8 Feb 2020 22:55:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A0ECF80085
+ by alsa1.perex.cz (Postfix) with ESMTPS id 93C23F80085
+ for <alsa-devel@alsa-project.org>; Sat,  8 Feb 2020 23:07:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93C23F80085
 Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
  by youngberry.canonical.com with esmtpsa
  (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
  (envelope-from <colin.king@canonical.com>)
- id 1j0Y4R-0007ms-BU; Sat, 08 Feb 2020 21:55:23 +0000
+ id 1j0YG1-0008Qa-6Q; Sat, 08 Feb 2020 22:07:21 +0000
 From: Colin King <colin.king@canonical.com>
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+To: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Vinod Koul <vkoul@kernel.org>,
+ "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>,
  alsa-devel@alsa-project.org
-Date: Sat,  8 Feb 2020 21:55:23 +0000
-Message-Id: <20200208215523.36094-1-colin.king@canonical.com>
+Date: Sat,  8 Feb 2020 22:07:20 +0000
+Message-Id: <20200208220720.36657-1-colin.king@canonical.com>
 X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
 Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [alsa-devel] [PATCH] ASoC: ti: davinci-mcasp: remove redundant
-	assignment to variable ret
+Subject: [alsa-devel] [PATCH] ASoC: Intel: mrfld: return error codes when an
+	error occurs
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,31 +85,31 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Colin Ian King <colin.king@canonical.com>
 
-The assignment to ret is redundant as it is not used in the error
-return path and hence can be removed.
+Currently function sst_platform_get_resources always returns zero and
+error return codes set by the function are never returned. Fix this
+by returning the error return code in variable ret rather than the
+hard coded zero.
 
 Addresses-Coverity: ("Unused value")
+Fixes: f533a035e4da ("ASoC: Intel: mrfld - create separate module for pci part")
 Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- sound/soc/ti/davinci-mcasp.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ sound/soc/intel/atom/sst/sst_pci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
-index e1e937eb1dc1..450c394b2882 100644
---- a/sound/soc/ti/davinci-mcasp.c
-+++ b/sound/soc/ti/davinci-mcasp.c
-@@ -1764,10 +1764,8 @@ static struct davinci_mcasp_pdata *davinci_mcasp_set_pdata_from_of(
- 	} else if (match) {
- 		pdata = devm_kmemdup(&pdev->dev, match->data, sizeof(*pdata),
- 				     GFP_KERNEL);
--		if (!pdata) {
--			ret = -ENOMEM;
-+		if (!pdata)
- 			return pdata;
--		}
- 	} else {
- 		/* control shouldn't reach here. something is wrong */
- 		ret = -EINVAL;
+diff --git a/sound/soc/intel/atom/sst/sst_pci.c b/sound/soc/intel/atom/sst/sst_pci.c
+index d952719bc098..5862fe968083 100644
+--- a/sound/soc/intel/atom/sst/sst_pci.c
++++ b/sound/soc/intel/atom/sst/sst_pci.c
+@@ -99,7 +99,7 @@ static int sst_platform_get_resources(struct intel_sst_drv *ctx)
+ 	dev_dbg(ctx->dev, "DRAM Ptr %p\n", ctx->dram);
+ do_release_regions:
+ 	pci_release_regions(pci);
+-	return 0;
++	return ret;
+ }
+ 
+ /*
 -- 
 2.25.0
 
