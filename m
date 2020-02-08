@@ -2,110 +2,66 @@ Return-Path: <SRS0=oFba=34=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CE5AC35250
-	for <alsa-devel@archiver.kernel.org>; Sat,  8 Feb 2020 16:20:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6400BC35242
+	for <alsa-devel@archiver.kernel.org>; Sat,  8 Feb 2020 21:56:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DE13421741
-	for <alsa-devel@archiver.kernel.org>; Sat,  8 Feb 2020 16:20:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E764E20720
+	for <alsa-devel@archiver.kernel.org>; Sat,  8 Feb 2020 21:56:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ONeqjXj5";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IsLTdWXi"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DE13421741
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fOb3JEdt"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E764E20720
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2A0C6168C;
-	Sat,  8 Feb 2020 17:19:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A0C6168C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4DFB3168B;
+	Sat,  8 Feb 2020 22:55:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4DFB3168B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581178825;
-	bh=hnNXe0uSSdgeNaxN7I87CxaycLjJC6bwNMMDcbu78Dk=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=ONeqjXj583edcLBkKKzwVL/9MTCPaudGdQAJYSULOVeNhj5S+OHheLf7+G8qHmgcl
-	 +r+pU8CcaGFKzvnm5VZuYNbCM8Ctok5G23eRKG8O5lNEmlZkEHp6s5pB+oI2KUzYjx
-	 NjtJpy9XJK6mr2/1uklPbfDFu//YiLQxIkGrOOpI=
+	s=default; t=1581198990;
+	bh=AQ1WzkK1OZyTvqb9GiIuj2jgRMyWMrFkVimlA4y/QRI=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=fOb3JEdtByEFOGlaSlNSiK1Zc4g0an1D5P3JHuP7jVxcRQmSEumPpF29qITcAXXJn
+	 NinqRJ2Z0uDxJp4xO/u+8w5Qfew6CyXX0ns0AgBqbgGzk947Svo0rS3eO7diczCHvW
+	 F6/NhVEMBamL/R4U1T4SMxJsqEssNc0oj+uifhOU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7E8F8F8015B;
-	Sat,  8 Feb 2020 17:19:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B0D88F8015B;
+	Sat,  8 Feb 2020 22:55:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E7C7BF80162; Sat,  8 Feb 2020 17:19:32 +0100 (CET)
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com
- [IPv6:2a00:1450:4864:20::541])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 0D85AF80162; Sat,  8 Feb 2020 22:55:36 +0100 (CET)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 590E8F80085
- for <alsa-devel@alsa-project.org>; Sat,  8 Feb 2020 17:19:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 590E8F80085
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="IsLTdWXi"
-Received: by mail-ed1-x541.google.com with SMTP id r18so3134078edl.1
- for <alsa-devel@alsa-project.org>; Sat, 08 Feb 2020 08:19:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=Mv9CXRSXinT9pUfCdHcC8w/h9QEiS/MWjIBy22YGISM=;
- b=IsLTdWXitIJnPxQXm5N2vrrx0+APBrwkC/lnKsI+ChUKkiUEiVVPn248x6uc4OOL2B
- WhKCF0Us5CQF4bS5ItrgRSGtz9T37DVULgpurgkW0f65s6bwZAJlNpqmFcd8DsMy7Wbv
- O0ov72kMYwoxQT01discBEfj5U5fnYzFv0sANSzzWctL4Ql+cqDht5KvCvIio5uFpJkQ
- C9MrdLSykbv6TfVl5DDD7At4PosJU2zbgrckyvESDCRYYXuGg5jFfcb8gv3FY1kwS183
- 3Ur14qf7IMKVGdWpcdFXWG+1Z9RYSMBHv5CAj16blJMb/E7RM0Lsm6ZSl1qFFOcdWymd
- g3Jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=Mv9CXRSXinT9pUfCdHcC8w/h9QEiS/MWjIBy22YGISM=;
- b=javFI3isN2TQfb3us43Q2zCYwvziz4zQD0ZceVSXZIphpR81YHS0mkXwhEZCHCkLnE
- QGpOTPHTnyuW9wU8uE7zTJI++Oq8dzUMuaJxeLoo/2abcdYZmZfjSZeRVdSMDbmM0YkF
- OrkABTpje35uTk/riZiIxWI1diuJi1IaiCcPoIfipyE62CLl+ByoxSLidVQD2r/dDJLU
- BB+sCFmMJH5GqENH1jzePPxaAnHjnRt74WC5rLzBMA6kgPHX1ILI3XD+96jbz76ayWMZ
- clyqoun0GPdshbMiYuwx3KSFMwO+FsZPVJ9S+k6LkGFAlRQuSBSHwHdTF4NT0Fq6dWTo
- N+SA==
-X-Gm-Message-State: APjAAAXB0QMd1C56QeHA5ZR4/tblBnk1HV9knIqdiOaf4Ej2hQbzkCrL
- 5s2kGos5IbyFyC3QFuE6TJE=
-X-Google-Smtp-Source: APXvYqxFBrwSNHP8rHVNvl1+mdeTMxa3S7krUi5FWVenbML3btPUFFaRm+GkItM8LB7NGYZjrmgBFQ==
-X-Received: by 2002:a17:906:2596:: with SMTP id
- m22mr4635957ejb.167.1581178769061; 
- Sat, 08 Feb 2020 08:19:29 -0800 (PST)
-Received: from [192.168.2.145] (79-139-233-37.dynamic.spd-mgts.ru.
- [79.139.233.37])
- by smtp.googlemail.com with ESMTPSA id w18sm717049eja.57.2020.02.08.08.19.27
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Sat, 08 Feb 2020 08:19:28 -0800 (PST)
-To: Sameer Pujar <spujar@nvidia.com>
-References: <1580380422-3431-1-git-send-email-spujar@nvidia.com>
- <1580380422-3431-4-git-send-email-spujar@nvidia.com>
- <9ada4090-169e-0767-db5d-739f6e621812@gmail.com>
- <3e89e75d-2f5a-dc42-98f7-8e1262afe380@nvidia.com>
-From: Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <b635bf45-f61e-266e-89bd-2b57ed47a807@gmail.com>
-Date: Sat, 8 Feb 2020 19:19:22 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9A0ECF80085
+ for <alsa-devel@alsa-project.org>; Sat,  8 Feb 2020 22:55:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A0ECF80085
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+ by youngberry.canonical.com with esmtpsa
+ (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
+ (envelope-from <colin.king@canonical.com>)
+ id 1j0Y4R-0007ms-BU; Sat, 08 Feb 2020 21:55:23 +0000
+From: Colin King <colin.king@canonical.com>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ alsa-devel@alsa-project.org
+Date: Sat,  8 Feb 2020 21:55:23 +0000
+Message-Id: <20200208215523.36094-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-In-Reply-To: <3e89e75d-2f5a-dc42-98f7-8e1262afe380@nvidia.com>
-Content-Language: en-US
-Cc: jonathanh@nvidia.com, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, atalambedu@nvidia.com,
- linux-kernel@vger.kernel.org, lgirdwood@gmail.com, robh+dt@kernel.org,
- tiwai@suse.com, viswanathl@nvidia.com, sharadg@nvidia.com, broonie@kernel.org,
- thierry.reding@gmail.com, linux-tegra@vger.kernel.org, rlokhande@nvidia.com,
- mkumard@nvidia.com, dramesh@nvidia.com
-Subject: Re: [alsa-devel] [PATCH v2 3/9] ASoC: tegra: add Tegra210 based
-	DMIC driver
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [alsa-devel] [PATCH] ASoC: ti: davinci-mcasp: remove redundant
+	assignment to variable ret
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -118,39 +74,42 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-MDcuMDIuMjAyMCAxNDowNiwgU2FtZWVyIFB1amFyINC/0LjRiNC10YI6Cj4gCj4gCj4gT24gMi82
-LzIwMjAgMTA6MjMgUE0sIERtaXRyeSBPc2lwZW5rbyB3cm90ZToKPj4gRXh0ZXJuYWwgZW1haWw6
-IFVzZSBjYXV0aW9uIG9wZW5pbmcgbGlua3Mgb3IgYXR0YWNobWVudHMKPj4KPj4KPj4gMzAuMDEu
-MjAyMCAxMzozMywgU2FtZWVyIFB1amFyINC/0LjRiNC10YI6Cj4+IC4uLgo+Pj4gK3N0YXRpYyBj
-b25zdCBzdHJ1Y3QgcmVnX2RlZmF1bHQgdGVncmEyMTBfZG1pY19yZWdfZGVmYXVsdHNbXSA9IHsK
-Pj4+ICvCoMKgwqDCoCB7IFRFR1JBMjEwX0RNSUNfVFhfSU5UX01BU0ssIDB4MDAwMDAwMDF9LAo+
-Pj4gK8KgwqDCoMKgIHsgVEVHUkEyMTBfRE1JQ19UWF9DSUZfQ1RSTCwgMHgwMDAwNzcwMH0sCj4+
-PiArwqDCoMKgwqAgeyBURUdSQTIxMF9ETUlDX0NHLCAweDF9LAo+Pj4gK8KgwqDCoMKgIHsgVEVH
-UkEyMTBfRE1JQ19DVFJMLCAweDAwMDAwMzAxfSwKPj4+ICvCoMKgwqDCoCAvKiBCZWxvdyBlbmFi
-bGVzIGFsbCBmaWx0ZXJzIC0gRENSLCBMUCBhbmQgU0MgKi8KPj4+ICvCoMKgwqDCoCB7IFRFR1JB
-MjEwX0RNSUNfREJHX0NUUkwsIDB4ZSB9LAo+Pj4gK8KgwqDCoMKgIC8qIEJlbG93IGFzIHBlciBs
-YXRlc3QgUE9SIHZhbHVlICovCj4+PiArwqDCoMKgwqAgeyBURUdSQTIxMF9ETUlDX0RDUl9CSVFV
-QURfMF9DT0VGXzQsIDB4MH0sCj4+PiArwqDCoMKgwqAgLyogTFAgZmlsdGVyIGlzIGNvbmZpZ3Vy
-ZWQgZm9yIHBhc3MgdGhyb3VnaCBhbmQgdXNlZCB0byBhcHBseQo+Pj4gZ2FpbiAqLwo+Pj4gK8Kg
-wqDCoMKgIHsgVEVHUkEyMTBfRE1JQ19MUF9CSVFVQURfMF9DT0VGXzAsIDB4MDA4MDAwMDB9LAo+
-Pj4gK8KgwqDCoMKgIHsgVEVHUkEyMTBfRE1JQ19MUF9CSVFVQURfMF9DT0VGXzEsIDB4MH0sCj4+
-PiArwqDCoMKgwqAgeyBURUdSQTIxMF9ETUlDX0xQX0JJUVVBRF8wX0NPRUZfMiwgMHgwfSwKPj4+
-ICvCoMKgwqDCoCB7IFRFR1JBMjEwX0RNSUNfTFBfQklRVUFEXzBfQ09FRl8zLCAweDB9LAo+Pj4g
-K8KgwqDCoMKgIHsgVEVHUkEyMTBfRE1JQ19MUF9CSVFVQURfMF9DT0VGXzQsIDB4MH0sCj4+PiAr
-wqDCoMKgwqAgeyBURUdSQTIxMF9ETUlDX0xQX0JJUVVBRF8xX0NPRUZfMCwgMHgwMDgwMDAwMH0s
-Cj4+PiArwqDCoMKgwqAgeyBURUdSQTIxMF9ETUlDX0xQX0JJUVVBRF8xX0NPRUZfMSwgMHgwfSwK
-Pj4+ICvCoMKgwqDCoCB7IFRFR1JBMjEwX0RNSUNfTFBfQklRVUFEXzFfQ09FRl8yLCAweDB9LAo+
-Pj4gK8KgwqDCoMKgIHsgVEVHUkEyMTBfRE1JQ19MUF9CSVFVQURfMV9DT0VGXzMsIDB4MH0sCj4+
-PiArwqDCoMKgwqAgeyBURUdSQTIxMF9ETUlDX0xQX0JJUVVBRF8xX0NPRUZfNCwgMHgwfSwKPj4+
-ICt9Owo+PiBJJ2QgYWRkIGEgc3BhY2Ugb24gdGhlIHJpZ2h0IHNpZGUgb2YgYH1gLCBmb3IgY29u
-c2lzdGVuY3kgd2l0aCB0aGUgbGVmdC4KPiAKPiBEbyB5b3UgbWVhbiBsaWtlIHRoaXM/Cj4geyBU
-RUdSQTIxMF9ETUlDX1RYX0lOVF9NQVNLLCAweDAwMDAwMDAxIH0sCj4geyBURUdSQTIxMF9ETUlD
-X1RYX0NJRl9DVFJMLCAweDAwMDA3NzAwIH0sCj4gwqDCoMKgIC4gLiAuCgpZZXMKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
-IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXBy
-b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+From: Colin Ian King <colin.king@canonical.com>
+
+The assignment to ret is redundant as it is not used in the error
+return path and hence can be removed.
+
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/soc/ti/davinci-mcasp.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
+index e1e937eb1dc1..450c394b2882 100644
+--- a/sound/soc/ti/davinci-mcasp.c
++++ b/sound/soc/ti/davinci-mcasp.c
+@@ -1764,10 +1764,8 @@ static struct davinci_mcasp_pdata *davinci_mcasp_set_pdata_from_of(
+ 	} else if (match) {
+ 		pdata = devm_kmemdup(&pdev->dev, match->data, sizeof(*pdata),
+ 				     GFP_KERNEL);
+-		if (!pdata) {
+-			ret = -ENOMEM;
++		if (!pdata)
+ 			return pdata;
+-		}
+ 	} else {
+ 		/* control shouldn't reach here. something is wrong */
+ 		ret = -EINVAL;
+-- 
+2.25.0
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
