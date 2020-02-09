@@ -2,84 +2,82 @@ Return-Path: <SRS0=eYvk=35=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A23BC35250
-	for <alsa-devel@archiver.kernel.org>; Sun,  9 Feb 2020 15:50:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CC30C35250
+	for <alsa-devel@archiver.kernel.org>; Sun,  9 Feb 2020 15:51:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CC15120733
-	for <alsa-devel@archiver.kernel.org>; Sun,  9 Feb 2020 15:50:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 27F862080C
+	for <alsa-devel@archiver.kernel.org>; Sun,  9 Feb 2020 15:51:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="c1B6t96/";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=serbinski.com header.i=@serbinski.com header.b="lmYxYZAO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC15120733
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iYxBYZ4M";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=serbinski.com header.i=@serbinski.com header.b="lnVf5zih"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 27F862080C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=serbinski.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2AA9316A6;
-	Sun,  9 Feb 2020 16:50:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2AA9316A6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 57F0A16BB;
+	Sun,  9 Feb 2020 16:50:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57F0A16BB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581263457;
-	bh=PpyO3O9OBGZBZ1lP8jQfjDdtHmX0GaxVOElI7bi+WWo=;
+	s=default; t=1581263502;
+	bh=0K+77HeJf7t6SYKxDiqRZ/U4PjheVu9fWBkJPCej6Rc=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=c1B6t96/voq7ppfIQHkoqlr052RtQXOjighayALjq0srCxEFq5cW7cCCF8lA0xV95
-	 4quMFQuw0aQ3/3nb/pkyejqg3vWKOjM4mkavvqdBovCiReVK3nG/zTvGsoOkXYWSIX
-	 3K/TIVycyS3ldv8OLBuSydQPPv9xmUZT8skqIggs=
+	b=iYxBYZ4M1ddUBiOsEjaaP6tRZSZexH4f+ol/+/2I/vMoNjSsLrVjw1blHLX6fZqzr
+	 Gz1RB/mGuiJr2e6kFyURy1QCIClSyJFZjb0B9HMC5LHkwrYRI6XxwsUcx/6l6ufgcB
+	 fLaXQOlYXymed3jsV2PNFJonxa5gbC8LY7xycWYo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 01C75F800E7;
-	Sun,  9 Feb 2020 16:48:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9F518F8028B;
+	Sun,  9 Feb 2020 16:48:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 14935F80276; Sun,  9 Feb 2020 16:48:28 +0100 (CET)
+ id 5D098F8028D; Sun,  9 Feb 2020 16:48:33 +0100 (CET)
 Received: from mail.serbinski.com (mail.serbinski.com [162.218.126.2])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 00C2FF800E7
- for <alsa-devel@alsa-project.org>; Sun,  9 Feb 2020 16:48:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00C2FF800E7
+ by alsa1.perex.cz (Postfix) with ESMTPS id A9511F8027C
+ for <alsa-devel@alsa-project.org>; Sun,  9 Feb 2020 16:48:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9511F8027C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=serbinski.com header.i=@serbinski.com
- header.b="lmYxYZAO"
+ header.b="lnVf5zih"
 Received: from localhost (unknown [127.0.0.1])
- by mail.serbinski.com (Postfix) with ESMTP id 7ACEAD006FC;
- Sun,  9 Feb 2020 15:48:23 +0000 (UTC)
+ by mail.serbinski.com (Postfix) with ESMTP id 861D7D00700;
+ Sun,  9 Feb 2020 15:48:29 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at serbinski.com
 Received: from mail.serbinski.com ([127.0.0.1])
  by localhost (mail.serbinski.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id xo4SnI5uVEOu; Sun,  9 Feb 2020 10:48:17 -0500 (EST)
+ with ESMTP id lcSDXKU_nL2R; Sun,  9 Feb 2020 10:48:23 -0500 (EST)
 Received: from anet (23-233-80-73.cpe.pppoe.ca [23.233.80.73])
  (using TLSv1 with cipher AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mail.serbinski.com (Postfix) with ESMTPSA id 27C4AD00715;
+ by mail.serbinski.com (Postfix) with ESMTPSA id D36A2D00716;
  Sun,  9 Feb 2020 10:48:09 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.serbinski.com 27C4AD00715
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.serbinski.com D36A2D00716
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=serbinski.com;
  s=default; t=1581263289;
- bh=UQULhBFsFv/7KduXszLvTWU0rPWyMPBaOu3wrDjbjjw=;
+ bh=+zB4LnN9LLpPdhU7E7/M9daLcjy7QRsA3nLhYSVC610=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=lmYxYZAOj8MMW1czRIaqj05/8zMgi28X2PT0HhS0wDLeEgMGnBtxDODssGs8ftJpZ
- SCIgrvkeNGm9IPSJSmu1VY34Z8toTqoaLFvoClrAH2k/ofRcqvowmNfKlt18rMygEj
- +hNajc5V2o1Mrbq5oBGxhTvLjP+VT49fDKPtbggU=
+ b=lnVf5zihzXXmqGAdeUCWgq53i5PiqyLPm1d4RtuXtQ2fYNZ0W9+yuDbaaVxcns6nO
+ H6f/mlBFE6sn5DoBh25bAHN/BPZrlzhq7aHNnw9M85EXayD/sUNVxysoAffz9o+GGc
+ dp+uvPpBThdF5kEtzk33qDa30Skas0vaaxANHxdI=
 From: Adam Serbinski <adam@serbinski.com>
 To: Mark Brown <broonie@kernel.org>,
  Srini Kandagatla <srinivas.kandagatla@linaro.org>,
  Rob Herring <robh+dt@kernel.org>,
  Bjorn Andersson <bjorn.andersson@linaro.org>
-Date: Sun,  9 Feb 2020 10:47:41 -0500
-Message-Id: <20200209154748.3015-2-adam@serbinski.com>
+Date: Sun,  9 Feb 2020 10:47:40 -0500
+Message-Id: <20200209154748.3015-1-adam@serbinski.com>
 X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200209154748.3015-1-adam@serbinski.com>
+In-Reply-To: <20200207205013.12274-1-adam@serbinski.com>
 References: <20200207205013.12274-1-adam@serbinski.com>
- <20200209154748.3015-1-adam@serbinski.com>
 MIME-Version: 1.0
 Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
  alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
@@ -87,8 +85,8 @@ Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
  Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
  Andy Gross <agross@kernel.org>, Adam Serbinski <adam@serbinski.com>,
  linux-kernel@vger.kernel.org
-Subject: [alsa-devel] [PATCH v2 1/8] ASoC: qdsp6: dt-bindings: Add q6afe pcm
-	dt binding
+Subject: [alsa-devel] [PATCH v2 0/8] ASoC: qdsp6: db820c: Add support for
+	external and bluetooth audio
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,9 +104,12 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch adds bindings required for PCM ports on AFE.
+Changes from V1:
 
-Signed-off-by: Adam Serbinski <adam@serbinski.com>
+	Rename patch:
+		from: dts: msm8996/db820c: enable primary pcm and quaternary i2s
+		to: dts: qcom: db820c: Enable primary PCM and quaternary I2S
+
 CC: Andy Gross <agross@kernel.org>
 CC: Mark Rutland <mark.rutland@arm.com>
 CC: Liam Girdwood <lgirdwood@gmail.com>
@@ -120,29 +121,28 @@ CC: alsa-devel@alsa-project.org
 CC: linux-arm-msm@vger.kernel.org
 CC: devicetree@vger.kernel.org
 CC: linux-kernel@vger.kernel.org
----
- include/dt-bindings/sound/qcom,q6afe.h | 8 ++++++++
- 1 file changed, 8 insertions(+)
 
-diff --git a/include/dt-bindings/sound/qcom,q6afe.h b/include/dt-bindings/sound/qcom,q6afe.h
-index 1df06f8ad5c3..f3a435a112cb 100644
---- a/include/dt-bindings/sound/qcom,q6afe.h
-+++ b/include/dt-bindings/sound/qcom,q6afe.h
-@@ -107,6 +107,14 @@
- #define QUINARY_TDM_RX_7	102
- #define QUINARY_TDM_TX_7	103
- #define DISPLAY_PORT_RX		104
-+#define PRIMARY_PCM_RX		105
-+#define PRIMARY_PCM_TX		106
-+#define SECONDARY_PCM_RX	107
-+#define SECONDARY_PCM_TX	108
-+#define TERTIARY_PCM_RX		109
-+#define TERTIARY_PCM_TX		110
-+#define QUATERNARY_PCM_RX	111
-+#define QUATERNARY_PCM_TX	112
- 
- #endif /* __DT_BINDINGS_Q6_AFE_H__ */
- 
+Adam Serbinski (8):
+  ASoC: qdsp6: dt-bindings: Add q6afe pcm dt binding
+  ASoC: qdsp6: q6afe: add support to pcm ports
+  ASoC: qdsp6: q6afe-dai: add support to pcm port dais
+  ASoC: qdsp6: q6routing: add pcm port routing
+  ASoC: qcom: apq8096: add support for primary and quaternary I2S/PCM
+  ASoC: qcom/common: Use snd-soc-dummy-dai when codec is not specified
+  arm64: dts: qcom: db820c: Enable primary PCM and quaternary I2S
+  ASoC: qcom: apq8096: add kcontrols to set PCM rate
+
+ arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi | 113 +++++++++
+ arch/arm64/boot/dts/qcom/msm8996-pins.dtsi   | 162 ++++++++++++
+ include/dt-bindings/sound/qcom,q6afe.h       |   8 +
+ sound/soc/qcom/apq8096.c                     | 172 +++++++++++--
+ sound/soc/qcom/common.c                      |  22 +-
+ sound/soc/qcom/qdsp6/q6afe-dai.c             | 198 ++++++++++++++-
+ sound/soc/qcom/qdsp6/q6afe.c                 | 246 +++++++++++++++++++
+ sound/soc/qcom/qdsp6/q6afe.h                 |   9 +-
+ sound/soc/qcom/qdsp6/q6routing.c             |  44 ++++
+ 9 files changed, 953 insertions(+), 21 deletions(-)
+
 -- 
 2.21.1
 
