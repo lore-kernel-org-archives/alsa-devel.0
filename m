@@ -2,73 +2,78 @@ Return-Path: <SRS0=eYvk=35=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3BEC9C35250
-	for <alsa-devel@archiver.kernel.org>; Sun,  9 Feb 2020 12:46:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B020C35250
+	for <alsa-devel@archiver.kernel.org>; Sun,  9 Feb 2020 15:36:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BA32620726
-	for <alsa-devel@archiver.kernel.org>; Sun,  9 Feb 2020 12:46:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 90ABA20726
+	for <alsa-devel@archiver.kernel.org>; Sun,  9 Feb 2020 15:36:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PAaLFNjS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BA32620726
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZNti2bER"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 90ABA20726
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0C31E1673;
-	Sun,  9 Feb 2020 13:45:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C31E1673
+	by alsa0.perex.cz (Postfix) with ESMTPS id DE6C8166F;
+	Sun,  9 Feb 2020 16:35:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE6C8166F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581252402;
-	bh=U9dd2zJM8YtJ0rJeCJPvzJK5EkYhq14Fui3X6c/J3JY=;
-	h=From:To:References:Date:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1581262559;
+	bh=4C2Hz6gTWTngW9tESNPOXsx91RU6nH4R4TWprxh4sMs=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PAaLFNjSIJ/RtF3j8hJSOGhnQhkrAVOlb3rq6m4rhjplKZnSCcCj9YeOd8IEbJtWE
-	 kBqEcfGBz2wda7KUDK/24ofEsOqILejLxfEEHn1u923MfmksogENEpYcFaX1Y0J9IN
-	 8u70YNyH8NczBC0bLwAuwWPAZrOWHm2eCUnVIjww=
+	b=ZNti2bER4hpJ0IDFDYuSvL5HObN93uItETFiDA+ynGJHAZtZZWz6v3xVKkb+36Mgc
+	 Ns9UBtbK74f8GD22lZXysfaCclKk1c/WPC7v5iobbgSFKT0Lf68j7lrFDzFq7OlbBU
+	 YYCZuT4nmibmFmI8DUdGgNIIn0DgWpCaTX7hip0Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5E36BF8012F;
-	Sun,  9 Feb 2020 13:45:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3B9C9F800E7;
+	Sun,  9 Feb 2020 16:35:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C56FBF80145; Sun,  9 Feb 2020 13:45:48 +0100 (CET)
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
+ id 94CE0F80145; Sun,  9 Feb 2020 16:35:05 +0100 (CET)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BD666F80089
- for <alsa-devel@alsa-project.org>; Sun,  9 Feb 2020 13:45:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BD666F80089
-Received: from [162.213.32.131] (helo=[0.0.0.0])
- by youngberry.canonical.com with esmtpsa
- (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
- (envelope-from <hui.wang@canonical.com>)
- id 1j0lxu-0002AN-FB; Sun, 09 Feb 2020 12:45:40 +0000
-From: Hui Wang <hui.wang@canonical.com>
-To: Jaroslav Kysela <perex@perex.cz>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- alsa-devel@alsa-project.org
-References: <20191104224812.3393-1-ranjani.sridharan@linux.intel.com>
- <20191104224812.3393-3-ranjani.sridharan@linux.intel.com>
- <a87bce63-0413-d475-9b3c-19aa0f803232@perex.cz>
- <d141c18c-6c65-453f-86fd-0735a044954f@canonical.com>
-Message-ID: <f8c8aa01-082a-8b00-cd6a-7d12af810559@canonical.com>
-Date: Sun, 9 Feb 2020 20:45:28 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id D1ED0F800E7
+ for <alsa-devel@alsa-project.org>; Sun,  9 Feb 2020 16:35:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1ED0F800E7
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 09 Feb 2020 07:34:57 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,421,1574150400"; d="scan'208";a="226964306"
+Received: from crojewsk-mobl1.ger.corp.intel.com (HELO [10.251.86.168])
+ ([10.251.86.168])
+ by fmsmga008.fm.intel.com with ESMTP; 09 Feb 2020 07:34:52 -0800
+To: Colin King <colin.king@canonical.com>
+References: <20200208220720.36657-1-colin.king@canonical.com>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+Message-ID: <5622cdca-c17b-c0d8-8dbc-4616449877d2@intel.com>
+Date: Sun, 9 Feb 2020 16:34:50 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.1
 MIME-Version: 1.0
-In-Reply-To: <d141c18c-6c65-453f-86fd-0735a044954f@canonical.com>
+In-Reply-To: <20200208220720.36657-1-colin.king@canonical.com>
 Content-Language: en-US
-Cc: tiwai@suse.de, broonie@kernel.org, pierre-louis.bossart@linux.intel.com
-Subject: Re: [alsa-devel] [PATCH v2 2/2] ASoC: SOF: topology: set trigger
- order for FE DAI link
+Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
+ Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vkoul@kernel.org>,
+ Mark Brown <broonie@kernel.org>,
+ "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>,
+ linux-kernel@vger.kernel.org
+Subject: Re: [alsa-devel] [PATCH] ASoC: Intel: mrfld: return error codes
+ when an error occurs
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,56 +86,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-QWZ0ZXIgY2hlcnJ5LXBpY2sgdGhpcyBjb21taXQgKGFjYmYyNzc0NmVjZmE5NmIyOTBiNTRjYzdm
-MDUyNzM0ODJlYTEyOGEgCkFTb0M6IHBjbTogdXBkYXRlIEZFL0JFIHRyaWdnZXIgb3JkZXIgYmFz
-ZWQgb24gdGhlIGNvbW1hbmQpIHRvIDUuNCAKc3RhYmxlIGtlcm5lbCwgdGhlIHNvZiBkcml2ZXIg
-d29ya3MuCgpPbiAyMDIwLzIvOSDkuIvljYg1OjMxLCBIdWkgV2FuZyB3cm90ZToKPgo+IE9uIDIw
-MTkvMTEvMTkg5LiK5Y2INjo0NCwgSmFyb3NsYXYgS3lzZWxhIHdyb3RlOgo+PiBEbmUgMDQuIDEx
-LiAxOSB2IDIzOjQ4IFJhbmphbmkgU3JpZGhhcmFuIG5hcHNhbChhKToKPj4+IFNldCB0cmlnZ2Vy
-IG9yZGVyIGZvciBGRSBEQUkgbGlua3MgdG8gU05EX1NPQ19EUENNX1RSSUdHRVJfUE9TVAo+Pj4g
-dG8gdHJpZ2dlciB0aGUgQkUgREFJJ3MgYmVmb3JlIHRoZSBGRSBEQUkncy4gVGhpcyBwcmV2ZW50
-cyB0aGUKPj4+IHhydW5zIHNlZW4gb24gcGxheWJhY2sgcGlwZWxpbmVzIHVzaW5nIHRoZSBsaW5r
-IERNQS4KPj4+Cj4+PiBTaWduZWQtb2ZmLWJ5OiBSYW5qYW5pIFNyaWRoYXJhbiA8cmFuamFuaS5z
-cmlkaGFyYW5AbGludXguaW50ZWwuY29tPgo+Pj4gU2lnbmVkLW9mZi1ieTogUGllcnJlLUxvdWlz
-IEJvc3NhcnQgCj4+PiA8cGllcnJlLWxvdWlzLmJvc3NhcnRAbGludXguaW50ZWwuY29tPgo+Pj4g
-LS0tCj4+PiDCoCBzb3VuZC9zb2Mvc29mL3RvcG9sb2d5LmMgfCA0ICsrKysKPj4+IMKgIDEgZmls
-ZSBjaGFuZ2VkLCA0IGluc2VydGlvbnMoKykKPj4+Cj4+PiBkaWZmIC0tZ2l0IGEvc291bmQvc29j
-L3NvZi90b3BvbG9neS5jIGIvc291bmQvc29jL3NvZi90b3BvbG9neS5jCj4+PiBpbmRleCBlMGUy
-YWU3MzQ2MzIuLmU3MDc2NjkyMTE5YiAxMDA2NDQKPj4+IC0tLSBhL3NvdW5kL3NvYy9zb2YvdG9w
-b2xvZ3kuYwo+Pj4gKysrIGIvc291bmQvc29jL3NvZi90b3BvbG9neS5jCj4+PiBAQCAtMjk1MSw2
-ICsyOTUxLDEwIEBAIHN0YXRpYyBpbnQgc29mX2xpbmtfbG9hZChzdHJ1Y3QgCj4+PiBzbmRfc29j
-X2NvbXBvbmVudCAqc2NvbXAsIGludCBpbmRleCwKPj4+IMKgwqDCoMKgwqAgaWYgKCFsaW5rLT5u
-b19wY20pIHsKPj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBsaW5rLT5ub25hdG9taWMgPSB0cnVlOwo+
-Pj4gwqAgK8KgwqDCoMKgwqDCoMKgIC8qIHNldCB0cmlnZ2VyIG9yZGVyICovCj4+PiArwqDCoMKg
-wqDCoMKgwqAgbGluay0+dHJpZ2dlclswXSA9IFNORF9TT0NfRFBDTV9UUklHR0VSX1BPU1Q7Cj4+
-PiArwqDCoMKgwqDCoMKgwqAgbGluay0+dHJpZ2dlclsxXSA9IFNORF9TT0NfRFBDTV9UUklHR0VS
-X1BPU1Q7Cj4+PiArCj4+PiDCoMKgwqDCoMKgwqDCoMKgwqAgLyogbm90aGluZyBtb3JlIHRvIGRv
-IGZvciBGRSBkYWkgbGlua3MgKi8KPj4+IMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gMDsKPj4+
-IMKgwqDCoMKgwqAgfQo+Pj4KPj4KPj4gSXQgc2VlbXMgdGhhdCB0aGlzIHBhdGNoIGJyZWFrcyB0
-aGUgc2lnbmVkIDEuMyBmaXJtd2FyZS4gVGVzdGVkIG9uIAo+PiBMZW5vdm8gQ2FyYm9uIFgxIDd0
-aCBnZW4uCj4+Cj4+IGh0dHBzOi8vZ2l0aHViLmNvbS90aGVzb2Zwcm9qZWN0L3NvZi9pc3N1ZXMv
-MjEwMgo+Pgo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBKYXJvc2xh
-dgo+Pgo+IEFsc28gbWV0IHRoaXMgcHJvYmxlbSwgdGhpcyBwYXRjaCBpcyBtZXJnZWQgdG8gNS40
-IHN0YWJsZSBrZXJuZWwsIHdoZW4gCj4gSSBydW4gdGhlIDUuNCBzdGFibGUga2VybmVsIG9uIHRo
-ZSBMZW5vdm8gQ2FyYm9uIHgxIDd0aCBnZW4gb3IgRGVsbCAKPiBEbWljIG1hY2hpbmVzLMKgIHRo
-ZSBzb2YgZHJpdmVyIHdpbGwgcHJpbnQgZXJyb3IgbG9ncyByZXBlYXRlZGx5IGFuZCAKPiB0aGUg
-c29mIGZhaWxzIHRvIHdvcmsuIEkgdHJpZWQgd2l0aCBib3RoIDEuMyBhbmQgMS40IGZpcm13YXJl
-LiBJZiBJIAo+IHJldmVydGVkIHRoaXMgcGF0Y2ggZnJvbSA1LjQgc3RhYmxlIGtlcm5lbCwgdGhl
-IHNvZiBkcml2ZXIgd2lsbCB3b3JrIAo+IHdpdGggYm90aCAxLjMgYW5kIDEuNCBmaXJtd2FyZS4K
-Pgo+IEkgYWxzbyB0cmllZCB0aGUgNS41LXJjMSBrZXJuZWwsIHRoaXPCoCBrZXJuZWwgYWxyZWFk
-eSBpbmNsdWRlcyB0aGlzIAo+IHBhdGNoLCBidXQgdGhlcmUgaXMgbm8gaXNzdWUgZm9yIHRoaXMg
-a2VybmVsLCB0aGUgc29mIGRyaXZlciB3b3JrcyAKPiB3ZWxsLiBTbyBsb29rcyBsaWtlIG9ubHkg
-YmFja3BvcnQgdGhpcyBwYXRjaCB0byA1LjQgc3RhYmxlIGtlcm5lbCBpcyAKPiBub3QgZW5vdWdo
-LCBlaXRoZXIgd2UgcmV2ZXJ0IHRoaXMgcGF0Y2ggb3Igd2UgYmFja3BvcnQgbW9yZSBwYXRjaGVz
-IHRvIAo+IDUuNCBzdGFibGUga2VybmVsLgo+Cj4KPiBfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1k
-ZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
-YS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2Fsc2EtZGV2ZWwK
+On 2020-02-08 23:07, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> Currently function sst_platform_get_resources always returns zero and
+> error return codes set by the function are never returned. Fix this
+> by returning the error return code in variable ret rather than the
+> hard coded zero.
+> 
+> Addresses-Coverity: ("Unused value")
+> Fixes: f533a035e4da ("ASoC: Intel: mrfld - create separate module for pci part")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>   sound/soc/intel/atom/sst/sst_pci.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/intel/atom/sst/sst_pci.c b/sound/soc/intel/atom/sst/sst_pci.c
+> index d952719bc098..5862fe968083 100644
+> --- a/sound/soc/intel/atom/sst/sst_pci.c
+> +++ b/sound/soc/intel/atom/sst/sst_pci.c
+> @@ -99,7 +99,7 @@ static int sst_platform_get_resources(struct intel_sst_drv *ctx)
+>   	dev_dbg(ctx->dev, "DRAM Ptr %p\n", ctx->dram);
+>   do_release_regions:
+>   	pci_release_regions(pci);
+> -	return 0;
+> +	return ret;
+>   }
+>   
+>   /*
+> 
+
+Thank you for the fix.
+
+Acked-by: Cezary Rojewski <cezary.rojewski@intel.com>
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
