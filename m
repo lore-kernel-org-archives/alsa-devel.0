@@ -2,75 +2,66 @@ Return-Path: <SRS0=5/4N=36=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	TVD_SPACE_RATIO autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F11EDC352A5
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 14:17:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 291E1C352A3
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 14:22:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 753FB20838
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 14:17:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A72FE2070A
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 14:22:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NtFTNqLp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 753FB20838
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mentor.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PxBA0PMB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A72FE2070A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D7D66166E;
-	Mon, 10 Feb 2020 15:07:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D7D66166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 07AE086F;
+	Mon, 10 Feb 2020 15:21:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 07AE086F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581343683;
-	bh=GGP815sKohAfoaew6PXS1iIL7EOl1q4GCsetSOT0y2w=;
-	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=NtFTNqLphXDjIGukOMBICcqIeRgZ9kF8TH/UFGZBUTZNrF2FrdzwArApLBZuL1f6v
-	 xakhnFaG5fHKmWLAfvkgUHr4YoTwFuH63V7A0snEVMFefOYmOMH4m/J7ngmZuHUjWI
-	 qLMyLHxk5QNgu8rP9WSyiXtOp8iYXsVY27B6UL9c=
+	s=default; t=1581344537;
+	bh=1pQeZyC/v4Rm5ZtB5V9wuYS60fwkuhLtH6X4xWeuAcA=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=PxBA0PMBTMYeJ8e7l5i8jtByDJ8AJ7TfEpEn3EoLT9MRhAdCB7aYLdVdkfiCX2PWS
+	 cyMRa97j7TNBkk0z68LYIZ9MGBVLeESY5YNaZ5t3lIOweDOKuzittR3TeeN9Xbp0Nn
+	 XIvar5gYfWOWRQKKF0S1LjCfOr9RF/JbO2VELPyU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7B368F8014F;
-	Mon, 10 Feb 2020 15:07:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 95128F8014F;
+	Mon, 10 Feb 2020 15:21:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D0DC9F80157; Mon, 10 Feb 2020 15:07:11 +0100 (CET)
-Received: from esa4.mentor.iphmx.com (esa4.mentor.iphmx.com [68.232.137.252])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D9B54F800E7
- for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2020 15:07:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9B54F800E7
-IronPort-SDR: oqRzx0lXeeEg1xEKCEYbiDRhMQnV5Z49laxCyJx2NwCuazksmSlX5zi8MiVa3XCa/ZrylOLCrN
- w5o7n7KijAOGquSqqcNOBbezUaBGD7DXl978dHmJcefftrJcJmMT3OJ3c0BI8LQmiYYIr1eFMZ
- a2rWx5gwUX6ZiaAoZbLmk2/aWELFPlMIcVsOd7ZhxEg1CNBZQD04Zb6qOQPiaMgYVtyXTeu1Dj
- BAzWGTxxGEZSHYZTYTuzhJ4IfWRhu0KKDIsfKOQtaEBGx/7Cn1LQlqT6+LtzAthf/gdf/Em+Zs
- Y/o=
-X-IronPort-AV: E=Sophos;i="5.70,425,1574150400"; d="scan'208,217";a="45728364"
-Received: from orw-gwy-02-in.mentorg.com ([192.94.38.167])
- by esa4.mentor.iphmx.com with ESMTP; 10 Feb 2020 06:07:06 -0800
-IronPort-SDR: e+6fzJfsFuKVrXa9NzyW694TluiUf9ZcyADi2utfT+DZo542CqLunYilpMaaP/Jbcydnn3jfjq
- cds0tSmNvH07eT/6/J5ebR7BBbdcHqYi8s897g0NteEI9/TrgqYJ+0oQSfPug2iYSI1EZ41VcI
- mBClLnPSkWCaX/aRj+MIvoUHAjdHfeQoSWokPszLDlrjZM6qqcwk2T3pzGVpEUX59onxPRmXal
- w8bvd+/rPh7oQ76AQ7t36MvmbGGw4vfU1BwirwIkHmes1Jb+s/TlAUOcAvVxOe1fub5cPdcu6b
- jTM=
-From: "Sutar, Mounesh" <Mounesh_Sutar@mentor.com>
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Thread-Topic: unsubscribe mounesh_sutar@mentor.com
-Thread-Index: AdXgG1n3oZ3XJwB4RHKD7NuvQL1qjA==
-Date: Mon, 10 Feb 2020 14:07:01 +0000
-Message-ID: <04d8373c32d842a899636399ab14a0a2@SVR-IES-MBX-04.mgc.mentorg.com>
-Accept-Language: en-US, en-IE
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [137.202.0.90]
-MIME-Version: 1.0
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Subject: [alsa-devel] unsubscribe mounesh_sutar@mentor.com
+ id B8961F80157; Mon, 10 Feb 2020 15:21:24 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1F8DBF800FD
+ for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2020 15:21:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F8DBF800FD
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id D963FB1A6;
+ Mon, 10 Feb 2020 14:21:20 +0000 (UTC)
+Date: Mon, 10 Feb 2020 15:21:20 +0100
+Message-ID: <s5hmu9qfrq7.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+In-Reply-To: <20200210140423.10232-1-peter.ujfalusi@ti.com>
+References: <20200210140423.10232-1-peter.ujfalusi@ti.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, linux-kernel@vger.kernel.org,
+ tiwai@suse.com, lgirdwood@gmail.com, vkoul@kernel.org, broonie@kernel.org
+Subject: Re: [alsa-devel] [PATCH] ASoC: dmaengine_pcm: Consider DMA cache
+	caused delay in pointer callback
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,7 +79,72 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-unsubscribe mounesh_sutar@mentor.com
+On Mon, 10 Feb 2020 15:04:23 +0100,
+Peter Ujfalusi wrote:
+> 
+> Some DMA engines can have big FIFOs which adds to the latency.
+> The DMAengine framework can report the FIFO utilization in bytes. Use this
+> information for the delay reporting.
+> 
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> ---
+> Hi,
+> 
+> 5.6-rc1 now have support for reporting the DMA cached data.
+> With this patch we can include it to the delay calculation.
+> The first DMA driver which reports this is the TI K3 UDMA driver.
+> 
+> Regards,
+> Peter
+> 
+>  sound/core/pcm_dmaengine.c | 6 ++++++
+>  sound/soc/soc-pcm.c        | 2 +-
+>  2 files changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/core/pcm_dmaengine.c b/sound/core/pcm_dmaengine.c
+> index 5749a8a49784..4f1395fd0160 100644
+> --- a/sound/core/pcm_dmaengine.c
+> +++ b/sound/core/pcm_dmaengine.c
+> @@ -247,9 +247,15 @@ snd_pcm_uframes_t snd_dmaengine_pcm_pointer(struct snd_pcm_substream *substream)
+>  
+>  	status = dmaengine_tx_status(prtd->dma_chan, prtd->cookie, &state);
+>  	if (status == DMA_IN_PROGRESS || status == DMA_PAUSED) {
+> +		struct snd_pcm_runtime *runtime = substream->runtime;
+> +		int sample_bits = snd_pcm_format_physical_width(runtime->format);
+> +
+>  		buf_size = snd_pcm_lib_buffer_bytes(substream);
+>  		if (state.residue > 0 && state.residue <= buf_size)
+>  			pos = buf_size - state.residue;
+> +
+> +		sample_bits *= runtime->channels;
+> +		runtime->delay = state.in_flight_bytes / (sample_bits / 8);
+
+Can this be simply bytes_to_frames()?
+
+		runtime->delay = bytes_to_frames(runtime, state.in_flight_bytes);
+
+>  	}
+>  
+>  	return bytes_to_frames(substream->runtime, pos);
+> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+> index ff1b7c7078e5..58ef508d70a3 100644
+> --- a/sound/soc/soc-pcm.c
+> +++ b/sound/soc/soc-pcm.c
+> @@ -1151,7 +1151,7 @@ static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
+>  	}
+>  	delay += codec_delay;
+>  
+> -	runtime->delay = delay;
+> +	runtime->delay += delay;
+
+Is it correct?
+delay already takes runtime->delay as its basis, so it'll result in a
+double.
+
+
+thanks,
+
+Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
