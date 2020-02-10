@@ -2,94 +2,101 @@ Return-Path: <SRS0=5/4N=36=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 200E7C352A3
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 10:25:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D90A0C352A3
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 10:27:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9D0402080C
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 10:25:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5E25A2080C
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 10:27:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lsoAuiuC";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=serbinski.com header.i=@serbinski.com header.b="YmszpOIY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9D0402080C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=serbinski.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XIIw2vH3";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="optwxEAU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E25A2080C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DD31A16A4;
-	Mon, 10 Feb 2020 11:25:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DD31A16A4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7943B1697;
+	Mon, 10 Feb 2020 11:26:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7943B1697
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581330357;
-	bh=G4r1mJGFO2PFJeOi4mXqd793cp+1FZMSwphFJ4MKGHo=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1581330420;
+	bh=YMXUNRIfRk07rWv1ZIL+woiRgcVLAw7jCBxGUr1ghXc=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lsoAuiuCSkN/hXb4NsiY7TxCnAuN9jcnOw2DSRAn4OuQWg+pxwLppKSQwALkrq/Am
-	 mXmrfebHOp96snLPd2xPeGDnksrjoa7ecpKOpkO2CkaixZ9Q9qPlWM4aRvtAVzQ8Dx
-	 kTuGrh65yQCl88q9IZlEhzK6Yjjuk+lwcmm5eIkA=
+	b=XIIw2vH3idHMVYFWTBbontCa2fgKKnj5KpdQmQdIZkd5s8xqgrmYGpKyOTVojfXrT
+	 KoI/mijw4ZjRg4+TI6qeDK5CG0MnLzeftmZucBHSK1uJMwk+7O51WxiE1iZFFNu55e
+	 jtg3pzz0DKCRrlHMtcOkQZwd7Luytsf4sxqr2Plw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 14930F802A7;
-	Mon, 10 Feb 2020 11:20:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 63CBAF802EB;
+	Mon, 10 Feb 2020 11:20:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 55B4BF80148; Fri,  7 Feb 2020 21:51:15 +0100 (CET)
-Received: from mail.serbinski.com (mail.serbinski.com [162.218.126.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 69AA3F80157; Mon, 10 Feb 2020 03:53:00 +0100 (CET)
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com
+ [IPv6:2607:f8b0:4864:20::1043])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C5026F800B2
- for <alsa-devel@alsa-project.org>; Fri,  7 Feb 2020 21:51:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5026F800B2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 68AB8F80118
+ for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2020 03:52:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68AB8F80118
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=serbinski.com header.i=@serbinski.com
- header.b="YmszpOIY"
-Received: from localhost (unknown [127.0.0.1])
- by mail.serbinski.com (Postfix) with ESMTP id 783A0D00732;
- Fri,  7 Feb 2020 20:51:08 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at serbinski.com
-Received: from mail.serbinski.com ([127.0.0.1])
- by localhost (mail.serbinski.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id aw0PiKosRpDL; Fri,  7 Feb 2020 15:50:56 -0500 (EST)
-Received: from anet
- (ipagstaticip-7ac5353e-e7de-3a0d-ff65-4540e9bc137f.sdsl.bell.ca
- [142.112.15.192]) (using TLSv1 with cipher AES256-SHA (256/256 bits))
- (No client certificate requested)
- by mail.serbinski.com (Postfix) with ESMTPSA id D9218D0071B;
- Fri,  7 Feb 2020 15:50:29 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.serbinski.com D9218D0071B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=serbinski.com;
- s=default; t=1581108629;
- bh=Li+7uO9ANVGhw/mLvHKkrDnYRFTrSj70ZU/KaJjHjjc=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=YmszpOIYsuFlKSA30erbiFhMiDo442nZhtP3XnqleqhzpuyZseknQuy5nTjQfCqAn
- MegrA4ojKOX4BBZQnmwO9aFGF4zWdS8gaNJyueaDgng68Gbwc5fXMqAKYsos8MidX2
- tuIhKxBwRfO03R9nfmd17zuzk/te04cHSeembVJs=
-From: Adam Serbinski <adam@serbinski.com>
-To: Mark Brown <broonie@kernel.org>,
- Srini Kandagatla <srinivas.kandagatla@linaro.org>,
- Rob Herring <robh+dt@kernel.org>,
- Bjorn Andersson <bjorn.andersson@linaro.org>
-Date: Fri,  7 Feb 2020 15:50:08 -0500
-Message-Id: <20200207205013.12274-4-adam@serbinski.com>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200207205013.12274-1-adam@serbinski.com>
-References: <20200207205013.12274-1-adam@serbinski.com>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="optwxEAU"
+Received: by mail-pj1-x1043.google.com with SMTP id 12so3555804pjb.5
+ for <alsa-devel@alsa-project.org>; Sun, 09 Feb 2020 18:52:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to;
+ bh=KIB3tCNxKUfOE33QODdBTwxKO9WOWEG49GokMmlC/2A=;
+ b=optwxEAU/vfjWHpLgR7xhu8zRbPhjzgel+OSfvuC4ip/VZuLhYnHJV3cpPAejbTRDx
+ +sxKflPlRvjLS5Z55Mt0U85mhn3KPZJgQOiYxVjkU40PA7kFQPJqoXEX3Bt5khIcghDj
+ QSBqeon6Y8CkXefiKwsP2cbyOKNrhqF4EXlO1btOsSfw10a6J2HucUNTbqFZt59nwf/A
+ h20gbxdmTZhQm6BB+NL1eqFfbWykENl30qRuV3zguYNxIHQ9pFqZqxE7CfC+XPLoN9C5
+ 1eX8jYhVBTE+R0YCtSlZ55AOUnIc08f+cRt4e6OsiF70KJVuy673B+/lY0vWIIc1341U
+ LVPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=KIB3tCNxKUfOE33QODdBTwxKO9WOWEG49GokMmlC/2A=;
+ b=Trs0Y6u6AI+N5yisalx7s4sw9Z4kPn0q13yCLacfLYG9DCirAYpgYWMhcShJ43LUBC
+ K1LJpK4kqv3XQN3ZKNyLBv0vPD2AmyXtYmbWSbzSapFnfZ4W4lAeIxnTrIlwsEN56fmZ
+ Dw8uVDeCcikIm+/rAYrSMuuJOlxkT8ruTmnLy0f0YSeuq5zt200syFlnFeUpMUuwLlkb
+ NRkSEEDgxFDAwREIej93TgrShqJjbKb/2WuZikT/xRJcrouwGR91+e170mwZSfPvWEEd
+ HHzw3M23ScKCFR5i538II2e6Y/8n4V38sxtIufASeYYww7kAPgWjeEBtF6oILxTGhtmD
+ uK+A==
+X-Gm-Message-State: APjAAAWJ270jXPtusxMI2WZSjk7Ol1R1qPCFtLAZiC38SOWz1Sck4Jww
+ OOTYV5J+46noUeH/hkbGiyY=
+X-Google-Smtp-Source: APXvYqzQLvsRe+DYbzRPo/VdziWHiDQsHn7VumDXdqZDoRedk3zhpG84sMCaYGty+JKDLDF9SIoemQ==
+X-Received: by 2002:a17:902:ff11:: with SMTP id
+ f17mr10341597plj.273.1581303174503; 
+ Sun, 09 Feb 2020 18:52:54 -0800 (PST)
+Received: from f3 (ag119225.dynamic.ppp.asahi-net.or.jp. [157.107.119.225])
+ by smtp.gmail.com with ESMTPSA id f15sm10279063pgj.30.2020.02.09.18.52.51
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sun, 09 Feb 2020 18:52:53 -0800 (PST)
+Date: Mon, 10 Feb 2020 11:52:49 +0900
+From: Benjamin Poirier <benjamin.poirier@gmail.com>
+To: Jaroslav Kysela <perex@perex.cz>
+Message-ID: <20200210025249.GA2700@f3>
+References: <20191129144027.14765-1-perex@perex.cz>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20191129144027.14765-1-perex@perex.cz>
 X-Mailman-Approved-At: Mon, 10 Feb 2020 11:20:06 +0100
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
- linux-arm-msm@vger.kernel.org, Patrick Lai <plai@codeaurora.org>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Andy Gross <agross@kernel.org>, Adam Serbinski <adam@serbinski.com>,
- linux-kernel@vger.kernel.org
-Subject: [alsa-devel] [PATCH 3/8] ASoC: qdsp6: q6afe-dai: add support to pcm
-	port dais
+Cc: Takashi Iwai <tiwai@suse.de>,
+ ALSA development <alsa-devel@alsa-project.org>,
+ Kailang Yang <kailang@realtek.com>
+Subject: Re: [alsa-devel] [PATCH] ALSA: hda - fixup for the bass speaker on
+ Lenovo Carbon X1 7th gen
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,297 +114,54 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch adds support of AFE DAI for PCM port.
+On 2019/11/29 15:40 +0100, Jaroslav Kysela wrote:
+> The auto-parser assigns the bass speaker to DAC3 (NID 0x06) which
+> is without the volume control. I do not see a reason to use DAC2,
+> because the shared output to all speakers produces the sufficient
+> and well balanced sound. The stereo support is enough for this
+> purpose (laptop).
+> 
+> Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+> ---
+>  sound/pci/hda/patch_realtek.c | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
 
-Signed-off-by: Adam Serbinski <adam@serbinski.com>
-CC: Andy Gross <agross@kernel.org>
-CC: Mark Rutland <mark.rutland@arm.com>
-CC: Liam Girdwood <lgirdwood@gmail.com>
-CC: Patrick Lai <plai@codeaurora.org>
-CC: Banajit Goswami <bgoswami@codeaurora.org>
-CC: Jaroslav Kysela <perex@perex.cz>
-CC: Takashi Iwai <tiwai@suse.com>
-CC: alsa-devel@alsa-project.org
-CC: linux-arm-msm@vger.kernel.org
-CC: devicetree@vger.kernel.org
-CC: linux-kernel@vger.kernel.org
----
- sound/soc/qcom/qdsp6/q6afe-dai.c | 198 ++++++++++++++++++++++++++++++-
- 1 file changed, 197 insertions(+), 1 deletion(-)
+This patch is now commit d2cd795c4ece ("ALSA: hda - fixup for the bass
+speaker on Lenovo Carbon X1 7th gen"). There was then followup commit
+86353aa70ed0 ("ALSA: hda/realtek - Add quirk for the bass speaker on
+Lenovo Yoga X1 7th gen").
 
-diff --git a/sound/soc/qcom/qdsp6/q6afe-dai.c b/sound/soc/qcom/qdsp6/q6afe-dai.c
-index c1a7624eaf17..23b29591ef47 100644
---- a/sound/soc/qcom/qdsp6/q6afe-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
-@@ -151,6 +151,28 @@ static int q6hdmi_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
-+static int q6pcm_hw_params(struct snd_pcm_substream *substream,
-+			   struct snd_pcm_hw_params *params,
-+			   struct snd_soc_dai *dai)
-+{
-+	struct q6afe_dai_data *dai_data = dev_get_drvdata(dai->dev);
-+	struct q6afe_pcm_cfg *pcm = &dai_data->port_config[dai->id].pcm_cfg;
-+
-+	pcm->sample_rate = params_rate(params);
-+
-+	return 0;
-+}
-+
-+static int q6pcm_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
-+{
-+	struct q6afe_dai_data *dai_data = dev_get_drvdata(dai->dev);
-+	struct q6afe_pcm_cfg *pcm = &dai_data->port_config[dai->id].pcm_cfg;
-+
-+	pcm->fmt = fmt;
-+
-+	return 0;
-+}
-+
- static int q6i2s_hw_params(struct snd_pcm_substream *substream,
- 			   struct snd_pcm_hw_params *params,
- 			   struct snd_soc_dai *dai)
-@@ -358,6 +380,15 @@ static int q6afe_dai_prepare(struct snd_pcm_substream *substream,
- 			return rc;
- 		}
- 		break;
-+	case PRIMARY_PCM_RX ... QUATERNARY_PCM_TX:
-+		rc = q6afe_pcm_port_prepare(dai_data->port[dai->id],
-+				&dai_data->port_config[dai->id].pcm_cfg);
-+		if (rc < 0) {
-+			dev_err(dai->dev, "fail to prepare AFE port %x\n",
-+				dai->id);
-+			return rc;
-+		}
-+		break;
- 	case PRIMARY_TDM_RX_0 ... QUINARY_TDM_TX_7:
- 		q6afe_tdm_port_prepare(dai_data->port[dai->id],
- 					&dai_data->port_config[dai->id].tdm);
-@@ -429,11 +460,32 @@ static int q6afe_mi2s_set_sysclk(struct snd_soc_dai *dai,
- 					     Q6AFE_LPASS_CLK_ROOT_DEFAULT,
- 					     freq, dir);
- 	case Q6AFE_LPASS_CLK_ID_PRI_MI2S_IBIT ... Q6AFE_LPASS_CLK_ID_QUI_MI2S_OSR:
-+	case Q6AFE_LPASS_CLK_ID_PRI_PCM_IBIT ... Q6AFE_LPASS_CLK_ID_QUI_PCM_OSR:
- 	case Q6AFE_LPASS_CLK_ID_MCLK_1 ... Q6AFE_LPASS_CLK_ID_INT_MCLK_1:
- 		return q6afe_port_set_sysclk(port, clk_id,
- 					     Q6AFE_LPASS_CLK_ATTRIBUTE_COUPLE_NO,
- 					     Q6AFE_LPASS_CLK_ROOT_DEFAULT,
- 					     freq, dir);
-+	}
-+
-+	return 0;
-+}
-+
-+static int q6afe_tdm_set_sysclk(struct snd_soc_dai *dai,
-+		int clk_id, unsigned int freq, int dir)
-+{
-+	struct q6afe_dai_data *dai_data = dev_get_drvdata(dai->dev);
-+	struct q6afe_port *port = dai_data->port[dai->id];
-+
-+	switch (clk_id) {
-+	case LPAIF_DIG_CLK:
-+		return q6afe_port_set_sysclk(port, clk_id, 0, 5, freq, dir);
-+	case LPAIF_BIT_CLK:
-+	case LPAIF_OSR_CLK:
-+		return q6afe_port_set_sysclk(port, clk_id,
-+					     Q6AFE_LPASS_CLK_SRC_INTERNAL,
-+					     Q6AFE_LPASS_CLK_ROOT_DEFAULT,
-+					     freq, dir);
- 	case Q6AFE_LPASS_CLK_ID_PRI_TDM_IBIT ... Q6AFE_LPASS_CLK_ID_QUIN_TDM_EBIT:
- 		return q6afe_port_set_sysclk(port, clk_id,
- 					     Q6AFE_LPASS_CLK_ATTRIBUTE_INVERT_COUPLE_NO,
-@@ -468,6 +520,11 @@ static const struct snd_soc_dapm_route q6afe_dapm_routes[] = {
- 	{"Tertiary MI2S Playback", NULL, "TERT_MI2S_RX"},
- 	{"Quaternary MI2S Playback", NULL, "QUAT_MI2S_RX"},
- 
-+	{"Primary PCM Playback", NULL, "PRI_PCM_RX"},
-+	{"Secondary PCM Playback", NULL, "SEC_PCM_RX"},
-+	{"Tertiary PCM Playback", NULL, "TERT_PCM_RX"},
-+	{"Quaternary PCM Playback", NULL, "QUAT_PCM_RX"},
-+
- 	{"Primary TDM0 Playback", NULL, "PRIMARY_TDM_RX_0"},
- 	{"Primary TDM1 Playback", NULL, "PRIMARY_TDM_RX_1"},
- 	{"Primary TDM2 Playback", NULL, "PRIMARY_TDM_RX_2"},
-@@ -562,6 +619,11 @@ static const struct snd_soc_dapm_route q6afe_dapm_routes[] = {
- 	{"PRI_MI2S_TX", NULL, "Primary MI2S Capture"},
- 	{"SEC_MI2S_TX", NULL, "Secondary MI2S Capture"},
- 	{"QUAT_MI2S_TX", NULL, "Quaternary MI2S Capture"},
-+
-+	{"PRI_PCM_TX", NULL, "Primary PCM Capture"},
-+	{"SEC_PCM_TX", NULL, "Secondary PCM Capture"},
-+	{"TERT_PCM_TX", NULL, "Tertiary PCM Capture"},
-+	{"QUAT_PCM_TX", NULL, "Quaternary PCM Capture"},
- };
- 
- static const struct snd_soc_dai_ops q6hdmi_ops = {
-@@ -578,6 +640,14 @@ static const struct snd_soc_dai_ops q6i2s_ops = {
- 	.set_sysclk	= q6afe_mi2s_set_sysclk,
- };
- 
-+static const struct snd_soc_dai_ops q6pcm_ops = {
-+	.prepare	= q6afe_dai_prepare,
-+	.hw_params	= q6pcm_hw_params,
-+	.set_fmt	= q6pcm_set_fmt,
-+	.shutdown	= q6afe_dai_shutdown,
-+	.set_sysclk	= q6afe_mi2s_set_sysclk,
-+};
-+
- static const struct snd_soc_dai_ops q6slim_ops = {
- 	.prepare	= q6afe_dai_prepare,
- 	.hw_params	= q6slim_hw_params,
-@@ -588,7 +658,7 @@ static const struct snd_soc_dai_ops q6slim_ops = {
- static const struct snd_soc_dai_ops q6tdm_ops = {
- 	.prepare	= q6afe_dai_prepare,
- 	.shutdown	= q6afe_dai_shutdown,
--	.set_sysclk	= q6afe_mi2s_set_sysclk,
-+	.set_sysclk	= q6afe_tdm_set_sysclk,
- 	.set_tdm_slot     = q6tdm_set_tdm_slot,
- 	.set_channel_map  = q6tdm_set_channel_map,
- 	.hw_params        = q6tdm_hw_params,
-@@ -1012,6 +1082,115 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
- 		.ops = &q6i2s_ops,
- 		.probe = msm_dai_q6_dai_probe,
- 		.remove = msm_dai_q6_dai_remove,
-+	}, {
-+		.playback = {
-+			.stream_name = "Primary PCM Playback",
-+			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE |
-+				   SNDRV_PCM_FMTBIT_S24_LE,
-+			.rate_min =     8000,
-+			.rate_max =     16000,
-+		},
-+		.id = PRIMARY_PCM_RX,
-+		.name = "PRI_PCM_RX",
-+		.ops = &q6pcm_ops,
-+		.probe = msm_dai_q6_dai_probe,
-+		.remove = msm_dai_q6_dai_remove,
-+	}, {
-+		.capture = {
-+			.stream_name = "Primary PCM Capture",
-+			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE |
-+				   SNDRV_PCM_FMTBIT_S24_LE,
-+			.rate_min =     8000,
-+			.rate_max =     16000,
-+		},
-+		.id = PRIMARY_PCM_TX,
-+		.name = "PRI_PCM_TX",
-+		.ops = &q6pcm_ops,
-+		.probe = msm_dai_q6_dai_probe,
-+		.remove = msm_dai_q6_dai_remove,
-+	}, {
-+		.playback = {
-+			.stream_name = "Secondary PCM Playback",
-+			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+			.rate_min =     8000,
-+			.rate_max =     16000,
-+		},
-+		.name = "SEC_PCM_RX",
-+		.id = SECONDARY_PCM_RX,
-+		.ops = &q6pcm_ops,
-+		.probe = msm_dai_q6_dai_probe,
-+		.remove = msm_dai_q6_dai_remove,
-+	}, {
-+		.capture = {
-+			.stream_name = "Secondary PCM Capture",
-+			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE |
-+				   SNDRV_PCM_FMTBIT_S24_LE,
-+			.rate_min =     8000,
-+			.rate_max =     16000,
-+		},
-+		.id = SECONDARY_PCM_TX,
-+		.name = "SEC_PCM_TX",
-+		.ops = &q6pcm_ops,
-+		.probe = msm_dai_q6_dai_probe,
-+		.remove = msm_dai_q6_dai_remove,
-+	}, {
-+		.playback = {
-+			.stream_name = "Tertiary PCM Playback",
-+			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+			.rate_min =     8000,
-+			.rate_max =     16000,
-+		},
-+		.name = "TERT_PCM_RX",
-+		.id = TERTIARY_PCM_RX,
-+		.ops = &q6pcm_ops,
-+		.probe = msm_dai_q6_dai_probe,
-+		.remove = msm_dai_q6_dai_remove,
-+	}, {
-+		.capture = {
-+			.stream_name = "Tertiary PCM Capture",
-+			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE |
-+				   SNDRV_PCM_FMTBIT_S24_LE,
-+			.rate_min =     8000,
-+			.rate_max =     16000,
-+		},
-+		.id = TERTIARY_PCM_TX,
-+		.name = "TERT_PCM_TX",
-+		.ops = &q6pcm_ops,
-+		.probe = msm_dai_q6_dai_probe,
-+		.remove = msm_dai_q6_dai_remove,
-+	}, {
-+		.playback = {
-+			.stream_name = "Quaternary PCM Playback",
-+			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+			.rate_min =     8000,
-+			.rate_max =     16000,
-+		},
-+		.name = "QUAT_PCM_RX",
-+		.id = QUATERNARY_PCM_RX,
-+		.ops = &q6pcm_ops,
-+		.probe = msm_dai_q6_dai_probe,
-+		.remove = msm_dai_q6_dai_remove,
-+	}, {
-+		.capture = {
-+			.stream_name = "Quaternary PCM Capture",
-+			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE |
-+				   SNDRV_PCM_FMTBIT_S24_LE,
-+			.rate_min =     8000,
-+			.rate_max =     16000,
-+		},
-+		.id = QUATERNARY_PCM_TX,
-+		.name = "QUAT_PCM_TX",
-+		.ops = &q6pcm_ops,
-+		.probe = msm_dai_q6_dai_probe,
-+		.remove = msm_dai_q6_dai_remove,
- 	},
- 	Q6AFE_TDM_PB_DAI("Primary", 0, PRIMARY_TDM_RX_0),
- 	Q6AFE_TDM_PB_DAI("Primary", 1, PRIMARY_TDM_RX_1),
-@@ -1169,6 +1348,23 @@ static const struct snd_soc_dapm_widget q6afe_dai_widgets[] = {
- 	SND_SOC_DAPM_AIF_OUT("PRI_MI2S_TX", NULL,
- 						0, 0, 0, 0),
- 
-+	SND_SOC_DAPM_AIF_IN("QUAT_PCM_RX", NULL,
-+			    0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("QUAT_PCM_TX", NULL,
-+			     0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("TERT_PCM_RX", NULL,
-+			    0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("TERT_PCM_TX", NULL,
-+			     0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("SEC_PCM_RX", NULL,
-+			    0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("SEC_PCM_TX", NULL,
-+			     0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("PRI_PCM_RX", NULL,
-+			    0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("PRI_PCM_TX", NULL,
-+			     0, 0, 0, 0),
-+
- 	SND_SOC_DAPM_AIF_IN("PRIMARY_TDM_RX_0", NULL,
- 			     0, 0, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("PRIMARY_TDM_RX_1", NULL,
--- 
-2.21.1
+As a result of those, the maximum sound output level on my laptop
+reduced to ~60% of what it used to be.
 
+Moreover, the quirk name is inaccurate. I have a "ThinkPad X1 Carbon
+7th" (as confirmed by dmidecode) and its audio device id is:
+        Subsystem: Lenovo Cannon Point-LP High Definition Audio Controller [17aa:2292]
+but the patches list:
+	SND_PCI_QUIRK(0x17aa, 0x2292, "Thinkpad X1 Yoga 7th", ALC285_FIXUP_SPEAKER2_TO_DAC1),
+	SND_PCI_QUIRK(0x17aa, 0x2293, "Thinkpad X1 Carbon 7th", ALC295_FIXUP_DISABLE_DAC3),
+(notice the mixup of id 0x2292).
+
+Applying the following diff brings the volume back to previous levels
+and brings functional volume control:
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 68832f52c1ad..ed41e3fb5566 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -7260,7 +7260,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x224c, "Thinkpad", ALC298_FIXUP_TPT470_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x224d, "Thinkpad", ALC298_FIXUP_TPT470_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x225d, "Thinkpad T480", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+-	SND_PCI_QUIRK(0x17aa, 0x2292, "Thinkpad X1 Yoga 7th", ALC285_FIXUP_SPEAKER2_TO_DAC1),
++	SND_PCI_QUIRK(0x17aa, 0x2292, "Thinkpad X1 Yoga 7th", ALC295_FIXUP_DISABLE_DAC3),
+ 	SND_PCI_QUIRK(0x17aa, 0x2293, "Thinkpad X1 Carbon 7th", ALC285_FIXUP_SPEAKER2_TO_DAC1),
+ 	SND_PCI_QUIRK(0x17aa, 0x30bb, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
+ 	SND_PCI_QUIRK(0x17aa, 0x30e2, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
+
+I can send a patch to fix the problems for my laptop but then I don't
+know what's up for other devices that built on
+ALC285_FIXUP_SPEAKER2_TO_DAC1.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
