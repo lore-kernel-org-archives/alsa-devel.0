@@ -2,67 +2,93 @@ Return-Path: <SRS0=5/4N=36=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C22EEC35254
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 19:00:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46B40C35254
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 20:02:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 43D9E20870
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 19:00:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BAC4220733
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 20:02:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="i6r13kPj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 43D9E20870
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JLtms1aP";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=serbinski.com header.i=@serbinski.com header.b="eQXczSjB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BAC4220733
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=serbinski.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9954815E5;
-	Mon, 10 Feb 2020 19:59:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9954815E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id E86ED1607;
+	Mon, 10 Feb 2020 21:01:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E86ED1607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581361203;
-	bh=Z8UnRcFcnXaSUOpzqaiZ45krClo+896G1C8hE1A6nfE=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1581364924;
+	bh=/EZUZU8u0h7lavCkol2KHMAe0SPMBtY4RQ8Isyid07g=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=i6r13kPjQrG97Nt0MWq7RO/PsmJL/S6HAfqiap8tqz77dPnQuNa1URDcbOzrOaFY2
-	 aMPNoTFYV2R4MevooqBULm2Spz9r6KrIrgQ/zv584apeepZ90f6NkYMyhjc6dvigFK
-	 FuXSoH+eWoGt0nHFFVUXeWWtwaekNgPCctyuylM8=
+	b=JLtms1aP/QkS5Oq1Z5gKA8gWtujLLTA7EYT5o9Hxa4+ZkCNqQVWQoVdsZyZpqTtxB
+	 GB+FIN2OvYUgeZt+6qVmVToL3B94vXihlcXchatymAPaydbjzgvnhSkJKVoIWC4GUI
+	 OZ5MYNfFY8L+pSMfY4NVXryNUa9EzZCbEPEBrrq0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2A163F8014F;
-	Mon, 10 Feb 2020 19:59:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 677EFF8014F;
+	Mon, 10 Feb 2020 21:01:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 79683F80157; Mon, 10 Feb 2020 19:59:12 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id DFA88F800E7
- for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2020 19:59:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DFA88F800E7
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E06941FB;
- Mon, 10 Feb 2020 10:59:07 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 64BA93F68F;
- Mon, 10 Feb 2020 10:59:07 -0800 (PST)
-Date: Mon, 10 Feb 2020 18:59:05 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Brent Lu <brent.lu@intel.com>
-Message-ID: <20200210185905.GD14166@sirena.org.uk>
-References: <1581322611-25695-1-git-send-email-brent.lu@intel.com>
+ id DB3DBF80157; Mon, 10 Feb 2020 21:01:06 +0100 (CET)
+Received: from mail.serbinski.com (mail.serbinski.com [162.218.126.2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id AE35EF800FD
+ for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2020 21:01:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE35EF800FD
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=serbinski.com header.i=@serbinski.com
+ header.b="eQXczSjB"
+Received: from localhost (unknown [127.0.0.1])
+ by mail.serbinski.com (Postfix) with ESMTP id 74951D006F9;
+ Mon, 10 Feb 2020 20:01:00 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at serbinski.com
+Received: from mail.serbinski.com ([127.0.0.1])
+ by localhost (mail.serbinski.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id vPrZs-h4-A_j; Mon, 10 Feb 2020 15:00:55 -0500 (EST)
+Received: from mail.serbinski.com (localhost [127.0.0.1])
+ by mail.serbinski.com (Postfix) with ESMTP id 322B0D00693;
+ Mon, 10 Feb 2020 15:00:55 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.serbinski.com 322B0D00693
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=serbinski.com;
+ s=default; t=1581364855;
+ bh=FC0suK3LacpLEIkSR/LMi90MqKyqvjqaemkIxiuQnsQ=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+ b=eQXczSjBjgUAdnSoYpeMqwFZ++51LDVybQH+o0mOVj6TcppiRNma7GYgngajWpLRy
+ N6apQTaUgSnSEihCmL0eSKt2yLk+lUhE28D5bW1nv/0dJy98An3AE25X7JUaLGvfLK
+ GtTjy77x+JbNHujwNXTMNPs6FAJNhsD0x7FHRaIM=
 MIME-Version: 1.0
-In-Reply-To: <1581322611-25695-1-git-send-email-brent.lu@intel.com>
-X-Cookie: No lifeguard on duty.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org,
- Support Opensource <support.opensource@diasemi.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- linux-kernel@vger.kernel.org, mac.chiang@intel.com, cychiang@google.com
-Subject: Re: [alsa-devel] [PATCH] ASoC: da7219: check SRM lock in trigger
-	callback
+Date: Mon, 10 Feb 2020 15:00:55 -0500
+From: Adam Serbinski <adam@serbinski.com>
+To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <20200210182609.GA14166@sirena.org.uk>
+References: <20200207205013.12274-1-adam@serbinski.com>
+ <20200209154748.3015-1-adam@serbinski.com>
+ <20200209154748.3015-9-adam@serbinski.com>
+ <20200210133636.GJ7685@sirena.org.uk>
+ <18057b47c76d350f8380f277713e0936@serbinski.com>
+ <20200210182609.GA14166@sirena.org.uk>
+User-Agent: Roundcube Webmail/1.4-beta
+Message-ID: <f88d21773f47f5a543a17ad07d66f9b7@serbinski.com>
+X-Sender: adam@serbinski.com
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
+ linux-arm-msm@vger.kernel.org, Patrick Lai <plai@codeaurora.org>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+ Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+ Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [alsa-devel] [PATCH v2 8/8] ASoC: qcom: apq8096: add kcontrols
+	to set PCM rate
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,63 +101,38 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0630168081784007376=="
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On 2020-02-10 13:26, Mark Brown wrote:
+> On Mon, Feb 10, 2020 at 10:45:16AM -0500, Adam Serbinski wrote:
+>> On 2020-02-10 08:36, Mark Brown wrote:
+> 
+>> > This would seem like an excellent thing to put in the driver for the
+>> > baseband or bluetooth.
+> 
+>> The value that must be set to this control is not available to the 
+>> bluetooth
+>> driver. It originates from the bluetooth stack in userspace, typically
+>> either blueZ or fluoride, as a result of a negotiation between the two
+>> devices participating in the HFP call.
+> 
+> To repeat my comment on another patch in the series there should still
+> be some representation of the DAI for this device in the kernel.
 
---===============0630168081784007376==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="76DTJ5CE0DCVQemd"
-Content-Disposition: inline
+Respectfully, I'm not sure I understand what it is that you are 
+suggesting.
 
+Is it your intention to suggest that instead of adding controls to the 
+machine driver, I should instead write a codec driver to contain those 
+controls?
 
---76DTJ5CE0DCVQemd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Feb 10, 2020 at 04:16:51PM +0800, Brent Lu wrote:
-
-> Intel sst firmware turns on BCLK/WCLK in START Ioctl call which timing is
-> later than the DAPM SUPPLY event handler da7219_dai_event is called (in
-> PREPARED state). Therefore, the SRM lock check always fail.
->=20
-> Moving the check to trigger callback could ensure the SRM is locked before
-> DSP starts to process data and avoid possisble noise.
-
-Independently of any other discussion trigger is expected to run very
-fast so doesn't feel like a good place to do this - given that we're
-talking about doing this to avoid noise the mute operation seems like a
-more idiomatic place to do this, it exists to avoid playing back
-glitches from the digitial interface during startup.
-
---76DTJ5CE0DCVQemd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5Bp/kACgkQJNaLcl1U
-h9AW9ggAhE+Uf05vhaF0QzQQUHbDzslATig+bVtp+hnoVHtcvBpIiJfssALCeBlO
-9ax23eqKKLc71AGPWz+0Q/SFXNKtQks8EcCVb3E7DtHCPuME2XweuKpUP3cChyIR
-PGC0auE4jAhRQYfUCHr/0h1mllN5eVB+CPIkvdlomAXdKVIIHh+RDfcWNzchlBqu
-iv7Z6JB30FDe21lVXVuVUsDCvRL/bGpq7Puo2gMlxbj/q0ZjHuUzzNxbbAb8qPQu
-Ck4FI/mgE+qoxGr1LvEmRU8/X9Z0FGRoA8j99UeYftSt338wTsYrMw9Q3vrrAwOJ
-vbWjkVfV4UqRZbk8c5Bm8D1weiYu/A==
-=kh32
------END PGP SIGNATURE-----
-
---76DTJ5CE0DCVQemd--
-
---===============0630168081784007376==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Or is it your intention to suggest that something within the kernel is 
+already aware of the rate to be set, and it is that which should set the 
+rate rather than a control?
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============0630168081784007376==--
