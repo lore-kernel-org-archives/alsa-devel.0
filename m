@@ -2,75 +2,93 @@ Return-Path: <SRS0=5/4N=36=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4321C352A3
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 14:29:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40A61C352A3
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 14:30:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3E45D2070A
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 14:29:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C25292080C
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 14:30:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ftm7jz7t"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3E45D2070A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jVTJn4Tu";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="tS+Nt8nu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C25292080C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 91E7B1678;
-	Mon, 10 Feb 2020 15:28:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 91E7B1678
+	by alsa0.perex.cz (Postfix) with ESMTPS id 173CC1697;
+	Mon, 10 Feb 2020 15:29:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 173CC1697
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581344967;
-	bh=ZzGjzc7Q0q9U2t3y6ptLvM/E5KsEzq9XoUKbX5aiiF0=;
+	s=default; t=1581345018;
+	bh=A+k0XP6Z7xI5LzsYwnY3vXyDCUSiva+QHhUMU1Bw5vs=;
 	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ftm7jz7tBTQEs3pbB1uAL/A/Rjw/Eoy8HIehG7Invs16zjU5hucIEP8/xB5Wg9Dl0
-	 JRdwyArOYIlHVXyJkb2LzR66Mx72X6HFVXQ8TlC9KPRPtUfjX0/v5jLg+cLnl3CmEB
-	 tl+6TQOmwGJOsBP9WBGjJ0AuTVTwrJnPfSyMGE2g=
+	b=jVTJn4TuzItCwirdnosXJ3ckpaFHbVmWODh0mhel4xZHytGVNv9RImEN1cu3Mat7v
+	 4F5+xz8FVr0DL1mgW3aCYrA1tGaeipmIk9xLXF9TB82yup03VOftmC5fwyHtESpHGK
+	 +0sYUimwEd1ociu/b1YXroTy3EtWJT0xkMPsyzb8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5AC7EF800FD;
-	Mon, 10 Feb 2020 15:28:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3B335F80278;
+	Mon, 10 Feb 2020 15:28:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 41D2EF8020B; Mon, 10 Feb 2020 15:28:10 +0100 (CET)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ id 2EDB5F80279; Mon, 10 Feb 2020 15:28:51 +0100 (CET)
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 943E2F80157
- for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2020 15:28:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 943E2F80157
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 10 Feb 2020 06:28:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,425,1574150400"; d="scan'208";a="226210606"
-Received: from ykatsuma-mobl1.gar.corp.intel.com (HELO [10.251.140.95])
- ([10.251.140.95])
- by fmsmga007.fm.intel.com with ESMTP; 10 Feb 2020 06:28:03 -0800
-To: alsa-devel@alsa-project.org
-References: <20200114234257.14336-1-pierre-louis.bossart@linux.intel.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <4554b59e-f4ec-ae4a-ef67-276964fcb14d@linux.intel.com>
-Date: Mon, 10 Feb 2020 08:28:03 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6CE64F8014F
+ for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2020 15:28:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6CE64F8014F
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="tS+Nt8nu"
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 01AESiJa001066;
+ Mon, 10 Feb 2020 08:28:44 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1581344924;
+ bh=+SXU0yCFEep2Yqb8rENzdcMj11Yb5cRlMdNCjpmA0es=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=tS+Nt8nunkUdVl31bfPwfP8vNDiDlnQ7sdnq6pQSgi9B6T/mjCojOHCYK44JPZUSy
+ nOjGBg/NIsrH8km1yEQK39ovilB2UScjHjirOu3jlkSe27wN8f0MbR9cz4Z7dcIvsW
+ byETDNkHXStoueFKplsWwUlKk3KgFEixlNS64gHk=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 01AESin6127867
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Mon, 10 Feb 2020 08:28:44 -0600
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Mon, 10
+ Feb 2020 08:28:44 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
+ Frontend Transport; Mon, 10 Feb 2020 08:28:44 -0600
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 01AESfmZ067868;
+ Mon, 10 Feb 2020 08:28:42 -0600
+To: Takashi Iwai <tiwai@suse.de>
+References: <20200210140423.10232-1-peter.ujfalusi@ti.com>
+ <s5hmu9qfrq7.wl-tiwai@suse.de>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Message-ID: <15c7df10-cf9f-109c-3cbf-e73af7f4f66a@ti.com>
+Date: Mon, 10 Feb 2020 16:28:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200114234257.14336-1-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <s5hmu9qfrq7.wl-tiwai@suse.de>
 Content-Language: en-US
-Cc: tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, vkoul@kernel.org,
- broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com,
- slawomir.blauciak@intel.com, Bard liao <yung-chuan.liao@linux.intel.com>,
- Rander Wang <rander.wang@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v2 0/5] soundwire: intel: add DAI callbacks
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, linux-kernel@vger.kernel.org,
+ tiwai@suse.com, lgirdwood@gmail.com, vkoul@kernel.org, broonie@kernel.org
+Subject: Re: [alsa-devel] [PATCH] ASoC: dmaengine_pcm: Consider DMA cache
+ caused delay in pointer callback
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,48 +101,57 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 1/14/20 5:42 PM, Pierre-Louis Bossart wrote:
-> The existing mainline code is missing most of the DAI callbacks needed
-> for a functional implementation, and the existing ones need to be
-> modified to provide the relevant information to SOF drivers.
-> 
-> As suggested by Vinod, these patches are shared first - with the risk
-> that they are separated from the actual DAI enablement, so reviewers
-> might wonder why they are needed in the first place.
-> 
-> For reference, the complete set of 90+ patches required for SoundWire
-> on Intel platforms is available here:
-> 
-> https://github.com/thesofproject/linux/pull/1692
-
-Vinod, these patches have been in the queue for quite some time, and 
-v5.6-rc1 is out. Can we move on with the reviews?
-Thanks!
-
-> 
-> changes since v1:
-> Fix string allocation (only feedback from Vinod)
-> 
-> Pierre-Louis Bossart (2):
->    soundwire: intel: rename res field as link_res
->    soundwire: intel: free all resources on hw_free()
-> 
-> Rander Wang (3):
->    soundwire: intel: add prepare support in sdw dai driver
->    soundwire: intel: add trigger support in sdw dai driver
->    soundwire: intel: add sdw_stream_setup helper for .startup callback
-> 
->   drivers/soundwire/intel.c | 197 ++++++++++++++++++++++++++++++++++----
->   1 file changed, 177 insertions(+), 20 deletions(-)
-> 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+SGkgVGFrYXNoaSwKCk9uIDEwLzAyLzIwMjAgMTYuMjEsIFRha2FzaGkgSXdhaSB3cm90ZToKPiBP
+biBNb24sIDEwIEZlYiAyMDIwIDE1OjA0OjIzICswMTAwLAo+IFBldGVyIFVqZmFsdXNpIHdyb3Rl
+Ogo+Pgo+PiBTb21lIERNQSBlbmdpbmVzIGNhbiBoYXZlIGJpZyBGSUZPcyB3aGljaCBhZGRzIHRv
+IHRoZSBsYXRlbmN5Lgo+PiBUaGUgRE1BZW5naW5lIGZyYW1ld29yayBjYW4gcmVwb3J0IHRoZSBG
+SUZPIHV0aWxpemF0aW9uIGluIGJ5dGVzLiBVc2UgdGhpcwo+PiBpbmZvcm1hdGlvbiBmb3IgdGhl
+IGRlbGF5IHJlcG9ydGluZy4KPj4KPj4gU2lnbmVkLW9mZi1ieTogUGV0ZXIgVWpmYWx1c2kgPHBl
+dGVyLnVqZmFsdXNpQHRpLmNvbT4KPj4gLS0tCj4+IEhpLAo+Pgo+PiA1LjYtcmMxIG5vdyBoYXZl
+IHN1cHBvcnQgZm9yIHJlcG9ydGluZyB0aGUgRE1BIGNhY2hlZCBkYXRhLgo+PiBXaXRoIHRoaXMg
+cGF0Y2ggd2UgY2FuIGluY2x1ZGUgaXQgdG8gdGhlIGRlbGF5IGNhbGN1bGF0aW9uLgo+PiBUaGUg
+Zmlyc3QgRE1BIGRyaXZlciB3aGljaCByZXBvcnRzIHRoaXMgaXMgdGhlIFRJIEszIFVETUEgZHJp
+dmVyLgo+Pgo+PiBSZWdhcmRzLAo+PiBQZXRlcgo+Pgo+PiAgc291bmQvY29yZS9wY21fZG1hZW5n
+aW5lLmMgfCA2ICsrKysrKwo+PiAgc291bmQvc29jL3NvYy1wY20uYyAgICAgICAgfCAyICstCj4+
+ICAyIGZpbGVzIGNoYW5nZWQsIDcgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQo+Pgo+PiBk
+aWZmIC0tZ2l0IGEvc291bmQvY29yZS9wY21fZG1hZW5naW5lLmMgYi9zb3VuZC9jb3JlL3BjbV9k
+bWFlbmdpbmUuYwo+PiBpbmRleCA1NzQ5YThhNDk3ODQuLjRmMTM5NWZkMDE2MCAxMDA2NDQKPj4g
+LS0tIGEvc291bmQvY29yZS9wY21fZG1hZW5naW5lLmMKPj4gKysrIGIvc291bmQvY29yZS9wY21f
+ZG1hZW5naW5lLmMKPj4gQEAgLTI0Nyw5ICsyNDcsMTUgQEAgc25kX3BjbV91ZnJhbWVzX3Qgc25k
+X2RtYWVuZ2luZV9wY21fcG9pbnRlcihzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVh
+bSkKPj4gIAo+PiAgCXN0YXR1cyA9IGRtYWVuZ2luZV90eF9zdGF0dXMocHJ0ZC0+ZG1hX2NoYW4s
+IHBydGQtPmNvb2tpZSwgJnN0YXRlKTsKPj4gIAlpZiAoc3RhdHVzID09IERNQV9JTl9QUk9HUkVT
+UyB8fCBzdGF0dXMgPT0gRE1BX1BBVVNFRCkgewo+PiArCQlzdHJ1Y3Qgc25kX3BjbV9ydW50aW1l
+ICpydW50aW1lID0gc3Vic3RyZWFtLT5ydW50aW1lOwo+PiArCQlpbnQgc2FtcGxlX2JpdHMgPSBz
+bmRfcGNtX2Zvcm1hdF9waHlzaWNhbF93aWR0aChydW50aW1lLT5mb3JtYXQpOwo+PiArCj4+ICAJ
+CWJ1Zl9zaXplID0gc25kX3BjbV9saWJfYnVmZmVyX2J5dGVzKHN1YnN0cmVhbSk7Cj4+ICAJCWlm
+IChzdGF0ZS5yZXNpZHVlID4gMCAmJiBzdGF0ZS5yZXNpZHVlIDw9IGJ1Zl9zaXplKQo+PiAgCQkJ
+cG9zID0gYnVmX3NpemUgLSBzdGF0ZS5yZXNpZHVlOwo+PiArCj4+ICsJCXNhbXBsZV9iaXRzICo9
+IHJ1bnRpbWUtPmNoYW5uZWxzOwo+PiArCQlydW50aW1lLT5kZWxheSA9IHN0YXRlLmluX2ZsaWdo
+dF9ieXRlcyAvIChzYW1wbGVfYml0cyAvIDgpOwo+IAo+IENhbiB0aGlzIGJlIHNpbXBseSBieXRl
+c190b19mcmFtZXMoKT8KPiAKPiAJCXJ1bnRpbWUtPmRlbGF5ID0gYnl0ZXNfdG9fZnJhbWVzKHJ1
+bnRpbWUsIHN0YXRlLmluX2ZsaWdodF9ieXRlcyk7CgpDZXJ0YWlubHkgaXQgY2FuLCBJIGxvb2tl
+ZCBhdCB2YXJpb3VzIGhlbHBlciBidXQgc29tZWhvdyBtaXNzZWQgdGhlCmJ5dGVzX3RvX2ZyYW1l
+cygpLgoKSSdsbCBzZW5kIHYyIGluIGFib3V0IGFuIGhvdXIuCgoKCj4gCj4+ICAJfQo+PiAgCj4+
+ICAJcmV0dXJuIGJ5dGVzX3RvX2ZyYW1lcyhzdWJzdHJlYW0tPnJ1bnRpbWUsIHBvcyk7Cj4+IGRp
+ZmYgLS1naXQgYS9zb3VuZC9zb2Mvc29jLXBjbS5jIGIvc291bmQvc29jL3NvYy1wY20uYwo+PiBp
+bmRleCBmZjFiN2M3MDc4ZTUuLjU4ZWY1MDhkNzBhMyAxMDA2NDQKPj4gLS0tIGEvc291bmQvc29j
+L3NvYy1wY20uYwo+PiArKysgYi9zb3VuZC9zb2Mvc29jLXBjbS5jCj4+IEBAIC0xMTUxLDcgKzEx
+NTEsNyBAQCBzdGF0aWMgc25kX3BjbV91ZnJhbWVzX3Qgc29jX3BjbV9wb2ludGVyKHN0cnVjdCBz
+bmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtKQo+PiAgCX0KPj4gIAlkZWxheSArPSBjb2RlY19k
+ZWxheTsKPj4gIAo+PiAtCXJ1bnRpbWUtPmRlbGF5ID0gZGVsYXk7Cj4+ICsJcnVudGltZS0+ZGVs
+YXkgKz0gZGVsYXk7Cj4gCj4gSXMgaXQgY29ycmVjdD8KPiBkZWxheSBhbHJlYWR5IHRha2VzIHJ1
+bnRpbWUtPmRlbGF5IGFzIGl0cyBiYXNpcywgc28gaXQnbGwgcmVzdWx0IGluIGEKPiBkb3VibGUu
+CgpUaGUgZGVsYXkgaGVyZSBpcyBjb21pbmcgZnJvbSB0aGUgREFJIGFuZCB0aGUgY29kZWMuClRo
+ZSBydW50aW1lLT5kZWxheSBob2xkIHRoZSBQQ00gKERNQSkgY2F1c2VkIGRlbGF5LgoKPiAKPiB0
+aGFua3MsCj4gCj4gVGFrYXNoaQo+IAoKLSBQw6l0ZXIKClRleGFzIEluc3RydW1lbnRzIEZpbmxh
+bmQgT3ksIFBvcmtrYWxhbmthdHUgMjIsIDAwMTgwIEhlbHNpbmtpLgpZLXR1bm51cy9CdXNpbmVz
+cyBJRDogMDYxNTUyMS00LiBLb3RpcGFpa2thL0RvbWljaWxlOiBIZWxzaW5raQpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
+bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJv
+amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
