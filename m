@@ -2,75 +2,75 @@ Return-Path: <SRS0=5/4N=36=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8F85C352A3
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 14:28:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B4321C352A3
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 14:29:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 609A02070A
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 14:28:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3E45D2070A
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 14:29:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="te15s1Bo"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 609A02070A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ftm7jz7t"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3E45D2070A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B26BC86F;
-	Mon, 10 Feb 2020 15:27:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B26BC86F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 91E7B1678;
+	Mon, 10 Feb 2020 15:28:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 91E7B1678
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581344913;
-	bh=B8cnMwsm61xYmo3N9w1jstgW2nKMCsTqX5rMa0VIxa4=;
+	s=default; t=1581344967;
+	bh=ZzGjzc7Q0q9U2t3y6ptLvM/E5KsEzq9XoUKbX5aiiF0=;
 	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=te15s1BoNndTZxf/weGJInqYexT6L7X8L4Is7AtjLWnSj5GyFGXLJldAOTGUPU/CD
-	 Dfr5DWKwwknS4MJRWmZqeLcDdJkEwvnrF+OZZB4hCEjZHDzKfSO2254FD1Et1THm4Y
-	 YgSR4mL5LwDnUgcZhnL2O3XomPwmFps+cdJwdJzQ=
+	b=Ftm7jz7tBTQEs3pbB1uAL/A/Rjw/Eoy8HIehG7Invs16zjU5hucIEP8/xB5Wg9Dl0
+	 JRdwyArOYIlHVXyJkb2LzR66Mx72X6HFVXQ8TlC9KPRPtUfjX0/v5jLg+cLnl3CmEB
+	 tl+6TQOmwGJOsBP9WBGjJ0AuTVTwrJnPfSyMGE2g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3E6CDF8014F;
-	Mon, 10 Feb 2020 15:27:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5AC7EF800FD;
+	Mon, 10 Feb 2020 15:28:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 35A4FF8014F; Mon, 10 Feb 2020 15:27:41 +0100 (CET)
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ id 41D2EF8020B; Mon, 10 Feb 2020 15:28:10 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4A033F800E7
- for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2020 15:27:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4A033F800E7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 943E2F80157
+ for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2020 15:28:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 943E2F80157
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 10 Feb 2020 06:27:30 -0800
+ by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 10 Feb 2020 06:28:04 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,425,1574150400"; d="scan'208";a="226210474"
+X-IronPort-AV: E=Sophos;i="5.70,425,1574150400"; d="scan'208";a="226210606"
 Received: from ykatsuma-mobl1.gar.corp.intel.com (HELO [10.251.140.95])
  ([10.251.140.95])
- by fmsmga007.fm.intel.com with ESMTP; 10 Feb 2020 06:27:29 -0800
+ by fmsmga007.fm.intel.com with ESMTP; 10 Feb 2020 06:28:03 -0800
 To: alsa-devel@alsa-project.org
-References: <20200114235227.14502-1-pierre-louis.bossart@linux.intel.com>
+References: <20200114234257.14336-1-pierre-louis.bossart@linux.intel.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <5f6af1da-ee9e-dcf8-0353-8f9eb4a39d21@linux.intel.com>
-Date: Mon, 10 Feb 2020 08:27:28 -0600
+Message-ID: <4554b59e-f4ec-ae4a-ef67-276964fcb14d@linux.intel.com>
+Date: Mon, 10 Feb 2020 08:28:03 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200114235227.14502-1-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20200114234257.14336-1-pierre-louis.bossart@linux.intel.com>
 Content-Language: en-US
 Cc: tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, vkoul@kernel.org,
  broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com,
  slawomir.blauciak@intel.com, Bard liao <yung-chuan.liao@linux.intel.com>,
  Rander Wang <rander.wang@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v2 0/5] soundwire: stream: fix state
- machines and transitions
+Subject: Re: [alsa-devel] [PATCH v2 0/5] soundwire: intel: add DAI callbacks
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,48 +90,39 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 1/14/20 5:52 PM, Pierre-Louis Bossart wrote:
-> The existing stream support works fine with simple cases, but does not
-> map well with ALSA transitions for underflows/resume where prepare()
-> can be called multiple times. Concurrency with multiple devices per
-> links or multiple streams enabled on the same link also needs to be
-> fixed.
+On 1/14/20 5:42 PM, Pierre-Louis Bossart wrote:
+> The existing mainline code is missing most of the DAI callbacks needed
+> for a functional implementation, and the existing ones need to be
+> modified to provide the relevant information to SOF drivers.
 > 
-> These patches are the result of hours of validation on the Intel side
-> and should benefit other implementations since there is nothing
-> hardware-specific. The Intel-specific changes being reviewed do depend
-> on those stream changes though to be functional.
+> As suggested by Vinod, these patches are shared first - with the risk
+> that they are separated from the actual DAI enablement, so reviewers
+> might wonder why they are needed in the first place.
+> 
+> For reference, the complete set of 90+ patches required for SoundWire
+> on Intel platforms is available here:
+> 
+> https://github.com/thesofproject/linux/pull/1692
 
 Vinod, these patches have been in the queue for quite some time, and 
 v5.6-rc1 is out. Can we move on with the reviews?
 Thanks!
 
-> Changes since v1:
-> Removed spurious code block change flagged by Vinod
 > 
-> No change (replies provided in v1 thread)
-> Github link issue is public, no reason to remove it
-> Bandwidth computation on ALSA prepare/start (for resume cases) handled
-> internally in stream layer.
-> Kept emacs comment formatting.
-> No additional code/test for concurrent streams (not supported due to locking)
-> 
-> Bard Liao (1):
->    soundwire: stream: only prepare stream when it is configured.
+> changes since v1:
+> Fix string allocation (only feedback from Vinod)
 > 
 > Pierre-Louis Bossart (2):
->    soundwire: stream: update state machine and add state checks
->    soundwire: stream: do not update parameters during DISABLED-PREPARED
->      transition
+>    soundwire: intel: rename res field as link_res
+>    soundwire: intel: free all resources on hw_free()
 > 
-> Rander Wang (2):
->    soundwire: stream: fix support for multiple Slaves on the same link
->    soundwire: stream: don't program ports when a stream that has not been
->      prepared
+> Rander Wang (3):
+>    soundwire: intel: add prepare support in sdw dai driver
+>    soundwire: intel: add trigger support in sdw dai driver
+>    soundwire: intel: add sdw_stream_setup helper for .startup callback
 > 
->   Documentation/driver-api/soundwire/stream.rst | 61 +++++++++----
->   drivers/soundwire/stream.c                    | 90 ++++++++++++++++---
->   2 files changed, 124 insertions(+), 27 deletions(-)
+>   drivers/soundwire/intel.c | 197 ++++++++++++++++++++++++++++++++++----
+>   1 file changed, 177 insertions(+), 20 deletions(-)
 > 
 _______________________________________________
 Alsa-devel mailing list
