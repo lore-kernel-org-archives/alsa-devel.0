@@ -2,89 +2,61 @@ Return-Path: <SRS0=5/4N=36=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ACB79C352A3
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 14:12:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DC182C352A3
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 14:17:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3858A2080C
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 14:12:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 66DD820714
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 14:17:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OFkZNsf+";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="BwP//hjD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3858A2080C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="d/L0Yz0+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 66DD820714
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 744FE16B9;
-	Mon, 10 Feb 2020 15:11:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 744FE16B9
+	by alsa0.perex.cz (Postfix) with ESMTPS id CA77D1699;
+	Mon, 10 Feb 2020 15:08:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA77D1699
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581343929;
-	bh=s1JGPnwCXkaL9XqZAnXhI1rIF7ySqgQHB9+xgNHGEs0=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=OFkZNsf+0Dsn8/T1i8ncgfrUEOaw9H5Y/NWwpbeQug4gaReoB80aEVrsxmd0D4dcF
-	 DE7nk98c2AO44C2I2iPCVLiWgR4tDxQVzhHKwH0UawQHqDlkWlDB6AFJV8RBPahjTA
-	 BMNjlwvQJOvQ+lOuGxnb1Sf/f1QWbBzWjWQ/mwcU=
+	s=default; t=1581343737;
+	bh=xwqtipwTRm0soBKRLMeHgKlfTpdF5oqeJexmZPJd2FE=;
+	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=d/L0Yz0+Ni2PJZZ/0B0Ls4olun6K0ddu6ySuq90JsPlEYruMwT5RUXaHzs+TapMWC
+	 /Fy1NgseNS9IKmhjyrNLkctQRr1CYjzu1zwU1gFEFgxrElXGhI2UYi6t0Z+E1QZWUK
+	 ttdyNq7PckKMbDZpOz740gPbvSMUKXxsdo5OCHcw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D9F42F80234;
-	Mon, 10 Feb 2020 15:10:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 76D4AF8020B;
+	Mon, 10 Feb 2020 15:07:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 85A44F80240; Mon, 10 Feb 2020 15:09:59 +0100 (CET)
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E2EB7F800E7
- for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2020 15:09:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2EB7F800E7
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="BwP//hjD"
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 01AE9qwe126791;
- Mon, 10 Feb 2020 08:09:52 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1581343792;
- bh=yu3+n7bZDh4cxlmIaKrakzrIy2mj0ce1NyTvJdnr57Y=;
- h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=BwP//hjDOzPoU+hZ8nTrQ7E8P4bg0Nl7FM17Hdwo5BOcrBuHEYTJSk2RmwN+FxVQV
- PaKCJjaQiAG5IIdL12Fmd61NtjoV//vsqsJxaI7JzYcLBBD0JH8//3iid72PxbixDc
- b2dSvoXNNoXNE00HfdPCdOde1QeY6PEayH6Hui4k=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 01AE9pDB096035
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Mon, 10 Feb 2020 08:09:51 -0600
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Mon, 10
- Feb 2020 08:09:50 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
- Frontend Transport; Mon, 10 Feb 2020 08:09:50 -0600
-Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 01AE9lru046182;
- Mon, 10 Feb 2020 08:09:49 -0600
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-Date: Mon, 10 Feb 2020 16:09:49 +0200
-Message-ID: <20200210140950.11090-2-peter.ujfalusi@ti.com>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200210140950.11090-1-peter.ujfalusi@ti.com>
-References: <20200210140950.11090-1-peter.ujfalusi@ti.com>
-MIME-Version: 1.0
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-Cc: alsa-devel@alsa-project.org
-Subject: [alsa-devel] [PATCH 1/2] ASoC: ti: Add udma-pcm platform driver for
-	UDMA
+ id 95CE9F8020B; Mon, 10 Feb 2020 15:07:31 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id B9D96F800FD
+ for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2020 15:07:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9D96F800FD
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D265031B;
+ Mon, 10 Feb 2020 06:07:27 -0800 (PST)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 55A433F68E;
+ Mon, 10 Feb 2020 06:07:27 -0800 (PST)
+Date: Mon, 10 Feb 2020 14:07:25 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+In-Reply-To: <20200206200223.7715-3-kai.vehmanen@linux.intel.com>
+Message-Id: <applied-20200206200223.7715-3-kai.vehmanen@linux.intel.com>
+X-Patchwork-Hint: ignore
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ pierre-louis.bossart@linux.intel.com, ranjani.sridharan@linux.intel.com
+Subject: [alsa-devel] Applied "ASoC: SOF: Intel: hda: move i915 init
+	earlier" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,132 +69,112 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Platform driver glue for platforms using UDMA (am654 and j721e).
+The patch
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+   ASoC: SOF: Intel: hda: move i915 init earlier
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.6
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+From af7aae1b1f6306a1cda4da393e920a1334eaa3d4 Mon Sep 17 00:00:00 2001
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Date: Thu, 6 Feb 2020 22:02:23 +0200
+Subject: [PATCH] ASoC: SOF: Intel: hda: move i915 init earlier
+
+To be compliant with i915 display driver requirements, i915 power-up
+must be done before any HDA communication takes place, including
+parsing the bus capabilities. Otherwise the initial codec probe
+may fail.
+
+Move i915 initialization earlier in the SOF HDA sequence. This
+sequence is now aligned with the snd-hda-intel driver where the
+display_power() call is before snd_hdac_bus_parse_capabilities()
+and rest of the capability parsing.
+
+Also remove unnecessary ifdef around hda_codec_i915_init(). There's
+a dummy implementation provided if CONFIG_SND_SOC_SOF_HDA is not
+enabled.
+
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
+Link: https://lore.kernel.org/r/20200206200223.7715-3-kai.vehmanen@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/ti/Kconfig    |  4 ++++
- sound/soc/ti/Makefile   |  2 ++
- sound/soc/ti/udma-pcm.c | 43 +++++++++++++++++++++++++++++++++++++++++
- sound/soc/ti/udma-pcm.h | 18 +++++++++++++++++
- 4 files changed, 67 insertions(+)
- create mode 100644 sound/soc/ti/udma-pcm.c
- create mode 100644 sound/soc/ti/udma-pcm.h
+ sound/soc/sof/intel/hda.c | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/ti/Kconfig b/sound/soc/ti/Kconfig
-index 29f61053ab62..bf85a160a523 100644
---- a/sound/soc/ti/Kconfig
-+++ b/sound/soc/ti/Kconfig
-@@ -10,6 +10,10 @@ config SND_SOC_TI_SDMA_PCM
- 	tristate
- 	select SND_SOC_GENERIC_DMAENGINE_PCM
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index 8fddafb5c1d4..25946a1c2822 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -286,6 +286,13 @@ static int hda_init(struct snd_sof_dev *sdev)
+ 	/* HDA base */
+ 	sdev->bar[HDA_DSP_HDA_BAR] = bus->remap_addr;
  
-+config SND_SOC_TI_UDMA_PCM
-+	tristate
-+	select SND_SOC_GENERIC_DMAENGINE_PCM
++	/* init i915 and HDMI codecs */
++	ret = hda_codec_i915_init(sdev);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: init i915 and HDMI codec failed\n");
++		return ret;
++	}
 +
- comment "Texas Instruments DAI support for:"
- config SND_SOC_DAVINCI_ASP
- 	tristate "daVinci Audio Serial Port (ASP) or McBSP support"
-diff --git a/sound/soc/ti/Makefile b/sound/soc/ti/Makefile
-index 08c44d56ef3e..ea48c6679cc7 100644
---- a/sound/soc/ti/Makefile
-+++ b/sound/soc/ti/Makefile
-@@ -3,9 +3,11 @@
- # Platform drivers
- snd-soc-ti-edma-objs := edma-pcm.o
- snd-soc-ti-sdma-objs := sdma-pcm.o
-+snd-soc-ti-udma-objs := udma-pcm.o
+ 	/* get controller capabilities */
+ 	ret = hda_dsp_ctrl_get_caps(sdev);
+ 	if (ret < 0)
+@@ -353,15 +360,6 @@ static int hda_init_caps(struct snd_sof_dev *sdev)
+ 	if (bus->ppcap)
+ 		dev_dbg(sdev->dev, "PP capability, will probe DSP later.\n");
  
- obj-$(CONFIG_SND_SOC_TI_EDMA_PCM) += snd-soc-ti-edma.o
- obj-$(CONFIG_SND_SOC_TI_SDMA_PCM) += snd-soc-ti-sdma.o
-+obj-$(CONFIG_SND_SOC_TI_UDMA_PCM) += snd-soc-ti-udma.o
- 
- # CPU DAI drivers
- snd-soc-davinci-asp-objs := davinci-i2s.o
-diff --git a/sound/soc/ti/udma-pcm.c b/sound/soc/ti/udma-pcm.c
-new file mode 100644
-index 000000000000..39830caaaf7c
---- /dev/null
-+++ b/sound/soc/ti/udma-pcm.c
-@@ -0,0 +1,43 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ *  Copyright (C) 2020 Texas Instruments Incorporated - http://www.ti.com
-+ *  Author: Peter Ujfalusi <peter.ujfalusi@ti.com>
-+ */
-+
-+#include <linux/module.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/dmaengine_pcm.h>
-+
-+#include "udma-pcm.h"
-+
-+static const struct snd_pcm_hardware udma_pcm_hardware = {
-+	.info			= SNDRV_PCM_INFO_MMAP |
-+				  SNDRV_PCM_INFO_MMAP_VALID |
-+				  SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME |
-+				  SNDRV_PCM_INFO_NO_PERIOD_WAKEUP |
-+				  SNDRV_PCM_INFO_INTERLEAVED,
-+	.buffer_bytes_max	= SIZE_MAX,
-+	.period_bytes_min	= 32,
-+	.period_bytes_max	= SZ_64K,
-+	.periods_min		= 2,
-+	.periods_max		= UINT_MAX,
-+};
-+
-+static const struct snd_dmaengine_pcm_config udma_dmaengine_pcm_config = {
-+	.pcm_hardware = &udma_pcm_hardware,
-+	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
-+};
-+
-+int udma_pcm_platform_register(struct device *dev)
-+{
-+	return devm_snd_dmaengine_pcm_register(dev, &udma_dmaengine_pcm_config,
-+					       0);
-+}
-+EXPORT_SYMBOL_GPL(udma_pcm_platform_register);
-+
-+MODULE_AUTHOR("Peter Ujfalusi <peter.ujfalusi@ti.com>");
-+MODULE_DESCRIPTION("UDMA PCM ASoC platform driver");
-+MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/ti/udma-pcm.h b/sound/soc/ti/udma-pcm.h
-new file mode 100644
-index 000000000000..54111e7312c1
---- /dev/null
-+++ b/sound/soc/ti/udma-pcm.h
-@@ -0,0 +1,18 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ *  Copyright (C) 2018 Texas Instruments Incorporated - http://www.ti.com
-+ */
-+
-+#ifndef __UDMA_PCM_H__
-+#define __UDMA_PCM_H__
-+
-+#if IS_ENABLED(CONFIG_SND_SOC_TI_UDMA_PCM)
-+int udma_pcm_platform_register(struct device *dev);
-+#else
-+static inline int udma_pcm_platform_register(struct device *dev)
-+{
-+	return 0;
-+}
-+#endif /* CONFIG_SND_SOC_TI_UDMA_PCM */
-+
-+#endif /* __UDMA_PCM_H__ */
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
+-	/* init i915 and HDMI codecs */
+-	ret = hda_codec_i915_init(sdev);
+-	if (ret < 0) {
+-		dev_err(sdev->dev, "error: init i915 and HDMI codec failed\n");
+-		return ret;
+-	}
+-#endif
+-
+ 	/* Init HDA controller after i915 init */
+ 	ret = hda_dsp_ctrl_init_chip(sdev, true);
+ 	if (ret < 0) {
+@@ -611,6 +609,7 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
+ 	iounmap(sdev->bar[HDA_DSP_BAR]);
+ hdac_bus_unmap:
+ 	iounmap(bus->remap_addr);
++	hda_codec_i915_exit(sdev);
+ err:
+ 	return ret;
+ }
 -- 
-Peter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+2.20.1
 
 _______________________________________________
 Alsa-devel mailing list
