@@ -2,66 +2,88 @@ Return-Path: <SRS0=5/4N=36=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 125A2C352A5
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BE8EC352A3
 	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 14:12:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 889B920842
+	by mail.kernel.org (Postfix) with ESMTPS id 83CE920714
 	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 14:12:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nnsBfk0i"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 889B920842
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cONg74Ap";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="x8MujdPN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 83CE920714
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6F08D15F9;
-	Mon, 10 Feb 2020 15:03:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F08D15F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9E7F21677;
+	Mon, 10 Feb 2020 15:04:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E7F21677
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581343450;
-	bh=CO8BbZnLagN+NDqnpjYDzy7c1DvphPrJuFtumwRWpsQ=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=nnsBfk0iM7XsPWJtL6aWrdgJeiTtzKFgllZp5DN97RkksgUkhUlRtWd+IHlc5gwK0
-	 3qRSGbnpTkDOHxHbKcjZEYHXag777pYphqNQhf1iJ283/m7rmLxog9olXs2S2ydXHQ
-	 roFR/Efiof/HsVToia/B8mcMlClQDFUzHcityphE=
+	s=default; t=1581343523;
+	bh=7wfuiae86jtDRDUhFUCW2rAZ8YEjsT+W5BNu68AzrQw=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=cONg74Ap/ieYXwDHPTFBZ4FDlfebq0RKnqs62Kmo8rrNpNepuM0Y2eX+VEX1LT/WK
+	 fqMMJyqkZRRG+J602HqcGzCPGeTgyoebo1/7xBrPziiTgCml5hIE8Vp9HpT+zNFgTj
+	 7PcXgP0zWV9qLRlCEP1M18ZM2q6qnS3Yb48r+X08=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E1614F8014F;
-	Mon, 10 Feb 2020 15:03:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 38535F80158;
+	Mon, 10 Feb 2020 15:04:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 604ADF80157; Mon, 10 Feb 2020 15:03:18 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 5D0D8F800FD
- for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2020 15:03:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D0D8F800FD
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D343F1FB;
- Mon, 10 Feb 2020 06:03:10 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5816E3F68E;
- Mon, 10 Feb 2020 06:03:10 -0800 (PST)
-Date: Mon, 10 Feb 2020 14:03:08 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Message-ID: <20200210140308.GN7685@sirena.org.uk>
-References: <20200207091351.18133-1-geert@linux-m68k.org>
+ id 3577AF8019B; Mon, 10 Feb 2020 15:04:31 +0100 (CET)
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 66F43F800E7
+ for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2020 15:04:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66F43F800E7
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="x8MujdPN"
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 01AE4O7g041894;
+ Mon, 10 Feb 2020 08:04:24 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1581343464;
+ bh=M7oV+dgNDePW9F+75A8vypX+j/v5tDexHBLLV1ccDfU=;
+ h=From:To:CC:Subject:Date;
+ b=x8MujdPN9PMGtYJardUmXjE4MOYPRuJh3p6eY1P17yHBEOMeOlw6pQeWroHLai4ug
+ A7QzYoCcsIlnPtsG/9+M5MOzoR0oLV+LqVtayhQpyFGg0/bMKX2vMvWrJCWG4IwFQc
+ Jm5wAMc/isV2eOzn737sG3Lf3p4b1niknRU5s0wE=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 01AE4Ols086430
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Mon, 10 Feb 2020 08:04:24 -0600
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Mon, 10
+ Feb 2020 08:04:23 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
+ Frontend Transport; Mon, 10 Feb 2020 08:04:23 -0600
+Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 01AE4Klm024323;
+ Mon, 10 Feb 2020 08:04:21 -0600
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <tiwai@suse.com>,
+ <perex@perex.cz>
+Date: Mon, 10 Feb 2020 16:04:23 +0200
+Message-ID: <20200210140423.10232-1-peter.ujfalusi@ti.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-In-Reply-To: <20200207091351.18133-1-geert@linux-m68k.org>
-X-Cookie: Avoid gunfire in the bathroom tonight.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>
-Subject: Re: [alsa-devel] [PATCH] [RFC] ASoC: Use imply for
-	SND_SOC_ALL_CODECS
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, vkoul@kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: [alsa-devel] [PATCH] ASoC: dmaengine_pcm: Consider DMA cache caused
+	delay in pointer callback
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,59 +96,70 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2572348713620724917=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Some DMA engines can have big FIFOs which adds to the latency.
+The DMAengine framework can report the FIFO utilization in bytes. Use this
+information for the delay reporting.
 
---===============2572348713620724917==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="TXIPBuAs4GDcsx9K"
-Content-Disposition: inline
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
+Hi,
 
+5.6-rc1 now have support for reporting the DMA cached data.
+With this patch we can include it to the delay calculation.
+The first DMA driver which reports this is the TI K3 UDMA driver.
 
---TXIPBuAs4GDcsx9K
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Regards,
+Peter
 
-On Fri, Feb 07, 2020 at 10:13:51AM +0100, Geert Uytterhoeven wrote:
-> Currently SND_SOC_ALL_CODECS selects the config symbols for all codec
-> drivers.  As "select" bypasses dependencies, lots of "select" statements
-> need explicit dependencies, which are hard to get right, and hard to
-> maintain[*].
->=20
-> Fix this by using "imply" instead, which is a weak version of "select",
-> and which obeys dependencies of target symbols.
+ sound/core/pcm_dmaengine.c | 6 ++++++
+ sound/soc/soc-pcm.c        | 2 +-
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
-This is a *really* badly named feature :/
+diff --git a/sound/core/pcm_dmaengine.c b/sound/core/pcm_dmaengine.c
+index 5749a8a49784..4f1395fd0160 100644
+--- a/sound/core/pcm_dmaengine.c
++++ b/sound/core/pcm_dmaengine.c
+@@ -247,9 +247,15 @@ snd_pcm_uframes_t snd_dmaengine_pcm_pointer(struct snd_pcm_substream *substream)
+ 
+ 	status = dmaengine_tx_status(prtd->dma_chan, prtd->cookie, &state);
+ 	if (status == DMA_IN_PROGRESS || status == DMA_PAUSED) {
++		struct snd_pcm_runtime *runtime = substream->runtime;
++		int sample_bits = snd_pcm_format_physical_width(runtime->format);
++
+ 		buf_size = snd_pcm_lib_buffer_bytes(substream);
+ 		if (state.residue > 0 && state.residue <= buf_size)
+ 			pos = buf_size - state.residue;
++
++		sample_bits *= runtime->channels;
++		runtime->delay = state.in_flight_bytes / (sample_bits / 8);
+ 	}
+ 
+ 	return bytes_to_frames(substream->runtime, pos);
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index ff1b7c7078e5..58ef508d70a3 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1151,7 +1151,7 @@ static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
+ 	}
+ 	delay += codec_delay;
+ 
+-	runtime->delay = delay;
++	runtime->delay += delay;
+ 
+ 	return offset;
+ }
+-- 
+Peter
 
---TXIPBuAs4GDcsx9K
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5BYpwACgkQJNaLcl1U
-h9AJ6wf+JoGh6XxETeSB4TWntPU4POgBDY7UzyJaSzC/k9dxItOpbvF8sZbh3YVO
-RqfpWryUL/Icpn8pUC785qgCczDrAzW3YB3tkwvAma8tNK/HA6TC4b5/pl2h0F1e
-R5gValaXJ4qG0+Q9ZDNlDNmVX06fSlutz4K+UUBAP8DUgrXcQXqo4PhjIptTRix/
-GKtNAePn3171ofUgEhfSpVE6I7zZHkcD0IC3CQ5Ss9ui/7YBzRls6qq5HOqEbvDD
-4KvKMTM4lDu7u7f+R9ov/N0NEDS2ZtKNfoALHeQTBCplEhIbXSHZ5r0hF4LBAE9r
-CI47bCrYKahz5DDreklkq0WdmyUZQw==
-=MBOV
------END PGP SIGNATURE-----
-
---TXIPBuAs4GDcsx9K--
-
---===============2572348713620724917==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============2572348713620724917==--
