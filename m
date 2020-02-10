@@ -2,60 +2,64 @@ Return-Path: <SRS0=5/4N=36=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CBC2C2BA83
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 03:14:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 45467C2BA83
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 03:15:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8F43C20870
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 03:14:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C641A20870
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 03:15:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Roqqsltx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F43C20870
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XaUiANWd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C641A20870
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DE40B86E;
-	Mon, 10 Feb 2020 04:13:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE40B86E
+	by alsa0.perex.cz (Postfix) with ESMTPS id E41FE1697;
+	Mon, 10 Feb 2020 04:14:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E41FE1697
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581304490;
-	bh=lPVd5qUvBaVkYhtNhgCu9EzCbwibt+BPGXF61/tcQSw=;
-	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=RoqqsltxZAXZM/F7hPi1ikFNprLDNJrU7VZ5cwF96pY9KBmCJ/I8tDmHC6iNbfruy
-	 +xT8KbS1Xr/mvNe9Nheu+Z9OfQVuEym4ec08+23vg9PLWrRlkSNP382Mk+YYymbGvN
-	 xvS0k3BO5G/idVwDE9s+0ZA5QuZjLIxnBLpkB7N4=
+	s=default; t=1581304544;
+	bh=ZiepE1bW0wDWG6vTnb2LQPr2exwFseMl1fHqSHmnirg=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=XaUiANWdVy6VYQ63/AW5R1TPg7kTXl2p6iPmfePN8jxJ7seEnP79DdcpFdmyL0X7k
+	 RC93afeasciK84ZPFuzizLNxVQYokWrpY601GfzxblGMFwp13BRH3i4lhgmYk531Qp
+	 zVuTTVKlccR6a3jehl/biTtbRJWaMGMwu2g4gF08=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 76AAAF80118;
-	Mon, 10 Feb 2020 04:13:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 66905F8020B;
+	Mon, 10 Feb 2020 04:14:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A4033F80157; Mon, 10 Feb 2020 04:13:58 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 0292EF80118
- for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2020 04:13:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0292EF80118
-Date: 10 Feb 2020 12:13:49 +0900
-X-IronPort-AV: E=Sophos;i="5.70,423,1574089200"; d="scan'208";a="38653572"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 10 Feb 2020 12:13:49 +0900
+ id 8B9C7F80228; Mon, 10 Feb 2020 04:14:21 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 45D76F800FD
+ for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2020 04:14:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45D76F800FD
+Date: 10 Feb 2020 12:14:12 +0900
+X-IronPort-AV: E=Sophos;i="5.70,423,1574089200"; d="scan'208";a="38869698"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 10 Feb 2020 12:14:12 +0900
 Received: from venus.renesas.com (unknown [10.166.252.89])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 32CAB4163577;
- Mon, 10 Feb 2020 12:13:49 +0900 (JST)
-Message-ID: <87d0anceze.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id C5A9A4005E0A;
+ Mon, 10 Feb 2020 12:14:12 +0900 (JST)
+Message-ID: <87blq7ceyq.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
-To: Mark Brown <broonie@kernel.org>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <87d0anceze.wl-kuninori.morimoto.gx@renesas.com>
+References: <87d0anceze.wl-kuninori.morimoto.gx@renesas.com>
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH v3 0/7] ASoC: soc-pcm cleanup step2
+Subject: [alsa-devel] [PATCH v3 1/8] ASoC: soc-pcm: add
+	snd_soc_runtime_action()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,41 +78,127 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-These are v3 of soc-pcm cleanup.
-Original [5/7] [6/7] patch call open / start function for all DAI / component.
-And, it calls close / stop function for all if some of them got error.
-But in such case, error occured DAI / component don't need to call close / stop.
+ALSA SoC has snd_soc_runtime_activate() / snd_soc_runtime_deactivate().
+These increment or decrement DAI/Component activity, but the code
+difference is only +1 or -1.
+This patch adds common snd_soc_runtime_action() which can get +1 or -1 as
+parameter, and use it from snd_soc_runtime_activate/deactivate() to
+avoid duplicate implementation.
 
-This issue can be solved if it had flag, and my local tree has such patch.
-But it was planed to post to ML a little later.
-This time, I merged original patch and this new flag patch on [5/7] [6/7].
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+---
+v2 -> v3
 
-These mention that "it is prepare for soc-pcm-open() cleanup".
-But it will be happen later.
+	- add Ranjani's Reviewed-by
 
-These are based on v5.6-rc1
+ sound/soc/soc-pcm.c | 67 +++++++++++++++++++++--------------------------------
+ 1 file changed, 26 insertions(+), 41 deletions(-)
 
-Kuninori Morimoto (8):
-  1) ASoC: soc-pcm: add snd_soc_runtime_action()
-  2) ASoC: soc-pcm: adjustment for DAI member 0 reset
-  3) ASoC: soc-pcm: add for_each_dapm_widgets() macro
-  4) ASoC: soc-pcm: don't use bit-OR'ed error
-  5) ASoC: soc-pcm: call snd_soc_dai_startup()/shutdown() once
-  6) ASoC: soc-pcm: call snd_soc_component_open/close() once
-  7) ASoC: soc-pcm: move soc_pcm_close() next to soc_pcm_open()
-  8) ASoC: soc-pcm: tidyup soc_pcm_open() order
-
- include/sound/soc-component.h |   7 +-
- include/sound/soc-dai.h       |   5 +-
- include/sound/soc-dapm.h      |   5 +
- sound/soc/soc-component.c     |  35 ++++--
- sound/soc/soc-dai.c           |  11 +-
- sound/soc/soc-dapm.c          |   8 +-
- sound/soc/soc-pcm.c           | 246 +++++++++++++++++++-----------------------
- 7 files changed, 161 insertions(+), 156 deletions(-)
-
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index ff1b7c7..4d26558 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -82,17 +82,8 @@ static int soc_rtd_trigger(struct snd_soc_pcm_runtime *rtd,
+ 	return 0;
+ }
+ 
+-/**
+- * snd_soc_runtime_activate() - Increment active count for PCM runtime components
+- * @rtd: ASoC PCM runtime that is activated
+- * @stream: Direction of the PCM stream
+- *
+- * Increments the active count for all the DAIs and components attached to a PCM
+- * runtime. Should typically be called when a stream is opened.
+- *
+- * Must be called with the rtd->card->pcm_mutex being held
+- */
+-void snd_soc_runtime_activate(struct snd_soc_pcm_runtime *rtd, int stream)
++static void snd_soc_runtime_action(struct snd_soc_pcm_runtime *rtd,
++				   int stream, int action)
+ {
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 	struct snd_soc_dai *codec_dai;
+@@ -101,24 +92,39 @@ void snd_soc_runtime_activate(struct snd_soc_pcm_runtime *rtd, int stream)
+ 	lockdep_assert_held(&rtd->card->pcm_mutex);
+ 
+ 	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
+-		cpu_dai->playback_active++;
++		cpu_dai->playback_active += action;
+ 		for_each_rtd_codec_dai(rtd, i, codec_dai)
+-			codec_dai->playback_active++;
++			codec_dai->playback_active += action;
+ 	} else {
+-		cpu_dai->capture_active++;
++		cpu_dai->capture_active += action;
+ 		for_each_rtd_codec_dai(rtd, i, codec_dai)
+-			codec_dai->capture_active++;
++			codec_dai->capture_active += action;
+ 	}
+ 
+-	cpu_dai->active++;
+-	cpu_dai->component->active++;
++	cpu_dai->active += action;
++	cpu_dai->component->active += action;
+ 	for_each_rtd_codec_dai(rtd, i, codec_dai) {
+-		codec_dai->active++;
+-		codec_dai->component->active++;
++		codec_dai->active += action;
++		codec_dai->component->active += action;
+ 	}
+ }
+ 
+ /**
++ * snd_soc_runtime_activate() - Increment active count for PCM runtime components
++ * @rtd: ASoC PCM runtime that is activated
++ * @stream: Direction of the PCM stream
++ *
++ * Increments the active count for all the DAIs and components attached to a PCM
++ * runtime. Should typically be called when a stream is opened.
++ *
++ * Must be called with the rtd->card->pcm_mutex being held
++ */
++void snd_soc_runtime_activate(struct snd_soc_pcm_runtime *rtd, int stream)
++{
++	snd_soc_runtime_action(rtd, stream, 1);
++}
++
++/**
+  * snd_soc_runtime_deactivate() - Decrement active count for PCM runtime components
+  * @rtd: ASoC PCM runtime that is deactivated
+  * @stream: Direction of the PCM stream
+@@ -130,28 +136,7 @@ void snd_soc_runtime_activate(struct snd_soc_pcm_runtime *rtd, int stream)
+  */
+ void snd_soc_runtime_deactivate(struct snd_soc_pcm_runtime *rtd, int stream)
+ {
+-	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+-	struct snd_soc_dai *codec_dai;
+-	int i;
+-
+-	lockdep_assert_held(&rtd->card->pcm_mutex);
+-
+-	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
+-		cpu_dai->playback_active--;
+-		for_each_rtd_codec_dai(rtd, i, codec_dai)
+-			codec_dai->playback_active--;
+-	} else {
+-		cpu_dai->capture_active--;
+-		for_each_rtd_codec_dai(rtd, i, codec_dai)
+-			codec_dai->capture_active--;
+-	}
+-
+-	cpu_dai->active--;
+-	cpu_dai->component->active--;
+-	for_each_rtd_codec_dai(rtd, i, codec_dai) {
+-		codec_dai->component->active--;
+-		codec_dai->active--;
+-	}
++	snd_soc_runtime_action(rtd, stream, -1);
+ }
+ 
+ /**
 -- 
 2.7.4
 
