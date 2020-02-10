@@ -2,103 +2,91 @@ Return-Path: <SRS0=5/4N=36=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A73B5C352A3
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 14:50:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B50AC352A3
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 14:51:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 31A3B206D6
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 14:50:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DAA8920714
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 14:51:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FWzFee8d";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="Lw6tOnb+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 31A3B206D6
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cUMI7YaF";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=serbinski.com header.i=@serbinski.com header.b="yFuXwYDd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DAA8920714
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=serbinski.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 856FA847;
-	Mon, 10 Feb 2020 15:49:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 856FA847
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3154B1607;
+	Mon, 10 Feb 2020 15:50:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3154B1607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581346221;
-	bh=DqsO3hKrhBIUytPChLGv9w3E1546phFkWediNVVA8b8=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1581346283;
+	bh=yP6Tti5bfmPoc6wLyccAwd/OQzA+Hh9syFSxEr3FhkM=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FWzFee8dRXaq/R5dWyUSGIDpt6CEUy9i2fIlLCMXOu4/OO2br/Xz/COs+ajrt2vOe
-	 GG/KGxZiUR+gHATRiK92AJMGh7woUn/sXQ/7rx8rF3ih9eotSImSNbjXPRKPTAQkW4
-	 uwHTmyzP2TrGwIJ75P8CKRUpcLc3h4RbOqydze5k=
+	b=cUMI7YaFx9XMiBVovdveVMWvIa72dSDoE7phtMETFT11bILO0KjMvotGYgZPvqFg3
+	 Si9lrxL0y+ueSaRcaAq3dkDeFYeYWTVhPqfRSR9JfzXd4baMop02aUsocUaw+4uwJM
+	 iiUO/rwUu5vRqvOFWYYt5o+3Boihkd+9Td+l4bls=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 05DD8F8014F;
-	Mon, 10 Feb 2020 15:49:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A1A1DF80158;
+	Mon, 10 Feb 2020 15:50:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C1276F80157; Mon, 10 Feb 2020 15:49:24 +0100 (CET)
-Received: from hqnvemgate24.nvidia.com (hqnvemgate24.nvidia.com
- [216.228.121.143])
+ id 08ABAF8019B; Mon, 10 Feb 2020 15:50:29 +0100 (CET)
+Received: from mail.serbinski.com (mail.serbinski.com [162.218.126.2])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EC22BF800E7
- for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2020 15:49:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC22BF800E7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 08A61F8014F
+ for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2020 15:50:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 08A61F8014F
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
- header.b="Lw6tOnb+"
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by
- hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
- id <B5e416d300001>; Mon, 10 Feb 2020 06:48:16 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
- by hqpgpgate101.nvidia.com (PGP Universal service);
- Mon, 10 Feb 2020 06:49:19 -0800
-X-PGP-Universal: processed;
- by hqpgpgate101.nvidia.com on Mon, 10 Feb 2020 06:49:19 -0800
-Received: from [10.25.75.202] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 10 Feb
- 2020 14:49:13 +0000
-To: Jon Hunter <jonathanh@nvidia.com>, Dmitry Osipenko <digetx@gmail.com>
-References: <1580380422-3431-1-git-send-email-spujar@nvidia.com>
- <1580380422-3431-7-git-send-email-spujar@nvidia.com>
- <f8ed8c4a-af40-44b2-b720-4d3a9b660fda@gmail.com>
- <75a63cb3-7d79-7216-6791-3cec57464cd9@nvidia.com>
- <847f4512-7118-e087-1004-685e476e11d8@gmail.com>
- <3c19ef99-8051-76f7-a4d6-0d61182fe6e4@nvidia.com>
- <4c75fc51-fbfd-158f-a096-d4f178921ee3@nvidia.com>
-From: Sameer Pujar <spujar@nvidia.com>
-Message-ID: <ffff29e1-7ffb-01a0-a36a-fbc1e0604e5c@nvidia.com>
-Date: Mon, 10 Feb 2020 20:19:09 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.2
+ dkim=pass (1024-bit key) header.d=serbinski.com header.i=@serbinski.com
+ header.b="yFuXwYDd"
+Received: from localhost (unknown [127.0.0.1])
+ by mail.serbinski.com (Postfix) with ESMTP id 06191D006F9;
+ Mon, 10 Feb 2020 14:50:23 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at serbinski.com
+Received: from mail.serbinski.com ([127.0.0.1])
+ by localhost (mail.serbinski.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 4SG34I_usFwg; Mon, 10 Feb 2020 09:50:17 -0500 (EST)
+Received: from mail.serbinski.com (localhost [127.0.0.1])
+ by mail.serbinski.com (Postfix) with ESMTP id 4D479D00693;
+ Mon, 10 Feb 2020 09:50:17 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.serbinski.com 4D479D00693
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=serbinski.com;
+ s=default; t=1581346217;
+ bh=AM31Nu9OJOn3Ets32wl1am+N+bfHUPcUFazJCovf5Vw=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+ b=yFuXwYDdU7nP2Y6H636YQuCZ0iVIhRD8IXev+Cd1kaanj+pniISRIwhHjXMarSrpD
+ NTzrKINGDWQ3cyAS2G04cXl/akvTvU2Sibu2lyJbBX/dB24cVSSV45r/XPm8ZBc69s
+ i6Vw61cavVG6khsGcgUzp/2Jewf2eF7sj5HM5u4E=
 MIME-Version: 1.0
-In-Reply-To: <4c75fc51-fbfd-158f-a096-d4f178921ee3@nvidia.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Language: en-GB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
- t=1581346097; bh=pGRqxh5K8EuRcbN7wmMZRcTfJvaodHRotMWQZiA3Ab0=;
- h=X-PGP-Universal:CC:Subject:To:References:From:Message-ID:Date:
- User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
- X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
- Content-Language;
- b=Lw6tOnb+ikPrnt3kc9xzVkN/YrTCIVw0uDOdwsjasTHyrKtfOX6ofYuT2/D5ijo0H
- 24A7Vi9tGozF/cwHOAFqb4JFMZbhjXlzWVcF89l4acEl7Es2sH4jZWulLDOz1GscQT
- fVoFkqHPMOweMnnqq4VPaiUmAeuCT/cstefwq9Cgd7wK7gK5SBeDdzAj5WZtlQ2aqr
- YyNOKb+CQS6/omYObvyJsLqcD90X/z3VS+G/3u4K9v1LwcBer45pNdYPBXCgCpoAjp
- PGS5JCijnKZjoCoXOrSSSSMLW1Iwm3TsTlTXsea/aEn6NECDO67mFI8zTe6BFXHymT
- j923KetnGthqg==
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- atalambedu@nvidia.com, linux-kernel@vger.kernel.org, spujar@nvidia.com,
- lgirdwood@gmail.com, tiwai@suse.com, viswanathl@nvidia.com, sharadg@nvidia.com,
- robh+dt@kernel.org, thierry.reding@gmail.com, broonie@kernel.org,
- linux-tegra@vger.kernel.org, rlokhande@nvidia.com, mkumard@nvidia.com,
- dramesh@nvidia.com
-Subject: Re: [alsa-devel] [PATCH v2 6/9] ASoC: tegra: add Tegra186 based
-	DSPK driver
+Date: Mon, 10 Feb 2020 09:50:17 -0500
+From: Adam Serbinski <adam@serbinski.com>
+To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <20200210133143.GG7685@sirena.org.uk>
+References: <20200207205013.12274-1-adam@serbinski.com>
+ <20200209154748.3015-1-adam@serbinski.com>
+ <20200209154748.3015-3-adam@serbinski.com>
+ <20200210133143.GG7685@sirena.org.uk>
+User-Agent: Roundcube Webmail/1.4-beta
+Message-ID: <4df03448f7919187a8a056d3f10415ab@serbinski.com>
+X-Sender: adam@serbinski.com
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
+ linux-arm-msm@vger.kernel.org, Patrick Lai <plai@codeaurora.org>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+ Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+ Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [alsa-devel] [PATCH v2 2/8] ASoC: qdsp6: q6afe: add support to
+	pcm ports
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,47 +99,56 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-CgpPbiAyLzEwLzIwMjAgNTo1MiBQTSwgSm9uIEh1bnRlciB3cm90ZToKPiBPbiAxMC8wMi8yMDIw
-IDExOjE1LCBTYW1lZXIgUHVqYXIgd3JvdGU6Cj4+Cj4+IE9uIDIvNy8yMDIwIDExOjUyIFBNLCBE
-bWl0cnkgT3NpcGVua28gd3JvdGU6Cj4+PiBFeHRlcm5hbCBlbWFpbDogVXNlIGNhdXRpb24gb3Bl
-bmluZyBsaW5rcyBvciBhdHRhY2htZW50cwo+Pj4KPj4+Cj4+PiAwNy4wMi4yMDIwIDE0OjI2LCBT
-YW1lZXIgUHVqYXIg0L/QuNGI0LXRgjoKPj4+PiBPbiAyLzYvMjAyMCAxMDo0NSBQTSwgRG1pdHJ5
-IE9zaXBlbmtvIHdyb3RlOgo+Pj4+PiBFeHRlcm5hbCBlbWFpbDogVXNlIGNhdXRpb24gb3Blbmlu
-ZyBsaW5rcyBvciBhdHRhY2htZW50cwo+Pj4+Pgo+Pj4+Pgo+Pj4+PiAzMC4wMS4yMDIwIDEzOjMz
-LCBTYW1lZXIgUHVqYXIg0L/QuNGI0LXRgjoKPj4+Pj4+ICtzdGF0aWMgY29uc3Qgc3RydWN0IGRl
-dl9wbV9vcHMgdGVncmExODZfZHNwa19wbV9vcHMgPSB7Cj4+Pj4+PiArwqDCoMKgwqAgU0VUX1JV
-TlRJTUVfUE1fT1BTKHRlZ3JhMTg2X2RzcGtfcnVudGltZV9zdXNwZW5kLAo+Pj4+Pj4gK8KgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdGVncmExODZfZHNwa19y
-dW50aW1lX3Jlc3VtZSwgTlVMTCkKPj4+Pj4+ICvCoMKgwqDCoCBTRVRfTEFURV9TWVNURU1fU0xF
-RVBfUE1fT1BTKHBtX3J1bnRpbWVfZm9yY2Vfc3VzcGVuZCwKPj4+Pj4+ICvCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcG1f
-cnVudGltZV9mb3JjZV9yZXN1bWUpCj4+Pj4+PiArfTsKPj4+Pj4gQ291bGQgeW91IHBsZWFzZSBl
-eHBsYWluIHdoeSBkcml2ZXJzIG5lZWQgdGhlICJsYXRlIiBzeXN0ZW0gc2xlZXA/Cj4+Pj4gSXQg
-d2FzIGRvbmUgdG8gZW5zdXJlIGNvcmUgZHJpdmVycyBhcmUgc3VzcGVuZGVkIGZpcnN0IGFuZCBk
-ZWZlciB0aGUKPj4+PiBjb2RlYyBkcml2ZXIgc3VzcGVuZAo+Pj4gU3VzcGVuZCBvcmRlciBpcyBv
-cHBvc2l0ZSB0byB0aGUgZHJpdmVycyByZWdpc3RyYXRpb24gb3JkZXIuIElmIHRoZXJlIGlzCj4+
-PiBubyByZWFsIHByb2JsZW0gd2l0aCB0aGF0LCB0aGVuIHlvdSBzaG91bGQgdXNlIHRoZSBkZWZh
-dWx0IHN1c3BlbmQKPj4+IGxldmVsLiBQbGVhc2UgZG9uJ3QgdHJ5IHRvIGZpeCBhIG5vbi1leGlz
-dGVudCBwcm9ibGVtcy4KPj4gTm8uIFRoaXMgd2FzIGRvbmUgc3BlY2lmaWNhbGx5IHRvIGFsbG93
-IHNvdW5kIGNvcmUgdG8gZmlyc3Qgc3RvcCBhbnkKPj4gb25nb2luZyBhdWRpbyBhY3Rpdml0eSBk
-dXJpbmcgbm9ybWFsIHN1c3BlbmQgYW5kIGVuc3VyZSBhIHNhZmUgc3VzcGVuZAo+PiBvZiBBSFVC
-IGRldmljZXMgYnkgZG9pbmcgYSBMQVRFIHN1c3BlbmQuCj4gV2hhdCBEbWl0cnkgaXMgc2F5aW5n
-IGlzIHRoYXQgaWYgdGhlIERTUEsgZHJpdmVyIGlzIHJlZ2lzdGVyZWQgYWZ0ZXIgdGhlCj4gc291
-bmQgY29yZSB0aGVuIHdlIHdpbGwgbm90IG5lZWQgdG8gc3VzcGVuZCBpbiB0aGUgbGF0ZSBwaGFz
-ZS4gVGhlIERTUEsKPiBkZXZpY2Ugc2hvdWxkIG9ubHkgYmUgcmVnaXN0ZXJlZCBvbmNlIHRoZSBz
-b3VuZCBjb3JlIGlzIGxvYWRlZCwgYmVjYXVzZQo+IG90aGVyd2lzZSB3ZSBzaG91bGQgZmFpbCB0
-byByZWdpc3RlciBpdCB3aXRoIHRoZSBzb3VuZCBjb3JlLiBTbyBJIGRvbid0Cj4gdGhpbmsgd2Ug
-bmVlZCB0aGlzIHRvIGJlIGxhdGUgYWZ0ZXJhbGwuCgpJIHdhcyBvcmlnaW5hbGx5IHRoaW5raW5n
-IGlmIERNQSBpcyB0aGUgbWFpbiByZWFzb24gZm9yIHVzaW5nIExBVEUgCnN1c3BlbmQgZm9yIGF1
-ZGlvIGRyaXZlcnMgYXMgd2VsbC4gSSBkaWQgYSBzbWFsbCBzYW5pdHkgY2hlY2sgYW5kIAphcHBl
-YXJzIG5vcm1hbCBzdXNwZW5kIGlzIGZpbmUuIEkgd2lsbCB1cGRhdGUgdGhlIGRyaXZlcnMgd2l0
-aCBub3JtYWwgCnN1c3BlbmQuIElmIHdlIGNvbWUgYWNyb3NzIGFueSBpc3N1ZSBsYXRlciwgaXQg
-Y2FuIGJlIGFkZHJlc3NlZCAKc2VwYXJhdGVseS4gVGhhbmtzIERtaXRyeSBhbmQgSm9uLgo+Cj4g
-Sm9uCj4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
-c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwczov
-L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On 2020-02-10 08:31, Mark Brown wrote:
+> On Sun, Feb 09, 2020 at 10:47:42AM -0500, Adam Serbinski wrote:
+> 
+>> 
+>> +#define AFE_API_VERSION_PCM_CONFIG	0x1
+>> +/* Enumeration for the auxiliary PCM synchronization signal
+>> + * provided by an external source.
+>> + */
+>> +
+>> +#define AFE_PORT_PCM_SYNC_SRC_EXTERNAL 0x0
+>> +/*	Enumeration for the auxiliary PCM synchronization signal
+>> + * provided by an internal source.
+>> + */
+> 
+> This is a *weird* commenting style for these #defines and it's not
+> consistent within the block, I'm seeing at least 3 different styles.
+
+I will clean up the commenting.
+
+
+>> +	default:
+>> +		break;
+>> +	}
+> 
+> Why is this not returning an error on unsupported values?
+
+Only to be consistent with the pre-existing implementation for i2s 
+ports.
+I will add an error return.
+
+> 
+>> +
+>> +	switch (cfg->sample_rate) {
+>> +	case 8000:
+>> +		pcfg->pcm_cfg.frame_setting = AFE_PORT_PCM_BITS_PER_FRAME_128;
+>> +		break;
+>> +	case 16000:
+>> +		pcfg->pcm_cfg.frame_setting = AFE_PORT_PCM_BITS_PER_FRAME_64;
+>> +		break;
+>> +	}
+> 
+> Same here.
+
+I will also add the error return here.
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
