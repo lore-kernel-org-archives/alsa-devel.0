@@ -2,100 +2,94 @@ Return-Path: <SRS0=5/4N=36=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A49CC352A3
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 10:27:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 52011C352A3
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 10:48:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0B2022080C
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 10:27:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CBFEF20842
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 10:48:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eE68KUA5";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CNttfqco"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0B2022080C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uDItZtmo";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="GB+F6x/q"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CBFEF20842
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 61C171670;
-	Mon, 10 Feb 2020 11:26:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 61C171670
+	by alsa0.perex.cz (Postfix) with ESMTPS id 298F41664;
+	Mon, 10 Feb 2020 11:47:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 298F41664
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581330453;
-	bh=yMjqGIN74TyCpZ3H2GdUDozVdAix329JAXoKvyTQ1Yg=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1581331695;
+	bh=e5WD7Hr6MJ0Y3+wGpTiuSGkPGSg/Ktcznjh7FzD4Opo=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eE68KUA516Dhq02H8hW5tkXCFsq6lWlgOOOy4kU2aKe9VpOqRs/5TR8KQf0ZBOnPU
-	 ke0hmYS7GgzlIo3jHigoVEV1zY7SnX8tgiR9FKuKejx6semPSP1Osd2/tw3U6h9QAA
-	 JOAKGvVl0VR0y2t+/XzpF95XBXCaBzMydYE2djME=
+	b=uDItZtmoGWMaH57Kex+SwmxmRM0rGyTCciXL9giIAz92Kq5U3fR64feZ98JJ73rpD
+	 I/huCzM2g8KPlYmr5gzkdT6XqjKUdq7MTcE9jyNwMilbQ3rcC7MCejDWg7GkejkkPp
+	 fvusZLRlszuOktg3Cp35sM0DqIY7BLglsR76Lzq0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 34E32F802F9;
-	Mon, 10 Feb 2020 11:20:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4696AF8014F;
+	Mon, 10 Feb 2020 11:47:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DF0A2F80157; Mon, 10 Feb 2020 04:04:29 +0100 (CET)
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com
- [IPv6:2607:f8b0:4864:20::444])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 72BDDF80157; Mon, 10 Feb 2020 11:47:21 +0100 (CET)
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B09F5F80118
- for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2020 04:04:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B09F5F80118
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6DC27F800FD
+ for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2020 11:47:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DC27F800FD
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="CNttfqco"
-Received: by mail-pf1-x444.google.com with SMTP id 185so2979931pfv.3
- for <alsa-devel@alsa-project.org>; Sun, 09 Feb 2020 19:04:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to;
- bh=+v3tugkO1iOaOq7ovlKkaRUNoP5wxMdesvR7lwgSDp8=;
- b=CNttfqcoV4DUETNVZ151AX1GoPCGswSucCrZ7FqXJVVVd5FVzp1/G9yKj2WumW512R
- lzQr7kBs/olQiHV97kKC8r2U9K2qBBb4fICgK8DCNYDTQnfvr4BSgY+VttQ3AqvZPY1N
- 2bKC9pdtpKMS/sr26RmTDpMbyAeLEN1cScUKu8XC4QLKfjVAsV859IDi325uE9AZ3chG
- e0DQRaURNyp2ax7QHcgzaJ2FDULxpwTqhJsTExKwNNNZEqZOWTf7fEXEzM7SENOY9G+K
- kYvRztckLjngK++nKjDcYC0EP396Kwtu4zPBuacVCKea4XslKGtKT6G3DTWNyAn0pnQy
- TMVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=+v3tugkO1iOaOq7ovlKkaRUNoP5wxMdesvR7lwgSDp8=;
- b=b5Ltqv+OYtHTl8Sx161n24OZcCNalC+a0eoS5uw+lBjqRxndI2KATYmO6DZ3QLac4z
- Slh/mArvqJNmHGVX3pKIU8hbvmsjVuNvsD49yueLVEaRODkABQSl1LSUMe1Kb8GBcj7+
- getsiaUDI8Y9+ZhrXgVSOgcLOmbj01JpWqcWq59/dXs4ranRfGXn2UowVMpj0VWej0wi
- 6BfzRHyd4GvE368P0uklIgqxT7UrNx0fmANGwMcTqQ/nHJYsijJRmzjdowx4MVlH2o3A
- lf1K5cntJ0UzJo005uHEos26hiOHpUgZS5JJwJF9WtK5AsJ5SZ83vmT/SsuR5t5tYbt5
- RMQw==
-X-Gm-Message-State: APjAAAWa+E2c9v9sWJEndw+jfj90xD18yFZGLguZ9F0cYeo9tZ1Srars
- cEwLZ8myHYdLzIupEajHHA0=
-X-Google-Smtp-Source: APXvYqyqAkF1kb2L/Z2ThpDSVEyV9/PCas0aP0/u5srrP7gK+MpWwzSeiK32cpiFxtR4UwxsnRSVRQ==
-X-Received: by 2002:a65:68ce:: with SMTP id k14mr11674041pgt.336.1581303861067; 
- Sun, 09 Feb 2020 19:04:21 -0800 (PST)
-Received: from f3 (ag119225.dynamic.ppp.asahi-net.or.jp. [157.107.119.225])
- by smtp.gmail.com with ESMTPSA id x65sm10697309pfb.171.2020.02.09.19.04.19
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 09 Feb 2020 19:04:20 -0800 (PST)
-Date: Mon, 10 Feb 2020 12:04:16 +0900
-From: Benjamin Poirier <benjamin.poirier@gmail.com>
-To: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <20200210030416.GA3302@f3>
-References: <20191129144027.14765-1-perex@perex.cz> <20200210025249.GA2700@f3>
+ dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="GB+F6x/q"
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 01AAlEEC094006;
+ Mon, 10 Feb 2020 04:47:14 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1581331634;
+ bh=B8GRA+CrLBCOGT5Ccz74+e8To+cVE5Fs8SCDmKQIwrA=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=GB+F6x/qzwuL0HMOreac7zKVQQdL5DxjkgqgA0qQg5j7Qt5Y09lF3qlP4N5o27vGs
+ czS7WgoKIqBr61mKS6c9z5V631fFqAN3Wnvra6b/pHcwO8b4NywFv0JzEhUE9BnO40
+ NqqD8cFPsveU+/+a7yAEaBijwEnMs08Rhlw5arm4=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 01AAlEXB076613
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Mon, 10 Feb 2020 04:47:14 -0600
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Mon, 10
+ Feb 2020 04:47:13 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
+ Frontend Transport; Mon, 10 Feb 2020 04:47:13 -0600
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 01AAlBTe091641;
+ Mon, 10 Feb 2020 04:47:12 -0600
+To: Colin King <colin.king@canonical.com>, Liam Girdwood
+ <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela
+ <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ <alsa-devel@alsa-project.org>
+References: <20200210092423.327499-1-colin.king@canonical.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Message-ID: <bc05a46a-fc38-c95f-4aa1-25034d3eb6cc@ti.com>
+Date: Mon, 10 Feb 2020 12:47:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20200210025249.GA2700@f3>
-X-Mailman-Approved-At: Mon, 10 Feb 2020 11:20:06 +0100
-Cc: Takashi Iwai <tiwai@suse.de>,
- ALSA development <alsa-devel@alsa-project.org>,
- Kailang Yang <kailang@realtek.com>
-Subject: Re: [alsa-devel] [PATCH] ALSA: hda - fixup for the bass speaker on
- Lenovo Carbon X1 7th gen
+In-Reply-To: <20200210092423.327499-1-colin.king@canonical.com>
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [alsa-devel] [PATCH][V2] ASoC: ti: davinci-mcasp: remove
+ redundant assignment to variable ret
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,67 +102,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 2020/02/10 11:52 +0900, Benjamin Poirier wrote:
-> On 2019/11/29 15:40 +0100, Jaroslav Kysela wrote:
-> > The auto-parser assigns the bass speaker to DAC3 (NID 0x06) which
-> > is without the volume control. I do not see a reason to use DAC2,
-> > because the shared output to all speakers produces the sufficient
-> > and well balanced sound. The stereo support is enough for this
-> > purpose (laptop).
-> > 
-> > Signed-off-by: Jaroslav Kysela <perex@perex.cz>
-> > ---
-> >  sound/pci/hda/patch_realtek.c | 17 +++++++++++++++++
-> >  1 file changed, 17 insertions(+)
-> 
-> This patch is now commit d2cd795c4ece ("ALSA: hda - fixup for the bass
-> speaker on Lenovo Carbon X1 7th gen"). There was then followup commit
-> 86353aa70ed0 ("ALSA: hda/realtek - Add quirk for the bass speaker on
-> Lenovo Yoga X1 7th gen").
-
-Sorry, commit id 86353aa70ed0 is the backport on stable/linux-5.4.y
-branch, mainline id is:
-54a6a7dc107d ("ALSA: hda/realtek - Add quirk for the bass speaker on
-Lenovo Yoga X1 7th gen")
-
-> 
-> As a result of those, the maximum sound output level on my laptop
-> reduced to ~60% of what it used to be.
-> 
-> Moreover, the quirk name is inaccurate. I have a "ThinkPad X1 Carbon
-> 7th" (as confirmed by dmidecode) and its audio device id is:
->         Subsystem: Lenovo Cannon Point-LP High Definition Audio Controller [17aa:2292]
-> but the patches list:
-> 	SND_PCI_QUIRK(0x17aa, 0x2292, "Thinkpad X1 Yoga 7th", ALC285_FIXUP_SPEAKER2_TO_DAC1),
-> 	SND_PCI_QUIRK(0x17aa, 0x2293, "Thinkpad X1 Carbon 7th", ALC295_FIXUP_DISABLE_DAC3),
-> (notice the mixup of id 0x2292).
-> 
-> Applying the following diff brings the volume back to previous levels
-> and brings functional volume control:
-> 
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> index 68832f52c1ad..ed41e3fb5566 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -7260,7 +7260,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
->  	SND_PCI_QUIRK(0x17aa, 0x224c, "Thinkpad", ALC298_FIXUP_TPT470_DOCK),
->  	SND_PCI_QUIRK(0x17aa, 0x224d, "Thinkpad", ALC298_FIXUP_TPT470_DOCK),
->  	SND_PCI_QUIRK(0x17aa, 0x225d, "Thinkpad T480", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
-> -	SND_PCI_QUIRK(0x17aa, 0x2292, "Thinkpad X1 Yoga 7th", ALC285_FIXUP_SPEAKER2_TO_DAC1),
-> +	SND_PCI_QUIRK(0x17aa, 0x2292, "Thinkpad X1 Yoga 7th", ALC295_FIXUP_DISABLE_DAC3),
->  	SND_PCI_QUIRK(0x17aa, 0x2293, "Thinkpad X1 Carbon 7th", ALC285_FIXUP_SPEAKER2_TO_DAC1),
->  	SND_PCI_QUIRK(0x17aa, 0x30bb, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
->  	SND_PCI_QUIRK(0x17aa, 0x30e2, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
-> 
-> I can send a patch to fix the problems for my laptop but then I don't
-> know what's up for other devices that built on
-> ALC285_FIXUP_SPEAKER2_TO_DAC1.
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+CgpPbiAxMC8wMi8yMDIwIDExLjI0LCBDb2xpbiBLaW5nIHdyb3RlOgo+IEZyb206IENvbGluIElh
+biBLaW5nIDxjb2xpbi5raW5nQGNhbm9uaWNhbC5jb20+Cj4gCj4gVGhlIGFzc2lnbm1lbnQgdG8g
+cmV0IGlzIHJlZHVuZGFudCBhcyBpdCBpcyBub3QgdXNlZCBpbiB0aGUgZXJyb3IKPiByZXR1cm4g
+cGF0aCBhbmQgaGVuY2UgY2FuIGJlIHJlbW92ZWQuCgpBY2tlZC1ieTogUGV0ZXIgVWpmYWx1c2kg
+PHBldGVyLnVqZmFsdXNpQHRpLmNvbT4KCj4gQWRkcmVzc2VzLUNvdmVyaXR5OiAoIlVudXNlZCB2
+YWx1ZSIpCj4gU2lnbmVkLW9mZi1ieTogQ29saW4gSWFuIEtpbmcgPGNvbGluLmtpbmdAY2Fub25p
+Y2FsLmNvbT4KPiAtLS0KPiBWMjogZXhwbGljaXRseSByZXR1cm4gTlVMTCB0byBpbXByb3ZlIHJl
+YWRhYmlsaXR5LiBUaGFua3MgdG8gRGFuIENhcnBlbnRlciBmb3IKPiAgICAgc3VnZ2VzdGluZyB0
+aGlzIGltcHJvdmVtZW50Lgo+IC0tLQo+ICBzb3VuZC9zb2MvdGkvZGF2aW5jaS1tY2FzcC5jIHwg
+NiArKy0tLS0KPiAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMo
+LSkKPiAKPiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL3RpL2RhdmluY2ktbWNhc3AuYyBiL3NvdW5k
+L3NvYy90aS9kYXZpbmNpLW1jYXNwLmMKPiBpbmRleCBlMWU5MzdlYjFkYzEuLjZmOTc2MzljNDZj
+ZCAxMDA2NDQKPiAtLS0gYS9zb3VuZC9zb2MvdGkvZGF2aW5jaS1tY2FzcC5jCj4gKysrIGIvc291
+bmQvc29jL3RpL2RhdmluY2ktbWNhc3AuYwo+IEBAIC0xNzY0LDEwICsxNzY0LDggQEAgc3RhdGlj
+IHN0cnVjdCBkYXZpbmNpX21jYXNwX3BkYXRhICpkYXZpbmNpX21jYXNwX3NldF9wZGF0YV9mcm9t
+X29mKAo+ICAJfSBlbHNlIGlmIChtYXRjaCkgewo+ICAJCXBkYXRhID0gZGV2bV9rbWVtZHVwKCZw
+ZGV2LT5kZXYsIG1hdGNoLT5kYXRhLCBzaXplb2YoKnBkYXRhKSwKPiAgCQkJCSAgICAgR0ZQX0tF
+Uk5FTCk7Cj4gLQkJaWYgKCFwZGF0YSkgewo+IC0JCQlyZXQgPSAtRU5PTUVNOwo+IC0JCQlyZXR1
+cm4gcGRhdGE7Cj4gLQkJfQo+ICsJCWlmICghcGRhdGEpCj4gKwkJCXJldHVybiBOVUxMOwo+ICAJ
+fSBlbHNlIHsKPiAgCQkvKiBjb250cm9sIHNob3VsZG4ndCByZWFjaCBoZXJlLiBzb21ldGhpbmcg
+aXMgd3JvbmcgKi8KPiAgCQlyZXQgPSAtRUlOVkFMOwo+IAoKLSBQw6l0ZXIKClRleGFzIEluc3Ry
+dW1lbnRzIEZpbmxhbmQgT3ksIFBvcmtrYWxhbmthdHUgMjIsIDAwMTgwIEhlbHNpbmtpLgpZLXR1
+bm51cy9CdXNpbmVzcyBJRDogMDYxNTUyMS00LiBLb3RpcGFpa2thL0RvbWljaWxlOiBIZWxzaW5r
+aQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
+dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWls
+bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
