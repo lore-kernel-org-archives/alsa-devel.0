@@ -2,69 +2,66 @@ Return-Path: <SRS0=5/4N=36=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B8F1C352A4
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 06:17:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68892C352A4
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 07:31:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8EBE520870
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 06:17:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7CC8520870
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Feb 2020 07:31:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eEYp2wWw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8EBE520870
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LVIHkGLA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7CC8520870
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 28A91844;
-	Mon, 10 Feb 2020 07:16:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28A91844
+	by alsa0.perex.cz (Postfix) with ESMTPS id 83D8C1664;
+	Mon, 10 Feb 2020 08:30:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 83D8C1664
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581315440;
-	bh=woiZcTLFw8hSzD3/8xWUmenonxVqlapgDYca/VHrxwg=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=eEYp2wWwE/ubKpqf8bOMG88ra0rD+r7GFNpo9vLbbSc/AnTt1/XaTKV2DTKzVqCkX
-	 EKtCWgEIrfRsLZBQfpftvBZ24j8IWQKcErOtcbjjT/6bbg9tOzpuZlZFbQBV4FCfIb
-	 MR7eGIfAqZ5Ge+wJ3rsiqnQiXaUgActGRfiR9jJ0=
+	s=default; t=1581319903;
+	bh=pxSEY3KPkaiimNDApzsNq/iUig18nC7tHqG5tEg3ABA=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=LVIHkGLAgDKB3JOsWXFIOUH9B+cdWgkIZZ4gNE9czry9teyaSErbgLL2/x0a0rOw9
+	 jnRd5PYcIb3Wlqo6BRF0ZNCnBFbCcxScBljnPASRTsUydUgFGQVNtZBx5lu8RuSWSw
+	 Ym/0Fw6f4NASYL0RLlPtBsm61mldyYep/XW8FSdA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1265EF8014F;
-	Mon, 10 Feb 2020 07:16:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 47B32F8014F;
+	Mon, 10 Feb 2020 08:30:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DE303F80157; Mon, 10 Feb 2020 07:16:10 +0100 (CET)
-Received: from huawei.com (szxga04-in.huawei.com [45.249.212.190])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 40AE6F80157; Mon, 10 Feb 2020 08:30:44 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B4EC7F800FD
- for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2020 07:16:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4EC7F800FD
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
- by Forcepoint Email with ESMTP id 3918F9EC00137237D55D;
- Mon, 10 Feb 2020 14:15:56 +0800 (CST)
-Received: from localhost (10.133.213.239) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.439.0; Mon, 10 Feb 2020
- 14:15:48 +0800
-From: YueHaibing <yuehaibing@huawei.com>
-To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
- <tiwai@suse.com>, <shawnguo@kernel.org>, <s.hauer@pengutronix.de>,
- <kernel@pengutronix.de>, <festevam@gmail.com>, <linux-imx@nxp.com>,
- <pierre-louis.bossart@linux.intel.com>, <yuehaibing@huawei.com>,
- <daniel.baluta@nxp.com>, <krzk@kernel.org>
-Date: Mon, 10 Feb 2020 14:15:44 +0800
-Message-ID: <20200210061544.7600-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
-MIME-Version: 1.0
-X-Originating-IP: [10.133.213.239]
-X-CFilter-Loop: Reflected
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-Subject: [alsa-devel] [PATCH -next] ASoC: SOF: imx8: Fix randbuild error
+ by alsa1.perex.cz (Postfix) with ESMTPS id 45CCCF800FD
+ for <alsa-devel@alsa-project.org>; Mon, 10 Feb 2020 08:30:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45CCCF800FD
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 55EFFACD6;
+ Mon, 10 Feb 2020 07:30:38 +0000 (UTC)
+Date: Mon, 10 Feb 2020 08:30:38 +0100
+Message-ID: <s5hy2ta5275.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Colin King <colin.king@canonical.com>
+In-Reply-To: <20200208222006.37376-1-colin.king@canonical.com>
+References: <20200208222006.37376-1-colin.king@canonical.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
+Subject: Re: [alsa-devel] [PATCH] ALSA: hdsp: remove redundant assignment to
+	variable err
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,44 +79,22 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-when do randconfig like this:
-CONFIG_SND_SOC_SOF_IMX8_SUPPORT=y
-CONFIG_SND_SOC_SOF_IMX8=y
-CONFIG_SND_SOC_SOF_OF=y
-CONFIG_IMX_DSP=m
-CONFIG_IMX_SCU=y
+On Sat, 08 Feb 2020 23:20:06 +0100,
+Colin King wrote:
+> 
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> Variable err is being assigned with a value that is never read, it is
+> assigned a new value in the next statement. The assignment is redundant
+> and can be removed.
+> 
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-there is a link error:
-
-sound/soc/sof/imx/imx8.o: In function 'imx8_send_msg':
-imx8.c:(.text+0x380): undefined reference to 'imx_dsp_ring_doorbell'
-
-Select IMX_DSP in SND_SOC_SOF_IMX8_SUPPORT to fix this
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Fixes: f9ad75468453 ("ASoC: SOF: imx: fix reverse CONFIG_SND_SOC_SOF_OF dependency")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- sound/soc/sof/imx/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/sof/imx/Kconfig b/sound/soc/sof/imx/Kconfig
-index bae4f7b..81274906 100644
---- a/sound/soc/sof/imx/Kconfig
-+++ b/sound/soc/sof/imx/Kconfig
-@@ -14,7 +14,7 @@ if SND_SOC_SOF_IMX_TOPLEVEL
- config SND_SOC_SOF_IMX8_SUPPORT
- 	bool "SOF support for i.MX8"
- 	depends on IMX_SCU
--	depends on IMX_DSP
-+	select IMX_DSP
- 	help
- 	  This adds support for Sound Open Firmware for NXP i.MX8 platforms
- 	  Say Y if you have such a device.
--- 
-2.7.4
+Thanks, applied.
 
 
+Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
