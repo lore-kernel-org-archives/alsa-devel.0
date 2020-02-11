@@ -2,67 +2,83 @@ Return-Path: <SRS0=t/pq=4B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CEFF1C2BA83
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 06:36:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0404DC2BA83
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 06:37:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 57A972173E
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 06:36:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 82D93217F4
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 06:37:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Qm+78Xb0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 57A972173E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Szb8rROk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 82D93217F4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=alum.mit.edu
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B71E81662;
-	Thu, 13 Feb 2020 07:35:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B71E81662
+	by alsa0.perex.cz (Postfix) with ESMTPS id DF4CB167D;
+	Thu, 13 Feb 2020 07:36:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF4CB167D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581575781;
-	bh=pupgiMjEB6M8ju90nTnKomWvEM9Edt1CI+31lOLdPd0=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Qm+78Xb0/5tj4xMnvWjuLvt3IUnBPbYl4DHJFLXQrXTpcf0cfdrbTXQ/xzJPhwW2Q
-	 VhsR4NCgy+YDid1mkNk9aeWso/AkQ5PpPZd4t2KlED8KwZxVO8sP/uXruNCRs/k8Gs
-	 5pQnwg360JDHoWX4W5jU/Qdsu4qoVvoMGgbTyYDA=
+	s=default; t=1581575855;
+	bh=I45KEfP+DoxjRLgCovCDSp+XOKQ3I8bi8BYGibIbUH8=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Szb8rROk92pDseK0iy/nmBw0PorqRJpma+KyJqfALO76VfTuNzzaFr4WChT/V8vTI
+	 Ig/kQLb8N0xtUwSBmqXFoa74jP1t3cwuF6+j25BhFnzX/Q4enEhx6h/bep5vudGWjO
+	 MXkHhbtDqgGGB5i2MSddXAQtMKfp8rvfYHQRZfHY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2DB20F80138;
-	Thu, 13 Feb 2020 07:35:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6DFDCF80146;
+	Thu, 13 Feb 2020 07:36:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DD358F80145; Thu, 13 Feb 2020 07:35:29 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 6B401F8013E; Tue, 11 Feb 2020 17:22:41 +0100 (CET)
+Received: from mail-qt1-f193.google.com (mail-qt1-f193.google.com
+ [209.85.160.193])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 41462F80138
- for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 07:35:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41462F80138
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id DE7FBACE8;
- Thu, 13 Feb 2020 06:35:25 +0000 (UTC)
-Date: Thu, 13 Feb 2020 07:35:25 +0100
-Message-ID: <s5h7e0ryoya.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87wo8rqfi3.wl-kuninori.morimoto.gx@renesas.com>
-References: <87blq3ru4w.wl-kuninori.morimoto.gx@renesas.com>
- <87wo8rqfi3.wl-kuninori.morimoto.gx@renesas.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH 10/10] ASoC: soc.h: add
-	for_each_pcm_stream()
+ by alsa1.perex.cz (Postfix) with ESMTPS id D9A87F800E7
+ for <alsa-devel@alsa-project.org>; Tue, 11 Feb 2020 17:22:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9A87F800E7
+Received: by mail-qt1-f193.google.com with SMTP id d5so8380035qto.0
+ for <alsa-devel@alsa-project.org>; Tue, 11 Feb 2020 08:22:38 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=8vKDSqnHXMxM6UbZpMgqezFGV7iFRtf6ymNXpe/ujkk=;
+ b=GXSbm+/AHxRK7NDKwkAIDxu9zsXOaAamx0kGRrx5N3rHH3hxMXeEFJBEAlRqIId623
+ syLd23ySnmAcpO3COumjwF6iG1ckiSLYuj329WCVFW+pAO6DHQDN7jhmGDQUF9d0t2Dx
+ kN/3MnhxCZkeQseoYhoswlStObKm8CLMK9z6ShrO3zlsX6etAripzKPhyfW4nG/ICXmY
+ xGtcWD+yHw/70DIemkL+SOKl6pCffKAN8OCdslDBGOGacqbIpF1I4bIqhYAaqgnKUJC4
+ 2caiMlYHsiAbhVCFWfIXWJ4wRF7nuMSCBYJNea1I75gwOeqS47MzYMSsxBpKPJrAtJVc
+ ziYQ==
+X-Gm-Message-State: APjAAAUf9VFtMHuDGASFsYT/maNiKo1HMBUZdElJHugKNvFXo/uwfS4T
+ JQhB43Q4rjo5ztomQ8ST9Bc=
+X-Google-Smtp-Source: APXvYqwwPXIFhlNKe/TmTl7Jr5C5T5vcDNDRHUN6KwtQ8wLSYF8MesauojL3eZcGJXM+s29O2pi9lw==
+X-Received: by 2002:aed:38c2:: with SMTP id k60mr3178211qte.375.1581438156499; 
+ Tue, 11 Feb 2020 08:22:36 -0800 (PST)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+ by smtp.gmail.com with ESMTPSA id v10sm2312403qtq.58.2020.02.11.08.22.35
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 11 Feb 2020 08:22:36 -0800 (PST)
+From: Arvind Sankar <nivedita@alum.mit.edu>
+To: Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>
+Date: Tue, 11 Feb 2020 11:22:35 -0500
+Message-Id: <20200211162235.1639889-1-nivedita@alum.mit.edu>
+X-Mailer: git-send-email 2.24.1
+MIME-Version: 1.0
+X-Mailman-Approved-At: Thu, 13 Feb 2020 07:36:42 +0100
+Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: [alsa-devel] [PATCH] ALSA: usb-audio: Apply sample rate quirk for
+	Audioengine D1
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,149 +96,44 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 13 Feb 2020 05:26:53 +0100,
-Kuninori Morimoto wrote:
-> 
-> 
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> 
-> ALSA SoC has SNDRV_PCM_STREAM_PLAYBACK/CAPTURE everywhere.
-> Having for_each_xxxx macro is useful.
-> This patch adds for_each_pcm_stream() for it.
+The Audioengine D1 (0x2912:0x30c8) does support reading the sample rate,
+but it returns the rate in byte-reversed order.
 
-This macro can be put in sound/pcm.h.  The similar pattern is found
-also generically in many non-ASoC codes, too.
+When setting sampling rate, the driver produces these warning messages:
+[168840.944226] usb 3-2.2: current rate 4500480 is different from the runtime rate 44100
+[168854.930414] usb 3-2.2: current rate 8436480 is different from the runtime rate 48000
+[168905.185825] usb 3-2.1.2: current rate 30465 is different from the runtime rate 96000
 
+As can be seen from the hexadecimal conversion, the current rate read
+back is byte-reversed from the rate that was set.
 
-thanks,
+44100 == 0x00ac44, 4500480 == 0x44ac00
+48000 == 0x00bb80, 8436480 == 0x80bb00
+96000 == 0x017700,   30465 == 0x007701
 
-Takashi
+Rather than implementing a new quirk to reverse the order, just skip
+checking the rate to avoid spamming the log.
 
-> 
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
->  include/sound/soc.h          |  5 +++++
->  sound/soc/fsl/fsl_asrc_dma.c |  4 ++--
->  sound/soc/soc-core.c         | 31 +++++++++++++------------------
->  3 files changed, 20 insertions(+), 20 deletions(-)
-> 
-> diff --git a/include/sound/soc.h b/include/sound/soc.h
-> index f0e4f36f83bf..58af52efa07d 100644
-> --- a/include/sound/soc.h
-> +++ b/include/sound/soc.h
-> @@ -419,6 +419,11 @@ enum snd_soc_card_subclass {
->  	SND_SOC_CARD_CLASS_RUNTIME	= 1,
->  };
->  
-> +#define for_each_pcm_stream(stream) \
-> +	for (stream  = SNDRV_PCM_STREAM_PLAYBACK;	\
-> +	     stream <= SNDRV_PCM_STREAM_LAST;		\
-> +	     stream++)
-> +
->  int snd_soc_register_card(struct snd_soc_card *card);
->  int snd_soc_unregister_card(struct snd_soc_card *card);
->  int devm_snd_soc_register_card(struct device *dev, struct snd_soc_card *card);
-> diff --git a/sound/soc/fsl/fsl_asrc_dma.c b/sound/soc/fsl/fsl_asrc_dma.c
-> index ece130f59d15..2f5a62381f94 100644
-> --- a/sound/soc/fsl/fsl_asrc_dma.c
-> +++ b/sound/soc/fsl/fsl_asrc_dma.c
-> @@ -400,7 +400,7 @@ static int fsl_asrc_dma_pcm_new(struct snd_soc_component *component,
->  		return ret;
->  	}
->  
-> -	for (i = SNDRV_PCM_STREAM_PLAYBACK; i <= SNDRV_PCM_STREAM_LAST; i++) {
-> +	for_each_pcm_stream(i) {
->  		substream = pcm->streams[i].substream;
->  		if (!substream)
->  			continue;
-> @@ -428,7 +428,7 @@ static void fsl_asrc_dma_pcm_free(struct snd_soc_component *component,
->  	struct snd_pcm_substream *substream;
->  	int i;
->  
-> -	for (i = SNDRV_PCM_STREAM_PLAYBACK; i <= SNDRV_PCM_STREAM_LAST; i++) {
-> +	for_each_pcm_stream(i) {
->  		substream = pcm->streams[i].substream;
->  		if (!substream)
->  			continue;
-> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index 068d809c349a..dc58ce766f3b 100644
-> --- a/sound/soc/soc-core.c
-> +++ b/sound/soc/soc-core.c
-> @@ -431,6 +431,7 @@ static struct snd_soc_pcm_runtime *soc_new_pcm_runtime(
->  	struct snd_soc_component *component;
->  	struct device *dev;
->  	int ret;
-> +	int stream;
->  
->  	/*
->  	 * for rtd->dev
-> @@ -465,10 +466,10 @@ static struct snd_soc_pcm_runtime *soc_new_pcm_runtime(
->  
->  	rtd->dev = dev;
->  	INIT_LIST_HEAD(&rtd->list);
-> -	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_PLAYBACK].be_clients);
-> -	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_CAPTURE].be_clients);
-> -	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_PLAYBACK].fe_clients);
-> -	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_CAPTURE].fe_clients);
-> +	for_each_pcm_stream(stream) {
-> +		INIT_LIST_HEAD(&rtd->dpcm[stream].be_clients);
-> +		INIT_LIST_HEAD(&rtd->dpcm[stream].fe_clients);
-> +	}
->  	dev_set_drvdata(dev, rtd);
->  	INIT_DELAYED_WORK(&rtd->delayed_work, close_delayed_work);
->  
-> @@ -558,17 +559,14 @@ int snd_soc_suspend(struct device *dev)
->  	snd_soc_flush_all_delayed_work(card);
->  
->  	for_each_card_rtds(card, rtd) {
-> +		int stream;
->  
->  		if (rtd->dai_link->ignore_suspend)
->  			continue;
->  
-> -		snd_soc_dapm_stream_event(rtd,
-> -					  SNDRV_PCM_STREAM_PLAYBACK,
-> -					  SND_SOC_DAPM_STREAM_SUSPEND);
-> -
-> -		snd_soc_dapm_stream_event(rtd,
-> -					  SNDRV_PCM_STREAM_CAPTURE,
-> -					  SND_SOC_DAPM_STREAM_SUSPEND);
-> +		for_each_pcm_stream(stream)
-> +			snd_soc_dapm_stream_event(rtd, stream,
-> +						  SND_SOC_DAPM_STREAM_SUSPEND);
->  	}
->  
->  	/* Recheck all endpoints too, their state is affected by suspend */
-> @@ -664,17 +662,14 @@ static void soc_resume_deferred(struct work_struct *work)
->  	}
->  
->  	for_each_card_rtds(card, rtd) {
-> +		int stream;
->  
->  		if (rtd->dai_link->ignore_suspend)
->  			continue;
->  
-> -		snd_soc_dapm_stream_event(rtd,
-> -					  SNDRV_PCM_STREAM_PLAYBACK,
-> -					  SND_SOC_DAPM_STREAM_RESUME);
-> -
-> -		snd_soc_dapm_stream_event(rtd,
-> -					  SNDRV_PCM_STREAM_CAPTURE,
-> -					  SND_SOC_DAPM_STREAM_RESUME);
-> +		for_each_pcm_stream(stream)
-> +			snd_soc_dapm_stream_event(rtd, stream,
-> +						  SND_SOC_DAPM_STREAM_RESUME);
->  	}
->  
->  	/* unmute any active DACs */
-> -- 
-> 2.17.1
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
+Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+---
+ sound/usb/quirks.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 3a5242e383b2..7f558f4b4520 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1440,6 +1440,7 @@ bool snd_usb_get_sample_rate_quirk(struct snd_usb_audio *chip)
+ 	case USB_ID(0x1395, 0x740a): /* Sennheiser DECT */
+ 	case USB_ID(0x1901, 0x0191): /* GE B850V3 CP2114 audio interface */
+ 	case USB_ID(0x21b4, 0x0081): /* AudioQuest DragonFly */
++	case USB_ID(0x2912, 0x30c8): /* Audioengine D1 */
+ 		return true;
+ 	}
+ 
+-- 
+2.24.1
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
