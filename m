@@ -4,61 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C5B0C352A3
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 15:53:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7B25C352A3
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 15:54:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CC03820714
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 15:53:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 42EE420714
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 15:54:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Sp9du30Q"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC03820714
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="n9nFqQgF"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 42EE420714
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 38001166C;
-	Tue, 11 Feb 2020 16:52:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38001166C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9D5AD85D;
+	Tue, 11 Feb 2020 16:53:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D5AD85D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581436425;
-	bh=Sx3yCCXwAYENAHVmYViLVB6MOlxrwBEFpWrhBci4fps=;
+	s=default; t=1581436462;
+	bh=CCNMwGixwnXz0RFp7j30gCStSb6vjuPXvFakhdNKdk8=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=Sp9du30QXy2dQCGsEKe67Utp8YiUS5IV7ER+RxQqzl7oGkNK/HYMq2lyijrjhnk5Q
-	 1MI6jenVdBdquEThD/5pNSY/8VY+6wEXQ3VSekhZxmO8K9ljyefncHC30x1K87E7Ns
-	 voZP4ubnbNkg8EngGguXimTEh2AQTDEKgMCxiFPU=
+	b=n9nFqQgFEKAO4C24vpqBNfBCDCaZRK9gkA9NSC2ifmJQFhExtLjYceaOZyEZMBKyO
+	 MUjHItNm85fscpse+AaLW9DdYF/SZ9bgI7AZM3+ztT6khr3UcM5Pvz8BB7SpIp6jDR
+	 cvoJulPEP18Z8O6MI+6oSCP+Kzy+1HQ5dX5zHi/c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 96312F802BD;
-	Tue, 11 Feb 2020 16:48:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 741BEF802C3;
+	Tue, 11 Feb 2020 16:48:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7F2F9F802A2; Tue, 11 Feb 2020 16:48:42 +0100 (CET)
+ id 8EE91F802C3; Tue, 11 Feb 2020 16:48:46 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 19FEAF8028A
- for <alsa-devel@alsa-project.org>; Tue, 11 Feb 2020 16:48:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 19FEAF8028A
+ by alsa1.perex.cz (Postfix) with ESMTP id C2E8EF80292
+ for <alsa-devel@alsa-project.org>; Tue, 11 Feb 2020 16:48:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2E8EF80292
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 64AC9FEC;
- Tue, 11 Feb 2020 07:48:35 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0F9B51045;
+ Tue, 11 Feb 2020 07:48:40 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DD5B43F68E;
- Tue, 11 Feb 2020 07:48:34 -0800 (PST)
-Date: Tue, 11 Feb 2020 15:48:33 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 866AB3F68E;
+ Tue, 11 Feb 2020 07:48:39 -0800 (PST)
+Date: Tue, 11 Feb 2020 15:48:38 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-In-Reply-To: <20200210151402.29634-1-peter.ujfalusi@ti.com>
-Message-Id: <applied-20200210151402.29634-1-peter.ujfalusi@ti.com>
+To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+In-Reply-To: <20200129220726.31792-9-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20200129220726.31792-9-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com,
- tiwai@suse.com, linux-kernel@vger.kernel.org, vkoul@kernel.org,
- Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ALSA: dmaengine_pcm: Consider DMA cache
-	caused delay in pointer callback" to the asoc tree
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Keyon Jie <yang.jie@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [alsa-devel] Applied "ASoC: SOF: Intel: cnl: Implement feature to
+	support DSP D0i3 in S0" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,7 +78,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ALSA: dmaengine_pcm: Consider DMA cache caused delay in pointer callback
+   ASoC: SOF: Intel: cnl: Implement feature to support DSP D0i3 in S0
 
 has been applied to the asoc tree at
 
@@ -104,43 +103,292 @@ to this mail.
 Thanks,
 Mark
 
-From fa1f875c120fa44572c561d86022af2f6b0774c7 Mon Sep 17 00:00:00 2001
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Mon, 10 Feb 2020 17:14:02 +0200
-Subject: [PATCH] ALSA: dmaengine_pcm: Consider DMA cache caused delay in
- pointer callback
+From 63e51fd33fef04b634a0c32ae491ab16a19cb17c Mon Sep 17 00:00:00 2001
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Date: Wed, 29 Jan 2020 16:07:25 -0600
+Subject: [PATCH] ASoC: SOF: Intel: cnl: Implement feature to support DSP D0i3
+ in S0
 
-Some DMA engines can have big FIFOs which adds to the latency.
-The DMAengine framework can report the FIFO utilization in bytes. Use this
-information for the delay reporting.
+This patch implements support for DSP D0i3 when the system
+is in S0. The basic idea is to schedule a delayed work after
+every successful IPC TX that checks if there are only
+D0I3-compatible streams active and if so transition
+the DSP to D0I3.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
-Link: https://lore.kernel.org/r/20200210151402.29634-1-peter.ujfalusi@ti.com
+With the introduction of DSP D0I3 in S0, we need to
+ensure that the DSP is in D0I0 before sending any new
+IPCs. The exception for this would be the
+compact IPCs that are used to set the DSP in
+D0I3/D0I0 states.
+
+Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20200129220726.31792-9-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/core/pcm_dmaengine.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/soc/sof/intel/cnl.c     | 37 +++++++++++++++++++++++++++------
+ sound/soc/sof/intel/hda-dsp.c | 39 +++++++++++++++++++++++++++++++++--
+ sound/soc/sof/intel/hda.c     |  5 +++++
+ sound/soc/sof/intel/hda.h     | 11 ++++++++++
+ sound/soc/sof/ipc.c           | 29 ++++++++++++++++++++++++--
+ sound/soc/sof/sof-priv.h      |  3 +++
+ 6 files changed, 114 insertions(+), 10 deletions(-)
 
-diff --git a/sound/core/pcm_dmaengine.c b/sound/core/pcm_dmaengine.c
-index 5749a8a49784..d8be7b488162 100644
---- a/sound/core/pcm_dmaengine.c
-+++ b/sound/core/pcm_dmaengine.c
-@@ -247,9 +247,14 @@ snd_pcm_uframes_t snd_dmaengine_pcm_pointer(struct snd_pcm_substream *substream)
+diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
+index 9e2d8afe0535..8a59fec72919 100644
+--- a/sound/soc/sof/intel/cnl.c
++++ b/sound/soc/sof/intel/cnl.c
+@@ -171,23 +171,48 @@ static bool cnl_compact_ipc_compress(struct snd_sof_ipc_msg *msg,
+ static int cnl_ipc_send_msg(struct snd_sof_dev *sdev,
+ 			    struct snd_sof_ipc_msg *msg)
+ {
++	struct sof_intel_hda_dev *hdev = sdev->pdata->hw_pdata;
++	struct sof_ipc_cmd_hdr *hdr;
+ 	u32 dr = 0;
+ 	u32 dd = 0;
  
- 	status = dmaengine_tx_status(prtd->dma_chan, prtd->cookie, &state);
- 	if (status == DMA_IN_PROGRESS || status == DMA_PAUSED) {
-+		struct snd_pcm_runtime *runtime = substream->runtime;
-+
- 		buf_size = snd_pcm_lib_buffer_bytes(substream);
- 		if (state.residue > 0 && state.residue <= buf_size)
- 			pos = buf_size - state.residue;
-+
-+		runtime->delay = bytes_to_frames(runtime,
-+						 state.in_flight_bytes);
++	/*
++	 * Currently the only compact IPC supported is the PM_GATE
++	 * IPC which is used for transitioning the DSP between the
++	 * D0I0 and D0I3 states. And these are sent only during the
++	 * set_power_state() op. Therefore, there will never be a case
++	 * that a compact IPC results in the DSP exiting D0I3 without
++	 * the host and FW being in sync.
++	 */
+ 	if (cnl_compact_ipc_compress(msg, &dr, &dd)) {
+ 		/* send the message via IPC registers */
+ 		snd_sof_dsp_write(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCIDD,
+ 				  dd);
+ 		snd_sof_dsp_write(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCIDR,
+ 				  CNL_DSP_REG_HIPCIDR_BUSY | dr);
+-	} else {
+-		/* send the message via mailbox */
+-		sof_mailbox_write(sdev, sdev->host_box.offset, msg->msg_data,
+-				  msg->msg_size);
+-		snd_sof_dsp_write(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCIDR,
+-				  CNL_DSP_REG_HIPCIDR_BUSY);
++		return 0;
  	}
  
- 	return bytes_to_frames(substream->runtime, pos);
++	/* send the message via mailbox */
++	sof_mailbox_write(sdev, sdev->host_box.offset, msg->msg_data,
++			  msg->msg_size);
++	snd_sof_dsp_write(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCIDR,
++			  CNL_DSP_REG_HIPCIDR_BUSY);
++
++	hdr = msg->msg_data;
++
++	/*
++	 * Use mod_delayed_work() to schedule the delayed work
++	 * to avoid scheduling multiple workqueue items when
++	 * IPCs are sent at a high-rate. mod_delayed_work()
++	 * modifies the timer if the work is pending.
++	 * Also, a new delayed work should not be queued after the
++	 * the CTX_SAVE IPC, which is sent before the DSP enters D3.
++	 */
++	if (hdr->cmd != (SOF_IPC_GLB_PM_MSG | SOF_IPC_PM_CTX_SAVE))
++		mod_delayed_work(system_wq, &hdev->d0i3_work,
++				 msecs_to_jiffies(SOF_HDA_D0I3_WORK_DELAY_MS));
++
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
+index 7b8425330ae0..ee604be715b9 100644
+--- a/sound/soc/sof/intel/hda-dsp.c
++++ b/sound/soc/sof/intel/hda-dsp.c
+@@ -17,6 +17,7 @@
+ 
+ #include <sound/hdaudio_ext.h>
+ #include <sound/hda_register.h>
++#include "../sof-audio.h"
+ #include "../ops.h"
+ #include "hda.h"
+ #include "hda-ipc.h"
+@@ -334,8 +335,9 @@ static int hda_dsp_send_pm_gate_ipc(struct snd_sof_dev *sdev, u32 flags)
+ 	pm_gate.flags = flags;
+ 
+ 	/* send pm_gate ipc to dsp */
+-	return sof_ipc_tx_message(sdev->ipc, pm_gate.hdr.cmd, &pm_gate,
+-				  sizeof(pm_gate), &reply, sizeof(reply));
++	return sof_ipc_tx_message_no_pm(sdev->ipc, pm_gate.hdr.cmd,
++					&pm_gate, sizeof(pm_gate), &reply,
++					sizeof(reply));
+ }
+ 
+ static int hda_dsp_update_d0i3c_register(struct snd_sof_dev *sdev, u8 value)
+@@ -706,6 +708,9 @@ int hda_dsp_suspend(struct snd_sof_dev *sdev, u32 target_state)
+ 	};
+ 	int ret;
+ 
++	/* cancel any attempt for DSP D0I3 */
++	cancel_delayed_work_sync(&hda->d0i3_work);
++
+ 	if (target_state == SOF_DSP_PM_D0) {
+ 		/* Set DSP power state */
+ 		ret = hda_dsp_set_power_state(sdev, &target_dsp_state);
+@@ -780,3 +785,33 @@ int hda_dsp_set_hw_params_upon_resume(struct snd_sof_dev *sdev)
+ #endif
+ 	return 0;
+ }
++
++void hda_dsp_d0i3_work(struct work_struct *work)
++{
++	struct sof_intel_hda_dev *hdev = container_of(work,
++						      struct sof_intel_hda_dev,
++						      d0i3_work.work);
++	struct hdac_bus *bus = &hdev->hbus.core;
++	struct snd_sof_dev *sdev = dev_get_drvdata(bus->dev);
++	struct sof_dsp_power_state target_state;
++	int ret;
++
++	target_state.state = SOF_DSP_PM_D0;
++
++	/* DSP can enter D0I3 iff only D0I3-compatible streams are active */
++	if (snd_sof_dsp_only_d0i3_compatible_stream_active(sdev))
++		target_state.substate = SOF_HDA_DSP_PM_D0I3;
++	else
++		target_state.substate = SOF_HDA_DSP_PM_D0I0;
++
++	/* remain in D0I0 */
++	if (target_state.substate == SOF_HDA_DSP_PM_D0I0)
++		return;
++
++	/* This can fail but error cannot be propagated */
++	ret = hda_dsp_set_power_state(sdev, &target_state);
++	if (ret < 0)
++		dev_err_ratelimited(sdev->dev,
++				    "error: failed to set DSP state %d substate %d\n",
++				    target_state.state, target_state.substate);
++}
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index 65b86dd044f1..2b8754a76584 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -598,6 +598,8 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
+ 	/* set default mailbox offset for FW ready message */
+ 	sdev->dsp_box.offset = HDA_DSP_MBOX_UPLINK_OFFSET;
+ 
++	INIT_DELAYED_WORK(&hdev->d0i3_work, hda_dsp_d0i3_work);
++
+ 	return 0;
+ 
+ free_ipc_irq:
+@@ -622,6 +624,9 @@ int hda_dsp_remove(struct snd_sof_dev *sdev)
+ 	struct pci_dev *pci = to_pci_dev(sdev->dev);
+ 	const struct sof_intel_dsp_desc *chip = hda->desc;
+ 
++	/* cancel any attempt for DSP D0I3 */
++	cancel_delayed_work_sync(&hda->d0i3_work);
++
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
+ 	/* codec removal, invoke bus_device_remove */
+ 	snd_hdac_ext_bus_device_remove(bus);
+diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+index 02c2a7eadb1b..a46b66437a3d 100644
+--- a/sound/soc/sof/intel/hda.h
++++ b/sound/soc/sof/intel/hda.h
+@@ -392,6 +392,13 @@ struct sof_intel_dsp_bdl {
+ #define SOF_HDA_PLAYBACK		0
+ #define SOF_HDA_CAPTURE			1
+ 
++/*
++ * Time in ms for opportunistic D0I3 entry delay.
++ * This has been deliberately chosen to be long to avoid race conditions.
++ * Could be optimized in future.
++ */
++#define SOF_HDA_D0I3_WORK_DELAY_MS	5000
++
+ /* HDA DSP D0 substate */
+ enum sof_hda_D0_substate {
+ 	SOF_HDA_DSP_PM_D0I0,	/* default D0 substate */
+@@ -420,6 +427,9 @@ struct sof_intel_hda_dev {
+ 
+ 	/* DMIC device */
+ 	struct platform_device *dmic_dev;
++
++	/* delayed work to enter D0I3 opportunistically */
++	struct delayed_work d0i3_work;
+ };
+ 
+ static inline struct hdac_bus *sof_to_bus(struct snd_sof_dev *s)
+@@ -487,6 +497,7 @@ void hda_dsp_dump_skl(struct snd_sof_dev *sdev, u32 flags);
+ void hda_dsp_dump(struct snd_sof_dev *sdev, u32 flags);
+ void hda_ipc_dump(struct snd_sof_dev *sdev);
+ void hda_ipc_irq_dump(struct snd_sof_dev *sdev);
++void hda_dsp_d0i3_work(struct work_struct *work);
+ 
+ /*
+  * DSP PCM Operations.
+diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
+index b63fc529b456..22d296f95761 100644
+--- a/sound/soc/sof/ipc.c
++++ b/sound/soc/sof/ipc.c
+@@ -268,7 +268,6 @@ static int sof_ipc_tx_message_unlocked(struct snd_sof_ipc *ipc, u32 header,
+ 	spin_unlock_irq(&sdev->ipc_lock);
+ 
+ 	if (ret < 0) {
+-		/* So far IPC TX never fails, consider making the above void */
+ 		dev_err_ratelimited(sdev->dev,
+ 				    "error: ipc tx failed with error %d\n",
+ 				    ret);
+@@ -288,6 +287,32 @@ static int sof_ipc_tx_message_unlocked(struct snd_sof_ipc *ipc, u32 header,
+ int sof_ipc_tx_message(struct snd_sof_ipc *ipc, u32 header,
+ 		       void *msg_data, size_t msg_bytes, void *reply_data,
+ 		       size_t reply_bytes)
++{
++	const struct sof_dsp_power_state target_state = {
++		.state = SOF_DSP_PM_D0,
++	};
++	int ret;
++
++	/* ensure the DSP is in D0 before sending a new IPC */
++	ret = snd_sof_dsp_set_power_state(ipc->sdev, &target_state);
++	if (ret < 0) {
++		dev_err(ipc->sdev->dev, "error: resuming DSP %d\n", ret);
++		return ret;
++	}
++
++	return sof_ipc_tx_message_no_pm(ipc, header, msg_data, msg_bytes,
++					reply_data, reply_bytes);
++}
++EXPORT_SYMBOL(sof_ipc_tx_message);
++
++/*
++ * send IPC message from host to DSP without modifying the DSP state.
++ * This will be used for IPC's that can be handled by the DSP
++ * even in a low-power D0 substate.
++ */
++int sof_ipc_tx_message_no_pm(struct snd_sof_ipc *ipc, u32 header,
++			     void *msg_data, size_t msg_bytes,
++			     void *reply_data, size_t reply_bytes)
+ {
+ 	int ret;
+ 
+@@ -305,7 +330,7 @@ int sof_ipc_tx_message(struct snd_sof_ipc *ipc, u32 header,
+ 
+ 	return ret;
+ }
+-EXPORT_SYMBOL(sof_ipc_tx_message);
++EXPORT_SYMBOL(sof_ipc_tx_message_no_pm);
+ 
+ /* handle reply message from DSP */
+ int snd_sof_ipc_reply(struct snd_sof_dev *sdev, u32 msg_id)
+diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
+index ef33aaadbc31..00084471d0de 100644
+--- a/sound/soc/sof/sof-priv.h
++++ b/sound/soc/sof/sof-priv.h
+@@ -470,6 +470,9 @@ int snd_sof_ipc_valid(struct snd_sof_dev *sdev);
+ int sof_ipc_tx_message(struct snd_sof_ipc *ipc, u32 header,
+ 		       void *msg_data, size_t msg_bytes, void *reply_data,
+ 		       size_t reply_bytes);
++int sof_ipc_tx_message_no_pm(struct snd_sof_ipc *ipc, u32 header,
++			     void *msg_data, size_t msg_bytes,
++			     void *reply_data, size_t reply_bytes);
+ 
+ /*
+  * Trace/debug
 -- 
 2.20.1
 
