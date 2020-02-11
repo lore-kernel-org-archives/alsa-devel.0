@@ -7,60 +7,60 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AEEDC352A3
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 16:07:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D65CC352A3
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 16:08:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BBC302070A
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 16:07:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EDDD62070A
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 16:08:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RvurZe2K"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BBC302070A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Hdk2J0DU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EDDD62070A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0C28016C7;
-	Tue, 11 Feb 2020 17:06:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C28016C7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 551CE168F;
+	Tue, 11 Feb 2020 17:07:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 551CE168F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581437260;
-	bh=9V3jK06K7IiKWfOmYgFOTUA1OfriScJdUaGoEBH/k5M=;
+	s=default; t=1581437305;
+	bh=eQQMm5EruqD7TqVzlAmUXZLWnVyz8b4QKgE6AEE2K1c=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=RvurZe2KoT9N942XYvc4MyqiS6uFMD2IGDISOErVc1UDAhnexdbAHPgYaYULyykFX
-	 IUup51fFO6N8aH+dauWjuQAeSZ02vcD+gm8WbvZek/XHCk6U7ukJSuupMHluQBS7m4
-	 CJPPvy8DldMkw3g0M+GFy5yeZmWgjRPgZYgjb7VY=
+	b=Hdk2J0DUxJ1gy+4IBT98FOY5S6pyLbswNnsVOqdMZXyS1vDHoFcC3MvvEZobff5Gt
+	 kcR++x98gVBRPJP8w5lpqlafTNsLza5XD8e7IVW9q2d8x1PtDH+rjyYuoWahZj0eGo
+	 +i3l47xq81DrLSfE7gRhGmB9eJqOyUv7Or8z5ULw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D09C8F803CA;
-	Tue, 11 Feb 2020 16:49:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4F9FDF803D5;
+	Tue, 11 Feb 2020 16:49:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 108D8F8038F; Tue, 11 Feb 2020 16:49:38 +0100 (CET)
+ id 1EB01F803A6; Tue, 11 Feb 2020 16:49:40 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id BB3C8F8037F
- for <alsa-devel@alsa-project.org>; Tue, 11 Feb 2020 16:49:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB3C8F8037F
+ by alsa1.perex.cz (Postfix) with ESMTP id F05F5F8038D
+ for <alsa-devel@alsa-project.org>; Tue, 11 Feb 2020 16:49:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F05F5F8038D
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 14B86139F;
- Tue, 11 Feb 2020 07:49:34 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 695FB1396;
+ Tue, 11 Feb 2020 07:49:36 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8F4663F68E;
- Tue, 11 Feb 2020 07:49:33 -0800 (PST)
-Date: Tue, 11 Feb 2020 15:49:32 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E23393F68E;
+ Tue, 11 Feb 2020 07:49:35 -0800 (PST)
+Date: Tue, 11 Feb 2020 15:49:34 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Olivier Moysan <olivier.moysan@st.com>
-In-Reply-To: <20200203100814.22944-6-olivier.moysan@st.com>
-Message-Id: <applied-20200203100814.22944-6-olivier.moysan@st.com>
+In-Reply-To: <20200203100814.22944-5-olivier.moysan@st.com>
+Message-Id: <applied-20200203100814.22944-5-olivier.moysan@st.com>
 X-Patchwork-Hint: ignore
 Cc: Etienne Carriere <etienne.carriere@st.com>, alsa-devel@alsa-project.org,
  olivier.moysan@st.com, alexandre.torgue@st.com, tiwai@suse.com,
  lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
  Mark Brown <broonie@kernel.org>, mcoquelin.stm32@gmail.com,
  linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org
-Subject: [alsa-devel] Applied "ASoC: stm32: spdifrx: improve error
-	management on probe deferral" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: stm32: sai: improve error management on
+	probe deferral" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,7 +81,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: stm32: spdifrx: improve error management on probe deferral
+   ASoC: stm32: sai: improve error management on probe deferral
 
 has been applied to the asoc tree at
 
@@ -106,67 +106,90 @@ to this mail.
 Thanks,
 Mark
 
-From d49bd5ed24163a1a1c81d40e84295731ddd17b1c Mon Sep 17 00:00:00 2001
+From 5183e85423070d088aaf1ed07ab260e03d5a4e20 Mon Sep 17 00:00:00 2001
 From: Olivier Moysan <olivier.moysan@st.com>
-Date: Mon, 3 Feb 2020 11:08:13 +0100
-Subject: [PATCH] ASoC: stm32: spdifrx: improve error management on probe
- deferral
+Date: Mon, 3 Feb 2020 11:08:12 +0100
+Subject: [PATCH] ASoC: stm32: sai: improve error management on probe deferral
 
-Do not print an error trace when deferring probe for SPDIFRX driver.
+Do not print an error trace when deferring probe for SAI driver.
 
 Signed-off-by: Etienne Carriere <etienne.carriere@st.com>
 Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
-Link: https://lore.kernel.org/r/20200203100814.22944-6-olivier.moysan@st.com
+Link: https://lore.kernel.org/r/20200203100814.22944-5-olivier.moysan@st.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/stm/stm32_spdifrx.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ sound/soc/stm/stm32_sai.c     | 12 +++++++++---
+ sound/soc/stm/stm32_sai_sub.c | 11 ++++++++---
+ 2 files changed, 17 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/stm/stm32_spdifrx.c b/sound/soc/stm/stm32_spdifrx.c
-index 9f80ddf34443..49766afdae61 100644
---- a/sound/soc/stm/stm32_spdifrx.c
-+++ b/sound/soc/stm/stm32_spdifrx.c
-@@ -406,7 +406,9 @@ static int stm32_spdifrx_dma_ctrl_register(struct device *dev,
- 
- 	spdifrx->ctrl_chan = dma_request_chan(dev, "rx-ctrl");
- 	if (IS_ERR(spdifrx->ctrl_chan)) {
--		dev_err(dev, "dma_request_slave_channel failed\n");
-+		if (PTR_ERR(spdifrx->ctrl_chan) != -EPROBE_DEFER)
-+			dev_err(dev, "dma_request_slave_channel error %ld\n",
-+				PTR_ERR(spdifrx->ctrl_chan));
- 		return PTR_ERR(spdifrx->ctrl_chan);
+diff --git a/sound/soc/stm/stm32_sai.c b/sound/soc/stm/stm32_sai.c
+index b824ba6cb028..058757c721f0 100644
+--- a/sound/soc/stm/stm32_sai.c
++++ b/sound/soc/stm/stm32_sai.c
+@@ -174,20 +174,26 @@ static int stm32_sai_probe(struct platform_device *pdev)
+ 	if (!STM_SAI_IS_F4(sai)) {
+ 		sai->pclk = devm_clk_get(&pdev->dev, "pclk");
+ 		if (IS_ERR(sai->pclk)) {
+-			dev_err(&pdev->dev, "missing bus clock pclk\n");
++			if (PTR_ERR(sai->pclk) != -EPROBE_DEFER)
++				dev_err(&pdev->dev, "missing bus clock pclk: %ld\n",
++					PTR_ERR(sai->pclk));
+ 			return PTR_ERR(sai->pclk);
+ 		}
  	}
  
-@@ -929,7 +931,9 @@ static int stm32_spdifrx_parse_of(struct platform_device *pdev,
- 
- 	spdifrx->kclk = devm_clk_get(&pdev->dev, "kclk");
- 	if (IS_ERR(spdifrx->kclk)) {
--		dev_err(&pdev->dev, "Could not get kclk\n");
-+		if (PTR_ERR(spdifrx->kclk) != -EPROBE_DEFER)
-+			dev_err(&pdev->dev, "Could not get kclk: %ld\n",
-+				PTR_ERR(spdifrx->kclk));
- 		return PTR_ERR(spdifrx->kclk);
+ 	sai->clk_x8k = devm_clk_get(&pdev->dev, "x8k");
+ 	if (IS_ERR(sai->clk_x8k)) {
+-		dev_err(&pdev->dev, "missing x8k parent clock\n");
++		if (PTR_ERR(sai->clk_x8k) != -EPROBE_DEFER)
++			dev_err(&pdev->dev, "missing x8k parent clock: %ld\n",
++				PTR_ERR(sai->clk_x8k));
+ 		return PTR_ERR(sai->clk_x8k);
  	}
  
-@@ -967,7 +971,9 @@ static int stm32_spdifrx_probe(struct platform_device *pdev)
- 						    spdifrx->base,
- 						    spdifrx->regmap_conf);
- 	if (IS_ERR(spdifrx->regmap)) {
--		dev_err(&pdev->dev, "Regmap init failed\n");
-+		if (PTR_ERR(spdifrx->regmap) != -EPROBE_DEFER)
+ 	sai->clk_x11k = devm_clk_get(&pdev->dev, "x11k");
+ 	if (IS_ERR(sai->clk_x11k)) {
+-		dev_err(&pdev->dev, "missing x11k parent clock\n");
++		if (PTR_ERR(sai->clk_x11k) != -EPROBE_DEFER)
++			dev_err(&pdev->dev, "missing x11k parent clock: %ld\n",
++				PTR_ERR(sai->clk_x11k));
+ 		return PTR_ERR(sai->clk_x11k);
+ 	}
+ 
+diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
+index 30bcd5d3a32a..0bbf9ed5e48b 100644
+--- a/sound/soc/stm/stm32_sai_sub.c
++++ b/sound/soc/stm/stm32_sai_sub.c
+@@ -1380,7 +1380,9 @@ static int stm32_sai_sub_parse_of(struct platform_device *pdev,
+ 	sai->regmap = devm_regmap_init_mmio(&pdev->dev, base,
+ 					    sai->regmap_config);
+ 	if (IS_ERR(sai->regmap)) {
+-		dev_err(&pdev->dev, "Failed to initialize MMIO\n");
++		if (PTR_ERR(sai->regmap) != -EPROBE_DEFER)
 +			dev_err(&pdev->dev, "Regmap init error %ld\n",
-+				PTR_ERR(spdifrx->regmap));
- 		return PTR_ERR(spdifrx->regmap);
++				PTR_ERR(sai->regmap));
+ 		return PTR_ERR(sai->regmap);
  	}
  
-@@ -1003,7 +1009,8 @@ static int stm32_spdifrx_probe(struct platform_device *pdev)
- 	pcm_config = &stm32_spdifrx_pcm_config;
- 	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, pcm_config, 0);
+@@ -1471,7 +1473,9 @@ static int stm32_sai_sub_parse_of(struct platform_device *pdev,
+ 	of_node_put(args.np);
+ 	sai->sai_ck = devm_clk_get(&pdev->dev, "sai_ck");
+ 	if (IS_ERR(sai->sai_ck)) {
+-		dev_err(&pdev->dev, "Missing kernel clock sai_ck\n");
++		if (PTR_ERR(sai->sai_ck) != -EPROBE_DEFER)
++			dev_err(&pdev->dev, "Missing kernel clock sai_ck: %ld\n",
++				PTR_ERR(sai->sai_ck));
+ 		return PTR_ERR(sai->sai_ck);
+ 	}
+ 
+@@ -1553,7 +1557,8 @@ static int stm32_sai_sub_probe(struct platform_device *pdev)
+ 
+ 	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, conf, 0);
  	if (ret) {
--		dev_err(&pdev->dev, "PCM DMA register returned %d\n", ret);
+-		dev_err(&pdev->dev, "Could not register pcm dma\n");
 +		if (ret != -EPROBE_DEFER)
 +			dev_err(&pdev->dev, "PCM DMA register error %d\n", ret);
- 		goto error;
+ 		return ret;
  	}
  
 -- 
