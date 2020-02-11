@@ -7,59 +7,60 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 59B96C352A3
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 16:00:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CF33C352A3
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 16:01:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D9C1020714
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 16:00:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CD96120714
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 16:01:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="R68UqriS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D9C1020714
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="j2C0Pwpa"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CD96120714
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2E32315E2;
-	Tue, 11 Feb 2020 16:59:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E32315E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4007F1676;
+	Tue, 11 Feb 2020 17:00:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4007F1676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581436847;
-	bh=rEGpdcyJnoXmr+5DtsJkb6m+k+9sEdbBJvzcd431bwY=;
+	s=default; t=1581436892;
+	bh=ZBmLvhKHS5MSwZ/M3ui6G6K+5sZNBStJMxqUhGquAwM=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=R68UqriSHpXMdaGbM0THQooH29kP1LIqra5uErhqlju9Q2sW1h2S4EG3kLRh1z9WS
-	 irZDY27OmR0d60p0KSgF+j3YGKYNqgBmrEYeop++FlTjABMGEz8Z16IhO2bUK+LFa9
-	 asWenM6NO1p2pbvbvWq5DwYrCgKMp/aeGHul5HAY=
+	b=j2C0PwpaoFan1TYAlmhoBAZAwwi0rldCKLv7L0b6OFxxv+P342tUHKEUkAMiSKtim
+	 8ceS5aJRLhnQr878xMv9GzkKykBAkzFQoTJv4bz14CvVYe8+RU8fyWkCjcFChGNLQ5
+	 KclEvVLo2+DbksoSUFYYC2VA9AGsQNxULUWJs3jw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6C460F80344;
-	Tue, 11 Feb 2020 16:49:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AD157F8034E;
+	Tue, 11 Feb 2020 16:49:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CD81FF80339; Tue, 11 Feb 2020 16:49:09 +0100 (CET)
+ id 0EADDF80340; Tue, 11 Feb 2020 16:49:12 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 7B210F80308
- for <alsa-devel@alsa-project.org>; Tue, 11 Feb 2020 16:49:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B210F80308
+ by alsa1.perex.cz (Postfix) with ESMTP id 07A99F80308
+ for <alsa-devel@alsa-project.org>; Tue, 11 Feb 2020 16:49:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07A99F80308
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D4065113E;
- Tue, 11 Feb 2020 07:49:05 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 364B812FC;
+ Tue, 11 Feb 2020 07:49:08 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5A5013F68E;
- Tue, 11 Feb 2020 07:49:05 -0800 (PST)
-Date: Tue, 11 Feb 2020 15:49:03 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B07003F68E;
+ Tue, 11 Feb 2020 07:49:07 -0800 (PST)
+Date: Tue, 11 Feb 2020 15:49:06 +0000
 From: Mark Brown <broonie@kernel.org>
-To: YueHaibing <yuehaibing@huawei.com>
-In-Reply-To: <20200210150421.34680-1-yuehaibing@huawei.com>
-Message-Id: <applied-20200210150421.34680-1-yuehaibing@huawei.com>
+To: Tzung-Bi Shih <tzungbi@google.com>
+In-Reply-To: <20200206102509.3.I253f51edff62df1d88005de12ba601aa029b1e99@changeid>
+Message-Id: <applied-20200206102509.3.I253f51edff62df1d88005de12ba601aa029b1e99@changeid>
 X-Patchwork-Hint: ignore
-Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, tiwai@suse.com, yuehaibing@huawei.com,
- lgirdwood@gmail.com, Hulk Robot <hulkci@huawei.com>,
- Mark Brown <broonie@kernel.org>, srinivas.kandagatla@linaro.org
-Subject: [alsa-devel] Applied "ASoC: wcd934x: Remove set but not unused
-	variable 'hph_comp_ctrl7'" to the asoc tree
+Cc: alsa-devel@alsa-project.org, cychiang@google.com, tzungbi@google.com,
+ airlied@linux.ie, dri-devel@lists.freedesktop.org, matthias.bgg@gmail.com,
+ Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org,
+ daniel@ffwll.ch, ck.hu@mediatek.com, p.zabel@pengutronix.de, dgreid@google.com,
+ linux-arm-kernel@lists.infradead.org
+Subject: [alsa-devel] Applied "ASoC: mediatek: mt8173-rt5650: support HDMI
+	jack reporting" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,7 +81,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: wcd934x: Remove set but not unused variable 'hph_comp_ctrl7'
+   ASoC: mediatek: mt8173-rt5650: support HDMI jack reporting
 
 has been applied to the asoc tree at
 
@@ -105,49 +106,69 @@ to this mail.
 Thanks,
 Mark
 
-From da22a95313197a349c557b98e3bee4e2b04d4f9d Mon Sep 17 00:00:00 2001
-From: YueHaibing <yuehaibing@huawei.com>
-Date: Mon, 10 Feb 2020 23:04:21 +0800
-Subject: [PATCH] ASoC: wcd934x: Remove set but not unused variable
- 'hph_comp_ctrl7'
+From c8b60c6d93b8104f5a8d9fbb4f52ad88df918a44 Mon Sep 17 00:00:00 2001
+From: Tzung-Bi Shih <tzungbi@google.com>
+Date: Thu, 6 Feb 2020 11:17:52 +0800
+Subject: [PATCH] ASoC: mediatek: mt8173-rt5650: support HDMI jack reporting
 
-sound/soc/codecs/wcd934x.c: In function wcd934x_codec_hphdelay_lutbypass:
-sound/soc/codecs/wcd934x.c:3395:6: warning: variable hph_comp_ctrl7 set but not used [-Wunused-but-set-variable]
+Uses hdmi-codec to support HDMI jack reporting.
 
-commit da3e83f8bb86 ("ASoC: wcd934x: add audio routings")
-involved this unused variable.
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Link: https://lore.kernel.org/r/20200210150421.34680-1-yuehaibing@huawei.com
+Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
+Link: https://lore.kernel.org/r/20200206102509.3.I253f51edff62df1d88005de12ba601aa029b1e99@changeid
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wcd934x.c | 3 ---
- 1 file changed, 3 deletions(-)
+ sound/soc/mediatek/mt8173/mt8173-rt5650.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wcd934x.c b/sound/soc/codecs/wcd934x.c
-index e780ecd554d2..aefaadfba8a1 100644
---- a/sound/soc/codecs/wcd934x.c
-+++ b/sound/soc/codecs/wcd934x.c
-@@ -3388,18 +3388,15 @@ static void wcd934x_codec_hphdelay_lutbypass(struct snd_soc_component *comp,
- {
- 	u8 hph_dly_mask;
- 	u16 hph_lut_bypass_reg = 0;
--	u16 hph_comp_ctrl7 = 0;
+diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650.c b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
+index ef6f23675286..849b050a54d1 100644
+--- a/sound/soc/mediatek/mt8173/mt8173-rt5650.c
++++ b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
+@@ -11,6 +11,7 @@
+ #include <linux/of_gpio.h>
+ #include <sound/soc.h>
+ #include <sound/jack.h>
++#include <sound/hdmi-codec.h>
+ #include "../../codecs/rt5645.h"
  
- 	switch (interp_idx) {
- 	case INTERP_HPHL:
- 		hph_dly_mask = 1;
- 		hph_lut_bypass_reg = WCD934X_CDC_TOP_HPHL_COMP_LUT;
--		hph_comp_ctrl7 = WCD934X_CDC_COMPANDER1_CTL7;
- 		break;
- 	case INTERP_HPHR:
- 		hph_dly_mask = 2;
- 		hph_lut_bypass_reg = WCD934X_CDC_TOP_HPHR_COMP_LUT;
--		hph_comp_ctrl7 = WCD934X_CDC_COMPANDER2_CTL7;
- 		break;
- 	default:
- 		return;
+ #define MCLK_FOR_CODECS		12288000
+@@ -98,7 +99,7 @@ static const struct snd_soc_ops mt8173_rt5650_ops = {
+ 	.hw_params = mt8173_rt5650_hw_params,
+ };
+ 
+-static struct snd_soc_jack mt8173_rt5650_jack;
++static struct snd_soc_jack mt8173_rt5650_jack, mt8173_rt5650_hdmi_jack;
+ 
+ static int mt8173_rt5650_init(struct snd_soc_pcm_runtime *runtime)
+ {
+@@ -144,6 +145,19 @@ static int mt8173_rt5650_init(struct snd_soc_pcm_runtime *runtime)
+ 				      &mt8173_rt5650_jack);
+ }
+ 
++static int mt8173_rt5650_hdmi_init(struct snd_soc_pcm_runtime *rtd)
++{
++	int ret;
++
++	ret = snd_soc_card_jack_new(rtd->card, "HDMI Jack", SND_JACK_LINEOUT,
++				    &mt8173_rt5650_hdmi_jack, NULL, 0);
++	if (ret)
++		return ret;
++
++	return hdmi_codec_set_jack_detect(rtd->codec_dai->component,
++					  &mt8173_rt5650_hdmi_jack);
++}
++
+ enum {
+ 	DAI_LINK_PLAYBACK,
+ 	DAI_LINK_CAPTURE,
+@@ -222,6 +236,7 @@ static struct snd_soc_dai_link mt8173_rt5650_dais[] = {
+ 		.name = "HDMI BE",
+ 		.no_pcm = 1,
+ 		.dpcm_playback = 1,
++		.init = mt8173_rt5650_hdmi_init,
+ 		SND_SOC_DAILINK_REG(hdmi_be),
+ 	},
+ };
 -- 
 2.20.1
 
