@@ -6,66 +6,65 @@ X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 53510C352A3
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 11:50:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DBB7C352A3
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 11:51:11 +0000 (UTC)
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BA1732086A
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 11:50:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D3CEB2086A
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 11:51:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="j3YZcBE9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BA1732086A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SXIa2NVG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D3CEB2086A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=tempfail smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 18ABE1664;
-	Tue, 11 Feb 2020 12:49:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 18ABE1664
+	by alsa0.perex.cz (Postfix) with ESMTPS id 31B3C1671;
+	Tue, 11 Feb 2020 12:50:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31B3C1671
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581421831;
-	bh=/beBDVbvocszpDGkH9758UE+u75q/eSxYK2B1QmrdlE=;
+	s=default; t=1581421869;
+	bh=VVUTd/A74BuNaRb7TTGvSgoF3V4HyAAJ6+5HME8vJTs=;
 	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=j3YZcBE9roxzwkIuC7iby3aRU6QCsyJUfyvcX0xi38HCEuJB+SVnAUKh1eKKpgl4q
-	 C3/aXOhbbBdYcg4tuYMppJki/36cfvU1aQpAmZOZwCswxjONWz6xQs7ufVstTJR3LA
-	 4cWIn7qslJ8vhJe+2CJRLRruS7SAPymX44WLpksg=
+	b=SXIa2NVGWMJTTINlyCClXvvuqGEuI+N+cOaycUG1s8hxtBg61f5RLb1x+AHTr4dYy
+	 VMSU9t9IYfGBFBn4tqoi+k6RvVwRNgdDaTi2ye6zte0zx/IJUnmndL//0vQW6Pojx6
+	 ogRAYPF/qWhcVMAVKEcVjMwg82dFuMO4C+z5vJ34=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9CB56F8013E;
-	Tue, 11 Feb 2020 12:49:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C2C74F8021E;
+	Tue, 11 Feb 2020 12:49:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C17D2F8013D; Tue, 11 Feb 2020 12:49:38 +0100 (CET)
+ id CF2F5F80252; Tue, 11 Feb 2020 12:49:55 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 656DCF8013D
- for <alsa-devel@alsa-project.org>; Tue, 11 Feb 2020 12:49:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 656DCF8013D
+ by alsa1.perex.cz (Postfix) with ESMTP id 5C6B1F80147
+ for <alsa-devel@alsa-project.org>; Tue, 11 Feb 2020 12:49:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C6B1F80147
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BC1641FB;
- Tue, 11 Feb 2020 03:49:35 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 77EC21FB;
+ Tue, 11 Feb 2020 03:49:52 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 419CA3F6CF;
- Tue, 11 Feb 2020 03:49:35 -0800 (PST)
-Date: Tue, 11 Feb 2020 11:49:33 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F0FFE3F6CF;
+ Tue, 11 Feb 2020 03:49:51 -0800 (PST)
+Date: Tue, 11 Feb 2020 11:49:50 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Derek =?utf-8?B?W+aWueW+t+e+qV0=?= <derek.fang@realtek.com>
-Message-ID: <20200211114933.GF4543@sirena.org.uk>
-References: <7541a3ab070044e0a997e5bca9680585@realtek.com>
+Message-ID: <20200211114950.GG4543@sirena.org.uk>
+References: <7b03c81f49fb488b95a487f15851220e@realtek.com>
 MIME-Version: 1.0
-In-Reply-To: <7541a3ab070044e0a997e5bca9680585@realtek.com>
+In-Reply-To: <7b03c81f49fb488b95a487f15851220e@realtek.com>
 X-Cookie: Hire the morally handicapped.
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Cc: Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>,
  "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "lars@metafoo.de" <lars@metafoo.de>,
  "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
  Albert Chen <albertchen@realtek.com>,
- "bard.liao@intel.com" <bard.liao@intel.com>,
  Shuming =?utf-8?B?W+iMg+abuOmKmF0=?= <shumingf@realtek.com>,
  "Flove\(HsinFu\)" <flove@realtek.com>
-Subject: Re: [alsa-devel] [PATCH 2/2] ASoC: rt5682: Enable PLL2 function
+Subject: Re: [alsa-devel] [PATCH 1/2] ASoC: rl6231: Add new supports on
+	rl6231
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,47 +77,48 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0884758313495696124=="
+Content-Type: multipart/mixed; boundary="===============4356811088488076331=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---===============0884758313495696124==
+--===============4356811088488076331==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="uTRFFR9qmiCqR05s"
+	protocol="application/pgp-signature"; boundary="uc35eWnScqDcQrv5"
 Content-Disposition: inline
 
 
---uTRFFR9qmiCqR05s
+--uc35eWnScqDcQrv5
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 30, 2020 at 10:51:46AM +0000, Derek [=E6=96=B9=E5=BE=B7=E7=BE=
+On Mon, Feb 03, 2020 at 04:05:40AM +0000, Derek [=E6=96=B9=E5=BE=B7=E7=BE=
 =A9] wrote:
-> Enable RT5682 PLL2 function to implement the more complex
-> frequency conversion.
+> 1. Increases the max limit of PLL input frequency
+>    on RL6231 shared support.
+> 2. Add a new pll preset map.
 
 This doesn't apply against current code, please check and resend.
 
---uTRFFR9qmiCqR05s
+--uc35eWnScqDcQrv5
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5ClMwACgkQJNaLcl1U
-h9CwwQf+Lij6hoQ5XS4GuNXbEuRfK8//kHo6xeslWxNDk9DCDqNicgQg/JGX2vlg
-RrVIxUTDEV53avm6PbYQUJPs48bDyQihNX5ClHIFBRhud2IgOiA06FsjWnGHqpVU
-OR+f6a/fEwJuO6uN5BVWZAcFUpgg0l0g4i8lVuGQwdmtLxEm8XnMn7Irquc4y9ZL
-wx7DjC/eUdG2R+5XKfnLxcGE+VJvnVWuOfNQ3njeH+RVwJVHDTFTqwrWAcOk4nHl
-QYGgjRR4hCS1T4w2F/7p3iIhSu9F+hA3TGY1RgAAgH2/kkdqHhNHTkOC3arN13Yv
-9k/kN67PU7FwynHADwxvN7pKcOxUHg==
-=Z0tT
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5ClN0ACgkQJNaLcl1U
+h9Dp0wf+IW0hwYCA/QdHioQuhpL+ertJivv1mALWHNfGk5KgIddANOB+qbLzrz1a
+LfFg4Kvw5GVRbRo7QFfJxmJJMxhllfdgRwQVAdn8YtauqW8t2pt+0aQ40BNUkXJr
+zSQWivYHLCQwHAhxY8PTyffH+dcrFgaxRcvt2ov8gIliGDag8I+erHir2NzCYKax
+XcD9IngpUMNP00v/rjabeakhpV2FKQKhHJoidzsGgRkMV+vVg/rnKl/MxUyRlD+q
+CFZgKi0quIzphGjZnewDWC6auv2YnXOkjXgJC+HlUY76kGWOCEw/Lsz82aOpaq2s
+a3zaWX4PJtESrrcS6fsy7uwEAI94gA==
+=MEvY
 -----END PGP SIGNATURE-----
 
---uTRFFR9qmiCqR05s--
+--uc35eWnScqDcQrv5--
 
---===============0884758313495696124==
+--===============4356811088488076331==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -129,4 +129,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---===============0884758313495696124==--
+--===============4356811088488076331==--
