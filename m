@@ -4,63 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CF33C352A3
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 16:01:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8435AC352A3
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 16:02:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CD96120714
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 16:01:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F1B552082F
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 16:02:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="j2C0Pwpa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CD96120714
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="f8+UTWsF"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F1B552082F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4007F1676;
-	Tue, 11 Feb 2020 17:00:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4007F1676
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4681115E2;
+	Tue, 11 Feb 2020 17:01:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4681115E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581436892;
-	bh=ZBmLvhKHS5MSwZ/M3ui6G6K+5sZNBStJMxqUhGquAwM=;
+	s=default; t=1581436919;
+	bh=KG6hXBdiB+XPr4Az6jQFqSvPLXeh8Mrtrbb7in0cRpE=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=j2C0PwpaoFan1TYAlmhoBAZAwwi0rldCKLv7L0b6OFxxv+P342tUHKEUkAMiSKtim
-	 8ceS5aJRLhnQr878xMv9GzkKykBAkzFQoTJv4bz14CvVYe8+RU8fyWkCjcFChGNLQ5
-	 KclEvVLo2+DbksoSUFYYC2VA9AGsQNxULUWJs3jw=
+	b=f8+UTWsFVCy/tyqKKU2gwdjrPQtKgUqByBJTKoGzdv1QIVhal43RaWejAqGvLm+6S
+	 7Zf2hOgIryGDPAnw/jdg9AKaFFLA3gFI9J/1SKjIy7DgucOWA/bWVOyK+YCN5Es07U
+	 rjcI7vOs4EHGee9aJGe/NCivgh31VsHqV2BSLo5U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AD157F8034E;
-	Tue, 11 Feb 2020 16:49:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E2213F80350;
+	Tue, 11 Feb 2020 16:49:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0EADDF80340; Tue, 11 Feb 2020 16:49:12 +0100 (CET)
+ id 9DF83F80344; Tue, 11 Feb 2020 16:49:14 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 07A99F80308
- for <alsa-devel@alsa-project.org>; Tue, 11 Feb 2020 16:49:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07A99F80308
+ by alsa1.perex.cz (Postfix) with ESMTP id 121D9F80341
+ for <alsa-devel@alsa-project.org>; Tue, 11 Feb 2020 16:49:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 121D9F80341
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 364B812FC;
- Tue, 11 Feb 2020 07:49:08 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 82E6AFEC;
+ Tue, 11 Feb 2020 07:49:10 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B07003F68E;
- Tue, 11 Feb 2020 07:49:07 -0800 (PST)
-Date: Tue, 11 Feb 2020 15:49:06 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 086E83F68E;
+ Tue, 11 Feb 2020 07:49:09 -0800 (PST)
+Date: Tue, 11 Feb 2020 15:49:08 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Tzung-Bi Shih <tzungbi@google.com>
-In-Reply-To: <20200206102509.3.I253f51edff62df1d88005de12ba601aa029b1e99@changeid>
-Message-Id: <applied-20200206102509.3.I253f51edff62df1d88005de12ba601aa029b1e99@changeid>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+In-Reply-To: <20200210140950.11090-3-peter.ujfalusi@ti.com>
+Message-Id: <applied-20200210140950.11090-3-peter.ujfalusi@ti.com>
 X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, cychiang@google.com, tzungbi@google.com,
- airlied@linux.ie, dri-devel@lists.freedesktop.org, matthias.bgg@gmail.com,
- Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org,
- daniel@ffwll.ch, ck.hu@mediatek.com, p.zabel@pengutronix.de, dgreid@google.com,
- linux-arm-kernel@lists.infradead.org
-Subject: [alsa-devel] Applied "ASoC: mediatek: mt8173-rt5650: support HDMI
-	jack reporting" to the asoc tree
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ lgirdwood@gmail.com
+Subject: [alsa-devel] Applied "ASoC: ti: davinci-mcasp: Add support for
+	platforms using UDMA" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,7 +78,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: mediatek: mt8173-rt5650: support HDMI jack reporting
+   ASoC: ti: davinci-mcasp: Add support for platforms using UDMA
 
 has been applied to the asoc tree at
 
@@ -106,69 +103,88 @@ to this mail.
 Thanks,
 Mark
 
-From c8b60c6d93b8104f5a8d9fbb4f52ad88df918a44 Mon Sep 17 00:00:00 2001
-From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Thu, 6 Feb 2020 11:17:52 +0800
-Subject: [PATCH] ASoC: mediatek: mt8173-rt5650: support HDMI jack reporting
+From fb0c3c6e2007da156d023e91da42c173ea33b102 Mon Sep 17 00:00:00 2001
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Date: Mon, 10 Feb 2020 16:09:50 +0200
+Subject: [PATCH] ASoC: ti: davinci-mcasp: Add support for platforms using UDMA
 
-Uses hdmi-codec to support HDMI jack reporting.
+k3 devices including am654 and j721e are using UDMA
 
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
-Link: https://lore.kernel.org/r/20200206102509.3.I253f51edff62df1d88005de12ba601aa029b1e99@changeid
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Link: https://lore.kernel.org/r/20200210140950.11090-3-peter.ujfalusi@ti.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/mediatek/mt8173/mt8173-rt5650.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+ sound/soc/ti/Kconfig         | 4 +++-
+ sound/soc/ti/davinci-mcasp.c | 7 +++++++
+ 2 files changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650.c b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
-index ef6f23675286..849b050a54d1 100644
---- a/sound/soc/mediatek/mt8173/mt8173-rt5650.c
-+++ b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
-@@ -11,6 +11,7 @@
- #include <linux/of_gpio.h>
- #include <sound/soc.h>
- #include <sound/jack.h>
-+#include <sound/hdmi-codec.h>
- #include "../../codecs/rt5645.h"
+diff --git a/sound/soc/ti/Kconfig b/sound/soc/ti/Kconfig
+index bf85a160a523..c5408c129f34 100644
+--- a/sound/soc/ti/Kconfig
++++ b/sound/soc/ti/Kconfig
+@@ -1,6 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ menu "Audio support for Texas Instruments SoCs"
+-depends on DMA_OMAP || TI_EDMA || COMPILE_TEST
++depends on DMA_OMAP || TI_EDMA || TI_K3_UDMA || COMPILE_TEST
  
- #define MCLK_FOR_CODECS		12288000
-@@ -98,7 +99,7 @@ static const struct snd_soc_ops mt8173_rt5650_ops = {
- 	.hw_params = mt8173_rt5650_hw_params,
- };
+ config SND_SOC_TI_EDMA_PCM
+ 	tristate
+@@ -28,6 +28,7 @@ config SND_SOC_DAVINCI_MCASP
+ 	tristate "Multichannel Audio Serial Port (McASP) support"
+ 	select SND_SOC_TI_EDMA_PCM
+ 	select SND_SOC_TI_SDMA_PCM
++	select SND_SOC_TI_UDMA_PCM
+ 	help
+ 	  Say Y or M here if you want to have support for McASP IP found in
+ 	  various Texas Instruments SoCs like:
+@@ -35,6 +36,7 @@ config SND_SOC_DAVINCI_MCASP
+ 	  - Sitara line of SoCs (AM335x, AM438x, etc)
+ 	  - DRA7x devices
+ 	  - Keystone devices
++	  - K3 devices (am654, j721e)
  
--static struct snd_soc_jack mt8173_rt5650_jack;
-+static struct snd_soc_jack mt8173_rt5650_jack, mt8173_rt5650_hdmi_jack;
+ config SND_SOC_DAVINCI_VCIF
+ 	tristate "daVinci Voice Interface (VCIF) support"
+diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
+index e1e937eb1dc1..d9c3a3210a24 100644
+--- a/sound/soc/ti/davinci-mcasp.c
++++ b/sound/soc/ti/davinci-mcasp.c
+@@ -38,6 +38,7 @@
  
- static int mt8173_rt5650_init(struct snd_soc_pcm_runtime *runtime)
- {
-@@ -144,6 +145,19 @@ static int mt8173_rt5650_init(struct snd_soc_pcm_runtime *runtime)
- 				      &mt8173_rt5650_jack);
- }
+ #include "edma-pcm.h"
+ #include "sdma-pcm.h"
++#include "udma-pcm.h"
+ #include "davinci-mcasp.h"
  
-+static int mt8173_rt5650_hdmi_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	int ret;
-+
-+	ret = snd_soc_card_jack_new(rtd->card, "HDMI Jack", SND_JACK_LINEOUT,
-+				    &mt8173_rt5650_hdmi_jack, NULL, 0);
-+	if (ret)
-+		return ret;
-+
-+	return hdmi_codec_set_jack_detect(rtd->codec_dai->component,
-+					  &mt8173_rt5650_hdmi_jack);
-+}
-+
+ #define MCASP_MAX_AFIFO_DEPTH	64
+@@ -1875,6 +1876,7 @@ static struct davinci_mcasp_pdata *davinci_mcasp_set_pdata_from_of(
  enum {
- 	DAI_LINK_PLAYBACK,
- 	DAI_LINK_CAPTURE,
-@@ -222,6 +236,7 @@ static struct snd_soc_dai_link mt8173_rt5650_dais[] = {
- 		.name = "HDMI BE",
- 		.no_pcm = 1,
- 		.dpcm_playback = 1,
-+		.init = mt8173_rt5650_hdmi_init,
- 		SND_SOC_DAILINK_REG(hdmi_be),
- 	},
+ 	PCM_EDMA,
+ 	PCM_SDMA,
++	PCM_UDMA,
  };
+ static const char *sdma_prefix = "ti,omap";
+ 
+@@ -1912,6 +1914,8 @@ static int davinci_mcasp_get_dma_type(struct davinci_mcasp *mcasp)
+ 	dev_dbg(mcasp->dev, "DMA controller compatible = \"%s\"\n", tmp);
+ 	if (!strncmp(tmp, sdma_prefix, strlen(sdma_prefix)))
+ 		return PCM_SDMA;
++	else if (strstr(tmp, "udmap"))
++		return PCM_UDMA;
+ 
+ 	return PCM_EDMA;
+ }
+@@ -2371,6 +2375,9 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 	case PCM_SDMA:
+ 		ret = sdma_pcm_platform_register(&pdev->dev, "tx", "rx");
+ 		break;
++	case PCM_UDMA:
++		ret = udma_pcm_platform_register(&pdev->dev);
++		break;
+ 	default:
+ 		dev_err(&pdev->dev, "No DMA controller found (%d)\n", ret);
+ 	case -EPROBE_DEFER:
 -- 
 2.20.1
 
