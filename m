@@ -7,57 +7,57 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7DAEAC352A3
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 15:55:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D9CFC352A3
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 15:56:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0A51C20714
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 15:55:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 097642082F
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 15:56:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NjLmKJV1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0A51C20714
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lHZiP3ZU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 097642082F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 583EA1664;
-	Tue, 11 Feb 2020 16:54:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 583EA1664
+	by alsa0.perex.cz (Postfix) with ESMTPS id 45C77167C;
+	Tue, 11 Feb 2020 16:55:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45C77167C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581436533;
-	bh=uxrBTZ2FRH9lrPI4FeWY/q650AaNbTALD4Hyjam/e6w=;
+	s=default; t=1581436569;
+	bh=1XxSlV4j2qbQ4EEXIj36DEbHvmgwMzYVSalfHXx2g2g=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=NjLmKJV1DkXWi0Iyn7QG+DT+icbCh+8sAx5EktOpQNvYX1w2ISPa2fhRiFzOM0MXh
-	 4goX3Zg6lNFeBtmlH88Tkfa9BlIiIM2fjc+Cw2PYGZ6G00xkQVtXJv8XVqF4jKZKAg
-	 kI244dnJkfFTmOmFT5VHA+4j/4WeB844/txEo8rA=
+	b=lHZiP3ZUg85tfsl+lRiK+o8VwWZvSu4soLmR8ikpt3HDsCs9UnFPpSQuCeUpJ1NOT
+	 a18DQGsdT2HrJSOQotiiQQQvDXPWe6K28uiPV6llpqWzwbuaHNqpR6iJLrQg2ip+tz
+	 aaQwi8fSR43ZHo2dTo94XrMdwojMBCM6Ow2D2xOg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B6276F802C2;
-	Tue, 11 Feb 2020 16:48:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CB7BBF802F9;
+	Tue, 11 Feb 2020 16:48:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 83A82F802DD; Tue, 11 Feb 2020 16:48:50 +0100 (CET)
+ id EE907F802EB; Tue, 11 Feb 2020 16:48:53 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 61469F802BE
- for <alsa-devel@alsa-project.org>; Tue, 11 Feb 2020 16:48:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 61469F802BE
+ by alsa1.perex.cz (Postfix) with ESMTP id 0B4B1F802A8
+ for <alsa-devel@alsa-project.org>; Tue, 11 Feb 2020 16:48:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B4B1F802A8
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AA26E1045;
- Tue, 11 Feb 2020 07:48:44 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7A7BA1045;
+ Tue, 11 Feb 2020 07:48:49 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 307E63F68E;
- Tue, 11 Feb 2020 07:48:44 -0800 (PST)
-Date: Tue, 11 Feb 2020 15:48:42 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F3E5A3F68E;
+ Tue, 11 Feb 2020 07:48:48 -0800 (PST)
+Date: Tue, 11 Feb 2020 15:48:47 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-In-Reply-To: <20200129220726.31792-7-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20200129220726.31792-7-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20200129220726.31792-5-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20200129220726.31792-5-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: SOF: audio: Add helper to check if only
-	D0i3 streams are active" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: SOF: pm: Introduce DSP power states" to
+	the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,7 +78,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: audio: Add helper to check if only D0i3 streams are active
+   ASoC: SOF: pm: Introduce DSP power states
 
 has been applied to the asoc tree at
 
@@ -103,80 +103,137 @@ to this mail.
 Thanks,
 Mark
 
-From de23a838d8d61767c6232f229f019eb46401cb93 Mon Sep 17 00:00:00 2001
+From 700d167739a099cdf12ed15c25fec7f4cb563d42 Mon Sep 17 00:00:00 2001
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Date: Wed, 29 Jan 2020 16:07:23 -0600
-Subject: [PATCH] ASoC: SOF: audio: Add helper to check if only D0i3 streams
- are active
+Date: Wed, 29 Jan 2020 16:07:21 -0600
+Subject: [PATCH] ASoC: SOF: pm: Introduce DSP power states
 
-Add a helper function to check if only D0i3-compatible streams
-are active.
+Add a new enum sof_dsp_power_states for all the possible
+the DSP device states. The SOF driver currently handles
+only the D0 and D3 states and support for other states
+will be added later as needed.
+
+Also, add a helper to determine the target DSP power state
+based on the system suspend target.
+The snd_sof_dsp_d0i3_on_suspend() function is renamed to
+snd_sof_stream_suspend_ignored() to be more indicative
+of what it does and it used to determine the target
+DSP state during system suspend.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200129220726.31792-7-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20200129220726.31792-5-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/sof-audio.c | 33 +++++++++++++++++++++++++++++++++
- sound/soc/sof/sof-audio.h |  1 +
- 2 files changed, 34 insertions(+)
+ sound/soc/sof/pm.c        | 38 +++++++++++++++++++++++++++++++++++++-
+ sound/soc/sof/sof-audio.c |  2 +-
+ sound/soc/sof/sof-audio.h |  2 +-
+ sound/soc/sof/sof-priv.h  | 10 ++++++++++
+ 4 files changed, 49 insertions(+), 3 deletions(-)
 
+diff --git a/sound/soc/sof/pm.c b/sound/soc/sof/pm.c
+index c86ac1e84bd7..bec25cb6beec 100644
+--- a/sound/soc/sof/pm.c
++++ b/sound/soc/sof/pm.c
+@@ -12,6 +12,42 @@
+ #include "sof-priv.h"
+ #include "sof-audio.h"
+ 
++/*
++ * Helper function to determine the target DSP state during
++ * system suspend. This function only cares about the device
++ * D-states. Platform-specific substates, if any, should be
++ * handled by the platform-specific parts.
++ */
++static u32 snd_sof_dsp_power_target(struct snd_sof_dev *sdev)
++{
++	u32 target_dsp_state;
++
++	switch (sdev->system_suspend_target) {
++	case SOF_SUSPEND_S3:
++		/* DSP should be in D3 if the system is suspending to S3 */
++		target_dsp_state = SOF_DSP_PM_D3;
++		break;
++	case SOF_SUSPEND_S0IX:
++		/*
++		 * Currently, the only criterion for retaining the DSP in D0
++		 * is that there are streams that ignored the suspend trigger.
++		 * Additional criteria such Soundwire clock-stop mode and
++		 * device suspend latency considerations will be added later.
++		 */
++		if (snd_sof_stream_suspend_ignored(sdev))
++			target_dsp_state = SOF_DSP_PM_D0;
++		else
++			target_dsp_state = SOF_DSP_PM_D3;
++		break;
++	default:
++		/* This case would be during runtime suspend */
++		target_dsp_state = SOF_DSP_PM_D3;
++		break;
++	}
++
++	return target_dsp_state;
++}
++
+ static int sof_send_pm_ctx_ipc(struct snd_sof_dev *sdev, int cmd)
+ {
+ 	struct sof_ipc_pm_ctx pm_ctx;
+@@ -169,7 +205,7 @@ static int sof_suspend(struct device *dev, bool runtime_suspend)
+ 		}
+ 	}
+ 
+-	if (snd_sof_dsp_d0i3_on_suspend(sdev)) {
++	if (snd_sof_dsp_power_target(sdev) == SOF_DSP_PM_D0) {
+ 		/* suspend to D0i3 */
+ 		ret = snd_sof_set_d0_substate(sdev, SOF_DSP_D0I3);
+ 		if (ret < 0) {
 diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
-index d16571ca129c..75f2ef2bd94b 100644
+index 345e42ee4783..d16571ca129c 100644
 --- a/sound/soc/sof/sof-audio.c
 +++ b/sound/soc/sof/sof-audio.c
-@@ -11,6 +11,39 @@
+@@ -11,7 +11,7 @@
  #include "sof-audio.h"
  #include "ops.h"
  
-+/*
-+ * helper to determine if there are only D0i3 compatible
-+ * streams active
-+ */
-+bool snd_sof_dsp_only_d0i3_compatible_stream_active(struct snd_sof_dev *sdev)
-+{
-+	struct snd_pcm_substream *substream;
-+	struct snd_sof_pcm *spcm;
-+	bool d0i3_compatible_active = false;
-+	int dir;
-+
-+	list_for_each_entry(spcm, &sdev->pcm_list, list) {
-+		for (dir = 0; dir <= SNDRV_PCM_STREAM_CAPTURE; dir++) {
-+			substream = spcm->stream[dir].substream;
-+			if (!substream || !substream->runtime)
-+				continue;
-+
-+			/*
-+			 * substream->runtime being not NULL indicates that
-+			 * that the stream is open. No need to check the
-+			 * stream state.
-+			 */
-+			if (!spcm->stream[dir].d0i3_compatible)
-+				return false;
-+
-+			d0i3_compatible_active = true;
-+		}
-+	}
-+
-+	return d0i3_compatible_active;
-+}
-+EXPORT_SYMBOL(snd_sof_dsp_only_d0i3_compatible_stream_active);
-+
- bool snd_sof_stream_suspend_ignored(struct snd_sof_dev *sdev)
+-bool snd_sof_dsp_d0i3_on_suspend(struct snd_sof_dev *sdev)
++bool snd_sof_stream_suspend_ignored(struct snd_sof_dev *sdev)
  {
  	struct snd_sof_pcm *spcm;
+ 
 diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
-index a2702afbd9a1..eacd10e4da11 100644
+index a62fb2da6a6e..a2702afbd9a1 100644
 --- a/sound/soc/sof/sof-audio.h
 +++ b/sound/soc/sof/sof-audio.h
-@@ -203,6 +203,7 @@ int snd_sof_ipc_set_get_comp_data(struct snd_sof_control *scontrol,
+@@ -202,7 +202,7 @@ int snd_sof_ipc_set_get_comp_data(struct snd_sof_control *scontrol,
+ /* PM */
  int sof_restore_pipelines(struct device *dev);
  int sof_set_hw_params_upon_resume(struct device *dev);
- bool snd_sof_stream_suspend_ignored(struct snd_sof_dev *sdev);
-+bool snd_sof_dsp_only_d0i3_compatible_stream_active(struct snd_sof_dev *sdev);
+-bool snd_sof_dsp_d0i3_on_suspend(struct snd_sof_dev *sdev);
++bool snd_sof_stream_suspend_ignored(struct snd_sof_dev *sdev);
  
  /* Machine driver enumeration */
  int sof_machine_register(struct snd_sof_dev *sdev, void *pdata);
+diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
+index 1839cc51957d..a7c6109acd98 100644
+--- a/sound/soc/sof/sof-priv.h
++++ b/sound/soc/sof/sof-priv.h
+@@ -54,6 +54,16 @@ extern int sof_core_debug;
+ 	(IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_ENABLE_DEBUGFS_CACHE) || \
+ 	 IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST))
+ 
++/* DSP power state */
++enum sof_dsp_power_states {
++	SOF_DSP_PM_D0,
++	SOF_DSP_PM_D1,
++	SOF_DSP_PM_D2,
++	SOF_DSP_PM_D3_HOT,
++	SOF_DSP_PM_D3,
++	SOF_DSP_PM_D3_COLD,
++};
++
+ /* DSP D0ix sub-state */
+ enum sof_d0_substate {
+ 	SOF_DSP_D0I0 = 0,	/* DSP default D0 substate */
 -- 
 2.20.1
 
