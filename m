@@ -7,57 +7,57 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8435AC352A3
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 16:02:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59ED4C352A3
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 16:02:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F1B552082F
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 16:02:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DD43320714
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 16:02:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="f8+UTWsF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F1B552082F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hEINpAr4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DD43320714
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4681115E2;
-	Tue, 11 Feb 2020 17:01:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4681115E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3500C1676;
+	Tue, 11 Feb 2020 17:01:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3500C1676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581436919;
-	bh=KG6hXBdiB+XPr4Az6jQFqSvPLXeh8Mrtrbb7in0cRpE=;
+	s=default; t=1581436954;
+	bh=teFda7AVou78AwNHw8H/WX7k21pleCJ9LLIOi5g/8Zc=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=f8+UTWsFVCy/tyqKKU2gwdjrPQtKgUqByBJTKoGzdv1QIVhal43RaWejAqGvLm+6S
-	 7Zf2hOgIryGDPAnw/jdg9AKaFFLA3gFI9J/1SKjIy7DgucOWA/bWVOyK+YCN5Es07U
-	 rjcI7vOs4EHGee9aJGe/NCivgh31VsHqV2BSLo5U=
+	b=hEINpAr4qXel6bfOyhl7cbsCLM0WvrVEiHu+Acz+A16lSrIP3YJDxV6rjeM5y/tjk
+	 MnE21Dk2xtOPhnSC5Vnpw5sOx/2bIdhwQ0nEGXs43Yq+m4n199i2feICO9YM4mKtG/
+	 1QhSxKQF2VOmXmtWGrt6gOZkSYV3vPlUmGqMmBbo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E2213F80350;
-	Tue, 11 Feb 2020 16:49:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6C3DDF80361;
+	Tue, 11 Feb 2020 16:49:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9DF83F80344; Tue, 11 Feb 2020 16:49:14 +0100 (CET)
+ id 83980F80348; Tue, 11 Feb 2020 16:49:16 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 121D9F80341
- for <alsa-devel@alsa-project.org>; Tue, 11 Feb 2020 16:49:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 121D9F80341
+ by alsa1.perex.cz (Postfix) with ESMTP id 7CAA5F80342
+ for <alsa-devel@alsa-project.org>; Tue, 11 Feb 2020 16:49:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7CAA5F80342
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 82E6AFEC;
- Tue, 11 Feb 2020 07:49:10 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D21ABFEC;
+ Tue, 11 Feb 2020 07:49:12 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 086E83F68E;
- Tue, 11 Feb 2020 07:49:09 -0800 (PST)
-Date: Tue, 11 Feb 2020 15:49:08 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 570F53F68E;
+ Tue, 11 Feb 2020 07:49:12 -0800 (PST)
+Date: Tue, 11 Feb 2020 15:49:10 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-In-Reply-To: <20200210140950.11090-3-peter.ujfalusi@ti.com>
-Message-Id: <applied-20200210140950.11090-3-peter.ujfalusi@ti.com>
+In-Reply-To: <20200210140950.11090-2-peter.ujfalusi@ti.com>
+Message-Id: <applied-20200210140950.11090-2-peter.ujfalusi@ti.com>
 X-Patchwork-Hint: ignore
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
  lgirdwood@gmail.com
-Subject: [alsa-devel] Applied "ASoC: ti: davinci-mcasp: Add support for
-	platforms using UDMA" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: ti: Add udma-pcm platform driver for
+	UDMA" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,7 +78,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: ti: davinci-mcasp: Add support for platforms using UDMA
+   ASoC: ti: Add udma-pcm platform driver for UDMA
 
 has been applied to the asoc tree at
 
@@ -103,88 +103,129 @@ to this mail.
 Thanks,
 Mark
 
-From fb0c3c6e2007da156d023e91da42c173ea33b102 Mon Sep 17 00:00:00 2001
+From 2619e03703475b7e0a6f73f85e642859cd25dfc8 Mon Sep 17 00:00:00 2001
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Mon, 10 Feb 2020 16:09:50 +0200
-Subject: [PATCH] ASoC: ti: davinci-mcasp: Add support for platforms using UDMA
+Date: Mon, 10 Feb 2020 16:09:49 +0200
+Subject: [PATCH] ASoC: ti: Add udma-pcm platform driver for UDMA
 
-k3 devices including am654 and j721e are using UDMA
+Platform driver glue for platforms using UDMA (am654 and j721e).
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Link: https://lore.kernel.org/r/20200210140950.11090-3-peter.ujfalusi@ti.com
+Link: https://lore.kernel.org/r/20200210140950.11090-2-peter.ujfalusi@ti.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/ti/Kconfig         | 4 +++-
- sound/soc/ti/davinci-mcasp.c | 7 +++++++
- 2 files changed, 10 insertions(+), 1 deletion(-)
+ sound/soc/ti/Kconfig    |  4 ++++
+ sound/soc/ti/Makefile   |  2 ++
+ sound/soc/ti/udma-pcm.c | 43 +++++++++++++++++++++++++++++++++++++++++
+ sound/soc/ti/udma-pcm.h | 18 +++++++++++++++++
+ 4 files changed, 67 insertions(+)
+ create mode 100644 sound/soc/ti/udma-pcm.c
+ create mode 100644 sound/soc/ti/udma-pcm.h
 
 diff --git a/sound/soc/ti/Kconfig b/sound/soc/ti/Kconfig
-index bf85a160a523..c5408c129f34 100644
+index 29f61053ab62..bf85a160a523 100644
 --- a/sound/soc/ti/Kconfig
 +++ b/sound/soc/ti/Kconfig
-@@ -1,6 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0-only
- menu "Audio support for Texas Instruments SoCs"
--depends on DMA_OMAP || TI_EDMA || COMPILE_TEST
-+depends on DMA_OMAP || TI_EDMA || TI_K3_UDMA || COMPILE_TEST
- 
- config SND_SOC_TI_EDMA_PCM
+@@ -10,6 +10,10 @@ config SND_SOC_TI_SDMA_PCM
  	tristate
-@@ -28,6 +28,7 @@ config SND_SOC_DAVINCI_MCASP
- 	tristate "Multichannel Audio Serial Port (McASP) support"
- 	select SND_SOC_TI_EDMA_PCM
- 	select SND_SOC_TI_SDMA_PCM
-+	select SND_SOC_TI_UDMA_PCM
- 	help
- 	  Say Y or M here if you want to have support for McASP IP found in
- 	  various Texas Instruments SoCs like:
-@@ -35,6 +36,7 @@ config SND_SOC_DAVINCI_MCASP
- 	  - Sitara line of SoCs (AM335x, AM438x, etc)
- 	  - DRA7x devices
- 	  - Keystone devices
-+	  - K3 devices (am654, j721e)
+ 	select SND_SOC_GENERIC_DMAENGINE_PCM
  
- config SND_SOC_DAVINCI_VCIF
- 	tristate "daVinci Voice Interface (VCIF) support"
-diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
-index e1e937eb1dc1..d9c3a3210a24 100644
---- a/sound/soc/ti/davinci-mcasp.c
-+++ b/sound/soc/ti/davinci-mcasp.c
-@@ -38,6 +38,7 @@
++config SND_SOC_TI_UDMA_PCM
++	tristate
++	select SND_SOC_GENERIC_DMAENGINE_PCM
++
+ comment "Texas Instruments DAI support for:"
+ config SND_SOC_DAVINCI_ASP
+ 	tristate "daVinci Audio Serial Port (ASP) or McBSP support"
+diff --git a/sound/soc/ti/Makefile b/sound/soc/ti/Makefile
+index 08c44d56ef3e..ea48c6679cc7 100644
+--- a/sound/soc/ti/Makefile
++++ b/sound/soc/ti/Makefile
+@@ -3,9 +3,11 @@
+ # Platform drivers
+ snd-soc-ti-edma-objs := edma-pcm.o
+ snd-soc-ti-sdma-objs := sdma-pcm.o
++snd-soc-ti-udma-objs := udma-pcm.o
  
- #include "edma-pcm.h"
- #include "sdma-pcm.h"
+ obj-$(CONFIG_SND_SOC_TI_EDMA_PCM) += snd-soc-ti-edma.o
+ obj-$(CONFIG_SND_SOC_TI_SDMA_PCM) += snd-soc-ti-sdma.o
++obj-$(CONFIG_SND_SOC_TI_UDMA_PCM) += snd-soc-ti-udma.o
+ 
+ # CPU DAI drivers
+ snd-soc-davinci-asp-objs := davinci-i2s.o
+diff --git a/sound/soc/ti/udma-pcm.c b/sound/soc/ti/udma-pcm.c
+new file mode 100644
+index 000000000000..39830caaaf7c
+--- /dev/null
++++ b/sound/soc/ti/udma-pcm.c
+@@ -0,0 +1,43 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ *  Copyright (C) 2020 Texas Instruments Incorporated - http://www.ti.com
++ *  Author: Peter Ujfalusi <peter.ujfalusi@ti.com>
++ */
++
++#include <linux/module.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include <sound/dmaengine_pcm.h>
++
 +#include "udma-pcm.h"
- #include "davinci-mcasp.h"
- 
- #define MCASP_MAX_AFIFO_DEPTH	64
-@@ -1875,6 +1876,7 @@ static struct davinci_mcasp_pdata *davinci_mcasp_set_pdata_from_of(
- enum {
- 	PCM_EDMA,
- 	PCM_SDMA,
-+	PCM_UDMA,
- };
- static const char *sdma_prefix = "ti,omap";
- 
-@@ -1912,6 +1914,8 @@ static int davinci_mcasp_get_dma_type(struct davinci_mcasp *mcasp)
- 	dev_dbg(mcasp->dev, "DMA controller compatible = \"%s\"\n", tmp);
- 	if (!strncmp(tmp, sdma_prefix, strlen(sdma_prefix)))
- 		return PCM_SDMA;
-+	else if (strstr(tmp, "udmap"))
-+		return PCM_UDMA;
- 
- 	return PCM_EDMA;
- }
-@@ -2371,6 +2375,9 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
- 	case PCM_SDMA:
- 		ret = sdma_pcm_platform_register(&pdev->dev, "tx", "rx");
- 		break;
-+	case PCM_UDMA:
-+		ret = udma_pcm_platform_register(&pdev->dev);
-+		break;
- 	default:
- 		dev_err(&pdev->dev, "No DMA controller found (%d)\n", ret);
- 	case -EPROBE_DEFER:
++
++static const struct snd_pcm_hardware udma_pcm_hardware = {
++	.info			= SNDRV_PCM_INFO_MMAP |
++				  SNDRV_PCM_INFO_MMAP_VALID |
++				  SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME |
++				  SNDRV_PCM_INFO_NO_PERIOD_WAKEUP |
++				  SNDRV_PCM_INFO_INTERLEAVED,
++	.buffer_bytes_max	= SIZE_MAX,
++	.period_bytes_min	= 32,
++	.period_bytes_max	= SZ_64K,
++	.periods_min		= 2,
++	.periods_max		= UINT_MAX,
++};
++
++static const struct snd_dmaengine_pcm_config udma_dmaengine_pcm_config = {
++	.pcm_hardware = &udma_pcm_hardware,
++	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
++};
++
++int udma_pcm_platform_register(struct device *dev)
++{
++	return devm_snd_dmaengine_pcm_register(dev, &udma_dmaengine_pcm_config,
++					       0);
++}
++EXPORT_SYMBOL_GPL(udma_pcm_platform_register);
++
++MODULE_AUTHOR("Peter Ujfalusi <peter.ujfalusi@ti.com>");
++MODULE_DESCRIPTION("UDMA PCM ASoC platform driver");
++MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/ti/udma-pcm.h b/sound/soc/ti/udma-pcm.h
+new file mode 100644
+index 000000000000..54111e7312c1
+--- /dev/null
++++ b/sound/soc/ti/udma-pcm.h
+@@ -0,0 +1,18 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ *  Copyright (C) 2018 Texas Instruments Incorporated - http://www.ti.com
++ */
++
++#ifndef __UDMA_PCM_H__
++#define __UDMA_PCM_H__
++
++#if IS_ENABLED(CONFIG_SND_SOC_TI_UDMA_PCM)
++int udma_pcm_platform_register(struct device *dev);
++#else
++static inline int udma_pcm_platform_register(struct device *dev)
++{
++	return 0;
++}
++#endif /* CONFIG_SND_SOC_TI_UDMA_PCM */
++
++#endif /* __UDMA_PCM_H__ */
 -- 
 2.20.1
 
