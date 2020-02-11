@@ -4,62 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D0D46C3B187
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 16:06:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98964C352A3
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 16:06:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6112A20873
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 16:06:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 24EF62082F
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 16:06:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gU7Ju665"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6112A20873
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QckyC7EG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 24EF62082F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B7D2B16A6;
-	Tue, 11 Feb 2020 17:05:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B7D2B16A6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7C13E16B2;
+	Tue, 11 Feb 2020 17:05:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7C13E16B2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581437159;
-	bh=ILHSCnTsnmTzpGKR49FDCPmEHksBGq575VYgXggRnSQ=;
+	s=default; t=1581437194;
+	bh=sNHne67I6cwScBYeB+7yScjLu5G2ab/bxKkP9ORtmO0=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=gU7Ju665HgQOhz4TXSfZtZANAeR3vsv031KAPVQWrS0wO9AtKNhViiHQFXhT7cvVl
-	 kH341zRSjcVCl4ipDeHi0dZZ204hqsmi/OyxjPQ9N2W3O3vuVQjkhmsV8X25SXyxgk
-	 rH49sh6Nv0QejqOpVPuV3Z+723tI1tGTLYCCaXKE=
+	b=QckyC7EGRKl1nq0J6U+ga0glavaeNTW7Nh+J6Ed3Jwf8VqJlUkki5JQmXUtUGuSml
+	 X1UuJWzz1nNSo9DK86mqcvNdHsP2cX22+L2O49EFcp7KR9S90BaxfQ9jwLkFdGfk5P
+	 x9T36G6BWYUCnPl988QFgOM4Srw62ZP6qbO2NFf8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B33C9F80392;
-	Tue, 11 Feb 2020 16:49:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2B196F803AD;
+	Tue, 11 Feb 2020 16:49:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A34E8F8036F; Tue, 11 Feb 2020 16:49:32 +0100 (CET)
+ id 1DA6DF80370; Tue, 11 Feb 2020 16:49:33 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 940BFF801DA
- for <alsa-devel@alsa-project.org>; Tue, 11 Feb 2020 16:49:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 940BFF801DA
+ by alsa1.perex.cz (Postfix) with ESMTP id E2F4DF8036D
+ for <alsa-devel@alsa-project.org>; Tue, 11 Feb 2020 16:49:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2F4DF8036D
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0BFCD1063;
- Tue, 11 Feb 2020 07:49:27 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5F717FEC;
+ Tue, 11 Feb 2020 07:49:29 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 85EC33F68E;
- Tue, 11 Feb 2020 07:49:26 -0800 (PST)
-Date: Tue, 11 Feb 2020 15:49:25 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DA34A3F68E;
+ Tue, 11 Feb 2020 07:49:28 -0800 (PST)
+Date: Tue, 11 Feb 2020 15:49:27 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Colin Ian King <colin.king@canonical.com>
-In-Reply-To: <20200208221529.37105-1-colin.king@canonical.com>
-Message-Id: <applied-20200208221529.37105-1-colin.king@canonical.com>
+In-Reply-To: <20200208220720.36657-1-colin.king@canonical.com>
+Message-Id: <applied-20200208220720.36657-1-colin.king@canonical.com>
 X-Patchwork-Hint: ignore
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org, Jie Yang <yang.jie@linux.intel.com>,
  Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org,
- linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: rt5659: remove redundant assignment to
-	variable idx" to the asoc tree
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vkoul@kernel.org>,
+ Mark Brown <broonie@kernel.org>,
+ "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>,
+ linux-kernel@vger.kernel.org
+Subject: [alsa-devel] Applied "ASoC: Intel: mrfld: return error codes when
+	an error occurs" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,7 +84,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: rt5659: remove redundant assignment to variable idx
+   ASoC: Intel: mrfld: return error codes when an error occurs
 
 has been applied to the asoc tree at
 
@@ -105,36 +109,40 @@ to this mail.
 Thanks,
 Mark
 
-From 1646484ed2430e37f00945db4755449d54354b57 Mon Sep 17 00:00:00 2001
+From 3025571edd9df653e1ad649f0638368a39d1bbb5 Mon Sep 17 00:00:00 2001
 From: Colin Ian King <colin.king@canonical.com>
-Date: Sat, 8 Feb 2020 22:15:29 +0000
-Subject: [PATCH] ASoC: rt5659: remove redundant assignment to variable idx
+Date: Sat, 8 Feb 2020 22:07:20 +0000
+Subject: [PATCH] ASoC: Intel: mrfld: return error codes when an error occurs
 
-Variable idx is being assigned with a value that is never idx, it is
-assigned a new value a couple of statements later. The assignment is
-redundant and can be removed.
+Currently function sst_platform_get_resources always returns zero and
+error return codes set by the function are never returned. Fix this
+by returning the error return code in variable ret rather than the
+hard coded zero.
 
 Addresses-Coverity: ("Unused value")
+Fixes: f533a035e4da ("ASoC: Intel: mrfld - create separate module for pci part")
 Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Link: https://lore.kernel.org/r/20200208221529.37105-1-colin.king@canonical.com
+Acked-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20200208220720.36657-1-colin.king@canonical.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5659.c | 2 +-
+ sound/soc/intel/atom/sst/sst_pci.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5659.c b/sound/soc/codecs/rt5659.c
-index e66d08398f74..89e0f58512fa 100644
---- a/sound/soc/codecs/rt5659.c
-+++ b/sound/soc/codecs/rt5659.c
-@@ -1604,7 +1604,7 @@ static int set_dmic_clk(struct snd_soc_dapm_widget *w,
- {
- 	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
- 	struct rt5659_priv *rt5659 = snd_soc_component_get_drvdata(component);
--	int pd, idx = -EINVAL;
-+	int pd, idx;
+diff --git a/sound/soc/intel/atom/sst/sst_pci.c b/sound/soc/intel/atom/sst/sst_pci.c
+index d952719bc098..5862fe968083 100644
+--- a/sound/soc/intel/atom/sst/sst_pci.c
++++ b/sound/soc/intel/atom/sst/sst_pci.c
+@@ -99,7 +99,7 @@ static int sst_platform_get_resources(struct intel_sst_drv *ctx)
+ 	dev_dbg(ctx->dev, "DRAM Ptr %p\n", ctx->dram);
+ do_release_regions:
+ 	pci_release_regions(pci);
+-	return 0;
++	return ret;
+ }
  
- 	pd = rl6231_get_pre_div(rt5659->regmap,
- 		RT5659_ADDA_CLK_1, RT5659_I2S_PD1_SFT);
+ /*
 -- 
 2.20.1
 
