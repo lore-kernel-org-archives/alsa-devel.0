@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D621C3B187
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 15:50:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5B20C352A3
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 15:51:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2CABC20656
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 15:50:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 369D320656
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 15:51:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QkdqK0He"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2CABC20656
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="S/ltmU56"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 369D320656
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6D13C166C;
-	Tue, 11 Feb 2020 16:49:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D13C166C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6631E83A;
+	Tue, 11 Feb 2020 16:50:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6631E83A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581436214;
-	bh=Q7r5N2xfF5KKRQYPLLoOaoPU90hoLsN20fLWFthB8nU=;
+	s=default; t=1581436260;
+	bh=Lwqz8ekwLjbFqtD9pgQqkH7Lr5Wi0Ih4EN6J1yKCsD4=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=QkdqK0HePC8knT8szLPLbeXRkgVhRtdeINuGoXnayuU8MlVJU2LILFUEwRZfyBznW
-	 VA0YzPLGKDmfUWwVJNZw/T8+Rb0LR77OUNxMBsTK6/JbO5SqgSOHdD4pAhYRK7S747
-	 kLtkz9VpIZZ+OLY07JolAddZWu23zoyQXVwR/WnM=
+	b=S/ltmU56Nslc1BQuL2BHvSv+PEMCfprMOGc6gfQkjEHMRpSvqWiJTpgFJ2ZhDjUdI
+	 CdMeiQOcrXh4qdDS0s+R2lBBBmcfwnZ1+CYRvRwLA+vyKFSoB6c1n2MhYTVs4J/XNN
+	 3akjS7th/I5EBnIZlmLkHLdjyIiQxSG2lyXjn76c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F3267F8021E;
-	Tue, 11 Feb 2020 16:48:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 031B5F8013E;
+	Tue, 11 Feb 2020 16:48:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 670CEF80218; Tue, 11 Feb 2020 16:48:30 +0100 (CET)
+ id DF569F80276; Tue, 11 Feb 2020 16:48:32 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 8EE83F8013D
- for <alsa-devel@alsa-project.org>; Tue, 11 Feb 2020 16:48:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8EE83F8013D
+ by alsa1.perex.cz (Postfix) with ESMTP id 975DFF80147
+ for <alsa-devel@alsa-project.org>; Tue, 11 Feb 2020 16:48:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 975DFF80147
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1E23AFEC;
- Tue, 11 Feb 2020 07:48:26 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6D20E1045;
+ Tue, 11 Feb 2020 07:48:28 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 98AF23F68E;
- Tue, 11 Feb 2020 07:48:25 -0800 (PST)
-Date: Tue, 11 Feb 2020 15:48:24 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E657B3F68E;
+ Tue, 11 Feb 2020 07:48:27 -0800 (PST)
+Date: Tue, 11 Feb 2020 15:48:26 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <877e0vceyc.wl-kuninori.morimoto.gx@renesas.com>
-Message-Id: <applied-877e0vceyc.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <878slbceyg.wl-kuninori.morimoto.gx@renesas.com>
+Message-Id: <applied-878slbceyg.wl-kuninori.morimoto.gx@renesas.com>
 X-Patchwork-Hint: ignore
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: soc-pcm: don't use bit-OR'ed error" to
-	the asoc tree
+Subject: [alsa-devel] Applied "ASoC: soc-pcm: add for_each_dapm_widgets()
+	macro" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,7 +77,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: soc-pcm: don't use bit-OR'ed error
+   ASoC: soc-pcm: add for_each_dapm_widgets() macro
 
 has been applied to the asoc tree at
 
@@ -102,68 +102,123 @@ to this mail.
 Thanks,
 Mark
 
-From e82ebffce3ec07584bcc2fc4c4d33a43fd9515f5 Mon Sep 17 00:00:00 2001
+From 09e88f8a5c56ac5258935a5a543868c20a55d4dd Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 10 Feb 2020 12:14:26 +0900
-Subject: [PATCH] ASoC: soc-pcm: don't use bit-OR'ed error
+Date: Mon, 10 Feb 2020 12:14:22 +0900
+Subject: [PATCH] ASoC: soc-pcm: add for_each_dapm_widgets() macro
 
-Current soc-pcm is using bit-OR'ed error
-
-	ret |= snd_soc_component_close(component, substream);
-	ret |= snd_soc_component_hw_free(component, substream);
-
-The driver may return arbitrary error codes so they can conflict.
-The bit-OR'ed error works only if the return code is always consistent.
-This patch fixup it, and use *last* ret value.
+This patch adds new for_each_dapm_widgets() macro and use it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/877e0vceyc.wl-kuninori.morimoto.gx@renesas.com
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Link: https://lore.kernel.org/r/878slbceyg.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-pcm.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ include/sound/soc-dapm.h |  5 +++++
+ sound/soc/soc-dapm.c     |  8 ++------
+ sound/soc/soc-pcm.c      | 17 +++++++++--------
+ 3 files changed, 16 insertions(+), 14 deletions(-)
 
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index 2a306c6f3fbc..9439e75945f6 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -693,6 +693,11 @@ struct snd_soc_dapm_widget_list {
+ 	struct snd_soc_dapm_widget *widgets[0];
+ };
+ 
++#define for_each_dapm_widgets(list, i, widget)				\
++	for ((i) = 0;							\
++	     (i) < list->num_widgets && (widget = list->widgets[i]);	\
++	     (i)++)
++
+ struct snd_soc_dapm_stats {
+ 	int power_checks;
+ 	int path_checks;
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index bc20ad9abf8b..cc17a3730d3d 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -1724,9 +1724,7 @@ static void dapm_widget_update(struct snd_soc_card *card)
+ 
+ 	wlist = dapm_kcontrol_get_wlist(update->kcontrol);
+ 
+-	for (wi = 0; wi < wlist->num_widgets; wi++) {
+-		w = wlist->widgets[wi];
+-
++	for_each_dapm_widgets(wlist, wi, w) {
+ 		if (w->event && (w->event_flags & SND_SOC_DAPM_PRE_REG)) {
+ 			ret = w->event(w, update->kcontrol, SND_SOC_DAPM_PRE_REG);
+ 			if (ret != 0)
+@@ -1753,9 +1751,7 @@ static void dapm_widget_update(struct snd_soc_card *card)
+ 				w->name, ret);
+ 	}
+ 
+-	for (wi = 0; wi < wlist->num_widgets; wi++) {
+-		w = wlist->widgets[wi];
+-
++	for_each_dapm_widgets(wlist, wi, w) {
+ 		if (w->event && (w->event_flags & SND_SOC_DAPM_POST_REG)) {
+ 			ret = w->event(w, update->kcontrol, SND_SOC_DAPM_POST_REG);
+ 			if (ret != 0)
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 7a490c05d4e9..8d8ed4774e9c 100644
+index 2a4f7ac5f563..7a490c05d4e9 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -498,13 +498,16 @@ static int soc_pcm_components_close(struct snd_pcm_substream *substream,
+@@ -1306,12 +1306,12 @@ static inline struct snd_soc_dapm_widget *
+ static int widget_in_list(struct snd_soc_dapm_widget_list *list,
+ 		struct snd_soc_dapm_widget *widget)
  {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_component *component;
--	int i, ret = 0;
-+	int i, r, ret = 0;
++	struct snd_soc_dapm_widget *w;
+ 	int i;
  
- 	for_each_rtd_components(rtd, i, component) {
- 		if (component == last)
+-	for (i = 0; i < list->num_widgets; i++) {
+-		if (widget == list->widgets[i])
++	for_each_dapm_widgets(list, i, w)
++		if (widget == w)
+ 			return 1;
+-	}
+ 
+ 	return 0;
+ }
+@@ -1422,12 +1422,13 @@ static int dpcm_add_paths(struct snd_soc_pcm_runtime *fe, int stream,
+ 	struct snd_soc_card *card = fe->card;
+ 	struct snd_soc_dapm_widget_list *list = *list_;
+ 	struct snd_soc_pcm_runtime *be;
++	struct snd_soc_dapm_widget *widget;
+ 	int i, new = 0, err;
+ 
+ 	/* Create any new FE <--> BE connections */
+-	for (i = 0; i < list->num_widgets; i++) {
++	for_each_dapm_widgets(list, i, widget) {
+ 
+-		switch (list->widgets[i]->id) {
++		switch (widget->id) {
+ 		case snd_soc_dapm_dai_in:
+ 			if (stream != SNDRV_PCM_STREAM_PLAYBACK)
+ 				continue;
+@@ -1441,10 +1442,10 @@ static int dpcm_add_paths(struct snd_soc_pcm_runtime *fe, int stream,
+ 		}
+ 
+ 		/* is there a valid BE rtd for this widget */
+-		be = dpcm_get_be(card, list->widgets[i], stream);
++		be = dpcm_get_be(card, widget, stream);
+ 		if (!be) {
+ 			dev_err(fe->dev, "ASoC: no BE found for %s\n",
+-					list->widgets[i]->name);
++					widget->name);
+ 			continue;
+ 		}
+ 
+@@ -1460,7 +1461,7 @@ static int dpcm_add_paths(struct snd_soc_pcm_runtime *fe, int stream,
+ 		err = dpcm_be_connect(fe, be, stream);
+ 		if (err < 0) {
+ 			dev_err(fe->dev, "ASoC: can't connect %s\n",
+-				list->widgets[i]->name);
++				widget->name);
  			break;
- 
--		ret |= snd_soc_component_close(component, substream);
-+		r = snd_soc_component_close(component, substream);
-+		if (r < 0)
-+			ret = r; /* use last ret */
-+
- 		snd_soc_component_module_put_when_close(component);
- 	}
- 
-@@ -798,13 +801,15 @@ static int soc_pcm_components_hw_free(struct snd_pcm_substream *substream,
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_component *component;
--	int i, ret = 0;
-+	int i, r, ret = 0;
- 
- 	for_each_rtd_components(rtd, i, component) {
- 		if (component == last)
- 			break;
- 
--		ret |= snd_soc_component_hw_free(component, substream);
-+		r = snd_soc_component_hw_free(component, substream);
-+		if (r < 0)
-+			ret = r; /* use last ret */
- 	}
- 
- 	return ret;
+ 		} else if (err == 0) /* already connected */
+ 			continue;
 -- 
 2.20.1
 
