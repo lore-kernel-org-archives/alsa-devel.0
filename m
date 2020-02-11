@@ -7,60 +7,60 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04568C352A3
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 16:09:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1942BC352A3
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 16:10:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 865522082F
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 16:09:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9B1562082F
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 16:10:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DtlYXaV5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 865522082F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="I3eNrc0z"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9B1562082F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B466516D4;
-	Tue, 11 Feb 2020 17:08:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B466516D4
+	by alsa0.perex.cz (Postfix) with ESMTPS id E8136169E;
+	Tue, 11 Feb 2020 17:09:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8136169E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581437365;
-	bh=g/++0FZUmaAwMdJd4qiSGrym4ntYsQnNurm7ZCQ/Hvk=;
+	s=default; t=1581437401;
+	bh=lbCm0ImbA0EfGUMykGKsi2F/byerMy7pQhKeEoAGZp0=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=DtlYXaV5UeM2M4/tb2TJQY8XABXvBSMCxRs97Z4niNJGs62KGqyPD+9m6N2JNiRnh
-	 YV1pkAzSUq3rud7AAG1k6hoLXGKXiURn7rwDx3x2DP2Poshi35rMd6qr76mlsi/Ab6
-	 8yF8wxIlk5Dx4rL89/wmrDiVCZNQFxsw/cbeaeOw=
+	b=I3eNrc0zboTS3HLyX/LKWCnAJBD7iy4vqDDVacGPczGuHHMODDL3H65HiEooDMKrW
+	 cOjptzWJZBTxWw1yqM/TaSF8Zx0IVSWvxmI9I8zAceVSaDfe34vNYoWYaHn841EQry
+	 +itsx2V8I+RuUCjHy9L4veJkU0Hvcxw2rD+g2iWI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9C2EDF803EC;
-	Tue, 11 Feb 2020 16:49:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CF8DBF803F9;
+	Tue, 11 Feb 2020 16:49:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A799BF803CB; Tue, 11 Feb 2020 16:49:44 +0100 (CET)
+ id 04384F803DE; Tue, 11 Feb 2020 16:49:46 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id A90C9F803B0
- for <alsa-devel@alsa-project.org>; Tue, 11 Feb 2020 16:49:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A90C9F803B0
+ by alsa1.perex.cz (Postfix) with ESMTP id 06C0DF803CC
+ for <alsa-devel@alsa-project.org>; Tue, 11 Feb 2020 16:49:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06C0DF803CC
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 236ED113E;
- Tue, 11 Feb 2020 07:49:41 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7843713A1;
+ Tue, 11 Feb 2020 07:49:43 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9BFE13F68E;
- Tue, 11 Feb 2020 07:49:40 -0800 (PST)
-Date: Tue, 11 Feb 2020 15:49:39 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F2AF73F68E;
+ Tue, 11 Feb 2020 07:49:42 -0800 (PST)
+Date: Tue, 11 Feb 2020 15:49:41 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Olivier Moysan <olivier.moysan@st.com>
-In-Reply-To: <20200203100814.22944-3-olivier.moysan@st.com>
-Message-Id: <applied-20200203100814.22944-3-olivier.moysan@st.com>
+In-Reply-To: <20200203100814.22944-2-olivier.moysan@st.com>
+Message-Id: <applied-20200203100814.22944-2-olivier.moysan@st.com>
 X-Patchwork-Hint: ignore
 Cc: Etienne Carriere <etienne.carriere@st.com>, alsa-devel@alsa-project.org,
  olivier.moysan@st.com, alexandre.torgue@st.com, tiwai@suse.com,
  lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
  Mark Brown <broonie@kernel.org>, mcoquelin.stm32@gmail.com,
  linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org
-Subject: [alsa-devel] Applied "ASoC: stm32: spdifrx: manage error when
-	getting reset controller" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: stm32: sai: manage error when getting
+	reset controller" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,7 +81,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: stm32: spdifrx: manage error when getting reset controller
+   ASoC: stm32: sai: manage error when getting reset controller
 
 has been applied to the asoc tree at
 
@@ -106,31 +106,30 @@ to this mail.
 Thanks,
 Mark
 
-From 7889c0082e6400ae5d07345e5573548d0999b840 Mon Sep 17 00:00:00 2001
+From 028476c861e3eb660d8d104ef39fccb34c04a0d5 Mon Sep 17 00:00:00 2001
 From: Olivier Moysan <olivier.moysan@st.com>
-Date: Mon, 3 Feb 2020 11:08:10 +0100
-Subject: [PATCH] ASoC: stm32: spdifrx: manage error when getting reset
- controller
+Date: Mon, 3 Feb 2020 11:08:09 +0100
+Subject: [PATCH] ASoC: stm32: sai: manage error when getting reset controller
 
-Return an error when the SPDIFRX driver fails to get a reset controller.
+Return an error when the SAI driver fails to get a reset controller.
 Also add an error trace, except on probe defer status.
 
 Signed-off-by: Etienne Carriere <etienne.carriere@st.com>
 Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
-Link: https://lore.kernel.org/r/20200203100814.22944-3-olivier.moysan@st.com
+Link: https://lore.kernel.org/r/20200203100814.22944-2-olivier.moysan@st.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/stm/stm32_spdifrx.c | 14 +++++++++-----
+ sound/soc/stm/stm32_sai.c | 14 +++++++++-----
  1 file changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/stm/stm32_spdifrx.c b/sound/soc/stm/stm32_spdifrx.c
-index 3769d9ce5dbe..9f80ddf34443 100644
---- a/sound/soc/stm/stm32_spdifrx.c
-+++ b/sound/soc/stm/stm32_spdifrx.c
-@@ -978,12 +978,16 @@ static int stm32_spdifrx_probe(struct platform_device *pdev)
- 		return ret;
- 	}
+diff --git a/sound/soc/stm/stm32_sai.c b/sound/soc/stm/stm32_sai.c
+index e20267504b16..b824ba6cb028 100644
+--- a/sound/soc/stm/stm32_sai.c
++++ b/sound/soc/stm/stm32_sai.c
+@@ -197,12 +197,16 @@ static int stm32_sai_probe(struct platform_device *pdev)
+ 		return sai->irq;
  
+ 	/* reset */
 -	rst = devm_reset_control_get_exclusive(&pdev->dev, NULL);
 -	if (!IS_ERR(rst)) {
 -		reset_control_assert(rst);
@@ -147,8 +146,8 @@ index 3769d9ce5dbe..9f80ddf34443 100644
 +	udelay(2);
 +	reset_control_deassert(rst);
  
- 	ret = devm_snd_soc_register_component(&pdev->dev,
- 					      &stm32_spdifrx_component,
+ 	/* Enable peripheral clock to allow register access */
+ 	ret = clk_prepare_enable(sai->pclk);
 -- 
 2.20.1
 
