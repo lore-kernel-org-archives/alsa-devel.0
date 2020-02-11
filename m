@@ -2,105 +2,102 @@ Return-Path: <SRS0=kaO4=37=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D5F8C35242
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 20:22:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86DF0C35242
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 20:38:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 759A120842
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 20:22:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1889E20714
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 20:38:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ch4Nepx3";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="Geu0/VC1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 759A120842
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KA8Qm8P+";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel-com.20150623.gappssmtp.com header.i=@intel-com.20150623.gappssmtp.com header.b="bQeXaWb6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1889E20714
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 850DF82C;
-	Tue, 11 Feb 2020 21:03:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 850DF82C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 48B9683B;
+	Tue, 11 Feb 2020 21:37:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 48B9683B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581451457;
-	bh=Zbfjn5YO2jzZOdAaTTo3rz0VWJJCdb+g6DGz1ly6AZ8=;
-	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=ch4Nepx31gAubR9tUyiHXkClshvtPdu4VcPL5vjvE40rcQj3wI/tlrNj51Vie0V/F
-	 L+mHxS/xEjU96PQNWdS8GcMH0vcuH9UTQneNYnR+x3453/q+Gq8c4K0i0OG3WSat6u
-	 EEhXEWXYfAZYdkED7XlLcdRY2drOtUVBVQl/0/5o=
+	s=default; t=1581453517;
+	bh=/RLY8KJQFbS907z03KWnDzVL+BW4BJfcKqiOSXSbge0=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=KA8Qm8P+cDCDixaZKyOrYBlcaZwoJX2Kl7XZxnhcVwhQ4lKPYjCd84kX27gQTpnA0
+	 mYt8RPWo612NyNOUnqTkiQ1s5XkmzBfvSdPNKiwLtZ9uZ1Pa+5dwx3m0RBiG9wTkG2
+	 rwoJL+utGGmOnQAJls2bZc9ClcSf7VmlyLZJ8rpg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0A0C8F8013E;
-	Tue, 11 Feb 2020 21:03:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CD32EF8013E;
+	Tue, 11 Feb 2020 21:37:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E8A45F80145; Tue, 11 Feb 2020 21:03:24 +0100 (CET)
-Received: from gateway23.websitewelcome.com (gateway23.websitewelcome.com
- [192.185.50.185])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 6C0B9F80145; Tue, 11 Feb 2020 21:37:45 +0100 (CET)
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com
+ [IPv6:2607:f8b0:4864:20::d44])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 48DB4F8013D
- for <alsa-devel@alsa-project.org>; Tue, 11 Feb 2020 21:03:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48DB4F8013D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 20326F800F0
+ for <alsa-devel@alsa-project.org>; Tue, 11 Feb 2020 21:37:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 20326F800F0
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com
- header.b="Geu0/VC1"
-Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
- by gateway23.websitewelcome.com (Postfix) with ESMTP id 58D77CDC
- for <alsa-devel@alsa-project.org>; Tue, 11 Feb 2020 14:03:16 -0600 (CST)
-Received: from gator4166.hostgator.com ([108.167.133.22]) by cmsmtp with SMTP
- id 1bkZjHX4vXVkQ1bkajfs41; Tue, 11 Feb 2020 14:03:16 -0600
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=embeddedor.com; s=default; h=Content-Type:MIME-Version:Message-ID:Subject:
- Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
- Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
- :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
- List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=QizRvNIXF5DCCYH7u737lg5G394CbFtXby/EhqCQDuw=; b=Geu0/VC1a9bUnDK6UTB9KqkiDb
- 00iQRld7kRim+DS53Mfew6B4tfD75rs5d7hV33SuZJUKAlBhhtA5v19dV0b5rK/hoF9iFJ5Yy6v/D
- Rty6bJrYNpI1JA/ph9yYQ3TAJeCDi+4WLy2Dy67gi0cJiXngA7QhZkyikdbM2IirBJVbCNDV99TdY
- Uuw8dhb4u7Kcfu1c3veFSLBtQwJDRE9SNefXYznkTWyDajHwpEgjC2gQjKhXA5vPgHic5SmaowxEb
- 7WrO7VW5d44awiisOW/SPTSncQGo0MSx5YC7s7aT22F3DjPZGZ8FsdpaksTXeZEbRZAXfbp3x3Fu5
- TIdLIjwA==;
-Received: from [200.68.140.36] (port=25245 helo=embeddedor)
- by gator4166.hostgator.com with esmtpa (Exim 4.92)
- (envelope-from <gustavo@embeddedor.com>)
- id 1j1bkY-001WQz-Cy; Tue, 11 Feb 2020 14:03:14 -0600
-Date: Tue, 11 Feb 2020 14:05:49 -0600
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Message-ID: <20200211200549.GA12072@embeddedor>
+ dkim=pass (2048-bit key) header.d=intel-com.20150623.gappssmtp.com
+ header.i=@intel-com.20150623.gappssmtp.com header.b="bQeXaWb6"
+Received: by mail-io1-xd44.google.com with SMTP id h8so13383291iob.2
+ for <alsa-devel@alsa-project.org>; Tue, 11 Feb 2020 12:37:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=intel-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=aNR92WPC/mMAKSQN3mZEwyb9pRseRqDXnlVBAKtffDQ=;
+ b=bQeXaWb6h+7mPixZUm1LMrdsWDxgxKISuoatu68+VLeNdt5yA2RGYxLS3tdae7ctDF
+ q3m3uLDnc4aHf8HcLEfGdKWdtZu8c57Kg4AADRuE8OdnHbpLnAMxj7kX37MbfF75DIv2
+ NYTpbibRiepTTce661qNMbUnhhcEsGeHA4DVFIdkF34Q65CPyW+DkcLlv/zNLxf+KW6c
+ osz+slSisOsLKujIAkWjWGov+loVoZ60pUycNvVGN35bGcORk5dbZUQadMrvq3Hj78cO
+ AtDpzPsRrj5gLHC0m3l2X5x7rFweXh91OzhGcLe++jewKF8FMHLFSt+zW6yuclVaW6X5
+ 4f9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=aNR92WPC/mMAKSQN3mZEwyb9pRseRqDXnlVBAKtffDQ=;
+ b=P+NussfUhIA9pcCfvZNiFSPEEjcSvIEi7WLaBbdgQBrt22E6YvXb0UVkXEsOI0rZCD
+ uMKGsdfanod5jVYkvKd5kYpGtobbh36EykZdfzqUxSQIC9tz4U/gy0HWtqMsvobvV9CX
+ bzp27fjKxK+CSiICdYVrewyMA4oXzGYLFZ7lN6/1xie3BV2BswNJP8tp7Ha7dambXR2X
+ sQrBdwsEOEY6tYbAKK0fCyYplUS6P0KKOMvKpms6gQlpmn9WR1oQ+hkTolTUBJ0ePK66
+ aDKy46d6r1pTrf8DEuM/dgD/H83JHdKGicL1JC8GF/IE2eMaOHRydn1y7kTA9qjL2+nz
+ 2PRA==
+X-Gm-Message-State: APjAAAUWwfOJHCPhmc7EQqAfLEaA7W4hDy9GxjKZn8zKj2HZsk1s9QiO
+ nKN/Fs/QPxGQNdnv+TPtwE0wEHXDuUfBK912QKWC6A==
+X-Google-Smtp-Source: APXvYqxACNJmwHtc3Nbe990Li5ARpLY+AgcUS2qgBc0ZuZIzfhbGcIdDpXRIEowKdWUHb89ProS2j9OBBxOijcocn9w=
+X-Received: by 2002:a6b:5503:: with SMTP id j3mr14752612iob.142.1581453459818; 
+ Tue, 11 Feb 2020 12:37:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse,
- please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - alsa-project.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 200.68.140.36
-X-Source-L: No
-X-Exim-ID: 1j1bkY-001WQz-Cy
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: (embeddedor) [200.68.140.36]:25245
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 6
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [alsa-devel] [PATCH] ASoC: wm0010: Replace zero-length array with
- flexible-array member
+References: <1581322611-25695-1-git-send-email-brent.lu@intel.com>
+ <AM6PR10MB2263F302A86B17C95B16361280190@AM6PR10MB2263.EURPRD10.PROD.OUTLOOK.COM>
+ <SN6PR11MB26702B2E7E5F705425517F4897180@SN6PR11MB2670.namprd11.prod.outlook.com>
+ <855c88fb-4438-aefb-ac9b-a9a5a2dc8caa@linux.intel.com>
+In-Reply-To: <855c88fb-4438-aefb-ac9b-a9a5a2dc8caa@linux.intel.com>
+From: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
+Date: Tue, 11 Feb 2020 12:37:28 -0800
+Message-ID: <CAFQqKeWHDyyd_YBBaD6P2sCL5OCNEsiUU6B7eUwtiLv8GZU0yg@mail.gmail.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ Support Opensource <Support.Opensource@diasemi.com>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Chiang,
+ Mac" <mac.chiang@intel.com>, Mark Brown <broonie@kernel.org>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, "Lu,
+ Brent" <brent.lu@intel.com>, "cychiang@google.com" <cychiang@google.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: da7219: check SRM lock in trigger
+	callback
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -118,48 +115,37 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The current codebase makes use of the zero-length array language
-extension to the C90 standard, but the preferred mechanism to declare
-variable-length types such as these ones is a flexible array member[1][2],
-introduced in C99:
+>
+>
+> > I think the patch is for those systems which enable I2S clocks in
+> pcm_start instead
+> > of pcm_prepare. It has no effect on systems already be able to turn on
+> clocks in
+> > supply widgets or set_bias_level() function.
+> >
+> > If the trigger type in the DAI link is TRIGGER_PRE, then the trigger
+> function of FE port
+> > (component or CPU DAI) will be called before codec driver's trigger
+> function. In this
+> > case we will be able to turn on the clock in time. However, if the
+> trigger type is
+> > TRIGGER_POST, then the patch does not help because just like what you
+> said, codec
+> > driver's trigger function is called first.
+>
+> IIRC we recently did a change to deal with underflows. Ranjani, can you
+> remind us what the issue was?
 
-struct foo {
-        int stuff;
-        struct boo array[];
-};
+Hi Pierre,
 
-By making use of the mechanism above, we will get a compiler warning
-in case the flexible array does not occur last in the structure, which
-will help us prevent some kind of undefined behavior bugs from being
-inadvertenly introduced[3] to the codebase from now on.
+Are you talking about the change in this commit acbf27746ecfa96b
+"ASoC: pcm: update FE/BE trigger order based on the command"?
 
-This issue was found with the help of Coccinelle.
+We made this change to handle xruns during pause/release particularly on
+the Intel HDA platforms.
 
-[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-[2] https://github.com/KSPP/linux/issues/21
-[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
----
- sound/soc/codecs/wm0010.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/wm0010.c b/sound/soc/codecs/wm0010.c
-index abd2defe7530..d7a882a6adf2 100644
---- a/sound/soc/codecs/wm0010.c
-+++ b/sound/soc/codecs/wm0010.c
-@@ -46,7 +46,7 @@ struct dfw_binrec {
- 	u8 command;
- 	u32 length:24;
- 	u32 address;
--	uint8_t data[0];
-+	uint8_t data[];
- } __packed;
- 
- struct dfw_inforec {
--- 
-2.25.0
-
+Thanks,
+Ranjani
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
