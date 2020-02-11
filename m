@@ -2,78 +2,73 @@ Return-Path: <SRS0=kaO4=37=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A5B0FC3F68F
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 11:44:35 +0000 (UTC)
-Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C392C352A3
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 11:47:38 +0000 (UTC)
+Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 345E220848
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 11:44:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8658820842
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Feb 2020 11:47:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fusrruUH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 345E220848
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YYclV5VL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8658820842
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
+Authentication-Results: mail.kernel.org; spf=tempfail smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5B392166D;
-	Tue, 11 Feb 2020 12:43:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B392166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id D51A94E;
+	Tue, 11 Feb 2020 12:46:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D51A94E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581421473;
-	bh=lFUi3K7vg4/U+PsBI6FzUBVeJ7QCgx5008qtl3yFArQ=;
+	s=default; t=1581421655;
+	bh=Nue+EcO3tJCT6XU2ZHnsMqRb3As4MADS4F7Lget1Hpo=;
 	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fusrruUHUM4YIj1O4m1zOLXKLeWb1rOYdP6Hp53g+JkoSE2DhoQqXdUzL6AA+CJe7
-	 Xn2CTe+OKE7xXB01qZcMUrqli/uNUp9FgGN/4lt5QYqnpCoh9RtM8Wpw6FWiXuGe9G
-	 ZjGekP1DlaZmAYtZ5h2p7qQRwf0tzc6HrbqfxztA=
+	b=YYclV5VLIAzjWw2rNXcTs4Ejnmd5wsYr4y2SqZmShiK85I2hF+yyiFxPA9ZBJLDjP
+	 rwcH4cS3pngRUOcZT3biz6lHBFfjfb/YblDnwjawGz41KEYkqsrfLrnVikZOh8p4UB
+	 Gtp29QKyAe9q9uGx4PybIqeBTTaWuQELyX2QE9As=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 533D8F800E7;
-	Tue, 11 Feb 2020 12:43:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6996CF8013E;
+	Tue, 11 Feb 2020 12:46:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D2B09F801DA; Tue, 11 Feb 2020 12:43:02 +0100 (CET)
+ id 04EC8F80145; Tue, 11 Feb 2020 12:46:44 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 6E107F80145
- for <alsa-devel@alsa-project.org>; Tue, 11 Feb 2020 12:42:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E107F80145
+ by alsa1.perex.cz (Postfix) with ESMTP id 397ABF8013D
+ for <alsa-devel@alsa-project.org>; Tue, 11 Feb 2020 12:46:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 397ABF8013D
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4F48231B;
- Tue, 11 Feb 2020 03:42:58 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 333C9FEC;
+ Tue, 11 Feb 2020 03:46:40 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C78C33F6CF;
- Tue, 11 Feb 2020 03:42:57 -0800 (PST)
-Date: Tue, 11 Feb 2020 11:42:56 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AC4053F6CF;
+ Tue, 11 Feb 2020 03:46:39 -0800 (PST)
+Date: Tue, 11 Feb 2020 11:46:38 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Adam Serbinski <adam@serbinski.com>
-Message-ID: <20200211114256.GC4543@sirena.org.uk>
-References: <20200207205013.12274-1-adam@serbinski.com>
- <20200209154748.3015-1-adam@serbinski.com>
- <20200209154748.3015-9-adam@serbinski.com>
- <20200210133636.GJ7685@sirena.org.uk>
- <18057b47c76d350f8380f277713e0936@serbinski.com>
- <20200210182609.GA14166@sirena.org.uk>
- <f88d21773f47f5a543a17ad07d66f9b7@serbinski.com>
- <20200210200839.GG14166@sirena.org.uk>
- <7c57801d8f671c40d4c6094e5ce89681@serbinski.com>
+To: Jack Yu <jack.yu@realtek.com>
+Message-ID: <20200211114638.GD4543@sirena.org.uk>
+References: <718b2de2f61a4fa1ad8099a55d11c6fc@realtek.com>
 MIME-Version: 1.0
-In-Reply-To: <7c57801d8f671c40d4c6094e5ce89681@serbinski.com>
+In-Reply-To: <718b2de2f61a4fa1ad8099a55d11c6fc@realtek.com>
 X-Cookie: Hire the morally handicapped.
 User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
- linux-arm-msm@vger.kernel.org, Patrick Lai <plai@codeaurora.org>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Bjorn Andersson <bjorn.andersson@linaro.org>, Rob Herring <robh+dt@kernel.org>,
- Srini Kandagatla <srinivas.kandagatla@linaro.org>,
- Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [alsa-devel] [PATCH v2 8/8] ASoC: qcom: apq8096: add kcontrols
-	to set PCM rate
+Cc: Oder Chiou <oder_chiou@realtek.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "lars@metafoo.de" <lars@metafoo.de>,
+ =?utf-8?B?a2VudF9jaGVuQHJlYWx0ZWsuY29tIFvpmbPlu7rlro9d?=
+ <kent_chen@realtek.com>, =?utf-8?B?6Zmz5pi25b+X?= <kenny_chen@realtek.com>,
+ "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+ Derek =?utf-8?B?W+aWueW+t+e+qV0=?= <derek.fang@realtek.com>,
+ Shuming =?utf-8?B?W+iMg+abuOmKmF0=?= <shumingf@realtek.com>,
+ Mingjane Hsieh <mingjane_hsieh@realtek.com>,
+ "Flove\(HsinFu\)" <flove@realtek.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: rt1015: fix typo for bypass boost
+	control
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,51 +81,47 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0426781921403778823=="
+Content-Type: multipart/mixed; boundary="===============1734535376390175800=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---===============0426781921403778823==
+--===============1734535376390175800==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ctP54qlpMx3WjD+/"
+	protocol="application/pgp-signature"; boundary="8w3uRX/HFJGApMzv"
 Content-Disposition: inline
 
 
---ctP54qlpMx3WjD+/
+--8w3uRX/HFJGApMzv
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 10, 2020 at 04:13:52PM -0500, Adam Serbinski wrote:
+On Thu, Jan 30, 2020 at 10:18:11AM +0000, Jack Yu wrote:
+> Fix typo for "Bypass Boost" control.
+>=20
+> Signed-off-by: Jack Yu <jack.yu@realtek.com>
 
-> I am not aware of how this could be done for bluetooth, since the value
-> still has to originate from userspace. The driver you referred to supports
-> only a single sample rate, whereas for bluetooth, 2 sample rates are
-> required, and nothing in the kernel is aware of the appropriate rate, at
-> least in the case of the qca6174a I'm working with right now, or for that
-> matter, TI Wilink 8, which I've also worked with.
+This doesn't apply against current code, please check and resend.
 
-There's generic support in the CODEC<->CODEC link code for setting the
-DAI configuration from userspace.
-
---ctP54qlpMx3WjD+/
+--8w3uRX/HFJGApMzv
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5Ckz8ACgkQJNaLcl1U
-h9ALGQf/Ss3ZIdJmQ7t1NLJpgkPvfgCHptgk+NO5wYCwd0pQJbzaflRdG45mcDPG
-bQRKfEaZEqvPWxASdTQTiFdmJg6zLqlvkQYPcor4DCPcB1bCkPS9hkeOSUxXSsOa
-ICLmJPQyoUqNyb6pHa6ghgfdVRPIr+GWPn0Zob/QpwybzWKBA7VHKmTEnxGDIq0z
-pLzYVaV03fmVkJUowVTUdZ40LP8mjTWVcXnk/NzM1qEs3T39Q6DmAUyR7IemHBBf
-wJr/MPk4Nr/9nPsmtD+5eJIG6m68tUximFPFeYIfid+WrHlY68RVcpgOBUG4LuvT
-ENG+UsqfuA8Olmmq+tnZG3Imx6tmzg==
-=pysG
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5ClB0ACgkQJNaLcl1U
+h9Aohgf+II2R6ZOya2D6QhZ7BkuMiuEnjX27ZFhae8iKLepqWhUBhFTAlu8aUPZH
+M0jwLuqZVOrvuzAWPO7VeWDCnGpxVkkv7aWbG4/W4TodPPwU60fKmiS89em1rvmW
+bFeE2b6Gbs1MYZgUH9/vRhX4IZ9+UwrEqEBQ8gGjqL2DxQlkZiwx/tBGF0vdk9uo
+QlR73kNIFLwu4TAxhC6pbeyd35CsTgfVMTGEq0ZdzTCOj+gkmNJcBbgyaTphKU2k
+fCu2w6jGqmmLiLKqmDFyJxm8EHHWQ6LcRCBWahe87esuHzw/92kM7nyVfpwdZYeL
+WNRY/x/dO015XlxHhFzxUIyt/j9fqA==
+=RMmN
 -----END PGP SIGNATURE-----
 
---ctP54qlpMx3WjD+/--
+--8w3uRX/HFJGApMzv--
 
---===============0426781921403778823==
+--===============1734535376390175800==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -141,4 +132,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---===============0426781921403778823==--
+--===============1734535376390175800==--
