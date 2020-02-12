@@ -2,85 +2,136 @@ Return-Path: <SRS0=nhcg=4A=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,UNWANTED_LANGUAGE_BODY,
-	USER_AGENT_SANE_2 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MSGID_FROM_MTA_HEADER,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8D33C2BA83
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Feb 2020 08:20:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 583AFC2BA83
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Feb 2020 09:09:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 62DAF20714
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Feb 2020 08:20:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D5807206CC
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Feb 2020 09:09:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IH38Uafv";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="oLhNGi+I"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 62DAF20714
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NhO9ngCO";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=amdcloud.onmicrosoft.com header.i=@amdcloud.onmicrosoft.com header.b="Cm1guE96"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D5807206CC
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=amd.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AF7B415E4;
-	Wed, 12 Feb 2020 09:19:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF7B415E4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 236CB15F8;
+	Wed, 12 Feb 2020 10:09:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 236CB15F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581495620;
-	bh=5RARRvEU40d9cFwlaGAQI52iAfgk34cp1XCG0tRQAfU=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1581498591;
+	bh=E9z+g5bjWYyFvXQB4kULsMM1Vy9sdrn5FZXOs1kNAvM=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IH38Uafvaw6qho//hQbnrERHIrC99DrhmaAcVgHJdRo6Y4rJEBpjhPNxQVr8zH6jM
-	 kEPkV6/zcByH35p2w37/vKXFjvEHsLbAwR7bYXKI0YkM8mN7wrPqhJu0mUBpAUigid
-	 k6V0cu6vyZDP6fmW3aY8pKxabGjfo/hij6mERogY=
+	b=NhO9ngCOAP89nF/o3/Fsk4s1Afo4vbb/y5ItwPvusAh2YWDcDLgXbjIpJB8QkQ/cQ
+	 YsIUBsYyG3y591PdsgDAGskUBoryEg/2GfIuqXDi9tFdxJO4G7Q+pDzwz6dhULVeaL
+	 wmF2WOqy6JBeLYrKXLeHEh0WitS/zIa+ofeB6U8s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2A192F8014F;
-	Wed, 12 Feb 2020 09:19:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A27D8F80125;
+	Wed, 12 Feb 2020 10:09:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D8A47F80157; Wed, 12 Feb 2020 09:19:28 +0100 (CET)
-Received: from mailgw01.mediatek.com (unknown [210.61.82.183])
- by alsa1.perex.cz (Postfix) with ESMTP id F3AA0F80125
- for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2020 09:19:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3AA0F80125
+ id E8943F80125; Wed, 12 Feb 2020 10:08:59 +0100 (CET)
+Received: from NAM02-BL2-obe.outbound.protection.outlook.com
+ (mail-eopbgr750070.outbound.protection.outlook.com [40.107.75.70])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 94984F80125
+ for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2020 10:08:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94984F80125
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com
- header.b="oLhNGi+I"
-X-UUID: 9f5fe6e7d3f145549f39c0a0532a0b1d-20200212
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com;
- s=dk; 
- h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID;
- bh=WTR3IyGTtiHoAq1wxcteE4V4GBjK4qM6cnQ1Vs7Y5e4=; 
- b=oLhNGi+I+Rma92S81fCP0y77PVdsTJDZmWur1Ou+uMLG7m1Jjf1OSTtFg9/apKKesd4YcQWwFvOEniTA4bZZ191ouvazyElHbawHgrd0FLQ1m5aWyVC4I88H8cZNSGOVi3Fy7+iJ+qyGp4Lll98mWkoZZFKurC+uXxqF3kTA6+4=;
-X-UUID: 9f5fe6e7d3f145549f39c0a0532a0b1d-20200212
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
- (envelope-from <ck.hu@mediatek.com>)
- (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
- with ESMTP id 2015734826; Wed, 12 Feb 2020 16:19:15 +0800
-Received: from mtkcas09.mediatek.inc (172.21.101.178) by
- mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
- 15.0.1395.4; Wed, 12 Feb 2020 16:17:37 +0800
-Received: from [172.21.77.4] (172.21.77.4) by mtkcas09.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1395.4 via Frontend
- Transport; Wed, 12 Feb 2020 16:19:42 +0800
-Message-ID: <1581495554.22603.2.camel@mtksdaap41>
-From: CK Hu <ck.hu@mediatek.com>
-To: Tzung-Bi Shih <tzungbi@google.com>
-Date: Wed, 12 Feb 2020 16:19:14 +0800
-In-Reply-To: <20200206102509.2.I230fd59de28e73934a91cb01424e25b9e84727f4@changeid>
-References: <20200206031752.193298-1-tzungbi@google.com>
- <20200206102509.2.I230fd59de28e73934a91cb01424e25b9e84727f4@changeid>
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+ dkim=pass (1024-bit key) header.d=amdcloud.onmicrosoft.com
+ header.i=@amdcloud.onmicrosoft.com header.b="Cm1guE96"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=C9HBgyw/MCki5eoDurA7EFkMrYHLzvaW8aRcEIYlkAco65zDv2Hot0yiSzpg762xYSAlB4WM6THwQ6mlrIhegogjGG/uaxKAAEHZ4VreIS0S1oHMg65Moy6Pt2UvoFSW2OXGz7yQ+F3WG6uVGEzxk///3f4I/RwRnxx9U8Ur3qOn9zTY33W1f0haBaDlsMUXH5WHg4NJLjoyy++z/5RnvnkW0KX7DZ0l8EbN893Nzc0awlsD3uS25/hCPG1hpvYhRrK7zklTwy9Jxts8DXSv2PPKD1gLwPhhLUDQj9WDQcIXdXXkRf7gvPnSw2+DRwz0eQRssDmwGrAmVKjoZilb1Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VXTivQ7eLvuhRAMBqe3k4QgJPPe6DRGwzA+6HB/RF0A=;
+ b=LH3U2n5MRv8O2Cn4XfATy7Rr0Kn8Ax3TyGPRmEJ3JzTm7qT34TNM6lu+QjYszYjuPKNL6wArLYZKm2XlH/jyXrZuI/ZDGj3zzGspSqwT67kuIEXEKTd6u2Tly0VCohXUeeI33h8OdycuMlp1kp4y4h8ctMa8MAMI68hETlIWSIhI423Z79yrVeaWscmqmCH+Z0WxJZ6cu7q3o3eenlBAV3wh83D0eh0XSZo5AVRs9zs31g0oeSmdCr1dGSBZL1M60dT3h2u0kO+spWQ/6nN3pwr9XvFlyKtGYZttAHKnTZYj/RKMCFwBeM5kK3BxRPGS2Sc1LShcdwIBbJWZgs5pAQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VXTivQ7eLvuhRAMBqe3k4QgJPPe6DRGwzA+6HB/RF0A=;
+ b=Cm1guE96R5CmV21CcX3QUIRndAkralc45OQxFKgLbjumfJGzqZRO3dX54C6QUjARM1X8nmlduYbgkCAP6A4CH4m1kRkhX7qpa/x1ZAyOAfpohapHyXMl+TIFwTc+4XvnUjex+4xkykWEYpwt7l2GMpkcqXvu+/Rd5/NtQlsay/I=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=Vishnuvardhanrao.Ravulapati@amd.com; 
+Received: from DM6PR12MB3868.namprd12.prod.outlook.com (10.255.173.213) by
+ DM6PR12MB2986.namprd12.prod.outlook.com (20.178.198.75) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2707.28; Wed, 12 Feb 2020 09:08:52 +0000
+Received: from DM6PR12MB3868.namprd12.prod.outlook.com
+ ([fe80::acd1:24ec:991:f353]) by DM6PR12MB3868.namprd12.prod.outlook.com
+ ([fe80::acd1:24ec:991:f353%5]) with mapi id 15.20.2707.030; Wed, 12 Feb 2020
+ 09:08:52 +0000
+To: Mark Brown <broonie@kernel.org>,
+ Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
+References: <1581426768-8937-1-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com>
+ <20200211153847.GK4543@sirena.org.uk>
+From: vishnu <vravulap@amd.com>
+Message-ID: <c4b900ee-743e-8ce0-1061-02c383bff90e@amd.com>
+Date: Wed, 12 Feb 2020 14:36:32 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.2.1
+In-Reply-To: <20200211153847.GK4543@sirena.org.uk>
+Content-Language: en-US
+X-ClientProxiedBy: BMXPR01CA0036.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:b00:c::22) To DM6PR12MB3868.namprd12.prod.outlook.com
+ (2603:10b6:5:1c8::21)
 MIME-Version: 1.0
-X-MTK: N
-Cc: alsa-devel@alsa-project.org, cychiang@google.com, airlied@linux.ie,
- dri-devel@lists.freedesktop.org, broonie@kernel.org,
- linux-mediatek@lists.infradead.org, daniel@ffwll.ch, matthias.bgg@gmail.com,
- p.zabel@pengutronix.de, dgreid@google.com,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [alsa-devel] [PATCH v2 2/3] drm/mediatek: support HDMI jack
-	status reporting
+Received: from [10.129.9.12] (165.204.159.251) by
+ BMXPR01CA0036.INDPRD01.PROD.OUTLOOK.COM (2603:1096:b00:c::22) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2729.22 via Frontend Transport; Wed, 12 Feb 2020 09:08:48 +0000
+X-Originating-IP: [165.204.159.251]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 64dd54c0-e341-4ab9-9ef8-08d7af9b2e02
+X-MS-TrafficTypeDiagnostic: DM6PR12MB2986:|DM6PR12MB2986:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB2986C3710F2A4230585E4A0CE71B0@DM6PR12MB2986.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Forefront-PRVS: 0311124FA9
+X-Forefront-Antispam-Report: SFV:NSPM;
+ SFS:(10009020)(4636009)(396003)(136003)(39860400002)(346002)(366004)(376002)(199004)(189003)(81166006)(81156014)(26005)(110136005)(36756003)(2616005)(8676002)(31696002)(6636002)(956004)(7416002)(8936002)(52116002)(478600001)(4326008)(6486002)(186003)(53546011)(66946007)(16526019)(54906003)(16576012)(316002)(6666004)(5660300002)(31686004)(66476007)(2906002)(66556008)(43062003);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:DM6PR12MB2986;
+ H:DM6PR12MB3868.namprd12.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; A:1; MX:1; 
+Received-SPF: None (protection.outlook.com: amd.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: cEmVanYSlK2r3LWwnyNdoEJ1bfExplo6LuFjX1v4sqp5zUihTljpfdOLoMxmcFm5NalJ8/S37GOcoa86NR2IexkRPpQhHRkMKM0/0pkyQ17ZF4Km96Hg5qcbcaS8R01OjGNregn1uqTk/Kmc8rkR+vagZBManCcLUlkz0awZo7+m0gf6UcdU16ItarArlbvQbBzUpi9fxbVXhI9nQqlZtZP6vgNLJd1U1bBS87jiRQ9UMWCOuDfkiYgSQRI3AmTU4kqhNfOh0jkXcdbo5bgMH1zseJlKo+V/rKR+9rR+NJwwU+w62AulqQPp8kxWI2xFZlZnwcaAzyqt7HBZX0SC2N6bFanCYOH1/XRe042cxrSQu4g0sFgMkL2NZ1KlbHHIfG27AEUEpqjcgzdm3pzsPM2iDQFVmk+X1ADCJAMUDXSsex74mjSGOaf0QUiCOmX6C3Hqu2r3PfSoPfFhiAsyPwJOtl8cQP3nm6xs2esGZKY/raZQ3hACxEms1RFLoFRT
+X-MS-Exchange-AntiSpam-MessageData: tl7kj3LiJ5IKYjrazo8LSlu10xCpyWvRQPxbMpA4kzyBneyulX4C3EiU+J8GauNB/GcoDchseEY6dh0fL3hFpjJoOJOQ8vSaFZ9Gey5lR1IhglN3/KNtobeyxCSmEB6EDr9XkyxC6l/HL860pS1n+g==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 64dd54c0-e341-4ab9-9ef8-08d7af9b2e02
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Feb 2020 09:08:52.6248 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: iEswVZVh0AK8b5Dz+CICfLvWX2hIUpbLFZZxUKz+8DHkVU4OwbDoIxR6A2kYwDcH+ZAUF5exckLW56ddkcVVcA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2986
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
+ <alsa-devel@alsa-project.org>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>,
+ YueHaibing <yuehaibing@huawei.com>, Takashi Iwai <tiwai@suse.com>,
+ Akshu Agrawal <akshu.agrawal@amd.com>, Wei Yongjun <weiyongjun1@huawei.com>,
+ Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Alexander.Deucher@amd.com,
+ Colin Ian King <colin.king@canonical.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: amd: Buffer Size instead of MAX
+	Buffer
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,124 +144,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi, Tzung-Bi:
 
-On Thu, 2020-02-06 at 11:17 +0800, Tzung-Bi Shih wrote:
-> 1.
-> Provides a callback (i.e. mtk_hdmi_audio_hook_plugged_cb) to hdmi-codec.
-> When ASoC machine driver calls hdmi_codec_set_jack_detect(), the
-> callback will be invoked to save plugged_cb and codec_dev parameters.
-> 
-> +---------+  set_jack_  +------------+ plugged_cb  +----------+
-> | machine | ----------> | hdmi-codec | ----------> | mtk-hdmi |
-> +---------+  detect()   +------------+ codec_dev   +----------+
-> 
-> 2.
-> When there is any jack status changes, mtk-hdmi will call the
-> plugged_cb() to notify hdmi-codec.  And then hdmi-codec will call
-> snd_soc_jack_report().
-> 
-> +----------+ plugged_cb  +------------+
-> | mtk-hdmi | ----------> | hdmi-codec | -> snd_soc_jack_report()
-> +----------+ codec_dev   +------------+
->              connector_status
-> 
-> Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
-> ---
->  drivers/gpu/drm/mediatek/mtk_hdmi.c | 34 ++++++++++++++++++++++++++---
->  1 file changed, 31 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi.c b/drivers/gpu/drm/mediatek/mtk_hdmi.c
-> index 23c2b0e8693d..fccdd975947d 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_hdmi.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_hdmi.c
-> @@ -169,6 +169,8 @@ struct mtk_hdmi {
->  	bool audio_enable;
->  	bool powered;
->  	bool enabled;
-> +	hdmi_codec_plugged_cb plugged_cb;
-> +	struct device *codec_dev;
->  };
->  
->  static inline struct mtk_hdmi *hdmi_ctx_from_bridge(struct drm_bridge *b)
-> @@ -1194,13 +1196,23 @@ static void mtk_hdmi_clk_disable_audio(struct mtk_hdmi *hdmi)
->  	clk_disable_unprepare(hdmi->clk[MTK_HDMI_CLK_AUD_SPDIF]);
->  }
->  
-> +static enum drm_connector_status
-> +mtk_hdmi_update_plugged_status(struct mtk_hdmi *hdmi)
-> +{
-> +	bool connected = mtk_cec_hpd_high(hdmi->cec_dev);
-> +
-> +	if (hdmi->plugged_cb && hdmi->codec_dev)
-> +		hdmi->plugged_cb(hdmi->codec_dev, connected);
-> +
-> +	return connected ?
-> +	       connector_status_connected : connector_status_disconnected;
-> +}
-> +
->  static enum drm_connector_status hdmi_conn_detect(struct drm_connector *conn,
->  						  bool force)
->  {
->  	struct mtk_hdmi *hdmi = hdmi_ctx_from_conn(conn);
-> -
-> -	return mtk_cec_hpd_high(hdmi->cec_dev) ?
-> -	       connector_status_connected : connector_status_disconnected;
-> +	return mtk_hdmi_update_plugged_status(hdmi);
->  }
->  
->  static void hdmi_conn_destroy(struct drm_connector *conn)
-> @@ -1648,20 +1660,36 @@ static int mtk_hdmi_audio_get_eld(struct device *dev, void *data, uint8_t *buf,
->  	return 0;
->  }
->  
-> +static int mtk_hdmi_audio_hook_plugged_cb(struct device *dev, void *data,
-> +					  hdmi_codec_plugged_cb fn,
-> +					  struct device *codec_dev)
-> +{
-> +	struct mtk_hdmi *hdmi = data;
-> +
-> +	hdmi->plugged_cb = fn;
-> +	hdmi->codec_dev = codec_dev;
-> +	mtk_hdmi_update_plugged_status(hdmi);
 
-I think hdmi_conn_detect() and mtk_hdmi_audio_hook_plugged_cb() would be
-called in different thread. So it's necessary to use a mutex to protect
-this.
+On 11/02/20 9:08 PM, Mark Brown wrote:
+> On Tue, Feb 11, 2020 at 06:42:28PM +0530, Ravulapati Vishnu vardhan rao wrote:
+> 
+>> Because of MAX BUFFER size in register,when user/app give small
+>> buffer size produces noise of old data in buffer.
+>> This patch rectifies this noise when using different
+>> buffer sizes less than MAX BUFFER.
+> 
+> In what way does this patch fix the issue?  I looks like it's moving a
+> buffer size setting from DMA to I2S but it's not clear why or how this
+> fixes the issue, or indeed what the actual issue that's causing what are
+> presumably underruns is?
+> 
+prior to this fix the value in Tx/Rx Ring Buffer Size register 
+ACP_BT_TX_RINGBUFSIZE,ACP_BT_RX_RINGBUFSIZE and same in I2S RINGBUFSIZE 
+registers was statically set to maximum which is wrong.
+Buffer size must be equal to actual allocated.
 
-Regards,
-CK
+Due to which When I play any audio:aplay -Dhw:2,0 test.wav and then stop 
+and play  aplay -Dhw:2,0 -c2 -fS16_LE -r48000 /dev/zero 
+--buffer-size=2048 I hear some part of old audio.
 
-> +
-> +	return 0;
-> +}
-> +
->  static const struct hdmi_codec_ops mtk_hdmi_audio_codec_ops = {
->  	.hw_params = mtk_hdmi_audio_hw_params,
->  	.audio_startup = mtk_hdmi_audio_startup,
->  	.audio_shutdown = mtk_hdmi_audio_shutdown,
->  	.digital_mute = mtk_hdmi_audio_digital_mute,
->  	.get_eld = mtk_hdmi_audio_get_eld,
-> +	.hook_plugged_cb = mtk_hdmi_audio_hook_plugged_cb,
->  };
->  
->  static int mtk_hdmi_register_audio_driver(struct device *dev)
->  {
-> +	struct mtk_hdmi *hdmi = dev_get_drvdata(dev);
->  	struct hdmi_codec_pdata codec_data = {
->  		.ops = &mtk_hdmi_audio_codec_ops,
->  		.max_i2s_channels = 2,
->  		.i2s = 1,
-> +		.data = hdmi,
->  	};
->  	struct platform_device *pdev;
->  
 
+So after adding above fix the issue is not reproduced.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
