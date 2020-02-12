@@ -6,62 +6,63 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 964F7C35242
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Feb 2020 00:33:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02F66C35242
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Feb 2020 01:17:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 20F862082F
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Feb 2020 00:33:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E082020848
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Feb 2020 01:17:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cRwsp2q1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 20F862082F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gMvB7zEP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E082020848
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DD0EA847;
-	Wed, 12 Feb 2020 01:32:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DD0EA847
+	by alsa0.perex.cz (Postfix) with ESMTPS id CCF49847;
+	Wed, 12 Feb 2020 02:16:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CCF49847
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581467589;
-	bh=1FpRPIq4HipnUngPoTV51Zwo4JB/p5CPBWt7kIWtkIk=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1581470236;
+	bh=nCa56w3D34vcquUffRnFuFL0Nymian85qy8BuPgxwVI=;
+	h=Date:From:To:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cRwsp2q1dLxgm0ostQUoVtyNY0EskwqAUEhJSjnzNXUkT5Z2udLhXfvAniF35KEg+
-	 h+HuZ/AlXm1QtSEu43PUUe+DeUhWrrHK3gWuv1rudDA85TEjxEdi2D6aookwsN7f59
-	 c0ll3dFatAT5g/KTBwpkWg4D/oQuFF8BopZ/TRcU=
+	b=gMvB7zEPsmc+CdEdcamMHWKJdrV7QcTNz2f/MZepkkttIk509UerjXrdliZgC0uTp
+	 BvdcaDSrENPlBonf5bYcPa/Ex9RfJQczrisZimYuFA1lFk2WoEvlifpzsTUs9RZrE2
+	 tBiEBkZU6bCVoqIACnZ5GBTwuvSWJCq7SlsF/QQ8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4FB27F8013D;
-	Wed, 12 Feb 2020 01:32:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4E5B9F8013E;
+	Wed, 12 Feb 2020 02:16:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 16C5EF80145; Wed, 12 Feb 2020 01:32:16 +0100 (CET)
+ id CF31CF80145; Wed, 12 Feb 2020 02:16:24 +0100 (CET)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 49DF6F800E7
- for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2020 01:32:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49DF6F800E7
-Date: 12 Feb 2020 09:32:04 +0900
-X-IronPort-AV: E=Sophos;i="5.70,428,1574089200"; d="scan'208";a="39020545"
+ by alsa1.perex.cz (Postfix) with ESMTP id 4F402F800F0
+ for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2020 02:16:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F402F800F0
+Date: 12 Feb 2020 10:16:15 +0900
+X-IronPort-AV: E=Sophos;i="5.70,428,1574089200"; d="scan'208";a="39025434"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 12 Feb 2020 09:32:04 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 12 Feb 2020 10:16:15 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 683BE411632F;
- Wed, 12 Feb 2020 09:32:04 +0900 (JST)
-Message-ID: <87ftfgmyro.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id A02414121513;
+ Wed, 12 Feb 2020 10:16:15 +0900 (JST)
+Message-ID: <87d0akmwq1.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Mark Brown <broonie@kernel.org>
-In-Reply-To: <20200211121616.GI4543@sirena.org.uk>
+To: Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Linux-ALSA <alsa-devel@alsa-project.org>
+In-Reply-To: <87ftfgmyro.wl-kuninori.morimoto.gx@renesas.com>
 References: <87d0anceze.wl-kuninori.morimoto.gx@renesas.com>
  <874kvzcey1.wl-kuninori.morimoto.gx@renesas.com>
  <095fdf34-5736-b79a-7bad-56f5a478e939@linux.intel.com>
  <20200211121616.GI4543@sirena.org.uk>
+ <87ftfgmyro.wl-kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Subject: Re: [alsa-devel] [PATCH v3 6/8] ASoC: soc-pcm: call
 	snd_soc_component_open/close() once
 X-BeenThere: alsa-devel@alsa-project.org
@@ -84,16 +85,19 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Hi Pierre-Louis, Mark
 
-> > Maybe a red-herring but is there a potential for race conditions here if
-> > that function is called twice from different places? Don't we need some sort
-> > of lock for all the new flags introduced here?
+> > > Maybe a red-herring but is there a potential for race conditions here if
+> > > that function is called twice from different places? Don't we need some sort
+> > > of lock for all the new flags introduced here?
+> > 
+> > The probe stuff is all going to get pretty upset if it's called from
+> > multiple paths already.
 > 
-> The probe stuff is all going to get pretty upset if it's called from
-> multiple paths already.
+> Hmm.. indeed we need to consider about it.
+> But I think it can/should/will be incremental patch.
+> Thank you for pointing it.
 
-Hmm.. indeed we need to consider about it.
-But I think it can/should/will be incremental patch.
-Thank you for pointing it.
+Is it OK for you ?
+Or, do we need v4 patch ?
 
 Thank you for your help !!
 Best regards
