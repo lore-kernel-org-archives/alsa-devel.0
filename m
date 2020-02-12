@@ -4,78 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EA58C35242
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Feb 2020 01:56:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CDDAC35242
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Feb 2020 01:56:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BF31320842
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Feb 2020 01:56:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CCCB22082F
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Feb 2020 01:56:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="C+m+KggW";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=serbinski.com header.i=@serbinski.com header.b="ENgRgVC+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BF31320842
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TkKfw1fR";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=serbinski.com header.i=@serbinski.com header.b="MyzJHWHO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CCCB22082F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=serbinski.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0A915167D;
-	Wed, 12 Feb 2020 02:55:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A915167D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 33463166E;
+	Wed, 12 Feb 2020 02:55:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33463166E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581472568;
-	bh=4yD6i0MK+sWjs18pA8UdZnoeLGdZ2hFb576dMh71LII=;
+	s=default; t=1581472585;
+	bh=cJy0KakIK/Hbl77gCoDTesHsFZGIyUPOp6lYV31dWFo=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=C+m+KggW+t+gojusVJUg8Ku67x2Ol3L2zhxuDrUZzy10JqyflZ6mQPNGFD4NV9di4
-	 wS04zBBUHTwkwECIRwezslXX19N/DwcXSvyRw+Dt0AulmTO5Y/F9dbLfPs9k7cdVj0
-	 mwst7DTGzJVQvz/P0rDc0GzoWSen3VRCC+dQ1238=
+	b=TkKfw1fRCy7Cmp9fBCVpP/knzC6CH6RBRXbSZtJUPSzzeJnEUWtCMWHjO6SQzM8mf
+	 tbMKpEiiggdpTlKBjAlGFUfO+nJaIx5tJqPBD9y+mtZaasaEDiamp6ihU2P+zji3K1
+	 +2cOhho+IY/zS8vyEhW9Qt32B8qsP+9Jdvr1dnHo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 53976F8028B;
-	Wed, 12 Feb 2020 02:53:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 53DB0F8028E;
+	Wed, 12 Feb 2020 02:53:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7E10BF80257; Wed, 12 Feb 2020 02:53:04 +0100 (CET)
+ id 78B1BF8028D; Wed, 12 Feb 2020 02:53:16 +0100 (CET)
 Received: from mail.serbinski.com (mail.serbinski.com [162.218.126.2])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 432C1F80218
- for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2020 02:53:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 432C1F80218
+ by alsa1.perex.cz (Postfix) with ESMTPS id B8F70F8028D
+ for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2020 02:53:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8F70F8028D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=serbinski.com header.i=@serbinski.com
- header.b="ENgRgVC+"
+ header.b="MyzJHWHO"
 Received: from localhost (unknown [127.0.0.1])
- by mail.serbinski.com (Postfix) with ESMTP id 7FFABD00718;
- Wed, 12 Feb 2020 01:52:59 +0000 (UTC)
+ by mail.serbinski.com (Postfix) with ESMTP id 5D545D0071A;
+ Wed, 12 Feb 2020 01:53:12 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at serbinski.com
 Received: from mail.serbinski.com ([127.0.0.1])
  by localhost (mail.serbinski.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id ADjIgewZVsVa; Tue, 11 Feb 2020 20:52:49 -0500 (EST)
+ with ESMTP id ffjh8fLh9Azr; Tue, 11 Feb 2020 20:52:58 -0500 (EST)
 Received: from anet (23-233-80-73.cpe.pppoe.ca [23.233.80.73])
  (using TLSv1 with cipher AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mail.serbinski.com (Postfix) with ESMTPSA id 9E82FD00705;
- Tue, 11 Feb 2020 20:52:36 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.serbinski.com 9E82FD00705
+ by mail.serbinski.com (Postfix) with ESMTPSA id 486D6D00715;
+ Tue, 11 Feb 2020 20:52:37 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.serbinski.com 486D6D00715
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=serbinski.com;
- s=default; t=1581472356;
- bh=qQ33OBoUwYvkzJ8dKPMjgyNVWI/zeHohTVgHOdxpxco=;
+ s=default; t=1581472357;
+ bh=6Z1IRgMoCdCgFvRk12JMyiKFWmlMSbcgX0A0M9qY3qI=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ENgRgVC+FmWDhsOpbEqN640LOejfSnmnXlKi6Psf337AVVptsXrG9GPMxm67GOez9
- fM1fSNMClO7eXwhDCHnmEvmDZ9iEI+fO7jzFmvZ4MMCzIwbfW/kPj8bGX8VpYp05hw
- pfDUvI6+CnTxKOZCFLzRpDvqREejM9s9MPqhywFQ=
+ b=MyzJHWHOSek1Wj3kk6aSij3GlAgVSI9BIlKlz0CST0OpKPB6IE2EAEsaZM7GIgTF/
+ +L9FVj9P4AKzQzxMbQltWlQsvDaDIqqoWnc6WiSAkRkDdPkSwk2hGuiPNjZFNF0ecs
+ s0WhCWNfvQKTCyd+XToWneyecdNTnnRLHNqjVSdI=
 From: Adam Serbinski <adam@serbinski.com>
 To: Mark Brown <broonie@kernel.org>,
  Srini Kandagatla <srinivas.kandagatla@linaro.org>,
  Rob Herring <robh+dt@kernel.org>,
  Bjorn Andersson <bjorn.andersson@linaro.org>
-Date: Tue, 11 Feb 2020 20:52:21 -0500
-Message-Id: <20200212015222.8229-6-adam@serbinski.com>
+Date: Tue, 11 Feb 2020 20:52:17 -0500
+Message-Id: <20200212015222.8229-2-adam@serbinski.com>
 X-Mailer: git-send-email 2.21.1
 In-Reply-To: <20200212015222.8229-1-adam@serbinski.com>
 References: <20200212015222.8229-1-adam@serbinski.com>
@@ -86,8 +86,8 @@ Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
  Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
  Andy Gross <agross@kernel.org>, Adam Serbinski <adam@serbinski.com>,
  linux-kernel@vger.kernel.org
-Subject: [alsa-devel] [PATCH v3 5/6] ASoC: qcom: apq8096: add support for
-	primary and quaternary I2S/PCM
+Subject: [alsa-devel] [PATCH v3 1/6] ASoC: qdsp6: dt-bindings: Add q6afe pcm
+	dt binding
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,9 +105,10 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This adds support to primary and quarternary I2S and PCM ports.
+This patch adds bindings required for PCM ports on AFE.
 
 Signed-off-by: Adam Serbinski <adam@serbinski.com>
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 CC: Andy Gross <agross@kernel.org>
 CC: Mark Rutland <mark.rutland@arm.com>
 CC: Liam Girdwood <lgirdwood@gmail.com>
@@ -120,137 +121,28 @@ CC: linux-arm-msm@vger.kernel.org
 CC: devicetree@vger.kernel.org
 CC: linux-kernel@vger.kernel.org
 ---
- sound/soc/qcom/apq8096.c | 86 +++++++++++++++++++++++++++++++++-------
- 1 file changed, 71 insertions(+), 15 deletions(-)
+ include/dt-bindings/sound/qcom,q6afe.h | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/sound/soc/qcom/apq8096.c b/sound/soc/qcom/apq8096.c
-index 94363fd6846a..0dd58cdf34dd 100644
---- a/sound/soc/qcom/apq8096.c
-+++ b/sound/soc/qcom/apq8096.c
-@@ -8,24 +8,13 @@
- #include <sound/soc-dapm.h>
- #include <sound/pcm.h>
- #include "common.h"
-+#include "qdsp6/q6afe.h"
+diff --git a/include/dt-bindings/sound/qcom,q6afe.h b/include/dt-bindings/sound/qcom,q6afe.h
+index 1df06f8ad5c3..f3a435a112cb 100644
+--- a/include/dt-bindings/sound/qcom,q6afe.h
++++ b/include/dt-bindings/sound/qcom,q6afe.h
+@@ -107,6 +107,14 @@
+ #define QUINARY_TDM_RX_7	102
+ #define QUINARY_TDM_TX_7	103
+ #define DISPLAY_PORT_RX		104
++#define PRIMARY_PCM_RX		105
++#define PRIMARY_PCM_TX		106
++#define SECONDARY_PCM_RX	107
++#define SECONDARY_PCM_TX	108
++#define TERTIARY_PCM_RX		109
++#define TERTIARY_PCM_TX		110
++#define QUATERNARY_PCM_RX	111
++#define QUATERNARY_PCM_TX	112
  
- #define SLIM_MAX_TX_PORTS 16
- #define SLIM_MAX_RX_PORTS 16
- #define WCD9335_DEFAULT_MCLK_RATE	9600000
--
--static int apq8096_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
--				      struct snd_pcm_hw_params *params)
--{
--	struct snd_interval *rate = hw_param_interval(params,
--					SNDRV_PCM_HW_PARAM_RATE);
--	struct snd_interval *channels = hw_param_interval(params,
--					SNDRV_PCM_HW_PARAM_CHANNELS);
--
--	rate->min = rate->max = 48000;
--	channels->min = channels->max = 2;
--
--	return 0;
--}
-+#define MI2S_BCLK_RATE			1536000
-+#define PCM_BCLK_RATE			1024000
+ #endif /* __DT_BINDINGS_Q6_AFE_H__ */
  
- static int msm_snd_hw_params(struct snd_pcm_substream *substream,
- 			     struct snd_pcm_hw_params *params)
-@@ -33,10 +22,32 @@ static int msm_snd_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_interval *rate = hw_param_interval(params,
-+					SNDRV_PCM_HW_PARAM_RATE);
-+	struct snd_interval *channels = hw_param_interval(params,
-+					SNDRV_PCM_HW_PARAM_CHANNELS);
- 	u32 rx_ch[SLIM_MAX_RX_PORTS], tx_ch[SLIM_MAX_TX_PORTS];
- 	u32 rx_ch_cnt = 0, tx_ch_cnt = 0;
- 	int ret = 0;
- 
-+	switch (cpu_dai->id) {
-+	case PRIMARY_PCM_RX:
-+	case PRIMARY_PCM_TX:
-+	case QUATERNARY_PCM_RX:
-+	case QUATERNARY_PCM_TX:
-+		rate->min = 16000;
-+		rate->max = 16000;
-+		channels->min = 1;
-+		channels->max = 1;
-+		break;
-+	default:
-+		rate->min = 48000;
-+		rate->max = 48000;
-+		channels->min = 2;
-+		channels->max = 2;
-+		break;
-+	}
-+
- 	ret = snd_soc_dai_get_channel_map(codec_dai,
- 				&tx_ch_cnt, tx_ch, &rx_ch_cnt, rx_ch);
- 	if (ret != 0 && ret != -ENOTSUPP) {
-@@ -60,8 +71,54 @@ static int msm_snd_hw_params(struct snd_pcm_substream *substream,
- 	return ret;
- }
- 
-+static int msm_snd_startup(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+
-+	switch (cpu_dai->id) {
-+	case PRIMARY_MI2S_RX:
-+	case PRIMARY_MI2S_TX:
-+		snd_soc_dai_set_sysclk(cpu_dai,
-+			Q6AFE_LPASS_CLK_ID_PRI_MI2S_IBIT,
-+			MI2S_BCLK_RATE, SNDRV_PCM_STREAM_PLAYBACK);
-+		snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_CBS_CFS);
-+		snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_CBS_CFS);
-+		break;
-+	case QUATERNARY_MI2S_RX:
-+	case QUATERNARY_MI2S_TX:
-+		snd_soc_dai_set_sysclk(cpu_dai,
-+			Q6AFE_LPASS_CLK_ID_QUAD_MI2S_IBIT,
-+			MI2S_BCLK_RATE, SNDRV_PCM_STREAM_PLAYBACK);
-+		snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_CBS_CFS);
-+		snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_CBS_CFS);
-+		break;
-+	case PRIMARY_PCM_RX:
-+	case PRIMARY_PCM_TX:
-+		snd_soc_dai_set_sysclk(cpu_dai,
-+			Q6AFE_LPASS_CLK_ID_PRI_PCM_IBIT,
-+			PCM_BCLK_RATE, SNDRV_PCM_STREAM_PLAYBACK);
-+		snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_CBS_CFS);
-+		snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_CBS_CFS);
-+		break;
-+	case QUATERNARY_PCM_RX:
-+	case QUATERNARY_PCM_TX:
-+		snd_soc_dai_set_sysclk(cpu_dai,
-+			Q6AFE_LPASS_CLK_ID_QUAD_PCM_IBIT,
-+			PCM_BCLK_RATE, SNDRV_PCM_STREAM_PLAYBACK);
-+		snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_CBS_CFS);
-+		snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_CBS_CFS);
-+		break;
-+	default:
-+		return -1;
-+	}
-+	return 0;
-+}
-+
- static struct snd_soc_ops apq8096_ops = {
- 	.hw_params = msm_snd_hw_params,
-+	.startup = msm_snd_startup,
- };
- 
- static int apq8096_init(struct snd_soc_pcm_runtime *rtd)
-@@ -96,7 +153,6 @@ static void apq8096_add_be_ops(struct snd_soc_card *card)
- 
- 	for_each_card_prelinks(card, i, link) {
- 		if (link->no_pcm == 1) {
--			link->be_hw_params_fixup = apq8096_be_hw_params_fixup;
- 			link->init = apq8096_init;
- 			link->ops = &apq8096_ops;
- 		}
 -- 
 2.21.1
 
