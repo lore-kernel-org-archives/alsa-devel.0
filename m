@@ -2,67 +2,77 @@ Return-Path: <SRS0=nhcg=4A=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C8D09C2BA83
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Feb 2020 07:19:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6338CC2BA83
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Feb 2020 07:48:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5183D2082F
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Feb 2020 07:19:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C9B54206DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Feb 2020 07:48:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Y5WtZPiU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5183D2082F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kOV1V+QP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C9B54206DB
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AF29A15E5;
-	Wed, 12 Feb 2020 08:18:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF29A15E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1AA3E15E4;
+	Wed, 12 Feb 2020 08:47:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1AA3E15E4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581491940;
-	bh=8ckGaii8wxqdY209NqbWRMMOvVFojUKuP9U3UoPCP08=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Y5WtZPiUW2zyNVzKkfAKgk1cln1J00ObjOHY3Ar3QaebRaAG57f3Rfp+iX1Rxn83A
-	 6HO+lnODzifGuPDc8YIP8hl3JQTEWFJ9MdfLqjWf28El0Pfm0gAT8Ax14K60ml8ASJ
-	 pSp3f3tuvQ4Vmr1bzzl3vze0JDmqxMvGwS3MaXzQ=
+	s=default; t=1581493690;
+	bh=guh4IOmdEYu+ANwm6VPLEKvJSi2e9+KN5l8Z79723rM=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=kOV1V+QPztujAcI2JZCoOkiXJSEI0sbz6kjusKL58tbI+m0ugKAx0xhseYMvZPFXs
+	 Z+zmuDYQ9Va/24ACtQNXju2zNmMI6CwYY6xZBZTITqy/zF+G9y3zfLUCx6paAdjoSZ
+	 vjblpD4T8q88lQlbB53HCJZfwj6vHXvtSKv57+Dg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0667CF80278;
-	Wed, 12 Feb 2020 08:16:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9C18EF8014F;
+	Wed, 12 Feb 2020 08:47:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E6270F80279; Wed, 12 Feb 2020 08:16:23 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 48FC4F80157; Wed, 12 Feb 2020 08:47:17 +0100 (CET)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 14EA4F80257
- for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2020 08:16:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14EA4F80257
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id B5AA4AF36;
- Wed, 12 Feb 2020 07:16:20 +0000 (UTC)
-Date: Wed, 12 Feb 2020 08:16:20 +0100
-Message-ID: <s5hd0ak1diz.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20200211200739.GA12948@embeddedor>
-References: <20200211200739.GA12948@embeddedor>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>
-Subject: Re: [alsa-devel] [PATCH] ALSA: hda_codec: Replace zero-length array
-	with flexible-array member
+ by alsa1.perex.cz (Postfix) with ESMTPS id 87E7DF80125
+ for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2020 08:47:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87E7DF80125
+Authenticated-By: 
+X-SpamFilter-By: BOX Solutions SpamTrap 5.62 with qID 01C7l6XG031331,
+ This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (RTEXMB06.realtek.com.tw[172.21.6.99])
+ by rtits2.realtek.com.tw (8.15.2/2.57/5.78) with ESMTPS id 01C7l6XG031331
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 12 Feb 2020 15:47:06 +0800
+Received: from RTEXMB01.realtek.com.tw (172.21.6.94) by
+ RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Wed, 12 Feb 2020 15:47:05 +0800
+Received: from RTEXMB01.realtek.com.tw ([fe80::1832:8abc:ec2d:974f]) by
+ RTEXMB01.realtek.com.tw ([fe80::1832:8abc:ec2d:974f%6]) with mapi id
+ 15.01.1779.005; Wed, 12 Feb 2020 15:47:05 +0800
+From: Kailang <kailang@realtek.com>
+To: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>
+Thread-Topic: Add more codec supported Headset Button
+Thread-Index: AdXheGe8u4G9RpikQner9xHzC9zetA==
+Date: Wed, 12 Feb 2020 07:47:05 +0000
+Message-ID: <948f70b4488f4cc2b629a39ce4e4be33@realtek.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: yes
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.22.105.169]
+Content-Type: multipart/mixed;
+ boundary="_002_948f70b4488f4cc2b629a39ce4e4be33realtekcom_"
+MIME-Version: 1.0
+Cc: " \(alsa-devel@alsa-project.org\)" <alsa-devel@alsa-project.org>
+Subject: [alsa-devel] Add more codec supported Headset Button
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,42 +85,57 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 11 Feb 2020 21:07:39 +0100,
-Gustavo A. R. Silva wrote:
-> 
-> The current codebase makes use of the zero-length array language
-> extension to the C90 standard, but the preferred mechanism to declare
-> variable-length types such as these ones is a flexible array member[1][2],
-> introduced in C99:
-> 
-> struct foo {
->         int stuff;
->         struct boo array[];
-> };
-> 
-> By making use of the mechanism above, we will get a compiler warning
-> in case the flexible array does not occur last in the structure, which
-> will help us prevent some kind of undefined behavior bugs from being
-> inadvertenly introduced[3] to the codebase from now on.
-> 
-> This issue was found with the help of Coccinelle.
-> 
-> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-> [2] https://github.com/KSPP/linux/issues/21
-> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+--_002_948f70b4488f4cc2b629a39ce4e4be33realtekcom_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Applied, thanks.
+Hi Takashi,
 
+Attach patch.
+Add supported Headset Button for ALC215/ALC285/ALC289.
 
-Takashi
+Many Thanks.
+
+BR,
+Kailang
+
+--_002_948f70b4488f4cc2b629a39ce4e4be33realtekcom_
+Content-Type: application/octet-stream; name="0000-HS-BTN-supported.patch"
+Content-Description: 0000-HS-BTN-supported.patch
+Content-Disposition: attachment; filename="0000-HS-BTN-supported.patch";
+	size=897; creation-date="Wed, 12 Feb 2020 07:33:35 GMT";
+	modification-date="Wed, 12 Feb 2020 07:45:09 GMT"
+Content-Transfer-Encoding: base64
+
+RnJvbSA5ZTE1ZGI0YWQzZjU1YTQ2MDg4MDUyZDNkNGQwNTEzMTQ2MGNkNWExIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CkRh
+dGU6IE1vbiwgMTAgRmViIDIwMjAgMTY6MTU6MTQgKzA4MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
+OiBoZGEvcmVhbHRlayAtIEFkZCBtb3JlIGNvZGVjIHN1cHBvcnRlZCBIZWFkc2V0IEJ1dHRvbgoK
+QWRkIHN1cHBvcnRlZCBIZWFkc2V0IEJ1dHRvbiBmb3IgQUxDMjE1L0FMQzI4NS9BTEMyODkuCgpT
+aWduZWQtb2ZmLWJ5OiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CgpkaWZmIC0t
+Z2l0IGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMgYi9zb3VuZC9wY2kvaGRhL3BhdGNo
+X3JlYWx0ZWsuYwppbmRleCA0NzcwZmIzZjUxZmIuLjNlZTg4YWRmNTdlNyAxMDA2NDQKLS0tIGEv
+c291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9y
+ZWFsdGVrLmMKQEAgLTU3MDEsOCArNTcwMSwxMSBAQCBzdGF0aWMgdm9pZCBhbGNfZml4dXBfaGVh
+ZHNldF9qYWNrKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjLAogCQlicmVhazsKIAljYXNlIEhEQV9G
+SVhVUF9BQ1RfSU5JVDoKIAkJc3dpdGNoIChjb2RlYy0+Y29yZS52ZW5kb3JfaWQpIHsKKwkJY2Fz
+ZSAweDEwZWMwMjE1OgogCQljYXNlIDB4MTBlYzAyMjU6CisJCWNhc2UgMHgxMGVjMDI4NToKIAkJ
+Y2FzZSAweDEwZWMwMjk1OgorCQljYXNlIDB4MTBlYzAyODk6CiAJCWNhc2UgMHgxMGVjMDI5OToK
+IAkJCWFsY193cml0ZV9jb2VmX2lkeChjb2RlYywgMHg0OCwgMHhkMDExKTsKIAkJCWFsY191cGRh
+dGVfY29lZl9pZHgoY29kZWMsIDB4NDksIDB4MDA3ZiwgMHgwMDQ1KTsK
+
+--_002_948f70b4488f4cc2b629a39ce4e4be33realtekcom_
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--_002_948f70b4488f4cc2b629a39ce4e4be33realtekcom_--
