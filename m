@@ -2,69 +2,92 @@ Return-Path: <SRS0=nhcg=4A=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02F66C35242
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Feb 2020 01:17:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7ADFAC35242
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Feb 2020 01:53:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E082020848
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Feb 2020 01:17:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 074F52082F
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Feb 2020 01:53:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gMvB7zEP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E082020848
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JUHP3pSb";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=serbinski.com header.i=@serbinski.com header.b="e9o7LKEW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 074F52082F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=serbinski.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CCF49847;
-	Wed, 12 Feb 2020 02:16:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CCF49847
+	by alsa0.perex.cz (Postfix) with ESMTPS id 59037846;
+	Wed, 12 Feb 2020 02:52:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 59037846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581470236;
-	bh=nCa56w3D34vcquUffRnFuFL0Nymian85qy8BuPgxwVI=;
-	h=Date:From:To:In-Reply-To:References:Subject:List-Id:
+	s=default; t=1581472423;
+	bh=DHUjAjLGqyq80n3v9SAEtS/ij4d87CD+Y2xqqAchlcY=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gMvB7zEPsmc+CdEdcamMHWKJdrV7QcTNz2f/MZepkkttIk509UerjXrdliZgC0uTp
-	 BvdcaDSrENPlBonf5bYcPa/Ex9RfJQczrisZimYuFA1lFk2WoEvlifpzsTUs9RZrE2
-	 tBiEBkZU6bCVoqIACnZ5GBTwuvSWJCq7SlsF/QQ8=
+	b=JUHP3pSbpRSK9hbsWDtkhTk/Q41lYhxFHpyhvuPDdLxdskG/ptYGycO9c/cmDrASr
+	 AOQbmzT38+B+9M/St7RQEPw4kibTo+Fo0J2ntD74NUV0J6MgGz7NM6QDkNVG5RsMyL
+	 aLoqKW7Ky2S4exIojR1+fk3jYcorvCAMf8K/22K4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4E5B9F8013E;
-	Wed, 12 Feb 2020 02:16:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CC34EF800F0;
+	Wed, 12 Feb 2020 02:52:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CF31CF80145; Wed, 12 Feb 2020 02:16:24 +0100 (CET)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 4F402F800F0
- for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2020 02:16:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F402F800F0
-Date: 12 Feb 2020 10:16:15 +0900
-X-IronPort-AV: E=Sophos;i="5.70,428,1574089200"; d="scan'208";a="39025434"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 12 Feb 2020 10:16:15 +0900
-Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id A02414121513;
- Wed, 12 Feb 2020 10:16:15 +0900 (JST)
-Message-ID: <87d0akmwq1.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+ id A6194F80145; Wed, 12 Feb 2020 02:52:51 +0100 (CET)
+Received: from mail.serbinski.com (mail.serbinski.com [162.218.126.2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id F3F62F800F0
+ for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2020 02:52:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3F62F800F0
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=serbinski.com header.i=@serbinski.com
+ header.b="e9o7LKEW"
+Received: from localhost (unknown [127.0.0.1])
+ by mail.serbinski.com (Postfix) with ESMTP id 9C5BCD00717;
+ Wed, 12 Feb 2020 01:52:44 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at serbinski.com
+Received: from mail.serbinski.com ([127.0.0.1])
+ by localhost (mail.serbinski.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id w6sI_TrmwMDz; Tue, 11 Feb 2020 20:52:32 -0500 (EST)
+Received: from anet (23-233-80-73.cpe.pppoe.ca [23.233.80.73])
+ (using TLSv1 with cipher AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mail.serbinski.com (Postfix) with ESMTPSA id 3FDAAD00693;
+ Tue, 11 Feb 2020 20:52:32 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.serbinski.com 3FDAAD00693
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=serbinski.com;
+ s=default; t=1581472352;
+ bh=HeEXjb1mAS3JAt8AjmL+s+xV5zTwkyyh6B62a9LbWeQ=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=e9o7LKEWtXhjwswZEoVIu2hrsfGBwTXOHUenIb6M7a5su89PFfrYqZWsa2fsDi/gf
+ 0MStw4EAz9Vx14FpB/TuO4oI8UJaKtGZb38RR+V8sM7QIbw9e8Y41e6IP5xu4zUhDn
+ +ZmTfwewWuYqkNHnX8EChG7sEQsMWi0grOZTN0CU=
+From: Adam Serbinski <adam@serbinski.com>
 To: Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Linux-ALSA <alsa-devel@alsa-project.org>
-In-Reply-To: <87ftfgmyro.wl-kuninori.morimoto.gx@renesas.com>
-References: <87d0anceze.wl-kuninori.morimoto.gx@renesas.com>
- <874kvzcey1.wl-kuninori.morimoto.gx@renesas.com>
- <095fdf34-5736-b79a-7bad-56f5a478e939@linux.intel.com>
- <20200211121616.GI4543@sirena.org.uk>
- <87ftfgmyro.wl-kuninori.morimoto.gx@renesas.com>
-User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Subject: Re: [alsa-devel] [PATCH v3 6/8] ASoC: soc-pcm: call
-	snd_soc_component_open/close() once
+ Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>
+Date: Tue, 11 Feb 2020 20:52:22 -0500
+Message-Id: <20200212015222.8229-7-adam@serbinski.com>
+X-Mailer: git-send-email 2.21.1
+In-Reply-To: <20200212015222.8229-1-adam@serbinski.com>
+References: <20200212015222.8229-1-adam@serbinski.com>
+MIME-Version: 1.0
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
+ linux-arm-msm@vger.kernel.org, Patrick Lai <plai@codeaurora.org>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Andy Gross <agross@kernel.org>, Adam Serbinski <adam@serbinski.com>,
+ linux-kernel@vger.kernel.org
+Subject: [alsa-devel] [PATCH v3 6/6] ASoC: qdsp6: dt-bindings: Add q6afe pcm
+	dt binding documentation
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,27 +105,86 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+This patch adds documentation of bindings required for PCM ports on AFE.
 
-Hi Pierre-Louis, Mark
-
-> > > Maybe a red-herring but is there a potential for race conditions here if
-> > > that function is called twice from different places? Don't we need some sort
-> > > of lock for all the new flags introduced here?
-> > 
-> > The probe stuff is all going to get pretty upset if it's called from
-> > multiple paths already.
-> 
-> Hmm.. indeed we need to consider about it.
-> But I think it can/should/will be incremental patch.
-> Thank you for pointing it.
-
-Is it OK for you ?
-Or, do we need v4 patch ?
-
-Thank you for your help !!
-Best regards
+Signed-off-by: Adam Serbinski <adam@serbinski.com>
+CC: Andy Gross <agross@kernel.org>
+CC: Mark Rutland <mark.rutland@arm.com>
+CC: Liam Girdwood <lgirdwood@gmail.com>
+CC: Patrick Lai <plai@codeaurora.org>
+CC: Banajit Goswami <bgoswami@codeaurora.org>
+CC: Jaroslav Kysela <perex@perex.cz>
+CC: Takashi Iwai <tiwai@suse.com>
+CC: alsa-devel@alsa-project.org
+CC: linux-arm-msm@vger.kernel.org
+CC: devicetree@vger.kernel.org
+CC: linux-kernel@vger.kernel.org
 ---
-Kuninori Morimoto
+ .../devicetree/bindings/sound/qcom,q6afe.txt  | 42 +++++++++++++++++++
+ 1 file changed, 42 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/sound/qcom,q6afe.txt b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+index d74888b9f1bb..6b1b17d31a2a 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
++++ b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+@@ -51,6 +51,24 @@ configuration of each dai. Must contain the following properties.
+ 	Definition: Must be list of serial data lines used by this dai.
+ 	should be one or more of the 0-3 sd lines.
+ 
++ - qcom,pcm-quantype
++	Usage: required for pcm interface
++	Value type: <u32>
++	Definition: PCM quantization type
++		0 - ALAW, no padding
++		1 - MULAW, no padding
++		2 - Linear, no padding
++		3 - ALAW, padding
++		4 - MULAW, padding
++		5 - Linear, padding
++
++ - qcom,pcm-slot-mapping
++	Usage: required for pcm interface
++	Value type: <prop-encoded-array>
++	Definition: Slot mapping for audio channels. Array size is the number
++		of slots, minimum 1, maximum 4. The value is 0 for no mapping
++		to the slot, or the channel number from 1 to 32.
++
+  - qcom,tdm-sync-mode:
+ 	Usage: required for tdm interface
+ 	Value type: <prop-encoded-array>
+@@ -174,5 +192,29 @@ q6afe@4 {
+ 			reg = <23>;
+ 			qcom,sd-lines = <1>;
+ 		};
++
++		pri-pcm-rx@105 {
++			reg = <105>;
++			qcom,pcm-quantype = <2>;
++			qcom,pcm-slot-mapping = <1>;
++		};
++
++		pri-pcm-tx@106 {
++			reg = <106>;
++			qcom,pcm-quantype = <2>;
++			qcom,pcm-slot-mapping = <1>;
++		};
++
++		quat-pcm-rx@111 {
++			reg = <111>;
++			qcom,pcm-quantype = <5>;
++			qcom,pcm-slot-mapping = <0 0 1>;
++		};
++
++		quat-pcm-tx@112 {
++			reg = <112>;
++			qcom,pcm-quantype = <5>;
++			qcom,pcm-slot-mapping = <0 0 1>;
++		};
+ 	};
+ };
+-- 
+2.21.1
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
