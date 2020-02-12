@@ -2,106 +2,107 @@ Return-Path: <SRS0=nhcg=4A=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BFFD7C2BA83
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Feb 2020 09:21:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FBFBC2BA83
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Feb 2020 09:53:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 500F820659
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Feb 2020 09:21:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F12E720714
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Feb 2020 09:52:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Qzt+vk0R";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="l4APu5AT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 500F820659
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EOy10UPz";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QYsqlI9C"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F12E720714
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9E78C15F8;
-	Wed, 12 Feb 2020 10:20:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E78C15F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 500B0166C;
+	Wed, 12 Feb 2020 10:52:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 500B0166C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581499288;
-	bh=CryfonCR59NIh3pbTCbdWY76dVjVvlJ+KKPncE/bpB8=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1581501178;
+	bh=3n/UiuMkVrjm54ExGHxmFG3Rr2Lwf4+yiToMsXZbFF0=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Qzt+vk0RnYGG82ZiA9B/YpbuI3Y5x+Q4j1EDggR/v4+PDH0W/+kktfT50FYMNDIOe
-	 YMAhh2y0VjgeoqPO7iNNPSBgqtP66NXaV5gTUmy0h5ojX3LUnEezT8ZlnlInSRkewo
-	 wwO7h8GfmMvfSJqPMIFO4yv2J2jmQKL13Ck4DUsU=
+	b=EOy10UPzlZVEc88nYs2VPnXMHtxXjfqXHJP4wEbdSNN0l1Uz1QliszjmrRX8wLrdG
+	 yI0B6rFkSyXy0Zohuq6pIM870yQbJk5/W5UIVxubedzej+hoK7JkHlmGL1Kgs+pf1G
+	 HR9g7rFhbK0QzmQH/nMx2m/h2QWHRdKbIq5H1AIU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3DE54F8014F;
-	Wed, 12 Feb 2020 10:20:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B99A5F8014F;
+	Wed, 12 Feb 2020 10:52:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F275AF80157; Wed, 12 Feb 2020 10:20:36 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 24CF2F80157; Wed, 12 Feb 2020 10:52:06 +0100 (CET)
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com
+ [IPv6:2a00:1450:4864:20::441])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2D207F80125
- for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2020 10:20:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D207F80125
+ by alsa1.perex.cz (Postfix) with ESMTPS id 866FBF80125
+ for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2020 10:52:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 866FBF80125
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="l4APu5AT"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
- 01C9CMd7030569; Wed, 12 Feb 2020 03:20:32 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=8HhGU6yaLOtpr5hOSd5iA2lPFMINYOyqL+TaAgpB1Fg=;
- b=l4APu5AT6ALyNG3zEI22OUCvYGlvSEqhltargsGgNtZ33SQExwhsfGc2MyR9isW9Ad2w
- ArXbXNdXwVWxElXK7Uftoo6zCEIpVpWuDoQSAy2In3ORV+NVCKt9O4s4bQhVnKYJfYBE
- bKbjHB0suxwNCuDlGfFvfNXCnRCi0VALGdYX0Futh0A80W0KDJWw2ZOc/eUBSxwky/A+
- icGQntcFCVurtnrSjCHoOytB5d0nR8oow3s9AgSVwkjrZQNvysbZSYTU5WVnExT1vvcP
- I9K4xXvmtW9E3YTTKjQ/NxYfjzaAZo0pVT8+caPmV41AQz1g+3x10UqUp1AV6APmWnYX Ww== 
-Authentication-Results: ppops.net;
- spf=fail smtp.mailfrom=ckeepax@opensource.cirrus.com
-Received: from ediex02.ad.cirrus.com ([5.172.152.52])
- by mx0b-001ae601.pphosted.com with ESMTP id 2y1ta165f0-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Wed, 12 Feb 2020 03:20:32 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1591.10; Wed, 12 Feb
- 2020 09:20:30 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1591.10 via
- Frontend Transport; Wed, 12 Feb 2020 09:20:30 +0000
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 6C9A72AB;
- Wed, 12 Feb 2020 09:20:30 +0000 (UTC)
-Date: Wed, 12 Feb 2020 09:20:30 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <20200212092030.GE4098@ediswmail.ad.cirrus.com>
-References: <20200211200549.GA12072@embeddedor>
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="QYsqlI9C"
+Received: by mail-wr1-x441.google.com with SMTP id z7so1367786wrl.13
+ for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2020 01:52:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=P1BE/J6k12sw+5b4sdZJAqIoEkv4CupE36M6VkS2iPk=;
+ b=QYsqlI9CK3W1WYd+81VRLDbVrXSvTLcqcOtmxlp7DQqLG8nG/Imqsojr2LpIE7SoEf
+ KmLq+Vx+nr7l8mAU5rSKGgywBXGYPFRXb55OR7wPtZ5D089rMiRwyn00uHzZFwZ26/aX
+ E+LJIV2U5RWB9jFrn30qBqiZ5eBQavfsGrVkN8xD8N1XC4MiL0Dqk5DTSjJGAhVcCspk
+ OxEnJpwgOBKG6+uvrk/6Zbh91r+M63HFYDQndyQaDLRNQhm2FLIpoJppJpsG3E374l4E
+ 3pq8uu3IAGg6FW2KVCkpM7eh8KDMrsKBA7vSRwrtqqVJq4/YwKNzU2R6l6tC3H6HiLFM
+ 1XFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=P1BE/J6k12sw+5b4sdZJAqIoEkv4CupE36M6VkS2iPk=;
+ b=ZR4LB1BFM9UnvWHuG/YKkqYN8Df2rU57NPSjiGRF/8lm7dcYvSkjNcThmiIe/0SW8K
+ YzNyxoNP9BUUWNBYGJTSfKsNlHXURsn/5soO9CE+xf47wfqaKs+cmnVWdd3iIufW6CsV
+ irtgDP6pTyjUZy6O+3BevD6KmQBzn4N8mhkxKTlcWJGZc2KLKYt9Z0ktAN7AOtnZOuZs
+ CdLtJ+IECwZXHFkE4LC/TPnkJ9gsaZ6lzA7M4qUCW2idYAv6iR5A5d013F6fpbmGBpmK
+ 2MgzTbXzCq/3oYms1ej0waSrJU/c1/5r/ZO0ayjYf++HsX9YbSWz807pTPDTONKpbQ9L
+ /WeQ==
+X-Gm-Message-State: APjAAAW4wxm4hqaxrU9qdZ6QY5ONzMsV7oWrnaJCNcfXQGPKsLxWrYAZ
+ E48CY6B3jwdJumVWd3HeV+vqwQ==
+X-Google-Smtp-Source: APXvYqzsQwheQau9uolf3pWBRAMxduG9Z1N4tSP3VvEA0X/qjSw6MaHP8j8sf7/aCCkRVNTE9MxaRQ==
+X-Received: by 2002:adf:97d6:: with SMTP id t22mr14099564wrb.407.1581501122445; 
+ Wed, 12 Feb 2020 01:52:02 -0800 (PST)
+Received: from [192.168.86.34]
+ (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
+ by smtp.googlemail.com with ESMTPSA id d9sm8887197wrx.94.2020.02.12.01.52.00
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Wed, 12 Feb 2020 01:52:01 -0800 (PST)
+To: Adam Serbinski <adam@serbinski.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>
+References: <20200212015222.8229-1-adam@serbinski.com>
+ <20200212015222.8229-4-adam@serbinski.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <1875fb89-6a25-0d1a-c367-183ae6980ac8@linaro.org>
+Date: Wed, 12 Feb 2020 09:52:00 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20200211200549.GA12072@embeddedor>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-SPF-Result: fail
-X-Proofpoint-SPF-Record: v=spf1 include:spf-001ae601.pphosted.com
- include:spf.protection.outlook.com -all
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0
- mlxscore=0
- priorityscore=1501 malwarescore=0 lowpriorityscore=0 suspectscore=0
- phishscore=0 spamscore=0 impostorscore=0 mlxlogscore=755 adultscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2001150001 definitions=main-2002120075
-Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+In-Reply-To: <20200212015222.8229-4-adam@serbinski.com>
+Content-Language: en-US
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
+ linux-arm-msm@vger.kernel.org, Patrick Lai <plai@codeaurora.org>,
  Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [alsa-devel] [PATCH] ASoC: wm0010: Replace zero-length array
- with flexible-array member
+ Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [alsa-devel] [PATCH v3 3/6] ASoC: qdsp6: q6afe-dai: add support
+ to pcm port dais
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -114,40 +115,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Feb 11, 2020 at 02:05:49PM -0600, Gustavo A. R. Silva wrote:
-> The current codebase makes use of the zero-length array language
-> extension to the C90 standard, but the preferred mechanism to declare
-> variable-length types such as these ones is a flexible array member[1][2],
-> introduced in C99:
-> 
-> struct foo {
->         int stuff;
->         struct boo array[];
-> };
-> 
-> By making use of the mechanism above, we will get a compiler warning
-> in case the flexible array does not occur last in the structure, which
-> will help us prevent some kind of undefined behavior bugs from being
-> inadvertenly introduced[3] to the codebase from now on.
-> 
-> This issue was found with the help of Coccinelle.
-> 
-> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-> [2] https://github.com/KSPP/linux/issues/21
-> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
-> ---
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-Thanks,
-Charles
+On 12/02/2020 01:52, Adam Serbinski wrote:
+> +			ret = of_property_read_u32(node, "qcom,pcm-quantype",
+> +						   &priv->quantype);
+> +			if (ret) {
+> +				dev_err(dev, "No quantype from DT\n");
+> +				break;
+> +			}
+> +
+> +			ret = of_property_read_variable_u32_array(node,
+> +						"qcom,pcm-slot-mapping",
+> +						priv->slot_number_mapping,
+> +						1, AFE_MAX_PCM_SLOT_COUNT);
+
+These new bindings needs to be documented in 
+Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+
+--srini
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
