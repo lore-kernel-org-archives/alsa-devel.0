@@ -2,93 +2,89 @@ Return-Path: <SRS0=nhcg=4A=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83C54C2BA83
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Feb 2020 05:58:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D604DC2BA83
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Feb 2020 06:33:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 107272073C
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Feb 2020 05:58:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 497ED206DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Feb 2020 06:33:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gwH82YJs";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="CbOH6Ou9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 107272073C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OVqI6085"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 497ED206DB
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4483E167A;
-	Wed, 12 Feb 2020 06:57:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4483E167A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 970ED83B;
+	Wed, 12 Feb 2020 07:33:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 970ED83B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581487096;
-	bh=2uhE0QGd8hAEApN3qefBw1UFmC2JMdKGIpKD7OeuAvs=;
-	h=Date:In-Reply-To:References:From:To:Cc:Subject:List-Id:
+	s=default; t=1581489235;
+	bh=Pn7hs/SiPdVl4YT51qjiZiphjtZBsCSphCJDU+MjjRg=;
+	h=From:To:Date:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gwH82YJsRYIUM3E9r0vchHhAJ+eCjsKVSiJkrJzirqYHTv3ZLbVsgY12vVjkNDPiV
-	 WQwxnGoDbHv9BQF+Mre3K2elMdhDkoL5R7jGybf6TdZM/xC4rjMxrUf31CsjGHM+WP
-	 ZE9k5ttLSpzR9qj12I+8cDLOZretF5HZvE7RRAlY=
+	b=OVqI6085/aEbfLOg2FcEVfmq/SmqJmJYK8C3jxc7E+mbY7OnsxsPJNHaAL9+smxgc
+	 7f8sIkuOw4q9/3hU5kSyc/fzyQf9p4DpjWdxgAaSJnqq9EhJxXpOKNpPDBa7PmWEMq
+	 0fFwvL22ISThAwSeZ7ZBr99qo7rCab0/F1UmYOiI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D64BAF80257;
-	Wed, 12 Feb 2020 06:55:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 057FFF8014F;
+	Wed, 12 Feb 2020 07:33:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6030FF8019B; Wed, 12 Feb 2020 06:55:49 +0100 (CET)
-Received: from mail-vs1-xe4a.google.com (mail-vs1-xe4a.google.com
- [IPv6:2607:f8b0:4864:20::e4a])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 2865CF80157; Wed, 12 Feb 2020 07:33:03 +0100 (CET)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A86DCF8020B
- for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2020 06:55:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A86DCF8020B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="CbOH6Ou9"
-Received: by mail-vs1-xe4a.google.com with SMTP id z3so91951vsp.1
- for <alsa-devel@alsa-project.org>; Tue, 11 Feb 2020 21:55:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=date:in-reply-to:message-id:mime-version:references:subject:from:to
- :cc; bh=M9bQe4JOHID9ch3ITGyX6R7TVb2qhHoZt552O2LOt4s=;
- b=CbOH6Ou9sdy+drDOcbDXrzLEnpnYXAIK+pBQSEsEBH7Tfg8tBz6w5n4R5h3p5JzrX6
- I4u8xv+5TtTot2Ml+mC5QjCQpZT2GajfMLDUz5vNPhci/OaETQQkLiVzDJl7k1YH1CDG
- v3PH05eh6dKmpYwzz4fRuhdhcJckQ1H6mpgn39GDSJ1ZZdO1qzKtLoi4WG1yiRtgsrWl
- 3HSKhSlb7imrZHP2V2q6TgK7TjJet3ekKqsv0qOEiYOV9Q+yFOlK+Bn5koa5G2ZuFBVD
- IbAdmcHMwMD5U5askdRUQEUDM2cTFRk7dr73HOx4pzp1Ac/tsj7abx9i2mDtcuHzgkNt
- dVkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:in-reply-to:message-id:mime-version
- :references:subject:from:to:cc;
- bh=M9bQe4JOHID9ch3ITGyX6R7TVb2qhHoZt552O2LOt4s=;
- b=ShDHiMzFOAAI8Mk1JoSXHfUDWzSnbSHtJgnId37f0Okw7NI+KRYc2fvNGnx3NnwK5r
- nJ5Vuoxf9Ns59iWhQX9Nl8jLAHQiGS2lWLkv0l7+tZm6WbHd32JtCBIheBgCeW03WG1C
- z/vunP1p12pWo/E5elnOdgQCiA+J7aB9ccQkaupLW12rXSK7Uh+8048dhqO7YxmSYUwJ
- C0WygIDXWX34p2HONaLPEi9gyRJSDqiN/wBm/3tHyfFjR6QwyufsWFa7PUN3C8VmQj8b
- Kb0VnqIDWrmWKqozFEG14YHZXbhfwsQkG13qDDTTlhkpaxsj2k/YUhXmya8dbkM8fgq7
- BFbQ==
-X-Gm-Message-State: APjAAAWmBhdXA7sNqCkBF0nAzZQ+ghdMd18uxudRdkJq2AJam9HMTfEv
- aXSk1tQ5ah04RPUY70vefoGm7wKQJnke
-X-Google-Smtp-Source: APXvYqwILyGwIMJDVisHLKgZjgfxKI88xEyIh2MlYu6lCbX5bZRxSUsN/rFOrqk6wKa/11OWAxB4jwP9d0OI
-X-Received: by 2002:a1f:9d16:: with SMTP id g22mr6845916vke.22.1581486943646; 
- Tue, 11 Feb 2020 21:55:43 -0800 (PST)
-Date: Wed, 12 Feb 2020 13:55:17 +0800
-In-Reply-To: <20200212055517.122728-1-tzungbi@google.com>
-Message-Id: <20200212124608.2.I5fa3fdca69dbb5d3dd5031c939b9b24095065a94@changeid>
-Mime-Version: 1.0
-References: <20200212055517.122728-1-tzungbi@google.com>
-X-Mailer: git-send-email 2.25.0.225.g125e21ebc7-goog
-From: Tzung-Bi Shih <tzungbi@google.com>
-To: broonie@kernel.org
-Cc: tzungbi@google.com, alsa-devel@alsa-project.org, dgreid@google.com,
- cychiang@google.com, jiaxin.yu@mediatek.com
-Subject: [alsa-devel] [PATCH 2/2] ASoC: mediatek: mt8183-da7219: add speaker
-	switch
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7EB2AF800F0
+ for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2020 07:32:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7EB2AF800F0
+Authenticated-By: 
+X-SpamFilter-By: BOX Solutions SpamTrap 5.62 with qID 01C6Wl64029615,
+ This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (RTEXMB06.realtek.com.tw[172.21.6.99])
+ by rtits2.realtek.com.tw (8.15.2/2.57/5.78) with ESMTPS id 01C6Wl64029615
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 12 Feb 2020 14:32:47 +0800
+Received: from RTEXDAG02.realtek.com.tw (172.21.6.101) by
+ RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Wed, 12 Feb 2020 14:32:47 +0800
+Received: from RTEXMB01.realtek.com.tw (172.21.6.94) by
+ RTEXDAG02.realtek.com.tw (172.21.6.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Wed, 12 Feb 2020 14:32:47 +0800
+Received: from RTEXMB01.realtek.com.tw ([fe80::1832:8abc:ec2d:974f]) by
+ RTEXMB01.realtek.com.tw ([fe80::1832:8abc:ec2d:974f%6]) with mapi id
+ 15.01.1779.005; Wed, 12 Feb 2020 14:32:47 +0800
+From: Kailang <kailang@realtek.com>
+To: Takashi Iwai <tiwai@suse.de>
+Thread-Topic: [PATCH 2/2] ALSA: hda/realtek - Fix Lenovo Thinkpad X1 Carbon
+ 7th quirk value
+Thread-Index: AQHV4KAyVK0d0c4RkUCatRD1s4Jmc6gVFbAAgAAJ9ACAAJRvkP//fXAAgAHpSsA=
+Date: Wed, 12 Feb 2020 06:32:46 +0000
+Message-ID: <e3d27837151c46debf6d9c5af37f7460@realtek.com>
+References: <20200211055651.4405-1-benjamin.poirier@gmail.com>
+ <20200211055651.4405-2-benjamin.poirier@gmail.com>
+ <b23abac0-401c-9472-320c-4e9d7eab26de@perex.cz>	<20200211081604.GA8286@f3>
+ <ab7a0abd24df485d8f8cc3723403a44f@realtek.com> <s5ho8u54h19.wl-tiwai@suse.de>
+In-Reply-To: <s5ho8u54h19.wl-tiwai@suse.de>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.22.105.169]
+MIME-Version: 1.0
+Cc: Benjamin Poirier <benjamin.poirier@gmail.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [alsa-devel] [PATCH 2/2] ALSA: hda/realtek - Fix Lenovo
+	Thinkpad X1 Carbon 7th quirk value
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,54 +102,94 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Da7219 and max98357a share the same I2S lines.  When writing audio data
-to the I2S, both codecs generate sound.
 
-Da7219 already has a separate control "Headphone Switch".  Adds a new
-control "Speakers Switch" for turning on/off max98357a.  Userspace
-program can decide to turn on/off which codecs by different use cases.
 
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
----
- .../mediatek/mt8183/mt8183-da7219-max98357.c  | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+> -----Original Message-----
+> From: Takashi Iwai <tiwai@suse.de>
+> Sent: Tuesday, February 11, 2020 5:20 PM
+> To: Kailang <kailang@realtek.com>
+> Cc: Benjamin Poirier <benjamin.poirier@gmail.com>; Jaroslav Kysela
+> <perex@perex.cz>; alsa-devel@alsa-project.org; linux-kernel@vger.kernel.org
+> Subject: Re: [PATCH 2/2] ALSA: hda/realtek - Fix Lenovo Thinkpad X1 Carbon
+> 7th quirk value
+> 
+> On Tue, 11 Feb 2020 10:10:50 +0100,
+> Kailang wrote:
+> >
+> > Hi,
+> >
+> > Speaker 2 connect to DAC 0x2 was Lenovo requested.
+> > This was tune for EQ setting.
+> > I didn't know more for this.
+> 
+> Thanks, that was my expectation, too.  Applying EQ to built-in speakers is an
+> oft-seen workaround for laptops to avoid the possible hardware damage.
+> 
+> Now the question is whether this obvious level of lowering is the expected
+> result.
+> 
+> Kailang, could you try to ask Lenovo about it?
 
-diff --git a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-index c65493721e90..1626541cc0d6 100644
---- a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-@@ -372,9 +372,28 @@ static struct snd_soc_codec_conf mt6358_codec_conf[] = {
- 	},
- };
- 
-+static const struct snd_kcontrol_new mt8183_da7219_max98357_snd_controls[] = {
-+	SOC_DAPM_PIN_SWITCH("Speakers"),
-+};
-+
-+static const
-+struct snd_soc_dapm_widget mt8183_da7219_max98357_dapm_widgets[] = {
-+	SND_SOC_DAPM_SPK("Speakers", NULL),
-+};
-+
-+static const struct snd_soc_dapm_route mt8183_da7219_max98357_dapm_routes[] = {
-+	{"Speakers", NULL, "Speaker"},
-+};
-+
- static struct snd_soc_card mt8183_da7219_max98357_card = {
- 	.name = "mt8183_da7219_max98357",
- 	.owner = THIS_MODULE,
-+	.controls = mt8183_da7219_max98357_snd_controls,
-+	.num_controls = ARRAY_SIZE(mt8183_da7219_max98357_snd_controls),
-+	.dapm_widgets = mt8183_da7219_max98357_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(mt8183_da7219_max98357_dapm_widgets),
-+	.dapm_routes = mt8183_da7219_max98357_dapm_routes,
-+	.num_dapm_routes = ARRAY_SIZE(mt8183_da7219_max98357_dapm_routes),
- 	.dai_link = mt8183_da7219_max98357_dai_links,
- 	.num_links = ARRAY_SIZE(mt8183_da7219_max98357_dai_links),
- 	.aux_dev = &mt8183_da7219_max98357_headset_dev,
--- 
-2.25.0.225.g125e21ebc7-goog
+I have confirmed with our Lenovo AE.
 
+> 
+> 
+> Takashi
+> 
+> >
+> > BR,
+> > Kailang
+> >
+> > > -----Original Message-----
+> > > From: Benjamin Poirier <benjamin.poirier@gmail.com>
+> > > Sent: Tuesday, February 11, 2020 4:16 PM
+> > > To: Jaroslav Kysela <perex@perex.cz>
+> > > Cc: Takashi Iwai <tiwai@suse.de>; Kailang <kailang@realtek.com>;
+> > > alsa-devel@alsa-project.org; linux-kernel@vger.kernel.org
+> > > Subject: Re: [PATCH 2/2] ALSA: hda/realtek - Fix Lenovo Thinkpad X1
+> > > Carbon 7th quirk value
+> > >
+> > > On 2020/02/11 08:40 +0100, Jaroslav Kysela wrote:
+> > > [...]
+> > > > >
+> > > > > In summary, Node 0x17 DAC connection 0x3 offers the loudest max
+> > > > > volume and the most detailed mixer controls. That connection is
+> > > > > obtained with quirk ALC295_FIXUP_DISABLE_DAC3. Therefore, change
+> > > > > the ThinkPad X1 Carbon 7th to use ALC295_FIXUP_DISABLE_DAC3.
+> > > >
+> > > > The volume split (individual volume control) will cause trouble
+> > > > for the UCM volume control at the moment which is the target for
+> > > > this device to get the digital microphone working. If there is no
+> > > > possibility to share DAC, it would be probably more nice to join
+> > > > the volume
+> > > control in the driver.
+> > > >
+> > > > Have you tried to use 0x03 as source for all four speakers?
+> > >
+> > > Front speakers are fixed to 0x02. Node 0x14
+> > >   Connection: 1
+> > >      0x02
+> > >
+> > > >
+> > > > Why PA handles the rear volume control with the current driver
+> > > > code in the legacy ALSA driver? It should be handled like standard
+> > > > stereo device. I'll check.
+> > >
+> > > The device comes up with "Analog Stereo Output" profile by default.
+> > > I changed it to "Analog Surround 4.0 Output" to test controlling each
+> channel individually:
+> > >
+> > > > > pavucontrol controls are reported with the device configured
+> > > > > with the "Analog Surround 4.0 Output" profile.
+> > >
+> > > >
+> > > > You should also test PA with UCM.
+> > >
+> > > Please let me know what do I need to test exactly? I'm not familiar with
+> UCM.
+> > >
+> > > ------Please consider the environment before printing this e-mail.
+> >
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
