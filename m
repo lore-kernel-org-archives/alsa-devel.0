@@ -4,64 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 257BDC352A4
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 00:00:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C8560C352A4
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 00:00:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A5C732168B
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 00:00:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 51E762168B
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 00:00:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="e5jXYNkN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A5C732168B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XITp6dxu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 51E762168B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 103F615F9;
-	Thu, 13 Feb 2020 00:59:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 103F615F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id B7E6E168D;
+	Thu, 13 Feb 2020 01:00:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B7E6E168D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581552032;
-	bh=hm38IpAY/iUyrNdQWhpJIi89J76/O7rshI+CTGsZvBQ=;
+	s=default; t=1581552051;
+	bh=ec4ZjeqX05IzmtD0Xm13E7+AW4cyc26MefWzSoQcc/k=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=e5jXYNkN9qQdbOdnYCx0bs+kxc+s37YFchevs4vZAUno6vvOfB+DVUDPIoogGN293
-	 kja+fRymycHaKQbRz2CkFcpwclpWBpNtBiByqtNEp0Bs0boFgJOi+RqFyeExEXQYQH
-	 40/1VZ4wceAsML3obgIKW+d6kATOEeU2T3h9+Cnk=
+	b=XITp6dxuaddHgt7cryMEgNPo6t29Yv0wt7ukcmJMulmFGQQ64QXdg/V32zf6Z+6vD
+	 5DFCwnubq4k5KjLAGcgQY9pixd4bVuaHI+F/ALYRrNGu5NOeBxerOC6QarVy5BvkXt
+	 OjJP7npn99q2aGN9nElzAT4iJtcJOlNMnwykuGxw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A7626F8028C;
-	Thu, 13 Feb 2020 00:57:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D4B8FF8028B;
+	Thu, 13 Feb 2020 00:57:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 656D4F8027B; Thu, 13 Feb 2020 00:57:20 +0100 (CET)
+ id C80E5F8028C; Thu, 13 Feb 2020 00:57:22 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id A7487F8014F
- for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 00:57:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7487F8014F
+ by alsa1.perex.cz (Postfix) with ESMTP id 0784CF80228
+ for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 00:57:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0784CF80228
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A1009106F;
- Wed, 12 Feb 2020 15:57:14 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 00D80113E;
+ Wed, 12 Feb 2020 15:57:17 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 267453F68E;
- Wed, 12 Feb 2020 15:57:14 -0800 (PST)
-Date: Wed, 12 Feb 2020 23:57:12 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 76C613F68E;
+ Wed, 12 Feb 2020 15:57:16 -0800 (PST)
+Date: Wed, 12 Feb 2020 23:57:15 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-In-Reply-To: <20200127091806.11403-1-dafna.hirschfeld@collabora.com>
-Message-Id: <applied-20200127091806.11403-1-dafna.hirschfeld@collabora.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <871rr3cext.wl-kuninori.morimoto.gx@renesas.com>
+Message-Id: <applied-871rr3cext.wl-kuninori.morimoto.gx@renesas.com>
 X-Patchwork-Hint: ignore
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, dafna.hirschfeld@collabora.com,
- ezequiel@collabora.com, dafna3@gmail.com, lgirdwood@gmail.com,
- robh+dt@kernel.org, linux-kernel@vger.kernel.org, groeck@chromium.org,
- helen.koike@collabora.com, Mark Brown <broonie@kernel.org>,
- enric.balletbo@collabora.com, kernel@collabora.com, bleung@chromium.org,
- cychiang@chromium.org
-Subject: [alsa-devel] Applied "dt-bindings: Convert the binding file google,
-	cros-ec-codec.txt to yaml format." to the asoc tree
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] Applied "ASoC: soc-pcm: tidyup soc_pcm_open() order"
+	to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,7 +76,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   dt-bindings: Convert the binding file google, cros-ec-codec.txt to yaml format.
+   ASoC: soc-pcm: tidyup soc_pcm_open() order
 
 has been applied to the asoc tree at
 
@@ -107,144 +101,121 @@ to this mail.
 Thanks,
 Mark
 
-From eadd54c75f1ef1566a6fe004787c028eb095f8b4 Mon Sep 17 00:00:00 2001
-From: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Date: Mon, 27 Jan 2020 10:18:06 +0100
-Subject: [PATCH] dt-bindings: Convert the binding file google,
- cros-ec-codec.txt to yaml format.
+From 5d9fa03e6c3514266fa94851ab1b6dd6e0595a13 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 10 Feb 2020 12:14:45 +0900
+Subject: [PATCH] ASoC: soc-pcm: tidyup soc_pcm_open() order
 
-This was tested and verified with:
-make dt_binding_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/sound/google,cros-ec-codec.yaml
+soc_pcm_open() operation order is not good.
+At first, soc_pcm_open() operation order is
 
-Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Link: https://lore.kernel.org/r/20200127091806.11403-1-dafna.hirschfeld@collabora.com
+	1) CPU DAI startup
+	2) Component open
+	3) Codec DAI startup
+	4) rtd startup
+
+But here, 2) will call try_module_get() if component has
+module_get_upon_open flags. This means 1) CPU DAI startup
+will be operated *before* its module was loaded.
+DAI should be called *after* Component.
+
+Second, soc_pcm_close() operation order is
+	1) CPU DAI shutdown
+	2) Codec DAI shutdown
+	3) rtd shutdown
+	4) Component close
+
+soc_pcm_open() and soc_pcm_close() are paired function,
+but, its operation order is unbalance.
+This patch tidyup soc_pcm_open() order to Component -> rtd -> DAI.
+This is one of prepare for cleanup soc-pcm-open()
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Link: https://lore.kernel.org/r/871rr3cext.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../bindings/sound/google,cros-ec-codec.txt   | 44 -------------
- .../bindings/sound/google,cros-ec-codec.yaml  | 62 +++++++++++++++++++
- 2 files changed, 62 insertions(+), 44 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/google,cros-ec-codec.txt
- create mode 100644 Documentation/devicetree/bindings/sound/google,cros-ec-codec.yaml
+ sound/soc/soc-pcm.c | 34 ++++++++++++++++------------------
+ 1 file changed, 16 insertions(+), 18 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/google,cros-ec-codec.txt b/Documentation/devicetree/bindings/sound/google,cros-ec-codec.txt
-deleted file mode 100644
-index 8ca52dcc5572..000000000000
---- a/Documentation/devicetree/bindings/sound/google,cros-ec-codec.txt
-+++ /dev/null
-@@ -1,44 +0,0 @@
--Audio codec controlled by ChromeOS EC
--
--Google's ChromeOS EC codec is a digital mic codec provided by the
--Embedded Controller (EC) and is controlled via a host-command interface.
--
--An EC codec node should only be found as a sub-node of the EC node (see
--Documentation/devicetree/bindings/mfd/cros-ec.txt).
--
--Required properties:
--- compatible: Must contain "google,cros-ec-codec"
--- #sound-dai-cells: Should be 1. The cell specifies number of DAIs.
--
--Optional properties:
--- reg: Pysical base address and length of shared memory region from EC.
--       It contains 3 unsigned 32-bit integer.  The first 2 integers
--       combine to become an unsigned 64-bit physical address.  The last
--       one integer is length of the shared memory.
--- memory-region: Shared memory region to EC.  A "shared-dma-pool".  See
--                 ../reserved-memory/reserved-memory.txt for details.
--
--Example:
--
--{
--	...
--
--	reserved_mem: reserved_mem {
--		compatible = "shared-dma-pool";
--		reg = <0 0x52800000 0 0x100000>;
--		no-map;
--	};
--}
--
--cros-ec@0 {
--	compatible = "google,cros-ec-spi";
--
--	...
--
--	cros_ec_codec: ec-codec {
--		compatible = "google,cros-ec-codec";
--		#sound-dai-cells = <1>;
--		reg = <0x0 0x10500000 0x80000>;
--		memory-region = <&reserved_mem>;
--	};
--};
-diff --git a/Documentation/devicetree/bindings/sound/google,cros-ec-codec.yaml b/Documentation/devicetree/bindings/sound/google,cros-ec-codec.yaml
-new file mode 100644
-index 000000000000..94a85d0cbf43
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/google,cros-ec-codec.yaml
-@@ -0,0 +1,62 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/google,cros-ec-codec.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 8aa775e0eb0d..6630fadd6e09 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -574,25 +574,32 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 
+ 	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
+ 
++	ret = soc_pcm_components_open(substream);
++	if (ret < 0)
++		goto component_err;
 +
-+title: Audio codec controlled by ChromeOS EC
++	ret = soc_rtd_startup(rtd, substream);
++	if (ret < 0) {
++		pr_err("ASoC: %s startup failed: %d\n",
++		       rtd->dai_link->name, ret);
++		goto component_err;
++	}
 +
-+maintainers:
-+  - Cheng-Yi Chiang <cychiang@chromium.org>
-+
-+description: |
-+  Google's ChromeOS EC codec is a digital mic codec provided by the
-+  Embedded Controller (EC) and is controlled via a host-command interface.
-+  An EC codec node should only be found as a sub-node of the EC node (see
-+  Documentation/devicetree/bindings/mfd/cros-ec.txt).
-+
-+properties:
-+  compatible:
-+    const: google,cros-ec-codec
-+
-+  "#sound-dai-cells":
-+    const: 1
-+
-+  reg:
-+    items:
-+      - description: |
-+          Physical base address and length of shared memory region from EC.
-+          It contains 3 unsigned 32-bit integer. The first 2 integers
-+          combine to become an unsigned 64-bit physical address.
-+          The last one integer is the length of the shared memory.
-+
-+  memory-region:
-+    $ref: '/schemas/types.yaml#/definitions/phandle'
-+    description: |
-+      Shared memory region to EC.  A "shared-dma-pool".
-+      See ../reserved-memory/reserved-memory.txt for details.
-+
-+required:
-+  - compatible
-+  - '#sound-dai-cells'
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    reserved_mem: reserved_mem {
-+        compatible = "shared-dma-pool";
-+        reg = <0 0x52800000 0 0x100000>;
-+        no-map;
-+    };
-+    cros-ec@0 {
-+        compatible = "google,cros-ec-spi";
-+        #address-cells = <2>;
-+        #size-cells = <1>;
-+        cros_ec_codec: ec-codec {
-+            compatible = "google,cros-ec-codec";
-+            #sound-dai-cells = <1>;
-+            reg = <0x0 0x10500000 0x80000>;
-+            memory-region = <&reserved_mem>;
-+        };
-+    };
+ 	/* startup the audio subsystem */
+ 	ret = snd_soc_dai_startup(cpu_dai, substream);
+ 	if (ret < 0) {
+ 		dev_err(cpu_dai->dev, "ASoC: can't open interface %s: %d\n",
+ 			cpu_dai->name, ret);
+-		goto out;
++		goto cpu_dai_err;
+ 	}
+ 
+-	ret = soc_pcm_components_open(substream);
+-	if (ret < 0)
+-		goto component_err;
+-
+ 	for_each_rtd_codec_dai(rtd, i, codec_dai) {
+ 		ret = snd_soc_dai_startup(codec_dai, substream);
+ 		if (ret < 0) {
+ 			dev_err(codec_dai->dev,
+ 				"ASoC: can't open codec %s: %d\n",
+ 				codec_dai->name, ret);
+-			goto codec_dai_err;
++			goto config_err;
+ 		}
+ 
+ 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+@@ -601,13 +608,6 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 			codec_dai->rx_mask = 0;
+ 	}
+ 
+-	ret = soc_rtd_startup(rtd, substream);
+-	if (ret < 0) {
+-		pr_err("ASoC: %s startup failed: %d\n",
+-		       rtd->dai_link->name, ret);
+-		goto codec_dai_err;
+-	}
+-
+ 	/* Dynamic PCM DAI links compat checks use dynamic capabilities */
+ 	if (rtd->dai_link->dynamic || rtd->dai_link->no_pcm)
+ 		goto dynamic;
+@@ -672,17 +672,15 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 	return 0;
+ 
+ config_err:
+-	soc_rtd_shutdown(rtd, substream);
+-
+-codec_dai_err:
+ 	for_each_rtd_codec_dai(rtd, i, codec_dai)
+ 		snd_soc_dai_shutdown(codec_dai, substream);
++cpu_dai_err:
++	snd_soc_dai_shutdown(cpu_dai, substream);
+ 
++	soc_rtd_shutdown(rtd, substream);
+ component_err:
+ 	soc_pcm_components_close(substream);
+ 
+-	snd_soc_dai_shutdown(cpu_dai, substream);
+-out:
+ 	mutex_unlock(&rtd->card->pcm_mutex);
+ 
+ 	for_each_rtd_components(rtd, i, component) {
 -- 
 2.20.1
 
