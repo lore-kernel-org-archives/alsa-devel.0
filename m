@@ -6,62 +6,62 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3507CC352A4
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Feb 2020 14:37:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67113C2BA83
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Feb 2020 14:47:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B778420724
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Feb 2020 14:37:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E261120873
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Feb 2020 14:47:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HFG2gmhc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B778420724
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hktV/CB5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E261120873
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 18A721662;
-	Wed, 12 Feb 2020 15:36:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 18A721662
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2B4B1166D;
+	Wed, 12 Feb 2020 15:46:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B4B1166D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581518222;
-	bh=oW+j6ZnXsNw8XIW3g6lL3LQiDh47GmJHvm6GOxBO9yk=;
+	s=default; t=1581518858;
+	bh=CvB7LaFDJvzxDSEteabJzqmvbFbIAwbvIhklu9vY6kg=;
 	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HFG2gmhcVQdfsfwSsfRPnC0uBTDSYIa74YvsRuFUOwbxahd28ZtaZfFGA8qNBkIhH
-	 xspBfRvFfglu0TFlfz/92zWDhvu6Y/HnU6BgzYNEAJyynrN1547DoUrUHcR7/3kXGV
-	 BVGL4h4FKDWZK91BKRRMCuEjKUDu4IcaIIXdt96Q=
+	b=hktV/CB5gxSlHBkkv5E5MisY+OQ6t7O9JPyfEAfJvERHlURvuVdpfzl+aO5wdVTeq
+	 PBIzQQGls3LQ72RJr14r8NTZelBHWcuWElfJs0xE4FPDm0S3ShRo3HfvdCGdCJo8Da
+	 wJT5fEvu2UxbdlLRywCmhhmUZqqJt2RLrMJjOljM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8DD42F8014F;
-	Wed, 12 Feb 2020 15:36:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 96FCDF8014F;
+	Wed, 12 Feb 2020 15:46:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6ABF7F80157; Wed, 12 Feb 2020 15:36:10 +0100 (CET)
+ id 37EBBF80157; Wed, 12 Feb 2020 15:46:46 +0100 (CET)
 Received: from muru.com (muru.com [72.249.23.125])
- by alsa1.perex.cz (Postfix) with ESMTP id D8674F800E7
- for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2020 15:35:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8674F800E7
+ by alsa1.perex.cz (Postfix) with ESMTP id 2160AF80125
+ for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2020 15:46:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2160AF80125
 Received: from atomide.com (localhost [127.0.0.1])
- by muru.com (Postfix) with ESMTPS id 47DC080F6;
- Wed, 12 Feb 2020 14:36:30 +0000 (UTC)
-Date: Wed, 12 Feb 2020 06:35:43 -0800
+ by muru.com (Postfix) with ESMTPS id 4A8A680F6;
+ Wed, 12 Feb 2020 14:47:07 +0000 (UTC)
+Date: Wed, 12 Feb 2020 06:46:20 -0800
 From: Tony Lindgren <tony@atomide.com>
 To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Message-ID: <20200212143543.GI64767@atomide.com>
-References: <20200211171645.41990-1-tony@atomide.com>
- <cd46c6ec-80e3-332f-4922-e58a3acbfc61@ti.com>
+Message-ID: <20200212144620.GJ64767@atomide.com>
+References: <20200211181005.54008-1-tony@atomide.com>
+ <ae2b7d9e-d05e-54ac-4f18-27cc8c4e81a0@ti.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <cd46c6ec-80e3-332f-4922-e58a3acbfc61@ti.com>
+In-Reply-To: <ae2b7d9e-d05e-54ac-4f18-27cc8c4e81a0@ti.com>
 Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org,
  Liam Girdwood <lgirdwood@gmail.com>, Merlijn Wajer <merlijn@wizzup.org>,
- Aaro Koskinen <aaro.koskinen@iki.fi>, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
- Pavel Machek <pavel@ucw.cz>, Sebastian Reichel <sre@kernel.org>,
- "Arthur D ." <spinal.by@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: ti: Allocate dais dynamically for
- TDM and audio graph card
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+ Sebastian Reichel <sre@kernel.org>, "Arthur D ." <spinal.by@gmail.com>,
+ Jarkko Nikula <jarkko.nikula@bitmer.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: cpcap: Implement set_tdm_slot for
+ voice call support
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,108 +79,72 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-* Peter Ujfalusi <peter.ujfalusi@ti.com> [200212 08:02]:
+* Peter Ujfalusi <peter.ujfalusi@ti.com> [200212 09:18]:
+> On 11/02/2020 20.10, Tony Lindgren wrote:
+> > +static int cpcap_voice_set_tdm_slot(struct snd_soc_dai *dai,
+> > +				    unsigned int tx_mask, unsigned int rx_mask,
+> > +				    int slots, int slot_width)
+> > +{
+> > +	struct snd_soc_component *component = dai->component;
+> > +	struct cpcap_audio *cpcap = snd_soc_component_get_drvdata(component);
+> > +	int err, ts_mask, mask;
+> > +	bool voice_call;
+> > +
+> > +	/*
+> > +	 * Primitive test for voice call, probably needs more checks
+> > +	 * later on for 16-bit calls detected, Bluetooth headset etc.
+> > +	 */
+> > +	if (tx_mask == 0 && rx_mask == 1 && slot_width == 8)
+> > +		voice_call = true;
+> > +	else
+> > +		voice_call = false;
 > 
+> You only have voice call if only rx slot0 is in use?
+
+Yeah so it seems. Then there's the modem to wlcore bluetooth path that
+I have not looked at. But presumably that's again just configuring some
+tdm slot on the PMIC.
+
+> If you record mono on the voice DAI, then rx_mask is also 1, no?
+
+It is above :) But maybe I don't follow what you're asking here and
+maybe you have some better check in mind.
+
+I have no idea where we would implement recording voice calls for
+example, I guess mcbsp could do that somewhere to dump out a tdm slot
+specific traffic.
+
+> > +
+> > +	ts_mask = 0x7 << CPCAP_BIT_MIC2_TIMESLOT0;
+> > +	ts_mask |= 0x7 << CPCAP_BIT_MIC1_RX_TIMESLOT0;
+> > +
+> > +	mask = (tx_mask & 0x7) << CPCAP_BIT_MIC2_TIMESLOT0;
+> > +	mask |= (rx_mask & 0x7) << CPCAP_BIT_MIC1_RX_TIMESLOT0;
+> > +
+> > +	err = regmap_update_bits(cpcap->regmap, CPCAP_REG_CDI,
+> > +				 ts_mask, mask);
+> > +	if (err)
+> > +		return err;
+> > +
+> > +	err = cpcap_set_samprate(cpcap, CPCAP_DAI_VOICE, slot_width * 1000);
+> > +	if (err)
+> > +		return err;
 > 
-> On 11/02/2020 19.16, Tony Lindgren wrote:
-> > We can have multiple connections on a single McBSP instance configured
-> > with audio graph card when using TDM (Time Division Multiplexing). Let's
-> > allow that by configuring dais dynamically.
+> You will also set the sampling rate for voice in
+> cpcap_voice_hw_params(), but that is for normal playback/capture, right?
+
+Yeah so normal playback/capture is already working with cpcap codec driver
+with mainline Linux. The voice call needs to set rate to 8000.
+
+> > +
+> > +	err = cpcap_voice_call(cpcap, dai, voice_call);
+> > +	if (err)
+> > +		return err;
 > 
-> It is still one DAI...
-> If you have multiple codec connected to the same I2S lines, but the
-> codecs communicate within different time slots, you still have one DAI
-> on the CPU side, but multiple codecs (codec DAIs) with different TDM slot.
+> It feels like that these should be done via DAPM with codec to codec route?
 
-OK so subject should say "dodec DAIs" then I guess?
-
-> > See Documentation/devicetree/bindings/sound/audio-graph-card.txt and
-> > Documentation/devicetree/bindings/graph.txt for more details for
-> > multiple endpoints.
-> 
-> See the example for 'Multi DAI with DPCM' in audio-graph-card.txt
-> The PCM3168a have 2 DAIs: playback and capture, but you can have
-> multiple endpoints within a DAI.
-
-Yes this should follow the audio-graph-card.txt example. We end up with
-mcbsp3 dts node as below on droid4:
-
-&mcbsp3 {
-        #sound-dai-cells = <0>;
-        pinctrl-names = "default";
-        pinctrl-0 = <&mcbsp3_pins>;
-        status = "okay";
-
-        ports {
-                mcbsp3_port: port@0 {
-                        #address-cells = <1>;
-                        #size-cells = <0>;
-
-                        cpu_dai3: endpoint@0 {
-                                reg = <0>;
-                                dai-format = "dsp_a";
-                                frame-master = <&cpcap_audio_codec1>;
-                                bitclock-master = <&cpcap_audio_codec1>;
-                                remote-endpoint = <&cpcap_audio_codec1>;
-                        };
-
-                        cpu_dai_mdm: endpoint@1 {
-                                reg = <1>;
-                                dai-format = "dsp_a";
-                                frame-master = <&cpcap_audio_codec1>;
-                                bitclock-master = <&cpcap_audio_codec1>;
-                                remote-endpoint = <&mot_mdm6600_audio_codec0>;
-                        };
-                };
-        };
-};
-
-That is pretty much the same as the 'Multi DAI with DPCM' example, with
-dne dai, and multiple endpoints. I think we still have just one port
-for one i2s transport on the mcbsp :)
-
-Does the above look as what you would expect based on the binding?
-
-> > I've tested this with droid4 where cpcap pmic and modem voice are both
-> > both wired to mcbsp3. I've also tested this on droid4 both with and
-> > without the pending modem audio codec driver that is waiting for n_gsm
-> > serdev dependencies to clear.
-> 
-> What this patch you effectively just creating dummy-dais on top of the
-> real McBSP DAI.
-
-Yes I think this is needed for snd-soc-audio-graph-card, and this allows
-configuring whatever is needed for the i2s slot. But maybe you have some
-better way of doing it in mind?
-
-> You also rename the DAIs, which might break ams-delta.
-
-Oops, that's not good. So should we just keep the old naming if there's
-only one endpoint?
-
-> We still have legacy support in
-> omap-twl4030.c
-> omap3pandora.c
-> osk5912.c
-> rx51.c
-> 
-> which will break with the renamed DAI. On the other hand I think the
-> legacy support can be dropped from them.
-
-I'm not sure what all that would take.
-
-> I know it was discussed, but can not find the mail:
-> Can you brief again on the audio connection?
-
-Below is a link to a mailing list thread where Sebastian describes
-the audio connection:
-
-https://lkml.org/lkml/2018/3/28/881
-
-> Do you have branch with working code?
-
-Yeah I have slightly older set of the patches in my droid4-pending-v5.5
-kernel.org git branch with voice calls working.
+Sure if you have some better way of doing it :) Do you have an example to
+point me to?
 
 Regards,
 
