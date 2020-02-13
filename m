@@ -2,66 +2,64 @@ Return-Path: <SRS0=t/pq=4B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E377C2BA83
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 10:59:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 72CC6C2BA83
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 11:21:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2A0942073C
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 10:59:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E8FC22073C
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 11:21:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QE/Ly+uA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2A0942073C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Jj7ptadn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E8FC22073C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 65876165F;
-	Thu, 13 Feb 2020 11:58:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 65876165F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 504881661;
+	Thu, 13 Feb 2020 12:21:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 504881661
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581591542;
-	bh=XP28DtN+4ds1e2spc3D8npHOLASSnCyC9ez9ivGeFBQ=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1581592917;
+	bh=SmdBO+r1H4R4DWIOjw87XJxk6insD6WTSC1ey3aKvZw=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QE/Ly+uAH0dHzFA++gBEyVcd84ti+WwoxMcf2oo6lgKy1A53tX4Rm7CBSrbU8GB0C
-	 IY6rEFDuteEIOaIC8/wOl88Q5x1OoCJv7k6Lirqb1CNZY3GOdVUBBhzprUginEuMLp
-	 sVL7qUklyIqBIJyY0XkUkJDXDPamMDiECfg+6cPY=
+	b=Jj7ptadnh6Q79pXzLLeYxmc45l9qOksnFWIFW5hoIw6emPa4/ezB7X8R7LYpkV4nx
+	 IZFTUPXY9zAQf00M8jWFei4Cm+zdnF12TIF3iGYoq3CaXb4vG2ynN+rETtEHQucDdL
+	 G18/36p/oVb/FflIFyxrUyvarq9rOoaF7ozL/pQA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D3F00F8013E;
-	Thu, 13 Feb 2020 11:58:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BF226F800F0;
+	Thu, 13 Feb 2020 12:21:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4ABD6F80145; Thu, 13 Feb 2020 11:58:10 +0100 (CET)
+ id 50352F801DA; Thu, 13 Feb 2020 12:21:05 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8184CF800F0
- for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 11:58:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8184CF800F0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7CE3DF80139
+ for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 12:21:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7CE3DF80139
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 7BCB0AC92;
- Thu, 13 Feb 2020 10:58:05 +0000 (UTC)
-Date: Thu, 13 Feb 2020 11:58:04 +0100
-Message-ID: <s5ha75mrbyb.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 7C1E7B196;
+ Thu, 13 Feb 2020 11:21:01 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
-To: Radoslaw Smigielski <radoslaw.smigielski@interia.pl>
-In-Reply-To: <20200213103636.733463-1-radoslaw.smigielski@interia.pl>
-References: <20200213103636.733463-1-radoslaw.smigielski@interia.pl>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org, corbet@lwn.net, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, tiwai@suse.com
-Subject: Re: [alsa-devel] [PATCH] ALSA: doc: fix snd_hda_intel driver name
+To: alsa-devel@alsa-project.org
+Date: Thu, 13 Feb 2020 12:20:58 +0100
+Message-Id: <20200213112059.18745-2-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
+In-Reply-To: <20200213112059.18745-1-tiwai@suse.de>
+References: <20200213112059.18745-1-tiwai@suse.de>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: [alsa-devel] [PATCH 1/2] usb: audio-v2: Add
+	uac2_effect_unit_descriptor definition
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,80 +72,48 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 13 Feb 2020 11:36:37 +0100,
-Radoslaw Smigielski wrote:
-> 
-> Update driver name snd-hda-intel to proper, existing driver
-> name snd_hda_intel in Documentation/sound/hd-audio/notes.rst.
+The UAC2 Effect Unit Descriptor has a slightly different definition
+from other similar ones like Processing Unit or Extension Unit.
+Define it here so that it can be used in USB-audio driver in a later
+patch.
 
-snd-hda-intel is correct from the module file name POV.
-Both are handled equivalently.
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ include/linux/usb/audio-v2.h | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
+diff --git a/include/linux/usb/audio-v2.h b/include/linux/usb/audio-v2.h
+index ba4b3e3327ff..cb9900b34b67 100644
+--- a/include/linux/usb/audio-v2.h
++++ b/include/linux/usb/audio-v2.h
+@@ -156,6 +156,18 @@ struct uac2_feature_unit_descriptor {
+ 	__u8 bmaControls[0]; /* variable length */
+ } __attribute__((packed));
+ 
++/* 4.7.2.10 Effect Unit Descriptor */
++
++struct uac2_effect_unit_descriptor {
++	__u8 bLength;
++	__u8 bDescriptorType;
++	__u8 bDescriptorSubtype;
++	__u8 bUnitID;
++	__le16 wEffectType;
++	__u8 bSourceID;
++	__u8 bmaControls[]; /* variable length */
++} __attribute__((packed));
++
+ /* 4.9.2 Class-Specific AS Interface Descriptor */
+ 
+ struct uac2_as_header_descriptor {
+-- 
+2.16.4
 
-thanks,
-
-Takashi
-
-> 
-> Signed-off-by: Radoslaw Smigielski <radoslaw.smigielski@interia.pl>
-> ---
->  Documentation/sound/hd-audio/notes.rst | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/Documentation/sound/hd-audio/notes.rst b/Documentation/sound/hd-audio/notes.rst
-> index 0f3109d9abc8..56ccc15f4d26 100644
-> --- a/Documentation/sound/hd-audio/notes.rst
-> +++ b/Documentation/sound/hd-audio/notes.rst
-> @@ -17,12 +17,12 @@ methods for the	HD-audio hardware.
->  
->  The HD-audio component consists of two parts: the controller chip and 
->  the codec chips on the HD-audio bus.  Linux provides a single driver
-> -for all controllers, snd-hda-intel.  Although the driver name contains
-> +for all controllers, snd_hda_intel.  Although the driver name contains
->  a word of a well-known hardware vendor, it's not specific to it but for
->  all controller chips by other companies.  Since the HD-audio
->  controllers are supposed to be compatible, the single snd-hda-driver
->  should work in most cases.  But, not surprisingly, there are known
-> -bugs and issues specific to each controller type.  The snd-hda-intel
-> +bugs and issues specific to each controller type.  The snd_hda_intel
->  driver has a bunch of workarounds for these as described below.
->  
->  A controller may have multiple codecs.  Usually you have one audio
-> @@ -31,7 +31,7 @@ multiple audio codecs, e.g. for analog and digital outputs, and the
->  driver might not work properly because of conflict of mixer elements.
->  This should be fixed in future if such hardware really exists.
->  
-> -The snd-hda-intel driver has several different codec parsers depending
-> +The snd_hda_intel driver has several different codec parsers depending
->  on the codec.  It has a generic parser as a fallback, but this
->  functionality is fairly limited until now.  Instead of the generic
->  parser, usually the codec-specific parser (coded in patch_*.c) is used
-> @@ -226,7 +226,7 @@ the external amplifier bits.  Thus a headphone output has a slightly
->  better chance.
->  
->  Before making a bug report, double-check whether the mixer is set up
-> -correctly.  The recent version of snd-hda-intel driver provides mostly
-> +correctly.  The recent version of snd_hda_intel driver provides mostly
->  "Master" volume control as well as "Front" volume (where Front
->  indicates the front-channels).  In addition, there can be individual
->  "Headphone" and "Speaker" controls.
-> @@ -596,7 +596,7 @@ For example, if you have two cards, one for an on-board analog and one
->  for an HDMI video board, you may pass patch option like below:
->  ::
->  
-> -    options snd-hda-intel patch=on-board-patch,hdmi-patch
-> +    options snd_hda_intel patch=on-board-patch,hdmi-patch
->  
->  
->  Power-Saving
-> -- 
-> 2.24.1
-> 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
