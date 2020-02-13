@@ -2,70 +2,67 @@ Return-Path: <SRS0=t/pq=4B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4670C3B18C
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 17:16:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F854C2BA83
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 17:19:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 421B7206D7
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 17:16:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8F0A3206DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 17:19:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ogbdqw4n"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 421B7206D7
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="e06AbLBn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F0A3206DB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8DD9116CF;
-	Thu, 13 Feb 2020 18:15:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8DD9116CF
+	by alsa0.perex.cz (Postfix) with ESMTPS id E223C16CC;
+	Thu, 13 Feb 2020 18:18:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E223C16CC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581614173;
-	bh=KPU7c2iwvaadITdyxvPQdU53KsS5TWN7qdTxoVGEJEc=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1581614371;
+	bh=o07WPZDwHUHJQAMsdfcTAdUFX3Z7mpSlwRuSS8cMHqk=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ogbdqw4nbO/pJONBtWNvXB330tHNaNf0rNCrydgv7ggJ5r/2rze0VHkH3WW1OJPp3
-	 kmLrOBLd2hqC+f1hYvBSwiHFxvCMjlyMHEt360nTxlrgSicLJHNaK+CFuEBlojCere
-	 /yR4dQukSwMrvNQaXcLyU432aRPiX0e1iMqs2654=
+	b=e06AbLBnBe5rf5F7ZOeewZ4XSsth1fL7n2au/DxYjx7nF+nROx1BK4b6PMYf5odFl
+	 20/lYmi1kIzfzN7f5vh/0hcYPeLf1q+vpZcFeQ+C1jRmmLETCP7iJM1PImG8OcFDSn
+	 92lwXF2KLx0gDOW1IqJD0CdCTMU1IoE5XDzIrRNo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F156CF8013E;
-	Thu, 13 Feb 2020 18:15:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4413AF80138;
+	Thu, 13 Feb 2020 18:18:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 22063F80145; Thu, 13 Feb 2020 18:15:22 +0100 (CET)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DD439F800F0
- for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 18:15:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD439F800F0
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 13 Feb 2020 09:15:16 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,437,1574150400"; d="scan'208";a="432730286"
-Received: from pjshinde-mobl.amr.corp.intel.com ([10.255.69.176])
- by fmsmga005.fm.intel.com with ESMTP; 13 Feb 2020 09:15:15 -0800
-Message-ID: <52cbcac8705fef8409b2bd7d759dc0d43c219b5a.camel@linux.intel.com>
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown
- <broonie@kernel.org>
-Date: Thu, 13 Feb 2020 09:15:15 -0800
-In-Reply-To: <871rqzru2y.wl-kuninori.morimoto.gx@renesas.com>
-References: <87blq3ru4w.wl-kuninori.morimoto.gx@renesas.com>
- <871rqzru2y.wl-kuninori.morimoto.gx@renesas.com>
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: Re: [alsa-devel] [PATCH 07/10] ASoC: soc-pcm: add
- snd_soc_dpcm_can_be() and remove duplicate code
+ id E85DDF80145; Thu, 13 Feb 2020 18:18:37 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 16CABF800F0
+ for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 18:18:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16CABF800F0
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9CDC6328;
+ Thu, 13 Feb 2020 09:18:32 -0800 (PST)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 204453F6CF;
+ Thu, 13 Feb 2020 09:18:31 -0800 (PST)
+Date: Thu, 13 Feb 2020 17:18:30 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Jerome Brunet <jbrunet@baylibre.com>
+Message-ID: <20200213171830.GH4333@sirena.org.uk>
+References: <20200213155159.3235792-1-jbrunet@baylibre.com>
+ <20200213155159.3235792-2-jbrunet@baylibre.com>
+MIME-Version: 1.0
+In-Reply-To: <20200213155159.3235792-2-jbrunet@baylibre.com>
+X-Cookie: Academicians care, that's who.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Kevin Hilman <khilman@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org
+Subject: Re: [alsa-devel] [PATCH 1/9] ASoC: core: allow a dt node to provide
+ several components
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,33 +75,62 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3217233678976701688=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 2020-02-13 at 13:26 +0900, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> 
-> Below functions are doing very similar things, the difference is
-> only used state.
-> 
-> 	snd_soc_dpcm_can_be_free_stop()
-> 	snd_soc_dpcm_can_be_params()
-> 
-> This patch adds common snd_soc_dpcm_can_be(), and use it from
-> snd_soc_dpcm_can_be_free_stop() / snd_soc_dpcm_can_be_params().
-> This can reduce duplicate code.
 
-Morimoto-san,
+--===============3217233678976701688==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="LZFKeWUZP29EKQNE"
+Content-Disposition: inline
 
-Only minor but does it make it a bit more intuitive to call this new
-function snd_soc_dpcm_check_state() or something equivalent maybe?
 
-Thanks,
-Ranjani
+--LZFKeWUZP29EKQNE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Feb 13, 2020 at 04:51:51PM +0100, Jerome Brunet wrote:
+
+> At the moment, querying the dai_name will stop of the first component
+> matching the dt node. This does not allow a device (single dt node) to
+> provide several ASoC components which could then be used through DT.
+
+> This change let the search go on if the xlate function of the component
+> returns an error, giving the possibility to another component to match
+> and return the dai_name.
+
+My first question here would be why you'd want to do that rather than
+combine everything into a single component since the hardware seems to
+be doing that anyway.  Hopefully the rest of the series will answer this
+but it'd be good in the changelog here.
+
+--LZFKeWUZP29EKQNE
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5FhOUACgkQJNaLcl1U
+h9CqPgf+L/Xt6fytZ8T0Qto2jS45qM+J0JJtBuwbWI1qn00Rangat1H8RPcg9vlo
+3gwlnj9jjdCCvGNB3+ECaCtCeh5QihLVZXSs8qXYIZF502avt/atdjVBfK7XT5jb
+uKjjMM+fn5wwvTfZsi3OOxXtUMbpSkuDJ82c8zFDgQBss4F7T94Lq3Qzw5f6Bvub
+/m1zvfVuh4LiTa7HADtrrD9Az0o9gO/Ielc0xH0mHydZtuv4qIMOxPQXwT/14tU1
+hLQwfy9VkkBfA0xuKKVJ0vjyWhi7A0SdE6RdbR9D0QUSBuSD2iPV28XaJD+jFwX3
+k0q3tgreqtSmKkmnySuAGJ+wTQIzVg==
+=Cn3Z
+-----END PGP SIGNATURE-----
+
+--LZFKeWUZP29EKQNE--
+
+--===============3217233678976701688==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============3217233678976701688==--
