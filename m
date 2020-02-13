@@ -2,65 +2,89 @@ Return-Path: <SRS0=t/pq=4B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D72A8C352A4
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 00:04:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0348DC352A4
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 01:58:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5ACF021739
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 00:04:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 83A0920724
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 01:58:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="o3CHYn3J"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5ACF021739
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WrftaGqP";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="hne3FsPD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 83A0920724
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B12B41679;
-	Thu, 13 Feb 2020 01:03:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B12B41679
+	by alsa0.perex.cz (Postfix) with ESMTPS id ACE15165F;
+	Thu, 13 Feb 2020 02:57:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ACE15165F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581552264;
-	bh=5Mdif9lWdZlXpIeDEdv/4paFmjOu1DUs9Ero0DEpDro=;
-	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=o3CHYn3JRCWRxE9RwYrKY9hMfoefstx1wFbdmKHb3rlkz3q50P35Bgk0r4PoOK7wW
-	 u0bGV1337LKEjldNisFg73oiCCQP7mqmN+Y/gY0v75sIzfoUl0vuOHiO8r1oxYk0ul
-	 ZCyxGilDrvvaI07/rmxt4ggox8UY1kDF7P+wqgTg=
+	s=default; t=1581559101;
+	bh=YAvfugY2AG177mYz6Uto+lzriqR8uqRhLszTZnqJSVA=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=WrftaGqP87gjBrxM644GfA/HnBJ2DDVZsW0n6/usL0kZ0GOTP7bs/tDFkZT7mxpxX
+	 FLuH+o1AK3ghCiURYHwsd826vMzjvhWO+98VknQxI6XMwdHrR7np6rQisYc1KKaXoP
+	 3FQlX18ypN2NyS4LnCxDieFC0Y8AkyC7Sn7X3EHM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8C93EF802E8;
-	Thu, 13 Feb 2020 00:57:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 42246F8014F;
+	Thu, 13 Feb 2020 02:57:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 397C1F802EA; Thu, 13 Feb 2020 00:57:43 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 6F67EF802E8
- for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 00:57:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F67EF802E8
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6EFB6113E;
- Wed, 12 Feb 2020 15:57:39 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E8F373F68E;
- Wed, 12 Feb 2020 15:57:38 -0800 (PST)
-Date: Wed, 12 Feb 2020 23:57:37 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-In-Reply-To: <20200212085008.9652-1-geert+renesas@glider.be>
-Message-Id: <applied-20200212085008.9652-1-geert+renesas@glider.be>
-X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- Christoph Hellwig <hch@lst.de>
-Subject: [alsa-devel] Applied "ASoC: sh: fsi: Restore devm_ioremap()
-	alignment" to the asoc tree
+ id 9CFE7F80157; Thu, 13 Feb 2020 02:57:29 +0100 (CET)
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+ by alsa1.perex.cz (Postfix) with ESMTP id E0645F80125
+ for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 02:57:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0645F80125
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com
+ header.b="hne3FsPD"
+X-UUID: dc98b481c0ca478ba22111a988250ed4-20200213
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com;
+ s=dk; 
+ h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID;
+ bh=SS2WJ9TnlTdWxgp0Ian/hWdeQ6K5JRe2gnRD2HiUUuo=; 
+ b=hne3FsPDQO9jeuZ9Tnc+sCBIQjIKoA+2MLp1XYmlv2S9RNIOUMa9d/wgECzF/Aq9pE7mQo7seqIPGY+ZET3B3W3TQm4nQkv93k2TkB6sDKUcFx3BpoN7MKiGX7bdzCDK7aSH0SR6KCRt2M57suGHRfmxkEnuOppdWwgt4l32BR4=;
+X-UUID: dc98b481c0ca478ba22111a988250ed4-20200213
+Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by
+ mailgw02.mediatek.com (envelope-from <ck.hu@mediatek.com>)
+ (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+ with ESMTP id 2053184014; Thu, 13 Feb 2020 09:57:15 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1395.4; Thu, 13 Feb 2020 09:55:50 +0800
+Received: from [172.21.77.4] (172.21.77.4) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1395.4 via Frontend
+ Transport; Thu, 13 Feb 2020 09:57:18 +0800
+Message-ID: <1581559033.14792.9.camel@mtksdaap41>
+From: CK Hu <ck.hu@mediatek.com>
+To: Tzung-Bi Shih <tzungbi@google.com>
+Date: Thu, 13 Feb 2020 09:57:13 +0800
+In-Reply-To: <CA+Px+wXjC1rchzUGhYYCJVyEbm7RQNFnqf-sQNaky6d82DyLyw@mail.gmail.com>
+References: <20200206031752.193298-1-tzungbi@google.com>
+ <20200206102509.2.I230fd59de28e73934a91cb01424e25b9e84727f4@changeid>
+ <1581495554.22603.2.camel@mtksdaap41>
+ <CA+Px+wXjC1rchzUGhYYCJVyEbm7RQNFnqf-sQNaky6d82DyLyw@mail.gmail.com>
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+MIME-Version: 1.0
+X-TM-SNTS-SMTP: 242DD775477EA9B69ECE3E92EE470D936050FE8CEE227D1CA21D57919E72DCD62000:8
+X-MTK: N
+Cc: ALSA development <alsa-devel@alsa-project.org>,
+ Jimmy Cheng-Yi Chiang <cychiang@google.com>, David Airlie <airlied@linux.ie>,
+ dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>,
+ linux-mediatek@lists.infradead.org, Daniel Vetter <daniel@ffwll.ch>,
+ Matthias Brugger <matthias.bgg@gmail.com>, p.zabel@pengutronix.de, Dylan
+ Reid <dgreid@google.com>, linux-arm-kernel@lists.infradead.org
+Subject: Re: [alsa-devel] [PATCH v2 2/3] drm/mediatek: support HDMI jack
+	status reporting
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,72 +97,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
+Hi, Tzung-Bi:
 
-   ASoC: sh: fsi: Restore devm_ioremap() alignment
+On Wed, 2020-02-12 at 19:31 +0800, Tzung-Bi Shih wrote:
+> On Wed, Feb 12, 2020 at 4:19 PM CK Hu <ck.hu@mediatek.com> wrote:
+> > I think hdmi_conn_detect() and mtk_hdmi_audio_hook_plugged_cb() would be
+> > called in different thread. So it's necessary to use a mutex to protect
+> > this.
+> 
+> Thanks for the reminder.  I feel using mutex here is overkill.  Please
+> see https://patchwork.kernel.org/patch/11378413/ for my proposed
+> solution.
+> 
 
-has been applied to the asoc tree at
+I'm not only consider the race condition of plugged_cb and codec_dev. I
+also care about the atomic of mtk_cec_hpd_high() and hdmi->plugged_cb().
+If these two function is not an atomic operation, below is an example of
+problem:
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+<Status disconnected>
+1. Thread A call mtk_hdmi_audio_hook_plugged_cb()
+2. Thread A call mtk_cec_hpd_high() and get disconnected.
+<Status connected>
+3. Thread B call hdmi_conn_detect()
+4. Thread B call mtk_cec_hpd_high() and get connected
+5. Thread B callback plugged_cb() with connected
+6. Thread A callback plugged_cb() with disconnected (Bug here)
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Regards,
+CK
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From 82dabf599b221a712e951b9061c56669565552a9 Mon Sep 17 00:00:00 2001
-From: Geert Uytterhoeven <geert+renesas@glider.be>
-Date: Wed, 12 Feb 2020 09:50:08 +0100
-Subject: [PATCH] ASoC: sh: fsi: Restore devm_ioremap() alignment
-
-The alignment of the continuation of the devm_ioremap() call in
-fsi_probe() was broken.  Join the lines, as all parameters can fit on a
-single line.
-
-Fixes: 4bdc0d676a643140 ("remove ioremap_nocache and devm_ioremap_nocache")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://lore.kernel.org/r/20200212085008.9652-1-geert+renesas@glider.be
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sh/fsi.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
-index 4b35ef402604..5ef4221be6c3 100644
---- a/sound/soc/sh/fsi.c
-+++ b/sound/soc/sh/fsi.c
-@@ -1938,8 +1938,7 @@ static int fsi_probe(struct platform_device *pdev)
- 	if (!master)
- 		return -ENOMEM;
- 
--	master->base = devm_ioremap(&pdev->dev,
--					    res->start, resource_size(res));
-+	master->base = devm_ioremap(&pdev->dev, res->start, resource_size(res));
- 	if (!master->base) {
- 		dev_err(&pdev->dev, "Unable to ioremap FSI registers.\n");
- 		return -ENXIO;
--- 
-2.20.1
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
 
 _______________________________________________
 Alsa-devel mailing list
