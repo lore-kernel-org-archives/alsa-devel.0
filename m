@@ -8,77 +8,76 @@ X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AE2BC352A3
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 22:27:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A0B8BC352A3
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 22:32:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C5F962086A
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 22:27:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1B2A921734
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 22:32:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="W31s3Avf";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Mf3W1BUf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C5F962086A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bmJrbSq1";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="THiYYtRd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1B2A921734
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2C68F1697;
-	Thu, 13 Feb 2020 22:09:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C68F1697
+	by alsa0.perex.cz (Postfix) with ESMTPS id 965FC16A3;
+	Thu, 13 Feb 2020 22:12:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 965FC16A3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581628247;
-	bh=lq8UofkzZs3gLRl/CXN1G0T1qdJv/QXhjt4qav+sqQU=;
+	s=default; t=1581628411;
+	bh=1J9s6yK8GAnjapE41SGO03BnXM9C+pdhiV1KKpftUmk=;
 	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=W31s3Avf+kV4zTvmGf+qdEuyaD1hD3gyIgcx/mkcPHmGQ5CdHScKSy7+evAb+h7K1
-	 fBBNWSrhQV11ChbvKRpJmh6/d4n6N19oA5xOn8xH5OFOttRFSZ7/yBvsi5OE5ZXEvm
-	 afOzTZoJRJWqJr8ao7DS90P6c4OP3IDsQjE4+pSE=
+	b=bmJrbSq1N1T24ZLui/x8j3drRNUnRmK3CxJkoBhkirZn4+PpJ4X0DK1OSgND8UDkq
+	 LigGqHI9I1FF5rQrBOKC6ROz/uaCQ0Bow9JErdr5V2mqoy3GPp6PK/duysFqk4mxmA
+	 Jo6yecr/3Bk+0sh1VEAlXEb8zaSst7vX2xQEnOwI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AEDDAF8013E;
-	Thu, 13 Feb 2020 22:09:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0CD7AF80138;
+	Thu, 13 Feb 2020 22:12:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 41DD7F80145; Thu, 13 Feb 2020 22:09:55 +0100 (CET)
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
- [IPv6:2a00:1450:4864:20::443])
+ id F1A64F80138; Thu, 13 Feb 2020 22:12:38 +0100 (CET)
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com
+ [IPv6:2a00:1450:4864:20::441])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 58F6CF80138
- for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 22:09:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58F6CF80138
+ by alsa1.perex.cz (Postfix) with ESMTPS id 19470F80138
+ for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 22:12:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 19470F80138
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="Mf3W1BUf"
-Received: by mail-wr1-x443.google.com with SMTP id z3so8486335wru.3
- for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 13:09:51 -0800 (PST)
+ header.b="THiYYtRd"
+Received: by mail-wr1-x441.google.com with SMTP id t3so8459605wru.7
+ for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 13:12:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=ZtGcUpA5w76Gcek+VkqKEDd0yDqjEFq7/gNXQdanLGM=;
- b=Mf3W1BUftM+nHyrzCX/s/zOBXQMM8Okj/NIiHqnyaNOVn9jeL+X5uDsvbhzPHs4ZYm
- Eywp6G8pCTJEPMEOzfDlStUka5S959F5fX2EOBMECYxssoK5tkYaGz5fR740k+uwX471
- xr7QHag/Smbp2tbSvoVKpw9CmTlS4i0HGeiXZhZ3mXb/Aila2GCHeova4TFb8L7ki8cc
- 8Cb/+2IB82/9tcSUyspxstMFFE03/nSdqiwVBfLvGYn0fVx0uxDIH24GzIGcgxrN9TWW
- /foFhhuCCVAYNigjgDUFZ4sb0kgTydppAjzxko/meQW72KN2UZo9k129RSjVX01uo5ph
- CPKQ==
+ :cc; bh=iLnuSGH6jNEPRpXsbLdWMvvm70on1OtXGRCIuCTYax4=;
+ b=THiYYtRd1Hw9OOJtDh3m0bsQpuPbcL6D15Or8KKVQBdszixBwTMpdrWI1sdey73UL6
+ OMnfWvyrWMTpxJtIWoOC3klZgu1IWrwgGpKzMr1l6YiTs0DTZmmHJJcXX96UNF87RkqM
+ HIFVzoYj/EtPV4PceO73UE9E2E+l505vMkvdCLvqEdLKR6NepxAChTX8Ksv5A3MY10wx
+ MRDdAInFdByqnE458Nnhm4UsbhvGkS+b6VwbMIinCdiLagqLPLJoH+eJrkk9PW7dAYay
+ e6CshZ/C9jEucmAiBLXhWu3nU7PBF+CispXbP2m0DDejFGVPd1+CTDQtGHZ+f7WzC7Ag
+ k7gQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=ZtGcUpA5w76Gcek+VkqKEDd0yDqjEFq7/gNXQdanLGM=;
- b=ulIf8q1458m58ScUvky0t+OS5prbGfVyTiDuJm+yfjVqfTLyVyCAIO0lCsTZxn2m9M
- oS1irmAxz/ZJoUnvpsQIjFlCUe1/2NrIBWlMvq4MpAAmR9GXyNarJpgZ7ToQJdycyrNk
- feF6IiCYAeMkNrjzeUYcUEV+ZgRVbsxA4xT1e50A/HVOac0qLJyAKZwxq7X6SKAuC2or
- Z8qBSSEu6JhNwFgJ6iOJ831dG+p5zucUhaJDadGgiEDlJWyNj1Ikst7b60pmJCm1H7/1
- ZU4vj4wPlajGnV3gKVg/tep0kh9KWuvxOI1G8GGkUTqwtCo+F2I7BT7Bf7ipegYyP+HB
- ks3g==
-X-Gm-Message-State: APjAAAWwCabMG7Weh56uePd3WQr27XZ2fuo5h0IO3TG0ZQLhI6BFaMQn
- CbKQNOfBAb/piWxZD1wdvHrm5gXfCJjaICLVmJQ=
-X-Google-Smtp-Source: APXvYqzGqv+wev1io566qMCQSBk8Usb8vOHvyhzTsTli9ft0dX6qZZT5ThpS8E5SOs7v3YSOIfjh2hVo6p2lk1M1uxE=
-X-Received: by 2002:a05:6000:367:: with SMTP id
- f7mr23219823wrf.174.1581628191354; 
- Thu, 13 Feb 2020 13:09:51 -0800 (PST)
+ bh=iLnuSGH6jNEPRpXsbLdWMvvm70on1OtXGRCIuCTYax4=;
+ b=FOJp4Mz1qdINY5ZZEnb4osM55tYq/QNWFTGxDAv24zy2mcGkx9a3WbMzCuA9Xa1MdS
+ 2cachKIy+QE1O3ouhxa6ckC7hzEf1xMVYNlv/gjfwagiRFt9Mh0wJHHgxjMw99QGbmRn
+ S4h/0gt9cxBmzbk484ajb6kScTQ2Ai7YxzlZmZ3l+2LQi4WQVktDu0FxQIMedK1+Fqjn
+ fCu1P+fsmUDnJT24jY3wZMcITZSvTR0GBymjjUfK7sP8U650oqnzJxhycnkcOXqpI6Ht
+ ePNLfr6OWn+UmFHDfyCVVkJyBQPQS+7JI9XRNOM7v8LM0iewu0bM/5e813MHWgnG9Mil
+ ugmw==
+X-Gm-Message-State: APjAAAU1EcPBcb088b1IbDrtF7dmgtm2e43c0x7edIqbtBS9QpcM0Pi2
+ O+8v34Al26UtMxzRMne91r1NU/01CpJnanU3RPo=
+X-Google-Smtp-Source: APXvYqz2/8nyozAwb5c39LHVAvkkzIlzsIxS4KXcp3M3SHYFP+afkm8+EUw7r7XUouiqxTfEbIygo0weNf0szTqLQ0o=
+X-Received: by 2002:adf:ed09:: with SMTP id a9mr24147253wro.350.1581628354989; 
+ Thu, 13 Feb 2020 13:12:34 -0800 (PST)
 MIME-Version: 1.0
 References: <20200210061544.7600-1-yuehaibing@huawei.com>
  <9351a746-8823-ee26-70da-fd3127a02c91@linux.intel.com>
@@ -87,8 +86,8 @@ References: <20200210061544.7600-1-yuehaibing@huawei.com>
  <CAJKOXPcxL2vpWGwO1OL9Vv0g6hzbW-AyGJNn=7Yq2iy10_cbhg@mail.gmail.com>
 In-Reply-To: <CAJKOXPcxL2vpWGwO1OL9Vv0g6hzbW-AyGJNn=7Yq2iy10_cbhg@mail.gmail.com>
 From: Daniel Baluta <daniel.baluta@gmail.com>
-Date: Thu, 13 Feb 2020 23:09:39 +0200
-Message-ID: <CAEnQRZA4W-i4zcF8jUL2zp5-dO-iX=KSp5Do2pCK9_oZiVtYEQ@mail.gmail.com>
+Date: Thu, 13 Feb 2020 23:12:23 +0200
+Message-ID: <CAEnQRZBgpcLz29PG6pY_6xaULO6siGumqrsO0gRReMRwUOqW2w@mail.gmail.com>
 To: Krzysztof Kozlowski <krzk@kernel.org>
 Cc: Daniel Baluta <daniel.baluta@nxp.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
@@ -176,11 +175,24 @@ On Tue, Feb 11, 2020 at 11:59 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
 > Hi,
 >
 > Since it's a module, don't you just miss EXPORT_SYMBOL there?
+>
+> > So, I think we should change the Fixes tag. Are there
+> > any clear rules on when to use select vs depends?
+> >
+> > On my side, I know what both are doing but it is not clear
+> > when to use them.
+>
+> Visible symbols usually should not be selected. The same with symbols
+> with dependencies. The docs have this rule mentioned.
 
-Hi Krzysztof,
+You mean if module X depends on module Y, we shouldn't use select?
+But this exactly what this patch does :).
 
-Which symbol misses an EXPORT_SYMBOL?
-We already have EXPORT_SYMBOL(imx_dsp_ring_doorbell);
+The problem here is that when X depends on Y, and X=y and Y=m
+when we try to compile X if get an error because we cannot find a symbol from Y.
+
+I think if X depends on Y, and X is forced to "y" then also Y should
+be forced on "y".
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
