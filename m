@@ -2,91 +2,99 @@ Return-Path: <SRS0=t/pq=4B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32E4DC2BA83
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 08:01:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D308C2BA83
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 08:03:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B26212168B
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 08:01:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DD22721734
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 08:03:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EQx2llli";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="O0GgSTgC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B26212168B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mrUaazyN";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="VrWi7c2d"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DD22721734
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 057D51661;
-	Thu, 13 Feb 2020 09:00:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 057D51661
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3672D1661;
+	Thu, 13 Feb 2020 09:02:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3672D1661
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581580870;
-	bh=k5B13PzzkWiO9aMTuA72TTi9aeTFvgEakrVAzVJOnLw=;
-	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=EQx2lllisHpBbvsunQdG1i/X+8upeaiL4eDi/vVuNZgbF7pOKe4/DqCGrTXcdrW0j
-	 JbVjSq8vNHIB1WeEwSOY6iLOZE5Ixu6WlBykJE54cdmDEX1nNghGWmKy524MdGyxa+
-	 nJ7O6PIQJO4GhvPc26hfj2TwdvTDcGKmzd/GAFFs=
+	s=default; t=1581581015;
+	bh=Ni8IRGt9UCcpvNig4c3ptm/7DXyQFBV3e/tCCPGuQdU=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=mrUaazyNjmaBmhNnwifkqkxp5V9xo/2eAQjkfAQU+ERgI4iP4Huv8BdnKdU+vjHcY
+	 ZdIM+4xQl5sEdp1HxIsOrbYeYLi7qAEBsrv+Z6FxMy/wfF/x6zgaEiBXFtaXLUnedB
+	 aCVBzgWRM5cdYjKRbuk68UvEMZ59+AswQ2fa0lBc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7C7D6F8013E;
-	Thu, 13 Feb 2020 09:00:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B33F7F8013E;
+	Thu, 13 Feb 2020 09:02:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D936FF80145; Thu, 13 Feb 2020 09:00:17 +0100 (CET)
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com
- [IPv6:2607:f8b0:4864:20::549])
+ id C50BBF80145; Thu, 13 Feb 2020 09:02:43 +0100 (CET)
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com
+ [IPv6:2607:f8b0:4864:20::144])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C8534F80139
- for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 09:00:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8534F80139
+ by alsa1.perex.cz (Postfix) with ESMTPS id BB12AF80139
+ for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 09:02:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB12AF80139
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="O0GgSTgC"
-Received: by mail-pg1-x549.google.com with SMTP id t17so3238613pgb.20
- for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 00:00:14 -0800 (PST)
+ header.b="VrWi7c2d"
+Received: by mail-il1-x144.google.com with SMTP id l4so4208342ilj.1
+ for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 00:02:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=date:message-id:mime-version:subject:from:to:cc;
- bh=tSlvrP4m66P1XACDCZDaP68t1HESopkE2ZYSJ/oW5Fc=;
- b=O0GgSTgCFWMe+CSNK993pV/PwzdGIXWDBR5X0/FBv+KHqZ7K9sI8OSrRkyU2JF0+bK
- a0oFchkMZ4tO5BLEk4bqnVywm6K4MRwLuT6lzun7Hb0FO7W5GmcvMELg9+zjOEAdeVkm
- bSVmoX3bkve//nZfusUDzKoQkpuWEWx2ND7zPEikUeU5mF44vV+/iie9fotkaJAoilcd
- SmTm7Pm+KaDA+TUmnOd/MFzybL1naAUfM8Ow8c9XSDEUk43pq3NJSkxA23l228OFxcqy
- yfEXmL17ZGL6KyDE/6ENhvek7IcRNXzWn+5PVtqvvkRRXWIdpkeQr63Cn+yXUn3o56i2
- joAQ==
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=10gKpQZri/82cKq6/v6n1q70/ykUGaRsAC3tbxvLKNg=;
+ b=VrWi7c2dKzqZsYHKurZTdMgkC4RFCLz8pRQXKliNxIOnXIQN+w/7W6XmD6fSAowzQM
+ ioOh/SrY3dOutMvt3wb5cGoy9CCd2hq9e+XJfPgkt+l6cd7VhjlSGIwQXuLnco2uNsYC
+ UypTXDK4eCxQ2pS4z1F9tocVzjWyCYt5twKT2tGFFb0FupN3d1FiybANMraeI/WOAHuO
+ Vbh4+aY3BmlkgOA8BGZ67TXc1X2ej6xK2B6Xe6W65hODbjUpqhOCOYwGzk3H7J8Q00Ki
+ OVjdyTUPZ8P7QlU9e6592dew2zas6uql7ZoBeMEedlHy4AhNyucuGZdfqAR9pwlXQ8jB
+ AoJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
- bh=tSlvrP4m66P1XACDCZDaP68t1HESopkE2ZYSJ/oW5Fc=;
- b=asrTKkzrIbZbiCcWaRJkl+E4Iam39Wat2JNowjEN+bvqZ4TaGM80Sc8YX6k9SgzhzH
- uR0VhRHbB8ZQ31bMI22LOXWjk8bGeUuQHzTxxhrCJ/vKiKa/37RRwzsRPVKlJO2WhZR4
- WAhs2u3VGPG6QH/nPMhRK6Nnvt512ULcykmHJ9+ZjCK9/KNhaOld6Gd5bxzr943Yizc+
- X/IQAq9o8PE4yvwJYUDikTQiBjrY9FQ5xdx1Ky69etk0Pmt74TuvQz3PDEsdyn6FXeL8
- fjJO+xprUef0Te0VyOQ9kZoHajAMW4utzS7JyosTbtZBBfeEFFBEsxtdm+BP4FmMREyQ
- Pn3A==
-X-Gm-Message-State: APjAAAUH7tFN0uQV2+ElA42Gwl1JDuZEgHzGDCP7WhIud8YjvLtkKfor
- 4aykR0udWSrESA95j47GEIoi9bc71uJL
-X-Google-Smtp-Source: APXvYqzDfbbpNkunl4GqakNBCLdfvlQrA9qA9iLtF3TS+2Mot3yuBl6sVFlx4f7nIe24WVH3YWORwiVOgN12
-X-Received: by 2002:a63:4305:: with SMTP id q5mr17607821pga.64.1581580811962; 
- Thu, 13 Feb 2020 00:00:11 -0800 (PST)
-Date: Thu, 13 Feb 2020 15:59:57 +0800
-Message-Id: <20200213153226.I477092c2f104fd589133436c3ae4590e6fc6323b@changeid>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.25.0.225.g125e21ebc7-goog
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=10gKpQZri/82cKq6/v6n1q70/ykUGaRsAC3tbxvLKNg=;
+ b=H2b/h5EUWOVdef+yHSOQ1xkyV0LwcW353OBbRT+22Rojn02WTK4eky7032g0CotRqL
+ jOmIf7C3HOv1LhFx/NKVUOyopOLR/ofmLsg7cTMig+TuF9SYVjqRZLF5DU4I5PbbqJqG
+ qbqwjSzpnJP+xIxjkEWoDuvKgyoRAe91lgqX+xjm3o/+pAPcDz5+JaVdm4VZqPt+BaIb
+ 2LvJ7MeSJKY698UXJeuNJEl6daa6Gmx1y69Pwyc8xIF3f7GNwZUUXlYisy75AGn8+MST
+ 2ssVgxcJ7l6lwViB9E3pt1BgZQCNsZd39uGpMCNA3fmFLMCeYlTEd1I7mViZbwEKqj2N
+ tuuw==
+X-Gm-Message-State: APjAAAXIUeU48VTU8m3FrlWYkkgSCx0U8ALUL0Xck7VLYXabL1uH0MJy
+ b9YpQB453aDz4+/KOLGSQeE5Hf9h2IqKzjjpmoJcig==
+X-Google-Smtp-Source: APXvYqyyqulvy1f+tDe7AmP1JblcXRQSp7dWSy72c8KxhM3n5LgVfLKIkT420HK+MTxArT2iueFQFfyI3z7Ky2ifzjI=
+X-Received: by 2002:a92:981b:: with SMTP id l27mr15162000ili.118.1581580958517; 
+ Thu, 13 Feb 2020 00:02:38 -0800 (PST)
+MIME-Version: 1.0
+References: <20200206031752.193298-1-tzungbi@google.com>
+ <20200206102509.2.I230fd59de28e73934a91cb01424e25b9e84727f4@changeid>
+ <1581495554.22603.2.camel@mtksdaap41>
+ <CA+Px+wXjC1rchzUGhYYCJVyEbm7RQNFnqf-sQNaky6d82DyLyw@mail.gmail.com>
+ <1581559033.14792.9.camel@mtksdaap41>
+In-Reply-To: <1581559033.14792.9.camel@mtksdaap41>
 From: Tzung-Bi Shih <tzungbi@google.com>
-To: broonie@kernel.org, airlied@linux.ie, daniel@ffwll.ch
-Cc: alsa-devel@alsa-project.org, cychiang@google.com, tzungbi@google.com,
- dri-devel@lists.freedesktop.org, ck.hu@mediatek.com,
- linux-mediatek@lists.infradead.org, p.zabel@pengutronix.de,
- matthias.bgg@gmail.com, dgreid@google.com,
- linux-arm-kernel@lists.infradead.org
-Subject: [alsa-devel] [PATCH] drm/mediatek: fix race condition for HDMI jack
+Date: Thu, 13 Feb 2020 16:02:27 +0800
+Message-ID: <CA+Px+wWAR3E8TWnPJEa62WjXQQ1Y-Ni9g1rqvPq0f_HPYYynHg@mail.gmail.com>
+To: CK Hu <ck.hu@mediatek.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>,
+ Jimmy Cheng-Yi Chiang <cychiang@google.com>, David Airlie <airlied@linux.ie>,
+ dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>,
+ linux-mediatek@lists.infradead.org, Daniel Vetter <daniel@ffwll.ch>,
+ Matthias Brugger <matthias.bgg@gmail.com>, p.zabel@pengutronix.de,
+ Dylan Reid <dgreid@google.com>, linux-arm-kernel@lists.infradead.org
+Subject: Re: [alsa-devel] [PATCH v2 2/3] drm/mediatek: support HDMI jack
 	status reporting
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -105,101 +113,22 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-hdmi_conn_detect and mtk_hdmi_audio_hook_plugged_cb would be called
-by different threads.
+On Thu, Feb 13, 2020 at 9:57 AM CK Hu <ck.hu@mediatek.com> wrote:
+> I'm not only consider the race condition of plugged_cb and codec_dev. I
+> also care about the atomic of mtk_cec_hpd_high() and hdmi->plugged_cb().
+> If these two function is not an atomic operation, below is an example of
+> problem:
+>
+> <Status disconnected>
+> 1. Thread A call mtk_hdmi_audio_hook_plugged_cb()
+> 2. Thread A call mtk_cec_hpd_high() and get disconnected.
+> <Status connected>
+> 3. Thread B call hdmi_conn_detect()
+> 4. Thread B call mtk_cec_hpd_high() and get connected
+> 5. Thread B callback plugged_cb() with connected
+> 6. Thread A callback plugged_cb() with disconnected (Bug here)
 
-Imaging the following calling sequence:
-           Thread A                            Thread B
---------------------------------------------------------------------
-mtk_hdmi_audio_hook_plugged_cb()
-mtk_cec_hpd_high() -> disconnected
-                                     hdmi_conn_detect()
-                                     mtk_cec_hpd_high() -> connected
-                                     plugged_cb(connected)
-plugged_cb(disconnected)
-
-The latest disconnected is false reported.  Makes mtk_cec_hpd_high
-and plugged_cb atomic to fix.
-
-plugged_cb and codec_dev are also in danger of race condition.  Instead
-of using mutex to protect them:
-- Checks NULLs first.
-- Uses WRITE_ONCE() to prevent store tearing (i.e. write to plugged_cb
-  after codec_dev).
-- Uses codec_dev as a signal to report HDMI jack status.
-
-Fixes: 5d3c64477392 ("drm/mediatek: support HDMI jack status reporting")
-
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
----
-Previous discussion: https://patchwork.kernel.org/patch/11367625/
-Previous attempt: https://patchwork.kernel.org/patch/11378413/
-
- drivers/gpu/drm/mediatek/mtk_hdmi.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi.c b/drivers/gpu/drm/mediatek/mtk_hdmi.c
-index 03aeb73005ef..b1e5d0c538fa 100644
---- a/drivers/gpu/drm/mediatek/mtk_hdmi.c
-+++ b/drivers/gpu/drm/mediatek/mtk_hdmi.c
-@@ -12,6 +12,7 @@
- #include <linux/io.h>
- #include <linux/kernel.h>
- #include <linux/mfd/syscon.h>
-+#include <linux/mutex.h>
- #include <linux/of_platform.h>
- #include <linux/of.h>
- #include <linux/of_gpio.h>
-@@ -171,6 +172,7 @@ struct mtk_hdmi {
- 	bool enabled;
- 	hdmi_codec_plugged_cb plugged_cb;
- 	struct device *codec_dev;
-+	struct mutex update_plugged_status_lock;
- };
- 
- static inline struct mtk_hdmi *hdmi_ctx_from_bridge(struct drm_bridge *b)
-@@ -1199,10 +1201,13 @@ static void mtk_hdmi_clk_disable_audio(struct mtk_hdmi *hdmi)
- static enum drm_connector_status
- mtk_hdmi_update_plugged_status(struct mtk_hdmi *hdmi)
- {
--	bool connected = mtk_cec_hpd_high(hdmi->cec_dev);
-+	bool connected;
- 
--	if (hdmi->plugged_cb && hdmi->codec_dev)
-+	mutex_lock(&hdmi->update_plugged_status_lock);
-+	connected = mtk_cec_hpd_high(hdmi->cec_dev);
-+	if (hdmi->codec_dev)
- 		hdmi->plugged_cb(hdmi->codec_dev, connected);
-+	mutex_unlock(&hdmi->update_plugged_status_lock);
- 
- 	return connected ?
- 	       connector_status_connected : connector_status_disconnected;
-@@ -1669,8 +1674,12 @@ static int mtk_hdmi_audio_hook_plugged_cb(struct device *dev, void *data,
- {
- 	struct mtk_hdmi *hdmi = data;
- 
--	hdmi->plugged_cb = fn;
--	hdmi->codec_dev = codec_dev;
-+	if (!fn || !codec_dev)
-+		return -EINVAL;
-+
-+	/* Use WRITE_ONCE() to prevent store tearing. */
-+	WRITE_ONCE(hdmi->plugged_cb, fn);
-+	WRITE_ONCE(hdmi->codec_dev, codec_dev);
- 	mtk_hdmi_update_plugged_status(hdmi);
- 
- 	return 0;
-@@ -1729,6 +1738,7 @@ static int mtk_drm_hdmi_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
-+	mutex_init(&hdmi->update_plugged_status_lock);
- 	platform_set_drvdata(pdev, hdmi);
- 
- 	ret = mtk_hdmi_output_init(hdmi);
--- 
-2.25.0.225.g125e21ebc7-goog
-
+Another attempt: https://patchwork.kernel.org/patch/11379979/
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
