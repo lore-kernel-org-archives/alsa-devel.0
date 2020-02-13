@@ -2,64 +2,73 @@ Return-Path: <SRS0=t/pq=4B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EB40C352A3
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 21:04:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76789C352A3
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 21:05:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2CAE4206B6
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 21:04:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EEC37206B6
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 21:05:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XeUUTd7E"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2CAE4206B6
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="G8F2BLph"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EEC37206B6
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9755316C0;
-	Thu, 13 Feb 2020 22:03:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9755316C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5751816CC;
+	Thu, 13 Feb 2020 22:04:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5751816CC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581627860;
-	bh=wOLaD9leoeH0yGrvzc0PgdqYImhl+btEDvxck4n7eJQ=;
-	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=XeUUTd7E1yNjXLGEqDE5VFEe9mLmi2aZMuD2unqVJnuwA9g7kjVZ4Xz8iOkGj9fsI
-	 ExyNTDE7NTdtrzKKsFTGamHkMbCYYJbuMUOGHSiIZ3kKyd1oeWWpH66PNUdrvjF+aW
-	 KPS7hnAfZUFoAKU1bUKc3PF0rxBTrUzAXHdLrjec=
+	s=default; t=1581627914;
+	bh=hvwU5++S0SQgUqutWcoo57MnXsCoaVY6lSEa0yxarhY=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=G8F2BLphpCwfX2eaMhdEFyB7uarS2eFrkCLjD1CwSeLXQi6nVJ6z99YAKs2VBuCHM
+	 SMbZPDm71jUTLjtUeQ+RqYlv+XzurNv6rugIb7sO+07mBOXE8e/6tQ1zEcPJn5Q3ks
+	 hT7umpIU459k+J9dn/7zlIQBDY8uVjiS48qkxfbQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8B6B9F802BE;
-	Thu, 13 Feb 2020 21:59:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 44CB0F8013E;
+	Thu, 13 Feb 2020 22:04:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E353DF8025E; Thu, 13 Feb 2020 21:58:39 +0100 (CET)
+ id 6ABB4F80139; Thu, 13 Feb 2020 22:04:10 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 89CE9F80260
- for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 21:58:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89CE9F80260
+ by alsa1.perex.cz (Postfix) with ESMTP id 9BA61F80139
+ for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 22:04:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9BA61F80139
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D95F21FB;
- Thu, 13 Feb 2020 12:58:35 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8BFC01FB;
+ Thu, 13 Feb 2020 13:04:06 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5DCAE3F6CF;
- Thu, 13 Feb 2020 12:58:35 -0800 (PST)
-Date: Thu, 13 Feb 2020 20:58:33 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0DD233F6CF;
+ Thu, 13 Feb 2020 13:04:05 -0800 (PST)
+Date: Thu, 13 Feb 2020 21:04:04 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Jerome Brunet <jbrunet@baylibre.com>
-In-Reply-To: <20200213155159.3235792-2-jbrunet@baylibre.com>
-Message-Id: <applied-20200213155159.3235792-2-jbrunet@baylibre.com>
-X-Patchwork-Hint: ignore
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Kevin Hilman <khilman@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- linux-amlogic@lists.infradead.org
-Subject: [alsa-devel] Applied "ASoC: core: allow a dt node to provide
-	several components" to the asoc tree
+To: Jack Yu <jack.yu@realtek.com>
+Message-ID: <20200213210404.GM4333@sirena.org.uk>
+References: <2fe07b2c200f43bc81de61f4e6c780ac@realtek.com>
+MIME-Version: 1.0
+In-Reply-To: <2fe07b2c200f43bc81de61f4e6c780ac@realtek.com>
+X-Cookie: Academicians care, that's who.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: Oder Chiou <oder_chiou@realtek.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "lars@metafoo.de" <lars@metafoo.de>,
+ =?utf-8?B?a2VudF9jaGVuQHJlYWx0ZWsuY29tIFvpmbPlu7rlro9d?=
+ <kent_chen@realtek.com>, =?utf-8?B?6Zmz5pi25b+X?= <kenny_chen@realtek.com>,
+ "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+ Derek =?utf-8?B?W+aWueW+t+e+qV0=?= <derek.fang@realtek.com>,
+ Shuming =?utf-8?B?W+iMg+abuOmKmF0=?= <shumingf@realtek.com>,
+ Mingjane Hsieh <mingjane_hsieh@realtek.com>,
+ "Flove\(HsinFu\)" <flove@realtek.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: rt1015: fix typo for bypass boost
+	control
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,82 +81,53 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3554242645956130123=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
 
-   ASoC: core: allow a dt node to provide several components
+--===============3554242645956130123==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="bPrm2PuLP7ysUh6c"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--bPrm2PuLP7ysUh6c
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Wed, Feb 12, 2020 at 01:59:49AM +0000, Jack Yu wrote:
+> Fix typo for "Bypass Boost" control.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+This doesn't apply against current code, please check and resend.  Also
+this is more of a cut'n'paste error than a typo.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+--bPrm2PuLP7ysUh6c
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Mark
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5FucMACgkQJNaLcl1U
+h9AKRQf/TAWL+07NV308bM/JY2nuRiFzrHsqwGRvoN7EVB+Bz4oEU17ZhJjXQBJm
+lYur8/o/am4Fyi6MnIy4PnFkXp3CTy2auHlOgRQO3+XInP6K16hu3Ky0n9FU0Zxn
+MRjEx/NQgK+4gPo89lC4xvEG3u9t56p46mZkUolWj9Icf6v4PINwajZk1qAo0SZK
+IvksVkn9HgrO0chELyrbkwW3zmGO/u+p0dwGOqixLMLdrB2RWQgWBgTt8oKLxTOt
+3OP2iviz5kBpJO4Wg6cmLZ/QFXl9fai21Jyxg++OczxmOLaQ8hMeYcz18rHIfZkM
+V9eQImH4DDqvn91MkCF1IfXmQAD24Q==
+=iqpu
+-----END PGP SIGNATURE-----
 
-From 1dfa5a5ab34560fd9647083f623d19705be2e706 Mon Sep 17 00:00:00 2001
-From: Jerome Brunet <jbrunet@baylibre.com>
-Date: Thu, 13 Feb 2020 16:51:51 +0100
-Subject: [PATCH] ASoC: core: allow a dt node to provide several components
+--bPrm2PuLP7ysUh6c--
 
-At the moment, querying the dai_name will stop of the first component
-matching the dt node. This does not allow a device (single dt node) to
-provide several ASoC components which could then be used through DT.
-
-This change let the search go on if the xlate function of the component
-returns an error, giving the possibility to another component to match
-and return the dai_name.
-
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Link: https://lore.kernel.org/r/20200213155159.3235792-2-jbrunet@baylibre.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/soc-core.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 068d809c349a..03b87427faa7 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -3102,6 +3102,14 @@ int snd_soc_get_dai_name(struct of_phandle_args *args,
- 			*dai_name = dai->driver->name;
- 			if (!*dai_name)
- 				*dai_name = pos->name;
-+		} else if (ret) {
-+			/*
-+			 * if another error than ENOTSUPP is returned go on and
-+			 * check if another component is provided with the same
-+			 * node. This may happen if a device provides several
-+			 * components
-+			 */
-+			continue;
- 		}
- 
- 		break;
--- 
-2.20.1
+--===============3554242645956130123==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============3554242645956130123==--
