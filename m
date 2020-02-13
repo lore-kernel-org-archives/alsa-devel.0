@@ -2,70 +2,85 @@ Return-Path: <SRS0=t/pq=4B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D5546C2BA83
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 11:39:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E4BE7C3B189
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 11:44:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 64ADF222C2
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 11:39:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2990A217F4
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 11:44:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="a06/ojKM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 64ADF222C2
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WV+2PjxB";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=interia.pl header.i=@interia.pl header.b="AAOrYEO6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2990A217F4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=interia.pl
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C9284165F;
-	Thu, 13 Feb 2020 12:38:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C9284165F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7C9DB1662;
+	Thu, 13 Feb 2020 12:43:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7C9DB1662
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581593984;
-	bh=pNU6vStSriR/RPnYr/5LoSvm19yHut2QceQoMgUbCKQ=;
+	s=default; t=1581594289;
+	bh=0PyksyO+G3myPgvl5vEhIalAvrvoEDOqWLs4Iud5e68=;
 	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=a06/ojKMDDXsj8kZ0vyEA65Aie+7L2l68nEGbMNFE0QUjKM3dv6uTtVDNxvOjyvmB
-	 gdxy0/IcihIjV2tk6IGneMvpq54b6PS+BZCzhMIpKQb2rxhjh+CIq5WX3RBapIGyer
-	 6g30yXTSQQOribEQQWG2PXZksuBQR3/F5Q2uyeh4=
+	b=WV+2PjxBdBLVO96qZax0actC6mQsWtDgTv2hSZJwD/bbgQBAsJIFeVGHJexKVMDRT
+	 1yMFFcRGCo2/vhDhd4um9Jo9kgsx9Ll377Xp2lWZbG+KqyRg6v4dvQzNYLC+qTfEON
+	 kpo3HuDTjEVwg4WCtgfsSPEB470PxK+cRf49As1w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 59631F8013E;
-	Thu, 13 Feb 2020 12:38:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DF70BF8013E;
+	Thu, 13 Feb 2020 12:43:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A4A94F80145; Thu, 13 Feb 2020 12:38:52 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 0FD78F80139
- for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 12:38:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0FD78F80139
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5EC491FB;
- Thu, 13 Feb 2020 03:38:48 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D795B3F6CF;
- Thu, 13 Feb 2020 03:38:47 -0800 (PST)
-Date: Thu, 13 Feb 2020 11:38:46 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Jerome Brunet <jbrunet@baylibre.com>
-Message-ID: <20200213113846.GB4333@sirena.org.uk>
-References: <20200213061147.29386-1-samuel@sholland.org>
- <20200213061147.29386-5-samuel@sholland.org>
- <1jpneialqa.fsf@starbuckisacylon.baylibre.com>
+ id 15FF3F80145; Thu, 13 Feb 2020 12:43:58 +0100 (CET)
+Received: from smtpo.poczta.interia.pl (smtpo.poczta.interia.pl
+ [217.74.65.152])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A6F79F80139
+ for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 12:43:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6F79F80139
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=interia.pl header.i=@interia.pl
+ header.b="AAOrYEO6"
+X-Interia-R: Interia
+X-Interia-R-IP: 185.15.80.246
+X-Interia-R-Helo: <photon>
+Received: from photon (185-15-80-246.ksi-system.net [185.15.80.246])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest
+ SHA256) (No client certificate requested)
+ by poczta.interia.pl (INTERIA.PL) with ESMTPSA;
+ Thu, 13 Feb 2020 12:43:53 +0100 (CET)
+Date: Thu, 13 Feb 2020 12:43:52 +0100
+From: Radoslaw Smigielski <radoslaw.smigielski@interia.pl>
+To: Takashi Iwai <tiwai@suse.de>
+Message-ID: <20200213114352.GA742571@photon>
+References: <20200213103636.733463-1-radoslaw.smigielski@interia.pl>
+ <s5ha75mrbyb.wl-tiwai@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <1jpneialqa.fsf@starbuckisacylon.baylibre.com>
-X-Cookie: Academicians care, that's who.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Mark Rutland <mark.rutland@arm.com>, Jonathan Corbet <corbet@lwn.net>,
- alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel@vger.kernel.org, Samuel Holland <samuel@sholland.org>,
- linux-doc@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
-Subject: Re: [alsa-devel] [PATCH 4/4] ASoC: simple-card: Add support for
- codec-to-codec dai_links
+Content-Disposition: inline
+In-Reply-To: <s5ha75mrbyb.wl-tiwai@suse.de>
+X-Interia-Antivirus: OK
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=interia.pl;
+ s=biztos; t=1581594234;
+ bh=HMNQ0ByYostuHLzXcVPMAhsXuFIIt6ZWJhldOgLujpY=;
+ h=X-Interia-R:X-Interia-R-IP:X-Interia-R-Helo:Date:From:To:Cc:
+ Subject:Message-ID:References:MIME-Version:Content-Type:
+ Content-Disposition:In-Reply-To:X-Interia-Antivirus;
+ b=AAOrYEO6R7Hn9ML3o/K6XyBmIXIZI7Ly2yKJcfedYXDVziYuujxykWtv9BRGtr9C5
+ FpUswTD3tiYlaFDm6ClLr1LdyoDBuO4MsLHVSIKFUOIPHZnk7JRj+ilaT4AFJIQG4S
+ TN3GkfpEmECy9gZICuJW1Qopqb98wprYHPyLYjWY=
+Cc: alsa-devel@alsa-project.org, corbet@lwn.net, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, tiwai@suse.com, radoslaw.smigielski@interia.pl
+Subject: Re: [alsa-devel] [PATCH] ALSA: doc: fix snd_hda_intel driver name
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,66 +93,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1205119423915401796=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Thu, Feb 13, 2020 at 11:58:04AM +0100, Takashi Iwai wrote:
+> On Thu, 13 Feb 2020 11:36:37 +0100,
+> Radoslaw Smigielski wrote:
+> > 
+> > Update driver name snd-hda-intel to proper, existing driver
+> > name snd_hda_intel in Documentation/sound/hd-audio/notes.rst.
+> 
+> snd-hda-intel is correct from the module file name POV.
+> Both are handled equivalently.
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
 
---===============1205119423915401796==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="/NkBOFFp2J2Af1nK"
-Content-Disposition: inline
+Takashi-san, I agree that the names with hyphens (snd-hda-intel)
+are present in help sections of many options in sound/pci/hda/Kconfig.
+But snd-hda-intel is confusing from end user point of view.
+After reading notes.rst, end user is going to do someting like this:
+
+    lsmod | grep snd-hda-intel
+
+and this command gives false result.
+
+Also this modprobe.conf file is not going to work but it's an existing
+example in Documentation/sound/hd-audio/notes.rst:
+
+> > -    options snd-hda-intel patch=on-board-patch,hdmi-patch
 
 
---/NkBOFFp2J2Af1nK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Feb 13, 2020 at 10:18:53AM +0100, Jerome Brunet wrote:
-> On Thu 13 Feb 2020 at 07:11, Samuel Holland <samuel@sholland.org> wrote:
-
-> > +- codec-to-codec			: Indicates a codec-to-codec
-> > dai-link.
-
-> I wonder if such property could be viewed as a Linux implementation
-> detail ?
-
-Yes, it is.
-
-> Should the card figure out the codec-to-codec links on its own or is it
-> something generic enough to put in DT ?
-
-We should be able to figure it out by ourselves, we already have a link
-between two CODECs - we should be able to infer that it is in fact a
-link between two CODECs with the information we already have, probably
-by looking at the two devices that are referenced.
-
---/NkBOFFp2J2Af1nK
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5FNUUACgkQJNaLcl1U
-h9AQ3Af/XaLbts6WjJP/3bk73GDv0QmGgaskQL8b6m1D39K+JlBEpJFtRFU8dbwI
-lRAtiipudev/YrYxB1zTgCbspo7bZ+p9X+lKGs3duT/Mbu/S19AJXn1oczaI9bSr
-ry8cckwgoWfaT5KEgf32ZKhLPL2RYOGUfxK8YD3V2SVj74QapjdY3S4cOWFYCGSy
-G9RP0+ReSirSQ9p4MFiA3zxj5lLgNHnCoMkVrIUktLtLfbE9T6vyW0eZhc0+9wXC
-td2NQln5v755wOwxzGvfZ0hmO1Zil4FZEoCCdGT/izv7joqZaB18lG/XVlBCHQbn
-Sm25vTaxFqSe2wL3vQlqmRW5BEYsTQ==
-=eGwg
------END PGP SIGNATURE-----
-
---/NkBOFFp2J2Af1nK--
-
---===============1205119423915401796==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Cheers,
+Radek
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============1205119423915401796==--
