@@ -2,68 +2,81 @@ Return-Path: <SRS0=t/pq=4B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BE935C2BA83
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 13:50:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 064FDC3B189
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 15:06:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 47DE3218AC
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 13:50:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 88DD72073C
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 15:06:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="K4zQd/wa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 47DE3218AC
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HjPGONNC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 88DD72073C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A3EB31687;
-	Thu, 13 Feb 2020 14:49:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3EB31687
+	by alsa0.perex.cz (Postfix) with ESMTPS id CFD38168D;
+	Thu, 13 Feb 2020 16:05:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CFD38168D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581601823;
-	bh=5LTjvV5gVgQVPgEscDU9z4LKlAuAU0AlLqGAJp6SDXk=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1581606378;
+	bh=rkyeycrUYt+V4f2JaBfclsIXxKJv0EpYiJs7q1TqnYY=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=K4zQd/wa/8D6O7dr2Nh+7adm6OCugliY0GXQY+GJjJgoyzoSrd0KhskPqt0ptO+7x
-	 yXDXJb642Ec7Ku7UoaqmgIBEoI6MgTK6Z80qoLZQqHtDBaGchn/C01du8MinqLg4IL
-	 esgdXDVZxqCxn13QW/U4gR5foxHc8d3sRfqG7HCo=
+	b=HjPGONNCQlq+egDE+duI6otnpxkLIL9gvRaOvY/hYGAwBnuM5/o299vtc+VINbun3
+	 GoCLo4uWqJr0D1aVYn2vloNxgtCJfzVlz7VgRjJZm0rly1iZAUK9hhkeZg1ieFecrr
+	 6JuugMym89G4oX1WnKO5yMUG072prNbKUscX8r5Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2EAEAF8013E;
-	Thu, 13 Feb 2020 14:49:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4109FF80139;
+	Thu, 13 Feb 2020 16:05:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E7CBEF80145; Thu, 13 Feb 2020 14:49:31 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 62115F80138
- for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 14:49:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62115F80138
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7A5841FB;
- Thu, 13 Feb 2020 05:49:27 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F1FC53F68F;
- Thu, 13 Feb 2020 05:49:26 -0800 (PST)
-Date: Thu, 13 Feb 2020 13:49:25 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Tzung-Bi Shih <tzungbi@google.com>
-Message-ID: <20200213134925.GF4333@sirena.org.uk>
-References: <20200213032728.199462-1-tzungbi@google.com>
- <20200213112003.2.I1d568b0c99742c6e755d051aadfd52e4be3cc0a5@changeid>
- <20200213122448.GD4333@sirena.org.uk>
- <CA+Px+wUCaLYrYR_Ff6tJGWaE+w=Nk=4JFJYu8zfT_MXZ2YR+UQ@mail.gmail.com>
+ id 55344F80145; Thu, 13 Feb 2020 16:05:26 +0100 (CET)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 55C66F800F0
+ for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 16:05:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55C66F800F0
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 13 Feb 2020 07:05:19 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,437,1574150400"; d="scan'208";a="227112418"
+Received: from lmbraun-mobl.amr.corp.intel.com (HELO [10.255.84.93])
+ ([10.255.84.93])
+ by fmsmga007.fm.intel.com with ESMTP; 13 Feb 2020 07:05:18 -0800
+To: Vinod Koul <vkoul@kernel.org>
+References: <20200114234257.14336-1-pierre-louis.bossart@linux.intel.com>
+ <20200114234257.14336-6-pierre-louis.bossart@linux.intel.com>
+ <20200212101554.GB2618@vkoul-mobl>
+ <c8219635-30be-9695-a3f5-cd649aa6fab7@linux.intel.com>
+ <20200213042344.GC2618@vkoul-mobl>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <7c84be84-1507-c132-abf5-d85fe96fe029@linux.intel.com>
+Date: Thu, 13 Feb 2020 09:05:18 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <CA+Px+wUCaLYrYR_Ff6tJGWaE+w=Nk=4JFJYu8zfT_MXZ2YR+UQ@mail.gmail.com>
-X-Cookie: Academicians care, that's who.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: ALSA development <alsa-devel@alsa-project.org>,
- Dylan Reid <dgreid@google.com>, Jimmy Cheng-Yi Chiang <cychiang@google.com>
-Subject: Re: [alsa-devel] [RESEND PATCH 2/4] ASoC: mediatek: mt8183-da7219:
- pull TDM GPIO pins down when probed
+In-Reply-To: <20200213042344.GC2618@vkoul-mobl>
+Content-Language: en-US
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
+ linux-kernel@vger.kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
+ srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
+ Sanyog Kale <sanyog.r.kale@intel.com>,
+ Bard liao <yung-chuan.liao@linux.intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH v2 5/5] soundwire: intel: free all
+ resources on hw_free()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,59 +89,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5677911211588957813=="
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---===============5677911211588957813==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="JSkcQAAxhB1h8DcT"
-Content-Disposition: inline
+>>>> +	ret = intel_free_stream(sdw, substream, dai, sdw->instance);
+>>>> +	if (ret < 0) {
+>>>> +		dev_err(dai->dev, "intel_free_stream: failed %d", ret);
+>>>> +		return ret;
+>>>> +	}
+>>>> +
+>>>> +	sdw_release_stream(dma->stream);
+>>>
+>>> I think, free the 'name' here would be apt
+>>
+>> Right, this is something we discussed with Rander shortly before Chinese New
+>> Year and we wanted to handle this with a follow-up patch, would that work
+>> for you? if not I can send a v3, your choice.
+> 
+> It would be better if we fix this up in this series :)
 
-
---JSkcQAAxhB1h8DcT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Feb 13, 2020 at 09:42:25PM +0800, Tzung-Bi Shih wrote:
-> On Thu, Feb 13, 2020 at 8:24 PM Mark Brown <broonie@kernel.org> wrote:
-> > we might want to have some general pinctrl integration
-
-> I have no idea what it could be so far.  But I am willing to help if
-> you have some draft ideas.
-
-Off the top of my head if we have standard names for the states then we
-could make DAPM widgets for the pinctrl stuff, probably like the
-regulator supply ones since typically there's multiple AIF widgets per
-physical interface.
-
---JSkcQAAxhB1h8DcT
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5FU+QACgkQJNaLcl1U
-h9CGswf/V7zm9D2sanigk36QMwu59qcefX2ljwQO2NQon3r5OEEGRoyJgQubOh43
-JvuY/H/dikrXT2Qi5mkofz0aF07JLtfs61whYDGU/wZ/mSKUgDyCFxXJZvG/ve1L
-l72ipcL5lsvAotbkDdYsPefqkrrX6AZUlG7LrehvaIwM8bHMNPOpGs/lmlI6s2oC
-IJTfOLPBKDKU8IeirefrqC0s9vUGwijeUNlKtHrKvQzYk4Tcw4UZERqu2kEpCJJI
-xt2VLaZ4lqK/Vn7yv3qFpPNwCA3AFilVdqdVm5lvzOM2+DKNwRaFJfE58jg5QXRy
-534CtOdDQyMHmyCzedks9xvbJ0radg==
-=2KN3
------END PGP SIGNATURE-----
-
---JSkcQAAxhB1h8DcT--
-
---===============5677911211588957813==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+ok, I will fix this later today.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============5677911211588957813==--
