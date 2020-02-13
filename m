@@ -2,59 +2,64 @@ Return-Path: <SRS0=t/pq=4B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67058C352A3
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 04:09:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC59BC352A3
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 04:10:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D2BC421734
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 04:09:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3720E222C2
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 04:10:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TWGLzKeD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D2BC421734
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FvVXsENP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3720E222C2
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 36756165F;
-	Thu, 13 Feb 2020 05:08:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36756165F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 39473166C;
+	Thu, 13 Feb 2020 05:09:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39473166C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581566966;
-	bh=6aG0QU1VfVIrYenQ6zcDwUJSOrogp1ZYYC3RJ9kzIMo=;
-	h=Date:From:To:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=TWGLzKeDVzJJ4Sh+1QFNjke8PeTJsAo/1ii5Le14nFMn5bns9RO8OaFbfQTVftWdE
-	 IMNnPZ/RSF4wt5Cm0SwKhrXbawcsu+zv0rw7bol0FA+IKGASOOlO6xuApDxQ5lF+Tk
-	 Mml81ttQMfFo0MWvFH45LTZx7QdSLPeSUVGHfnKY=
+	s=default; t=1581567020;
+	bh=7FkhsOc8TLhoWoj8zIFUwmJSfbnoL28vOPOMKTPXsBA=;
+	h=Date:From:To:In-Reply-To:References:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=FvVXsENPYOwrD/Zo4xcYRf4XRSUiNs7PiBfqYPfaxEJLckbHBHXt3gfbsKvHpRaOw
+	 AsPt4Usv5j5ddYNX3lj8oiwMQ3MCx5KfC/vyf8VDlXonYeJP8V+tQqDC4pMRXxpmzG
+	 xt8tiqnzvg9N5clCNzVrqyRoAUQWK4CWZ0vFYrK0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 98953F800F0;
-	Thu, 13 Feb 2020 05:08:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D4E34F801DA;
+	Thu, 13 Feb 2020 05:08:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 93BB8F80145; Thu, 13 Feb 2020 05:08:31 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id E3F08F800F0
- for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 05:08:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3F08F800F0
-Date: 13 Feb 2020 13:08:15 +0900
-X-IronPort-AV: E=Sophos;i="5.70,434,1574089200"; d="scan'208";a="38930462"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 13 Feb 2020 13:08:15 +0900
+ id BBDA7F801DA; Thu, 13 Feb 2020 05:08:42 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id C3514F80146
+ for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 05:08:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3514F80146
+Date: 13 Feb 2020 13:08:35 +0900
+X-IronPort-AV: E=Sophos;i="5.70,434,1574089200"; d="scan'208";a="39146457"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 13 Feb 2020 13:08:35 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id A1D18418A4EB
- for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 13:08:15 +0900 (JST)
-Message-ID: <87lfp7ruxl.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id B54AE4003878
+ for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 13:08:35 +0900 (JST)
+Message-ID: <87k14rrux0.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Linux-ALSA <alsa-devel@alsa-project.org>
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
+To: Linux-ALSA <alsa-devel@alsa-project.org>
+In-Reply-To: <87lfp7ruxl.wl-kuninori.morimoto.gx@renesas.com>
+References: <87lfp7ruxl.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Subject: [alsa-devel] [PATCH 0/6] ASoC: use for_each_rtd_codec_dai() macro
+Subject: [alsa-devel] [PATCH 1/6] ASoC: soundwaire: qcom: use
+	for_each_rtd_codec_dai() macro
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,28 +77,41 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Hi Mark
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ drivers/soundwire/qcom.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-Some drivers aren't using for_each_rtd_codec_dai() macro.
-This patch-set switches to use it.
-
-Kuninori Morimoto (6):
-  ASoC: soundwaire: qcom: use for_each_rtd_codec_dai() macro
-  ASoC: qcom: sdm845: use for_each_rtd_codec_dai() macro
-  ASoC: qcom: apq8016_sbc: use for_each_rtd_codec_dai() macro
-  ASoC: intel: cml_rt1011_rt5682: use for_each_rtd_codec_dai() macro
-  ASoC: intel: kbl_da7219_max98927: use for_each_rtd_codec_dai() macro
-  ASoC: mediatek: mt8183-da7219-max98357: use for_each_rtd_codec_dai() macro
-
- drivers/soundwire/qcom.c                      |  7 ++++---
- sound/soc/intel/boards/cml_rt1011_rt5682.c    |  3 +--
- sound/soc/intel/boards/kbl_da7219_max98927.c  |  8 ++++----
- .../mediatek/mt8183/mt8183-da7219-max98357.c  |  8 ++++----
- sound/soc/qcom/apq8016_sbc.c                  |  7 +++----
- sound/soc/qcom/sdm845.c                       | 20 +++++++++----------
- 6 files changed, 25 insertions(+), 28 deletions(-)
-
+diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+index 1c6c6a2e0def..fb30bbec999a 100644
+--- a/drivers/soundwire/qcom.c
++++ b/drivers/soundwire/qcom.c
+@@ -594,6 +594,7 @@ static int qcom_swrm_startup(struct snd_pcm_substream *substream,
+ 	struct qcom_swrm_ctrl *ctrl = dev_get_drvdata(dai->dev);
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct sdw_stream_runtime *sruntime;
++	struct snd_soc_dai *codec_dai;
+ 	int ret, i;
+ 
+ 	sruntime = sdw_alloc_stream(dai->name);
+@@ -602,12 +603,12 @@ static int qcom_swrm_startup(struct snd_pcm_substream *substream,
+ 
+ 	ctrl->sruntime[dai->id] = sruntime;
+ 
+-	for (i = 0; i < rtd->num_codecs; i++) {
+-		ret = snd_soc_dai_set_sdw_stream(rtd->codec_dais[i], sruntime,
++	for_each_rtd_codec_dai(rtd, i, codec_dai) {
++		ret = snd_soc_dai_set_sdw_stream(codec_dai, sruntime,
+ 						 substream->stream);
+ 		if (ret < 0 && ret != -ENOTSUPP) {
+ 			dev_err(dai->dev, "Failed to set sdw stream on %s",
+-				rtd->codec_dais[i]->name);
++				codec_dai->name);
+ 			sdw_release_stream(sruntime);
+ 			return ret;
+ 		}
 -- 
 2.17.1
 
