@@ -2,94 +2,68 @@ Return-Path: <SRS0=t/pq=4B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8740CC2BA83
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 13:44:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE935C2BA83
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 13:50:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 113E7217F4
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 13:44:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 47DE3218AC
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 13:50:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pzGdEwlF";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="BWvRESFW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 113E7217F4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="K4zQd/wa"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 47DE3218AC
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 69E3A1673;
-	Thu, 13 Feb 2020 14:43:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 69E3A1673
+	by alsa0.perex.cz (Postfix) with ESMTPS id A3EB31687;
+	Thu, 13 Feb 2020 14:49:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3EB31687
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581601468;
-	bh=cdBM37qBgry5uKmAw4Ar7iDdiSx2PAuzN4801SWZpQ8=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	s=default; t=1581601823;
+	bh=5LTjvV5gVgQVPgEscDU9z4LKlAuAU0AlLqGAJp6SDXk=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pzGdEwlFVMr6RpkVGVeNJrZ8bPqcqq79+En8Xu4mkD0+adRhHFLXFUeVQL4fuHJ+f
-	 CD5AAYtdF8oZ2EyKKg+xWtzAHLqxc7ThnLxD/z80ljuoeDKTzRkxJehpmqcxRmPtip
-	 i/Jg5gkECpZRNzbkFdyVuZ8o/Ic0wklFeWDoa+7g=
+	b=K4zQd/wa/8D6O7dr2Nh+7adm6OCugliY0GXQY+GJjJgoyzoSrd0KhskPqt0ptO+7x
+	 yXDXJb642Ec7Ku7UoaqmgIBEoI6MgTK6Z80qoLZQqHtDBaGchn/C01du8MinqLg4IL
+	 esgdXDVZxqCxn13QW/U4gR5foxHc8d3sRfqG7HCo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 83D78F80147;
-	Thu, 13 Feb 2020 14:43:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2EAEAF8013E;
+	Thu, 13 Feb 2020 14:49:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CD378F801DA; Thu, 13 Feb 2020 14:43:02 +0100 (CET)
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com
- [IPv6:2607:f8b0:4864:20::d42])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1B911F80146
- for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 14:42:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B911F80146
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="BWvRESFW"
-Received: by mail-io1-xd42.google.com with SMTP id z8so6522432ioh.0
- for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 05:42:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=JixNVZPfaxw28v2GWTDVEkWm5e7Z+yfB9QhN7sWRc14=;
- b=BWvRESFWNuwpu+LiV4vfYqyS6/iy8+fypXiO3hqT32XzRbTU0qZP/lMjGujKcIleol
- wvhUCWsaZcwTdxa2K6/dmWxjdKvqIpZd8wyRCRdyV3VadmBZDM6NuZ3/d6KjkJmRWGJb
- TVcfrWQ78gvVR+PS7CEg+DDkd6dcWWvFmAAU5EZrozUjAW5kjdOoX1FY8DtvqxqvOor8
- w92J1nbcPVmNT3j4AG19geWDWkftzfZsvLLoWy6jHTQx88rAsDhOSRaG87nnl1dqrZ+S
- dfQmc6qKKXKn6JMuzZAt8Ka0HkxXagP82bhpBywAn9YyWk8yTQw45+7eejwq5jYpHOUg
- R0dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=JixNVZPfaxw28v2GWTDVEkWm5e7Z+yfB9QhN7sWRc14=;
- b=Ew6NVFtGmXIbN3Zz0Xx3jQoBRjliQx8gXwcEv8vGTwZcX2axL/yLykbo1z/SEakQRA
- nt5sE30FgH2u6glQc08PoRBJ/+wJiTs5Et08c7nhvcJvy0Pgy9MCv3L1L74LjbaWzRpW
- KtGS+k4pyL8H/81mzLJFrwtMqF4Nrea60GSP5L07y4QJGobvHc9/On7eSUtqOjQ4lKZF
- uvLazxB9VhOHRzsK1L0NSaEhKkQM/FBIZZT2mCjNwBtEBjIbYVijrtET5ufQXvweHT5x
- GuNk4/pGA+PvTDJaI7GTylOy0RSmYPmjTaR9i0Y/1QXALfyvfDLdiCdjOZUPstwl2MdQ
- Tj0w==
-X-Gm-Message-State: APjAAAUbd87GI010xZp8ybkhOU8rWq+BCVUENGHZVYO1x6jDdRsXu+2g
- mTPLLwPjfrdkijBJYX6Vtk/1huzKdWyrxh5I60IbEA==
-X-Google-Smtp-Source: APXvYqy5xoGvURXQ5mKlvI1PTr50d2rw0jQcWB4kD3QNbeLAFbEdhWTc8hfz64qHPp7ao8YaiTAAKZhJWrLoApChauI=
-X-Received: by 2002:a02:2101:: with SMTP id e1mr22999258jaa.29.1581601377939; 
- Thu, 13 Feb 2020 05:42:57 -0800 (PST)
-MIME-Version: 1.0
+ id E7CBEF80145; Thu, 13 Feb 2020 14:49:31 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 62115F80138
+ for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 14:49:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62115F80138
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7A5841FB;
+ Thu, 13 Feb 2020 05:49:27 -0800 (PST)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F1FC53F68F;
+ Thu, 13 Feb 2020 05:49:26 -0800 (PST)
+Date: Thu, 13 Feb 2020 13:49:25 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Tzung-Bi Shih <tzungbi@google.com>
+Message-ID: <20200213134925.GF4333@sirena.org.uk>
 References: <20200213032728.199462-1-tzungbi@google.com>
- <20200213112003.4.Ia542007f51d3de753a9e0a83135ee074581dbf71@changeid>
- <20200213122708.GE4333@sirena.org.uk>
-In-Reply-To: <20200213122708.GE4333@sirena.org.uk>
-From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Thu, 13 Feb 2020 21:42:47 +0800
-Message-ID: <CA+Px+wUkmUZ=boWtXoNQfe+7ieGdwXCvsfL=tXHQTQ=otO6h=Q@mail.gmail.com>
-To: Mark Brown <broonie@kernel.org>
+ <20200213112003.2.I1d568b0c99742c6e755d051aadfd52e4be3cc0a5@changeid>
+ <20200213122448.GD4333@sirena.org.uk>
+ <CA+Px+wUCaLYrYR_Ff6tJGWaE+w=Nk=4JFJYu8zfT_MXZ2YR+UQ@mail.gmail.com>
+MIME-Version: 1.0
+In-Reply-To: <CA+Px+wUCaLYrYR_Ff6tJGWaE+w=Nk=4JFJYu8zfT_MXZ2YR+UQ@mail.gmail.com>
+X-Cookie: Academicians care, that's who.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Cc: ALSA development <alsa-devel@alsa-project.org>,
  Dylan Reid <dgreid@google.com>, Jimmy Cheng-Yi Chiang <cychiang@google.com>
-Subject: Re: [alsa-devel] [RESEND PATCH 4/4] ASoC: mediatek: mt8183-da7219:
-	apply some refactors
+Subject: Re: [alsa-devel] [RESEND PATCH 2/4] ASoC: mediatek: mt8183-da7219:
+ pull TDM GPIO pins down when probed
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,24 +76,59 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5677911211588957813=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Feb 13, 2020 at 8:27 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Thu, Feb 13, 2020 at 11:27:28AM +0800, Tzung-Bi Shih wrote:
-> > 1. Moves headset jack to card-specific storage.
-> > 2. Removes trailing blank line.
-> > 3. Moves card registration to the end of probe.
->
-> I'll apply this but it feels like it should be at least two patches - if
-> you're writing a changelog with numbered changes like this it's a big
-> warning sign.
 
-I see.  Will pay more attention and won't squash small changes next time.
+--===============5677911211588957813==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="JSkcQAAxhB1h8DcT"
+Content-Disposition: inline
+
+
+--JSkcQAAxhB1h8DcT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Feb 13, 2020 at 09:42:25PM +0800, Tzung-Bi Shih wrote:
+> On Thu, Feb 13, 2020 at 8:24 PM Mark Brown <broonie@kernel.org> wrote:
+> > we might want to have some general pinctrl integration
+
+> I have no idea what it could be so far.  But I am willing to help if
+> you have some draft ideas.
+
+Off the top of my head if we have standard names for the states then we
+could make DAPM widgets for the pinctrl stuff, probably like the
+regulator supply ones since typically there's multiple AIF widgets per
+physical interface.
+
+--JSkcQAAxhB1h8DcT
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5FU+QACgkQJNaLcl1U
+h9CGswf/V7zm9D2sanigk36QMwu59qcefX2ljwQO2NQon3r5OEEGRoyJgQubOh43
+JvuY/H/dikrXT2Qi5mkofz0aF07JLtfs61whYDGU/wZ/mSKUgDyCFxXJZvG/ve1L
+l72ipcL5lsvAotbkDdYsPefqkrrX6AZUlG7LrehvaIwM8bHMNPOpGs/lmlI6s2oC
+IJTfOLPBKDKU8IeirefrqC0s9vUGwijeUNlKtHrKvQzYk4Tcw4UZERqu2kEpCJJI
+xt2VLaZ4lqK/Vn7yv3qFpPNwCA3AFilVdqdVm5lvzOM2+DKNwRaFJfE58jg5QXRy
+534CtOdDQyMHmyCzedks9xvbJ0radg==
+=2KN3
+-----END PGP SIGNATURE-----
+
+--JSkcQAAxhB1h8DcT--
+
+--===============5677911211588957813==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============5677911211588957813==--
