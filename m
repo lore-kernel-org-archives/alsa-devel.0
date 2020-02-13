@@ -2,56 +2,56 @@ Return-Path: <SRS0=t/pq=4B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A32CC352A3
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 04:30:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21EBDC352A3
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 04:31:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A9F58206ED
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 04:30:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9C454206ED
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 04:31:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="g12raERH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A9F58206ED
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gQUlOmou"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9C454206ED
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 217FE1684;
-	Thu, 13 Feb 2020 05:29:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 217FE1684
+	by alsa0.perex.cz (Postfix) with ESMTPS id 032BA1677;
+	Thu, 13 Feb 2020 05:30:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 032BA1677
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581568248;
-	bh=oOHYw27vy9iiEGAv56dCuzpUZpD0Th8uxrfvvB2FXg8=;
+	s=default; t=1581568289;
+	bh=iDXnXaqvqT+rTG6D1BbWllebWkZmyGkCqH9VbNUCZV8=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=g12raERHgKFggG1Fu7fBYzium8v/XFvlMXibhVhqOXquzLTeJyDPok/yNWEbJrXk3
-	 Vfmtq81ufmnRfRa2g4STuKrYf9MYgWG73TQw6u1qER9twd4dERHtwvQWrzT5B1WE/B
-	 LuBG9PIE+HUo3alwYRmZ/sehrlyihdBNtff/TcG4=
+	b=gQUlOmoub1sjUFLdD1uB0gHkTnrvV6ww8C2WfVsvcvxuLBPNreeyNp9xM05wrAG4/
+	 GEENX9bkGcjRTNxBueQOfM1Jv7krG2BJMsZtxXd6E3amJvuJTbC1prR7YWuE1PFJn1
+	 fok1VJY2TRyLH0q1AilMB2Az9lLCpgx9DaSykQcY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4D44DF802A8;
-	Thu, 13 Feb 2020 05:26:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9CDAFF802BE;
+	Thu, 13 Feb 2020 05:26:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 26907F802A1; Thu, 13 Feb 2020 05:26:46 +0100 (CET)
+ id 5D7A2F802C2; Thu, 13 Feb 2020 05:26:52 +0100 (CET)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id B33FFF80299
- for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 05:26:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B33FFF80299
-Date: 13 Feb 2020 13:26:42 +0900
-X-IronPort-AV: E=Sophos;i="5.70,434,1574089200"; d="scan'208";a="39148069"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 13 Feb 2020 13:26:42 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 24D75F802A7
+ for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 05:26:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24D75F802A7
+Date: 13 Feb 2020 13:26:46 +0900
+X-IronPort-AV: E=Sophos;i="5.70,434,1574089200"; d="scan'208";a="39148079"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 13 Feb 2020 13:26:46 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 4FA10418DEC6;
- Thu, 13 Feb 2020 13:26:42 +0900 (JST)
-Message-ID: <87zhdnqfie.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id AD48F4009BCE;
+ Thu, 13 Feb 2020 13:26:46 +0900 (JST)
+Message-ID: <87y2t7qfi9.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -59,8 +59,8 @@ In-Reply-To: <87blq3ru4w.wl-kuninori.morimoto.gx@renesas.com>
 References: <87blq3ru4w.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH 08/10] ASoC: soc-pcm: use goto and remove multi
-	return
+Subject: [alsa-devel] [PATCH 09/10] ASoC: soc-pcm: care Multi Codec at
+	soc_dpcm_fe_runtime_update()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,41 +78,75 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-When we use some kind of lock, we need to do unlock.
-In that time, multi unlock/return is not good implementation.
-This patch add label and use goto at dpcm_fe_dai_open()
-to reduce such code.
+soc_dpcm_fe_runtime_update() doesn't care Multi Codec now.
+We need to care it. This patch fixup it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-pcm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/soc-pcm.c | 24 ++++++++++++++++++------
+ 1 file changed, 18 insertions(+), 6 deletions(-)
 
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 140f07b91d6a..95fe915f26b0 100644
+index 95fe915f26b0..962fe6cb7d3e 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -2733,8 +2733,7 @@ static int dpcm_fe_dai_open(struct snd_pcm_substream *fe_substream)
+@@ -2614,8 +2614,10 @@ static int dpcm_run_old_update(struct snd_soc_pcm_runtime *fe, int stream)
  
- 	ret = dpcm_path_get(fe, stream, &list);
- 	if (ret < 0) {
--		mutex_unlock(&fe->card->mutex);
--		return ret;
-+		goto open_end;
- 	} else if (ret == 0) {
- 		dev_dbg(fe->dev, "ASoC: %s no valid %s route\n",
- 			fe->dai_link->name, stream ? "capture" : "playback");
-@@ -2755,6 +2754,7 @@ static int dpcm_fe_dai_open(struct snd_pcm_substream *fe_substream)
+ static int soc_dpcm_fe_runtime_update(struct snd_soc_pcm_runtime *fe, int new)
+ {
++	struct snd_soc_dai *codec_dai;
+ 	struct snd_soc_dapm_widget_list *list;
+ 	int count, paths;
++	int i;
  
- 	dpcm_clear_pending_state(fe, stream);
- 	dpcm_path_put(&list);
-+open_end:
- 	mutex_unlock(&fe->card->mutex);
- 	return ret;
- }
+ 	if (!fe->dai_link->dynamic)
+ 		return 0;
+@@ -2629,13 +2631,18 @@ static int soc_dpcm_fe_runtime_update(struct snd_soc_pcm_runtime *fe, int new)
+ 		new ? "new" : "old", fe->dai_link->name);
+ 
+ 	/* skip if FE doesn't have playback capability */
+-	if (!snd_soc_dai_stream_valid(fe->cpu_dai,   SNDRV_PCM_STREAM_PLAYBACK) ||
+-	    !snd_soc_dai_stream_valid(fe->codec_dai, SNDRV_PCM_STREAM_PLAYBACK))
++	if (!snd_soc_dai_stream_valid(fe->cpu_dai,   SNDRV_PCM_STREAM_PLAYBACK))
+ 		goto capture;
++	for_each_rtd_codec_dai(fe, i, codec_dai)
++		if (!snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_PLAYBACK))
++			goto capture;
+ 
+ 	/* skip if FE isn't currently playing */
+-	if (!fe->cpu_dai->playback_active || !fe->codec_dai->playback_active)
++	if (!fe->cpu_dai->playback_active)
+ 		goto capture;
++	for_each_rtd_codec_dai(fe, i, codec_dai)
++		if (!codec_dai->playback_active)
++			goto capture;
+ 
+ 	paths = dpcm_path_get(fe, SNDRV_PCM_STREAM_PLAYBACK, &list);
+ 	if (paths < 0) {
+@@ -2660,13 +2667,18 @@ static int soc_dpcm_fe_runtime_update(struct snd_soc_pcm_runtime *fe, int new)
+ 
+ capture:
+ 	/* skip if FE doesn't have capture capability */
+-	if (!snd_soc_dai_stream_valid(fe->cpu_dai,   SNDRV_PCM_STREAM_CAPTURE) ||
+-	    !snd_soc_dai_stream_valid(fe->codec_dai, SNDRV_PCM_STREAM_CAPTURE))
++	if (!snd_soc_dai_stream_valid(fe->cpu_dai,   SNDRV_PCM_STREAM_CAPTURE))
+ 		return 0;
++	for_each_rtd_codec_dai(fe, i, codec_dai)
++		if (!snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_CAPTURE))
++			return 0;
+ 
+ 	/* skip if FE isn't currently capturing */
+-	if (!fe->cpu_dai->capture_active || !fe->codec_dai->capture_active)
++	if (!fe->cpu_dai->capture_active)
+ 		return 0;
++	for_each_rtd_codec_dai(fe, i, codec_dai)
++		if (!codec_dai->capture_active)
++			return 0;
+ 
+ 	paths = dpcm_path_get(fe, SNDRV_PCM_STREAM_CAPTURE, &list);
+ 	if (paths < 0) {
 -- 
 2.17.1
 
