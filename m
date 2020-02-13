@@ -2,96 +2,105 @@ Return-Path: <SRS0=t/pq=4B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AEA04C3B189
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 08:05:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 26DE7C2BA83
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 08:38:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3E5F3218AC
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 08:05:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A316C217F4
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 08:38:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZGwcg8eq";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="smkU19UK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3E5F3218AC
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="V7YtUwnS";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com header.i=@baylibre-com.20150623.gappssmtp.com header.b="QqLT0mWV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A316C217F4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7F9C21661;
-	Thu, 13 Feb 2020 09:04:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F9C21661
+	by alsa0.perex.cz (Postfix) with ESMTPS id F185E165F;
+	Thu, 13 Feb 2020 09:37:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F185E165F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581581137;
-	bh=BDQnM+/PnE7RS87sfxgfmCVwNUwbNrxmnD66Zsq/p0w=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	s=default; t=1581583098;
+	bh=R/I0seV/RhMJZgfT6421TdX6ajoMptoADgX3faigJMc=;
+	h=References:From:To:In-reply-to:Date:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZGwcg8eqVw6tEZRDTSc7bgQhiX/UIN8A+QhmoCQickz2qpVAzDknOB+Ld5HwvRXMW
-	 Ljtc6CXmVK8xnFcs6CEAJlCL5fKFB7s1Ju+z/cQZdSc0QlChcl5eVwFmi3oYsAViVG
-	 66wIUxvjo7r4RH5SUw0UVYRYUvmjy2REAZY2DMSU=
+	b=V7YtUwnSZ8DXCTobMiqLJ5MtxdWXqjjGh4ouQDuWQgCoAsxsL1JUHhVqAntfj/MZG
+	 GpsALjG5ncll36mNdXdTpIAYql2BwTQ/xTdFga5lDG1NF+PDpPg3O6MzMIjbSpnhgE
+	 srJe4xvudubVQEyxzzhdMYE1AHGFlgDPqGw0uxT0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 26C2DF8013E;
-	Thu, 13 Feb 2020 09:04:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5655CF8013E;
+	Thu, 13 Feb 2020 09:37:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B0996F80145; Thu, 13 Feb 2020 09:04:45 +0100 (CET)
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com
- [IPv6:2607:f8b0:4864:20::d44])
+ id 255C8F80145; Thu, 13 Feb 2020 09:37:25 +0100 (CET)
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com
+ [IPv6:2a00:1450:4864:20::343])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 41324F80138
- for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 09:04:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41324F80138
+ by alsa1.perex.cz (Postfix) with ESMTPS id B37CBF80138
+ for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 09:37:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B37CBF80138
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="smkU19UK"
-Received: by mail-io1-xd44.google.com with SMTP id i11so5398274ioi.12
- for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 00:04:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=sc3keblL800YvOavDBCb855qDz/NufloEJ5TcEwfY7k=;
- b=smkU19UKPG07Wu5DsBkdgAAwKhnW0ebOa1khT8jd7fCuMNJjwP+Saxa3Jobis/+muN
- ZkmXGbw9ZnB/3LDbSUs4/xtbo60UJOYOHZ5xsS5isrkMbaFnYMuFwcAN729yoACIz+3v
- FYDd2d/Oe8JmmpRlGAklaTD/JJ95QCnvjlqw1evmT8HliD72qW1NxqIZ7PkjhgncaiwZ
- YLLIbV7zROOaEhz8NUpya9wKbr8QUC63vSN11nHyAcl1mhrgTeH2uAUyVeqhV+pTFw5o
- ZTvBIMozhpOdC2mI/nBqSkb2DVbsKCjtsTdEeQbanSTBgZmqS+EQur03LuOGo3gdDha0
- pgaw==
+ dkim=pass (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com
+ header.i=@baylibre-com.20150623.gappssmtp.com header.b="QqLT0mWV"
+Received: by mail-wm1-x343.google.com with SMTP id a5so5200489wmb.0
+ for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 00:37:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+ h=references:user-agent:from:to:cc:subject:in-reply-to:date
+ :message-id:mime-version;
+ bh=SpOSiHd+ceklnjc83gflDmwLy0jKlR+qhKztdISCJPg=;
+ b=QqLT0mWVbsMw+N9f4Im+jQL5BOZo+5jZXDOTzVWBKwPthjs9CXFw5kX2TVdcK/JYQS
+ SgPW18YO1LCHbpThp+P6ZRoeZtLq69sCJ21cpm867TRwd/S54iTZrTK0XS7g3KDuffEC
+ LzdwixSMCUskX2SPWImajF+SsDK+hX6EsXF5IIOUcxqE53Rf5pa1lImq3xbL90KcAEDN
+ 0gn2FqERO9F2jtW/KbFh/C07s4I+p1oJPmqz1Abj+EMbv/F3wF29lguemS0h4t2O6rrE
+ jgHVzKVE4uD/30BlXw+InYiUcUz+GWXFTDCh81VHWnGbSUV8Yv1lyu7SoskuvZ3jakRD
+ oijA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=sc3keblL800YvOavDBCb855qDz/NufloEJ5TcEwfY7k=;
- b=rH2Li+jfWVycqCfxqUYTvpwcvBKYPAzJzkFOy8PmvbZjp2EPLWU4TDcoEFpbk9NGZo
- 0e7spTsnU99MACzV2z4aZgKjuF8lSogGe7bGMiWb2PKAH8dfkqRtYA43OQG1zssX48AA
- Qwuu6J4IErwOmYShnUAR+Dbptg6FW/RUjcK9xu55oQ8azgAiIedgiy4T9GBd5ZaUbuMD
- eypVuhpDe/NhT0bPTS+ssk+j0YwsQ8I+4/hxdpOmVqHDXw1zxv1/CI3OUkrpteYm+hYz
- aNNge0TStlITjDlp7CxyyFbHZkAZGcHd8LhhZ+Yf2ViuNJx8DtbtnWF9h48Lz6ga3phC
- QCTg==
-X-Gm-Message-State: APjAAAW2DFDfKEZ3ovPOELMRpo+eJKn3HRZo6Tt97igLW+HxOqY2A4sZ
- d1P2313B5TznnrRjUFEBb+rWnFvIqWVYIPyIvKjkp/5U2Zc=
-X-Google-Smtp-Source: APXvYqz80zbBUl4azLIlTYZJqui4gbd2SKx6LXrZUjj87iiR7EZYRgG1ei+0n/JP2A0qiVFK0NgJVqH3yG53c8hyEJs=
-X-Received: by 2002:a6b:c703:: with SMTP id x3mr21246766iof.118.1581581081318; 
- Thu, 13 Feb 2020 00:04:41 -0800 (PST)
+ h=x-gm-message-state:references:user-agent:from:to:cc:subject
+ :in-reply-to:date:message-id:mime-version;
+ bh=SpOSiHd+ceklnjc83gflDmwLy0jKlR+qhKztdISCJPg=;
+ b=BwQ7nuAZhxE1GPL8yGzYyInK6oxhxVHsew5g7t3PBlSaJlgwpmPfCO0mJyidoV2y5V
+ nW6zyPjLy23r3loVs7bKCoCK9jBSFq3jibP7VNcL/ofTnM4UTPqs1VMhFS+35JGQQ3k7
+ tyU1mdHCDHFpDL8T25G6vHQZA2m+iUex0aL7yHIzzyekP2GTd8FiUUtO9+yk0+8xTkG0
+ sf54Y+QUhXgHUsu/VWoJ4CeaHPO5jV3sUn6lwYmRQjDJ2RIdq5eGuM2jPM/pq4VoBRSo
+ fsbwq3bZSGXEwMMHQBwHJIVhFZKaRw0tIQv+e+ggQX+3RBvP5wLdmdnCiRg3LXpaSmlF
+ 0tUw==
+X-Gm-Message-State: APjAAAUlwvYUY+GjbycHsV0rcuS/PO92bltDMusv0ee9Pggzw8sC2i3b
+ 5v3EaayKp5LOZpDaMv+lzkn3AQ==
+X-Google-Smtp-Source: APXvYqzCff8WTsFShTc3iju7U1CZeupb+EhRjNpiAZFEfcxo2uvaUfoSzx1vdoEkL6bd57iktFA6Nw==
+X-Received: by 2002:a1c:4e01:: with SMTP id g1mr4269368wmh.12.1581583039666;
+ Thu, 13 Feb 2020 00:37:19 -0800 (PST)
+Received: from localhost (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr.
+ [90.63.244.31])
+ by smtp.gmail.com with ESMTPSA id o77sm2154746wme.34.2020.02.13.00.37.18
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 13 Feb 2020 00:37:19 -0800 (PST)
+References: <20200213061147.29386-1-samuel@sholland.org>
+ <20200213061147.29386-2-samuel@sholland.org>
+User-agent: mu4e 1.3.3; emacs 26.3
+From: Jerome Brunet <jbrunet@baylibre.com>
+To: Samuel Holland <samuel@sholland.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Jonathan Corbet <corbet@lwn.net>
+In-reply-to: <20200213061147.29386-2-samuel@sholland.org>
+Date: Thu, 13 Feb 2020 09:37:18 +0100
+Message-ID: <1jr1yyannl.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-References: <20200212192707.PATCH.I477092c2f104fd589133436c3ae4590e6fc6323b@changeid>
-In-Reply-To: <20200212192707.PATCH.I477092c2f104fd589133436c3ae4590e6fc6323b@changeid>
-From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Thu, 13 Feb 2020 16:04:30 +0800
-Message-ID: <CA+Px+wW6G274xtGhjmBc-QMqBahe0rtNVGt1Tc4bC6SH9VGiqg@mail.gmail.com>
-To: Mark Brown <broonie@kernel.org>, David Airlie <airlied@linux.ie>, 
- Daniel Vetter <daniel@ffwll.ch>
-Cc: ALSA development <alsa-devel@alsa-project.org>,
- Jimmy Cheng-Yi Chiang <cychiang@google.com>, dri-devel@lists.freedesktop.org,
- CK Hu <ck.hu@mediatek.com>, linux-mediatek@lists.infradead.org,
- p.zabel@pengutronix.de, Matthias Brugger <matthias.bgg@gmail.com>,
- Dylan Reid <dgreid@google.com>, linux-arm-kernel@lists.infradead.org
-Subject: Re: [alsa-devel] [PATCH] drm/mediatek: fix race condition of
-	plugged_cb and codec_dev
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+ linux-doc@vger.kernel.org
+Subject: Re: [alsa-devel] [PATCH 1/4] ASoC: codec2codec: avoid
+	invalid/double-free of pcm runtime
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,14 +118,46 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Feb 12, 2020 at 7:29 PM Tzung-Bi Shih <tzungbi@google.com> wrote:
->
-> hdmi_conn_detect and mtk_hdmi_audio_hook_plugged_cb woule be called
-> by different threads.  plugged_cb and codec_dev are in danger of race
-> condition.
 
-Please ignore the patch.  The successive attempt:
-https://patchwork.kernel.org/patch/11379979/
+On Thu 13 Feb 2020 at 07:11, Samuel Holland <samuel@sholland.org> wrote:
+
+> The PCM runtime was freed during PMU in the case that the event hook
+> encountered an error. However, it is also unconditionally freed during
+> PMD. Avoid a double-free by dropping the call to kfree in the PMU
+> hook.
+
+Oh ... Thanks for finding this.
+
+I thought that a widget which has failed PMU would not go through PMD,
+but It seems the return value dapm_seq_check_event is not checked.
+
+This brings another question/problem:
+A link which has failed in PMU, could try in PMD to hw_free/shutdown a
+dai which has not gone through startup/hw_params, right ?
+
+>
+> Fixes: a72706ed8208 ("ASoC: codec2codec: remove ephemeral variables")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> ---
+>  sound/soc/soc-dapm.c | 3 ---
+>  1 file changed, 3 deletions(-)
+>
+> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+> index b6378f025836..935b5375ecc5 100644
+> --- a/sound/soc/soc-dapm.c
+> +++ b/sound/soc/soc-dapm.c
+> @@ -3888,9 +3888,6 @@ snd_soc_dai_link_event_pre_pmu(struct snd_soc_dapm_widget *w,
+>  	runtime->rate = params_rate(params);
+>  
+>  out:
+> -	if (ret < 0)
+> -		kfree(runtime);
+> -
+>  	kfree(params);
+>  	return ret;
+>  }
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
