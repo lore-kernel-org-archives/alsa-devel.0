@@ -7,78 +7,110 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0404DC2BA83
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 06:37:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 140F6C2BA83
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 06:38:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 82D93217F4
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 06:37:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9262F217F4
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 06:38:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Szb8rROk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 82D93217F4
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=alum.mit.edu
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FgCdjenz";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sholland.org header.i=@sholland.org header.b="FrRY45uz";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ciM6GQug"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9262F217F4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sholland.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DF4CB167D;
-	Thu, 13 Feb 2020 07:36:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF4CB167D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2973C1683;
+	Thu, 13 Feb 2020 07:37:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2973C1683
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581575855;
-	bh=I45KEfP+DoxjRLgCovCDSp+XOKQ3I8bi8BYGibIbUH8=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Szb8rROk92pDseK0iy/nmBw0PorqRJpma+KyJqfALO76VfTuNzzaFr4WChT/V8vTI
-	 Ig/kQLb8N0xtUwSBmqXFoa74jP1t3cwuF6+j25BhFnzX/Q4enEhx6h/bep5vudGWjO
-	 MXkHhbtDqgGGB5i2MSddXAQtMKfp8rvfYHQRZfHY=
+	s=default; t=1581575912;
+	bh=lfOUMycBbARse1OmWIa1eHXVl6RcQMAD+ZVpcxzVHs0=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=FgCdjenz4f9ZN/k/zwemAE+Tn26343HIHOPWHldOw3YcnkJQA2b78s4KvqbV/7J5b
+	 UmTXmrjerm5CqRbAL0VtvXYazbitdc3r5TDqWcaC4YX2nqHCPr1bHb71EQuf4ELbxy
+	 eplK9QFsXU5JHktcX31hFD8RWCd9vl6I8gMotRUE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6DFDCF80146;
-	Thu, 13 Feb 2020 07:36:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E6421F80278;
+	Thu, 13 Feb 2020 07:36:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6B401F8013E; Tue, 11 Feb 2020 17:22:41 +0100 (CET)
-Received: from mail-qt1-f193.google.com (mail-qt1-f193.google.com
- [209.85.160.193])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 9286EF80218; Thu, 13 Feb 2020 07:11:57 +0100 (CET)
+Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com
+ [66.111.4.221])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D9A87F800E7
- for <alsa-devel@alsa-project.org>; Tue, 11 Feb 2020 17:22:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9A87F800E7
-Received: by mail-qt1-f193.google.com with SMTP id d5so8380035qto.0
- for <alsa-devel@alsa-project.org>; Tue, 11 Feb 2020 08:22:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=8vKDSqnHXMxM6UbZpMgqezFGV7iFRtf6ymNXpe/ujkk=;
- b=GXSbm+/AHxRK7NDKwkAIDxu9zsXOaAamx0kGRrx5N3rHH3hxMXeEFJBEAlRqIId623
- syLd23ySnmAcpO3COumjwF6iG1ckiSLYuj329WCVFW+pAO6DHQDN7jhmGDQUF9d0t2Dx
- kN/3MnhxCZkeQseoYhoswlStObKm8CLMK9z6ShrO3zlsX6etAripzKPhyfW4nG/ICXmY
- xGtcWD+yHw/70DIemkL+SOKl6pCffKAN8OCdslDBGOGacqbIpF1I4bIqhYAaqgnKUJC4
- 2caiMlYHsiAbhVCFWfIXWJ4wRF7nuMSCBYJNea1I75gwOeqS47MzYMSsxBpKPJrAtJVc
- ziYQ==
-X-Gm-Message-State: APjAAAUf9VFtMHuDGASFsYT/maNiKo1HMBUZdElJHugKNvFXo/uwfS4T
- JQhB43Q4rjo5ztomQ8ST9Bc=
-X-Google-Smtp-Source: APXvYqwwPXIFhlNKe/TmTl7Jr5C5T5vcDNDRHUN6KwtQ8wLSYF8MesauojL3eZcGJXM+s29O2pi9lw==
-X-Received: by 2002:aed:38c2:: with SMTP id k60mr3178211qte.375.1581438156499; 
- Tue, 11 Feb 2020 08:22:36 -0800 (PST)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
- by smtp.gmail.com with ESMTPSA id v10sm2312403qtq.58.2020.02.11.08.22.35
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 11 Feb 2020 08:22:36 -0800 (PST)
-From: Arvind Sankar <nivedita@alum.mit.edu>
-To: Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>
-Date: Tue, 11 Feb 2020 11:22:35 -0500
-Message-Id: <20200211162235.1639889-1-nivedita@alum.mit.edu>
+ by alsa1.perex.cz (Postfix) with ESMTPS id A566AF80138
+ for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 07:11:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A566AF80138
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=sholland.org header.i=@sholland.org
+ header.b="FrRY45uz"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="ciM6GQug"
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+ by mailnew.nyi.internal (Postfix) with ESMTP id F2A215397;
+ Thu, 13 Feb 2020 01:11:49 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute5.internal (MEProxy); Thu, 13 Feb 2020 01:11:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+ from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding; s=fm1; bh=RIhl9ui4MUMvU
+ Z3Loqtrzp+BStII7YZIIhAd8D98BR8=; b=FrRY45uza9QIuvD5w+dJpQeXqiaCE
+ c7bfRtWec5BqDXWDuANN1aSRBkpbHpHDJZKhM1Flzqs5uBjN2Q0SJ9WNRdkFc41Y
+ udUV+f/RJhMESZsCQHfUcU5/uTi6IbdBtdmcesSn01yed2mGgyYWR9Ixd9kFxrPG
+ 85pgkcZbQi4CuByjj5Vk3CHigylPmknw0aRch5d4K+jIBiZbp6nPDPSd4C3b++Il
+ M/oSnqrVjVXjaf1jVWJ3RoZ+GKefTBmD+zv9/kS3MgbL0/HbprW+v/zgFbiWdKIv
+ c+l3xmS8oeA9Y1j4iFYBgu4d2D1F3c3o9hYP3VAQ02CtDg3nTj+OBIQ3Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-transfer-encoding:date:from
+ :in-reply-to:message-id:mime-version:references:subject:to
+ :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+ fm2; bh=RIhl9ui4MUMvUZ3Loqtrzp+BStII7YZIIhAd8D98BR8=; b=ciM6GQug
+ Iw0C7/qrmPtYFYeogOGkOV+LKE3UJfNnEt1Uf388Y2HrIJMW6+SaksdhcaSWZff8
+ pNt1cOsuMoHdBICa47pJIqRHTnMVRTLtexGKXoqkhJx9cy31Gr1KvE445cdsim+H
+ g8bVRCZyZERGBoiKMkpeVhdWjfLayrkXOBtEgG/B49mrYg0YQdIVVsXrw6HffNFB
+ Ux9xdwfwRrXZmuMj7bKQWSc6J1Mby9v4DW7F56kV3VClafRjgxtx2EWomunJ27U0
+ Sa6olSwdregwsItpviPrCd65uvl8akNKQ5TF8QEzFI73UWeHUhtK8IePGm6CPZ9X
+ HnJDMV1yS4LGtQ==
+X-ME-Sender: <xms:pehEXn4FgcqQV0QB2W75WmQRxBAjFFyio8WwtXUKnJR9vY-r5Hb0rA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedrieejgdelhecutefuodetggdotefrodftvf
+ curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+ uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+ fjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghl
+ ucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecukfhppe
+ ejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgr
+ mhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhg
+X-ME-Proxy: <xmx:pehEXqG_tkvVnAlLW0wt6CgoCmUugWiJDHEnxRaYpbfFENSenBvs1A>
+ <xmx:pehEXnCLaUgA2hBbPTjHKfpT_TV_WKMxoNjt3EZvgAb4u-aJkDxtrw>
+ <xmx:pehEXnycsg15BGcKBJuRm_5AwxKWgNZ7D9_cIAelNFC-0d-zPUnTZA>
+ <xmx:pehEXrF1pHEbmaet6mDBhsM37nEGOeXFFOdUuWC75nAHjOZfiOiV0A>
+Received: from titanium.stl.sholland.net
+ (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+ by mail.messagingengine.com (Postfix) with ESMTPA id 114593280067;
+ Thu, 13 Feb 2020 01:11:49 -0500 (EST)
+From: Samuel Holland <samuel@sholland.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Jonathan Corbet <corbet@lwn.net>, Jerome Brunet <jbrunet@baylibre.com>
+Date: Thu, 13 Feb 2020 00:11:44 -0600
+Message-Id: <20200213061147.29386-2-samuel@sholland.org>
 X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200213061147.29386-1-samuel@sholland.org>
+References: <20200213061147.29386-1-samuel@sholland.org>
 MIME-Version: 1.0
 X-Mailman-Approved-At: Thu, 13 Feb 2020 07:36:42 +0100
-Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: [alsa-devel] [PATCH] ALSA: usb-audio: Apply sample rate quirk for
-	Audioengine D1
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Samuel Holland <samuel@sholland.org>, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: [alsa-devel] [PATCH 1/4] ASoC: codec2codec: avoid
+	invalid/double-free of pcm runtime
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,41 +128,31 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The Audioengine D1 (0x2912:0x30c8) does support reading the sample rate,
-but it returns the rate in byte-reversed order.
+The PCM runtime was freed during PMU in the case that the event hook
+encountered an error. However, it is also unconditionally freed during
+PMD. Avoid a double-free by dropping the call to kfree in the PMU hook.
 
-When setting sampling rate, the driver produces these warning messages:
-[168840.944226] usb 3-2.2: current rate 4500480 is different from the runtime rate 44100
-[168854.930414] usb 3-2.2: current rate 8436480 is different from the runtime rate 48000
-[168905.185825] usb 3-2.1.2: current rate 30465 is different from the runtime rate 96000
-
-As can be seen from the hexadecimal conversion, the current rate read
-back is byte-reversed from the rate that was set.
-
-44100 == 0x00ac44, 4500480 == 0x44ac00
-48000 == 0x00bb80, 8436480 == 0x80bb00
-96000 == 0x017700,   30465 == 0x007701
-
-Rather than implementing a new quirk to reverse the order, just skip
-checking the rate to avoid spamming the log.
-
-Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+Fixes: a72706ed8208 ("ASoC: codec2codec: remove ephemeral variables")
+Cc: stable@vger.kernel.org
+Signed-off-by: Samuel Holland <samuel@sholland.org>
 ---
- sound/usb/quirks.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/soc-dapm.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 3a5242e383b2..7f558f4b4520 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1440,6 +1440,7 @@ bool snd_usb_get_sample_rate_quirk(struct snd_usb_audio *chip)
- 	case USB_ID(0x1395, 0x740a): /* Sennheiser DECT */
- 	case USB_ID(0x1901, 0x0191): /* GE B850V3 CP2114 audio interface */
- 	case USB_ID(0x21b4, 0x0081): /* AudioQuest DragonFly */
-+	case USB_ID(0x2912, 0x30c8): /* Audioengine D1 */
- 		return true;
- 	}
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index b6378f025836..935b5375ecc5 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -3888,9 +3888,6 @@ snd_soc_dai_link_event_pre_pmu(struct snd_soc_dapm_widget *w,
+ 	runtime->rate = params_rate(params);
  
+ out:
+-	if (ret < 0)
+-		kfree(runtime);
+-
+ 	kfree(params);
+ 	return ret;
+ }
 -- 
 2.24.1
 
