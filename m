@@ -2,67 +2,66 @@ Return-Path: <SRS0=Q+Fc=4C=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86E82C352A3
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 00:04:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9924C352A3
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 00:05:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0C1FC24654
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 00:04:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5898F24654
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 00:05:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uazKcAi9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0C1FC24654
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cu5ipQff"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5898F24654
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3E1361679;
-	Fri, 14 Feb 2020 01:03:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E1361679
+	by alsa0.perex.cz (Postfix) with ESMTPS id 11832167B;
+	Fri, 14 Feb 2020 01:04:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 11832167B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581638672;
-	bh=KxRjEKN6s+fx4mRnPFOREFHmqm44atnOTf33/Jtv0ls=;
+	s=default; t=1581638726;
+	bh=tUHFit5W2mX+Lxywk3OYGiIKQyt7PFaEuTQ689m5+wo=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uazKcAi9JUWchbME7FvUiWIGRR/xtMQcbwmo2BzX2RpYiOE/o7r0cG0/5p1HliB8F
-	 ZuCL7BBQbC/OZfF4i5HWjDHZBO6ynpcRDCRnhWqSvEcrb4oTTvT2wA97RZZUfs157F
-	 2XXr1CnwEZl4cVi82ojkPA/xp9muSBifcN3SkaTE=
+	b=cu5ipQffY3+GXlbf4HUoL63reQ5J2xBqhRDPA4CcvhGsH/K0NB+Be+DdSoZSQIOgn
+	 Nb1VbboQE3aRF8zk2QCSSvBhSqCdy8zQmJ0EFcLn63WoX++aUz4Ba7x16duMNsugkJ
+	 3VsDJAbIq9RCdWcs6mz0bkRBOJUHHlGjwFUP0q7E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BDEE4F800F0;
-	Fri, 14 Feb 2020 01:03:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2F9D6F80147;
+	Fri, 14 Feb 2020 01:04:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 41EB3F80138; Fri, 14 Feb 2020 01:03:40 +0100 (CET)
+ id B499FF801DA; Fri, 14 Feb 2020 01:04:16 +0100 (CET)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 5FEDEF80138
- for <alsa-devel@alsa-project.org>; Fri, 14 Feb 2020 01:03:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5FEDEF80138
-Date: 14 Feb 2020 09:03:31 +0900
-X-IronPort-AV: E=Sophos;i="5.70,438,1574089200"; d="scan'208";a="39008549"
+ by alsa1.perex.cz (Postfix) with ESMTP id 39232F80146
+ for <alsa-devel@alsa-project.org>; Fri, 14 Feb 2020 01:04:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39232F80146
+Date: 14 Feb 2020 09:04:10 +0900
+X-IronPort-AV: E=Sophos;i="5.70,438,1574089200"; d="scan'208";a="39008622"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 14 Feb 2020 09:03:31 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 14 Feb 2020 09:04:10 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 0AFF24124A91;
- Fri, 14 Feb 2020 09:03:31 +0900 (JST)
-Message-ID: <87zhdmyr05.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id AAAAE412450B;
+ Fri, 14 Feb 2020 09:04:10 +0900 (JST)
+Message-ID: <87y2t6yqz1.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Rob Herring <robh@kernel.org>
-In-Reply-To: <20200213205230.GA13640@bogus>
-References: <87tv3vqc93.wl-kuninori.morimoto.gx@renesas.com>
- <20200213205230.GA13640@bogus>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <3ea74049-c07a-bfed-204b-96f6bd9d9032@linux.intel.com>
+References: <87blq3ru4w.wl-kuninori.morimoto.gx@renesas.com>
+ <871rqzru2y.wl-kuninori.morimoto.gx@renesas.com>
+ <3ea74049-c07a-bfed-204b-96f6bd9d9032@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH] ASoC: dt-bindings: renesas,
-	rsnd: switch to yaml base Documentation
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [PATCH 07/10] ASoC: soc-pcm: add
+	snd_soc_dpcm_can_be() and remove duplicate code
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,35 +80,31 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Rob
+Hi Pierre-Louis
 
-> > This patch switches from .txt base to .yaml base Document.
-> > It is still keeping detail explanations at .txt
-> > 
-> > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> > ---
-> >  .../bindings/sound/renesas,rsnd.txt           | 518 -----------------
-> >  .../bindings/sound/renesas,rsnd.yaml          | 528 ++++++++++++++++++
-> >  2 files changed, 528 insertions(+), 518 deletions(-)
-> >  create mode 100644 Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
-> > 
+> > +int snd_soc_dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
+> > +		struct snd_soc_pcm_runtime *be, int stream)
+> > +{
+> > +	enum snd_soc_dpcm_state state[] = {
+> > +		SND_SOC_DPCM_STATE_START,
+> > +		SND_SOC_DPCM_STATE_PAUSED,
+> > +		SND_SOC_DPCM_STATE_SUSPEND,
+> > +	};
 > 
-> My bot found errors running 'make dt_binding_check' on your patch:
+> should this be const?
 > 
-> Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.6/dist-packages/dtschema/schemas/sound/simple-card.yaml'
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml: patternProperties:^rcar_sound,src$:patternProperties:src-.: 'if' is not one of ['type', 'description', 'dependencies', 'properties', 'patternProperties', 'additionalProperties', 'unevaluatedProperties', 'deprecated', 'required', 'allOf', 'anyOf', 'oneOf', '$ref']
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml: patternProperties:^rcar_sound,src$:patternProperties:src-.: 'then' is not one of ['type', 'description', 'dependencies', 'properties', 'patternProperties', 'additionalProperties', 'unevaluatedProperties', 'deprecated', 'required', 'allOf', 'anyOf', 'oneOf', '$ref']
-> Documentation/devicetree/bindings/Makefile:12: recipe for target 'Documentation/devicetree/bindings/sound/renesas,rsnd.example.dts' failed
-> make[1]: *** [Documentation/devicetree/bindings/sound/renesas,rsnd.example.dts] Error 255
-> Makefile:1263: recipe for target 'dt_binding_check' failed
-> make: *** [dt_binding_check] Error 2
 > 
-> See https://patchwork.ozlabs.org/patch/1237280
-> Please check and re-submit.
+> > +	enum snd_soc_dpcm_state state[] = {
+> > +		SND_SOC_DPCM_STATE_START,
+> > +		SND_SOC_DPCM_STATE_PAUSED,
+> > +		SND_SOC_DPCM_STATE_SUSPEND,
+> > +		SND_SOC_DPCM_STATE_PREPARE,
+> > +	};
+> 
+> const as well?
 
-Hmm...
-OK, Thank you.
-I will re-check and re-post it
+Yeah, indeed.
+Thanks. Will fix in v2
 
 Thank you for your help !!
 Best regards
