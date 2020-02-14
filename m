@@ -2,70 +2,83 @@ Return-Path: <SRS0=Q+Fc=4C=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 344A4C2BA83
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 12:50:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E209C2BA83
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 13:05:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B4FE42086A
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 12:50:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8F77C2168B
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 13:05:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="N8I1/DVL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B4FE42086A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="je6acUxo";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="PlL/l3Z7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F77C2168B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0F276839;
-	Fri, 14 Feb 2020 13:49:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F276839
+	by alsa0.perex.cz (Postfix) with ESMTPS id ED66E83B;
+	Fri, 14 Feb 2020 14:04:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ED66E83B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581684620;
-	bh=I+Mij9FPWU4D4lHMlj4OTdbj6LmykjbbKVYi0sIkfHU=;
+	s=default; t=1581685531;
+	bh=7QY7vBOE0bgML9XXjR5buyq+i0Gj4OOu/ohz0xJ55xw=;
 	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=N8I1/DVL7mNq1Oo5zIctXTj1B92Fxnb2udInFGS9ndjbwB/Jvb1fO1tiC1XxOu0om
-	 mI5g4Yj5g6HAUynfh02xbZ9Y5gl7pxPGu05QDZcGLlKEbQU+El0upLwoSub6ovFwOw
-	 Vo08yu9DOFKC86otb0JaslfWNPf5g3a+UJVARVPM=
+	b=je6acUxopjz7vhkYgkxaWx4MFj1mqtwa7DpE3Wm1PGPCYAcZ5YNZbQPtYdHyeaqTb
+	 qVjYWDcSs4Bcyfev+MKgtFsmngyUQtZuTAkLhAKnLt1GaLpdjh1+3HtP/dB93BWxJg
+	 bKTfc+asabn+gtEgz8ae+iCiK7lZHndUcYbuxfaM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 818CBF80138;
-	Fri, 14 Feb 2020 13:49:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 48266F8013E;
+	Fri, 14 Feb 2020 14:04:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 325F3F8014F; Fri, 14 Feb 2020 13:49:27 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 9CB38F80138
- for <alsa-devel@alsa-project.org>; Fri, 14 Feb 2020 13:49:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9CB38F80138
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9BF1E1FB;
- Fri, 14 Feb 2020 04:49:22 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1E29E3F68F;
- Fri, 14 Feb 2020 04:49:21 -0800 (PST)
-Date: Fri, 14 Feb 2020 12:49:20 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Message-ID: <20200214124920.GH4827@sirena.org.uk>
+ id 82FCFF8014F; Fri, 14 Feb 2020 14:04:38 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 20414F80138
+ for <alsa-devel@alsa-project.org>; Fri, 14 Feb 2020 14:04:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 20414F80138
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="PlL/l3Z7"
+Received: from earth.universe (dyndsl-095-033-170-229.ewe-ip-backbone.de
+ [95.33.170.229])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 021942168B;
+ Fri, 14 Feb 2020 13:04:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1581685471;
+ bh=Whpmh17W3kSxzCbioGOu19PQoaptQmnJO000zV6cl/s=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=PlL/l3Z7kdOoZpVyGq4Roudbx0tJgxPrPX2KIHigFeXx4RIrrrT+QNcPyJFJjicgb
+ qxc27FG+O+7IGNWpHE0t33kVWRXs4y3BEylH+Lsal/AqdD/0i59RTOC4sTKBI9292O
+ X0ddPyfqq3ku12pGk9j3YuYrLx9AJfVNmaYFZ4T0=
+Received: by earth.universe (Postfix, from userid 1000)
+ id A5A543C0C83; Fri, 14 Feb 2020 14:04:28 +0100 (CET)
+Date: Fri, 14 Feb 2020 14:04:28 +0100
+From: Sebastian Reichel <sre@kernel.org>
+To: Tony Lindgren <tony@atomide.com>
+Message-ID: <20200214130428.gkhmr55ptmi2bh2x@earth.universe>
 References: <20200211171645.41990-1-tony@atomide.com>
  <cd46c6ec-80e3-332f-4922-e58a3acbfc61@ti.com>
  <20200212143543.GI64767@atomide.com>
- <346dfd2b-23f8-87e0-6f45-27a5099b1066@ti.com>
+ <20200214003452.xuadnylj2udqyljs@earth.universe>
+ <20200214013454.GX64767@atomide.com>
 MIME-Version: 1.0
-In-Reply-To: <346dfd2b-23f8-87e0-6f45-27a5099b1066@ti.com>
-X-Cookie: Shipping not included.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200214013454.GX64767@atomide.com>
 Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Aaro Koskinen <aaro.koskinen@iki.fi>, Tony Lindgren <tony@atomide.com>,
- linux-kernel@vger.kernel.org, Merlijn Wajer <merlijn@wizzup.org>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Pavel Machek <pavel@ucw.cz>, Sebastian Reichel <sre@kernel.org>,
+ Aaro Koskinen <aaro.koskinen@iki.fi>, linux-kernel@vger.kernel.org,
+ Merlijn Wajer <merlijn@wizzup.org>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>,
+ Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
  "Arthur D ." <spinal.by@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 Subject: Re: [alsa-devel] [PATCH] ASoC: ti: Allocate dais dynamically for
  TDM and audio graph card
@@ -81,52 +94,180 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8774967020732926033=="
+Content-Type: multipart/mixed; boundary="===============7443330097114439882=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---===============8774967020732926033==
+--===============7443330097114439882==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="bpVaumkpfGNUagdU"
+	protocol="application/pgp-signature"; boundary="grqobqlnl2f7lvmu"
 Content-Disposition: inline
 
 
---bpVaumkpfGNUagdU
+--grqobqlnl2f7lvmu
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 14, 2020 at 02:41:30PM +0200, Peter Ujfalusi wrote:
-> On 12/02/2020 16.35, Tony Lindgren wrote:
+Hi,
 
-> > Oops, that's not good. So should we just keep the old naming if there's
-> > only one endpoint?
+On Thu, Feb 13, 2020 at 05:34:54PM -0800, Tony Lindgren wrote:
+> * Sebastian Reichel <sre@kernel.org> [200214 00:35]:
+> > On Wed, Feb 12, 2020 at 06:35:43AM -0800, Tony Lindgren wrote:
+> > > Yes this should follow the audio-graph-card.txt example. We end up wi=
+th
+> > > mcbsp3 dts node as below on droid4:
+> > >=20
+> > > &mcbsp3 {
+> > >         #sound-dai-cells =3D <0>;
+> > >         pinctrl-names =3D "default";
+> > >         pinctrl-0 =3D <&mcbsp3_pins>;
+> > >         status =3D "okay";
+> > >=20
+> > >         ports {
+> > >                 mcbsp3_port: port@0 {
+> > >                         #address-cells =3D <1>;
+> > >                         #size-cells =3D <0>;
+> > >=20
+> > >                         cpu_dai3: endpoint@0 {
+> >=20
+> > cpu_dai3_cpcap
+> >=20
+> > >                                 reg =3D <0>;
+> > >                                 dai-format =3D "dsp_a";
+> > >                                 frame-master =3D <&cpcap_audio_codec1=
+>;
+> > >                                 bitclock-master =3D <&cpcap_audio_cod=
+ec1>;
+> > >                                 remote-endpoint =3D <&cpcap_audio_cod=
+ec1>;
+> > >                         };
+> > >=20
+> > >                         cpu_dai_mdm: endpoint@1 {
+> >=20
+> > cpu_dai3_mdm
+>=20
+> OK
+>=20
+> > >                                 reg =3D <1>;
+> > >                                 dai-format =3D "dsp_a";
+> > >                                 frame-master =3D <&cpcap_audio_codec1=
+>;
+> > >                                 bitclock-master =3D <&cpcap_audio_cod=
+ec1>;
+> > >                                 remote-endpoint =3D <&mot_mdm6600_aud=
+io_codec0>;
+> > >                         };
+> > >                 };
+> > >         };
+> > > };
+> > >=20
+> > > That is pretty much the same as the 'Multi DAI with DPCM' example, wi=
+th
+> > > dne dai, and multiple endpoints. I think we still have just one port
+> > > for one i2s transport on the mcbsp :)
+> > >=20
+> > > Does the above look as what you would expect based on the binding?
+> >=20
+> > I haven't had a look at this for quite some time. I suppose the
+> > cpcap voice DAI and the modem will also have two endpoints? So
+> > once the BT support is added it will looks like this [simplified]?
+>=20
+> Well it will be even simpler, no need for extra endpoints at
+> the codecs, see below.
+> =20
+> > &mcbsp3 {
+> >     ports {
+> >         port@0 {
+> >             cpu_dai3_cpcap: endpoint@0 {};
+> >             cpu_dai3_modem: endpoint@1 {};
+> >             cpu_dai3_bt: endpoint@2 {};
+> >         };
+> >     };
+> > };
+>=20
+> But yes, bluetooth would be just added as above under mcbsp3.
+>=20
+[...]
+>
+> Then the modem codec looks like this:
+>=20
+> mot_mdm6600_audio: audio-codec {
+> 	#address-cells =3D <1>;
+> 	#size-cells =3D <0>;
+> 	#sound-dai-cells =3D <1>;
+>=20
+> 	port@0 {
+> 		mot_mdm6600_audio_codec0: endpoint {
+> 			remote-endpoint =3D <&cpu_dai_mdm>;
+> 		};
+> 	};
+> };
+>=20
+> > &bluetooth {
+> >     ports {
+> >         port@0 {
+> >             bt_dai_cpu: endpoint@0 {};
+> >             bt_dai_modem: endpoint@1 {};
+> >             bt_dai_cpcap: endpoint@2 {};
+> >         };
+> >     };
+> > };
+>=20
+> And bluetooth would be similar to cpcap_audio and mot_mdm6600_audio
+> above.
 
-> That's an option, yes, if we really need extra dummy McBSP DAIs at all,
-> again, let's hear from Morimoto-san or Mark.
+My understanding is, that CPU is not involved for calls (except for
+setting up cpcap registers correctly). Basically McBSP3 should
+remain idle for a call and data goes directly from modem to cpcap.
+The same should work for modem <-> BT, except that CPCAP seems to
+always provide the clock. That would imply a direct link between
+modem and codec / BT?
 
-We really shouldn't need dummy DAIs at all I think, if we do it feels
-like there's a problem.  It's quite possible that there is actually a
-problem here though...
+> My guess is that only cpcap registers and clock rate needs to be
+> changed for bluetooth audio BTW, so if somebody havs a bluetooth
+> headset just do the following in Android:
+>=20
+> # cpcaprw --all > /tmp/before
+> configure bluetooth headset for audio in android and start
+> playing some music or make a phone call
+> ...
+> # cpcaprw --all > /tmp/after
+> stop playing music or phone call
+> ...
+> diff -u /tmp/before /tmp/after
+>=20
+> The registers will be different for a bluetooth phone call and
+> playing music.
 
---bpVaumkpfGNUagdU
+I can provider register values once I find some time.
+
+-- Sebastian
+
+--grqobqlnl2f7lvmu
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5Gl08ACgkQJNaLcl1U
-h9AGSgf/WC1rD+oEYoImv2NX+F1kZLeDZ1n+50cMMhVxzUM8Wc/oD6BZAF7BSo5I
-Pd0iBQQd9PStwHOvnWEdTzohUmiK/7iRVPKYYYpv47/9g4v4tT7BDe7tNRNolBGR
-xYV/sJiD+U0DlpSUOYuwd4xxQVLAcEXUp7SSjvHAoYEiJlZ055K1opwl3avKwYR0
-7d2vQr0nQrc9wD49QxxD9fGMhv/o+sVx6rpkayuiOpcE3QRxSJIgxnVdPwlKSjxU
-YIe91JG0GI4BGwWy3fi21D4tiMNLIPrwubI91PuPhBFaUkJVSW+8njfpLK+SrHrJ
-uaRh/PD/nMhNE7bNAr7JbguqB70QRA==
-=s0ru
+iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl5GmtMACgkQ2O7X88g7
++poqlxAAoWvnDgIQ89tEJ3QSMvEfczJKLhj/o5/V9vMZaFmtaPu/FfV1uSgVl62E
+u7yH8XYBz/SFzkspyURXuBR0BVN8HYqgIDT7sMGfF56SqWR31aUgEPQP2W1SVZeR
+W7x2NcPDRBpRciEqiwEWWp7ikRd5XWvDOwFL6moH1fNhHK3ckznQzC4AAg1FvAdv
+9YYdYfq+HV+TXGlGZHS8NV0+a+jzVUDrHY4FN/WaHBFnfoPMzZXicdtWv5gYcS8A
+5Iq1Rm28VX/r0aOsk6UaPOeKkynjHfueQhPHnlao5SRsaA4dLJG4OXIkJdbLs0xw
+Bt9AumrNmMpfMh5l4jmNezh+EBHARY0pgnzptPga/cdaCjIFMBwsSVHtkJmNT5Z1
+iXujx+GP838sqdnKE141bo2fePlZ6cn4qY5kWsN4jf8BkxNKexP8Qz8UVc3820rn
+WFhzRdDVLJLBZga464CWaYAdUxnv52TcfmDyETUeGs4CQVcM5a3s00Xn+U70cFvd
+oz4TD7OsXcyrhQgisbrUpQ3rhLVr4zzn2Bj9/3jOodJezPXp/TJSaWnZsEwRH3jg
+tyCsODn49aYuJEc6lGLwH8edtbJyU0eApVzQ5XCA3pwmcRZzA34sefpYyw791kdM
+8H0dpVRfaBxg8VBFhb437qUMAukYjN9rj8MuzPi/rdDrCOKopZ0=
+=s63e
 -----END PGP SIGNATURE-----
 
---bpVaumkpfGNUagdU--
+--grqobqlnl2f7lvmu--
 
---===============8774967020732926033==
+--===============7443330097114439882==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -137,4 +278,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---===============8774967020732926033==--
+--===============7443330097114439882==--
