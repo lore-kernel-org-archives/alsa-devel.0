@@ -2,75 +2,91 @@ Return-Path: <SRS0=Q+Fc=4C=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C5043C2BA83
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 18:40:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D12F3C2BA83
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 18:46:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4197B20848
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 18:40:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4326E20848
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 18:46:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RVtqbJzI";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="Ro4Uwjow"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4197B20848
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GCBIoUSL";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="KqpYxaTL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4326E20848
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A0EAD165D;
-	Fri, 14 Feb 2020 19:39:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A0EAD165D
+	by alsa0.perex.cz (Postfix) with ESMTPS id A6DE31665;
+	Fri, 14 Feb 2020 19:45:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6DE31665
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581705599;
-	bh=sc6PdmMA5Saj9qv5emOsCARJeAu4FDkY17g8uRd+Gkg=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1581705975;
+	bh=WjCz1KugVUMCrmz82ITagvOChUDYzUbfymnOFIfBobI=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RVtqbJzIbIA1Ujbm2DQjvb/Em1c6n6b3fuZK6rJrwqBMy9iv8x+p4U4wiS5wCZHAB
-	 cmJyyf8vWVTjLk0P+A3rLOEkLhCY2w8wYNh8eYXa51uo74vhhXdRN3MVNcu64aZ3zJ
-	 4Y+c/xjnKDQNikcFdPzGufaLFCfFK8465AaVa/5I=
+	b=GCBIoUSLXjbr+YKaCwZr0M5h/nj7sWHfsSKZk7ebqtP7mulfTXRWbwl2cLd/pCPjK
+	 6/yvvbCYVJImmtqgyehUkfHFTT6ZlS4DEsyzAvshA2yq0v/FmUnAePN6YlXEWny0io
+	 dNmtIUsfAAsX35BecwmIiJFzLXcLAuthc6/pxvKk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F20C9F800F0;
-	Fri, 14 Feb 2020 19:39:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EAAE2F8013E;
+	Fri, 14 Feb 2020 19:45:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 43B7BF800F0; Fri, 14 Feb 2020 19:39:07 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 50B94F800F0
- for <alsa-devel@alsa-project.org>; Fri, 14 Feb 2020 19:39:03 +0100 (CET)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 16289A003F;
- Fri, 14 Feb 2020 19:39:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 16289A003F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1581705543; bh=xySUiXr4rHjXcQOaU/vhwmZ3YCvxxvXZAGsuLwcQwQg=;
- h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
- b=Ro4UwjowhQ7bjlS0+MEbq3mochGu8ME0759k5omB/q9RqKje+g9HpFsUo+jHFFu1V
- NceqallSK7Nrt82kVFM2u/nKKXh6rF+5MBiaC8Y1sNbF5QXzyUVDpIMQ3qUyftnZPG
- JcDhWUzP9Z8WedKnHXGtpm/8b4Cf1msyUQP/91Ec=
-Received: from p50.perex-int.cz (unknown [192.168.100.94])
+ id A718BF8014F; Fri, 14 Feb 2020 19:45:23 +0100 (CET)
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com
+ [IPv6:2607:f8b0:4864:20::743])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Fri, 14 Feb 2020 19:38:57 +0100 (CET)
-To: Curtis Malainey <cujomalainey@google.com>,
- ALSA development <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.com>
-References: <CAOReqxhbvG03QvqkbjnGB8w5cM4WOK4qeZ+bh0apNna7i3ZimA@mail.gmail.com>
-From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <23daf96d-f854-f01f-bc4e-2afc47299c0a@perex.cz>
-Date: Fri, 14 Feb 2020 19:38:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id CE7AFF80086
+ for <alsa-devel@alsa-project.org>; Fri, 14 Feb 2020 19:45:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE7AFF80086
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
+ header.b="KqpYxaTL"
+Received: by mail-qk1-x743.google.com with SMTP id v2so10206620qkj.2
+ for <alsa-devel@alsa-project.org>; Fri, 14 Feb 2020 10:45:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=Of8Awt9rEqyy32r52fmiKSVswu4h8kjSfTeTq0F8J4E=;
+ b=KqpYxaTLsAdtqFx55QtzvTbe4EEZjE0rIX2YU2htiloGVOq4C6XT9VE4mil2to2AQm
+ wZKQIWsfzfIr8pu3GH00kxGao+y9Y0kUOY8LKoC1dtn9w1/WCs6DX17omnV2qmo/mgb9
+ pH5zyyd9CqWQgDOJdwBcoAQJjMPv7oGrkRmRbqKiEcKfa/tia4/fielGQFo5mlNdd3zs
+ MslMHHjwr38O6dlYSntivcQX8Z/9Vt2U2LqX/sw79Svgm3C9Hxo0FiVb2rkCXuz8WxQA
+ SAdC0p73QmYMwDTEN8N058kiiGFs/wTJST8o2j/HefuS+Z5k8L7oHhUqMpzejah4403D
+ Szlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=Of8Awt9rEqyy32r52fmiKSVswu4h8kjSfTeTq0F8J4E=;
+ b=tjnxnhRvnVZi9ECGig8z8kWD9qw0a6Y6v9+LAkPXADPYPGs/ynUjriWMpPlcusvEVd
+ 7TW4PyimyuNh/9A7HlLnI8fRwuy3Idvc4dRPZjSgWERMZWa5QPGaadWIf5sqCDNMdntC
+ wqEQJ8ehddyxD/CVWrboKLCvZ9CVaMC7xx7aT0Uqz09j2LIalAwd4z1gT/FIXRaGVndB
+ 7+KfwMeoV//1V2T51fIdO73A1h33BlqRK2jVzbq1g0/u8M4ycmM/WUQ7LY/zfGnqSrBO
+ 3d+RnlkYnRdfgoCr1KGPsBPlnfjNnrw5gJ4f85XGFl+lqQrmJPSx+D3c6v3vYcoCG4mF
+ QmCw==
+X-Gm-Message-State: APjAAAWCSfDGAYxIBuoVLV2TrLlMpoUwhIe1XYjsJCZSOqc+Ut26KTJj
+ EasBvfVGe4g33BiQrhChh5jPtxSeWXDma2c/hveIOQ==
+X-Google-Smtp-Source: APXvYqxGmPNWxuQXZFZCy72dkVbRKbbt7Y9RLlLF9LjdVlwHZ3zO/WBtLuxQ+6RxDjDZioBVsDs1UafTOvbvlu1Ewq8=
+X-Received: by 2002:a37:a78d:: with SMTP id q135mr3757202qke.158.1581705917366; 
+ Fri, 14 Feb 2020 10:45:17 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAOReqxhbvG03QvqkbjnGB8w5cM4WOK4qeZ+bh0apNna7i3ZimA@mail.gmail.com>
-Content-Language: en-US
-Cc: Dylan Reid <dgreid@google.com>, Jimmy Cheng-Yi Chiang <cychiang@google.com>
+References: <CAOReqxhbvG03QvqkbjnGB8w5cM4WOK4qeZ+bh0apNna7i3ZimA@mail.gmail.com>
+ <23daf96d-f854-f01f-bc4e-2afc47299c0a@perex.cz>
+In-Reply-To: <23daf96d-f854-f01f-bc4e-2afc47299c0a@perex.cz>
+From: Curtis Malainey <cujomalainey@google.com>
+Date: Fri, 14 Feb 2020 10:45:06 -0800
+Message-ID: <CAOReqxgK3BPnm3ds0fvMjc4q0mUnDgK5E1X2tV2nXz3uYwymLA@mail.gmail.com>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>,
+ Dylan Reid <dgreid@google.com>, Takashi Iwai <tiwai@suse.com>,
+ Jimmy Cheng-Yi Chiang <cychiang@google.com>
 Subject: Re: [alsa-devel] alsa-ucm-conf via portage on arm
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -84,34 +100,40 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 14. 02. 20 v 19:23 Curtis Malainey napsal(a):
-> Hello Takashi and Jaroslav,
-> 
-> There appears to be a upstream package issue for alsa-ucm-conf in that
-> portage seems to have it restricted to x86 and amd64 platforms. Given
-> the nature of the ucms I figure this is an error and was hoping you
-> know who to speak to in order to resolve this. If this isn't an error
-> what can I do to help get the repo to state in which it is supported
-> on arm/arm64?
-> 
-> See https://gitweb.gentoo.org/repo/gentoo.git/commit/media-libs/alsa-ucm-conf/alsa-ucm-conf-1.2.1.2.ebuild?id=dd3e0570e2465639431709bce0410b787d312bbe
-> 
-> Curtis
+Not yet, that was going to be my follow up. I just wanted to make sure
+there is not ALSA restriction first. I assumed there wasn't but
+figured better safe than sorry. I will follow up with Lars.
 
-It's Gentoo specific and you see signed-off-by in this commit.
-
-Did you contact this person (Lars Wendler) from Gentoo?
-
-					Jaroslav
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+On Fri, Feb 14, 2020 at 10:39 AM Jaroslav Kysela <perex@perex.cz> wrote:
+>
+> Dne 14. 02. 20 v 19:23 Curtis Malainey napsal(a):
+> > Hello Takashi and Jaroslav,
+> >
+> > There appears to be a upstream package issue for alsa-ucm-conf in that
+> > portage seems to have it restricted to x86 and amd64 platforms. Given
+> > the nature of the ucms I figure this is an error and was hoping you
+> > know who to speak to in order to resolve this. If this isn't an error
+> > what can I do to help get the repo to state in which it is supported
+> > on arm/arm64?
+> >
+> > See https://gitweb.gentoo.org/repo/gentoo.git/commit/media-libs/alsa-ucm-conf/alsa-ucm-conf-1.2.1.2.ebuild?id=dd3e0570e2465639431709bce0410b787d312bbe
+> >
+> > Curtis
+>
+> It's Gentoo specific and you see signed-off-by in this commit.
+>
+> Did you contact this person (Lars Wendler) from Gentoo?
+>
+>                                         Jaroslav
+>
+> --
+> Jaroslav Kysela <perex@perex.cz>
+> Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
