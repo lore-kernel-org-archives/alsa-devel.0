@@ -2,82 +2,81 @@ Return-Path: <SRS0=Q+Fc=4C=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DEACEC3B1A1
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 16:03:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 52413C3B1A2
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 16:04:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6F74D2468F
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 16:03:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D52AA222C2
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 16:04:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UCfByuJg";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="u6xLzULi"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6F74D2468F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="A+NT9Sqv";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="AL/vJync"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D52AA222C2
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C82F61685;
-	Fri, 14 Feb 2020 17:03:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C82F61685
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3BB9816AB;
+	Fri, 14 Feb 2020 17:03:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BB9816AB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581696232;
-	bh=VVzQXURXo+DEVdNT3muzPx4wU8AXPWxvy1oQq6hnvJk=;
+	s=default; t=1581696270;
+	bh=c4amDoZ2NuUik0nmGpFRDGTXKs4dwsJTgYFE7dmu2aM=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UCfByuJgxwDk+h4PDvLKwprb5D2NWVFjLVU8lAjiYY06Ji4v7iiHaA6fWKPicipcV
-	 cp4gU5C28Q+mbbgcmhRCc+WZ21comABWaEs/f9avLtiyb4vy6zqsq/bcUDfUIKpee2
-	 ZvMWokf3MAnWFcoz2FZTpqsBQkOR0TsyK40yV6v4=
-Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DA8E7F802EB;
-	Fri, 14 Feb 2020 16:57:48 +0100 (CET)
+	b=A+NT9SqvA2zB10eoDXlBl0LjRL4Wg5+DecFK8MT6PIBNnIUjR7zxmc61fuCZHAtCf
+	 NN29nIaPKEM4ZZQWZuuVQOP4NxAi+m+3pk9O/MKOPlwVQXl8oilqhflE5yRY9BjDSK
+	 uxeYldOKoTcDbQMf3JUlr3MRXryCKJmrxr01QiQc=
+Received: from vmi242170.contaboserver.net (localhost.localdomain [127.0.0.1])
+	by alsa1.perex.cz (Postfix) with ESMTP id 1FBC8F80279;
+	Fri, 14 Feb 2020 16:58:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6F093F802E8; Fri, 14 Feb 2020 16:57:43 +0100 (CET)
+ id 4DF15F802A0; Fri, 14 Feb 2020 16:58:07 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 730F3F8028F
- for <alsa-devel@alsa-project.org>; Fri, 14 Feb 2020 16:57:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 730F3F8028F
+ by alsa1.perex.cz (Postfix) with ESMTPS id F22AAF80290
+ for <alsa-devel@alsa-project.org>; Fri, 14 Feb 2020 16:58:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F22AAF80290
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="u6xLzULi"
+ header.b="AL/vJync"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 1060A2082F;
- Fri, 14 Feb 2020 15:57:37 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 93E2124680;
+ Fri, 14 Feb 2020 15:58:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1581695858;
- bh=Vu0ngAKoMRzMfbfs/lL5eeluUpFL9hTnSNWHivquHeU=;
+ s=default; t=1581695882;
+ bh=Q1AXNF7/YBceLKM0t6wsQ+e5+2pz9pwHhqbAUEzue1w=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=u6xLzULiRYUthKnPuK7ZlpYC0yqa1HfegvviMtmQ0VvhnuvOd5x0KQTeDqpVhgD5F
- AFv18IuSWvlZSeCNW9mZc07U9prFNSt036z5vdVcjSY8mQd+pWXw041NzKZRIoOqMn
- PBifk2229IOccr7BywUAFAhWqbQrhbXDUyrPfSSE=
+ b=AL/vJync2GqnR2ejhC1lB5wKVvbI9SaHCJNDLj/4Y+w7iMJB73ut7Hj6X7n7abB5H
+ ZYnHDALoDMgUiMU0vnW3CN64ukeynFZM2WEeCk0GT9NnwyRbsz3l2INfk2CJQFmoag
+ /JssZf3Y9pi/Hlt/mgpiVq8C5zPS8IabAILYWQi0=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Date: Fri, 14 Feb 2020 10:46:38 -0500
-Message-Id: <20200214154854.6746-406-sashal@kernel.org>
+Date: Fri, 14 Feb 2020 10:46:58 -0500
+Message-Id: <20200214154854.6746-426-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200214154854.6746-1-sashal@kernel.org>
 References: <20200214154854.6746-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-Cc: Sasha Levin <sashal@kernel.org>,
- Cezary Rojewski <cezary.rojewski@intel.com>, Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org
-Subject: [alsa-devel] [PATCH AUTOSEL 5.5 406/542] ASoC: SOF: Intel: hda: Fix
-	SKL dai count
+Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+ alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Subject: [alsa-devel] [PATCH AUTOSEL 5.5 426/542] ALSA: hda/hdmi - add retry
+	logic to parse_intel_hdmi()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,37 +94,50 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Cezary Rojewski <cezary.rojewski@intel.com>
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 
-[ Upstream commit a6947c9d86bcfd61b758b5693eba58defe7fd2ae ]
+[ Upstream commit 2928fa0a97ebb9549cb877fdc99aed9b95438c3a ]
 
-With fourth pin added for iDisp for skl_dai, update SOF_SKL_DAI_NUM to
-account for the change. Without this, dais from the bottom of the list
-are skipped. In current state that's the case for 'Alt Analog CPU DAI'.
+The initial snd_hda_get_sub_node() can fail on certain
+devices (e.g. some Chromebook models using Intel GLK).
+The failure rate is very low, but as this is is part of
+the probe process, end-user impact is high.
 
-Fixes: ac42b142cd76 ("ASoC: SOF: Intel: hda: Add iDisp4 DAI")
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200113114054.9716-1-cezary.rojewski@intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+In observed cases, related hardware status registers have
+expected values, but the node query still fails. Retrying
+the node query does seem to help, so fix the problem by
+adding retry logic to the query. This does not impact
+non-Intel platforms.
+
+BugLink: https://github.com/thesofproject/linux/issues/1642
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
+Link: https://lore.kernel.org/r/20200120160117.29130-4-kai.vehmanen@linux.intel.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sof/intel/hda.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/hda/patch_hdmi.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index 63df888dddb6c..de0115294c74e 100644
---- a/sound/soc/sof/intel/hda.h
-+++ b/sound/soc/sof/intel/hda.h
-@@ -348,7 +348,7 @@
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index bde50414029d9..4f195c7d966a9 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -2862,9 +2862,12 @@ static int alloc_intel_hdmi(struct hda_codec *codec)
+ /* parse and post-process for Intel codecs */
+ static int parse_intel_hdmi(struct hda_codec *codec)
+ {
+-	int err;
++	int err, retries = 3;
++
++	do {
++		err = hdmi_parse_codec(codec);
++	} while (err < 0 && retries--);
  
- /* Number of DAIs */
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
--#define SOF_SKL_NUM_DAIS		14
-+#define SOF_SKL_NUM_DAIS		15
- #else
- #define SOF_SKL_NUM_DAIS		8
- #endif
+-	err = hdmi_parse_codec(codec);
+ 	if (err < 0) {
+ 		generic_spec_free(codec);
+ 		return err;
 -- 
 2.20.1
 
