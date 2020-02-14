@@ -6,62 +6,62 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 31A43C352A3
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 00:08:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5F81C352A3
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 00:09:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A79102073C
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 00:08:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6F07A2073C
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 00:09:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KUSBQoGP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A79102073C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ksn/lEEa"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6F07A2073C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 192D81679;
-	Fri, 14 Feb 2020 01:07:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 192D81679
+	by alsa0.perex.cz (Postfix) with ESMTPS id D35031685;
+	Fri, 14 Feb 2020 01:08:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D35031685
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581638897;
-	bh=VF8ZRmApMRn5IBtK7WX85dpiMgi7nFBT3HACf8qCzDw=;
+	s=default; t=1581638970;
+	bh=3nNfR71VmTVrGEFy5XGae2VY2rtgGo8GJBmBFO3qiXg=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KUSBQoGP6lkvQFrEBrCYMpmszaHA01eqXDhlsBMFs/eEnztNZ8GEFleJ9t3I0u7H1
-	 LSsH3IM8MCVp0uCA4/mbOAAud+RpYGMGeolB58t+s6WS/p/yiKIVZhnj6s8dUypZ7u
-	 L0dZgWjLu6qhKNGgriA8Rv2jAQ06y+rCb1OzO4ps=
+	b=Ksn/lEEaSbIH9xkmkoErgnxpmfDZn4HyS2yD4AFjPJEJA1R+y2DeMTy+dR1f382IJ
+	 oaNSB5NDMmeqkIdTZwbMeTV41VIVe7dHrjo9pbD1BJN8rmp5VSwwzgDCYgt+Cs+MGp
+	 C5c/vbkZR9q/d2GX8mqQsEtk0MYJ2t5hUCm5f3RQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7CF17F8013E;
-	Fri, 14 Feb 2020 01:07:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 74577F80146;
+	Fri, 14 Feb 2020 01:08:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 32002F80145; Fri, 14 Feb 2020 01:07:24 +0100 (CET)
+ id 22295F8013E; Fri, 14 Feb 2020 01:08:39 +0100 (CET)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id EF1B5F800F0
- for <alsa-devel@alsa-project.org>; Fri, 14 Feb 2020 01:07:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF1B5F800F0
-Date: 14 Feb 2020 09:07:17 +0900
-X-IronPort-AV: E=Sophos;i="5.70,438,1574089200"; d="scan'208";a="39009028"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 14 Feb 2020 09:07:17 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 421A9F8013E
+ for <alsa-devel@alsa-project.org>; Fri, 14 Feb 2020 01:08:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 421A9F8013E
+Date: 14 Feb 2020 09:08:33 +0900
+X-IronPort-AV: E=Sophos;i="5.70,438,1574089200"; d="scan'208";a="39009183"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 14 Feb 2020 09:08:33 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 918CE4125FB6;
- Fri, 14 Feb 2020 09:07:17 +0900 (JST)
-Message-ID: <87v9oayqtv.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id F20D94008C78;
+ Fri, 14 Feb 2020 09:08:32 +0900 (JST)
+Message-ID: <87tv3uyqrr.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <09d31018-abdf-0383-ac55-29cc7d5ad103@linux.intel.com>
+To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+In-Reply-To: <52cbcac8705fef8409b2bd7d759dc0d43c219b5a.camel@linux.intel.com>
 References: <87blq3ru4w.wl-kuninori.morimoto.gx@renesas.com>
- <87y2t7qfi9.wl-kuninori.morimoto.gx@renesas.com>
- <09d31018-abdf-0383-ac55-29cc7d5ad103@linux.intel.com>
+ <871rqzru2y.wl-kuninori.morimoto.gx@renesas.com>
+ <52cbcac8705fef8409b2bd7d759dc0d43c219b5a.camel@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH 09/10] ASoC: soc-pcm: care Multi Codec at
-	soc_dpcm_fe_runtime_update()
+Subject: Re: [alsa-devel] [PATCH 07/10] ASoC: soc-pcm: add
+	snd_soc_dpcm_can_be() and remove duplicate code
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,21 +80,26 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Pierre-Louis
+Hi Ranjani
 
-> > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> > Below functions are doing very similar things, the difference is
+> > only used state.
 > > 
-> > soc_dpcm_fe_runtime_update() doesn't care Multi Codec now.
-> > We need to care it. This patch fixup it.
+> > 	snd_soc_dpcm_can_be_free_stop()
+> > 	snd_soc_dpcm_can_be_params()
+> > 
+> > This patch adds common snd_soc_dpcm_can_be(), and use it from
+> > snd_soc_dpcm_can_be_free_stop() / snd_soc_dpcm_can_be_params().
+> > This can reduce duplicate code.
 > 
-> Humm, maybe a stupid question but for my education is there an actual
-> case where a front-end dailink uses more that one codec_dai? All the
-> examples I see for Intel rely on COMP_DUMMY().
+> Morimoto-san,
+> 
+> Only minor but does it make it a bit more intuitive to call this new
+> function snd_soc_dpcm_check_state() or something equivalent maybe?
 
-Hmm..? indeed...
-We might need it in the future somehow, but not so much so far.
-OK, let's skip it this time.
 Thank you for pointing it.
+I like understandable naming :)
+Will fix it in v2
 
 Thank you for your help !!
 Best regards
