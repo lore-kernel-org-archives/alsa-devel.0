@@ -2,83 +2,82 @@ Return-Path: <SRS0=Q+Fc=4C=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 661EBC3B1A2
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 16:08:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CE24C3B19F
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 16:09:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EA0BC2467E
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 16:08:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B07C024681
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 16:09:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Dosaq5Eo";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="DR+bvb4J"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EA0BC2467E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ey5SMMw8";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="SpPBNezk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B07C024681
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5AEAF167A;
-	Fri, 14 Feb 2020 17:07:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5AEAF167A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1381E16B1;
+	Fri, 14 Feb 2020 17:08:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1381E16B1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581696511;
-	bh=lCKXSfcV+yKW5VWACDtLOpgb7gW0MIQo7qcjKc0abvs=;
+	s=default; t=1581696542;
+	bh=v72Qg7mYoVx8t4LWXqS65M22RX1IH09Le4MwhM0s03o=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Dosaq5Eo1p9j13+wZzSzJuReYlSyBzJ9xp38GJGghuodT8TZ8z04oWNlhbZc9cc1J
-	 tMvJq1aCDf00tfr/IINcJjU82QrwIFprjeQyQD0YGuCAHy/0JTp7YXHleFRUQyFXIn
-	 zsn38PVgxYpd718pqUX/gSrq7TNOdIoroRwYn5v0=
+	b=ey5SMMw8bAq7BKkg+97rOUXofLz7m5Ncv6bpYEdeBV4MYhYsIc72w2MmlSYwbe0r2
+	 7BsgS/iEd9xxeZ5JpV/3Np7ZB4lqjNZ5in55OxpprcTk+mBJF/0pV+z60bERDF++fe
+	 xlcArAlf+TYLP1aqyVylh6EOjGr+YvunLrvNMQmU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2ECC6F8027B;
-	Fri, 14 Feb 2020 17:05:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4C693F80228;
+	Fri, 14 Feb 2020 17:06:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7B494F80277; Fri, 14 Feb 2020 17:05:13 +0100 (CET)
+ id 85D8CF80228; Fri, 14 Feb 2020 17:06:07 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DC57BF8019B
- for <alsa-devel@alsa-project.org>; Fri, 14 Feb 2020 17:05:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC57BF8019B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6DAE3F80228
+ for <alsa-devel@alsa-project.org>; Fri, 14 Feb 2020 17:06:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DAE3F80228
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="DR+bvb4J"
+ header.b="SpPBNezk"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 5B35224699;
- Fri, 14 Feb 2020 16:05:08 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id EF54124676;
+ Fri, 14 Feb 2020 16:06:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1581696309;
- bh=j6vTk5xwIZQxMl0N+87vCz7J+K5hKkkEZIizq5rdXXc=;
+ s=default; t=1581696362;
+ bh=Xdz5g+eobi2ZEQdasmCypMVgaHUhILG5k0/pdY3tblI=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=DR+bvb4Jk0V7c2dGLYp0lB27UFPeeZ7WNoBKiUQLVMKGrk848hqqdymwJETFzMKkC
- c1ax3pTIaZGGhinvpwvjovPgT69iVDa/CIPT1tMKMqQCpivAPJccuZCzDsDM77da5u
- WWDC8LZLNKrposQiyc8+51IBJKbYkfMWJ1sbqDg4=
+ b=SpPBNezk3kk6DmBl416fkfNXqt2YX9agdar9H1DYkHMq03QM4cAejnRl4ekEOgL56
+ KC4b6MUfcImPf4hBxkr37lW98xhe6PV9X5g+OxFb3kA9LpbJKrgRrYOdBhfbfqhmv/
+ o5HwrjWVBmVkriGRgxf8pGbbG1GhkZqGsp7dW9EY=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Date: Fri, 14 Feb 2020 10:56:42 -0500
-Message-Id: <20200214160149.11681-152-sashal@kernel.org>
+Date: Fri, 14 Feb 2020 10:57:24 -0500
+Message-Id: <20200214160149.11681-194-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200214160149.11681-1-sashal@kernel.org>
 References: <20200214160149.11681-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Jairaj Arava <jairaj.arava@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Mark Brown <broonie@kernel.org>,
- Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
-Subject: [alsa-devel] [PATCH AUTOSEL 5.4 152/459] ASoC: intel: sof_rt5682:
-	Add support for tgl-max98357a-rt5682
+Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+ Nathan Chancellor <natechancellor@gmail.com>, alsa-devel@alsa-project.org,
+ clang-built-linux@googlegroups.com
+Subject: [alsa-devel] [PATCH AUTOSEL 5.4 194/459] ALSA: usx2y: Adjust
+	indentation in snd_usX2Y_hwdep_dsp_status
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,72 +95,49 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+From: Nathan Chancellor <natechancellor@gmail.com>
 
-[ Upstream commit 6605f0ca3af3b964635287ec7c9dadc812b78eb0 ]
+[ Upstream commit df4654bd6e42125d9b85ce3a26eaca2935290b98 ]
 
-This patch adds the driver data and updates quirk info
-for tgl with max98357a speaker amp and ALC5682 headset codec.
+Clang warns:
 
-Signed-off-by: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
-Signed-off-by: Jairaj Arava <jairaj.arava@intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191126143205.21987-3-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+../sound/usb/usx2y/usX2Yhwdep.c:122:3: warning: misleading indentation;
+statement is not part of the previous 'if' [-Wmisleading-indentation]
+        info->version = USX2Y_DRIVER_VERSION;
+        ^
+../sound/usb/usx2y/usX2Yhwdep.c:120:2: note: previous statement is here
+        if (us428->chip_status & USX2Y_STAT_CHIP_INIT)
+        ^
+1 warning generated.
+
+This warning occurs because there is a space before the tab on this
+line. Remove it so that the indentation is consistent with the Linux
+kernel coding style and clang no longer warns.
+
+This was introduced before the beginning of git history so no fixes tag.
+
+Link: https://github.com/ClangBuiltLinux/linux/issues/831
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Link: https://lore.kernel.org/r/20191218034257.54535-1-natechancellor@gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/sof_rt5682.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ sound/usb/usx2y/usX2Yhwdep.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index 377ff17dedb98..9441ddfeea5e6 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -589,6 +589,9 @@ static int sof_audio_probe(struct platform_device *pdev)
- 	if (!ctx)
- 		return -ENOMEM;
- 
-+	if (pdev->id_entry && pdev->id_entry->driver_data)
-+		sof_rt5682_quirk = (unsigned long)pdev->id_entry->driver_data;
-+
- 	dmi_check_system(sof_rt5682_quirk_table);
- 
- 	if (soc_intel_is_byt() || soc_intel_is_cht()) {
-@@ -680,6 +683,21 @@ static int sof_rt5682_remove(struct platform_device *pdev)
+diff --git a/sound/usb/usx2y/usX2Yhwdep.c b/sound/usb/usx2y/usX2Yhwdep.c
+index d1caa8ed9e681..9985fc139487b 100644
+--- a/sound/usb/usx2y/usX2Yhwdep.c
++++ b/sound/usb/usx2y/usX2Yhwdep.c
+@@ -119,7 +119,7 @@ static int snd_usX2Y_hwdep_dsp_status(struct snd_hwdep *hw,
+ 	info->num_dsps = 2;		// 0: Prepad Data, 1: FPGA Code
+ 	if (us428->chip_status & USX2Y_STAT_CHIP_INIT)
+ 		info->chip_ready = 1;
+- 	info->version = USX2Y_DRIVER_VERSION; 
++	info->version = USX2Y_DRIVER_VERSION;
  	return 0;
  }
  
-+static const struct platform_device_id board_ids[] = {
-+	{
-+		.name = "sof_rt5682",
-+	},
-+	{
-+		.name = "tgl_max98357a_rt5682",
-+		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
-+					SOF_RT5682_SSP_CODEC(0) |
-+					SOF_SPEAKER_AMP_PRESENT |
-+					SOF_RT5682_SSP_AMP(1) |
-+					SOF_RT5682_NUM_HDMIDEV(4)),
-+	},
-+	{ }
-+};
-+
- static struct platform_driver sof_audio = {
- 	.probe = sof_audio_probe,
- 	.remove = sof_rt5682_remove,
-@@ -687,6 +705,7 @@ static struct platform_driver sof_audio = {
- 		.name = "sof_rt5682",
- 		.pm = &snd_soc_pm_ops,
- 	},
-+	.id_table = board_ids,
- };
- module_platform_driver(sof_audio)
- 
-@@ -696,3 +715,4 @@ MODULE_AUTHOR("Bard Liao <bard.liao@intel.com>");
- MODULE_AUTHOR("Sathya Prakash M R <sathya.prakash.m.r@intel.com>");
- MODULE_LICENSE("GPL v2");
- MODULE_ALIAS("platform:sof_rt5682");
-+MODULE_ALIAS("platform:tgl_max98357a_rt5682");
 -- 
 2.20.1
 
