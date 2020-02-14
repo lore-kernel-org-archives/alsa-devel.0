@@ -6,76 +6,77 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AB37C2BA83
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 16:29:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7531DC2BA83
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 16:29:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 90D8724694
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 16:29:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 065B624694
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 16:29:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OL6Q8RlD";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="pliuNyal"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 90D8724694
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HiAhICaX";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="U9SBcQ8w"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 065B624694
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 62A0E170A;
-	Fri, 14 Feb 2020 17:28:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 62A0E170A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6C8FB16F0;
+	Fri, 14 Feb 2020 17:28:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C8FB16F0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581697756;
-	bh=K3lxUjfYapMVgi6LqhwNIVEhBYhEZugXVVTuDWBTTp0=;
+	s=default; t=1581697783;
+	bh=rGVGR7Pk9uIISAlcfACPqGhJABHIn1AFYh+6KOcwdHk=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OL6Q8RlDPlIkwe3FTfopA56KRCdqMg90wxfIgExu/wK9NHa4VLX1qkNdaL/foMUgR
-	 dXdFZqjlzZzw7d+TUYuaiyFq8SWQvKRp8EBdVk2PMZtnAA0K/GllcwM18u6O1iXyjd
-	 fpAPoRl06JYN690n1Yv6NkER4p2hKGMylKLf0+nQ=
+	b=HiAhICaXz/E+fznhucaAEwiP0gd/a5AVm8amEneXorOyjpoCXDXI3f9oRRoPoknyA
+	 zPB11Q5bw0KYSNvwOpEcyp/ZjAhJ9RzK3shyTrSVhXN8DsRTmSUYIp6TFngnXWhqea
+	 40n/1y85q33RqY00FD8lDQ+9WQLI+gCcs5MPdkyo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8BE93F80292;
-	Fri, 14 Feb 2020 17:25:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 16DA5F802A1;
+	Fri, 14 Feb 2020 17:25:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A2BBEF802A0; Fri, 14 Feb 2020 17:25:40 +0100 (CET)
+ id AE3A2F802A2; Fri, 14 Feb 2020 17:25:52 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D3B44F800F0
- for <alsa-devel@alsa-project.org>; Fri, 14 Feb 2020 17:25:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3B44F800F0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 07267F80299
+ for <alsa-devel@alsa-project.org>; Fri, 14 Feb 2020 17:25:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07267F80299
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="pliuNyal"
+ header.b="U9SBcQ8w"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id F07FB247C7;
- Fri, 14 Feb 2020 16:25:33 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id ADCE6247C8;
+ Fri, 14 Feb 2020 16:25:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1581697534;
- bh=gG8HGprrQBBywmF5eY3kLdDk0um/SI/w5sXTZx28iH8=;
+ s=default; t=1581697547;
+ bh=IxJhJMPN/OwtHe3aahbDjabfp0JXfPEO+U/lhktaBeA=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=pliuNyalW5zKX4wlsHvXqNilErETr8l3A9U/T56w5+8/KiqlkLc2eweq2ngCHtGDr
- iTOMkTW6XURWA5Jw84QstQkjBWGvoPI0FtlMeHkWHLKJwbhstFo1KYeSiO4Pdu2AZf
- FwBqqPXhvfN6LuSesoQsLPdKPGDlod6A6GL8e7Xg=
+ b=U9SBcQ8wjOl6OB1Fz4KS5w0HgN2bft0xb5hh/zbZ2aW4b2bgIuWpuNjqKNTAHnE/L
+ hmZK000zs1Hlfu/kOGzApKJlpHxoeOntycPL35p5mvRkvaGixpZRSiZcy1VuIRNcpY
+ uLlgaUUcLBuSi2hclaYOqFNb+A1Y/ZFEvjBmQdjc=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Date: Fri, 14 Feb 2020 11:23:40 -0500
-Message-Id: <20200214162425.21071-56-sashal@kernel.org>
+Date: Fri, 14 Feb 2020 11:23:50 -0500
+Message-Id: <20200214162425.21071-66-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200214162425.21071-1-sashal@kernel.org>
 References: <20200214162425.21071-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
- alsa-devel@alsa-project.org
-Subject: [alsa-devel] [PATCH AUTOSEL 4.4 056/100] ALSA: sh: Fix compile
-	warning wrt const
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ Chen Zhou <chenzhou10@huawei.com>, Hulk Robot <hulkci@huawei.com>,
+ Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+Subject: [alsa-devel] [PATCH AUTOSEL 4.4 066/100] ASoC: atmel: fix build
+	error with CONFIG_SND_ATMEL_SOC_DMA=m
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,39 +94,41 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Chen Zhou <chenzhou10@huawei.com>
 
-[ Upstream commit f1dd4795b1523fbca7ab4344dd5a8bb439cc770d ]
+[ Upstream commit 8fea78029f5e6ed734ae1957bef23cfda1af4354 ]
 
-A long-standing compile warning was seen during build test:
-  sound/sh/aica.c: In function 'load_aica_firmware':
-  sound/sh/aica.c:521:25: warning: passing argument 2 of 'spu_memload' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+If CONFIG_SND_ATMEL_SOC_DMA=m, build error:
 
-Fixes: 198de43d758c ("[ALSA] Add ALSA support for the SEGA Dreamcast PCM device")
-Link: https://lore.kernel.org/r/20200105144823.29547-69-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+sound/soc/atmel/atmel_ssc_dai.o: In function `atmel_ssc_set_audio':
+(.text+0x7cd): undefined reference to `atmel_pcm_dma_platform_register'
+
+Function atmel_pcm_dma_platform_register is defined under
+CONFIG SND_ATMEL_SOC_DMA, so select SND_ATMEL_SOC_DMA in
+CONFIG SND_ATMEL_SOC_SSC, same to CONFIG_SND_ATMEL_SOC_PDC.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
+Link: https://lore.kernel.org/r/20200113133242.144550-1-chenzhou10@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/sh/aica.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/atmel/Kconfig | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/sh/aica.c b/sound/sh/aica.c
-index ad3d9ae380349..dd601b39f69ef 100644
---- a/sound/sh/aica.c
-+++ b/sound/sh/aica.c
-@@ -120,10 +120,10 @@ static void spu_memset(u32 toi, u32 what, int length)
- }
+diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
+index 2d30464b81cef..d7b471c69f4fb 100644
+--- a/sound/soc/atmel/Kconfig
++++ b/sound/soc/atmel/Kconfig
+@@ -24,6 +24,8 @@ config SND_ATMEL_SOC_DMA
  
- /* spu_memload - write to SPU address space */
--static void spu_memload(u32 toi, void *from, int length)
-+static void spu_memload(u32 toi, const void *from, int length)
- {
- 	unsigned long flags;
--	u32 *froml = from;
-+	const u32 *froml = from;
- 	u32 __iomem *to = (u32 __iomem *) (SPU_MEMORY_BASE + toi);
- 	int i;
- 	u32 val;
+ config SND_ATMEL_SOC_SSC_DMA
+ 	tristate
++	select SND_ATMEL_SOC_DMA
++	select SND_ATMEL_SOC_PDC
+ 
+ config SND_ATMEL_SOC_SSC
+ 	tristate
 -- 
 2.20.1
 
