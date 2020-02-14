@@ -4,78 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B4A7C3B1A1
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 16:06:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AF72BC2BA83
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 16:06:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8F9D2217F4
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 16:06:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3F23324650
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 16:06:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tKBAUlrR";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="FSlTUjqB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F9D2217F4
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dUwt6/qr";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="UqzugSWr"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3F23324650
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EE8A916BC;
-	Fri, 14 Feb 2020 17:05:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE8A916BC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9E464169B;
+	Fri, 14 Feb 2020 17:06:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E464169B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581696367;
-	bh=TLUvmA8xhMqadwEaOa0F0P2EYwb9g+QdvJOX7u7mawc=;
+	s=default; t=1581696414;
+	bh=3nB9Mvu1dDWj+79gi0m4+tiCt7oOupI+9gkUZOJF5Eo=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tKBAUlrRUJg7gNhdgnbe+BTrgwAFwc2MVAbCU0VOIJbGrHoCR+p4IqpfApyDEpMLs
-	 kPmvwJJjpIp8NpQNkvyBBD5LCMoA9fc17op+D1y55AOIjA102iTvozkQW8IQnXMmEa
-	 l10Wtd1vif7VQwNjMpuUbll8thrqk43hhs/XJC/M=
+	b=dUwt6/qrJ7ivdZFpGl6cbC8jn38TLyNWRHpybBVQy1LYx6pte65MGbTLXBn8MYTZ4
+	 2ICD0NllIWSRkNifuJUaws0RoVhppoN2s3yiImqGK47GnsbgdQUlh1gDfN5mTYGSyk
+	 td013qouE73AzGkfbFG+ojnViNNfriWZ+cKHGSvI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 39665F8014F;
-	Fri, 14 Feb 2020 16:59:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 776A2F802A8;
+	Fri, 14 Feb 2020 16:59:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 099BBF80276; Fri, 14 Feb 2020 16:59:00 +0100 (CET)
+ id BCF9BF80303; Fri, 14 Feb 2020 16:59:24 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D8BF9F800F0
- for <alsa-devel@alsa-project.org>; Fri, 14 Feb 2020 16:58:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8BF9F800F0
+ by alsa1.perex.cz (Postfix) with ESMTPS id AE3BDF802A7
+ for <alsa-devel@alsa-project.org>; Fri, 14 Feb 2020 16:59:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE3BDF802A7
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="FSlTUjqB"
+ header.b="UqzugSWr"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 84B802467C;
- Fri, 14 Feb 2020 15:58:54 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 3F7802067D;
+ Fri, 14 Feb 2020 15:59:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1581695935;
- bh=AWcXrUPmg1Ok0gkYHL79LaRTs1+QfXtcYfPh5YIhW2I=;
+ s=default; t=1581695960;
+ bh=kfBZGCnGbpQro7ES8DP2ikbKpzDW9V8VqF0jmOeg57g=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=FSlTUjqBqkTlCgefOQNUhLzg1x8O9OST6mdesnqR0dX83/cW/sO+PgNISqmbGgHOC
- s48PLn0gNgB8IkbxhQlcfo3/vnPivOEpdo9P7KgE4v/hriaWAURu4BERzxCw2UJqgf
- FmYU1x1WHJjMa8v7twAp52RQ8ANXYNvPb1YmboQw=
+ b=UqzugSWrEOwMw74s0F0nIiSDq0MvX29WQ+/V7tnPD+Fw/3Lp9+4JfN7laN+tBSebC
+ efDkIKJ7re1jt2lMBhWkntZF0PXJOf7k+uH6l4Xo40kwajw/P3roG0kXaKPhlhrWlE
+ cm6wWf5URuXFoEcDgoyhXjndPxv35sYYe2v9TWyI=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Date: Fri, 14 Feb 2020 10:47:42 -0500
-Message-Id: <20200214154854.6746-470-sashal@kernel.org>
+Date: Fri, 14 Feb 2020 10:48:01 -0500
+Message-Id: <20200214154854.6746-489-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200214154854.6746-1-sashal@kernel.org>
 References: <20200214154854.6746-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
- alsa-devel@alsa-project.org, Nicola Lunghi <nick83ola@gmail.com>
-Subject: [alsa-devel] [PATCH AUTOSEL 5.5 470/542] ALSA: usb-audio: add
-	quirks for Line6 Helix devices fw>=2.82
+Cc: Sasha Levin <sashal@kernel.org>,
+ Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [alsa-devel] [PATCH AUTOSEL 5.5 489/542] ASoC: Intel: consistent
+	HDMI codec probing code
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,39 +95,224 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Nicola Lunghi <nick83ola@gmail.com>
+From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 
-[ Upstream commit b81cbf7abfc94878a3c6f0789f2185ee55b1cc21 ]
+[ Upstream commit 98ff5c262f27aafee077a4c096f71a8566e9e948 ]
 
-With firmware 2.82 Line6 changed the usb id of some of the Helix
-devices but the quirks is still needed.
+Multiple Intel ASoC machine drivers repeat the same pattern in their
+.late_probe() methods: they first check whether the common HDMI codec
+driver is used, if not, they proceed by linking the legacy HDMI
+driver to each HDMI port. While doing that they use some
+inconsistent code:
 
-Add it to the quirk list for line6 helix family of devices.
+1. after the loop they check, whether the list contained at least one
+   element and if not, they return an error. However, the earlier
+   code to use the common HDMI driver uses the first element of the
+   same list without checking. To fix this we move the check to the
+   top of the function.
 
-Thanks to Jens for pointing out the missing ids.
+2. some of those .late_probe() implementations execute code, only
+   needed for the common HDMI driver, before checking, whether the
+   driver is used. Move the code to after the check.
 
-Signed-off-by: Nicola Lunghi <nick83ola@gmail.com>
-Link: https://lore.kernel.org/r/20200125150917.5040-1-nick83ola@gmail.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+3. Some of those functions also perform a redundant initialisation of
+   the "err" variable.
+
+This patch fixes those issues.
+
+Signed-off-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20200124213625.30186-8-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/format.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/intel/boards/bxt_da7219_max98357a.c | 14 +++++++-------
+ sound/soc/intel/boards/bxt_rt298.c            | 14 +++++++-------
+ sound/soc/intel/boards/cml_rt1011_rt5682.c    | 13 +++++++------
+ sound/soc/intel/boards/glk_rt5682_max98357a.c | 16 ++++++++--------
+ sound/soc/intel/boards/sof_rt5682.c           | 15 ++++++++-------
+ 5 files changed, 37 insertions(+), 35 deletions(-)
 
-diff --git a/sound/usb/format.c b/sound/usb/format.c
-index d79db71305f63..53922f73467f4 100644
---- a/sound/usb/format.c
-+++ b/sound/usb/format.c
-@@ -296,6 +296,9 @@ static int line6_parse_audio_format_rates_quirk(struct snd_usb_audio *chip,
- 	case USB_ID(0x0E41, 0x4242): /* Line6 Helix Rack */
- 	case USB_ID(0x0E41, 0x4244): /* Line6 Helix LT */
- 	case USB_ID(0x0E41, 0x4246): /* Line6 HX-Stomp */
-+	case USB_ID(0x0E41, 0x4248): /* Line6 Helix >= fw 2.82 */
-+	case USB_ID(0x0E41, 0x4249): /* Line6 Helix Rack >= fw 2.82 */
-+	case USB_ID(0x0E41, 0x424a): /* Line6 Helix LT >= fw 2.82 */
- 		/* supported rates: 48Khz */
- 		kfree(fp->rate_table);
- 		fp->rate_table = kmalloc(sizeof(int), GFP_KERNEL);
+diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+index 5873abb46441c..749b1c4f1ceec 100644
+--- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
++++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+@@ -617,12 +617,15 @@ static int bxt_card_late_probe(struct snd_soc_card *card)
+ 		snd_soc_dapm_add_routes(&card->dapm, broxton_map,
+ 					ARRAY_SIZE(broxton_map));
+ 
+-	pcm = list_first_entry(&ctx->hdmi_pcm_list, struct bxt_hdmi_pcm,
+-			       head);
+-	component = pcm->codec_dai->component;
++	if (list_empty(&ctx->hdmi_pcm_list))
++		return -EINVAL;
+ 
+-	if (ctx->common_hdmi_codec_drv)
++	if (ctx->common_hdmi_codec_drv) {
++		pcm = list_first_entry(&ctx->hdmi_pcm_list, struct bxt_hdmi_pcm,
++				       head);
++		component = pcm->codec_dai->component;
+ 		return hda_dsp_hdmi_build_controls(card, component);
++	}
+ 
+ 	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
+ 		component = pcm->codec_dai->component;
+@@ -643,9 +646,6 @@ static int bxt_card_late_probe(struct snd_soc_card *card)
+ 		i++;
+ 	}
+ 
+-	if (!component)
+-		return -EINVAL;
+-
+ 	return hdac_hdmi_jack_port_init(component, &card->dapm);
+ }
+ 
+diff --git a/sound/soc/intel/boards/bxt_rt298.c b/sound/soc/intel/boards/bxt_rt298.c
+index eabf9d8468ae5..becfc4fc1aff3 100644
+--- a/sound/soc/intel/boards/bxt_rt298.c
++++ b/sound/soc/intel/boards/bxt_rt298.c
+@@ -529,12 +529,15 @@ static int bxt_card_late_probe(struct snd_soc_card *card)
+ 	int err, i = 0;
+ 	char jack_name[NAME_SIZE];
+ 
+-	pcm = list_first_entry(&ctx->hdmi_pcm_list, struct bxt_hdmi_pcm,
+-			       head);
+-	component = pcm->codec_dai->component;
++	if (list_empty(&ctx->hdmi_pcm_list))
++		return -EINVAL;
+ 
+-	if (ctx->common_hdmi_codec_drv)
++	if (ctx->common_hdmi_codec_drv) {
++		pcm = list_first_entry(&ctx->hdmi_pcm_list, struct bxt_hdmi_pcm,
++				       head);
++		component = pcm->codec_dai->component;
+ 		return hda_dsp_hdmi_build_controls(card, component);
++	}
+ 
+ 	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
+ 		component = pcm->codec_dai->component;
+@@ -555,9 +558,6 @@ static int bxt_card_late_probe(struct snd_soc_card *card)
+ 		i++;
+ 	}
+ 
+-	if (!component)
+-		return -EINVAL;
+-
+ 	return hdac_hdmi_jack_port_init(component, &card->dapm);
+ }
+ 
+diff --git a/sound/soc/intel/boards/cml_rt1011_rt5682.c b/sound/soc/intel/boards/cml_rt1011_rt5682.c
+index 5f1bf6d3800c6..a54636f77c8e6 100644
+--- a/sound/soc/intel/boards/cml_rt1011_rt5682.c
++++ b/sound/soc/intel/boards/cml_rt1011_rt5682.c
+@@ -241,12 +241,15 @@ static int sof_card_late_probe(struct snd_soc_card *card)
+ 	struct hdmi_pcm *pcm;
+ 	int ret, i = 0;
+ 
+-	pcm = list_first_entry(&ctx->hdmi_pcm_list, struct hdmi_pcm,
+-			       head);
+-	component = pcm->codec_dai->component;
++	if (list_empty(&ctx->hdmi_pcm_list))
++		return -EINVAL;
+ 
+-	if (ctx->common_hdmi_codec_drv)
++	if (ctx->common_hdmi_codec_drv) {
++		pcm = list_first_entry(&ctx->hdmi_pcm_list, struct hdmi_pcm,
++				       head);
++		component = pcm->codec_dai->component;
+ 		return hda_dsp_hdmi_build_controls(card, component);
++	}
+ 
+ 	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
+ 		component = pcm->codec_dai->component;
+@@ -265,8 +268,6 @@ static int sof_card_late_probe(struct snd_soc_card *card)
+ 
+ 		i++;
+ 	}
+-	if (!component)
+-		return -EINVAL;
+ 
+ 	return hdac_hdmi_jack_port_init(component, &card->dapm);
+ }
+diff --git a/sound/soc/intel/boards/glk_rt5682_max98357a.c b/sound/soc/intel/boards/glk_rt5682_max98357a.c
+index b36264d1d1cd3..94c6bdfab63bb 100644
+--- a/sound/soc/intel/boards/glk_rt5682_max98357a.c
++++ b/sound/soc/intel/boards/glk_rt5682_max98357a.c
+@@ -544,15 +544,18 @@ static int glk_card_late_probe(struct snd_soc_card *card)
+ 	struct snd_soc_component *component = NULL;
+ 	char jack_name[NAME_SIZE];
+ 	struct glk_hdmi_pcm *pcm;
+-	int err = 0;
++	int err;
+ 	int i = 0;
+ 
+-	pcm = list_first_entry(&ctx->hdmi_pcm_list, struct glk_hdmi_pcm,
+-			       head);
+-	component = pcm->codec_dai->component;
++	if (list_empty(&ctx->hdmi_pcm_list))
++		return -EINVAL;
+ 
+-	if (ctx->common_hdmi_codec_drv)
++	if (ctx->common_hdmi_codec_drv) {
++		pcm = list_first_entry(&ctx->hdmi_pcm_list, struct glk_hdmi_pcm,
++				       head);
++		component = pcm->codec_dai->component;
+ 		return hda_dsp_hdmi_build_controls(card, component);
++	}
+ 
+ 	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
+ 		component = pcm->codec_dai->component;
+@@ -573,9 +576,6 @@ static int glk_card_late_probe(struct snd_soc_card *card)
+ 		i++;
+ 	}
+ 
+-	if (!component)
+-		return -EINVAL;
+-
+ 	return hdac_hdmi_jack_port_init(component, &card->dapm);
+ }
+ 
+diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+index 8a13231dee15d..5d878873a8e08 100644
+--- a/sound/soc/intel/boards/sof_rt5682.c
++++ b/sound/soc/intel/boards/sof_rt5682.c
+@@ -273,19 +273,22 @@ static int sof_card_late_probe(struct snd_soc_card *card)
+ 	struct snd_soc_component *component = NULL;
+ 	char jack_name[NAME_SIZE];
+ 	struct sof_hdmi_pcm *pcm;
+-	int err = 0;
++	int err;
+ 	int i = 0;
+ 
+ 	/* HDMI is not supported by SOF on Baytrail/CherryTrail */
+ 	if (is_legacy_cpu)
+ 		return 0;
+ 
+-	pcm = list_first_entry(&ctx->hdmi_pcm_list, struct sof_hdmi_pcm,
+-			       head);
+-	component = pcm->codec_dai->component;
++	if (list_empty(&ctx->hdmi_pcm_list))
++		return -EINVAL;
+ 
+-	if (ctx->common_hdmi_codec_drv)
++	if (ctx->common_hdmi_codec_drv) {
++		pcm = list_first_entry(&ctx->hdmi_pcm_list, struct sof_hdmi_pcm,
++				       head);
++		component = pcm->codec_dai->component;
+ 		return hda_dsp_hdmi_build_controls(card, component);
++	}
+ 
+ 	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
+ 		component = pcm->codec_dai->component;
+@@ -305,8 +308,6 @@ static int sof_card_late_probe(struct snd_soc_card *card)
+ 
+ 		i++;
+ 	}
+-	if (!component)
+-		return -EINVAL;
+ 
+ 	return hdac_hdmi_jack_port_init(component, &card->dapm);
+ }
 -- 
 2.20.1
 
