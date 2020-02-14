@@ -2,59 +2,64 @@ Return-Path: <SRS0=Q+Fc=4C=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F021DC2BA83
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 14:50:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8620EC2BA83
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 15:44:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7C36C222C2
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 14:50:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 129E62467E
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 15:44:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PqqdsaKC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7C36C222C2
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gp3vAEV7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 129E62467E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C5CB2166D;
-	Fri, 14 Feb 2020 15:49:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C5CB2166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 885831661;
+	Fri, 14 Feb 2020 16:43:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 885831661
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581691825;
-	bh=XVIgtE25UySu7aJGH+V4x5dYxzFaoQwGVyLAGFWQ8Do=;
-	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=PqqdsaKCz/Zo0dZcFO1Zbd8nR2cFJ0dlJ7QqDu7RWJmICSp82sYz25VPssBQoKeYO
-	 UJTl3zbPua6rJsBv4mZB/OkEUCdoRGRFkm5nadpVp7cyvqdZ8N4EzgEzGtx9nDQntk
-	 v08kxUU3Y3Jtr+9GnQl4dlO3XzgWyfuEhpu/ds0o=
+	s=default; t=1581695043;
+	bh=9GPgMdMuBYEpAFENI7egU9gT8TMUQhP4hNhr63Y+rW0=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=gp3vAEV75oeXV8mqn61o6S23kKXcU4etG+FPGvPpg29jJ7BVtactvoS9NJZhnBdBq
+	 sIbCKo+s0RKePboH6x6b9Z6qXgZoi7S7lciIbDTHyQkTyxaHKCVhich7L+q0rZCvBg
+	 EPLclwFZpnATscoaxZLM/3nS2Fcir26Fs15gEVsc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 51943F8013E;
-	Fri, 14 Feb 2020 15:49:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F3E9EF8013E;
+	Fri, 14 Feb 2020 16:43:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8CCB9F8014F; Fri, 14 Feb 2020 15:49:33 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E7AECF800F0
- for <alsa-devel@alsa-project.org>; Fri, 14 Feb 2020 15:49:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7AECF800F0
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 11976B03B
- for <alsa-devel@alsa-project.org>; Fri, 14 Feb 2020 14:49:30 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Date: Fri, 14 Feb 2020 15:49:28 +0100
-Message-Id: <20200214144928.23628-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.16.4
-Subject: [alsa-devel] [PATCH] ALSA: usb-audio: Don't create a mixer element
-	with bogus volume range
+ id 71AFCF8014F; Fri, 14 Feb 2020 16:43:11 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id D8CD2F80086
+ for <alsa-devel@alsa-project.org>; Fri, 14 Feb 2020 16:43:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8CD2F80086
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8BC2E328;
+ Fri, 14 Feb 2020 07:43:06 -0800 (PST)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0F1953F68E;
+ Fri, 14 Feb 2020 07:43:05 -0800 (PST)
+Date: Fri, 14 Feb 2020 15:43:04 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Tzung-Bi Shih <tzungbi@google.com>
+Message-ID: <20200214154304.GP4827@sirena.org.uk>
+References: <20200214105744.82258-1-tzungbi@google.com>
+ <20200214105744.82258-4-tzungbi@google.com>
+MIME-Version: 1.0
+In-Reply-To: <20200214105744.82258-4-tzungbi@google.com>
+X-Cookie: Shipping not included.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: alsa-devel@alsa-project.org, dgreid@google.com, cychiang@google.com
+Subject: Re: [alsa-devel] [PATCH 3/3] ASoC: core: remove SND_SOC_BYTES_E
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -67,47 +72,53 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3086947808919035477=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Some USB-audio descriptors provide a bogus volume range (e.g. volume
-min and max are identical), which confuses user-space.
-This patch makes the driver skipping such a control element.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=206221
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/mixer.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+--===============3086947808919035477==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="K8zN2sh9fO5jmbe4"
+Content-Disposition: inline
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 81b2db0edd5f..906fd38ce647 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -1674,6 +1674,16 @@ static void __build_feature_ctl(struct usb_mixer_interface *mixer,
- 	/* get min/max values */
- 	get_min_max_with_quirks(cval, 0, kctl);
- 
-+	/* skip a bogus volume range */
-+	if (cval->max <= cval->min) {
-+		usb_audio_dbg(mixer->chip,
-+			      "[%d] FU [%s] skipped due to invalid volume\n",
-+			      cval->head.id, kctl->id.name);
-+		snd_ctl_free_one(kctl);
-+		return;
-+	}
-+
-+
- 	if (control == UAC_FU_VOLUME) {
- 		check_mapped_dB(map, cval);
- 		if (cval->dBmin < cval->dBmax || !cval->initialized) {
--- 
-2.16.4
+
+--K8zN2sh9fO5jmbe4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Feb 14, 2020 at 06:57:44PM +0800, Tzung-Bi Shih wrote:
+> Reverts commit fb5126778333 ("ASoC: core: add SND_SOC_BYTES_E").
+
+Not sure I see any great need to do this - it's not doing any harm and
+something else might come along which could use it.
+
+--K8zN2sh9fO5jmbe4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5GwAcACgkQJNaLcl1U
+h9B/Sgf/X32Q0oK6g5R91Wy4BoWfrVozp7scHEikjUURK8+S7ay7WPigoFX3q/cE
+aTSfMRc0RcEgyo3cwkMaQJwEBLHhrzGG5niiPEhhecNA8CRgElIVUR0qi9h3483b
+5HbUvzZUlBQWZdGYiOXmQShTL1O4gWanOCf2anpwpuBxDG/YD9/9ldZDL6zO8hAo
+oT1AUXCY6QUYXM1H5kvuq0w/pYiimLo5IOMvBhj0RTLc9Q6KBESuKCqTlS+1Q8Yp
+U4a+/b5kQ+WVpCLhSfHncuvcX8V+M0MhhLJbfRZZPkHf4+YL6f+5IuQzMRYGbn78
+4IxFoB4MFXslPnsU5+R/KiNxHXxy2Q==
+=VqrR
+-----END PGP SIGNATURE-----
+
+--K8zN2sh9fO5jmbe4--
+
+--===============3086947808919035477==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============3086947808919035477==--
