@@ -2,81 +2,81 @@ Return-Path: <SRS0=Q+Fc=4C=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 52413C3B1A2
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 16:04:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 60875C3B1A1
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 16:05:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D52AA222C2
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 16:04:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E530224686
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 Feb 2020 16:05:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="A+NT9Sqv";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="AL/vJync"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D52AA222C2
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kPhQOxAu";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="HgOOg3b0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E530224686
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3BB9816AB;
-	Fri, 14 Feb 2020 17:03:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BB9816AB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 44AB6168D;
+	Fri, 14 Feb 2020 17:04:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 44AB6168D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581696270;
-	bh=c4amDoZ2NuUik0nmGpFRDGTXKs4dwsJTgYFE7dmu2aM=;
+	s=default; t=1581696303;
+	bh=yP/z9i3p8Hux7BuhYaeH2Vd3Oyww7tgsOdVehcgVPoE=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=A+NT9SqvA2zB10eoDXlBl0LjRL4Wg5+DecFK8MT6PIBNnIUjR7zxmc61fuCZHAtCf
-	 NN29nIaPKEM4ZZQWZuuVQOP4NxAi+m+3pk9O/MKOPlwVQXl8oilqhflE5yRY9BjDSK
-	 uxeYldOKoTcDbQMf3JUlr3MRXryCKJmrxr01QiQc=
-Received: from vmi242170.contaboserver.net (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1FBC8F80279;
-	Fri, 14 Feb 2020 16:58:14 +0100 (CET)
+	b=kPhQOxAu/Wg22ceoHRo24O+sPyqNtcSGxR4KBiwtfdQRmB8sNK5xngVja3ZYtMyI6
+	 sMSE3DKEXQN4tdZHg/8xU5dVMRkPKIHIjNiW+fZo+tx9LiNNfI+mhjDmzs1z1oAPuj
+	 0OGjVbl8g9ta+zHvwBPSKDhxpve/ClHtPapl9HRc=
+Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
+	by alsa1.perex.cz (Postfix) with ESMTP id 20D12F802F9;
+	Fri, 14 Feb 2020 16:58:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4DF15F802A0; Fri, 14 Feb 2020 16:58:07 +0100 (CET)
+ id 5B6CBF80292; Fri, 14 Feb 2020 16:58:08 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F22AAF80290
- for <alsa-devel@alsa-project.org>; Fri, 14 Feb 2020 16:58:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F22AAF80290
+ by alsa1.perex.cz (Postfix) with ESMTPS id D3363F80291
+ for <alsa-devel@alsa-project.org>; Fri, 14 Feb 2020 16:58:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3363F80291
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="AL/vJync"
+ header.b="HgOOg3b0"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 93E2124680;
- Fri, 14 Feb 2020 15:58:01 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id BC2502067D;
+ Fri, 14 Feb 2020 15:58:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1581695882;
- bh=Q1AXNF7/YBceLKM0t6wsQ+e5+2pz9pwHhqbAUEzue1w=;
+ s=default; t=1581695883;
+ bh=QxrAzp/5VK+RMu9LHx3+Uqc02lXUcfEbrPtdH908nhU=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=AL/vJync2GqnR2ejhC1lB5wKVvbI9SaHCJNDLj/4Y+w7iMJB73ut7Hj6X7n7abB5H
- ZYnHDALoDMgUiMU0vnW3CN64ukeynFZM2WEeCk0GT9NnwyRbsz3l2INfk2CJQFmoag
- /JssZf3Y9pi/Hlt/mgpiVq8C5zPS8IabAILYWQi0=
+ b=HgOOg3b0O/6FJ/jjeib/BQuyzVnCxSccxxhZkyTckCFX4hypS/lTdt1OzxlN6ZcSQ
+ Ln4FqHcllemRLYTT8eD/wSPsH8FCWgAdR1MEbTX5vIhbXGW7fy1QC+l18tNxQvV+yN
+ KNahN4xeN653JeEsNlagwbtNNXICSj7bTJ73qglE=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Date: Fri, 14 Feb 2020 10:46:58 -0500
-Message-Id: <20200214154854.6746-426-sashal@kernel.org>
+Date: Fri, 14 Feb 2020 10:46:59 -0500
+Message-Id: <20200214154854.6746-427-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200214154854.6746-1-sashal@kernel.org>
 References: <20200214154854.6746-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
- alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: [alsa-devel] [PATCH AUTOSEL 5.5 426/542] ALSA: hda/hdmi - add retry
-	logic to parse_intel_hdmi()
+Cc: Sasha Levin <sashal@kernel.org>, Shengjiu Wang <shengjiu.wang@nxp.com>,
+ Mark Brown <broonie@kernel.org>, John Stultz <john.stultz@linaro.org>,
+ alsa-devel@alsa-project.org
+Subject: [alsa-devel] [PATCH AUTOSEL 5.5 427/542] ASoC:
+	soc-generic-dmaengine-pcm: Fix error handling
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,50 +94,61 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-[ Upstream commit 2928fa0a97ebb9549cb877fdc99aed9b95438c3a ]
+[ Upstream commit 130128098a4e5ce9a0dfbdf9a7e27a43579901fd ]
 
-The initial snd_hda_get_sub_node() can fail on certain
-devices (e.g. some Chromebook models using Intel GLK).
-The failure rate is very low, but as this is is part of
-the probe process, end-user impact is high.
+Remove the return value checking, that is to align with the code
+before adding snd_dmaengine_pcm_refine_runtime_hwparams function.
 
-In observed cases, related hardware status registers have
-expected values, but the node query still fails. Retrying
-the node query does seem to help, so fix the problem by
-adding retry logic to the query. This does not impact
-non-Intel platforms.
+Otherwise it causes a regression on the HiKey board:
 
-BugLink: https://github.com/thesofproject/linux/issues/1642
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
-Link: https://lore.kernel.org/r/20200120160117.29130-4-kai.vehmanen@linux.intel.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+[   17.721424] hi6210_i2s f7118000.i2s: ASoC: can't open component f7118000.i2s: -6
+
+Fixes: e957204e732b ("ASoC: pcm_dmaengine: Extract snd_dmaengine_pcm_refine_runtime_hwparams")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Reported-by: John Stultz <john.stultz@linaro.org>
+Link: https://lore.kernel.org/r/1579505286-32085-1-git-send-email-shengjiu.wang@nxp.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_hdmi.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ sound/soc/soc-generic-dmaengine-pcm.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index bde50414029d9..4f195c7d966a9 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -2862,9 +2862,12 @@ static int alloc_intel_hdmi(struct hda_codec *codec)
- /* parse and post-process for Intel codecs */
- static int parse_intel_hdmi(struct hda_codec *codec)
- {
--	int err;
-+	int err, retries = 3;
-+
-+	do {
-+		err = hdmi_parse_codec(codec);
-+	} while (err < 0 && retries--);
+diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
+index a428ff393ea26..2b5f3b1b062bc 100644
+--- a/sound/soc/soc-generic-dmaengine-pcm.c
++++ b/sound/soc/soc-generic-dmaengine-pcm.c
+@@ -117,7 +117,6 @@ dmaengine_pcm_set_runtime_hwparams(struct snd_soc_component *component,
+ 	struct dma_chan *chan = pcm->chan[substream->stream];
+ 	struct snd_dmaengine_dai_dma_data *dma_data;
+ 	struct snd_pcm_hardware hw;
+-	int ret;
  
--	err = hdmi_parse_codec(codec);
- 	if (err < 0) {
- 		generic_spec_free(codec);
- 		return err;
+ 	if (pcm->config && pcm->config->pcm_hardware)
+ 		return snd_soc_set_runtime_hwparams(substream,
+@@ -138,12 +137,15 @@ dmaengine_pcm_set_runtime_hwparams(struct snd_soc_component *component,
+ 	if (pcm->flags & SND_DMAENGINE_PCM_FLAG_NO_RESIDUE)
+ 		hw.info |= SNDRV_PCM_INFO_BATCH;
+ 
+-	ret = snd_dmaengine_pcm_refine_runtime_hwparams(substream,
+-							dma_data,
+-							&hw,
+-							chan);
+-	if (ret)
+-		return ret;
++	/**
++	 * FIXME: Remove the return value check to align with the code
++	 * before adding snd_dmaengine_pcm_refine_runtime_hwparams
++	 * function.
++	 */
++	snd_dmaengine_pcm_refine_runtime_hwparams(substream,
++						  dma_data,
++						  &hw,
++						  chan);
+ 
+ 	return snd_soc_set_runtime_hwparams(substream, &hw);
+ }
 -- 
 2.20.1
 
