@@ -2,74 +2,79 @@ Return-Path: <SRS0=1P3b=4D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81366C2BA83
-	for <alsa-devel@archiver.kernel.org>; Sat, 15 Feb 2020 16:26:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D0D0C2BA83
+	for <alsa-devel@archiver.kernel.org>; Sat, 15 Feb 2020 16:57:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F2EC520726
-	for <alsa-devel@archiver.kernel.org>; Sat, 15 Feb 2020 16:26:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 26CE82083B
+	for <alsa-devel@archiver.kernel.org>; Sat, 15 Feb 2020 16:57:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="e2C2Qty/";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="ELMVRH5i"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F2EC520726
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="e7Hu8VVg";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ap2c.com header.i=@ap2c.com header.b="L0li/Dby"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 26CE82083B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ap2c.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 61F901664;
-	Sat, 15 Feb 2020 17:25:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 61F901664
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7649C1665;
+	Sat, 15 Feb 2020 17:57:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7649C1665
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581783981;
-	bh=8G4LI1D1SE82OJ6VGbTuXxqeXpoMqWEg45k1cQ4ln/c=;
-	h=To:References:From:Date:In-Reply-To:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=e2C2Qty/WYfXvfNljEEeww/haKlxNqxJrzq0QSi+k786UaG85s8R7pWJt8Yg0yHkt
-	 j4SexRpcB4g6D9zqA5yP7va+dgrpCju0iFNEReTHmXjTWrlQpyNhkq6VYfXVVnDne5
-	 TJoYjYEW1qTQ0yAaOKxGRQqeAbqKFvizSu3JEvKY=
+	s=default; t=1581785877;
+	bh=YHtN5H5If3QnzPOLGldfvcf74MRnstIqpAblO1YfXVo=;
+	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=e7Hu8VVgu2BhamyV7sQzA7oAFMf9dG49ra2I+fWQmWVkDm2lRl3MGmloQZTxifWhj
+	 ZP6fON27B7MV4X/fXN74QGYBPViBC9v9oxIdWw5ah/Pi4e+6ujagyopEi0yXACJ5Mn
+	 sSGIzXszyLaNpy8SgvwVU6ZpTgXrT4fvqB5zsU3o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D4294F80146;
-	Sat, 15 Feb 2020 17:25:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E1370F8011B;
+	Sat, 15 Feb 2020 17:57:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EF704F80147; Sat, 15 Feb 2020 17:25:28 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 90FB5F80147; Sat, 15 Feb 2020 17:57:05 +0100 (CET)
+Received: from berkelium.ap2c.org (unknown
+ [IPv6:2a01:e35:1386:d790:250:fcff:fe42:7bed])
+ by alsa1.perex.cz (Postfix) with ESMTP id 99F7AF80138
+ for <alsa-devel@alsa-project.org>; Sat, 15 Feb 2020 17:57:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99F7AF80138
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=ap2c.com header.i=@ap2c.com
+ header.b="L0li/Dby"
+Received: from berkelium.ap2c.org (localhost [127.0.0.1])
+ by berkelium.ap2c.org (Postfix) with ESMTP id 3F9EDF4F
+ for <alsa-devel@alsa-project.org>; Sat, 15 Feb 2020 17:57:00 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ap2c.com; s=ap2cCom;
+ t=1581785820; bh=v1HpK74iBm3+w8E4a/AX6JYDI9/DBclMDbnvv2FVP9M=;
+ h=From:To:Subject:Date;
+ b=L0li/DbyRaP7AJbDkCVD8mi5aEuC11SACpeuH9eest5rnmfpABXx6wUJHNj/ZuwSD
+ xfR7rHb+aTXGJ7kOLh1hxccYy4EfvZmIN9VcX6z0Zsp2sAOh3LIRdl8fOEK0409rQo
+ WfOkBDZVHTncLT9edpmwf8RjDOZrH46Hzu09NKK0=
+X-Virus-Scanned: amavisd-new at ap2c.org
+Received: from berkelium.ap2c.org ([127.0.0.1])
+ by berkelium.ap2c.org (berkelium.ap2c.org [127.0.0.1]) (amavisd-new,
+ port 10024)
+ with ESMTP id e1PCQ2MW1Qdw for <alsa-devel@alsa-project.org>;
+ Sat, 15 Feb 2020 17:56:59 +0100 (CET)
+Received: from antimony.ap2c.org (unknown
+ [IPv6:2a01:e34:ec20:ab90:63ad:3e9d:5e02:f5e0])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DA6B3F80138
- for <alsa-devel@alsa-project.org>; Sat, 15 Feb 2020 17:25:25 +0100 (CET)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id DDEFEA0040;
- Sat, 15 Feb 2020 17:25:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz DDEFEA0040
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1581783924; bh=YfGEK2MAmAaNYrmGW5D2kBrIDPtxbaCAKNexZbbyk+s=;
- h=Subject:To:References:From:Date:In-Reply-To:From;
- b=ELMVRH5iBlko2ey68PH5RtPGzno9DByXKqs07kEEy9nHtQiIEkM1TbVU+xRUMAayU
- YRRrIy6WS433OdM9Mu4vGW/EBKoIOoTFlYKVKB+11UTnD3NOAMoc3T7nCn7OL2OQ0n
- BboKa36762uAOreJZQIjpm0vQ6Nqu2S0fbRTBrGs=
-Received: from p50.perex-int.cz (unknown [192.168.100.94])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Sat, 15 Feb 2020 17:25:22 +0100 (CET)
-To: Tanu Kaskinen <tanuk@iki.fi>, alsa-devel <alsa-devel@alsa-project.org>
-References: <50ae39498982ba2fc3fc8df1b9f0eac15a2b98c8.camel@iki.fi>
-From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <cb58008e-e9cc-8390-cfc8-c5c93d31c862@perex.cz>
-Date: Sat, 15 Feb 2020 17:25:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+ by berkelium.ap2c.org (Postfix) with ESMTPSA
+ for <alsa-devel@alsa-project.org>; Sat, 15 Feb 2020 17:56:59 +0100 (CET)
+From: =?ISO-8859-1?Q?Aur=E9lien?= Croc <aurelien@ap2c.com>
+To: alsa-devel <alsa-devel@alsa-project.org>
+Date: Sat, 15 Feb 2020 17:56:58 +0100
+Message-ID: <1610933.XPBrhYXKCp@antimony.ap2c.org>
+Organization: =?UTF-8?B?QVDCskM=?=
 MIME-Version: 1.0
-In-Reply-To: <50ae39498982ba2fc3fc8df1b9f0eac15a2b98c8.camel@iki.fi>
-Content-Language: en-US
-Subject: Re: [alsa-devel] Question about the various mixer options in UCM
+Subject: [alsa-devel] No sound with Realtek ALC298 on a Samsung Galaxy book
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,70 +87,42 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 15. 02. 20 v 7:29 Tanu Kaskinen napsal(a):
-> What's the difference between PlaybackVolume, PlaybackMixerElem and
-> PlaybackMasterElem? Other than the obvious difference that
-> PlaybackVolume is used only to configure the volume control, whereas
-> PlaybackMixerElem and PlaybackMasterElem are used also to configure the
-> mute control.
+Dear ALSA community, =
 
-At first, I don't really know if someone uses PlaybackVolume/PlaybackSwitch. 
-It was defined for the direct control interface (not the mixer interface). I 
-do not think that we should support this.
 
-I defined new PlaybackMixerElem to select the simple mixer element which 
-controls both volume and switch (mute) in the ALSA API. The master volume 
-might be also in the chain (thus PlaybackMasterElem) was introduced.
+I just bought a Samsung Galaxy book 12" laptop and I installed the latest =
 
-It seems that it might be not enough and I play with an idea to build custom 
-mixer description to handle the special cases (like several speakers with the 
-different volume controls connected to the single stereo stream etc.).
+Fedora version (31) on it. Unfortunately when I try to listen something the=
+re =
 
-To keep things simple, I would probably hide all functionality to 
-PlaybackMixer/PlaybackMixerElem and CaptureMixer/CaptureMixerElem . The 
-special mixer name will create the abstract mixer for the applications and 
-only one simple mixer element control will set the appropriate volume for
-the stream (like pulseaudio actually does for the legacy ALSA support - volume 
-synthetizer). So UCM will describe the mixer for alsa-lib and application will 
-use only abstract interface to set / get the volume and mute state.
+is absolutely no sound from speaker nor headsets. I checked that volumes of =
 
-Actually, I am also trying to resolve the description of the speaker 
-configuration. It may not be only enough to give the PCM device, because we 
-don't know, if user connected the stereo or surround speakers to the sound 
-card output for example. I play with an idea to add device variants to UCM, 
-but the question is, how we can map this to pulseaudio profile/port schematics.
+the different channels were max. I also checked for muting system but I did=
+n't =
 
-My quick idea is to export those variants via the verbs, so the exported verb 
-names might look like:
+found anything.
+Of course it works perfectly under Windows.
+I saw on internet that many ALC298 users had troubles with it. I tried =
 
-HiFi:Speaker-Stereo
-HiFi:Speaker-5.1
+different options to the intel hda driver (especially the model one) but it =
 
-Where 'HiFi' is the verb name, 'Speaker' is the device name and 'Stereo' is 
-the variant name.
+changes nothing.
 
-If we need to define multiple variants, all may be exported like:
+Here is the alsa-info.sh output: http://alsa-project.org/db/?
+f=3D871881e295972b9ecf252b25e90d659e38d939b8
+I would appreciate some help in order to find a solution.
+Tell me if you need more information.
+Thanks in advance.
 
-HiFi:Speaker-5.1,Mic-4.0
 
-Also, we can enhance this and store the configuration to a file, thus 'HiFi' 
-can refer to 'HiFi@Speaker-5.1,Mic-4.0' by default.
+Aur=E9lien
 
-I welcome any opinions on this. The goal is to provide the complete abstract 
-description of the sound hardware for sound servers like pulseaudio. We can 
-use this abstraction for the command line ALSA applications, too.
 
-				Thanks,
-					Jaroslav
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
