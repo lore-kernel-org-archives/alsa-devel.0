@@ -2,56 +2,56 @@ Return-Path: <SRS0=LPcU=4F=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 33F28C3B1BF
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 02:20:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93AECC3B1BF
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 02:20:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B79B420857
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 02:20:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 22F5822522
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 02:20:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Xi9LsZO1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B79B420857
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="I4NvhDzj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 22F5822522
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 219461694;
-	Mon, 17 Feb 2020 03:19:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 219461694
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7FA0A167B;
+	Mon, 17 Feb 2020 03:19:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7FA0A167B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581906016;
-	bh=Qv0VbLPWbgtVH5j6tyzrseGYuJyjvBvOhnpxeZSToGQ=;
+	s=default; t=1581906033;
+	bh=qiY80czJUOMWFhR3oghno22m56ZR5GXTZcJR9j1ZrGk=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Xi9LsZO1xfAb3xVicuv/y9ZUjL7et3SSipoeLn2ZT2QOx0qrTdzgidyGkq8bV1o4J
-	 Hk34AbmXp5qJ4oc8zGsQ+hZO9rILnY6eFkS0Ndex22otwzE7liZEkozZ8NppuSLfmI
-	 Hyr2PKUVrgu1G9EJWpGb+2U6w+SuhzwvIgE4heI8=
+	b=I4NvhDzjdVlv3tHD45gx3qSbNT3SdlL19ovBNgPVv4900JZly0EqXbpI2KunCRFtf
+	 By69EF4wWW0d/YyLhVpLMqkBTUTxvukA5EnPY/DLm1Yous1PNdyhleUoSiwsOHnzDg
+	 eF8BSYu4JC/l29Avn9OYWj8LoW1cBvkf6c9O+NMc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 36940F802A2;
-	Mon, 17 Feb 2020 03:16:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 35F98F802A9;
+	Mon, 17 Feb 2020 03:16:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EA435F802A2; Mon, 17 Feb 2020 03:16:05 +0100 (CET)
+ id 2D861F802A9; Mon, 17 Feb 2020 03:16:10 +0100 (CET)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id D75DCF8028F
- for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 03:16:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D75DCF8028F
-Date: 17 Feb 2020 11:16:00 +0900
-X-IronPort-AV: E=Sophos;i="5.70,450,1574089200"; d="scan'208";a="39233631"
+ by alsa1.perex.cz (Postfix) with ESMTP id 3401CF802A0
+ for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 03:16:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3401CF802A0
+Date: 17 Feb 2020 11:16:04 +0900
+X-IronPort-AV: E=Sophos;i="5.70,450,1574089200"; d="scan'208";a="39233641"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 17 Feb 2020 11:16:00 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 17 Feb 2020 11:16:04 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 6FD9E4007553;
- Mon, 17 Feb 2020 11:16:00 +0900 (JST)
-Message-ID: <8736baarht.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id C1C6940083CB;
+ Mon, 17 Feb 2020 11:16:04 +0900 (JST)
+Message-ID: <871rquarhp.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
@@ -59,8 +59,8 @@ To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87blpyarja.wl-kuninori.morimoto.gx@renesas.com>
 References: <87blpyarja.wl-kuninori.morimoto.gx@renesas.com>
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH v3 06/18] ASoC: soc-pcm: remove
-	snd_soc_dpcm_be_get/set_state()
+Subject: [alsa-devel] [PATCH v3 07/18] ASoC: soc-pcm: add
+	snd_soc_dpcm_can_be() and remove duplicate code
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,65 +80,129 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-No one is using snd_soc_dpcm_be_get/set_state().
-If it exists only by assumption that "it may be necessary someday",
-let's remove it now. Otherwise code maintenance will be difficult.
-We can revive it when we really needed it.
-Let's remove it, so far.
+Below functions are doing very similar things, the difference is
+used state only.
+
+	snd_soc_dpcm_can_be_free_stop()
+	snd_soc_dpcm_can_be_params()
+
+This patch adds common snd_soc_dpcm_check_state(), and use it from
+snd_soc_dpcm_can_be_free_stop() / snd_soc_dpcm_can_be_params().
+It can reduce duplicate code.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- include/sound/soc-dpcm.h |  8 --------
- sound/soc/soc-pcm.c      | 16 ----------------
- 2 files changed, 24 deletions(-)
+ sound/soc/soc-pcm.c | 70 ++++++++++++++++++++++-----------------------
+ 1 file changed, 35 insertions(+), 35 deletions(-)
 
-diff --git a/include/sound/soc-dpcm.h b/include/sound/soc-dpcm.h
-index 665516387671..3e7819d2a6aa 100644
---- a/include/sound/soc-dpcm.h
-+++ b/include/sound/soc-dpcm.h
-@@ -132,14 +132,6 @@ int snd_soc_dpcm_be_can_update(struct snd_soc_pcm_runtime *fe,
- struct snd_pcm_substream *
- 	snd_soc_dpcm_get_substream(struct snd_soc_pcm_runtime *be, int stream);
- 
--/* get the BE runtime state */
--enum snd_soc_dpcm_state
--	snd_soc_dpcm_be_get_state(struct snd_soc_pcm_runtime *be, int stream);
--
--/* set the BE runtime state */
--void snd_soc_dpcm_be_set_state(struct snd_soc_pcm_runtime *be, int stream,
--	enum snd_soc_dpcm_state state);
--
- /* internal use only */
- int soc_dpcm_runtime_update(struct snd_soc_card *);
- 
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index aafa97bbcd1d..acc8a7eabfbe 100644
+index acc8a7eabfbe..fcebc327c0ef 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -2957,22 +2957,6 @@ struct snd_pcm_substream *
+@@ -2957,17 +2957,17 @@ struct snd_pcm_substream *
  }
  EXPORT_SYMBOL_GPL(snd_soc_dpcm_get_substream);
  
--/* get the BE runtime state */
--enum snd_soc_dpcm_state
--	snd_soc_dpcm_be_get_state(struct snd_soc_pcm_runtime *be, int stream)
--{
--	return be->dpcm[stream].state;
--}
--EXPORT_SYMBOL_GPL(snd_soc_dpcm_be_get_state);
--
--/* set the BE runtime state */
--void snd_soc_dpcm_be_set_state(struct snd_soc_pcm_runtime *be,
--		int stream, enum snd_soc_dpcm_state state)
--{
--	be->dpcm[stream].state = state;
--}
--EXPORT_SYMBOL_GPL(snd_soc_dpcm_be_set_state);
--
+-/*
+- * We can only hw_free, stop, pause or suspend a BE DAI if any of it's FE
+- * are not running, paused or suspended for the specified stream direction.
+- */
+-int snd_soc_dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
+-		struct snd_soc_pcm_runtime *be, int stream)
++static int snd_soc_dpcm_check_state(struct snd_soc_pcm_runtime *fe,
++				    struct snd_soc_pcm_runtime *be,
++				    int stream,
++				    const enum snd_soc_dpcm_state *states,
++				    int num_states)
+ {
+ 	struct snd_soc_dpcm *dpcm;
+ 	int state;
+ 	int ret = 1;
+ 	unsigned long flags;
++	int i;
+ 
+ 	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
+ 	for_each_dpcm_fe(be, stream, dpcm) {
+@@ -2976,18 +2976,34 @@ int snd_soc_dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
+ 			continue;
+ 
+ 		state = dpcm->fe->dpcm[stream].state;
+-		if (state == SND_SOC_DPCM_STATE_START ||
+-			state == SND_SOC_DPCM_STATE_PAUSED ||
+-			state == SND_SOC_DPCM_STATE_SUSPEND) {
+-			ret = 0;
+-			break;
++		for (i = 0; i < num_states; i++) {
++			if (state == states[i]) {
++				ret = 0;
++				break;
++			}
+ 		}
+ 	}
+ 	spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 
+-	/* it's safe to free/stop this BE DAI */
++	/* it's safe to do this BE DAI */
+ 	return ret;
+ }
++
++/*
++ * We can only hw_free, stop, pause or suspend a BE DAI if any of it's FE
++ * are not running, paused or suspended for the specified stream direction.
++ */
++int snd_soc_dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
++		struct snd_soc_pcm_runtime *be, int stream)
++{
++	const enum snd_soc_dpcm_state state[] = {
++		SND_SOC_DPCM_STATE_START,
++		SND_SOC_DPCM_STATE_PAUSED,
++		SND_SOC_DPCM_STATE_SUSPEND,
++	};
++
++	return snd_soc_dpcm_check_state(fe, be, stream, state, ARRAY_SIZE(state));
++}
+ EXPORT_SYMBOL_GPL(snd_soc_dpcm_can_be_free_stop);
+ 
  /*
-  * We can only hw_free, stop, pause or suspend a BE DAI if any of it's FE
-  * are not running, paused or suspended for the specified stream direction.
+@@ -2997,30 +3013,14 @@ EXPORT_SYMBOL_GPL(snd_soc_dpcm_can_be_free_stop);
+ int snd_soc_dpcm_can_be_params(struct snd_soc_pcm_runtime *fe,
+ 		struct snd_soc_pcm_runtime *be, int stream)
+ {
+-	struct snd_soc_dpcm *dpcm;
+-	int state;
+-	int ret = 1;
+-	unsigned long flags;
+-
+-	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
+-	for_each_dpcm_fe(be, stream, dpcm) {
+-
+-		if (dpcm->fe == fe)
+-			continue;
++	const enum snd_soc_dpcm_state state[] = {
++		SND_SOC_DPCM_STATE_START,
++		SND_SOC_DPCM_STATE_PAUSED,
++		SND_SOC_DPCM_STATE_SUSPEND,
++		SND_SOC_DPCM_STATE_PREPARE,
++	};
+ 
+-		state = dpcm->fe->dpcm[stream].state;
+-		if (state == SND_SOC_DPCM_STATE_START ||
+-			state == SND_SOC_DPCM_STATE_PAUSED ||
+-			state == SND_SOC_DPCM_STATE_SUSPEND ||
+-			state == SND_SOC_DPCM_STATE_PREPARE) {
+-			ret = 0;
+-			break;
+-		}
+-	}
+-	spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+-
+-	/* it's safe to change hw_params */
+-	return ret;
++	return snd_soc_dpcm_check_state(fe, be, stream, state, ARRAY_SIZE(state));
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dpcm_can_be_params);
+ 
 -- 
 2.17.1
 
