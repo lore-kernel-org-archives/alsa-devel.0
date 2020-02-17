@@ -2,91 +2,72 @@ Return-Path: <SRS0=LPcU=4F=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 77D1DC35254
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 12:18:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C0F1DC35254
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 12:37:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 01A2B20578
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 12:18:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4BD8A207FD
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 12:37:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AM0isWoY";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=metafoo.de header.i=@metafoo.de header.b="NaDUFXbf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 01A2B20578
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=metafoo.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ntE2o5AS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4BD8A207FD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5AE871612;
-	Mon, 17 Feb 2020 13:17:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5AE871612
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9A8791657;
+	Mon, 17 Feb 2020 13:36:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A8791657
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581941910;
-	bh=UJJQIV6QC4RUJAySZCIsVmDf3AdiZzpJ5u48FrJ0S88=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1581943069;
+	bh=ydifzsJ40KU0yQFS5L7E9psBLEjJmYBfvnPBxZQejfs=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AM0isWoY2avmxOte5Lyy/DsFKWebfKjlqAqUSCRQ/dj6WmqmlYpg805hUp59/DnXd
-	 gqZNYnPY+PEm7yUEmZiwg6XY0VkfAT6COeOKKMfwRakTXrvwzD0D0H3PmTgPp1lXTk
-	 7ehGz4rj3sfDGe+kIzjHd1mWpe+WMWDnkkNa3ZBQ=
+	b=ntE2o5AS8oE+1MnaerP7SVLdQr+PY/f7mYtpS1WLh4ofhfo9TotPwgc7LfD0XPkkF
+	 HYBeYgqk4h+tHGBNDyxPIEWttUXgg1cQ1J/+0RtGJT5bKaCkDnwAI/DhQJMuqnKWdo
+	 9WYNFZSabMHiI33rZ9ZelpnkXR1Mgp8XFnwhh0uc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D5F22F800B6;
-	Mon, 17 Feb 2020 13:17:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1F962F8015E;
+	Mon, 17 Feb 2020 13:36:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 85EBBF80172; Mon, 17 Feb 2020 13:17:38 +0100 (CET)
-Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E669BF800B6
- for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 13:17:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E669BF800B6
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=metafoo.de header.i=@metafoo.de
- header.b="NaDUFXbf"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de; 
- s=default2002;
- h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
- MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
- Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
- Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
- List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=fZoATTqPJUdKKC1IrtDOAB96Jovw6rpyMcO43yCvYnY=; b=NaDUFXbfMP/SP9qaMEYzwzE1pZ
- RQM59QJelqnu7IK1BegM4TGvTJVsXUPjoLLwyKp3vXfMnQzcOpJUo5ZJFonTyzwHRzECBKHbX/zX2
- 0JdvHZo5Cl9EGAkTKhUvHDKBNvpyIi2Hz8YkPnW9LOE7R5n0P00bGIs6BHTek7/xPHfc3LHicsSSj
- lPpWaVQj93SpMR51I0YtBPS1ZkfJZJIzMIcms76BwzaUShc+rZf+tHndmeMrReD6R9iMGlCZqq65T
- HY1B9+aKP4fg0zQg2IAAuByB44pFZGOmfaiT6zARmCK4kGVt3IY0dPIYl4JeUYNNahF0dwRleO28i
- 5T7jmpzQ==;
-Received: from sslproxy05.your-server.de ([78.46.172.2])
- by www381.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
- (Exim 4.89_1) (envelope-from <lars@metafoo.de>)
- id 1j3fL9-0008Gr-0T; Mon, 17 Feb 2020 13:17:31 +0100
-Received: from [93.104.109.112] (helo=[192.168.178.20])
- by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
- (Exim 4.92) (envelope-from <lars@metafoo.de>)
- id 1j3fL8-000GU3-PV; Mon, 17 Feb 2020 13:17:30 +0100
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>,
- Charles Keepax <ckeepax@opensource.cirrus.com>
-References: <77884bad-81fd-f876-3f72-1f96a39d6329@perex.cz>
- <d1d0be54-5bdb-0405-320a-d7e542fdbcde@metafoo.de>
- <20200217113540.GB108283@ediswmail.ad.cirrus.com>
- <4fafa55a-acd0-8a64-2ebe-0ed38b306678@ti.com>
-From: Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <ce896073-df9e-7504-6c37-c611dd750936@metafoo.de>
-Date: Mon, 17 Feb 2020 13:17:30 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+ id 7DDA4F80172; Mon, 17 Feb 2020 13:36:57 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id A8DD5F800B6
+ for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 13:36:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8DD5F800B6
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 30CBB30E;
+ Mon, 17 Feb 2020 04:36:52 -0800 (PST)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A84553F703;
+ Mon, 17 Feb 2020 04:36:51 -0800 (PST)
+Date: Mon, 17 Feb 2020 12:36:50 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Derek =?utf-8?B?W+aWueW+t+e+qV0=?= <derek.fang@realtek.com>
+Message-ID: <20200217123650.GD9304@sirena.org.uk>
+References: <1581666814-6380-1-git-send-email-derek.fang@realtek.com>
+ <20200214123803.GG4827@sirena.org.uk>
+ <b9cfe003aeb34216b59c9a22c4601bf1@realtek.com>
 MIME-Version: 1.0
-In-Reply-To: <4fafa55a-acd0-8a64-2ebe-0ed38b306678@ti.com>
-Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.102.1/25725/Sun Feb 16 13:04:22 2020)
-Cc: ALSA development <alsa-devel@alsa-project.org>
-Subject: Re: [alsa-devel] DMARC & gmail & cirrus.com
+In-Reply-To: <b9cfe003aeb34216b59c9a22c4601bf1@realtek.com>
+X-Cookie: There was a phone call for you.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "lars@metafoo.de" <lars@metafoo.de>,
+ "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+ Albert Chen <albertchen@realtek.com>,
+ Shuming =?utf-8?B?W+iMg+abuOmKmF0=?= <shumingf@realtek.com>,
+ "Flove\(HsinFu\)" <flove@realtek.com>
+Subject: Re: [alsa-devel] [PATCH 1/2] ASoC: rt5682: Add CCF usage for
+	providing I2S clks
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,45 +80,75 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: multipart/mixed; boundary="===============5898061874182434278=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-T24gMi8xNy8yMCAxMjo1NiBQTSwgUGV0ZXIgVWpmYWx1c2kgd3JvdGU6Cj4gSGksCj4gCj4gT24g
-MTcvMDIvMjAyMCAxMy4zNSwgQ2hhcmxlcyBLZWVwYXggd3JvdGU6Cj4+IE9uIE1vbiwgRmViIDE3
-LCAyMDIwIGF0IDEwOjMzOjU1QU0gKzAxMDAsIExhcnMtUGV0ZXIgQ2xhdXNlbiB3cm90ZToKPj4+
-IE9uIDIvMTcvMjAgOTo0NiBBTSwgSmFyb3NsYXYgS3lzZWxhIHdyb3RlOgo+Pj4+ICDCoMKgwqDC
-oEkgY2FuIGVuYWJsZSB0aGUgIlJlcGxhY2UgdGhlIEZyb206IGhlYWRlciBhZGRyZXNzIiBpbiB0
-aGUKPj4+PiBtYWlsbWFuIGNvbmZpZyB0byAiTXVuZ2UgRnJvbSIgbGlrZSBpbiB0aGUgYWJvdmUg
-ZXhhbXBsZSwgYnV0IGl0Cj4+Pj4gd2lsbCBtZWFuIHRoYXQgRnJvbTogd2lsbCBiZSBhbHRlcmVk
-IChzZWUgdGhlIGV4cGxhbmF0aW9uKS4KPj4+Cj4+PiBUaGUgd2F5IEkgdW5kZXJzdGFuZCB0aGUg
-b3B0aW9uIHRvIHJlcGxhY2UgdGhlIEZyb206IGhlYWRlciBpcyB0aGF0Cj4+PiBpdCB3aWxsIG9u
-bHkgaGFwcGVuIGZvciB0aG9zZSB0aGF0IGhhdmUgYSByZWplY3QgcG9saWN5LCBmb3IKPj4+IGV2
-ZXJ5Ym9keSBlbHNlIG5vdGhpbmcgY2hhbmdlcy4gU28gaWYgdGhlIG1haWxpbmdsaXN0IGlzIHN1
-cHBvc2VkIHRvCj4+PiBzdGF5IHVzZWZ1bCBmb3IgdGhvc2Ugd2l0aCBhIHJlamVjdCBwb2xpY3kg
-dGhlIG9ubHkgb3B0aW9uIGlzIHRvCj4+PiByZXdyaXRlIHRoZSBmcm9tIGhlYWRlciBmb3IgdGhl
-bS4KPj4+Cj4+Cj4+IFJld3JpdGluZyBzZWVtcyBsaWtlIHRoZSBiZXN0IG9wdGlvbiByZWFsbHks
-IEkgZG91YnQgdGhlcmUKPj4gaXMgbXVjaCBjaGFuY2Ugb2YgbWUgbWFuYWdpbmcgdG8gZ2V0IHRo
-ZSBJUyBndXlzIHRvIGNoYW5nZQo+PiBjaXJydXMuY29tJ3MgRE1BUkMgcG9saWN5IGFuZCBJIGd1
-ZXNzIHdlIG1pZ2h0IG5vdCBiZSB0aGUgb25seQo+PiBwZW9wbGUgd2hvIGNhdXNlIHRyb3VibGUg
-b24gdGhpcyBmcm9udC4KPiAKPiB0aS5jb20gYWxzbyBoYWQgaXNzdWVzIGNhdXNlZCBieSBETUFS
-QyBwb2xpY3kuIFdlIGhhdmUgZXh0ZW5zaXZlbHkKPiBuYWdnZWQgb3VyIElUIGRlcGFydG1lbnQg
-b3ZlciB0aGlzIGFuZCBpdCBnb3QgcmVzb2x2ZWQ/Cj4gUHJvYmFibHkuIE5vdCBzdXJlLCBidXQg
-SSBoYXZlIG5vdCBiZWVuIHVuc3Vic2NyaWJlZCBsYXRlbHkgZnJvbSBsaXN0cwo+IGFuZCBubyBj
-b21wbGFpbnRzIG9uIHBlb3BsZSBub3QgcmVjZWl2aW5nIG15IG1haWxzLi4uIGl0IGNvdWxkIGJl
-IHRoYXQKPiB0aGV5IGRvIG5vdCBpbmRlZWQgcmVjZWl2ZSB0aGUgbWFpbHMgd2hpY2ggbWFrZXMg
-dGhlbSBoYXBweSA7KQpJdHMgbm90IHRoYXQgeW91IGdldCB1bnN1YnNjcmliZWQsIGJ1dCBldmVy
-eWJvZHkgZWxzZSB3aG8gaXMgcmVqZWN0aW5nIAp5b3VyIG1haWxzIDspCgpfZG1hcmMudGkuY29t
-LgkJMzYwMAlJTglUWFQgCiJ2PURNQVJDMTtwPXF1YXJhbnRpbmU7c3A9bm9uZTtydWE9bWFpbHRv
-OmRtYXJjLWFnZ3JAdGkuY29tO3J1Zj1tYWlsdG86ZG1hcmMtZm9yQHRpLmNvbTtmbz0wIgoKVGhl
-IHA9cXVhcmFudGluZSBtZWFucyB0aGF0IHlvdXIgbWVzc2FnZXMgZm9yd2FyZGVkIGJ5IHRoZSBB
-TFNBIAptYWlsaW5nbGlzdCB3aWxsIHByb2JhYmx5IGdvIHRvIHNwYW0gZm9yIHBlb3BsZSB1c2lu
-ZyBnbWFpbC4KClNvbWUgb3RoZXIgbWFpbGluZ2xpc3RzIGJ0dyBkb24ndCBoYXZlIHRoaXMgcHJv
-YmxlbSwgc2luY2UgdGhleSBmb3J3YXJkIAp0aGUgc2lnbmVkIGNvbnRlbnQgb2YgdGhlIG1haWwg
-dW5tb2RpZmllZC4gQnV0IHNpbmNlIGFsc2EgbW9kaWZpZXMgdGhlIApzdWJqZWN0IGFzIHdlbGwg
-YXMgYWRkaW5nIHRoZSBpbmZvIGZvb3RlciB0aGUgb3JpZ2luYWwgc2lnbmF0dXJlIGlzIG5vIAps
-b25nZXIgdmFsaWQuCgotIExhcnMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
-Y3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
-YWxzYS1kZXZlbAo=
+
+--===============5898061874182434278==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="/3yNEOqWowh/8j+e"
+Content-Disposition: inline
+
+
+--/3yNEOqWowh/8j+e
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Feb 17, 2020 at 10:59:55AM +0000, Derek [=E6=96=B9=E5=BE=B7=E7=BE=
+=A9] wrote:
+> > Subject: Re: [PATCH 1/2] ASoC: rt5682: Add CCF usage for providing I2S =
+clks
+
+> > > +	if (parent_rate !=3D CLK_PLL2_FIN)
+> > > +		dev_warn(component->dev, "clk %s only support %d Hz input\n",
+> > > +			clk_name, CLK_PLL2_FIN);
+
+> > > +	if (rate !=3D CLK_48) {
+> > > +		dev_warn(component->dev, "clk %s only support %d Hz output\n",
+> > > +			clk_name, CLK_48);
+> > > +		rate =3D CLK_48;
+> > > +	}
+
+> > Are these genuine restrictions of the hardware or is this just being
+> > hard coded in the driver?
+
+> It's hard coded for an application case.
+> Generate a 48kHz clk with a parent 48 MHz clk.
+
+I see...  obviously this is really not good quality of implementation
+although it doesn't actually break any external interfaces so I guess we
+could take it.  I would at least want to see some clear comments in both
+the code and the changelog explaining that this limitation is just a
+temporary hack until a better implementation is done though.
+
+--/3yNEOqWowh/8j+e
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5KiOEACgkQJNaLcl1U
+h9DMXQf+Kon4Z0ajfBKari7ZjfJBGGoDxE3CDeiCPfGliI89G4zGAZkg4rOyrNkE
+xnvk5TsRwBCe+yYRz6PXukm8FXIV6Th0tcABe/KzKfSfsJpk7T0Mmez2Yz++SNKa
+QKOHFXF2AGtXFhbfQ6eq6nj9d+9es49KWBixzf6HBrpBrqoGCGmK/eUcmvggjEgs
+tOq3WIDTjHnSvR1Zt/I15u0O46NVQ2jwvwP2htvHVcrId2Kk3lInSkXl3mMshqf6
+Lio0vKQ4mSkgLOPXh+tUlYWRBpLfrbZFLFRLvoZnD5aUCB9aZ3UaFvFzy17cUL5W
+ldYn9lt0R26U9RgCzF1jAkgxQDaaRQ==
+=L9HC
+-----END PGP SIGNATURE-----
+
+--/3yNEOqWowh/8j+e--
+
+--===============5898061874182434278==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============5898061874182434278==--
