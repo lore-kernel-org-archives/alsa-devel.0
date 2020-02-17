@@ -2,97 +2,94 @@ Return-Path: <SRS0=LPcU=4F=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2983CC7619D
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24F50C35242
 	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 07:52:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A7EED207FD
+	by mail.kernel.org (Postfix) with ESMTPS id A7E7320725
 	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 07:52:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZaJQxGu4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A7EED207FD
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ACAnxu80"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A7E7320725
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=csie.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C6618166D;
-	Mon, 17 Feb 2020 08:41:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C6618166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6306C839;
+	Mon, 17 Feb 2020 08:33:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6306C839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581925358;
-	bh=A8yBkcgmGWA5nS+EptjQSxvzstMXcSYYvRhwSVkNZGs=;
+	s=default; t=1581924874;
+	bh=UcilPhArBNE/wmmP5/5ySUGm1hc3QybTK1jWMcx8etw=;
 	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZaJQxGu4TO3AbkibpGoFPEcz48NjL7xA/glZuYc4S9vf94xiRvXl/xPIANlqAcYek
-	 k+QfIAjB4zDJawivU9XhUR04HRLH8CMv4Co+rpsqS32JgACG0lr7UbNMPUM23OVU+8
-	 YAZscZPUTncxX79jT5newgu8NlwAlCi1N2jNnBJY=
+	b=ACAnxu80L99zpudlLXrazOD8ihfx8G6fpNg6Se2c2SOH+Ov/Tmz1a8sibpVh4bM7S
+	 kjCLiC/Z6xD++VlSjEsBOZfjn8jZxu0yIQwHS+lxj5Al//Wm/52xV7erD3JRFUhyLv
+	 1xkFVxWk6yOueuLZtl5+e/QI08LXgOhwD1MXX6RU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1FC4EF800C4;
-	Mon, 17 Feb 2020 08:41:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id ECB70F800B6;
+	Mon, 17 Feb 2020 08:33:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 607C4F80172; Mon, 17 Feb 2020 08:41:46 +0100 (CET)
-Received: from mail-ed1-f65.google.com (mail-ed1-f65.google.com
- [209.85.208.65])
+ id A4982F80172; Mon, 17 Feb 2020 08:33:42 +0100 (CET)
+Received: from mail-ed1-f66.google.com (mail-ed1-f66.google.com
+ [209.85.208.66])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7B07EF800B6
- for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 08:41:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B07EF800B6
-Received: by mail-ed1-f65.google.com with SMTP id m13so19538799edb.6
- for <alsa-devel@alsa-project.org>; Sun, 16 Feb 2020 23:41:43 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8C5A2F800B6
+ for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 08:33:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C5A2F800B6
+Received: by mail-ed1-f66.google.com with SMTP id r21so19552229edq.0
+ for <alsa-devel@alsa-project.org>; Sun, 16 Feb 2020 23:33:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=76WiewyfAQysMsVYcXQkeWLkjiTOOZNh8t0AnmKu14M=;
- b=rm8rtr3wGMSw9ecqeSaN6CYH+23imVn5NxpydjYwIo4seoHj182Tq8Fc3Yve8az+bE
- qDkwmpoy2MLUGt5upEG3gVKAwjLMdz4W7vBL8B0PrBTBZ7+ERXOsQTEeNl/pWhjzbMxW
- b+hRyg1fep54Cv/Q/8se3ATwENOPvndv3mDYcHfz8ECdMycxdopU5ZRG7zv3rW+7p1r+
- 3Ysn69eQayaHKGfak3W47UDoeyraX1esII9frxy9AxNjVWFTZHqIRNXwF02lJyLsUQjx
- pP4QuayjW0oY7Orsu0hXs4bIA7cg6RxW1F5wVObz02WkzL127FUiQRFYxR8ZOhYCMvD2
- kDZw==
-X-Gm-Message-State: APjAAAVqJeqW680AttHUpqWjBcroVNHx8LSmRWWBzVVpwHmlqD851izx
- 1JRD51SNa9Adf23azZBKvIbeyshZGAI=
-X-Google-Smtp-Source: APXvYqx3ARg/VKTodSLakwokTbhvOs5gPpVAhywE6QXWamu7sn3HKOqnf4ZEWx3oFR0tPxCpWMtY9w==
-X-Received: by 2002:aa7:d712:: with SMTP id t18mr7645944edq.0.1581925302089;
- Sun, 16 Feb 2020 23:41:42 -0800 (PST)
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com.
- [209.85.221.49])
- by smtp.gmail.com with ESMTPSA id l1sm212266edf.43.2020.02.16.23.41.41
+ bh=gSSCawygB3nvTAtWswavRnt6s9D1sDcPs8tiWUcv5Cc=;
+ b=G0J5j01J7tkJ7QAIS7xRAeUFSjAltScqDcrzEojmuVIMaknMlADbRhqt3iZY+nA4zf
+ l8s2IhuNZcTKrnJS3Viml1ZtJu2xjasi4ZXRylm1iHdtbB0NkGzpMdzixubihuW8LNl7
+ P+1BY4WBkZbpNvsp99wltyY9en9lwEt3AbyWKMJDOAI+xITFQ2EkeeR+06NsUkm8SP6y
+ XkKeiDzd6X1t8SPMvfOj6eBmAxhaZEtbC8i9fR+KyYcmYPvB7Ve1PLzNWSr+jYJIqS2a
+ u8aAu3cXQM3DOpPtILvE2Lyphpx8UCg1MHMZeSMuzlA9MZqxK/lVFwX3xLfEemDbd45l
+ cnYQ==
+X-Gm-Message-State: APjAAAX2GWZG5HOjeljwl0fkmoo2YoxHuW2hHwXmcwDVRx5H+SLH4ybt
+ 0kLwxeVqk2R0o5EAQ/NsoBRaaMQAToc=
+X-Google-Smtp-Source: APXvYqxlEWUZKlqD/2ZfVC8GyN+0IfJ3uivdVzrYAxDKUEQ9uuiFefqZyrmqs2xaTfndBMNwwX2NlA==
+X-Received: by 2002:aa7:db44:: with SMTP id n4mr12724201edt.357.1581924814366; 
+ Sun, 16 Feb 2020 23:33:34 -0800 (PST)
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com.
+ [209.85.128.54])
+ by smtp.gmail.com with ESMTPSA id y4sm856755ejp.50.2020.02.16.23.33.33
  for <alsa-devel@alsa-project.org>
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Sun, 16 Feb 2020 23:41:41 -0800 (PST)
-Received: by mail-wr1-f49.google.com with SMTP id n10so16407881wrm.1
- for <alsa-devel@alsa-project.org>; Sun, 16 Feb 2020 23:41:40 -0800 (PST)
-X-Received: by 2002:a5d:484f:: with SMTP id n15mr20324028wrs.365.1581925300705; 
- Sun, 16 Feb 2020 23:41:40 -0800 (PST)
+ Sun, 16 Feb 2020 23:33:34 -0800 (PST)
+Received: by mail-wm1-f54.google.com with SMTP id t14so17194915wmi.5
+ for <alsa-devel@alsa-project.org>; Sun, 16 Feb 2020 23:33:33 -0800 (PST)
+X-Received: by 2002:a1c:dc85:: with SMTP id t127mr22012620wmg.16.1581924813434; 
+ Sun, 16 Feb 2020 23:33:33 -0800 (PST)
 MIME-Version: 1.0
-References: <20200217064250.15516-1-samuel@sholland.org>
- <20200217064250.15516-5-samuel@sholland.org>
-In-Reply-To: <20200217064250.15516-5-samuel@sholland.org>
+References: <20200217021813.53266-1-samuel@sholland.org>
+ <20200217021813.53266-9-samuel@sholland.org>
+In-Reply-To: <20200217021813.53266-9-samuel@sholland.org>
 From: Chen-Yu Tsai <wens@csie.org>
-Date: Mon, 17 Feb 2020 15:41:29 +0800
-X-Gmail-Original-Message-ID: <CAGb2v6543yLuBUi_37DbFdfkOo_OBK8v-rB2hViex_BCzAurPQ@mail.gmail.com>
-Message-ID: <CAGb2v6543yLuBUi_37DbFdfkOo_OBK8v-rB2hViex_BCzAurPQ@mail.gmail.com>
+Date: Mon, 17 Feb 2020 15:33:22 +0800
+X-Gmail-Original-Message-ID: <CAGb2v67wvWEYM4ttKVmgM6Pou+00tuvwb8nMvjR+Y+F-p2cA=g@mail.gmail.com>
+Message-ID: <CAGb2v67wvWEYM4ttKVmgM6Pou+00tuvwb8nMvjR+Y+F-p2cA=g@mail.gmail.com>
 To: Samuel Holland <samuel@sholland.org>
-Cc: Mark Rutland <mark.rutland@arm.com>,
- devicetree <devicetree@vger.kernel.org>,
- Linux-ALSA <alsa-devel@alsa-project.org>,
+Cc: Luca Weiss <luca@z3ntu.xyz>, Linux-ALSA <alsa-devel@alsa-project.org>,
  linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Maxime Ripard <mripard@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
  Vasily Khoruzhick <anarsoul@gmail.com>, Mark Brown <broonie@kernel.org>,
- Maxime Ripard <mripard@kernel.org>,
- =?UTF-8?Q?Myl=C3=A8ne_Josserand?= <mylene.josserand@free-electrons.com>,
  linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [alsa-devel] [RFC PATCH 04/34] ASoC: sun8i-codec: Remove unused
-	dev from codec struct
+Subject: Re: [alsa-devel] [PATCH 8/8] ASoC: sun50i-codec-analog: Enable DAPM
+	for earpiece switch
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -110,14 +107,82 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Feb 17, 2020 at 2:42 PM Samuel Holland <samuel@sholland.org> wrote:
->
-> This field is not used anywhere in the driver, so remove it.
->
-> Fixes: 36c684936fae ("ASoC: Add sun8i digital audio codec")
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
+Hi,
 
-Acked-by: Chen-Yu Tsai <wens@csie.org>
+On Mon, Feb 17, 2020 at 10:18 AM Samuel Holland <samuel@sholland.org> wrote:
+>
+> By including the earpiece mute switch in the DAPM graph, both the
+> earpiece amplifier and the Mixer/DAC inputs can be powered off when
+> the earpiece is muted.
+>
+> The mute switch is between the source selection and the amplifier,
+> as per the diagram in the SoC manual.
+>
+> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> ---
+>  sound/soc/sunxi/sun50i-codec-analog.c | 15 +++++++++------
+>  1 file changed, 9 insertions(+), 6 deletions(-)
+>
+> diff --git a/sound/soc/sunxi/sun50i-codec-analog.c b/sound/soc/sunxi/sun50i-codec-analog.c
+> index 84bb76cad74f..6c89b0716bbd 100644
+> --- a/sound/soc/sunxi/sun50i-codec-analog.c
+> +++ b/sound/soc/sunxi/sun50i-codec-analog.c
+> @@ -232,11 +232,6 @@ static const struct snd_kcontrol_new sun50i_a64_codec_controls[] = {
+>                        SUN50I_ADDA_EARPIECE_CTRL1,
+>                        SUN50I_ADDA_EARPIECE_CTRL1_ESP_VOL, 0x1f, 0,
+>                        sun50i_codec_earpiece_vol_scale),
+> -
+> -       SOC_SINGLE("Earpiece Playback Switch",
+> -                  SUN50I_ADDA_EARPIECE_CTRL1,
+> -                  SUN50I_ADDA_EARPIECE_CTRL1_ESPPA_MUTE, 1, 0),
+> -
+>  };
+>
+>  static const char * const sun50i_codec_hp_src_enum_text[] = {
+> @@ -295,6 +290,11 @@ static const struct snd_kcontrol_new sun50i_codec_earpiece_src[] = {
+>                       sun50i_codec_earpiece_src_enum),
+>  };
+>
+> +static const struct snd_kcontrol_new sun50i_codec_earpiece_switch =
+> +       SOC_DAPM_SINGLE("Playback Switch",
+> +                       SUN50I_ADDA_EARPIECE_CTRL1,
+> +                       SUN50I_ADDA_EARPIECE_CTRL1_ESPPA_MUTE, 1, 0);
+> +
+>  static const struct snd_soc_dapm_widget sun50i_a64_codec_widgets[] = {
+>         /* DAC */
+>         SND_SOC_DAPM_DAC("Left DAC", NULL, SUN50I_ADDA_MIX_DAC_CTRL,
+> @@ -341,6 +341,8 @@ static const struct snd_soc_dapm_widget sun50i_a64_codec_widgets[] = {
+>
+>         SND_SOC_DAPM_MUX("Earpiece Source Playback Route",
+>                          SND_SOC_NOPM, 0, 0, sun50i_codec_earpiece_src),
+> +       SND_SOC_DAPM_SWITCH("Earpiece",
+> +                           SND_SOC_NOPM, 0, 0, &sun50i_codec_earpiece_switch),
+
+I would suggest naming this something a bit more specific, in case someone
+uses "Earpiece" as a widget name at the board level. Also, having the
+"Earpiece" come before the "Earpiece Amp" in the route doesn't make much
+sense. However, this creates an issue with the name of the created kcontrol...
+Any other ideas?
+
+ChenYu
+
+
+>         SND_SOC_DAPM_OUT_DRV("Earpiece Amp", SUN50I_ADDA_EARPIECE_CTRL1,
+>                              SUN50I_ADDA_EARPIECE_CTRL1_ESPPA_EN, 0, NULL, 0),
+>         SND_SOC_DAPM_OUTPUT("EARPIECE"),
+> @@ -462,7 +464,8 @@ static const struct snd_soc_dapm_route sun50i_a64_codec_routes[] = {
+>         { "Earpiece Source Playback Route", "DACR", "Right DAC" },
+>         { "Earpiece Source Playback Route", "Left Mixer", "Left Mixer" },
+>         { "Earpiece Source Playback Route", "Right Mixer", "Right Mixer" },
+> -       { "Earpiece Amp", NULL, "Earpiece Source Playback Route" },
+> +       { "Earpiece", "Playback Switch", "Earpiece Source Playback Route" },
+> +       { "Earpiece Amp", NULL, "Earpiece" },
+>         { "EARPIECE", NULL, "Earpiece Amp" },
+>  };
+>
+> --
+> 2.24.1
+>
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
