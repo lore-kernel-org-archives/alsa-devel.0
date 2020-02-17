@@ -2,60 +2,65 @@ Return-Path: <SRS0=LPcU=4F=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C6C07C7619D
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 08:28:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1CFFC7619B
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 08:29:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 46D2E20801
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 08:28:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6ACDC20725
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 08:29:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YRoSXvd9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 46D2E20801
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nLPGmzny"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6ACDC20725
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9CCE5846;
-	Mon, 17 Feb 2020 09:27:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CCE5846
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6164D1683;
+	Mon, 17 Feb 2020 09:28:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6164D1683
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581928098;
-	bh=H0qxCY1r7GvTfmaiIh0rs8mgJTA79qv0cjCM4FDscrM=;
-	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=YRoSXvd9do6XDa6CyveqXq9HYjDsaetZ8rUlEw/ojgUV7Deg8ekngDvB0tm0mXPoJ
-	 TxmLNM3J7zNmHKtfN8KKXJa1ueYZka0Mel4G0MS+QPpKLePAiVvkNrbbhwYnCDFQdh
-	 U3Zx1o+ni8XO5Eg9pv6KIQYjp4PrE7In5+i693gM=
+	s=default; t=1581928152;
+	bh=0DkqMkGyoi7gi5tKQ6thV00EN9/ZsdTschgzN9U9BtA=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=nLPGmznysP0FueHQSwv2SflTcZMJu95QCiEvFvStLrd5ZYTjcITFnwOoea4FDN5Hs
+	 mEvRHU5yyWVIz22kDMVytJmcZ+CPzh+1f2zSroIrtnGd+H42ouzHghcZeajZg8OCAm
+	 3LBiRj+Ro2n54wLTWoo1CuSUf0E4xPdvBFZaYL2s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 331B4F800C4;
-	Mon, 17 Feb 2020 09:27:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4E1D7F8015E;
+	Mon, 17 Feb 2020 09:27:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 796C7F8015E; Mon, 17 Feb 2020 09:27:26 +0100 (CET)
+ id CA531F80096; Mon, 17 Feb 2020 09:27:48 +0100 (CET)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id D0680F800B6
- for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 09:27:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0680F800B6
-Date: 17 Feb 2020 17:27:17 +0900
-X-IronPort-AV: E=Sophos;i="5.70,451,1574089200"; d="scan'208";a="39275002"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 17 Feb 2020 17:27:17 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 5893FF80096
+ for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 09:27:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5893FF80096
+Date: 17 Feb 2020 17:27:43 +0900
+X-IronPort-AV: E=Sophos;i="5.70,451,1574089200"; d="scan'208";a="39275033"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 17 Feb 2020 17:27:43 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id E552941A353D;
- Mon, 17 Feb 2020 17:27:17 +0900 (JST)
-Message-ID: <87imk5bovg.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id DEBB54008569;
+ Mon, 17 Feb 2020 17:27:43 +0900 (JST)
+Message-ID: <87ftf9bouq.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Mark Brown <broonie@kernel.org>
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <87imk5bovg.wl-kuninori.morimoto.gx@renesas.com>
+References: <87imk5bovg.wl-kuninori.morimoto.gx@renesas.com>
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH v4 00/18] ASoC: soc-pcm cleanup step3
+Subject: [alsa-devel] [PATCH v4 02/18] ASoC: soc-pcm: use dai_get_widget()
+	at dpcm_get_be()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,47 +79,95 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-These are v4 of soc-pcm cleanup step3.
-Main change from v3 is that
-	- tidyup Subject on [10/18] patch
-	- added Takashi's Reviewed-by / Acked-by on [10/18], [18/18]
+dpcm_get_be() has very duplicate code.
 
-Kuninori Morimoto (18):
-   1) ASoC: soc-pcm: move dai_get_widget()
-   2) ASoC: soc-pcm: use dai_get_widget() at dpcm_get_be()
-   3) ASoC: soc-pcm: use dai_get_widget() at dpcm_end_walk_at_be()
-   4) ASoC: soc-pcm: use dpcm_get_be() at dpcm_end_walk_at_be()
-   5) ASoC: soc-pcm: remove soc_dpcm_be_digital_mute()
-   6) ASoC: soc-pcm: remove snd_soc_dpcm_be_get/set_state()
-   7) ASoC: soc-pcm: add snd_soc_dpcm_can_be() and remove duplicate code
-   8) ASoC: soc-pcm: use goto and remove multi return
-   9) ASoC: soc-pcm: merge playback/cature_active into stream_active
-  10) ASoC: soc.h: add for_each_pcm_streams()
-  11) ASoC: soc-core: use for_each_pcm_streams() macro
-  12) ASoC: soc-pcm: use for_each_pcm_streams() macro
-  13) ASoC: soc-generic-dmaengine-pcm: use for_each_pcm_streams() macro
-  14) ASoC: dwc: dwc-i2s: use for_each_pcm_streams() macro
-  15) ASoC: fsl: fsl_asrc_dma: use for_each_pcm_streams() macro
-  16) ASoC: qcom: lpass-platform: use for_each_pcm_streams() macro
-  17) ASoC: sof: sof-audio: use for_each_pcm_streams() macro
-  18) ALSA: usx2y: use for_each_pcm_streams() macro
+	dpcm_get_be() {
+		...
+		if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
+(1)			/* code for Playback */
+		} else  {
+(2)			/* code for Capture */
+		}
+	}
 
- include/sound/pcm.h                   |   5 +
- include/sound/soc-dai.h               |   3 +-
- include/sound/soc-dpcm.h              |   9 -
- sound/soc/codecs/cs4271.c             |   4 +-
- sound/soc/dwc/dwc-i2s.c               |   8 +-
- sound/soc/fsl/fsl_asrc_dma.c          |   4 +-
- sound/soc/qcom/lpass-platform.c       |   2 +-
- sound/soc/soc-core.c                  |  48 ++--
- sound/soc/soc-generic-dmaengine-pcm.c |   8 +-
- sound/soc/soc-pcm.c                   | 327 +++++++++-----------------
- sound/soc/sof/sof-audio.c             |  19 +-
- sound/usb/usx2y/usbusx2yaudio.c       |   9 +-
- 12 files changed, 162 insertions(+), 284 deletions(-)
+The difference between Playback (1) and Capture (2) code is pointer only
+(= "playback_widget" or "caputre_widget").
+OTOH, now we already has dai_get_widget() for it.
+This means we can merge (1) and (2).
+This patch do it and remove duplicated code.
 
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+---
+ sound/soc/soc-pcm.c | 41 ++++++++++++-----------------------------
+ 1 file changed, 12 insertions(+), 29 deletions(-)
+
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index a8adc8d06c05..e60dfbcf52b4 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1246,47 +1246,30 @@ static struct snd_soc_pcm_runtime *dpcm_get_be(struct snd_soc_card *card,
+ 		struct snd_soc_dapm_widget *widget, int stream)
+ {
+ 	struct snd_soc_pcm_runtime *be;
++	struct snd_soc_dapm_widget *w;
+ 	struct snd_soc_dai *dai;
+ 	int i;
+ 
+ 	dev_dbg(card->dev, "ASoC: find BE for widget %s\n", widget->name);
+ 
+-	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
+-		for_each_card_rtds(card, be) {
++	for_each_card_rtds(card, be) {
+ 
+-			if (!be->dai_link->no_pcm)
+-				continue;
++		if (!be->dai_link->no_pcm)
++			continue;
+ 
+-			dev_dbg(card->dev, "ASoC: try BE : %s\n",
+-				be->cpu_dai->playback_widget ?
+-				be->cpu_dai->playback_widget->name : "(not set)");
++		w = dai_get_widget(be->cpu_dai, stream);
+ 
+-			if (be->cpu_dai->playback_widget == widget)
+-				return be;
++		dev_dbg(card->dev, "ASoC: try BE : %s\n",
++			w ? w->name : "(not set)");
+ 
+-			for_each_rtd_codec_dai(be, i, dai) {
+-				if (dai->playback_widget == widget)
+-					return be;
+-			}
+-		}
+-	} else {
+-
+-		for_each_card_rtds(card, be) {
+-
+-			if (!be->dai_link->no_pcm)
+-				continue;
++		if (w == widget)
++			return be;
+ 
+-			dev_dbg(card->dev, "ASoC: try BE %s\n",
+-				be->cpu_dai->capture_widget ?
+-				be->cpu_dai->capture_widget->name : "(not set)");
++		for_each_rtd_codec_dai(be, i, dai) {
++			w = dai_get_widget(dai, stream);
+ 
+-			if (be->cpu_dai->capture_widget == widget)
++			if (w == widget)
+ 				return be;
+-
+-			for_each_rtd_codec_dai(be, i, dai) {
+-				if (dai->capture_widget == widget)
+-					return be;
+-			}
+ 		}
+ 	}
+ 
 -- 
 2.17.1
 
