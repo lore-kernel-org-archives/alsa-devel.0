@@ -2,75 +2,99 @@ Return-Path: <SRS0=LPcU=4F=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2EC6C7619F
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 09:47:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F82FC35254
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 09:50:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 71C5020718
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 09:47:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 09E2A206F4
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 09:50:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TFC93naS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 71C5020718
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FAs1rDJQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 09E2A206F4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=csie.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AC93C82E;
-	Mon, 17 Feb 2020 10:46:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC93C82E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3DAAC828;
+	Mon, 17 Feb 2020 10:49:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3DAAC828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581932821;
-	bh=UegL4qwYO2r1ZO81+6UUahogQUO8p8aylkVc9cALTqM=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1581933034;
+	bh=KNqX6FLgJtUvypCsBAQ3XwMsZBT1PRRmihAOKsPRxi0=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TFC93naSuCagzfD7ufV3icraLs1rkTzgEY6IU2pGiyq8HjZHsyjTrNbP8Dd1miZ5f
-	 hSdgLgK+tGm4hbVjvFtN16HDMECV9/3kdtMOdwTqIwEQwgF0DUP/sVq/yPIFH4oVrr
-	 BHpnllDRGbuturSiED3R/Oo2yAp30UQuMBDJj4HA=
+	b=FAs1rDJQ1qIj38BcTLii5TCqGXejIk+mXUI0v++L5PBt/fz/u21E4DNMvLhOv7uyU
+	 qYBf/wLleZr+T4QGv9uLpnLku+DHmCW/eLFJ4Ql5aJ31EBTgqvDLTXbRadK9bWZ2lz
+	 Tiwr5aHnjPBI32DqiAeLWinopUjhIxneE7Dp1yPw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 33834F801F4;
-	Mon, 17 Feb 2020 10:46:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B6478F80096;
+	Mon, 17 Feb 2020 10:49:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9D2ACF801F5; Mon, 17 Feb 2020 10:46:09 +0100 (CET)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 80F25F80172; Mon, 17 Feb 2020 10:49:41 +0100 (CET)
+Received: from mail-ed1-f65.google.com (mail-ed1-f65.google.com
+ [209.85.208.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 49BA3F80096
- for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 10:45:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49BA3F80096
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
- by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 17 Feb 2020 01:45:52 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,452,1574150400"; d="scan'208";a="314731888"
-Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by orsmga001.jf.intel.com with ESMTP; 17 Feb 2020 01:45:50 -0800
-Date: Mon, 17 Feb 2020 11:45:49 +0200 (EET)
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-X-X-Sender: kvehmane@eliteleevi.tm.intel.com
-To: Takashi Iwai <tiwai@suse.de>
-In-Reply-To: <s5ha75hbmjb.wl-tiwai@suse.de>
-Message-ID: <alpine.DEB.2.21.2002171138320.2957@eliteleevi.tm.intel.com>
-References: <20200216203516.10869-1-tiwai@suse.de>
- <alpine.DEB.2.21.2002171058360.2957@eliteleevi.tm.intel.com>
- <s5ha75hbmjb.wl-tiwai@suse.de>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
+ by alsa1.perex.cz (Postfix) with ESMTPS id BAEE0F80096
+ for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 10:49:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BAEE0F80096
+Received: by mail-ed1-f65.google.com with SMTP id p3so19940552edx.7
+ for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 01:49:30 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=hYpNZkgMugd7lxhUSqCjHE99UAOTKhfYi8V45j1F/S4=;
+ b=rijIc84NtNE7w7TEhAfRWxl/bTPfOUfOxaohF9/T2zL4c4F+Uy5ImoVT+gBOnK9Ypd
+ 1AhPC4iwE1hFQZjMZ1+wPoxirnmgVRjfCHZJfHVKcPYpbfIS2lOewod41gcjsRTNH61i
+ u6vDPjZLdb9QB4w03139tl6bM6GY0810zKD5WTbqTTjFlGdgOtKBeagtjZq36iRjbb6i
+ WCoU8f/CryZCcf9GqvAzZMPX0khZMR4uuqnXpK2mjC1PA13pfMqqTmylNO9Sk4Ut+b4P
+ te7xG3SSwn3kTMyfBMaxpV/VKF7pL2/LU2ncGA8M3h4ikpfD2q3wT4R7EFUvrj5PaZWh
+ 91EA==
+X-Gm-Message-State: APjAAAVpVrSO9a7h1ZpS6KaHsyDZZxb2rJCY5GvJ7Kd7Znr5vmlJZuIt
+ pH04rUate8ZLthbV0tqf0d4Og/Gh/kM=
+X-Google-Smtp-Source: APXvYqxJMyUFRzXLTKPX7eWfNn1nwMNLqedinXdYl8jXccApgXXJ4nkxJbSN5wV0hx0U9CHcaEsC3A==
+X-Received: by 2002:a17:906:3449:: with SMTP id
+ d9mr14717511ejb.163.1581932969228; 
+ Mon, 17 Feb 2020 01:49:29 -0800 (PST)
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com.
+ [209.85.128.51])
+ by smtp.gmail.com with ESMTPSA id oe20sm824240ejb.2.2020.02.17.01.49.28
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Mon, 17 Feb 2020 01:49:28 -0800 (PST)
+Received: by mail-wm1-f51.google.com with SMTP id a5so16420779wmb.0
+ for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 01:49:28 -0800 (PST)
+X-Received: by 2002:a1c:dc85:: with SMTP id t127mr22802965wmg.16.1581932968319; 
+ Mon, 17 Feb 2020 01:49:28 -0800 (PST)
 MIME-Version: 1.0
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: SOF: intel: Fix probe error without
- i915 graphics
+References: <20200217064250.15516-1-samuel@sholland.org>
+ <20200217064250.15516-2-samuel@sholland.org>
+In-Reply-To: <20200217064250.15516-2-samuel@sholland.org>
+From: Chen-Yu Tsai <wens@csie.org>
+Date: Mon, 17 Feb 2020 17:49:17 +0800
+X-Gmail-Original-Message-ID: <CAGb2v670SH1Ra26eKgOhLYAeRTV719a3TDAfCyMr49bKU8Z=PA@mail.gmail.com>
+Message-ID: <CAGb2v670SH1Ra26eKgOhLYAeRTV719a3TDAfCyMr49bKU8Z=PA@mail.gmail.com>
+To: Samuel Holland <samuel@sholland.org>
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ devicetree <devicetree@vger.kernel.org>,
+ Linux-ALSA <alsa-devel@alsa-project.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Vasily Khoruzhick <anarsoul@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Maxime Ripard <mripard@kernel.org>,
+ =?UTF-8?Q?Myl=C3=A8ne_Josserand?= <mylene.josserand@free-electrons.com>,
+ stable@kernel.org, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [alsa-devel] [RFC PATCH 01/34] ASoC: dt-bindings: Add a
+ separate compatible for the A64 codec
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,37 +112,51 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hey,
+On Mon, Feb 17, 2020 at 2:42 PM Samuel Holland <samuel@sholland.org> wrote:
+>
+> The digital codec in the A64 is largely compatible with the one in the
+> A33, with two changes:
+>  - It is missing some muxing options for AIF1/2/3 (not currently
+>    supported by the driver)
 
-On Mon, 17 Feb 2020, Takashi Iwai wrote:
+Is this at the pinctrl level or mixer level? If it's at the pinctrl level
+then it's out of the scope of this driver/binding. It could very well have
+those signals, just that they aren't routed outside the SoC.
 
-> On Mon, 17 Feb 2020 10:11:59 +0100, Kai Vehmanen wrote:
-> > With my patchset, if i915 is not present or the init fails, only the idisp 
-> > codec is dropped and the probe continues for other codecs.
-> > 
-> > Your patch will partly conflict with mine as I rely on i915_init to 
-> > report failure in this case. Ok if we wait until my patch gets in? 
-> 
-> Sure, mine is just a quick fix.  If there is already a work on it,
-> let's take it instead.
 
-ok, I'll try to fix the remaining issue with module reload today.
+ChenYu
 
-> But, this HP machine still seems broken even after ignoring i915, so
-> we'd need more work in anyway?
-
-I needed to do some changes in the machine driver as well, but it should 
-work on devices like this HP now. SOF will create PCM nodes for HDMI/DP, 
-but they will never be connected -- these ports will be handled by the DGPU 
-driver.
-
-The one thing I haven't checked is how UCM behaves when the "Jack" nodes 
-for HDMI/DP are not created. That may require some further changes to UCM 
-(fortunately with UCMv2 we can now additionl conditional statements to 
-cover this case as well). Another option is to create dummy mixer nodes, 
-but that's not yet in my patch series.
-
-Br, Kai
+>  - It does not have the LRCK inversion issue that A33 has
+>
+> To fix the Left/Right channel inversion on the A64 caused by the A33
+> LRCK fix, we need to introduce a new compatible for the codec in the
+> A64.
+>
+> Cc: stable@kernel.org
+> Fixes: ec4a95409d5c ("arm64: dts: allwinner: a64: add nodes necessary for analog sound support")
+> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> ---
+>  .../devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml  | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml b/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml
+> index 55d28268d2f4..7c66409f13ea 100644
+> --- a/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml
+> +++ b/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml
+> @@ -15,7 +15,9 @@ properties:
+>      const: 0
+>
+>    compatible:
+> -    const: allwinner,sun8i-a33-codec
+> +    enum:
+> +      - allwinner,sun8i-a33-codec
+> +      - allwinner,sun50i-a64-codec
+>
+>    reg:
+>      maxItems: 1
+> --
+> 2.24.1
+>
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
