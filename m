@@ -2,94 +2,98 @@ Return-Path: <SRS0=LPcU=4F=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C156C7619B
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 03:49:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 14586C35242
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 03:56:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 27941206E2
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 03:49:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 911E72072C
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 03:56:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hRPl5x0i"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 27941206E2
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=csie.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OWlBFvOx";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="gxFKXkh2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 911E72072C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 79F5F83B;
-	Mon, 17 Feb 2020 04:48:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 79F5F83B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 03B6B83B;
+	Mon, 17 Feb 2020 04:55:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 03B6B83B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581911363;
-	bh=X9NqEjRk9ipZho0yMV72iDHGV9Vj6LWmZoh+Y+57rHk=;
+	s=default; t=1581911792;
+	bh=/C7epqqg7LAIND+pRlmG5yRnXdXQYg5+7ntc2FcUmVY=;
 	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hRPl5x0iJvx3cuCVKoDywMtCOiYDvFpwWo2abTL1YkU4FzPHUTmoEspOjDTMGRBIA
-	 5lASRbhmKRTPYHj4ZALlQOmEPkAwBvdYdtfCLzEpgmftftFUYnhNz6KgwgsY7Izpj2
-	 XpBHKB5Prk8cRdeVpcdvdLD3LhqYq0uH9JMjDzC8=
+	b=OWlBFvOx/oAbHz4vKRiia11HkIVVpJWRzBx79cJsJF+jkh8htoiIIWQbF7nqyPBEf
+	 J9gKUYJUk2y+5xf4c6pDmDkv9hUdLJprc5543pEuvq1hGCBf3aKsY5Khu19iiwVb4O
+	 sgqbCRGYOwmKqhB5jv31c6LUP5WtsKMVFVYORQy0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D80A6F80096;
-	Mon, 17 Feb 2020 04:48:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E8984F8015E;
+	Mon, 17 Feb 2020 04:55:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9FC29F80172; Mon, 17 Feb 2020 04:48:28 +0100 (CET)
-Received: from mail-ed1-f67.google.com (mail-ed1-f67.google.com
- [209.85.208.67])
+ id DB0CBF80172; Mon, 17 Feb 2020 04:55:38 +0100 (CET)
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com
+ [IPv6:2607:f8b0:4864:20::d43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 44FA8F800C4
- for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 04:48:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44FA8F800C4
-Received: by mail-ed1-f67.google.com with SMTP id p23so19009093edr.5
- for <alsa-devel@alsa-project.org>; Sun, 16 Feb 2020 19:48:24 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5FA7CF80096
+ for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 04:55:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5FA7CF80096
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
+ header.b="gxFKXkh2"
+Received: by mail-io1-xd43.google.com with SMTP id x1so5483421iop.7
+ for <alsa-devel@alsa-project.org>; Sun, 16 Feb 2020 19:55:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=MDRwOw0qxHT8lr0hMdZ3Qai+ub8w2eSiYOEUSVqxsao=;
+ b=gxFKXkh2sDRFMwdMCiVPpZM94a7Wqh//+i/PPGKzGqg109MExjedklZrYzYfEB1dOn
+ 1RSy4HwVcYyZEyQT2/50sKFaxsQXYw/KUtPQSDP0SgMbgkHZYACNmTy3pk+RfjP8wJ8H
+ vIQbzTSkumfZSiOX1QkrO62yBG89y3JCzRkpualHWXG0WOZs2WCVsNdPN/uMBuN1PInl
+ oqcehkB6H/Yc1VLJ3pAYtnF9A9V2mJze/G9H/eo22rOrbk+WDlH62AIzov8o++KQFpd7
+ KP75BTi8ZU1s49FOmVefZoWDFS4sgNo3WYKRPRPKOjsYYbG/apbzhJqjc7u5AOkSY0o2
+ u4qQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=1P9UDUTmYMSZh58iCz9VgX9ylC6V1SoZoKFa2vjdalQ=;
- b=FIX+STzGIwy11LshavKQAbSyT9FYWMfkTtBxZbpC9u45WRuLmR7Cf35hf9F6Wsrft0
- kF2C0UKXKpx8ebS9f03im6CueRTGf2Ux8EqtT+4DakWyz/jNQ3GmfhKquWnboFsOI6Z5
- yrCK8bu2+OaYcbmw0uYFZ2WoMIQ2aCe4ujn8ADjoGIyxzs7lRje5/FR5lS7clPVsTN3A
- Vboa87MPuvQ28FvyiK6hDRR+NItDsPW4oGHhElOD+gBH8/k8zARcOTIjbZaUcEPFziRj
- 359t6g3gNgQ56m0EISdpyJLqgBPsyMKj8HIH9m/JOgoOgYz27nIX/9Jjsy23D6MqqdUG
- 1YqA==
-X-Gm-Message-State: APjAAAUA4aoKIH0Van451oIaSIMW6rrJb4TbY95TGsL/qy4m6C1xMBoc
- HQyOdutm4ufELd29khV1d2Fw/A0Qwoc=
-X-Google-Smtp-Source: APXvYqyGKJADXbd2mRjM7iyPsa6LVMhxikZ96L7EnXa5VQ9NjhC3LqtgU3uYQs+aK0tR/xfxmwB4vQ==
-X-Received: by 2002:aa7:d8d4:: with SMTP id k20mr12868070eds.380.1581911303501; 
- Sun, 16 Feb 2020 19:48:23 -0800 (PST)
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com.
- [209.85.221.48])
- by smtp.gmail.com with ESMTPSA id c19sm844507ejm.47.2020.02.16.19.48.22
- for <alsa-devel@alsa-project.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Sun, 16 Feb 2020 19:48:23 -0800 (PST)
-Received: by mail-wr1-f48.google.com with SMTP id t3so17872830wru.7
- for <alsa-devel@alsa-project.org>; Sun, 16 Feb 2020 19:48:22 -0800 (PST)
-X-Received: by 2002:a5d:6805:: with SMTP id w5mr19709664wru.64.1581911302119; 
- Sun, 16 Feb 2020 19:48:22 -0800 (PST)
+ bh=MDRwOw0qxHT8lr0hMdZ3Qai+ub8w2eSiYOEUSVqxsao=;
+ b=oCecx9+X/fl6YWIt2A741Oho6eGoJ678ZQwohD4NGQixXFST9CCbxQFOKz1buI+t2P
+ 0ePD3anOYyGRMdrO2OOmwhjXIuYa//BpZBC1c5cucscRsau+g0lfVSLJ78hwhvdUMbND
+ b0LRbQilnRvIFBe/42vz8rHGLkdDINGhLTUVIMRwHCW0mQuRxK25E5CvOpF+YF5GBFOG
+ Li2utBtynmxx9kR438u8kBmavvx1ZQoQv8e9b8DsOU3DdXejb1cakRCO0Rr+sLO64aac
+ GmcRRRHn9NNUWSLElb2utBaaI7pqUAlDeY3TnRAuoagDXOUP4OzRChrdfXH/TPrxTlnl
+ dtKA==
+X-Gm-Message-State: APjAAAWD3muLp3eyy5IUPE18UnJJ0/gw4fwYxmwTnxFlsK8414W4ESM+
+ vCrPHbi17lew/8Vfp30aa0RL2X4SntIsPovO6ZSslA==
+X-Google-Smtp-Source: APXvYqzvM4FCMTrCi0v8wV4k9sbQWYIUffnsL+Kp3MW2/ZQ6XXOz2og41iziG0mONHGsGItgPmiMVNuzIdWL8NvO3J8=
+X-Received: by 2002:a02:2101:: with SMTP id e1mr11084540jaa.29.1581911728799; 
+ Sun, 16 Feb 2020 19:55:28 -0800 (PST)
 MIME-Version: 1.0
-References: <20200217021813.53266-1-samuel@sholland.org>
- <20200217021813.53266-5-samuel@sholland.org>
-In-Reply-To: <20200217021813.53266-5-samuel@sholland.org>
-From: Chen-Yu Tsai <wens@csie.org>
-Date: Mon, 17 Feb 2020 11:48:11 +0800
-X-Gmail-Original-Message-ID: <CAGb2v677p8u8_0jhcbN07QsyVc21dKJmeK6=rxLCbde+AOqreQ@mail.gmail.com>
-Message-ID: <CAGb2v677p8u8_0jhcbN07QsyVc21dKJmeK6=rxLCbde+AOqreQ@mail.gmail.com>
-To: Samuel Holland <samuel@sholland.org>
-Cc: Luca Weiss <luca@z3ntu.xyz>, Linux-ALSA <alsa-devel@alsa-project.org>,
- linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
- Maxime Ripard <mripard@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Vasily Khoruzhick <anarsoul@gmail.com>, Mark Brown <broonie@kernel.org>,
- linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [alsa-devel] [PATCH 4/8] ASoC: sun50i-codec-analog: Make
-	headphone routes stereo
+References: <20200217031653.52345-1-tzungbi@google.com>
+ <20200217105513.2.I477092c2f104fd589133436c3ae4590e6fc6323b@changeid>
+ <1581911058.12629.1.camel@mtksdaap41>
+In-Reply-To: <1581911058.12629.1.camel@mtksdaap41>
+From: Tzung-Bi Shih <tzungbi@google.com>
+Date: Mon, 17 Feb 2020 11:55:17 +0800
+Message-ID: <CA+Px+wWRn1-t2fd+bD-PGRVjyLaAHqm1wF3W3T_GMUh0GXkA_A@mail.gmail.com>
+To: CK Hu <ck.hu@mediatek.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>, p.zabel@pengutronix.de,
+ David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
+ Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org,
+ Daniel Vetter <daniel@ffwll.ch>, Matthias Brugger <matthias.bgg@gmail.com>,
+ Dylan Reid <dgreid@google.com>, linux-arm-kernel@lists.infradead.org,
+ Jimmy Cheng-Yi Chiang <cychiang@google.com>
+Subject: Re: [alsa-devel] [PATCH v2 2/2] drm/mediatek: fix race condition
+ for HDMI jack status reporting
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,81 +111,15 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+On Mon, Feb 17, 2020 at 11:44 AM CK Hu <ck.hu@mediatek.com> wrote:
+> On Mon, 2020-02-17 at 11:16 +0800, Tzung-Bi Shih wrote:
+> > Fixes: 5d3c64477392 ("drm/mediatek: support HDMI jack status reporting")
+>
+> This patch looks good to me, but please merge this patch with the patch
+> it fix.
 
-On Mon, Feb 17, 2020 at 10:18 AM Samuel Holland <samuel@sholland.org> wrote:
->
-> This matches the hardware more accurately, and is necessary for
-> including the (stereo) headphone mute switch in the DAPM graph.
->
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
-> ---
->  sound/soc/sunxi/sun50i-codec-analog.c | 28 +++++++++++++++++++--------
->  1 file changed, 20 insertions(+), 8 deletions(-)
->
-> diff --git a/sound/soc/sunxi/sun50i-codec-analog.c b/sound/soc/sunxi/sun50i-codec-analog.c
-> index 17165f1ddb63..f98851067f97 100644
-> --- a/sound/soc/sunxi/sun50i-codec-analog.c
-> +++ b/sound/soc/sunxi/sun50i-codec-analog.c
-> @@ -311,9 +311,15 @@ static const struct snd_soc_dapm_widget sun50i_a64_codec_widgets[] = {
->          */
->
->         SND_SOC_DAPM_REGULATOR_SUPPLY("cpvdd", 0, 0),
-> -       SND_SOC_DAPM_MUX("Headphone Source Playback Route",
-> +       SND_SOC_DAPM_MUX("Left Headphone Source",
->                          SND_SOC_NOPM, 0, 0, sun50i_codec_hp_src),
-> -       SND_SOC_DAPM_OUT_DRV("Headphone Amp", SUN50I_ADDA_HP_CTRL,
-> +       SND_SOC_DAPM_MUX("Right Headphone Source",
-
-Please don't remove the widget suffix. The suffix was chosen to work with
-alsa-lib's control parsing code. The term "Playback Route" is appropriate
-because it is playback only, and it is a routing switch, not a source or
-sink.
-
-Also, what's wrong with just having a single "stereo" widget instead of
-two "mono" widgets? I added stereo (2-channel) support to DAPM quite
-some time ago. You just have to have two routes in and out.
-
-ChenYu
-
-> +                        SND_SOC_NOPM, 0, 0, sun50i_codec_hp_src),
-> +       SND_SOC_DAPM_OUT_DRV("Left Headphone Amp",
-> +                            SND_SOC_NOPM, 0, 0, NULL, 0),
-> +       SND_SOC_DAPM_OUT_DRV("Right Headphone Amp",
-> +                            SND_SOC_NOPM, 0, 0, NULL, 0),
-> +       SND_SOC_DAPM_SUPPLY("Headphone Amp", SUN50I_ADDA_HP_CTRL,
->                              SUN50I_ADDA_HP_CTRL_HPPA_EN, 0, NULL, 0),
->         SND_SOC_DAPM_OUTPUT("HP"),
->
-> @@ -405,13 +411,19 @@ static const struct snd_soc_dapm_route sun50i_a64_codec_routes[] = {
->         { "Right ADC", NULL, "Right ADC Mixer" },
->
->         /* Headphone Routes */
-> -       { "Headphone Source Playback Route", "DAC", "Left DAC" },
-> -       { "Headphone Source Playback Route", "DAC", "Right DAC" },
-> -       { "Headphone Source Playback Route", "Mixer", "Left Mixer" },
-> -       { "Headphone Source Playback Route", "Mixer", "Right Mixer" },
-> -       { "Headphone Amp", NULL, "Headphone Source Playback Route" },
-> +       { "Left Headphone Source", "DAC", "Left DAC" },
-> +       { "Left Headphone Source", "Mixer", "Left Mixer" },
-> +       { "Left Headphone Amp", NULL, "Left Headphone Source" },
-> +       { "Left Headphone Amp", NULL, "Headphone Amp" },
-> +       { "HP", NULL, "Left Headphone Amp" },
-> +
-> +       { "Right Headphone Source", "DAC", "Right DAC" },
-> +       { "Right Headphone Source", "Mixer", "Right Mixer" },
-> +       { "Right Headphone Amp", NULL, "Right Headphone Source" },
-> +       { "Right Headphone Amp", NULL, "Headphone Amp" },
-> +       { "HP", NULL, "Right Headphone Amp" },
-> +
->         { "Headphone Amp", NULL, "cpvdd" },
-> -       { "HP", NULL, "Headphone Amp" },
->
->         /* Microphone Routes */
->         { "Mic1 Amplifier", NULL, "MIC1"},
-> --
-> 2.24.1
->
+5d3c64477392 ("drm/mediatek: support HDMI jack status reporting") has
+applied to ASoC for-next branch.  This is a fixup patch.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
