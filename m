@@ -4,96 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B21DC7619B
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 06:53:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D634CC35242
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 06:54:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E81ED20679
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 06:53:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5F8F620679
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 06:54:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZjhxFfBF";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sholland.org header.i=@sholland.org header.b="oDmFapVa";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Gfk6BOFV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E81ED20679
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="npUT4cgj";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sholland.org header.i=@sholland.org header.b="YkUlL4uC";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="o57zOObe"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5F8F620679
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sholland.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5662E1698;
-	Mon, 17 Feb 2020 07:52:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5662E1698
+	by alsa0.perex.cz (Postfix) with ESMTPS id B561716C7;
+	Mon, 17 Feb 2020 07:53:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B561716C7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581922409;
-	bh=FdyPoJNksCi7dd4YfBaPeEBMHVKnxqv1myzAGI59stE=;
+	s=default; t=1581922444;
+	bh=R9gTIB4ZFiTRZU+7CzNPSSjZ4yjL5Tux0ZIgVhZ4pVQ=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZjhxFfBF63fK+ZhWfZkSEMG+5MyxYjpe3WiG6Ts0k29tH1x181DfYw+xkeE/ZIc0k
-	 OrpAyQIIQpUFoxR7ibS2TZRPC6F3qVna9fMWLFQBpImPsL3BwMzwOVp3+PfIlv98i8
-	 tAjQzGl7gEQvSTe2JIAdasouwZkLxmoVRN2IK8sI=
+	b=npUT4cgjoq5h8/XRol18tSUME6GcTZvMTINsuK4rrVMZBchOJpZ614YNSQHv40MgG
+	 iCMOey03KSzsBYu0AY2UcwZYHtyM8vQYvKxcxaus0aiJGU9V08qff5eaaFzF0gKtIa
+	 3O9+oJ2sY4rdMcE+pHvO89U+zSz47yjx4ZhRIVoo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9B24CF80323;
-	Mon, 17 Feb 2020 07:43:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B23CEF80329;
+	Mon, 17 Feb 2020 07:43:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8B292F802F8; Mon, 17 Feb 2020 07:43:22 +0100 (CET)
+ id 92CCAF802FB; Mon, 17 Feb 2020 07:43:23 +0100 (CET)
 Received: from new2-smtp.messagingengine.com (new2-smtp.messagingengine.com
  [66.111.4.224])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 61D1AF8028A
- for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 07:43:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 61D1AF8028A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3FAF9F80172
+ for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 07:43:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3FAF9F80172
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sholland.org header.i=@sholland.org
- header.b="oDmFapVa"; 
+ header.b="YkUlL4uC"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="Gfk6BOFV"
+ header.i=@messagingengine.com header.b="o57zOObe"
 Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
- by mailnew.nyi.internal (Postfix) with ESMTP id 86F9A5529;
- Mon, 17 Feb 2020 01:43:00 -0500 (EST)
+ by mailnew.nyi.internal (Postfix) with ESMTP id 65B4B539F;
+ Mon, 17 Feb 2020 01:43:02 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
- by compute5.internal (MEProxy); Mon, 17 Feb 2020 01:43:00 -0500
+ by compute5.internal (MEProxy); Mon, 17 Feb 2020 01:43:02 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
  from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm2; bh=bWdMIahH29yFf
- zqwPIeEk1em2GgGUD8m6unCtTeCgqs=; b=oDmFapVanONA3Slt7PN7tEJnclOhm
- tdlQ6XiGyxMevoxHuUMikFZhHM6eywY8irIudalh+02wtXA1Mzr5UN6cKLFAUPsp
- baeBXslamCMNxmfCZgnFougtNU1LtRN+OI5BySI+w7eLGIwL5S+C+locXD1AwdGy
- kWc7GNCwfq/EHLWnkGcoyYVnDEQ7P28HIfzPQvkPeuHNXpfRSQ9oX5za1zfn+auU
- 7odde6VyrqIPfqU7xwbGUXUx+7dw/BoyBhmroyGAganlcZ4nCitS2BGXdULF+AR4
- +Du2J9jvDUVUTt/HYBIG9/iHM072/J4nwPD5gx00oZioQSpD1Lc9NYvUw==
+ :mime-version:content-transfer-encoding; s=fm2; bh=Ka38TRYaT49vf
+ pdd4Hx2SUEK/pkVlhY/GFkRWWqZ1Iw=; b=YkUlL4uCUFYm72WdplCV2egPKoT3g
+ eEL9x7B8x7GchOFWWeUwjI4EOqQvFIKQvPa/5t2NdX2udiwBd0LECukJjjxM4t2N
+ nBUPb2CfU0LsLQz7TY2PM3Jc/xfzSOYMEZ7w1wCKyU6TI6pBZu6iqwnDh7DtQHvX
+ LHc10YVCl2Z+YaehH10R+AGOacdRXQv7vLJk014z7wqQ8VLFl0VwY2fd+sX+5L4S
+ MKFi/7aDg9jCyMR9coZHqUJv5TRA9phGTZDqqjVgysB+V7IyZvNJYyrz1BHp8sWg
+ HrwWaQ3OfCUeVNRN2fHnlMzpNaL8FWUpdl/qWiDEfjl5KpR4DrMpNQFPQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm2; bh=bWdMIahH29yFfzqwPIeEk1em2GgGUD8m6unCtTeCgqs=; b=Gfk6BOFV
- 5zfCdamui7/Aovbs/sbmd47cRRRmgFhF/gIHUSVoSxFKpHwNjdk6w1jInKl7lXT4
- P8FhmCZfU55lJ8IXOTsqMzeI1j3FTfLn4Cu2gDW7LJFEARStHOY99OMdnzdHbbHZ
- kveQSffYUBaNAvzd5aMLFg1XZgYNeMsQ92V1RvM/emc9bbYjoAQsUmuE1D6gc91o
- WfaWxrgOBp9UMl3EpQuNMvG1XSvYS42xKnw3iegogqY4YUkTWmW2eaiiybIHS+IU
- zxqCS9xa9eNNHFiC91UaCKLSudxCD995iWU1d42Rb++VjWzjYX2vvexn//xqr61n
- qy28BIysxXMygg==
-X-ME-Sender: <xms:9DVKXv2Oybe4YvNfBc8OTA-hrH5ArG7P98gJQG0rOiTKtxMs3imlPA>
+ fm2; bh=Ka38TRYaT49vfpdd4Hx2SUEK/pkVlhY/GFkRWWqZ1Iw=; b=o57zOObe
+ q1sivwubPtAEh8LNg0PFAi1axSJJ9qQ1QKhY8XTngxGbU+9/O9oxX+bUD/HkuIEL
+ po3pb+C9LSxl2IONKaMu+xiQ0iNAqkhitBBtZLzvmQyCos9oIl6CwAKfPEIOmIMT
+ SvI/HPY1YMoHm9L/OCdCofGxpt547YBYzAcdXX6z5X7Vlh0KG6gnTL4ysFtyFJZ1
+ OJwrVODeKvo7XTgKatMgj1XS3uTlNg22L7/1GQNHpfl9bcRKDsrB/IsJBg8QiUDa
+ pxz5Nc3qxy/gad0agbFVuGQse01FN387gV9K2B82kD9HDlPv0PPcmnlDy6GkgcuT
+ 1/bdzrN+HDWjbg==
+X-ME-Sender: <xms:9jVKXn0FPsuD0woE-CZhJPVCjF7HZE8aFWSzuzSCmuMo2jgRWLiFNA>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedrjeehgdelkecutefuodetggdotefrodftvf
  curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
  uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
  fjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghl
  ucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecukfhppe
- ejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiiigvpeejnecurfgrrhgr
- mhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhg
-X-ME-Proxy: <xmx:9DVKXssjNf9P2VJhB7qaCyD2XDPjjoQo2YTXkrrdVBzymNRvqVJzmw>
- <xmx:9DVKXvgup7UmBZHeFUDXzqBgUpXELuWbWNToAkLRd4nhBpIg7jFkPw>
- <xmx:9DVKXrAwi2k8dWc3qso-tuKpuJG87IWiZlI4Ye_slPFXdBA487TOKw>
- <xmx:9DVKXnhyvJdLZiM8CNr_S3RxUz0AEGUa-R_6pGaS3vjB-rIaPPVnZA>
+ ejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiiigvpedujeenucfrrghr
+ rghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghnugdrohhrgh
+X-ME-Proxy: <xmx:9jVKXrBZH8WTh0eXzyLSQhSbgCKq-n15kVEcz1FXOo1ry1ReeSzT3w>
+ <xmx:9jVKXsJ_reivPJ1nFomRunQiI0QJt-oGrTF7-yBV49FpbHGbtxOKXg>
+ <xmx:9jVKXslnIQd-lTbQJIb7GYmDlObXUdV5lbHaFTCKoCa4EuUQa0C69A>
+ <xmx:9jVKXraDwrxNGx6BdM-gXyt0IEioxlZN_skZo2IZ0AWaA4Fd_lse9g>
 Received: from titanium.stl.sholland.net
  (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
- by mail.messagingengine.com (Postfix) with ESMTPA id D1AD63280059;
- Mon, 17 Feb 2020 01:42:59 -0500 (EST)
+ by mail.messagingengine.com (Postfix) with ESMTPA id A5DC9328005A;
+ Mon, 17 Feb 2020 01:43:01 -0500 (EST)
 From: Samuel Holland <samuel@sholland.org>
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
  Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
@@ -101,8 +101,8 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
  Vasily Khoruzhick <anarsoul@gmail.com>,
  =?UTF-8?q?Myl=C3=A8ne=20Josserand?= <mylene.josserand@free-electrons.com>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Date: Mon, 17 Feb 2020 00:42:31 -0600
-Message-Id: <20200217064250.15516-16-samuel@sholland.org>
+Date: Mon, 17 Feb 2020 00:42:34 -0600
+Message-Id: <20200217064250.15516-19-samuel@sholland.org>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200217064250.15516-1-samuel@sholland.org>
 References: <20200217064250.15516-1-samuel@sholland.org>
@@ -110,8 +110,8 @@ MIME-Version: 1.0
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  Samuel Holland <samuel@sholland.org>
-Subject: [alsa-devel] [RFC PATCH 15/34] ASoC: sun8i-codec: Fix ADC_DIG_CTRL
-	field name
+Subject: [alsa-devel] [RFC PATCH 18/34] ASoC: sun8i-codec: Allow all clock
+	inversion permutations
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -129,36 +129,71 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This is the enable bit for the "AD"C, no the "DA"C.
+Since the hardware has separate bits for BCLK and LRCK inversion, we can
+support any combination of normal and inverted clocks.
 
-Fixes: eda85d1fee05 ("ASoC: sun8i-codec: Add ADC support for a33")
 Signed-off-by: Samuel Holland <samuel@sholland.org>
 ---
- sound/soc/sunxi/sun8i-codec.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/sunxi/sun8i-codec.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
 diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
-index 6c2fe8549668..0063fa301fab 100644
+index 36ce281286b5..f8cde149a92b 100644
 --- a/sound/soc/sunxi/sun8i-codec.c
 +++ b/sound/soc/sunxi/sun8i-codec.c
-@@ -64,7 +64,7 @@
- #define SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_ADCR		9
- #define SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_AIF2DACL	8
- #define SUN8I_ADC_DIG_CTRL				0x100
--#define SUN8I_ADC_DIG_CTRL_ENDA			15
-+#define SUN8I_ADC_DIG_CTRL_ENAD				15
- #define SUN8I_ADC_DIG_CTRL_ADOUT_DTS			2
- #define SUN8I_ADC_DIG_CTRL_ADOUT_DLY			1
- #define SUN8I_DAC_DIG_CTRL				0x120
-@@ -392,7 +392,7 @@ static const struct snd_soc_dapm_widget sun8i_codec_dapm_widgets[] = {
- 	/* Digital parts of the DACs and ADC */
- 	SND_SOC_DAPM_SUPPLY("DAC", SUN8I_DAC_DIG_CTRL, SUN8I_DAC_DIG_CTRL_ENDA,
- 			    0, NULL, 0),
--	SND_SOC_DAPM_SUPPLY("ADC", SUN8I_ADC_DIG_CTRL, SUN8I_ADC_DIG_CTRL_ENDA,
-+	SND_SOC_DAPM_SUPPLY("ADC", SUN8I_ADC_DIG_CTRL, SUN8I_ADC_DIG_CTRL_ENAD,
- 			    0, NULL, 0),
+@@ -41,8 +41,7 @@
+ #define SUN8I_SYS_SR_CTRL_AIF2_FS			8
+ #define SUN8I_AIF1CLK_CTRL				0x040
+ #define SUN8I_AIF1CLK_CTRL_AIF1_MSTR_MOD		15
+-#define SUN8I_AIF1CLK_CTRL_AIF1_BCLK_INV		14
+-#define SUN8I_AIF1CLK_CTRL_AIF1_LRCK_INV		13
++#define SUN8I_AIF1CLK_CTRL_AIF1_CLK_INV			13
+ #define SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV		9
+ #define SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV		6
+ #define SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ		4
+@@ -81,6 +80,7 @@
  
- 	/* Analog DAC AIF */
+ #define SUN8I_SYS_SR_CTRL_AIF1_FS_MASK		GENMASK(15, 12)
+ #define SUN8I_SYS_SR_CTRL_AIF2_FS_MASK		GENMASK(11, 8)
++#define SUN8I_AIF1CLK_CTRL_AIF1_CLK_INV_MASK	GENMASK(14, 13)
+ #define SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV_MASK	GENMASK(12, 9)
+ #define SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV_MASK	GENMASK(8, 6)
+ #define SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_MASK	GENMASK(5, 4)
+@@ -205,16 +205,18 @@ static int sun8i_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	case SND_SOC_DAIFMT_NB_NF: /* Normal */
+ 		value = 0x0;
+ 		break;
+-	case SND_SOC_DAIFMT_IB_IF: /* Inversion */
++	case SND_SOC_DAIFMT_NB_IF: /* Inverted LRCK */
+ 		value = 0x1;
+ 		break;
++	case SND_SOC_DAIFMT_IB_NF: /* Inverted BCLK */
++		value = 0x2;
++		break;
++	case SND_SOC_DAIFMT_IB_IF: /* Both inverted */
++		value = 0x3;
++		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+-	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
+-			   BIT(SUN8I_AIF1CLK_CTRL_AIF1_BCLK_INV),
+-			   value << SUN8I_AIF1CLK_CTRL_AIF1_BCLK_INV);
+-
+ 	/*
+ 	 * It appears that the DAI and the codec in the A33 SoC don't
+ 	 * share the same polarity for the LRCK signal when they mean
+@@ -227,8 +229,8 @@ static int sun8i_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	 */
+ 	value ^= scodec->inverted_lrck;
+ 	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
+-			   BIT(SUN8I_AIF1CLK_CTRL_AIF1_LRCK_INV),
+-			   value << SUN8I_AIF1CLK_CTRL_AIF1_LRCK_INV);
++			   SUN8I_AIF1CLK_CTRL_AIF1_CLK_INV_MASK,
++			   value << SUN8I_AIF1CLK_CTRL_AIF1_CLK_INV);
+ 
+ 	/* DAI format */
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
 -- 
 2.24.1
 
