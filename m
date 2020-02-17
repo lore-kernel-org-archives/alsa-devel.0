@@ -7,78 +7,78 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C33E4C35242
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 06:56:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE415C35242
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 06:56:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4EC8520679
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 06:56:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7985A2070B
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 06:56:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="p7KcSGzT";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sholland.org header.i=@sholland.org header.b="QFLVltHV";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="FCyMsmk3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4EC8520679
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SeIao3dq";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sholland.org header.i=@sholland.org header.b="gfcAKqPH";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="0d10K7zW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7985A2070B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sholland.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9F5D216D9;
-	Mon, 17 Feb 2020 07:55:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F5D216D9
+	by alsa0.perex.cz (Postfix) with ESMTPS id DA36316F3;
+	Mon, 17 Feb 2020 07:55:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA36316F3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581922563;
-	bh=DrKitC8yzxmEb8WOZ8ocF4uq/t4J3vtX2Q4E+LQbTM0=;
+	s=default; t=1581922594;
+	bh=dREvPRmoA3hXIluxVcK3/1LeT/B3MwrRyIbNwYtPhwE=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=p7KcSGzT8rFjxbinePMYKlZMZnagl6YR+QBYWKWDfrYSHLOtWRvHcH/ksUMtEclui
-	 wp6lXNQ8TV23oQWdKfdonJvCYN7SYDlKuhvlZfnkfPI7L2DosXXdxMybFywVOXZR5w
-	 vhpV05oWQYs4QTfE6x+FgolZ7/jjlzeNRZsaWGlU=
+	b=SeIao3dqorVFo01eijfOOFbiCG7DAPZ1TKqbZzAuz7imRPFe27leJA+5mA7d06VjU
+	 US5oKJpbBnTYBkJFNA5UfOYej/2PvxIUEiORNAyIdEn8DP5II3qHOIlNp1GjPlS6ig
+	 H7y4Z1/ymf7+O0/vOT5ttHPBDnc+rdrw7EbysAk0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EF3C8F8034B;
-	Mon, 17 Feb 2020 07:44:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BC3A7F8034F;
+	Mon, 17 Feb 2020 07:44:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 862F1F802FB; Mon, 17 Feb 2020 07:43:30 +0100 (CET)
+ id 5B09CF8028F; Mon, 17 Feb 2020 07:43:31 +0100 (CET)
 Received: from new2-smtp.messagingengine.com (new2-smtp.messagingengine.com
  [66.111.4.224])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 74EF1F80290
- for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 07:43:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74EF1F80290
+ by alsa1.perex.cz (Postfix) with ESMTPS id A9E6CF801F4
+ for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 07:43:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9E6CF801F4
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sholland.org header.i=@sholland.org
- header.b="QFLVltHV"; 
+ header.b="gfcAKqPH"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="FCyMsmk3"
+ header.i=@messagingengine.com header.b="0d10K7zW"
 Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
- by mailnew.nyi.internal (Postfix) with ESMTP id 97C6E54A2;
- Mon, 17 Feb 2020 01:43:03 -0500 (EST)
+ by mailnew.nyi.internal (Postfix) with ESMTP id CCF19552C;
+ Mon, 17 Feb 2020 01:43:04 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
- by compute5.internal (MEProxy); Mon, 17 Feb 2020 01:43:03 -0500
+ by compute5.internal (MEProxy); Mon, 17 Feb 2020 01:43:04 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
  from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm2; bh=dxjG83xmJslF6
- Sx6oGJvOxbCreiRgRFoHqqs44C23es=; b=QFLVltHVcyT91BPPEEUuHtetQUJTg
- EKUpeCB4fbLTRuP6V67JHSJAZzbiKA4+8JrTgvuytAjouyt0yTLwRlam7ZOcW7tA
- 5ybbPTsInDXPE1GR1jVmWQDpHMk0N47Eoa/Rz7KIe8H89LHGn8yPsQ5bpNiWewaG
- Dpa7J4rfof41ZvUCkBaYDIGoUnuj0+ibkjswLyQ52nHPrfWUtNpBec20G5kL6UHz
- PTlhVNEF5X5G5Zgqnh7dw2nd1QZahoHhDUWMPBbhiwjhJnLt1ugsStAClSL0r7FA
- p7NqbK64BLmQhY5zSoURtF+oRkF3/gwpzEQEbgR/ChghX0LFD59Vho2ow==
+ :mime-version:content-transfer-encoding; s=fm2; bh=DBdByb7xpH/PX
+ xP1Vq/SOFf147fSI39LL4w1DRyW60M=; b=gfcAKqPHI/PCNWUOJLTb4aqKLiziN
+ RbVe9b+TOHRmARy8fjMcWTPclAQQRrFPTizZkrsi2UjJaaYhOBZw3b7V+MtM4KEJ
+ J9G3/7EpOaiBwNr1N7vntPEt3nXmwYX+pIX2rS4gh4kEJtR3NTySnGAvJHRIEvxR
+ B80hlPS69ieN/W/abS8kMt/xHbWofoVjmiE8bB0NqO3C56d1EKt9UD5FR4wmAD8n
+ F0D5wBu2wryiM1PT1xm1pAWaSkjEKe2ZKQxbvz0c8suQ1bK2mEs3WE6SRnQ3lm+S
+ oFuuSWVWISMhLQUt3pqAKxmJ5gIxaQpomna11o8AhhTQSkVmRqUNLKHGQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm2; bh=dxjG83xmJslF6Sx6oGJvOxbCreiRgRFoHqqs44C23es=; b=FCyMsmk3
- Kkxb1o6jtzWJ7VM/PCQrPXoOnLvDO5yqPfTFZoxzqA7X4fJbGyN2gi4L2S1DtBNf
- I4b+bvMmygBIRj/z5BcraOFQtLZQ5eRNidvPrU1+16jLU/WTfhNhu5w/2UDL8ruT
- 04aSs/Cv4lfsSVzK3DnW+UdF6RqMxaOtsDPRZQnem0YJXGgshxLbjoM4IOwybUxX
- fKEvg4e5fX6iFOAeOTlrHGhBehL2JL6P3GrTPwUp91mgDz8siSB1wEg0E8jsqskl
- s81IZ5rUB4kyrMkg6g0TU31xh9V9s1NkJ4TUJjQxRMQZtHr0WOQQdI7izrBnijlf
- 2mH6FDmc5fh/rA==
-X-ME-Sender: <xms:9zVKXuoeZJ4WsQVe4Clc1UwfKTzIH1tsGp5ssqa-apkIgftijoh34Q>
+ fm2; bh=DBdByb7xpH/PXxP1Vq/SOFf147fSI39LL4w1DRyW60M=; b=0d10K7zW
+ IyrE4ZaBnbYuf++JeGo1aWD2p+4S0ZrtikqBgn9XrRBrL6prMOq9N77o4k6wQfqG
+ OTxrBtOYe9lx+58W8qO0e4eyNCSn9iHyF0GiI4BjqT8OWkZkXlB/G2qu636vyEpi
+ 9SBDld6S+rTJGhNGCGUkziFGyO8MCUziAPPvR+1vHDl+LHewvhu2+14RP8vSL3nk
+ kH8EVxfciAbjsXIi1mRkF01koK0JEki6eWvioB/IdaFQ+fX5oURrkYa923vukO+M
+ vkRvkyE24s68W/oj8rfra+LyLWWIpaQDKJIsU1VSCpi6f1vBQx3ksQoFtHyPf+8I
+ d8zlENB1a5a86A==
+X-ME-Sender: <xms:-DVKXv6ebhxOmcinyiXb6ejtOG_lPYUeYqyjZh2xxtRSBg34cBfTmA>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedrjeehgdelkecutefuodetggdotefrodftvf
  curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
  uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
@@ -86,14 +86,14 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedrjeehgdelkecutefuodetggdote
  ucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecukfhppe
  ejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiiigvpedujeenucfrrghr
  rghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghnugdrohhrgh
-X-ME-Proxy: <xmx:9zVKXj5v_ufh1CAl5FQ9VoHKj8WosyqDX5pr7Qugi3VYdU4CcOgDkg>
- <xmx:9zVKXn6QdoZx0Fn7kH3Oc5bXVwaxbkbD8gatKRdeoEvBST7mXDs0fQ>
- <xmx:9zVKXqmZ0OfQBdhlsaEDEBatqDcG0KO7Y53JAD32QhtLT8QRgoZ1nw>
- <xmx:9zVKXhB8ZmEXVu6Ouwy5NWkTUqXbTJXBRX34reoP_uS_BN1MlHO2ng>
+X-ME-Proxy: <xmx:-DVKXu9YdFOWN83IahKDNl6kKKYUrGbXLiiAumicc5nG-x3RusSnHg>
+ <xmx:-DVKXlizALPX0isjQOZRM0kWxZbOle_-ShXZH_nuqs9PJMWi4GP-gg>
+ <xmx:-DVKXoTf-DJ0peZMTokfm2IL7J4q4e_RCuSeZtUzXEpzMKNR4dK5gw>
+ <xmx:-DVKXiYFytttnwEMOw7v79ErpTSV8JEU_-pg5IybOmfEJQBPKMx8XQ>
 Received: from titanium.stl.sholland.net
  (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
- by mail.messagingengine.com (Postfix) with ESMTPA id DA6E8328005A;
- Mon, 17 Feb 2020 01:43:02 -0500 (EST)
+ by mail.messagingengine.com (Postfix) with ESMTPA id 1A9353280064;
+ Mon, 17 Feb 2020 01:43:04 -0500 (EST)
 From: Samuel Holland <samuel@sholland.org>
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
  Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
@@ -101,8 +101,8 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
  Vasily Khoruzhick <anarsoul@gmail.com>,
  =?UTF-8?q?Myl=C3=A8ne=20Josserand?= <mylene.josserand@free-electrons.com>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Date: Mon, 17 Feb 2020 00:42:36 -0600
-Message-Id: <20200217064250.15516-21-samuel@sholland.org>
+Date: Mon, 17 Feb 2020 00:42:38 -0600
+Message-Id: <20200217064250.15516-23-samuel@sholland.org>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200217064250.15516-1-samuel@sholland.org>
 References: <20200217064250.15516-1-samuel@sholland.org>
@@ -110,8 +110,8 @@ MIME-Version: 1.0
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  Samuel Holland <samuel@sholland.org>
-Subject: [alsa-devel] [RFC PATCH 20/34] ASoC: sun8i-codec: Support
-	8/20/24-bit word sizes
+Subject: [alsa-devel] [RFC PATCH 22/34] ASoC: sun8i-codec: Clean up AIF1
+	Slot 0 widgets
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -129,135 +129,167 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The codec hardware natively supports 8, 16, 20, and 24-bit word sizes.
-However, it only supports slot widths that are a multiple of 16 bits.
-So we can only support the 20-bit and 24-bit formats that are padded to
-32 bits. This doesn't cost anything, because the DMA controller on the
-CPU side only supports power-of-two byte sizes anyway.
+The driver currently confuses AIF1 AD0 with the ADC. They are
+independent. The ADC can be used without AIF1, and AIF1 AD0 can pull
+audio from other sources, such as AIF1 DA0 and AIF2. There is no mixer
+associated with the main ADC; the mixers are associated with an output,
+in this case AIF1 AD0.
 
-S8, S16_LE, and S24_LE were tested using a modified version of the
-sun4i-i2s driver as the CPU end of the DAI link. S20_LE was not tested
-due to poor userspace support; it should work the same.
+This commit renames the AIF1 Slot 0 widgets and routes to match their
+actual usage, and sorts them in a topological sink<-source ordering.
 
-In 8 bit mono mode, the computed BCLK/LRCK divider will be less than the
-minimum value 16. This is fine; there will just be padding after the
-data bits, similar to how S20_LE and S24_LE always have padding.
+Because each of the inputs is sent to multiple mixers, the controls must
+be renamed to include both the input name and the mixer name.
+
+It also sets the correct channel for the AIF inputs/outputs, so that the
+minimal number of DAPM widgets are turned on for mono routing.
 
 Signed-off-by: Samuel Holland <samuel@sholland.org>
 ---
- sound/soc/sunxi/sun8i-codec.c | 47 ++++++++++++++++++++++++-----------
- 1 file changed, 32 insertions(+), 15 deletions(-)
+ sound/soc/sunxi/sun8i-codec.c | 80 ++++++++++++++++++-----------------
+ 1 file changed, 42 insertions(+), 38 deletions(-)
 
 diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
-index 2df899daec67..b915e62fa005 100644
+index 0561d8d2e941..6f589e93850a 100644
 --- a/sound/soc/sunxi/sun8i-codec.c
 +++ b/sound/soc/sunxi/sun8i-codec.c
-@@ -45,7 +45,6 @@
- #define SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV		9
- #define SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV		6
- #define SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ		4
--#define SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_16		(1 << 4)
- #define SUN8I_AIF1CLK_CTRL_AIF1_DATA_FMT		2
- #define SUN8I_AIF1CLK_CTRL_AIF1_MONO_PCM		1
- #define SUN8I_AIF1_ADCDAT_CTRL				0x044
-@@ -87,6 +86,10 @@
- #define SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_MASK	GENMASK(5, 4)
- #define SUN8I_AIF1CLK_CTRL_AIF1_DATA_FMT_MASK	GENMASK(3, 2)
+@@ -401,41 +401,48 @@ static const struct snd_kcontrol_new sun8i_dac_mixer_controls[] = {
+ 			SUN8I_DAC_MXR_SRC_DACR_MXR_SRC_ADCR, 1, 0),
+ };
  
-+#define SUN8I_AIF_PCM_FMTS  (SNDRV_PCM_FMTBIT_S8|\
-+			     SNDRV_PCM_FMTBIT_S16_LE|\
-+			     SNDRV_PCM_FMTBIT_S20_LE|\
-+			     SNDRV_PCM_FMTBIT_S24_LE)
- #define SUN8I_AIF_PCM_RATES (SNDRV_PCM_RATE_8000_48000|\
- 			     SNDRV_PCM_RATE_96000|\
- 			     SNDRV_PCM_RATE_192000|\
-@@ -307,7 +310,9 @@ static int sun8i_codec_get_lrck_div(unsigned int channels,
- {
- 	unsigned int div = word_size * channels;
+-static const struct snd_kcontrol_new sun8i_input_mixer_controls[] = {
+-	SOC_DAPM_DOUBLE("AIF1 Slot 0 Digital ADC Capture Switch",
++static const struct snd_kcontrol_new sun8i_aif1_ad0_mixer_controls[] = {
++	SOC_DAPM_DOUBLE("AIF1 AD0 Mixer AIF1 DA0 Capture Switch",
+ 			SUN8I_AIF1_MXR_SRC,
+ 			SUN8I_AIF1_MXR_SRC_AD0L_MXR_SRC_AIF1DA0L,
+ 			SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_AIF1DA0R, 1, 0),
+-	SOC_DAPM_DOUBLE("AIF2 Digital ADC Capture Switch", SUN8I_AIF1_MXR_SRC,
++	SOC_DAPM_DOUBLE("AIF1 AD0 Mixer AIF2 DAC Capture Switch",
++			SUN8I_AIF1_MXR_SRC,
+ 			SUN8I_AIF1_MXR_SRC_AD0L_MXR_SRC_AIF2DACL,
+ 			SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_AIF2DACR, 1, 0),
+-	SOC_DAPM_DOUBLE("AIF1 Data Digital ADC Capture Switch",
++	SOC_DAPM_DOUBLE("AIF1 AD0 Mixer ADC Capture Switch",
+ 			SUN8I_AIF1_MXR_SRC,
+ 			SUN8I_AIF1_MXR_SRC_AD0L_MXR_SRC_ADCL,
+ 			SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_ADCR, 1, 0),
+-	SOC_DAPM_DOUBLE("AIF2 Inv Digital ADC Capture Switch",
++	SOC_DAPM_DOUBLE("AIF1 AD0 Mixer AIF2 DAC Rev Capture Switch",
+ 			SUN8I_AIF1_MXR_SRC,
+ 			SUN8I_AIF1_MXR_SRC_AD0L_MXR_SRC_AIF2DACR,
+ 			SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_AIF2DACL, 1, 0),
+ };
  
--	if (div < 16 || div > 256)
-+	if (div < 16)
-+		div = 16;
-+	if (div > 256)
- 		return -EINVAL;
- 
- 	return ilog2(div) - 4;
-@@ -318,27 +323,19 @@ static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
- 				 struct snd_soc_dai *dai)
- {
- 	struct sun8i_codec *scodec = snd_soc_component_get_drvdata(dai->component);
-+	unsigned int slot_width = params_physical_width(params);
- 	unsigned int channels = params_channels(params);
- 	int sample_rate, lrck_div;
- 	u8 bclk_div;
- 	u32 value;
- 
--	/*
--	 * The CPU DAI handles only a sample of 16 bits. Configure the
--	 * codec to handle this type of sample resolution.
--	 */
--	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
--			   SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_MASK,
--			   SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_16);
+ static const struct snd_soc_dapm_widget sun8i_codec_dapm_widgets[] = {
+-	/* Analog DAC AIF */
+-	SND_SOC_DAPM_AIF_IN("AIF1 Slot 0 Left", "Playback", 0,
+-			    SUN8I_AIF1_DACDAT_CTRL,
+-			    SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0L_ENA, 0),
+-	SND_SOC_DAPM_AIF_IN("AIF1 Slot 0 Right", "Playback", 0,
+-			    SUN8I_AIF1_DACDAT_CTRL,
+-			    SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0R_ENA, 0),
 -
- 	bclk_div = sun8i_codec_get_bclk_div(scodec, params_rate(params),
--					    channels, 16);
-+					    channels, slot_width);
- 	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
- 			   SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV_MASK,
- 			   bclk_div << SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV);
+-	/* Analog ADC AIF */
+-	SND_SOC_DAPM_AIF_OUT("AIF1 Slot 0 Left ADC", "Capture", 0,
++	/* AIF "ADC" Outputs */
++	SND_SOC_DAPM_AIF_OUT("AIF1 AD0 Left", "Capture", 0,
+ 			     SUN8I_AIF1_ADCDAT_CTRL,
+ 			     SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0L_ENA, 0),
+-	SND_SOC_DAPM_AIF_OUT("AIF1 Slot 0 Right ADC", "Capture", 0,
++	SND_SOC_DAPM_AIF_OUT("AIF1 AD0 Right", "Capture", 1,
+ 			     SUN8I_AIF1_ADCDAT_CTRL,
+ 			     SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0R_ENA, 0),
  
--	lrck_div = sun8i_codec_get_lrck_div(channels,
--					    params_physical_width(params));
-+	lrck_div = sun8i_codec_get_lrck_div(channels, slot_width);
- 	if (lrck_div < 0)
- 		return lrck_div;
- 
-@@ -346,6 +343,26 @@ static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
- 			   SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV_MASK,
- 			   lrck_div << SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV);
- 
-+	switch (params_width(params)) {
-+	case 8:
-+		value = 0x0;
-+		break;
-+	case 16:
-+		value = 0x1;
-+		break;
-+	case 20:
-+		value = 0x2;
-+		break;
-+	case 24:
-+		value = 0x3;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
-+			   SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_MASK,
-+			   value << SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ);
++	/* AIF "ADC" Mixers */
++	SOC_MIXER_ARRAY("AIF1 AD0 Left Mixer", SND_SOC_NOPM, 0, 0,
++			sun8i_aif1_ad0_mixer_controls),
++	SOC_MIXER_ARRAY("AIF1 AD0 Right Mixer", SND_SOC_NOPM, 0, 0,
++			sun8i_aif1_ad0_mixer_controls),
 +
- 	value = channels == 1;
- 	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
- 			   BIT(SUN8I_AIF1CLK_CTRL_AIF1_MONO_PCM),
-@@ -533,7 +550,7 @@ static struct snd_soc_dai_driver sun8i_codec_dai = {
- 		.channels_min = 1,
- 		.channels_max = 2,
- 		.rates = SUN8I_AIF_PCM_RATES,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		.formats = SUN8I_AIF_PCM_FMTS,
- 	},
- 	/* capture capabilities */
- 	.capture = {
-@@ -541,7 +558,7 @@ static struct snd_soc_dai_driver sun8i_codec_dai = {
- 		.channels_min = 1,
- 		.channels_max = 2,
- 		.rates = SUN8I_AIF_PCM_RATES,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		.formats = SUN8I_AIF_PCM_FMTS,
- 		.sig_bits = 24,
- 	},
- 	/* pcm operations */
++	/* AIF "DAC" Inputs */
++	SND_SOC_DAPM_AIF_IN("AIF1 DA0 Left", "Playback", 0,
++			    SUN8I_AIF1_DACDAT_CTRL,
++			    SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0L_ENA, 0),
++	SND_SOC_DAPM_AIF_IN("AIF1 DA0 Right", "Playback", 1,
++			    SUN8I_AIF1_DACDAT_CTRL,
++			    SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0R_ENA, 0),
++
+ 	/* Main DAC Outputs (connected to analog codec DAPM context) */
+ 	SND_SOC_DAPM_PGA("DAC Left", SND_SOC_NOPM, 0, 0, NULL, 0),
+ 	SND_SOC_DAPM_PGA("DAC Right", SND_SOC_NOPM, 0, 0, NULL, 0),
+@@ -448,10 +455,6 @@ static const struct snd_soc_dapm_widget sun8i_codec_dapm_widgets[] = {
+ 			sun8i_dac_mixer_controls),
+ 	SOC_MIXER_ARRAY("Right Digital DAC Mixer", SND_SOC_NOPM, 0, 0,
+ 			sun8i_dac_mixer_controls),
+-	SOC_MIXER_ARRAY("Left Digital ADC Mixer", SND_SOC_NOPM, 0, 0,
+-			sun8i_input_mixer_controls),
+-	SOC_MIXER_ARRAY("Right Digital ADC Mixer", SND_SOC_NOPM, 0, 0,
+-			sun8i_input_mixer_controls),
+ 
+ 	/* Main ADC Inputs (connected to analog codec DAPM context) */
+ 	SND_SOC_DAPM_PGA("ADC Left", SND_SOC_NOPM, 0, 0, NULL, 0),
+@@ -485,15 +488,22 @@ static const struct snd_soc_dapm_widget sun8i_codec_dapm_widgets[] = {
+ 
+ static const struct snd_soc_dapm_route sun8i_codec_dapm_routes[] = {
+ 	/* AIF "ADC" Output Routes */
+-	{ "AIF1 Slot 0 Left ADC", NULL, "Left Digital ADC Mixer" },
+-	{ "AIF1 Slot 0 Right ADC", NULL, "Right Digital ADC Mixer" },
++	{ "AIF1 AD0 Left", NULL, "AIF1 AD0 Left Mixer" },
++	{ "AIF1 AD0 Right", NULL, "AIF1 AD0 Right Mixer" },
+ 
+-	{ "AIF1 Slot 0 Left ADC", NULL, "AIF1CLK" },
+-	{ "AIF1 Slot 0 Right ADC", NULL, "AIF1CLK" },
++	{ "AIF1 AD0 Left", NULL, "AIF1CLK" },
++	{ "AIF1 AD0 Right", NULL, "AIF1CLK" },
++
++	/* AIF "ADC" Mixer Routes */
++	{ "AIF1 AD0 Left Mixer", "AIF1 AD0 Mixer AIF1 DA0 Capture Switch", "AIF1 DA0 Left" },
++	{ "AIF1 AD0 Left Mixer", "AIF1 AD0 Mixer ADC Capture Switch", "ADC Left" },
++
++	{ "AIF1 AD0 Right Mixer", "AIF1 AD0 Mixer AIF1 DA0 Capture Switch", "AIF1 DA0 Right" },
++	{ "AIF1 AD0 Right Mixer", "AIF1 AD0 Mixer ADC Capture Switch", "ADC Right" },
+ 
+ 	/* AIF "DAC" Input Routes */
+-	{ "AIF1 Slot 0 Left", NULL, "AIF1CLK" },
+-	{ "AIF1 Slot 0 Right", NULL, "AIF1CLK" },
++	{ "AIF1 DA0 Left", NULL, "AIF1CLK" },
++	{ "AIF1 DA0 Right", NULL, "AIF1CLK" },
+ 
+ 	/* DAC Routes */
+ 	{ "DAC Left", NULL, "Left Digital DAC Mixer" },
+@@ -504,25 +514,19 @@ static const struct snd_soc_dapm_route sun8i_codec_dapm_routes[] = {
+ 
+ 	/* DAC Mixer Routes */
+ 	{ "Left Digital DAC Mixer", "AIF1 Slot 0 Digital DAC Playback Switch",
+-	  "AIF1 Slot 0 Left"},
++	  "AIF1 DA0 Left"},
+ 	{ "Right Digital DAC Mixer", "AIF1 Slot 0 Digital DAC Playback Switch",
+-	  "AIF1 Slot 0 Right"},
++	  "AIF1 DA0 Right"},
+ 
+ 	/* ADC Routes */
+ 	{ "ADC Left", NULL, "ADC" },
+ 	{ "ADC Right", NULL, "ADC" },
+ 
+-	/* ADC Mixer Routes */
+-	{ "Left Digital ADC Mixer", "AIF1 Data Digital ADC Capture Switch",
+-	  "ADC Left" },
+-	{ "Right Digital ADC Mixer", "AIF1 Data Digital ADC Capture Switch",
+-	  "ADC Right" },
+-
+ 	/* Module Supply Routes */
+-	{ "AIF1 Slot 0 Left ADC", NULL, "RST AIF1" },
+-	{ "AIF1 Slot 0 Right ADC", NULL, "RST AIF1" },
+-	{ "AIF1 Slot 0 Left", NULL, "RST AIF1" },
+-	{ "AIF1 Slot 0 Right", NULL, "RST AIF1" },
++	{ "AIF1 AD0 Left", NULL, "RST AIF1" },
++	{ "AIF1 AD0 Right", NULL, "RST AIF1" },
++	{ "AIF1 DA0 Left", NULL, "RST AIF1" },
++	{ "AIF1 DA0 Right", NULL, "RST AIF1" },
+ 
+ 	{ "ADC", NULL, "RST ADC" },
+ 	{ "DAC", NULL, "RST DAC" },
 -- 
 2.24.1
 
