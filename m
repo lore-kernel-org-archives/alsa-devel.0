@@ -2,64 +2,69 @@ Return-Path: <SRS0=LPcU=4F=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 477DFC34022
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 22:08:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A362C34022
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 22:08:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C5BBF2072C
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 22:08:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B93332072C
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 22:08:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QirT+PEs"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C5BBF2072C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gWBhK5gd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B93332072C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2EB241693;
-	Mon, 17 Feb 2020 23:07:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2EB241693
+	by alsa0.perex.cz (Postfix) with ESMTPS id 110B61682;
+	Mon, 17 Feb 2020 23:08:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 110B61682
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581977285;
-	bh=s4MfkWBkTrbCl1kuQ+rgtQ1051/vqgVwEJRhNyVBe3o=;
-	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=QirT+PEsDk9fPcBjv5C3GRprT1gQsPufUJJNjyi+C9gsm+KZh7p0bmaPHekfI0qJc
-	 DYHSVcu+i3rkJOP8KrgIqhfSFAJy07iJI0Nk1IemFsNn6cKyqs/61bE9VHz7Ub130F
-	 R82YwQyv/nsc3urCxMWpPLFLza+Z+sXwZmBqWYL0=
+	s=default; t=1581977335;
+	bh=8OVASzovetVk4cPnnMsFxkB7DqyRjcyr8ESREWAbuFA=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=gWBhK5gd/r0CjB0uzQVQPBSONsGcCr6D5n8hl3+WgRNEGdJWDvSAhMQHQiju/wnut
+	 M9RZJTaoVYcwxFKjTS7dKF48stZ6qAAkR6UTgq/VnS/jhtKfkK7ldnUYYyK0JQZTv5
+	 Y4Q+XCLjN2R0DjHxLh8j8IIVPxQhNZUMbRfsk/EI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2BAC0F8028D;
-	Mon, 17 Feb 2020 23:04:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CE0A3F8015E;
+	Mon, 17 Feb 2020 23:05:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 92A9FF8028E; Mon, 17 Feb 2020 23:04:17 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 9CE26F8028B
- for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 23:04:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9CE26F8028B
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F24EA106F;
- Mon, 17 Feb 2020 14:04:13 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 76E393F703;
- Mon, 17 Feb 2020 14:04:13 -0800 (PST)
-Date: Mon, 17 Feb 2020 22:04:12 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Tzung-Bi Shih <tzungbi@google.com>
-Subject: Applied "ASoC: hdmi-codec: set plugged_cb to NULL when component
- removing" to the asoc tree
-In-Reply-To: <20200217105513.1.Icc323daaf71ad02f191fd8d91136b01b61eca5e3@changeid>
-Message-Id: <applied-20200217105513.1.Icc323daaf71ad02f191fd8d91136b01b61eca5e3@changeid>
-X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, cychiang@google.com, tzungbi@google.com,
- airlied@linux.ie, dri-devel@lists.freedesktop.org, matthias.bgg@gmail.com,
- Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org,
- daniel@ffwll.ch, ck.hu@mediatek.com, p.zabel@pengutronix.de, dgreid@google.com,
- linux-arm-kernel@lists.infradead.org
+ id C4D6AF802A0; Mon, 17 Feb 2020 23:05:10 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 355D0F8015E
+ for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 23:05:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 355D0F8015E
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 22353ADEB;
+ Mon, 17 Feb 2020 22:05:07 +0000 (UTC)
+Date: Mon, 17 Feb 2020 23:05:06 +0100
+Message-ID: <s5h1rqsc1kd.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: =?UTF-8?B?QXVyw6lsaWVu?= Croc <aurelien@ap2c.com>
+Subject: Re: [alsa-devel] No sound with Realtek ALC298 on a Samsung Galaxy book
+In-Reply-To: <5023991.OkN0jAucn1@antimony.ap2c.org>
+References: <1610933.XPBrhYXKCp@antimony.ap2c.org>
+ <2757884.e1HrdM282F@antimony.ap2c.org>
+ <s5hd0adfapa.wl-tiwai@suse.de>
+ <5023991.OkN0jAucn1@antimony.ap2c.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Kailang <kailang@realtek.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,71 +80,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
+On Mon, 17 Feb 2020 20:01:05 +0100,
+Aurélien Croc wrote:
+> 
+> > Sometimes you have some data in *.INF file or such.  At least, if the
+> > standard Windows driver (not the h/w vendor's one) works, the extra
+> > configuration is usually put there.
+> 
+> The Windows driver is the one provided by Realtek. The manufacturer ID is 
+> "INTELAUDIO\FUNC_01&VEN_10EC&DEV_0298&SUBSYS_144DC14F".
+> I looked into the INF file which corresponds to this driver but I'm not sure 
+> to understand it. There is a specific section attached to this device which 
+> looks like:
+> [CusEffectSettingsMaxim.AddReg]
+> HKR,SSTPPCfg\{C75061F3-F2B2-4DCC-8F9F-82ABB4131E66}\SPK\EFX,16777217, 1, 
+> 1,0,0,1,1,0,0,0
+> HKR,SSTPPCfg\{C75061F3-F2B2-4DCC-8F9F-82ABB4131E66}\SPK\EFX,16777218, 1, 
+> 2,0,0,1,0,0,80,2
+> ....
+> 
+> I don't know if the solution is in these lines or not..
+> 
+> 
+> > Also, when you test the sound, don't use PulseAudio but test directly
+> > with ALSA native apps (e.g. aplay with -Dhw:0 or -Dplughw:0, etc).
+> > You can use speaker-test program, too.
+> 
+> I tried again all the channels with headphone only by using only ALSA and not 
+> pulseaudio. There is no sound at all.
+> Note that the internal microphone and the microphone of my headphone when it's 
+> plugged in works very well..
 
-   ASoC: hdmi-codec: set plugged_cb to NULL when component removing
+Aha, so the input works but only the output doesn't?
+Then it's not about the basic stuff like pin configuration but rather
+the missing COEF setup or such that is specific to Realtek codec
+(and/or the Samsung platform).
 
-has been applied to the asoc tree at
+Kailang, do you have any clue?
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+thanks,
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Takashi
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From 4aadf4b49ec7d80c5db842ca28479d07108c9484 Mon Sep 17 00:00:00 2001
-From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Mon, 17 Feb 2020 11:16:52 +0800
-Subject: [PATCH] ASoC: hdmi-codec: set plugged_cb to NULL when component
- removing
-
-Sets plugged_cb to NULL when component removing to notify its consumers
-: no further plugged status report is required.
-
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
-Link: https://lore.kernel.org/r/20200217105513.1.Icc323daaf71ad02f191fd8d91136b01b61eca5e3@changeid
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/hdmi-codec.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index 543363102d03..bc2903d27e6e 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -779,7 +779,17 @@ static int hdmi_of_xlate_dai_id(struct snd_soc_component *component,
- 	return ret;
- }
- 
-+static void hdmi_remove(struct snd_soc_component *component)
-+{
-+	struct hdmi_codec_priv *hcp = snd_soc_component_get_drvdata(component);
-+
-+	if (hcp->hcd.ops->hook_plugged_cb)
-+		hcp->hcd.ops->hook_plugged_cb(component->dev->parent,
-+					      hcp->hcd.data, NULL, NULL);
-+}
-+
- static const struct snd_soc_component_driver hdmi_driver = {
-+	.remove			= hdmi_remove,
- 	.dapm_widgets		= hdmi_widgets,
- 	.num_dapm_widgets	= ARRAY_SIZE(hdmi_widgets),
- 	.of_xlate_dai_id	= hdmi_of_xlate_dai_id,
--- 
-2.20.1
-
+> 
+> > And always try a headphone output at first.  The headset mic might not
+> > work, but the headphone output is usually the easiest one to get
+> > working.
+> 
+> 
+> Thank you for your help. I hope we'll find the problem..
+> 
+> 
+> 
