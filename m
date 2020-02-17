@@ -4,53 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04A84C7619B
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 08:33:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DE0C8C7619B
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 08:34:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 78D9520725
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 08:33:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5AF8420725
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 08:34:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="V2BoX3xy"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 78D9520725
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ebKCLhED"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5AF8420725
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CBD711684;
-	Mon, 17 Feb 2020 09:32:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CBD711684
+	by alsa0.perex.cz (Postfix) with ESMTPS id AE728168A;
+	Mon, 17 Feb 2020 09:33:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE728168A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581928401;
-	bh=LbI34iGBYzhhRstrzKsR7hJKdaVTFILztcAycPqF7nE=;
+	s=default; t=1581928440;
+	bh=GkN4UVQk1leNy3d7J8ZoDOj8aVh4B8ohjTDKfSbm4FY=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=V2BoX3xyF9O1yphstdaQ0nCHDORifzHvZjmFUimUTiW9G2071t1RMxQy8HlMk5wIT
-	 0S7xIJIKRB9dYXGZ2TXzI0rzKpDW35C89gfoStLnDcP8CcY0J8y40Q5SazfY9V8tq2
-	 PFzSDszqNtg+enfMnYEUrtIGNtQicHYn2QxekZi0=
+	b=ebKCLhEDAUBzJURQ1AGmMBSaFgdrpvqIGNrvkSoaFbLzLJLWu4OYPuyBZL85MKvjD
+	 NC1EQ3cSP/S3+K7CY8eA1Ay07lP4bc4zJKD5EpuxpR7yI7CC4DZlxWKjr0ZZ80pc9N
+	 B47/CyZQXklZ87DA9Xp8fUBere4NZgS7ONMWb9G4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6C12FF802C2;
-	Mon, 17 Feb 2020 09:28:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B1EE9F802DB;
+	Mon, 17 Feb 2020 09:28:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3373DF802C3; Mon, 17 Feb 2020 09:28:20 +0100 (CET)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 747BFF80292
- for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 09:28:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 747BFF80292
-Date: 17 Feb 2020 17:28:11 +0900
-X-IronPort-AV: E=Sophos;i="5.70,451,1574089200"; d="scan'208";a="39491303"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 17 Feb 2020 17:28:11 +0900
+ id C917DF802D2; Mon, 17 Feb 2020 09:28:22 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 2C378F8029B
+ for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 09:28:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C378F8029B
+Date: 17 Feb 2020 17:28:15 +0900
+X-IronPort-AV: E=Sophos;i="5.70,451,1574089200"; d="scan'208";a="39275103"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 17 Feb 2020 17:28:15 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 5A4F841A36BD;
- Mon, 17 Feb 2020 17:28:11 +0900 (JST)
-Message-ID: <877e0lboty.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id DEEB740031C6;
+ Mon, 17 Feb 2020 17:28:15 +0900 (JST)
+Message-ID: <875zg5botu.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
@@ -58,8 +59,8 @@ To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87imk5bovg.wl-kuninori.morimoto.gx@renesas.com>
 References: <87imk5bovg.wl-kuninori.morimoto.gx@renesas.com>
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH v4 08/18] ASoC: soc-pcm: use goto and remove
-	multi return
+Subject: [alsa-devel] [PATCH v4 09/18] ASoC: soc-pcm: merge
+	playback/cature_active into stream_active
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,42 +78,194 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-When we use some kind of lock, we need to do unlock.
-In that time, multi unlock/return is not good implementation.
-This patch add label and use goto at dpcm_fe_dai_open()
-to reduce such code.
+DAI has playback_active and capture_active to care usage count.
+OTOH, we have SNDRV_PCM_STREAM_PLAYBACK/CAPTURE.
+But because of this kind of implementation mismatch,
+ALSA SoC has many verbose code.
+
+To solve this issue, this patch merge playback_active/capture_active
+into stream_active[2];
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/soc-pcm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/sound/soc-dai.h   |  3 +--
+ sound/soc/codecs/cs4271.c |  4 ++--
+ sound/soc/dwc/dwc-i2s.c   |  4 ++--
+ sound/soc/soc-core.c      | 17 +++++++++--------
+ sound/soc/soc-pcm.c       | 25 ++++++++++++-------------
+ 5 files changed, 26 insertions(+), 27 deletions(-)
 
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index 04c23ac0dfff..7481e468be39 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -322,8 +322,7 @@ struct snd_soc_dai {
+ 	struct snd_soc_dai_driver *driver;
+ 
+ 	/* DAI runtime info */
+-	unsigned int capture_active;		/* stream usage count */
+-	unsigned int playback_active;		/* stream usage count */
++	unsigned int stream_active[SNDRV_PCM_STREAM_LAST + 1]; /* usage count */
+ 
+ 	unsigned int active;
+ 
+diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
+index 04b86a51e055..62f412d6f9f2 100644
+--- a/sound/soc/codecs/cs4271.c
++++ b/sound/soc/codecs/cs4271.c
+@@ -356,9 +356,9 @@ static int cs4271_hw_params(struct snd_pcm_substream *substream,
+ 		 */
+ 
+ 		if ((substream->stream == SNDRV_PCM_STREAM_PLAYBACK &&
+-		     !dai->capture_active) ||
++		     !dai->stream_active[SNDRV_PCM_STREAM_CAPTURE]) ||
+ 		    (substream->stream == SNDRV_PCM_STREAM_CAPTURE &&
+-		     !dai->playback_active)) {
++		     !dai->stream_active[SNDRV_PCM_STREAM_PLAYBACK])) {
+ 			ret = regmap_update_bits(cs4271->regmap, CS4271_MODE2,
+ 						 CS4271_MODE2_PDN,
+ 						 CS4271_MODE2_PDN);
+diff --git a/sound/soc/dwc/dwc-i2s.c b/sound/soc/dwc/dwc-i2s.c
+index 7eeca2150b2d..a8bff6f08a69 100644
+--- a/sound/soc/dwc/dwc-i2s.c
++++ b/sound/soc/dwc/dwc-i2s.c
+@@ -427,9 +427,9 @@ static int dw_i2s_resume(struct snd_soc_component *component)
+ 		clk_enable(dev->clk);
+ 
+ 	for_each_component_dais(component, dai) {
+-		if (dai->playback_active)
++		if (dai->stream_active[SNDRV_PCM_STREAM_PLAYBACK])
+ 			dw_i2s_config(dev, SNDRV_PCM_STREAM_PLAYBACK);
+-		if (dai->capture_active)
++		if (dai->stream_active[SNDRV_PCM_STREAM_CAPTURE])
+ 			dw_i2s_config(dev, SNDRV_PCM_STREAM_CAPTURE);
+ 	}
+ 
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 068d809c349a..13df3175e184 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -365,19 +365,20 @@ EXPORT_SYMBOL_GPL(snd_soc_get_pcm_runtime);
+ void snd_soc_close_delayed_work(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	int playback = SNDRV_PCM_STREAM_PLAYBACK;
+ 
+ 	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
+ 
+ 	dev_dbg(rtd->dev,
+ 		"ASoC: pop wq checking: %s status: %s waiting: %s\n",
+ 		codec_dai->driver->playback.stream_name,
+-		codec_dai->playback_active ? "active" : "inactive",
++		codec_dai->stream_active[playback] ? "active" : "inactive",
+ 		rtd->pop_wait ? "yes" : "no");
+ 
+ 	/* are we waiting on this codec DAI stream */
+ 	if (rtd->pop_wait == 1) {
+ 		rtd->pop_wait = 0;
+-		snd_soc_dapm_stream_event(rtd, SNDRV_PCM_STREAM_PLAYBACK,
++		snd_soc_dapm_stream_event(rtd, playback,
+ 					  SND_SOC_DAPM_STREAM_STOP);
+ 	}
+ 
+@@ -514,6 +515,7 @@ int snd_soc_suspend(struct device *dev)
+ 	struct snd_soc_card *card = dev_get_drvdata(dev);
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_pcm_runtime *rtd;
++	int playback = SNDRV_PCM_STREAM_PLAYBACK;
+ 	int i;
+ 
+ 	/* If the card is not initialized yet there is nothing to do */
+@@ -537,9 +539,8 @@ int snd_soc_suspend(struct device *dev)
+ 			continue;
+ 
+ 		for_each_rtd_codec_dai(rtd, i, dai) {
+-			if (dai->playback_active)
+-				snd_soc_dai_digital_mute(dai, 1,
+-						SNDRV_PCM_STREAM_PLAYBACK);
++			if (dai->stream_active[playback])
++				snd_soc_dai_digital_mute(dai, 1, playback);
+ 		}
+ 	}
+ 
+@@ -680,14 +681,14 @@ static void soc_resume_deferred(struct work_struct *work)
+ 	/* unmute any active DACs */
+ 	for_each_card_rtds(card, rtd) {
+ 		struct snd_soc_dai *dai;
++		int playback = SNDRV_PCM_STREAM_PLAYBACK;
+ 
+ 		if (rtd->dai_link->ignore_suspend)
+ 			continue;
+ 
+ 		for_each_rtd_codec_dai(rtd, i, dai) {
+-			if (dai->playback_active)
+-				snd_soc_dai_digital_mute(dai, 0,
+-						SNDRV_PCM_STREAM_PLAYBACK);
++			if (dai->stream_active[playback])
++				snd_soc_dai_digital_mute(dai, 0, playback);
+ 		}
+ 	}
+ 
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index fcebc327c0ef..bf1f74c42e1a 100644
+index bf1f74c42e1a..bbecf8f5f4b9 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -2733,8 +2733,7 @@ static int dpcm_fe_dai_open(struct snd_pcm_substream *fe_substream)
+@@ -100,15 +100,9 @@ static void snd_soc_runtime_action(struct snd_soc_pcm_runtime *rtd,
  
- 	ret = dpcm_path_get(fe, stream, &list);
- 	if (ret < 0) {
--		mutex_unlock(&fe->card->mutex);
--		return ret;
-+		goto open_end;
- 	} else if (ret == 0) {
- 		dev_dbg(fe->dev, "ASoC: %s no valid %s route\n",
- 			fe->dai_link->name, stream ? "capture" : "playback");
-@@ -2755,6 +2754,7 @@ static int dpcm_fe_dai_open(struct snd_pcm_substream *fe_substream)
+ 	lockdep_assert_held(&rtd->card->pcm_mutex);
  
- 	dpcm_clear_pending_state(fe, stream);
- 	dpcm_path_put(&list);
-+open_end:
- 	mutex_unlock(&fe->card->mutex);
- 	return ret;
- }
+-	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
+-		cpu_dai->playback_active += action;
+-		for_each_rtd_codec_dai(rtd, i, codec_dai)
+-			codec_dai->playback_active += action;
+-	} else {
+-		cpu_dai->capture_active += action;
+-		for_each_rtd_codec_dai(rtd, i, codec_dai)
+-			codec_dai->capture_active += action;
+-	}
++	cpu_dai->stream_active[stream] += action;
++	for_each_rtd_codec_dai(rtd, i, codec_dai)
++		codec_dai->stream_active[stream] += action;
+ 
+ 	cpu_dai->active += action;
+ 	cpu_dai->component->active += action;
+@@ -967,8 +961,11 @@ static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
+ 
+ 	/* apply codec digital mute */
+ 	for_each_rtd_codec_dai(rtd, i, codec_dai) {
+-		if ((playback && codec_dai->playback_active == 1) ||
+-		    (!playback && codec_dai->capture_active == 1))
++		int playback_active = codec_dai->stream_active[SNDRV_PCM_STREAM_PLAYBACK];
++		int capture_active  = codec_dai->stream_active[SNDRV_PCM_STREAM_CAPTURE];
++
++		if ((playback && playback_active == 1) ||
++		    (!playback && capture_active == 1))
+ 			snd_soc_dai_digital_mute(codec_dai, 1,
+ 						 substream->stream);
+ 	}
+@@ -2634,7 +2631,8 @@ static int soc_dpcm_fe_runtime_update(struct snd_soc_pcm_runtime *fe, int new)
+ 		goto capture;
+ 
+ 	/* skip if FE isn't currently playing */
+-	if (!fe->cpu_dai->playback_active || !fe->codec_dai->playback_active)
++	if (!fe->cpu_dai->stream_active[SNDRV_PCM_STREAM_PLAYBACK] ||
++	    !fe->codec_dai->stream_active[SNDRV_PCM_STREAM_PLAYBACK])
+ 		goto capture;
+ 
+ 	paths = dpcm_path_get(fe, SNDRV_PCM_STREAM_PLAYBACK, &list);
+@@ -2665,7 +2663,8 @@ static int soc_dpcm_fe_runtime_update(struct snd_soc_pcm_runtime *fe, int new)
+ 		return 0;
+ 
+ 	/* skip if FE isn't currently capturing */
+-	if (!fe->cpu_dai->capture_active || !fe->codec_dai->capture_active)
++	if (!fe->cpu_dai->stream_active[SNDRV_PCM_STREAM_CAPTURE] ||
++	    !fe->codec_dai->stream_active[SNDRV_PCM_STREAM_CAPTURE])
+ 		return 0;
+ 
+ 	paths = dpcm_path_get(fe, SNDRV_PCM_STREAM_CAPTURE, &list);
 -- 
 2.17.1
 
