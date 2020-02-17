@@ -2,60 +2,64 @@ Return-Path: <SRS0=LPcU=4F=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 69DB2C3B1BF
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 02:16:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C21BC3B1BF
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 02:17:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D66712086A
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 02:16:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B55C3208C4
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 02:17:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="U/us/XLB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D66712086A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fXOxj/V+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B55C3208C4
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2D42B166C;
-	Mon, 17 Feb 2020 03:15:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D42B166C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1BD0E1686;
+	Mon, 17 Feb 2020 03:16:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1BD0E1686
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581905769;
-	bh=rOwfVdQff1pdYrqn06T5eJumaq9bmBsFmarta1pTibI=;
-	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=U/us/XLBbxM6YEF61wajmluBYLUAqowzi0Te9qRNqimCK2F4nOZIkM2NN+5hKn6An
-	 aI5P6jRaJJ89U2vQRAPEZNp9QuIL5rwOmFo0/sLI9GhEwccBURbuIgpThU62g08KvW
-	 QZCpj9Jnpin/nR+WFpt1zBGsYrwlWv4XiowxPtoc=
+	s=default; t=1581905823;
+	bh=uUyjlOTp/ydoPxaIN2upQuWV/WkJeLuSOuYWr/yI6RA=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=fXOxj/V+2RFcaTNBGA0vdeiPjL/2ej85s+BzYzW1hIMtIwWE4gAvqlaBBxRUmrwxb
+	 ZSw/yK83MYwQ/n5HGpBBlzYoT27LAZ623mC5d7S6CcSxbgBLtGsYnfU9Bmt/eb8sdc
+	 qjC6/jHzErQBLC1XfMtz+g9aIvvIX3zIK0qk3l4g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9B11FF80142;
-	Mon, 17 Feb 2020 03:15:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DC362F80138;
+	Mon, 17 Feb 2020 03:15:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 41C6DF80145; Mon, 17 Feb 2020 03:15:16 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 8E43BF80096
- for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 03:15:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E43BF80096
-Date: 17 Feb 2020 11:15:07 +0900
-X-IronPort-AV: E=Sophos;i="5.70,450,1574089200"; d="scan'208";a="39233531"
+ id 62A62F80150; Mon, 17 Feb 2020 03:15:38 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 04770F80138
+ for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 03:15:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04770F80138
+Date: 17 Feb 2020 11:15:31 +0900
+X-IronPort-AV: E=Sophos;i="5.70,450,1574089200"; d="scan'208";a="39449780"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 17 Feb 2020 11:15:07 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 17 Feb 2020 11:15:31 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 89A6B40083D3;
- Mon, 17 Feb 2020 11:15:07 +0900 (JST)
-Message-ID: <87blpyarja.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id C3E0840083CB;
+ Mon, 17 Feb 2020 11:15:31 +0900 (JST)
+Message-ID: <87a75iarim.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
-To: Mark Brown <broonie@kernel.org>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <87blpyarja.wl-kuninori.morimoto.gx@renesas.com>
+References: <87blpyarja.wl-kuninori.morimoto.gx@renesas.com>
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH v3 00/18] ASoC: soc-pcm cleanup step3
+Subject: [alsa-devel] [PATCH v3 01/18] ASoC: soc-pcm: move dai_get_widget()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,47 +78,53 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-These are v3 of soc-pcm cleanup step3.
-Main change from v2 is that last patch was splited
-into each files (= [10/18] to [18/18]).
-And all patches have Reviewed-by tag from Ranjani
+This patch moves dai_get_widget() to top side.
+This is prepare for cleanup soc-pcm.c
 
-Kuninori Morimoto (18):
-   1) ASoC: soc-pcm: move dai_get_widget()
-   2) ASoC: soc-pcm: use dai_get_widget() at dpcm_get_be()
-   3) ASoC: soc-pcm: use dai_get_widget() at dpcm_end_walk_at_be()
-   4) ASoC: soc-pcm: use dpcm_get_be() at dpcm_end_walk_at_be()
-   5) ASoC: soc-pcm: remove soc_dpcm_be_digital_mute()
-   6) ASoC: soc-pcm: remove snd_soc_dpcm_be_get/set_state()
-   7) ASoC: soc-pcm: add snd_soc_dpcm_can_be() and remove duplicate code
-   8) ASoC: soc-pcm: use goto and remove multi return
-   9) ASoC: soc-pcm: merge playback/cature_active into stream_active
-  10) ASoC: soc.h: add for_each_pcm_streams()
-  11) ASoC: soc-core: use for_each_pcm_streams() macro
-  12) ASoC: soc-pcm: use for_each_pcm_streams() macro
-  13) ASoC: soc-generic-dmaengine-pcm: use for_each_pcm_streams() macro
-  14) ASoC: dwc: dwc-i2s: use for_each_pcm_streams() macro
-  15) ASoC: fsl: fsl_asrc_dma: use for_each_pcm_streams() macro
-  16) ASoC: qcom: lpass-platform: use for_each_pcm_streams() macro
-  17) ASoC: sof: sof-audio: use for_each_pcm_streams() macro
-  18) ALSA: usx2y: use for_each_pcm_streams() macro
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+---
+ sound/soc/soc-pcm.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
- include/sound/pcm.h                   |   5 +
- include/sound/soc-dai.h               |   3 +-
- include/sound/soc-dpcm.h              |   9 -
- sound/soc/codecs/cs4271.c             |   4 +-
- sound/soc/dwc/dwc-i2s.c               |   8 +-
- sound/soc/fsl/fsl_asrc_dma.c          |   4 +-
- sound/soc/qcom/lpass-platform.c       |   2 +-
- sound/soc/soc-core.c                  |  48 ++--
- sound/soc/soc-generic-dmaengine-pcm.c |   8 +-
- sound/soc/soc-pcm.c                   | 327 +++++++++-----------------
- sound/soc/sof/sof-audio.c             |  19 +-
- sound/usb/usx2y/usbusx2yaudio.c       |   9 +-
- 12 files changed, 162 insertions(+), 284 deletions(-)
-
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 6630fadd6e09..a8adc8d06c05 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -82,6 +82,15 @@ static int soc_rtd_trigger(struct snd_soc_pcm_runtime *rtd,
+ 	return 0;
+ }
+ 
++static inline
++struct snd_soc_dapm_widget *dai_get_widget(struct snd_soc_dai *dai, int stream)
++{
++	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
++		return dai->playback_widget;
++	else
++		return dai->capture_widget;
++}
++
+ static void snd_soc_runtime_action(struct snd_soc_pcm_runtime *rtd,
+ 				   int stream, int action)
+ {
+@@ -1287,15 +1296,6 @@ static struct snd_soc_pcm_runtime *dpcm_get_be(struct snd_soc_card *card,
+ 	return NULL;
+ }
+ 
+-static inline struct snd_soc_dapm_widget *
+-	dai_get_widget(struct snd_soc_dai *dai, int stream)
+-{
+-	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
+-		return dai->playback_widget;
+-	else
+-		return dai->capture_widget;
+-}
+-
+ static int widget_in_list(struct snd_soc_dapm_widget_list *list,
+ 		struct snd_soc_dapm_widget *widget)
+ {
 -- 
 2.17.1
 
