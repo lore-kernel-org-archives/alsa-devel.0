@@ -2,113 +2,108 @@ Return-Path: <SRS0=LPcU=4F=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 105B1C3B1BF
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 02:31:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E3CC6C3B1BF
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 02:31:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 900E620718
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 02:31:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6E22C2086A
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 02:31:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ujR8yWcd";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sholland.org header.i=@sholland.org header.b="pWHVy+m5";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="AUYoSPzG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 900E620718
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vTzN642o";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sholland.org header.i=@sholland.org header.b="KgZOC9om";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="tZ4rjemR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6E22C2086A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sholland.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E60DA168D;
-	Mon, 17 Feb 2020 03:30:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E60DA168D
+	by alsa0.perex.cz (Postfix) with ESMTPS id CC33616B8;
+	Mon, 17 Feb 2020 03:30:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC33616B8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581906663;
-	bh=pflOHrcycbwmuROXhXwuvzUHHj0cuev298fSFZLsmV4=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=ujR8yWcdkAPzLOwe2dVY4+2BE04hxV85Nin+QX/D8+K5TWSCi0As0s80Jfne6/2hx
-	 SxO3Wqzjl3e+P+d81v/1qf9o6OmAUcq5RzCVaTEX+Ii3hvmeqegQlWYWMZO5Odg81l
-	 o2UR5izXEioWXYSdqw2kfXS70gFQPYFZiLfqcrSA=
+	s=default; t=1581906692;
+	bh=J5sM9SbklSneKFTkJG1fSYjgnbGgxOC2nanSiVOfY0E=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=vTzN642oS/VQ2L4qMM48p249XpETXJ4EGHm3R0/tmcgKwgS6L/geND/LyI2hLAkBK
+	 s2Lh/7Mj2fJexI4fw4pPnNrrux6LsoTClGCAeatEA7j86OuN91w1AWFfb+vbtv6Tbo
+	 /OayPRVZww+l8Nt3a+1YXrnddLf02ucKSdk4F7lM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 20138F8034F;
-	Mon, 17 Feb 2020 03:18:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 33101F80351;
+	Mon, 17 Feb 2020 03:18:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1C8E7F80334; Mon, 17 Feb 2020 03:18:33 +0100 (CET)
+ id 0BACBF8033F; Mon, 17 Feb 2020 03:18:36 +0100 (CET)
 Received: from new4-smtp.messagingengine.com (new4-smtp.messagingengine.com
  [66.111.4.230])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 03BC5F80233
- for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 03:18:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03BC5F80233
+ by alsa1.perex.cz (Postfix) with ESMTPS id 01BEAF8014C
+ for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 03:18:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01BEAF8014C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sholland.org header.i=@sholland.org
- header.b="pWHVy+m5"; 
+ header.b="KgZOC9om"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="AUYoSPzG"
+ header.i=@messagingengine.com header.b="tZ4rjemR"
 Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
- by mailnew.nyi.internal (Postfix) with ESMTP id 957BC6D5A;
+ by mailnew.nyi.internal (Postfix) with ESMTP id 97B6D6D65;
  Sun, 16 Feb 2020 21:18:19 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
  by compute5.internal (MEProxy); Sun, 16 Feb 2020 21:18:19 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
- from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm2; bh=Apb+TtYDINvK9
- uZ9r+oVYbxjc0AlZfJeyDhd5kRGQlI=; b=pWHVy+m5e622nR2vd+ayxQPevzsgs
- u+0iSGk/pLt+uLaZ2BKOrO7Oy0im/IjPPWTBNeU65XzlnhpQBSiTHGUD9wWMhUiI
- 3NwWCpuIkIli8fnUtzAeX9x+x2iFwcQdt3mDF9Bz2yAwVM8XvJndyQCHi3+cpzFT
- bzz+UiX8KEGw8Q85AFdncWwtlgDF0A7lZdSEMVTsySFHlHv3RBbi4DgNLbHZILfu
- uJv3PsBLNbCN4EbjHbNus91afGG/wWgqcDE2UsKp/g7ipy8qIVd2fwRHxvXI2Maq
- ZYi0v5a0Eza/tPc2/tdxFZJ2lpx2exxM9A1Svlxw1q64B7lV+lTnoTK9w==
+ from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding; s=fm2; bh=81rmcCzH+99CIb8JzKCPF7IB0i
+ Cso38cvLYNenVDvQ8=; b=KgZOC9omNh/Mhbz59mykqHg/w1bH45ClosPkO/Fgoz
+ MZVm8v1NXpcRoWPtlrKLqnSUQy3XJt9Qtbwk+B4Be+fx9uqNRxS6QrsdAjy1byID
+ O/JYdYWsZyCRnagTztvOpA44PadmDw3sSOpvQ8olhgxD/t/XOycyMoJFMxiKhPB5
+ NMzKive9HuRPjrq6dk7gU6M0SjswTEjjbNWdYJIc4SaY6iO+PP710It1TDEGQm0k
+ 0mzXt0E7CGx9FvrZhwNY7jMFteLPBCBswZZ2//OVAni0hTmD/YubQdLNZEfJiH3d
+ dh5HkyOkweAb/f93iMMdLOYqgH5U9VMmXZ6N0YSevXGg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
- :in-reply-to:message-id:mime-version:references:subject:to
- :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm2; bh=Apb+TtYDINvK9uZ9r+oVYbxjc0AlZfJeyDhd5kRGQlI=; b=AUYoSPzG
- fQirV7Xsea1GglhB4YDBzB4Nfk95Yft1+sPR9vCSyLToW4bt/BGeMD/kdsuuZdRt
- VJ20kq4inOgeBaUVJ+FM9IUkmwv65W57AAJhALC0slLj72ntyhdsRE0q/Jq8Eldb
- U1gJlZ6wzIQ4/8MhHWoo3I7aDQdWYxLwu0sHTqJwOlponGy3U25mm70pIY66kqPL
- ZxFGNXb4Fg4blJLJgeduwOemUrYTutPIZ6pvXP6TDW7oGhvVCh05EwXmELxGe3AQ
- i+7hRjr9MNjbGztaryIgSQMmAr1NqecbvGSjNiLY8pjwv3u/aoheWQcRl5SiF6RU
- RkTQm2S9B9rmqw==
-X-ME-Sender: <xms:6PdJXlGar6itgvb3IIKt4Zi9EVPWx7qbk2o1DvmUDPUg3XmULIcU7w>
+ :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+ :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=81rmcCzH+99CIb8Jz
+ KCPF7IB0iCso38cvLYNenVDvQ8=; b=tZ4rjemRHjhvYRn8IWa88dxrN+aJ7aByz
+ 81isJQx4xCyoJkN1ETHReI0CHGcSnX8REs5smKf6AWPv98T8AEUQ8kmLrduG7do0
+ L15QVoc1XNNomtXRu0ZCQDBtSPbHHBoEN9gXJtGcoISYE8FO76fI4deQO/OJSmW5
+ pXlkS0cCeRCtWQY1teiJjRjSlWXkthdJBK6STYvVDtrEGv8ynxGX5KQKaHJH2Wj9
+ iMoBjLF7MCrWKW9inTL9057KwaQXitloWMtAx5Tao9+XKX36TIgKNKgm0U2nCjxr
+ +7tdT5IZr0MOPSYGV0kKAdUnRYCn2mV7OQCf1sYVlWWF973jXAV6Q==
+X-ME-Sender: <xms:5vdJXg3nqOvn_wGRRoRCPDwqghJu_I90lH075V3kuV08-Z8QTSnS0g>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedrjeehgdegfecutefuodetggdotefrodftvf
  curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
  uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
- fjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghl
- ucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecukfhppe
- ejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgr
- mhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhg
-X-ME-Proxy: <xmx:6PdJXlGLQXDZ4ZxIjE3JuDwy17Tmf5Q8wojJn4zllGv-7_8VUAcG2Q>
- <xmx:6PdJXmDnYWgmqeWlNsf4jz1mH0RN22gy8i8oMnj-cMbZVufPEYzeCA>
- <xmx:6PdJXh0dWJAQEm-eDQC9b4_wbmVB53viQ9AQRhPpiuEphMgX4Er-CQ>
- <xmx:6_dJXsDuJpnF_sBVK2u2ondG4ZFUJW1mdOlGkFN6HatIaZQvyPIv_w>
+ fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghlucfj
+ ohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecukfhppeejtd
+ drudefhedrudegkedrudehudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhep
+ mhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhg
+X-ME-Proxy: <xmx:5vdJXiHPqr_iZzZGKOLSoK8hMUwQFvTT2CWrCjnhDYhfRk3Fe6LmGQ>
+ <xmx:5vdJXt7kJxB7BEVbcvSeo_2a3KP_GrteIFqNl0cO1okB5I20m02Kwg>
+ <xmx:5vdJXov0YxKj6xnnkjebkZWvv228FAN7ew_FqYDVxI36OBFxt8tEhQ>
+ <xmx:6_dJXr0UGR0mFYcqrcV5ahNxO4ZvGbeiGrxNaoWWqto1dCWm1TSr2w>
 Received: from titanium.stl.sholland.net
  (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
- by mail.messagingengine.com (Postfix) with ESMTPA id A99BB3060EE4;
- Sun, 16 Feb 2020 21:18:15 -0500 (EST)
+ by mail.messagingengine.com (Postfix) with ESMTPA id 2A1443060BE4;
+ Sun, 16 Feb 2020 21:18:14 -0500 (EST)
 From: Samuel Holland <samuel@sholland.org>
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
  Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
  Vasily Khoruzhick <anarsoul@gmail.com>, Luca Weiss <luca@z3ntu.xyz>
-Date: Sun, 16 Feb 2020 20:18:08 -0600
-Message-Id: <20200217021813.53266-4-samuel@sholland.org>
+Date: Sun, 16 Feb 2020 20:18:05 -0600
+Message-Id: <20200217021813.53266-1-samuel@sholland.org>
 X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200217021813.53266-1-samuel@sholland.org>
-References: <20200217021813.53266-1-samuel@sholland.org>
 MIME-Version: 1.0
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, Samuel Holland <samuel@sholland.org>
-Subject: [alsa-devel] [PATCH 3/8] ASoC: sun50i-codec-analog: Group and sort
-	mixer routes
+Subject: [alsa-devel] [PATCH 0/8] ASoC: sun50i-codec-analog: Cleanup and
+	power management
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -126,141 +121,23 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Sort the controls in the same order as the bits in the register. Then
-group the routes by sink, and sort them in the same order as the
-controls. This makes it much easier to verify that all mixer inputs are
-accounted for.
+This series performs some minor cleanup on the driver for the analog
+codec in the Allwinner A64, and hooks up the existing mute switches to
+DAPM widgets, in order to provide improved power management.
 
-Signed-off-by: Samuel Holland <samuel@sholland.org>
----
- sound/soc/sunxi/sun50i-codec-analog.c | 58 +++++++++++++--------------
- 1 file changed, 28 insertions(+), 30 deletions(-)
+Samuel Holland (8):
+  ASoC: sun50i-codec-analog: Fix duplicate use of ADC enable bits
+  ASoC: sun50i-codec-analog: Gate the amplifier clock during suspend
+  ASoC: sun50i-codec-analog: Group and sort mixer routes
+  ASoC: sun50i-codec-analog: Make headphone routes stereo
+  ASoC: sun50i-codec-analog: Enable DAPM for headphone switch
+  ASoC: sun50i-codec-analog: Make line out routes stereo
+  ASoC: sun50i-codec-analog: Enable DAPM for line out switch
+  ASoC: sun50i-codec-analog: Enable DAPM for earpiece switch
 
-diff --git a/sound/soc/sunxi/sun50i-codec-analog.c b/sound/soc/sunxi/sun50i-codec-analog.c
-index 4ad262c2e59b..17165f1ddb63 100644
---- a/sound/soc/sunxi/sun50i-codec-analog.c
-+++ b/sound/soc/sunxi/sun50i-codec-analog.c
-@@ -121,50 +121,50 @@
- 
- /* mixer controls */
- static const struct snd_kcontrol_new sun50i_a64_codec_mixer_controls[] = {
--	SOC_DAPM_DOUBLE_R("DAC Playback Switch",
-+	SOC_DAPM_DOUBLE_R("Mic1 Playback Switch",
- 			  SUN50I_ADDA_OL_MIX_CTRL,
- 			  SUN50I_ADDA_OR_MIX_CTRL,
--			  SUN50I_ADDA_OL_MIX_CTRL_DACL, 1, 0),
--	SOC_DAPM_DOUBLE_R("DAC Reversed Playback Switch",
-+			  SUN50I_ADDA_OL_MIX_CTRL_MIC1, 1, 0),
-+	SOC_DAPM_DOUBLE_R("Mic2 Playback Switch",
- 			  SUN50I_ADDA_OL_MIX_CTRL,
- 			  SUN50I_ADDA_OR_MIX_CTRL,
--			  SUN50I_ADDA_OL_MIX_CTRL_DACR, 1, 0),
-+			  SUN50I_ADDA_OL_MIX_CTRL_MIC2, 1, 0),
- 	SOC_DAPM_DOUBLE_R("Line In Playback Switch",
- 			  SUN50I_ADDA_OL_MIX_CTRL,
- 			  SUN50I_ADDA_OR_MIX_CTRL,
- 			  SUN50I_ADDA_OL_MIX_CTRL_LINEINL, 1, 0),
--	SOC_DAPM_DOUBLE_R("Mic1 Playback Switch",
-+	SOC_DAPM_DOUBLE_R("DAC Playback Switch",
- 			  SUN50I_ADDA_OL_MIX_CTRL,
- 			  SUN50I_ADDA_OR_MIX_CTRL,
--			  SUN50I_ADDA_OL_MIX_CTRL_MIC1, 1, 0),
--	SOC_DAPM_DOUBLE_R("Mic2 Playback Switch",
-+			  SUN50I_ADDA_OL_MIX_CTRL_DACL, 1, 0),
-+	SOC_DAPM_DOUBLE_R("DAC Reversed Playback Switch",
- 			  SUN50I_ADDA_OL_MIX_CTRL,
- 			  SUN50I_ADDA_OR_MIX_CTRL,
--			  SUN50I_ADDA_OL_MIX_CTRL_MIC2, 1, 0),
-+			  SUN50I_ADDA_OL_MIX_CTRL_DACR, 1, 0),
- };
- 
- /* ADC mixer controls */
- static const struct snd_kcontrol_new sun50i_codec_adc_mixer_controls[] = {
--	SOC_DAPM_DOUBLE_R("Mixer Capture Switch",
-+	SOC_DAPM_DOUBLE_R("Mic1 Capture Switch",
- 			  SUN50I_ADDA_L_ADCMIX_SRC,
- 			  SUN50I_ADDA_R_ADCMIX_SRC,
--			  SUN50I_ADDA_L_ADCMIX_SRC_OMIXRL, 1, 0),
--	SOC_DAPM_DOUBLE_R("Mixer Reversed Capture Switch",
-+			  SUN50I_ADDA_L_ADCMIX_SRC_MIC1, 1, 0),
-+	SOC_DAPM_DOUBLE_R("Mic2 Capture Switch",
- 			  SUN50I_ADDA_L_ADCMIX_SRC,
- 			  SUN50I_ADDA_R_ADCMIX_SRC,
--			  SUN50I_ADDA_L_ADCMIX_SRC_OMIXRR, 1, 0),
-+			  SUN50I_ADDA_L_ADCMIX_SRC_MIC2, 1, 0),
- 	SOC_DAPM_DOUBLE_R("Line In Capture Switch",
- 			  SUN50I_ADDA_L_ADCMIX_SRC,
- 			  SUN50I_ADDA_R_ADCMIX_SRC,
- 			  SUN50I_ADDA_L_ADCMIX_SRC_LINEINL, 1, 0),
--	SOC_DAPM_DOUBLE_R("Mic1 Capture Switch",
-+	SOC_DAPM_DOUBLE_R("Mixer Capture Switch",
- 			  SUN50I_ADDA_L_ADCMIX_SRC,
- 			  SUN50I_ADDA_R_ADCMIX_SRC,
--			  SUN50I_ADDA_L_ADCMIX_SRC_MIC1, 1, 0),
--	SOC_DAPM_DOUBLE_R("Mic2 Capture Switch",
-+			  SUN50I_ADDA_L_ADCMIX_SRC_OMIXRL, 1, 0),
-+	SOC_DAPM_DOUBLE_R("Mixer Reversed Capture Switch",
- 			  SUN50I_ADDA_L_ADCMIX_SRC,
- 			  SUN50I_ADDA_R_ADCMIX_SRC,
--			  SUN50I_ADDA_L_ADCMIX_SRC_MIC2, 1, 0),
-+			  SUN50I_ADDA_L_ADCMIX_SRC_OMIXRR, 1, 0),
- };
- 
- static const DECLARE_TLV_DB_SCALE(sun50i_codec_out_mixer_pregain_scale,
-@@ -373,24 +373,32 @@ static const struct snd_soc_dapm_widget sun50i_a64_codec_widgets[] = {
- 
- static const struct snd_soc_dapm_route sun50i_a64_codec_routes[] = {
- 	/* Left Mixer Routes */
-+	{ "Left Mixer", "Mic1 Playback Switch", "Mic1 Amplifier" },
-+	{ "Left Mixer", "Mic2 Playback Switch", "Mic2 Amplifier" },
-+	{ "Left Mixer", "Line In Playback Switch", "LINEIN" },
- 	{ "Left Mixer", "DAC Playback Switch", "Left DAC" },
- 	{ "Left Mixer", "DAC Reversed Playback Switch", "Right DAC" },
--	{ "Left Mixer", "Mic1 Playback Switch", "Mic1 Amplifier" },
- 
- 	/* Right Mixer Routes */
-+	{ "Right Mixer", "Mic1 Playback Switch", "Mic1 Amplifier" },
-+	{ "Right Mixer", "Mic2 Playback Switch", "Mic2 Amplifier" },
-+	{ "Right Mixer", "Line In Playback Switch", "LINEIN" },
- 	{ "Right Mixer", "DAC Playback Switch", "Right DAC" },
- 	{ "Right Mixer", "DAC Reversed Playback Switch", "Left DAC" },
--	{ "Right Mixer", "Mic1 Playback Switch", "Mic1 Amplifier" },
- 
- 	/* Left ADC Mixer Routes */
-+	{ "Left ADC Mixer", "Mic1 Capture Switch", "Mic1 Amplifier" },
-+	{ "Left ADC Mixer", "Mic2 Capture Switch", "Mic2 Amplifier" },
-+	{ "Left ADC Mixer", "Line In Capture Switch", "LINEIN" },
- 	{ "Left ADC Mixer", "Mixer Capture Switch", "Left Mixer" },
- 	{ "Left ADC Mixer", "Mixer Reversed Capture Switch", "Right Mixer" },
--	{ "Left ADC Mixer", "Mic1 Capture Switch", "Mic1 Amplifier" },
- 
- 	/* Right ADC Mixer Routes */
-+	{ "Right ADC Mixer", "Mic1 Capture Switch", "Mic1 Amplifier" },
-+	{ "Right ADC Mixer", "Mic2 Capture Switch", "Mic2 Amplifier" },
-+	{ "Right ADC Mixer", "Line In Capture Switch", "LINEIN" },
- 	{ "Right ADC Mixer", "Mixer Capture Switch", "Right Mixer" },
- 	{ "Right ADC Mixer", "Mixer Reversed Capture Switch", "Left Mixer" },
--	{ "Right ADC Mixer", "Mic1 Capture Switch", "Mic1 Amplifier" },
- 
- 	/* ADC Routes */
- 	{ "Left ADC", NULL, "Left ADC Mixer" },
-@@ -410,16 +418,6 @@ static const struct snd_soc_dapm_route sun50i_a64_codec_routes[] = {
- 
- 	/* Microphone Routes */
- 	{ "Mic2 Amplifier", NULL, "MIC2"},
--	{ "Left Mixer", "Mic2 Playback Switch", "Mic2 Amplifier" },
--	{ "Right Mixer", "Mic2 Playback Switch", "Mic2 Amplifier" },
--	{ "Left ADC Mixer", "Mic2 Capture Switch", "Mic2 Amplifier" },
--	{ "Right ADC Mixer", "Mic2 Capture Switch", "Mic2 Amplifier" },
--
--	/* Line-in Routes */
--	{ "Left Mixer", "Line In Playback Switch", "LINEIN" },
--	{ "Right Mixer", "Line In Playback Switch", "LINEIN" },
--	{ "Left ADC Mixer", "Line In Capture Switch", "LINEIN" },
--	{ "Right ADC Mixer", "Line In Capture Switch", "LINEIN" },
- 
- 	/* Line-out Routes */
- 	{ "Line Out Source Playback Route", "Stereo", "Left Mixer" },
+ sound/soc/sunxi/sun50i-codec-analog.c | 174 ++++++++++++++++----------
+ 1 file changed, 109 insertions(+), 65 deletions(-)
+
 -- 
 2.24.1
 
