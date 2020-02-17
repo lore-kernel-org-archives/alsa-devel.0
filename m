@@ -4,84 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D6ACC7619F
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 08:07:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DF52FC7619B
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 08:20:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1E6FD20726
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 08:07:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6D08320718
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 08:20:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AD4jecFU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1E6FD20726
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lexm89Vt"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6D08320718
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=csie.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 731AD166E;
-	Mon, 17 Feb 2020 09:06:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 731AD166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id B692982A;
+	Mon, 17 Feb 2020 09:20:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B692982A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581926867;
-	bh=Z496eBAIRqNqFKwkZ+IEgBibQQQP5sWDTkxWZELEgaI=;
+	s=default; t=1581927652;
+	bh=p8tHXWCiSvkuEYWjW8VUGd376lNNw//xrFhalbSTt1Y=;
 	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AD4jecFUWWRzav24rrMytPbglkqx/4kaLnBPOVz15B+oWwRRmTOeNjPfgA5wMPo+X
-	 ghg+y7AMWHm/vVcj9PuB5dXm9j/gk/vYUrMLfzpTJC2Sush1n4wdK4ewDyi8LWXww0
-	 VTKtij7O/jSBIs34qhOCeJ1nCUpkSwZ3gg91liaU=
+	b=lexm89Vt8gHxv/fSgz6yKHvLN8BoA2QI8LXhr3FmdYJRo0CC9rne1LxQY6Ggcywo3
+	 1z7cFgqMHabepWYEwfrKt9s59Jy5vyTyT8vkxsl4yYDA/7Auu/ft56kr9pHHN4d/Dn
+	 K/+DiCbrY/wtIQZ5UqERDl/ejBrlRWaOcnO1aXHg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0DC47F800C4;
-	Mon, 17 Feb 2020 09:06:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0EB40F800B6;
+	Mon, 17 Feb 2020 09:20:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EF8D1F80172; Mon, 17 Feb 2020 09:06:55 +0100 (CET)
-Received: from mail-ed1-f68.google.com (mail-ed1-f68.google.com
- [209.85.208.68])
+ id 78B9BF800B6; Mon, 17 Feb 2020 09:20:00 +0100 (CET)
+Received: from mail-ed1-f67.google.com (mail-ed1-f67.google.com
+ [209.85.208.67])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 23806F800B6
- for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 09:06:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23806F800B6
-Received: by mail-ed1-f68.google.com with SMTP id c26so19606338eds.8
- for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 00:06:52 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8C376F800B6
+ for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 09:19:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C376F800B6
+Received: by mail-ed1-f67.google.com with SMTP id p23so19648073edr.5
+ for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 00:19:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=H7HNmg9K88memoV4mQIdFTzsV1B2vI42lPI0r8PIbeg=;
- b=sxm/3QP1iLDhA0CqLbiG9ggFYx+1s+EFEexN5sAXia49rD1u0Q2CiH7dbZcoR9gltP
- 1Zt/VHXZ0tK610SrlURWsyx2rkSZ5oZIX6TeDe72bHZ+2WaXi61aOA77m2Iqa2KzWdYj
- QadJYzsy+qcs6QUUZqGcllk0SwOuPbTSPudNvtso0kNUplxqmE3gwGpu7YQgqwSrDpKT
- QrjsO+FlMZd4xPY6Kb0CGcXVWEzngOMjn52rqDI/QzDzL2vRJEZLTSindHzN7k5ImK3x
- zk50Rh3tpKp8ZB3Sml3AH86juSl7Ifh9OZcGyb9bYLrG7quW/+LaRhE8RnNk+4rc9CLg
- OxHQ==
-X-Gm-Message-State: APjAAAWZPlwW4opel6HtHtmyxOw9bPI64g3YRMaLdp1sxkYvucnO9f8N
- ZyS7nrN05gTvn1WhzX1Yc3p3WlzJCBc=
-X-Google-Smtp-Source: APXvYqwrNnH0Lb/NWZLq8WmGiqvINl3vAf4wlbnXO+hjK2b5DBn86+saQKUPR8pnCoHhpezKhJQdAg==
-X-Received: by 2002:a17:906:b80a:: with SMTP id
- dv10mr14230531ejb.115.1581926811706; 
- Mon, 17 Feb 2020 00:06:51 -0800 (PST)
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com.
- [209.85.128.52])
- by smtp.gmail.com with ESMTPSA id u9sm827892ejj.49.2020.02.17.00.06.51
+ bh=ATnQLLigNnNp+3vrMMUywd96YC/sdkp/YQzir+b0HgQ=;
+ b=G1H3dv0BPX9f+mq02AQfSEubAtrd4Yhs11DiSralcvkL3yEyjA4PKz2kjCWBRYz6Fo
+ onwtbQzEYUUIyPZZj6m+2DuRDhMiezpC5e9ETWJ5zvvUD9uejKc4NUDAb0wBaa2JBnIB
+ MDaTVcicwUICko2G9GM0dip+betAsp0EuCevGDrtzw0gxHj95gsGEQD/Uzz8U8Q6Q9NV
+ 2pte7gFpee5YPvCCwzsWAraIvsReKJrv1DWjInYVghnxrms7dZC8EnBvkMAaZ5JdiYQ/
+ 9EpcunebOdLJOkps5vPQAoZBkyWhEW7CmVQVVjJQVgxJKJrbCWu1PkySIMyzavTeDv37
+ Uwtg==
+X-Gm-Message-State: APjAAAXEqN21fKPsSaoU0V911fQFllr7wHCQ/FeFfHsvtqprqLC90fQf
+ 3L17b+CvVZToJrieiup7gOyh+FStaLw=
+X-Google-Smtp-Source: APXvYqznrwAH5sil7koMB2YIKWNVPijfppm7neMEE7ZxHPfhLkLlnjY+6WdqDfxdWlHGfZWX+pKScA==
+X-Received: by 2002:aa7:d9c6:: with SMTP id v6mr13249066eds.107.1581927596024; 
+ Mon, 17 Feb 2020 00:19:56 -0800 (PST)
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com.
+ [209.85.128.51])
+ by smtp.gmail.com with ESMTPSA id q5sm440940edb.70.2020.02.17.00.19.54
  for <alsa-devel@alsa-project.org>
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 17 Feb 2020 00:06:51 -0800 (PST)
-Received: by mail-wm1-f52.google.com with SMTP id a9so17296477wmj.3
- for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 00:06:51 -0800 (PST)
-X-Received: by 2002:a1c:dc85:: with SMTP id t127mr22204730wmg.16.1581926810934; 
- Mon, 17 Feb 2020 00:06:50 -0800 (PST)
+ Mon, 17 Feb 2020 00:19:55 -0800 (PST)
+Received: by mail-wm1-f51.google.com with SMTP id c84so17356648wme.4
+ for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 00:19:54 -0800 (PST)
+X-Received: by 2002:a05:600c:34d:: with SMTP id
+ u13mr21454590wmd.77.1581927594021; 
+ Mon, 17 Feb 2020 00:19:54 -0800 (PST)
 MIME-Version: 1.0
 References: <20200217064250.15516-1-samuel@sholland.org>
- <20200217064250.15516-13-samuel@sholland.org>
-In-Reply-To: <20200217064250.15516-13-samuel@sholland.org>
+ <20200217064250.15516-6-samuel@sholland.org>
+In-Reply-To: <20200217064250.15516-6-samuel@sholland.org>
 From: Chen-Yu Tsai <wens@csie.org>
-Date: Mon, 17 Feb 2020 16:06:40 +0800
-X-Gmail-Original-Message-ID: <CAGb2v65e3dwji4cwRh6uTryjXq=0qmeggEjrMgL9KtB+JTWCVg@mail.gmail.com>
-Message-ID: <CAGb2v65e3dwji4cwRh6uTryjXq=0qmeggEjrMgL9KtB+JTWCVg@mail.gmail.com>
+Date: Mon, 17 Feb 2020 16:19:43 +0800
+X-Gmail-Original-Message-ID: <CAGb2v64p9QEhni1sAQWA9eOtGYDcc2_VnUd92sUxK7M_doHZJA@mail.gmail.com>
+Message-ID: <CAGb2v64p9QEhni1sAQWA9eOtGYDcc2_VnUd92sUxK7M_doHZJA@mail.gmail.com>
 To: Samuel Holland <samuel@sholland.org>
 Cc: Mark Rutland <mark.rutland@arm.com>,
  devicetree <devicetree@vger.kernel.org>,
@@ -89,10 +89,10 @@ Cc: Mark Rutland <mark.rutland@arm.com>,
  linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
  Vasily Khoruzhick <anarsoul@gmail.com>, Mark Brown <broonie@kernel.org>,
- Maxime Ripard <mripard@kernel.org>,
+ Maxime Ripard <mripard@kernel.org>, stable@kernel.org,
  linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [alsa-devel] [RFC PATCH 12/34] ASoC: sun8i-codec: Fix AIF1
-	MODCLK widget name
+Subject: Re: [alsa-devel] [RFC PATCH 05/34] ASoC: sun8i-codec: Remove
+	incorrect SND_SOC_DAIFMT_DSP_B
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,10 +112,14 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 On Mon, Feb 17, 2020 at 2:43 PM Samuel Holland <samuel@sholland.org> wrote:
 >
-> It should be "AIF1", not "AFI1".
+> DSP_A and DSP_B are not interchangeable. The timing used by the codec in
+> DSP mode is consistent with DSP_A. This is verified with an EG25-G modem
+> connected to AIF2, as well as by comparing with the BSP driver.
 >
+> Remove the DSP_B option, as it is not supported by the hardware.
+>
+> Cc: stable@kernel.org
 > Fixes: 36c684936fae ("ASoC: Add sun8i digital audio codec")
-> Fixes: eda85d1fee05 ("ASoC: sun8i-codec: Add ADC support for a33")
 > Signed-off-by: Samuel Holland <samuel@sholland.org>
 
 Acked-by: Chen-Yu Tsai <wens@csie.org>
