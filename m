@@ -2,83 +2,71 @@ Return-Path: <SRS0=LPcU=4F=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FA9FC34021
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 14:42:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12A5DC34022
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 14:44:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AE83C208C4
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 14:42:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 93385207FD
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 14:44:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EzrIQ6dn";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="WwxkUyin"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AE83C208C4
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tlnsmXjg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 93385207FD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 00F02846;
-	Mon, 17 Feb 2020 15:41:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00F02846
+	by alsa0.perex.cz (Postfix) with ESMTPS id E8BFE83D;
+	Mon, 17 Feb 2020 15:43:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8BFE83D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581950554;
-	bh=mupifk44OONGo3mIFc74CI18Xi3bdf8D0wYQxQ+wxAg=;
+	s=default; t=1581950662;
+	bh=gWcyInVWYkGQYLY6TE2AxRBHe/rEdM11rLQVFv7/aU0=;
 	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EzrIQ6dngxGWr48d93SwvnDzOykqpR7bGhvFbdzr1SLYc0pDtEfqZicNr2IuLcoAu
-	 KcT7jtshrUmkggzs6vEcD2mI6/mAZRxPwCpudH4gk4pxM9USyBoDRqpw66btWtq1KC
-	 Db+mhR40KwQPOetuF0tFa5rbZgsPE1e4NPnm05JM=
+	b=tlnsmXjg57Hhma/23Hw4awls+K2e9Q+kUoMyDueIA48y96+rJ7gzIJSFkK85sSjxU
+	 +jlHQh9fq1dV2YLD4K+TrrCDy/hg/N4nyobXnR2Ndxrhqtj0gLbGmGDA+WKTCUItEZ
+	 5+55m1SoBvMCW+ms+MgOukDN9W+iaTSsPHe5f4OQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 58F78F80172;
-	Mon, 17 Feb 2020 15:41:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 611B0F80172;
+	Mon, 17 Feb 2020 15:43:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 132A2F801F4; Mon, 17 Feb 2020 15:41:41 +0100 (CET)
-Received: from mo6-p00-ob.smtp.rzone.de (mo6-p00-ob.smtp.rzone.de
- [IPv6:2a01:238:20a:202:5300::8])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 70171F800C4
- for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 15:41:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70171F800C4
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net
- header.b="WwxkUyin"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1581950492;
- s=strato-dkim-0002; d=gerhold.net;
- h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:
- X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
- bh=cFRtptfsaUlKo1DNByJ5pB2rNEq/gwFCmQzD67nfBms=;
- b=WwxkUyinrQpAiI+2ZXL1HDMgD8iQ2gpMo2N38jW/bLeonGb7SIp7TkiwwC8py9rit5
- jn/f0Uq2olYwRSkwpfNvWNfwRYpmTdqLTKOwTO3ioRFFUjjHgl5Z1KcRdKz34IwKobtG
- TQFR+Z0WUlySZsYFp2JsjwUSh4UHC5Sd5JHvUVTw+1hYgEzU2jpHMQDbtXfnF520ecAM
- Gl8kMubjy5IrHsUXLCFWENq1DiSbXS47OUhu32jLHzFbS1X7Facnv6UV5T5Y77usy9eu
- 3GonhHJ2psoa/n0DBlvX6tMGl2X831ovSpjk4bPUa23SsoGdCSNCGORPjJuVG6r3LQnA
- NucQ==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u266EZF6ORJKBk/pyQ=="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net by smtp.strato.de (RZmta 46.1.12 AUTH)
- with ESMTPSA id a01fe9w1HEfPcdV
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
- (Client did not present a certificate);
- Mon, 17 Feb 2020 15:41:25 +0100 (CET)
-Date: Mon, 17 Feb 2020 15:41:20 +0100
-From: Stephan Gerhold <stephan@gerhold.net>
-To: Sameer Pujar <spujar@nvidia.com>
-Message-ID: <20200217144120.GA243254@gerhold.net>
-References: <1579443563-12287-1-git-send-email-spujar@nvidia.com>
+ id EB814F801F5; Mon, 17 Feb 2020 15:43:28 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 7928DF800C4
+ for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 15:43:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7928DF800C4
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A28BC30E;
+ Mon, 17 Feb 2020 06:43:24 -0800 (PST)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 257A83F703;
+ Mon, 17 Feb 2020 06:43:24 -0800 (PST)
+Date: Mon, 17 Feb 2020 14:43:22 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Samuel Holland <samuel@sholland.org>
+Message-ID: <20200217144322.GE9304@sirena.org.uk>
+References: <20200217064250.15516-1-samuel@sholland.org>
+ <20200217064250.15516-3-samuel@sholland.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1579443563-12287-1-git-send-email-spujar@nvidia.com>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- broonie@kernel.org, tiwai@suse.com
-Subject: Re: [alsa-devel] [RFC] ASoC: soc-pcm: crash in snd_soc_dapm_new_dai
+In-Reply-To: <20200217064250.15516-3-samuel@sholland.org>
+X-Cookie: There was a phone call for you.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Maxime Ripard <mripard@kernel.org>, Vasily Khoruzhick <anarsoul@gmail.com>,
+ Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
+ =?iso-8859-1?Q?Myl=E8ne?= Josserand <mylene.josserand@free-electrons.com>,
+ stable@kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [alsa-devel] [RFC PATCH 02/34] ASoC: sun8i-codec: LRCK is not
+	inverted on A64
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,82 +79,55 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8255929010299751292=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, Jan 19, 2020 at 07:49:23PM +0530, Sameer Pujar wrote:
-> Crash happens in snd_soc_dapm_new_dai() when substream->private_data
-> access is made and substream is NULL here. This is seen for DAIs where
-> only playback or capture stream is defined. This seems to be happening
-> for codec2codec DAI link.
-> 
-> Both playback and capture are 0 during soc_new_pcm(). This is probably
-> happening because cpu_dai and codec_dai are both validated either for
-> SNDRV_PCM_STREAM_PLAYBACK or SNDRV_PCM_STREAM_CAPTURE.
-> 
-> Shouldn't be playback = 1 when,
->  - playback stream is available for codec_dai AND
->  - capture stream is available for cpu_dai
-> 
-> and vice-versa for capture = 1?
-> 
-> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-> ---
->  sound/soc/soc-pcm.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-> index 74d340d..5aa9c0b 100644
-> --- a/sound/soc/soc-pcm.c
-> +++ b/sound/soc/soc-pcm.c
-> @@ -2855,10 +2855,10 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
->  
->  		for_each_rtd_codec_dai(rtd, i, codec_dai) {
->  			if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_PLAYBACK) &&
-> -			    snd_soc_dai_stream_valid(cpu_dai,   SNDRV_PCM_STREAM_PLAYBACK))
-> +			    snd_soc_dai_stream_valid(cpu_dai,   SNDRV_PCM_STREAM_CAPTURE))
->  				playback = 1;
->  			if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_CAPTURE) &&
-> -			    snd_soc_dai_stream_valid(cpu_dai,   SNDRV_PCM_STREAM_CAPTURE))
-> +			    snd_soc_dai_stream_valid(cpu_dai,   SNDRV_PCM_STREAM_PLAYBACK))
->  				capture = 1;
->  		}
->  
 
-There are no longer any playback/capture PCMs registered on
-qcom/apq8016_sbc with this patch. :(
+--===============8255929010299751292==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="uCPdOCrL+PnN2Vxy"
+Content-Disposition: inline
 
-With this patch:
-  $ ls /dev/snd
-  controlC0  timer
 
-Without this patch:
-  $ ls /dev/snd
-  controlC0  pcmC0D0p   pcmC0D1c   timer
+--uCPdOCrL+PnN2Vxy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-(There is exactly one playback-only and capture-only PCM normally...)
+On Mon, Feb 17, 2020 at 12:42:18AM -0600, Samuel Holland wrote:
 
-The routing looks like this:
-  qcom-apq8016-sbc 7702000.sound: ASoC: registered pcm #0 WCD multicodec-0
-  qcom-apq8016-sbc 7702000.sound: multicodec <-> Primary MI2S mapping ok
-  qcom-apq8016-sbc 7702000.sound: ASoC: registered pcm #1 WCD-Capture multicodec-1
-  qcom-apq8016-sbc 7702000.sound: multicodec <-> Tertiary MI2S mapping ok
-  WCD: connected DAI link 7708000.lpass:Primary Playback -> 771c000.codec:AIF1 Playback
-  WCD: connected DAI link 7708000.lpass:Primary Playback -> 200f000.spmi:pm8916@1:codec@f00:PDM Playback
-  WCD-Capture: connected DAI link 771c000.codec:AIF1 Capture -> 7708000.lpass:Tertiary Capture
-  WCD-Capture: connected DAI link 200f000.spmi:pm8916@1:codec@f00:PDM Capture -> 7708000.lpass:Tertiary Capture
+> +	scodec->inverted_lrck = (uintptr_t)of_device_get_match_data(&pdev->dev);
+> +
 
-For the playback stream, codec_dai and cpu_dai (lpass) only support SNDRV_PCM_STREAM_PLAYBACK.
-The same applies to the capture stream.
+This is going to break the moment someone finds another quirk for some
+variant of this device, it's not scalable.
 
-I'm a bit confused about this patch, isn't SNDRV_PCM_STREAM_PLAYBACK
-used for both cpu_dai and codec_dai in the playback case?
+--uCPdOCrL+PnN2Vxy
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Stephan
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5KpokACgkQJNaLcl1U
+h9ALhQf+KpZMG6XlWXOf5M+RQbrrlJ7G6eHlAz9WNWS6pBlAdaLNxekgK+nHQJos
+xgRQQ+WfRPwkVwkQqQ78pknN7GNtJA47rvXZskBUGBiYErsA8awxR7NQ0MdVgHt7
+IER95dS+HOIU9qzfu/qXPJzL7FYmNiBgxG2766bd5rboIqr3GXhAsYa7phl3XPZo
+HBwmnZ8DP2xN4op0fRBwZ/L855fSoATnNyoSPMabDa530WwUYyiUk+2BXYk8TaRB
+Ck+OXm50qHCp8JHXoQox+uQzIyqVjtjp4czaGJeMlHQ+7ocwLa8ltTMkCfDUlzU6
+zdaJIgMVGilYkB59EaFQL0UQ8j1TmA==
+=ggb0
+-----END PGP SIGNATURE-----
+
+--uCPdOCrL+PnN2Vxy--
+
+--===============8255929010299751292==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============8255929010299751292==--
