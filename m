@@ -6,62 +6,56 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 924D4C7619D
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 08:25:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C6C07C7619D
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 08:28:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E643A2067D
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 08:25:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 46D2E20801
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 08:28:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BylN3VPK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E643A2067D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YRoSXvd9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 46D2E20801
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4E1F6166F;
-	Mon, 17 Feb 2020 09:24:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E1F6166F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9CCE5846;
+	Mon, 17 Feb 2020 09:27:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CCE5846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581927929;
-	bh=996mBd02Acx+kQfIYZaPGeH+wdwevlHwdmeg1ziNkfc=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=BylN3VPKlj0OyBnOz3e4RJVaOKsnTPwYE75uxfjZnbnRyD0x+448YzK1wWNZ618LA
-	 9QAsvvlKKD8mBTyeHYrcnvZG7hGqOPk489cZMwf4A3FrwROKyXHyMjym/KaJ3e1kHW
-	 lZ8nlVUVM4zb/9R2+LNZyt4OIVDTj6NBVy4v1crQ=
+	s=default; t=1581928098;
+	bh=H0qxCY1r7GvTfmaiIh0rs8mgJTA79qv0cjCM4FDscrM=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=YRoSXvd9do6XDa6CyveqXq9HYjDsaetZ8rUlEw/ojgUV7Deg8ekngDvB0tm0mXPoJ
+	 TxmLNM3J7zNmHKtfN8KKXJa1ueYZka0Mel4G0MS+QPpKLePAiVvkNrbbhwYnCDFQdh
+	 U3Zx1o+ni8XO5Eg9pv6KIQYjp4PrE7In5+i693gM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A2D39F800B6;
-	Mon, 17 Feb 2020 09:24:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 331B4F800C4;
+	Mon, 17 Feb 2020 09:27:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 094D5F8025F; Mon, 17 Feb 2020 09:24:35 +0100 (CET)
+ id 796C7F8015E; Mon, 17 Feb 2020 09:27:26 +0100 (CET)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 4405EF800B6
- for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 09:24:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4405EF800B6
-Date: 17 Feb 2020 17:24:26 +0900
-X-IronPort-AV: E=Sophos;i="5.70,451,1574089200"; d="scan'208";a="39274694"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 17 Feb 2020 17:24:26 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id D0680F800B6
+ for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 09:27:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0680F800B6
+Date: 17 Feb 2020 17:27:17 +0900
+X-IronPort-AV: E=Sophos;i="5.70,451,1574089200"; d="scan'208";a="39275002"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 17 Feb 2020 17:27:17 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 5E7294002C29;
- Mon, 17 Feb 2020 17:24:26 +0900 (JST)
-Message-ID: <87k14lbp07.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id E552941A353D;
+ Mon, 17 Feb 2020 17:27:17 +0900 (JST)
+Message-ID: <87imk5bovg.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Takashi Iwai <tiwai@suse.de>
-In-Reply-To: <s5hlfp1bqcm.wl-tiwai@suse.de>
-References: <87blpyarja.wl-kuninori.morimoto.gx@renesas.com>
- <87wo8m9cwq.wl-kuninori.morimoto.gx@renesas.com>
- <s5hlfp1bqcm.wl-tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH v3 10/18] ASoC: soc.h:
-	add	for_each_pcm_streams()
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Subject: [alsa-devel] [PATCH v4 00/18] ASoC: soc-pcm cleanup step3
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,25 +74,50 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Takashi-san
+Hi Mark
 
-Thank you for your review.
+These are v4 of soc-pcm cleanup step3.
+Main change from v3 is that
+	- tidyup Subject on [10/18] patch
+	- added Takashi's Reviewed-by / Acked-by on [10/18], [18/18]
 
-> > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> > 
-> > ALSA SoC has SNDRV_PCM_STREAM_PLAYBACK/CAPTURE everywhere.
-> > Having for_each_xxxx macro is useful.
-> > This patch adds for_each_pcm_streams() for it.
-> 
-> The subject prefix should be "ALSA" as it's ALSA-common code.
+Kuninori Morimoto (18):
+   1) ASoC: soc-pcm: move dai_get_widget()
+   2) ASoC: soc-pcm: use dai_get_widget() at dpcm_get_be()
+   3) ASoC: soc-pcm: use dai_get_widget() at dpcm_end_walk_at_be()
+   4) ASoC: soc-pcm: use dpcm_get_be() at dpcm_end_walk_at_be()
+   5) ASoC: soc-pcm: remove soc_dpcm_be_digital_mute()
+   6) ASoC: soc-pcm: remove snd_soc_dpcm_be_get/set_state()
+   7) ASoC: soc-pcm: add snd_soc_dpcm_can_be() and remove duplicate code
+   8) ASoC: soc-pcm: use goto and remove multi return
+   9) ASoC: soc-pcm: merge playback/cature_active into stream_active
+  10) ASoC: soc.h: add for_each_pcm_streams()
+  11) ASoC: soc-core: use for_each_pcm_streams() macro
+  12) ASoC: soc-pcm: use for_each_pcm_streams() macro
+  13) ASoC: soc-generic-dmaengine-pcm: use for_each_pcm_streams() macro
+  14) ASoC: dwc: dwc-i2s: use for_each_pcm_streams() macro
+  15) ASoC: fsl: fsl_asrc_dma: use for_each_pcm_streams() macro
+  16) ASoC: qcom: lpass-platform: use for_each_pcm_streams() macro
+  17) ASoC: sof: sof-audio: use for_each_pcm_streams() macro
+  18) ALSA: usx2y: use for_each_pcm_streams() macro
 
-Oops. And it needs to fixup "soc.h" to "pcm.h" on Subject.
-Will post v4 patch set soon
+ include/sound/pcm.h                   |   5 +
+ include/sound/soc-dai.h               |   3 +-
+ include/sound/soc-dpcm.h              |   9 -
+ sound/soc/codecs/cs4271.c             |   4 +-
+ sound/soc/dwc/dwc-i2s.c               |   8 +-
+ sound/soc/fsl/fsl_asrc_dma.c          |   4 +-
+ sound/soc/qcom/lpass-platform.c       |   2 +-
+ sound/soc/soc-core.c                  |  48 ++--
+ sound/soc/soc-generic-dmaengine-pcm.c |   8 +-
+ sound/soc/soc-pcm.c                   | 327 +++++++++-----------------
+ sound/soc/sof/sof-audio.c             |  19 +-
+ sound/usb/usx2y/usbusx2yaudio.c       |   9 +-
+ 12 files changed, 162 insertions(+), 284 deletions(-)
 
-Thank you for your help !!
-Best regards
----
-Kuninori Morimoto
+-- 
+2.17.1
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
