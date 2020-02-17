@@ -2,76 +2,88 @@ Return-Path: <SRS0=LPcU=4F=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 311A7C35242
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 04:09:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C692C35242
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 04:50:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AE0B520717
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 04:09:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E9AB020718
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 04:50:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vd2riE3h"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AE0B520717
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tPq18LuW";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="LzeR3AZZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E9AB020718
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F21BA83D;
-	Mon, 17 Feb 2020 05:08:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F21BA83D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 55BAE829;
+	Mon, 17 Feb 2020 05:49:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 55BAE829
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581912563;
-	bh=TrBuMzcvzI3BHplaLIhZMiGCuWCZ93MOjIsybB+v7wY=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1581915017;
+	bh=UiF0RtyJJ0uz6HERe8hAHhLQsKpq/zA/kJQJZ539sPM=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vd2riE3hZgCah7jQnA9b+236osHR8sF1V+81ba2Ss9cx/CYAmxGaZ3VetSJouKoF9
-	 SflG/tS3nyi1ZSWXN4VNaOrOOkAbnGLL//Rj+9+fex0OrFzDZqD9OyEAsTRZbve7dr
-	 XYxQMJmsJh/xSpXBxRqiriH+TCf9ZHYKSe3YVz2g=
+	b=tPq18LuW//g+p3mwoDhDSpJFOnPIbVseSnHfJDBPl0aXmwmpyV1f56h3ucmeqvMS3
+	 FWsLzYmkVBvlW1kQL/d8JP2/aUc8RgqTDuPkIpjsgtBGUPKXwg+a69bzuCuB8znQJm
+	 WAmNh2kajbaFT2RTx6UR/oi1Is9iFLAejP3UR8So=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 70CEFF8015E;
-	Mon, 17 Feb 2020 05:08:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B69D3F8015E;
+	Mon, 17 Feb 2020 05:49:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D3E5BF80172; Mon, 17 Feb 2020 05:08:28 +0100 (CET)
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D9E1CF800C4
- for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 05:08:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9E1CF800C4
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 16 Feb 2020 20:08:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,451,1574150400"; d="scan'208";a="258141212"
-Received: from unknown (HELO buildpc-HP-Z230) ([10.223.89.131])
- by fmsmga004.fm.intel.com with ESMTP; 16 Feb 2020 20:08:13 -0800
-Date: Mon, 17 Feb 2020 09:39:21 +0530
-From: Sanyog Kale <sanyog.r.kale@intel.com>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <20200217040921.GA19766@buildpc-HP-Z230>
-References: <20200215014740.27580-1-pierre-louis.bossart@linux.intel.com>
+ id C7B53F80172; Mon, 17 Feb 2020 05:49:24 +0100 (CET)
+Received: from mailgw01.mediatek.com (unknown [210.61.82.183])
+ by alsa1.perex.cz (Postfix) with ESMTP id C8D77F800B6
+ for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 05:49:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8D77F800B6
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com
+ header.b="LzeR3AZZ"
+X-UUID: 8a14c4fe7f9444b1b755bdb56451a0a8-20200217
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com;
+ s=dk; 
+ h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID;
+ bh=Ib3CGDT48ndknLXCzeQvFl+o88PHBbAK1vPnBCCEPIU=; 
+ b=LzeR3AZZNezNMC2uS+TX/bIxwUBA7Z2udE90OAaUxZoSgQ4Rtf81incW3AxkF97NnBP22yYcrMxjCIJzl9Hl7RWaea+CUXmXvoc1YB0YWVxqR68DcJtRkrtWE4nSEpl89hM/bI2YZurhxk+x8S/ji+FLNqyNWiQzPngxksfdIoE=;
+X-UUID: 8a14c4fe7f9444b1b755bdb56451a0a8-20200217
+Received: from mtkcas09.mediatek.inc [(172.21.101.178)] by
+ mailgw01.mediatek.com (envelope-from <ck.hu@mediatek.com>)
+ (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+ with ESMTP id 1619337215; Mon, 17 Feb 2020 12:49:14 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1395.4; Mon, 17 Feb 2020 12:48:24 +0800
+Received: from [172.21.77.4] (172.21.77.4) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1395.4 via Frontend
+ Transport; Mon, 17 Feb 2020 12:49:00 +0800
+Message-ID: <1581914953.20102.3.camel@mtksdaap41>
+From: CK Hu <ck.hu@mediatek.com>
+To: Tzung-Bi Shih <tzungbi@google.com>
+Date: Mon, 17 Feb 2020 12:49:13 +0800
+In-Reply-To: <CA+Px+wWRn1-t2fd+bD-PGRVjyLaAHqm1wF3W3T_GMUh0GXkA_A@mail.gmail.com>
+References: <20200217031653.52345-1-tzungbi@google.com>
+ <20200217105513.2.I477092c2f104fd589133436c3ae4590e6fc6323b@changeid>
+ <1581911058.12629.1.camel@mtksdaap41>
+ <CA+Px+wWRn1-t2fd+bD-PGRVjyLaAHqm1wF3W3T_GMUh0GXkA_A@mail.gmail.com>
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20200215014740.27580-1-pierre-louis.bossart@linux.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
- linux-kernel@vger.kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Hui Wang <hui.wang@canonical.com>, vkoul@kernel.org, broonie@kernel.org,
- srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
- Bard liao <yung-chuan.liao@linux.intel.com>,
- Rander Wang <rander.wang@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v3 0/5] soundwire: intel: add DAI callbacks
+X-MTK: N
+Cc: ALSA development <alsa-devel@alsa-project.org>, p.zabel@pengutronix.de,
+ David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
+ Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org, Daniel
+ Vetter <daniel@ffwll.ch>, Matthias Brugger <matthias.bgg@gmail.com>,
+ Dylan Reid <dgreid@google.com>, linux-arm-kernel@lists.infradead.org,
+ Jimmy Cheng-Yi Chiang <cychiang@google.com>
+Subject: Re: [alsa-devel] [PATCH v2 2/2] drm/mediatek: fix race condition
+ for HDMI jack status reporting
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,53 +101,21 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Feb 14, 2020 at 07:47:35PM -0600, Pierre-Louis Bossart wrote:
-> The existing mainline code is missing most of the DAI callbacks needed
-> for a functional implementation, and the existing ones need to be
-> modified to provide the relevant information to ASoC/SOF drivers.
+On Mon, 2020-02-17 at 11:55 +0800, Tzung-Bi Shih wrote:
+> On Mon, Feb 17, 2020 at 11:44 AM CK Hu <ck.hu@mediatek.com> wrote:
+> > On Mon, 2020-02-17 at 11:16 +0800, Tzung-Bi Shih wrote:
+> > > Fixes: 5d3c64477392 ("drm/mediatek: support HDMI jack status reporting")
+> >
+> > This patch looks good to me, but please merge this patch with the patch
+> > it fix.
 > 
-> As suggested by Vinod, these patches are shared first - with the risk
-> that they are separated from the actual DAI enablement, so reviewers
-> might wonder why they are needed in the first place.
-> 
-> For reference, the complete set of 90+ patches required for SoundWire
-> on Intel platforms is available here:
-> 
-> https://github.com/thesofproject/linux/pull/1692
-> 
-> Changes since v2:
-> Add missing kfree for stream name (feedback from Vinod)
-> 
-> changes since v1:
-> Fix string allocation (only feedback from Vinod)
-> 
-> Pierre-Louis Bossart (2):
->   soundwire: intel: rename res field as link_res
->   soundwire: intel: free all resources on hw_free()
-> 
-> Rander Wang (3):
->   soundwire: intel: add prepare support in sdw dai driver
->   soundwire: intel: add trigger support in sdw dai driver
->   soundwire: intel: add sdw_stream_setup helper for .startup callback
-> 
->  drivers/soundwire/intel.c | 198 ++++++++++++++++++++++++++++++++++----
->  1 file changed, 178 insertions(+), 20 deletions(-)
-> 
+> 5d3c64477392 ("drm/mediatek: support HDMI jack status reporting") has
+> applied to ASoC for-next branch.  This is a fixup patch.
 
-Acked-by: Sanyog Kale <sanyog.r.kale@intel.com>
+I thought a patch need an ack by the maintainer. OK, so I could do is,
+for this patch,
 
-Thanks,
-Sanyog
-
-> -- 
-> 2.20.1
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
--- 
+Acked-by: CK Hu <ck.hu@mediatek.com> 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
