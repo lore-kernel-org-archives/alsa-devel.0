@@ -2,78 +2,60 @@ Return-Path: <SRS0=LPcU=4F=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7708BC3B1BF
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 02:04:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 69DB2C3B1BF
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 02:16:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D9F3A2072C
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 02:04:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D66712086A
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 02:16:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jHNmWT5D"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D9F3A2072C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="U/us/XLB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D66712086A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 38FD5846;
-	Mon, 17 Feb 2020 03:03:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38FD5846
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2D42B166C;
+	Mon, 17 Feb 2020 03:15:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D42B166C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581905072;
-	bh=gcazZ2vz3h5M2v2ZYfqpvY7McOODgPsb6IDLDb/ZzCU=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1581905769;
+	bh=rOwfVdQff1pdYrqn06T5eJumaq9bmBsFmarta1pTibI=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=jHNmWT5DtcfpEUHiv6lgaD9hDPUcU1w8rmyBeUjbLxSUBlbT+w5NF4memAlVZc05Z
-	 f/ELEhwX4pf1UHFV/J3L2EM/l3zUVAIVpZj8TaMdxL3Z9Bw311+O7r/cmwr482bzT+
-	 IoIdbnppUawfIQ2TA6bBeuZ4Qzp/tdnfNYH4Aq6Y=
+	b=U/us/XLBbxM6YEF61wajmluBYLUAqowzi0Te9qRNqimCK2F4nOZIkM2NN+5hKn6An
+	 aI5P6jRaJJ89U2vQRAPEZNp9QuIL5rwOmFo0/sLI9GhEwccBURbuIgpThU62g08KvW
+	 QZCpj9Jnpin/nR+WFpt1zBGsYrwlWv4XiowxPtoc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B5C71F80142;
-	Mon, 17 Feb 2020 03:03:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9B11FF80142;
+	Mon, 17 Feb 2020 03:15:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C5009F80145; Mon, 17 Feb 2020 03:03:40 +0100 (CET)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 22899F80138
- for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 03:03:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22899F80138
-Authenticated-By: 
-X-SpamFilter-By: BOX Solutions SpamTrap 5.62 with qID 01H23QLJ013263,
- This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (RTEXMB06.realtek.com.tw[172.21.6.99])
- by rtits2.realtek.com.tw (8.15.2/2.57/5.78) with ESMTPS id 01H23QLJ013263
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 17 Feb 2020 10:03:26 +0800
-Received: from RTEXMB01.realtek.com.tw (172.21.6.94) by
- RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Mon, 17 Feb 2020 10:03:25 +0800
-Received: from localhost.localdomain (172.22.102.1) by RTEXMB01.realtek.com.tw
- (172.21.6.94) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Mon, 17 Feb
- 2020 10:03:25 +0800
-From: <jack.yu@realtek.com>
-To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-Date: Mon, 17 Feb 2020 10:03:11 +0800
-Message-ID: <20200217020311.12793-1-jack.yu@realtek.com>
-X-Mailer: git-send-email 2.25.0
-MIME-Version: 1.0
-X-Originating-IP: [172.22.102.1]
-X-ClientProxiedBy: RTEXMB06.realtek.com.tw (172.21.6.99) To
- RTEXMB01.realtek.com.tw (172.21.6.94)
-Cc: oder_chiou@realtek.com, Jack Yu <jack.yu@realtek.com>,
- alsa-devel@alsa-project.org, lars@metafoo.de, kent_chen@realtek.com,
- kenny_chen@realtek.com, derek.fang@realtek.com, shumingf@realtek.com,
- mingjane_hsieh@realtek.com, flove@realtek.com
-Subject: [alsa-devel] [PATCH v2] ASoC: rt1015: fix typo for bypass boost
-	control
+ id 41C6DF80145; Mon, 17 Feb 2020 03:15:16 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 8E43BF80096
+ for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 03:15:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E43BF80096
+Date: 17 Feb 2020 11:15:07 +0900
+X-IronPort-AV: E=Sophos;i="5.70,450,1574089200"; d="scan'208";a="39233531"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 17 Feb 2020 11:15:07 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 89A6B40083D3;
+ Mon, 17 Feb 2020 11:15:07 +0900 (JST)
+Message-ID: <87blpyarja.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Subject: [alsa-devel] [PATCH v3 00/18] ASoC: soc-pcm cleanup step3
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,48 +73,50 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Jack Yu <jack.yu@realtek.com>
 
-Fix typo for "Bypass Boost" control.
+Hi Mark
 
-Signed-off-by: Jack Yu <jack.yu@realtek.com>
----
- sound/soc/codecs/rt1015.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+These are v3 of soc-pcm cleanup step3.
+Main change from v2 is that last patch was splited
+into each files (= [10/18] to [18/18]).
+And all patches have Reviewed-by tag from Ranjani
 
-diff --git a/sound/soc/codecs/rt1015.c b/sound/soc/codecs/rt1015.c
-index 6d490e2dbc25..d300b417dd50 100644
---- a/sound/soc/codecs/rt1015.c
-+++ b/sound/soc/codecs/rt1015.c
-@@ -444,7 +444,7 @@ static int rt1015_boost_mode_put(struct snd_kcontrol *kcontrol,
- 	return 0;
- }
- 
--static int rt5518_bypass_boost_get(struct snd_kcontrol *kcontrol,
-+static int rt1015_bypass_boost_get(struct snd_kcontrol *kcontrol,
- 		struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_soc_component *component =
-@@ -457,7 +457,7 @@ static int rt5518_bypass_boost_get(struct snd_kcontrol *kcontrol,
- 	return 0;
- }
- 
--static int rt5518_bypass_boost_put(struct snd_kcontrol *kcontrol,
-+static int rt1015_bypass_boost_put(struct snd_kcontrol *kcontrol,
- 		struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_soc_component *component =
-@@ -497,7 +497,7 @@ static const struct snd_kcontrol_new rt1015_snd_controls[] = {
- 		rt1015_boost_mode_get, rt1015_boost_mode_put),
- 	SOC_ENUM("Mono LR Select", rt1015_mono_lr_sel),
- 	SOC_SINGLE_EXT("Bypass Boost", SND_SOC_NOPM, 0, 1, 0,
--		rt5518_bypass_boost_get, rt5518_bypass_boost_put),
-+		rt1015_bypass_boost_get, rt1015_bypass_boost_put),
- };
- 
- static int rt1015_is_sys_clk_from_pll(struct snd_soc_dapm_widget *source,
+Kuninori Morimoto (18):
+   1) ASoC: soc-pcm: move dai_get_widget()
+   2) ASoC: soc-pcm: use dai_get_widget() at dpcm_get_be()
+   3) ASoC: soc-pcm: use dai_get_widget() at dpcm_end_walk_at_be()
+   4) ASoC: soc-pcm: use dpcm_get_be() at dpcm_end_walk_at_be()
+   5) ASoC: soc-pcm: remove soc_dpcm_be_digital_mute()
+   6) ASoC: soc-pcm: remove snd_soc_dpcm_be_get/set_state()
+   7) ASoC: soc-pcm: add snd_soc_dpcm_can_be() and remove duplicate code
+   8) ASoC: soc-pcm: use goto and remove multi return
+   9) ASoC: soc-pcm: merge playback/cature_active into stream_active
+  10) ASoC: soc.h: add for_each_pcm_streams()
+  11) ASoC: soc-core: use for_each_pcm_streams() macro
+  12) ASoC: soc-pcm: use for_each_pcm_streams() macro
+  13) ASoC: soc-generic-dmaengine-pcm: use for_each_pcm_streams() macro
+  14) ASoC: dwc: dwc-i2s: use for_each_pcm_streams() macro
+  15) ASoC: fsl: fsl_asrc_dma: use for_each_pcm_streams() macro
+  16) ASoC: qcom: lpass-platform: use for_each_pcm_streams() macro
+  17) ASoC: sof: sof-audio: use for_each_pcm_streams() macro
+  18) ALSA: usx2y: use for_each_pcm_streams() macro
+
+ include/sound/pcm.h                   |   5 +
+ include/sound/soc-dai.h               |   3 +-
+ include/sound/soc-dpcm.h              |   9 -
+ sound/soc/codecs/cs4271.c             |   4 +-
+ sound/soc/dwc/dwc-i2s.c               |   8 +-
+ sound/soc/fsl/fsl_asrc_dma.c          |   4 +-
+ sound/soc/qcom/lpass-platform.c       |   2 +-
+ sound/soc/soc-core.c                  |  48 ++--
+ sound/soc/soc-generic-dmaengine-pcm.c |   8 +-
+ sound/soc/soc-pcm.c                   | 327 +++++++++-----------------
+ sound/soc/sof/sof-audio.c             |  19 +-
+ sound/usb/usx2y/usbusx2yaudio.c       |   9 +-
+ 12 files changed, 162 insertions(+), 284 deletions(-)
+
 -- 
-2.25.0
+2.17.1
 
 _______________________________________________
 Alsa-devel mailing list
