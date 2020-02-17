@@ -6,82 +6,81 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 20135C35242
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 07:59:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 500F7C7619B
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 08:00:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A0A3E2064C
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 07:59:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CEEC52064C
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2020 08:00:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Jtr/HXhW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A0A3E2064C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kQ6QQBb4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CEEC52064C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=csie.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F291C166C;
-	Mon, 17 Feb 2020 08:58:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F291C166C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3F52583B;
+	Mon, 17 Feb 2020 08:59:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F52583B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581926364;
-	bh=hHYUsPGezze/n7oVQh9m6hPhZEPrJfrvb/Ka2mfwHIc=;
+	s=default; t=1581926445;
+	bh=pJwqAWbOBA3E4CXw8zIu5UkFe3Y6jSpW1BJO3Z+1gaI=;
 	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Jtr/HXhWEQshZgkxdyOYLqyT1S2FrjlstYySbBiX5SRtRJozv4Pm5i92xNt9ElUDD
-	 sq5T2uUfRblMOwv/mmwYVA/LyHofD674uHSAh2zUkGfvnrAbbLOPwD+p2A8Fq59NB/
-	 TX2uS//H3VJZvsKZj/NK1kahrwCkgNTJvu06J7Sw=
+	b=kQ6QQBb46jdKWVfwBDMR4arqy1X7sYGDDPTUgdABOYpvTTwoMBVRqBUnneePSZ/i1
+	 /2xdX59eq5x2cks4WI+U70rpLoyRGfJplsN9IfwES4XKBUQ3C5TGsvIlJY3SbISJ7O
+	 Fsea7nzod5vJRXBQutBThtTLqJ8eV4CkovclvqPo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8C2B2F80172;
-	Mon, 17 Feb 2020 08:58:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C03D1F800C4;
+	Mon, 17 Feb 2020 08:59:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7AF7DF801F5; Mon, 17 Feb 2020 08:58:32 +0100 (CET)
-Received: from mail-ed1-f68.google.com (mail-ed1-f68.google.com
- [209.85.208.68])
+ id 42E2BF80172; Mon, 17 Feb 2020 08:59:53 +0100 (CET)
+Received: from mail-ed1-f67.google.com (mail-ed1-f67.google.com
+ [209.85.208.67])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 77545F80096
- for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 08:58:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77545F80096
-Received: by mail-ed1-f68.google.com with SMTP id f8so19608578edv.2
- for <alsa-devel@alsa-project.org>; Sun, 16 Feb 2020 23:58:29 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1803CF80096
+ for <alsa-devel@alsa-project.org>; Mon, 17 Feb 2020 08:59:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1803CF80096
+Received: by mail-ed1-f67.google.com with SMTP id f8so19612318edv.2
+ for <alsa-devel@alsa-project.org>; Sun, 16 Feb 2020 23:59:49 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=qAkDAKXcgCBrOdSb/zgNyHSfr/RVZZb04YTPxwkLXA0=;
- b=d7fdRj9e27JW7V2Sea8Onam1gJhriqm9BacLD0VYdmNJuUUHaQBX7qmj2bC7WqNNBq
- F72V+qHyhBtIU45Eie79I82PDopUCCz+A0pC+yhFaaiUr5pft7EofHKKiyMgEIaUhzvY
- yyvJphiQOpv0mUJlkR9f0zvSwbeA0c2IiTm33vJ+UWGwT3ucbKN/GU7bYSQS9F5BUone
- TmKQrm9fGBh0zETC7L5YPuVz4ZZqHJSplBjvtrF8lWn0N4D0KC7bfoBD8NeWm8MOmew6
- 7U9gJws/Fz2cwso78VCPiss019ExOFA1kX1JnO50VniIA9u/+AIw75DY1h+GKQJqQtl+
- NEjg==
-X-Gm-Message-State: APjAAAVZnlavYHHbLd1GGCvnAC0JxYVrBvwNcU2nU/ZJ2PDMNJefG2mS
- 3ghDEdFT5q6oRN09xuVWT6H7+Wh6Qa4=
-X-Google-Smtp-Source: APXvYqyodKt+9bWWAk+W3OGN7NI+EZs7N3KQjjLIXFyHUeS0aPeRiJ/zL103ZilHJPri6fkTbT1Rrw==
-X-Received: by 2002:a05:6402:144c:: with SMTP id
- d12mr11945360edx.265.1581926308363; 
- Sun, 16 Feb 2020 23:58:28 -0800 (PST)
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com.
- [209.85.128.41])
- by smtp.gmail.com with ESMTPSA id u10sm826445ejx.20.2020.02.16.23.58.27
+ bh=Diza8Cc5Cpy+OVsRi4P0IsWcjJ4gPjcUytSTU6gocRQ=;
+ b=ZxzmMqjZvxIk8Gy4L8UElzpbnd0nV+mdi4UirHw7Jh5yakpinZzRlIxxtge9K5hxN7
+ cmPK2CEs44wjs8KA2/jbgHOfRMqgoC3LnXA3MtL6x+bOyz0KaqEBZbeiFRjxTWHWuCKS
+ K4jcgSniblFZUZmcSvmw1yGZQfTU9PJL2Pm+Ptcx9UY5zfwFaIAj52PUjdJTVtMecPtl
+ UuLHIJTqe86FNSOFOw1BSVRkcn8HfuRG0s0THntP+8lY9ck9ROulGOWZJcfRUXPzw0KS
+ hdqMpMCP7KN1wjoDHP9hSDDBPD5TD8WCeHxVQ+/z6QsjSMxZ3e0oO/WZ2duMhX7O0UtY
+ nzbg==
+X-Gm-Message-State: APjAAAVxIAAhzEB6JGBkFvLjx+XPbpqfg5wGqmwbGAn1J3bFPOrHYR1x
+ VqUPVFV+7fLYh+g1SetyfEkRJzH+718=
+X-Google-Smtp-Source: APXvYqylFi8DjI1HqKZ7r2d+5TyfwjWM4MQtkvuxrdyfTNBzEucUnX5etH9I6cVJDznwUmcAHqVITA==
+X-Received: by 2002:aa7:d811:: with SMTP id v17mr12625347edq.277.1581926388383; 
+ Sun, 16 Feb 2020 23:59:48 -0800 (PST)
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com.
+ [209.85.221.42])
+ by smtp.gmail.com with ESMTPSA id u13sm819305ejz.69.2020.02.16.23.59.47
  for <alsa-devel@alsa-project.org>
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Sun, 16 Feb 2020 23:58:27 -0800 (PST)
-Received: by mail-wm1-f41.google.com with SMTP id a6so17282489wme.2
- for <alsa-devel@alsa-project.org>; Sun, 16 Feb 2020 23:58:27 -0800 (PST)
-X-Received: by 2002:a1c:dc85:: with SMTP id t127mr22154598wmg.16.1581926307557; 
- Sun, 16 Feb 2020 23:58:27 -0800 (PST)
+ Sun, 16 Feb 2020 23:59:48 -0800 (PST)
+Received: by mail-wr1-f42.google.com with SMTP id k11so18389903wrd.9
+ for <alsa-devel@alsa-project.org>; Sun, 16 Feb 2020 23:59:47 -0800 (PST)
+X-Received: by 2002:a5d:484f:: with SMTP id n15mr20431084wrs.365.1581926387451; 
+ Sun, 16 Feb 2020 23:59:47 -0800 (PST)
 MIME-Version: 1.0
 References: <20200217064250.15516-1-samuel@sholland.org>
- <20200217064250.15516-14-samuel@sholland.org>
-In-Reply-To: <20200217064250.15516-14-samuel@sholland.org>
+ <20200217064250.15516-18-samuel@sholland.org>
+In-Reply-To: <20200217064250.15516-18-samuel@sholland.org>
 From: Chen-Yu Tsai <wens@csie.org>
-Date: Mon, 17 Feb 2020 15:58:17 +0800
-X-Gmail-Original-Message-ID: <CAGb2v649-ZJZfnOoNtsRuQXFOsZLg69Bizz+vZbB6yML-T8z2g@mail.gmail.com>
-Message-ID: <CAGb2v649-ZJZfnOoNtsRuQXFOsZLg69Bizz+vZbB6yML-T8z2g@mail.gmail.com>
+Date: Mon, 17 Feb 2020 15:59:37 +0800
+X-Gmail-Original-Message-ID: <CAGb2v65jWNCss88961zXT5is4LQQFh=Hcxx9ydn_bGqR7Sig8A@mail.gmail.com>
+Message-ID: <CAGb2v65jWNCss88961zXT5is4LQQFh=Hcxx9ydn_bGqR7Sig8A@mail.gmail.com>
 To: Samuel Holland <samuel@sholland.org>
 Cc: Mark Rutland <mark.rutland@arm.com>,
  devicetree <devicetree@vger.kernel.org>,
@@ -90,10 +89,9 @@ Cc: Mark Rutland <mark.rutland@arm.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
  Vasily Khoruzhick <anarsoul@gmail.com>, Mark Brown <broonie@kernel.org>,
  Maxime Ripard <mripard@kernel.org>,
- =?UTF-8?Q?Myl=C3=A8ne_Josserand?= <mylene.josserand@free-electrons.com>,
  linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [alsa-devel] [RFC PATCH 13/34] ASoC: sun8i-codec: Fix
-	AIF1_ADCDAT_CTRL field names
+Subject: Re: [alsa-devel] [RFC PATCH 17/34] ASoC: sun8i-codec: Sort masks in
+	a consistent order
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -113,9 +111,9 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 On Mon, Feb 17, 2020 at 2:43 PM Samuel Holland <samuel@sholland.org> wrote:
 >
-> They are controlling "AD0" (AIF1 slot 0), not "DA0".
+> All other definitions are sorted from largest to smallest bit number.
+> This makes the AIF1CLK_CTRL mask constants consistent with them.
 >
-> Fixes: eda85d1fee05 ("ASoC: sun8i-codec: Add ADC support for a33")
 > Signed-off-by: Samuel Holland <samuel@sholland.org>
 
 Acked-by: Chen-Yu Tsai <wens@csie.org>
