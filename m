@@ -2,69 +2,76 @@ Return-Path: <SRS0=1Vby=4G=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1E75C34026
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 14:46:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68727C34026
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 14:50:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7E5A420658
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 14:46:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E6D1E20658
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 14:50:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QSlqD6ed"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7E5A420658
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="i58ayVwa"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E6D1E20658
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DDF4E1690;
-	Tue, 18 Feb 2020 15:45:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DDF4E1690
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5C7EA1694;
+	Tue, 18 Feb 2020 15:49:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C7EA1694
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582037209;
-	bh=n1HSN7zgZz7W5VoQCYojOZWxVtt64aVd7AdKuC2OX3M=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1582037411;
+	bh=gPn39BmH7e6TwxaaNzhq3bp1oN2oLW2NdbzDGUX+qQ4=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QSlqD6edU/39UsoC8rad8lZ3jB6Qy9z2PHPhy7xt3/OpJB88rPY6i1Zc3YNLw101C
-	 xU+4ILSLZEmwPzs+/wMS2FGNlowqw3T3t+8ZL179uv5IGiwzVyNKY0O4q1xx+mTwdL
-	 abJoaJV/ObQfryHupvl9xhuL58RMNEINIfzwGvvQ=
+	b=i58ayVwaAym6iFKAwLzPBleh6QmatVJX8Aepa58oSVxJAR9yy8/atVhsM6I0Ay7tD
+	 WLVzvJUPR8LBx5rZZRFy6CO2rtSrfUR4fgO3M02YSdykjUC5Lk3AXR1oMinZ71ttQ4
+	 o0GHwNUwVOQ4M+aqXkqmI4iU7KR/6DPJOg7+Kd9o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 677F1F802E2;
-	Tue, 18 Feb 2020 15:40:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C4B18F80145;
+	Tue, 18 Feb 2020 15:49:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 17260F8028F; Tue, 18 Feb 2020 15:40:24 +0100 (CET)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ id 639ECF80148; Tue, 18 Feb 2020 15:49:19 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A28FCF80277
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2020 15:40:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A28FCF80277
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5E30DF80135
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2020 15:49:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E30DF80135
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 18 Feb 2020 06:40:15 -0800
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 18 Feb 2020 06:49:12 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,456,1574150400"; d="scan'208";a="235549878"
-Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga003.jf.intel.com with ESMTP; 18 Feb 2020 06:40:13 -0800
+X-IronPort-AV: E=Sophos;i="5.70,456,1574150400"; d="scan'208";a="224155997"
+Received: from crojewsk-mobl1.ger.corp.intel.com (HELO [10.237.137.172])
+ ([10.237.137.172])
+ by orsmga007.jf.intel.com with ESMTP; 18 Feb 2020 06:49:10 -0800
+Subject: Re: [PATCH v4 06/11] ASoC: SOF: Intel: Account for compress streams
+ when servicing IRQs
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+References: <20200131123115.14247-1-cezary.rojewski@intel.com>
+ <20200131123115.14247-7-cezary.rojewski@intel.com>
+ <56ed74d5-2f03-711f-9f21-cde0ddf8ecc7@linux.intel.com>
 From: Cezary Rojewski <cezary.rojewski@intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH v5 8/9] ASoC: SOF: Provide probe debugfs support
-Date: Tue, 18 Feb 2020 15:39:23 +0100
-Message-Id: <20200218143924.10565-9-cezary.rojewski@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200218143924.10565-1-cezary.rojewski@intel.com>
-References: <20200218143924.10565-1-cezary.rojewski@intel.com>
-Cc: pierre-louis.bossart@linux.intel.com,
- Cezary Rojewski <cezary.rojewski@intel.com>, lgirdwood@gmail.com,
- tiwai@suse.com, vkoul@kernel.org, broonie@kernel.org
+Message-ID: <44e8f78b-dbb5-e03a-637e-d8a8d71f4721@intel.com>
+Date: Tue, 18 Feb 2020 15:49:10 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.1
+MIME-Version: 1.0
+In-Reply-To: <56ed74d5-2f03-711f-9f21-cde0ddf8ecc7@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+Cc: vkoul@kernel.org, alsa-devel@alsa-project.org, broonie@kernel.org,
+ tiwai@suse.com, lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,276 +87,67 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Define debugfs subdirectory delegated for IPC communication with DSP.
-Input format: uint,uint,(...) which are later translated into DWORDS
-sequence and further into instances of struct of interest given the IPC
-type.
+On 2020-01-31 17:39, Pierre-Louis Bossart wrote:
+> Maybe be a paranoid check but the types used in this patch seem to need 
+> additional work:
+> 
+>> diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
+>> index 9a8bf1eb7d69..9a24d57f0cf2 100644
+>> --- a/include/sound/hdaudio.h
+>> +++ b/include/sound/hdaudio.h
+>> @@ -496,6 +496,7 @@ struct hdac_stream {
+>>       bool locked:1;
+>>       bool stripe:1;            /* apply stripe control */
+>> +    unsigned long curr_pos;
+> 
+> 'long' is an error-prone definition...
+> 
+>>       /* timestamp */
+>>       unsigned long start_wallclk;    /* start + minimum wallclk */
+>>       unsigned long period_wallclk;    /* wallclk for period */
+>> diff --git a/sound/soc/sof/intel/hda-stream.c 
+>> b/sound/soc/sof/intel/hda-stream.c
+>> index c0ab9bb2a797..c8920a60e346 100644
+>> --- a/sound/soc/sof/intel/hda-stream.c
+>> +++ b/sound/soc/sof/intel/hda-stream.c
+>> @@ -571,6 +571,23 @@ bool hda_dsp_check_stream_irq(struct snd_sof_dev 
+>> *sdev)
+>>       return ret;
+>>   }
+>> +static void hda_dsp_set_bytes_transferred(struct hdac_stream *hstream,
+>> +                      u64 buffer_size)
+>> +{
+>> +    unsigned int prev_pos;
+>> +    int pos, num_bytes;
+>> +
+>> +    div_u64_rem(hstream->curr_pos, buffer_size, &prev_pos);
+> 
+> ... here you use it as a u64 value so I guess the intent was to use more 
+> than 32 bits?
+> 
+> But then the u64 for the 'buffer size' argument is also not consistent 
+> with the definition of div_u64_rem, it's got to be u32, or you wanted to 
+> use div64_64_rem?
+> 
+> static inline u64 div_u64_rem(u64 dividend, u32 divisor, u32 *remainder)
+> 
+> prev_pos should also be declared as u32 to avoid any ambiguity.
+> 
+>> +    pos = snd_hdac_stream_get_pos_posbuf(hstream);
+>> +
+>> +    if (pos < prev_pos)
+>> +        num_bytes = (buffer_size - prev_pos) +  pos;
+>> +    else
+>> +        num_bytes = pos - prev_pos;
+>> +
+>> +    hstream->curr_pos += num_bytes;
+> 
+> ... and here it's a never ending-increment that is likely to hit a 
+> 32-bit ceiling.
+> 
+> I remember we made a mistake some time back on compressed stuff and 
+> updated the counters to rely on 64 bits. Unless this is a hardware 
+> counter (and then we should use u32 and deal with overflow), we should 
+> use u64, no?
 
-For Extractor probes, following have been enabled:
-- PROBE_POINT_ADD (echo <..> probe_points)
-- PROBE_POINT_REMOVE (echo <..> probe_points_remove)
-- PROBE_POINT_INFO (cat probe_points)
-
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
----
-
-Changes in v4:
-- Debugfs probe handlers now check if extractor stream is running before
-  continuing. To achieve this, 'extractor_stream_tag' is both initialized
-  and set to SOF_PROBE_INVALID_NODE_ID on sof_probe_compr_free().
-  Suggestion provided by Pierre
-
-Changes in v2:
-- renamed debugfs probe functions as requested by Pierre
-
-
- sound/soc/sof/debug.c | 226 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 226 insertions(+)
-
-diff --git a/sound/soc/sof/debug.c b/sound/soc/sof/debug.c
-index d2b3b99d3a20..b5c0d6cf72cc 100644
---- a/sound/soc/sof/debug.c
-+++ b/sound/soc/sof/debug.c
-@@ -17,6 +17,221 @@
- #include "sof-priv.h"
- #include "ops.h"
- 
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_PROBES)
-+#include "probe.h"
-+
-+/**
-+ * strsplit_u32 - Split string into sequence of u32 tokens
-+ * @buf:	String to split into tokens.
-+ * @delim:	String containing delimiter characters.
-+ * @tkns:	Returned u32 sequence pointer.
-+ * @num_tkns:	Returned number of tokens obtained.
-+ */
-+static int
-+strsplit_u32(char **buf, const char *delim, u32 **tkns, size_t *num_tkns)
-+{
-+	char *s;
-+	u32 *data, *tmp;
-+	size_t count = 0;
-+	size_t cap = 32;
-+	int ret = 0;
-+
-+	*tkns = NULL;
-+	*num_tkns = 0;
-+	data = kcalloc(cap, sizeof(*data), GFP_KERNEL);
-+	if (!data)
-+		return -ENOMEM;
-+
-+	while ((s = strsep(buf, delim)) != NULL) {
-+		ret = kstrtouint(s, 0, data + count);
-+		if (ret)
-+			goto exit;
-+		if (++count >= cap) {
-+			cap *= 2;
-+			tmp = krealloc(data, cap * sizeof(*data), GFP_KERNEL);
-+			if (!tmp) {
-+				ret = -ENOMEM;
-+				goto exit;
-+			}
-+			data = tmp;
-+		}
-+	}
-+
-+	if (!count)
-+		goto exit;
-+	*tkns = kmemdup(data, count * sizeof(*data), GFP_KERNEL);
-+	if (*tkns == NULL) {
-+		ret = -ENOMEM;
-+		goto exit;
-+	}
-+	*num_tkns = count;
-+
-+exit:
-+	kfree(data);
-+	return ret;
-+}
-+
-+static int tokenize_input(const char __user *from, size_t count,
-+		loff_t *ppos, u32 **tkns, size_t *num_tkns)
-+{
-+	char *buf;
-+	int ret;
-+
-+	buf = kmalloc(count + 1, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
-+
-+	ret = simple_write_to_buffer(buf, count, ppos, from, count);
-+	if (ret != count) {
-+		ret = ret >= 0 ? -EIO : ret;
-+		goto exit;
-+	}
-+
-+	buf[count] = '\0';
-+	ret = strsplit_u32((char **)&buf, ",", tkns, num_tkns);
-+exit:
-+	kfree(buf);
-+	return ret;
-+}
-+
-+static ssize_t probe_points_read(struct file *file,
-+		char __user *to, size_t count, loff_t *ppos)
-+{
-+	struct snd_sof_dfsentry *dfse = file->private_data;
-+	struct snd_sof_dev *sdev = dfse->sdev;
-+	struct sof_probe_point_desc *desc;
-+	size_t num_desc, len = 0;
-+	char *buf;
-+	int i, ret;
-+
-+	if (sdev->extractor_stream_tag == SOF_PROBE_INVALID_NODE_ID) {
-+		dev_warn(sdev->dev, "no extractor stream running\n");
-+		return -ENOENT;
-+	}
-+
-+	buf = kzalloc(PAGE_SIZE, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
-+
-+	ret = sof_ipc_probe_points_info(sdev, &desc, &num_desc);
-+	if (ret < 0)
-+		goto exit;
-+
-+	for (i = 0; i < num_desc; i++) {
-+		ret = snprintf(buf + len, PAGE_SIZE - len,
-+			"Id: %#010x  Purpose: %d  Node id: %#x\n",
-+			desc[i].buffer_id, desc[i].purpose, desc[i].stream_tag);
-+		if (ret < 0)
-+			goto free_desc;
-+		len += ret;
-+	}
-+
-+	ret = simple_read_from_buffer(to, count, ppos, buf, len);
-+free_desc:
-+	kfree(desc);
-+exit:
-+	kfree(buf);
-+	return ret;
-+}
-+
-+static ssize_t probe_points_write(struct file *file,
-+		const char __user *from, size_t count, loff_t *ppos)
-+{
-+	struct snd_sof_dfsentry *dfse = file->private_data;
-+	struct snd_sof_dev *sdev = dfse->sdev;
-+	struct sof_probe_point_desc *desc;
-+	size_t num_tkns, bytes;
-+	u32 *tkns;
-+	int ret;
-+
-+	if (sdev->extractor_stream_tag == SOF_PROBE_INVALID_NODE_ID) {
-+		dev_warn(sdev->dev, "no extractor stream running\n");
-+		return -ENOENT;
-+	}
-+
-+	ret = tokenize_input(from, count, ppos, &tkns, &num_tkns);
-+	if (ret < 0)
-+		return ret;
-+	bytes = sizeof(*tkns) * num_tkns;
-+	if (!num_tkns || (bytes % sizeof(*desc))) {
-+		ret = -EINVAL;
-+		goto exit;
-+	}
-+
-+	desc = (struct sof_probe_point_desc *)tkns;
-+	ret = sof_ipc_probe_points_add(sdev,
-+			desc, bytes / sizeof(*desc));
-+	if (!ret)
-+		ret = count;
-+exit:
-+	kfree(tkns);
-+	return ret;
-+}
-+
-+static const struct file_operations probe_points_fops = {
-+	.open = simple_open,
-+	.read = probe_points_read,
-+	.write = probe_points_write,
-+	.llseek = default_llseek,
-+};
-+
-+static ssize_t probe_points_remove_write(struct file *file,
-+		const char __user *from, size_t count, loff_t *ppos)
-+{
-+	struct snd_sof_dfsentry *dfse = file->private_data;
-+	struct snd_sof_dev *sdev = dfse->sdev;
-+	size_t num_tkns;
-+	u32 *tkns;
-+	int ret;
-+
-+	if (sdev->extractor_stream_tag == SOF_PROBE_INVALID_NODE_ID) {
-+		dev_warn(sdev->dev, "no extractor stream running\n");
-+		return -ENOENT;
-+	}
-+
-+	ret = tokenize_input(from, count, ppos, &tkns, &num_tkns);
-+	if (ret < 0)
-+		return ret;
-+	if (!num_tkns) {
-+		ret = -EINVAL;
-+		goto exit;
-+	}
-+
-+	ret = sof_ipc_probe_points_remove(sdev, tkns, num_tkns);
-+	if (!ret)
-+		ret = count;
-+exit:
-+	kfree(tkns);
-+	return ret;
-+}
-+
-+static const struct file_operations probe_points_remove_fops = {
-+	.open = simple_open,
-+	.write = probe_points_remove_write,
-+	.llseek = default_llseek,
-+};
-+
-+static int snd_sof_debugfs_probe_item(struct snd_sof_dev *sdev,
-+				 const char *name, mode_t mode,
-+				 const struct file_operations *fops)
-+{
-+	struct snd_sof_dfsentry *dfse;
-+
-+	dfse = devm_kzalloc(sdev->dev, sizeof(*dfse), GFP_KERNEL);
-+	if (!dfse)
-+		return -ENOMEM;
-+
-+	dfse->type = SOF_DFSENTRY_TYPE_BUF;
-+	dfse->sdev = sdev;
-+
-+	debugfs_create_file(name, mode, sdev->debugfs_root, dfse, fops);
-+	/* add to dfsentry list */
-+	list_add(&dfse->list, &sdev->dfsentry_list);
-+
-+	return 0;
-+}
-+#endif
-+
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST)
- #define MAX_IPC_FLOOD_DURATION_MS 1000
- #define MAX_IPC_FLOOD_COUNT 10000
-@@ -436,6 +651,17 @@ int snd_sof_dbg_init(struct snd_sof_dev *sdev)
- 			return err;
- 	}
- 
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_PROBES)
-+	err = snd_sof_debugfs_probe_item(sdev, "probe_points",
-+			0644, &probe_points_fops);
-+	if (err < 0)
-+		return err;
-+	err = snd_sof_debugfs_probe_item(sdev, "probe_points_remove",
-+			0200, &probe_points_remove_fops);
-+	if (err < 0)
-+		return err;
-+#endif
-+
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST)
- 	/* create read-write ipc_flood_count debugfs entry */
- 	err = snd_sof_debugfs_buf_item(sdev, NULL, 0,
--- 
-2.17.1
-
+All addressed in v5, thanks for review!
