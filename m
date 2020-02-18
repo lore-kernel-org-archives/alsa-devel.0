@@ -2,78 +2,64 @@ Return-Path: <SRS0=1Vby=4G=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C77BC34026
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 11:13:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E8B7EC34026
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 11:18:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AAD032173E
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 11:13:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6EC082173E
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 11:18:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fxuSaB5l"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AAD032173E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SP8UPYVI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6EC082173E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0C8591673;
-	Tue, 18 Feb 2020 12:12:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C8591673
+	by alsa0.perex.cz (Postfix) with ESMTPS id C082A1676;
+	Tue, 18 Feb 2020 12:17:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C082A1676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582024385;
-	bh=Emuqgo3MEznIuvrdQGvRUsjDknfSqPl2kZH7Ymefqdk=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1582024719;
+	bh=WIXAPoB1DwxUc+f7ajfOCq52AfSb8biv2vbkgkT4Nto=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fxuSaB5lRPiOMNth5km/HR0Gqb9/oAJ2vuGysMSPiScdESYCbnwLwcL87HYSShVnL
-	 y78bI13CDr54re3b5xXkxtQdEAwj7LU0ZUC79ldfUHU5ZUAlOtcu/NZdfBoZJC+4ga
-	 wOisl4QHnxgfyATLgCtR9o8gGC/dwTzuKKoyQDGU=
+	b=SP8UPYVIZQSkdafrw15E3RCJEDZbRbOSavhMkernto81/sxjuDpKg8P0lWc9lW9iF
+	 egcJKZ4TXD/fSDY7T3PBzluY7Ks0NQO78oR0gJoKQd96gfssGMmNOKeM+R9s+cax6m
+	 Ntg5BPjOhCrMCTjTCu1+VcHZ89bjXCQ7EkHN0Cgc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8C6CBF80145;
-	Tue, 18 Feb 2020 12:12:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 44BCEF80137;
+	Tue, 18 Feb 2020 12:17:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A8B24F80148; Tue, 18 Feb 2020 12:12:12 +0100 (CET)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 15445F80150; Tue, 18 Feb 2020 12:17:47 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E2FEAF80137
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2020 12:12:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2FEAF80137
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
- by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 18 Feb 2020 03:12:05 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,456,1574150400"; d="scan'208";a="435819634"
-Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by fmsmga006.fm.intel.com with ESMTP; 18 Feb 2020 03:12:03 -0800
-Date: Tue, 18 Feb 2020 13:12:02 +0200 (EET)
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-X-X-Sender: kvehmane@eliteleevi.tm.intel.com
-To: Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH] ASoC: SOF: intel: Fix probe error without i915
- graphics
-In-Reply-To: <s5h8sl1guk2.wl-tiwai@suse.de>
-Message-ID: <alpine.DEB.2.21.2002181248120.2957@eliteleevi.tm.intel.com>
-References: <20200216203516.10869-1-tiwai@suse.de>
- <alpine.DEB.2.21.2002171506330.2957@eliteleevi.tm.intel.com>
- <s5hk14lgvy6.wl-tiwai@suse.de>
- <alpine.DEB.2.21.2002171612320.2957@eliteleevi.tm.intel.com>
- <s5h8sl1guk2.wl-tiwai@suse.de>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7729BF80137
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2020 12:17:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7729BF80137
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 0ED9FAD2D;
+ Tue, 18 Feb 2020 11:17:43 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 2/3] ASoC: intel: skl: Fix possible buffer overflow in debug
+ outputs
+Date: Tue, 18 Feb 2020 12:17:36 +0100
+Message-Id: <20200218111737.14193-3-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
+In-Reply-To: <20200218111737.14193-1-tiwai@suse.de>
+References: <20200218111737.14193-1-tiwai@suse.de>
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,74 +75,125 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hey,
+The debugfs output of intel skl driver writes strings with multiple
+snprintf() calls with the fixed size.  This was supposed to avoid the
+buffer overflow but actually it still would, because snprintf()
+returns the expected size to be output, not the actual output size.
 
-On Mon, 17 Feb 2020, Takashi Iwai wrote:
+Fix it by replacing snprintf() calls with scnprintf().
 
-> On Mon, 17 Feb 2020 15:21:37 +0100,
-> Kai Vehmanen wrote: 
->> at least in my tests, acomp_exit() ended up releasing a bunch of devres 
->> allocations made with devm_kzalloc() that had no relation to acomp. I 
->> noted that in devres.c:find_group(), docs say:
-> 
-> Isn't it the devres object allocated in the component base code
-> itself?
+Fixes: d14700a01f91 ("ASoC: Intel: Skylake: Debugfs facility to dump module config")
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/soc/intel/skylake/skl-debug.c | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
-true, but problem are other devres allocations done to the PCI device.
+diff --git a/sound/soc/intel/skylake/skl-debug.c b/sound/soc/intel/skylake/skl-debug.c
+index 4c1703da1a6d..a15aa2ffa681 100644
+--- a/sound/soc/intel/skylake/skl-debug.c
++++ b/sound/soc/intel/skylake/skl-debug.c
+@@ -35,7 +35,7 @@ static ssize_t skl_print_pins(struct skl_module_pin *m_pin, char *buf,
+ 	ssize_t ret = 0;
+ 
+ 	for (i = 0; i < max_pin; i++) {
+-		ret += snprintf(buf + size, MOD_BUF - size,
++		ret += scnprintf(buf + size, MOD_BUF - size,
+ 				"%s %d\n\tModule %d\n\tInstance %d\n\t"
+ 				"In-used %s\n\tType %s\n"
+ 				"\tState %d\n\tIndex %d\n",
+@@ -53,7 +53,7 @@ static ssize_t skl_print_pins(struct skl_module_pin *m_pin, char *buf,
+ static ssize_t skl_print_fmt(struct skl_module_fmt *fmt, char *buf,
+ 					ssize_t size, bool direction)
+ {
+-	return snprintf(buf + size, MOD_BUF - size,
++	return scnprintf(buf + size, MOD_BUF - size,
+ 			"%s\n\tCh %d\n\tFreq %d\n\tBit depth %d\n\t"
+ 			"Valid bit depth %d\n\tCh config %#x\n\tInterleaving %d\n\t"
+ 			"Sample Type %d\n\tCh Map %#x\n",
+@@ -77,16 +77,16 @@ static ssize_t module_read(struct file *file, char __user *user_buf,
+ 	if (!buf)
+ 		return -ENOMEM;
+ 
+-	ret = snprintf(buf, MOD_BUF, "Module:\n\tUUID %pUL\n\tModule id %d\n"
++	ret = scnprintf(buf, MOD_BUF, "Module:\n\tUUID %pUL\n\tModule id %d\n"
+ 			"\tInstance id %d\n\tPvt_id %d\n", mconfig->guid,
+ 			mconfig->id.module_id, mconfig->id.instance_id,
+ 			mconfig->id.pvt_id);
+ 
+-	ret += snprintf(buf + ret, MOD_BUF - ret,
++	ret += scnprintf(buf + ret, MOD_BUF - ret,
+ 			"Resources:\n\tCPC %#x\n\tIBS %#x\n\tOBS %#x\t\n",
+ 			res->cpc, res->ibs, res->obs);
+ 
+-	ret += snprintf(buf + ret, MOD_BUF - ret,
++	ret += scnprintf(buf + ret, MOD_BUF - ret,
+ 			"Module data:\n\tCore %d\n\tIn queue %d\n\t"
+ 			"Out queue %d\n\tType %s\n",
+ 			mconfig->core_id, mconfig->max_in_queue,
+@@ -96,38 +96,38 @@ static ssize_t module_read(struct file *file, char __user *user_buf,
+ 	ret += skl_print_fmt(mconfig->in_fmt, buf, ret, true);
+ 	ret += skl_print_fmt(mconfig->out_fmt, buf, ret, false);
+ 
+-	ret += snprintf(buf + ret, MOD_BUF - ret,
++	ret += scnprintf(buf + ret, MOD_BUF - ret,
+ 			"Fixup:\n\tParams %#x\n\tConverter %#x\n",
+ 			mconfig->params_fixup, mconfig->converter);
+ 
+-	ret += snprintf(buf + ret, MOD_BUF - ret,
++	ret += scnprintf(buf + ret, MOD_BUF - ret,
+ 			"Module Gateway:\n\tType %#x\n\tVbus %#x\n\tHW conn %#x\n\tSlot %#x\n",
+ 			mconfig->dev_type, mconfig->vbus_id,
+ 			mconfig->hw_conn_type, mconfig->time_slot);
+ 
+-	ret += snprintf(buf + ret, MOD_BUF - ret,
++	ret += scnprintf(buf + ret, MOD_BUF - ret,
+ 			"Pipeline:\n\tID %d\n\tPriority %d\n\tConn Type %d\n\t"
+ 			"Pages %#x\n", mconfig->pipe->ppl_id,
+ 			mconfig->pipe->pipe_priority, mconfig->pipe->conn_type,
+ 			mconfig->pipe->memory_pages);
+ 
+-	ret += snprintf(buf + ret, MOD_BUF - ret,
++	ret += scnprintf(buf + ret, MOD_BUF - ret,
+ 			"\tParams:\n\t\tHost DMA %d\n\t\tLink DMA %d\n",
+ 			mconfig->pipe->p_params->host_dma_id,
+ 			mconfig->pipe->p_params->link_dma_id);
+ 
+-	ret += snprintf(buf + ret, MOD_BUF - ret,
++	ret += scnprintf(buf + ret, MOD_BUF - ret,
+ 			"\tPCM params:\n\t\tCh %d\n\t\tFreq %d\n\t\tFormat %d\n",
+ 			mconfig->pipe->p_params->ch,
+ 			mconfig->pipe->p_params->s_freq,
+ 			mconfig->pipe->p_params->s_fmt);
+ 
+-	ret += snprintf(buf + ret, MOD_BUF - ret,
++	ret += scnprintf(buf + ret, MOD_BUF - ret,
+ 			"\tLink %#x\n\tStream %#x\n",
+ 			mconfig->pipe->p_params->linktype,
+ 			mconfig->pipe->p_params->stream);
+ 
+-	ret += snprintf(buf + ret, MOD_BUF - ret,
++	ret += scnprintf(buf + ret, MOD_BUF - ret,
+ 			"\tState %d\n\tPassthru %s\n",
+ 			mconfig->pipe->state,
+ 			mconfig->pipe->passthru ? "true" : "false");
+@@ -137,7 +137,7 @@ static ssize_t module_read(struct file *file, char __user *user_buf,
+ 	ret += skl_print_pins(mconfig->m_out_pin, buf,
+ 			mconfig->max_out_queue, ret, false);
+ 
+-	ret += snprintf(buf + ret, MOD_BUF - ret,
++	ret += scnprintf(buf + ret, MOD_BUF - ret,
+ 			"Other:\n\tDomain %d\n\tHomogeneous Input %s\n\t"
+ 			"Homogeneous Output %s\n\tIn Queue Mask %d\n\t"
+ 			"Out Queue Mask %d\n\tDMA ID %d\n\tMem Pages %d\n\t"
+@@ -193,7 +193,7 @@ static ssize_t fw_softreg_read(struct file *file, char __user *user_buf,
+ 		__ioread32_copy(d->fw_read_buff, fw_reg_addr, w0_stat_sz >> 2);
+ 
+ 	for (offset = 0; offset < FW_REG_SIZE; offset += 16) {
+-		ret += snprintf(tmp + ret, FW_REG_BUF - ret, "%#.4x: ", offset);
++		ret += scnprintf(tmp + ret, FW_REG_BUF - ret, "%#.4x: ", offset);
+ 		hex_dump_to_buffer(d->fw_read_buff + offset, 16, 16, 4,
+ 				   tmp + ret, FW_REG_BUF - ret, 0);
+ 		ret += strlen(tmp + ret);
+-- 
+2.16.4
 
-I did some more testing and if I force a failure in snd_hdac_i915_init()
-and do cleanup with snd_hdac_acomp_exit() in the same function, it works
-as expected:
-
-[ 1476.111313] sof-audio-pci 0000:00:1f.3: bound 0000:00:02.0 (ops vgt_balloon_space [i915])
-[ 1476.111315] sof-audio-pci 0000:00:1f.3: couldn't bind with audio component
-[ 1476.111338] i915 0000:00:02.0: DEVRES REL 00000000b76305ff grp< (0 bytes)
-[ 1476.111346] sof-audio-pci 0000:00:1f.3: DEVRES REL 000000006f2e9c46 grp< (0 bytes)
-[ 1476.111360] sof-audio-pci 0000:00:1f.3: DEVRES REM 000000000810c760 hdac_acomp_release (64 bytes)
-[ 1476.111366] sof-audio-pci 0000:00:1f.3: init of i915 and HDMI codec failed
-
-So this is good. It released the group created for acomp. But, but,
-if the init is successful, but later in probe I end up disabling i915 
-support (e.g. no codec driver in the kernel) and try to do cleanup of 
-acomp resources by calling snd_hdac_i915_exit(), I get this suprising 
-devres log:
-
-[ 3007.592029] i915 0000:00:02.0: DEVRES REL 0000000071c16ac0 grp< (0 bytes)
-[ 3007.592038] sof-audio-pci 0000:00:1f.3: DEVRES REL 000000008b5ea24e grp< (0 bytes)
-[ 3007.592044] sof-audio-pci 0000:00:1f.3: DEVRES REL 00000000f9d4d35c devm_kzalloc_release (1816 bytes)
-[ 3007.592051] sof-audio-pci 0000:00:1f.3: DEVRES REL 00000000fa1e4d1a devm_kzalloc_release (1816 bytes)
-[ 3007.592057] sof-audio-pci 0000:00:1f.3: DEVRES REL 0000000057d8edec devm_kzalloc_release (320 bytes)
-[ 3007.592063] sof-audio-pci 0000:00:1f.3: DEVRES REL 00000000aea01a3d devm_kzalloc_release (320 bytes)
-[ 3007.592069] sof-audio-pci 0000:00:1f.3: DEVRES REL 0000000039d17832 devm_kzalloc_release (320 bytes)
-[ 3007.592075] sof-audio-pci 0000:00:1f.3: DEVRES REL 000000009958e500 devm_kzalloc_release (320 bytes)
-[ 3007.592081] sof-audio-pci 0000:00:1f.3: DEVRES REL 00000000eea2922f devm_kzalloc_release (320 bytes)
-[ 3007.592088] sof-audio-pci 0000:00:1f.3: DEVRES REL 00000000dd6f6f2a devm_kzalloc_release (320 bytes)
-[ 3007.592093] sof-audio-pci 0000:00:1f.3: DEVRES REL 000000005ca30f2d devm_kzalloc_release (320 bytes)
-[ 3007.592099] sof-audio-pci 0000:00:1f.3: DEVRES REL 00000000bf594d2d devm_kzalloc_release (320 bytes)
-[ 3007.592104] sof-audio-pci 0000:00:1f.3: DEVRES REL 000000009a0669c2 devm_kzalloc_release (320 bytes)
-[ 3007.592110] sof-audio-pci 0000:00:1f.3: DEVRES REL 00000000757c42ee devm_kzalloc_release (320 bytes)
-[ 3007.592115] sof-audio-pci 0000:00:1f.3: DEVRES REL 00000000a928376b devm_kzalloc_release (320 bytes)
-[ 3007.592121] sof-audio-pci 0000:00:1f.3: DEVRES REL 000000007bf93e19 devm_kzalloc_release (320 bytes)
-[ 3007.592127] sof-audio-pci 0000:00:1f.3: DEVRES REL 00000000485f5b74 devm_kzalloc_release (320 bytes)
-[ 3007.592133] sof-audio-pci 0000:00:1f.3: DEVRES REL 000000007c95c553 devm_kzalloc_release (320 bytes)
-[ 3007.592139] sof-audio-pci 0000:00:1f.3: DEVRES REL 00000000d7b60566 devm_kzalloc_release (320 bytes)
-[ 3007.592145] sof-audio-pci 0000:00:1f.3: DEVRES REL 000000002805a826 devm_kzalloc_release (320 bytes)
-[ 3007.592160] sof-audio-pci 0000:00:1f.3: DEVRES REM 0000000085720a3d hdac_acomp_release (64 bytes)
-
-
-These allocations are not done for acomp, but are rather allocs
-done for the SOF DSP device during the init. E.g. the 1816 byte alloc is 
-devm_kzalloc of "struct hdac_hda_priv":
-
-[ 3007.558102] sof-audio-pci 0000:00:1f.3: HDA codec #0 probed OK: response: 10ec0700
-[ 3007.558109] sof-audio-pci 0000:00:1f.3: DEVRES ADD 00000000fa1e4d1a devm_kzalloc_release (1816 bytes)
-
-... now I guess this is just how the component framework works. We do 
-register the hdac-bus device as aggregate master device in 
-snd_hdac_acomp_init() by calling component_master_add_with_match(). So 
-calling snd_hdac_acomp_exit() will bring down the aggregate master device.
-
-I now worked around this my putting the acomp_exit() at end of the SOF
-DSP device removal.
-
-Br, Kai
