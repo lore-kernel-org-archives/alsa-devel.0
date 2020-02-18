@@ -2,73 +2,73 @@ Return-Path: <SRS0=1Vby=4G=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 727BCC34026
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 17:27:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 55918C34026
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 17:28:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E8B4820801
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 17:27:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CB134208C4
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 17:28:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TQt1ZBdR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E8B4820801
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="r4wrKdwt"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CB134208C4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 42D73168F;
-	Tue, 18 Feb 2020 18:26:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 42D73168F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1DAFC16B1;
+	Tue, 18 Feb 2020 18:27:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1DAFC16B1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582046863;
-	bh=Y00LjOdYLUrsD5LYdrcBRi9DKZ6h2er2ZpCPi3bADgY=;
+	s=default; t=1582046881;
+	bh=g0V4b0pJ0LlkiBfUjj1wlZr36OObR4o21820ltW6MO8=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TQt1ZBdRcDbl/9CUpil2dHkOfkfgSTTJ0nctoJ1QwONJC63JlaoA+nxrWxeJWkqfP
-	 FYr+KPT/wfdCj0WnhF94Yw7wT4iH7rMjRifwlMX4uJhYe51GqT10GWA9LAfWf2wymY
-	 EMi9+MEOTKwiM1DyFTyJLSZVUUinTTdprZgtpQy0=
+	b=r4wrKdwtQIDIZKbJ+sHXj9DuPMLF/yRDWaC84TYdLGFJsjtbVmdwmHvdzWQ6jU7J5
+	 PczMRsgD2MIP07edJQBVgFkzzfFe1aVJ5hI1mpohKGMm+1D1fJ5eyebadRQ1GECkhz
+	 GP0YnLVaD0uuKN3F2qSaL3lbs0JATQFJqXXfE4oo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 78537F80278;
-	Tue, 18 Feb 2020 18:24:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 62A07F80279;
+	Tue, 18 Feb 2020 18:24:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1C98AF8015C; Tue, 18 Feb 2020 18:24:38 +0100 (CET)
+ id 486C5F80137; Tue, 18 Feb 2020 18:24:38 +0100 (CET)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B3A1EF800C4
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2020 18:24:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3A1EF800C4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7FCF7F80148
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2020 18:24:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7FCF7F80148
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 18 Feb 2020 09:24:31 -0800
+ 18 Feb 2020 09:24:30 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,456,1574150400"; d="scan'208";a="408136640"
+X-IronPort-AV: E=Sophos;i="5.70,456,1574150400"; d="scan'208";a="408136628"
 Received: from bmerugul-mobl1.amr.corp.intel.com (HELO [10.251.159.61])
  ([10.251.159.61])
- by orsmga005.jf.intel.com with ESMTP; 18 Feb 2020 09:24:30 -0800
-Subject: Re: [PATCH v5 0/9] ASoC: SOF: Data probing
+ by orsmga005.jf.intel.com with ESMTP; 18 Feb 2020 09:24:29 -0800
+Subject: Re: [PATCH] ASoC: SOF: Intel: Fix stream cleanup on pcm close
 To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
-References: <20200218143924.10565-1-cezary.rojewski@intel.com>
+References: <20200218141013.7290-1-cezary.rojewski@intel.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <88345dc4-6d9f-66ee-8069-f7d4fd87863a@linux.intel.com>
-Date: Tue, 18 Feb 2020 11:21:53 -0600
+Message-ID: <63adf568-74f4-2c01-8257-955d5aa51420@linux.intel.com>
+Date: Tue, 18 Feb 2020 10:45:16 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200218143924.10565-1-cezary.rojewski@intel.com>
+In-Reply-To: <20200218141013.7290-1-cezary.rojewski@intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Cc: vkoul@kernel.org, broonie@kernel.org, lgirdwood@gmail.com, tiwai@suse.com
+Cc: broonie@kernel.org, lgirdwood@gmail.com, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,133 +86,35 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 2/18/20 8:39 AM, Cezary Rojewski wrote:
-> This set of patches achieves few goals in order to enable data probing
-> feature for audio DSP.
+On 2/18/20 8:10 AM, Cezary Rojewski wrote:
+> Field "substream" gets assigned during stream setup in
+> hda_dsp_pcm_hw_params() but it is never cleared afterwards during
+> hda_dsp_pcm_close(). Now, any non-pcm operation e.g.: compress can
+> mistakenly make use of that pointer as it's bypassing all
+> "if (s->substream)" checks.
 > 
-> First, provide new and alter existing interfaces (page allocation,
-> runtime flow adjustments) to make them compress friendly.
+> Nulling the pointer during close operation ensures no wild pointers are
+> left behind.
 > 
-> Finally, the end goal which are the probe APIs and usage itself. Probes
-> can be treated as endpoints which allow for data extraction from or
-> injection to target module - a great ally when debugging problematic
-> audio issues such as distortions, glitches or gaps.
-> Compress streams are a weapon of choice here to provide a lightweight
-> implementation.
+> Fixes: cdae3b9a47aa ("ASoC: SOF: Intel: Add Intel specific HDA PCM operations")
+> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+> ---
+>   sound/soc/sof/intel/hda-pcm.c | 1 +
+>   1 file changed, 1 insertion(+)
 > 
-> While all available IPCs have been defined, current implementation
-> covers extraction only, with injection scheduled for a later date.
-> 
-> Initial review and development of probes can be found under:
-> https://github.com/thesofproject/linux/pull/1276
-> 
-> with the hda-compress-enable set of patches being separated and
-> reviewed on:
-> https://github.com/thesofproject/linux/pull/1571
-> 
-> Tested on CML-U with rt5682 i2s board.
+> diff --git a/sound/soc/sof/intel/hda-pcm.c b/sound/soc/sof/intel/hda-pcm.c
+> index a46a6baa1c3f..4b3a89cf20e7 100644
+> --- a/sound/soc/sof/intel/hda-pcm.c
+> +++ b/sound/soc/sof/intel/hda-pcm.c
+> @@ -246,5 +246,6 @@ int hda_dsp_pcm_close(struct snd_sof_dev *sdev,
+>   
+>   	/* unbinding pcm substream to hda stream */
+>   	substream->runtime->private_data = NULL;
+> +	hstream->substream = NULL;
+>   	return 0;
+>   }
 
-For the series:
 
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-Nice work Cezary, thanks.
-
-> Cahnges in v5:
-> - Removed SND_SOC_SOF_HDA_LINK requirement for hda probes. Instead of
->    sound/hda/ext, sof hda operations are used
-> - In consequence of above, patches:
->      ALSA: hda: Allow for compress stream to hdac_ext_stream assignment
->      ALSA: hda: Prepare for compress stream support
->      ALSA: hda: Interrupt servicing and BDL setup for compress streams
->    have been dropped.
-> 
-> - In order to reuse pcm utility functions for hda compress, new patch
->    has been added:
->      ASoC: SOF: Intel: Expose SDnFMT helpers
-> - Addressed u64/ u32 concerns from Pierre when calculating bytes
->    transferred during runtime
-> 
-> Changes in v4:
-> - No changes to ALSA core and hda patches
-> 
-> - 'probe' source added in patch "ASoC: SOF: Implement Probe IPC API" now
->    only compiled if SND_SOC_SOF_DEBUG_PROBES is enabled. Said kconfig
->    initial declaration has been moved to that patch too
-> - 'extractor_stream_tag' field now decorated with _DEBUG_PROBES to
->    account for the change above
-> - Debugfs probe handlers now check if extractor stream is running before
->    continuing. To achieve this, 'extractor_stream_tag' is both initialized
->    and set to SOF_PROBE_INVALID_NODE_ID on sof_probe_compr_free().
->    Suggestion provided by Pierre
-> 
-> - Reverted SND_SOC_SOF_HDA_LINK requirement-removal change for HDA probes.
->    Code requires SND_HDA_EXT_CORE in order to function on Intel platforms
-> - Relocated probe-compress related code from /sof/pcm.c directly to
->    /sof/compress.c as requested by Daniel
-> 
-> Changes in v3:
-> - No changes to ALSA core and hda patches
-> 
-> - Addressed sparse and all doc related warnings as reported by Pierre
-> - Moved _DEBUG_PROBES config outside of _DEVELOPER_SUPPORT block
-> - Renamed 'extractor' field to 'extractor_stream_tag' as requested
-> - Relocated 'extractor_stream_tag' declaration from patch 07 to 08
-> 
-> Changes in v2:
-> - No changes to ALSA core and hda patches
-> 
-> - Removed "ASoC: Intel: sof_rt5682: Add compress probe DAI links" from
->    the patchset list as requested by Pierre
-> - updated copyright header for newly added files (dates)
-> - probes over HDA no longer require SND_SOC_SOF_HDA_LINK enabled
-> - renamed debugfs probe functions as requested by Pierre
-> 
-> - probe IPC API has been updated to align with newest SOF FW & probe
->    debug app (struct_size macro has been enlisted to make the size
->    calculations transparent). This targets only "ASoC: SOF: Implement
->    Probe IPC API" patch
-> 
-> Cezary Rojewski (9):
->    ALSA: core: Expand DMA buffer information
->    ALSA: core: Implement compress page allocation and free routines
->    ASoC: SOF: Intel: Account for compress streams when servicing IRQs
->    ASoC: SOF: Implement Probe IPC API
->    ASoC: SOF: Generic probe compress operations
->    ASoC: SOF: Intel: Expose SDnFMT helpers
->    ASoC: SOF: Intel: Probe compress operations
->    ASoC: SOF: Provide probe debugfs support
->    ASoC: SOF: Intel: Add Probe compress CPU DAIs
-> 
->   include/sound/compress_driver.h    |  40 +++-
->   include/sound/hdaudio.h            |   2 +
->   include/sound/sof/header.h         |  11 ++
->   sound/core/compress_offload.c      |  42 +++++
->   sound/soc/sof/Kconfig              |   9 +
->   sound/soc/sof/Makefile             |   1 +
->   sound/soc/sof/compress.c           | 146 +++++++++++++++
->   sound/soc/sof/compress.h           |  31 ++++
->   sound/soc/sof/core.c               |   6 +
->   sound/soc/sof/debug.c              | 226 +++++++++++++++++++++++
->   sound/soc/sof/intel/Kconfig        |   9 +
->   sound/soc/sof/intel/Makefile       |   1 +
->   sound/soc/sof/intel/apl.c          |   9 +
->   sound/soc/sof/intel/cnl.c          |   9 +
->   sound/soc/sof/intel/hda-compress.c | 114 ++++++++++++
->   sound/soc/sof/intel/hda-dai.c      |  28 +++
->   sound/soc/sof/intel/hda-ipc.c      |   4 +-
->   sound/soc/sof/intel/hda-pcm.c      |   8 +-
->   sound/soc/sof/intel/hda-stream.c   |  25 ++-
->   sound/soc/sof/intel/hda.h          |  32 ++++
->   sound/soc/sof/ops.h                |  43 +++++
->   sound/soc/sof/pcm.c                |   7 +
->   sound/soc/sof/probe.c              | 286 +++++++++++++++++++++++++++++
->   sound/soc/sof/probe.h              |  85 +++++++++
->   sound/soc/sof/sof-priv.h           |  25 +++
->   25 files changed, 1183 insertions(+), 16 deletions(-)
->   create mode 100644 sound/soc/sof/compress.c
->   create mode 100644 sound/soc/sof/compress.h
->   create mode 100644 sound/soc/sof/intel/hda-compress.c
->   create mode 100644 sound/soc/sof/probe.c
->   create mode 100644 sound/soc/sof/probe.h
-> 
+Humm, yes we should clean this, but wondering if the close() operation 
+is the right place. Doing this is hda_dsp_stream_hw_free() sounds more 
+logical to me?
