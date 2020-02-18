@@ -2,75 +2,73 @@ Return-Path: <SRS0=1Vby=4G=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	UNPARSEABLE_RELAY autolearn=no autolearn_force=no version=3.4.0
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5EB74C34026
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 17:07:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 23267C34026
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 17:25:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DE0C5208C4
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 17:07:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A194020801
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 17:25:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="d+vPRhGi"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DE0C5208C4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GOtOPMet"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A194020801
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3C8511689;
-	Tue, 18 Feb 2020 18:06:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C8511689
+	by alsa0.perex.cz (Postfix) with ESMTPS id D577B1686;
+	Tue, 18 Feb 2020 18:24:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D577B1686
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582045648;
-	bh=crnRkpMpRVbtZ0/NXXsmAPn19HyOGjwAIImCjGd3dyk=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1582046725;
+	bh=C/LRkYWdX6wxiYiNDVoMyIi3O5/6Xmei2Ghg+RE+6fQ=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=d+vPRhGii+3x5bIOGgV3PUjejC4gQGkrNGoh5yqpUYeP/78vceAfTsf4vcXxseHM7
-	 +A71LRXTmPIn8h/vhOadm4qMLD9ENlqjXJl15mM+LdZF/WzTI4dzDEEgjM2j7HPDgP
-	 of61Sj09RvQzrpXd/zT30G7dJkP67X5nCbgkMHN4=
+	b=GOtOPMetGEi4HH7i+mU9i4Rrvce0DwpD6dWKNc6FkEwIbbA0Rcj2MMOrdW1rO3g72
+	 VhqeRUEIAiAmfRWEpXQrwNlz6fT7veE8QNVrNrYAieQttwI/XUgGM4RFxjKy0RsO/U
+	 47iPCslnNQzZDLbktptLJncfQTgQdg9Cv1WoJrKU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C3A58F800C4;
-	Tue, 18 Feb 2020 18:06:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 214F4F8014A;
+	Tue, 18 Feb 2020 18:24:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B7CCAF80148; Tue, 18 Feb 2020 18:06:35 +0100 (CET)
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 238D2F80137
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2020 18:06:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 238D2F80137
-Received: from [127.0.0.1] (localhost [127.0.0.1]) (Authenticated sender: sre)
- with ESMTPSA id A56E72942E5
-Received: by earth.universe (Postfix, from userid 1000)
- id 04A863C0C81; Tue, 18 Feb 2020 18:06:29 +0100 (CET)
-Date: Tue, 18 Feb 2020 18:06:28 +0100
-From: Sebastian Reichel <sebastian.reichel@collabora.com>
-To: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH] ASoC: cpcap: Implement set_tdm_slot for voice call support
-Message-ID: <20200218170628.r47xc3yydg6xx2yh@earth.universe>
-References: <20200211181005.54008-1-tony@atomide.com>
- <ae2b7d9e-d05e-54ac-4f18-27cc8c4e81a0@ti.com>
- <20200212144620.GJ64767@atomide.com>
- <9a060430-5a3e-61e1-3d2c-f89819d9436f@ti.com>
- <20200217232325.GD35972@atomide.com>
- <8fc1dded-6d28-f5cd-f2f9-3a6810571119@ti.com>
- <20200218153211.GI35972@atomide.com>
+ id 73DCEF8014A; Tue, 18 Feb 2020 18:24:33 +0100 (CET)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id CF6AFF80137
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2020 18:24:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF6AFF80137
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 18 Feb 2020 09:24:25 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,456,1574150400"; d="scan'208";a="408136585"
+Received: from bmerugul-mobl1.amr.corp.intel.com (HELO [10.251.159.61])
+ ([10.251.159.61])
+ by orsmga005.jf.intel.com with ESMTP; 18 Feb 2020 09:24:25 -0800
+Subject: Re: [alsa-devel] [PATCH v4 00/18] ASoC: soc-pcm cleanup step3
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Mark Brown <broonie@kernel.org>
+References: <87imk5bovg.wl-kuninori.morimoto.gx@renesas.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <cab66798-bf11-25cc-f6de-7eb50a1d52f0@linux.intel.com>
+Date: Tue, 18 Feb 2020 09:56:06 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="e4xhqf4ckenfagk5"
-Content-Disposition: inline
-In-Reply-To: <20200218153211.GI35972@atomide.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org,
- linux-kernel@vger.kernel.org, Merlijn Wajer <merlijn@wizzup.org>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>,
- Pavel Machek <pavel@ucw.cz>, "Arthur D ." <spinal.by@gmail.com>,
- Jarkko Nikula <jarkko.nikula@bitmer.com>
+In-Reply-To: <87imk5bovg.wl-kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,129 +85,53 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---e4xhqf4ckenfagk5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On 2/17/20 2:27 AM, Kuninori Morimoto wrote:
+> 
+> Hi Mark
+> 
+> These are v4 of soc-pcm cleanup step3.
+> Main change from v3 is that
+> 	- tidyup Subject on [10/18] patch
+> 	- added Takashi's Reviewed-by / Acked-by on [10/18], [18/18]
 
-On Tue, Feb 18, 2020 at 07:32:11AM -0800, Tony Lindgren wrote:
-> * Peter Ujfalusi <peter.ujfalusi@ti.com> [200218 15:16]:
-> > On 18/02/2020 1.23, Tony Lindgren wrote:
-> > > * Peter Ujfalusi <peter.ujfalusi@ti.com> [200214 13:30]:
-> > >> Hi Tony,
-> > >>
-> > >> On 12/02/2020 16.46, Tony Lindgren wrote:
-> > >>> * Peter Ujfalusi <peter.ujfalusi@ti.com> [200212 09:18]:
-> > >>>> On 11/02/2020 20.10, Tony Lindgren wrote:
-> > >>>>> +static int cpcap_voice_set_tdm_slot(struct snd_soc_dai *dai,
-> > >>>>> +				    unsigned int tx_mask, unsigned int rx_mask,
-> > >>>>> +				    int slots, int slot_width)
-> > >>>>> +{
-> > >>>>> +	struct snd_soc_component *component =3D dai->component;
-> > >>>>> +	struct cpcap_audio *cpcap =3D snd_soc_component_get_drvdata(com=
-ponent);
-> > >>>>> +	int err, ts_mask, mask;
-> > >>>>> +	bool voice_call;
-> > >>>>> +
-> > >>>>> +	/*
-> > >>>>> +	 * Primitive test for voice call, probably needs more checks
-> > >>>>> +	 * later on for 16-bit calls detected, Bluetooth headset etc.
-> > >>>>> +	 */
-> > >>>>> +	if (tx_mask =3D=3D 0 && rx_mask =3D=3D 1 && slot_width =3D=3D 8)
-> > >>>>> +		voice_call =3D true;
-> > >>>>> +	else
-> > >>>>> +		voice_call =3D false;
-> > >>>>
-> > >>>> You only have voice call if only rx slot0 is in use?
-> > >>>
-> > >>> Yeah so it seems. Then there's the modem to wlcore bluetooth path t=
-hat
-> > >>> I have not looked at. But presumably that's again just configuring =
-some
-> > >>> tdm slot on the PMIC.
-> > >>>
-> > >>>> If you record mono on the voice DAI, then rx_mask is also 1, no?
-> > >>>
-> > >>> It is above :) But maybe I don't follow what you're asking here
-> > >>
-> > >> If you arecrod -Dvoice_pcm -c1 -fS8 > /dev/null
-> > >> then it is reasonable that the machine driver will set rx_mask =3D 1
-> > >>
-> > >>> and maybe you have some better check in mind.
-> > >>
-> > >> Not sure, but relying on set_tdm_slots to decide if we are in a call
-> > >> case does not sound right.
-> > >=20
-> > > OK yeah seems at least bluetooth would need to be also handled
-> > > in the set_tdm_slots.
-> >=20
-> > set_tdm_slots() is for setting how the TDM slots supposed to be used by
-> > the component and not really for things to configure different operating
-> > modes.
-> >=20
-> > If you hardwire things in set_tdm_slots() for the droid4 then how the
-> > codec driver can be reused in other setups?
->=20
-> Right, I'm all go for better solutions :)
->=20
-> > >>>> You will also set the sampling rate for voice in
-> > >>>> cpcap_voice_hw_params(), but that is for normal playback/capture, =
-right?
-> > >>>
-> > >>> Yeah so normal playback/capture is already working with cpcap codec=
- driver
-> > >>> with mainline Linux. The voice call needs to set rate to 8000.
-> > >>
-> > >> But if you have a voice call initiated should not the rate be set by=
- the
-> > >> set_sysclk()?
-> > >=20
-> > > Hmm does set_sysclk called from modem codec know that cpcap codec
-> > > is the clock master based on bitclock-master and set the rate
-> > > for cpcap codec?
-> >=20
-> > Neither component should call set_sysclk, set_tdm_slots. The machine
-> > driver should as it is the only one who know how things are wired...
->=20
-> OK, but so what's the machine driver part in this case?
+For the series
 
-simple-graph-card is the current machine driver. We might have to
-introduce a Droid 4 specific driver instead. I used simple(-graph)-card
-instead of introducing a new driver, since the setup was simple enough
-without modem and bluetooth. The simple card was perfect to test the CPCAP
-codec driver. The TDM things might be complex enough to create
-a new machine driver (as I mentioned in the original patchset
-adding CPCAP codec support).
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Note: Don't use Motorola's tree to learn about ASoC. Their soundcard
-and cpcap codec drivers are full of weird hacks. I'm pretty sure the
-author(s) did not really understand how ASoC works. From my
-experience you should only use their code to understand the
-hardware wiring. You might also want to look into the MC13783
-datasheet for the keyword "network mode".
+Thank you Morimoto-san, nice cleanup!
 
--- Sebastian
-
---e4xhqf4ckenfagk5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl5MGZEACgkQ2O7X88g7
-+pqn5A/7Bby/ClGFYeyupbA+sYRaZu0ngXwFHcjCe/kXviBzAt/Yx8Hm2Bu65KNA
-occazqTddxw4EHMvS3PbDjnxokZtyZZGHf8ZK8yXE9EeUJc8GW0OX/YjMgCKtKgk
-NzaPGkeWkwn29T/0+0p0Ld7j/LGg3qRirxyIfkeFTR5IN+sOGL7DdHCgCu8C/JEm
-fYFt0tNbLV+0sINzhLVNj6nu22204LxNpF/ZFwxVcStna8EdQR1osDlt9fe46LkF
-CuYsKahKTRS3hTGC3iJGwr1YRzxIc3myiCxQGnw2R0cYuqX+Yo0iNuqjlFL+Kzqu
-d43H6838ld18/xqIDRVh2NVaeeRuAwaa81YHoYFK0K80zx/tDkfjY9fbl34AXJzh
-KjsI3bedxewJtgtL1SIg9PD66fzcL8R0NHr6VE40OiiQZ0Gs+CnnDGZYHsiAgeJy
-hmc3NWk5nrxkcNHIVCWYnmvJ1zylvufSaCx2Ry5/ZL+S1opgo1P9UM4TCCfRl346
-9r09CrFbf/WYYhq9n1Oit8WpgoC6jZC/wU15/LCFA/dc8lMGc/Grt/Eiuz7eXdu8
-EO/sDKFRNCxlEUY5Tn/DMAc1d3T0lge19f3AN8+N3cHjti+NZicnoOsT+wfpAGh9
-kSbALPnfqw1Qk3B2pl88+WuGf8da2FDghRmG1PxovpsHEC9wtyo=
-=aBy/
------END PGP SIGNATURE-----
-
---e4xhqf4ckenfagk5--
+> Kuninori Morimoto (18):
+>     1) ASoC: soc-pcm: move dai_get_widget()
+>     2) ASoC: soc-pcm: use dai_get_widget() at dpcm_get_be()
+>     3) ASoC: soc-pcm: use dai_get_widget() at dpcm_end_walk_at_be()
+>     4) ASoC: soc-pcm: use dpcm_get_be() at dpcm_end_walk_at_be()
+>     5) ASoC: soc-pcm: remove soc_dpcm_be_digital_mute()
+>     6) ASoC: soc-pcm: remove snd_soc_dpcm_be_get/set_state()
+>     7) ASoC: soc-pcm: add snd_soc_dpcm_can_be() and remove duplicate code
+>     8) ASoC: soc-pcm: use goto and remove multi return
+>     9) ASoC: soc-pcm: merge playback/cature_active into stream_active
+>    10) ASoC: soc.h: add for_each_pcm_streams()
+>    11) ASoC: soc-core: use for_each_pcm_streams() macro
+>    12) ASoC: soc-pcm: use for_each_pcm_streams() macro
+>    13) ASoC: soc-generic-dmaengine-pcm: use for_each_pcm_streams() macro
+>    14) ASoC: dwc: dwc-i2s: use for_each_pcm_streams() macro
+>    15) ASoC: fsl: fsl_asrc_dma: use for_each_pcm_streams() macro
+>    16) ASoC: qcom: lpass-platform: use for_each_pcm_streams() macro
+>    17) ASoC: sof: sof-audio: use for_each_pcm_streams() macro
+>    18) ALSA: usx2y: use for_each_pcm_streams() macro
+> 
+>   include/sound/pcm.h                   |   5 +
+>   include/sound/soc-dai.h               |   3 +-
+>   include/sound/soc-dpcm.h              |   9 -
+>   sound/soc/codecs/cs4271.c             |   4 +-
+>   sound/soc/dwc/dwc-i2s.c               |   8 +-
+>   sound/soc/fsl/fsl_asrc_dma.c          |   4 +-
+>   sound/soc/qcom/lpass-platform.c       |   2 +-
+>   sound/soc/soc-core.c                  |  48 ++--
+>   sound/soc/soc-generic-dmaengine-pcm.c |   8 +-
+>   sound/soc/soc-pcm.c                   | 327 +++++++++-----------------
+>   sound/soc/sof/sof-audio.c             |  19 +-
+>   sound/usb/usx2y/usbusx2yaudio.c       |   9 +-
+>   12 files changed, 162 insertions(+), 284 deletions(-)
+> 
