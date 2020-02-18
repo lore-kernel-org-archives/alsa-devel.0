@@ -2,58 +2,81 @@ Return-Path: <SRS0=1Vby=4G=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C22A6C34031
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 08:10:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 625C4C34033
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 08:41:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 50E31206EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 08:10:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DB49520658
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 08:41:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RLuOhVnk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 50E31206EF
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VIVMugx7";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="OegWfWUa"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DB49520658
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9E0F31616;
-	Tue, 18 Feb 2020 09:09:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E0F31616
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3C02F82A;
+	Tue, 18 Feb 2020 09:40:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C02F82A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582013412;
-	bh=gEvtO9zONfgM4vWjJjKOXEhv6JpzdabcgbtYyZa/vG4=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=RLuOhVnkmSkbZ9nuAsBUeNPTO1HDI2I+CXm9Jn2dgrdGruxMKRrd6kM+yfVf8QzSJ
-	 z3Uiz0CE6I5zJTgdnWy3oP8byh0oX1gEqGa3N48MwwI4axN71AhUQiWrwqMwfGmCvN
-	 7Tw8wXYeF79wo6p7O5pdirzu4rqcbpevUKrs3RLI=
+	s=default; t=1582015273;
+	bh=oysnfDeX+x37pbSVDy8ym3/f1dM48yvStIkICrht8fo=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=VIVMugx7mnb12r9cQx1/ggCnDmdXn9G0uanxJeu2E6ac/jGVbdLRdl5xGXjH77a+c
+	 0Of8c8d8RRPIfSXALRUgDF83e6j6JJ7nz2gp4ayNJbGNKhmN3xM38ul08H+bfIDFMk
+	 wqZ0ZBhnLsc89qoTNba4js1YWzGsCWhC/Bf0/8G4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2AD88F80145;
-	Tue, 18 Feb 2020 09:09:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BE7CDF80145;
+	Tue, 18 Feb 2020 09:40:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E84C0F80148; Tue, 18 Feb 2020 09:09:20 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id 9B47AF80148; Tue, 18 Feb 2020 09:40:21 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 58B1BF80135
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2020 09:09:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58B1BF80135
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 28B80AD05
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2020 08:09:17 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: hda/realtek - Apply quirk for yet another MSI laptop
-Date: Tue, 18 Feb 2020 09:09:15 +0100
-Message-Id: <20200218080915.3433-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.16.4
+ by alsa1.perex.cz (Postfix) with ESMTPS id A2811F80137
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2020 09:40:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2811F80137
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="OegWfWUa"
+Received: from localhost (unknown [223.226.112.179])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 29A8F2176D;
+ Tue, 18 Feb 2020 08:40:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1582015216;
+ bh=oysnfDeX+x37pbSVDy8ym3/f1dM48yvStIkICrht8fo=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=OegWfWUaDQ+DilRbLi4I3DgfqefHkndDBkc2qS4uVtyDCtj4GgsERaSS/3m/XjJmd
+ 6mDF02v/dEK98bqSLBdVDmnp9tyMYtDRjAlNMgK+H9AU9A555DJUBVgJnamLM+pQcN
+ UrExk2BTtl2iAFIi7aVwUFPuTF/EN2MmuRgTawz8=
+Date: Tue, 18 Feb 2020 14:10:11 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v3 0/5] soundwire: intel: add DAI callbacks
+Message-ID: <20200218084011.GB2618@vkoul-mobl>
+References: <20200215014740.27580-1-pierre-louis.bossart@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200215014740.27580-1-pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
+ linux-kernel@vger.kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Hui Wang <hui.wang@canonical.com>, broonie@kernel.org,
+ srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
+ Bard liao <yung-chuan.liao@linux.intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -69,28 +92,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-MSI GP65 laptop with SSID 1462:1293 requires the same quirk as other
-MSI models.
+On 14-02-20, 19:47, Pierre-Louis Bossart wrote:
+> The existing mainline code is missing most of the DAI callbacks needed
+> for a functional implementation, and the existing ones need to be
+> modified to provide the relevant information to ASoC/SOF drivers.
+> 
+> As suggested by Vinod, these patches are shared first - with the risk
+> that they are separated from the actual DAI enablement, so reviewers
+> might wonder why they are needed in the first place.
+> 
+> For reference, the complete set of 90+ patches required for SoundWire
+> on Intel platforms is available here:
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=204159
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+Applied, thanks
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 82485e06dde1..477589e7ec1d 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -2449,6 +2449,7 @@ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1458, 0xa0b8, "Gigabyte AZ370-Gaming", ALC1220_FIXUP_GB_DUAL_CODECS),
- 	SND_PCI_QUIRK(0x1462, 0x1228, "MSI-GP63", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1462, 0x1276, "MSI-GL73", ALC1220_FIXUP_CLEVO_P950),
-+	SND_PCI_QUIRK(0x1462, 0x1293, "MSI-GP65", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1462, 0x7350, "MSI-7350", ALC889_FIXUP_CD),
- 	SND_PCI_QUIRK(0x1462, 0xda57, "MSI Z270-Gaming", ALC1220_FIXUP_GB_DUAL_CODECS),
- 	SND_PCI_QUIRK_VENDOR(0x1462, "MSI", ALC882_FIXUP_GPIO3),
 -- 
-2.16.4
-
+~Vinod
