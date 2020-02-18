@@ -2,100 +2,99 @@ Return-Path: <SRS0=1Vby=4G=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE6E0C34026
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 15:16:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0181AC34026
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 15:20:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 36DC4207FD
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 15:16:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 80C8A207FD
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 15:20:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fA+9Jql0";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="zJ9PC+sa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 36DC4207FD
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UEa3f+tp";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com header.i=@baylibre-com.20150623.gappssmtp.com header.b="zDq1sa10"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 80C8A207FD
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8BEA41686;
-	Tue, 18 Feb 2020 16:15:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8BEA41686
+	by alsa0.perex.cz (Postfix) with ESMTPS id DD30F1687;
+	Tue, 18 Feb 2020 16:19:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DD30F1687
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582039007;
-	bh=Cqaa2L2MjKGvDC1RqclGXQ+LvvBK8o8RTNYD1UV15PE=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1582039210;
+	bh=JPxHxmU8AkIXdwE/mBODY+MsHQOBMFztx0eE00t7nxI=;
+	h=References:From:To:Subject:In-reply-to:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fA+9Jql0l/U89O+ehXqY0UtrIJb6EzcY+mXypYgXnlWZS9A8LpMqbYOSL8qzlSWMC
-	 OX97ZB4OvrDrnZrZEBdf+Hg4Kv09flzWSOF61qKvpmSIP1terBSa8e4Qzn2GXpU2CT
-	 b9rBPZ2S14DRlN4r/h67RIDEcw9cGl28dcLt3J4s=
+	b=UEa3f+tpCggJvQcQs25F7ykyGARM1AvbikMNOnlrrrwnnLCVReNzBnVKpYpseOSub
+	 0vxDNzRQv4J2fZ3fOns9xgSecZbXqqSDzrRdr893Vh8vPQvnXVshK13FJzIZxz1HVf
+	 9oHdj1hLpBV9UMMbf7aNjQsMT8z7kV/FYA+jDN7o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 106EEF80145;
-	Tue, 18 Feb 2020 16:15:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7196FF80145;
+	Tue, 18 Feb 2020 16:19:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 77386F80148; Tue, 18 Feb 2020 16:15:55 +0100 (CET)
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id AA97CF80148; Tue, 18 Feb 2020 16:19:18 +0100 (CET)
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com
+ [IPv6:2a00:1450:4864:20::342])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3AAE3F800C4
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2020 16:15:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3AAE3F800C4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2CAC8F80137
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2020 16:19:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2CAC8F80137
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="zJ9PC+sa"
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 01IFFmX6090741;
- Tue, 18 Feb 2020 09:15:48 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1582038948;
- bh=g7CZ22E9Atxx53T54UZaa8VzKxWPPc31ojdRcNza8bc=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=zJ9PC+saejh46Of6QW2dFH2redqRaK99p/OiX29Vdpq2bwpD+bHlq+E3Fh8yopM99
- I/26yU3sNuM0HI+54L04lAYpSpW/EcebdbbpnYSFjq8ocZPAFnrgffwUIOYmM5gpUu
- Uep1knp/sByK6quH10wI4ngBFPboc5v2sPld0XM4=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 01IFFmUB055288
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 18 Feb 2020 09:15:48 -0600
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Tue, 18
- Feb 2020 09:15:47 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
- Frontend Transport; Tue, 18 Feb 2020 09:15:47 -0600
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 01IFFi7U067542;
- Tue, 18 Feb 2020 09:15:44 -0600
-Subject: Re: [PATCH] ASoC: cpcap: Implement set_tdm_slot for voice call support
-To: Tony Lindgren <tony@atomide.com>
-References: <20200211181005.54008-1-tony@atomide.com>
- <ae2b7d9e-d05e-54ac-4f18-27cc8c4e81a0@ti.com>
- <20200212144620.GJ64767@atomide.com>
- <9a060430-5a3e-61e1-3d2c-f89819d9436f@ti.com>
- <20200217232325.GD35972@atomide.com>
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Message-ID: <8fc1dded-6d28-f5cd-f2f9-3a6810571119@ti.com>
-Date: Tue, 18 Feb 2020 17:15:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+ dkim=pass (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com
+ header.i=@baylibre-com.20150623.gappssmtp.com header.b="zDq1sa10"
+Received: by mail-wm1-x342.google.com with SMTP id a6so3345732wme.2
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2020 07:19:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+ h=references:user-agent:from:to:cc:subject:in-reply-to:date
+ :message-id:mime-version;
+ bh=JPxHxmU8AkIXdwE/mBODY+MsHQOBMFztx0eE00t7nxI=;
+ b=zDq1sa10e5lFrhxQwmWsk9PP/Zqve+Pj9G5zjjgERLh8WpFa1BDaRXedwqCPJO3LEU
+ uRq1pVQwad9ZdsnkXRBv8qMqICkEK5jMPy0CTMOfPEGqylF2ktDmuZKBq3dNeqZLjYMN
+ eeI2k6Rom3Wa17U8JVWrKnkyF9X90A5kXede9MFPOtFEOB+kccO12G6B04jd1MyOg1Pq
+ pj7jxPX7VH2cbu6TlWTIOzzcIgEjeODCCs+8So4W/2AusI8HeUbUYmYTiYo2sAGeiD8g
+ NZIWALRTUBMeCtEdtGy2T9HtrpLvT009CD76dHNriYcLx/NEadRDDAYJO0QB+/qgnC4f
+ cS6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:references:user-agent:from:to:cc:subject
+ :in-reply-to:date:message-id:mime-version;
+ bh=JPxHxmU8AkIXdwE/mBODY+MsHQOBMFztx0eE00t7nxI=;
+ b=TE4cqQRNBIu1R4FngI6Kl83E4vu/HVFJdqyjLdWsOaB4o7I6VhrhaW9qCLgFeg5vvN
+ n5KoGIsy+fjp4rU4rgYgq9eKDJvHEw0d0RR5Q+pHHmZsfhIK4dfV+G7Ltrrd/FnX/i2r
+ fxR0oCFlFfshssfBiDhV8ba1QYKN3+k53xCMmmI4NtwZx3zI3oeXijGhN0cgmlGL1eq1
+ 1zSRmmJHU2taJzIwj3zh+Hmep5Srq3Uu/XLr3kP/wFJ8lH2KIzUYCJyGnNQnTg1Yq/ZD
+ EGN50EhkG4IReb9t4bYSIe4RKyObzRMG2lhm8ySI+UWEkcQiM+eUpp7TAPdjk2d8KlTI
+ sI5g==
+X-Gm-Message-State: APjAAAUklx/ovDzohBlVVQTuZuBQ6YzBZwCUi08bJ28IGKWa/jmoOAaN
+ oNbIQ4fKlFLx5pQT1gjZvscaYQ==
+X-Google-Smtp-Source: APXvYqxGboUSdKLNAg8RpEjAeJQnsUFol6BX6M6mCPurTPlomezlvF9k8U+3ruvotcQJvfLnP3JT+w==
+X-Received: by 2002:a1c:491:: with SMTP id 139mr3746815wme.117.1582039154988; 
+ Tue, 18 Feb 2020 07:19:14 -0800 (PST)
+Received: from localhost (cag06-3-82-243-161-21.fbx.proxad.net.
+ [82.243.161.21])
+ by smtp.gmail.com with ESMTPSA id q1sm6469393wrw.5.2020.02.18.07.19.14
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 18 Feb 2020 07:19:14 -0800 (PST)
+References: <20200218103824.26708-1-stephan@gerhold.net>
+User-agent: mu4e 1.3.3; emacs 26.3
+From: Jerome Brunet <jbrunet@baylibre.com>
+To: Stephan Gerhold <stephan@gerhold.net>, Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: soc-pcm: fix regression in soc_new_pcm()
+In-reply-to: <20200218103824.26708-1-stephan@gerhold.net>
+Date: Tue, 18 Feb 2020 16:19:13 +0100
+Message-ID: <1jd0abrki6.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-In-Reply-To: <20200217232325.GD35972@atomide.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org,
- Liam Girdwood <lgirdwood@gmail.com>, Merlijn Wajer <merlijn@wizzup.org>,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
- Sebastian Reichel <sre@kernel.org>, "Arthur D ." <spinal.by@gmail.com>,
- Jarkko Nikula <jarkko.nikula@bitmer.com>
+Content-Type: text/plain
+Cc: Sameer Pujar <spujar@nvidia.com>, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,96 +110,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Tony,
 
-On 18/02/2020 1.23, Tony Lindgren wrote:
-> * Peter Ujfalusi <peter.ujfalusi@ti.com> [200214 13:30]:
->> Hi Tony,
->>
->> On 12/02/2020 16.46, Tony Lindgren wrote:
->>> * Peter Ujfalusi <peter.ujfalusi@ti.com> [200212 09:18]:
->>>> On 11/02/2020 20.10, Tony Lindgren wrote:
->>>>> +static int cpcap_voice_set_tdm_slot(struct snd_soc_dai *dai,
->>>>> +				    unsigned int tx_mask, unsigned int rx_mask,
->>>>> +				    int slots, int slot_width)
->>>>> +{
->>>>> +	struct snd_soc_component *component = dai->component;
->>>>> +	struct cpcap_audio *cpcap = snd_soc_component_get_drvdata(component);
->>>>> +	int err, ts_mask, mask;
->>>>> +	bool voice_call;
->>>>> +
->>>>> +	/*
->>>>> +	 * Primitive test for voice call, probably needs more checks
->>>>> +	 * later on for 16-bit calls detected, Bluetooth headset etc.
->>>>> +	 */
->>>>> +	if (tx_mask == 0 && rx_mask == 1 && slot_width == 8)
->>>>> +		voice_call = true;
->>>>> +	else
->>>>> +		voice_call = false;
->>>>
->>>> You only have voice call if only rx slot0 is in use?
->>>
->>> Yeah so it seems. Then there's the modem to wlcore bluetooth path that
->>> I have not looked at. But presumably that's again just configuring some
->>> tdm slot on the PMIC.
->>>
->>>> If you record mono on the voice DAI, then rx_mask is also 1, no?
->>>
->>> It is above :) But maybe I don't follow what you're asking here
->>
->> If you arecrod -Dvoice_pcm -c1 -fS8 > /dev/null
->> then it is reasonable that the machine driver will set rx_mask = 1
->>
->>> and maybe you have some better check in mind.
->>
->> Not sure, but relying on set_tdm_slots to decide if we are in a call
->> case does not sound right.
-> 
-> OK yeah seems at least bluetooth would need to be also handled
-> in the set_tdm_slots.
+On Tue 18 Feb 2020 at 11:38, Stephan Gerhold <stephan@gerhold.net> wrote:
 
-set_tdm_slots() is for setting how the TDM slots supposed to be used by
-the component and not really for things to configure different operating
-modes.
+> Commit af4bac11531f ("ASoC: soc-pcm: crash in snd_soc_dapm_new_dai")
+> swapped the SNDRV_PCM_STREAM_* parameter in the
+> snd_soc_dai_stream_valid(cpu_dai, ...) checks. But that works only
+> for codec2codec links. For normal links it breaks registration of
+> playback/capture-only PCM devices.
+>
+> E.g. on qcom/apq8016_sbc there is usually one playback-only and one
+> capture-only PCM device, but they disappeared after the commit.
+>
+> The codec2codec case was added in commit a342031cdd08
+> ("ASoC: create pcm for codec2codec links as well") as an extra check
+> (e.g. `playback = playback && cpu_playback->channels_min`).
 
-If you hardwire things in set_tdm_slots() for the droid4 then how the
-codec driver can be reused in other setups?
+That particular check was there when I worked on that change but I seems
+I messed up when I rebased on Kuninori's work regarding
+snd_soc_dai_stream_valid() which happened more or less at the same time.
 
->>>> You will also set the sampling rate for voice in
->>>> cpcap_voice_hw_params(), but that is for normal playback/capture, right?
->>>
->>> Yeah so normal playback/capture is already working with cpcap codec driver
->>> with mainline Linux. The voice call needs to set rate to 8000.
->>
->> But if you have a voice call initiated should not the rate be set by the
->> set_sysclk()?
-> 
-> Hmm does set_sysclk called from modem codec know that cpcap codec
-> is the clock master based on bitclock-master and set the rate
-> for cpcap codec?
+>
+> We should be able to simplify the code by checking directly for
+> the correct stream type in the loop.
+> This also fixes the regression because we check for PLAYBACK for
+> both codec and cpu dai again when codec2codec is not used.
+>
+> Cc: Sameer Pujar <spujar@nvidia.com>
+> Cc: Jerome Brunet <jbrunet@baylibre.com>
+> Fixes: af4bac11531f ("ASoC: soc-pcm: crash in snd_soc_dapm_new_dai")
+> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
 
-Neither component should call set_sysclk, set_tdm_slots. The machine
-driver should as it is the only one who know how things are wired...
+Looks good and works with the codec-to-codec links on Amlogic aiu. Thx !
 
-> 
->>>> It feels like that these should be done via DAPM with codec to codec route?
->>>
->>> Sure if you have some better way of doing it :) Do you have an example to
->>> point me to?
->>
->> Something along the lines of:
->> https://mailman.alsa-project.org/pipermail/alsa-devel/2020-February/162915.html
->>
->> The it is a matter of building and connecting the DAPM routes between
->> the two codec and with a flip of the switch you would have audio flowing
->> between them.
-> 
-> Sounds good to me.
-> 
-> Tony
-> 
-
-- Péter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+Reviewed-by: Jerome Brunet <jbrunet@baylibre.com>
+Tested-by: Jerome Brunet <jbrunet@baylibre.com>
