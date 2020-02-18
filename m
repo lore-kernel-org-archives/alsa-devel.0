@@ -2,80 +2,73 @@ Return-Path: <SRS0=1Vby=4G=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F2A5CC34026
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 14:14:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EC28C3403D
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 14:20:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8072424654
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 14:14:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1F83D2176D
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 14:20:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bgpdjxWE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8072424654
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AFDvvIXI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1F83D2176D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DA19674C;
-	Tue, 18 Feb 2020 15:13:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA19674C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 77F7F168D;
+	Tue, 18 Feb 2020 15:19:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77F7F168D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582035280;
-	bh=0Ix2d08LCpwj+w4WoHDZ0BeMIQRrKb6o9aW6P4f2fZM=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1582035614;
+	bh=G6e1VzpmxOIF/WOf8kSYryoy4ac3z3aFGWDdMckuGb0=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bgpdjxWEhKgAccFQuCOYmqCoWdP8nSfY6zhBvGNBu4jv1s8anhieP/YUYlT6jJjgY
-	 OuJv3EJu8fHD3UE2HKGbr1tCrtbWHlpETJ7qUM9SuyEZDUt8a1ELQldINSSYm50olV
-	 tsp6p28DElz9W6RnNO2H45utLfu7CgxBHP0Mh/kI=
+	b=AFDvvIXIAXChbEqsjnygV1dIz7OLdPLVUKaFw5gT7zy7IxHQqP/AheHxFmDwU2iSz
+	 +T0FzZ49Fd13BiLG2h2jXPCmSoHfuml2zITO8vmmN/jPG7WoHrIyTEQv5K0jb5naCt
+	 juvJlH/wvzVnd82hj0e6dZpcti5/GqfyARsjOCwM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 81B8AF80145;
-	Tue, 18 Feb 2020 15:13:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E3AC6F80135;
+	Tue, 18 Feb 2020 15:19:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B2DA5F80148; Tue, 18 Feb 2020 15:13:49 +0100 (CET)
-Received: from mail-ot1-f66.google.com (mail-ot1-f66.google.com
- [209.85.210.66])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 05446F80137
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2020 15:13:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05446F80137
-Received: by mail-ot1-f66.google.com with SMTP id i6so19619491otr.7
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2020 06:13:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=xIGu2Frv1sIXH/32fSc0dEEu4VzyHnNJMuWeixXt4so=;
- b=AuvEMgDf5ftaxy1OhxtmMrVWijwl45hbpAp+0EBF+dgoTNmkitVOdvSjF3DifqitpN
- +CR+0u1bYI6X8ox2DvRSPuc3/ZqZD/3xr6TQH3vXHnqSC7nBJArwfKKZQU7yg4+ZaHgw
- jPrEqCXhvz7rt5hi4t9uT9gDk6W7BzbeeLK4wsHNvFPvIT4XHddwo2+BBqTBbfFf8LKe
- m5HkGIsPoGg59zGbhSb/HGISem9xuwMaNbEj+94v2ZEs1uGAUHrSeEJ6yA6gsw3ASu2+
- 5f8rd0Qt6KykS3yuWvtuB2t036bz6C4r7ZaesEq1JznVVbhh2mg+BkGs5xjh2aCqBSAA
- M4ew==
-X-Gm-Message-State: APjAAAVzo+sDEi/kmKCGI9YHCtnQdZCn2er/RjEU9KplyE9hDc5WpKHF
- mn3OgAdJ6ERjoSNwC+4FqI9hgaZqPtQCrksA4Eo=
-X-Google-Smtp-Source: APXvYqwq7ZrkVxCwDxzidMb1IF/ed6FGbeBmsWTjcOiGwEYVvfJqCie4oq96n58tgmlGgT4cbz53tmg9q7ne+a5eUp0=
-X-Received: by 2002:a9d:dc1:: with SMTP id 59mr16069703ots.250.1582035224535; 
- Tue, 18 Feb 2020 06:13:44 -0800 (PST)
+ id D35FAF80148; Tue, 18 Feb 2020 15:19:21 +0100 (CET)
+Received: from muru.com (muru.com [72.249.23.125])
+ by alsa1.perex.cz (Postfix) with ESMTP id 8F9D8F80135
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2020 15:19:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F9D8F80135
+Received: from atomide.com (localhost [127.0.0.1])
+ by muru.com (Postfix) with ESMTPS id 6B43D8043;
+ Tue, 18 Feb 2020 14:19:52 +0000 (UTC)
+Date: Tue, 18 Feb 2020 06:19:05 -0800
+From: Tony Lindgren <tony@atomide.com>
+To: Sebastian Reichel <sebastian.reichel@collabora.com>
+Subject: Re: [PATCH] ASoC: ti: Allocate dais dynamically for TDM and audio
+ graph card
+Message-ID: <20200218141905.GG35972@atomide.com>
+References: <20200211171645.41990-1-tony@atomide.com>
+ <cd46c6ec-80e3-332f-4922-e58a3acbfc61@ti.com>
+ <20200212143543.GI64767@atomide.com>
+ <20200214003452.xuadnylj2udqyljs@earth.universe>
+ <20200214013454.GX64767@atomide.com>
+ <20200214130428.gkhmr55ptmi2bh2x@earth.universe>
+ <20200214170946.GB64767@atomide.com>
+ <20200218140431.emrxgvckrpltmg2s@earth.universe>
 MIME-Version: 1.0
-References: <202002180512.4RU8Rxge%lkp@intel.com>
-In-Reply-To: <202002180512.4RU8Rxge%lkp@intel.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 18 Feb 2020 15:13:33 +0100
-Message-ID: <CAMuHMdW8SvDgQJyenTtEm4Xn2Ma6PK9pfwKR2_gn60t2AqNWXg@mail.gmail.com>
-Subject: "imply" and modular target dependencies (was: Re: [asoc:for-5.7
- 21/76] wcd9335.c:undefined reference to `slim_stream_prepare')
-To: kbuild test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- Mark Brown <broonie@kernel.org>, kbuild-all@lists.01.org,
- Masahiro Yamada <masahiroy@kernel.org>, Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200218140431.emrxgvckrpltmg2s@earth.universe>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org,
+ Aaro Koskinen <aaro.koskinen@iki.fi>, linux-kernel@vger.kernel.org,
+ Merlijn Wajer <merlijn@wizzup.org>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>,
+ Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+ "Arthur D ." <spinal.by@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,104 +84,74 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Feb 17, 2020 at 10:55 PM kbuild test robot <lkp@intel.com> wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.7
-> head:   3cd23f021e2e5f3350125abcb39f12430df87d06
-> commit: ea00d95200d02ece71f5814d41b14f2eb16d598b [21/76] ASoC: Use imply for SND_SOC_ALL_CODECS
-> config: x86_64-randconfig-s2-20200217 (attached as .config)
-> compiler: gcc-7 (Debian 7.5.0-5) 7.5.0
-> reproduce:
->         git checkout ea00d95200d02ece71f5814d41b14f2eb16d598b
->         # save the attached .config to linux build tree
->         make ARCH=x86_64
->
-> If you fix the issue, kindly add following tag
-> Reported-by: kbuild test robot <lkp@intel.com>
+* Sebastian Reichel <sebastian.reichel@collabora.com> [200218 06:05]:
+> Hi,
+> 
+> On Fri, Feb 14, 2020 at 09:09:46AM -0800, Tony Lindgren wrote:
+> > * Sebastian Reichel <sre@kernel.org> [200214 13:05]:
+> > > On Thu, Feb 13, 2020 at 05:34:54PM -0800, Tony Lindgren wrote:
+> > > > And bluetooth would be similar to cpcap_audio and mot_mdm6600_audio
+> > > > above.
+> > > 
+> > > My understanding is, that CPU is not involved for calls (except for
+> > > setting up cpcap registers correctly). Basically McBSP3 should
+> > > remain idle for a call and data goes directly from modem to cpcap.
+> > > The same should work for modem <-> BT, except that CPCAP seems to
+> > > always provide the clock. That would imply a direct link between
+> > > modem and codec / BT?
+> > 
+> > Yes the direct link is i2s. I'm ot sure if mcbsp can be idle during
+> > voice call though, I guess it should be doable since mcbsp is not
+> > the clock master :)
+> > 
+> > > > My guess is that only cpcap registers and clock rate needs to be
+> > > > changed for bluetooth audio BTW, so if somebody havs a bluetooth
+> > > > headset just do the following in Android:
+> > > > 
+> > > > # cpcaprw --all > /tmp/before
+> > > > configure bluetooth headset for audio in android and start
+> > > > playing some music or make a phone call
+> > > > ...
+> > > > # cpcaprw --all > /tmp/after
+> > > > stop playing music or phone call
+> > > > ...
+> > > > diff -u /tmp/before /tmp/after
+> > > > 
+> > > > The registers will be different for a bluetooth phone call and
+> > > > playing music.
+> > > 
+> > > I can provider register values once I find some time.
+> 
+> [NI] Normal idle (no BT headset connected)
+> [BI] Bluetooth idle (with BT headset connected)
+> [BC] Bluetooth call in progress
+> [NC] Normal call in progress (BT headset disabled)
+> 
+>                      [NI]  =>  [BI]  =>  [BC]  =>  [NC]
+> CPCAP_REG_VAUDIOC   0x0065 => 0x0065 => 0x0065 => 0x0025
+> CPCAP_REG_CC        0x0000 => 0x0000 => 0x6000 => 0x60df
+> CPCAP_REG_CDI       0x0040 => 0x0000 => 0xaa40 => 0xae0a
+> CPCAP_REG_SDAC      -------------- 0x0000 --------------
+> CPCAP_REG_SDACDI    -------------- 0x0004 --------------
+> CPCAP_REG_TXI       0x0804 => 0x0004 => 0x0000 => 0x0cc6
+> CPCAP_REG_TXMP      0x079c => 0x079c => 0x0400 => 0x0673
+> CPCAP_REG_RXOA      0x0000 => 0x0000 => 0x0001 => 0x0001
+> CPCAP_REG_RXVC      0x0d34 => 0x0d34 => 0x0000 => 0x0b2c
+> CPCAP_REG_RXCOA     0x0000 => 0x0000 => 0x0000 => 0x0601
+> CPCAP_REG_RXSDOA    0x0000 => 0x0000 => 0x0600 => 0x0600
+> CPCAP_REG_RXEPOA    -------------- 0x0400 --------------
+> CPCAP_REG_RXLL      -------------- 0x0000 --------------
+> CPCAP_REG_A2LA      -------------- 0x0030 --------------
+> CPCAP_REG_MIPIS1    -------------- 0x0000 --------------
+> CPCAP_REG_MIPIS2    -------------- 0x0000 --------------
+> CPCAP_REG_MIPIS3    -------------- 0x0000 --------------
+> CPCAP_REG_LVAB      -------------- 0x0000 --------------
 
-Thanks for your report!
+Great thanks! Care to do also a dump just playing music to on
+bluetooth headset at some point?
 
-> All errors (new ones prefixed by >>):
->
->    ld: sound/soc/codecs/ab8500-codec.o: in function `ab8500_codec_read_reg':
->    ab8500-codec.c:(.text+0x479): undefined reference to `abx500_get_register_interruptible'
->    ld: sound/soc/codecs/ab8500-codec.o: in function `ab8500_codec_probe':
->    ab8500-codec.c:(.text+0xdf1): undefined reference to `abx500_get_register_interruptible'
->    ld: ab8500-codec.c:(.text+0xe18): undefined reference to `abx500_set_register_interruptible'
->    ld: sound/soc/codecs/ab8500-codec.o: in function `ab8500_codec_write_reg':
->    ab8500-codec.c:(.text+0x4b1): undefined reference to `abx500_set_register_interruptible'
+Regards,
 
-The above are fixed in next-20200218.
+Tony
 
->    ld: sound/soc/codecs/mc13783.o: in function `mc13783_probe':
->    mc13783.c:(.text+0x24c): undefined reference to `mc13xxx_reg_write'
->    ld: mc13783.c:(.text+0x25e): undefined reference to `mc13xxx_reg_write'
->    ld: mc13783.c:(.text+0x270): undefined reference to `mc13xxx_reg_write'
->    ld: mc13783.c:(.text+0x282): undefined reference to `mc13xxx_reg_write'
->    ld: mc13783.c:(.text+0x294): undefined reference to `mc13xxx_reg_write'
->    ld: sound/soc/codecs/mc13783.o:mc13783.c:(.text+0x2a6): more undefined references to `mc13xxx_reg_write' follow
->    ld: sound/soc/codecs/mc13783.o: in function `mc13783_probe':
->    mc13783.c:(.text+0x2c5): undefined reference to `mc13xxx_reg_rmw'
->    ld: mc13783.c:(.text+0x2e4): undefined reference to `mc13xxx_reg_rmw'
->    ld: sound/soc/codecs/mc13783.o: in function `mc13783_remove':
->    mc13783.c:(.text+0x212): undefined reference to `mc13xxx_reg_rmw'
 
-CONFIG_SND_SOC_MC13783=y
-CONFIG_MFD_MC13XXX=m
-
->    ld: sound/soc/codecs/wcd9335.o: in function `wcd9335_trigger':
-> >> wcd9335.c:(.text+0x323): undefined reference to `slim_stream_prepare'
-> >> ld: wcd9335.c:(.text+0x32f): undefined reference to `slim_stream_enable'
-> >> ld: wcd9335.c:(.text+0x345): undefined reference to `slim_stream_unprepare'
-> >> ld: wcd9335.c:(.text+0x351): undefined reference to `slim_stream_disable'
->    ld: sound/soc/codecs/wcd9335.o: in function `wcd9335_slim_status':
-> >> wcd9335.c:(.text+0x1970): undefined reference to `of_slim_get_device'
-> >> ld: wcd9335.c:(.text+0x1995): undefined reference to `slim_get_logical_addr'
-> >> ld: wcd9335.c:(.text+0x19b2): undefined reference to `__regmap_init_slimbus'
->    ld: wcd9335.c:(.text+0x19f3): undefined reference to `__regmap_init_slimbus'
->    ld: sound/soc/codecs/wcd9335.o: in function `wcd9335_hw_params':
-> >> wcd9335.c:(.text+0x348f): undefined reference to `slim_stream_allocate'
->    ld: sound/soc/codecs/wcd9335.o: in function `wcd9335_slim_driver_init':
-> >> wcd9335.c:(.init.text+0x3c): undefined reference to `__slim_driver_register'
->    ld: sound/soc/codecs/wcd9335.o: in function `wcd9335_slim_driver_exit':
-> >> wcd9335.c:(.exit.text+0x8): undefined reference to `slim_driver_unregister'
-
-CONFIG_SND_SOC_WCD9335=y
-CONFIG_SLIMBUS=m
-
->    ld: sound/soc/codecs/wcd934x.o: in function `wcd934x_trigger':
-> >> wcd934x.c:(.text+0x30d): undefined reference to `slim_stream_prepare'
-> >> ld: wcd934x.c:(.text+0x319): undefined reference to `slim_stream_enable'
-> >> ld: wcd934x.c:(.text+0x32f): undefined reference to `slim_stream_unprepare'
-> >> ld: wcd934x.c:(.text+0x33b): undefined reference to `slim_stream_disable'
->    ld: sound/soc/codecs/wcd934x.o: in function `wcd934x_hw_params':
-> >> wcd934x.c:(.text+0x2620): undefined reference to `slim_stream_allocate'
->    ld: sound/soc/codecs/wcd934x.o: in function `wcd934x_codec_probe':
-> >> wcd934x.c:(.text+0x27ee): undefined reference to `of_slim_get_device'
-> >> ld: wcd934x.c:(.text+0x2818): undefined reference to `slim_get_logical_addr'
-> >> ld: wcd934x.c:(.text+0x2836): undefined reference to `__regmap_init_slimbus'
-
-CONFIG_SND_SOC_WCD934X=y
-CONFIG_SLIMBUS=m
-
-All CONFIG_SND_SOC_* symbols above are tristate and have dependencies
-on the modular symbols.
-
-However, the "imply" statements in SND_SOC_ALL_CODECS force all of them
-builtin, despite their dependencies being modular.
-
-So while "imply" is meant to be a softer form of "select", obeying target
-dependencies, it does not seem to obey modular tristate dependencies?
-
-Or am I missing something?
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
