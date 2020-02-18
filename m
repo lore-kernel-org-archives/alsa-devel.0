@@ -2,65 +2,58 @@ Return-Path: <SRS0=1Vby=4G=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A42AC34031
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 07:29:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C22A6C34031
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 08:10:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CE4E32176D
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 07:29:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 50E31206EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 08:10:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jgNhdAZG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CE4E32176D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RLuOhVnk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 50E31206EF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1EC971607;
-	Tue, 18 Feb 2020 08:28:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1EC971607
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9E0F31616;
+	Tue, 18 Feb 2020 09:09:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E0F31616
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582010946;
-	bh=vQ/DAHdM3umyPLc3WvET3H2vZaGfrvtwwYo/hzFp5aE=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=jgNhdAZGvmRBQIoxDvZ9DALPDQOQHHvdbP9D1ORmVQGxBUTGMj4VzAHvYO4vsveyW
-	 1odMd0JzqkRhWsgRKYfr2JOv0lxWKcLzL1z6ItYfVNa/Ouyj7M8rA6i/v2CtNeKhSy
-	 JZFAdDd3Yr3AQZ73peALVpIwRANyFe9qqXSbQ0D0=
+	s=default; t=1582013412;
+	bh=gEvtO9zONfgM4vWjJjKOXEhv6JpzdabcgbtYyZa/vG4=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=RLuOhVnkmSkbZ9nuAsBUeNPTO1HDI2I+CXm9Jn2dgrdGruxMKRrd6kM+yfVf8QzSJ
+	 z3Uiz0CE6I5zJTgdnWy3oP8byh0oX1gEqGa3N48MwwI4axN71AhUQiWrwqMwfGmCvN
+	 7Tw8wXYeF79wo6p7O5pdirzu4rqcbpevUKrs3RLI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7ED0DF80135;
-	Tue, 18 Feb 2020 08:28:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2AD88F80145;
+	Tue, 18 Feb 2020 09:09:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 86EE5F80148; Tue, 18 Feb 2020 08:28:11 +0100 (CET)
+ id E84C0F80148; Tue, 18 Feb 2020 09:09:20 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B3277F80135
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2020 08:28:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3277F80135
+ by alsa1.perex.cz (Postfix) with ESMTPS id 58B1BF80135
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2020 09:09:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58B1BF80135
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 13069AAC3;
- Tue, 18 Feb 2020 07:28:05 +0000 (UTC)
-Date: Tue, 18 Feb 2020 08:28:04 +0100
-Message-ID: <s5hy2t09wxn.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 28B80AD05
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2020 08:09:17 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: Questions about event implementation in ALSA Sequencer
-In-Reply-To: <20200218031101.GA12168@workstation>
-References: <20200218031101.GA12168@workstation>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: hda/realtek - Apply quirk for yet another MSI laptop
+Date: Tue, 18 Feb 2020 09:09:15 +0100
+Message-Id: <20200218080915.3433-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,84 +69,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 18 Feb 2020 04:11:02 +0100,
-Takashi Sakamoto wrote:
-> 
-> Hi,
-> 
-> I'm working for alsa-gobject[1] so that it supports API for ALSA Sequencer.
-> At present I've mostly done it just with direct dispatch support[2] (thus
-> transmission via queue is for my later work). Then I have some questions
-> about the design of event in ALSA Sequencer. I'd like to ask for some advices
-> (mainly Iwai-san, perhaps).
-> 
-> 1. use case of SNDRV_SEQ_EVENT_LENGTH_VARUSR in 'struct snd_seq_event'
-> 
-> In my understanding, the flag is used for a case that sender transmits the
-> value of pointer itself and its length to the receiver in the shape of
-> 'struct snd_seq_ev_ext'. I assume that two use cases. If the sender and
-> receiver are in the same process, the event is a request for the receiver to
-> operate data in the same VMA. If the sender and receiver are in different
-> processes, the event is a request for pointer-based calculation between the
-> peer.
-> 
-> If the above understanding is correct, it's hard to represent this type of
-> event for g-i interface because g-i is the object-based framework. Any raw
-> pointer without explicit type is hard to be exposed to g-i applications as
-> long as I know, and it's going to be unsupported, perhaps.
+MSI GP65 laptop with SSID 1462:1293 requires the same quirk as other
+MSI models.
 
-To be more exact, the usage isn't restricted whether belonging to the
-same process or not.  The event with VARUSR is processed only for the
-direct transfer, not for the scheduled transfer.  That is, the written
-packet is immediately processed and the user-space data is copied to
-the destinations at this point.  In this sense, it's no zero-copy but
-rather just for saving the space in the input pool.
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=204159
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 82485e06dde1..477589e7ec1d 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -2449,6 +2449,7 @@ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1458, 0xa0b8, "Gigabyte AZ370-Gaming", ALC1220_FIXUP_GB_DUAL_CODECS),
+ 	SND_PCI_QUIRK(0x1462, 0x1228, "MSI-GP63", ALC1220_FIXUP_CLEVO_P950),
+ 	SND_PCI_QUIRK(0x1462, 0x1276, "MSI-GL73", ALC1220_FIXUP_CLEVO_P950),
++	SND_PCI_QUIRK(0x1462, 0x1293, "MSI-GP65", ALC1220_FIXUP_CLEVO_P950),
+ 	SND_PCI_QUIRK(0x1462, 0x7350, "MSI-7350", ALC889_FIXUP_CD),
+ 	SND_PCI_QUIRK(0x1462, 0xda57, "MSI Z270-Gaming", ALC1220_FIXUP_GB_DUAL_CODECS),
+ 	SND_PCI_QUIRK_VENDOR(0x1462, "MSI", ALC882_FIXUP_GPIO3),
+-- 
+2.16.4
 
-> 2. event data type corresponding to event type
-> 
-> Some event types are expected to specific data type; e.g. SNDRV_SEQ_EVENT_NOTE
-> is for 'struct snd_seq_ev_note' and SNDRV_SEQ_EVENT_CONTROLLER is for
-> 'struct snd_seq_ev_ctrl'. However there're some types for any data type; e.g.
-> SNDRV_SEQ_EVENT_ECHO or SNDRV_SEQ_EVENT_USR0. For the kind of types, the
-> event structure has no information about which data type should be used and
-> user applications voluntarily decide the data type. Therefore the sender
-> and receiver should share a kind of protocol in advance.
-> 
-> This means that userspace applications require API to select data type
-> independent of event type itself.
-
-Right, those 'any-type' events have no specification of the event
-data, hence both sender and receiver need to agree with the handling.
-IOW, if not known, the receiver should discard the event.
-
-
-> 3. quote event and specific event types.
-> 
-> Two event types are reserved for 'struct snd_seq_ev_quote'; i.e.
-> SNDRV_SEQ_EVENT_KERNEL_ERROR and SNDRV_SEQ_EVENT_KERNEL_QUOTE(obsoleted?).
-> However, the quote structure is exposed to userspace itself. Furthermore,
-> as of v5.5 kernel, there's no in-kernel code to check the quote data
-> from/to user client.
-> 
-> Is it better to produce API so that userspace application can transfer
-> the quote event?
-
-You can, but it makes little sense other than as a fuzzer.
-The quote events are only for the error bounce that is used
-internally.
-
-
-thanks,
-
-Takashi
-
-> 
-> [1] https://github.com/alsa-project/alsa-gobject
-> [2] https://github.com/takaswie/alsa-gobject/tree/topic/seq
-> 
-> Regards
-> 
-> 
-> Takashi Sakamoto
-> 
