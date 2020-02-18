@@ -2,112 +2,81 @@ Return-Path: <SRS0=1Vby=4G=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9ED6C34026
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 13:11:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DB5FAC34026
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 13:55:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 544AE20801
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 13:11:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 501BA20801
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 13:55:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AXBvklya";
-	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="PhGUrndR";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="BvKpit3n"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 544AE20801
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fQMOCBKH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 501BA20801
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B02BB1693;
-	Tue, 18 Feb 2020 14:10:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B02BB1693
+	by alsa0.perex.cz (Postfix) with ESMTPS id A669D168A;
+	Tue, 18 Feb 2020 14:55:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A669D168A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582031488;
-	bh=75r2b8Aijups/8BZOaaVlwsdAWKDA7cpFpwl6CnhnPk=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1582034152;
+	bh=kST5t0Y3Qqo1GPTlAIDSVh0O6gPxFeifVhfZdHzeY1Y=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AXBvklyaMPgYhgwGVbT4/tEViNhk6CO0ol4yhEGvmRM9e7aBUj5PQs5WJBqWObT9W
-	 Aqtiog3KHTBKyFuh9H2rB9L6Dtb+T/pnFrB2XHcPuqc6GVUAzMGbtBWmB59muO+OuD
-	 0To9HfCHnmjfIlNcsF25c7dkiYnLSVN3nRpCqGZ4=
+	b=fQMOCBKHnvbLw7QGZzGbQPbKs6kwFB/a5P0dT9UsTrWQL0SUqSOQDMceB8Q9HmiS6
+	 DmObcijql1homk0rEPaTVMTLx9GVsoWWlG6YDfgGypT0bT2t/Dbi8xK3dl13yjmOky
+	 cq0MhlRBKcBKsbBO45tomD7TferiqhrLA96gd0Mw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2A0AAF8014A;
-	Tue, 18 Feb 2020 14:10:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2BECAF80145;
+	Tue, 18 Feb 2020 14:55:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6A1EDF800C4; Tue, 18 Feb 2020 14:10:36 +0100 (CET)
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
- [66.111.4.27])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 9F6DFF8014A; Tue, 18 Feb 2020 14:55:00 +0100 (CET)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CFAADF80145
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2020 14:10:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CFAADF80145
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="PhGUrndR"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="BvKpit3n"
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
- by mailout.nyi.internal (Postfix) with ESMTP id 3095B21E6A;
- Tue, 18 Feb 2020 08:10:27 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
- by compute1.internal (MEProxy); Tue, 18 Feb 2020 08:10:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-type:in-reply-to; s=fm3; bh=qqjDGqrFWqZOsfZxodsvpvSCXav
- apeSPzmK41PxiqQ8=; b=PhGUrndRQPlhIvtOdY7FW2rnBuBi3DWCY4xsWA+E9sW
- vGukJJdRmSoEjoY8lNDZ0T/ZcANEvJ4XQOQYw1yAKXArNyF6K7AEH2ins1WqxqQx
- UuQtgF8nZzB+2xTeb50U4o2+bjQ93W+ZALrh3TTJ7jzv2yLhftf3zK1HW4Y1yIcu
- kWNGSv/0ls+Wa2U6FlyLPzNO76y6Y9LMc74eEgEvA5mk1YjcOv1e5bQCMjkmLF78
- UCRAxSiO41G9DxIUSBMjUN9o8FH2BvQJQdWPI6OgpJLvtVYLICUkc8m/Yk+1Us6o
- RKoj6hI96lJh1Ru9ebPlPdtcFBdQ6Us4bSN2ZSWxmQw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to:x-me-proxy
- :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=qqjDGq
- rFWqZOsfZxodsvpvSCXavapeSPzmK41PxiqQ8=; b=BvKpit3nuo6DvN75KXNFQm
- CezIqNn41MVpwsWeXIGbppUs5338tk+fiGL7SdoWSrX/n3ebbcvt0b29N+C50hCF
- uX9681+dgzS/1nL4Oj0GJpXGSZ5xqMvPsASwNAkniPBxgp0e3Ir2Jf9Jh1pJ4W4u
- Fzauz9oNbe9ljfiyLwcEShnB0eZ9UkopyykKIvx9sy9pFvMzGokqJeABjJAmlWhf
- /EDJ4UbQSg0slFzHR7Srs1jGpR6OSf5nCQ0S3M3ill0NAvF3igIyRp3Bs7mODLc8
- AE/xET8p4PGq02Zyn/qSeJwW/1JI1E96XRciWbKvZYpgEl5J/2sufSopRN6Ucakw
- ==
-X-ME-Sender: <xms:QuJLXqyi1wekb9MxjleWex_tgCgiTlAFFxKtK2E-XG-_wJ-6Aj-OXQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedrjeekgdeglecutefuodetggdotefrodftvf
- curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
- uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
- fjughrpeffhffvuffkfhggtggujggfsehttdertddtredvnecuhfhrohhmpefvrghkrghs
- hhhiucfurghkrghmohhtohcuoehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjh
- hpqeenucffohhmrghinheprghlshgrqdhprhhojhgvtghtrdhorhhgpdhgihhthhhusgdr
- tghomhenucfkphepudegrdefrdejgedrudeikeenucevlhhushhtvghrufhiiigvpedtne
- curfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttghh
- ihdrjhhp
-X-ME-Proxy: <xmx:QuJLXhLngqcv3XKfEi1LcxkW4k391AL_p1CjASDgGWuNDsZCOxnCOQ>
- <xmx:QuJLXmjaVGDLBku2rDvZpDXGhvJqowayuNMXdbQkO7airkTpOdN-8Q>
- <xmx:QuJLXiOsOZjnIjL1wCRZXYddT7KX-czg-dUD2SY4e1bR2dmPJSQaLA>
- <xmx:Q-JLXmvvc_FTKAG7Ds_Ny4R4rKxwzZgMF182zuXuTjxx9Wu2i1eb7Q>
-Received: from workstation (ae074168.dynamic.ppp.asahi-net.or.jp [14.3.74.168])
- by mail.messagingengine.com (Postfix) with ESMTPA id 23B9330606E9;
- Tue, 18 Feb 2020 08:10:25 -0500 (EST)
-Date: Tue, 18 Feb 2020 22:10:23 +0900
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: Takashi Iwai <tiwai@suse.de>
-Subject: Re: Questions about event implementation in ALSA Sequencer
-Message-ID: <20200218131023.GA15442@workstation>
-Mail-Followup-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-References: <20200218031101.GA12168@workstation> <s5hy2t09wxn.wl-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id C6FF9F800C4
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2020 14:54:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6FF9F800C4
+Authenticated-By: 
+X-SpamFilter-By: BOX Solutions SpamTrap 5.62 with qID 01IDsp7c031336,
+ This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (RTEXMB06.realtek.com.tw[172.21.6.99])
+ by rtits2.realtek.com.tw (8.15.2/2.57/5.78) with ESMTPS id 01IDsp7c031336
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 18 Feb 2020 21:54:51 +0800
+Received: from RTEXMB01.realtek.com.tw (172.21.6.94) by
+ RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Tue, 18 Feb 2020 21:54:51 +0800
+Received: from derek-pvm.localdomain (172.22.234.75) by
+ RTEXMB01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Tue, 18 Feb 2020 21:54:50 +0800
+From: <derek.fang@realtek.com>
+To: <broonie@kernel.org>, <lgirdwood@gmail.com>
+Subject: [PATCH v2 2/2] ASoC: rt5682: Add DAI clock binding info for WCLK/BCLK
+ CCF usage
+Date: Tue, 18 Feb 2020 21:51:52 +0800
+Message-ID: <1582033912-6841-2-git-send-email-derek.fang@realtek.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1582033912-6841-1-git-send-email-derek.fang@realtek.com>
+References: <1582033912-6841-1-git-send-email-derek.fang@realtek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <s5hy2t09wxn.wl-tiwai@suse.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain
+X-Originating-IP: [172.22.234.75]
+X-ClientProxiedBy: RTEXMB05.realtek.com.tw (172.21.6.98) To
+ RTEXMB01.realtek.com.tw (172.21.6.94)
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
+ lars@metafoo.de, albertchen@realtek.com, derek.fang@realtek.com,
+ shumingf@realtek.com, flove@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -123,107 +92,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+From: Derek Fang <derek.fang@realtek.com>
 
-Thanks for your reply ;)
+This patch describes that rt5682 can expose WCLK and BCLK clocks
+and how to use.
 
-On Tue, Feb 18, 2020 at 08:28:04AM +0100, Takashi Iwai wrote:
-> On Tue, 18 Feb 2020 04:11:02 +0100,
-> Takashi Sakamoto wrote:
-> > 
-> > Hi,
-> > 
-> > I'm working for alsa-gobject[1] so that it supports API for ALSA Sequencer.
-> > At present I've mostly done it just with direct dispatch support[2] (thus
-> > transmission via queue is for my later work). Then I have some questions
-> > about the design of event in ALSA Sequencer. I'd like to ask for some advices
-> > (mainly Iwai-san, perhaps).
-> > 
-> > 1. use case of SNDRV_SEQ_EVENT_LENGTH_VARUSR in 'struct snd_seq_event'
-> > 
-> > In my understanding, the flag is used for a case that sender transmits the
-> > value of pointer itself and its length to the receiver in the shape of
-> > 'struct snd_seq_ev_ext'. I assume that two use cases. If the sender and
-> > receiver are in the same process, the event is a request for the receiver to
-> > operate data in the same VMA. If the sender and receiver are in different
-> > processes, the event is a request for pointer-based calculation between the
-> > peer.
-> > 
-> > If the above understanding is correct, it's hard to represent this type of
-> > event for g-i interface because g-i is the object-based framework. Any raw
-> > pointer without explicit type is hard to be exposed to g-i applications as
-> > long as I know, and it's going to be unsupported, perhaps.
-> 
-> To be more exact, the usage isn't restricted whether belonging to the
-> same process or not.  The event with VARUSR is processed only for the
-> direct transfer, not for the scheduled transfer.  That is, the written
-> packet is immediately processed and the user-space data is copied to
-> the destinations at this point.  In this sense, it's no zero-copy but
-> rather just for saving the space in the input pool.
+Signed-off-by: Derek Fang <derek.fang@realtek.com>
+---
+ Documentation/devicetree/bindings/sound/rt5682.txt | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-Yes. VARUSR is available with direct transfer only.
-
-In alsa-lib documentation, I can see 'only for a special purpose like a bulk
-data transfer':
-https://www.alsa-project.org/alsa-doc/alsa-lib/seq.html#seq_ev_data
-
-I guess in this case page frame sharing is used between the peers, like
-POSIX shared memory or System V shared memory. Then VARUSR is used to
-point on the memory insted of copying the buld data.
-
-> > 2. event data type corresponding to event type
-> > 
-> > Some event types are expected to specific data type; e.g. SNDRV_SEQ_EVENT_NOTE
-> > is for 'struct snd_seq_ev_note' and SNDRV_SEQ_EVENT_CONTROLLER is for
-> > 'struct snd_seq_ev_ctrl'. However there're some types for any data type; e.g.
-> > SNDRV_SEQ_EVENT_ECHO or SNDRV_SEQ_EVENT_USR0. For the kind of types, the
-> > event structure has no information about which data type should be used and
-> > user applications voluntarily decide the data type. Therefore the sender
-> > and receiver should share a kind of protocol in advance.
-> > 
-> > This means that userspace applications require API to select data type
-> > independent of event type itself.
-> 
-> Right, those 'any-type' events have no specification of the event
-> data, hence both sender and receiver need to agree with the handling.
-> IOW, if not known, the receiver should discard the event.
->
->
-> > 3. quote event and specific event types.
-> > 
-> > Two event types are reserved for 'struct snd_seq_ev_quote'; i.e.
-> > SNDRV_SEQ_EVENT_KERNEL_ERROR and SNDRV_SEQ_EVENT_KERNEL_QUOTE(obsoleted?).
-> > However, the quote structure is exposed to userspace itself. Furthermore,
-> > as of v5.5 kernel, there's no in-kernel code to check the quote data
-> > from/to user client.
-> > 
-> > Is it better to produce API so that userspace application can transfer
-> > the quote event?
-> 
-> You can, but it makes little sense other than as a fuzzer.
-> The quote events are only for the error bounce that is used
-> internally.
+diff --git a/Documentation/devicetree/bindings/sound/rt5682.txt b/Documentation/devicetree/bindings/sound/rt5682.txt
+index 30e927a2..ac98151 100644
+--- a/Documentation/devicetree/bindings/sound/rt5682.txt
++++ b/Documentation/devicetree/bindings/sound/rt5682.txt
+@@ -32,6 +32,12 @@ Optional properties:
+   The delay time is realtek,btndet-delay value multiple of 8.192 ms.
+   If absent, the default is 16.
  
-In the view of generic IPC mechanism (in my understanding ALSA Sequencer is
-a sort of IPC mechanism), error bounce is not only required for kernel
-stuffs, but also for userspace applications. However it seems to be a bit hard
-to express the nested event structure as GObject class, I leave it as
-unsupported in this time.
++- #clock-cells : Should be set to '<1>',  wclk and bclk sources provided.
++- clock-output-names : Name given for DAI clocks output.
++
++- clocks : phandle and clock specifier for codec MCLK.
++- clock-names : Clock name string for 'clocks' attribute, should be "mclk".
++
+ Pins on the device (for linking into audio routes) for RT5682:
  
+   * DMIC L1
+@@ -53,4 +59,10 @@ rt5682 {
+ 	realtek,dmic1-clk-pin = <1>;
+ 	realtek,jd-src = <1>;
+ 	realtek,btndet-delay = <16>;
++
++	#clock-cells = <1>;
++	clock-output-names = "rt5682-dai-wclk", "rt5682-dai-bclk";
++
++	clocks = <&osc>;
++	clock-names = "mclk";
+ };
+-- 
+2.7.4
 
-Thanks
-
-Takashi Sakamoto
-
-> thanks,
-> 
-> Takashi
-> 
-> > 
-> > [1] https://github.com/alsa-project/alsa-gobject
-> > [2] https://github.com/takaswie/alsa-gobject/tree/topic/seq
-> > 
-> > Regards
-> > 
-> > 
-> > Takashi Sakamoto
