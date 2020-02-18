@@ -2,57 +2,57 @@ Return-Path: <SRS0=1Vby=4G=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	UNPARSEABLE_RELAY autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CFCDC34048
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 16:45:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5EB74C34026
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 17:07:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1C9342464E
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 16:45:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DE0C5208C4
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 17:07:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uw2AcAQ3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1C9342464E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="d+vPRhGi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DE0C5208C4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 71CC0827;
-	Tue, 18 Feb 2020 17:44:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 71CC0827
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3C8511689;
+	Tue, 18 Feb 2020 18:06:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C8511689
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582044324;
-	bh=uQbSAwGDz9FJaYwjUTngZnOp0C2M4gvUSXL3Y/kG+wk=;
+	s=default; t=1582045648;
+	bh=crnRkpMpRVbtZ0/NXXsmAPn19HyOGjwAIImCjGd3dyk=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uw2AcAQ3g5T7qYXIIiPf6Zakv9Z0MifLYbxY8yyML92CerwpCtNmTg7IOsZzGCdEt
-	 NgK/u1RQcoOyKWp6R1QN36G4iKu7po5cz0ryCt2y1+n26ubOUiPHQ2yeX9M0XoVK5F
-	 OjERUmGTdUW5FkB3PO0Zi1hh5OY4S7c34adFlUAM=
+	b=d+vPRhGii+3x5bIOGgV3PUjejC4gQGkrNGoh5yqpUYeP/78vceAfTsf4vcXxseHM7
+	 +A71LRXTmPIn8h/vhOadm4qMLD9ENlqjXJl15mM+LdZF/WzTI4dzDEEgjM2j7HPDgP
+	 of61Sj09RvQzrpXd/zT30G7dJkP67X5nCbgkMHN4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ED55DF80145;
-	Tue, 18 Feb 2020 17:44:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C3A58F800C4;
+	Tue, 18 Feb 2020 18:06:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5E4DBF80148; Tue, 18 Feb 2020 17:44:32 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 48A15F80137
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2020 17:44:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48A15F80137
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 80A2830E;
- Tue, 18 Feb 2020 08:44:27 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0338D3F68F;
- Tue, 18 Feb 2020 08:44:26 -0800 (PST)
-Date: Tue, 18 Feb 2020 16:44:25 +0000
-From: Mark Brown <broonie@kernel.org>
+ id B7CCAF80148; Tue, 18 Feb 2020 18:06:35 +0100 (CET)
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 238D2F80137
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2020 18:06:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 238D2F80137
+Received: from [127.0.0.1] (localhost [127.0.0.1]) (Authenticated sender: sre)
+ with ESMTPSA id A56E72942E5
+Received: by earth.universe (Postfix, from userid 1000)
+ id 04A863C0C81; Tue, 18 Feb 2020 18:06:29 +0100 (CET)
+Date: Tue, 18 Feb 2020 18:06:28 +0100
+From: Sebastian Reichel <sebastian.reichel@collabora.com>
 To: Tony Lindgren <tony@atomide.com>
 Subject: Re: [PATCH] ASoC: cpcap: Implement set_tdm_slot for voice call support
-Message-ID: <20200218164425.GJ4232@sirena.org.uk>
+Message-ID: <20200218170628.r47xc3yydg6xx2yh@earth.universe>
 References: <20200211181005.54008-1-tony@atomide.com>
  <ae2b7d9e-d05e-54ac-4f18-27cc8c4e81a0@ti.com>
  <20200212144620.GJ64767@atomide.com>
@@ -62,16 +62,14 @@ References: <20200211181005.54008-1-tony@atomide.com>
  <20200218153211.GI35972@atomide.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="4vpci17Ql0Nrbul2"
+ protocol="application/pgp-signature"; boundary="e4xhqf4ckenfagk5"
 Content-Disposition: inline
 In-Reply-To: <20200218153211.GI35972@atomide.com>
-X-Cookie: No alcohol, dogs or horses.
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org,
- Liam Girdwood <lgirdwood@gmail.com>, Merlijn Wajer <merlijn@wizzup.org>,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Peter Ujfalusi <peter.ujfalusi@ti.com>, Pavel Machek <pavel@ucw.cz>,
- Sebastian Reichel <sre@kernel.org>, "Arthur D ." <spinal.by@gmail.com>,
+ linux-kernel@vger.kernel.org, Merlijn Wajer <merlijn@wizzup.org>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>,
+ Pavel Machek <pavel@ucw.cz>, "Arthur D ." <spinal.by@gmail.com>,
  Jarkko Nikula <jarkko.nikula@bitmer.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -89,39 +87,129 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---4vpci17Ql0Nrbul2
+--e4xhqf4ckenfagk5
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
 
 On Tue, Feb 18, 2020 at 07:32:11AM -0800, Tony Lindgren wrote:
 > * Peter Ujfalusi <peter.ujfalusi@ti.com> [200218 15:16]:
-
+> > On 18/02/2020 1.23, Tony Lindgren wrote:
+> > > * Peter Ujfalusi <peter.ujfalusi@ti.com> [200214 13:30]:
+> > >> Hi Tony,
+> > >>
+> > >> On 12/02/2020 16.46, Tony Lindgren wrote:
+> > >>> * Peter Ujfalusi <peter.ujfalusi@ti.com> [200212 09:18]:
+> > >>>> On 11/02/2020 20.10, Tony Lindgren wrote:
+> > >>>>> +static int cpcap_voice_set_tdm_slot(struct snd_soc_dai *dai,
+> > >>>>> +				    unsigned int tx_mask, unsigned int rx_mask,
+> > >>>>> +				    int slots, int slot_width)
+> > >>>>> +{
+> > >>>>> +	struct snd_soc_component *component =3D dai->component;
+> > >>>>> +	struct cpcap_audio *cpcap =3D snd_soc_component_get_drvdata(com=
+ponent);
+> > >>>>> +	int err, ts_mask, mask;
+> > >>>>> +	bool voice_call;
+> > >>>>> +
+> > >>>>> +	/*
+> > >>>>> +	 * Primitive test for voice call, probably needs more checks
+> > >>>>> +	 * later on for 16-bit calls detected, Bluetooth headset etc.
+> > >>>>> +	 */
+> > >>>>> +	if (tx_mask =3D=3D 0 && rx_mask =3D=3D 1 && slot_width =3D=3D 8)
+> > >>>>> +		voice_call =3D true;
+> > >>>>> +	else
+> > >>>>> +		voice_call =3D false;
+> > >>>>
+> > >>>> You only have voice call if only rx slot0 is in use?
+> > >>>
+> > >>> Yeah so it seems. Then there's the modem to wlcore bluetooth path t=
+hat
+> > >>> I have not looked at. But presumably that's again just configuring =
+some
+> > >>> tdm slot on the PMIC.
+> > >>>
+> > >>>> If you record mono on the voice DAI, then rx_mask is also 1, no?
+> > >>>
+> > >>> It is above :) But maybe I don't follow what you're asking here
+> > >>
+> > >> If you arecrod -Dvoice_pcm -c1 -fS8 > /dev/null
+> > >> then it is reasonable that the machine driver will set rx_mask =3D 1
+> > >>
+> > >>> and maybe you have some better check in mind.
+> > >>
+> > >> Not sure, but relying on set_tdm_slots to decide if we are in a call
+> > >> case does not sound right.
+> > >=20
+> > > OK yeah seems at least bluetooth would need to be also handled
+> > > in the set_tdm_slots.
+> >=20
+> > set_tdm_slots() is for setting how the TDM slots supposed to be used by
+> > the component and not really for things to configure different operating
+> > modes.
+> >=20
+> > If you hardwire things in set_tdm_slots() for the droid4 then how the
+> > codec driver can be reused in other setups?
+>=20
+> Right, I'm all go for better solutions :)
+>=20
+> > >>>> You will also set the sampling rate for voice in
+> > >>>> cpcap_voice_hw_params(), but that is for normal playback/capture, =
+right?
+> > >>>
+> > >>> Yeah so normal playback/capture is already working with cpcap codec=
+ driver
+> > >>> with mainline Linux. The voice call needs to set rate to 8000.
+> > >>
+> > >> But if you have a voice call initiated should not the rate be set by=
+ the
+> > >> set_sysclk()?
+> > >=20
 > > > Hmm does set_sysclk called from modem codec know that cpcap codec
 > > > is the clock master based on bitclock-master and set the rate
 > > > for cpcap codec?
-
+> >=20
 > > Neither component should call set_sysclk, set_tdm_slots. The machine
 > > driver should as it is the only one who know how things are wired...
-
+>=20
 > OK, but so what's the machine driver part in this case?
 
-The machine driver is responsible for saying how everything is glued
-together, both where the wires run and any policy decisions about how
-the clocking tree should be arranged or TDM used.
+simple-graph-card is the current machine driver. We might have to
+introduce a Droid 4 specific driver instead. I used simple(-graph)-card
+instead of introducing a new driver, since the setup was simple enough
+without modem and bluetooth. The simple card was perfect to test the CPCAP
+codec driver. The TDM things might be complex enough to create
+a new machine driver (as I mentioned in the original patchset
+adding CPCAP codec support).
 
---4vpci17Ql0Nrbul2
+Note: Don't use Motorola's tree to learn about ASoC. Their soundcard
+and cpcap codec drivers are full of weird hacks. I'm pretty sure the
+author(s) did not really understand how ASoC works. From my
+experience you should only use their code to understand the
+hardware wiring. You might also want to look into the MC13783
+datasheet for the keyword "network mode".
+
+-- Sebastian
+
+--e4xhqf4ckenfagk5
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5MFGgACgkQJNaLcl1U
-h9BWigf9HfGg6QYgwXFW+UiKeanYp+tlVmrtYAk5vKqT+qhhZaUphuoL0k1AjEar
-fhxVZBAyq6Xum6S6U8dTncKMled15zqe6RzRqXf/3MrmiX+nF/UsNhJkRbDPIZhH
-8a/RIeMIaPpfB46mB0VWQIFqsHSpCIhuWxIKIKW1yqqpobWatjHG2kLHWxGZZ3k6
-ajFkE6B/+1HYORI8eOtDBFM4GldmmVWM/Lfo7DadnRpCnoyte2n+dVsEidhYmxJv
-biw9pG50kKZmeJth2GMVcvlBdrYM32WKJv8iZKt2NF3qJEMgMDuekj+L3Slz3Ev8
-r8/i+/DRJeHwCwifLyfgg/VZjjqZAg==
-=sLmb
+iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl5MGZEACgkQ2O7X88g7
++pqn5A/7Bby/ClGFYeyupbA+sYRaZu0ngXwFHcjCe/kXviBzAt/Yx8Hm2Bu65KNA
+occazqTddxw4EHMvS3PbDjnxokZtyZZGHf8ZK8yXE9EeUJc8GW0OX/YjMgCKtKgk
+NzaPGkeWkwn29T/0+0p0Ld7j/LGg3qRirxyIfkeFTR5IN+sOGL7DdHCgCu8C/JEm
+fYFt0tNbLV+0sINzhLVNj6nu22204LxNpF/ZFwxVcStna8EdQR1osDlt9fe46LkF
+CuYsKahKTRS3hTGC3iJGwr1YRzxIc3myiCxQGnw2R0cYuqX+Yo0iNuqjlFL+Kzqu
+d43H6838ld18/xqIDRVh2NVaeeRuAwaa81YHoYFK0K80zx/tDkfjY9fbl34AXJzh
+KjsI3bedxewJtgtL1SIg9PD66fzcL8R0NHr6VE40OiiQZ0Gs+CnnDGZYHsiAgeJy
+hmc3NWk5nrxkcNHIVCWYnmvJ1zylvufSaCx2Ry5/ZL+S1opgo1P9UM4TCCfRl346
+9r09CrFbf/WYYhq9n1Oit8WpgoC6jZC/wU15/LCFA/dc8lMGc/Grt/Eiuz7eXdu8
+EO/sDKFRNCxlEUY5Tn/DMAc1d3T0lge19f3AN8+N3cHjti+NZicnoOsT+wfpAGh9
+kSbALPnfqw1Qk3B2pl88+WuGf8da2FDghRmG1PxovpsHEC9wtyo=
+=aBy/
 -----END PGP SIGNATURE-----
 
---4vpci17Ql0Nrbul2--
+--e4xhqf4ckenfagk5--
