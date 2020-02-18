@@ -2,85 +2,73 @@ Return-Path: <SRS0=1Vby=4G=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB5ADC34026
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 17:27:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 727BCC34026
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 17:27:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 75EE420801
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 17:27:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E8B4820801
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 17:27:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="E6mDCuYS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 75EE420801
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TQt1ZBdR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E8B4820801
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CC8BA16A1;
-	Tue, 18 Feb 2020 18:26:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC8BA16A1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 42D73168F;
+	Tue, 18 Feb 2020 18:26:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 42D73168F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582046826;
-	bh=6DK/FocroVLPyjuI56YRMOSmLrvoS/+ZAaEtZ8mXGo0=;
+	s=default; t=1582046863;
+	bh=Y00LjOdYLUrsD5LYdrcBRi9DKZ6h2er2ZpCPi3bADgY=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=E6mDCuYS2cZgRsrMqxnaLyCCgNpy5DcEXpLJXyA6TeDgrggmSwud+wMl6mNKeokjU
-	 q2bSc06ZTnSADP2i3IRg7OHDCSLXnJvYAJfPqP4QpeiX7lAdRvK5OcB0PUnfG+mXpV
-	 D1nKuLO1HNwSS9LIkKkNPy5fMcAKZ2lTJBBO5eSY=
+	b=TQt1ZBdRcDbl/9CUpil2dHkOfkfgSTTJ0nctoJ1QwONJC63JlaoA+nxrWxeJWkqfP
+	 FYr+KPT/wfdCj0WnhF94Yw7wT4iH7rMjRifwlMX4uJhYe51GqT10GWA9LAfWf2wymY
+	 EMi9+MEOTKwiM1DyFTyJLSZVUUinTTdprZgtpQy0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1F058F80247;
-	Tue, 18 Feb 2020 18:24:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 78537F80278;
+	Tue, 18 Feb 2020 18:24:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 40A41F8015C; Tue, 18 Feb 2020 18:24:36 +0100 (CET)
+ id 1C98AF8015C; Tue, 18 Feb 2020 18:24:38 +0100 (CET)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BA4C8F80137
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2020 18:24:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA4C8F80137
+ by alsa1.perex.cz (Postfix) with ESMTPS id B3A1EF800C4
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2020 18:24:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3A1EF800C4
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 18 Feb 2020 09:24:28 -0800
+ 18 Feb 2020 09:24:31 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,456,1574150400"; d="scan'208";a="408136610"
+X-IronPort-AV: E=Sophos;i="5.70,456,1574150400"; d="scan'208";a="408136640"
 Received: from bmerugul-mobl1.amr.corp.intel.com (HELO [10.251.159.61])
  ([10.251.159.61])
- by orsmga005.jf.intel.com with ESMTP; 18 Feb 2020 09:24:27 -0800
-Subject: Re: [alsa-devel] No sound since 5.4 on skl_n88l25_s4567
-To: ojab // <ojab@ojab.ru>, Mark Brown <broonie@kernel.org>
-References: <CAKzrAgTD2oeyajKGOaPea98vZ-uKJOn6uOqABA+CKtpvYpWYvQ@mail.gmail.com>
- <CAKzrAgTCE4btXr04pkvLUG6PPbtn9dm5h_9rjqDYG0HrTZ0zbg@mail.gmail.com>
- <87h80x8t41.wl-kuninori.morimoto.gx@renesas.com>
- <130af222-1086-ebcf-6a0f-9a390f9afbc3@linux.intel.com>
- <CAKzrAgRJZd4UZjt411vA8WwUv1KyVahVTNyUS8nA1TbKsA57dg@mail.gmail.com>
- <14259e97-72f5-439f-b2f1-356b6e45bcfb@linux.intel.com>
- <CAKzrAgQR0iZWPCudQ6k+RNWGk3L-=UU792RW6s7LxF+8wOPDUw@mail.gmail.com>
- <7de214eb-d6a0-3f86-9eb3-76488f0ec99f@linux.intel.com>
- <87r2001bsi.wl-kuninori.morimoto.gx@renesas.com>
- <6d0f1830-a2f0-997a-99cc-05c268acefc6@linux.intel.com>
- <20200116145708.GQ3897@sirena.org.uk>
- <CAKzrAgQapgQtxMLYjEe9mSaXp_uYxMyH8fwvoJqM3Or0sqqfiw@mail.gmail.com>
+ by orsmga005.jf.intel.com with ESMTP; 18 Feb 2020 09:24:30 -0800
+Subject: Re: [PATCH v5 0/9] ASoC: SOF: Data probing
+To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
+References: <20200218143924.10565-1-cezary.rojewski@intel.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <394de883-f044-44cb-9b09-a4fbe2e14b75@linux.intel.com>
-Date: Tue, 18 Feb 2020 10:24:50 -0600
+Message-ID: <88345dc4-6d9f-66ee-8069-f7d4fd87863a@linux.intel.com>
+Date: Tue, 18 Feb 2020 11:21:53 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <CAKzrAgQapgQtxMLYjEe9mSaXp_uYxMyH8fwvoJqM3Or0sqqfiw@mail.gmail.com>
+In-Reply-To: <20200218143924.10565-1-cezary.rojewski@intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: vkoul@kernel.org, broonie@kernel.org, lgirdwood@gmail.com, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,92 +86,133 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 2/17/20 9:10 AM, ojab // wrote:
-> On Thu, Jan 16, 2020 at 5:57 PM Mark Brown <broonie@kernel.org> wrote:
->>
->> On Wed, Jan 15, 2020 at 07:04:48PM -0600, Pierre-Louis Bossart wrote:
->>
->>> Maybe we could have some sort of boolean flag in the component->driver
->>> definition and explicitly request a backwards-compatible behavior (e.g. for
->>> all SKL/KBL machine drivers) when that driver is known to be flaky. There's
->>> already things like 'fully_routed', maybe we can add something such as
->>> 'disable_route_check'?
->>
->> A quirk for old stuff that can't be fixed sounds like a sensible
->> solution to this.
+On 2/18/20 8:39 AM, Cezary Rojewski wrote:
+> This set of patches achieves few goals in order to enable data probing
+> feature for audio DSP.
 > 
-> Any update on this?
+> First, provide new and alter existing interfaces (page allocation,
+> runtime flow adjustments) to make them compress friendly.
+> 
+> Finally, the end goal which are the probe APIs and usage itself. Probes
+> can be treated as endpoints which allow for data extraction from or
+> injection to target module - a great ally when debugging problematic
+> audio issues such as distortions, glitches or gaps.
+> Compress streams are a weapon of choice here to provide a lightweight
+> implementation.
+> 
+> While all available IPCs have been defined, current implementation
+> covers extraction only, with injection scheduled for a later date.
+> 
+> Initial review and development of probes can be found under:
+> https://github.com/thesofproject/linux/pull/1276
+> 
+> with the hda-compress-enable set of patches being separated and
+> reviewed on:
+> https://github.com/thesofproject/linux/pull/1571
+> 
+> Tested on CML-U with rt5682 i2s board.
 
-Sorry, this is what I had in mind (not even compile-tested). I don't 
-know if the checks need to be disabled twice.
+For the series:
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index f0e4f36f83bf..7a4643d87e39 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1058,6 +1058,7 @@ struct snd_soc_card {
-         const struct snd_soc_dapm_route *of_dapm_routes;
-         int num_of_dapm_routes;
-         bool fully_routed;
-+       bool disable_route_checks;
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-         /* lists of probed devices belonging to this card */
-         struct list_head component_dev_list;
-diff --git a/sound/soc/intel/boards/skl_nau88l25_max98357a.c 
-b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-index e6de3b28d840..b57f55731390 100644
---- a/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-@@ -644,6 +644,7 @@ static struct snd_soc_card skylake_audio_card = {
-         .num_dapm_routes = ARRAY_SIZE(skylake_map),
-         .fully_routed = true,
-         .late_probe = skylake_card_late_probe,
-+       .disable_route_checks = true,
-  };
+Nice work Cezary, thanks.
 
-  static int skylake_audio_probe(struct platform_device *pdev)
-diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c 
-b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-index c99c8b23e509..8f3b724fec27 100644
---- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-@@ -687,6 +687,7 @@ static struct snd_soc_card skylake_audio_card = {
-         .num_configs = ARRAY_SIZE(ssm4567_codec_conf),
-         .fully_routed = true,
-         .late_probe = skylake_card_late_probe,
-+       .disable_route_checks = true,
-  };
-
-  static int skylake_audio_probe(struct platform_device *pdev)
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 068d809c349a..d56cb655d89c 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1257,7 +1257,10 @@ static int soc_probe_component(struct 
-snd_soc_card *card,
-                                       component->driver->dapm_routes,
-                                       component->driver->num_dapm_routes);
-         if (ret < 0)
--               goto err_probe;
-+               if (card->disable_route_checks)
-+                       dev_info(component->dev, "Ignoring errors on 
-snd_soc_dapm_add_routes\n");
-+               else
-+                       goto err_probe;
-
-         /* see for_each_card_components */
-         list_add(&component->card_list, &card->component_dev_list);
-@@ -1939,7 +1942,10 @@ static int snd_soc_bind_card(struct snd_soc_card 
-*card)
-         ret = snd_soc_dapm_add_routes(&card->dapm, card->dapm_routes,
-                                       card->num_dapm_routes);
-         if (ret < 0)
--               goto probe_end;
-+               if (card->disable_route_checks)
-+                       dev_info(component->dev, "Ignoring errors on 
-snd_soc_dapm_add_routes\n");
-+               else
-+                       goto probe_end;
-
-         ret = snd_soc_dapm_add_routes(&card->dapm, card->of_dapm_routes,
-                                       card->num_of_dapm_routes);
+> Cahnges in v5:
+> - Removed SND_SOC_SOF_HDA_LINK requirement for hda probes. Instead of
+>    sound/hda/ext, sof hda operations are used
+> - In consequence of above, patches:
+>      ALSA: hda: Allow for compress stream to hdac_ext_stream assignment
+>      ALSA: hda: Prepare for compress stream support
+>      ALSA: hda: Interrupt servicing and BDL setup for compress streams
+>    have been dropped.
+> 
+> - In order to reuse pcm utility functions for hda compress, new patch
+>    has been added:
+>      ASoC: SOF: Intel: Expose SDnFMT helpers
+> - Addressed u64/ u32 concerns from Pierre when calculating bytes
+>    transferred during runtime
+> 
+> Changes in v4:
+> - No changes to ALSA core and hda patches
+> 
+> - 'probe' source added in patch "ASoC: SOF: Implement Probe IPC API" now
+>    only compiled if SND_SOC_SOF_DEBUG_PROBES is enabled. Said kconfig
+>    initial declaration has been moved to that patch too
+> - 'extractor_stream_tag' field now decorated with _DEBUG_PROBES to
+>    account for the change above
+> - Debugfs probe handlers now check if extractor stream is running before
+>    continuing. To achieve this, 'extractor_stream_tag' is both initialized
+>    and set to SOF_PROBE_INVALID_NODE_ID on sof_probe_compr_free().
+>    Suggestion provided by Pierre
+> 
+> - Reverted SND_SOC_SOF_HDA_LINK requirement-removal change for HDA probes.
+>    Code requires SND_HDA_EXT_CORE in order to function on Intel platforms
+> - Relocated probe-compress related code from /sof/pcm.c directly to
+>    /sof/compress.c as requested by Daniel
+> 
+> Changes in v3:
+> - No changes to ALSA core and hda patches
+> 
+> - Addressed sparse and all doc related warnings as reported by Pierre
+> - Moved _DEBUG_PROBES config outside of _DEVELOPER_SUPPORT block
+> - Renamed 'extractor' field to 'extractor_stream_tag' as requested
+> - Relocated 'extractor_stream_tag' declaration from patch 07 to 08
+> 
+> Changes in v2:
+> - No changes to ALSA core and hda patches
+> 
+> - Removed "ASoC: Intel: sof_rt5682: Add compress probe DAI links" from
+>    the patchset list as requested by Pierre
+> - updated copyright header for newly added files (dates)
+> - probes over HDA no longer require SND_SOC_SOF_HDA_LINK enabled
+> - renamed debugfs probe functions as requested by Pierre
+> 
+> - probe IPC API has been updated to align with newest SOF FW & probe
+>    debug app (struct_size macro has been enlisted to make the size
+>    calculations transparent). This targets only "ASoC: SOF: Implement
+>    Probe IPC API" patch
+> 
+> Cezary Rojewski (9):
+>    ALSA: core: Expand DMA buffer information
+>    ALSA: core: Implement compress page allocation and free routines
+>    ASoC: SOF: Intel: Account for compress streams when servicing IRQs
+>    ASoC: SOF: Implement Probe IPC API
+>    ASoC: SOF: Generic probe compress operations
+>    ASoC: SOF: Intel: Expose SDnFMT helpers
+>    ASoC: SOF: Intel: Probe compress operations
+>    ASoC: SOF: Provide probe debugfs support
+>    ASoC: SOF: Intel: Add Probe compress CPU DAIs
+> 
+>   include/sound/compress_driver.h    |  40 +++-
+>   include/sound/hdaudio.h            |   2 +
+>   include/sound/sof/header.h         |  11 ++
+>   sound/core/compress_offload.c      |  42 +++++
+>   sound/soc/sof/Kconfig              |   9 +
+>   sound/soc/sof/Makefile             |   1 +
+>   sound/soc/sof/compress.c           | 146 +++++++++++++++
+>   sound/soc/sof/compress.h           |  31 ++++
+>   sound/soc/sof/core.c               |   6 +
+>   sound/soc/sof/debug.c              | 226 +++++++++++++++++++++++
+>   sound/soc/sof/intel/Kconfig        |   9 +
+>   sound/soc/sof/intel/Makefile       |   1 +
+>   sound/soc/sof/intel/apl.c          |   9 +
+>   sound/soc/sof/intel/cnl.c          |   9 +
+>   sound/soc/sof/intel/hda-compress.c | 114 ++++++++++++
+>   sound/soc/sof/intel/hda-dai.c      |  28 +++
+>   sound/soc/sof/intel/hda-ipc.c      |   4 +-
+>   sound/soc/sof/intel/hda-pcm.c      |   8 +-
+>   sound/soc/sof/intel/hda-stream.c   |  25 ++-
+>   sound/soc/sof/intel/hda.h          |  32 ++++
+>   sound/soc/sof/ops.h                |  43 +++++
+>   sound/soc/sof/pcm.c                |   7 +
+>   sound/soc/sof/probe.c              | 286 +++++++++++++++++++++++++++++
+>   sound/soc/sof/probe.h              |  85 +++++++++
+>   sound/soc/sof/sof-priv.h           |  25 +++
+>   25 files changed, 1183 insertions(+), 16 deletions(-)
+>   create mode 100644 sound/soc/sof/compress.c
+>   create mode 100644 sound/soc/sof/compress.h
+>   create mode 100644 sound/soc/sof/intel/hda-compress.c
+>   create mode 100644 sound/soc/sof/probe.c
+>   create mode 100644 sound/soc/sof/probe.h
+> 
