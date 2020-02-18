@@ -2,67 +2,72 @@ Return-Path: <SRS0=1Vby=4G=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A87B5C34026
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 18:49:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 32EB9C34026
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 18:54:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 35B9721D56
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 18:49:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B84BC22B48
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Feb 2020 18:54:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="elp2/Uy8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 35B9721D56
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Xv+WACDZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B84BC22B48
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 69E6F1687;
-	Tue, 18 Feb 2020 19:48:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 69E6F1687
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1290C1689;
+	Tue, 18 Feb 2020 19:54:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1290C1689
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582051772;
-	bh=BldLJUMeLfjzF7LWWWVI8kglnk/rWLvFMyWyQafRjYs=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1582052091;
+	bh=lYmo1j5aHBiCxqL1CQUiT3JnDbf2RTcu2xMa8UrrZyY=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=elp2/Uy8jciPIO5hbER1X1acEeNTaBb2SLTd19fmVajku8fcGK6oxBJF6tMZ0OU+o
-	 tgJVijwlFfuL5C+DjIPq1a3yjL+OrlUVH1m4kHelF2u1kdxXyQvaHHS9Oyz5NjKJrO
-	 vK7zW/L7cXivWvewWrznNL9x/slPsH5GJbznjbrw=
+	b=Xv+WACDZh1geue9GAtFKV37dSpNemR272Q6U8KyNtMXTcV/dYgfi52zaIShMO2q30
+	 UmjId10vN1m35E1b/9EogfdURwX8Z42cofGNCLh3d3pbvoxAqIkWN9AYSnjhHudgvV
+	 vE6cTlwYPiX8BFqU3jwg5sngmeehDU4jQDYEXTdU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EF05BF80145;
-	Tue, 18 Feb 2020 19:48:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 65180F80145;
+	Tue, 18 Feb 2020 19:54:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2FFA6F80148; Tue, 18 Feb 2020 19:48:39 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 8B03BF80135
- for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2020 19:48:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B03BF80135
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5CC9731B;
- Tue, 18 Feb 2020 10:48:34 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D3DC53F703;
- Tue, 18 Feb 2020 10:48:33 -0800 (PST)
-Date: Tue, 18 Feb 2020 18:48:32 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Dan Murphy <dmurphy@ti.com>
-Subject: Re: [PATCH] ASoC: tas2562: Return invalid for when bitwidth is invalid
-Message-ID: <20200218184832.GL4232@sirena.org.uk>
-References: <20200218174706.27309-1-dmurphy@ti.com>
+ id A25E8F80148; Tue, 18 Feb 2020 19:53:59 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 95DCDF80135
+ for <alsa-devel@alsa-project.org>; Tue, 18 Feb 2020 19:53:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95DCDF80135
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 18 Feb 2020 10:53:53 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,457,1574150400"; d="scan'208";a="268869289"
+Received: from amholmes-mobl3.ger.corp.intel.com (HELO [10.251.87.78])
+ ([10.251.87.78])
+ by fmsmga002.fm.intel.com with ESMTP; 18 Feb 2020 10:53:51 -0800
+Subject: Re: [PATCH 0/3] ASoC: snprintf() usage fixes
+To: Takashi Iwai <tiwai@suse.de>
+References: <20200218111737.14193-1-tiwai@suse.de>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+Message-ID: <6e40ea50-7850-6040-fff8-3a22c98bb327@intel.com>
+Date: Tue, 18 Feb 2020 19:53:49 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="0qVF/w3MHQqLSynd"
-Content-Disposition: inline
-In-Reply-To: <20200218174706.27309-1-dmurphy@ti.com>
-X-Cookie: No alcohol, dogs or horses.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com,
- lgirdwood@gmail.com
+In-Reply-To: <20200218111737.14193-1-tiwai@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,50 +83,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On 2020-02-18 12:17, Takashi Iwai wrote:
+> Hi,
+> 
+> this is a series of patches I spotted during debugging other code.
+> Intel skl and ASoC PCM core invokes succeeding calls of snprintf()
+> with the incorrect expectation of the return value, which may lead to
+> a buffer overflow.
+> 
+> The first patch is yet another bug I found during working on this, and
+> it's rather a real bug that can be seen clearly.
+> 
+> 
+> Takashi
+> 
+> ===
+> 
+> Takashi Iwai (3):
+>    ASoC: intel: skl: Fix pin debug prints
+>    ASoC: intel: skl: Fix possible buffer overflow in debug outputs
+>    ASoC: pcm: Fix possible buffer overflow in dpcm state sysfs output
 
---0qVF/w3MHQqLSynd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thank you, Takashi for the fixes.
 
-On Tue, Feb 18, 2020 at 11:47:06AM -0600, Dan Murphy wrote:
-> If the bitwidth passed in to the set_bitwidth function is not supported
-> then return an error.
->=20
-> Fixes: 29b74236bd57 ("ASoC: tas2562: Introduce the TAS2562 amplifier")
-> Signed-off-by: Dan Murphy <dmurphy@ti.com>
-> ---
->  scripts/conmakehash        | Bin 0 -> 13120 bytes
->  scripts/sortextable        | Bin 0 -> 18040 bytes
->  sound/soc/codecs/tas2562.c |   3 ++-
->  3 files changed, 2 insertions(+), 1 deletion(-)
->  create mode 100755 scripts/conmakehash
->  create mode 100755 scripts/sortextable
->=20
-> diff --git a/scripts/conmakehash b/scripts/conmakehash
-> new file mode 100755
-> index 0000000000000000000000000000000000000000..17eec37019b8ae45f42f3c820=
-46d1a55a6f69cb3
-> GIT binary patch
-> literal 13120
-> zcmeHOeQ;D&mcN}25CU`u1i`Q23C#=3Dv(j@XB0Wx-n4!le?@~!SFHl6fK(rc$X+x=3DRD
+s/skl/skylake/g but I don't mind the shortcut usage at all.
+For the /intel/skylake patches:
 
-This is...  fun?  I'm guessing it's not intentional, it's certainly a
-little difficult to review.  :)
-
---0qVF/w3MHQqLSynd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5MMX8ACgkQJNaLcl1U
-h9AE1Qf/Zp6m3NI0e0rXFXTJ2XbGhyY0eb9a56oQ6NAH8Cxv75wmSpRtYY56PGpK
-XgBcQN67E9zoR9G+t8WS3t60tOmLAOyAVVDNQ4llIzUsl5oq0zcN5QZhG0GeDPwF
-gfKhGhyKgyZ7cNY0IJETfg9kgF+zvUq49Dh9APTHkBr4OMd0XDJxuBSc2+oCFeAb
-ozO7V5pje1NZe3zcwJY7ZvrjJ+MXnwevO+V9r+1QpFXS6als6G+JC3nChaDBHT7P
-3rQJVO1Wtbl9m9cN2zUj18Zbg5dYjGQLr2ak91NLBjeawlzVSCQucidm0rAaGL4H
-BrBsxv18mqZb8bouvke9jMA+15ovmw==
-=piVj
------END PGP SIGNATURE-----
-
---0qVF/w3MHQqLSynd--
+Acked-by: Cezary Rojewski <cezary.rojewski@intel.com>
