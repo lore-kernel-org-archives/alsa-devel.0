@@ -2,61 +2,92 @@ Return-Path: <SRS0=QPpS=4H=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BE5DC34056
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 21:09:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BDFEC3524E
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 21:17:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 140EC207FD
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 21:09:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A61E321D56
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 21:17:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aqROP+xF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 140EC207FD
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Wp9YD55y";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="JnEKz4/D"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A61E321D56
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 456DC16BC;
-	Wed, 19 Feb 2020 22:08:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 456DC16BC
+	by alsa0.perex.cz (Postfix) with ESMTPS id D663516A8;
+	Wed, 19 Feb 2020 22:17:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D663516A8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582146589;
-	bh=h6rXdn+U/z42QQoMYgoE+hZivYM9UFbti8cCLJg+U2o=;
-	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=aqROP+xFaBFzuhv+HIWtvDUGOuML9EKRrAGpVeYJu4kzFraNwfu9/LOuZ7aLSh7Wi
-	 +ZB1iMLf5QUnNV2IQz6YYIFmrxzY7LuqsPqeyBAD9+5AOUPT/BUVDD5ByHL0VmmjZs
-	 4zjRWhZaR6d3SlCTzQXLGChLuhq4XnlJswL8Nau8=
+	s=default; t=1582147073;
+	bh=O16WBUAOGciWUuhDocKaq7dVvFRE194g+h16gYIHkwg=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Wp9YD55y3XIHESh2FS25hgdZY0wLTtlBjgtu8EoKWjyeFtRbzAc2+xhBG61WoiIPm
+	 GodzpFXsnWetZ8iOJiwysEeeD7iEzzhQJIGp4GjZPtVe9EvPXS5psfO1Rqfr9SdZAR
+	 K844RHPwOrQJXg7d1IblI7/guDgrDPD2K7L1pXiY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5B6F2F8035E;
-	Wed, 19 Feb 2020 21:58:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 48851F801F5;
+	Wed, 19 Feb 2020 22:17:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2B7FFF8035E; Wed, 19 Feb 2020 21:58:21 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 2A5B2F80351
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 21:58:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2A5B2F80351
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7E13E101E;
- Wed, 19 Feb 2020 12:58:17 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 01F953F68F;
- Wed, 19 Feb 2020 12:58:16 -0800 (PST)
-Date: Wed, 19 Feb 2020 20:58:15 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Takashi Iwai <tiwai@suse.de>
-Subject: Applied "ASoC: intel: skl: Fix pin debug prints" to the asoc tree
-In-Reply-To: <20200218111737.14193-2-tiwai@suse.de>
-Message-Id: <applied-20200218111737.14193-2-tiwai@suse.de>
-X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Cezary Rojewski <cezary.rojewski@intel.com>
+ id 4D7DFF80273; Wed, 19 Feb 2020 22:17:01 +0100 (CET)
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A4690F801F5
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 22:16:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4690F801F5
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="JnEKz4/D"
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 01JLGphA114842;
+ Wed, 19 Feb 2020 15:16:51 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1582147011;
+ bh=hELP/UVWF2wnG4khdI+ML3nj51J78zGR6XNDM5je6Hg=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=JnEKz4/DGmVnBOrxNaZHZuiGPeUqqqq/31MYe4eTb7lpWgkFhcm6pOU6VaKgC+UkK
+ oWOPnZZO0Ykef9kve5EubrsJ+i1D0o7yPRdEgi4KFkXq2hYfGNWG77GEPb/ji4KIJL
+ 1sW3BQR4PQMMX1Z4y8hUTo5cgI4FDB2vIbWPDl5w=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 01JLGp1U062825
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Wed, 19 Feb 2020 15:16:51 -0600
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Wed, 19
+ Feb 2020 15:16:51 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
+ Frontend Transport; Wed, 19 Feb 2020 15:16:51 -0600
+Received: from [10.250.65.13] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 01JLGp5o045264;
+ Wed, 19 Feb 2020 15:16:51 -0600
+Subject: [RFC] Volume control across multiple registers
+To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+ <tiwai@suse.com>
+References: <20200219134622.22066-1-dmurphy@ti.com>
+From: Dan Murphy <dmurphy@ti.com>
+Message-ID: <2f74b971-4a6a-016f-8121-4da941eeccef@ti.com>
+Date: Wed, 19 Feb 2020 15:11:47 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+MIME-Version: 1.0
+In-Reply-To: <20200219134622.22066-1-dmurphy@ti.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,73 +103,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
+Hello!
 
-   ASoC: intel: skl: Fix pin debug prints
+I am trying to figure out how to control the volume of a speaker device 
+with full volume control spread out across 4 8bit registers.
 
-has been applied to the asoc tree at
+The standard TLV calls only allow a single register for volume control.  
+But I have 4 I need to touch to get a full range of volume from 0dB to 
+-110dB.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+I was looking at using the DAPM calls and use PGA_E and define an event 
+but there really is no good way to get the current volume setting.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+I don't see any example of this in any current driver.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Any guidance is appreciated.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From 64bbacc5f08c01954890981c63de744df1f29a30 Mon Sep 17 00:00:00 2001
-From: Takashi Iwai <tiwai@suse.de>
-Date: Tue, 18 Feb 2020 12:17:35 +0100
-Subject: [PATCH] ASoC: intel: skl: Fix pin debug prints
-
-skl_print_pins() loops over all given pins but it overwrites the text
-at the very same position while increasing the returned length.
-Fix this to show the all pin contents properly.
-
-Fixes: d14700a01f91 ("ASoC: Intel: Skylake: Debugfs facility to dump module config")
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Acked-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Link: https://lore.kernel.org/r/20200218111737.14193-2-tiwai@suse.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/skylake/skl-debug.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/intel/skylake/skl-debug.c b/sound/soc/intel/skylake/skl-debug.c
-index 3466675f2678..4c1703da1a6d 100644
---- a/sound/soc/intel/skylake/skl-debug.c
-+++ b/sound/soc/intel/skylake/skl-debug.c
-@@ -34,7 +34,7 @@ static ssize_t skl_print_pins(struct skl_module_pin *m_pin, char *buf,
- 	int i;
- 	ssize_t ret = 0;
- 
--	for (i = 0; i < max_pin; i++)
-+	for (i = 0; i < max_pin; i++) {
- 		ret += snprintf(buf + size, MOD_BUF - size,
- 				"%s %d\n\tModule %d\n\tInstance %d\n\t"
- 				"In-used %s\n\tType %s\n"
-@@ -45,6 +45,8 @@ static ssize_t skl_print_pins(struct skl_module_pin *m_pin, char *buf,
- 				m_pin[i].in_use ? "Used" : "Unused",
- 				m_pin[i].is_dynamic ? "Dynamic" : "Static",
- 				m_pin[i].pin_state, i);
-+		size += ret;
-+	}
- 	return ret;
- }
- 
--- 
-2.20.1
+Dan
 
