@@ -2,89 +2,76 @@ Return-Path: <SRS0=QPpS=4H=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CCCAC34022
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 21:39:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CBF6C5ACC4
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 21:54:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9AB932465D
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 21:39:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 24EF421D56
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 21:54:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fClF4uLF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9AB932465D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YbAhYeOQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 24EF421D56
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 98A1C1695;
-	Wed, 19 Feb 2020 22:38:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98A1C1695
+	by alsa0.perex.cz (Postfix) with ESMTPS id 661B5168A;
+	Wed, 19 Feb 2020 22:53:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 661B5168A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582148369;
-	bh=McV5z3AOKh1DYVx9b2DiQokkQOrYW4AqY96xfMyVuK0=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1582149283;
+	bh=ACPiDPU/AwaDIXQvmX6YsRnNtMapN2Dp2lVgMLGlhhQ=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fClF4uLFA4H5K9HqL4iQeKWc8fBW0saMiLpNxD/Vhi386hjhUMSKGspLJI2kFDm4s
-	 4X8gMutwVSM2IE/lXohK6PTHz0Pm6IoiS7veMUSGUKJiudI5Eb3Bgc9QCV1n2r9JyY
-	 2rUonTeC8VTNwrQcPAQhBV0e47CBoUFZnEfyLfW0=
+	b=YbAhYeOQ4bZJ1ujr1U7afcg51llC6d8DNGlRvhVZMI/GaO6KPDoTSshIB0sE1vhGZ
+	 bV3Sw2i1CtxS5l+F/9IT3F881GLpbFj1fAB6NrNq3L8LidUrAYwz0dgKGQJSCE0V7I
+	 TxiR5Rxdc/5BKBYGXyp51VLbCU4yWQmfclArl2B4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 02483F8025F;
-	Wed, 19 Feb 2020 22:38:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BE6D4F80142;
+	Wed, 19 Feb 2020 22:53:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0EC8DF80273; Wed, 19 Feb 2020 22:38:37 +0100 (CET)
-Received: from mail-oi1-f194.google.com (mail-oi1-f194.google.com
- [209.85.167.194])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 98F58F80273; Wed, 19 Feb 2020 22:53:50 +0100 (CET)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E7BDDF80142
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 22:38:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7BDDF80142
-Received: by mail-oi1-f194.google.com with SMTP id c16so25392914oic.3
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 13:38:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=E/e/t/Igu2jhBduZSv2AW4CMedwV0BIQbWhMahuclRw=;
- b=PmPN0Zh48vVnQhXjK8g8YZASHXwcvklZSHr4rYpy56U4cdCMx2AIGFZpyA8OUlDM9P
- LktKKHk0n/h5r5niKsmi6uh2EGOv/L0jm72jKTD7pU/FTOT9X8DixoCVLx57lk6p9Cws
- qBDvxDlTZ/dTTbg08VZEMWCoO5h/9AG5fjsDeV2/z71hmA5s3IgszhThlVVNTEHGzDXf
- m6mIUpp7YpKgnLVeiDV3aeGZta2RUbWyRRaUxDd7tGvzV6c+eb/07Y+4HNj9E7h4GiMQ
- z4rhd3V9ygkB1sIeODynedyeeRht78FUzkIS+CYLdew0bthiqvVogBdkz4PShTjY8FWU
- C3VQ==
-X-Gm-Message-State: APjAAAWdQUjRI+6pVdxE9UQWNCsjft2wvzxWDmuv4djnV+6DdPIDaMe/
- 57PKgkGLg9M85Z6QMTjgRA==
-X-Google-Smtp-Source: APXvYqzXRQu0rzVdzwAvjm3VOQxfppCool33P+2clSM/5tqQ9a4Gt59ZBgfIOhaxSQcWmeEQr5REYA==
-X-Received: by 2002:a54:4791:: with SMTP id o17mr5704299oic.70.1582148312171; 
- Wed, 19 Feb 2020 13:38:32 -0800 (PST)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net.
- [24.155.109.49])
- by smtp.gmail.com with ESMTPSA id w72sm378347oie.49.2020.02.19.13.38.31
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 19 Feb 2020 13:38:31 -0800 (PST)
-Received: (nullmailer pid 15386 invoked by uid 1000);
- Wed, 19 Feb 2020 21:38:30 -0000
-Date: Wed, 19 Feb 2020 15:38:30 -0600
-From: Rob Herring <robh@kernel.org>
-To: Robin Murphy <robin.murphy@arm.com>
-Subject: Re: [PATCH v2 1/3] ASoC: dt-bindings: Make RK3328 codec GPIO explicit
-Message-ID: <20200219213830.GA15330@bogus>
-References: <cover.1581376744.git.robin.murphy@arm.com>
- <5f7a399dea8a9dedef57f6f99f0f6ab1c1fdc56a.1581376744.git.robin.murphy@arm.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id E7F27F80142
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 22:53:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7F27F80142
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 19 Feb 2020 13:53:44 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,462,1574150400"; d="scan'208";a="228724420"
+Received: from ssavage-mobl.amr.corp.intel.com (HELO [10.254.46.100])
+ ([10.254.46.100])
+ by fmsmga007.fm.intel.com with ESMTP; 19 Feb 2020 13:53:43 -0800
+Subject: Re: [PATCH] ASoC: dpcm: remove confusing trace in dpcm_get_be()
+To: Jerome Brunet <jbrunet@baylibre.com>, Mark Brown <broonie@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>
+References: <20200219115048.934678-1-jbrunet@baylibre.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <88391284-8125-1be6-f7c9-4509b1d89367@linux.intel.com>
+Date: Wed, 19 Feb 2020 15:53:43 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5f7a399dea8a9dedef57f6f99f0f6ab1c1fdc56a.1581376744.git.robin.murphy@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, heiko@sntech.de,
- lgirdwood@gmail.com, linux-rockchip@lists.infradead.org, broonie@kernel.org,
- pgwipeout@gmail.com, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20200219115048.934678-1-jbrunet@baylibre.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,23 +87,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 18 Feb 2020 21:31:58 +0000, Robin Murphy wrote:
-> Existing RK3328 codec drivers have overloaded the GRF phandle to assume
-> implicit control of the limited-function GPIO_MUTE pin, which is usually
-> used to enable an external audio line driver IC. Since this pin has a
-> proper binding of its own (see gpio/rockchip,rk3328-grf-gpio.txt), make
-> a GPIO explicit in the codec binding too. This will help avoid ambiguity
-> on boards that use that pin for some other purpose.
-> 
-> (and while touching the example, enforce the "don't include status" rule)
-> 
-> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
-> ---
-> 
-> v2: no change
-> 
->  .../devicetree/bindings/sound/rockchip,rk3328-codec.txt    | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
 
-Acked-by: Rob Herring <robh@kernel.org>
+
+On 2/19/20 5:50 AM, Jerome Brunet wrote:
+> Now that dpcm_get_be() is used in dpcm_end_walk_at_be(), it is not a error
+> if this function does not find a BE for the provided widget. Remove the
+> related dev_err() trace which is confusing since things might be working
+> as expected.
+> 
+> When called from dpcm_add_paths(), it is an error if dpcm_get_be() fails to
+> find a BE for the provided widget. The necessary error trace is already
+> done in this case.
+> 
+> Fixes: 027a48387183 ("ASoC: soc-pcm: use dpcm_get_be() at dpcm_end_walk_at_be()")
+> Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+
+Good catch, this error log is indeed unnecessary, I see more than 30 
+lines of 'can't get capture/playback BE' for all the non-BE widgets in 
+our topologies (PCM, buffers, PGA, EQ, etc).
+
+Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
+> ---
+>   sound/soc/soc-pcm.c | 4 +---
+>   1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+> index 63f67eb7c077..aff27c8599ef 100644
+> --- a/sound/soc/soc-pcm.c
+> +++ b/sound/soc/soc-pcm.c
+> @@ -1270,9 +1270,7 @@ static struct snd_soc_pcm_runtime *dpcm_get_be(struct snd_soc_card *card,
+>   		}
+>   	}
+>   
+> -	/* dai link name and stream name set correctly ? */
+> -	dev_err(card->dev, "ASoC: can't get %s BE for %s\n",
+> -		stream ? "capture" : "playback", widget->name);
+> +	/* Widget provided is not a BE */
+>   	return NULL;
+>   }
+>   
+> 
