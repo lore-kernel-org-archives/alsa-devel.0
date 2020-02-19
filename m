@@ -2,63 +2,67 @@ Return-Path: <SRS0=QPpS=4H=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45A32C34031
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 00:27:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 88270C34031
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 01:31:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C3814206F4
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 00:27:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 12A912464E
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 01:31:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nbuYqipw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C3814206F4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DdQwepKn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 12A912464E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 249551690;
-	Wed, 19 Feb 2020 01:26:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 249551690
+	by alsa0.perex.cz (Postfix) with ESMTPS id 64ECD16B8;
+	Wed, 19 Feb 2020 02:30:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64ECD16B8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582072047;
-	bh=1yRRYxKumiHFjTBY96Vl6BkMw20bZzFQXkDRV5EL3Xg=;
-	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=nbuYqipwChRYRerGLYMjWrJfxRn2mcB4KZiuEbVHDEKWKgCstFHt/ZVAZm4n+uY+O
-	 Elq0AHAi9kAmxO4MIn8ixgV5lmgzD46hGAgjn4JR+VcqnFytzeS6vdgWLr0BsTCTfv
-	 eXWpU70j7pFtPMDm1MmBbaaJaq9SlK790v+ESesg=
+	s=default; t=1582075903;
+	bh=qTuU9POOzFGbczndMxZOynSgdJs/KC2SPmY0ZzwtX5g=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=DdQwepKnAX04RoGw5871Y7KlfTlp8V5xHKgUZO6/KrlfAoDAL8qQ08g5pgEG1/wpK
+	 VoPRLC99YCCFhU+gfN7q6lOatuW0jcupdZGJc+L6SbbqBgXzqvNqK/D+fpVHC4DIWH
+	 394+jM/VkicDMmnTMdzDek2Lqd89Clvxx1NB8cp0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 541CDF803AE;
-	Wed, 19 Feb 2020 01:11:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D73D2F80145;
+	Wed, 19 Feb 2020 02:30:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A8461F803AF; Wed, 19 Feb 2020 01:11:19 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id EB0FAF8038D
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 01:11:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB0FAF8038D
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 58B92FEC;
- Tue, 18 Feb 2020 16:11:15 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D08003F68F;
- Tue, 18 Feb 2020 16:11:14 -0800 (PST)
-Date: Wed, 19 Feb 2020 00:11:13 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Stephan Gerhold <stephan@gerhold.net>
-Subject: Applied "ASoC: soc-pcm: fix regression in soc_new_pcm()" to the asoc
- tree
-In-Reply-To: <20200218103824.26708-1-stephan@gerhold.net>
-Message-Id: <applied-20200218103824.26708-1-stephan@gerhold.net>
-X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, Sameer Pujar <spujar@nvidia.com>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Jerome Brunet <jbrunet@baylibre.com>
+ id 1CB5FF80148; Wed, 19 Feb 2020 02:30:51 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 0517AF80137
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 02:30:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0517AF80137
+Date: 19 Feb 2020 10:30:38 +0900
+X-IronPort-AV: E=Sophos;i="5.70,458,1574089200"; d="scan'208";a="39655158"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 19 Feb 2020 10:30:38 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 572324146B34;
+ Wed, 19 Feb 2020 10:30:38 +0900 (JST)
+Message-ID: <87v9o3jrdf.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Dmitry Osipenko <digetx@gmail.com>
+Subject: Re: [alsa-devel] [PATCH v3 0/7] ASoC: soc-pcm cleanup step2
+In-Reply-To: <5d19876d-86a4-a461-f47a-68c7ba1f46ac@gmail.com>
+References: <87d0anceze.wl-kuninori.morimoto.gx@renesas.com>
+ <5d19876d-86a4-a461-f47a-68c7ba1f46ac@gmail.com>
+User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+ Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
+ Jon Hunter <jonathanh@nvidia.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,101 +78,89 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
 
-   ASoC: soc-pcm: fix regression in soc_new_pcm()
+Hi Dmitry
 
-has been applied to the asoc tree at
+Thank you for reporting
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+> I'm observing a NULL dereference on NVIDIA Tegra20/30 once PulseAudio is
+> loaded.
+> 
+> The offending patch is:
+> 
+>   ASoC: soc-pcm: call snd_soc_component_open/close() once
+> 
+> Please fix, thanks in advance.
+> 
+> [   61.860826] 8<--- cut here ---
+> [   61.860965] Unable to handle kernel NULL pointer dereference at
+> virtual address 00000000
+> [   61.861037] pgd = ef2eab54
+> [   61.861155] [00000000] *pgd=00000000
+> [   61.861228] Internal error: Oops: 5 [#1] SMP THUMB2
+> [   61.861298] Modules linked in:
+> [   61.861427] CPU: 2 PID: 599 Comm: pulseaudio Not tainted
+> 5.6.0-rc2-next-20200218-00168-g1e584fed87b9 #1275
+> [   61.861546] Hardware name: NVIDIA Tegra SoC (Flattened Device Tree)
+> [   61.861626] PC is at snd_dmaengine_pcm_close+0x1c/0x3c
+> [   61.861756] LR is at snd_soc_component_close+0x1d/0x3c
+> [   61.861823] pc : [<c072a36c>]    lr : [<c0751b51>]    psr: 60000033
+> [   61.861944] sp : dc01bc88  ip : 00000000  fp : ffffffea
+> [   61.862013] r10: 00000010  r9 : dd81a840  r8 : de318e00
+> [   61.862080] r7 : dd81adfc  r6 : 00000000  r5 : 00000003  r4 : 00000000
+> [   61.862199] r3 : dc19f800  r2 : 00000000  r1 : 00000447  r0 : c0e2f438
+> [   61.862322] Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA Thumb
+> Segment none
+> [   61.862390] Control: 50c5387d  Table: 9db0c04a  DAC: 00000051
+> [   61.862510] Process pulseaudio (pid: 599, stack limit = 0xcfc4cd60)
+> [   61.862576] Stack: (0xdc01bc88 to 0xdc01c000)
+> [   61.862700] bc80:                   c0756611 de31b60c 00000003
+> c0751b51 de31b60c c07525ff
+> ...
+> [   61.865643] bfe0: 00000142 beb9b7e8 b6c35f0d b6bbcd56 00000030
+> ffffff9c 00000000 00000000
+> [   61.865773] [<c072a36c>] (snd_dmaengine_pcm_close) from [<c0751b51>]
+> (snd_soc_component_close+0x1d/0x3c)
+> [   61.865920] [<c0751b51>] (snd_soc_component_close) from [<c07525ff>]
+> (soc_pcm_components_close+0x27/0x54)
+> [   61.865993] [<c07525ff>] (soc_pcm_components_close) from [<c0752c27>]
+> (soc_pcm_close+0x73/0xf0)
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+But, hmm... This is strange...
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+I checked this patch and your Oops trace.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+This patch protects kernel from "duplicate close" or "close without open",
+and your Oops happen in snd_dmaengine_pcm_close().
+This means it is really opened, and was closed correctly,
+if my understanding was correct.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+I guess the NULL is on substream or substream_to_prtd(substream)
+in snd_dmaengine_pcm_close().
+I guess it has same issue without this patch ?
 
-Thanks,
-Mark
+Can you debug that this component .close() was called twice or more ?
+# but, I don't think so...
+I think "component->name" can help you ?
 
-From a4877a6fb2bd2e356a5eaacd86d6b6d69ff84e69 Mon Sep 17 00:00:00 2001
-From: Stephan Gerhold <stephan@gerhold.net>
-Date: Tue, 18 Feb 2020 11:38:24 +0100
-Subject: [PATCH] ASoC: soc-pcm: fix regression in soc_new_pcm()
+ int snd_soc_component_close(struct snd_soc_component *component,
+ 			    struct snd_pcm_substream *substream)
+ {
+-	if (component->driver->close)
+-		return component->driver->close(component, substream);
+-	return 0;
++	int ret = 0;
++
++	if (component->opened &&
++	    component->driver->close)
++		ret = component->driver->close(component, substream);
++
++	component->opened = 0;
++
++	return ret;
+ }
 
-Commit af4bac11531f ("ASoC: soc-pcm: crash in snd_soc_dapm_new_dai")
-swapped the SNDRV_PCM_STREAM_* parameter in the
-snd_soc_dai_stream_valid(cpu_dai, ...) checks. But that works only
-for codec2codec links. For normal links it breaks registration of
-playback/capture-only PCM devices.
-
-E.g. on qcom/apq8016_sbc there is usually one playback-only and one
-capture-only PCM device, but they disappeared after the commit.
-
-The codec2codec case was added in commit a342031cdd08
-("ASoC: create pcm for codec2codec links as well") as an extra check
-(e.g. `playback = playback && cpu_playback->channels_min`).
-
-We should be able to simplify the code by checking directly for
-the correct stream type in the loop.
-This also fixes the regression because we check for PLAYBACK for
-both codec and cpu dai again when codec2codec is not used.
-
-Fixes: af4bac11531f ("ASoC: soc-pcm: crash in snd_soc_dapm_new_dai")
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-Tested-by: Jerome Brunet <jbrunet@baylibre.com>
-Reviewed-by: Jerome Brunet <jbrunet@baylibre.com>
-Cc: Jerome Brunet <jbrunet@baylibre.com>
-Cc: Sameer Pujar <spujar@nvidia.com>
-Link: https://lore.kernel.org/r/20200218103824.26708-1-stephan@gerhold.net
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Thank you for your help !!
+Best regards
 ---
- sound/soc/soc-pcm.c | 15 ++++++---------
- 1 file changed, 6 insertions(+), 9 deletions(-)
-
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 6630fadd6e09..65a3856be250 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -2858,22 +2858,19 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
- 		capture = rtd->dai_link->dpcm_capture;
- 	} else {
- 		/* Adapt stream for codec2codec links */
--		struct snd_soc_pcm_stream *cpu_capture = rtd->dai_link->params ?
--			&cpu_dai->driver->playback : &cpu_dai->driver->capture;
--		struct snd_soc_pcm_stream *cpu_playback = rtd->dai_link->params ?
--			&cpu_dai->driver->capture : &cpu_dai->driver->playback;
-+		int cpu_capture = rtd->dai_link->params ?
-+			SNDRV_PCM_STREAM_PLAYBACK : SNDRV_PCM_STREAM_CAPTURE;
-+		int cpu_playback = rtd->dai_link->params ?
-+			SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
- 
- 		for_each_rtd_codec_dai(rtd, i, codec_dai) {
- 			if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_PLAYBACK) &&
--			    snd_soc_dai_stream_valid(cpu_dai,   SNDRV_PCM_STREAM_CAPTURE))
-+			    snd_soc_dai_stream_valid(cpu_dai,   cpu_playback))
- 				playback = 1;
- 			if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_CAPTURE) &&
--			    snd_soc_dai_stream_valid(cpu_dai,   SNDRV_PCM_STREAM_PLAYBACK))
-+			    snd_soc_dai_stream_valid(cpu_dai,   cpu_capture))
- 				capture = 1;
- 		}
--
--		capture = capture && cpu_capture->channels_min;
--		playback = playback && cpu_playback->channels_min;
- 	}
- 
- 	if (rtd->dai_link->playback_only) {
--- 
-2.20.1
-
+Kuninori Morimoto
