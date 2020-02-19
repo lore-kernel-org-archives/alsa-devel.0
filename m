@@ -2,70 +2,141 @@ Return-Path: <SRS0=QPpS=4H=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 626E4C34047
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 12:07:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9AE7C34047
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 13:01:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E3B1024671
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 12:07:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5565A20801
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 13:01:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="COMokR/Y"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E3B1024671
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sVV2dX8G";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="mpqlsKv9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5565A20801
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=samsung.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3A32E74C;
-	Wed, 19 Feb 2020 13:06:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A32E74C
+	by alsa0.perex.cz (Postfix) with ESMTPS id A25E01685;
+	Wed, 19 Feb 2020 14:00:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A25E01685
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582114031;
-	bh=IpLhAi9AooA4Gf4th3c5XahCCwCq9g4w7rArbqpTPwM=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1582117300;
+	bh=UToYEvW6lml54g3FIbEDBUXifAlDYtN97iTzZBlJYZo=;
+	h=Subject:To:From:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=COMokR/YiF3niwyjjDWTImrkoL0fcRW8kHp4Xj0HPvkoj40A8AkEl7wY9KQ1ZaS9B
-	 laiieRBHyjAy4bDWzppxSoKDiCDjXNoLOj0kVSK3QSNMve/4jG6Se1PbxGc+56iM1u
-	 FGQfDMQMnc4ANbtqLKxXk4lkNhdAyTphUo8Sm0o8=
+	b=sVV2dX8GN9v6UATrqxR7/hD9SEuATKKHGlkF2VxbZ02xw3R2TuOEfWdvdUw7Wa284
+	 XZugKSuGuY2XxZeR3QEx4Dapv6EQhtm24OpZxm7TSLBtN+vThvez2HnTlGXFCGIGzO
+	 ZD6EKMNbvB7p95ctKnURl+QIDP3/SUBaFzbiaB28=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B0E12F8025F;
-	Wed, 19 Feb 2020 13:06:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 23F8FF8025F;
+	Wed, 19 Feb 2020 14:00:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 97964F80273; Wed, 19 Feb 2020 13:06:18 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 07788F801F5
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 13:06:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07788F801F5
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E6B9731B;
- Wed, 19 Feb 2020 04:06:13 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6A28E3F6CF;
- Wed, 19 Feb 2020 04:06:13 -0800 (PST)
-Date: Wed, 19 Feb 2020 12:06:11 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Robin Murphy <robin.murphy@arm.com>
-Subject: Re: [PATCH v2 2/3] ASoC: rockchip: Make RK3328 GPIO_MUTE control
- explicit
-Message-ID: <20200219120611.GB4488@sirena.org.uk>
-References: <cover.1581376744.git.robin.murphy@arm.com>
- <5bc383ed1832f0f5d1dcb3c97ad92fd68e5217e3.1581376744.git.robin.murphy@arm.com>
+ id C4200F80273; Wed, 19 Feb 2020 14:00:47 +0100 (CET)
+Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com
+ [210.118.77.11])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E7AFDF801F5
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 14:00:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7AFDF801F5
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com
+ header.b="mpqlsKv9"
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+ by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id
+ 20200219130044euoutp0119ed4ad4459e0b03d2b6516267164872~0z0BB9tOq3268732687euoutp01e
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 13:00:44 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com
+ 20200219130044euoutp0119ed4ad4459e0b03d2b6516267164872~0z0BB9tOq3268732687euoutp01e
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+ s=mail20170921; t=1582117244;
+ bh=ii8GQDIT+uQSHgPUzhTyWc8rNgTYbW4x5aLUgk7/fdk=;
+ h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+ b=mpqlsKv9L2hFCBeqs+sCPoLBI2pCd00S9vXrKh5QBmUSOcDVvQQtflhXrx8MSJ0xD
+ +GycHv/CXw7WWmbchiNoZRIqfjkeBZxbz3VMocJsFy0OiPqy0MnhhlJ8DyWVHUm9S5
+ K+f9bk3HYywa+XtL41Y9duhbJTyf/zaGtYGwShig=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+ eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+ 20200219130043eucas1p201ec5696edbd3b35c87867735de506cf~0z0A8LZz71243712437eucas1p2Y;
+ Wed, 19 Feb 2020 13:00:43 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+ eusmges1new.samsung.com (EUCPMTA) with SMTP id 67.DB.61286.B713D4E5; Wed, 19
+ Feb 2020 13:00:43 +0000 (GMT)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+ eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+ 20200219130043eucas1p223130679005b25ad2b22081c35731766~0z0AqUwEH0842708427eucas1p2c;
+ Wed, 19 Feb 2020 13:00:43 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+ eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+ 20200219130043eusmtrp293d0e52664e55345fda81e9f27745b54~0z0AprYQX1308813088eusmtrp2n;
+ Wed, 19 Feb 2020 13:00:43 +0000 (GMT)
+X-AuditID: cbfec7f2-ef1ff7000001ef66-0d-5e4d317b9345
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+ eusmgms2.samsung.com (EUCPMTA) with SMTP id DA.75.07950.B713D4E5; Wed, 19
+ Feb 2020 13:00:43 +0000 (GMT)
+Received: from [106.120.51.15] (unknown [106.120.51.15]) by
+ eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+ 20200219130043eusmtip2e69d72b93110e15589430ae8323303ed~0z0AP2D2Q2992429924eusmtip2E;
+ Wed, 19 Feb 2020 13:00:43 +0000 (GMT)
+Subject: Re: [PATCH] ASoC: fix card registration regression.
+To: Jerome Brunet <jbrunet@baylibre.com>, Mark Brown <broonie@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>
+From: Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <96d80637-3c3b-6a72-85d2-4ee37c371804@samsung.com>
+Date: Wed, 19 Feb 2020 14:00:42 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="yNb1oOkm5a9FJOVX"
-Content-Disposition: inline
-In-Reply-To: <5bc383ed1832f0f5d1dcb3c97ad92fd68e5217e3.1581376744.git.robin.murphy@arm.com>
-X-Cookie: FORTH IF HONK THEN
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, heiko@sntech.de,
- lgirdwood@gmail.com, linux-rockchip@lists.infradead.org, pgwipeout@gmail.com,
- linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20200219102526.692126-1-jbrunet@baylibre.com>
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrHKsWRmVeSWpSXmKPExsWy7djPc7rVhr5xBhfmmllcuXiIyWLqwyds
+ FvOPnGO1ePPoCLPFtysdTBaXd81hs5h4ewO7A7vHhs9NbB7vb7Sye+ycdZfdY9OqTjaPzUvq
+ PT5vkgtgi+KySUnNySxLLdK3S+DKOPv6PlPBTLGKrSe+sTQw/hTsYuTkkBAwkVg66RxbFyMX
+ h5DACkaJGZOnsIIkhAS+MErMXRkKkfjMKHH111+mLkYOsI5J+4sg4ssZJXrXfmaHcN4ySiw4
+ uJkRpFtYwEZiz/dP7CC2iECBxLMJT8HizALTGCUOvBcHsdkEDCW63naxgdi8AnYSfZN3soDY
+ LAKqEn375oLViwrESsxeeZgFokZQ4uTMJ2A2p4C1xIbzH5ghZspLbH87B8oWl7j1ZD4TyEES
+ AvvYJU7tgCiSEHCROHbwOSOELSzx6vgWdghbRuL/TpiGZkaJh+fWskM4PYwSl5tmQHVYS9w5
+ 94sN5H9mAU2J9bv0IcKOErPXLGKDBAufxI23ghBH8ElM2jadGSLMK9HRJgRRrSYx6/g6uLUH
+ L1xinsCoNAvJa7OQvDMLyTuzEPYuYGRZxSieWlqcm55abJiXWq5XnJhbXJqXrpecn7uJEZiK
+ Tv87/mkH49dLSYcYBTgYlXh4P6j7xgmxJpYVV+YeYpTgYFYS4fUW94oT4k1JrKxKLcqPLyrN
+ SS0+xCjNwaIkzmu86GWskEB6YklqdmpqQWoRTJaJg1OqgbHJp/hwFqux2wvrr3/2cC00bXt1
+ e9NP/5Nxcy57zjGb/nP73Muvmu/fjawSze712ae94qtDxzaT396WQUUfLOO6pdmWuMpvOJLb
+ XP3mW+z+ds8nIu8ur96yrzT8i+crsePcjmKHn/2uSd6pvfXw+V7zV99nLr6vkHtDY0bUapfL
+ dTcX2oWcDU9VYinOSDTUYi4qTgQAJqG+kUEDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrEIsWRmVeSWpSXmKPExsVy+t/xe7rVhr5xBo8PKltcuXiIyWLqwyds
+ FvOPnGO1ePPoCLPFtysdTBaXd81hs5h4ewO7A7vHhs9NbB7vb7Sye+ycdZfdY9OqTjaPzUvq
+ PT5vkgtgi9KzKcovLUlVyMgvLrFVija0MNIztLTQMzKx1DM0No+1MjJV0rezSUnNySxLLdK3
+ S9DLOPv6PlPBTLGKrSe+sTQw/hTsYuTgkBAwkZi0v6iLkYtDSGApo8Tp/StZuxg5geIyEien
+ NUDZwhJ/rnWxQRS9ZpRo/93PBpIQFrCR2PP9EzuILSJQIDH94H9mkCJmgWmMEl2rp7JAdPQx
+ Shx+2MIMUsUmYCjR9bYLrJtXwE6ib/JOFhCbRUBVom/fXEYQW1QgVuLGzA4miBpBiZMzn4DV
+ cApYS2w4/wFsDrOAmcS8zQ+hbHmJ7W/nQNniEreezGeawCg0C0n7LCQts5C0zELSsoCRZRWj
+ SGppcW56brGRXnFibnFpXrpecn7uJkZg/G079nPLDsaud8GHGAU4GJV4eGeo+sYJsSaWFVfm
+ HmKU4GBWEuH1FveKE+JNSaysSi3Kjy8qzUktPsRoCvTcRGYp0eR8YGrIK4k3NDU0t7A0NDc2
+ NzazUBLn7RA4GCMkkJ5YkpqdmlqQWgTTx8TBKdXAuOjLOaewpgeT522x6N320FCietltxzmH
+ zxyZ7iP+9vw0u96/f+69Ni8PfmZe822Hz7Z6o9dqi9IvGvquUjF4vFiM+2CRVVEty7HMXh2G
+ 4lsz38X8NEsr+jYz5sXPI0WyORaaKyw5U/rfWrgLL2+avLSyYP/UsHPO0z0mn7736PBh9b2m
+ CxlS1ymxFGckGmoxFxUnAgCIHPuc1QIAAA==
+X-CMS-MailID: 20200219130043eucas1p223130679005b25ad2b22081c35731766
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200219102548eucas1p1c4c4ec50d6d4e01500028bedfed5305e
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200219102548eucas1p1c4c4ec50d6d4e01500028bedfed5305e
+References: <CGME20200219102548eucas1p1c4c4ec50d6d4e01500028bedfed5305e@eucas1p1.samsung.com>
+ <20200219102526.692126-1-jbrunet@baylibre.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org,
+ linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,32 +152,86 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi Jerome,
 
---yNb1oOkm5a9FJOVX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 19.02.2020 11:25, Jerome Brunet wrote:
+> This reverts commit b2354e4009a773c00054b964d937e1b81cb92078.
+>
+> This change might have been desirable to ensure the uniqueness of
+> the component name. It would have helped to better support linux
+> devices which register multiple components, something is which more
+> common than initially thought.
+>
+> However, some card driver are directly using dev_name() to fill the
+> component names of the dai_link which is a problem if want to change
+> the way ASoC generates the component names.
+>
+> Until we figure out the appropriate way to deal with this, revert the
+> change and keep the names as they were. There might be a couple of warning
+> related to debugfs (which were already present before the change) but it
+> is still better than breaking working audio cards.
+>
+> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 
-On Tue, Feb 18, 2020 at 09:31:59PM +0000, Robin Murphy wrote:
+As expected, this fixes vc4-drm driver registration on RPi3.
 
->  - add fallback case to avoid possible Rock64 regressions
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
 
-This should really have been called out in the changelog, were I reading
-this cold I might've stopped at the changelog and said you needed to
-keep the ABI stable for old boards.
+> ---
+>   sound/soc/soc-core.c | 29 +----------------------------
+>   1 file changed, 1 insertion(+), 28 deletions(-)
+>
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> index 30c17fde14ca..518b652cf872 100644
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> @@ -2442,33 +2442,6 @@ static int snd_soc_register_dais(struct snd_soc_component *component,
+>   	return ret;
+>   }
+>   
+> -static char *snd_soc_component_unique_name(struct device *dev,
+> -					   struct snd_soc_component *component)
+> -{
+> -	struct snd_soc_component *pos;
+> -	int count = 0;
+> -	char *name, *unique;
+> -
+> -	name = fmt_single_name(dev, &component->id);
+> -	if (!name)
+> -		return name;
+> -
+> -	/* Count the number of components registred by the device */
+> -	for_each_component(pos) {
+> -		if (dev == pos->dev)
+> -			count++;
+> -	}
+> -
+> -	/* Keep naming as it is for the 1st component */
+> -	if (!count)
+> -		return name;
+> -
+> -	unique = devm_kasprintf(dev, GFP_KERNEL, "%s-%d", name, count);
+> -	devm_kfree(dev, name);
+> -
+> -	return unique;
+> -}
+> -
+>   static int snd_soc_component_initialize(struct snd_soc_component *component,
+>   	const struct snd_soc_component_driver *driver, struct device *dev)
+>   {
+> @@ -2477,7 +2450,7 @@ static int snd_soc_component_initialize(struct snd_soc_component *component,
+>   	INIT_LIST_HEAD(&component->card_list);
+>   	mutex_init(&component->io_mutex);
+>   
+> -	component->name = snd_soc_component_unique_name(dev, component);
+> +	component->name = fmt_single_name(dev, &component->id);
+>   	if (!component->name) {
+>   		dev_err(dev, "ASoC: Failed to allocate name\n");
+>   		return -ENOMEM;
 
---yNb1oOkm5a9FJOVX
-Content-Type: application/pgp-signature; name="signature.asc"
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5NJLMACgkQJNaLcl1U
-h9A6EQf+M4FxgJh7NoGwjteEBX6uwLvxHTrgo0677EFqqDjc/b5TNCDU720Q7dbi
-Mead2pPB06lQOHGO2piOu+A55lWuHX17hfnh9t1AECnZmZDQv/kTgZ/qb/yYU02d
-rJLGP0+Uy8bYU3SAzIGZyC0RJ3MydsaHp5/w3qXNiTQ/RB90k4CkqeYpCw0uT9yX
-8fgIUqUdiOgOvGjDn91teqXcoAjIU7VXfvz6yijqhqNynx1ybjgXklR1TJ2S2bZc
-kY35dvMUXpVraf/NcNJMYZVBaMRHMqj7LmRGUUAcVZZ982bWNAXx1FOPzY19ri6v
-NZyWPTowIagAhp65YyKen9nUh3a4sA==
-=Inf+
------END PGP SIGNATURE-----
-
---yNb1oOkm5a9FJOVX--
