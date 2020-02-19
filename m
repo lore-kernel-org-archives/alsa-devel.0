@@ -2,63 +2,58 @@ Return-Path: <SRS0=QPpS=4H=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4F7FC34022
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 05:24:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 70818C34022
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 05:52:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 89D1B208E4
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 05:24:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E8C87207FD
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 05:52:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gnllfOVc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 89D1B208E4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FKKJ7J1F"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E8C87207FD
+Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E25BA16CB;
-	Wed, 19 Feb 2020 06:23:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E25BA16CB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 557AB16C8;
+	Wed, 19 Feb 2020 06:51:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 557AB16C8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582089858;
-	bh=lK0Wy/HjCHY0D7gRwlWWYbwxPjXJ4mlXYStYh8KKd9Y=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=gnllfOVcX/+j1AS9GYAALUQOamhjq35LmPY4U8aEEtse7L/9XPvbGBXfL1UjjQHKb
-	 OoJDGNqHgibJPFWcbdedlEm0TeiEFZ9D3LWEA+qY3muxhjKFvUj5/IOWqfJdd8rQdv
-	 SYBbTn2NltEAyBLRDbLeIIeJcGh1ERZXgXum62no=
+	s=default; t=1582091559;
+	bh=/cPuSPHCa8yhtyme52EVKZPMCJygtIPuM5pWxUWwhYo=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=FKKJ7J1FRpk9uGmM0yQvyGPidBZ+lMnBFrEGRNxKDRbAF+lvIhzeZzR1zBhMR+RRf
+	 pilBAVXZMod88c4GBXzW0pAhpZyw28EpPzAW9G9Bbnli9zOLTbXNttNMcji9bARBEc
+	 1qG8zVbCTnpYu6s6Dq/P1p7l88CSIcXEcVxSRgUk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7A477F8015E;
-	Wed, 19 Feb 2020 06:23:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9EE49F8015E;
+	Wed, 19 Feb 2020 06:51:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8A9B4F80172; Wed, 19 Feb 2020 06:23:26 +0100 (CET)
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6BAE9F80114
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 06:23:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6BAE9F80114
-Received: from [222.130.141.161] (helo=localhost.localdomain)
- by youngberry.canonical.com with esmtpsa
- (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
- (envelope-from <hui.wang@canonical.com>)
- id 1j4HpR-0005y0-Tl; Wed, 19 Feb 2020 05:23:22 +0000
-From: Hui Wang <hui.wang@canonical.com>
-To: alsa-devel@alsa-project.org,
-	tiwai@suse.de,
-	stable@vger.kernel.org
-Subject: [PATCH] ALSA: hda/realtek - Fix a regression for mute led on Lenovo
- Carbon X1
-Date: Wed, 19 Feb 2020 13:23:06 +0800
-Message-Id: <20200219052306.24935-1-hui.wang@canonical.com>
-X-Mailer: git-send-email 2.17.1
+ id 6B6C1F80172; Wed, 19 Feb 2020 06:51:46 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id BE40EF800C4
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 06:51:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE40EF800C4
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1582091501705790043-webhooks-bot@alsa-project.org>
+References: <1582091501705790043-webhooks-bot@alsa-project.org>
+Subject: ALSA raw MIDI API - client hangup and amidi exits midiC3D0 failed:
+ Device or resource busy
+Message-Id: <20200219055146.6B6C1F80172@alsa1.perex.cz>
+Date: Wed, 19 Feb 2020 06:51:46 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,29 +69,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Need to chain the THINKPAD_ACPI, otherwise the mute led will not
-work.
+alsa-project/alsa-lib issue #25 was opened from MusicMaker:
 
-Fixes: d2cd795c4ece ("ALSA: hda - fixup for the bass speaker on Lenovo Carbon X1 7th gen")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 2 ++
- 1 file changed, 2 insertions(+)
+While developing a client using the raw MIDI interface, bumped into an issue that
+went away after rebooting Ubuntu 19.10 - 64 bit. Using a MIDISPORT 4x4 one of the 4 ports could not be opened. The client (written in C) call hang and the client thus went unresponsive. No timeout, no error, no nothing. CTRL-BREAK the client and retrying many times gave the exact same result, no other apps were using the port. The other 3 ports on the interface and any other MIDI USB device connected could be opened and used without any problem.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 477589e7ec1d..31bee0512334 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6684,6 +6684,8 @@ static const struct hda_fixup alc269_fixups[] = {
- 	[ALC285_FIXUP_SPEAKER2_TO_DAC1] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc285_fixup_speaker2_to_dac1,
-+		.chained = true,
-+		.chain_id = ALC269_FIXUP_THINKPAD_ACPI
- 	},
- 	[ALC256_FIXUP_DELL_INSPIRON_7559_SUBWOOFER] = {
- 		.type = HDA_FIXUP_PINS,
--- 
-2.17.1
+When opening the port with amidi, an error was reported, it seems amidi did not gracefully exit as well.
 
+amidi -receive -p hw:3,0,1
+ALSA lib rawmidi_hw.c:233:(snd_rawmidi_hw_open) open /dev/snd/midiC3D0 failed: Device or resource busy
+cannot open port "hw:3,0,1": Device or resource busy
+
+Looking at the rawmidi_hw.c code there is a GOTO and SYSERR statement. Not sure if those caused this .
+
+   if (fd < 0) {
+            snd_ctl_close(ctl);
+            SYSERR("open %s failed", filename);
+            return -errno;
+.
+After reboot the problem went away. The problem could have been caused while fixing some by coding issue. Maybe someone with more understanding of the code can spot an issue in the code. While  many applications use the raw MIDI interface. believe Bitwig and most others use the sequencer API to open ports.
+
+Just wanted to log this just in case anyone else experiences this
+
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/25
+Repository URL: https://github.com/alsa-project/alsa-lib
