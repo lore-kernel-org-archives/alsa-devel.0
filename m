@@ -2,141 +2,88 @@ Return-Path: <SRS0=QPpS=4H=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9AE7C34047
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 13:01:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F23BC34047
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 13:05:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5565A20801
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 13:01:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ADA5420801
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 13:05:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sVV2dX8G";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="mpqlsKv9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5565A20801
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=samsung.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kAsyrrYV";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="rpuXHCGN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ADA5420801
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A25E01685;
-	Wed, 19 Feb 2020 14:00:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A25E01685
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0CD051686;
+	Wed, 19 Feb 2020 14:04:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0CD051686
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582117300;
-	bh=UToYEvW6lml54g3FIbEDBUXifAlDYtN97iTzZBlJYZo=;
-	h=Subject:To:From:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=sVV2dX8GN9v6UATrqxR7/hD9SEuATKKHGlkF2VxbZ02xw3R2TuOEfWdvdUw7Wa284
-	 XZugKSuGuY2XxZeR3QEx4Dapv6EQhtm24OpZxm7TSLBtN+vThvez2HnTlGXFCGIGzO
-	 ZD6EKMNbvB7p95ctKnURl+QIDP3/SUBaFzbiaB28=
+	s=default; t=1582117526;
+	bh=2OH8uyzRnKGZ80RuK7L0CY6+aUGbeKNsMO3PJZ34OwM=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=kAsyrrYVuOk3Pi1NuWr6MmGj717uiUp9d3OdNacMNQTHMBiubrLQM5gNjgG5mUCvp
+	 IIDJUxC3L15iXQUfPS5mHFJoh7FnWIJe+Rzak3GmJAuTSmrS6BqP3iHgn8hfkeFoY6
+	 FjRkN+FKoGI8He7sNA4hGv54SfjV9l9ex8MdOZwI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 23F8FF8025F;
-	Wed, 19 Feb 2020 14:00:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 041B6F801F5;
+	Wed, 19 Feb 2020 14:04:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C4200F80273; Wed, 19 Feb 2020 14:00:47 +0100 (CET)
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com
- [210.118.77.11])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 75DD8F80277; Wed, 19 Feb 2020 14:04:33 +0100 (CET)
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E7AFDF801F5
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 14:00:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7AFDF801F5
+ by alsa1.perex.cz (Postfix) with ESMTPS id D5C8FF801F5
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 14:04:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5C8FF801F5
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com
- header.b="mpqlsKv9"
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
- by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id
- 20200219130044euoutp0119ed4ad4459e0b03d2b6516267164872~0z0BB9tOq3268732687euoutp01e
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 13:00:44 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com
- 20200219130044euoutp0119ed4ad4459e0b03d2b6516267164872~0z0BB9tOq3268732687euoutp01e
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
- s=mail20170921; t=1582117244;
- bh=ii8GQDIT+uQSHgPUzhTyWc8rNgTYbW4x5aLUgk7/fdk=;
- h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
- b=mpqlsKv9L2hFCBeqs+sCPoLBI2pCd00S9vXrKh5QBmUSOcDVvQQtflhXrx8MSJ0xD
- +GycHv/CXw7WWmbchiNoZRIqfjkeBZxbz3VMocJsFy0OiPqy0MnhhlJ8DyWVHUm9S5
- K+f9bk3HYywa+XtL41Y9duhbJTyf/zaGtYGwShig=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
- eucas1p2.samsung.com (KnoxPortal) with ESMTP id
- 20200219130043eucas1p201ec5696edbd3b35c87867735de506cf~0z0A8LZz71243712437eucas1p2Y;
- Wed, 19 Feb 2020 13:00:43 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
- eusmges1new.samsung.com (EUCPMTA) with SMTP id 67.DB.61286.B713D4E5; Wed, 19
- Feb 2020 13:00:43 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
- eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
- 20200219130043eucas1p223130679005b25ad2b22081c35731766~0z0AqUwEH0842708427eucas1p2c;
- Wed, 19 Feb 2020 13:00:43 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
- eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
- 20200219130043eusmtrp293d0e52664e55345fda81e9f27745b54~0z0AprYQX1308813088eusmtrp2n;
- Wed, 19 Feb 2020 13:00:43 +0000 (GMT)
-X-AuditID: cbfec7f2-ef1ff7000001ef66-0d-5e4d317b9345
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
- eusmgms2.samsung.com (EUCPMTA) with SMTP id DA.75.07950.B713D4E5; Wed, 19
- Feb 2020 13:00:43 +0000 (GMT)
-Received: from [106.120.51.15] (unknown [106.120.51.15]) by
- eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
- 20200219130043eusmtip2e69d72b93110e15589430ae8323303ed~0z0AP2D2Q2992429924eusmtip2E;
- Wed, 19 Feb 2020 13:00:43 +0000 (GMT)
-Subject: Re: [PATCH] ASoC: fix card registration regression.
-To: Jerome Brunet <jbrunet@baylibre.com>, Mark Brown <broonie@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>
-From: Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <96d80637-3c3b-6a72-85d2-4ee37c371804@samsung.com>
-Date: Wed, 19 Feb 2020 14:00:42 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+ dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="rpuXHCGN"
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 01JD4R81119667;
+ Wed, 19 Feb 2020 07:04:27 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1582117467;
+ bh=QYfk/0tLN4Oql6dXwlH5d6evBQcLGicLwy72d29I5bM=;
+ h=From:To:CC:Subject:Date;
+ b=rpuXHCGNdzmZFyvV91ah83UrwHMlI2xoau9rC8bKyOTb0aZerrOwq7D3lF3wh55gq
+ 4qUFQszANHZ6kPUSg1hh9Pp+zR5pXpE6u3U3n3KBLKCuAgZM4wncKzFYkYvFJeTRrp
+ Wbl29MmHiNKSTte1OoKoYFK/uLe477Ytox06pFzY=
+Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 01JD4Q39130488
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Wed, 19 Feb 2020 07:04:27 -0600
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Wed, 19
+ Feb 2020 07:04:26 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
+ Frontend Transport; Wed, 19 Feb 2020 07:04:26 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 01JD4QHi062569;
+ Wed, 19 Feb 2020 07:04:26 -0600
+From: Dan Murphy <dmurphy@ti.com>
+To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+ <tiwai@suse.com>
+Subject: [PATCH v3 0/2] Introduce the TLV320ADCx140 codec family
+Date: Wed, 19 Feb 2020 06:59:40 -0600
+Message-ID: <20200219125942.22013-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-In-Reply-To: <20200219102526.692126-1-jbrunet@baylibre.com>
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrHKsWRmVeSWpSXmKPExsWy7djPc7rVhr5xBhfmmllcuXiIyWLqwyds
- FvOPnGO1ePPoCLPFtysdTBaXd81hs5h4ewO7A7vHhs9NbB7vb7Sye+ycdZfdY9OqTjaPzUvq
- PT5vkgtgi+KySUnNySxLLdK3S+DKOPv6PlPBTLGKrSe+sTQw/hTsYuTkkBAwkVg66RxbFyMX
- h5DACkaJGZOnsIIkhAS+MErMXRkKkfjMKHH111+mLkYOsI5J+4sg4ssZJXrXfmaHcN4ySiw4
- uJkRpFtYwEZiz/dP7CC2iECBxLMJT8HizALTGCUOvBcHsdkEDCW63naxgdi8AnYSfZN3soDY
- LAKqEn375oLViwrESsxeeZgFokZQ4uTMJ2A2p4C1xIbzH5ghZspLbH87B8oWl7j1ZD4TyEES
- AvvYJU7tgCiSEHCROHbwOSOELSzx6vgWdghbRuL/TpiGZkaJh+fWskM4PYwSl5tmQHVYS9w5
- 94sN5H9mAU2J9bv0IcKOErPXLGKDBAufxI23ghBH8ElM2jadGSLMK9HRJgRRrSYx6/g6uLUH
- L1xinsCoNAvJa7OQvDMLyTuzEPYuYGRZxSieWlqcm55abJiXWq5XnJhbXJqXrpecn7uJEZiK
- Tv87/mkH49dLSYcYBTgYlXh4P6j7xgmxJpYVV+YeYpTgYFYS4fUW94oT4k1JrKxKLcqPLyrN
- SS0+xCjNwaIkzmu86GWskEB6YklqdmpqQWoRTJaJg1OqgbHJp/hwFqux2wvrr3/2cC00bXt1
- e9NP/5Nxcy57zjGb/nP73Muvmu/fjawSze712ae94qtDxzaT396WQUUfLOO6pdmWuMpvOJLb
- XP3mW+z+ds8nIu8ur96yrzT8i+crsePcjmKHn/2uSd6pvfXw+V7zV99nLr6vkHtDY0bUapfL
- dTcX2oWcDU9VYinOSDTUYi4qTgQAJqG+kUEDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrEIsWRmVeSWpSXmKPExsVy+t/xe7rVhr5xBo8PKltcuXiIyWLqwyds
- FvOPnGO1ePPoCLPFtysdTBaXd81hs5h4ewO7A7vHhs9NbB7vb7Sye+ycdZfdY9OqTjaPzUvq
- PT5vkgtgi9KzKcovLUlVyMgvLrFVija0MNIztLTQMzKx1DM0No+1MjJV0rezSUnNySxLLdK3
- S9DLOPv6PlPBTLGKrSe+sTQw/hTsYuTgkBAwkZi0v6iLkYtDSGApo8Tp/StZuxg5geIyEien
- NUDZwhJ/rnWxQRS9ZpRo/93PBpIQFrCR2PP9EzuILSJQIDH94H9mkCJmgWmMEl2rp7JAdPQx
- Shx+2MIMUsUmYCjR9bYLrJtXwE6ib/JOFhCbRUBVom/fXEYQW1QgVuLGzA4miBpBiZMzn4DV
- cApYS2w4/wFsDrOAmcS8zQ+hbHmJ7W/nQNniEreezGeawCg0C0n7LCQts5C0zELSsoCRZRWj
- SGppcW56brGRXnFibnFpXrpecn7uJkZg/G079nPLDsaud8GHGAU4GJV4eGeo+sYJsSaWFVfm
- HmKU4GBWEuH1FveKE+JNSaysSi3Kjy8qzUktPsRoCvTcRGYp0eR8YGrIK4k3NDU0t7A0NDc2
- NzazUBLn7RA4GCMkkJ5YkpqdmlqQWgTTx8TBKdXAuOjLOaewpgeT522x6N320FCietltxzmH
- zxyZ7iP+9vw0u96/f+69Ni8PfmZe822Hz7Z6o9dqi9IvGvquUjF4vFiM+2CRVVEty7HMXh2G
- 4lsz38X8NEsr+jYz5sXPI0WyORaaKyw5U/rfWrgLL2+avLSyYP/UsHPO0z0mn7736PBh9b2m
- CxlS1ymxFGckGmoxFxUnAgCIHPuc1QIAAA==
-X-CMS-MailID: 20200219130043eucas1p223130679005b25ad2b22081c35731766
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200219102548eucas1p1c4c4ec50d6d4e01500028bedfed5305e
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200219102548eucas1p1c4c4ec50d6d4e01500028bedfed5305e
-References: <CGME20200219102548eucas1p1c4c4ec50d6d4e01500028bedfed5305e@eucas1p1.samsung.com>
- <20200219102526.692126-1-jbrunet@baylibre.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org,
- linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Dan Murphy <dmurphy@ti.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -152,86 +99,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Jerome,
+Hello
 
-On 19.02.2020 11:25, Jerome Brunet wrote:
-> This reverts commit b2354e4009a773c00054b964d937e1b81cb92078.
->
-> This change might have been desirable to ensure the uniqueness of
-> the component name. It would have helped to better support linux
-> devices which register multiple components, something is which more
-> common than initially thought.
->
-> However, some card driver are directly using dev_name() to fill the
-> component names of the dai_link which is a problem if want to change
-> the way ASoC generates the component names.
->
-> Until we figure out the appropriate way to deal with this, revert the
-> change and keep the names as they were. There might be a couple of warning
-> related to debugfs (which were already present before the change) but it
-> is still better than breaking working audio cards.
->
-> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Introducing the Texas Instruments TLV320ADCx140 quad channel audio ADC.
+This device supports 4 analog inputs, 8 digital inputs or a combination of
+analog and digital microphones.
 
-As expected, this fixes vc4-drm driver registration on RPi3.
+TLV320ADC3140 - http://www.ti.com/lit/gpn/tlv320adc3140
+TLV320ADC5140 - http://www.ti.com/lit/gpn/tlv320adc5140
+TLV320ADC6140 - http://www.ti.com/lit/gpn/tlv320adc6140
 
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Dan Murphy (2):
+  dt-bindings: sound: Add TLV320ADCx140 dt bindings
+  ASoC: tlv320adcx140: Add the tlv320adcx140 codec driver family
 
-> ---
->   sound/soc/soc-core.c | 29 +----------------------------
->   1 file changed, 1 insertion(+), 28 deletions(-)
->
-> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index 30c17fde14ca..518b652cf872 100644
-> --- a/sound/soc/soc-core.c
-> +++ b/sound/soc/soc-core.c
-> @@ -2442,33 +2442,6 @@ static int snd_soc_register_dais(struct snd_soc_component *component,
->   	return ret;
->   }
->   
-> -static char *snd_soc_component_unique_name(struct device *dev,
-> -					   struct snd_soc_component *component)
-> -{
-> -	struct snd_soc_component *pos;
-> -	int count = 0;
-> -	char *name, *unique;
-> -
-> -	name = fmt_single_name(dev, &component->id);
-> -	if (!name)
-> -		return name;
-> -
-> -	/* Count the number of components registred by the device */
-> -	for_each_component(pos) {
-> -		if (dev == pos->dev)
-> -			count++;
-> -	}
-> -
-> -	/* Keep naming as it is for the 1st component */
-> -	if (!count)
-> -		return name;
-> -
-> -	unique = devm_kasprintf(dev, GFP_KERNEL, "%s-%d", name, count);
-> -	devm_kfree(dev, name);
-> -
-> -	return unique;
-> -}
-> -
->   static int snd_soc_component_initialize(struct snd_soc_component *component,
->   	const struct snd_soc_component_driver *driver, struct device *dev)
->   {
-> @@ -2477,7 +2450,7 @@ static int snd_soc_component_initialize(struct snd_soc_component *component,
->   	INIT_LIST_HEAD(&component->card_list);
->   	mutex_init(&component->io_mutex);
->   
-> -	component->name = snd_soc_component_unique_name(dev, component);
-> +	component->name = fmt_single_name(dev, &component->id);
->   	if (!component->name) {
->   		dev_err(dev, "ASoC: Failed to allocate name\n");
->   		return -ENOMEM;
+ .../bindings/sound/tlv320adcx140.yaml         |  83 ++
+ sound/soc/codecs/Kconfig                      |   9 +
+ sound/soc/codecs/Makefile                     |   2 +
+ sound/soc/codecs/tlv320adcx140.c              | 849 ++++++++++++++++++
+ sound/soc/codecs/tlv320adcx140.h              | 130 +++
+ 5 files changed, 1073 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
+ create mode 100644 sound/soc/codecs/tlv320adcx140.c
+ create mode 100644 sound/soc/codecs/tlv320adcx140.h
 
-Best regards
 -- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+2.25.0
 
