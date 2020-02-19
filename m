@@ -2,92 +2,89 @@ Return-Path: <SRS0=QPpS=4H=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BDFEC3524E
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 21:17:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CCCAC34022
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 21:39:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A61E321D56
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 21:17:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9AB932465D
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 21:39:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Wp9YD55y";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="JnEKz4/D"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A61E321D56
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fClF4uLF"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9AB932465D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D663516A8;
-	Wed, 19 Feb 2020 22:17:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D663516A8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 98A1C1695;
+	Wed, 19 Feb 2020 22:38:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98A1C1695
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582147073;
-	bh=O16WBUAOGciWUuhDocKaq7dVvFRE194g+h16gYIHkwg=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1582148369;
+	bh=McV5z3AOKh1DYVx9b2DiQokkQOrYW4AqY96xfMyVuK0=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Wp9YD55y3XIHESh2FS25hgdZY0wLTtlBjgtu8EoKWjyeFtRbzAc2+xhBG61WoiIPm
-	 GodzpFXsnWetZ8iOJiwysEeeD7iEzzhQJIGp4GjZPtVe9EvPXS5psfO1Rqfr9SdZAR
-	 K844RHPwOrQJXg7d1IblI7/guDgrDPD2K7L1pXiY=
+	b=fClF4uLFA4H5K9HqL4iQeKWc8fBW0saMiLpNxD/Vhi386hjhUMSKGspLJI2kFDm4s
+	 4X8gMutwVSM2IE/lXohK6PTHz0Pm6IoiS7veMUSGUKJiudI5Eb3Bgc9QCV1n2r9JyY
+	 2rUonTeC8VTNwrQcPAQhBV0e47CBoUFZnEfyLfW0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 48851F801F5;
-	Wed, 19 Feb 2020 22:17:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 02483F8025F;
+	Wed, 19 Feb 2020 22:38:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4D7DFF80273; Wed, 19 Feb 2020 22:17:01 +0100 (CET)
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 0EC8DF80273; Wed, 19 Feb 2020 22:38:37 +0100 (CET)
+Received: from mail-oi1-f194.google.com (mail-oi1-f194.google.com
+ [209.85.167.194])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A4690F801F5
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 22:16:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4690F801F5
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="JnEKz4/D"
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 01JLGphA114842;
- Wed, 19 Feb 2020 15:16:51 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1582147011;
- bh=hELP/UVWF2wnG4khdI+ML3nj51J78zGR6XNDM5je6Hg=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=JnEKz4/DGmVnBOrxNaZHZuiGPeUqqqq/31MYe4eTb7lpWgkFhcm6pOU6VaKgC+UkK
- oWOPnZZO0Ykef9kve5EubrsJ+i1D0o7yPRdEgi4KFkXq2hYfGNWG77GEPb/ji4KIJL
- 1sW3BQR4PQMMX1Z4y8hUTo5cgI4FDB2vIbWPDl5w=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 01JLGp1U062825
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Wed, 19 Feb 2020 15:16:51 -0600
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Wed, 19
- Feb 2020 15:16:51 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
- Frontend Transport; Wed, 19 Feb 2020 15:16:51 -0600
-Received: from [10.250.65.13] (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 01JLGp5o045264;
- Wed, 19 Feb 2020 15:16:51 -0600
-Subject: [RFC] Volume control across multiple registers
-To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
- <tiwai@suse.com>
-References: <20200219134622.22066-1-dmurphy@ti.com>
-From: Dan Murphy <dmurphy@ti.com>
-Message-ID: <2f74b971-4a6a-016f-8121-4da941eeccef@ti.com>
-Date: Wed, 19 Feb 2020 15:11:47 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id E7BDDF80142
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 22:38:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7BDDF80142
+Received: by mail-oi1-f194.google.com with SMTP id c16so25392914oic.3
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 13:38:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=E/e/t/Igu2jhBduZSv2AW4CMedwV0BIQbWhMahuclRw=;
+ b=PmPN0Zh48vVnQhXjK8g8YZASHXwcvklZSHr4rYpy56U4cdCMx2AIGFZpyA8OUlDM9P
+ LktKKHk0n/h5r5niKsmi6uh2EGOv/L0jm72jKTD7pU/FTOT9X8DixoCVLx57lk6p9Cws
+ qBDvxDlTZ/dTTbg08VZEMWCoO5h/9AG5fjsDeV2/z71hmA5s3IgszhThlVVNTEHGzDXf
+ m6mIUpp7YpKgnLVeiDV3aeGZta2RUbWyRRaUxDd7tGvzV6c+eb/07Y+4HNj9E7h4GiMQ
+ z4rhd3V9ygkB1sIeODynedyeeRht78FUzkIS+CYLdew0bthiqvVogBdkz4PShTjY8FWU
+ C3VQ==
+X-Gm-Message-State: APjAAAWdQUjRI+6pVdxE9UQWNCsjft2wvzxWDmuv4djnV+6DdPIDaMe/
+ 57PKgkGLg9M85Z6QMTjgRA==
+X-Google-Smtp-Source: APXvYqzXRQu0rzVdzwAvjm3VOQxfppCool33P+2clSM/5tqQ9a4Gt59ZBgfIOhaxSQcWmeEQr5REYA==
+X-Received: by 2002:a54:4791:: with SMTP id o17mr5704299oic.70.1582148312171; 
+ Wed, 19 Feb 2020 13:38:32 -0800 (PST)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net.
+ [24.155.109.49])
+ by smtp.gmail.com with ESMTPSA id w72sm378347oie.49.2020.02.19.13.38.31
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 19 Feb 2020 13:38:31 -0800 (PST)
+Received: (nullmailer pid 15386 invoked by uid 1000);
+ Wed, 19 Feb 2020 21:38:30 -0000
+Date: Wed, 19 Feb 2020 15:38:30 -0600
+From: Rob Herring <robh@kernel.org>
+To: Robin Murphy <robin.murphy@arm.com>
+Subject: Re: [PATCH v2 1/3] ASoC: dt-bindings: Make RK3328 codec GPIO explicit
+Message-ID: <20200219213830.GA15330@bogus>
+References: <cover.1581376744.git.robin.murphy@arm.com>
+ <5f7a399dea8a9dedef57f6f99f0f6ab1c1fdc56a.1581376744.git.robin.murphy@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20200219134622.22066-1-dmurphy@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5f7a399dea8a9dedef57f6f99f0f6ab1c1fdc56a.1581376744.git.robin.murphy@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, heiko@sntech.de,
+ lgirdwood@gmail.com, linux-rockchip@lists.infradead.org, broonie@kernel.org,
+ pgwipeout@gmail.com, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -103,21 +100,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello!
+On Tue, 18 Feb 2020 21:31:58 +0000, Robin Murphy wrote:
+> Existing RK3328 codec drivers have overloaded the GRF phandle to assume
+> implicit control of the limited-function GPIO_MUTE pin, which is usually
+> used to enable an external audio line driver IC. Since this pin has a
+> proper binding of its own (see gpio/rockchip,rk3328-grf-gpio.txt), make
+> a GPIO explicit in the codec binding too. This will help avoid ambiguity
+> on boards that use that pin for some other purpose.
+> 
+> (and while touching the example, enforce the "don't include status" rule)
+> 
+> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+> ---
+> 
+> v2: no change
+> 
+>  .../devicetree/bindings/sound/rockchip,rk3328-codec.txt    | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
 
-I am trying to figure out how to control the volume of a speaker device 
-with full volume control spread out across 4 8bit registers.
-
-The standard TLV calls only allow a single register for volume control.  
-But I have 4 I need to touch to get a full range of volume from 0dB to 
--110dB.
-
-I was looking at using the DAPM calls and use PGA_E and define an event 
-but there really is no good way to get the current volume setting.
-
-I don't see any example of this in any current driver.
-
-Any guidance is appreciated.
-
-Dan
-
+Acked-by: Rob Herring <robh@kernel.org>
