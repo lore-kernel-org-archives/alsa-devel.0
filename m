@@ -2,92 +2,99 @@ Return-Path: <SRS0=QPpS=4H=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 33905C34047
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 13:07:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01384C34050
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 13:37:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B720321D56
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 13:07:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 800DB20801
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 13:37:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eyLwiIpy";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="f6jTvMmG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B720321D56
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TcLZem7c";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com header.i=@baylibre-com.20150623.gappssmtp.com header.b="Irva5dhD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 800DB20801
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0F31616A5;
-	Wed, 19 Feb 2020 14:06:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F31616A5
+	by alsa0.perex.cz (Postfix) with ESMTPS id DC2C11686;
+	Wed, 19 Feb 2020 14:37:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC2C11686
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582117627;
-	bh=XDBJpV1aRuXV88IvRhLrjnZ0HDWQxYnhjhjXkzV02xg=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=eyLwiIpybnCuDcXpj90451MYRldh9tu9RbUaarjha2lTs3Dzv2nHgJAZubi4i7sT6
-	 wGq95bEtzwuKYa2FkwmIMeJlUs8luUITe8Wf6zCtGUhCJEorFvwrXbVAIyacvsc+Jb
-	 pWWw7uq2kFoYxfObhK5025kAdGirYRzXorHJ5y+k=
-Received: from vmi242170.contaboserver.net (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5B2D3F8027B;
-	Wed, 19 Feb 2020 14:04:46 +0100 (CET)
+	s=default; t=1582119471;
+	bh=ENCBRczBmqh0VKd9yn7J8fn5n7P/8HT6qPlxyXfp2PA=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=TcLZem7cZJ9NzB1hBa6f8kQRoHw/scZdfir3pz2xMgfsdS0lCICzvQAIaHfORmBe/
+	 WjKazZjcZYKwyZCvwMC61+ujr7q7jNhlk8bUe4qbBSM+oSq6LCtluYfhSuU0T9NeKn
+	 YOz8Mc0eI1pkVGmBRAQHUGVWOeABZfDPPVSjDiX0=
+Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
+	by alsa1.perex.cz (Postfix) with ESMTP id 0C13CF80273;
+	Wed, 19 Feb 2020 14:37:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 60C40F80278; Wed, 19 Feb 2020 14:04:36 +0100 (CET)
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id C5ACAF80276; Wed, 19 Feb 2020 14:36:59 +0100 (CET)
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
+ [IPv6:2a00:1450:4864:20::443])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7E0BAF8025F
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 14:04:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E0BAF8025F
+ by alsa1.perex.cz (Postfix) with ESMTPS id B510EF801F5
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 14:36:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B510EF801F5
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="f6jTvMmG"
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 01JD4RfF018446;
- Wed, 19 Feb 2020 07:04:27 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1582117467;
- bh=HVsXnu4xQWqDabHfEgIckIN0e5mLwYsB4VXGkAEGOTk=;
- h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=f6jTvMmGt5/49KFfCHsZr3ZUQuJ/0djb0ei7fQB2Ds1Yg+53wbEtJYE4Bw4/U+WNH
- e705N3uwrrIx1aqYE1ECyLONwdN9iW9pkPPUayiVQfo5sGctA7Sccr8tK433ma5Ol+
- HEncY5WBNt5JJuz+ccOirGUHFjX6pwj7RCgzuZz4=
-Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 01JD4RI1092494
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Wed, 19 Feb 2020 07:04:27 -0600
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Wed, 19
- Feb 2020 07:04:26 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
- Frontend Transport; Wed, 19 Feb 2020 07:04:26 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 01JD4Qte039784;
- Wed, 19 Feb 2020 07:04:26 -0600
-From: Dan Murphy <dmurphy@ti.com>
-To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
- <tiwai@suse.com>
-Subject: [PATCH v3 1/2] dt-bindings: sound: Add TLV320ADCx140 dt bindings
-Date: Wed, 19 Feb 2020 06:59:41 -0600
-Message-ID: <20200219125942.22013-2-dmurphy@ti.com>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200219125942.22013-1-dmurphy@ti.com>
-References: <20200219125942.22013-1-dmurphy@ti.com>
+ dkim=pass (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com
+ header.i=@baylibre-com.20150623.gappssmtp.com header.b="Irva5dhD"
+Received: by mail-wr1-x443.google.com with SMTP id r11so536203wrq.10
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 05:36:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=HwepP4vylkvrAMsKrJGWiwfWFEMFo390d/0hPnMfDnQ=;
+ b=Irva5dhDO7EeC/Gq61LwcdDA8SlWmI5WtROw0M6kcYEwuY1jDLSJ+y73xIUtZPyrj+
+ p3mFAKgb/uvVhkn9uCHbuA0guPmbGlioDgYymJFVf3MHc/q3A/0vEC/t9140r7ZLnUQl
+ Fr0fN2VVS2grIBPMAMi0teBetl/uTUELthI98JilwqkP4Iwma6YTDSNBhDkz9hyRaPGI
+ gtXMisst6zIZbntFjDhIUmkOLCM9D1xAw4ggRKOxh/IaYhkSci+8xVY+aklr6GNXDCDL
+ fwNgiBHAgXgzy6SIWPRyayR9I5fmAt11PAbnTcvhohV5oGjumm6ZQN+kkM/Uas3sNgHx
+ wxcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=HwepP4vylkvrAMsKrJGWiwfWFEMFo390d/0hPnMfDnQ=;
+ b=gK1FaoKGUwlUgv6ffTO3lWmP8HieUil9c1q88+bMYp2jeT2o0BIllq3PoWHlJUdYkW
+ j6zXESGaS8EReacmBU1Yp9CYKWNZAuNILoxrcGLESNPGlG+kF6l4TSfCMQDxOp4oTRsQ
+ nRu8XqqQFnbF2T0jiKLFqlyY8IEmbqvyCsXPiYBhV3DTj0WjvnhOSV+mqTKQn9CaEwmq
+ Zc0kjw0/vi+iXdnzOlGYKu530uGHdm+SlHxtbH8RAjbUVhVwaUzhMxH1xP7F5k0mb7Kh
+ rvLIawnNr7Pmf6okogcy56LZffzco5ahN1mq+gmM0vBv1hOJr4DG9q5Tw6UWHUHzVIAc
+ eIdQ==
+X-Gm-Message-State: APjAAAXPpG/TubTSIHWxxJHDl0bbaGK2X1QssqtUtESrUt16K/FyP9Hr
+ 7CAO43i/1NUnXxw/8P8Dfewhrw==
+X-Google-Smtp-Source: APXvYqzFBdf+KvQ/AaFbssZg7VHUlYCElqE3Jj98G953ZIChVvbutlzYOglzkBF0ek20O6lSxHLvQA==
+X-Received: by 2002:a5d:4f0f:: with SMTP id c15mr37854818wru.251.1582119415457; 
+ Wed, 19 Feb 2020 05:36:55 -0800 (PST)
+Received: from localhost.localdomain (cag06-3-82-243-161-21.fbx.proxad.net.
+ [82.243.161.21])
+ by smtp.googlemail.com with ESMTPSA id q124sm8856480wme.2.2020.02.19.05.36.54
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 19 Feb 2020 05:36:54 -0800 (PST)
+From: Jerome Brunet <jbrunet@baylibre.com>
+To: Mark Brown <broonie@kernel.org>,
+	Liam Girdwood <lgirdwood@gmail.com>
+Subject: [PATCH 0/2] ASoC: meson: add internal DAC support
+Date: Wed, 19 Feb 2020 14:36:44 +0100
+Message-Id: <20200219133646.1035506-1-jbrunet@baylibre.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Dan Murphy <dmurphy@ti.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Kevin Hilman <khilman@baylibre.com>, linux-kernel@vger.kernel.org,
+ linux-amlogic@lists.infradead.org, Jerome Brunet <jbrunet@baylibre.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -103,111 +110,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add dt bindings for the TLV320ADCx140 Burr-Brown ADC.
-The initial support is for the following:
+This patchset adds support for the internal audio DAC provided on the
+Amlogic gxl, g12a and sm1 SoC families. On each of these SoC families,
+there is glue between this codec on the audio provider. The architecture
+is similar to the one used for the synopsys hdmi codec on these SoCs
 
-TLV320ADC3140 - http://www.ti.com/lit/gpn/tlv320adc3140
-TLV320ADC5140 - http://www.ti.com/lit/gpn/tlv320adc5140
-TLV320ADC6140 - http://www.ti.com/lit/gpn/tlv320adc6140
+Jerome Brunet (2):
+  ASoC: meson: add t9015 internal codec binding documentation
+  ASoC: meson: add t9015 internal DAC driver
 
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
----
+ .../bindings/sound/amlogic,t9015.yaml         |  58 ++++
+ sound/soc/meson/Kconfig                       |   8 +
+ sound/soc/meson/Makefile                      |   2 +
+ sound/soc/meson/t9015.c                       | 320 ++++++++++++++++++
+ 4 files changed, 388 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/amlogic,t9015.yaml
+ create mode 100644 sound/soc/meson/t9015.c
 
-v3 - No changes
-
- .../bindings/sound/tlv320adcx140.yaml         | 83 +++++++++++++++++++
- 1 file changed, 83 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
-
-diff --git a/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml b/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
-new file mode 100644
-index 000000000000..1433ff62b14f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
-@@ -0,0 +1,83 @@
-+# SPDX-License-Identifier: (GPL-2.0+ OR BSD-2-Clause)
-+# Copyright (C) 2019 Texas Instruments Incorporated
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/tlv320adcx140.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Texas Instruments TLV320ADCX140 Quad Channel Analog-to-Digital Converter
-+
-+maintainers:
-+  - Dan Murphy <dmurphy@ti.com>
-+
-+description: |
-+  The TLV320ADCX140 are multichannel (4-ch analog recording or 8-ch digital
-+  PDM microphones recording), high-performance audio, analog-to-digital
-+  converter (ADC) with analog inputs supporting up to 2V RMS. The TLV320ADCX140
-+  family supports line and  microphone Inputs, and offers a programmable
-+  microphone bias or supply voltage generation.
-+
-+  Specifications can be found at:
-+    http://www.ti.com/lit/ds/symlink/tlv320adc3140.pdf
-+    http://www.ti.com/lit/ds/symlink/tlv320adc5140.pdf
-+    http://www.ti.com/lit/ds/symlink/tlv320adc6140.pdf
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - const: ti,tlv320adc3140
-+      - const: ti,tlv320adc5140
-+      - const: ti,tlv320adc6140
-+
-+  reg:
-+    maxItems: 1
-+    description: |
-+       I2C addresss of the device can be one of these 0x4c, 0x4d, 0x4e or 0x4f
-+
-+  reset-gpios:
-+    description: |
-+       GPIO used for hardware reset.
-+
-+  areg-supply:
-+      description: |
-+       Regulator with AVDD at 3.3V.  If not defined then the internal regulator
-+       is enabled.
-+
-+  ti,mic-bias-source:
-+    description: |
-+       Indicates the source for MIC Bias.
-+       0 - Mic bias is set to VREF
-+       1 - Mic bias is set to VREF × 1.096
-+       6 - Mic bias is set to AVDD
-+    allOf:
-+      - $ref: /schemas/types.yaml#/definitions/uint32
-+      - enum: [0, 1, 6]
-+
-+  ti,vref-source:
-+    description: |
-+       Indicates the source for MIC Bias.
-+       0 - Set VREF to 2.75V
-+       1 - Set VREF to 2.5V
-+       2 - Set VREF to 1.375V
-+    allOf:
-+      - $ref: /schemas/types.yaml#/definitions/uint32
-+      - enum: [0, 1, 2]
-+
-+required:
-+  - compatible
-+  - reg
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+    i2c0 {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+      codec: codec@4c {
-+        compatible = "ti,tlv320adc5140";
-+        reg = <0x4c>;
-+        ti,use-internal-areg;
-+        ti,mic-bias-source = <6>;
-+        reset-gpios = <&gpio0 14 GPIO_ACTIVE_HIGH>;
-+      };
-+    };
 -- 
-2.25.0
+2.24.1
 
