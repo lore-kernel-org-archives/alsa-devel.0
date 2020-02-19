@@ -2,58 +2,58 @@ Return-Path: <SRS0=QPpS=4H=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DB8BC34022
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 06:57:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 122E1C34022
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 06:58:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9D9F021D56
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 06:57:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 93B1C208E4
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 06:58:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ENz/N328"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9D9F021D56
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GF47snnk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 93B1C208E4
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E9FD216DF;
-	Wed, 19 Feb 2020 07:56:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E9FD216DF
+	by alsa0.perex.cz (Postfix) with ESMTPS id E1FDF16EC;
+	Wed, 19 Feb 2020 07:57:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1FDF16EC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582095445;
-	bh=uqXaKzIf6RdFd63ITiirJNsA9qzlV4e7VbM7t/6YtI0=;
+	s=default; t=1582095492;
+	bh=p8g1z+kG/QnHH7HXBVQ3U6owQXMDj9EMZs0m80A8Ljk=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ENz/N3283JUlrFCUwsI2bJkcKTkwpJRlhFrjzfkBArRdzfvvMaHvYmlIb7K9ZaUVw
-	 RfO/GigG8AcFYNYm9RhKOz2FRgUhSTvgkCrOvvS/+a6UEYyzP1KFNxdxRACZlS/roi
-	 gvVqoChWdi+XhjKhLauWKWCigrd8/oDbZTf3XG/c=
+	b=GF47snnkWb1z4X4N28IZ/moprGBoPNyFkh15IYG1Afe0nPNBUEBfNJf4zKsiIipkh
+	 8vifRhb3cOwbjeKrxypZguqvirjycu8IapYi1GajrXaeMghhGcz0reesAVW8T0/5Nr
+	 FyyhFK96g9xDVVuTAuZrm64pa1PQ7Lg0g20YWWYc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BE785F801F5;
-	Wed, 19 Feb 2020 07:56:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 885C9F80276;
+	Wed, 19 Feb 2020 07:56:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 43D31F80214; Wed, 19 Feb 2020 07:56:01 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 53124F800C4
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 07:55:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53124F800C4
-Date: 19 Feb 2020 15:55:53 +0900
-X-IronPort-AV: E=Sophos;i="5.70,459,1574089200"; d="scan'208";a="39472414"
+ id 049FDF80273; Wed, 19 Feb 2020 07:56:09 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 06216F80233
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 07:56:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06216F80233
+Date: 19 Feb 2020 15:56:01 +0900
+X-IronPort-AV: E=Sophos;i="5.70,459,1574089200"; d="scan'208";a="39688723"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 19 Feb 2020 15:55:53 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 19 Feb 2020 15:56:01 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id DE8F641D9327;
- Wed, 19 Feb 2020 15:55:53 +0900 (JST)
-Message-ID: <87o8tvjcbc.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 68DD541D9BF2;
+ Wed, 19 Feb 2020 15:56:01 +0900 (JST)
+Message-ID: <87mu9fjcb4.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 01/13] ASoC: soundwaire: qcom: use for_each_rtd_codec_dai()
- macro
+Subject: [PATCH 02/13] ASoC: qcom: sdm845: use for_each_rtd_codec_dai() macro
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87pnebjcc4.wl-kuninori.morimoto.gx@renesas.com>
@@ -76,42 +76,93 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/qcom.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ sound/soc/qcom/sdm845.c | 20 +++++++++-----------
+ 1 file changed, 9 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-index 1c6c6a2e0def..fb30bbec999a 100644
---- a/drivers/soundwire/qcom.c
-+++ b/drivers/soundwire/qcom.c
-@@ -594,6 +594,7 @@ static int qcom_swrm_startup(struct snd_pcm_substream *substream,
- 	struct qcom_swrm_ctrl *ctrl = dev_get_drvdata(dai->dev);
+diff --git a/sound/soc/qcom/sdm845.c b/sound/soc/qcom/sdm845.c
+index 3b5547a27aad..5a23597261ac 100644
+--- a/sound/soc/qcom/sdm845.c
++++ b/sound/soc/qcom/sdm845.c
+@@ -43,14 +43,14 @@ static int sdm845_slim_snd_hw_params(struct snd_pcm_substream *substream,
+ 				     struct snd_pcm_hw_params *params)
+ {
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct sdw_stream_runtime *sruntime;
+-	struct snd_soc_dai_link *dai_link = rtd->dai_link;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
 +	struct snd_soc_dai *codec_dai;
- 	int ret, i;
+ 	u32 rx_ch[SLIM_MAX_RX_PORTS], tx_ch[SLIM_MAX_TX_PORTS];
+ 	u32 rx_ch_cnt = 0, tx_ch_cnt = 0;
+ 	int ret = 0, i;
  
- 	sruntime = sdw_alloc_stream(dai->name);
-@@ -602,12 +603,12 @@ static int qcom_swrm_startup(struct snd_pcm_substream *substream,
- 
- 	ctrl->sruntime[dai->id] = sruntime;
- 
--	for (i = 0; i < rtd->num_codecs; i++) {
--		ret = snd_soc_dai_set_sdw_stream(rtd->codec_dais[i], sruntime,
+-	for (i = 0 ; i < dai_link->num_codecs; i++) {
+-		ret = snd_soc_dai_get_channel_map(rtd->codec_dais[i],
 +	for_each_rtd_codec_dai(rtd, i, codec_dai) {
-+		ret = snd_soc_dai_set_sdw_stream(codec_dai, sruntime,
- 						 substream->stream);
- 		if (ret < 0 && ret != -ENOTSUPP) {
- 			dev_err(dai->dev, "Failed to set sdw stream on %s",
--				rtd->codec_dais[i]->name);
-+				codec_dai->name);
- 			sdw_release_stream(sruntime);
- 			return ret;
++		ret = snd_soc_dai_get_channel_map(codec_dai,
+ 				&tx_ch_cnt, tx_ch, &rx_ch_cnt, rx_ch);
+ 
+ 		if (ret != 0 && ret != -ENOTSUPP) {
+@@ -77,6 +77,7 @@ static int sdm845_tdm_snd_hw_params(struct snd_pcm_substream *substream,
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	struct snd_soc_dai *codec_dai;
+ 	int ret = 0, j;
+ 	int channels, slot_width;
+ 
+@@ -125,8 +126,7 @@ static int sdm845_tdm_snd_hw_params(struct snd_pcm_substream *substream,
  		}
+ 	}
+ 
+-	for (j = 0; j < rtd->num_codecs; j++) {
+-		struct snd_soc_dai *codec_dai = rtd->codec_dais[j];
++	for_each_rtd_codec_dai(rtd, j, codec_dai) {
+ 
+ 		if (!strcmp(codec_dai->component->name_prefix, "Left")) {
+ 			ret = snd_soc_dai_set_tdm_slot(
+@@ -214,7 +214,6 @@ static int sdm845_dai_init(struct snd_soc_pcm_runtime *rtd)
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 	struct sdm845_snd_data *pdata = snd_soc_card_get_drvdata(card);
+ 	struct snd_jack *jack;
+-	struct snd_soc_dai_link *dai_link = rtd->dai_link;
+ 	/*
+ 	 * Codec SLIMBUS configuration
+ 	 * RX1, RX2, RX3, RX4, RX5, RX6, RX7, RX8, RX9, RX10, RX11, RX12, RX13
+@@ -266,8 +265,8 @@ static int sdm845_dai_init(struct snd_soc_pcm_runtime *rtd)
+ 		}
+ 		break;
+ 	case SLIMBUS_0_RX...SLIMBUS_6_TX:
+-		for (i = 0 ; i < dai_link->num_codecs; i++) {
+-			rval = snd_soc_dai_set_channel_map(rtd->codec_dais[i],
++		for_each_rtd_codec_dai(rtd, i, codec_dai) {
++			rval = snd_soc_dai_set_channel_map(codec_dai,
+ 							  ARRAY_SIZE(tx_ch),
+ 							  tx_ch,
+ 							  ARRAY_SIZE(rx_ch),
+@@ -275,7 +274,7 @@ static int sdm845_dai_init(struct snd_soc_pcm_runtime *rtd)
+ 			if (rval != 0 && rval != -ENOTSUPP)
+ 				return rval;
+ 
+-			snd_soc_dai_set_sysclk(rtd->codec_dais[i], 0,
++			snd_soc_dai_set_sysclk(codec_dai, 0,
+ 					       WCD934X_DEFAULT_MCLK_RATE,
+ 					       SNDRV_PCM_STREAM_PLAYBACK);
+ 		}
+@@ -345,8 +344,7 @@ static int sdm845_snd_startup(struct snd_pcm_substream *substream)
+ 
+ 		codec_dai_fmt |= SND_SOC_DAIFMT_IB_NF | SND_SOC_DAIFMT_DSP_B;
+ 
+-		for (j = 0; j < rtd->num_codecs; j++) {
+-			codec_dai = rtd->codec_dais[j];
++		for_each_rtd_codec_dai(rtd, j, codec_dai) {
+ 
+ 			if (!strcmp(codec_dai->component->name_prefix,
+ 				    "Left")) {
 -- 
 2.17.1
 
