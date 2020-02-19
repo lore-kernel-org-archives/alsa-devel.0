@@ -1,4 +1,4 @@
-Return-Path: <SRS0=t/pq=4B=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=QPpS=4H=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A40B5C2BA83
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 13:36:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18512C34031
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 00:10:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2D77020873
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Feb 2020 13:36:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 985F622B48
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 00:10:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cfM5cWIZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2D77020873
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TGnGmIyH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 985F622B48
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 84DD616A5;
-	Thu, 13 Feb 2020 14:35:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84DD616A5
+	by alsa0.perex.cz (Postfix) with ESMTPS id DCCBF1686;
+	Wed, 19 Feb 2020 01:09:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DCCBF1686
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1581600979;
-	bh=5bL70ueFawRpJST9uvpaBGMLme8RL2dRSN/UwWDmJ6c=;
-	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
+	s=default; t=1582071003;
+	bh=KeEzxXuJaE23+vQhTScZ4baPavrsVlAEHLAJxRR/OmQ=;
+	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=cfM5cWIZ7pofoz2wE+2uTfe4mo5ec65ZpvDiN5njSCYvBmWSLr6Tytx2F95iXL9PW
-	 w3xp+8+0aWaSFXQkVXeYaishPIciHfahggKpeaFZbfTRKtVKfxXEPSfwb0C4WOXWYK
-	 cf8vRRW9C9ppVplFfdPsK+g00JS/dfxgAwmrMn9A=
+	b=TGnGmIyH3XCtYR0HjTOmiRo+tFnTahtPq7n9rhNiHoN6+/tiFDfafnjwJgvPxisqs
+	 q02haJBrRME51RAeKaDKaaMVenSyrvHEjiH25nNgyPi2n7bCG0mwlTd2LRJLdtCSis
+	 ze95Z5t2yx27KM0TSLh5wHWVCupH4Wddl23aAZX8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 03255F80299;
-	Thu, 13 Feb 2020 14:32:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5917CF80148;
+	Wed, 19 Feb 2020 01:09:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 84F70F8029A; Thu, 13 Feb 2020 14:32:25 +0100 (CET)
+ id D7D03F80148; Wed, 19 Feb 2020 01:09:10 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 8FA3AF80292
- for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2020 14:32:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8FA3AF80292
+ by alsa1.perex.cz (Postfix) with ESMTP id 2E40AF80137
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 01:09:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E40AF80137
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7E5EE1045;
- Thu, 13 Feb 2020 05:32:21 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4F71B1FB;
+ Tue, 18 Feb 2020 16:09:05 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 033BE3F6CF;
- Thu, 13 Feb 2020 05:32:20 -0800 (PST)
-Date: Thu, 13 Feb 2020 13:32:19 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C72B63F68F;
+ Tue, 18 Feb 2020 16:09:04 -0800 (PST)
+Date: Wed, 19 Feb 2020 00:09:03 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Tzung-Bi Shih <tzungbi@google.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ALSA: usx2y: use for_each_pcm_streams() macro" to the asoc
+ tree
 In-Reply-To: 
 Message-Id: 
 X-Patchwork-Hint: ignore
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: mediatek: mt8183-da7219: change
-	supported formats of DL2 and UL1" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -69,16 +69,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20200213133219._j9RbnuMwb-tg-Qszf2ufv9wm43VbzKkGxaAnIxb2RA@z>
+Message-ID: <20200219000903.F6TdcHSHPBOFT8aXowQh-7-xm2i_-kONnmd96jYdPnQ@z>
 
 The patch
 
-   ASoC: mediatek: mt8183-da7219: change supported formats of DL2 and UL1
+   ALSA: usx2y: use for_each_pcm_streams() macro
 
 has been applied to the asoc tree at
 
@@ -103,93 +100,42 @@ to this mail.
 Thanks,
 Mark
 
-From ec7ba9e1500b0af5bf30b4e56bfaaf3a88850bbf Mon Sep 17 00:00:00 2001
-From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Thu, 13 Feb 2020 11:27:25 +0800
-Subject: [PATCH] ASoC: mediatek: mt8183-da7219: change supported formats of
- DL2 and UL1
+From ffd11d1e7ad4602d5d1c2b4517ad316f7587d4d9 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 17 Feb 2020 17:28:51 +0900
+Subject: [PATCH] ALSA: usx2y: use for_each_pcm_streams() macro
 
-DL2 and UL1 are for BTSCO.  Provides only 16-bit, mono, 8kHz and
-16kHz to userspace.
-
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
-Link: https://lore.kernel.org/r/20200213112003.1.Ie5aedb9d34ebfc7f05ceb382bfe346c45331cd63@changeid
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/87sgj9aa8e.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../mediatek/mt8183/mt8183-da7219-max98357.c  | 42 +++++++++++++++++++
- 1 file changed, 42 insertions(+)
+ sound/usb/usx2y/usbusx2yaudio.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-index 1626541cc0d6..b52ffed882a7 100644
---- a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-@@ -116,6 +116,46 @@ static int mt8183_i2s_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
- 	return 0;
+diff --git a/sound/usb/usx2y/usbusx2yaudio.c b/sound/usb/usx2y/usbusx2yaudio.c
+index 772f6f3ccbb1..37d290fe9d43 100644
+--- a/sound/usb/usx2y/usbusx2yaudio.c
++++ b/sound/usb/usx2y/usbusx2yaudio.c
+@@ -906,11 +906,12 @@ static const struct snd_pcm_ops snd_usX2Y_pcm_ops =
+  */
+ static void usX2Y_audio_stream_free(struct snd_usX2Y_substream **usX2Y_substream)
+ {
+-	kfree(usX2Y_substream[SNDRV_PCM_STREAM_PLAYBACK]);
+-	usX2Y_substream[SNDRV_PCM_STREAM_PLAYBACK] = NULL;
++	int stream;
+ 
+-	kfree(usX2Y_substream[SNDRV_PCM_STREAM_CAPTURE]);
+-	usX2Y_substream[SNDRV_PCM_STREAM_CAPTURE] = NULL;
++	for_each_pcm_streams(stream) {
++		kfree(usX2Y_substream[stream]);
++		usX2Y_substream[stream] = NULL;
++	}
  }
  
-+static int
-+mt8183_da7219_max98357_bt_sco_startup(
-+	struct snd_pcm_substream *substream)
-+{
-+	static const unsigned int rates[] = {
-+		8000, 16000
-+	};
-+	static const struct snd_pcm_hw_constraint_list constraints_rates = {
-+		.count = ARRAY_SIZE(rates),
-+		.list  = rates,
-+		.mask = 0,
-+	};
-+	static const unsigned int channels[] = {
-+		1,
-+	};
-+	static const struct snd_pcm_hw_constraint_list constraints_channels = {
-+		.count = ARRAY_SIZE(channels),
-+		.list = channels,
-+		.mask = 0,
-+	};
-+
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+
-+	snd_pcm_hw_constraint_list(runtime, 0,
-+			SNDRV_PCM_HW_PARAM_RATE, &constraints_rates);
-+	runtime->hw.channels_max = 1;
-+	snd_pcm_hw_constraint_list(runtime, 0,
-+			SNDRV_PCM_HW_PARAM_CHANNELS,
-+			&constraints_channels);
-+
-+	runtime->hw.formats = SNDRV_PCM_FMTBIT_S16_LE;
-+	snd_pcm_hw_constraint_msbits(runtime, 0, 16, 16);
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_ops mt8183_da7219_max98357_bt_sco_ops = {
-+	.startup = mt8183_da7219_max98357_bt_sco_startup,
-+};
-+
- /* FE */
- SND_SOC_DAILINK_DEFS(playback1,
- 	DAILINK_COMP_ARRAY(COMP_CPU("DL1")),
-@@ -222,6 +262,7 @@ static struct snd_soc_dai_link mt8183_da7219_max98357_dai_links[] = {
- 			    SND_SOC_DPCM_TRIGGER_PRE},
- 		.dynamic = 1,
- 		.dpcm_playback = 1,
-+		.ops = &mt8183_da7219_max98357_bt_sco_ops,
- 		SND_SOC_DAILINK_REG(playback2),
- 	},
- 	{
-@@ -240,6 +281,7 @@ static struct snd_soc_dai_link mt8183_da7219_max98357_dai_links[] = {
- 			    SND_SOC_DPCM_TRIGGER_PRE},
- 		.dynamic = 1,
- 		.dpcm_capture = 1,
-+		.ops = &mt8183_da7219_max98357_bt_sco_ops,
- 		SND_SOC_DAILINK_REG(capture1),
- 	},
- 	{
+ static void snd_usX2Y_pcm_private_free(struct snd_pcm *pcm)
 -- 
 2.20.1
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
