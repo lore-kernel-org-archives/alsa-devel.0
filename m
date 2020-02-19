@@ -7,51 +7,52 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D0CC9C34031
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 00:20:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EFA0AC3404C
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 00:21:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5D47424670
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 00:20:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7AD6D2465A
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 00:21:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="E492oWXO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5D47424670
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="N/jd7VdZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7AD6D2465A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B6AFE16EF;
-	Wed, 19 Feb 2020 01:19:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B6AFE16EF
+	by alsa0.perex.cz (Postfix) with ESMTPS id D8A1116DE;
+	Wed, 19 Feb 2020 01:20:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8A1116DE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582071613;
-	bh=kGi9CWVzQuiF9/ESQu0OGVAYLnCMzvVhgGqUqJi43p0=;
+	s=default; t=1582071660;
+	bh=LrpbHDx/gKTEtRKlBEkJqB6J1FpPYTkarNy5Qy9LFQY=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=E492oWXO3BKOqBqjN+DQcC9LoGIeCK7n5wVug3mLVmLCcDe1sBryEa2xKLssA3R45
-	 o2rV4IPsEZhEYDWi9dlkJO8ijkc3Uw7wIOej6xLer9ccyBuFhMD5sL/Yu0XttBmhex
-	 hgFcHLR+w8pOr8MSQ3RuxcAXZkt8Gzui7kz0Y+UA=
+	b=N/jd7VdZw6yAwE49Qepp2FxNnm9A76STybcH8yPcFEx7SiPvOum99JJRcImO7q6YA
+	 po9Zm3gXjtNdRpOBRsg1Eyk1xzzET5LfkYsFMvPJdfGgoJhzaDHzjXrBYoD2N9RJV/
+	 Eha+uVE+ybBNW/hlH8JboztJqj2jd1olEbPYtUl4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 530AAF80329;
-	Wed, 19 Feb 2020 01:10:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B2B21F8033D;
+	Wed, 19 Feb 2020 01:10:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B6E72F80332; Wed, 19 Feb 2020 01:10:25 +0100 (CET)
+ id A277CF8033E; Wed, 19 Feb 2020 01:10:29 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 506ABF80328
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 01:10:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 506ABF80328
+ by alsa1.perex.cz (Postfix) with ESMTP id 69509F80331
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 01:10:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69509F80331
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 460D81FB;
- Tue, 18 Feb 2020 16:10:21 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BC9191FB;
+ Tue, 18 Feb 2020 16:10:25 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BEB443F68F;
- Tue, 18 Feb 2020 16:10:20 -0800 (PST)
-Date: Wed, 19 Feb 2020 00:10:19 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 40BF23F68F;
+ Tue, 18 Feb 2020 16:10:25 -0800 (PST)
+Date: Wed, 19 Feb 2020 00:10:23 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Applied "ASoC: soc-pcm: move dai_get_widget()" to the asoc tree
+To: Derek Fang <derek.fang@realtek.com>
+Subject: Applied "ASoC: rt5682: Add DAI clock binding info for WCLK/BCLK CCF
+ usage" to the asoc tree
 In-Reply-To: 
 Message-Id: 
 X-Patchwork-Hint: ignore
@@ -70,11 +71,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20200219001019.9zfX3vTIp-Le4S4GNi1cgIZmBupgDaKQ1GrQEdMhpf0@z>
+Message-ID: <20200219001023.TuIdfSHNKzzg_Ra4NsIl79mYR_RHyxcXyqen7jaL9_o@z>
 
 The patch
 
-   ASoC: soc-pcm: move dai_get_widget()
+   ASoC: rt5682: Add DAI clock binding info for WCLK/BCLK CCF usage
 
 has been applied to the asoc tree at
 
@@ -99,59 +100,50 @@ to this mail.
 Thanks,
 Mark
 
-From d9303690f753dfdae51304fc89f4b04c0549a9f7 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 17 Feb 2020 17:27:39 +0900
-Subject: [PATCH] ASoC: soc-pcm: move dai_get_widget()
+From 8b59e642d05f0ae9800b057350c063fe7debd6bc Mon Sep 17 00:00:00 2001
+From: Derek Fang <derek.fang@realtek.com>
+Date: Tue, 18 Feb 2020 21:51:52 +0800
+Subject: [PATCH] ASoC: rt5682: Add DAI clock binding info for WCLK/BCLK CCF
+ usage
 
-This patch moves dai_get_widget() to top side.
-This is prepare for cleanup soc-pcm.c
+This patch describes that rt5682 can expose WCLK and BCLK clocks
+and how to use.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/87h7zpbouu.wl-kuninori.morimoto.gx@renesas.com
+Signed-off-by: Derek Fang <derek.fang@realtek.com>
+Link: https://lore.kernel.org/r/1582033912-6841-2-git-send-email-derek.fang@realtek.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-pcm.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ Documentation/devicetree/bindings/sound/rt5682.txt | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 65a3856be250..23e36f4f965c 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -82,6 +82,15 @@ static int soc_rtd_trigger(struct snd_soc_pcm_runtime *rtd,
- 	return 0;
- }
+diff --git a/Documentation/devicetree/bindings/sound/rt5682.txt b/Documentation/devicetree/bindings/sound/rt5682.txt
+index 30e927a28369..ac98151d29e4 100644
+--- a/Documentation/devicetree/bindings/sound/rt5682.txt
++++ b/Documentation/devicetree/bindings/sound/rt5682.txt
+@@ -32,6 +32,12 @@ Optional properties:
+   The delay time is realtek,btndet-delay value multiple of 8.192 ms.
+   If absent, the default is 16.
  
-+static inline
-+struct snd_soc_dapm_widget *dai_get_widget(struct snd_soc_dai *dai, int stream)
-+{
-+	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		return dai->playback_widget;
-+	else
-+		return dai->capture_widget;
-+}
++- #clock-cells : Should be set to '<1>',  wclk and bclk sources provided.
++- clock-output-names : Name given for DAI clocks output.
 +
- static void snd_soc_runtime_action(struct snd_soc_pcm_runtime *rtd,
- 				   int stream, int action)
- {
-@@ -1287,15 +1296,6 @@ static struct snd_soc_pcm_runtime *dpcm_get_be(struct snd_soc_card *card,
- 	return NULL;
- }
++- clocks : phandle and clock specifier for codec MCLK.
++- clock-names : Clock name string for 'clocks' attribute, should be "mclk".
++
+ Pins on the device (for linking into audio routes) for RT5682:
  
--static inline struct snd_soc_dapm_widget *
--	dai_get_widget(struct snd_soc_dai *dai, int stream)
--{
--	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
--		return dai->playback_widget;
--	else
--		return dai->capture_widget;
--}
--
- static int widget_in_list(struct snd_soc_dapm_widget_list *list,
- 		struct snd_soc_dapm_widget *widget)
- {
+   * DMIC L1
+@@ -53,4 +59,10 @@ rt5682 {
+ 	realtek,dmic1-clk-pin = <1>;
+ 	realtek,jd-src = <1>;
+ 	realtek,btndet-delay = <16>;
++
++	#clock-cells = <1>;
++	clock-output-names = "rt5682-dai-wclk", "rt5682-dai-bclk";
++
++	clocks = <&osc>;
++	clock-names = "mclk";
+ };
 -- 
 2.20.1
 
