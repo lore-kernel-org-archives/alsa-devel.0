@@ -2,54 +2,57 @@ Return-Path: <SRS0=QPpS=4H=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF86BC34056
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 17:40:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D8656C34056
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 17:47:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4D384206DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 17:40:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 62A6E20801
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 17:47:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GxJZ96nd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4D384206DB
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="brE82quL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 62A6E20801
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 94668167E;
-	Wed, 19 Feb 2020 18:39:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94668167E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9CFDD1695;
+	Wed, 19 Feb 2020 18:46:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CFDD1695
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582134014;
-	bh=n09TfX6KRd/GHvXKrWyESxKzpL2lx3JGrS0xttGDE8U=;
+	s=default; t=1582134418;
+	bh=6jQXc7OQT6Tcx9ZaYTOFIo+N/ctZIbnsTNU0Eriz2NY=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GxJZ96ndB4JSyy066aKCqdNE6kZTD1CPK0iGZghcSAIaVfeNaa7KJyJ59kY56/QBP
-	 aZku0WK53jF15irU/XLmHEBG8oh8s6IL9Ix7Eb5tsaIPro5kqgDTtHDCG9zHPs9m+2
-	 9fllPCcNmeW0CMvvLeBhyp7f4W6NnUHNHiBi2tDk=
+	b=brE82quLZugD8DtRFM50I2GK0WvNeI8NLPlxSwFHOY8LYuGP+BqhRqffPo0QUSH8H
+	 uYMgVVPdYYIOTpQFAEMVldoziAU7RAnklKMQ7s/Te9Hpr0t2RHrR1iafwTlszUWRsV
+	 7H06A2JtiRipdQJfbGDrnlwiAvwbix/haPaE1pe4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2F012F8025F;
-	Wed, 19 Feb 2020 18:39:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2486CF8025F;
+	Wed, 19 Feb 2020 18:46:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 194ADF80273; Wed, 19 Feb 2020 18:39:22 +0100 (CET)
-Received: from muru.com (muru.com [72.249.23.125])
- by alsa1.perex.cz (Postfix) with ESMTP id 17E26F80142
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 18:39:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17E26F80142
-Received: from atomide.com (localhost [127.0.0.1])
- by muru.com (Postfix) with ESMTPS id 9F75C80F3;
- Wed, 19 Feb 2020 17:39:53 +0000 (UTC)
-Date: Wed, 19 Feb 2020 09:39:02 -0800
-From: Tony Lindgren <tony@atomide.com>
-To: Mark Brown <broonie@kernel.org>
+ id 24FA6F80273; Wed, 19 Feb 2020 18:46:07 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id A7B8FF80142
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 18:46:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7B8FF80142
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B19E131B;
+ Wed, 19 Feb 2020 09:46:02 -0800 (PST)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 35EC33F703;
+ Wed, 19 Feb 2020 09:46:02 -0800 (PST)
+Date: Wed, 19 Feb 2020 17:46:00 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Tony Lindgren <tony@atomide.com>
 Subject: Re: [PATCH] ASoC: cpcap: Implement set_tdm_slot for voice call support
-Message-ID: <20200219173902.GA37466@atomide.com>
+Message-ID: <20200219174600.GH4488@sirena.org.uk>
 References: <20200211181005.54008-1-tony@atomide.com>
  <ae2b7d9e-d05e-54ac-4f18-27cc8c4e81a0@ti.com>
  <20200212144620.GJ64767@atomide.com>
@@ -59,10 +62,14 @@ References: <20200211181005.54008-1-tony@atomide.com>
  <20200218153211.GI35972@atomide.com>
  <20200218170628.r47xc3yydg6xx2yh@earth.universe>
  <20200218174258.GK4232@sirena.org.uk>
+ <20200219173902.GA37466@atomide.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="+Z7/5fzWRHDJ0o7Q"
 Content-Disposition: inline
-In-Reply-To: <20200218174258.GK4232@sirena.org.uk>
+In-Reply-To: <20200219173902.GA37466@atomide.com>
+X-Cookie: FORTH IF HONK THEN
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
  linux-kernel@vger.kernel.org, Merlijn Wajer <merlijn@wizzup.org>,
  Takashi Iwai <tiwai@suse.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>,
@@ -85,35 +92,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-* Mark Brown <broonie@kernel.org> [200218 17:43]:
-> On Tue, Feb 18, 2020 at 06:06:28PM +0100, Sebastian Reichel wrote:
-> 
-> > simple-graph-card is the current machine driver. We might have to
-> > introduce a Droid 4 specific driver instead. I used simple(-graph)-card
-> > instead of introducing a new driver, since the setup was simple enough
-> > without modem and bluetooth. The simple card was perfect to test the CPCAP
-> > codec driver. The TDM things might be complex enough to create
-> > a new machine driver (as I mentioned in the original patchset
-> > adding CPCAP codec support).
-> 
-> I tend to agree here, phones are generally one of the most complicated
-> classes of system for clocking and interconnects and the CODECs they use
-> often the most complex too so they're really stretching the generic
-> cards.  It'd be nice to be able to handle things with generic cards but
-> it's likely you'll run into issues that it'd be unreasonable to force
-> you to address for system enablement.  OTOH if you manage to get one of
-> the generic cards working well that'd be excellent!
 
-Well to me it seems that we just already have all the data needed with
-the graph binding and snd-soc-audio-graph-card + codec2codec support.
+--+Z7/5fzWRHDJ0o7Q
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I don't think we have cases where the cpcap codec is not the master,
-so as long as the cpcap codec knows what's going on then there
-may not be a need for machine driver.
+On Wed, Feb 19, 2020 at 09:39:02AM -0800, Tony Lindgren wrote:
+> * Mark Brown <broonie@kernel.org> [200218 17:43]:
 
-I guess the the bluetooth to modem path is the one to check to see
-what provides the clocks..
+> > you to address for system enablement.  OTOH if you manage to get one of
+> > the generic cards working well that'd be excellent!
 
-Regards,
+> Well to me it seems that we just already have all the data needed with
+> the graph binding and snd-soc-audio-graph-card + codec2codec support.
 
-Tony
+> I don't think we have cases where the cpcap codec is not the master,
+> so as long as the cpcap codec knows what's going on then there
+> may not be a need for machine driver.
+
+> I guess the the bluetooth to modem path is the one to check to see
+> what provides the clocks..
+
+Usually in telephony cases it's the modem that's the clock master FWIW.
+
+--+Z7/5fzWRHDJ0o7Q
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5NdFcACgkQJNaLcl1U
+h9BHgQf/WmvIam0UASnfG1o54i1CWeWsvsmiCK7/+FWgq77+E+b2l7WNCZLeu/4r
+g7DR1qjj+5Ogl5aUXofhX4nOIBziyJTk1uEjy4MNFr5fIzexu4zaV2hNPuzcJ8YF
+21g7bpU3IrsVnaldU5zh4e6olPpVwfBsB7UboCb2fWidPqe3d525T2L+pj3l1HfZ
+9TEr58a2UEpQh9f+33kJKhmMmNhwh1ycKm2A9bRrRGfNOneX3mw0CfDGby6QpAfU
+F80CcEmoDlHYzrLcE7osxHLLWdIR+f2iMi1LXR4QfyM4oz7J8f2imPHKOZDXPqjB
+Z43rTMLpES32bQjaMY/bDBxDi36EdQ==
+=fNVj
+-----END PGP SIGNATURE-----
+
+--+Z7/5fzWRHDJ0o7Q--
