@@ -2,75 +2,73 @@ Return-Path: <SRS0=QPpS=4H=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A299C18DF4
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 18:50:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 05BEDC34056
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 18:54:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1AEC524670
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 18:50:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8354F24671
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 18:54:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WwTkRQiP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1AEC524670
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ah+xLdur"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8354F24671
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6200F1697;
-	Wed, 19 Feb 2020 19:49:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6200F1697
+	by alsa0.perex.cz (Postfix) with ESMTPS id BACF21697;
+	Wed, 19 Feb 2020 19:53:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BACF21697
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582138234;
-	bh=8hW+IVM4hWtGHflR/ldW2Eih3y9DxPkXsx5/3+xQSAU=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1582138446;
+	bh=qVWKmPXLQb1OpzWQpMnkRQWf9oD8AzUHso3Iav+pITE=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WwTkRQiPx/qxOifumXGA70sSe803TmWBM7kzEuPsQJkQyurN4QHXGPq5fxyyCwKTU
-	 4Tk9W24I4PTB4Yk3p/91hpUgu1n7DXaoRkg4ixYPzaEboIikYTokh1YNeKYEq/M8x/
-	 R9PsYYCYULeh5i8lAfO47hqo2nfHXfxPbpBOqaJU=
+	b=Ah+xLdurF86j3prLtfqsTRTVFAuAslR05f0vafyqEM8eIYk3csJjNrGqbRVboL6w5
+	 xoLK1xMtXZoAye8vptAQ/Utmeun0wPVuJ7mwwch9r4P9Z/4VIQ8QOw/1YEKHMeY/fT
+	 F2zQ8kYpr1EIWujh4903yyDkJb0pl8Pl1LbP28BU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CC1D0F8025F;
-	Wed, 19 Feb 2020 19:49:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 53073F80273;
+	Wed, 19 Feb 2020 19:53:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BC266F80273; Wed, 19 Feb 2020 19:49:42 +0100 (CET)
-Received: from muru.com (muru.com [72.249.23.125])
- by alsa1.perex.cz (Postfix) with ESMTP id 44522F80114
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 19:49:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44522F80114
-Received: from atomide.com (localhost [127.0.0.1])
- by muru.com (Postfix) with ESMTPS id 9CA2B80F3;
- Wed, 19 Feb 2020 18:50:03 +0000 (UTC)
-Date: Wed, 19 Feb 2020 10:49:16 -0800
-From: Tony Lindgren <tony@atomide.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: cpcap: Implement set_tdm_slot for voice call support
-Message-ID: <20200219184916.GB37466@atomide.com>
-References: <ae2b7d9e-d05e-54ac-4f18-27cc8c4e81a0@ti.com>
- <20200212144620.GJ64767@atomide.com>
- <9a060430-5a3e-61e1-3d2c-f89819d9436f@ti.com>
- <20200217232325.GD35972@atomide.com>
- <8fc1dded-6d28-f5cd-f2f9-3a6810571119@ti.com>
- <20200218153211.GI35972@atomide.com>
- <20200218170628.r47xc3yydg6xx2yh@earth.universe>
- <20200218174258.GK4232@sirena.org.uk>
- <20200219173902.GA37466@atomide.com>
- <20200219174600.GH4488@sirena.org.uk>
+ id 2BFB6F80276; Wed, 19 Feb 2020 19:53:15 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 05335F8025F
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 19:53:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05335F8025F
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+ by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 19 Feb 2020 10:53:09 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,461,1574150400"; d="scan'208";a="283184514"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+ by FMSMGA003.fm.intel.com with ESMTP; 19 Feb 2020 10:53:07 -0800
+Date: Wed, 19 Feb 2020 20:53:06 +0200 (EET)
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@eliteleevi.tm.intel.com
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH] ASoC: soc-pcm: Revert "call snd_soc_component_open/close()
+ once"
+In-Reply-To: <20200219182650.1416-1-kai.vehmanen@linux.intel.com>
+Message-ID: <alpine.DEB.2.21.2002192046250.2957@eliteleevi.tm.intel.com>
+References: <20200219182650.1416-1-kai.vehmanen@linux.intel.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200219174600.GH4488@sirena.org.uk>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel@vger.kernel.org, Merlijn Wajer <merlijn@wizzup.org>,
- Takashi Iwai <tiwai@suse.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>,
- Pavel Machek <pavel@ucw.cz>, linux-omap@vger.kernel.org,
- "Arthur D ." <spinal.by@gmail.com>,
- Sebastian Reichel <sebastian.reichel@collabora.com>,
- Jarkko Nikula <jarkko.nikula@bitmer.com>
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com,
+ ranjani.sridharan@linux.intel.com, pierre-louis.bossart@linux.intel.com,
+ broonie@kernel.org, digetx@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,37 +84,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-* Mark Brown <broonie@kernel.org> [200219 17:46]:
-> On Wed, Feb 19, 2020 at 09:39:02AM -0800, Tony Lindgren wrote:
-> > * Mark Brown <broonie@kernel.org> [200218 17:43]:
-> 
-> > > you to address for system enablement.  OTOH if you manage to get one of
-> > > the generic cards working well that'd be excellent!
-> 
-> > Well to me it seems that we just already have all the data needed with
-> > the graph binding and snd-soc-audio-graph-card + codec2codec support.
-> 
-> > I don't think we have cases where the cpcap codec is not the master,
-> > so as long as the cpcap codec knows what's going on then there
-> > may not be a need for machine driver.
-> 
-> > I guess the the bluetooth to modem path is the one to check to see
-> > what provides the clocks..
-> 
-> Usually in telephony cases it's the modem that's the clock master FWIW.
+Hey,
 
-Well at least the samplerate needs to be configured in the cpcap
-codec driver for voice calls, and we're setting CPCAP_BIT_CDC_CLK_EN
-bit for voice call which is the "Voice DAI Clock". It's also set when
-just playing audio using the voice channel is used. And we also have
-a similar bit for CPCAP_BIT_ST_CLK_EN for "HiFi DAI Clock" for the
-hifi channel. So these would seem to hit that it is really the cpcap
-that's the clock master for voice calls in this case.
+On Wed, 19 Feb 2020, Kai Vehmanen wrote:
 
-But I guess the test to do there would be to just clear the bit
-for CPCAP_BIT_CDC_CLK_EN during a voice call and see if it still
-works.
+> ASoC component open/close and snd_soc_component_module_get/put are
+> called independently for each component-substream pair, so the logic
+> in the reverted patch was not sufficient and led to PCM playback and
+> module unload errors.
 
-Regards,
+I tried to keep part of the original patch at first, but I kept hitting 
+new issues either in component load, or in module unload-reload flow.
+Thanks to Pierre and Ranjani for early reviews.
 
-Tony
+So in the end I ended up with a full revert. This at least works on all 
+SOF device topologies I tested with. 
+
+At the root of the problem is that component open is called with multiple 
+substreams and driver open (and close) should be called for each substream 
+as well. This also caused problems to the added module refcounting logic.. 
+so that is reverted as well.
+
+Br, Kai
