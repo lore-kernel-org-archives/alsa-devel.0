@@ -7,52 +7,52 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B65DC34031
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 00:11:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A151C34031
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 00:11:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AA9BF24658
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 00:10:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D9F9624656
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 00:11:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="c4oTcBS7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AA9BF24658
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Gl8FxSFa"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D9F9624656
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E3129169E;
-	Wed, 19 Feb 2020 01:10:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3129169E
+	by alsa0.perex.cz (Postfix) with ESMTPS id F0D5716AE;
+	Wed, 19 Feb 2020 01:10:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F0D5716AE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582071058;
-	bh=T9L/8gM171dIJDRC3jN4cadMBLZQ/tQ7qXvuvlff1nM=;
+	s=default; t=1582071105;
+	bh=zaC+BuDIqQxHuRDtYHVVILRu03cPoOLk7/XEtoYNe4Q=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=c4oTcBS7dsInkKStMZ/k+2oLvknJvct1SkwR2UFcOhtE5CMRz5IB8UIz2yfKXNZdZ
-	 wtyu/RlKWShgixA+guRXDd+p724sV8goZwbP9qIa3uuTNiPobDtJa2zcVjTO0qFChh
-	 5n/kH4mfWrOtPA5r+eaPYJwAqiMxI0XuOtMNqeZ4=
+	b=Gl8FxSFaQUALlMafXNvtaFCG2lIY/V28gKlDm1tTCdIUHdqQC8VNfNnk6yyxmy2Ks
+	 0dLvy75Pxqe9GAAA2JCiU8jnxcavUKNM+RqXjQ2h7IX7VrdAhhcxsDj0gfD+TNFZAK
+	 1Ldh9Q5Rh5j1mmwPqo1KafLSDEWZz6wuKE7jwzJk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B77E1F8014A;
-	Wed, 19 Feb 2020 01:09:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 34066F80150;
+	Wed, 19 Feb 2020 01:09:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 734C6F80135; Wed, 19 Feb 2020 01:09:14 +0100 (CET)
+ id 6DDAFF8025F; Wed, 19 Feb 2020 01:09:18 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 3227AF80135
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 01:09:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3227AF80135
+ by alsa1.perex.cz (Postfix) with ESMTP id 9C319F8014C
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 01:09:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C319F8014C
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B29301FB;
- Tue, 18 Feb 2020 16:09:09 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3C1C51FB;
+ Tue, 18 Feb 2020 16:09:14 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3562F3F68F;
- Tue, 18 Feb 2020 16:09:09 -0800 (PST)
-Date: Wed, 19 Feb 2020 00:09:07 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B589C3F68F;
+ Tue, 18 Feb 2020 16:09:13 -0800 (PST)
+Date: Wed, 19 Feb 2020 00:09:12 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Applied "ASoC: sof: sof-audio: use for_each_pcm_streams() macro" to
- the asoc tree
+Subject: Applied "ASoC: qcom: lpass-platform: use for_each_pcm_streams()
+ macro" to the asoc tree
 In-Reply-To: 
 Message-Id: 
 X-Patchwork-Hint: ignore
@@ -71,11 +71,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20200219000907.-RGcjhX4NS9q4lSPK_VPSlxaO9dDn9xqaTLGgtT9ezg@z>
+Message-ID: <20200219000912.l79Y2GQYOzwYnX5vRzCRSEMUn2K1sknJXBN4UZg7lk8@z>
 
 The patch
 
-   ASoC: sof: sof-audio: use for_each_pcm_streams() macro
+   ASoC: qcom: lpass-platform: use for_each_pcm_streams() macro
 
 has been applied to the asoc tree at
 
@@ -100,64 +100,33 @@ to this mail.
 Thanks,
 Mark
 
-From 525c4107da8c0a86aa3548dc6e1d0014749e95f7 Mon Sep 17 00:00:00 2001
+From 4c260c3f19bd16e6b11841aad1162f5a105ed24e Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 17 Feb 2020 17:28:47 +0900
-Subject: [PATCH] ASoC: sof: sof-audio: use for_each_pcm_streams() macro
+Date: Mon, 17 Feb 2020 17:28:44 +0900
+Subject: [PATCH] ASoC: qcom: lpass-platform: use for_each_pcm_streams() macro
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/87tv3paa8i.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87v9o5aa8m.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/sof-audio.c | 19 +++++++------------
- 1 file changed, 7 insertions(+), 12 deletions(-)
+ sound/soc/qcom/lpass-platform.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
-index 75f2ef2bd94b..fc4ed2a8a914 100644
---- a/sound/soc/sof/sof-audio.c
-+++ b/sound/soc/sof/sof-audio.c
-@@ -23,7 +23,7 @@ bool snd_sof_dsp_only_d0i3_compatible_stream_active(struct snd_sof_dev *sdev)
- 	int dir;
+diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
+index b05091c283b7..5d1bc5757169 100644
+--- a/sound/soc/qcom/lpass-platform.c
++++ b/sound/soc/qcom/lpass-platform.c
+@@ -529,7 +529,7 @@ static void lpass_platform_pcm_free(struct snd_soc_component *component,
+ 	struct snd_pcm_substream *substream;
+ 	int i;
  
- 	list_for_each_entry(spcm, &sdev->pcm_list, list) {
--		for (dir = 0; dir <= SNDRV_PCM_STREAM_CAPTURE; dir++) {
-+		for_each_pcm_streams(dir) {
- 			substream = spcm->stream[dir].substream;
- 			if (!substream || !substream->runtime)
- 				continue;
-@@ -71,7 +71,7 @@ int sof_set_hw_params_upon_resume(struct device *dev)
- 	 * have been suspended.
- 	 */
- 	list_for_each_entry(spcm, &sdev->pcm_list, list) {
--		for (dir = 0; dir <= SNDRV_PCM_STREAM_CAPTURE; dir++) {
-+		for_each_pcm_streams(dir) {
- 			/*
- 			 * do not reset hw_params upon resume for streams that
- 			 * were kept running during suspend
-@@ -319,16 +319,11 @@ struct snd_sof_pcm *snd_sof_find_spcm_comp(struct snd_soc_component *scomp,
- 	int dir;
- 
- 	list_for_each_entry(spcm, &sdev->pcm_list, list) {
--		dir = SNDRV_PCM_STREAM_PLAYBACK;
--		if (spcm->stream[dir].comp_id == comp_id) {
--			*direction = dir;
--			return spcm;
--		}
--
--		dir = SNDRV_PCM_STREAM_CAPTURE;
--		if (spcm->stream[dir].comp_id == comp_id) {
--			*direction = dir;
--			return spcm;
-+		for_each_pcm_streams(dir) {
-+			if (spcm->stream[dir].comp_id == comp_id) {
-+				*direction = dir;
-+				return spcm;
-+			}
- 		}
- 	}
- 
+-	for (i = 0; i < ARRAY_SIZE(pcm->streams); i++) {
++	for_each_pcm_streams(i) {
+ 		substream = pcm->streams[i].substream;
+ 		if (substream) {
+ 			snd_dma_free_pages(&substream->dma_buffer);
 -- 
 2.20.1
 
