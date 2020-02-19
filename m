@@ -7,59 +7,57 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 22BAAC3524E
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 21:01:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68CA3C3524E
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 21:05:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A594124672
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 21:01:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E6B42207FD
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 21:05:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NimUnIQo"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A594124672
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="L1ngFj5L"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E6B42207FD
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EC93616BB;
-	Wed, 19 Feb 2020 22:00:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC93616BB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4FB2F16C5;
+	Wed, 19 Feb 2020 22:04:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4FB2F16C5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582146069;
-	bh=ZLeSRaZ+bs57DBKQbEWc3gflC62avjUK1mfd1oFxx8o=;
+	s=default; t=1582146339;
+	bh=0556/W4oJCT2Llotqt/ikhVTlPFGLryOXw5ErmcBMjY=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=NimUnIQoEx9KmM3+UEju6T9YAyb2r5gDDzoM8PeYo43Q/FBXHWbEskkrVQLYa4yqN
-	 5Fni/49q0bwW+ckH5qa/kSjbLaaIyXsbCBbBPY848We5XhDH8BSsCqgn60qjSW3p5s
-	 w4Ixo4Np/j5Z3n+zfV+RaZif+vT9Nq9g4mHamSO0=
+	b=L1ngFj5LAz9dvTQ0oHO63D4Uuo/6Rwxxc98P8evn1BiWN8jSIwhrCPqL4gUScjkxA
+	 7QbLit9vY7YuwVyfJ5xhHv6oiYXJo7CD3eIrBa5pZ5B21uTTA+x6N4n/XQ5Arz556o
+	 y10aT25iTPQayihOYHSozQYwuCBG+y+Elm/JQNhg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B776AF8029B;
-	Wed, 19 Feb 2020 21:57:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9CA0DF80316;
+	Wed, 19 Feb 2020 21:57:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 098BCF802A9; Wed, 19 Feb 2020 21:57:14 +0100 (CET)
+ id 492A9F80317; Wed, 19 Feb 2020 21:57:52 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 58E30F8029B
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 21:57:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58E30F8029B
+ by alsa1.perex.cz (Postfix) with ESMTP id D0D78F80308
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 21:57:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0D78F80308
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2F106FEC;
- Wed, 19 Feb 2020 12:57:10 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3225F1FB;
+ Wed, 19 Feb 2020 12:57:45 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A63AE3F68F;
- Wed, 19 Feb 2020 12:57:09 -0800 (PST)
-Date: Wed, 19 Feb 2020 20:57:08 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ABEED3F68F;
+ Wed, 19 Feb 2020 12:57:44 -0800 (PST)
+Date: Wed, 19 Feb 2020 20:57:43 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Robin Murphy <robin.murphy@arm.com>
-Subject: Applied "ASoC: rockchip: Make RK3328 GPIO_MUTE control explicit" to
- the asoc tree
-In-Reply-To: <5bc383ed1832f0f5d1dcb3c97ad92fd68e5217e3.1581376744.git.robin.murphy@arm.com>
-Message-Id: <applied-5bc383ed1832f0f5d1dcb3c97ad92fd68e5217e3.1581376744.git.robin.murphy@arm.com>
+To: Dan Murphy <dmurphy@ti.com>
+Subject: Applied "ASoC: tas2562: Add support for ISENSE and VSENSE" to the
+ asoc tree
+In-Reply-To: <20200219134622.22066-1-dmurphy@ti.com>
+Message-Id: <applied-20200219134622.22066-1-dmurphy@ti.com>
 X-Patchwork-Hint: ignore
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, heiko@sntech.de,
- lgirdwood@gmail.com, linux-rockchip@lists.infradead.org,
- Mark Brown <broonie@kernel.org>, pgwipeout@gmail.com,
- linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,7 +75,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: rockchip: Make RK3328 GPIO_MUTE control explicit
+   ASoC: tas2562: Add support for ISENSE and VSENSE
 
 has been applied to the asoc tree at
 
@@ -102,111 +100,122 @@ to this mail.
 Thanks,
 Mark
 
-From 87d12d5545fa72d67d99d797cdb464c0c7efb9c9 Mon Sep 17 00:00:00 2001
-From: Robin Murphy <robin.murphy@arm.com>
-Date: Tue, 18 Feb 2020 21:31:59 +0000
-Subject: [PATCH] ASoC: rockchip: Make RK3328 GPIO_MUTE control explicit
+From 69e53129d01317d94e8b97ec11688880106a2f97 Mon Sep 17 00:00:00 2001
+From: Dan Murphy <dmurphy@ti.com>
+Date: Wed, 19 Feb 2020 07:46:22 -0600
+Subject: [PATCH] ASoC: tas2562: Add support for ISENSE and VSENSE
 
-The RK3328 reference design uses an external line driver IC as a buffer
-on the analog codec output, enabled by the GPIO_MUTE pin, and such a
-configuration is currently assumed in the codec driver's direct poking
-of GRF_SOC_CON10 to control the GPIO_MUTE output value. However, some
-boards wire up analog audio yet use that pin for some other purpose, so
-that assumption doesn't always hold. Update this functionality to rely
-on an explicit GPIO descriptor, such that it can be managed at the
-board level.
+Add additional support for ISENSE and VSENSE feature for the TAS2562.
+This feature monitors the output to the loud speaker attempts to
+eliminate IR drop errors due to packaging.
 
-Signed-off-by: Robin Murphy <robin.murphy@arm.com>
-Link: https://lore.kernel.org/r/5bc383ed1832f0f5d1dcb3c97ad92fd68e5217e3.1581376744.git.robin.murphy@arm.com
+This feature is defined in Section 8.4.5 IV Sense of the data sheet.
+
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+Link: https://lore.kernel.org/r/20200219134622.22066-1-dmurphy@ti.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rk3328_codec.c | 31 ++++++++++++++++---------------
- 1 file changed, 16 insertions(+), 15 deletions(-)
+ sound/soc/codecs/tas2562.c | 32 +++++++++++++++++++++++++++-----
+ sound/soc/codecs/tas2562.h |  6 +++---
+ 2 files changed, 30 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/rk3328_codec.c b/sound/soc/codecs/rk3328_codec.c
-index 287c962ba00d..115706a55577 100644
---- a/sound/soc/codecs/rk3328_codec.c
-+++ b/sound/soc/codecs/rk3328_codec.c
-@@ -7,6 +7,7 @@
- #include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/device.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/platform_device.h>
-@@ -31,7 +32,7 @@
+diff --git a/sound/soc/codecs/tas2562.c b/sound/soc/codecs/tas2562.c
+index 729acd874c48..b517ada7e809 100644
+--- a/sound/soc/codecs/tas2562.c
++++ b/sound/soc/codecs/tas2562.c
+@@ -382,18 +382,34 @@ static int tas2562_dac_event(struct snd_soc_dapm_widget *w,
+ 	struct snd_soc_component *component =
+ 					snd_soc_dapm_to_component(w->dapm);
+ 	struct tas2562_data *tas2562 = snd_soc_component_get_drvdata(component);
++	int ret;
  
- struct rk3328_codec_priv {
- 	struct regmap *regmap;
--	struct regmap *grf;
-+	struct gpio_desc *mute;
- 	struct clk *mclk;
- 	struct clk *pclk;
- 	unsigned int sclk;
-@@ -106,16 +107,6 @@ static int rk3328_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	switch (event) {
+ 	case SND_SOC_DAPM_POST_PMU:
+-		dev_info(tas2562->dev, "SND_SOC_DAPM_POST_PMU\n");
++		ret = snd_soc_component_update_bits(component,
++			TAS2562_PWR_CTRL,
++			TAS2562_MODE_MASK,
++			TAS2562_MUTE);
++		if (ret)
++			goto end;
+ 		break;
+ 	case SND_SOC_DAPM_PRE_PMD:
+-		dev_info(tas2562->dev, "SND_SOC_DAPM_PRE_PMD\n");
++		ret = snd_soc_component_update_bits(component,
++			TAS2562_PWR_CTRL,
++			TAS2562_MODE_MASK,
++			TAS2562_SHUTDOWN);
++		if (ret)
++			goto end;
+ 		break;
+ 	default:
+-		break;
++		dev_err(tas2562->dev, "Not supported evevt\n");
++		return -EINVAL;
+ 	}
+ 
++end:
++	if (ret < 0)
++		return ret;
++
  	return 0;
  }
  
--static void rk3328_analog_output(struct rk3328_codec_priv *rk3328, int mute)
--{
--	unsigned int val = BIT(17);
--
--	if (mute)
--		val |= BIT(1);
--
--	regmap_write(rk3328->grf, RK3328_GRF_SOC_CON10, val);
--}
--
- static int rk3328_digital_mute(struct snd_soc_dai *dai, int mute)
- {
- 	struct rk3328_codec_priv *rk3328 =
-@@ -205,7 +196,7 @@ static int rk3328_codec_open_playback(struct rk3328_codec_priv *rk3328)
- 	}
+@@ -415,7 +431,6 @@ static const struct snd_kcontrol_new tas2562_snd_controls[] = {
+ static const struct snd_soc_dapm_widget tas2562_dapm_widgets[] = {
+ 	SND_SOC_DAPM_AIF_IN("ASI1", "ASI1 Playback", 0, SND_SOC_NOPM, 0, 0),
+ 	SND_SOC_DAPM_MUX("ASI1 Sel", SND_SOC_NOPM, 0, 0, &tas2562_asi1_mux),
+-	SND_SOC_DAPM_AIF_IN("DAC IN", "Playback", 0, SND_SOC_NOPM, 0, 0),
+ 	SND_SOC_DAPM_DAC_E("DAC", NULL, SND_SOC_NOPM, 0, 0, tas2562_dac_event,
+ 			   SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
+ 	SND_SOC_DAPM_SWITCH("ISENSE", TAS2562_PWR_CTRL, 3, 1, &isense_switch),
+@@ -430,7 +445,7 @@ static const struct snd_soc_dapm_route tas2562_audio_map[] = {
+ 	{"ASI1 Sel", "Left", "ASI1"},
+ 	{"ASI1 Sel", "Right", "ASI1"},
+ 	{"ASI1 Sel", "LeftRightDiv2", "ASI1"},
+-	{ "DAC", NULL, "DAC IN" },
++	{ "DAC", NULL, "ASI1 Sel" },
+ 	{ "OUT", NULL, "DAC" },
+ 	{"ISENSE", "Switch", "IMON"},
+ 	{"VSENSE", "Switch", "VMON"},
+@@ -471,6 +486,13 @@ static struct snd_soc_dai_driver tas2562_dai[] = {
+ 			.rates      = SNDRV_PCM_RATE_8000_192000,
+ 			.formats    = TAS2562_FORMATS,
+ 		},
++		.capture = {
++			.stream_name    = "ASI1 Capture",
++			.channels_min   = 0,
++			.channels_max   = 2,
++			.rates		= SNDRV_PCM_RATE_8000_192000,
++			.formats	= TAS2562_FORMATS,
++		},
+ 		.ops = &tas2562_speaker_dai_ops,
+ 	},
+ };
+diff --git a/sound/soc/codecs/tas2562.h b/sound/soc/codecs/tas2562.h
+index 62e659ab786d..6f55ebcf19ea 100644
+--- a/sound/soc/codecs/tas2562.h
++++ b/sound/soc/codecs/tas2562.h
+@@ -40,7 +40,7 @@
  
- 	msleep(rk3328->spk_depop_time);
--	rk3328_analog_output(rk3328, 1);
-+	gpiod_set_value(rk3328->mute, 0);
+ #define TAS2562_RESET	BIT(0)
  
- 	regmap_update_bits(rk3328->regmap, HPOUTL_GAIN_CTRL,
- 			   HPOUTL_GAIN_MASK, OUT_VOLUME);
-@@ -246,7 +237,7 @@ static int rk3328_codec_close_playback(struct rk3328_codec_priv *rk3328)
- {
- 	size_t i;
+-#define TAS2562_MODE_MASK	0x3
++#define TAS2562_MODE_MASK	GENMASK(1,0)
+ #define TAS2562_ACTIVE		0x0
+ #define TAS2562_MUTE		0x1
+ #define TAS2562_SHUTDOWN	0x2
+@@ -73,8 +73,8 @@
+ #define TAS2562_TDM_CFG2_RXWLEN_24B	BIT(3)
+ #define TAS2562_TDM_CFG2_RXWLEN_32B	(BIT(2) | BIT(3))
  
--	rk3328_analog_output(rk3328, 0);
-+	gpiod_set_value(rk3328->mute, 1);
+-#define TAS2562_VSENSE_POWER_EN		BIT(2)
+-#define TAS2562_ISENSE_POWER_EN		BIT(3)
++#define TAS2562_VSENSE_POWER_EN		2
++#define TAS2562_ISENSE_POWER_EN		3
  
- 	regmap_update_bits(rk3328->regmap, HPOUTL_GAIN_CTRL,
- 			   HPOUTL_GAIN_MASK, 0);
-@@ -446,7 +437,6 @@ static int rk3328_platform_probe(struct platform_device *pdev)
- 		dev_err(&pdev->dev, "missing 'rockchip,grf'\n");
- 		return PTR_ERR(grf);
- 	}
--	rk3328->grf = grf;
- 	/* enable i2s_acodec_en */
- 	regmap_write(grf, RK3328_GRF_SOC_CON2,
- 		     (BIT(14) << 16 | BIT(14)));
-@@ -458,7 +448,18 @@ static int rk3328_platform_probe(struct platform_device *pdev)
- 		rk3328->spk_depop_time = 200;
- 	}
- 
--	rk3328_analog_output(rk3328, 0);
-+	rk3328->mute = gpiod_get_optional(&pdev->dev, "mute", GPIOD_OUT_HIGH);
-+	if (IS_ERR(rk3328->mute))
-+		return PTR_ERR(rk3328->mute);
-+	/*
-+	 * Rock64 is the only supported platform to have widely relied on
-+	 * this; if we do happen to come across an old DTB, just leave the
-+	 * external mute forced off.
-+	 */
-+	if (!rk3328->mute && of_machine_is_compatible("pine64,rock64")) {
-+		dev_warn(&pdev->dev, "assuming implicit control of GPIO_MUTE; update devicetree if possible\n");
-+		regmap_write(grf, RK3328_GRF_SOC_CON10, BIT(17) | BIT(1));
-+	}
- 
- 	rk3328->mclk = devm_clk_get(&pdev->dev, "mclk");
- 	if (IS_ERR(rk3328->mclk))
+ #define TAS2562_TDM_CFG5_VSNS_EN	BIT(6)
+ #define TAS2562_TDM_CFG5_VSNS_SLOT_MASK	GENMASK(5, 0)
 -- 
 2.20.1
 
