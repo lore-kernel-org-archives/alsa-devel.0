@@ -7,56 +7,57 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EFA0AC3404C
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 00:21:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09F53C3404C
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 00:22:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7AD6D2465A
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 00:21:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 71D402173E
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 00:22:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="N/jd7VdZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7AD6D2465A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DjJ8aN7A"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 71D402173E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D8A1116DE;
-	Wed, 19 Feb 2020 01:20:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8A1116DE
+	by alsa0.perex.cz (Postfix) with ESMTPS id C9CDE16CA;
+	Wed, 19 Feb 2020 01:21:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C9CDE16CA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582071660;
-	bh=LrpbHDx/gKTEtRKlBEkJqB6J1FpPYTkarNy5Qy9LFQY=;
+	s=default; t=1582071721;
+	bh=hLwBTsKxXffyR7SFKAARP74ux3moEFbT18oflpeAsiU=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=N/jd7VdZw6yAwE49Qepp2FxNnm9A76STybcH8yPcFEx7SiPvOum99JJRcImO7q6YA
-	 po9Zm3gXjtNdRpOBRsg1Eyk1xzzET5LfkYsFMvPJdfGgoJhzaDHzjXrBYoD2N9RJV/
-	 Eha+uVE+ybBNW/hlH8JboztJqj2jd1olEbPYtUl4=
+	b=DjJ8aN7A+ow7H0QaHbVt7upaYgEIUcSphsULX7CRj2G2U/rIcqtSrlr2fQkpoRIOc
+	 u9D+rYcchGpXKPm0IJfnU48EZq5rxR6osLfBtG7/puqZSDSE916MZsDnAFAdi9p6jd
+	 7vXzMgtlpntodcZREcgCEtkffg3w8hgJ4E5uoO9s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B2B21F8033D;
-	Wed, 19 Feb 2020 01:10:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BD875F80345;
+	Wed, 19 Feb 2020 01:10:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A277CF8033E; Wed, 19 Feb 2020 01:10:29 +0100 (CET)
+ id 3AE7CF80346; Wed, 19 Feb 2020 01:10:39 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 69509F80331
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 01:10:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69509F80331
+ by alsa1.perex.cz (Postfix) with ESMTP id 8D0B7F80343
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 01:10:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D0B7F80343
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BC9191FB;
- Tue, 18 Feb 2020 16:10:25 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E1BEEFEC;
+ Tue, 18 Feb 2020 16:10:34 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 40BF23F68F;
- Tue, 18 Feb 2020 16:10:25 -0800 (PST)
-Date: Wed, 19 Feb 2020 00:10:23 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6579B3F68F;
+ Tue, 18 Feb 2020 16:10:34 -0800 (PST)
+Date: Wed, 19 Feb 2020 00:10:32 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Derek Fang <derek.fang@realtek.com>
-Subject: Applied "ASoC: rt5682: Add DAI clock binding info for WCLK/BCLK CCF
- usage" to the asoc tree
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: Applied "ASoC: SOF: Intel: Add Probe compress CPU DAIs" to the asoc
+ tree
 In-Reply-To: 
 Message-Id: 
 X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -71,11 +72,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20200219001023.TuIdfSHNKzzg_Ra4NsIl79mYR_RHyxcXyqen7jaL9_o@z>
+Message-ID: <20200219001032.pemz3NBbhggpvm44zJ_DUCL8zI8k2XHTPJehKoXQUCA@z>
 
 The patch
 
-   ASoC: rt5682: Add DAI clock binding info for WCLK/BCLK CCF usage
+   ASoC: SOF: Intel: Add Probe compress CPU DAIs
 
 has been applied to the asoc tree at
 
@@ -100,50 +101,143 @@ to this mail.
 Thanks,
 Mark
 
-From 8b59e642d05f0ae9800b057350c063fe7debd6bc Mon Sep 17 00:00:00 2001
-From: Derek Fang <derek.fang@realtek.com>
-Date: Tue, 18 Feb 2020 21:51:52 +0800
-Subject: [PATCH] ASoC: rt5682: Add DAI clock binding info for WCLK/BCLK CCF
- usage
+From 70368106467cd8c420176bf3ab0acc797f6584bf Mon Sep 17 00:00:00 2001
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+Date: Tue, 18 Feb 2020 15:39:24 +0100
+Subject: [PATCH] ASoC: SOF: Intel: Add Probe compress CPU DAIs
 
-This patch describes that rt5682 can expose WCLK and BCLK clocks
-and how to use.
+Declare extraction CPU DAI as well as sof_probe_compr_ops. FE DAIs can
+link against these new CPU DAI to create new compress devices.
 
-Signed-off-by: Derek Fang <derek.fang@realtek.com>
-Link: https://lore.kernel.org/r/1582033912-6841-2-git-send-email-derek.fang@realtek.com
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20200218143924.10565-10-cezary.rojewski@intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/rt5682.txt | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ sound/soc/sof/compress.c      |  5 +++++
+ sound/soc/sof/compress.h      |  2 ++
+ sound/soc/sof/intel/hda-dai.c | 28 ++++++++++++++++++++++++++++
+ sound/soc/sof/intel/hda.h     |  6 ++++++
+ sound/soc/sof/pcm.c           |  7 +++++++
+ 5 files changed, 48 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/rt5682.txt b/Documentation/devicetree/bindings/sound/rt5682.txt
-index 30e927a28369..ac98151d29e4 100644
---- a/Documentation/devicetree/bindings/sound/rt5682.txt
-+++ b/Documentation/devicetree/bindings/sound/rt5682.txt
-@@ -32,6 +32,12 @@ Optional properties:
-   The delay time is realtek,btndet-delay value multiple of 8.192 ms.
-   If absent, the default is 16.
+diff --git a/sound/soc/sof/compress.c b/sound/soc/sof/compress.c
+index e87cc81a0599..7354dc6a49cf 100644
+--- a/sound/soc/sof/compress.c
++++ b/sound/soc/sof/compress.c
+@@ -13,6 +13,11 @@
+ #include "ops.h"
+ #include "probe.h"
  
-+- #clock-cells : Should be set to '<1>',  wclk and bclk sources provided.
-+- clock-output-names : Name given for DAI clocks output.
++struct snd_compr_ops sof_probe_compressed_ops = {
++	.copy		= sof_probe_compr_copy,
++};
++EXPORT_SYMBOL(sof_probe_compressed_ops);
 +
-+- clocks : phandle and clock specifier for codec MCLK.
-+- clock-names : Clock name string for 'clocks' attribute, should be "mclk".
-+
- Pins on the device (for linking into audio routes) for RT5682:
+ int sof_probe_compr_open(struct snd_compr_stream *cstream,
+ 		struct snd_soc_dai *dai)
+ {
+diff --git a/sound/soc/sof/compress.h b/sound/soc/sof/compress.h
+index dccc9e008f81..800f163603e1 100644
+--- a/sound/soc/sof/compress.h
++++ b/sound/soc/sof/compress.h
+@@ -13,6 +13,8 @@
  
-   * DMIC L1
-@@ -53,4 +59,10 @@ rt5682 {
- 	realtek,dmic1-clk-pin = <1>;
- 	realtek,jd-src = <1>;
- 	realtek,btndet-delay = <16>;
+ #include <sound/compress_driver.h>
+ 
++extern struct snd_compr_ops sof_probe_compressed_ops;
 +
-+	#clock-cells = <1>;
-+	clock-output-names = "rt5682-dai-wclk", "rt5682-dai-bclk";
-+
-+	clocks = <&osc>;
-+	clock-names = "mclk";
+ int sof_probe_compr_open(struct snd_compr_stream *cstream,
+ 		struct snd_soc_dai *dai);
+ int sof_probe_compr_free(struct snd_compr_stream *cstream,
+diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
+index 9c6e3f990ee3..ed5e7d2c0d43 100644
+--- a/sound/soc/sof/intel/hda-dai.c
++++ b/sound/soc/sof/intel/hda-dai.c
+@@ -399,6 +399,19 @@ static const struct snd_soc_dai_ops hda_link_dai_ops = {
+ 	.trigger = hda_link_pcm_trigger,
+ 	.prepare = hda_link_pcm_prepare,
  };
++
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_PROBES)
++#include "../compress.h"
++
++static struct snd_soc_cdai_ops sof_probe_compr_ops = {
++	.startup	= sof_probe_compr_open,
++	.shutdown	= sof_probe_compr_free,
++	.set_params	= sof_probe_compr_set_params,
++	.trigger	= sof_probe_compr_trigger,
++	.pointer	= sof_probe_compr_pointer,
++};
++
++#endif
+ #endif
+ 
+ /*
+@@ -460,5 +473,20 @@ struct snd_soc_dai_driver skl_dai[] = {
+ 	.name = "Alt Analog CPU DAI",
+ 	.ops = &hda_link_dai_ops,
+ },
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_PROBES)
++{
++	.name = "Probe Extraction CPU DAI",
++	.compress_new = snd_soc_new_compress,
++	.cops = &sof_probe_compr_ops,
++	.capture = {
++		.stream_name = "Probe Extraction",
++		.channels_min = 1,
++		.channels_max = 8,
++		.rates = SNDRV_PCM_RATE_48000,
++		.rate_min = 48000,
++		.rate_max = 48000,
++	},
++},
++#endif
+ #endif
+ };
+diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+index ca44ecb76534..537c0a930a15 100644
+--- a/sound/soc/sof/intel/hda.h
++++ b/sound/soc/sof/intel/hda.h
+@@ -349,7 +349,13 @@
+ 
+ /* Number of DAIs */
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
++
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_PROBES)
++#define SOF_SKL_NUM_DAIS		16
++#else
+ #define SOF_SKL_NUM_DAIS		15
++#endif
++
+ #else
+ #define SOF_SKL_NUM_DAIS		8
+ #endif
+diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
+index db3df02c7398..b239bbff4b5c 100644
+--- a/sound/soc/sof/pcm.c
++++ b/sound/soc/sof/pcm.c
+@@ -16,6 +16,9 @@
+ #include "sof-priv.h"
+ #include "sof-audio.h"
+ #include "ops.h"
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_PROBES)
++#include "compress.h"
++#endif
+ 
+ /* Create DMA buffer page table for DSP */
+ static int create_page_table(struct snd_soc_component *component,
+@@ -787,6 +790,10 @@ void snd_sof_new_platform_drv(struct snd_sof_dev *sdev)
+ 
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_COMPRESS)
+ 	pd->compr_ops = &sof_compressed_ops;
++#endif
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_PROBES)
++	/* override cops when probe support is enabled */
++	pd->compr_ops = &sof_probe_compressed_ops;
+ #endif
+ 	pd->pcm_construct = sof_pcm_new;
+ 	pd->ignore_machine = drv_name;
 -- 
 2.20.1
 
