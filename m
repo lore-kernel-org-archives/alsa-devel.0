@@ -2,59 +2,58 @@ Return-Path: <SRS0=QPpS=4H=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 566B3C34022
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 07:02:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8330EC34022
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 07:03:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D557B208E4
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 07:02:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0E604208E4
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 07:03:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hSLRv4St"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D557B208E4
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OOwd/JB9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0E604208E4
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3ABAB16D4;
-	Wed, 19 Feb 2020 08:02:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3ABAB16D4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6E20D1704;
+	Wed, 19 Feb 2020 08:02:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E20D1704
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582095772;
-	bh=3KInVJMiFo/HZ908T97IPcIjUu6nqJoYmZ5y5LsNIZs=;
+	s=default; t=1582095800;
+	bh=WhPqCtwPoXnGYqc5QjCqvn8Trab8GszOXJ19RBW2Ksg=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hSLRv4StwKd8DUZG7e8uV2p9bGTuyHzDep+tgzhklrqqgXPWPQOEDaBCzq2ht4gVa
-	 MqxwuE/ZzBquwWxalkkWhUNN54dce6ZmJtqqr9/vbRiMu9x7LvvVt+TsD1Vp9FtmhW
-	 oF4/omxaSMS/5LPhDR/x4YC3XWJ+n5FU/nenkjbE=
+	b=OOwd/JB9WZe8190AHX3uMp3qJtjvvqEuETxff2AlTI4DxNggd68YVS77e/yakoObI
+	 V2eEabtaummEHMhP8OXybblHkrodKKJQIFtRKlZ1XVE4EBVK5mHO/9e7/GM7vzBDmd
+	 Gq8zk13KVkj6cG/iKJj7c+W8Ok1CENJHBc0SXhhU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C04F0F802E7;
-	Wed, 19 Feb 2020 07:56:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 528BAF802EC;
+	Wed, 19 Feb 2020 07:56:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 95B49F802E8; Wed, 19 Feb 2020 07:56:51 +0100 (CET)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 9E5ABF802BD
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 07:56:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E5ABF802BD
-Date: 19 Feb 2020 15:56:46 +0900
-X-IronPort-AV: E=Sophos;i="5.70,459,1574089200"; d="scan'208";a="39688815"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 19 Feb 2020 15:56:46 +0900
+ id 8307AF802EC; Wed, 19 Feb 2020 07:56:58 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 7D26AF802E9
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 07:56:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D26AF802E9
+Date: 19 Feb 2020 15:56:52 +0900
+X-IronPort-AV: E=Sophos;i="5.70,459,1574089200"; d="scan'208";a="39472527"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 19 Feb 2020 15:56:52 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 5BE17400964C;
- Wed, 19 Feb 2020 15:56:46 +0900 (JST)
-Message-ID: <87blpvjc9v.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id ED78E41D9F77;
+ Wed, 19 Feb 2020 15:56:51 +0900 (JST)
+Message-ID: <87a75fjc9q.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 10/13] ASoC: soc-pcm: merge dpcm_run_new/old_update() into
- dpcm_fe_runtime_update()
+Subject: [PATCH 11/13] ASoC: soc-pcm: move dpcm_path_put() to soc-pcm.c
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87pnebjcc4.wl-kuninori.morimoto.gx@renesas.com>
@@ -77,77 +76,134 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-soc-pcm has dpcm_run_new/old_update(), but these are used from
-dpcm_fe_runtime_update() only, and are very verbose functions.
-This patch disassembles these.
+dpcm_path_put() (A) is calling kfree(*list).
+The freed list is created by dapm_widget_list_create() (B) which is called
+from snd_soc_dapm_dai_get_connected_widgets() (C) which is called from
+dpcm_path_get() (D).
+
+(B)	dapm_widget_list_create(**list, ...)
+	{
+		...
+=>		*list = kzalloc();
+		...
+	}
+
+(C)	snd_soc_dapm_dai_get_connected_widgets(..., **list, ...)
+	{
+		...
+		dapm_widget_list_create(list, ...);
+		...
+	}
+
+(D)	dpcm_path_get(..., **list)
+	{
+		...
+		snd_soc_dapm_dai_get_connected_widgets(..., list, ...);
+		...
+	}
+
+(A)	dpcm_path_put(**list)
+	{
+=>		kfree(*list);
+	}
+
+This kind of unbalance code is very difficult to read/understand.
+To avoid this issue, this patch adds each missing paired function
+dapm_widget_list_free()         for dapm_widget_list_create() (B), and
+snd_soc_dapm_dai_free_widgets() for snd_soc_dapm_dai_get_connected_widgets() (C).
+
+This patch uses these, and moves dpcm_path_put() next to dpcm_path_get().
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-pcm.c | 35 +++++++----------------------------
- 1 file changed, 7 insertions(+), 28 deletions(-)
+ include/sound/soc-dapm.h |  1 +
+ include/sound/soc-dpcm.h |  7 +------
+ sound/soc/soc-dapm.c     | 10 ++++++++++
+ sound/soc/soc-pcm.c      |  5 +++++
+ 4 files changed, 17 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 09104013b984..066b9e3e60dc 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -2538,37 +2538,12 @@ static int dpcm_run_update_startup(struct snd_soc_pcm_runtime *fe, int stream)
- 	return ret;
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index 9439e75945f6..464b20acd720 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -484,6 +484,7 @@ int snd_soc_dapm_dai_get_connected_widgets(struct snd_soc_dai *dai, int stream,
+ 	struct snd_soc_dapm_widget_list **list,
+ 	bool (*custom_stop_condition)(struct snd_soc_dapm_widget *,
+ 				      enum snd_soc_dapm_direction));
++void snd_soc_dapm_dai_free_widgets(struct snd_soc_dapm_widget_list **list);
+ 
+ struct snd_soc_dapm_context *snd_soc_dapm_kcontrol_dapm(
+ 	struct snd_kcontrol *kcontrol);
+diff --git a/include/sound/soc-dpcm.h b/include/sound/soc-dpcm.h
+index 3e7819d2a6aa..40223577ec4a 100644
+--- a/include/sound/soc-dpcm.h
++++ b/include/sound/soc-dpcm.h
+@@ -145,6 +145,7 @@ static inline void soc_dpcm_debugfs_add(struct snd_soc_pcm_runtime *rtd)
+ 
+ int dpcm_path_get(struct snd_soc_pcm_runtime *fe,
+ 	int stream, struct snd_soc_dapm_widget_list **list_);
++void dpcm_path_put(struct snd_soc_dapm_widget_list **list);
+ int dpcm_process_paths(struct snd_soc_pcm_runtime *fe,
+ 	int stream, struct snd_soc_dapm_widget_list **list, int new);
+ int dpcm_be_dai_startup(struct snd_soc_pcm_runtime *fe, int stream);
+@@ -158,10 +159,4 @@ int dpcm_be_dai_prepare(struct snd_soc_pcm_runtime *fe, int stream);
+ int dpcm_dapm_stream_event(struct snd_soc_pcm_runtime *fe, int dir,
+ 	int event);
+ 
+-static inline void dpcm_path_put(struct snd_soc_dapm_widget_list **list)
+-{
+-	kfree(*list);
+-}
+-
+-
+ #endif
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 4bee5f42f3be..c913fc6d3711 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -1105,6 +1105,11 @@ static int snd_soc_dapm_suspend_check(struct snd_soc_dapm_widget *widget)
+ 	}
  }
  
--static int dpcm_run_new_update(struct snd_soc_pcm_runtime *fe, int stream)
--{
--	int ret;
--
--	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_BE);
--	ret = dpcm_run_update_startup(fe, stream);
--	if (ret < 0)
--		dev_err(fe->dev, "ASoC: failed to startup some BEs\n");
--	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_NO);
--
--	return ret;
--}
--
--static int dpcm_run_old_update(struct snd_soc_pcm_runtime *fe, int stream)
--{
--	int ret;
--
--	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_BE);
--	ret = dpcm_run_update_shutdown(fe, stream);
--	if (ret < 0)
--		dev_err(fe->dev, "ASoC: failed to shutdown some BEs\n");
--	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_NO);
--
--	return ret;
--}
--
- static int soc_dpcm_fe_runtime_update(struct snd_soc_pcm_runtime *fe, int new)
++static void dapm_widget_list_free(struct snd_soc_dapm_widget_list **list)
++{
++	kfree(*list);
++}
++
+ static int dapm_widget_list_create(struct snd_soc_dapm_widget_list **list,
+ 	struct list_head *widgets)
  {
- 	struct snd_soc_dapm_widget_list *list;
- 	int stream;
- 	int count, paths;
-+	int ret;
+@@ -1310,6 +1315,11 @@ int snd_soc_dapm_dai_get_connected_widgets(struct snd_soc_dai *dai, int stream,
+ 	return paths;
+ }
  
- 	if (!fe->dai_link->dynamic)
- 		return 0;
-@@ -2605,10 +2580,14 @@ static int soc_dpcm_fe_runtime_update(struct snd_soc_pcm_runtime *fe, int new)
- 		/* update any playback/capture paths */
- 		count = dpcm_process_paths(fe, stream, &list, new);
- 		if (count) {
-+			dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_BE);
- 			if (new)
--				dpcm_run_new_update(fe, stream);
-+				ret = dpcm_run_update_startup(fe, stream);
- 			else
--				dpcm_run_old_update(fe, stream);
-+				ret = dpcm_run_update_shutdown(fe, stream);
-+			if (ret < 0)
-+				dev_err(fe->dev, "ASoC: failed to shutdown some BEs\n");
-+			dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_NO);
++void snd_soc_dapm_dai_free_widgets(struct snd_soc_dapm_widget_list **list)
++{
++	dapm_widget_list_free(list);
++}
++
+ /*
+  * Handler for regulator supply widget.
+  */
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 066b9e3e60dc..baab322e61e2 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1304,6 +1304,11 @@ int dpcm_path_get(struct snd_soc_pcm_runtime *fe,
+ 	return paths;
+ }
  
- 			dpcm_clear_pending_state(fe, stream);
- 			dpcm_be_disconnect(fe, stream);
++void dpcm_path_put(struct snd_soc_dapm_widget_list **list)
++{
++	snd_soc_dapm_dai_free_widgets(list);
++}
++
+ static int dpcm_prune_paths(struct snd_soc_pcm_runtime *fe, int stream,
+ 	struct snd_soc_dapm_widget_list **list_)
+ {
 -- 
 2.17.1
 
