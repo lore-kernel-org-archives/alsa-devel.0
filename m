@@ -7,57 +7,56 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A278C34031
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 00:27:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E3381C34031
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 00:28:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 875F6208E4
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 00:27:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6A62E208E4
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 00:28:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="htTnRBLZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 875F6208E4
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ii4KZ5fh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6A62E208E4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AA04C1729;
-	Wed, 19 Feb 2020 01:26:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA04C1729
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9C778172C;
+	Wed, 19 Feb 2020 01:27:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C778172C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582072019;
-	bh=DS5MJEmSmQAj2d2ph/3XZOgggjsoY4qpFDZNbIZO51U=;
+	s=default; t=1582072079;
+	bh=+ng/STmgaVR7Cot9pXbQ2wXAoEuudGZ3aFb2ykc4jog=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=htTnRBLZXEadTPrU+fhF3XRsDsxa7nY7b8zS+uB3X7rBufsARjvggwSd2WkubMYZA
-	 eRZIu7SAL1e7Opvzt5GYt0ZLq7UY9BvvK6uglEBmuXRnOWfW02QZc6GRPO6zBIWeJn
-	 LJkoNNoQJhrSm+GgfHxO8l7FPOdA1Lcy/WVwsBYo=
+	b=Ii4KZ5fhHkk7/gPN/4luyLPDgU+YEeOheL4kGepanr2ZyU2dVMI0QWWd+YGZi1nHP
+	 W9AirxzY4yopbWYJKfgGAh7rm+8BCFTm0G9pvoCTMt9avdRfzrF6bX8sGURh4pajET
+	 E+nv0zbkWwAJFqqktqrPziL1utORpSN6/jxKhjFk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 96214F80391;
-	Wed, 19 Feb 2020 01:11:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DF7C2F803B2;
+	Wed, 19 Feb 2020 01:11:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2BC9BF8038E; Wed, 19 Feb 2020 01:11:17 +0100 (CET)
+ id 7AC1FF803BC; Wed, 19 Feb 2020 01:11:24 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 96F79F80385
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 01:11:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96F79F80385
+ by alsa1.perex.cz (Postfix) with ESMTP id 817D4F803B0
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 01:11:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 817D4F803B0
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E29C4FEC;
- Tue, 18 Feb 2020 16:11:10 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B4241FEC;
+ Tue, 18 Feb 2020 16:11:19 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 65F5C3F68F;
- Tue, 18 Feb 2020 16:11:10 -0800 (PST)
-Date: Wed, 19 Feb 2020 00:11:08 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 391F33F68F;
+ Tue, 18 Feb 2020 16:11:19 -0800 (PST)
+Date: Wed, 19 Feb 2020 00:11:17 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Applied "ALSA: core: Expand DMA buffer information" to the asoc tree
+To: Dan Murphy <dmurphy@ti.com>
+Subject: Applied "ASoC: tas2562: Return invalid for when bitwidth is invalid"
+ to the asoc tree
 In-Reply-To: 
 Message-Id: 
 X-Patchwork-Hint: ignore
-Cc: Vinod Koul <vkoul@kernel.org>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,11 +71,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20200219001108.ybYRPQMNahhDp1n1-AyeBu8fuKsGB0nvKg2FtURwaFM@z>
+Message-ID: <20200219001117.NHYnNfxpEqoQ_PTqiyiwj92Aa19Uc9X5lB7IuiDiKLQ@z>
 
 The patch
 
-   ALSA: core: Expand DMA buffer information
+   ASoC: tas2562: Return invalid for when bitwidth is invalid
 
 has been applied to the asoc tree at
 
@@ -101,102 +100,36 @@ to this mail.
 Thanks,
 Mark
 
-From 386dd54b3a2eedb91aa6e465e7c3a57db04f3960 Mon Sep 17 00:00:00 2001
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-Date: Tue, 18 Feb 2020 15:39:16 +0100
-Subject: [PATCH] ALSA: core: Expand DMA buffer information
+From 310006cab991fa895cc3a42c53609778b0d50d46 Mon Sep 17 00:00:00 2001
+From: Dan Murphy <dmurphy@ti.com>
+Date: Tue, 18 Feb 2020 12:52:52 -0600
+Subject: [PATCH] ASoC: tas2562: Return invalid for when bitwidth is invalid
 
-Update DMA buffer definition for snd_compr_runtime so it is represented
-similarly as in snd_pcm_runtime. While at it, modify
-snd_compr_set_runtime_buffer to account for newly added members.
+If the bitwidth passed in to the set_bitwidth function is not supported
+then return an error.
 
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
-Acked-by: Vinod Koul <vkoul@kernel.org>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200218143924.10565-2-cezary.rojewski@intel.com
+Fixes: 29b74236bd57 ("ASoC: tas2562: Introduce the TAS2562 amplifier")
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+Link: https://lore.kernel.org/r/20200218185252.26290-1-dmurphy@ti.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/compress_driver.h | 35 ++++++++++++++++++++++++---------
- 1 file changed, 26 insertions(+), 9 deletions(-)
+ sound/soc/codecs/tas2562.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
-index bc88d6f964da..00f633c0c3ba 100644
---- a/include/sound/compress_driver.h
-+++ b/include/sound/compress_driver.h
-@@ -23,7 +23,6 @@ struct snd_compr_ops;
-  * struct snd_compr_runtime: runtime stream description
-  * @state: stream state
-  * @ops: pointer to DSP callbacks
-- * @dma_buffer_p: runtime dma buffer pointer
-  * @buffer: pointer to kernel buffer, valid only when not in mmap mode or
-  *	DSP doesn't implement copy
-  * @buffer_size: size of the above buffer
-@@ -34,11 +33,14 @@ struct snd_compr_ops;
-  * @total_bytes_transferred: cumulative bytes transferred by offload DSP
-  * @sleep: poll sleep
-  * @private_data: driver private data pointer
-+ * @dma_area: virtual buffer address
-+ * @dma_addr: physical buffer address (not accessible from main CPU)
-+ * @dma_bytes: size of DMA area
-+ * @dma_buffer_p: runtime dma buffer pointer
-  */
- struct snd_compr_runtime {
- 	snd_pcm_state_t state;
- 	struct snd_compr_ops *ops;
--	struct snd_dma_buffer *dma_buffer_p;
- 	void *buffer;
- 	u64 buffer_size;
- 	u32 fragment_size;
-@@ -47,6 +49,11 @@ struct snd_compr_runtime {
- 	u64 total_bytes_transferred;
- 	wait_queue_head_t sleep;
- 	void *private_data;
-+
-+	unsigned char *dma_area;
-+	dma_addr_t dma_addr;
-+	size_t dma_bytes;
-+	struct snd_dma_buffer *dma_buffer_p;
- };
+diff --git a/sound/soc/codecs/tas2562.c b/sound/soc/codecs/tas2562.c
+index 729acd874c48..5b4803a76719 100644
+--- a/sound/soc/codecs/tas2562.c
++++ b/sound/soc/codecs/tas2562.c
+@@ -215,7 +215,8 @@ static int tas2562_set_bitwidth(struct tas2562_data *tas2562, int bitwidth)
+ 		break;
  
- /**
-@@ -180,19 +187,29 @@ static inline void snd_compr_drain_notify(struct snd_compr_stream *stream)
+ 	default:
+-		dev_info(tas2562->dev, "Not supported params format\n");
++		dev_info(tas2562->dev, "Unsupported bitwidth format\n");
++		return -EINVAL;
+ 	}
  
- /**
-  * snd_compr_set_runtime_buffer - Set the Compress runtime buffer
-- * @substream: compress substream to set
-+ * @stream: compress stream to set
-  * @bufp: the buffer information, NULL to clear
-  *
-  * Copy the buffer information to runtime buffer when @bufp is non-NULL.
-  * Otherwise it clears the current buffer information.
-  */
--static inline void snd_compr_set_runtime_buffer(
--					struct snd_compr_stream *substream,
--					struct snd_dma_buffer *bufp)
-+static inline void
-+snd_compr_set_runtime_buffer(struct snd_compr_stream *stream,
-+			     struct snd_dma_buffer *bufp)
- {
--	struct snd_compr_runtime *runtime = substream->runtime;
--
--	runtime->dma_buffer_p = bufp;
-+	struct snd_compr_runtime *runtime = stream->runtime;
-+
-+	if (bufp) {
-+		runtime->dma_buffer_p = bufp;
-+		runtime->dma_area = bufp->area;
-+		runtime->dma_addr = bufp->addr;
-+		runtime->dma_bytes = bufp->bytes;
-+	} else {
-+		runtime->dma_buffer_p = NULL;
-+		runtime->dma_area = NULL;
-+		runtime->dma_addr = 0;
-+		runtime->dma_bytes = 0;
-+	}
- }
- 
- int snd_compr_stop_error(struct snd_compr_stream *stream,
+ 	ret = snd_soc_component_update_bits(tas2562->component,
 -- 
 2.20.1
 
