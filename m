@@ -7,53 +7,53 @@ X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DC2CC34022
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 07:01:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E2D3C34022
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 07:01:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DE833208E4
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 07:01:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 961A6208E4
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 07:01:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WuyLUwBd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DE833208E4
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Cmyevgag"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 961A6208E4
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4522E1703;
-	Wed, 19 Feb 2020 08:00:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4522E1703
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0730516EE;
+	Wed, 19 Feb 2020 08:00:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0730516EE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582095660;
-	bh=wnJ8GB7ZXxdcGfZEdKyOMR1T/QYpVOqbdWGjbh6WY3Q=;
+	s=default; t=1582095694;
+	bh=MeoGMxCLV2ZGlZPGtlwlzT7Qwf0mPsPQPg1wgFi7Q0c=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WuyLUwBdcAHFeI5CRp/6S8MIWMMDEAULAr5DH5O+indBBEy61+AWkYJDquHGLaiMF
-	 1tn7bTpZ2aJdNcL7YUV2JtuLLNiU1sD7rgMcp2v5zqMenTBQ6aCkEA466OgTkD4SIw
-	 Bc/wi/TkUa43cLYC7yx/7JppPd4KeBe6s3Gb8+DA=
+	b=Cmyevgagrj2w1WyLmVRta+kQoTtQMJ0g20b9OJDkX6PW4H2AlKROOaBpTjvBbRnUl
+	 FKBNos38tJfeNeDK/yy/7ZMhnItRTbRAo/DCTEcBcXgetHD2PwG7AB2qgV5QviapB2
+	 JW1xUk8xskaxB/T/16fi+bLQzPkqpxRpiJyT0E0M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D098CF802A8;
-	Wed, 19 Feb 2020 07:56:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1FEAAF800C4;
+	Wed, 19 Feb 2020 07:56:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 51A36F802A9; Wed, 19 Feb 2020 07:56:40 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 4613EF80290
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 07:56:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4613EF80290
-Date: 19 Feb 2020 15:56:30 +0900
-X-IronPort-AV: E=Sophos;i="5.70,459,1574089200"; d="scan'208";a="39472484"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 19 Feb 2020 15:56:30 +0900
+ id 58B0BF802BD; Wed, 19 Feb 2020 07:56:42 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 4A58DF800C4
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 07:56:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4A58DF800C4
+Date: 19 Feb 2020 15:56:36 +0900
+X-IronPort-AV: E=Sophos;i="5.70,459,1574089200"; d="scan'208";a="39688802"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 19 Feb 2020 15:56:36 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id BA2124009F79;
- Wed, 19 Feb 2020 15:56:30 +0900 (JST)
-Message-ID: <87ftf7jcab.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 0971B41D9F77;
+ Wed, 19 Feb 2020 15:56:36 +0900 (JST)
+Message-ID: <87eeurjca6.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 07/13] ASoC: soc-pcm: add snd_soc_dai_get_pcm_stream()
+Subject: [PATCH 08/13] ASoC: soc-pcm: cleanup soc_pcm_apply_msb()
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87pnebjcc4.wl-kuninori.morimoto.gx@renesas.com>
@@ -79,182 +79,64 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-DAI driver has playback/capture stream.
-OTOH, we have SNDRV_PCM_STREAM_PLAYBACK/CAPTURE.
-Because of this kind of implementation,
-ALSA SoC needs to have many verbose code.
+soc_pcm_apply_msb() apply msb for CPU/Codec,
+but, it has duplicate code. The difference is only
+SNDRV_PCM_STREAM_PLAYBACK and SNDRV_PCM_STEAM_CAPTURE.
 
-To solve this issue, this patch adds snd_soc_dai_get_pcm_stream() macro
-to get playback/capture stream pointer from stream.
+It is very verbose and duplicate code.
+This patch simplify code by using snd_soc_dai_get_pcm_stream().
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- include/sound/soc-dai.h |  7 ++++++
- sound/soc/soc-dai.c     |  7 +-----
- sound/soc/soc-pcm.c     | 49 ++++++++---------------------------------
- 3 files changed, 17 insertions(+), 46 deletions(-)
+ sound/soc/soc-pcm.c | 29 ++++++++++++-----------------
+ 1 file changed, 12 insertions(+), 17 deletions(-)
 
-diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index 7481e468be39..c1089194ddf1 100644
---- a/include/sound/soc-dai.h
-+++ b/include/sound/soc-dai.h
-@@ -352,6 +352,13 @@ struct snd_soc_dai {
- 	unsigned int started:1;
- };
- 
-+static inline struct snd_soc_pcm_stream *
-+snd_soc_dai_get_pcm_stream(const struct snd_soc_dai *dai, int stream)
-+{
-+	return (stream == SNDRV_PCM_STREAM_PLAYBACK) ?
-+		&dai->driver->playback : &dai->driver->capture;
-+}
-+
- static inline void *snd_soc_dai_get_dma_data(const struct snd_soc_dai *dai,
- 					     const struct snd_pcm_substream *ss)
- {
-diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
-index 73a829393652..19142f6e533c 100644
---- a/sound/soc/soc-dai.c
-+++ b/sound/soc/soc-dai.c
-@@ -390,12 +390,7 @@ int snd_soc_dai_compress_new(struct snd_soc_dai *dai,
-  */
- bool snd_soc_dai_stream_valid(struct snd_soc_dai *dai, int dir)
- {
--	struct snd_soc_pcm_stream *stream;
--
--	if (dir == SNDRV_PCM_STREAM_PLAYBACK)
--		stream = &dai->driver->playback;
--	else
--		stream = &dai->driver->capture;
-+	struct snd_soc_pcm_stream *stream = snd_soc_dai_get_pcm_stream(dai, dir);
- 
- 	/* If the codec specifies any channels at all, it supports the stream */
- 	return stream->channels_min;
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 63f67eb7c077..8734ce051c51 100644
+index 8734ce051c51..4b9ade4349aa 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -396,20 +396,16 @@ static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
- 	struct snd_pcm_hardware *hw = &runtime->hw;
+@@ -363,29 +363,24 @@ static void soc_pcm_apply_msb(struct snd_pcm_substream *substream)
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
  	struct snd_soc_dai *codec_dai;
--	struct snd_soc_dai_driver *cpu_dai_drv = rtd->cpu_dai->driver;
--	struct snd_soc_dai_driver *codec_dai_drv;
- 	struct snd_soc_pcm_stream *codec_stream;
- 	struct snd_soc_pcm_stream *cpu_stream;
- 	unsigned int chan_min = 0, chan_max = UINT_MAX;
- 	unsigned int rate_min = 0, rate_max = UINT_MAX;
- 	unsigned int rates = UINT_MAX;
- 	u64 formats = ULLONG_MAX;
++	struct snd_soc_pcm_stream *pcm_codec, *pcm_cpu;
 +	int stream = substream->stream;
  	int i;
+ 	unsigned int bits = 0, cpu_bits;
  
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		cpu_stream = &cpu_dai_drv->playback;
--	else
--		cpu_stream = &cpu_dai_drv->capture;
-+	cpu_stream = snd_soc_dai_get_pcm_stream(rtd->cpu_dai, stream);
- 
- 	/* first calculate min/max only for CODECs in the DAI link */
- 	for_each_rtd_codec_dai(rtd, i, codec_dai) {
-@@ -427,11 +423,8 @@ static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
- 					      substream->stream))
- 			continue;
- 
--		codec_dai_drv = codec_dai->driver;
--		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--			codec_stream = &codec_dai_drv->playback;
--		else
--			codec_stream = &codec_dai_drv->capture;
-+		codec_stream = snd_soc_dai_get_pcm_stream(codec_dai, stream);
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+-		for_each_rtd_codec_dai(rtd, i, codec_dai) {
+-			if (codec_dai->driver->playback.sig_bits == 0) {
+-				bits = 0;
+-				break;
+-			}
+-			bits = max(codec_dai->driver->playback.sig_bits, bits);
+-		}
+-		cpu_bits = cpu_dai->driver->playback.sig_bits;
+-	} else {
+-		for_each_rtd_codec_dai(rtd, i, codec_dai) {
+-			if (codec_dai->driver->capture.sig_bits == 0) {
+-				bits = 0;
+-				break;
+-			}
+-			bits = max(codec_dai->driver->capture.sig_bits, bits);
++	for_each_rtd_codec_dai(rtd, i, codec_dai) {
++		pcm_codec = snd_soc_dai_get_pcm_stream(codec_dai, stream);
 +
- 		chan_min = max(chan_min, codec_stream->channels_min);
- 		chan_max = min(chan_max, codec_stream->channels_max);
- 		rate_min = max(rate_min, codec_stream->rate_min);
-@@ -1602,7 +1595,6 @@ static void dpcm_runtime_merge_format(struct snd_pcm_substream *substream,
- 
- 	for_each_dpcm_be(fe, stream, dpcm) {
- 		struct snd_soc_pcm_runtime *be = dpcm->be;
--		struct snd_soc_dai_driver *codec_dai_drv;
- 		struct snd_soc_pcm_stream *codec_stream;
- 		int i;
- 
-@@ -1614,11 +1606,7 @@ static void dpcm_runtime_merge_format(struct snd_pcm_substream *substream,
- 			if (!snd_soc_dai_stream_valid(dai, stream))
- 				continue;
- 
--			codec_dai_drv = dai->driver;
--			if (stream == SNDRV_PCM_STREAM_PLAYBACK)
--				codec_stream = &codec_dai_drv->playback;
--			else
--				codec_stream = &codec_dai_drv->capture;
-+			codec_stream = snd_soc_dai_get_pcm_stream(dai, stream);
- 
- 			*formats &= codec_stream->formats;
++		if (pcm_codec->sig_bits == 0) {
++			bits = 0;
++			break;
  		}
-@@ -1643,15 +1631,10 @@ static void dpcm_runtime_merge_chan(struct snd_pcm_substream *substream,
+-		cpu_bits = cpu_dai->driver->capture.sig_bits;
++		bits = max(pcm_codec->sig_bits, bits);
+ 	}
  
- 	for_each_dpcm_be(fe, stream, dpcm) {
- 		struct snd_soc_pcm_runtime *be = dpcm->be;
--		struct snd_soc_dai_driver *cpu_dai_drv =  be->cpu_dai->driver;
--		struct snd_soc_dai_driver *codec_dai_drv;
- 		struct snd_soc_pcm_stream *codec_stream;
- 		struct snd_soc_pcm_stream *cpu_stream;
- 
--		if (stream == SNDRV_PCM_STREAM_PLAYBACK)
--			cpu_stream = &cpu_dai_drv->playback;
--		else
--			cpu_stream = &cpu_dai_drv->capture;
-+		cpu_stream = snd_soc_dai_get_pcm_stream(be->cpu_dai, stream);
- 
- 		*channels_min = max(*channels_min, cpu_stream->channels_min);
- 		*channels_max = min(*channels_max, cpu_stream->channels_max);
-@@ -1661,12 +1644,7 @@ static void dpcm_runtime_merge_chan(struct snd_pcm_substream *substream,
- 		 * DAIs connected to a single CPU DAI, use CPU DAI's directly
- 		 */
- 		if (be->num_codecs == 1) {
--			codec_dai_drv = be->codec_dais[0]->driver;
--
--			if (stream == SNDRV_PCM_STREAM_PLAYBACK)
--				codec_stream = &codec_dai_drv->playback;
--			else
--				codec_stream = &codec_dai_drv->capture;
-+			codec_stream = snd_soc_dai_get_pcm_stream(be->codec_dais[0], stream);
- 
- 			*channels_min = max(*channels_min,
- 					    codec_stream->channels_min);
-@@ -1695,17 +1673,12 @@ static void dpcm_runtime_merge_rate(struct snd_pcm_substream *substream,
- 
- 	for_each_dpcm_be(fe, stream, dpcm) {
- 		struct snd_soc_pcm_runtime *be = dpcm->be;
--		struct snd_soc_dai_driver *cpu_dai_drv =  be->cpu_dai->driver;
--		struct snd_soc_dai_driver *codec_dai_drv;
- 		struct snd_soc_pcm_stream *codec_stream;
- 		struct snd_soc_pcm_stream *cpu_stream;
- 		struct snd_soc_dai *dai;
- 		int i;
- 
--		if (stream == SNDRV_PCM_STREAM_PLAYBACK)
--			cpu_stream = &cpu_dai_drv->playback;
--		else
--			cpu_stream = &cpu_dai_drv->capture;
-+		cpu_stream = snd_soc_dai_get_pcm_stream(be->cpu_dai, stream);
- 
- 		*rate_min = max(*rate_min, cpu_stream->rate_min);
- 		*rate_max = min_not_zero(*rate_max, cpu_stream->rate_max);
-@@ -1719,11 +1692,7 @@ static void dpcm_runtime_merge_rate(struct snd_pcm_substream *substream,
- 			if (!snd_soc_dai_stream_valid(dai, stream))
- 				continue;
- 
--			codec_dai_drv = dai->driver;
--			if (stream == SNDRV_PCM_STREAM_PLAYBACK)
--				codec_stream = &codec_dai_drv->playback;
--			else
--				codec_stream = &codec_dai_drv->capture;
-+			codec_stream = snd_soc_dai_get_pcm_stream(dai, stream);
- 
- 			*rate_min = max(*rate_min, codec_stream->rate_min);
- 			*rate_max = min_not_zero(*rate_max,
++	pcm_cpu = snd_soc_dai_get_pcm_stream(cpu_dai, stream);
++	cpu_bits = pcm_cpu->sig_bits;
++
+ 	soc_pcm_set_msb(substream, bits);
+ 	soc_pcm_set_msb(substream, cpu_bits);
+ }
 -- 
 2.17.1
 
