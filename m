@@ -2,58 +2,58 @@ Return-Path: <SRS0=QPpS=4H=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3131DC34022
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 06:59:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 20773C34022
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 07:00:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A8A17208E4
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 06:59:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 95410208E4
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 07:00:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hJSCHALr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A8A17208E4
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rFUq97WJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 95410208E4
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 041F516CC;
-	Wed, 19 Feb 2020 07:59:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 041F516CC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 000E516DD;
+	Wed, 19 Feb 2020 07:59:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 000E516DD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582095593;
-	bh=TpHUUZBH+7F1jwqSgR+eMV1WmAjKyZiQU+/wooSXTGc=;
+	s=default; t=1582095638;
+	bh=LjFSJk0nlIZ4KgLU3gm4GTZRsT7HVTQGVWmz6BWBS2A=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hJSCHALrLw4xA2fE2rR00N1EzpCPKrzKBbU1iuHjPJSDBPNR0W9V1HX5yogqm1yUg
-	 CUNJo+MUW8nt8xFwilCRs191S27XZLlZO6pT+yo85qO7pQ1VLYECARCFbcEz/UrXDM
-	 SZGzzn343JC59IUzvI8iUUna248o6Uhu09E/5/T0=
+	b=rFUq97WJ1oMDcjACpoJy0HbVTk7WVRcBPLT57jGjYuIMeyidwkvc6iqRC/YlUzRXZ
+	 EU6e9itP7fNLYstSIrGD5g5g2poq6QGb71UsQ8UWGiiEcbwAq0pVEZM4UkjElN5vpO
+	 tfg/nIIf7O66SenHt+Fbzusn1+4JrrjuByNTNRPM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B0833F80299;
-	Wed, 19 Feb 2020 07:56:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DFA44F8029B;
+	Wed, 19 Feb 2020 07:56:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 35AA2F80142; Wed, 19 Feb 2020 07:56:32 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 6803BF80290
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 07:56:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6803BF80290
-Date: 19 Feb 2020 15:56:25 +0900
-X-IronPort-AV: E=Sophos;i="5.70,459,1574089200"; d="scan'208";a="39472480"
+ id 2BF16F8029B; Wed, 19 Feb 2020 07:56:31 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id EA607F80278
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 07:56:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA607F80278
+Date: 19 Feb 2020 15:56:15 +0900
+X-IronPort-AV: E=Sophos;i="5.70,459,1574089200"; d="scan'208";a="39688757"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 19 Feb 2020 15:56:25 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 19 Feb 2020 15:56:15 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id B41064009F79;
- Wed, 19 Feb 2020 15:56:25 +0900 (JST)
-Message-ID: <87h7znjcag.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 61D6E4008C5C;
+ Wed, 19 Feb 2020 15:56:15 +0900 (JST)
+Message-ID: <87k14jjcaq.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 06/13] ASoC: mediatek: mt8183-da7219-max98357: use
+Subject: [PATCH 04/13] ASoC: intel: cml_rt1011_rt5682: use
  for_each_rtd_codec_dai() macro
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -82,44 +82,23 @@ From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/intel/boards/cml_rt1011_rt5682.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-index c0c85972cfb7..de296fe7100f 100644
---- a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-@@ -53,6 +53,7 @@ static int mt8183_da7219_i2s_hw_params(struct snd_pcm_substream *substream,
- 				       struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai;
- 	unsigned int rate = params_rate(params);
- 	unsigned int mclk_fs_ratio = 256;
- 	unsigned int mclk_fs = rate * mclk_fs_ratio;
-@@ -64,8 +65,7 @@ static int mt8183_da7219_i2s_hw_params(struct snd_pcm_substream *substream,
- 	if (ret < 0)
- 		dev_err(rtd->dev, "failed to set cpu dai sysclk\n");
+diff --git a/sound/soc/intel/boards/cml_rt1011_rt5682.c b/sound/soc/intel/boards/cml_rt1011_rt5682.c
+index dd80d0186a6c..02aa18d24319 100644
+--- a/sound/soc/intel/boards/cml_rt1011_rt5682.c
++++ b/sound/soc/intel/boards/cml_rt1011_rt5682.c
+@@ -164,8 +164,7 @@ static int cml_rt1011_hw_params(struct snd_pcm_substream *substream,
  
--	for (j = 0; j < rtd->num_codecs; j++) {
--		struct snd_soc_dai *codec_dai = rtd->codec_dais[j];
-+	for_each_rtd_codec_dai(rtd, j, codec_dai) {
+ 	srate = params_rate(params);
  
- 		if (!strcmp(codec_dai->component->name, "da7219.5-001a")) {
- 			ret = snd_soc_dai_set_sysclk(codec_dai,
-@@ -95,10 +95,10 @@ static int mt8183_da7219_i2s_hw_params(struct snd_pcm_substream *substream,
- static int mt8183_da7219_hw_free(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai;
- 	int ret = 0, j;
+-	for (i = 0; i < rtd->num_codecs; i++) {
+-		codec_dai = rtd->codec_dais[i];
++	for_each_rtd_codec_dai(rtd, i, codec_dai) {
  
--	for (j = 0; j < rtd->num_codecs; j++) {
--		struct snd_soc_dai *codec_dai = rtd->codec_dais[j];
-+	for_each_rtd_codec_dai(rtd, j, codec_dai) {
- 
- 		if (!strcmp(codec_dai->component->name, "da7219.5-001a")) {
- 			ret = snd_soc_dai_set_pll(codec_dai,
+ 		/* 100 Fs to drive 24 bit data */
+ 		ret = snd_soc_dai_set_pll(codec_dai, 0, RT1011_PLL1_S_BCLK,
 -- 
 2.17.1
 
