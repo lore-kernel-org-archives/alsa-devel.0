@@ -7,59 +7,57 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F921C34031
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 00:26:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A278C34031
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 00:27:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CD329208E4
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 00:26:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 875F6208E4
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2020 00:27:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XYeSCXeh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CD329208E4
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="htTnRBLZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 875F6208E4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 33D31171F;
-	Wed, 19 Feb 2020 01:25:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33D31171F
+	by alsa0.perex.cz (Postfix) with ESMTPS id AA04C1729;
+	Wed, 19 Feb 2020 01:26:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA04C1729
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582071972;
-	bh=lBrjVPTM7mDqKc4wY6qVXf08/jb58DXMPLFWGCnF2Rw=;
+	s=default; t=1582072019;
+	bh=DS5MJEmSmQAj2d2ph/3XZOgggjsoY4qpFDZNbIZO51U=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=XYeSCXehcaTkADxptYMsZbURNuKa4xQ1QVIBu7kkiU/ySnirce/uN/om8BB5e/yLr
-	 e9eqq+srQUwPtK5Z2N/ygC015Ce3wg8Kz4xLyfmYRg5HQNjeBWMUQWf2V5vUZ010J4
-	 1gwAKQfEXb7die1+JUDE9HtFvg4LyZkuFvBSVLgc=
+	b=htTnRBLZXEadTPrU+fhF3XRsDsxa7nY7b8zS+uB3X7rBufsARjvggwSd2WkubMYZA
+	 eRZIu7SAL1e7Opvzt5GYt0ZLq7UY9BvvK6uglEBmuXRnOWfW02QZc6GRPO6zBIWeJn
+	 LJkoNNoQJhrSm+GgfHxO8l7FPOdA1Lcy/WVwsBYo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 205C0F8036D;
-	Wed, 19 Feb 2020 01:11:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 96214F80391;
+	Wed, 19 Feb 2020 01:11:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7E9F9F8038D; Wed, 19 Feb 2020 01:11:14 +0100 (CET)
+ id 2BC9BF8038E; Wed, 19 Feb 2020 01:11:17 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 03FFFF80368
- for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 01:11:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03FFFF80368
+ by alsa1.perex.cz (Postfix) with ESMTP id 96F79F80385
+ for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2020 01:11:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96F79F80385
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 71AD2FEC;
- Tue, 18 Feb 2020 16:11:06 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E29C4FEC;
+ Tue, 18 Feb 2020 16:11:10 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E89403F68F;
- Tue, 18 Feb 2020 16:11:05 -0800 (PST)
-Date: Wed, 19 Feb 2020 00:11:04 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 65F5C3F68F;
+ Tue, 18 Feb 2020 16:11:10 -0800 (PST)
+Date: Wed, 19 Feb 2020 00:11:08 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Applied "ALSA: core: Implement compress page allocation and free
- routines" to the asoc tree
+Subject: Applied "ALSA: core: Expand DMA buffer information" to the asoc tree
 In-Reply-To: 
 Message-Id: 
 X-Patchwork-Hint: ignore
-Cc: Divya Prakash <divya1.prakash@intel.com>, alsa-devel@alsa-project.org,
+Cc: Vinod Koul <vkoul@kernel.org>, alsa-devel@alsa-project.org,
  Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Vinod Koul <vkoul@kernel.org>
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,11 +72,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20200219001104.6NjZ-IvjKzory_IcqAFXkp_zhWEKqi7PT9njtgfRAVI@z>
+Message-ID: <20200219001108.ybYRPQMNahhDp1n1-AyeBu8fuKsGB0nvKg2FtURwaFM@z>
 
 The patch
 
-   ALSA: core: Implement compress page allocation and free routines
+   ALSA: core: Expand DMA buffer information
 
 has been applied to the asoc tree at
 
@@ -103,111 +101,102 @@ to this mail.
 Thanks,
 Mark
 
-From b9759ef2fd1acb0d3f3dce7991c44a4c5e9e68a3 Mon Sep 17 00:00:00 2001
+From 386dd54b3a2eedb91aa6e465e7c3a57db04f3960 Mon Sep 17 00:00:00 2001
 From: Cezary Rojewski <cezary.rojewski@intel.com>
-Date: Tue, 18 Feb 2020 15:39:17 +0100
-Subject: [PATCH] ALSA: core: Implement compress page allocation and free
- routines
+Date: Tue, 18 Feb 2020 15:39:16 +0100
+Subject: [PATCH] ALSA: core: Expand DMA buffer information
 
-Add simple malloc and free methods for memory management for compress
-streams. Based on snd_pcm_lib_malloc_pages and snd_pcm_lib_free_pages
-implementation.
+Update DMA buffer definition for snd_compr_runtime so it is represented
+similarly as in snd_pcm_runtime. While at it, modify
+snd_compr_set_runtime_buffer to account for newly added members.
 
-Signed-off-by: Divya Prakash <divya1.prakash@intel.com>
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 Reviewed-by: Takashi Iwai <tiwai@suse.de>
 Acked-by: Vinod Koul <vkoul@kernel.org>
 Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200218143924.10565-3-cezary.rojewski@intel.com
+Link: https://lore.kernel.org/r/20200218143924.10565-2-cezary.rojewski@intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/compress_driver.h |  5 ++++
- sound/core/compress_offload.c   | 42 +++++++++++++++++++++++++++++++++
- 2 files changed, 47 insertions(+)
+ include/sound/compress_driver.h | 35 ++++++++++++++++++++++++---------
+ 1 file changed, 26 insertions(+), 9 deletions(-)
 
 diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
-index 00f633c0c3ba..6ce8effa0b12 100644
+index bc88d6f964da..00f633c0c3ba 100644
 --- a/include/sound/compress_driver.h
 +++ b/include/sound/compress_driver.h
-@@ -67,6 +67,7 @@ struct snd_compr_runtime {
-  * @metadata_set: metadata set flag, true when set
-  * @next_track: has userspace signal next track transition, true when set
-  * @private_data: pointer to DSP private data
-+ * @dma_buffer: allocated buffer if any
+@@ -23,7 +23,6 @@ struct snd_compr_ops;
+  * struct snd_compr_runtime: runtime stream description
+  * @state: stream state
+  * @ops: pointer to DSP callbacks
+- * @dma_buffer_p: runtime dma buffer pointer
+  * @buffer: pointer to kernel buffer, valid only when not in mmap mode or
+  *	DSP doesn't implement copy
+  * @buffer_size: size of the above buffer
+@@ -34,11 +33,14 @@ struct snd_compr_ops;
+  * @total_bytes_transferred: cumulative bytes transferred by offload DSP
+  * @sleep: poll sleep
+  * @private_data: driver private data pointer
++ * @dma_area: virtual buffer address
++ * @dma_addr: physical buffer address (not accessible from main CPU)
++ * @dma_bytes: size of DMA area
++ * @dma_buffer_p: runtime dma buffer pointer
   */
- struct snd_compr_stream {
- 	const char *name;
-@@ -78,6 +79,7 @@ struct snd_compr_stream {
- 	bool metadata_set;
- 	bool next_track;
+ struct snd_compr_runtime {
+ 	snd_pcm_state_t state;
+ 	struct snd_compr_ops *ops;
+-	struct snd_dma_buffer *dma_buffer_p;
+ 	void *buffer;
+ 	u64 buffer_size;
+ 	u32 fragment_size;
+@@ -47,6 +49,11 @@ struct snd_compr_runtime {
+ 	u64 total_bytes_transferred;
+ 	wait_queue_head_t sleep;
  	void *private_data;
-+	struct snd_dma_buffer dma_buffer;
++
++	unsigned char *dma_area;
++	dma_addr_t dma_addr;
++	size_t dma_bytes;
++	struct snd_dma_buffer *dma_buffer_p;
  };
  
  /**
-@@ -212,6 +214,9 @@ snd_compr_set_runtime_buffer(struct snd_compr_stream *stream,
- 	}
- }
+@@ -180,19 +187,29 @@ static inline void snd_compr_drain_notify(struct snd_compr_stream *stream)
  
-+int snd_compr_malloc_pages(struct snd_compr_stream *stream, size_t size);
-+int snd_compr_free_pages(struct snd_compr_stream *stream);
-+
- int snd_compr_stop_error(struct snd_compr_stream *stream,
- 			 snd_pcm_state_t state);
- 
-diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-index 9de1c9a0173e..509290f2efa8 100644
---- a/sound/core/compress_offload.c
-+++ b/sound/core/compress_offload.c
-@@ -488,6 +488,48 @@ snd_compr_get_codec_caps(struct snd_compr_stream *stream, unsigned long arg)
- }
- #endif /* !COMPR_CODEC_CAPS_OVERFLOW */
- 
-+int snd_compr_malloc_pages(struct snd_compr_stream *stream, size_t size)
-+{
-+	struct snd_dma_buffer *dmab;
-+	int ret;
-+
-+	if (snd_BUG_ON(!(stream) || !(stream)->runtime))
-+		return -EINVAL;
-+	dmab = kzalloc(sizeof(*dmab), GFP_KERNEL);
-+	if (!dmab)
-+		return -ENOMEM;
-+	dmab->dev = stream->dma_buffer.dev;
-+	ret = snd_dma_alloc_pages(dmab->dev.type, dmab->dev.dev, size, dmab);
-+	if (ret < 0) {
-+		kfree(dmab);
-+		return ret;
-+	}
-+
-+	snd_compr_set_runtime_buffer(stream, dmab);
-+	stream->runtime->dma_bytes = size;
-+	return 1;
-+}
-+EXPORT_SYMBOL(snd_compr_malloc_pages);
-+
-+int snd_compr_free_pages(struct snd_compr_stream *stream)
-+{
+ /**
+  * snd_compr_set_runtime_buffer - Set the Compress runtime buffer
+- * @substream: compress substream to set
++ * @stream: compress stream to set
+  * @bufp: the buffer information, NULL to clear
+  *
+  * Copy the buffer information to runtime buffer when @bufp is non-NULL.
+  * Otherwise it clears the current buffer information.
+  */
+-static inline void snd_compr_set_runtime_buffer(
+-					struct snd_compr_stream *substream,
+-					struct snd_dma_buffer *bufp)
++static inline void
++snd_compr_set_runtime_buffer(struct snd_compr_stream *stream,
++			     struct snd_dma_buffer *bufp)
+ {
+-	struct snd_compr_runtime *runtime = substream->runtime;
+-
+-	runtime->dma_buffer_p = bufp;
 +	struct snd_compr_runtime *runtime = stream->runtime;
 +
-+	if (snd_BUG_ON(!(stream) || !(stream)->runtime))
-+		return -EINVAL;
-+	if (runtime->dma_area == NULL)
-+		return 0;
-+	if (runtime->dma_buffer_p != &stream->dma_buffer) {
-+		/* It's a newly allocated buffer. Release it now. */
-+		snd_dma_free_pages(runtime->dma_buffer_p);
-+		kfree(runtime->dma_buffer_p);
++	if (bufp) {
++		runtime->dma_buffer_p = bufp;
++		runtime->dma_area = bufp->area;
++		runtime->dma_addr = bufp->addr;
++		runtime->dma_bytes = bufp->bytes;
++	} else {
++		runtime->dma_buffer_p = NULL;
++		runtime->dma_area = NULL;
++		runtime->dma_addr = 0;
++		runtime->dma_bytes = 0;
 +	}
-+
-+	snd_compr_set_runtime_buffer(stream, NULL);
-+	return 0;
-+}
-+EXPORT_SYMBOL(snd_compr_free_pages);
-+
- /* revisit this with snd_pcm_preallocate_xxx */
- static int snd_compr_allocate_buffer(struct snd_compr_stream *stream,
- 		struct snd_compr_params *params)
+ }
+ 
+ int snd_compr_stop_error(struct snd_compr_stream *stream,
 -- 
 2.20.1
 
