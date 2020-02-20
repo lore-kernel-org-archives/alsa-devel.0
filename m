@@ -2,61 +2,102 @@ Return-Path: <SRS0=8DMN=4I=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE2B5C11D04
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Feb 2020 12:53:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 474F9C11D04
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Feb 2020 12:57:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5A52224654
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Feb 2020 12:53:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C6C0324654
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Feb 2020 12:57:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SbG3sPQw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5A52224654
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tMVTI0NB";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="WTk7U7sg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C6C0324654
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5B88216A6;
-	Thu, 20 Feb 2020 13:53:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B88216A6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 32422168A;
+	Thu, 20 Feb 2020 13:57:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32422168A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582203237;
-	bh=z9nOf1oU0xYTu/GFyQReJSfFTx4y9SLQPKyNDDGJufk=;
-	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=SbG3sPQwWgyAflZdSRQdIaTOb99hX0CZEfbL7/c4IIlxMQeZ4auVTVypGAbNkkThH
-	 JFb4A12sVOk1aPUvLICR3f3Q+wmOCjulbBwkrcEdel4rkkehpNW94clGjwJZDilcpM
-	 IwRm5DW91zzPTexIPMnI9Cegr4SmlHBUMZzK4Ook=
+	s=default; t=1582203473;
+	bh=TJayQYWZ7KC35aIZo8HXYH3xAsNqPCGnuSygqB8ujPQ=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=tMVTI0NBkwCvpoaa1msp7mgV+esevi24Qr8tWODnaNfYoqVKHheW4ciJ9MM2M+Rxv
+	 3lXB0EA1x1jnWYZPiuaEYAKzFrOz77vaihPi+2cKIu5y5D2yzkq/Q4aXvul+ZLmhXc
+	 3sUhK/kEeYCl6GPVrHdpkRwOf9sBJ7RBfbMs0f8w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 14EC0F8014C;
-	Thu, 20 Feb 2020 13:52:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8C428F80145;
+	Thu, 20 Feb 2020 13:57:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5326FF8011D; Thu, 20 Feb 2020 13:52:13 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 9260CF8011D
- for <alsa-devel@alsa-project.org>; Thu, 20 Feb 2020 13:52:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9260CF8011D
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2968D31B;
- Thu, 20 Feb 2020 04:52:09 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A257B3F703;
- Thu, 20 Feb 2020 04:52:08 -0800 (PST)
-Date: Thu, 20 Feb 2020 12:52:07 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Applied "ASoC: soc-core: fix for_rtd_codec_dai_rollback() macro" to
- the asoc tree
-In-Reply-To: <20200219222130.29933-1-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20200219222130.29933-1-pierre-louis.bossart@linux.intel.com>
-X-Patchwork-Hint: ignore
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+ id 01D93F80148; Thu, 20 Feb 2020 13:57:00 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1ECF5F80114
+ for <alsa-devel@alsa-project.org>; Thu, 20 Feb 2020 13:56:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1ECF5F80114
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="WTk7U7sg"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
+ 01KCr8Io029073; Thu, 20 Feb 2020 06:56:55 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : mime-version : content-type;
+ s=PODMain02222019; bh=EUZmQ5HqmNQC6EoWxxeGfXF81MosGr3sishTvEqK4ZQ=;
+ b=WTk7U7sgbSCW4C0M42b+EQV/mIGCW9SAhk9ydzvLZmM7SJeD/9NYzm8Y2yMDIBOyk1Jt
+ f8+8afbLNpvZiAoVwgwAEHrgyNBkQK0xmDpI/d9k22Dg472HS6vzDwSCEI4QuqDKiqlN
+ 2XLHdDoa0B2ygcxFHr9iFhr+iOPHIQkEiMVcTvML/+NwH+0qIwohgt27RMNHAWkG0/Vr
+ gU0ZDoat7Bb2XG3LSY9BUNpBDGBYgHzxZ+prAqNuUsgrqXZrBOfAUEdP5vhA+ZHyvnAR
+ usluodQfPSgo/X4tPKHGwjkd+sncrU04XVdl8H0zzavUzjUdRG3Nzjdoyi+fpYpV3WFD 3g== 
+Authentication-Results: ppops.net;
+ spf=pass smtp.mailfrom=ckeepax@opensource.cirrus.com
+Received: from ediex02.ad.cirrus.com ([5.172.152.52])
+ by mx0b-001ae601.pphosted.com with ESMTP id 2y8uckad1r-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Thu, 20 Feb 2020 06:56:55 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1591.10; Thu, 20 Feb
+ 2020 12:56:54 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1591.10 via
+ Frontend Transport; Thu, 20 Feb 2020 12:56:54 +0000
+Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 83C9B2AB;
+ Thu, 20 Feb 2020 12:56:54 +0000 (UTC)
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: <broonie@kernel.org>
+Subject: [PATCH] ASoC: samsung: Update dependencies for Arizona machine drivers
+Date: Thu, 20 Feb 2020 12:56:54 +0000
+Message-ID: <20200220125654.7064-1-ckeepax@opensource.cirrus.com>
+X-Mailer: git-send-email 2.11.0
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Proofpoint-SPF-Result: pass
+X-Proofpoint-SPF-Record: v=spf1 include:spf-001ae601.pphosted.com
+ include:spf.protection.outlook.com
+ ip4:5.172.152.52 -all
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
+ priorityscore=1501 suspectscore=1
+ clxscore=1011 lowpriorityscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ bulkscore=0 mlxlogscore=992 phishscore=0 adultscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
+ definitions=main-2002200097
+Cc: alsa-devel@alsa-project.org, sbkim73@samsung.com,
+ patches@opensource.cirrus.com, rdunlap@infradead.org, lgirdwood@gmail.com,
+ s.nawrocki@samsung.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,64 +113,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
+Currently it is possible to get the following bad config:
 
-   ASoC: soc-core: fix for_rtd_codec_dai_rollback() macro
+WARNING: unmet direct dependencies detected for SND_SOC_WM5110
+  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && MFD_WM5110 [=n]
 
-has been applied to the asoc tree at
+commit ea00d95200d0 ("ASoC: Use imply for SND_SOC_ALL_CODECS")
+commit d8dd3f92a6ba ("ASoC: Fix SND_SOC_ALL_CODECS imply misc fallout")
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+After these two patches the machine drivers still selects the
+SND_SOC_WM5110 symbol which doesn't take account of the dependency
+added on the MFD_WM5110 symbol, fix this by also adding a dependency on
+MFD_WM5110 itself.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From 63d68382f5fb5f71772357e31841c19c4a133182 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Wed, 19 Feb 2020 16:21:30 -0600
-Subject: [PATCH] ASoC: soc-core: fix for_rtd_codec_dai_rollback() macro
-
-The use of parentheses to protect the argument is fine for (i)++ but
-not for (--i).
-
-Fixes: 83f94a2e293d61 ("ASoC: soc-core: add snd_soc_close_delayed_work()")
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/20200219222130.29933-1-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- include/sound/soc.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/samsung/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index f0e4f36f83bf..8a2266676b2d 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1157,7 +1157,7 @@ struct snd_soc_pcm_runtime {
- 	     ((i) < rtd->num_codecs) && ((dai) = rtd->codec_dais[i]); \
- 	     (i)++)
- #define for_each_rtd_codec_dai_rollback(rtd, i, dai)		\
--	for (; ((--i) >= 0) && ((dai) = rtd->codec_dais[i]);)
-+	for (; (--(i) >= 0) && ((dai) = rtd->codec_dais[i]);)
+diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
+index 1a0b163ca47b5..112911dc271ba 100644
+--- a/sound/soc/samsung/Kconfig
++++ b/sound/soc/samsung/Kconfig
+@@ -151,7 +151,7 @@ config SND_SOC_TOBERMORY
  
- void snd_soc_close_delayed_work(struct snd_soc_pcm_runtime *rtd);
+ config SND_SOC_BELLS
+ 	tristate "Audio support for Wolfson Bells"
+-	depends on MFD_ARIZONA && I2C && SPI_MASTER
++	depends on MFD_ARIZONA && MFD_WM5102 && MFD_WM5110 && I2C && SPI_MASTER
+ 	depends on MACH_WLF_CRAGG_6410 || COMPILE_TEST
+ 	select SND_SAMSUNG_I2S
+ 	select SND_SOC_WM5102
+@@ -204,7 +204,7 @@ config SND_SOC_ARNDALE
  
+ config SND_SOC_SAMSUNG_TM2_WM5110
+ 	tristate "SoC I2S Audio support for WM5110 on TM2 board"
+-	depends on SND_SOC_SAMSUNG && MFD_ARIZONA && I2C && SPI_MASTER
++	depends on SND_SOC_SAMSUNG && MFD_ARIZONA && MFD_WM5110 && I2C && SPI_MASTER
+ 	depends on GPIOLIB || COMPILE_TEST
+ 	select SND_SOC_MAX98504
+ 	select SND_SOC_WM5110
 -- 
-2.20.1
+2.11.0
 
