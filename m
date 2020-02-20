@@ -7,52 +7,52 @@ X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB551C5ACC4
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Feb 2020 02:18:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F6EBC5ACC4
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Feb 2020 02:19:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6EC0B24670
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Feb 2020 02:18:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E672F2465D
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Feb 2020 02:19:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lC0feSv4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6EC0B24670
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tDMzbiZT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E672F2465D
 Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CA7D516A3;
-	Thu, 20 Feb 2020 03:18:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA7D516A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 500701698;
+	Thu, 20 Feb 2020 03:18:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 500701698
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582165134;
-	bh=1U+JzrP0YfjXNNsmy2OSp3+FiJEaC0UW+tqf6PbWlkE=;
+	s=default; t=1582165177;
+	bh=CzKtcsUuMcZ6rgnt7Sdp6xYwN1HuJdlKy5yeJpZDFW8=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lC0feSv4YRcp2r6WTHoY8xPgT6ygEpugNWrsEihHN6DPcJg14a0g9rbiO4r4FAfIU
-	 4h6nIfH6IerwvC7LX9pdvzj2jCGo8iyVdNz84oJEmOZg1JmqIFP4w7pwyNPi//QjFr
-	 zY7guAceGLYNe+Q2e5prASsme58ectbtvjVhgoeg=
+	b=tDMzbiZT01mc30o8m6uInmbMYT6+rN/VM+5SvmgZzEVmbOlP79NP3x2JAI1NMUB9p
+	 lZr4wlJfCkWN+xE24BY7e1S3kI8/gA01RyNfLdhrxIWHHdf0ijJ5MT6uttAy+NTZuw
+	 tICmwasMZCkWi1sUb2lg8j5rlLP6Jfu1elt2EPak=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6625EF8025F;
-	Thu, 20 Feb 2020 03:18:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AE557F80276;
+	Thu, 20 Feb 2020 03:18:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 062AAF80276; Thu, 20 Feb 2020 03:18:02 +0100 (CET)
+ id B9BD7F80278; Thu, 20 Feb 2020 03:18:45 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 095B8F801F5
- for <alsa-devel@alsa-project.org>; Thu, 20 Feb 2020 03:18:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 095B8F801F5
+ by alsa1.perex.cz (Postfix) with ESMTP id 497A2F80273
+ for <alsa-devel@alsa-project.org>; Thu, 20 Feb 2020 03:18:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 497A2F80273
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1582165079840311050-webhooks-bot@alsa-project.org>
-References: <1582165079840311050-webhooks-bot@alsa-project.org>
+In-Reply-To: <1582165123128607035-webhooks-bot@alsa-project.org>
+References: <1582165123128607035-webhooks-bot@alsa-project.org>
 Subject: usage of snd_rawmidi_status_get_avail()
-Message-Id: <20200220021803.062AAF80276@alsa1.perex.cz>
-Date: Thu, 20 Feb 2020 03:18:02 +0100 (CET)
+Message-Id: <20200220021845.B9BD7F80278@alsa1.perex.cz>
+Date: Thu, 20 Feb 2020 03:18:45 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -70,7 +70,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 alsa-project/alsa-lib issue #26 was edited from MusicMaker:
 
-In non blocked raw MIDI, is snd_rawmidi_status_get_avail supposed to return the number of available bytes than can read via snd_rawmidi_read. (port is opened for read only)  It seems always return 0 even there is MIDI data when using a read.  Else is there a(nother) way to find the number of unread received bytes in the buffer?
+In non blocked raw MIDI, is snd_rawmidi_status_get_avail supposed to return the number of available bytes than can read via snd_rawmidi_read. (port is opened for read only)  It seems get_avail always returns 0 even there is MIDI data when using a read.  Else is there a(nother) way to find the number of unread received bytes in the buffer?
 snd_rawmidi_status_alloca (&status);  	
 snd_rawmidi_status(client, status); 
 snd_rawmidi_status_get_avail(status);
