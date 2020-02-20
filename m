@@ -2,89 +2,69 @@ Return-Path: <SRS0=8DMN=4I=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B487FC11D19
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Feb 2020 18:55:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 781F2C11D0C
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Feb 2020 19:19:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 49DAB2467C
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Feb 2020 18:55:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 01163206E2
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Feb 2020 19:19:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kAzyfrKR";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="P7+C4UiQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 49DAB2467C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bTuAnK4R"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 01163206E2
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AD8D516E1;
-	Thu, 20 Feb 2020 19:54:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD8D516E1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 51BE116A3;
+	Thu, 20 Feb 2020 20:18:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 51BE116A3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582224933;
-	bh=JKqp95SvPECvQkNqL69x6n+3vvEms1ZNM/w7nhbS23E=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=kAzyfrKRH+ZzCctZHI/4VhaYQASldXu8AzDzN1NNrYYNjs9Ekwj4WxRhkGEDROQcY
-	 AZfRcaX5JjqkNLZ1B9Y9O8LvEXgT5UOh1a5imJR6islUE25MHcP70HyN4reIP0MHrj
-	 qdu9yJN/scIymQ0ck5nnXCYu7BGow/dJmPHIZwrw=
+	s=default; t=1582226342;
+	bh=fYWUmFhvIZEW7EE1tT9DCfw4pyvNRhmVwpwmcFItVpM=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=bTuAnK4R1p6KGtZM8w0GwBe0Gq6Ma0SSKoadXmsIsA7RKjZlqii6VTJcd5tSLb9g5
+	 p0wOCZFjYPpRGeb5IrqbJZ68KtAoeZCzyZu9h6NAZkMje5ySMECfCcZJjK+H+2Dcni
+	 XST+xabal42U328PC8QmsMNoIWrzvCV9xBA5pz/s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 49BF6F80145;
-	Thu, 20 Feb 2020 19:54:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BB7F3F80145;
+	Thu, 20 Feb 2020 20:18:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 08514F80148; Thu, 20 Feb 2020 19:54:42 +0100 (CET)
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 66D35F80114
- for <alsa-devel@alsa-project.org>; Thu, 20 Feb 2020 19:54:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66D35F80114
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="P7+C4UiQ"
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 01KIsafT124931;
- Thu, 20 Feb 2020 12:54:36 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1582224876;
- bh=wEEg/7za58pz0OaOTo3rUQEadWNihDSZlnn0QWWoCnM=;
- h=From:To:CC:Subject:Date;
- b=P7+C4UiQDFiF1OIOZUGBuLjv8kT+nRqJgYvEb0sk8E0J9rbFr139HY6dLIPk2zEo+
- s0YmzvOcprfpjSiDhpwJu2b681WGZQTU7kcuNv389Q8T0LAqWaqoUBHrtg98XoGr9N
- 98N3XAOc3qv5HsgPurzax+iae2D0PWm2Vxaw6asg=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 01KIsaR6062873
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Thu, 20 Feb 2020 12:54:36 -0600
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Thu, 20
- Feb 2020 12:54:36 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
- Frontend Transport; Thu, 20 Feb 2020 12:54:36 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 01KIsamG100034;
- Thu, 20 Feb 2020 12:54:36 -0600
-From: Dan Murphy <dmurphy@ti.com>
-To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
- <tiwai@suse.com>
-Subject: [PATCH v2] ASoC: tas2562: Add support for digital volume control
-Date: Thu, 20 Feb 2020 12:49:30 -0600
-Message-ID: <20200220184930.21543-1-dmurphy@ti.com>
-X-Mailer: git-send-email 2.25.0
+ id 3C229F80148; Thu, 20 Feb 2020 20:18:10 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 39DD0F80101
+ for <alsa-devel@alsa-project.org>; Thu, 20 Feb 2020 20:18:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39DD0F80101
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 474ED30E;
+ Thu, 20 Feb 2020 11:18:05 -0800 (PST)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ACD463F6CF;
+ Thu, 20 Feb 2020 11:18:04 -0800 (PST)
+Date: Thu, 20 Feb 2020 19:18:03 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Dan Murphy <dmurphy@ti.com>
+Subject: Re: [PATCH] ASoC: tas2562: Add support for digital volume control
+Message-ID: <20200220191803.GH3926@sirena.org.uk>
+References: <20200220172721.10547-1-dmurphy@ti.com>
+ <20200220184507.GF3926@sirena.org.uk>
+ <de0e8a5b-8c2a-ee04-856f-f0d678a3c66b@ti.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Dan Murphy <dmurphy@ti.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="jRdC2OsRnuV8iIl8"
+Content-Disposition: inline
+In-Reply-To: <de0e8a5b-8c2a-ee04-856f-f0d678a3c66b@ti.com>
+X-Cookie: You are number 6!  Who is number one?
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com,
+ lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,178 +80,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add support for digital volume control.  There is no dedicated register
-for volume control but instead there are 4.  The values of the registers
-are determined with exponential floating point math.
-So a table was created with register values for 2dB step increments
-from -110dB to 0dB.
 
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
----
+--jRdC2OsRnuV8iIl8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-v2 - Fix init values to lower volume CFG4 is the LSB and CFG1 is MSB
+On Thu, Feb 20, 2020 at 12:46:57PM -0600, Dan Murphy wrote:
+> On 2/20/20 12:45 PM, Mark Brown wrote:
 
- sound/soc/codecs/tas2562.c | 94 ++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/tas2562.h |  6 ++-
- 2 files changed, 98 insertions(+), 2 deletions(-)
+> > Is there a reason not to use the chip default here?  Otherwise this
+> > looks good.
 
-diff --git a/sound/soc/codecs/tas2562.c b/sound/soc/codecs/tas2562.c
-index b2682c2360b6..92e4bf34b35c 100644
---- a/sound/soc/codecs/tas2562.c
-+++ b/sound/soc/codecs/tas2562.c
-@@ -26,6 +26,24 @@
- #define TAS2562_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |\
- 			 SNDRV_PCM_FORMAT_S32_LE)
- 
-+/* DVC equation involves floating point math
-+ * round(10^(volume in dB/20)*2^30)
-+ * so create a lookup table for 2dB step
-+ */
-+static const unsigned int float_vol_db_lookup[] = {
-+0x00000d43, 0x000010b2, 0x00001505, 0x00001a67, 0x00002151,
-+0x000029f1, 0x000034cd, 0x00004279, 0x000053af, 0x0000695b,
-+0x0000695b, 0x0000a6fa, 0x0000d236, 0x000108a4, 0x00014d2a,
-+0x0001a36e, 0x00021008, 0x000298c0, 0x000344df, 0x00041d8f,
-+0x00052e5a, 0x000685c8, 0x00083621, 0x000a566d, 0x000d03a7,
-+0x0010624d, 0x0014a050, 0x0019f786, 0x0020b0bc, 0x0029279d,
-+0x0033cf8d, 0x004139d3, 0x00521d50, 0x00676044, 0x0082248a,
-+0x00a3d70a, 0x00ce4328, 0x0103ab3d, 0x0146e75d, 0x019b8c27,
-+0x02061b89, 0x028c423f, 0x03352529, 0x0409c2b0, 0x05156d68,
-+0x080e9f96, 0x0a24b062, 0x0cc509ab, 0x10137987, 0x143d1362,
-+0x197a967f, 0x2013739e, 0x28619ae9, 0x32d64617, 0x40000000
-+};
-+
- struct tas2562_data {
- 	struct snd_soc_component *component;
- 	struct gpio_desc *sdz_gpio;
-@@ -34,6 +52,7 @@ struct tas2562_data {
- 	struct i2c_client *client;
- 	int v_sense_slot;
- 	int i_sense_slot;
-+	int volume_lvl;
- };
- 
- static int tas2562_set_bias_level(struct snd_soc_component *component,
-@@ -334,6 +353,22 @@ static int tas2562_codec_probe(struct snd_soc_component *component)
- 	if (ret < 0)
- 		return ret;
- 
-+	/* Set the Digital volume to -110dB */
-+	ret = snd_soc_component_write(component, TAS2562_DVC_CFG4, 0x43);
-+	if (ret)
-+		return ret;
-+	ret = snd_soc_component_write(component, TAS2562_DVC_CFG3, 0x0d);
-+	if (ret)
-+		return ret;
-+	ret = snd_soc_component_write(component, TAS2562_DVC_CFG2, 0x00);
-+	if (ret)
-+		return ret;
-+	ret = snd_soc_component_write(component, TAS2562_DVC_CFG1, 0x00);
-+	if (ret)
-+		return ret;
-+
-+	tas2562->volume_lvl = 0;
-+
- 	return 0;
- }
- 
-@@ -414,6 +449,50 @@ static int tas2562_dac_event(struct snd_soc_dapm_widget *w,
- 	return 0;
- }
- 
-+static int tas2562_volume_control_get(struct snd_kcontrol *kcontrol,
-+				      struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct tas2562_data *tas2562 = snd_soc_component_get_drvdata(component);
-+
-+	ucontrol->value.integer.value[0] = tas2562->volume_lvl;
-+	return 0;
-+}
-+
-+static int tas2562_volume_control_put(struct snd_kcontrol *kcontrol,
-+				      struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct tas2562_data *tas2562 = snd_soc_component_get_drvdata(component);
-+	int ret;
-+	u32 reg_val;
-+
-+	reg_val = float_vol_db_lookup[ucontrol->value.integer.value[0]/2];
-+	ret = snd_soc_component_write(component, TAS2562_DVC_CFG4,
-+				      (reg_val & 0xff));
-+	if (ret)
-+		return ret;
-+	ret = snd_soc_component_write(component, TAS2562_DVC_CFG3,
-+				      ((reg_val >> 8) & 0xff));
-+	if (ret)
-+		return ret;
-+	ret = snd_soc_component_write(component, TAS2562_DVC_CFG2,
-+				      ((reg_val >> 16) & 0xff));
-+	if (ret)
-+		return ret;
-+	ret = snd_soc_component_write(component, TAS2562_DVC_CFG1,
-+				      ((reg_val >> 24) & 0xff));
-+	if (ret)
-+		return ret;
-+
-+	tas2562->volume_lvl = ucontrol->value.integer.value[0];
-+
-+	return ret;
-+}
-+
-+/* Digital Volume Control. From 0 dB to -110 dB in 1 dB steps */
-+static const DECLARE_TLV_DB_SCALE(dvc_tlv, -11000, 100, 0);
-+
- static DECLARE_TLV_DB_SCALE(tas2562_dac_tlv, 850, 50, 0);
- 
- static const struct snd_kcontrol_new isense_switch =
-@@ -427,6 +506,17 @@ static const struct snd_kcontrol_new vsense_switch =
- static const struct snd_kcontrol_new tas2562_snd_controls[] = {
- 	SOC_SINGLE_TLV("Amp Gain Volume", TAS2562_PB_CFG1, 0, 0x1c, 0,
- 		       tas2562_dac_tlv),
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "Digital Volume Control",
-+		.index = 0,
-+		.tlv.p = dvc_tlv,
-+		.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ | SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+		.info = snd_soc_info_volsw,
-+		.get = tas2562_volume_control_get,
-+		.put = tas2562_volume_control_put,
-+		.private_value = SOC_SINGLE_VALUE(TAS2562_DVC_CFG1, 0, 110, 0, 0) ,
-+	},
- };
- 
- static const struct snd_soc_dapm_widget tas2562_dapm_widgets[] = {
-@@ -517,6 +607,10 @@ static const struct reg_default tas2562_reg_defaults[] = {
- 	{ TAS2562_PB_CFG1, 0x20 },
- 	{ TAS2562_TDM_CFG0, 0x09 },
- 	{ TAS2562_TDM_CFG1, 0x02 },
-+	{ TAS2562_DVC_CFG1, 0x40 },
-+	{ TAS2562_DVC_CFG2, 0x40 },
-+	{ TAS2562_DVC_CFG3, 0x00 },
-+	{ TAS2562_DVC_CFG4, 0x00 },
- };
- 
- static const struct regmap_config tas2562_regmap_config = {
-diff --git a/sound/soc/codecs/tas2562.h b/sound/soc/codecs/tas2562.h
-index 6f55ebcf19ea..28e75fc431d0 100644
---- a/sound/soc/codecs/tas2562.h
-+++ b/sound/soc/codecs/tas2562.h
-@@ -35,8 +35,10 @@
- #define TAS2562_REV_ID		TAS2562_REG(0, 0x7d)
- 
- /* Page 2 */
--#define TAS2562_DVC_CFG1	TAS2562_REG(2, 0x01)
--#define TAS2562_DVC_CFG2	TAS2562_REG(2, 0x02)
-+#define TAS2562_DVC_CFG1	TAS2562_REG(2, 0x0c)
-+#define TAS2562_DVC_CFG2	TAS2562_REG(2, 0x0d)
-+#define TAS2562_DVC_CFG3	TAS2562_REG(2, 0x0e)
-+#define TAS2562_DVC_CFG4	TAS2562_REG(2, 0x0f)
- 
- #define TAS2562_RESET	BIT(0)
- 
--- 
-2.25.0
+> Chip default is set to 0dB full blast+ 0x40400000.=A0 This sets the volum=
+e to
+> -110dB.
 
+OK...  that's a policy decision the same as all other volume changes and
+so shouldn't be done by the driver - as ever we don't know how the
+system is set up and what values make sense and keeping things out of
+the driver means we don't end up with competing system integration
+decisions causing changes in the driver.  The system may have an
+external amplifier they prefer to use for hardware volume control, may
+prefer to do entirely soft volume control in their sound server or
+something like that.
+
+--jRdC2OsRnuV8iIl8
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5O22oACgkQJNaLcl1U
+h9BNnAf/STD8X1meBVMym8n0PChi4jx1nA4QyPkwc1x8USlqaoWsz3QHBi7Q6H37
+OG5YcO02ATyyjTe0rCZVKgyQUQ7Bmtw2bWRhNS3KH3HL90f0/kgu4K84i0UJ6psr
+wfnDq2dItRwnq/EEwburkJom8ZJac9dii3HfF7jsafA1PoWgEdCy2pCY6liTfUNS
+GzbqXIuXTIG25A6oHG7HE8489gPuC57XRapoGUyQ3gIj+ems8EwEAUkqVIA3symp
++6ZO2qTqhA+ArEuOptlxpjVLoNcQfddeJ/jwBZZQtCa2h/cwSVmzcfOorbznBmp9
+KshHMzn9Z/sa+dmi0twVgXHv9mtEJQ==
+=YOPj
+-----END PGP SIGNATURE-----
+
+--jRdC2OsRnuV8iIl8--
