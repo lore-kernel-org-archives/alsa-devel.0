@@ -2,57 +2,74 @@ Return-Path: <SRS0=8DMN=4I=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88B59C5ACC4
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Feb 2020 02:22:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F450C5ACC4
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Feb 2020 03:02:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3DB3724656
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Feb 2020 02:22:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 03B29206E2
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Feb 2020 03:02:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="quC74Apt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3DB3724656
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cMB/f2s+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 03B29206E2
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8BBFE16B1;
-	Thu, 20 Feb 2020 03:21:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8BBFE16B1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3E10E1698;
+	Thu, 20 Feb 2020 04:01:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E10E1698
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582165346;
-	bh=lB0dAJopOD70I9sOuBBn9oKUyC0f5/TFfoXCXh6acj0=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1582167735;
+	bh=bglizIMAC/xlBJD1uZqOTl5FW4kjdeoEeQrZZJAG2NA=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=quC74AptUAwYQgugq2neRKscnreFNSSbXN8el0F5Y0PCMZ5Lgj5/iY92WTMpHArU3
-	 7POUNpTP+rEgV3T8kNKUhEIRfqTMF4F7if9TYC8w+GXzHuyESEq4zh7MMEnuT7A5Z5
-	 yKTLz112K9QmVJnOqwvaJNqVggqYo6g3gT6K3488=
+	b=cMB/f2s+1Ov7og6zA/goYUm3Rd4LLIVmOhRqHsQhE2jsU1ibAGe1uq38iVN9hiVjP
+	 zDpTDQ4UKnkNo91POY1s3RlO4Kr+22uRGpTkqap9SGeM+P+g7iopkLpmYKMlH7XGl9
+	 /rlbq9+v7RG+7K/0LfXv/hMZtPPKhFl6mkUn1fNs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 47ED2F8028E;
-	Thu, 20 Feb 2020 03:20:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B3C3BF80145;
+	Thu, 20 Feb 2020 04:01:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E358FF8028F; Thu, 20 Feb 2020 03:20:20 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 94EC5F8028D
- for <alsa-devel@alsa-project.org>; Thu, 20 Feb 2020 03:20:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94EC5F8028D
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1582165218427489996-webhooks-bot@alsa-project.org>
-References: <1582165218427489996-webhooks-bot@alsa-project.org>
-Subject: usage of snd_rawmidi_status_get_avail()
-Message-Id: <20200220022020.E358FF8028F@alsa1.perex.cz>
-Date: Thu, 20 Feb 2020 03:20:20 +0100 (CET)
+ id 40345F80148; Thu, 20 Feb 2020 04:01:22 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 07B1FF8011D
+ for <alsa-devel@alsa-project.org>; Thu, 20 Feb 2020 04:01:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07B1FF8011D
+Date: 20 Feb 2020 12:01:13 +0900
+X-IronPort-AV: E=Sophos;i="5.70,462,1574089200"; d="scan'208";a="39555475"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 20 Feb 2020 12:01:13 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 5B0E64133BF1;
+ Thu, 20 Feb 2020 12:01:13 +0900 (JST)
+Message-ID: <8736b6t120.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
+Subject: Re: [PATCH][RFC] ASoC: soc-component: count
+ snd_soc_component_open/close()
+In-Reply-To: <CAFQqKeUcgKRnWmF4bzGvfb8MNj8XtPp2cD7yBWY8XNJzUnRQjw@mail.gmail.com>
+References: <20200219182650.1416-1-kai.vehmanen@linux.intel.com>
+ <87blput7hh.wl-kuninori.morimoto.gx@renesas.com>
+ <878skyt6om.wl-kuninori.morimoto.gx@renesas.com>
+ <CAFQqKeX8oDOUsN_=OfO7Sn_vTmdE-BbHL8Jruji_rAY85mB98g@mail.gmail.com>
+ <875zg2t4qd.wl-kuninori.morimoto.gx@renesas.com>
+ <CAFQqKeUcgKRnWmF4bzGvfb8MNj8XtPp2cD7yBWY8XNJzUnRQjw@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>, digetx@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,12 +85,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #26 was edited from MusicMaker:
 
-In non blocked raw MIDI, is snd_rawmidi_status_get_avail supposed to return the number of available bytes that can be read using a snd_rawmidi_read. (port is opened for input only)  It seems get_avail always returns 0 even there is MIDI data when using a read.  Else is there a(nother) way to find the number of unread received bytes in the buffer?
-snd_rawmidi_status_alloca (&status);  	
-snd_rawmidi_status(client, status); 
-snd_rawmidi_status_get_avail(status);
+Hi Sridharan
 
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/26
-Repository URL: https://github.com/alsa-project/alsa-lib
+>     >     ASoC component open/close and snd_soc_component_module_get/put are
+>     >     called once for each component, but we need it for each substream.
+>     >     To solve this issue, this patch counts open / get,
+>     >     and call close / put accordingly.
+>     >
+>     >     Fixes: dd03907bf129 ("ASoC: soc-pcm: call snd_soc_component_open/close() once")
+>     >     Reported-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+>     >     Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>     >     ---
+(snip)
+>     I think same as open ?
+>     It protects calling put() from not-get-component.
+>     Because module_put() has WARN_ON(ret < 0).
+> 
+> Can we use the module_refcount instead of adding a new field?
+
+Ahh, maybe yes.
+I can try to use it in non-RFC patch.
+
+Thank you for your help !!
+Best regards
+---
+Kuninori Morimoto
