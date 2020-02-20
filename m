@@ -1,61 +1,61 @@
-Return-Path: <SRS0=BBoH=4M=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=8DMN=4I=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B26BDC38BFA
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Feb 2020 22:25:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C3BFC11D00
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Feb 2020 22:20:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3D4B621744
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Feb 2020 22:25:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0030D20801
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Feb 2020 22:20:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Yx4sC1Cy"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3D4B621744
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WFoMhDhD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0030D20801
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9CBC716A0;
-	Mon, 24 Feb 2020 23:24:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CBC716A0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5EB5116BC;
+	Thu, 20 Feb 2020 23:19:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5EB5116BC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582583112;
-	bh=i9ivECZw04GzvXSuNOUHdPplUq1Frtays82wjUo/WEg=;
+	s=default; t=1582237234;
+	bh=JkcLK1Udba9UAifpDkW+XKjGm5ZwO9aAJp6lse+/5NM=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=Yx4sC1CyYIA/w1wPO11aZsKwPIWD+NFN0Pkfo65qmRdxr9CP0anGRxnDIVwLKOHea
-	 xoINw7zvWAXr0n27dPgTkdDaREbLU0RNgplNn0hAZFNMjh/3jKieiAC3gxxgjDH56v
-	 NbL2UICxaU6VDJ8zDM8rjKr6thHDsF64Z4eG7Z/w=
+	b=WFoMhDhDvdRViBXHXGCISAV4q0AQYjRYCvcSkMjvIpk+sCqdCazMC2VjeRU1rfAy2
+	 M+yE1o4fRgeACzXP8ehLVxMt4qA26EQt756LFAU1OM/Ai4krA964VtENpUy7F04pWR
+	 WCJpzTyIHuJfCjssqUy1FCZ8nRBVyDrQDSQjlOSI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 414E9F80292;
-	Mon, 24 Feb 2020 23:21:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8A5CCF8028C;
+	Thu, 20 Feb 2020 23:18:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CC8E0F802A1; Mon, 24 Feb 2020 23:21:55 +0100 (CET)
+ id E4BE4F80148; Thu, 20 Feb 2020 23:18:41 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id EEB40F80292
- for <alsa-devel@alsa-project.org>; Mon, 24 Feb 2020 23:21:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EEB40F80292
+ by alsa1.perex.cz (Postfix) with ESMTP id 59A62F80145
+ for <alsa-devel@alsa-project.org>; Thu, 20 Feb 2020 23:18:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59A62F80145
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8B3D431B;
- Mon, 24 Feb 2020 14:21:51 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CBAD9328;
+ Thu, 20 Feb 2020 14:18:36 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0F1D43F534;
- Mon, 24 Feb 2020 14:21:50 -0800 (PST)
-Date: Mon, 24 Feb 2020 22:21:49 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 42B873F6CF;
+ Thu, 20 Feb 2020 14:18:36 -0800 (PST)
+Date: Thu, 20 Feb 2020 22:18:34 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Applied "ASoC: soc-pcm: merge dpcm_run_new/old_update() into
- dpcm_fe_runtime_update()" to the asoc tree
-In-Reply-To: <87blpvjc9v.wl-kuninori.morimoto.gx@renesas.com>
-Message-Id: <applied-87blpvjc9v.wl-kuninori.morimoto.gx@renesas.com>
+To: Dan Murphy <dmurphy@ti.com>
+Subject: Applied "dt-bindings: sound: Add TLV320ADCx140 dt bindings" to the
+ asoc tree
+In-Reply-To: 
+Message-Id: 
 X-Patchwork-Hint: ignore
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -70,10 +70,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+Content-Type: text/plain; charset="UTF-8"
+Message-ID: <20200220221834._SVBE8Mvza5Pqxwuwb7FYY0uijlc-Sy2S1-jAIWgwjQ@z>
 
 The patch
 
-   ASoC: soc-pcm: merge dpcm_run_new/old_update() into dpcm_fe_runtime_update()
+   dt-bindings: sound: Add TLV320ADCx140 dt bindings
 
 has been applied to the asoc tree at
 
@@ -98,83 +100,115 @@ to this mail.
 Thanks,
 Mark
 
-From 580dff3636d08ed12cb5d5db2fd895cbeffd0fd5 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 19 Feb 2020 15:56:46 +0900
-Subject: [PATCH] ASoC: soc-pcm: merge dpcm_run_new/old_update() into
- dpcm_fe_runtime_update()
+From 4ee67cbd97668ab1b17d86d85348302c0b7490cd Mon Sep 17 00:00:00 2001
+From: Dan Murphy <dmurphy@ti.com>
+Date: Thu, 20 Feb 2020 15:07:58 -0600
+Subject: [PATCH] dt-bindings: sound: Add TLV320ADCx140 dt bindings
 
-soc-pcm has dpcm_run_new/old_update(), but these are used from
-dpcm_fe_runtime_update() only, and are very verbose functions.
-This patch disassembles these.
+Add dt bindings for the TLV320ADCx140 Burr-Brown ADC.
+The initial support is for the following:
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87blpvjc9v.wl-kuninori.morimoto.gx@renesas.com
+TLV320ADC3140 - http://www.ti.com/lit/gpn/tlv320adc3140
+TLV320ADC5140 - http://www.ti.com/lit/gpn/tlv320adc5140
+TLV320ADC6140 - http://www.ti.com/lit/gpn/tlv320adc6140
+
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+Link: https://lore.kernel.org/r/20200220210759.31466-2-dmurphy@ti.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-pcm.c | 35 +++++++----------------------------
- 1 file changed, 7 insertions(+), 28 deletions(-)
+ .../bindings/sound/tlv320adcx140.yaml         | 83 +++++++++++++++++++
+ 1 file changed, 83 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index e183fabc5b6f..1bf2db1732bf 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -2536,37 +2536,12 @@ static int dpcm_run_update_startup(struct snd_soc_pcm_runtime *fe, int stream)
- 	return ret;
- }
- 
--static int dpcm_run_new_update(struct snd_soc_pcm_runtime *fe, int stream)
--{
--	int ret;
--
--	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_BE);
--	ret = dpcm_run_update_startup(fe, stream);
--	if (ret < 0)
--		dev_err(fe->dev, "ASoC: failed to startup some BEs\n");
--	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_NO);
--
--	return ret;
--}
--
--static int dpcm_run_old_update(struct snd_soc_pcm_runtime *fe, int stream)
--{
--	int ret;
--
--	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_BE);
--	ret = dpcm_run_update_shutdown(fe, stream);
--	if (ret < 0)
--		dev_err(fe->dev, "ASoC: failed to shutdown some BEs\n");
--	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_NO);
--
--	return ret;
--}
--
- static int soc_dpcm_fe_runtime_update(struct snd_soc_pcm_runtime *fe, int new)
- {
- 	struct snd_soc_dapm_widget_list *list;
- 	int stream;
- 	int count, paths;
-+	int ret;
- 
- 	if (!fe->dai_link->dynamic)
- 		return 0;
-@@ -2603,10 +2578,14 @@ static int soc_dpcm_fe_runtime_update(struct snd_soc_pcm_runtime *fe, int new)
- 		/* update any playback/capture paths */
- 		count = dpcm_process_paths(fe, stream, &list, new);
- 		if (count) {
-+			dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_BE);
- 			if (new)
--				dpcm_run_new_update(fe, stream);
-+				ret = dpcm_run_update_startup(fe, stream);
- 			else
--				dpcm_run_old_update(fe, stream);
-+				ret = dpcm_run_update_shutdown(fe, stream);
-+			if (ret < 0)
-+				dev_err(fe->dev, "ASoC: failed to shutdown some BEs\n");
-+			dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_NO);
- 
- 			dpcm_clear_pending_state(fe, stream);
- 			dpcm_be_disconnect(fe, stream);
+diff --git a/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml b/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
+new file mode 100644
+index 000000000000..1433ff62b14f
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
+@@ -0,0 +1,83 @@
++# SPDX-License-Identifier: (GPL-2.0+ OR BSD-2-Clause)
++# Copyright (C) 2019 Texas Instruments Incorporated
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/tlv320adcx140.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Texas Instruments TLV320ADCX140 Quad Channel Analog-to-Digital Converter
++
++maintainers:
++  - Dan Murphy <dmurphy@ti.com>
++
++description: |
++  The TLV320ADCX140 are multichannel (4-ch analog recording or 8-ch digital
++  PDM microphones recording), high-performance audio, analog-to-digital
++  converter (ADC) with analog inputs supporting up to 2V RMS. The TLV320ADCX140
++  family supports line and  microphone Inputs, and offers a programmable
++  microphone bias or supply voltage generation.
++
++  Specifications can be found at:
++    http://www.ti.com/lit/ds/symlink/tlv320adc3140.pdf
++    http://www.ti.com/lit/ds/symlink/tlv320adc5140.pdf
++    http://www.ti.com/lit/ds/symlink/tlv320adc6140.pdf
++
++properties:
++  compatible:
++    oneOf:
++      - const: ti,tlv320adc3140
++      - const: ti,tlv320adc5140
++      - const: ti,tlv320adc6140
++
++  reg:
++    maxItems: 1
++    description: |
++       I2C addresss of the device can be one of these 0x4c, 0x4d, 0x4e or 0x4f
++
++  reset-gpios:
++    description: |
++       GPIO used for hardware reset.
++
++  areg-supply:
++      description: |
++       Regulator with AVDD at 3.3V.  If not defined then the internal regulator
++       is enabled.
++
++  ti,mic-bias-source:
++    description: |
++       Indicates the source for MIC Bias.
++       0 - Mic bias is set to VREF
++       1 - Mic bias is set to VREF × 1.096
++       6 - Mic bias is set to AVDD
++    allOf:
++      - $ref: /schemas/types.yaml#/definitions/uint32
++      - enum: [0, 1, 6]
++
++  ti,vref-source:
++    description: |
++       Indicates the source for MIC Bias.
++       0 - Set VREF to 2.75V
++       1 - Set VREF to 2.5V
++       2 - Set VREF to 1.375V
++    allOf:
++      - $ref: /schemas/types.yaml#/definitions/uint32
++      - enum: [0, 1, 2]
++
++required:
++  - compatible
++  - reg
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    i2c0 {
++      #address-cells = <1>;
++      #size-cells = <0>;
++      codec: codec@4c {
++        compatible = "ti,tlv320adc5140";
++        reg = <0x4c>;
++        ti,use-internal-areg;
++        ti,mic-bias-source = <6>;
++        reset-gpios = <&gpio0 14 GPIO_ACTIVE_HIGH>;
++      };
++    };
 -- 
 2.20.1
 
