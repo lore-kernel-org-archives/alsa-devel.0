@@ -7,72 +7,72 @@ X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF14EC11D05
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Feb 2020 15:09:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41B9FC11D0C
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Feb 2020 15:11:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8018D208CD
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Feb 2020 15:09:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BE373208CD
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Feb 2020 15:11:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="c3wLdg+l";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="WdHPV5jT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8018D208CD
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oQM8waK8";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="iJiqZm/8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BE373208CD
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E344216BC;
-	Thu, 20 Feb 2020 16:08:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E344216BC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2441516C7;
+	Thu, 20 Feb 2020 16:10:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2441516C7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582211348;
-	bh=IsMRCtbeAkobDvJcSJu9wAvgMOS2B90Xx1HZTmWmeIY=;
+	s=default; t=1582211474;
+	bh=4dpaNDCNECG6zSKvNOmZjPU/aUyF9SRvNXqLuUEXYo4=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=c3wLdg+lp4aw55KZNmVEcSOfvBn+H7JDdBIAiTdbHqTDoNGJjzjdLgrWyzE9efQCI
-	 QCzGfuZTSMDe271YT+nzZ0Y0Tlvfc6Y1cxigj2hNK+VmLyn/geIoHb8EZmiq4kaOI5
-	 draZu4IjxRpz2d2M3tItUUTXij6mfp0Ume2CV4LA=
+	b=oQM8waK803EpGVK55I2f3fkxVmbUvkMq25kZ12tO9hwAfxpWimVYO3S/XqQE7D6DQ
+	 YYEE5/PKCk5M0WGucCTL+vXsPiOX/GtT8fElvaHGD8fjkR1BRsLXPBPCem2939ZZf6
+	 gfeGIlkqsv6/STcx1xH4XZLbJAaZNVM29J17ag4A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 683CFF80145;
-	Thu, 20 Feb 2020 16:08:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9C60EF80101;
+	Thu, 20 Feb 2020 16:10:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EA749F80148; Thu, 20 Feb 2020 16:08:14 +0100 (CET)
-Received: from hqnvemgate24.nvidia.com (hqnvemgate24.nvidia.com
- [216.228.121.143])
+ id 4996CF80148; Thu, 20 Feb 2020 16:10:21 +0100 (CET)
+Received: from hqnvemgate26.nvidia.com (hqnvemgate26.nvidia.com
+ [216.228.121.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 34E31F80101
- for <alsa-devel@alsa-project.org>; Thu, 20 Feb 2020 16:08:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34E31F80101
+ by alsa1.perex.cz (Postfix) with ESMTPS id 45887F80101
+ for <alsa-devel@alsa-project.org>; Thu, 20 Feb 2020 16:10:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45887F80101
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
- header.b="WdHPV5jT"
+ header.b="iJiqZm/8"
 Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by
- hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
- id <B5e4ea0900000>; Thu, 20 Feb 2020 07:06:56 -0800
+ hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+ id <B5e4ea14a0000>; Thu, 20 Feb 2020 07:10:02 -0800
 Received: from hqmail.nvidia.com ([172.20.161.6])
  by hqpgpgate101.nvidia.com (PGP Universal service);
- Thu, 20 Feb 2020 07:08:08 -0800
+ Thu, 20 Feb 2020 07:10:15 -0800
 X-PGP-Universal: processed;
- by hqpgpgate101.nvidia.com on Thu, 20 Feb 2020 07:08:08 -0800
+ by hqpgpgate101.nvidia.com on Thu, 20 Feb 2020 07:10:15 -0800
 Received: from [10.21.133.51] (10.124.1.5) by HQMAIL107.nvidia.com
  (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 20 Feb
- 2020 15:08:05 +0000
-Subject: Re: [PATCH v3 05/10] ASoC: tegra: add Tegra210 based AHUB driver
+ 2020 15:10:12 +0000
+Subject: Re: [PATCH v3 06/10] ASoC: tegra: add Tegra186 based DSPK driver
 To: Sameer Pujar <spujar@nvidia.com>, <perex@perex.cz>, <tiwai@suse.com>,
  <robh+dt@kernel.org>
 References: <1582180492-25297-1-git-send-email-spujar@nvidia.com>
- <1582180492-25297-6-git-send-email-spujar@nvidia.com>
+ <1582180492-25297-7-git-send-email-spujar@nvidia.com>
 From: Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <d6fec11f-3ea3-6da3-ef96-74e4c0a9293e@nvidia.com>
-Date: Thu, 20 Feb 2020 15:08:03 +0000
+Message-ID: <21f89564-2e04-7d06-bb07-5fa488d9ee8f@nvidia.com>
+Date: Thu, 20 Feb 2020 15:10:10 +0000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <1582180492-25297-6-git-send-email-spujar@nvidia.com>
+In-Reply-To: <1582180492-25297-7-git-send-email-spujar@nvidia.com>
 X-Originating-IP: [10.124.1.5]
 X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
  HQMAIL107.nvidia.com (172.20.187.13)
@@ -80,17 +80,17 @@ Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
- t=1582211216; bh=1fxGENVsrBJEQvVJW5203qUrMQ2k8GsjvtaSYcWTupg=;
+ t=1582211402; bh=DqhgkJnHxUcz8diUkAKKorYICLcz915PBRp2VzGuspI=;
  h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
  User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
  X-ClientProxiedBy:Content-Type:Content-Language:
  Content-Transfer-Encoding;
- b=WdHPV5jTvllydXKqWZyKo6EBlgdMZLp/IxTT1Aw7dvi/Fg/i9tcpwbLRgqoFEOiDP
- Ot29wZkYEN0vaVQ//R+yG/uYnD8pOVwRnKpTf17zUsjqVxG/0y7/6WSbfQ1Duca6un
- sLTZS5OdHNpEkncE29OMirsLCGIRJmkGrVQCP76FGGVTHaLXrOupWqivrgoREHb8jw
- R80vLvNjtFaphj5Una7wahQJSgPioMKQ5MZl+hb2LSYQ+w8MKgZj14OBQSovO+3Sya
- dZhjFY/rlY4VugyU/hoFWgXEdNO9u6m3smwK8QwP0BvBdvDEXcahbITGg+Wvn5yLVK
- dYMm4GbS/9g+w==
+ b=iJiqZm/8CmQ+plBvUef6JAzfIwThPCK7ELdBLATXQ1HHnhpPGcC6AMs5eGG50IHC/
+ qZyeHfJ4KuLem1QhEnqfHr6Tw/j4PStoRmi5VYIWKizvoGMfNxm3Q/qALQygxJgU1j
+ DMUp3OoK8kZFgspILqGleRn4nDu9vdFkWMH33SQdG5n2KpGXM9uOxXhGu5Z8yeOO5U
+ mLp06zsH2VCH/z3sfEieQ+gQ+CVLPvzCQekA0fqtYrFUnw+txu0u2KTUzLzE6Ita7k
+ sJqSWo/Wj6KwwDfuuQKSBG3TIfVF0QYsr9Pm4Ka69rKw75EcrftJ/J+mX1c/Wd/HTz
+ mwFQxuse41eKw==
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
  atalambedu@nvidia.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
  viswanathl@nvidia.com, sharadg@nvidia.com, broonie@kernel.org,
@@ -113,33 +113,30 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 On 20/02/2020 06:34, Sameer Pujar wrote:
-> The Audio Hub (AHUB) comprises a collection of hardware accelerators for
-> audio pre/post-processing and a programmable full crossbar (XBAR) for
-> routing audio data across these accelerators in time and in parallel.
-> AHUB supports multiple interfaces to I2S, DSPK, DMIC etc., XBAR is a
-> switch used to configure or modify audio routing between HW accelerators
-> present inside AHUB.
+> The Digital Speaker Controller (DSPK) converts the multi-bit Pulse Code
+> Modulation (PCM) audio input to oversampled 1-bit Pulse Density Modulation
+> (PDM) output. From the signal flow perpsective, the DSPK can be viewed as
+> a PDM transmitter that up-samples the input to the desired sampling rate
+> by interpolation then converts the oversampled PCM input to the desired
+> 1-bit output via Delta Sigma Modulation (DSM).
 > 
-> This patch registers AHUB component with ASoC framework. The component
+> This patch registers DSPK component with ASoC framework. The component
 > driver exposes DAPM widgets, routes and kcontrols for the device. The DAI
-> driver exposes AHUB interfaces, which can be used to connect different
-> components in the ASoC layer. Currently the driver takes care of XBAR
-> programming to allow audio data flow through various clients of the AHUB.
-> Makefile and Kconfig support is added to allow to build the driver. The
-> AHUB component can be enabled in the DT via below compatible bindings.
->   - "nvidia,tegra210-ahub" for Tegra210
->   - "nvidia,tegra186-ahub" for Tegra186 and Tegra194
+> driver exposes DSPK interfaces, which can be used to connect different
+> components in the ASoC layer. Makefile and Kconfig support is added to
+> allow to build the driver. The DSPK devices can be enabled in the DT via
+> "nvidia,tegra186-dspk" compatible binding. This driver can be used
+> on Tegra194 chip as well.
 > 
 > Signed-off-by: Sameer Pujar <spujar@nvidia.com>
 > ---
->  sound/soc/tegra/Kconfig         |  10 +
+>  sound/soc/tegra/Kconfig         |  13 +
 >  sound/soc/tegra/Makefile        |   2 +
->  sound/soc/tegra/tegra210_ahub.c | 651 ++++++++++++++++++++++++++++++++++++++++
->  sound/soc/tegra/tegra210_ahub.h | 125 ++++++++
->  4 files changed, 788 insertions(+)
->  create mode 100644 sound/soc/tegra/tegra210_ahub.c
->  create mode 100644 sound/soc/tegra/tegra210_ahub.h
-
+>  sound/soc/tegra/tegra186_dspk.c | 510 ++++++++++++++++++++++++++++++++++++++++
+>  sound/soc/tegra/tegra186_dspk.h |  73 ++++++
+>  4 files changed, 598 insertions(+)
+>  create mode 100644 sound/soc/tegra/tegra186_dspk.c
+>  create mode 100644 sound/soc/tegra/tegra186_dspk.h
 
 Aside from Randy's comment ...
 
