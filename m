@@ -2,72 +2,63 @@ Return-Path: <SRS0=sxeJ=4J=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC9F6C35647
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Feb 2020 13:22:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9864AC35647
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Feb 2020 13:34:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6A075206D7
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Feb 2020 13:22:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 27DA32073A
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Feb 2020 13:34:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fANswPD3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6A075206D7
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nvr73ZFI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 27DA32073A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CDC9016CE;
-	Fri, 21 Feb 2020 14:21:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CDC9016CE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7DB2A16CE;
+	Fri, 21 Feb 2020 14:33:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7DB2A16CE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582291347;
-	bh=7jBCZFzRAMGvkjduzvrnNgKG2uWZV8YyKE222d9XAbk=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=fANswPD3kSsOniq+GK5Rz2WSomTlIMIXprz+I/+3Szerc6BhkJi/pnM7AMFEn8bh9
-	 jUTk9yAFtTT57MpoF+yeNTf28Xjakxx9xcm9JoDU5/NQPQiq7n2ESZ+/rgNlS2yXO+
-	 mo+EP3nNdGM0uZln4paJ3zBF7cIcr9Z0Q7g8nnk8=
+	s=default; t=1582292053;
+	bh=U/gHYr8sl3aK+jYWw6PwcQsEDqxAchevD2FJehyKjm0=;
+	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=nvr73ZFIustf7qaPALyR5DW5Q4xkDpJpbmFDQqP683xqHkRUtSkmpHpXSCK2cfdq9
+	 M2WpGI/K6i4kDTlcIetot0GzTJQKR4qf5wXNBLD8Ax/dlVqOmYBCvJ5JPXjCHGsjLW
+	 acDmAijNTs0X/Jkk4PupsIY2+74iSeHyPoLIKOlc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 680DBF8025F;
-	Fri, 21 Feb 2020 14:21:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5EAF0F8028A;
+	Fri, 21 Feb 2020 14:31:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D09BEF80276; Fri, 21 Feb 2020 14:21:35 +0100 (CET)
+ id BF1D1F8028E; Fri, 21 Feb 2020 14:31:19 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 73617F80240
- for <alsa-devel@alsa-project.org>; Fri, 21 Feb 2020 14:21:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73617F80240
+ by alsa1.perex.cz (Postfix) with ESMTP id 2F452F8028C
+ for <alsa-devel@alsa-project.org>; Fri, 21 Feb 2020 14:31:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F452F8028C
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6CD1630E;
- Fri, 21 Feb 2020 05:21:30 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BFFD330E;
+ Fri, 21 Feb 2020 05:31:15 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D526C3F703;
- Fri, 21 Feb 2020 05:21:29 -0800 (PST)
-Date: Fri, 21 Feb 2020 13:21:28 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 383B83F703;
+ Fri, 21 Feb 2020 05:31:15 -0800 (PST)
+Date: Fri, 21 Feb 2020 13:31:13 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Sameer Pujar <spujar@nvidia.com>
-Subject: Re: [PATCH v3 04/10] ASoC: tegra: add Tegra210 based I2S driver
-Message-ID: <20200221132128.GE5546@sirena.org.uk>
-References: <1582180492-25297-1-git-send-email-spujar@nvidia.com>
- <1582180492-25297-5-git-send-email-spujar@nvidia.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="FEz7ebHBGB6b2e8X"
-Content-Disposition: inline
-In-Reply-To: <1582180492-25297-5-git-send-email-spujar@nvidia.com>
-X-Cookie: Dead?	No excuse for laying off work.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+To: Jerome Brunet <jbrunet@baylibre.com>
+Subject: Applied "ASoC: meson: g12a: add tohdmitx reset" to the asoc tree
+In-Reply-To: <20200221121146.1498427-1-jbrunet@baylibre.com>
+Message-Id: <applied-20200221121146.1498427-1-jbrunet@baylibre.com>
+X-Patchwork-Hint: ignore
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- atalambedu@nvidia.com, linux-kernel@vger.kernel.org, tiwai@suse.com,
- lgirdwood@gmail.com, jonathanh@nvidia.com, viswanathl@nvidia.com,
- sharadg@nvidia.com, robh+dt@kernel.org, thierry.reding@gmail.com,
- linux-tegra@vger.kernel.org, digetx@gmail.com, rlokhande@nvidia.com,
- mkumard@nvidia.com, dramesh@nvidia.com
+ Kevin Hilman <khilman@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ linux-amlogic@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,83 +74,71 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+The patch
 
---FEz7ebHBGB6b2e8X
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: meson: g12a: add tohdmitx reset
 
-On Thu, Feb 20, 2020 at 12:04:46PM +0530, Sameer Pujar wrote:
+has been applied to the asoc tree at
 
-> @@ -0,0 +1,938 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * tegra210_i2s.c - Tegra210 I2S driver
-> + *
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-All C++ please.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> +static void tegra210_i2s_set_data_offset(struct tegra210_i2s *i2s,
-> +					 unsigned int data_offset)
-> +{
-> +	unsigned int mask = I2S_CTRL_DATA_OFFSET_MASK;
-> +	unsigned int shift = I2S_DATA_SHIFT;
-> +	unsigned int reg;
-> +
-> +	reg = TEGRA210_I2S_TX_CTRL;
-> +	regmap_update_bits(i2s->regmap, reg, mask, data_offset << shift);
-> +
-> +	reg = TEGRA210_I2S_RX_CTRL;
-> +	regmap_update_bits(i2s->regmap, reg, mask, data_offset << shift);
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-The way this is written is *weird*, especially the use of reg - it'd
-probably be clearer to just use the values directly rather than have
-these intermediate temporary values.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> +static int tegra210_i2s_get_control(struct snd_kcontrol *kcontrol,
-> +				    struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	struct snd_soc_component *compnt = snd_soc_kcontrol_component(kcontrol);
-> +	struct tegra210_i2s *i2s = snd_soc_component_get_drvdata(compnt);
-> +	long *uctl_val = &ucontrol->value.integer.value[0];
-> +
-> +	if (strstr(kcontrol->id.name, "Loopback"))
-> +		*uctl_val = i2s->loopback;
-> +	else if (strstr(kcontrol->id.name, "Sample Rate"))
-> +		*uctl_val = i2s->srate_override;
-> +	else if (strstr(kcontrol->id.name, "FSYNC Width"))
-> +		*uctl_val = i2s->fsync_width;
-> +	else if (strstr(kcontrol->id.name, "Playback Audio Bit Format"))
-> +		*uctl_val = i2s->audio_fmt_override[I2S_RX_PATH];
-> +	else if (strstr(kcontrol->id.name, "Capture Audio Bit Format"))
-> +		*uctl_val = i2s->audio_fmt_override[I2S_TX_PATH];
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-Same issue as the DMIC driver, these really shouldn't be exposed to
-userspace as regular controls.
+Thanks,
+Mark
 
-> +	/*
-> +	 * For playback I2S RX-CIF and for capture TX-CIF is used.
-> +	 * With reference to AHUB, for I2S, SNDRV_PCM_STREAM_CAPTURE stream is
-> +	 * actually for playback.
-> +	 */
-> +	path = (substream->stream == SNDRV_PCM_STREAM_CAPTURE) ?
-> +	       I2S_RX_PATH : I2S_TX_PATH;
+From 22946f37557e27697aabc8e4f62642bfe4a17fd8 Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Fri, 21 Feb 2020 13:11:46 +0100
+Subject: [PATCH] ASoC: meson: g12a: add tohdmitx reset
 
-Please write normal conditional statements, it makes things easier to
-read.
+Reset the g12a hdmi codec glue on probe. This ensure a sane startup state.
 
---FEz7ebHBGB6b2e8X
-Content-Type: application/pgp-signature; name="signature.asc"
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Link: https://lore.kernel.org/r/20200221121146.1498427-1-jbrunet@baylibre.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/meson/g12a-tohdmitx.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/sound/soc/meson/g12a-tohdmitx.c b/sound/soc/meson/g12a-tohdmitx.c
+index 9cfbd343a00c..8a0db28a6a40 100644
+--- a/sound/soc/meson/g12a-tohdmitx.c
++++ b/sound/soc/meson/g12a-tohdmitx.c
+@@ -8,6 +8,7 @@
+ #include <linux/module.h>
+ #include <sound/pcm_params.h>
+ #include <linux/regmap.h>
++#include <linux/reset.h>
+ #include <sound/soc.h>
+ #include <sound/soc-dai.h>
+ 
+@@ -378,6 +379,11 @@ static int g12a_tohdmitx_probe(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 	void __iomem *regs;
+ 	struct regmap *map;
++	int ret;
++
++	ret = device_reset(dev);
++	if (ret)
++		return ret;
+ 
+ 	regs = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(regs))
+-- 
+2.20.1
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5P2VcACgkQJNaLcl1U
-h9D/awf/U2ZCR7nNWNrI95I8xTMDKuA/JDQe0xYLuDIfs3GKQSPQMpUDhki+WZMN
-DqFveacFKjMaU6kxGpoFWONkDSLzRjWguMjv0+SwXJPDbwYmJFsfOFNPc8AjXIDc
-YsgXv6n/zHWQGC9w7tU3/Goy7n87FGWsBIKsBAQF2K4ZhubTgA9zggVBKLArj7J1
-WpidsKFtr0DqBk/BKpQfERYQIQqND2xScFnTkrp80A55wu0rzNW2wP4XXWcOkPbS
-jYoVHY81EV3ExQzN3T7FbOO6PWfXZMPwUw+UwfODLvFCbpmQJSkiMiv5x4qXJDrS
-wxx80JuxpcjWr6qKYltb4t/R/+AgZg==
-=0K47
------END PGP SIGNATURE-----
-
---FEz7ebHBGB6b2e8X--
