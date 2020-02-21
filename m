@@ -2,77 +2,93 @@ Return-Path: <SRS0=sxeJ=4J=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7288CC3565B
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Feb 2020 18:09:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67285C3565B
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Feb 2020 18:20:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0341F208E4
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Feb 2020 18:09:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E11F2222C4
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Feb 2020 18:20:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ExoUNdeY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0341F208E4
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UJah0u5C";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="TFnz+smq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E11F2222C4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5960016BA;
-	Fri, 21 Feb 2020 19:08:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5960016BA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4BE0416B5;
+	Fri, 21 Feb 2020 19:19:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4BE0416B5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582308571;
-	bh=UgMVSZKvFSWlp5v/OxbZklqlFRNqAf02Lty8NYzOhwA=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1582309205;
+	bh=zVxIuHKC8BXSaSX0PZpb0KH3gJ9t1n1YdH1SUBoFDyw=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ExoUNdeYTowaqW9irioYrCq9zluA+l5qM77uq+4529xZgwmdv+JgQ7iikT3zUqloz
-	 +s9Zq5ZIYgttuk4vwg2w6FsRx6YOHaOOWURbi1HQljqvc4IMj5YOSsw8vbLScblKOV
-	 a+abFckXPM2B1BXx7vm0tYGz0FJd8obIl4boTzHg=
+	b=UJah0u5CcltqFS2ceuDmC/v9EG5JaMCK/oOSc0eW6eEl4uLXYAu20pNjyrOeGQPBr
+	 M2KiJRykVTAQc4CJTMFxSLPCs8UEIQspIhWIs+prBYtxxpgW6W4j/cKU3k7oZbgfQO
+	 qJ+nWYeeajQqqwzAv5aOxosNhJ52JLXcgCt4l4bA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DE51AF80240;
-	Fri, 21 Feb 2020 19:08:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D6865F80240;
+	Fri, 21 Feb 2020 19:19:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 46F2AF8025F; Fri, 21 Feb 2020 19:08:38 +0100 (CET)
-Received: from muru.com (muru.com [72.249.23.125])
- by alsa1.perex.cz (Postfix) with ESMTP id F1507F800C5
- for <alsa-devel@alsa-project.org>; Fri, 21 Feb 2020 19:08:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1507F800C5
-Received: from atomide.com (localhost [127.0.0.1])
- by muru.com (Postfix) with ESMTPS id 060D9807E;
- Fri, 21 Feb 2020 18:09:08 +0000 (UTC)
-Date: Fri, 21 Feb 2020 10:08:21 -0800
-From: Tony Lindgren <tony@atomide.com>
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: ti: Allocate dais dynamically for TDM and audio
- graph card
-Message-ID: <20200221180821.GA37466@atomide.com>
-References: <20200212143543.GI64767@atomide.com>
- <346dfd2b-23f8-87e0-6f45-27a5099b1066@ti.com>
- <20200214170322.GZ64767@atomide.com>
- <d9a43fcb-ed0f-5cd5-7e22-58924d571d17@ti.com>
- <20200217231001.GC35972@atomide.com>
- <5402eba8-4f84-0973-e11b-6ab2667ada85@ti.com>
- <20200218211631.fxojsxzvttoidfed@earth.universe>
- <a263a857-bb8a-0e37-6932-dd07df98ad63@ti.com>
- <20200220201559.GX37466@atomide.com>
- <9ea8239f-3b2d-8206-95ee-2789fbae83d4@ti.com>
+ id 4AF05F800C5; Fri, 21 Feb 2020 19:19:14 +0100 (CET)
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 97F6BF8011D
+ for <alsa-devel@alsa-project.org>; Fri, 21 Feb 2020 19:19:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97F6BF8011D
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="TFnz+smq"
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 01LIJ7Av002930;
+ Fri, 21 Feb 2020 12:19:07 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1582309147;
+ bh=bsI2HkrAS+Vu3v42QGL3/rnggOmg6lsHS1PaGjXsLps=;
+ h=From:To:CC:Subject:Date:In-Reply-To:References;
+ b=TFnz+smq5hJY4+vixyzlgEIaS8p/ZysyM3Cx6Jcq1EW7Y0OEdRzh9OWKtM3/IYcCk
+ bjChMoF4f+RPotRrPd23fsQ9qT2e7INrBxeWS9ie2acFkfGEKvcBV5y0NHYfOrLFpp
+ BBcS8jAGyJB5UnaVGNKEhPyTKjTkuKk8hAEw0npk=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 01LIJ7R2064973
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Fri, 21 Feb 2020 12:19:07 -0600
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Fri, 21
+ Feb 2020 12:19:07 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
+ Frontend Transport; Fri, 21 Feb 2020 12:19:07 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 01LIJ7TM047749;
+ Fri, 21 Feb 2020 12:19:07 -0600
+From: Dan Murphy <dmurphy@ti.com>
+To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+ <tiwai@suse.com>
+Subject: [PATCH for-next 2/2] ASoC: tlv320adcx140: Add decimation filter
+ support
+Date: Fri, 21 Feb 2020 12:13:58 -0600
+Message-ID: <20200221181358.22526-2-dmurphy@ti.com>
+X-Mailer: git-send-email 2.25.0
+In-Reply-To: <20200221181358.22526-1-dmurphy@ti.com>
+References: <20200221181358.22526-1-dmurphy@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9ea8239f-3b2d-8206-95ee-2789fbae83d4@ti.com>
-Cc: alsa-devel@alsa-project.org,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
- Merlijn Wajer <merlijn@wizzup.org>, Aaro Koskinen <aaro.koskinen@iki.fi>,
- Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
- Pavel Machek <pavel@ucw.cz>, Sebastian Reichel <sre@kernel.org>,
- linux-omap@vger.kernel.org, "Arthur D ." <spinal.by@gmail.com>,
- Jarkko Nikula <jarkko.nikula@bitmer.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Dan Murphy <dmurphy@ti.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,36 +104,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-* Peter Ujfalusi <peter.ujfalusi@ti.com> [200221 13:21]:
-> Hi Tony,
-> 
-> On 20/02/2020 22.15, Tony Lindgren wrote:
-> > * Peter Ujfalusi <peter.ujfalusi@ti.com> [200220 14:16]:
-> >> On 18/02/2020 23.16, Sebastian Reichel wrote:
-> >>> I suppose in the end its a question if generic card can provide TDM
-> >>> support.
-> >>
-> >> Sure it can, but can it handle the switching between the paths based on
-> >> use cases?
-> >> There should be machine level DAPM widgets to kick codec2codec (MDM6600
-> >> - CPAC_voice for example) and also to make sure that when you switch
-> >> between them the system is not going to get misconfigured.
-> >> Switching between CPAC and BT route during call?
-> >> Not allowing VoIP while on call, etc.
-> > 
-> > Well I guess the key thing to check here is if it's enough to
-> > keep track of things in the cpcap codec driver. If cpcap is always
-> > involved, that should be sufficient.
-> 
-> The codec driver should keep track on what it can do, but should not
-> start policing the outside world.
-> The machine driver knows the connections and should tell the components
-> on what to do.
+Add decimation filter selection support.
+Per Section 8.3.6.7 the Digital Decimation Filter is selectable between
+a Linear Phase, Low Latency, and Ultra Low Latency filer.
 
-OK that makes senes to me. So I guess now the question is if
-we can maintain this state in snd-soc-audio-graph-card instead
-of needing a custom machine driver.
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
+ sound/soc/codecs/tlv320adcx140.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-Regards,
+diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv320adcx140.c
+index 105e51be6fe6..93a0cb8e662c 100644
+--- a/sound/soc/codecs/tlv320adcx140.c
++++ b/sound/soc/codecs/tlv320adcx140.c
+@@ -169,6 +169,17 @@ static DECLARE_TLV_DB_SCALE(agc_thresh_tlv, -3600, 200, 0);
+ /* AGC Max Gain. From 3 dB to 42 dB in 3 dB steps */
+ static DECLARE_TLV_DB_SCALE(agc_gain_tlv, 300, 300, 0);
+ 
++static const char * const decimation_filter_text[] = {
++	"Linear Phase", "Low Latency", "Ultra-low Latency"
++};
++
++static SOC_ENUM_SINGLE_DECL(decimation_filter_enum, ADCX140_DSP_CFG0, 4,
++			    decimation_filter_text);
++
++static const struct snd_kcontrol_new decimation_filter_controls[] = {
++	SOC_DAPM_ENUM("Decimation Filter", decimation_filter_enum),
++};
++
+ static const char * const resistor_text[] = {
+ 	"2.5 kOhm", "10 kOhm", "20 kOhm"
+ };
+@@ -404,6 +415,9 @@ static const struct snd_soc_dapm_widget adcx140_dapm_widgets[] = {
+ 			in3_resistor_controls),
+ 	SND_SOC_DAPM_MUX("IN4 Analog Mic Resistor", SND_SOC_NOPM, 0, 0,
+ 			in4_resistor_controls),
++
++	SND_SOC_DAPM_MUX("Decimation Filter", SND_SOC_NOPM, 0, 0,
++			decimation_filter_controls),
+ };
+ 
+ static const struct snd_soc_dapm_route adcx140_audio_map[] = {
+@@ -418,6 +432,10 @@ static const struct snd_soc_dapm_route adcx140_audio_map[] = {
+ 	{"CH3_ASI_EN", "Switch", "CH3_ADC"},
+ 	{"CH4_ASI_EN", "Switch", "CH4_ADC"},
+ 
++	{"Decimation Filter", "Linear Phase", "DRE_ENABLE"},
++	{"Decimation Filter", "Low Latency", "DRE_ENABLE"},
++	{"Decimation Filter", "Ultra-low Latency", "DRE_ENABLE"},
++
+ 	{"DRE_ENABLE", "Switch", "CH1_DRE_EN"},
+ 	{"DRE_ENABLE", "Switch", "CH2_DRE_EN"},
+ 	{"DRE_ENABLE", "Switch", "CH3_DRE_EN"},
+-- 
+2.25.0
 
-Tony
