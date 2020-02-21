@@ -2,69 +2,64 @@ Return-Path: <SRS0=sxeJ=4J=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CB96C11D00
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Feb 2020 01:14:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D0984C11D00
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Feb 2020 01:26:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 07953206E2
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Feb 2020 01:14:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5951C208CD
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Feb 2020 01:26:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QGnblEMo"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 07953206E2
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GOPvsrLJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5951C208CD
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5AF7816B2;
-	Fri, 21 Feb 2020 02:13:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5AF7816B2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 95B3C16B3;
+	Fri, 21 Feb 2020 02:25:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95B3C16B3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582247655;
-	bh=Y98oLWbFNTRLjErPsJQquf5dSpM8xNcxPz1gfBBp6M4=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=QGnblEMoxMUacdcX51lF9jDRFaq7GKHU30Yv/Id1GweY5F7AQfjQrRjHtCgjBAme3
-	 ftuxRhyQcwCeUwDpPS1JtjXvgPqBLH4c3z3t2GGS2miG1VQlyK5St+MB/Fab8R3loH
-	 NHOYWjRUgfk4R3PM7tltGUoq1XdRb/rZSw2TRRoQ=
+	s=default; t=1582248377;
+	bh=ZWNAgRJPI90WnlvP2hF2FaufnaCoWCjgxU5Wn2JHmVU=;
+	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=GOPvsrLJDSi4I6VmWHOakZVHhvst48vWoJp2Q6+NUIXorSYzYLlrpWW9cMCX0VQc3
+	 nVsQy+hdvKIvGcZZdMcRHDubcRHZiPiCMHVEZzKvhSH8nJHgF0bHkCvvTo5huQL0w3
+	 MBS3VimoTFBKCTOdSK5apS4/8ippzzKSPU6kFCtw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CEEEAF80114;
-	Fri, 21 Feb 2020 02:13:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 21CB6F80145;
+	Fri, 21 Feb 2020 02:25:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9EC14F80148; Fri, 21 Feb 2020 02:13:22 +0100 (CET)
+ id 8E30FF80148; Fri, 21 Feb 2020 02:25:25 +0100 (CET)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id D6659F80114
- for <alsa-devel@alsa-project.org>; Fri, 21 Feb 2020 02:13:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6659F80114
-Date: 21 Feb 2020 10:13:14 +0900
-X-IronPort-AV: E=Sophos;i="5.70,466,1574089200"; d="scan'208";a="39646979"
+ by alsa1.perex.cz (Postfix) with ESMTP id 8D647F8011D
+ for <alsa-devel@alsa-project.org>; Fri, 21 Feb 2020 02:25:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D647F8011D
+Date: 21 Feb 2020 10:25:18 +0900
+X-IronPort-AV: E=Sophos;i="5.70,466,1574089200"; d="scan'208";a="39648715"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 21 Feb 2020 10:13:14 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 21 Feb 2020 10:25:18 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 4F963400C433;
- Fri, 21 Feb 2020 10:13:14 +0900 (JST)
-Message-ID: <87mu9cspyf.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 489FB400C432;
+ Fri, 21 Feb 2020 10:25:18 +0900 (JST)
+Message-ID: <87lfowspeb.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: Re: [PATCH] ASoC: soc-pcm: Revert "call
- snd_soc_component_open/close() once"
-In-Reply-To: <alpine.DEB.2.21.2002201103060.2957@eliteleevi.tm.intel.com>
-References: <20200219182650.1416-1-kai.vehmanen@linux.intel.com>
- <87blput7hh.wl-kuninori.morimoto.gx@renesas.com>
- <alpine.DEB.2.21.2002201103060.2957@eliteleevi.tm.intel.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: soc-pcm/soc-compress: don't use
+ snd_soc_dapm_stream_stop()
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org,
- ranjani.sridharan@linux.intel.com, digetx@gmail.com,
- pierre-louis.bossart@linux.intel.com
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
+ Chris Gorman <chrisjohgorman@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,42 +75,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Hi Kai
+commit b0edff42360ab4 ("ASoC: soc-pcm/soc-compress: use
+snd_soc_dapm_stream_stop() for SND_SOC_DAPM_STREAM_STOP")
+uses snd_soc_dapm_stream_stop() for soc_compr_free_fe()
+and dpcm_fe_dai_shutdown() because it didn't care about pmdown_time.
+But, it didn't need to care.
+This patch rollback to original code.
+Some system will wait unneeded timed-out without this patch.
+Special Thanks for reporting to Chris Gorman.
+	...
+	intel_sst_acpi 808622A8:00: Wait timed-out condition:0x0, msg_id:0x1 fw_state 0x3
+	intel_sst_acpi 808622A8:00: fw returned err -16
+	sst-mfld-platform sst-mfld-platform: ASoC: PRE_PMD: pcm0_in event failed: -16
+	...
 
-Thank you for your help
-
-> > But, unfortunately I don't want spaghetti error handling code again.
-> > I think we can solve it if we can *count* open / module ?
-> > Can you please test this patch ?
-> 
-> I tested and this version works as well, so:
-> Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-> 
-> ... but, but, I have some doubts about th "opened" tracking as a solution.
-> 
-> A single counter will track the overall number of component-substream 
-> combinations, but if we have bugs in calling code and e.g. same 
-> component-substream is passed multiple times to open or close, the 
-> the single counter will go out of sync.
-> 
-> So if the primary problem is the messy rollback in case one open fails, 
-> what if we do the rollback directly in soc_pcm_components_open() and do
-> not add any additional tracking..?
-> 
-> Let me send a proposal patch for that.
-
-Hmm...
-It seems the patch was not so good cleanup...
-
-Thank you for your proposal patch. I checked it.
-But, if it rollback when error with *last,
-my opinion is original code
-(= soc_pcm_components_close() needs *last parameter)
-(= same as just revert the patch) is better.
-
-
-Thank you for your help !!
-Best regards
+Fixes: commit b0edff42360ab4 ("ASoC: soc-pcm/soc-compress: use snd_soc_dapm_stream_stop() for SND_SOC_DAPM_STREAM_STOP")
+Reported-by: Chris Gorman <chrisjohgorman@gmail.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
-Kuninori Morimoto
+> Mark
+
+This patch is for asoc/for-5.6 branch
+
+ sound/soc/soc-compress.c | 2 +-
+ sound/soc/soc-pcm.c      | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index 223cd045719e..392a1c5b15d3 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -299,7 +299,7 @@ static int soc_compr_free_fe(struct snd_compr_stream *cstream)
+ 	for_each_dpcm_be(fe, stream, dpcm)
+ 		dpcm->state = SND_SOC_DPCM_LINK_STATE_FREE;
+ 
+-	snd_soc_dapm_stream_stop(fe, stream);
++	dpcm_dapm_stream_event(fe, stream, SND_SOC_DAPM_STREAM_STOP);
+ 
+ 	fe->dpcm[stream].state = SND_SOC_DPCM_STATE_CLOSE;
+ 	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_NO;
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 42fb03a99cb1..6d400bf02ca1 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2006,7 +2006,7 @@ static int dpcm_fe_dai_shutdown(struct snd_pcm_substream *substream)
+ 	soc_pcm_close(substream);
+ 
+ 	/* run the stream event for each BE */
+-	snd_soc_dapm_stream_stop(fe, stream);
++	dpcm_dapm_stream_event(fe, stream, SND_SOC_DAPM_STREAM_STOP);
+ 
+ 	fe->dpcm[stream].state = SND_SOC_DPCM_STATE_CLOSE;
+ 	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_NO);
+-- 
+2.17.1
+
