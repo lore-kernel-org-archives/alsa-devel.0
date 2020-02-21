@@ -2,103 +2,77 @@ Return-Path: <SRS0=sxeJ=4J=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9708C35646
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Feb 2020 15:39:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B297EC35646
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Feb 2020 15:44:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 73C37208E4
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Feb 2020 15:39:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 42AFC206E2
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Feb 2020 15:44:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kzRPd3lk";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com header.i=@baylibre-com.20150623.gappssmtp.com header.b="YJwIqRv9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 73C37208E4
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mbQUnHA3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 42AFC206E2
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B879516BA;
-	Fri, 21 Feb 2020 16:38:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B879516BA
+	by alsa0.perex.cz (Postfix) with ESMTPS id A497C16B4;
+	Fri, 21 Feb 2020 16:43:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A497C16B4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582299564;
-	bh=Eyx1O3bcdzOnfzPIy8zGyoLAcghfb4FAA8fcpkLyHFg=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1582299870;
+	bh=jkZQFgPsPyR5A+kSjTDPH7u9v+FrkGj0BEFlkIdTo3Q=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kzRPd3lkRF/tl8QFJIUtHNUVB5meZd61LB8T0zBZsTSrcDsiPCFNwPnR8xK9aZC+H
-	 GPUw9g4G89E7ePsI0fVVh8X+D/zQXGS5O1dKxJleKVvfqR9catunUrB1cGO2KSDfEr
-	 aAFTJNd+xlZHanYlG6yRSAC0E5mlyH6AzTClsGNo=
+	b=mbQUnHA3g8zkfCFONuSSLH6Iv77UWr5osfKlw6L7P17ocFL1sq28Cvvm6tO9TKUZx
+	 qqKMx2xkaLbjIj27+v7fg7Rqzw7VX1lKjzYY1SNCpR4yj2Gvj+CppSX2IlaQm9pt2S
+	 iq8tiDBnT2fQgPxVH35ignOq+wO/gtQOFCzOJXKs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BAA71F8028C;
-	Fri, 21 Feb 2020 16:36:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 27CFDF80240;
+	Fri, 21 Feb 2020 16:43:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 952F9F80240; Fri, 21 Feb 2020 16:36:23 +0100 (CET)
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com
- [IPv6:2a00:1450:4864:20::341])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 5752DF8025F; Fri, 21 Feb 2020 16:43:38 +0100 (CET)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 319F7F80278
- for <alsa-devel@alsa-project.org>; Fri, 21 Feb 2020 16:36:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 319F7F80278
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com
- header.i=@baylibre-com.20150623.gappssmtp.com header.b="YJwIqRv9"
-Received: by mail-wm1-x341.google.com with SMTP id a6so2373410wme.2
- for <alsa-devel@alsa-project.org>; Fri, 21 Feb 2020 07:36:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=baylibre-com.20150623.gappssmtp.com; s=20150623;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=eFN2VKHrE+JD0cGAI+3A9MIQDzvF5Lgt98hOYp/CejM=;
- b=YJwIqRv9ZAZT+JufvECzrUvECj3c7vl3DwyjpavnRiTUC+BT5MwCGuUuHrmuPh5Qdx
- 2k2nK57li5jZtok/isZ8Y1ljxslqxASi+smgJ7u9748rS31vEE6rk1FFWUbLXsNaFofV
- WC9+91sUznQKJ4ukv+rpRKMuxbM8RZgHoBZyWBPbD0POsX8WiOb+0mYGMRZ4w9iu5anB
- PV2NTKPrVoTm9H6mFTrDDZISPtGpVmOjN6OQMXYBeRUeZh21ze7FU98JEInnGCL2lpOo
- CK7zxw0pRThM7dM1fWfJlbzxNQP95XAMC63rKo7kS7d/iCJPCdB1RkSa+kMv8AtG/3Si
- M6ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=eFN2VKHrE+JD0cGAI+3A9MIQDzvF5Lgt98hOYp/CejM=;
- b=dNc72vfm9Fee9XTgAJKqXwUWl5O6r5ndznN2K1XWrUlJp3WJYRt/4Jvgl7G6HhdIa2
- DtBshtBwphY4xR/jMjIY8N2Bv1zFj1N0aE8p4ef/pWeFoSdwswJyIAZSkagh9GBR6rl0
- O/8dYSr7UQeI7A0L8wGjRXbZTD9oxiXrHHOvCWb6z7gxYR0nGsjfBsdCPmcXONcILIUn
- huiksOBv98STaR4gwg89qk+jRTurBvyBHqyzLqOy/RjLdPzaIG1PguoNHujgnq/7vQn4
- tNhcFeyxYb5MlE2y/SgGhCNXmez59Otn1I4MkPRho06OBjlcAZpmWZCb8Q1QHhEJD+bU
- YH/w==
-X-Gm-Message-State: APjAAAWo09VtqV1jtMABJ4t59zRnawfJK/rrG1XrqyIVAp0KrG1WzMeW
- N7dF8FMf4QchAPYqNFv7AOuqlA==
-X-Google-Smtp-Source: APXvYqyKrZMlHSg/htp/5+30XIfFhh5aJwM5uacnmK48s3KUO/TfzxUThJS8Jhao+rZrzsLIALqGhQ==
-X-Received: by 2002:a7b:c14d:: with SMTP id z13mr4597867wmi.71.1582299379163; 
- Fri, 21 Feb 2020 07:36:19 -0800 (PST)
-Received: from localhost.localdomain (cag06-3-82-243-161-21.fbx.proxad.net.
- [82.243.161.21])
- by smtp.googlemail.com with ESMTPSA id z25sm4198782wmf.14.2020.02.21.07.36.17
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 21 Feb 2020 07:36:18 -0800 (PST)
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Mark Brown <broonie@kernel.org>,
-	Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH v2 3/3] ASoC: meson: axg-card: add toacodec support
-Date: Fri, 21 Feb 2020 16:36:07 +0100
-Message-Id: <20200221153607.1585499-4-jbrunet@baylibre.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200221153607.1585499-1-jbrunet@baylibre.com>
-References: <20200221153607.1585499-1-jbrunet@baylibre.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 466A5F800C5
+ for <alsa-devel@alsa-project.org>; Fri, 21 Feb 2020 16:43:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 466A5F800C5
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by orsmga101.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 21 Feb 2020 07:43:33 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,468,1574150400"; d="scan'208";a="236603814"
+Received: from mdiamon1-mobl.amr.corp.intel.com (HELO [10.252.143.193])
+ ([10.252.143.193])
+ by orsmga003.jf.intel.com with ESMTP; 21 Feb 2020 07:43:30 -0800
+Subject: Re: [PATCH] Intel: Skylake: Fix inconsistent IS_ERR and PTR_ERR
+To: Joe Perches <joe@perches.com>, Xu Wang <vulab@iscas.ac.cn>,
+ perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
+References: <20200221101112.3104-1-vulab@iscas.ac.cn>
+ <1247da797bc0a860e845989241385e124e589063.camel@perches.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <8e96c207-cdf8-2d1f-755e-be60555c8728@linux.intel.com>
+Date: Fri, 21 Feb 2020 09:40:13 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Kevin Hilman <khilman@baylibre.com>, linux-kernel@vger.kernel.org,
- linux-amlogic@lists.infradead.org, Jerome Brunet <jbrunet@baylibre.com>
+In-Reply-To: <1247da797bc0a860e845989241385e124e589063.camel@perches.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: "Rojewski, Cezary" <cezary.rojewski@intel.com>,
+ linux-kernel@vger.kernel.org, "Slawinski,
+ AmadeuszX" <amadeuszx.slawinski@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -114,28 +88,78 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Make sure the axg audio card driver recognise the dai_link as a
-codec-to-codec link if the cpu dai is the internal dac glue.
 
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
----
- sound/soc/meson/axg-card.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/meson/axg-card.c b/sound/soc/meson/axg-card.c
-index 372dc696cc8e..48651631bdcf 100644
---- a/sound/soc/meson/axg-card.c
-+++ b/sound/soc/meson/axg-card.c
-@@ -303,7 +303,8 @@ static int axg_card_cpu_is_tdm_iface(struct device_node *np)
- 
- static int axg_card_cpu_is_codec(struct device_node *np)
- {
--	return of_device_is_compatible(np, DT_PREFIX "g12a-tohdmitx");
-+	return of_device_is_compatible(np, DT_PREFIX "g12a-tohdmitx") ||
-+		of_device_is_compatible(np, DT_PREFIX "g12a-toacodec");
- }
- 
- static int axg_card_add_link(struct snd_soc_card *card, struct device_node *np,
--- 
-2.24.1
+On 2/21/20 8:41 AM, Joe Perches wrote:
+> On Fri, 2020-02-21 at 18:11 +0800, Xu Wang wrote:
+>> PTR_ERR should access the value just tested by IS_ERR.
+>> In skl_clk_dev_probe(),it is inconsistent.
+> []
+>> diff --git a/sound/soc/intel/skylake/skl-ssp-clk.c b/sound/soc/intel/skylake/skl-ssp-clk.c
+> []
+>> @@ -384,7 +384,7 @@ static int skl_clk_dev_probe(struct platform_device *pdev)
+>>   				&clks[i], clk_pdata, i);
+>>   
+>>   		if (IS_ERR(data->clk[data->avail_clk_cnt])) {
+>> -			ret = PTR_ERR(data->clk[data->avail_clk_cnt++]);
+>> +			ret = PTR_ERR(data->clk[data->avail_clk_cnt]);
+> 
+> NAK.
+> 
+> This is not inconsistent and you are removing the ++
+> which is a post increment.  Likely that is necessary.
+> 
+> You could write the access and the increment as two
+> separate statements if it confuses you.
 
+Well to be fair the code is far from clear.
+
+the post-increment is likely needed because of the error handling in 
+unregister_src_clk 1
+		data->clk[data->avail_clk_cnt] = register_skl_clk(dev,
+				&clks[i], clk_pdata, i);
+
+		if (IS_ERR(data->clk[data->avail_clk_cnt])) {
+			ret = PTR_ERR(data->clk[data->avail_clk_cnt++]);
+			goto err_unreg_skl_clk;
+		}
+	}
+
+	platform_set_drvdata(pdev, data);
+
+	return 0;
+
+err_unreg_skl_clk:
+	unregister_src_clk(data);
+
+static void unregister_src_clk(struct skl_clk_data *dclk)
+{
+	while (dclk->avail_clk_cnt--)
+		clkdev_drop(dclk->clk[dclk->avail_clk_cnt]->lookup);
+}
+
+So the post-increment is cancelled in the while().
+
+That said, the avail_clk_cnt field is never initialized or incremented 
+in normal usages so the code looks quite suspicious indeed.
+
+gitk tells me this patch is likely the culprit:
+
+6ee927f2f01466 ('ASoC: Intel: Skylake: Fix NULL ptr dereference when 
+unloading clk dev')
+
+-		data->clk[i] = register_skl_clk(dev, &clks[i], clk_pdata, i);
+-		if (IS_ERR(data->clk[i])) {
+-			ret = PTR_ERR(data->clk[i]);
++		data->clk[data->avail_clk_cnt] = register_skl_clk(dev,
++				&clks[i], clk_pdata, i);
++
++		if (IS_ERR(data->clk[data->avail_clk_cnt])) {
++			ret = PTR_ERR(data->clk[data->avail_clk_cnt++]);
+  			goto err_unreg_skl_clk;
+  		}
+-
+-		data->avail_clk_cnt++;
+
+That last removal is probably wrong. Cezary and Amadeusz, you may want 
+to look at this?
