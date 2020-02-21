@@ -2,105 +2,76 @@ Return-Path: <SRS0=sxeJ=4J=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 58BC5C35647
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Feb 2020 10:44:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6457BC35647
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Feb 2020 11:10:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D52DB24650
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Feb 2020 10:44:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E3EEB24650
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Feb 2020 11:10:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aRc83ncf";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com header.i=@baylibre-com.20150623.gappssmtp.com header.b="oztzjCZy"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D52DB24650
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YIK4Q9w6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E3EEB24650
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 14F1516AE;
-	Fri, 21 Feb 2020 11:43:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 14F1516AE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2916F16B4;
+	Fri, 21 Feb 2020 12:09:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2916F16B4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582281867;
-	bh=bqNpkSuq7JiXiMDn+FbRhEuFOT7pU91FnOe1u9ja4gA=;
-	h=References:From:To:Subject:In-reply-to:Date:Cc:List-Id:
+	s=default; t=1582283445;
+	bh=6vuQ0kYppmxKkNdThDeXKzsQJd/6umjovXDPzW71Wu8=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=aRc83ncfRBHxf5YYSk7vHp2WTjgdAEbkYPYnNo8Vu21CmpLZ95Tbk7+qQWmv6Weuu
-	 hx9j3JoQyDb5/Gz5xHQBooIIst7L7x5xRDPPEgCbNLSIp0fMkIbogJdo+fd7aIG0q7
-	 /FWpsrFxZLKRREwi6W7EzFT4q86OjdzKOEvUv47Q=
+	b=YIK4Q9w6uHJt8QTY+sZ6WacvpUwtjEZ2F5om5oDn9CssFGBUJ/FkBuahY5Tq0hj7S
+	 p0ggsDViq9/tOI5wtzKWVxfKwioray47p2gb6deOT+N5TmlWWX+yj13WgI8mdd/KQu
+	 9Yp22uJaxawncegTW6neA2IjmIuP3cxvAY7qfwl4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 93724F8025F;
-	Fri, 21 Feb 2020 11:43:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 97906F80240;
+	Fri, 21 Feb 2020 12:09:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 56BE9F80273; Fri, 21 Feb 2020 11:43:35 +0100 (CET)
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com
- [IPv6:2a00:1450:4864:20::441])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 1620CF8025F; Fri, 21 Feb 2020 12:09:54 +0100 (CET)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0C55FF80240
- for <alsa-devel@alsa-project.org>; Fri, 21 Feb 2020 11:43:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C55FF80240
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com
- header.i=@baylibre-com.20150623.gappssmtp.com header.b="oztzjCZy"
-Received: by mail-wr1-x441.google.com with SMTP id u6so1475202wrt.0
- for <alsa-devel@alsa-project.org>; Fri, 21 Feb 2020 02:43:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=baylibre-com.20150623.gappssmtp.com; s=20150623;
- h=references:user-agent:from:to:cc:subject:in-reply-to:date
- :message-id:mime-version;
- bh=y17j3JfMjOhBp3bg0o/t76XeKtZ2b+e9QhazcUZ/DV0=;
- b=oztzjCZyuKPCwe5jorKjqpGVUCsUh45QaV8hnlC1/6Ol0GqAWOEkRXfELn2BdK0wG3
- qgXRuaXEt6mFUfdXJtCiTsSSpE619tWAHLuApmFtmpBhmjuJrnyz/gGZj1ZOEmv6CGPe
- xFo/kVwsxny1VsK32QrRl+22bNULIFDEKfOYo5p4ksYHHIbAJFNDhgzb7Qz1GNzXTvQx
- gQdbh9tr7v+Xskj2ffaldUHzSpqW7HsJWb6Id/rvlmrYiWjSSX70gijwaG0xMLRmlBCn
- roLxbhhURKF6XR4OYdfLf2WxIDb9HshFovZCkB0Fh8uPwYUeccqsfX5SkZA+KdP+E05U
- D8Ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:references:user-agent:from:to:cc:subject
- :in-reply-to:date:message-id:mime-version;
- bh=y17j3JfMjOhBp3bg0o/t76XeKtZ2b+e9QhazcUZ/DV0=;
- b=k2/c/DmbMaZoUVMw/p4Yt2paNiN2QLYWyuK24UOYb0+DvkpuK0lFd/+rQ3y4dRTKL3
- c7ExaWwlpyFIHn7ufaDZjDYPhfL2/q/LgwGJq2h28URNhOG7GhQrO5tWWjV/Z5s1YiUh
- QdMo0E+RIxF6m5Tw1aPyfEjFp4+OuCQ+dt1jy7OWw//NAdZusNjt591sPSzbBX3eA0ik
- TlNTGN2as9uTmEqH9Fh+IbaVM9GPx1IpWnwM+FFoO6rcAhuILtS8sCbYApFlYt9suLga
- LXOqsM+dPuAsBUZ+s3FmzeunGPa0u5gb1JilrZi4L4UCLnaJar3oBIA5L0/2z5L2a+I3
- CBfg==
-X-Gm-Message-State: APjAAAUYhAgNTeVyJN+xzMlZAdfROcxYRMWdDImTZAs43OQ5gPCxUu4P
- yftoRdSnoEe7mlA9/APTF18ZEw==
-X-Google-Smtp-Source: APXvYqwQ6mtepZYIPlcj/NAAw+eWDJa/MMOiK0l4maoi5chkWidP9g3E3ZCQ0dYFbQuvk4hE+DhiSw==
-X-Received: by 2002:adf:dc8d:: with SMTP id r13mr49810404wrj.357.1582281811037; 
- Fri, 21 Feb 2020 02:43:31 -0800 (PST)
-Received: from localhost (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr.
- [90.63.244.31])
- by smtp.gmail.com with ESMTPSA id c15sm3403521wrt.1.2020.02.21.02.43.30
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 21 Feb 2020 02:43:30 -0800 (PST)
-References: <20200220205711.77953-1-martin.blumenstingl@googlemail.com>
- <20200220205711.77953-4-martin.blumenstingl@googlemail.com>
-User-agent: mu4e 1.3.3; emacs 26.3
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
- broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com,
- alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- linux-amlogic@lists.infradead.org
-Subject: Re: [PATCH 3/3] ASoC: meson: aiu: add support for the Meson8 and
- Meson8b SoC families
-In-reply-to: <20200220205711.77953-4-martin.blumenstingl@googlemail.com>
-Date: Fri, 21 Feb 2020 11:43:29 +0100
-Message-ID: <1jr1yo2pbi.fsf@starbuckisacylon.baylibre.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id DAA91F8011D
+ for <alsa-devel@alsa-project.org>; Fri, 21 Feb 2020 12:09:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DAA91F8011D
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 21 Feb 2020 03:09:47 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,468,1574150400"; d="scan'208";a="316026195"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+ by orsmga001.jf.intel.com with ESMTP; 21 Feb 2020 03:09:45 -0800
+Date: Fri, 21 Feb 2020 13:09:44 +0200 (EET)
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@eliteleevi.tm.intel.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] ASoC: soc-pcm: Revert "call snd_soc_component_open/close()
+ once"
+In-Reply-To: <87mu9cspyf.wl-kuninori.morimoto.gx@renesas.com>
+Message-ID: <alpine.DEB.2.21.2002211251280.2957@eliteleevi.tm.intel.com>
+References: <20200219182650.1416-1-kai.vehmanen@linux.intel.com>
+ <87blput7hh.wl-kuninori.morimoto.gx@renesas.com>
+ <alpine.DEB.2.21.2002201103060.2957@eliteleevi.tm.intel.com>
+ <87mu9cspyf.wl-kuninori.morimoto.gx@renesas.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com,
- linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ ranjani.sridharan@linux.intel.com, pierre-louis.bossart@linux.intel.com,
+ broonie@kernel.org, digetx@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -116,216 +87,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hello Morimoto-san,
 
-On Thu 20 Feb 2020 at 21:57, Martin Blumenstingl <martin.blumenstingl@googlemail.com> wrote:
+On Fri, 21 Feb 2020, Kuninori Morimoto wrote:
 
-> The AIU audio controller on the Meson8 and Meson8b SoC families is
-> compatible with the one found in the later GXBB family. Add compatible
-> strings for these two older SoC families so the driver can be loaded for
-> them.
->
-> Instead of using the I2S divider from the AIU_CLK_CTRL_MORE register we
-> need to use the I2S divider from the AIU_CLK_CTRL register. This older
-> register is less flexible because it only supports four divider settings
-> (1, 2, 4, 8) compared to the AIU_CLK_CTRL_MORE register (which supports
-> dividers in the range 0..64).
->
-> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> Kai Vehmanen wrote:
+> > So if the primary problem is the messy rollback in case one open fails, 
+> > what if we do the rollback directly in soc_pcm_components_open() and do
+> > not add any additional tracking..?
+> > 
+> > Let me send a proposal patch for that.
+> It seems the patch was not so good cleanup...
+> 
+> Thank you for your proposal patch. I checked it.
+> But, if it rollback when error with *last,
+> my opinion is original code
+> (= soc_pcm_components_close() needs *last parameter)
+> (= same as just revert the patch) is better.
 
-Reviewed-by: Jerome Brunet <jbrunet@baylibre.com>
+well, I do think the original code could still need a cleanup, so the 
+effort is very much welcome. Having to pass the "last" parameter to 
+components_open() just so that we can clean up if errors happen, seems
+a bit out of place.
 
-> ---
->  sound/soc/meson/Kconfig           |  2 +-
->  sound/soc/meson/aiu-encoder-i2s.c | 92 +++++++++++++++++++++++--------
->  sound/soc/meson/aiu.c             |  9 +++
->  sound/soc/meson/aiu.h             |  1 +
->  4 files changed, 81 insertions(+), 23 deletions(-)
->
-> diff --git a/sound/soc/meson/Kconfig b/sound/soc/meson/Kconfig
-> index 897a706dcda0..d27e9180b453 100644
-> --- a/sound/soc/meson/Kconfig
-> +++ b/sound/soc/meson/Kconfig
-> @@ -10,7 +10,7 @@ config SND_MESON_AIU
->  	imply SND_SOC_HDMI_CODEC if DRM_MESON_DW_HDMI
->  	help
->  	  Select Y or M to add support for the Audio output subsystem found
-> -	  in the Amlogic GX SoC family
-> +	  in the Amlogic Meson8, Meson8b and GX SoC families
->  
->  config SND_MESON_AXG_FIFO
->  	tristate
-> diff --git a/sound/soc/meson/aiu-encoder-i2s.c b/sound/soc/meson/aiu-encoder-i2s.c
-> index 4900e38e7e49..cc73b5d5c2b7 100644
-> --- a/sound/soc/meson/aiu-encoder-i2s.c
-> +++ b/sound/soc/meson/aiu-encoder-i2s.c
-> @@ -111,34 +111,40 @@ static int aiu_encoder_i2s_setup_desc(struct snd_soc_component *component,
->  	return 0;
->  }
->  
-> -static int aiu_encoder_i2s_set_clocks(struct snd_soc_component *component,
-> -				      struct snd_pcm_hw_params *params)
-> +static int aiu_encoder_i2s_set_legacy_div(struct snd_soc_component *component,
-> +					  struct snd_pcm_hw_params *params,
-> +					  unsigned int bs)
->  {
-> -	struct aiu *aiu = snd_soc_component_get_drvdata(component);
-> -	unsigned int srate = params_rate(params);
-> -	unsigned int fs, bs;
-> -
-> -	/* Get the oversampling factor */
-> -	fs = DIV_ROUND_CLOSEST(clk_get_rate(aiu->i2s.clks[MCLK].clk), srate);
-> +	switch (bs) {
-> +	case 1:
-> +	case 2:
-> +	case 4:
-> +	case 8:
-> +		/* These are the only valid legacy dividers */
-> +		break;
+But yeah, easier said than done. We have now three alternatives to solve 
+this:
 
-I wonder how it will work with the 8ch mode and 16bits but we can deal
-with this later on.
+1. do the cleanup locally in soc_pcm_components_open()
+	[PATCH] ASoC: soc-pcm: fix state tracking error in snd_soc_component_open/close()
 
->  
-> -	if (fs % 64)
-> +	default:
-> +		dev_err(component->dev, "Unsupported i2s divider: %u\n", bs);
->  		return -EINVAL;
-> +	};
->  
-> -	/* Send data MSB first */
-> -	snd_soc_component_update_bits(component, AIU_I2S_DAC_CFG,
-> -				      AIU_I2S_DAC_CFG_MSB_FIRST,
-> -				      AIU_I2S_DAC_CFG_MSB_FIRST);
-> +	snd_soc_component_update_bits(component, AIU_CLK_CTRL,
-> +				      AIU_CLK_CTRL_I2S_DIV,
-> +				      FIELD_PREP(AIU_CLK_CTRL_I2S_DIV,
-> +						 __ffs(bs)));
->  
-> -	/* Set bclk to lrlck ratio */
-> -	snd_soc_component_update_bits(component, AIU_CODEC_DAC_LRCLK_CTRL,
-> -				      AIU_CODEC_DAC_LRCLK_CTRL_DIV,
-> -				      FIELD_PREP(AIU_CODEC_DAC_LRCLK_CTRL_DIV,
-> -						 64 - 1));
-> +	snd_soc_component_update_bits(component, AIU_CLK_CTRL_MORE,
-> +				      AIU_CLK_CTRL_MORE_I2S_DIV,
-> +				      FIELD_PREP(AIU_CLK_CTRL_MORE_I2S_DIV,
-> +						 0));
->  
-> -	/* Use CLK_MORE for mclk to bclk divider */
-> -	snd_soc_component_update_bits(component, AIU_CLK_CTRL,
-> -				      AIU_CLK_CTRL_I2S_DIV, 0);
-> +	return 0;
-> +}
->  
-> +static int aiu_encoder_i2s_set_more_div(struct snd_soc_component *component,
-> +					struct snd_pcm_hw_params *params,
-> +					unsigned int bs)
-> +{
->  	/*
->  	 * NOTE: this HW is odd.
->  	 * In most configuration, the i2s divider is 'mclk / blck'.
-> @@ -146,7 +152,6 @@ static int aiu_encoder_i2s_set_clocks(struct snd_soc_component *component,
->  	 * increased by 50% to get the correct output rate.
->  	 * No idea why !
->  	 */
-> -	bs = fs / 64;
->  	if (params_width(params) == 16 && params_channels(params) == 8) {
->  		if (bs % 2) {
->  			dev_err(component->dev,
-> @@ -156,11 +161,54 @@ static int aiu_encoder_i2s_set_clocks(struct snd_soc_component *component,
->  		bs += bs / 2;
->  	}
->  
-> +	/* Use CLK_MORE for mclk to bclk divider */
-> +	snd_soc_component_update_bits(component, AIU_CLK_CTRL,
-> +				      AIU_CLK_CTRL_I2S_DIV,
-> +				      FIELD_PREP(AIU_CLK_CTRL_I2S_DIV, 0));
-> +
->  	snd_soc_component_update_bits(component, AIU_CLK_CTRL_MORE,
->  				      AIU_CLK_CTRL_MORE_I2S_DIV,
->  				      FIELD_PREP(AIU_CLK_CTRL_MORE_I2S_DIV,
->  						 bs - 1));
->  
-> +	return 0;
-> +}
-> +
-> +static int aiu_encoder_i2s_set_clocks(struct snd_soc_component *component,
-> +				      struct snd_pcm_hw_params *params)
-> +{
-> +	struct aiu *aiu = snd_soc_component_get_drvdata(component);
-> +	unsigned int srate = params_rate(params);
-> +	unsigned int fs, bs;
-> +	int ret;
-> +
-> +	/* Get the oversampling factor */
-> +	fs = DIV_ROUND_CLOSEST(clk_get_rate(aiu->i2s.clks[MCLK].clk), srate);
-> +
-> +	if (fs % 64)
-> +		return -EINVAL;
-> +
-> +	/* Send data MSB first */
-> +	snd_soc_component_update_bits(component, AIU_I2S_DAC_CFG,
-> +				      AIU_I2S_DAC_CFG_MSB_FIRST,
-> +				      AIU_I2S_DAC_CFG_MSB_FIRST);
-> +
-> +	/* Set bclk to lrlck ratio */
-> +	snd_soc_component_update_bits(component, AIU_CODEC_DAC_LRCLK_CTRL,
-> +				      AIU_CODEC_DAC_LRCLK_CTRL_DIV,
-> +				      FIELD_PREP(AIU_CODEC_DAC_LRCLK_CTRL_DIV,
-> +						 64 - 1));
-> +
-> +	bs = fs / 64;
-> +
-> +	if (aiu->platform->has_clk_ctrl_more_i2s_div)
-> +		ret = aiu_encoder_i2s_set_more_div(component, params, bs);
-> +	else
-> +		ret = aiu_encoder_i2s_set_legacy_div(component, params, bs);
-> +
-> +	if (ret)
-> +		return ret;
-> +
->  	/* Make sure amclk is used for HDMI i2s as well */
->  	snd_soc_component_update_bits(component, AIU_CLK_CTRL_MORE,
->  				      AIU_CLK_CTRL_MORE_HDMI_AMCLK,
-> diff --git a/sound/soc/meson/aiu.c b/sound/soc/meson/aiu.c
-> index 38209312a8c3..dc35ca79021c 100644
-> --- a/sound/soc/meson/aiu.c
-> +++ b/sound/soc/meson/aiu.c
-> @@ -351,15 +351,24 @@ static int aiu_remove(struct platform_device *pdev)
->  
->  static const struct aiu_platform_data aiu_gxbb_pdata = {
->  	.has_acodec = false,
-> +	.has_clk_ctrl_more_i2s_div = true,
->  };
->  
->  static const struct aiu_platform_data aiu_gxl_pdata = {
->  	.has_acodec = true,
-> +	.has_clk_ctrl_more_i2s_div = true,
-> +};
-> +
-> +static const struct aiu_platform_data aiu_meson8_pdata = {
-> +	.has_acodec = false,
-> +	.has_clk_ctrl_more_i2s_div = false,
->  };
->  
->  static const struct of_device_id aiu_of_match[] = {
->  	{ .compatible = "amlogic,aiu-gxbb", .data = &aiu_gxbb_pdata },
->  	{ .compatible = "amlogic,aiu-gxl", .data = &aiu_gxl_pdata },
-> +	{ .compatible = "amlogic,aiu-meson8", .data = &aiu_meson8_pdata },
-> +	{ .compatible = "amlogic,aiu-meson8b", .data = &aiu_meson8_pdata },
->  	{}
->  };
->  MODULE_DEVICE_TABLE(of, aiu_of_match);
-> diff --git a/sound/soc/meson/aiu.h b/sound/soc/meson/aiu.h
-> index ab003638d5e5..87aa19ac4af3 100644
-> --- a/sound/soc/meson/aiu.h
-> +++ b/sound/soc/meson/aiu.h
-> @@ -29,6 +29,7 @@ struct aiu_interface {
->  
->  struct aiu_platform_data {
->  	bool has_acodec;
-> +	bool has_clk_ctrl_more_i2s_div;
->  };
->  
->  struct aiu {
+2. revert to original implementation with "last" passed to components_open()
+	[PATCH] ASoC: soc-pcm: Revert "call snd_soc_component_open/close() once"
 
+3. implement opened/module counters
+	[PATCH][RFC] ASoC: soc-component: count snd_soc_component_open/close()
+
+... I have tested all three and they seem to work.
+
+I still don't really like (1), but I agree (2) adds more code in total.
+I worry (3) might backfire with some component-substream combinations.
+
+So maybe we'll go with (1)? We do need to merge one of them, because 
+current merged code is broken on many platforms.
+
+Br, Kai
