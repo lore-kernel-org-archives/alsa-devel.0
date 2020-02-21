@@ -6,60 +6,60 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C2C3C11D00
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Feb 2020 00:31:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B303C11D00
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Feb 2020 00:35:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8AF63206EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Feb 2020 00:31:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B1B2920659
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Feb 2020 00:35:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ICOlw8tr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8AF63206EF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FkeOPFai"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B1B2920659
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B09DE16B0;
-	Fri, 21 Feb 2020 01:30:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B09DE16B0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1525F16B2;
+	Fri, 21 Feb 2020 01:34:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1525F16B2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582245067;
-	bh=SNK/+Jp3H4FzP0u4Ic4C510GVDV+IJ3WPKwKlZ4W/sI=;
+	s=default; t=1582245333;
+	bh=nSgBwdNzqc/9bWYBmGw08tdpygsVIJG+khbTxLOVHBk=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ICOlw8trGAlRk7JbYK1A2RLjpkmmDQJYAVRwZxRIAcW3X5IaCk9KmL73wSnE3RdKQ
-	 CflQUf+CaSmVCmfNw3n00Frstqgt1eaLE9FqvWOWGxCEvIvsQg9hfxHjNrinmSMipu
-	 +TRTXWt7Ky3y0irIfup29JNIiD0k7X4/M+q2tV1Q=
+	b=FkeOPFaiFOwTaJ21QlYo316RORSLj2QzWiIfnHhPqfLrFvffNTp+bReD5jMfHKV17
+	 7VJ2l+s3jxLlVKClqY/+Fb85rmLhMhMg5bhALlTuyRyquGcUxIry0u7Od4148JXL1P
+	 jT/F80lCFbEbB2Qzehjd73ys8UqU4UxBGVnBpJPs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3A23CF80145;
-	Fri, 21 Feb 2020 01:30:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 98AE0F80145;
+	Fri, 21 Feb 2020 01:34:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6FCFCF80148; Fri, 21 Feb 2020 01:30:15 +0100 (CET)
+ id 9E440F80148; Fri, 21 Feb 2020 01:34:40 +0100 (CET)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 90E3DF80101
- for <alsa-devel@alsa-project.org>; Fri, 21 Feb 2020 01:30:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90E3DF80101
-Date: 21 Feb 2020 09:30:04 +0900
-X-IronPort-AV: E=Sophos;i="5.70,466,1574089200"; d="scan'208";a="39642237"
+ by alsa1.perex.cz (Postfix) with ESMTP id 29FD8F80101
+ for <alsa-devel@alsa-project.org>; Fri, 21 Feb 2020 01:34:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 29FD8F80101
+Date: 21 Feb 2020 09:34:33 +0900
+X-IronPort-AV: E=Sophos;i="5.70,466,1574089200"; d="scan'208";a="39642706"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 21 Feb 2020 09:30:04 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 21 Feb 2020 09:34:33 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 3F324400C0A8;
- Fri, 21 Feb 2020 09:30:04 +0900 (JST)
-Message-ID: <87tv3ksryd.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 7F0664009F87;
+ Fri, 21 Feb 2020 09:34:33 +0900 (JST)
+Message-ID: <87sgj4srqw.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v2] ASoC: dt-bindings: renesas,
- rsnd: switch to yaml base Documentation
-In-Reply-To: <CAL_Jsq+VEQj9Nkyo_85RM3Ku1-D73_ot5BTAjidnJzJv7r1_Sw@mail.gmail.com>
-References: <87d0ahzr9d.wl-kuninori.morimoto.gx@renesas.com>
- <20200219161732.GB25095@bogus>
- <874kvmt355.wl-kuninori.morimoto.gx@renesas.com>
- <CAL_Jsq+VEQj9Nkyo_85RM3Ku1-D73_ot5BTAjidnJzJv7r1_Sw@mail.gmail.com>
+Subject: Re: [PATCH v2] ASoC: dt-bindings: simple-card: switch to yaml base
+ Documentation
+In-Reply-To: <CAL_JsqJJMNr6BWiw=Sv-nN8zQ=C+TrwFua0zWrMYJdxoNoZ09Q@mail.gmail.com>
+References: <87blq1zr8n.wl-kuninori.morimoto.gx@renesas.com>
+ <20200219155808.GA25095@bogus>
+ <871rqqt0nj.wl-kuninori.morimoto.gx@renesas.com>
+ <CAL_JsqJJMNr6BWiw=Sv-nN8zQ=C+TrwFua0zWrMYJdxoNoZ09Q@mail.gmail.com>
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -85,68 +85,26 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Hi Rob
 
-Thank you for your feedback
-
-> > This needs clock array. Like this
-> >
-> >         clock-frequency = <12288000 11289600>;
-> 
-> Sorry, but the type is already defined in the spec. You'll still get
-> warnings from the common schema and you can't override that here.
-> 
-> Not sure what to suggest. Leave it with a fixme or move to
-> assigned-clocks-rates instead?
-
-As you know, I'm not familiar with yaml base Documentation :/
-I want leave it as your fixme if possible.
-
-> > > > +  # For multi OF-graph
-> > > > +  ports:
-> > > > +    description: multi OF-Graph subnode
+> > > > +  dai:
 > > > > +    type: object
-> > > > +    patternProperties:
-> > > > +      "port(@.*)?":
-(snip)
-> > > > +        $ref: "#properties/port"
+> > > > +    properties:
+> > > > +      sound-dai:
+> > > > +        $ref: /schemas/types.yaml#/definitions/phandle-array
 > > >
-> > > Would be more simple to just always have 'ports'.
+> > > This should have a common definition elsewhere which I'd prefer be in
+> > > the dtschema repo. You can just assume there is and do 'maxItems: 1'
+> > > here assuming it's only 1.
 > >
-> > Having "ports" or "port" are case-by-case, not always.
+> > I think dai and/or sound-dai are not common definition.
+> > These are very simple-card specific property.
 > 
-> Why?
-> 
-> This:
-> 
-> port {};
-> 
-> and this:
-> 
-> ports {
->   port {};
-> };
-> 
-> Are treated the same. It's perfectly valid to have 'ports' with a single port.
+> Qcom platforms also use 'sound-dai' and they aren't simple-card.
 
-Yeah, if it needs only 1 port.
-If I'm not misunderstanding, We are using it as
-
-	ports {
-		port@0 {
-			endpoint {}
-		};
-		port@1 {
-			endpoint {}
-		};
-		....
-	};
-
-or simply
-
-	port {
-			endpoint {}
-	};
-
-And here, sometimes, "port" and "endpoint" both need "reg".
+OK, I see.
+But, as you know I'm not 100% understanding about yaml Documentation.
+Can you teach me what is "dtschema repo" ?
+(I guess it means "sound-dai" will be common schema ?)
+What should I do ?
 
 Thank you for your help !!
 Best regards
