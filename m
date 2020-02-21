@@ -2,84 +2,74 @@ Return-Path: <SRS0=sxeJ=4J=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AE7BC35642
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Feb 2020 07:56:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6372CC35640
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Feb 2020 10:08:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2B12C24670
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Feb 2020 07:56:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E224220722
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Feb 2020 10:08:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DNvzJOCT";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Igu85J2Z"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2B12C24670
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KkODfBZX";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="MNIUzmf2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E224220722
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7DF4816A9;
-	Fri, 21 Feb 2020 08:55:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7DF4816A9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3734716AE;
+	Fri, 21 Feb 2020 11:08:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3734716AE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582271793;
-	bh=J12BU6v6skinvk/5A45oPZq3RlG0T1+MQhN1yxEUabk=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=DNvzJOCT1Z4F4OSNpb6UfbOLACIv2JaSuoIoP+0QCPCxXOg7bzyAARusNlQ66btgk
-	 /r4EqQ7/rms2gv2siTOY3+Y7ndGu95ieJ3dd3Chfv0Aql576J3mjPEZLBsOhjR5akz
-	 RtmjtOeuhnYRoTd9iGU4q6bxOEN1nOW+szvQIE2s=
+	s=default; t=1582279730;
+	bh=7iv85r/E6IKQiugwycyCXOqnGFwdFq7etKvQyvCf8NM=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=KkODfBZXKkNfLDVYHJApaIrsDMC21f/P0ADrChAB5KUWYwWGCeM9bkEZaf0kHKOZ1
+	 VW8B5aFjzGvpBFVQ2Kad6Ww9Ptg6q8KzODc9Vn7/yeRvroefJ0XJNeZnGc0erhbZ2b
+	 c8SFFbKu9xJFa1ty18vqq7DaAwRHejcH7kwwwas0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D2697F80240;
-	Fri, 21 Feb 2020 08:55:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9767FF80240;
+	Fri, 21 Feb 2020 11:07:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 27A32F8025F; Fri, 21 Feb 2020 08:55:41 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id E2482F8025F; Fri, 21 Feb 2020 11:07:56 +0100 (CET)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A575CF800C5
- for <alsa-devel@alsa-project.org>; Fri, 21 Feb 2020 08:55:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A575CF800C5
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Igu85J2Z"
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl
- [83.86.89.107])
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6DCA4F800C5
+ for <alsa-devel@alsa-project.org>; Fri, 21 Feb 2020 11:07:53 +0100 (CET)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id A27FDA003F;
+ Fri, 21 Feb 2020 11:07:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz A27FDA003F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1582279672; bh=TH4JGpiyxD0qWDgfr66r7GV7RqB6a7jzO3/wgLcwVfQ=;
+ h=From:To:Cc:Subject:Date:From;
+ b=MNIUzmf2vlKATWsd8rJG/7S2aSFs3OKUau3/KieIL6/kbewV2agJFaLKVsFIRE4IG
+ 7GCZasutYtNYRj77y+l2ovAkI41ZtwPA2S2rhoBPH7m1m2b3pO6Hcc+ZoNddsSwX39
+ Otlx/GvAQHKfaUTVIFaL7TsrsFYqYyvP+shM0JT8=
+Received: from p50.perex-int.cz (unknown [192.168.100.94])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 4852C222C4;
- Fri, 21 Feb 2020 07:55:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1582271734;
- bh=J12BU6v6skinvk/5A45oPZq3RlG0T1+MQhN1yxEUabk=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=Igu85J2ZVC8jQDVOMtvergSNzYcQzhBBHnPAXB4K1eEXxLl5rHFzQvhzhlfUCD/qN
- t1+kVw7qzbh2G0IpVVgFZFKjbl7wbZAvnWpdUULpPtkvYWQSKKvwz32/tBBhJnGOQl
- 1O5o3VmB2MdVt7/st0TBJ7/LgO9r1zTkd06oyfjU=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH 5.5 241/399] ASoC: txx9: Remove unused rtd variable
-Date: Fri, 21 Feb 2020 08:39:26 +0100
-Message-Id: <20200221072425.963014211@linuxfoundation.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200221072402.315346745@linuxfoundation.org>
-References: <20200221072402.315346745@linuxfoundation.org>
-User-Agent: quilt/0.66
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Fri, 21 Feb 2020 11:07:47 +0100 (CET)
+From: Jaroslav Kysela <perex@perex.cz>
+To: ALSA development <alsa-devel@alsa-project.org>
+Subject: [PATCH] ASoC: SOF - topology - do not change the link trigger order
+ for pre-1.4 firmware
+Date: Fri, 21 Feb 2020 11:07:39 +0100
+Message-Id: <20200221100739.3883842-1-perex@perex.cz>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Paul Burton <paulburton@kernel.org>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, stable@vger.kernel.org,
- Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,52 +85,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Paul Burton <paulburton@kernel.org>
+This patch is for SOF v1.3 firmware. The DSP firmware will crash (DSP oops)
+without this patch. The 1.4.1 firmare has this issue fixed.
 
-[ Upstream commit ec0f6a4c4a987aa20b2e77e0db2ae555276e45e6 ]
+The ABI version is used for the comparison, because the firmware version
+for the firmware files before 1.4.2 was not set properly (git hash was
+used).
 
-Commit a857e073ffc6 ("ASoC: txx9: txx9aclc: remove snd_pcm_ops") removed
-the last use of the rtd variable but didn't remove its definition,
-leading to the following warning/error for MIPS rbtx49xx_defconfig
-builds:
-
-sound/soc/txx9/txx9aclc.c: In function 'txx9aclc_pcm_hw_params':
-sound/soc/txx9/txx9aclc.c:54:30: error: unused variable 'rtd'
-    [-Werror=unused-variable]
-  struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
-                              ^~~
-
-Resolve this by removing the unused variable.
-
-Signed-off-by: Paul Burton <paulburton@kernel.org>
-Fixes: a857e073ffc6 ("ASoC: txx9: txx9aclc: remove snd_pcm_ops")
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+BugLink: https://github.com/thesofproject/sof/issues/2102
+Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Cc: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org
-Link: https://lore.kernel.org/r/20200109191422.334516-1-paulburton@kernel.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/txx9/txx9aclc.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/sof/topology.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/txx9/txx9aclc.c b/sound/soc/txx9/txx9aclc.c
-index 33c78d33e5a1d..9a55926ebf07b 100644
---- a/sound/soc/txx9/txx9aclc.c
-+++ b/sound/soc/txx9/txx9aclc.c
-@@ -51,7 +51,6 @@ static int txx9aclc_pcm_hw_params(struct snd_soc_component *component,
- 				  struct snd_pcm_substream *substream,
- 				  struct snd_pcm_hw_params *params)
- {
--	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct txx9aclc_dmadata *dmadata = runtime->private_data;
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index 9f4f8868b386..58ff4766b47b 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -3111,6 +3111,7 @@ static int sof_link_load(struct snd_soc_component *scomp, int index,
+ 	struct snd_soc_tplg_private *private = &cfg->priv;
+ 	struct sof_ipc_dai_config config;
+ 	struct snd_soc_tplg_hw_config *hw_config;
++	struct sof_ipc_fw_version *v = &sdev->fw_ready.version;
+ 	int num_hw_configs;
  	int ret;
+ 	int i = 0;
+@@ -3128,9 +3129,12 @@ static int sof_link_load(struct snd_soc_component *scomp, int index,
+ 	if (!link->no_pcm) {
+ 		link->nonatomic = true;
+ 
+-		/* set trigger order */
+-		link->trigger[0] = SND_SOC_DPCM_TRIGGER_POST;
+-		link->trigger[1] = SND_SOC_DPCM_TRIGGER_POST;
++		/* this causes DSP panic on firmware v1.3 */
++		if (v->abi_version > SOF_ABI_VER(3, 7, 0)) {
++			/* set trigger order */
++			link->trigger[0] = SND_SOC_DPCM_TRIGGER_POST;
++			link->trigger[1] = SND_SOC_DPCM_TRIGGER_POST;
++		}
+ 
+ 		/* nothing more to do for FE dai links */
+ 		return 0;
 -- 
-2.20.1
-
-
-
+2.24.1
