@@ -7,52 +7,52 @@ X-Spam-Status: No, score=-5.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67E42C35671
-	for <alsa-devel@archiver.kernel.org>; Sat, 22 Feb 2020 19:29:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CC51C35671
+	for <alsa-devel@archiver.kernel.org>; Sat, 22 Feb 2020 20:35:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1796C206ED
-	for <alsa-devel@archiver.kernel.org>; Sat, 22 Feb 2020 19:29:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 08B3220659
+	for <alsa-devel@archiver.kernel.org>; Sat, 22 Feb 2020 20:35:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BGEyjXpk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1796C206ED
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pq+7RJUH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 08B3220659
 Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6F61816B8;
-	Sat, 22 Feb 2020 20:29:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F61816B8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5EA8016BA;
+	Sat, 22 Feb 2020 21:35:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5EA8016BA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582399796;
-	bh=MJS5P/hGKVI6eQ6a9/M8dVxRVtckvw4it5dbYh14/Ho=;
+	s=default; t=1582403757;
+	bh=AXwqS6ygE7Ec8NxGBThEH4Tf3GvaArH1zlrySrl0VvU=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BGEyjXpk/dCuCxF1CsoHcwynFHlg8c4bpnnxbNPvcK2VyR/lKS7tlgfDTyFyz2E7q
-	 U5ZNuF37Ox205+73tEJN4STwvsFNKMxQncb60SoC1T4sCzy7BMLr6usam0NRzpHZ7c
-	 BLPKoLfkD3McR7qRDahY+iC6BtbaxxBJZ38rG3I4=
+	b=pq+7RJUHQgiWhNjCdu0pqpU5QcTY/eSA7jqQa8QPKU0BaGl0KphQZ/7bCwQGNb9pQ
+	 XD45wGAIyIHURseSoVJLQiKk31mpn0riK/jSG6Kpn0tFUVpmKAxoZusDENem/1KC0U
+	 +FkiWKK12Zcg9BcEubcLYfW+5sxqJe+yrzc/DPdQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8B258F80145;
-	Sat, 22 Feb 2020 20:29:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C4F85F80145;
+	Sat, 22 Feb 2020 21:35:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7AC1EF80148; Sat, 22 Feb 2020 20:28:58 +0100 (CET)
+ id 0F215F80148; Sat, 22 Feb 2020 21:35:04 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 2D566F8011D
- for <alsa-devel@alsa-project.org>; Sat, 22 Feb 2020 20:28:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D566F8011D
+ by alsa1.perex.cz (Postfix) with ESMTP id F3E7EF80143
+ for <alsa-devel@alsa-project.org>; Sat, 22 Feb 2020 21:35:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3E7EF80143
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1582399732574770927-webhooks-bot@alsa-project.org>
-References: <1582399732574770927-webhooks-bot@alsa-project.org>
+In-Reply-To: <1582403699991316080-webhooks-bot@alsa-project.org>
+References: <1582403699991316080-webhooks-bot@alsa-project.org>
 Subject: alsa-lib 1.2.2 breaks Shovel Knight, 1.2.1.2 is still working.
-Message-Id: <20200222192858.7AC1EF80148@alsa1.perex.cz>
-Date: Sat, 22 Feb 2020 20:28:58 +0100 (CET)
+Message-Id: <20200222203505.0F215F80148@alsa1.perex.cz>
+Date: Sat, 22 Feb 2020 21:35:04 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,11 +68,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #27 was opened from DarkWav:
+alsa-project/alsa-lib issue #27 was edited from DarkWav:
 
 So, today after upgrading to alsa-lib 1.2.2 I noticed the game "Shovel Knight" does no longer launch.
 Any Ideas why this could be happening?
-Sadly steam or the game executable won't provide any usable debug info :( .
+Sadly steam or the game executable won't provide any usable debug info when looking at terminal output :( .
+Can I maybe use GDB to gather more info or is that useless in this case?
 
 Issue URL     : https://github.com/alsa-project/alsa-lib/issues/27
 Repository URL: https://github.com/alsa-project/alsa-lib
