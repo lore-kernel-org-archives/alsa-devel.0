@@ -2,108 +2,120 @@ Return-Path: <SRS0=EG3k=4L=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F573C35671
-	for <alsa-devel@archiver.kernel.org>; Sun, 23 Feb 2020 03:48:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C7242C35670
+	for <alsa-devel@archiver.kernel.org>; Sun, 23 Feb 2020 03:55:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AD12920578
-	for <alsa-devel@archiver.kernel.org>; Sun, 23 Feb 2020 03:48:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 52B312067D
+	for <alsa-devel@archiver.kernel.org>; Sun, 23 Feb 2020 03:55:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NbgE1grd";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sholland.org header.i=@sholland.org header.b="N15Z7jSU";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ViTn650G"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AD12920578
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="psbscaMa";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sholland.org header.i=@sholland.org header.b="eH3O+Uht";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="GyuP/YCv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 52B312067D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sholland.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 12A8816E2;
-	Sun, 23 Feb 2020 04:48:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 12A8816E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id B12EC16C7;
+	Sun, 23 Feb 2020 04:54:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B12EC16C7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582429731;
-	bh=rPRENAgmewQpiluPMSoLRxjgoZsIpmkbTyxOmd7YgZY=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=NbgE1grdubzt7vY5mdadWD9FBfmQGhBwEItyNP4HD+vaha/F7lX+k78sRtt5MlfxP
-	 g+/Vlvo/TasXpLcrQRmPjzeCXxkxrZPIgANHcFyjnBBPAU4QdBVnUmU1P9Yz+/Gsl6
-	 27LHYJM4eZ04di8+Avo/oQXtClGp1Y8KYLx8rtT0=
+	s=default; t=1582430122;
+	bh=5UnVOm0UiGrg0JYbTKbiVlnyXkcUBx/HK2mfaYgVbi0=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=psbscaMa+EkW5XWwTUlV2r4LrJUGcIszupuJJ5nBBwsQzgUlOlfCwg4lbZn4DAW3d
+	 aILxx31ZLU5ciYxu+IAeojDAREkqya75Uk1TDK+81HOmjlC/SJ4cC2K+9A/6TXOX5g
+	 x4Ofe87xrbI5pN/vlh7CgsHbZiT6Lp6z13xG/5Cg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A7418F8028C;
-	Sun, 23 Feb 2020 04:45:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2E0A4F8013E;
+	Sun, 23 Feb 2020 04:54:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1267DF8027D; Sun, 23 Feb 2020 04:45:48 +0100 (CET)
+ id 03496F80142; Sun, 23 Feb 2020 04:54:29 +0100 (CET)
 Received: from new4-smtp.messagingengine.com (new4-smtp.messagingengine.com
  [66.111.4.230])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 78C6AF80143
- for <alsa-devel@alsa-project.org>; Sun, 23 Feb 2020 04:45:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78C6AF80143
+ by alsa1.perex.cz (Postfix) with ESMTPS id 04D25F800C6
+ for <alsa-devel@alsa-project.org>; Sun, 23 Feb 2020 04:54:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04D25F800C6
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sholland.org header.i=@sholland.org
- header.b="N15Z7jSU"; 
+ header.b="eH3O+Uht"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="ViTn650G"
+ header.i=@messagingengine.com header.b="GyuP/YCv"
 Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
- by mailnew.nyi.internal (Postfix) with ESMTP id C7E016A20;
- Sat, 22 Feb 2020 22:45:35 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
- by compute5.internal (MEProxy); Sat, 22 Feb 2020 22:45:35 -0500
+ by mailnew.nyi.internal (Postfix) with ESMTP id D30BD141E;
+ Sat, 22 Feb 2020 22:54:23 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute5.internal (MEProxy); Sat, 22 Feb 2020 22:54:23 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
- from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding; s=fm2; bh=JMfR+VrrDoBk0uiOZlbWJKwHPD
- wLyBQJby+91WZGxwo=; b=N15Z7jSUHNbz+mOHEHh9vOf++wuuoKnB3PsgyLkvBC
- Jgd/3kRocYSbOQo6xAfqnqIV6K+B6EFoN4p95GFDrHgwTkCRVxQbYrB1p/xKhAuP
- A2jZDHH3jNATzObmEqMAPXVIf9OptXQM2P3xIBPsnEclURSOD9cR0XezUlYxOMpb
- AWQJJsa+dTYzLFD2tMybJg7yuHssBeM7mEKDUJSLZCT4v/+bH2px4G8sWQqppksS
- QRfZ06pCUHh1lUrfEr4fsYjTWCALrwWNP167atO547OnzalTGBEFoE62g2LMfDfs
- ZfJcrkxRX6Hu0RQjCIsfxnBv8tBJaKw/AzC0G2pCyc4A==
+ subject:to:cc:references:from:message-id:date:mime-version
+ :in-reply-to:content-type:content-transfer-encoding; s=fm2; bh=U
+ tQ4ZCxViuOYrkl32VfE2T3Vc4NBhu7cH68gein0hZ8=; b=eH3O+UhtcNk39WqG7
+ 7++FXGFTX+4Z2PcXe3xjcwJsOODd4hxFQavwi0/mUwTIoxG9JBuAOmvs5HQJt990
+ QIgs1pI/FaTRd3ev0T4IL+aTvVevCQh7OFSFWKaP/KY94r+EE9D8RHkP90X8PxFC
+ oBLmR6XHSy54HBa/H14DQ7lYQ0J/Ydfp27ocjSVODTDsMZjhEZb10ccofds6YtNi
+ oaCndzsfnBoKSmoY5aRfQXCd4KQVTdffKFdF/fHmCrQVYwGy8OLV2MowadGuAqHn
+ YIqEA+IgJP8fQu88VichUhpYSu9m/bVcLBBWNImzHZQ0a/ObPiE6NmPeg6oxGd8W
+ K6ySQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-transfer-encoding:date:from
- :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
- :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=JMfR+VrrDoBk0uiOZ
- lbWJKwHPDwLyBQJby+91WZGxwo=; b=ViTn650G/ITqnEZaxdRRq1Px708Tpx7IL
- 6rIFKsUtxC/91d7eYk8XJyJ7h3oYHtnwQcM6QqbA18vNEC8Or1Pcdzja1MWoEjpZ
- 0eV7iTjE4nNc4Iocb+nA7nb2AHc/xOcIDv050uf0kNCg4183CQzlreRCGmh2GAqW
- vFViFctcOAzgtJ+O32qHcikV56OMKCYXcTOvZ8DSKtFCXWx+hdx29PQk6b0FfV9N
- 4LeUWQt4wagG1FVMh2PkDiRwaSMIg/GAp+BIJC3D/qIsIHw4GXQSEBVi6Z3b8lsl
- 5WySNwkpwWoKvf9fMBL0M4uSWguBeXDdq7dp/db3SdANrCmnKOGBw==
-X-ME-Sender: <xms:XvVRXsEGLApsGVhP9X0Uvwv0ihw2IEdDB3YOYxcXos1Vx-8BIZZR5w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedrkeejgdeitdcutefuodetggdotefrodftvf
+ messagingengine.com; h=cc:content-transfer-encoding:content-type
+ :date:from:in-reply-to:message-id:mime-version:references
+ :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+ :x-sasl-enc; s=fm2; bh=UtQ4ZCxViuOYrkl32VfE2T3Vc4NBhu7cH68gein0h
+ Z8=; b=GyuP/YCv6RLhHx+tybgAMZbAWarsj8Ii4R+BOab0Cw4iOfoJaifZtVc/6
+ 5Fd1ZIpBORlLHlM5LdItWCbg4TqjJbGHEkASpjlrm+3gGzqj/BwAaZuqBOH0YZxx
+ XM34+pmlF976U4TwYysQcVWaDYNCrA75o/b6cM0a0sM3lmw8zmvMMPJXYX3Fpv4I
+ yYjTsV717azlzXouTRBaux6jcJMDECw07ZfLymaJ80a20T9FvQsSwAYXw9m6V4Vd
+ pFLgMxSD48vcLM7SooibOaf/fbhrA+Hv9V84TE7nSgj9bXlkh7UwPQfclWjLbRGz
+ K9IGLkbdVO+s8xbaE9j7kamSgE9ZQ==
+X-ME-Sender: <xms:avdRXiuiOsH3o0DSLtQ5DE1m9D-9YuzK8izj4qTuqAIMxZEQ3TuaEQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedrkeejgdeiudcutefuodetggdotefrodftvf
  curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
  uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
- fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghlucfj
- ohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecukfhppeejtd
- drudefhedrudegkedrudehudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhep
- mhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhg
-X-ME-Proxy: <xmx:XvVRXpIaccIq6yUpwks2VERhBIKwEPRyJAzXCLcaWaA9AVUS3CF99g>
- <xmx:XvVRXvPb7NRIuARAiPqP49vSipDB_z-4we1CTrA-MYDdKyXD98o6IQ>
- <xmx:XvVRXhlUVGjXJO3xaPjeBqm07zAIWCt7altd8e8jjp1JYLHbJUTw-w>
- <xmx:X_VRXvD5uUkrC7iwE2GgfU6duBgXHVk6qB_NtBHs1bbcSUKofbkOdQ>
-Received: from titanium.stl.sholland.net
+ fjughrpefuvfhfhffkffgfgggjtgfgsehtjeertddtfeejnecuhfhrohhmpefurghmuhgv
+ lhcujfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucfkph
+ epjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghr
+ rghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghnugdrohhrgh
+X-ME-Proxy: <xmx:avdRXn51utho87JkjiCEVKsYSyaYUpq6F3T40tibOEYao28SHO_3Bw>
+ <xmx:avdRXjN-2TXP4CKuwakTE1BqjwcSJb_74ylsLvfxdtvCfcsv01adtw>
+ <xmx:avdRXrLkOPwWjIuYPLMnhvX-YnhSwzeK0a3As4WIj5J_T5iK2msXFw>
+ <xmx:b_dRXgzcsgknp-tn_3NniTdvYlav4zzWm91Lza6tirW8ghCKDJ3peg>
+Received: from [192.168.50.169]
  (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
- by mail.messagingengine.com (Postfix) with ESMTPA id F27D83060BD1;
- Sat, 22 Feb 2020 22:45:33 -0500 (EST)
+ by mail.messagingengine.com (Postfix) with ESMTPA id 4E23C3280059;
+ Sat, 22 Feb 2020 22:54:18 -0500 (EST)
+Subject: Re: [PATCH 5/8] ASoC: sun50i-codec-analog: Enable DAPM for headphone
+ switch
+To: Chen-Yu Tsai <wens@csie.org>
+References: <20200217021813.53266-1-samuel@sholland.org>
+ <20200217021813.53266-6-samuel@sholland.org>
+ <CAGb2v65v=wPJNxPfOzp2bcevk0qoDiW-+KFBO1MKHz6gE86DPQ@mail.gmail.com>
 From: Samuel Holland <samuel@sholland.org>
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Jonathan Corbet <corbet@lwn.net>, Jerome Brunet <jbrunet@baylibre.com>
-Subject: [PATCH v3 0/3] simple-audio-card codec2codec support
-Date: Sat, 22 Feb 2020 21:45:30 -0600
-Message-Id: <20200223034533.1035-1-samuel@sholland.org>
-X-Mailer: git-send-email 2.24.1
+Message-ID: <f0037c9d-e3b5-3fa9-1f1a-d52d26de3ed7@sholland.org>
+Date: Sat, 22 Feb 2020 21:54:17 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
- Samuel Holland <samuel@sholland.org>, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org
+In-Reply-To: <CAGb2v65v=wPJNxPfOzp2bcevk0qoDiW-+KFBO1MKHz6gE86DPQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: Luca Weiss <luca@z3ntu.xyz>, Linux-ALSA <alsa-devel@alsa-project.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Maxime Ripard <mripard@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Vasily Khoruzhick <anarsoul@gmail.com>, Mark Brown <broonie@kernel.org>,
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -119,44 +131,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We are currently using simple-audio-card on the Allwinner A64 SoC.
-The digital audio codec there (sun8i-codec) has 3 AIFs, one each for the
-CPU, the modem, and Bluetooth. Adding support for the secondary AIFs
-requires adding codec2codec DAI links.
+On 2/17/20 1:17 AM, Chen-Yu Tsai wrote:
+> On Mon, Feb 17, 2020 at 10:18 AM Samuel Holland <samuel@sholland.org> wrote:
+>>
+>> By including the headphone mute switch to the DAPM graph, both the
+>> headphone amplifier and the Mixer/DAC inputs can be powered off when
+>> the headphones are muted.
+>>
+>> The mute switch is between the source selection and the amplifier,
+>> as per the diagram in the SoC manual.
+>>
+>> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> 
+> Reviewed-by: Chen-Yu Tsai <wens@csie.org>
+> 
+> BTW, have you also considered tying in the headphone volume control?
+> It also has a mute setting.
 
-Since the modem and bt-sco codec DAI drivers only have one set of
-possible PCM parameters (namely, 8kHz mono S16LE), there's no real
-need for a machine driver to specify the DAI link configuration. The
-parameters for these "simple" DAI links can be chosen automatically.
+As far as I can tell, setting a volume control to its "mute" level has no effect
+on the DAPM power state. So I didn't add PGA widgets for the volume controls on
+either codec. I can add them if there's some benefit to doing so.
 
-This series adds codec2codec DAI link support to simple-audio-card.
-Codec to codec links are automatically detected when all DAIs in the
-link belong to codec components.
+> ChenYu
+> 
 
-I tried to reuse as much code as possible, so the first two patches
-refactor a couple of helper functions to be more generic.
-
-The last patch adds the new feature and its documentation.
-
-Changes in v3:
-  - Update use of for_each_rtd_components for v5.6
-Changes in v2:
-  - Drop patch 1 as it was merged
-  - Automatically detect codec2codec links instead of using a DT property
-
-Samuel Holland (3):
-  ALSA: pcm: Add a standalone version of snd_pcm_limit_hw_rates
-  ASoC: pcm: Export parameter intersection logic
-  ASoC: simple-card: Add support for codec2codec DAI links
-
- Documentation/sound/soc/codec-to-codec.rst |  9 +++-
- include/sound/pcm.h                        |  9 +++-
- include/sound/soc.h                        |  3 ++
- sound/core/pcm_misc.c                      | 18 +++----
- sound/soc/generic/simple-card-utils.c      | 49 +++++++++++++++++++
- sound/soc/soc-pcm.c                        | 55 +++++++++++++++-------
- 6 files changed, 115 insertions(+), 28 deletions(-)
-
--- 
-2.24.1
-
+Regards,
+Samuel
