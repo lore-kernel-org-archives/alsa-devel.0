@@ -2,78 +2,63 @@ Return-Path: <SRS0=BBoH=4M=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 049ACC11D34
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Feb 2020 13:19:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77153C35671
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Feb 2020 13:43:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 887842192A
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Feb 2020 13:19:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 003A92082F
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Feb 2020 13:43:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JYjCHQue"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 887842192A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HzXe8lGp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 003A92082F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CF0051673;
-	Mon, 24 Feb 2020 14:18:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF0051673
+	by alsa0.perex.cz (Postfix) with ESMTPS id 230C8167C;
+	Mon, 24 Feb 2020 14:42:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 230C8167C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582550380;
-	bh=lv1M7Ii9Kt5bXH1YXOoOMU/lPivMJ76BP24o9zQYoQI=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=JYjCHQuerP8Y9ZdfJvKyd/loHQZS82wi6r2u9tQuKY4M++05TGtISyxEmraiqXQhv
-	 m6nzilyUgVDeV6cFBV6QYb4Ci1tthAPpAhD9WbFtBgL9xwaOOTc/uXrmifG9rheIi5
-	 Ss2y2G2zbg6DxfnlIvc+dTcj7prv/U/JcEidE4lw=
+	s=default; t=1582551818;
+	bh=ZOzVybOYVC4CBHM5d8bpe9dlvbOWYAWyUT4hQNsoR7M=;
+	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=HzXe8lGpzp7PVaUQmubbKsh0PO7IHNIUBRCA+loknNxG2/XNlXyzBocoAncRJO1o9
+	 hH9SDcXiN2OEyOcjPlY1nCzo43QP3xPGYQnnLxHnsa6XJFD9SheeA9AfFeit5nSbah
+	 XU03hCapC4TwTSkwO+sAEzDmUiEy6kZOctdsZbyE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 56247F8014D;
-	Mon, 24 Feb 2020 14:18:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DA35CF801F2;
+	Mon, 24 Feb 2020 14:41:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5A338F8014E; Mon, 24 Feb 2020 14:18:48 +0100 (CET)
+ id 978F3F80213; Mon, 24 Feb 2020 14:41:55 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id C89AEF80137
- for <alsa-devel@alsa-project.org>; Mon, 24 Feb 2020 14:18:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C89AEF80137
+ by alsa1.perex.cz (Postfix) with ESMTP id 5F23EF80137
+ for <alsa-devel@alsa-project.org>; Mon, 24 Feb 2020 14:41:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F23EF80137
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C53E730E;
- Mon, 24 Feb 2020 05:18:28 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E909D30E;
+ Mon, 24 Feb 2020 05:41:50 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 49DE93F534;
- Mon, 24 Feb 2020 05:18:28 -0800 (PST)
-Date: Mon, 24 Feb 2020 13:18:26 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6EC433F534;
+ Mon, 24 Feb 2020 05:41:50 -0800 (PST)
+Date: Mon, 24 Feb 2020 13:41:48 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Sameer Pujar <spujar@nvidia.com>
-Subject: Re: Re: [PATCH v3 03/10] ASoC: tegra: add Tegra210 based DMIC driver
-Message-ID: <20200224131826.GI6215@sirena.org.uk>
-References: <1582180492-25297-1-git-send-email-spujar@nvidia.com>
- <1582180492-25297-4-git-send-email-spujar@nvidia.com>
- <20200221130005.GD5546@sirena.org.uk>
- <316ce0d5-318d-0533-ef06-bd7e8672f893@nvidia.com>
- <20200221165535.GG5546@sirena.org.uk>
- <47f94534-e997-d56c-5793-ae832fb2add4@nvidia.com>
- <20200224114406.GB6215@sirena.org.uk>
- <f70c7c12-dbc0-a725-f06a-86fab868e7dc@nvidia.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="CNK/L7dwKXQ4Ub8J"
-Content-Disposition: inline
-In-Reply-To: <f70c7c12-dbc0-a725-f06a-86fab868e7dc@nvidia.com>
-X-Cookie: How you look depends on where you go.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com,
- robh+dt@kernel.org, viswanathl@nvidia.com, sharadg@nvidia.com,
- thierry.reding@gmail.com, atalambedu@nvidia.com, linux-tegra@vger.kernel.org,
- digetx@gmail.com, Jon Hunter <jonathanh@nvidia.com>, rlokhande@nvidia.com,
- mkumard@nvidia.com, dramesh@nvidia.com
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Applied "ASoC: Fix SND_SOC_ALL_CODECS imply ac97 fallout" to the asoc
+ tree
+In-Reply-To: <20200224112537.14483-1-geert@linux-m68k.org>
+Message-Id: <applied-20200224112537.14483-1-geert@linux-m68k.org>
+X-Patchwork-Hint: ignore
+Cc: alsa-devel@alsa-project.org, Randy Dunlap <rdunlap@infradead.org>,
+ linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,58 +74,81 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+The patch
 
---CNK/L7dwKXQ4Ub8J
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: Fix SND_SOC_ALL_CODECS imply ac97 fallout
 
-On Mon, Feb 24, 2020 at 05:59:33PM +0530, Sameer Pujar wrote:
-> On 2/24/2020 5:14 PM, Mark Brown wrote:
+has been applied to the asoc tree at
 
-> > I don't think so, I'd not expect the individual drivers to be doing
-> > anything user visible here - if we know what a digital transformation
-> > looks like the framework should be offering anything that's needed to
-> > users (and hiding controls that don't have any practical control in a
-> > given system).
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-> Are you suggesting to have some alternate way of users configuring sample
-> rates (and other params) and not use mixer control method?
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-I'm mainly saying the driver shouldn't be doing it directly, it should
-be doing something much closer to hwparams for digital formats.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> This is a typical use case we see,
-> - [stream-1] Lets say high resolution audio is playing (96kHz, 24-bit,
-> stereo)
-> - [stream-2] Randomly system notifications of small durations come (48kHz,
-> 16-bit, stereo)
-> The requirement is, both streams should be mixed and played.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Most systems like this would run the output at a fixed sample rate here
-so there'd be no runtime configuration.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> Is there a better way for user to configure custom audio paths?
+Thanks,
+Mark
 
-Fit what you're doing into DPCM.  It's not particularly great but it's
-what we have at the minute.
+From 5a309875787db47d69610e45f00a727ef9e62aa0 Mon Sep 17 00:00:00 2001
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 24 Feb 2020 12:25:37 +0100
+Subject: [PATCH] ASoC: Fix SND_SOC_ALL_CODECS imply ac97 fallout
 
-This isn't me not understanding your use case, this is me saying that
-it would be better to either work like other existing drivers or improve
-the framework so that it works better for everyone.
+On i386 randconfig:
 
---CNK/L7dwKXQ4Ub8J
-Content-Type: application/pgp-signature; name="signature.asc"
+    sound/soc/codecs/wm9705.o: In function `wm9705_soc_resume':
+    wm9705.c:(.text+0x128): undefined reference to `snd_ac97_reset'
+    sound/soc/codecs/wm9712.o: In function `wm9712_soc_resume':
+    wm9712.c:(.text+0x2d1): undefined reference to `snd_ac97_reset'
+    sound/soc/codecs/wm9713.o: In function `wm9713_soc_resume':
+    wm9713.c:(.text+0x820): undefined reference to `snd_ac97_reset'
 
------BEGIN PGP SIGNATURE-----
+Fix this by adding the missing dependencies on SND_SOC_AC97_BUS.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5TzSEACgkQJNaLcl1U
-h9BAhwf/QhpoDg6KiehDe7VRnOhtmPEXAczk9wdg+IxjQr0QRsmC+kn/PQ9O+TJG
-puwkmjpN5PJmU+kUECaCiZO5midMxKemgI4ITEHhtBGmuOhaRv/Fq4HwHJoYPvNu
-QCgOqLmAA/A7GSMZFPKterSWZ37254QlSiiBo77wWvzBgsByJ/JaBEyvWOPHQfaJ
-S+TsoKJV2hh73j8GfBxMJPzoDxoetly2+sUhudtNG7fPAlKyoX7rkRYn/JBmlFxf
-Zz3VF3oq+6zyraU3o7z/Ki76E5MXclTItaA0qQ0sYKJmVdbN4VMAwmzsqBhVe1e9
-fGzmk+Ai8I9CHO4TczYKw5D5YYxs8A==
-=ZFLp
------END PGP SIGNATURE-----
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Link: https://lore.kernel.org/r/20200224112537.14483-1-geert@linux-m68k.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/Kconfig | 3 +++
+ 1 file changed, 3 insertions(+)
 
---CNK/L7dwKXQ4Ub8J--
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 9e9d54e4576c..a7e89567edbe 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -1610,16 +1610,19 @@ config SND_SOC_WM9090
+ 
+ config SND_SOC_WM9705
+ 	tristate
++	depends on SND_SOC_AC97_BUS
+ 	select REGMAP_AC97
+ 	select AC97_BUS_COMPAT if AC97_BUS_NEW
+ 
+ config SND_SOC_WM9712
+ 	tristate
++	depends on SND_SOC_AC97_BUS
+ 	select REGMAP_AC97
+ 	select AC97_BUS_COMPAT if AC97_BUS_NEW
+ 
+ config SND_SOC_WM9713
+ 	tristate
++	depends on SND_SOC_AC97_BUS
+ 	select REGMAP_AC97
+ 	select AC97_BUS_COMPAT if AC97_BUS_NEW
+ 
+-- 
+2.20.1
+
