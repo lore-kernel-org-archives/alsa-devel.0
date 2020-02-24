@@ -2,112 +2,81 @@ Return-Path: <SRS0=BBoH=4M=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_RHS_DOB,USER_AGENT_SANE_2 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C522C35670
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Feb 2020 00:21:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 335E5C35679
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Feb 2020 08:46:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D57582067D
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Feb 2020 00:21:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B0D622080D
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Feb 2020 08:46:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RyPM9I4q";
-	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="xPjqy5Zx";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="kYZ7cfDx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D57582067D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mZhuhzh6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B0D622080D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3AA881671;
-	Mon, 24 Feb 2020 01:20:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3AA881671
+	by alsa0.perex.cz (Postfix) with ESMTPS id 032D21677;
+	Mon, 24 Feb 2020 09:45:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 032D21677
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582503695;
-	bh=QpnzDW3PJ6gOZaiGPBTCBG9E6kja+0iaU4MMLfBspJc=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1582534005;
+	bh=OZ7HP4gPcobYGioA3yiH2R6Z3sas3K8gfl43/OXdEuY=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RyPM9I4qMo4XE8QEQNqvh9bRWZKZnJjr1uUsYm/EHO1vTa8jtDic1xlxe58LFfwS0
-	 +BpPMnEFuWk4RTEQG1R4VtMS5q5W3GOFpEJktjYU8fE28H83MD5bEytNIueFyBTYpp
-	 OL0cqqKN20wMRyQQoW0sT67FZ3eGwnPP0w6U7n5w=
+	b=mZhuhzh69qor4H/BbtQMKgEUJ7UiSn4Iz19xo8NAnDO8uhBzg5yQG9P8cGIj5nScy
+	 MuL7SONeJ6NCnI15r3ZkpmFH6oqeKK+xYwuqc/G4I9MCWG9WPYsRda9jvv+pAb5bro
+	 caaI9rQNake003O0D6ejoPKxgZ/c8IhA8ogEuNMc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B9EB7F8013E;
-	Mon, 24 Feb 2020 01:20:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 81A41F8014D;
+	Mon, 24 Feb 2020 09:45:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 555B7F80142; Mon, 24 Feb 2020 01:20:43 +0100 (CET)
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id C9AE0F8014E; Mon, 24 Feb 2020 09:45:51 +0100 (CET)
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net
+ [217.70.183.195])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 19670F800C6
- for <alsa-devel@alsa-project.org>; Mon, 24 Feb 2020 01:20:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 19670F800C6
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="xPjqy5Zx"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="kYZ7cfDx"
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
- by mailout.nyi.internal (Postfix) with ESMTP id F11E920F51;
- Sun, 23 Feb 2020 19:20:36 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
- by compute1.internal (MEProxy); Sun, 23 Feb 2020 19:20:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-type:in-reply-to; s=fm3; bh=QGy6mwgMxS/UXPDoQAeZGqZqNp7
- g5A4zYM41BXCFU1U=; b=xPjqy5ZxYhaoWKhaNHEZyIM6EYHFyCQgkatoczqBzMP
- Veytg+0MFrefbC4T48jpTjItJx0YJRmjbpP7j3lAFExSRgrWGtGmN7nnIlm9X8Bf
- 61AeCtEhRgQ81N+tZ0+iSPlQCGjUWyxEJkYHgIqqcUqmC1yUNKfXbO2OMzwWvk/L
- hb//3Gm66BoaylG/j3PShc/Ev7aKNk5YMhArW6xyZVRSMWgsqpsXuH382g/2e0Ya
- Sn9xZA42x+mbZWkkW3e1VBejcfLffM7Bn9XX9ktkYZlljSjVlKlmL49Q6q0T+Dvc
- 2NxGpcWq8mwvtlek2u9q1orojwdSbUkOZRz8Bd8oVdw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to:x-me-proxy
- :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=QGy6mw
- gMxS/UXPDoQAeZGqZqNp7g5A4zYM41BXCFU1U=; b=kYZ7cfDxgfAn7trl9fUH+D
- r7AY9Bc5D6jzCE5zLhaG6mny7IbtlUWzLMIbhj4vmKh3MZcJxpKsNaVe8JFPzr4P
- J2VQOvBNdkHLXx2RzhgiQqVL9qxvG1bplJ8AG3Gdyw3vzeSt7Dyhriv2Ovyvx+N4
- 5lbSeHmqE9u0/YByz/ZpjLlX7PbHclOuuxIlj10N8m5/0usyOGbHXv4Dl7RSSHEm
- V+Mzf+NaXjUYL2qR0+sKmeB46cePgnnMktHx81rCvIYEvbHaCad0TSsl/uqdIR4v
- rvd6phmciHYVjH6d8inXw+BcYLpnC7bpoqUNFkxNWWoJFx+NdSILDtEjYKt3WPww
- ==
-X-ME-Sender: <xms:1BZTXsePiB4yYVCbZh-OnmJ9dm8Zq0ToAO_8rm9F_crBh4IHDT83eA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedrkeelgddvudcutefuodetggdotefrodftvf
- curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
- uegrihhlohhuthemuceftddtnecunecujfgurhepfffhvffukfhfgggtuggjfgesthdtre
- dttdervdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgr
- shhhihesshgrkhgrmhhotggthhhirdhjpheqnecukfhppedvudekrddvvdehrdduhedurd
- einecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdq
- thgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:1BZTXif36m_YN7yITK9DGSi_O-eZ8dOBuEVZF2-pLCRYJWYGMCpuxA>
- <xmx:1BZTXogytyz708JaP-WTo0e9Jk78hfwvmF6IdPQTM7OyUcOGmgJg8g>
- <xmx:1BZTXmS9xTXBHhyVmU-aDBUlTgumMbxG0oCQXSKCj_sxf7Lc6YFKgA>
- <xmx:1BZTXno_TwPlNUD9SkwqCSu4T517KGSBurna6GMgeIV7FTaI3UPeoQ>
-Received: from laptop (g6.218-225-151.ppp.wakwak.ne.jp [218.225.151.6])
- by mail.messagingengine.com (Postfix) with ESMTPA id 33BF83060F09;
- Sun, 23 Feb 2020 19:20:35 -0500 (EST)
-Date: Mon, 24 Feb 2020 09:20:32 +0900
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: Mathias Buhr <napcode@apparatus.de>
-Subject: Re: snd_dice: Clicking artifacts with TC StudioKonnekt 48
-Message-ID: <20200224002031.GA10405@laptop>
-Mail-Followup-To: Mathias Buhr <napcode@apparatus.de>,
- alsa-devel@alsa-project.org
-References: <921a3b13-b44e-3300-bb72-84cbc9e3dd88@apparatus.de>
- <20200222012510.GA4883@laptop>
- <e29617da-9d34-c99f-f425-5d2aef59b623@apparatus.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 195E4F80090
+ for <alsa-devel@alsa-project.org>; Mon, 24 Feb 2020 09:45:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 195E4F80090
+X-Originating-IP: 86.201.231.92
+Received: from xps13 (lfbn-tou-1-149-92.w86-201.abo.wanadoo.fr [86.201.231.92])
+ (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id B8DBF60015;
+ Mon, 24 Feb 2020 08:45:44 +0000 (UTC)
+Date: Mon, 24 Feb 2020 09:45:44 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: Re: [PATCH] docs: dt: fix several broken doc references
+Message-ID: <20200224094544.63f10b7c@xps13>
+In-Reply-To: <0e530494349b37eb2eab4a8eccf56626e0b18e6d.1582448388.git.mchehab+huawei@kernel.org>
+References: <0e530494349b37eb2eab4a8eccf56626e0b18e6d.1582448388.git.mchehab+huawei@kernel.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e29617da-9d34-c99f-f425-5d2aef59b623@apparatus.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: alsa-devel@alsa-project.org, Olivier Moysan <olivier.moysan@st.com>,
+ =?UTF-8?B?SsOpcsO0bWU=?= Pouiller <jerome.pouiller@silabs.com>,
+ Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com,
+ Vignesh Raghavendra <vigneshr@ti.com>, devel@driverdev.osuosl.org,
+ Jonathan Corbet <corbet@lwn.net>, Richard Weinberger <richard@nod.at>,
+ Piotr Sroka <piotrs@cadence.com>, devicetree@vger.kernel.org,
+ Alexandre Torgue <alexandre.torgue@st.com>, Mark Brown <broonie@kernel.org>,
+ linux-arm-kernel@lists.infradead.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Arnaud Pouliquen <arnaud.pouliquen@st.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-spi@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -123,30 +92,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+Hi Mauro,
 
-On Sat, Feb 22, 2020 at 05:49:29PM +0100, Mathias Buhr wrote:
-> Thanks for your reply Takashi! It clarifies the situation. I'lll stick
-> with ffado then.
-> 
-> Regards,
-> 
-> Mathias
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote on Sun, 23 Feb
+2020 09:59:53 +0100:
 
-Both of libffado2 and ALSA dice driver have problems for each, but it's
-a convenient option for users of Dice-based devices to use the former,
-at present. I've been improved ALSA dice driver for years with the other
-drivers, but it doesn't bring so hasty changes since it's a kind of
-reverse-engineering; no one knows the actual design and few ones can
-make discussion based on the fact.
+> There are several DT doc references that require manual fixes.
+> I found 3 cases fixed on this patch:
+>=20
+> 	- directory named "binding/" instead of "bindings/";
+> 	- .txt to .yaml renames;
+> 	- file renames (still on txt format);
+>=20
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  .../devicetree/bindings/mtd/cadence-nand-controller.txt       | 2 +-
+>  .../devicetree/bindings/net/brcm,bcm7445-switch-v4.0.txt      | 2 +-
+>  Documentation/devicetree/bindings/sound/st,stm32-sai.txt      | 2 +-
+>  Documentation/devicetree/bindings/sound/st,stm32-spdifrx.txt  | 2 +-
+>  Documentation/devicetree/bindings/spi/st,stm32-spi.yaml       | 2 +-
+>  MAINTAINERS                                                   | 4 ++--
+>  .../devicetree/bindings/net/wireless/siliabs,wfx.txt          | 2 +-
+>  7 files changed, 8 insertions(+), 8 deletions(-)
 
+For the Cadence file,
 
-Well, I also own TC Electronic Sudio Konnekt 48 and I've investigated
-its protocol to configure I/O routings on internal DSP. After my
-vacation, I'll send information about it for your convenience
-(maybe next week).
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
-
-Regards
-
-Takashi Sakamoto
+Thanks,
+Miqu=C3=A8l
