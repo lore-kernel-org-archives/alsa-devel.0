@@ -2,80 +2,84 @@ Return-Path: <SRS0=BBoH=4M=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AADD4C11D2F
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Feb 2020 10:44:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 831B1C35671
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Feb 2020 11:15:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 24F8120732
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Feb 2020 10:44:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EDE7620828
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Feb 2020 11:15:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iVYH+TrJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 24F8120732
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="c5U9k3dJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EDE7620828
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7C08A168A;
-	Mon, 24 Feb 2020 11:43:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7C08A168A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 44D1A1679;
+	Mon, 24 Feb 2020 12:14:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 44D1A1679
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582541043;
-	bh=e+5Gq3+CTN8X/VB4OrUNu6tJzjBIwox13nQLzF6Qpsg=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1582542948;
+	bh=RpJEbXanR/STGPBhnQgqkY6Oghlhx6RVT/of2k0eozs=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iVYH+TrJlPpWn/EI8RU3DRwjSsXXSdddS6SSej2inu9aUW19c7LJOnUB8ai0QypzN
-	 0H4QPpL+Np1GCfmgSSbwpXMxeNeIRdlI6B7RIHd2ozUwwzR4mKY/kJG8pbz9qBGVSA
-	 Vto3F76jV0kqh/MUN7HgbSvO1UPH1D7QgD1vq8Zk=
+	b=c5U9k3dJa8coqPXO4uTYWwSd+w8fYRBl27AKPhyrnQXtfgSXmLzHjqrVZbC2UPDIh
+	 TSeaAIhN1/lSZmM9oizTaV/BNkCL6xeocTET+TW1vDa97nlAmlsf4lfin1kOLzFkKN
+	 q5DmQ8/LrKQV/u5aYBwQNQLUo0Uv6VDpBTxhgIm0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0E079F8016F;
-	Mon, 24 Feb 2020 11:43:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AC7EBF80137;
+	Mon, 24 Feb 2020 12:14:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D8A2CF80171; Mon, 24 Feb 2020 11:43:11 +0100 (CET)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id B6DFAF8014E; Mon, 24 Feb 2020 12:14:55 +0100 (CET)
+Received: from mail-oi1-f196.google.com (mail-oi1-f196.google.com
+ [209.85.167.196])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8D0A9F80137
- for <alsa-devel@alsa-project.org>; Mon, 24 Feb 2020 11:43:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D0A9F80137
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 24 Feb 2020 02:43:04 -0800
-X-IronPort-AV: E=Sophos;i="5.70,479,1574150400"; d="scan'208";a="225935345"
-Received: from aslawinx-mobl1.ger.corp.intel.com (HELO [10.249.154.74])
- ([10.249.154.74])
- by orsmga007-auth.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-SHA;
- 24 Feb 2020 02:43:02 -0800
-Subject: Re: [PATCH] Intel: Skylake: Fix inconsistent IS_ERR and PTR_ERR
-To: Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Joe Perches <joe@perches.com>, Xu Wang <vulab@iscas.ac.cn>,
- "Slawinski, AmadeuszX" <amadeuszx.slawinski@intel.com>
-References: <20200221101112.3104-1-vulab@iscas.ac.cn>
- <1247da797bc0a860e845989241385e124e589063.camel@perches.com>
- <8e96c207-cdf8-2d1f-755e-be60555c8728@linux.intel.com>
- <a0f5a3bc-3814-4e96-f81a-b693f78d2511@intel.com>
-From: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-Message-ID: <f05ddcba-4cd2-fb55-1829-53e7ef19943f@linux.intel.com>
-Date: Mon, 24 Feb 2020 11:42:59 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id E27FDF80137
+ for <alsa-devel@alsa-project.org>; Mon, 24 Feb 2020 12:14:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E27FDF80137
+Received: by mail-oi1-f196.google.com with SMTP id b18so8580674oie.2
+ for <alsa-devel@alsa-project.org>; Mon, 24 Feb 2020 03:14:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=6J56GZAIisN7s+G2kGZDSpihGRsq1TAS9IAl8pKmY94=;
+ b=b7F5AP2+HJO8CCv9XkeyczAhoiQar2Tb7hZLwAoVx1bdGjJJMqtmIdbNS9uKsPjMQw
+ 7iUvorccmsFm8WvlxrtGG8DicoMzDYvls03w0BlyaOXLt5KHDR0Z/ZeF95K84cYPdQWM
+ pQRorLp3/C33OqEqdbm9D0NEIeiDXLMyc+8ApcDnHCq34fSo7hx+75yeUC4HmEv9RtOf
+ FmzGwKlFCfhRN0oz+D0WDZXWXWPmUAUkMLxfvOG5MZ+eL87iMNWimehz8bwre/94pRZV
+ ek6Md7hapHDqaEFKfaE5cpu1VRn8dvh0F/Ba6mg2YgB5B+yvULb0MPqk1FRbnUgL0Bm9
+ +Glg==
+X-Gm-Message-State: APjAAAXfiuQWm0Z1g0LcP8X/Eiva1fo9yMmt6MlnYXQEoluihE0KsS9t
+ Ag7ja3039daE7CxP/qVgPN0B6Ncxof+mRhUhF9A=
+X-Google-Smtp-Source: APXvYqyJGLntakWARp86s91QH32t/qVwHjeTCsojy/gtzoQLTXH03yoyT3RIy6NniXxO35oP/uCuX+NiSRuYe1mWX5k=
+X-Received: by 2002:aca:b4c3:: with SMTP id
+ d186mr11814856oif.131.1582542890533; 
+ Mon, 24 Feb 2020 03:14:50 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <a0f5a3bc-3814-4e96-f81a-b693f78d2511@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com
+References: <20180603201202.15468-1-robert.jarzmik@free.fr>
+In-Reply-To: <20180603201202.15468-1-robert.jarzmik@free.fr>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 24 Feb 2020 12:14:39 +0100
+Message-ID: <CAMuHMdU3uxfBwKd8SkOtZSDV5Ai3CKc3CWRhDy0Cz94T1Hn0iA@mail.gmail.com>
+Subject: non-existent SND_SOC_AC97_BUS_NEW (was: Re: [PATCH v9] ASoC: pxa:
+ switch to new ac97 bus support)
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Content-Type: text/plain; charset="UTF-8"
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ Daniel Mack <daniel@zonque.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,113 +95,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi Robert,
 
-
-On 2/23/2020 4:59 PM, Cezary Rojewski wrote:
-> On 2020-02-21 16:40, Pierre-Louis Bossart wrote:
->> On 2/21/20 8:41 AM, Joe Perches wrote:
->>> On Fri, 2020-02-21 at 18:11 +0800, Xu Wang wrote:
->>>> PTR_ERR should access the value just tested by IS_ERR.
->>>> In skl_clk_dev_probe(),it is inconsistent.
-> 
-> Please include all maintainers of given driver when submitting the 
-> patch, thank you.
-> 
->>> []
->>>> diff --git a/sound/soc/intel/skylake/skl-ssp-clk.c 
->>>> b/sound/soc/intel/skylake/skl-ssp-clk.c
->>> []
->>>> @@ -384,7 +384,7 @@ static int skl_clk_dev_probe(struct 
->>>> platform_device *pdev)
->>>>                   &clks[i], clk_pdata, i);
->>>>           if (IS_ERR(data->clk[data->avail_clk_cnt])) {
->>>> -            ret = PTR_ERR(data->clk[data->avail_clk_cnt++]);
->>>> +            ret = PTR_ERR(data->clk[data->avail_clk_cnt]);
->>>
->>> NAK.
->>>
->>> This is not inconsistent and you are removing the ++
->>> which is a post increment.  Likely that is necessary.
->>>
->>> You could write the access and the increment as two
->>> separate statements if it confuses you.
->>
->> Well to be fair the code is far from clear.
-> 
-> Thanks for notifying, Pierre.
-> 
-> Although NAK is upheld here. Proposed change is likely to introduce 
-> regression.
-> 
->>
->> the post-increment is likely needed because of the error handling in 
->> unregister_src_clk 1
->>          data->clk[data->avail_clk_cnt] = register_skl_clk(dev,
->>                  &clks[i], clk_pdata, i);
->>
->>          if (IS_ERR(data->clk[data->avail_clk_cnt])) {
->>              ret = PTR_ERR(data->clk[data->avail_clk_cnt++]);
->>              goto err_unreg_skl_clk;
->>          }
->>      }
->>
->>      platform_set_drvdata(pdev, data);
->>
->>      return 0;
->>
->> err_unreg_skl_clk:
->>      unregister_src_clk(data);
->>
->> static void unregister_src_clk(struct skl_clk_data *dclk)
->> {
->>      while (dclk->avail_clk_cnt--)
->>          clkdev_drop(dclk->clk[dclk->avail_clk_cnt]->lookup);
->> }
->>
->> So the post-increment is cancelled in the while().
->>
->> That said, the avail_clk_cnt field is never initialized or incremented 
->> in normal usages so the code looks quite suspicious indeed.
-> 
-> As basically entire old Skylake code, so no surprises here : )
-> struct skl_clk_data::avail_clk_cnt field is initialized with 0 via 
-> devm_kzalloc in skl_clk_dev_probe().
-> 
->>
->> gitk tells me this patch is likely the culprit:
->>
->> 6ee927f2f01466 ('ASoC: Intel: Skylake: Fix NULL ptr dereference when 
->> unloading clk dev')
->>
->> -        data->clk[i] = register_skl_clk(dev, &clks[i], clk_pdata, i);
->> -        if (IS_ERR(data->clk[i])) {
->> -            ret = PTR_ERR(data->clk[i]);
->> +        data->clk[data->avail_clk_cnt] = register_skl_clk(dev,
->> +                &clks[i], clk_pdata, i);
->> +
->> +        if (IS_ERR(data->clk[data->avail_clk_cnt])) {
->> +            ret = PTR_ERR(data->clk[data->avail_clk_cnt++]);
->>               goto err_unreg_skl_clk;
->>           }
->> -
->> -        data->avail_clk_cnt++;
->>
->> That last removal is probably wrong. Cezary and Amadeusz, you may want 
->> to look at this?
-> 
-> Indeed, code looks wrong. Idk what are we even dropping in 
-> unregister_src_clk() if register_skl_clk() fails and avail_clk_cnt gets 
-> incremented anyway.
-> 
-> In general usage of while(ptr->counter--) (example of which is present 
-> in unregister_src_clk()) is prone to errors. Decrementation happens 
-> regardless of while's check outcome and caller may receive back handle 
-> in invalid state.
-> 
-> Amadeo, your thoughts?
+On Sun, Jun 3, 2018 at 10:12 PM Robert Jarzmik <robert.jarzmik@free.fr> wrote:
+> Switch to the new ac97 bus support in sound/ac97 instead of the legacy
+> snd_ac97 one.
 >
+> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
 
-Right, there is a problem with how we do increment available clock 
-counter. It should be done in success path, sent fix.
+This is commit 1c8bc7b3de5e76cb ("ASoC: pxa: switch to new ac97 bus
+support") in v4.20-rc1 and later.
 
-Amadeusz
+> --- a/sound/soc/pxa/Kconfig
+> +++ b/sound/soc/pxa/Kconfig
+> @@ -20,13 +20,12 @@ config SND_MMP_SOC
+>
+>  config SND_PXA2XX_AC97
+>         tristate
+> -       select SND_AC97_CODEC
+>
+>  config SND_PXA2XX_SOC_AC97
+>         tristate
+> -       select AC97_BUS
+> +       select AC97_BUS_NEW
+>         select SND_PXA2XX_LIB_AC97
+> -       select SND_SOC_AC97_BUS
+> +       select SND_SOC_AC97_BUS_NEW
+
+The actual SND_SOC_AC97_BUS_NEW symbol never made it upstream, although
+4 of its users did (3 have been removed in commit ea00d95200d02ece
+("ASoC: Use imply for SND_SOC_ALL_CODECS")).
+
+The definition seems to have been dropped silently in v4 of the series.
+What should the select be replaced with? Or should it just be dropped?
+
+Thanks!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
