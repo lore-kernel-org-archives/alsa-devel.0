@@ -2,69 +2,79 @@ Return-Path: <SRS0=BBoH=4M=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D9B2C35671
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Feb 2020 12:02:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89F1CC35671
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Feb 2020 12:28:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DC03720828
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Feb 2020 12:02:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0DAE72072D
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Feb 2020 12:28:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Wdv3DGYi"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DC03720828
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="l4Dj4uC+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0DAE72072D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 349E71673;
-	Mon, 24 Feb 2020 13:02:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 349E71673
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5AC381673;
+	Mon, 24 Feb 2020 13:27:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5AC381673
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582545776;
-	bh=J+pbnicZ2KwaAGCE+UgX1IMO29EfZK6RTfNlcliW3nA=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1582547311;
+	bh=hJVIl5arA24YZzRokKmEqYGy9zBvS39cD0Jv/OgL2Mg=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Wdv3DGYiCioNY+yDDGJ3nmxZq0EmkrS2SVUExpW/IqdUR2fTElKHzgof08FnoP+Y+
-	 Hx4C+amyPixV7eOVyx6lHRw+l1aHFnWcEOroLqnU6QwyR5k07YH7hyMpN69fNPx737
-	 M9m6p9Hb+i+oJKkplCaQu0fbGPlazEOcJJjueCwc=
+	b=l4Dj4uC+EUfFR0wHiJFLE8b9cFzpgJJWwkIfEFgkZuZluLZnNSAHK33a5qjoqmHKE
+	 9LQIQSOP/NzRhKwDzd2GCesdcpSrLWI982zsqbeX16rTaznCEPbvdGtbtTSA15jQLE
+	 M9UH8tjFs8+CPo2992az72e8SRljy7ypz8GbtkAQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9B06AF8014D;
-	Mon, 24 Feb 2020 13:02:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DA6ABF8014D;
+	Mon, 24 Feb 2020 13:27:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 538D0F8014E; Mon, 24 Feb 2020 13:02:04 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 65ACCF800C6
- for <alsa-devel@alsa-project.org>; Mon, 24 Feb 2020 13:02:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65ACCF800C6
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5572A30E;
- Mon, 24 Feb 2020 04:01:59 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CDA633F534;
- Mon, 24 Feb 2020 04:01:58 -0800 (PST)
-Date: Mon, 24 Feb 2020 12:01:57 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: Re: [PATCH] ASoC: soc-pcm: fix state tracking error in
- snd_soc_component_open/close()
-Message-ID: <20200224120157.GF6215@sirena.org.uk>
-References: <20200220094955.16968-1-kai.vehmanen@linux.intel.com>
+ id 758AAF8014E; Mon, 24 Feb 2020 13:27:39 +0100 (CET)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E46F2F800C6
+ for <alsa-devel@alsa-project.org>; Mon, 24 Feb 2020 13:27:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E46F2F800C6
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 24 Feb 2020 04:27:32 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,480,1574150400"; d="scan'208";a="437687507"
+Received: from crojewsk-mobl1.ger.corp.intel.com (HELO [10.237.137.172])
+ ([10.237.137.172])
+ by fmsmga006.fm.intel.com with ESMTP; 24 Feb 2020 04:27:30 -0800
+Subject: Re: [PATCH] ASoC: Intel: Skylake: Fix available clock counter
+ incrementation
+To: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+References: <20200224125202.13784-1-amadeuszx.slawinski@linux.intel.com>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+Message-ID: <9db960cc-1e87-b39d-10f2-b028e1b88c08@intel.com>
+Date: Mon, 24 Feb 2020 13:27:30 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="VuQYccsttdhdIfIP"
-Content-Disposition: inline
-In-Reply-To: <20200220094955.16968-1-kai.vehmanen@linux.intel.com>
-X-Cookie: How you look depends on where you go.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org, ranjani.sridharan@linux.intel.com,
- digetx@gmail.com, kuninori.morimoto.gx@renesas.com,
- pierre-louis.bossart@linux.intel.com
+In-Reply-To: <20200224125202.13784-1-amadeuszx.slawinski@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+Cc: "moderated list:INTEL ASoC DRIVERS" <alsa-devel@alsa-project.org>,
+ Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,40 +90,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On 2020-02-24 13:52, Amadeusz Sławiński wrote:
+> Incrementation of avail_clk_cnt was incorrectly moved to error path. Put
+> it back to success path.
+> 
+> Fixes: 6ee927f2f01466 ('ASoC: Intel: Skylake: Fix NULL ptr dereference when unloading clk dev')
+> Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+> ---
+>   sound/soc/intel/skylake/skl-ssp-clk.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/intel/skylake/skl-ssp-clk.c b/sound/soc/intel/skylake/skl-ssp-clk.c
+> index 1c0e5226cb5b..bd43885f3805 100644
+> --- a/sound/soc/intel/skylake/skl-ssp-clk.c
+> +++ b/sound/soc/intel/skylake/skl-ssp-clk.c
+> @@ -384,9 +384,11 @@ static int skl_clk_dev_probe(struct platform_device *pdev)
+>   				&clks[i], clk_pdata, i);
+>   
+>   		if (IS_ERR(data->clk[data->avail_clk_cnt])) {
+> -			ret = PTR_ERR(data->clk[data->avail_clk_cnt++]);
+> +			ret = PTR_ERR(data->clk[data->avail_clk_cnt]);
+>   			goto err_unreg_skl_clk;
+>   		}
+> +
+> +		data->avail_clk_cnt++;
+>   	}
+>   
+>   	platform_set_drvdata(pdev, data);
+> 
 
---VuQYccsttdhdIfIP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thank you for the fix.
 
-On Thu, Feb 20, 2020 at 11:49:55AM +0200, Kai Vehmanen wrote:
-> ASoC component open/close and snd_soc_component_module_get/put are called
-> independently for each component-substream pair, so the logic added in
-> commit dd03907bf129 ("ASoC: soc-pcm: call snd_soc_component_open/close()
-> once") was not sufficient and led to PCM playback and module unload error=
-s.
->=20
-> Implement handling of failures directly in soc_pcm_components_open(),
-> so that any successfully opened components are closed upon error with
-> other components. This allows to clean up error handling in
-> soc_pcm_open() without adding more state tracking.
-
-Do people have thoughts on this?  I do like this approach but can't
-really test effectively myself.
-
---VuQYccsttdhdIfIP
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5TuzQACgkQJNaLcl1U
-h9A+tAf9EdkKSaPXcik+qhSQzku8/Iw24EHmoSW7PbcU6t/4tHHw9e1VNBntCmdm
-Ob1GgBCECEE98u/Ih/twhEha5n2CLsbyg4OL1SqQoVgP8wiPwIMvzHgQDqYuUN1K
-KU/hQh3+wTaq0+Q6i2bt4Cjv+giJJLgywTG4VDdvfe0eyY87QxsvAlqfCYYUOf2n
-tIfWny1s2LmGVf/1X7rJQsaMw9tTaZkWbt1YAWe06bdlCDwUWvQWP9jVt3Au7+Vj
-4uE3O1ZJLaqeeh0Rz2uDei+OOYtejrFiTsQUNKlq+YRiWOdKopGm/J6cQR8DXGwW
-cPCXulxQr5zXX1eJ01OHhDl4EBCwIQ==
-=XU7w
------END PGP SIGNATURE-----
-
---VuQYccsttdhdIfIP--
+Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
