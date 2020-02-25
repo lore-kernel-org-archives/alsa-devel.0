@@ -2,68 +2,102 @@ Return-Path: <SRS0=Ovzg=4N=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D530C35DE1
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Feb 2020 13:25:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 142FEC35DE1
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Feb 2020 13:30:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AF27D20726
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Feb 2020 13:25:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9129F20658
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Feb 2020 13:30:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="T2ELRCWM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AF27D20726
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sqAdi+tC";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="p5gkxScV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9129F20658
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0E2F11671;
-	Tue, 25 Feb 2020 14:24:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E2F11671
+	by alsa0.perex.cz (Postfix) with ESMTPS id E1A101672;
+	Tue, 25 Feb 2020 14:29:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1A101672
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582637100;
-	bh=GL0fXsOxCKFCxkB5D7HGQMAMwEWPl+S/mALOPU2bQxY=;
-	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=T2ELRCWMMYgvl1qCd+PG5V1Pyb/msj265G0hLDDDggDov7JTJ6qNipEuTffsO1xBM
-	 c3vvIdx50WGDJmibNmdkBxc6Cnwnq4+2KSVrrovo+eNrNMRQuOsbd+YCeCgXGc6FMm
-	 ESLGtB6UE13l9RwS04gmkDbednrrlpVJrv7ME+UA=
+	s=default; t=1582637411;
+	bh=LjoAlnUOfz7B15Oh06w56z8MAYtM1HhtQCggxvmDW/Q=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=sqAdi+tCT2TBDsfSKTn/z7e7b75kZ7P8ysRXu3tgjYWkrlVnKP0IDA3SsaakvDWd1
+	 +P7aHKFOxXIDkygXnItVLaVrrjJEplZmta4nxrnBOu3GorF9RdxoCiZq4xXVRWn4Fs
+	 qc6W6LzjRkj0tTFpjtojMJJe8mcEMN4/1Qy9nG08=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 87F2AF8013E;
-	Tue, 25 Feb 2020 14:24:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5C6CEF8013E;
+	Tue, 25 Feb 2020 14:29:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 006CAF80142; Tue, 25 Feb 2020 14:24:07 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 57EDEF80090
- for <alsa-devel@alsa-project.org>; Tue, 25 Feb 2020 14:24:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57EDEF80090
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3A8C6FEC;
- Tue, 25 Feb 2020 05:24:03 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A746D3F703;
- Tue, 25 Feb 2020 05:24:02 -0800 (PST)
-Date: Tue, 25 Feb 2020 13:24:01 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Colin Ian King <colin.king@canonical.com>
-Subject: Applied "ASoC: Intel: mrfld: fix incorrect check on p->sink" to the
- asoc tree
-In-Reply-To: <20191119113640.166940-1-colin.king@canonical.com>
-Message-Id: <applied-20191119113640.166940-1-colin.king@canonical.com>
-X-Patchwork-Hint: ignore
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org, Jie Yang <yang.jie@linux.intel.com>,
- Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vkoul@kernel.org>,
- Mark Brown <broonie@kernel.org>,
- "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>,
- linux-kernel@vger.kernel.org
+ id 30EFCF80142; Tue, 25 Feb 2020 14:29:18 +0100 (CET)
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com
+ [IPv6:2a00:1450:4864:20::144])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E7B95F80090
+ for <alsa-devel@alsa-project.org>; Tue, 25 Feb 2020 14:29:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7B95F80090
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="p5gkxScV"
+Received: by mail-lf1-x144.google.com with SMTP id s23so9748540lfs.10
+ for <alsa-devel@alsa-project.org>; Tue, 25 Feb 2020 05:29:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=J5YGUk8kDLWUcN6FO7jMtSAEeHUxuzzxjpTLzQYYweo=;
+ b=p5gkxScVwAoyrKk4a4rxpdI8CwjXi3s/gwjb96f6Wq8DMh7+ckHj9cHqtX2Xmvz4PC
+ zFcgBUKSY4FDQwgiUQ1XvB35OKkR6W+nk+ZtQFq+vso7pZIo6d8loNtErwQb9q7kG8Kq
+ t5+fPBMlWvWaDtcGkjDyWNc5r+VPSLrGb3Y/PgD7A+08ySrZv+T/s3Jpy8HTfsIXKRT3
+ 9ulKYZZOdKaOtTytuTsDglE2qRWURjKzH8/TJGNqNerCXFTfAaczzTneYndUttFmAj6r
+ n0eCaa+1Lcyvkm5CoaTn1hZaw0uCMlq+ojmfQ03coOvxRxDckBLwgAAnOb/Sp9x0MF0l
+ zS7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=J5YGUk8kDLWUcN6FO7jMtSAEeHUxuzzxjpTLzQYYweo=;
+ b=DJP+wGpVA82l0xNiVahDJDxo3TmSJWRuPKKlb0HdbhMUzspXboIWjusMCj7Cnx6YZR
+ YMoNJK/vZtaRCYYoYuX50UP7ZnG6wouIfSea8mgjWTUqxzGY56dAl3Yq01qiKfgkm74F
+ ThfNumWPTnovz5ewPfvAFdS6g5/7DMjrMxDS0IpiZOTPyYbaV1L9BFYT3N8MxMJQgaBp
+ TTlf1R09jYMKlctJeyXt4efaqWFsiK/oJg3nDT2gvMYsXjlTcrHrwcfuQfPmU6HorLb1
+ 88QlEFJgRK87Z2p0IkL2m/ZRbr3CC31x3p8c646DiYA7zldwmdQcqAZRKQCTGzoiP8FB
+ ZOzQ==
+X-Gm-Message-State: APjAAAUYlBvgu8RNnjqTCUt7jBE7vv7gKDeg++gcyWXcZ10y0DsSrL07
+ /mOIwPIRCAkRsGjkuKSdL4SSHkSGub7n047Ejw0=
+X-Google-Smtp-Source: APXvYqw3oHtn5KjqRvE1g+6UE2ciKFKZF1TT8oRFN2lxJXdMFSeR/r0UOh+jyirs0SD3FwQmtigjkFxNiZtJu4xI81k=
+X-Received: by 2002:a05:6512:10d4:: with SMTP id
+ k20mr14161107lfg.70.1582637353133; 
+ Tue, 25 Feb 2020 05:29:13 -0800 (PST)
+MIME-Version: 1.0
+References: <20200128144707.21833-1-daniel.baluta@oss.nxp.com>
+In-Reply-To: <20200128144707.21833-1-daniel.baluta@oss.nxp.com>
+From: Fabio Estevam <festevam@gmail.com>
+Date: Tue, 25 Feb 2020 10:29:03 -0300
+Message-ID: <CAOMZO5CKda0TEai5CDdkmADNSMnn3WvY_xD42a=PMpzUFO4Z-w@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: fsl: Add generic CPU DAI driver
+To: "Daniel Baluta (OSS)" <daniel.baluta@oss.nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: "pierre-louis.bossart@linux.intel.com"
+ <pierre-louis.bossart@linux.intel.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>,
+ "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>,
+ "S.j. Wang" <shengjiu.wang@nxp.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "tiwai@suse.com" <tiwai@suse.com>,
+ "peter.ujfalusi@ti.com" <peter.ujfalusi@ti.com>,
+ "broonie@kernel.org" <broonie@kernel.org>, dl-linux-imx <linux-imx@nxp.com>,
+ Viorel Suman <viorel.suman@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,64 +113,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
+On Tue, Jan 28, 2020 at 11:47 AM Daniel Baluta (OSS)
+<daniel.baluta@oss.nxp.com> wrote:
 
-   ASoC: Intel: mrfld: fix incorrect check on p->sink
+> +static struct snd_soc_dai_driver fsl_esai_dai = {
+> +       .name = "esai0",
+> +};
+> +
+> +static struct snd_soc_dai_driver fsl_sai_dai = {
+> +       .name = "sai1",
 
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From f5e056e1e46fcbb5f74ce560792aeb7d57ce79e6 Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Tue, 19 Nov 2019 11:36:40 +0000
-Subject: [PATCH] ASoC: Intel: mrfld: fix incorrect check on p->sink
-
-The check on p->sink looks bogus, I believe it should be p->source
-since the following code blocks are related to p->source. Fix
-this by replacing p->sink with p->source.
-
-Fixes: 24c8d14192cc ("ASoC: Intel: mrfld: add DSP core controls")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Addresses-Coverity: ("Copy-paste error")
-Link: https://lore.kernel.org/r/20191119113640.166940-1-colin.king@canonical.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/atom/sst-atom-controls.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/intel/atom/sst-atom-controls.c b/sound/soc/intel/atom/sst-atom-controls.c
-index baef461a99f1..f883c9340eee 100644
---- a/sound/soc/intel/atom/sst-atom-controls.c
-+++ b/sound/soc/intel/atom/sst-atom-controls.c
-@@ -1333,7 +1333,7 @@ int sst_send_pipe_gains(struct snd_soc_dai *dai, int stream, int mute)
- 				dai->capture_widget->name);
- 		w = dai->capture_widget;
- 		snd_soc_dapm_widget_for_each_source_path(w, p) {
--			if (p->connected && !p->connected(w, p->sink))
-+			if (p->connected && !p->connected(w, p->source))
- 				continue;
- 
- 			if (p->connect &&  p->source->power &&
--- 
-2.20.1
-
+So the name will be hardcoded to sai1 even if SAI2, SAI3, etc is used?
