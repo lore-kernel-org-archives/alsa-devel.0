@@ -1,4 +1,4 @@
-Return-Path: <SRS0=BBoH=4M=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=Ovzg=4N=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
@@ -6,70 +6,67 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C5CA5C35DE6
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Feb 2020 23:34:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D495FC35DEA
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Feb 2020 00:42:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4551A20732
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Feb 2020 23:34:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5FA502072D
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Feb 2020 00:42:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eTdsle2t"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4551A20732
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=davemloft.net
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OgFdQOGc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5FA502072D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9FCC31676;
-	Tue, 25 Feb 2020 00:34:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9FCC31676
+	by alsa0.perex.cz (Postfix) with ESMTPS id B74CC1676;
+	Tue, 25 Feb 2020 01:41:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B74CC1676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582587295;
-	bh=kBphkUkAegHS+KlG8wikO5by4pdhcCtfIgBgxVxhVOs=;
-	h=Date:To:Subject:From:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1582591331;
+	bh=YRVQ6o9SC8kO2SsF08RhPbNRAVwSDOE+7ZPx903Iubw=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eTdsle2tDjO0aY+oHqZLMcYe8n3QAIVFxvHrmuPcm6j+htF+Vyidl4K6CUB9Cn0Aj
-	 OPOq8mkp59NAMBskaTbGQA1dYrukbhAWmzsfmn2cP16RdzkGyfRcnQXMy0k2BzkUtr
-	 RFooKDYmdVvSYBvPdUF01tSBQn9w9b8AYNhr02KM=
+	b=OgFdQOGc4TMbRK649Zc3j9bI3MGciop893ow16SCkz/+BKJpn9PPOMBeaJ65i9qNY
+	 8bHDJG+kUKVFXpgUHCsPN6RP3SR0r3VnRxIPWSibqYwQ+Aa5kF0tkbeWsn1ZNHm9Ib
+	 sTtWiREHbl0sfvWMH+oz9nHRmNuuV12LJvg0bkkk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1CF70F8014D;
-	Tue, 25 Feb 2020 00:34:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2EA19F8014D;
+	Tue, 25 Feb 2020 01:41:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9F1CBF8014E; Tue, 25 Feb 2020 00:34:03 +0100 (CET)
-Received: from shards.monkeyblade.net (shards.monkeyblade.net
- [IPv6:2620:137:e000::1:9])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BAAA6F800C6
- for <alsa-devel@alsa-project.org>; Tue, 25 Feb 2020 00:33:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BAAA6F800C6
-Received: from localhost (unknown [50.226.181.18])
- (using TLSv1 with cipher AES256-SHA (256/256 bits))
- (Client did not present a certificate)
- (Authenticated sender: davem-davemloft)
- by shards.monkeyblade.net (Postfix) with ESMTPSA id 50CCD124CE3F3;
- Mon, 24 Feb 2020 15:33:53 -0800 (PST)
-Date: Mon, 24 Feb 2020 15:33:52 -0800 (PST)
-Message-Id: <20200224.153352.364779446032996784.davem@davemloft.net>
-To: hkallweit1@gmail.com
-Subject: Re: [PATCH 0/9] PCI: add and use constant PCI_STATUS_ERROR_BITS
- and helper pci_status_get_and_clear_errors
-From: David Miller <davem@davemloft.net>
-In-Reply-To: <5939f711-92aa-e7ed-2a26-4f1e4169f786@gmail.com>
-References: <5939f711-92aa-e7ed-2a26-4f1e4169f786@gmail.com>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12
- (shards.monkeyblade.net [149.20.54.216]);
- Mon, 24 Feb 2020 15:33:53 -0800 (PST)
-Cc: alsa-devel@alsa-project.org, nic_swsd@realtek.com,
- linux-pci@vger.kernel.org, clemens@ladisch.de, tiwai@suse.com,
- stephen@networkplumber.org, netdev@vger.kernel.org, bhelgaas@google.com,
- linux-kernel@vger.kernel.org, mlindner@marvell.com
+ id 63DE5F8014E; Tue, 25 Feb 2020 01:41:19 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id AB902F80137
+ for <alsa-devel@alsa-project.org>; Tue, 25 Feb 2020 01:41:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB902F80137
+Date: 25 Feb 2020 09:41:09 +0900
+X-IronPort-AV: E=Sophos;i="5.70,481,1574089200"; d="scan'208";a="39912782"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 25 Feb 2020 09:41:09 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id E1D01410187F;
+ Tue, 25 Feb 2020 09:41:09 +0900 (JST)
+Message-ID: <87mu978pob.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH] ASoC: soc-pcm: Revert "call
+ snd_soc_component_open/close() once"
+In-Reply-To: <alpine.DEB.2.21.2002211251280.2957@eliteleevi.tm.intel.com>
+References: <20200219182650.1416-1-kai.vehmanen@linux.intel.com>
+ <87blput7hh.wl-kuninori.morimoto.gx@renesas.com>
+ <alpine.DEB.2.21.2002201103060.2957@eliteleevi.tm.intel.com>
+ <87mu9cspyf.wl-kuninori.morimoto.gx@renesas.com>
+ <alpine.DEB.2.21.2002211251280.2957@eliteleevi.tm.intel.com>
+User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org,
+ ranjani.sridharan@linux.intel.com, digetx@gmail.com,
+ pierre-louis.bossart@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,26 +82,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Heiner Kallweit <hkallweit1@gmail.com>
-Date: Mon, 24 Feb 2020 22:20:08 +0100
 
-> Few drivers have own definitions for this constant, so move it to the
-> PCI core. In addition there are several places where the following
-> code sequence is used:
-> 1. Read PCI_STATUS
-> 2. Mask out non-error bits
-> 3. Action based on set error bits
-> 4. Write back set error bits to clear them
+Hi Kai
+
+Thank you for your feedback / test / review
+
+> 1. do the cleanup locally in soc_pcm_components_open()
+> 	[PATCH] ASoC: soc-pcm: fix state tracking error in snd_soc_component_open/close()
 > 
-> As this is a repeated pattern, add a helper to the PCI core.
+> 2. revert to original implementation with "last" passed to components_open()
+> 	[PATCH] ASoC: soc-pcm: Revert "call snd_soc_component_open/close() once"
 > 
-> Most affected drivers are network drivers. But as it's about core
-> PCI functionality, I suppose the series should go through the PCI
-> tree.
+> 3. implement opened/module counters
+> 	[PATCH][RFC] ASoC: soc-component: count snd_soc_component_open/close()
+> 
+> ... I have tested all three and they seem to work.
+> 
+> I still don't really like (1), but I agree (2) adds more code in total.
+> I worry (3) might backfire with some component-substream combinations.
+> 
+> So maybe we'll go with (1)? We do need to merge one of them, because 
+> current merged code is broken on many platforms.
 
-Heiner, something is up with this submission.
+It seems Mark accepted (1), and I have no big objection about it.
+Thank you for your hard work
 
-The subject line here says 0/9, but the patches say N/8 and patch #8 never
-showed up on the list.
-
-Sort out what this should be and resubmit, thank you.
+Thank you for your help !!
+Best regards
+---
+Kuninori Morimoto
