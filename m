@@ -3,93 +3,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AD1CC35DEE
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Feb 2020 02:56:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EDC55C35DF2
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Feb 2020 04:21:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0034124650
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Feb 2020 02:56:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7886A2467B
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Feb 2020 04:21:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="t79dDWxJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0034124650
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EaMzslAM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7886A2467B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3F61C1668;
-	Tue, 25 Feb 2020 03:55:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F61C1668
+	by alsa0.perex.cz (Postfix) with ESMTPS id C8DFD1672;
+	Tue, 25 Feb 2020 05:20:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C8DFD1672
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582599377;
-	bh=bJaeFM1e42RY4iyMWgtUBJWakIbV6ofaTg3clze8ZCs=;
-	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1582604464;
+	bh=cxonSlPzL9++XArmqi8GEXLfoZptDSa0Hyd9Icy7upg=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=t79dDWxJxAZD13LRjYxFlxjgI3r0AKe4StHlLRnH5QG4QKnnYMZmDubMEahZAJusP
-	 /wkqm9gxIkiOXblan5/hmo9oshsitPV9nkfbMmawjNcEiUjpF3NT83duwcet9yRFTf
-	 TD1FApt0Xm2KJKAhOytWpoe247+GCFbts7h3v0H8=
+	b=EaMzslAMg3gjMMtA6cS0kyAURPZql1wniw4RIZztKFD/8eIpm2sBn10J7s8MfTEvj
+	 U5ncqsJzgBRZn/NJoyApeCdk/DnPSUlDuG8oY7AKlWN5g71ZJiWccNeRW5cxtCeG1F
+	 GU9iVZ9AHxNRmTD8HlN9iZ7ngIvmEbk21CGFlLKU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B0DAAF8013E;
-	Tue, 25 Feb 2020 03:55:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3CCC6F8013E;
+	Tue, 25 Feb 2020 05:20:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BF18FF80142; Tue, 25 Feb 2020 03:55:24 +0100 (CET)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 19F79F80096
- for <alsa-devel@alsa-project.org>; Tue, 25 Feb 2020 03:55:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 19F79F80096
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 24 Feb 2020 18:55:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,482,1574150400"; d="scan'208";a="410085247"
-Received: from fmsmsx103.amr.corp.intel.com ([10.18.124.201])
- by orsmga005.jf.intel.com with ESMTP; 24 Feb 2020 18:55:16 -0800
-Received: from shsmsx603.ccr.corp.intel.com (10.109.6.143) by
- FMSMSX103.amr.corp.intel.com (10.18.124.201) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Mon, 24 Feb 2020 18:55:16 -0800
-Received: from shsmsx606.ccr.corp.intel.com (10.109.6.216) by
- SHSMSX603.ccr.corp.intel.com (10.109.6.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 25 Feb 2020 10:54:41 +0800
-Received: from shsmsx606.ccr.corp.intel.com ([10.109.6.216]) by
- SHSMSX606.ccr.corp.intel.com ([10.109.6.216]) with mapi id 15.01.1713.004;
- Tue, 25 Feb 2020 10:54:41 +0800
-From: "Liao, Bard" <bard.liao@intel.com>
-To: Mark Brown <broonie@kernel.org>, Bard Liao
- <yung-chuan.liao@linux.intel.com>
-Subject: RE: [PATCH RFC v4 0/6] ASoC: Add Multi CPU DAI support
-Thread-Topic: [PATCH RFC v4 0/6] ASoC: Add Multi CPU DAI support
-Thread-Index: AQHVz/myiSuEvK8oHku0EJ5CjUUF56gq16kAgACWBJA=
-Date: Tue, 25 Feb 2020 02:54:41 +0000
-Message-ID: <9dafc59401fd414baccd88e2fa53e511@intel.com>
-References: <20200120132928.25257-1-yung-chuan.liao@linux.intel.com>
- <20200225015658.GB21366@sirena.org.uk>
-In-Reply-To: <20200225015658.GB21366@sirena.org.uk>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-dlp-product: dlpe-windows
-x-originating-ip: [10.239.127.36]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: "tiwai@suse.de" <tiwai@suse.de>,
- "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>,
- "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>
+ id 2D1ACF80142; Tue, 25 Feb 2020 05:20:12 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 19F80F800AD
+ for <alsa-devel@alsa-project.org>; Tue, 25 Feb 2020 05:20:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 19F80F800AD
+Date: 25 Feb 2020 13:20:01 +0900
+X-IronPort-AV: E=Sophos;i="5.70,482,1574089200"; d="scan'208";a="39940289"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 25 Feb 2020 13:20:01 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 245D54002644;
+ Tue, 25 Feb 2020 13:20:01 +0900 (JST)
+Message-ID: <87zhd7jo3b.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [PATCH 7/7] ASoC: soc-pcm: tidyup soc_pcm_open()
+ order
+In-Reply-To: <20200225014039.GA21366@sirena.org.uk>
+References: <877e1doeis.wl-kuninori.morimoto.gx@renesas.com>
+ <87wo9dmzwv.wl-kuninori.morimoto.gx@renesas.com>
+ <eb217e1e-6438-b59d-c155-5fe53de542ee@linux.intel.com>
+ <20200225014039.GA21366@sirena.org.uk>
+User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Linux-ALSA <alsa-devel@alsa-project.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,21 +82,44 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-> -----Original Message-----
-> From: Mark Brown <broonie@kernel.org>
-> Sent: Tuesday, February 25, 2020 9:57 AM
-> To: Bard Liao <yung-chuan.liao@linux.intel.com>
-> Cc: tiwai@suse.de; alsa-devel@alsa-project.org;
-> liam.r.girdwood@linux.intel.com; pierre-louis.bossart@linux.intel.com;
-> kuninori.morimoto.gx@renesas.com; Liao, Bard <bard.liao@intel.com>
-> Subject: Re: [PATCH RFC v4 0/6] ASoC: Add Multi CPU DAI support
->=20
-> On Mon, Jan 20, 2020 at 09:29:22PM +0800, Bard Liao wrote:
-> > As discussed in [1], ASoC core supports multi codec DAIs on a DAI
-> > link. However it does not do so for CPU DAIs.
->=20
-> Sorry, I didn't apply this at -rc1 like I intended to and now it needs so=
-me rebasing
-> - can you resend please?  My mistake, sorry.
+Hi Pierre-Louis, Mark
 
-Sure, I will do it soon.
+> > you'll see that the intent was to
+> > - start the cpu_dai
+> > - open the platform driver to e.g handle DMAs
+> > - start the codec_dai.
+> 
+> > The second step is not really needed for Intel but might be needed on others
+> > where the DMA is centrally handled (Omap, etc).
+> 
+> > My concern is that we've modified the order to deal with module
+> > dependencies, without necessarily taking into account that DMA setup part
+> 
+> > That said I don't understand the initial sequence for soc_pcm_close() so I
+> > am not advocating for a revert, but more a clarification of what those
+> > component open/close steps are supposed to do.
+> 
+> It's possible we're going to shake some issues out here but the
+> ordering has always been a bit arbitrary, especially the CPU vs
+> CODEC ordering.  We're basically hoping that the ordering we've
+> picked is the one that causes fewest glitches and upsets on the
+> broad range of hardware.  My expectation/hope is that for most
+> hardware the flow control between the DAI and the DMA controller
+> (which has to be there anyway) will mean that it mostly doesn't
+> matter, if there's anything that is too sensitive to it we can
+> always revert and try something
+> else.
+
+I'm sorry to not clarify the detail.
+Yes, as you mentioned, the patch exchanged start/stop order,
+and some platform *might* get damage (I hope not, of course).
+
+But we can't say that the previous order was the best order for all platform.
+I'm thinking that the current order is also not the best,
+but is not random.
+The *best* solution is that we need to have xxx_order flag like for_each_comp_order().
+
+Thank you for your help !!
+Best regards
+---
+Kuninori Morimoto
