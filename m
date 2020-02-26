@@ -7,56 +7,59 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6675DC4BA24
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 18:49:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A0CCC4BA24
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 18:54:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D8B0A24653
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 18:49:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C9BFC20714
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 18:53:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FodGGBZ7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D8B0A24653
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dLcsGYU4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C9BFC20714
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BC93B16A0;
-	Wed, 26 Feb 2020 19:48:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC93B16A0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2E85E168B;
+	Wed, 26 Feb 2020 19:53:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E85E168B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582742940;
-	bh=f8S4ZBNZwujUDwycfaHba+lcky+KdUoDZMnfXQYgiNA=;
+	s=default; t=1582743238;
+	bh=ujsHoetCb26dRu7uV+O4lGWnUXe3BuajfXc+9KCl8Xs=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=FodGGBZ7xmXotYaY1yTogYIDiTqap2vCZQVDT/8Ti5Nk/0eXEn8VS5xgR+IoMOIGs
-	 wcHAIeSwwTokz5CDpNO+MBmQarinm2ACJcAqqyUZr4y+dtT/Kj59nipUPe0AeHMpx+
-	 hMVriGiDghXEdeCC9Ce4yQFgYi+SMNWeDJgsH5Go=
+	b=dLcsGYU4t9SoUosZFsEs+BzA5d5tioGYmhIDVzyz8tSvJCXv3vz5ws2QLApQTu3ju
+	 uWzIoUFAaf+DGscDA857G6mzz3JmZUIYDfVa0IJJyAZdjJC6cEz1ErFDVdT2r7I7jW
+	 8ouHPzc37pwsxjYyaFS4bjVVHLJvBQ4PX/E6UB8o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 55E46F8016F;
-	Wed, 26 Feb 2020 19:47:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7418BF802EC;
+	Wed, 26 Feb 2020 19:48:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5EEF1F8016F; Wed, 26 Feb 2020 19:47:20 +0100 (CET)
+ id 055B0F802E7; Wed, 26 Feb 2020 19:47:58 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 58942F801F2
- for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2020 19:47:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58942F801F2
+ by alsa1.perex.cz (Postfix) with ESMTP id 03140F802DB
+ for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2020 19:47:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03140F802DB
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4BE4330E;
- Wed, 26 Feb 2020 10:47:14 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CBA7B31B;
+ Wed, 26 Feb 2020 10:47:52 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B5D383F881;
- Wed, 26 Feb 2020 10:47:13 -0800 (PST)
-Date: Wed, 26 Feb 2020 18:47:12 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 435773F881;
+ Wed, 26 Feb 2020 10:47:52 -0800 (PST)
+Date: Wed, 26 Feb 2020 18:47:50 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Dan Murphy <dmurphy@ti.com>
-Subject: Applied "ASoC: dt-bindings: Add TAS2563 compatible to the TAS2562
- binding" to the asoc tree
+To: Shreyas NC <shreyas.nc@intel.com>
+Subject: Applied "ASoC: Add multiple CPU DAI support in DAPM" to the asoc tree
 In-Reply-To: 
 Message-Id: 
 X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -71,11 +74,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20200226184712.stXO0YeEh3OA1PMcioHspEXsjDDw0N-fc3CSoCvc2Rw@z>
+Message-ID: <20200226184750.Aa2mqJwhWD-phNY6w2H-H4j7d40LyV-nqWyPdNccc6A@z>
 
 The patch
 
-   ASoC: dt-bindings: Add TAS2563 compatible to the TAS2562 binding
+   ASoC: Add multiple CPU DAI support in DAPM
 
 has been applied to the asoc tree at
 
@@ -100,35 +103,67 @@ to this mail.
 Thanks,
 Mark
 
-From f87cdb1f9937e6f5234e3300804ac156e639bc00 Mon Sep 17 00:00:00 2001
-From: Dan Murphy <dmurphy@ti.com>
-Date: Wed, 26 Feb 2020 07:03:03 -0600
-Subject: [PATCH] ASoC: dt-bindings: Add TAS2563 compatible to the TAS2562
- binding
+From de6214a33633d8ce1c1490336f8e798e75ccd004 Mon Sep 17 00:00:00 2001
+From: Shreyas NC <shreyas.nc@intel.com>
+Date: Tue, 25 Feb 2020 21:39:15 +0800
+Subject: [PATCH] ASoC: Add multiple CPU DAI support in DAPM
 
-Add the Texas Instruments TAS2563 audio amplifier to the TAS262
-binding.
+DAPM handles DAIs during soc_dapm_stream_event() and during addition
+and creation of DAI widgets i.e., dapm_add_valid_dai_widget() and
+dapm_connect_dai_link_widgets().
 
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
-CC: Rob Herring <robh@kernel.org>
-Link: https://lore.kernel.org/r/20200226130305.12043-1-dmurphy@ti.com
+Extend these functions to handle multiple cpu dai.
+
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Link: https://lore.kernel.org/r/20200225133917.21314-5-yung-chuan.liao@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/tas2562.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/soc-dapm.c | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/tas2562.txt b/Documentation/devicetree/bindings/sound/tas2562.txt
-index 658e1fb18a99..94796b547184 100644
---- a/Documentation/devicetree/bindings/sound/tas2562.txt
-+++ b/Documentation/devicetree/bindings/sound/tas2562.txt
-@@ -8,7 +8,7 @@ real time monitoring of loudspeaker behavior.
- Required properties:
-  - #address-cells  - Should be <1>.
-  - #size-cells     - Should be <0>.
-- - compatible:	   - Should contain "ti,tas2562".
-+ - compatible:	   - Should contain "ti,tas2562", "ti,tas2563".
-  - reg:		   - The i2c address. Should be 0x4c, 0x4d, 0x4e or 0x4f.
-  - ti,imon-slot-no:- TDM TX current sense time slot.
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 539a1eaebeac..6ce024d52170 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -4361,9 +4361,19 @@ static void dapm_connect_dai_link_widgets(struct snd_soc_card *card,
+ 	struct snd_soc_dai *codec_dai;
+ 	int i;
+ 
+-	for_each_rtd_codec_dai(rtd, i, codec_dai)
+-		dapm_add_valid_dai_widget(card, rtd,
+-					  codec_dai, rtd->cpu_dais[0]);
++	if (rtd->num_cpus == 1) {
++		for_each_rtd_codec_dai(rtd, i, codec_dai)
++			dapm_add_valid_dai_widget(card, rtd, codec_dai,
++						  rtd->cpu_dais[0]);
++	} else if (rtd->num_codecs == rtd->num_cpus) {
++		for_each_rtd_codec_dai(rtd, i, codec_dai)
++			dapm_add_valid_dai_widget(card, rtd, codec_dai,
++						  rtd->cpu_dais[i]);
++	} else {
++		dev_err(card->dev,
++			"N cpus to M codecs link is not supported yet\n");
++	}
++
+ }
+ 
+ static void soc_dapm_dai_stream_event(struct snd_soc_dai *dai, int stream,
+@@ -4424,9 +4434,11 @@ static void soc_dapm_stream_event(struct snd_soc_pcm_runtime *rtd, int stream,
+ 	int event)
+ {
+ 	struct snd_soc_dai *codec_dai;
++	struct snd_soc_dai *cpu_dai;
+ 	int i;
+ 
+-	soc_dapm_dai_stream_event(rtd->cpu_dai, stream, event);
++	for_each_rtd_cpu_dai(rtd, i, cpu_dai)
++		soc_dapm_dai_stream_event(rtd->cpu_dai, stream, event);
+ 	for_each_rtd_codec_dai(rtd, i, codec_dai)
+ 		soc_dapm_dai_stream_event(codec_dai, stream, event);
  
 -- 
 2.20.1
