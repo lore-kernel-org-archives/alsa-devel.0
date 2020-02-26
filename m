@@ -7,85 +7,84 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF65CC4BA13
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 13:11:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F25D3C4BA12
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 13:40:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4196D20714
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 13:11:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 80EB724683
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 13:40:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qvwjMsZL";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="yOUwkDUu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4196D20714
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="l0x3uWuB";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="wEwlWUXM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 80EB724683
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9985E166D;
-	Wed, 26 Feb 2020 14:10:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9985E166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id C45D61662;
+	Wed, 26 Feb 2020 14:40:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C45D61662
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582722658;
-	bh=nI+TxUsDZ5PqXKovNrNWw8SFYPnW292vIfbGbu2DWJ0=;
+	s=default; t=1582724453;
+	bh=nxAS79n8ttJa3VY1a3i+9sar/09j4mOjk5StE6NUxGc=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=qvwjMsZLgd6BzuoxwHVtCMreLtgpKzcOfbUmkVNfbWQ3laWHacLCJNdfLhWezfmiu
-	 J1PQ5pKaX/EsH8Rft/sgloiDzK7bEZJhBKHgb19hq9v4H6mI+rwca35Eg+u6ndMoGd
-	 jrB1f1zmOOs7LRwWxUmE04yPPkRE8tpJ4UxewFnM=
+	b=l0x3uWuBNxtr9WYC9jTGx/iqzx1FvFZFknFBg2UzE2vne6Ta87tFbsQE14DNT7xSA
+	 V8azhy8eutW/DFNxMcL9seFVLpEAJdcxZuqYQuQcl0xrrMke9nJCz3FdyKJnQbdTFF
+	 gA3ddpimGZdZN6ePt+HkQR9bFciPNqOLDvALLNFU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3C146F80278;
-	Wed, 26 Feb 2020 14:08:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 38CF4F800E8;
+	Wed, 26 Feb 2020 14:40:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 73107F80213; Wed, 26 Feb 2020 14:08:28 +0100 (CET)
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+ id AEC95F8014D; Wed, 26 Feb 2020 14:40:00 +0100 (CET)
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B0390F800AD
- for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2020 14:08:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0390F800AD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 716A9F800AD
+ for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2020 14:39:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 716A9F800AD
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="yOUwkDUu"
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 01QD8K8t097198;
- Wed, 26 Feb 2020 07:08:20 -0600
+ dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="wEwlWUXM"
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 01QDdrYq034511;
+ Wed, 26 Feb 2020 07:39:53 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1582722500;
- bh=0bhKPvjJa3/rmLd39zoLbOUlraMceKvkCehpXWM1XR0=;
+ s=ti-com-17Q1; t=1582724393;
+ bh=HTRVPjh5DuXVRlDJkrZ6Z9RblyZsq7c/8F7wOehG3zw=;
  h=From:To:CC:Subject:Date;
- b=yOUwkDUujCJL8aqRNJjC4JnIZh0D94A5A/XfZyXhzpur1qQS4LUl2Tj5iGJkjwcnN
- AocFMIz91zT+fkezXBJthtihRQ5j/yDZbbGs9zVmkY5uax2QuIRewRuub2M7HHGJYf
- SJszsK41R3kIGo1ZE3MW0HmVWsoAcn47lHUZLjFs=
-Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 01QD8JUd032725
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Wed, 26 Feb 2020 07:08:19 -0600
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ b=wEwlWUXMOpmqXzaj1p3Iafzy5ChoyhKl77B4qsHA8/3HwDSGESsVVjOYMu42ytA/v
+ tdgAZQT/Y6uOQcRRAAJXJ5DDzbAb+IBUS0q7brKAP9ACQ6Kt6dwby3xnH4Hn5EP3/M
+ VmG+9wAxq7dQbMzl4n/Os4OHDFCV8VMtNHZGMG04=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+ by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 01QDdrHb026706;
+ Wed, 26 Feb 2020 07:39:53 -0600
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Wed, 26
- Feb 2020 07:08:19 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ Feb 2020 07:39:52 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
- Frontend Transport; Wed, 26 Feb 2020 07:08:19 -0600
+ Frontend Transport; Wed, 26 Feb 2020 07:39:52 -0600
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 01QD8Jwm073329;
- Wed, 26 Feb 2020 07:08:19 -0600
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 01QDdqRY023003;
+ Wed, 26 Feb 2020 07:39:52 -0600
 From: Dan Murphy <dmurphy@ti.com>
 To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
  <tiwai@suse.com>
-Subject: [PATCH for-next 1/3] ASoC: dt-bindings: Add TAS2563 compatible to the
- TAS2562 binding
-Date: Wed, 26 Feb 2020 07:03:03 -0600
-Message-ID: <20200226130305.12043-1-dmurphy@ti.com>
+Subject: [PATCH for-next] ASoC: tlv320adcx140: Fix MIC_BIAS defines for ADC
+ full scale
+Date: Wed, 26 Feb 2020 07:34:39 -0600
+Message-ID: <20200226133439.15837-1-dmurphy@ti.com>
 X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-Cc: Rob Herring <robh@kernel.org>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Dan Murphy <dmurphy@ti.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Ricard Wanderlof <ricardw@axis.com>, Dan Murphy <dmurphy@ti.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,28 +100,67 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add the Texas Instruments TAS2563 audio amplifier to the TAS262
-binding.
+Change the #defines for the ADC full scale bits from MIC_BIAS to
+ADC_FSCALE.  This also changes the error message to incidate ADC full
+scale value error as opposed to the Mic bias.
 
-CC: Rob Herring <robh@kernel.org>
+Reported-by: Ricard Wanderlof <ricardw@axis.com>
 Signed-off-by: Dan Murphy <dmurphy@ti.com>
 ---
- Documentation/devicetree/bindings/sound/tas2562.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/tlv320adcx140.c | 12 ++++++------
+ sound/soc/codecs/tlv320adcx140.h |  8 ++++----
+ 2 files changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/tas2562.txt b/Documentation/devicetree/bindings/sound/tas2562.txt
-index 658e1fb18a99..94796b547184 100644
---- a/Documentation/devicetree/bindings/sound/tas2562.txt
-+++ b/Documentation/devicetree/bindings/sound/tas2562.txt
-@@ -8,7 +8,7 @@ real time monitoring of loudspeaker behavior.
- Required properties:
-  - #address-cells  - Should be <1>.
-  - #size-cells     - Should be <0>.
-- - compatible:	   - Should contain "ti,tas2562".
-+ - compatible:	   - Should contain "ti,tas2562", "ti,tas2563".
-  - reg:		   - The i2c address. Should be 0x4c, 0x4d, 0x4e or 0x4f.
-  - ti,imon-slot-no:- TDM TX current sense time slot.
+diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv320adcx140.c
+index 93a0cb8e662c..825ace9b5fa7 100644
+--- a/sound/soc/codecs/tlv320adcx140.c
++++ b/sound/soc/codecs/tlv320adcx140.c
+@@ -758,12 +758,12 @@ static int adcx140_codec_probe(struct snd_soc_component *component)
+ 	ret = device_property_read_u8(adcx140->dev, "ti,vref-source",
+ 				      &vref_source);
+ 	if (ret)
+-		vref_source = ADCX140_MIC_BIAS_VREF_275V;
++		vref_source = ADCX140_ADC_FSCALE_VREF_275V;
  
+-	if (vref_source != ADCX140_MIC_BIAS_VREF_275V &&
+-	    vref_source != ADCX140_MIC_BIAS_VREF_25V &&
+-	    vref_source != ADCX140_MIC_BIAS_VREF_1375V) {
+-		dev_err(adcx140->dev, "Mic Bias source value is invalid\n");
++	if (vref_source != ADCX140_ADC_FSCALE_VREF_275V &&
++	    vref_source != ADCX140_ADC_FSCALE_VREF_25V &&
++	    vref_source != ADCX140_ADC_FSCALE_VREF_1375V) {
++		dev_err(adcx140->dev, "ADC full scale setting is invalid\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -787,7 +787,7 @@ static int adcx140_codec_probe(struct snd_soc_component *component)
+ 
+ 	ret = regmap_update_bits(adcx140->regmap, ADCX140_BIAS_CFG,
+ 				ADCX140_MIC_BIAS_VAL_MSK |
+-				ADCX140_MIC_BIAS_VREF_MSK, bias_source);
++				ADCX140_ADC_FSCALE_VREF_MSK, bias_source);
+ 	if (ret)
+ 		dev_err(adcx140->dev, "setting MIC bias failed %d\n", ret);
+ out:
+diff --git a/sound/soc/codecs/tlv320adcx140.h b/sound/soc/codecs/tlv320adcx140.h
+index 6d055e55909e..adb9513900b1 100644
+--- a/sound/soc/codecs/tlv320adcx140.h
++++ b/sound/soc/codecs/tlv320adcx140.h
+@@ -117,10 +117,10 @@
+ #define ADCX140_MIC_BIAS_VAL_AVDD	6
+ #define ADCX140_MIC_BIAS_VAL_MSK GENMASK(6, 4)
+ 
+-#define ADCX140_MIC_BIAS_VREF_275V	0
+-#define ADCX140_MIC_BIAS_VREF_25V	1
+-#define ADCX140_MIC_BIAS_VREF_1375V	2
+-#define ADCX140_MIC_BIAS_VREF_MSK GENMASK(1, 0)
++#define ADCX140_ADC_FSCALE_VREF_275V	0
++#define ADCX140_ADC_FSCALE_VREF_25V	1
++#define ADCX140_ADC_FSCALE_VREF_1375V	2
++#define ADCX140_ADC_FSCALE_VREF_MSK GENMASK(1, 0)
+ 
+ #define ADCX140_PWR_CFG_BIAS_PDZ	BIT(7)
+ #define ADCX140_PWR_CFG_ADC_PDZ		BIT(6)
 -- 
 2.25.0
 
