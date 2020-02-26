@@ -1,82 +1,62 @@
-Return-Path: <SRS0=q21C=4W=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=ZBV5=4O=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ECB79C3F2D2
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 18:10:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 04D7EC4BA24
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 18:48:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7875220716
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 18:10:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 85AF324653
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 18:48:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="T6pgzYTq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7875220716
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QQ3ooHkN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 85AF324653
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CC60115F9;
-	Thu,  5 Mar 2020 19:09:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC60115F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id C8D421660;
+	Wed, 26 Feb 2020 19:47:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C8D421660
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583431801;
-	bh=3gRa+yMPzpeeeRDx9BUrmpxtlWofx0SWv2fiAJWzFSU=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=T6pgzYTqQHdHok0d301AZk/qdFtZYa+63gkuMCAu0Eo6hptYJ4Reingfsc5ImtAg7
-	 1GeGSJduCRbA1fECImyhGMv+BClaHAlnhiBHX3+gz7h5W6AlWPntwWwKWG8iCgoKpf
-	 PxIGv0oPqtiAqOR1O/3j5Iv2ee1Qg77m/AIueB9c=
+	s=default; t=1582742886;
+	bh=ygKXUP/zlNrD1JP9tprOUPDs+qn0SEaRxxiS+kQqvV8=;
+	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=QQ3ooHkNhkQp11lTOUNSl+Is8kH9NIWsLC5HJMhAVewY7oTXxajov31nS3bFbsTyj
+	 EImal5SPlD5ogPN6Yiu6rLcPxVl+UJ3OTZybtDgQtdjiPg5JuAd6KHNG8iUrXOHuno
+	 U3dAvJ6kZaNosFZEUuuB3codq+j8F4OH7Xh21MX0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4990FF800D8;
-	Thu,  5 Mar 2020 19:09:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 327A8F8014D;
+	Wed, 26 Feb 2020 19:47:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 88685F8025F; Thu,  5 Mar 2020 19:09:09 +0100 (CET)
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 12F94F800D8
- for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2020 19:09:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 12F94F800D8
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 05 Mar 2020 10:08:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,518,1574150400"; d="scan'208";a="387576939"
-Received: from vheang-mobl1.amr.corp.intel.com (HELO [10.254.189.4])
- ([10.254.189.4])
- by orsmga004.jf.intel.com with ESMTP; 05 Mar 2020 10:08:58 -0800
-Subject: Re: [RFC PATCH 2/3] ASoC: Intel: bdw-rt5677: fix module load/unload
- issues
-To: Mark Brown <broonie@kernel.org>
-References: <20200305130616.28658-1-pierre-louis.bossart@linux.intel.com>
- <20200305130616.28658-3-pierre-louis.bossart@linux.intel.com>
- <20200305133638.GE4046@sirena.org.uk>
- <13857c7b-f7d2-9be2-c1e1-a577a774773e@linux.intel.com>
- <20200305135908.GF4046@sirena.org.uk>
- <c1419cb1-c1d6-897d-05a4-48e57a3e15db@linux.intel.com>
- <20200305174324.GH4046@sirena.org.uk>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <7c52ff6f-76ef-7c55-65e6-9c0437bb983a@linux.intel.com>
-Date: Thu, 5 Mar 2020 12:08:57 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
-MIME-Version: 1.0
-In-Reply-To: <20200305174324.GH4046@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+ id 993C2F8014E; Wed, 26 Feb 2020 19:47:14 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id C9C35F80089
+ for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2020 19:47:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9C35F80089
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8C96930E;
+ Wed, 26 Feb 2020 10:47:09 -0800 (PST)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 023F43F881;
+ Wed, 26 Feb 2020 10:47:08 -0800 (PST)
+Date: Wed, 26 Feb 2020 18:47:07 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Dan Murphy <dmurphy@ti.com>
+Subject: Applied "ASoC: tas2562: Add entries for the TAS2563 audio amplifier"
+ to the asoc tree
+In-Reply-To: 
+Message-Id: 
+X-Patchwork-Hint: ignore
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,50 +71,84 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+Message-ID: <20200226184707.zRDPeWZ3cw40hNPlwWyzPBsBkhO_6DrhgT-UyiNlKBE@z>
 
+The patch
 
+   ASoC: tas2562: Add entries for the TAS2563 audio amplifier
 
-On 3/5/20 11:43 AM, Mark Brown wrote:
-> On Thu, Mar 05, 2020 at 08:51:03AM -0600, Pierre-Louis Bossart wrote:
-> 
->>> This doesn't answer the question: why is the machine driver not
->>> requesting the GPIO on device model probe?
-> 
->> I *think* it's due to the need to use the codec component->dev, which is
->> only available with the dailink callbacks - not on platform device probe
->> which ends with the card registration.
-> 
-> Why do you have this need?  This is sounding a lot like the CODEC ought
-> to be requesting it...
+has been applied to the asoc tree at
 
-it's been that way since 2016 and the initial contribution. The Chrome 
-folks might know more, I don't think anyone at Intel has worked on this 
-code.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
->>> So you've removed the driver which will have unbound the device but devm
->>> actions don't seem to have fired?  That seems worrying...
-> 
->> Well, the devm uses the component device, not the card device, so when
->> removing the machine driver nothing should happen. The problem seems to be
->> in the removal of the codec and component drivers.
-> 
-> Right, it's always a bad idea to do allocations with devm_ on a device
-> other than the one that you're currently working with - that clearly
-> leads to lifetime issues.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-that's precisely what I tried to correct.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
->> We tried to use the card device instead but then the gpiod_get fails.
-> 
-> I think you need to take a step back and work out what you're actually
-> doing here.  It doesn't sound like the problem has been fully understood
-> so there's no clear articulation of what you're trying to do.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Can we split this RFC in two:
-a) do you have any objections to adding an .exit() callback? That's what 
-the main goal was
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-b) do you have any objections if we remove this devm_ use without trying 
-to dig further into the gpio management. This is a 2015 product that we 
-use to verify the SOF driver on Broadwell, not an Intel-owned device.
+Thanks,
+Mark
+
+From 14f8c8d8fd62207f081549d45099a90dd3717696 Mon Sep 17 00:00:00 2001
+From: Dan Murphy <dmurphy@ti.com>
+Date: Wed, 26 Feb 2020 07:03:04 -0600
+Subject: [PATCH] ASoC: tas2562: Add entries for the TAS2563 audio amplifier
+
+The TAS2563 is register compatible with the TAS2562.  The main
+difference is the TAS2563 has a programmable DSP to manage different
+audio profiles.
+
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+Link: https://lore.kernel.org/r/20200226130305.12043-2-dmurphy@ti.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/tas2562.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/tas2562.c b/sound/soc/codecs/tas2562.c
+index d5e04030a0c1..79c3c3d79766 100644
+--- a/sound/soc/codecs/tas2562.c
++++ b/sound/soc/codecs/tas2562.c
+@@ -55,6 +55,11 @@ struct tas2562_data {
+ 	int volume_lvl;
+ };
+ 
++enum tas256x_model {
++	TAS2562,
++	TAS2563,
++};
++
+ static int tas2562_set_bias_level(struct snd_soc_component *component,
+ 				 enum snd_soc_bias_level level)
+ {
+@@ -664,13 +669,15 @@ static int tas2562_probe(struct i2c_client *client,
+ }
+ 
+ static const struct i2c_device_id tas2562_id[] = {
+-	{ "tas2562", 0 },
++	{ "tas2562", TAS2562 },
++	{ "tas2563", TAS2563 },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(i2c, tas2562_id);
+ 
+ static const struct of_device_id tas2562_of_match[] = {
+ 	{ .compatible = "ti,tas2562", },
++	{ .compatible = "ti,tas2563", },
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(of, tas2562_of_match);
+-- 
+2.20.1
 
