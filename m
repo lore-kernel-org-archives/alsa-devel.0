@@ -2,92 +2,93 @@ Return-Path: <SRS0=ZBV5=4O=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B440CC4BA13
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 16:17:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D087C4BA13
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 16:22:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 33B452084E
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 16:17:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9CCE3206E6
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 16:22:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uavK12Xa";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="slqioptl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 33B452084E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="grYmXAe2";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Zv3tIkZT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9CCE3206E6
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8AE221612;
-	Wed, 26 Feb 2020 17:16:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8AE221612
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0687F1616;
+	Wed, 26 Feb 2020 17:21:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0687F1616
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582733825;
-	bh=ahyHPn26B2YfUXQi+9PLxbpEHIg2UMTzE6sS5ecrJzU=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1582734161;
+	bh=EvCB0bMRBhu7WzGOnGdh+1Nje9yFHfKbig5KLfd/3oI=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uavK12XaGPhZd+bU2tzQh1NpsnFSVuYTEbolAxSFAu6nXqUfJo7l8ahf5X+jAXFIb
-	 jN59gC96lPPYKcNUB1W/OrnEKf/e1Yxdu97PNjtruiX7GKkm2UP9TtvxyCHmfhAf3z
-	 /2dVMy/adU/XZ6/3xOE+IoOn/GkpUhLPnR+vX9L8=
+	b=grYmXAe261rQubbwggJ3var8lRPojqrUlHJWr0lUC4e2WHl6Ow4wsxfYN7GhICz7w
+	 eYv4zjX/TECYdGQFPKKBlblCTvSGJGc9wYdLgyOQ9Kaa38/PcFJjhEsh4I39KG02f4
+	 fqjgTtfYlW80pHuVhUQIqqqhj6pPg9wxsCtEr/34=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 19E81F800E8;
-	Wed, 26 Feb 2020 17:16:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7F35FF8014E;
+	Wed, 26 Feb 2020 17:21:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CD1ECF8014E; Wed, 26 Feb 2020 17:16:13 +0100 (CET)
+ id 221D1F80171; Wed, 26 Feb 2020 17:21:48 +0100 (CET)
 Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D7284F80089
- for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2020 17:16:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7284F80089
+ by alsa1.perex.cz (Postfix) with ESMTPS id C6E2DF80089
+ for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2020 17:21:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6E2DF80089
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="slqioptl"
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 01QGG64N119983;
- Wed, 26 Feb 2020 10:16:06 -0600
+ dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Zv3tIkZT"
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 01QGLgFg121430;
+ Wed, 26 Feb 2020 10:21:42 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1582733766;
- bh=0FcgBZD0FcGrWhEPucId1UBN/EwNU1wafv0wW/abf7g=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=slqioptlPCKXxQMJ4eKOpsW4TDjTw29mNub/CYcPvjVCJBA2W14fTEEsngMqu4hjE
- g2nM+VK2fpirqfJNdGpCwBvI/tUp1CIApBlQHNKmppiKIUGlB4tFYwU51UfZUJblak
- HoJ3BxWCgTMKQvDjW0325vj44EVeEBhvL90QE44s=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 01QGG6XW000712;
- Wed, 26 Feb 2020 10:16:06 -0600
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ s=ti-com-17Q1; t=1582734102;
+ bh=qYRk9Qh2iIroRJl+3iF1hS7lDL46mTc+W347ZyPJ/Y4=;
+ h=From:To:CC:Subject:Date:In-Reply-To:References;
+ b=Zv3tIkZTlNxl061VWhv5IRD7r/Wuj0GamrHOZepyhdddPGavnbn4oblg+TozaglJF
+ elHnb96ezQRKVsCR+NwFF3ZFVb1inIxImkuqSOKLXbkEIO90bNcjDbw1nKB2oJqRQt
+ 7enTOTyUIWoL4Re/TfiSq4ihakWkiPVb9kBgddNs=
+Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 01QGLgvT064850
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Wed, 26 Feb 2020 10:21:42 -0600
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Wed, 26
- Feb 2020 10:16:05 -0600
-Received: from localhost.localdomain (10.64.41.19) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ Feb 2020 10:21:42 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
- Frontend Transport; Wed, 26 Feb 2020 10:16:05 -0600
-Received: from [10.250.65.13] (ileax41-snat.itg.ti.com [10.172.224.153])
- by localhost.localdomain (8.15.2/8.15.2) with ESMTP id 01QGG5B7079209;
- Wed, 26 Feb 2020 10:16:05 -0600
-Subject: Re: [PATCH for-next 3/3] ASoC: tas2562: Fix sample rate error message
-To: Mark Brown <broonie@kernel.org>
-References: <20200226130305.12043-1-dmurphy@ti.com>
- <20200226130305.12043-3-dmurphy@ti.com> <20200226161204.GG4136@sirena.org.uk>
+ Frontend Transport; Wed, 26 Feb 2020 10:21:42 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 01QGLgqE074809;
+ Wed, 26 Feb 2020 10:21:42 -0600
 From: Dan Murphy <dmurphy@ti.com>
-Message-ID: <531e40a0-7433-66d9-7b77-fc4ccc3dabdb@ti.com>
-Date: Wed, 26 Feb 2020 10:10:52 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+ <tiwai@suse.com>
+Subject: [RESEND PATCH for-next 2/3] ASoC: dt-bindings: Add TAS2563 compatible
+ to the TAS2562 binding
+Date: Wed, 26 Feb 2020 10:16:27 -0600
+Message-ID: <20200226161628.29960-2-dmurphy@ti.com>
+X-Mailer: git-send-email 2.25.0
+In-Reply-To: <20200226161628.29960-1-dmurphy@ti.com>
+References: <20200226161628.29960-1-dmurphy@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20200226161204.GG4136@sirena.org.uk>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com,
- lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Dan Murphy <dmurphy@ti.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -103,16 +104,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Mark
+Add the Texas Instruments TAS2563 audio amplifier to the TAS262
+binding.
 
-On 2/26/20 10:12 AM, Mark Brown wrote:
-> On Wed, Feb 26, 2020 at 07:03:05AM -0600, Dan Murphy wrote:
->> Fix error message for setting the sample rate.  It says bitwidth but
->> should say sample rate.
-> Fixes should always go at the start of a series so they can be applied
-> as such without any dependency on any new features or cleanups.
-OK I will rebase and put the fixes first.
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
+ Documentation/devicetree/bindings/sound/tas2562.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-Dan
+diff --git a/Documentation/devicetree/bindings/sound/tas2562.txt b/Documentation/devicetree/bindings/sound/tas2562.txt
+index 658e1fb18a99..94796b547184 100644
+--- a/Documentation/devicetree/bindings/sound/tas2562.txt
++++ b/Documentation/devicetree/bindings/sound/tas2562.txt
+@@ -8,7 +8,7 @@ real time monitoring of loudspeaker behavior.
+ Required properties:
+  - #address-cells  - Should be <1>.
+  - #size-cells     - Should be <0>.
+- - compatible:	   - Should contain "ti,tas2562".
++ - compatible:	   - Should contain "ti,tas2562", "ti,tas2563".
+  - reg:		   - The i2c address. Should be 0x4c, 0x4d, 0x4e or 0x4f.
+  - ti,imon-slot-no:- TDM TX current sense time slot.
+ 
+-- 
+2.25.0
 
