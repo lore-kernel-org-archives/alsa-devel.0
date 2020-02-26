@@ -7,51 +7,51 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A0CCC4BA24
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 18:54:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 99F92C4BA21
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 18:54:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C9BFC20714
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 18:53:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 24F232465D
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 18:54:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dLcsGYU4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C9BFC20714
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qQT19Ydy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 24F232465D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2E85E168B;
-	Wed, 26 Feb 2020 19:53:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E85E168B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 743581698;
+	Wed, 26 Feb 2020 19:53:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 743581698
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582743238;
-	bh=ujsHoetCb26dRu7uV+O4lGWnUXe3BuajfXc+9KCl8Xs=;
+	s=default; t=1582743257;
+	bh=mD1A1lFsxdnKER9j2IxUSs2Ez4jLoEFeDxKmDhYmFKI=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=dLcsGYU4t9SoUosZFsEs+BzA5d5tioGYmhIDVzyz8tSvJCXv3vz5ws2QLApQTu3ju
-	 uWzIoUFAaf+DGscDA857G6mzz3JmZUIYDfVa0IJJyAZdjJC6cEz1ErFDVdT2r7I7jW
-	 8ouHPzc37pwsxjYyaFS4bjVVHLJvBQ4PX/E6UB8o=
+	b=qQT19Ydytb/jppQBFbjhnvMgJhwsW2+TQQ6yfuPILPnDAjVFRcOlOzcljQixDtg8s
+	 heLuRuCFgWe7vLAk4sXgzhIUnbpJ70zJEezBHZORGlI/PKGFg7nFjvfVNlV+yZUiNc
+	 sXItAkQGLP3V3xL51uCGEc5Wx8b5cSTE9I5yQ01k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7418BF802EC;
-	Wed, 26 Feb 2020 19:48:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D3AC9F802E8;
+	Wed, 26 Feb 2020 19:48:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 055B0F802E7; Wed, 26 Feb 2020 19:47:58 +0100 (CET)
+ id 7C812F802FB; Wed, 26 Feb 2020 19:48:02 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 03140F802DB
- for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2020 19:47:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03140F802DB
+ by alsa1.perex.cz (Postfix) with ESMTP id 04878F802E8
+ for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2020 19:47:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04878F802E8
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CBA7B31B;
- Wed, 26 Feb 2020 10:47:52 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8E87531B;
+ Wed, 26 Feb 2020 10:47:57 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 435773F881;
- Wed, 26 Feb 2020 10:47:52 -0800 (PST)
-Date: Wed, 26 Feb 2020 18:47:50 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0516D3F881;
+ Wed, 26 Feb 2020 10:47:56 -0800 (PST)
+Date: Wed, 26 Feb 2020 18:47:55 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Shreyas NC <shreyas.nc@intel.com>
-Subject: Applied "ASoC: Add multiple CPU DAI support in DAPM" to the asoc tree
+Subject: Applied "ASoC: Add dapm_add_valid_dai_widget helper" to the asoc tree
 In-Reply-To: 
 Message-Id: 
 X-Patchwork-Hint: ignore
@@ -74,11 +74,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20200226184750.Aa2mqJwhWD-phNY6w2H-H4j7d40LyV-nqWyPdNccc6A@z>
+Message-ID: <20200226184755.oju8gd7_Ui_KIacoVvJPVxNOIlIba70WWmlbRGG1Zzs@z>
 
 The patch
 
-   ASoC: Add multiple CPU DAI support in DAPM
+   ASoC: Add dapm_add_valid_dai_widget helper
 
 has been applied to the asoc tree at
 
@@ -103,68 +103,177 @@ to this mail.
 Thanks,
 Mark
 
-From de6214a33633d8ce1c1490336f8e798e75ccd004 Mon Sep 17 00:00:00 2001
+From 6c4b13b51aa36aab023dd0bf24bf5582c9ba091e Mon Sep 17 00:00:00 2001
 From: Shreyas NC <shreyas.nc@intel.com>
-Date: Tue, 25 Feb 2020 21:39:15 +0800
-Subject: [PATCH] ASoC: Add multiple CPU DAI support in DAPM
+Date: Tue, 25 Feb 2020 21:39:14 +0800
+Subject: [PATCH] ASoC: Add dapm_add_valid_dai_widget helper
 
-DAPM handles DAIs during soc_dapm_stream_event() and during addition
-and creation of DAI widgets i.e., dapm_add_valid_dai_widget() and
-dapm_connect_dai_link_widgets().
-
-Extend these functions to handle multiple cpu dai.
+Adding a helper to connect widget for a specific cpu and codec dai
+The helper will help dapm_connect_dai_link_widgets() to reduce indents.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
 Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Link: https://lore.kernel.org/r/20200225133917.21314-5-yung-chuan.liao@linux.intel.com
+Link: https://lore.kernel.org/r/20200225133917.21314-4-yung-chuan.liao@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-dapm.c | 20 ++++++++++++++++----
- 1 file changed, 16 insertions(+), 4 deletions(-)
+ sound/soc/soc-dapm.c | 119 +++++++++++++++++++++++--------------------
+ 1 file changed, 63 insertions(+), 56 deletions(-)
 
 diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 539a1eaebeac..6ce024d52170 100644
+index 58c318c9debb..539a1eaebeac 100644
 --- a/sound/soc/soc-dapm.c
 +++ b/sound/soc/soc-dapm.c
-@@ -4361,9 +4361,19 @@ static void dapm_connect_dai_link_widgets(struct snd_soc_card *card,
- 	struct snd_soc_dai *codec_dai;
- 	int i;
- 
--	for_each_rtd_codec_dai(rtd, i, codec_dai)
--		dapm_add_valid_dai_widget(card, rtd,
--					  codec_dai, rtd->cpu_dais[0]);
-+	if (rtd->num_cpus == 1) {
-+		for_each_rtd_codec_dai(rtd, i, codec_dai)
-+			dapm_add_valid_dai_widget(card, rtd, codec_dai,
-+						  rtd->cpu_dais[0]);
-+	} else if (rtd->num_codecs == rtd->num_cpus) {
-+		for_each_rtd_codec_dai(rtd, i, codec_dai)
-+			dapm_add_valid_dai_widget(card, rtd, codec_dai,
-+						  rtd->cpu_dais[i]);
-+	} else {
-+		dev_err(card->dev,
-+			"N cpus to M codecs link is not supported yet\n");
-+	}
-+
+@@ -4277,16 +4277,15 @@ int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card)
+ 	return 0;
  }
  
+-static void dapm_connect_dai_link_widgets(struct snd_soc_card *card,
+-					  struct snd_soc_pcm_runtime *rtd)
++static void dapm_add_valid_dai_widget(struct snd_soc_card *card,
++				      struct snd_soc_pcm_runtime *rtd,
++				      struct snd_soc_dai *codec_dai,
++				      struct snd_soc_dai *cpu_dai)
+ {
+-	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+-	struct snd_soc_dai *codec_dai;
+ 	struct snd_soc_dapm_widget *playback = NULL, *capture = NULL;
+ 	struct snd_soc_dapm_widget *codec, *playback_cpu, *capture_cpu;
+ 	struct snd_pcm_substream *substream;
+ 	struct snd_pcm_str *streams = rtd->pcm->streams;
+-	int i;
+ 
+ 	if (rtd->dai_link->params) {
+ 		playback_cpu = cpu_dai->capture_widget;
+@@ -4298,67 +4297,75 @@ static void dapm_connect_dai_link_widgets(struct snd_soc_card *card,
+ 		capture_cpu = capture;
+ 	}
+ 
+-	for_each_rtd_codec_dai(rtd, i, codec_dai) {
+-		/* connect BE DAI playback if widgets are valid */
+-		codec = codec_dai->playback_widget;
+-
+-		if (playback_cpu && codec) {
+-			if (!playback) {
+-				substream = streams[SNDRV_PCM_STREAM_PLAYBACK].substream;
+-				playback = snd_soc_dapm_new_dai(card, substream,
+-								"playback");
+-				if (IS_ERR(playback)) {
+-					dev_err(rtd->dev,
+-						"ASoC: Failed to create DAI %s: %ld\n",
+-						codec_dai->name,
+-						PTR_ERR(playback));
+-					continue;
+-				}
+-
+-				snd_soc_dapm_add_path(&card->dapm, playback_cpu,
+-						      playback, NULL, NULL);
++	/* connect BE DAI playback if widgets are valid */
++	codec = codec_dai->playback_widget;
++
++	if (playback_cpu && codec) {
++		if (!playback) {
++			substream = streams[SNDRV_PCM_STREAM_PLAYBACK].substream;
++			playback = snd_soc_dapm_new_dai(card, substream,
++							"playback");
++			if (IS_ERR(playback)) {
++				dev_err(rtd->dev,
++					"ASoC: Failed to create DAI %s: %ld\n",
++					codec_dai->name,
++					PTR_ERR(playback));
++				goto capture;
+ 			}
+ 
+-			dev_dbg(rtd->dev, "connected DAI link %s:%s -> %s:%s\n",
+-				cpu_dai->component->name, playback_cpu->name,
+-				codec_dai->component->name, codec->name);
+-
+-			snd_soc_dapm_add_path(&card->dapm, playback, codec,
+-					      NULL, NULL);
++			snd_soc_dapm_add_path(&card->dapm, playback_cpu,
++					      playback, NULL, NULL);
+ 		}
+-	}
+ 
+-	for_each_rtd_codec_dai(rtd, i, codec_dai) {
+-		/* connect BE DAI capture if widgets are valid */
+-		codec = codec_dai->capture_widget;
+-
+-		if (codec && capture_cpu) {
+-			if (!capture) {
+-				substream = streams[SNDRV_PCM_STREAM_CAPTURE].substream;
+-				capture = snd_soc_dapm_new_dai(card, substream,
+-							       "capture");
+-				if (IS_ERR(capture)) {
+-					dev_err(rtd->dev,
+-						"ASoC: Failed to create DAI %s: %ld\n",
+-						codec_dai->name,
+-						PTR_ERR(capture));
+-					continue;
+-				}
+-
+-				snd_soc_dapm_add_path(&card->dapm, capture,
+-						      capture_cpu, NULL, NULL);
++		dev_dbg(rtd->dev, "connected DAI link %s:%s -> %s:%s\n",
++			cpu_dai->component->name, playback_cpu->name,
++			codec_dai->component->name, codec->name);
++
++		snd_soc_dapm_add_path(&card->dapm, playback, codec,
++				      NULL, NULL);
++	}
++
++capture:
++	/* connect BE DAI capture if widgets are valid */
++	codec = codec_dai->capture_widget;
++
++	if (codec && capture_cpu) {
++		if (!capture) {
++			substream = streams[SNDRV_PCM_STREAM_CAPTURE].substream;
++			capture = snd_soc_dapm_new_dai(card, substream,
++						       "capture");
++			if (IS_ERR(capture)) {
++				dev_err(rtd->dev,
++					"ASoC: Failed to create DAI %s: %ld\n",
++					codec_dai->name,
++					PTR_ERR(capture));
++				return;
+ 			}
+ 
+-			dev_dbg(rtd->dev, "connected DAI link %s:%s -> %s:%s\n",
+-				codec_dai->component->name, codec->name,
+-				cpu_dai->component->name, capture_cpu->name);
+-
+-			snd_soc_dapm_add_path(&card->dapm, codec, capture,
+-					      NULL, NULL);
++			snd_soc_dapm_add_path(&card->dapm, capture,
++					      capture_cpu, NULL, NULL);
+ 		}
++
++		dev_dbg(rtd->dev, "connected DAI link %s:%s -> %s:%s\n",
++			codec_dai->component->name, codec->name,
++			cpu_dai->component->name, capture_cpu->name);
++
++		snd_soc_dapm_add_path(&card->dapm, codec, capture,
++				      NULL, NULL);
+ 	}
+ }
+ 
++static void dapm_connect_dai_link_widgets(struct snd_soc_card *card,
++					  struct snd_soc_pcm_runtime *rtd)
++{
++	struct snd_soc_dai *codec_dai;
++	int i;
++
++	for_each_rtd_codec_dai(rtd, i, codec_dai)
++		dapm_add_valid_dai_widget(card, rtd,
++					  codec_dai, rtd->cpu_dais[0]);
++}
++
  static void soc_dapm_dai_stream_event(struct snd_soc_dai *dai, int stream,
-@@ -4424,9 +4434,11 @@ static void soc_dapm_stream_event(struct snd_soc_pcm_runtime *rtd, int stream,
  	int event)
  {
- 	struct snd_soc_dai *codec_dai;
-+	struct snd_soc_dai *cpu_dai;
- 	int i;
- 
--	soc_dapm_dai_stream_event(rtd->cpu_dai, stream, event);
-+	for_each_rtd_cpu_dai(rtd, i, cpu_dai)
-+		soc_dapm_dai_stream_event(rtd->cpu_dai, stream, event);
- 	for_each_rtd_codec_dai(rtd, i, codec_dai)
- 		soc_dapm_dai_stream_event(codec_dai, stream, event);
- 
 -- 
 2.20.1
 
