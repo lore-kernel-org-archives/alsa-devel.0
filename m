@@ -2,75 +2,72 @@ Return-Path: <SRS0=ZBV5=4O=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F1AAC4BA1E
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 17:37:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1178C4BA1E
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 17:50:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B48A524680
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 17:37:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2F9AC20801
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 17:50:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DvsmdDbg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B48A524680
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UOxglwbV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2F9AC20801
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E3FB7166A;
-	Wed, 26 Feb 2020 18:36:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3FB7166A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 74FBE1662;
+	Wed, 26 Feb 2020 18:50:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 74FBE1662
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582738631;
-	bh=seBWHwi8JNHmL1iwql4bErhY86dNxZyoyRTvs53SJ5c=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1582739455;
+	bh=16IH0sQEo2VsQQ2AHajjh4BS+4kehGgBMlTMnFcdIwY=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DvsmdDbgvwqrJ9r26bDsHVmJGd4DIPgyNCSGHuUv8QVkcySho7jjzOJXcOvM//hBv
-	 AJKp2mLKAsIg6+vkpmejQgJIeFjzJvF5DjRj9jNAqsj1mXDVIzgdCpMP3mh2tW5H5w
-	 UFQRWxx52YRDTPca52Tu63dt1sQBYaAYu5EfEwb0=
+	b=UOxglwbVWflf4MAWqQQSu1gQ8CB1JA+KXwOovDwnuIXvFEQe/M1Vugccq1PKN2FiN
+	 yJpf8VCU+OmfcCRePxfiRGjVzGOsXklUopEqnIgzeMnXpmRwy6dxtyRJCmvdutd1Yj
+	 i+stSfDKxvh89HSSgv75B5G0+e3vw8ZsWtuXWWng=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 52373F800E8;
-	Wed, 26 Feb 2020 18:36:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CD87EF8014D;
+	Wed, 26 Feb 2020 18:50:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 358C6F8014E; Wed, 26 Feb 2020 18:36:18 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 77015F800E8
- for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2020 18:36:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77015F800E8
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A97EA30E;
- Wed, 26 Feb 2020 09:36:13 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1F6EA3F881;
- Wed, 26 Feb 2020 09:36:12 -0800 (PST)
-Date: Wed, 26 Feb 2020 17:36:11 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH] ASoC: soc-pcm: Revert "call
- snd_soc_component_open/close() once"
-Message-ID: <20200226173611.GI4136@sirena.org.uk>
-References: <20200219182650.1416-1-kai.vehmanen@linux.intel.com>
- <87blput7hh.wl-kuninori.morimoto.gx@renesas.com>
- <alpine.DEB.2.21.2002201103060.2957@eliteleevi.tm.intel.com>
- <87mu9cspyf.wl-kuninori.morimoto.gx@renesas.com>
- <alpine.DEB.2.21.2002211251280.2957@eliteleevi.tm.intel.com>
- <87mu978pob.wl-kuninori.morimoto.gx@renesas.com>
- <87ftey88wk.wl-kuninori.morimoto.gx@renesas.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="xGGVyNQdqA79rdfn"
-Content-Disposition: inline
-In-Reply-To: <87ftey88wk.wl-kuninori.morimoto.gx@renesas.com>
-X-Cookie: May all your PUSHes be POPped.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: digetx@gmail.com, alsa-devel@alsa-project.org,
- ranjani.sridharan@linux.intel.com, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- pierre-louis.bossart@linux.intel.com
+ id 1D809F8014E; Wed, 26 Feb 2020 18:50:03 +0100 (CET)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id CA803F800AD
+ for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2020 18:49:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA803F800AD
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 26 Feb 2020 09:49:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,488,1574150400"; d="scan'208";a="230510128"
+Received: from walkernx-mobl.amr.corp.intel.com ([10.254.14.92])
+ by fmsmga007.fm.intel.com with ESMTP; 26 Feb 2020 09:49:55 -0800
+Message-ID: <5d98cb39bfdc4fe806fa5ec249f02dfc03d994ee.camel@linux.intel.com>
+Subject: Re: [PATCH 4/8] ASoC: soc-pcm: add dpcm_fe_dai_clean()
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown
+ <broonie@kernel.org>
+Date: Wed, 26 Feb 2020 09:49:55 -0800
+In-Reply-To: <878skp97in.wl-kuninori.morimoto.gx@renesas.com>
+References: <87eeuh97k4.wl-kuninori.morimoto.gx@renesas.com>
+ <878skp97in.wl-kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,37 +83,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Wed, 2020-02-26 at 15:40 +0900, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> 
+> dpcm_fe_dai_close() and error case of dpcm_fe_dai_open()
+> need to do same cleanup operation.
+> To avoid duplicate code, this patch adds dpcm_fe_dai_clean()
+> and use it.
+> 
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+>  sound/soc/soc-pcm.c | 30 ++++++++++++++++--------------
+>  1 file changed, 16 insertions(+), 14 deletions(-)
+> 
+> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+> index 3686dda097e2..d578dbdfa846 100644
+> --- a/sound/soc/soc-pcm.c
+> +++ b/sound/soc/soc-pcm.c
+> @@ -2978,14 +2978,11 @@ int soc_dpcm_runtime_update(struct
+> snd_soc_card *card)
+>  	return ret;
+>  }
+>  
+> -static int dpcm_fe_dai_close(struct snd_pcm_substream *fe_substream)
+> +static void dpcm_fe_dai_clean(struct snd_pcm_substream
+> *fe_substream)
+The series looks good to me, Morimoto-san. But a minor suggestion if
+you're doing a v2 to address other comments. Could you please change
+the name of the function above to dpcm_fe_dai_cleanup() instead?
 
---xGGVyNQdqA79rdfn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-On Wed, Feb 26, 2020 at 09:55:47AM +0900, Kuninori Morimoto wrote:
+Thanks,
+Ranjani
 
-> If each component / rtd / dai have "done" flag or count,
-> soc_pcm_open() can call soc_pcm_close() directly
-> without thinking about "until", because each flag can handle/indicate it.
-
-> The good point is we can reduce duplicate implementation.
-> And it can avoid future bug. Because today, we need to care both
-> soc_pcm_close() and error handling in soc_pcm_open(), it is not good for me.
-
-That goal definitely makes sense, if we can avoid problems like the ones
-here it seems like a useful change.
-
---xGGVyNQdqA79rdfn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5WrIoACgkQJNaLcl1U
-h9AghAgAhAl+JdOAz0lFwtiL1VLunSoDtHxZoxmJOJNUi0UKzPgzYtZ9rPpDbDSx
-+QfpXs++Qhj4FH32ijIS53zpU3M/0suZQr60aiSa13jV1g8KLzeI4PWK4rMcNYSj
-LUJXmC/cbcdrsAUtZxXyPWMtpa1HQT9xZcKQ8gpCTvxH+m1/j04tonmkX/moaeln
-k6rMD8C1TQZEtQjvJukR8TYERhlBKgJnnsDAwHM89J5ejagZ7blWtkLH+pGLa6oP
-Xus9V4HHP6zVLQmbcHrGXRV9L8ND+w0lLgKby1OosBlS+FNsUSdiLouQDQbGCcdF
-KiHCRzIS31nmVNNrZ9/xq8vXDN6G/g==
-=TcA/
------END PGP SIGNATURE-----
-
---xGGVyNQdqA79rdfn--
