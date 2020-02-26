@@ -2,68 +2,92 @@ Return-Path: <SRS0=ZBV5=4O=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	UNPARSEABLE_RELAY autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 093E1C4BA12
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 12:52:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 035AFC4BA10
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 13:09:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 768A224684
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 12:52:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 67DDD2467F
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 13:09:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="me+oiXOa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 768A224684
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=apparatus.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="j7DLmGvL";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="RT8Ou6ue"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 67DDD2467F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CE4321657;
-	Wed, 26 Feb 2020 13:52:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE4321657
+	by alsa0.perex.cz (Postfix) with ESMTPS id 974A615E5;
+	Wed, 26 Feb 2020 14:08:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 974A615E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582721570;
-	bh=Ss1DxhAlXwFasbOETeRivACMVvQBwqZ7h2ELjSI1OCE=;
-	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
+	s=default; t=1582722557;
+	bh=oN0y6TXA1vaow9sxAXty+RyWp/7oFhjNuNfLo8EgdZY=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=me+oiXOawUV77ea07ic30wDl1giePenjTDmaooN/niTpPNGXOThR1c4XLMRjJV+6S
-	 QuFvZiNQ8h5o2gaQ2S3HspVksRrlrmVgaduQ7N4fuXxPN9cjlY2lT2W8hpsSmHft+g
-	 per56UXgerAuo0wDbH+ew/kkIr4K25dquFAZbl1Q=
+	b=j7DLmGvLE52HjOpRKr8PN0BSnP+IXbytjgCEU+lIEH1HSCy1qG12Ho2w/2Zcu1jPs
+	 TkNSVPhCikJOQ2IqtB3HLm4qxy1JcmJevNXHmX4Lfe3m7RCozu1yioJL1V28X0v2PJ
+	 eX8nT5Y7kh11HgZ2jOf/rdnATC6yXR+2e0YrDxZI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 69100F800E8;
-	Wed, 26 Feb 2020 13:52:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 22C25F8014D;
+	Wed, 26 Feb 2020 14:08:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DCF34F8014D; Wed, 26 Feb 2020 13:51:57 +0100 (CET)
-Received: from apparatus.de (apparatus.de [116.203.57.180])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 28B7FF80171; Wed, 26 Feb 2020 14:08:26 +0100 (CET)
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 97886F800AD
- for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2020 13:51:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97886F800AD
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
- by apparatus.de (Postfix) with ESMTPA id AE58CFF28B
- for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2020 12:51:54 +0000 (UTC)
-Subject: Re: snd_dice: Clicking artifacts with TC StudioKonnekt 48
-To: alsa-devel@alsa-project.org
-References: <921a3b13-b44e-3300-bb72-84cbc9e3dd88@apparatus.de>
- <20200222012510.GA4883@laptop>
- <e29617da-9d34-c99f-f425-5d2aef59b623@apparatus.de>
- <20200224002031.GA10405@laptop>
-From: Mathias Buhr <napcode@apparatus.de>
-Message-ID: <3b42e75b-07ec-9dd4-b399-dbad30afc5a4@apparatus.de>
-Date: Wed, 26 Feb 2020 13:51:53 +0100
+ by alsa1.perex.cz (Postfix) with ESMTPS id AC215F800E8
+ for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2020 14:08:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC215F800E8
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="RT8Ou6ue"
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 01QD8KRu097208;
+ Wed, 26 Feb 2020 07:08:20 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1582722500;
+ bh=U2/8MofG7oIU/EBLKqUbVXsN2VlldAOoMRTLHW4tTgg=;
+ h=From:To:CC:Subject:Date:In-Reply-To:References;
+ b=RT8Ou6ueGxFz9OE7DoSdeK399eoXe1tRq3NGVKavsPyI6d4WOEXY241aCe91/vpUi
+ 3IHitAzsi0Ya5q3YZEEs+7Vpyea+bRwABZo1fKli1w2B8DgyTO27Zu8OHXBbnAYyAf
+ kp/dwk9YmImgD5HvKrVyDxsl0NIm7u3voWMwzxjI=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 01QD8KKF021752
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Wed, 26 Feb 2020 07:08:20 -0600
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Wed, 26
+ Feb 2020 07:08:20 -0600
+Received: from localhost.localdomain (10.64.41.19) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
+ Frontend Transport; Wed, 26 Feb 2020 07:08:20 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by localhost.localdomain (8.15.2/8.15.2) with ESMTP id 01QD8JJN121280;
+ Wed, 26 Feb 2020 07:08:20 -0600
+From: Dan Murphy <dmurphy@ti.com>
+To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+ <tiwai@suse.com>
+Subject: [PATCH for-next 3/3] ASoC: tas2562: Fix sample rate error message
+Date: Wed, 26 Feb 2020 07:03:05 -0600
+Message-ID: <20200226130305.12043-3-dmurphy@ti.com>
+X-Mailer: git-send-email 2.25.0
+In-Reply-To: <20200226130305.12043-1-dmurphy@ti.com>
+References: <20200226130305.12043-1-dmurphy@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20200224002031.GA10405@laptop>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-Authentication-Results: apparatus.de;
- auth=pass smtp.auth=buhr@apparatus.de smtp.mailfrom=napcode@apparatus.de
-X-Spamd-Bar: /
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Dan Murphy <dmurphy@ti.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,36 +103,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 24.02.20 01:20, Takashi Sakamoto wrote:
-> Hi,
->
-> On Sat, Feb 22, 2020 at 05:49:29PM +0100, Mathias Buhr wrote:
->> Thanks for your reply Takashi! It clarifies the situation. I'lll stick
->> with ffado then.
->>
->> Regards,
->>
->> Mathias
-> Both of libffado2 and ALSA dice driver have problems for each, but it's
-> a convenient option for users of Dice-based devices to use the former,
-> at present. I've been improved ALSA dice driver for years with the other
-> drivers, but it doesn't bring so hasty changes since it's a kind of
-> reverse-engineering; no one knows the actual design and few ones can
-> make discussion based on the fact.
->
->
-> Well, I also own TC Electronic Sudio Konnekt 48 and I've investigated
-> its protocol to configure I/O routings on internal DSP. After my
-> vacation, I'll send information about it for your convenience
-> (maybe next week).
->
->
-> Regards
->
-> Takashi Sakamoto
+Fix error message for setting the sample rate.  It says bitwidth but
+should say sample rate.
 
-Thanks Takashi! I'd appreciate that!
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
+ sound/soc/codecs/tas2562.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Regards
+diff --git a/sound/soc/codecs/tas2562.c b/sound/soc/codecs/tas2562.c
+index 79c3c3d79766..6b7f7a18da36 100644
+--- a/sound/soc/codecs/tas2562.c
++++ b/sound/soc/codecs/tas2562.c
+@@ -276,7 +276,7 @@ static int tas2562_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	ret = tas2562_set_samplerate(tas2562, params_rate(params));
+ 	if (ret)
+-		dev_err(tas2562->dev, "set bitwidth failed, %d\n", ret);
++		dev_err(tas2562->dev, "set sample rate failed, %d\n", ret);
+ 
+ 	return ret;
+ }
+-- 
+2.25.0
 
--Mathias
