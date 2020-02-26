@@ -2,70 +2,101 @@ Return-Path: <SRS0=ZBV5=4O=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35CEFC4BA10
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 12:27:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E79DC4BA12
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 12:33:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B35F324685
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 12:27:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9E9AC20838
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 12:33:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RUb/PuJm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B35F324685
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EDvA7j8V";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vo8zTNll"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9E9AC20838
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F220D1655;
-	Wed, 26 Feb 2020 13:26:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F220D1655
+	by alsa0.perex.cz (Postfix) with ESMTPS id 04327166D;
+	Wed, 26 Feb 2020 13:32:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 04327166D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582720039;
-	bh=VPJngg7C2avbMeb4L65drmcQvZ+4VqbZDWVG175EJMw=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1582720379;
+	bh=dTko1tilxS3S8vj7bQGj7xrjWq8TTL6aDTriVVNz9Cg=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RUb/PuJmX+C1I8mysUQxGXpP0o0EJP82V6qIyncTIN9yuWmirbLEnKGpNOyYSKFml
-	 +I0SIADypO9QdVadIZBANjRt+tmgHWHXs4rDihcQSesIgLMBnLXfZgJjKJ97JHW5+M
-	 Cbozs/ADyB5jALdvAN+IDQaMyxn5FKVYHItaWaFM=
+	b=EDvA7j8V6gjowRlQmPaH0jU+apw76ZN4XuIIvvc6cfL/Cpgp1mHySQ5v4CYxwbAzL
+	 l0bAQg6k9z0G20jb66b5fjvQ9r+Ies7Ni3ILdHDaez5sZzBhcY6yLhSR7RJcvtd9WE
+	 qktNWqrkt7K+mDSEMEJowaS6vggILafS7KjvsHsY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7A373F8014D;
-	Wed, 26 Feb 2020 13:26:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 826F4F8014D;
+	Wed, 26 Feb 2020 13:32:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 07167F8014E; Wed, 26 Feb 2020 13:26:26 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 0AAEFF800AD
- for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2020 13:26:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0AAEFF800AD
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1A6291FB;
- Wed, 26 Feb 2020 04:26:21 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 92A363FA00;
- Wed, 26 Feb 2020 04:26:20 -0800 (PST)
-Date: Wed, 26 Feb 2020 12:26:19 +0000
-From: Mark Brown <broonie@kernel.org>
-To: jack.yu@realtek.com
-Subject: Re: [PATCH] ASoC: rt1015: modify some structure to be static and add
- operation callback function for rt1015_dai
-Message-ID: <20200226122619.GF4136@sirena.org.uk>
-References: <20200226022827.3262-1-jack.yu@realtek.com>
+ id DB9F6F8014E; Wed, 26 Feb 2020 13:32:05 +0100 (CET)
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com
+ [IPv6:2607:f8b0:4864:20::743])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3D12EF800E8
+ for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2020 13:32:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3D12EF800E8
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="Vo8zTNll"
+Received: by mail-qk1-x743.google.com with SMTP id m2so767621qka.7
+ for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2020 04:32:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=0MRsXhRp3E6rh2+qvZmIeFVHR93AAhtRNYB0tmbFEVY=;
+ b=Vo8zTNllfC4o6nND7kLPoDV7V03+PGLD04JqV7MNWSx0oObQWxHlaEfGIBrdyHaRvJ
+ ww2vSmC4bRv8i6hcU8VBeY2YhfMDKdaS6MfQUPq1T7fZxrXW5NTcxlG8C521XtoJJQOx
+ AlBGmyqtGt3YFgb2TnObOZnHZNWjm9XEp7X9sF25doQduHp62/V02ifg2v+zkJGjLGie
+ X240XCgFRjloBM3RFAwEtFylPsHPRhwNYVxOXI3L4Uz4qTKOe116ebQmBoaKfuWsL/+e
+ cjoSbJV9c9LPLH4pAIgZn619ZEH4FQ8oRR3Ud3Vo+NF1ywIf8ZBsAIOqEb9XriCWX05L
+ N/Ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=0MRsXhRp3E6rh2+qvZmIeFVHR93AAhtRNYB0tmbFEVY=;
+ b=eqeGWtA0YHXOMCDUS0p/XW0b5mIgBE7GWwSFH6EHD+eQz8ChjlgNzjuSLCAbhf11/C
+ CoLLSxuP0+dhJyW5W5vo6Z6w5+c7gSgFXsVmvk5HVe+ZXlhXFbIpVyHhEQwomsQ744n0
+ B0wRMJD9ZawpO2p8cdkEDoVFtJEx3S4CkpXyrhDR6DmOqziiDJTCCWssVDjsZ0o086ZR
+ wVPv8nkx3ZRO8ps1+LTFXHiriK7494G8sobAYvXMZpn6N+QOZ4v8jWQp9vC0Au7zEPCI
+ Ff/rPaTFbW9iQyA6KlueXIXUjZx+ASi+U50sNhwAA9bWi7iNAvmYpJfWnh3SNRatGgeJ
+ Qtww==
+X-Gm-Message-State: APjAAAXsk6loG9kjwVv9GmIcSQ4+3PFDTtJmYUbrLdG9xvymFzNCFddL
+ o1lcWf0jnIommPDMYQroGu7F9RwGvcEAYj/VCfg=
+X-Google-Smtp-Source: APXvYqzT0QOBpKRKbC4kcg/YNxuLy3cnTrGuXc9LH9ek2oNBn/hVko38x0Hlgj0xhIw5szgawcSuZNLgT142188LFQs=
+X-Received: by 2002:a37:a8c3:: with SMTP id r186mr5306087qke.37.1582720319288; 
+ Wed, 26 Feb 2020 04:31:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="lIrNkN/7tmsD/ALM"
-Content-Disposition: inline
-In-Reply-To: <20200226022827.3262-1-jack.yu@realtek.com>
-X-Cookie: May all your PUSHes be POPped.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de,
- kent_chen@realtek.com, kenny_chen@realtek.com, lgirdwood@gmail.com,
- derek.fang@realtek.com, shumingf@realtek.com, mingjane_hsieh@realtek.com,
- flove@realtek.com
+References: <cover.1582007379.git.shengjiu.wang@nxp.com>
+ <a02af544c73914fe3a5ab2f35eb237ef68ee29e7.1582007379.git.shengjiu.wang@nxp.com>
+ <20200219203706.GA25618@bogus>
+In-Reply-To: <20200219203706.GA25618@bogus>
+From: Shengjiu Wang <shengjiu.wang@gmail.com>
+Date: Wed, 26 Feb 2020 20:31:48 +0800
+Message-ID: <CAA+D8AMrHHZ3U66z+jroZqLK8pnn7xF0A9MCzxAqdqDfUHxf2A@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] ASoC: dt-bindings: fsl_easrc: Add document for
+ EASRC
+To: Rob Herring <robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>,
+ Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
+ Fabio Estevam <festevam@gmail.com>, Shengjiu Wang <shengjiu.wang@nxp.com>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>,
+ linuxppc-dev@lists.ozlabs.org, linux-kernel <linux-kernel@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,50 +112,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi
 
---lIrNkN/7tmsD/ALM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Thu, Feb 20, 2020 at 4:38 AM Rob Herring <robh@kernel.org> wrote:
+>
+> On Tue, Feb 18, 2020 at 02:39:36PM +0800, Shengjiu Wang wrote:
+> > EASRC (Enhanced Asynchronous Sample Rate Converter) is a new
+> > IP module found on i.MX8MN.
+> >
+> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> > ---
+> >  .../devicetree/bindings/sound/fsl,easrc.txt   | 57 +++++++++++++++++++
+> >  1 file changed, 57 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/sound/fsl,easrc.txt
+>
+> Bindings are now in DT schema format. See
+> Documentation/devicetree/writing-schema.rst.
+>
+Thanks, will switch to .yaml format.
 
-On Wed, Feb 26, 2020 at 10:28:27AM +0800, jack.yu@realtek.com wrote:
-> From: Jack Yu <jack.yu@realtek.com>
->=20
-> 1. Add "static" for rt1015_aif_dai_ops.
-> 2. Add "static" for rt1015_dai[].
-> 3. Add operation callback for rt1015_dai[].
-
-Please don't send multiple changes in a single patch, split them up into
-separate patches - the callback certainly seems like it needs to be in a
-different patch.
-
-> @@ -664,7 +664,7 @@ static int rt1015_hw_params(struct snd_pcm_substream =
-*substream,
->  	snd_soc_component_update_bits(component, RT1015_TDM_MASTER,
->  		RT1015_I2S_DL_MASK, val_len);
->  	snd_soc_component_update_bits(component, RT1015_CLK2,
-> -		RT1015_FS_PD_MASK, pre_div);
-> +		RT1015_FS_PD_MASK, pre_div << RT1015_FS_PD_SFT);
-> =20
->  	return 0;
->  }
-
-This doesn't seem to be mentioned in the changelog and should probably
-also be a separate patch?
-
---lIrNkN/7tmsD/ALM
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5WY+oACgkQJNaLcl1U
-h9DsWwf/dQs3poLbJP9axq+2cvAoRIyxFY8WC88OOIVrhUISwukxxqKurxx1aBgi
-u7A8/WqTFpjxMjxhcnvzqkgVJjE/XK9Qzt8ffDSw/NuEyhpwJcJSSAzx9vfOshRm
-/792hgCFcAQ4MSzLrw5LBkKhvlpjaZ+injT42QZSvk6mWHI3WQXsKxiLZALS+HIt
-fi6t3ML+GYdzpiHFPyWF4WDIRgA6YFy18z+u4vO9G/sA/yUNz2VyPHI1tWS+3udr
-DEyTjwKsRtroqaj8N84D1QjOrmF40jZqTmf5oiYa4gig//efZxSwILL7IhVBR7N6
-xBHGM4m9ZSE1SpM8iiBBXSyeU1ppRA==
-=jZrK
------END PGP SIGNATURE-----
-
---lIrNkN/7tmsD/ALM--
+best regards
+wang shengjiu
