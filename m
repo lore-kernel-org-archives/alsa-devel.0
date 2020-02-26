@@ -7,52 +7,52 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04D7EC4BA24
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 18:48:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6675DC4BA24
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 18:49:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 85AF324653
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 18:48:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D8B0A24653
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 18:49:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QQ3ooHkN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 85AF324653
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FodGGBZ7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D8B0A24653
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C8D421660;
-	Wed, 26 Feb 2020 19:47:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C8D421660
+	by alsa0.perex.cz (Postfix) with ESMTPS id BC93B16A0;
+	Wed, 26 Feb 2020 19:48:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC93B16A0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582742886;
-	bh=ygKXUP/zlNrD1JP9tprOUPDs+qn0SEaRxxiS+kQqvV8=;
+	s=default; t=1582742940;
+	bh=f8S4ZBNZwujUDwycfaHba+lcky+KdUoDZMnfXQYgiNA=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=QQ3ooHkNhkQp11lTOUNSl+Is8kH9NIWsLC5HJMhAVewY7oTXxajov31nS3bFbsTyj
-	 EImal5SPlD5ogPN6Yiu6rLcPxVl+UJ3OTZybtDgQtdjiPg5JuAd6KHNG8iUrXOHuno
-	 U3dAvJ6kZaNosFZEUuuB3codq+j8F4OH7Xh21MX0=
+	b=FodGGBZ7xmXotYaY1yTogYIDiTqap2vCZQVDT/8Ti5Nk/0eXEn8VS5xgR+IoMOIGs
+	 wcHAIeSwwTokz5CDpNO+MBmQarinm2ACJcAqqyUZr4y+dtT/Kj59nipUPe0AeHMpx+
+	 hMVriGiDghXEdeCC9Ce4yQFgYi+SMNWeDJgsH5Go=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 327A8F8014D;
-	Wed, 26 Feb 2020 19:47:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 55E46F8016F;
+	Wed, 26 Feb 2020 19:47:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 993C2F8014E; Wed, 26 Feb 2020 19:47:14 +0100 (CET)
+ id 5EEF1F8016F; Wed, 26 Feb 2020 19:47:20 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id C9C35F80089
- for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2020 19:47:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9C35F80089
+ by alsa1.perex.cz (Postfix) with ESMTP id 58942F801F2
+ for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2020 19:47:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58942F801F2
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8C96930E;
- Wed, 26 Feb 2020 10:47:09 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4BE4330E;
+ Wed, 26 Feb 2020 10:47:14 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 023F43F881;
- Wed, 26 Feb 2020 10:47:08 -0800 (PST)
-Date: Wed, 26 Feb 2020 18:47:07 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B5D383F881;
+ Wed, 26 Feb 2020 10:47:13 -0800 (PST)
+Date: Wed, 26 Feb 2020 18:47:12 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Dan Murphy <dmurphy@ti.com>
-Subject: Applied "ASoC: tas2562: Add entries for the TAS2563 audio amplifier"
- to the asoc tree
+Subject: Applied "ASoC: dt-bindings: Add TAS2563 compatible to the TAS2562
+ binding" to the asoc tree
 In-Reply-To: 
 Message-Id: 
 X-Patchwork-Hint: ignore
@@ -71,11 +71,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20200226184707.zRDPeWZ3cw40hNPlwWyzPBsBkhO_6DrhgT-UyiNlKBE@z>
+Message-ID: <20200226184712.stXO0YeEh3OA1PMcioHspEXsjDDw0N-fc3CSoCvc2Rw@z>
 
 The patch
 
-   ASoC: tas2562: Add entries for the TAS2563 audio amplifier
+   ASoC: dt-bindings: Add TAS2563 compatible to the TAS2562 binding
 
 has been applied to the asoc tree at
 
@@ -100,55 +100,36 @@ to this mail.
 Thanks,
 Mark
 
-From 14f8c8d8fd62207f081549d45099a90dd3717696 Mon Sep 17 00:00:00 2001
+From f87cdb1f9937e6f5234e3300804ac156e639bc00 Mon Sep 17 00:00:00 2001
 From: Dan Murphy <dmurphy@ti.com>
-Date: Wed, 26 Feb 2020 07:03:04 -0600
-Subject: [PATCH] ASoC: tas2562: Add entries for the TAS2563 audio amplifier
+Date: Wed, 26 Feb 2020 07:03:03 -0600
+Subject: [PATCH] ASoC: dt-bindings: Add TAS2563 compatible to the TAS2562
+ binding
 
-The TAS2563 is register compatible with the TAS2562.  The main
-difference is the TAS2563 has a programmable DSP to manage different
-audio profiles.
+Add the Texas Instruments TAS2563 audio amplifier to the TAS262
+binding.
 
 Signed-off-by: Dan Murphy <dmurphy@ti.com>
-Link: https://lore.kernel.org/r/20200226130305.12043-2-dmurphy@ti.com
+CC: Rob Herring <robh@kernel.org>
+Link: https://lore.kernel.org/r/20200226130305.12043-1-dmurphy@ti.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tas2562.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ Documentation/devicetree/bindings/sound/tas2562.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/tas2562.c b/sound/soc/codecs/tas2562.c
-index d5e04030a0c1..79c3c3d79766 100644
---- a/sound/soc/codecs/tas2562.c
-+++ b/sound/soc/codecs/tas2562.c
-@@ -55,6 +55,11 @@ struct tas2562_data {
- 	int volume_lvl;
- };
+diff --git a/Documentation/devicetree/bindings/sound/tas2562.txt b/Documentation/devicetree/bindings/sound/tas2562.txt
+index 658e1fb18a99..94796b547184 100644
+--- a/Documentation/devicetree/bindings/sound/tas2562.txt
++++ b/Documentation/devicetree/bindings/sound/tas2562.txt
+@@ -8,7 +8,7 @@ real time monitoring of loudspeaker behavior.
+ Required properties:
+  - #address-cells  - Should be <1>.
+  - #size-cells     - Should be <0>.
+- - compatible:	   - Should contain "ti,tas2562".
++ - compatible:	   - Should contain "ti,tas2562", "ti,tas2563".
+  - reg:		   - The i2c address. Should be 0x4c, 0x4d, 0x4e or 0x4f.
+  - ti,imon-slot-no:- TDM TX current sense time slot.
  
-+enum tas256x_model {
-+	TAS2562,
-+	TAS2563,
-+};
-+
- static int tas2562_set_bias_level(struct snd_soc_component *component,
- 				 enum snd_soc_bias_level level)
- {
-@@ -664,13 +669,15 @@ static int tas2562_probe(struct i2c_client *client,
- }
- 
- static const struct i2c_device_id tas2562_id[] = {
--	{ "tas2562", 0 },
-+	{ "tas2562", TAS2562 },
-+	{ "tas2563", TAS2563 },
- 	{ }
- };
- MODULE_DEVICE_TABLE(i2c, tas2562_id);
- 
- static const struct of_device_id tas2562_of_match[] = {
- 	{ .compatible = "ti,tas2562", },
-+	{ .compatible = "ti,tas2563", },
- 	{ },
- };
- MODULE_DEVICE_TABLE(of, tas2562_of_match);
 -- 
 2.20.1
 
