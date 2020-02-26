@@ -7,59 +7,56 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 99F92C4BA21
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 18:54:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A6F1FC4BA21
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 18:56:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 24F232465D
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 18:54:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2F1C220578
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 18:56:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qQT19Ydy"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 24F232465D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QyKMnXdD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2F1C220578
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 743581698;
-	Wed, 26 Feb 2020 19:53:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 743581698
+	by alsa0.perex.cz (Postfix) with ESMTPS id 820C7166A;
+	Wed, 26 Feb 2020 19:55:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 820C7166A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582743257;
-	bh=mD1A1lFsxdnKER9j2IxUSs2Ez4jLoEFeDxKmDhYmFKI=;
+	s=default; t=1582743373;
+	bh=ZcdzpBDBqOAUZFnPx6tvKO3tG/h8eEY32BexOJs3jLA=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=qQT19Ydytb/jppQBFbjhnvMgJhwsW2+TQQ6yfuPILPnDAjVFRcOlOzcljQixDtg8s
-	 heLuRuCFgWe7vLAk4sXgzhIUnbpJ70zJEezBHZORGlI/PKGFg7nFjvfVNlV+yZUiNc
-	 sXItAkQGLP3V3xL51uCGEc5Wx8b5cSTE9I5yQ01k=
+	b=QyKMnXdD75Pe6YCyJiWij6oVQA5XcObXLogn+EImfkWhAjwLJ1ytOuZcQvX6VLV0H
+	 W0aHq/OnBsjgF5EBg7oL+STqQYKEZlea7cmKTxTad5X1n0kdlHXVwQmT39DowyRGYY
+	 aA4uDHs0jqhOeYn6oJVRGhAnZVh8Mu6Qm4rM34+I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D3AC9F802E8;
-	Wed, 26 Feb 2020 19:48:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E2A15F80321;
+	Wed, 26 Feb 2020 19:48:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7C812F802FB; Wed, 26 Feb 2020 19:48:02 +0100 (CET)
+ id 6EFEFF80329; Wed, 26 Feb 2020 19:48:17 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 04878F802E8
- for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2020 19:47:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04878F802E8
+ by alsa1.perex.cz (Postfix) with ESMTP id 78577F8014D
+ for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2020 19:48:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78577F8014D
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8E87531B;
- Wed, 26 Feb 2020 10:47:57 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8E5AD4B2;
+ Wed, 26 Feb 2020 10:48:12 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0516D3F881;
- Wed, 26 Feb 2020 10:47:56 -0800 (PST)
-Date: Wed, 26 Feb 2020 18:47:55 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 05F6D3F881;
+ Wed, 26 Feb 2020 10:48:11 -0800 (PST)
+Date: Wed, 26 Feb 2020 18:48:10 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Shreyas NC <shreyas.nc@intel.com>
-Subject: Applied "ASoC: Add dapm_add_valid_dai_widget helper" to the asoc tree
+To: Dan Murphy <dmurphy@ti.com>
+Subject: Applied "ASoC: tas2562: Fix sample rate error message" to the asoc
+ tree
 In-Reply-To: 
 Message-Id: 
 X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>,
- Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,11 +71,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20200226184755.oju8gd7_Ui_KIacoVvJPVxNOIlIba70WWmlbRGG1Zzs@z>
+Message-ID: <20200226184810.ofSpA4IBYxNg7_cDfKKXkazr4iVvyUxYoiUMFvI2Y1c@z>
 
 The patch
 
-   ASoC: Add dapm_add_valid_dai_widget helper
+   ASoC: tas2562: Fix sample rate error message
 
 has been applied to the asoc tree at
 
@@ -103,177 +100,34 @@ to this mail.
 Thanks,
 Mark
 
-From 6c4b13b51aa36aab023dd0bf24bf5582c9ba091e Mon Sep 17 00:00:00 2001
-From: Shreyas NC <shreyas.nc@intel.com>
-Date: Tue, 25 Feb 2020 21:39:14 +0800
-Subject: [PATCH] ASoC: Add dapm_add_valid_dai_widget helper
+From 38b6a714941a285319734b9ccc30d34e107d5d7e Mon Sep 17 00:00:00 2001
+From: Dan Murphy <dmurphy@ti.com>
+Date: Wed, 26 Feb 2020 07:03:05 -0600
+Subject: [PATCH] ASoC: tas2562: Fix sample rate error message
 
-Adding a helper to connect widget for a specific cpu and codec dai
-The helper will help dapm_connect_dai_link_widgets() to reduce indents.
+Fix error message for setting the sample rate.  It says bitwidth but
+should say sample rate.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Link: https://lore.kernel.org/r/20200225133917.21314-4-yung-chuan.liao@linux.intel.com
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+Link: https://lore.kernel.org/r/20200226130305.12043-3-dmurphy@ti.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-dapm.c | 119 +++++++++++++++++++++++--------------------
- 1 file changed, 63 insertions(+), 56 deletions(-)
+ sound/soc/codecs/tas2562.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 58c318c9debb..539a1eaebeac 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -4277,16 +4277,15 @@ int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card)
- 	return 0;
+diff --git a/sound/soc/codecs/tas2562.c b/sound/soc/codecs/tas2562.c
+index 5b4803a76719..be52886a5edb 100644
+--- a/sound/soc/codecs/tas2562.c
++++ b/sound/soc/codecs/tas2562.c
+@@ -252,7 +252,7 @@ static int tas2562_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	ret = tas2562_set_samplerate(tas2562, params_rate(params));
+ 	if (ret)
+-		dev_err(tas2562->dev, "set bitwidth failed, %d\n", ret);
++		dev_err(tas2562->dev, "set sample rate failed, %d\n", ret);
+ 
+ 	return ret;
  }
- 
--static void dapm_connect_dai_link_widgets(struct snd_soc_card *card,
--					  struct snd_soc_pcm_runtime *rtd)
-+static void dapm_add_valid_dai_widget(struct snd_soc_card *card,
-+				      struct snd_soc_pcm_runtime *rtd,
-+				      struct snd_soc_dai *codec_dai,
-+				      struct snd_soc_dai *cpu_dai)
- {
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--	struct snd_soc_dai *codec_dai;
- 	struct snd_soc_dapm_widget *playback = NULL, *capture = NULL;
- 	struct snd_soc_dapm_widget *codec, *playback_cpu, *capture_cpu;
- 	struct snd_pcm_substream *substream;
- 	struct snd_pcm_str *streams = rtd->pcm->streams;
--	int i;
- 
- 	if (rtd->dai_link->params) {
- 		playback_cpu = cpu_dai->capture_widget;
-@@ -4298,67 +4297,75 @@ static void dapm_connect_dai_link_widgets(struct snd_soc_card *card,
- 		capture_cpu = capture;
- 	}
- 
--	for_each_rtd_codec_dai(rtd, i, codec_dai) {
--		/* connect BE DAI playback if widgets are valid */
--		codec = codec_dai->playback_widget;
--
--		if (playback_cpu && codec) {
--			if (!playback) {
--				substream = streams[SNDRV_PCM_STREAM_PLAYBACK].substream;
--				playback = snd_soc_dapm_new_dai(card, substream,
--								"playback");
--				if (IS_ERR(playback)) {
--					dev_err(rtd->dev,
--						"ASoC: Failed to create DAI %s: %ld\n",
--						codec_dai->name,
--						PTR_ERR(playback));
--					continue;
--				}
--
--				snd_soc_dapm_add_path(&card->dapm, playback_cpu,
--						      playback, NULL, NULL);
-+	/* connect BE DAI playback if widgets are valid */
-+	codec = codec_dai->playback_widget;
-+
-+	if (playback_cpu && codec) {
-+		if (!playback) {
-+			substream = streams[SNDRV_PCM_STREAM_PLAYBACK].substream;
-+			playback = snd_soc_dapm_new_dai(card, substream,
-+							"playback");
-+			if (IS_ERR(playback)) {
-+				dev_err(rtd->dev,
-+					"ASoC: Failed to create DAI %s: %ld\n",
-+					codec_dai->name,
-+					PTR_ERR(playback));
-+				goto capture;
- 			}
- 
--			dev_dbg(rtd->dev, "connected DAI link %s:%s -> %s:%s\n",
--				cpu_dai->component->name, playback_cpu->name,
--				codec_dai->component->name, codec->name);
--
--			snd_soc_dapm_add_path(&card->dapm, playback, codec,
--					      NULL, NULL);
-+			snd_soc_dapm_add_path(&card->dapm, playback_cpu,
-+					      playback, NULL, NULL);
- 		}
--	}
- 
--	for_each_rtd_codec_dai(rtd, i, codec_dai) {
--		/* connect BE DAI capture if widgets are valid */
--		codec = codec_dai->capture_widget;
--
--		if (codec && capture_cpu) {
--			if (!capture) {
--				substream = streams[SNDRV_PCM_STREAM_CAPTURE].substream;
--				capture = snd_soc_dapm_new_dai(card, substream,
--							       "capture");
--				if (IS_ERR(capture)) {
--					dev_err(rtd->dev,
--						"ASoC: Failed to create DAI %s: %ld\n",
--						codec_dai->name,
--						PTR_ERR(capture));
--					continue;
--				}
--
--				snd_soc_dapm_add_path(&card->dapm, capture,
--						      capture_cpu, NULL, NULL);
-+		dev_dbg(rtd->dev, "connected DAI link %s:%s -> %s:%s\n",
-+			cpu_dai->component->name, playback_cpu->name,
-+			codec_dai->component->name, codec->name);
-+
-+		snd_soc_dapm_add_path(&card->dapm, playback, codec,
-+				      NULL, NULL);
-+	}
-+
-+capture:
-+	/* connect BE DAI capture if widgets are valid */
-+	codec = codec_dai->capture_widget;
-+
-+	if (codec && capture_cpu) {
-+		if (!capture) {
-+			substream = streams[SNDRV_PCM_STREAM_CAPTURE].substream;
-+			capture = snd_soc_dapm_new_dai(card, substream,
-+						       "capture");
-+			if (IS_ERR(capture)) {
-+				dev_err(rtd->dev,
-+					"ASoC: Failed to create DAI %s: %ld\n",
-+					codec_dai->name,
-+					PTR_ERR(capture));
-+				return;
- 			}
- 
--			dev_dbg(rtd->dev, "connected DAI link %s:%s -> %s:%s\n",
--				codec_dai->component->name, codec->name,
--				cpu_dai->component->name, capture_cpu->name);
--
--			snd_soc_dapm_add_path(&card->dapm, codec, capture,
--					      NULL, NULL);
-+			snd_soc_dapm_add_path(&card->dapm, capture,
-+					      capture_cpu, NULL, NULL);
- 		}
-+
-+		dev_dbg(rtd->dev, "connected DAI link %s:%s -> %s:%s\n",
-+			codec_dai->component->name, codec->name,
-+			cpu_dai->component->name, capture_cpu->name);
-+
-+		snd_soc_dapm_add_path(&card->dapm, codec, capture,
-+				      NULL, NULL);
- 	}
- }
- 
-+static void dapm_connect_dai_link_widgets(struct snd_soc_card *card,
-+					  struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_dai *codec_dai;
-+	int i;
-+
-+	for_each_rtd_codec_dai(rtd, i, codec_dai)
-+		dapm_add_valid_dai_widget(card, rtd,
-+					  codec_dai, rtd->cpu_dais[0]);
-+}
-+
- static void soc_dapm_dai_stream_event(struct snd_soc_dai *dai, int stream,
- 	int event)
- {
 -- 
 2.20.1
 
