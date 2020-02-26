@@ -6,71 +6,71 @@ X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 89005C4BA0B
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 08:40:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E15FC4BA0B
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 08:41:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 14D5E222C2
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 08:40:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D396824653
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 08:41:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TnD+yn9Q";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="FobR3kDe"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 14D5E222C2
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iY+xzpUt";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="mJqtwb1l"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D396824653
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6B90D166C;
-	Wed, 26 Feb 2020 09:39:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B90D166C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 209C8168D;
+	Wed, 26 Feb 2020 09:40:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 209C8168D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582706426;
-	bh=ytnd76MiJNXHaByv3oTOm1FC8A8dH3TLYQBSH6N48gw=;
+	s=default; t=1582706480;
+	bh=LYIUguxIL6wJHCQWIRNDa0HHgxSUcSnBZ4MGaN9UEBs=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TnD+yn9QFnUfhgO0ML6xFriiOjP/Rhzb/Bgq98ONemPgKHaT749HcWY29J3/y6DLM
-	 Aw0QAq4CSOqksM5WDcuZksondBxMx3e3YLV3CZMgGeZm6YZHsQfnOfN6kj3EvLJ/+Z
-	 LQBqewoL36fX/MXC7Wd4kDL8c48BybYoyq6PYo6A=
+	b=iY+xzpUt5vT0yC6XvFW617pQg5puf+5V7WyIPnYvWN//amw1zMiXWG+kVyShyiQbU
+	 i7CurOXu7VLURu5t/TXhQZv8SqODw+/vn+K+IelDdkr76T7icPGAhksrLXT59F9cRg
+	 lG/bT+mcWNjqkJe/ZasSEAIVWRDOoLcGq/A1dyY4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ECD7AF8014D;
-	Wed, 26 Feb 2020 09:39:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3B277F80171;
+	Wed, 26 Feb 2020 09:39:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 771DBF8014E; Wed, 26 Feb 2020 09:39:34 +0100 (CET)
+ id BFAABF801F2; Wed, 26 Feb 2020 09:39:47 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B9BF9F800E8
- for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2020 09:39:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9BF9F800E8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6BAEAF8014E
+ for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2020 09:39:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6BAEAF8014E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="FobR3kDe"
+ header.b="mJqtwb1l"
 Received: from localhost (unknown [171.76.87.135])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 543DF2084E;
- Wed, 26 Feb 2020 08:39:29 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 78786222C2;
+ Wed, 26 Feb 2020 08:39:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1582706370;
- bh=ytnd76MiJNXHaByv3oTOm1FC8A8dH3TLYQBSH6N48gw=;
+ s=default; t=1582706383;
+ bh=LYIUguxIL6wJHCQWIRNDa0HHgxSUcSnBZ4MGaN9UEBs=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=FobR3kDeMc1b6SJ5ntF1e9FyWd/X3c7IvZrwuxwC/70H3/1rHSIuOosbIGG/lAsE7
- VKNIIjqgD1ObRpAcNKqEOai3Jn1N+ldb9md4zeD9+pItvanmPMDN8iiaft+uucIGby
- /k05jk3I/ePWBdlL4K8W/IdNQwz42NrPMH6P2p18=
-Date: Wed, 26 Feb 2020 14:09:26 +0530
+ b=mJqtwb1loYlCJ/FFQM9s1OHOUON3w4iePK73PkG8hhxlGfBeBVO4KHAlYOMnluSX+
+ MjY+7kC6/tHP4Qpz6GKOUMBjdWOoyMl3GSAgdl9UsvYLVnHWDRyKNzYV3aVI3L0Ru2
+ roTF4i1OHNCm5WlL2ws67tgrg/Jv63Q3eH8WQH1k=
+Date: Wed, 26 Feb 2020 14:09:39 +0530
 From: Vinod Koul <vkoul@kernel.org>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 1/3] soundwire: cadence: remove useless prototypes
-Message-ID: <20200226083926.GW2618@vkoul-mobl>
+Subject: Re: [PATCH 3/3] soundwire: add helper macros for devID fields
+Message-ID: <20200226083939.GX2618@vkoul-mobl>
 References: <20200225170041.23644-1-pierre-louis.bossart@linux.intel.com>
- <20200225170041.23644-2-pierre-louis.bossart@linux.intel.com>
+ <20200225170041.23644-4-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200225170041.23644-2-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20200225170041.23644-4-pierre-louis.bossart@linux.intel.com>
 Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
  linux-kernel@vger.kernel.org,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
@@ -95,7 +95,9 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 On 25-02-20, 11:00, Pierre-Louis Bossart wrote:
-> These prototypes are no longer used, remove.
+> Move bit extractors to macros, so that the definitions can be used by
+> other drivers parsing the MIPI definitions extracted from firmware
+> tables (ACPI or DT).
 
 Applied, thanks
 
