@@ -2,74 +2,66 @@ Return-Path: <SRS0=k5Qg=4P=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D943FC4BA24
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Feb 2020 00:12:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16E5FC4BA35
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Feb 2020 00:14:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 61EDC24650
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Feb 2020 00:12:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9A58724650
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Feb 2020 00:14:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ONaCdK6h"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 61EDC24650
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bBew5NBL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9A58724650
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B7404166A;
-	Thu, 27 Feb 2020 01:12:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B7404166A
+	by alsa0.perex.cz (Postfix) with ESMTPS id E44E7166C;
+	Thu, 27 Feb 2020 01:13:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E44E7166C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582762376;
-	bh=pnRimu/n4opE3RtHU075afOXbaV8MRLv/XD86J+WyY8=;
+	s=default; t=1582762474;
+	bh=dzRL3KKgHUI3E4W5PaOBw79VE5j5LdBTmBFzWILgMDU=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ONaCdK6huW38/V5tmzkskuNUEdv9KkxyXaVqI+2Os0/xYhnMXAvPRhkzT8v5liJqD
-	 vQpoc46jELlu+rqD0L9xQnV2ziwv1frANEWhIxreEOEevjAoCX9bq70X2/yImanL1d
-	 0McTQ2rnUpZqOeLMxPIc2oxFnfJ7vCzz+vH8yh7U=
+	b=bBew5NBLUEs4A7X9JmSDV2I2ZgW+1Jzig7ZP9Iu9Iy+U7ofgYRU0oP2ZoCm09DlvP
+	 ewgtnJp4dCo69XyHP/XWz923+/e4yGu+U0qmJ1tCpWNR02In2lgGHfp+Ea40b20LbV
+	 ryAVMUBUELxsc8zWqroX6I0D3fh2lHWb0l4W4cGE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 32BCFF8014D;
-	Thu, 27 Feb 2020 01:12:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 82D88F80089;
+	Thu, 27 Feb 2020 01:13:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CB22AF8014E; Thu, 27 Feb 2020 01:12:03 +0100 (CET)
+ id E284EF80171; Thu, 27 Feb 2020 01:13:42 +0100 (CET)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 5AA54F800E8
- for <alsa-devel@alsa-project.org>; Thu, 27 Feb 2020 01:11:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5AA54F800E8
-Date: 27 Feb 2020 09:11:56 +0900
-X-IronPort-AV: E=Sophos;i="5.70,490,1574089200"; d="scan'208";a="40133506"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 27 Feb 2020 09:11:56 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 52E63F80089
+ for <alsa-devel@alsa-project.org>; Thu, 27 Feb 2020 01:13:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52E63F80089
+Date: 27 Feb 2020 09:13:37 +0900
+X-IronPort-AV: E=Sophos;i="5.70,490,1574089200"; d="scan'208";a="40133628"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 27 Feb 2020 09:13:37 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 61BB34114CD7;
- Thu, 27 Feb 2020 09:11:56 +0900 (JST)
-Message-ID: <87y2so7usz.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 216EC400A0F9;
+ Thu, 27 Feb 2020 09:13:37 +0900 (JST)
+Message-ID: <87wo887uq6.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: soc-pcm: Revert "call
- snd_soc_component_open/close() once"
-In-Reply-To: <20200226173611.GI4136@sirena.org.uk>
-References: <20200219182650.1416-1-kai.vehmanen@linux.intel.com>
- <87blput7hh.wl-kuninori.morimoto.gx@renesas.com>
- <alpine.DEB.2.21.2002201103060.2957@eliteleevi.tm.intel.com>
- <87mu9cspyf.wl-kuninori.morimoto.gx@renesas.com>
- <alpine.DEB.2.21.2002211251280.2957@eliteleevi.tm.intel.com>
- <87mu978pob.wl-kuninori.morimoto.gx@renesas.com>
- <87ftey88wk.wl-kuninori.morimoto.gx@renesas.com>
- <20200226173611.GI4136@sirena.org.uk>
+To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: Re: [PATCH 4/8] ASoC: soc-pcm: add dpcm_fe_dai_clean()
+In-Reply-To: <5d98cb39bfdc4fe806fa5ec249f02dfc03d994ee.camel@linux.intel.com>
+References: <87eeuh97k4.wl-kuninori.morimoto.gx@renesas.com>
+ <878skp97in.wl-kuninori.morimoto.gx@renesas.com>
+ <5d98cb39bfdc4fe806fa5ec249f02dfc03d994ee.camel@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: digetx@gmail.com, alsa-devel@alsa-project.org,
- ranjani.sridharan@linux.intel.com, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- pierre-louis.bossart@linux.intel.com
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,24 +78,30 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark
+Hi Ranjani
 
-> > If each component / rtd / dai have "done" flag or count,
-> > soc_pcm_open() can call soc_pcm_close() directly
-> > without thinking about "until", because each flag can handle/indicate it.
-> 
-> > The good point is we can reduce duplicate implementation.
-> > And it can avoid future bug. Because today, we need to care both
-> > soc_pcm_close() and error handling in soc_pcm_open(), it is not good for me.
-> 
-> That goal definitely makes sense, if we can avoid problems like the ones
-> here it seems like a useful change.
+Thank you for your review
 
-Thank you for your feedback.
-The one big headache is that, as Kai mentioned, how to know
-the "handled substream". We need list or array, but...
-I will postpone this kind of patches now, and post other patches.
-And I will re-think about it again after that.
+> > diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+> > index 3686dda097e2..d578dbdfa846 100644
+> > --- a/sound/soc/soc-pcm.c
+> > +++ b/sound/soc/soc-pcm.c
+> > @@ -2978,14 +2978,11 @@ int soc_dpcm_runtime_update(struct
+> > snd_soc_card *card)
+> >  	return ret;
+> >  }
+> >  
+> > -static int dpcm_fe_dai_close(struct snd_pcm_substream *fe_substream)
+> > +static void dpcm_fe_dai_clean(struct snd_pcm_substream
+> > *fe_substream)
+> The series looks good to me, Morimoto-san. But a minor suggestion if
+> you're doing a v2 to address other comments. Could you please change
+> the name of the function above to dpcm_fe_dai_cleanup() instead?
+
+Yeah, will do.
+Thanks
+
+> Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
 Thank you for your help !!
 Best regards
