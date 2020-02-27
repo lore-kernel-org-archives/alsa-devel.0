@@ -2,77 +2,62 @@ Return-Path: <SRS0=k5Qg=4P=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 987E1C4BA24
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Feb 2020 01:24:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BA79BC4BA24
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Feb 2020 01:48:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 246E824650
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Feb 2020 01:24:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3B2DE24670
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Feb 2020 01:48:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EczjdY/G"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 246E824650
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="USLKjUcj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3B2DE24670
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7A5051657;
-	Thu, 27 Feb 2020 02:23:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A5051657
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9C3C6826;
+	Thu, 27 Feb 2020 02:47:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C3C6826
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582766674;
-	bh=EUFsqGuN8X1VnLpGNmfm5LMGEbGvUTan6oIe0Q+rJ1A=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=EczjdY/GIcCo5Hirp/V+zw/dNKdFjPZSUMfOhTgNPCl+QyBTObQcypH6OSYjdxif6
-	 rgZeTVqiGrIGX0yPa4g6Gu9C3sD6XZUO29LLBMU5kYVvFa1VhUvjn3Up+NzMRbRYR6
-	 l31SuQoKHsGSO4kEEoDWAdmsooTHnEpLlUji8hcg=
+	s=default; t=1582768083;
+	bh=Z2KEI7rKW0UYQZim1u1xpINFyOvgoyIDpame13zmqDM=;
+	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=USLKjUcjuOIA+nIHsf+yqQwTXaOJTKNSRjHR6Ne6LEtnqL6Z8ft40KVSMZaEZ96d1
+	 aQ86myBWCIWIPvYrF9cMY7r7bRELeX0VXzvY18KYRjmNugZcIwBum2jxzLRV6tdG+3
+	 vqktcCzeKtrV+t20XggWxSIRr/a9hbIOtRurxJmA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EFB5DF800E8;
-	Thu, 27 Feb 2020 02:23:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 070D9F800AD;
+	Thu, 27 Feb 2020 02:47:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D4143F8014E; Thu, 27 Feb 2020 02:23:41 +0100 (CET)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C2A4CF800E8
- for <alsa-devel@alsa-project.org>; Thu, 27 Feb 2020 02:23:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2A4CF800E8
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by orsmga101.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 26 Feb 2020 17:23:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,490,1574150400"; d="scan'208";a="232005327"
-Received: from jianmao-mobl1.amr.corp.intel.com (HELO [10.255.69.58])
- ([10.255.69.58])
- by fmsmga008.fm.intel.com with ESMTP; 26 Feb 2020 17:23:34 -0800
-Subject: Re: [PATCH 6/8] ASoC: soc-pcm: check DAI's activity more simply
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-References: <87eeuh97k4.wl-kuninori.morimoto.gx@renesas.com>
- <875zft97i4.wl-kuninori.morimoto.gx@renesas.com>
- <704a2cb1-ebcd-d433-0b8a-0f8d97d72fa5@linux.intel.com>
- <87v9ns7tpk.wl-kuninori.morimoto.gx@renesas.com>
- <f99bfbaa-c1a3-3545-aef9-dcb6ad9bd77f@linux.intel.com>
- <87tv3c7tc5.wl-kuninori.morimoto.gx@renesas.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <d2638e3f-37f4-a347-f5c8-c76d49e2bb8c@linux.intel.com>
-Date: Wed, 26 Feb 2020 19:23:33 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
-MIME-Version: 1.0
-In-Reply-To: <87tv3c7tc5.wl-kuninori.morimoto.gx@renesas.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+ id 12917F8014E; Thu, 27 Feb 2020 02:47:11 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 32806F800E8
+ for <alsa-devel@alsa-project.org>; Thu, 27 Feb 2020 02:47:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32806F800E8
+Date: 27 Feb 2020 10:47:02 +0900
+X-IronPort-AV: E=Sophos;i="5.70,490,1574089200"; d="scan'208";a="40361287"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 27 Feb 2020 10:47:02 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id C2542414A6F6;
+ Thu, 27 Feb 2020 10:47:02 +0900 (JST)
+Message-ID: <87pne07qeh.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH] ASoC: soc-dapm: don't use rtd->cpu_dai on
+ for_each_rtd_cpu_dai()
+User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Shreyas NC <shreyas.nc@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,29 +73,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
+soc_dapm_stream_event() is using for_each_rtd_cpu_dais().
+It should use "cpu_dai", instead of "rtd->cpu_dai".
+This patch fixup it.
 
->>>>> -		if ((playback && playback_active == 1) ||
->>>>> -		    (!playback && capture_active == 1))
->>>>> +		if (codec_dai->active == 1)
->>>>
->>>> nit-pick: we have two tests in soc-pcm.c
->>>>
->>>> if (codec_dai->active)
->>>> if (codec_dai->active == 1)
->>>>
->>>> The two are functionality equivalent but it'd be good to choose one
->>>> version - or possibly use 'active' as a boolean.
->>>
->>> In my understanding, dai->active can be 0/1/2.
->>
->> I see, I guess I missed this completely. Thanks Morimoto-san for the
->> precision.
-> 
-> But, we want to use "if (codec_dai->active)" anyway.
-> Your review indicated my mistake.
+Fixes: commit de6214a33633d ("ASoC: Add multiple CPU DAI support in DAPM")
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ sound/soc/soc-dapm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Not in this case though, the initial idea was to do the mute when only 
-playback or capture were enabled? If you mute when both are enabled then 
-that's a real change.
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 6ce024d52170..9a809f2caa10 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -4438,7 +4438,7 @@ static void soc_dapm_stream_event(struct snd_soc_pcm_runtime *rtd, int stream,
+ 	int i;
+ 
+ 	for_each_rtd_cpu_dai(rtd, i, cpu_dai)
+-		soc_dapm_dai_stream_event(rtd->cpu_dai, stream, event);
++		soc_dapm_dai_stream_event(cpu_dai, stream, event);
+ 	for_each_rtd_codec_dai(rtd, i, codec_dai)
+ 		soc_dapm_dai_stream_event(codec_dai, stream, event);
+ 
+-- 
+2.17.1
 
