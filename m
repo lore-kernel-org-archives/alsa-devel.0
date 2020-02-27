@@ -2,79 +2,71 @@ Return-Path: <SRS0=k5Qg=4P=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A1CC1C4BA37
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Feb 2020 02:07:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E60F4C4BA37
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Feb 2020 02:35:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F1F9321927
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Feb 2020 02:07:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 72DEB206E2
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Feb 2020 02:35:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bqLbt/Nq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F1F9321927
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ggOTVTdU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 72DEB206E2
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 523371660;
-	Thu, 27 Feb 2020 03:06:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 523371660
+	by alsa0.perex.cz (Postfix) with ESMTPS id C53F8886;
+	Thu, 27 Feb 2020 03:34:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C53F8886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582769269;
-	bh=qCw5u5UZfSxyMlz2nE9j8ZIawnB7YE2+cEtvsYHXAPU=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=bqLbt/NqmJ+NwcJiv5Ofs8vKeUTuZ+WFB9L/wK81eG6V0e2tArZbN8k/1eBDq3WM3
-	 pgsepCP387/MSprv2J+Fz/s1cSlDfbCEOGKH6CM3SnJ9v0nTnbC14dtMNlZAAMj6W5
-	 zYkIOF5rpXZAKxI4PS641UZmXFo+83W3KYOEpwI4=
+	s=default; t=1582770948;
+	bh=54093go0b7TnYSbXYi+jWNtBYpx90u1wc6yBe+YR1zI=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ggOTVTdUDkp6aiqikcpy7sfCGv28G4NJCYZo4ZmX2Du41ZSnx+eSId6O+kmw7s1hG
+	 l7K/VsliRtiLzAk77kPIYdNJPF0i3UluppzexRAB3PakfX3v9B0zSgyN5QOyTokVMW
+	 PPV1ojyVMOMpSVO0dh41Op//3Qn5pZduxx7ha+eQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D7B20F8014D;
-	Thu, 27 Feb 2020 03:06:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 37C78F8013E;
+	Thu, 27 Feb 2020 03:34:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 98F51F8014E; Thu, 27 Feb 2020 03:06:57 +0100 (CET)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0C4BDF800AD
- for <alsa-devel@alsa-project.org>; Thu, 27 Feb 2020 03:06:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C4BDF800AD
-Authenticated-By: 
-X-SpamFilter-By: BOX Solutions SpamTrap 5.62 with qID 01R26iBB022786,
- This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (RTEXMB06.realtek.com.tw[172.21.6.99])
- by rtits2.realtek.com.tw (8.15.2/2.57/5.78) with ESMTPS id 01R26iBB022786
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 27 Feb 2020 10:06:44 +0800
-Received: from RTEXMB01.realtek.com.tw (172.21.6.94) by
- RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 27 Feb 2020 10:06:44 +0800
-Received: from localhost.localdomain (172.22.102.1) by RTEXMB01.realtek.com.tw
- (172.21.6.94) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Thu, 27 Feb
- 2020 10:06:44 +0800
-From: <jack.yu@realtek.com>
-To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-Subject: [PATCH] ASoC: rt1015: modify some structure to be static.
-Date: Thu, 27 Feb 2020 10:06:37 +0800
-Message-ID: <20200227020637.15135-1-jack.yu@realtek.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [172.22.102.1]
-X-ClientProxiedBy: RTEXMB05.realtek.com.tw (172.21.6.98) To
- RTEXMB01.realtek.com.tw (172.21.6.94)
-Cc: oder_chiou@realtek.com, Jack Yu <jack.yu@realtek.com>,
- alsa-devel@alsa-project.org, lars@metafoo.de, kent_chen@realtek.com,
- kenny_chen@realtek.com, derek.fang@realtek.com, shumingf@realtek.com,
- mingjane_hsieh@realtek.com, flove@realtek.com
+ id EF02EF80142; Thu, 27 Feb 2020 03:34:56 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id BDEEAF800E8
+ for <alsa-devel@alsa-project.org>; Thu, 27 Feb 2020 03:34:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BDEEAF800E8
+Date: 27 Feb 2020 11:34:47 +0900
+X-IronPort-AV: E=Sophos;i="5.70,490,1574089200"; d="scan'208";a="40152281"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 27 Feb 2020 11:34:47 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 3338841644D8;
+ Thu, 27 Feb 2020 11:34:47 +0900 (JST)
+Message-ID: <87a7547o6w.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 6/8] ASoC: soc-pcm: check DAI's activity more simply
+In-Reply-To: <87blpk7psk.wl-kuninori.morimoto.gx@renesas.com>
+References: <87eeuh97k4.wl-kuninori.morimoto.gx@renesas.com>
+ <875zft97i4.wl-kuninori.morimoto.gx@renesas.com>
+ <704a2cb1-ebcd-d433-0b8a-0f8d97d72fa5@linux.intel.com>
+ <87v9ns7tpk.wl-kuninori.morimoto.gx@renesas.com>
+ <f99bfbaa-c1a3-3545-aef9-dcb6ad9bd77f@linux.intel.com>
+ <87tv3c7tc5.wl-kuninori.morimoto.gx@renesas.com>
+ <d2638e3f-37f4-a347-f5c8-c76d49e2bb8c@linux.intel.com>
+ <87blpk7psk.wl-kuninori.morimoto.gx@renesas.com>
+User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,34 +82,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Jack Yu <jack.yu@realtek.com>
 
-Modify rt1015_aif_dai_ops and rt1015_dai[] to be static.
+Hi Pierre-Louis, again
 
-Signed-off-by: Jack Yu <jack.yu@realtek.com>
+> > Not in this case though, the initial idea was to do the mute when only
+> > playback or capture were enabled? If you mute when both are enabled
+> > then that's a real change.
+> 
+> Let's check original
+> 
+> 	if ((playback && playback_active == 1) ||
+> 	    (!playback && capture_active == 1))
+> 		snd_soc_dai_digital_mute(...)
+> 
+> It calls mute if Playback or Capture is working.
+> and my patch (v2) is
+> 
+> 	if (codec_dai->activity)
+> 		snd_soc_dai_digital_mute(...)
+> 
+> It calls mute if Codec DAI is working (= Playback or Capture).
+> I think it doesn't change behavior.
+
+Oops !
+I was wrong. I will post mail to v2 patch for detail
+
+Thank you for your help !!
+Best regards
 ---
- sound/soc/codecs/rt1015.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/rt1015.c b/sound/soc/codecs/rt1015.c
-index d300b417dd50..c118d030bd2d 100644
---- a/sound/soc/codecs/rt1015.c
-+++ b/sound/soc/codecs/rt1015.c
-@@ -841,12 +841,12 @@ static void rt1015_remove(struct snd_soc_component *component)
- #define RT1015_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
- 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S8)
- 
--struct snd_soc_dai_ops rt1015_aif_dai_ops = {
-+static struct snd_soc_dai_ops rt1015_aif_dai_ops = {
- 	.hw_params = rt1015_hw_params,
- 	.set_fmt = rt1015_set_dai_fmt,
- };
- 
--struct snd_soc_dai_driver rt1015_dai[] = {
-+static struct snd_soc_dai_driver rt1015_dai[] = {
- 	{
- 		.name = "rt1015-aif",
- 		.id = 0,
--- 
-2.25.1
-
+Kuninori Morimoto
