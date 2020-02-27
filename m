@@ -2,62 +2,62 @@ Return-Path: <SRS0=k5Qg=4P=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16E5FC4BA35
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Feb 2020 00:14:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10487C4BA24
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Feb 2020 00:36:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9A58724650
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Feb 2020 00:14:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8521E24670
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Feb 2020 00:36:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bBew5NBL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9A58724650
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="f79vEJ1i"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8521E24670
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E44E7166C;
-	Thu, 27 Feb 2020 01:13:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E44E7166C
+	by alsa0.perex.cz (Postfix) with ESMTPS id E55771662;
+	Thu, 27 Feb 2020 01:35:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E55771662
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582762474;
-	bh=dzRL3KKgHUI3E4W5PaOBw79VE5j5LdBTmBFzWILgMDU=;
+	s=default; t=1582763797;
+	bh=vb6D3l/qgz9w36ZPpuVCF9ysU8GCo7q6xgb9ekX5fdU=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bBew5NBLUEs4A7X9JmSDV2I2ZgW+1Jzig7ZP9Iu9Iy+U7ofgYRU0oP2ZoCm09DlvP
-	 ewgtnJp4dCo69XyHP/XWz923+/e4yGu+U0qmJ1tCpWNR02In2lgGHfp+Ea40b20LbV
-	 ryAVMUBUELxsc8zWqroX6I0D3fh2lHWb0l4W4cGE=
+	b=f79vEJ1i64knXLVzMSccj/fL6Cg22jptog5ppmlrJyNSyV1D3lj+U3XKeBpNsR8pr
+	 DfRMYSlrrkY8NKAhzRS5drFfd1d1ZfWYZDl8HmAxG0BdLyKGcVkfIBnPnsGiI4hD3B
+	 9CNdUXS9QHGK0hkciY+LGZM9P2AZZCZMu/9d2Kw0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 82D88F80089;
-	Thu, 27 Feb 2020 01:13:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6F25EF8014D;
+	Thu, 27 Feb 2020 01:35:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E284EF80171; Thu, 27 Feb 2020 01:13:42 +0100 (CET)
+ id A09C3F8014E; Thu, 27 Feb 2020 01:35:44 +0100 (CET)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 52E63F80089
- for <alsa-devel@alsa-project.org>; Thu, 27 Feb 2020 01:13:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52E63F80089
-Date: 27 Feb 2020 09:13:37 +0900
-X-IronPort-AV: E=Sophos;i="5.70,490,1574089200"; d="scan'208";a="40133628"
+ by alsa1.perex.cz (Postfix) with ESMTP id 57677F800E8
+ for <alsa-devel@alsa-project.org>; Thu, 27 Feb 2020 01:35:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57677F800E8
+Date: 27 Feb 2020 09:35:35 +0900
+X-IronPort-AV: E=Sophos;i="5.70,490,1574089200"; d="scan'208";a="40135595"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 27 Feb 2020 09:13:37 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 27 Feb 2020 09:35:35 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 216EC400A0F9;
- Thu, 27 Feb 2020 09:13:37 +0900 (JST)
-Message-ID: <87wo887uq6.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 67FF7400A109;
+ Thu, 27 Feb 2020 09:35:35 +0900 (JST)
+Message-ID: <87v9ns7tpk.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: Re: [PATCH 4/8] ASoC: soc-pcm: add dpcm_fe_dai_clean()
-In-Reply-To: <5d98cb39bfdc4fe806fa5ec249f02dfc03d994ee.camel@linux.intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 6/8] ASoC: soc-pcm: check DAI's activity more simply
+In-Reply-To: <704a2cb1-ebcd-d433-0b8a-0f8d97d72fa5@linux.intel.com>
 References: <87eeuh97k4.wl-kuninori.morimoto.gx@renesas.com>
- <878skp97in.wl-kuninori.morimoto.gx@renesas.com>
- <5d98cb39bfdc4fe806fa5ec249f02dfc03d994ee.camel@linux.intel.com>
+ <875zft97i4.wl-kuninori.morimoto.gx@renesas.com>
+ <704a2cb1-ebcd-d433-0b8a-0f8d97d72fa5@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -78,30 +78,34 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Ranjani
+Hi Pierre-Louis
 
-Thank you for your review
+> > @@ -1226,11 +1225,7 @@ static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
+> >     	/* apply codec digital mute */
+> >   	for_each_rtd_codec_dai(rtd, i, codec_dai) {
+> > -		int playback_active = codec_dai->stream_active[SNDRV_PCM_STREAM_PLAYBACK];
+> > -		int capture_active  = codec_dai->stream_active[SNDRV_PCM_STREAM_CAPTURE];
+> > -
+> > -		if ((playback && playback_active == 1) ||
+> > -		    (!playback && capture_active == 1))
+> > +		if (codec_dai->active == 1)
+> 
+> nit-pick: we have two tests in soc-pcm.c
+> 
+> if (codec_dai->active)
+> if (codec_dai->active == 1)
+> 
+> The two are functionality equivalent but it'd be good to choose one
+> version - or possibly use 'active' as a boolean.
 
-> > diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-> > index 3686dda097e2..d578dbdfa846 100644
-> > --- a/sound/soc/soc-pcm.c
-> > +++ b/sound/soc/soc-pcm.c
-> > @@ -2978,14 +2978,11 @@ int soc_dpcm_runtime_update(struct
-> > snd_soc_card *card)
-> >  	return ret;
-> >  }
-> >  
-> > -static int dpcm_fe_dai_close(struct snd_pcm_substream *fe_substream)
-> > +static void dpcm_fe_dai_clean(struct snd_pcm_substream
-> > *fe_substream)
-> The series looks good to me, Morimoto-san. But a minor suggestion if
-> you're doing a v2 to address other comments. Could you please change
-> the name of the function above to dpcm_fe_dai_cleanup() instead?
+In my understanding, dai->active can be 0/1/2.
+But yes, we want to call mute if codec_dai is working
 
-Yeah, will do.
-Thanks
+	/* Call Mute if Codec DAI is working */
+	if (codec_dai->active)
 
-> Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+	/* Call Mute if Codec DAI is used only for Playback or Capture */
+	if (codec_dai->active == 1)
 
 Thank you for your help !!
 Best regards
