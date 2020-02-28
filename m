@@ -7,60 +7,60 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 333D7C3F2D3
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Feb 2020 23:14:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DAFDC3F2D2
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Feb 2020 23:15:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AE09C246B8
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Feb 2020 23:14:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C8F1E246AF
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Feb 2020 23:15:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="n/uow1Gi"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AE09C246B8
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aZTQ/0DE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C8F1E246AF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 08C4716ED;
-	Sat, 29 Feb 2020 00:14:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 08C4716ED
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2832A16DD;
+	Sat, 29 Feb 2020 00:14:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2832A16DD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582931697;
-	bh=1YzXLD8X/B/ox1IE6m9u03jmAA24VC+PknXItfGfz+M=;
+	s=default; t=1582931731;
+	bh=LVabuym36BsCnSfkXSyjS9wfCbfBnN2MUnPh30NVyrs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=n/uow1GinwphQadTvNi90AuvGYpXbz4uZ5/R2YOACl0wZNPankf8Zu5jrHfEhB6TZ
-	 c/7kPvDdaBpKFsTOULnEiiHAKgRQlZh9x6OjOqj/Of909xAEn38m+nyAVfd+Wh13Nd
-	 sxwZxGAXp6Yf7OA42S8NxiIxJimLMPLU5rYnuUdo=
+	b=aZTQ/0DEhylVgCGx3YVkjvC4BBTQIRS5/VQ9HqUNtKYzW+DivkTWxP+5z8OV6QtLI
+	 9f8a+iK1tkEwn+wYC2xBDiZChcoZD6uV19nDx64BeZ6jV9PPeuOG8U5OdCPuk8psEv
+	 KMyGGDQ7psjTdRIByGUYY9d3xWqR7mxA4u8/2IhM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ECB21F80278;
-	Sat, 29 Feb 2020 00:12:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EE7BEF8028C;
+	Sat, 29 Feb 2020 00:12:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EC994F80213; Sat, 29 Feb 2020 00:12:22 +0100 (CET)
+ id 252DFF80278; Sat, 29 Feb 2020 00:12:24 +0100 (CET)
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0814FF80086
- for <alsa-devel@alsa-project.org>; Sat, 29 Feb 2020 00:12:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0814FF80086
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6DB6CF80171
+ for <alsa-devel@alsa-project.org>; Sat, 29 Feb 2020 00:12:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DB6CF80171
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 28 Feb 2020 15:12:15 -0800
+ 28 Feb 2020 15:12:16 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,497,1574150400"; d="scan'208";a="232402937"
+X-IronPort-AV: E=Sophos;i="5.70,497,1574150400"; d="scan'208";a="232402952"
 Received: from rbconrad-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.254.95.100])
- by orsmga008.jf.intel.com with ESMTP; 28 Feb 2020 15:12:14 -0800
+ by orsmga008.jf.intel.com with ESMTP; 28 Feb 2020 15:12:16 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/9] ASoC: Intel: sof_pcm512x: drop reverse deps for
- SND_HDA_CODEC_HDMI
-Date: Fri, 28 Feb 2020 17:11:57 -0600
-Message-Id: <20200228231204.9026-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 4/9] ASoC: SOF: Intel: hda: remove
+ SND_SOC_SOF_HDA_COMMON_HDMI_CODEC
+Date: Fri, 28 Feb 2020 17:11:59 -0600
+Message-Id: <20200228231204.9026-5-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200228231204.9026-1-pierre-louis.bossart@linux.intel.com>
 References: <20200228231204.9026-1-pierre-louis.bossart@linux.intel.com>
@@ -86,39 +86,63 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 
-Having a reverse dependency to a config that has its own additional
-dependencies, is generally not recommended. And this applies to
-select statements for SND_HDA_CODEC_HDMI, e.g. the case where SND_HDA
-and SND_SOC_SOF_HDA are built as modules, but the machine driver is
-built-in, leading to compile errors (reported as
-i386-randconfig-e003-20200206).
+To help user-space with HDMI codec driver transition, both
+a kernel module parameter and a kernel option were initially
+provided to configure default behaviour of SOF on Intel hardware
+with commit 139c7febad1a ("ASoC: SOF: Intel: add support for
+snd-hda-codec-hdmi").
 
-Give up on trying to define different dependencies based on SOF/SST
-selection, and simply add a "depends on" for SND_HDA_CODEC_HDMI. This
-fixes the issue with randconfigs. Only downside is that SND_HDA_CODEC_HDMI
-may be built unnecessarily in some cases, but this seems like the lesser
-evil.
+As hdac-hdmi is already now lagging in features compared to
+snd-hda-codec-hdmi, move ahead with the transition and remove
+the build option to select between the two, and instead default
+to snd-hda-codec-hdmi if it is enabled in kernel build.
+
+The old behaviour of using hdac-hdmi driver can still be forced
+via the kernel module parameter.
 
 Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sof/intel/Kconfig | 11 -----------
+ sound/soc/sof/intel/hda.c   |  3 +--
+ 2 files changed, 1 insertion(+), 13 deletions(-)
 
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index 67d85a7be559..6833ef548710 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -464,8 +464,8 @@ config SND_SOC_INTEL_SOF_PCM512x_MACH
- 	depends on I2C && ACPI
- 	depends on (SND_SOC_SOF_HDA_AUDIO_CODEC && (MFD_INTEL_LPSS || COMPILE_TEST)) ||\
- 		   (SND_SOC_SOF_BAYTRAIL && (X86_INTEL_LPSS || COMPILE_TEST))
-+	depends on SND_HDA_CODEC_HDMI
- 	select SND_SOC_PCM512x_I2C
--	select SND_HDA_CODEC_HDMI if SND_SOC_SOF_HDA_AUDIO_CODEC
- 	help
- 	  This adds support for ASoC machine driver for SOF platforms
- 	  with TI PCM512x I2S audio codec.
+diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
+index 3bc64dee7c39..c9a2bee4b55c 100644
+--- a/sound/soc/sof/intel/Kconfig
++++ b/sound/soc/sof/intel/Kconfig
+@@ -324,17 +324,6 @@ config SND_SOC_SOF_HDA_ALWAYS_ENABLE_DMI_L1
+ 	  Say Y if you want to enable DMI Link L1
+ 	  If unsure, select "N".
+ 
+-config SND_SOC_SOF_HDA_COMMON_HDMI_CODEC
+-	bool "SOF common HDA HDMI codec driver"
+-	depends on SND_SOC_SOF_HDA_LINK
+-	depends on SND_HDA_CODEC_HDMI
+-	default SND_HDA_CODEC_HDMI
+-	help
+-	  This adds support for HDMI audio by using the common HDA
+-	  HDMI/DisplayPort codec driver.
+-	  Say Y if you want to use the common codec driver with SOF.
+-	  If unsure select "Y".
+-
+ endif ## SND_SOC_SOF_HDA_COMMON
+ 
+ config SND_SOC_SOF_HDA_LINK_BASELINE
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index 7ca887041a34..1de750a1dd19 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -54,8 +54,7 @@ static int hda_dmic_num = -1;
+ module_param_named(dmic_num, hda_dmic_num, int, 0444);
+ MODULE_PARM_DESC(dmic_num, "SOF HDA DMIC number");
+ 
+-static bool hda_codec_use_common_hdmi =
+-	IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_COMMON_HDMI_CODEC);
++static bool hda_codec_use_common_hdmi = IS_ENABLED(CONFIG_SND_HDA_CODEC_HDMI);
+ module_param_named(use_common_hdmi, hda_codec_use_common_hdmi, bool, 0444);
+ MODULE_PARM_DESC(use_common_hdmi, "SOF HDA use common HDMI codec driver");
+ #endif
 -- 
 2.20.1
 
