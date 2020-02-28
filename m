@@ -7,60 +7,60 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32051C3F2CD
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Feb 2020 23:16:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C3AEC3F2CD
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Feb 2020 23:17:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A6936246A8
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Feb 2020 23:16:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1D0D5246B4
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Feb 2020 23:17:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BzQ+6PT3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A6936246A8
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fLRoO13z"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1D0D5246B4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ECDBD16CA;
-	Sat, 29 Feb 2020 00:15:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ECDBD16CA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 77BB616EB;
+	Sat, 29 Feb 2020 00:16:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77BB616EB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582931792;
-	bh=35p5YyXxfbhMIF5WWXKeHFeXpG5Vg3hUQPFzAwCbxLA=;
+	s=default; t=1582931828;
+	bh=dO1aZDexHNnh53JodSl09T+U2eHM2GO0g6dawGYnKzA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BzQ+6PT3C0RuRpABM7D13roHudfrpAaL/vFiYVk2XrUpANMWF4wPoYLiw058ddzXD
-	 O/G8yp7f2WMZIKRtYzBJrJB/1SZYjJuZd6ztp4z794hmIIWUuESet7LI7YG3vBCZvm
-	 6Ef6Pmi55RXLm95gbk8dUeSgxdxphLjZqmJwYjs0=
+	b=fLRoO13zqicmUQYtCL1dW2RUOZqJeYjI0S30LpOj+VIbnr4SPWLbY9mh18tUZkIfY
+	 8S0d7o1wu/eeHIjwdfpG3jN+PwtiL/0nDuZ2bNWdSkk7AnuyvXInvTeKzzAZ+DxmMV
+	 7gVwY8hipmHvv58KztXnLYOGuGWQZtw4WJTz33HI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CCBE0F8029A;
-	Sat, 29 Feb 2020 00:12:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D409AF802A2;
+	Sat, 29 Feb 2020 00:12:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4A57EF80089; Sat, 29 Feb 2020 00:12:25 +0100 (CET)
+ id 41AF6F8027D; Sat, 29 Feb 2020 00:12:27 +0100 (CET)
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EB9A3F80089
+ by alsa1.perex.cz (Postfix) with ESMTPS id 08371F8016F
  for <alsa-devel@alsa-project.org>; Sat, 29 Feb 2020 00:12:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB9A3F80089
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 08371F8016F
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 28 Feb 2020 15:12:17 -0800
+ 28 Feb 2020 15:12:18 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,497,1574150400"; d="scan'208";a="232402957"
+X-IronPort-AV: E=Sophos;i="5.70,497,1574150400"; d="scan'208";a="232402960"
 Received: from rbconrad-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.254.95.100])
- by orsmga008.jf.intel.com with ESMTP; 28 Feb 2020 15:12:16 -0800
+ by orsmga008.jf.intel.com with ESMTP; 28 Feb 2020 15:12:17 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 5/9] ASoC: codecs: hdac_hdmi: (cosmetic) remove redundant
+Subject: [PATCH 6/9] ASoC: Intel: skylake: (cosmetic) remove redundant
  variable initialisations
-Date: Fri, 28 Feb 2020 17:12:00 -0600
-Message-Id: <20200228231204.9026-6-pierre-louis.bossart@linux.intel.com>
+Date: Fri, 28 Feb 2020 17:12:01 -0600
+Message-Id: <20200228231204.9026-7-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200228231204.9026-1-pierre-louis.bossart@linux.intel.com>
 References: <20200228231204.9026-1-pierre-louis.bossart@linux.intel.com>
@@ -87,33 +87,36 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 
-Remove several redundant variable initialisations.
+Variables, used as loop iterators, don't need to be initialised.
 
 Signed-off-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/codecs/hdac_hdmi.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/intel/skylake/skl.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index e6558475e006..fba9b749839d 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -1998,11 +1998,11 @@ static struct hdac_hdmi_drv_data intel_drv_data  = {
- 
- static int hdac_hdmi_dev_probe(struct hdac_device *hdev)
- {
--	struct hdac_hdmi_priv *hdmi_priv = NULL;
-+	struct hdac_hdmi_priv *hdmi_priv;
- 	struct snd_soc_dai_driver *hdmi_dais = NULL;
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index f755ca2484cf..1aa8114a4f77 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -359,7 +359,7 @@ static int skl_resume(struct device *dev)
+ 	struct pci_dev *pci = to_pci_dev(dev);
+ 	struct hdac_bus *bus = pci_get_drvdata(pci);
+ 	struct skl_dev *skl  = bus_to_skl(bus);
 -	struct hdac_ext_link *hlink = NULL;
 +	struct hdac_ext_link *hlink;
- 	int num_dais = 0;
--	int ret = 0;
-+	int ret;
- 	struct hdac_driver *hdrv = drv_to_hdac_driver(hdev->dev.driver);
- 	const struct hda_device_id *hdac_id = hdac_get_device_id(hdev, hdrv);
+ 	int ret;
  
+ 	/*
+@@ -794,7 +794,7 @@ static void skl_probe_work(struct work_struct *work)
+ {
+ 	struct skl_dev *skl = container_of(work, struct skl_dev, probe_work);
+ 	struct hdac_bus *bus = skl_to_bus(skl);
+-	struct hdac_ext_link *hlink = NULL;
++	struct hdac_ext_link *hlink;
+ 	int err;
+ 
+ 	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
 -- 
 2.20.1
 
