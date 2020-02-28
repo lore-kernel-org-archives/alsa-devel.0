@@ -2,75 +2,62 @@ Return-Path: <SRS0=9THl=4Q=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64B9FC3F2CD
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Feb 2020 00:47:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75D14C3F2CE
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Feb 2020 01:49:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E4E9A2064A
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Feb 2020 00:47:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E928B2469F
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Feb 2020 01:49:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XNQ+N7NK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E4E9A2064A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sf6g8xTQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E928B2469F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 451BB16D4;
-	Fri, 28 Feb 2020 01:47:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 451BB16D4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 38FBD16D1;
+	Fri, 28 Feb 2020 02:48:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38FBD16D1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582850873;
-	bh=lLvgvFsUmsr2TiodLvi3NOTIFVugwFoon3QVFhPDHL4=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=XNQ+N7NKkmBytLaqU/gnvPMgasTWGMX+m3/jlnstVCkg0lE8/NGVhJEboDTQc/gRS
-	 dBkckUNwzLYYEMCFR4dQ2RrcfJWwZR3ks2uc31jyHUlEn7M/Djv6vDL5W2KsO+kZwa
-	 P9OSxiBB+js8Qa9Aj+eNcmjQseDK0dMYz/Sa7CUc=
+	s=default; t=1582854577;
+	bh=L1ukLqUamm+tyMJd3mKd6vv47d+gcCLUj1HoJh/6VCs=;
+	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=sf6g8xTQvOE5/cHq0HFw3FSFbrdIamwZKI+b1bSkw6NtA4iHr+bScwGhNYXdNTlKs
+	 vxoFMsPyw4nUS3rzEEM53ykJh6WS0bD4Rr0/+sN83CDvB8nVOJwnzn02jjyYTORHdT
+	 6ClJ5Gz5zQQ0kS8HP0z4J0rpZ6dcJ28e4rGUUhsU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B2395F8013E;
-	Fri, 28 Feb 2020 01:47:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B7247F8013E;
+	Fri, 28 Feb 2020 02:48:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5F434F80142; Fri, 28 Feb 2020 01:47:00 +0100 (CET)
+ id 47A14F80142; Fri, 28 Feb 2020 02:48:45 +0100 (CET)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 3B51EF80089
- for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2020 01:46:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3B51EF80089
-Date: 28 Feb 2020 09:46:51 +0900
-X-IronPort-AV: E=Sophos;i="5.70,493,1574089200"; d="scan'208";a="40246138"
+ by alsa1.perex.cz (Postfix) with ESMTP id 1C87CF80125
+ for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2020 02:48:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C87CF80125
+Date: 28 Feb 2020 10:48:35 +0900
+X-IronPort-AV: E=Sophos;i="5.70,493,1574089200"; d="scan'208";a="40253622"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 28 Feb 2020 09:46:51 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 28 Feb 2020 10:48:35 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 58E0B4139DE1;
- Fri, 28 Feb 2020 09:46:51 +0900 (JST)
-Message-ID: <874kvb7d38.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 967B041556CC;
+ Fri, 28 Feb 2020 10:48:35 +0900 (JST)
+Message-ID: <8736av7a8c.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: Re: [PATCH] ASoC: soc-pcm: Revert "call
- snd_soc_component_open/close() once"
-In-Reply-To: <alpine.DEB.2.21.2002271110010.2957@eliteleevi.tm.intel.com>
-References: <20200219182650.1416-1-kai.vehmanen@linux.intel.com>
- <87blput7hh.wl-kuninori.morimoto.gx@renesas.com>
- <alpine.DEB.2.21.2002201103060.2957@eliteleevi.tm.intel.com>
- <87mu9cspyf.wl-kuninori.morimoto.gx@renesas.com>
- <alpine.DEB.2.21.2002211251280.2957@eliteleevi.tm.intel.com>
- <87mu978pob.wl-kuninori.morimoto.gx@renesas.com>
- <87ftey88wk.wl-kuninori.morimoto.gx@renesas.com>
- <alpine.DEB.2.21.2002271110010.2957@eliteleevi.tm.intel.com>
+Subject: [PATCH] ASoC: soc-component: tidyup snd_soc_pcm_component_sync_stop()
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
+To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org,
- ranjani.sridharan@linux.intel.com, digetx@gmail.com,
- pierre-louis.bossart@linux.intel.com
+Content-Type: text/plain; charset=US-ASCII
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,104 +73,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Hi Kai
+commit 1e5ddb6ba73894 ("ASoC: component: Add sync_stop PCM ops")
+added snd_soc_pcm_component_sync_stop(), but it is checking
+ioctrl instead of sync_stop. This is bug.
+This patch fixup it.
 
-Thank you for feedback
-
-> thanks for the longer explanation. It's true we have a lot of code with=20
-> for_each_xxx() loops, and loop logic where errors can occur. It seems the=
-=20
-> most common approach is to store the index and use for_each_xxx_rollback(=
-)=20
-> macros to clean up in case error happens. This does lead to the problem o=
-f=20
-> essentially duplicated logic e.g. for soc_pcm_close() and error handling =
-
-> of snd_pcm_open().
-
-Thank you for understanding my headache.
-My opinion is that complex duplicated code never bring luck to us.
-
-> And yeah, it's also a bit error prone as the logic is=20
-> not exactly the same. E.g. I'm not convinced this is quite right in=20
-> soc_pcm_open():
->=20
-> =BB       for_each_rtd_codec_dai(rtd, i, codec_dai) {                    =
-                                                                           =
-                                                          =20
-> =BB       =BB       ret =3D snd_soc_dai_startup(codec_dai, substream);   =
-                                                                           =
-                                                              =20
-> =BB       =BB       if (ret < 0) {                                       =
-                                                                           =
-                                                            =20
-> =BB       =BB       =BB       dev_err(codec_dai->dev,                    =
-                                                                           =
-                                                              =20
-> =BB       =BB       =BB       =BB       "ASoC: can't open codec %s: %d\n"=
-,                                                                          =
-                                                                =20
-> =BB       =BB       =BB       =BB       codec_dai->name, ret);           =
-                                                                           =
-                                                                =20
-> =BB       =BB       =BB       goto config_err;                           =
-                                                                           =
-                                                              =20
-> =BB       =BB       }                                            =20
-> ...
-> config_err:                                                              =
-                                                                           =
-                                                        =20
-> =BB       for_each_rtd_codec_dai(rtd, i, codec_dai)                      =
-                                                                           =
-                                                          =20
-> =BB       =BB       snd_soc_dai_shutdown(codec_dai, substream);          =
-                                                                           =
-                                                            =20
-> =BB       i =3D rtd->num_cpus;
-
-Yeah indeed.
-I think this is just one of the BUG.
-I guess we can find similar issue everywhere.
-
-> Having a single cleanup path would be easier, but I think in the end it=20
-> comes down to how cleanly you can track the opened state. It seems bigges=
-t=20
-> issue is how to cleanly track the component-substream pairs. Ideally we'd=
-=20
-> have a dedicated state object to represent an opened component-substream =
-
-> pair, but that's not how the APIs are defined now. But something to that
-> effect is needed.
-
-Yeah, I can understand your concern, but not 100% yet.
-In my understanding, counting start vs stop is not enough but not so bad.
-If my understanding was correct, your concern is
-counting only is not enough, because wrong component-substream pair
-can be used, like this ?
-
-	start(substream-A); <=3D
-	start(substream-B);
-	start(substream-C);
-
-	stop(substream-Z);  <=3D
-	stop(substream-B);
-	stop(substream-C);
-
-But I wonder is it really happen ?
-If there is clear such case, yes, we need to consider
-component-substream pair list, somehow.
-
-If you are worry about some kind of BUG, I guess we need to solve
-is such bug, not error handling method.
-But how about step-by-step approach (I like it :) ?
-At first, add counting method as 1st step. Indeed it is not enough,
-but we can cleanup error handling.
-If we found/noticed above not-enough-case,
-start to consider about component-substream pair list ?
-
-Thank you for your help !!
-Best regards
+Fixes: commit 1e5ddb6ba73894 ("ASoC: component: Add sync_stop PCM ops")
+Cc: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
-Kuninori Morimoto
+ sound/soc/soc-component.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
+index eed07a4d85ed..76f4b953563c 100644
+--- a/sound/soc/soc-component.c
++++ b/sound/soc/soc-component.c
+@@ -339,7 +339,7 @@ int snd_soc_pcm_component_sync_stop(struct snd_pcm_substream *substream)
+ 	int i, ret;
+ 
+ 	for_each_rtd_components(rtd, i, component) {
+-		if (component->driver->ioctl) {
++		if (component->driver->sync_stop) {
+ 			ret = component->driver->sync_stop(component,
+ 							   substream);
+ 			if (ret < 0)
+-- 
+2.17.1
+
