@@ -2,72 +2,66 @@ Return-Path: <SRS0=9THl=4Q=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1AC55C3F2D2
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Feb 2020 23:13:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7427DC3F2D2
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Feb 2020 23:14:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 97E832469C
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Feb 2020 23:13:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F29092469C
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Feb 2020 23:14:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ITNiDEWS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 97E832469C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vnZFuDg3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F29092469C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BDBB416D2;
-	Sat, 29 Feb 2020 00:12:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BDBB416D2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1293116CA;
+	Sat, 29 Feb 2020 00:13:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1293116CA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582931595;
-	bh=vtaK1KowhZJch2b+YATNlHyDR8xlGLN+TRxn4LlxzsY=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=ITNiDEWS7mFPR1bHZZWshrpS8og9d2whGmEBXL7Fa3m3KI0Dhq2a9SZbwQDDBjpAz
-	 6xODvfmYxyHruoo7CZ9ugOxB7LtEAhtHYPMD5E7SM0FY9xf40k//ZN7f4pZ3BSOsSl
-	 FiMj04ckvkhVS0rD1FX1QGFdZ1//XbU7OgMP6on0=
+	s=default; t=1582931649;
+	bh=Ka2u7DusClEmWDfqyzgIDwc+T3r4rjWgtAfd4cgVNZE=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=vnZFuDg3rBKDNGO13p5Sgttf2jeAGphxROxQSHkpddbzFYuZh/FRlh09lkJ58U6O3
+	 bHnLbRH/PAZECjRKwyxLGdenlGyxl4FmIucYa4cOs6UILavKE79HO1ocEGHTELkFgW
+	 Ylo0AhWA+QUOYuNfDD/4/HV7a7WaQBJf4ox8wIOU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9DA9FF8014E;
-	Sat, 29 Feb 2020 00:12:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 048A0F8014D;
+	Sat, 29 Feb 2020 00:12:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 954D7F8016F; Sat, 29 Feb 2020 00:12:20 +0100 (CET)
+ id EC04BF80213; Sat, 29 Feb 2020 00:12:20 +0100 (CET)
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7CBD2F8014D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 39378F80089
  for <alsa-devel@alsa-project.org>; Sat, 29 Feb 2020 00:12:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7CBD2F8014D
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39378F80089
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 28 Feb 2020 15:12:14 -0800
+ 28 Feb 2020 15:12:13 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,497,1574150400"; d="scan'208";a="232402936"
+X-IronPort-AV: E=Sophos;i="5.70,497,1574150400"; d="scan'208";a="232402931"
 Received: from rbconrad-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.254.95.100])
- by orsmga008.jf.intel.com with ESMTP; 28 Feb 2020 15:12:13 -0800
+ by orsmga008.jf.intel.com with ESMTP; 28 Feb 2020 15:12:12 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/9] ASoC: Intel: boards: drop reverse deps for
- SND_HDA_CODEC_HDMI
-Date: Fri, 28 Feb 2020 17:11:56 -0600
-Message-Id: <20200228231204.9026-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 0/9] ASoC: Intel: machine driver updates for 5.7
+Date: Fri, 28 Feb 2020 17:11:55 -0600
+Message-Id: <20200228231204.9026-1-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200228231204.9026-1-pierre-louis.bossart@linux.intel.com>
-References: <20200228231204.9026-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org, kbuild test robot <lkp@intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+Cc: tiwai@suse.de, broonie@kernel.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -84,114 +78,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Fix HDaudio/HDMI Kconfig dependencies, cleanup code, and add support
+for 2 new configs (DA7219+Maxim 98360A and RT5692+RT1015)
 
-Having a reverse dependency to a config that has its own additional
-dependencies, is generally not recommended. And this applies to
-select statements for SND_HDA_CODEC_HDMI, e.g. the case where SND_HDA
-and SND_SOC_SOF_HDA are built as modules, but the machine driver is
-built-in, leading to compile errors (reported as
-i386-randconfig-e003-20200206).
+Guennadi Liakhovetski (3):
+  ASoC: codecs: hdac_hdmi: (cosmetic) remove redundant variable
+    initialisations
+  ASoC: Intel: skylake: (cosmetic) remove redundant variable
+    initialisations
+  ASoC: Intel: (cosmetic) simplify structure member access
 
-Give up on trying to define different dependencies based on SOF/SST
-selection, and simply add a "depends on" for SND_HDA_CODEC_HDMI. This
-fixes the issue with randconfigs. Only downside is that SND_HDA_CODEC_HDMI
-may be built unnecessarily in some cases, but this seems like the lesser
-evil.
+Kai Vehmanen (4):
+  ASoC: Intel: boards: drop reverse deps for SND_HDA_CODEC_HDMI
+  ASoC: Intel: sof_pcm512x: drop reverse deps for SND_HDA_CODEC_HDMI
+  ASoC: Intel: sof_pcm512x: make HDMI optional for all platforms
+  ASoC: SOF: Intel: hda: remove SND_SOC_SOF_HDA_COMMON_HDMI_CODEC
 
-Reported-by: kbuild test robot <lkp@intel.com>
-Fixes: aa2b4a5 ('ASoC: Intel: boards: fix incorrect HDMI Kconfig dependency')
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/intel/boards/Kconfig | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+Yong Zhi (2):
+  ASoC: Intel: sof_da7219_max98373: Add support for max98360a speaker
+    amp
+  ASoC: Intel: sof_rt5682: Add rt1015 speaker amp support
 
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index 755e1de19df9..67d85a7be559 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -289,7 +289,6 @@ config SND_SOC_INTEL_DA7219_MAX98357A_GENERIC
- 	select SND_SOC_DA7219
- 	select SND_SOC_MAX98357A
- 	select SND_SOC_DMIC
--	select SND_HDA_CODEC_HDMI if SND_SOC_SOF_HDA_AUDIO_CODEC
- 	select SND_SOC_HDAC_HDMI
- 
- config SND_SOC_INTEL_BXT_DA7219_MAX98357A_COMMON
-@@ -302,6 +301,7 @@ config SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH
- 	tristate "Broxton with DA7219 and MAX98357A in I2S Mode"
- 	depends on I2C && ACPI
- 	depends on MFD_INTEL_LPSS || COMPILE_TEST
-+	depends on SND_HDA_CODEC_HDMI
- 	select SND_SOC_INTEL_BXT_DA7219_MAX98357A_COMMON
- 	help
- 	   This adds support for ASoC machine driver for Broxton-P platforms
-@@ -402,6 +402,7 @@ config SND_SOC_INTEL_GLK_DA7219_MAX98357A_MACH
- 	tristate "GLK with DA7219 and MAX98357A in I2S Mode"
- 	depends on I2C && ACPI
- 	depends on MFD_INTEL_LPSS || COMPILE_TEST
-+	depends on SND_HDA_CODEC_HDMI
- 	select SND_SOC_INTEL_BXT_DA7219_MAX98357A_COMMON
- 	help
- 	   This adds support for ASoC machine driver for Geminilake platforms
-@@ -413,10 +414,10 @@ config SND_SOC_INTEL_GLK_RT5682_MAX98357A_MACH
- 	tristate "GLK with RT5682 and MAX98357A in I2S Mode"
- 	depends on I2C && ACPI
- 	depends on MFD_INTEL_LPSS || COMPILE_TEST
-+	depends on SND_HDA_CODEC_HDMI
- 	select SND_SOC_RT5682
- 	select SND_SOC_MAX98357A
- 	select SND_SOC_DMIC
--	select SND_HDA_CODEC_HDMI if SND_SOC_SOF_HDA_AUDIO_CODEC
- 	select SND_SOC_HDAC_HDMI
- 	help
- 	   This adds support for ASoC machine driver for Geminilake platforms
-@@ -430,7 +431,7 @@ if SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC || SND_SOC_SOF_HDA_AUDIO_CODEC
- 
- config SND_SOC_INTEL_SKL_HDA_DSP_GENERIC_MACH
- 	tristate "SKL/KBL/BXT/APL with HDA Codecs"
--	select SND_HDA_CODEC_HDMI if SND_SOC_SOF_HDA_AUDIO_CODEC
-+	depends on SND_HDA_CODEC_HDMI
- 	select SND_SOC_HDAC_HDMI
- 	select SND_SOC_DMIC
- 	# SND_SOC_HDAC_HDA is already selected
-@@ -448,9 +449,9 @@ config SND_SOC_INTEL_SOF_RT5682_MACH
- 	depends on I2C && ACPI
- 	depends on (SND_SOC_SOF_HDA_LINK && (MFD_INTEL_LPSS || COMPILE_TEST)) ||\
- 		   (SND_SOC_SOF_BAYTRAIL && (X86_INTEL_LPSS || COMPILE_TEST))
-+	depends on SND_HDA_CODEC_HDMI
- 	select SND_SOC_RT5682
- 	select SND_SOC_DMIC
--	select SND_HDA_CODEC_HDMI if SND_SOC_SOF_HDA_AUDIO_CODEC
- 	select SND_SOC_HDAC_HDMI
- 	help
- 	   This adds support for ASoC machine driver for SOF platforms
-@@ -490,11 +491,11 @@ config SND_SOC_INTEL_SOF_CML_RT1011_RT5682_MACH
- 	tristate "CML with RT1011 and RT5682 in I2S Mode"
- 	depends on I2C && ACPI
- 	depends on MFD_INTEL_LPSS || COMPILE_TEST
-+	depends on SND_HDA_CODEC_HDMI
- 	select SND_SOC_RT1011
- 	select SND_SOC_RT5682
- 	select SND_SOC_DMIC
- 	select SND_SOC_HDAC_HDMI
--	select SND_HDA_CODEC_HDMI if SND_SOC_SOF_HDA_AUDIO_CODEC
- 	help
- 	  This adds support for ASoC machine driver for SOF platform with
- 	  RT1011 + RT5682 I2S codec.
-@@ -509,10 +510,10 @@ config SND_SOC_INTEL_SOF_DA7219_MAX98373_MACH
- 	tristate "SOF with DA7219 and MAX98373 in I2S Mode"
- 	depends on I2C && ACPI
- 	depends on MFD_INTEL_LPSS || COMPILE_TEST
-+	depends on SND_HDA_CODEC_HDMI
- 	select SND_SOC_DA7219
- 	select SND_SOC_MAX98373
- 	select SND_SOC_DMIC
--	select SND_HDA_CODEC_HDMI if SND_SOC_SOF_HDA_AUDIO_CODEC
- 	help
- 	  This adds support for ASoC machine driver for SOF platforms
- 	  with DA7219 + MAX98373 I2S audio codec.
+ sound/soc/codecs/hdac_hdmi.c                  |   6 +-
+ sound/soc/intel/boards/Kconfig                |  20 ++--
+ sound/soc/intel/boards/bdw-rt5650.c           |   2 +-
+ sound/soc/intel/boards/bdw-rt5677.c           |   2 +-
+ sound/soc/intel/boards/broadwell.c            |   2 +-
+ sound/soc/intel/boards/bxt_da7219_max98357a.c |   2 +-
+ sound/soc/intel/boards/bxt_rt298.c            |   2 +-
+ sound/soc/intel/boards/bytcht_da7213.c        |   2 +-
+ sound/soc/intel/boards/cht_bsw_max98090_ti.c  |   2 +-
+ sound/soc/intel/boards/cht_bsw_nau8824.c      |   2 +-
+ sound/soc/intel/boards/cht_bsw_rt5645.c       |   2 +-
+ sound/soc/intel/boards/cml_rt1011_rt5682.c    |   2 +-
+ sound/soc/intel/boards/glk_rt5682_max98357a.c |   2 +-
+ sound/soc/intel/boards/haswell.c              |   2 +-
+ sound/soc/intel/boards/kbl_rt5663_max98927.c  |   2 +-
+ .../intel/boards/kbl_rt5663_rt5514_max98927.c |   2 +-
+ sound/soc/intel/boards/skl_hda_dsp_generic.c  |   2 +-
+ .../soc/intel/boards/skl_nau88l25_max98357a.c |   2 +-
+ sound/soc/intel/boards/skl_nau88l25_ssm4567.c |   2 +-
+ sound/soc/intel/boards/sof_da7219_max98373.c  |  76 ++++++++++--
+ sound/soc/intel/boards/sof_pcm512x.c          |  38 ++++--
+ sound/soc/intel/boards/sof_rt5682.c           | 110 +++++++++++++++++-
+ .../intel/common/soc-acpi-intel-jsl-match.c   |  34 +++++-
+ sound/soc/intel/skylake/skl.c                 |   4 +-
+ sound/soc/sof/intel/Kconfig                   |  11 --
+ sound/soc/sof/intel/hda.c                     |   3 +-
+ 26 files changed, 267 insertions(+), 69 deletions(-)
+
+
+base-commit: 6941b0b5f919e9839e8c25efaeb53854efee14e5
 -- 
 2.20.1
 
