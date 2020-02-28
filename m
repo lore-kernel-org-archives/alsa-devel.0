@@ -2,62 +2,103 @@ Return-Path: <SRS0=9THl=4Q=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 75D14C3F2CE
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Feb 2020 01:49:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C900C3F2CE
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Feb 2020 02:55:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E928B2469F
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Feb 2020 01:49:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CBC2A2469B
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Feb 2020 02:55:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sf6g8xTQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E928B2469F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZpIfvGX3";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TBD1vGhu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CBC2A2469B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 38FBD16D1;
-	Fri, 28 Feb 2020 02:48:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38FBD16D1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1C4EE16C7;
+	Fri, 28 Feb 2020 03:54:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C4EE16C7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582854577;
-	bh=L1ukLqUamm+tyMJd3mKd6vv47d+gcCLUj1HoJh/6VCs=;
-	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=sf6g8xTQvOE5/cHq0HFw3FSFbrdIamwZKI+b1bSkw6NtA4iHr+bScwGhNYXdNTlKs
-	 vxoFMsPyw4nUS3rzEEM53ykJh6WS0bD4Rr0/+sN83CDvB8nVOJwnzn02jjyYTORHdT
-	 6ClJ5Gz5zQQ0kS8HP0z4J0rpZ6dcJ28e4rGUUhsU=
+	s=default; t=1582858512;
+	bh=oYE5fShZEKgury+3yLdJjOoldJzsqRvkFeknBJT5awk=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ZpIfvGX3SBLTkPjVgy9qnRSd7SHZW+gIfhyDg92pxqWKqxC2NA6yDqDHWER3nIAEl
+	 F6dTKyW4d0IrDtUWPwUBVhRVHEOmkZuYf8MHhqZ2EVkRakZKWqV+pe1CvyOFngKJWM
+	 Jm1X5OZ/UXE2v6SpNSrMYA0suRfIAzgoufQcqaNI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B7247F8013E;
-	Fri, 28 Feb 2020 02:48:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 680CEF8014D;
+	Fri, 28 Feb 2020 03:54:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 47A14F80142; Fri, 28 Feb 2020 02:48:45 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 1C87CF80125
- for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2020 02:48:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C87CF80125
-Date: 28 Feb 2020 10:48:35 +0900
-X-IronPort-AV: E=Sophos;i="5.70,493,1574089200"; d="scan'208";a="40253622"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 28 Feb 2020 10:48:35 +0900
-Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 967B041556CC;
- Fri, 28 Feb 2020 10:48:35 +0900 (JST)
-Message-ID: <8736av7a8c.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH] ASoC: soc-component: tidyup snd_soc_pcm_component_sync_stop()
-User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
-To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+ id 36B5BF8014E; Fri, 28 Feb 2020 03:54:19 +0100 (CET)
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com
+ [IPv6:2607:f8b0:4864:20::842])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 11069F80086
+ for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2020 03:54:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11069F80086
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="TBD1vGhu"
+Received: by mail-qt1-x842.google.com with SMTP id r5so1006381qtt.9
+ for <alsa-devel@alsa-project.org>; Thu, 27 Feb 2020 18:54:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=22hz3EXYq0SzN1Wu2fonmhGKwST6HFX0P3UPEDmpwXo=;
+ b=TBD1vGhuloKu8RtFPWQxFgHHziYiJYOdde1353qzy2LmcoeF0TiDjDX1vZWq4i+I1G
+ PxOGEuwdm3jskEG8pUt/6K0JSYZJ0j+CUnc9p9tBIyyk6ljb/P7YZkENFlOKudEIAHIz
+ lYZu3V4cVEiJhkcItpRev2T8F2Xv+xbwvQMzSApqjce7q0xJzmAlfnCRx7iznMqtFpMw
+ D9hPjaUJnzrxXvBACyVYK5QgZxg449iJK2ULaQ3hg4IfAgfp2YuQsaC0pP09+/AMME+N
+ e7XkK8nJFvXHADovHj3sQyLpUp4qgFKouUF/Xr15HR9gMjka5EcBntqIZbCRQm7aoS9P
+ Mm+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=22hz3EXYq0SzN1Wu2fonmhGKwST6HFX0P3UPEDmpwXo=;
+ b=hIXerSynrJPmySZEF9gNxrptGM6WMwjpnzNrclHEZbCilHmNkCusrzcdn/S8eXu22/
+ SMq1Px0zteFQrG/Ew2XnShqpCLGd/tec5yrLTY6GGBzQtl+22OSBqJWAJPoXJXXI+gV+
+ wln+Fy8yox/ayuyxee4NOizR/Oe0DnoARlUZqG+SNPgfxFU88E/rJT+DLDUdVdsits8f
+ tzaVcQiU2JTdKsAydOZgFPPli6kDWYcbvmlA67qkS8UNf11hRlY2ybnp9kQA3CQWQNf/
+ 5aLBBaHkfQX1yJor5bfj3MRKwIBuZu4txo3YAg/oY5G79P+a+oYcbGoMUvB6Awj5PWQO
+ HyjA==
+X-Gm-Message-State: APjAAAVYSN8SuYweJZVwSpdnQwaOH423/4dgxv+JDv8hVcokhL5sinje
+ cIpfQEHo+B1qjS1zl8zEi7b8S+nJuSJ8rfDNDrE=
+X-Google-Smtp-Source: APXvYqx40ohLVeMfivRLcPCJq0RBwQ9BYmvFVQpKE5DzCFxMCXj1+DIF7ZrkDxeYve2lklZXhdcB7wpqqqroi1Qjtfk=
+X-Received: by 2002:ac8:7b45:: with SMTP id m5mr2482318qtu.360.1582858453803; 
+ Thu, 27 Feb 2020 18:54:13 -0800 (PST)
+MIME-Version: 1.0
+References: <cover.1582770784.git.shengjiu.wang@nxp.com>
+ <ffd5ff2fd0e8ad03a97f6a640630cff767d73fa7.1582770784.git.shengjiu.wang@nxp.com>
+ <20200227034121.GA20540@Asurada-Nvidia.nvidia.com>
+ <CAA+D8AMzqpC35_CR2dCG6a_h4FzvZ6orXkPSYh_1o1d8hv+BMg@mail.gmail.com>
+ <20200227174540.GA17040@Asurada-Nvidia.nvidia.com>
+In-Reply-To: <20200227174540.GA17040@Asurada-Nvidia.nvidia.com>
+From: Shengjiu Wang <shengjiu.wang@gmail.com>
+Date: Fri, 28 Feb 2020 10:54:02 +0800
+Message-ID: <CAA+D8AM6t79cPoNmt-8HbGwTSM9bfXSW8g76HtkCF7eauL_Xmw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/4] ASoC: fsl_asrc: Change asrc_width to asrc_format
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>,
+ Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
+ Fabio Estevam <festevam@gmail.com>, Shengjiu Wang <shengjiu.wang@nxp.com>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
+ linuxppc-dev@lists.ozlabs.org, linux-kernel <linux-kernel@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,33 +114,63 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Hi
 
-commit 1e5ddb6ba73894 ("ASoC: component: Add sync_stop PCM ops")
-added snd_soc_pcm_component_sync_stop(), but it is checking
-ioctrl instead of sync_stop. This is bug.
-This patch fixup it.
+On Fri, Feb 28, 2020 at 1:45 AM Nicolin Chen <nicoleotsuka@gmail.com> wrote:
+>
+> On Thu, Feb 27, 2020 at 01:10:19PM +0800, Shengjiu Wang wrote:
+> > On Thu, Feb 27, 2020 at 11:43 AM Nicolin Chen <nicoleotsuka@gmail.com> wrote:
+> > >
+> > > On Thu, Feb 27, 2020 at 10:41:55AM +0800, Shengjiu Wang wrote:
+> > > > asrc_format is more inteligent variable, which is align
+> > > > with the alsa definition snd_pcm_format_t.
+> > > >
+> > > > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> > > > ---
+> > > >  sound/soc/fsl/fsl_asrc.c     | 23 +++++++++++------------
+> > > >  sound/soc/fsl/fsl_asrc.h     |  4 ++--
+> > > >  sound/soc/fsl/fsl_asrc_dma.c |  2 +-
+> > > >  3 files changed, 14 insertions(+), 15 deletions(-)
+> > > >
+> > > > diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
+> > > > index 0dcebc24c312..2b6a1643573c 100644
+> > > > --- a/sound/soc/fsl/fsl_asrc.c
+> > > > +++ b/sound/soc/fsl/fsl_asrc.c
+> > >
+> > > > @@ -600,11 +599,6 @@ static int fsl_asrc_dai_hw_params(struct snd_pcm_substream *substream,
+> > > >
+> > > >       pair->config = &config;
+> > > >
+> > > > -     if (asrc_priv->asrc_width == 16)
+> > > > -             format = SNDRV_PCM_FORMAT_S16_LE;
+> > > > -     else
+> > > > -             format = SNDRV_PCM_FORMAT_S24_LE;
+> > >
+> > > It feels better to me that we have format settings in hw_params().
+> > >
+> > > Why not let fsl_easrc align with this? Any reason that I'm missing?
+> >
+> > because the asrc_width is not formal,  in the future we can direct
+>
+> Hmm..that's our DT binding. And I don't feel it is a problem
+> to be ASoC irrelative.
+>
+> > input the format from the dts. format involve the info about width.
+>
+> Is there such any formal ASoC binding? I don't see those PCM
+> formats under include/dt-bindings/ folder. How are we going
+> to involve those formats in DT?
 
-Fixes: commit 1e5ddb6ba73894 ("ASoC: component: Add sync_stop PCM ops")
-Cc: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
----
- sound/soc/soc-component.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+There is no formal binding of this case.
 
-diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
-index eed07a4d85ed..76f4b953563c 100644
---- a/sound/soc/soc-component.c
-+++ b/sound/soc/soc-component.c
-@@ -339,7 +339,7 @@ int snd_soc_pcm_component_sync_stop(struct snd_pcm_substream *substream)
- 	int i, ret;
- 
- 	for_each_rtd_components(rtd, i, component) {
--		if (component->driver->ioctl) {
-+		if (component->driver->sync_stop) {
- 			ret = component->driver->sync_stop(component,
- 							   substream);
- 			if (ret < 0)
--- 
-2.17.1
+I think it is not good to convert width to format, because, for example
+width = 24,  there is two option, we can select format S24_LE,  or
+format S24_3LE,  width is ambiguous for selecting.
 
+In EASRC, it support other two 24bit format U24_LE, U24_3LE .
+
+if we use the format in DT, then it is clear for usage in driver.
+
+
+best regards
+wang shengjiu
