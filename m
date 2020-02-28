@@ -2,75 +2,57 @@ Return-Path: <SRS0=9THl=4Q=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45BC4C3F2D0
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Feb 2020 07:58:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BD740C3F2D0
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Feb 2020 08:17:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C5447246A8
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Feb 2020 07:58:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6F756246A3
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Feb 2020 08:17:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="S3wEAWpg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C5447246A8
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TCaGig/V"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6F756246A3
+Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 291F482E;
-	Fri, 28 Feb 2020 08:57:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 291F482E
+	by alsa0.perex.cz (Postfix) with ESMTPS id CFFEA16CA;
+	Fri, 28 Feb 2020 09:16:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CFFEA16CA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582876724;
-	bh=4cethoaChBf4vjJFA/XxJ1Fzdpv4cmyIrohkAFDiVNk=;
-	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1582877818;
+	bh=R2E6cZGLlY1PPETyHi4udexypEEmAfTCrf3OwNX7f6M=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=S3wEAWpgW/4zbLuTApgZmOhkXPKJBs37LIhVrq2Pd6AkHxsb5GwTSe3BW2DiNNwou
-	 LaCqXz1YAWkhaB/0hhdOzySf5YClXSwtfXQ2Kh8T4nORNxHRvhygT+GaBDqH3D6O7d
-	 J+gxwb77TOsTfsULhPmJ3oS4mfSqwMzFiR3KFCLM=
+	b=TCaGig/VluR7hR80evUpc+/H6RWDOKJKkMI0aJqtIk9ebUmYeYDYlM4eJjCPRugth
+	 aMDE8r25HgCZbDmm5Vb+n0QEIhXap2HWnogDelXmvzHM23OfMX4MTTIfwQLwBs5bsu
+	 cg9ZVyY7R/ku9KlWkvj4q33zv4GkgOQZsAFbRMmo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BF62DF8014E;
-	Fri, 28 Feb 2020 08:57:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 52E6FF8014D;
+	Fri, 28 Feb 2020 09:16:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3E03FF80171; Fri, 28 Feb 2020 08:57:52 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 12D85F80113
- for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2020 08:57:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 12D85F80113
-Date: 28 Feb 2020 16:57:43 +0900
-X-IronPort-AV: E=Sophos;i="5.70,493,1574089200"; d="scan'208";a="40295078"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 28 Feb 2020 16:57:43 +0900
-Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 85B4741F4DF6;
- Fri, 28 Feb 2020 16:57:43 +0900 (JST)
-Message-ID: <87zhd35eko.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>, broonie@kernel.org,
- alsa-devel@alsa-project.org, ranjani.sridharan@linux.intel.com,
- digetx@gmail.com, pierre-louis.bossart@linux.intel.com
-Subject: Re: [PATCH] ASoC: soc-pcm: Revert "call
- snd_soc_component_open/close() once"
-In-Reply-To: <871rqf6xas.wl-kuninori.morimoto.gx@renesas.com>
-References: <20200219182650.1416-1-kai.vehmanen@linux.intel.com>
- <87blput7hh.wl-kuninori.morimoto.gx@renesas.com>
- <alpine.DEB.2.21.2002201103060.2957@eliteleevi.tm.intel.com>
- <87mu9cspyf.wl-kuninori.morimoto.gx@renesas.com>
- <alpine.DEB.2.21.2002211251280.2957@eliteleevi.tm.intel.com>
- <87mu978pob.wl-kuninori.morimoto.gx@renesas.com>
- <87ftey88wk.wl-kuninori.morimoto.gx@renesas.com>
- <alpine.DEB.2.21.2002271110010.2957@eliteleevi.tm.intel.com>
- <874kvb7d38.wl-kuninori.morimoto.gx@renesas.com>
- <871rqf6xas.wl-kuninori.morimoto.gx@renesas.com>
-User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
+ id 8C0CBF8014E; Fri, 28 Feb 2020 09:16:07 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 092BBF80113
+ for <alsa-devel@alsa-project.org>; Fri, 28 Feb 2020 09:16:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 092BBF80113
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1582877764343802929-webhooks-bot@alsa-project.org>
+References: <1582877764343802929-webhooks-bot@alsa-project.org>
+Subject: libavresample is deprecated since January 2017 swith to libswresample
+Message-Id: <20200228081607.8C0CBF8014E@alsa1.perex.cz>
+Date: Fri, 28 Feb 2020 09:16:07 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,112 +68,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+alsa-project/alsa-plugins issue #7 was opened from marillat:
 
-Hi Kai, again, and, again
+As the subject said, would be nice if you can switch from libavresample  to libswresample
 
-> > 	start(substream-A); <=
-> > 	start(substream-B);
-> > 	start(substream-C);
-> >
-> > 	stop(substream-Z);  <=
-> > 	stop(substream-B);
-> > 	stop(substream-C);
-(snip)
-> Ohh, yes indeed !! I was confused.
-> But Hmm... I don't want to have substream list on each component...
-> Hmm... I will re-consider it again.
-
-I don't want to have substream list on each components,
-and keep simple code as much as possible.
-
-My current idea is using ID. What do you think ?
-It is not super simple though...
-
-	int soc_pcm_components_open(struct snd_pcm_substream *substream, u8 id)
-	{
-		int ret = 0;
-
-		/*
-		 * Add ID to each component to know "which open".
-		 */
-		for_each_rtd_components(rtd, i, component) {
-			if (component->driver->open) {
-				ret = component->driver->open(component, substream);
-				if (ret < 0)
-					return ret;
-
-				component->open_id = id; /* add ID */
-			}
-		}
-
-		return 0;
-	}
-
-	int soc_pcm_components_close(struct snd_pcm_substream *substream, u8 id)
-	{
-		/*
-		 * if ID > 0,  it is only target.
-		 * if ID == 0, all components are the target
-		 */
-		for_each_rtd_components(rtd, i, component) {
-			if ((id == 0 ||
-			     id == component->open_id) &&
-			    component->driver->close)
-				component->driver->close(component, substream);
-		}
-		...
-	}
-
-
-=>	int soc_pcm_clear(..., u8 id)
-	{
-		...
-		/*
-		 * if ID > 0,  it is only target.
-		 * if ID == 0, all components are the target
-		 */
-		soc_pcm_components_close(substream, id);
-		...
-	}
-
-	int soc_pcm_close(...)
-	{
-		/*
-		 * ID = 0
-		 * All components are target of close
-		 */
-=>		soc_pcm_clear(xxx, 0);
-	}
-
-	int soc_pcm_open(...)
-	{
-		static u8 id;
-
-		/* update ID */
-		id++;
-		if (id == 0)
-			id++;
-
-		...
-		ret = soc_pcm_components_open(substream, id);
-		if (ret < 0)
-			goto open_err;
-		...
-
-		return 0; /* success */
-
-	open_err:
-		/*
-		 * ID = id
-		 * Only this IDs are the target
-		 */
-=>		soc_pcm_clear(xxx, id)
-
-		return ret;
-	}
-
-
-Thank you for your help !!
-Best regards
----
-Kuninori Morimoto
+Issue URL     : https://github.com/alsa-project/alsa-plugins/issues/7
+Repository URL: https://github.com/alsa-project/alsa-plugins
