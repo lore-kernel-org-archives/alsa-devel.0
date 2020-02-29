@@ -2,85 +2,75 @@ Return-Path: <SRS0=/0g+=4R=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 616CBC3F2C6
-	for <alsa-devel@archiver.kernel.org>; Sat, 29 Feb 2020 12:39:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 470F0C3F2C6
+	for <alsa-devel@archiver.kernel.org>; Sat, 29 Feb 2020 15:19:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D23FE246AF
-	for <alsa-devel@archiver.kernel.org>; Sat, 29 Feb 2020 12:39:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BFC852468A
+	for <alsa-devel@archiver.kernel.org>; Sat, 29 Feb 2020 15:19:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tysqJ65T";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ap2c.com header.i=@ap2c.com header.b="Z2gSk7vT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D23FE246AF
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ap2c.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="awp8FOoY";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=tsoy.me header.i=@tsoy.me header.b="ioiFuvTv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BFC852468A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=tsoy.me
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3349916C7;
-	Sat, 29 Feb 2020 13:38:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3349916C7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1FFA742;
+	Sat, 29 Feb 2020 16:18:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1FFA742
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582979945;
-	bh=uKEB6Vx6x3Ty2rPHKz4AXA9jhddebxWvXW3rHPUWvs0=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=tysqJ65T/o6m/kkUCkRRmcTKYfURuL6v9lg6Ahma+2yuXAp6yYZXLAbKrXYlYbO6Z
-	 xQ0yHZwpmpncw2UxdYH4Ij5Uf3YCtZBavB67z+Lybogy/2vU8cC4/qi+IavABNPBQT
-	 bgWtIdhPhJKEk5Cv0e+dAGnPCzEkuK0fipuhHbcw=
+	s=default; t=1582989565;
+	bh=AiuBYTLnwKCxr5u4Mz7LxFqQi5+axvTG9ulG7zahD3Y=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=awp8FOoY+DH7dOSeDqTdp8LCN8M2ggrRN+gWTfKJhdKCa2aiZ6gO6Eykxc/7a1grE
+	 lM8tFkNvcZxlA6tW65PEmPT4xtEIi58Ya6/giJI6fOAAFpzKP9+nFjBCI3OpM8xKfe
+	 An3MuAerUp148uuqf+CKAdNOCsWn0nJETspLZo4I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AB8EEF80138;
-	Sat, 29 Feb 2020 13:38:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8109CF80138;
+	Sat, 29 Feb 2020 16:18:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BB60BF8013E; Sat, 29 Feb 2020 13:38:12 +0100 (CET)
-Received: from ber75-3-78-194-10-185.fbxo.proxad.net (unknown
- [IPv6:2a01:e34:ec20:ab90:82ee:73ff:fe69:7f62])
- by alsa1.perex.cz (Postfix) with ESMTP id B2608F800E1
- for <alsa-devel@alsa-project.org>; Sat, 29 Feb 2020 13:38:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B2608F800E1
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ap2c.com header.i=@ap2c.com
- header.b="Z2gSk7vT"
-Received: from mail-gateway.ap2c.org (localhost [127.0.0.1])
- by ber75-3-78-194-10-185.fbxo.proxad.net (Postfix) with ESMTP id 1D37B10C3A3; 
- Sat, 29 Feb 2020 13:38:08 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ap2c.com; s=ap2cCom;
- t=1582979888; bh=uKEB6Vx6x3Ty2rPHKz4AXA9jhddebxWvXW3rHPUWvs0=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References;
- b=Z2gSk7vTfVu1d1dnu/y7KapDhM3ugygUyqQXeFlHX4xCZsonp85ScksUdVE1fxnz4
- wPf7z286lTI0PsngHH2fQWDoodWPJskOg2MN9cP4XZ+ys1aD/hr2tWC8OHA9V814bX
- meHMW9BCaoT0p+b1nnIrfr6VxZ0I7pep2w5TvVRo=
-X-Virus-Scanned: amavisd-new at ap2c.orgm
-Received: from ber75-3-78-194-10-185.fbxo.proxad.net ([127.0.0.1])
- by mail-gateway.ap2c.org (berkelium.ap2c.org [127.0.0.1]) (amavisd-new,
- port 10024)
- with ESMTP id vAA25ZYUXTWg; Sat, 29 Feb 2020 13:38:07 +0100 (CET)
-Received: from antimony.ap2c.org (unknown
- [IPv6:2a01:e34:ec20:ab90:63ad:3e9d:5e02:f5e0])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ id C0DC9F80138; Sat, 29 Feb 2020 16:18:31 +0100 (CET)
+Received: from puleglot.ru (puleglot.ru [IPv6:2a01:4f8:1c0c:58e8::2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ber75-3-78-194-10-185.fbxo.proxad.net (Postfix) with ESMTPSA;
- Sat, 29 Feb 2020 13:38:07 +0100 (CET)
-From: =?ISO-8859-1?Q?Aur=E9lien?= Croc <aurelien@ap2c.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2C83DF80138
+ for <alsa-devel@alsa-project.org>; Sat, 29 Feb 2020 16:18:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C83DF80138
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=tsoy.me header.i=@tsoy.me
+ header.b="ioiFuvTv"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=tsoy.me;
+ s=mymail; h=Sender:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:
+ Subject:Cc:To:From:Reply-To:Content-Type:Content-ID:Content-Description:
+ Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+ In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+ List-Post:List-Owner:List-Archive;
+ bh=SJPWrlHj3hThIWe+0cqHFtLlvI6lGptrpw/QRu65zjA=; b=ioiFuvTvsW58EJAbnhGEtNX6JV
+ hS6MJ0Y9l+tmf9sNQ9hKBDYAgJwdKh+WDnYMAn7y8ipc0O4BIaYWDDwtVUgTgYSxXEY2zGhHu/oTI
+ pBRuAO3XYVFcqkhTFQuBuSZSOFGjrQXecCowCp5pZAfIoiy+mrAn1UdmAtPGdwvZewpo=;
+Received: from [2a00:1370:8125:a23e:55c9:2d3a:3db9:4bca]
+ (helo=home.puleglot.ru)
+ by puleglot.ru with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+ (Exim 4.92.3) (envelope-from <puleglot@puleglot.ru>)
+ id 1j83sf-0001ms-4q; Sat, 29 Feb 2020 18:18:17 +0300
+From: Alexander Tsoy <alexander@tsoy.me>
 To: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] No sound with Realtek ALC298 on a Samsung Galaxy book
-Date: Sat, 29 Feb 2020 13:37:37 +0100
-Message-ID: <15991530.MgTdZOinpY@antimony.ap2c.org>
-Organization: =?UTF-8?B?QVDCskM=?=
-In-Reply-To: <bd2f299ee9784fe2898cc303ff3516d0@realtek.com>
-References: <1610933.XPBrhYXKCp@antimony.ap2c.org>
- <s5h1rqsc1kd.wl-tiwai@suse.de> <bd2f299ee9784fe2898cc303ff3516d0@realtek.com>
+Subject: [PATCH] ALSA: usb-audio: Add support for MOTU MicroBook IIc
+Date: Sat, 29 Feb 2020 18:18:15 +0300
+Message-Id: <20200229151815.14199-1-alexander@tsoy.me>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-Cc: Takashi Iwai <tiwai@suse.de>, Kailang <kailang@realtek.com>
+Content-Transfer-Encoding: 8bit
+Cc: Takashi Iwai <tiwai@suse.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,27 +86,176 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,=20
+MicroBook IIc operates in UAC2 mode by default. This patch addresses
+several issues with it:
 
-> Sorry.
-> Samsung didn't request this platform need to support Linux.
+- MicroBook II and IIc shares the same USB ID. We can distinguish them
+  by interface class.
+- MaxPacketsOnly attribute is erroneously set in endpoint descriptors.
+  As a result this card produces noise with all sample rates other than
+  96 KHz. This also causes issues like IOMMU page faults and other
+  problems with host controller.
+- Sample rate changes takes more than 2 seconds for this device. Clock
+  validity request returns false during that period, so the clock validity
+  quirk is required.
 
-I can understand that you can't work on my problem if your client (Samsung)=
-=20
-didn't paid for that. However is it possible to get ALC298 specs in order t=
-o=20
-understand how to configure it (in particular a document which explains its=
-=20
-COEF registers and their meaning) and I will do the job.
+Signed-off-by: Alexander Tsoy <alexander@tsoy.me>
+---
+ sound/usb/clock.c        | 59 ++++++++++++++++++++++++++++++++--------
+ sound/usb/pcm.c          |  7 ++++-
+ sound/usb/quirks-table.h |  2 +-
+ sound/usb/quirks.c       | 18 +++++++++++-
+ 4 files changed, 72 insertions(+), 14 deletions(-)
 
-Thank you in advance.
-Regards,
-
-Aur=E9lien
-
-P.S. : sorry for those who received this email twice: I had trouble with th=
-e=20
-SMTP server..
-
-
+diff --git a/sound/usb/clock.c b/sound/usb/clock.c
+index a48313dfa967..b118cf97607f 100644
+--- a/sound/usb/clock.c
++++ b/sound/usb/clock.c
+@@ -151,16 +151,15 @@ static int uac_clock_selector_set_val(struct snd_usb_audio *chip, int selector_i
+ 	return ret;
+ }
+ 
+-/*
+- * Assume the clock is valid if clock source supports only one single sample
+- * rate, the terminal is connected directly to it (there is no clock selector)
+- * and clock type is internal. This is to deal with some Denon DJ controllers
+- * that always reports that clock is invalid.
+- */
+ static bool uac_clock_source_is_valid_quirk(struct snd_usb_audio *chip,
+ 					    struct audioformat *fmt,
+ 					    int source_id)
+ {
++	bool ret = false;
++	int count;
++	unsigned char data;
++	struct usb_device *dev = chip->dev;
++
+ 	if (fmt->protocol == UAC_VERSION_2) {
+ 		struct uac_clock_source_descriptor *cs_desc =
+ 			snd_usb_find_clock_source(chip->ctrl_intf, source_id);
+@@ -168,13 +167,51 @@ static bool uac_clock_source_is_valid_quirk(struct snd_usb_audio *chip,
+ 		if (!cs_desc)
+ 			return false;
+ 
+-		return (fmt->nr_rates == 1 &&
+-			(fmt->clock & 0xff) == cs_desc->bClockID &&
+-			(cs_desc->bmAttributes & 0x3) !=
+-				UAC_CLOCK_SOURCE_TYPE_EXT);
++		/*
++		 * Assume the clock is valid if clock source supports only one
++		 * single sample rate, the terminal is connected directly to it
++		 * (there is no clock selector) and clock type is internal.
++		 * This is to deal with some Denon DJ controllers that always
++		 * reports that clock is invalid.
++		 */
++		if (fmt->nr_rates == 1 &&
++		    (fmt->clock & 0xff) == cs_desc->bClockID &&
++		    (cs_desc->bmAttributes & 0x3) !=
++				UAC_CLOCK_SOURCE_TYPE_EXT)
++			return true;
++	}
++
++	/*
++	 * MOTU MicroBook IIc
++	 * Sample rate changes takes more than 2 seconds for this device. Clock
++	 * validity request returns false during that period.
++	 */
++	if (chip->usb_id == USB_ID(0x07fd, 0x0004)) {
++		count = 0;
++
++		while ((!ret) && (count < 50)) {
++			int err;
++
++			msleep(100);
++
++			err = snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0), UAC2_CS_CUR,
++					      USB_TYPE_CLASS | USB_RECIP_INTERFACE | USB_DIR_IN,
++					      UAC2_CS_CONTROL_CLOCK_VALID << 8,
++					      snd_usb_ctrl_intf(chip) | (source_id << 8),
++					      &data, sizeof(data));
++			if (err < 0) {
++				dev_warn(&dev->dev,
++					 "%s(): cannot get clock validity for id %d\n",
++					   __func__, source_id);
++				return false;
++			}
++
++			ret = !!data;
++			count++;
++		}
+ 	}
+ 
+-	return false;
++	return ret;
+ }
+ 
+ static bool uac_clock_source_is_valid(struct snd_usb_audio *chip,
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index bd258f1ec2dd..a4e4064f9aee 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -357,7 +357,12 @@ static int set_sync_ep_implicit_fb_quirk(struct snd_usb_substream *subs,
+ 		ep = 0x81;
+ 		ifnum = 1;
+ 		goto add_sync_ep_from_ifnum;
+-	case USB_ID(0x07fd, 0x0004): /* MOTU MicroBook II */
++	case USB_ID(0x07fd, 0x0004): /* MOTU MicroBook II/IIc */
++		/* MicroBook IIc */
++		if (altsd->bInterfaceClass == USB_CLASS_AUDIO)
++			return 0;
++
++		/* MicroBook II */
+ 		ep = 0x84;
+ 		ifnum = 0;
+ 		goto add_sync_ep_from_ifnum;
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index d187aa6d50db..1c8719292eee 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -3472,7 +3472,7 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
+ },
+ /* MOTU Microbook II */
+ {
+-	USB_DEVICE(0x07fd, 0x0004),
++	USB_DEVICE_VENDOR_SPEC(0x07fd, 0x0004),
+ 	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
+ 		.vendor_name = "MOTU",
+ 		.product_name = "MicroBookII",
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 7f558f4b4520..a7bd32bd301c 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1316,7 +1316,15 @@ int snd_usb_apply_boot_quirk(struct usb_device *dev,
+ 	case USB_ID(0x2466, 0x8010): /* Fractal Audio Axe-Fx 3 */
+ 		return snd_usb_axefx3_boot_quirk(dev);
+ 	case USB_ID(0x07fd, 0x0004): /* MOTU MicroBook II */
+-		return snd_usb_motu_microbookii_boot_quirk(dev);
++		/*
++		 * For some reason interface 3 with vendor-spec class is
++		 * detected on MicroBook IIc.
++		 */
++		if (get_iface_desc(intf->altsetting)->bInterfaceClass ==
++		    USB_CLASS_VENDOR_SPEC &&
++		    get_iface_desc(intf->altsetting)->bInterfaceNumber < 3)
++			return snd_usb_motu_microbookii_boot_quirk(dev);
++		break;
+ 	}
+ 
+ 	return 0;
+@@ -1754,5 +1762,13 @@ void snd_usb_audioformat_attributes_quirk(struct snd_usb_audio *chip,
+ 		else
+ 			fp->ep_attr |= USB_ENDPOINT_SYNC_SYNC;
+ 		break;
++	case USB_ID(0x07fd, 0x0004):  /* MOTU MicroBook IIc */
++		/*
++		 * MaxPacketsOnly attribute is erroneously set in endpoint
++		 * descriptors. As a result this card produces noise with
++		 * all sample rates other than 96 KHz.
++		 */
++		fp->attributes &= ~UAC_EP_CS_ATTR_FILL_MAX;
++		break;
+ 	}
+ }
+-- 
+2.24.1
 
