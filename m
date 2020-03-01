@@ -7,52 +7,52 @@ X-Spam-Status: No, score=-5.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C49F3C3F2D1
-	for <alsa-devel@archiver.kernel.org>; Sun,  1 Mar 2020 14:00:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 20EA0C3F2CE
+	for <alsa-devel@archiver.kernel.org>; Sun,  1 Mar 2020 14:01:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3D05D20674
-	for <alsa-devel@archiver.kernel.org>; Sun,  1 Mar 2020 14:00:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A176F222C2
+	for <alsa-devel@archiver.kernel.org>; Sun,  1 Mar 2020 14:01:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rGUQvmlK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3D05D20674
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OA5uh0i+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A176F222C2
 Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 945F0950;
-	Sun,  1 Mar 2020 15:00:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 945F0950
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4B46216C6;
+	Sun,  1 Mar 2020 15:00:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B46216C6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583071253;
-	bh=ylhVIY6BkW9DGtY3ukafkNDOnUcWDOcpKLXUdVWlUCY=;
+	s=default; t=1583071307;
+	bh=5moYO7AABPehty5TzdHsEKxWxhZGW+iSIX6GPlOiXWk=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rGUQvmlKJYU/F086vcd+0kKkjsxLTUElR2bH93wHu9NFgP1dsTQSOCr2ua60ptO4Y
-	 tDwX8XfLQ006+GpIXSaL+zT0luR7YTtn83KUHMOY2+jSCRgKOMLPYZwDihHAwmd2Xs
-	 TJ8YvN6MKe4f63cMgT+rhW3OaqeXpPTX8cijKUUQ=
+	b=OA5uh0i+sYghRrAMCJGgxggJ7ZQqtS7g4JcTBT+AVUPrbupXd8wAjBooy8blNpyv2
+	 hUamY/wqPKVT4r9on8ifPnXLGJ1MtmnOkKbUihooCB3j+ja1xN95P6UhgeHdLH5TD6
+	 M3vpjQdJ6NEpEOi/trEsr0+aTWKmCVIHq0UlmRhM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 01BE7F80245;
-	Sun,  1 Mar 2020 15:00:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D2C5AF8026A;
+	Sun,  1 Mar 2020 15:00:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EF1B0F8025F; Sun,  1 Mar 2020 14:59:59 +0100 (CET)
+ id 52302F80271; Sun,  1 Mar 2020 15:00:14 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 40E44F8013E
- for <alsa-devel@alsa-project.org>; Sun,  1 Mar 2020 14:59:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40E44F8013E
+ by alsa1.perex.cz (Postfix) with ESMTP id 9B3AAF8025F
+ for <alsa-devel@alsa-project.org>; Sun,  1 Mar 2020 15:00:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B3AAF8025F
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1583071196587867022-webhooks-bot@alsa-project.org>
-References: <1583071196587867022-webhooks-bot@alsa-project.org>
+In-Reply-To: <1583071211391659975-webhooks-bot@alsa-project.org>
+References: <1583071211391659975-webhooks-bot@alsa-project.org>
 Subject: Assertion 'jack' failed at modules/alsa/alsa-ucm.c:2158
-Message-Id: <20200301135959.EF1B0F8025F@alsa1.perex.cz>
-Date: Sun,  1 Mar 2020 14:59:59 +0100 (CET)
+Message-Id: <20200301140014.52302F80271@alsa1.perex.cz>
+Date: Sun,  1 Mar 2020 15:00:14 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,7 +68,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #14 was opened from JeremyFiggins:
+alsa-project/alsa-ucm-conf issue #14 was edited from JeremyFiggins:
 
 Hi, I have the following hardware:
 
@@ -82,7 +82,7 @@ and I'm running:
 
 > ~> cat /etc/os-release 
 > NAME="openSUSE Tumbleweed"
-> # VERSION="20200228"
+> VERSION="20200228"
 > ID="opensuse-tumbleweed"
 > ID_LIKE="opensuse suse"
 > VERSION_ID="20200228"
