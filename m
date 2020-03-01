@@ -7,55 +7,55 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 604E2C3F2D1
-	for <alsa-devel@archiver.kernel.org>; Sun,  1 Mar 2020 05:32:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BD9FFC3F2CE
+	for <alsa-devel@archiver.kernel.org>; Sun,  1 Mar 2020 05:33:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E279E2072A
-	for <alsa-devel@archiver.kernel.org>; Sun,  1 Mar 2020 05:32:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 47C362072A
+	for <alsa-devel@archiver.kernel.org>; Sun,  1 Mar 2020 05:33:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="o7k9PXlT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E279E2072A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vtpOSzIp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 47C362072A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B00A216DD;
-	Sun,  1 Mar 2020 06:31:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B00A216DD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8574916CA;
+	Sun,  1 Mar 2020 06:32:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8574916CA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583040747;
-	bh=5uu1wQLn1bgXrtTWXs5dvCWu41fLZhcB2ej8gUaQUUI=;
+	s=default; t=1583040795;
+	bh=4zj0S8V8QSOe2r0WI3NGf8jOHJAMAwAB8PUvFcujgoU=;
 	h=From:To:Subject:Date:In-Reply-To:References:In-Reply-To:
 	 References:Cc:List-Id:List-Unsubscribe:List-Archive:List-Post:
 	 List-Help:List-Subscribe:From;
-	b=o7k9PXlTeZZx2R7GiypIm5LdFePk6NSdm/YUKmc1jAfxPNSOsfB1fY0Tv06Iaagz+
-	 7j4YaYP2Y+8yxa6Cp6Bo45pD8TNMOWCDTpihqLJogvyL/mlb6LjAp+xye5m9t9I7rk
-	 WsDQ5BXc2JUqTGEdiIgTGGAVzH47mTcx6QT3jUBw=
+	b=vtpOSzIpg6kVMX0liSr/yp711bQ8Qpei7GyFG4o01fq+TVqMIL6u01F9qlRIgFquO
+	 0YOP9qWe6GrEMNwDdfHvtNIimJkyqZLw65u9g6BAXsQ/8U7FfLwaUPJmTKuDJQ3y82
+	 VKE9mKniKQlOlalGyrJY7fSrA2OVNbEpxgeMJV6g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7CFEAF8028B;
-	Sun,  1 Mar 2020 06:30:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0D4F9F8028E;
+	Sun,  1 Mar 2020 06:30:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 85363F80271; Sun,  1 Mar 2020 06:30:42 +0100 (CET)
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+ id 2B6EBF80273; Sun,  1 Mar 2020 06:30:43 +0100 (CET)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0BDBDF8025F
- for <alsa-devel@alsa-project.org>; Sun,  1 Mar 2020 06:30:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0BDBDF8025F
-Received: from inva021.nxp.com (localhost [127.0.0.1])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 88E0C200A3A;
- Sun,  1 Mar 2020 06:30:38 +0100 (CET)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C8380F8013E
+ for <alsa-devel@alsa-project.org>; Sun,  1 Mar 2020 06:30:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8380F8013E
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 738A11A09C0;
+ Sun,  1 Mar 2020 06:30:35 +0100 (CET)
 Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
  [165.114.16.14])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 4453320062C;
- Sun,  1 Mar 2020 06:30:29 +0100 (CET)
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 30C241A09C6;
+ Sun,  1 Mar 2020 06:30:26 +0100 (CET)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 11D71402D5;
- Sun,  1 Mar 2020 13:30:18 +0800 (SGT)
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 03A8D40299;
+ Sun,  1 Mar 2020 13:30:14 +0800 (SGT)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
  festevam@gmail.com, broonie@kernel.org, alsa-devel@alsa-project.org,
@@ -63,9 +63,10 @@ To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
  mark.rutland@arm.com, devicetree@vger.kernel.org, shawnguo@kernel.org,
  s.hauer@pengutronix.de, kernel@pengutronix.de, linux-imx@nxp.com,
  linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v4 3/8] ASoC: fsl-asoc-card: Change asrc-width to asrc-format
-Date: Sun,  1 Mar 2020 13:24:14 +0800
-Message-Id: <b220ba87a89cd4d0d876800efac9bb761f98bd70.1583039752.git.shengjiu.wang@nxp.com>
+Subject: [PATCH v4 1/8] ASoC: dt-bindings: fsl_asrc: Change asrc-width to
+ asrc-format
+Date: Sun,  1 Mar 2020 13:24:12 +0800
+Message-Id: <872c2e1082de6348318e14ccd31884d62355c282.1583039752.git.shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <cover.1583039752.git.shengjiu.wang@nxp.com>
 References: <cover.1583039752.git.shengjiu.wang@nxp.com>
@@ -94,33 +95,24 @@ format in driver, and it can distinguish S24_LE & S24_3LE.
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- sound/soc/fsl/fsl-asoc-card.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+ Documentation/devicetree/bindings/sound/fsl,asrc.txt | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index 9ce55feaac22..ab21fa1cabf7 100644
---- a/sound/soc/fsl/fsl-asoc-card.c
-+++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -680,17 +680,12 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
- 			goto asrc_fail;
- 		}
+diff --git a/Documentation/devicetree/bindings/sound/fsl,asrc.txt b/Documentation/devicetree/bindings/sound/fsl,asrc.txt
+index cb9a25165503..0cbb86c026d5 100644
+--- a/Documentation/devicetree/bindings/sound/fsl,asrc.txt
++++ b/Documentation/devicetree/bindings/sound/fsl,asrc.txt
+@@ -38,7 +38,9 @@ Required properties:
  
--		ret = of_property_read_u32(asrc_np, "fsl,asrc-width", &width);
-+		ret = of_property_read_u32(asrc_np, "fsl,asrc-format", &priv->asrc_format);
- 		if (ret) {
--			dev_err(&pdev->dev, "failed to get output rate\n");
-+			dev_err(&pdev->dev, "failed to get output format\n");
- 			ret = -EINVAL;
- 			goto asrc_fail;
- 		}
--
--		if (width == 24)
--			priv->asrc_format = SNDRV_PCM_FORMAT_S24_LE;
--		else
--			priv->asrc_format = SNDRV_PCM_FORMAT_S16_LE;
- 	}
+    - fsl,asrc-rate	: Defines a mutual sample rate used by DPCM Back Ends.
  
- 	/* Finish card registering */
+-   - fsl,asrc-width	: Defines a mutual sample width used by DPCM Back Ends.
++   - fsl,asrc-format	: Defines a mutual sample format used by DPCM Back
++			  Ends. The value is one of SNDRV_PCM_FORMAT_XX in
++			  "include/uapi/sound/asound.h"
+ 
+    - fsl,asrc-clk-map   : Defines clock map used in driver. which is required
+ 			  by imx8qm/imx8qxp platform
 -- 
 2.21.0
 
