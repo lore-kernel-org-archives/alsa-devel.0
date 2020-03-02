@@ -2,63 +2,73 @@ Return-Path: <SRS0=GfuB=4T=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CDD6C3F2CD
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Mar 2020 14:43:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DE819C3F2D1
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Mar 2020 16:14:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0BFE42166E
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Mar 2020 14:43:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6860D222C4
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Mar 2020 16:14:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JJTP9Rt5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0BFE42166E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iLfju03Y"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6860D222C4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6660F169F;
-	Mon,  2 Mar 2020 15:42:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6660F169F
+	by alsa0.perex.cz (Postfix) with ESMTPS id A7CE11687;
+	Mon,  2 Mar 2020 17:13:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A7CE11687
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583160192;
-	bh=XGyxMyaEHf54dcEpdc2/wE3et618rSb73lxFzQI+vrk=;
-	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=JJTP9Rt5/0wHVwnrgTgI/X5DSmOpYB97nbc4vAd+7gSBMr6T6pDlzg0JhXQgJKJ9H
-	 J9KE28PKHinv+J62oDmUQlw+UtuAx2DEGnoJONtOj0OGuMNMSW+arzREABl0NhfDf9
-	 coSPRWOwQ8j9uDl6/NYimSqvc0tiLvnOBUHca3rU=
+	s=default; t=1583165644;
+	bh=YE7Ie0/eRxJGSVX6GTGUIKusvzqxdB2TGGpBhjxMkSw=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=iLfju03YNJkPpyKnvHqDe5nOpwPfwOqbUYcERWwnLzSs7rwWmpxBN8Wb2D3utBI0/
+	 1EkP4uv01GX92S/Z7ubWCYic0VnnKTSS0H/UA8Dg7fSzbhOKc8gNm5lOTybsJazM/H
+	 xIAs0iE/GcaWS4BjZbl78AUkqe9YT7a3aqJ9Al6E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8AE81F802DF;
-	Mon,  2 Mar 2020 15:37:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2EC5DF80130;
+	Mon,  2 Mar 2020 17:13:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ECE08F802E0; Mon,  2 Mar 2020 15:37:36 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 23D71F802DC
- for <alsa-devel@alsa-project.org>; Mon,  2 Mar 2020 15:37:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23D71F802DC
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B6D0E2F;
- Mon,  2 Mar 2020 06:37:32 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3A63A3F534;
- Mon,  2 Mar 2020 06:37:32 -0800 (PST)
-Date: Mon, 02 Mar 2020 14:37:30 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Jack Yu <jack.yu@realtek.com>
-Subject: Applied "ASoC: rt1015: add operation callback function for
- rt1015_dai[]" to the asoc tree
-In-Reply-To: <20200302015424.9075-1-jack.yu@realtek.com>
-Message-Id: <applied-20200302015424.9075-1-jack.yu@realtek.com>
-X-Patchwork-Hint: ignore
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de,
- kent_chen@realtek.com, kenny_chen@realtek.com, lgirdwood@gmail.com,
- Mark Brown <broonie@kernel.org>, derek.fang@realtek.com, shumingf@realtek.com,
- mingjane_hsieh@realtek.com, flove@realtek.com
+ id 35F06F801ED; Mon,  2 Mar 2020 17:13:12 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D8A5DF80130
+ for <alsa-devel@alsa-project.org>; Mon,  2 Mar 2020 17:13:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8A5DF80130
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 02 Mar 2020 08:13:04 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,507,1574150400"; d="scan'208";a="262818513"
+Received: from mchandr7-mobl.amr.corp.intel.com (HELO [10.251.146.106])
+ ([10.251.146.106])
+ by fmsmga004.fm.intel.com with ESMTP; 02 Mar 2020 08:13:03 -0800
+Subject: Re: [PATCH 0/9] ASoC: Intel: machine driver updates for 5.7
+To: Mark Brown <broonie@kernel.org>
+References: <20200228231204.9026-1-pierre-louis.bossart@linux.intel.com>
+ <20200302131138.GD4166@sirena.org.uk>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <131b84c8-7750-1fdd-5e6f-e26915fa9a46@linux.intel.com>
+Date: Mon, 2 Mar 2020 08:52:01 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+MIME-Version: 1.0
+In-Reply-To: <20200302131138.GD4166@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,60 +84,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
 
-   ASoC: rt1015: add operation callback function for rt1015_dai[]
 
-has been applied to the asoc tree at
+On 3/2/20 7:11 AM, Mark Brown wrote:
+> On Fri, Feb 28, 2020 at 05:11:55PM -0600, Pierre-Louis Bossart wrote:
+> 
+>> base-commit: 6941b0b5f919e9839e8c25efaeb53854efee14e5
+> 
+> Since for-next gets rebuilt all the time it's not ideal to base things
+> off, for-5.x branches are better.  If you need dependencies it's fine
+> though.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From d237851d5d9dff5973160737197e825f05715ba3 Mon Sep 17 00:00:00 2001
-From: Jack Yu <jack.yu@realtek.com>
-Date: Mon, 2 Mar 2020 09:54:24 +0800
-Subject: [PATCH] ASoC: rt1015: add operation callback function for
- rt1015_dai[]
-
-Add operation callback function for rt1015_dai[].
-
-Signed-off-by: Jack Yu <jack.yu@realtek.com>
-Link: https://lore.kernel.org/r/20200302015424.9075-1-jack.yu@realtek.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/rt1015.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/soc/codecs/rt1015.c b/sound/soc/codecs/rt1015.c
-index 6d490e2dbc25..9f151c7c3d2d 100644
---- a/sound/soc/codecs/rt1015.c
-+++ b/sound/soc/codecs/rt1015.c
-@@ -857,6 +857,7 @@ struct snd_soc_dai_driver rt1015_dai[] = {
- 			.rates = RT1015_STEREO_RATES,
- 			.formats = RT1015_FORMATS,
- 		},
-+		.ops = &rt1015_aif_dai_ops,
- 	}
- };
- 
--- 
-2.20.1
-
+No dependencies expected, it's just to help buildbots understand what 
+tree to use, and for-5.x is just fine indeed. Thanks for the feedback.
