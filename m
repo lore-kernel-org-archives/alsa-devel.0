@@ -2,58 +2,66 @@ Return-Path: <SRS0=GfuB=4T=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BD61C3F2D2
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Mar 2020 10:48:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6127AC3F2D2
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Mar 2020 13:12:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0D99222B48
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Mar 2020 10:48:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DF4AA21739
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Mar 2020 13:12:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Q9W3vmM1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0D99222B48
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sGtLO6ug"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DF4AA21739
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3BFC816A1;
-	Mon,  2 Mar 2020 11:47:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BFC816A1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 27C1016A2;
+	Mon,  2 Mar 2020 14:11:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 27C1016A2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583146117;
-	bh=zqXEUu5q7AWEGLTc7soBCHee8ADB4oKrwDY5nWZPVR8=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1583154757;
+	bh=N9HqMGdVq+3ukr+ElMzBF4bW6fhpKt7uH2245qfO1BE=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Q9W3vmM1ec85DEAe5CI5MX0gAu4Qn8MUgPoOn8E0Kl7z6EfQuZ67JByrwlE95Obns
-	 dWZvxOT5ZMig720EPaFpdftXzpyvVg15k0ugwkey3r9jqicd1UNwR7Q0rpbNKc1BFy
-	 85QV5Rqy5KbvXYmqon81Er56L/qoB/pEgyEFA8SE=
+	b=sGtLO6ugHQ4oDqt2NaIdO0bMkQpH/raWZTjrqTfLGxHlb07r1Mz3m5eknw+sry6MQ
+	 IIIpTtvl1ay/0tUL5dX1rev4f92Y/SPpPebN177zrT85eFPwGhedDqaOyGrot3hHjO
+	 UBajj9UZN4CMnj+hKI9RVlSrN2gbPUsrXnZg+AUc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B398CF801EC;
-	Mon,  2 Mar 2020 11:47:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9BBF4F80131;
+	Mon,  2 Mar 2020 14:11:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 363E0F801ED; Mon,  2 Mar 2020 11:47:45 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 42F8EF80131
- for <alsa-devel@alsa-project.org>; Mon,  2 Mar 2020 11:47:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42F8EF80131
+ id F1D6FF801ED; Mon,  2 Mar 2020 14:11:44 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 9C97EF80131
+ for <alsa-devel@alsa-project.org>; Mon,  2 Mar 2020 14:11:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C97EF80131
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4CCD92F;
+ Mon,  2 Mar 2020 05:11:40 -0800 (PST)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C45463F534;
+ Mon,  2 Mar 2020 05:11:39 -0800 (PST)
+Date: Mon, 2 Mar 2020 13:11:38 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/9] ASoC: Intel: machine driver updates for 5.7
+Message-ID: <20200302131138.GD4166@sirena.org.uk>
+References: <20200228231204.9026-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1583146061636600018-webhooks-bot@alsa-project.org>
-References: <1583146061636600018-webhooks-bot@alsa-project.org>
-Subject: alsa-gobject: add support for i386 build job to workflow of Github
- Actions
-Message-Id: <20200302104745.363E0F801ED@alsa1.perex.cz>
-Date: Mon,  2 Mar 2020 11:47:45 +0100 (CET)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="5p8PegU4iirBW1oA"
+Content-Disposition: inline
+In-Reply-To: <20200228231204.9026-1-pierre-louis.bossart@linux.intel.com>
+X-Cookie: Whistler's mother is off her rocker.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -69,24 +77,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-gobject pull request #9 was opened from takaswie:
 
-In lxd repository for Ubuntu Cloud Images[1], Ubuntu i386 container
-is available for applications of Intel386 ABI.
+--5p8PegU4iirBW1oA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-This commit uses the container to test build for Intel386 ABI in
-workflow of Github Actions.
+On Fri, Feb 28, 2020 at 05:11:55PM -0600, Pierre-Louis Bossart wrote:
 
-I note that no official Fedora i386 container is in dockerhub
-registry[2]. It's needed to find the way to build application for
-Intel386 ABI on AMD64 architecture (perhaps multiarch) if we are
-going to support it.
+> base-commit: 6941b0b5f919e9839e8c25efaeb53854efee14e5
 
-[1] https://cloud-images.ubuntu.com/releases/
-[2] https://hub.docker.com/_/fedora
+Since for-next gets rebuilt all the time it's not ideal to base things
+off, for-5.x branches are better.  If you need dependencies it's fine
+though.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+--5p8PegU4iirBW1oA
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Request URL   : https://github.com/alsa-project/alsa-gobject/pull/9
-Patch URL     : https://github.com/alsa-project/alsa-gobject/pull/9.patch
-Repository URL: https://github.com/alsa-project/alsa-gobject
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5dBgkACgkQJNaLcl1U
+h9CDCQf+OpmsJYyHy2Idu4m6WCbqzNX98Aksc8Ay6kJh8LTbIupo+KT4a1RyvyxO
+onAl60SyOGDuah9pXMp+ZI+38aP4fCKqehUM8fsdMitXmH1WBPws0+ARruRFVuho
+0RL7hLxi8AYkGKCmLhouQrJAOoEobZfatWkUwFdzlnloz4rPL+ndzGATCoP0Zsb7
+4tHcV9WeNBE/q3FW1beyjclR8AsW2XSUvy2itIvatiEfDH2TSThgxv6dDA4O45U/
+PeVmTRwxiW8JjLUQXSjGyZdCS7qmfEOmLNn79FOwp6rpKdxv9fEkousNxPcwvTMX
+4baG2IMmEYfWc4b/u+/jtKUXEArXmw==
+=2vu5
+-----END PGP SIGNATURE-----
+
+--5p8PegU4iirBW1oA--
