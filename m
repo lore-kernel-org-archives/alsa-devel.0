@@ -6,57 +6,59 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 527A2C3F2CD
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Mar 2020 14:42:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CDD6C3F2CD
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Mar 2020 14:43:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D09232166E
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Mar 2020 14:42:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0BFE42166E
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Mar 2020 14:43:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EMgIZHLH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D09232166E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JJTP9Rt5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0BFE42166E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 28F0616D7;
-	Mon,  2 Mar 2020 15:42:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28F0616D7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6660F169F;
+	Mon,  2 Mar 2020 15:42:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6660F169F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583160172;
-	bh=4uB+mmdYYeExsjBKhpKt6sI8wT6RhS1DB1B6UYORGps=;
+	s=default; t=1583160192;
+	bh=XGyxMyaEHf54dcEpdc2/wE3et618rSb73lxFzQI+vrk=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=EMgIZHLHfj6xrP5OB68GIY2uXJL/1hOK5wtKp2+g0R3JSX7FKk4Bj1atG+EQzLbDc
-	 opY/TnnIPim6aSI6same1a8vC/TpCBFvKB8s7MsCPa2d7+jYYD6EXE4nmGBlJXc77E
-	 OHyQYZWPmVou/XzbRzSz6Z9hD/GHvEGL5Qqt2bAc=
+	b=JJTP9Rt5/0wHVwnrgTgI/X5DSmOpYB97nbc4vAd+7gSBMr6T6pDlzg0JhXQgJKJ9H
+	 J9KE28PKHinv+J62oDmUQlw+UtuAx2DEGnoJONtOj0OGuMNMSW+arzREABl0NhfDf9
+	 coSPRWOwQ8j9uDl6/NYimSqvc0tiLvnOBUHca3rU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B15B8F802D2;
-	Mon,  2 Mar 2020 15:37:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8AE81F802DF;
+	Mon,  2 Mar 2020 15:37:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B0BAAF802DB; Mon,  2 Mar 2020 15:37:32 +0100 (CET)
+ id ECE08F802E0; Mon,  2 Mar 2020 15:37:36 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id AA089F802A1
- for <alsa-devel@alsa-project.org>; Mon,  2 Mar 2020 15:37:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA089F802A1
+ by alsa1.perex.cz (Postfix) with ESMTP id 23D71F802DC
+ for <alsa-devel@alsa-project.org>; Mon,  2 Mar 2020 15:37:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23D71F802DC
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 472522F;
- Mon,  2 Mar 2020 06:37:28 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B6D0E2F;
+ Mon,  2 Mar 2020 06:37:32 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BFA3A3F534;
- Mon,  2 Mar 2020 06:37:27 -0800 (PST)
-Date: Mon, 02 Mar 2020 14:37:26 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3A63A3F534;
+ Mon,  2 Mar 2020 06:37:32 -0800 (PST)
+Date: Mon, 02 Mar 2020 14:37:30 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Keyon Jie <yang.jie@linux.intel.com>
-Subject: Applied "ASoC: SOF: pcm: skip DMA buffer pre-allocation" to the asoc
- tree
-In-Reply-To: <20200228231850.9226-2-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20200228231850.9226-2-pierre-louis.bossart@linux.intel.com>
+To: Jack Yu <jack.yu@realtek.com>
+Subject: Applied "ASoC: rt1015: add operation callback function for
+ rt1015_dai[]" to the asoc tree
+In-Reply-To: <20200302015424.9075-1-jack.yu@realtek.com>
+Message-Id: <applied-20200302015424.9075-1-jack.yu@realtek.com>
 X-Patchwork-Hint: ignore
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de,
+ kent_chen@realtek.com, kenny_chen@realtek.com, lgirdwood@gmail.com,
+ Mark Brown <broonie@kernel.org>, derek.fang@realtek.com, shumingf@realtek.com,
+ mingjane_hsieh@realtek.com, flove@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,7 +76,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: pcm: skip DMA buffer pre-allocation
+   ASoC: rt1015: add operation callback function for rt1015_dai[]
 
 has been applied to the asoc tree at
 
@@ -99,54 +101,33 @@ to this mail.
 Thanks,
 Mark
 
-From e582f4832a9ee27d92502b58f3a1b3331457e8bb Mon Sep 17 00:00:00 2001
-From: Keyon Jie <yang.jie@linux.intel.com>
-Date: Fri, 28 Feb 2020 17:18:47 -0600
-Subject: [PATCH] ASoC: SOF: pcm: skip DMA buffer pre-allocation
+From d237851d5d9dff5973160737197e825f05715ba3 Mon Sep 17 00:00:00 2001
+From: Jack Yu <jack.yu@realtek.com>
+Date: Mon, 2 Mar 2020 09:54:24 +0800
+Subject: [PATCH] ASoC: rt1015: add operation callback function for
+ rt1015_dai[]
 
-As discussion in ALSA https://patchwork.kernel.org/patch/11336023/, it
-is suggested to skip DMA buffer pre-allocation with passing size=0 when
-calling snd_pcm_set_managed_buffer(), to make the full buffer_bytes
-range configured in topology file selectable from user space, here do
-the corresponding change in SOF PCM driver to implement it.
+Add operation callback function for rt1015_dai[].
 
-This change doesn't have dependency to the change that Takashi will do
-in the ALSA core by adding total_pcm_alloc_bytes limitation to the
-struct snd_card, it passes tests both with or without Takashi's coming
-change on SOF CML platform.
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
-Link: https://lore.kernel.org/r/20200228231850.9226-2-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Jack Yu <jack.yu@realtek.com>
+Link: https://lore.kernel.org/r/20200302015424.9075-1-jack.yu@realtek.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/pcm.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ sound/soc/codecs/rt1015.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
-index b239bbff4b5c..f4769e19965a 100644
---- a/sound/soc/sof/pcm.c
-+++ b/sound/soc/sof/pcm.c
-@@ -601,8 +601,7 @@ static int sof_pcm_new(struct snd_soc_component *component,
+diff --git a/sound/soc/codecs/rt1015.c b/sound/soc/codecs/rt1015.c
+index 6d490e2dbc25..9f151c7c3d2d 100644
+--- a/sound/soc/codecs/rt1015.c
++++ b/sound/soc/codecs/rt1015.c
+@@ -857,6 +857,7 @@ struct snd_soc_dai_driver rt1015_dai[] = {
+ 			.rates = RT1015_STEREO_RATES,
+ 			.formats = RT1015_FORMATS,
+ 		},
++		.ops = &rt1015_aif_dai_ops,
+ 	}
+ };
  
- 	snd_pcm_set_managed_buffer(pcm->streams[stream].substream,
- 				   SNDRV_DMA_TYPE_DEV_SG, sdev->dev,
--				   le32_to_cpu(caps->buffer_size_min),
--				   le32_to_cpu(caps->buffer_size_max));
-+				   0, le32_to_cpu(caps->buffer_size_max));
- capture:
- 	stream = SNDRV_PCM_STREAM_CAPTURE;
- 
-@@ -624,8 +623,7 @@ static int sof_pcm_new(struct snd_soc_component *component,
- 
- 	snd_pcm_set_managed_buffer(pcm->streams[stream].substream,
- 				   SNDRV_DMA_TYPE_DEV_SG, sdev->dev,
--				   le32_to_cpu(caps->buffer_size_min),
--				   le32_to_cpu(caps->buffer_size_max));
-+				   0, le32_to_cpu(caps->buffer_size_max));
- 
- 	return 0;
- }
 -- 
 2.20.1
 
