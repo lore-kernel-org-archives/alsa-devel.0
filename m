@@ -1,4 +1,4 @@
-Return-Path: <SRS0=ZBV5=4O=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=GfuB=4T=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
@@ -7,52 +7,52 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A6F1FC4BA21
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 18:56:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FC6AC3F2CD
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Mar 2020 14:38:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2F1C220578
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Feb 2020 18:56:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 244BC21775
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Mar 2020 14:38:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QyKMnXdD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2F1C220578
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MR81CQW9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 244BC21775
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 820C7166A;
-	Wed, 26 Feb 2020 19:55:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 820C7166A
+	by alsa0.perex.cz (Postfix) with ESMTPS id E2A5A1683;
+	Mon,  2 Mar 2020 15:37:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E2A5A1683
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1582743373;
-	bh=ZcdzpBDBqOAUZFnPx6tvKO3tG/h8eEY32BexOJs3jLA=;
+	s=default; t=1583159932;
+	bh=+9oF1zZoYnvddeA35g9qY7GcZxtKtbT7C4WpHm5AJTU=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=QyKMnXdD75Pe6YCyJiWij6oVQA5XcObXLogn+EImfkWhAjwLJ1ytOuZcQvX6VLV0H
-	 W0aHq/OnBsjgF5EBg7oL+STqQYKEZlea7cmKTxTad5X1n0kdlHXVwQmT39DowyRGYY
-	 aA4uDHs0jqhOeYn6oJVRGhAnZVh8Mu6Qm4rM34+I=
+	b=MR81CQW9lEV5YpYxE18XYELBXT1gNjc7/JBCWvF3v8a2DwZo1HNSE3a763dJakCRW
+	 RXqDgZ1XRrSjoAmsguP9CpAoyGkciaGJ7OqBnhLPLhk6RbPjxPvvXYPaNgo0c8l1oH
+	 Q21M7cOiXYlZA1zZwUxzD/nKdwQTeWdl7UBGdSDs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E2A15F80321;
-	Wed, 26 Feb 2020 19:48:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 697C9F801ED;
+	Mon,  2 Mar 2020 15:37:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6EFEFF80329; Wed, 26 Feb 2020 19:48:17 +0100 (CET)
+ id 571D0F801ED; Mon,  2 Mar 2020 15:37:06 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 78577F8014D
- for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2020 19:48:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78577F8014D
+ by alsa1.perex.cz (Postfix) with ESMTP id 34DE3F800E5
+ for <alsa-devel@alsa-project.org>; Mon,  2 Mar 2020 15:37:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34DE3F800E5
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8E5AD4B2;
- Wed, 26 Feb 2020 10:48:12 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2BB6D2F;
+ Mon,  2 Mar 2020 06:37:01 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 05F6D3F881;
- Wed, 26 Feb 2020 10:48:11 -0800 (PST)
-Date: Wed, 26 Feb 2020 18:48:10 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A1D893F534;
+ Mon,  2 Mar 2020 06:37:00 -0800 (PST)
+Date: Mon, 02 Mar 2020 14:36:59 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Dan Murphy <dmurphy@ti.com>
-Subject: Applied "ASoC: tas2562: Fix sample rate error message" to the asoc
- tree
+To: YueHaibing <yuehaibing@huawei.com>
+Subject: Applied "ASoC: rt1015: set snd_soc_dai_ops in rt1015_dai driver" to
+ the asoc tree
 In-Reply-To: 
 Message-Id: 
 X-Patchwork-Hint: ignore
@@ -71,11 +71,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20200226184810.ofSpA4IBYxNg7_cDfKKXkazr4iVvyUxYoiUMFvI2Y1c@z>
+Message-ID: <20200302143659.ipaaL6TQOWhUSiAswRNLnM7st-PMLMV7FmiKzstnnPM@z>
 
 The patch
 
-   ASoC: tas2562: Fix sample rate error message
+   ASoC: rt1015: set snd_soc_dai_ops in rt1015_dai driver
 
 has been applied to the asoc tree at
 
@@ -100,34 +100,34 @@ to this mail.
 Thanks,
 Mark
 
-From 38b6a714941a285319734b9ccc30d34e107d5d7e Mon Sep 17 00:00:00 2001
-From: Dan Murphy <dmurphy@ti.com>
-Date: Wed, 26 Feb 2020 07:03:05 -0600
-Subject: [PATCH] ASoC: tas2562: Fix sample rate error message
+From a79ee2e095c0a60c32d5b1fce39d58e0fc4d9ec5 Mon Sep 17 00:00:00 2001
+From: YueHaibing <yuehaibing@huawei.com>
+Date: Mon, 2 Mar 2020 15:05:22 +0800
+Subject: [PATCH] ASoC: rt1015: set snd_soc_dai_ops in rt1015_dai driver
 
-Fix error message for setting the sample rate.  It says bitwidth but
-should say sample rate.
+snd_soc_dai_driver should set ops in rt1015_dai driver.
+Also make the two variable static to fix sparse warnings.
 
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
-Link: https://lore.kernel.org/r/20200226130305.12043-3-dmurphy@ti.com
+Fixes: df31007400c3 ("ASoC: rt1015: add rt1015 amplifier driver")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Link: https://lore.kernel.org/r/20200302070522.48104-1-yuehaibing@huawei.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tas2562.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/rt1015.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/tas2562.c b/sound/soc/codecs/tas2562.c
-index 5b4803a76719..be52886a5edb 100644
---- a/sound/soc/codecs/tas2562.c
-+++ b/sound/soc/codecs/tas2562.c
-@@ -252,7 +252,7 @@ static int tas2562_hw_params(struct snd_pcm_substream *substream,
+diff --git a/sound/soc/codecs/rt1015.c b/sound/soc/codecs/rt1015.c
+index c118d030bd2d..100b8c89d537 100644
+--- a/sound/soc/codecs/rt1015.c
++++ b/sound/soc/codecs/rt1015.c
+@@ -857,6 +857,7 @@ static struct snd_soc_dai_driver rt1015_dai[] = {
+ 			.rates = RT1015_STEREO_RATES,
+ 			.formats = RT1015_FORMATS,
+ 		},
++		.ops    = &rt1015_aif_dai_ops,
+ 	}
+ };
  
- 	ret = tas2562_set_samplerate(tas2562, params_rate(params));
- 	if (ret)
--		dev_err(tas2562->dev, "set bitwidth failed, %d\n", ret);
-+		dev_err(tas2562->dev, "set sample rate failed, %d\n", ret);
- 
- 	return ret;
- }
 -- 
 2.20.1
 
