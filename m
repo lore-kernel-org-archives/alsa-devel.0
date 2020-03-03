@@ -2,97 +2,80 @@ Return-Path: <SRS0=CIz3=4U=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D0FCAC3F2CD
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Mar 2020 14:35:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CBE2C3F2CD
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Mar 2020 14:57:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4C5D620714
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Mar 2020 14:35:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9B48F20828
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Mar 2020 14:57:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="t5zcsBgO";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Wj7clo3b"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4C5D620714
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cIi7cA1R"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9B48F20828
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7A0E81662;
-	Tue,  3 Mar 2020 15:34:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A0E81662
+	by alsa0.perex.cz (Postfix) with ESMTPS id E31C81662;
+	Tue,  3 Mar 2020 15:56:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E31C81662
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583246146;
-	bh=5HLphgfoAp5hxc33Hyu3pkUVc4DKx/1Imqw5QOPmuoY=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1583247453;
+	bh=OGTb9rnq94nO9dXfuOPUPWaW8y1d04E1IMU5OdDNkP8=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=t5zcsBgOeU1lTKXamB7meEyj6pHNKAxRqpudees4mpQ3dSI8RIGyWsZPbAhMECaul
-	 8bf9wZPX+TMcFmAwjuHuRqhuOuWetc/oGi/ZEfFeXSlKr3IWqot19q52PRXOvTg+Cn
-	 IGUqzRx5/Nf+O7xg6RAJjcF5L6Ib286dh+He7Tzo=
+	b=cIi7cA1RkaphCxImlw/UNzq6ph3lLtvs0diw30qaSUsP6OO3SW4rUsDzkXdeyhXp5
+	 QIFGXegsvZVTmBO/SIXm3R28d+hVRLwnsIbu5+OVBtHNUOrOeOk4YthX7EaF4yOO59
+	 C8l1MePFpFkHh9Eona4MGNE/urgbnnWCkUK0rBlU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E0E3CF80245;
-	Tue,  3 Mar 2020 15:34:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7E517F80131;
+	Tue,  3 Mar 2020 15:56:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 37513F8025F; Tue,  3 Mar 2020 15:34:53 +0100 (CET)
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com
- [IPv6:2607:f8b0:4864:20::541])
+ id 014A7F8025F; Tue,  3 Mar 2020 15:56:40 +0100 (CET)
+Received: from mail-oi1-f193.google.com (mail-oi1-f193.google.com
+ [209.85.167.193])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6361FF80131
- for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2020 15:34:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6361FF80131
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="Wj7clo3b"
-Received: by mail-pg1-x541.google.com with SMTP id s2so1617876pgv.6
- for <alsa-devel@alsa-project.org>; Tue, 03 Mar 2020 06:34:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=sender:date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to:user-agent;
- bh=A9r1rdjgxdujZHKdyrajsLeH9QBeHgW4Z+0FAe0pOxM=;
- b=Wj7clo3bjugnZLLN8cUphbm9TO23s/7v9ldR/lHR892/Nl683ZqPpvT2w4auQw4BVK
- /h5o2JcYFH/nx5+tY8XkcUgV7oD/OnLEg4HJOrTVPl5IdKkj31qvttGeKv4cK8v8XLx6
- yLZRzLwLfTVd3agskOtEJ3eMAEruzXKCvcYwrk/C43G5YDsoKzDBoLNgaQcP3HhFQyuu
- fdfoLh8C5/jqtkWa+vZJgSOXpwpPnMRezM6JO0cmuByL0BFMKeb7QRx6X1RbPm6eUUPL
- ywwi2qJzPm23k/NyJ0gK5zepUy7PNG/Pd/p6X6XNqzH5yz47gKjzX1ZwMXOEmkUcQoyZ
- 9jqA==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3F86BF8012D
+ for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2020 15:56:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3F86BF8012D
+Received: by mail-oi1-f193.google.com with SMTP id q81so3320516oig.0
+ for <alsa-devel@alsa-project.org>; Tue, 03 Mar 2020 06:56:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
- :references:mime-version:content-disposition:in-reply-to:user-agent;
- bh=A9r1rdjgxdujZHKdyrajsLeH9QBeHgW4Z+0FAe0pOxM=;
- b=LHMNdRLPSLaQq6RoLwB2xWw86h1qlQJ6nYQaPCrSk8xVEIV04VZXWndwsOhRAt7fBl
- hbvPzLbVWYtDZ2xIPyfyUv/K51Dfc/DHvC1uKXU2bB8e6XAUFaCXBYkskpyYlND+ZhKa
- 0splkXtNCwWEyoST+6GAbNeFs5U490YDa7jY6CGJMSpERoJOrBVaeqEVCFM4jQLx/dhU
- Fen6QiiiwkPdYmOUIn/WU8Uao5oY1eZtxDdhonZRp4KyZtWs5lkzU2wu3NOtS5u1bxTM
- iN22aDYgWhVxMQj7AAQBtqJoLatqlC711HkCoJ6C+aBfajZaoCMgjoGHHspHzCJuDbH8
- 6gdg==
-X-Gm-Message-State: ANhLgQ3xB5FY+phhoVRMkjIxUQlW1bt7sLYdDguPjhxdGpCZd+PsqL48
- 267PkMBBuWOBYgIC0MZWD+k=
-X-Google-Smtp-Source: ADFU+vvSX/wgDsqEEwAqbDZltsO3GyJEnBAqz5YJ8pdU+azKUfszCRTdwImCImdr9VODUOMIAe/W5Q==
-X-Received: by 2002:aa7:86cd:: with SMTP id h13mr349892pfo.252.1583246086518; 
- Tue, 03 Mar 2020 06:34:46 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
- by smtp.gmail.com with ESMTPSA id m15sm23947712pgh.80.2020.03.03.06.34.45
- (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
- Tue, 03 Mar 2020 06:34:45 -0800 (PST)
-Date: Tue, 3 Mar 2020 06:34:44 -0800
-From: Guenter Roeck <linux@roeck-us.net>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] ASoC: Fix SND_SOC_ALL_CODECS imply ac97 fallout
-Message-ID: <20200303143444.GA25683@roeck-us.net>
-References: <20200224112537.14483-1-geert@linux-m68k.org>
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=x3zNZ7d0/O3piZAKwaRzICowqFDeT12MhX8I85ngdoI=;
+ b=D3nWXukdFlze3KD2kjeGAkJjg7aHRki7mDZ/qcsqIYQKGa61pBIrl0HHdBVDRhIMZs
+ bctgh3cUodBsPYsA4fg3/7EB005iMqCUF2uNikdb6GYUstgnu/BxE3QiF6jswpxVRBqc
+ uiGfdNHUQPQslVbzFjbj1vY2y0s5/aemGqq3tU5ZP74nwhdudKNOkn8CIBztPMmj9ih0
+ fiSxK+TGTQxaoLvV7PNgPl3+Wm8hI93g3vyrHOS8juu2ZbfZeh51BWZjxuod+HoQQTdO
+ UweGsvqQKIKWs6hOG+B7nUSo+5OjB618EBffqwficJQTKfHfeGFne4g2k+JBPD3EGhbk
+ y9LQ==
+X-Gm-Message-State: ANhLgQ0nD9XNR6knDbBMjPD4gM32Xkr/2S8Dmg0iPU917EFe1hrfgPqz
+ HwoSoiDMfXY5+Mp6PhDgBLQH1n//65jhrBHz+fI=
+X-Google-Smtp-Source: ADFU+vsxyoz8G7LuihX+qLVDCzU7Ls0iBKTkvdUqqQNbf2pr5oeMDXiJ/hb4dyT/P9DEa3JE+h8pPzSts0auW2RHjS4=
+X-Received: by 2002:aca:cdd1:: with SMTP id d200mr2565751oig.153.1583247396276; 
+ Tue, 03 Mar 2020 06:56:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200224112537.14483-1-geert@linux-m68k.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+References: <20200224112537.14483-1-geert@linux-m68k.org>
+ <20200303143444.GA25683@roeck-us.net>
+In-Reply-To: <20200303143444.GA25683@roeck-us.net>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 3 Mar 2020 15:56:25 +0100
+Message-ID: <CAMuHMdWZxc5KjHaOhk5xdcjSn54i3ku7b1dW6tXhXbjku1eLww@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: Fix SND_SOC_ALL_CODECS imply ac97 fallout
+To: Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
  Randy Dunlap <rdunlap@infradead.org>, Takashi Iwai <tiwai@suse.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Robert Jarzmik <robert.jarzmik@free.fr>
@@ -111,26 +94,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Feb 24, 2020 at 12:25:37PM +0100, Geert Uytterhoeven wrote:
-> On i386 randconfig:
-> 
->     sound/soc/codecs/wm9705.o: In function `wm9705_soc_resume':
->     wm9705.c:(.text+0x128): undefined reference to `snd_ac97_reset'
->     sound/soc/codecs/wm9712.o: In function `wm9712_soc_resume':
->     wm9712.c:(.text+0x2d1): undefined reference to `snd_ac97_reset'
->     sound/soc/codecs/wm9713.o: In function `wm9713_soc_resume':
->     wm9713.c:(.text+0x820): undefined reference to `snd_ac97_reset'
-> 
-> Fix this by adding the missing dependencies on SND_SOC_AC97_BUS.
-> 
+Hi G=C3=BCnter
 
-With this patch applied, arm:pxa_defconfig reports a variety of unmet
-SND_SOC dependencies, and it fails to build.
+On Tue, Mar 3, 2020 at 3:34 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> On Mon, Feb 24, 2020 at 12:25:37PM +0100, Geert Uytterhoeven wrote:
+> > On i386 randconfig:
+> >
+> >     sound/soc/codecs/wm9705.o: In function `wm9705_soc_resume':
+> >     wm9705.c:(.text+0x128): undefined reference to `snd_ac97_reset'
+> >     sound/soc/codecs/wm9712.o: In function `wm9712_soc_resume':
+> >     wm9712.c:(.text+0x2d1): undefined reference to `snd_ac97_reset'
+> >     sound/soc/codecs/wm9713.o: In function `wm9713_soc_resume':
+> >     wm9713.c:(.text+0x820): undefined reference to `snd_ac97_reset'
+> >
+> > Fix this by adding the missing dependencies on SND_SOC_AC97_BUS.
+> >
+>
+> With this patch applied, arm:pxa_defconfig reports a variety of unmet
+> SND_SOC dependencies, and it fails to build.
+>
+> ERROR: "snd_ac97_reset" [sound/soc/codecs/snd-soc-wm9713.ko] undefined!
+> ERROR: "snd_ac97_reset" [sound/soc/codecs/snd-soc-wm9712.ko] undefined!
+> ERROR: "snd_ac97_reset" [sound/soc/codecs/snd-soc-wm9705.ko] undefined!
+>
+> Reverting this patch fixes the problem.
 
-ERROR: "snd_ac97_reset" [sound/soc/codecs/snd-soc-wm9713.ko] undefined!
-ERROR: "snd_ac97_reset" [sound/soc/codecs/snd-soc-wm9712.ko] undefined!
-ERROR: "snd_ac97_reset" [sound/soc/codecs/snd-soc-wm9705.ko] undefined!
+Should SND_PXA2XX_SOC_AC97 in sound/soc/pxa/Kconfig select
+SND_SOC_AC97_BUS instead of SND_SOC_AC97_BUS_NEW?
+The latter does not exist.
 
-Reverting this patch fixes the problem.
+Gr{oetje,eeting}s,
 
-Guenter
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
