@@ -2,87 +2,66 @@ Return-Path: <SRS0=CIz3=4U=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5F2EC3F2C6
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Mar 2020 16:55:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A8B1C3F2D1
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Mar 2020 17:09:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6D0DF20836
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Mar 2020 16:55:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 171DE2086A
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Mar 2020 17:09:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HzPwCUFR";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="o4b8Fvsz"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6D0DF20836
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="U2885hLf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 171DE2086A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C6C2D1661;
-	Tue,  3 Mar 2020 17:55:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C6C2D1661
+	by alsa0.perex.cz (Postfix) with ESMTPS id 312FF166F;
+	Tue,  3 Mar 2020 18:08:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 312FF166F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583254553;
-	bh=4Iu72ZqZPGr/AjqOSDI7Zng1ndHkGYdIqZnvpMUgZ64=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=HzPwCUFR1Z7++qLc6KH6Qjy0H4olhj36pAE9VDK2K1Q0u9cABGOJMVDD6X7ccOs38
-	 wwd5WlLaMzbe2td0hLuqUvd2n1DX9Am63VvJf+YOUqMfmY1WgvQOyBbSjdOI9TIl2w
-	 uLGx3eb17ECIffeBe8yxPTMQ2oiN+GYWpA9CjL+c=
+	s=default; t=1583255383;
+	bh=0E7Cz8fxoAfea7PhJy8DMBwwk5masbcHP5eJQ1S8aTM=;
+	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=U2885hLfBZBSQZ3sZ0Pn0GvcOsslo5t5iTMwbY/VXIqbSUWR9MncZVQo27V0asDE9
+	 2sjg2blW9PIW3TC/0aiBvBW0kaimw+1m36jlisXMTFovnsl3wU5RAvHmlU9Ejpwrjf
+	 IRSjWML0Oa/O9Zi5QoGqriFSGRLDnrzNW4JRfBss=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1CFEEF80245;
-	Tue,  3 Mar 2020 17:55:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 05F37F80271;
+	Tue,  3 Mar 2020 18:08:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C8C09F8012D; Tue,  3 Mar 2020 17:55:00 +0100 (CET)
-Received: from bombadil.infradead.org (bombadil.infradead.org
- [IPv6:2607:7c80:54:e::133])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BE4F8F8012D
- for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2020 17:54:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE4F8F8012D
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="o4b8Fvsz"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
- Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
- Subject:Sender:Reply-To:Content-ID:Content-Description;
- bh=0h9eZXUbT/+wZn18IzVeTxSKw0VaeM+576oP9khRe6o=; b=o4b8FvszcUQVJsc7FTwT0eGsg2
- 8IGAsPOmZEt3I7SeQ1YmMBj/ZGYGdXT9eTMWdDnusCnGWhT7wWB7fwX5ygtZL/FKfGUU70EidZkIZ
- 7HQywX5V/rCqHkxjrPXBYVJ4jmZ7/XKBvA/SfBcJW7m68jJk9MqVg8rGu9VJqLKcYjTv7G2OWc/cQ
- ono48DKQUjNB59qUvXs3PDRsi1sCWSLPNy3Nr+Agttxw3T8gc5PV3R9vYg6Vi1WlqdapXMz2flidi
- HlTiTw6+5t6dO8uQIx5IwhrlLwVN1B84IkJeEihitV7XkAm5UMP8rwAWyNWFZNWZwuR+ntBNTb/S8
- r0NMFSOg==;
-Received: from [2601:1c0:6280:3f0::19c2]
- by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j9AoX-0004ah-2t; Tue, 03 Mar 2020 16:54:37 +0000
-Subject: Re: [PATCH] ASoC: amd: AMD RV RT5682 should depends on CROS_EC
-To: Enric Balletbo i Serra <enric.balletbo@collabora.com>,
- linux-kernel@vger.kernel.org
-References: <20200303110514.3267126-1-enric.balletbo@collabora.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <3e34a902-2a7c-c13c-d569-9d6479a65627@infradead.org>
-Date: Tue, 3 Mar 2020 08:54:34 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
-MIME-Version: 1.0
+ id C329FF8011C; Tue,  3 Mar 2020 18:07:58 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 552AFF8012D
+ for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2020 18:07:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 552AFF8012D
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E6E802F;
+ Tue,  3 Mar 2020 09:07:53 -0800 (PST)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6C2A93F534;
+ Tue,  3 Mar 2020 09:07:53 -0800 (PST)
+Date: Tue, 03 Mar 2020 17:07:51 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Subject: Applied "ASoC: amd: AMD RV RT5682 should depends on CROS_EC" to the
+ asoc tree
 In-Reply-To: <20200303110514.3267126-1-enric.balletbo@collabora.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+Message-Id: <applied-20200303110514.3267126-1-enric.balletbo@collabora.com>
+X-Patchwork-Hint: ignore
+Cc: alsa-devel@alsa-project.org,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- YueHaibing <yuehaibing@huawei.com>, Takashi Iwai <tiwai@suse.com>,
- Akshu Agrawal <akshu.agrawal@amd.com>, Mark Brown <broonie@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>,
- Collabora Kernel ML <kernel@collabora.com>
+ Randy Dunlap <rdunlap@infradead.org>, YueHaibing <yuehaibing@huawei.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Collabora Kernel ML <kernel@collabora.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Akshu Agrawal <akshu.agrawal@amd.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,50 +77,74 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 3/3/20 3:05 AM, Enric Balletbo i Serra wrote:
-> If SND_SOC_AMD_RV_RT5682_MACH=y, below kconfig and build errors can be seen:
-> 
->  WARNING: unmet direct dependencies detected for SND_SOC_CROS_EC_CODEC
->  WARNING: unmet direct dependencies detected for I2C_CROS_EC_TUNNEL
-> 
->  ld: drivers/i2c/busses/i2c-cros-ec-tunnel.o: in function `ec_i2c_xfer':
->  i2c-cros-ec-tunnel.c:(.text+0x2fc): undefined reference to `cros_ec_cmd_xfer_status'
->  ld: sound/soc/codecs/cros_ec_codec.o: in function `wov_host_event':
->  cros_ec_codec.c:(.text+0x4fb): undefined reference to `cros_ec_get_host_event'
->  ld: sound/soc/codecs/cros_ec_codec.o: in function `send_ec_host_command':
->  cros_ec_codec.c:(.text+0x831): undefined reference to `cros_ec_cmd_xfer_status'
-> 
-> This is because it will select SND_SOC_CROS_EC_CODEC and I2c_CROS_EC_TUNNEL but
-> both depends on CROS_EC.
-> 
-> Fixes: 6b8e4e7db3cd ("ASoC: amd: Add machine driver for Raven based platform")
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+The patch
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+   ASoC: amd: AMD RV RT5682 should depends on CROS_EC
 
-Thanks.
+has been applied to the asoc tree at
 
-> ---
-> 
->  sound/soc/amd/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
-> index b29ef1373946..bce4cee5cb54 100644
-> --- a/sound/soc/amd/Kconfig
-> +++ b/sound/soc/amd/Kconfig
-> @@ -33,6 +33,6 @@ config SND_SOC_AMD_RV_RT5682_MACH
->  	select SND_SOC_MAX98357A
->  	select SND_SOC_CROS_EC_CODEC
->  	select I2C_CROS_EC_TUNNEL
-> -	depends on SND_SOC_AMD_ACP3x && I2C
-> +	depends on SND_SOC_AMD_ACP3x && I2C && CROS_EC
->  	help
->  	 This option enables machine driver for RT5682 and MAX9835.
-> 
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+From e7e2afeacaa6e6b3d428ca8dd0507f1098bafe5d Mon Sep 17 00:00:00 2001
+From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Date: Tue, 3 Mar 2020 12:05:14 +0100
+Subject: [PATCH] ASoC: amd: AMD RV RT5682 should depends on CROS_EC
+
+If SND_SOC_AMD_RV_RT5682_MACH=y, below kconfig and build errors can be seen:
+
+ WARNING: unmet direct dependencies detected for SND_SOC_CROS_EC_CODEC
+ WARNING: unmet direct dependencies detected for I2C_CROS_EC_TUNNEL
+
+ ld: drivers/i2c/busses/i2c-cros-ec-tunnel.o: in function `ec_i2c_xfer':
+ i2c-cros-ec-tunnel.c:(.text+0x2fc): undefined reference to `cros_ec_cmd_xfer_status'
+ ld: sound/soc/codecs/cros_ec_codec.o: in function `wov_host_event':
+ cros_ec_codec.c:(.text+0x4fb): undefined reference to `cros_ec_get_host_event'
+ ld: sound/soc/codecs/cros_ec_codec.o: in function `send_ec_host_command':
+ cros_ec_codec.c:(.text+0x831): undefined reference to `cros_ec_cmd_xfer_status'
+
+This is because it will select SND_SOC_CROS_EC_CODEC and I2c_CROS_EC_TUNNEL but
+both depends on CROS_EC.
+
+Fixes: 6b8e4e7db3cd ("ASoC: amd: Add machine driver for Raven based platform")
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Link: https://lore.kernel.org/r/20200303110514.3267126-1-enric.balletbo@collabora.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/amd/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
+index b29ef1373946..bce4cee5cb54 100644
+--- a/sound/soc/amd/Kconfig
++++ b/sound/soc/amd/Kconfig
+@@ -33,6 +33,6 @@ config SND_SOC_AMD_RV_RT5682_MACH
+ 	select SND_SOC_MAX98357A
+ 	select SND_SOC_CROS_EC_CODEC
+ 	select I2C_CROS_EC_TUNNEL
+-	depends on SND_SOC_AMD_ACP3x && I2C
++	depends on SND_SOC_AMD_ACP3x && I2C && CROS_EC
+ 	help
+ 	 This option enables machine driver for RT5682 and MAX9835.
 -- 
-~Randy
+2.20.1
 
