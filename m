@@ -2,65 +2,78 @@ Return-Path: <SRS0=CIz3=4U=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81F50C3F2CD
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Mar 2020 11:06:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C8F1C3F2C6
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Mar 2020 11:40:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1087A2083E
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Mar 2020 11:06:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B19FB2073D
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Mar 2020 11:40:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GkZmo+fw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1087A2083E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IZ2MHEjM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B19FB2073D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5C6491662;
-	Tue,  3 Mar 2020 12:05:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C6491662
+	by alsa0.perex.cz (Postfix) with ESMTPS id 149EF166E;
+	Tue,  3 Mar 2020 12:40:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 149EF166E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583233577;
-	bh=gC3Q8kx/jzj7i0FVNHlIeLOgiFhvUBVLwsqS3eBHg/Q=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=GkZmo+fwGwdelpbUx1MQGTYGACyXpbx8BiGAu6oXALq7XbD79obDpQHzf4vvnjAdg
-	 PQb85xO4uYbhQbMWU3rVUKGCg4g9rDj/hgIZgkvNrf99PnqWxjVqyif6rHSKaje0kY
-	 HxwTHk4SzIrmPpobBurx9+Dbpr8ll8Yzau/lOgoE=
+	s=default; t=1583235650;
+	bh=UXMhDI/Ql+Furl3D/dbvU82sBdWIKg63ndO+GYoJ1Hg=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=IZ2MHEjMOOb/EyzqndR81VYRGSrrrt8akudv1h2QhtKvYJpGqIPwQmo2/P0pTPmuY
+	 3GCavgKLLCkYZzagFT1Jx46/f3MM7So74BlSxlQclD5uvN3RBhWP3OlR93A9uaNYTG
+	 ehsiR86otjLNzUkm0PYQzO5XMO+wW0flaBtckEdI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DD9EEF80245;
-	Tue,  3 Mar 2020 12:05:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 96FF2F8012D;
+	Tue,  3 Mar 2020 12:39:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B09D8F8025F; Tue,  3 Mar 2020 12:05:25 +0100 (CET)
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk
- [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+ id DE415F8025F; Tue,  3 Mar 2020 12:39:56 +0100 (CET)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 03190F8012D
- for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2020 12:05:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03190F8012D
-Received: from [127.0.0.1] (localhost [127.0.0.1])
- (Authenticated sender: eballetbo) with ESMTPSA id 091D52919DF
-From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: amd: AMD RV RT5682 should depends on CROS_EC
-Date: Tue,  3 Mar 2020 12:05:14 +0100
-Message-Id: <20200303110514.3267126-1-enric.balletbo@collabora.com>
-X-Mailer: git-send-email 2.25.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1E69CF80131
+ for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2020 12:39:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E69CF80131
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 03 Mar 2020 03:39:49 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,511,1574150400"; d="scan'208";a="240044033"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+ by orsmga003.jf.intel.com with ESMTP; 03 Mar 2020 03:39:46 -0800
+Date: Tue, 3 Mar 2020 13:39:45 +0200 (EET)
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@eliteleevi.tm.intel.com
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH] ASoC: SOF: Fix snd_sof_ipc_stream_posn()
+In-Reply-To: <20200303101858.ytehbrivocyp3cnf@kili.mountain>
+Message-ID: <alpine.DEB.2.21.2003031321410.2957@eliteleevi.tm.intel.com>
+References: <20200303101858.ytehbrivocyp3cnf@kili.mountain>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Randy Dunlap <rdunlap@infradead.org>, YueHaibing <yuehaibing@huawei.com>,
- Takashi Iwai <tiwai@suse.com>, Akshu Agrawal <akshu.agrawal@amd.com>,
- Mark Brown <broonie@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- Collabora Kernel ML <kernel@collabora.com>
+Content-Type: text/plain; charset=US-ASCII
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, kernel-janitors@vger.kernel.org,
+ Keyon Jie <yang.jie@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.com>,
+ Slawomir Blauciak <slawomir.blauciak@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,41 +89,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-If SND_SOC_AMD_RV_RT5682_MACH=y, below kconfig and build errors can be seen:
+Hi, 
 
- WARNING: unmet direct dependencies detected for SND_SOC_CROS_EC_CODEC
- WARNING: unmet direct dependencies detected for I2C_CROS_EC_TUNNEL
+On Tue, 3 Mar 2020, Dan Carpenter wrote:
 
- ld: drivers/i2c/busses/i2c-cros-ec-tunnel.o: in function `ec_i2c_xfer':
- i2c-cros-ec-tunnel.c:(.text+0x2fc): undefined reference to `cros_ec_cmd_xfer_status'
- ld: sound/soc/codecs/cros_ec_codec.o: in function `wov_host_event':
- cros_ec_codec.c:(.text+0x4fb): undefined reference to `cros_ec_get_host_event'
- ld: sound/soc/codecs/cros_ec_codec.o: in function `send_ec_host_command':
- cros_ec_codec.c:(.text+0x831): undefined reference to `cros_ec_cmd_xfer_status'
+> We're passing "&posn" instead of "posn" so it ends up corrupting
+> memory instead of doing something useful.
+[...]
+>  	/* send IPC to the DSP */
+>  	err = sof_ipc_tx_message(sdev->ipc,
+> -				 stream.hdr.cmd, &stream, sizeof(stream), &posn,
+> +				 stream.hdr.cmd, &stream, sizeof(stream), posn,
+>  				 sizeof(*posn));
 
-This is because it will select SND_SOC_CROS_EC_CODEC and I2c_CROS_EC_TUNNEL but
-both depends on CROS_EC.
+ack, thanks, this is clearly wrong. This function is not used by current 
+platforms, so the bug has gone unnnoticed. Most platforms either rely on 
+direct MMIO queries of the DSP position, or the periodic position updates 
+DSPs send after each ALSA period. This function for host to query DSP 
+position via IPC is thus not used, although it's part of the generic audio
+DSP IPC interface.
 
-Fixes: 6b8e4e7db3cd ("ASoC: amd: Add machine driver for Raven based platform")
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
----
+For the SOF folks in CC, I wonder should we keep this function at all? 
 
- sound/soc/amd/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Anyways, that's probably a longer discussion, so while it's there, 
+the code should be correct, so for the patch:
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 
-diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
-index b29ef1373946..bce4cee5cb54 100644
---- a/sound/soc/amd/Kconfig
-+++ b/sound/soc/amd/Kconfig
-@@ -33,6 +33,6 @@ config SND_SOC_AMD_RV_RT5682_MACH
- 	select SND_SOC_MAX98357A
- 	select SND_SOC_CROS_EC_CODEC
- 	select I2C_CROS_EC_TUNNEL
--	depends on SND_SOC_AMD_ACP3x && I2C
-+	depends on SND_SOC_AMD_ACP3x && I2C && CROS_EC
- 	help
- 	 This option enables machine driver for RT5682 and MAX9835.
--- 
-2.25.1
-
+Br, Kai
