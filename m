@@ -6,77 +6,77 @@ X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8652FC3F2D1
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Mar 2020 15:39:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89B7CC3F2D1
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Mar 2020 15:39:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 12A7320828
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Mar 2020 15:39:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0AE8820828
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Mar 2020 15:39:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eCpu3nLl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 12A7320828
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RSEamLsB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0AE8820828
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 68983166F;
-	Tue,  3 Mar 2020 16:38:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 68983166F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6702F11C;
+	Tue,  3 Mar 2020 16:38:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6702F11C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583249942;
-	bh=/UZer4y7FzuEtgMknFavye/RHnzX6epJ+Nqq9NFkEt4=;
+	s=default; t=1583249978;
+	bh=oR0mymt3qg2VGBNa5uFGa5ECNGmPwilx9ScAGNlOOx8=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eCpu3nLleb9LGM2B2clgUtxgzB9tRBX8URdLI+WEhCQa3raksnK2+XIjAx4ABjpn6
-	 tbWeLR782WJeV6HW4H+1N0+YYItF0xu5GMlEoZ8A+8s0aMaGnjenW72k4vorE87AeS
-	 S0xRG/I4tHqNEOY4wbWWyNv2At3uT2QwBnrRrByg=
+	b=RSEamLsBsEDKY0vJeEcuMZK04h3pTlwlllXMUBSAHmVbJCIgQ7fUgFCsq7mbbPbR2
+	 eIKsRs3/P7/WiSq9POEN3nW4OfYubd20XnuONwMeIssjmhroB3bqkJhbSRm14lqlHw
+	 uFuLqgjWqEGg4K87KRcAc1tcLPFhfivOMuQhhoyk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0B777F80245;
-	Tue,  3 Mar 2020 16:37:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EF0CDF8028C;
+	Tue,  3 Mar 2020 16:37:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6B158F8027C; Tue,  3 Mar 2020 16:37:55 +0100 (CET)
+ id D9D18F80271; Tue,  3 Mar 2020 16:37:56 +0100 (CET)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 03090F8011C
- for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2020 16:37:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03090F8011C
+ by alsa1.perex.cz (Postfix) with ESMTPS id E6EBBF8026A
+ for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2020 16:37:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6EBBF8026A
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 03 Mar 2020 07:37:47 -0800
+ 03 Mar 2020 07:37:49 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,511,1574150400"; d="scan'208";a="412777795"
+X-IronPort-AV: E=Sophos;i="5.70,511,1574150400"; d="scan'208";a="412777799"
 Received: from jinzhiti-mobl2.amr.corp.intel.com (HELO [10.255.230.140])
  ([10.255.230.140])
- by orsmga005.jf.intel.com with ESMTP; 03 Mar 2020 07:37:45 -0800
-Subject: Re: [PATCH 1/8] soundwire: bus_type: add master_device/driver support
-To: Vinod Koul <vkoul@kernel.org>
-References: <20200227223206.5020-1-pierre-louis.bossart@linux.intel.com>
- <20200227223206.5020-2-pierre-louis.bossart@linux.intel.com>
- <20200303054136.GP4148@vkoul-mobl>
+ by orsmga005.jf.intel.com with ESMTP; 03 Mar 2020 07:37:48 -0800
+Subject: Re: [PATCH] ASoC: SOF: Fix snd_sof_ipc_stream_posn()
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Dan Carpenter <dan.carpenter@oracle.com>
+References: <20200303101858.ytehbrivocyp3cnf@kili.mountain>
+ <alpine.DEB.2.21.2003031321410.2957@eliteleevi.tm.intel.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <8a04eda6-cbcf-582f-c229-5d6e4557344b@linux.intel.com>
-Date: Tue, 3 Mar 2020 09:23:16 -0600
+Message-ID: <993233ff-1492-5a87-1026-09af76f6fc7f@linux.intel.com>
+Date: Tue, 3 Mar 2020 09:36:29 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200303054136.GP4148@vkoul-mobl>
+In-Reply-To: <alpine.DEB.2.21.2003031321410.2957@eliteleevi.tm.intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
- linux-kernel@vger.kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Hui Wang <hui.wang@canonical.com>, broonie@kernel.org,
- srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
- Sanyog Kale <sanyog.r.kale@intel.com>,
- Bard liao <yung-chuan.liao@linux.intel.com>,
- Rander Wang <rander.wang@linux.intel.com>
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ alsa-devel@alsa-project.org, Keyon Jie <yang.jie@linux.intel.com>,
+ kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Slawomir Blauciak <slawomir.blauciak@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,307 +94,27 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 3/2/20 11:41 PM, Vinod Koul wrote:
-> On 27-02-20, 16:31, Pierre-Louis Bossart wrote:
->> In the existing SoundWire code, Master Devices are not explicitly
->> represented - only SoundWire Slave Devices are exposed (the use of
->> capital letters follows the SoundWire specification conventions).
->>
->> The SoundWire Master Device provides the clock, synchronization
->> information and command/control channels. When multiple links are
->> supported, a Controller may expose more than one Master Device; they
->> are typically embedded inside a larger audio cluster (be it in an
->> SOC/chipset or an external audio codec), and we need to describe it
->> using the Linux device and driver model.  This will allow for
->> configuration functions to account for external dependencies such as
->> power rails, clock sources or wake-up mechanisms. This transition will
+>> We're passing "&posn" instead of "posn" so it ends up corrupting
+>> memory instead of doing something useful.
+> [...]
+>>   	/* send IPC to the DSP */
+>>   	err = sof_ipc_tx_message(sdev->ipc,
+>> -				 stream.hdr.cmd, &stream, sizeof(stream), &posn,
+>> +				 stream.hdr.cmd, &stream, sizeof(stream), posn,
+>>   				 sizeof(*posn));
 > 
-> I dont not see that as a soundwire issue. The external dependencies
-> should be handled as any device would do in Linux kernel with subsystem
-> specific things for soundwire mechanisms like wake-up
+> ack, thanks, this is clearly wrong. This function is not used by current
+> platforms, so the bug has gone unnnoticed. Most platforms either rely on
+> direct MMIO queries of the DSP position, or the periodic position updates
+> DSPs send after each ALSA period. This function for host to query DSP
+> position via IPC is thus not used, although it's part of the generic audio
+> DSP IPC interface.
+> 
+> For the SOF folks in CC, I wonder should we keep this function at all?
+> 
+> Anyways, that's probably a longer discussion, so while it's there,
+> the code should be correct, so for the patch:
+> Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 
-There is nothing in the SoundWire specification that tells how a 
-controller/master should interface with the rest of the SoC.
-
-There are two ways of handling wake-ups
-a. 'normal' wakes handled internally by the master - that's what the 
-regular clock stop does.
-b. PCI-based wakes. In that case, the wake is not detected at the 
-SoundWire level - the IP is power-gated -, but comes from the PCI 
-subsystem based on a level detector and needs to be notified to the 
-SoundWire master. That's what I did.
-
-Now you can claim that this case b) doesn't belong in the 
-drivers/soundwire code, in which case my answer will be to move all the 
-Intel controller code in sound/soc/sof/intel. I have no choice but to 
-implement what's needed on the hardware I have.
-
-> 
-> 
-> Intel has a big controller with HDA, DSP and Soundwire clubbed together,
-> I dont think we should burden the susbstem due to hw design
-> 
->> also allow for better sysfs support without the reference count issues
->> mentioned in the initial reviews.
->>
->> In this patch, we convert the existing code to use an explicit
->> sdw_slave_type, then define new objects (sdw_master_device and
->> sdw_master_driver).
-> 
-> Thanks for sdw_master_device, that is required and fully agreed upon.
-> What is not agreed is the sdw_master_driver. We do not need that.
-
-I will respectfully ask that you have a conversation with Greg on this 
-one. These patches were reviewed as 'sane', I am not going to go back on 
-this without an agreement on directions.
-
-> 
-> As we have discussed your proposal with Greg and aligned (quoting that
-> here) on following device model for Intel and ARM:
-> 
->>   - For DT cases we will have:
->>          -> soundwire DT device (soundwire DT driver)
->>             -> soundwire master device
->>                -> soundwire slave device (slave drivers)
->>   - For Intel case, you would have:
->>          -> HDA PCI device (SOF driver + soundwire module)
->>             -> soundwire master device
->>                -> soundwire slave device (slave drivers)
-> 
-> But you have gone ahead and kept the sdw_master_driver which does not fit
-> into rest of the world except Intel.
-
-I followed Greg's guidance. There was nothing in the thread with Greg 
-that hinted as a required change.
-If you don't agree with Greg, please talk with him.
-
-> 
-> I think I am okay with rest of proposal, except this one, so can you
-> remove this and we can make progress. This issue is lingering since Oct!
-
-Yes indeed, and we just circled once more.
-
->> A parent (such as the Intel audio controller or its equivalent on
->> Qualcomm devices) would use sdw_master_device_add() to create the
->> device, passing a driver name as a parameter. The master device would
->> be released when device_unregister() is invoked by the parent.
-> 
-> We already have a DT driver for soundwire master! We dont need another
-> layer which does not add value!
-
-Talk with Greg please.
-
-> 
->> Note that since there is no standard for the Master host-facing
->> interface, so the bus matching relies on a simple string matching (as
->> previously done with platform devices).
->>
->> The 'Master Device' driver exposes callbacks for
->> probe/startup/shutdown/remove/process_wake. The startup and process
->> wake need to be called by the parent directly (using wrappers), while
->> the probe/shutdown/remove are handled by the SoundWire bus core upon
->> device creation and release.
-> 
-> these are added to handle intel DSP and sequencing issue, rest of the
-> world does not have these issues and does not needs them!
-
-They are not required, don't use them if you don't need them?
-What's wrong with this approach?
-
->> Additional callbacks will be added in the future for e.g. autonomous
->> clock stop modes.
-> 
-> Yes these would be required, these can be added in sdw_master_device
-> too, I dont see them requiring a dummy driver layer..
-
-Again talk with Greg.
-
->> @@ -113,8 +152,6 @@ static int sdw_drv_probe(struct device *dev)
->>   	slave->probed = true;
->>   	complete(&slave->probe_complete);
->>   
->> -	dev_dbg(dev, "probe complete\n");
->> -
-> 
-> This does not seem to belong to this patch.
-> 
->> +struct device_type sdw_master_type = {
->> +	.name =		"soundwire_master",
->> +	.release =	sdw_master_device_release,
->> +};
->> +
->> +struct sdw_master_device
->> +*sdw_master_device_add(const char *master_name,
->> +		       struct device *parent,
->> +		       struct fwnode_handle *fwnode,
->> +		       int link_id,
->> +		       void *pdata)
->> +{
->> +	struct sdw_master_device *md;
->> +	int ret;
->> +
->> +	md = kzalloc(sizeof(*md), GFP_KERNEL);
->> +	if (!md)
->> +		return ERR_PTR(-ENOMEM);
->> +
->> +	md->link_id = link_id;
->> +	md->pdata = pdata;
->> +	md->master_name = master_name;
-> 
-> should we not allocate the memory here for master_name?
-> 
->> +
->> +	init_completion(&md->probe_complete);
->> +
->> +	md->dev.parent = parent;
->> +	md->dev.fwnode = fwnode;
->> +	md->dev.bus = &sdw_bus_type;
->> +	md->dev.type = &sdw_master_type;
->> +	md->dev.dma_mask = md->dev.parent->dma_mask;
->> +	dev_set_name(&md->dev, "sdw-master-%d", md->link_id);
-> 
-> why do we need master_name if we are setting this here?
-
-for the matching needed to find a driver.
-
-> 
->> +
->> +	ret = device_register(&md->dev);
->> +	if (ret) {
->> +		dev_err(parent, "Failed to add master: ret %d\n", ret);
->> +		/*
->> +		 * On err, don't free but drop ref as this will be freed
->> +		 * when release method is invoked.
->> +		 */
->> +		put_device(&md->dev);
->> +		return ERR_PTR(-ENOMEM);
-> 
-> ENOMEM?
-
-no, this function returns a pointer.
-
-> 
->> +int sdw_master_device_startup(struct sdw_master_device *md)
->> +{
->> +	struct sdw_master_driver *mdrv;
->> +	struct device *dev;
->> +	int ret = 0;
->> +
->> +	if (IS_ERR_OR_NULL(md))
->> +		return -EINVAL;
->> +
->> +	dev = &md->dev;
->> +	mdrv = drv_to_sdw_master_driver(dev->driver);
->> +
->> +	if (mdrv && mdrv->startup)
->> +		ret = mdrv->startup(md);
->> +
->> +	return ret;
->> +}
->> +EXPORT_SYMBOL_GPL(sdw_master_device_startup);
-> 
-> who invokes this and when, can you add kernel-doc style documentation to
-> all APIs exported
-
-ok
-
-> 
->> +int sdw_master_device_process_wake_event(struct sdw_master_device *md)
->> +{
->> +	struct sdw_master_driver *mdrv;
->> +	struct device *dev;
->> +	int ret = 0;
->> +
->> +	if (IS_ERR_OR_NULL(md))
->> +		return -EINVAL;
->> +
->> +	dev = &md->dev;
->> +	mdrv = drv_to_sdw_master_driver(dev->driver);
->> +
->> +	if (mdrv && mdrv->process_wake_event)
->> +		ret = mdrv->process_wake_event(md);
->> +
->> +	return ret;
->> +}
->> +EXPORT_SYMBOL_GPL(sdw_master_device_process_wake_event);
-> 
-> Documentation required
-
-ok
-
-> 
->> +/**
->> + * struct sdw_master_device - SoundWire 'Master Device' representation
->> + *
->> + * @dev: Linux device for this Master
->> + * @master_name: Linux driver name
->> + * @driver: Linux driver for this Master (set by SoundWire core during probe)
->> + * @probe_complete: used by parent if synchronous probe behavior is needed
->> + * @link_id: link index as defined by MIPI DisCo specification
->> + * @pm_runtime_suspended: flag to restore pm_runtime state after system resume
->> + * @pdata: private data typically provided with sdw_master_device_add()
->> + */
->> +
->> +struct sdw_master_device {
->> +	struct device dev;
->> +	const char *master_name;
->> +	struct sdw_master_driver *driver;
->> +	struct completion probe_complete;
->> +	int link_id;
->> +	bool pm_runtime_suspended;
-> 
-> why not use runtime_pm apis like pm_runtime_suspended()
-
-that's exactly what we do, we store the value on pm_runtime_suspended() 
-and use it on resume.
-
-> 
->> +/**
->> + * sdw_master_device_add() - create a Linux Master Device representation.
->> + *
->> + * @master_name: Linux driver name
->> + * @parent: the parent Linux device (e.g. a PCI device)
->> + * @fwnode: the parent fwnode (e.g. an ACPI companion device to the parent)
->> + * @link_id: link index as defined by MIPI DisCo specification
->> + * @pdata: private data (e.g. register base, offsets, platform quirks, etc).
->> + */
->> +struct sdw_master_device
->> +*sdw_master_device_add(const char *master_name,
->> +		       struct device *parent,
->> +		       struct fwnode_handle *fwnode,
->> +		       int link_id,
->> +		       void *pdata);
->> +
->> +/**
->> + * sdw_master_device_startup() - startup hardware
->> + *
->> + * @md: Linux Soundwire master device
-> 
-> Please add more useful comments like when this API would be invoked and
-> what shall be expected outcome
-
-Huh, that's pretty much self-explanatory? device_add() adds a device and 
-if there's a driver for it the probe will be called. Nothing fancy or 
-earth-shattering.
-
-> 
->> + */
->> +int sdw_master_device_startup(struct sdw_master_device *md);
->> +
->> +/**
->> + * sdw_master_device_process_wake_event() - handle external wake
->> + * event, e.g. handled at the PCI level
->> + *
->> + * @md: Linux Soundwire master device
->> + */
->> +int sdw_master_device_process_wake_event(struct sdw_master_device *md);
->> +
-> 
-> If you look at existing headers the documentation is in C files for
-> APIs, so can you move them over.
-> 
-> When adding stuff please look at the rest of the code as an example.
-
-isn't it more clear when the prototypes come with the documentation, 
-rather than the kernel doc stuff be buried in pages of code?
-
+I checked all the way to 5.2 and it was never used, so indeed wondering 
+what the purpose of this function was.
