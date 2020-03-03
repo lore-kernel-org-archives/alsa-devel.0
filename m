@@ -1,4 +1,4 @@
-Return-Path: <SRS0=GfuB=4T=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=CIz3=4U=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
@@ -7,56 +7,57 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FC6AC3F2CD
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Mar 2020 14:38:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9497C3F2D1
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Mar 2020 17:08:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 244BC21775
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Mar 2020 14:38:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2A87A2086A
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Mar 2020 17:08:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MR81CQW9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 244BC21775
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UJWHK2AG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2A87A2086A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E2A5A1683;
-	Mon,  2 Mar 2020 15:37:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E2A5A1683
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7882F1661;
+	Tue,  3 Mar 2020 18:07:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7882F1661
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583159932;
-	bh=+9oF1zZoYnvddeA35g9qY7GcZxtKtbT7C4WpHm5AJTU=;
+	s=default; t=1583255329;
+	bh=FId+IKUV52kj1FTclLMqy7PaVYR4x3davXwiVnXR3qc=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=MR81CQW9lEV5YpYxE18XYELBXT1gNjc7/JBCWvF3v8a2DwZo1HNSE3a763dJakCRW
-	 RXqDgZ1XRrSjoAmsguP9CpAoyGkciaGJ7OqBnhLPLhk6RbPjxPvvXYPaNgo0c8l1oH
-	 Q21M7cOiXYlZA1zZwUxzD/nKdwQTeWdl7UBGdSDs=
+	b=UJWHK2AG8EZKQHm5abT0CIXov4SGtBsM1n7JFPpXSV35W200zGBCe2kinOU6XFQvo
+	 AQvktXY3V6c2ts6DTqhbtg6c6BIQd86fwNPKXyotOGZj050khPWbl5RsP6aFHboudY
+	 hkxAbaqZKnZyTHdur1oXg3LJahfsrKeu2TpxTGOo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 697C9F801ED;
-	Mon,  2 Mar 2020 15:37:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C93A7F80266;
+	Tue,  3 Mar 2020 18:07:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 571D0F801ED; Mon,  2 Mar 2020 15:37:06 +0100 (CET)
+ id DAE96F80266; Tue,  3 Mar 2020 18:07:57 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 34DE3F800E5
- for <alsa-devel@alsa-project.org>; Mon,  2 Mar 2020 15:37:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34DE3F800E5
+ by alsa1.perex.cz (Postfix) with ESMTP id C4B34F8011C
+ for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2020 18:07:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4B34F8011C
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2BB6D2F;
- Mon,  2 Mar 2020 06:37:01 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9D1DE2F;
+ Tue,  3 Mar 2020 09:07:49 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A1D893F534;
- Mon,  2 Mar 2020 06:37:00 -0800 (PST)
-Date: Mon, 02 Mar 2020 14:36:59 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1F9E13F534;
+ Tue,  3 Mar 2020 09:07:48 -0800 (PST)
+Date: Tue, 03 Mar 2020 17:07:47 +0000
 From: Mark Brown <broonie@kernel.org>
-To: YueHaibing <yuehaibing@huawei.com>
-Subject: Applied "ASoC: rt1015: set snd_soc_dai_ops in rt1015_dai driver" to
- the asoc tree
+To: Akshu Agrawal <akshu.agrawal@amd.com>
+Subject: Applied "ASoC: amd: Fix compile warning of argument type" to the asoc
+ tree
 In-Reply-To: 
 Message-Id: 
 X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ kbuild test robot <lkp@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -71,11 +72,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20200302143659.ipaaL6TQOWhUSiAswRNLnM7st-PMLMV7FmiKzstnnPM@z>
+Message-ID: <20200303170747.a7qP4rJRzkwpqgjK8ORvIOrWEiDit18GJOETVg-nM88@z>
 
 The patch
 
-   ASoC: rt1015: set snd_soc_dai_ops in rt1015_dai driver
+   ASoC: amd: Fix compile warning of argument type
 
 has been applied to the asoc tree at
 
@@ -100,34 +101,38 @@ to this mail.
 Thanks,
 Mark
 
-From a79ee2e095c0a60c32d5b1fce39d58e0fc4d9ec5 Mon Sep 17 00:00:00 2001
-From: YueHaibing <yuehaibing@huawei.com>
-Date: Mon, 2 Mar 2020 15:05:22 +0800
-Subject: [PATCH] ASoC: rt1015: set snd_soc_dai_ops in rt1015_dai driver
+From d7729c40b376ab7c1ad4b0498a8bbf44bed3cbf4 Mon Sep 17 00:00:00 2001
+From: Akshu Agrawal <akshu.agrawal@amd.com>
+Date: Tue, 3 Mar 2020 14:34:37 +0530
+Subject: [PATCH] ASoC: amd: Fix compile warning of argument type
 
-snd_soc_dai_driver should set ops in rt1015_dai driver.
-Also make the two variable static to fix sparse warnings.
+Fixes:
+>> sound/soc//amd/acp3x-rt5682-max9836.c:341:23: warning: format '%d'
+>> expects argument of type 'int', but argument 3 has type 'long int'
+>> [-Wformat=]
+      dev_err(&pdev->dev, "DMIC gpio failed err=%d\n",
 
-Fixes: df31007400c3 ("ASoC: rt1015: add rt1015 amplifier driver")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Link: https://lore.kernel.org/r/20200302070522.48104-1-yuehaibing@huawei.com
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
+Link: https://lore.kernel.org/r/20200303090444.95805-1-akshu.agrawal@amd.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt1015.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/amd/acp3x-rt5682-max9836.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt1015.c b/sound/soc/codecs/rt1015.c
-index c118d030bd2d..100b8c89d537 100644
---- a/sound/soc/codecs/rt1015.c
-+++ b/sound/soc/codecs/rt1015.c
-@@ -857,6 +857,7 @@ static struct snd_soc_dai_driver rt1015_dai[] = {
- 			.rates = RT1015_STEREO_RATES,
- 			.formats = RT1015_FORMATS,
- 		},
-+		.ops    = &rt1015_aif_dai_ops,
- 	}
- };
+diff --git a/sound/soc/amd/acp3x-rt5682-max9836.c b/sound/soc/amd/acp3x-rt5682-max9836.c
+index 511b8b1722aa..521c9ab4c29c 100644
+--- a/sound/soc/amd/acp3x-rt5682-max9836.c
++++ b/sound/soc/amd/acp3x-rt5682-max9836.c
+@@ -338,7 +338,7 @@ static int acp3x_probe(struct platform_device *pdev)
  
+ 	dmic_sel = devm_gpiod_get(&pdev->dev, "dmic", GPIOD_OUT_LOW);
+ 	if (IS_ERR(dmic_sel)) {
+-		dev_err(&pdev->dev, "DMIC gpio failed err=%d\n",
++		dev_err(&pdev->dev, "DMIC gpio failed err=%ld\n",
+ 			PTR_ERR(dmic_sel));
+ 		return PTR_ERR(dmic_sel);
+ 	}
 -- 
 2.20.1
 
