@@ -1,103 +1,82 @@
-Return-Path: <SRS0=GfuB=4T=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=CIz3=4U=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 218EAC3F2D1
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Mar 2020 21:27:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AC54C3F2CD
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Mar 2020 00:44:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8E72322B48
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Mar 2020 21:27:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A9FA924673
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Mar 2020 00:44:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jj9aH6Dk";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel-com.20150623.gappssmtp.com header.i=@intel-com.20150623.gappssmtp.com header.b="kiu3jdBq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8E72322B48
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WuB2U2vZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A9FA924673
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DBAC21676;
-	Mon,  2 Mar 2020 22:26:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DBAC21676
+	by alsa0.perex.cz (Postfix) with ESMTPS id 09F3E1676;
+	Tue,  3 Mar 2020 01:44:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09F3E1676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583184464;
-	bh=MxKNYRSc4U7voliI7J7coFQApA12uIgHOK0zI9+Ui+Q=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1583196297;
+	bh=pOJhz/1frry6VXpb3dnLI2KcSBCuXgpwO2KQEW+GtK0=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jj9aH6DkNqbSseFVGi/V+UOG3WkxpjqohPo2jWJWExjK0acOhVcjvSV4MPdSXekW3
-	 rKgK9qXU1DFKuxEZbeus6aaCZORMafu/xoQm4UV5cWDhTWe4mBpEoal7YmEtO6WSmj
-	 laiCHfDrQeZr2Mien3KgtJMfafbyu3pV/tEe6PpY=
+	b=WuB2U2vZ52kBBSlqweDLLpAzAooNzqcBGulJ3ZqECKRjLKcuH0TbZ+hJVlO9WV/W7
+	 btKKwLqtADtsT3IG51m4E+q9PL9tWl3lFXwPsSOxEkMEymibC+HBMBEUG6h6iKt2LI
+	 zckZonwQHw5VKAW0faGYh8NThJ7X76k6P0bNGJtw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7C730F801EC;
-	Mon,  2 Mar 2020 22:26:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6B01EF80130;
+	Tue,  3 Mar 2020 01:44:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1F621F801ED; Mon,  2 Mar 2020 22:26:53 +0100 (CET)
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com
- [IPv6:2607:f8b0:4864:20::141])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AB475F80130
- for <alsa-devel@alsa-project.org>; Mon,  2 Mar 2020 22:26:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB475F80130
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel-com.20150623.gappssmtp.com
- header.i=@intel-com.20150623.gappssmtp.com header.b="kiu3jdBq"
-Received: by mail-il1-x141.google.com with SMTP id x7so794425ilq.11
- for <alsa-devel@alsa-project.org>; Mon, 02 Mar 2020 13:26:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=intel-com.20150623.gappssmtp.com; s=20150623;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=T0HZC5wGaYiacULJL5eqjWlCdMswXyLb5S9WIdniaEo=;
- b=kiu3jdBqgM2ZLAIdq1yGcAG9wjOEhNEPM5mqLfTqDKcBmYvo7UUPh25gp6iGPlRNEG
- QoQqN43/oUpGR8SiHDd+GUXPy0ROOozxfSxvHkazWRJUZErg5EjS2Mi2Iqvti7beVKKH
- FnRTkaDkcpCp2LLq21/YKHE4WtzpHSyuqofIDawJvTA7MiblFa9fCIsfn9WWHi7wMSt6
- Yc2Wtcag8Odtncb6YoDURAE2dH5N/5BUbYx3uIRDInJWePTKv0A2t6i51+ZLlxSpb3OL
- Tuad5jrJCPEN6TFU37M2a/DaveMdN80agphGjJLTU160MaQlFcKdTi+q6oly5aafUDcL
- Jc8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=T0HZC5wGaYiacULJL5eqjWlCdMswXyLb5S9WIdniaEo=;
- b=XE8fv/a7TPHoYPY0cCo9QslkbkcugrSQcuXPWibZQg2ohW2HkOuWPFqOMw8NegYKd4
- eSwuC2rEYzJd2a/qrHFKDUWju/3L5wjzeqWgnJ2lhX1Cqi/mpczQAxcb9bAE0amMiP8/
- +PpuTAQfnkVn7ZBAIOJ8ak4bq/jYmeEfXSDMNkT8vy5pTgAaj/Y3pMD8QQcxOj+sOvq4
- pA/yHQ+y0JZnCJZbgOTDLuTXVv9d5vQjR8aifB07NgX7IztQke+TVZZtx4gk1DVi5zao
- HBQNvyhTz9TRluIq941S1Iq8mLMTk8n8lxDfOu4gKKmt039Yfy8+2eXdUKQWI+YNCvPG
- ooZQ==
-X-Gm-Message-State: ANhLgQ3e2bjuOjVp7t+ECt+jb/wMLiLHJ1MqIBMcOIe7jw8tOy2aXIsx
- 56tgBL0u28wtsJnm6BVZM4r8kfmFSe1sbHsfC6dEWA==
-X-Google-Smtp-Source: ADFU+vuybSmz4rAptQcaRCKizlpWTIlyU2DreJwStc/RUwlUnqnLGVLDG0eFSiL5Ldwsx+yJ67a8ZK/MAIaA44SxCY0=
-X-Received: by 2002:a92:8893:: with SMTP id m19mr1561572ilh.54.1583184406823; 
- Mon, 02 Mar 2020 13:26:46 -0800 (PST)
-MIME-Version: 1.0
-References: <20200302205700.29746-1-daniel.baluta@oss.nxp.com>
- <20200302205700.29746-3-daniel.baluta@oss.nxp.com>
-In-Reply-To: <20200302205700.29746-3-daniel.baluta@oss.nxp.com>
-From: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
-Date: Mon, 2 Mar 2020 13:26:36 -0800
-Message-ID: <CAFQqKeUSf_KJ3MBumZTEEUc+kUdLnL5y=kvQ2x75FziJUECqpA@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/2] ASoC: SOF: Use multi PM domains helpers
-To: Daniel Baluta <daniel.baluta@oss.nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, ulf.hansson@linaro.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, pavel@ucw.cz,
- festevam@gmail.com, khilman@kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, linux-imx@nxp.com,
- "Brown, Len" <len.brown@intel.com>, linux-pm@vger.kernel.org,
- s.hauer@pengutronix.de, paul.olaru@nxp.com,
- Daniel Baluta <daniel.baluta@nxp.com>, linux-arm-kernel@lists.infradead.org,
- aisheng.dong@nxp.com, Daniel Baluta <daniel.baluta@gmail.com>,
- Greg KH <gregkh@linuxfoundation.org>, shengjiu.wang@nxp.com, rjw@rjwysocki.net,
- linux-kernel@vger.kernel.org, kernel@pengutronix.de, shawnguo@kernel.org
+ id 725FAF801ED; Tue,  3 Mar 2020 01:44:04 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 0ECE5F80130
+ for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2020 01:43:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0ECE5F80130
+Date: 03 Mar 2020 09:43:53 +0900
+X-IronPort-AV: E=Sophos;i="5.70,509,1574089200"; d="scan'208";a="40556374"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 03 Mar 2020 09:43:53 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 8736D4008C52;
+ Tue,  3 Mar 2020 09:43:53 +0900 (JST)
+Message-ID: <8736aq2rp2.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH] ASoC: soc-pcm: Revert "call
+ snd_soc_component_open/close() once"
+In-Reply-To: <alpine.DEB.2.21.2003021902500.2957@eliteleevi.tm.intel.com>
+References: <20200219182650.1416-1-kai.vehmanen@linux.intel.com>
+ <87blput7hh.wl-kuninori.morimoto.gx@renesas.com>
+ <alpine.DEB.2.21.2002201103060.2957@eliteleevi.tm.intel.com>
+ <87mu9cspyf.wl-kuninori.morimoto.gx@renesas.com>
+ <alpine.DEB.2.21.2002211251280.2957@eliteleevi.tm.intel.com>
+ <87mu978pob.wl-kuninori.morimoto.gx@renesas.com>
+ <87ftey88wk.wl-kuninori.morimoto.gx@renesas.com>
+ <alpine.DEB.2.21.2002271110010.2957@eliteleevi.tm.intel.com>
+ <874kvb7d38.wl-kuninori.morimoto.gx@renesas.com>
+ <871rqf6xas.wl-kuninori.morimoto.gx@renesas.com>
+ <87zhd35eko.wl-kuninori.morimoto.gx@renesas.com>
+ <alpine.DEB.2.21.2002281404580.2957@eliteleevi.tm.intel.com>
+ <87d09vha51.wl-kuninori.morimoto.gx@renesas.com>
+ <alpine.DEB.2.21.2003021902500.2957@eliteleevi.tm.intel.com>
+User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org,
+ ranjani.sridharan@linux.intel.com, digetx@gmail.com,
+ pierre-louis.bossart@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -113,98 +92,56 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Mar 2, 2020 at 1:00 PM Daniel Baluta <daniel.baluta@oss.nxp.com>
-wrote:
 
-> From: Daniel Baluta <daniel.baluta@nxp.com>
->
-> Use dev_multi_pm_attach / dev_multi_pm_detach instead of the hardcoded
-> version.
->
-> Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
-> ---
->  sound/soc/sof/imx/imx8.c | 54 +++++-----------------------------------
->  1 file changed, 6 insertions(+), 48 deletions(-)
->
-> diff --git a/sound/soc/sof/imx/imx8.c b/sound/soc/sof/imx/imx8.c
-> index b692752b2178..ca740538a2d5 100644
-> --- a/sound/soc/sof/imx/imx8.c
-> +++ b/sound/soc/sof/imx/imx8.c
-> @@ -51,10 +51,7 @@ struct imx8_priv {
->         struct imx_sc_ipc *sc_ipc;
->
->         /* Power domain handling */
-> -       int num_domains;
-> -       struct device **pd_dev;
-> -       struct device_link **link;
-> -
-> +       struct dev_multi_pm_domain_data *mpd;
->  };
->
->  static void imx8_get_reply(struct snd_sof_dev *sdev)
-> @@ -207,7 +204,6 @@ static int imx8_probe(struct snd_sof_dev *sdev)
->         struct resource res;
->         u32 base, size;
->         int ret = 0;
-> -       int i;
->
->         priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
->         if (!priv)
-> @@ -218,39 +214,9 @@ static int imx8_probe(struct snd_sof_dev *sdev)
->         priv->sdev = sdev;
->
->         /* power up device associated power domains */
-> -       priv->num_domains = of_count_phandle_with_args(np, "power-domains",
-> -
-> "#power-domain-cells");
-> -       if (priv->num_domains < 0) {
-> -               dev_err(sdev->dev, "no power-domains property in %pOF\n",
-> np);
-> -               return priv->num_domains;
-> -       }
-> -
-> -       priv->pd_dev = devm_kmalloc_array(&pdev->dev, priv->num_domains,
-> -                                         sizeof(*priv->pd_dev),
-> GFP_KERNEL);
-> -       if (!priv->pd_dev)
-> -               return -ENOMEM;
-> -
-> -       priv->link = devm_kmalloc_array(&pdev->dev, priv->num_domains,
-> -                                       sizeof(*priv->link), GFP_KERNEL);
-> -       if (!priv->link)
-> -               return -ENOMEM;
-> -
-> -       for (i = 0; i < priv->num_domains; i++) {
-> -               priv->pd_dev[i] = dev_pm_domain_attach_by_id(&pdev->dev,
-> i);
-> -               if (IS_ERR(priv->pd_dev[i])) {
-> -                       ret = PTR_ERR(priv->pd_dev[i]);
-> -                       goto exit_unroll_pm;
-> -               }
-> -               priv->link[i] = device_link_add(&pdev->dev,
-> priv->pd_dev[i],
-> -                                               DL_FLAG_STATELESS |
-> -                                               DL_FLAG_PM_RUNTIME |
-> -                                               DL_FLAG_RPM_ACTIVE);
-> -               if (!priv->link[i]) {
-> -                       ret = -ENOMEM;
-> -                       dev_pm_domain_detach(priv->pd_dev[i], false);
-> -                       goto exit_unroll_pm;
-> -               }
-> -       }
-> +       priv->mpd = dev_multi_pm_attach(&pdev->dev);
-> +       if (IS_ERR(priv->mpd))
-> +               return PTR_ERR(priv->mpd);
->
->         ret = imx_scu_get_handle(&priv->sc_ipc);
->         if (ret) {
-> @@ -329,25 +295,17 @@ static int imx8_probe(struct snd_sof_dev *sdev)
->  exit_pdev_unregister:
->         platform_device_unregister(priv->ipc_dev);
->  exit_unroll_pm:
->
-Can we also rename the label to exit_pm_detach maybe? It is no longer an
-unroll anymore right?
+Hi Kai
 
-Thanks,
-Ranjani
+Thank you for your feedback
+
+> /* add list of opened substreams to snd_soc_component */
+> struct snd_soc_component {
+> ...
+> 	struct list_head substream_list;
+>=20
+> int snd_soc_component_open(struct snd_soc_component *component,
+> =BB       =BB       =BB          struct snd_pcm_substream *substream)
+> {
+> 	int res =3D 0;
+> 	if (component->driver->open)
+> 		res =3D component->driver->open(component, substream);
+>=20
+>         /* on success, add proxy of substream to component->substream_lis=
+t  */
+> ...
+>=20
+> int snd_soc_component_close(struct snd_soc_component *component,
+> =BB       =BB       =BB           struct snd_pcm_substream *substream)
+> {
+> 	/*=20
+> 	 * lookup substream from "component->substream_List",=20
+> 	 * only call driver->close() if found
+> 	 */
+> ...
+>=20
+>=20
+> ... this is arguably more code, but makes the state created in=20
+> snd_soc_component_open() explicit. Upon error in middle of=20
+> components_open(), one can just call soc_pcm_components_close() which wil=
+l=20
+> close all components for that substream (that had been succesfully=20
+> opened).
+k
+Yes, totally agree to your code.
+But, 1 point I still not yet understand.
+
+close() will be called 1) when open failed, or, 2) normal close.
+If my understanding was correct, your code is caring that
+2) normal close() might be called without open().
+
+I don't think it happen, but are you worrying that it might be
+happen by some BUG, or for some accident ?
+If so, I can 100% understand your idea.
+
+Thank you for your help !!
+Best regards
+---
+Kuninori Morimoto
