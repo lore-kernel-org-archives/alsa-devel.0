@@ -6,78 +6,70 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF15CC3F2C6
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Mar 2020 00:12:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93C21C3F2C6
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Mar 2020 03:00:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6500C20716
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Mar 2020 00:12:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4726E2073B
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Mar 2020 03:00:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="n9pCVGei"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6500C20716
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Dma8B/l9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4726E2073B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=davemloft.net
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B468F85D;
-	Wed,  4 Mar 2020 01:12:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B468F85D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9E1F81607;
+	Wed,  4 Mar 2020 03:59:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E1F81607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583280774;
-	bh=XOWEF2X+fzZMR0junfJM6aQzd5XdbH6IYOcIlv9byYY=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1583290840;
+	bh=UNtNCoaHEYNaUCLwCLha42WHcojBifGsddIweXRLHmc=;
+	h=Date:To:Subject:From:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=n9pCVGeiFNG3SYK7NuHO98vCUovsNhjGCncP/iHYkqTr5ryzAyiMtW1cWEY/L+Npv
-	 bSSzeTewFWTCg61tK4GiUp48LGUCWe93FX2dfIhg9ptJyXtg7b9AAiC62bS/0ADivi
-	 elD705KOlMMlOCBb9kbPT3rUFEV4LuHzzBw/w0rY=
+	b=Dma8B/l9Zs97XedxzvmYTubdVS5GW8Yd92ntDwlO/NbIpwX+xJKXK93QmswWxHaOH
+	 DKG/bmn/1NFMIPyC1kPt3jCBUFmvn02qcbau69KXHTSHUEA+Yl8eFul9DmgKO/6DWX
+	 nJhpUk/iaMwwCu0zyEkwd2s2ecZIepKr2luIZzqA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0C3E9F80245;
-	Wed,  4 Mar 2020 01:12:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 15219F801EC;
+	Wed,  4 Mar 2020 03:59:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7DF5AF8025F; Wed,  4 Mar 2020 01:12:01 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 49C23F80131
- for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2020 01:11:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49C23F80131
-Date: 04 Mar 2020 09:11:48 +0900
-X-IronPort-AV: E=Sophos;i="5.70,511,1574089200"; d="scan'208";a="40671271"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 04 Mar 2020 09:11:48 +0900
-Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id D7A61411A34D;
- Wed,  4 Mar 2020 09:11:48 +0900 (JST)
-Message-ID: <87ftep0yij.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: Re: [PATCH] ASoC: soc-pcm: Revert "call
- snd_soc_component_open/close() once"
-In-Reply-To: <alpine.DEB.2.21.2003032107560.2957@eliteleevi.tm.intel.com>
-References: <20200219182650.1416-1-kai.vehmanen@linux.intel.com>
- <87blput7hh.wl-kuninori.morimoto.gx@renesas.com>
- <alpine.DEB.2.21.2002201103060.2957@eliteleevi.tm.intel.com>
- <87mu9cspyf.wl-kuninori.morimoto.gx@renesas.com>
- <alpine.DEB.2.21.2002211251280.2957@eliteleevi.tm.intel.com>
- <87mu978pob.wl-kuninori.morimoto.gx@renesas.com>
- <87ftey88wk.wl-kuninori.morimoto.gx@renesas.com>
- <alpine.DEB.2.21.2002271110010.2957@eliteleevi.tm.intel.com>
- <874kvb7d38.wl-kuninori.morimoto.gx@renesas.com>
- <871rqf6xas.wl-kuninori.morimoto.gx@renesas.com>
- <87zhd35eko.wl-kuninori.morimoto.gx@renesas.com>
- <alpine.DEB.2.21.2002281404580.2957@eliteleevi.tm.intel.com>
- <87d09vha51.wl-kuninori.morimoto.gx@renesas.com>
- <alpine.DEB.2.21.2003021902500.2957@eliteleevi.tm.intel.com>
- <8736aq2rp2.wl-kuninori.morimoto.gx@renesas.com>
- <alpine.DEB.2.21.2003032107560.2957@eliteleevi.tm.intel.com>
-User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org,
- ranjani.sridharan@linux.intel.com, digetx@gmail.com,
- pierre-louis.bossart@linux.intel.com
+ id 4F658F801ED; Wed,  4 Mar 2020 03:59:48 +0100 (CET)
+Received: from shards.monkeyblade.net (shards.monkeyblade.net
+ [IPv6:2620:137:e000::1:9])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 74322F800D8
+ for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2020 03:59:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74322F800D8
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+ (using TLSv1 with cipher AES256-SHA (256/256 bits))
+ (Client did not present a certificate)
+ (Authenticated sender: davem-davemloft)
+ by shards.monkeyblade.net (Postfix) with ESMTPSA id 93D9F15AFD85F;
+ Tue,  3 Mar 2020 18:59:39 -0800 (PST)
+Date: Tue, 03 Mar 2020 18:59:37 -0800 (PST)
+Message-Id: <20200303.185937.1365050844508788930.davem@davemloft.net>
+To: hkallweit1@gmail.com
+Subject: Re: [PATCH v4 00/10] PCI: Add and use constant
+ PCI_STATUS_ERROR_BITS and helper pci_status_get_and_clear_errors
+From: David Miller <davem@davemloft.net>
+In-Reply-To: <adeb9e6e-9be6-317f-3fc0-a4e6e6af5f81@gmail.com>
+References: <adeb9e6e-9be6-317f-3fc0-a4e6e6af5f81@gmail.com>
+X-Mailer: Mew version 6.8 on Emacs 26.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12
+ (shards.monkeyblade.net [149.20.54.216]);
+ Tue, 03 Mar 2020 18:59:40 -0800 (PST)
+Cc: alsa-devel@alsa-project.org, nic_swsd@realtek.com,
+ linux-pci@vger.kernel.org, clemens@ladisch.de, tiwai@suse.com,
+ stephen@networkplumber.org, netdev@vger.kernel.org, bhelgaas@google.com,
+ linux-kernel@vger.kernel.org, mlindner@marvell.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,38 +86,7 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Kai
+Bjorn, please review and let me know if it is OK to merge this via the
+networking tree.
 
-Thank you for your feedback
-
-> > close() will be called 1) when open failed, or, 2) normal close.
-> > If my understanding was correct, your code is caring that
-> > 2) normal close() might be called without open().
-> 
-> it also covers case (1) when open fails. So instead of the currently 
-> merged error case rollback code in soc_pcm_components_open(), we'd just 
-> call snd_pcm_components_close(substream) directly in case 
-> of error. With tracking of opened substreams in soc-component.c, close() 
-> is safe to call also in error case.
-
-Oh, yes, of course.
-I'm sorry to you for my lack of words.
-My question was
-"My idea cares open-close mismatch only for 1).
-and your's cared both 1) and 2) ?", I mean.
-
-> That considered, I'm fine if you can come up with a cleaner version to 
-> handle just case (1), without tracking substreams. Maybe worth a try and 
-> if it doesn't work (e.g. with ID/tag), we can look at substream tracking.
-
-I see.
-Let's use step-by-step approach.
-I will try to care 1) as 1st step.
-If it was not enough, or, if we want to have tracker,
-let's update it by your idea as 2nd step.
-
-Thank you for your help !!
-
-Best regards
----
-Kuninori Morimoto
+Thank you.
