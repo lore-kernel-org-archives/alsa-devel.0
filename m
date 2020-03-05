@@ -2,61 +2,70 @@ Return-Path: <SRS0=q21C=4W=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0744AC3F2CD
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 13:17:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78E9DC3F2D2
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 18:16:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 832F72073B
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 13:17:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EE81A208C3
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 18:16:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HqydvaQm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 832F72073B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bnkRnalq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EE81A208C3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A912E1667;
-	Thu,  5 Mar 2020 14:16:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A912E1667
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5604F15F8;
+	Thu,  5 Mar 2020 19:16:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5604F15F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583414245;
-	bh=HH0JA2evtYkdoGmZXwc4Ql9f8IaDIrL7YTIjj9V8pU4=;
-	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=HqydvaQmWrOqSHj5/QP7YK+yiYI0Oo0x2uYeG+fsc/ybeAUhNTNbgY1wg/SZ2e5+V
-	 r9x1WZvJFQQE7Cg5z1S8r0PoOGrRATb0rmPw5W1yjEHeO4Axrc9N5qHNkulqRNH3vw
-	 w4NOs6KcfzuFnZxFPwAy0qsrSiUPjDr5m2wz5KFk=
+	s=default; t=1583432210;
+	bh=p2fT8t338jU5/sgK9KJmo2qPlkEfrhf1nea3aS+qS/8=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=bnkRnalqiOv6uUKdFsU9JcOp/IBBOBw0cgWlwnw+h3r8jxm8R+F2bvsIiE/AP8d+C
+	 Ow1aVRtHouH5IRnLP6Rv2upyPqEd6riQd/uwz4RlM9qvj3wnkqe25BQnVTUr0FU4Fm
+	 c9sWTgWomj1jXI4h/2X+xavIattlbHpXy+5HqL6c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 099C6F80271;
-	Thu,  5 Mar 2020 14:15:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CE5F6F80245;
+	Thu,  5 Mar 2020 19:15:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 867E7F80266; Thu,  5 Mar 2020 14:15:38 +0100 (CET)
+ id 7872AF8025F; Thu,  5 Mar 2020 19:15:58 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 10100F800D8
- for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2020 14:15:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10100F800D8
+ by alsa1.perex.cz (Postfix) with ESMTP id 16186F80126
+ for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2020 19:15:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16186F80126
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 523F61FB;
- Thu,  5 Mar 2020 05:15:29 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 93D2C30E;
+ Thu,  5 Mar 2020 10:15:53 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C9DDC3F6CF;
- Thu,  5 Mar 2020 05:15:28 -0800 (PST)
-Date: Thu, 05 Mar 2020 13:15:27 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 158873F6CF;
+ Thu,  5 Mar 2020 10:15:52 -0800 (PST)
+Date: Thu, 5 Mar 2020 18:15:51 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Applied "ASoC: soc-pcm: remove duplicate be check from
- dpcm_add_paths()" to the asoc tree
-In-Reply-To: 
-Message-Id: 
-X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [RFC PATCH 1/3] ASoC: soc-core: introduce exit() callback for
+ dailinks
+Message-ID: <20200305181551.GJ4046@sirena.org.uk>
+References: <20200305130616.28658-1-pierre-louis.bossart@linux.intel.com>
+ <20200305130616.28658-2-pierre-louis.bossart@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="MzdA25v054BPvyZa"
+Content-Disposition: inline
+In-Reply-To: <20200305130616.28658-2-pierre-louis.bossart@linux.intel.com>
+X-Cookie: When among apes, one must play the ape.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -71,100 +80,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20200305131527.1Ou_at0ynlyjeUf3NIbjtmcYMzBsOqLOFfnxEEaggEQ@z>
 
-The patch
 
-   ASoC: soc-pcm: remove duplicate be check from dpcm_add_paths()
+--MzdA25v054BPvyZa
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-has been applied to the asoc tree at
+On Thu, Mar 05, 2020 at 07:06:14AM -0600, Pierre-Louis Bossart wrote:
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+> The exit() is invoked in soc_free_pcm_runtime(), which is not
+> completely symmetric with the init() invoked in soc_init_pcm_runtime()
+> - not soc_add_pcm_runtime(), but that's the best solution so far.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+We *could* look at moving the init back.  In any case this seems
+reasonable by itself (I'm less convinced by the users).  However...
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> @@ -1069,7 +1075,7 @@ static int soc_init_pcm_runtime(struct snd_soc_card=
+ *card,
+>  	/* set default power off timeout */
+>  	rtd->pmdown_time =3D pmdown_time;
+> =20
+> -	/* do machine specific initialization */
+> +	/* do machine specific allocations and initialization */
+>  	if (dai_link->init) {
+>  		ret =3D dai_link->init(rtd);
+>  		if (ret < 0) {
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+=2E..I'm not sure why we're saying to do allocations here?  That really,
+really shouldn't be a normal thing - allocations should generally be
+done at the device model probe.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+--MzdA25v054BPvyZa
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Mark
+-----BEGIN PGP SIGNATURE-----
 
-From 6e02feb0d2663c1b7caa5e271c2a60e219f0ca07 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 27 Feb 2020 10:54:48 +0900
-Subject: [PATCH] ASoC: soc-pcm: remove duplicate be check from
- dpcm_add_paths()
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5hQdYACgkQJNaLcl1U
+h9BzQwf/YRpjsWZKqjGFTqHF5tkB2AJaJq6ff6bg6lYTvV27swuCSg422XpqqgL2
+8009vVsLOkZ2vUjsQKN/7WvGtqlATkH72JvjXwzkQ4vJf0FpnHMWM4DAk3IwXKrN
+xtj82/k8qX1aaa0MklC+QKMwkTXJR2gORqwgbioAQipegTHi1SKrMdK2Cu0i/CVH
+tGZKYTPbQ+pu7XIdauVUAZHwL/lO8EtFQ6ehKFGlRwLRwI7tM7VsOmjQkYKCDPWP
+LTyAiq4qAGGS5G3BfvD71cVOZNiefWrRJ9g8HmAHCYSYE3QIv+TnX7X6XMZ3NEHf
+TUUH3BfXL+YIvaHuOmepGVpPg8BGwQ==
+=Zwpj
+-----END PGP SIGNATURE-----
 
-dpcm_add_paths() checks returned be from dpcm_get_be()
-
-	static int dpcm_add_paths(...)
-	{
-		...
-		for_each_dapm_widgets(list, i, widget) {
-			...
-			be = dpcm_get_be(...);
-			...
-			/* make sure BE is a real BE */
-=>			if (!be->dai_link->no_pcm)
-				continue;
-			...
-		}
-		...
-	}
-
-But, dpcm_get_be() itself is checking it already.
-
-	dpcm_get_be(...)
-	{
-		...
-		for_each_card_rtds(card, be) {
-=>			if (!be->dai_link->no_pcm)
-				continue;
-			...
-			if (...)
-=>				return be;
-		}
-
-		return NULL
-	}
-
-This patch removes duplicate check
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Link: https://lore.kernel.org/r/87lfoo7q1j.wl-kuninori.morimoto.gx@renesas.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/soc-pcm.c | 4 ----
- 1 file changed, 4 deletions(-)
-
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 8c27eb4d5e4c..e3a2c4f7757b 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1690,10 +1690,6 @@ static int dpcm_add_paths(struct snd_soc_pcm_runtime *fe, int stream,
- 			continue;
- 		}
- 
--		/* make sure BE is a real BE */
--		if (!be->dai_link->no_pcm)
--			continue;
--
- 		/* don't connect if FE is not running */
- 		if (!fe->dpcm[stream].runtime && !fe->fe_compr)
- 			continue;
--- 
-2.20.1
-
+--MzdA25v054BPvyZa--
