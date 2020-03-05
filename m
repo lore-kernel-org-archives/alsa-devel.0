@@ -2,57 +2,62 @@ Return-Path: <SRS0=q21C=4W=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E9BEC3F2D1
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 13:10:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 57374C3F2D7
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 13:18:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 419EF2072A
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 13:10:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DAAD12072A
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 13:18:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uVbmIkit"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 419EF2072A
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Rzq6qCb6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DAAD12072A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6D29F1671;
-	Thu,  5 Mar 2020 14:09:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D29F1671
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4061A1668;
+	Thu,  5 Mar 2020 14:17:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4061A1668
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583413810;
-	bh=/UPiOxsuucMb8padFBubdEP01nT2C3ZljTPONylfi6Q=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=uVbmIkitP9LQM6MLlkEwue8PWSU7ywdaMTA+9O8b3bKt2zAoVZDEUrWpNZKdi+2r8
-	 e8HQNrMuk7aUOoN/cn6rPid9n2gchIMMFhzG6AQ5BszxrSE7UNhde8XLla9qdZNfpD
-	 en3E2iznlHJk32qEhwBsHopp1bl2zJzNkrpSHiKc=
+	s=default; t=1583414293;
+	bh=8Y/+fSmGtQ5niReIDVUsnAPfqnZw8Sl6VHGa4vylWCc=;
+	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=Rzq6qCb6qzwZVrQZc3kWWOsrhusCCXqbXTBhDHtftz36CMdXaF5NvKsy5vlOuRsOl
+	 jDrsdcuTpHJXneiEP8WzM/orEFFmiupfrHFs9gOcQYVKp7Ed7G3LoC11upYsb7ouXT
+	 KFCjv33VGBsToNzsyzRSEGxgX7k32vwk1Qp4d7wM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4BE89F8028E;
-	Thu,  5 Mar 2020 14:07:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5D92BF80279;
+	Thu,  5 Mar 2020 14:15:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DF256F80271; Thu,  5 Mar 2020 14:06:40 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 01720F80279
- for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2020 14:06:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01720F80279
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1583413597191935062-webhooks-bot@alsa-project.org>
-References: <1583413597191935062-webhooks-bot@alsa-project.org>
-Subject: sof-hda-dsp: Support systems without integrated graphics audio
-Message-Id: <20200305130640.DF256F80271@alsa1.perex.cz>
-Date: Thu,  5 Mar 2020 14:06:40 +0100 (CET)
+ id C0F67F80279; Thu,  5 Mar 2020 14:15:42 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 4784EF800D8
+ for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2020 14:15:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4784EF800D8
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 393E91FB;
+ Thu,  5 Mar 2020 05:15:38 -0800 (PST)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B22053F6CF;
+ Thu,  5 Mar 2020 05:15:37 -0800 (PST)
+Date: Thu, 05 Mar 2020 13:15:36 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Baolin Wang <baolin.wang7@gmail.com>
+Subject: Applied "ASoC: sprd: Allow the MCDT driver to build into modules" to
+ the asoc tree
+In-Reply-To: <9306f2b99641136653ae4fe6cf9e859b7f698f77.1583387748.git.baolin.wang7@gmail.com>
+Message-Id: <applied-9306f2b99641136653ae4fe6cf9e859b7f698f77.1583387748.git.baolin.wang7@gmail.com>
+X-Patchwork-Hint: ignore
+Cc: alsa-devel@alsa-project.org, zhang.lyra@gmail.com, tiwai@suse.com,
+ lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>, baolin.wang7@gmail.com, orsonzhai@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,15 +73,76 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #15 was opened from kv2019i:
+The patch
 
-On systems where integrated graphics audio is not present
-or is disabled, the HDMI PCM nodes are disabled. Add rules to
-detect these systems by checking presence of HDMI jack controls
-with UCM2 rules.
+   ASoC: sprd: Allow the MCDT driver to build into modules
 
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+has been applied to the asoc tree at
 
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/15
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/15.patch
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+From fd357ec595d36676c239d8d16706a270a961ac32 Mon Sep 17 00:00:00 2001
+From: Baolin Wang <baolin.wang7@gmail.com>
+Date: Thu, 5 Mar 2020 14:00:53 +0800
+Subject: [PATCH] ASoC: sprd: Allow the MCDT driver to build into modules
+
+Change the config to 'tristate' for MCDT driver to allow it to build into
+modules, as well as changing to use IS_ENABLED() to validate if need supply
+dummy functions when building the MCDT driver as a module.
+
+Signed-off-by: Baolin Wang <baolin.wang7@gmail.com>
+Link: https://lore.kernel.org/r/9306f2b99641136653ae4fe6cf9e859b7f698f77.1583387748.git.baolin.wang7@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sprd/Kconfig     | 2 +-
+ sound/soc/sprd/sprd-mcdt.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/sprd/Kconfig b/sound/soc/sprd/Kconfig
+index 5474fd3de8c0..5e0ac8278572 100644
+--- a/sound/soc/sprd/Kconfig
++++ b/sound/soc/sprd/Kconfig
+@@ -8,7 +8,7 @@ config SND_SOC_SPRD
+ 	  the Spreadtrum SoCs' Audio interfaces.
+ 
+ config SND_SOC_SPRD_MCDT
+-	bool "Spreadtrum multi-channel data transfer support"
++	tristate "Spreadtrum multi-channel data transfer support"
+ 	depends on SND_SOC_SPRD
+ 	help
+ 	  Say y here to enable multi-channel data transfer support. It
+diff --git a/sound/soc/sprd/sprd-mcdt.h b/sound/soc/sprd/sprd-mcdt.h
+index 9cc7e207ac76..679e3af3baad 100644
+--- a/sound/soc/sprd/sprd-mcdt.h
++++ b/sound/soc/sprd/sprd-mcdt.h
+@@ -48,7 +48,7 @@ struct sprd_mcdt_chan {
+ 	struct list_head list;
+ };
+ 
+-#ifdef CONFIG_SND_SOC_SPRD_MCDT
++#if IS_ENABLED(CONFIG_SND_SOC_SPRD_MCDT)
+ struct sprd_mcdt_chan *sprd_mcdt_request_chan(u8 channel,
+ 					      enum sprd_mcdt_channel_type type);
+ void sprd_mcdt_free_chan(struct sprd_mcdt_chan *chan);
+-- 
+2.20.1
+
