@@ -3,64 +3,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95899C3F2DA
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 14:36:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C219C3F2D7
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 14:38:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4709C2166E
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 14:36:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 526F52146E
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 14:38:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AEN65T+C"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4709C2166E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="h0VQC7q5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 526F52146E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A84941607;
-	Thu,  5 Mar 2020 15:35:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A84941607
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6C669166D;
+	Thu,  5 Mar 2020 15:36:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C669166D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583419009;
-	bh=94NdDdXcZ6ooz/11xwSIMAl3XEx3rti3To417OzzEec=;
+	s=default; t=1583419082;
+	bh=5oegOQbfpBCTHWw5YsylVc0DEZU6kZugE0zags85bcU=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AEN65T+CIpslSZ0cc29SlEDmThyhSptfVqY8OtUjYJ4Ts29V3jV4t5YzKST1oqEqg
-	 8WQQMZWk+lrA84m9iccGtfxtpuADyR7lOmdxeZXJ6x+JHyAs9OCHsPptVDUKM25gYA
-	 m9qo8ZN5Vs8TzFGoa/gsj6Iz2HrLCp7jh1WMyN5M=
+	b=h0VQC7q5p0C89KxcSgmrgbjQFgwRHIWTy/UobQWYffFFcH4misGjb/8oHJgG9+bRf
+	 y16YrQ8SZe2Ir2570muog9UAQhwUmaE+RVCZ65uidsubISJEJ3iXnYPlMxRqqB+hsh
+	 0ZW4mBn40mxqjf8ei00qPdP5+fpbQiSxbbFIt3s0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 373C1F80245;
-	Thu,  5 Mar 2020 15:35:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1EABFF8026A;
+	Thu,  5 Mar 2020 15:36:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6011EF8025F; Thu,  5 Mar 2020 15:35:57 +0100 (CET)
+ id D2466F80271; Thu,  5 Mar 2020 15:36:12 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E621FF8012D
- for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2020 15:35:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E621FF8012D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2B12BF80266
+ for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2020 15:36:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B12BF80266
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 62024B280;
- Thu,  5 Mar 2020 14:35:53 +0000 (UTC)
-Date: Thu, 05 Mar 2020 15:35:52 +0100
-Message-ID: <s5hd09qg987.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id C986CB2EF;
+ Thu,  5 Mar 2020 14:36:08 +0000 (UTC)
+Date: Thu, 05 Mar 2020 15:36:08 +0100
+Message-ID: <s5hblpag97r.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Kailang <kailang@realtek.com>
-Subject: Re: Enable Headset Mic for Dell desktop
-In-Reply-To: <b9da28d772ef43088791b0f3675929e7@realtek.com>
-References: <b9da28d772ef43088791b0f3675929e7@realtek.com>
+Subject: Re: Enable Headset Button for ThinkPad X1
+In-Reply-To: <7f0b7128f40f41f6b5582ff610adc33d@realtek.com>
+References: <7f0b7128f40f41f6b5582ff610adc33d@realtek.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: " \(alsa-devel@alsa-project.org\)" <alsa-devel@alsa-project.org>
+Cc: Hui Wang <hui.wang@canonical.com>,
+ " \(alsa-devel@alsa-project.org\)" <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,32 +77,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
-
-sorry for the late reaction, as I've been traveling in last weeks.
-
-On Thu, 20 Feb 2020 09:30:59 +0100,
+On Thu, 20 Feb 2020 09:42:21 +0100,
 Kailang wrote:
 > 
-> Sorry! Forgot attach file.
+> Hi Takashi,
+> 
+> Lenovo ThinkPad X1 want to support Headset Button.
+> Attach patch will enable it.
 
-Applied now.  Thanks.
+Applied, thanks.
 
 
 Takashi
-
-> > -----Original Message-----
-> > From: Kailang
-> > Sent: Thursday, February 20, 2020 4:30 PM
-> > To: Takashi Iwai (tiwai@suse.de) <tiwai@suse.de>
-> > Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
-> > Subject: Enable Headset Mic for Dell desktop
-> > 
-> > Hi Takashi,
-> > 
-> > Attach patch was supported headset Mic.
-> > 
-> > BR,
-> > Kailang
-> [2 0001-dell-alc256-0x098d.patch <application/octet-stream (base64)>]
-> 
