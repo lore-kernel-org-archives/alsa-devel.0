@@ -2,113 +2,92 @@ Return-Path: <SRS0=q21C=4W=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7323C3F2CD
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 05:15:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E060C3F2CD
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 06:02:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 31F3D208CD
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 05:15:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CC0C7208CD
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 06:02:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jy9dEY50";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sholland.org header.i=@sholland.org header.b="B5uyHhTh";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="NJOA7gNH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 31F3D208CD
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sholland.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="s0bcURWm";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CflcryAT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC0C7208CD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8E66B1670;
-	Thu,  5 Mar 2020 06:14:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E66B1670
+	by alsa0.perex.cz (Postfix) with ESMTPS id 29BE915F8;
+	Thu,  5 Mar 2020 07:01:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29BE915F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583385317;
-	bh=TCTiPbfvLwQkuyGelaS61vLdbVITwP8AS81sn+8GMVA=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=jy9dEY50Ghpfylot40eDfFoTH1POI5JB85BCeA1I6sWEcC4JG20Ws25xxvlosGLl3
-	 3Anri0+vnZWmFoMXlNU5zRK7yMqXGP6gjQAUom5I+e8cKsjuJJXViKS33AqQA6p/3O
-	 aBzumQH45OG4Y0iX8B/ysoHgCzqcD3haYa6xrAUg=
+	s=default; t=1583388131;
+	bh=yVlWyjwAo9HKaum+EAqNlnChsC2Wxwlso2zSpZJ+K0M=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=s0bcURWm0CMjHDt/gOU7CYO9JN+moiDOTHClxgfdPYYyClREavzLlhT4ry7ac9eI5
+	 r+iJVPgC0MZrncaXehKs+Z12aMajEKpUScXu+k5dyEB6FxVpwxHmuboSXl5PdfY2fb
+	 aT8ZuCpODW3jEUhvwzhTbfaSYk/R1j32vxaqzr8s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1A514F8029A;
-	Thu,  5 Mar 2020 06:12:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 74312F80245;
+	Thu,  5 Mar 2020 07:01:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 426DCF8025F; Thu,  5 Mar 2020 06:12:00 +0100 (CET)
-Received: from new3-smtp.messagingengine.com (new3-smtp.messagingengine.com
- [66.111.4.229])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 5ECC6F8025F; Thu,  5 Mar 2020 07:01:17 +0100 (CET)
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com
+ [IPv6:2607:f8b0:4864:20::444])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DAA92F80245
- for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2020 06:11:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DAA92F80245
+ by alsa1.perex.cz (Postfix) with ESMTPS id AACEAF8012D
+ for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2020 07:01:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AACEAF8012D
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=sholland.org header.i=@sholland.org
- header.b="B5uyHhTh"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="NJOA7gNH"
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
- by mailnew.nyi.internal (Postfix) with ESMTP id 50F5613EC;
- Thu,  5 Mar 2020 00:11:46 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
- by compute3.internal (MEProxy); Thu, 05 Mar 2020 00:11:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
- from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm2; bh=WgXHuW9inH73V
- 4eN9Lhc8dVUq0yylRgC2mv73tI5Dos=; b=B5uyHhThrj2OofyyxskhR/L9EAozj
- MuCOo23YfhH41IZF4duzAQ5aaTbIjz4qIxh9pK8MaJ+qaPiCQzf2h4GWrEuziNpG
- 1B/bRI67OJWzgL0FEnjyHoiYnI18KNX6N6BtAs1/o3rkJRcxx8fe97+kIsZclAgO
- lXxNiUzRGDoQvtNsNAuGSV/6n4yusOFVAeuGebtdRFs2o6FZ8TKPgPUc2pUY095f
- P9uwwlSqvCby9ydaqnbujOAVaSeC0pomYoiUCx77imTMGegcVBJNDiLPQWJEcFkc
- 8/hPtLuJ9QFP4s54mDfr0YVFagt95bOfOYC1QRmbixWqorM3FBoFDZ3ZA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-transfer-encoding:date:from
- :in-reply-to:message-id:mime-version:references:subject:to
- :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm2; bh=WgXHuW9inH73V4eN9Lhc8dVUq0yylRgC2mv73tI5Dos=; b=NJOA7gNH
- syK7afkZkupBPnZNGLUOSi9ILnoW79aLG8skgIqWVZdTkPJzj+f3ys5P0vqPrMwl
- zqtmPJWYnfJugJB0VvQqIqY/EXsMKhTEzvuHzY9AGkqy5uxWlGyDhJMEWBx/hhb9
- BHCvHaDLAShRbQkV5xzerc9tDUYZDkggw5l6tqepYZ5iCzcAOsv0l+7+/TYw6sPD
- tviMuNQTwO5VKQKsui2HYepqgbwdwsn2EJRfzs5Jsu+knDTSzkYDQJeWXEhqE7Qy
- NuRHfOtqpn98TY4v9EWmlzyQhXFq8+a4f/CAVAUJXD1qSHFWkacpgNwdtiwAKp75
- hI4gu0XRasmY3Q==
-X-ME-Sender: <xms:EYpgXsFZUw1fdpsIctcO3TQtLiJcinGgFDdBSK1xSfEnxE3GQyjdBA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedruddtledgkedtucetufdoteggodetrfdotf
- fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
- cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgv
- lhcujfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucfkph
- epjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghr
- rghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghnugdrohhrgh
-X-ME-Proxy: <xmx:EYpgXs8f10zp7uGtX61wRzqpMWDxGNgINF1TNdphcxHxgYAOvqzLkw>
- <xmx:EYpgXhXRnA_5PTIyKOTCumPylRkH8lVDDOCXhJIPAuVZSAcqfAuE2g>
- <xmx:EYpgXoZJGiNcdOmCAilJfNP8yUuRvbcUKdSGSntbb51UpoyzJSCSQg>
- <xmx:EopgXuGzW5D9sQsG_WAePJJl7IVTf8wZ-P-gMNNZnH-_ZtdJfa2tag>
-Received: from titanium.stl.sholland.net
- (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
- by mail.messagingengine.com (Postfix) with ESMTPA id ECE51328005E;
- Thu,  5 Mar 2020 00:11:44 -0500 (EST)
-From: Samuel Holland <samuel@sholland.org>
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Jonathan Corbet <corbet@lwn.net>, Jerome Brunet <jbrunet@baylibre.com>
-Subject: [PATCH v4 2/3] ASoC: pcm: Export parameter intersection logic
-Date: Wed,  4 Mar 2020 23:11:42 -0600
-Message-Id: <20200305051143.60691-3-samuel@sholland.org>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200305051143.60691-1-samuel@sholland.org>
-References: <20200305051143.60691-1-samuel@sholland.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
- Samuel Holland <samuel@sholland.org>, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="CflcryAT"
+Received: by mail-pf1-x444.google.com with SMTP id i13so2233222pfe.3
+ for <alsa-devel@alsa-project.org>; Wed, 04 Mar 2020 22:01:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id;
+ bh=+crT0pBWSfuXBvsoxmaazzTBpnM/2/pQconS/hbBjSE=;
+ b=CflcryATJ3b/FURJquNJlND9mLY4WDEwsbNpyJgV7+X7a16X7mWxQ8LoU8cDZI9rdr
+ GI2Kc/NheE0BNdceo46E5+J4dTEt6FhdPCD/9gO0tfuLykTDFRmArPpN/mbTc0FhWSOR
+ K8cqaftg39gR0DiOX9YBEbpGPVpk8mhT1zq28D/aLfmBT+j6NYsIMjZHCujV5WZTajcF
+ xNVleNiKbjEqFlFSm8M11pl4tV6EO2KDNJTTL6oSA5iJ35RQj93hWJbcdOgjX6CPN/uo
+ LdTzU/2Exnfr3fgbVMm+Ak1/kiP1vPIUvS+8szG7hJ9coag1Ne9P699SykPE4m8ZGmkx
+ Q8Jw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id;
+ bh=+crT0pBWSfuXBvsoxmaazzTBpnM/2/pQconS/hbBjSE=;
+ b=MAfOzW7aBLDMbkTUtATUsP0NkN6Yj0Pti27hmHwctfzyni5/bWDL4+NPxABDqxc6jU
+ SkTlIHdancvEgn7vLTH+j+2NzEDtu99IKiS3fyfmqKMxtn0hLZDZi9ZTrpCNScPIU3Le
+ Tx5ynY6YQRiYkbKPe/hXumRb+EIo2gMicSLLRklLPMm2GehC1LkodruR0KWME8sT41Nf
+ Yfs1qB4Kp5m7NgY+DW0j063nqH7jTKyCn+LWvW0OlsE9/63x46mNSWqz/LaGS/2JWWO2
+ Xq+08F4qa9J8aQhrVxTbvFCR3OYHC3gSQDLdINUnW6Wd5oyICMF0nSVfbcC5NWiaDRnW
+ KsIQ==
+X-Gm-Message-State: ANhLgQ3ntV2NbzV6jLbexF5QllAVj2Kp4HJ5PZJanv2tOsp8zhtdeYT3
+ hbUrX3pjZam32ktPolrvvwc=
+X-Google-Smtp-Source: ADFU+vvHjIS0y6Haki+xnAkKnWAaibQMrBK4UejzhrMNkhA0XNRzbYHbqwwN9JidnZp/UGRI/O9pUw==
+X-Received: by 2002:a62:1dc6:: with SMTP id d189mr6807646pfd.153.1583388064938; 
+ Wed, 04 Mar 2020 22:01:04 -0800 (PST)
+Received: from sh03840pcu.spreadtrum.com ([117.18.48.82])
+ by smtp.gmail.com with ESMTPSA id t19sm29508372pgg.23.2020.03.04.22.01.02
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+ Wed, 04 Mar 2020 22:01:04 -0800 (PST)
+From: Baolin Wang <baolin.wang7@gmail.com>
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
+Subject: [PATCH] ASoC: sprd: Allow the MCDT driver to build into modules
+Date: Thu,  5 Mar 2020 14:00:53 +0800
+Message-Id: <9306f2b99641136653ae4fe6cf9e859b7f698f77.1583387748.git.baolin.wang7@gmail.com>
+X-Mailer: git-send-email 1.9.1
+Cc: baolin.wang7@gmail.com, orsonzhai@gmail.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, zhang.lyra@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -124,145 +103,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The logic to calculate the subset of stream parameters supported by all
-DAIs associated with a PCM stream is nontrivial. Export a helper
-function so it can be used to set up simple codec2codec DAI links.
+Change the config to 'tristate' for MCDT driver to allow it to build into
+modules, as well as changing to use IS_ENABLED() to validate if need supply
+dummy functions when building the MCDT driver as a module.
 
-Signed-off-by: Samuel Holland <samuel@sholland.org>
+Signed-off-by: Baolin Wang <baolin.wang7@gmail.com>
 ---
- include/sound/soc.h |  3 +++
- sound/soc/soc-pcm.c | 59 ++++++++++++++++++++++++++++++---------------
- 2 files changed, 42 insertions(+), 20 deletions(-)
+ sound/soc/sprd/Kconfig     | 2 +-
+ sound/soc/sprd/sprd-mcdt.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 81e5d17be935..9543d9246ca4 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -471,6 +471,9 @@ bool snd_soc_runtime_ignore_pmdown_time(struct snd_soc_pcm_runtime *rtd);
- void snd_soc_runtime_activate(struct snd_soc_pcm_runtime *rtd, int stream);
- void snd_soc_runtime_deactivate(struct snd_soc_pcm_runtime *rtd, int stream);
+diff --git a/sound/soc/sprd/Kconfig b/sound/soc/sprd/Kconfig
+index 5474fd3..5e0ac82 100644
+--- a/sound/soc/sprd/Kconfig
++++ b/sound/soc/sprd/Kconfig
+@@ -8,7 +8,7 @@ config SND_SOC_SPRD
+ 	  the Spreadtrum SoCs' Audio interfaces.
  
-+int snd_soc_runtime_calc_hw(struct snd_soc_pcm_runtime *rtd,
-+			    struct snd_pcm_hardware *hw, int stream);
-+
- int snd_soc_runtime_set_dai_fmt(struct snd_soc_pcm_runtime *rtd,
- 	unsigned int dai_fmt);
+ config SND_SOC_SPRD_MCDT
+-	bool "Spreadtrum multi-channel data transfer support"
++	tristate "Spreadtrum multi-channel data transfer support"
+ 	depends on SND_SOC_SPRD
+ 	help
+ 	  Say y here to enable multi-channel data transfer support. It
+diff --git a/sound/soc/sprd/sprd-mcdt.h b/sound/soc/sprd/sprd-mcdt.h
+index 9cc7e207..679e3af 100644
+--- a/sound/soc/sprd/sprd-mcdt.h
++++ b/sound/soc/sprd/sprd-mcdt.h
+@@ -48,7 +48,7 @@ struct sprd_mcdt_chan {
+ 	struct list_head list;
+ };
  
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 90857138c823..2ad501aaa4f9 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -587,11 +587,18 @@ static void soc_pcm_apply_msb(struct snd_pcm_substream *substream)
- 	soc_pcm_set_msb(substream, cpu_bits);
- }
- 
--static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
-+/**
-+ * snd_soc_runtime_calc_hw() - Calculate hw limits for a PCM stream
-+ * @rtd: ASoC PCM runtime
-+ * @hw: PCM hardware parameters (output)
-+ * @stream: Direction of the PCM stream
-+ *
-+ * Calculates the subset of stream parameters supported by all DAIs
-+ * associated with the PCM stream.
-+ */
-+int snd_soc_runtime_calc_hw(struct snd_soc_pcm_runtime *rtd,
-+			    struct snd_pcm_hardware *hw, int stream)
- {
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct snd_pcm_hardware *hw = &runtime->hw;
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_dai *codec_dai;
- 	struct snd_soc_dai *cpu_dai;
- 	struct snd_soc_pcm_stream *codec_stream;
-@@ -602,7 +609,6 @@ static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
- 	unsigned int cpu_rate_min = 0, cpu_rate_max = UINT_MAX;
- 	unsigned int rates = UINT_MAX, cpu_rates = UINT_MAX;
- 	u64 formats = ULLONG_MAX;
--	int stream = substream->stream;
- 	int i;
- 
- 	/* first calculate min/max only for CPUs in the DAI link */
-@@ -613,12 +619,8 @@ static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
- 		 * Otherwise, since the rate, channel, and format values will
- 		 * zero in that case, we would have no usable settings left,
- 		 * causing the resulting setup to fail.
--		 * At least one CPU should match, otherwise we should have
--		 * bailed out on a higher level, since there would be no
--		 * CPU to support the transfer direction in that case.
- 		 */
--		if (!snd_soc_dai_stream_valid(cpu_dai,
--					      substream->stream))
-+		if (!snd_soc_dai_stream_valid(cpu_dai, stream))
- 			continue;
- 
- 		cpu_stream = snd_soc_dai_get_pcm_stream(cpu_dai, stream);
-@@ -640,12 +642,8 @@ static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
- 		 * Otherwise, since the rate, channel, and format values will
- 		 * zero in that case, we would have no usable settings left,
- 		 * causing the resulting setup to fail.
--		 * At least one CODEC should match, otherwise we should have
--		 * bailed out on a higher level, since there would be no
--		 * CODEC to support the transfer direction in that case.
- 		 */
--		if (!snd_soc_dai_stream_valid(codec_dai,
--					      substream->stream))
-+		if (!snd_soc_dai_stream_valid(codec_dai, stream))
- 			continue;
- 
- 		codec_stream = snd_soc_dai_get_pcm_stream(codec_dai, stream);
-@@ -658,6 +656,10 @@ static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
- 		rates = snd_pcm_rate_mask_intersect(codec_stream->rates, rates);
- 	}
- 
-+	/* Verify both a valid CPU DAI and a valid CODEC DAI were found */
-+	if (!chan_min || !cpu_chan_min)
-+		return -EINVAL;
-+
- 	/*
- 	 * chan min/max cannot be enforced if there are multiple CODEC DAIs
- 	 * connected to CPU DAI(s), use CPU DAI's directly and let
-@@ -671,18 +673,35 @@ static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
- 	/* finally find a intersection between CODECs and CPUs */
- 	hw->channels_min = max(chan_min, cpu_chan_min);
- 	hw->channels_max = min(chan_max, cpu_chan_max);
--	if (hw->formats)
--		hw->formats &= formats;
--	else
--		hw->formats = formats;
-+	hw->formats = formats;
- 	hw->rates = snd_pcm_rate_mask_intersect(rates, cpu_rates);
- 
--	snd_pcm_limit_hw_rates(runtime);
-+	snd_pcm_hw_limit_rates(hw);
- 
- 	hw->rate_min = max(hw->rate_min, cpu_rate_min);
- 	hw->rate_min = max(hw->rate_min, rate_min);
- 	hw->rate_max = min_not_zero(hw->rate_max, cpu_rate_max);
- 	hw->rate_max = min_not_zero(hw->rate_max, rate_max);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_runtime_calc_hw);
-+
-+static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_hardware *hw = &substream->runtime->hw;
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	u64 formats = hw->formats;
-+
-+	/*
-+	 * At least one CPU and one CODEC should match. Otherwise, we should
-+	 * have bailed out on a higher level, since there would be no CPU or
-+	 * CODEC to support the transfer direction in that case.
-+	 */
-+	snd_soc_runtime_calc_hw(rtd, hw, substream->stream);
-+
-+	if (formats)
-+		hw->formats &= formats;
- }
- 
- static int soc_pcm_components_open(struct snd_pcm_substream *substream)
+-#ifdef CONFIG_SND_SOC_SPRD_MCDT
++#if IS_ENABLED(CONFIG_SND_SOC_SPRD_MCDT)
+ struct sprd_mcdt_chan *sprd_mcdt_request_chan(u8 channel,
+ 					      enum sprd_mcdt_channel_type type);
+ void sprd_mcdt_free_chan(struct sprd_mcdt_chan *chan);
 -- 
-2.24.1
+1.9.1
 
