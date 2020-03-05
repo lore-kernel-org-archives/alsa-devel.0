@@ -4,65 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 003ABC3F2D1
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 14:40:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4DB6C3F2D1
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 14:48:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AA5E9208CD
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 14:40:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5864420732
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 14:48:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jlBjcPP3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AA5E9208CD
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AbSIsOTF"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5864420732
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DF5C215F9;
-	Thu,  5 Mar 2020 15:39:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF5C215F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id C72B615F9;
+	Thu,  5 Mar 2020 15:48:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C72B615F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583419226;
-	bh=6Jr+NDbafm1nVW9aPn2AjdI4ua2Irh6Imt8PN37W8uA=;
+	s=default; t=1583419733;
+	bh=+wl3kEi9yB6hIz4WWD9nn7/BGJTIriisjL3eLX5s//U=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jlBjcPP3vYsXrXwSexlms6/d5efDLoIZxDNZromT/VJ9AYQTzPFT0Ba8w3vNNCypS
-	 1TeJQ6hyO7jPE8S9kxzKvnvStasKSlWfYW2pJwcpcpymLfVqk3XdfXweNTcZ28UD5s
-	 dQlEznWtW+BtFmVPXUua8TTmBqLdPD7/qhVueliU=
+	b=AbSIsOTFHh9QEZUPhrpSGZYd2FkHP4Hkg+wHrYMwOF23tnolUR3mD1Hh0VB+Jy92/
+	 AVtWHIavJ+Wm7UcRmiEMZJuAgAk8Va++h51o8GmvlqPapjXcVLX1te2XQMNNwBa0NR
+	 OYhMRMMnEMna5UDiZVTzEdqpZW26tJRRtOBS7YlE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6729BF80245;
-	Thu,  5 Mar 2020 15:39:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2C219F8012D;
+	Thu,  5 Mar 2020 15:48:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BA371F8025F; Thu,  5 Mar 2020 15:39:34 +0100 (CET)
+ id AFABDF8025F; Thu,  5 Mar 2020 15:48:01 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 52295F800D8
- for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2020 15:39:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52295F800D8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 96DDFF8012D
+ for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2020 15:47:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96DDFF8012D
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 6E662B280;
- Thu,  5 Mar 2020 14:39:31 +0000 (UTC)
-Date: Thu, 05 Mar 2020 15:39:31 +0100
-Message-ID: <s5ha74ug924.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 1F9EDAED8;
+ Thu,  5 Mar 2020 14:47:50 +0000 (UTC)
+Date: Thu, 05 Mar 2020 15:47:49 +0100
+Message-ID: <s5h8skeg8oa.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Christian Lachner <gladiac@gmail.com>
-Subject: Re: [PATCH 1/1] ALSA: hda/realtek - Fix silent output on Gigabyte
- X570 Aorus Master
-In-Reply-To: <20200223092416.15016-2-gladiac@gmail.com>
-References: <20200223092416.15016-1-gladiac@gmail.com>
- <20200223092416.15016-2-gladiac@gmail.com>
+To: Jian-Hong Pan <jian-hong@endlessm.com>
+Subject: Re: [PATCH] ALSA: hda/realtek - Enable the headset of ASUS B9450FA
+ with ALC294
+In-Reply-To: <20200225072920.109199-1-jian-hong@endlessm.com>
+References: <20200225072920.109199-1-jian-hong@endlessm.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, Kailang Yang <kailang@realtek.com>,
+ linux@endlessm.com, Takashi Iwai <tiwai@suse.com>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,17 +79,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 23 Feb 2020 10:24:16 +0100,
-Christian Lachner wrote:
+On Tue, 25 Feb 2020 08:29:21 +0100,
+Jian-Hong Pan wrote:
 > 
-> The Gigabyte X570 Aorus Master motherboard with ALC1220 codec
-> requires a similar workaround for Clevo laptops to enforce the
-> DAC/mixer connection path. Set up a quirk entry for that.
+> A headset on the laptop like ASUS B9450FA does not work, until quirk
+> ALC294_FIXUP_ASUS_HPE is applied.
 > 
-> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=205275
-> Signed-off-by: Christian Lachner <gladiac@gmail.com>
+> Signed-off-by: Jian-Hong Pan <jian-hong@endlessm.com>
+> Singed-off-by: Kailang Yang <kailang@realtek.com>
 
-Applied now.  Thanks.
+It's a typo of "Signed" :)
 
+Applied with correction and adaption to the latest code now.
+
+
+thanks,
 
 Takashi
