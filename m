@@ -2,103 +2,108 @@ Return-Path: <SRS0=q21C=4W=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB7A3C3F2D1
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 05:14:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7323C3F2CD
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 05:15:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 33EBF2146E
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 05:14:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 31F3D208CD
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 05:15:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="g9/a5XIE";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sholland.org header.i=@sholland.org header.b="MhEVqnS8";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="qUykTYP/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 33EBF2146E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jy9dEY50";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sholland.org header.i=@sholland.org header.b="B5uyHhTh";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="NJOA7gNH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 31F3D208CD
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sholland.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CD1061679;
-	Thu,  5 Mar 2020 06:13:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD1061679
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8E66B1670;
+	Thu,  5 Mar 2020 06:14:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E66B1670
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583385273;
-	bh=qQCQAeaqLbpO6mgArZvYFum6EX4CBIjB5Tg65/964w8=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=g9/a5XIE5QszFZnmkl/4oh4hUlH77yi5BLcbBJLSZELx9x9Kly7cqGt8FzDMWIzAE
-	 IAgh1FBzDvaovXyGxvjrPeiVwm6CASOHGPHUjTWkcIUPrpwoa4lkrN/dO4s2u/Vc+W
-	 CSMdq1JcqusOm6IXfSHjYM7ppWV2y2DLGLxJt2ec=
+	s=default; t=1583385317;
+	bh=TCTiPbfvLwQkuyGelaS61vLdbVITwP8AS81sn+8GMVA=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=jy9dEY50Ghpfylot40eDfFoTH1POI5JB85BCeA1I6sWEcC4JG20Ws25xxvlosGLl3
+	 3Anri0+vnZWmFoMXlNU5zRK7yMqXGP6gjQAUom5I+e8cKsjuJJXViKS33AqQA6p/3O
+	 aBzumQH45OG4Y0iX8B/ysoHgCzqcD3haYa6xrAUg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B404AF8028B;
-	Thu,  5 Mar 2020 06:12:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1A514F8029A;
+	Thu,  5 Mar 2020 06:12:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A71E9F80266; Thu,  5 Mar 2020 06:11:59 +0100 (CET)
+ id 426DCF8025F; Thu,  5 Mar 2020 06:12:00 +0100 (CET)
 Received: from new3-smtp.messagingengine.com (new3-smtp.messagingengine.com
  [66.111.4.229])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2A07BF8012D
+ by alsa1.perex.cz (Postfix) with ESMTPS id DAA92F80245
  for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2020 06:11:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2A07BF8012D
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DAA92F80245
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sholland.org header.i=@sholland.org
- header.b="MhEVqnS8"; 
+ header.b="B5uyHhTh"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="qUykTYP/"
+ header.i=@messagingengine.com header.b="NJOA7gNH"
 Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
- by mailnew.nyi.internal (Postfix) with ESMTP id 53C8E13EF;
+ by mailnew.nyi.internal (Postfix) with ESMTP id 50F5613EC;
  Thu,  5 Mar 2020 00:11:46 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
  by compute3.internal (MEProxy); Thu, 05 Mar 2020 00:11:46 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
- from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding; s=fm2; bh=PScnJ6CuMqDBUUffmRP5+N0vni
- LQnYGo+Aq7HzbeNwU=; b=MhEVqnS8+2y4D/730NbQnzZ/bz2kXU+ilZ3pQQv6Zv
- YzvvplnLkQK45M+SNeUsSpubZ5DtMwwigWbbNWzX7ONNlVmBNKh96jfDja7dbviB
- OH30EzR22Xru9xzKptdByEankPV7ceU09HwgT8xy+bhEVCSitWu7bkijHfw/ST5Z
- wrMuu5s4+tlAwW8/DOEP1RAvoJsCuLwlmoOdhnqd6coIhNH8j949EBUxsJ9PBiD1
- 6UJbF6NOuMnMXFvPq5VXsVEw3vk3T0LreDyaj/gggZXD9JxP59963oNEal9Xi48/
- 4tXIkO35qCbnrJR6o+vgaBcxs0ae/F4oounUHAoDtxsw==
+ from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding; s=fm2; bh=WgXHuW9inH73V
+ 4eN9Lhc8dVUq0yylRgC2mv73tI5Dos=; b=B5uyHhThrj2OofyyxskhR/L9EAozj
+ MuCOo23YfhH41IZF4duzAQ5aaTbIjz4qIxh9pK8MaJ+qaPiCQzf2h4GWrEuziNpG
+ 1B/bRI67OJWzgL0FEnjyHoiYnI18KNX6N6BtAs1/o3rkJRcxx8fe97+kIsZclAgO
+ lXxNiUzRGDoQvtNsNAuGSV/6n4yusOFVAeuGebtdRFs2o6FZ8TKPgPUc2pUY095f
+ P9uwwlSqvCby9ydaqnbujOAVaSeC0pomYoiUCx77imTMGegcVBJNDiLPQWJEcFkc
+ 8/hPtLuJ9QFP4s54mDfr0YVFagt95bOfOYC1QRmbixWqorM3FBoFDZ3ZA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
- :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
- :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=PScnJ6CuMqDBUUffm
- RP5+N0vniLQnYGo+Aq7HzbeNwU=; b=qUykTYP/KzkfwrZuZuwsC+31/IWLifoTG
- xUjgibR4b6J5uZvc7Ts1mphjsLIsk0vQELVDKs6DtJtGE0ipvnjc+3mZJulZEVxM
- n98lErR7PIfPYTqtASJxsqujYkk4VeLTEq6N/V16FUmsV2Mv3CopPtFMMDhzBpqK
- Tmj8lGQvvOzg4fuZV6cDa0ZN5YhHHZhFOaqHWTLkOkS0FQTs2rpx9DxZD8ZGuo+f
- MTpqlCLPZmrZWle/iE3kowyEjuIKnJJbWNnR0+7XCb4OhPqX0pfMv8yrCgw21vdY
- Wv2w2reDEMj3+EnMGmIaWt8E3qhxCoy8Nh9M49nI9yjGYRW+dOnMg==
-X-ME-Sender: <xms:EIpgXrdBjTZ1yWZ6NStxIgdJ4acssIIvZ1PddReLeCBWMJlIU1umRg>
+ :in-reply-to:message-id:mime-version:references:subject:to
+ :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+ fm2; bh=WgXHuW9inH73V4eN9Lhc8dVUq0yylRgC2mv73tI5Dos=; b=NJOA7gNH
+ syK7afkZkupBPnZNGLUOSi9ILnoW79aLG8skgIqWVZdTkPJzj+f3ys5P0vqPrMwl
+ zqtmPJWYnfJugJB0VvQqIqY/EXsMKhTEzvuHzY9AGkqy5uxWlGyDhJMEWBx/hhb9
+ BHCvHaDLAShRbQkV5xzerc9tDUYZDkggw5l6tqepYZ5iCzcAOsv0l+7+/TYw6sPD
+ tviMuNQTwO5VKQKsui2HYepqgbwdwsn2EJRfzs5Jsu+knDTSzkYDQJeWXEhqE7Qy
+ NuRHfOtqpn98TY4v9EWmlzyQhXFq8+a4f/CAVAUJXD1qSHFWkacpgNwdtiwAKp75
+ hI4gu0XRasmY3Q==
+X-ME-Sender: <xms:EYpgXsFZUw1fdpsIctcO3TQtLiJcinGgFDdBSK1xSfEnxE3GQyjdBA>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedruddtledgkedtucetufdoteggodetrfdotf
  fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
  uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
- cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgvlhcu
- jfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucfkphepje
- dtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghm
- pehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghnugdrohhrgh
-X-ME-Proxy: <xmx:EIpgXuqqvbzx9JAHluhgUl7Uvf_7OaEXSJ4rNjr2CRUgrJrFnDbo3A>
- <xmx:EIpgXke9WF6qju8u84TIBWMMKnOJt8NRPLurOi4RteH2ENcPFf2nrQ>
- <xmx:EIpgXun5jl-qKOqwmPe4UZXYrAXm_hpJCHwJcMW1-29pC__Jl0EpEQ>
- <xmx:EopgXrtnF6oh-p8fQUk3q0RlBgD_MA0-K35yteAbeFkvK2yo-ODJIA>
+ cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgv
+ lhcujfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucfkph
+ epjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghr
+ rghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghnugdrohhrgh
+X-ME-Proxy: <xmx:EYpgXs8f10zp7uGtX61wRzqpMWDxGNgINF1TNdphcxHxgYAOvqzLkw>
+ <xmx:EYpgXhXRnA_5PTIyKOTCumPylRkH8lVDDOCXhJIPAuVZSAcqfAuE2g>
+ <xmx:EYpgXoZJGiNcdOmCAilJfNP8yUuRvbcUKdSGSntbb51UpoyzJSCSQg>
+ <xmx:EopgXuGzW5D9sQsG_WAePJJl7IVTf8wZ-P-gMNNZnH-_ZtdJfa2tag>
 Received: from titanium.stl.sholland.net
  (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
- by mail.messagingengine.com (Postfix) with ESMTPA id E82833280064;
- Thu,  5 Mar 2020 00:11:43 -0500 (EST)
+ by mail.messagingengine.com (Postfix) with ESMTPA id ECE51328005E;
+ Thu,  5 Mar 2020 00:11:44 -0500 (EST)
 From: Samuel Holland <samuel@sholland.org>
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
  Jonathan Corbet <corbet@lwn.net>, Jerome Brunet <jbrunet@baylibre.com>
-Subject: [PATCH v4 0/3] simple-audio-card codec2codec support
-Date: Wed,  4 Mar 2020 23:11:40 -0600
-Message-Id: <20200305051143.60691-1-samuel@sholland.org>
+Subject: [PATCH v4 2/3] ASoC: pcm: Export parameter intersection logic
+Date: Wed,  4 Mar 2020 23:11:42 -0600
+Message-Id: <20200305051143.60691-3-samuel@sholland.org>
 X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200305051143.60691-1-samuel@sholland.org>
+References: <20200305051143.60691-1-samuel@sholland.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
@@ -119,47 +124,145 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We are currently using simple-audio-card on the Allwinner A64 SoC.
-The digital audio codec there (sun8i-codec) has 3 AIFs, one each for the
-CPU, the modem, and Bluetooth. Adding support for the secondary AIFs
-requires adding codec2codec DAI links.
+The logic to calculate the subset of stream parameters supported by all
+DAIs associated with a PCM stream is nontrivial. Export a helper
+function so it can be used to set up simple codec2codec DAI links.
 
-Since the modem and bt-sco codec DAI drivers only have one set of
-possible PCM parameters (namely, 8kHz mono S16LE), there's no real
-need for a machine driver to specify the DAI link configuration. The
-parameters for these "simple" DAI links can be chosen automatically.
+Signed-off-by: Samuel Holland <samuel@sholland.org>
+---
+ include/sound/soc.h |  3 +++
+ sound/soc/soc-pcm.c | 59 ++++++++++++++++++++++++++++++---------------
+ 2 files changed, 42 insertions(+), 20 deletions(-)
 
-This series adds codec2codec DAI link support to simple-audio-card.
-Codec to codec links are automatically detected when all DAIs in the
-link belong to codec components.
-
-I tried to reuse as much code as possible, so the first two patches
-refactor a couple of helper functions to be more generic.
-
-The last patch adds the new feature and its documentation.
-
-Changes in v4:
-  - Rebased on top of asoc/for-next, several changes to patch 2
-  - Removed unused variable from patch 3
-Changes in v3:
-  - Update use of for_each_rtd_components for v5.6
-Changes in v2:
-  - Drop patch 1 as it was merged
-  - Automatically detect codec2codec links instead of using a DT property
-
-Samuel Holland (3):
-  ALSA: pcm: Add a standalone version of snd_pcm_limit_hw_rates
-  ASoC: pcm: Export parameter intersection logic
-  ASoC: simple-card: Add support for codec2codec DAI links
-
- Documentation/sound/soc/codec-to-codec.rst |  9 +++-
- include/sound/pcm.h                        |  9 +++-
- include/sound/soc.h                        |  3 ++
- sound/core/pcm_misc.c                      | 18 +++----
- sound/soc/generic/simple-card-utils.c      | 48 ++++++++++++++++++
- sound/soc/soc-pcm.c                        | 59 ++++++++++++++--------
- 6 files changed, 114 insertions(+), 32 deletions(-)
-
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 81e5d17be935..9543d9246ca4 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -471,6 +471,9 @@ bool snd_soc_runtime_ignore_pmdown_time(struct snd_soc_pcm_runtime *rtd);
+ void snd_soc_runtime_activate(struct snd_soc_pcm_runtime *rtd, int stream);
+ void snd_soc_runtime_deactivate(struct snd_soc_pcm_runtime *rtd, int stream);
+ 
++int snd_soc_runtime_calc_hw(struct snd_soc_pcm_runtime *rtd,
++			    struct snd_pcm_hardware *hw, int stream);
++
+ int snd_soc_runtime_set_dai_fmt(struct snd_soc_pcm_runtime *rtd,
+ 	unsigned int dai_fmt);
+ 
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 90857138c823..2ad501aaa4f9 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -587,11 +587,18 @@ static void soc_pcm_apply_msb(struct snd_pcm_substream *substream)
+ 	soc_pcm_set_msb(substream, cpu_bits);
+ }
+ 
+-static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
++/**
++ * snd_soc_runtime_calc_hw() - Calculate hw limits for a PCM stream
++ * @rtd: ASoC PCM runtime
++ * @hw: PCM hardware parameters (output)
++ * @stream: Direction of the PCM stream
++ *
++ * Calculates the subset of stream parameters supported by all DAIs
++ * associated with the PCM stream.
++ */
++int snd_soc_runtime_calc_hw(struct snd_soc_pcm_runtime *rtd,
++			    struct snd_pcm_hardware *hw, int stream)
+ {
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct snd_pcm_hardware *hw = &runtime->hw;
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_soc_dai *codec_dai;
+ 	struct snd_soc_dai *cpu_dai;
+ 	struct snd_soc_pcm_stream *codec_stream;
+@@ -602,7 +609,6 @@ static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
+ 	unsigned int cpu_rate_min = 0, cpu_rate_max = UINT_MAX;
+ 	unsigned int rates = UINT_MAX, cpu_rates = UINT_MAX;
+ 	u64 formats = ULLONG_MAX;
+-	int stream = substream->stream;
+ 	int i;
+ 
+ 	/* first calculate min/max only for CPUs in the DAI link */
+@@ -613,12 +619,8 @@ static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
+ 		 * Otherwise, since the rate, channel, and format values will
+ 		 * zero in that case, we would have no usable settings left,
+ 		 * causing the resulting setup to fail.
+-		 * At least one CPU should match, otherwise we should have
+-		 * bailed out on a higher level, since there would be no
+-		 * CPU to support the transfer direction in that case.
+ 		 */
+-		if (!snd_soc_dai_stream_valid(cpu_dai,
+-					      substream->stream))
++		if (!snd_soc_dai_stream_valid(cpu_dai, stream))
+ 			continue;
+ 
+ 		cpu_stream = snd_soc_dai_get_pcm_stream(cpu_dai, stream);
+@@ -640,12 +642,8 @@ static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
+ 		 * Otherwise, since the rate, channel, and format values will
+ 		 * zero in that case, we would have no usable settings left,
+ 		 * causing the resulting setup to fail.
+-		 * At least one CODEC should match, otherwise we should have
+-		 * bailed out on a higher level, since there would be no
+-		 * CODEC to support the transfer direction in that case.
+ 		 */
+-		if (!snd_soc_dai_stream_valid(codec_dai,
+-					      substream->stream))
++		if (!snd_soc_dai_stream_valid(codec_dai, stream))
+ 			continue;
+ 
+ 		codec_stream = snd_soc_dai_get_pcm_stream(codec_dai, stream);
+@@ -658,6 +656,10 @@ static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
+ 		rates = snd_pcm_rate_mask_intersect(codec_stream->rates, rates);
+ 	}
+ 
++	/* Verify both a valid CPU DAI and a valid CODEC DAI were found */
++	if (!chan_min || !cpu_chan_min)
++		return -EINVAL;
++
+ 	/*
+ 	 * chan min/max cannot be enforced if there are multiple CODEC DAIs
+ 	 * connected to CPU DAI(s), use CPU DAI's directly and let
+@@ -671,18 +673,35 @@ static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
+ 	/* finally find a intersection between CODECs and CPUs */
+ 	hw->channels_min = max(chan_min, cpu_chan_min);
+ 	hw->channels_max = min(chan_max, cpu_chan_max);
+-	if (hw->formats)
+-		hw->formats &= formats;
+-	else
+-		hw->formats = formats;
++	hw->formats = formats;
+ 	hw->rates = snd_pcm_rate_mask_intersect(rates, cpu_rates);
+ 
+-	snd_pcm_limit_hw_rates(runtime);
++	snd_pcm_hw_limit_rates(hw);
+ 
+ 	hw->rate_min = max(hw->rate_min, cpu_rate_min);
+ 	hw->rate_min = max(hw->rate_min, rate_min);
+ 	hw->rate_max = min_not_zero(hw->rate_max, cpu_rate_max);
+ 	hw->rate_max = min_not_zero(hw->rate_max, rate_max);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_soc_runtime_calc_hw);
++
++static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_hardware *hw = &substream->runtime->hw;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	u64 formats = hw->formats;
++
++	/*
++	 * At least one CPU and one CODEC should match. Otherwise, we should
++	 * have bailed out on a higher level, since there would be no CPU or
++	 * CODEC to support the transfer direction in that case.
++	 */
++	snd_soc_runtime_calc_hw(rtd, hw, substream->stream);
++
++	if (formats)
++		hw->formats &= formats;
+ }
+ 
+ static int soc_pcm_components_open(struct snd_pcm_substream *substream)
 -- 
 2.24.1
 
