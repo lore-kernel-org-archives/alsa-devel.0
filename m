@@ -2,62 +2,77 @@ Return-Path: <SRS0=q21C=4W=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F057C3F2D1
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 13:18:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71DDDC3F2CD
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 13:27:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1ADF62072A
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 13:18:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EDCBD20848
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 13:27:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="M8JqHBgB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1ADF62072A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mfREMnCl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EDCBD20848
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7E62F1667;
-	Thu,  5 Mar 2020 14:17:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E62F1667
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5B5EB1666;
+	Thu,  5 Mar 2020 14:26:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B5EB1666
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583414322;
-	bh=KOksV8eVyBP8koJL1LGAUBzTM6x0CS5AIJrBtFiNDbc=;
-	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=M8JqHBgBM0178JoIANZ35Lkac4y1I/ZED/eL7VEPmWNkdYMDMw0QUqdF0XCt7TMjq
-	 M77tZN/t6yC3UZUf+lifbkEhLjNQvGGz9CaxF8RBTDhlpd64jLI8b+Zk6Y9Ow1JTHS
-	 o7pxIvBlUYfJXPcGLiSkMxM2ieeyp5B2Zqmz++GU=
+	s=default; t=1583414825;
+	bh=UPafrNw5I0RgSP8eHC1D8brgZoMoRIZQz8SOuANmbow=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=mfREMnCle515VkuSJnIT4X/LcPQ9l4XpH9mZE54HMhYdgG9gPGqC3Lv8oqt8YBUo+
+	 zccw/RAsQBlk3PK2/8yeM0YPT58pj8tAHKl6awVLxSYs11rlPlxeXpktnMmJYAwnxn
+	 YNM09xIBAcwHKLsKUMiRCUA/ULuyK0eFdrLtBx+g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4A7A3F8028E;
-	Thu,  5 Mar 2020 14:15:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D5D0AF80245;
+	Thu,  5 Mar 2020 14:26:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 21515F8028F; Thu,  5 Mar 2020 14:15:47 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 30F41F8028D
- for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2020 14:15:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30F41F8028D
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B4EE04B2;
- Thu,  5 Mar 2020 05:15:42 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 39CE13F6CF;
- Thu,  5 Mar 2020 05:15:42 -0800 (PST)
-Date: Thu, 05 Mar 2020 13:15:40 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Dan Murphy <dmurphy@ti.com>
-Subject: Applied "ASoC: tlv320adcx140: Fix mic_bias and vref device tree
- verification" to the asoc tree
-In-Reply-To: <20200304193427.16886-1-dmurphy@ti.com>
-Message-Id: <applied-20200304193427.16886-1-dmurphy@ti.com>
-X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
- linux-kernel@vger.kernel.org, tiwai@suse.com, Mark Brown <broonie@kernel.org>
+ id C795EF800D8; Thu,  5 Mar 2020 14:26:03 +0100 (CET)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 57888F800D8
+ for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2020 14:25:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57888F800D8
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+ by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 05 Mar 2020 05:25:57 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,518,1574150400"; d="scan'208";a="275085884"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+ by fmsmga002.fm.intel.com with ESMTP; 05 Mar 2020 05:25:55 -0800
+Received: from andy by smile with local (Exim 4.93)
+ (envelope-from <andriy.shevchenko@linux.intel.com>)
+ id 1j9qVi-0076Uu-2S; Thu, 05 Mar 2020 15:25:58 +0200
+Date: Thu, 5 Mar 2020 15:25:58 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [RFC PATCH 2/3] ASoC: Intel: bdw-rt5677: fix module load/unload
+ issues
+Message-ID: <20200305132558.GJ1224808@smile.fi.intel.com>
+References: <20200305130616.28658-1-pierre-louis.bossart@linux.intel.com>
+ <20200305130616.28658-3-pierre-louis.bossart@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200305130616.28658-3-pierre-louis.bossart@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,78 +88,78 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
+On Thu, Mar 05, 2020 at 07:06:15AM -0600, Pierre-Louis Bossart wrote:
+> The use of devm_gpiod_get() in a dailink .init() callback generates issues
+> when unloading modules. The dependencies between modules are not well
+> handled and the snd_soc_rt5677 module cannot be removed:
+> 
+> rmmod: ERROR: Module snd_soc_rt5677 is in use
+> 
+> Removing the use of devm_ and manually releasing the gpio descriptor
 
-   ASoC: tlv320adcx140: Fix mic_bias and vref device tree verification
+gpio -> GPIO
 
-has been applied to the asoc tree at
+> in the dailink .exit() callback solves the issue.
+> 
+> Tested on SAMUS Chromebook with SOF driver.
+> 
+> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> ---
+>  sound/soc/intel/boards/bdw-rt5677.c | 14 ++++++++++++--
+>  1 file changed, 12 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/soc/intel/boards/bdw-rt5677.c b/sound/soc/intel/boards/bdw-rt5677.c
+> index a94f498388e1..641491cb449b 100644
+> --- a/sound/soc/intel/boards/bdw-rt5677.c
+> +++ b/sound/soc/intel/boards/bdw-rt5677.c
+> @@ -247,8 +247,8 @@ static int bdw_rt5677_init(struct snd_soc_pcm_runtime *rtd)
+>  			RT5677_CLK_SEL_SYS2);
+>  
+>  	/* Request rt5677 GPIO for headphone amp control */
+> -	bdw_rt5677->gpio_hp_en = devm_gpiod_get(component->dev, "headphone-enable",
+> -						GPIOD_OUT_LOW);
+> +	bdw_rt5677->gpio_hp_en = gpiod_get(component->dev, "headphone-enable",
+> +					   GPIOD_OUT_LOW);
+>  	if (IS_ERR(bdw_rt5677->gpio_hp_en)) {
+>  		dev_err(component->dev, "Can't find HP_AMP_SHDN_L gpio\n");
+>  		return PTR_ERR(bdw_rt5677->gpio_hp_en);
+> @@ -282,6 +282,15 @@ static int bdw_rt5677_init(struct snd_soc_pcm_runtime *rtd)
+>  	return 0;
+>  }
+>  
+> +static void bdw_rt5677_exit(struct snd_soc_pcm_runtime *rtd)
+> +{
+> +	struct bdw_rt5677_priv *bdw_rt5677 =
+> +			snd_soc_card_get_drvdata(rtd->card);
+> +
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+> +	if (!IS_ERR(bdw_rt5677->gpio_hp_en))
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+I'm wondering if you need this check at all? In the above (I left for context)
+the GPIO is considered mandatory, does the core handles errors from ->init()
+correctly?
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> +		gpiod_put(bdw_rt5677->gpio_hp_en);
+> +}
+> +
+>  /* broadwell digital audio interface glue - connects codec <--> CPU */
+>  SND_SOC_DAILINK_DEF(dummy,
+>  	DAILINK_COMP_ARRAY(COMP_DUMMY()));
+> @@ -350,6 +359,7 @@ static struct snd_soc_dai_link bdw_rt5677_dais[] = {
+>  		.dpcm_playback = 1,
+>  		.dpcm_capture = 1,
+>  		.init = bdw_rt5677_init,
+> +		.exit = bdw_rt5677_exit,
+>  		SND_SOC_DAILINK_REG(ssp0_port, be, platform),
+>  	},
+>  };
+> -- 
+> 2.20.1
+> 
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From 2e4249f58074ec93746df3a902d1835b7edfef49 Mon Sep 17 00:00:00 2001
-From: Dan Murphy <dmurphy@ti.com>
-Date: Wed, 4 Mar 2020 13:34:27 -0600
-Subject: [PATCH] ASoC: tlv320adcx140: Fix mic_bias and vref device tree
- verification
-
-Fix the range verification check for the mic_bias and vref device tree
-entries.
-
-Fixes 37bde5acf040 ("ASoC: tlv320adcx140: Add the tlv320adcx140 codec driver family")
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
-Link: https://lore.kernel.org/r/20200304193427.16886-1-dmurphy@ti.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/tlv320adcx140.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
-
-diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv320adcx140.c
-index 93a0cb8e662c..38897568ee96 100644
---- a/sound/soc/codecs/tlv320adcx140.c
-+++ b/sound/soc/codecs/tlv320adcx140.c
-@@ -748,9 +748,8 @@ static int adcx140_codec_probe(struct snd_soc_component *component)
- 	if (ret)
- 		bias_source = ADCX140_MIC_BIAS_VAL_VREF;
- 
--	if (bias_source != ADCX140_MIC_BIAS_VAL_VREF &&
--	    bias_source != ADCX140_MIC_BIAS_VAL_VREF_1096 &&
--	    bias_source != ADCX140_MIC_BIAS_VAL_AVDD) {
-+	if (bias_source < ADCX140_MIC_BIAS_VAL_VREF ||
-+	    bias_source > ADCX140_MIC_BIAS_VAL_AVDD) {
- 		dev_err(adcx140->dev, "Mic Bias source value is invalid\n");
- 		return -EINVAL;
- 	}
-@@ -760,9 +759,8 @@ static int adcx140_codec_probe(struct snd_soc_component *component)
- 	if (ret)
- 		vref_source = ADCX140_MIC_BIAS_VREF_275V;
- 
--	if (vref_source != ADCX140_MIC_BIAS_VREF_275V &&
--	    vref_source != ADCX140_MIC_BIAS_VREF_25V &&
--	    vref_source != ADCX140_MIC_BIAS_VREF_1375V) {
-+	if (vref_source < ADCX140_MIC_BIAS_VREF_275V ||
-+	    vref_source > ADCX140_MIC_BIAS_VREF_1375V) {
- 		dev_err(adcx140->dev, "Mic Bias source value is invalid\n");
- 		return -EINVAL;
- 	}
 -- 
-2.20.1
+With Best Regards,
+Andy Shevchenko
+
 
