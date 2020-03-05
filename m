@@ -1,4 +1,4 @@
-Return-Path: <SRS0=cEba=4V=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=q21C=4W=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
@@ -7,51 +7,51 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B2BBEC3F2CD
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Mar 2020 13:41:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 675BCC3F2D1
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 13:16:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3E0D02166E
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Mar 2020 13:41:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CC4452072A
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 13:16:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hkCBYgeN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3E0D02166E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="C8iL6mo5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC4452072A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 08A1C1660;
-	Wed,  4 Mar 2020 14:40:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 08A1C1660
+	by alsa0.perex.cz (Postfix) with ESMTPS id 354E682E;
+	Thu,  5 Mar 2020 14:15:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 354E682E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583329272;
-	bh=oyaLShO1qecF01YUs0ZEPpXmwVmlVW79R6CS6vxnJHA=;
+	s=default; t=1583414192;
+	bh=3Q/K9VkRIGDmtyGTwKcI8eFT56z8ZWkc3aHHWp2bbOA=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=hkCBYgeNP4Ia0mGVsMiulKO+NgRapwSTA0PTvEQWOrPpfmshkpDl1uwPO97duxpGL
-	 +YJnrQgl3aAgpP4lN9CJs2JXHFFVBmzASLl7bLDf8otWg+OeI8JUc51lILD+uDJoGi
-	 J1GObYWIlRtyzwBXZG8SI5LuVFIQ1KmaCTE1Gl1I=
+	b=C8iL6mo5p8oQZAnYu05w2rPRdmAra2HqkhtstHp26Rja3eP0EYSpKEXGc9GbVV8VI
+	 g+B/UQXXbWCJ9i4sviBq9aWgoOG2O6YVf1m0cteRyMH652HWbfWwdYzw137cXYmdwW
+	 md6fnYLzNEb0sztgff0wDT2QQyU8Sg3RgDwQWfbI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 824CAF800D8;
-	Wed,  4 Mar 2020 14:39:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3F1CCF80126;
+	Thu,  5 Mar 2020 14:15:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 46331F801EC; Wed,  4 Mar 2020 14:39:25 +0100 (CET)
+ id 92FD7F80126; Thu,  5 Mar 2020 14:15:38 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 3FD96F8011C
- for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2020 14:39:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3FD96F8011C
+ by alsa1.perex.cz (Postfix) with ESMTP id CC10AF80245
+ for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2020 14:15:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC10AF80245
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E524B4B2;
- Wed,  4 Mar 2020 05:39:19 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C87A21FB;
+ Thu,  5 Mar 2020 05:15:33 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6A4693F6C4;
- Wed,  4 Mar 2020 05:39:19 -0800 (PST)
-Date: Wed, 04 Mar 2020 13:39:17 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4BE143F6CF;
+ Thu,  5 Mar 2020 05:15:33 -0800 (PST)
+Date: Thu, 05 Mar 2020 13:15:31 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Olivier Moysan <olivier.moysan@st.com>
-Subject: Applied "ASoC: stm32: sai: manage rebind issue" to the asoc tree
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: soc-pcm: use defined stream" to the asoc tree
 In-Reply-To: 
 Message-Id: 
 X-Patchwork-Hint: ignore
@@ -70,11 +70,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20200304133917.kKNec1Sa-e7394O5SNbR3c_lLjzuD5jGbMDzFn8ADP0@z>
+Message-ID: <20200305131531.ScVTP5HOivWvvXu5HaO3ixte35MDz3f8XKp4teB2hhA@z>
 
 The patch
 
-   ASoC: stm32: sai: manage rebind issue
+   ASoC: soc-pcm: use defined stream
 
 has been applied to the asoc tree at
 
@@ -99,97 +99,86 @@ to this mail.
 Thanks,
 Mark
 
-From 0d6defc7e0e437a9fd53622f7fd85740f38d5693 Mon Sep 17 00:00:00 2001
-From: Olivier Moysan <olivier.moysan@st.com>
-Date: Wed, 4 Mar 2020 11:24:06 +0100
-Subject: [PATCH] ASoC: stm32: sai: manage rebind issue
+From 25c2f5156dd57f03aee2de079248c23a56222c92 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Thu, 27 Feb 2020 10:54:38 +0900
+Subject: [PATCH] ASoC: soc-pcm: use defined stream
 
-The commit e894efef9ac7 ("ASoC: core: add support to card rebind")
-allows to rebind the sound card after a rebind of one of its component.
-With this commit, the sound card is actually rebound,
-but may be no more functional. The following problems have been seen
-with STM32 SAI driver.
+Many functions defines "stream = substream->stream", but
+some of them is using "substream->stream" instead of "stream".
+It is pointless. This patch uses defined stream.
 
-1) DMA channel is not requested:
-
-With the sound card rebind the simplified call sequence is:
-stm32_sai_sub_probe
-	snd_soc_register_component
-		snd_soc_try_rebind_card
-			snd_soc_instantiate_card
-	devm_snd_dmaengine_pcm_register
-
-The problem occurs because the pcm must be registered,
-before snd_soc_instantiate_card() is called.
-
-Modify SAI driver, to change the call sequence as follows:
-stm32_sai_sub_probe
-	devm_snd_dmaengine_pcm_register
-	snd_soc_register_component
-		snd_soc_try_rebind_card
-
-2) DMA channel is not released:
-
-dma_release_channel() is not called when
-devm_dmaengine_pcm_release() is executed.
-This occurs because SND_DMAENGINE_PCM_DRV_NAME component,
-has already been released through devm_component_release().
-
-devm_dmaengine_pcm_release() should be called before
-devm_component_release() to avoid this problem.
-
-Call snd_dmaengine_pcm_unregister() and snd_soc_unregister_component()
-explicitly from SAI driver, to have the right sequence.
-
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
-Message-Id: <20200304102406.8093-1-olivier.moysan@st.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Link: https://lore.kernel.org/r/87mu947q1t.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/stm/stm32_sai_sub.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ sound/soc/soc-pcm.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
-index 30bcd5d3a32a..10eb4b8e8e7e 100644
---- a/sound/soc/stm/stm32_sai_sub.c
-+++ b/sound/soc/stm/stm32_sai_sub.c
-@@ -1543,20 +1543,20 @@ static int stm32_sai_sub_probe(struct platform_device *pdev)
- 		return ret;
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 90857138c823..8c27eb4d5e4c 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -644,8 +644,7 @@ static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
+ 		 * bailed out on a higher level, since there would be no
+ 		 * CODEC to support the transfer direction in that case.
+ 		 */
+-		if (!snd_soc_dai_stream_valid(codec_dai,
+-					      substream->stream))
++		if (!snd_soc_dai_stream_valid(codec_dai, stream))
+ 			continue;
+ 
+ 		codec_stream = snd_soc_dai_get_pcm_stream(codec_dai, stream);
+@@ -2149,7 +2148,7 @@ static int dpcm_fe_dai_startup(struct snd_pcm_substream *fe_substream)
+ 
+ 	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_FE);
+ 
+-	ret = dpcm_be_dai_startup(fe, fe_substream->stream);
++	ret = dpcm_be_dai_startup(fe, stream);
+ 	if (ret < 0) {
+ 		dev_err(fe->dev,"ASoC: failed to start some BEs %d\n", ret);
+ 		goto be_err;
+@@ -2180,7 +2179,7 @@ static int dpcm_fe_dai_startup(struct snd_pcm_substream *fe_substream)
+ 	return 0;
+ 
+ unwind:
+-	dpcm_be_dai_startup_unwind(fe, fe_substream->stream);
++	dpcm_be_dai_startup_unwind(fe, stream);
+ be_err:
+ 	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_NO);
+ 	return ret;
+@@ -2234,7 +2233,7 @@ static int dpcm_fe_dai_shutdown(struct snd_pcm_substream *substream)
+ 	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_FE);
+ 
+ 	/* shutdown the BEs */
+-	dpcm_be_dai_shutdown(fe, substream->stream);
++	dpcm_be_dai_shutdown(fe, stream);
+ 
+ 	dev_dbg(fe->dev, "ASoC: close FE %s\n", fe->dai_link->name);
+ 
+@@ -2412,9 +2411,9 @@ static int dpcm_fe_dai_hw_params(struct snd_pcm_substream *substream,
+ 	mutex_lock_nested(&fe->card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
+ 	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_FE);
+ 
+-	memcpy(&fe->dpcm[substream->stream].hw_params, params,
++	memcpy(&fe->dpcm[stream].hw_params, params,
+ 			sizeof(struct snd_pcm_hw_params));
+-	ret = dpcm_be_dai_hw_params(fe, substream->stream);
++	ret = dpcm_be_dai_hw_params(fe, stream);
+ 	if (ret < 0) {
+ 		dev_err(fe->dev,"ASoC: hw_params BE failed %d\n", ret);
+ 		goto out;
+@@ -2736,7 +2735,7 @@ static int dpcm_fe_dai_prepare(struct snd_pcm_substream *substream)
+ 		goto out;
  	}
  
--	ret = devm_snd_soc_register_component(&pdev->dev, &stm32_component,
--					      &sai->cpu_dai_drv, 1);
-+	ret = snd_dmaengine_pcm_register(&pdev->dev, conf, 0);
-+	if (ret) {
-+		dev_err(&pdev->dev, "Could not register pcm dma\n");
-+		return ret;
-+	}
-+
-+	ret = snd_soc_register_component(&pdev->dev, &stm32_component,
-+					 &sai->cpu_dai_drv, 1);
- 	if (ret)
- 		return ret;
+-	ret = dpcm_be_dai_prepare(fe, substream->stream);
++	ret = dpcm_be_dai_prepare(fe, stream);
+ 	if (ret < 0)
+ 		goto out;
  
- 	if (STM_SAI_PROTOCOL_IS_SPDIF(sai))
- 		conf = &stm32_sai_pcm_config_spdif;
- 
--	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, conf, 0);
--	if (ret) {
--		dev_err(&pdev->dev, "Could not register pcm dma\n");
--		return ret;
--	}
--
- 	return 0;
- }
- 
-@@ -1565,6 +1565,8 @@ static int stm32_sai_sub_remove(struct platform_device *pdev)
- 	struct stm32_sai_sub_data *sai = dev_get_drvdata(&pdev->dev);
- 
- 	clk_unprepare(sai->pdata->pclk);
-+	snd_dmaengine_pcm_unregister(&pdev->dev);
-+	snd_soc_unregister_component(&pdev->dev);
- 
- 	return 0;
- }
 -- 
 2.20.1
 
