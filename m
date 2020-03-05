@@ -2,93 +2,95 @@ Return-Path: <SRS0=q21C=4W=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB93CC3F2CD
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 13:45:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DE6FC3F2CD
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 13:46:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 78152208C3
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 13:45:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8C8E02073D
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 13:46:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pajGjt7W";
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yEvHYrzc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 78152208C3
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="V8CTSkgA";
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cMgpk3pp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8C8E02073D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D2B0215E5;
-	Thu,  5 Mar 2020 14:44:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D2B0215E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id B8F8A1655;
+	Thu,  5 Mar 2020 14:45:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B8F8A1655
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583415928;
-	bh=eGL3p1IHf9edqq3kxH5vE7XPSA+vqylPUjwtkEiHuWk=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=pajGjt7WN11RWujrRHboPrWIQf1iAHE/w/Tr5oZjFySgpkNAZrsSYESGfCEwYS/w1
-	 U11cT6mOTv2z8zpENJsbgSXe6BIirhapORpdG32qScXIgc+oSZ4SbbcSzCya7fA1Jh
-	 LlW0FKef1owIZQB6w+WbyyvYhcui4oKuljecOR70=
+	s=default; t=1583415982;
+	bh=xWE+O0nW/2cUBX6HD1hidlw/xsOZ4Dth7pc/BpAIx28=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=V8CTSkgAsv7H/CDccU1Cm1yMSgavkspg9NESuys1z7ICliBBpT5uvqZiP6zB+pIQi
+	 2Z0Dh6OmoTQJEMLBE1D59vgfkR18IaSVPf/U1jWW29fHSGacv5qoUgLmxO3lG+sUZ6
+	 ZMcwkyET/gWoroSIRsMy7AmDGpjj3kaX5HDzNmD8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 592B6F8025F;
-	Thu,  5 Mar 2020 14:44:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 40BD4F80271;
+	Thu,  5 Mar 2020 14:44:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 90918F80266; Thu,  5 Mar 2020 14:44:36 +0100 (CET)
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com
- [IPv6:2a00:1450:4864:20::332])
+ id 74DB8F80126; Thu,  5 Mar 2020 14:44:40 +0100 (CET)
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com
+ [IPv6:2a00:1450:4864:20::42d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D8815F800D8
- for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2020 14:44:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8815F800D8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 83FFAF80126
+ for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2020 14:44:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83FFAF80126
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="yEvHYrzc"
-Received: by mail-wm1-x332.google.com with SMTP id a141so5786679wme.2
- for <alsa-devel@alsa-project.org>; Thu, 05 Mar 2020 05:44:33 -0800 (PST)
+ header.b="cMgpk3pp"
+Received: by mail-wr1-x42d.google.com with SMTP id v4so7083048wrs.8
+ for <alsa-devel@alsa-project.org>; Thu, 05 Mar 2020 05:44:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=8WY2lzyi/TKkFb0Qxrd7XVTyizJTyW1RRVpFhSXpUJA=;
- b=yEvHYrzcGnRqreMYMaDaezEp6sUz0olv3ypZ/J0OvfAejxiLovsX0YOG+IL2b/veKf
- SWSBoaq5LZ3dMAhu7XJ/55oFNURoIHBs2OiUESnvQsBOLEj4yJeijC8JtrVmovIKnz3G
- OtVY+nuVuVaPXbUO0MzN4DT7xJRJS7rAdmr14hTUyQDqgML1jJIY5HQRoW3sP22GJn+F
- 23NyFP84pQUOiTYA/5/SKkvyXDoWGErnl7mhuGBaQJDp73guRp5XdUkTnrfKlIs9H/e/
- 1dXv43kcTu/Yk99A2n3TzNo+QN/MGN12utSPkBXzKrpqPgBYx4hwpdF7MziyP/buKKry
- X+gQ==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=tkkdkuj2nMIqRYSUpJgIISztIjHhGG24T2FE65a4WvI=;
+ b=cMgpk3pps/kLc7FO2rFNJQa09CAaneKjKetzaJa/BuX2MES2mW/d6QS/zXTMyON30D
+ wy0DqGPeYIlBVmFiMDzTf3/KdSqYbrmmh5hGSTeTXy5BqheONbNvb4WOmkOj/6qi2mSe
+ Pog89Cp85VjxFxrADjxjIKl3036gQ1HrZO4bc0px2BFHJvQAoE6kIoxB/ts7SmQpKgjR
+ +iCsrymHUesisHPDfny73L5+k6Lrzh7OQT/ZqOQUZ0PoHL7lhl9rUMZxG3vR63X2y1sF
+ SSnk+aARsQgxWuq/U8Wu3dfXmmBOM4Wbrq11229xE8jLLbpHEyeO/IILeF/OZ2wqVzTn
+ R1eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=8WY2lzyi/TKkFb0Qxrd7XVTyizJTyW1RRVpFhSXpUJA=;
- b=geykJLAbtJO/RMlAX0S8Cns6s9pAgLLKKoz1yIRTVRzSdMhfu8hlMrk+Lq8uhKClvc
- Xu9hfsEJ46rF48TDJAk1SFzVgkxiMtTCWCYmBUy6I+f4Z2NA+B//EZ/33WlG8HgXHku1
- cesKHhaX+PlldSjdGw8KZ9yJnOKbbwPTH3oUoqCl2/3Czawcfn6gCn/Zv/BYDliSqhi3
- 4HB2YMM7GB17SbsJhMfSf+LVgLfNzaCRi0cA0/JfCAlmk+nd9ulgevqEFZTb6YixzW6p
- Cj/RJpNiO6DcFnuni1OL8ug4z0jr9RgphJRC/092k7jjrWAPPCcpDIchDlBpXHZ2gU/y
- PO6w==
-X-Gm-Message-State: ANhLgQ0mB1azs178eoKjl/QVWS68EOE6vWyhhfN7fmpUdWB7lncfl4VB
- f1qKpx9W2TeNmMHH0Oji++1DTw==
-X-Google-Smtp-Source: ADFU+vtILtrFtaNaE2weX2r5j+pFLEoY3qj6t+5aAQmaj6xSsq6JfcV3IYYDu+SWxqvDhyqCP6AFuA==
-X-Received: by 2002:a1c:2dc7:: with SMTP id
- t190mr10020652wmt.137.1583415872163; 
- Thu, 05 Mar 2020 05:44:32 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=tkkdkuj2nMIqRYSUpJgIISztIjHhGG24T2FE65a4WvI=;
+ b=b2NHYxgi9As5NBH2OHL0b8qHPdchJC/aaqBnIBseoSzpxLs4Wf3r2x3KIkh1LCNfWb
+ ss2cn/1TjXZL8rN6ucdpB/XG0w+fcxscdoBpT/Dxvb2H3EjhyUNTDlk3TgBDCWGkQ+qe
+ LNCCCChPk6L9f2uZ76yz2e7CalW5PiNXdI+iWfG24VGN0/qhnr5AnG8mWINR1uXxhba3
+ hxhDI54EQ9Pp3zdAf+kbkCRCgvtHcumvNaQBybsD5Bn8L6CeU6gvHSQ+Xs8o3PdYMEPm
+ Uuc3BedJHdRlUlkiqQi6JJTe/WrThM/mrsBv3PcURSY702OEoNPAIkhNmUOLZToW6sRH
+ Ch/g==
+X-Gm-Message-State: ANhLgQ1OYVWMDLx+gPdK5qrA8UQo7oT4VsrjHMOJNvRcTjCM6UW6vdnh
+ L5BLVwjEQIJv3eILYtJG3TPmgA==
+X-Google-Smtp-Source: ADFU+vuvKskKTBdQ1yL8h+kiMzqWUIvCVnh5PzwGM2oCe76SKtCt9bddLJp0G6cNPoSSziSJqKbsgQ==
+X-Received: by 2002:adf:e803:: with SMTP id o3mr9965035wrm.110.1583415873508; 
+ Thu, 05 Mar 2020 05:44:33 -0800 (PST)
 Received: from srini-hackbox.lan
  (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
- by smtp.gmail.com with ESMTPSA id o9sm46425385wrw.20.2020.03.05.05.44.31
+ by smtp.gmail.com with ESMTPSA id o9sm46425385wrw.20.2020.03.05.05.44.32
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 05 Mar 2020 05:44:31 -0800 (PST)
+ Thu, 05 Mar 2020 05:44:32 -0800 (PST)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: perex@perex.cz
-Subject: [PATCH 0/4] ucm2: Add support to SDM845 based platforms
-Date: Thu,  5 Mar 2020 13:44:00 +0000
-Message-Id: <20200305134404.7690-1-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 1/4] ucm2: codecs: wcd934x: Add Codec sequences.
+Date: Thu,  5 Mar 2020 13:44:01 +0000
+Message-Id: <20200305134404.7690-2-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20200305134404.7690-1-srinivas.kandagatla@linaro.org>
+References: <20200305134404.7690-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: alsa-devel@alsa-project.org,
@@ -108,44 +110,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patchset adds UCM support for WSA881x, WCD934x codec and two platforms,
-DB845c DragonBoard and Lenovo YOGA C360 Laptop that use these codecs.
+Add WCD934x codec sequences to be used by other platforms like DB845c
+and Lenovo YOGA C630
 
-Tested on Ubuntu 20.04 with pulseaudio 13 along with
-with this fix
- https://github.com/pulseaudio/pulseaudio/commit/cabd387e26b5fe03661f4b894826c7c6b58d7efa
-
-Thanks,
-srini
-
-Srinivas Kandagatla (4):
-  ucm2: codecs: wcd934x: Add Codec sequences.
-  ucm2: codecs: wsa881x: add codec sequences
-  ucm2: DB845c: Add ucm for DB845c board
-  ucm2: Add ucm for Lenovo-YOGA-C630-13Q50 laptop
-
- ucm2/DB845c/DB845c.conf                       | 11 +++
- ucm2/DB845c/HDMI.conf                         | 33 +++++++
- ucm2/DB845c/HiFi.conf                         | 46 +++++++++
- ucm2/Lenovo-YOGA-C630-13Q50/HiFi.conf         | 98 +++++++++++++++++++
- .../Lenovo-YOGA-C630-13Q50.conf               |  6 ++
- ucm2/codecs/wcd934x/DefaultDisableSeq.conf    |  5 +
- ucm2/codecs/wcd934x/DefaultEnableSeq.conf     | 14 +++
- ucm2/codecs/wcd934x/HeadphoneDisableSeq.conf  |  6 ++
- ucm2/codecs/wcd934x/HeadphoneEnableSeq.conf   |  6 ++
- .../wcd934x/HeadphoneMicDisableSeq.conf       |  2 +
- .../codecs/wcd934x/HeadphoneMicEnableSeq.conf |  3 +
- ucm2/codecs/wcd934x/SpeakerDisableSeq.conf    |  4 +
- ucm2/codecs/wcd934x/SpeakerEnableSeq.conf     |  4 +
- ucm2/codecs/wsa881x/DefaultEnableSeq.conf     |  8 ++
- ucm2/codecs/wsa881x/SpeakerDisableSeq.conf    |  8 ++
- ucm2/codecs/wsa881x/SpeakerEnableSeq.conf     |  8 ++
- 16 files changed, 262 insertions(+)
- create mode 100644 ucm2/DB845c/DB845c.conf
- create mode 100644 ucm2/DB845c/HDMI.conf
- create mode 100644 ucm2/DB845c/HiFi.conf
- create mode 100644 ucm2/Lenovo-YOGA-C630-13Q50/HiFi.conf
- create mode 100644 ucm2/Lenovo-YOGA-C630-13Q50/Lenovo-YOGA-C630-13Q50.conf
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ ucm2/codecs/wcd934x/DefaultDisableSeq.conf      |  5 +++++
+ ucm2/codecs/wcd934x/DefaultEnableSeq.conf       | 14 ++++++++++++++
+ ucm2/codecs/wcd934x/HeadphoneDisableSeq.conf    |  6 ++++++
+ ucm2/codecs/wcd934x/HeadphoneEnableSeq.conf     |  6 ++++++
+ ucm2/codecs/wcd934x/HeadphoneMicDisableSeq.conf |  2 ++
+ ucm2/codecs/wcd934x/HeadphoneMicEnableSeq.conf  |  3 +++
+ ucm2/codecs/wcd934x/SpeakerDisableSeq.conf      |  4 ++++
+ ucm2/codecs/wcd934x/SpeakerEnableSeq.conf       |  4 ++++
+ 8 files changed, 44 insertions(+)
  create mode 100644 ucm2/codecs/wcd934x/DefaultDisableSeq.conf
  create mode 100644 ucm2/codecs/wcd934x/DefaultEnableSeq.conf
  create mode 100644 ucm2/codecs/wcd934x/HeadphoneDisableSeq.conf
@@ -154,10 +132,99 @@ Srinivas Kandagatla (4):
  create mode 100644 ucm2/codecs/wcd934x/HeadphoneMicEnableSeq.conf
  create mode 100644 ucm2/codecs/wcd934x/SpeakerDisableSeq.conf
  create mode 100644 ucm2/codecs/wcd934x/SpeakerEnableSeq.conf
- create mode 100644 ucm2/codecs/wsa881x/DefaultEnableSeq.conf
- create mode 100644 ucm2/codecs/wsa881x/SpeakerDisableSeq.conf
- create mode 100644 ucm2/codecs/wsa881x/SpeakerEnableSeq.conf
 
+diff --git a/ucm2/codecs/wcd934x/DefaultDisableSeq.conf b/ucm2/codecs/wcd934x/DefaultDisableSeq.conf
+new file mode 100644
+index 0000000..88d82a3
+--- /dev/null
++++ b/ucm2/codecs/wcd934x/DefaultDisableSeq.conf
+@@ -0,0 +1,5 @@
++cset "name='RX INT7_1 MIX1 INP0' ZERO"
++cset "name='RX INT8_1 MIX1 INP0' ZERO"
++cset "name='RX INT1_2 MUX' ZERO"
++cset "name='RX INT2_2 MUX' ZERO"
++cset "name='CDC_IF TX0 MUX' ZERO"
+diff --git a/ucm2/codecs/wcd934x/DefaultEnableSeq.conf b/ucm2/codecs/wcd934x/DefaultEnableSeq.conf
+new file mode 100644
+index 0000000..e5bdbbd
+--- /dev/null
++++ b/ucm2/codecs/wcd934x/DefaultEnableSeq.conf
+@@ -0,0 +1,14 @@
++cset "name='SLIM RX1 MUX' AIF1_PB"
++cset "name='SLIM RX2 MUX' AIF1_PB"
++cset "name='SLIM RX6 MUX' ZERO"
++cset "name='SLIM RX7 MUX' ZERO"
++cset "name='SLIM RX3 MUX' ZERO"
++cset "name='SLIM RX4 MUX' ZERO"
++cset "name='SLIM RX5 MUX' ZERO"
++cset "name='AIF1_CAP Mixer SLIM TX0' 1"
++
++cset "name='RX INT7_1 MIX1 INP0' RX1"
++cset "name='RX INT8_1 MIX1 INP0' RX2"
++cset "name='RX INT1_2 MUX' RX1"
++cset "name='RX INT2_2 MUX' RX2"
++cset "name='CDC_IF TX0 MUX' DEC0"
+diff --git a/ucm2/codecs/wcd934x/HeadphoneDisableSeq.conf b/ucm2/codecs/wcd934x/HeadphoneDisableSeq.conf
+new file mode 100644
+index 0000000..0206e87
+--- /dev/null
++++ b/ucm2/codecs/wcd934x/HeadphoneDisableSeq.conf
+@@ -0,0 +1,6 @@
++cset "name='COMP1 Switch' 0"
++cset "name='COMP2 Switch' 0"
++cset "name='RX1 Digital Volume' 0"
++cset "name='RX2 Digital Volume' 0"
++cset "name='RX INT1 DEM MUX' ZERO"
++cset "name='RX INT2 DEM MUX' ZERO"
+diff --git a/ucm2/codecs/wcd934x/HeadphoneEnableSeq.conf b/ucm2/codecs/wcd934x/HeadphoneEnableSeq.conf
+new file mode 100644
+index 0000000..5ce7950
+--- /dev/null
++++ b/ucm2/codecs/wcd934x/HeadphoneEnableSeq.conf
+@@ -0,0 +1,6 @@
++cset "name='COMP1 Switch' 1"
++cset "name='COMP2 Switch' 1"
++cset "name='RX INT1 DEM MUX' CLSH_DSM_OUT"
++cset "name='RX INT2 DEM MUX' CLSH_DSM_OUT"
++cset "name='RX1 Digital Volume' 68"
++cset "name='RX2 Digital Volume' 68"
+diff --git a/ucm2/codecs/wcd934x/HeadphoneMicDisableSeq.conf b/ucm2/codecs/wcd934x/HeadphoneMicDisableSeq.conf
+new file mode 100644
+index 0000000..5558446
+--- /dev/null
++++ b/ucm2/codecs/wcd934x/HeadphoneMicDisableSeq.conf
+@@ -0,0 +1,2 @@
++cset "name='AMIC MUX0' ZERO"
++cset "name='ADC2 Volume' 0"
+diff --git a/ucm2/codecs/wcd934x/HeadphoneMicEnableSeq.conf b/ucm2/codecs/wcd934x/HeadphoneMicEnableSeq.conf
+new file mode 100644
+index 0000000..ad43830
+--- /dev/null
++++ b/ucm2/codecs/wcd934x/HeadphoneMicEnableSeq.conf
+@@ -0,0 +1,3 @@
++cset "name='AMIC MUX0' ADC2"
++cset "name='ADC2 Volume' 12"
++cset "name='ADC MUX0' AMIC"
+diff --git a/ucm2/codecs/wcd934x/SpeakerDisableSeq.conf b/ucm2/codecs/wcd934x/SpeakerDisableSeq.conf
+new file mode 100644
+index 0000000..3c977c8
+--- /dev/null
++++ b/ucm2/codecs/wcd934x/SpeakerDisableSeq.conf
+@@ -0,0 +1,4 @@
++cset "name='RX7 Digital Volume' 0"
++cset "name='RX8 Digital Volume' 0"
++cset "name='COMP7 Switch' 0"
++cset "name='COMP8 Switch' 0"
+diff --git a/ucm2/codecs/wcd934x/SpeakerEnableSeq.conf b/ucm2/codecs/wcd934x/SpeakerEnableSeq.conf
+new file mode 100644
+index 0000000..2d9a3d8
+--- /dev/null
++++ b/ucm2/codecs/wcd934x/SpeakerEnableSeq.conf
+@@ -0,0 +1,4 @@
++cset "name='COMP7 Switch' 1"
++cset "name='COMP8 Switch' 1"
++cset "name='RX7 Digital Volume' 80"
++cset "name='RX8 Digital Volume' 80"
 -- 
 2.21.0
 
