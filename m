@@ -2,68 +2,65 @@ Return-Path: <SRS0=q21C=4W=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F206C3F2CD
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 14:53:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 145B1C3F2CD
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 14:54:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 832AB20732
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 14:53:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 82B4D20732
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 14:54:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="N50y23J/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 832AB20732
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Rt40e6ZP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 82B4D20732
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D746E1666;
-	Thu,  5 Mar 2020 15:52:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D746E1666
+	by alsa0.perex.cz (Postfix) with ESMTPS id D33001614;
+	Thu,  5 Mar 2020 15:53:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D33001614
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583419997;
-	bh=EImDRg1qvz/f/qgd+6QUFxQ82rGXLHDRllxrH0gNaIc=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=N50y23J/FEHTWGTRNTYHdbMX+wzPtERETte8GcKRHVOtn2F+2JkmZB8u5f6QJOAHr
-	 vztmcUZtcCgCKtwFbBgad/zRcoUNPT6GsYNE3tk8GDxQgct2hT2+X7x5YOlvPEPe/S
-	 2BYyCVxRMyQiDbPDyUALZlplESXozVPU92PzQQ9Q=
+	s=default; t=1583420076;
+	bh=apv6s+xcFTVlIy2nUsgDrAqwkxF0dAk3CHX5A0Yf9Nw=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Rt40e6ZPmcHL+KrzewuWsQltz+TU5FjCngKq4Dmdn4VU+N4AYuMkF/sgh29I9Kmxn
+	 uuVuRQGn4Nw785zX9ImJndoN17wtHPLyucJj/DX4HIpQ0cn8YvIjx3clnQRRoENOSh
+	 Ta7HGfA7yD88kJXa8L4zpVHT5kRcPT9Oq9agGNPM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 68722F80266;
-	Thu,  5 Mar 2020 15:52:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6BBFEF8027B;
+	Thu,  5 Mar 2020 15:53:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8068DF8026A; Thu,  5 Mar 2020 15:52:24 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 157F9F8027B; Thu,  5 Mar 2020 15:53:45 +0100 (CET)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 14056F80245
- for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2020 15:52:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14056F80245
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 39B34B2C1;
- Thu,  5 Mar 2020 14:52:21 +0000 (UTC)
-Date: Thu, 05 Mar 2020 15:52:21 +0100
-Message-ID: <s5h7dzyg8gq.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Christian Lachner <gladiac@gmail.com>
-Subject: Re: [PATCH v2 1/1] ALSA: hda/realtek - Fix silent output on Gigabyte
- X570 Aorus Master
-In-Reply-To: <20200303153619.24720-2-gladiac@gmail.com>
-References: <20200303153619.24720-1-gladiac@gmail.com>
- <20200303153619.24720-2-gladiac@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- kailang@realtek.com, tiwai@suse.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id D02C0F800D8
+ for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2020 15:53:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D02C0F800D8
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 05 Mar 2020 06:53:37 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,518,1574150400"; d="scan'208";a="352372579"
+Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
+ by fmsmga001.fm.intel.com with ESMTP; 05 Mar 2020 06:53:35 -0800
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 0/7] ASoC: Intel: Skylake: Fix HDaudio and Dmic
+Date: Thu,  5 Mar 2020 15:53:07 +0100
+Message-Id: <20200305145314.32579-1-cezary.rojewski@intel.com>
+X-Mailer: git-send-email 2.17.1
+Cc: pierre-louis.bossart@linux.intel.com,
+ Cezary Rojewski <cezary.rojewski@intel.com>, lgirdwood@gmail.com,
+ tiwai@suse.com, vkoul@kernel.org, broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,40 +76,90 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 03 Mar 2020 16:36:19 +0100,
-Christian Lachner wrote:
-> 
-> The Gigabyte X570 Aorus Master motherboard with ALC1220 codec
-> requires a similar workaround for Clevo laptops to enforce the
-> DAC/mixer connection path. Set up a quirk entry for that.
-> 
-> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=205275
-> Signed-off-by: Christian Lachner <gladiac@gmail.com>
-
-What's the difference from v1?  I already applied v1.
+Following is the list of fixes and updates targeting HDaudio +/- Dmic
+configuration on Intel DSP platforms.
 
 
-thanks,
+- ASoC: Intel: Skylake: Remove superfluous chip initialization
+  ASoC: Intel: Skylake: Select hda configuration permissively
 
-Takashi
+First patch addresses race condition issue between i915 and hda
+controller. This is done by yielding priority to i915 so iDisp codec can
+enumerate properly: same codec_mask is now observed regardless of driver
+chosen (snd_hda_intel vs snd_soc_skl).
+
+Second patch is a consequence of the first, to prevent driver from
+incorrectly aborting probe - rather than reorganizing Skylake's boot
+flow, small changed has been proposed.
 
 
-> ---
->  sound/pci/hda/patch_realtek.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> index 477589e7ec1d..8722616c6cc6 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -2447,6 +2447,7 @@ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
->  	SND_PCI_QUIRK(0x1071, 0x8258, "Evesham Voyaeger", ALC882_FIXUP_EAPD),
->  	SND_PCI_QUIRK(0x1458, 0xa002, "Gigabyte EP45-DS3/Z87X-UD3H", ALC889_FIXUP_FRONT_HP_NO_PRESENCE),
->  	SND_PCI_QUIRK(0x1458, 0xa0b8, "Gigabyte AZ370-Gaming", ALC1220_FIXUP_GB_DUAL_CODECS),
-> +	SND_PCI_QUIRK(0x1458, 0xa0cd, "Gigabyte X570 Aorus Master", ALC1220_FIXUP_CLEVO_P950),
->  	SND_PCI_QUIRK(0x1462, 0x1228, "MSI-GP63", ALC1220_FIXUP_CLEVO_P950),
->  	SND_PCI_QUIRK(0x1462, 0x1276, "MSI-GL73", ALC1220_FIXUP_CLEVO_P950),
->  	SND_PCI_QUIRK(0x1462, 0x1293, "MSI-GP65", ALC1220_FIXUP_CLEVO_P950),
-> -- 
-> 2.25.1
-> 
+- ASoC: Intel: Skylake: Shield against no-NHLT configurations
+
+Some hardware has no NHLT exposed by BIOS (or an equivalent). Changes
+have been made to ensure driver is shielded against null-dereferences and
+such which occur when said table is absent.
+
+
+- ASoC: Intel: skl_hda_dsp: Enable Dmic configuration
+
+While DMIC is available on some production stuff, Intel platforms with
+Skylake driver do not treat it as a valid option if no additional I2S
+codec in present onboard. Update skl_hda_dsp board to expose Dmic
+connections too.
+
+
+- ASoC: Intel: Allow for ROM init retry on CNL platforms
+  ASoC: Intel: Skylake: Await purge request ack on CNL
+
+Both address rom init timeouts during CNL/ CFL/ CML/ WHL boot up
+sequences. These provide retry mechanism and ensure purge request is
+acked before proceding with FW load. bxt-sst.c has had these fixes
+appended long ago - somehow someone forgotten about CNL family.
+
+*****
+
+Note: topology update is also needed to enable HDA +/- Dmic
+configuration as existing ones do not contain any routes or widgets
+required to enable it - these care about I2S only. We have prepared
+corresponding UCM files too. Will be sharing them shortly.
+
+This patchset has been prepared internally for topmost linux-stable 5.5
+and 4.20 (no 4.19 as skl_hda_dsp did not exist there yet).
+
+Apart from our RVPs, we have run tests also on:
+- KBL Lenovo Carbon X1
+- SKL Dell XPS 9350
+- WHL Acer Swift 5
+
+Honestly, I'd see HDaudio related patches being backport as low as 4.20
+(although some changes had to be adjusted due to base differences
+between 4.20 and 5.5, can share these too). One could argue HDA + Dmic
+configuration should be available on 4.19 too - it's an LTS after all.
+However, that time, some changes could be counted as "feature" rather
+than fixes. Awaiting your replies and thoughts on that.
+
+In consequence, I've appended "Fixes" only for last two patches for now
+- once decisions are made, can append adequate tags wherever necessary.
+
+Cezary Rojewski (6):
+  ASoC: Intel: Skylake: Remove superfluous chip initialization
+  ASoC: Intel: Skylake: Select hda configuration permissively
+  ASoC: Intel: Skylake: Enable codec wakeup during chip init
+  ASoC: Intel: Skylake: Shield against no-NHLT configurations
+  ASoC: Intel: Allow for ROM init retry on CNL platforms
+  ASoC: Intel: Skylake: Await purge request ack on CNL
+
+Mateusz Gorski (1):
+  ASoC: Intel: skl_hda_dsp: Enable Dmic configuration
+
+ sound/soc/intel/boards/skl_hda_dsp_generic.c |  3 ++
+ sound/soc/intel/skylake/bxt-sst.c            |  3 --
+ sound/soc/intel/skylake/cnl-sst.c            | 35 ++++++++++++++++----
+ sound/soc/intel/skylake/skl-nhlt.c           |  3 +-
+ sound/soc/intel/skylake/skl-sst-dsp.h        |  2 ++
+ sound/soc/intel/skylake/skl.c                | 29 ++++++++--------
+ 6 files changed, 48 insertions(+), 27 deletions(-)
+
+-- 
+2.17.1
+
