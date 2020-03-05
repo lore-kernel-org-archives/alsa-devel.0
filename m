@@ -7,59 +7,60 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 300CBC3F2D1
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 13:08:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F14EAC3F2CD
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 13:09:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AA4A92073B
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 13:08:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7A81E2072A
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Mar 2020 13:09:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fp0J0m49"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AA4A92073B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kvmBLJg3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A81E2072A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1FB021607;
-	Thu,  5 Mar 2020 14:07:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1FB021607
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5476E1673;
+	Thu,  5 Mar 2020 14:08:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5476E1673
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583413706;
-	bh=QtadTGNeD3JYpv4iBdDHvMrBhrRjKlUcRH+KvkHxONw=;
+	s=default; t=1583413750;
+	bh=EXP3qrBOexTl3d84/+S81bqjNxMxrENUAuqK4KQrPpU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fp0J0m49Rc2n6uopHVUdSDXoasptJsgsNXzYrlx7gn0gOBkS5ltjo+C8Oeelu76DC
-	 eIJ5X3LR6n9aXBCGcFjo/EWFKhuH96GCa32S+Mx47Gw5++4mMIMW1HOX91ysDRqGAZ
-	 njpMkyrxj5F7f6lwaE2STAzOqiJRtYMy6Ya8JYjg=
+	b=kvmBLJg3OtxISdiMnOHha1VFBFzeeYeXpmMJw1hVoTTjOP+X1OKISqd8krt3HKAHv
+	 MjbE9of48b6RUm5u0jVvsZ56ok/ITEOGRDzJgBH65/rXLO3Ip9vhOjb8ssQefB9fvY
+	 C9mOob/LJZeCeLz5xk7ixM5iq3UBfyZU9aYTEF4Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D89CDF80266;
-	Thu,  5 Mar 2020 14:06:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 97084F8027B;
+	Thu,  5 Mar 2020 14:06:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 32C1CF80245; Thu,  5 Mar 2020 14:06:36 +0100 (CET)
+ id C84BAF80271; Thu,  5 Mar 2020 14:06:38 +0100 (CET)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BBC82F80245
- for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2020 14:06:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BBC82F80245
+ by alsa1.perex.cz (Postfix) with ESMTPS id CE2B6F80271
+ for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2020 14:06:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE2B6F80271
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 05 Mar 2020 05:06:28 -0800
+ 05 Mar 2020 05:06:29 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,518,1574150400"; d="scan'208";a="287659380"
+X-IronPort-AV: E=Sophos;i="5.70,518,1574150400"; d="scan'208";a="287659384"
 Received: from virbhadx-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.254.184.168])
- by FMSMGA003.fm.intel.com with ESMTP; 05 Mar 2020 05:06:27 -0800
+ by FMSMGA003.fm.intel.com with ESMTP; 05 Mar 2020 05:06:28 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [RFC PATCH 1/3] ASoC: soc-core: introduce exit() callback for dailinks
-Date: Thu,  5 Mar 2020 07:06:14 -0600
-Message-Id: <20200305130616.28658-2-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH 3/3] ASoC: Intel: kbl-rt5660: use .exit() dailink callback
+ to release gpiod
+Date: Thu,  5 Mar 2020 07:06:16 -0600
+Message-Id: <20200305130616.28658-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200305130616.28658-1-pierre-louis.bossart@linux.intel.com>
 References: <20200305130616.28658-1-pierre-louis.bossart@linux.intel.com>
@@ -84,73 +85,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Some machine drivers allocate or request resources during the init()
-phase, which need to be released at some point, e.g. when rebooting or
-unloading modules.
+The gpiod handling is inspired from the bdw-rt5677 code. Apply same
+fix to avoid reference count issue while removing modules for
+consistency.
 
-In an initial pass, we added a .remove() callback for the platform
-driver, but that's not symmetrical at all and would be difficult to
-handle if there are more than one dailink implementing an .init().
-
-We looked also into using .remove_dai_link() callback, but that would
-also be imlanced.
-
-The suggested solution is to use a dual exit() phase for dailinks to
-release all resources.
-
-The exit() is invoked in soc_free_pcm_runtime(), which is not
-completely symmetric with the init() invoked in soc_init_pcm_runtime()
-- not soc_add_pcm_runtime(), but that's the best solution so far.
+The SOF driver does not yet support this machine driver, and module
+load/unload with the SKL driver isn't well supported, so this was not
+tested on a device.
 
 Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- include/sound/soc.h  | 3 +++
- sound/soc/soc-core.c | 8 +++++++-
- 2 files changed, 10 insertions(+), 1 deletion(-)
+ sound/soc/intel/boards/kbl_rt5660.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 81e5d17be935..2beebe89ebbc 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -794,6 +794,9 @@ struct snd_soc_dai_link {
- 	/* codec/machine specific init - e.g. add machine controls */
- 	int (*init)(struct snd_soc_pcm_runtime *rtd);
+diff --git a/sound/soc/intel/boards/kbl_rt5660.c b/sound/soc/intel/boards/kbl_rt5660.c
+index e23dea9ab79a..3ff3afd36536 100644
+--- a/sound/soc/intel/boards/kbl_rt5660.c
++++ b/sound/soc/intel/boards/kbl_rt5660.c
+@@ -165,8 +165,8 @@ static int kabylake_rt5660_codec_init(struct snd_soc_pcm_runtime *rtd)
+ 		dev_warn(component->dev, "Failed to add driver gpios\n");
  
-+	/* codec/machine specific exit - dual of init() */
-+	void (*exit)(struct snd_soc_pcm_runtime *rtd);
+ 	/* Request rt5660 GPIO for lineout mute control, return if fails */
+-	ctx->gpio_lo_mute = devm_gpiod_get(component->dev, "lineout-mute",
+-					   GPIOD_OUT_HIGH);
++	ctx->gpio_lo_mute = gpiod_get(component->dev, "lineout-mute",
++				      GPIOD_OUT_HIGH);
+ 	if (IS_ERR(ctx->gpio_lo_mute)) {
+ 		dev_err(component->dev, "Can't find GPIO_MUTE# gpio\n");
+ 		return PTR_ERR(ctx->gpio_lo_mute);
+@@ -207,6 +207,14 @@ static int kabylake_rt5660_codec_init(struct snd_soc_pcm_runtime *rtd)
+ 	return 0;
+ }
+ 
++static void kabylake_rt5660_codec_exit(struct snd_soc_pcm_runtime *rtd)
++{
++	struct kbl_codec_private *ctx = snd_soc_card_get_drvdata(rtd->card);
 +
- 	/* optional hw_params re-writing for BE and FE sync */
- 	int (*be_hw_params_fixup)(struct snd_soc_pcm_runtime *rtd,
- 			struct snd_pcm_hw_params *params);
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index f2cfbf182f49..09a0976d6a62 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -937,8 +937,14 @@ static int soc_dai_link_sanity_check(struct snd_soc_card *card,
- void snd_soc_remove_pcm_runtime(struct snd_soc_card *card,
- 				struct snd_soc_pcm_runtime *rtd)
++	if (!IS_ERR(ctx->gpio_lo_mute))
++		gpiod_put(ctx->gpio_lo_mute));
++}
++
+ static int kabylake_hdmi_init(struct snd_soc_pcm_runtime *rtd, int device)
  {
-+	struct snd_soc_dai_link *dai_link = rtd->dai_link;
-+
- 	lockdep_assert_held(&client_mutex);
- 
-+	/* release machine specific resources */
-+	if (dai_link->exit)
-+		dai_link->exit(rtd);
-+
- 	/*
- 	 * Notify the machine driver for extra destruction
- 	 */
-@@ -1069,7 +1075,7 @@ static int soc_init_pcm_runtime(struct snd_soc_card *card,
- 	/* set default power off timeout */
- 	rtd->pmdown_time = pmdown_time;
- 
--	/* do machine specific initialization */
-+	/* do machine specific allocations and initialization */
- 	if (dai_link->init) {
- 		ret = dai_link->init(rtd);
- 		if (ret < 0) {
+ 	struct kbl_codec_private *ctx = snd_soc_card_get_drvdata(rtd->card);
+@@ -421,6 +429,7 @@ static struct snd_soc_dai_link kabylake_rt5660_dais[] = {
+ 		.id = 0,
+ 		.no_pcm = 1,
+ 		.init = kabylake_rt5660_codec_init,
++		.exit = kabylake_rt5660_codec_exit,
+ 		.dai_fmt = SND_SOC_DAIFMT_I2S |
+ 		SND_SOC_DAIFMT_NB_NF |
+ 		SND_SOC_DAIFMT_CBS_CFS,
 -- 
 2.20.1
 
