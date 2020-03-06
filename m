@@ -6,51 +6,52 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 023A0C10DCE
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 15:08:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CBAC6C10DCE
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 15:09:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 82D6320409
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 15:08:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 596042073D
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 15:09:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XTdDe0Yf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 82D6320409
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZtI4yA9Z"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 596042073D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D5C07847;
-	Fri,  6 Mar 2020 16:07:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D5C07847
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9054D1671;
+	Fri,  6 Mar 2020 16:08:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9054D1671
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583507286;
-	bh=7X2Yzo2I+SuK4/fJV9bvjLEGD2vAtuuDGv0b1QheDMo=;
+	s=default; t=1583507352;
+	bh=ieXPLfTZ7OQWhIj0ednsZMlHpGSE1FvRtKcDq6szjsE=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=XTdDe0Yf/YJqLVhFiBnopOdFuKG/AaoUP6ZMtVlAHrstPjv6bYXuDxPO9kZSIXrm3
-	 ajOVv5V3eUzKTUUgJsARJv4oqhv4/1tNYxP5CLYapwqqxDlL1fO4k7KEdVSYgTrss/
-	 wCnHa4l8RUPvf/h4yH/sPUTO3wUhM7WgD2zcRUiw=
+	b=ZtI4yA9ZevLOcr1VwDPCQWhoQ/xbM9TxRRSOxBOtPTWyy00Ix5QUT23USQdCy4lu5
+	 5PgTbwzIPkg00/HLg980y6OewgvcyVnLxQCERRkpFpKdAQJEOTku7U51Y9+Ns8jlHo
+	 KjMtzJn7SDoOyZnTZeQt/R6AY5Hfkljz99d4J7O4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 145D9F802A8;
-	Fri,  6 Mar 2020 16:03:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A13A8F802E0;
+	Fri,  6 Mar 2020 16:03:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DEDB2F802C4; Fri,  6 Mar 2020 16:03:34 +0100 (CET)
+ id C32BAF802EB; Fri,  6 Mar 2020 16:03:43 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 0C88CF802A8
- for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2020 16:03:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C88CF802A8
+ by alsa1.perex.cz (Postfix) with ESMTP id 9777EF802E0
+ for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2020 16:03:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9777EF802E0
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 459C531B;
- Fri,  6 Mar 2020 07:03:31 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 684D44B2;
+ Fri,  6 Mar 2020 07:03:39 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BD2C63F237;
- Fri,  6 Mar 2020 07:03:30 -0800 (PST)
-Date: Fri, 06 Mar 2020 15:03:29 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DE7EB3F237;
+ Fri,  6 Mar 2020 07:03:38 -0800 (PST)
+Date: Fri, 06 Mar 2020 15:03:37 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Applied "ASoC: soc-pcm: move dpcm_fe_dai_close()" to the asoc tree
+To: Samuel Holland <samuel@sholland.org>
+Subject: Applied "ASoC: pcm: Export parameter intersection logic" to the asoc
+ tree
 In-Reply-To: 
 Message-Id: 
 X-Patchwork-Hint: ignore
@@ -69,11 +70,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20200306150329.6k5XCqjAu-oSsVeu2hGR43gUHbWcKh9L4wx8s4sP45A@z>
+Message-ID: <20200306150337.sEh3EwEx8OIsz-uMv9AG-xukqYoJqdU_6Ry3FLYqyxM@z>
 
 The patch
 
-   ASoC: soc-pcm: move dpcm_fe_dai_close()
+   ASoC: pcm: Export parameter intersection logic
 
 has been applied to the asoc tree at
 
@@ -98,81 +99,148 @@ to this mail.
 Thanks,
 Mark
 
-From 30fca26f8e2277ccd14fe3277a330b4f21cadca7 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 6 Mar 2020 10:09:44 +0900
-Subject: [PATCH] ASoC: soc-pcm: move dpcm_fe_dai_close()
+From 5854a46486ad5b8d73766735fb0d77f05956b22c Mon Sep 17 00:00:00 2001
+From: Samuel Holland <samuel@sholland.org>
+Date: Wed, 4 Mar 2020 23:11:42 -0600
+Subject: [PATCH] ASoC: pcm: Export parameter intersection logic
 
-move dpcm_fe_dai_close() next to dpcm_fe_dai_open().
-This is prepare for dpcm_fe_dai_open() cleanup
+The logic to calculate the subset of stream parameters supported by all
+DAIs associated with a PCM stream is nontrivial. Export a helper
+function so it can be used to set up simple codec2codec DAI links.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Link: https://lore.kernel.org/r/87pndqp9uv.wl-kuninori.morimoto.gx@renesas.com
+Signed-off-by: Samuel Holland <samuel@sholland.org>
+Link: https://lore.kernel.org/r/20200305051143.60691-3-samuel@sholland.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-pcm.c | 40 ++++++++++++++++++++--------------------
- 1 file changed, 20 insertions(+), 20 deletions(-)
+ include/sound/soc.h |  3 +++
+ sound/soc/soc-pcm.c | 56 ++++++++++++++++++++++++++++++---------------
+ 2 files changed, 41 insertions(+), 18 deletions(-)
 
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 81e5d17be935..9543d9246ca4 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -471,6 +471,9 @@ bool snd_soc_runtime_ignore_pmdown_time(struct snd_soc_pcm_runtime *rtd);
+ void snd_soc_runtime_activate(struct snd_soc_pcm_runtime *rtd, int stream);
+ void snd_soc_runtime_deactivate(struct snd_soc_pcm_runtime *rtd, int stream);
+ 
++int snd_soc_runtime_calc_hw(struct snd_soc_pcm_runtime *rtd,
++			    struct snd_pcm_hardware *hw, int stream);
++
+ int snd_soc_runtime_set_dai_fmt(struct snd_soc_pcm_runtime *rtd,
+ 	unsigned int dai_fmt);
+ 
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index e3a2c4f7757b..3686dda097e2 100644
+index e3a2c4f7757b..de4226357e2b 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -2978,6 +2978,26 @@ int soc_dpcm_runtime_update(struct snd_soc_card *card)
- 	return ret;
+@@ -587,11 +587,18 @@ static void soc_pcm_apply_msb(struct snd_pcm_substream *substream)
+ 	soc_pcm_set_msb(substream, cpu_bits);
  }
  
-+static int dpcm_fe_dai_close(struct snd_pcm_substream *fe_substream)
-+{
-+	struct snd_soc_pcm_runtime *fe = fe_substream->private_data;
-+	struct snd_soc_dpcm *dpcm;
-+	int stream = fe_substream->stream, ret;
+-static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
++/**
++ * snd_soc_runtime_calc_hw() - Calculate hw limits for a PCM stream
++ * @rtd: ASoC PCM runtime
++ * @hw: PCM hardware parameters (output)
++ * @stream: Direction of the PCM stream
++ *
++ * Calculates the subset of stream parameters supported by all DAIs
++ * associated with the PCM stream.
++ */
++int snd_soc_runtime_calc_hw(struct snd_soc_pcm_runtime *rtd,
++			    struct snd_pcm_hardware *hw, int stream)
+ {
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct snd_pcm_hardware *hw = &runtime->hw;
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_soc_dai *codec_dai;
+ 	struct snd_soc_dai *cpu_dai;
+ 	struct snd_soc_pcm_stream *codec_stream;
+@@ -602,7 +609,6 @@ static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
+ 	unsigned int cpu_rate_min = 0, cpu_rate_max = UINT_MAX;
+ 	unsigned int rates = UINT_MAX, cpu_rates = UINT_MAX;
+ 	u64 formats = ULLONG_MAX;
+-	int stream = substream->stream;
+ 	int i;
+ 
+ 	/* first calculate min/max only for CPUs in the DAI link */
+@@ -613,12 +619,8 @@ static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
+ 		 * Otherwise, since the rate, channel, and format values will
+ 		 * zero in that case, we would have no usable settings left,
+ 		 * causing the resulting setup to fail.
+-		 * At least one CPU should match, otherwise we should have
+-		 * bailed out on a higher level, since there would be no
+-		 * CPU to support the transfer direction in that case.
+ 		 */
+-		if (!snd_soc_dai_stream_valid(cpu_dai,
+-					      substream->stream))
++		if (!snd_soc_dai_stream_valid(cpu_dai, stream))
+ 			continue;
+ 
+ 		cpu_stream = snd_soc_dai_get_pcm_stream(cpu_dai, stream);
+@@ -640,9 +642,6 @@ static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
+ 		 * Otherwise, since the rate, channel, and format values will
+ 		 * zero in that case, we would have no usable settings left,
+ 		 * causing the resulting setup to fail.
+-		 * At least one CODEC should match, otherwise we should have
+-		 * bailed out on a higher level, since there would be no
+-		 * CODEC to support the transfer direction in that case.
+ 		 */
+ 		if (!snd_soc_dai_stream_valid(codec_dai, stream))
+ 			continue;
+@@ -657,6 +656,10 @@ static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
+ 		rates = snd_pcm_rate_mask_intersect(codec_stream->rates, rates);
+ 	}
+ 
++	/* Verify both a valid CPU DAI and a valid CODEC DAI were found */
++	if (!chan_min || !cpu_chan_min)
++		return -EINVAL;
 +
-+	mutex_lock_nested(&fe->card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
-+	ret = dpcm_fe_dai_shutdown(fe_substream);
+ 	/*
+ 	 * chan min/max cannot be enforced if there are multiple CODEC DAIs
+ 	 * connected to CPU DAI(s), use CPU DAI's directly and let
+@@ -670,18 +673,35 @@ static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
+ 	/* finally find a intersection between CODECs and CPUs */
+ 	hw->channels_min = max(chan_min, cpu_chan_min);
+ 	hw->channels_max = min(chan_max, cpu_chan_max);
+-	if (hw->formats)
+-		hw->formats &= formats;
+-	else
+-		hw->formats = formats;
++	hw->formats = formats;
+ 	hw->rates = snd_pcm_rate_mask_intersect(rates, cpu_rates);
+ 
+-	snd_pcm_limit_hw_rates(runtime);
++	snd_pcm_hw_limit_rates(hw);
+ 
+ 	hw->rate_min = max(hw->rate_min, cpu_rate_min);
+ 	hw->rate_min = max(hw->rate_min, rate_min);
+ 	hw->rate_max = min_not_zero(hw->rate_max, cpu_rate_max);
+ 	hw->rate_max = min_not_zero(hw->rate_max, rate_max);
 +
-+	/* mark FE's links ready to prune */
-+	for_each_dpcm_be(fe, stream, dpcm)
-+		dpcm->state = SND_SOC_DPCM_LINK_STATE_FREE;
-+
-+	dpcm_be_disconnect(fe, stream);
-+
-+	fe->dpcm[stream].runtime = NULL;
-+	mutex_unlock(&fe->card->mutex);
-+	return ret;
++	return 0;
 +}
++EXPORT_SYMBOL_GPL(snd_soc_runtime_calc_hw);
 +
- static int dpcm_fe_dai_open(struct snd_pcm_substream *fe_substream)
- {
- 	struct snd_soc_pcm_runtime *fe = fe_substream->private_data;
-@@ -3017,26 +3037,6 @@ static int dpcm_fe_dai_open(struct snd_pcm_substream *fe_substream)
- 	return ret;
++static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_hardware *hw = &substream->runtime->hw;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	u64 formats = hw->formats;
++
++	/*
++	 * At least one CPU and one CODEC should match. Otherwise, we should
++	 * have bailed out on a higher level, since there would be no CPU or
++	 * CODEC to support the transfer direction in that case.
++	 */
++	snd_soc_runtime_calc_hw(rtd, hw, substream->stream);
++
++	if (formats)
++		hw->formats &= formats;
  }
  
--static int dpcm_fe_dai_close(struct snd_pcm_substream *fe_substream)
--{
--	struct snd_soc_pcm_runtime *fe = fe_substream->private_data;
--	struct snd_soc_dpcm *dpcm;
--	int stream = fe_substream->stream, ret;
--
--	mutex_lock_nested(&fe->card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
--	ret = dpcm_fe_dai_shutdown(fe_substream);
--
--	/* mark FE's links ready to prune */
--	for_each_dpcm_be(fe, stream, dpcm)
--		dpcm->state = SND_SOC_DPCM_LINK_STATE_FREE;
--
--	dpcm_be_disconnect(fe, stream);
--
--	fe->dpcm[stream].runtime = NULL;
--	mutex_unlock(&fe->card->mutex);
--	return ret;
--}
--
- /* create a new pcm */
- int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
- {
+ static int soc_pcm_components_open(struct snd_pcm_substream *substream)
 -- 
 2.20.1
 
