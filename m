@@ -2,83 +2,97 @@ Return-Path: <SRS0=YoTX=4X=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93D4EC10DCE
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 12:19:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C8A9C10DCE
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 13:03:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1DCFF2072D
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 12:19:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D78E52084E
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 13:03:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UtRid5N3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1DCFF2072D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fd6M+NSk";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vHwDKD8W"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D78E52084E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7240082A;
-	Fri,  6 Mar 2020 13:18:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7240082A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3315F820;
+	Fri,  6 Mar 2020 14:02:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3315F820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583497148;
-	bh=Wbxl2lgYfuXExjQFrge1vKIv4WDmZ1/wpMX4ZgH57ZM=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=UtRid5N3o/CEvfv6qE1TbpDnZwfe4wzfojZsu7MSbVW/3br39PH1ITIqg7aylBjZ6
-	 kzsHJXTTlhtB/VlaCWYhLqYjsHnz1J+noJmLGw34w4dD9WfxmkWvMiz//0wBWpbbAl
-	 gffd65jrvxUUxKxEDQaOXE9S5PxopDLi7ZriwSv0=
+	s=default; t=1583499782;
+	bh=8K5ZcukzeZNwTnekrmDzD1sny+S7qGyqpQLkIgaDlVI=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=fd6M+NSkhe7n8bxC0fPfl016zgRPkBb8MsvvAZ7CSLxD2m8YQbKZV+NcKGgdMLCml
+	 F9CmokNG+sewW9UcrLZoCAIvFMECjVitiRqFHFH1iHPY49v74I4s9l2rMRQyDGRSW5
+	 f0+uo7hZj3QgM5zS1tNWk7uEWFnSR3v5nC+Zpp0I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E1BF7F801EC;
-	Fri,  6 Mar 2020 13:18:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9D4BEF801EC;
+	Fri,  6 Mar 2020 14:02:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 13A0BF801ED; Fri,  6 Mar 2020 13:18:11 +0100 (CET)
-Received: from mail-oi1-f193.google.com (mail-oi1-f193.google.com
- [209.85.167.193])
+ id 5C00AF801ED; Fri,  6 Mar 2020 14:02:09 +0100 (CET)
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com
+ [IPv6:2a00:1450:4864:20::342])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 14E8CF80126
- for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2020 13:18:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14E8CF80126
-Received: by mail-oi1-f193.google.com with SMTP id r16so2311091oie.6
- for <alsa-devel@alsa-project.org>; Fri, 06 Mar 2020 04:18:05 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D8FB0F8012D
+ for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2020 14:02:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8FB0F8012D
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="vHwDKD8W"
+Received: by mail-wm1-x342.google.com with SMTP id a132so2325403wme.1
+ for <alsa-devel@alsa-project.org>; Fri, 06 Mar 2020 05:02:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=pUTUKe1ETsrKt03/K8XFrOHiuViiNejQfkx377kvHWs=;
+ b=vHwDKD8WnVD4XGaGQWK1nRjEz3HT5MOG0IwqkPkUYSKJ3zNOik7vRThpI8QHYziLGM
+ Y+vvyU5kcAjcJa5kMOyPCOTyH0ILFVZNJrb1w7Gbm7Ezvj9C+8X3PW/9Pn9shjowUfBU
+ upHnpztrOipG2J3TgYnIfhi+9izI3Ss1XD+RskCSPuCIsLXV02X7ENKkmyJIBQfsj2MM
+ QIS8I2i1HteFYou44w6VUzs6Hv9VGFz0lwoFJJPx6uPSoSI8Hk5416hkSHhuAQ0pvTHo
+ ouAX++E6x74XgASA1tBqutLnxD9Tba3j2VDqQNF7sTtwePututbASVPiVkKzERIvU6L1
+ Qbqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=zCzopvBe5pClIDQDJUrJo6Mdp8tlxa91qM1CJIBUoZU=;
- b=EP8bpsU0acsxF1lx0meKIFCQcki9fZRJ+peE32BkdEwYy8bzTElHQnVq8dgvwDeC76
- d5Ee6qEUq+jSap0nOMaT25hYB60NMc5n6D6V4vF/BEUoYMfFrmzTNnXtuygyUST/yBGY
- 7VfdZCCtH6v82EwUnLr/sUQhQT2naqUPsI6QuPmMYU/2M+yLk146RmE0Ik8EyBNnnxES
- ZiDHjEgbn2paI9NqMjwLPkuvPKzFzg+sb7uP3SJtfUG8BobE1U71/2p4uhUp1nJRXJi2
- NYPaVbhbJ7/qkJIX3Sav+V/AbP01DPpe9uPxcFIdsTxTJ8wfVqrvkW5laSX58pKMdUwh
- Ikfw==
-X-Gm-Message-State: ANhLgQ21pfajwuKPkecTgsog4zkqcMcj1/d21uWFg5UHJ9pnY+VvQl9f
- Hqo/3MeGSJ+rbuGdC8QTpK/g7F6eJvAVeGR30Io=
-X-Google-Smtp-Source: ADFU+vv2jlvbLhAc6REVXuwMcnoIkqf+yF7o6TIX59QZjp7iyI4Ry7WdpVGYuGOEEDGnsDWTufmFHi8kMV3eEpcMQTg=
-X-Received: by 2002:aca:1a06:: with SMTP id a6mr2240414oia.148.1583497083839; 
- Fri, 06 Mar 2020 04:18:03 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=pUTUKe1ETsrKt03/K8XFrOHiuViiNejQfkx377kvHWs=;
+ b=Fjy8SikwIQXgvq71FOT/RwBUS8RmfIk0hgyLvtbgnqz8p+M147VDyuKC6nTOHDeu3j
+ qNjbW4OIYcrY7NxqAGRiZBk70Gj8fc08dEUKxImm040R/qvLE6q4lRMhW7/8/3syRgWF
+ 2PY4E/Ng1GSfgv9JxxI0voij0qTjU2PgaLEMwmEMTLzSOzg5T2M1lTls6ev4WZrW6qdE
+ kYbvW5xJCrC9Kpx93CGIAPWCZDFLrohOwhjhRlgUkSn59yXgEi+ru8gkMfe2NNzaLA7P
+ rZMx8K0ZBmANNfhufhkJ5+9HRezjkW9vGRKV902wjOOU4V3ccbnYSBkQo7cWNYcWjXs1
+ hvOg==
+X-Gm-Message-State: ANhLgQ3tjq+3vQWx0y6R9NpeTcSw9RR43Z9FKG60VdwsSKK412GkI0/X
+ 6m4031LteZK3UpHTP2OlW8/WSg==
+X-Google-Smtp-Source: ADFU+vuqmeh78SXaWsiXYy8hXlNrfLgWnmSHgXkI8A59hRejEmU+31cdoU6sL3oIm2qw7aI5XIZ2yA==
+X-Received: by 2002:a1c:41c3:: with SMTP id o186mr3876274wma.27.1583499721445; 
+ Fri, 06 Mar 2020 05:02:01 -0800 (PST)
+Received: from srini-hackbox.lan
+ (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
+ by smtp.gmail.com with ESMTPSA id b5sm3128324wrn.22.2020.03.06.05.01.59
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 06 Mar 2020 05:01:59 -0800 (PST)
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: broonie@kernel.org
+Subject: [PATCH] ASoC: qcom: lpass-cpu: support full duplex operation
+Date: Fri,  6 Mar 2020 13:01:47 +0000
+Message-Id: <20200306130147.27452-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-References: <20200305175528.5b3ccc09@canb.auug.org.au>
- <fabd49c7-d72e-a5a2-7f2c-47a8bd6c36a1@infradead.org>
-In-Reply-To: <fabd49c7-d72e-a5a2-7f2c-47a8bd6c36a1@infradead.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Fri, 6 Mar 2020 13:17:52 +0100
-Message-ID: <CAMuHMdUs00Qtm0CMBTougPyTZxS_cN+x8QWezs_OtPFWB0B2Pw@mail.gmail.com>
-Subject: Re: linux-next: Tree for Mar 5 (sound/soc/codecs/wcd934x.o)
-To: Randy Dunlap <rdunlap@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
- moderated for non-subscribers <alsa-devel@alsa-project.org>,
- Mark Brown <broonie@kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Transfer-Encoding: 8bit
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ alsa-devel@alsa-project.org, Takahide Higuchi <takahidehiguchi@gmail.com>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,40 +108,120 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Randy,
+From: Takahide Higuchi <takahidehiguchi@gmail.com>
 
-On Thu, Mar 5, 2020 at 5:49 PM Randy Dunlap <rdunlap@infradead.org> wrote:
-> On 3/4/20 10:55 PM, Stephen Rothwell wrote:
-> > Changes since 20200304:
-> >
->
-> on x86_64:
->
-> CONFIG_MFD_WCD934X=m
-> CONFIG_SND_SOC_WCD934X=y
->
-> ld: sound/soc/codecs/wcd934x.o: in function `wcd934x_trigger':
-> wcd934x.c:(.text+0x754): undefined reference to `slim_stream_prepare'
-> ld: wcd934x.c:(.text+0x768): undefined reference to `slim_stream_enable'
-> ld: wcd934x.c:(.text+0x797): undefined reference to `slim_stream_unprepare'
-> ld: wcd934x.c:(.text+0x7ab): undefined reference to `slim_stream_disable'
-> ld: sound/soc/codecs/wcd934x.o: in function `wcd934x_codec_probe':
-> wcd934x.c:(.text+0x4c6c): undefined reference to `of_slim_get_device'
-> ld: wcd934x.c:(.text+0x4cd4): undefined reference to `slim_get_logical_addr'
-> ld: wcd934x.c:(.text+0x4cfe): undefined reference to `__regmap_init_slimbus'
-> ld: sound/soc/codecs/wcd934x.o: in function `wcd934x_hw_params':
-> wcd934x.c:(.text+0x6027): undefined reference to `slim_stream_allocate'
+This patch fixes a bug where playback on bidirectional I2S interface stops
+when we start recording on the same interface.
 
-This is fixed by:
-https://lore.kernel.org/linux-doc/20200302062340.21453-1-masahiroy@kernel.org/
+We use regmap_update_bits instead of regmap_write so that we will not clear
+SPKEN and SPKMODE bits when we start/stop recording.
 
-Gr{oetje,eeting}s,
+Signed-off-by: Takahide Higuchi <takahidehiguchi@gmail.com>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ sound/soc/qcom/lpass-apq8016.c   |  2 ++
+ sound/soc/qcom/lpass-cpu.c       | 24 ++++++++++++++++++------
+ sound/soc/qcom/lpass-lpaif-reg.h |  2 +-
+ 3 files changed, 21 insertions(+), 7 deletions(-)
 
-                        Geert
-
+diff --git a/sound/soc/qcom/lpass-apq8016.c b/sound/soc/qcom/lpass-apq8016.c
+index 6575da549237..85079c697faa 100644
+--- a/sound/soc/qcom/lpass-apq8016.c
++++ b/sound/soc/qcom/lpass-apq8016.c
+@@ -121,6 +121,8 @@ static struct snd_soc_dai_driver apq8016_lpass_cpu_dai_driver[] = {
+ 		},
+ 		.probe	= &asoc_qcom_lpass_cpu_dai_probe,
+ 		.ops    = &asoc_qcom_lpass_cpu_dai_ops,
++		.symmetric_samplebits   = 1,
++		.symmetric_rates        = 1,
+ 	},
+ };
+ 
+diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+index dbce7e92baf3..dc8acb380b6f 100644
+--- a/sound/soc/qcom/lpass-cpu.c
++++ b/sound/soc/qcom/lpass-cpu.c
+@@ -72,6 +72,7 @@ static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
+ 	snd_pcm_format_t format = params_format(params);
+ 	unsigned int channels = params_channels(params);
+ 	unsigned int rate = params_rate(params);
++	unsigned int mask;
+ 	unsigned int regval;
+ 	int bitwidth, ret;
+ 
+@@ -81,6 +82,9 @@ static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
+ 		return bitwidth;
+ 	}
+ 
++	mask   = LPAIF_I2SCTL_LOOPBACK_MASK |
++			LPAIF_I2SCTL_WSSRC_MASK |
++			LPAIF_I2SCTL_BITWIDTH_MASK;
+ 	regval = LPAIF_I2SCTL_LOOPBACK_DISABLE |
+ 			LPAIF_I2SCTL_WSSRC_INTERNAL;
+ 
+@@ -100,6 +104,7 @@ static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		mask   |= LPAIF_I2SCTL_SPKMODE_MASK | LPAIF_I2SCTL_SPKMONO_MASK;
+ 		switch (channels) {
+ 		case 1:
+ 			regval |= LPAIF_I2SCTL_SPKMODE_SD0;
+@@ -127,6 +132,7 @@ static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
+ 			return -EINVAL;
+ 		}
+ 	} else {
++		mask   |= LPAIF_I2SCTL_MICMODE_MASK | LPAIF_I2SCTL_MICMONO_MASK;
+ 		switch (channels) {
+ 		case 1:
+ 			regval |= LPAIF_I2SCTL_MICMODE_SD0;
+@@ -155,9 +161,9 @@ static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
+ 		}
+ 	}
+ 
+-	ret = regmap_write(drvdata->lpaif_map,
+-			   LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id),
+-			   regval);
++	ret = regmap_update_bits(drvdata->lpaif_map,
++			 LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id),
++			 mask, regval);
+ 	if (ret) {
+ 		dev_err(dai->dev, "error writing to i2sctl reg: %d\n", ret);
+ 		return ret;
+@@ -178,11 +184,17 @@ static int lpass_cpu_daiops_hw_free(struct snd_pcm_substream *substream,
+ 		struct snd_soc_dai *dai)
+ {
+ 	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++	unsigned int mask;
+ 	int ret;
+ 
+-	ret = regmap_write(drvdata->lpaif_map,
+-			   LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id),
+-			   0);
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		mask   = LPAIF_I2SCTL_SPKMODE_MASK;
++	else
++		mask   = LPAIF_I2SCTL_MICMODE_MASK;
++
++	ret = regmap_update_bits(drvdata->lpaif_map,
++			 LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id),
++			 mask, 0);
+ 	if (ret)
+ 		dev_err(dai->dev, "error writing to i2sctl reg: %d\n", ret);
+ 
+diff --git a/sound/soc/qcom/lpass-lpaif-reg.h b/sound/soc/qcom/lpass-lpaif-reg.h
+index 3d74ae123e9d..7a2b9cf99976 100644
+--- a/sound/soc/qcom/lpass-lpaif-reg.h
++++ b/sound/soc/qcom/lpass-lpaif-reg.h
+@@ -56,7 +56,7 @@
+ #define LPAIF_I2SCTL_MICMODE_6CH	(7 << LPAIF_I2SCTL_MICMODE_SHIFT)
+ #define LPAIF_I2SCTL_MICMODE_8CH	(8 << LPAIF_I2SCTL_MICMODE_SHIFT)
+ 
+-#define LPAIF_I2SCTL_MIMONO_MASK	GENMASK(3, 3)
++#define LPAIF_I2SCTL_MICMONO_MASK	GENMASK(3, 3)
+ #define LPAIF_I2SCTL_MICMONO_SHIFT	3
+ #define LPAIF_I2SCTL_MICMONO_STEREO	(0 << LPAIF_I2SCTL_MICMONO_SHIFT)
+ #define LPAIF_I2SCTL_MICMONO_MONO	(1 << LPAIF_I2SCTL_MICMONO_SHIFT)
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.21.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
