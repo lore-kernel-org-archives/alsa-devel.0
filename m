@@ -2,77 +2,66 @@ Return-Path: <SRS0=YoTX=4X=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91E81C10F25
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 14:47:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1ADA4C10DCE
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 14:55:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 16E842084E
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 14:47:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C4F2620848
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 14:55:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Nzygjt88"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 16E842084E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NgNrSRQ3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C4F2620848
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4E24F828;
-	Fri,  6 Mar 2020 15:46:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E24F828
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2FBC0826;
+	Fri,  6 Mar 2020 15:54:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2FBC0826
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583506058;
-	bh=62klweFIwoKvoOGe6pTO4aaPOmnp2C1NGbSMttzCUPk=;
+	s=default; t=1583506516;
+	bh=aea3T3MIbf6qWxrPT0ghKPghXWaJZyZVOBUFAtGIbLI=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Nzygjt88ApjAcrsRwcN7ndQpmuIZSfM6Sf3aKxTf7C/NqcxwFvHuLPrGG/K9LoS9q
-	 79BBB3eSn6x6dKLZuAFqXTN2edLoz9SzdX7h/np7qpCPTmQEcmSZlNbnO7RLO7MfLh
-	 Fm1uWOrf04ZTMiR/U1B0pqsNa5sKvxpPMJNos2UU=
+	b=NgNrSRQ32YMFUCHTqs8S2LJz/ZB7ayFZpvvppWAh6EnokkG3Ha+/nkBPIwf2R/6K4
+	 YSuTeqCGvdPXqnJgDMcccFBKi0p/x76H+XgFOtuZq57d42LCyKQ1QEIdSTBf5v+m0k
+	 g6XCgpMqktMzCnu6GptHAwS5m8qtRRbrAWeZVWhE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BAAE9F801EC;
-	Fri,  6 Mar 2020 15:46:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AB2DBF801EC;
+	Fri,  6 Mar 2020 15:54:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 63F5FF801ED; Fri,  6 Mar 2020 15:46:46 +0100 (CET)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id D3A2DF801ED; Fri,  6 Mar 2020 15:54:23 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 01569F80126
- for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2020 15:46:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01569F80126
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 06 Mar 2020 06:46:39 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,522,1574150400"; d="scan'208";a="264476569"
-Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by fmsmga004.fm.intel.com with ESMTP; 06 Mar 2020 06:46:37 -0800
-Date: Fri, 6 Mar 2020 16:46:36 +0200 (EET)
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-X-X-Sender: kvehmane@eliteleevi.tm.intel.com
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [PATCH 5/7] ASoC: Intel: skl_hda_dsp: Enable Dmic
- configuration
-In-Reply-To: <20200305145314.32579-6-cezary.rojewski@intel.com>
-Message-ID: <alpine.DEB.2.21.2003061636580.2957@eliteleevi.tm.intel.com>
-References: <20200305145314.32579-1-cezary.rojewski@intel.com>
- <20200305145314.32579-6-cezary.rojewski@intel.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
-MIME-Version: 1.0
-Content-ID: <alpine.DEB.2.21.2003061645420.2957@eliteleevi.tm.intel.com>
-Content-Type: text/plain; CHARSET=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.com,
- pierre-louis.bossart@linux.intel.com, vkoul@kernel.org, broonie@kernel.org,
- Mateusz Gorski <mateusz.gorski@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 61957F80126
+ for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2020 15:54:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 61957F80126
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 34D20AD5D;
+ Fri,  6 Mar 2020 14:54:19 +0000 (UTC)
+Date: Fri, 06 Mar 2020 15:54:18 +0100
+Message-ID: <s5htv31cz51.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] ALSA: firewire: use KBUILD_MODNAME for struct driver.name
+ instead of string
+In-Reply-To: <20200306135229.11659-1-o-takashi@sakamocchi.jp>
+References: <20200306135229.11659-1-o-takashi@sakamocchi.jp>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,35 +77,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hey,
+On Fri, 06 Mar 2020 14:52:29 +0100,
+Takashi Sakamoto wrote:
+> 
+> KBUILD_MODNAME is available to name kernel modules according to its object
+> name. This commit uses the macro instead of string for name field of
+> struct driver since drivers in ALSA firewire stack have the same name of
+> each object name.
+> 
+> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-On Thu, 5 Mar 2020, Cezary Rojewski wrote:
+Applied now.  Thanks.
 
-> --- a/sound/soc/intel/boards/skl_hda_dsp_generic.c
-> +++ b/sound/soc/intel/boards/skl_hda_dsp_generic.c
-> @@ -59,6 +59,9 @@ static const struct snd_soc_dapm_route skl_hda_map[] = {
->  	{ "Digital CPU Capture", NULL, "Digital Codec Capture" },
->  	{ "codec2_in", NULL, "Alt Analog CPU Capture" },
->  	{ "Alt Analog CPU Capture", NULL, "Alt Analog Codec Capture" },
-> +
-> +	{ "dmic01_hifi", NULL, "DMIC01 Rx" },
-> +	{ "DMIC01 Rx", NULL, "DMIC AIF" },
 
-hmm, we need to figure out something else for this. This very same table 
-already has:
-
-»       /* digital mics */
-»       {"DMic", NULL, "SoC DMIC"},
-
-.. so now we have dmic entries two times in the same initializer list.
-
-But a more pressing issue is that this breaks platforms using SOF 
-firmware:
-
-[   28.751756] skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: no sink widget found for dmic01_hifi
-[   28.751987] skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: Failed to add route DMIC01 Rx -> direct -> dmic01_hifi
-
-... maybe you can align the topology to mathc so we can reuse the same 
-widget mapping for both SOF and SST firmwares..?
-
-Br, Kai
+Takashi
