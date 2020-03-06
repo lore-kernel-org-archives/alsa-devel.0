@@ -6,60 +6,57 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B262FC10DCE
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 15:08:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E044C10DCE
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 15:10:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3C46120409
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 15:08:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9DFA520409
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 15:10:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PDF4nL0c"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3C46120409
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="m7wY04vc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9DFA520409
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9A6D410E;
-	Fri,  6 Mar 2020 16:07:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A6D410E
+	by alsa0.perex.cz (Postfix) with ESMTPS id F395182B;
+	Fri,  6 Mar 2020 16:09:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F395182B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583507306;
-	bh=EZ3C2rlyNUrRxX2zYtuIyyeToL3vAS26vj8u9F3mNuI=;
+	s=default; t=1583507416;
+	bh=tsLJQo5g76IdhhvV8GDVa0HgUrSzXjBd2wRaU/DOCHI=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=PDF4nL0cRkQn1g+O/u6ZwoohRCKBLf7ddCzqE8nwavPj+Zqb6VKmK7IJL1jpjJ8y5
-	 bNA1Eb7n1UblFxDTKPHWvJz1/K/JYg3PUb9agCMqPChGTo3hrS51Vfy7o3vINlvzCM
-	 jZ3y4X+qWnoAgGO7yIu2RRpM+HqxB96Wh7Y7HVRs=
+	b=m7wY04vcIhtnSy9ZUeuKbkz5FPTctjVjVol9O3xrmUpzVi9gjeloyPfZuqOix41q5
+	 A2h0Fj6W/0kTCUBJsUw4KSnS4IUKFgsaj6h2C5qNtlzdt2S90HuvZEj/esXOWtJDUL
+	 pLpH0q9yHxHlC6+9hi24PXJRLlIn0y0lLS0HSNuw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EA6C0F802DC;
-	Fri,  6 Mar 2020 16:03:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4A024F802FF;
+	Fri,  6 Mar 2020 16:03:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A90B3F802DD; Fri,  6 Mar 2020 16:03:39 +0100 (CET)
+ id C613EF802FF; Fri,  6 Mar 2020 16:03:53 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 89CF3F802D2
- for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2020 16:03:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89CF3F802D2
+ by alsa1.perex.cz (Postfix) with ESMTP id 0FAA5F802FB
+ for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2020 16:03:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0FAA5F802FB
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 888A731B;
- Fri,  6 Mar 2020 07:03:35 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DE34030E;
+ Fri,  6 Mar 2020 07:03:47 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0994B3F237;
- Fri,  6 Mar 2020 07:03:34 -0800 (PST)
-Date: Fri, 06 Mar 2020 15:03:33 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 62EEB3F237;
+ Fri,  6 Mar 2020 07:03:47 -0800 (PST)
+Date: Fri, 06 Mar 2020 15:03:45 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Samuel Holland <samuel@sholland.org>
-Subject: Applied "ASoC: simple-card: Add support for codec2codec DAI links" to
- the asoc tree
-In-Reply-To: <20200305051143.60691-4-samuel@sholland.org>
-Message-Id: <applied-20200305051143.60691-4-samuel@sholland.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Applied "ASoC: wcd934x: remove unused headers" to the asoc tree
+In-Reply-To: <20200306132806.19684-3-srinivas.kandagatla@linaro.org>
+Message-Id: <applied-20200306132806.19684-3-srinivas.kandagatla@linaro.org>
 X-Patchwork-Hint: ignore
-Cc: Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
- Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
- Jerome Brunet <jbrunet@baylibre.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ lgirdwood@gmail.com, Stephen Boyd <swboyd@chromium.org>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,7 +74,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: simple-card: Add support for codec2codec DAI links
+   ASoC: wcd934x: remove unused headers
 
 has been applied to the asoc tree at
 
@@ -102,114 +99,45 @@ to this mail.
 Thanks,
 Mark
 
-From 95cfc0a0aaf575207152dd7601e782702565a6f1 Mon Sep 17 00:00:00 2001
-From: Samuel Holland <samuel@sholland.org>
-Date: Wed, 4 Mar 2020 23:11:43 -0600
-Subject: [PATCH] ASoC: simple-card: Add support for codec2codec DAI links
+From e0e247d593f78f4ac5647a9ef2c6db8f918ecbdc Mon Sep 17 00:00:00 2001
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Date: Fri, 6 Mar 2020 13:28:06 +0000
+Subject: [PATCH] ASoC: wcd934x: remove unused headers
 
-Following the example in cb2cf0de1174 ("ASoC: soc-core: care Codec <->
-Codec case by non_legacy_dai_naming"), determine if a DAI link contains
-only codec DAIs by examining the non_legacy_dai_naming flag in each
-DAI's component.
+Looks like there are some unused headers, remove them.
+Seems to be missed while moving to mfd.
 
-For now, we assume there is only one or a small set of valid PCM stream
-parameters, so num_params == 1 is good enough. We also assume that the
-same params are valid for all supported streams. params is set to the
-subset of parameters common among all DAIs, and then the existing code
-automatically chooses the highest quality of the remaining values when
-the link is brought up.
-
-Signed-off-by: Samuel Holland <samuel@sholland.org>
-Link: https://lore.kernel.org/r/20200305051143.60691-4-samuel@sholland.org
+Reported-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20200306132806.19684-3-srinivas.kandagatla@linaro.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/sound/soc/codec-to-codec.rst |  9 +++-
- sound/soc/generic/simple-card-utils.c      | 48 ++++++++++++++++++++++
- 2 files changed, 55 insertions(+), 2 deletions(-)
+ sound/soc/codecs/wcd934x.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/Documentation/sound/soc/codec-to-codec.rst b/Documentation/sound/soc/codec-to-codec.rst
-index 810109d7500d..4eaa9a0c41fc 100644
---- a/Documentation/sound/soc/codec-to-codec.rst
-+++ b/Documentation/sound/soc/codec-to-codec.rst
-@@ -104,5 +104,10 @@ Make sure to name your corresponding cpu and codec playback and capture
- dai names ending with "Playback" and "Capture" respectively as dapm core
- will link and power those dais based on the name.
+diff --git a/sound/soc/codecs/wcd934x.c b/sound/soc/codecs/wcd934x.c
+index 83d643a07775..5269857e2746 100644
+--- a/sound/soc/codecs/wcd934x.c
++++ b/sound/soc/codecs/wcd934x.c
+@@ -3,7 +3,6 @@
  
--Note that in current device tree there is no way to mark a dai_link
--as codec to codec. However, it may change in future.
-+A dai_link in a "simple-audio-card" will automatically be detected as
-+codec to codec when all DAIs on the link belong to codec components.
-+The dai_link will be initialized with the subset of stream parameters
-+(channels, format, sample rate) supported by all DAIs on the link. Since
-+there is no way to provide these parameters in the device tree, this is
-+mostly useful for communication with simple fixed-function codecs, such
-+as a Bluetooth controller or cellular modem.
-diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index 9b794775df53..320e648f7499 100644
---- a/sound/soc/generic/simple-card-utils.c
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -331,6 +331,50 @@ static int asoc_simple_init_dai(struct snd_soc_dai *dai,
- 	return 0;
- }
- 
-+static int asoc_simple_init_dai_link_params(struct snd_soc_pcm_runtime *rtd,
-+					    struct simple_dai_props *dai_props)
-+{
-+	struct snd_soc_dai_link *dai_link = rtd->dai_link;
-+	struct snd_soc_component *component;
-+	struct snd_soc_pcm_stream *params;
-+	struct snd_pcm_hardware hw;
-+	int i, ret, stream;
-+
-+	/* Only codecs should have non_legacy_dai_naming set. */
-+	for_each_rtd_components(rtd, i, component) {
-+		if (!component->driver->non_legacy_dai_naming)
-+			return 0;
-+	}
-+
-+	/* Assumes the capabilities are the same for all supported streams */
-+	for (stream = 0; stream < 2; stream++) {
-+		ret = snd_soc_runtime_calc_hw(rtd, &hw, stream);
-+		if (ret == 0)
-+			break;
-+	}
-+
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "simple-card: no valid dai_link params\n");
-+		return ret;
-+	}
-+
-+	params = devm_kzalloc(rtd->dev, sizeof(*params), GFP_KERNEL);
-+	if (!params)
-+		return -ENOMEM;
-+
-+	params->formats = hw.formats;
-+	params->rates = hw.rates;
-+	params->rate_min = hw.rate_min;
-+	params->rate_max = hw.rate_max;
-+	params->channels_min = hw.channels_min;
-+	params->channels_max = hw.channels_max;
-+
-+	dai_link->params = params;
-+	dai_link->num_params = 1;
-+
-+	return 0;
-+}
-+
- int asoc_simple_dai_init(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct asoc_simple_priv *priv = snd_soc_card_get_drvdata(rtd->card);
-@@ -347,6 +391,10 @@ int asoc_simple_dai_init(struct snd_soc_pcm_runtime *rtd)
- 	if (ret < 0)
- 		return ret;
- 
-+	ret = asoc_simple_init_dai_link_params(rtd, dai_props);
-+	if (ret < 0)
-+		return ret;
-+
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(asoc_simple_dai_init);
+ #include <linux/clk.h>
+ #include <linux/clk-provider.h>
+-#include <linux/gpio.h>
+ #include <linux/interrupt.h>
+ #include <linux/kernel.h>
+ #include <linux/mfd/wcd934x/registers.h>
+@@ -11,10 +10,7 @@
+ #include <linux/module.h>
+ #include <linux/mutex.h>
+ #include <linux/of_clk.h>
+-#include <linux/of_device.h>
+-#include <linux/of_gpio.h>
+ #include <linux/of.h>
+-#include <linux/of_irq.h>
+ #include <linux/platform_device.h>
+ #include <linux/regmap.h>
+ #include <linux/regulator/consumer.h>
 -- 
 2.20.1
 
