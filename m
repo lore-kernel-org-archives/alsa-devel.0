@@ -2,61 +2,63 @@ Return-Path: <SRS0=YoTX=4X=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CCC0C10DCE
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 15:52:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4EE24C10DCE
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 16:28:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 076692072A
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 15:52:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BEA7B20658
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 16:28:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KoupaSWc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 076692072A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CX+zMRrt"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BEA7B20658
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6643182A;
-	Fri,  6 Mar 2020 16:51:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6643182A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1245C828;
+	Fri,  6 Mar 2020 17:28:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1245C828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583509925;
-	bh=0gPAyKzA3Du6cO7P+Pk28G5fPpL01sEW95ybQ0wcL/Y=;
-	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=KoupaSWcNy3GHfEcLT9JLOAnfCzaZ5+Yr7mJyHVVRh1ir7Lrb1ColTVc5hmhT0BV6
-	 QVAxIo1+v5kiLAktscPnoJ7PkZseB4Uyt5gyy9vKcJcMIIrF6w33hTFL+h3SMLe1AO
-	 x+0/SEUbv12+5ilFdlsnRuCdaQafiQao5ua0XaNE=
+	s=default; t=1583512131;
+	bh=0C+6XHYdJIVmksLjDyIuC4qeEjpyQ2kk5w5i1zngU48=;
+	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=CX+zMRrtx+eaih6enY/htIEHu/e+C/8+5eBLmDDHKF+3+m9n7BRgw5sxgzhUYq0gk
+	 6X2rNGZIZKcwQPxvE8vCaK7IfghbyuE43opQgYTEhP9rycajWd4/uDUiyYqq9U6Kjr
+	 7jRsih7QiXLtYUh5FoNNtDb2Ta0VuxMWm1ybg99M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EFBEEF801F5;
-	Fri,  6 Mar 2020 16:51:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 801D9F8012D;
+	Fri,  6 Mar 2020 17:28:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B1120F801F9; Fri,  6 Mar 2020 16:51:13 +0100 (CET)
+ id AFF2AF801ED; Fri,  6 Mar 2020 17:27:58 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id E2404F80125
- for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2020 16:51:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2404F80125
+ by alsa1.perex.cz (Postfix) with ESMTP id 82BD0F80125
+ for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2020 17:27:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 82BD0F80125
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3A28B30E;
- Fri,  6 Mar 2020 07:51:09 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8560530E;
+ Fri,  6 Mar 2020 08:27:53 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B0C1C3F237;
- Fri,  6 Mar 2020 07:51:08 -0800 (PST)
-Date: Fri, 06 Mar 2020 15:51:07 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 083E13F237;
+ Fri,  6 Mar 2020 08:27:52 -0800 (PST)
+Date: Fri, 6 Mar 2020 16:27:51 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Applied "ASoC: wcd9335: fix address map representation" to the asoc
- tree
-In-Reply-To: <20200306152633.25836-1-srinivas.kandagatla@linaro.org>
-Message-Id: <applied-20200306152633.25836-1-srinivas.kandagatla@linaro.org>
-X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- lgirdwood@gmail.com, linux-kernel@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Subject: [GIT PULL] ASoC fixes for v5.6
+Message-ID: <20200306162751.GC4114@sirena.org.uk>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="NKoe5XOeduwbEQHU"
+Content-Disposition: inline
+X-Cookie: fortune: No such file or directory
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,128 +74,111 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
 
-   ASoC: wcd9335: fix address map representation
+--NKoe5XOeduwbEQHU
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-has been applied to the asoc tree at
+The following changes since commit 96781fd941b39e1f78098009344ebcd7af861c67:
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+  ASoC: sun8i-codec: Fix setting DAI data format (2020-02-17 21:58:41 +0000)
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+are available in the Git repository at:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/as=
+oc-fix-v5.6-rc4
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+for you to fetch changes up to 3fb83cbee1de58fcd5d22f1db89460bb7c08b6e8:
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+  ASoC: wm8741: Fix typo in Kconfig prompt (2020-03-05 12:53:51 +0000)
 
-Thanks,
-Mark
+----------------------------------------------------------------
+ASoC: Fixes for v5.6
 
-From d902e7856d2a3b5da7acab90e5faec22e395e57a Mon Sep 17 00:00:00 2001
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Fri, 6 Mar 2020 15:26:33 +0000
-Subject: [PATCH] ASoC: wcd9335: fix address map representation
+More fixes that have arrived since the merge window, spread out all
+over.  There's a few things like the operation callback addition for
+rt1015 and the meson reset addition which add small new bits of
+functionality to fix non-working systems, they're all very small and for
+parts of newly added functionality.
 
-slimbus addresses are 16 bit wide, masking page numbers
-to wcd register at offset of 12 will limit the number for pages.
-So it becomes impossible to write to page 0x10 registers.
-Remove masking 0x800 (slimbus address range) from register address
-and making use of window parameters in regmap config should fix it
-and also will represent the registers exactly inline with Datasheet.
+----------------------------------------------------------------
+Amadeusz S=C5=82awi=C5=84ski (1):
+      ASoC: Intel: Skylake: Fix available clock counter incrementation
 
-Remove this unnessary masking and make the registers be inline
-with datasheet.
+Axel Lin (1):
+      ASoC: wm8741: Fix typo in Kconfig prompt
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20200306152633.25836-1-srinivas.kandagatla@linaro.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/wcd9335.c | 18 +++++++++---------
- sound/soc/codecs/wcd9335.h |  7 ++++---
- 2 files changed, 13 insertions(+), 12 deletions(-)
+Charles Keepax (1):
+      ASoC: dapm: Correct DAPM handling of active widgets during shutdown
 
-diff --git a/sound/soc/codecs/wcd9335.c b/sound/soc/codecs/wcd9335.c
-index f11ffa28683b..700cc1212770 100644
---- a/sound/soc/codecs/wcd9335.c
-+++ b/sound/soc/codecs/wcd9335.c
-@@ -4926,11 +4926,11 @@ static const struct regmap_range_cfg wcd9335_ranges[] = {
- 		.name = "WCD9335",
- 		.range_min =  0x0,
- 		.range_max =  WCD9335_MAX_REGISTER,
--		.selector_reg = WCD9335_REG(0x0, 0),
-+		.selector_reg = WCD9335_SEL_REGISTER,
- 		.selector_mask = 0xff,
- 		.selector_shift = 0,
--		.window_start = 0x0,
--		.window_len = 0x1000,
-+		.window_start = 0x800,
-+		.window_len = 0x100,
- 	},
- };
- 
-@@ -4968,12 +4968,12 @@ static const struct regmap_range_cfg wcd9335_ifc_ranges[] = {
- 	{
- 		.name = "WCD9335-IFC-DEV",
- 		.range_min =  0x0,
--		.range_max = WCD9335_REG(0, 0x7ff),
--		.selector_reg = WCD9335_REG(0, 0x0),
--		.selector_mask = 0xff,
-+		.range_max = WCD9335_MAX_REGISTER,
-+		.selector_reg = WCD9335_SEL_REGISTER,
-+		.selector_mask = 0xfff,
- 		.selector_shift = 0,
--		.window_start = 0x0,
--		.window_len = 0x1000,
-+		.window_start = 0x800,
-+		.window_len = 0x400,
- 	},
- };
- 
-@@ -4981,7 +4981,7 @@ static struct regmap_config wcd9335_ifc_regmap_config = {
- 	.reg_bits = 16,
- 	.val_bits = 8,
- 	.can_multi_write = true,
--	.max_register = WCD9335_REG(0, 0x7FF),
-+	.max_register = WCD9335_MAX_REGISTER,
- 	.ranges = wcd9335_ifc_ranges,
- 	.num_ranges = ARRAY_SIZE(wcd9335_ifc_ranges),
- };
-diff --git a/sound/soc/codecs/wcd9335.h b/sound/soc/codecs/wcd9335.h
-index 4d9be2496c30..72060824c743 100644
---- a/sound/soc/codecs/wcd9335.h
-+++ b/sound/soc/codecs/wcd9335.h
-@@ -8,9 +8,9 @@
-  * in slimbus mode the reg base starts from 0x800
-  * in i2s/i2c mode the reg base is 0x0
-  */
--#define WCD9335_REG(pg, r)	((pg << 12) | (r) | 0x800)
-+#define WCD9335_REG(pg, r)	((pg << 8) | (r))
- #define WCD9335_REG_OFFSET(r)	(r & 0xFF)
--#define WCD9335_PAGE_OFFSET(r)	((r >> 12) & 0xFF)
-+#define WCD9335_PAGE_OFFSET(r)	((r >> 8) & 0xFF)
- 
- /* Page-0 Registers */
- #define WCD9335_PAGE0_PAGE_REGISTER		WCD9335_REG(0x00, 0x000)
-@@ -600,7 +600,8 @@
- #define WCD9335_CDC_CLK_RST_CTRL_FS_CNT_ENABLE	BIT(0)
- #define WCD9335_CDC_CLK_RST_CTRL_FS_CNT_DISABLE	0
- #define WCD9335_CDC_TOP_TOP_CFG1	WCD9335_REG(0x0d, 0x082)
--#define WCD9335_MAX_REGISTER	WCD9335_REG(0x80, 0x0FF)
-+#define WCD9335_MAX_REGISTER	0xffff
-+#define WCD9335_SEL_REGISTER	0x800
- 
- /* SLIMBUS Slave Registers */
- #define WCD9335_SLIM_PGD_PORT_INT_EN0	WCD9335_REG(0, 0x30)
--- 
-2.20.1
+Dan Carpenter (1):
+      ASoC: SOF: Fix snd_sof_ipc_stream_posn()
 
+Dan Murphy (2):
+      ASoC: tas2562: Return invalid for when bitwidth is invalid
+      ASoC: tas2562: Fix sample rate error message
+
+Dragos Tarcatu (2):
+      ASoC: topology: Fix memleak in soc_tplg_link_elems_load()
+      ASoC: topology: Fix memleak in soc_tplg_manifest_load()
+
+Jack Yu (2):
+      ASoC: rt1015: add operation callback function for rt1015_dai[]
+      ASoC: rt1015: modify pre-divider for sysclk
+
+Jerome Brunet (1):
+      ASoC: meson: g12a: add tohdmitx reset
+
+Kuninori Morimoto (2):
+      ASoC: soc-pcm/soc-compress: don't use snd_soc_dapm_stream_stop()
+      ASoC: soc-component: tidyup snd_soc_pcm_component_sync_stop()
+
+Matthias Reichl (1):
+      ASoC: pcm512x: Fix unbalanced regulator enable call in probe error pa=
+th
+
+Olivier Moysan (1):
+      ASoC: stm32: sai: manage rebind issue
+
+Pierre-Louis Bossart (1):
+      ASoC: soc-core: fix for_rtd_codec_dai_rollback() macro
+
+Takashi Iwai (3):
+      ASoC: intel: skl: Fix pin debug prints
+      ASoC: intel: skl: Fix possible buffer overflow in debug outputs
+      ASoC: pcm: Fix possible buffer overflow in dpcm state sysfs output
+
+ include/sound/soc.h                   |  2 +-
+ sound/soc/codecs/Kconfig              |  2 +-
+ sound/soc/codecs/pcm512x.c            |  8 +++++---
+ sound/soc/codecs/rt1015.c             |  3 ++-
+ sound/soc/codecs/tas2562.c            |  5 +++--
+ sound/soc/intel/skylake/skl-debug.c   | 32 +++++++++++++++++---------------
+ sound/soc/intel/skylake/skl-ssp-clk.c |  4 +++-
+ sound/soc/meson/g12a-tohdmitx.c       |  6 ++++++
+ sound/soc/soc-component.c             |  2 +-
+ sound/soc/soc-compress.c              |  2 +-
+ sound/soc/soc-dapm.c                  |  2 +-
+ sound/soc/soc-pcm.c                   | 18 +++++++++---------
+ sound/soc/soc-topology.c              | 17 ++++++++++-------
+ sound/soc/sof/ipc.c                   |  2 +-
+ sound/soc/stm/stm32_sai_sub.c         | 18 ++++++++++--------
+ 15 files changed, 71 insertions(+), 52 deletions(-)
+
+--NKoe5XOeduwbEQHU
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5iegYACgkQJNaLcl1U
+h9BQxwf+NKp1kaJ1WS1iKTq4X8W6gWdH3fKAaTH3cMsKG7/h7Wphr6R9tok6VipF
+0+GKqfvHNLtQEwGctZaNCnq7X9NWzh7ANlBuEcUP+Wc0Adm+FFsrhqkoO7Uft8pB
+rDyyn9IRPt38OI9NAejd5q7NKtb9t/vbDL6p7GXr6oxfKc3glepLEAeKxHCoAsKt
+ePaPG6Ie+6V1FrYt5Te1V6N23CKf8W3oof6illWX2K4h4WW+Dc4j4QovQfQ7x0/x
+/jelecBFwfd4YSeHGAyviyJJZ0il7qw9w5Tk5GHjCZ3oSTU1xQzhft/rk08PaE9s
+wj4qovOUwrgwCWERzeHbmE7/PA0Kag==
+=Scji
+-----END PGP SIGNATURE-----
+
+--NKoe5XOeduwbEQHU--
