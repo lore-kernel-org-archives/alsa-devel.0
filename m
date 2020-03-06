@@ -2,70 +2,74 @@ Return-Path: <SRS0=YoTX=4X=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 751FDC3F2CD
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 05:54:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18A0AC3F2D7
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 06:07:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 29D802072A
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 05:54:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8CA792072A
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 06:07:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GjZq+QoW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 29D802072A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="p2h8+BvK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8CA792072A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8E7B011C;
-	Fri,  6 Mar 2020 06:53:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E7B011C
+	by alsa0.perex.cz (Postfix) with ESMTPS id ECD324E;
+	Fri,  6 Mar 2020 07:07:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ECD324E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583474083;
-	bh=kt91gLV7bGgUX5cdbgOiSIGd8TE4u227xC+e+8f051Y=;
+	s=default; t=1583474876;
+	bh=bbQXvTqqUjEyM+nHHRrr2CNR3X5IOMlT0PNtYt/q7ZU=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GjZq+QoW+ypWXg1qhiDIqpjU7GDbS1Fa7wubx6djneyz+ZlhHiC3mHVgV1Qt0YAZ7
-	 Ywi5NZqna37Z3PmrtBZlCbBt6wLZ2M964zbvBTdZIKURjjjryUycmBrxCgmRrKRJdG
-	 Xgy+KyX3th9Jzfj7UiX2XzjIL/e+n9cqp2p5aNYg=
+	b=p2h8+BvKLOi7WF3b3xm2m3EbO60sGcJ1haNT9+nzvp0raHPNcWIDj238J7GiuvEc/
+	 yUL377wPZoxG1dnKEvnQ9zTnMMN3NPuDmHuMZP3+TJaGJZR3DfxRGJtB61G0WIacxd
+	 ampqH2nqHHuh+lKxUrbigN1E80W4ZdGedJpG9dc8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 117FBF801ED;
-	Fri,  6 Mar 2020 06:53:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D4815F801EC;
+	Fri,  6 Mar 2020 07:07:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 449DBF801F9; Fri,  6 Mar 2020 06:53:52 +0100 (CET)
+ id EB208F801ED; Fri,  6 Mar 2020 07:07:02 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7A41DF801EC
- for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2020 06:53:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A41DF801EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 012B4F80125
+ for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2020 07:06:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 012B4F80125
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id B34E1AE6F;
- Fri,  6 Mar 2020 05:53:48 +0000 (UTC)
-Date: Fri, 06 Mar 2020 06:53:48 +0100
-Message-ID: <s5hy2sedo5v.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id BF005B066;
+ Fri,  6 Mar 2020 06:06:56 +0000 (UTC)
+Date: Fri, 06 Mar 2020 07:06:55 +0100
+Message-ID: <s5hv9nidnk0.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Chris <gladiac@gmail.com>
-Subject: Re: [PATCH v2 1/1] ALSA: hda/realtek - Fix silent output on Gigabyte
- X570 Aorus Master
-In-Reply-To: <CAE3uWP3Shf+vEwV-wUDUmzizSOCS5cSvND+-=rZijefgkmp2tQ@mail.gmail.com>
-References: <20200303153619.24720-1-gladiac@gmail.com>
- <20200303153619.24720-2-gladiac@gmail.com>
- <s5h7dzyg8gq.wl-tiwai@suse.de>
- <CAE3uWP3Shf+vEwV-wUDUmzizSOCS5cSvND+-=rZijefgkmp2tQ@mail.gmail.com>
+To: Heiner Kallweit <hkallweit1@gmail.com>
+Subject: Re: [PATCH v4 10/10] sound: bt87x: use pci_status_get_and_clear_errors
+In-Reply-To: <6362e866-9ce3-31f5-3357-9f086eedf11e@gmail.com>
+References: <adeb9e6e-9be6-317f-3fc0-a4e6e6af5f81@gmail.com>
+ <6362e866-9ce3-31f5-3357-9f086eedf11e@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- kailang@realtek.com, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org,
+ Realtek linux nic maintainers <nic_swsd@realtek.com>,
+ "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+ Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.com>,
+ Stephen Hemminger <stephen@networkplumber.org>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ Bjorn Helgaas <bhelgaas@google.com>, David Miller <davem@davemloft.net>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Mirko Lindner <mlindner@marvell.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,15 +85,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 05 Mar 2020 16:14:10 +0100,
-Chris wrote:
+On Sat, 29 Feb 2020 23:29:07 +0100,
+Heiner Kallweit wrote:
 > 
-> Hello, I am really sorry for the mess-up. It is the exact same patch. I just
-> re-sent it because v1 did not show up in the alsa-devel mailinglist because i
-> did not do the registration beforehand. Please ignore v2.
-> Thanks a lot, Chris
+> Use new helper pci_status_get_and_clear_errors() to simplify the code.
+> 
+> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
 
-OK, thanks for confirmation.
+Acked-by: Takashi Iwai <tiwai@suse.de>
 
+
+thanks,
 
 Takashi
+
+> ---
+>  sound/pci/bt87x.c | 7 +------
+>  1 file changed, 1 insertion(+), 6 deletions(-)
+> 
+> diff --git a/sound/pci/bt87x.c b/sound/pci/bt87x.c
+> index 8c48864c8..656750466 100644
+> --- a/sound/pci/bt87x.c
+> +++ b/sound/pci/bt87x.c
+> @@ -271,13 +271,8 @@ static void snd_bt87x_free_risc(struct snd_bt87x *chip)
+>  
+>  static void snd_bt87x_pci_error(struct snd_bt87x *chip, unsigned int status)
+>  {
+> -	u16 pci_status;
+> +	int pci_status = pci_status_get_and_clear_errors(chip->pci);
+>  
+> -	pci_read_config_word(chip->pci, PCI_STATUS, &pci_status);
+> -	pci_status &= PCI_STATUS_PARITY | PCI_STATUS_SIG_TARGET_ABORT |
+> -		PCI_STATUS_REC_TARGET_ABORT | PCI_STATUS_REC_MASTER_ABORT |
+> -		PCI_STATUS_SIG_SYSTEM_ERROR | PCI_STATUS_DETECTED_PARITY;
+> -	pci_write_config_word(chip->pci, PCI_STATUS, pci_status);
+>  	if (pci_status != PCI_STATUS_DETECTED_PARITY)
+>  		dev_err(chip->card->dev,
+>  			"Aieee - PCI error! status %#08x, PCI status %#04x\n",
+> -- 
+> 2.25.1
+> 
+> 
