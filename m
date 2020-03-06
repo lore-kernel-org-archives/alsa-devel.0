@@ -6,54 +6,53 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D6ACFC3F2D1
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 01:12:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BD863C3F2D2
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 01:13:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 63F8E207FD
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 01:12:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 488CA2073D
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 01:13:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YKKvvpCC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 63F8E207FD
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Xd6mJ2Rg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 488CA2073D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 94D071660;
-	Fri,  6 Mar 2020 02:11:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94D071660
+	by alsa0.perex.cz (Postfix) with ESMTPS id 467541669;
+	Fri,  6 Mar 2020 02:12:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 467541669
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583457169;
-	bh=6WBrs0SA5jG6/ElekOIV1d2BrSbcLusivmP8kZItEgU=;
+	s=default; t=1583457218;
+	bh=0aollEJ9AW+tnRrPwveiNMTuadiSvQWtMHVgNol2BXU=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YKKvvpCCoDadn9Hxh+egadRUGoJUzbJKn64TbjUF1Sv19lzcb/ZGOpkZUtiTWQZqP
-	 mhhjHwJPVzarrd21bAR4YxlHWXNlNSZDznVloS+ElwJ7dA2Py0hWT0cPH5VLCBLRH0
-	 2ScEbtajoXwH+5EDk9WA2ipI6NsiSHYr9tVXsmvE=
+	b=Xd6mJ2RgbVggdeqpOdz0E5I7EecmAtoS82ixAIWzTDInB3K8R/Es9dz1620HF+RbB
+	 ZV9ft/kL7U0691j6C4QsRG8KoXxKftmIVtmTT/aJws8veALL7OOPf/NwKHNF8yLUpf
+	 vfwb8pRzbBRCAkZ5bIsELekvgq3cGma56k5WSErc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5E181F8027B;
-	Fri,  6 Mar 2020 02:10:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2EB65F802A8;
+	Fri,  6 Mar 2020 02:10:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EC454F80299; Fri,  6 Mar 2020 02:10:04 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 1FC03F8027B
- for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2020 02:09:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1FC03F8027B
-Date: 06 Mar 2020 10:09:59 +0900
-X-IronPort-AV: E=Sophos;i="5.70,520,1574089200"; d="scan'208";a="40908175"
+ id 2B096F80299; Fri,  6 Mar 2020 02:10:11 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 2794BF80290
+ for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2020 02:10:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2794BF80290
+Date: 06 Mar 2020 10:10:04 +0900
+X-IronPort-AV: E=Sophos;i="5.70,520,1574089200"; d="scan'208";a="41123521"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 06 Mar 2020 10:09:59 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 06 Mar 2020 10:10:04 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 7F40B400C4CC;
- Fri,  6 Mar 2020 10:09:59 +0900 (JST)
-Message-ID: <87lfoep9ug.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 817A4400C4CF;
+ Fri,  6 Mar 2020 10:10:04 +0900 (JST)
+Message-ID: <87k13yp9ub.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v2 resend 4/6] ASoC: soc-pcm: tidyup dulicate handing at
- dpcm_fe_dai_startup()
+Subject: [PATCH v2 resend 5/6] ASoC: soc-pcm: check DAI's activity more simply
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87r1y6p9vt.wl-kuninori.morimoto.gx@renesas.com>
@@ -76,43 +75,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-error handling at dpcm_fe_dai_startup() has duplicate code.
-This patch tidyup it.
+soc_pcm_hw_free() want to call snd_soc_dai_digital_mute()
+if it was last user of Playback or Capture.
+
+	bool playback = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+	int playback_active = dai->stream_active[SNDRV_PCM_STREAM_PLAYBACK];
+	int capture_active  = dai->stream_active[SNDRV_PCM_STREAM_CAPTURE];
+
+	if ((playback  && playback_active == 1) ||
+	    (!playback && capture_active  == 1))
+		snd_soc_dai_digital_mute(...)
+
+But it is same as
+
+	int active = dai->stream_active[substream->stream];
+
+	if (active == 1)
+		snd_soc_dai_digital_mute(...)
+
+This patch simplify the code.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/soc-pcm.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ sound/soc/soc-pcm.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 3a30776858bf..7d787e0966f3 100644
+index 7d787e0966f3..af0e17bfeeab 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -2162,17 +2162,13 @@ static int dpcm_fe_dai_startup(struct snd_pcm_substream *fe_substream)
- 	snd_pcm_limit_hw_rates(runtime);
+@@ -1202,7 +1202,6 @@ static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_soc_dai *cpu_dai;
+ 	struct snd_soc_dai *codec_dai;
+-	bool playback = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+ 	int i;
  
- 	ret = dpcm_apply_symmetry(fe_substream, stream);
--	if (ret < 0) {
-+	if (ret < 0)
- 		dev_err(fe->dev, "ASoC: failed to apply dpcm symmetry %d\n",
- 			ret);
--		goto unwind;
--	}
--
--	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_NO);
--	return 0;
+ 	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
+@@ -1226,11 +1225,9 @@ static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
  
- unwind:
--	dpcm_be_dai_startup_unwind(fe, stream);
-+	if (ret < 0)
-+		dpcm_be_dai_startup_unwind(fe, stream);
- be_err:
- 	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_NO);
- 	return ret;
+ 	/* apply codec digital mute */
+ 	for_each_rtd_codec_dai(rtd, i, codec_dai) {
+-		int playback_active = codec_dai->stream_active[SNDRV_PCM_STREAM_PLAYBACK];
+-		int capture_active  = codec_dai->stream_active[SNDRV_PCM_STREAM_CAPTURE];
++		int active = codec_dai->stream_active[substream->stream];
+ 
+-		if ((playback && playback_active == 1) ||
+-		    (!playback && capture_active == 1))
++		if (active == 1)
+ 			snd_soc_dai_digital_mute(codec_dai, 1,
+ 						 substream->stream);
+ 	}
 -- 
 2.17.1
 
