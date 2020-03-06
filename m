@@ -2,66 +2,65 @@ Return-Path: <SRS0=YoTX=4X=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 65EBEC10F00
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 08:01:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE5EEC10F00
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 08:06:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DE4A020848
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 08:01:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3E9A62073D
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 08:06:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CkO5PKTE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DE4A020848
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GyZxQv3H"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3E9A62073D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 16BB9820;
-	Fri,  6 Mar 2020 09:00:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 16BB9820
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9F863826;
+	Fri,  6 Mar 2020 09:05:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F863826
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583481661;
-	bh=JaXqyh0UJNUmPXmnP6N0QFVSUKMBIK2LnMttDfIQCnw=;
+	s=default; t=1583481971;
+	bh=G7nRMaIXlOW+gCNU6YaFKC+OVPbGJzoiQKkUtLxvrAo=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CkO5PKTE0t1v8UQTnlCjqVlr6QaUAdqweZSRW9MQ06RIumkNVjRr98+9OlCVK7Mx3
-	 mSm1DJO/njYk3Nkvo5wwwR7AjKZ+snQUIdk+4cpPIIUD3SwCcVmox35zhDfnQsB9AY
-	 AiADxK4qd20XdWlNNeHWb90YaaCL7m3zJZSlHRMg=
+	b=GyZxQv3H5yFLnjLKQgO0h/Dr7GqI4bUnL8d0Wg45o/xkR9oAu5SdrJsaStg1g6M1H
+	 G/W00p35f70xBh3vCcp/IMC/VO2QCxb0yOgKmPoK7bFcaqDzppGF7iOrZPkhOXL+YK
+	 ADe3D9w9VCK511WwFIBT8PR9RSJlT8j2nu5tGhcM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8DA29F801EC;
-	Fri,  6 Mar 2020 09:00:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B26D1F801EC;
+	Fri,  6 Mar 2020 09:05:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 71386F801EC; Fri,  6 Mar 2020 09:00:08 +0100 (CET)
+ id 7E011F801ED; Fri,  6 Mar 2020 09:05:12 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3E00CF8012D
- for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2020 09:00:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E00CF8012D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1963EF80125
+ for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2020 09:05:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1963EF80125
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 836F2B511;
- Fri,  6 Mar 2020 08:00:03 +0000 (UTC)
-Date: Fri, 06 Mar 2020 08:59:59 +0100
-Message-ID: <s5hr1y5eww0.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 584AFABEA;
+ Fri,  6 Mar 2020 08:05:02 +0000 (UTC)
+Date: Fri, 06 Mar 2020 09:05:01 +0100
+Message-ID: <s5hpndpewnm.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: Automatically switching snd_hda_intel.power_save value when
- switching from battery to ac ?
-In-Reply-To: <2ea1d6fe-aec6-71bc-3716-ae851fbfaa9f@redhat.com>
-References: <2ea1d6fe-aec6-71bc-3716-ae851fbfaa9f@redhat.com>
+To: Alexander Tsoy <alexander@tsoy.me>
+Subject: Re: [PATCH] ALSA: usb-audio: Add support for MOTU MicroBook IIc
+In-Reply-To: <20200229151815.14199-1-alexander@tsoy.me>
+References: <20200229151815.14199-1-alexander@tsoy.me>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,34 +76,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 05 Mar 2020 15:33:04 +0100,
-Hans de Goede wrote:
+On Sat, 29 Feb 2020 16:18:15 +0100,
+Alexander Tsoy wrote:
 > 
-> Hi,
+> MicroBook IIc operates in UAC2 mode by default. This patch addresses
+> several issues with it:
 > 
-> Because of a bug-report about power-saving related plops/clocks on a
-> Lenovo T470s, I've asked inside Red Hat if people with a T470s and
-> running a recent kernel were also experiencing this.
+> - MicroBook II and IIc shares the same USB ID. We can distinguish them
+>   by interface class.
+> - MaxPacketsOnly attribute is erroneously set in endpoint descriptors.
+>   As a result this card produces noise with all sample rates other than
+>   96 KHz. This also causes issues like IOMMU page faults and other
+>   problems with host controller.
+> - Sample rate changes takes more than 2 seconds for this device. Clock
+>   validity request returns false during that period, so the clock validity
+>   quirk is required.
 > 
-> Most people are happy with the audio, but I did get a few bug reports
-> about plops on the headphones-jack.
-> 
-> One of the suggestions which I got from 2 different users is to
-> disable power-saving for the HDA driver when on AC, esp. since most
-> headphones-jack use (esp. with an external amplifier which amplifies
-> the problem) is done while the laptop is sitting on a desk and thus
-> typically is connected to a charger.
-> 
-> I'm personally not necessarily a fan of changing settings based
-> on being connected to ac or not, but I guess that in this case
-> it might not be such a bad idea ?
+> Signed-off-by: Alexander Tsoy <alexander@tsoy.me>
 
-Actually the power-saving-toggle-on-demand used to be the standard
-behavior by some power management tools including some
-thinkpad-specific one, IIRC.  So the behavior itself isn't too bad if
-the pop noise can't be fully eliminated.
+Applied now.  Thanks.
 
-
-thanks,
 
 Takashi
