@@ -2,67 +2,70 @@ Return-Path: <SRS0=YoTX=4X=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45EB5C3F2D7
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 05:53:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 751FDC3F2CD
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 05:54:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C4A002072A
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 05:53:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 29D802072A
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 05:54:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YW/RkOvM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C4A002072A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GjZq+QoW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 29D802072A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 28DEF11C;
-	Fri,  6 Mar 2020 06:52:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28DEF11C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8E7B011C;
+	Fri,  6 Mar 2020 06:53:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E7B011C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583474010;
-	bh=O9eVCZh1KUL03QDd8PW/dq5L2FSMsta3LNWEXGchPrg=;
+	s=default; t=1583474083;
+	bh=kt91gLV7bGgUX5cdbgOiSIGd8TE4u227xC+e+8f051Y=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YW/RkOvMoOqnHZtgnUONbYUWzK3KUnXxjjPuT0e50dkFwBI0xMsP3hIenm0tLgrVn
-	 bCMmpUTbk3UwigdFu5AWC4Z8OII/WJgMpQxu9/kJh8thnFa9NAyoPqTKcz+jOMNvXD
-	 qWiZLvESOQ3S3naP8fmFNRWnCBX0R2gT+EqsMJWU=
+	b=GjZq+QoW+ypWXg1qhiDIqpjU7GDbS1Fa7wubx6djneyz+ZlhHiC3mHVgV1Qt0YAZ7
+	 Ywi5NZqna37Z3PmrtBZlCbBt6wLZ2M964zbvBTdZIKURjjjryUycmBrxCgmRrKRJdG
+	 Xgy+KyX3th9Jzfj7UiX2XzjIL/e+n9cqp2p5aNYg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7C761F801EC;
-	Fri,  6 Mar 2020 06:52:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 117FBF801ED;
+	Fri,  6 Mar 2020 06:53:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CECB5F801ED; Fri,  6 Mar 2020 06:52:36 +0100 (CET)
+ id 449DBF801F9; Fri,  6 Mar 2020 06:53:52 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 92153F80125
- for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2020 06:52:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92153F80125
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7A41DF801EC
+ for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2020 06:53:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A41DF801EC
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 63793AE6F;
- Fri,  6 Mar 2020 05:52:26 +0000 (UTC)
-Date: Fri, 06 Mar 2020 06:52:25 +0100
-Message-ID: <s5hzhcudo86.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id B34E1AE6F;
+ Fri,  6 Mar 2020 05:53:48 +0000 (UTC)
+Date: Fri, 06 Mar 2020 06:53:48 +0100
+Message-ID: <s5hy2sedo5v.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH] sound: korg1212: fix if-statement empty body warnings
-In-Reply-To: <91fb1e97-a773-5790-3f65-8198403341e1@infradead.org>
-References: <91fb1e97-a773-5790-3f65-8198403341e1@infradead.org>
+To: Chris <gladiac@gmail.com>
+Subject: Re: [PATCH v2 1/1] ALSA: hda/realtek - Fix silent output on Gigabyte
+ X570 Aorus Master
+In-Reply-To: <CAE3uWP3Shf+vEwV-wUDUmzizSOCS5cSvND+-=rZijefgkmp2tQ@mail.gmail.com>
+References: <20200303153619.24720-1-gladiac@gmail.com>
+ <20200303153619.24720-2-gladiac@gmail.com>
+ <s5h7dzyg8gq.wl-tiwai@suse.de>
+ <CAE3uWP3Shf+vEwV-wUDUmzizSOCS5cSvND+-=rZijefgkmp2tQ@mail.gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: moderated for non-subscribers <alsa-devel@alsa-project.org>,
- LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ kailang@realtek.com, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,33 +81,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 26 Feb 2020 06:32:49 +0100,
-Randy Dunlap wrote:
+On Thu, 05 Mar 2020 16:14:10 +0100,
+Chris wrote:
 > 
-> From: Randy Dunlap <rdunlap@infradead.org>
-> 
-> Fix gcc warnings when -Wextra is used by using an empty do-while
-> block instead of <nothing>.  Fixes these build warnings:
-> 
-> ../sound/pci/korg1212/korg1212.c:674:44: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
-> ../sound/pci/korg1212/korg1212.c:708:43: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
-> ../sound/pci/korg1212/korg1212.c:730:43: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
-> ../sound/pci/korg1212/korg1212.c:853:43: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
-> ../sound/pci/korg1212/korg1212.c:1013:44: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
-> ../sound/pci/korg1212/korg1212.c:1035:43: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
-> ../sound/pci/korg1212/korg1212.c:1052:43: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
-> ../sound/pci/korg1212/korg1212.c:1066:43: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
-> ../sound/pci/korg1212/korg1212.c:1087:43: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
-> ../sound/pci/korg1212/korg1212.c:1094:43: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
-> ../sound/pci/korg1212/korg1212.c:1208:43: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
-> ../sound/pci/korg1212/korg1212.c:2360:102: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Jaroslav Kysela <perex@perex.cz>
-> Cc: Takashi Iwai <tiwai@suse.com>
-> Cc: alsa-devel@alsa-project.org
+> Hello, I am really sorry for the mess-up. It is the exact same patch. I just
+> re-sent it because v1 did not show up in the alsa-devel mailinglist because i
+> did not do the registration beforehand. Please ignore v2.
+> Thanks a lot, Chris
 
-Applied, thanks.
+OK, thanks for confirmation.
 
 
 Takashi
