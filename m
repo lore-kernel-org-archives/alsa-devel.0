@@ -2,158 +2,60 @@ Return-Path: <SRS0=YoTX=4X=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2587BC10DCE
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 21:19:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E469C10DCE
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 15:06:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A028D206E6
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 21:19:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E079F20409
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 15:06:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LHCp+snc";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="N7kRiGdR";
-	dkim=pass (1024-bit key) header.d=cirrus4.onmicrosoft.com header.i=@cirrus4.onmicrosoft.com header.b="mlzsFQgH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A028D206E6
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=cirrus.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kYIhvLl9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E079F20409
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0BCC2826;
-	Fri,  6 Mar 2020 22:18:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0BCC2826
+	by alsa0.perex.cz (Postfix) with ESMTPS id 55C3582A;
+	Fri,  6 Mar 2020 16:05:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 55C3582A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583529552;
-	bh=cFmM3oO5l3SnvlFC1mN18AFrVdm5Ootaj0h7GbOzd9A=;
-	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=LHCp+snc6TF0Jwgnjo0rzQDv1nXvNZn/rEvqefW2FJybFVBp48HfwrlCqsfMPyiPi
-	 elD9ytjipogQjC+ukfFXu0agm+ClUB85RzuDtYGHBF+SxuEFMwcBP1244fllhEl/Cp
-	 Tpu2iGqASiH8ZfncGNbwBBSBba6zRAKwISrQykrA=
+	s=default; t=1583507190;
+	bh=PPVL0uCsu7WPF0k5Viw065ckUzFsogu4Sv3mSLVAx+Y=;
+	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=kYIhvLl97X87Oi5i3T2hi9qAdXa7FgGMwPyvntJhZhBplPDPSlVlDFSkZXrFqDHMC
+	 MgGo7Enp0vptxm7u6tbaAb+KignO7qAllqmUxjgn0AGQXhuLpkVxOf9PFPCvTkmGSN
+	 A9ohcC42CnfAfpkk47odCsWeL8Kpub2kr3gi+X9w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8BAE8F801EC;
-	Fri,  6 Mar 2020 22:18:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 556C4F8029A;
+	Fri,  6 Mar 2020 16:03:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CEF1AF801ED; Fri,  6 Mar 2020 22:18:19 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5CCFEF80126
- for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2020 22:18:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5CCFEF80126
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="N7kRiGdR"; 
- dkim=pass (1024-bit key) header.d=cirrus4.onmicrosoft.com
- header.i=@cirrus4.onmicrosoft.com header.b="mlzsFQgH"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
- 026L1G2C019642; Fri, 6 Mar 2020 15:18:13 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=PODMain02222019;
- bh=cFmM3oO5l3SnvlFC1mN18AFrVdm5Ootaj0h7GbOzd9A=;
- b=N7kRiGdRIohow2SWqW1sCqr6Q+a4EuBMnqO89ft1QV09TfPqBFdO/zpaZ15CUDc3/7ic
- eI4naEDwBfLGxt3r+JvPTcYzhB2acFyHG92Mm5gETMAZ5ofABS1PDGAC+P2VawmcGTY8
- 2RJB+SQ+CuVzRb2iftwQkHeAdrS1jwkqWyemSCh8bSNGEgR1K/EwjLVMlGNrLdz36zEZ
- fBwJQffP7KaairAXFRNH7nP8O3Mt0PbOy70fMuw89zg4autWkD2crAAoCzZlOE0SyicF
- 7SsCr9vKagNgjkASCJWVBO2FZRvNYSHI9+ZPi+U9Dsz3dgm019EeoW25rGjx6fvsoYTJ /w== 
-Authentication-Results: ppops.net;
- spf=pass smtp.mailfrom=David.Rhodes@cirrus.com
-Received: from nam12-mw2-obe.outbound.protection.outlook.com
- (mail-mw2nam12lp2044.outbound.protection.outlook.com [104.47.66.44])
- by mx0a-001ae601.pphosted.com with ESMTP id 2yfp8a3w0m-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 06 Mar 2020 15:18:13 -0600
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EBGk9DVag1SoL24QeTLQzZZDUXONunPPtcV8Tje658fSu2VfVZtU0rCoQYvp8HQ1nCc9ATT2QCdXz5dQTWOmnVzif9kASWoQurEodiVmGTH/u6h1Z8l/bTwkvdGV2IWcw0PfggzumnH4rEuC3i0TeNxHUHr1XUmNTYuQZKAJcvvd7pi5nY+G+tlBoDBtFkFtTk0xJtFeUsQj9m+2cAE0tAmKZIUDT1iK3Qz2XiS49+H2whAAZZjzp0u4hEQOOekOvvVK7GLWKzwwe6vavFmwOJsfSYmbkffWb7YLjz0IA6JMfZj/N6EtEB33eL5OJW41RxMVhwaI2cEvO8y2yoPp9Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cFmM3oO5l3SnvlFC1mN18AFrVdm5Ootaj0h7GbOzd9A=;
- b=LUV79hnCQUTwT+dpYNKVH+OBnRB6p5EYLDs9X1l6uDAViuOUkJFepxXyZPY3q9q7q1yYSL9dMfvi//GHF9LwAcJI342wRtVuvOAFbmTxGQIWpRRULpkBZVkUKpx2HhowV6z5D+AnAg3DT/hXGD6+dn24vl44Y0ZKX4AGE6gEHGhM2nKzbPc6dh+GXL81MUoS/174arMTa+K1rv7ju5v+QZpVuDbpmm4ILi008yo1doV53JUx5Yc5W0YAhvC8VwL4v02yHqoivg86QWFxtU/GxISZCiDuYMDIaAQyEzMCtogL1a1f/HrFkJzRzi9ZgDM8zxg2bIryMrfyMNDuUAnvpw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cirrus.com; dmarc=pass action=none header.from=cirrus.com;
- dkim=pass header.d=cirrus.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=cirrus4.onmicrosoft.com; s=selector2-cirrus4-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cFmM3oO5l3SnvlFC1mN18AFrVdm5Ootaj0h7GbOzd9A=;
- b=mlzsFQgHCK2pjVOn0Cq3DJwuWbPdulMsbux6swSq35g0vdvSQgSGhN+1kpWB2kbGnOpMwJsLDRCWVWvrWJlJM/PAb+yYFczBNLugTIbzwM6hl9bfCSX9a6x4vSkFX/wRe0Wtx83ggmHe5AZOfl7JZj2OPysw5Dw17DW4Bs4AXvg=
-Received: from BY5PR19MB3538.namprd19.prod.outlook.com (2603:10b6:a03:1bf::28)
- by BY5PR19MB3350.namprd19.prod.outlook.com (2603:10b6:a03:185::18)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2793.17; Fri, 6 Mar
- 2020 21:18:10 +0000
-Received: from BY5PR19MB3538.namprd19.prod.outlook.com
- ([fe80::1153:a153:f112:43e1]) by BY5PR19MB3538.namprd19.prod.outlook.com
- ([fe80::1153:a153:f112:43e1%5]) with mapi id 15.20.2793.013; Fri, 6 Mar 2020
- 21:18:10 +0000
-From: "Rhodes, David" <David.Rhodes@cirrus.com>
-To: "Schulman, James" <James.Schulman@cirrus.com>, "broonie@kernel.org"
- <broonie@kernel.org>, "alsa-devel@alsa-project.org"
- <alsa-devel@alsa-project.org>
-Subject: Re: [PATCH] MAINTAINERS: Update Cirrus Logic codec driver maintainers
-Thread-Topic: [PATCH] MAINTAINERS: Update Cirrus Logic codec driver maintainers
-Thread-Index: AQHV8/uvTLLDbdTF00mNe25R2BUq/qg7rOuA
-Date: Fri, 6 Mar 2020 21:18:10 +0000
-Message-ID: <33FB8674-6779-437E-B647-BA651C121A77@cirrus.com>
-References: <alpine.DEB.2.21.2003061508150.32557@james-tower>
-In-Reply-To: <alpine.DEB.2.21.2003061508150.32557@james-tower>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [141.131.2.3]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f732c407-103d-472d-1e0a-08d7c213df96
-x-ms-traffictypediagnostic: BY5PR19MB3350:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BY5PR19MB3350DE5853168689984F3ED1EEE30@BY5PR19MB3350.namprd19.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4125;
-x-forefront-prvs: 0334223192
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10019020)(4636009)(136003)(396003)(366004)(376002)(39850400004)(346002)(189003)(199004)(4326008)(26005)(54906003)(110136005)(316002)(81166006)(81156014)(8676002)(76116006)(91956017)(107886003)(66476007)(66946007)(66446008)(64756008)(66556008)(15650500001)(71200400001)(86362001)(478600001)(6512007)(6506007)(2906002)(186003)(2616005)(6486002)(8936002)(5660300002)(4744005)(33656002)(36756003);
- DIR:OUT; SFP:1102; SCL:1; SRVR:BY5PR19MB3350;
- H:BY5PR19MB3538.namprd19.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; MX:1; A:1; 
-received-spf: None (protection.outlook.com: cirrus.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Oj1eX8Nif0/AtjjZQ+dtHPhaJRd4kzN+nzjp4Wcxm3OVHwLv03MLu7B1YiZ1xH6Ksc+2mdcyvD0UK61cQm1M2xcfQVxdFMeK2pDOJeVfNZGRSY61J1Q10UL2CzXBUXmFk8EJKtC34PhvZhrdmxV3hb1hXuzPYtH0kktlAX3RuvDcAlu5yUYXyK8VoB5hYOpu5wsttRiGM6vUQ/h9FXnYUwqjNdo3H1LKr9aoRNKlWW+Y6PCCj1ViylcR/wz9xNg/CHn1ox71MEPk87QwZDi0C3GlEqiNt7mloFiUwO7yzI7YBDRFjsAOiUzgCIrK7BEpjb2IzkhIc/b5U+/S2ZZaSrEptGxl0NJskVLmMFiwOnESbYDh4ewh8lx5Sg5ZCueW9l6mLyOOIWKXiWE8erTGS8wM2M5O9TjqicH9+PK2TGPeygnUF54V2f42wNkXcXwR
-x-ms-exchange-antispam-messagedata: /bCjZ7x8dViYlQmKBNYcdbtFQv4TUsz/SmRvFuGXL/PbA5cj7V84QTxXNSfRKMtIVjsz6BlM3zSLGIgAvQLF63VFZB71AzFdh5mJaVazt5syamxeF4NYyx/RelIY1373jxsUEPi1Z+sdXF92Z5C/Hw==
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <6AFAA74F5678F94F890C7BA7CAADCD57@namprd19.prod.outlook.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-OriginatorOrg: cirrus.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f732c407-103d-472d-1e0a-08d7c213df96
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Mar 2020 21:18:10.5680 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: bec09025-e5bc-40d1-a355-8e955c307de8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: sMjfab4YyF8OcMuimRcmc0OpqrIx8N+G3FZyiP+jZ0/mcNA/rD0HocKuCwhddnn0n/VMney3b121/ABjttxRdQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR19MB3350
-X-Proofpoint-SPF-Result: pass
-X-Proofpoint-SPF-Record: v=spf1 include:spf-001ae601.pphosted.com
- include:spf.protection.outlook.com
- include:_spf1.cirrus.com include:_spf2.cirrus.com -all
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0
- suspectscore=0
- priorityscore=1501 phishscore=0 mlxlogscore=999 impostorscore=0 mlxscore=0
- bulkscore=0 clxscore=1011 spamscore=0 adultscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
- definitions=main-2003060123
-Cc: "Austin, Brian" <Brian.Austin@cirrus.com>, "Handrigan,
- Paul" <Paul.Handrigan@cirrus.com>
+ id 8DEDEF8029B; Fri,  6 Mar 2020 16:03:22 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id A7BABF8028E
+ for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2020 16:03:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7BABF8028E
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 859E131B;
+ Fri,  6 Mar 2020 07:03:18 -0800 (PST)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 09A463F237;
+ Fri,  6 Mar 2020 07:03:17 -0800 (PST)
+Date: Fri, 06 Mar 2020 15:03:16 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: soc-pcm: tidyup dulicate handing at
+ dpcm_fe_dai_startup()" to the asoc tree
+In-Reply-To: 
+Message-Id: 
+X-Patchwork-Hint: ignore
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -168,25 +70,78 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+Message-ID: <20200306150316.LJ_5q1raGk-qCtF4hhxeu6d42islho2KZXr4rofLelo@z>
 
-QWNrZWQtYnk6IERhdmlkIFJob2RlcyA8ZGF2aWQucmhvZGVzQGNpcnJ1cy5jb20+DQoNClRoYW5r
-cywNCkRhdmlkDQoNCu+7v09uIDMvNi8yMCwgMzoxMCBQTSwgIlNjaHVsbWFuLCBKYW1lcyIgPEph
-bWVzLlNjaHVsbWFuQGNpcnJ1cy5jb20+IHdyb3RlOg0KDQogICAgQnJpYW4gJiBQYXVsIGFyZSBu
-byBsb25nZXIgYWN0aXZlIGF1ZGlvIGNvZGVjIGRyaXZlcg0KICAgIG1haW50YWluZXJzLiBVcGRh
-dGUgbGlzdCB0byByZWZsZWN0IG15c2VsZiBhbmQgRGF2aWQNCiAgICBSaG9kZXMgYXMgdGhlIGFj
-dGl2ZSBtYWludGFpbmVycy4NCiAgICANCiAgICBTaWduZWQtb2ZmLWJ5OiBKYW1lcyBTY2h1bG1h
-biA8amFtZXMuc2NodWxtYW5AY2lycnVzLmNvbT4NCiAgICAtLS0NCiAgICAgICBNQUlOVEFJTkVS
-UyB8IDQgKystLQ0KICAgICAgIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDIgZGVs
-ZXRpb25zKC0pDQogICAgDQogICAgZGlmZiAtLWdpdCBhL01BSU5UQUlORVJTIGIvTUFJTlRBSU5F
-UlMNCiAgICBpbmRleCA2MTU4YTE0M2ExM2UuLjA1Mzc5ZjhiYzhlMSAxMDA2NDQNCiAgICAtLS0g
-YS9NQUlOVEFJTkVSUw0KICAgICsrKyBiL01BSU5UQUlORVJTDQogICAgQEAgLTQwMjEsOCArNDAy
-MSw4IEBAIEY6DQogICAgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL2dv
-b2dsZSxjcm9zLWVjLWNvZGVjLnR4dA0KICAgICAgIEY6ICAgICAgc291bmQvc29jL2NvZGVjcy9j
-cm9zX2VjX2NvZGVjLioNCiAgICANCiAgICAgICBDSVJSVVMgTE9HSUMgQVVESU8gQ09ERUMgRFJJ
-VkVSUw0KICAgIC1NOiAgICAgQnJpYW4gQXVzdGluIDxicmlhbi5hdXN0aW5AY2lycnVzLmNvbT4N
-CiAgICAtTTogICAgIFBhdWwgSGFuZHJpZ2FuIDxQYXVsLkhhbmRyaWdhbkBjaXJydXMuY29tPg0K
-ICAgICtNOiAgICAgSmFtZXMgU2NodWxtYW4gPGphbWVzLnNjaHVsbWFuQGNpcnJ1cy5jb20+DQog
-ICAgK006ICAgICBEYXZpZCBSaG9kZXMgPGRhdmlkLnJob2Rlc0BjaXJydXMuY29tPg0KICAgICAg
-IEw6ICAgICAgYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnIChtb2RlcmF0ZWQgZm9yIG5vbi1z
-dWJzY3JpYmVycykNCiAgICAgICBTOiAgICAgIE1haW50YWluZWQNCiAgICAgICBGOiAgICAgIHNv
-dW5kL3NvYy9jb2RlY3MvY3MqDQogICAgLS0NCiAgICAyLjE3LjENCg0K
+The patch
+
+   ASoC: soc-pcm: tidyup dulicate handing at dpcm_fe_dai_startup()
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+From 8a01fbf0ac115268293d8764850edc0628a58e4f Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Fri, 6 Mar 2020 10:09:59 +0900
+Subject: [PATCH] ASoC: soc-pcm: tidyup dulicate handing at
+ dpcm_fe_dai_startup()
+
+error handling at dpcm_fe_dai_startup() has duplicate code.
+This patch tidyup it.
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Link: https://lore.kernel.org/r/87lfoep9ug.wl-kuninori.morimoto.gx@renesas.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/soc-pcm.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
+
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 3a30776858bf..7d787e0966f3 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2162,17 +2162,13 @@ static int dpcm_fe_dai_startup(struct snd_pcm_substream *fe_substream)
+ 	snd_pcm_limit_hw_rates(runtime);
+ 
+ 	ret = dpcm_apply_symmetry(fe_substream, stream);
+-	if (ret < 0) {
++	if (ret < 0)
+ 		dev_err(fe->dev, "ASoC: failed to apply dpcm symmetry %d\n",
+ 			ret);
+-		goto unwind;
+-	}
+-
+-	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_NO);
+-	return 0;
+ 
+ unwind:
+-	dpcm_be_dai_startup_unwind(fe, stream);
++	if (ret < 0)
++		dpcm_be_dai_startup_unwind(fe, stream);
+ be_err:
+ 	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_NO);
+ 	return ret;
+-- 
+2.20.1
+
