@@ -8,86 +8,88 @@ X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 246C4C10DCE
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 22:34:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 512C7C10DCE
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 23:03:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9D122206E6
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 22:34:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CC75B206CC
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Mar 2020 23:03:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="k5ahP/bR";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bx2+x4gj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9D122206E6
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eeUFtnww";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R4J4lHYv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC75B206CC
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 05CEF1607;
-	Fri,  6 Mar 2020 23:34:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 05CEF1607
+	by alsa0.perex.cz (Postfix) with ESMTPS id 143B382A;
+	Sat,  7 Mar 2020 00:02:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 143B382A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583534091;
-	bh=szYjNDgvUyPnicG9dZ7/XN4ohfqE/lEK38wYv6bMhIg=;
+	s=default; t=1583535818;
+	bh=89vF5FFF/+gSrCt/v5B9oyjp0YLrn8tUV8aYZL25jbQ=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=k5ahP/bR3Z5rS1t/uv6EncUDuo9DOeZc6oCm/cdSaOHhpPtQy6L3/PCCMoJe/wOPF
-	 jmi8gtMt4GibsPxeLQAXponchevLLHW1cao5LZoSCOc2eogLupKBlrt0dwHwvlAGxU
-	 SbvViTTNaPdEuEVtSeWZ2iEIw+DYhuNeQIrWDjGs=
+	b=eeUFtnwwHuLTeedWdQH288wpQ1B2/JtQrzEL86BLTonirIqGEwPgfaHSYTUblGbJn
+	 ZYLuuCIURqz7VTWHJxLBtsckUsyiNgO7vxF+I0BwLsrH3rSx/TbR/wxq0cHX3PEgwU
+	 9c+OwBmb4ZFfZiQTZuBMJ9KScToLLwEGc+b6kNTI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6BC64F801EC;
-	Fri,  6 Mar 2020 23:34:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6BFEBF801EC;
+	Sat,  7 Mar 2020 00:02:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 69959F8012D; Fri,  6 Mar 2020 23:33:58 +0100 (CET)
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com
- [IPv6:2607:f8b0:4864:20::442])
+ id 24860F801ED; Sat,  7 Mar 2020 00:02:46 +0100 (CET)
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com
+ [IPv6:2a00:1450:4864:20::542])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 52F78F8012D
- for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2020 23:33:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52F78F8012D
+ by alsa1.perex.cz (Postfix) with ESMTPS id CF145F80125
+ for <alsa-devel@alsa-project.org>; Sat,  7 Mar 2020 00:02:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF145F80125
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="bx2+x4gj"
-Received: by mail-pf1-x442.google.com with SMTP id g21so1787452pfb.5
- for <alsa-devel@alsa-project.org>; Fri, 06 Mar 2020 14:33:54 -0800 (PST)
+ header.b="R4J4lHYv"
+Received: by mail-ed1-x542.google.com with SMTP id y3so4339617edj.13
+ for <alsa-devel@alsa-project.org>; Fri, 06 Mar 2020 15:02:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
  :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=FS9+2bDY2vULPMbYtS5zKTaNGCBeXOr++Wtt8/sAX38=;
- b=bx2+x4gjWHAh3Lous3ONP4TSwUXN6JEzkZn1ZrFFOjana49CDhwujOOo3ZSK26X5Kd
- 1o1ARXO0kw9E5RYGTZ+6qrW17yQl3dptFaVoS6M6pRKnFHQtp0xPmNcZEIaIETqZ+mvi
- knRh+lOxW+JhIv8RuwZpfKAASqpUAA661tQhExUGqUatDBDl4gHhquj0hVwO3fzztOkT
- l1b3KD2tF5IMhCUobZBTNrQDFYwdEcz1mFGOUgWQZyoD2+QWEZ81oUlPd+c52OsQ2J/3
- 9HOaDPLOs+uoQTvsPesKkNy05YiKtq4yfIVQAYDSgj6QrCqWZg0tNickUEHbo6BL0x0T
- heqQ==
+ bh=pXwY9kZsDr2SZGX5k1OX7n8vFsAeKymBZXMokmmHvgE=;
+ b=R4J4lHYv//4yEzHWU/RG0e4PhJW4aOW0ZJg0M5AAnvn5ZAlepi40bORyC83hUv6f96
+ 9+wNu8NN/xkjl81diF3vVYkkIX6bNbTQLKkpXM9mPx+BBlNJikcZb8qu0R/kxMmW0MBf
+ q9u486WaFnItX9wU5vT6IJjDfXm12WgKWdAZLV+7kKIN+ExBIKd6MBkihEyZYurWwkjN
+ h+p+8i7MrfQTxAE7aDUIxbYJCG2UGjAA+A2d3r+FSIFqdCsGQjmAQaQAgobxJfqWiK27
+ 7gvqVk9/c8jFvm1/26fQl+kO3+1JO5IJEB48Zo7JlooC7zqRoqBeacaN8SPes1BD5Doe
+ 6uiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:subject:to:cc:references:from:autocrypt
  :message-id:date:user-agent:mime-version:in-reply-to
  :content-language:content-transfer-encoding;
- bh=FS9+2bDY2vULPMbYtS5zKTaNGCBeXOr++Wtt8/sAX38=;
- b=IY6RtAvNSSep71gT174tDrhGnbeYhJg2sd9uKa6G9dv7F9flv3poF6dR21vyUrguUn
- +PBTKQ8U9PI9tlw1hyVz59ROsMf1r+Nyl2agV+Ug2rcbnJdhDi6xQHNNg2pkybzTaUGt
- l2v5J8+R2k1dW+Jc10y4eCXOOf3JD8H8/9U7WaPx7SYw1lFJ7F2biMGTJe1pZ65CJbE1
- yaTxtq+6oyXN9q5zB/M2wlKKsm2PPnpHvRiXvJNmw5lCoudMfT05kCfljypdETn9uCLk
- DCftPBbr/Y5XzZEIChu7X+5CHggsDr99CJ+Gc9CQxzZAC+FVgkM8rWCeGZGfl0k0jXiP
- fmQw==
-X-Gm-Message-State: ANhLgQ3y9511FWEd6wWVLTQQK9G5P4M8zHdl4gfg3duIFf1Z2ZatJ/Fv
- Fen6yOfhhg4i3cTipXTGYvQ=
-X-Google-Smtp-Source: ADFU+vtD4/idDTlt2c4LtFn+sBQoFRZS8xjqFe321lMdM8lFIa5yunrPaFMzfSJchG6/7cf1aFJPHg==
-X-Received: by 2002:a62:874d:: with SMTP id i74mr5793894pfe.241.1583534031966; 
- Fri, 06 Mar 2020 14:33:51 -0800 (PST)
+ bh=pXwY9kZsDr2SZGX5k1OX7n8vFsAeKymBZXMokmmHvgE=;
+ b=L9hW5r8j502C16DHq2n2gLLZWPZ+t4TCRQjKr9HM9sNeedjsb4Tko75YQlxXfVi48y
+ ulAT7lGfzc1EkQl+Q6tjuJRFZT+wHbfHLYRdqM/XVb371BL/ZjS9V2LeH/SsoierpF1E
+ sf1Xa7SPbokJoXZM8+zSTEs1CnH9fdUXwJB5KCKrlK32J1FiHyge4l1CBnOjvsIUDPa3
+ mjIIOOv0F+7OowTbBecjbMwRrSHu9f7k+u18t0RIBnZreO7tlLxXA3NQH6nIWq6Zzs6n
+ vaUqrcsL5BRVN2NqYvUOpCXEPADjvZRzBW4lwnJaiAma8nSFcjduf/LnqLIYaD4N37CN
+ ZxFw==
+X-Gm-Message-State: ANhLgQ06Uq1qkceC2ZfUJ83HYE2NnHMfoX3obuWjVSkB6PmRBbwKXAZ1
+ TCtjLEDxns2y8YaHNTk+eyw=
+X-Google-Smtp-Source: ADFU+vurlvAjqQ4Okdwipjm4AfN/rPfObofn8pUkaEGeNw/iU54P0LffU21JL45PA9wcd1dQWha+OA==
+X-Received: by 2002:a05:6402:95b:: with SMTP id
+ h27mr5679209edz.114.1583535759799; 
+ Fri, 06 Mar 2020 15:02:39 -0800 (PST)
 Received: from [10.67.48.239] ([192.19.223.252])
- by smtp.googlemail.com with ESMTPSA id
- r14sm16371376pfh.119.2020.03.06.14.33.50
+ by smtp.googlemail.com with ESMTPSA id i15sm1636107ejh.56.2020.03.06.15.02.36
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 06 Mar 2020 14:33:51 -0800 (PST)
+ Fri, 06 Mar 2020 15:02:38 -0800 (PST)
 Subject: Re: [PATCH] ASoC: brcm: Add DSL/PON SoC audio driver
 To: Kevin Li <kevin-ke.li@broadcom.com>, Mark Brown <broonie@kernel.org>
 References: <20200306222705.13309-1-kevin-ke.li@broadcom.com>
+ <8d4fc59e-f892-7228-4369-f40ced5dc2d3@gmail.com>
+ <31b665e609f3cfee935f4489a073af21@mail.gmail.com>
 From: Florian Fainelli <f.fainelli@gmail.com>
 Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
  xsDiBEjPuBIRBACW9MxSJU9fvEOCTnRNqG/13rAGsj+vJqontvoDSNxRgmafP8d3nesnqPyR
@@ -143,12 +145,12 @@ Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
  HvsHIcv4lxCWkFXkwsuWqzEKK6kxVpRDoEQPDj+Oy/ZJ5fYuMbkdHrlegwoQ64LrqdmiVVPC
  TwQYEQIADwIbDAUCVF/S8QUJHlwd3wAKCRBhV5kVtWN2Do+FAJ956xSz2XpDHql+Wg/2qv3b
  G10n8gCguORqNGMsVRxrlLs7/himep7MrCc=
-Message-ID: <8d4fc59e-f892-7228-4369-f40ced5dc2d3@gmail.com>
-Date: Fri, 6 Mar 2020 14:33:48 -0800
+Message-ID: <26805c24-7339-d9c9-269c-d6c027a891d1@gmail.com>
+Date: Fri, 6 Mar 2020 15:02:34 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200306222705.13309-1-kevin-ke.li@broadcom.com>
+In-Reply-To: <31b665e609f3cfee935f4489a073af21@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -173,49 +175,81 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 3/6/20 2:27 PM, Kevin Li wrote:
-> This patch adds Broadcom DSL/PON SoC audio driver
-> with Whistler I2S block. The SoC supported by this
-> patch are BCM63158B0,BCM63178 and BCM47622/6755.
+On 3/6/20 2:50 PM, Kevin Li wrote:
+> Hi Florian,
 > 
-> Signed-off-by: Kevin Li <kevin-ke.li@broadcom.com>
-> ---
+> It is called from bcm63xx-i2s-whistler.c.
+> Maybe the name "_probe" function confused. It was 2 platform drivers, I
+> combined them together now.
+> 
+> Let me know if this answers your question, and what to do to address your
+> question.
 
-[snip]
+Ok, that makes sense now, sorry for not spotting it earlier.
 
-> +int bcm63xx_soc_platform_probe(struct platform_device *pdev,
-> +			       struct bcm_i2s_priv *i2s_priv)
-> +{
-> +	int ret;
-> +
-> +	i2s_priv->r_irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
-> +	if (!i2s_priv->r_irq) {
-> +		dev_err(&pdev->dev, "Unable to get register irq resource.\n");
-> +		return -ENODEV;
-> +	}
-> +
-> +	ret = devm_request_irq(&pdev->dev, i2s_priv->r_irq->start, i2s_dma_isr,
-> +			i2s_priv->r_irq->flags, "i2s_dma", (void *)i2s_priv);
-> +	if (ret) {
-> +		dev_err(&pdev->dev,
-> +			"i2s_init: failed to request interrupt.ret=%d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	return devm_snd_soc_register_component(&pdev->dev,
-> +					&bcm63xx_soc_platform, NULL, 0);
-> +}
-> +
-> +int bcm63xx_soc_platform_remove(struct platform_device *pdev)
-> +{
-> +	return 0;
-> +}
+PS: no top posting please ;)
 
-How does one probe this module if the bcm63xx_soc_platform_probe()
-functions are not called from anywhere and/or hooked up to the module
-entry/exit points?
+> 
+> Regards!
+> Kevin
+> 
+> -----Original Message-----
+> From: Florian Fainelli [mailto:f.fainelli@gmail.com]
+> Sent: Friday, March 06, 2020 2:34 PM
+> To: Kevin Li <kevin-ke.li@broadcom.com>; Mark Brown <broonie@kernel.org>
+> Cc: alsa-devel@alsa-project.org; linux-kernel@vger.kernel.org; Kuninori
+> Morimoto <kuninori.morimoto.gx@renesas.com>; Scott Branden
+> <sbranden@broadcom.com>; Liam Girdwood <lgirdwood@gmail.com>; Ray Jui
+> <rjui@broadcom.com>; Takashi Iwai <tiwai@suse.com>; Jaroslav Kysela
+> <perex@perex.cz>; bcm-kernel-feedback-list@broadcom.com; Stephen Boyd
+> <swboyd@chromium.org>; linux-arm-kernel@lists.infradead.org
+> Subject: Re: [PATCH] ASoC: brcm: Add DSL/PON SoC audio driver
+> 
+> On 3/6/20 2:27 PM, Kevin Li wrote:
+>> This patch adds Broadcom DSL/PON SoC audio driver with Whistler I2S
+>> block. The SoC supported by this patch are BCM63158B0,BCM63178 and
+>> BCM47622/6755.
+>>
+>> Signed-off-by: Kevin Li <kevin-ke.li@broadcom.com>
+>> ---
+> 
+> [snip]
+> 
+>> +int bcm63xx_soc_platform_probe(struct platform_device *pdev,
+>> +			       struct bcm_i2s_priv *i2s_priv) {
+>> +	int ret;
+>> +
+>> +	i2s_priv->r_irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
+>> +	if (!i2s_priv->r_irq) {
+>> +		dev_err(&pdev->dev, "Unable to get register irq resource.\n");
+>> +		return -ENODEV;
+>> +	}
+>> +
+>> +	ret = devm_request_irq(&pdev->dev, i2s_priv->r_irq->start, i2s_dma_isr,
+>> +			i2s_priv->r_irq->flags, "i2s_dma", (void *)i2s_priv);
+>> +	if (ret) {
+>> +		dev_err(&pdev->dev,
+>> +			"i2s_init: failed to request interrupt.ret=%d\n", ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	return devm_snd_soc_register_component(&pdev->dev,
+>> +					&bcm63xx_soc_platform, NULL, 0); }
+>> +
+>> +int bcm63xx_soc_platform_remove(struct platform_device *pdev) {
+>> +	return 0;
+>> +}
+> 
+> How does one probe this module if the bcm63xx_soc_platform_probe() functions
+> are not called from anywhere and/or hooked up to the module entry/exit
+> points?
+> 
+> Are you not missing a platform_driver entry which matches the compatible
+> string you defined?
+> --
+> Florian
+> 
 
-Are you not missing a platform_driver entry which matches the compatible
-string you defined?
+
 -- 
 Florian
