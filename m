@@ -2,101 +2,98 @@ Return-Path: <SRS0=Hs3e=4Z=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F3A8C18E5B
-	for <alsa-devel@archiver.kernel.org>; Sun,  8 Mar 2020 07:49:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2ACB8C10F28
+	for <alsa-devel@archiver.kernel.org>; Sun,  8 Mar 2020 07:49:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CF1A920828
-	for <alsa-devel@archiver.kernel.org>; Sun,  8 Mar 2020 07:49:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A8A6020828
+	for <alsa-devel@archiver.kernel.org>; Sun,  8 Mar 2020 07:49:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EvHsFT0A";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="OJlbFWUt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CF1A920828
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=broadcom.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LXlg2sGc";
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lEcgW0wE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A8A6020828
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 229E51616;
-	Sun,  8 Mar 2020 08:48:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 229E51616
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0BC6E1672;
+	Sun,  8 Mar 2020 08:48:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0BC6E1672
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583653759;
-	bh=CDhDSmF/gP9TlFAJRJwhhCX83/75NZAu7/Z3hv8ph+s=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=EvHsFT0Acebv3OmrrRBtNiDtuGshZ4m2Ft1/bisOa8XnKKrM2WEu9eocUL7PdwPKb
-	 NWMJHpTwPIxBm7rVM8atGDH2TchVkkdF8xLiJ6AF1M/6pQtsRq6ABWaZSA8Kt/daYd
-	 qIeHI5wvgQ+5fW43WRG3Da3W9ede9y5DK02AG44k=
+	s=default; t=1583653786;
+	bh=c3vz12+4VID8zK8FL5KjiYfCAjJuUOqUTAQfHx5W3z4=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=LXlg2sGcayShvtygxAT+T/YdEaDXRN+JFEddu6OzfNImtKxEGE2wrAuA3GolaO0/X
+	 COVIRVJeidbC3mcdxExZnbgCzv06qnGlehwRBk7hg8V5tgAELKbgkUNfwfi05fnW0U
+	 41dApvo4a95VwgwQOHJZthf0DGiuCIssGMdXPxzQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DA03DF8028E;
-	Sun,  8 Mar 2020 08:46:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C9442F80292;
+	Sun,  8 Mar 2020 08:46:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 938C6F801ED; Fri,  6 Mar 2020 23:27:35 +0100 (CET)
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com
- [IPv6:2607:f8b0:4864:20::541])
+ id B0D80F80125; Sat,  7 Mar 2020 19:57:30 +0100 (CET)
+Received: from mail-yw1-xc34.google.com (mail-yw1-xc34.google.com
+ [IPv6:2607:f8b0:4864:20::c34])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2FCB7F80126
- for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2020 23:27:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2FCB7F80126
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8A6CAF80125;
+ Sat,  7 Mar 2020 19:57:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8A6CAF80125
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com
- header.b="OJlbFWUt"
-Received: by mail-pg1-x541.google.com with SMTP id m5so1732697pgg.0
- for <alsa-devel@alsa-project.org>; Fri, 06 Mar 2020 14:27:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=broadcom.com; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=aeWGyVhSQlBwiMFchxY/x8zvKPyDAht51wdM4LGPaMo=;
- b=OJlbFWUtTlgzus9WEg4N3tRl6P5CYlHkRBNYM3Gldbs2eQTew1H7qa/996L6qmDxXq
- IpUDapzYB+xKEOgMAmL0TaIIScu4BpnVSD6HrJtwNA2y0q9wO5Ta+2Z44/9uxpvdhasR
- oo+euUGZ2J1ZqyZgw1EwVnS54iI2yCbvBl0GY=
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="lEcgW0wE"
+Received: by mail-yw1-xc34.google.com with SMTP id v138so5731537ywa.9;
+ Sat, 07 Mar 2020 10:57:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=c3vz12+4VID8zK8FL5KjiYfCAjJuUOqUTAQfHx5W3z4=;
+ b=lEcgW0wE+HP3wwv2fAI6onOrCuJll2lBCO/RIxRooIP1psG8mn1RLKzITKVat1pFor
+ xZ62dsS5ZK1LoUdELMlGsDoB0nmi6zzJdFdXZVh2XwE4ZA36ZSToDrK8QQAf1nkLkkwh
+ cWvBC0W4Xpzb9+DOQcqTJdk1uLTVfIDh0MAQxql/8rXrHm7Igt5XW9m/YG8KcQdrSUGK
+ elpc89TCGW1vN47f2Py42ue3E0nDXH59JTs5xjryjrnEMArFNyMIEcEZ2JwOQ38bz9RZ
+ dEdvNL6sv1NjBWYuZPhsbC7ra0HBss/T1oDp66dzo5LyNQvSbXniABguchHr3X+17qol
+ zQQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=aeWGyVhSQlBwiMFchxY/x8zvKPyDAht51wdM4LGPaMo=;
- b=NrHu7aopp10fdV4YbFXsPjI+dEwWA6xuoVVzoSm/SeT/nGrK8hAI7u+JPL+WI93D5u
- A7z6wqfMxVsrI5ajQyYz+TDw2gsLaDYWWKPrqhbkbHe6ScApOHmPuYNGQlPna7iwfLdv
- DyyIpNQ2DgLD33vpx2+Qk0mF+ntHQlCVUcMYwb+c9zJYrkdEFvL6l68/mrVhIo9EHrTY
- +0NPKU4qGtMtPfvWowmuPfJm4eTfRz/qcE+eoUAIskVtG0E6RyS9kzmX5QNxNqr4DOLN
- PL0GMI3rfdxrAfyrkZt+UT1pbyv/dLTWJpPYvYPDkKndQ7c7QHLD3uXWYWnFg1riTDee
- R+IQ==
-X-Gm-Message-State: ANhLgQ2Ik94JjgyEDDGA1Vrt06cO6R/mqhwduM61Dka5o3w4sClEV0NK
- ShvCFG1AlW1mC8rOImmIzn2NGQ==
-X-Google-Smtp-Source: ADFU+vt8dZkS4FIomsYdEorgdQI9ZuLx45WIO/FKY615N0QhD3Iqa3QnSbVOSov43AVKbWzILUMkgg==
-X-Received: by 2002:a63:112:: with SMTP id 18mr5258545pgb.116.1583533644783;
- Fri, 06 Mar 2020 14:27:24 -0800 (PST)
-Received: from kevin-Precision-Tower-5810.dhcp.broadcom.net ([192.19.228.250])
- by smtp.gmail.com with ESMTPSA id
- v8sm10504805pjr.10.2020.03.06.14.27.22
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
- Fri, 06 Mar 2020 14:27:24 -0800 (PST)
-From: Kevin Li <kevin-ke.li@broadcom.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: brcm: DSL/PON SoC device tree bindings of audio driver
-Date: Fri,  6 Mar 2020 14:27:05 -0800
-Message-Id: <20200306222705.13309-2-kevin-ke.li@broadcom.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200306222705.13309-1-kevin-ke.li@broadcom.com>
-References: <20200306222705.13309-1-kevin-ke.li@broadcom.com>
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=c3vz12+4VID8zK8FL5KjiYfCAjJuUOqUTAQfHx5W3z4=;
+ b=lVgcg3v2Ov+xsCJOG5PHwnNBIjAhnqBW1qXThwgh+yogPCro9fbeMJ2SUyPvbEmpYV
+ N4mQ9lFNxEleRQOSRTz9DWA39UMJrFK+Je+58K+y3qMsqaRIp2dbiujtBHNjWEf6MkZE
+ KQMSKpaEO4SLjhBBAlo7edgJY9xEHFiV9Xb0KvOoUNIyzHmSGf2tfDIMHtsxmAZKxN+6
+ qNf0eDB9nNrNuOhRkXzNV4p4Rv/1IxHxTHRS18yb35WeAFY4BJi5uiFLLhC+x5PIXVtA
+ hSH119Xvm4L8RZTeUbII3lsoPwarE/U1Ws2GjycPffG3IqqQRBfcUUiCxwazkHWJqqzc
+ 0HEg==
+X-Gm-Message-State: ANhLgQ1O0FYQXFORxmQ9I3V4ho3IJiJSYTbpKEWBiet/HUHnQrKoJtjG
+ BC7l5+U2flxMxr4LdbeTz2HrEkno
+X-Google-Smtp-Source: ADFU+vu0NjiNG+FG8EOnXsfiuk99W2ZyJVCWTW9UvJE2cjsD52QVFQ0FhEIr9jr8TvJU295cnQMvSQ==
+X-Received: by 2002:a25:c50c:: with SMTP id v12mr1501649ybe.205.1583607444260; 
+ Sat, 07 Mar 2020 10:57:24 -0800 (PST)
+Received: from cybertron.pseudoangel.com
+ (cpe-172-101-252-194.rochester.res.rr.com. [172.101.252.194])
+ by smtp.gmail.com with ESMTPSA id e62sm15863903ywe.37.2020.03.07.10.57.23
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sat, 07 Mar 2020 10:57:23 -0800 (PST)
+From: crwulff@gmail.com
+To: patch@alsa-project.org
+Subject: [PATCH Fix for Kingston HyperX Amp (0951:16d8) 0/1] snd-usb-audio:
+ Fix Kingston HyperX Amp (0951:16d8).
+Date: Sat,  7 Mar 2020 13:57:40 -0500
+Message-Id: <20200307185741.32578-1-crwulff@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Mailman-Approved-At: Sun, 08 Mar 2020 08:46:09 +0100
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Scott Branden <sbranden@broadcom.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Ray Jui <rjui@broadcom.com>, Takashi Iwai <tiwai@suse.com>,
- Kevin Li <kevin-ke.li@broadcom.com>, bcm-kernel-feedback-list@broadcom.com,
- Stephen Boyd <swboyd@chromium.org>, linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, Chris Wulff <crwulff@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,48 +109,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Signed-off-by: Kevin Li <kevin-ke.li@broadcom.com>
----
- .../bindings/sound/brcm,bcm63xx-audio.txt     | 29 +++++++++++++++++++
- 1 file changed, 29 insertions(+)
- create mode 100755 Documentation/devicetree/bindings/sound/brcm,bcm63xx-audio.txt
+From: Chris Wulff <crwulff@gmail.com>
 
-diff --git a/Documentation/devicetree/bindings/sound/brcm,bcm63xx-audio.txt b/Documentation/devicetree/bindings/sound/brcm,bcm63xx-audio.txt
-new file mode 100755
-index 000000000000..88e404a8145f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/brcm,bcm63xx-audio.txt
-@@ -0,0 +1,29 @@
-+Broadcom DSL/PON BCM63xx Audio I2S controller
-+
-+Required properties:
-+- compatible:     Should be "brcm,bcm63xx-i2s".
-+- #address-cells: 32bit valued, 1 cell.
-+- #size-cells:    32bit valued, 0 cell.
-+- reg:            Should contain audio registers location and length
-+- interrupts:     Should contain the interrupt for the controller.
-+- clocks:         Must contain an entry for each entry in clock-names.
-+                  Please refer to clock-bindings.txt.
-+- clock-names:    Should be one of each entry matching the clocks phandles list:
-+                  - "i2sclk" (generated clock) Required.
-+                  - "i2sosc" (fixed 200MHz clock) Required.
-+
-+(1) : The generated clock is required only when any of TX and RX
-+      works on Master Mode.
-+(2) : The fixed 200MHz clock is from internal chip and always on
-+
-+Example:
-+
-+		i2s: bcm63xx-i2s {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			compatible = "brcm,bcm63xx-i2s";
-+			reg = <0xFF802080 0xFF>;
-+			interrupts = <GIC_SPI 84 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&i2sclk>, <&osc>;
-+			clock-names = "i2sclk","i2sosc"; 
-+		};
-\ No newline at end of file
--- 
-2.25.1
+The newer version of the HyperX Amp USB audio sound card appears to use two
+separate interfaces for controls and audio. This doesn't work well with the
+current linux kernel (tested with 5.4).
 
+Interface 0 has just a mute control, while interface 2 has mute and volume
+controls for both playback and capture. This appears to cause a couple different
+issues. 
+
+The first is that the wrong interface is used to query most of the controls,
+resulting in lots of messages like this:
+
+usb 1-3: 12:0: cannot get min/max values for control 2 (id 12)
+
+The second problem is that since it is enumerated as two separate interfaces,
+the device gets registered and then the capture stream gets merged into the
+already-registered pcm device (which results in the udev events not being
+generated for the capture stream and no /dev/snd/pcmC#D#c file.)
+
+This patch fixes both those problems, and allows the device to be used with
+ALSA programs, but pulseaudio does not enumerate the capture device correctly
+since it is pcmC#D1c and there is no pcmC#D0c. Adding a symlink from
+pcmC#D0c -> pcmC#D1c fixes pulseaudio but I'm not sure exactly why pulseaudio
+can't find the device without it.
