@@ -2,101 +2,94 @@ Return-Path: <SRS0=Hs3e=4Z=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24112C10F28
-	for <alsa-devel@archiver.kernel.org>; Sun,  8 Mar 2020 07:51:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0EDECC10DCE
+	for <alsa-devel@archiver.kernel.org>; Sun,  8 Mar 2020 14:26:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A2AD220828
-	for <alsa-devel@archiver.kernel.org>; Sun,  8 Mar 2020 07:51:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8E3952084E
+	for <alsa-devel@archiver.kernel.org>; Sun,  8 Mar 2020 14:26:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BAyrjlbG";
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TDSSBGeL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A2AD220828
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qt2CloZn";
+	dkim=pass (2048-bit key) header.d=mind.be header.i=@mind.be header.b="LVsMjwVU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8E3952084E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mind.be
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0C2E81675;
-	Sun,  8 Mar 2020 08:50:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C2E81675
+	by alsa0.perex.cz (Postfix) with ESMTPS id BCBF61657;
+	Sun,  8 Mar 2020 15:25:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BCBF61657
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583653887;
-	bh=zT7f4+CCyNdB1Pi3oViMds8OfwoEV/Ivaa1zpi9mzWk=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=BAyrjlbG6J9MY3I59Stda56pNsTX58Sd2/I12PRinSQlDbmauUUsiY/tQ++9P5W1a
-	 oyJxvmy11lrjQ8hfAv4L7TCyxNl2FDYff30offG9uVbdj3Ax0TMmo+7isdlTBxe3kx
-	 kBH0gwlWAFCtolq/i3Zs+o91sPgWvqrfVybJYwSU=
+	s=default; t=1583677578;
+	bh=lBfMtov3eR9/spOPZw4OQV8lCwFaKXIkYfW10tMXCng=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=qt2CloZnWIF2ydS0PFHkkX58mHGmbEdvSViy1/Nwu9Sr3jh+X8/VCEFFOODuGEL9V
+	 KHZPbBjIKSUXST+ymWgWpqhTQbM+QoxjjSQ3+sp8hpedQtZaMnhKR879KGmAfWb+P1
+	 FpCjmZT/aDPhVu2Jw3vOMQGZyNv+2L45xj7Mu5cY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E149AF802A9;
-	Sun,  8 Mar 2020 08:46:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 15BC8F8020C;
+	Sun,  8 Mar 2020 15:25:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7A13BF80266; Sat,  7 Mar 2020 19:57:35 +0100 (CET)
-Received: from mail-yw1-xc43.google.com (mail-yw1-xc43.google.com
- [IPv6:2607:f8b0:4864:20::c43])
+ id 88542F8020C; Sun,  8 Mar 2020 15:25:24 +0100 (CET)
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com
+ [IPv6:2a00:1450:4864:20::52e])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 900C5F80130;
- Sat,  7 Mar 2020 19:57:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 900C5F80130
+ by alsa1.perex.cz (Postfix) with ESMTPS id 06384F80130
+ for <alsa-devel@alsa-project.org>; Sun,  8 Mar 2020 15:25:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06384F80130
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="TDSSBGeL"
-Received: by mail-yw1-xc43.google.com with SMTP id x5so4878228ywb.13;
- Sat, 07 Mar 2020 10:57:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=W3CY8lMYNprZ5dAt94aJtLZOZW04lS1eDinvVtLpyp0=;
- b=TDSSBGeLlE8SKXPvtd+lImqYM8WIP3+7OwKciFPcc31M/Hsj5zPtCvd1EoZ7eO6HkI
- e5HeWyHRU42og9I6jzFSoqIltSG/HmL81W8kILpM/Tcwb9SpE3cP1Ro6/49TLc5c+8Z1
- ABD6lAimDhXe3HsOo8Jhn2nmcNwHQpB4yxxlNn51ayf3PXxvoM44Ssupx9bPfivOB9DJ
- N8MFBn68ediVFEb6LnOo8Ilylc1U0COXu1d5XqzFGyXcGc9+fAzY72epTOxTTFufHVmC
- /mwvh7FOFvwGeJlt00NRtfdEnrk5nJZZkfoexFw4dsGoCa6f530siOjQj/fDe9WNjdis
- 1mVQ==
+ dkim=pass (2048-bit key) header.d=mind.be header.i=@mind.be
+ header.b="LVsMjwVU"
+Received: by mail-ed1-x52e.google.com with SMTP id y3so8791172edj.13
+ for <alsa-devel@alsa-project.org>; Sun, 08 Mar 2020 07:25:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mind.be; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=pSsIxxcYD2IRo/XwqQkOgmnJ6QudV3YD5q1CSFIVsFs=;
+ b=LVsMjwVUF8zj3ZeMC71HGla8EmYK6AeKIuuHdeic38AAGGbMrrIT5+pj9oUQfbYfBf
+ KsL9cDiFIATIJTYvAoFVk+CX3P7FK3PpuydFFBxwzKylEHitjl2AIw/xjYJXiVDNTGtF
+ xQfIYRgJAfmmdTP3jrWAsoswomg37Fh/CsOhDp4JpUl5uBHr0LnStaa0XEqQTa/oFwdZ
+ c/DfkYZaKAqshvt4dQwN6tYlY/Wk10suTIDIYA3pcgUvJj83y3bzmXmN0AIypzXTJQcb
+ GR67o2l/D6g5s2DWGRFI+E0rnWPCZysZW5hPTYRPUnh2Tiaq9zLCMEkLPekbByOtGfKL
+ PcYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=W3CY8lMYNprZ5dAt94aJtLZOZW04lS1eDinvVtLpyp0=;
- b=pRghToZB3jwtOP7pTk/82x1sbI7vLPfaJW8ATFq2XjGzt54b8sr/6t402niHXCPyAh
- pXeWCeip68zlsY3CyOOW3XIzEFS4fKvPtxUfnprIooPiGA1mZkdVZi5FmWIfAKBrvjFy
- SOc+vl6gydPRCw8Cn8dlV5iNVplyWjrQe/QRmGBrKJNjgQLBZFQBZJHulwbhZoEGfRSM
- L0u//OmgumP2Yc/M9DtzP3cPF7SOWroVDWsqAvpn9Vs33czMGsjnaIK+EOax1K7OIQs8
- 3bsIibeQa7tVo4SZazeAqDFPV9YUOm1HrvTLVMr0mvo6bWZn1lKsZz+W4A8NdlsIc2dm
- p8Uw==
-X-Gm-Message-State: ANhLgQ3mXG4cvkJJdd+oI0cn0GMzH1G+sCuQ/0R5m//T/liweaWeDuwx
- 5pOoTf71VoXZJVN5qomUG+pynzR+
-X-Google-Smtp-Source: ADFU+vtDNXKQbcXDL574KaAtPyD24y2F4HIRZ1FVuNepChNDeQoVXA+K0hLlJ4IQ7u33OZbx12/xsA==
-X-Received: by 2002:a25:8446:: with SMTP id r6mr9947372ybm.451.1583607445247; 
- Sat, 07 Mar 2020 10:57:25 -0800 (PST)
-Received: from cybertron.pseudoangel.com
- (cpe-172-101-252-194.rochester.res.rr.com. [172.101.252.194])
- by smtp.gmail.com with ESMTPSA id e62sm15863903ywe.37.2020.03.07.10.57.24
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=pSsIxxcYD2IRo/XwqQkOgmnJ6QudV3YD5q1CSFIVsFs=;
+ b=iJrHS0c3f+IZcg/TnettizJceoM3c/zcpAh4bsSpkA0AwvsbS5XqE6KdcagjW+YPz8
+ Bu24vyO5W3ebRsWsJli9/90AXGMZG/0xIb/2ydQUGrf5JARPyBqmJ3AiWlOGjpy7ansn
+ Iv8a7Cc0RvqW6PJoAd/YznaNB5TnptoUKGcyx8ZSArfV9n1mmQWQGEVOErhiGwxkNL5f
+ mTLL02LPQd8XTImwNzX3T1MGQIZtr1ZZuy6jTyikCy4dMPG37cb+zazYE91FVWAAuP1h
+ r/iSwP+JnoJrrudGUDxyRovPYsLGYaIsRaqavykjPwSqkeqCUrFpRlO9tVV2Uie7uM9o
+ Fayg==
+X-Gm-Message-State: ANhLgQ0IZ3OmF+9PK05SNo3Re0IlRT/wuoa9Uasy/IUwYTzzZTCUsSia
+ HhAWzko1797BP+KgCMvM2rykD71LA8k=
+X-Google-Smtp-Source: ADFU+vtGMT0jubg0n3sS9KKTmYvKTD69LwePZLHVi5uBbRwXqMATDh17TmCuh+4gzCfZ54G74GFheg==
+X-Received: by 2002:a50:9d06:: with SMTP id v6mr6929891ede.189.1583677516689; 
+ Sun, 08 Mar 2020 07:25:16 -0700 (PDT)
+Received: from localhost.localdomain
+ ([2a02:a03f:44b4:9700:886c:841d:dea2:ee2a])
+ by smtp.googlemail.com with ESMTPSA id h20sm1736516edr.43.2020.03.08.07.25.15
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 07 Mar 2020 10:57:24 -0800 (PST)
-From: crwulff@gmail.com
-To: patch@alsa-project.org
-Subject: [PATCH Fix for Kingston HyperX Amp (0951:16d8) 1/1] snd-usb-audio:
- Fix Kingston HyperX Amp (0951:16d8).
-Date: Sat,  7 Mar 2020 13:57:41 -0500
-Message-Id: <20200307185741.32578-2-crwulff@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200307185741.32578-1-crwulff@gmail.com>
-References: <20200307185741.32578-1-crwulff@gmail.com>
+ Sun, 08 Mar 2020 07:25:16 -0700 (PDT)
+From: Charles-Antoine Couret <charles-antoine.couret@mind.be>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 0/6 V3] TAS5756M codec driver
+Date: Sun,  8 Mar 2020 15:25:03 +0100
+Message-Id: <20200308142509.27765-1-charles-antoine.couret@mind.be>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Mailman-Approved-At: Sun, 08 Mar 2020 08:46:09 +0100
-Cc: alsa-devel@alsa-project.org, Chris Wulff <crwulff@gmail.com>
+Cc: Charles-Antoine Couret <charles-antoine.couret@mind.be>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,103 +105,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Chris Wulff <crwulff@gmail.com>
+V3 changes:
+ * Fix device tree documentation (thanks to Rob Herring for dt_binding_check)
+ * Split main driver commit with hybridflow support
 
-The newer version of the HyperX Amp has controls on two
-separate USB interfaces (0 and 2.)
+V2 changes:
+ * Fix bug in driver itself
+ * Change device tree attribute names
+ * Convert device tree documentation from txt to YAML format
 
-This patch fixes the use of two separate usb interfaces
-for controls and audio by using the controls mixer interface
-instead of the card interface for each control and by not
-merging new streams with a pcm device that has already
-been registered.
+Charles-Antoine Couret (6):
+  ASoC: add TAS5756m driver
+  ASoC: tas5756m: add Hybridflow 3 support
+  ASoC: tas5756m: add Hybridflow 4 support
+  ASoC: tas5756m: add Hybridflow 6 support
+  ASoC: tas5756m: add Hybridflow 7 support
+  ASoC: tas5756m: Add DT binding document
 
-Signed-off-by: Chris Wulff <crwulff@gmail.com>
+ .../devicetree/bindings/sound/tas5756m.yaml   |   64 +
+ sound/soc/codecs/Kconfig                      |    8 +
+ sound/soc/codecs/Makefile                     |    2 +
+ sound/soc/codecs/tas5756m.c                   | 2161 ++++++++
+ sound/soc/codecs/tas5756m.h                   |  351 ++
+ sound/soc/codecs/tas5756m_hf3_cfg.h           | 4508 ++++++++++++++++
+ sound/soc/codecs/tas5756m_hf4_cfg.h           | 4510 +++++++++++++++++
+ sound/soc/codecs/tas5756m_hf6_cfg.h           | 4510 +++++++++++++++++
+ sound/soc/codecs/tas5756m_hf7_cfg.h           | 4510 +++++++++++++++++
+ 9 files changed, 20624 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/tas5756m.yaml
+ create mode 100644 sound/soc/codecs/tas5756m.c
+ create mode 100644 sound/soc/codecs/tas5756m.h
+ create mode 100644 sound/soc/codecs/tas5756m_hf3_cfg.h
+ create mode 100644 sound/soc/codecs/tas5756m_hf4_cfg.h
+ create mode 100644 sound/soc/codecs/tas5756m_hf6_cfg.h
+ create mode 100644 sound/soc/codecs/tas5756m_hf7_cfg.h
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 45eee5cc312e..2498107ca89f 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -306,7 +306,7 @@ static int get_ctl_value_v1(struct usb_mixer_elem_info *cval, int request,
- 		return -EIO;
- 
- 	while (timeout-- > 0) {
--		idx = snd_usb_ctrl_intf(chip) | (cval->head.id << 8);
-+		idx = cval->head.mixer->hostif->desc.bInterfaceNumber | (cval->head.id << 8);
- 		err = snd_usb_ctl_msg(chip->dev, usb_rcvctrlpipe(chip->dev, 0), request,
- 				      USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
- 				      validx, idx, buf, val_len);
-@@ -354,7 +354,7 @@ static int get_ctl_value_v2(struct usb_mixer_elem_info *cval, int request,
- 	if (ret)
- 		goto error;
- 
--	idx = snd_usb_ctrl_intf(chip) | (cval->head.id << 8);
-+	idx = cval->head.mixer->hostif->desc.bInterfaceNumber | (cval->head.id << 8);
- 	ret = snd_usb_ctl_msg(chip->dev, usb_rcvctrlpipe(chip->dev, 0), bRequest,
- 			      USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
- 			      validx, idx, buf, size);
-@@ -479,7 +479,7 @@ int snd_usb_mixer_set_ctl_value(struct usb_mixer_elem_info *cval,
- 		return -EIO;
- 
- 	while (timeout-- > 0) {
--		idx = snd_usb_ctrl_intf(chip) | (cval->head.id << 8);
-+		idx = cval->head.mixer->hostif->desc.bInterfaceNumber | (cval->head.id << 8);
- 		err = snd_usb_ctl_msg(chip->dev,
- 				      usb_sndctrlpipe(chip->dev, 0), request,
- 				      USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_OUT,
-@@ -1195,7 +1195,7 @@ static int get_min_max_with_quirks(struct usb_mixer_elem_info *cval,
- 		    get_ctl_value(cval, UAC_GET_MIN, (cval->control << 8) | minchn, &cval->min) < 0) {
- 			usb_audio_err(cval->head.mixer->chip,
- 				      "%d:%d: cannot get min/max values for control %d (id %d)\n",
--				   cval->head.id, snd_usb_ctrl_intf(cval->head.mixer->chip),
-+				   cval->head.id, cval->head.mixer->hostif->desc.bInterfaceNumber,
- 							       cval->control, cval->head.id);
- 			return -EINVAL;
- 		}
-@@ -1414,7 +1414,7 @@ static int mixer_ctl_connector_get(struct snd_kcontrol *kcontrol,
- 	if (ret)
- 		goto error;
- 
--	idx = snd_usb_ctrl_intf(chip) | (cval->head.id << 8);
-+	idx = cval->head.mixer->hostif->desc.bInterfaceNumber | (cval->head.id << 8);
- 	if (cval->head.mixer->protocol == UAC_VERSION_2) {
- 		struct uac2_connectors_ctl_blk uac2_conn;
- 
-@@ -3192,7 +3192,7 @@ static void snd_usb_mixer_proc_read(struct snd_info_entry *entry,
- 	list_for_each_entry(mixer, &chip->mixer_list, list) {
- 		snd_iprintf(buffer,
- 			"USB Mixer: usb_id=0x%08x, ctrlif=%i, ctlerr=%i\n",
--				chip->usb_id, snd_usb_ctrl_intf(chip),
-+				chip->usb_id, mixer->hostif->desc.bInterfaceNumber,
- 				mixer->ignore_ctl_error);
- 		snd_iprintf(buffer, "Card: %s\n", chip->card->longname);
- 		for (unitid = 0; unitid < MAX_ID_ELEMS; unitid++) {
-diff --git a/sound/usb/stream.c b/sound/usb/stream.c
-index 11785f9652ad..d286c18f8d43 100644
---- a/sound/usb/stream.c
-+++ b/sound/usb/stream.c
-@@ -482,6 +482,7 @@ static int __snd_usb_add_audio_stream(struct snd_usb_audio *chip,
- 	struct snd_usb_stream *as;
- 	struct snd_usb_substream *subs;
- 	struct snd_pcm *pcm;
-+	struct snd_device *dev;
- 	int err;
- 
- 	list_for_each_entry(as, &chip->pcm_list, list) {
-@@ -502,6 +503,13 @@ static int __snd_usb_add_audio_stream(struct snd_usb_audio *chip,
- 		subs = &as->substream[stream];
- 		if (subs->ep_num)
- 			continue;
-+
-+		list_for_each_entry(dev, &as->pcm->card->devices, list)
-+			if (dev->device_data == as->pcm)
-+				break;
-+		if (dev && (dev->state == SNDRV_DEV_REGISTERED))
-+			continue;
-+
- 		err = snd_pcm_new_stream(as->pcm, stream, 1);
- 		if (err < 0)
- 			return err;
 -- 
-2.20.1
+2.24.1
 
