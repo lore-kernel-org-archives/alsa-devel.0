@@ -6,83 +6,85 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D195C10F25
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 06:17:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D5D86C10F25
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 06:18:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BB84520873
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 06:17:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 655F620873
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 06:18:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CG9PKnSZ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="DQxdAFgB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BB84520873
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DSVG6/lZ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="hcX3nNIn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 655F620873
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BEB07166B;
-	Wed, 11 Mar 2020 07:16:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BEB07166B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7EB091677;
+	Wed, 11 Mar 2020 07:17:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7EB091677
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583907436;
-	bh=mYJdm4o8qKYhs7j4lktdhVenm4hpEUqNfN+ztgPE6bg=;
+	s=default; t=1583907477;
+	bh=koPyYPcnPETHgCvHEnnCmdmwfA+OhLOvchqTM1xprps=;
 	h=From:References:In-Reply-To:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CG9PKnSZVjqhMxyU67PCX5CjB2Q6BzJSrSYhJOMwj9FT3lMNwBNiOM6ZBnilkNeuT
-	 kgagrdce5dYIIi+TxBk6zECUixxOF2NISsm/DhyZPLxpEpcu94CH06tYFKNp/VFCNY
-	 RtbEoA9imHcIlFhfSeK+Dkov7RG2h4IbWxbDVy9k=
+	b=DSVG6/lZNr18HAyScwtHKSF4iuX9gpN0S4Rd+k2xKI9ejb/CNjZwUZS/6F1hKjxaw
+	 MCRwGr3R0MF88sziv3T40seDtTtZquLhi69KsW9YEy+POefI3yS+U5JH0L9ZPCALGD
+	 QPGTJFP/0tBl6qy+8GdoY2qEkMXBGUazdlNlOe5w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A06E2F802A0;
-	Wed, 11 Mar 2020 07:15:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EA45CF802A2;
+	Wed, 11 Mar 2020 07:15:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4097CF801EB; Mon,  9 Mar 2020 18:33:39 +0100 (CET)
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com
- [IPv6:2a00:1450:4864:20::129])
+ id 7247CF801EB; Mon,  9 Mar 2020 19:14:25 +0100 (CET)
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com
+ [IPv6:2a00:1450:4864:20::234])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 01C5EF800DA
- for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2020 18:33:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01C5EF800DA
+ by alsa1.perex.cz (Postfix) with ESMTPS id D38D5F80123
+ for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2020 19:14:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D38D5F80123
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com
- header.b="DQxdAFgB"
-Received: by mail-lf1-x129.google.com with SMTP id c20so8459295lfb.0
- for <alsa-devel@alsa-project.org>; Mon, 09 Mar 2020 10:33:34 -0700 (PDT)
+ header.b="hcX3nNIn"
+Received: by mail-lj1-x234.google.com with SMTP id e18so10989766ljn.12
+ for <alsa-devel@alsa-project.org>; Mon, 09 Mar 2020 11:14:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=broadcom.com; s=google;
  h=from:references:in-reply-to:mime-version:thread-index:date
  :message-id:subject:to:cc;
- bh=bgiHSLTQXM8E0mv0SF7G09UBPAaNCg/++oKU9IO6Jv0=;
- b=DQxdAFgBLzOAYx5M0Q2Fh/zkVoV6kRmCETSjJWCX2qfbDblPeSMRSyXVWiyOt5Ig3w
- gMJcpRqwnRBelmbxOy+sO0cchBZqoMdedCWSBBTnV3n3ng/yHVlq3GqcCNbjCr0OjUSN
- bIhthscycsWpgsCe1Hw6pRZIVFPhvr5K67Giw=
+ bh=koPyYPcnPETHgCvHEnnCmdmwfA+OhLOvchqTM1xprps=;
+ b=hcX3nNInTx9iPg7EaR+RByFVzvo/cSttxQcApuNwRryPYcMSIWjR9EGkmg4RuaKhT4
+ Dvkz7XZHPwiW2D/MPgulKgvlSOp2p1+Z6RSgpSLCSj8oQlR1KydMYFuXN2GJqA+khaaI
+ n+jHxvfrvN4OZXWhrflT6H8M3bYWCmMJnNwL4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:references:in-reply-to:mime-version
  :thread-index:date:message-id:subject:to:cc;
- bh=bgiHSLTQXM8E0mv0SF7G09UBPAaNCg/++oKU9IO6Jv0=;
- b=sYhFu5jxioEbbOWTr2JqKCpafXBwxkFmI6unGyv1cED8Kqo5cfdfr8GQDueQzz/3fx
- nXK6ECdhjxZuxp5dkdEJmRuzWI3uKxD904p9LgjIJahcb+3RrgSC3tOeIPDupiJTPngh
- Q5ZQOX3hzA07XhRfuPcPU59EBZHd+OVbpEr5NKDTbuETmpl0jTFyoHjvF6qeJdMo8mwo
- 18NNNEjLySUWHNH3NjjsQyfQddVqmROMGC6fnYPPVIryG0RkZOdgoToGXfLGPxin4GDX
- Km8InJ/JR8UVIxZuhE4rsjq7/Pulr+uMB1b8MdA4salYEQv+OuqWC0Vl7hde5ZjqPsdb
- 3fWA==
-X-Gm-Message-State: ANhLgQ36Dc/9XMeyRBtDzG3WOkxQDhTtoqhoPpYKbZath8UPAzsOjlDK
- iRcPOtqjnrebTky7WKJDjlzS0VyLMOJKdE857nmVVw==
-X-Google-Smtp-Source: ADFU+vuq3eH9wkuVNiO3iVGw7rhwXN2qPoAEtL/Vxw8RjRXO3sz1OPnFMpu3+6cw1VwM6E+14wRoY4uUL6ksq3D8aLA=
-X-Received: by 2002:ac2:4834:: with SMTP id 20mr9943688lft.93.1583775213105;
- Mon, 09 Mar 2020 10:33:33 -0700 (PDT)
+ bh=koPyYPcnPETHgCvHEnnCmdmwfA+OhLOvchqTM1xprps=;
+ b=O/6KK9PfdcizM3iNiROMdl6TF+ARSxXcdC10nrkf+zRjqCUKO30JNRNd+nYh/RpfPy
+ 3cUY/q4YbKh9RDss5m4+GAUWW+qIra9F0uK3RHURbbWoA7IxvfXQWJxABhXSNxsnPkn4
+ 6nwMSWBGpxp3s/ZxjmrJ179fWFjPvAPqcnLTGJ31ti1U3mIdYqMXU+mS/lKkeKMQj+aq
+ nGrCidiPERbXTO5iDzBhSLMGmOGA3xYefl981r44xL/kiEM10UU42Q4cfoytyY8kbR0L
+ hHQcpf0nCzM6WppdWdTyjouQoUcvfW8v8+dqZZdcgHfuKjyy5DBivVMHxu7v+anohlOX
+ 0zcg==
+X-Gm-Message-State: ANhLgQ28A9NNWM3CDOUeGJ3zs8K2XJJluPEPef2KwNV5tW5YQbmxPMhR
+ Hjk/z8392Rmi05HNH+nTw21dxuXF0KNVu6DuEzEO/Q==
+X-Google-Smtp-Source: ADFU+vtgo6olIYRoVSmwWWivdI6JJjr250gtxBwwoAJTPwO/+EsUYi98/L4RLCE5w9lBmxHiqH1H3VYw5KdKjPdM5rA=
+X-Received: by 2002:a2e:80c3:: with SMTP id r3mr10292149ljg.105.1583777660196; 
+ Mon, 09 Mar 2020 11:14:20 -0700 (PDT)
 From: Kevin Li <kevin-ke.li@broadcom.com>
 References: <20200306222705.13309-1-kevin-ke.li@broadcom.com>
  <20200309123307.GE4101@sirena.org.uk>
-In-Reply-To: <20200309123307.GE4101@sirena.org.uk>
+ <69138568e9c18afa57d5edba6be9887b@mail.gmail.com>
+ <20200309175205.GJ4101@sirena.org.uk>
+In-Reply-To: <20200309175205.GJ4101@sirena.org.uk>
 MIME-Version: 1.0
 X-Mailer: Microsoft Outlook 15.0
-Thread-Index: AQK6AtPk+W1UvlC/8YJn5FlJAEq5hQGCyJpIpmw/bzA=
-Date: Mon, 9 Mar 2020 10:33:30 -0700
-Message-ID: <69138568e9c18afa57d5edba6be9887b@mail.gmail.com>
+Thread-Index: AQK6AtPk+W1UvlC/8YJn5FlJAEq5hQGCyJpIAfJ2lUUB0s+e4qZONC5g
+Date: Mon, 9 Mar 2020 11:14:18 -0700
+Message-ID: <8113837129a1b41aee674c68258cd37f@mail.gmail.com>
 Subject: RE: [PATCH] ASoC: brcm: Add DSL/PON SoC audio driver
 To: Mark Brown <broonie@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
@@ -108,60 +110,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Mark,
+I can't really parse what you're talking about here (perhaps some of that
+context would have helped...) but it doesn't seem to be the clocking of
+the I2S bus which would normally be what master and slave would be talking
+about.
 
-The SoC I2S block we currently have shares one clock and frame sync signal
-for both playback and capture stream, plus playback and capture can only
-have one master at a time. If we set playback and capture master at same
-time, it will have jitter on clock and FS.
-
-Based on above, for playback and capture, whichever starts first, it will
-be master, another stream will be slave if it starts before the first
-stream shutting  down. So working as master or slave for a stream is
-depending on another stream's status.
-
-Same thing for shutting down a stream. A master stream shutting down will
-have to set another stream to master if another stream is on working
-status as a slave. A glitch/Jitter will happen at this moment. But we
-minimize it.
-
-That is why this master/slave mode handles in startup/shutdown functions.
-Not sure how other company handles this kind of I2S block.
-
-Let me know if it is still not clear.
-
-Yes, set_fmt() is not needed. Will be addressed along with rest questions
-you mentioned on the next patch, with a patch version.
-
-
-Thanks!
-Kevin
-
-
-> +	struct bcm_i2s_priv *i2s_priv = snd_soc_dai_get_drvdata(dai);
-> +	struct regmap *regmap_i2s = i2s_priv->regmap_i2s;
-> +
-> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-> +		regmap_update_bits(regmap_i2s, I2S_TX_CFG,
-> +				   I2S_TX_OUT_R | I2S_TX_DATA_ALIGNMENT |
-> +				   I2S_TX_DATA_ENABLE |
-I2S_TX_CLOCK_ENABLE,
-> +				   I2S_TX_OUT_R | I2S_TX_DATA_ALIGNMENT |
-> +				   I2S_TX_DATA_ENABLE |
-I2S_TX_CLOCK_ENABLE);
-> +		regmap_write(regmap_i2s, I2S_TX_IRQ_CTL, 0);
-> +		regmap_write(regmap_i2s, I2S_TX_IRQ_IFF_THLD, 0);
-> +		regmap_write(regmap_i2s, I2S_TX_IRQ_OFF_THLD, 1);
-> +
-> +		regmap_read(regmap_i2s, I2S_RX_CFG_2, &slaveMode);
-> +		if (slaveMode & I2S_RX_SLAVE_MODE_MASK)
-> +			regmap_update_bits(regmap_i2s, I2S_TX_CFG_2,
-> +					   I2S_TX_SLAVE_MODE_MASK,
-> +					   I2S_TX_MASTER_MODE);
-> +		else
-> +			regmap_update_bits(regmap_i2s, I2S_TX_CFG_2,
-> +					   I2S_TX_SLAVE_MODE_MASK,
-> +					   I2S_TX_SLAVE_MODE);
-
-Setting master or slave mode should be done with a set_fmt() operation but
-your set_fmt() operation was empty.  How would this be configured?
+It is the clock setting of I2S bus master or slave.
+If I am playing music only, I set TX as master. All others are slave.
+If I am recording only. I set RX as master. All others are slave.
+If I am playing and recording at same time, I set first coming stream as
+master second coming stream as slave. If I shut down first stream before
+second stream, then I will set the second stream as master, otherwise
+there will be no clock/FS signal on the I2S bus to maintain the second
+stream to its end.
+Hope it is clearer.
