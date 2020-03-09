@@ -6,53 +6,53 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35A1AC10F25
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 04:15:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D043AC10F25
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 04:16:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ACDDE20727
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 04:15:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5B44C20727
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 04:16:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="spzRI6+R"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ACDDE20727
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vSvrsJUk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5B44C20727
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 22C6516A5;
-	Mon,  9 Mar 2020 05:15:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22C6516A5
+	by alsa0.perex.cz (Postfix) with ESMTPS id B29C816B3;
+	Mon,  9 Mar 2020 05:15:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B29C816B3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583727352;
-	bh=CjUiUBR6MGPMk7iKx3cgSWx2Zxa8D6ftdZvEB/dFUSs=;
+	s=default; t=1583727385;
+	bh=BwtiQ/CoFv+1JhHT8yc85YQrTb5Mdzng7MaNsslaUts=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=spzRI6+RnD7on7djdABHchG6ChHEBqA3No1eZNW7XrobVZIdAX7UTEONINUnk3xpR
-	 YKL9E+rBr9N4emtOFFuBYeOuA5MnKz7Xok6mHH+UAi917VSQeZ5Ve4e66EkM94zRYe
-	 RwjtWqt4NdeChnmhbf1wiGpYAG9ONtc+QabnyO9c=
+	b=vSvrsJUkmTFltsynSEfYn736obc78cpL8xykUSEvlb3nibQCMsSFG7Kp32rTRmw5h
+	 m9TBh1G/df3an78+yaaEe60nSbRTyIbYtMfV7zj4pPMBsC1/s+T/UtDz+fA9heUyi4
+	 ah04pG5YP29bGV/lmQH+u0sUqe8tnPQLfqjWqQvA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A2A27F80335;
-	Mon,  9 Mar 2020 05:08:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1EDD1F80337;
+	Mon,  9 Mar 2020 05:08:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 92085F80331; Mon,  9 Mar 2020 05:08:16 +0100 (CET)
+ id 02031F80337; Mon,  9 Mar 2020 05:08:21 +0100 (CET)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id D1026F80322
- for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2020 05:08:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1026F80322
-Date: 09 Mar 2020 13:08:10 +0900
-X-IronPort-AV: E=Sophos;i="5.70,531,1574089200"; d="scan'208";a="41130219"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 09 Mar 2020 13:08:10 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 76092F80322
+ for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2020 05:08:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76092F80322
+Date: 09 Mar 2020 13:08:16 +0900
+X-IronPort-AV: E=Sophos;i="5.70,531,1574089200"; d="scan'208";a="41130225"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 09 Mar 2020 13:08:16 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 717FB4002C0A;
- Mon,  9 Mar 2020 13:08:10 +0900 (JST)
-Message-ID: <87tv2ygogl.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 11106414191A;
+ Mon,  9 Mar 2020 13:08:16 +0900 (JST)
+Message-ID: <87sgiigogf.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 7/9] ASoC: soc.h: remove non plural form for_each_xxx macro
+Subject: [PATCH 8/9] ASoC: soc-dapm: add for_each_card_dapms() macro
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <874kuyi33c.wl-kuninori.morimoto.gx@renesas.com>
@@ -78,36 +78,110 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
+To be more readable code, this patch adds
+new for_each_card_dapms() macro, and replace existing code to it.
+
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- include/sound/soc.h | 14 --------------
- 1 file changed, 14 deletions(-)
+ include/sound/soc.h  |  3 +++
+ sound/soc/soc-dapm.c | 18 +++++++++---------
+ 2 files changed, 12 insertions(+), 9 deletions(-)
 
 diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 09bc45b8bf00..5e1b4ef1543c 100644
+index 5e1b4ef1543c..3aee33c8249e 100644
 --- a/include/sound/soc.h
 +++ b/include/sound/soc.h
-@@ -1163,20 +1163,6 @@ struct snd_soc_pcm_runtime {
- 	for ((i) = 0;							\
- 	     ((i) < rtd->num_components) && ((component) = rtd->components[i]);\
- 	     (i)++)
--#define for_each_rtd_codec_dai(rtd, i, dai)\
--	for ((i) = 0;						       \
--	     ((i) < rtd->num_codecs) && ((dai) = rtd->codec_dais[i]); \
--	     (i)++)
--#define for_each_rtd_codec_dai_rollback(rtd, i, dai)		\
--	for (; (--(i) >= 0) && ((dai) = rtd->codec_dais[i]);)
--
--#define for_each_rtd_cpu_dai(rtd, i, dai)\
--	for ((i) = 0;						       \
--	     ((i) < rtd->num_cpus) && ((dai) = rtd->cpu_dais[i]); \
--	     (i)++)
--#define for_each_rtd_cpu_dai_rollback(rtd, i, dai)		\
--	for (; (--(i) >= 0) && ((dai) = rtd->cpu_dais[i]);)
--
- #define for_each_rtd_cpu_dais(rtd, i, dai)				\
- 	for ((i) = 0;							\
- 	     ((i) < rtd->num_cpus) && ((dai) = rtd->cpu_dais[i]);	\
+@@ -1117,6 +1117,9 @@ struct snd_soc_card {
+ #define for_each_card_components(card, component)			\
+ 	list_for_each_entry(component, &(card)->component_dev_list, card_list)
+ 
++#define for_each_card_dapms(card, dapm)					\
++	list_for_each_entry(dapm, &card->dapm_list, list)
++
+ /* SoC machine DAI configuration, glues a codec and cpu DAI together */
+ struct snd_soc_pcm_runtime {
+ 	struct device *dev;
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 7374829c6675..ac48303ea26d 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -1716,9 +1716,8 @@ static void dapm_seq_run(struct snd_soc_card *card,
+ 					i, cur_subseq);
+ 	}
+ 
+-	list_for_each_entry(d, &card->dapm_list, list) {
++	for_each_card_dapms(card, d)
+ 		soc_dapm_async_complete(d);
+-	}
+ }
+ 
+ static void dapm_widget_update(struct snd_soc_card *card)
+@@ -1949,7 +1948,7 @@ static int dapm_power_widgets(struct snd_soc_card *card, int event)
+ 
+ 	trace_snd_soc_dapm_start(card);
+ 
+-	list_for_each_entry(d, &card->dapm_list, list) {
++	for_each_card_dapms(card, d) {
+ 		if (dapm_idle_bias_off(d))
+ 			d->target_bias_level = SND_SOC_BIAS_OFF;
+ 		else
+@@ -2013,10 +2012,10 @@ static int dapm_power_widgets(struct snd_soc_card *card, int event)
+ 	 * they're not ground referenced.
+ 	 */
+ 	bias = SND_SOC_BIAS_OFF;
+-	list_for_each_entry(d, &card->dapm_list, list)
++	for_each_card_dapms(card, d)
+ 		if (d->target_bias_level > bias)
+ 			bias = d->target_bias_level;
+-	list_for_each_entry(d, &card->dapm_list, list)
++	for_each_card_dapms(card, d)
+ 		if (!dapm_idle_bias_off(d))
+ 			d->target_bias_level = bias;
+ 
+@@ -2025,7 +2024,7 @@ static int dapm_power_widgets(struct snd_soc_card *card, int event)
+ 	/* Run card bias changes at first */
+ 	dapm_pre_sequence_async(&card->dapm, 0);
+ 	/* Run other bias changes in parallel */
+-	list_for_each_entry(d, &card->dapm_list, list) {
++	for_each_card_dapms(card, d) {
+ 		if (d != &card->dapm && d->bias_level != d->target_bias_level)
+ 			async_schedule_domain(dapm_pre_sequence_async, d,
+ 						&async_domain);
+@@ -2049,7 +2048,7 @@ static int dapm_power_widgets(struct snd_soc_card *card, int event)
+ 	dapm_seq_run(card, &up_list, event, true);
+ 
+ 	/* Run all the bias changes in parallel */
+-	list_for_each_entry(d, &card->dapm_list, list) {
++	for_each_card_dapms(card, d) {
+ 		if (d != &card->dapm && d->bias_level != d->target_bias_level)
+ 			async_schedule_domain(dapm_post_sequence_async, d,
+ 						&async_domain);
+@@ -2059,7 +2058,7 @@ static int dapm_power_widgets(struct snd_soc_card *card, int event)
+ 	dapm_post_sequence_async(&card->dapm, 0);
+ 
+ 	/* do we need to notify any clients that DAPM event is complete */
+-	list_for_each_entry(d, &card->dapm_list, list) {
++	for_each_card_dapms(card, d) {
+ 		if (!d->component)
+ 			continue;
+ 
+@@ -4776,6 +4775,7 @@ void snd_soc_dapm_init(struct snd_soc_dapm_context *dapm,
+ 	}
+ 
+ 	INIT_LIST_HEAD(&dapm->list);
++	/* see for_each_card_dapms */
+ 	list_add(&dapm->list, &card->dapm_list);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dapm_init);
+@@ -4822,7 +4822,7 @@ void snd_soc_dapm_shutdown(struct snd_soc_card *card)
+ {
+ 	struct snd_soc_dapm_context *dapm;
+ 
+-	list_for_each_entry(dapm, &card->dapm_list, list) {
++	for_each_card_dapms(card, dapm) {
+ 		if (dapm != &card->dapm) {
+ 			soc_dapm_shutdown_dapm(dapm);
+ 			if (dapm->bias_level == SND_SOC_BIAS_STANDBY)
 -- 
 2.17.1
 
