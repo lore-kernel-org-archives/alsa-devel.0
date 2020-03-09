@@ -2,61 +2,88 @@ Return-Path: <SRS0=1nsM=42=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EA359C10F27
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 14:04:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 49738C10F25
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 20:39:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7399221D56
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 14:04:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CE4A620409
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 20:39:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="svbyuxD8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7399221D56
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ADWoeJWz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CE4A620409
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C223F1669;
-	Mon,  9 Mar 2020 15:03:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C223F1669
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2B727851;
+	Mon,  9 Mar 2020 21:39:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B727851
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583762685;
-	bh=0bGHIfqwwx196ULA1enrCvrDYvVLqsdKTOhz0PTbNRI=;
-	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=svbyuxD8Q1M1D8iUc8mA7xxzH5v8V45SIcXP6hOiQ4V47yGHgd6U4B3PtbEDR/Z8x
-	 QHdVIRVrUBnEEqlzuG7kFkuJmE3cbGw8Cb68/JALg4CG9o9OQ6Hnv18JzJFhsITzmP
-	 fUDKSJ/MSAYiiME04gkUQk9I4adtRRFBgleajwQY=
+	s=default; t=1583786392;
+	bh=uKIKyE2aDLigjVLzzpTPvrwTJrITxL3fQ1PGUSn/J5Q=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ADWoeJWzW1caFxdHXpOOnAk1PPqA844BeXQph5ejkCOQiLMFxN+DMQgFeBGVlAgcq
+	 +/AG30hX06C7s5jfXX96v1uKHKvseECO03R3EO29Z2Ip8c3d6+6DE9churRyMsCPlJ
+	 AFNnIo5vwvViyP/dKn8kpk/9/+JYml2pfSGGEByI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5D13CF801EB;
-	Mon,  9 Mar 2020 15:03:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 51865F801A3;
+	Mon,  9 Mar 2020 21:39:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B3992F801F8; Mon,  9 Mar 2020 15:03:53 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 05D36F800DA
- for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2020 15:03:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05D36F800DA
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E4D0630E;
- Mon,  9 Mar 2020 07:03:48 -0700 (PDT)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 684BC3F67D;
- Mon,  9 Mar 2020 07:03:48 -0700 (PDT)
-Date: Mon, 09 Mar 2020 14:03:46 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Paul Cercueil <paul@crapouillou.net>
-Subject: Applied "ASoC: jz4740-i2s: Fix divider written at incorrect offset in
- register" to the asoc tree
-In-Reply-To: 
-Message-Id: 
-X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- stable@vger.kernel.org
+ id D85BAF801EB; Mon,  9 Mar 2020 21:38:54 +0100 (CET)
+Received: from mail-ot1-f68.google.com (mail-ot1-f68.google.com
+ [209.85.210.68])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D0976F80123
+ for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2020 21:38:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0976F80123
+Received: by mail-ot1-f68.google.com with SMTP id k26so3739688otr.2
+ for <alsa-devel@alsa-project.org>; Mon, 09 Mar 2020 13:38:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=movXecPtcFCRJBwb8EpVb7ysHOpf27xnptRbhixi3a4=;
+ b=anYaF9zB3v+C4vyNrpr0djac34Ke7dr3lzpIA2B8uqxsvYYNXZ1krqWe4X6/E8RdSN
+ kiV8QW+qvZDa00U/5FBVGghRFpx3/hrI2FfCXzDsmMjNkeZtbn/fDPMU2YHwk4QTR1Dc
+ px3X7B5dwHl5XqY+D4aVgUGC0g9iSeYYuAl8apd/I718KIHRIPAQ3CKW4gJxjIkmvset
+ ZzzCK2KwZFKtdBcA5Ll1cDWbtmymFuCBgx7NJmOAqMWE0gZ1WohpUcW8t+LjE+DKlAUe
+ eZuHD2tEZZz2Uv89Bzf7GQxG0dleQ3l0lInW+56STFlhpYmuzbsg889Kp7i8CC2ffpfA
+ fcuQ==
+X-Gm-Message-State: ANhLgQ03Pwd4eAJscw0uuVgAywaupB4r4cIfQQUWQpe8D2cnN26eOAem
+ eoYedk6zqbEcQalzZTNp+Q==
+X-Google-Smtp-Source: ADFU+vvLY1vdTo+msfSic/K+4qibHlH1f0qTdVM2N2SfpTods148lywXntMcEmHDYFrgDcR2ILTnuw==
+X-Received: by 2002:a9d:4001:: with SMTP id m1mr551258ote.57.1583786329894;
+ Mon, 09 Mar 2020 13:38:49 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net.
+ [24.155.109.49])
+ by smtp.gmail.com with ESMTPSA id q1sm3495874oij.18.2020.03.09.13.38.48
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 09 Mar 2020 13:38:48 -0700 (PDT)
+Received: (nullmailer pid 31750 invoked by uid 1000);
+ Mon, 09 Mar 2020 20:38:47 -0000
+Date: Mon, 9 Mar 2020 15:38:47 -0500
+From: Rob Herring <robh@kernel.org>
+To: Charles-Antoine Couret <charles-antoine.couret@mind.be>
+Subject: Re: [PATCH 6/6 V3] ASoC: tas5756m: Add DT binding document
+Message-ID: <20200309203847.GA31358@bogus>
+References: <20200308142509.27765-1-charles-antoine.couret@mind.be>
+ <20200308142509.27765-7-charles-antoine.couret@mind.be>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200308142509.27765-7-charles-antoine.couret@mind.be>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Charles-Antoine Couret <charles-antoine.couret@mind.be>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -71,66 +98,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20200309140346.vH0foau-26LxEaZQptUNrabyyksnJthckKf5D1WVlVE@z>
 
-The patch
+On Sun,  8 Mar 2020 15:25:09 +0100, Charles-Antoine Couret wrote:
+> Document the bindings for the tas5756m driver.
+> 
+> Signed-off-by: Charles-Antoine Couret <charles-antoine.couret@mind.be>
+> ---
+>  .../devicetree/bindings/sound/tas5756m.yaml   | 64 +++++++++++++++++++
+>  1 file changed, 64 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/tas5756m.yaml
+> 
 
-   ASoC: jz4740-i2s: Fix divider written at incorrect offset in register
+My bot found errors running 'make dt_binding_check' on your patch:
 
-has been applied to the asoc tree at
+Error: Documentation/devicetree/bindings/sound/tas5756m.example.dts:23.37-38 syntax error
+FATAL ERROR: Unable to parse input tree
+scripts/Makefile.lib:311: recipe for target 'Documentation/devicetree/bindings/sound/tas5756m.example.dt.yaml' failed
+make[1]: *** [Documentation/devicetree/bindings/sound/tas5756m.example.dt.yaml] Error 1
+Makefile:1262: recipe for target 'dt_binding_check' failed
+make: *** [dt_binding_check] Error 2
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From 9401d5aa328e64617d87abd59af1c91cace4c3e4 Mon Sep 17 00:00:00 2001
-From: Paul Cercueil <paul@crapouillou.net>
-Date: Fri, 6 Mar 2020 23:29:27 +0100
-Subject: [PATCH] ASoC: jz4740-i2s: Fix divider written at incorrect offset in
- register
-
-The 4-bit divider value was written at offset 8, while the jz4740
-programming manual locates it at offset 0.
-
-Fixes: 26b0aad80a86 ("ASoC: jz4740: Add dynamic sampling rate support to jz4740-i2s")
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200306222931.39664-2-paul@crapouillou.net
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/jz4740/jz4740-i2s.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/jz4740/jz4740-i2s.c b/sound/soc/jz4740/jz4740-i2s.c
-index 9d5405881209..434737b2b2b2 100644
---- a/sound/soc/jz4740/jz4740-i2s.c
-+++ b/sound/soc/jz4740/jz4740-i2s.c
-@@ -83,7 +83,7 @@
- #define JZ_AIC_I2S_STATUS_BUSY BIT(2)
- 
- #define JZ_AIC_CLK_DIV_MASK 0xf
--#define I2SDIV_DV_SHIFT 8
-+#define I2SDIV_DV_SHIFT 0
- #define I2SDIV_DV_MASK (0xf << I2SDIV_DV_SHIFT)
- #define I2SDIV_IDV_SHIFT 8
- #define I2SDIV_IDV_MASK (0xf << I2SDIV_IDV_SHIFT)
--- 
-2.20.1
-
+See https://patchwork.ozlabs.org/patch/1251057
+Please check and re-submit.
