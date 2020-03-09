@@ -2,58 +2,67 @@ Return-Path: <SRS0=1nsM=42=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4468C10F27
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 10:00:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22921C10F27
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 10:31:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6414120674
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 10:00:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A425820828
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 10:31:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TGAPzJk2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6414120674
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mLbguZWb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A425820828
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C29E51666;
-	Mon,  9 Mar 2020 10:59:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C29E51666
+	by alsa0.perex.cz (Postfix) with ESMTPS id E91FF1616;
+	Mon,  9 Mar 2020 11:30:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E91FF1616
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583748020;
-	bh=gW/dFvCjl7GrukTeAhgAIhKeG4AKN3+0I7DzHQgi328=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=TGAPzJk28OFKcZZ3W3pDh7nYdKxpUju4FzDTS3oxNGM4zoVHTQIc2Xc2vOaMBpClH
-	 tD8QdyUXeTlQhKX+KewdSjKI3lPJZDZJd74AGMLWf/9kRVaDqjM3ibvJbzcvT2ZZuB
-	 12SAuXLRLbc5zrAazvpqIQLv/7R2AmqauoVLJ20g=
+	s=default; t=1583749893;
+	bh=Xw4WHEhJzAoX+vCRfIMpbvtdik3XqmH2KuQGOuh7xm8=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=mLbguZWbFIs2e4GlLTP4xYL78pJjJGQwIbCFuTR6dFtOfa2XWJ7vTjAk5vv+gvWVP
+	 n+60oSJd2QDt2cCxNS5WAr0hpSkMpWWRR7r5B8mY+jcHQplskvoKzZ+8vXGugzjn3T
+	 IAddL4V1qcHzdrnT8YLPF48k9/r2j3pjHhILi0eY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 51A7EF801EB;
-	Mon,  9 Mar 2020 10:59:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 52C40F80123;
+	Mon,  9 Mar 2020 11:30:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0A6CAF801F8; Mon,  9 Mar 2020 10:59:29 +0100 (CET)
+ id A2ED8F801EB; Mon,  9 Mar 2020 11:30:40 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 03CB0F801A3
- for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2020 10:59:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03CB0F801A3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 877DBF80123
+ for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2020 11:30:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 877DBF80123
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 48712AE46
- for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2020 09:59:23 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id 0F749B384;
+ Mon,  9 Mar 2020 10:30:28 +0000 (UTC)
+Date: Mon, 09 Mar 2020 11:30:27 +0100
+Message-ID: <s5h7dztstvg.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: line6: Fix endless MIDI read loop
-Date: Mon,  9 Mar 2020 10:59:22 +0100
-Message-Id: <20200309095922.30269-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.16.4
+To: crwulff@gmail.com
+Subject: Re: [PATCH Fix for Kingston HyperX Amp (0951:16d8) 1/1]
+ snd-usb-audio: Fix Kingston HyperX Amp (0951:16d8).
+In-Reply-To: <20200307185741.32578-2-crwulff@gmail.com>
+References: <20200307185741.32578-1-crwulff@gmail.com>
+ <20200307185741.32578-2-crwulff@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -69,53 +78,110 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The MIDI input event parser of the LINE6 driver may enter into an
-endless loop when the unexpected data sequence is given, as it tries
-to continue the secondary bytes without termination.  Also, when the
-input data is too short, the parser returns a negative error, while
-the caller doesn't handle it properly.  This would lead to the
-unexpected behavior as well.
+On Sat, 07 Mar 2020 19:57:41 +0100,
+crwulff@gmail.com wrote:
+> 
+> From: Chris Wulff <crwulff@gmail.com>
+> 
+> The newer version of the HyperX Amp has controls on two
+> separate USB interfaces (0 and 2.)
+> 
+> This patch fixes the use of two separate usb interfaces
+> for controls and audio by using the controls mixer interface
+> instead of the card interface for each control and by not
+> merging new streams with a pcm device that has already
+> been registered.
+> 
+> Signed-off-by: Chris Wulff <crwulff@gmail.com>
 
-This patch addresses those issues by checking the return value
-correctly and handling the one-byte event in the parser properly.
+First off, thanks for the patch and the detailed analysis.
 
-The bug was reported by syzkaller.
+You had a nice description in the cover letter (patch 0), and it could
+be added here as well.
 
-Reported-by: syzbot+cce32521ee0a824c21f7@syzkaller.appspotmail.com
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/000000000000033087059f8f8fa3@google.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/line6/driver.c  | 2 +-
- sound/usb/line6/midibuf.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Also, the patch can be split to two: one for changing the mixer
+interface reference and another for avoiding the addition of the
+substream to the already registered device.
 
-diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
-index b5a3f754a4f1..4f096685ed65 100644
---- a/sound/usb/line6/driver.c
-+++ b/sound/usb/line6/driver.c
-@@ -305,7 +305,7 @@ static void line6_data_received(struct urb *urb)
- 				line6_midibuf_read(mb, line6->buffer_message,
- 						LINE6_MIDI_MESSAGE_MAXLEN);
- 
--			if (done == 0)
-+			if (done <= 0)
- 				break;
- 
- 			line6->message_length = done;
-diff --git a/sound/usb/line6/midibuf.c b/sound/usb/line6/midibuf.c
-index 8d6eefa0d936..6a70463f82c4 100644
---- a/sound/usb/line6/midibuf.c
-+++ b/sound/usb/line6/midibuf.c
-@@ -159,7 +159,7 @@ int line6_midibuf_read(struct midi_buffer *this, unsigned char *data,
- 			int midi_length_prev =
- 			    midibuf_message_length(this->command_prev);
- 
--			if (midi_length_prev > 0) {
-+			if (midi_length_prev > 1) {
- 				midi_length = midi_length_prev - 1;
- 				repeat = 1;
- 			} else
--- 
-2.16.4
+Now about the code changes:
 
+> diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+> index 45eee5cc312e..2498107ca89f 100644
+> --- a/sound/usb/mixer.c
+> +++ b/sound/usb/mixer.c
+> @@ -306,7 +306,7 @@ static int get_ctl_value_v1(struct usb_mixer_elem_info *cval, int request,
+>  		return -EIO;
+>  
+>  	while (timeout-- > 0) {
+> -		idx = snd_usb_ctrl_intf(chip) | (cval->head.id << 8);
+> +		idx = cval->head.mixer->hostif->desc.bInterfaceNumber | (cval->head.id << 8);
+
+This and the whole other conversion could be a bit nicer if we
+introduce a helper macro / inline function instead of the open coding,
+e.g.
+
+		idx = mixer_host_intf(cval->head.mixer) | (cval->head.id << 8);
+
+... and
+
+static inline int mixer_host_intf(struct usb_mixer_interface *mixer)
+{
+	return get_iface_desc(mixer->hostif)->bInterfaceNumber;
+}
+
+Those changes are drastic, hence the fix will be likely queued at
+first as post 5.6 change, i.e. it'll be merged to 5.7 kernel.
+
+
+> diff --git a/sound/usb/stream.c b/sound/usb/stream.c
+> index 11785f9652ad..d286c18f8d43 100644
+> --- a/sound/usb/stream.c
+> +++ b/sound/usb/stream.c
+> @@ -482,6 +482,7 @@ static int __snd_usb_add_audio_stream(struct snd_usb_audio *chip,
+>  	struct snd_usb_stream *as;
+>  	struct snd_usb_substream *subs;
+>  	struct snd_pcm *pcm;
+> +	struct snd_device *dev;
+>  	int err;
+>  
+>  	list_for_each_entry(as, &chip->pcm_list, list) {
+> @@ -502,6 +503,13 @@ static int __snd_usb_add_audio_stream(struct snd_usb_audio *chip,
+>  		subs = &as->substream[stream];
+>  		if (subs->ep_num)
+>  			continue;
+> +
+> +		list_for_each_entry(dev, &as->pcm->card->devices, list)
+> +			if (dev->device_data == as->pcm)
+> +				break;
+> +		if (dev && (dev->state == SNDRV_DEV_REGISTERED))
+> +			continue;
+> +
+
+It's a bit too hackish, and it's unfortunate that we have no way to
+identify whether the device got already registered or not in the
+current code.
+
+And, as you stated in the cover letter, this would lead some confusion
+to PulseAudio.  I guess we can still merge the substreams into the
+single device if the card registration is delayed.  That is, introduce
+a check before snd_card_register() call in usb_audio_probe(); if the
+probed interface matches with a blacklist (e.g. the combo of
+USB-device matching and the interface number matching), it skips the
+snd_card_register() call and lets the next interface doing it.
+
+In addition to that, we can put the workaround for the avoidance of
+the already registered device as you did in the above but in a
+slightly different form, too.  For example, we can introduce at first
+snd_pcm.registered flag that is set in PCM dev_register ops callback.
+Or we put a struct snd_device reverse mapping there so that you can
+check the device state, too.
+
+When we add the workaround, it should also print some info or error
+message, too.  Basically it's a racy action and it can be handled
+better with the delayed snd_card_register(), and the message indicates
+the needed change.
+
+
+thanks,
+
+Takashi
