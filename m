@@ -2,92 +2,76 @@ Return-Path: <SRS0=1nsM=42=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B37AC10F27
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 17:01:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B5A0C10F27
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 17:04:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9CCD420727
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 17:01:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 189892465D
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 17:04:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="T5EBkE64";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel-com.20150623.gappssmtp.com header.i=@intel-com.20150623.gappssmtp.com header.b="nbBSCWLi"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9CCD420727
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EU5nZdp/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 189892465D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E8F761678;
-	Mon,  9 Mar 2020 18:01:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8F761678
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4C355167A;
+	Mon,  9 Mar 2020 18:04:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4C355167A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583773314;
-	bh=Lx7415VUYJZ9clT9pfLLj8BH3QMH5ynyqGWkKaN3K+c=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1583773496;
+	bh=FoOwwCQwBQ7+akQDaFfkvZpdTFbgSqpasMhJoTDpalk=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=T5EBkE64KkLDd4aCQAU0KLbAKwDoYxTy0XCKx6SGWlmPx1/G63tjZrmzgO6X0RuiV
-	 p5L4o1fzxstAtXGrB1to3B2xmnTfOcIH5kQFUIjtP85eEjnmTIDIZ7uRZ+TrYzlDZG
-	 sPqqY0+Yg7wH74pphzwYfh4KZ9rcF/ORKlfV0YxM=
+	b=EU5nZdp/HHw7c5RvxRZCdaDCRtFWre4i2MYJnKCKPnvRlK+RR6XIrjmkyRtbWRDDy
+	 W9SZnZSKwXjzPbVtTs5Wvc4Qy/Bur69IEWzk0Eu5vidr/Gf7/mmYuqfHW33K5jQp2K
+	 oA6WK3HyPNnKef2/taeyCs+9+iQ05/2oVWd950ds=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 66A57F801A3;
-	Mon,  9 Mar 2020 18:01:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C6E87F801EB;
+	Mon,  9 Mar 2020 18:04:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B0B66F800DA; Mon,  9 Mar 2020 18:01:01 +0100 (CET)
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com
- [IPv6:2607:f8b0:4864:20::d42])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id DCD9AF801F7; Mon,  9 Mar 2020 18:04:03 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8F7D1F800DA
- for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2020 18:00:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F7D1F800DA
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel-com.20150623.gappssmtp.com
- header.i=@intel-com.20150623.gappssmtp.com header.b="nbBSCWLi"
-Received: by mail-io1-xd42.google.com with SMTP id t26so2096743ios.11
- for <alsa-devel@alsa-project.org>; Mon, 09 Mar 2020 10:00:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=intel-com.20150623.gappssmtp.com; s=20150623;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=rY3Eoq3idHFGjCrdr+cdPyN4Ku0GrYFLG04WoSLkUbE=;
- b=nbBSCWLiQVjFlPr/3qo9J2DAL6fIlPzTVPelWcAO8R/wZJS33JyJDb1T4QOlKOSfl0
- sM7hzn/4QqJvHoB0ze2bebkxwJN4rFm2U0Fx3IKsJKU3imFi+ZeSycRqkb2mSsaw4qlv
- WAgjfGu8jrkLSqQ8IPHc7v/RO04JXwLO2lVJx6gn+1pfuCsp8B7FGqq62lFX0UL6a9mo
- ep+BLvs+cDaKNRs5jNYdcxCWE9J7Bt1oF7leEay8YO5wB+0Yp/kQ7lFgWLbHamAqbNdN
- eCH2e6wfqUtqiHF2jcUj2jMKQTLkzW1wK3/XBBvVS/lNfsXIoY9aK/w4ibqQODI4KgAX
- xOSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=rY3Eoq3idHFGjCrdr+cdPyN4Ku0GrYFLG04WoSLkUbE=;
- b=YloN95uJuXywoetWU+24OsE2dSlmn/5+3Q5/XwgFFw9stjF6pR7jLqajSDcHi8cCZl
- TwvRYj8BCEZX4/XdkzJJcSRqnZ4MIA16wq7tuhJK6eWQWDUaMjEQ5gortUcGA0+cw/dw
- Ma7A7TY8EUwgFEDr7Py7mNMEgmfx/YrvLDPPb33tfVR0xf+BYrNt5065l3nspANsdlfc
- FOhZGPQKhLMbzkYI/ZO9CJy+f77UzGW405uEry6EJc95Fhj/x9h5DoppECM19BTQ24dg
- OMWns0gOr673ojkF1a0ATMMlCTwIFB9mwzjEqQt9plegixfbfi0/udKvTxLsezSoMMQe
- 0ZSw==
-X-Gm-Message-State: ANhLgQ2KmoCLl90a/Xdpwig7xnAC2c8QRdTXrb7+ljzgtCvSAUYlS3Sb
- I27kvyFjN5QpAbDJ2U8QXthu8tSe/9YR8ydOAWj0hpS3
-X-Google-Smtp-Source: ADFU+vtT3NyUkK0CTmNBlISCBEDzizPGeM2IyCIls4yagf4ZsfW5a8wzxVlByOQu58zO8rHcWv2Yg/QgHbBN673/tRw=
-X-Received: by 2002:a6b:e806:: with SMTP id f6mr7998451ioh.52.1583773254244;
- Mon, 09 Mar 2020 10:00:54 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 89670F800DA
+ for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2020 18:03:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89670F800DA
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 09 Mar 2020 10:03:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,534,1574150400"; d="scan'208";a="230996418"
+Received: from jdbostic-mobl1.amr.corp.intel.com (HELO [10.251.152.35])
+ ([10.251.152.35])
+ by orsmga007.jf.intel.com with ESMTP; 09 Mar 2020 10:03:50 -0700
+Subject: Re: [PATCH 2/7] ASoC: Intel: Skylake: Select hda configuration
+ permissively
+To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
+References: <20200305145314.32579-1-cezary.rojewski@intel.com>
+ <20200305145314.32579-3-cezary.rojewski@intel.com>
+ <ab7ad0e3-bc46-c761-4357-65d8563df5cc@linux.intel.com>
+ <7a04e8af-6ee0-394a-6802-c193777ad87c@intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <ffe33017-5b2d-0c63-4a15-33df8831f29c@linux.intel.com>
+Date: Mon, 9 Mar 2020 12:03:49 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-References: <874kuyi33c.wl-kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <874kuyi33c.wl-kuninori.morimoto.gx@renesas.com>
-From: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
-Date: Mon, 9 Mar 2020 10:00:43 -0700
-Message-ID: <CAFQqKeViGDniocxCScM9KGfawCDiOzMfjK=aAFAnnWV=C3JzXg@mail.gmail.com>
-Subject: Re: [PATCH 0/9] ASoC: soc-pcm cleanup step6
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+In-Reply-To: <7a04e8af-6ee0-394a-6802-c193777ad87c@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: vkoul@kernel.org, broonie@kernel.org, tiwai@suse.com, lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -103,30 +87,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, Mar 8, 2020 at 9:12 PM Kuninori Morimoto <
-kuninori.morimoto.gx@renesas.com> wrote:
 
->
-> Hi Mark
->
-> We are using plural form for for_each_xxx() macro.
-> But, for_each_rtd_codec/cpu_dai() are out of this rule.
-> 1) - 7) are for it.
-> 8) - 9) add new for_each_card_xxx() macros.
->
-> Kuninori Morimoto (9):
->    1) ASoC: soc.h: add for_each_rtd_codecs/cpus_dai() macro
->    2) ASoC: Intel: use for_each_rtd_codecs/cpus_dai() macro
->    3) ASoC: mediatek: use for_each_rtd_codecs/cpus_dai() macro
->    4) ASoC: meson: use for_each_rtd_codecs/cpus_dai() macro
->    5) ASoC: qcom: use for_each_rtd_codecs/cpus_dai() macro
->    6) ASoC: soc: use for_each_rtd_codecs/cpus_dai() macro
->    7) ASoC: soc.h: remove non plural form for_each_xxx macro
->    8) ASoC: soc-dapm: add for_each_card_dapms() macro
->    9) ASoC: soc-dapm: add for_each_card_widgets() macro
 
-LGTM Morimoto-san. I feel like the last 2 patches might be a bit of an
-overkill but then they might make sense to keep the code consistent with
-the use of the for_each*() macros everywhere.
+On 3/9/20 8:47 AM, Cezary Rojewski wrote:
+> On 2020-03-06 21:57, Pierre-Louis Bossart wrote:
+>> On 3/5/20 8:53 AM, Cezary Rojewski wrote:
+>>> With _reset_link removed from the probe sequence, codec_mask at the time
+>>> skl_find_hda_machine() is invoked will always be 0, so hda machine will
+>>> never be chosen. Rather than reorganizing boot flow, be permissive about
+>>> invalid mask. codec_mask will be set to proper value during probe_work -
+>>> before skl_codec_create() ever gets called.
+>>
+>> humm, what would happen e.g. if you have select the SKL driver but 
+>> there is no ACPI information to select an I2S-based machine driver, 
+>> and HDaudio/iDISP are disabled? You would have no error checks then?
+>>
+> 
+> Laptops I've been testing this with have had Realtek + iDisp present 
+> onboard. Now, if you disable Realtek + HDMI/DP modules within legacy 
+> HDaudio Kconfig and HD audio support within Intel Skylake tree then you 
+> end up with no required modules for said configuration at all. Nothing 
+> will happen really: no warnings, no sound card either.
 
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+I meant enable the HDaudio controller but disable HDaudio codecs/HDMI at 
+the BIOS level. In that case the codec_mask will never be set.
+
+> Just run such kernel on my setup and results are quite obvious:
+> - skl boots
+> - no machines present
+> - drv stays dormant
+> 
+> Czarek
