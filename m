@@ -2,71 +2,92 @@ Return-Path: <SRS0=1nsM=42=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CF10C10F27
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 16:55:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B37AC10F27
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 17:01:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 085B320828
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 16:55:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9CCD420727
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 17:01:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UsmrPtI0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 085B320828
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="T5EBkE64";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel-com.20150623.gappssmtp.com header.i=@intel-com.20150623.gappssmtp.com header.b="nbBSCWLi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9CCD420727
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5136F1675;
-	Mon,  9 Mar 2020 17:54:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5136F1675
+	by alsa0.perex.cz (Postfix) with ESMTPS id E8F761678;
+	Mon,  9 Mar 2020 18:01:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8F761678
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583772913;
-	bh=kU/9LkE7mPZ4GC+4dMcpbDDP/D1tGYyGtfXn/1zliAk=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1583773314;
+	bh=Lx7415VUYJZ9clT9pfLLj8BH3QMH5ynyqGWkKaN3K+c=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UsmrPtI0MbNUX9vvn3WRJeGp1eXGbBD3etceKfX8APycsFfsIZSksz4SLMgVOrHo3
-	 bZbwxBgcCBDlsG6RpK8rrvMbRb2WDitXA9WhR3xh0C+R0OccadhcJDKQuccLfHtXd1
-	 K3AsmAme3GGOeaWFt/6jzzhsVBfzX0KEH6x6dK6Q=
+	b=T5EBkE64KkLDd4aCQAU0KLbAKwDoYxTy0XCKx6SGWlmPx1/G63tjZrmzgO6X0RuiV
+	 p5L4o1fzxstAtXGrB1to3B2xmnTfOcIH5kQFUIjtP85eEjnmTIDIZ7uRZ+TrYzlDZG
+	 sPqqY0+Yg7wH74pphzwYfh4KZ9rcF/ORKlfV0YxM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D1F6FF801EB;
-	Mon,  9 Mar 2020 17:54:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 66A57F801A3;
+	Mon,  9 Mar 2020 18:01:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1777EF801F7; Mon,  9 Mar 2020 17:54:21 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 907C9F801A3
- for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2020 17:54:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 907C9F801A3
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E194A1FB;
- Mon,  9 Mar 2020 09:54:15 -0700 (PDT)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 63D1A3F534;
- Mon,  9 Mar 2020 09:54:15 -0700 (PDT)
-Date: Mon, 9 Mar 2020 16:54:13 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [PATCH 0/7] ASoC: Intel: Skylake: Fix HDaudio and Dmic
-Message-ID: <20200309165413.GH4101@sirena.org.uk>
-References: <20200305145314.32579-1-cezary.rojewski@intel.com>
- <9d53337b-b02b-efd7-790e-c3db18562346@linux.intel.com>
- <20200309113844.GA4101@sirena.org.uk>
- <e50a52eb-ea7a-4528-cfdb-1dd9210b5779@intel.com>
+ id B0B66F800DA; Mon,  9 Mar 2020 18:01:01 +0100 (CET)
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com
+ [IPv6:2607:f8b0:4864:20::d42])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8F7D1F800DA
+ for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2020 18:00:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F7D1F800DA
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel-com.20150623.gappssmtp.com
+ header.i=@intel-com.20150623.gappssmtp.com header.b="nbBSCWLi"
+Received: by mail-io1-xd42.google.com with SMTP id t26so2096743ios.11
+ for <alsa-devel@alsa-project.org>; Mon, 09 Mar 2020 10:00:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=intel-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=rY3Eoq3idHFGjCrdr+cdPyN4Ku0GrYFLG04WoSLkUbE=;
+ b=nbBSCWLiQVjFlPr/3qo9J2DAL6fIlPzTVPelWcAO8R/wZJS33JyJDb1T4QOlKOSfl0
+ sM7hzn/4QqJvHoB0ze2bebkxwJN4rFm2U0Fx3IKsJKU3imFi+ZeSycRqkb2mSsaw4qlv
+ WAgjfGu8jrkLSqQ8IPHc7v/RO04JXwLO2lVJx6gn+1pfuCsp8B7FGqq62lFX0UL6a9mo
+ ep+BLvs+cDaKNRs5jNYdcxCWE9J7Bt1oF7leEay8YO5wB+0Yp/kQ7lFgWLbHamAqbNdN
+ eCH2e6wfqUtqiHF2jcUj2jMKQTLkzW1wK3/XBBvVS/lNfsXIoY9aK/w4ibqQODI4KgAX
+ xOSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=rY3Eoq3idHFGjCrdr+cdPyN4Ku0GrYFLG04WoSLkUbE=;
+ b=YloN95uJuXywoetWU+24OsE2dSlmn/5+3Q5/XwgFFw9stjF6pR7jLqajSDcHi8cCZl
+ TwvRYj8BCEZX4/XdkzJJcSRqnZ4MIA16wq7tuhJK6eWQWDUaMjEQ5gortUcGA0+cw/dw
+ Ma7A7TY8EUwgFEDr7Py7mNMEgmfx/YrvLDPPb33tfVR0xf+BYrNt5065l3nspANsdlfc
+ FOhZGPQKhLMbzkYI/ZO9CJy+f77UzGW405uEry6EJc95Fhj/x9h5DoppECM19BTQ24dg
+ OMWns0gOr673ojkF1a0ATMMlCTwIFB9mwzjEqQt9plegixfbfi0/udKvTxLsezSoMMQe
+ 0ZSw==
+X-Gm-Message-State: ANhLgQ2KmoCLl90a/Xdpwig7xnAC2c8QRdTXrb7+ljzgtCvSAUYlS3Sb
+ I27kvyFjN5QpAbDJ2U8QXthu8tSe/9YR8ydOAWj0hpS3
+X-Google-Smtp-Source: ADFU+vtT3NyUkK0CTmNBlISCBEDzizPGeM2IyCIls4yagf4ZsfW5a8wzxVlByOQu58zO8rHcWv2Yg/QgHbBN673/tRw=
+X-Received: by 2002:a6b:e806:: with SMTP id f6mr7998451ioh.52.1583773254244;
+ Mon, 09 Mar 2020 10:00:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="a8sldprk+5E/pDEv"
-Content-Disposition: inline
-In-Reply-To: <e50a52eb-ea7a-4528-cfdb-1dd9210b5779@intel.com>
-X-Cookie: Above all things, reverence yourself.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: vkoul@kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- lgirdwood@gmail.com
+References: <874kuyi33c.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <874kuyi33c.wl-kuninori.morimoto.gx@renesas.com>
+From: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
+Date: Mon, 9 Mar 2020 10:00:43 -0700
+Message-ID: <CAFQqKeViGDniocxCScM9KGfawCDiOzMfjK=aAFAnnWV=C3JzXg@mail.gmail.com>
+Subject: Re: [PATCH 0/9] ASoC: soc-pcm cleanup step6
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,38 +103,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Sun, Mar 8, 2020 at 9:12 PM Kuninori Morimoto <
+kuninori.morimoto.gx@renesas.com> wrote:
 
---a8sldprk+5E/pDEv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+>
+> Hi Mark
+>
+> We are using plural form for for_each_xxx() macro.
+> But, for_each_rtd_codec/cpu_dai() are out of this rule.
+> 1) - 7) are for it.
+> 8) - 9) add new for_each_card_xxx() macros.
+>
+> Kuninori Morimoto (9):
+>    1) ASoC: soc.h: add for_each_rtd_codecs/cpus_dai() macro
+>    2) ASoC: Intel: use for_each_rtd_codecs/cpus_dai() macro
+>    3) ASoC: mediatek: use for_each_rtd_codecs/cpus_dai() macro
+>    4) ASoC: meson: use for_each_rtd_codecs/cpus_dai() macro
+>    5) ASoC: qcom: use for_each_rtd_codecs/cpus_dai() macro
+>    6) ASoC: soc: use for_each_rtd_codecs/cpus_dai() macro
+>    7) ASoC: soc.h: remove non plural form for_each_xxx macro
+>    8) ASoC: soc-dapm: add for_each_card_dapms() macro
+>    9) ASoC: soc-dapm: add for_each_card_widgets() macro
 
-On Mon, Mar 09, 2020 at 03:02:25PM +0100, Cezary Rojewski wrote:
+LGTM Morimoto-san. I feel like the last 2 patches might be a bit of an
+overkill but then they might make sense to keep the code consistent with
+the use of the for_each*() macros everywhere.
 
-> Mark, what's your take on backporting these to 4.19 LTS? Do we abandon the
-> subject and "just" merge (once reviewed/ approved) into 5.5? I believe
-> addressing all the issues mentioned on 4.19 is important.
-
-I didn't actually look at the patches since by the time I went to look
-at them it was clear that there was going to be a new version.  Pierre
-was saying that they added new functionality which would generally not
-be suitable.
-
-See Documentation/process/stable-kernel-rules.rst for the official
-rules.
-
---a8sldprk+5E/pDEv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5mdLUACgkQJNaLcl1U
-h9DZ2gf/Zm6kaB1CqHuqxzdUL5bhxEtvxA/j13lodjtM70ALUUct6nd1q9AQwQHl
-PGUll0xtrca4ftLBZFmbCK0ju+935msvPXIRX7Z1HwFeWkizR4whusEEyJtUYnI7
-JRx4qcf4pJvB48os4ywrmUeEfqjb+J48WNbXGzkdqOsEz6ViaSZ3L+MtW3ovNbAq
-A5IeCnGdxwSXDL7s88ZMZ85/4YRZh7EsnE1Bj6NN7e5luDDhdfsQbLUoeohS2ktx
-2Z3pWPcDlgfoBHlX3Ku5uZmCHPW0+rxqDgyQSqb4Bc6i0mt7y+i7iWEYDcHYR+9K
-J1qaRE7MRpDNO7KuzJD8/Mi6Dmm1mQ==
-=L2tP
------END PGP SIGNATURE-----
-
---a8sldprk+5E/pDEv--
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
