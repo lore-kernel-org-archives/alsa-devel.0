@@ -2,58 +2,61 @@ Return-Path: <SRS0=1nsM=42=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD066C10F26
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 04:11:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 37548C10F25
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 04:12:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5EA01206D7
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 04:11:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AC644206D7
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 04:12:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CTNeb+5r"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5EA01206D7
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RhAoFWwA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AC644206D7
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B10E31690;
-	Mon,  9 Mar 2020 05:10:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B10E31690
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1422B168F;
+	Mon,  9 Mar 2020 05:11:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1422B168F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583727108;
-	bh=c6lgXY8XfsZT63X1vYmmCarHWQukvGTmInnmJa/jw/4=;
-	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=CTNeb+5r8DrjwzwNshb5E2+/fhkze91NzdAVTup6Wow3nrR7RzZbTjgEvc61hHzQ5
-	 WsHmWXOw9bAvu9402sB/q3I7xh2KPwbWUjN6FZy3tg+b/FeZXmq3o1hlXPgvhFbq+G
-	 skem4+uFg1ylt+ynQBewBdzLzKwYm8Ncnh04vR0w=
+	s=default; t=1583727143;
+	bh=1BMn36WKwhYD4sp6jyaE64TKb5PDbI+R68eigAbG8IQ=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=RhAoFWwAZXRqh2nNJjYVNwx54x2mUgtBQO7aWFpCguxVJWPnTo/U9D2Doh6z6Fcyz
+	 YJmdAfdqEWy0MKvhgGvcsmpFXt18h1zHbysSLrAeFZbodnG+BAUVlVsLpqXAirbxwc
+	 Eg6ttjFWjNo1mIJaK4/E/6zmmTv17depyyQDE0Cw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E75C2F802F8;
-	Mon,  9 Mar 2020 05:06:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EB1F4F80260;
+	Mon,  9 Mar 2020 05:07:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DEECFF802F9; Mon,  9 Mar 2020 05:06:55 +0100 (CET)
+ id 99535F802FB; Mon,  9 Mar 2020 05:07:36 +0100 (CET)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 643FBF80227
- for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2020 05:06:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 643FBF80227
-Date: 09 Mar 2020 13:06:47 +0900
-X-IronPort-AV: E=Sophos;i="5.70,531,1574089200"; d="scan'208";a="41130119"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 09 Mar 2020 13:06:47 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 97703F801F7
+ for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2020 05:07:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97703F801F7
+Date: 09 Mar 2020 13:07:29 +0900
+X-IronPort-AV: E=Sophos;i="5.70,531,1574089200"; d="scan'208";a="41130169"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 09 Mar 2020 13:07:29 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id EE3F44006DE6;
- Mon,  9 Mar 2020 13:06:47 +0900 (JST)
-Message-ID: <874kuyi33c.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 7709E4142DF5;
+ Mon,  9 Mar 2020 13:07:29 +0900 (JST)
+Message-ID: <8736aii326.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 0/9] ASoC: soc-pcm cleanup step6
+Subject: [PATCH 1/9] ASoC: soc.h: add for_each_rtd_codecs/cpus_dai() macro
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <874kuyi33c.wl-kuninori.morimoto.gx@renesas.com>
+References: <874kuyi33c.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
@@ -73,44 +76,42 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
 We are using plural form for for_each_xxx() macro.
 But, for_each_rtd_codec/cpu_dai() are out of this rule.
-1) - 7) are for it.
-8) - 9) add new for_each_card_xxx() macros.
+This patch adds plural form macro.
 
-Kuninori Morimoto (9):
-   1) ASoC: soc.h: add for_each_rtd_codecs/cpus_dai() macro
-   2) ASoC: Intel: use for_each_rtd_codecs/cpus_dai() macro
-   3) ASoC: mediatek: use for_each_rtd_codecs/cpus_dai() macro
-   4) ASoC: meson: use for_each_rtd_codecs/cpus_dai() macro
-   5) ASoC: qcom: use for_each_rtd_codecs/cpus_dai() macro
-   6) ASoC: soc: use for_each_rtd_codecs/cpus_dai() macro
-   7) ASoC: soc.h: remove non plural form for_each_xxx macro
-   8) ASoC: soc-dapm: add for_each_card_dapms() macro
-   9) ASoC: soc-dapm: add for_each_card_widgets() macro
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ include/sound/soc.h | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
- drivers/soundwire/qcom.c                      |   2 +-
- include/sound/soc.h                           |  28 ++--
- sound/soc/intel/boards/cml_rt1011_rt5682.c    |   2 +-
- sound/soc/intel/boards/kbl_da7219_max98927.c  |   4 +-
- sound/soc/intel/boards/kbl_rt5663_max98927.c  |   2 +-
- .../intel/boards/kbl_rt5663_rt5514_max98927.c |   2 +-
- .../mediatek/mt8173/mt8173-rt5650-rt5514.c    |   2 +-
- .../mediatek/mt8173/mt8173-rt5650-rt5676.c    |   2 +-
- sound/soc/mediatek/mt8173/mt8173-rt5650.c     |   2 +-
- .../mediatek/mt8183/mt8183-da7219-max98357.c  |   4 +-
- sound/soc/meson/axg-card.c                    |   2 +-
- sound/soc/meson/meson-card-utils.c            |   2 +-
- sound/soc/qcom/apq8016_sbc.c                  |   2 +-
- sound/soc/qcom/sdm845.c                       |   8 +-
- sound/soc/soc-core.c                          |  16 +--
- sound/soc/soc-dapm.c                          |  53 ++++----
- sound/soc/soc-pcm.c                           | 124 +++++++++---------
- sound/soc/soc-topology.c                      |   2 +-
- 18 files changed, 134 insertions(+), 125 deletions(-)
-
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 9543d9246ca4..09bc45b8bf00 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1177,6 +1177,20 @@ struct snd_soc_pcm_runtime {
+ #define for_each_rtd_cpu_dai_rollback(rtd, i, dai)		\
+ 	for (; (--(i) >= 0) && ((dai) = rtd->cpu_dais[i]);)
+ 
++#define for_each_rtd_cpu_dais(rtd, i, dai)				\
++	for ((i) = 0;							\
++	     ((i) < rtd->num_cpus) && ((dai) = rtd->cpu_dais[i]);	\
++	     (i)++)
++#define for_each_rtd_cpu_dais_rollback(rtd, i, dai)		\
++	for (; (--(i) >= 0) && ((dai) = rtd->cpu_dais[i]);)
++#define for_each_rtd_codec_dais(rtd, i, dai)				\
++	for ((i) = 0;							\
++	     ((i) < rtd->num_codecs) && ((dai) = rtd->codec_dais[i]);	\
++	     (i)++)
++#define for_each_rtd_codec_dais_rollback(rtd, i, dai)		\
++	for (; (--(i) >= 0) && ((dai) = rtd->codec_dais[i]);)
++
++
+ void snd_soc_close_delayed_work(struct snd_soc_pcm_runtime *rtd);
+ 
+ /* mixer control */
 -- 
 2.17.1
 
