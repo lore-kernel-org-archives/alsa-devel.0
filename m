@@ -2,106 +2,97 @@ Return-Path: <SRS0=OXo6=44=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86E73C10F25
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 06:16:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D195C10F25
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 06:17:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1669420873
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 06:16:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BB84520873
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 06:17:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EodDg/VM";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="rXZlxFI9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1669420873
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CG9PKnSZ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="DQxdAFgB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BB84520873
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 383981612;
-	Wed, 11 Mar 2020 07:15:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 383981612
+	by alsa0.perex.cz (Postfix) with ESMTPS id BEB07166B;
+	Wed, 11 Mar 2020 07:16:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BEB07166B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583907374;
-	bh=QDLDyTPXic3+9x8WuFyWnPrArYTgFychuxvUjipk7Vk=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1583907436;
+	bh=mYJdm4o8qKYhs7j4lktdhVenm4hpEUqNfN+ztgPE6bg=;
+	h=From:References:In-Reply-To:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EodDg/VMZctz02CYvraA70gog/MoeySpQqfdyKSGYohLo47uVy5vAEHdMIZQbb0hd
-	 lg2uWddF1AKVUU/U4oijpb13GjDLEO6nBFZWIawnrV/0UPdoaGQ1ctC1g5SKQLmqa7
-	 /awBL8Eqxh0IGWYnPa7cU8wm6KbXMzDs0Kg/FR5k=
+	b=CG9PKnSZVjqhMxyU67PCX5CjB2Q6BzJSrSYhJOMwj9FT3lMNwBNiOM6ZBnilkNeuT
+	 kgagrdce5dYIIi+TxBk6zECUixxOF2NISsm/DhyZPLxpEpcu94CH06tYFKNp/VFCNY
+	 RtbEoA9imHcIlFhfSeK+Dkov7RG2h4IbWxbDVy9k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 68412F80268;
-	Wed, 11 Mar 2020 07:14:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A06E2F802A0;
+	Wed, 11 Mar 2020 07:15:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 518BDF8028C; Wed, 11 Mar 2020 02:09:47 +0100 (CET)
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
- [IPv6:2a00:1450:4864:20::443])
+ id 4097CF801EB; Mon,  9 Mar 2020 18:33:39 +0100 (CET)
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com
+ [IPv6:2a00:1450:4864:20::129])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CC2BCF80217
- for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2020 02:09:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC2BCF80217
+ by alsa1.perex.cz (Postfix) with ESMTPS id 01C5EF800DA
+ for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2020 18:33:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01C5EF800DA
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="rXZlxFI9"
-Received: by mail-wr1-x443.google.com with SMTP id s14so416770wrt.8
- for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2020 18:09:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=00GSpkojnx3B4GB0fFMAKFnU+tANLaiUGZgbkObBjO4=;
- b=rXZlxFI9JSzCtp81Ib7ST1kaLR/Xl1OrJ2z46XZY4sBTtm3lREyA9akpIS9lcjwiML
- VYoYR8hLGI5Z+wOOBt7p7W2aTJ/5M/pBoYe0rKUn5gWv3HYP1PSqQSypbszvwaNvmdCz
- kjTqHgsAfKVBgXFea9cHKcd2aURr8Atn5b94jRSfR4IeSgt6yHXxFVCPCcZVmw1K9fz9
- 6PLIlVupVklKgjKMLnCPRmPcB5j/UPiF1BKPcq66GPMWM3UkRkJzNucYPExpORpw+xwM
- miIaPGjeP93ijikHj9Hs7ilF5w2j99rKV3ps+Lp+KmYG9JJjxyFyOcYRjXFKw24fYfoH
- XE3A==
+ dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com
+ header.b="DQxdAFgB"
+Received: by mail-lf1-x129.google.com with SMTP id c20so8459295lfb.0
+ for <alsa-devel@alsa-project.org>; Mon, 09 Mar 2020 10:33:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=broadcom.com; s=google;
+ h=from:references:in-reply-to:mime-version:thread-index:date
+ :message-id:subject:to:cc;
+ bh=bgiHSLTQXM8E0mv0SF7G09UBPAaNCg/++oKU9IO6Jv0=;
+ b=DQxdAFgBLzOAYx5M0Q2Fh/zkVoV6kRmCETSjJWCX2qfbDblPeSMRSyXVWiyOt5Ig3w
+ gMJcpRqwnRBelmbxOy+sO0cchBZqoMdedCWSBBTnV3n3ng/yHVlq3GqcCNbjCr0OjUSN
+ bIhthscycsWpgsCe1Hw6pRZIVFPhvr5K67Giw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=00GSpkojnx3B4GB0fFMAKFnU+tANLaiUGZgbkObBjO4=;
- b=s0yvLOUZwnlKuRVcGd2aYRQZQmpM8ZCWuiff6DPE0gzs27y83k5kVeQSwPP2OaoUZg
- ZjaGSeT+1RD5jAZojUJWF2EH15cUiAWxcq0UfAeUT4cP/Lt9uMCaz6CPG1qwlzfD/iZ5
- jCSOq1lkBTtuvRntpZZNVauhaq2b6RR5RIZcFoYH7UwPF+cPh6qbi/mMLMWjkslEQJ5J
- U0FVJdj8fz9KMk4HcI9WG3DC0T/P8lVCq7xez8agmS9YNn5L5Ai4jJqCa4nKUr6PK7E3
- n0zmCPEkW3wlBMXT6ccRdiDTRMii59Y3oMNrzOyNprcXYy0ti3s8xu8XgggKuGs8g9ZH
- Bo0g==
-X-Gm-Message-State: ANhLgQ1YEzpXuAH6IKdFMLlj+w2mwJsUeC8GO/j7rflcK0IC89zxQP2B
- YKt5cUNt/DEAL/t+uqt2iQ==
-X-Google-Smtp-Source: ADFU+vuPZB+qEvJlgMjAKNaONJg23VSoTdeJapUHrDxw8mfccmCzR4CYmGDU2ygM1wMZnnyCmheYRQ==
-X-Received: by 2002:a5d:6902:: with SMTP id t2mr720116wru.135.1583888983726;
- Tue, 10 Mar 2020 18:09:43 -0700 (PDT)
-Received: from ninjahost.lan (host-2-102-15-144.as13285.net. [2.102.15.144])
- by smtp.googlemail.com with ESMTPSA id i6sm36658097wra.42.2020.03.10.18.09.41
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 10 Mar 2020 18:09:43 -0700 (PDT)
-From: Jules Irenge <jbi.octave@gmail.com>
-To: boqun.feng@gmail.com
-Subject: [PATCH 8/8] ALSA: firewire-tascam: Add missing annotation for
- tscm_hwdep_read_locked()
-Date: Wed, 11 Mar 2020 01:09:08 +0000
-Message-Id: <20200311010908.42366-9-jbi.octave@gmail.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200311010908.42366-1-jbi.octave@gmail.com>
-References: <0/8>
- <20200311010908.42366-1-jbi.octave@gmail.com>
+ h=x-gm-message-state:from:references:in-reply-to:mime-version
+ :thread-index:date:message-id:subject:to:cc;
+ bh=bgiHSLTQXM8E0mv0SF7G09UBPAaNCg/++oKU9IO6Jv0=;
+ b=sYhFu5jxioEbbOWTr2JqKCpafXBwxkFmI6unGyv1cED8Kqo5cfdfr8GQDueQzz/3fx
+ nXK6ECdhjxZuxp5dkdEJmRuzWI3uKxD904p9LgjIJahcb+3RrgSC3tOeIPDupiJTPngh
+ Q5ZQOX3hzA07XhRfuPcPU59EBZHd+OVbpEr5NKDTbuETmpl0jTFyoHjvF6qeJdMo8mwo
+ 18NNNEjLySUWHNH3NjjsQyfQddVqmROMGC6fnYPPVIryG0RkZOdgoToGXfLGPxin4GDX
+ Km8InJ/JR8UVIxZuhE4rsjq7/Pulr+uMB1b8MdA4salYEQv+OuqWC0Vl7hde5ZjqPsdb
+ 3fWA==
+X-Gm-Message-State: ANhLgQ36Dc/9XMeyRBtDzG3WOkxQDhTtoqhoPpYKbZath8UPAzsOjlDK
+ iRcPOtqjnrebTky7WKJDjlzS0VyLMOJKdE857nmVVw==
+X-Google-Smtp-Source: ADFU+vuq3eH9wkuVNiO3iVGw7rhwXN2qPoAEtL/Vxw8RjRXO3sz1OPnFMpu3+6cw1VwM6E+14wRoY4uUL6ksq3D8aLA=
+X-Received: by 2002:ac2:4834:: with SMTP id 20mr9943688lft.93.1583775213105;
+ Mon, 09 Mar 2020 10:33:33 -0700 (PDT)
+From: Kevin Li <kevin-ke.li@broadcom.com>
+References: <20200306222705.13309-1-kevin-ke.li@broadcom.com>
+ <20200309123307.GE4101@sirena.org.uk>
+In-Reply-To: <20200309123307.GE4101@sirena.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Mailer: Microsoft Outlook 15.0
+Thread-Index: AQK6AtPk+W1UvlC/8YJn5FlJAEq5hQGCyJpIpmw/bzA=
+Date: Mon, 9 Mar 2020 10:33:30 -0700
+Message-ID: <69138568e9c18afa57d5edba6be9887b@mail.gmail.com>
+Subject: RE: [PATCH] ASoC: brcm: Add DSL/PON SoC audio driver
+To: Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Mailman-Approved-At: Wed, 11 Mar 2020 07:14:40 +0100
-Cc: "moderated list:FIREWIRE AUDIO DRIVERS and IEC 61883-1/6 PACKET..."
- <alsa-devel@alsa-project.org>, netdev@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Clemens Ladisch <clemens@ladisch.de>,
- linux-kernel@vger.kernel.org, Alexios Zavras <alexios.zavras@intel.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, bpf@vger.kernel.org,
- Thomas Gleixner <tglx@linutronix.de>, Allison Randal <allison@lohutok.net>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Scott Branden <sbranden@broadcom.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Ray Jui <rjui@broadcom.com>, Takashi Iwai <tiwai@suse.com>,
+ bcm-kernel-feedback-list@broadcom.com, Stephen Boyd <swboyd@chromium.org>,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -117,30 +108,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Sparse reports a warning at tscm_hwdep_read_locked()
+Hi Mark,
 
-warning: context imbalance in tscm_hwdep_read_locked() - unexpected unlock
+The SoC I2S block we currently have shares one clock and frame sync signal
+for both playback and capture stream, plus playback and capture can only
+have one master at a time. If we set playback and capture master at same
+time, it will have jitter on clock and FS.
 
-The root cause is the missing annotation at tscm_hwdep_read_locked()
-Add the missing __releases(&tscm->lock) annotation
+Based on above, for playback and capture, whichever starts first, it will
+be master, another stream will be slave if it starts before the first
+stream shutting  down. So working as master or slave for a stream is
+depending on another stream's status.
 
-Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
----
- sound/firewire/tascam/tascam-hwdep.c | 1 +
- 1 file changed, 1 insertion(+)
+Same thing for shutting down a stream. A master stream shutting down will
+have to set another stream to master if another stream is on working
+status as a slave. A glitch/Jitter will happen at this moment. But we
+minimize it.
 
-diff --git a/sound/firewire/tascam/tascam-hwdep.c b/sound/firewire/tascam/tascam-hwdep.c
-index 9801e33e7f2a..6f38335fe10b 100644
---- a/sound/firewire/tascam/tascam-hwdep.c
-+++ b/sound/firewire/tascam/tascam-hwdep.c
-@@ -17,6 +17,7 @@
- 
- static long tscm_hwdep_read_locked(struct snd_tscm *tscm, char __user *buf,
- 				   long count, loff_t *offset)
-+	__releases(&tscm->lock)
- {
- 	struct snd_firewire_event_lock_status event = {
- 		.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS,
--- 
-2.24.1
+That is why this master/slave mode handles in startup/shutdown functions.
+Not sure how other company handles this kind of I2S block.
 
+Let me know if it is still not clear.
+
+Yes, set_fmt() is not needed. Will be addressed along with rest questions
+you mentioned on the next patch, with a patch version.
+
+
+Thanks!
+Kevin
+
+
+> +	struct bcm_i2s_priv *i2s_priv = snd_soc_dai_get_drvdata(dai);
+> +	struct regmap *regmap_i2s = i2s_priv->regmap_i2s;
+> +
+> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+> +		regmap_update_bits(regmap_i2s, I2S_TX_CFG,
+> +				   I2S_TX_OUT_R | I2S_TX_DATA_ALIGNMENT |
+> +				   I2S_TX_DATA_ENABLE |
+I2S_TX_CLOCK_ENABLE,
+> +				   I2S_TX_OUT_R | I2S_TX_DATA_ALIGNMENT |
+> +				   I2S_TX_DATA_ENABLE |
+I2S_TX_CLOCK_ENABLE);
+> +		regmap_write(regmap_i2s, I2S_TX_IRQ_CTL, 0);
+> +		regmap_write(regmap_i2s, I2S_TX_IRQ_IFF_THLD, 0);
+> +		regmap_write(regmap_i2s, I2S_TX_IRQ_OFF_THLD, 1);
+> +
+> +		regmap_read(regmap_i2s, I2S_RX_CFG_2, &slaveMode);
+> +		if (slaveMode & I2S_RX_SLAVE_MODE_MASK)
+> +			regmap_update_bits(regmap_i2s, I2S_TX_CFG_2,
+> +					   I2S_TX_SLAVE_MODE_MASK,
+> +					   I2S_TX_MASTER_MODE);
+> +		else
+> +			regmap_update_bits(regmap_i2s, I2S_TX_CFG_2,
+> +					   I2S_TX_SLAVE_MODE_MASK,
+> +					   I2S_TX_SLAVE_MODE);
+
+Setting master or slave mode should be done with a set_fmt() operation but
+your set_fmt() operation was empty.  How would this be configured?
