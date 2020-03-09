@@ -2,72 +2,61 @@ Return-Path: <SRS0=1nsM=42=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04B28C10F25
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 19:30:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EA359C10F27
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 14:04:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 851EF2465A
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 19:30:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7399221D56
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 14:04:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="T/JXhl+e"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 851EF2465A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="svbyuxD8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7399221D56
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C949716BF;
-	Mon,  9 Mar 2020 20:29:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C949716BF
+	by alsa0.perex.cz (Postfix) with ESMTPS id C223F1669;
+	Mon,  9 Mar 2020 15:03:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C223F1669
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583782234;
-	bh=YdQ7FpXgwyvj+pjAB8lFz5IXg2+0MNrHDzOZLHdLX+s=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=T/JXhl+ezuvJEAyVd6d4a03Itt77IYMtUKZkhEaKmhkAxgcIZTsFXzK2hY9dECXoI
-	 7LASE8OjPfs/C+U7NwXCo8FkfW/tHwjGdM3sNuz7IePpzlB6R0p6/4YY3NVLwYAmE7
-	 9KD8ubENoUqzaO50owbnnYCMRE4o/MZQG9Ud3dM0=
+	s=default; t=1583762685;
+	bh=0bGHIfqwwx196ULA1enrCvrDYvVLqsdKTOhz0PTbNRI=;
+	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=svbyuxD8Q1M1D8iUc8mA7xxzH5v8V45SIcXP6hOiQ4V47yGHgd6U4B3PtbEDR/Z8x
+	 QHdVIRVrUBnEEqlzuG7kFkuJmE3cbGw8Cb68/JALg4CG9o9OQ6Hnv18JzJFhsITzmP
+	 fUDKSJ/MSAYiiME04gkUQk9I4adtRRFBgleajwQY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B919BF80290;
-	Mon,  9 Mar 2020 20:28:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5D13CF801EB;
+	Mon,  9 Mar 2020 15:03:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ACBEFF8028E; Mon,  9 Mar 2020 20:28:03 +0100 (CET)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CCB88F801F7
- for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2020 20:27:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CCB88F801F7
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
- by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 09 Mar 2020 12:27:51 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,534,1574150400"; d="scan'208";a="442858065"
-Received: from dmaida-mobl.amr.corp.intel.com (HELO
- pbossart-mobl3.amr.corp.intel.com) ([10.251.17.65])
- by fmsmga006.fm.intel.com with ESMTP; 09 Mar 2020 12:27:50 -0700
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/2] ASoC: Intel: skl_nau88l25_ssm4567: disable route checks
-Date: Mon,  9 Mar 2020 14:27:44 -0500
-Message-Id: <20200309192744.18380-3-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200309192744.18380-1-pierre-louis.bossart@linux.intel.com>
-References: <20200309192744.18380-1-pierre-louis.bossart@linux.intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, ojab // <ojab@ojab.ru>
+ id B3992F801F8; Mon,  9 Mar 2020 15:03:53 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 05D36F800DA
+ for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2020 15:03:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05D36F800DA
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E4D0630E;
+ Mon,  9 Mar 2020 07:03:48 -0700 (PDT)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 684BC3F67D;
+ Mon,  9 Mar 2020 07:03:48 -0700 (PDT)
+Date: Mon, 09 Mar 2020 14:03:46 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Paul Cercueil <paul@crapouillou.net>
+Subject: Applied "ASoC: jz4740-i2s: Fix divider written at incorrect offset in
+ register" to the asoc tree
+In-Reply-To: 
+Message-Id: 
+X-Patchwork-Hint: ignore
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,29 +71,66 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+Message-ID: <20200309140346.vH0foau-26LxEaZQptUNrabyyksnJthckKf5D1WVlVE@z>
 
-Deal with incomplete topologies, this patch restores sound on user
-devices.
+The patch
 
-Tested-by: ojab // <ojab@ojab.ru>
-Fixes: daa480bde6b3a9 ("ASoC: soc-core: tidyup for snd_soc_dapm_add_routes()")
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+   ASoC: jz4740-i2s: Fix divider written at incorrect offset in register
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+From 9401d5aa328e64617d87abd59af1c91cace4c3e4 Mon Sep 17 00:00:00 2001
+From: Paul Cercueil <paul@crapouillou.net>
+Date: Fri, 6 Mar 2020 23:29:27 +0100
+Subject: [PATCH] ASoC: jz4740-i2s: Fix divider written at incorrect offset in
+ register
+
+The 4-bit divider value was written at offset 8, while the jz4740
+programming manual locates it at offset 0.
+
+Fixes: 26b0aad80a86 ("ASoC: jz4740: Add dynamic sampling rate support to jz4740-i2s")
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20200306222931.39664-2-paul@crapouillou.net
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/skl_nau88l25_ssm4567.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/jz4740/jz4740-i2s.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-index 6f68712ffce9..40f8eb53e822 100644
---- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-@@ -686,6 +686,7 @@ static struct snd_soc_card skylake_audio_card = {
- 	.codec_conf = ssm4567_codec_conf,
- 	.num_configs = ARRAY_SIZE(ssm4567_codec_conf),
- 	.fully_routed = true,
-+	.disable_route_checks = true,
- 	.late_probe = skylake_card_late_probe,
- };
+diff --git a/sound/soc/jz4740/jz4740-i2s.c b/sound/soc/jz4740/jz4740-i2s.c
+index 9d5405881209..434737b2b2b2 100644
+--- a/sound/soc/jz4740/jz4740-i2s.c
++++ b/sound/soc/jz4740/jz4740-i2s.c
+@@ -83,7 +83,7 @@
+ #define JZ_AIC_I2S_STATUS_BUSY BIT(2)
  
+ #define JZ_AIC_CLK_DIV_MASK 0xf
+-#define I2SDIV_DV_SHIFT 8
++#define I2SDIV_DV_SHIFT 0
+ #define I2SDIV_DV_MASK (0xf << I2SDIV_DV_SHIFT)
+ #define I2SDIV_IDV_SHIFT 8
+ #define I2SDIV_IDV_MASK (0xf << I2SDIV_IDV_SHIFT)
 -- 
 2.20.1
 
