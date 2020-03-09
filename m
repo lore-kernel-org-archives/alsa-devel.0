@@ -2,76 +2,68 @@ Return-Path: <SRS0=1nsM=42=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B5A0C10F27
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 17:04:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 42851C10F27
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 17:08:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 189892465D
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 17:04:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B657320663
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 17:08:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EU5nZdp/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 189892465D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="J55mjVHs"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B657320663
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4C355167A;
-	Mon,  9 Mar 2020 18:04:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4C355167A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1A03C167E;
+	Mon,  9 Mar 2020 18:08:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A03C167E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583773496;
-	bh=FoOwwCQwBQ7+akQDaFfkvZpdTFbgSqpasMhJoTDpalk=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=EU5nZdp/HHw7c5RvxRZCdaDCRtFWre4i2MYJnKCKPnvRlK+RR6XIrjmkyRtbWRDDy
-	 W9SZnZSKwXjzPbVtTs5Wvc4Qy/Bur69IEWzk0Eu5vidr/Gf7/mmYuqfHW33K5jQp2K
-	 oA6WK3HyPNnKef2/taeyCs+9+iQ05/2oVWd950ds=
+	s=default; t=1583773734;
+	bh=VIvtGrdUEz/Zc4u55LcCB9bQzpnCU+rZcLJv8/zrrjI=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=J55mjVHsMonk9EZaJ+P/x5dZ0xIius6hOAO+VvaNKgBznHAKBhrBF/Rcl9AGGpSH7
+	 cCMEUu+xvjoz46D8mbqT/dd8kiiDNCrxhxbBbAPl4dKQuhld2ogdic2kyQl0aQdP0l
+	 3hdYbKG6NnAOQYSN9m4vT0OEOv50WQzJWq0OK1Co=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C6E87F801EB;
-	Mon,  9 Mar 2020 18:04:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5E54BF801F8;
+	Mon,  9 Mar 2020 18:08:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DCD9AF801F7; Mon,  9 Mar 2020 18:04:03 +0100 (CET)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ id 3740AF800DA; Mon,  9 Mar 2020 18:08:01 +0100 (CET)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 89670F800DA
- for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2020 18:03:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89670F800DA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8F5B7F800DA;
+ Mon,  9 Mar 2020 18:07:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F5B7F800DA
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 09 Mar 2020 10:03:51 -0700
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 09 Mar 2020 10:07:53 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,534,1574150400"; d="scan'208";a="230996418"
-Received: from jdbostic-mobl1.amr.corp.intel.com (HELO [10.251.152.35])
- ([10.251.152.35])
- by orsmga007.jf.intel.com with ESMTP; 09 Mar 2020 10:03:50 -0700
-Subject: Re: [PATCH 2/7] ASoC: Intel: Skylake: Select hda configuration
- permissively
-To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
-References: <20200305145314.32579-1-cezary.rojewski@intel.com>
- <20200305145314.32579-3-cezary.rojewski@intel.com>
- <ab7ad0e3-bc46-c761-4357-65d8563df5cc@linux.intel.com>
- <7a04e8af-6ee0-394a-6802-c193777ad87c@intel.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <ffe33017-5b2d-0c63-4a15-33df8831f29c@linux.intel.com>
-Date: Mon, 9 Mar 2020 12:03:49 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+X-IronPort-AV: E=Sophos;i="5.70,534,1574150400"; d="scan'208";a="353408506"
+Received: from gliakhov-mobl2.ger.corp.intel.com (HELO
+ ubuntu.ger.corp.intel.com) ([10.249.40.3])
+ by fmsmga001.fm.intel.com with ESMTP; 09 Mar 2020 10:07:51 -0700
+From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 0/3] [RESEND] ASoC: SOF: preparatory patches
+Date: Mon,  9 Mar 2020 18:07:46 +0100
+Message-Id: <20200309170749.32313-1-guennadi.liakhovetski@linux.intel.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <7a04e8af-6ee0-394a-6802-c193777ad87c@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: vkoul@kernel.org, broonie@kernel.org, tiwai@suse.com, lgirdwood@gmail.com
+Content-Transfer-Encoding: 8bit
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,34 +79,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+This is the first set of patches for the SOF virtualisation work. We
+send these patches first because they touch the ASoC core. 2 of them
+are mostly cosmetic with no functional changes, but patch 2/3 might
+cause some discussions. Please review and comment.
 
+Thanks
+Guennadi
 
-On 3/9/20 8:47 AM, Cezary Rojewski wrote:
-> On 2020-03-06 21:57, Pierre-Louis Bossart wrote:
->> On 3/5/20 8:53 AM, Cezary Rojewski wrote:
->>> With _reset_link removed from the probe sequence, codec_mask at the time
->>> skl_find_hda_machine() is invoked will always be 0, so hda machine will
->>> never be chosen. Rather than reorganizing boot flow, be permissive about
->>> invalid mask. codec_mask will be set to proper value during probe_work -
->>> before skl_codec_create() ever gets called.
->>
->> humm, what would happen e.g. if you have select the SKL driver but 
->> there is no ACPI information to select an I2S-based machine driver, 
->> and HDaudio/iDISP are disabled? You would have no error checks then?
->>
-> 
-> Laptops I've been testing this with have had Realtek + iDisp present 
-> onboard. Now, if you disable Realtek + HDMI/DP modules within legacy 
-> HDaudio Kconfig and HD audio support within Intel Skylake tree then you 
-> end up with no required modules for said configuration at all. Nothing 
-> will happen really: no warnings, no sound card either.
+Guennadi Liakhovetski (3):
+  ASoC: (cosmetic) simplify dpcm_prune_paths()
+  ASoC: add function parameters to enable forced path pruning
+  ASoC: export DPCM runtime update functions
 
-I meant enable the HDaudio controller but disable HDaudio codecs/HDMI at 
-the BIOS level. In that case the codec_mask will never be set.
+ include/sound/soc-dpcm.h |  30 ++++++++---
+ sound/soc/soc-compress.c |   2 +-
+ sound/soc/soc-dapm.c     |   8 +--
+ sound/soc/soc-pcm.c      | 130 +++++++++++++++++++++++++++++------------------
+ 4 files changed, 109 insertions(+), 61 deletions(-)
 
-> Just run such kernel on my setup and results are quite obvious:
-> - skl boots
-> - no machines present
-> - drv stays dormant
-> 
-> Czarek
+-- 
+1.9.3
+
