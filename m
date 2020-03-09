@@ -2,104 +2,107 @@ Return-Path: <SRS0=1nsM=42=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F714C10F25
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 20:56:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90727C10F25
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 21:19:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E30572464B
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 20:56:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 210A32464B
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 21:19:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HFzBybFl";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=mind.be header.i=@mind.be header.b="YuJ74zCS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E30572464B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mind.be
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WD6TOFgg";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Mc3f2TGu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 210A32464B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 49FD41607;
-	Mon,  9 Mar 2020 21:56:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 49FD41607
+	by alsa0.perex.cz (Postfix) with ESMTPS id 75DFA1612;
+	Mon,  9 Mar 2020 22:18:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75DFA1612
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583787412;
-	bh=LQKII5TaPLHsurGXhlRoeFmLQ3D5zGnZ/y4rQ5dBTBc=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1583788763;
+	bh=DtXKlc/0IwIJ4W+Dw/Rxf4cl8x8k1kmsy2VrIIeLaZE=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HFzBybFl45hPRxriMhf2HB9EXGBW1VP7ZylDXl251eMywDyifH+3lW3n8x2Q6lEXH
-	 U8I0S9oz+mtTyUjaCc0YGwGXwQpktUz9cTctx3H5l9BfY3MHgjCvZj5PXysgwkIhD6
-	 XUW7fJXZaWQe9DyikMtsZJT0xpmeycW21U5nEGyQ=
+	b=WD6TOFggICTVhNM9MxnoAaiQ7RhxBzrLy54RGFDmIyjkCxHVmOcK4/q0bXYP8KB0L
+	 dPLSMHxL2l3sKKyimvcFJFtm+wzlYowlGe0cbiN5V/Z6AUAL7UBthtoA8wk+foZU/7
+	 vDhGs/h3ogSZp42TnNlJuFWJNOnD/gzFElJUaCXk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A9D19F801A3;
-	Mon,  9 Mar 2020 21:56:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id ED898F800B5;
+	Mon,  9 Mar 2020 22:18:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EB038F801EB; Mon,  9 Mar 2020 21:55:59 +0100 (CET)
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
- [IPv6:2a00:1450:4864:20::443])
+ id 37E79F801EB; Mon,  9 Mar 2020 22:18:31 +0100 (CET)
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com
+ [IPv6:2607:f8b0:4864:20::1043])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 10136F800B5
- for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2020 21:55:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10136F800B5
+ by alsa1.perex.cz (Postfix) with ESMTPS id E28F6F800B5
+ for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2020 22:18:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E28F6F800B5
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=mind.be header.i=@mind.be
- header.b="YuJ74zCS"
-Received: by mail-wr1-x443.google.com with SMTP id z15so13031900wrl.1
- for <alsa-devel@alsa-project.org>; Mon, 09 Mar 2020 13:55:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mind.be; s=google;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-transfer-encoding:content-language;
- bh=vhQE94JMdE+kOhEIbg2JbjKBD/IEFt/F1xmPKcV+cCA=;
- b=YuJ74zCSchT9R3Qw3rctLTy0ub6AzdBpEPLkSD80z+B+IQkXZa36AMPNVEM7doIeXL
- zd8Vpkkze/4ANcZsQ7e8Dr1Njf9f4PHcm7FKs+nm7r0UuFVfMQFa1Mrbpnw8xEZ9ZQ8v
- YfqZFMqOWMa+j/RfwTu4lYl9g14Srn1vG8+dTNYq6J0uQlTPQVPwCITtEfB8VSYBSzsH
- tyht4tdxYqCNSvFX0iMdVWadDTPODU60p/CoH123NYBypP+o6h/ypxiFNetmHzRnfYYs
- 5VH1fYXNJFXiMp5VC8ZaOpHTtKCxTUuXMeb6O4EJ+kQYucaDX1WuNVEFqXrGKH3x5+cU
- afjQ==
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="Mc3f2TGu"
+Received: by mail-pj1-x1043.google.com with SMTP id a18so435376pjs.5
+ for <alsa-devel@alsa-project.org>; Mon, 09 Mar 2020 14:18:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to:user-agent;
+ bh=75BMaXcAmO4F5Wh+UkrqpyAJEuiai75tQOLAGLzUruc=;
+ b=Mc3f2TGua+mzWZqhqcBFy8xGR4f62bMfkZ533/dtz8uiLUdJhj/KUeALKn1cfWNrgL
+ fIQti2Sr9jF85Y+rnxx4+60P16SUP3noRF2AljLUI1D2TFMmP1bonRiTwzjx4xNJ9Qwe
+ 5ZwVhdVsIL82iYY0GFFZP9ck6Ccro9zA/NCVMYqPyiZzOtN5c7Gv+TLxZguS9lB7Xon4
+ hDadFff6ReYzd5WneH3sHbliE6rYSdrwuC0imPmRhArAKnt1MskwGQAGVLXRnAlhKQtL
+ kwBImHlUMMDcum7ZL8MZBJ/YPV3RAGp0y3mQHGzC9a7UWHTJnrktv2CJw6iWWZrfotr5
+ SlVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-transfer-encoding
- :content-language;
- bh=vhQE94JMdE+kOhEIbg2JbjKBD/IEFt/F1xmPKcV+cCA=;
- b=H0tintU6TfU5Vvo6Ghcmfv3RnYAAWvOUgBABo53KTobSTZne9EJpKeMsb2Q8EtZkd4
- XRa1+Qmbhbqn2pXgW0wkErjV4ES+AAuIvY1LjBvCDR/rxyJKNj8jC6NvShAW5KoHkWYg
- pnfbllt24tqiYCHu1M66VlMJ0P6Zi8HmD345oJPsXIdvN1BfFB5OSOPCyF94kKAkTnIS
- k4KM00aPugfrtejetolYOnPR6hot8JllxZ8MgtW7eerUPypAwzV+uKu1vX6P8EhzqxOS
- uLYbvR1zL9LOCZBaomD7GwDHOEbJOzTZ+D2zSW6erMbDxNxsR5ycUMFj9aq2t9VKjHNM
- q6sQ==
-X-Gm-Message-State: ANhLgQ2CQf7bXa+irO9n0M2gge4ikhcCarPwG1Ni0JRgcnUjh1jaU/Nt
- lBHUPMD1AVr7DUdo2JF6moNAbA==
-X-Google-Smtp-Source: ADFU+vuzi/IVOqxjAG2WysJRD8gtQgdniJdh8UtOI2sGJBVKb2NSoZEAo9jXf68Q3PWHcOJjeJmg6A==
-X-Received: by 2002:adf:9087:: with SMTP id i7mr14374888wri.120.1583787355688; 
- Mon, 09 Mar 2020 13:55:55 -0700 (PDT)
-Received: from ?IPv6:2a02:a03f:44b4:9700:886c:841d:dea2:ee2a?
- ([2a02:a03f:44b4:9700:886c:841d:dea2:ee2a])
- by smtp.gmail.com with ESMTPSA id i14sm10352273wrp.82.2020.03.09.13.55.54
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 09 Mar 2020 13:55:55 -0700 (PDT)
-Subject: Re: [PATCH 6/6 V3] ASoC: tas5756m: Add DT binding document
-To: Rob Herring <robh@kernel.org>
-References: <20200308142509.27765-1-charles-antoine.couret@mind.be>
- <20200308142509.27765-7-charles-antoine.couret@mind.be>
- <20200309203847.GA31358@bogus>
-From: Couret Charles-Antoine <charles-antoine.couret@mind.be>
-Message-ID: <e537768b-9d46-afcf-f5b9-0552630cdff7@mind.be>
-Date: Mon, 9 Mar 2020 21:55:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=75BMaXcAmO4F5Wh+UkrqpyAJEuiai75tQOLAGLzUruc=;
+ b=MTmjxp8rxVv/FH0aLYyOAAWqROuCYvyP1+oNNiYkqnpVYcbXYWc8+fUYtUI+jR0oYZ
+ 9Z66expylP9XID2YeIom9jgtCQC0skqKOzf/GjM1+/p47m2zjN3OYXsHJZZxiMubLxiJ
+ UonLMdDLQOtXtgzIkfLOUTiyNKmfcNprDsC2d1qdU1yeYJGmEVnj36CFoaELoZZrZzg3
+ 6fX3CtByLtqWnWPQ1iuGS1VhJcM9O5+V+VaF46bfTxsYNBV/O5ktHAQLwxCGls3jbQMo
+ SprYRas/E6+7Pb8rblwGovIoCULv9IxrncB24ta7vqzw/+A6RYiKZjn72LSBTBIkXEJn
+ v+kA==
+X-Gm-Message-State: ANhLgQ15RElXPbX8pm3MbSIIMbMVmwXmkKVGYpMvmZ4uA0FtnWd34RN0
+ nL9vXTv7vjK7aKjG49DXud4=
+X-Google-Smtp-Source: ADFU+vt2yYWX7gJknQLuNcwuQzhGdS8aInh7+JZ9Mbaq0Z7M0IITbFjuVTv3VCNQfp0cXyneROITtg==
+X-Received: by 2002:a17:902:864a:: with SMTP id
+ y10mr17943042plt.2.1583788704865; 
+ Mon, 09 Mar 2020 14:18:24 -0700 (PDT)
+Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com.
+ [216.228.112.22])
+ by smtp.gmail.com with ESMTPSA id u24sm44614851pgo.83.2020.03.09.14.18.23
+ (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+ Mon, 09 Mar 2020 14:18:24 -0700 (PDT)
+Date: Mon, 9 Mar 2020 14:18:32 -0700
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+To: Shengjiu Wang <shengjiu.wang@nxp.com>
+Subject: Re: [PATCH v5 2/7] ASoC: fsl-asoc-card: Support new property
+ fsl,asrc-format
+Message-ID: <20200309211831.GA11333@Asurada-Nvidia.nvidia.com>
+References: <cover.1583725533.git.shengjiu.wang@nxp.com>
+ <266dccc836c11165ad91a301f24fe4f7ad2557be.1583725533.git.shengjiu.wang@nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <20200309203847.GA31358@bogus>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <266dccc836c11165ad91a301f24fe4f7ad2557be.1583725533.git.shengjiu.wang@nxp.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, timur@kernel.org, Xiubo.Lee@gmail.com,
+ linuxppc-dev@lists.ozlabs.org, tiwai@suse.com, lgirdwood@gmail.com,
+ robh+dt@kernel.org, broonie@kernel.org, festevam@gmail.com,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -115,41 +118,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Le 09/03/2020 à 21:38, Rob Herring a écrit :
-> On Sun,  8 Mar 2020 15:25:09 +0100, Charles-Antoine Couret wrote:
->> Document the bindings for the tas5756m driver.
->>
->> Signed-off-by: Charles-Antoine Couret <charles-antoine.couret@mind.be>
->> ---
->>   .../devicetree/bindings/sound/tas5756m.yaml   | 64 +++++++++++++++++++
->>   1 file changed, 64 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/sound/tas5756m.yaml
->>
-> My bot found errors running 'make dt_binding_check' on your patch:
->
-> Error: Documentation/devicetree/bindings/sound/tas5756m.example.dts:23.37-38 syntax error
-> FATAL ERROR: Unable to parse input tree
-> scripts/Makefile.lib:311: recipe for target 'Documentation/devicetree/bindings/sound/tas5756m.example.dt.yaml' failed
-> make[1]: *** [Documentation/devicetree/bindings/sound/tas5756m.example.dt.yaml] Error 1
-> Makefile:1262: recipe for target 'dt_binding_check' failed
-> make: *** [dt_binding_check] Error 2
->
-> See https://patchwork.ozlabs.org/patch/1251057
-> Please check and re-submit.
+On Mon, Mar 09, 2020 at 11:58:29AM +0800, Shengjiu Wang wrote:
+> In order to align with new ESARC, we add new property fsl,asrc-format.
+> The fsl,asrc-format can replace the fsl,asrc-width, driver
+> can accept format from devicetree, don't need to convert it to
+> format through width.
+> 
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> ---
+>  sound/soc/fsl/fsl-asoc-card.c | 20 +++++++++++---------
+>  1 file changed, 11 insertions(+), 9 deletions(-)
+> 
+> diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+> index 9ce55feaac22..32101b9a37b9 100644
+> --- a/sound/soc/fsl/fsl-asoc-card.c
+> +++ b/sound/soc/fsl/fsl-asoc-card.c
+> @@ -680,17 +680,19 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+>  			goto asrc_fail;
+>  		}
+>  
+> -		ret = of_property_read_u32(asrc_np, "fsl,asrc-width", &width);
+> +		ret = of_property_read_u32(asrc_np, "fsl,asrc-format", &priv->asrc_format);
+>  		if (ret) {
+> -			dev_err(&pdev->dev, "failed to get output rate\n");
 
-Hi Rob,
+Nice that your patch fixed my copy-n-paste typo here :)
 
-I don't understand this issue. My example is based on a real device tree 
-and it works fine.
+> -			ret = -EINVAL;
+> -			goto asrc_fail;
+> -		}
 
-I don't have access to your 
-"Documentation/devicetree/bindings/sound/tas5756m.example.dts" file so I 
-can not reproduce it. I executed your script before sending the patch 
-(but without extracting the example) and it was fine.
+It'd be nicer to have a line of comments:
+			/* Fallback to old binding; translate to asrc_format */
 
-Can you explain the issue please?
-
-Thank you in advance and have a nice day,
-
-Charles-Antoine Couret
-
+> +			ret = of_property_read_u32(asrc_np, "fsl,asrc-width", &width);
+> +			if (ret) {
+> +				dev_err(&pdev->dev, "failed to get output width\n");
+> +				return ret;
+> +			}
+>  
+> -		if (width == 24)
+> -			priv->asrc_format = SNDRV_PCM_FORMAT_S24_LE;
+> -		else
+> -			priv->asrc_format = SNDRV_PCM_FORMAT_S16_LE;
+> +			if (width == 24)
+> +				priv->asrc_format = SNDRV_PCM_FORMAT_S24_LE;
+> +			else
+> +				priv->asrc_format = SNDRV_PCM_FORMAT_S16_LE;
+> +		}
