@@ -2,70 +2,71 @@ Return-Path: <SRS0=1nsM=42=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 56B06C10F27
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 16:30:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CF10C10F27
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 16:55:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D4713222D9
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 16:30:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 085B320828
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2020 16:55:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="p6fTK1po";
-	dkim=pass (1024-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="kB/HWARO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D4713222D9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=protonmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UsmrPtI0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 085B320828
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2B2D91674;
-	Mon,  9 Mar 2020 17:29:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B2D91674
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5136F1675;
+	Mon,  9 Mar 2020 17:54:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5136F1675
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583771431;
-	bh=GPfZ2sJXdk/ljwvXj5II6kTq9QX6zu4+e6d2iW1novc=;
-	h=Date:To:From:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:Reply-To:From;
-	b=p6fTK1poWbJyzlmMvn9TU7Q3JDpAE8ymJQHVCOlTAPZQKUaKT9GBEknIP9HT8g1rs
-	 Jo63Z3D6wVI6X1UcDZVCt+I32c6WwY5VkvAC77CWZK8qimHFZP10BiC+7AMcTvpy9c
-	 dnnin7Ddep+cruA34GJvCH09R4nlR/Cug+Nkr4Y8=
+	s=default; t=1583772913;
+	bh=kU/9LkE7mPZ4GC+4dMcpbDDP/D1tGYyGtfXn/1zliAk=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=UsmrPtI0MbNUX9vvn3WRJeGp1eXGbBD3etceKfX8APycsFfsIZSksz4SLMgVOrHo3
+	 bZbwxBgcCBDlsG6RpK8rrvMbRb2WDitXA9WhR3xh0C+R0OccadhcJDKQuccLfHtXd1
+	 K3AsmAme3GGOeaWFt/6jzzhsVBfzX0KEH6x6dK6Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9BEB0F800B5;
-	Mon,  9 Mar 2020 17:29:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D1F6FF801EB;
+	Mon,  9 Mar 2020 17:54:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5055CF80171; Sun,  8 Mar 2020 16:11:03 +0100 (CET)
-Received: from mail-40135.protonmail.ch (mail-40135.protonmail.ch
- [185.70.40.135])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7C528F800B5
- for <alsa-devel@alsa-project.org>; Sun,  8 Mar 2020 16:10:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C528F800B5
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=protonmail.com header.i=@protonmail.com
- header.b="kB/HWARO"
-Date: Sun, 08 Mar 2020 15:10:50 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
- s=default; t=1583680257;
- bh=GPfZ2sJXdk/ljwvXj5II6kTq9QX6zu4+e6d2iW1novc=;
- h=Date:To:From:Reply-To:Subject:Feedback-ID:From;
- b=kB/HWARO44ufItewhH9iiDAbGPxqMQx8VA0XkN/1Ll6K2zBiDTYIRO5U1KPHrdy/U
- 8RbMko7zGpPguWYfxKIN2WAUpH5SV7jzUrdRTvNnou0l6ndGw2kJwiX6W4Yux/dwJS
- PTMsalFs9vlINIyaP3b/DYoXRoIWjGgx3JEpZ/BA=
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-From: andythe_great <andythe_great@protonmail.com>
-Subject: Port HDA Analyzer to python 3
-Message-ID: <ol12k6zTg1bF6sZnv01hgWTqv1uqtvMWljgnxbh_d4uOGiQfSLHsaRbmQ7ddFfSu8taOrpCW0yvBMuxa5JVLs-ZtSDVy1-Eyj30Cp-WymZs=@protonmail.com>
-Feedback-ID: 16DksG2N8KG1vbeo3c4XxkUoV9jleFKWqd2aA4aZ0wgJU0iBj2hhIOrld09c0oGfpAmQdrFc_UX03VmAt7VLfw==:Ext:ProtonMail
+ id 1777EF801F7; Mon,  9 Mar 2020 17:54:21 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 907C9F801A3
+ for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2020 17:54:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 907C9F801A3
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E194A1FB;
+ Mon,  9 Mar 2020 09:54:15 -0700 (PDT)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 63D1A3F534;
+ Mon,  9 Mar 2020 09:54:15 -0700 (PDT)
+Date: Mon, 9 Mar 2020 16:54:13 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: Re: [PATCH 0/7] ASoC: Intel: Skylake: Fix HDaudio and Dmic
+Message-ID: <20200309165413.GH4101@sirena.org.uk>
+References: <20200305145314.32579-1-cezary.rojewski@intel.com>
+ <9d53337b-b02b-efd7-790e-c3db18562346@linux.intel.com>
+ <20200309113844.GA4101@sirena.org.uk>
+ <e50a52eb-ea7a-4528-cfdb-1dd9210b5779@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Mailman-Approved-At: Mon, 09 Mar 2020 17:29:39 +0100
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="a8sldprk+5E/pDEv"
+Content-Disposition: inline
+In-Reply-To: <e50a52eb-ea7a-4528-cfdb-1dd9210b5779@intel.com>
+X-Cookie: Above all things, reverence yourself.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: vkoul@kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,19 +79,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Reply-To: andythe_great <andythe_great@protonmail.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello,
 
-Is it possible to port HDA Analyzer to python 3? https://www.alsa-project.o=
-rg/main/index.php/HDA_Analyzer
+--a8sldprk+5E/pDEv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Because openSUSE is retiring python 2.
+On Mon, Mar 09, 2020 at 03:02:25PM +0100, Cezary Rojewski wrote:
 
-I tried using python-modernize https://python-modernize.readthedocs.io/en/l=
-atest/ but many could not get it to run.
+> Mark, what's your take on backporting these to 4.19 LTS? Do we abandon the
+> subject and "just" merge (once reviewed/ approved) into 5.5? I believe
+> addressing all the issues mentioned on 4.19 is important.
 
-Thanks.
-Andy
+I didn't actually look at the patches since by the time I went to look
+at them it was clear that there was going to be a new version.  Pierre
+was saying that they added new functionality which would generally not
+be suitable.
+
+See Documentation/process/stable-kernel-rules.rst for the official
+rules.
+
+--a8sldprk+5E/pDEv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5mdLUACgkQJNaLcl1U
+h9DZ2gf/Zm6kaB1CqHuqxzdUL5bhxEtvxA/j13lodjtM70ALUUct6nd1q9AQwQHl
+PGUll0xtrca4ftLBZFmbCK0ju+935msvPXIRX7Z1HwFeWkizR4whusEEyJtUYnI7
+JRx4qcf4pJvB48os4ywrmUeEfqjb+J48WNbXGzkdqOsEz6ViaSZ3L+MtW3ovNbAq
+A5IeCnGdxwSXDL7s88ZMZ85/4YRZh7EsnE1Bj6NN7e5luDDhdfsQbLUoeohS2ktx
+2Z3pWPcDlgfoBHlX3Ku5uZmCHPW0+rxqDgyQSqb4Bc6i0mt7y+i7iWEYDcHYR+9K
+J1qaRE7MRpDNO7KuzJD8/Mi6Dmm1mQ==
+=L2tP
+-----END PGP SIGNATURE-----
+
+--a8sldprk+5E/pDEv--
