@@ -7,67 +7,55 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16E7AC10F27
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Mar 2020 16:38:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B0F5C10F27
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Mar 2020 16:38:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8A1A2215A4
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Mar 2020 16:38:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 07D32215A4
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Mar 2020 16:38:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ePN5GTe5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8A1A2215A4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ou1MRgis"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 07D32215A4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D49CE1666;
-	Tue, 10 Mar 2020 17:37:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D49CE1666
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5F0C31678;
+	Tue, 10 Mar 2020 17:37:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5F0C31678
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583858307;
-	bh=jfiwWO8cE6YFj4r/UOjdudca4wOIxuuFKrvLd8Uonq4=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=ePN5GTe5UKxygVJVzQ5l/rGaAQTiWE3C3f3IR6eH4loEfp4Ap8QG409wmrPoSu0nW
-	 p2t0OpH95WaLzH0xuUQwWImeHNLJXPk68tKOprlYwVj+UNHPvNjSKVBrbwzeV87sue
-	 sUSC0VDXmpHrE6ddBybgs60vfC51qNNRqZPpVhuw=
+	s=default; t=1583858327;
+	bh=eAwLyfWWRdAMzC/6jweVhUTew67XY5YvVm6dtZZWHJE=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=ou1MRgisEm8u5yVaiQ8DbkUo3e0PolRpK241buQCVIr4mUEbYYf/jNpogdmjeyQnJ
+	 ctCKFED13tVnvJ+9AW7dqlGIfUNs4pjLnE0oYfQFcizPLk1fGt2cDZhgyBqhVWokoz
+	 bEWk3O8SWQLl2eEr6tOqxWeuajZ+cHnFF/GFvGwE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 63F59F8028E;
-	Tue, 10 Mar 2020 17:35:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3D615F80290;
+	Tue, 10 Mar 2020 17:36:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 228E0F8028B; Tue, 10 Mar 2020 17:35:24 +0100 (CET)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 05DE6F80291; Tue, 10 Mar 2020 17:36:31 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A6AA8F8020C
- for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2020 17:35:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6AA8F8020C
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 10 Mar 2020 09:35:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,537,1574150400"; d="scan'208";a="388985491"
-Received: from djdickof-mobl.amr.corp.intel.com (HELO
- pbossart-mobl3.amr.corp.intel.com) ([10.252.192.103])
- by orsmga004.jf.intel.com with ESMTP; 10 Mar 2020 09:35:14 -0700
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 3/3] ASoC: rt5682-sdw: fix 'defined but not used' pm functions
-Date: Tue, 10 Mar 2020 11:35:09 -0500
-Message-Id: <20200310163509.14466-4-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200310163509.14466-1-pierre-louis.bossart@linux.intel.com>
-References: <20200310163509.14466-1-pierre-louis.bossart@linux.intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Oder Chiou <oder_chiou@realtek.com>, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- kbuild test robot <lkp@intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3723BF80247
+ for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2020 17:36:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3723BF80247
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 22A08AC84;
+ Tue, 10 Mar 2020 16:36:27 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
+Subject: [PATCH for-5.7] ASoC: pcm: Fix (again) possible buffer overflow in
+ dpcm state sysfs output
+Date: Tue, 10 Mar 2020 17:36:25 +0100
+Message-Id: <20200310163625.10838-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,50 +71,73 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Gcc reports the following warnings:
+This is re-applying the fix that went into 5.6 (commit 6c89ffea60aa)
+as the changes were wiped out after merging the other code
+refactoring.  Basically the same changes, just replacing the
+suspicious calls of snprintf() with scnprintf().
 
-sound/soc/codecs/rt5682-sdw.c:286:12: warning: 'rt5682_dev_resume'
-defined but not used [-Wunused-function]
- static int rt5682_dev_resume(struct device *dev)
-            ^~~~~~~~~~~~~~~~~
-
-sound/soc/codecs/rt5682-sdw.c:273:12: warning: 'rt5682_dev_suspend'
-defined but not used [-Wunused-function]
- static int rt5682_dev_suspend(struct device *dev)
-            ^~~~~~~~~~~~~~~~~~
-
-Fix by adding maybe_unused as done for other SoundWire codecs
-
-Reported-by: kbuild test robot <lkp@intel.com>
-Fixes: 03f6fc6de9192f ('ASoC: rt5682: Add the soundwire support')
-Cc: Oder Chiou <oder_chiou@realtek.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/rt5682-sdw.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/soc-pcm.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5682-sdw.c b/sound/soc/codecs/rt5682-sdw.c
-index fc31d04b5203..e456bdd15207 100644
---- a/sound/soc/codecs/rt5682-sdw.c
-+++ b/sound/soc/codecs/rt5682-sdw.c
-@@ -270,7 +270,7 @@ static const struct sdw_device_id rt5682_id[] = {
- };
- MODULE_DEVICE_TABLE(sdw, rt5682_id);
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index e7915adaaf0a..34ee54ea7b30 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -66,16 +66,16 @@ static ssize_t dpcm_show_state(struct snd_soc_pcm_runtime *fe,
+ 	unsigned long flags;
  
--static int rt5682_dev_suspend(struct device *dev)
-+static int __maybe_unused rt5682_dev_suspend(struct device *dev)
- {
- 	struct rt5682_priv *rt5682 = dev_get_drvdata(dev);
+ 	/* FE state */
+-	offset += snprintf(buf + offset, size - offset,
++	offset += scnprintf(buf + offset, size - offset,
+ 			   "[%s - %s]\n", fe->dai_link->name,
+ 			   stream ? "Capture" : "Playback");
  
-@@ -283,7 +283,7 @@ static int rt5682_dev_suspend(struct device *dev)
- 	return 0;
- }
+-	offset += snprintf(buf + offset, size - offset, "State: %s\n",
++	offset += scnprintf(buf + offset, size - offset, "State: %s\n",
+ 			   dpcm_state_string(fe->dpcm[stream].state));
  
--static int rt5682_dev_resume(struct device *dev)
-+static int __maybe_unused rt5682_dev_resume(struct device *dev)
- {
- 	struct sdw_slave *slave = dev_to_sdw_dev(dev);
- 	struct rt5682_priv *rt5682 = dev_get_drvdata(dev);
+ 	if ((fe->dpcm[stream].state >= SND_SOC_DPCM_STATE_HW_PARAMS) &&
+ 	    (fe->dpcm[stream].state <= SND_SOC_DPCM_STATE_STOP))
+-		offset += snprintf(buf + offset, size - offset,
++		offset += scnprintf(buf + offset, size - offset,
+ 				   "Hardware Params: "
+ 				   "Format = %s, Channels = %d, Rate = %d\n",
+ 				   snd_pcm_format_name(params_format(params)),
+@@ -83,10 +83,10 @@ static ssize_t dpcm_show_state(struct snd_soc_pcm_runtime *fe,
+ 				   params_rate(params));
+ 
+ 	/* BEs state */
+-	offset += snprintf(buf + offset, size - offset, "Backends:\n");
++	offset += scnprintf(buf + offset, size - offset, "Backends:\n");
+ 
+ 	if (list_empty(&fe->dpcm[stream].be_clients)) {
+-		offset += snprintf(buf + offset, size - offset,
++		offset += scnprintf(buf + offset, size - offset,
+ 				   " No active DSP links\n");
+ 		goto out;
+ 	}
+@@ -96,16 +96,16 @@ static ssize_t dpcm_show_state(struct snd_soc_pcm_runtime *fe,
+ 		struct snd_soc_pcm_runtime *be = dpcm->be;
+ 		params = &dpcm->hw_params;
+ 
+-		offset += snprintf(buf + offset, size - offset,
++		offset += scnprintf(buf + offset, size - offset,
+ 				   "- %s\n", be->dai_link->name);
+ 
+-		offset += snprintf(buf + offset, size - offset,
++		offset += scnprintf(buf + offset, size - offset,
+ 				   "   State: %s\n",
+ 				   dpcm_state_string(be->dpcm[stream].state));
+ 
+ 		if ((be->dpcm[stream].state >= SND_SOC_DPCM_STATE_HW_PARAMS) &&
+ 		    (be->dpcm[stream].state <= SND_SOC_DPCM_STATE_STOP))
+-			offset += snprintf(buf + offset, size - offset,
++			offset += scnprintf(buf + offset, size - offset,
+ 					   "   Hardware Params: "
+ 					   "Format = %s, Channels = %d, Rate = %d\n",
+ 					   snd_pcm_format_name(params_format(params)),
 -- 
-2.20.1
+2.16.4
 
