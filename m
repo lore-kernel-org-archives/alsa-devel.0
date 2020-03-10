@@ -2,67 +2,70 @@ Return-Path: <SRS0=NKE9=43=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DF8CC10F27
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Mar 2020 16:36:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B22FEC18E5A
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Mar 2020 16:37:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BDDDC20848
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Mar 2020 16:36:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 40D1E215A4
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Mar 2020 16:37:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dklIDc4x"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BDDDC20848
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HOMvfCb+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 40D1E215A4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 325231655;
-	Tue, 10 Mar 2020 17:35:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 325231655
+	by alsa0.perex.cz (Postfix) with ESMTPS id A9376166E;
+	Tue, 10 Mar 2020 17:36:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A9376166E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583858172;
-	bh=cMlagDOGSfvaf6lX7iMq1s219qki2ZD8O99RQ8Rzbt8=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=dklIDc4xXgxAXvt1NmZ8jdsNuV7CV8xIPaw8ZRqhbChpA+DE6kKSKgs9WI5RL7kyQ
-	 XXhQFRB0AYo4el3KTO2VFwP6INQomMYH/CpeWJ7HLUqOGRVpLzF0Hd8En9XpnByYRT
-	 pgUKdpvEDKLjxFmSpXyCB1naSD4FidfRMk1QJuQA=
+	s=default; t=1583858225;
+	bh=RKU8+9V/KTVjpvGlIZIV7Wtd/ZjtivY3U13wwNDktHQ=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=HOMvfCb+OG44Zst/YnK3ZXTLIjdkgHdtthBT4dzkEY7SqqcV+uDqc8Tp+JYVOFsJa
+	 68P6wd1xAqNcRrUnUTD21HvKvDbXvAx71hfy56kqKjm8WVUJAtNx7fc/6ohellKiMa
+	 Jd8htQ4pz20Exo/wyZefHB7Aal6F0AKiTa00o5yQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3983DF8023F;
-	Tue, 10 Mar 2020 17:35:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6FE22F80260;
+	Tue, 10 Mar 2020 17:35:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 06F30F8023F; Tue, 10 Mar 2020 17:35:19 +0100 (CET)
+ id B1AE8F80246; Tue, 10 Mar 2020 17:35:22 +0100 (CET)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 41C73F800DA
- for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2020 17:35:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41C73F800DA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3CBEBF80217
+ for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2020 17:35:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3CBEBF80217
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 10 Mar 2020 09:35:12 -0700
+ 10 Mar 2020 09:35:14 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,537,1574150400"; d="scan'208";a="388985478"
+X-IronPort-AV: E=Sophos;i="5.70,537,1574150400"; d="scan'208";a="388985487"
 Received: from djdickof-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.252.192.103])
- by orsmga004.jf.intel.com with ESMTP; 10 Mar 2020 09:35:11 -0700
+ by orsmga004.jf.intel.com with ESMTP; 10 Mar 2020 09:35:13 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 0/3] ASoC: rt5682: fix Kconfig/compilation issues when I2C is
- not selected
-Date: Tue, 10 Mar 2020 11:35:06 -0500
-Message-Id: <20200310163509.14466-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 2/3] ASoC: rt5682: fix compilation issues without I2C
+Date: Tue, 10 Mar 2020 11:35:08 -0500
+Message-Id: <20200310163509.14466-3-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200310163509.14466-1-pierre-louis.bossart@linux.intel.com>
+References: <20200310163509.14466-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org,
+Cc: tiwai@suse.de, Oder Chiou <oder_chiou@realtek.com>, broonie@kernel.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  kbuild test robot <lkp@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
@@ -80,21 +83,106 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-RT5682 can work in I2C or SoundWire mode, but the code will not
-compile if I2C is not selected.
+Exclude all I2C-related code from compilation to avoid compilation
+errors and defined but not used warnings.
+
+sound/soc/codecs/rt5682.c:3688:26: warning: 'rt5682_i2c_driver'
+defined but not used [-Wunused-variable]
+    static struct i2c_driver rt5682_i2c_driver = {
+                             ^~~~~~~~~~~~~~~~~
 
 Reported-by: kbuild test robot <lkp@intel.com>
+Fixes: 03f6fc6de9192f ('ASoC: rt5682: Add the soundwire support')
+Cc: Oder Chiou <oder_chiou@realtek.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/codecs/rt5682.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-Pierre-Louis Bossart (3):
-  ASoC: rt5682: fix unmet dependencies
-  ASoC: rt5682: fix compilation issues without I2C
-  ASoC: rt5682-sdw: fix 'defined but not used' pm functions
-
- sound/soc/codecs/Kconfig      |  2 +-
- sound/soc/codecs/rt5682-sdw.c |  4 ++--
- sound/soc/codecs/rt5682.c     | 10 ++++++++++
- 3 files changed, 13 insertions(+), 3 deletions(-)
-
+diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
+index e1df2d076533..8828ed5db58d 100644
+--- a/sound/soc/codecs/rt5682.c
++++ b/sound/soc/codecs/rt5682.c
+@@ -33,6 +33,7 @@
+ #include "rt5682.h"
+ #include "rt5682-sdw.h"
+ 
++#if IS_ENABLED(CONFIG_I2C)
+ static const char *rt5682_supply_names[RT5682_NUM_SUPPLIES] = {
+ 	"AVDD",
+ 	"MICVDD",
+@@ -47,6 +48,7 @@ static const struct rt5682_platform_data i2s_default_platform_data = {
+ 	.dai_clk_names[RT5682_DAI_WCLK_IDX] = "rt5682-dai-wclk",
+ 	.dai_clk_names[RT5682_DAI_BCLK_IDX] = "rt5682-dai-bclk",
+ };
++#endif
+ 
+ static const struct reg_sequence patch_list[] = {
+ 	{RT5682_HP_IMP_SENS_CTRL_19, 0x1000},
+@@ -974,6 +976,7 @@ static int rt5682_headset_detect(struct snd_soc_component *component,
+ 	return rt5682->jack_type;
+ }
+ 
++#if IS_ENABLED(CONFIG_I2C)
+ static irqreturn_t rt5682_irq(int irq, void *data)
+ {
+ 	struct rt5682_priv *rt5682 = data;
+@@ -1002,6 +1005,7 @@ static void rt5682_jd_check_handler(struct work_struct *work)
+ 		schedule_delayed_work(&rt5682->jd_check_work, 500);
+ 	}
+ }
++#endif
+ 
+ static int rt5682_set_jack_detect(struct snd_soc_component *component,
+ 	struct snd_soc_jack *hs_jack, void *data)
+@@ -3214,6 +3218,7 @@ static const struct regmap_config rt5682_regmap = {
+ 	.use_single_write = true,
+ };
+ 
++#if IS_ENABLED(CONFIG_I2C)
+ static const struct i2c_device_id rt5682_i2c_id[] = {
+ 	{"rt5682", 0},
+ 	{}
+@@ -3244,6 +3249,7 @@ static int rt5682_parse_dt(struct rt5682_priv *rt5682, struct device *dev)
+ 
+ 	return 0;
+ }
++#endif
+ 
+ static void rt5682_calibrate(struct rt5682_priv *rt5682)
+ {
+@@ -3510,6 +3516,7 @@ int rt5682_io_init(struct device *dev, struct sdw_slave *slave)
+ EXPORT_SYMBOL_GPL(rt5682_io_init);
+ #endif
+ 
++#if IS_ENABLED(CONFIG_I2C)
+ static int rt5682_i2c_probe(struct i2c_client *i2c,
+ 		    const struct i2c_device_id *id)
+ {
+@@ -3668,6 +3675,7 @@ static void rt5682_i2c_shutdown(struct i2c_client *client)
+ 
+ 	rt5682_reset(rt5682);
+ }
++#endif
+ 
+ #ifdef CONFIG_OF
+ static const struct of_device_id rt5682_of_match[] = {
+@@ -3685,6 +3693,7 @@ static const struct acpi_device_id rt5682_acpi_match[] = {
+ MODULE_DEVICE_TABLE(acpi, rt5682_acpi_match);
+ #endif
+ 
++#if IS_ENABLED(CONFIG_I2C)
+ static struct i2c_driver rt5682_i2c_driver = {
+ 	.driver = {
+ 		.name = "rt5682",
+@@ -3696,6 +3705,7 @@ static struct i2c_driver rt5682_i2c_driver = {
+ 	.id_table = rt5682_i2c_id,
+ };
+ module_i2c_driver(rt5682_i2c_driver);
++#endif
+ 
+ MODULE_DESCRIPTION("ASoC RT5682 driver");
+ MODULE_AUTHOR("Bard Liao <bardliao@realtek.com>");
 -- 
 2.20.1
 
