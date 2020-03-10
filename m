@@ -2,78 +2,159 @@ Return-Path: <SRS0=NKE9=43=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 36E76C10F27
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Mar 2020 16:40:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF759C10F27
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Mar 2020 16:45:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B94C8222D9
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Mar 2020 16:40:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 46978222C3
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Mar 2020 16:45:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jzFwvKvc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B94C8222D9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tmAAbrlC";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="RzoW97gC";
+	dkim=pass (1024-bit key) header.d=cirrus4.onmicrosoft.com header.i=@cirrus4.onmicrosoft.com header.b="TbZZbpii"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 46978222C3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0E67A1674;
-	Tue, 10 Mar 2020 17:39:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E67A1674
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9433F1607;
+	Tue, 10 Mar 2020 17:44:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9433F1607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583858416;
-	bh=zCDnN+NtdVnAUhRxI9XLUhqs1GU7dc9kxonu3AALIDM=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1583858736;
+	bh=gSkogLM885I/RNpPluWRGk9tL+zflSK8M72UpOjWcBs=;
+	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jzFwvKvcsVTy+sxAUUIDWu/rsqBaKb3J2ySdogVs96d/Cq7O7tZfRKtJ51ton+P9G
-	 zwEGql+LcB0G2nzue7g/bTkJeTZHR2rhfnxV1YQ4/sA/dj4ETaHAcqeFqK9WbCHik+
-	 mdM/9AnQDPr2yfwHWSwQwjMbQQwEuoBlsKwHAt94=
+	b=tmAAbrlCN/EKnKqytvFXz8X1fZLZOcs+SDA2gwnv9QVP/nP4QQK5k2ppg7BGA5G6m
+	 lGlaMFqiu6bERnwMQULXoveXcGei1B5JTrJ9q9NKNAwSi6Bi3toL2pQCKj4YGU3HlY
+	 dgdGwWXIHFIGMxBSzcQva2mlmRHqQcCnx7N3hG3g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 536F6F800BC;
-	Tue, 10 Mar 2020 17:38:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1EAE5F8020C;
+	Tue, 10 Mar 2020 17:44:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B61E9F80217; Tue, 10 Mar 2020 17:38:45 +0100 (CET)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ id 5FBDCF80217; Tue, 10 Mar 2020 17:44:44 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 68057F8020C
- for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2020 17:38:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68057F8020C
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
- by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 10 Mar 2020 09:38:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,518,1574150400"; d="scan'208";a="321858026"
-Received: from djdickof-mobl.amr.corp.intel.com (HELO [10.252.192.103])
- ([10.252.192.103])
- by orsmga001.jf.intel.com with ESMTP; 10 Mar 2020 09:38:39 -0700
-Subject: Re: [PATCH 0/7] ASoC: Intel: Skylake: Fix HDaudio and Dmic
-To: Mark Brown <broonie@kernel.org>,
- Cezary Rojewski <cezary.rojewski@intel.com>
-References: <20200305145314.32579-1-cezary.rojewski@intel.com>
- <9d53337b-b02b-efd7-790e-c3db18562346@linux.intel.com>
- <20200309113844.GA4101@sirena.org.uk>
- <e50a52eb-ea7a-4528-cfdb-1dd9210b5779@intel.com>
- <20200309165413.GH4101@sirena.org.uk>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <cbcdd4bd-6981-0dda-c8e9-bbe5c8128afc@linux.intel.com>
-Date: Tue, 10 Mar 2020 11:03:15 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
-MIME-Version: 1.0
-In-Reply-To: <20200309165413.GH4101@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+ by alsa1.perex.cz (Postfix) with ESMTPS id 23155F800BC
+ for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2020 17:44:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23155F800BC
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="RzoW97gC"; 
+ dkim=pass (1024-bit key) header.d=cirrus4.onmicrosoft.com
+ header.i=@cirrus4.onmicrosoft.com header.b="TbZZbpii"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
+ 02AGaXIF016625; Tue, 10 Mar 2020 11:44:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=PODMain02222019;
+ bh=1mUK7maACODudBphXRL9U+rGnJkLFMYM9BziyGjACik=;
+ b=RzoW97gCldD2/yadhtaRGtQnCxlc6orgMngvm9tw4R+Qx4ibYvWE00DD9gzU8EYIJH5v
+ XA4k4IlhQLreTr4lHb2EiZtgXp4yn+HORnz6sZOIJHEzXoU4MptxTyQCkYB+iZvvsMSt
+ P0N20/YKG16YfofQCbJ/V43QnNNtbMNGtg31lAoYlE9LD9+tMwRz6qjlqUcSIBrNhueP
+ Tng7jZE7f8BAp9qp2yBzAOhLVrxpUl8O1Eoge1eGuya2O/SnB8yzjlx4MOOzoMoH0upt
+ JBtf4aoLVodpQZUI0kwyjh0EcoTfueMsXq03c47bosavF1apESZx0wY4AwcfgvT1518b tA== 
+Authentication-Results: ppops.net;
+ spf=pass smtp.mailfrom=James.Schulman@cirrus.com
+Received: from nam10-mw2-obe.outbound.protection.outlook.com
+ (mail-mw2nam10lp2108.outbound.protection.outlook.com [104.47.55.108])
+ by mx0b-001ae601.pphosted.com with ESMTP id 2ym8wuw580-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 10 Mar 2020 11:44:38 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cW1+SOSOrWkKM2LmGkf/Tb1bIDVAcM2brwc/uGtO2Jj4lZ4JtEynMfsgbriROwHSxjbpsLRAsgEbARwFsXf2xXGWNV3j5C6RTDsP6m2tGYjGdEy7VZEJsosE8O12w+bA6qG6tPW0K/GthXFMBifO3kZDqUWTR3VlFFY+/ezC5Jdg5gth28LCVgF4S9a4vz67INN2seDXppa1lmKCo+FheNX05QKAufOhFaNpq4clv8sm4+FchtizjQLtVUFiliV48JegwdXDMIBZE3E4D+WgVDUzH6GG2ru3r2ZU2dwysGW1bO8QRC6Q95YxzBvikFWob5My3P/FVsKRidJNYYyFZw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1mUK7maACODudBphXRL9U+rGnJkLFMYM9BziyGjACik=;
+ b=nNoYXT1gwDpelHxBJ9lqLIYHWMErt6QMRKonqqWLW7SDpZM+ssZ4/FmZxtm0St7/n96UWxIWKgccN5vqegyb/+gSFcVBR7QKKiueoVfetk+tCGbMn88++lr0e95rGtCyEB9DnsrnaG1TCbeT3U+ILs2bQNCANRwjorNUB00n56fEhpXmTiuI95BgzOj5vCB2KuIoGlQ4pIetfAronDzV9B8iOVtcTnLohHvPbLC3ScxY9Izw8mvASRzL/fdnVWplTNdQuJyMO2nw/daII2aK/Cvugr127/FMnSNuSE425JbImlAsnpUjtr3i0XgjEgwLz16YSDqJmFtiPabVFc5WPA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cirrus.com; dmarc=pass action=none header.from=cirrus.com;
+ dkim=pass header.d=cirrus.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=cirrus4.onmicrosoft.com; s=selector2-cirrus4-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1mUK7maACODudBphXRL9U+rGnJkLFMYM9BziyGjACik=;
+ b=TbZZbpiiSck8L0iMsE/7LviOlqUZNVeuNQNCqhojK+Fq95RA7ZsS2xLr7q470YzZyfPBbGv8WGrUf0E7B0i3FQ3YXXnixPr92Y6vUXl01hLB9RZgh27t+SAkxzXHBxn5zSCpZuof7jVVtkXqMhbOV1cIU2TgKsY5oa7MAdSVBhw=
+Received: from SN6PR19MB2381.namprd19.prod.outlook.com (2603:10b6:805:64::29)
+ by SN6PR19MB2349.namprd19.prod.outlook.com (2603:10b6:805:63::33)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2793.14; Tue, 10 Mar
+ 2020 16:44:36 +0000
+Received: from SN6PR19MB2381.namprd19.prod.outlook.com
+ ([fe80::6083:405f:6d77:5d00]) by SN6PR19MB2381.namprd19.prod.outlook.com
+ ([fe80::6083:405f:6d77:5d00%6]) with mapi id 15.20.2793.013; Tue, 10 Mar 2020
+ 16:44:36 +0000
+From: "Schulman, James" <James.Schulman@cirrus.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] MAINTAINERS: Update Cirrus Logic codec driver maintainers
+Thread-Topic: [PATCH] MAINTAINERS: Update Cirrus Logic codec driver maintainers
+Thread-Index: AQHV8/uvTLLDbdTF00mNe25R2BUq/qhByUWAgABFHgA=
+Date: Tue, 10 Mar 2020 16:44:36 +0000
+Message-ID: <alpine.DEB.2.21.2003101141560.11219@james-tower>
+References: <alpine.DEB.2.21.2003061508150.32557@james-tower>
+ <20200310123711.GA53842@sirena.org.uk>
+In-Reply-To: <20200310123711.GA53842@sirena.org.uk>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: lgirdwood@gmail.com, vkoul@kernel.org, alsa-devel@alsa-project.org,
- tiwai@suse.com
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [141.131.2.3]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ad68ef2e-b710-4ff9-27e1-08d7c5125176
+x-ms-traffictypediagnostic: SN6PR19MB2349:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SN6PR19MB23498B727721342566745582E4FF0@SN6PR19MB2349.namprd19.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6108;
+x-forefront-prvs: 033857D0BD
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10019020)(4636009)(7916004)(396003)(376002)(39850400004)(366004)(346002)(136003)(189003)(199004)(4326008)(8676002)(91956017)(76116006)(71200400001)(66446008)(64756008)(66556008)(66476007)(86362001)(316002)(5660300002)(186003)(26005)(478600001)(66946007)(9686003)(6512007)(107886003)(33716001)(81156014)(81166006)(54906003)(8936002)(6486002)(6916009)(2906002)(4744005)(6506007);
+ DIR:OUT; SFP:1102; SCL:1; SRVR:SN6PR19MB2349;
+ H:SN6PR19MB2381.namprd19.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; MX:1; A:1; 
+received-spf: None (protection.outlook.com: cirrus.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: DiVvlbihdb2KSfep0PKsEMXMiCJOx5Gg+WoTpY+pFN0KTdUq5nHJFL6ZsgPxgI4ZdXJZnUKU5WnXoqkQDGz8dYBOBv4NZApS7egps/wBOcrYuIjzyYhzzt4bV+oQ/wBBacXFvIeZlfGbmwIJQ1sA0Vwu4RJStfbK3PYCV85FYtvoSTK+SFAlSn5A8CQWBvNAEX6Z7knY15J9YsJMsyyKYOPjTFujeI5p4XmwVcii+1L1V0tLZb9oVDjDl/LtpEB1AyI0smrBEXF5dToSjTyUniuBZcJYJTfOzbOicmvsE35fKQetVcFXT9oW1LksAJlv3b8WhKCg+X1Fbats+jJqElvbmwZ+UiSGXqaoOo3kibDJKh/8m/drPnF1fYF0fsw5H1pplhYqDo1I8s5uY9Tnfzbh885SAeQhLY90dPsBo8PLU9df1Ny8QynXuh3oIZeG
+x-ms-exchange-antispam-messagedata: YWZSHXaXAawcHRUYBYqbg10lJe8HvTSiIeXaxvndFsHBR97nFFc4o8lTm1T589ta2Fp/MShhMnvIcccEsfZ25Pfp6itZN6p+qrTufsX+g5eYHm6gb5I5+F+VMy+1TeYNXsVDy+fjplMV2knG0sYy4Q==
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <4A4C07059AC10349A97B4A51C2613034@namprd19.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: cirrus.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ad68ef2e-b710-4ff9-27e1-08d7c5125176
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Mar 2020 16:44:36.0906 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: bec09025-e5bc-40d1-a355-8e955c307de8
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: o6cstZeDhaSWfx/czEEXO/SXc68TFbwKfJeitgzl84waMvMXBcyHlHBO3+MJomYn11W9ndE32ywWq5PxyaYWSO/MsEuSZpMaQF3JA8KWFnw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR19MB2349
+X-Proofpoint-SPF-Result: pass
+X-Proofpoint-SPF-Record: v=spf1 include:spf-001ae601.pphosted.com
+ include:spf.protection.outlook.com
+ include:_spf1.cirrus.com include:_spf2.cirrus.com -all
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0
+ spamscore=0 malwarescore=0
+ priorityscore=1501 lowpriorityscore=0 clxscore=1015 impostorscore=0
+ mlxlogscore=861 phishscore=0 adultscore=0 bulkscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
+ definitions=main-2003100103
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Rhodes,
+ David" <David.Rhodes@cirrus.com>, "Austin, Brian" <Brian.Austin@cirrus.com>,
+ "Handrigan, Paul" <Paul.Handrigan@cirrus.com>, "Schulman,
+ James" <James.Schulman@cirrus.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,24 +170,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Sorry Mark, our corporate email server makes it hard to send SMTP
+emails. I'll figure out a better way to do it.
 
+On Tue, 10 Mar 2020, Mark Brown wrote:
 
-> I didn't actually look at the patches since by the time I went to look
-> at them it was clear that there was going to be a new version.  Pierre
-> was saying that they added new functionality which would generally not
-> be suitable.
-
-I am ok with the patches, as long as "[PATCH 5/7] ASoC: Intel: 
-skl_hda_dsp: Enable Dmic configuration" is dropped as discussed.
-
-I don't know if that requires a v2 or if Mark you can just drop this one 
-patch?
-
-So for all Patches except Patch5:
-
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-Thanks Cezary!
-
-
-
+> On Fri, Mar 06, 2020 at 09:10:38PM +0000, Schulman, James wrote:
+>
+>> +++ b/MAINTAINERS
+>> @@ -4021,8 +4021,8 @@ F:
+>> Documentation/devicetree/bindings/sound/google,cros-ec-codec.txt
+>>    F:      sound/soc/codecs/cros_ec_codec.*
+>>
+>
+> This e-mail is corrupted so the patch won't apply, you've got word
+> wrapping issue.  Please check your mail configuration and resend :/
+>=
