@@ -4,59 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90638C10F27
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Mar 2020 13:52:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 877B0C10F27
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Mar 2020 13:53:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1911624649
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Mar 2020 13:52:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 149FD21D7E
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Mar 2020 13:53:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pYw/tqw+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1911624649
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Qm+l2W/d"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 149FD21D7E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 61469851;
-	Tue, 10 Mar 2020 14:51:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 61469851
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2185583A;
+	Tue, 10 Mar 2020 14:52:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2185583A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583848329;
-	bh=MnbKE3+8+yRHBSr9ea+uJWhvu++UWbY8ieJZgBJB2L8=;
+	s=default; t=1583848383;
+	bh=TAs76LktZXzoGPPn2Se16aHdwgmYNpIDJ1m9EPk2yeQ=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=pYw/tqw+wGSNNUsnZevSO0PDX3/C89zfLUzK6QAvVE9WA1k5AHHwvM7KDl52kiwZf
-	 jCNSg7+tM8k01A49LJ4wb09pltHMsDTMq89RIS+XHGz/ERcp0FllKxQpYRH8137YuM
-	 2cMnQA805B2vvyAnFz9Gmb4ue3KzfoTCO4GuzDrA=
+	b=Qm+l2W/dJGrmgIDg9u+DwUPvyl1UVn/V2y62uWcLRIqqMgbCi6xZaZsp4ECUkrA8V
+	 FlPrW5U3OdnstF9KNCs5qi8N0Lctg59XNBMHwgKZgp1lpvpnF0Xry9qwxpsuJWy9/F
+	 yIP7fYi0Dp0HcFMZJp6RNQc7+kWVCP5uXqt1kmhE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DAA9FF80217;
-	Tue, 10 Mar 2020 14:51:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7DD03F80246;
+	Tue, 10 Mar 2020 14:51:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DF983F80217; Tue, 10 Mar 2020 14:51:16 +0100 (CET)
+ id 91751F80247; Tue, 10 Mar 2020 14:51:21 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id E871CF80123
- for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2020 14:51:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E871CF80123
+ by alsa1.perex.cz (Postfix) with ESMTP id CA54AF8020C
+ for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2020 14:51:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA54AF8020C
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DF9C330E;
- Tue, 10 Mar 2020 06:51:11 -0700 (PDT)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5593D30E;
+ Tue, 10 Mar 2020 06:51:16 -0700 (PDT)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 61DAF3F6CF;
- Tue, 10 Mar 2020 06:51:11 -0700 (PDT)
-Date: Tue, 10 Mar 2020 13:51:09 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CCC583F6CF;
+ Tue, 10 Mar 2020 06:51:15 -0700 (PDT)
+Date: Tue, 10 Mar 2020 13:51:14 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Applied "ASoC: SOF: Fix probe point getter" to the asoc tree
-In-Reply-To: <20200309142124.29262-1-cezary.rojewski@intel.com>
-Message-Id: <applied-20200309142124.29262-1-cezary.rojewski@intel.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: soc-dapm: add for_each_card_widgets() macro" to the
+ asoc tree
+In-Reply-To: <87r1y2goga.wl-kuninori.morimoto.gx@renesas.com>
+Message-Id: <applied-87r1y2goga.wl-kuninori.morimoto.gx@renesas.com>
 X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- lgirdwood@gmail.com,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,7 +74,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: Fix probe point getter
+   ASoC: soc-dapm: add for_each_card_widgets() macro
 
 has been applied to the asoc tree at
 
@@ -99,50 +99,174 @@ to this mail.
 Thanks,
 Mark
 
-From a3b7343e3f8c4c74516df41827b6d81905e346a1 Mon Sep 17 00:00:00 2001
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-Date: Mon, 9 Mar 2020 15:21:24 +0100
-Subject: [PATCH] ASoC: SOF: Fix probe point getter
+From 14596692631eadbefba8419698cccfc23bfccd2b Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 9 Mar 2020 13:08:21 +0900
+Subject: [PATCH] ASoC: soc-dapm: add for_each_card_widgets() macro
 
-Firmware API changes which introduced 'num_elems' param in several probe
-structs such as sof_ipc_probe_dma_add_params also impacted getter for
-both, DMA and probe points. All struct handlers except for
-sof_ipc_probe_info_params have been updated. Align said handler too to
-calculate payload size correctly.
+To be more readable code, this patch adds
+new for_each_card_widgets() macro, and replace existing code to it.
 
-Fixes: f3b433e4699f ("ASoC: SOF: Implement Probe IPC API")
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200309142124.29262-1-cezary.rojewski@intel.com
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/87r1y2goga.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/probe.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ include/sound/soc.h      |  5 +++++
+ sound/soc/soc-dapm.c     | 25 +++++++++++++------------
+ sound/soc/soc-topology.c |  2 +-
+ 3 files changed, 19 insertions(+), 13 deletions(-)
 
-diff --git a/sound/soc/sof/probe.c b/sound/soc/sof/probe.c
-index 2b2f3dcfc7e9..c38169fe00c5 100644
---- a/sound/soc/sof/probe.c
-+++ b/sound/soc/sof/probe.c
-@@ -95,13 +95,17 @@ static int sof_ipc_probe_info(struct snd_sof_dev *sdev, unsigned int cmd,
- 	if (!reply->num_elems)
- 		goto exit;
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 3aee33c8249e..03054bf9cd37 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1120,6 +1120,11 @@ struct snd_soc_card {
+ #define for_each_card_dapms(card, dapm)					\
+ 	list_for_each_entry(dapm, &card->dapm_list, list)
  
--	bytes = reply->num_elems * sizeof(reply->dma[0]);
-+	if (cmd == SOF_IPC_PROBE_DMA_INFO)
-+		bytes = sizeof(reply->dma[0]);
-+	else
-+		bytes = sizeof(reply->desc[0]);
-+	bytes *= reply->num_elems;
- 	*params = kmemdup(&reply->dma[0], bytes, GFP_KERNEL);
- 	if (!*params) {
- 		ret = -ENOMEM;
- 		goto exit;
++#define for_each_card_widgets(card, w)\
++	list_for_each_entry(w, &card->widgets, list)
++#define for_each_card_widgets_safe(card, w, _w)	\
++	list_for_each_entry_safe(w, _w, &card->widgets, list)
++
+ /* SoC machine DAI configuration, glues a codec and cpu DAI together */
+ struct snd_soc_pcm_runtime {
+ 	struct device *dev;
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index ac48303ea26d..e00a465a7c32 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -302,7 +302,7 @@ void dapm_mark_endpoints_dirty(struct snd_soc_card *card)
+ 
+ 	mutex_lock(&card->dapm_mutex);
+ 
+-	list_for_each_entry(w, &card->widgets, list) {
++	for_each_card_widgets(card, w) {
+ 		if (w->is_ep) {
+ 			dapm_mark_dirty(w, "Rechecking endpoints");
+ 			if (w->is_ep & SND_SOC_DAPM_EP_SINK)
+@@ -589,7 +589,7 @@ static void dapm_reset(struct snd_soc_card *card)
+ 
+ 	memset(&card->dapm_stats, 0, sizeof(card->dapm_stats));
+ 
+-	list_for_each_entry(w, &card->widgets, list) {
++	for_each_card_widgets(card, w) {
+ 		w->new_power = w->power;
+ 		w->power_checked = false;
  	}
--	*num_params = msg.num_elems;
-+	*num_params = reply->num_elems;
+@@ -833,7 +833,7 @@ static int dapm_is_shared_kcontrol(struct snd_soc_dapm_context *dapm,
  
- exit:
- 	kfree(reply);
+ 	*kcontrol = NULL;
+ 
+-	list_for_each_entry(w, &dapm->card->widgets, list) {
++	for_each_card_widgets(dapm->card, w) {
+ 		if (w == kcontrolw || w->dapm != kcontrolw->dapm)
+ 			continue;
+ 		for (i = 0; i < w->num_kcontrols; i++) {
+@@ -1967,7 +1967,7 @@ static int dapm_power_widgets(struct snd_soc_card *card, int event)
+ 		dapm_power_one_widget(w, &up_list, &down_list);
+ 	}
+ 
+-	list_for_each_entry(w, &card->widgets, list) {
++	for_each_card_widgets(card, w) {
+ 		switch (w->id) {
+ 		case snd_soc_dapm_pre:
+ 		case snd_soc_dapm_post:
+@@ -2376,7 +2376,7 @@ static ssize_t dapm_widget_show_component(struct snd_soc_component *cmpnt,
+ 	if (!cmpnt->card)
+ 		return 0;
+ 
+-	list_for_each_entry(w, &cmpnt->card->widgets, list) {
++	for_each_card_widgets(cmpnt->card, w) {
+ 		if (w->dapm != dapm)
+ 			continue;
+ 
+@@ -2496,7 +2496,7 @@ static void dapm_free_widgets(struct snd_soc_dapm_context *dapm)
+ {
+ 	struct snd_soc_dapm_widget *w, *next_w;
+ 
+-	list_for_each_entry_safe(w, next_w, &dapm->card->widgets, list) {
++	for_each_card_widgets_safe(dapm->card, w, next_w) {
+ 		if (w->dapm != dapm)
+ 			continue;
+ 		snd_soc_dapm_free_widget(w);
+@@ -2511,7 +2511,7 @@ static struct snd_soc_dapm_widget *dapm_find_widget(
+ 	struct snd_soc_dapm_widget *w;
+ 	struct snd_soc_dapm_widget *fallback = NULL;
+ 
+-	list_for_each_entry(w, &dapm->card->widgets, list) {
++	for_each_card_widgets(dapm->card, w) {
+ 		if (!strcmp(w->name, pin)) {
+ 			if (w->dapm == dapm)
+ 				return w;
+@@ -2910,7 +2910,7 @@ static int snd_soc_dapm_add_route(struct snd_soc_dapm_context *dapm,
+ 	 * find src and dest widgets over all widgets but favor a widget from
+ 	 * current DAPM context
+ 	 */
+-	list_for_each_entry(w, &dapm->card->widgets, list) {
++	for_each_card_widgets(dapm->card, w) {
+ 		if (!wsink && !(strcmp(w->name, sink))) {
+ 			wtsink = w;
+ 			if (w->dapm == dapm) {
+@@ -3189,7 +3189,7 @@ int snd_soc_dapm_new_widgets(struct snd_soc_card *card)
+ 
+ 	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_INIT);
+ 
+-	list_for_each_entry(w, &card->widgets, list)
++	for_each_card_widgets(card, w)
+ 	{
+ 		if (w->new)
+ 			continue;
+@@ -3703,6 +3703,7 @@ snd_soc_dapm_new_control_unlocked(struct snd_soc_dapm_context *dapm,
+ 	w->dapm = dapm;
+ 	INIT_LIST_HEAD(&w->list);
+ 	INIT_LIST_HEAD(&w->dirty);
++	/* see for_each_card_widgets */
+ 	list_add_tail(&w->list, &dapm->card->widgets);
+ 
+ 	snd_soc_dapm_for_each_direction(dir) {
+@@ -4227,7 +4228,7 @@ int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card)
+ 	struct snd_soc_dai *dai;
+ 
+ 	/* For each DAI widget... */
+-	list_for_each_entry(dai_w, &card->widgets, list) {
++	for_each_card_widgets(card, dai_w) {
+ 		switch (dai_w->id) {
+ 		case snd_soc_dapm_dai_in:
+ 		case snd_soc_dapm_dai_out:
+@@ -4246,7 +4247,7 @@ int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card)
+ 		dai = dai_w->priv;
+ 
+ 		/* ...find all widgets with the same stream and link them */
+-		list_for_each_entry(w, &card->widgets, list) {
++		for_each_card_widgets(card, w) {
+ 			if (w->dapm != dai_w->dapm)
+ 				continue;
+ 
+@@ -4789,7 +4790,7 @@ static void soc_dapm_shutdown_dapm(struct snd_soc_dapm_context *dapm)
+ 
+ 	mutex_lock(&card->dapm_mutex);
+ 
+-	list_for_each_entry(w, &dapm->card->widgets, list) {
++	for_each_card_widgets(dapm->card, w) {
+ 		if (w->dapm != dapm)
+ 			continue;
+ 		if (w->power) {
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 575da6aba807..33909afd3bbc 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -2774,7 +2774,7 @@ void snd_soc_tplg_widget_remove_all(struct snd_soc_dapm_context *dapm,
+ {
+ 	struct snd_soc_dapm_widget *w, *next_w;
+ 
+-	list_for_each_entry_safe(w, next_w, &dapm->card->widgets, list) {
++	for_each_card_widgets_safe(dapm->card, w, next_w) {
+ 
+ 		/* make sure we are a widget with correct context */
+ 		if (w->dobj.type != SND_SOC_DOBJ_WIDGET || w->dapm != dapm)
 -- 
 2.20.1
 
