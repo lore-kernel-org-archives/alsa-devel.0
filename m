@@ -7,54 +7,54 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E025FC18E5A
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Mar 2020 17:47:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CF4B3C10F27
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Mar 2020 17:48:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7149821D7E
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Mar 2020 17:47:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5BED521D7E
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Mar 2020 17:48:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mFvCRM0W"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7149821D7E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="W0gdHjIA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5BED521D7E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BA594825;
-	Tue, 10 Mar 2020 18:46:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA594825
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7B4081681;
+	Tue, 10 Mar 2020 18:47:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B4081681
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583862469;
-	bh=wlQYbWXyFJ4xBTFtaa6TiISbQeqYcNHfi0NMPu7O4Ts=;
+	s=default; t=1583862496;
+	bh=6grFRkCVWVIlv1SVR6rmUcbt5Dd3tM57Sv8p0+QNKx8=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=mFvCRM0WYlaSKGIqEQfNIvU+1BYqOlyeuKKBHdOiy5Ic0KNTXx6cuxuotdVT2NWhT
-	 OBIHnRKsPAQNTn4lImJ/Upa7o/Kzdbvs9vbWJh37Uj9eeeDv0XpREx+dWNa0SnIdMu
-	 B4X8XPL3HHEIFlM1n2ZJobm5g2aOEHMmsn2E2avc=
+	b=W0gdHjIAB9cItfhB6SpYbJc8JN4//bjIOTDqVIr/K1yGeceGnHmwv0gj0HFlDiX5e
+	 axKf5d86XDJ1IzHAZpvOLHaou0LDH8h+U4/LABrWXFrvojSKOhUQ9USoTkovsjNMBf
+	 NnNpl+4dsBR/ybeuDoSphmDe3phbnEyESZnqz+RU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 14518F8028E;
-	Tue, 10 Mar 2020 18:45:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CB655F80292;
+	Tue, 10 Mar 2020 18:45:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 01A1BF8028F; Tue, 10 Mar 2020 18:45:03 +0100 (CET)
+ id 2235BF80299; Tue, 10 Mar 2020 18:45:08 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 35927F8028B
- for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2020 18:45:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35927F8028B
+ by alsa1.perex.cz (Postfix) with ESMTP id 01594F80290
+ for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2020 18:45:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01594F80290
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C105A1FB;
- Tue, 10 Mar 2020 10:44:58 -0700 (PDT)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A4AB67FA;
+ Tue, 10 Mar 2020 10:45:03 -0700 (PDT)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 41AFC3F67D;
- Tue, 10 Mar 2020 10:44:58 -0700 (PDT)
-Date: Tue, 10 Mar 2020 17:44:56 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 275823F67D;
+ Tue, 10 Mar 2020 10:45:03 -0700 (PDT)
+Date: Tue, 10 Mar 2020 17:45:01 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Applied "ASoC: Intel: Skylake: Enable codec wakeup during chip init"
+Subject: Applied "ASoC: Intel: Skylake: Select hda configuration permissively"
  to the asoc tree
-In-Reply-To: <20200305145314.32579-4-cezary.rojewski@intel.com>
-Message-Id: <applied-20200305145314.32579-4-cezary.rojewski@intel.com>
+In-Reply-To: <20200305145314.32579-3-cezary.rojewski@intel.com>
+Message-Id: <applied-20200305145314.32579-3-cezary.rojewski@intel.com>
 X-Patchwork-Hint: ignore
 Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
  tiwai@suse.com, lgirdwood@gmail.com, vkoul@kernel.org,
@@ -76,7 +76,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: Intel: Skylake: Enable codec wakeup during chip init
+   ASoC: Intel: Skylake: Select hda configuration permissively
 
 has been applied to the asoc tree at
 
@@ -101,43 +101,43 @@ to this mail.
 Thanks,
 Mark
 
-From e603f11d5df8997d104ab405ff27640b90baffaa Mon Sep 17 00:00:00 2001
+From a66f88394a78fec9a05fa6e517e9603e8eca8363 Mon Sep 17 00:00:00 2001
 From: Cezary Rojewski <cezary.rojewski@intel.com>
-Date: Thu, 5 Mar 2020 15:53:10 +0100
-Subject: [PATCH] ASoC: Intel: Skylake: Enable codec wakeup during chip init
+Date: Thu, 5 Mar 2020 15:53:09 +0100
+Subject: [PATCH] ASoC: Intel: Skylake: Select hda configuration permissively
 
-Follow the recommendation set by hda_intel.c and enable HDMI/DP codec
-wakeup during bus initialization procedure. Disable wakeup once init
-completes.
+With _reset_link removed from the probe sequence, codec_mask at the time
+skl_find_hda_machine() is invoked will always be 0, so hda machine will
+never be chosen. Rather than reorganizing boot flow, be permissive about
+invalid mask. codec_mask will be set to proper value during probe_work -
+before skl_codec_create() ever gets called.
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200305145314.32579-4-cezary.rojewski@intel.com
+Link: https://lore.kernel.org/r/20200305145314.32579-3-cezary.rojewski@intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/intel/skylake/skl.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
 diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 4827fe6bc1cb..e2e531c96dd1 100644
+index d66231525356..4827fe6bc1cb 100644
 --- a/sound/soc/intel/skylake/skl.c
 +++ b/sound/soc/intel/skylake/skl.c
-@@ -130,6 +130,7 @@ static int skl_init_chip(struct hdac_bus *bus, bool full_reset)
- 	struct hdac_ext_link *hlink;
- 	int ret;
+@@ -481,13 +481,8 @@ static struct skl_ssp_clk skl_ssp_clks[] = {
+ static struct snd_soc_acpi_mach *skl_find_hda_machine(struct skl_dev *skl,
+ 					struct snd_soc_acpi_mach *machines)
+ {
+-	struct hdac_bus *bus = skl_to_bus(skl);
+ 	struct snd_soc_acpi_mach *mach;
  
-+	snd_hdac_set_codec_wakeup(bus, true);
- 	skl_enable_miscbdcge(bus->dev, false);
- 	ret = snd_hdac_bus_init_chip(bus, full_reset);
+-	/* check if we have any codecs detected on bus */
+-	if (bus->codec_mask == 0)
+-		return NULL;
+-
+ 	/* point to common table */
+ 	mach = snd_soc_acpi_intel_hda_machines;
  
-@@ -138,6 +139,7 @@ static int skl_init_chip(struct hdac_bus *bus, bool full_reset)
- 		writel(0, hlink->ml_addr + AZX_REG_ML_LOSIDV);
- 
- 	skl_enable_miscbdcge(bus->dev, true);
-+	snd_hdac_set_codec_wakeup(bus, false);
- 
- 	return ret;
- }
 -- 
 2.20.1
 
