@@ -7,60 +7,59 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AFBCC0044D
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 18:51:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 37979C0044D
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 18:52:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E8A10206BE
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 18:51:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A5172206BE
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 18:52:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="m/ShYosc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E8A10206BE
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hptlYpqW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A5172206BE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5609816A3;
-	Wed, 11 Mar 2020 19:50:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5609816A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 18E1516AE;
+	Wed, 11 Mar 2020 19:51:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 18E1516AE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583952700;
-	bh=wKesjt5CLBliIATi9VeVcMjg4x/CZbGYYpPifelNvVE=;
+	s=default; t=1583952727;
+	bh=obVPWP9kHTvESLbdwLqCmd7SoTKwmUnEZLmIdb9lbqI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=m/ShYosc26jBDQeP76PfqHf0TSPQ+vZXrk7Msf3+m3DmJR1Nt7Sh8Dg+5RvcXb53R
-	 lH1cYfkLvz+tx/B0IoVf7EGSR5U8giaJ9OwVjUdVY0IE0Ua3lMFs90kSv68e5He8Mk
-	 PesZGxZQZ2RM0daFkrib9+cPlNTBvua6onsLUYUQ=
+	b=hptlYpqWlt4MhI/CvzuOMhdzExpuuy8R9rX60/5abbh81CvG/fazRewpPprCM7oLK
+	 UHzDsTrMVlmlOUAdowdmVGT+9MEmtHSdTs1vtIyanU4UHQYrjhdP16AZxy5NafiFi7
+	 roA+j9m6S6BrgWIf5cGMH/4ik3XXzlVtBp4Pra94=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BB3ACF80333;
-	Wed, 11 Mar 2020 19:42:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 86035F80335;
+	Wed, 11 Mar 2020 19:42:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6288AF802E8; Wed, 11 Mar 2020 19:42:15 +0100 (CET)
+ id D4379F802E8; Wed, 11 Mar 2020 19:42:17 +0100 (CET)
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C9F61F802DD
- for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2020 19:42:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9F61F802DD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 21A03F802E0
+ for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2020 19:42:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21A03F802E0
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 11 Mar 2020 11:42:11 -0700
+ 11 Mar 2020 11:42:13 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,541,1574150400"; d="scan'208";a="441776344"
+X-IronPort-AV: E=Sophos;i="5.70,541,1574150400"; d="scan'208";a="441776353"
 Received: from fjan-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.251.25.157])
- by fmsmga005.fm.intel.com with ESMTP; 11 Mar 2020 11:42:09 -0700
+ by fmsmga005.fm.intel.com with ESMTP; 11 Mar 2020 11:42:11 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 15/16] soundwire: cadence: commit changes in the exit_reset()
- sequence
-Date: Wed, 11 Mar 2020 13:41:27 -0500
-Message-Id: <20200311184128.4212-16-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 16/16] soundwire: cadence: multi-link support
+Date: Wed, 11 Mar 2020 13:41:28 -0500
+Message-Id: <20200311184128.4212-17-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200311184128.4212-1-pierre-louis.bossart@linux.intel.com>
 References: <20200311184128.4212-1-pierre-louis.bossart@linux.intel.com>
@@ -89,36 +88,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Follow recommended flows, the BUS_RESET must be programmed before the
-UPDATE_CONFIG.
+Enable multi-link (aka multi-master configuration). In this
+configuration, updates and commands with the 'ssp_sync' tag will be
+deferred and controlled by the gsync hardware signal.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/cadence_master.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/soundwire/cadence_master.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-index acafa6222171..112f4ebcf1be 100644
+index 112f4ebcf1be..5b07ce195100 100644
 --- a/drivers/soundwire/cadence_master.c
 +++ b/drivers/soundwire/cadence_master.c
-@@ -1074,7 +1074,6 @@ static void cdns_init_clock_ctrl(struct sdw_cdns *cdns)
- int sdw_cdns_init(struct sdw_cdns *cdns)
- {
- 	u32 val;
--	int ret;
+@@ -843,7 +843,13 @@ int sdw_cdns_exit_reset(struct sdw_cdns *cdns)
+ 		     CDNS_MCP_CONTROL_HW_RST);
  
- 	cdns_init_clock_ctrl(cdns);
- 
-@@ -1113,8 +1112,8 @@ int sdw_cdns_init(struct sdw_cdns *cdns)
- 
- 	cdns_writel(cdns, CDNS_MCP_CONFIG, val);
- 
--	/* commit changes */
+ 	/* commit changes */
 -	return cdns_config_update(cdns);
-+	/* changes will be committed later */
++	cdns_updatel(cdns, CDNS_MCP_CONFIG_UPDATE,
++		     CDNS_MCP_CONFIG_UPDATE_BIT,
++		     CDNS_MCP_CONFIG_UPDATE_BIT);
++
++	/* don't wait here */
 +	return 0;
++
  }
- EXPORT_SYMBOL(sdw_cdns_init);
+ EXPORT_SYMBOL(sdw_cdns_exit_reset);
+ 
+@@ -1104,7 +1110,9 @@ int sdw_cdns_init(struct sdw_cdns *cdns)
+ 	/* Disable auto bus release */
+ 	val &= ~CDNS_MCP_CONFIG_BUS_REL;
+ 
+-	/* Multi-master support to be added here */
++	if (cdns->bus.multi_link)
++		/* Set Multi-master mode to take gsync into account */
++		val |= CDNS_MCP_CONFIG_MMASTER;
+ 
+ 	/* leave frame delay to hardware default of 0x1F */
  
 -- 
 2.20.1
