@@ -6,57 +6,57 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 43872C10F25
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 06:57:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67D39C10F25
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 06:58:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C635620873
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 06:57:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E5FFD20873
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 06:58:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fLB2OemG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C635620873
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ULJVPKY3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E5FFD20873
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 32522950;
-	Wed, 11 Mar 2020 07:56:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32522950
+	by alsa0.perex.cz (Postfix) with ESMTPS id 05CBA1657;
+	Wed, 11 Mar 2020 07:57:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 05CBA1657
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583909858;
-	bh=Sct+kErT9qw9nCYZk9jXpuW9wtoffqHU5VSjQNC4bGI=;
+	s=default; t=1583909912;
+	bh=H7Qruhjkxz9FZwH3qveKAVUwpqFkgSFwPa8Zmgmwywg=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fLB2OemGe0sZbLTcY4IZlE/pmNBA9pebvkKEf+fMs5s5HDAtJt1mzG2C3J+TMMUq+
-	 RqM4oyka9BMgeRaUzYdPShyllLI1D3gxKuSvoY6tooSvwR7CzfC4HbRkWOAzy4m3py
-	 BCPUkie4XZ2Zg9DY2bc33W6nZzDXq6WTHFv8WMKE=
+	b=ULJVPKY3oQxUI22Aqsbqe+gRnJB1BCCSJX9IgNberys8MLcGcK0KiF+kfF/J/+duS
+	 RRWDea55ZLoHm6JmNWSHfxK+r132bU8mbWm44zJ/uLT4ONu7TyZsHPzUgcKdWGYSkb
+	 PDiyycW+IWtnWKdumua/KEYNBAkggXec8bjUGdnQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B3F67F801A3;
-	Wed, 11 Mar 2020 07:56:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D5FA9F801F8;
+	Wed, 11 Mar 2020 07:56:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9D5DAF801EB; Wed, 11 Mar 2020 07:56:46 +0100 (CET)
+ id 81E79F80217; Wed, 11 Mar 2020 07:56:57 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4AFA8F800B5
- for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2020 07:56:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4AFA8F800B5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2E06CF801F7
+ for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2020 07:56:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E06CF801F7
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 8C41FAE39;
- Wed, 11 Mar 2020 06:56:43 +0000 (UTC)
-Date: Wed, 11 Mar 2020 07:56:42 +0100
-Message-ID: <s5hmu8n9y6t.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 6D952AECE;
+ Wed, 11 Mar 2020 06:56:54 +0000 (UTC)
+Date: Wed, 11 Mar 2020 07:56:54 +0100
+Message-ID: <s5hlfo79y6h.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Jules Irenge <jbi.octave@gmail.com>
-Subject: Re: [PATCH 8/8] ALSA: firewire-tascam: Add missing annotation for
- tscm_hwdep_read_locked()
-In-Reply-To: <20200311010908.42366-9-jbi.octave@gmail.com>
+Subject: Re: [PATCH 7/8] ALSA: firewire-tascam: Add missing annotation for
+ tscm_hwdep_read_queue()
+In-Reply-To: <20200311010908.42366-8-jbi.octave@gmail.com>
 References: <0/8> <20200311010908.42366-1-jbi.octave@gmail.com>
- <20200311010908.42366-9-jbi.octave@gmail.com>
+ <20200311010908.42366-8-jbi.octave@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -83,14 +83,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 11 Mar 2020 02:09:08 +0100,
+On Wed, 11 Mar 2020 02:09:07 +0100,
 Jules Irenge wrote:
 > 
-> Sparse reports a warning at tscm_hwdep_read_locked()
+> Sparse reports a warning at tscm_hwdep_read_queue()
 > 
-> warning: context imbalance in tscm_hwdep_read_locked() - unexpected unlock
+> warning: context imbalance in tscm_hwdep_read_queue() - unexpected unlock
 > 
-> The root cause is the missing annotation at tscm_hwdep_read_locked()
+> The root cause is the missing annotation at tscm_hwdep_read_queue()
 > Add the missing __releases(&tscm->lock) annotation
 > 
 > Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
