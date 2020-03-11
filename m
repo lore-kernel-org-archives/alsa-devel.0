@@ -6,61 +6,68 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90265C10F25
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 06:55:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43872C10F25
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 06:57:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1F2292146E
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 06:55:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C635620873
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 06:57:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Gba1KDvZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1F2292146E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fLB2OemG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C635620873
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 684A015F9;
-	Wed, 11 Mar 2020 07:54:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 684A015F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 32522950;
+	Wed, 11 Mar 2020 07:56:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32522950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583909709;
-	bh=daei1U1yBaGkQDYumx37V4jIEGY5TLKvkf6AiiQsJ+w=;
+	s=default; t=1583909858;
+	bh=Sct+kErT9qw9nCYZk9jXpuW9wtoffqHU5VSjQNC4bGI=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Gba1KDvZE19eYPLyuHfqv8uM3tPC9Tezl4S4gQ0mHtY5hgKsCFqQUM5HcwHRPBUbK
-	 8krgRRDQimJNBPmdNRI3LdxSC1AdS6PUU0nL6be/bZF0fbicvLA3461UWKLcDgQute
-	 cTNiQOmRiCu574WvIPJYCtrcPrR89drTgGtWFfqo=
+	b=fLB2OemGe0sZbLTcY4IZlE/pmNBA9pebvkKEf+fMs5s5HDAtJt1mzG2C3J+TMMUq+
+	 RqM4oyka9BMgeRaUzYdPShyllLI1D3gxKuSvoY6tooSvwR7CzfC4HbRkWOAzy4m3py
+	 BCPUkie4XZ2Zg9DY2bc33W6nZzDXq6WTHFv8WMKE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C397FF801A3;
-	Wed, 11 Mar 2020 07:54:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B3F67F801A3;
+	Wed, 11 Mar 2020 07:56:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4DADFF801EB; Wed, 11 Mar 2020 07:54:17 +0100 (CET)
+ id 9D5DAF801EB; Wed, 11 Mar 2020 07:56:46 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8DB9BF80141
- for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2020 07:54:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8DB9BF80141
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4AFA8F800B5
+ for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2020 07:56:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4AFA8F800B5
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id C9F22AE39;
- Wed, 11 Mar 2020 06:54:12 +0000 (UTC)
-Date: Wed, 11 Mar 2020 07:54:12 +0100
-Message-ID: <s5ho8t39yaz.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 8C41FAE39;
+ Wed, 11 Mar 2020 06:56:43 +0000 (UTC)
+Date: Wed, 11 Mar 2020 07:56:42 +0100
+Message-ID: <s5hmu8n9y6t.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: Re: [PATCH] ALSA: hda/realtek: Fix pop noise on ALC225
-In-Reply-To: <20200311061328.17614-1-kai.heng.feng@canonical.com>
-References: <20200311061328.17614-1-kai.heng.feng@canonical.com>
+To: Jules Irenge <jbi.octave@gmail.com>
+Subject: Re: [PATCH 8/8] ALSA: firewire-tascam: Add missing annotation for
+ tscm_hwdep_read_locked()
+In-Reply-To: <20200311010908.42366-9-jbi.octave@gmail.com>
+References: <0/8> <20200311010908.42366-1-jbi.octave@gmail.com>
+ <20200311010908.42366-9-jbi.octave@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, tiwai@suse.com, linux-kernel@vger.kernel.org
+Cc: "moderated list:FIREWIRE AUDIO DRIVERS and IEC 61883-1/6 PACKET..."
+ <alsa-devel@alsa-project.org>, netdev@vger.kernel.org, boqun.feng@gmail.com,
+ Takashi Iwai <tiwai@suse.com>, Clemens Ladisch <clemens@ladisch.de>,
+ linux-kernel@vger.kernel.org, Alexios Zavras <alexios.zavras@intel.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, bpf@vger.kernel.org,
+ Thomas Gleixner <tglx@linutronix.de>, Allison Randal <allison@lohutok.net>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,30 +83,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 11 Mar 2020 07:13:28 +0100,
-Kai-Heng Feng wrote:
+On Wed, 11 Mar 2020 02:09:08 +0100,
+Jules Irenge wrote:
 > 
-> Commit 317d9313925c ("ALSA: hda/realtek - Set default power save node to
-> 0") makes the ALC225 have pop noise on S3 resume and cold boot.
+> Sparse reports a warning at tscm_hwdep_read_locked()
 > 
-> So partially revert this commit for ALC225 to fix the regression.
+> warning: context imbalance in tscm_hwdep_read_locked() - unexpected unlock
 > 
-> Fixes: 317d9313925c ("ALSA: hda/realtek - Set default power save node to 0")
-> BugLink: https://bugs.launchpad.net/bugs/1866357
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> ---
+> The root cause is the missing annotation at tscm_hwdep_read_locked()
+> Add the missing __releases(&tscm->lock) annotation
+> 
+> Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
 
-Hrm, it's rather surprising.  The power_save_node was thought to be a
-cause of the pop noise, but in this case it fixes.  It's interesting
-because this codec chip has no loopback mixer, and the connection is
-directly from DAC to pin, so in theory, it shouldn't be influenced
-from other nodes.
+Applied, thanks.
 
-Anyways, a slight concern is that this might cause a regression on
-another machine.  But who knows, maybe the influence is very limited.
-Let's apply it and see what happens.
-
-
-thanks,
 
 Takashi
