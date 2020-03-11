@@ -2,68 +2,73 @@ Return-Path: <SRS0=OXo6=44=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34DC7C10F27
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 12:26:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 367E7C10F27
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 12:37:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B37F120873
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 12:26:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B4568208E4
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 12:37:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NkhKsz9Q"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B37F120873
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LLqHrNWf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B4568208E4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2F237828;
-	Wed, 11 Mar 2020 13:25:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F237828
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0878F886;
+	Wed, 11 Mar 2020 13:36:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0878F886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583929591;
-	bh=24aKGf8USad68wemz4fQ5WB73MfTPuqcHaKOlGTQcbQ=;
+	s=default; t=1583930243;
+	bh=9qbFris02EO6y6gzN/rmPfNWU7F7Nen/GmOY3ia3I1w=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NkhKsz9QtAawF/lY1nIDf/F2lV+URkFUR2cPGQ4s5mdy15BNMFN4z630smTagfcFx
-	 DTh19HTUOcrO08IIjWg7hsQ+Pm3bxXxSyLaN/o5MRJX0H2sVT2kLVy/pTe8+75g9L1
-	 PRFqJAEiHa+SpvlvPHmFR3TJcFwGMU0MKepM6CHI=
+	b=LLqHrNWfxBdtgMQIPXAxs/18/5izL1SSHkzWRcI6X7mqu+QcWNoe5x7R8Emg4oN6O
+	 OGNBd68BMGfF5fwBVq8tCimeo6HK86YBr02Z4E0B8/gltM+kXnu0fB4k3WjGnaC4Sa
+	 2YsU3GhWZ55S7SaeLoO/pMdYquOqG7+I28kcM1n0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9F864F801A3;
-	Wed, 11 Mar 2020 13:25:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 60D92F801A3;
+	Wed, 11 Mar 2020 13:36:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 603BFF801EB; Wed, 11 Mar 2020 13:25:38 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id B9FDFF80141;
- Wed, 11 Mar 2020 13:25:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9FDFF80141
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 18D2F7FA;
- Wed, 11 Mar 2020 05:25:33 -0700 (PDT)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9101F3F6CF;
- Wed, 11 Mar 2020 05:25:32 -0700 (PDT)
-Date: Wed, 11 Mar 2020 12:25:31 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+ id E9F3BF801EB; Wed, 11 Mar 2020 13:36:29 +0100 (CET)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id BD8B3F800BE;
+ Wed, 11 Mar 2020 13:36:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BD8B3F800BE
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+ by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 11 Mar 2020 05:36:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,540,1574150400"; d="scan'208";a="289370390"
+Received: from gliakhov-mobl2.ger.corp.intel.com (HELO ubuntu) ([10.249.40.3])
+ by FMSMGA003.fm.intel.com with ESMTP; 11 Mar 2020 05:36:19 -0700
+Date: Wed, 11 Mar 2020 13:36:17 +0100
+From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+To: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH 2/3] ASoC: add function parameters to enable forced path
  pruning
-Message-ID: <20200311122531.GD5411@sirena.org.uk>
+Message-ID: <20200311123617.GA5347@ubuntu>
 References: <20200309170749.32313-1-guennadi.liakhovetski@linux.intel.com>
  <20200309170749.32313-3-guennadi.liakhovetski@linux.intel.com>
  <20200310124544.GE4106@sirena.org.uk>
  <20200311074126.GA4149@ubuntu>
+ <20200311122531.GD5411@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="d01dLTUuW90fS44H"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200311074126.GA4149@ubuntu>
-X-Cookie: I'm a Lisp variable -- bind me!
+In-Reply-To: <20200311122531.GD5411@sirena.org.uk>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>,
  Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
@@ -83,52 +88,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi Mark,
 
---d01dLTUuW90fS44H
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Wed, Mar 11, 2020 at 12:25:31PM +0000, Mark Brown wrote:
+> On Wed, Mar 11, 2020 at 08:41:27AM +0100, Guennadi Liakhovetski wrote:
+> > On Tue, Mar 10, 2020 at 12:45:44PM +0000, Mark Brown wrote:
+> 
+> > > So why doesn't DPCM recognize that the path is inactive and why is it
+> > > better to do this than fix whatever the issue is there?
+> 
+> > Of course that would be better abd I'd much prefer that. Unfortunately I 
+> > haven't been able to find a single scenario in which those paths would be 
+> > exercised. As far as I understand path pruning should take place e.g. 
+> > when a mixer modifies audio routing and as a result disables a certain 
+> > pipeline, which is then pruned. If I could reproduce such a scenario I 
+> > would be able to first check whether it's working, then see exactly how 
+> > it is working and then see how best to add my use case to it. Since I 
+> > wasn't able to find such a scenario, my only option was to preserve 
+> > the current state and add my own path "on top." I'd be happy to try the 
+> > other path too, I just need a use case, that I can reproduce.
+> 
+> It's still not clear to me what the issue is here.  If something is
+> making a modification to the graph which needs a recheck or update I'd
+> expect that these things happen along with that modification.  I don't
+> understand what you're saying about not being able to reproduce
+> scenarios or adding things "on top".
 
-On Wed, Mar 11, 2020 at 08:41:27AM +0100, Guennadi Liakhovetski wrote:
-> On Tue, Mar 10, 2020 at 12:45:44PM +0000, Mark Brown wrote:
+I mean, that I don't have a test-case to test dpcm_prune_paths() without my 
+VirtIO support. That function currently exists in the kernel, but I don't 
+have a test-case to verify its work, to see it called and actually perform 
+the pruning. So I don't know how it is supposed to work. And because of 
+that I cannot fix my VirtIO use case to use that function properly, without 
+forcing it with an additional parameter.
 
-> > So why doesn't DPCM recognize that the path is inactive and why is it
-> > better to do this than fix whatever the issue is there?
-
-> Of course that would be better abd I'd much prefer that. Unfortunately I=
-=20
-> haven't been able to find a single scenario in which those paths would be=
-=20
-> exercised. As far as I understand path pruning should take place e.g.=20
-> when a mixer modifies audio routing and as a result disables a certain=20
-> pipeline, which is then pruned. If I could reproduce such a scenario I=20
-> would be able to first check whether it's working, then see exactly how=
-=20
-> it is working and then see how best to add my use case to it. Since I=20
-> wasn't able to find such a scenario, my only option was to preserve=20
-> the current state and add my own path "on top." I'd be happy to try the=
-=20
-> other path too, I just need a use case, that I can reproduce.
-
-It's still not clear to me what the issue is here.  If something is
-making a modification to the graph which needs a recheck or update I'd
-expect that these things happen along with that modification.  I don't
-understand what you're saying about not being able to reproduce
-scenarios or adding things "on top".
-
---d01dLTUuW90fS44H
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5o2LoACgkQJNaLcl1U
-h9BTGgf+MS1O47tGNEZsXfJiMsPQE0g8rVtwACcygj9mziHRQ4tTFGISdOfsj5Mp
-G4TyuslyA02Zz3pF4XVuM73gqosDApPd8lj16Y7bMCucftP+TcqynUz/ZuWG7Ov4
-Izp8f49YoOD1piIDQkZQPPVtdg1SaNPwUiTfoi1Q3sP3Ypcu6RB+MZjYoV8qASSp
-pquhI+AnXCqFd2UeU5aKEPt1EIhsDwg79uSE/9KPKI5FERGWHQqo+kkOV6VWTSrQ
-lxQIxdT5eRxZa2E7+0gNhS/fhBcJ0nhaDfSwkQm3zkGO1U8z/Cd1H62E7ZjMROTm
-6u+jIOI7jJ4UxHGIsOxsuMHFv0aDyQ==
-=tDB1
------END PGP SIGNATURE-----
-
---d01dLTUuW90fS44H--
+Thanks
+Guennadi
