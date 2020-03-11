@@ -2,66 +2,127 @@ Return-Path: <SRS0=OXo6=44=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3653AC10DCE
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 02:40:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B77AC10DCE
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 03:20:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B034021927
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 02:40:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CB5A821655
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 03:20:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BWjNoNKz"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B034021927
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="g7lHGm7v";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="TrxEz737";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="CsgbMFq0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CB5A821655
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 05265827;
-	Wed, 11 Mar 2020 03:39:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 05265827
+	by alsa0.perex.cz (Postfix) with ESMTPS id 32D9883A;
+	Wed, 11 Mar 2020 04:19:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32D9883A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583894432;
-	bh=Boora4G/djz9VY3duTaSx3rIfeMQzNkS+a8fmCte3mo=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1583896803;
+	bh=az7rvA7qHu2lFEl9HYZEloMU4ywTW9hpP/RejLmLfZI=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BWjNoNKzCuBmUjsHkI9M2KlNbM05Fkh/YkzJ3b+r8J1Td7c5rs2BESLi6t9BeTEuL
-	 CBPel3YIWWTfBdV51ghvj9xY20zu5eiXt2WyVwtVfVLP5l6qHPeqb9lhR3VKr6tl51
-	 E1yz6f6kGDghJ85rm1FSRGLt1pxcK3F2P1uo5wU4=
+	b=g7lHGm7v/r7juoX5QU3wfKIWxHPTyMqskyThsU9Z4THsWkiOcaFfwUoffLhnaJEWm
+	 ElT2hcUSrLfoiOden6nbO5IE52hiZh6lKGyYxpAwKtZJcvKz9VEXvt08aY9p5g9NxG
+	 OywDaqpvGvHxoYTNebDF4UCfo7dL+UNxFDh1cA7w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 84561F80141;
-	Wed, 11 Mar 2020 03:39:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A1F7FF801A3;
+	Wed, 11 Mar 2020 04:19:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B7336F801A3; Wed, 11 Mar 2020 03:39:39 +0100 (CET)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id E0F4FF800B5
- for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2020 03:39:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0F4FF800B5
-Date: 11 Mar 2020 11:39:30 +0900
-X-IronPort-AV: E=Sophos;i="5.70,539,1574089200"; d="scan'208";a="41548461"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 11 Mar 2020 11:39:30 +0900
-Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 7A203400A8A3;
- Wed, 11 Mar 2020 11:39:30 +0900 (JST)
-Message-ID: <87imjbvcm5.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 7/7] ASoC: soc-pcm: Merge CPU/Codec at soc_pcm_pointer()
-In-Reply-To: <1968b2ea-f094-709e-b5b2-784f7aec5081@linux.intel.com>
-References: <87y2s7vgxb.wl-kuninori.morimoto.gx@renesas.com>
- <87o8t3vgur.wl-kuninori.morimoto.gx@renesas.com>
- <1968b2ea-f094-709e-b5b2-784f7aec5081@linux.intel.com>
-User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+ id 519CCF801EB; Wed, 11 Mar 2020 04:19:11 +0100 (CET)
+Received: from wnew2-smtp.messagingengine.com (wnew2-smtp.messagingengine.com
+ [64.147.123.27])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id EED9AF80141
+ for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2020 04:19:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EED9AF80141
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
+ header.b="TrxEz737"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="CsgbMFq0"
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+ by mailnew.west.internal (Postfix) with ESMTP id C6EC46BE;
+ Tue, 10 Mar 2020 23:19:00 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute2.internal (MEProxy); Tue, 10 Mar 2020 23:19:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-type:in-reply-to; s=fm1; bh=n7m72Tx+CWEa02zHghdkj9AV/pW
+ oZotPpODUQGq39GM=; b=TrxEz737tfc4toeTcWR6JE6dB+EN4l1X7zs9bym9ZW3
+ 6HcmOb6wtTuWJRtDKH8N6LWA6iVwY6S1lvkdLnp8DJRFN4yE/LlCXVS9Czh7M+Zr
+ WJCwXjQnSM0NuK4fmv4wjXJYZ5a1U26aBPHKl+MIGlHh53Yyu5o8CxEzNtsDlo+s
+ nsnb7nw0sNQV95CBjm9uwt8DsHoBsYCeqZxZyWHFoz/ydz6oZLvV9tSmY4OElaO2
+ scjr9g8LRd+CpR292Oj1p5qHrpchE9KxnZbA+hkNMxsVrsilWRZkAMdX4xAtBGqO
+ 6SZ3rgaoNt8BRmB32jYRExf+5bMu9Fq/5F2aiWtpsBA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to:x-me-proxy
+ :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=n7m72T
+ x+CWEa02zHghdkj9AV/pWoZotPpODUQGq39GM=; b=CsgbMFq0GBoJbAzszr8IH5
+ /25ZkX1Z3ZP6p9bO86zYssPEZCBQ6NPhk1yj1WI5YSEKe+IxdVnObvWw7xCM1rJg
+ cysDqa8PwmcLR1au8LKZxNDpkzEQ3iGz730i59Fu9CaOrwrzN72erFKw+NN312B3
+ 6S1JGk6LnGQXuPqKwnOkgrJ52tK8x5dbsgBo+5Sq5upCD5fvBKPHaArzO3ng1+db
+ pdiDJ/TomXx3EA03ZXpoiZXESNmKpqOt7Ss9MZz5bNr67FtX0Yq1Sv50KZrVvyHv
+ 1OExx+A0fZkSrVLoF13nKioeCyvsfBRmiWH8+RtdpqWtuF4Vv7WwGLZwDc7Jwy2A
+ ==
+X-ME-Sender: <xms:o1hoXiE9F8d63W5FJwaI-hRTaAe0E3KcYFl4fj5Bb0eJ5jyLm_putg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedruddvuddgheekucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+ cujfgurhepfffhvffukfhfgggtuggjfgesthdtredttdervdenucfhrhhomhepvfgrkhgr
+ shhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhird
+ hjpheqnecukfhppedugedrfedrjeegrdduieeknecuvehluhhsthgvrhfuihiivgeptden
+ ucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthh
+ hirdhjph
+X-ME-Proxy: <xmx:o1hoXpyvpK075-EuV3DK9-cOJwJdQNqwHsLwAtPjM8IeJlo0jnvfzA>
+ <xmx:o1hoXk8k5N5gJTt-jqWBtt8oEPd9rAMHIUfdRsIvW7jMV9nE7x8Hrw>
+ <xmx:o1hoXrVjRku8AwyWmYO0iMwZ51L9dICuSIv63yN3yZQSPxOSyWBYxg>
+ <xmx:pFhoXrIdJdSGK1Dh7-0w7wkFolMYiM2ibdevR8DbGPFC5QjW7P7na5qWUJU>
+Received: from workstation (ae074168.dynamic.ppp.asahi-net.or.jp [14.3.74.168])
+ by mail.messagingengine.com (Postfix) with ESMTPA id 7370B328005A;
+ Tue, 10 Mar 2020 23:18:56 -0400 (EDT)
+Date: Wed, 11 Mar 2020 12:18:54 +0900
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: Jules Irenge <jbi.octave@gmail.com>
+Subject: Re: [PATCH 8/8] ALSA: firewire-tascam: Add missing annotation for
+ tscm_hwdep_read_locked()
+Message-ID: <20200311031853.GA8197@workstation>
+Mail-Followup-To: Jules Irenge <jbi.octave@gmail.com>, boqun.feng@gmail.com,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, Clemens Ladisch <clemens@ladisch.de>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Alexios Zavras <alexios.zavras@intel.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Allison Randal <allison@lohutok.net>,
+ "moderated list:FIREWIRE AUDIO DRIVERS and IEC 61883-1/6 PACKET..."
+ <alsa-devel@alsa-project.org>
+References: <0/8> <20200311010908.42366-1-jbi.octave@gmail.com>
+ <20200311010908.42366-9-jbi.octave@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200311010908.42366-9-jbi.octave@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: "moderated list:FIREWIRE AUDIO DRIVERS and IEC 61883-1/6 PACKET..."
+ <alsa-devel@alsa-project.org>, netdev@vger.kernel.org, boqun.feng@gmail.com,
+ Takashi Iwai <tiwai@suse.com>, Clemens Ladisch <clemens@ladisch.de>,
+ linux-kernel@vger.kernel.org, Alexios Zavras <alexios.zavras@intel.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, bpf@vger.kernel.org,
+ Thomas Gleixner <tglx@linutronix.de>, Allison Randal <allison@lohutok.net>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,51 +138,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi,
 
-Hi Pierre-Louis
-
-Thank you for your review
-
-> The max() used between all cpu or codec dais for the same dailink is
-> largely defensive programming, in practice it's not clear to me if we
-> have different delays reported by differents codec or cpu_dais. I
-> would expect all cpu dais in the same dailink to report the same
-> delay, and likewise all codecs dais in the same dailink should provide
-> the same value.
+On Wed, Mar 11, 2020 at 01:09:08AM +0000, Jules Irenge wrote:
+> Sparse reports a warning at tscm_hwdep_read_locked()
 > 
-> Now doing a max between cpu and codec dais does not seem right to
-> me. You may have a delay in a DSP and a delay in a codec, and worst
-> case the delay is the total of the two. It wouldn't matter too much
-> with a 'simple' codec with limited buffering, but the moment the codec
-> itself has a DSP and internal buffering this change in accounting
-> would introduce a real offset.
-(snip)
-> > -	for_each_rtd_cpu_dais(rtd, i, cpu_dai) {
-> > -		cpu_delay = max(cpu_delay,
-> > -				snd_soc_dai_delay(cpu_dai, substream));
-> > -	}
-> > -	delay += cpu_delay;
-> > -
-> > -	for_each_rtd_codec_dais(rtd, i, codec_dai) {
-> > -		codec_delay = max(codec_delay,
-> > -				  snd_soc_dai_delay(codec_dai, substream));
-> > -	}
-> > -	delay += codec_delay;
-> > +	for_each_rtd_dais(rtd, i, dai)
-> > +		add_delay = max(add_delay,
-> > +				snd_soc_dai_delay(dai, substream));
-> >   -	runtime->delay = delay;
-> > +	/* base delay if assigned in pointer callback */
-> > +	runtime->delay += add_delay;
-> >     	return offset;
+> warning: context imbalance in tscm_hwdep_read_locked() - unexpected unlock
+> 
+> The root cause is the missing annotation at tscm_hwdep_read_locked()
+> Add the missing __releases(&tscm->lock) annotation
+> 
+> Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
+> ---
+>  sound/firewire/tascam/tascam-hwdep.c | 1 +
+>  1 file changed, 1 insertion(+)
 
-Hmm.. ? Indeed...
-Why I merged these ??
-Thank you for pointing it. This patch is indeed wrong.
-Will remove it in v2.
+Thanks for your care of the warning. Although I have found it, I had
+no idea to suppress it.
 
-Thank you for your help !!
+Acked-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-Best regards
----
-Kuninori Morimoto
+> diff --git a/sound/firewire/tascam/tascam-hwdep.c b/sound/firewire/tascam/tascam-hwdep.c
+> index 9801e33e7f2a..6f38335fe10b 100644
+> --- a/sound/firewire/tascam/tascam-hwdep.c
+> +++ b/sound/firewire/tascam/tascam-hwdep.c
+> @@ -17,6 +17,7 @@
+>  
+>  static long tscm_hwdep_read_locked(struct snd_tscm *tscm, char __user *buf,
+>  				   long count, loff_t *offset)
+> +	__releases(&tscm->lock)
+>  {
+>  	struct snd_firewire_event_lock_status event = {
+>  		.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS,
+> -- 
+> 2.24.1
+> 
