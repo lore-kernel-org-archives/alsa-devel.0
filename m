@@ -2,79 +2,80 @@ Return-Path: <SRS0=OXo6=44=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 783E9C10F27
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 14:30:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A39FC10F27
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 14:53:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3A82A204FD
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 14:30:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 917602072F
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 14:53:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mkGW85sf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3A82A204FD
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JPsno7cz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 917602072F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 210EA846;
-	Wed, 11 Mar 2020 15:29:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 210EA846
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0650D846;
+	Wed, 11 Mar 2020 15:52:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0650D846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583937027;
-	bh=KpFQiwEfVni0aD4eDOB1DyejnNl3GMDacXlsVqCtV2I=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1583938404;
+	bh=wg8NrmVjhCmd4gTSsQqyrN/28Z7FcfYM0TUbC4KWzoM=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mkGW85sfw660/ODl2s4ov0RydboADPFKVlseIcNxpAwcAttj//qNkl6ac92Vimt1O
-	 iHlj5IRaKri7BANjmgxb5PJ15l9SlKHdjZqHK1cp468uJKNj5mbK7gPmuUhmsfaZit
-	 6wP6aNVD62mJExCPFq1/thbQpL7SZhFFbgq7VYH0=
+	b=JPsno7czq/U5GLqugtuuif4QXLJqHizkeq0EIQJ92d5Hq7N2//1E94VP9haf0t9RJ
+	 KcAjSvw/u1SVcX0HJlGfhj12QuXN6/7Z9wq5dYnKMgYWUDCXT5wZZUh4sTf8PPEhCz
+	 woiKU93EdCuLo+nKgZCsyJJSDJTuNdL84qccWlIU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 802ACF800BE;
-	Wed, 11 Mar 2020 15:29:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 84602F801A3;
+	Wed, 11 Mar 2020 15:52:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4B497F801EB; Wed, 11 Mar 2020 15:29:32 +0100 (CET)
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net
- [217.70.183.195])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 0055FF80217; Wed, 11 Mar 2020 15:52:29 +0100 (CET)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5B8C0F800BE
- for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2020 15:29:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B8C0F800BE
-X-Originating-IP: 90.89.41.158
-Received: from xps13 (lfbn-tou-1-1473-158.w90-89.abo.wanadoo.fr [90.89.41.158])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 9615760009;
- Wed, 11 Mar 2020 14:29:23 +0000 (UTC)
-Date: Wed, 11 Mar 2020 15:29:22 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [PATCH -next 013/491] INGENIC JZ47xx SoCs: Use fallthrough;
-Message-ID: <20200311152922.2dc56137@xps13>
-In-Reply-To: <CAPDyKFo2UensmH_gYkH+u22bs=K9Xn0q3Dr9v6tq6GPNRg_Lew@mail.gmail.com>
-References: <cover.1583896344.git.joe@perches.com>
- <ad408ff8dc4e5fae0884312cb0aa618664e546e5.1583896348.git.joe@perches.com>
- <20200311084052.3ca3c331@xps13>
- <CAPDyKFo2UensmH_gYkH+u22bs=K9Xn0q3Dr9v6tq6GPNRg_Lew@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4DFB6F801EB
+ for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2020 15:52:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4DFB6F801EB
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 11 Mar 2020 07:52:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,541,1574150400"; d="scan'208";a="242703777"
+Received: from psingh6-mobl.amr.corp.intel.com (HELO [10.251.23.209])
+ ([10.251.23.209])
+ by orsmga003.jf.intel.com with ESMTP; 11 Mar 2020 07:52:22 -0700
+Subject: Re: [alsa-devel] [PATCH 3/6] ASoC: Intel: common: add match tables
+ for ICL w/ SoundWire
+To: Vinod Koul <vkoul@kernel.org>, Jaroslav Kysela <perex@perex.cz>
+References: <20200110222530.30303-1-pierre-louis.bossart@linux.intel.com>
+ <20200110222530.30303-4-pierre-louis.bossart@linux.intel.com>
+ <d5e15895-7d10-7255-692c-c5c89d3ae1be@perex.cz>
+ <b49c010b-5b90-4ad6-58b8-9e43f9fc949f@linux.intel.com>
+ <e8df8119-d88b-69b7-fd7a-890f1eb06dbf@perex.cz>
+ <20200311090706.GJ4885@vkoul-mobl>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <5195f1e1-45c9-7b24-2f78-212093976dba@linux.intel.com>
+Date: Wed, 11 Mar 2020 09:47:15 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: alsa-devel@alsa-project.org, Vignesh Raghavendra <vigneshr@ti.com>,
- David Airlie <airlied@linux.ie>, Richard Weinberger <richard@nod.at>,
- Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
- "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>,
- dri-devel <dri-devel@lists.freedesktop.org>,
- Paul Cercueil <paul@crapouillou.net>, Harvey Hunt <harveyhuntnexus@gmail.com>,
- linux-mtd@lists.infradead.org, Daniel Vetter <daniel@ffwll.ch>,
- Joe Perches <joe@perches.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200311090706.GJ4885@vkoul-mobl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,46 +92,70 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Ulf Hansson <ulf.hansson@linaro.org> wrote on Wed, 11 Mar 2020 15:20:59
-+0100:
 
-> On Wed, 11 Mar 2020 at 08:40, Miquel Raynal <miquel.raynal@bootlin.com> w=
-rote:
-> >
-> > Hi Joe,
-> >
-> > Joe Perches <joe@perches.com> wrote on Tue, 10 Mar 2020 21:51:27 -0700:
-> > =20
-> > > Convert the various uses of fallthrough comments to fallthrough;
-> > >
-> > > Done via script
-> > > Link: https://lore.kernel.org/lkml/b56602fcf79f849e733e7b521bb0e17895=
-d390fa.1582230379.git.joe.com/
-> > >
-> > > Signed-off-by: Joe Perches <joe@perches.com>
-> > > ---
-> > >  drivers/gpu/drm/ingenic/ingenic-drm.c           | 2 +-
-> > >  drivers/mmc/host/jz4740_mmc.c                   | 6 ++----
-> > >  drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c | 2 +-
-> > >  drivers/mtd/nand/raw/ingenic/jz4725b_bch.c      | 4 ++--
-> > >  drivers/mtd/nand/raw/ingenic/jz4780_bch.c       | 4 ++--
-> > >  sound/soc/codecs/jz4770.c                       | 2 +-
-> > >  6 files changed, 9 insertions(+), 11 deletions(-) =20
-> >
-> > I like very much the new way to advertise for fallthrough statements,
-> > but I am not willing to take any patch converting a single driver
-> > anymore. I had too many from Gustavo when these comments had to be
-> > inserted. I would really prefer a MTD-wide or a NAND-wide or at least a
-> > raw-NAND-wide single patch (anything inside drivers/mtd/nand/raw/).
-> >
-> > Hope you'll understand! =20
->=20
-> I fully agree (for mmc). One patch please.
->=20
-> Another option is to make a big fat tree wide patch and ask Linus if
-> he want to pick up immediately after an rc1. That should cause less
-> disturbance for everyone, no?
+On 3/11/20 4:07 AM, Vinod Koul wrote:
+> On 11-03-20, 07:39, Jaroslav Kysela wrote:
+>> Dne 11. 03. 20 v 2:35 Pierre-Louis Bossart napsal(a):
+>>>
+>>>
+>>> On 3/10/20 5:12 PM, Jaroslav Kysela wrote:
+>>>> Dne 10. 01. 20 v 23:25 Pierre-Louis Bossart napsal(a):
+>>>>> From: Bard Liao <yung-chuan.liao@linux.intel.com>
+>>>>>
+>>>>> The two configurations are with the Realtek 3-in-1 board requiring all
+>>>>> 4 links to be enabled, or basic configuration with the on-board RT700
+>>>>> using link0.
+>>>>>
+>>>>> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+>>>>> Signed-off-by: Pierre-Louis Bossart
+>>>>> <pierre-louis.bossart@linux.intel.com>
+>>>>
+>>>> Hi,
+>>>>
+>>>>      I just looking to this code and I miss the Kconfig selection for RT
+>>>> codecs in the SOF SDW driver. How we can enable this driver without
+>>>> selecting SND_SOC_ALL_CODECS ?
+>>>>
+>>>>      I believe that those changes should be in sync with the machine
+>>>> description.
+>>>
+>>> Sorry Jaroslav, I don't fully understand your question.
+>>>
+>>> These tables are just used to
+>>> a) select a firmware file
+>>> b) select a topology file
+>>> c) select a machine driver.
+>>>
+>>> The codec selections are not made in this module but handled by the
+>>> machine drivers in sound/soc/intel/boards/. It's the same mechanism as
+>>> for all other machine drivers.
+>>>
+>>> One caveat is that the SOF parts and machine drivers for SoundWire have
+>>> not been provided upstream just yet, since they would not build without
+>>> patches in drivers/soundwire. GregKH mentioned the patches are 'sane'
+>>> and provided his Reviewed-by tag. Vinod Koul still has objections to our
+>>> proposals but has yet to make proposals that would work for Intel, so if
+>>> you need SoundWire support in the near-term you will need to have a
+>>> conversation with Vinod. The code is ready and fully-tested.
+>>>
+>>> If you want to look at the machine drivers for SOF+Realtek drivers, see
+>>>
+>>> https://github.com/thesofproject/linux/blob/topic/sof-dev/sound/soc/intel/boards/sdw_rt711_rt1308_rt715.c
+>>>
+>>> and the Kconfig that selects the relevant codec drivers is here:
+>>>
+>>> https://github.com/thesofproject/linux/blob/d05959d5021cefbbd841773ee25f6c7387e6bfd9/sound/soc/intel/boards/Kconfig#L556
+>>
+>> Ohh, it explains all. I was looking for the 'select SND_SOC_RT711_SDW' lines
+>> in Kconfig. It's really bad to merge those pieces randomly to the ASoC tree,
+>> because this code in the patch is dead without the machine driver code.
+>>
+>> Vinod, any ETA? It seems that the Intel's soundwire hardware is reaching the
+>> market.
+> 
+> That would be question for Pierre, I no longer work for Intel.
 
-Absolutely.
+We don't discuss product schedules or releases here.
 
-Miqu=C3=A8l
+The question was "any ETA to start merging Intel patches"...
+
