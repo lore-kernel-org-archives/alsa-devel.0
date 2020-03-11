@@ -2,65 +2,95 @@ Return-Path: <SRS0=OXo6=44=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BCF7C2BB1D
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 18:01:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64DB8C0044D
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 18:05:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DD2412073E
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 18:01:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ADC8220691
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 18:05:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pcZJQYcQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DD2412073E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MCvPYtP7";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="M3bjxGks"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ADC8220691
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6C5F41655;
-	Wed, 11 Mar 2020 19:00:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C5F41655
+	by alsa0.perex.cz (Postfix) with ESMTPS id 54BE81667;
+	Wed, 11 Mar 2020 19:04:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 54BE81667
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583949662;
-	bh=13eyCeRbfnL23xSG0aEnKEidDw3DEzplrT4cMv4eihQ=;
-	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=pcZJQYcQEvEsuxASVtYQPGfUHY5uDlnIAwTE3fqeJZFfFliRRgQA/gLmfxMyO6bqm
-	 KGgWUcwsSeS00uUo0HiIffSm7vGA9hRUuHVOxRTvHHHe3J5ModBlGiWRGmMwPI3iI+
-	 5eAufdRrznUDh9R5hnoKtZgd22gb2aMgTidEaxxI=
+	s=default; t=1583949939;
+	bh=qNurTMPC8PWr0BcgKD2a4f9yE6iL5Busk0QPdltjBgQ=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=MCvPYtP727FjSwTFVYXwJQlPkobvVECXS1UbhHuDhB9uxgOj0KU1y32/aKJuHFTN4
+	 k0WPXDteMYN0VdDy4SU/K/O5+T5E0SrDfI6MeP73AtCo+6M4TzcOuzMaFNr4eoxLsa
+	 AEHQ0HPNrlp2as+Winhfh5WgP0RXXHjCFw11Z7ik=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B8B06F800B5;
-	Wed, 11 Mar 2020 19:00:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 820C6F800BE;
+	Wed, 11 Mar 2020 19:04:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7F3FBF801EB; Wed, 11 Mar 2020 19:00:07 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 9A4E0F800BE
- for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2020 19:00:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A4E0F800BE
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4DC541FB;
- Wed, 11 Mar 2020 11:00:01 -0700 (PDT)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C495F3F6CF;
- Wed, 11 Mar 2020 11:00:00 -0700 (PDT)
-Date: Wed, 11 Mar 2020 17:59:59 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Olivier Moysan <olivier.moysan@st.com>
-Subject: Applied "ASoC: dt-bindings: stm32: convert spdfirx to json-schema" to
- the asoc tree
-In-Reply-To: <20200117170352.16040-1-olivier.moysan@st.com>
-Message-Id: <applied-20200117170352.16040-1-olivier.moysan@st.com>
-X-Patchwork-Hint: ignore
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com,
- robh@kernel.org, tiwai@suse.com, lgirdwood@gmail.com,
- linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- mcoquelin.stm32@gmail.com, linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org
+ id 6014AF801F7; Wed, 11 Mar 2020 19:04:46 +0100 (CET)
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com
+ [IPv6:2a00:1450:4864:20::442])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A12D8F800B5
+ for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2020 19:04:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A12D8F800B5
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="M3bjxGks"
+Received: by mail-wr1-x442.google.com with SMTP id v11so3836392wrm.9
+ for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2020 11:04:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=uSWL2FmY7zpKu733UysN5ObefdtHGdo1xnjVfRmXsfs=;
+ b=M3bjxGksxSB2uD4exfypPyvoUCoNhuYHVu0Z7MqkcbU24JUr39s/S5w2HTfIBfk8Gt
+ qvyGcxu9THPrvu/aO9SGE5ImXArh3scmpeWqi7SwDUsnUKyiSePi2qxnIhWu2eR0N40D
+ jP9cTxfo/cMkuwroo9gS3LZzbkIEzd3rU8wGYX0ygDWBuKI6fwLXlz/xtgJ/aQqFt+Q1
+ wdkU4M+LdGcUDA4KdxkDA4pt48DMP7F0FLVJLgJ/doKJcBQ4rVy8quGpLLbWnyFM5viI
+ HtLbFbgQb9/ku1o3OmTW6d4p76eqt/6x1eO/WjPqZ4DCDHjVdvyxmQSAFxJVp5a2W+S+
+ sMOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=uSWL2FmY7zpKu733UysN5ObefdtHGdo1xnjVfRmXsfs=;
+ b=hFZvjCUWoOS/APH6vPTosP0Z4bbvLiiGsbFxi3Kl13JWGYV9he7aDSYjd2m78YFILJ
+ 4u2xGytNID/fCnth085ulBb8gAsLz1DZRJcBwGP1vIz0xB2rbXqO1nhWTwsx/Yo+FjX8
+ te9oGXhBTKNtOGCNsiTm7ClKqm/9ginsUjdIcJMn6xlindU5fH6uPkAVsYBzDkhe2QmS
+ b0g0mwQdLRxeMo/Zmh4f66YpcF2o1uPRWkXxpIGtpDUc5EsR6Bp9xYeTlVJBDgturWsG
+ 5dhGW4zPFVIq/P+xmtJ/Cco0CIxFM226OGMFwbc11TZo6Oqi2VPOAS7G090IUynjeSiT
+ 67JA==
+X-Gm-Message-State: ANhLgQ2unsLwDi8bGetOaJM4gLNhtVZbzWGxeR/S+nI2gdCelowOGPpE
+ 6j+OzcLh2hL89cIcNgUVSHhaag==
+X-Google-Smtp-Source: ADFU+vvWK8hKheKVDZ1BgJb12Z0r9+RePhfmT1iLPBixkKd5N5IR5u2BasLAy4m4UbOiD5vTW3YbfQ==
+X-Received: by 2002:adf:f044:: with SMTP id t4mr5493484wro.287.1583949882618; 
+ Wed, 11 Mar 2020 11:04:42 -0700 (PDT)
+Received: from srini-hackbox.lan
+ (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
+ by smtp.gmail.com with ESMTPSA id z11sm8997840wmd.47.2020.03.11.11.04.40
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 11 Mar 2020 11:04:40 -0700 (PDT)
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: broonie@kernel.org
+Subject: [PATCH 0/2] ASoC: qdsp6: fix default FE dais and routings.
+Date: Wed, 11 Mar 2020 18:04:20 +0000
+Message-Id: <20200311180422.28363-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,199 +106,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
+QDSP6 Frontend dais can be configured to work in rx or tx or both rx/tx mode,
+however the default routing do not honour this DT configuration making sound
+card fail to probe. FE dais are also not fully honouring device tree configuration.
+Fix both of them.
 
-   ASoC: dt-bindings: stm32: convert spdfirx to json-schema
+Originally  issue was reported by Vinod Koul
 
-has been applied to the asoc tree at
+Srinivas Kandagatla (2):
+  ASoC: qdsp6: q6asm-dai: only enable dais from device tree
+  ASoC: qdsp6: q6routing: remove default routing
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+ sound/soc/qcom/qdsp6/q6asm-dai.c | 30 +++++++++++++++++++++++-------
+ sound/soc/qcom/qdsp6/q6routing.c | 19 -------------------
+ 2 files changed, 23 insertions(+), 26 deletions(-)
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From 9032cdd96a2d4b0ef2f43499328f8a68050be2ec Mon Sep 17 00:00:00 2001
-From: Olivier Moysan <olivier.moysan@st.com>
-Date: Fri, 17 Jan 2020 18:03:52 +0100
-Subject: [PATCH] ASoC: dt-bindings: stm32: convert spdfirx to json-schema
-
-Convert the STM32 SPDIFRX bindings to DT schema format using json-schema.
-
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Link: https://lore.kernel.org/r/20200117170352.16040-1-olivier.moysan@st.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- .../bindings/sound/st,stm32-spdifrx.txt       | 56 -------------
- .../bindings/sound/st,stm32-spdifrx.yaml      | 80 +++++++++++++++++++
- 2 files changed, 80 insertions(+), 56 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/st,stm32-spdifrx.txt
- create mode 100644 Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml
-
-diff --git a/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.txt b/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.txt
-deleted file mode 100644
-index 33826f2459fa..000000000000
---- a/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.txt
-+++ /dev/null
-@@ -1,56 +0,0 @@
--STMicroelectronics STM32 S/PDIF receiver (SPDIFRX).
--
--The SPDIFRX peripheral, is designed to receive an S/PDIF flow compliant with
--IEC-60958 and IEC-61937.
--
--Required properties:
--  - compatible: should be "st,stm32h7-spdifrx"
--  - reg: cpu DAI IP base address and size
--  - clocks: must contain an entry for kclk (used as S/PDIF signal reference)
--  - clock-names: must contain "kclk"
--  - interrupts: cpu DAI interrupt line
--  - dmas: DMA specifiers for audio data DMA and iec control flow DMA
--    See STM32 DMA bindings, Documentation/devicetree/bindings/dma/stm32-dma.txt
--  - dma-names: two dmas have to be defined, "rx" and "rx-ctrl"
--
--Optional properties:
--  - resets: Reference to a reset controller asserting the SPDIFRX
--
--The device node should contain one 'port' child node with one child 'endpoint'
--node, according to the bindings defined in Documentation/devicetree/bindings/
--graph.txt.
--
--Example:
--spdifrx: spdifrx@40004000 {
--	compatible = "st,stm32h7-spdifrx";
--	reg = <0x40004000 0x400>;
--	clocks = <&rcc SPDIFRX_CK>;
--	clock-names = "kclk";
--	interrupts = <97>;
--	dmas = <&dmamux1 2 93 0x400 0x0>,
--	       <&dmamux1 3 94 0x400 0x0>;
--	dma-names = "rx", "rx-ctrl";
--	pinctrl-0 = <&spdifrx_pins>;
--	pinctrl-names = "default";
--
--	spdifrx_port: port {
--		cpu_endpoint: endpoint {
--			remote-endpoint = <&codec_endpoint>;
--		};
--	};
--};
--
--spdif_in: spdif-in {
--	compatible = "linux,spdif-dir";
--
--	codec_port: port {
--		codec_endpoint: endpoint {
--			remote-endpoint = <&cpu_endpoint>;
--		};
--	};
--};
--
--soundcard {
--	compatible = "audio-graph-card";
--	dais = <&spdifrx_port>;
--};
-diff --git a/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml b/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml
-new file mode 100644
-index 000000000000..b7f7dc452231
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml
-@@ -0,0 +1,80 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/st,stm32-spdifrx.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: STMicroelectronics STM32 S/PDIF receiver (SPDIFRX)
-+
-+maintainers:
-+  - Olivier Moysan <olivier.moysan@st.com>
-+
-+description: |
-+  The SPDIFRX peripheral, is designed to receive an S/PDIF flow compliant with
-+  IEC-60958 and IEC-61937.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - st,stm32h7-spdifrx
-+
-+  "#sound-dai-cells":
-+    const: 0
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  clock-names:
-+    items:
-+      - const: kclk
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  dmas:
-+    items:
-+      - description: audio data capture DMA
-+      - description: IEC status bits capture DMA
-+
-+  dma-names:
-+    items:
-+      - const: rx
-+      - const: rx-ctrl
-+
-+  resets:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - "#sound-dai-cells"
-+  - reg
-+  - clocks
-+  - clock-names
-+  - interrupts
-+  - dmas
-+  - dma-names
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/clock/stm32mp1-clks.h>
-+    spdifrx: spdifrx@40004000 {
-+        compatible = "st,stm32h7-spdifrx";
-+        #sound-dai-cells = <0>;
-+        reg = <0x40004000 0x400>;
-+        clocks = <&rcc SPDIF_K>;
-+        clock-names = "kclk";
-+        interrupts = <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>;
-+        dmas = <&dmamux1 2 93 0x400 0x0>,
-+               <&dmamux1 3 94 0x400 0x0>;
-+        dma-names = "rx", "rx-ctrl";
-+        pinctrl-0 = <&spdifrx_pins>;
-+        pinctrl-names = "default";
-+    };
-+
-+...
 -- 
-2.20.1
+2.21.0
 
