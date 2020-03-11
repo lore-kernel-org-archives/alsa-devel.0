@@ -2,77 +2,91 @@ Return-Path: <SRS0=OXo6=44=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 12747C10F25
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 06:43:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AE9E5C10F25
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 06:46:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 91AE821655
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 06:43:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3B6472192A
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 06:46:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="V3oJDX6n";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="M26G4X0U"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 91AE821655
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="D26xR406";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="P1oqWI0b"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3B6472192A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E61711612;
-	Wed, 11 Mar 2020 07:42:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E61711612
+	by alsa0.perex.cz (Postfix) with ESMTPS id 703DB886;
+	Wed, 11 Mar 2020 07:45:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 703DB886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583909029;
-	bh=LI8rbNA8wJc83S2WR1/sE0Ht53AWmB5tHGMzGWEUODg=;
+	s=default; t=1583909207;
+	bh=xz+sZJFmubD4ssEsM3A90XjoRD6psOOwHmjKnsrsbRM=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=V3oJDX6nlT8gJEypOZYGWbFGHL36rawj0CxKgq8xrKm9VMn9L6gGBDmg5DcJNKyCY
-	 JZDQ/MdY4xyoZWvr6NSOheAH6Y+5TJIU0rzRO5hzP+BEjIFsWbeDHzpZDcn9+quozf
-	 Ss2vI0YuakgU9fjqAFPswgzDzC+hxEwYlVIacXts=
+	b=D26xR4063M2TtojeqTIhc4zoJGXG49hg6TGHeE27aK6efltogM1CXuCvloom11pxP
+	 F1I0xOvLmENPxu7fuMaVPtKh6XSuoumrw4f1Q4lHy9ATxbLmx/c6L030nFYuo3+WcG
+	 5E9tB0GxIxkvKGbrUP1GH8lwyJs5//QTBTOy7Ops=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 64D71F801A3;
-	Wed, 11 Mar 2020 07:42:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DA8B7F80141;
+	Wed, 11 Mar 2020 07:45:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C8FB8F801EB; Wed, 11 Mar 2020 07:42:56 +0100 (CET)
+ id 83B2AF801EB; Wed, 11 Mar 2020 07:45:55 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EDB54F800B5
- for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2020 07:42:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EDB54F800B5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 41349F80141
+ for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2020 07:45:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41349F80141
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="M26G4X0U"
+ header.b="P1oqWI0b"
 Received: from localhost (unknown [106.201.105.99])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 75C1821655;
- Wed, 11 Mar 2020 06:42:50 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id C8FE2208C4;
+ Wed, 11 Mar 2020 06:36:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1583908971;
- bh=LI8rbNA8wJc83S2WR1/sE0Ht53AWmB5tHGMzGWEUODg=;
+ s=default; t=1583908610;
+ bh=xz+sZJFmubD4ssEsM3A90XjoRD6psOOwHmjKnsrsbRM=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=M26G4X0UgwEGh4VvB4h8EhSAmXLwIUI3RrvAC1rXFaHYjFSmydS6eC2mH78OUax1D
- NiPWOlTwLO1RKZs61ALXNh6VG6oFv3Xm5RNq3boFdB2WKh7n1h7cBr8fW21JQFkkQ7
- 87pnEdS5lWLdqmfV+/o4dTszFH+1ouannbTnzC2Y=
-Date: Wed, 11 Mar 2020 12:12:43 +0530
+ b=P1oqWI0bB64jxOIKXemfToG1CvrCaC6br86A0kjyJxQhPHifa7j2i9ugHhLGczlyo
+ DPtJBSxqsush0+l/FD/Jlvdk9DM9kDk6X37pe3phnpMGJ0eByGOfBxisXuo70PzBxX
+ +LSeueSF3WTfjkpcVDO1HuyZLHg6rx2tp//ZoDmI=
+Date: Wed, 11 Mar 2020 12:06:45 +0530
 From: Vinod Koul <vkoul@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [RFC PATCH] soundwire: bus: Add flag to mark DPN_BlockCtrl1 as
- readonly
-Message-ID: <20200311064243.GI4885@vkoul-mobl>
-References: <20200309173755.955-1-srinivas.kandagatla@linaro.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 1/8] soundwire: bus_type: add master_device/driver support
+Message-ID: <20200311063645.GH4885@vkoul-mobl>
+References: <20200227223206.5020-1-pierre-louis.bossart@linux.intel.com>
+ <20200227223206.5020-2-pierre-louis.bossart@linux.intel.com>
+ <20200303054136.GP4148@vkoul-mobl>
+ <8a04eda6-cbcf-582f-c229-5d6e4557344b@linux.intel.com>
+ <20200304095312.GT4148@vkoul-mobl>
+ <05dbe43c-abf8-9d5a-d808-35bf4defe4ba@linux.intel.com>
+ <20200305063646.GW4148@vkoul-mobl>
+ <eb30ac49-788f-b856-6fcf-84ae580eb3c8@linux.intel.com>
+ <20200306050115.GC4148@vkoul-mobl>
+ <4fabb135-6fbb-106f-44fd-8155ea716c00@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200309173755.955-1-srinivas.kandagatla@linaro.org>
-Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
- linux-kernel@vger.kernel.org
+In-Reply-To: <4fabb135-6fbb-106f-44fd-8155ea716c00@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
+ linux-kernel@vger.kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Hui Wang <hui.wang@canonical.com>, broonie@kernel.org,
+ srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
+ Sanyog Kale <sanyog.r.kale@intel.com>,
+ Bard liao <yung-chuan.liao@linux.intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,57 +102,75 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 09-03-20, 17:37, Srinivas Kandagatla wrote:
-> According to SoundWire Specification Version 1.2.
-> "A Data Port number X (in the range 0-14) which supports only one
-> value of WordLength may implement the WordLength field in the
-> DPX_BlockCtrl1 Register as Read-Only, returning the fixed value of
-> WordLength in response to reads."
+On 06-03-20, 09:40, Pierre-Louis Bossart wrote:
+> > > > Why do you need a extra driver for this. Do you have another set of
+> > > > device object and driver for DSP code? But you do manage that, right?
+> > > > I am proposing to simplify the device model here and have only one
+> > > > device (SOF PCI) and driver (SOF PCI driver), which is created by actual
+> > > > bus (PCI here) as you have in rest of the driver like HDA, DSP etc.
+> > > > 
+> > > > I have already recommended is to make the int-sdw a module which is
+> > > > invoked by SOF PCI driver code (thereby all code uses SOF PCI device and
+> > > > SOF PCI driver) directly. The DSP in my time for skl was a separate
+> > > > module but used the parent objects.
+> > > > 
+> > > > The SOF sdw init (the place where sdw routines are invoked after DSP
+> > > > load) can call sdw_probe and startup. Based on DSP sequencing you can
+> > > > call these functions directly without waiting for extra device to be
+> > > > probed etc.
+> > > > 
+> > > > I feel your flows will be greatly simplified as a result of this.
+> > > 
+> > > Not at all, no. This is not a simplification but an extremely invasive
+> > > proposal.
+> > > 
+> > > The parent-child relationship is extremely useful for power management, and
+> > > guarantees that the PCI device remains on while one or more of the masters
+> > > are used, and conversely can suspend when all links are idle. I currently
+> > > don't need to do anything, it's all taken care of by the framework.
+> > > 
+> > > If I have to do all the power management at the PCI device level, then I
+> > > will need to keep track of which links are currently active. All these links
+> > > are used independently, so it's racy as hell to keep track of the usage when
+> > > the pm framework already does so quite elegantly. You really want to use the
+> > > pm_runtime_get/put refcount for each master device, not manage them from the
+> > > PCI level.
+> > 
+> > Not at all, you still can call pm_runtime_get/put() calls in sdw module
+> > for PCI device. That doesn't change at all.
+> > 
+> > Only change is for suspend/resume you have callbacks from PCI driver
+> > rather than pm core.
+> There are two other related issues that you didn't mention.
 > 
-> As WSA881x interfaces in PDM mode making the only field "WordLength"
-> in DPX_BlockCtrl1" fixed and read-only. Behaviour of writing to this
-> register on WSA881x soundwire slave with Qualcomm Soundwire Controller
-> is throwing up an error. Not sure how other controllers deal with
-> writing to readonly registers, but this patch provides a way to avoid
-> writes to DPN_BlockCtrl1 register by providing a ro_blockctrl1_reg
-> flag in struct sdw_port_runtime.
+> the ASoC layer does require a driver with a 'name' for the components
+> registered with the master device. So if you don't have a driver for the
+> master device, the DAIs will be associated with the PCI device.
 > 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
+> But the ASoC core does make pm_runtime calls on its own,
 > 
-> I will send patch for WSA881x to include this change once this patch
-> is accepted.
+> soc_pcm_open(struct snd_pcm_substream *substream)
+> {
+> ...
+> 	for_each_rtd_components(rtd, i, component)
+> 		pm_runtime_get_sync(component->dev);
 > 
->  drivers/soundwire/bus.h    |  2 ++
->  drivers/soundwire/stream.c | 17 ++++++++++-------
->  2 files changed, 12 insertions(+), 7 deletions(-)
+> and if the device that's associated with the DAI is the PCI device, then
+> that will not result in the relevant master IP being activated, only the PCI
+> device refcount will be increased - meaning there is no hook that would tell
+> the PCI layer to turn on a specific link.
 > 
-> diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
-> index 204204a26db8..791e8d14093e 100644
-> --- a/drivers/soundwire/bus.h
-> +++ b/drivers/soundwire/bus.h
-> @@ -79,6 +79,7 @@ int sdw_find_col_index(int col);
->   * @num: Port number. For audio streams, valid port number ranges from
->   * [1,14]
->   * @ch_mask: Channel mask
-> + * @ro_blockctrl1_reg: Read Only flag for DPN_BlockCtrl1 register
->   * @transport_params: Transport parameters
->   * @port_params: Port parameters
->   * @port_node: List node for Master or Slave port_list
-> @@ -89,6 +90,7 @@ int sdw_find_col_index(int col);
->  struct sdw_port_runtime {
->  	int num;
->  	int ch_mask;
-> +	bool ro_blockctrl1_reg;
+> What you are recommending would be an all-or-nothing solution with all links
+> on or all links off, which beats the purpose of having independent
+> link-level power management.
 
-Let us use properties for this so it should be added in struct
-sdw_dpn_prop or struct sdw_slave_prop (I dont think that we would have
-different properties for each DPn when we are dealing with these simple
-codecs)
+Why can't you use dai .startup callback for this?
 
-Also the property should not have mipi tag as this is not in DiSCo spec
-(yet), so I would suggest sdw_ro_wordlen for this.
+The ASoC core will do pm_runtime calls that will ensure PCI device is
+up, DSP firmware downloaded and running.
 
-Thanks
+You can use .startup() to turn on your link and .shutdown to turn off
+the link.
+
 -- 
 ~Vinod
