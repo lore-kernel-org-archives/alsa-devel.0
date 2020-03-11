@@ -6,85 +6,72 @@ X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 29EB1C10F27
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 14:54:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E035C18E5A
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 14:55:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8756D20650
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 14:54:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C2CE220650
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 14:55:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MwbQqRDI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8756D20650
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bb1LcxoU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C2CE220650
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DA5D91667;
-	Wed, 11 Mar 2020 15:53:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA5D91667
+	by alsa0.perex.cz (Postfix) with ESMTPS id 15DCC1671;
+	Wed, 11 Mar 2020 15:54:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 15DCC1671
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583938457;
-	bh=n4xKY8L75e2VWhGkF7cHX7zF/WcA79ybj6E5sdAb/Cs=;
+	s=default; t=1583938505;
+	bh=FSRW3Kil8kEzINVyihS6mFj/AQWMAUt0FDqlB9L+2oU=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MwbQqRDIr15hfCd+N0ml2upODNSqPHNUL7YVx3khNk/UMYB4cncT928FgToK8J2p+
-	 lWyRxiA1z/HcyPlbhezwGug9hjAQnR2l4clv5PpekM434qIVrc+aCtEDmYpUUS3qGJ
-	 vNja/gUa+f/j+tKbkKBY2PDUYg/OfIUsZujoERU8=
+	b=bb1LcxoUUbIiF6ASK+Y+9o7NMl4Jj1HjvZlY7edVq6wWcTYhyOLBM7QC/DUeo3imd
+	 842rnrKKYs1z+dJFB+qzLZa29HWALqxqJyltMQtDxEZcUj6cIrd+kczDZq19Q+bAWP
+	 Q2wsLACYtc7qo3i6grIL8mja315LoKnLg4u/FifY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8EBB7F801F7;
-	Wed, 11 Mar 2020 15:52:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B312DF8028B;
+	Wed, 11 Mar 2020 15:52:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8DB02F801F7; Wed, 11 Mar 2020 15:52:30 +0100 (CET)
+ id 2B36EF801EB; Wed, 11 Mar 2020 15:52:32 +0100 (CET)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2E45AF800BE
- for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2020 15:52:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E45AF800BE
+ by alsa1.perex.cz (Postfix) with ESMTPS id E9A35F801A3
+ for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2020 15:52:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9A35F801A3
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 11 Mar 2020 07:52:21 -0700
+ 11 Mar 2020 07:52:24 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,541,1574150400"; d="scan'208";a="242703772"
+X-IronPort-AV: E=Sophos;i="5.70,541,1574150400"; d="scan'208";a="242703781"
 Received: from psingh6-mobl.amr.corp.intel.com (HELO [10.251.23.209])
  ([10.251.23.209])
- by orsmga003.jf.intel.com with ESMTP; 11 Mar 2020 07:52:20 -0700
-Subject: Re: [PATCH 1/8] soundwire: bus_type: add master_device/driver support
-To: Vinod Koul <vkoul@kernel.org>
-References: <20200227223206.5020-1-pierre-louis.bossart@linux.intel.com>
- <20200227223206.5020-2-pierre-louis.bossart@linux.intel.com>
- <20200303054136.GP4148@vkoul-mobl>
- <8a04eda6-cbcf-582f-c229-5d6e4557344b@linux.intel.com>
- <20200304095312.GT4148@vkoul-mobl>
- <05dbe43c-abf8-9d5a-d808-35bf4defe4ba@linux.intel.com>
- <20200305063646.GW4148@vkoul-mobl>
- <eb30ac49-788f-b856-6fcf-84ae580eb3c8@linux.intel.com>
- <20200306050115.GC4148@vkoul-mobl>
- <4fabb135-6fbb-106f-44fd-8155ea716c00@linux.intel.com>
- <20200311063645.GH4885@vkoul-mobl>
+ by orsmga003.jf.intel.com with ESMTP; 11 Mar 2020 07:52:23 -0700
+Subject: Re: [PATCH v2] topology: Add topology file for generic HDA DSP
+ machine driver
+To: "Gorski, Mateusz" <mateusz.gorski@linux.intel.com>,
+ alsa-devel@alsa-project.org
+References: <20200309120944.15240-1-mateusz.gorski@linux.intel.com>
+ <0d2fb996-2668-e53b-ec91-18bf9e27df31@linux.intel.com>
+ <7334e7b6-c4d3-aac3-46d2-b4fbcb0e3957@linux.intel.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <0fafb567-10e5-a1ea-4a6d-b3c53afb215e@linux.intel.com>
-Date: Wed, 11 Mar 2020 09:44:42 -0500
+Message-ID: <27e153ce-f94b-876a-32e7-66dd5842c07b@linux.intel.com>
+Date: Wed, 11 Mar 2020 09:48:47 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200311063645.GH4885@vkoul-mobl>
+In-Reply-To: <7334e7b6-c4d3-aac3-46d2-b4fbcb0e3957@linux.intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
- linux-kernel@vger.kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Hui Wang <hui.wang@canonical.com>, broonie@kernel.org,
- srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
- Sanyog Kale <sanyog.r.kale@intel.com>,
- Bard liao <yung-chuan.liao@linux.intel.com>,
- Rander Wang <rander.wang@linux.intel.com>
+Content-Transfer-Encoding: 8bit
+Cc: cezary.rojewski@intel.com, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,86 +89,40 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 3/11/20 1:36 AM, Vinod Koul wrote:
-> On 06-03-20, 09:40, Pierre-Louis Bossart wrote:
->>>>> Why do you need a extra driver for this. Do you have another set of
->>>>> device object and driver for DSP code? But you do manage that, right?
->>>>> I am proposing to simplify the device model here and have only one
->>>>> device (SOF PCI) and driver (SOF PCI driver), which is created by actual
->>>>> bus (PCI here) as you have in rest of the driver like HDA, DSP etc.
->>>>>
->>>>> I have already recommended is to make the int-sdw a module which is
->>>>> invoked by SOF PCI driver code (thereby all code uses SOF PCI device and
->>>>> SOF PCI driver) directly. The DSP in my time for skl was a separate
->>>>> module but used the parent objects.
->>>>>
->>>>> The SOF sdw init (the place where sdw routines are invoked after DSP
->>>>> load) can call sdw_probe and startup. Based on DSP sequencing you can
->>>>> call these functions directly without waiting for extra device to be
->>>>> probed etc.
->>>>>
->>>>> I feel your flows will be greatly simplified as a result of this.
->>>>
->>>> Not at all, no. This is not a simplification but an extremely invasive
->>>> proposal.
->>>>
->>>> The parent-child relationship is extremely useful for power management, and
->>>> guarantees that the PCI device remains on while one or more of the masters
->>>> are used, and conversely can suspend when all links are idle. I currently
->>>> don't need to do anything, it's all taken care of by the framework.
->>>>
->>>> If I have to do all the power management at the PCI device level, then I
->>>> will need to keep track of which links are currently active. All these links
->>>> are used independently, so it's racy as hell to keep track of the usage when
->>>> the pm framework already does so quite elegantly. You really want to use the
->>>> pm_runtime_get/put refcount for each master device, not manage them from the
->>>> PCI level.
->>>
->>> Not at all, you still can call pm_runtime_get/put() calls in sdw module
->>> for PCI device. That doesn't change at all.
->>>
->>> Only change is for suspend/resume you have callbacks from PCI driver
->>> rather than pm core.
->> There are two other related issues that you didn't mention.
->>
->> the ASoC layer does require a driver with a 'name' for the components
->> registered with the master device. So if you don't have a driver for the
->> master device, the DAIs will be associated with the PCI device.
->>
->> But the ASoC core does make pm_runtime calls on its own,
->>
->> soc_pcm_open(struct snd_pcm_substream *substream)
->> {
->> ...
->> 	for_each_rtd_components(rtd, i, component)
->> 		pm_runtime_get_sync(component->dev);
->>
->> and if the device that's associated with the DAI is the PCI device, then
->> that will not result in the relevant master IP being activated, only the PCI
->> device refcount will be increased - meaning there is no hook that would tell
->> the PCI layer to turn on a specific link.
->>
->> What you are recommending would be an all-or-nothing solution with all links
->> on or all links off, which beats the purpose of having independent
->> link-level power management.
+On 3/11/20 4:13 AM, Gorski, Mateusz wrote:
 > 
-> Why can't you use dai .startup callback for this?
+>>> +SectionPCMCapabilities."DMIC-Capture" {
+>>> +    formats "S16_LE"
+>>> +    rates "48000"
+>>> +    channels_min "2"
+>>> +    channels_max "2"
+>>> +    sig_bits "16"
+>>> +}
+>>
+>> NHLT reports 4 microphones on a number of devices, is there any 
+>> specific reason to limit the capture to 2ch?
+>>
+>> I believe the generic Hdaudio card now reports the number of channels 
+>> to pulseaudio, so it's possible that PulseAudio would open a 4ch 
+>> stream but be told sorry no can do by topology.
+>>
+>> FWIW we ended-up selecting different topology files in SOF, depending 
+>> on whether we had 0, 2 or 4 mics.
 > 
-> The ASoC core will do pm_runtime calls that will ensure PCI device is
-> up, DSP firmware downloaded and running.
 > 
-> You can use .startup() to turn on your link and .shutdown to turn off
-> the link.
+> This patch was prepared to address many issues regarding broken DMIC 
+> configurations.
+> 
+> You are right - there are different DMIC configurations on different 
+> devices, but, since path multi-configuration feature is not upstreamed 
+> in cAVS driver, we are not able to include all of these in one topology 
+> file.
+> 
+> This is a reference topology, and it was successfully validated on few 
+> production laptops (including models on which DMIC capture was not 
+> working).
 
-There are multiple dais per link, and multiple Slave per link, so we 
-would have to refcount and track active dais to understand when the link 
-needs to be turned on/off. It's a duplication of what the pm framework 
-can do at the device/link level, and will likely introduce race conditions.
+Sorry, I don't understand what's missing in the cAVS driver?
 
-Not to mention that we'd need to introduce workqueues to turn the link 
-off with a delay, with pm_runtime_put_autosuspend() does for free.
-
-Linux is all about frameworks. For power management, we shall use the 
-power management framework, not reinvent it.
-
-
+All you need is to select a different topology based on the number of 
+DMICs detected.
