@@ -7,59 +7,60 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 51A97C0044D
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 22:15:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2DE12C0044D
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 22:16:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F362B20746
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 22:15:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D1CA620746
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 22:16:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ehquh0IG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F362B20746
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JrZhGMyt"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D1CA620746
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2165B16AC;
-	Wed, 11 Mar 2020 23:15:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2165B16AC
+	by alsa0.perex.cz (Postfix) with ESMTPS id B38D916C8;
+	Wed, 11 Mar 2020 23:15:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B38D916C8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583964952;
-	bh=MEisn/MasuBrpLdxtcfBv3X9C/PEfKQ0XRx/oFxvVB4=;
+	s=default; t=1583964974;
+	bh=yu04svFgcwrSk1SN6AOJkwo6qDP/S/2oVhplyozXFlE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ehquh0IGgPNI+IN6PaUMJBpCrspP+Qem9BJp/angGONtEjHLHISGkDrfUUAw8GGth
-	 v+9FwiVJGn282rjSqFfVT7qgekRxiex35NtO5DaW4+sd8CqzELeK7Um1PAgkp2ZIFZ
-	 6brpUBfHyThYR6gx2TJpjs00i8h2eYAGySrLpYDI=
+	b=JrZhGMytvohEeuhU2VytI2XBSACNxGXMtNorbL2z+rnsHg4v9Enzx6NVs2BcRCYjW
+	 MkZoefBI2LX1LXfK4K4yVc5jIml3PIkwTp2Uy+rxnKUY+QdpyDntJFxjuzSleeiJG1
+	 YaVohJunQ/Q+mwDLu71+DWcNB27rY/GO4H9gWqpk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B69EBF802C3;
-	Wed, 11 Mar 2020 23:11:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C4014F802DC;
+	Wed, 11 Mar 2020 23:11:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4EA6FF80217; Wed, 11 Mar 2020 23:10:59 +0100 (CET)
+ id 8B98BF802A0; Wed, 11 Mar 2020 23:11:01 +0100 (CET)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A1477F80217
- for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2020 23:10:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1477F80217
+ by alsa1.perex.cz (Postfix) with ESMTPS id DD354F8028B
+ for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2020 23:10:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD354F8028B
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
  by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 11 Mar 2020 15:10:49 -0700
+ 11 Mar 2020 15:10:56 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,542,1574150400"; d="scan'208";a="277550591"
+X-IronPort-AV: E=Sophos;i="5.70,542,1574150400"; d="scan'208";a="277550628"
 Received: from fjan-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.251.25.157])
- by fmsmga002.fm.intel.com with ESMTP; 11 Mar 2020 15:10:47 -0700
+ by fmsmga002.fm.intel.com with ESMTP; 11 Mar 2020 15:10:54 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 4/7] soundwire: intel: add definitions for shim_mask
-Date: Wed, 11 Mar 2020 17:10:23 -0500
-Message-Id: <20200311221026.18174-5-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 7/7] soundwire: intel: introduce helper for link
+ synchronization
+Date: Wed, 11 Mar 2020 17:10:26 -0500
+Message-Id: <20200311221026.18174-8-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200311221026.18174-1-pierre-louis.bossart@linux.intel.com>
 References: <20200311221026.18174-1-pierre-louis.bossart@linux.intel.com>
@@ -88,57 +89,82 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We want to make sure SHIM register fields such as SYNCPRD are only
-programmed once. Since we don't have a controller-level driver, we
-need master-level drivers to collaborate: the registers will only be
-programmed when the first link is powered-up.
+After arming the synchronization, the SYNCGO field controls the
+hardware-based synchronization between links.
+
+Move the programming and wait for clear of SYNCGO to dedicated helper.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/intel.h           | 2 ++
- include/linux/soundwire/sdw_intel.h | 2 ++
- 2 files changed, 4 insertions(+)
+ drivers/soundwire/intel.c | 47 ++++++++++++++++++++++++++++++++-------
+ 1 file changed, 39 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/soundwire/intel.h b/drivers/soundwire/intel.h
-index 568c84a80d79..cfc83120b8f9 100644
---- a/drivers/soundwire/intel.h
-+++ b/drivers/soundwire/intel.h
-@@ -16,6 +16,7 @@
-  * @ops: Shim callback ops
-  * @dev: device implementing hw_params and free callbacks
-  * @shim_lock: mutex to handle access to shared SHIM registers
-+ * @shim_mask: global pointer to check SHIM register initialization
-  */
- struct sdw_intel_link_res {
- 	struct platform_device *pdev;
-@@ -27,6 +28,7 @@ struct sdw_intel_link_res {
- 	const struct sdw_intel_ops *ops;
- 	struct device *dev;
- 	struct mutex *shim_lock; /* protect shared registers */
-+	u32 *shim_mask;
- };
+diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+index 93d157d04eb9..e2dac2f0b343 100644
+--- a/drivers/soundwire/intel.c
++++ b/drivers/soundwire/intel.c
+@@ -524,6 +524,44 @@ static void intel_shim_sync_arm(struct sdw_intel *sdw)
+ 	mutex_unlock(sdw->link_res->shim_lock);
+ }
  
- #endif /* __SDW_INTEL_LOCAL_H */
-diff --git a/include/linux/soundwire/sdw_intel.h b/include/linux/soundwire/sdw_intel.h
-index 979b41b5dcb4..120ffddc03d2 100644
---- a/include/linux/soundwire/sdw_intel.h
-+++ b/include/linux/soundwire/sdw_intel.h
-@@ -115,6 +115,7 @@ struct sdw_intel_slave_id {
-  * links
-  * @link_list: list to handle interrupts across all links
-  * @shim_lock: mutex to handle concurrent rmw access to shared SHIM registers.
-+ * @shim_mask: flags to track initialization of SHIM shared registers
++static int intel_shim_sync_go_unlocked(struct sdw_intel *sdw)
++{
++	void __iomem *shim = sdw->link_res->shim;
++	u32 sync_reg;
++	int ret;
++
++	/* Read SYNC register */
++	sync_reg = intel_readl(shim, SDW_SHIM_SYNC);
++
++	/*
++	 * Set SyncGO bit to synchronously trigger a bank switch for
++	 * all the masters. A write to SYNCGO bit clears CMDSYNC bit for all
++	 * the Masters.
++	 */
++	sync_reg |= SDW_SHIM_SYNC_SYNCGO;
++
++	ret = intel_clear_bit(shim, SDW_SHIM_SYNC, sync_reg,
++			      SDW_SHIM_SYNC_SYNCGO);
++
++	if (ret < 0)
++		dev_err(sdw->cdns.dev, "SyncGO clear failed: %d\n", ret);
++
++	return ret;
++}
++
++static int intel_shim_sync_go(struct sdw_intel *sdw)
++{
++	int ret;
++
++	mutex_lock(sdw->link_res->shim_lock);
++
++	ret = intel_shim_sync_go_unlocked(sdw);
++
++	mutex_unlock(sdw->link_res->shim_lock);
++
++	return ret;
++}
++
+ /*
+  * PDI routines
   */
- struct sdw_intel_ctx {
- 	int count;
-@@ -126,6 +127,7 @@ struct sdw_intel_ctx {
- 	struct sdw_intel_slave_id *ids;
- 	struct list_head link_list;
- 	struct mutex shim_lock; /* lock for access to shared SHIM registers */
-+	u32 shim_mask;
- };
+@@ -775,15 +813,8 @@ static int intel_post_bank_switch(struct sdw_bus *bus)
+ 		ret = 0;
+ 		goto unlock;
+ 	}
+-	/*
+-	 * Set SyncGO bit to synchronously trigger a bank switch for
+-	 * all the masters. A write to SYNCGO bit clears CMDSYNC bit for all
+-	 * the Masters.
+-	 */
+-	sync_reg |= SDW_SHIM_SYNC_SYNCGO;
  
- /**
+-	ret = intel_clear_bit(shim, SDW_SHIM_SYNC, sync_reg,
+-			      SDW_SHIM_SYNC_SYNCGO);
++	ret = intel_shim_sync_go_unlocked(sdw);
+ unlock:
+ 	mutex_unlock(sdw->link_res->shim_lock);
+ 
 -- 
 2.20.1
 
