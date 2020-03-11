@@ -7,59 +7,59 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC1F5C0044D
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 18:43:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13404C0044D
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 18:44:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 23C02206E9
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 18:43:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 80416206BE
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 18:44:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lwskPirT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 23C02206E9
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vJt8AAtJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 80416206BE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 648FE1683;
-	Wed, 11 Mar 2020 19:42:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 648FE1683
+	by alsa0.perex.cz (Postfix) with ESMTPS id CFD6B167C;
+	Wed, 11 Mar 2020 19:43:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CFD6B167C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583952212;
-	bh=Qar1jEFutMtpqGiyiAt3le69QV9BMCd4y+yIG3NCiJk=;
+	s=default; t=1583952260;
+	bh=Yj9komwek2gVBp2Ua2QwDYmTc0xHBiarNLIJPiFt42A=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lwskPirTnuLvs83c2yXVbjvQ5zkV+NLrO+UnA36a58ECYS4Yrtq8phPn50Ih4N2SU
-	 SrlxI+Alhviyyj3rGIRyj/Enss9zHX1xy7vTEniGdQa3ScMkwzJLmrhMtxMQoxQchE
-	 07pFPyCodaHS43nKbfqpG/7VZ0LTzSoez5a5Iy8U=
+	b=vJt8AAtJkIqXW7X/0tynMnZ/LzA3jJ3euBMoVWkjk6B9qjkcLpts+AjRAh7jtl0OC
+	 A+mfO2Fch4o/0p5he6sXiWVPt57KTelWbzvrRXOxCDozXQQPSAj6PWQTNtWhurcqVf
+	 7rMf2j6AXN7IOl1goUxqoaf/XZ9M90h8BscHRtMo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DB12DF8021D;
-	Wed, 11 Mar 2020 19:41:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C250DF8028B;
+	Wed, 11 Mar 2020 19:41:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5BA9FF801F8; Wed, 11 Mar 2020 19:41:47 +0100 (CET)
+ id 1F4F7F80217; Wed, 11 Mar 2020 19:41:48 +0100 (CET)
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 035A5F800BE
- for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2020 19:41:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 035A5F800BE
+ by alsa1.perex.cz (Postfix) with ESMTPS id B25CAF801A3
+ for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2020 19:41:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B25CAF801A3
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 11 Mar 2020 11:41:40 -0700
+ 11 Mar 2020 11:41:42 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,541,1574150400"; d="scan'208";a="441776206"
+X-IronPort-AV: E=Sophos;i="5.70,541,1574150400"; d="scan'208";a="441776218"
 Received: from fjan-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.251.25.157])
- by fmsmga005.fm.intel.com with ESMTP; 11 Mar 2020 11:41:38 -0700
+ by fmsmga005.fm.intel.com with ESMTP; 11 Mar 2020 11:41:40 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 01/16] soundwire: cadence: s/update_config/config_update
-Date: Wed, 11 Mar 2020 13:41:13 -0500
-Message-Id: <20200311184128.4212-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 02/16] soundwire: cadence: simplifiy cdns_init()
+Date: Wed, 11 Mar 2020 13:41:14 -0500
+Message-Id: <20200311184128.4212-3-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200311184128.4212-1-pierre-louis.bossart@linux.intel.com>
 References: <20200311184128.4212-1-pierre-louis.bossart@linux.intel.com>
@@ -70,7 +70,7 @@ Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.de,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
  Hui Wang <hui.wang@canonical.com>, vkoul@kernel.org, broonie@kernel.org,
  srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
- Sanyog Kale <sanyog.r.kale@intel.com>,
+ Sanyog Kale <sanyog.r.kale@intel.com>, Rander Wang <rander.wang@intel.com>,
  Bard liao <yung-chuan.liao@linux.intel.com>,
  Rander Wang <rander.wang@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
@@ -88,45 +88,73 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Somehow we inverted the two, align with register definition to avoid
-further confusion.
+From: Rander Wang <rander.wang@intel.com>
 
+There is no need for the clock_stop_exit argument with the latest
+implementation
+
+Signed-off-by: Rander Wang <rander.wang@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/cadence_master.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/soundwire/cadence_master.c | 12 +-----------
+ drivers/soundwire/cadence_master.h |  2 +-
+ drivers/soundwire/intel.c          |  2 +-
+ 3 files changed, 3 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-index 9bec270d0fa4..a1a889d1d7dc 100644
+index a1a889d1d7dc..941809ea00a8 100644
 --- a/drivers/soundwire/cadence_master.c
 +++ b/drivers/soundwire/cadence_master.c
-@@ -235,7 +235,7 @@ static int cdns_clear_bit(struct sdw_cdns *cdns, int offset, u32 value)
-  * all changes to the MCP_CONFIG, MCP_CONTROL, MCP_CMDCTRL and MCP_PHYCTRL
-  * need to be confirmed with a write to MCP_CONFIG_UPDATE
+@@ -1018,22 +1018,12 @@ static u32 cdns_set_initial_frame_shape(int n_rows, int n_cols)
+  * sdw_cdns_init() - Cadence initialization
+  * @cdns: Cadence instance
   */
--static int cdns_update_config(struct sdw_cdns *cdns)
-+static int cdns_config_update(struct sdw_cdns *cdns)
+-int sdw_cdns_init(struct sdw_cdns *cdns, bool clock_stop_exit)
++int sdw_cdns_init(struct sdw_cdns *cdns)
  {
- 	int ret;
+ 	struct sdw_bus *bus = &cdns->bus;
+ 	struct sdw_master_prop *prop = &bus->prop;
+ 	u32 val;
+ 	int divider;
+-	int ret;
+-
+-	if (clock_stop_exit) {
+-		ret = cdns_clear_bit(cdns, CDNS_MCP_CONTROL,
+-				     CDNS_MCP_CONTROL_CLK_STOP_CLR);
+-		if (ret < 0) {
+-			dev_err(cdns->dev, "Couldn't exit from clock stop\n");
+-			return ret;
+-		}
+-	}
  
-@@ -838,7 +838,7 @@ int sdw_cdns_exit_reset(struct sdw_cdns *cdns)
- 		     CDNS_MCP_CONFIG_OP_NORMAL);
+ 	/* Set clock divider */
+ 	divider	= (prop->mclk_freq / prop->max_clk_freq) - 1;
+diff --git a/drivers/soundwire/cadence_master.h b/drivers/soundwire/cadence_master.h
+index 2de1b2493ffc..44e802bba702 100644
+--- a/drivers/soundwire/cadence_master.h
++++ b/drivers/soundwire/cadence_master.h
+@@ -138,7 +138,7 @@ extern struct sdw_master_ops sdw_cdns_master_ops;
+ irqreturn_t sdw_cdns_irq(int irq, void *dev_id);
+ irqreturn_t sdw_cdns_thread(int irq, void *dev_id);
  
- 	/* commit changes */
--	return cdns_update_config(cdns);
-+	return cdns_config_update(cdns);
+-int sdw_cdns_init(struct sdw_cdns *cdns, bool clock_stop_exit);
++int sdw_cdns_init(struct sdw_cdns *cdns);
+ int sdw_cdns_pdi_init(struct sdw_cdns *cdns,
+ 		      struct sdw_cdns_stream_config config);
+ int sdw_cdns_exit_reset(struct sdw_cdns *cdns);
+diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+index a327669c757b..3c83e76c6bf9 100644
+--- a/drivers/soundwire/intel.c
++++ b/drivers/soundwire/intel.c
+@@ -1077,7 +1077,7 @@ static int intel_init(struct sdw_intel *sdw)
+ 	intel_link_power_up(sdw);
+ 	intel_shim_init(sdw);
+ 
+-	return sdw_cdns_init(&sdw->cdns, false);
++	return sdw_cdns_init(&sdw->cdns);
  }
- EXPORT_SYMBOL(sdw_cdns_exit_reset);
  
-@@ -1084,7 +1084,7 @@ int sdw_cdns_init(struct sdw_cdns *cdns, bool clock_stop_exit)
- 	cdns_writel(cdns, CDNS_MCP_CONFIG, val);
- 
- 	/* commit changes */
--	return cdns_update_config(cdns);
-+	return cdns_config_update(cdns);
- }
- EXPORT_SYMBOL(sdw_cdns_init);
- 
+ /*
 -- 
 2.20.1
 
