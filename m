@@ -2,93 +2,65 @@ Return-Path: <SRS0=OXo6=44=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EFD24C10DCE
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 01:28:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 512BDC10DCE
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 01:31:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4C5E4205ED
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 01:28:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B84B3205ED
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 01:31:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ugdLvGK5";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel-com.20150623.gappssmtp.com header.i=@intel-com.20150623.gappssmtp.com header.b="yVjYPpaM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4C5E4205ED
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Y77kwxpR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B84B3205ED
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A184374C;
-	Wed, 11 Mar 2020 02:27:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A184374C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2756C827;
+	Wed, 11 Mar 2020 02:30:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2756C827
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583890105;
-	bh=PJ81/ZqXoZrV12MCpPrcUXl57HM/vZYSisQaW9VRjpQ=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1583890285;
+	bh=Cbg/OB250roQQTjBH4x0DwetkPlszgK8RwKJdRyKJJw=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ugdLvGK5QJk6V+t0zaPnQQ8BCtujd8mTAgTyu5a8na0/fUSKygewcj+2WRwZo3csH
-	 B/g+TMs7XWgVVl2QozRu0FcvIxHHl3PPKx5tu8j/Y+mO79n9owkjdDP7qnABGB2NGA
-	 qhdNDrUzWtS6XqXaDMtXbaUnvgnuSz5LqfDHS+H8=
+	b=Y77kwxpR9kkfyxH4HORpWQRWTp1N6ZkbAHlJt5lashRE4zfKtGEqdfH8yjfNYVQk0
+	 JRjG27q/ZNj7+dA/9eW8Uvwbp/fm21+hSdpqCdgq+1/NOdlOrW0YUDmznFFySriq7k
+	 JYwmwfMRSe5B8OOq5xQnvNW3tkCPmtymaztfZQFw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 15F01F80123;
-	Wed, 11 Mar 2020 02:27:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B2496F80123;
+	Wed, 11 Mar 2020 02:30:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 53488F80217; Wed, 11 Mar 2020 02:27:33 +0100 (CET)
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com
- [IPv6:2607:f8b0:4864:20::d43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4DBB6F800DA
- for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2020 02:27:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4DBB6F800DA
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel-com.20150623.gappssmtp.com
- header.i=@intel-com.20150623.gappssmtp.com header.b="yVjYPpaM"
-Received: by mail-io1-xd43.google.com with SMTP id k4so236341ior.4
- for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2020 18:27:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=intel-com.20150623.gappssmtp.com; s=20150623;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=ZavdonYmkl3wlcs1lhyu+z2iJ6IJI3+VUSxgGeipNzk=;
- b=yVjYPpaMagnKXtEel886rKmupvLX35i/9nWuGgyc+Q+1RhLnBU8+9Yj3HBeFdhGSEs
- 8oOKNwGCYDQvwQf+0N5lnlgCpFY41VamKalAJESyXrRugnrA6+CKxx44aArCY+mdBYhL
- cuoFsCI11F75Q9ILZPoH3I/ir9d5prgqCLUhsUOd4/HPGZCNoZ/jl9m79szo2DY/RW7a
- T74FKyPdqAU1L0oqwu+bYoKQgcWzPdOiyFsTYsr7vwktVFIueK+ERlLY2NEmllmd0C5+
- J97irUMjlY0dNrPiU1h8VE9HMKsf+zGcOWJyjy0YR6q+CSeYV/axCrLOEaCRsW4ZOXLX
- HZoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=ZavdonYmkl3wlcs1lhyu+z2iJ6IJI3+VUSxgGeipNzk=;
- b=sElBO5oDkiFwRP5SinjmkOI/T/Otsd2R/BVh36E3W6aQL4j7CV5qygvJL2gtlELCQS
- ZDCntqpAqIeShbLmtzHJqUdavXsaho2yKNPX/eJ3wwLfIXNmkOMaAZloloumAerRS09s
- rRthMxQhVF5dipC1KgEagRDWBe41fIMTP9105wEZ87WzuHhnqI3EQYHOXCu7PkoVP8Vv
- BNx7TM7lyQKZsmmXScirpeE/87GGZfDiRlAz/MoHJzEYAxD6w90zA7/A1XlqSvL/2x0j
- fA9C9ZmQQ0QRijBX13pCZpcnYZ8axsitfGeG7S9IB1IlIXHKViKjpsoqDUOOkttDnyQB
- /cHw==
-X-Gm-Message-State: ANhLgQ1E1lSogUZuhHOX3TRoz6LwD9phJNG4RicwAXQInVxxQG1YwUVk
- voz9SlknHD7lZgumf0l/BDb4hrKWI/8TTbYmO25fXQ==
-X-Google-Smtp-Source: ADFU+vuq3gfStWve/MADCIiN5Wmxxnagakf7kcLBigcmvkyB3oXM+Li99BpGlD/tE+9FEnhAhajOJhxoC9o0xw9LRdw=
-X-Received: by 2002:a5d:8952:: with SMTP id b18mr795008iot.40.1583890046936;
- Tue, 10 Mar 2020 18:27:26 -0700 (PDT)
-MIME-Version: 1.0
+ id 7E3A9F800DA; Wed, 11 Mar 2020 02:30:32 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 1AEA4F800DA
+ for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2020 02:30:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1AEA4F800DA
+Date: 11 Mar 2020 10:30:25 +0900
+X-IronPort-AV: E=Sophos;i="5.70,539,1574089200"; d="scan'208";a="41325682"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 11 Mar 2020 10:30:25 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 5532841423B7;
+ Wed, 11 Mar 2020 10:30:25 +0900 (JST)
+Message-ID: <87mu8nvfta.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
+Subject: Re: [PATCH 3/7] ASoC: soc-dapm: Merge for_each_rtd_cpu/codec_dais()
+In-Reply-To: <CAFQqKeXD+W6WMB7sp8H5m1k6Sc5_FEvKv4O6d0YE_F5pr-cofw@mail.gmail.com>
 References: <87y2s7vgxb.wl-kuninori.morimoto.gx@renesas.com>
  <87tv2vvgvq.wl-kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87tv2vvgvq.wl-kuninori.morimoto.gx@renesas.com>
-From: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
-Date: Tue, 10 Mar 2020 18:27:16 -0700
-Message-ID: <CAFQqKeXD+W6WMB7sp8H5m1k6Sc5_FEvKv4O6d0YE_F5pr-cofw@mail.gmail.com>
-Subject: Re: [PATCH 3/7] ASoC: soc-dapm: Merge for_each_rtd_cpu/codec_dais()
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+ <CAFQqKeXD+W6WMB7sp8H5m1k6Sc5_FEvKv4O6d0YE_F5pr-cofw@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -105,41 +77,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Mar 10, 2020 at 6:10 PM Kuninori Morimoto <
-kuninori.morimoto.gx@renesas.com> wrote:
 
->
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->
-> Now we can use for_each_rtd_dais().
-> Let's use it instead of for_each_rtd_cpu/codec_dais().
->
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
->  sound/soc/soc-dapm.c | 9 +++------
->  1 file changed, 3 insertions(+), 6 deletions(-)
->
-> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-> index e00a465a7c32..3a3fbf167383 100644
-> --- a/sound/soc/soc-dapm.c
-> +++ b/sound/soc/soc-dapm.c
-> @@ -4433,14 +4433,11 @@ void snd_soc_dapm_connect_dai_link_widgets(struct
-> snd_soc_card *card)
->  static void soc_dapm_stream_event(struct snd_soc_pcm_runtime *rtd, int
-> stream,
->         int event)
->  {
-> -       struct snd_soc_dai *codec_dai;
-> -       struct snd_soc_dai *cpu_dai;
-> +       struct snd_soc_dai *dai;
->         int i;
->
-> -       for_each_rtd_cpu_dais(rtd, i, cpu_dai)
-> -               soc_dapm_dai_stream_event(cpu_dai, stream, event);
-> -       for_each_rtd_codec_dais(rtd, i, codec_dai)
-> -               soc_dapm_dai_stream_event(codec_dai, stream, event);
-> +       for_each_rtd_cpu_dais(rtd, i, dai)
->
-typo here? should be for_each_rtd_dais()?
-Thanks,
-Ranjani
+Hi Sridharan
+
+Thank you for your review
+
+>     From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>    
+>     Now we can use for_each_rtd_dais().
+>     Let's use it instead of for_each_rtd_cpu/codec_dais().
+>    
+>     Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>     ---
+(snip)
+>     -       for_each_rtd_cpu_dais(rtd, i, cpu_dai)
+>     -               soc_dapm_dai_stream_event(cpu_dai, stream, event);
+>     -       for_each_rtd_codec_dais(rtd, i, codec_dai)
+>     -               soc_dapm_dai_stream_event(codec_dai, stream, event);
+>     +       for_each_rtd_cpu_dais(rtd, i, dai)
+> 
+> typo here? should be for_each_rtd_dais()?
+
+Oops !? Indeed.
+Thank you for pointing it.
+Will fix in v2
+
+Thank you for your help !!
+
+Best regards
+---
+Kuninori Morimoto
