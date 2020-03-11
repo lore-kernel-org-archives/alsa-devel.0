@@ -6,57 +6,58 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44718C10DCE
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 02:29:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3653AC10DCE
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 02:40:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B7181208C3
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 02:29:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B034021927
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 02:40:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AIBqQxqg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B7181208C3
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BWjNoNKz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B034021927
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0D6E0828;
-	Wed, 11 Mar 2020 03:28:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D6E0828
+	by alsa0.perex.cz (Postfix) with ESMTPS id 05265827;
+	Wed, 11 Mar 2020 03:39:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 05265827
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583893745;
-	bh=0gKO+jteKz6qr0XXW8N9B7aqnYUaae4JgkVmGcY7gKo=;
+	s=default; t=1583894432;
+	bh=Boora4G/djz9VY3duTaSx3rIfeMQzNkS+a8fmCte3mo=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AIBqQxqgNnDTORwDpwBjGsJp9GD5mRmNobFhTg1GKhy2YFHYz/adqgDynFVOdqhw5
-	 c0QOoTz/pJSw2zY0gz47u7rZa3vhaUjmQ5jWZGPheTgvpS39W7yvSQ8tS/0CTgRQCg
-	 9z3KltsDx2zykiSGP3H2hh7jibDP2lRlybG/bnQs=
+	b=BWjNoNKzCuBmUjsHkI9M2KlNbM05Fkh/YkzJ3b+r8J1Td7c5rs2BESLi6t9BeTEuL
+	 CBPel3YIWWTfBdV51ghvj9xY20zu5eiXt2WyVwtVfVLP5l6qHPeqb9lhR3VKr6tl51
+	 E1yz6f6kGDghJ85rm1FSRGLt1pxcK3F2P1uo5wU4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7DA52F80123;
-	Wed, 11 Mar 2020 03:28:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 84561F80141;
+	Wed, 11 Mar 2020 03:39:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0A589F8020C; Wed, 11 Mar 2020 03:28:11 +0100 (CET)
+ id B7336F801A3; Wed, 11 Mar 2020 03:39:39 +0100 (CET)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 9271BF800DA
- for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2020 03:27:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9271BF800DA
-Date: 11 Mar 2020 11:27:55 +0900
-X-IronPort-AV: E=Sophos;i="5.70,539,1574089200"; d="scan'208";a="41547232"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 11 Mar 2020 11:27:55 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id E0F4FF800B5
+ for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2020 03:39:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0F4FF800B5
+Date: 11 Mar 2020 11:39:30 +0900
+X-IronPort-AV: E=Sophos;i="5.70,539,1574089200"; d="scan'208";a="41548461"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 11 Mar 2020 11:39:30 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 1B2BB40BD813;
- Wed, 11 Mar 2020 11:27:55 +0900 (JST)
-Message-ID: <87k13rvd5g.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 7A203400A8A3;
+ Wed, 11 Mar 2020 11:39:30 +0900 (JST)
+Message-ID: <87imjbvcm5.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/7] ASoC: Merge CPU/Codec DAIs
-In-Reply-To: <03ac5f70-9aa3-b909-c693-caaa0afd09c9@linux.intel.com>
+Subject: Re: [PATCH 7/7] ASoC: soc-pcm: Merge CPU/Codec at soc_pcm_pointer()
+In-Reply-To: <1968b2ea-f094-709e-b5b2-784f7aec5081@linux.intel.com>
 References: <87y2s7vgxb.wl-kuninori.morimoto.gx@renesas.com>
- <03ac5f70-9aa3-b909-c693-caaa0afd09c9@linux.intel.com>
+ <87o8t3vgur.wl-kuninori.morimoto.gx@renesas.com>
+ <1968b2ea-f094-709e-b5b2-784f7aec5081@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -79,62 +80,45 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Hi Pierre-Louis
 
-> > 	rtd->cpu_dais   = [][][][][][][][][]
-> > 	rtd->codec_dais = [][][][][][][][][]
+Thank you for your review
+
+> The max() used between all cpu or codec dais for the same dailink is
+> largely defensive programming, in practice it's not clear to me if we
+> have different delays reported by differents codec or cpu_dais. I
+> would expect all cpu dais in the same dailink to report the same
+> delay, and likewise all codecs dais in the same dailink should provide
+> the same value.
+> 
+> Now doing a max between cpu and codec dais does not seem right to
+> me. You may have a delay in a DSP and a delay in a codec, and worst
+> case the delay is the total of the two. It wouldn't matter too much
+> with a 'simple' codec with limited buffering, but the moment the codec
+> itself has a DSP and internal buffering this change in accounting
+> would introduce a real offset.
 (snip)
-> > 	rtd->dais = [][][][][][][][][][][][][][][][][][]
-> > 	            ^cpu_dais         ^codec_dais
-> > 	            |--- num_cpus ---|--- num_codecs --|
-(snip)
-> Is the end-goal to remove the cpu_dais and codec_dais, and fold them
-> as non-descript 'dais'? This is what I understand by "it will be no
-> longer good much for modern device"
+> > -	for_each_rtd_cpu_dais(rtd, i, cpu_dai) {
+> > -		cpu_delay = max(cpu_delay,
+> > -				snd_soc_dai_delay(cpu_dai, substream));
+> > -	}
+> > -	delay += cpu_delay;
+> > -
+> > -	for_each_rtd_codec_dais(rtd, i, codec_dai) {
+> > -		codec_delay = max(codec_delay,
+> > -				  snd_soc_dai_delay(codec_dai, substream));
+> > -	}
+> > -	delay += codec_delay;
+> > +	for_each_rtd_dais(rtd, i, dai)
+> > +		add_delay = max(add_delay,
+> > +				snd_soc_dai_delay(dai, substream));
+> >   -	runtime->delay = delay;
+> > +	/* base delay if assigned in pointer callback */
+> > +	runtime->delay += add_delay;
+> >     	return offset;
 
-Yes. We want to have non-descript DAIs in the future.
-I think this was indicated by Lars-Peter before at ELCE.
-But, I think we *can't* do it right now.
-Because many drivers are considering CPU and Codec separately.
-
-> Or is this 'merge' a simple data handling change to avoid using two
-> "for" loops instead of one, and we are going to keep the distinction
-> between dais?
-
-Yes.
-There are some functions which is doing something only for CPU or Codec.
-This patch-set do nothing to such functions.
-Maybe it can be updated in the future, maybe not (can't).
-
-I hope this patch-set can be 1st step for non-descript DAIs.
-But the main purpose of this patch so far is that
-keeping current CPU / Codec DAIs method,
-but, simply merge such code *if possible*.
-
-> more specifically I am concerned about the tons of code we have,
-> e.g. a random machine driver:
-> 
-> 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-> 	struct snd_soc_jack *jack;
-> 	int ret;
-> 
-> 	/* Configure sysclk for codec */
-> 	ret = snd_soc_dai_set_sysclk(codec_dai, DA7219_CLKSRC_MCLK,
-> 
-> If the rtd structure only has an array of dais, how would the codecs
-> be configured then?
-
-The image is like this.
-It still can use rtd->cpu_dais, rtd->codec_dais.
-Of course for_each_rtd_cpu/codec_dais() macro too.
-
-	rtd->dais = [][][][][][][][][][][][][][][][][][]
-	            ^cpu_dais         ^codec_dais
-	            |--- num_cpus ---|--- num_codecs --|
-
-	rtd->cpu_dais   = &rtd->dais[0];
-	rtd->codec_dais = &rtd->dais[dai_link->num_cpus];
-
-So we can use/keep existing code/method same as before.
-Is this good answer for you ?
+Hmm.. ? Indeed...
+Why I merged these ??
+Thank you for pointing it. This patch is indeed wrong.
+Will remove it in v2.
 
 Thank you for your help !!
 
