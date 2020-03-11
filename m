@@ -2,92 +2,96 @@ Return-Path: <SRS0=OXo6=44=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F729C10F27
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 11:38:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 38F29C10F27
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 11:38:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 12A872146E
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 11:38:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B5D6F20848
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 11:38:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="G4iRTOSY";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="epXS8b68"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 12A872146E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VcrmgSjW";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MjzLEDmF"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B5D6F20848
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 010F21662;
-	Wed, 11 Mar 2020 12:37:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 010F21662
+	by alsa0.perex.cz (Postfix) with ESMTPS id 013DD1607;
+	Wed, 11 Mar 2020 12:38:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 013DD1607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583926689;
-	bh=1gFdenCqKi3mV1I7eiCFkSxnBKntOe4an5aiMcIWKRE=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=G4iRTOSY9P3zBSdEMqNy12nubf9Avf8iCe6Ad1ULJ47hx5zxjKuvFzySwHmLi+9iV
-	 WgDHguR5STlrQ9BRyAi746VIB0X5K5GtTwXcWlJat/fyoMKE5vTNQF7G5U9K1H3swh
-	 UQIfdPceHs0lezLyb6eqSHWn9rx9oTMBaFwKFJJk=
+	s=default; t=1583926736;
+	bh=7OhOMQVG+beKcyExVg3KAzMHHf/bi3VdOdz1J+KUbEQ=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=VcrmgSjW7JNOPm2a077N1tbO1L4iM2nfa/C8pQrBp+O4XnhjDj3viYag7UtIBefFQ
+	 ZshTWxIYxIah+k+1eNsMX1dsRGfkQ0YSJ2vs4oF0RhHxm50sOFFFzaFKsy0PQmtw2l
+	 C3PPo3wl5JOiu+HWSwSgaaWWul3USBSPgqf/HGWI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EE038F801F7;
-	Wed, 11 Mar 2020 12:36:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B6B3DF8028B;
+	Wed, 11 Mar 2020 12:36:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C2D86F800B5; Wed, 11 Mar 2020 12:36:24 +0100 (CET)
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com
- [IPv6:2a00:1450:4864:20::441])
+ id 2944DF8021D; Wed, 11 Mar 2020 12:36:25 +0100 (CET)
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com
+ [IPv6:2a00:1450:4864:20::344])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E8744F800B5
- for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2020 12:36:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8744F800B5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 776BCF801A3
+ for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2020 12:36:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 776BCF801A3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="epXS8b68"
-Received: by mail-wr1-x441.google.com with SMTP id z15so2174074wrl.1
- for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2020 04:36:18 -0700 (PDT)
+ header.b="MjzLEDmF"
+Received: by mail-wm1-x344.google.com with SMTP id a141so1720453wme.2
+ for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2020 04:36:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=a3pvk8YM9KciTsoi8ZTo0J1S/sSYGSlU0IpIN/JdgKY=;
- b=epXS8b68jSfacixPIe996/Issuty7JuLN8tDTKxPy/9fL8ZoneFpxLQoKp55s/Xqrb
- yomyWspUaaoN7PPbyg3+1+dn1USNiC4R2gN3GrIlwzilyKRWugjvBFAVkFtSiLgU6c7L
- yJ2kz9qKA3wpwVLGa7ja7+b5uymfx2YuauBf/dmyNpbqkG9PhfaBYCY73QWPyuGggLKf
- VeziX3p8ojj9CZveIkORRR8MGnOfWObshMianlG0flWNvIcet9GPAkEOVnX0gdr/RSAn
- 4s2g2ROl0Jdl5Bez/LDwwa1GgbUCDtDn/GoLHXic4DSOo9MSPaScEcnrEgzdTKNJhET6
- gGJA==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=4dSjMYJm/Ra5sgQShi2pf7+T6koKZ++HOxR0wa0eN84=;
+ b=MjzLEDmFJ/aZXSENFbjIyt0KVvyajh+YnB/ueDBs1bz0YgVO03hmugfnPZdvU3vt/6
+ BBGbHwfSuITh/mzCoIh3L9H5Xm7GhvVopaYxlbzYHEaFpzzGBm5bpH1E14+QPAQj+/Zi
+ oz0hJV8Uo0RnjvYx3X/NcoKRTSUE0mxzyaIKrecwFNg9w6OfLfFVZZFSS3L63oEAv3NN
+ M85rjg8MG6w/3q6GdZ3z8lcHkRCHWQCV7MT+N8waXX1F6iOwXpQFA9n/FzKQ98EPl1ZW
+ LenVwfClcI7m9C49N7ZiYFpAR+wdIAWAcAfIClt6Na8GpVqOHnsERF9aA/UbB7Dslj4m
+ DcyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=a3pvk8YM9KciTsoi8ZTo0J1S/sSYGSlU0IpIN/JdgKY=;
- b=mzEGz5VVeRRc47sEtSKIyWNJ5j5rM+gNm+14BDj9siiqRYQfNlUtFniHQKy71K+IWB
- PRi2oXJs2+DdHjznUNx+DjjeTVw90YWk0JNqAFmEhkPnIBdZXtMLGhFduLY+8xn7PrAW
- kf6yWwhV5/414arVFXcxnE/K53jdDSD+0qPoqWgPwZMZqHonnjEoBVBphoYCXRFo/a95
- j8fsbYmUPnHBUF+0+SOBhN7fZNM5+tyTe2wTPqAxpHXEs50jonI+/+o9T9Hf2gbzMKrZ
- h264T2Phg87gpta6+pPliTIGMufjjsBowSA9y34oY+bkfb0O3xneCEAiea0GBH0eldkn
- JyPg==
-X-Gm-Message-State: ANhLgQ2lp8mJHrwIp1+jxuEQDPj1I3SA6ir1OpG96+R+Vrcn8jWk7zB2
- BYjnzLbSSIlRG0veW0ho+XLfPQ==
-X-Google-Smtp-Source: ADFU+vvu2foe5tilScyQakEbJFDrry3CKe/s1NISiVxUkngdoUCD9DWM8A/xs/ohy3NDrj2Prqhzxg==
-X-Received: by 2002:a5d:6591:: with SMTP id q17mr3933045wru.22.1583926578262; 
- Wed, 11 Mar 2020 04:36:18 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=4dSjMYJm/Ra5sgQShi2pf7+T6koKZ++HOxR0wa0eN84=;
+ b=FxBlhULMAEZnbiB+VEbt3jBX0bYaBF9Gldwoz2RxzsIYyxKWhf4DxUIUP/3i69izEJ
+ 9ixkaNgFBN9OSrlQTBaGGZraPt7zPlhFNvmoFdopiAbfLElqtthukLgR0cszeFRSABgT
+ cIsMFgM9tGGgkC8XmGDcF4aLcUkhvJXQur//qZISf18WqwCxVRkMc5bxcyBNDIcPPVi1
+ ImMU1P1PdcORxDqF83FHyzMuo2evny5Ab5s/EkKXGlMONqoN0XrqiYztAcBIeEwAZxYW
+ opYG1JqAyKmpi0FJGCaHdM/z/MmkBhGEZq1XREso9avfug7+P1Zbij3GEPY646+MF2Uf
+ izHg==
+X-Gm-Message-State: ANhLgQ1fqSCP9Jgu0QM1kklCsSeWnfZduVDUP/O/khbA+e6msZWztbzr
+ IbqApWMVjbParHluzA/rflZ8TGOe8es=
+X-Google-Smtp-Source: ADFU+vt+eNgeMdW8z+nYMrd8Bxe7xSf0Y8oplVFQFkTzkOPeN1bEt3y5GLgzl+F32+wHlT+zM65jyA==
+X-Received: by 2002:a1c:1d88:: with SMTP id d130mr3473216wmd.138.1583926580522; 
+ Wed, 11 Mar 2020 04:36:20 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
- by smtp.gmail.com with ESMTPSA id c8sm61650537wru.7.2020.03.11.04.36.17
+ by smtp.gmail.com with ESMTPSA id c8sm61650537wru.7.2020.03.11.04.36.19
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 11 Mar 2020 04:36:17 -0700 (PDT)
+ Wed, 11 Mar 2020 04:36:19 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org,
 	vkoul@kernel.org
-Subject: [PATCH 0/2] soundwire: add read_only_wordlength flag
-Date: Wed, 11 Mar 2020 11:35:43 +0000
-Message-Id: <20200311113545.23773-1-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 2/2] ASoC: wsa881x: mark read_only_wordlength flag
+Date: Wed, 11 Mar 2020 11:35:45 +0000
+Message-Id: <20200311113545.23773-3-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20200311113545.23773-1-srinivas.kandagatla@linaro.org>
+References: <20200311113545.23773-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: alsa-devel@alsa-project.org,
@@ -108,30 +112,53 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-According to SoundWire Specification Version 1.2.
-"A Data Port number X (in the range 0-14) which supports only one
-value of WordLength may implement the WordLength field in the
-DPX_BlockCtrl1 Register as Read-Only, returning the fixed value of
-WordLength in response to reads."
+WSA881x works in PDM mode so the wordlength is fixed, which also makes
+the only field "WordLength" in DPN_BlockCtrl1 register a read-only.
+Writing to this register will throw up errors with Qualcomm Controller.
+So use ro_blockctrl1_reg flag to mark this field as read-only so that
+core will not write to this register.
 
-As WSA881x interfaces in PDM mode making the only field "WordLength"
-in DPX_BlockCtrl1" fixed and read-only. Behaviour of writing to this
-register on WSA881x soundwire slave with Qualcomm Soundwire Controller
-is throwing up an error. Not sure how other controllers deal with
-writing to readonly registers, but this patch provides a way to avoid
-writes to DPN_BlockCtrl1 register by providing a read_only_wordlength
-flag in struct sdw_dpn_prop
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ sound/soc/codecs/wsa881x.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-
-Srinivas Kandagatla (2):
-  soundwire: stream: Add read_only_wordlength flag to port properties
-  ASoC: wsa881x: mark read_only_wordlength flag
-
- drivers/soundwire/stream.c    | 16 +++++++++-------
- include/linux/soundwire/sdw.h |  2 ++
- sound/soc/codecs/wsa881x.c    |  4 ++++
- 3 files changed, 15 insertions(+), 7 deletions(-)
-
+diff --git a/sound/soc/codecs/wsa881x.c b/sound/soc/codecs/wsa881x.c
+index b59f1d0e7f84..35b44b297f9e 100644
+--- a/sound/soc/codecs/wsa881x.c
++++ b/sound/soc/codecs/wsa881x.c
+@@ -394,6 +394,7 @@ static struct sdw_dpn_prop wsa_sink_dpn_prop[WSA881X_MAX_SWR_PORTS] = {
+ 		.min_ch = 1,
+ 		.max_ch = 1,
+ 		.simple_ch_prep_sm = true,
++		.read_only_wordlength = true,
+ 	}, {
+ 		/* COMP */
+ 		.num = 2,
+@@ -401,6 +402,7 @@ static struct sdw_dpn_prop wsa_sink_dpn_prop[WSA881X_MAX_SWR_PORTS] = {
+ 		.min_ch = 1,
+ 		.max_ch = 1,
+ 		.simple_ch_prep_sm = true,
++		.read_only_wordlength = true,
+ 	}, {
+ 		/* BOOST */
+ 		.num = 3,
+@@ -408,6 +410,7 @@ static struct sdw_dpn_prop wsa_sink_dpn_prop[WSA881X_MAX_SWR_PORTS] = {
+ 		.min_ch = 1,
+ 		.max_ch = 1,
+ 		.simple_ch_prep_sm = true,
++		.read_only_wordlength = true,
+ 	}, {
+ 		/* VISENSE */
+ 		.num = 4,
+@@ -415,6 +418,7 @@ static struct sdw_dpn_prop wsa_sink_dpn_prop[WSA881X_MAX_SWR_PORTS] = {
+ 		.min_ch = 1,
+ 		.max_ch = 1,
+ 		.simple_ch_prep_sm = true,
++		.read_only_wordlength = true,
+ 	}
+ };
+ 
 -- 
 2.21.0
 
