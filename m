@@ -2,70 +2,67 @@ Return-Path: <SRS0=OXo6=44=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C41FAC0044D
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 17:11:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09D76C0044D
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 17:46:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D4F7920734
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 17:11:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 15A5920734
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 17:46:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OURGU02m"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D4F7920734
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XBbOJjky"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 15A5920734
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9E40F1655;
-	Wed, 11 Mar 2020 18:10:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E40F1655
+	by alsa0.perex.cz (Postfix) with ESMTPS id B9C591655;
+	Wed, 11 Mar 2020 18:45:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9C591655
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583946691;
-	bh=oDDrUGwHTFBsE0ePcbTDf38M4SYbi1gP7AeUelw1qtk=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=OURGU02mz6vx1XcSViCspeEFmm6XVqOwlWEeLJsFysxFOC4SlXblMAL8Zqk0vdz/F
-	 TsOfzwaECm5pDBf+j/oYYb9DJyi6eCdYjh6Kxg/SWxnQKcnz6IH7AXejb/KqEsWQlq
-	 haS09F71lMZYXmXm3TcJlhbXLe85/taD1+KGe4YQ=
+	s=default; t=1583948808;
+	bh=XC0ISTlGcVCFciYOXMigPmUA3YH+kFqHaUkzCMimb08=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=XBbOJjkyrM0R51SM/Dem/MHKrpbAj7O4iXEMPSjs4HszJ6LTGj99QGtDfqieXtEX+
+	 kCXRlG8ZAGu9VI7R0bb28GBs8ZRf2Ej0Sy9ILN+LtVgZVvntGkTFzr/+n+qTizFYoq
+	 BIHIl/PxCVLFX7Z/aqqWRuEcRe0//1EOwf5Kp7xM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 26F9BF801A3;
-	Wed, 11 Mar 2020 18:10:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 52866F801A3;
+	Wed, 11 Mar 2020 18:45:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 839B1F801EB; Wed, 11 Mar 2020 18:10:40 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id B6E91F800B5
- for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2020 18:10:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6E91F800B5
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CFC9E1FB;
- Wed, 11 Mar 2020 10:10:35 -0700 (PDT)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 528AE3F6CF;
- Wed, 11 Mar 2020 10:10:35 -0700 (PDT)
-Date: Wed, 11 Mar 2020 17:10:33 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/7] ASoC: Merge CPU/Codec DAIs
-Message-ID: <20200311171033.GI5411@sirena.org.uk>
-References: <87y2s7vgxb.wl-kuninori.morimoto.gx@renesas.com>
- <03ac5f70-9aa3-b909-c693-caaa0afd09c9@linux.intel.com>
- <87k13rvd5g.wl-kuninori.morimoto.gx@renesas.com>
- <8e92f00a-6fb4-84e6-8e48-28b9913791c0@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="cVp8NMj01v+Em8Se"
-Content-Disposition: inline
-In-Reply-To: <8e92f00a-6fb4-84e6-8e48-28b9913791c0@linux.intel.com>
-X-Cookie: I'm a Lisp variable -- bind me!
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+ id 2FCB1F801EB; Wed, 11 Mar 2020 18:45:56 +0100 (CET)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id EC358F800BE
+ for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2020 18:45:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC358F800BE
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 11 Mar 2020 10:45:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,541,1574150400"; d="scan'208";a="242756548"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+ by orsmga003.jf.intel.com with ESMTP; 11 Mar 2020 10:45:44 -0700
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+To: alsa-devel@alsa-project.org,
+	broonie@kernel.org
+Subject: [PATCH] MAINTAINERS: add entry for Sound Open Firmware drivers
+Date: Wed, 11 Mar 2020 19:45:37 +0200
+Message-Id: <20200311174537.24497-1-kai.vehmanen@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
+Cc: liam.r.girdwood@linux.intel.com, daniel.baluta@nxp.com,
+ pierre-louis.bossart@linux.intel.com, kai.vehmanen@linux.intel.com,
+ ranjani.sridharan@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,38 +78,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Sound Open Firmware (SOF) is an open source audio DSP firwmare
+instrastructure and SDK. The kernel drivers for SOF are part of
+the ALSA subsystem.
 
---cVp8NMj01v+Em8Se
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Acked-by: Daniel Baluta <daniel.baluta@nxp.com>
+Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Acked-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+---
+ MAINTAINERS | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-On Wed, Mar 11, 2020 at 09:36:17AM -0500, Pierre-Louis Bossart wrote:
+diff --git a/MAINTAINERS b/MAINTAINERS
+index d87507d53ca5..0b022b26bfa9 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -15618,6 +15618,17 @@ F:	sound/soc/
+ F:	include/dt-bindings/sound/
+ F:	include/sound/soc*
+ 
++SOUND - SOUND OPEN FIRMWARE (SOF) DRIVERS
++M:	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
++M:	Liam Girdwood <lgirdwood@gmail.com>
++M:	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
++M:	Kai Vehmanen <kai.vehmanen@linux.intel.com>
++M:	Daniel Baluta <daniel.baluta@nxp.com>
++L:	sound-open-firmware@alsa-project.org (moderated for non-subscribers)
++W:	https://github.com/thesofproject/linux/
++S:	Supported
++F:	sound/soc/sof/
++
+ SOUNDWIRE SUBSYSTEM
+ M:	Vinod Koul <vkoul@kernel.org>
+ M:	Sanyog Kale <sanyog.r.kale@intel.com>
+-- 
+2.17.1
 
-> I would still like to make sure we have an broadbrush idea of what the 2nd
-> step might be. It seems to me it's not possible to avoid having a notion of
-> source/sink inside of a dailink (the wording is probably not right e.g. for
-> full duplex, maybe domain1/domain2 component1/component2 are more accurate).
-> The dais are exposed by different components and are really the hook by
-> which the components can be configured with compatible settings.
-
-We at least have the notion of clock master but that's something that
-could potentially vary at runtime so not stable.  Like you say finding
-appropriate language to talk about these things is tricky and I'm also
-struggling to think of anything better than numbered components.
-
---cVp8NMj01v+Em8Se
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5pG4kACgkQJNaLcl1U
-h9CkFgf/RL9HA2SbZ03JjCO0lZui4M7pwCNp2X6DEVJMnUKypgwRkqzRQypkJkV7
-0bBRLqiyVOTOY35q0rKFaH9m7yw6sgzglfh9g+nzXyDYCRf3wSJpiU1cn6VFYRjz
-u8iiptR3URJPElah+wX+f8zTsKdSr/vhjdwXPMX4lsHegyTbO6fvioAUP5qX5NCc
-x+PMa0YkTNxp65sdyPqb59twovPcvH2efabdQEqp3WIbPs/DzqlPKcDfBtQqZT2y
-ORefu7l4MA+UJJFmVGgY/N4tGwoperBkhYiWmS/YLHrEbMQh4FaNqr+fk9yO8PqA
-6rFtHiUU+10Wjhv/1TXQDLQK4hbDEA==
-=/iQW
------END PGP SIGNATURE-----
-
---cVp8NMj01v+Em8Se--
