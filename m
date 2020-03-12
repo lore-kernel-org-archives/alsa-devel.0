@@ -2,108 +2,99 @@ Return-Path: <SRS0=Zr1M=45=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB9EFC10DCE
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 17:00:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 83CDCC2BB1D
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 17:31:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 574BC206FA
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 17:00:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D9F9120724
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 17:31:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VWr0c4r2";
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="SEyYl1P1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 574BC206FA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MJMiZ7Du";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g6RAegYu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D9F9120724
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A97E7172B;
-	Thu, 12 Mar 2020 17:59:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A97E7172B
+	by alsa0.perex.cz (Postfix) with ESMTPS id D55A7171B;
+	Thu, 12 Mar 2020 18:30:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D55A7171B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584032426;
-	bh=PRiQnZFTwMWhPThZMRl4E0CvnyXDVZyQwj5HtZxeF7g=;
-	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
+	s=default; t=1584034302;
+	bh=oPBEH1UuTE5mhosr860CYrNrZPhGotiaK2icJxvvAV0=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VWr0c4r29AuiCehQmKoldkGp6plJ/THy9cPOOMXpPPHTBOb5asX9covz8aXsbWMKZ
-	 jQL1cZRuOhMt75LD7UTrC7+WJ4bS7BW4gN6F7v5XORQE4XoaqaL7+natT4S2JFeNV1
-	 UEuEqtpC5R5iwrzWMwNVuc8Z6ZeLzfqu8TWqP7Wk=
+	b=MJMiZ7DuzM8bGZaKKX1coPAHwMWkNN9ivkNla8i/QunVIQB56VAAF9ZncI6yJyPNf
+	 HKqEEAu4b+8QMaDtCMBLnh055sat9P8oreyBJ+JEPp5kRkcqMQA7C+nSSZqmVvDx/7
+	 NuJE+w9g0X7Dvi0rxU6HWmwYhn+BJkgwlB/bbp94=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 27B99F801D9;
-	Thu, 12 Mar 2020 17:59:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 516F1F8013E;
+	Thu, 12 Mar 2020 18:30:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A09C3F8020C; Thu, 12 Mar 2020 17:59:34 +0100 (CET)
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com
- [IPv6:2a00:1450:4864:20::442])
+ id 00732F800BE; Thu, 12 Mar 2020 18:30:50 +0100 (CET)
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
+ [IPv6:2a00:1450:4864:20::443])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AE660F8013E
- for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2020 17:59:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE660F8013E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8FF05F8013E
+ for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2020 18:30:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8FF05F8013E
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="SEyYl1P1"
-Received: by mail-wr1-x442.google.com with SMTP id m9so8395666wro.12
- for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2020 09:59:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=subject:to:references:from:message-id:date:user-agent:mime-version
- :in-reply-to:content-language:content-transfer-encoding;
- bh=nQC0QSzFNBjeDFgkasDXcXEkr8IK6cRuABug8n4HpyY=;
- b=SEyYl1P17U723AAa+CbznLSA1uyOrnLUfVk1NNG23zxnCcAGG9rAtjiv3FevqOfdf/
- u+/UQSk72yceMW65Ir5wjscdMBuxIoTu/zT1/k1q6JXUJoycBOLqqaFj/kGjqeYA7M14
- D5/Qfq5zW/x8JkjiWQIIqxvj9mL52fZ82FKOj2Q+zR3Zq5Egw3ApSCb7JLMBp41Wwgyu
- G8hSeY8oZBzc7qS7UECsz2QtI4oJEe/akxiNyk90adBToog6GAo/qxGNjrDp0weVWczl
- RR4qVBmdowZm6gKlFJNNRVJXmQYAbiKF1kc2O2+WvebXV0VAXnzSS5/SyGPrLI7Dwm9J
- nlmQ==
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="g6RAegYu"
+Received: by mail-wr1-x443.google.com with SMTP id 6so8559700wre.4
+ for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2020 10:30:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references;
+ bh=x3OsNYo4WOFc4e3N45xENkSPMvXkKhjC6Ed5es5ifqc=;
+ b=g6RAegYueXWuES+iYPK9Gx7ix10quTgc1ud5mKsYb3JnooppxE0lL1gjlhqcSCzaQj
+ J/HpKmkgG1HkW6I6eDyzTS7nsc0xqLs9o0Ew4C14V6N+HogqAbYe4OtujhizuUqlpZR5
+ rulWdJPyPze13u9HQ9NENF7fALTj1bdbjZDh92TloU9d78F3K8M1khhOakADPAZEffjL
+ WquoKWFqAFPYlEHDxJp2bOoe38p89iKuifCU82U5+NdiB3jpZFc6lwfRNiWw8pAi3q0v
+ LpnjMSR7EfUQfh8nsNXo+Xg/U2LR+yOVrAVKlQWtk0IuJWsUkKXk8w+1EXbtNOcTURHT
+ hCeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=nQC0QSzFNBjeDFgkasDXcXEkr8IK6cRuABug8n4HpyY=;
- b=R4U3R6rgHe8bXE/ReVs8DS+wSvO2WVKYEFpAkvYBvY9LZ9b7Qh91jOn2v5l1EXB2IH
- Sg4z5PjnqHneX3DwuxUaCMa3d6mYbP4z8ogaCDA52Yjq6blDnjAtS9OOfTzlgP/ez5pK
- hivjbIckl7v7yoWrI+xZcVSNxBjY0P2cZbX0E7gFbAS2kHk6n02ZFnS5icGPC1Y/x8XD
- QMs5OGUDIW2JYJID2zab+96VUBAF9VNYl4xkUwUpi7+qCNpWa3un65yJsa+LV3+O/gdC
- YN+KRD8VsesAySi5MkwhXPm+J7leo7huuysBHosEpeelOrkGNOLJOqtpAjcPlkFKlTkh
- ekgQ==
-X-Gm-Message-State: ANhLgQ1lwrvdOdLjhQyCleOaii8SUA3dVBLbYgBNSQ+G8Lq17hXE5gfA
- cCpIZc+6NYAzi08l/kpyjxjsMw==
-X-Google-Smtp-Source: ADFU+vtsjvk5wo4ek2GJmozMoUUD/QFXQN2Lb/I85PUHa/iiHKI/CHcnqR1KBbMsE0qJbK4lelEbSA==
-X-Received: by 2002:a5d:46cc:: with SMTP id g12mr11829040wrs.42.1584032369018; 
- Thu, 12 Mar 2020 09:59:29 -0700 (PDT)
-Received: from [192.168.86.34]
- (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
- by smtp.googlemail.com with ESMTPSA id 7sm1714719wmf.20.2020.03.12.09.59.27
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references;
+ bh=x3OsNYo4WOFc4e3N45xENkSPMvXkKhjC6Ed5es5ifqc=;
+ b=bPLaf9SbyK+xjy/MH1labZ5edMnk0GoPeJiKe2apWzsC3XOLWI5nyfx3Urdn4jo9wU
+ 2POyLnOOC9KMn0tqMJz5rw1HFYuzy8aGOLIWs9+qj6Nya2cf6smqp7OFXlgksR+x+9jn
+ lgw31wFAPWeZGnGjschvwXNcsjFy/PgEWEvaflK5m1KitsjlP3DvC9NcNDaemgkE0B7w
+ wwXTZjfVlD5M7s5c0MuKsbX3RxKZqM8SmVvChZDNJv9mQXIk8H4l3BZ/I9jRTNSVUM9K
+ /8Ggzk9WXylZwj6qXdn2ZyBr1xzctxUYDv863VI+RL9wOFXdpGNylTjPt485N9EI5JYJ
+ 0bjQ==
+X-Gm-Message-State: ANhLgQ2gJ9aTxgDfyugh1g3QBOwRWA/eLxhMxa4ax8J/GssSOOiPNobM
+ z8Cu9Omn+CU32+KmvQalnrY=
+X-Google-Smtp-Source: ADFU+vuaSKw7SYbH880phKppaz4MtvoEjwN3be8Iip/jpwF5n3XHQkpzzWFily55uljws4EM4ziA8A==
+X-Received: by 2002:a5d:6908:: with SMTP id t8mr12459365wru.92.1584034246665; 
+ Thu, 12 Mar 2020 10:30:46 -0700 (PDT)
+Received: from debian.home (ip51ccf9cd.speed.planet.nl. [81.204.249.205])
+ by smtp.gmail.com with ESMTPSA id x24sm13170222wmc.36.2020.03.12.10.30.45
  (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Thu, 12 Mar 2020 09:59:28 -0700 (PDT)
-Subject: Re: mmotm 2020-03-11-21-11 uploaded (sound/soc/codecs/wcd9335.c)
-To: Randy Dunlap <rdunlap@infradead.org>,
- Andrew Morton <akpm@linux-foundation.org>, broonie@kernel.org,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
- mm-commits@vger.kernel.org, sfr@canb.auug.org.au,
- moderated for non-subscribers <alsa-devel@alsa-project.org>,
- masahiroy@kernel.org
-References: <20200312041232.wBVu2sBcq%akpm@linux-foundation.org>
- <c6c4e6fb-30f3-60a1-6bc0-25daa84d479d@infradead.org>
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <a8343b1f-7e87-d34d-a71b-86d20a8a3aff@linaro.org>
-Date: Thu, 12 Mar 2020 16:59:27 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <c6c4e6fb-30f3-60a1-6bc0-25daa84d479d@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+ Thu, 12 Mar 2020 10:30:46 -0700 (PDT)
+From: Johan Jonker <jbx6244@gmail.com>
+To: lgirdwood@gmail.com
+Subject: [PATCH v1 2/2] dt-bindings: sound: rockchip-spdif: add
+ #sound-dai-cells property
+Date: Thu, 12 Mar 2020 18:30:37 +0100
+Message-Id: <20200312173037.21477-2-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20200312173037.21477-1-jbx6244@gmail.com>
+References: <20200312173037.21477-1-jbx6244@gmail.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, heiko@sntech.de,
+ linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+ linux-rockchip@lists.infradead.org, broonie@kernel.org,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -119,96 +110,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Adding+ Masahiro Yamada for more inputs w.r.t kconfig.
+'#sound-dai-cells' is required to properly interpret
+the list of DAI specified in the 'sound-dai' property,
+so add them to 'rockchip-spdif.yaml'
 
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+---
+ Documentation/devicetree/bindings/sound/rockchip-spdif.yaml | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Kconfig side we have:
+diff --git a/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml b/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml
+index 45c6eea30..39aa0b4f7 100644
+--- a/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml
++++ b/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml
+@@ -59,6 +59,9 @@ properties:
+       The phandle of the syscon node for the GRF register.
+       Required property on RK3288.
+ 
++  "#sound-dai-cells":
++    const: 0
++
+ required:
+   - compatible
+   - reg
+@@ -67,6 +70,7 @@ required:
+   - clock-names
+   - dmas
+   - dma-names
++  - "#sound-dai-cells"
+ 
+ if:
+   properties:
+@@ -93,4 +97,5 @@ examples:
+       clock-names = "mclk", "hclk";
+       dmas = <&dmac1_s 8>;
+       dma-names = "tx";
++      #sound-dai-cells = <0>;
+     };
+-- 
+2.11.0
 
-config SND_SOC_ALL_CODECS
-         tristate "Build all ASoC CODEC drivers"
-         imply SND_SOC_WCD9335
-
-config SND_SOC_WCD9335
-         tristate "WCD9335 Codec"
-         depends on SLIMBUS
-	...
-
-The implied symbol SND_SOC_WCD9335 should be set based on direct 
-dependency, However in this case, direct dependency SLIMBUS=m where as 
-SND_SOC_WCD9335=y. I would have expected to be SND_SOC_WCD9335=m in this 
-case.
-
-Is this a valid possible case or a bug in Kconfig?
-
-
-Thanks,
-srini
-
-On 12/03/2020 15:03, Randy Dunlap wrote:
-> On 3/11/20 9:12 PM, Andrew Morton wrote:
->> The mm-of-the-moment snapshot 2020-03-11-21-11 has been uploaded to
->>
->>     http://www.ozlabs.org/~akpm/mmotm/
->>
->> mmotm-readme.txt says
->>
->> README for mm-of-the-moment:
->>
->> http://www.ozlabs.org/~akpm/mmotm/
->>
->> This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
->> more than once a week.
->>
->> You will need quilt to apply these patches to the latest Linus release (5.x
->> or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
->> http://ozlabs.org/~akpm/mmotm/series
->>
->> The file broken-out.tar.gz contains two datestamp files: .DATE and
->> .DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
->> followed by the base kernel version against which this patch series is to
->> be applied.
->>
->> This tree is partially included in linux-next.  To see which patches are
->> included in linux-next, consult the `series' file.  Only the patches
->> within the #NEXT_PATCHES_START/#NEXT_PATCHES_END markers are included in
->> linux-next.
->>
->>
->> A full copy of the full kernel tree with the linux-next and mmotm patches
->> already applied is available through git within an hour of the mmotm
->> release.  Individual mmotm releases are tagged.  The master branch always
->> points to the latest release, so it's constantly rebasing.
->>
->> 	https://github.com/hnaz/linux-mm
->>
->> The directory http://www.ozlabs.org/~akpm/mmots/ (mm-of-the-second)
->> contains daily snapshots of the -mm tree.  It is updated more frequently
->> than mmotm, and is untested.
->>
->> A git copy of this tree is also available at
->>
->> 	https://github.com/hnaz/linux-mm
-> 
-> 
-> on x86_64:
-> 
-> ld: sound/soc/codecs/wcd9335.o: in function `wcd9335_trigger':
-> wcd9335.c:(.text+0x451): undefined reference to `slim_stream_prepare'
-> ld: wcd9335.c:(.text+0x465): undefined reference to `slim_stream_enable'
-> ld: wcd9335.c:(.text+0x48f): undefined reference to `slim_stream_unprepare'
-> ld: wcd9335.c:(.text+0x4a3): undefined reference to `slim_stream_disable'
-> ld: sound/soc/codecs/wcd9335.o: in function `wcd9335_slim_status':
-> wcd9335.c:(.text+0x23df): undefined reference to `of_slim_get_device'
-> ld: wcd9335.c:(.text+0x2414): undefined reference to `slim_get_logical_addr'
-> ld: wcd9335.c:(.text+0x2427): undefined reference to `__regmap_init_slimbus'
-> ld: wcd9335.c:(.text+0x245f): undefined reference to `__regmap_init_slimbus'
-> ld: sound/soc/codecs/wcd9335.o: in function `wcd9335_hw_params':
-> wcd9335.c:(.text+0x3e05): undefined reference to `slim_stream_allocate'
-> ld: sound/soc/codecs/wcd9335.o: in function `wcd9335_slim_driver_init':
-> wcd9335.c:(.init.text+0x15): undefined reference to `__slim_driver_register'
-> ld: sound/soc/codecs/wcd9335.o: in function `wcd9335_slim_driver_exit':
-> wcd9335.c:(.exit.text+0x11): undefined reference to `slim_driver_unregister'
-> 
-> 
-> Full randconfig file is attached.
-> 
