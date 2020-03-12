@@ -2,66 +2,59 @@ Return-Path: <SRS0=Zr1M=45=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ADF44C10DCE
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 15:53:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE075C10DCE
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 15:58:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 39669206BE
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 15:53:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 70C06206BE
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 15:58:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="d18RYq0P"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 39669206BE
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EJRajRLa"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 70C06206BE
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6C48D1716;
-	Thu, 12 Mar 2020 16:52:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C48D1716
+	by alsa0.perex.cz (Postfix) with ESMTPS id D0A85171C;
+	Thu, 12 Mar 2020 16:57:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D0A85171C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584028384;
-	bh=E/VmV5iC61IZwUPt5So0SX5LorTk+KTHEOcj+aOABSw=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=d18RYq0PC4XbO1So6DK0yF2DE0KnlBTAWDU6QvxSaAXn02vJJdmGodIIiVeBU9yhY
-	 8ldJxo6f2wzXrFCrUzppJCkoL7m9MkySh7fugWXMcb4xyGwzSPbEad7HMgsl/UI+2I
-	 0Qy+le7fvT/FWaCc71bNQVuAH7t9qkKo19cQvDqk=
+	s=default; t=1584028705;
+	bh=ivc8FuMihzLzLsyBxgx9MXhJnzyQTWM7L6UL6JH9mPc=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=EJRajRLa34oGj3ID9kB8FlyRRCghYNWD0EgORi3WCMem9vq9tlRLTA2k2PTg9i0kp
+	 wsTKUJAJxkGmadlCIoAYbi0iC/2EgycQg+vb4d9z/OMrV86GftCGwINWBtORGgPBow
+	 9jfaY6qvaXFTzeXg+F7RD4HLAT8U/ncEmJ6gk2qI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DF513F801D9;
-	Thu, 12 Mar 2020 16:52:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 51E0FF801D9;
+	Thu, 12 Mar 2020 16:57:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 63161F8020C; Thu, 12 Mar 2020 16:52:11 +0100 (CET)
+ id 0D3DFF800BE; Thu, 12 Mar 2020 16:57:34 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A3F1CF800BE
- for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2020 16:52:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3F1CF800BE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 75706F800BE
+ for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2020 16:57:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75706F800BE
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id A0C70ADE8;
- Thu, 12 Mar 2020 15:52:06 +0000 (UTC)
-Date: Thu, 12 Mar 2020 16:52:06 +0100
-Message-ID: <s5htv2tefkp.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id B57A2AB6D
+ for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2020 15:57:30 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
-To: syzbot <syzbot+2a59ee7a9831b264f45e@syzkaller.appspotmail.com>
-Subject: Re: linux-next test error: WARNING in snd_pcm_plug_alloc
-In-Reply-To: <000000000000488d2805a0aa449c@google.com>
-References: <000000000000488d2805a0aa449c@google.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, tiwai@suse.com,
- syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: pcm: oss: Remove WARNING from snd_pcm_plug_alloc()
+ checks
+Date: Thu, 12 Mar 2020 16:57:30 +0100
+Message-Id: <20200312155730.7520-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,87 +70,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 12 Mar 2020 16:47:14 +0100,
-syzbot wrote:
-> 
-> Hello,
-> 
-> syzbot found the following crash on:
-> 
-> HEAD commit:    407b0a62 Add linux-next specific files for 20200312
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=14dd6545e00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=d644875269fc730b
-> dashboard link: https://syzkaller.appspot.com/bug?extid=2a59ee7a9831b264f45e
-> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> 
-> Unfortunately, I don't have any reproducer for this crash yet.
-> 
-> IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> Reported-by: syzbot+2a59ee7a9831b264f45e@syzkaller.appspotmail.com
-> 
-> ------------[ cut here ]------------
-> WARNING: CPU: 0 PID: 8559 at sound/core/oss/pcm_plugin.c:126 snd_pcm_plug_alloc+0x29a/0x330 sound/core/oss/pcm_plugin.c:126
+The return value checks in snd_pcm_plug_alloc() are covered with
+snd_BUG_ON() macro that may trigger a kernel WARNING depending on the
+kconfig.  But since the error condition can be triggered by a weird
+user space parameter passed to OSS layer, we shouldn't give the kernel
+stack trace just for that.  As it's a normal error condition, let's
+remove snd_BUG_ON() macro usage there.
 
-This looks like rather a spurious WARNING(), we can get rid of
-snd_BUG_ON() usage there, as the condition can be triggered by the
-user-space parameter change.
+Reported-by: syzbot+2a59ee7a9831b264f45e@syzkaller.appspotmail.com
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/oss/pcm_plugin.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/sound/core/oss/pcm_plugin.c b/sound/core/oss/pcm_plugin.c
+index c9401832967c..752d078908e9 100644
+--- a/sound/core/oss/pcm_plugin.c
++++ b/sound/core/oss/pcm_plugin.c
+@@ -111,7 +111,7 @@ int snd_pcm_plug_alloc(struct snd_pcm_substream *plug, snd_pcm_uframes_t frames)
+ 		while (plugin->next) {
+ 			if (plugin->dst_frames)
+ 				frames = plugin->dst_frames(plugin, frames);
+-			if (snd_BUG_ON((snd_pcm_sframes_t)frames <= 0))
++			if ((snd_pcm_sframes_t)frames <= 0)
+ 				return -ENXIO;
+ 			plugin = plugin->next;
+ 			err = snd_pcm_plugin_alloc(plugin, frames);
+@@ -123,7 +123,7 @@ int snd_pcm_plug_alloc(struct snd_pcm_substream *plug, snd_pcm_uframes_t frames)
+ 		while (plugin->prev) {
+ 			if (plugin->src_frames)
+ 				frames = plugin->src_frames(plugin, frames);
+-			if (snd_BUG_ON((snd_pcm_sframes_t)frames <= 0))
++			if ((snd_pcm_sframes_t)frames <= 0)
+ 				return -ENXIO;
+ 			plugin = plugin->prev;
+ 			err = snd_pcm_plugin_alloc(plugin, frames);
+-- 
+2.16.4
 
-Takashi
-
-> Kernel panic - not syncing: panic_on_warn set ...
-> CPU: 0 PID: 8559 Comm: syz-fuzzer Not tainted 5.6.0-rc5-next-20200312-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:77 [inline]
->  dump_stack+0x188/0x20d lib/dump_stack.c:118
->  panic+0x2e3/0x75c kernel/panic.c:221
->  __warn.cold+0x2f/0x35 kernel/panic.c:582
->  report_bug+0x27b/0x2f0 lib/bug.c:195
->  fixup_bug arch/x86/kernel/traps.c:175 [inline]
->  fixup_bug arch/x86/kernel/traps.c:170 [inline]
->  do_error_trap+0x12b/0x220 arch/x86/kernel/traps.c:267
->  do_invalid_op+0x32/0x40 arch/x86/kernel/traps.c:286
->  invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
-> RIP: 0010:snd_pcm_plug_alloc+0x29a/0x330 sound/core/oss/pcm_plugin.c:126
-> Code: ff ff 45 31 e4 e8 d6 4d 7f fb 44 89 e0 5b 5d 41 5c 41 5d 41 5e c3 e8 c5 4d 7f fb 0f 0b 41 bc fa ff ff ff eb e0 e8 b6 4d 7f fb <0f> 0b 41 bc fa ff ff ff eb d1 e8 a7 4d 7f fb 0f 0b 41 bc fa ff ff
-> RSP: 0018:ffffc90002317b88 EFLAGS: 00010293
-> RAX: ffff888093a7c200 RBX: ffff8880a4086000 RCX: ffffffff85f37886
-> RDX: 0000000000000000 RSI: ffffffff85f37a0a RDI: 0000000000000007
-> RBP: 0000000000000000 R08: ffff888093a7c200 R09: ffffed10132a791f
-> R10: ffff88809953c8f3 R11: ffffed10132a791e R12: ffff8880a4086058
-> R13: dffffc0000000000 R14: 0000000000000000 R15: ffff88809953c800
->  snd_pcm_oss_change_params_locked+0x1c05/0x34b0 sound/core/oss/pcm_oss.c:1021
->  snd_pcm_oss_change_params+0x76/0xd0 sound/core/oss/pcm_oss.c:1084
->  snd_pcm_oss_make_ready+0xb7/0x170 sound/core/oss/pcm_oss.c:1143
->  snd_pcm_oss_sync.isra.0+0x1be/0x7d0 sound/core/oss/pcm_oss.c:1708
->  snd_pcm_oss_release+0x210/0x280 sound/core/oss/pcm_oss.c:2546
->  __fput+0x2da/0x850 fs/file_table.c:280
->  task_work_run+0xf4/0x1b0 kernel/task_work.c:123
->  tracehook_notify_resume include/linux/tracehook.h:188 [inline]
->  exit_to_usermode_loop+0x2fa/0x360 arch/x86/entry/common.c:165
->  prepare_exit_to_usermode arch/x86/entry/common.c:196 [inline]
->  syscall_return_slowpath arch/x86/entry/common.c:279 [inline]
->  do_syscall_64+0x6b1/0x7d0 arch/x86/entry/common.c:305
->  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> RIP: 0033:0x4afb40
-> Code: 8b 7c 24 10 48 8b 74 24 18 48 8b 54 24 20 49 c7 c2 00 00 00 00 49 c7 c0 00 00 00 00 49 c7 c1 00 00 00 00 48 8b 44 24 08 0f 05 <48> 3d 01 f0 ff ff 76 20 48 c7 44 24 28 ff ff ff ff 48 c7 44 24 30
-> RSP: 002b:000000c000213588 EFLAGS: 00000212 ORIG_RAX: 0000000000000003
-> RAX: 0000000000000000 RBX: 000000c00002c000 RCX: 00000000004afb40
-> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000003
-> RBP: 000000c0002135c8 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000212 R12: 0000000000000006
-> R13: 0000000000000005 R14: 0000000000000200 R15: 0000000000000000
-> Kernel Offset: disabled
-> Rebooting in 86400 seconds..
-> 
-> 
-> ---
-> This bug is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this bug report. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> 
