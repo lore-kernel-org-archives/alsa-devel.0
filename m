@@ -2,61 +2,72 @@ Return-Path: <SRS0=Zr1M=45=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 800C0C1975A
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 13:13:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BD2FC10DCE
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 19:35:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 092622067C
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 13:13:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0966B20724
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 19:35:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ek5QcUQ3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 092622067C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EVLZ9VRs"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0966B20724
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5518A16E5;
-	Thu, 12 Mar 2020 14:12:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5518A16E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 502031725;
+	Thu, 12 Mar 2020 20:34:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 502031725
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584018826;
-	bh=Q19RzE4raSm0pL7HXduR5Cd0zhjjliYs/iLQ5vH/Vhk=;
-	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=ek5QcUQ3VEaBrTXyXUBcTvSz3Eb9phn/0F3v0F/r1XAi1kRtF0tjQ+I/QXVLdBVN0
-	 WO+BsYyxyv5Mkn38ko7nLqJeKy5ZlBrwObv9L4UuGXEy6hCTgJN3AsN7dCVe/RQzK5
-	 MJb5j7ztoDLEYtmQi5HN2lzHvDZRz/jXM5f+zIaY=
+	s=default; t=1584041699;
+	bh=0WUpJUOyqZHlDSBF7abuY5J23vQ+Ccws/uGPli0qGBY=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=EVLZ9VRsM7K3eAgP9MiOUMh26UXcNnK9+5fE8qusAXXAEePMK53QNvDxLmSwnCzkl
+	 FjfunXOGkJCmybY5h9Cuf3iB8DUvFrpdCtJkXYzNvfRMiC8LejCU0IQUKj1dGZJBv8
+	 ebITUH3zOgKhjvEVW5NLHiNt1bUPjFD7jeQqaTlo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DE6E9F80086;
-	Thu, 12 Mar 2020 14:12:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9D844F801D9;
+	Thu, 12 Mar 2020 20:34:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 06386F8020C; Thu, 12 Mar 2020 14:12:54 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 77BF6F80086
- for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2020 14:12:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77BF6F80086
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D7F7330E;
- Thu, 12 Mar 2020 06:12:49 -0700 (PDT)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5AE283F534;
- Thu, 12 Mar 2020 06:12:49 -0700 (PDT)
-Date: Thu, 12 Mar 2020 13:12:47 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Applied "ASoC: SOF: Intel: Fix stream cleanup on hw free" to the asoc
- tree
-In-Reply-To: 
-Message-Id: 
-X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+ id 388FEF8020C; Thu, 12 Mar 2020 20:34:07 +0100 (CET)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8CC81F800BE
+ for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2020 20:34:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8CC81F800BE
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 12 Mar 2020 12:33:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,545,1574150400"; d="scan'208";a="243142313"
+Received: from unknown (HELO pbossart-mobl3.amr.corp.intel.com)
+ ([10.251.241.169])
+ by orsmga003.jf.intel.com with ESMTP; 12 Mar 2020 12:33:58 -0700
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 00/10] ASoC: SOF: Intel: add SoundWire support
+Date: Thu, 12 Mar 2020 14:33:36 -0500
+Message-Id: <20200312193346.3264-1-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.de,
+ gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Hui Wang <hui.wang@canonical.com>, vkoul@kernel.org, broonie@kernel.org,
+ srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
+ Bard liao <yung-chuan.liao@linux.intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -71,71 +82,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20200312131247.fE_2LXoUNUB_JNTeAT8Yo3aNZbG5pL_rwMuHfqSYrkA@z>
 
-The patch
+This patchset provides the support for SoundWire support on Intel
+CometLake, IcelLake and TigerLake RVP platforms and form-factor
+devices to be released 'soon'.
 
-   ASoC: SOF: Intel: Fix stream cleanup on hw free
+The bulk of the code is about detecting a valid SoundWire
+configuration from ACPI, and implementing the interfaces suggested in
+'[PATCH 0/8] soundwire: remove platform devices, add SOF interfaces'
+for interrupts, PCI wakes and clock-stop configurations.
 
-has been applied to the asoc tree at
+Since that SoundWire series is stuck with no resolution, the build
+support for SOF w/ SoundWire is not provided for now, and fall-back
+functions will be used. This code is tested on a daily basis in the
+SOF tree and is not expected to change. If audio maintainers will only
+accept functional code, which isn't unreasonable, I would kindly ask
+that they reach out to Vinod Koul.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Bard Liao (1):
+  ASoC: SOF: Intel: hda: merge IPC, stream and SoundWire interrupt
+    handlers
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Pierre-Louis Bossart (7):
+  ASoC: soc-acpi: expand description of _ADR-based devices
+  ASoC: SOF: Intel: add SoundWire configuration interface
+  ASoC: SOF: IPC: dai-intel: move ALH declarations in header file
+  ASoC: SOF: Intel: hda: add SoundWire stream config/free callbacks
+  ASoC: SOF: Intel: hda: initial SoundWire machine driver autodetect
+  ASoC: SOF: Intel: hda: disable SoundWire interrupts on suspend
+  ASoC: SOF: Intel: hda: add parameter to control SoundWire clock stop
+    quirks
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Rander Wang (2):
+  ASoC: SOF: Intel: hda: add WAKEEN interrupt support for SoundWire
+  Asoc: SOF: Intel: hda: check SoundWire wakeen interrupt in irq thread
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+ include/sound/soc-acpi.h                      |  39 +-
+ include/sound/sof/dai-intel.h                 |  18 +-
+ .../intel/common/soc-acpi-intel-cml-match.c   |  87 +++-
+ .../intel/common/soc-acpi-intel-icl-match.c   |  97 ++++-
+ .../intel/common/soc-acpi-intel-tgl-match.c   |  49 ++-
+ sound/soc/sof/intel/hda-dsp.c                 |   2 +
+ sound/soc/sof/intel/hda-loader.c              |  31 ++
+ sound/soc/sof/intel/hda.c                     | 399 ++++++++++++++++++
+ sound/soc/sof/intel/hda.h                     |  66 +++
+ 9 files changed, 728 insertions(+), 60 deletions(-)
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
 
-Thanks,
-Mark
-
-From 16dcefc23eefda57ee705dcffba67f1bd42c01bc Mon Sep 17 00:00:00 2001
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-Date: Thu, 12 Mar 2020 13:00:58 +0100
-Subject: [PATCH] ASoC: SOF: Intel: Fix stream cleanup on hw free
-
-Field "substream" gets assigned during stream setup in
-hda_dsp_pcm_hw_params() but it is never cleared afterwards during
-cleanup procedure. Now, any non-pcm operation e.g.: compress can
-mistakenly make use of that pointer as it's bypassing all
-"if (s->substream)" checks.
-
-Nulling the pointer during hw_free operation ensures no wild pointers
-are left behind.
-
-Fixes: cdae3b9a47aa ("ASoC: SOF: Intel: Add Intel specific HDA PCM operations")
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200312120058.15057-1-cezary.rojewski@intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sof/intel/hda-stream.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/sound/soc/sof/intel/hda-stream.c b/sound/soc/sof/intel/hda-stream.c
-index c0ab9bb2a797..d2234f802788 100644
---- a/sound/soc/sof/intel/hda-stream.c
-+++ b/sound/soc/sof/intel/hda-stream.c
-@@ -547,6 +547,8 @@ int hda_dsp_stream_hw_free(struct snd_sof_dev *sdev,
- 					SOF_HDA_REG_PP_PPCTL, mask, 0);
- 	spin_unlock_irq(&bus->reg_lock);
- 
-+	stream->substream = NULL;
-+
- 	return 0;
- }
- 
+base-commit: 101247a3b86e1cc0e382b7e887a56176290fc957
 -- 
 2.20.1
 
