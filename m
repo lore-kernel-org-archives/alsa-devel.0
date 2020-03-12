@@ -2,75 +2,65 @@ Return-Path: <SRS0=Zr1M=45=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DD96C10DCE
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 11:46:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 214DFC10DCE
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 11:48:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1F5002071B
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 11:46:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 92AA520738
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 11:48:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="i1+MnOWJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1F5002071B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="auwwKdE2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 92AA520738
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7BB6816D5;
-	Thu, 12 Mar 2020 12:45:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7BB6816D5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0190116DA;
+	Thu, 12 Mar 2020 12:47:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0190116DA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584013599;
-	bh=aCjkl9gpkU1+eEZ2W0KpBz71vInbaGYi3LZv/ytc4JE=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=i1+MnOWJwy2HS+mXmwK71cczoXAUe2LrHZhk2ifCmSZ/RVQn8PNXIDpvedjzRltyG
-	 6xlIhwgVexkrYk5Pd7jsNFW2J/J2OQ6umP3PyL2d/S0RJ4lgx/vLOr4J8vOGsW5nbk
-	 5fdAUnFWXuNZmF61pPysmkoTnpSXas1lxfCEj30c=
+	s=default; t=1584013680;
+	bh=zamNgFLHdNKz5knZsp6dPQgYjhZo6HVkR9TtUdlF2DE=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=auwwKdE2wD3OFEPJXusJhFTu1KesGdUF0qnSNzMhKoYysEXVxZyr5jiMawSmOjs7H
+	 2ObOfvClNGrgeElMC0dsNua+sXHYUiSPCbeBQ5sY+PTbWHOs/S06xTZl+ynrb+f8uB
+	 Phjhxa36MXpRkr4sKUU5grUd8I32O+fyQYylubG4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 05D93F801D9;
-	Thu, 12 Mar 2020 12:45:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8CB9AF8021C;
+	Thu, 12 Mar 2020 12:47:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 85B6FF8020C; Thu, 12 Mar 2020 12:45:47 +0100 (CET)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ id 6A4AAF8023F; Thu, 12 Mar 2020 12:47:07 +0100 (CET)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F14EFF800BE;
- Thu, 12 Mar 2020 12:45:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F14EFF800BE
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6E61BF8013E
+ for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2020 12:47:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E61BF8013E
+X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
- by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 12 Mar 2020 04:45:40 -0700
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+ by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 12 Mar 2020 04:47:01 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,544,1574150400"; d="scan'208";a="322447053"
-Received: from gliakhov-mobl2.ger.corp.intel.com (HELO ubuntu) ([10.249.40.3])
- by orsmga001.jf.intel.com with ESMTP; 12 Mar 2020 04:45:38 -0700
-Date: Thu, 12 Mar 2020 12:45:37 +0100
-From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/3] [RESEND] ASoC: SOF: preparatory patches
-Message-ID: <20200312114536.GA15167@ubuntu>
-References: <20200309170749.32313-1-guennadi.liakhovetski@linux.intel.com>
- <9cfc4182-1f22-9f28-52d8-f8aac1f7bc0b@linux.intel.com>
- <20200310125055.GF4106@sirena.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200310125055.GF4106@sirena.org.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- sound-open-firmware@alsa-project.org
+X-IronPort-AV: E=Sophos;i="5.70,544,1574150400"; d="scan'208";a="443898812"
+Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
+ by fmsmga006.fm.intel.com with ESMTP; 12 Mar 2020 04:46:59 -0700
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH v2] ASoC: SOF: Intel: Fix stream cleanup on pcm close
+Date: Thu, 12 Mar 2020 12:46:54 +0100
+Message-Id: <20200312114654.14260-1-cezary.rojewski@intel.com>
+X-Mailer: git-send-email 2.17.1
+Cc: lgirdwood@gmail.com, Cezary Rojewski <cezary.rojewski@intel.com>,
+ broonie@kernel.org, tiwai@suse.com, pierre-louis.bossart@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,36 +76,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+Field "substream" gets assigned during stream setup in
+hda_dsp_pcm_hw_params() but it is never cleared afterwards during
+cleanup procedure. Now, any non-pcm operation e.g.: compress can
+mistakenly make use of that pointer as it's bypassing all
+"if (s->substream)" checks.
 
-On Tue, Mar 10, 2020 at 12:50:56PM +0000, Mark Brown wrote:
-> On Mon, Mar 09, 2020 at 05:05:06PM -0500, Pierre-Louis Bossart wrote:
-> 
-> > To get a better picture of the directions, reviewers are invited to take a
-> > look at the in-depth documentation written by Guennadi since the initial
-> > patches were shared. This documentation was reviewed by Liam and me and is
-> > really required to understand the concepts:
-> 
-> > https://thesofproject.github.io/latest/developer_guides/virtualization/virtualization.html
-> 
-> How does this relate to the virtio audio spec that's currently under
-> review?
+Nulling the pointer during close operation ensures no wild pointers are
+left behind.
 
-The spec under discussion is only for simple audio virtualisation with fixed 
-roles and topologies. With our approach guests get access to advanced DSP 
-capabilities. The virtualisation approach under discussion can be a fallback 
-for cases when no DSP has been detected on the host.
+Fixes: cdae3b9a47aa ("ASoC: SOF: Intel: Add Intel specific HDA PCM operations")
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+---
 
-> It looks to be doing something much lower level than that.
-> I am concerned that this looks to be exposing DPCM as a virtio ABI,
-> we're trying to replace it as an internal API never mind ABI.
+Changes in v2:
+- relocated stream->substream assignment from _pcm_close() to _hw_free()
 
-You mean that our approach works at the widget level, which is a part of the 
-DPCM API? Well there is a translation layer between our ABI and DPCM. And by 
-virtue of the same argument don't we already have DPCM as an ABI on the 
-opposite side of SOF - in its IPC ABI? Largely this virtualisation approach 
-doesn't add new interfaces, it re-uses the SOF IPC ABI, which is also one of 
-its advantages.
 
-Thanks
-Guennadi
+ sound/soc/sof/intel/hda-stream.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sound/soc/sof/intel/hda-stream.c b/sound/soc/sof/intel/hda-stream.c
+index 7daa913dbde0..5d386956906f 100644
+--- a/sound/soc/sof/intel/hda-stream.c
++++ b/sound/soc/sof/intel/hda-stream.c
+@@ -547,6 +547,8 @@ int hda_dsp_stream_hw_free(struct snd_sof_dev *sdev,
+ 					SOF_HDA_REG_PP_PPCTL, mask, 0);
+ 	spin_unlock_irq(&bus->reg_lock);
+ 
++	stream->substream = NULL;
++
+ 	return 0;
+ }
+ 
+-- 
+2.17.1
+
