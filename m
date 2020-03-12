@@ -6,65 +6,60 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 411D1C0044D
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 01:18:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 54F4EC0044D
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 01:21:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 053B0206F7
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 01:18:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3AD8720734
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 01:21:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="unA7Wm5f"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 053B0206F7
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KKIgXPQA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3AD8720734
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0E09916A8;
-	Thu, 12 Mar 2020 02:17:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E09916A8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 651FA16A6;
+	Thu, 12 Mar 2020 02:20:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 651FA16A6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583975889;
-	bh=jTHRX304N9MUS2y4CszF0BdOISmJYKd/vTRxmWlbSI8=;
+	s=default; t=1583976102;
+	bh=fbFIwi705wupIEnOAdhtDuHnY3nPtOFpkLgdjPYFmmM=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=unA7Wm5fD2IKZMKiQ/rREsQXlC4DsWxY/T9tM8CfIJgT1VoElarCKOnTDAJt4vLLg
-	 Pg4iQfTU7JmnYRq5UX+8slb/5lr3/f/xO7ihb2Y5NLeTfjIpgJW10zAz9Qk7UyEDCY
-	 G1ODdVmG/jWTc5iqr/kh1ga0hCDTldHzckrDD/Xk=
+	b=KKIgXPQAcZUkvRvIUKPoZGPMpZ7t5/tBsZOOTjPj4gNt0rSZ/RcJgvgmO+21bbg3g
+	 S0sGnrttNIgad+jqBnzJg1DZUOjJL897qlFBnJetuklw/xYwmMHRb0yWwsXxDSQaOc
+	 ruR+9pHU/lnPRzDf+9Hyw73uKgjoO+dyFKNdzYUw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8414DF801A3;
-	Thu, 12 Mar 2020 02:17:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E3219F80141;
+	Thu, 12 Mar 2020 02:20:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0E9B4F801EB; Thu, 12 Mar 2020 02:17:16 +0100 (CET)
+ id 47388F801EB; Thu, 12 Mar 2020 02:20:50 +0100 (CET)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 1A920F80141
- for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2020 02:17:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A920F80141
-Date: 12 Mar 2020 10:17:06 +0900
-X-IronPort-AV: E=Sophos;i="5.70,542,1574089200"; d="scan'208";a="41641199"
+ by alsa1.perex.cz (Postfix) with ESMTP id D8FF8F80141
+ for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2020 02:20:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8FF8F80141
+Date: 12 Mar 2020 10:20:42 +0900
+X-IronPort-AV: E=Sophos;i="5.70,542,1574089200"; d="scan'208";a="41641547"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 12 Mar 2020 10:17:06 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 12 Mar 2020 10:20:42 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 193744139174;
- Thu, 12 Mar 2020 10:17:06 +0900 (JST)
-Message-ID: <87blp2e5il.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 7B5F1413A737;
+ Thu, 12 Mar 2020 10:20:42 +0900 (JST)
+Message-ID: <87a74me5cl.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/7] ASoC: Merge CPU/Codec DAIs
-In-Reply-To: <20200311171033.GI5411@sirena.org.uk>
-References: <87y2s7vgxb.wl-kuninori.morimoto.gx@renesas.com>
- <03ac5f70-9aa3-b909-c693-caaa0afd09c9@linux.intel.com>
- <87k13rvd5g.wl-kuninori.morimoto.gx@renesas.com>
- <8e92f00a-6fb4-84e6-8e48-28b9913791c0@linux.intel.com>
- <20200311171033.GI5411@sirena.org.uk>
+Subject: Re: [PATCH v2 0/6] ASoC: Merge CPU/Codec DAIs
+In-Reply-To: <87eetz32qv.wl-kuninori.morimoto.gx@renesas.com>
+References: <87eetz32qv.wl-kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,39 +76,19 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark, Pierre-Louis
+Hi
 
-Thank you for your feedback
+> Kuninori Morimoto (6):
+>   ASoC: soc-core: Merge CPU/Codec DAIs
+>   ASoC: soc-core: Merge for_each_rtd_cpu/codec_dais()
+>   ASoC: soc-dapm: Merge for_each_rtd_cpu/codec_dais()
+>   ASoC: soc-pcm: Merge for_each_rtd_cpu/codec_dais()
+>   ASoC: soc-core: Merge CPU/Codec for soc_dai_pcm_new()
+>   ASoC: soc-pcm: Merge CPU/Codec MSB at soc_pcm_apply_msb()
 
-> > I would still like to make sure we have an broadbrush idea of what the 2nd
-> > step might be. It seems to me it's not possible to avoid having a notion of
-> > source/sink inside of a dailink (the wording is probably not right e.g. for
-> > full duplex, maybe domain1/domain2 component1/component2 are more accurate).
-> > The dais are exposed by different components and are really the hook by
-> > which the components can be configured with compatible settings.
-> 
-> We at least have the notion of clock master but that's something that
-> could potentially vary at runtime so not stable.  Like you say finding
-> appropriate language to talk about these things is tricky and I'm also
-> struggling to think of anything better than numbered components.
+Maybe nice to have ?
 
-If my understanding was correct,
-Lars-Peter's presentation at ELCE was using idea of "Bridge".
-This idea is not exist in current ALSA SoC,
-but current DAI can be updated to it ?
-Then, current notion can be udated also?
-I'm not 100% understanding how to update,
-how to use, etc, but my Image is...
-
-	sink     source
-	+---+	 +---+
-	|DAI|--->|DAI|
-	+---+	 +---+
-
-	    ---->
-	+------------+
-	|   Bridge   |
-	+------------+
+Link: https://lore.kernel.org/alsa-devel/87y2s7vgxb.wl-kuninori.morimoto.gx@renesas.com/
 
 Thank you for your help !!
 
