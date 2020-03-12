@@ -2,100 +2,95 @@ Return-Path: <SRS0=Zr1M=45=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4372AC10DCE
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 13:50:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 020C3C10DCE
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 13:59:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C2AA42067C
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 13:50:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7E83C206E7
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 13:59:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GEZX9Crl";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="noA+/Z1E"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C2AA42067C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="G8aGmbma";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel-com.20150623.gappssmtp.com header.i=@intel-com.20150623.gappssmtp.com header.b="CQ22swji"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7E83C206E7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 283BF16F2;
-	Thu, 12 Mar 2020 14:49:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 283BF16F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id D341816EF;
+	Thu, 12 Mar 2020 14:58:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D341816EF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584021008;
-	bh=fPgqpanMx36NoD3q5qdB4wlyAOPZrp3h4KxFVlbT1Ss=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1584021540;
+	bh=dysdb4Mqgb5qdZSooO0za60yCJ0ozymgk9JgxhcVm38=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GEZX9CrlFt6HnYC2qAhSFBSsfDotCBviJyTkP9ZN29KsIvXVXZOP9V8ieBXIuItoA
-	 CwtP3m/GHyT+88y9z+Q/YOMWAjE7ZzDA8b3I3GM4PzixclqRqctj0BS0+x5L34thLH
-	 fne0frjArv3Vm3R/a0IM/t2rzQg4N+sz14gXUO1Q=
+	b=G8aGmbmalKkHKtoSUYTfNfagga68uhvSsYWkNtBJyBLDSVGZ6wUb9KJqa6sp7xmuh
+	 gf2LknKOQLtSQ8EkOuKW8/tQX7DH4T1pCaz8KWitfzWFE/bQd5T6Lh2+06bcJ5yJZc
+	 sW2g3wEtnq1qlk8xFwBAZD0vnYMaa8SiOFZgmYgs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E8725F8028C;
-	Thu, 12 Mar 2020 14:48:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 70565F801D9;
+	Thu, 12 Mar 2020 14:58:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D1B33F801EB; Wed, 11 Mar 2020 18:43:36 +0100 (CET)
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com
- [IPv6:2a00:1450:4864:20::341])
+ id 797DBF8020C; Thu, 12 Mar 2020 14:58:09 +0100 (CET)
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com
+ [IPv6:2607:f8b0:4864:20::d44])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9AF28F800BE
- for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2020 18:43:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9AF28F800BE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 59081F80086
+ for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2020 14:58:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59081F80086
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="noA+/Z1E"
-Received: by mail-wm1-x341.google.com with SMTP id g62so3118352wme.1
- for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2020 10:43:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references;
- bh=2AsgLfDS4BH//bZzgWykwkfl2H5xfBl7A5I1f5MVUhg=;
- b=noA+/Z1EG3yGGgsXsC3y4RHI7uOm1qZ3feLx1mroJlFFWwEH4nPGzOdJY2WeYCDqko
- rfb5yFjjPfD6VFWhKPBS/cGHC6sJ/xh4uKadBsoJE7yhAW8VVNT5OnxXjUxP9NlSZkB6
- V9UFsnuCu25buJPjoWovmUTCGtLIlxBUE9oZTZX9YAyIRWr6g7FDSwNkP3SALevEnjdy
- X08kf2GRkmZ/F6jb9RlouPZAlvA44bxzRj0VROfW3N6OUFCUpzxY6hHBcdKWgk7Bguak
- OoSslOOoA9z0yf3oATpR/5CEB+uk4Z6HQHw0LEJztYZRESj67kK3amEz4RAZ8AiM1EyF
- sdvg==
+ dkim=pass (2048-bit key) header.d=intel-com.20150623.gappssmtp.com
+ header.i=@intel-com.20150623.gappssmtp.com header.b="CQ22swji"
+Received: by mail-io1-xd44.google.com with SMTP id q128so5750411iof.9
+ for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2020 06:58:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=intel-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=Q5jWP/1noFwzObY4I4oTofdUqp0/aBf7noRWrJzokWw=;
+ b=CQ22swjiCopu7kqfLfnsrwhHAPSRfwKKCA6r4elFcV1FPK4WrNMHXrVMCCf2D4NZFD
+ 0IYw/mgKcl4tOAFqMJQz1vrsNdteWH3dC6JxmyacveLw7yeBuspIZstI1ms2bwO7tZ++
+ eDYZA4gV9gss+gE35AUmYFGboXEqWRhaiWKQyfuAgZmczwqEGPxuZcTg7xD5DBGV0kxv
+ qG0eQPJfq/3RJtGfsyV0OSqiozYrJKv6Lj8bZXn14zynI2g+FVka0y0Ar3whQgM3vxPf
+ pAPpcQ9MrA83L8s7CSDDAl8F5kpaFX3IqzwuAmEnuZX597mi8d8BSQcxld3gyLFQrcOy
+ kasw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references;
- bh=2AsgLfDS4BH//bZzgWykwkfl2H5xfBl7A5I1f5MVUhg=;
- b=iZ0rvO+yat0itjVBkG7TnEve8E8Lc4XzAco/CRjqB9Hz7qs0RA1KTDEuS/XSj2Ckds
- irA1IhpMxbXOs6dodeFqg34vzgpWuApMsKTGrsp7SJ/oOTWk0rnXTGfaWjQEn1cghSXN
- 0UQ5EBy/V7nMCD4ECouYUkbYUrQ10gx8QmG6/4VC+24KTLWERlxWRIQct0ZPKSn6ozHr
- x8T9YdxV+7w9+UiCVEx5xbsVz9ORDKS/tuEJiVwVKtFa94jsQvC5HGCkmpiwYv+fhJua
- 85QBK6U0DRt4wkCcMap4VR4G7B08j4bh43ATpydCz/Wm4raa8BNeNFENLCUDiv6XgocX
- 1pVQ==
-X-Gm-Message-State: ANhLgQ2wzuNyU34k5MJlNOW0C4OHBVocDIp7f3kQacUHA9oOhd616SiM
- d8UWYcLos/sQFGjBVLB97S4=
-X-Google-Smtp-Source: ADFU+vsGIHuUFLLALx+EZj11W8sJMVfT8mLaq6XyHbUXZwurQL5aYlv5E13r2MsZ4Y6uPYTI1JfqPQ==
-X-Received: by 2002:a1c:ab07:: with SMTP id u7mr4521159wme.23.1583948611726;
- Wed, 11 Mar 2020 10:43:31 -0700 (PDT)
-Received: from debian.home (ip51ccf9cd.speed.planet.nl. [81.204.249.205])
- by smtp.gmail.com with ESMTPSA id d1sm8933166wrw.52.2020.03.11.10.43.30
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Wed, 11 Mar 2020 10:43:31 -0700 (PDT)
-From: Johan Jonker <jbx6244@gmail.com>
-To: lgirdwood@gmail.com
-Subject: [PATCH v1 2/2] dt-bindings: sound: rockchip-i2s: add #sound-dai-cells
- property
-Date: Wed, 11 Mar 2020 18:43:22 +0100
-Message-Id: <20200311174322.23813-2-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200311174322.23813-1-jbx6244@gmail.com>
-References: <20200311174322.23813-1-jbx6244@gmail.com>
-X-Mailman-Approved-At: Thu, 12 Mar 2020 14:48:14 +0100
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, heiko@sntech.de,
- linux-kernel@vger.kernel.org, robh+dt@kernel.org,
- linux-rockchip@lists.infradead.org, broonie@kernel.org,
- linux-arm-kernel@lists.infradead.org
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=Q5jWP/1noFwzObY4I4oTofdUqp0/aBf7noRWrJzokWw=;
+ b=HodbnP+vEjmREY9xlIgj87++xAwb23jaYCb4bxStRNj7CyMrHD5d3x3gvxP7YTYxYc
+ 9Lz9sQ1xsQzWyjMaHK2gxZ+FxRUv2nmktzLy40UcqYqi0l93JDDMV7C7eb38eoghh/rp
+ eLCSNGxgkcrYBLiASA1cjMx1uP1/uAa18bDLvJoFZ33qgo0/9mtbw2xNEok4Cb8nQ8+0
+ kYq45PwRXwiR2bdu0iFbjQudbDePgGJNQMnscsVWhiH37ncF2nhzzBipY+UlhHwM4Nx/
+ HQi+SEnecf7Y2QK17fdPIjpnz/0VBU44GuxI1naKM8r1so+Mo5MS7Yqx0xziCUmo7XZV
+ Jwmg==
+X-Gm-Message-State: ANhLgQ0xOLGNOv68Nd3zy0JKZ9QK7ultJzZvj48ljggLmG/OzlVEcEvX
+ POZkoMPX1T8gauVqQ7IZaFYAx8eLna0FGs4/47yzJw==
+X-Google-Smtp-Source: ADFU+vuJuUGRnEC3iVhGRSxroos2Ede9Dpwj56z+iJgPmm+9YKj7N4Outv5g/paeciUkpT4sh1lIb3Qq6pAc+vGaW/U=
+X-Received: by 2002:a6b:e806:: with SMTP id f6mr7929034ioh.52.1584021482487;
+ Thu, 12 Mar 2020 06:58:02 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200312122239.14489-1-amadeuszx.slawinski@linux.intel.com>
+In-Reply-To: <20200312122239.14489-1-amadeuszx.slawinski@linux.intel.com>
+From: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
+Date: Thu, 12 Mar 2020 06:57:51 -0700
+Message-ID: <CAFQqKeUOQ5EU57SvEpzkSJ=khsRZ=E-WqarFoq2xpoycmhHqeA@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: topology: Perform component check upfront
+To: =?UTF-8?B?QW1hZGV1c3ogU8WCYXdpxYRza2k=?=
+ <amadeuszx.slawinski@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,43 +106,149 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-'#sound-dai-cells' is required to properly interpret
-the list of DAI specified in the 'sound-dai' property,
-so add them to 'rockchip-i2s.yaml'
+On Thu, Mar 12, 2020 at 3:14 AM Amadeusz S=C5=82awi=C5=84ski <
+amadeuszx.slawinski@linux.intel.com> wrote:
 
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
----
- Documentation/devicetree/bindings/sound/rockchip-i2s.yaml | 5 +++++
- 1 file changed, 5 insertions(+)
+> Function soc_tplg_dbytes_create(), calls soc_tplg_init_kcontrol() to
+> perform additional driver specific initialization. While
+> soc_tplg_init_kcontrol() ensures that component is valid before invoking
+> ops->control_load, there is no such check at the end of
+> soc_tplg_dbytes_create() where list_add() is used.
+>
+> Also in quite a few places, there is reference of tplg->comp->dapm or
+> tplg->comp->card, without any checks for tplg->comp.
+>
+> In consequence of the above this may lead to referencing NULL pointer.
+>
+> This allows for removal of now unnecessary checks.
+>
+> Signed-off-by: Amadeusz S=C5=82awi=C5=84ski <amadeuszx.slawinski@linux.in=
+tel.com>
+> ---
+>  sound/soc/soc-topology.c | 22 +++++++++++++---------
+>  1 file changed, 13 insertions(+), 9 deletions(-)
+>
+> diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+> index 575da6aba807..66958c57d884 100644
+> --- a/sound/soc/soc-topology.c
+> +++ b/sound/soc/soc-topology.c
+> @@ -251,7 +251,7 @@ static int soc_tplg_vendor_load_(struct soc_tplg *tpl=
+g,
+>  {
+>         int ret =3D 0;
+>
+> -       if (tplg->comp && tplg->ops && tplg->ops->vendor_load)
+> +       if (tplg->ops && tplg->ops->vendor_load)
+>                 ret =3D tplg->ops->vendor_load(tplg->comp, tplg->index, h=
+dr);
+>         else {
+>                 dev_err(tplg->dev, "ASoC: no vendor load callback for ID
+> %d\n",
+> @@ -283,7 +283,7 @@ static int soc_tplg_vendor_load(struct soc_tplg *tplg=
+,
+>  static int soc_tplg_widget_load(struct soc_tplg *tplg,
+>         struct snd_soc_dapm_widget *w, struct snd_soc_tplg_dapm_widget
+> *tplg_w)
+>  {
+> -       if (tplg->comp && tplg->ops && tplg->ops->widget_load)
+> +       if (tplg->ops && tplg->ops->widget_load)
+>                 return tplg->ops->widget_load(tplg->comp, tplg->index, w,
+>                         tplg_w);
+>
+> @@ -295,7 +295,7 @@ static int soc_tplg_widget_load(struct soc_tplg *tplg=
+,
+>  static int soc_tplg_widget_ready(struct soc_tplg *tplg,
+>         struct snd_soc_dapm_widget *w, struct snd_soc_tplg_dapm_widget
+> *tplg_w)
+>  {
+> -       if (tplg->comp && tplg->ops && tplg->ops->widget_ready)
+> +       if (tplg->ops && tplg->ops->widget_ready)
+>                 return tplg->ops->widget_ready(tplg->comp, tplg->index, w=
+,
+>                         tplg_w);
+>
+> @@ -307,7 +307,7 @@ static int soc_tplg_dai_load(struct soc_tplg *tplg,
+>         struct snd_soc_dai_driver *dai_drv,
+>         struct snd_soc_tplg_pcm *pcm, struct snd_soc_dai *dai)
+>  {
+> -       if (tplg->comp && tplg->ops && tplg->ops->dai_load)
+> +       if (tplg->ops && tplg->ops->dai_load)
+>                 return tplg->ops->dai_load(tplg->comp, tplg->index,
+> dai_drv,
+>                         pcm, dai);
+>
+> @@ -318,7 +318,7 @@ static int soc_tplg_dai_load(struct soc_tplg *tplg,
+>  static int soc_tplg_dai_link_load(struct soc_tplg *tplg,
+>         struct snd_soc_dai_link *link, struct snd_soc_tplg_link_config
+> *cfg)
+>  {
+> -       if (tplg->comp && tplg->ops && tplg->ops->link_load)
+> +       if (tplg->ops && tplg->ops->link_load)
+>                 return tplg->ops->link_load(tplg->comp, tplg->index, link=
+,
+> cfg);
+>
+>         return 0;
+> @@ -327,7 +327,7 @@ static int soc_tplg_dai_link_load(struct soc_tplg
+> *tplg,
+>  /* tell the component driver that all firmware has been loaded in this
+> request */
+>  static void soc_tplg_complete(struct soc_tplg *tplg)
+>  {
+> -       if (tplg->comp && tplg->ops && tplg->ops->complete)
+> +       if (tplg->ops && tplg->ops->complete)
+>                 tplg->ops->complete(tplg->comp);
+>  }
+>
+> @@ -684,7 +684,7 @@ EXPORT_SYMBOL_GPL(snd_soc_tplg_widget_bind_event);
+>  static int soc_tplg_init_kcontrol(struct soc_tplg *tplg,
+>         struct snd_kcontrol_new *k, struct snd_soc_tplg_ctl_hdr *hdr)
+>  {
+> -       if (tplg->comp && tplg->ops && tplg->ops->control_load)
+> +       if (tplg->ops && tplg->ops->control_load)
+>                 return tplg->ops->control_load(tplg->comp, tplg->index, k=
+,
+>                         hdr);
+>
+> @@ -1174,7 +1174,7 @@ static int soc_tplg_kcontrol_elems_load(struct
+> soc_tplg *tplg,
+>  static int soc_tplg_add_route(struct soc_tplg *tplg,
+>         struct snd_soc_dapm_route *route)
+>  {
+> -       if (tplg->comp && tplg->ops && tplg->ops->dapm_route_load)
+> +       if (tplg->ops && tplg->ops->dapm_route_load)
+>                 return tplg->ops->dapm_route_load(tplg->comp, tplg->index=
+,
+>                         route);
+>
+> @@ -2564,7 +2564,7 @@ static int soc_tplg_manifest_load(struct soc_tplg
+> *tplg,
+>         }
+>
+>         /* pass control to component driver for optional further init */
+> -       if (tplg->comp && tplg->ops && tplg->ops->manifest)
+> +       if (tplg->ops && tplg->ops->manifest)
+>                 ret =3D tplg->ops->manifest(tplg->comp, tplg->index,
+> _manifest);
+>
+>         if (!abi_match) /* free the duplicated one */
+> @@ -2736,6 +2736,10 @@ int snd_soc_tplg_component_load(struct
+> snd_soc_component *comp,
+>         struct soc_tplg tplg;
+>         int ret;
+>
+> +       /* component needs to exist to keep and reference data while
+> parsing */
+> +       if (!comp)
+> +               return -EINVAL;
+> +
 
-diff --git a/Documentation/devicetree/bindings/sound/rockchip-i2s.yaml b/Documentation/devicetree/bindings/sound/rockchip-i2s.yaml
-index eff06b4b5..7cd0e278e 100644
---- a/Documentation/devicetree/bindings/sound/rockchip-i2s.yaml
-+++ b/Documentation/devicetree/bindings/sound/rockchip-i2s.yaml
-@@ -77,6 +77,9 @@ properties:
-       Required property for controllers which support multi channel
-       playback/capture.
- 
-+  "#sound-dai-cells":
-+    const: 0
-+
- required:
-   - compatible
-   - reg
-@@ -85,6 +88,7 @@ required:
-   - clock-names
-   - dmas
-   - dma-names
-+  - "#sound-dai-cells"
- 
- additionalProperties: false
- 
-@@ -103,4 +107,5 @@ examples:
-       dma-names = "tx", "rx";
-       rockchip,capture-channels = <2>;
-       rockchip,playback-channels = <8>;
-+      #sound-dai-cells = <0>;
-     };
--- 
-2.11.0
+Amadeusz,
 
+Thanks for this change. I agree that the checks for tplg->comp in the above
+functions should be removed but is the check here really necessary at all?
+snd_soc_tplg_component_load() is typically called when a component is
+probed. Can it ever be null at all if it is getting probed?
+
+Thanks,
+Ranjani
