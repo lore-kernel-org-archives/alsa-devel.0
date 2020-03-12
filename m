@@ -2,76 +2,63 @@ Return-Path: <SRS0=Zr1M=45=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4ECA8C10DCE
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 16:31:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 562E8C2BB1D
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 16:53:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CF4B92067C
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 16:31:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B7241206F1
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 16:53:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UMX7ySCt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CF4B92067C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LRRIel6D"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B7241206F1
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6932F1733;
-	Thu, 12 Mar 2020 17:30:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6932F1733
+	by alsa0.perex.cz (Postfix) with ESMTPS id 013271719;
+	Thu, 12 Mar 2020 17:52:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 013271719
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584030706;
-	bh=vElPR3QX3tHiie7PggHyPf8Scfc9X4yZFsAN+Ittzuo=;
-	h=Date:Subject:From:To:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=UMX7ySCtzigw97LUd8FwZltGozwsQGQbZppkik51CMjuntSzs1YclIcOMimPiQWU0
-	 kkSZeJCGAHrQCAgX9VE58J6RSMjqWeMXVIiSHUCgSlHot6hZp4F2Su+xsap9nWA7+D
-	 jN0tyLkgV65FBO2mjmg0XVczUlDaFvABf0Dmjw5M=
+	s=default; t=1584032008;
+	bh=8NgqFcLoh0BxbM56rj/f9wx74WZzrJ/WT0KIO/7dVEc=;
+	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=LRRIel6DFVZw1a5pdrXVeeYFwVM7TG+KgdLAgj7uCv4JdHhvhvtBgd58RGu+Bq26j
+	 glHgTY2zNt7FQgJIcM3aeKDGA8UrEYoQ1hcYmmvl+iPCiE1AyeYXz0tfsM4rxrGRnk
+	 2+Ldjoh5Nl9CXMNDsPsdyexlE8MK5DLiQZmWZCwE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AEE12F8021C;
-	Thu, 12 Mar 2020 17:30:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 84BD5F801D9;
+	Thu, 12 Mar 2020 17:52:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5D9FAF8020C; Thu, 12 Mar 2020 16:47:20 +0100 (CET)
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com
- [209.85.166.72])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5B813F8013E
- for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2020 16:47:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B813F8013E
-Received: by mail-io1-f72.google.com with SMTP id p4so4189113ioo.4
- for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2020 08:47:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
- bh=O73odJhRE0RHld216mUpontgZMPThRLNn/9xOQ9zEz4=;
- b=rUbDnZF55+up8Awez3S9l4nxS2zX6BVLCE2Ndb7Edpz+lolX89y/yqhjZghKsVemsP
- 4UjPcC9tHb7MStVCO7SFSQh9zdEnw8hHKF/bNtwUlAIo59HAhDJeTxButGki/OE2fZI+
- R//7kK4+jQriMjqvjCqdTn7R1bcz773hww0tFocjcBYdQkws/JuZZUbo7S2MsdhywdSW
- AflSNWYwITSMlkpo+uY4VEazwYT/mNhyOs2b1ccTLKlgROvP2nVETywOzcsqUrdGQhEI
- kc50eLzbuzcrNydl4Gle4q3W4PBiSU54+Dk8FU8ovxgHzvjQWaq3SEql/1PNFEOYRTz7
- cB1g==
-X-Gm-Message-State: ANhLgQ090XMm/1SKV3EII9CVQ5ge0dRx2bj6rfeSPSQE16BH0vZ6lVnq
- 9vMZxZYPXgh1LNwcXGEfDsp6R43aMN7SDh315Q261wc7EnKO
-X-Google-Smtp-Source: ADFU+vvaavmPhh9rz8kG1SSIP1LAz3qXenQRbRDuSH3nHZItb1tKcdfIX9vmI8nzNvqHJQLjeHH+GFo9B7OE3ObSiz50VG9KRMu2
-MIME-Version: 1.0
-X-Received: by 2002:a92:ddcb:: with SMTP id d11mr8654833ilr.211.1584028034040; 
- Thu, 12 Mar 2020 08:47:14 -0700 (PDT)
-Date: Thu, 12 Mar 2020 08:47:14 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000488d2805a0aa449c@google.com>
-Subject: linux-next test error: WARNING in snd_pcm_plug_alloc
-From: syzbot <syzbot+2a59ee7a9831b264f45e@syzkaller.appspotmail.com>
-To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, perex@perex.cz, 
- syzkaller-bugs@googlegroups.com, tiwai@suse.com
-Content-Type: text/plain; charset="UTF-8"
-X-Mailman-Approved-At: Thu, 12 Mar 2020 17:29:57 +0100
+ id 10274F8020C; Thu, 12 Mar 2020 17:52:36 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 015F4F8013E
+ for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2020 17:52:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 015F4F8013E
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 48C6430E;
+ Thu, 12 Mar 2020 09:52:30 -0700 (PDT)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BF3973F6CF;
+ Thu, 12 Mar 2020 09:52:29 -0700 (PDT)
+Date: Thu, 12 Mar 2020 16:52:28 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+Subject: Applied "ASoC: topology: Perform component check upfront" to the asoc
+ tree
+In-Reply-To: <20200312122239.14489-1-amadeuszx.slawinski@linux.intel.com>
+Message-Id: <applied-20200312122239.14489-1-amadeuszx.slawinski@linux.intel.com>
+X-Patchwork-Hint: ignore
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ =?utf-8?q?Amadeusz_S=C5=82awi=C5=84ski?= <amadeuszx.slawinski@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,75 +74,159 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello,
+The patch
 
-syzbot found the following crash on:
+   ASoC: topology: Perform component check upfront
 
-HEAD commit:    407b0a62 Add linux-next specific files for 20200312
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=14dd6545e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d644875269fc730b
-dashboard link: https://syzkaller.appspot.com/bug?extid=2a59ee7a9831b264f45e
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+has been applied to the asoc tree at
 
-Unfortunately, I don't have any reproducer for this crash yet.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+2a59ee7a9831b264f45e@syzkaller.appspotmail.com
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 8559 at sound/core/oss/pcm_plugin.c:126 snd_pcm_plug_alloc+0x29a/0x330 sound/core/oss/pcm_plugin.c:126
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 8559 Comm: syz-fuzzer Not tainted 5.6.0-rc5-next-20200312-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x188/0x20d lib/dump_stack.c:118
- panic+0x2e3/0x75c kernel/panic.c:221
- __warn.cold+0x2f/0x35 kernel/panic.c:582
- report_bug+0x27b/0x2f0 lib/bug.c:195
- fixup_bug arch/x86/kernel/traps.c:175 [inline]
- fixup_bug arch/x86/kernel/traps.c:170 [inline]
- do_error_trap+0x12b/0x220 arch/x86/kernel/traps.c:267
- do_invalid_op+0x32/0x40 arch/x86/kernel/traps.c:286
- invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
-RIP: 0010:snd_pcm_plug_alloc+0x29a/0x330 sound/core/oss/pcm_plugin.c:126
-Code: ff ff 45 31 e4 e8 d6 4d 7f fb 44 89 e0 5b 5d 41 5c 41 5d 41 5e c3 e8 c5 4d 7f fb 0f 0b 41 bc fa ff ff ff eb e0 e8 b6 4d 7f fb <0f> 0b 41 bc fa ff ff ff eb d1 e8 a7 4d 7f fb 0f 0b 41 bc fa ff ff
-RSP: 0018:ffffc90002317b88 EFLAGS: 00010293
-RAX: ffff888093a7c200 RBX: ffff8880a4086000 RCX: ffffffff85f37886
-RDX: 0000000000000000 RSI: ffffffff85f37a0a RDI: 0000000000000007
-RBP: 0000000000000000 R08: ffff888093a7c200 R09: ffffed10132a791f
-R10: ffff88809953c8f3 R11: ffffed10132a791e R12: ffff8880a4086058
-R13: dffffc0000000000 R14: 0000000000000000 R15: ffff88809953c800
- snd_pcm_oss_change_params_locked+0x1c05/0x34b0 sound/core/oss/pcm_oss.c:1021
- snd_pcm_oss_change_params+0x76/0xd0 sound/core/oss/pcm_oss.c:1084
- snd_pcm_oss_make_ready+0xb7/0x170 sound/core/oss/pcm_oss.c:1143
- snd_pcm_oss_sync.isra.0+0x1be/0x7d0 sound/core/oss/pcm_oss.c:1708
- snd_pcm_oss_release+0x210/0x280 sound/core/oss/pcm_oss.c:2546
- __fput+0x2da/0x850 fs/file_table.c:280
- task_work_run+0xf4/0x1b0 kernel/task_work.c:123
- tracehook_notify_resume include/linux/tracehook.h:188 [inline]
- exit_to_usermode_loop+0x2fa/0x360 arch/x86/entry/common.c:165
- prepare_exit_to_usermode arch/x86/entry/common.c:196 [inline]
- syscall_return_slowpath arch/x86/entry/common.c:279 [inline]
- do_syscall_64+0x6b1/0x7d0 arch/x86/entry/common.c:305
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x4afb40
-Code: 8b 7c 24 10 48 8b 74 24 18 48 8b 54 24 20 49 c7 c2 00 00 00 00 49 c7 c0 00 00 00 00 49 c7 c1 00 00 00 00 48 8b 44 24 08 0f 05 <48> 3d 01 f0 ff ff 76 20 48 c7 44 24 28 ff ff ff ff 48 c7 44 24 30
-RSP: 002b:000000c000213588 EFLAGS: 00000212 ORIG_RAX: 0000000000000003
-RAX: 0000000000000000 RBX: 000000c00002c000 RCX: 00000000004afb40
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000003
-RBP: 000000c0002135c8 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000212 R12: 0000000000000006
-R13: 0000000000000005 R14: 0000000000000200 R15: 0000000000000000
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+From c42464a4e67383d8daeeaa668ff875e399a38105 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+Date: Thu, 12 Mar 2020 08:22:39 -0400
+Subject: [PATCH] ASoC: topology: Perform component check upfront
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Function soc_tplg_dbytes_create(), calls soc_tplg_init_kcontrol() to
+perform additional driver specific initialization. While
+soc_tplg_init_kcontrol() ensures that component is valid before invoking
+ops->control_load, there is no such check at the end of
+soc_tplg_dbytes_create() where list_add() is used.
+
+Also in quite a few places, there is reference of tplg->comp->dapm or
+tplg->comp->card, without any checks for tplg->comp.
+
+In consequence of the above this may lead to referencing NULL pointer.
+
+This allows for removal of now unnecessary checks.
+
+Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Link: https://lore.kernel.org/r/20200312122239.14489-1-amadeuszx.slawinski@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ sound/soc/soc-topology.c | 22 +++++++++++++---------
+ 1 file changed, 13 insertions(+), 9 deletions(-)
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 22c38df40d5a..c98766957c10 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -251,7 +251,7 @@ static int soc_tplg_vendor_load_(struct soc_tplg *tplg,
+ {
+ 	int ret = 0;
+ 
+-	if (tplg->comp && tplg->ops && tplg->ops->vendor_load)
++	if (tplg->ops && tplg->ops->vendor_load)
+ 		ret = tplg->ops->vendor_load(tplg->comp, tplg->index, hdr);
+ 	else {
+ 		dev_err(tplg->dev, "ASoC: no vendor load callback for ID %d\n",
+@@ -283,7 +283,7 @@ static int soc_tplg_vendor_load(struct soc_tplg *tplg,
+ static int soc_tplg_widget_load(struct soc_tplg *tplg,
+ 	struct snd_soc_dapm_widget *w, struct snd_soc_tplg_dapm_widget *tplg_w)
+ {
+-	if (tplg->comp && tplg->ops && tplg->ops->widget_load)
++	if (tplg->ops && tplg->ops->widget_load)
+ 		return tplg->ops->widget_load(tplg->comp, tplg->index, w,
+ 			tplg_w);
+ 
+@@ -295,7 +295,7 @@ static int soc_tplg_widget_load(struct soc_tplg *tplg,
+ static int soc_tplg_widget_ready(struct soc_tplg *tplg,
+ 	struct snd_soc_dapm_widget *w, struct snd_soc_tplg_dapm_widget *tplg_w)
+ {
+-	if (tplg->comp && tplg->ops && tplg->ops->widget_ready)
++	if (tplg->ops && tplg->ops->widget_ready)
+ 		return tplg->ops->widget_ready(tplg->comp, tplg->index, w,
+ 			tplg_w);
+ 
+@@ -307,7 +307,7 @@ static int soc_tplg_dai_load(struct soc_tplg *tplg,
+ 	struct snd_soc_dai_driver *dai_drv,
+ 	struct snd_soc_tplg_pcm *pcm, struct snd_soc_dai *dai)
+ {
+-	if (tplg->comp && tplg->ops && tplg->ops->dai_load)
++	if (tplg->ops && tplg->ops->dai_load)
+ 		return tplg->ops->dai_load(tplg->comp, tplg->index, dai_drv,
+ 			pcm, dai);
+ 
+@@ -318,7 +318,7 @@ static int soc_tplg_dai_load(struct soc_tplg *tplg,
+ static int soc_tplg_dai_link_load(struct soc_tplg *tplg,
+ 	struct snd_soc_dai_link *link, struct snd_soc_tplg_link_config *cfg)
+ {
+-	if (tplg->comp && tplg->ops && tplg->ops->link_load)
++	if (tplg->ops && tplg->ops->link_load)
+ 		return tplg->ops->link_load(tplg->comp, tplg->index, link, cfg);
+ 
+ 	return 0;
+@@ -327,7 +327,7 @@ static int soc_tplg_dai_link_load(struct soc_tplg *tplg,
+ /* tell the component driver that all firmware has been loaded in this request */
+ static void soc_tplg_complete(struct soc_tplg *tplg)
+ {
+-	if (tplg->comp && tplg->ops && tplg->ops->complete)
++	if (tplg->ops && tplg->ops->complete)
+ 		tplg->ops->complete(tplg->comp);
+ }
+ 
+@@ -684,7 +684,7 @@ EXPORT_SYMBOL_GPL(snd_soc_tplg_widget_bind_event);
+ static int soc_tplg_init_kcontrol(struct soc_tplg *tplg,
+ 	struct snd_kcontrol_new *k, struct snd_soc_tplg_ctl_hdr *hdr)
+ {
+-	if (tplg->comp && tplg->ops && tplg->ops->control_load)
++	if (tplg->ops && tplg->ops->control_load)
+ 		return tplg->ops->control_load(tplg->comp, tplg->index, k,
+ 			hdr);
+ 
+@@ -1174,7 +1174,7 @@ static int soc_tplg_kcontrol_elems_load(struct soc_tplg *tplg,
+ static int soc_tplg_add_route(struct soc_tplg *tplg,
+ 	struct snd_soc_dapm_route *route)
+ {
+-	if (tplg->comp && tplg->ops && tplg->ops->dapm_route_load)
++	if (tplg->ops && tplg->ops->dapm_route_load)
+ 		return tplg->ops->dapm_route_load(tplg->comp, tplg->index,
+ 			route);
+ 
+@@ -2563,7 +2563,7 @@ static int soc_tplg_manifest_load(struct soc_tplg *tplg,
+ 	}
+ 
+ 	/* pass control to component driver for optional further init */
+-	if (tplg->comp && tplg->ops && tplg->ops->manifest)
++	if (tplg->ops && tplg->ops->manifest)
+ 		ret = tplg->ops->manifest(tplg->comp, tplg->index, _manifest);
+ 
+ 	if (!abi_match)	/* free the duplicated one */
+@@ -2735,6 +2735,10 @@ int snd_soc_tplg_component_load(struct snd_soc_component *comp,
+ 	struct soc_tplg tplg;
+ 	int ret;
+ 
++	/* component needs to exist to keep and reference data while parsing */
++	if (!comp)
++		return -EINVAL;
++
+ 	/* setup parsing context */
+ 	memset(&tplg, 0, sizeof(tplg));
+ 	tplg.fw = fw;
+-- 
+2.20.1
+
