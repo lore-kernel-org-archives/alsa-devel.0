@@ -7,69 +7,69 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D0E35C1975A
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 19:56:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 85E12C1975A
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 20:07:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 62C7120637
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 19:56:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E5355206EB
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 20:07:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tEVWRkX2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 62C7120637
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kouLC7hP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E5355206EB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 89ECC177E;
-	Thu, 12 Mar 2020 20:55:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89ECC177E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 27FC31737;
+	Thu, 12 Mar 2020 21:06:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 27FC31737
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584042990;
-	bh=ET3RoWz+L3HsboY0NM1xvG1ylL1l6tt7SNXQTf+GjBI=;
+	s=default; t=1584043656;
+	bh=T8ytAn550ucyBqQ7BMd2CqIvkRUlFqT6lzS9shxKK2U=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tEVWRkX2nTBKydXVd/AsPAOj3QPlWmaPqhO9IllkP5Lapo/6kALtKRFTWxaPHp98y
-	 9VyojGZnBnl0KxWJv/awpH4MZk6rIBRrdHgNeTaeM0Ak0PY7se3utROH/StsD44zNW
-	 vNdDZOkbLwf/xe2i/5Xr5sI8mtywDEM+ET7+aEYw=
+	b=kouLC7hPOJ5HIpUsJ6ahIRfdhDUxTvfRYO37cw5e+yyWnKIJpy07VXmoJXNAin+0+
+	 OhfiQIqZK5LwbmrK9ai/7gDGa0gwCx1aRwDQAYSmj/rdg280t+yGVybham2lSKzltb
+	 ZlBh6gxIf9v0mw/W9rpPdc1T3U0WUflC2AUFgiAY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 41874F802EC;
-	Thu, 12 Mar 2020 20:50:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4D4E5F800BE;
+	Thu, 12 Mar 2020 21:06:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8A095F8028E; Thu, 12 Mar 2020 20:49:53 +0100 (CET)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ id 918ADF8026F; Thu, 12 Mar 2020 21:06:41 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E4B43F8029A
- for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2020 20:49:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4B43F8029A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0C589F800BE
+ for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2020 21:06:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C589F800BE
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 12 Mar 2020 12:49:27 -0700
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+ by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 12 Mar 2020 13:06:34 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,545,1574150400"; d="scan'208";a="416058430"
+X-IronPort-AV: E=Sophos;i="5.70,545,1574150400"; d="scan'208";a="444063049"
 Received: from unknown (HELO pbossart-mobl3.amr.corp.intel.com)
  ([10.251.241.169])
- by orsmga005.jf.intel.com with ESMTP; 12 Mar 2020 12:49:25 -0700
+ by fmsmga006.fm.intel.com with ESMTP; 12 Mar 2020 13:06:33 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 10/10] ASoC: Intel: don't use GFP_ATOMIC for machine driver
- contexts
-Date: Thu, 12 Mar 2020 14:48:59 -0500
-Message-Id: <20200312194859.4051-11-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 1/6] ASoC: SOF: Intel: hda-dai: add stream capability
+Date: Thu, 12 Mar 2020 15:06:17 -0500
+Message-Id: <20200312200622.24477-2-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200312194859.4051-1-pierre-louis.bossart@linux.intel.com>
-References: <20200312194859.4051-1-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20200312200622.24477-1-pierre-louis.bossart@linux.intel.com>
+References: <20200312200622.24477-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
  Kai Vehmanen <kai.vehmanen@linux.intel.com>, tiwai@suse.de,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Pierre Bossart <pierre-louis.bossart@linux.intel.com>, broonie@kernel.org,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,44 +85,181 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We've removed GFP_ATOMIC in all machine drivers and somehow this keeps
-coming back due to copy-paste. Move to GFP_KERNEL.
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+snd_soc_dai_stream_valid() will check if the stream is valid by testing
+stream->channels_min. So we do need the information in dai driver.
+
+The stream name is not added since we want to sure
+playback_widget/capture_widget will be created by topology.
+
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Pierre Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/cml_rt1011_rt5682.c   | 2 +-
- sound/soc/intel/boards/sof_da7219_max98373.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/sof/intel/hda-dai.c | 96 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 96 insertions(+)
 
-diff --git a/sound/soc/intel/boards/cml_rt1011_rt5682.c b/sound/soc/intel/boards/cml_rt1011_rt5682.c
-index 30de502b4fbb..ed6c26a256e7 100644
---- a/sound/soc/intel/boards/cml_rt1011_rt5682.c
-+++ b/sound/soc/intel/boards/cml_rt1011_rt5682.c
-@@ -446,7 +446,7 @@ static int snd_cml_rt1011_probe(struct platform_device *pdev)
- 	const char *platform_name;
- 	int ret;
- 
--	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
-+	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
- 	if (!ctx)
- 		return -ENOMEM;
- 
-diff --git a/sound/soc/intel/boards/sof_da7219_max98373.c b/sound/soc/intel/boards/sof_da7219_max98373.c
-index 7847dd44f41b..6d210ba06d19 100644
---- a/sound/soc/intel/boards/sof_da7219_max98373.c
-+++ b/sound/soc/intel/boards/sof_da7219_max98373.c
-@@ -371,7 +371,7 @@ static int audio_probe(struct platform_device *pdev)
- 	struct card_private *ctx;
- 	int ret;
- 
--	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
-+	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
- 	if (!ctx)
- 		return -ENOMEM;
- 
+diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
+index ed5e7d2c0d43..b9e3ce65e778 100644
+--- a/sound/soc/sof/intel/hda-dai.c
++++ b/sound/soc/sof/intel/hda-dai.c
+@@ -422,56 +422,152 @@ static struct snd_soc_cdai_ops sof_probe_compr_ops = {
+ struct snd_soc_dai_driver skl_dai[] = {
+ {
+ 	.name = "SSP0 Pin",
++	.playback = {
++		.channels_min = 1,
++		.channels_max = 8,
++	},
++	.capture = {
++		.channels_min = 1,
++		.channels_max = 8,
++	},
+ },
+ {
+ 	.name = "SSP1 Pin",
++	.playback = {
++		.channels_min = 1,
++		.channels_max = 8,
++	},
++	.capture = {
++		.channels_min = 1,
++		.channels_max = 8,
++	},
+ },
+ {
+ 	.name = "SSP2 Pin",
++	.playback = {
++		.channels_min = 1,
++		.channels_max = 8,
++	},
++	.capture = {
++		.channels_min = 1,
++		.channels_max = 8,
++	},
+ },
+ {
+ 	.name = "SSP3 Pin",
++	.playback = {
++		.channels_min = 1,
++		.channels_max = 8,
++	},
++	.capture = {
++		.channels_min = 1,
++		.channels_max = 8,
++	},
+ },
+ {
+ 	.name = "SSP4 Pin",
++	.playback = {
++		.channels_min = 1,
++		.channels_max = 8,
++	},
++	.capture = {
++		.channels_min = 1,
++		.channels_max = 8,
++	},
+ },
+ {
+ 	.name = "SSP5 Pin",
++	.playback = {
++		.channels_min = 1,
++		.channels_max = 8,
++	},
++	.capture = {
++		.channels_min = 1,
++		.channels_max = 8,
++	},
+ },
+ {
+ 	.name = "DMIC01 Pin",
++	.capture = {
++		.channels_min = 1,
++		.channels_max = 4,
++	},
+ },
+ {
+ 	.name = "DMIC16k Pin",
++	.capture = {
++		.channels_min = 1,
++		.channels_max = 4,
++	},
+ },
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
+ {
+ 	.name = "iDisp1 Pin",
+ 	.ops = &hda_link_dai_ops,
++	.playback = {
++		.channels_min = 1,
++		.channels_max = 8,
++	},
+ },
+ {
+ 	.name = "iDisp2 Pin",
+ 	.ops = &hda_link_dai_ops,
++	.playback = {
++		.channels_min = 1,
++		.channels_max = 8,
++	},
+ },
+ {
+ 	.name = "iDisp3 Pin",
+ 	.ops = &hda_link_dai_ops,
++	.playback = {
++		.channels_min = 1,
++		.channels_max = 8,
++	},
+ },
+ {
+ 	.name = "iDisp4 Pin",
+ 	.ops = &hda_link_dai_ops,
++	.playback = {
++		.channels_min = 1,
++		.channels_max = 8,
++	},
+ },
+ {
+ 	.name = "Analog CPU DAI",
+ 	.ops = &hda_link_dai_ops,
++	.playback = {
++		.channels_min = 1,
++		.channels_max = 16,
++	},
++	.capture = {
++		.channels_min = 1,
++		.channels_max = 16,
++	},
+ },
+ {
+ 	.name = "Digital CPU DAI",
+ 	.ops = &hda_link_dai_ops,
++	.playback = {
++		.channels_min = 1,
++		.channels_max = 16,
++	},
++	.capture = {
++		.channels_min = 1,
++		.channels_max = 16,
++	},
+ },
+ {
+ 	.name = "Alt Analog CPU DAI",
+ 	.ops = &hda_link_dai_ops,
++	.playback = {
++		.channels_min = 1,
++		.channels_max = 16,
++	},
++	.capture = {
++		.channels_min = 1,
++		.channels_max = 16,
++	},
+ },
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_PROBES)
+ {
 -- 
 2.20.1
 
