@@ -1,65 +1,70 @@
-Return-Path: <SRS0=OXo6=44=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=Zr1M=45=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0860DC2BB1D
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 22:55:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 411D1C0044D
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 01:18:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 892412074B
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2020 22:55:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 053B0206F7
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 01:18:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RbuwkT+J"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 892412074B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=flatmax.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="unA7Wm5f"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 053B0206F7
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B9BF516A5;
-	Wed, 11 Mar 2020 23:54:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9BF516A5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0E09916A8;
+	Thu, 12 Mar 2020 02:17:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E09916A8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1583967347;
-	bh=3zke/Jsye4sMTy1iV0pUqUHaLmGaYWgK1xXMqjc+Hh8=;
-	h=To:From:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=RbuwkT+JI2HqVto9kl9URB42FIUWeR7nHFN6/t07fDgvr9YLaPVJ/1wrD7f21jbRq
-	 VvQhq0eXluq9h9qtLP7O7TnEgiz225+iPJMBcGTmTdpepRZcERaNb7So4yldrnGhq5
-	 FFeeWziOiesx25dxKbrLYsiP48FOhCL6GKfOZ55A=
+	s=default; t=1583975889;
+	bh=jTHRX304N9MUS2y4CszF0BdOISmJYKd/vTRxmWlbSI8=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=unA7Wm5fD2IKZMKiQ/rREsQXlC4DsWxY/T9tM8CfIJgT1VoElarCKOnTDAJt4vLLg
+	 Pg4iQfTU7JmnYRq5UX+8slb/5lr3/f/xO7ihb2Y5NLeTfjIpgJW10zAz9Qk7UyEDCY
+	 G1ODdVmG/jWTc5iqr/kh1ga0hCDTldHzckrDD/Xk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 10B1EF800B5;
-	Wed, 11 Mar 2020 23:54:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8414DF801A3;
+	Thu, 12 Mar 2020 02:17:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CDB11F801EB; Wed, 11 Mar 2020 23:54:54 +0100 (CET)
-Received: from mx.flatmax.org (mx.flatmax.org [13.55.16.222])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5CD74F800B5
- for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2020 23:54:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5CD74F800B5
-Received: from 41.68.233.220.static.exetel.com.au ([220.233.68.41]
- helo=[192.168.1.51])
- by mx.flatmax.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
- (Exim 4.89) (envelope-from <flatmax@flatmax.org>) id 1jCAFO-0004XS-Cz
- for alsa-devel@alsa-project.org; Thu, 12 Mar 2020 09:54:43 +1100
-To: alsa-devel@alsa-project.org
-From: Matt Flax <flatmax@flatmax.org>
-Subject: ASoc: soc_core.c stream direction from snd_soc_dai
-Message-ID: <5598a2fc-9b49-ad5e-2265-fbc0593ead1b@flatmax.org>
-Date: Thu, 12 Mar 2020 09:54:42 +1100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+ id 0E9B4F801EB; Thu, 12 Mar 2020 02:17:16 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 1A920F80141
+ for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2020 02:17:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A920F80141
+Date: 12 Mar 2020 10:17:06 +0900
+X-IronPort-AV: E=Sophos;i="5.70,542,1574089200"; d="scan'208";a="41641199"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 12 Mar 2020 10:17:06 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 193744139174;
+ Thu, 12 Mar 2020 10:17:06 +0900 (JST)
+Message-ID: <87blp2e5il.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 0/7] ASoC: Merge CPU/Codec DAIs
+In-Reply-To: <20200311171033.GI5411@sirena.org.uk>
+References: <87y2s7vgxb.wl-kuninori.morimoto.gx@renesas.com>
+ <03ac5f70-9aa3-b909-c693-caaa0afd09c9@linux.intel.com>
+ <87k13rvd5g.wl-kuninori.morimoto.gx@renesas.com>
+ <8e92f00a-6fb4-84e6-8e48-28b9913791c0@linux.intel.com>
+ <20200311171033.GI5411@sirena.org.uk>
+User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,44 +80,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi there,
 
-A large number of audio codecs allow different formats for playback and 
-capture. This becomes very useful when there are different latencies 
-between playback and capture hardware data lines. For example digital 
-isolation chips typically have a 1 bit delay in propagation as the bit 
-clock rate gets faster for higher sample rates. By setting the capture 
-and playback formats to differ by one or two bit clock cycles, the delay 
-problem is solved.
+Hi Mark, Pierre-Louis
 
-There doesn't seem to be a simple way to detect stream direction in the 
-codec driver's set_fmt function.
+Thank you for your feedback
 
-The snd_soc_runtime_set_dai_fmt function :
+> > I would still like to make sure we have an broadbrush idea of what the 2nd
+> > step might be. It seems to me it's not possible to avoid having a notion of
+> > source/sink inside of a dailink (the wording is probably not right e.g. for
+> > full duplex, maybe domain1/domain2 component1/component2 are more accurate).
+> > The dais are exposed by different components and are really the hook by
+> > which the components can be configured with compatible settings.
+> 
+> We at least have the notion of clock master but that's something that
+> could potentially vary at runtime so not stable.  Like you say finding
+> appropriate language to talk about these things is tricky and I'm also
+> struggling to think of anything better than numbered components.
 
-https://github.com/torvalds/linux/blob/master/sound/soc/soc-core.c#L1480
+If my understanding was correct,
+Lars-Peter's presentation at ELCE was using idea of "Bridge".
+This idea is not exist in current ALSA SoC,
+but current DAI can be updated to it ?
+Then, current notion can be udated also?
+I'm not 100% understanding how to update,
+how to use, etc, but my Image is...
 
-calls the snd_soc_dai_set_fmt function :
+	sink     source
+	+---+	 +---+
+	|DAI|--->|DAI|
+	+---+	 +---+
 
-https://github.com/torvalds/linux/blob/master/sound/soc/soc-dai.c#L101
+	    ---->
+	+------------+
+	|   Bridge   |
+	+------------+
 
-which calls the set_fmt function :
+Thank you for your help !!
 
-https://github.com/torvalds/linux/blob/master/include/sound/soc-dai.h#L189
-
-
-The snd_soc_dai_ops set_fmt function is defined as :
-
-     int (*set_fmt)(struct snd_soc_dai *dai, unsigned int fmt);
-
-
-Is there a simple way to find the stream direction from a snd_soc_dai ?
-
-If the stream direction can be detected then the playback and capture 
-formats can be set independently for the codec.
-
-It there a different way to set the playback and capture formats for the 
-codec independently at runtime, depending on the sample rate ?
-
-Matt
-
+Best regards
+---
+Kuninori Morimoto
