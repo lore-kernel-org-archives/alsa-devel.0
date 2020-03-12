@@ -7,59 +7,59 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 43C7BC10DCE
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 09:54:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89486C2BB1D
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 09:55:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C9F9820691
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 09:54:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 21EC8206F1
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2020 09:55:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NKpUZ8UN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C9F9820691
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="j1hRKahD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 21EC8206F1
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 22D7A16D5;
-	Thu, 12 Mar 2020 10:53:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22D7A16D5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 657D016DA;
+	Thu, 12 Mar 2020 10:54:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 657D016DA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584006857;
-	bh=oNHXkhq6gwOOZum1h19yFTrLLl32epJy/GQ0a0BVToY=;
+	s=default; t=1584006899;
+	bh=TRkemX3WZ6ksv/8ggjrrPMdsW9LZ8zceSGYc3giJyuE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NKpUZ8UNcjgtFfAtPB/BRCSQ3mNhdADGODHNpsii2KHklLFPTl+2ZJG880IjruTfc
-	 ci873I4w16ewDM96KDPy7a1Tcw9AaCnMgTsFoF1D/4vfW8/hlNIewpwQnHPaAdDzD7
-	 0ZBmhfhzWG0r9Js+d1OQd/4K/oZ46tWz2NS9uuNQ=
+	b=j1hRKahDAUizyb2Bm231d4h5p7bbQ7rfjPJkWqzsSSErmdMrBIruZUIUMMTYAkh44
+	 B3y0Kvxup5XUC8FlLnO+b10p1GxASBpdYy+QEvQyQd0hMR1zrEX2yUKskek4yPgzJN
+	 9dOJU6rAhRJTC1umugsZSh3s7Tl3wxbp0CNXHKDM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 47A4CF8028D;
-	Thu, 12 Mar 2020 10:52:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 45E92F80290;
+	Thu, 12 Mar 2020 10:52:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A6C2CF800BE; Thu, 12 Mar 2020 10:52:29 +0100 (CET)
+ id 0C2A6F80291; Thu, 12 Mar 2020 10:52:35 +0100 (CET)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 04905F800BE;
- Thu, 12 Mar 2020 10:52:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04905F800BE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4281FF8023F;
+ Thu, 12 Mar 2020 10:52:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4281FF8023F
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
  by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 12 Mar 2020 02:52:18 -0700
+ 12 Mar 2020 02:52:20 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,544,1574150400"; d="scan'208";a="443867511"
+X-IronPort-AV: E=Sophos;i="5.70,544,1574150400"; d="scan'208";a="443867515"
 Received: from gliakhov-mobl2.ger.corp.intel.com (HELO
  ubuntu.ger.corp.intel.com) ([10.249.40.3])
- by fmsmga006.fm.intel.com with ESMTP; 12 Mar 2020 02:52:17 -0700
+ by fmsmga006.fm.intel.com with ESMTP; 12 Mar 2020 02:52:19 -0700
 From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 1/2] ASoC: (cosmetic) simplify dpcm_prune_paths()
-Date: Thu, 12 Mar 2020 10:52:13 +0100
-Message-Id: <20200312095214.15126-2-guennadi.liakhovetski@linux.intel.com>
+Subject: [PATCH v2 2/2] ASoC: export DPCM runtime update functions
+Date: Thu, 12 Mar 2020 10:52:14 +0100
+Message-Id: <20200312095214.15126-3-guennadi.liakhovetski@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200312095214.15126-1-guennadi.liakhovetski@linux.intel.com>
 References: <20200312095214.15126-1-guennadi.liakhovetski@linux.intel.com>
@@ -83,98 +83,112 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Currently dpcm_prune_paths() has up to 4 nested condition and loop
-levels, which forces the code to use flags for flow control.
-Extracting widget status verification code from dpcm_prune_paths()
-into a separate function simplifies the code.
+This makes DPCM runtime update functions available for external
+calling. As an example, virtualised ASoC component drivers may need
+to call these when managing shared DAPM routes that are used by more
+than one driver (i.e. when host driver and guest drivers have a DAPM
+path from guest PCM to host DAI where some parts are owned by host
+driver and others by guest driver).
 
 Signed-off-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 ---
- sound/soc/soc-pcm.c | 63 +++++++++++++++++++++++++++--------------------------
- 1 file changed, 32 insertions(+), 31 deletions(-)
+ include/sound/soc-dpcm.h | 4 ++--
+ sound/soc/soc-dapm.c     | 8 ++++----
+ sound/soc/soc-pcm.c      | 5 ++++-
+ 3 files changed, 10 insertions(+), 7 deletions(-)
 
+diff --git a/include/sound/soc-dpcm.h b/include/sound/soc-dpcm.h
+index 4022357..0f6c50b 100644
+--- a/include/sound/soc-dpcm.h
++++ b/include/sound/soc-dpcm.h
+@@ -132,8 +132,8 @@ int snd_soc_dpcm_be_can_update(struct snd_soc_pcm_runtime *fe,
+ struct snd_pcm_substream *
+ 	snd_soc_dpcm_get_substream(struct snd_soc_pcm_runtime *be, int stream);
+ 
+-/* internal use only */
+-int soc_dpcm_runtime_update(struct snd_soc_card *);
++/* update audio routing between PCMs and any DAI links */
++int snd_soc_dpcm_runtime_update(struct snd_soc_card *card);
+ 
+ #ifdef CONFIG_DEBUG_FS
+ void soc_dpcm_debugfs_add(struct snd_soc_pcm_runtime *rtd);
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index e00a465..d5eb52f 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -2291,7 +2291,7 @@ int snd_soc_dapm_mux_update_power(struct snd_soc_dapm_context *dapm,
+ 	card->update = NULL;
+ 	mutex_unlock(&card->dapm_mutex);
+ 	if (ret > 0)
+-		soc_dpcm_runtime_update(card);
++		snd_soc_dpcm_runtime_update(card);
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dapm_mux_update_power);
+@@ -2356,7 +2356,7 @@ int snd_soc_dapm_mixer_update_power(struct snd_soc_dapm_context *dapm,
+ 	card->update = NULL;
+ 	mutex_unlock(&card->dapm_mutex);
+ 	if (ret > 0)
+-		soc_dpcm_runtime_update(card);
++		snd_soc_dpcm_runtime_update(card);
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dapm_mixer_update_power);
+@@ -3396,7 +3396,7 @@ int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
+ 	mutex_unlock(&card->dapm_mutex);
+ 
+ 	if (ret > 0)
+-		soc_dpcm_runtime_update(card);
++		snd_soc_dpcm_runtime_update(card);
+ 
+ 	return change;
+ }
+@@ -3501,7 +3501,7 @@ int snd_soc_dapm_put_enum_double(struct snd_kcontrol *kcontrol,
+ 	mutex_unlock(&card->dapm_mutex);
+ 
+ 	if (ret > 0)
+-		soc_dpcm_runtime_update(card);
++		snd_soc_dpcm_runtime_update(card);
+ 
+ 	return change;
+ }
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 733d7e8..bf4c5dc 100644
+index bf4c5dc..2b915f4 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -1626,45 +1626,46 @@ void dpcm_path_put(struct snd_soc_dapm_widget_list **list)
- 	snd_soc_dapm_dai_free_widgets(list);
- }
- 
--static int dpcm_prune_paths(struct snd_soc_pcm_runtime *fe, int stream,
--	struct snd_soc_dapm_widget_list **list_)
-+static bool dpcm_be_is_active(struct snd_soc_dpcm *dpcm, int stream,
-+			      struct snd_soc_dapm_widget_list *list)
+@@ -295,6 +295,7 @@ void snd_soc_runtime_activate(struct snd_soc_pcm_runtime *rtd, int stream)
  {
--	struct snd_soc_dpcm *dpcm;
--	struct snd_soc_dapm_widget_list *list = *list_;
- 	struct snd_soc_dapm_widget *widget;
- 	struct snd_soc_dai *dai;
--	int prune = 0;
--	int do_prune;
-+	unsigned int i;
+ 	snd_soc_runtime_action(rtd, stream, 1);
+ }
++EXPORT_SYMBOL_GPL(snd_soc_runtime_activate);
  
--	/* Destroy any old FE <--> BE connections */
--	for_each_dpcm_be(fe, stream, dpcm) {
--		unsigned int i;
-+	/* is there a valid CPU DAI widget for this BE */
-+	for_each_rtd_cpu_dais(dpcm->be, i, dai) {
-+		widget = snd_soc_dai_get_widget(dai, stream);
+ /**
+  * snd_soc_runtime_deactivate() - Decrement active count for PCM runtime components
+@@ -310,6 +311,7 @@ void snd_soc_runtime_deactivate(struct snd_soc_pcm_runtime *rtd, int stream)
+ {
+ 	snd_soc_runtime_action(rtd, stream, -1);
+ }
++EXPORT_SYMBOL_GPL(snd_soc_runtime_deactivate);
  
--		/* is there a valid CPU DAI widget for this BE */
--		do_prune = 1;
--		for_each_rtd_cpu_dais(dpcm->be, i, dai) {
--			widget = snd_soc_dai_get_widget(dai, stream);
-+		/*
-+		 * The BE is pruned only if none of the cpu_dai
-+		 * widgets are in the active list.
-+		 */
-+		if (widget && widget_in_list(list, widget))
-+			return true;
-+	}
+ /**
+  * snd_soc_runtime_ignore_pmdown_time() - Check whether to ignore the power down delay
+@@ -2969,7 +2971,7 @@ static int soc_dpcm_fe_runtime_update(struct snd_soc_pcm_runtime *fe, int new)
+ /* Called by DAPM mixer/mux changes to update audio routing between PCMs and
+  * any DAI links.
+  */
+-int soc_dpcm_runtime_update(struct snd_soc_card *card)
++int snd_soc_dpcm_runtime_update(struct snd_soc_card *card)
+ {
+ 	struct snd_soc_pcm_runtime *fe;
+ 	int ret = 0;
+@@ -2993,6 +2995,7 @@ int soc_dpcm_runtime_update(struct snd_soc_card *card)
+ 	mutex_unlock(&card->mutex);
+ 	return ret;
+ }
++EXPORT_SYMBOL_GPL(snd_soc_dpcm_runtime_update);
  
--			/*
--			 * The BE is pruned only if none of the cpu_dai
--			 * widgets are in the active list.
--			 */
--			if (widget && widget_in_list(list, widget))
--				do_prune = 0;
--		}
--		if (!do_prune)
--			continue;
-+	/* is there a valid CODEC DAI widget for this BE */
-+	for_each_rtd_codec_dais(dpcm->be, i, dai) {
-+		widget = snd_soc_dai_get_widget(dai, stream);
- 
--		/* is there a valid CODEC DAI widget for this BE */
--		do_prune = 1;
--		for_each_rtd_codec_dais(dpcm->be, i, dai) {
--			widget = snd_soc_dai_get_widget(dai, stream);
-+		/* prune the BE if it's no longer in our active list */
-+		if (widget && widget_in_list(list, widget))
-+			return true;
-+	}
- 
--			/* prune the BE if it's no longer in our active list */
--			if (widget && widget_in_list(list, widget))
--				do_prune = 0;
--		}
--		if (!do_prune)
-+	return false;
-+}
-+
-+static int dpcm_prune_paths(struct snd_soc_pcm_runtime *fe, int stream,
-+			    struct snd_soc_dapm_widget_list **list_)
-+{
-+	struct snd_soc_dpcm *dpcm;
-+	int prune = 0;
-+
-+	/* Destroy any old FE <--> BE connections */
-+	for_each_dpcm_be(fe, stream, dpcm) {
-+		if (dpcm_be_is_active(dpcm, stream, *list_))
- 			continue;
- 
- 		dev_dbg(fe->dev, "ASoC: pruning %s BE %s for %s\n",
+ static void dpcm_fe_dai_cleanup(struct snd_pcm_substream *fe_substream)
+ {
 -- 
 1.9.3
 
