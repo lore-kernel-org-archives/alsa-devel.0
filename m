@@ -2,106 +2,68 @@ Return-Path: <SRS0=U/T/=46=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D299C2BB1D
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 13:26:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EB9BEC10DCE
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 14:32:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 29321206BE
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 13:26:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7743B2073E
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 14:32:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HEqe9C85";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="PS6US2pp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 29321206BE
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RdjqViV1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7743B2073E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8032A17D6;
-	Fri, 13 Mar 2020 14:25:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8032A17D6
+	by alsa0.perex.cz (Postfix) with ESMTPS id ABE61166C;
+	Fri, 13 Mar 2020 15:31:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ABE61166C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584105975;
-	bh=kxaxTJVVKZVL7AmzQrIeUTzResAv1y6qY63DhKAUTAY=;
+	s=default; t=1584109967;
+	bh=x8GGQ1ulMYXe3kWEbWWEenVnUQikdkrRgnbGKRGISR4=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HEqe9C85+Lusi6gwQFjZ3kfMq5lpgFn7HT/PdwT9VsbOYpjxso09u/3WDNkXFCvSk
-	 PyQD6hzt7GqVGI5sm9g4ioujGovO2gvxYAgm8Qqgl0Jix9l32MWuTxWx9cJOKTGP7Y
-	 KF+nOP5OYlMGo/TLyJ2yyOv8O6pu7f+9C1TWZUIU=
+	b=RdjqViV11BXcHpiaVb3GE2r+sY+deFyLHYRrpljRI7VgIlIcqA1jG8/CfqpN/kP8i
+	 WKmWUbA0ENFbQyqx+bsIJ61789IYqBFCQKXm/fEZbn4VbYhaxJDyffd+pTRYi4z0QA
+	 KdACjGEq60gY10zDQJbKXXn0enmiWfj4TNXNVrsY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0180CF801A3;
-	Fri, 13 Mar 2020 14:25:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 212EEF801A3;
+	Fri, 13 Mar 2020 15:31:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 24F43F801EB; Fri, 13 Mar 2020 14:25:20 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 05F79F80086
- for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2020 14:25:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05F79F80086
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="PS6US2pp"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
- 02DDOf69020396; Fri, 13 Mar 2020 08:25:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=1g+yEZHlt2Q04R5aWwm8MjJ2eg5k6k6BPi/8vA7zXSg=;
- b=PS6US2ppZ2WT6af52sTUusw3XSBtJzLVNDcBr9MiUIsjM1BmF5u9o49+rVS7eAdjwiX4
- wXt+3lMI6DhP7Eo9xxHrxSuDemwJt+3UR11ypVZT2Eg4OYohIsQjqRchaMGDUdWLrCna
- tnzorTH+2F1h9EaoDdUsXN3B3kKyzPJqAzadyn+57EMxnFlZ9TpWy8Zf/9pA18LNmPs6
- FJRJg7txWRu6JbbTr0u7Do10CeFd+/mlTSfauvsxlCUEUOn3pUH23eWeKaroT5SpcFux
- vYHuG+5gOXRmG+V80M0j8Fi4bwBczk5BNHzkDQ8DU1H9OI6iXvh9BuJwOTptHOMPWJB7 pQ== 
-Authentication-Results: ppops.net;
- spf=fail smtp.mailfrom=ckeepax@opensource.cirrus.com
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 2yqt8nsmtm-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Fri, 13 Mar 2020 08:25:09 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1591.10; Fri, 13 Mar
- 2020 13:25:07 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1591.10 via
- Frontend Transport; Fri, 13 Mar 2020 13:25:07 +0000
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id BB39F2AB;
- Fri, 13 Mar 2020 13:25:07 +0000 (UTC)
-Date: Fri, 13 Mar 2020 13:25:07 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH] ASoC: wm_adsp: Use scnprintf() for the limited buffer
- output
-Message-ID: <20200313132507.GL108283@ediswmail.ad.cirrus.com>
-References: <20200313130334.9028-1-tiwai@suse.de>
+ id B8674F80086; Fri, 13 Mar 2020 15:31:30 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id AD0D4F80086;
+ Fri, 13 Mar 2020 15:31:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AD0D4F80086
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 71D3230E;
+ Fri, 13 Mar 2020 07:31:23 -0700 (PDT)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CC9693F67D;
+ Fri, 13 Mar 2020 07:31:22 -0700 (PDT)
+Date: Fri, 13 Mar 2020 14:31:21 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Subject: Re: [PATCH 00/14] ASoC: SOF DSP virtualisation
+Message-ID: <20200313143121.GI5528@sirena.org.uk>
+References: <20200312144429.17959-1-guennadi.liakhovetski@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="ev7mvGV+3JQuI2Eo"
 Content-Disposition: inline
-In-Reply-To: <20200313130334.9028-1-tiwai@suse.de>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-SPF-Result: fail
-X-Proofpoint-SPF-Record: v=spf1 include:spf-001ae601.pphosted.com
- include:spf.protection.outlook.com
- ip4:5.172.152.52 -all
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0
- suspectscore=0
- malwarescore=0 mlxlogscore=788 priorityscore=1501 clxscore=1015
- phishscore=0 adultscore=0 mlxscore=0 impostorscore=0 bulkscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2003130070
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+In-Reply-To: <20200312144429.17959-1-guennadi.liakhovetski@linux.intel.com>
+X-Cookie: This page intentionally left blank.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -117,19 +79,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Mar 13, 2020 at 02:03:34PM +0100, Takashi Iwai wrote:
-> snprintf() is a hard-to-use function, it's especially difficult to use
-> it for concatenating substrings in a buffer with a limited size.
-> Since snprintf() returns the would-be-output size, not the actual
-> size, the subsequent use of snprintf() may point to the incorrect
-> position.
-> 
-> Use scnprintf() instead for fixing such potential errors.
-> 
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+--ev7mvGV+3JQuI2Eo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks,
-Charles
+On Thu, Mar 12, 2020 at 03:44:15PM +0100, Guennadi Liakhovetski wrote:
+> This patch series extends the SOF driver to add support for DSP
+> virtualisation to ASoC. It is built on top of VirtIO, contains a
+> guest driver and a vhost in-kernel guest driver. This version
+
+Is there a spec for this?
+
+--ev7mvGV+3JQuI2Eo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5rmTgACgkQJNaLcl1U
+h9AFjQf9GAsVkvJADM4k1Rp2gmWANvzxSTw/QLf0L6rbACWr28/0B1WR8gT7OdLn
+XBvwCIbMe+vcPNaon22cp/mSowr5P8jJw9wIGAtiQDGqbD6czpagzz30WFuNaTPz
+vQsVuoPfB8lCRAkEpWyQZwh6VFB9FLDbjwVSdO3/yAU+Z0Mle5UdR/jP9isPUh+F
+y39jelF0OsCrxEBbEt8VC92ZJJGgDiEeKCbLZrzLjYCxhWJsR0KLdmFGPiyW/+zv
+CAe4MvvO6sGz0CuxlNnFeR+rti+yl4+F6AsKnnEofw+vDRN29lVZ6ZQR59rQHvG3
+CizUHPlF+p3yggBuZEAWnFhPppIdPw==
+=lJ/I
+-----END PGP SIGNATURE-----
+
+--ev7mvGV+3JQuI2Eo--
