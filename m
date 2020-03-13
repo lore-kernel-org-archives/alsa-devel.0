@@ -2,77 +2,78 @@ Return-Path: <SRS0=U/T/=46=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E1F9C2BB1D
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 07:09:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7148BC10DCE
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 07:10:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 30E5B20749
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 07:09:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F1EC420409
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 07:10:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rWnkUjar"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 30E5B20749
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XJlgNba/";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="xNvlGhvG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F1EC420409
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 74F0C1785;
-	Fri, 13 Mar 2020 08:08:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 74F0C1785
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3C429178D;
+	Fri, 13 Mar 2020 08:09:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C429178D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584083381;
-	bh=gDwwcHQWQG6EFXhmssdykmhTl7qxvkaKNxbnk0cVpYk=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=rWnkUjarnIdQjlu39pEfgeRzucOY5RZbEAIxZVF0/ogYKedlzRi8whi7InRWXThoj
-	 UL9QPu+uhaNZRAAK+cFEEzhnhYhqZXTt1NEs6HtJsURCJfAreMISbok1xAkf/0uGRv
-	 6o4PEfj04a6r7JZaAQH9lo2l6idNnSM4vKEG7ceE=
+	s=default; t=1584083435;
+	bh=HhSVVPJ3LoI3jQaeENZl2yYG2HKleKcxy4U8f5tiZUg=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=XJlgNba/Bj6JJGlqVXEBjnoeZEN95T4gHgEfZYABev8SF8wfSodFVwdt3j7V9y3qY
+	 Nxr2mnoFPlrlxFgl/vygj32jv8fb46JZv32g03RMQtxffL6pdf//zzhGdFuL2/yhdL
+	 MakNtqCvTP1K5SQWVhMenmC1Zbr7mh1bLsgCQd40=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9FBC4F801A3;
-	Fri, 13 Mar 2020 08:08:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A70ECF8021D;
+	Fri, 13 Mar 2020 08:09:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 62BD6F801EB; Fri, 13 Mar 2020 08:08:47 +0100 (CET)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ id B7ECCF80086; Fri, 13 Mar 2020 08:09:15 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D68A0F80086
+ for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2020 08:09:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D68A0F80086
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="xNvlGhvG"
+Received: from localhost.localdomain (unknown [171.76.107.175])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 430B4F8013E
- for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2020 08:08:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 430B4F8013E
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 13 Mar 2020 00:08:37 -0700
-X-IronPort-AV: E=Sophos;i="5.70,547,1574150400"; d="scan'208";a="237123087"
-Received: from xweng-mobl.amr.corp.intel.com (HELO [10.251.242.215])
- ([10.251.242.215])
- by orsmga008-auth.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-SHA;
- 13 Mar 2020 00:08:36 -0700
-Subject: Re: [PATCH v2] topology: Add topology file for generic HDA DSP
- machine driver
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org
-References: <20200309120944.15240-1-mateusz.gorski@linux.intel.com>
- <0d2fb996-2668-e53b-ec91-18bf9e27df31@linux.intel.com>
- <7334e7b6-c4d3-aac3-46d2-b4fbcb0e3957@linux.intel.com>
- <27e153ce-f94b-876a-32e7-66dd5842c07b@linux.intel.com>
-From: "Gorski, Mateusz" <mateusz.gorski@linux.intel.com>
-Message-ID: <0efdc802-eb82-2137-19a1-9a7e71fa62d8@linux.intel.com>
-Date: Fri, 13 Mar 2020 08:08:16 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+ by mail.kernel.org (Postfix) with ESMTPSA id 2DF502073E;
+ Fri, 13 Mar 2020 07:09:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1584083346;
+ bh=HhSVVPJ3LoI3jQaeENZl2yYG2HKleKcxy4U8f5tiZUg=;
+ h=From:To:Cc:Subject:Date:From;
+ b=xNvlGhvGjENGkn6kCVs3IdUutTwfk/Ck8XjLki8Z02sThIiSUOziD5xmaAbGwDrOH
+ gtAX7mxludvHTFLJhTDoBb+NNsr1N0432nwQsJJiaLJyBM1DmZSvFdMyTEcwj+1XAT
+ KaNKPlstFfH3t2yMDQ6lAvLx05VZDxCOx1BkdS6U=
+From: Vinod Koul <vkoul@kernel.org>
+To: Mark Brown <broonie@kernel.org>,
+	Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH 0/9] ALSA: compress: Add wma, alac and ape support
+Date: Fri, 13 Mar 2020 12:38:38 +0530
+Message-Id: <20200313070847.1464977-1-vkoul@kernel.org>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-In-Reply-To: <27e153ce-f94b-876a-32e7-66dd5842c07b@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: pl
-Cc: cezary.rojewski@intel.com, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
+ linux-arm-msm@vger.kernel.org, Patrick Lai <plai@codeaurora.org>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>, Vinod Koul <vkoul@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,51 +89,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+This series adds more WMA profiles and WMA decoder parameters to UAPI and
+then support for these in qcom driver. It also adds FLAC and APE IDs and
+decoder parameters to UAPI and then support in qcom driver
 
->>>> +SectionPCMCapabilities."DMIC-Capture" {
->>>> +    formats "S16_LE"
->>>> +    rates "48000"
->>>> +    channels_min "2"
->>>> +    channels_max "2"
->>>> +    sig_bits "16"
->>>> +}
->>>
->>> NHLT reports 4 microphones on a number of devices, is there any 
->>> specific reason to limit the capture to 2ch?
->>>
->>> I believe the generic Hdaudio card now reports the number of 
->>> channels to pulseaudio, so it's possible that PulseAudio would open 
->>> a 4ch stream but be told sorry no can do by topology.
->>>
->>> FWIW we ended-up selecting different topology files in SOF, 
->>> depending on whether we had 0, 2 or 4 mics.
->>
->>
->> This patch was prepared to address many issues regarding broken DMIC 
->> configurations.
->>
->> You are right - there are different DMIC configurations on different 
->> devices, but, since path multi-configuration feature is not 
->> upstreamed in cAVS driver, we are not able to include all of these in 
->> one topology file.
->>
->> This is a reference topology, and it was successfully validated on 
->> few production laptops (including models on which DMIC capture was 
->> not working).
->
-> Sorry, I don't understand what's missing in the cAVS driver?
->
-> All you need is to select a different topology based on the number of 
-> DMICs detected.
+This was tested on Dragon board RB3.
 
+Last, bump up the compressed version so that userspace can check for the
+support.
 
-We have a mechanism to choose the PCM configuration of given topology 
-path via amixer control. That way we can include both 2ch and 4ch DMIC 
-configurations in one topology file and simply change DMIC pipeline 
-configuration on runtime.
+Since the series touches compress uapi and asoc, it would make sense to go
+thru asoc tree with acks.
 
-Unfortunately this mechanism is not currently available on upstream.
+Vinod Koul (9):
+  ALSA: compress: add wma codec profiles
+  ALSA: compress: Add wma decoder params
+  ASoC: qcom: q6asm: pass codec profile to q6asm_open_write
+  ASoC: qcom: q6asm: add support to wma config
+  ASoC: qcom: q6asm-dai: add support to wma decoder
+  ALSA: compress: add alac & ape decoder params
+  ASoC: qcom: q6asm: add support for alac and ape configs
+  ASoC: qcom: q6asm-dai: add support for ALAC and APE decoders
+  ALSA: compress: bump the version
 
-As said before, this is a reference topology, if needed I can also 
-upload modified version with 4ch DMIC path.
+ include/uapi/sound/compress_offload.h |   2 +-
+ include/uapi/sound/compress_params.h  |  37 +++-
+ sound/soc/qcom/qdsp6/q6asm-dai.c      | 136 +++++++++++++-
+ sound/soc/qcom/qdsp6/q6asm.c          | 243 +++++++++++++++++++++++++-
+ sound/soc/qcom/qdsp6/q6asm.h          |  51 +++++-
+ 5 files changed, 462 insertions(+), 7 deletions(-)
+
+~Vinod
+
+-- 
+2.24.1
 
