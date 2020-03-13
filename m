@@ -7,95 +7,96 @@ X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B734C10DCE
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 12:19:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 37149C10DCE
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 12:19:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 09B1320724
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 12:19:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B322520724
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 12:19:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aSyBTDhg";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="b3x2jx1U"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 09B1320724
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="muC4q+w7";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uyl+0f2v"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B322520724
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6517317DB;
-	Fri, 13 Mar 2020 13:18:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6517317DB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1879D17F5;
+	Fri, 13 Mar 2020 13:18:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1879D17F5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584101949;
-	bh=BY7e1VJdsGFKKewq1EXgQKYPas8pl3SFi703gNZeXDs=;
+	s=default; t=1584101971;
+	bh=AZO01oN46GyI0PrBJcn2yxaV9nQ+LiVN2TtlFSUnxd4=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=aSyBTDhgcucd1E3IVYBSCwrZUxPH4LKip9XueZfR2Gy1BWQZdDygi4Co8b3efN0V5
-	 +S2QH8NDTaFyNDxyRyxa3bUlc3fEvmlQ3/5bbD1XZd2EWj//g5Jz1YGVoIkIUcqEIO
-	 PrDJWV1PQ9/NOmMQGhjQqa4lfPRNIa2XvEr7GchQ=
+	b=muC4q+w7oDR58ZjF0pfsCQ7mUNV/oskAUQjSTukYtU446dPUZAsgzKmlwZHtpLW14
+	 f/G9qo43/Jb+zqE3FACRTfYwC9sBbx8CSr8PmOOHQDsITqTTvzsY3gj2F2hJBJpMjp
+	 yT0HFBROKoZvkH20FYCgCdF6aYFvGRqHieV1W8NU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4A2BCF8028E;
-	Fri, 13 Mar 2020 13:16:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 208A4F80292;
+	Fri, 13 Mar 2020 13:16:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6CC1DF801EB; Fri, 13 Mar 2020 13:15:57 +0100 (CET)
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
- [IPv6:2a00:1450:4864:20::443])
+ id 59E57F801EB; Fri, 13 Mar 2020 13:16:07 +0100 (CET)
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com
+ [IPv6:2a00:1450:4864:20::343])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CD9E9F8013E
- for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2020 13:15:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CD9E9F8013E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 42A87F80086
+ for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2020 13:16:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42A87F80086
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="b3x2jx1U"
-Received: by mail-wr1-x443.google.com with SMTP id x11so7051981wrv.5
- for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2020 05:15:28 -0700 (PDT)
+ header.b="uyl+0f2v"
+Received: by mail-wm1-x343.google.com with SMTP id m3so10051111wmi.0
+ for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2020 05:16:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=subject:to:cc:references:from:message-id:date:user-agent
  :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=03slhcmvhoks3TEe8Ap/dMwGdXRQ8mfgJLK4iHfROxE=;
- b=b3x2jx1UlW5BmqjKnk9uTYg56kmkE5j1cTOSHA9CjAureDfgr60GP53Qjk1i8HFDzN
- Srix0sgQh56FjoN5gNiQ8k3xXwmF8cXah02l/ll6WG3jXdzA91uYXiX6QLGvy0SJqa70
- NGBNDxHRwXFIBJ1XKv2w9+ze7OCElYbqDayfkCZ8RUzWzIlS6lONzRH7H0o2BJZiZemQ
- gcomEiXx0JMeRHizKatgAfrw9llNWLmGFBK4vmMjG1F5MLcsTqu9JPaqJXl7wPNGYzGi
- 0xcVd/pdWmzzZ9dODpUF/9olNYc3VxCSStk4CoEfsLoZTgSHUju7idE8386SJblkVsuE
- 2llQ==
+ bh=cos0z2ZnLdhgTrKzYZS98WN2zx2uM2u3a3GtghXGyMM=;
+ b=uyl+0f2vW+990e+EP5QFGafFeKSM6QnC39sXPkUFRtsjZ8lFkyt4cSw06tKYg+HK7Y
+ ynoknG21PmZ/TvatDsuQn4GliguyX86GIMXfgnhFutfl7vOniKKVsLMrfD9rdpt2TCD8
+ 2XSGU05a343XbQ053KCylLmfd4HvmfJJwI+lCaNqsBjSRDKvmEiCiTfBnG6v3OHXQVbU
+ +PzDGeqBKdSEpj9Sny7kT4D4AfaPxX2rsSFn/TT9htkqy0nCSD+c2ZF47PDzlkVedeH9
+ ie3gDjsv5pz23lWzXBqZ7LGQn38y+td+eu7eC7m4WMAh9PGuGuN40zOkP7/cfHhILCED
+ 6Aew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:subject:to:cc:references:from:message-id:date
  :user-agent:mime-version:in-reply-to:content-language
  :content-transfer-encoding;
- bh=03slhcmvhoks3TEe8Ap/dMwGdXRQ8mfgJLK4iHfROxE=;
- b=idbNfDGhBMt8xsg7XQ4DTIl1aoD2m/4B7sfi2L35hoSaaWNplTICZBbDxOa2Js2w9L
- /na7Dcc4BNI5QAG5p2DLaCZ2g3ly9BaJUQPuG2oQlpvjtVC46aYhKlBPqLFyJMmsjFEC
- 3Q/QtfSIbemL417wWbLpqXzpnBvBg/xE2KH4u2RnZ78Jwt8iOLxgxyNS5U2nDPz2quw5
- C9FrfKiDvX/5SLyRDL0272YL/1+MN4xDHMf9+9xsxtQu8o2n8r9g6GlaCd9mWwzkhrym
- 5OvPm1ogPddwNYsxFo3xjfvVaS5R0LY/pqmxx+CXYqRBxjYSxbtm4ES2r37OafZoxQAS
- GcXw==
-X-Gm-Message-State: ANhLgQ25VEt6b0j1SznWFwU8cNUA1I5H+S2xMMFq3Y+L1heWiyr03U2P
- MgkPnsRAMOSko/T3rWbK+sDaRA==
-X-Google-Smtp-Source: ADFU+vtYrwHpAYGiqlnYwHTVsIrKYnbriSKJTx9gN3G/OSkclar4UXFdkzaeltwXf9vgPIHv3KpjSQ==
-X-Received: by 2002:a5d:56c4:: with SMTP id m4mr3935185wrw.182.1584101725930; 
- Fri, 13 Mar 2020 05:15:25 -0700 (PDT)
+ bh=cos0z2ZnLdhgTrKzYZS98WN2zx2uM2u3a3GtghXGyMM=;
+ b=PznD4TdJ2WLbTbWjkb2ZBhM7YjXcAFjO8lillbGl9N/J5JG5MkiDq8mP9u4AM2LSR0
+ hP6aZrBgEPtXUm3mw3XPaP7ZmKM4PsNWRxEu33KdjluZjmuaXTSWiXBS3vR7dm5K8oiO
+ 5FN3DlCBx6UCtNrsomE+gjpqLD8PsHpKZ7xFXlVsoTCgU1qu3/AltSOPWuLzRpzMpKhY
+ SanWWm22x7fxhmWjup9SOdw2sAHvY+R3klnSK+AbIi6CjMr5lLJSvB99ex/ByzzPH7+r
+ 2q3IBMQ4rLlCqVhpDPAH0Tk7lqEXkpCEGtOIeLrtsMiIkvGnFJ3m8tkkTdrDmKmXfHg+
+ 2cWA==
+X-Gm-Message-State: ANhLgQ3sDRFsi7u94dbELbV5AVm+TK5VSTxQox/A9x/oVIJcpG5xLoFE
+ E53glbn3PrT3eGI14xSDnnCrDA==
+X-Google-Smtp-Source: ADFU+vuDGoIAUIxQUpdgjLTOoFE9zMYRNI6MCt6NH/LR8YP5yQH95VtC4/lS6iAKjJPkWVF1MOmOMg==
+X-Received: by 2002:a1c:5585:: with SMTP id j127mr10605018wmb.35.1584101761142; 
+ Fri, 13 Mar 2020 05:16:01 -0700 (PDT)
 Received: from [192.168.86.34]
  (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
- by smtp.googlemail.com with ESMTPSA id n2sm11579258wrr.62.2020.03.13.05.15.24
+ by smtp.googlemail.com with ESMTPSA id v14sm43278354wrr.34.2020.03.13.05.15.59
  (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Fri, 13 Mar 2020 05:15:24 -0700 (PDT)
-Subject: Re: [RESEND PATCH v2 4/9] ASoC: qcom: q6asm: add support to wma config
+ Fri, 13 Mar 2020 05:16:00 -0700 (PDT)
+Subject: Re: [RESEND PATCH v2 8/9] ASoC: qcom: q6asm-dai: add support for ALAC
+ and APE decoders
 To: Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>,
  Takashi Iwai <tiwai@suse.com>
 References: <20200313101627.1561365-1-vkoul@kernel.org>
- <20200313101627.1561365-5-vkoul@kernel.org>
+ <20200313101627.1561365-9-vkoul@kernel.org>
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <cda84c80-a8bb-ecb5-3bda-ec1d610fd374@linaro.org>
-Date: Fri, 13 Mar 2020 12:15:23 +0000
+Message-ID: <fcee2779-fee8-e3d9-590f-e28fc5880ea0@linaro.org>
+Date: Fri, 13 Mar 2020 12:15:59 +0000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200313101627.1561365-5-vkoul@kernel.org>
+In-Reply-To: <20200313101627.1561365-9-vkoul@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -121,205 +122,76 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 On 13/03/2020 10:16, Vinod Koul wrote:
-> Qualcomm DSPs expect wma v9 and wma v10 configs to be set for wma
-> decoders, so add the API to program the respective wma config to the DSP
+> Qualcomm DSPs also supports the ALAC and APE decoders, so add support
+> for these and convert the snd_codec_params to qdsp format.
 > 
 > Signed-off-by: Vinod Koul <vkoul@kernel.org>
+One minor nit, other that,
 
 Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+
 > ---
->   sound/soc/qcom/qdsp6/q6asm.c | 123 +++++++++++++++++++++++++++++++++++
->   sound/soc/qcom/qdsp6/q6asm.h |  17 +++++
->   2 files changed, 140 insertions(+)
+>   sound/soc/qcom/qdsp6/q6asm-dai.c | 67 +++++++++++++++++++++++++++++++-
+>   1 file changed, 66 insertions(+), 1 deletion(-)
 > 
-> diff --git a/sound/soc/qcom/qdsp6/q6asm.c b/sound/soc/qcom/qdsp6/q6asm.c
-> index 64eb7b6ba305..4cec95c657ba 100644
-> --- a/sound/soc/qcom/qdsp6/q6asm.c
-> +++ b/sound/soc/qcom/qdsp6/q6asm.c
-> @@ -39,6 +39,8 @@
->   #define ASM_MEDIA_FMT_MULTI_CHANNEL_PCM_V2	0x00010DA5
->   #define ASM_MEDIA_FMT_MP3			0x00010BE9
->   #define ASM_MEDIA_FMT_FLAC			0x00010C16
-> +#define ASM_MEDIA_FMT_WMA_V9			0x00010DA8
-> +#define ASM_MEDIA_FMT_WMA_V10			0x00010DA7
->   #define ASM_DATA_CMD_WRITE_V2			0x00010DAB
->   #define ASM_DATA_CMD_READ_V2			0x00010DAC
->   #define ASM_SESSION_CMD_SUSPEND			0x00010DEC
-> @@ -104,6 +106,33 @@ struct asm_flac_fmt_blk_v2 {
->   	u16 reserved;
->   } __packed;
+> diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
+> index 53c250778eea..948710759824 100644
+> --- a/sound/soc/qcom/qdsp6/q6asm-dai.c
+> +++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
+> @@ -628,12 +628,16 @@ static int q6asm_dai_compr_set_params(struct snd_compr_stream *stream,
+>   	struct q6asm_dai_data *pdata;
+>   	struct q6asm_flac_cfg flac_cfg;
+>   	struct q6asm_wma_cfg wma_cfg;
+> +	struct q6asm_alac_cfg alac_cfg;
+> +	struct q6asm_ape_cfg ape_cfg;
+>   	unsigned int wma_v9 = 0;
+>   	struct device *dev = c->dev;
+>   	int ret;
+>   	union snd_codec_options *codec_options;
+>   	struct snd_dec_flac *flac;
+>   	struct snd_dec_wma *wma;
+> +	struct snd_dec_alac *alac;
+> +	struct snd_dec_ape *ape;
 >   
-> +struct asm_wmastdv9_fmt_blk_v2 {
-> +	struct asm_data_cmd_media_fmt_update_v2 fmt_blk;
-> +	u16          fmtag;
-> +	u16          num_channels;
-> +	u32          sample_rate;
-> +	u32          bytes_per_sec;
-> +	u16          blk_align;
-> +	u16          bits_per_sample;
-> +	u32          channel_mask;
-> +	u16          enc_options;
-> +	u16          reserved;
-> +} __packed;
-> +
-> +struct asm_wmaprov10_fmt_blk_v2 {
-> +	struct asm_data_cmd_media_fmt_update_v2 fmt_blk;
-> +	u16          fmtag;
-> +	u16          num_channels;
-> +	u32          sample_rate;
-> +	u32          bytes_per_sec;
-> +	u16          blk_align;
-> +	u16          bits_per_sample;
-> +	u32          channel_mask;
-> +	u16          enc_options;
-> +	u16          advanced_enc_options1;
-> +	u32          advanced_enc_options2;
-> +} __packed;
-> +
->   struct asm_stream_cmd_set_encdec_param {
->   	u32                  param_id;
->   	u32                  param_size;
-> @@ -894,6 +923,24 @@ int q6asm_open_write(struct audio_client *ac, uint32_t format,
->   	case SND_AUDIOCODEC_FLAC:
->   		open->dec_fmt_id = ASM_MEDIA_FMT_FLAC;
->   		break;
-> +	case SND_AUDIOCODEC_WMA:
-> +		switch (codec_profile) {
-> +		case SND_AUDIOPROFILE_WMA9:
-> +			open->dec_fmt_id = ASM_MEDIA_FMT_WMA_V9;
-> +			break;
-> +		case SND_AUDIOPROFILE_WMA10:
-> +		case SND_AUDIOPROFILE_WMA9_PRO:
-> +		case SND_AUDIOPROFILE_WMA9_LOSSLESS:
-> +		case SND_AUDIOPROFILE_WMA10_LOSSLESS:
-> +			open->dec_fmt_id = ASM_MEDIA_FMT_WMA_V10;
-> +			break;
-> +		default:
-> +			dev_err(ac->dev, "Invalid codec profile 0x%x\n",
-> +				codec_profile);
-> +			rc = -EINVAL;
-> +			goto err;
-> +		}
+>   	codec_options = &(prtd->codec_param.codec.options);
+>   
+> @@ -756,6 +760,65 @@ static int q6asm_dai_compr_set_params(struct snd_compr_stream *stream,
+>   			dev_err(dev, "WMA9 CMD failed:%d\n", ret);
+>   			return -EIO;
+>   		}
 > +		break;
->   	default:
->   		dev_err(ac->dev, "Invalid format 0x%x\n", format);
->   		rc = -EINVAL;
-> @@ -1075,6 +1122,82 @@ int q6asm_stream_media_format_block_flac(struct audio_client *ac,
->   	return rc;
->   }
->   EXPORT_SYMBOL_GPL(q6asm_stream_media_format_block_flac);
 > +
-> +int q6asm_stream_media_format_block_wma_v9(struct audio_client *ac,
-> +					   struct q6asm_wma_cfg *cfg)
-> +{
-> +	struct asm_wmastdv9_fmt_blk_v2 *fmt;
-> +	struct apr_pkt *pkt;
-> +	void *p;
-> +	int rc, pkt_size;
+> +	case SND_AUDIOCODEC_ALAC:
+> +		memset(&alac_cfg, 0x0, sizeof(alac_cfg));
+> +		alac = &codec_options->alac_d;
 > +
-> +	pkt_size = APR_HDR_SIZE + sizeof(*fmt);
-> +	p = kzalloc(pkt_size, GFP_KERNEL);
-> +	if (!p)
-> +		return -ENOMEM;
+> +		alac_cfg.sample_rate = params->codec.sample_rate;
+> +		alac_cfg.avg_bit_rate = params->codec.bit_rate;
+> +		alac_cfg.bit_depth = prtd->bits_per_sample;
+> +		alac_cfg.num_channels = params->codec.ch_in;
 > +
-> +	pkt = p;
-> +	fmt = p + APR_HDR_SIZE;
+> +		alac_cfg.frame_length = alac->frame_length;
+> +		alac_cfg.pb = alac->pb;
+> +		alac_cfg.mb = alac->mb;
+> +		alac_cfg.kb = alac->kb;
+> +		alac_cfg.max_run = alac->max_run;
+> +		alac_cfg.compatible_version = alac->compatible_version;
+> +		alac_cfg.max_frame_bytes = alac->max_frame_bytes;
 > +
-> +	q6asm_add_hdr(ac, &pkt->hdr, pkt_size, true, ac->stream_id);
-> +
-> +	pkt->hdr.opcode = ASM_DATA_CMD_MEDIA_FMT_UPDATE_V2;
-> +	fmt->fmt_blk.fmt_blk_size = sizeof(*fmt) - sizeof(fmt->fmt_blk);
-> +	fmt->fmtag = cfg->fmtag;
-> +	fmt->num_channels = cfg->num_channels;
-> +	fmt->sample_rate = cfg->sample_rate;
-> +	fmt->bytes_per_sec = cfg->bytes_per_sec;
-> +	fmt->blk_align = cfg->block_align;
-> +	fmt->bits_per_sample = cfg->bits_per_sample;
-> +	fmt->channel_mask = cfg->channel_mask;
-> +	fmt->enc_options = cfg->enc_options;
-> +	fmt->reserved = 0;
-> +
-> +	rc = q6asm_ac_send_cmd_sync(ac, pkt);
-> +	kfree(pkt);
-> +
-> +	return rc;
-> +}
-> +EXPORT_SYMBOL_GPL(q6asm_stream_media_format_block_wma_v9);
-> +
-> +int q6asm_stream_media_format_block_wma_v10(struct audio_client *ac,
-> +					    struct q6asm_wma_cfg *cfg)
-> +{
-> +	struct asm_wmaprov10_fmt_blk_v2 *fmt;
-> +	struct apr_pkt *pkt;
-> +	void *p;
-> +	int rc, pkt_size;
-> +
-> +	pkt_size = APR_HDR_SIZE + sizeof(*fmt);
-> +	p = kzalloc(pkt_size, GFP_KERNEL);
-> +	if (!p)
-> +		return -ENOMEM;
-> +
-> +	pkt = p;
-> +	fmt = p + APR_HDR_SIZE;
-> +
-> +	q6asm_add_hdr(ac, &pkt->hdr, pkt_size, true, ac->stream_id);
-> +
-> +	pkt->hdr.opcode = ASM_DATA_CMD_MEDIA_FMT_UPDATE_V2;
-> +	fmt->fmt_blk.fmt_blk_size = sizeof(*fmt) - sizeof(fmt->fmt_blk);
-> +	fmt->fmtag = cfg->fmtag;
-> +	fmt->num_channels = cfg->num_channels;
-> +	fmt->sample_rate = cfg->sample_rate;
-> +	fmt->bytes_per_sec = cfg->bytes_per_sec;
-> +	fmt->blk_align = cfg->block_align;
-> +	fmt->bits_per_sample = cfg->bits_per_sample;
-> +	fmt->channel_mask = cfg->channel_mask;
-> +	fmt->enc_options = cfg->enc_options;
-> +	fmt->advanced_enc_options1 = cfg->adv_enc_options;
-> +	fmt->advanced_enc_options2 = cfg->adv_enc_options2;
-> +
-> +	rc = q6asm_ac_send_cmd_sync(ac, pkt);
-> +	kfree(pkt);
-> +
-> +	return rc;
-> +}
-> +EXPORT_SYMBOL_GPL(q6asm_stream_media_format_block_wma_v10);
-> +
->   /**
->    * q6asm_enc_cfg_blk_pcm_format_support() - setup pcm configuration for capture
->    *
-> diff --git a/sound/soc/qcom/qdsp6/q6asm.h b/sound/soc/qcom/qdsp6/q6asm.h
-> index 1cff7f68b95d..5d9fbc75688c 100644
-> --- a/sound/soc/qcom/qdsp6/q6asm.h
-> +++ b/sound/soc/qcom/qdsp6/q6asm.h
-> @@ -45,6 +45,19 @@ struct q6asm_flac_cfg {
->           u16 md5_sum;
->   };
->   
-> +struct q6asm_wma_cfg {
-> +	u32 fmtag;
-> +	u32 num_channels;
-> +	u32 sample_rate;
-> +	u32 bytes_per_sec;
-> +	u32 block_align;
-> +	u32 bits_per_sample;
-> +	u32 channel_mask;
-> +	u32 enc_options;
-> +	u32 adv_enc_options;
-> +	u32 adv_enc_options2;
-> +};
-> +
->   typedef void (*q6asm_cb) (uint32_t opcode, uint32_t token,
->   			  void *payload, void *priv);
->   struct audio_client;
-> @@ -69,6 +82,10 @@ int q6asm_media_format_block_multi_ch_pcm(struct audio_client *ac,
->   					  uint16_t bits_per_sample);
->   int q6asm_stream_media_format_block_flac(struct audio_client *ac,
->   					 struct q6asm_flac_cfg *cfg);
-> +int q6asm_stream_media_format_block_wma_v9(struct audio_client *ac,
-> +					   struct q6asm_wma_cfg *cfg);
-> +int q6asm_stream_media_format_block_wma_v10(struct audio_client *ac,
-> +					    struct q6asm_wma_cfg *cfg);
->   int q6asm_run(struct audio_client *ac, uint32_t flags, uint32_t msw_ts,
->   	      uint32_t lsw_ts);
->   int q6asm_run_nowait(struct audio_client *ac, uint32_t flags, uint32_t msw_ts,
-> 
+> +		switch (params->codec.ch_in) {
+> +		case 1:
+> +			alac_cfg.channel_layout_tag = (100 << 16) | 1;
+
+We should probably define this layout tag in asm.h
+something like:
+
+#define ALAC_CHANNEL_LAYOUT_TAG_Mono (100<<16) | 1
+#define ALAC_CHANNEL_LAYOUT_TAG_STEREO (100<<16) | 2
+
+--srini
+
+> +			break;
+> +		case 2:
+> +			alac_cfg.channel_layout_tag = (101 << 16) | 2;
+> +			break;
+> +		}
