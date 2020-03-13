@@ -2,79 +2,69 @@ Return-Path: <SRS0=U/T/=46=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C7FAC10DCE
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 07:15:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86569C10DCE
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 07:24:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9C68A206FA
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 07:15:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 083B0206EB
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 07:24:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ncE7aWun";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="IFwnKjcb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9C68A206FA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sdwgxkRX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 083B0206EB
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A118917AB;
-	Fri, 13 Mar 2020 08:14:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A118917AB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5466E179B;
+	Fri, 13 Mar 2020 08:23:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5466E179B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584083741;
-	bh=eOHdzKsuiDRxoSeOKx1T/q3qpP4W3MG5l3YkkamaGsA=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1584084256;
+	bh=rE4CkOTVl6m+fZz6lPEc8HhqhM/+osZluHFehu6ROaM=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ncE7aWunHmRbEJOBdVgC7G4RGe+QwmS+BOepCTzxItuceYamW/VjPj+1Rs/vp0f91
-	 OMdlrp2jqv3cOwXxgYiEzhGPPsMENuhgS/bRJDYepmIPxphV7DoDtndtJxnZikq0jH
-	 yN6ffByduzOau/w+4JRB3HMXmTkmTMoIiWlc3S7o=
+	b=sdwgxkRX4+Uq2X+xls3icLulehdAwniy5Xz1TICWrs9qy0BsEsHjyW+qOQk3KKmW0
+	 lQlZU9wiHxzG43F0Nnj/E8cYXe7UhCHhnzCIR6BcbglAXBphkPRoHoQ6aOTBUu7gIx
+	 cJnpfghOD3l2MndShjUQr/EBGFbuJFQByMbcAEO8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AB6D1F802EA;
-	Fri, 13 Mar 2020 08:10:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5B74FF801A3;
+	Fri, 13 Mar 2020 08:23:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0BE1AF80086; Fri, 13 Mar 2020 08:10:15 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id 23E9CF801EB; Fri, 13 Mar 2020 08:22:48 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7FFCDF80086
- for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2020 08:09:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7FFCDF80086
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="IFwnKjcb"
-Received: from localhost.localdomain (unknown [171.76.107.175])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 0AA6920752;
- Fri, 13 Mar 2020 07:09:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1584083386;
- bh=eOHdzKsuiDRxoSeOKx1T/q3qpP4W3MG5l3YkkamaGsA=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=IFwnKjcbcZsSqhSXb0Mg7XByzhZcaf6iLcfs20N+AeiPC/fIt2p6maiVTJQyzjy8u
- V/1Ohulmb4JNJgSTUR+oJmD4xfAyk4BADjq0kKyHzIuJiRE6GJNE2f93mQuLFBAQ0F
- fdqiJZ4QTIHjEu5vlYdFkZ4bstp/uzCtz6HisziQ=
-From: Vinod Koul <vkoul@kernel.org>
-To: Mark Brown <broonie@kernel.org>,
-	Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 9/9] ALSA: compress: bump the version
-Date: Fri, 13 Mar 2020 12:38:47 +0530
-Message-Id: <20200313070847.1464977-10-vkoul@kernel.org>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200313070847.1464977-1-vkoul@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id C08DFF80090
+ for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2020 08:22:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C08DFF80090
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 4877FB042;
+ Fri, 13 Mar 2020 07:22:38 +0000 (UTC)
+Date: Fri, 13 Mar 2020 08:22:38 +0100
+Message-ID: <s5h36ac67nl.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Vinod Koul <vkoul@kernel.org>
+Subject: Re: [PATCH 1/9] ALSA: compress: add wma codec profiles
+In-Reply-To: <20200313070847.1464977-2-vkoul@kernel.org>
 References: <20200313070847.1464977-1-vkoul@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+ <20200313070847.1464977-2-vkoul@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
- linux-arm-msm@vger.kernel.org, Patrick Lai <plai@codeaurora.org>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Bjorn Andersson <bjorn.andersson@linaro.org>, Vinod Koul <vkoul@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-arm-msm@vger.kernel.org,
+ Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>, Mark Brown <broonie@kernel.org>,
  Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
@@ -92,27 +82,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We have added support for bunch of new decoders and parameters for
-decoders. To help users find the support bump the version up to 0,2,0.
+On Fri, 13 Mar 2020 08:08:39 +0100,
+Vinod Koul wrote:
+> 
+> Some codec profiles were missing for WMA, like WMA9/10 lossless and
+> wma10 pro, so add these profiles
+> 
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
+>  include/uapi/sound/compress_params.h | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/include/uapi/sound/compress_params.h b/include/uapi/sound/compress_params.h
+> index 9c96fb0e4d90..634daa354b58 100644
+> --- a/include/uapi/sound/compress_params.h
+> +++ b/include/uapi/sound/compress_params.h
+> @@ -142,6 +142,9 @@
+>  #define SND_AUDIOPROFILE_WMA8                ((__u32) 0x00000002)
+>  #define SND_AUDIOPROFILE_WMA9                ((__u32) 0x00000004)
+>  #define SND_AUDIOPROFILE_WMA10               ((__u32) 0x00000008)
+> +#define SND_AUDIOPROFILE_WMA9_PRO            ((__u32) 0x00000010)
+> +#define SND_AUDIOPROFILE_WMA9_LOSSLESS       ((__u32) 0x00000011)
+> +#define SND_AUDIOPROFILE_WMA10_LOSSLESS      ((__u32) 0x00000012)
 
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
----
- include/uapi/sound/compress_offload.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Are the profiles are bit flags, or they are just enums?
+All other definitions are set as if bit flags.
 
-diff --git a/include/uapi/sound/compress_offload.h b/include/uapi/sound/compress_offload.h
-index 56d95673ce0f..7184265c0b0d 100644
---- a/include/uapi/sound/compress_offload.h
-+++ b/include/uapi/sound/compress_offload.h
-@@ -31,7 +31,7 @@
- #include <sound/compress_params.h>
- 
- 
--#define SNDRV_COMPRESS_VERSION SNDRV_PROTOCOL_VERSION(0, 1, 2)
-+#define SNDRV_COMPRESS_VERSION SNDRV_PROTOCOL_VERSION(0, 2, 0)
- /**
-  * struct snd_compressed_buffer - compressed buffer
-  * @fragment_size: size of buffer fragment in bytes
--- 
-2.24.1
 
+thanks,
+
+Takashi
