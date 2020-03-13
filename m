@@ -2,86 +2,57 @@ Return-Path: <SRS0=U/T/=46=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DBB91C10DCE
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 18:06:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C645EC10DCE
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 18:13:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6566C20674
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 18:06:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5165F20674
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 18:13:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qbhLKj0H"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6566C20674
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JQ5t61J8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5165F20674
+Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B1C5A1841;
-	Fri, 13 Mar 2020 19:05:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1C5A1841
+	by alsa0.perex.cz (Postfix) with ESMTPS id AB4131841;
+	Fri, 13 Mar 2020 19:13:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB4131841
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584122804;
-	bh=tS2q+oXz20VqzSeHESYk3tjWn89uZDkDnSDm+k5Qa9M=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=qbhLKj0H5Sxpsbsxe7udECadFbGVUEdYamLULyWQU7Twfa8X415kaXdPRdZM08wSE
-	 20Y3PrDHsVWXWt+zWJxl+u/NdMVQ2WVPAB19uzEGi4Ujw+5OIY+9Toz4i/9KwUIqX3
-	 /dNTpf5bo6+a2ly2y/gukEFLZrIXZiCWhokS/JII=
+	s=default; t=1584123231;
+	bh=hfmdYh7nC4KEpyUKgbxyUdvCbPmd56o4WZU98eSiCcA=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=JQ5t61J869nDAd1bLkGPPawKeSDrzFtYxBMZ/3jskynuXh9DqBo4odWp+ujBSQ79O
+	 pnMJtALUBKL5eRmHkC3pRtMyBx5BfPNnBViWiRfwEH+mYqxfhWy9tZNooHEDQuQnH4
+	 zzyexLt2vESWVNO02MsV++c9YNPOz0n63aGoeMPA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 26FF4F801A3;
-	Fri, 13 Mar 2020 19:05:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 254B8F8013E;
+	Fri, 13 Mar 2020 19:13:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4CE56F801EB; Fri, 13 Mar 2020 19:05:51 +0100 (CET)
-Received: from mail-ot1-f65.google.com (mail-ot1-f65.google.com
- [209.85.210.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EF202F80086
- for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2020 19:05:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF202F80086
-Received: by mail-ot1-f65.google.com with SMTP id h17so11020671otn.7
- for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2020 11:05:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=q7+Nkcvfl4/gb9mNioMQHbyMcrjEyqR+fODsE4xtIGc=;
- b=Wi25RZuCv+PCTbtEizvxZnm5zYvQjv3+ocDFQaKxXy0gEFAWlgPkk9rstKFIpQcgbv
- NeN0MJxABCBp72kClssuud/1J0Rgmmx7vZ5cWLXIIMH1ttDU5fjFGHLYGESPn6gxjYfa
- 9ghRnYMII1xDsSA5tCzxp4hbJdlhyPBWYftn/Ebu0mn9mvHobkTUipcD54bwbuAAHFw7
- 8A0tSpj7ZHScRkIweWV+u3XznEZV0U6wJwHrr610GRSuH/7szZwm8uioj513tgTGtRjC
- 49+fIq2V7kTCyExy/koABnuTL9s2N9/BhCL/b4I1WMow3pirNCeKZOYN7ZF751BNDP07
- 9d/Q==
-X-Gm-Message-State: ANhLgQ3Wi5gcxOw4Q9gHgZK3+eYASbDzakSWxKUoFVqOX8GXRmm5Zdo7
- 8cZojpgo+g2ifzhG9f/tuA==
-X-Google-Smtp-Source: ADFU+vuE1znAWJdS12d/3fpV7RSOblB37rwLd2+2qwovCXq+PD/Gh05XlFdke2N5njfGD69QMU3nNw==
-X-Received: by 2002:a05:6830:1498:: with SMTP id
- s24mr10839643otq.242.1584122745570; 
- Fri, 13 Mar 2020 11:05:45 -0700 (PDT)
-Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net.
- [24.155.109.49])
- by smtp.googlemail.com with ESMTPSA id b15sm8012288oic.52.2020.03.13.11.05.44
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 13 Mar 2020 11:05:44 -0700 (PDT)
-From: Rob Herring <robh@kernel.org>
-To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH v2] ASoC: dt-bindings: google,
- cros-ec-codec: Fix dtc warnings in example
-Date: Fri, 13 Mar 2020 13:05:43 -0500
-Message-Id: <20200313180543.20497-1-robh@kernel.org>
-X-Mailer: git-send-email 2.20.1
+ id E363CF801A3; Fri, 13 Mar 2020 19:12:59 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id E6BCDF80086
+ for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2020 19:12:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6BCDF80086
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
- Enric Balletbo i Serra <enric.balletbo@collabora.com>,
- Guenter Roeck <groeck@chromium.org>, Benson Leung <bleung@chromium.org>,
- Cheng-Yi Chiang <cychiang@chromium.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1584123173741833925-webhooks-bot@alsa-project.org>
+References: <1584123173741833925-webhooks-bot@alsa-project.org>
+Subject: alsatplg (libasound.a) segmentation fault using AFL
+Message-Id: <20200313181259.E363CF801A3@alsa1.perex.cz>
+Date: Fri, 13 Mar 2020 19:12:59 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,84 +68,97 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Extra dtc warnings (roughly what W=1 enables) are now enabled by default
-when building the binding examples. These were fixed treewide in
-5.6-rc5, but the newly added google,cros-ec-codec schema adds some new
-warnings:
+alsa-project/alsa-lib issue #37 was opened from tysonite:
 
-Documentation/devicetree/bindings/sound/google,cros-ec-codec.example.dts:17.28-21.11:
-Warning (unit_address_vs_reg): /example-0/reserved_mem: node has a reg or ranges property, but no unit name
-Documentation/devicetree/bindings/sound/google,cros-ec-codec.example.dts:22.19-32.11:
-Warning (unit_address_vs_reg): /example-0/cros-ec@0: node has a unit name, but no reg property
-Documentation/devicetree/bindings/sound/google,cros-ec-codec.example.dts:26.37-31.15:
-Warning (unit_address_vs_reg): /example-0/cros-ec@0/ec-codec: node has a reg or ranges property, but no unit name
+I was playing around with [AFL](https://fuzzing-project.org/tutorial3.html) tonight on one of my pet projects. And after it found few crashes, I've decided to fuzz one of open-source projects. The `alsatplg` tool just looked simple enough to exercise it with fuzzing tool.
 
-Fixing the above, then results in:
+I made a simple Dockerfile that runs AFL on `alsatplg`:
+```
+FROM ubuntu:18.04
 
-Documentation/devicetree/bindings/sound/google,cros-ec-codec.example.dts:26.13-23:
-Warning (reg_format): /example-0/cros-ec@0:reg: property has invalid length (4 bytes) (#address-cells == 1, #size-cells == 1)
-Documentation/devicetree/bindings/sound/google,cros-ec-codec.example.dts:27.37-32.15:
-Warning (unit_address_vs_reg): /example-0/cros-ec@0/ec-codec: node has a reg or ranges property, but no unit name
+ENV LANG C.UTF-8
 
-Fix these warnings and adjust the node name to 'audio-codec' while we're
-touching the node name.
+RUN apt-get update && \
+    apt-get install -y apt-utils && \
+    apt-get install -y afl git build-essential m4 autoconf automake libtool
 
-Fixes: eadd54c75f1e ("dt-bindings: Convert the binding file google, cros-ec-codec.txt to yaml format.")
-Cc: Cheng-Yi Chiang <cychiang@chromium.org>
-Cc: Guenter Roeck <groeck@chromium.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Benson Leung <bleung@chromium.org>
-Cc: alsa-devel@alsa-project.org
-Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Signed-off-by: Rob Herring <robh@kernel.org>
----
-v2:
- - s/ec-codec/audio-codec/
----
- .../bindings/sound/google,cros-ec-codec.yaml  | 27 +++++++++++--------
- 1 file changed, 16 insertions(+), 11 deletions(-)
+RUN cd /
 
-diff --git a/Documentation/devicetree/bindings/sound/google,cros-ec-codec.yaml b/Documentation/devicetree/bindings/sound/google,cros-ec-codec.yaml
-index 94a85d0cbf43..d62284288f23 100644
---- a/Documentation/devicetree/bindings/sound/google,cros-ec-codec.yaml
-+++ b/Documentation/devicetree/bindings/sound/google,cros-ec-codec.yaml
-@@ -44,19 +44,24 @@ additionalProperties: false
- 
- examples:
-   - |
--    reserved_mem: reserved_mem {
-+    reserved_mem: reserved-mem@52800000 {
-         compatible = "shared-dma-pool";
--        reg = <0 0x52800000 0 0x100000>;
-+        reg = <0x52800000 0x100000>;
-         no-map;
-     };
--    cros-ec@0 {
--        compatible = "google,cros-ec-spi";
--        #address-cells = <2>;
--        #size-cells = <1>;
--        cros_ec_codec: ec-codec {
--            compatible = "google,cros-ec-codec";
--            #sound-dai-cells = <1>;
--            reg = <0x0 0x10500000 0x80000>;
--            memory-region = <&reserved_mem>;
-+    spi {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        cros-ec@0 {
-+            compatible = "google,cros-ec-spi";
-+            #address-cells = <2>;
-+            #size-cells = <1>;
-+            reg = <0>;
-+            cros_ec_codec: audio-codec@10500000 {
-+                compatible = "google,cros-ec-codec";
-+                #sound-dai-cells = <1>;
-+                reg = <0x0 0x10500000 0x80000>;
-+                memory-region = <&reserved_mem>;
-+            };
-         };
-     };
--- 
-2.20.1
+RUN git clone https://github.com/alsa-project/alsa-lib.git
+RUN cd alsa-lib && \
+    	libtoolize --force --copy --automake && \
+    	aclocal && \
+    	autoheader && \
+   		automake --foreign --copy --add-missing && \
+    	autoconf && \
+    	export CFLAGS="-O2 -Wall -W -Wunused-const-variable=0 -pipe -g" && \
+    	export CC=afl-gcc && \
+    	./configure --disable-aload && \
+    	make && \
+    	make install \
+    && cd /
 
+RUN apt-get install -y gettext ncurses-base libncurses5 libncurses5-dev pkg-config
+RUN git clone https://github.com/alsa-project/alsa-utils.git
+RUN cd alsa-utils && \
+    	export CC=afl-gcc && \
+        ./gitcompile && \
+        make install && \
+    cd /
+
+RUN mkdir in
+
+#RUN cp alsa-utils/speaker-test/samples/Noise.wav in
+RUN echo "Hello" > in/input.txt
+
+CMD ["afl-fuzz", "-i", "in", "-o", "out", "alsatplg", "-c", "@@", "-o", "/output"]
+```
+
+After around 10-15 minutes running on my core i7 laptop, it generated a sequence of bytes that leads to crash. If you want to try it by yourself just run `docker build -t alsa/dev .` followed by `docker run alsa/dev`, and wait a bit. When crash happened, the input data can be copied from the container by running `docker cp <container_id>:/out .`.
+
+An example of input data that lead to SIGSEGV: 
+[id:000000,sig:11,src:000325,op:arith8,pos:48,val:-26.txt](https://github.com/alsa-project/alsa-lib/files/4330943/id.000000.sig.11.src.000325.op.arith8.pos.48.val.-26.txt)
+
+And stack trace based on it:
+```
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+Core was generated by `alsatplg -c out/crashes/id:000000,sig:11,src:000325,op:arith8,pos:48,val:-26 -o'.
+Program terminated with signal SIGSEGV, Segmentation fault.
+#0  0x00007fcb65e05ca8 in snd_config_delete () from /usr/lib/x86_64-linux-gnu/libasound.so.2
+(gdb) bt
+#0  0x00007fcb65e05ca8 in snd_config_delete () from /usr/lib/x86_64-linux-gnu/libasound.so.2
+#1  0x00007fcb65e06479 in ?? () from /usr/lib/x86_64-linux-gnu/libasound.so.2
+#2  0x00007fcb65e064ba in ?? () from /usr/lib/x86_64-linux-gnu/libasound.so.2
+#3  0x00007fcb65e0661c in ?? () from /usr/lib/x86_64-linux-gnu/libasound.so.2
+#4  0x00007fcb65e818c4 in snd_tplg_build_file () from /usr/lib/x86_64-linux-gnu/libasound.so.2
+#5  0x00005587bce0ab6a in ?? ()
+#6  0x00007fcb65a07b97 in __libc_start_main (main=0x5587bce0aa10, argc=5, argv=0x7ffcfa707628, init=<optimized out>, fini=<optimized out>, rtld_fini=<optimized out>, 
+    stack_end=0x7ffcfa707618) at ../csu/libc-start.c:310
+#7  0x00005587bce0ac4a in ?? ()
+(gdb) bt full
+#0  0x00007fcb65e05ca8 in snd_config_delete () from /usr/lib/x86_64-linux-gnu/libasound.so.2
+No symbol table info available.
+#1  0x00007fcb65e06479 in ?? () from /usr/lib/x86_64-linux-gnu/libasound.so.2
+No symbol table info available.
+#2  0x00007fcb65e064ba in ?? () from /usr/lib/x86_64-linux-gnu/libasound.so.2
+No symbol table info available.
+#3  0x00007fcb65e0661c in ?? () from /usr/lib/x86_64-linux-gnu/libasound.so.2
+No symbol table info available.
+#4  0x00007fcb65e818c4 in snd_tplg_build_file () from /usr/lib/x86_64-linux-gnu/libasound.so.2
+No symbol table info available.
+#5  0x00005587bce0ab6a in ?? ()
+No symbol table info available.
+#6  0x00007fcb65a07b97 in __libc_start_main (main=0x5587bce0aa10, argc=5, argv=0x7ffcfa707628, init=<optimized out>, fini=<optimized out>, rtld_fini=<optimized out>, 
+    stack_end=0x7ffcfa707618) at ../csu/libc-start.c:310
+        self = <optimized out>
+        __self = <optimized out>
+        result = <optimized out>
+        unwind_buf = {cancel_jmp_buf = {{jmp_buf = {0, -5452963434713232627, 94041477786656, 140724510160416, 0, 0, -2259219850243519731, -2248813385476519155}, 
+              mask_was_saved = 0}}, priv = {pad = {0x0, 0x0, 0x7fcb660ee733 <_dl_init+259>, 0x7fcb660d6370}, data = {prev = 0x0, cleanup = 0x0, canceltype = 1712252723}}}
+        not_first_call = <optimized out>
+#7  0x00005587bce0ac4a in ?? ()
+No symbol table info available.
+```
+
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/37
+Repository URL: https://github.com/alsa-project/alsa-lib
