@@ -4,60 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46D2CC10DCE
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 16:18:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 45C2EC10DCE
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 16:19:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C5D5B206B7
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 16:18:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C402320746
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 16:19:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jj4PFWIU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C5D5B206B7
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="boLMd7SR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C402320746
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 203521813;
-	Fri, 13 Mar 2020 17:17:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 203521813
+	by alsa0.perex.cz (Postfix) with ESMTPS id 02498181C;
+	Fri, 13 Mar 2020 17:18:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 02498181C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584116291;
-	bh=M5DNWO8UN0jkySMEuOnbP0fSiq0UED9gtwCAuyR6k9s=;
+	s=default; t=1584116345;
+	bh=MronHSxo0fS39DoROCWhQlbbol1jvXD0+EePLi6Q6RE=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=jj4PFWIU+jRBAUjL3ueev7cZYLIbh3ASGg0Q+JUF0hOm3OM1DREnbJFzwhHlXau8R
-	 jEqBwS0w2HXvTvxWrmtVdzwUDzIAuGZqIKKn1vw4fio80fEk6MeFybrL4tGijLBPfK
-	 kycsQNgwrIwOm5r10ZtZagU5jBzFJTzlmrfHDkKY=
+	b=boLMd7SRfiiK+Rk+PH2CAa4esa424vF2PvsPjd+FNnYO55r5u8Icht55y5NbGduwK
+	 oHgF4KlRpOYmuZC35LMLPwZafRHApLjwDKPBodvv11+6VgO65VF84wGhVwkdDUPKLF
+	 brZ6VedF6cU1h0E4f7gbORuovH6LiOEy+URz9C+E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 53D6AF801A3;
-	Fri, 13 Mar 2020 17:17:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 10425F8021D;
+	Fri, 13 Mar 2020 17:17:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E3EB7F80090; Fri, 13 Mar 2020 17:17:17 +0100 (CET)
+ id CE28CF8023E; Fri, 13 Mar 2020 17:17:21 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 60566F80090
- for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2020 17:17:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60566F80090
+ by alsa1.perex.cz (Postfix) with ESMTP id 2B045F8013E
+ for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2020 17:17:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B045F8013E
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 785A0FEC;
- Fri, 13 Mar 2020 09:17:12 -0700 (PDT)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E75EC31B;
+ Fri, 13 Mar 2020 09:17:16 -0700 (PDT)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EE9D33F6CF;
- Fri, 13 Mar 2020 09:17:11 -0700 (PDT)
-Date: Fri, 13 Mar 2020 16:17:10 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6B2433F6CF;
+ Fri, 13 Mar 2020 09:17:16 -0700 (PDT)
+Date: Fri, 13 Mar 2020 16:17:15 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Oder Chiou <oder_chiou@realtek.com>
-Subject: Applied "ASoC: rt5682: Fine tune the HP performance in soundwire
- mode" to the asoc tree
-In-Reply-To: <20200313023850.28875-1-oder_chiou@realtek.com>
-Message-Id: <applied-20200313023850.28875-1-oder_chiou@realtek.com>
+To: Kevin Li <kevin-ke.li@broadcom.com>
+Subject: Applied "ASoC: brcm: DSL/PON SoC device tree bindings of audio
+ driver" to the asoc tree
+In-Reply-To: <20200312223242.2843-1-kevin-ke.li@broadcom.com>
+Message-Id: <applied-20200312223242.2843-1-kevin-ke.li@broadcom.com>
 X-Patchwork-Hint: ignore
-Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com,
- Mark Brown <broonie@kernel.org>, derek.fang@realtek.com, shumingf@realtek.com,
- flove@realtek.com
+Cc: alsa-devel@alsa-project.org, Scott Branden <sbranden@broadcom.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Ray Jui <rjui@broadcom.com>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>, bcm-kernel-feedback-list@broadcom.com,
+ Stephen Boyd <swboyd@chromium.org>, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,7 +78,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: rt5682: Fine tune the HP performance in soundwire mode
+   ASoC: brcm: DSL/PON SoC device tree bindings of audio driver
 
 has been applied to the asoc tree at
 
@@ -100,33 +103,54 @@ to this mail.
 Thanks,
 Mark
 
-From a252d78cf772f86c2dcc40df8117d9461eed88d6 Mon Sep 17 00:00:00 2001
-From: Oder Chiou <oder_chiou@realtek.com>
-Date: Fri, 13 Mar 2020 10:38:49 +0800
-Subject: [PATCH] ASoC: rt5682: Fine tune the HP performance in soundwire mode
+From 2834a736371eab06182fcdfb0c32d23d34068764 Mon Sep 17 00:00:00 2001
+From: Kevin Li <kevin-ke.li@broadcom.com>
+Date: Thu, 12 Mar 2020 15:32:40 -0700
+Subject: [PATCH] ASoC: brcm: DSL/PON SoC device tree bindings of audio driver
 
-The setting is sync with I2C/I2S mode.
-
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
-Link: https://lore.kernel.org/r/20200313023850.28875-1-oder_chiou@realtek.com
+Signed-off-by: Kevin Li <kevin-ke.li@broadcom.com>
+Link: https://lore.kernel.org/r/20200312223242.2843-1-kevin-ke.li@broadcom.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5682.c | 2 ++
- 1 file changed, 2 insertions(+)
+ .../bindings/sound/brcm,bcm63xx-audio.txt     | 29 +++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/brcm,bcm63xx-audio.txt
 
-diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
-index e1df2d076533..f4b8af128828 100644
---- a/sound/soc/codecs/rt5682.c
-+++ b/sound/soc/codecs/rt5682.c
-@@ -3462,6 +3462,8 @@ int rt5682_io_init(struct device *dev, struct sdw_slave *slave)
- 			RT5682_HPA_CP_BIAS_CTRL_MASK, RT5682_HPA_CP_BIAS_3UA);
- 	regmap_update_bits(rt5682->regmap, RT5682_CHARGE_PUMP_1,
- 			RT5682_CP_CLK_HP_MASK, RT5682_CP_CLK_HP_300KHZ);
-+	regmap_update_bits(rt5682->regmap, RT5682_HP_CHARGE_PUMP_1,
-+			RT5682_PM_HP_MASK, RT5682_PM_HP_HV);
- 
- 	/* Soundwire */
- 	regmap_write(rt5682->regmap, RT5682_PLL2_INTERNAL, 0xa266);
+diff --git a/Documentation/devicetree/bindings/sound/brcm,bcm63xx-audio.txt b/Documentation/devicetree/bindings/sound/brcm,bcm63xx-audio.txt
+new file mode 100644
+index 000000000000..007f524b4d15
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/brcm,bcm63xx-audio.txt
+@@ -0,0 +1,29 @@
++Broadcom DSL/PON BCM63xx Audio I2S controller
++
++Required properties:
++- compatible:     Should be "brcm,bcm63xx-i2s".
++- #address-cells: 32bit valued, 1 cell.
++- #size-cells:    32bit valued, 0 cell.
++- reg:            Should contain audio registers location and length
++- interrupts:     Should contain the interrupt for the controller.
++- clocks:         Must contain an entry for each entry in clock-names.
++                  Please refer to clock-bindings.txt.
++- clock-names:    One of each entry matching the clocks phandles list:
++                  - "i2sclk" (generated clock) Required.
++                  - "i2sosc" (fixed 200MHz clock) Required.
++
++(1) : The generated clock is required only when any of TX and RX
++      works on Master Mode.
++(2) : The fixed 200MHz clock is from internal chip and always on
++
++Example:
++
++		i2s: bcm63xx-i2s {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			compatible = "brcm,bcm63xx-i2s";
++			reg = <0xFF802080 0xFF>;
++			interrupts = <GIC_SPI 84 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&i2sclk>, <&osc>;
++			clock-names = "i2sclk","i2sosc";
++		};
 -- 
 2.20.1
 
