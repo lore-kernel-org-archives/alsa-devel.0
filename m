@@ -2,102 +2,101 @@ Return-Path: <SRS0=U/T/=46=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67187C10DCE
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 12:17:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F2F80C10DCE
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 12:17:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E86C120746
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 12:17:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8144F20724
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 12:17:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Dj0npv+s";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dmdrL9J8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E86C120746
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="k8Wv2ufZ";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Qq5X8eF/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8144F20724
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4C19C17DA;
-	Fri, 13 Mar 2020 13:16:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4C19C17DA
+	by alsa0.perex.cz (Postfix) with ESMTPS id DA74817DB;
+	Fri, 13 Mar 2020 13:17:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA74817DB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584101819;
-	bh=72stC87vAGNEh1dMEhTskoYmn70OoLqSvfVHo5iRsrc=;
+	s=default; t=1584101877;
+	bh=eICaTUVnqdLrgLYjZFV6B4lCOe3ScTRooyQUY7GWhIQ=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Dj0npv+sjGxpxqDR9RwMkdHOq5iMJ10bGvA6+cuRn7QMiPK6OEeWjvTJh+e+gBr+F
-	 54Nr7RAGc3JwJ5dkaxAg2chDQXfR4GKWnFBtj1+2aUGe+B9IoL48El5fAE+8qDLoeB
-	 njb6IP9ZKs44TZB6dXYZxAmQ+EySzmqMx6lCGTGk=
+	b=k8Wv2ufZBxjkHRgTGDGdfSfYL/pnBMrWeBKwdG8bkeb+EXktdu/mozTS0rgtT8jAK
+	 QmJv7287yhX0oKtfC1SILwl97xNyYpRo0U6zDEap58ELYDsXR4LkmTbuvHYvKh/ACK
+	 pCWl2o8o5G0XHiDxHrqIJBgMP+EiTGPvN2Js0xDo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8EF9DF801A3;
-	Fri, 13 Mar 2020 13:16:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 69D55F8021D;
+	Fri, 13 Mar 2020 13:16:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C45EFF801F7; Fri, 13 Mar 2020 13:15:31 +0100 (CET)
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com
- [IPv6:2a00:1450:4864:20::343])
+ id B5816F801F7; Fri, 13 Mar 2020 13:15:36 +0100 (CET)
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
+ [IPv6:2a00:1450:4864:20::443])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9EEE2F80086
- for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2020 13:15:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9EEE2F80086
+ by alsa1.perex.cz (Postfix) with ESMTPS id DC851F801A3
+ for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2020 13:15:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC851F801A3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="dmdrL9J8"
-Received: by mail-wm1-x343.google.com with SMTP id 6so9670479wmi.5
- for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2020 05:15:22 -0700 (PDT)
+ header.b="Qq5X8eF/"
+Received: by mail-wr1-x443.google.com with SMTP id b2so5569347wrj.10
+ for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2020 05:15:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=subject:to:cc:references:from:message-id:date:user-agent
  :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=Us+slyMydZd/eqziQ4Za2MmMvMvI/Alts84+tTbnLIk=;
- b=dmdrL9J8Py6pjzSo9zxb1Yfa1SYLqBuFeXStUEe356hzKeaAzHXVcOgPyuyyrEefAl
- lRQUAClgr46+cGoe9EiUoCs9iFeVJEJJMexF8D13T9wf6eAyiCk4qCsQ07DW561IuBYO
- hnPfwa5/OCPwap5maFvMYyxIkukrBuOIgBYqdi1yNzTqopWHa2q/1oQm8iZLJG0lGt+n
- 6sqAlipnm0nYh/0p3RgYOw4QKViq2p6lOKel6B3y71wEAXvZ41vPjaUWivg2ZVoznsSK
- FU6fgQkETfifKTe817Ea4sPB/g74dG66ohFKeJ3bFRb2KRKwWH2opOCdQnWdzpfY79C6
- 9s7g==
+ bh=dkkOhNptW/+i6AyGAlAqxzIg7MAf9JOSQV9ZjZ8SZb0=;
+ b=Qq5X8eF/pk2ONqTki4DzQ/QaR74gyCIuVgJhjAdSm6LRfjQvqIKFfJjp+MmGiCEmCF
+ kCy+Kuh0WTq08v4WtL0QX7xPj9ZjHmYTA8dLuQDDfXdnqS18w7rJL57weHJ0D/QslzQY
+ dCve5He1CXK81mR2k9/edV7/sGQdRz2XFxFY4c4VUq8LCAbAzNI1avYRfAGtLMc/p+MS
+ nvGB4B/1r6i9leJd0cs9Oupl2a7bRuJRxBpC89Yv+mYXIHuU18Fljb1pYZ3pLZKlnUV4
+ SLu8j8JzkMeHZMnZLTY+p7xGBwK0SSY7U6L0kBDbPc816Dv3+bLt6cEwXu6mdoEXtSzK
+ 7lbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:subject:to:cc:references:from:message-id:date
  :user-agent:mime-version:in-reply-to:content-language
  :content-transfer-encoding;
- bh=Us+slyMydZd/eqziQ4Za2MmMvMvI/Alts84+tTbnLIk=;
- b=tEwyGZNEz3DSNqWWMVDKLYd4ryBr6iRZIlNyK+cZsQMuR+/MDEmpndeiA2ATl9oqCD
- 5jEaT57pcjcmWPc+7Hi2s7kYRcfErzSnPFs/3Ev+g1eTCUAi0PqhiqJCuxM0E3o/RWr0
- xLEbdC/heWU4GeiCW2WN1bixMBJuTejkuz6Jy2nohtFkpCZ0DEg7sCm73FGDZyRPr9b0
- GybwlVSk4tApykemGbvcp0aMZXXsFiKEZlc+NDO6qoOyxM0dwvbLZkkPp0uLrKyWhPXm
- vQaUvcUOowHvJ4+WH34QfS7JC8amEW9V6+nZvdvDbKrdx5I2rZKkvsGjsB++Ev9VfmBr
- 4H2Q==
-X-Gm-Message-State: ANhLgQ3978FvmH4ZJRuvYyLdYrevZT67Jw7TsH5SmhoBdKHM2yaZ7Lqf
- 4TWxFtvWRAJqA736cskJTWaCgg==
-X-Google-Smtp-Source: ADFU+vveUbU45uEhQYSZ4Gbmvwbf1schWKEpmcGYLn3cvPLdTqdNnZeTOPyZ6EBJ9iwM90TrudsIvQ==
-X-Received: by 2002:a1c:208a:: with SMTP id g132mr10174291wmg.44.1584101721737; 
- Fri, 13 Mar 2020 05:15:21 -0700 (PDT)
+ bh=dkkOhNptW/+i6AyGAlAqxzIg7MAf9JOSQV9ZjZ8SZb0=;
+ b=CU2MkKGDIE8gUHRO/unEaUA4AwMnIvU1X1wdgaqB6hSeHBLVEz0MI1g9hVGMasZNeX
+ Hwf1WmL2/USPqqb5rW5UafcFJi70ciz4NY2R7vNCd69y9mYyYMJ0Tc1T82Rm4dHni/iJ
+ QPhjrbovLRXSyvXwMWs5285ct3+rsCYh1gMS34yzz9T/Sqkfc+TvOhfo9Uzm6mKoM831
+ lCIUx2zgVGARLk/1ayK5QxtNdkcPFFnqh4HxjsmCdhjfI5WpJHznq4jVPFNdACtITL1e
+ jRr+hLXNvPMxiLpfaGee7x9lWa27MhOKD/xTSe47CTte5HZnauWwnR+kIFN2Bj59DG9E
+ /s8g==
+X-Gm-Message-State: ANhLgQ0OzGwG4MNxmm8s5T8OT4/KoqG6h6PF64ZP2VOx0UGf3E3YvEDI
+ B9Ff65Wec1PK5IhNV/kSCOGlgQ==
+X-Google-Smtp-Source: ADFU+vs9izdgrrewhtkxUU5LKPkaJ65rMQLgmOmqDgkmbdhOP1bk6wyZiC5daEz2RNyitsQZf1Ladw==
+X-Received: by 2002:adf:f289:: with SMTP id k9mr11052126wro.220.1584101730877; 
+ Fri, 13 Mar 2020 05:15:30 -0700 (PDT)
 Received: from [192.168.86.34]
  (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
- by smtp.googlemail.com with ESMTPSA id
- a184sm17302709wmf.29.2020.03.13.05.15.20
+ by smtp.googlemail.com with ESMTPSA id t1sm33778054wrq.36.2020.03.13.05.15.29
  (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Fri, 13 Mar 2020 05:15:20 -0700 (PDT)
-Subject: Re: [RESEND PATCH v2 3/9] ASoC: qcom: q6asm: pass codec profile to
- q6asm_open_write
+ Fri, 13 Mar 2020 05:15:30 -0700 (PDT)
+Subject: Re: [RESEND PATCH v2 7/9] ASoC: qcom: q6asm: add support for alac and
+ ape configs
 To: Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>,
  Takashi Iwai <tiwai@suse.com>
 References: <20200313101627.1561365-1-vkoul@kernel.org>
- <20200313101627.1561365-4-vkoul@kernel.org>
+ <20200313101627.1561365-8-vkoul@kernel.org>
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <15823832-0639-f868-9338-091bceaba6bd@linaro.org>
-Date: Fri, 13 Mar 2020 12:15:19 +0000
+Message-ID: <a4002e22-81c8-e1bf-50dc-03fe6a55a6b1@linaro.org>
+Date: Fri, 13 Mar 2020 12:15:29 +0000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200313101627.1561365-4-vkoul@kernel.org>
+In-Reply-To: <20200313101627.1561365-8-vkoul@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -123,68 +122,218 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 On 13/03/2020 10:16, Vinod Koul wrote:
-> Codec profile is required to be passed for WMA codecs so that we know
-> the codec profile present and tell DSP accordingly, so update this API
-> to pass the codec profile as argument
+> Qualcomm DSPs expect ALAC and APE configs to be send for decoders,
+> so add the API to program the respective config to the DSP.
 > 
 > Signed-off-by: Vinod Koul <vkoul@kernel.org>
 
-LGTM,
 
 Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
+
 > ---
->   sound/soc/qcom/qdsp6/q6asm-dai.c | 4 ++--
->   sound/soc/qcom/qdsp6/q6asm.c     | 2 +-
->   sound/soc/qcom/qdsp6/q6asm.h     | 2 +-
->   3 files changed, 4 insertions(+), 4 deletions(-)
+>   sound/soc/qcom/qdsp6/q6asm.c | 118 +++++++++++++++++++++++++++++++++++
+>   sound/soc/qcom/qdsp6/q6asm.h |  32 ++++++++++
+>   2 files changed, 150 insertions(+)
 > 
-> diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
-> index c0d422d0ab94..8f245d03b6f5 100644
-> --- a/sound/soc/qcom/qdsp6/q6asm-dai.c
-> +++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
-> @@ -250,7 +250,7 @@ static int q6asm_dai_prepare(struct snd_soc_component *component,
->   
->   	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
->   		ret = q6asm_open_write(prtd->audio_client, FORMAT_LINEAR_PCM,
-> -				       prtd->bits_per_sample);
-> +				       0, prtd->bits_per_sample);
->   	} else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
->   		ret = q6asm_open_read(prtd->audio_client, FORMAT_LINEAR_PCM,
->   				       prtd->bits_per_sample);
-> @@ -652,7 +652,7 @@ static int q6asm_dai_compr_set_params(struct snd_compr_stream *stream,
->   	prtd->bits_per_sample = 16;
->   	if (dir == SND_COMPRESS_PLAYBACK) {
->   		ret = q6asm_open_write(prtd->audio_client, params->codec.id,
-> -					prtd->bits_per_sample);
-> +				params->codec.profile, prtd->bits_per_sample);
->   
->   		if (ret < 0) {
->   			dev_err(dev, "q6asm_open_write failed\n");
 > diff --git a/sound/soc/qcom/qdsp6/q6asm.c b/sound/soc/qcom/qdsp6/q6asm.c
-> index 36e0eab13a98..64eb7b6ba305 100644
+> index 4cec95c657ba..0e0e8f7a460a 100644
 > --- a/sound/soc/qcom/qdsp6/q6asm.c
 > +++ b/sound/soc/qcom/qdsp6/q6asm.c
-> @@ -858,7 +858,7 @@ static int q6asm_ac_send_cmd_sync(struct audio_client *ac, struct apr_pkt *pkt)
->    * Return: Will be an negative value on error or zero on success
->    */
->   int q6asm_open_write(struct audio_client *ac, uint32_t format,
-> -		     uint16_t bits_per_sample)
-> +		     u32 codec_profile, uint16_t bits_per_sample)
->   {
->   	struct asm_stream_cmd_open_write_v3 *open;
->   	struct apr_pkt *pkt;
+> @@ -48,6 +48,8 @@
+>   #define ASM_STREAM_CMD_OPEN_READ_V3                 0x00010DB4
+>   #define ASM_DATA_EVENT_READ_DONE_V2 0x00010D9A
+>   #define ASM_STREAM_CMD_OPEN_READWRITE_V2        0x00010D8D
+> +#define ASM_MEDIA_FMT_ALAC			0x00012f31
+> +#define ASM_MEDIA_FMT_APE			0x00012f32
+>   
+>   
+>   #define ASM_LEGACY_STREAM_SESSION	0
+> @@ -133,6 +135,36 @@ struct asm_wmaprov10_fmt_blk_v2 {
+>   	u32          advanced_enc_options2;
+>   } __packed;
+>   
+> +struct asm_alac_fmt_blk_v2 {
+> +	struct asm_data_cmd_media_fmt_update_v2 fmt_blk;
+> +	u32 frame_length;
+> +	u8 compatible_version;
+> +	u8 bit_depth;
+> +	u8 pb;
+> +	u8 mb;
+> +	u8 kb;
+> +	u8 num_channels;
+> +	u16 max_run;
+> +	u32 max_frame_bytes;
+> +	u32 avg_bit_rate;
+> +	u32 sample_rate;
+> +	u32 channel_layout_tag;
+> +} __packed;
+> +
+> +struct asm_ape_fmt_blk_v2 {
+> +	struct asm_data_cmd_media_fmt_update_v2 fmt_blk;
+> +	u16 compatible_version;
+> +	u16 compression_level;
+> +	u32 format_flags;
+> +	u32 blocks_per_frame;
+> +	u32 final_frame_blocks;
+> +	u32 total_frames;
+> +	u16 bits_per_sample;
+> +	u16 num_channels;
+> +	u32 sample_rate;
+> +	u32 seek_table_present;
+> +} __packed;
+> +
+>   struct asm_stream_cmd_set_encdec_param {
+>   	u32                  param_id;
+>   	u32                  param_size;
+> @@ -941,6 +973,12 @@ int q6asm_open_write(struct audio_client *ac, uint32_t format,
+>   			goto err;
+>   		}
+>   		break;
+> +	case SND_AUDIOCODEC_ALAC:
+> +		open->dec_fmt_id = ASM_MEDIA_FMT_ALAC;
+> +		break;
+> +	case SND_AUDIOCODEC_APE:
+> +		open->dec_fmt_id = ASM_MEDIA_FMT_APE;
+> +		break;
+>   	default:
+>   		dev_err(ac->dev, "Invalid format 0x%x\n", format);
+>   		rc = -EINVAL;
+> @@ -1198,6 +1236,86 @@ int q6asm_stream_media_format_block_wma_v10(struct audio_client *ac,
+>   }
+>   EXPORT_SYMBOL_GPL(q6asm_stream_media_format_block_wma_v10);
+>   
+> +int q6asm_stream_media_format_block_alac(struct audio_client *ac,
+> +					 struct q6asm_alac_cfg *cfg)
+> +{
+> +	struct asm_alac_fmt_blk_v2 *fmt;
+> +	struct apr_pkt *pkt;
+> +	void *p;
+> +	int rc, pkt_size;
+> +
+> +	pkt_size = APR_HDR_SIZE + sizeof(*fmt);
+> +	p = kzalloc(pkt_size, GFP_KERNEL);
+> +	if (!p)
+> +		return -ENOMEM;
+> +
+> +	pkt = p;
+> +	fmt = p + APR_HDR_SIZE;
+> +
+> +	q6asm_add_hdr(ac, &pkt->hdr, pkt_size, true, ac->stream_id);
+> +
+> +	pkt->hdr.opcode = ASM_DATA_CMD_MEDIA_FMT_UPDATE_V2;
+> +	fmt->fmt_blk.fmt_blk_size = sizeof(*fmt) - sizeof(fmt->fmt_blk);
+> +
+> +	fmt->frame_length = cfg->frame_length;
+> +	fmt->compatible_version = cfg->compatible_version;
+> +	fmt->bit_depth =  cfg->bit_depth;
+> +	fmt->num_channels = cfg->num_channels;
+> +	fmt->max_run = cfg->max_run;
+> +	fmt->max_frame_bytes = cfg->max_frame_bytes;
+> +	fmt->avg_bit_rate = cfg->avg_bit_rate;
+> +	fmt->sample_rate = cfg->sample_rate;
+> +	fmt->channel_layout_tag = cfg->channel_layout_tag;
+> +	fmt->pb = cfg->pb;
+> +	fmt->mb = cfg->mb;
+> +	fmt->kb = cfg->kb;
+> +
+> +	rc = q6asm_ac_send_cmd_sync(ac, pkt);
+> +	kfree(pkt);
+> +
+> +	return rc;
+> +}
+> +EXPORT_SYMBOL_GPL(q6asm_stream_media_format_block_alac);
+> +
+> +int q6asm_stream_media_format_block_ape(struct audio_client *ac,
+> +					struct q6asm_ape_cfg *cfg)
+> +{
+> +	struct asm_ape_fmt_blk_v2 *fmt;
+> +	struct apr_pkt *pkt;
+> +	void *p;
+> +	int rc, pkt_size;
+> +
+> +	pkt_size = APR_HDR_SIZE + sizeof(*fmt);
+> +	p = kzalloc(pkt_size, GFP_KERNEL);
+> +	if (!p)
+> +		return -ENOMEM;
+> +
+> +	pkt = p;
+> +	fmt = p + APR_HDR_SIZE;
+> +
+> +	q6asm_add_hdr(ac, &pkt->hdr, pkt_size, true, ac->stream_id);
+> +
+> +	pkt->hdr.opcode = ASM_DATA_CMD_MEDIA_FMT_UPDATE_V2;
+> +	fmt->fmt_blk.fmt_blk_size = sizeof(*fmt) - sizeof(fmt->fmt_blk);
+> +
+> +	fmt->compatible_version = cfg->compatible_version;
+> +	fmt->compression_level = cfg->compression_level;
+> +	fmt->format_flags = cfg->format_flags;
+> +	fmt->blocks_per_frame = cfg->blocks_per_frame;
+> +	fmt->final_frame_blocks = cfg->final_frame_blocks;
+> +	fmt->total_frames = cfg->total_frames;
+> +	fmt->bits_per_sample = cfg->bits_per_sample;
+> +	fmt->num_channels = cfg->num_channels;
+> +	fmt->sample_rate = cfg->sample_rate;
+> +	fmt->seek_table_present = cfg->seek_table_present;
+> +
+> +	rc = q6asm_ac_send_cmd_sync(ac, pkt);
+> +	kfree(pkt);
+> +
+> +	return rc;
+> +}
+> +EXPORT_SYMBOL_GPL(q6asm_stream_media_format_block_ape);
+> +
+>   /**
+>    * q6asm_enc_cfg_blk_pcm_format_support() - setup pcm configuration for capture
+>    *
 > diff --git a/sound/soc/qcom/qdsp6/q6asm.h b/sound/soc/qcom/qdsp6/q6asm.h
-> index 6764f55f7078..1cff7f68b95d 100644
+> index 5d9fbc75688c..38a207d6cd95 100644
 > --- a/sound/soc/qcom/qdsp6/q6asm.h
 > +++ b/sound/soc/qcom/qdsp6/q6asm.h
-> @@ -55,7 +55,7 @@ void q6asm_audio_client_free(struct audio_client *ac);
->   int q6asm_write_async(struct audio_client *ac, uint32_t len, uint32_t msw_ts,
->   		       uint32_t lsw_ts, uint32_t flags);
->   int q6asm_open_write(struct audio_client *ac, uint32_t format,
-> -		     uint16_t bits_per_sample);
-> +		     u32 codec_profile, uint16_t bits_per_sample);
+> @@ -58,6 +58,34 @@ struct q6asm_wma_cfg {
+>   	u32 adv_enc_options2;
+>   };
 >   
->   int q6asm_open_read(struct audio_client *ac, uint32_t format,
->   		     uint16_t bits_per_sample);
+> +struct q6asm_alac_cfg {
+> +	u32 frame_length;
+> +	u8 compatible_version;
+> +	u8 bit_depth;
+> +	u8 pb;
+> +	u8 mb;
+> +	u8 kb;
+> +	u8 num_channels;
+> +	u16 max_run;
+> +	u32 max_frame_bytes;
+> +	u32 avg_bit_rate;
+> +	u32 sample_rate;
+> +	u32 channel_layout_tag;
+> +};
+> +
+> +struct q6asm_ape_cfg {
+> +	u16 compatible_version;
+> +	u16 compression_level;
+> +	u32 format_flags;
+> +	u32 blocks_per_frame;
+> +	u32 final_frame_blocks;
+> +	u32 total_frames;
+> +	u16 bits_per_sample;
+> +	u16 num_channels;
+> +	u32 sample_rate;
+> +	u32 seek_table_present;
+> +};
+> +
+>   typedef void (*q6asm_cb) (uint32_t opcode, uint32_t token,
+>   			  void *payload, void *priv);
+>   struct audio_client;
+> @@ -86,6 +114,10 @@ int q6asm_stream_media_format_block_wma_v9(struct audio_client *ac,
+>   					   struct q6asm_wma_cfg *cfg);
+>   int q6asm_stream_media_format_block_wma_v10(struct audio_client *ac,
+>   					    struct q6asm_wma_cfg *cfg);
+> +int q6asm_stream_media_format_block_alac(struct audio_client *ac,
+> +					 struct q6asm_alac_cfg *cfg);
+> +int q6asm_stream_media_format_block_ape(struct audio_client *ac,
+> +					struct q6asm_ape_cfg *cfg);
+>   int q6asm_run(struct audio_client *ac, uint32_t flags, uint32_t msw_ts,
+>   	      uint32_t lsw_ts);
+>   int q6asm_run_nowait(struct audio_client *ac, uint32_t flags, uint32_t msw_ts,
 > 
