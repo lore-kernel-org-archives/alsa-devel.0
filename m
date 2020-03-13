@@ -2,81 +2,79 @@ Return-Path: <SRS0=U/T/=46=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2DA5C5ACC0
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 10:13:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B2E1C10DCE
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 10:14:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7BBAE20749
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 10:13:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AF64B2073E
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 10:14:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="S5+63RXz";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="bSsgxDNm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7BBAE20749
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YCCTPPuG";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="hdWB4E7D"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AF64B2073E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 205D517CF;
-	Fri, 13 Mar 2020 11:12:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 205D517CF
+	by alsa0.perex.cz (Postfix) with ESMTPS id CCE6317B5;
+	Fri, 13 Mar 2020 11:13:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CCE6317B5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584094413;
-	bh=eOHdzKsuiDRxoSeOKx1T/q3qpP4W3MG5l3YkkamaGsA=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1584094467;
+	bh=iAw9u4aWzxZM6fbv9mNZZWBz2qN7xEeu3pNeidvP1nc=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=S5+63RXzMVwo4tuzxRVI/OmsLt7HCmH2YiUa7GIn9YuJrf/JH3ScIbWwsbZ2K+qL2
-	 UBklOl3nt3legdWrEe8Utayh8ISYyvpdWSHYG7VaN/dqqxH7992LV0klZnf+GnbnJT
-	 8n/2kcPf627/sfvTCKv4ynwlxhq8d3X34JmEPa2E=
+	b=YCCTPPuGgXiMtrvwpvsIuCFU6Z55OD6D6un5OdMgQdks8v4TWBFWpBwYEN50W+kMJ
+	 SDisnuOEn5SFvlqSxrS3lASFmhJRGSjVSNZ4hS1W1V5HXtl8u93I+RF1iJOcAdOev0
+	 EKhML8ErE3L+Se69g1tY6LWoLquSKzPqT/GhGRUk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0EBE6F802E1;
-	Fri, 13 Mar 2020 11:08:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 07E8FF801F7;
+	Fri, 13 Mar 2020 11:13:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 87E54F802A9; Fri, 13 Mar 2020 11:08:06 +0100 (CET)
+ id 255EDF801F7; Fri, 13 Mar 2020 11:13:34 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8B633F802A7
- for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2020 11:08:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B633F802A7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 80890F8013E
+ for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2020 11:13:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80890F8013E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="bSsgxDNm"
-Received: from localhost.localdomain (unknown [171.76.107.175])
+ header.b="hdWB4E7D"
+Received: from localhost (unknown [171.76.107.175])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 7B4842074D;
- Fri, 13 Mar 2020 10:07:57 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 243C120724;
+ Fri, 13 Mar 2020 10:13:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1584094081;
- bh=eOHdzKsuiDRxoSeOKx1T/q3qpP4W3MG5l3YkkamaGsA=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=bSsgxDNmXiZrw4DKDd+KmQgD7Mgpyg3FDetFtJO6IsqW34smLhVCZK3ICsd1Wdd9c
- fhb6Qqmvm5ZrRg3Urk8f2gr4LoQRruUovC/BWuvANCIKxMrkFbAwOCjUqWCtD+JmqW
- 7EBwxmyIup0Qr/J7Ux64EwNssBQKtBnB2KH1Hu7o=
+ s=default; t=1584094408;
+ bh=iAw9u4aWzxZM6fbv9mNZZWBz2qN7xEeu3pNeidvP1nc=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=hdWB4E7DDe2h/L1sWI4v//sZDt38tFF5fk3wkVcvt8f39IE4vTDqME+1hNpGrmU5k
+ M9bf48iynKaHV+2Q6OjmD0eUQTIcTkIoJrWF8bDrQOxQlZtFEpfx628OOa4K7d0JUd
+ PY7K4M6owViHUmRKjJU36Pi0XXDmXySWa3EnMgt4=
+Date: Fri, 13 Mar 2020 15:43:24 +0530
 From: Vinod Koul <vkoul@kernel.org>
-To: Mark Brown <broonie@kernel.org>,
-	Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v2 9/9] ALSA: compress: bump the version
-Date: Fri, 13 Mar 2020 15:37:08 +0530
-Message-Id: <20200313100708.1558658-10-vkoul@kernel.org>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200313095318.1555163-2-vkoul@kernel.org>
-References: <20200313095318.1555163-2-vkoul@kernel.org>
+To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+Subject: Re: [PATCH v2 0/9] ALSA: compress: Add wma, alac and ape support
+Message-ID: <20200313101324.GB4885@vkoul-mobl>
+References: <20200313095318.1555163-1-vkoul@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200313095318.1555163-1-vkoul@kernel.org>
 Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
  linux-arm-msm@vger.kernel.org, Patrick Lai <plai@codeaurora.org>,
  Liam Girdwood <lgirdwood@gmail.com>,
- Bjorn Andersson <bjorn.andersson@linaro.org>, Vinod Koul <vkoul@kernel.org>,
  Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- linux-kernel@vger.kernel.org
+ Bjorn Andersson <bjorn.andersson@linaro.org>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,27 +90,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We have added support for bunch of new decoders and parameters for
-decoders. To help users find the support bump the version up to 0,2,0.
+On 13-03-20, 15:23, Vinod Koul wrote:
+> This series adds more WMA profiles and WMA decoder parameters to UAPI and
+> then support for these in qcom driver. It also adds FLAC and APE IDs and
+> decoder parameters to UAPI and then support in qcom driver
+> 
+> This was tested on Dragon board RB3.
+> 
+> Last, bump up the compressed version so that userspace can check for the
+> support.
+> 
+> Since the series touches compress uapi and asoc, it would make sense to go
+> thru asoc tree with acks.
 
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
----
- include/uapi/sound/compress_offload.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Oops threading is broken b/w cover and patches. I will resend this
 
-diff --git a/include/uapi/sound/compress_offload.h b/include/uapi/sound/compress_offload.h
-index 56d95673ce0f..7184265c0b0d 100644
---- a/include/uapi/sound/compress_offload.h
-+++ b/include/uapi/sound/compress_offload.h
-@@ -31,7 +31,7 @@
- #include <sound/compress_params.h>
- 
- 
--#define SNDRV_COMPRESS_VERSION SNDRV_PROTOCOL_VERSION(0, 1, 2)
-+#define SNDRV_COMPRESS_VERSION SNDRV_PROTOCOL_VERSION(0, 2, 0)
- /**
-  * struct snd_compressed_buffer - compressed buffer
-  * @fragment_size: size of buffer fragment in bytes
+Apologies for the mess!
+
+> 
+> Changes in v2:
+>  - use bitflags for wma profiles
+> 
+> Vinod Koul (9):
+>   ALSA: compress: add wma codec profiles
+>   ALSA: compress: Add wma decoder params
+>   ASoC: qcom: q6asm: pass codec profile to q6asm_open_write
+>   ASoC: qcom: q6asm: add support to wma config
+>   ASoC: qcom: q6asm-dai: add support to wma decoder
+>   ALSA: compress: add alac & ape decoder params
+>   ASoC: qcom: q6asm: add support for alac and ape configs
+>   ASoC: qcom: q6asm-dai: add support for ALAC and APE decoders
+>   ALSA: compress: bump the version
+> 
+>  include/uapi/sound/compress_offload.h |   2 +-
+>  include/uapi/sound/compress_params.h  |  37 +++-
+>  sound/soc/qcom/qdsp6/q6asm-dai.c      | 136 +++++++++++++-
+>  sound/soc/qcom/qdsp6/q6asm.c          | 243 +++++++++++++++++++++++++-
+>  sound/soc/qcom/qdsp6/q6asm.h          |  51 +++++-
+>  5 files changed, 462 insertions(+), 7 deletions(-)
+> 
+> -- 
+> 2.24.1
+
 -- 
-2.24.1
-
+~Vinod
