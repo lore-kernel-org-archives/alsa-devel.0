@@ -2,65 +2,78 @@ Return-Path: <SRS0=U/T/=46=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5260EC10DCE
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 16:29:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F314C10DCE
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 17:29:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D35A4206BE
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 16:29:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C110F206E9
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 17:29:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cp7Ji+ZY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D35A4206BE
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sTBfTNrr"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C110F206E9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 430561853;
-	Fri, 13 Mar 2020 17:28:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 430561853
+	by alsa0.perex.cz (Postfix) with ESMTPS id 09D191830;
+	Fri, 13 Mar 2020 18:28:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09D191830
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584116948;
-	bh=YcsxiDbLxQ4OrsTkcRPIHn3RRKIU7oTy9XFVqM+w7es=;
-	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=cp7Ji+ZYK81XbjDKMu0C7ajdj+R3oJ95dI3ktzJe5v+/IGayFQP0nAkSqCmEO++nW
-	 ePOTfB3Ni9+8+oiZgVbVMo1vD/Kc2rkSBkr+6AlhuNYJbT+5HbnXV0ria0UkHdhagt
-	 8cPV0IWlf15KVGglStyHKcvELPYobj7kZlk/KAIo=
+	s=default; t=1584120552;
+	bh=u5wYuhNIdltXJXaGATbionXCcVGdwE18yWVTNON5bzI=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=sTBfTNrrivsxE4O6GjOjZh5Sw508Pa16BCmPJoytgROybPFdokhMfnuXW+vZsxtR1
+	 1cKjoeqVfTOjrsF8BmKxNhFyx4ZDTEu94pxaP2/6DDsGJCsGgg6s6aWCEpQQkCDCcc
+	 CIXGNxjkKZAvb+UCr8fh0tJyEZLnf33ghM/xMdLY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 35540F80347;
-	Fri, 13 Mar 2020 17:19:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7296DF801A3;
+	Fri, 13 Mar 2020 18:28:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 71C19F80322; Fri, 13 Mar 2020 17:18:43 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 53EA3F80321
- for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2020 17:18:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53EA3F80321
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 27BE51045;
- Fri, 13 Mar 2020 09:18:33 -0700 (PDT)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9F4CD3F6CF;
- Fri, 13 Mar 2020 09:18:32 -0700 (PDT)
-Date: Fri, 13 Mar 2020 16:18:31 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Bard Liao <yung-chuan.liao@linux.intel.com>
-Subject: Applied "ASoC: SOF: Intel: hda-dai: add stream capability" to the
- asoc tree
-In-Reply-To: <20200312200622.24477-2-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20200312200622.24477-2-pierre-louis.bossart@linux.intel.com>
-X-Patchwork-Hint: ignore
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Mark Brown <broonie@kernel.org>
+ id 41BE8F8013E; Fri, 13 Mar 2020 18:28:15 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D3E0DF8013E
+ for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2020 18:28:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3E0DF8013E
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 13 Mar 2020 10:28:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,549,1574150400"; d="scan'208";a="237017059"
+Received: from sblancoa-mobl.amr.corp.intel.com (HELO [10.251.232.239])
+ ([10.251.232.239])
+ by fmsmga008.fm.intel.com with ESMTP; 13 Mar 2020 10:28:03 -0700
+Subject: Re: [PATCH v2] topology: Add topology file for generic HDA DSP
+ machine driver
+To: "Gorski, Mateusz" <mateusz.gorski@linux.intel.com>,
+ alsa-devel@alsa-project.org
+References: <20200309120944.15240-1-mateusz.gorski@linux.intel.com>
+ <0d2fb996-2668-e53b-ec91-18bf9e27df31@linux.intel.com>
+ <7334e7b6-c4d3-aac3-46d2-b4fbcb0e3957@linux.intel.com>
+ <27e153ce-f94b-876a-32e7-66dd5842c07b@linux.intel.com>
+ <0efdc802-eb82-2137-19a1-9a7e71fa62d8@linux.intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <00bd3e15-b088-c185-4473-8d928da01b9c@linux.intel.com>
+Date: Fri, 13 Mar 2020 11:13:02 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+MIME-Version: 1.0
+In-Reply-To: <0efdc802-eb82-2137-19a1-9a7e71fa62d8@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: cezary.rojewski@intel.com, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,213 +89,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
 
-   ASoC: SOF: Intel: hda-dai: add stream capability
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+>>> This is a reference topology, and it was successfully validated on 
+>>> few production laptops (including models on which DMIC capture was 
+>>> not working).
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+The topology exposes a path that's not present in the hardware then?
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+>> Sorry, I don't understand what's missing in the cAVS driver?
+>>
+>> All you need is to select a different topology based on the number of 
+>> DMICs detected.
+> 
+> 
+> We have a mechanism to choose the PCM configuration of given topology 
+> path via amixer control. That way we can include both 2ch and 4ch DMIC 
+> configurations in one topology file and simply change DMIC pipeline 
+> configuration on runtime.
+> 
+> Unfortunately this mechanism is not currently available on upstream.
+> 
+> As said before, this is a reference topology, if needed I can also 
+> upload modified version with 4ch DMIC path.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+I don't understand the concept of 'reference topology'. It's not like 
+anyone is going to modify this file, which is seriously cryptic, so it's 
+got to be a 'usable topology', turn-key really.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+You would need three files, with no dmic, with 2 dmic with 4 dmic and a 
+driver level code selection. Today the code loads the topology name 
+coming from NHLT or dfw_sst.bin, you'd need a more elaborate logic to 
+deal with the hardware variants and without requiring any fiddling, 
+rename or edits of topology files.
 
-Thanks,
-Mark
-
-From e81d47e94c569f537e008ede59e70e4f27904c86 Mon Sep 17 00:00:00 2001
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
-Date: Thu, 12 Mar 2020 15:06:17 -0500
-Subject: [PATCH] ASoC: SOF: Intel: hda-dai: add stream capability
-
-snd_soc_dai_stream_valid() will check if the stream is valid by testing
-stream->channels_min. So we do need the information in dai driver.
-
-The stream name is not added since we want to sure
-playback_widget/capture_widget will be created by topology.
-
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Pierre Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Link: https://lore.kernel.org/r/20200312200622.24477-2-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sof/intel/hda-dai.c | 96 +++++++++++++++++++++++++++++++++++
- 1 file changed, 96 insertions(+)
-
-diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
-index ed5e7d2c0d43..b9e3ce65e778 100644
---- a/sound/soc/sof/intel/hda-dai.c
-+++ b/sound/soc/sof/intel/hda-dai.c
-@@ -422,56 +422,152 @@ static struct snd_soc_cdai_ops sof_probe_compr_ops = {
- struct snd_soc_dai_driver skl_dai[] = {
- {
- 	.name = "SSP0 Pin",
-+	.playback = {
-+		.channels_min = 1,
-+		.channels_max = 8,
-+	},
-+	.capture = {
-+		.channels_min = 1,
-+		.channels_max = 8,
-+	},
- },
- {
- 	.name = "SSP1 Pin",
-+	.playback = {
-+		.channels_min = 1,
-+		.channels_max = 8,
-+	},
-+	.capture = {
-+		.channels_min = 1,
-+		.channels_max = 8,
-+	},
- },
- {
- 	.name = "SSP2 Pin",
-+	.playback = {
-+		.channels_min = 1,
-+		.channels_max = 8,
-+	},
-+	.capture = {
-+		.channels_min = 1,
-+		.channels_max = 8,
-+	},
- },
- {
- 	.name = "SSP3 Pin",
-+	.playback = {
-+		.channels_min = 1,
-+		.channels_max = 8,
-+	},
-+	.capture = {
-+		.channels_min = 1,
-+		.channels_max = 8,
-+	},
- },
- {
- 	.name = "SSP4 Pin",
-+	.playback = {
-+		.channels_min = 1,
-+		.channels_max = 8,
-+	},
-+	.capture = {
-+		.channels_min = 1,
-+		.channels_max = 8,
-+	},
- },
- {
- 	.name = "SSP5 Pin",
-+	.playback = {
-+		.channels_min = 1,
-+		.channels_max = 8,
-+	},
-+	.capture = {
-+		.channels_min = 1,
-+		.channels_max = 8,
-+	},
- },
- {
- 	.name = "DMIC01 Pin",
-+	.capture = {
-+		.channels_min = 1,
-+		.channels_max = 4,
-+	},
- },
- {
- 	.name = "DMIC16k Pin",
-+	.capture = {
-+		.channels_min = 1,
-+		.channels_max = 4,
-+	},
- },
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
- {
- 	.name = "iDisp1 Pin",
- 	.ops = &hda_link_dai_ops,
-+	.playback = {
-+		.channels_min = 1,
-+		.channels_max = 8,
-+	},
- },
- {
- 	.name = "iDisp2 Pin",
- 	.ops = &hda_link_dai_ops,
-+	.playback = {
-+		.channels_min = 1,
-+		.channels_max = 8,
-+	},
- },
- {
- 	.name = "iDisp3 Pin",
- 	.ops = &hda_link_dai_ops,
-+	.playback = {
-+		.channels_min = 1,
-+		.channels_max = 8,
-+	},
- },
- {
- 	.name = "iDisp4 Pin",
- 	.ops = &hda_link_dai_ops,
-+	.playback = {
-+		.channels_min = 1,
-+		.channels_max = 8,
-+	},
- },
- {
- 	.name = "Analog CPU DAI",
- 	.ops = &hda_link_dai_ops,
-+	.playback = {
-+		.channels_min = 1,
-+		.channels_max = 16,
-+	},
-+	.capture = {
-+		.channels_min = 1,
-+		.channels_max = 16,
-+	},
- },
- {
- 	.name = "Digital CPU DAI",
- 	.ops = &hda_link_dai_ops,
-+	.playback = {
-+		.channels_min = 1,
-+		.channels_max = 16,
-+	},
-+	.capture = {
-+		.channels_min = 1,
-+		.channels_max = 16,
-+	},
- },
- {
- 	.name = "Alt Analog CPU DAI",
- 	.ops = &hda_link_dai_ops,
-+	.playback = {
-+		.channels_min = 1,
-+		.channels_max = 16,
-+	},
-+	.capture = {
-+		.channels_min = 1,
-+		.channels_max = 16,
-+	},
- },
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_PROBES)
- {
--- 
-2.20.1
 
