@@ -7,49 +7,48 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 706CDC10DCE
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 02:40:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A2150C1975A
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 02:40:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DE7D42072F
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 02:40:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0C43F2072F
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 02:40:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ueooyNhh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DE7D42072F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="h/n0g6V0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0C43F2072F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2BF5E1778;
-	Fri, 13 Mar 2020 03:39:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2BF5E1778
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2ED61178F;
+	Fri, 13 Mar 2020 03:40:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2ED61178F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584067203;
-	bh=5R5WjUPb0KkLfzt7oM06mQkeh17Zt2FCC82hAqyslXk=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=ueooyNhhGKhIBgOBwWzMaz0uNo1b5XvTR8/JOYXipmd2qnEXKEVeVyLlntRpX1WXL
-	 ysz3/kQOj+kRg7YWPoJLa7pDSmmeQhvcE0RIMyZXKzL14pfLxX7zBfC9zheKFdJfxX
-	 HaYLiS1MV1XwiJa7OH96z5t/VKEvHdySwNLC0JXI=
+	s=default; t=1584067257;
+	bh=uRcLlztbtD8o8LGR5qAsG3wlNcxdsTX6eXJLjt3AGZU=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=h/n0g6V0Z5cZesG5dn8Hce19/hl7wmVbdTekloCUv+e2r71Pc4MPkaxeSTVOW0xgO
+	 6R9IAqlE07+OMm1rvtiVjTHWCv8hEuFNof60yh1IgC1PvK2taPQd/hxhaMY2v8fJqp
+	 zTGCA2AVY0GGb7i4mUxwe3DthxN41C97y+pAuPVQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 974A9F801A3;
-	Fri, 13 Mar 2020 03:39:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 19E8BF80090;
+	Fri, 13 Mar 2020 03:39:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 45C38F80090; Fri, 13 Mar 2020 03:39:11 +0100 (CET)
+ id 19AECF801F8; Fri, 13 Mar 2020 03:39:11 +0100 (CET)
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9B432F801A3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 86E6CF8013E
  for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2020 03:39:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B432F801A3
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86E6CF8013E
 Authenticated-By: 
-X-SpamFilter-By: BOX Solutions SpamTrap 5.62 with qID 02D2ctPk018582,
+X-SpamFilter-By: BOX Solutions SpamTrap 5.62 with qID 02D2ctPi018582,
  This message is accepted by code: ctloc85258
 Received: from mail.realtek.com (RTEXMB06.realtek.com.tw[172.21.6.99])
- by rtits2.realtek.com.tw (8.15.2/2.57/5.78) with ESMTPS id 02D2ctPk018582
+ by rtits2.realtek.com.tw (8.15.2/2.57/5.78) with ESMTPS id 02D2ctPi018582
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT);
  Fri, 13 Mar 2020 10:38:55 +0800
 Received: from RTEXMB01.realtek.com.tw (172.21.6.94) by
@@ -59,15 +58,14 @@ Received: from RTEXMB01.realtek.com.tw (172.21.6.94) by
 Received: from localhost.localdomain (172.22.102.1) by RTEXMB01.realtek.com.tw
  (172.21.6.94) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Fri, 13 Mar
- 2020 10:38:55 +0800
+ 2020 10:38:54 +0800
 From: Oder Chiou <oder_chiou@realtek.com>
 To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-Subject: [PATCH 2/2] ASoC: rt5682: Revise the DAC1 volume setting
-Date: Fri, 13 Mar 2020 10:38:50 +0800
-Message-ID: <20200313023850.28875-2-oder_chiou@realtek.com>
+Subject: [PATCH 1/2] ASoC: rt5682: Fine tune the HP performance in soundwire
+ mode
+Date: Fri, 13 Mar 2020 10:38:49 +0800
+Message-ID: <20200313023850.28875-1-oder_chiou@realtek.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200313023850.28875-1-oder_chiou@realtek.com>
-References: <20200313023850.28875-1-oder_chiou@realtek.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -92,26 +90,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The max volume of the DAC1 Playback Volume is 0dB.
+The setting is sync with I2C/I2S mode.
 
 Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
 ---
- sound/soc/codecs/rt5682.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/rt5682.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
-index f4b8af128828..7ca02a5e52e9 100644
+index e1df2d076533..f4b8af128828 100644
 --- a/sound/soc/codecs/rt5682.c
 +++ b/sound/soc/codecs/rt5682.c
-@@ -1166,7 +1166,7 @@ static void rt5682_jack_detect_handler(struct work_struct *work)
- static const struct snd_kcontrol_new rt5682_snd_controls[] = {
- 	/* DAC Digital Volume */
- 	SOC_DOUBLE_TLV("DAC1 Playback Volume", RT5682_DAC1_DIG_VOL,
--		RT5682_L_VOL_SFT + 1, RT5682_R_VOL_SFT + 1, 86, 0, dac_vol_tlv),
-+		RT5682_L_VOL_SFT + 1, RT5682_R_VOL_SFT + 1, 87, 0, dac_vol_tlv),
+@@ -3462,6 +3462,8 @@ int rt5682_io_init(struct device *dev, struct sdw_slave *slave)
+ 			RT5682_HPA_CP_BIAS_CTRL_MASK, RT5682_HPA_CP_BIAS_3UA);
+ 	regmap_update_bits(rt5682->regmap, RT5682_CHARGE_PUMP_1,
+ 			RT5682_CP_CLK_HP_MASK, RT5682_CP_CLK_HP_300KHZ);
++	regmap_update_bits(rt5682->regmap, RT5682_HP_CHARGE_PUMP_1,
++			RT5682_PM_HP_MASK, RT5682_PM_HP_HV);
  
- 	/* IN Boost Volume */
- 	SOC_SINGLE_TLV("CBJ Boost Volume", RT5682_CBJ_BST_CTRL,
+ 	/* Soundwire */
+ 	regmap_write(rt5682->regmap, RT5682_PLL2_INTERNAL, 0xa266);
 -- 
 2.25.1
 
