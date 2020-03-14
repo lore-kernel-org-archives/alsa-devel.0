@@ -1,66 +1,83 @@
-Return-Path: <SRS0=f902=47=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=Xern=5A=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=0.3 required=3.0 tests=DKIM_ADSP_ALL,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D987C0044D
-	for <alsa-devel@archiver.kernel.org>; Sat, 14 Mar 2020 17:27:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 619B5C10DCE
+	for <alsa-devel@archiver.kernel.org>; Sun, 15 Mar 2020 08:33:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BDB382073C
-	for <alsa-devel@archiver.kernel.org>; Sat, 14 Mar 2020 17:27:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BB7D720575
+	for <alsa-devel@archiver.kernel.org>; Sun, 15 Mar 2020 08:33:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Yn+58PPA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BDB382073C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="b056bcKT";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=domdv.de header.i=@domdv.de header.b="G5gbUiEn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BB7D720575
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=domdv.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1539E1860;
-	Sat, 14 Mar 2020 18:26:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1539E1860
+	by alsa0.perex.cz (Postfix) with ESMTPS id F1C821840;
+	Sun, 15 Mar 2020 09:33:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F1C821840
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584206837;
-	bh=z3m56ygDeRjBcgIdmnPb7FnzhZIQeRLxyCbbddyayp8=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Yn+58PPAiKMpLzwNc90QHshh87OjZ6hx9GxQIa0C9oUO08xvmFITodiB+g3WZP+RS
-	 9Su/l15aV/c5GqUf7+ZTOMYgQ33kezwOeArDOlGeUGjmzzeHR21rykSSPw3KusAMcp
-	 RwpaJTEDzBUkIG1cX6Ma77EQFRN8evt60tVtXNnk=
+	s=default; t=1584261232;
+	bh=QmoMrLguuDjA8XpiIfQupTq3izazNikvWt+QEDGgkYU=;
+	h=Subject:From:To:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=b056bcKTl0CJXMq5N5/jMX+Hz6onscUqiwyRQnGInzyOEImN9fnFGRSEKVwhqEIWQ
+	 P0jBwNev6IkqpxeP/U5JuICi65YU2nWUmP9ErVLnqIUkRbxGrNprT+oZscUfAIGN89
+	 5bY6rZSLAUJXpBFGxatQefrQ4CoEomfdIzxK6V8Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8C581F8013E;
-	Sat, 14 Mar 2020 18:26:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 569DDF8013D;
+	Sun, 15 Mar 2020 09:33:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CA7A7F801D9; Sat, 14 Mar 2020 18:26:24 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 9B2A5F801D9; Sat, 14 Mar 2020 09:12:24 +0100 (CET)
+Received: from zeus.domdv.de (zeus.domdv.de [IPv6:2a02:2ad0:c00::11])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 85539F8013C
- for <alsa-devel@alsa-project.org>; Sat, 14 Mar 2020 18:26:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85539F8013C
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 54DEDABF4;
- Sat, 14 Mar 2020 17:26:21 +0000 (UTC)
-Date: Sat, 14 Mar 2020 18:26:20 +0100
-Message-ID: <s5h1rpu3l1f.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: crwulff@gmail.com
-Subject: Re: [PATCH Fix for Kingston HyperX Amp (0951:16d8) 0/2 (Try #2)]
-In-Reply-To: <20200314165449.4086-1-crwulff@gmail.com>
-References: <20200314165449.4086-1-crwulff@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id D3045F8013D
+ for <alsa-devel@alsa-project.org>; Sat, 14 Mar 2020 09:12:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3045F8013D
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=domdv.de header.i=@domdv.de
+ header.b="G5gbUiEn"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=domdv.de;
+ s=dk3; h=Content-Transfer-Encoding:MIME-Version:Content-Type:Date:Cc:To:From
+ :Subject:Message-ID:Sender:Reply-To:Content-ID:Content-Description:
+ Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+ In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+ List-Post:List-Owner:List-Archive;
+ bh=8GRYcYJPU9ukGFAGL9EG81YjIIZPeu2Chxb2bcUidHk=; b=G5gbUiEnexZri/Z8lRK/w3Af2e
+ M7lPggE2tVhkc2PFKDnKx2DahW7iEvLMGbGTWoyF/y2mivUey2EiieH2thanaaa7zSI9y1OYy9LPd
+ dmwr8sF3/C+PEPxH/1J/750QMhy/XtZcTEu4r6YPaiR8AIqPWTwalu8RFYNmqLFROt3I=;
+Received: from [fd06:8443:81a1:74b0::212] (port=1222 helo=castor.lan.domdv.de)
+ by zeus.domdv.de with esmtpsa
+ (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256) (Exim 4.92.3)
+ (envelope-from <ast@domdv.de>)
+ id 1jD1t8-0001OH-89; Sat, 14 Mar 2020 09:11:18 +0100
+Received: from woody.lan.domdv.de ([10.1.9.28]
+ helo=host028-server-9.lan.domdv.de)
+ by castor.lan.domdv.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+ (Exim 4.92.3) (envelope-from <ast@domdv.de>)
+ id 1jD1t8-0003cS-2F; Sat, 14 Mar 2020 09:11:18 +0100
+Message-ID: <42a9a862efbc9cfdacc783f816f93340ccc58cec.camel@domdv.de>
+Subject: [PATCH 0/3] ALSA USB MIDI: Predictable low latency for USB MIDI output
+From: Andreas Steinmetz <ast@domdv.de>
+To: alsa-devel@alsa-project.org
+Date: Sat, 14 Mar 2020 09:11:17 +0100
+Organization: D.O.M. Datenverarbeitung GmbH
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.30.5 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Mailman-Approved-At: Sun, 15 Mar 2020 09:32:59 +0100
+Cc: clemens@ladisch.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,18 +93,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 14 Mar 2020 17:54:47 +0100,
-crwulff@gmail.com wrote:
-> 
-> From: Chris Wulff <crwulff@gmail.com>
-> 
-> This patch set is modified to use an inline function for the mixer control
-> interface lookup. The attempt at preventing modifications to a PCM that has
-> previously been registered has been changed to defer registration instead,
-> and has been split into a separate patch. This approach now works with pulseaudio.
+The following patch series fixes USB MIDI output starvation and allows
+to configure a predictable worst case output latency with a minimum of 15ms
+for 16x16 devices and 3.8ms for 4x4 devices (excluding USB transfer time
+and latencies of the interface device itself).
 
-Thanks, it looks better now.
-I applied both patches with a slight modification of subject lines.
+The reasoning behind this patch series is first to fix the possible
+indefinite latency and then to allow to configure a predictable
+low latency to be able to use a cheap embedded Linux system (e.g.
+Raspberry Pi) in combination with a multiport USB MIDI interface
+as a drop in replacement for commercial hardware based MIDI routing
+and filtering products. This includes "real time" (live) usage.
+
+For this usage the guaranteed latency within the kernel must be as
+low as possible, depending on the requirements of the USB MIDI
+interface in use.
+
+Though the current state of the kernel code is acceptable in a
+fully controlled by a single user environment, it is not usable
+for uncontrolled standalone use as the driver behaviour then
+depends on unpredictable MIDI data streams and thus is unpredictable
+in behaviour itself.
+
+After applying this patch series the USB MIDI driver can be used
+as usual or it can be tuned to low latency when this is desired.
+
+From a developer perspective the actual output rate of USB MIDI
+interfaces is typically slower than the expected 320us and even
+varies depending on how many ports are busy (e.g. a M-Audio
+Midisport 4x4 AE interface exhibits a varying output rate of
+357us to 515us per byte depending on device load). Thus the driver
+needs a predictable low latency to allow userspace to use the
+rawmidi buffer fill state to estimate the expected output latency
+and schedule data accordingly.
+
+The following table shows relative processing time for varying driver
+configurations using the M-Audio Midisport 4x4 AE as the test device.
+For the parameters "outqueue" and "events" do see the descriptions
+of the following patches.
+
+	| unpatched	| outqueue=7	| outqueue=1	| outqueue=1	|
+	| kernel	| events=0	| events=0	| events=4	|
+--------+---------------+---------------+---------------+---------------+
+1 Port	|      100%	|      100%	|      100%	|    100.05%	|
+--------+---------------+---------------+---------------+---------------+
+4 Ports	|      n/a	|      100%	|     99.97%	|    100.36%	|
+--------+---------------+---------------+---------------+---------------+
+
+As can be seen from the above table the changes to output latency do
+affect throughput only marginally.
 
 
-Takashi
