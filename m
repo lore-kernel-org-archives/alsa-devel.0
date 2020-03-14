@@ -7,72 +7,72 @@ X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIM_ADSP_ALL,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 574C2C10DCE
-	for <alsa-devel@archiver.kernel.org>; Sun, 15 Mar 2020 08:35:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 05E7BC10DCE
+	for <alsa-devel@archiver.kernel.org>; Sun, 15 Mar 2020 08:35:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D7C0520724
-	for <alsa-devel@archiver.kernel.org>; Sun, 15 Mar 2020 08:35:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8652220737
+	for <alsa-devel@archiver.kernel.org>; Sun, 15 Mar 2020 08:35:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Z5DXNEgn";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=domdv.de header.i=@domdv.de header.b="bFHfCXEr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D7C0520724
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="C7ntsofx";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=domdv.de header.i=@domdv.de header.b="LOg6oevp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8652220737
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=domdv.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3562E1878;
-	Sun, 15 Mar 2020 09:34:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3562E1878
+	by alsa0.perex.cz (Postfix) with ESMTPS id CECBE1853;
+	Sun, 15 Mar 2020 09:35:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CECBE1853
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584261333;
-	bh=oVnru5yMXHwM6ttGqec4ooXGuyU2MMp8xCGHSGIq4nQ=;
+	s=default; t=1584261356;
+	bh=cI6E34OUlUD5RYYnFmqm4z413wvx8gQIS1EQtokauJY=;
 	h=Subject:From:To:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=Z5DXNEgngN2wGdNyYGPlcoTEjG7O5bVmaH6nImSUrP3TOu/F/j3DUAwNjcDgxQNBo
-	 IcIGDhjUZ+BCsnNdbKTjeC5DGrSXuA4CcIxJhg6rVCD15QTjEFEQbCwDVQMhDk3XWL
-	 IKR0Z6kKsy+38PopWeAT7QyaWzvKgDcxqP+tJADE=
+	b=C7ntsofx40U+Vcyqx9X5OBtMa05mO6wRFPcDRaSVKwZc3S5M9iST5XOKc9Fr6u2V0
+	 /Snz8NyDAd6mT7hEV/VZc8K3GCu9eJbXNYvZib7LdtBrq8itRftkhD0mudBraZqwYX
+	 BI+wuoQAwsDvuo4BakYfy9v7/GrBTqSkSf5jjGOc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 34003F80086;
-	Sun, 15 Mar 2020 09:33:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B7EFFF8028E;
+	Sun, 15 Mar 2020 09:33:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DF95AF8020C; Sat, 14 Mar 2020 09:12:39 +0100 (CET)
+ id 56C0DF801D9; Sat, 14 Mar 2020 09:12:40 +0100 (CET)
 Received: from zeus.domdv.de (zeus.domdv.de [IPv6:2a02:2ad0:c00::11])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0403EF8013D
- for <alsa-devel@alsa-project.org>; Sat, 14 Mar 2020 09:12:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0403EF8013D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 00CD9F80086
+ for <alsa-devel@alsa-project.org>; Sat, 14 Mar 2020 09:12:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00CD9F80086
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=domdv.de header.i=@domdv.de
- header.b="bFHfCXEr"
+ header.b="LOg6oevp"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=domdv.de;
  s=dk3; h=Content-Transfer-Encoding:MIME-Version:Content-Type:Date:Cc:To:From
  :Subject:Message-ID:Sender:Reply-To:Content-ID:Content-Description:
  Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
  In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
  List-Post:List-Owner:List-Archive;
- bh=BHrLHoS3b9S3egxYoGnr9pRgJAHSWSaim92tfzqxv8k=; b=bFHfCXErZASuEXo6DyPM3JU0/F
- 8YlYbC7JYZzrY50rLaIzPS2pgm6EQa5qZ+bJ+6khnqOTf5tVo92fpBoBbG8BG4qHNpqEl/3Sm6VaK
- OtmzPn/zQkDeU8XieI2agKNMjEwnXaFpFK/5/HBiPKjd5piKQQPxW/EE8O2W2Nnw1MlI=;
-Received: from [fd06:8443:81a1:74b0::212] (port=1226 helo=castor.lan.domdv.de)
+ bh=mXhR7kW5ab/f8b7vZ1VJFg3sVuCfHiT6IkAyckcRW9Y=; b=LOg6oevph3guW6mR3UjyFFnUjY
+ zW1aT7Q0l6lZFE47dlS5YWJX587L4pyrL6Qv8rcxgcqvSksC8RfNJrZCekzWTGaKKKXveL2xz56xb
+ oKHrUvWyH3GG+HwDH7vHWwFPLzSp/mdpIWcpMw8GaVWZNPYz7sKYyyal6WanFFCxKUeY=;
+Received: from [fd06:8443:81a1:74b0::212] (port=1228 helo=castor.lan.domdv.de)
  by zeus.domdv.de with esmtpsa
  (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256) (Exim 4.92.3)
  (envelope-from <ast@domdv.de>)
- id 1jD1tG-0001Od-0O; Sat, 14 Mar 2020 09:11:26 +0100
+ id 1jD1tJ-0001Oo-14; Sat, 14 Mar 2020 09:11:29 +0100
 Received: from woody.lan.domdv.de ([10.1.9.28]
  helo=host028-server-9.lan.domdv.de)
  by castor.lan.domdv.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
  (Exim 4.92.3) (envelope-from <ast@domdv.de>)
- id 1jD1tF-0003cb-RN; Sat, 14 Mar 2020 09:11:25 +0100
-Message-ID: <4d24ecd833aec61fec3decadf195861c4f22634d.camel@domdv.de>
-Subject: [PATCH 2/3] ALSA USB MIDI: Make amount of output URBs selectable by
- user
+ id 1jD1tI-0003cg-Rm; Sat, 14 Mar 2020 09:11:28 +0100
+Message-ID: <00d9b60b04efca71748acb006c05217ec8a28ef8.camel@domdv.de>
+Subject: [PATCH 3/3] ALSA USB MIDI:  Make amount of MIDI events per output
+ URB selectable by user
 From: Andreas Steinmetz <ast@domdv.de>
 To: alsa-devel@alsa-project.org
-Date: Sat, 14 Mar 2020 09:11:25 +0100
+Date: Sat, 14 Mar 2020 09:11:28 +0100
 Organization: D.O.M. Datenverarbeitung GmbH
 Content-Type: text/plain; charset="UTF-8"
 User-Agent: Evolution 3.30.5 
@@ -95,115 +95,73 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch introduces a new module parameter "outqueue" which allows
-userspace to set the amount of output URBs is a range from 1 to 7
-with 7 being the default (illegal values are clamped to the next
-valid value).
+This patch introduces a new module parameter "events" which allows
+userspace to limit the amount of MIDI events per output URB. An
+"events" value of 0 which is the default means "use wMaxPacketSize".
+Out of range values for "events" are clamped to the nearest valid value.
 
-It is assumed that the previous patch has been applied. Looking then
-at a multiport USB MIDI interface with a wMaxPacketSize of 64 and
-assuming an optimal output rate of 320us/byte the following is true:
+It is assumed that the previous patches are applied and "outqueue=1" is
+used. Looking then at a four port USB MIDI interface with a wMaxPacketSize
+of 64 and assuming an optimal output rate of 320us/byte the following is
+true:
 
 16 MIDI events PER URB
 Up to 3 bytes per MIDI event (3 bytes are assumed below)
-A driver queue of 7 URBs which are completely filled.
-Resulting latency is 16*3*7*320us=107.52ms
+A driver queue of 1 URB which is completely filled.
+Resulting latency is 16*3*1*320us=15.36ms which still is in the
+audible range (a latency of less than 5ms is required, think playing
+a keyboard to MIDI in and using MIDI out to control a piano module
+and using headphones, while using another port for sysex transfers).
 
-So if all URBs are filled by e.g. a sysex transfer on one port, a realtime
-message delivered by userspace for another port will be delayed by 107.52ms
-which is far too long.
+After applying this patch and selecting the valid minimum event value
+of 4 (there must be at least space for one event per port to assert proper
+output balancing) tests show that the throughput isn't really affected,
+the worst case latency however drops to 3.84ms which is acceptable.
 
-After applying this patch and selecting a queue of only 1 URB tests show
-that the throughput isn't really affected, the latency however drops to
-16*3*1*320us=15.36ms which is considerably better.
+In case of the largest class compliant devices which do have 16 ports
+the worst case latency is then 15.36ms which is tolerable. If this is
+still to long it could be fixed by introducing additional complexity
+to the balancing of snd_usbmidi_standard_output() at some later stage.
 
-As the default is not touched no implications are expected for existing
-users. By making the parameter writable via sysfs it is possible to
-do selective output URB queue size management from userspace via a script
-that manages USB authorize and the module option.
+As the device default is used by default no implications are expected for
+existing users. By making the parameter writable via sysfs it is possible
+to do selective output URB event count management from userspace via a
+script that manages USB authorize and the module option.
 
 Signed-off-by: Andreas Steinmetz <ast@domdv.de>
 
---- a/sound/usb/midi.c	2020-03-13 19:19:28.614798593 +0100
-+++ b/sound/usb/midi.c	2020-03-13 19:37:08.097411436 +0100
-@@ -45,6 +45,7 @@
- #include <linux/slab.h>
- #include <linux/timer.h>
- #include <linux/usb.h>
-+#include <linux/moduleparam.h>
- #include <linux/wait.h>
- #include <linux/usb/audio.h>
- #include <linux/module.h>
-@@ -77,6 +78,11 @@
- MODULE_DESCRIPTION("USB Audio/MIDI helper module");
+--- a/sound/usb/midi.c	2020-03-13 20:18:33.443265194 +0100
++++ b/sound/usb/midi.c	2020-03-13 20:42:49.445546326 +0100
+@@ -79,9 +79,12 @@
  MODULE_LICENSE("Dual BSD/GPL");
  
-+static int outqueue = OUTPUT_URBS;
-+
-+module_param(outqueue, int, 0644);
-+MODULE_PARM_DESC(outqueue, "Outgoing queue size, 1-7 (default: 7).");
-+
+ static int outqueue = OUTPUT_URBS;
++static int events;
+ 
+ module_param(outqueue, int, 0644);
+-MODULE_PARM_DESC(outqueue, "Outgoing queue size, 1-7 (default: 7).");
++MODULE_PARM_DESC(outqueue, "Outgoing MIDI queue size, 1-7 (default: 7).");
++module_param(events, int, 0644);
++MODULE_PARM_DESC(events, "MIDI events per queue element, 0=device default (default: 0).");
+ 
  
  struct usb_ms_header_descriptor {
- 	__u8  bLength;
-@@ -141,6 +147,7 @@
- 	} urbs[OUTPUT_URBS];
- 	unsigned int active_urbs;
- 	unsigned int drain_urbs;
-+	unsigned int out_urbs;
- 	int max_transfer;		/* size of urb buffer */
- 	struct tasklet_struct tasklet;
- 	unsigned int next_urb;
-@@ -335,7 +342,7 @@
- 				break;
- 			ep->active_urbs |= 1 << urb_index;
- 		}
--		if (++urb_index >= OUTPUT_URBS)
-+		if (++urb_index >= ep->out_urbs)
- 			urb_index = 0;
- 		if (urb_index == ep->next_urb)
- 			break;
-@@ -1364,7 +1371,7 @@
- {
- 	unsigned int i;
- 
--	for (i = 0; i < OUTPUT_URBS; ++i)
-+	for (i = 0; i < ep->out_urbs; ++i)
- 		if (ep->urbs[i].urb) {
- 			free_urb_and_buffer(ep->umidi, ep->urbs[i].urb,
- 					    ep->max_transfer);
-@@ -1397,7 +1404,14 @@
- 		return -ENOMEM;
- 	ep->umidi = umidi;
- 
--	for (i = 0; i < OUTPUT_URBS; ++i) {
-+	if (outqueue < 1)
-+		ep->out_urbs = 1;
-+	else if (outqueue > OUTPUT_URBS)
-+		ep->out_urbs = OUTPUT_URBS;
-+	else
-+		ep->out_urbs = outqueue;
+@@ -1426,6 +1429,17 @@
+ 	switch (umidi->usb_id) {
+ 	default:
+ 		ep->max_transfer = usb_maxpacket(umidi->dev, pipe, 1);
++		if (events) {
++			int ev = 0;
 +
-+	for (i = 0; i < ep->out_urbs; ++i) {
- 		ep->urbs[i].urb = usb_alloc_urb(0, GFP_KERNEL);
- 		if (!ep->urbs[i].urb) {
- 			err = -ENOMEM;
-@@ -1434,7 +1448,7 @@
- 		ep->max_transfer = 9;
++			for (i = 0; i < 0x10; ++i)
++				if (ep_info->out_cables & (1 << i))
++					ev++;
++			if (events > ev)
++				ev = events;
++			if (ev < ep->max_transfer >> 2)
++				ep->max_transfer = ev << 2;
++		}
  		break;
- 	}
--	for (i = 0; i < OUTPUT_URBS; ++i) {
-+	for (i = 0; i < ep->out_urbs; ++i) {
- 		buffer = usb_alloc_coherent(umidi->dev,
- 					    ep->max_transfer, GFP_KERNEL,
- 					    &ep->urbs[i].urb->transfer_dma);
-@@ -1525,7 +1539,7 @@
- 		if (ep->out)
- 			tasklet_kill(&ep->out->tasklet);
- 		if (ep->out) {
--			for (j = 0; j < OUTPUT_URBS; ++j)
-+			for (j = 0; j < ep->out->out_urbs; ++j)
- 				usb_kill_urb(ep->out->urbs[j].urb);
- 			if (umidi->usb_protocol_ops->finish_out_endpoint)
- 				umidi->usb_protocol_ops->finish_out_endpoint(ep->out);
+ 		/*
+ 		 * Various chips declare a packet size larger than 4 bytes, but
 
