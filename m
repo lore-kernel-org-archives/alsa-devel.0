@@ -6,58 +6,61 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B591C18E5B
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Mar 2020 18:08:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96A13C2BB1D
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Mar 2020 18:10:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1ED4E2071C
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Mar 2020 18:08:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 24BAF20674
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Mar 2020 18:10:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IE1pILhB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1ED4E2071C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pkzLES9V"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 24BAF20674
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5E70F1662;
-	Mon, 16 Mar 2020 19:08:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5E70F1662
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7EF6218C7;
+	Mon, 16 Mar 2020 19:09:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7EF6218C7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584382131;
-	bh=y9oLjSK2TxUZWlILM/SVB5M0J/KgHI6XPxssQ9hwb/8=;
+	s=default; t=1584382232;
+	bh=aSGUaETrVlfP6l6e2BraMZ8cZpsFZueQ1YQLMZLrH2Q=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=IE1pILhBc75cNFJ/qd18j7OtihoQ8LmKvXihpinmbTV2BXoMnEskxTANDajdMDJww
-	 FT4BkT7kRX/P3v/7bRIRqNEZ4GziTDmGkcBnEvt+NZ+zH7mrKcrzeXDBnGnkY+oYiW
-	 AtfZf42YQUKmukZ7Eq5cACvXpaTF3ZKIu1Sh+Z3I=
+	b=pkzLES9Vb+fhw11GME40YN3giLBwbuFHFzASLORGCnWkl58aOrjPPmo3lgGUnv+MY
+	 /JGijwqH48kuH9beVQiOSwjScbLQ+igw1f8uUGC34wXM7Y6+7ElhJXB05p3z0lCHLF
+	 4cUdhzc21fhrLYUURSCqHWWI8fT/N++RNed5noc8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 38611F8015B;
-	Mon, 16 Mar 2020 19:08:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E6AB4F80248;
+	Mon, 16 Mar 2020 19:08:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 33863F8015B; Mon, 16 Mar 2020 19:07:58 +0100 (CET)
+ id B88C7F8028B; Mon, 16 Mar 2020 19:08:07 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 311E0F800D2
- for <alsa-devel@alsa-project.org>; Mon, 16 Mar 2020 19:07:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 311E0F800D2
+ by alsa1.perex.cz (Postfix) with ESMTP id 76657F801DB
+ for <alsa-devel@alsa-project.org>; Mon, 16 Mar 2020 19:08:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76657F801DB
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E40741FB;
- Mon, 16 Mar 2020 11:07:52 -0700 (PDT)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0818E1FB;
+ Mon, 16 Mar 2020 11:08:02 -0700 (PDT)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 66D323F67D;
- Mon, 16 Mar 2020 11:07:52 -0700 (PDT)
-Date: Mon, 16 Mar 2020 18:07:50 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7E5863F67D;
+ Mon, 16 Mar 2020 11:08:01 -0700 (PDT)
+Date: Mon, 16 Mar 2020 18:08:00 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Applied "ASoC: soc-dai: return proper error for get_sdw_stream()" to
- the asoc tree
-In-Reply-To: <20200316151110.2580-1-srinivas.kandagatla@linaro.org>
-Message-Id: <applied-20200316151110.2580-1-srinivas.kandagatla@linaro.org>
+To: Vinod Koul <vkoul@kernel.org>
+Subject: Applied "ASoC: qcom: q6asm-dai: add support for ALAC and APE
+ decoders" to the asoc tree
+In-Reply-To: <20200316055221.1944464-9-vkoul@kernel.org>
+Message-Id: <applied-20200316055221.1944464-9-vkoul@kernel.org>
 X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com, vkoul@kernel.org,
- Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
+ linux-arm-msm@vger.kernel.org, Patrick Lai <plai@codeaurora.org>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,7 +78,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: soc-dai: return proper error for get_sdw_stream()
+   ASoC: qcom: q6asm-dai: add support for ALAC and APE decoders
 
 has been applied to the asoc tree at
 
@@ -100,46 +103,134 @@ to this mail.
 Thanks,
 Mark
 
-From 308811a327c38364fff7752d3009160632f5dd5e Mon Sep 17 00:00:00 2001
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Mon, 16 Mar 2020 15:11:10 +0000
-Subject: [PATCH] ASoC: soc-dai: return proper error for get_sdw_stream()
+From 4c3189380c6748a3e9fc6ab8aeb4bde3dd2032ed Mon Sep 17 00:00:00 2001
+From: Vinod Koul <vkoul@kernel.org>
+Date: Mon, 16 Mar 2020 11:22:20 +0530
+Subject: [PATCH] ASoC: qcom: q6asm-dai: add support for ALAC and APE decoders
 
-snd_soc_dai_get_sdw_stream() returns null if dai does not support
-this callback, this is no very useful for the caller to
-differentiate if this is an error or unsupported call for the dai.
+Qualcomm DSPs also supports the ALAC and APE decoders, so add support
+for these and convert the snd_codec_params to qdsp format.
 
-return -ENOTSUPP in cases where this callback is not supported.
-
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20200316151110.2580-1-srinivas.kandagatla@linaro.org
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
+Link: https://lore.kernel.org/r/20200316055221.1944464-9-vkoul@kernel.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc-dai.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/qcom/qdsp6/q6asm-dai.c | 70 +++++++++++++++++++++++++++++++-
+ 1 file changed, 69 insertions(+), 1 deletion(-)
 
-diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index 7f70db149b81..78bac995db15 100644
---- a/include/sound/soc-dai.h
-+++ b/include/sound/soc-dai.h
-@@ -433,7 +433,7 @@ static inline int snd_soc_dai_set_sdw_stream(struct snd_soc_dai *dai,
-  * This routine only retrieves that was previously configured
-  * with snd_soc_dai_get_sdw_stream()
-  *
-- * Returns pointer to stream or NULL;
-+ * Returns pointer to stream or -ENOTSUPP if callback is not supported;
-  */
- static inline void *snd_soc_dai_get_sdw_stream(struct snd_soc_dai *dai,
- 					       int direction)
-@@ -441,7 +441,7 @@ static inline void *snd_soc_dai_get_sdw_stream(struct snd_soc_dai *dai,
- 	if (dai->driver->ops->get_sdw_stream)
- 		return dai->driver->ops->get_sdw_stream(dai, direction);
- 	else
--		return NULL;
-+		return ERR_PTR(-ENOTSUPP);
- }
+diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
+index fa685fe4a027..8b5d86be9ace 100644
+--- a/sound/soc/qcom/qdsp6/q6asm-dai.c
++++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
+@@ -41,6 +41,9 @@
+ #define Q6ASM_DAI_TX	1
+ #define Q6ASM_DAI_RX	2
  
- #endif
++#define ALAC_CH_LAYOUT_MONO   ((101 << 16) | 1)
++#define ALAC_CH_LAYOUT_STEREO ((101 << 16) | 2)
++
+ enum stream_state {
+ 	Q6ASM_STREAM_IDLE = 0,
+ 	Q6ASM_STREAM_STOPPED,
+@@ -630,12 +633,16 @@ static int q6asm_dai_compr_set_params(struct snd_compr_stream *stream,
+ 	struct q6asm_dai_data *pdata;
+ 	struct q6asm_flac_cfg flac_cfg;
+ 	struct q6asm_wma_cfg wma_cfg;
++	struct q6asm_alac_cfg alac_cfg;
++	struct q6asm_ape_cfg ape_cfg;
+ 	unsigned int wma_v9 = 0;
+ 	struct device *dev = c->dev;
+ 	int ret;
+ 	union snd_codec_options *codec_options;
+ 	struct snd_dec_flac *flac;
+ 	struct snd_dec_wma *wma;
++	struct snd_dec_alac *alac;
++	struct snd_dec_ape *ape;
+ 
+ 	codec_options = &(prtd->codec_param.codec.options);
+ 
+@@ -758,6 +765,65 @@ static int q6asm_dai_compr_set_params(struct snd_compr_stream *stream,
+ 			dev_err(dev, "WMA9 CMD failed:%d\n", ret);
+ 			return -EIO;
+ 		}
++		break;
++
++	case SND_AUDIOCODEC_ALAC:
++		memset(&alac_cfg, 0x0, sizeof(alac_cfg));
++		alac = &codec_options->alac_d;
++
++		alac_cfg.sample_rate = params->codec.sample_rate;
++		alac_cfg.avg_bit_rate = params->codec.bit_rate;
++		alac_cfg.bit_depth = prtd->bits_per_sample;
++		alac_cfg.num_channels = params->codec.ch_in;
++
++		alac_cfg.frame_length = alac->frame_length;
++		alac_cfg.pb = alac->pb;
++		alac_cfg.mb = alac->mb;
++		alac_cfg.kb = alac->kb;
++		alac_cfg.max_run = alac->max_run;
++		alac_cfg.compatible_version = alac->compatible_version;
++		alac_cfg.max_frame_bytes = alac->max_frame_bytes;
++
++		switch (params->codec.ch_in) {
++		case 1:
++			alac_cfg.channel_layout_tag = ALAC_CH_LAYOUT_MONO;
++			break;
++		case 2:
++			alac_cfg.channel_layout_tag = ALAC_CH_LAYOUT_STEREO;
++			break;
++		}
++		ret = q6asm_stream_media_format_block_alac(prtd->audio_client,
++							   &alac_cfg);
++		if (ret < 0) {
++			dev_err(dev, "ALAC CMD Format block failed:%d\n", ret);
++			return -EIO;
++		}
++		break;
++
++	case SND_AUDIOCODEC_APE:
++		memset(&ape_cfg, 0x0, sizeof(ape_cfg));
++		ape = &codec_options->ape_d;
++
++		ape_cfg.sample_rate = params->codec.sample_rate;
++		ape_cfg.num_channels = params->codec.ch_in;
++		ape_cfg.bits_per_sample = prtd->bits_per_sample;
++
++		ape_cfg.compatible_version = ape->compatible_version;
++		ape_cfg.compression_level = ape->compression_level;
++		ape_cfg.format_flags = ape->format_flags;
++		ape_cfg.blocks_per_frame = ape->blocks_per_frame;
++		ape_cfg.final_frame_blocks = ape->final_frame_blocks;
++		ape_cfg.total_frames = ape->total_frames;
++		ape_cfg.seek_table_present = ape->seek_table_present;
++
++		ret = q6asm_stream_media_format_block_ape(prtd->audio_client,
++							  &ape_cfg);
++		if (ret < 0) {
++			dev_err(dev, "APE CMD Format block failed:%d\n", ret);
++			return -EIO;
++		}
++		break;
++
+ 	default:
+ 		break;
+ 	}
+@@ -857,10 +923,12 @@ static int q6asm_dai_compr_get_caps(struct snd_compr_stream *stream,
+ 	caps->max_fragment_size = COMPR_PLAYBACK_MAX_FRAGMENT_SIZE;
+ 	caps->min_fragments = COMPR_PLAYBACK_MIN_NUM_FRAGMENTS;
+ 	caps->max_fragments = COMPR_PLAYBACK_MAX_NUM_FRAGMENTS;
+-	caps->num_codecs = 3;
++	caps->num_codecs = 5;
+ 	caps->codecs[0] = SND_AUDIOCODEC_MP3;
+ 	caps->codecs[1] = SND_AUDIOCODEC_FLAC;
+ 	caps->codecs[2] = SND_AUDIOCODEC_WMA;
++	caps->codecs[3] = SND_AUDIOCODEC_ALAC;
++	caps->codecs[4] = SND_AUDIOCODEC_APE;
+ 
+ 	return 0;
+ }
 -- 
 2.20.1
 
