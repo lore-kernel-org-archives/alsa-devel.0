@@ -2,65 +2,93 @@ Return-Path: <SRS0=b36W=5B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96A13C2BB1D
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Mar 2020 18:10:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CDAB5C0044D
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Mar 2020 19:16:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 24BAF20674
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Mar 2020 18:10:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3039220674
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Mar 2020 19:16:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pkzLES9V"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 24BAF20674
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Cu904eTv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3039220674
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7EF6218C7;
-	Mon, 16 Mar 2020 19:09:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7EF6218C7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 80910179B;
+	Mon, 16 Mar 2020 20:15:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 80910179B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584382232;
-	bh=aSGUaETrVlfP6l6e2BraMZ8cZpsFZueQ1YQLMZLrH2Q=;
-	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=pkzLES9Vb+fhw11GME40YN3giLBwbuFHFzASLORGCnWkl58aOrjPPmo3lgGUnv+MY
-	 /JGijwqH48kuH9beVQiOSwjScbLQ+igw1f8uUGC34wXM7Y6+7ElhJXB05p3z0lCHLF
-	 4cUdhzc21fhrLYUURSCqHWWI8fT/N++RNed5noc8=
+	s=default; t=1584386165;
+	bh=0v4ox8MhQNqUrGZoQuiHYuUcmjemgD2ghgliY7yKGGo=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Cu904eTvJXKY2pqLq6c38re52GMkbfE6GA/1CozfWdW6BJHyf9vGY3u9p0mw0rPqP
+	 kGYgCcS1BKWLy0bTxjKS60HaZxvKJRaGYaZd98By3AqtsjDpaNClRIHIO4X2v1r7NP
+	 TQPZMYITAjJcddwm5Vyg1+aAvxJN9KIVMPYHVaCQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E6AB4F80248;
-	Mon, 16 Mar 2020 19:08:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D8369F80058;
+	Mon, 16 Mar 2020 20:15:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B88C7F8028B; Mon, 16 Mar 2020 19:08:07 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 76657F801DB
- for <alsa-devel@alsa-project.org>; Mon, 16 Mar 2020 19:08:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76657F801DB
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0818E1FB;
- Mon, 16 Mar 2020 11:08:02 -0700 (PDT)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7E5863F67D;
- Mon, 16 Mar 2020 11:08:01 -0700 (PDT)
-Date: Mon, 16 Mar 2020 18:08:00 +0000
-From: Mark Brown <broonie@kernel.org>
+ id 98330F8015B; Mon, 16 Mar 2020 20:15:12 +0100 (CET)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 18683F80058
+ for <alsa-devel@alsa-project.org>; Mon, 16 Mar 2020 20:15:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18683F80058
+IronPort-SDR: xVHtIeem4KZad05O1E7V4XRWRO9VBgY/awEaAPXSDcpriQEC5i/jiqayncX/2MxhKFwavMcij7
+ JSKqeDFMh+YQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 16 Mar 2020 12:15:04 -0700
+IronPort-SDR: BkxMwYmGdmJL6bboIYVi1p4yGEi4lwtwLzcR/d0ngV74pLIjsdWFhK6pgUuMwbnjsirJR6lMqk
+ GT+celwN2SiQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,561,1574150400"; d="scan'208";a="267685306"
+Received: from saholmes-mobl.amr.corp.intel.com (HELO [10.255.32.131])
+ ([10.255.32.131])
+ by fmsmga004.fm.intel.com with ESMTP; 16 Mar 2020 12:15:02 -0700
+Subject: Re: [PATCH 1/8] soundwire: bus_type: add master_device/driver support
 To: Vinod Koul <vkoul@kernel.org>
-Subject: Applied "ASoC: qcom: q6asm-dai: add support for ALAC and APE
- decoders" to the asoc tree
-In-Reply-To: <20200316055221.1944464-9-vkoul@kernel.org>
-Message-Id: <applied-20200316055221.1944464-9-vkoul@kernel.org>
-X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
- linux-arm-msm@vger.kernel.org, Patrick Lai <plai@codeaurora.org>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Bjorn Andersson <bjorn.andersson@linaro.org>
+References: <20200304095312.GT4148@vkoul-mobl>
+ <05dbe43c-abf8-9d5a-d808-35bf4defe4ba@linux.intel.com>
+ <20200305063646.GW4148@vkoul-mobl>
+ <eb30ac49-788f-b856-6fcf-84ae580eb3c8@linux.intel.com>
+ <20200306050115.GC4148@vkoul-mobl>
+ <4fabb135-6fbb-106f-44fd-8155ea716c00@linux.intel.com>
+ <20200311063645.GH4885@vkoul-mobl>
+ <0fafb567-10e5-a1ea-4a6d-b3c53afb215e@linux.intel.com>
+ <20200313115011.GD4885@vkoul-mobl>
+ <4cb16467-87d0-ef99-e471-9eafa9e669d2@linux.intel.com>
+ <20200314094904.GP4885@vkoul-mobl>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <3c32830c-cd12-867f-a763-7c3e385cb1e9@linux.intel.com>
+Date: Mon, 16 Mar 2020 14:15:02 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+MIME-Version: 1.0
+In-Reply-To: <20200314094904.GP4885@vkoul-mobl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
+ linux-kernel@vger.kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Hui Wang <hui.wang@canonical.com>, broonie@kernel.org,
+ srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
+ Sanyog Kale <sanyog.r.kale@intel.com>,
+ Bard liao <yung-chuan.liao@linux.intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,161 +104,73 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
 
-   ASoC: qcom: q6asm-dai: add support for ALAC and APE decoders
 
-has been applied to the asoc tree at
+>> It's really down to your objection to the use of 'struct driver'... For ASoC
+>> support we only need the .name and .pm_ops, so there's really no possible
+>> path forward otherwise.
+> 
+> It means that we cannot have a solution which is Intel specific into
+> core. If you has a standalone controller you do not need this.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+A 'struct driver' is not Intel-specific, sorry.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+>> Like I said, we have 3 options
+> 
+> Repeating the already discussed doesn't help. I have already told you the
+> constraint to work is not to add Intel specific change into core.
+> 
+> I have already said that expect the driver part I dont have objections
+> to rest of this series and am ready to merge
+> 
+>> a) stay with platform devices for now. You will need to have a conversation
+>> with Greg on this.
+>>
+>> b) use a minimal sdw_master_device with a minimal 'struct driver' use.
+>>
+>> c) use a more elaborate solution suggested in this patchset and yes that
+>> means the Qualcomm driver would need to change a bit.
+>>
+>> Pick one or suggest something that is implementable. The first version of
+>> the patches was provided in October, the last RFC was provided on January
+>> 31, time's up. At the moment you are preventing ASoC integration from moving
+>> forward.
+> 
+> In opensource review we go back and forth and we debate and come to a
+> common conclusion. Choosing a specific set of solutions and constraining
+> yourself to pick one does not help.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+First off, the ask to move away from platform devices came from Greg. 
+Not me. All I did here was suggest solutions, one reviewed by Greg as 
+'sane' and 'nice work'. Greg essentially wrote the book on 
+devices/drivers so his review means I am not completely senile just yet.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+You pushed back with two proposals that don't account for power 
+management and the driver name required for ASoC. That was on top on 
+another suggestion to use platform devices that was shot down by Greg 
+himself with language I can't quote here.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Please re-read my words: my ask was "Pick one or suggest something that 
+is implementable."
 
-Thanks,
-Mark
+You don't pick one and don't suggest anything implementable either, so 
+there's really not much I can do, can I? I don't have a solution without 
+a 'struct driver', and you don't want it.
 
-From 4c3189380c6748a3e9fc6ab8aeb4bde3dd2032ed Mon Sep 17 00:00:00 2001
-From: Vinod Koul <vkoul@kernel.org>
-Date: Mon, 16 Mar 2020 11:22:20 +0530
-Subject: [PATCH] ASoC: qcom: q6asm-dai: add support for ALAC and APE decoders
+The only short-term path forward I see is to ask Greg to agree to keep 
+the platform devices for now.
 
-Qualcomm DSPs also supports the ALAC and APE decoders, so add support
-for these and convert the snd_codec_params to qdsp format.
+> I have only _one_ constraint no platform specific change in core. If that
+> is satisfied I will go with it. Sorry but this is non-negotiable for me.
 
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
-Link: https://lore.kernel.org/r/20200316055221.1944464-9-vkoul@kernel.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/qcom/qdsp6/q6asm-dai.c | 70 +++++++++++++++++++++++++++++++-
- 1 file changed, 69 insertions(+), 1 deletion(-)
+How is a 'struct driver' platform specific?
 
-diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
-index fa685fe4a027..8b5d86be9ace 100644
---- a/sound/soc/qcom/qdsp6/q6asm-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
-@@ -41,6 +41,9 @@
- #define Q6ASM_DAI_TX	1
- #define Q6ASM_DAI_RX	2
- 
-+#define ALAC_CH_LAYOUT_MONO   ((101 << 16) | 1)
-+#define ALAC_CH_LAYOUT_STEREO ((101 << 16) | 2)
-+
- enum stream_state {
- 	Q6ASM_STREAM_IDLE = 0,
- 	Q6ASM_STREAM_STOPPED,
-@@ -630,12 +633,16 @@ static int q6asm_dai_compr_set_params(struct snd_compr_stream *stream,
- 	struct q6asm_dai_data *pdata;
- 	struct q6asm_flac_cfg flac_cfg;
- 	struct q6asm_wma_cfg wma_cfg;
-+	struct q6asm_alac_cfg alac_cfg;
-+	struct q6asm_ape_cfg ape_cfg;
- 	unsigned int wma_v9 = 0;
- 	struct device *dev = c->dev;
- 	int ret;
- 	union snd_codec_options *codec_options;
- 	struct snd_dec_flac *flac;
- 	struct snd_dec_wma *wma;
-+	struct snd_dec_alac *alac;
-+	struct snd_dec_ape *ape;
- 
- 	codec_options = &(prtd->codec_param.codec.options);
- 
-@@ -758,6 +765,65 @@ static int q6asm_dai_compr_set_params(struct snd_compr_stream *stream,
- 			dev_err(dev, "WMA9 CMD failed:%d\n", ret);
- 			return -EIO;
- 		}
-+		break;
-+
-+	case SND_AUDIOCODEC_ALAC:
-+		memset(&alac_cfg, 0x0, sizeof(alac_cfg));
-+		alac = &codec_options->alac_d;
-+
-+		alac_cfg.sample_rate = params->codec.sample_rate;
-+		alac_cfg.avg_bit_rate = params->codec.bit_rate;
-+		alac_cfg.bit_depth = prtd->bits_per_sample;
-+		alac_cfg.num_channels = params->codec.ch_in;
-+
-+		alac_cfg.frame_length = alac->frame_length;
-+		alac_cfg.pb = alac->pb;
-+		alac_cfg.mb = alac->mb;
-+		alac_cfg.kb = alac->kb;
-+		alac_cfg.max_run = alac->max_run;
-+		alac_cfg.compatible_version = alac->compatible_version;
-+		alac_cfg.max_frame_bytes = alac->max_frame_bytes;
-+
-+		switch (params->codec.ch_in) {
-+		case 1:
-+			alac_cfg.channel_layout_tag = ALAC_CH_LAYOUT_MONO;
-+			break;
-+		case 2:
-+			alac_cfg.channel_layout_tag = ALAC_CH_LAYOUT_STEREO;
-+			break;
-+		}
-+		ret = q6asm_stream_media_format_block_alac(prtd->audio_client,
-+							   &alac_cfg);
-+		if (ret < 0) {
-+			dev_err(dev, "ALAC CMD Format block failed:%d\n", ret);
-+			return -EIO;
-+		}
-+		break;
-+
-+	case SND_AUDIOCODEC_APE:
-+		memset(&ape_cfg, 0x0, sizeof(ape_cfg));
-+		ape = &codec_options->ape_d;
-+
-+		ape_cfg.sample_rate = params->codec.sample_rate;
-+		ape_cfg.num_channels = params->codec.ch_in;
-+		ape_cfg.bits_per_sample = prtd->bits_per_sample;
-+
-+		ape_cfg.compatible_version = ape->compatible_version;
-+		ape_cfg.compression_level = ape->compression_level;
-+		ape_cfg.format_flags = ape->format_flags;
-+		ape_cfg.blocks_per_frame = ape->blocks_per_frame;
-+		ape_cfg.final_frame_blocks = ape->final_frame_blocks;
-+		ape_cfg.total_frames = ape->total_frames;
-+		ape_cfg.seek_table_present = ape->seek_table_present;
-+
-+		ret = q6asm_stream_media_format_block_ape(prtd->audio_client,
-+							  &ape_cfg);
-+		if (ret < 0) {
-+			dev_err(dev, "APE CMD Format block failed:%d\n", ret);
-+			return -EIO;
-+		}
-+		break;
-+
- 	default:
- 		break;
- 	}
-@@ -857,10 +923,12 @@ static int q6asm_dai_compr_get_caps(struct snd_compr_stream *stream,
- 	caps->max_fragment_size = COMPR_PLAYBACK_MAX_FRAGMENT_SIZE;
- 	caps->min_fragments = COMPR_PLAYBACK_MIN_NUM_FRAGMENTS;
- 	caps->max_fragments = COMPR_PLAYBACK_MAX_NUM_FRAGMENTS;
--	caps->num_codecs = 3;
-+	caps->num_codecs = 5;
- 	caps->codecs[0] = SND_AUDIOCODEC_MP3;
- 	caps->codecs[1] = SND_AUDIOCODEC_FLAC;
- 	caps->codecs[2] = SND_AUDIOCODEC_WMA;
-+	caps->codecs[3] = SND_AUDIOCODEC_ALAC;
-+	caps->codecs[4] = SND_AUDIOCODEC_APE;
- 
- 	return 0;
- }
--- 
-2.20.1
+> Ask yourself, do you need this intrusive core change if you had this
+> exact same controller(s) but only as standalone one...
 
+That would really not change anything. There would be some sort of ID 
+(PCI or something else) for the controller and multiple masters below. 
+The ACPI/DisCo spec does not account for masters so they would have to 
+be created by hand.
+
+Again how is a 'struct driver' an 'intrusive change'?
