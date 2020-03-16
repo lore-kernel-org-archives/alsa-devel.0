@@ -1,83 +1,82 @@
-Return-Path: <SRS0=Xern=5A=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=b36W=5B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A6DF0C10DCE
-	for <alsa-devel@archiver.kernel.org>; Sun, 15 Mar 2020 20:06:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B648C10F29
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Mar 2020 02:38:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 291C5205ED
-	for <alsa-devel@archiver.kernel.org>; Sun, 15 Mar 2020 20:06:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DFF5020722
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Mar 2020 02:38:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="L+SOwu7U"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 291C5205ED
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nv/BdB5z";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="sWoGXueo"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DFF5020722
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 821751871;
-	Sun, 15 Mar 2020 21:05:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 821751871
+	by alsa0.perex.cz (Postfix) with ESMTPS id 23B111875;
+	Mon, 16 Mar 2020 03:37:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23B111875
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584302768;
-	bh=7orrgjujETggp+OERofJStzAcTRtMFusOqWDB767FOc=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1584326314;
+	bh=HDWemFmS6sNHHvqLejbRyMAPEs6e+okEDrDeTOhqVWg=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=L+SOwu7UgAaAMqw9GfZqmxPn+f3Hpnq5/WYczYgDJwB/Oxggv6a3xYUe+Frpca5cJ
-	 4X6TFHECrClblUKupXy5UnQIwYHaKZ2vPTVcNy+YF7Q36eAQ2B06g7f2c5L9ZwxQK1
-	 F5W2teg2wLTjHsRSR6ciwsgUTCg0l1i/ipPr7Jew=
+	b=nv/BdB5zo78ZWDmzPgENdZl89aYJbqwQMZmJdnHQ1Ji4Za9rx7qk0Rgh47Ui+VaLs
+	 Tb53zIxRfdi4X+h0UB87huNP2GEGfO5f6QE17UJTC1VDgEZf7dNDQIpibWK7zFEHGp
+	 gOyapBAPP/4lAZzfcWWIsPJL1+sj+GTSzlRBNEnk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DDFBDF801F9;
-	Sun, 15 Mar 2020 21:05:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6CB5CF801F9;
+	Mon, 16 Mar 2020 03:37:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C61B5F8022B; Sun, 15 Mar 2020 21:05:15 +0100 (CET)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 5F33FF801F9; Mon, 16 Mar 2020 03:35:41 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6881FF8013D
- for <alsa-devel@alsa-project.org>; Sun, 15 Mar 2020 21:05:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6881FF8013D
-IronPort-SDR: 1bguplLPgwJJ7q/Mxz+gWA6Sy7SEYT3pq1ISd9pcyhNIb4loMuxwiAvLwF6/YvFWSQNT4BBGJJ
- 0Cl/Lvqk85Rw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Mar 2020 13:05:06 -0700
-IronPort-SDR: snUymknbCVk7rEjEEizyXyuG9lVkHcMmdw4Jt8Fe+TDe/LXIZ1tuS2duUT2M792RYE2DzPyhuP
- TLXuE3/GxnCA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,557,1574150400"; d="scan'208";a="267346874"
-Received: from crojewsk-mobl1.ger.corp.intel.com (HELO [10.249.138.187])
- ([10.249.138.187])
- by fmsmga004.fm.intel.com with ESMTP; 15 Mar 2020 13:05:04 -0700
-Subject: Re: [PATCH v2 05/10] ASoC: codecs: hdac_hdmi: (cosmetic) remove
- redundant variable initialisations
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org
-References: <20200312194859.4051-1-pierre-louis.bossart@linux.intel.com>
- <20200312194859.4051-6-pierre-louis.bossart@linux.intel.com>
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-Message-ID: <d4f6dd03-3580-3301-9a35-7226f893e316@intel.com>
-Date: Sun, 15 Mar 2020 21:05:04 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3E6BAF801F9
+ for <alsa-devel@alsa-project.org>; Mon, 16 Mar 2020 03:33:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E6BAF801F9
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="sWoGXueo"
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
+ [73.47.72.35])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id E197E206BE;
+ Mon, 16 Mar 2020 02:33:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1584326034;
+ bh=HDWemFmS6sNHHvqLejbRyMAPEs6e+okEDrDeTOhqVWg=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=sWoGXueoh9RRb9ZfMtqEouGMFCL9su9O4nrtnMEYxzO7hijuqz8FKpnxfH81EoccB
+ w/SNJcnkP5oPSyAJvIzeTlxsAd3g+Z3e1n6OkGEfDXHk+kfY3HNI/UZ4zro6+n3Rby
+ iVX22a/EeVg6vnFjla588hMJKfoFrL74BAX8xMg8=
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.5 29/41] ASoC: stm32: sai: manage rebind issue
+Date: Sun, 15 Mar 2020 22:33:07 -0400
+Message-Id: <20200316023319.749-29-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200316023319.749-1-sashal@kernel.org>
+References: <20200316023319.749-1-sashal@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200312194859.4051-6-pierre-louis.bossart@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: tiwai@suse.de,
- Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- broonie@kernel.org
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ Olivier Moysan <olivier.moysan@st.com>, Mark Brown <broonie@kernel.org>,
+ linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,36 +92,97 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 2020-03-12 20:48, Pierre-Louis Bossart wrote:
-> From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-> 
-> Remove several redundant variable initialisations.
-> 
-> Signed-off-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> ---
->   sound/soc/codecs/hdac_hdmi.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-> index e6558475e006..fba9b749839d 100644
-> --- a/sound/soc/codecs/hdac_hdmi.c
-> +++ b/sound/soc/codecs/hdac_hdmi.c
-> @@ -1998,11 +1998,11 @@ static struct hdac_hdmi_drv_data intel_drv_data  = {
->   
->   static int hdac_hdmi_dev_probe(struct hdac_device *hdev)
->   {
-> -	struct hdac_hdmi_priv *hdmi_priv = NULL;
-> +	struct hdac_hdmi_priv *hdmi_priv;
->   	struct snd_soc_dai_driver *hdmi_dais = NULL;
-> -	struct hdac_ext_link *hlink = NULL;
-> +	struct hdac_ext_link *hlink;
->   	int num_dais = 0;
-> -	int ret = 0;
-> +	int ret;
->   	struct hdac_driver *hdrv = drv_to_hdac_driver(hdev->dev.driver);
->   	const struct hda_device_id *hdac_id = hdac_get_device_id(hdev, hdrv);
->   
-> 
+From: Olivier Moysan <olivier.moysan@st.com>
 
-Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
+[ Upstream commit 0d6defc7e0e437a9fd53622f7fd85740f38d5693 ]
+
+The commit e894efef9ac7 ("ASoC: core: add support to card rebind")
+allows to rebind the sound card after a rebind of one of its component.
+With this commit, the sound card is actually rebound,
+but may be no more functional. The following problems have been seen
+with STM32 SAI driver.
+
+1) DMA channel is not requested:
+
+With the sound card rebind the simplified call sequence is:
+stm32_sai_sub_probe
+	snd_soc_register_component
+		snd_soc_try_rebind_card
+			snd_soc_instantiate_card
+	devm_snd_dmaengine_pcm_register
+
+The problem occurs because the pcm must be registered,
+before snd_soc_instantiate_card() is called.
+
+Modify SAI driver, to change the call sequence as follows:
+stm32_sai_sub_probe
+	devm_snd_dmaengine_pcm_register
+	snd_soc_register_component
+		snd_soc_try_rebind_card
+
+2) DMA channel is not released:
+
+dma_release_channel() is not called when
+devm_dmaengine_pcm_release() is executed.
+This occurs because SND_DMAENGINE_PCM_DRV_NAME component,
+has already been released through devm_component_release().
+
+devm_dmaengine_pcm_release() should be called before
+devm_component_release() to avoid this problem.
+
+Call snd_dmaengine_pcm_unregister() and snd_soc_unregister_component()
+explicitly from SAI driver, to have the right sequence.
+
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+Message-Id: <20200304102406.8093-1-olivier.moysan@st.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ sound/soc/stm/stm32_sai_sub.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
+
+diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
+index 30bcd5d3a32a8..10eb4b8e8e7ee 100644
+--- a/sound/soc/stm/stm32_sai_sub.c
++++ b/sound/soc/stm/stm32_sai_sub.c
+@@ -1543,20 +1543,20 @@ static int stm32_sai_sub_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	ret = devm_snd_soc_register_component(&pdev->dev, &stm32_component,
+-					      &sai->cpu_dai_drv, 1);
++	ret = snd_dmaengine_pcm_register(&pdev->dev, conf, 0);
++	if (ret) {
++		dev_err(&pdev->dev, "Could not register pcm dma\n");
++		return ret;
++	}
++
++	ret = snd_soc_register_component(&pdev->dev, &stm32_component,
++					 &sai->cpu_dai_drv, 1);
+ 	if (ret)
+ 		return ret;
+ 
+ 	if (STM_SAI_PROTOCOL_IS_SPDIF(sai))
+ 		conf = &stm32_sai_pcm_config_spdif;
+ 
+-	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, conf, 0);
+-	if (ret) {
+-		dev_err(&pdev->dev, "Could not register pcm dma\n");
+-		return ret;
+-	}
+-
+ 	return 0;
+ }
+ 
+@@ -1565,6 +1565,8 @@ static int stm32_sai_sub_remove(struct platform_device *pdev)
+ 	struct stm32_sai_sub_data *sai = dev_get_drvdata(&pdev->dev);
+ 
+ 	clk_unprepare(sai->pdata->pclk);
++	snd_dmaengine_pcm_unregister(&pdev->dev);
++	snd_soc_unregister_component(&pdev->dev);
+ 
+ 	return 0;
+ }
+-- 
+2.20.1
+
