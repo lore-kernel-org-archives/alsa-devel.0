@@ -1,4 +1,4 @@
-Return-Path: <SRS0=U/T/=46=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=b36W=5B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
@@ -6,58 +6,55 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4EEE4C2BB1D
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 16:25:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41DD1C0044D
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Mar 2020 18:09:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D2412206FA
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2020 16:25:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C57AD2071C
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Mar 2020 18:09:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mn1gvC4z"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D2412206FA
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Q1qC/Edo"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C57AD2071C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2EF631815;
-	Fri, 13 Mar 2020 17:24:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2EF631815
+	by alsa0.perex.cz (Postfix) with ESMTPS id E780618C9;
+	Mon, 16 Mar 2020 19:08:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E780618C9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584116744;
-	bh=Tcuwa+w+UcIViZ7ipgOjxe/t/aFCKXG0ADcsS8nAVUM=;
+	s=default; t=1584382185;
+	bh=tVj/Jeq14jH33GteqXDaWCsEU63zCW3Go10YBKDjgi0=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=mn1gvC4z/UZfwCRxgPZs6iRzf/SA3PBR2eyfO49VBW8HUAHouc7Br7Y4OeA7IlNPo
-	 85HlxOSLhlIpXzIAzeX1uvmowKNs6YqqXxuIy1xExaSlXGrvuxSovzhnpo+nWQCypb
-	 ookBAq1JezyQxzRDCZ7PCjmpHAq79hwwDsmOqqtE=
+	b=Q1qC/Edop3mHp1457hEM8sWOc+bu3LRb2s0eEem9AlYHKumcWV5cuAGjzxa4hVelT
+	 TNgTSgzdgzvAz84icjHYAcI9DOqMsltLfC2JtC2HkW1E55v0AMXFpJ1Gc/4zEjFnSu
+	 FGRAyRvt+gyeetDR5XtjOcFZpHrvJoeaLgfciU2I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1F7FEF80321;
-	Fri, 13 Mar 2020 17:19:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5B2B7F801F9;
+	Mon, 16 Mar 2020 19:08:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 55B3DF802E8; Fri, 13 Mar 2020 17:18:10 +0100 (CET)
+ id 78F31F80110; Mon, 16 Mar 2020 19:08:04 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id F28C2F802EC
- for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2020 17:18:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F28C2F802EC
+ by alsa1.perex.cz (Postfix) with ESMTP id 2C88CF80110
+ for <alsa-devel@alsa-project.org>; Mon, 16 Mar 2020 19:07:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C88CF80110
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 13B89FEC;
- Fri, 13 Mar 2020 09:18:06 -0700 (PDT)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6FA711FB;
+ Mon, 16 Mar 2020 11:07:57 -0700 (PDT)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 766A13F6CF;
- Fri, 13 Mar 2020 09:18:05 -0700 (PDT)
-Date: Fri, 13 Mar 2020 16:18:03 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E8DFB3F67D;
+ Mon, 16 Mar 2020 11:07:56 -0700 (PDT)
+Date: Mon, 16 Mar 2020 18:07:55 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: Applied "ASoC: Intel: boards: drop reverse deps for
- SND_HDA_CODEC_HDMI" to the asoc tree
+To: Vinod Koul <vkoul@kernel.org>
+Subject: Applied "ALSA: compress: bump the version" to the asoc tree
 In-Reply-To: 
 Message-Id: 
 X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- kbuild test robot <lkp@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,11 +69,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20200313161803.Y-94C19YBus8aLYlMSt-n2kTtF7A83E4c7rZTpbg7eA@z>
+Message-ID: <20200316180755.TC3UiadKIfEr32ndArYCAumOTYcEx0Tv4RblZ3pV940@z>
 
 The patch
 
-   ASoC: Intel: boards: drop reverse deps for SND_HDA_CODEC_HDMI
+   ALSA: compress: bump the version
 
 has been applied to the asoc tree at
 
@@ -101,119 +98,35 @@ to this mail.
 Thanks,
 Mark
 
-From 5c82813ce43e3a2017c43b32a57dc7a8802d9ad4 Mon Sep 17 00:00:00 2001
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Date: Thu, 12 Mar 2020 14:48:50 -0500
-Subject: [PATCH] ASoC: Intel: boards: drop reverse deps for SND_HDA_CODEC_HDMI
+From 54ce83a3080c3d06b14faa7533a9adb4e158dcea Mon Sep 17 00:00:00 2001
+From: Vinod Koul <vkoul@kernel.org>
+Date: Mon, 16 Mar 2020 11:22:21 +0530
+Subject: [PATCH] ALSA: compress: bump the version
 
-Having a reverse dependency to a config that has its own additional
-dependencies, is generally not recommended. And this applies to
-select statements for SND_HDA_CODEC_HDMI, e.g. the case where SND_HDA
-and SND_SOC_SOF_HDA are built as modules, but the machine driver is
-built-in, leading to compile errors (reported as
-i386-randconfig-e003-20200206).
+We have added support for bunch of new decoders and parameters for
+decoders. To help users find the support bump the version up to 0,2,0.
 
-Give up on trying to define different dependencies based on SOF/SST
-selection, and simply add a "depends on" for SND_HDA_CODEC_HDMI. This
-fixes the issue with randconfigs. Only downside is that SND_HDA_CODEC_HDMI
-may be built unnecessarily in some cases, but this seems like the lesser
-evil.
-
-Fixes: aa2b4a5 ('ASoC: Intel: boards: fix incorrect HDMI Kconfig dependency')
-Reported-by: kbuild test robot <lkp@intel.com>
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200312194859.4051-2-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
+Link: https://lore.kernel.org/r/20200316055221.1944464-10-vkoul@kernel.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/Kconfig | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ include/uapi/sound/compress_offload.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index 755e1de19df9..67d85a7be559 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -289,7 +289,6 @@ config SND_SOC_INTEL_DA7219_MAX98357A_GENERIC
- 	select SND_SOC_DA7219
- 	select SND_SOC_MAX98357A
- 	select SND_SOC_DMIC
--	select SND_HDA_CODEC_HDMI if SND_SOC_SOF_HDA_AUDIO_CODEC
- 	select SND_SOC_HDAC_HDMI
+diff --git a/include/uapi/sound/compress_offload.h b/include/uapi/sound/compress_offload.h
+index 56d95673ce0f..7184265c0b0d 100644
+--- a/include/uapi/sound/compress_offload.h
++++ b/include/uapi/sound/compress_offload.h
+@@ -31,7 +31,7 @@
+ #include <sound/compress_params.h>
  
- config SND_SOC_INTEL_BXT_DA7219_MAX98357A_COMMON
-@@ -302,6 +301,7 @@ config SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH
- 	tristate "Broxton with DA7219 and MAX98357A in I2S Mode"
- 	depends on I2C && ACPI
- 	depends on MFD_INTEL_LPSS || COMPILE_TEST
-+	depends on SND_HDA_CODEC_HDMI
- 	select SND_SOC_INTEL_BXT_DA7219_MAX98357A_COMMON
- 	help
- 	   This adds support for ASoC machine driver for Broxton-P platforms
-@@ -402,6 +402,7 @@ config SND_SOC_INTEL_GLK_DA7219_MAX98357A_MACH
- 	tristate "GLK with DA7219 and MAX98357A in I2S Mode"
- 	depends on I2C && ACPI
- 	depends on MFD_INTEL_LPSS || COMPILE_TEST
-+	depends on SND_HDA_CODEC_HDMI
- 	select SND_SOC_INTEL_BXT_DA7219_MAX98357A_COMMON
- 	help
- 	   This adds support for ASoC machine driver for Geminilake platforms
-@@ -413,10 +414,10 @@ config SND_SOC_INTEL_GLK_RT5682_MAX98357A_MACH
- 	tristate "GLK with RT5682 and MAX98357A in I2S Mode"
- 	depends on I2C && ACPI
- 	depends on MFD_INTEL_LPSS || COMPILE_TEST
-+	depends on SND_HDA_CODEC_HDMI
- 	select SND_SOC_RT5682
- 	select SND_SOC_MAX98357A
- 	select SND_SOC_DMIC
--	select SND_HDA_CODEC_HDMI if SND_SOC_SOF_HDA_AUDIO_CODEC
- 	select SND_SOC_HDAC_HDMI
- 	help
- 	   This adds support for ASoC machine driver for Geminilake platforms
-@@ -430,7 +431,7 @@ if SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC || SND_SOC_SOF_HDA_AUDIO_CODEC
  
- config SND_SOC_INTEL_SKL_HDA_DSP_GENERIC_MACH
- 	tristate "SKL/KBL/BXT/APL with HDA Codecs"
--	select SND_HDA_CODEC_HDMI if SND_SOC_SOF_HDA_AUDIO_CODEC
-+	depends on SND_HDA_CODEC_HDMI
- 	select SND_SOC_HDAC_HDMI
- 	select SND_SOC_DMIC
- 	# SND_SOC_HDAC_HDA is already selected
-@@ -448,9 +449,9 @@ config SND_SOC_INTEL_SOF_RT5682_MACH
- 	depends on I2C && ACPI
- 	depends on (SND_SOC_SOF_HDA_LINK && (MFD_INTEL_LPSS || COMPILE_TEST)) ||\
- 		   (SND_SOC_SOF_BAYTRAIL && (X86_INTEL_LPSS || COMPILE_TEST))
-+	depends on SND_HDA_CODEC_HDMI
- 	select SND_SOC_RT5682
- 	select SND_SOC_DMIC
--	select SND_HDA_CODEC_HDMI if SND_SOC_SOF_HDA_AUDIO_CODEC
- 	select SND_SOC_HDAC_HDMI
- 	help
- 	   This adds support for ASoC machine driver for SOF platforms
-@@ -490,11 +491,11 @@ config SND_SOC_INTEL_SOF_CML_RT1011_RT5682_MACH
- 	tristate "CML with RT1011 and RT5682 in I2S Mode"
- 	depends on I2C && ACPI
- 	depends on MFD_INTEL_LPSS || COMPILE_TEST
-+	depends on SND_HDA_CODEC_HDMI
- 	select SND_SOC_RT1011
- 	select SND_SOC_RT5682
- 	select SND_SOC_DMIC
- 	select SND_SOC_HDAC_HDMI
--	select SND_HDA_CODEC_HDMI if SND_SOC_SOF_HDA_AUDIO_CODEC
- 	help
- 	  This adds support for ASoC machine driver for SOF platform with
- 	  RT1011 + RT5682 I2S codec.
-@@ -509,10 +510,10 @@ config SND_SOC_INTEL_SOF_DA7219_MAX98373_MACH
- 	tristate "SOF with DA7219 and MAX98373 in I2S Mode"
- 	depends on I2C && ACPI
- 	depends on MFD_INTEL_LPSS || COMPILE_TEST
-+	depends on SND_HDA_CODEC_HDMI
- 	select SND_SOC_DA7219
- 	select SND_SOC_MAX98373
- 	select SND_SOC_DMIC
--	select SND_HDA_CODEC_HDMI if SND_SOC_SOF_HDA_AUDIO_CODEC
- 	help
- 	  This adds support for ASoC machine driver for SOF platforms
- 	  with DA7219 + MAX98373 I2S audio codec.
+-#define SNDRV_COMPRESS_VERSION SNDRV_PROTOCOL_VERSION(0, 1, 2)
++#define SNDRV_COMPRESS_VERSION SNDRV_PROTOCOL_VERSION(0, 2, 0)
+ /**
+  * struct snd_compressed_buffer - compressed buffer
+  * @fragment_size: size of buffer fragment in bytes
 -- 
 2.20.1
 
