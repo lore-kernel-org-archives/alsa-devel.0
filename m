@@ -2,66 +2,63 @@ Return-Path: <SRS0=b36W=5B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EFDBEC0044D
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Mar 2020 09:01:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C5A1C0044D
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Mar 2020 09:06:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 56A3F20674
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Mar 2020 09:01:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AB9C620658
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Mar 2020 09:06:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZkbIej+7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 56A3F20674
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vCPGVqIq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AB9C620658
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 96B0717A3;
-	Mon, 16 Mar 2020 10:00:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 96B0717A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id F27A918A0;
+	Mon, 16 Mar 2020 10:05:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F27A918A0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584349286;
-	bh=nefbg1GmwcZTqql7Of8DWHbfYV0nk4Z5KAOf8imBtzM=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1584349563;
+	bh=K7JHcllETSF0PNuTzDIttijSNxY58x/PN9W+Jzt9ZYw=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZkbIej+7KKQwM/qX+P/wbh+4LNDwhAs+/HQlXgjZhtKaRzOvn+ZQoEylEYzLo5vDY
-	 qLuNngxOO7CHA0kFDr2va19UDZl2WY2ClM1RNMY+K2rWjda7Xie6r9+d/C3DDN+9hq
-	 aDwJbTT+Dr9IXkHveewr/4Ylrx/D/xtkIs9kJo7w=
+	b=vCPGVqIqASLwzpt9QhiWZVrk79IWkXO+j1Zo2p8VT6o3+c33sW9wGHT+/aYgndrtH
+	 vpsE2RrEk7Ybla7df0lF7+iIEv3pqYy8UvpdDtvWnf2XYVPxXyA8pLBoCickiZ8g9y
+	 VkqeHXGzJ/W4b/3zoal68Pj0Z6ZEnI+e17CcHOOo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0E03EF800CD;
-	Mon, 16 Mar 2020 10:00:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6A7D5F80058;
+	Mon, 16 Mar 2020 10:05:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3AEA6F8015B; Mon, 16 Mar 2020 10:00:35 +0100 (CET)
+ id 12707F801DB; Mon, 16 Mar 2020 10:05:11 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D1242F800CD
- for <alsa-devel@alsa-project.org>; Mon, 16 Mar 2020 10:00:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1242F800CD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 64DBCF800CD
+ for <alsa-devel@alsa-project.org>; Mon, 16 Mar 2020 10:05:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64DBCF800CD
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 31EDAAD0F;
- Mon, 16 Mar 2020 09:00:32 +0000 (UTC)
-Date: Mon, 16 Mar 2020 10:00:32 +0100
-Message-ID: <s5ho8swznbj.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 19E61AE84;
+ Mon, 16 Mar 2020 09:05:08 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
-To: Andreas Steinmetz <ast@domdv.de>
-Subject: Re: BUG: ALSA snd-virmidi: snd-virmidi is not MIDI 1.0 specification
- compliant
-In-Reply-To: <3b4a4e0f232b7afbaf0a843f63d0e538e3029bfd.camel@domdv.de>
-References: <3b4a4e0f232b7afbaf0a843f63d0e538e3029bfd.camel@domdv.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 1/2] ALSA: seq: virmidi: Fix running status after receiving
+ sysex
+Date: Mon, 16 Mar 2020 10:05:05 +0100
+Message-Id: <20200316090506.23966-2-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
+In-Reply-To: <20200316090506.23966-1-tiwai@suse.de>
+References: <20200316090506.23966-1-tiwai@suse.de>
+Cc: Andreas Steinmetz <ast@domdv.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,59 +74,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 15 Mar 2020 12:57:13 +0100,
-Andreas Steinmetz wrote:
-> 
-> snd-virmidi, as of kernel 5.4.23, does not adhere to the MIDI
-> specification:
-> 
-> >From MIDI 1.0 Detailed Specification, Document Version 4.2, Appendix A-
-> 1 (RUNNING STATUS), Page A-2:
-> 
-> "3. Buffer is cleared when a System Exclusive or Common status message
-> is received."
-> 
-> snd-virmidi does not clear the running status in case of a SysEx
-> message.
-> 
-> How to test:
-> 
-> Load snd-virmidi module and get the card number of the module.
-> In the following 5 is assumed as the card number and device 1 is used.
-> 
-> You need two shells, in shell 1 do:
-> 
-> aconnect 'Virtual Raw MIDI 5-1':0 'Virtual Raw MIDI 5-1':0
-> amidi -p hw:VirMIDI,1 -d
-> 
-> Now, in shell 2 do:
-> 
-> amidi -p hw:VirMIDI,1 -S '80 01 02 F0 01 F7 80 02 03'
-> 
-> This sends a note off, followed by a SysEx, followed by another note
-> off. The result in shell 1 is:
-> 
-> 80 01 02
-> F0 01 F7
-> 02
-> 03
-> 
-> So snd-virmidi did not clear the running status. The correct result
-> would be:
-> 
-> 80 01 02
-> F0 01 F7
-> 80 02 03
+The virmidi driver handles sysex event exceptionally in a short-cut
+snd_seq_dump_var_event() call, but this missed the reset of the
+running status.  As a result, it may lead to an incomplete command
+right after the sysex when an event with the same running status was
+queued.
 
-Thanks for the report.  Indeed it's a very old bug.
-The fix is simple as below.
+Fix it by clearing the running status properly via alling
+snd_midi_event_reset_decode() for that code path.
 
-Since there is a similar bug in OSS emulation layer, too, I'm going to
-submit a proper patch set including this.
+Reported-by: Andreas Steinmetz <ast@domdv.de>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/3b4a4e0f232b7afbaf0a843f63d0e538e3029bfd.camel@domdv.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/seq/seq_virmidi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-
-Takashi
-
+diff --git a/sound/core/seq/seq_virmidi.c b/sound/core/seq/seq_virmidi.c
+index 626d87c1539b..77d7037d1476 100644
 --- a/sound/core/seq/seq_virmidi.c
 +++ b/sound/core/seq/seq_virmidi.c
 @@ -81,6 +81,7 @@ static int snd_virmidi_dev_receive_event(struct snd_virmidi_dev *rdev,
@@ -140,3 +103,6 @@ Takashi
  		} else {
  			len = snd_midi_event_decode(vmidi->parser, msg, sizeof(msg), ev);
  			if (len > 0)
+-- 
+2.16.4
+
