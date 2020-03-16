@@ -6,76 +6,75 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4252AC4332D
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Mar 2020 15:33:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68B28C4332D
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Mar 2020 15:44:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C33CD2075E
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Mar 2020 15:33:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E8ACD20775
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Mar 2020 15:44:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YROHsXBG"
-Authentication-Results: mail.kernel.org; dmarc=permerror header.from=codethink.co.uk
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qu4ENETY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E8ACD20775
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 04A861764;
-	Thu, 19 Mar 2020 16:33:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 04A861764
+	by alsa0.perex.cz (Postfix) with ESMTPS id 468091764;
+	Thu, 19 Mar 2020 16:43:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 468091764
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584632035;
-	bh=JaT2Im0/hCAk0IM6JHQU9/Q4//RWIs38e1/pK2lSQEk=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1584632645;
+	bh=4AMqcLUNCFM5j8TcYnZ2lKKFs6jDr9kdfcBrrbuP0Hw=;
+	h=From:To:Subject:In-Reply-To:References:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YROHsXBGW5RGpnHQHDO6LFYl8jh9khm+7rzQ3oCDyVJfD0b5+KwodVU0BoLETO7oK
-	 bGpttUIlAqge/unhpPrD2x+FV+u78BA+UMceP7xrJP9Xm2eUz+N5oE4APuRhtBItPz
-	 Rj8l/PddtAaCX76OrwP9GPAIZa2XymTkYCJkyPjE=
+	b=qu4ENETYy2pT+89orWtXyPvjHjn3OHi2T741kukWUlJUbNRdoetJVF1VaEvNU0x3F
+	 NSsuFXmsrDdZX5EoSzikpxA0wU/XrbruHvAB9gtnj25PDfEZoKRGSwq+q3M2SOu+OM
+	 8TSO233g9yg8AyAxm+EyIwZLfbERTAgV2WnNScG4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1C621F80217;
-	Thu, 19 Mar 2020 16:33:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A697DF8012F;
+	Thu, 19 Mar 2020 16:43:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B3C4FF8022B; Thu, 19 Mar 2020 16:33:01 +0100 (CET)
-Received: from imap2.colo.codethink.co.uk (imap2.colo.codethink.co.uk
- [78.40.148.184])
+ id 2EE49F8015B; Mon, 16 Mar 2020 16:33:17 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AB4A8F8012F
- for <alsa-devel@alsa-project.org>; Thu, 19 Mar 2020 16:32:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB4A8F8012F
-Received: from [78.40.148.177] (helo=localhost)
- by imap2.colo.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
- id 1jExAA-0000Vn-Tx; Thu, 19 Mar 2020 15:32:51 +0000
+ by alsa1.perex.cz (Postfix) with ESMTPS id 35DD5F80058
+ for <alsa-devel@alsa-project.org>; Mon, 16 Mar 2020 16:33:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35DD5F80058
+IronPort-SDR: XcdEwQ0RzZVQ5A9KCCcOALEOgof/fduJSqHNqqPMMT0x/y71xVOQUceaYivsjLHAtxE75bE2mM
+ YB8rPVZzF6yA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 16 Mar 2020 08:33:06 -0700
+IronPort-SDR: iITveEGsB4PM/qGADp4pXTOILr3PlYoZBRaDxL2M2sonmhpy4W1Khrjrb5ebjKAGrgLHTJLQlO
+ 4S+ARju9YjGg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,560,1574150400"; d="scan'208";a="417177457"
+Received: from um.fi.intel.com (HELO um) ([10.237.72.57])
+ by orsmga005.jf.intel.com with ESMTP; 16 Mar 2020 08:33:02 -0700
+From: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
+ x86@kernel.org, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/9] x86: Easy way of detecting MS Surface 3
+In-Reply-To: <20200122112306.64598-1-andriy.shevchenko@linux.intel.com>
+References: <20200122112306.64598-1-andriy.shevchenko@linux.intel.com>
+Date: Mon, 16 Mar 2020 17:33:02 +0200
+Message-ID: <871rps9uxd.fsf@ashishki-desk.ger.corp.intel.com>
 MIME-Version: 1.0
-Date: Thu, 19 Mar 2020 15:32:50 +0000
-From: Ben Dooks <ben.dooks@codethink.co.uk>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [Linux-kernel] [PATCH v5 2/7] ASoC: tegra: Allow
- 24bit and 32bit samples
-In-Reply-To: <20200130131039.GC6682@sirena.org.uk>
-References: <0e0cd260e39ad293edb881da1c565510@codethink.co.uk>
- <507dcd5a-672b-61ac-aa7f-af5ff01accff@codethink.co.uk>
- <a2744ea0-cf6d-d083-75e6-853746195001@gmail.com>
- <28cafc56-095b-68c6-638d-270608a2983f@codethink.co.uk>
- <3d8544be-af20-f382-85fd-32183365267b@nvidia.com>
- <1b3c2af4-510e-306c-749a-efffc994b20a@gmail.com>
- <20200128121315.GD4689@sirena.org.uk>
- <4b90efd2-5d0c-84df-961d-80cee288e0d4@nvidia.com>
- <586ea2b9-c204-2bd1-f8e2-875e0974e42d@nvidia.com>
- <fe002ec7-ae6e-f770-b82a-49237e0b29c6@codethink.co.uk>
- <20200130131039.GC6682@sirena.org.uk>
-User-Agent: Roundcube Webmail/1.4.3
-Message-ID: <1df9cc13ea636502ac09191523ff0669@codethink.co.uk>
-X-Sender: ben.dooks@codethink.co.uk
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-kernel@lists.codethink.co.uk, alsa-devel@alsa-project.org,
- Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- Thierry Reding <thierry.reding@gmail.com>,
- Edward Cragg <edward.cragg@codethink.co.uk>, linux-tegra@vger.kernel.org,
- Dmitry Osipenko <digetx@gmail.com>, Jon Hunter <jonathanh@nvidia.com>
+Content-Type: text/plain
+X-Mailman-Approved-At: Thu, 19 Mar 2020 16:43:13 +0100
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
+ alexander.shishkin@linux.intel.com, Jie Yang <yang.jie@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,27 +90,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> writes:
 
+> While working on RTC regression, I noticed that we are using the same DMI check
+> over and over in the drivers for MS Surface 3 platform. This series dedicated
+> for making it easier in the same way how it's done for Apple machines.
 
-On 2020-01-30 13:10, Mark Brown wrote:
-> On Thu, Jan 30, 2020 at 08:17:37AM +0000, Ben Dooks wrote:
->> On 29/01/2020 14:33, Jon Hunter wrote:
-> 
->> > controller. Applying these patches it is not distorted but now I am
->> > observing the clocking issue Ben reported and so the tone is not quite
->> > right.
-> 
->> I thought they had been applied? I probably dragged them back in when
->> putting in the support for the test channel on the colibri.
-> 
-> There were review comments from Jon on patch 6 that you never responded
-> to.
+[...]
 
-Hmm, I may have accidentally deleted those.
+>   x86/quirks: Introduce hpet_dev_print_force_hpet_address() helper
+>   x86/quirks: Join string literals back
 
-I will look to see if I can re-form the series and re-send in the next
-couple of weeks. I've got no access currently to the machine and having
-to deal with working from home for the next month or so.
+These two don't seem to be related to the Surface 3 cause of the rest of
+the patchset, or am I missing something?
 
--- 
-Ben
+Regards,
+--
+Alex
