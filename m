@@ -6,53 +6,53 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2165C0044D
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Mar 2020 06:38:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB506C0044D
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Mar 2020 06:39:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6D3E720722
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Mar 2020 06:38:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3701A2071C
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Mar 2020 06:39:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SxQYlvdR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6D3E720722
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hCXHLbJv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3701A2071C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 86A0E18A9;
-	Mon, 16 Mar 2020 07:37:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86A0E18A9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 99492189B;
+	Mon, 16 Mar 2020 07:38:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99492189B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584340706;
-	bh=JEv922kqkT0sU32VjvSU2fvQHC3EmLdBkNZgxrVrXWY=;
+	s=default; t=1584340753;
+	bh=ejdv2deeGP+a2OMxwhE0Be+/OhI4PHTshx+gBWSybTQ=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SxQYlvdRWwAZSWS50lmp2WKGpXG8zF/0HehbCw0UXUfwccHWqWy9G0P4GpH22LQzM
-	 kqP+/a0nWzfn2/o4Tggj9Xy648zM0BNTTJOyh7De50B6m9O8sp3BbeS4ZfVTWXBBbW
-	 9R5Ah0dZ0Jwz1EVM/wNbrqt24WNNkdR/nu9moODI=
+	b=hCXHLbJvoXscA8i4XZszYbPJmPr3+j2c/Xi1u09z/HMFFOKYkUnUbpJGSujqfC1VU
+	 aQHkxAj3CqZZ9RkXlxn35wpcWZcrB8tSvP36gksQhmT1SBiqhgYwTgW3X9WUL/KY58
+	 PZcEay4UxwJGwDXIdxWT4cr/76AVP/l0hboujc/s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DA8CDF801DB;
-	Mon, 16 Mar 2020 07:37:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 00594F8028B;
+	Mon, 16 Mar 2020 07:37:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BA93DF800CD; Mon, 16 Mar 2020 07:37:05 +0100 (CET)
+ id BE002F8028C; Mon, 16 Mar 2020 07:37:15 +0100 (CET)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 0162BF800CD
- for <alsa-devel@alsa-project.org>; Mon, 16 Mar 2020 07:37:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0162BF800CD
-Date: 16 Mar 2020 15:36:58 +0900
-X-IronPort-AV: E=Sophos;i="5.70,559,1574089200"; d="scan'208";a="41771232"
+ by alsa1.perex.cz (Postfix) with ESMTP id 9A382F80248
+ for <alsa-devel@alsa-project.org>; Mon, 16 Mar 2020 07:37:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A382F80248
+Date: 16 Mar 2020 15:37:09 +0900
+X-IronPort-AV: E=Sophos;i="5.70,559,1574089200"; d="scan'208";a="41771254"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 16 Mar 2020 15:36:58 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 16 Mar 2020 15:37:09 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id EE95B4005E27;
- Mon, 16 Mar 2020 15:36:57 +0900 (JST)
-Message-ID: <87wo7kolfa.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 4B1094005E27;
+ Mon, 16 Mar 2020 15:37:09 +0900 (JST)
+Message-ID: <87tv2ooley.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 1/6] ASoC: soc-core: Merge CPU/Codec DAIs
+Subject: [PATCH 3/6] ASoC: soc-dapm: Merge for_each_rtd_cpu/codec_dais()
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87y2s0olg6.wl-kuninori.morimoto.gx@renesas.com>
@@ -78,105 +78,36 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-ALSA SoC is currently categorizing CPU/Codec DAIs,
-and it works well.
-
-But modern devices require more complex connections,
-for example Codec to Codec, etc, and future devices will
-enable to more complex connections.
-Because of these background, CPU/Codec DAIs categorizing is
-no longer good much to modern device.
-
-Currently, rtd has both CPU/Codec DAIs pointer.
-
-	rtd->cpu_dais   = [][][][][][][][][]
-	rtd->codec_dais = [][][][][][][][][]
-
-This patch merges these into DAIs pointer.
-
-	rtd->dais = [][][][][][][][][][][][][][][][][][]
-	            ^cpu_dais         ^codec_dais
-	            |--- num_cpus ---|--- num_codecs --|
-
-Then, we can merge for_each_rtd_cpu/codec_dais() from this patch.
-
--	for_each_rtd_cpu_dais() {
--		...
--	}
--	for_each_rtd_codec_dais() {
--		...
--	}
-+	for_each_rtd_dais() {
-+		...
-+	}
+Now we can use for_each_rtd_dais().
+Let's use it instead of for_each_rtd_cpu/codec_dais().
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- include/sound/soc.h  |  7 ++++++-
- sound/soc/soc-core.c | 18 +++++++++---------
- 2 files changed, 15 insertions(+), 10 deletions(-)
+ sound/soc/soc-dapm.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 03054bf9cd37..efa12256bb33 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1144,6 +1144,7 @@ struct snd_soc_pcm_runtime {
- 	struct snd_compr *compr;
- 	struct snd_soc_dai *codec_dai;
- 	struct snd_soc_dai *cpu_dai;
-+	struct snd_soc_dai **dais;
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index d5eb52fe115b..04da7928c873 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -4433,14 +4433,11 @@ void snd_soc_dapm_connect_dai_link_widgets(struct snd_soc_card *card)
+ static void soc_dapm_stream_event(struct snd_soc_pcm_runtime *rtd, int stream,
+ 	int event)
+ {
+-	struct snd_soc_dai *codec_dai;
+-	struct snd_soc_dai *cpu_dai;
++	struct snd_soc_dai *dai;
+ 	int i;
  
- 	struct snd_soc_dai **codec_dais;
- 	unsigned int num_codecs;
-@@ -1183,7 +1184,11 @@ struct snd_soc_pcm_runtime {
- 	     (i)++)
- #define for_each_rtd_codec_dais_rollback(rtd, i, dai)		\
- 	for (; (--(i) >= 0) && ((dai) = rtd->codec_dais[i]);)
--
-+#define for_each_rtd_dais(rtd, i, dai)					\
-+	for ((i) = 0;							\
-+	     ((i) < (rtd)->num_cpus + (rtd)->num_codecs) &&		\
-+		     ((dai) = (rtd)->dais[i]);				\
-+	     (i)++)
+-	for_each_rtd_cpu_dais(rtd, i, cpu_dai)
+-		soc_dapm_dai_stream_event(cpu_dai, stream, event);
+-	for_each_rtd_codec_dais(rtd, i, codec_dai)
+-		soc_dapm_dai_stream_event(codec_dai, stream, event);
++	for_each_rtd_dais(rtd, i, dai)
++		soc_dapm_dai_stream_event(dai, stream, event);
  
- void snd_soc_close_delayed_work(struct snd_soc_pcm_runtime *rtd);
- 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 4e0f55555e37..511f6b0cb2e0 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -475,22 +475,22 @@ static struct snd_soc_pcm_runtime *soc_new_pcm_runtime(
- 	INIT_DELAYED_WORK(&rtd->delayed_work, close_delayed_work);
- 
- 	/*
--	 * for rtd->codec_dais
-+	 * for rtd->dais
- 	 */
--	rtd->codec_dais = devm_kcalloc(dev, dai_link->num_codecs,
-+	rtd->dais = devm_kcalloc(dev, dai_link->num_cpus + dai_link->num_codecs,
- 					sizeof(struct snd_soc_dai *),
- 					GFP_KERNEL);
--	if (!rtd->codec_dais)
-+	if (!rtd->dais)
- 		goto free_rtd;
- 
- 	/*
--	 * for rtd->cpu_dais
-+	 * dais = [][][][][][][][][][][][][][][][][][]
-+	 *	  ^cpu_dais         ^codec_dais
-+	 *	  |--- num_cpus ---|--- num_codecs --|
- 	 */
--	rtd->cpu_dais = devm_kcalloc(dev, dai_link->num_cpus,
--				     sizeof(struct snd_soc_dai *),
--				     GFP_KERNEL);
--	if (!rtd->cpu_dais)
--		goto free_rtd;
-+	rtd->cpu_dais	= &rtd->dais[0];
-+	rtd->codec_dais	= &rtd->dais[dai_link->num_cpus];
-+
- 	/*
- 	 * rtd remaining settings
- 	 */
+ 	dapm_power_widgets(rtd->card, event);
+ }
 -- 
 2.17.1
 
