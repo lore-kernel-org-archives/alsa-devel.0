@@ -2,110 +2,82 @@ Return-Path: <SRS0=KQif=5C=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 230BAC10F29
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Mar 2020 13:05:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 557A3C10F29
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Mar 2020 13:25:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A4B4A20752
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Mar 2020 13:05:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A56A820738
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Mar 2020 13:25:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="faFfHNkq";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rs3av+te"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A4B4A20752
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LOgiCiPU";
+	dkim=pass (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="Lsy/7uDY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A56A820738
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E114E17E2;
-	Tue, 17 Mar 2020 14:04:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E114E17E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0BECD1811;
+	Tue, 17 Mar 2020 14:24:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0BECD1811
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584450320;
-	bh=zLvVitW+XehcueCpYwMZdyIvzZ+eckaVxMleOJ55w2k=;
+	s=default; t=1584451502;
+	bh=9VWuIaWdOdM0ZAwgu5IkhSCVpTVt5+1PiIssoQmF6jQ=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=faFfHNkqmzMmVda1dtm58ryu0IA3bHdkleVQ+dqdBib4VtSmVtrHOQGaJxUR5MjXG
-	 99X+9TlLKBQE3xGZ7euzXYr5qwS+bs0L6Qv86ZkhRbJvQWp5auwTXPnxDAZDfIhSLn
-	 Mc6j/IHWqhHDqk+860ulpc0/oFag5mSxBt1TNUag=
+	b=LOgiCiPU0dW72MfV9DcZbVVhrEXm0R4yvivw0oUM+ImzPzqjMAHUVtSDRGU0Nr+NH
+	 cO8X4dDNw+9jd9+GRcIE0HWbCYV1yiAVGpyMS2ZhvpOxsQDmHNQDmjjfNCnKncwhGD
+	 qUanZk0FzOAij28Hv/ZHVRJiTEUAt90KSRhvxv40=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 62231F80217;
-	Tue, 17 Mar 2020 14:04:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 82617F80217;
+	Tue, 17 Mar 2020 14:24:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DF1B7F8022B; Tue, 17 Mar 2020 14:04:27 +0100 (CET)
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com
- [IPv6:2a00:1450:4864:20::342])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 4B4D8F8022B; Tue, 17 Mar 2020 14:24:05 +0100 (CET)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 38556F800C0
- for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2020 14:04:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38556F800C0
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="rs3av+te"
-Received: by mail-wm1-x342.google.com with SMTP id n8so21351240wmc.4
- for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2020 06:04:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=CBpRlvxbCNLYQBl3LHSl0nng0Xdghb8tGGZtN/n8eEA=;
- b=rs3av+teL5zRUCvHPgx0S8WLpLFXi/rQjT3qB12O1odsCNVyHCow3jyqCTVPz/axhJ
- eTsPQ2FFB3XvyuO18IXsMrg1ZOKShEWYZ2sfwrkKe1/rEBeGMZlvmRmzO00qhR4zj6Lt
- CxVsedfjrja6Vj3mpnk+WzAJqZuf8eCOW5m1bsFBkjmhqYzQ8zcyPdu/0ntu6Gny4Y3b
- vkOYP9nfl+GvFLhGlF6PcTf9LLl3ttKODvTDp0s0Tq2/RtxVr1iM/veBe4d3iehiiz+/
- j3x4gbNocMZa2mhfNmKBJA6UuF+j0Yfg5Udrl7kPcL90VORPO9nqpXNuC3dYaSeQHR3e
- NdUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=CBpRlvxbCNLYQBl3LHSl0nng0Xdghb8tGGZtN/n8eEA=;
- b=N+vklE7f21LAn3/XarnksaKYnuvq3QmjXp8oVbQhxIoC+G/DQDz0Gu4NBB8FEPbTnl
- FIeBoSMrtgF2fZbwuPQvM17Cu48ZVqP2ouh+gU7YVYWwzEqpZmgbymmvo9d7vYcxFxUG
- qxh/BMCmDvpmV9Q51PwZ3bnyfaOjlCD7xUfjuZqEd6f0B4xOlZGEFk0yrydh4sIUosXg
- 8eGNay4OrY+m4Nh8Ga61EN4y4bYFjUFPK1Utspmwr8yihstbuYoTdsl+MYOc7G9o3aEF
- DUuPrmpcl2QSnO7pbInhQXf9RMOZGaxYy3IvtZmqHpVfEgbs3fIBIx3vgc7xU4+0OZj5
- nfig==
-X-Gm-Message-State: ANhLgQ2YQClS/w6L12yko8ntMJFzHuPFIgFEKBGt48Ng9FcVYlbvg/o4
- JgM6XlO4KRmeFvv+kI+65Txcxg==
-X-Google-Smtp-Source: ADFU+vvoAkMzfYgPtp1cZbiMZaoUYcRqXKDAwxi7Sx36tQoZJ/ASy2GDlCOByqHGITcuN6yxlu3RcQ==
-X-Received: by 2002:a1c:6a08:: with SMTP id f8mr5170207wmc.53.1584450264035;
- Tue, 17 Mar 2020 06:04:24 -0700 (PDT)
-Received: from [192.168.86.34]
- (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
- by smtp.googlemail.com with ESMTPSA id a13sm4566335wrh.80.2020.03.17.06.04.18
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Tue, 17 Mar 2020 06:04:18 -0700 (PDT)
-Subject: Re: [PATCH] soundwire: stream: only change state if needed
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ by alsa1.perex.cz (Postfix) with ESMTPS id 60095F800CD
+ for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2020 14:23:58 +0100 (CET)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id C0FF1A003F;
+ Tue, 17 Mar 2020 14:23:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz C0FF1A003F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1584451437; bh=vZjBKXah3+Gc9+mAJg+XY7h5N6lf2iEmp9JLC6lUDRA=;
+ h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+ b=Lsy/7uDYcg1fgDBkqR4KUtzjquns/yy/HDMAo3YRJYatyZM6OUP+ZE01hy3x7oIgp
+ b0VtIFEt1VNc5bNI3MXKyjiugo3RdX6g3wc5T4tK8AWmDzD/CnbmKe6ilWlulHIjLw
+ mQY15/zm5477Wgbn+nYtjUK+aLqXBm+gHg8tWv/A=
+Received: from p50.perex-int.cz (unknown [192.168.100.94])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Tue, 17 Mar 2020 14:23:53 +0100 (CET)
+Subject: Re: [PATCH] ucm2: hdadsp: add basic ucm config
+To: "Gorski, Mateusz" <mateusz.gorski@linux.intel.com>,
  alsa-devel@alsa-project.org
-References: <20200317105142.4998-1-pierre-louis.bossart@linux.intel.com>
- <6bc8412a-f6d9-64d1-2218-ca98cfdb31c0@linaro.org>
- <27a73cbd-9418-4488-5cb2-fb21f9fc9110@linux.intel.com>
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <c1e5dc89-a069-a427-4912-89d90ecc0334@linaro.org>
-Date: Tue, 17 Mar 2020 13:04:17 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+References: <20200306113031.713-1-mateusz.gorski@linux.intel.com>
+ <4e2e3345-81d0-c698-d589-d4db5faff288@perex.cz>
+ <8cd9195d-6104-88ed-22ed-c3151334ee76@linux.intel.com>
+ <1bd9d86c-e19f-183c-5355-5b7359c6e4c0@perex.cz>
+ <7a44ec22-ed38-5ddd-0f04-097b2befd796@linux.intel.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Message-ID: <9adc9d91-4227-9558-067f-40a9aa3fb561@perex.cz>
+Date: Tue, 17 Mar 2020 14:23:53 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <27a73cbd-9418-4488-5cb2-fb21f9fc9110@linux.intel.com>
+In-Reply-To: <7a44ec22-ed38-5ddd-0f04-097b2befd796@linux.intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Hui Wang <hui.wang@canonical.com>, vkoul@kernel.org, broonie@kernel.org,
- jank@cadence.com, slawomir.blauciak@intel.com,
- Sanyog Kale <sanyog.r.kale@intel.com>,
- Bard liao <yung-chuan.liao@linux.intel.com>,
- Rander Wang <rander.wang@linux.intel.com>
+Content-Transfer-Encoding: 8bit
+Cc: cezary.rojewski@intel.com, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -121,21 +93,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 17/03/2020 12:22, Pierre-Louis Bossart wrote:
+Dne 17. 03. 20 v 12:45 Gorski, Mateusz napsal(a):
 > 
-> The change below would be an error case for Intel, so it's probably 
-> better if we go with your suggestion. You have a very specific state 
-> handling due to your power amps and it's probably better to keep it 
-> platform-specific.
+>>>>> Basic UCM configuration for HDA DSP generic enabling codec playback
+>>>>> and
+>>>>> capture on both HDA codec and DMIC ports.
+>>>>
+>>>> Could you describe for what Linux driver (source code) is this
+>>>> configuration?
+>>>
+>>>
+>>> This file is for Intel Skylake SST driver. Information added in v2.
+>>
+>> Ok, do we have this code in the vanilla linux kernel? Which .c file?
+>> The driver name 'hdadsp' looks suspicious. We usually have a delimiter
+>> in the driver name (like sof-hda-dsp).
+> 
+> 
+> Yes, it is a part of Skylake driver, "hdadsp" is the name of sound card
+> created on machine when using HDA generic machine driver. This machine
+> driver is made of 2 .c files:
+> 
+>       - skl_hda_dsp_common.c
+>       - skl_hda_dsp_generic.c
+> 
+> both are located in: sound/soc/intel/boards/
+> 
+> Example on production laptop:
+> 
+> test@test-Swift-SF515-51T:/proc/asound$ cat cards
+>    0 [hdadsp         ]: hda-dsp - hda-dsp
+>                         WL-SwiftSF515_51T-V1.02-Guinness_WL
 
-Just trying to understand, why would it be error for Intel case?
+Ok, I see now. The 'hdadsp' is the user configurable card identification 
+(alias to the card number) not the driver name. The UCM should be in 'hda-dsp' 
+directory. If the UCM validator works for you, it should be corrected.
 
-IMO, If stream state is SDW_STREAM_ENABLED that also implicit that its 
-prepared too. Similar thing with SDW_STREAM_DEPREPARED.
-Isn't it?
+Could you point me to the alsa-info.sh output for this hardware?
 
---srini
+			Thank you,
+				Jaroslav
 
-
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
