@@ -2,91 +2,95 @@ Return-Path: <SRS0=KQif=5C=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B1AD5C10F29
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Mar 2020 09:57:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E3BCFC2BB1D
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Mar 2020 09:58:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 372DF20663
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Mar 2020 09:57:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 70F2920736
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Mar 2020 09:58:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="A3F7hZmb";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UNIfL1SC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 372DF20663
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aIB452lb";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gCt6PuOl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 70F2920736
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7F2B11835;
-	Tue, 17 Mar 2020 10:56:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F2B11835
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8973B183C;
+	Tue, 17 Mar 2020 10:57:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8973B183C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584439026;
-	bh=VrRitmyc+Nv57pQuOhR/WpGFtlJGebhR43qGBp4yGNI=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=A3F7hZmbayvwRHD2YYPGlQNZIZdgGq77LIFu4ThALprJs+CnshvR9oiDlzUXl04su
-	 qObBy/NUMKmelyGOqJjyWeND+ubaGXYMMrlB8wZdaaFIqBOdzuykJwSUG7XE1QWIwm
-	 AucM/BPly10MEXQ/Akyh6r7XQeGZH4GY/28WHjWQ=
+	s=default; t=1584439080;
+	bh=k5m11VeUGGV5JiGvFWUWuaQdMGchkrx1R9+nugyltg8=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=aIB452lbW5Q3bOnMBY93tqC66h56a95WRuYFIY6SywzNoQCxbrR0CmzWor/n+BEGl
+	 Sz+PDSKrc9n4fMM/9guT+4SoQjPYf5zNgVCNHB5qQVp3MPZ6w958V9Ibn3FEOGoluZ
+	 34LQ2vD4Fl6WIHdFbmL/7WRUZR0KeY9AKgORd314=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D9F15F8022B;
-	Tue, 17 Mar 2020 10:56:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5D61DF80254;
+	Tue, 17 Mar 2020 10:56:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7DFEDF8022B; Tue, 17 Mar 2020 10:56:14 +0100 (CET)
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com
- [IPv6:2a00:1450:4864:20::442])
+ id 82390F80254; Tue, 17 Mar 2020 10:56:17 +0100 (CET)
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
+ [IPv6:2a00:1450:4864:20::444])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9E09BF80058
- for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2020 10:56:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E09BF80058
+ by alsa1.perex.cz (Postfix) with ESMTPS id 750C7F800CD
+ for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2020 10:56:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 750C7F800CD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="UNIfL1SC"
-Received: by mail-wr1-x442.google.com with SMTP id y2so9273509wrn.11
- for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2020 02:56:11 -0700 (PDT)
+ header.b="gCt6PuOl"
+Received: by mail-wr1-x444.google.com with SMTP id f11so7976407wrp.8
+ for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2020 02:56:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=42N7VCrThrSwnkSNBM3TwhqhSUki2RBAuZUgm+K5p+g=;
- b=UNIfL1SC+aOa6Zm0P+hVXUd1/ygNCoESBkxcifAH83Cbzn36AWtIPO2KiDy93M4lZo
- Q0xehMTfsZ8yXtzsSVIoOSaLaijVy9lVIJHA0+lkrJFMUw+apKWzrQLTH+8v3ZVSCiOv
- 9gCIA1EeffTbUZqYHfGEe9yXV2EBFzvD95YghA3MZE8egtxsLJI7k24l5r34B4v+6R0c
- 6esTUy0MQkG+pvF7HC2Z9CMzgrEb7EGU50flb5vTnAoSTdmCZpDw2sarWESSXHva2dNn
- IUCAlTZ49e8a/iXnO49+6aecaX2j1u3M3FtSQtB0y7IvaaQNLmeqDcj31N9TngXujwg8
- qVCQ==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=To+ZBrVO7etOV/SjBRId9Z6wmLhx8Z2t4f3TOlZx1jE=;
+ b=gCt6PuOl3Pf14jrW7CShNKEAx6VEl4w9WHMOpbcHEdj/DxcqNOt+RVOr88DIpYWcr6
+ 9bJIRUNGJR6UTaaO1Vq3bhpbZsuyOv1BUC7BjHYVy2ZQxde6qyfto63LQS04JHoL6kXt
+ XaSZc/N/8FyY69mcZVR+I7+e9MDH3734h6R3KvFTW3nZUqATwcdTYabXrjav+t0JWSYO
+ sT7QWzSkvbiFcTKKp4RKzisUQfD+pD0/EFQh9mbpN5cVx/11NceyTxdH4RS83pM2NZdz
+ 7Ii5CcbF7f8v9KZau6JUjSh2e3Mj+CBwUbn4gGyBeuKZ9MboeEL19XfudGnGM9vj4KxU
+ 1oKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=42N7VCrThrSwnkSNBM3TwhqhSUki2RBAuZUgm+K5p+g=;
- b=TYTWMr4Hy/yqQc5KqSJwxdfH2K8BrcP90RkGTIfQS/zze9Kl03cUA7aYbIEyV7ppok
- pmLR1CMCRkqhCXU+1qk9NGKKLD8KWjvIoj6GQ0AkffUw2eZVtK2w1U+A03IhPxUO28jv
- AGA4fSbqquqGlP+Tb/ZE3peMw+hhRbopyLF4ZxbWvpcz/9UBM26oZn86HetV/Q5Vi3JE
- Na7LAFgf5U+aFUbBv7rTmFhKJQ2M2D6MGiANvDa7xTFxKi5qN23PwPaS9vWpXPYhgJLr
- fyNJLvodwrnZPOR66zJUhUk0e2o2t8/QHqkuQ0vxJ8RC28TCbjjVcE2P+N/3ydjkbdkV
- RdgQ==
-X-Gm-Message-State: ANhLgQ2jbZSJMDuJHiolnFTGcT5IjBsiVMAFOP3RSpaYSIRfr30W4Sy/
- JRqWNkEUtLQkgP+pU5Yeb+u6Kg==
-X-Google-Smtp-Source: ADFU+vuEOv8DktK7HZpKYZKzfKWTTwJADXKyxrC6o1T4tNcFo4N7VZ+RX93SFmawI8izid9kdmDEqQ==
-X-Received: by 2002:adf:eac7:: with SMTP id o7mr4658525wrn.292.1584438970650; 
- Tue, 17 Mar 2020 02:56:10 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=To+ZBrVO7etOV/SjBRId9Z6wmLhx8Z2t4f3TOlZx1jE=;
+ b=YAaz5l7xMqbRGoFZKcGKjAc6sjLuoW9f6GcmjlJIOR2GnHxoXQdJqPKDTmtOhyxg78
+ uyRICvQXkIA5J/4lExsstOXjO00wCMckugNbmi2Z6bqNaS7WO8lYIJAr8msynZKtqgif
+ Zxaz+k+JZLAmd36QdttjkSkGhqElwuDjh+jHCjwGmkos8jAGBfaeyAsnrlrweX3/Y3L0
+ KGyujgvAOs6VZHYE2gTdA+B1SpTXTVaLTeQua3WraxJ8rcAMl9ovmcCAw8fH5dRXL+RJ
+ gOwryWiYhatVVXxRbQ3AfBe1YummVJSTzzS6kGP3K9Zg7Y0SJK9SSjkP71R4UxiA0BU8
+ +5kw==
+X-Gm-Message-State: ANhLgQ18rJZQwH/UfsfkBnrsSAN+y8PIJLynhbx72hN2LquLt1NvtDTA
+ JFD+vRr+sJfHVaVjj6WuvoV8Dg==
+X-Google-Smtp-Source: ADFU+vvSmH4BQWYSEJ6orhlFnlf4qay25LVcbKQQgE5YeEkhjFWKQMiRb2awtyD7VI4kEaQAeIoH5w==
+X-Received: by 2002:a5d:528e:: with SMTP id c14mr5246370wrv.308.1584438973380; 
+ Tue, 17 Mar 2020 02:56:13 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
- by smtp.gmail.com with ESMTPSA id a184sm3394970wmf.29.2020.03.17.02.56.09
+ by smtp.gmail.com with ESMTPSA id a184sm3394970wmf.29.2020.03.17.02.56.11
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 17 Mar 2020 02:56:09 -0700 (PDT)
+ Tue, 17 Mar 2020 02:56:12 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH 0/2] ASoC: sdm845: fix soundwire stream handling
-Date: Tue, 17 Mar 2020 09:53:49 +0000
-Message-Id: <20200317095351.15582-1-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 2/2] ASoC: codecs: wsa881x: remove soundwire stream handling
+Date: Tue, 17 Mar 2020 09:53:51 +0000
+Message-Id: <20200317095351.15582-3-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20200317095351.15582-1-srinivas.kandagatla@linaro.org>
+References: <20200317095351.15582-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
@@ -107,29 +111,92 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Recent addition of SoundWire stream state-machine checks in linux-next
-have shown an existing issue with handling soundwire streams in codec drivers.
+There could be multiple instances of this codec on any platform,
+so handling stream directly in this codec driver can lead to
+multiple calls to prepare/enable/disable on the same SoundWire stream.
+Move this stream handling to machine driver to fix this issue.
 
-In general soundwire stream prepare/enable/disable can be called from either
-codec/machine/controller driver. However calling it in codec driver means
-that if multiple instances(Left/Right speakers) of the same codec is
-connected to the same stream then it will endup calling stream
-prepare/enable/disable more than once. This will mess up the stream
-state-machine checks in the soundwire core.
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ sound/soc/codecs/wsa881x.c | 44 +-------------------------------------
+ 1 file changed, 1 insertion(+), 43 deletions(-)
 
-Moving this stream handling to machine driver would fix this issue
-and also allow board/platform specfic power sequencing.
-
-
-Srinivas Kandagatla (2):
-  ASoC: qcom: sdm845: handle soundwire stream
-  ASoC: codecs: wsa881x: remove soundwire stream handling
-
- sound/soc/codecs/wsa881x.c | 44 +-----------------------
- sound/soc/qcom/Kconfig     |  2 +-
- sound/soc/qcom/sdm845.c    | 69 ++++++++++++++++++++++++++++++++++++++
- 3 files changed, 71 insertions(+), 44 deletions(-)
-
+diff --git a/sound/soc/codecs/wsa881x.c b/sound/soc/codecs/wsa881x.c
+index 1810e0775efe..d39d479e2378 100644
+--- a/sound/soc/codecs/wsa881x.c
++++ b/sound/soc/codecs/wsa881x.c
+@@ -680,7 +680,6 @@ struct wsa881x_priv {
+ 	int active_ports;
+ 	bool port_prepared[WSA881X_MAX_SWR_PORTS];
+ 	bool port_enable[WSA881X_MAX_SWR_PORTS];
+-	bool stream_prepared;
+ };
+ 
+ static void wsa881x_init(struct wsa881x_priv *wsa881x)
+@@ -958,41 +957,6 @@ static const struct snd_soc_dapm_widget wsa881x_dapm_widgets[] = {
+ 	SND_SOC_DAPM_OUTPUT("SPKR"),
+ };
+ 
+-static int wsa881x_prepare(struct snd_pcm_substream *substream,
+-			   struct snd_soc_dai *dai)
+-{
+-	struct wsa881x_priv *wsa881x = dev_get_drvdata(dai->dev);
+-	int ret;
+-
+-	if (wsa881x->stream_prepared) {
+-		sdw_disable_stream(wsa881x->sruntime);
+-		sdw_deprepare_stream(wsa881x->sruntime);
+-		wsa881x->stream_prepared = false;
+-	}
+-
+-
+-	ret = sdw_prepare_stream(wsa881x->sruntime);
+-	if (ret)
+-		return ret;
+-
+-	/**
+-	 * NOTE: there is a strict hw requirement about the ordering of port
+-	 * enables and actual PA enable. PA enable should only happen after
+-	 * soundwire ports are enabled if not DC on the line is accumulated
+-	 * resulting in Click/Pop Noise
+-	 * PA enable/mute are handled as part of DAPM and digital mute.
+-	 */
+-
+-	ret = sdw_enable_stream(wsa881x->sruntime);
+-	if (ret) {
+-		sdw_deprepare_stream(wsa881x->sruntime);
+-		return ret;
+-	}
+-	wsa881x->stream_prepared = true;
+-
+-	return ret;
+-}
+-
+ static int wsa881x_hw_params(struct snd_pcm_substream *substream,
+ 			     struct snd_pcm_hw_params *params,
+ 			     struct snd_soc_dai *dai)
+@@ -1020,12 +984,7 @@ static int wsa881x_hw_free(struct snd_pcm_substream *substream,
+ {
+ 	struct wsa881x_priv *wsa881x = dev_get_drvdata(dai->dev);
+ 
+-	if (wsa881x->stream_prepared) {
+-		sdw_disable_stream(wsa881x->sruntime);
+-		sdw_deprepare_stream(wsa881x->sruntime);
+-		sdw_stream_remove_slave(wsa881x->slave, wsa881x->sruntime);
+-		wsa881x->stream_prepared = false;
+-	}
++	sdw_stream_remove_slave(wsa881x->slave, wsa881x->sruntime);
+ 
+ 	return 0;
+ }
+@@ -1056,7 +1015,6 @@ static int wsa881x_digital_mute(struct snd_soc_dai *dai, int mute, int stream)
+ 
+ static struct snd_soc_dai_ops wsa881x_dai_ops = {
+ 	.hw_params = wsa881x_hw_params,
+-	.prepare = wsa881x_prepare,
+ 	.hw_free = wsa881x_hw_free,
+ 	.mute_stream = wsa881x_digital_mute,
+ 	.set_sdw_stream = wsa881x_set_sdw_stream,
 -- 
 2.21.0
 
