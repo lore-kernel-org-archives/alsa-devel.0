@@ -2,93 +2,96 @@ Return-Path: <SRS0=KQif=5C=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E224CC10F29
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Mar 2020 08:30:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F55AC10F29
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Mar 2020 08:31:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2528E205ED
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Mar 2020 08:30:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 76B94205ED
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Mar 2020 08:31:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="C9JchhPh";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=endlessm-com.20150623.gappssmtp.com header.i=@endlessm-com.20150623.gappssmtp.com header.b="aSNejnAS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2528E205ED
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lMKicVtY";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=endlessm-com.20150623.gappssmtp.com header.i=@endlessm-com.20150623.gappssmtp.com header.b="kqYfXL1I"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 76B94205ED
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=endlessm.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7B348182D;
-	Tue, 17 Mar 2020 09:29:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B348182D
+	by alsa0.perex.cz (Postfix) with ESMTPS id E76161839;
+	Tue, 17 Mar 2020 09:30:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E76161839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584433800;
-	bh=2UiAZWEP1LWNNt/QOPgpoYhFPGiwVU78neopdk8youQ=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=C9JchhPhOZjF7h74gOfMdkqgr6G6hISSmOsWnqWeEBkO2BU/IDpAAgupT6iSRIM5s
-	 895ZF6YnIz9XIISeiy6MeDFkX3/mdwv1aFzpnMy86RE41aRhTD3n93eEot0OhpROJ9
-	 Z0TTHr6G40rXCjFrES0Q5JIgp21XhkvpDMFs73+U=
+	s=default; t=1584433859;
+	bh=Au090xoaPxCIy2lf2OXFiWY6l33FNRXByzu3AoiXUOE=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=lMKicVtYTEspOxbSQR4THEZmWuqGj1D/Mj380vcwp26NtcGfq1YMpI7qb1A7rYyhy
+	 Yc6mdHbsSaSafDaaV9o3qnRLXp5raLzNM1ECROkbeOrhDWjtKcb1yl6fi6xkM8zHVh
+	 A2t3HYh1mJiMrbqyhYVNQV8PfCApmJomiun5aDoo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E4574F80217;
-	Tue, 17 Mar 2020 09:29:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 62E3FF8022B;
+	Tue, 17 Mar 2020 09:30:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D8F3EF8022B; Tue, 17 Mar 2020 09:29:06 +0100 (CET)
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com
- [IPv6:2607:f8b0:4864:20::1043])
+ id 97753F8023E; Tue, 17 Mar 2020 09:30:06 +0100 (CET)
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com
+ [IPv6:2607:f8b0:4864:20::444])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6B75AF80058
- for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2020 09:29:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B75AF80058
+ by alsa1.perex.cz (Postfix) with ESMTPS id CA897F80217
+ for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2020 09:30:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA897F80217
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=endlessm-com.20150623.gappssmtp.com
- header.i=@endlessm-com.20150623.gappssmtp.com header.b="aSNejnAS"
-Received: by mail-pj1-x1043.google.com with SMTP id bo3so8748355pjb.5
- for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2020 01:29:02 -0700 (PDT)
+ header.i=@endlessm-com.20150623.gappssmtp.com header.b="kqYfXL1I"
+Received: by mail-pf1-x444.google.com with SMTP id z65so11530594pfz.8
+ for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2020 01:30:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=endlessm-com.20150623.gappssmtp.com; s=20150623;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=wp49eG+mgt94Sf8OotuurBq01cQ7kmd6Td3YpYWcZnY=;
- b=aSNejnASf5mtNy+7z5yy1Ul5UP6XqQ246NFpAeHvn9PFhcUV8DSwR3FwPahRoqPBMN
- eikDVrHtDyogY6R0VE2RhdQA+Sm6dBjaWmYgJi6XoQg6J3KL25J9Aqxn8b+tyW33efEO
- zM7EXFptBn3W6f9T6t1m/Gcr+ZsMiuLjchNm6PX9FSBGroSdP3NratVkmfl9s78vbUUE
- Rhbgtt0KHQUxFBxccGfIoP3TPvOQVbx3Xh6MHiqHL60CcEqocAvSlJ3Ygy19BpnvTNn+
- WYJ0CdGKX3QUtsoZEeMB51yALEal8/Vuozt17JHdCOom4s8aVqbW3MKnyWXxq72Y9pQe
- cg6w==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=gZuIwtZ+2hf7pTqEUWqw1JVhU89MyFlE8Sqn8Fq++lU=;
+ b=kqYfXL1Ip04HSNa8KkPDkDcYn9wmErZYNjZYbNvEgOyOvNcKeM6PnUSsd63PcWQ4cE
+ ffmMU1uEnPka286OXda1tk8F4bTmOJTGkxiSkayEbrknb1/F1jxXabXASpWuC1zXLvHk
+ lUiAfATamDJucgdSejqSv2xOcEeuROXpdQBR5g2y6Sx/xsMOoWMvt7sXCWmgFI0PncXD
+ T/XHlwOeZHYjHem5INobJ54nKD/SllrBAwAJGQTzEqz7z7SG61QQA0Yd7Mux51uw5lGO
+ 6YS4qXeFVzCFAxBO89ViyIi9uXKzUbXAf3YBI4lnzPkA/2TzGG0H9IUq6Zt1Xr6XyoIB
+ TdVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=wp49eG+mgt94Sf8OotuurBq01cQ7kmd6Td3YpYWcZnY=;
- b=aHvG6xK5wH+0Ik2uruu6enQDtnpQF/LzZe5ZZ3mCAT1SyOHg0rIBqSd0DLEZ1K4QoR
- 5lpiza06XHJ6ljI3h7x4Lz2UHPLwY+RTsnAdxdmPO1gNFJbjnqCf4zlskIDz9+ffP/47
- v5+hUPrTkWTGHBo5ufiuOhNEg/pmIfRO16yhLlYsZcUNJ11AxX+ajCBD6S8LOI0C1LtL
- 5J8sbO9Ikoe0yPgSZ21SBx5wvZQ6IDYL3nsj14Kenf+p/QnMVnqk9Phu7bXHSKhAAOJI
- BGI3a5edxFRVSSiIALzaVBge4LCFOtG3KMATYvBOl+x4iS8pXbnn9T5ySVNgVMvCoQBZ
- Efgg==
-X-Gm-Message-State: ANhLgQ252rXhMFHaAeyP+dyjf+NPlcqbzCIH9GHcD4Z+eUM5p8tBJ3Uw
- CXFTstcYcHF5DXjdhIYJUx89fw==
-X-Google-Smtp-Source: ADFU+vuyGkQvDdcATxD0OMwlD0qwZwgEt45StAjnv6dNA1hgaFMp3uWeOX/5JY4BV3CS1ecWSQo/xQ==
-X-Received: by 2002:a17:90a:2503:: with SMTP id
- j3mr4205128pje.83.1584433739386; 
- Tue, 17 Mar 2020 01:28:59 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=gZuIwtZ+2hf7pTqEUWqw1JVhU89MyFlE8Sqn8Fq++lU=;
+ b=lkqzxmYOu5WrSxHncIsF6yja/KreD3U+MSkmjMDYfDAj2RpKo3iDd+58xyb59OD5mh
+ 9aACJjtWBD2f05aTkmsMQIJ5YYH0gULwZ0QdogXtfnznmB8RPGqyrz0O6VcT0+JOXMf5
+ t2yUBUTR3+i/X+erqUAiQoOIVyp9GBXczuLXFyK8wThLhxfZq8IUXM00BdDbPJ0OwHPd
+ j0lDdhbBVP7SgwCt0lHe/8pjSartKa4pop1JC88AYe9nFiFFgzCGz+nbzh/3BZWHoaXX
+ 1AwC6hgcBdAeVSN0Ku0IlHJcEhgOx9GPlaQz9q4I+MObdBG0Pw6K+Js6XAmK0OIJHCrA
+ cEBQ==
+X-Gm-Message-State: ANhLgQ2Sntgf59PyQsLdkGudl08XNRDL60nt2DTdMVB5/GQXbbtpCSdM
+ r9RrnSpHjfO82GNLydEopCLEXg==
+X-Google-Smtp-Source: ADFU+vuuKNJsNdUjh+PEtFFc4KNbme2kHZkfB9E0YtDtV8C5w+Ed+TLaDuX5RWPZPS0rV5JHuMXVIg==
+X-Received: by 2002:a63:e053:: with SMTP id n19mr4100628pgj.64.1584433799881; 
+ Tue, 17 Mar 2020 01:29:59 -0700 (PDT)
 Received: from starnight.local ([150.116.255.181])
- by smtp.googlemail.com with ESMTPSA id m68sm21095679pjb.0.2020.03.17.01.28.57
+ by smtp.googlemail.com with ESMTPSA id m68sm21095679pjb.0.2020.03.17.01.29.58
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 17 Mar 2020 01:28:58 -0700 (PDT)
+ Tue, 17 Mar 2020 01:29:59 -0700 (PDT)
 From: Jian-Hong Pan <jian-hong@endlessm.com>
 To: Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 0/2] ALSA: hda/realtek: Enable headset for Acer desktops with
- ALC662
-Date: Tue, 17 Mar 2020 16:28:05 +0800
-Message-Id: <20200317082806.73194-1-jian-hong@endlessm.com>
+Subject: [PATCH 1/2] ALSA: hda/realtek - Enable headset mic of Acer X2660G
+ with ALC662
+Date: Tue, 17 Mar 2020 16:28:07 +0800
+Message-Id: <20200317082806.73194-2-jian-hong@endlessm.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200317082806.73194-1-jian-hong@endlessm.com>
+References: <20200317082806.73194-1-jian-hong@endlessm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: Jian-Hong Pan <jian-hong@endlessm.com>, alsa-devel@alsa-project.org,
@@ -109,16 +112,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This series enables the headset on Acer X2660G and N50-600 desktops with
-ALC662.
+The Acer desktop X2660G with ALC662 can't detect the headset microphone
+until ALC662_FIXUP_ACER_X2660G_HEADSET_MODE quirk applied.
 
-Jian-Hong Pan (2):
-  ALSA: hda/realtek - Enable headset mic of Acer X2660G with ALC662
-  ALSA: hda/realtek - Enable the headset of Acer N50-600 with ALC662
+Signed-off-by: Jian-Hong Pan <jian-hong@endlessm.com>
+---
+ sound/pci/hda/patch_realtek.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
- sound/pci/hda/patch_realtek.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
-
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 0ac06ff1a17c..bb29c25f4567 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -8610,6 +8610,7 @@ enum {
+ 	ALC669_FIXUP_ACER_ASPIRE_ETHOS,
+ 	ALC669_FIXUP_ACER_ASPIRE_ETHOS_HEADSET,
+ 	ALC671_FIXUP_HP_HEADSET_MIC2,
++	ALC662_FIXUP_ACER_X2660G_HEADSET_MODE,
+ };
+ 
+ static const struct hda_fixup alc662_fixups[] = {
+@@ -8955,6 +8956,15 @@ static const struct hda_fixup alc662_fixups[] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc671_fixup_hp_headset_mic2,
+ 	},
++	[ALC662_FIXUP_ACER_X2660G_HEADSET_MODE] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x1a, 0x02a1113c }, /* use as headset mic, without its own jack detect */
++			{ }
++		},
++		.chained = true,
++		.chain_id = ALC662_FIXUP_USI_FUNC
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc662_fixup_tbl[] = {
+@@ -8966,6 +8976,7 @@ static const struct snd_pci_quirk alc662_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1025, 0x0349, "eMachines eM250", ALC662_FIXUP_INV_DMIC),
+ 	SND_PCI_QUIRK(0x1025, 0x034a, "Gateway LT27", ALC662_FIXUP_INV_DMIC),
+ 	SND_PCI_QUIRK(0x1025, 0x038b, "Acer Aspire 8943G", ALC662_FIXUP_ASPIRE),
++	SND_PCI_QUIRK(0x1025, 0x124e, "Acer 2660G", ALC662_FIXUP_ACER_X2660G_HEADSET_MODE),
+ 	SND_PCI_QUIRK(0x1028, 0x05d8, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x05db, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x05fe, "Dell XPS 15", ALC668_FIXUP_DELL_XPS13),
 -- 
 2.25.1
 
