@@ -6,57 +6,57 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8584EC10F29
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Mar 2020 17:08:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E47C5C10F29
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Mar 2020 17:09:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 336FA20714
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Mar 2020 17:08:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 925B420735
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Mar 2020 17:09:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PP1QWyLf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 336FA20714
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JfPlXkBA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 925B420735
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7871E185B;
-	Tue, 17 Mar 2020 18:07:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7871E185B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9C9921869;
+	Tue, 17 Mar 2020 18:08:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C9921869
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584464885;
-	bh=3fMSsTgorgqXX1Y6dJRdedf4MHUoDCeWlKkN5g11ees=;
+	s=default; t=1584464939;
+	bh=NJcpzOAPGb4ic0IqFuL32GLvAxseuK4B3APy5sRzbMU=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PP1QWyLfpXLC2wvfMlxaOQtLrq6lMC2Oupir8G9/9VpZMAoxtvv2MqG0CwVHxoB+v
-	 JsRL0xWnkn2PxEnzbOSlqZSw95nujSviNWXMQtujrvxu5MvT4BaafSmM9rkIYCtYYg
-	 GyeLQ/GhtGOG2TfWMfmPetMMGCSpwuNPOhp3VEk8=
+	b=JfPlXkBAU6zeuheAfMcv6Z1ffFj/qFJTTJ94QGkNeXLd+1ITBF1V1JkfKl183E093
+	 M28cl6xiH6rw+5H1carUIxmyUy/3YKdJnOScNIldlIul7FF7gnF8TCf1eBe0n8Qldm
+	 dj2ULJpmlYKlelo4RV8DUtJXvQG/TXyVIovRKnBA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D38DAF80217;
-	Tue, 17 Mar 2020 18:07:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D2FA0F80253;
+	Tue, 17 Mar 2020 18:07:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 94FC3F80232; Tue, 17 Mar 2020 18:07:12 +0100 (CET)
+ id 99444F8022B; Tue, 17 Mar 2020 18:07:13 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 56902F800CD
- for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2020 18:07:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56902F800CD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0058EF80058
+ for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2020 18:07:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0058EF80058
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id C83F3AFDC;
- Tue, 17 Mar 2020 17:07:00 +0000 (UTC)
-Date: Tue, 17 Mar 2020 18:07:00 +0100
-Message-ID: <s5hpndax64r.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 76BB1AFDC;
+ Tue, 17 Mar 2020 17:07:10 +0000 (UTC)
+Date: Tue, 17 Mar 2020 18:07:10 +0100
+Message-ID: <s5ho8sux64h.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Jian-Hong Pan <jian-hong@endlessm.com>
-Subject: Re: [PATCH 1/2] ALSA: hda/realtek - Enable headset mic of Acer X2660G
- with ALC662
-In-Reply-To: <20200317082806.73194-2-jian-hong@endlessm.com>
+Subject: Re: [PATCH 2/2] ALSA: hda/realtek - Enable the headset of Acer
+ N50-600 with ALC662
+In-Reply-To: <20200317082806.73194-3-jian-hong@endlessm.com>
 References: <20200317082806.73194-1-jian-hong@endlessm.com>
- <20200317082806.73194-2-jian-hong@endlessm.com>
+ <20200317082806.73194-3-jian-hong@endlessm.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -80,11 +80,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 17 Mar 2020 09:28:07 +0100,
+On Tue, 17 Mar 2020 09:28:09 +0100,
 Jian-Hong Pan wrote:
 > 
-> The Acer desktop X2660G with ALC662 can't detect the headset microphone
-> until ALC662_FIXUP_ACER_X2660G_HEADSET_MODE quirk applied.
+> A headset on the desktop like Acer N50-600 does not work, until quirk
+> ALC662_FIXUP_ACER_NITRO_HEADSET_MODE is applied.
 > 
 > Signed-off-by: Jian-Hong Pan <jian-hong@endlessm.com>
 
