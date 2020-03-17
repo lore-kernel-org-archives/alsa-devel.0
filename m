@@ -1,60 +1,94 @@
-Return-Path: <SRS0=b36W=5B=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=KQif=5C=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B1EBC18E5B
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Mar 2020 18:14:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 57912C1975A
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Mar 2020 19:11:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0786220409
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Mar 2020 18:14:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DDFC4206EC
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Mar 2020 19:11:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NqbZuatf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0786220409
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZprhhalV";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=metafoo.de header.i=@metafoo.de header.b="dWxsitvU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DDFC4206EC
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=metafoo.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 58EEC18DA;
-	Mon, 16 Mar 2020 19:13:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 58EEC18DA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0F7DF17D0;
+	Tue, 17 Mar 2020 20:10:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F7DF17D0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584382477;
-	bh=fQeMxYsWD63Datwz7AmytiuqseBz3NQStpaKWdah1+Q=;
-	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=NqbZuatfQzs0Tp3X+cWnPI3U3eyRBKpsq7s0HE3XkPZX3F77+0P2kJTrQZxmXyQ8h
-	 fkSBULgH79NpBw5Uv42qpT7I7XaRJmMLlMBXr/Bi8xVAutjiLxgtSXgTdmEJWo439T
-	 SEmEue4l3qc9+fvEMOZYAXtQqPZpkIh3gjl/PcIg=
+	s=default; t=1584472266;
+	bh=cKUmtWgsXTYhVHRq4t4bgZjMH5Db2bATfaxdGrjuHbc=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ZprhhalV92gkJYqd34PvgRV8VSkxxgDhQ6/Vnf+ybKJmIujbJ0NsuUf9mqxSoZnis
+	 rTEZqleTQqNuwmIMgFhgOPL47BYt0K3Ew6EqZfaH51XJ5iWdNpUyYktgfZrelMCZAI
+	 k8vYC5uiab02OrL9hJCN6s1xYGrzVMGrxE1dZ+lc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 00415F802F8;
-	Mon, 16 Mar 2020 19:08:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5580FF80058;
+	Tue, 17 Mar 2020 20:10:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 79C81F802EA; Mon, 16 Mar 2020 19:08:38 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id A3646F802E9
- for <alsa-devel@alsa-project.org>; Mon, 16 Mar 2020 19:08:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3646F802E9
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7D5371FB;
- Mon, 16 Mar 2020 11:08:29 -0700 (PDT)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F39403F67D;
- Mon, 16 Mar 2020 11:08:28 -0700 (PDT)
-Date: Mon, 16 Mar 2020 18:08:27 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Vinod Koul <vkoul@kernel.org>
-Subject: Applied "ALSA: compress: Add wma decoder params" to the asoc tree
-In-Reply-To: 
-Message-Id: 
-X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+ id 51E1EF8022B; Tue, 17 Mar 2020 20:09:10 +0100 (CET)
+Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7D262F80058
+ for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2020 20:09:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D262F80058
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=metafoo.de header.i=@metafoo.de
+ header.b="dWxsitvU"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de; 
+ s=default2002;
+ h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+ MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+ Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+ Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+ List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=5UT2Wz6CJZWB2uuzVor6AdGb1SvtV4k8FNfjK8QT4ag=; b=dWxsitvUCI6WFPgTGRgsAUuRYI
+ ElYY0rYjM/MoL7z3BYy9PNgPXfOFrpCRWCy3SsYC5ekNSO3PU61U42sV5ZgeqjvXeP1GCRKz8sJm1
+ doDgPaHJFjo0ifIAhXOPKy43Jx1RxEZkCHeXPoQAj0mbiF35ZRbaTos8Ih6JhgdouDEWg36H7fjXR
+ rNWqemPniRBHglksYL5bw5B31Ce3PYn2cVxOmSNHY7300og1d1bXyC4gvCxcSx537eeGKAneWTPR4
+ py6YiIACXnibfwKawG9TxLPrhIGknoG3h2HIBIUjPoX73b9jFCeyuW9Scxu4SmKnX7ptJsPI+SnIK
+ Tx1/DmFQ==;
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+ by www381.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+ (Exim 4.89_1) (envelope-from <lars@metafoo.de>)
+ id 1jEHaE-0001Fb-Jk; Tue, 17 Mar 2020 20:08:58 +0100
+Received: from [93.104.105.202] (helo=[192.168.178.20])
+ by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+ (Exim 4.92) (envelope-from <lars@metafoo.de>)
+ id 1jEHaE-000D2U-D9; Tue, 17 Mar 2020 20:08:58 +0100
+Subject: Re: [PATCH 6/6] ASoC: soc-pcm: Merge CPU/Codec MSB at
+ soc_pcm_apply_msb()
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Mark Brown <broonie@kernel.org>
+References: <87y2s0olg6.wl-kuninori.morimoto.gx@renesas.com>
+ <87pndcoleh.wl-kuninori.morimoto.gx@renesas.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Message-ID: <a400680b-0334-be68-f137-19a601b43d33@metafoo.de>
+Date: Tue, 17 Mar 2020 20:08:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
+MIME-Version: 1.0
+In-Reply-To: <87pndcoleh.wl-kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: lars@metafoo.de
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25754/Tue Mar 17 14:09:15 2020)
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -69,77 +103,76 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20200316180827.7CWoElWxI76BgOjMAhjXCVNoppvBhATQuPFe6M3RB1A@z>
 
-The patch
+On 3/16/20 7:37 AM, Kuninori Morimoto wrote:
+> 
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> 
+> soc_pcm_apply_msb() is setting msb for both CPU/Codec,
+> but we can merge these into one.
+> This patch do it.
 
-   ALSA: compress: Add wma decoder params
+This patch changes the behavior. Before it was
 
-has been applied to the asoc tree at
+min(max(ALL_CODEC_DAIS), max(ALL_CPU_DAIS))
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Now it is just max(ALL_DAIS).
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+We really do need to differentiate between the DAIs on the transmit side 
+and the DAIs on the receive side of a stream to compute this correctly.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From 20ff1456d26807aa5441be02f0f5459014664aad Mon Sep 17 00:00:00 2001
-From: Vinod Koul <vkoul@kernel.org>
-Date: Mon, 16 Mar 2020 11:22:14 +0530
-Subject: [PATCH] ALSA: compress: Add wma decoder params
-
-Some WMA decoders like WMAv10 etc need some additional encoder option
-parameters, so add these as WMA decoder params.
-
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
-Link: https://lore.kernel.org/r/20200316055221.1944464-3-vkoul@kernel.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- include/uapi/sound/compress_params.h | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/include/uapi/sound/compress_params.h b/include/uapi/sound/compress_params.h
-index a47d9df0fd7b..bf6f7155e775 100644
---- a/include/uapi/sound/compress_params.h
-+++ b/include/uapi/sound/compress_params.h
-@@ -329,6 +329,13 @@ struct snd_dec_flac {
- 	__u16 reserved;
- } __attribute__((packed, aligned(4)));
- 
-+struct snd_dec_wma {
-+	__u32 encoder_option;
-+	__u32 adv_encoder_option;
-+	__u32 adv_encoder_option2;
-+	__u32 reserved;
-+} __attribute__((packed, aligned(4)));
-+
- union snd_codec_options {
- 	struct snd_enc_wma wma;
- 	struct snd_enc_vorbis vorbis;
-@@ -336,6 +343,7 @@ union snd_codec_options {
- 	struct snd_enc_flac flac;
- 	struct snd_enc_generic generic;
- 	struct snd_dec_flac flac_d;
-+	struct snd_dec_wma wma_d;
- } __attribute__((packed, aligned(4)));
- 
- /** struct snd_codec_desc - description of codec capabilities
--- 
-2.20.1
+> 
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+>   sound/soc/soc-pcm.c | 26 +++++++-------------------
+>   1 file changed, 7 insertions(+), 19 deletions(-)
+> 
+> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+> index e256d438ee68..aadf3349fb07 100644
+> --- a/sound/soc/soc-pcm.c
+> +++ b/sound/soc/soc-pcm.c
+> @@ -532,35 +532,23 @@ static void soc_pcm_set_msb(struct snd_pcm_substream *substream, int bits)
+>   static void soc_pcm_apply_msb(struct snd_pcm_substream *substream)
+>   {
+>   	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> -	struct snd_soc_dai *cpu_dai;
+> -	struct snd_soc_dai *codec_dai;
+> -	struct snd_soc_pcm_stream *pcm_codec, *pcm_cpu;
+> +	struct snd_soc_dai *dai;
+> +	struct snd_soc_pcm_stream *pcm;
+>   	int stream = substream->stream;
+>   	int i;
+> -	unsigned int bits = 0, cpu_bits = 0;
+> +	unsigned int bits = 0;
+>   
+> -	for_each_rtd_codec_dais(rtd, i, codec_dai) {
+> -		pcm_codec = snd_soc_dai_get_pcm_stream(codec_dai, stream);
+> +	for_each_rtd_dais(rtd, i, dai) {
+> +		pcm = snd_soc_dai_get_pcm_stream(dai, stream);
+>   
+> -		if (pcm_codec->sig_bits == 0) {
+> +		if (pcm->sig_bits == 0) {
+>   			bits = 0;
+>   			break;
+>   		}
+> -		bits = max(pcm_codec->sig_bits, bits);
+> -	}
+> -
+> -	for_each_rtd_cpu_dais(rtd, i, cpu_dai) {
+> -		pcm_cpu = snd_soc_dai_get_pcm_stream(cpu_dai, stream);
+> -
+> -		if (pcm_cpu->sig_bits == 0) {
+> -			cpu_bits = 0;
+> -			break;
+> -		}
+> -		cpu_bits = max(pcm_cpu->sig_bits, cpu_bits);
+> +		bits = max(pcm->sig_bits, bits);
+>   	}
+>   
+>   	soc_pcm_set_msb(substream, bits);
+> -	soc_pcm_set_msb(substream, cpu_bits);
+>   }
+>   
+>   /**
+> 
 
