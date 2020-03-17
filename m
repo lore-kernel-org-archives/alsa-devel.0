@@ -2,96 +2,88 @@ Return-Path: <SRS0=KQif=5C=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64CCCC10F29
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Mar 2020 15:15:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E12ADC2BB1D
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Mar 2020 15:33:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E0F8220714
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Mar 2020 15:15:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4284C206EC
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Mar 2020 15:33:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uBfoM5C1";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WmxBBoG5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E0F8220714
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cepav75n"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4284C206EC
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2D4691750;
-	Tue, 17 Mar 2020 16:14:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D4691750
+	by alsa0.perex.cz (Postfix) with ESMTPS id 95E3917B6;
+	Tue, 17 Mar 2020 16:32:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95E3917B6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584458132;
-	bh=lRFem7qQgAk+KJPqvOX4YqkMWp1hcYJxLSBbQ3Xzma0=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=uBfoM5C15nBieX655ZtCK9tRTibSv50Y2gG7ud7QaRLLqwS7kSrT9R+4luo8D9Iu3
-	 nPmIb+c95ejGfjpAagV+gcztGsotHdEEt81mosvLk61KsIqkOvsNcc7SFDzr8Umd2S
-	 UYetB3dtDH1WT/Pr/a4a9B5HQh3k0mBMctqIY+iw=
+	s=default; t=1584459219;
+	bh=kMsY72mmL59mXN7CXQN6FNdo05HIidCYjxCMHysgvtM=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=cepav75nOxF9kQtaJnOErGQFh6+T9w/jsvSRJU6vDOsHDUZjbnWGNzxCFkgFQmW/M
+	 JgEqOeY+rP4W0ZHqJJLB06k3AKlkuDcKL+4PI+LQZsa7tGyuW9BOVB4T7WGvm4Rajb
+	 pq+HKePN2tz3lH8Od3OYII6TO+M6nOpa3ZJOOKX0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 578BCF80269;
-	Tue, 17 Mar 2020 16:13:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B3A81F80217;
+	Tue, 17 Mar 2020 16:32:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7036CF800C0; Tue, 17 Mar 2020 16:12:59 +0100 (CET)
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com
- [IPv6:2a00:1450:4864:20::343])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 61AAAF8022B; Tue, 17 Mar 2020 16:32:44 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B8DEDF80217
- for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2020 16:12:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8DEDF80217
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="WmxBBoG5"
-Received: by mail-wm1-x343.google.com with SMTP id 25so21880676wmk.3
- for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2020 08:12:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=qSvV6OpvBf1rvB8ZBQIuOtC3wOEjkhtAfFvjmoSxpKM=;
- b=WmxBBoG5elQBlBCwz/IKHCH6X8PLjSl3o7xDvcMXnSYgcDH0kY8VRjtCj4hcRNV6A7
- fk8jrU2lU4vRGuUNpGtbaCAEw5Mvk/hmhCOG/Hgy0Mjn4wCpCmTgXalHUGZqaFietR4i
- CjUlos6iU1ZwxhBrMZeQipNk22v/IRLWfubb5Yro3QO0ODAntEvNngOuRTlm0O/QjLYM
- s5mDVj5YXXSU3y9GQUmUlsGfv+p+qJb8OykUFdiwyat8H+1ysUWqrw8CgOE/3NtKS357
- fPBQWxhTvv+j5ahpe5nauXfhZBCQO7sfepDmqjVpZXpz8Rd4aWEiZKb8VcCIjSRskYQf
- 9OGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=qSvV6OpvBf1rvB8ZBQIuOtC3wOEjkhtAfFvjmoSxpKM=;
- b=dIxxfhZM029ZhH7kXZ2FxXnT4bS+Lir5QQwndiya5+J4w9Ayk5Kh+Ca7k0cnlWxsYx
- O6qG8NKaR1dJpjw2jm1V4kh42e4DnUwCbDmE4R5OpIF3u/H2KXgSkFMhGvFZCihMsNoC
- Vtm8AV5KFpqBfPKjFDgPUO8jav83VbCCVW1XC6RonSU/dpzqjBqZnr9uuN5388z6Kat0
- Sww9cfNgfxUARx5Ynu8J1kxxmlI+geW6CWJXxerRA6bsRxoe372dVrAvH80+0V7nVVgB
- qbJgUiu3IHSC0N+c4HTBE3BqFfyEgdN4x9i4n/NcyJNAQbgO621t6PRxA8oz9a1eoKJ8
- 963g==
-X-Gm-Message-State: ANhLgQ09ZvowSVLZzdaL5q48Eca6QR3ABfHqWKFu5OMBQ5ZH0Iqw2Lul
- HL3Is1Egpuc53F7SWrVbuGbtpxEQA4I=
-X-Google-Smtp-Source: ADFU+vtqacOkLRon1SKHEZrSi/5Duy8tSRlCpBE1YWumTSvdeh3MQP9RyTMTg8QT2IBi3zf9JuGpng==
-X-Received: by 2002:a1c:8090:: with SMTP id b138mr5983445wmd.55.1584457969777; 
- Tue, 17 Mar 2020 08:12:49 -0700 (PDT)
-Received: from srini-hackbox.lan
- (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
- by smtp.gmail.com with ESMTPSA id u8sm4711089wrn.69.2020.03.17.08.12.48
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 17 Mar 2020 08:12:48 -0700 (PDT)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: broonie@kernel.org
-Subject: [PATCH v2 0/2] ASoC: sdm845: fix soundwire stream handling
-Date: Tue, 17 Mar 2020 15:12:31 +0000
-Message-Id: <20200317151233.8763-1-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5F27EF80058
+ for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2020 16:32:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F27EF80058
+IronPort-SDR: 45f5ErQX4fOk1A4nnaebVLkoNG/hM3eurortqkZQWZkgT2NlZsrbPUZU+uSQrJri6PKzHQjECY
+ aG/zdbES1riw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 17 Mar 2020 08:32:36 -0700
+IronPort-SDR: AlObTxabHgmiM6Jn3ywAh/Yt0oaBfUo/bqhYV9hSVEb6s6cToF6f79VnvrY/w1+8SKKs8wIUcS
+ rEU7Bof4w0Eg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,564,1574150400"; d="scan'208";a="268002291"
+Received: from atthomas-mobl.amr.corp.intel.com (HELO [10.255.32.45])
+ ([10.255.32.45])
+ by fmsmga004.fm.intel.com with ESMTP; 17 Mar 2020 08:32:33 -0700
+Subject: Re: [PATCH] soundwire: stream: only change state if needed
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ alsa-devel@alsa-project.org
+References: <20200317105142.4998-1-pierre-louis.bossart@linux.intel.com>
+ <6bc8412a-f6d9-64d1-2218-ca98cfdb31c0@linaro.org>
+ <27a73cbd-9418-4488-5cb2-fb21f9fc9110@linux.intel.com>
+ <c1e5dc89-a069-a427-4912-89d90ecc0334@linaro.org>
+ <6dde3b32-a29a-3ac9-d95d-283f5b05e64a@linux.intel.com>
+ <7c7b334d-ae5c-35f6-9cf3-04700677211f@linaro.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <7a362c6a-364e-499a-e841-0a919f48bf84@linux.intel.com>
+Date: Tue, 17 Mar 2020 10:31:29 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
- linux-kernel@vger.kernel.org, pierre-louis.bossart@linux.intel.com,
- vkoul@kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <7c7b334d-ae5c-35f6-9cf3-04700677211f@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Hui Wang <hui.wang@canonical.com>, vkoul@kernel.org, broonie@kernel.org,
+ jank@cadence.com, slawomir.blauciak@intel.com,
+ Sanyog Kale <sanyog.r.kale@intel.com>,
+ Bard liao <yung-chuan.liao@linux.intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,31 +99,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Recent addition of SoundWire stream state-machine checks in linux-next
-have shown an existing issue with handling soundwire streams in codec drivers.
 
-In general soundwire stream prepare/enable/disable can be called from either
-codec/machine/controller driver. However calling it in codec driver means
-that if multiple instances(Left/Right speakers) of the same codec is
-connected to the same stream then it will endup calling stream
-prepare/enable/disable more than once. This will mess up the stream
-state-machine checks in the soundwire core.
+>>>> The change below would be an error case for Intel, so it's probably 
+>>>> better if we go with your suggestion. You have a very specific state 
+>>>> handling due to your power amps and it's probably better to keep it 
+>>>> platform-specific.
+>>>
+>>> Just trying to understand, why would it be error for Intel case?
+>>>
+>>> IMO, If stream state is SDW_STREAM_ENABLED that also implicit that 
+>>> its prepared too. Similar thing with SDW_STREAM_DEPREPARED.
+>>> Isn't it?
+>>
+>> the stream state is a scalar value, not a mask. The state machine only 
+>> allows transition from CONFIGURED TO PREPARED or from DEPREPARED TO 
+>> PREPARED, or DISABLED to PREPARED.
+>> There is no allowed transition from ENABLED TO PREPARED, you have to 
+>> go through the DISABLED state and make sure a bank switch occurred, 
+>> and re-do a bank switch to prepare again.
+> I agree with you if are on single dai case. Am happy to move to stream 
+> handling to machine driver for now.
+> 
+> But this also means that in cases like multi-codec its not recommended 
+> to call sdw_prepare and sdw_enable in a single function from codec.
+> Which might be worth documenting.
 
-Moving this stream handling to machine driver would fix this issue
-and also allow board/platform specfic power sequencing.
+Well, the bigger question is why use sdw_stream functions at the codec 
+level in the first place? All other codec drivers seem to have no issue 
+leaving the dais owned by the master control stream state changes.
 
-Changes since v1:
-	- removed false error check while setting sruntime.
-
-Srinivas Kandagatla (2):
-  ASoC: qcom: sdm845: handle soundwire stream
-  ASoC: codecs: wsa881x: remove soundwire stream handling
-
- sound/soc/codecs/wsa881x.c | 44 +------------------------
- sound/soc/qcom/Kconfig     |  2 +-
- sound/soc/qcom/sdm845.c    | 67 ++++++++++++++++++++++++++++++++++++++
- 3 files changed, 69 insertions(+), 44 deletions(-)
-
--- 
-2.21.0
-
+I am not saying I object or it's bad, just that there were significant 
+changes in usages of the 'stream' concept since it was introduced, as 
+well as threads in MIPI circles to clarify the prepare/enable 
+dependencies, so it'd be useful to have a complete picture of what 
+different platforms need/want.
