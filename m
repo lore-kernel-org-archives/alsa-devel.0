@@ -2,71 +2,106 @@ Return-Path: <SRS0=W6oB=5D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF7DFC10DCE
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Mar 2020 11:49:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 52DF5C10DCE
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Mar 2020 12:00:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 782F2205ED
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Mar 2020 11:49:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D028A2076D
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Mar 2020 12:00:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GZvwSmys"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 782F2205ED
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OReJiTTe";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Pt3x+uRS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D028A2076D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D2D1E1729;
-	Wed, 18 Mar 2020 12:48:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D2D1E1729
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2A9EF1730;
+	Wed, 18 Mar 2020 12:59:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A9EF1730
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584532183;
-	bh=AG9M1kcWBPSjVC2/nPK+uxXuWA73vfjU/vqttXP9AAE=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1584532819;
+	bh=4wBJYSF5YrhTj1piECI1HRQK/reY54QB+utGTA0n8hs=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GZvwSmysQNjKcyU8JsGsqQVgfv+ij5lbOqwosaWwgBGZT2qb1SByM5sP9A4x7rx8s
-	 JdshfdnZ9lYrzZ/bjeqlY6fByhxQrRiVnbjhwiiDPIozs8nGwPB6gnnU3Six4q7+mi
-	 N2gTE/iNPuZzirqLE0CqGHRttbQZRIYpFcUL1GPk=
+	b=OReJiTTelVvAQp2x2Y884EEczfYVM37UGOi7fgvBKXF3/clcrG3CJpw6Lbz4SYYZY
+	 yJnfNidm2olCnglFvaBev7JLbaBxmeRUYOVHsBsBsJOmoKwiN8R0TXGoFD79QDysWC
+	 RlH+pCiTJ99C2klswLhCDTRt3LljERSuQT7CUaGs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 52255F80132;
-	Wed, 18 Mar 2020 12:48:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 86349F80132;
+	Wed, 18 Mar 2020 12:59:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4EEBCF80139; Wed, 18 Mar 2020 12:48:52 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 5EFF5F800B7
- for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2020 12:48:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5EFF5F800B7
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 055551FB;
- Wed, 18 Mar 2020 04:48:43 -0700 (PDT)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7DD483F534;
- Wed, 18 Mar 2020 04:48:42 -0700 (PDT)
-Date: Wed, 18 Mar 2020 11:48:41 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH 6/6] ASoC: soc-pcm: Merge CPU/Codec MSB at
- soc_pcm_apply_msb()
-Message-ID: <20200318114841.GB4553@sirena.org.uk>
-References: <87y2s0olg6.wl-kuninori.morimoto.gx@renesas.com>
- <87pndcoleh.wl-kuninori.morimoto.gx@renesas.com>
- <a400680b-0334-be68-f137-19a601b43d33@metafoo.de>
- <87imj2pltk.wl-kuninori.morimoto.gx@renesas.com>
+ id 5BB66F80139; Wed, 18 Mar 2020 12:59:27 +0100 (CET)
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com
+ [IPv6:2a00:1450:4864:20::341])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A6FCBF800B7
+ for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2020 12:59:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6FCBF800B7
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="Pt3x+uRS"
+Received: by mail-wm1-x341.google.com with SMTP id 6so2959673wmi.5
+ for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2020 04:59:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=YJqjwINizd0mjxU+F08RGbhSKRJRuplDkN1+krLz9Io=;
+ b=Pt3x+uRS/li8KFYyqVdOwKOuFPdkPPdYK4iGxXkx22gyl8xyCbct2cPfaoHMyZTYcA
+ rZ4PmmPl5FZqksFWOmKRomE++5WAbzGqPyB1/4OvnH3jwC7ZSPAnx0S9bTFX2gdarewb
+ mw0ZJ0ED+uPoXQRtb6yWjQi2fbg5m+ybUvVV8kWXaQQRwm+nwjjjnkxTrFXa7TG06qoF
+ TkGCnib1dFKSL9aszKx7MXcW/9pmyXBxb9lvqu2xiWEuSmbK99DPxDBrubMF8TQE1Z+z
+ P0bEpXpewb3U5Aw53MTFc/7t3AA+cQ21vUnsQWR1727aeusgoaSVoT2lGfPcQi/FGbRb
+ +1Nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=YJqjwINizd0mjxU+F08RGbhSKRJRuplDkN1+krLz9Io=;
+ b=RCP0T78FQ1Oza3h2kwN6cNkRvC6Y8V2aArWoDULa5IG3du2Ncg5KW0i3A+ssCt4LWn
+ nchRuawpaEtQt7rHP42q5FC3P23zngT9tS/k9NYCfAwreVAQWleajJ2old8zehtuxQW8
+ pkCagrFTrVbq6nIqQfzmAxvi9T3foFmDG3R84I2TUeePpSwCtMxmpMhEH69xAQFWM94I
+ /2qbdVPIfsTe2EHAIX/ph0HTc11Z76/wgLw74VZ4HrBwcmZQ1lCQDwOmC0GojKqyIbuQ
+ nglEU7FFIGzpvDwdyG4wRnBOFuvX6LavtpTt5tfgGEm+2MaEM5yfvxc8qaO/om/n2/1u
+ cxuQ==
+X-Gm-Message-State: ANhLgQ0Wms85hF14f1K7KZlPrxVT5t5DIkVcZawKh3aBLlIWvgiFitKF
+ 17+TBF1kJqPFHodddYEeJP61iA==
+X-Google-Smtp-Source: ADFU+vvSL2S8Zk4kOLlmqKuwdQt3oO0VIUxIQXZukISeVwAVMKksfVbyrSNcY+B2b7oCBoxLUVTeYg==
+X-Received: by 2002:a05:600c:2319:: with SMTP id
+ 25mr4948012wmo.106.1584532763247; 
+ Wed, 18 Mar 2020 04:59:23 -0700 (PDT)
+Received: from [192.168.86.34]
+ (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
+ by smtp.googlemail.com with ESMTPSA id c4sm3653831wml.7.2020.03.18.04.59.21
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Wed, 18 Mar 2020 04:59:22 -0700 (PDT)
+Subject: Re: [PATCH 1/2] ASoC: qcom: sdm845: handle soundwire stream
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ broonie@kernel.org
+References: <20200317095351.15582-1-srinivas.kandagatla@linaro.org>
+ <20200317095351.15582-2-srinivas.kandagatla@linaro.org>
+ <8daeeb26-851b-8311-30f5-5d285ccbc255@linux.intel.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <69c72f5a-e72e-b7b3-90cb-a7354dcb175d@linaro.org>
+Date: Wed, 18 Mar 2020 11:59:21 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="v9Ux+11Zm5mwPlX6"
-Content-Disposition: inline
-In-Reply-To: <87imj2pltk.wl-kuninori.morimoto.gx@renesas.com>
-X-Cookie: Oh no, not again.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
- Lars-Peter Clausen <lars@metafoo.de>
+In-Reply-To: <8daeeb26-851b-8311-30f5-5d285ccbc255@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, vkoul@kernel.org,
+ lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,29 +118,121 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---v9Ux+11Zm5mwPlX6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Wed, Mar 18, 2020 at 09:07:35AM +0900, Kuninori Morimoto wrote:
+On 17/03/2020 13:07, Pierre-Louis Bossart wrote:
+> 
+>> @@ -45,11 +48,20 @@ static int sdm845_slim_snd_hw_params(struct 
+>> snd_pcm_substream *substream,
+>>       struct snd_soc_pcm_runtime *rtd = substream->private_data;
+>>       struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+>>       struct snd_soc_dai *codec_dai;
+>> +    struct sdm845_snd_data *pdata = snd_soc_card_get_drvdata(rtd->card);
+>>       u32 rx_ch[SLIM_MAX_RX_PORTS], tx_ch[SLIM_MAX_TX_PORTS];
+>> +    struct sdw_stream_runtime *sruntime;
+>>       u32 rx_ch_cnt = 0, tx_ch_cnt = 0;
+>>       int ret = 0, i;
+>>       for_each_rtd_codec_dais(rtd, i, codec_dai) {
+>> +        sruntime = snd_soc_dai_get_sdw_stream(codec_dai,
+>> +                              substream->stream);
+>> +        if (sruntime != ERR_PTR(-ENOTSUPP))
+>> +            pdata->sruntime[cpu_dai->id] = sruntime;
+>> +        else
+>> +            pdata->sruntime[cpu_dai->id] = NULL;
+>> +
+> 
+> Can you explain this part?
+> The get_sdw_stream() is supposed to return what was set by 
+> set_sdw_stream(), so if it's not supported isn't this an error?
 
-> Mark, can you please ignore this patch ?
+In this case its not an error because we have
+totally 3 codecs in this path.
+One wcd934x Slimbus codec and two wsa881x Soundwire Codec.
 
-Yup.
+wcd934x codec side will return ENOTSUPP which is not an error.
 
---v9Ux+11Zm5mwPlX6
-Content-Type: application/pgp-signature; name="signature.asc"
+> 
+>>           ret = snd_soc_dai_get_channel_map(codec_dai,
+>>                   &tx_ch_cnt, tx_ch, &rx_ch_cnt, rx_ch);
+>> @@ -425,8 +437,65 @@ static void  sdm845_snd_shutdown(struct 
+>> snd_pcm_substream *substream)
+>>       }
+>>   }
+>> +static int sdm845_snd_prepare(struct snd_pcm_substream *substream)
+>> +{
+>> +    struct snd_soc_pcm_runtime *rtd = substream->private_data;
+>> +    struct sdm845_snd_data *data = snd_soc_card_get_drvdata(rtd->card);
+>> +    struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+>> +    struct sdw_stream_runtime *sruntime = data->sruntime[cpu_dai->id];
+>> +    int ret;
+>> +
+>> +    if (!sruntime)
+>> +        return 0;
+> 
+> same here, isn't this an error?
 
------BEGIN PGP SIGNATURE-----
+These callbacks are used for other dais aswell in this case
+HDMI, Slimbus and Soundwire, so sruntime being null is not treated as error.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5yCpgACgkQJNaLcl1U
-h9ANFQf/d1xfJClz0qe6tYPlRHcen7EfvQIkIV5G60hHIf/4GI9QmymX4+tvqWsY
-WlzM1c4APxue0Zx6A2odZW+J7oLGDKqSt6y+R+WYQdi+m1GpSF5ZQI1BNLS2t1mt
-I4JuXxO6Wems2PUejBPWLhKnxqal8vBNb8DczEkZQ8YptZVLj45uJHD0p8KgB74J
-zWKcA06Y+F2qopIn31mBfEOPz7610+tSFzbXgv6Pl03Lhcs6eDfRIupplrFCb910
-4GFiJCVp5bLVztYBB1ZgdVmnHz0BeUohL8iXyVAJICOd74chIrmFcbrFZUKrCWda
-u8tJZDimzGNiEjznmnV8xcv6y3LBUA==
-=njz5
------END PGP SIGNATURE-----
+> 
+>> +    if (data->stream_prepared[cpu_dai->id]) {
+>> +        sdw_disable_stream(sruntime);
+>> +        sdw_deprepare_stream(sruntime);
+>> +        data->stream_prepared[cpu_dai->id] = false;
+>> +    }
+>> +
+>> +    ret = sdw_prepare_stream(sruntime);
+>> +    if (ret)
+>> +        return ret;
+>> +
+>> +    /**
+>> +     * NOTE: there is a strict hw requirement about the ordering of port
+>> +     * enables and actual WSA881x PA enable. PA enable should only 
+>> happen
+>> +     * after soundwire ports are enabled if not DC on the line is
+>> +     * accumulated resulting in Click/Pop Noise
+>> +     * PA enable/mute are handled as part of codec DAPM and digital 
+>> mute.
+>> +     */
+>> +
+>> +    ret = sdw_enable_stream(sruntime);
+>> +    if (ret) {
+>> +        sdw_deprepare_stream(sruntime);
+>> +        return ret;
+>> +    }
+>> +    data->stream_prepared[cpu_dai->id] = true;
+>> +
+>> +    return ret;
+>> +}
+>> +
+>> +static int sdm845_snd_hw_free(struct snd_pcm_substream *substream)
+>> +{
+>> +    struct snd_soc_pcm_runtime *rtd = substream->private_data;
+>> +    struct sdm845_snd_data *data = snd_soc_card_get_drvdata(rtd->card);
+>> +    struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+>> +    struct sdw_stream_runtime *sruntime = data->sruntime[cpu_dai->id];
+>> +
+>> +    if (sruntime && data->stream_prepared[cpu_dai->id]) {
+> 
+> and here?
+> 
+> Really wondering where the stream is actually allocated and set.
 
---v9Ux+11Zm5mwPlX6--
+Controller is allocating the runtime in this case.
+
+> 
+>> +        sdw_disable_stream(sruntime);
+>> +        sdw_deprepare_stream(sruntime);
+>> +        data->stream_prepared[cpu_dai->id] = false;
+>> +    }
+>> +
+>> +    return 0;
+>> +}
+>> +
+>>   static const struct snd_soc_ops sdm845_be_ops = {
+>>       .hw_params = sdm845_snd_hw_params,
+>> +    .hw_free = sdm845_snd_hw_free,
+>> +    .prepare = sdm845_snd_prepare,
+>>       .startup = sdm845_snd_startup,
+>>       .shutdown = sdm845_snd_shutdown,
+>>   };
+>>
