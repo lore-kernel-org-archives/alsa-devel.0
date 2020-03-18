@@ -6,57 +6,58 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 69523C4332B
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Mar 2020 21:43:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 460E8C4332D
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Mar 2020 21:44:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E4FB920714
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Mar 2020 21:43:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C302220768
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Mar 2020 21:44:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="n0F1ueUu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E4FB920714
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="o7EzQjMS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C302220768
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0A62B1723;
-	Wed, 18 Mar 2020 22:42:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A62B1723
+	by alsa0.perex.cz (Postfix) with ESMTPS id 00873172F;
+	Wed, 18 Mar 2020 22:43:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00873172F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584567812;
-	bh=nMjIsklxCd3S37mFBSyAWNRDRIuPEOZT9quj6s/qhjE=;
+	s=default; t=1584567859;
+	bh=Q5lHgnLAgtDLzem5S7y9DycEZhoumdwoeWq4NWy5Yd0=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=n0F1ueUuUCv+7XlM0zCWNi2GZ0w2CQdJX1geiolS7j/zy+365Jhu5od64bhREgblJ
-	 mzCvrDA7U/VpeCyZE45M52e2biGB51kLAP/oEYQaEp24giJQrz7GVnSB96IozcsGz/
-	 pQkZuxpezvuYpnbZDkqsQfuG18LrgbvlTP4sR8mU=
+	b=o7EzQjMSu6T8CjI++IVhFAVk3LHZsSavjI4YWF2xtd7RqWBUgkA5tylk5IywX3eqC
+	 4nDuH+/7/y/v2foQW4VoqN8MqFqh2ToAlyQ41WCeVq2dYx0myPXb8NM77Oyv5lM0mh
+	 MPij/ClsN6hJ8mckddhLWXhPsRdh7P7tR6vcp6Q4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8FF82F80139;
-	Wed, 18 Mar 2020 22:41:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 29107F8028C;
+	Wed, 18 Mar 2020 22:41:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 84A00F801F9; Wed, 18 Mar 2020 22:41:49 +0100 (CET)
+ id 25FE6F8028C; Wed, 18 Mar 2020 22:41:57 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 23E04F80139
- for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2020 22:41:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23E04F80139
+ by alsa1.perex.cz (Postfix) with ESMTP id B887CF80162
+ for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2020 22:41:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B887CF80162
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9094FFEC;
- Wed, 18 Mar 2020 14:41:43 -0700 (PDT)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 881B830E;
+ Wed, 18 Mar 2020 14:41:52 -0700 (PDT)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 13C463F67D;
- Wed, 18 Mar 2020 14:41:42 -0700 (PDT)
-Date: Wed, 18 Mar 2020 21:41:41 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0C74F3F7BB;
+ Wed, 18 Mar 2020 14:41:51 -0700 (PDT)
+Date: Wed, 18 Mar 2020 21:41:50 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Applied "ASoC: qcom: sdm845: handle soundwire stream" to the asoc tree
-In-Reply-To: <20200317151233.8763-2-srinivas.kandagatla@linaro.org>
-Message-Id: <applied-20200317151233.8763-2-srinivas.kandagatla@linaro.org>
+To: Olivier Moysan <olivier.moysan@st.com>
+Subject: Applied "ASoC: stm32: i2s: manage rebind issue" to the asoc tree
+In-Reply-To: <20200318144125.9163-4-olivier.moysan@st.com>
+Message-Id: <applied-20200318144125.9163-4-olivier.moysan@st.com>
 X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com, vkoul@kernel.org,
- Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com,
+ tiwai@suse.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
+ Mark Brown <broonie@kernel.org>, linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,7 +75,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: qcom: sdm845: handle soundwire stream
+   ASoC: stm32: i2s: manage rebind issue
 
 has been applied to the asoc tree at
 
@@ -99,149 +100,123 @@ to this mail.
 Thanks,
 Mark
 
-From 1b93a88431470ea0b943157999084d9c7e6e3bd3 Mon Sep 17 00:00:00 2001
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Tue, 17 Mar 2020 15:12:32 +0000
-Subject: [PATCH] ASoC: qcom: sdm845: handle soundwire stream
+From caff4ce8cc582a97b17d10b7c7f5fe8500323135 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@st.com>
+Date: Wed, 18 Mar 2020 15:41:25 +0100
+Subject: [PATCH] ASoC: stm32: i2s: manage rebind issue
 
-In existing setup WSA881x codec handles soundwire stream,
-however DB845c and other machines based on SDM845c have 2
-instances for WSA881x codec. This will force soundwire stream
-to be prepared/enabled twice or multiple times.
-Handling SoundWire Stream in machine driver would fix this issue.
+The commit e894efef9ac7 ("ASoC: core: add support to card rebind")
+allows to rebind the sound card after a rebind of one of its component.
+With this commit, the sound card is actually rebound,
+but may be no more functional.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200317151233.8763-2-srinivas.kandagatla@linaro.org
+Corrections:
+- Call snd_dmaengine_pcm_register() before snd_soc_register_component().
+- Call snd_dmaengine_pcm_unregister() and snd_soc_unregister_component()
+explicitly from I2S driver.
+
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+Link: https://lore.kernel.org/r/20200318144125.9163-4-olivier.moysan@st.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/Kconfig  |  2 +-
- sound/soc/qcom/sdm845.c | 67 +++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 68 insertions(+), 1 deletion(-)
+ sound/soc/stm/stm32_i2s.c | 40 ++++++++++++++++++++++++++++-----------
+ 1 file changed, 29 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index 6530d2462a9e..f51b28d1b94d 100644
---- a/sound/soc/qcom/Kconfig
-+++ b/sound/soc/qcom/Kconfig
-@@ -99,7 +99,7 @@ config SND_SOC_MSM8996
- 
- config SND_SOC_SDM845
- 	tristate "SoC Machine driver for SDM845 boards"
--	depends on QCOM_APR && CROS_EC && I2C
-+	depends on QCOM_APR && CROS_EC && I2C && SOUNDWIRE
- 	select SND_SOC_QDSP6
- 	select SND_SOC_QCOM_COMMON
- 	select SND_SOC_RT5663
-diff --git a/sound/soc/qcom/sdm845.c b/sound/soc/qcom/sdm845.c
-index 3ac02204a706..67a55edf755f 100644
---- a/sound/soc/qcom/sdm845.c
-+++ b/sound/soc/qcom/sdm845.c
-@@ -11,6 +11,7 @@
- #include <sound/pcm_params.h>
- #include <sound/jack.h>
- #include <sound/soc.h>
-+#include <linux/soundwire/sdw.h>
- #include <uapi/linux/input-event-codes.h>
- #include "common.h"
- #include "qdsp6/q6afe.h"
-@@ -31,10 +32,12 @@
- struct sdm845_snd_data {
- 	struct snd_soc_jack jack;
- 	bool jack_setup;
-+	bool stream_prepared[SLIM_MAX_RX_PORTS];
- 	struct snd_soc_card *card;
- 	uint32_t pri_mi2s_clk_count;
- 	uint32_t sec_mi2s_clk_count;
- 	uint32_t quat_tdm_clk_count;
-+	struct sdw_stream_runtime *sruntime[SLIM_MAX_RX_PORTS];
- };
- 
- static unsigned int tdm_slot_offset[8] = {0, 4, 8, 12, 16, 20, 24, 28};
-@@ -45,11 +48,18 @@ static int sdm845_slim_snd_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	struct snd_soc_dai *codec_dai;
-+	struct sdm845_snd_data *pdata = snd_soc_card_get_drvdata(rtd->card);
- 	u32 rx_ch[SLIM_MAX_RX_PORTS], tx_ch[SLIM_MAX_TX_PORTS];
-+	struct sdw_stream_runtime *sruntime;
- 	u32 rx_ch_cnt = 0, tx_ch_cnt = 0;
- 	int ret = 0, i;
- 
- 	for_each_rtd_codec_dais(rtd, i, codec_dai) {
-+		sruntime = snd_soc_dai_get_sdw_stream(codec_dai,
-+						      substream->stream);
-+		if (sruntime != ERR_PTR(-ENOTSUPP))
-+			pdata->sruntime[cpu_dai->id] = sruntime;
-+
- 		ret = snd_soc_dai_get_channel_map(codec_dai,
- 				&tx_ch_cnt, tx_ch, &rx_ch_cnt, rx_ch);
- 
-@@ -425,8 +435,65 @@ static void  sdm845_snd_shutdown(struct snd_pcm_substream *substream)
- 	}
+diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
+index 2478405727c3..7c4d63c33f15 100644
+--- a/sound/soc/stm/stm32_i2s.c
++++ b/sound/soc/stm/stm32_i2s.c
+@@ -888,6 +888,14 @@ static int stm32_i2s_parse_dt(struct platform_device *pdev,
+ 	return 0;
  }
  
-+static int sdm845_snd_prepare(struct snd_pcm_substream *substream)
++static int stm32_i2s_remove(struct platform_device *pdev)
 +{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct sdm845_snd_data *data = snd_soc_card_get_drvdata(rtd->card);
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct sdw_stream_runtime *sruntime = data->sruntime[cpu_dai->id];
-+	int ret;
-+
-+	if (!sruntime)
-+		return 0;
-+
-+	if (data->stream_prepared[cpu_dai->id]) {
-+		sdw_disable_stream(sruntime);
-+		sdw_deprepare_stream(sruntime);
-+		data->stream_prepared[cpu_dai->id] = false;
-+	}
-+
-+	ret = sdw_prepare_stream(sruntime);
-+	if (ret)
-+		return ret;
-+
-+	/**
-+	 * NOTE: there is a strict hw requirement about the ordering of port
-+	 * enables and actual WSA881x PA enable. PA enable should only happen
-+	 * after soundwire ports are enabled if not DC on the line is
-+	 * accumulated resulting in Click/Pop Noise
-+	 * PA enable/mute are handled as part of codec DAPM and digital mute.
-+	 */
-+
-+	ret = sdw_enable_stream(sruntime);
-+	if (ret) {
-+		sdw_deprepare_stream(sruntime);
-+		return ret;
-+	}
-+	data->stream_prepared[cpu_dai->id] = true;
-+
-+	return ret;
-+}
-+
-+static int sdm845_snd_hw_free(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct sdm845_snd_data *data = snd_soc_card_get_drvdata(rtd->card);
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct sdw_stream_runtime *sruntime = data->sruntime[cpu_dai->id];
-+
-+	if (sruntime && data->stream_prepared[cpu_dai->id]) {
-+		sdw_disable_stream(sruntime);
-+		sdw_deprepare_stream(sruntime);
-+		data->stream_prepared[cpu_dai->id] = false;
-+	}
++	snd_dmaengine_pcm_unregister(&pdev->dev);
++	snd_soc_unregister_component(&pdev->dev);
 +
 +	return 0;
 +}
 +
- static const struct snd_soc_ops sdm845_be_ops = {
- 	.hw_params = sdm845_snd_hw_params,
-+	.hw_free = sdm845_snd_hw_free,
-+	.prepare = sdm845_snd_prepare,
- 	.startup = sdm845_snd_startup,
- 	.shutdown = sdm845_snd_shutdown,
+ static int stm32_i2s_probe(struct platform_device *pdev)
+ {
+ 	struct stm32_i2s_data *i2s;
+@@ -921,47 +929,56 @@ static int stm32_i2s_probe(struct platform_device *pdev)
+ 		return PTR_ERR(i2s->regmap);
+ 	}
+ 
+-	ret = devm_snd_soc_register_component(&pdev->dev, &stm32_i2s_component,
+-					      i2s->dai_drv, 1);
+-	if (ret)
+-		return ret;
+-
+-	ret = devm_snd_dmaengine_pcm_register(&pdev->dev,
+-					      &stm32_i2s_pcm_config, 0);
++	ret = snd_dmaengine_pcm_register(&pdev->dev, &stm32_i2s_pcm_config, 0);
+ 	if (ret) {
+ 		if (ret != -EPROBE_DEFER)
+ 			dev_err(&pdev->dev, "PCM DMA register error %d\n", ret);
+ 		return ret;
+ 	}
+ 
++	ret = snd_soc_register_component(&pdev->dev, &stm32_i2s_component,
++					 i2s->dai_drv, 1);
++	if (ret) {
++		snd_dmaengine_pcm_unregister(&pdev->dev);
++		return ret;
++	}
++
+ 	/* Set SPI/I2S in i2s mode */
+ 	ret = regmap_update_bits(i2s->regmap, STM32_I2S_CGFR_REG,
+ 				 I2S_CGFR_I2SMOD, I2S_CGFR_I2SMOD);
+ 	if (ret)
+-		return ret;
++		goto error;
+ 
+ 	ret = regmap_read(i2s->regmap, STM32_I2S_IPIDR_REG, &val);
+ 	if (ret)
+-		return ret;
++		goto error;
+ 
+ 	if (val == I2S_IPIDR_NUMBER) {
+ 		ret = regmap_read(i2s->regmap, STM32_I2S_HWCFGR_REG, &val);
+ 		if (ret)
+-			return ret;
++			goto error;
+ 
+ 		if (!FIELD_GET(I2S_HWCFGR_I2S_SUPPORT_MASK, val)) {
+ 			dev_err(&pdev->dev,
+ 				"Device does not support i2s mode\n");
+-			return -EPERM;
++			ret = -EPERM;
++			goto error;
+ 		}
+ 
+ 		ret = regmap_read(i2s->regmap, STM32_I2S_VERR_REG, &val);
++		if (ret)
++			goto error;
+ 
+ 		dev_dbg(&pdev->dev, "I2S version: %lu.%lu registered\n",
+ 			FIELD_GET(I2S_VERR_MAJ_MASK, val),
+ 			FIELD_GET(I2S_VERR_MIN_MASK, val));
+ 	}
+ 
++	return ret;
++
++error:
++	stm32_i2s_remove(pdev);
++
+ 	return ret;
+ }
+ 
+@@ -998,6 +1015,7 @@ static struct platform_driver stm32_i2s_driver = {
+ 		.pm = &stm32_i2s_pm_ops,
+ 	},
+ 	.probe = stm32_i2s_probe,
++	.remove = stm32_i2s_remove,
  };
+ 
+ module_platform_driver(stm32_i2s_driver);
 -- 
 2.20.1
 
