@@ -2,78 +2,76 @@ Return-Path: <SRS0=W6oB=5D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A8D4C10DCE
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Mar 2020 09:42:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EB19C5ACD6
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Mar 2020 09:59:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 14D9820674
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Mar 2020 09:42:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EA7622076F
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Mar 2020 09:58:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WZtAUwoo"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 14D9820674
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hijlLT59"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EA7622076F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=dominikbrodowski.net
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 626921743;
-	Wed, 18 Mar 2020 10:41:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 626921743
+	by alsa0.perex.cz (Postfix) with ESMTPS id 45949174B;
+	Wed, 18 Mar 2020 10:58:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45949174B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584524566;
-	bh=KA6kxYjRiaC7bOQKke1gGoL6RGTSHP3JuvmCUiV5Ec0=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1584525538;
+	bh=wlCJfhUNDrgI33XVhaMggt5wvjxcdGWplG5X1IiaYj0=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WZtAUwoo2rfWSA7YqZSt+C6txnv+l2TPKADyHsgN0FXADwc28sCICiLCny8AmQq1w
-	 fSGzfwiJU7dtT9rIQWR1C4ULI+9NxBWqlhcnpVjShcO1CN1BLquA9Edp59pKDBIGTg
-	 QPP311oLXomDxg+VtuHpnWChS3MpQ8rtl4YJImTE=
+	b=hijlLT59q7gsNiLCEp8P/wQAwqx8v1VDutsV+hFFtHP23YPiP5kqHczZclVGT9o9q
+	 C04iBSg6ivbW0+N3MkaN2rzniXDJtLOo38LLL71CnNLGuLYsmG1nVQRmH9034NO0vZ
+	 hqcmojFyOe6cjDS+o0eCnxjlOpYw02TQV26i36D4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CFCCBF800B7;
-	Wed, 18 Mar 2020 10:41:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B279EF80132;
+	Wed, 18 Mar 2020 10:58:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7D6E4F80139; Wed, 18 Mar 2020 10:41:52 +0100 (CET)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 87A72F80139; Wed, 18 Mar 2020 10:58:03 +0100 (CET)
+Received: from isilmar-4.linta.de (isilmar-4.linta.de [136.243.71.142])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 12580F800B7
- for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2020 10:41:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 12580F800B7
-IronPort-SDR: hsc+gA7eQGDeOcptvFFN1XRF1Y36dlEZYoYn8WV8DgLjRbXvzSi5B/QNbHt1HW5oD26C4wUE98
- CrlPAq9OfqtQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Mar 2020 02:41:46 -0700
-IronPort-SDR: ORroYAM1KHIe5G6nl1CYBrtbrzPa8jYhFyIQ6qqrD+QGHGs+Q8O/LQlNvfrX8z0P0CccpA88s0
- Om4sJrb4I/Sw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,566,1574150400"; d="scan'208";a="248117273"
-Received: from crojewsk-mobl1.ger.corp.intel.com (HELO [10.249.155.222])
- ([10.249.155.222])
- by orsmga006.jf.intel.com with ESMTP; 18 Mar 2020 02:41:43 -0700
+ by alsa1.perex.cz (Postfix) with ESMTPS id E1B8BF800B7
+ for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2020 10:58:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1B8BF800B7
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+Received: from light.dominikbrodowski.net (brodo.linta [10.1.0.102])
+ by isilmar-4.linta.de (Postfix) with ESMTPSA id C0687200ADE;
+ Wed, 18 Mar 2020 09:57:59 +0000 (UTC)
+Received: by light.dominikbrodowski.net (Postfix, from userid 1000)
+ id 2EFF320B19; Wed, 18 Mar 2020 10:57:45 +0100 (CET)
+Date: Wed, 18 Mar 2020 10:57:45 +0100
+From: Dominik Brodowski <linux@dominikbrodowski.net>
+To: Cezary Rojewski <cezary.rojewski@intel.com>
 Subject: Re: snd_hda_intel/sst-acpi sound breakage on suspend/resume since
  5.6-rc1
-To: Dominik Brodowski <linux@dominikbrodowski.net>, tiwai@suse.com
+Message-ID: <20200318095745.GA133849@light.dominikbrodowski.net>
 References: <20200318063022.GA116342@light.dominikbrodowski.net>
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-Message-ID: <66c719b3-a66e-6a9f-fab8-721ba48d7ad8@intel.com>
-Date: Wed, 18 Mar 2020 10:41:42 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+ <66c719b3-a66e-6a9f-fab8-721ba48d7ad8@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200318063022.GA116342@light.dominikbrodowski.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- yang.jie@linux.intel.com, pierre-louis.bossart@linux.intel.com,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <66c719b3-a66e-6a9f-fab8-721ba48d7ad8@intel.com>
+Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, yang.jie@linux.intel.com, tiwai@suse.com,
  liam.r.girdwood@linux.intel.com, broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -90,63 +88,77 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 2020-03-18 07:30, Dominik Brodowski wrote:
-> Hi!
+On Wed, Mar 18, 2020 at 10:41:42AM +0100, Cezary Rojewski wrote:
+> On 2020-03-18 07:30, Dominik Brodowski wrote:
+> > Hi!
+> > 
+> > While 5.5.x works fine, mainline as of ac309e7744be (v5.6-rc6+) causes me
+> > some sound-related trouble: after boot, the sound works fine -- but once I
+> > suspend and resume my broadwell-based XPS13, I need to switch to headphone
+> > and back to speaker to hear something. But what I hear isn't music but
+> > garbled output.
+> > 
+> > A few dmesg snippets from v5.6-rc6-9-gac309e7744be which might be of
+> > interest. I've highlighted the lines differing from v.5.5.x which might be
+> > of special interest:
+> > 
 > 
-> While 5.5.x works fine, mainline as of ac309e7744be (v5.6-rc6+) causes me
-> some sound-related trouble: after boot, the sound works fine -- but once I
-> suspend and resume my broadwell-based XPS13, I need to switch to headphone
-> and back to speaker to hear something. But what I hear isn't music but
-> garbled output.
+> Thank you for the report, Dominik. You definitely got our attention.
 > 
-> A few dmesg snippets from v5.6-rc6-9-gac309e7744be which might be of
-> interest. I've highlighted the lines differing from v.5.5.x which might be
-> of special interest:
+> I've checked the market: Dell XPS 13 9343, yes? Once you confirm model id,
+> I'll order a piece immediately to our site.
+
+Thanks, for taking a look at this issue, Czarek. Indeed, it's a
+
+	Dell Inc. XPS 13 9343/0TM99H, BIOS A19 12/24/2018
+
+and IIRC there should be at least one of those already at the Linux sound
+team at Intel (you may want to check with Yang Jie and Han Lu; I was in
+contact with them relating to a different sound-related issue in 2015).
+
+> In regard to logs, thanks for highlighting important lines. Build is of 'rc'
+> so bugs can still be in plenty - any reason for switching to cutting-edge
+> kernel on production stuff? Our CI didn't detect any anomalies yet as it is
+> running on 5.5.
+
+Well, one has to test things to find bugs ;-) -- and as I sometimes
+contribute to the kernel, it is better to keep current on things.
+
+> I'll direct your ticket on todays meeting. On the first look, issue seems to
+> be connected with recent changes to /drivers/dma/dmaengine.c. DesignWare DMA
+> controller drv - which HSW/BDW makes use of - might not have been updated
+> accordingly. Will dig further on that.
 > 
-
-Thank you for the report, Dominik. You definitely got our attention.
-
-I've checked the market: Dell XPS 13 9343, yes? Once you confirm model 
-id, I'll order a piece immediately to our site.
-
-In regard to logs, thanks for highlighting important lines. Build is of 
-'rc' so bugs can still be in plenty - any reason for switching to 
-cutting-edge kernel on production stuff? Our CI didn't detect any 
-anomalies yet as it is running on 5.5.
-
-I'll direct your ticket on todays meeting. On the first look, issue 
-seems to be connected with recent changes to /drivers/dma/dmaengine.c. 
-DesignWare DMA controller drv - which HSW/BDW makes use of - might not 
-have been updated accordingly. Will dig further on that.
-
-One more, just to make it clear for the rest of the viewers:
-
- > 	haswell-pcm-audio haswell-pcm-audio: Direct firmware load for 
-intel/IntcPP01.bin failed with error -2
- > 	haswell-pcm-audio haswell-pcm-audio: fw image intel/IntcPP01.bin not 
-available(-2)
-
-Back in the ancient days of DSP (HSW/BDW are actually the very first 
-audio DSP hws for Intel) topology was part of FW - SW could not 
-configure it and probably that's why library IntcPP01 is attempted to be 
-loaded on every boot, even if it's not part of configuration for given 
-hw. Maybe we could make it quieter though..
-
+> One more, just to make it clear for the rest of the viewers:
 > 
-> (these last two messages already are printed a couple of time after boot, and then
-> again during a suspend/resume cycle. On v.5.5.y, there are similar messages
-> "no context buffer need to restore!"). Everything is built-in, no modules
-> are loaded.
+> > 	haswell-pcm-audio haswell-pcm-audio: Direct firmware load for intel/IntcPP01.bin failed with error -2
+> > 	haswell-pcm-audio haswell-pcm-audio: fw image intel/IntcPP01.bin not available(-2)
 > 
-> Unfortunately, I cannot bisect this issue easily -- i915 was broken for
-> quite some time on this system[*], prohibiting boot...
+> Back in the ancient days of DSP (HSW/BDW are actually the very first audio
+> DSP hws for Intel) topology was part of FW - SW could not configure it and
+> probably that's why library IntcPP01 is attempted to be loaded on every
+> boot, even if it's not part of configuration for given hw. Maybe we could
+> make it quieter though..
+> 
+> > 
+> > (these last two messages already are printed a couple of time after boot, and then
+> > again during a suspend/resume cycle. On v.5.5.y, there are similar messages
+> > "no context buffer need to restore!"). Everything is built-in, no modules
+> > are loaded.
+> > 
+> > Unfortunately, I cannot bisect this issue easily -- i915 was broken for
+> > quite some time on this system[*], prohibiting boot...
+> 
+> Hmm, sounds like that issue is quite old. DSP for Haswell and Broadwell is
+> available for I2S devices only, so this relates directly to legacy HDA
+> driver. Compared to Skylake+, HDAudio controller for older platforms is
+> found within GPU. My advice is to notify the DRM guys about this issue.
+> 
+> Takashi, are you aware of problems with HDMI on HSW/ BDW or should I just
+> loop Jani and other DRM peps here?
 
-Hmm, sounds like that issue is quite old. DSP for Haswell and Broadwell 
-is available for I2S devices only, so this relates directly to legacy 
-HDA driver. Compared to Skylake+, HDAudio controller for older platforms 
-is found within GPU. My advice is to notify the DRM guys about this issue.
+Well, it works on v5.5, so this issue is not really "quite old" (the "no
+context buffer need to restore!" message seen there seems harmless).
 
-Takashi, are you aware of problems with HDMI on HSW/ BDW or should I 
-just loop Jani and other DRM peps here?
-
-Czarek
+Thanks again, and best wishes,
+	Dominik
