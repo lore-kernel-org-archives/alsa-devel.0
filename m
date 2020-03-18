@@ -1,91 +1,61 @@
-Return-Path: <SRS0=JibJ=5F=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=W6oB=5D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 372BBC4332D
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Mar 2020 00:22:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94842C4332B
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Mar 2020 21:45:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B57C420740
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Mar 2020 00:22:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1E9D620768
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Mar 2020 21:45:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HwlD7FHj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B57C420740
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TymV3Dxz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1E9D620768
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0BC1317B7;
-	Fri, 20 Mar 2020 01:21:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0BC1317B7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 72963173E;
+	Wed, 18 Mar 2020 22:44:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 72963173E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584663734;
-	bh=vr1j1MCsadkOnB8cI79yaYQoZGEZuTmwpWblI/5kSVA=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=HwlD7FHjYz8giQ65/9mVIe2PeOf4nXID1tkfsXTV/Py+JiUILlUiRX3H/50j19Klp
-	 Z53EuBKX4AF+DcmLaWpNi/dS2Pwj3guBATj+lecBaiF4iNhFI5Cuo7Gvl+Ugd7DPp0
-	 H+ZYYitcQPlIh0s44V7u2Z6aUwJ66/oXjbKuB9Cg=
+	s=default; t=1584567913;
+	bh=/9nSN2i4/ou2uEhr5nak8IwvEU2dspFM4dhe+9ZzbPg=;
+	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=TymV3DxzX8nLsD5d68qA57dFbf0bW1W4YCQ80Fzqtw79jBEekikIUEmidBGM4IYJJ
+	 ssy3jCdIxvJCiVVVWmrgkdkEovHcMHzbsDjw8/GQJLG2aS3EVe9wDWEnyPS94GB3+y
+	 9eorYOShLlt88cgGdfbjbRtHgkkTX+iDP0+W3gUU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 74CB4F800C0;
-	Fri, 20 Mar 2020 01:21:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 192DAF80292;
+	Wed, 18 Mar 2020 22:42:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8197CF8022B; Fri, 20 Mar 2020 01:21:21 +0100 (CET)
-Received: from mail-il1-f193.google.com (mail-il1-f193.google.com
- [209.85.166.193])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1D4D5F800C0
- for <alsa-devel@alsa-project.org>; Fri, 20 Mar 2020 01:21:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D4D5F800C0
-Received: by mail-il1-f193.google.com with SMTP id k29so4090996ilg.0
- for <alsa-devel@alsa-project.org>; Thu, 19 Mar 2020 17:21:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=FuTx6V6iQX3TQQufQK6K65FrEVN9gM5pUAmus1MSvNc=;
- b=k68WnXfJsb7d6J4YNdQ1an6qzvJxC1b7WnIiWJNG629xfSvCFq34Dm8RtCVit0Fja5
- TpcNziibgUC0AhPaEVqBCS89hlYcGkSkogc0tfXKoY58nOYsZsYXzRtCOUPA7HPsj/Go
- 6Y5SzV9ej8HD598Tg1rIQnzWC/dlOrN08VaM4xWkxVF5y0yluRBScuJpWk8mRrtKYEkc
- R586kMAV2NiG0yzhUYpi4PKCCbTLxAWM9ISnNjrJjJ2dQqh/g2Q+l1hA4akycYenXsAa
- 9U96wHSieKasK6XLNyhcSJKxN//Wp8aClshUeR8k0L9zf6vZR1tmQ4uxM7YX7X3fIJ9V
- oJhA==
-X-Gm-Message-State: ANhLgQ2DuvY9mXQFKv7VPEdW579CoT3wyjsxmwy8gPF/w06mAAH+QcGB
- PcjMoPpCBYaafOpXi7aBnw==
-X-Google-Smtp-Source: ADFU+vtWkY9RoNxxzvof2BMoe1HJaDzh6VsWtHCXeQqV0u6VhrRgZXrJYD2kh9SusnEkFODar2PWAQ==
-X-Received: by 2002:a05:6e02:e0e:: with SMTP id
- a14mr5896966ilk.104.1584663676074; 
- Thu, 19 Mar 2020 17:21:16 -0700 (PDT)
-Received: from rob-hp-laptop ([64.188.179.250])
- by smtp.gmail.com with ESMTPSA id t24sm1275351ioj.13.2020.03.19.17.21.13
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 19 Mar 2020 17:21:14 -0700 (PDT)
-Received: (nullmailer pid 11035 invoked by uid 1000);
- Fri, 20 Mar 2020 00:21:12 -0000
-Date: Thu, 19 Mar 2020 18:21:12 -0600
-From: Rob Herring <robh@kernel.org>
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 2/3] bindings: sound: Add documentation for TI j721e EVM
- (CPB and IVI)
-Message-ID: <20200320002112.GA10030@bogus>
-References: <20200319092815.3776-1-peter.ujfalusi@ti.com>
- <20200319092815.3776-3-peter.ujfalusi@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200319092815.3776-3-peter.ujfalusi@ti.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- lgirdwood@gmail.com, robh+dt@kernel.org, linux-kernel@vger.kernel.org,
- broonie@kernel.org
+ id 04FC5F801DB; Wed, 18 Mar 2020 22:41:52 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 18EB3F800C0
+ for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2020 22:41:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18EB3F800C0
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 05BC2FEC;
+ Wed, 18 Mar 2020 14:41:48 -0700 (PDT)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7E6BB3F67D;
+ Wed, 18 Mar 2020 14:41:47 -0700 (PDT)
+Date: Wed, 18 Mar 2020 21:41:46 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Applied "ASoC: codecs: wsa881x: remove soundwire stream handling" to
+ the asoc tree
+In-Reply-To: 
+Message-Id: 
+X-Patchwork-Hint: ignore
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,46 +70,128 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+Message-ID: <20200318214146.cjctHtQIJD-elVk2sRo0_Kz5hp7X_TA3-Fa_wHk7LYY@z>
 
-On Thu, 19 Mar 2020 11:28:14 +0200, Peter Ujfalusi wrote:
-> The audio support on the Common Processor Board board is using
-> pcm3168a codec connected to McASP10 serializers in parallel setup.
-> 
-> The Infotainment board plugs into the Common Processor Board, the support
-> of the extension board is extending the CPB audio support by adding
-> the two codecs on the expansion board.
-> 
-> The audio support on the Infotainment Expansion Board consists of McASP0
-> connected to two pcm3168a codecs with dedicated set of serializers to each.
-> The SCKI for pcm3168a is sourced from j721e AUDIO_REFCLK0 pin.
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> ---
->  .../bindings/sound/ti,j721e-cpb-audio.yaml    |  93 +++++++++++
->  .../sound/ti,j721e-cpb-ivi-audio.yaml         | 145 ++++++++++++++++++
->  2 files changed, 238 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/ti,j721e-cpb-audio.yaml
->  create mode 100644 Documentation/devicetree/bindings/sound/ti,j721e-cpb-ivi-audio.yaml
-> 
+The patch
 
-My bot found errors running 'make dt_binding_check' on your patch:
+   ASoC: codecs: wsa881x: remove soundwire stream handling
 
-Documentation/devicetree/bindings/sound/ti,j721e-cpb-ivi-audio.yaml: $id: relative path/filename doesn't match actual path or filename
-	expected: http://devicetree.org/schemas/sound/ti,j721e-cpb-ivi-audio.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/ti,j721e-cpb-audio.yaml: duplicate '$id' value 'http://devicetree.org/schemas/sound/ti,j721e-cpb-audio.yaml#'
-Error: Documentation/devicetree/bindings/sound/ti,j721e-cpb-ivi-audio.example.dts:21.23-24 syntax error
-FATAL ERROR: Unable to parse input tree
-scripts/Makefile.lib:311: recipe for target 'Documentation/devicetree/bindings/sound/ti,j721e-cpb-ivi-audio.example.dt.yaml' failed
-make[1]: *** [Documentation/devicetree/bindings/sound/ti,j721e-cpb-ivi-audio.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-Makefile:1262: recipe for target 'dt_binding_check' failed
-make: *** [dt_binding_check] Error 2
+has been applied to the asoc tree at
 
-See https://patchwork.ozlabs.org/patch/1258054
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure dt-schema is up to date:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Please check and re-submit.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+From 16252a8f3af77f69c2193fdc7b2f595b30845a44 Mon Sep 17 00:00:00 2001
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Date: Tue, 17 Mar 2020 15:12:33 +0000
+Subject: [PATCH] ASoC: codecs: wsa881x: remove soundwire stream handling
+
+There could be multiple instances of this codec on any platform,
+so handling stream directly in this codec driver can lead to
+multiple calls to prepare/enable/disable on the same SoundWire stream.
+Move this stream handling to machine driver to fix this issue.
+
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20200317151233.8763-3-srinivas.kandagatla@linaro.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/wsa881x.c | 44 +-------------------------------------
+ 1 file changed, 1 insertion(+), 43 deletions(-)
+
+diff --git a/sound/soc/codecs/wsa881x.c b/sound/soc/codecs/wsa881x.c
+index b59f1d0e7f84..3d525297eac9 100644
+--- a/sound/soc/codecs/wsa881x.c
++++ b/sound/soc/codecs/wsa881x.c
+@@ -676,7 +676,6 @@ struct wsa881x_priv {
+ 	int active_ports;
+ 	bool port_prepared[WSA881X_MAX_SWR_PORTS];
+ 	bool port_enable[WSA881X_MAX_SWR_PORTS];
+-	bool stream_prepared;
+ };
+ 
+ static void wsa881x_init(struct wsa881x_priv *wsa881x)
+@@ -954,41 +953,6 @@ static const struct snd_soc_dapm_widget wsa881x_dapm_widgets[] = {
+ 	SND_SOC_DAPM_OUTPUT("SPKR"),
+ };
+ 
+-static int wsa881x_prepare(struct snd_pcm_substream *substream,
+-			   struct snd_soc_dai *dai)
+-{
+-	struct wsa881x_priv *wsa881x = dev_get_drvdata(dai->dev);
+-	int ret;
+-
+-	if (wsa881x->stream_prepared) {
+-		sdw_disable_stream(wsa881x->sruntime);
+-		sdw_deprepare_stream(wsa881x->sruntime);
+-		wsa881x->stream_prepared = false;
+-	}
+-
+-
+-	ret = sdw_prepare_stream(wsa881x->sruntime);
+-	if (ret)
+-		return ret;
+-
+-	/**
+-	 * NOTE: there is a strict hw requirement about the ordering of port
+-	 * enables and actual PA enable. PA enable should only happen after
+-	 * soundwire ports are enabled if not DC on the line is accumulated
+-	 * resulting in Click/Pop Noise
+-	 * PA enable/mute are handled as part of DAPM and digital mute.
+-	 */
+-
+-	ret = sdw_enable_stream(wsa881x->sruntime);
+-	if (ret) {
+-		sdw_deprepare_stream(wsa881x->sruntime);
+-		return ret;
+-	}
+-	wsa881x->stream_prepared = true;
+-
+-	return ret;
+-}
+-
+ static int wsa881x_hw_params(struct snd_pcm_substream *substream,
+ 			     struct snd_pcm_hw_params *params,
+ 			     struct snd_soc_dai *dai)
+@@ -1016,12 +980,7 @@ static int wsa881x_hw_free(struct snd_pcm_substream *substream,
+ {
+ 	struct wsa881x_priv *wsa881x = dev_get_drvdata(dai->dev);
+ 
+-	if (wsa881x->stream_prepared) {
+-		sdw_disable_stream(wsa881x->sruntime);
+-		sdw_deprepare_stream(wsa881x->sruntime);
+-		sdw_stream_remove_slave(wsa881x->slave, wsa881x->sruntime);
+-		wsa881x->stream_prepared = false;
+-	}
++	sdw_stream_remove_slave(wsa881x->slave, wsa881x->sruntime);
+ 
+ 	return 0;
+ }
+@@ -1052,7 +1011,6 @@ static int wsa881x_digital_mute(struct snd_soc_dai *dai, int mute, int stream)
+ 
+ static struct snd_soc_dai_ops wsa881x_dai_ops = {
+ 	.hw_params = wsa881x_hw_params,
+-	.prepare = wsa881x_prepare,
+ 	.hw_free = wsa881x_hw_free,
+ 	.mute_stream = wsa881x_digital_mute,
+ 	.set_sdw_stream = wsa881x_set_sdw_stream,
+-- 
+2.20.1
+
