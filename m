@@ -2,66 +2,88 @@ Return-Path: <SRS0=4Ztp=5E=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06A9CC4332D
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Mar 2020 16:05:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A0D2BC4332B
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Mar 2020 16:53:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 86EBC2072D
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Mar 2020 16:05:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2AE9C206D7
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Mar 2020 16:53:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lpIp7RG6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 86EBC2072D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Srv9LR8+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2AE9C206D7
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=dominikbrodowski.net
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CA4711779;
-	Thu, 19 Mar 2020 17:05:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA4711779
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7B635823;
+	Thu, 19 Mar 2020 17:52:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B635823
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584633954;
-	bh=Sds0hQ6Ga5/CDUhw1Kw74bSey+OY19gQPx/5iGM/mD0=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1584636785;
+	bh=IS8NReQAmzsrHoYKnUcyegjDX95a5LQ9/zvFFb6MHsk=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lpIp7RG67joIk0dbaVoikqJAU8Oy5KGBlafT66keh1vTUjDsZiVe2zkWj1tUV2fut
-	 VoUk6rL9DB0FIiH2X+tZ0AvRGuxXgs5JsbAcD0IU4DNezvp97ew0N2NcZPDfGT2RDm
-	 tarLO5K+IaSuh4sCqZwTOR4F7PEjocy55bKEUc+M=
+	b=Srv9LR8+X+c5dmffAeqKF9J9ay7ihL07PZgSjlI7Jxit4O6X9x06OG/eyx/HHo9aQ
+	 d30EgKz0fWZQiPXToga8rHQhGFliLLuG3XyewF1n0RAXp5iiNUQxSH61dXg3g63HpT
+	 81xDk+qOygfrpoGBH9kLn7q54ZT5sSTobeifmTwU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1795FF80217;
-	Thu, 19 Mar 2020 17:05:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CB6ECF80217;
+	Thu, 19 Mar 2020 17:52:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 283B8F8022B; Thu, 19 Mar 2020 17:05:03 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 8DC76F8022B; Thu, 19 Mar 2020 17:52:12 +0100 (CET)
+Received: from isilmar-4.linta.de (isilmar-4.linta.de [136.243.71.142])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B24A8F800DD
- for <alsa-devel@alsa-project.org>; Thu, 19 Mar 2020 17:04:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B24A8F800DD
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 57B86AC67;
- Thu, 19 Mar 2020 16:04:56 +0000 (UTC)
-Date: Thu, 19 Mar 2020 17:04:56 +0100
-Message-ID: <s5h1rpouy8n.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Geoffrey Allott <geoffrey@allott.email>
-Subject: Re: [PATCH] ALSA: hda/ca0132 - Add Recon3Di quirk to handle
- integrated sound on EVGA X99 Classified motherboard
-In-Reply-To: <a6cd56b678c00ce2db3685e4278919f2584f8244.camel@allott.email>
-References: <a6cd56b678c00ce2db3685e4278919f2584f8244.camel@allott.email>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id EE146F800C0
+ for <alsa-devel@alsa-project.org>; Thu, 19 Mar 2020 17:52:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE146F800C0
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+Received: from light.dominikbrodowski.net (brodo.linta [10.1.0.102])
+ by isilmar-4.linta.de (Postfix) with ESMTPSA id 98A67200B24;
+ Thu, 19 Mar 2020 16:52:08 +0000 (UTC)
+Received: by light.dominikbrodowski.net (Postfix, from userid 1000)
+ id 094F520B21; Thu, 19 Mar 2020 17:51:57 +0100 (CET)
+Date: Thu, 19 Mar 2020 17:51:57 +0100
+From: Dominik Brodowski <linux@dominikbrodowski.net>
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: Re: snd_hda_intel/sst-acpi sound breakage on suspend/resume since
+ 5.6-rc1
+Message-ID: <20200319165157.GA2254@light.dominikbrodowski.net>
+References: <d7a357c5-54af-3e69-771c-d7ea83c6fbb7@linux.intel.com>
+ <20200318162029.GA3999@light.dominikbrodowski.net>
+ <e49eec28-2037-f5db-e75b-9eadf6180d81@intel.com>
+ <20200318192213.GA2987@light.dominikbrodowski.net>
+ <b352a46b-8a66-8235-3622-23e561d3728c@intel.com>
+ <20200318215218.GA2439@light.dominikbrodowski.net>
+ <e7f4f38d-b53e-8c69-8b23-454718cf92af@intel.com>
+ <20200319130049.GA2244@light.dominikbrodowski.net>
+ <20200319134139.GB3983@sirena.org.uk>
+ <a01359dc-479e-b3e3-37a6-4a9c421d18da@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a01359dc-479e-b3e3-37a6-4a9c421d18da@intel.com>
+Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com,
+ curtis@malainey.com, tiwai@suse.com, Keyon Jie <yang.jie@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com,
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,57 +99,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 19 Mar 2020 15:00:48 +0100,
-Geoffrey Allott wrote:
+On Thu, Mar 19, 2020 at 04:48:03PM +0100, Cezary Rojewski wrote:
+> On 2020-03-19 14:41, Mark Brown wrote:
+> > On Thu, Mar 19, 2020 at 02:00:49PM +0100, Dominik Brodowski wrote:
+> > 
+> > > Have some good news now, namely that a bisect is complete: That pointed to
+> > > 1272063a7ee4 ("ASoC: soc-core: care .ignore_suspend for Component suspend");
+> > > therefore I've added Kuninori Morimoto to this e-mail thread.
+> > 
+> > If that's an issue it feels more like a driver bug in that if the driver
+> > asked for ignore_suspend then it should expect not to have the suspend
+> > callback called.
+> > 
 > 
-> I have a system which has an EVGA X99 Classified motherboard. The pin
-> assignments for the HD Audio controller are not correct under Linux.
-> Windows 10 works fine and informs me that it's using the Recon3Di
-> driver, and on Linux, `cat
-> /sys/class/sound/card0/device/subsystem_{vendor,device}` yields
+> Requested for tests with following diff applied:
 > 
-> 0x3842
-> 0x1038
-> 
-> This patch adds a corresponding entry to the quirk list.
-> 
-> Signed-off-by: Geoffrey Allott <geoffrey@allott.email>
+> diff --git a/sound/soc/intel/boards/broadwell.c
+> b/sound/soc/intel/boards/broadwell.c
+> index db7e1e87156d..6ed4c1b0a515 100644
+> --- a/sound/soc/intel/boards/broadwell.c
+> +++ b/sound/soc/intel/boards/broadwell.c
+> @@ -212,7 +212,6 @@ static struct snd_soc_dai_link broadwell_rt286_dais[] =
+> {
+>                 .init = broadwell_rt286_codec_init,
+>                 .dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+>                         SND_SOC_DAIFMT_CBS_CFS,
+> -               .ignore_suspend = 1,
+>                 .ignore_pmdown_time = 1,
+>                 .be_hw_params_fixup = broadwell_ssp0_fixup,
+>                 .ops = &broadwell_rt286_ops,
 
-Applied with Cc to stable now.
+That patch fixes the issue(s). I didn't even need to revert 64df6afa0dab
+("ASoC: Intel: broadwell: change cpu_dai and platform components for SOF")
+on top of that. But you can assess better whether that patch needs care for
+other reasons; for me, this one-liner you have suggested is perfect.
 
-But the patch wasn't applicable cleanly due to the line breakage, so I
-had to correct manually.  At the next time, please fix your MUA setup
-or try git-send-email (or use an attachment as a last resort).
+Many thanks -- it's been a pleasure to work with you on tracking this issue
+down.
 
+	Dominik
 
-thanks,
-
-Takashi
-
-
-> 
-> ---
->  sound/pci/hda/patch_ca0132.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/sound/pci/hda/patch_ca0132.c
-> b/sound/pci/hda/patch_ca0132.c
-> index ded8bc07d755..10223e080d59 100644
-> --- a/sound/pci/hda/patch_ca0132.c
-> +++ b/sound/pci/hda/patch_ca0132.c
-> @@ -1180,6 +1180,7 @@ static const struct snd_pci_quirk ca0132_quirks[]
-> = {
->  	SND_PCI_QUIRK(0x1458, 0xA016, "Recon3Di", QUIRK_R3DI),
->  	SND_PCI_QUIRK(0x1458, 0xA026, "Gigabyte G1.Sniper Z97",
-> QUIRK_R3DI),
->  	SND_PCI_QUIRK(0x1458, 0xA036, "Gigabyte GA-Z170X-Gaming 7",
-> QUIRK_R3DI),
-> +	SND_PCI_QUIRK(0x3842, 0x1038, "EVGA X99 Classified",
-> QUIRK_R3DI),
->  	SND_PCI_QUIRK(0x1102, 0x0013, "Recon3D", QUIRK_R3D),
->  	SND_PCI_QUIRK(0x1102, 0x0051, "Sound Blaster AE-5", QUIRK_AE5),
->  	{}
-> -- 
-> 2.25.1
-> 
-> 
