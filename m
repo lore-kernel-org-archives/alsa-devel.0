@@ -2,85 +2,88 @@ Return-Path: <SRS0=4Ztp=5E=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MSGID_FROM_MTA_HEADER,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MSGID_FROM_MTA_HEADER,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96EDDC4332B
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Mar 2020 19:53:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AB43C4332B
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Mar 2020 19:54:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 20D16206D7
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Mar 2020 19:53:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A5C83206D7
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Mar 2020 19:54:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="K3BoCVAt";
-	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="FPJvvm45"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 20D16206D7
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="q6FlBAfS";
+	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="mckwreSi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A5C83206D7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oss.nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 33E4117A3;
-	Thu, 19 Mar 2020 20:52:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33E4117A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0CE7417B9;
+	Thu, 19 Mar 2020 20:53:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0CE7417B9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584647626;
-	bh=5WPo6lili1K8jYc6xDDF55cG5z4adFZx5R3uKulZMG0=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=K3BoCVAtvc7HiN9m15WNmWrYeMBPxayzSIjWAQ9h74Hw35twueYQBxge+gioV+C6k
-	 FTZLODuIqeGNw4HMdbcz4zis3TeqQrOcZatj5S7oNIjakW9x6vKC99yYLGIvR1lJcq
-	 cAjhm/wZUQRlbCoDWMpo9iXNfI+sUb/g/jGZUrQs=
+	s=default; t=1584647677;
+	bh=Hx2TMLMjbNc/5FTY2zJ3uakTijXkBLXcSNJgNU7vZQI=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=q6FlBAfSQUZfcFq47w6Mp9j2+UV1XW2ihxFV0rQMqS1KtAYPof6Ozq5tICr3YRb3/
+	 CjRdWtHtxFsTGNi1v4tQJAAuVs9I5D51K91E3c+j5gOvixdX8nsIxSssw7/fyooRrG
+	 j3NPCPRDcB0w+SBRZ8mSbR9Ram09ddo9R+e9PqeY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 966E8F80253;
-	Thu, 19 Mar 2020 20:52:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2D945F80290;
+	Thu, 19 Mar 2020 20:52:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BDED1F8023E; Thu, 19 Mar 2020 20:51:54 +0100 (CET)
+ id AE905F8024A; Thu, 19 Mar 2020 20:51:57 +0100 (CET)
 Received: from EUR04-VI1-obe.outbound.protection.outlook.com
  (mail-eopbgr80055.outbound.protection.outlook.com [40.107.8.55])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F2F5BF800DD;
- Thu, 19 Mar 2020 20:51:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2F5BF800DD
+ by alsa1.perex.cz (Postfix) with ESMTPS id F04FBF800C0;
+ Thu, 19 Mar 2020 20:51:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F04FBF800C0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com
- header.i=@NXP1.onmicrosoft.com header.b="FPJvvm45"
+ header.i=@NXP1.onmicrosoft.com header.b="mckwreSi"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Q4zofgkZ7zP6Gw5Te1xkIS+tjd1YGkHLrhfPGnfOiRvErYMAgViuVPaTQrEMDWEtRISSCAIel84/8LCKJwC0/fbdD5Eo4R89msT6/BLqsBs5u4TeWK5HiMLN7UuxS+lqCjQUGKMjZZKTdLdILDRVvf9D3G+wL34JgtVyAxZ/opHL9xaXb9Qn0k1uyB0Ypl0M08kQzj0TRBTEvDmkCaOEfpiQXeIXGLGbvbQjigeKqpvqnOg1hLEiGS7xSxykxtkhslw7b85SEr3c/OICfJAUm3XCh75S7ZfozVHCyhAapypdugcR+mdmJciFSIkI7/1N12nk//PqlbZdJPiiWR51ng==
+ b=c9D9wYq9Eub2KplHkUla7283hJLpW6bijlrX6hL5doTVQc45KAMLIg15bkOE+1JMeywnr2UpRN7XW+9XeTViCqLNXUpHj+oyCtK1M+z/MLi/IGmaPzBWMT4ew1yTb1yEsd85zTf3bosIwSGRJ2u2Z40YwidM85rx0oJg5zm697kAZ/t43xlRKWQgbzF8BS0ch4rnUz9VnlOYK2ZR/NXrb3BPucAQxIRlEyPawvMyUjXkyNHXuZD6sELHFx7NBlnec/yql1kmovvwZJlv+g/M/fBXlnu8lvxn5u0Ltpq/ioTA4HYMSEWJQCOsDMM7n1AuU7gyj58ekRfKH6MBEVfImw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=33Y+k5XVFn4hawpiqiZ0JEg5M5ZSQ1Lh1jAjmWH3bMM=;
- b=Ybd27aeWUUnUhk2QjfLJm2sknDmYXiz1xNGOQNbhjlX8bLEhHwWwyC6IYqdJs+KaB9Fi/Pp+SvELGwODESU2fwpAefb1QZKVBKLSUDnrDSRvsQfPxQNAuQF57qboYMunyXPOWrfx16S0felcIA3MUqe9prO57Aj8R5mbzwVHTnmEPpMYp0T/T6sjJAg8dB+T+7GfM1fxmgFxAffNzl0Fdwp9ia3SeR+OVyJ1FcM9NlAWDKXy/9Lj9J+8e8xDR1GVnhC13nBUZT47LbIzG36XpDYz40KTB6RX1x8D0EnEzAb+P6LMvHww6hgS8+MdUV/PlUFbw6s5OnBHOKCviRGoPw==
+ bh=s0QTYR+zBU/gPa+yJ0Tvr7AOSy44w97Zi5bWKxRvmcM=;
+ b=nMAOdU+obZMnRpTEhVzUWND78XuSO92T4uVdgnNI3r5UsQM8df7S6NrFyptqgKmoNPBs0Lj7/wgmOClDyeJvXR1TJ3tl+bMZgnyxJ/ZcJ0FxiR3JqE4cZWG5tfFdJDQp3EM6FYIIThBL5pGR2Mb6BhGZm+YqHgpE23qnHo7L0AtxA+reX4GLnhcXJU3/iStkrUtccWzPQlzDwj0R6aGGTI56Fw1xPhCIPiHpdg8nCAHQrjezoyGMHWgQhY5ba3yGu4IRu+st322+OuFjUexDIhtv7oZN1og1tA4/rL4CTjhprpWivEkPKcqNVjVzjdQh6avZi5nwtTIjX8ImjaazLw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
  dkim=pass header.d=oss.nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com; 
  s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=33Y+k5XVFn4hawpiqiZ0JEg5M5ZSQ1Lh1jAjmWH3bMM=;
- b=FPJvvm45tYSLWmK1t3fz230Rah/0tsGBqJGsEFXNeCkaM4QBSrRsKEmbN9bTP7+KawAeah1Byc/x5XADhdyhN1f2JjQctdMPqKhka2xErmIFCVvRyRqy8dXtiDZGX0vTy0rx+1Slt+LgTsjXK0grapLURuYDWlIlfFGeSSGc3lA=
+ bh=s0QTYR+zBU/gPa+yJ0Tvr7AOSy44w97Zi5bWKxRvmcM=;
+ b=mckwreSivnBDYNQztOZJKanuSCLzdbbv1J6pcLaSpSTrNd2WE01AIoWG3CybpLnPsi+aLA6513w949ASv1Zqodbc5VQ2wFjCIfrGEXhsOW6Udeg5cqy4GmKRhnsk+3rwzf7PNUMCXCur80T1QevnAhtLBhKCc6UQgUJhNKL8VCA=
 Authentication-Results: spf=none (sender IP is )
  smtp.mailfrom=daniel.baluta@oss.nxp.com; 
 Received: from VI1PR0402MB3839.eurprd04.prod.outlook.com (52.134.16.147) by
  VI1PR0402MB3486.eurprd04.prod.outlook.com (52.134.4.10) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2814.13; Thu, 19 Mar 2020 19:51:41 +0000
+ 15.20.2814.13; Thu, 19 Mar 2020 19:51:46 +0000
 Received: from VI1PR0402MB3839.eurprd04.prod.outlook.com
  ([fe80::35d0:31bc:91d9:ceb0]) by VI1PR0402MB3839.eurprd04.prod.outlook.com
  ([fe80::35d0:31bc:91d9:ceb0%7]) with mapi id 15.20.2835.017; Thu, 19 Mar 2020
- 19:51:41 +0000
+ 19:51:46 +0000
 From: Daniel Baluta <daniel.baluta@oss.nxp.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
-Subject: [PATCH 0/5] Add support for SOF on i.MX8M 
-Date: Thu, 19 Mar 2020 21:49:52 +0200
-Message-Id: <20200319194957.9569-1-daniel.baluta@oss.nxp.com>
+Subject: [PATCH 2/5] ASoC: SOF: imx: fix undefined reference issue
+Date: Thu, 19 Mar 2020 21:49:54 +0200
+Message-Id: <20200319194957.9569-3-daniel.baluta@oss.nxp.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200319194957.9569-1-daniel.baluta@oss.nxp.com>
+References: <20200319194957.9569-1-daniel.baluta@oss.nxp.com>
 Content-Type: text/plain
 X-ClientProxiedBy: AM0PR07CA0031.eurprd07.prod.outlook.com
  (2603:10a6:208:ac::44) To VI1PR0402MB3839.eurprd04.prod.outlook.com
@@ -90,20 +93,20 @@ X-MS-Exchange-MessageSentRepresentingType: 1
 Received: from fsr-ub1864-103.ro-buh02.nxp.com (89.37.124.34) by
  AM0PR07CA0031.eurprd07.prod.outlook.com (2603:10a6:208:ac::44) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2835.12 via Frontend Transport; Thu, 19 Mar 2020 19:51:39 +0000
+ 15.20.2835.12 via Frontend Transport; Thu, 19 Mar 2020 19:51:44 +0000
 X-Mailer: git-send-email 2.17.1
 X-Originating-IP: [89.37.124.34]
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: a7eaeb31-5b4e-4855-98a2-08d7cc3ef1a9
+X-MS-Office365-Filtering-Correlation-Id: 229774bf-87d2-417a-5de8-08d7cc3ef4b1
 X-MS-TrafficTypeDiagnostic: VI1PR0402MB3486:|VI1PR0402MB3486:
 X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR0402MB3486E70DDEC1DB7B40580ECAB8F40@VI1PR0402MB3486.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-Microsoft-Antispam-PRVS: <VI1PR0402MB3486EC278CF9DE7DEC95A62DB8F40@VI1PR0402MB3486.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
 X-Forefront-PRVS: 0347410860
 X-Forefront-Antispam-Report: SFV:NSPM;
- SFS:(10009020)(4636009)(346002)(366004)(39860400002)(396003)(136003)(376002)(199004)(81156014)(4744005)(8676002)(8936002)(1076003)(81166006)(186003)(26005)(956004)(4326008)(16526019)(2616005)(478600001)(4743002)(6506007)(316002)(6666004)(2906002)(44832011)(86362001)(66946007)(7416002)(66476007)(6486002)(52116002)(66556008)(6512007)(5660300002);
+ SFS:(10009020)(4636009)(346002)(366004)(39860400002)(396003)(136003)(376002)(199004)(81156014)(8676002)(8936002)(1076003)(81166006)(186003)(26005)(956004)(4326008)(16526019)(2616005)(478600001)(6506007)(316002)(6666004)(2906002)(44832011)(86362001)(66946007)(7416002)(66476007)(6486002)(52116002)(66556008)(6512007)(5660300002);
  DIR:OUT; SFP:1101; SCL:1; SRVR:VI1PR0402MB3486;
  H:VI1PR0402MB3839.eurprd04.prod.outlook.com; FPR:; SPF:None; LANG:en;
  PTR:InfoNoRecords; A:0; 
@@ -111,15 +114,15 @@ Received-SPF: None (protection.outlook.com: oss.nxp.com does not designate
  permitted sender hosts)
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: aGxMB3yr3NIjHkL71VSOamB8pUYzRhtj+Y69FHeMnXpqosZCzEsvF4WZykGvw/aShyOMo+/h3UTCJozdkub208TvYO1NUc74WYu9Wkql8DeAFF8w1yNcjnGxHrUkIT4lDFxSZ8eqAZ7gT7cV/+g+OOSixF5aGAgkH4dcd3YXM+49CzjxJ7aTwgXCxyqZxqY7mEe8R0oVwBE5OE4AaXXLzvYUerICiqiVE4Y+uQS4VXsETM20BUME3VxEcsgMapJcsij1m/Rxzrk57ndIRakEizf5DGaYV0qO47bC0gOY4An3ck6JdChXM92+oWvs7kh7hym3TKtdz6y4PC1Omk3vXCGm4Lud8UmJJx6J9wHRrLaQO/ICyzGzccx31M5afE7X2F8+7DGhB41avpt1ooD4b532lTeck8GDweJ3RSrZmc169vGuaIpgjESJ3UJHVYCJ
-X-MS-Exchange-AntiSpam-MessageData: FicdRk1BQFUw6771FAeXE17a6AScZSlpPKbpH8y5VRYwX4HeiKfVnybF1LT8QOobjmMYop3956oSdqSkDQEhg2fXvwcFu8otfQMdLyZfpJbqmmzPusx/aKlei5T28dmstalS8ILDiC7OiiXuqcQhQA==
+X-Microsoft-Antispam-Message-Info: 0x3/0y1zVptZ5VA9qcroBbaXRyP/N+MR8+m6i6ByKNImlKPgcYXLSDF472WnW5+4OVM5iafvlHpUF0YIIGI39nPi+coh8cVBQqK0vse5iGKOppUMLsSg5TO+ZZi6k9XbwEcnjf95v2X7eQzUXyaQWjK5S73KgdrB9PQvPmPn0yCea7jVIGRsh96xMflOXPtd3DtSqK80yBHWiEfWlUNBsvhIUrQRv/qB81n/nE29pgFJItUeJPUsMGSuOrZGbopBXJGeN4T+bw/+7K9rjPbAz3fUbjQDTsXoGD6ryXhiDaZ3VARr9rjOSzlVClum00nmy0iyxFq6TGvl+CWMtyqlJyHwxN/t19wBFwxfCBnBVboAQORId3UM74+vNvdOpzPBOgO6r0TIP2ZMoCEWDd8r8zhmiWjDHguCMRR+cV+i/V7SOjN1QdRXNqlZJlGsPngy
+X-MS-Exchange-AntiSpam-MessageData: Aui9wGuY8UX14msPUG1ryqGFXXv6DtS5q6rZz/3SZifeGc2OZqwDR6U32XtQScuEYCaUc12a3CCgoZlS+zAWrPWH8sB1yM8ixZQEQcP1k0BadrmsuTcBRce3g52lUHpQg+XyJlPjcJyJmV0Y1v+uqw==
 X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a7eaeb31-5b4e-4855-98a2-08d7cc3ef1a9
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2020 19:51:41.6233 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 229774bf-87d2-417a-5de8-08d7cc3ef4b1
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2020 19:51:46.3326 (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: SUxIjWvQbxuE+3Gt3pxQ00551TH/bQ1atvALi2LoP9OCkPfgBWLINSwVfh4lZgdPoSh0IVs+ADv4EZJUhI62+w==
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2APgmY5nfmseak7H65WNXth67KgSbWLI5AIWJoT5QJZnVwT/YHjiFRxepYdKtlccDiCqsT3D9UthU7IQlV+WDg==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3486
 Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
  daniel.baluta@gmail.com, Daniel Baluta <daniel.baluta@nxp.com>,
@@ -145,30 +148,57 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Daniel Baluta <daniel.baluta@nxp.com>
 
-This patch series adds support for SOF on i.MX8M family. First board
-from this family that has a DSP is i.MX8MP.
+make.cross ARCH=mips allyesconfig fails with the following error:
 
-First 2 patches are trying to fix some compilation issues, the next two
-are adding the imx8m support and the last one adds the devicetree
-binding.
+sound/soc/sof/sof-of-dev.o:(.data.sof_of_imx8qxp_desc+0x40): undefined
+reference to `sof_imx8x_ops'.
 
-Daniel Baluta (4):
-  ASoC: SOF: imx: fix undefined reference issue
-  ASoC: SOF: imx: Add i.MX8M HW support
-  ASoC: SOF: Add i.MX8MP device descriptor
-  dt-bindings: dsp: fsl: Add fsl,imx8mp-dsp entry
+This seems to be a Makefile order issue, solve by using the same
+structure as for Intel platforms.
 
-YueHaibing (1):
-  ASoC: SOF: imx8: Fix randbuild error
+Fixes: f9ad75468453 ("ASoC: SOF: imx: fix reverse CONFIG_SND_SOC_SOF_OF
+dependency")
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+---
+ sound/soc/sof/imx/Kconfig | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
 
- .../devicetree/bindings/dsp/fsl,dsp.yaml      |   2 +
- sound/soc/sof/imx/Kconfig                     |  32 +-
- sound/soc/sof/imx/Makefile                    |   2 +
- sound/soc/sof/imx/imx8m.c                     | 279 ++++++++++++++++++
- sound/soc/sof/sof-of-dev.c                    |  14 +
- 5 files changed, 325 insertions(+), 4 deletions(-)
- create mode 100644 sound/soc/sof/imx/imx8m.c
-
+diff --git a/sound/soc/sof/imx/Kconfig b/sound/soc/sof/imx/Kconfig
+index 812749064ca8..9586635cf8ab 100644
+--- a/sound/soc/sof/imx/Kconfig
++++ b/sound/soc/sof/imx/Kconfig
+@@ -11,17 +11,26 @@ config SND_SOC_SOF_IMX_TOPLEVEL
+ 
+ if SND_SOC_SOF_IMX_TOPLEVEL
+ 
++config SND_SOC_SOF_IMX_OF
++	def_tristate SND_SOC_SOF_OF
++	select SND_SOC_SOF_IMX8 if SND_SOC_SOF_IMX8_SUPPORT
++	help
++	  This option is not user-selectable but automagically handled by
++	  'select' statements at a higher level
++
+ config SND_SOC_SOF_IMX8_SUPPORT
+ 	bool "SOF support for i.MX8"
+-	depends on IMX_SCU
+-	select IMX_DSP
+ 	help
+ 	  This adds support for Sound Open Firmware for NXP i.MX8 platforms
+ 	  Say Y if you have such a device.
+ 	  If unsure select "N".
+ 
+ config SND_SOC_SOF_IMX8
+-	def_tristate SND_SOC_SOF_OF
+-	depends on SND_SOC_SOF_IMX8_SUPPORT
++	tristate
++	depends on IMX_SCU
++	select IMX_DSP
++	help
++	  This option is not user-selectable but automagically handled by
++	  'select' statements at a higher level
+ 
+ endif ## SND_SOC_SOF_IMX_IMX_TOPLEVEL
 -- 
 2.17.1
 
