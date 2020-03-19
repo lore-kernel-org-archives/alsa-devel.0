@@ -2,92 +2,135 @@ Return-Path: <SRS0=4Ztp=5E=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MSGID_FROM_MTA_HEADER,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 94A2AC4332D
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Mar 2020 19:30:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E294C4332B
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Mar 2020 19:52:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2574D20739
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Mar 2020 19:30:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7641C206D7
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Mar 2020 19:52:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="F3w0i4Cv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2574D20739
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WbPipajJ";
+	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="e49anRXz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7641C206D7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oss.nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8A37B17A8;
-	Thu, 19 Mar 2020 20:29:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A37B17A8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 362CB1798;
+	Thu, 19 Mar 2020 20:52:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 362CB1798
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584646230;
-	bh=rq5oP6Ug5Od0LjTx0LNJMTIVmmDG7cUK91FxWANfZiE=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1584647572;
+	bh=iz8YN3ZOs6Rak0UPDVgUraXT91WNI2Q0Xvliv4/VlGs=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=F3w0i4CvkO/iDcNWrI9iKPTRG6xz0jC2LpAwN39WOJRZ/obmwbMHwxrSDH5BimSWF
-	 1g/DTUuybGFMeSgN4hqDHM9btJFq+NGfuDanI4BbEZXnmbShJ5p/Yvxqbm1ohsQZv6
-	 R6OZUkZRf95506+IoSTZVD7bLq9o7JvmtXnJ3gGk=
+	b=WbPipajJexnVEqv2X0IzRi3vz+O29EtywsX+orfHJV63bzy+c3V5trXxnQkLUJjHM
+	 YlwPhBdZs9uHuthy7Z54/WdBY7X/+ie2WMPFbqsA9FWuWtPFVvlXbX0MmqOQ8pVAhF
+	 LR959dPd52NEzgi/i0P8DgA7WCbGlLaiMZ6aPFWE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6F469F80254;
-	Thu, 19 Mar 2020 20:29:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5E888F8022B;
+	Thu, 19 Mar 2020 20:52:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D9EF4F8023E; Thu, 19 Mar 2020 20:29:23 +0100 (CET)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ id 91451F80217; Thu, 19 Mar 2020 20:51:56 +0100 (CET)
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com
+ (mail-eopbgr80055.outbound.protection.outlook.com [40.107.8.55])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8F8ADF80217
- for <alsa-devel@alsa-project.org>; Thu, 19 Mar 2020 20:29:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F8ADF80217
-IronPort-SDR: OaUd89KBLxc07poA4AcNTnzTOAmE3RY6dSTBXsBvYt4cp6Tke4i2NTK2zYo5iCTckRAhtDIXGX
- ZYBIuEZRoNaQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Mar 2020 12:29:17 -0700
-IronPort-SDR: MQXloGgtmfQmn2lTbl+0WLbHTx9QpCVk0qFlUxv6GOqn/OpUgA3EDvcUSRLeEL1HnuDHbQR4cA
- TjDyvYis4T+A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,572,1574150400"; d="scan'208";a="391905475"
-Received: from mallani-mobl.amr.corp.intel.com (HELO [10.255.35.49])
- ([10.255.35.49])
- by orsmga004.jf.intel.com with ESMTP; 19 Mar 2020 12:29:16 -0700
-Subject: Re: snd_hda_intel/sst-acpi sound breakage on suspend/resume since
- 5.6-rc1
-To: Cezary Rojewski <cezary.rojewski@intel.com>,
- Dominik Brodowski <linux@dominikbrodowski.net>
-References: <e49eec28-2037-f5db-e75b-9eadf6180d81@intel.com>
- <20200318192213.GA2987@light.dominikbrodowski.net>
- <b352a46b-8a66-8235-3622-23e561d3728c@intel.com>
- <20200318215218.GA2439@light.dominikbrodowski.net>
- <e7f4f38d-b53e-8c69-8b23-454718cf92af@intel.com>
- <20200319130049.GA2244@light.dominikbrodowski.net>
- <20200319134139.GB3983@sirena.org.uk>
- <a01359dc-479e-b3e3-37a6-4a9c421d18da@intel.com>
- <20200319165157.GA2254@light.dominikbrodowski.net>
- <a7bf2aee-78e7-f905-bcc3-cd21bf16a976@intel.com>
- <20200319182413.GA3968@light.dominikbrodowski.net>
- <750f7841-0b95-9fa8-d858-e0bff4d834d5@intel.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <f6b7c60a-d99e-c140-31d0-0b56960c3ec9@linux.intel.com>
-Date: Thu, 19 Mar 2020 14:05:56 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9B619F80217;
+ Thu, 19 Mar 2020 20:51:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B619F80217
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com
+ header.i=@NXP1.onmicrosoft.com header.b="e49anRXz"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ni5ktaZi01JxaQqHnu9Thd2Sd4Ln880Q2v5JnByqyso4VirLQPeSzaSch5z0pseeKqACNwc1qOWCXJFfowsANNY6O8bIK+xB6TDK9LhoDqBccMeDVBHQbRGQAaa7Jbgqjfae4geiK+X6HV81SWLd8duhWfTf0ysrthZ83Cj5khQUh6bER1XCNnOr1xCM5fGCmCBlMTHBZic7UwJGcRtiaC87mWMKPWXvzNlts5aT4oBIQeCdcosjvP8IZXp6tSpQMyZKfgxkzwPKskYHbxsIYfIOdf0kse02pWc+7Cgiz7ORhJA7mTkqc5cwm3AukLBrMtPxtjUMVyI7xaRcqr6rZA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=n50d34UAFoD31TdOb/UenHzu6OWlJmOwhnhtBlo5j5c=;
+ b=aQ7wOpMAKSppJMfD4Sw76UPSN8utueUb73sg7oqI+Xyi866fSvs8lj9LPDJI900e9YXyzi1GT9tI2ja3PikzmgF1lb5GO4v5T0+W5Hjh0dPnLPhreRQIAoThrt6epksLgY13RtO+TMSh0QN4gCIxMB8TDXUlaO1rEXdMzbPwnacGnaAqeqcd1qx16sR2n8Tcu469f1INb5cMsENQ1rCUsvneppsF26h8XS1rfk7dc2ZM/80v1CVmR4BJaCacw3/tLZINwgobCycJED4O44fDhA68cZJgYjHSNCQVwwBMlISZ1W2svYo0jPQOCHwIi/PaKG3f+ke9dfTwvj1OS3TSuA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com; 
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=n50d34UAFoD31TdOb/UenHzu6OWlJmOwhnhtBlo5j5c=;
+ b=e49anRXzTBKqN6ztwelhcYsRyMjA9sEaZS4EA3dW7Fr0No0TUBE5LEoQ/4Se/QfK0igQhItTI7uMk0RPstqZWLur+SrJHAjJQD/P7D8yJxdURdP3ZHQUMsYKahraGZyPbdN8fMlrg8IjT5TaWxI4JsshvTiBh81WBGVZCH71a58=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=daniel.baluta@oss.nxp.com; 
+Received: from VI1PR0402MB3839.eurprd04.prod.outlook.com (52.134.16.147) by
+ VI1PR0402MB3486.eurprd04.prod.outlook.com (52.134.4.10) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2814.13; Thu, 19 Mar 2020 19:51:44 +0000
+Received: from VI1PR0402MB3839.eurprd04.prod.outlook.com
+ ([fe80::35d0:31bc:91d9:ceb0]) by VI1PR0402MB3839.eurprd04.prod.outlook.com
+ ([fe80::35d0:31bc:91d9:ceb0%7]) with mapi id 15.20.2835.017; Thu, 19 Mar 2020
+ 19:51:44 +0000
+From: Daniel Baluta <daniel.baluta@oss.nxp.com>
+To: lgirdwood@gmail.com,
+	broonie@kernel.org
+Subject: [PATCH 1/5] ASoC: SOF: imx8: Fix randbuild error
+Date: Thu, 19 Mar 2020 21:49:53 +0200
+Message-Id: <20200319194957.9569-2-daniel.baluta@oss.nxp.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200319194957.9569-1-daniel.baluta@oss.nxp.com>
+References: <20200319194957.9569-1-daniel.baluta@oss.nxp.com>
+Content-Type: text/plain
+X-ClientProxiedBy: AM0PR07CA0031.eurprd07.prod.outlook.com
+ (2603:10a6:208:ac::44) To VI1PR0402MB3839.eurprd04.prod.outlook.com
+ (2603:10a6:803:21::19)
 MIME-Version: 1.0
-In-Reply-To: <750f7841-0b95-9fa8-d858-e0bff4d834d5@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com,
- curtis@malainey.com, Keyon Jie <yang.jie@linux.intel.com>, tiwai@suse.com,
- linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com,
- Mark Brown <broonie@kernel.org>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from fsr-ub1864-103.ro-buh02.nxp.com (89.37.124.34) by
+ AM0PR07CA0031.eurprd07.prod.outlook.com (2603:10a6:208:ac::44) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2835.12 via Frontend Transport; Thu, 19 Mar 2020 19:51:42 +0000
+X-Mailer: git-send-email 2.17.1
+X-Originating-IP: [89.37.124.34]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: f957147d-3441-440c-a2ba-08d7cc3ef384
+X-MS-TrafficTypeDiagnostic: VI1PR0402MB3486:|VI1PR0402MB3486:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR0402MB34868FAD67FD17A51BBA8B10B8F40@VI1PR0402MB3486.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:923;
+X-Forefront-PRVS: 0347410860
+X-Forefront-Antispam-Report: SFV:NSPM;
+ SFS:(10009020)(4636009)(346002)(366004)(39860400002)(396003)(136003)(376002)(199004)(81156014)(8676002)(8936002)(1076003)(81166006)(186003)(26005)(956004)(4326008)(16526019)(2616005)(478600001)(6506007)(316002)(6666004)(2906002)(44832011)(86362001)(66946007)(7416002)(66476007)(6486002)(52116002)(66556008)(6512007)(5660300002);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:VI1PR0402MB3486;
+ H:VI1PR0402MB3839.eurprd04.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; A:0; 
+Received-SPF: None (protection.outlook.com: oss.nxp.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: UFyBHcu9dd4CiE72t3GNwG7fJ/6VFokN6nqxMxwEneEXZTvQt1gmGyz46/FD9FSg9fYTOy0T7nPYCYAisgSHF/wC2cbaGnKA2jMeKcxCXC3+K+5BGQmLwRPyuY1O8pbjFV/+yzDunU0yaVr0t2ObYAAzLqsBAbvxubAh94slTNztjQJB5mzwYrhM4GbMeosubNKsaUrIplxb9OOFnktgw+KXnzYCRWgbj84/hbUsDRWdDJD3/3Jo3i+bifNTD66thlzgwW9SBLJsptPdUVi4UcfS/8x02iJQMMtPDxjsw+p+md0Ck4G3zkfGu++mx6dHrzzyQgJKrwXbONSYH9oRT5XCZzd1YftXrXAKfqKIykzfoKniDEl347L7pumxv+rGC4P61R/gdO7YnD4r8qQHymSKCfut7o5OaW1FDynqFfRYXE1E3XVa9fvCuRS1cfaT
+X-MS-Exchange-AntiSpam-MessageData: vi7EBYL36xqYDDDACuuTJlu+6OsSXOuZS22cgQmxRtgA68QAcFhdCGApyKzQpxaa1FA6FGqpLYRhMRK/rJMmwET38Abda7OxPNfS08+VRxwHKEglxIGAnEhbhExoPJ63vFN8y994309ptQigcZ6Xfg==
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f957147d-3441-440c-a2ba-08d7cc3ef384
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2020 19:51:44.5227 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: kK4AyjF2d1B91MX/pRAfUA4zh65uiCBg5vX12VWfUbo4re8CH3+0OcAtMJV/sN+xfEm8azOC/cQf+AD4fM36XQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3486
+Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+ daniel.baluta@gmail.com, Daniel Baluta <daniel.baluta@nxp.com>,
+ kai.vehmanen@linux.intel.com, festevam@gmail.com, s.hauer@pengutronix.de,
+ yuehaibing@huawei.com, pierre-louis.bossart@linux.intel.com, krzk@kernel.org,
+ ranjani.sridharan@linux.intel.com, robh+dt@kernel.org, linux-imx@nxp.com,
+ kernel@pengutronix.de, alsa-devel@alsa-project.org, shawnguo@kernel.org,
+ linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -103,39 +146,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: YueHaibing <yuehaibing@huawei.com>
 
+when do randconfig like this:
+CONFIG_SND_SOC_SOF_IMX8_SUPPORT=y
+CONFIG_SND_SOC_SOF_IMX8=y
+CONFIG_SND_SOC_SOF_OF=y
+CONFIG_IMX_DSP=m
+CONFIG_IMX_SCU=y
 
-On 3/19/20 1:35 PM, Cezary Rojewski wrote:
-> On 2020-03-19 19:24, Dominik Brodowski wrote:
->> On Thu, Mar 19, 2020 at 06:33:50PM +0100, Cezary Rojewski wrote:
->>>
->>> Could you confirm the same happens on your machine when revert of 
->>> mentioned
->>> patch is not applied ("stream is NULL" messages occur)? Issue may be
->>> harmless but explained sequence does not look right.
->>
->> Indeed, I still see
->>
->> haswell-pcm-audio haswell-pcm-audio: warning: stream is NULL, no 
->> stream to reset, ignore it.
->> haswell-pcm-audio haswell-pcm-audio: warning: stream is NULL, no 
->> stream to free, ignore it.
->> haswell-pcm-audio haswell-pcm-audio: FW loaded, mailbox readback FW 
->> info: type 01, - version: 00.00, build 77, source commit id: 
->> 876ac6906f31a43b6772b23c7c983ce9dcb18a19
->> haswell-pcm-audio haswell-pcm-audio: warning: stream is NULL, no 
->> stream to reset, ignore it.
->> haswell-pcm-audio haswell-pcm-audio: warning: stream is NULL, no 
->> stream to free, ignore it.
->>
->> though sounds continues to work.
->>
-> 
-> Thanks once again for your input and time!
-> 
-> I'll prepare patches for both issues. My guess is haswell-pcm could be 
-> updated to handle 'platform' component param just fine, but it is 
-> probably a change of more than few lines. I'd rather revert non-SOF 
-> broadwell to its previous behavior and start a separate task from there.
+there is a link error:
 
-It'd be good to know why a dummy platform component is required though.
+sound/soc/sof/imx/imx8.o: In function 'imx8_send_msg':
+imx8.c:(.text+0x380): undefined reference to 'imx_dsp_ring_doorbell'
+
+Select IMX_DSP in SND_SOC_SOF_IMX8_SUPPORT to fix this
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Fixes: f9ad75468453 ("ASoC: SOF: imx: fix reverse CONFIG_SND_SOC_SOF_OF dependency")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+---
+ sound/soc/sof/imx/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/sof/imx/Kconfig b/sound/soc/sof/imx/Kconfig
+index bae4f7bf5f75..812749064ca8 100644
+--- a/sound/soc/sof/imx/Kconfig
++++ b/sound/soc/sof/imx/Kconfig
+@@ -14,7 +14,7 @@ if SND_SOC_SOF_IMX_TOPLEVEL
+ config SND_SOC_SOF_IMX8_SUPPORT
+ 	bool "SOF support for i.MX8"
+ 	depends on IMX_SCU
+-	depends on IMX_DSP
++	select IMX_DSP
+ 	help
+ 	  This adds support for Sound Open Firmware for NXP i.MX8 platforms
+ 	  Say Y if you have such a device.
+-- 
+2.17.1
+
