@@ -2,71 +2,83 @@ Return-Path: <SRS0=4Ztp=5E=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D88DC4332D
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Mar 2020 21:13:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CBB0EC4332B
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Mar 2020 22:16:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 684E22072D
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Mar 2020 21:13:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5145F20663
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Mar 2020 22:16:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TFSemhDB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 684E22072D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jxV3lb4h"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5145F20663
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A9CBA17AE;
-	Thu, 19 Mar 2020 22:12:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A9CBA17AE
+	by alsa0.perex.cz (Postfix) with ESMTPS id A5BC617AF;
+	Thu, 19 Mar 2020 23:15:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5BC617AF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584652401;
-	bh=Va1qGIhaxyUN0bq3JSJKjS7dp1aFxm7NLQChHcP+1AI=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=TFSemhDBMktjIAmvWb3QQw/6vAoAUM1t8I3IDBZGovtjxT4upIYjC2MGHkpM0NWai
-	 cK7Jzs1mbQGfRizjVPbFB9puNwOA/kT223qt1VEfBiBUIQzOMBHTIlJD8bq+K/PSbh
-	 G6CQy5wNhdz91HoRy7C15inKiHXUMgbICF8oJt+8=
+	s=default; t=1584656161;
+	bh=5EbMIh3HMJ2LkkLSER90/nlQqsHsgDQLM7WLpueZ04g=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=jxV3lb4hmgG3ikbdG48HSxWynFd8gnDcDgqsq+WnSwD1V5R3mwQvp6TkQaWCT3zsS
+	 xMjIL2ucuO4oLhGaZGllut1PgdXZRhQu+/3TtJE0FOCdJHoCpzTZABUpUXwBljQuS/
+	 xdJmBuBTTCzSbXUMPPJ/E/cp3DEHH2xrmjz6PjIg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3AF7BF80217;
-	Thu, 19 Mar 2020 22:12:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 138D1F80217;
+	Thu, 19 Mar 2020 23:15:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7EFFEF8022B; Thu, 19 Mar 2020 22:12:28 +0100 (CET)
+ id D8D0FF8022B; Thu, 19 Mar 2020 23:15:06 +0100 (CET)
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 53BE2F8012F
- for <alsa-devel@alsa-project.org>; Thu, 19 Mar 2020 22:12:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53BE2F8012F
-IronPort-SDR: 67KWqBW/rk+uIw9pQeHJFEaiZrmbPowkvC812KSGvygvSzQ1AAYxpYtu0ypTNGOPrLGMFLTFv9
- t8fcHQOSACvw==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 39C98F8012F
+ for <alsa-devel@alsa-project.org>; Thu, 19 Mar 2020 23:15:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39C98F8012F
+IronPort-SDR: OehT5WA6ku+nW79d3IcwZ7jK9nie4az2EfUaqokWWGgTgdLB6blBb5t1lpikhghNg0M6uQVk9z
+ 4Gqz4hTide7w==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Mar 2020 14:12:21 -0700
-IronPort-SDR: nXpm8WDReEMraGgInDRbIWORfmGeijuPzcKIzmrdmFlXyY3c8kakMAxZBg9cX3Pq5eg2ugfHJj
- 3rKGbBd58pQQ==
+ 19 Mar 2020 15:14:57 -0700
+IronPort-SDR: SRdwGa9UsFtD7gNi+Cn3EgwiJZCF5dH845IhdG+wXOEO3XV5wxPpbwuo4AFnqNFII2wBs0nsNZ
+ MCPcmc8T7rWA==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,573,1574150400"; d="scan'208";a="263859642"
-Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga002.jf.intel.com with ESMTP; 19 Mar 2020 14:12:20 -0700
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: Intel: broadwell: Revert SSP0 link to use dummy
- components
-Date: Thu, 19 Mar 2020 22:12:04 +0100
-Message-Id: <20200319211204.21580-1-cezary.rojewski@intel.com>
-X-Mailer: git-send-email 2.17.1
-Cc: pierre-louis.bossart@linux.intel.com,
- Cezary Rojewski <cezary.rojewski@intel.com>, lgirdwood@gmail.com,
- linux@dominikbrodowski.net, tiwai@suse.com, broonie@kernel.org
+X-IronPort-AV: E=Sophos;i="5.70,573,1574150400"; d="scan'208";a="391952068"
+Received: from skesavan-mobl1.amr.corp.intel.com (HELO [10.255.32.52])
+ ([10.255.32.52])
+ by orsmga004.jf.intel.com with ESMTP; 19 Mar 2020 15:14:56 -0700
+Subject: Re: [PATCH 3/4] ASoC: Intel: bdw-rt5677: Remove ignore_suspend flag
+ from SSP0 dai link
+To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
+References: <20200319204947.18963-1-cezary.rojewski@intel.com>
+ <20200319204947.18963-4-cezary.rojewski@intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <dea20cf7-f324-a933-8f8e-e70a4dffa249@linux.intel.com>
+Date: Thu, 19 Mar 2020 17:14:55 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+MIME-Version: 1.0
+In-Reply-To: <20200319204947.18963-4-cezary.rojewski@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Curtis Malainey <cujomalainey@google.com>, tiwai@suse.com,
+ Dominik Brodowski <linux@dominikbrodowski.net>, lgirdwood@gmail.com,
+ Hans de Goede <hdegoede@redhat.com>, vkoul@kernel.org, broonie@kernel.org,
+ Ben Zhang <benzh@google.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,55 +94,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Commit:
-"ASoC: Intel: broadwell: change cpu_dai and platform components for SOF
 
-while enabling bdw on SOF, changed behavior for non-SOF solutions. In
-essence replacing platform 'dummy' with actual 'platform' causes
-redundant stream initialization to occur during audio start. hw_params
-for haswell-pcm destroys initial stream right after its creation - only
-to recreate it again from proceed from there.
 
-While harmless so far, this flow ain't right and should be corrected.
-The actual need for dummy components for SSP0 link is questionable but
-that issue is subject for another series.
+On 3/19/20 3:49 PM, Cezary Rojewski wrote:
+> As of commit:
+> ASoC: soc-core: care .ignore_suspend for Component suspend
+> 
+> function soc-core::snd_soc_suspend no longer ignores 'ignore_suspend'
+> flag for dai links. While BE dai link for System Pin is
+> supposed to follow standard suspend-resume flow, appended
+> 'ignore_suspend' flag disturbs that flow and causes audio to break
+> right after resume. Remove the flag to address this.
+> 
+> Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Cc: Dominik Brodowski <linux@dominikbrodowski.net>
+> Cc: Mark Brown <broonie@kernel.org>
+> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 
-Link to first message in conversation:
-https://lkml.org/lkml/2020/3/18/54
+we should ask Ben and Curtis @ Google if the changes related to suspend 
+interfere with the wake-on-voice support?
 
-Reported-by: Dominik Brodowski <linux@dominikbrodowski.net>
-Fixes: 64df6afa0dab ("ASoC: Intel: broadwell: change cpu_dai and platform components for SOF")
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
----
- sound/soc/intel/boards/broadwell.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+Btw the .ignore_suspend is also set in bytcr_rt5640/51 drivers, so 
+wondering if additional devices are broken, or if there's something off 
+about Broadwell in general. Hans, have you heard of any regressions on 
+Baytrail devices?
 
-diff --git a/sound/soc/intel/boards/broadwell.c b/sound/soc/intel/boards/broadwell.c
-index 0776ea2d4f36..9b639475e99f 100644
---- a/sound/soc/intel/boards/broadwell.c
-+++ b/sound/soc/intel/boards/broadwell.c
-@@ -167,9 +167,6 @@ SND_SOC_DAILINK_DEF(codec,
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
- SND_SOC_DAILINK_DEF(ssp0_port,
- 	    DAILINK_COMP_ARRAY(COMP_CPU("ssp0-port")));
--#else
--SND_SOC_DAILINK_DEF(ssp0_port,
--	    DAILINK_COMP_ARRAY(COMP_DUMMY()));
- #endif
- 
- /* broadwell digital audio interface glue - connects codec <--> CPU */
-@@ -225,7 +222,11 @@ static struct snd_soc_dai_link broadwell_rt286_dais[] = {
- 		.ops = &broadwell_rt286_ops,
- 		.dpcm_playback = 1,
- 		.dpcm_capture = 1,
-+#if !IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
-+		SND_SOC_DAILINK_REG(dummy, codec, dummy),
-+#else
- 		SND_SOC_DAILINK_REG(ssp0_port, codec, platform),
-+#endif
- 	},
- };
- 
--- 
-2.17.1
-
+> ---
+>   sound/soc/intel/boards/bdw-rt5677.c | 1 -
+>   1 file changed, 1 deletion(-)
+> 
+> diff --git a/sound/soc/intel/boards/bdw-rt5677.c b/sound/soc/intel/boards/bdw-rt5677.c
+> index a94f498388e1..713ef48b36a8 100644
+> --- a/sound/soc/intel/boards/bdw-rt5677.c
+> +++ b/sound/soc/intel/boards/bdw-rt5677.c
+> @@ -343,7 +343,6 @@ static struct snd_soc_dai_link bdw_rt5677_dais[] = {
+>   		.no_pcm = 1,
+>   		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+>   			SND_SOC_DAIFMT_CBS_CFS,
+> -		.ignore_suspend = 1,
+>   		.ignore_pmdown_time = 1,
+>   		.be_hw_params_fixup = broadwell_ssp0_fixup,
+>   		.ops = &bdw_rt5677_ops,
+> 
