@@ -2,118 +2,81 @@ Return-Path: <SRS0=JibJ=5F=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 37DF0C4332D
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Mar 2020 14:19:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E3E0FC4332B
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Mar 2020 15:08:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8DBD820754
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Mar 2020 14:19:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6B35F2072C
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Mar 2020 15:08:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GoC8tVd+";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="rYopsrW6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8DBD820754
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qeu7+u6q"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6B35F2072C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E74C517DE;
-	Fri, 20 Mar 2020 15:18:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E74C517DE
+	by alsa0.perex.cz (Postfix) with ESMTPS id B071911C;
+	Fri, 20 Mar 2020 16:07:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B071911C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584713963;
-	bh=g5JnbAW3j8ylLBaTbmzrvf1LL2qu6rEhjU41ulweAQ4=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1584716915;
+	bh=aXCMXevHKRcdOt+Kl3TUjnQToeEmyryr+uvD5bSpjzE=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GoC8tVd+1CX9qUZleLQ/kn4AVN/esZRbxd9WY25PBA9tN5pFs00r/poUEDKyXN2nz
-	 k+ek6ytNslfWhjxB+EgCLgAYBvpaOJTxHLmUzhvrJtFwdCfsUCZZickTYRBkj1x1Ws
-	 JaF/MVSAXSdPYv4Ii61ZMk29wcaspuKoQYIkYRcI=
+	b=qeu7+u6q2JVc0zxf+W/9raVLWVqWPQ1YygsrliQkF/vsNL1EwJ5zelTxk9I1bVyGZ
+	 THJ1fLIjJ++WvE6CZmyVy4ZPFv+LjtKAo1xIcwa2Sx+JCL5pzKLAVQ3+OjGXrgF8VK
+	 Hy0pOePcKreTXXnGlz2ajcT8VPgoTglOzElxGxQg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6A3B9F80139;
-	Fri, 20 Mar 2020 15:18:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 16B5CF80139;
+	Fri, 20 Mar 2020 16:07:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7C603F8015B; Fri, 20 Mar 2020 15:18:30 +0100 (CET)
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com
- [IPv6:2a00:1450:4864:20::142])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id BBF38F8015B; Fri, 20 Mar 2020 16:07:43 +0100 (CET)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B555BF800DD
- for <alsa-devel@alsa-project.org>; Fri, 20 Mar 2020 15:18:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B555BF800DD
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="rYopsrW6"
-Received: by mail-lf1-x142.google.com with SMTP id j17so4683269lfe.7
- for <alsa-devel@alsa-project.org>; Fri, 20 Mar 2020 07:18:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=chBLQap+SYKGNzmXvbmb0fKi1zu9d0mpFF2vjia6tcw=;
- b=rYopsrW6ZFC37xZcQOcJGUhPe4rKJbBymWCv2GsSPgbw6Ied2jFWyDidXBfoxhQnj/
- UKU1jHx/MFO+8W+xnDgYChSkdE75tKHwc9u80yFKiNibb4lRXSdUKIVTjGXLayxE4xxf
- CjvYGNqBI8O+Sqw4gDelB5iEw9S11oWZ/K7xtGGWnmaHnrwiwCMD/2hAzTIKpZAA4XoM
- XZ4PVoEWfilijfs+LFvpkRm0yBAyBV9KMUjnoil9+vWLXqYmDvDlTtf9VDSAeVv2XNGK
- 2hztDnyBo3PFMNFng1YZGc7alJ3NeYJ2O4+l/x/QeyYjT0FCBiG6ebuTtBHxW1gpHr7V
- z9yA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=chBLQap+SYKGNzmXvbmb0fKi1zu9d0mpFF2vjia6tcw=;
- b=GWcmiC1/dBDj5lFKA37O3l+UcWwlB88X0olUZM2otlP1IJZpGM2SG/h6EOmGrFWlpr
- dGnFHLgJWzIk6Oy3KCWv3IJC1u5YJjfT2H8Hx/CC53UNnjHIPHGdqemcNkfErwT/bNxt
- 5r36c9js5MJ8MyAHt6LUC45cSyx6AzMvuhzVWFZ/poM6QHvOLhc1NuEsgJgH65oSU7dc
- NNxJA3KwdRAQ3P72KBL02gMA7JgMqgMIMivfL55TxO29u5uGnxYoTHdI3REuT1nDGgqY
- szCxPAGFDUE6GkyPpJQFMWw3Cf08ZnVSBmrb5B2xpJvB86RnMt60LmbIKcNKWU4Ti/Yg
- xCKQ==
-X-Gm-Message-State: ANhLgQ16aduKlpL+EiJRYoIyt5QOR0/EuTz64LHkO5p/Pgyht7IUt1Ha
- 5IfvnJbcG6wzilwirrf+XcOBsTyr
-X-Google-Smtp-Source: ADFU+vsHb0FtO1zHy7j0zMSFIunLOXaJMhsTtAXAzU+h1Lch1pchWCJKq24Yu8lGWtxmhLFpren//w==
-X-Received: by 2002:a19:c1d2:: with SMTP id r201mr5453386lff.13.1584713906485; 
- Fri, 20 Mar 2020 07:18:26 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-39-224.dynamic.spd-mgts.ru.
- [94.29.39.224])
- by smtp.googlemail.com with ESMTPSA id u7sm3252010lfl.81.2020.03.20.07.18.25
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 20 Mar 2020 07:18:25 -0700 (PDT)
-Subject: Re: [alsa-devel] [Linux-kernel] [PATCH v5 2/7] ASoC: tegra: Allow
- 24bit and 32bit samples
-To: Ben Dooks <ben.dooks@codethink.co.uk>, Mark Brown <broonie@kernel.org>
-References: <0e0cd260e39ad293edb881da1c565510@codethink.co.uk>
- <507dcd5a-672b-61ac-aa7f-af5ff01accff@codethink.co.uk>
- <a2744ea0-cf6d-d083-75e6-853746195001@gmail.com>
- <28cafc56-095b-68c6-638d-270608a2983f@codethink.co.uk>
- <3d8544be-af20-f382-85fd-32183365267b@nvidia.com>
- <1b3c2af4-510e-306c-749a-efffc994b20a@gmail.com>
- <20200128121315.GD4689@sirena.org.uk>
- <4b90efd2-5d0c-84df-961d-80cee288e0d4@nvidia.com>
- <586ea2b9-c204-2bd1-f8e2-875e0974e42d@nvidia.com>
- <fe002ec7-ae6e-f770-b82a-49237e0b29c6@codethink.co.uk>
- <20200130131039.GC6682@sirena.org.uk>
- <1df9cc13ea636502ac09191523ff0669@codethink.co.uk>
-From: Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <e28e72e7-c4c0-952a-29b7-fb49462708f1@gmail.com>
-Date: Fri, 20 Mar 2020 17:18:24 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id D8D6BF800C0;
+ Fri, 20 Mar 2020 16:07:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8D6BF800C0
+IronPort-SDR: gL+bz+uRJTQ7EFjOhUkUomODU2l3Gcl2G3Wc0cQfkQZXw509NXqkmyukS+jwn0Dk7IviGbdfOy
+ YnVtezXZnUEA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 Mar 2020 08:07:29 -0700
+IronPort-SDR: O6djZM0BXaAnsVaLen+wd0zRGkwLZiuiqvYsOitkJDfC+EZMy6U+beqX+t+WKuZMmylYVsV4DL
+ jl1M/2+PtuEw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,284,1580803200"; d="scan'208";a="237250392"
+Received: from gliakhov-mobl2.ger.corp.intel.com (HELO ubuntu)
+ ([10.252.57.199])
+ by fmsmga007.fm.intel.com with ESMTP; 20 Mar 2020 08:07:28 -0700
+Date: Fri, 20 Mar 2020 16:07:27 +0100
+From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 06/14] ASoC: SOF: add a power status IPC
+Message-ID: <20200320150727.GD2130@ubuntu>
+References: <20200312144429.17959-1-guennadi.liakhovetski@linux.intel.com>
+ <20200312144429.17959-7-guennadi.liakhovetski@linux.intel.com>
+ <20200313143956.GJ5528@sirena.org.uk>
+ <20200320115203.GA2130@ubuntu>
+ <20200320121952.GC3961@sirena.org.uk>
+ <20200320132732.GC2130@ubuntu>
 MIME-Version: 1.0
-In-Reply-To: <1df9cc13ea636502ac09191523ff0669@codethink.co.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-Cc: linux-kernel@lists.codethink.co.uk, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Thierry Reding <thierry.reding@gmail.com>,
- Edward Cragg <edward.cragg@codethink.co.uk>, linux-tegra@vger.kernel.org,
- Jon Hunter <jonathanh@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200320132732.GC2130@ubuntu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -129,12 +92,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-19.03.2020 18:32, Ben Dooks пишет:
-...
-> Hmm, I may have accidentally deleted those.
+On Fri, Mar 20, 2020 at 02:27:32PM +0100, Guennadi Liakhovetski wrote:
+> On Fri, Mar 20, 2020 at 12:19:52PM +0000, Mark Brown wrote:
+> > On Fri, Mar 20, 2020 at 12:52:03PM +0100, Guennadi Liakhovetski wrote:
+> > > On Fri, Mar 13, 2020 at 02:39:56PM +0000, Mark Brown wrote:
+> > > > On Thu, Mar 12, 2020 at 03:44:21PM +0100, Guennadi Liakhovetski wrote:
+> > 
+> > > > >  #endif
+> > > > > +	atomic_set(&sdev->reset_count, 0);
+> > > > >  	dev_set_drvdata(dev, sdev);
+> > 
+> > > > Do we really need to use atomics for this?  They are hard to use
+> > > > correctly.
+> > 
+> > > This variable is accessed from 2 contexts: it's incremented by the SOF 
+> > > driver, when the firmware has booted and it's read by the SOF
+> > > VirtIO backend vhost-be.c when receiving a resume request from the guest. 
+> > > Timewise the variable will only be incremented during the DSP resume / 
+> > > power up, while the VirtIO back end is waiting for the resume to complete in 
+> > > pm_runtime_get_sync(). And only after that it reads the variable. But that 
+> > > can happen on different CPUs. Whereas I think that runtime PM will sync 
+> > > caches somewhere during the process, I think it is better to access the 
+> > > variable in an SMP-safe way, e.g. using atomic operations.
+> > 
+> > That doesn't address my concern - to repeat, my concern is that atomics
+> > are hard to use correctly.  Is there no other concurrency primitive (for
+> > example this sounds like a completion) which can be used?
 > 
-> I will look to see if I can re-form the series and re-send in the next
-> couple of weeks. I've got no access currently to the machine and having
-> to deal with working from home for the next month or so.
+> No, this isn't a completion - it's a counter. I've used atomic variables 
+> before, I cannot remember seeing any difficulties with their correct use 
+> described. Do you have a pointer?
+> 
+> Thinking about it, one problem I see is wrapping, it isn't currently 
+> handled, but that would happen after quite a few PM suspend / resume 
+> cycles... Still it can and should be fixed. But this isn't the concern, 
+> that you have?
 
-Great, looking forward to the new version :)
+Actually I'd even say this isn't a problem. I think it's safe to say, you 
+won't suspend and resume your audio interface more often than every 10 
+seconds. That makes under 3200000 cycles per year. Even with 31 bits for a 
+signed integer that makes more than 600 years. I think we're safe.
+
+Thanks
+Guennadi
