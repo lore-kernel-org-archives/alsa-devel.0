@@ -6,89 +6,90 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A875C4332B
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2020 13:53:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4026EC4332B
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2020 13:54:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BAE252072D
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2020 13:53:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BD4AB20663
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2020 13:54:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XIdXp1C1";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ff33wKiw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BAE252072D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Tk1eEEve"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BD4AB20663
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linutronix.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 23998950;
-	Mon, 23 Mar 2020 14:53:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23998950
+	by alsa0.perex.cz (Postfix) with ESMTPS id D2C8C852;
+	Mon, 23 Mar 2020 14:53:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D2C8C852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584971634;
-	bh=Hd3zAvAezuFSVlozOz44ullhVT1eSajSxemMLbZxlBE=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1584971665;
+	bh=tT2F5YVflY7cUnyWu+xTJtJt3Y55/1boTLPXttVvxPI=;
+	h=From:To:Subject:In-Reply-To:References:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XIdXp1C1z6QfrUbb9ReLEIuk1hlY32r4hNQRNKq1HJcquxgptzj2aE8XvU2LKzE3R
-	 enoZtAG0ZONUrqYMLk17WmAj9Nje2hykOTsmdkNgxhipRSSXEUKveStrZPj1NXbKb7
-	 D87174hyf/fqUR1g+QoCoQCMMhUWDLu0e+OwwRGE=
+	b=Tk1eEEvesux7mntMsLtbAHsJ5InDSZOKa7SWBtrdIAG1EAilStHO641AuzEhTGAW5
+	 DpIZ0T3SxAt2AMuG8OdS8fTtnwFcdOKR2ZeSBtE0WjHDXGfxF6bA1yybQ6Cjn3PSFc
+	 7hkI9GhCiXMi8P/+c8dWEXN2H1LbG+ipmxCS5O84=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E30AEF802DC;
-	Mon, 23 Mar 2020 14:47:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 299ECF802E3;
+	Mon, 23 Mar 2020 14:47:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 570CCF8015B; Fri, 20 Mar 2020 15:59:23 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id F2816F8015B; Fri, 20 Mar 2020 21:24:55 +0100 (CET)
+Received: from Galois.linutronix.de (galois.linutronix.de
+ [IPv6:2a0a:51c0:0:12e:550::1])
+ (using TLSv1.2 with cipher DHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F3E0FF800C0
- for <alsa-devel@alsa-project.org>; Fri, 20 Mar 2020 15:59:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3E0FF800C0
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Ff33wKiw"
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl
- [83.86.89.107])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 99F7A2072D;
- Fri, 20 Mar 2020 14:59:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1584716354;
- bh=Hd3zAvAezuFSVlozOz44ullhVT1eSajSxemMLbZxlBE=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=Ff33wKiw1HbXy93zCGoh1lWvVOk00lgxJdeoknvNzKnVdJSPvefa0ML3LysbJ4nTO
- 6rAp6ASm4qt4uUIq2mtTpgvdRMDHrrSeBb59UaWhHjcJKEKHYeRpe3xmrMj7LtAtPD
- nmjVJ+xUohzhMq/MhLV3uoj+bRi4FVjkP6UigI8o=
-Date: Fri, 20 Mar 2020 15:59:06 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [patch 00/22] x86/treewide: Consolidate CPU match macro maze and
- get rid of C89 (sic!) initializers
-Message-ID: <20200320145906.GA762057@kroah.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id DECA0F800C0
+ for <alsa-devel@alsa-project.org>; Fri, 20 Mar 2020 21:24:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DECA0F800C0
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11]
+ helo=nanos.tec.linutronix.de)
+ by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+ (Exim 4.80) (envelope-from <tglx@linutronix.de>)
+ id 1jFOCA-0003F1-0T; Fri, 20 Mar 2020 21:24:42 +0100
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+ id 7019C1039FC; Fri, 20 Mar 2020 21:24:41 +0100 (CET)
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [patch 01/22] x86/devicetable: Move x86 specific macro out of
+ generic code
+In-Reply-To: <CAHp75Vca0j0=EB2qdvGgFOq2s_ohHUEzY4OeNrv-oynLBVYh1w@mail.gmail.com>
 References: <20200320131345.635023594@linutronix.de>
+ <20200320131508.736205164@linutronix.de>
+ <CAHp75Vca0j0=EB2qdvGgFOq2s_ohHUEzY4OeNrv-oynLBVYh1w@mail.gmail.com>
+Date: Fri, 20 Mar 2020 21:24:41 +0100
+Message-ID: <87k13epyeu.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200320131345.635023594@linutronix.de>
-X-Mailman-Approved-At: Mon, 23 Mar 2020 14:47:37 +0100
-Cc: Ulf Hansson <ulf.hansson@linaro.org>, x86@kernel.org,
- Viresh Kumar <viresh.kumar@linaro.org>, alsa-devel@alsa-project.org,
- platform-driver-x86@vger.kernel.org, Jacob Pan <jacob.jun.pan@linux.intel.com>,
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required, ALL_TRUSTED=-1,
+ SHORTCIRCUIT=-0.0001
+X-Mailman-Approved-At: Mon, 23 Mar 2020 14:47:38 +0100
+Cc: Ulf Hansson <ulf.hansson@linaro.org>, "maintainer:X86 ARCHITECTURE
+ \(32-BIT AND 64-BIT\)" <x86@kernel.org>, Viresh Kumar <viresh.kumar@linaro.org>,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Platform Driver <platform-driver-x86@vger.kernel.org>,
+ Jacob Pan <jacob.jun.pan@linux.intel.com>,
  Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
  Amit Kucheria <amit.kucheria@verdurent.com>,
  Mark Gross <mgross@linux.intel.com>, Herbert Xu <herbert@gondor.apana.org.au>,
- linux-acpi@vger.kernel.org, Daniel Lezcano <daniel.lezcano@linaro.org>,
- Chanwoo Choi <cw00.choi@samsung.com>, linux-pci@vger.kernel.org,
+ Chanwoo Choi <cw00.choi@samsung.com>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>,
+ ACPI Devel Maling List <linux-acpi@vger.kernel.org>, linux-pci@vger.kernel.org,
  Darren Hart <dvhart@infradead.org>, Zhang Rui <rui.zhang@intel.com>,
  Guenter Roeck <linux@roeck-us.net>, Len Brown <lenb@kernel.org>,
- Jean Delvare <jdelvare@suse.com>, linux-pm@vger.kernel.org,
- linux-mmc@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+ Jean Delvare <jdelvare@suse.com>, Linux PM <linux-pm@vger.kernel.org>,
+ linux-mmc <linux-mmc@vger.kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
  Takashi Iwai <tiwai@suse.com>, Adrian Hunter <adrian.hunter@intel.com>,
  linux-edac@vger.kernel.org, linux-hwmon@vger.kernel.org,
- Tony Luck <tony.luck@intel.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
- LKML <linux-kernel@vger.kernel.org>, linux-crypto@vger.kernel.org,
+ Tony Luck <tony.luck@intel.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael
+ J. Wysocki" <rjw@rjwysocki.net>, LKML <linux-kernel@vger.kernel.org>,
+ linux-crypto <linux-crypto@vger.kernel.org>,
  Paolo Bonzini <pbonzini@redhat.com>, "David S. Miller" <davem@davemloft.net>,
  Andy Shevchenko <andy@infradead.org>
 X-BeenThere: alsa-devel@alsa-project.org
@@ -106,54 +107,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Mar 20, 2020 at 02:13:45PM +0100, Thomas Gleixner wrote:
-> The x86 CPU matching based on struct x86_cpu_id:
-> 
->   - is using an inconsistent macro mess with pointlessly duplicated and
->     slightly different local macros. Finding the places is an art as there
->     is no consistent name space at all.
-> 
->   - is still mostly based on C89 struct initializers which rely on the
->     ordering of the struct members. That's proliferated forever as every
->     new driver just copies the mess from some exising one.
-> 
-> A recent offlist conversation about adding more match criteria to the CPU
-> matching logic instead of creating yet another set of horrors, reminded me
-> of a pile of scripts and patches which I hacked on a few years ago when I
-> tried to add something to struct x86_cpu_id.
-> 
-> That stuff was finally not needed and ended up in my ever growing todo list
-> and collected dust and cobwebs, but (un)surprisingly enough most of it
-> still worked out of the box. The copy & paste machinery still works as it
-> did years ago.
-> 
-> There are a few places which needed extra care due to new creative macros,
-> new check combinations etc. and surprisingly ONE open coded proper C99
-> initializer.
-> 
-> It was reasonably simple to make it at least compile and pass a quick
-> binary equivalence check.
-> 
-> The result is a X86_MATCH prefix based set of macros which are reflecting
-> the needs of the usage sites and shorten the base macro which takes all
-> possible parameters (vendor, family, model, feature, data) and uses proper
-> C99 initializers.
-> 
-> So extensions of the match logic are trivial after that.
-> 
-> The patch set is against Linus tree and has trivial conflicts against
-> linux-next.
-> 
-> The diffstat is:
->  71 files changed, 525 insertions(+), 472 deletions(-)
-> 
-> but the extra lines are pretty much kernel-doc documentation which I added
-> to each of the new macros. The usage sites diffstat is:
-> 
->  70 files changed, 393 insertions(+), 471 deletions(-)
-> 
-> Thoughts?
+Andy Shevchenko <andy.shevchenko@gmail.com> writes:
+> On Fri, Mar 20, 2020 at 3:17 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+>> --- a/arch/x86/include/asm/cpu_device_id.h
+>> +++ b/arch/x86/include/asm/cpu_device_id.h
+>> @@ -6,10 +6,21 @@
+>>   * Declare drivers belonging to specific x86 CPUs
+>>   * Similar in spirit to pci_device_id and related PCI functions
+>>   */
+>
+>> -
+>
+> Seems you are going to remove below anyway in the next patches, so,
+> why not to do this also there?
+>
+>>  #include <linux/mod_devicetable.h>
 
-Much nicer looking, thanks for cleaning up this mess:
+No it stays, but yes I could do that comment change right here.
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Thanks,
+
+        tglx
+
+
