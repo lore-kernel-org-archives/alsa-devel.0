@@ -7,64 +7,63 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81DCFC4332B
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Mar 2020 15:43:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CD92C4332D
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Mar 2020 15:44:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 064BF2070A
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Mar 2020 15:43:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 236C52070A
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Mar 2020 15:44:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hAExMb5+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 064BF2070A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="X1gKHNZy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 236C52070A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 651041667;
-	Fri, 20 Mar 2020 16:42:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 651041667
+	by alsa0.perex.cz (Postfix) with ESMTPS id 702AE1607;
+	Fri, 20 Mar 2020 16:43:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 702AE1607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584718990;
-	bh=ypn/OERoUpG1c3RInrBL42GgO22kfXAkU3XbwZw77e0=;
+	s=default; t=1584719039;
+	bh=c7SIsHAAXjU1YLHnq0zVFulXi1hfunmviwHY2Bjo2p0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hAExMb5+Kt4ahnDe0YKr+XYEH+ppQsscA/eSgQgecQxenMg2wwFGVTuWeoiSeBY9q
-	 +2clFBmMDlfpk6I58k3cbLnflavfBTMpAngAltvX8WNRjUZi0Y0yZ/cKvRP7KrEexG
-	 PkoCMMORqu1e3gToFCMTCtH/3nrWpclJWp3ky8fY=
+	b=X1gKHNZylWsGE53Q0ssqnBHwN1G0Et8hUPAdz6cnvLRbcRYRrPaQKzNnfctjjndFe
+	 ZqlAtKzBMAQJV3Do12iEJha1tXdjJi27Yj41PrC3N1AAWU2qMgYv7ebunFdXiDio7U
+	 Wnv5B5zTVYe8cSizDiwBziNdOo9JHlQumaUmRXKQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C25CAF802A8;
-	Fri, 20 Mar 2020 16:40:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 35042F802DD;
+	Fri, 20 Mar 2020 16:40:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 83A6EF8028D; Fri, 20 Mar 2020 16:40:37 +0100 (CET)
+ id 9D827F80212; Fri, 20 Mar 2020 16:40:43 +0100 (CET)
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AC0C3F8015B;
- Fri, 20 Mar 2020 16:40:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC0C3F8015B
-IronPort-SDR: ZxEFZ1A6qFKNmiKbjf5OE1BeSipLiG+ENlxMdfInj7ZYXkI1uIq8zPRsSUprBS6gqNwhWeQtv4
- JuiqiAscKeXQ==
+ by alsa1.perex.cz (Postfix) with ESMTPS id C50B8F80212;
+ Fri, 20 Mar 2020 16:40:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C50B8F80212
+IronPort-SDR: uMO4h0bQGMkj/rrBF0alviayyNgTfZhZV5GB8G9bou8cEoHd4WO4VN6pHd+g2E+R0HggXEDWFV
+ lkMypyk7onEg==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Mar 2020 08:40:26 -0700
-IronPort-SDR: v7PaI4O8YrEj9F5qgDPvJUpdBED+67mqFNBO2MvJXj0dhT4VBWttX2rzYoTvhCVQXPY5yUi9lA
- Sw4sXs9UsQFg==
+ 20 Mar 2020 08:40:29 -0700
+IronPort-SDR: //q3uznxU8M/QSmlnIb7/VfWNZHw1mP0Lx2ucSpcXrE9+qEzBiBfSuvbImUDFbQ+5dcx2f5zPm
+ pT6aV+71d4Jg==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,285,1580803200"; d="scan'208";a="237257380"
+X-IronPort-AV: E=Sophos;i="5.72,285,1580803200"; d="scan'208";a="237257390"
 Received: from gliakhov-mobl2.ger.corp.intel.com (HELO
  ubuntu.ger.corp.intel.com) ([10.252.57.199])
- by fmsmga007.fm.intel.com with ESMTP; 20 Mar 2020 08:40:25 -0700
+ by fmsmga007.fm.intel.com with ESMTP; 20 Mar 2020 08:40:28 -0700
 From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 02/12] ASoC: SOF: extract firmware-related operation into a
- function
-Date: Fri, 20 Mar 2020 16:40:11 +0100
-Message-Id: <20200320154021.5964-3-guennadi.liakhovetski@linux.intel.com>
+Subject: [PATCH 05/12] ASoC: SOF: support IPC with immediate response
+Date: Fri, 20 Mar 2020 16:40:14 +0100
+Message-Id: <20200320154021.5964-6-guennadi.liakhovetski@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200320154021.5964-1-guennadi.liakhovetski@linux.intel.com>
 References: <20200320154021.5964-1-guennadi.liakhovetski@linux.intel.com>
@@ -86,126 +85,65 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-In the VirtIO guest case the SOF will not be dealing with the
-firmware directly. Extract related functionality into a function to
-make the separation easier.
+Usually when an IPC message is sent, we have to wait for a reply from
+the DSP or from the host in the VirtIO case. However, sometimes in
+the VirtIO case a response is available immediately. Skip sleeping in
+such cases.
 
 Signed-off-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 ---
- sound/soc/sof/core.c | 85 ++++++++++++++++++++++++++++++----------------------
- 1 file changed, 49 insertions(+), 36 deletions(-)
+ sound/soc/sof/ipc.c |  9 +++++----
+ sound/soc/sof/ops.h | 10 +++++++++-
+ 2 files changed, 14 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
-index 91acfae..ca30d67 100644
---- a/sound/soc/sof/core.c
-+++ b/sound/soc/sof/core.c
-@@ -135,6 +135,53 @@ void snd_sof_get_status(struct snd_sof_dev *sdev, u32 panic_code,
-  *	(System Suspend/Runtime Suspend)
-  */
+diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
+index cf57085..6fa501c1 100644
+--- a/sound/soc/sof/ipc.c
++++ b/sound/soc/sof/ipc.c
+@@ -262,6 +262,10 @@ int sof_ipc_tx_message_unlocked(struct snd_sof_ipc *ipc, u32 header,
  
-+static int sof_load_and_run_firmware(struct snd_sof_dev *sdev)
-+{
-+	/* load the firmware */
-+	int ret = snd_sof_load_firmware(sdev);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: failed to load DSP firmware %d\n",
-+			ret);
-+		return ret;
-+	}
-+
-+	sdev->fw_state = SOF_FW_BOOT_IN_PROGRESS;
-+
+ 	sdev->msg = msg;
+ 
 +	/*
-+	 * Boot the firmware. The FW boot status will be modified
-+	 * in snd_sof_run_firmware() depending on the outcome.
++	 * If snd_sof_dsp_send_msg() returns a positive number it means, that a
++	 * response is already available, no need to sleep waiting for it
 +	 */
-+	ret = snd_sof_run_firmware(sdev);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: failed to boot DSP firmware %d\n",
-+			ret);
-+		goto fw_run_err;
-+	}
-+
-+	if (IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_ENABLE_FIRMWARE_TRACE) ||
-+	    (sof_core_debug & SOF_DBG_ENABLE_TRACE)) {
-+		sdev->dtrace_is_supported = true;
-+
-+		/* init DMA trace */
-+		ret = snd_sof_init_trace(sdev);
-+		if (ret < 0) {
-+			/* non fatal */
-+			dev_warn(sdev->dev,
-+				 "warning: failed to initialize trace %d\n",
-+				 ret);
-+		}
-+	} else {
-+		dev_dbg(sdev->dev, "SOF firmware trace disabled\n");
-+	}
-+
-+	return 0;
-+
-+fw_run_err:
-+	snd_sof_fw_unload(sdev);
-+
-+	return ret;
-+}
-+
- static int sof_probe_continue(struct snd_sof_dev *sdev)
+ 	ret = snd_sof_dsp_send_msg(sdev, msg);
+ 	/* Next reply that we receive will be related to this message */
+ 	if (!ret)
+@@ -279,10 +283,7 @@ int sof_ipc_tx_message_unlocked(struct snd_sof_ipc *ipc, u32 header,
+ 	ipc_log_header(sdev->dev, "ipc tx", msg->header);
+ 
+ 	/* now wait for completion */
+-	if (!ret)
+-		ret = tx_wait_done(ipc, msg, reply_data);
+-
+-	return ret;
++	return tx_wait_done(ipc, msg, reply_data);
+ }
+ EXPORT_SYMBOL(sof_ipc_tx_message_unlocked);
+ 
+diff --git a/sound/soc/sof/ops.h b/sound/soc/sof/ops.h
+index a771500..43bcfbf 100644
+--- a/sound/soc/sof/ops.h
++++ b/sound/soc/sof/ops.h
+@@ -274,7 +274,15 @@ static inline void snd_sof_dsp_block_write(struct snd_sof_dev *sdev, u32 bar,
+ 	sof_ops(sdev)->block_write(sdev, bar, offset, src, bytes);
+ }
+ 
+-/* ipc */
++/**
++ * snd_sof_dsp_send_msg - call sdev ops to send a message
++ * @sdev:	sdev context
++ * @msg:	message to send
++ *
++ * Returns	< 0 - an error code
++ *		  0 - the message has been sent, wait for a reply
++ *		> 0 - the message has been sent, a reply is already available
++ */
+ static inline int snd_sof_dsp_send_msg(struct snd_sof_dev *sdev,
+ 				       struct snd_sof_ipc_msg *msg)
  {
- 	struct snd_sof_pdata *plat_data = sdev->pdata;
-@@ -180,42 +227,9 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
- 		goto ipc_err;
- 	}
- 
--	/* load the firmware */
--	ret = snd_sof_load_firmware(sdev);
--	if (ret < 0) {
--		dev_err(sdev->dev, "error: failed to load DSP firmware %d\n",
--			ret);
-+	ret = sof_load_and_run_firmware(sdev);
-+	if (ret < 0)
- 		goto fw_load_err;
--	}
--
--	sdev->fw_state = SOF_FW_BOOT_IN_PROGRESS;
--
--	/*
--	 * Boot the firmware. The FW boot status will be modified
--	 * in snd_sof_run_firmware() depending on the outcome.
--	 */
--	ret = snd_sof_run_firmware(sdev);
--	if (ret < 0) {
--		dev_err(sdev->dev, "error: failed to boot DSP firmware %d\n",
--			ret);
--		goto fw_run_err;
--	}
--
--	if (IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_ENABLE_FIRMWARE_TRACE) ||
--	    (sof_core_debug & SOF_DBG_ENABLE_TRACE)) {
--		sdev->dtrace_is_supported = true;
--
--		/* init DMA trace */
--		ret = snd_sof_init_trace(sdev);
--		if (ret < 0) {
--			/* non fatal */
--			dev_warn(sdev->dev,
--				 "warning: failed to initialize trace %d\n",
--				 ret);
--		}
--	} else {
--		dev_dbg(sdev->dev, "SOF firmware trace disabled\n");
--	}
- 
- 	/* hereafter all FW boot flows are for PM reasons */
- 	sdev->first_boot = false;
-@@ -249,7 +263,6 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
- 
- fw_trace_err:
- 	snd_sof_free_trace(sdev);
--fw_run_err:
- 	snd_sof_fw_unload(sdev);
- fw_load_err:
- 	snd_sof_ipc_free(sdev);
 -- 
 1.9.3
 
