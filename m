@@ -7,63 +7,63 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D3C7C4332D
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Mar 2020 15:45:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0ADD6C4332D
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Mar 2020 15:45:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0553A2070A
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Mar 2020 15:45:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8A66C2072C
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Mar 2020 15:45:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bS+m52PS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0553A2070A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QLz2Gg3X"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8A66C2072C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4C349823;
-	Fri, 20 Mar 2020 16:44:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4C349823
+	by alsa0.perex.cz (Postfix) with ESMTPS id DA3FE1668;
+	Fri, 20 Mar 2020 16:44:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA3FE1668
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584719103;
-	bh=HndsIeMbUnlgvKj9VoGwly/yM9fjQj+xriuxL6qj6vU=;
+	s=default; t=1584719143;
+	bh=8e2S/U+kp08mrCdLAThG8ojTPA4hK6yC2BAzeJqLfOc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bS+m52PS8Wy+HkL6/E92dTz4W8qKDtQmPCRgK/qgK5brHrJjJMt8sByLaQZR+gSJp
-	 fbmRwByjDeLp/6qxk2zS0crVlzD/x2ntrJTcR2TQICS19MN6yITZzaTzbiZfajm8Cu
-	 JJVhB5JZXNdy3tkIziShu6u/L74cpaMqS+0haD2U=
+	b=QLz2Gg3X4+jY6aUxu+3foTHolDbHDv5pL3z7kBUXSfIorYitzG06t7W6m24wifAtT
+	 krL75B8Q+8QbQXrefYgZMbV6SklIxOvj/cbFhA/EMYtDzQiVUdR/a4RdbhpCFNO/jD
+	 Lw2TGiMFNzXHdqn7rHnYtk97RsL28MdiW9Zu6Ks4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E441AF802F8;
-	Fri, 20 Mar 2020 16:41:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AF684F80304;
+	Fri, 20 Mar 2020 16:41:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9CDB0F802A2; Fri, 20 Mar 2020 16:40:44 +0100 (CET)
+ id D38B0F801F9; Fri, 20 Mar 2020 16:40:45 +0100 (CET)
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 34CCBF80139;
- Fri, 20 Mar 2020 16:40:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34CCBF80139
-IronPort-SDR: tiJklcEqnn62QltgynqKMbPuLB6l3XfIug8DI+Kgk7OtZJHbaPAV9Q7bv1lOsAZh+HihSF2lX7
- NAVyRvcjg2SA==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 37687F80256;
+ Fri, 20 Mar 2020 16:40:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 37687F80256
+IronPort-SDR: 5DIS0DPD1j7O9JaJS47DRBQvGMqhQCctjxrWTPL+qHWAWrRNqNy5kJJ4DbYp1CnJaOJDX5WDW/
+ uHomrizMYJIQ==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Mar 2020 08:40:27 -0700
-IronPort-SDR: Hc4o6CWf2Dab14ToCsqDC32jDZL+7MK9TChYzdEhAiowAh+vDbK9+CZqkzx4iPf/XCkAe6RKjg
- TV0HIXC5Vi6w==
+ 20 Mar 2020 08:40:31 -0700
+IronPort-SDR: jaBOsb+ROal5nbDUbomUaGALKJVfwyDwNV6Au32PPRnoQtCxs7LYY4VT7MHWK0skqCKvf+ic18
+ 7au6OFefKOiQ==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,285,1580803200"; d="scan'208";a="237257385"
+X-IronPort-AV: E=Sophos;i="5.72,285,1580803200"; d="scan'208";a="237257394"
 Received: from gliakhov-mobl2.ger.corp.intel.com (HELO
  ubuntu.ger.corp.intel.com) ([10.252.57.199])
- by fmsmga007.fm.intel.com with ESMTP; 20 Mar 2020 08:40:26 -0700
+ by fmsmga007.fm.intel.com with ESMTP; 20 Mar 2020 08:40:30 -0700
 From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 03/12] ASoC: SOF: VirtIO: make a function global
-Date: Fri, 20 Mar 2020 16:40:12 +0100
-Message-Id: <20200320154021.5964-4-guennadi.liakhovetski@linux.intel.com>
+Subject: [PATCH 07/12] ASoC: SOF: add two helper lookup functions
+Date: Fri, 20 Mar 2020 16:40:16 +0100
+Message-Id: <20200320154021.5964-8-guennadi.liakhovetski@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200320154021.5964-1-guennadi.liakhovetski@linux.intel.com>
 References: <20200320154021.5964-1-guennadi.liakhovetski@linux.intel.com>
@@ -85,54 +85,65 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-sof_ipc_tx_message_unlocked() will be needed for VirtIO code, make
-it global.
+Add two helper lookup functions for finding a widget by its component
+ID and a DAI by a pipeline ID.
 
 Signed-off-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 ---
- sound/soc/sof/ipc.c      | 7 ++++---
- sound/soc/sof/sof-priv.h | 3 +++
- 2 files changed, 7 insertions(+), 3 deletions(-)
+ sound/soc/sof/sof-audio.c | 24 ++++++++++++++++++++++++
+ sound/soc/sof/sof-audio.h |  4 ++++
+ 2 files changed, 28 insertions(+)
 
-diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
-index 1c67949..cf57085 100644
---- a/sound/soc/sof/ipc.c
-+++ b/sound/soc/sof/ipc.c
-@@ -231,9 +231,9 @@ static int tx_wait_done(struct snd_sof_ipc *ipc, struct snd_sof_ipc_msg *msg,
+diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
+index fc4ed2a..b4c5fe2 100644
+--- a/sound/soc/sof/sof-audio.c
++++ b/sound/soc/sof/sof-audio.c
+@@ -395,6 +395,30 @@ struct snd_sof_dai *snd_sof_find_dai(struct snd_soc_component *scomp,
+ 	return NULL;
  }
  
- /* send IPC message from host to DSP */
--static int sof_ipc_tx_message_unlocked(struct snd_sof_ipc *ipc, u32 header,
--				       void *msg_data, size_t msg_bytes,
--				       void *reply_data, size_t reply_bytes)
-+int sof_ipc_tx_message_unlocked(struct snd_sof_ipc *ipc, u32 header,
-+				void *msg_data, size_t msg_bytes,
-+				void *reply_data, size_t reply_bytes)
- {
- 	struct snd_sof_dev *sdev = ipc->sdev;
- 	struct snd_sof_ipc_msg *msg;
-@@ -284,6 +284,7 @@ static int sof_ipc_tx_message_unlocked(struct snd_sof_ipc *ipc, u32 header,
- 
- 	return ret;
- }
-+EXPORT_SYMBOL(sof_ipc_tx_message_unlocked);
- 
- /* send IPC message from host to DSP */
- int sof_ipc_tx_message(struct snd_sof_ipc *ipc, u32 header,
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index a4b297c..922b671 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -493,6 +493,9 @@ int sof_ipc_tx_message(struct snd_sof_ipc *ipc, u32 header,
- int sof_ipc_tx_message_no_pm(struct snd_sof_ipc *ipc, u32 header,
- 			     void *msg_data, size_t msg_bytes,
- 			     void *reply_data, size_t reply_bytes);
-+int sof_ipc_tx_message_unlocked(struct snd_sof_ipc *ipc, u32 header,
-+				void *msg_data, size_t msg_bytes,
-+				void *reply_data, size_t reply_bytes);
++struct snd_sof_widget *snd_sof_find_swidget_id(struct snd_sof_dev *sdev,
++					       unsigned int comp_id)
++{
++	struct snd_sof_widget *swidget;
++
++	list_for_each_entry(swidget, &sdev->widget_list, list)
++		if (swidget->comp_id == comp_id)
++			return swidget;
++
++	return NULL;
++}
++
++struct snd_sof_dai *snd_sof_find_dai_pipe(struct snd_sof_dev *sdev,
++					  unsigned int pipeline_id)
++{
++	struct snd_sof_dai *dai;
++
++	list_for_each_entry(dai, &sdev->dai_list, list)
++		if (dai->pipeline_id == pipeline_id)
++			return dai;
++
++	return NULL;
++}
++
+ /*
+  * SOF Driver enumeration.
+  */
+diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
+index eacd10e..e9a6091 100644
+--- a/sound/soc/sof/sof-audio.h
++++ b/sound/soc/sof/sof-audio.h
+@@ -188,6 +188,10 @@ struct snd_sof_pcm *snd_sof_find_spcm_comp(struct snd_soc_component *scomp,
+ 					   int *direction);
+ struct snd_sof_pcm *snd_sof_find_spcm_pcm_id(struct snd_soc_component *scomp,
+ 					     unsigned int pcm_id);
++struct snd_sof_widget *snd_sof_find_swidget_id(struct snd_sof_dev *sdev,
++					       unsigned int comp_id);
++struct snd_sof_dai *snd_sof_find_dai_pipe(struct snd_sof_dev *sdev,
++					  unsigned int pipeline_id);
+ void snd_sof_pcm_period_elapsed(struct snd_pcm_substream *substream);
  
  /*
-  * Trace/debug
 -- 
 1.9.3
 
