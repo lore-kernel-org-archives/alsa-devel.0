@@ -2,76 +2,75 @@ Return-Path: <SRS0=JibJ=5F=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F35CC4332D
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Mar 2020 13:42:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10B97C4332D
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Mar 2020 13:44:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 979B720739
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Mar 2020 13:42:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8977B20739
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Mar 2020 13:43:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LtcPm1YH";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="trRd25v4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 979B720739
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IUX1bT2S";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="IK13Wl2S"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8977B20739
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EE64117C6;
-	Fri, 20 Mar 2020 14:41:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE64117C6
+	by alsa0.perex.cz (Postfix) with ESMTPS id E5E8417C6;
+	Fri, 20 Mar 2020 14:43:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E5E8417C6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584711734;
-	bh=MgN9pJPsqG2bTCAI23maRrYMK1eh1ghBMd5dfP46JjE=;
+	s=default; t=1584711838;
+	bh=7RGOPJR25CwJirzAerwKnDLjD3O8PXRhRx7qMiLnguk=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LtcPm1YHgKyjTvD+ZaarfgAlJaiW/GK05b6k+zZObCVFRBg8jc77NBJoHCpIlGrWx
-	 6g12WV5hJAzgbTXmT6OJNqjrDjoulG1bH/WBWe1C6Ag0dmUusmCIxqphpAhxOpPGyk
-	 y5/SNVUbyO/I5PaXLrZgvrb8vz04+GBHsV8u2Abk=
+	b=IUX1bT2S4HrVzNCQfbo55j0s9ksEpuTcQhuYv4gHQBqLliN7GLM3I5SGQofItspI5
+	 eM94urRdMNZjkAJ+bfVE+GLDeNZNNR3vcyZvYkaQUOCGlPnxrCVZn7YOL9jrRt0Opn
+	 YvzaBdHgGIoLuYvc0zf0qAeWpglveydLnv7VFHy0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7AECDF80126;
-	Fri, 20 Mar 2020 14:41:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 515A5F800DD;
+	Fri, 20 Mar 2020 14:43:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2429BF8015B; Fri, 20 Mar 2020 14:41:22 +0100 (CET)
+ id 55BB4F8015B; Fri, 20 Mar 2020 14:43:05 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 35C69F80126
- for <alsa-devel@alsa-project.org>; Fri, 20 Mar 2020 14:41:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35C69F80126
+ by alsa1.perex.cz (Postfix) with ESMTPS id 84099F800DD
+ for <alsa-devel@alsa-project.org>; Fri, 20 Mar 2020 14:43:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84099F800DD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="trRd25v4"
+ header.b="IK13Wl2S"
 Received: from localhost (unknown [122.167.82.180])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 74E1820739;
- Fri, 20 Mar 2020 13:41:15 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 1FE3220739;
+ Fri, 20 Mar 2020 13:42:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1584711677;
- bh=MgN9pJPsqG2bTCAI23maRrYMK1eh1ghBMd5dfP46JjE=;
+ s=default; t=1584711780;
+ bh=7RGOPJR25CwJirzAerwKnDLjD3O8PXRhRx7qMiLnguk=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=trRd25v4vy0t3nnZz59a6IOwarik97JjaQJxVmRRqwb1NI5enqJ9nO3bLaULvpL8G
- 9tSHEZzVI7p7RSD7PzlyU7cYrnmh+rYIIXaLQsVNvR/eaypxE9M92TVHRqzPp4iw/f
- ww8lSjoFGNP457C+SOX5vazL2EnXfljDyIizFpF4=
-Date: Fri, 20 Mar 2020 19:11:12 +0530
+ b=IK13Wl2SiISx3G3YrNWIFPq1yrUzhqhUSirhjg5S49ODZ5Pf4p+riDnww6UOdd75Y
+ jpGDNpLNPYlthJ0Y+RjRx+A1ks9jCrbf6CfqUEZ8L0pnCxEoeq0iiDOEcVbmkGvQMA
+ cf1LRS3Ms5uw6M3FX/5B2y0BUEHCsJKFcy0xw2uc=
+Date: Fri, 20 Mar 2020 19:12:57 +0530
 From: Vinod Koul <vkoul@kernel.org>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 3/7] soundwire: intel: add mutex to prevent concurrent
- access to SHIM registers
-Message-ID: <20200320134112.GC4885@vkoul-mobl>
+Subject: Re: [PATCH 4/7] soundwire: intel: add definitions for shim_mask
+Message-ID: <20200320134257.GD4885@vkoul-mobl>
 References: <20200311221026.18174-1-pierre-louis.bossart@linux.intel.com>
- <20200311221026.18174-4-pierre-louis.bossart@linux.intel.com>
+ <20200311221026.18174-5-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200311221026.18174-4-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20200311221026.18174-5-pierre-louis.bossart@linux.intel.com>
 Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
  linux-kernel@vger.kernel.org,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
@@ -96,176 +95,60 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 On 11-03-20, 17:10, Pierre-Louis Bossart wrote:
-> Some of the SHIM registers exposed fields that are link specific, and
-> in addition some of the power-related registers (SPA/CPA) take time to
-> be updated. Uncontrolled access leads to timeouts or errors.
+> We want to make sure SHIM register fields such as SYNCPRD are only
+> programmed once. Since we don't have a controller-level driver, we
+> need master-level drivers to collaborate: the registers will only be
+> programmed when the first link is powered-up.
 > 
-> Add a mutex, shared by all links, so that all accesses to such
-> registers are serialized, and follow a pattern of read-modify-write.
-> 
-> The mutex initialization is done at the higher layer since the same
-> mutex is used for all links.
-> 
-> GitHub issue: https://github.com/thesofproject/linux/issues/1555
 > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > ---
->  drivers/soundwire/intel.c | 37 +++++++++++++++++++++++++++++++------
->  drivers/soundwire/intel.h |  2 ++
->  2 files changed, 33 insertions(+), 6 deletions(-)
+>  drivers/soundwire/intel.h           | 2 ++
+>  include/linux/soundwire/sdw_intel.h | 2 ++
+>  2 files changed, 4 insertions(+)
 > 
-> diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-> index 1a3b828b03a1..3c271a8044b8 100644
-> --- a/drivers/soundwire/intel.c
-> +++ b/drivers/soundwire/intel.c
-> @@ -286,6 +286,8 @@ static int intel_link_power_up(struct sdw_intel *sdw)
->  	int spa_mask, cpa_mask;
->  	int link_control, ret;
->  
-> +	mutex_lock(sdw->link_res->shim_lock);
-> +
->  	/* Link power up sequence */
->  	link_control = intel_readl(shim, SDW_SHIM_LCTL);
->  	spa_mask = (SDW_SHIM_LCTL_SPA << link_id);
-> @@ -293,6 +295,8 @@ static int intel_link_power_up(struct sdw_intel *sdw)
->  	link_control |=  spa_mask;
->  
->  	ret = intel_set_bit(shim, SDW_SHIM_LCTL, link_control, cpa_mask);
-> +	mutex_unlock(sdw->link_res->shim_lock);
-> +
->  	if (ret < 0)
->  		return ret;
->  
-> @@ -307,6 +311,8 @@ static int intel_shim_init(struct sdw_intel *sdw)
->  	int sync_reg, ret;
->  	u16 ioctl = 0, act = 0;
->  
-> +	mutex_lock(sdw->link_res->shim_lock);
-> +
->  	/* Initialize Shim */
->  	ioctl |= SDW_SHIM_IOCTL_BKE;
->  	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
-> @@ -351,6 +357,8 @@ static int intel_shim_init(struct sdw_intel *sdw)
->  	sync_reg |= SDW_SHIM_SYNC_SYNCCPU;
->  	ret = intel_clear_bit(shim, SDW_SHIM_SYNC, sync_reg,
->  			      SDW_SHIM_SYNC_SYNCCPU);
-> +	mutex_unlock(sdw->link_res->shim_lock);
-> +
->  	if (ret < 0)
->  		dev_err(sdw->cdns.dev, "Failed to set sync period: %d\n", ret);
->  
-> @@ -363,13 +371,15 @@ static void intel_shim_wake(struct sdw_intel *sdw, bool wake_enable)
->  	unsigned int link_id = sdw->instance;
->  	u16 wake_en, wake_sts;
->  
-> +	mutex_lock(sdw->link_res->shim_lock);
-> +	wake_en = intel_readw(shim, SDW_SHIM_WAKEEN);
-> +
->  	if (wake_enable) {
->  		/* Enable the wakeup */
-> -		intel_writew(shim, SDW_SHIM_WAKEEN,
-> -			     (SDW_SHIM_WAKEEN_ENABLE << link_id));
-> +		wake_en |= (SDW_SHIM_WAKEEN_ENABLE << link_id);
-> +		intel_writew(shim, SDW_SHIM_WAKEEN, wake_en);
->  	} else {
->  		/* Disable the wake up interrupt */
-> -		wake_en = intel_readw(shim, SDW_SHIM_WAKEEN);
->  		wake_en &= ~(SDW_SHIM_WAKEEN_ENABLE << link_id);
->  		intel_writew(shim, SDW_SHIM_WAKEEN, wake_en);
->  
-> @@ -378,6 +388,7 @@ static void intel_shim_wake(struct sdw_intel *sdw, bool wake_enable)
->  		wake_sts |= (SDW_SHIM_WAKEEN_ENABLE << link_id);
->  		intel_writew(shim, SDW_SHIM_WAKESTS_STATUS, wake_sts);
->  	}
-> +	mutex_unlock(sdw->link_res->shim_lock);
->  }
->  
->  static int intel_link_power_down(struct sdw_intel *sdw)
-> @@ -387,6 +398,8 @@ static int intel_link_power_down(struct sdw_intel *sdw)
->  	void __iomem *shim = sdw->link_res->shim;
->  	u16 ioctl;
->  
-> +	mutex_lock(sdw->link_res->shim_lock);
-> +
->  	/* Glue logic */
->  	ioctl = intel_readw(shim, SDW_SHIM_IOCTL(link_id));
->  	ioctl |= SDW_SHIM_IOCTL_BKE;
-> @@ -403,6 +416,8 @@ static int intel_link_power_down(struct sdw_intel *sdw)
->  	link_control &=  spa_mask;
->  
->  	ret = intel_clear_bit(shim, SDW_SHIM_LCTL, link_control, cpa_mask);
-> +	mutex_unlock(sdw->link_res->shim_lock);
-> +
->  	if (ret < 0)
->  		return ret;
->  
-> @@ -630,11 +645,15 @@ static int intel_pre_bank_switch(struct sdw_bus *bus)
->  	if (!bus->multi_link)
->  		return 0;
->  
-> +	mutex_lock(sdw->link_res->shim_lock);
-> +
->  	/* Read SYNC register */
->  	sync_reg = intel_readl(shim, SDW_SHIM_SYNC);
->  	sync_reg |= SDW_SHIM_SYNC_CMDSYNC << sdw->instance;
->  	intel_writel(shim, SDW_SHIM_SYNC, sync_reg);
->  
-> +	mutex_unlock(sdw->link_res->shim_lock);
-> +
->  	return 0;
->  }
->  
-> @@ -649,6 +668,8 @@ static int intel_post_bank_switch(struct sdw_bus *bus)
->  	if (!bus->multi_link)
->  		return 0;
->  
-> +	mutex_lock(sdw->link_res->shim_lock);
-> +
->  	/* Read SYNC register */
->  	sync_reg = intel_readl(shim, SDW_SHIM_SYNC);
->  
-> @@ -660,9 +681,10 @@ static int intel_post_bank_switch(struct sdw_bus *bus)
->  	 *
->  	 * So, set the SYNCGO bit only if CMDSYNC bit is set for any Master.
->  	 */
-> -	if (!(sync_reg & SDW_SHIM_SYNC_CMDSYNC_MASK))
-> -		return 0;
-> -
-> +	if (!(sync_reg & SDW_SHIM_SYNC_CMDSYNC_MASK)) {
-> +		ret = 0;
-> +		goto unlock;
-> +	}
->  	/*
->  	 * Set SyncGO bit to synchronously trigger a bank switch for
->  	 * all the masters. A write to SYNCGO bit clears CMDSYNC bit for all
-> @@ -672,6 +694,9 @@ static int intel_post_bank_switch(struct sdw_bus *bus)
->  
->  	ret = intel_clear_bit(shim, SDW_SHIM_SYNC, sync_reg,
->  			      SDW_SHIM_SYNC_SYNCGO);
-> +unlock:
-> +	mutex_unlock(sdw->link_res->shim_lock);
-> +
->  	if (ret < 0)
->  		dev_err(sdw->cdns.dev, "Post bank switch failed: %d\n", ret);
->  
 > diff --git a/drivers/soundwire/intel.h b/drivers/soundwire/intel.h
-> index 38b7c125fb10..568c84a80d79 100644
+> index 568c84a80d79..cfc83120b8f9 100644
 > --- a/drivers/soundwire/intel.h
 > +++ b/drivers/soundwire/intel.h
-> @@ -15,6 +15,7 @@
->   * @irq: Interrupt line
+> @@ -16,6 +16,7 @@
 >   * @ops: Shim callback ops
 >   * @dev: device implementing hw_params and free callbacks
-> + * @shim_lock: mutex to handle access to shared SHIM registers
+>   * @shim_lock: mutex to handle access to shared SHIM registers
+> + * @shim_mask: global pointer to check SHIM register initialization
 >   */
 >  struct sdw_intel_link_res {
 >  	struct platform_device *pdev;
-> @@ -25,6 +26,7 @@ struct sdw_intel_link_res {
->  	int irq;
+> @@ -27,6 +28,7 @@ struct sdw_intel_link_res {
 >  	const struct sdw_intel_ops *ops;
 >  	struct device *dev;
-> +	struct mutex *shim_lock; /* protect shared registers */
+>  	struct mutex *shim_lock; /* protect shared registers */
+> +	u32 *shim_mask;
 
-Where is this mutex initialized? Did you test this...
+You have a pointer, okay where is it initialized
+
+>  };
+>  
+>  #endif /* __SDW_INTEL_LOCAL_H */
+> diff --git a/include/linux/soundwire/sdw_intel.h b/include/linux/soundwire/sdw_intel.h
+> index 979b41b5dcb4..120ffddc03d2 100644
+> --- a/include/linux/soundwire/sdw_intel.h
+> +++ b/include/linux/soundwire/sdw_intel.h
+> @@ -115,6 +115,7 @@ struct sdw_intel_slave_id {
+>   * links
+>   * @link_list: list to handle interrupts across all links
+>   * @shim_lock: mutex to handle concurrent rmw access to shared SHIM registers.
+> + * @shim_mask: flags to track initialization of SHIM shared registers
+>   */
+>  struct sdw_intel_ctx {
+>  	int count;
+> @@ -126,6 +127,7 @@ struct sdw_intel_ctx {
+>  	struct sdw_intel_slave_id *ids;
+>  	struct list_head link_list;
+>  	struct mutex shim_lock; /* lock for access to shared SHIM registers */
+> +	u32 shim_mask;
+
+And a integer, question: why do you need pointer and integer, why not
+use only one..?
 
 -- 
 ~Vinod
