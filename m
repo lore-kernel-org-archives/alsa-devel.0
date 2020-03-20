@@ -1,61 +1,92 @@
-Return-Path: <SRS0=W6oB=5D=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=JibJ=5F=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 94842C4332B
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Mar 2020 21:45:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC8FBC4332D
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Mar 2020 03:22:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1E9D620768
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Mar 2020 21:45:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4695C20709
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Mar 2020 03:22:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TymV3Dxz"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1E9D620768
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JsLr7Lp2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4695C20709
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 72963173E;
-	Wed, 18 Mar 2020 22:44:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 72963173E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7AC8317B1;
+	Fri, 20 Mar 2020 04:21:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7AC8317B1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584567913;
-	bh=/9nSN2i4/ou2uEhr5nak8IwvEU2dspFM4dhe+9ZzbPg=;
-	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=TymV3DxzX8nLsD5d68qA57dFbf0bW1W4YCQ80Fzqtw79jBEekikIUEmidBGM4IYJJ
-	 ssy3jCdIxvJCiVVVWmrgkdkEovHcMHzbsDjw8/GQJLG2aS3EVe9wDWEnyPS94GB3+y
-	 9eorYOShLlt88cgGdfbjbRtHgkkTX+iDP0+W3gUU=
+	s=default; t=1584674540;
+	bh=P+FjRK2wXx/zGqnWUz4J8BzKVLQR19Evv1TIJT/tL0I=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=JsLr7Lp2jk16BF2mDuEDsH5GVmGHQ2gxYnDNvbWtTsps82vPxIugLhW+NA5Q79S70
+	 GZ4b5IlEo8tnu89hCAq2J+HDwB1bk9iURAatD11algu4ZfKhO5czPnexSJNlK6tPP1
+	 lNVe3JmFkluQz4ogQDt4VaLWgxvsBEGru5XYfA3Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 192DAF80292;
-	Wed, 18 Mar 2020 22:42:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D2C81F80139;
+	Fri, 20 Mar 2020 04:21:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 04FC5F801DB; Wed, 18 Mar 2020 22:41:52 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 18EB3F800C0
- for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2020 22:41:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18EB3F800C0
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 05BC2FEC;
- Wed, 18 Mar 2020 14:41:48 -0700 (PDT)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7E6BB3F67D;
- Wed, 18 Mar 2020 14:41:47 -0700 (PDT)
-Date: Wed, 18 Mar 2020 21:41:46 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Applied "ASoC: codecs: wsa881x: remove soundwire stream handling" to
- the asoc tree
-In-Reply-To: 
-Message-Id: 
-X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+ id B169EF8015B; Fri, 20 Mar 2020 04:21:26 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 41914F800C0
+ for <alsa-devel@alsa-project.org>; Fri, 20 Mar 2020 04:21:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41914F800C0
+IronPort-SDR: 6QRANaKpFGL40cQHjR0lLkNJEnXmNDfMXG/6Bpqqet4VIYynrvn3hg4u79z6wylZAlj632xDGw
+ CZ3HDnegSTBw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Mar 2020 20:21:19 -0700
+IronPort-SDR: mR03DYeqvkIQcgn0WcWd2qJ7otYBW15lrJjlF8zdd6PSU699Wr5FRC2o0WZ3rL9yRLtxxBUDjJ
+ ut+0mQv3w5ng==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,283,1580803200"; d="scan'208";a="324731214"
+Received: from jliu231-mobl1.ccr.corp.intel.com (HELO [10.254.208.65])
+ ([10.254.208.65])
+ by orsmga001.jf.intel.com with ESMTP; 19 Mar 2020 20:21:16 -0700
+Subject: Re: snd_hda_intel/sst-acpi sound breakage on suspend/resume since
+ 5.6-rc1
+To: Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+References: <e49eec28-2037-f5db-e75b-9eadf6180d81@intel.com>
+ <20200318192213.GA2987@light.dominikbrodowski.net>
+ <b352a46b-8a66-8235-3622-23e561d3728c@intel.com>
+ <20200318215218.GA2439@light.dominikbrodowski.net>
+ <e7f4f38d-b53e-8c69-8b23-454718cf92af@intel.com>
+ <20200319130049.GA2244@light.dominikbrodowski.net>
+ <20200319134139.GB3983@sirena.org.uk>
+ <a01359dc-479e-b3e3-37a6-4a9c421d18da@intel.com>
+ <20200319165157.GA2254@light.dominikbrodowski.net>
+ <eef45d20-3bce-184a-842c-216c15252014@linux.intel.com>
+ <20200319173502.GC3983@sirena.org.uk>
+From: Keyon Jie <yang.jie@linux.intel.com>
+Message-ID: <0d01b2ce-9531-1a08-e632-4608ab894fbe@linux.intel.com>
+Date: Fri, 20 Mar 2020 11:21:40 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+MIME-Version: 1.0
+In-Reply-To: <20200319173502.GC3983@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ kuninori.morimoto.gx@renesas.com, curtis@malainey.com, tiwai@suse.com,
+ alsa-devel@alsa-project.org, Dominik Brodowski <linux@dominikbrodowski.net>,
+ linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -70,128 +101,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20200318214146.cjctHtQIJD-elVk2sRo0_Kz5hp7X_TA3-Fa_wHk7LYY@z>
 
-The patch
 
-   ASoC: codecs: wsa881x: remove soundwire stream handling
 
-has been applied to the asoc tree at
+On 3/20/20 1:35 AM, Mark Brown wrote:
+> On Thu, Mar 19, 2020 at 12:21:47PM -0500, Pierre-Louis Bossart wrote:
+>> On 3/19/20 11:51 AM, Dominik Brodowski wrote:
+> 
+>>> That patch fixes the issue(s). I didn't even need to revert 64df6afa0dab
+>>> ("ASoC: Intel: broadwell: change cpu_dai and platform components for SOF")
+>>> on top of that. But you can assess better whether that patch needs care for
+>>> other reasons; for me, this one-liner you have suggested is perfect.
+> 
+> Good news!
+> 
+>> .ignore_suspend is set for bdw-rt5677.c and bdw-rt5650.c as well. I don't
+>> know if that was intentional.
+> 
+> The intended use case is for applications doing audio during suspend
+> like telephony audio between the modem and CODEC on a phone or
+> compressed audio playback.  I guess the compressed audio playback case
+> could possibly apply with these systems though x86 suspend/resume is
+> usually sufficiently heavyweight that it's surprising.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+I think that's true, on many of SKL- intel platforms(byt, hsw, bdw), we 
+are seeing this .ignore_suspend set with offload or deep buffer FE 
+dai_links configured together.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+So it looks we can't ignore calling codec's suspend/resume callbacks 
+during the power cycle for rt286 codec(on the Dell XPS here), which is 
+actually supported on Chromebook SAMUS(rt5677)?
 
 Thanks,
-Mark
+~Keyon
 
-From 16252a8f3af77f69c2193fdc7b2f595b30845a44 Mon Sep 17 00:00:00 2001
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Tue, 17 Mar 2020 15:12:33 +0000
-Subject: [PATCH] ASoC: codecs: wsa881x: remove soundwire stream handling
-
-There could be multiple instances of this codec on any platform,
-so handling stream directly in this codec driver can lead to
-multiple calls to prepare/enable/disable on the same SoundWire stream.
-Move this stream handling to machine driver to fix this issue.
-
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20200317151233.8763-3-srinivas.kandagatla@linaro.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/wsa881x.c | 44 +-------------------------------------
- 1 file changed, 1 insertion(+), 43 deletions(-)
-
-diff --git a/sound/soc/codecs/wsa881x.c b/sound/soc/codecs/wsa881x.c
-index b59f1d0e7f84..3d525297eac9 100644
---- a/sound/soc/codecs/wsa881x.c
-+++ b/sound/soc/codecs/wsa881x.c
-@@ -676,7 +676,6 @@ struct wsa881x_priv {
- 	int active_ports;
- 	bool port_prepared[WSA881X_MAX_SWR_PORTS];
- 	bool port_enable[WSA881X_MAX_SWR_PORTS];
--	bool stream_prepared;
- };
- 
- static void wsa881x_init(struct wsa881x_priv *wsa881x)
-@@ -954,41 +953,6 @@ static const struct snd_soc_dapm_widget wsa881x_dapm_widgets[] = {
- 	SND_SOC_DAPM_OUTPUT("SPKR"),
- };
- 
--static int wsa881x_prepare(struct snd_pcm_substream *substream,
--			   struct snd_soc_dai *dai)
--{
--	struct wsa881x_priv *wsa881x = dev_get_drvdata(dai->dev);
--	int ret;
--
--	if (wsa881x->stream_prepared) {
--		sdw_disable_stream(wsa881x->sruntime);
--		sdw_deprepare_stream(wsa881x->sruntime);
--		wsa881x->stream_prepared = false;
--	}
--
--
--	ret = sdw_prepare_stream(wsa881x->sruntime);
--	if (ret)
--		return ret;
--
--	/**
--	 * NOTE: there is a strict hw requirement about the ordering of port
--	 * enables and actual PA enable. PA enable should only happen after
--	 * soundwire ports are enabled if not DC on the line is accumulated
--	 * resulting in Click/Pop Noise
--	 * PA enable/mute are handled as part of DAPM and digital mute.
--	 */
--
--	ret = sdw_enable_stream(wsa881x->sruntime);
--	if (ret) {
--		sdw_deprepare_stream(wsa881x->sruntime);
--		return ret;
--	}
--	wsa881x->stream_prepared = true;
--
--	return ret;
--}
--
- static int wsa881x_hw_params(struct snd_pcm_substream *substream,
- 			     struct snd_pcm_hw_params *params,
- 			     struct snd_soc_dai *dai)
-@@ -1016,12 +980,7 @@ static int wsa881x_hw_free(struct snd_pcm_substream *substream,
- {
- 	struct wsa881x_priv *wsa881x = dev_get_drvdata(dai->dev);
- 
--	if (wsa881x->stream_prepared) {
--		sdw_disable_stream(wsa881x->sruntime);
--		sdw_deprepare_stream(wsa881x->sruntime);
--		sdw_stream_remove_slave(wsa881x->slave, wsa881x->sruntime);
--		wsa881x->stream_prepared = false;
--	}
-+	sdw_stream_remove_slave(wsa881x->slave, wsa881x->sruntime);
- 
- 	return 0;
- }
-@@ -1052,7 +1011,6 @@ static int wsa881x_digital_mute(struct snd_soc_dai *dai, int mute, int stream)
- 
- static struct snd_soc_dai_ops wsa881x_dai_ops = {
- 	.hw_params = wsa881x_hw_params,
--	.prepare = wsa881x_prepare,
- 	.hw_free = wsa881x_hw_free,
- 	.mute_stream = wsa881x_digital_mute,
- 	.set_sdw_stream = wsa881x_set_sdw_stream,
--- 
-2.20.1
-
+> 
