@@ -2,89 +2,91 @@ Return-Path: <SRS0=HX6w=5I=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F0ACC4332B
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2020 13:50:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 85D39C54FCE
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2020 13:50:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 064832074D
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2020 13:50:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0A6962076A
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2020 13:50:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XGONMA3M";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AbnB4www"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 064832074D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pbg5zY+h";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L9sgbN6w"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0A6962076A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 286611664;
-	Mon, 23 Mar 2020 14:49:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 286611664
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5B2A6846;
+	Mon, 23 Mar 2020 14:49:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B2A6846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584971411;
-	bh=9ncUxRvHf0FPXNscLgmmsmMq2h5YMOZH6dHTjucibVA=;
+	s=default; t=1584971436;
+	bh=4Ga4/nRhdnC9UJIYIruT0FKV6lKxmiKral2ggHMGLtk=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XGONMA3M+ZQMGYQ4/YwsO/+HA6+XFCinQXovYt2G/p6tb0w/A9d9k9SvQ4kWsXAqA
-	 kR3nD8GiqBeHJiCqmCFJrL1b0/LXolorlQ6SZMVYU0CSHowHaxCqnmcvm7UjymgQZ7
-	 6TSAQWZSpqRe096Yv5XQVtr2myy2hZnPTHpKawuA=
+	b=pbg5zY+h7v+clqFlIxrs4Z1LGx4r2L4ArUWSieK3oRh5bO/i+ll06k/k1YgQT+3f/
+	 E+fgM98p9WmiiiG7aeLpUosD/RN0qNMAAb7P29JXFmiSOCWzYy9VOunB5xCr4pGnOg
+	 68D60vvK9CG3RXIvYiT5UQw7xIW6ZYvbn7JsmJzQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E0C51F80268;
-	Mon, 23 Mar 2020 14:47:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BF209F8028F;
+	Mon, 23 Mar 2020 14:47:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 47A5BF8015B; Fri, 20 Mar 2020 15:31:55 +0100 (CET)
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com
- [IPv6:2607:f8b0:4864:20::544])
+ id 0E6B6F8015B; Fri, 20 Mar 2020 15:33:27 +0100 (CET)
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com
+ [IPv6:2607:f8b0:4864:20::1041])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EBE43F800DD
- for <alsa-devel@alsa-project.org>; Fri, 20 Mar 2020 15:31:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EBE43F800DD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 261F3F800DD
+ for <alsa-devel@alsa-project.org>; Fri, 20 Mar 2020 15:33:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 261F3F800DD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="AbnB4www"
-Received: by mail-pg1-x544.google.com with SMTP id k191so2015206pgc.13
- for <alsa-devel@alsa-project.org>; Fri, 20 Mar 2020 07:31:51 -0700 (PDT)
+ header.b="L9sgbN6w"
+Received: by mail-pj1-x1041.google.com with SMTP id mj6so2541892pjb.5
+ for <alsa-devel@alsa-project.org>; Fri, 20 Mar 2020 07:33:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=6c+JSVCxP0/exR74ChVM1yt+TIcfNUXUTN2EWov9Law=;
- b=AbnB4wwwyxJU822g6/gWFpEQ4P3sPvgEIZgPVxj0ueTSXGScHWIdqu8Bfum8A4f6/t
- 2cDmx+mRDs0d1aBYc9kuZWhUGlZQopNmfAxvsBGjJ2W8LGR85UU6GLrxxvJOy3kJTSkt
- JE2nO9goUQjnpdlunQj2qxtw4FlMydNhnNhEBXWivBv1tMzUcJQVSsDGBYU36GYVMp8q
- bKTQBBUmTNmI+aPH3SFqG5lItDWQRccn1+Dg8YPYsBTJRjVLTIQ2IzJKGId0vHuwsZiT
- VE+EXhUwgiTuaSOm8mlyq4iFfyyT5oKb3cv24fO6Y63UPc6pY5TFkmuaGyR5BMx2pRpy
- uzkw==
+ :cc; bh=y8CL3zZj4yGG4lD3L6yv8lcW+KdsOuZ+KSCgXBMVoeQ=;
+ b=L9sgbN6wN5LoekRNwV3OkrwtTgMc/JlHqiY7y9vO3HDdjEG/orGFjNxp/q2gIpR2HX
+ cU6tHLQns13rsmmNdoEI7Nv2tbx4XbTTK3yI0Ugeb8037dKJAGcbafkBWz5WUYEGvUES
+ mr4CF0f7lD5Ovkymjy0j4fN+23aB2juafQuLbQCUK8eg6CppHfxoO6WNxz5Un1/qDb/7
+ YTbJyV3ooQQlJT7MjAeroDiUw5ja4n/ivZCszT3H/j46hYkIeHWwf6lkmIIjR+oqM69R
+ wGCC9vfLD+DwxaR+M3PBGwaej7BdJmmi7YgWJAUynp/EXPazIGucxui5Wg1SngYwtTf7
+ V5EQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=6c+JSVCxP0/exR74ChVM1yt+TIcfNUXUTN2EWov9Law=;
- b=ponX/IZAtY7Aolx7Xia5YS04MomIwdqmhoo6JptLh0HBK0I3miwSxZKKb5BFpLM1RW
- a02xILTeRcUPC2Y8pICRrTdpuKSxBofO2o2kOkdg/rpxKKhBBMU0Y17Z5nM2W68s59rr
- bw1AM9/vDI/auU4GV+LDAXC/P/SK22W1r5E52WOXpLgu5+hQUAMHn+OHk2H77yJJYEXI
- /HmYCyaxZS83WOaN+ZMJuHmkIYw8ydHipy6axgh9eXJZjQXhwGctalrKlwcwW3TL36uZ
- ADxsivs04cuhxrUI0yujFTU3ZZPz2t18EG5LbDtX/B3Kp8OAbxsocQ+4gnnK4GmzqOv/
- 8WLg==
-X-Gm-Message-State: ANhLgQ2XhD+ZrNBaqbAM/15zdVbRiK5arPDGYIfp8jdhPuDa4pKnN5jP
- HQw3BICjTkuG3hZE4Y9NwoncN20/pm5/GIj4PUA=
-X-Google-Smtp-Source: ADFU+vup5g2RU5zzwiEF27K/7Facn+zu9j1qO5AF3IVfdl5lu3UZTrDLOmtE7bcC/STD/7WybqqCoP0QLrfa0c2hinA=
-X-Received: by 2002:a63:798a:: with SMTP id u132mr9271382pgc.203.1584714709588; 
- Fri, 20 Mar 2020 07:31:49 -0700 (PDT)
+ bh=y8CL3zZj4yGG4lD3L6yv8lcW+KdsOuZ+KSCgXBMVoeQ=;
+ b=TAijNhazj1sBKJqpBKpYG7A4cDvgVHzW/FZQgLjluPq/ldiVyg7OPH15Bb6dMLfR5G
+ mXQT1x9evNFUpjzivEpoGzN2b8brUeLmvOS6xfbGk//vvz2Pr8S01hu1+oiPahvatByH
+ L+b+YbJwqsKc9BamEADIZWL+IhDNv6MVQdAjS/CThoCgnHibQmn1wYGVvfE0emaBrvQb
+ GchM4w0waH5qh4LEBWQ8lcNc9VgSGTG+jmhR1HFlYQ6IhpRGy6/mzA+DuKFqgYvx/Zxv
+ DckHqkvXVbeEMtXET9fQh4IZIE8vywrIka6BKBCPkcPJGM4M9fizEn/ml+144j7JLaf1
+ H2jQ==
+X-Gm-Message-State: ANhLgQ2caDx09HTtmfBWOAPkHgq2PpnKL2R1U0EZhcwYZh1dchQ3iIJC
+ R3KVDVStnLYtuaSgq1JCa8lZ3n9P7yABGL0al+U=
+X-Google-Smtp-Source: ADFU+vtfmvNWzKVRIO3O61UeKiXfFAkZ78miDvEyQJ+ZPA+9PqY48/8tdpjDkFa9gmPvQSHovm3oH5zXZ65598V9cJg=
+X-Received: by 2002:a17:902:8d92:: with SMTP id
+ v18mr9079029plo.18.1584714801666; 
+ Fri, 20 Mar 2020 07:33:21 -0700 (PDT)
 MIME-Version: 1.0
 References: <20200320131345.635023594@linutronix.de>
-In-Reply-To: <20200320131345.635023594@linutronix.de>
+ <20200320131508.736205164@linutronix.de>
+In-Reply-To: <20200320131508.736205164@linutronix.de>
 From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Fri, 20 Mar 2020 16:31:42 +0200
-Message-ID: <CAHp75Vffg5jm5knwuAKwkDZ16=kDujT1LCpzGU8mUV9NrXkSag@mail.gmail.com>
-Subject: Re: [patch 00/22] x86/treewide: Consolidate CPU match macro maze and
- get rid of C89 (sic!) initializers
+Date: Fri, 20 Mar 2020 16:33:14 +0200
+Message-ID: <CAHp75Vca0j0=EB2qdvGgFOq2s_ohHUEzY4OeNrv-oynLBVYh1w@mail.gmail.com>
+Subject: Re: [patch 01/22] x86/devicetable: Move x86 specific macro out of
+ generic code
 To: Thomas Gleixner <tglx@linutronix.de>
 Content-Type: text/plain; charset="UTF-8"
 X-Mailman-Approved-At: Mon, 23 Mar 2020 14:47:37 +0100
@@ -127,70 +129,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Mar 20, 2020 at 3:19 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+On Fri, Mar 20, 2020 at 3:17 PM Thomas Gleixner <tglx@linutronix.de> wrote:
 >
-> The x86 CPU matching based on struct x86_cpu_id:
+> There is no reason that this gunk is in a generic header file. The wildcard
+> defines need to stay as they are required by file2alias.
 >
->   - is using an inconsistent macro mess with pointlessly duplicated and
->     slightly different local macros. Finding the places is an art as there
->     is no consistent name space at all.
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  arch/x86/include/asm/cpu_device_id.h   |   13 ++++++++++++-
+>  arch/x86/kvm/svm.c                     |    1 +
+>  arch/x86/kvm/vmx/vmx.c                 |    1 +
+>  drivers/cpufreq/acpi-cpufreq.c         |    1 +
+>  drivers/cpufreq/amd_freq_sensitivity.c |    1 +
+>  include/linux/mod_devicetable.h        |    4 +---
+>  6 files changed, 17 insertions(+), 4 deletions(-)
 >
->   - is still mostly based on C89 struct initializers which rely on the
->     ordering of the struct members. That's proliferated forever as every
->     new driver just copies the mess from some exising one.
->
-> A recent offlist conversation about adding more match criteria to the CPU
-> matching logic instead of creating yet another set of horrors, reminded me
-> of a pile of scripts and patches which I hacked on a few years ago when I
-> tried to add something to struct x86_cpu_id.
->
-> That stuff was finally not needed and ended up in my ever growing todo list
-> and collected dust and cobwebs, but (un)surprisingly enough most of it
-> still worked out of the box. The copy & paste machinery still works as it
-> did years ago.
->
-> There are a few places which needed extra care due to new creative macros,
-> new check combinations etc. and surprisingly ONE open coded proper C99
-> initializer.
->
-> It was reasonably simple to make it at least compile and pass a quick
-> binary equivalence check.
->
-> The result is a X86_MATCH prefix based set of macros which are reflecting
-> the needs of the usage sites and shorten the base macro which takes all
-> possible parameters (vendor, family, model, feature, data) and uses proper
-> C99 initializers.
->
-> So extensions of the match logic are trivial after that.
->
+> --- a/arch/x86/include/asm/cpu_device_id.h
+> +++ b/arch/x86/include/asm/cpu_device_id.h
+> @@ -6,10 +6,21 @@
+>   * Declare drivers belonging to specific x86 CPUs
+>   * Similar in spirit to pci_device_id and related PCI functions
+>   */
 
-Thank you, Thomas!
+> -
 
-Briefly looking to the code, I like the idea. I'll do (minor) comments
-on individual patches.
+Seems you are going to remove below anyway in the next patches, so,
+why not to do this also there?
 
-I see it incorporates my previous attempts to extend this, but now it
-looks better.
-
-> The patch set is against Linus tree and has trivial conflicts against
-> linux-next.
->
-> The diffstat is:
->  71 files changed, 525 insertions(+), 472 deletions(-)
->
-> but the extra lines are pretty much kernel-doc documentation which I added
-> to each of the new macros. The usage sites diffstat is:
->
->  70 files changed, 393 insertions(+), 471 deletions(-)
->
-> Thoughts?
->
-> Thanks,
->
->         tglx
->
->
-
+>  #include <linux/mod_devicetable.h>
 
 -- 
 With Best Regards,
