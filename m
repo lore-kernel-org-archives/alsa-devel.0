@@ -2,65 +2,65 @@ Return-Path: <SRS0=HX6w=5I=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=0.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	UPPERCASE_50_75,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E06A9C4332B
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2020 13:55:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B825C4332B
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2020 13:56:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6A5FD2072D
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2020 13:55:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8C0112072D
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2020 13:56:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fzDoJe51"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6A5FD2072D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="n8MCrw8k"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8C0112072D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linutronix.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8FBC515F9;
-	Mon, 23 Mar 2020 14:54:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8FBC515F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id E9B11886;
+	Mon, 23 Mar 2020 14:55:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E9B11886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584971730;
-	bh=nxgga+nH6b51TGWsS58+xEcIBZHWwWZyBEfNJeJyKJk=;
+	s=default; t=1584971767;
+	bh=gjqhe5NDYWnd2SltHD55lQgF7NVCa2rNTAbhEe38jEc=;
 	h=From:To:Subject:In-Reply-To:References:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fzDoJe51PEA05Rc8Go/E71CFg9DeLlLkMSrXUwdtHT1vFW9TPmykVMzzrZeW5O6yi
-	 an8Fxs0HnpkixFulf97y84mLeGy11qtQ1WyoHnF7BBh2UtHl1GmOml0mq5d9LqR+56
-	 1umXlFbajDaHUklw9r4omf2IYXIQ0/bPyxgB1yKo=
+	b=n8MCrw8kfmpNb4Ktq0oXxp/Shn4NL31s9OOxgdxPfrHICC0K4r1e1/2TQDZHz0Odt
+	 4XfByqmTZ/4roFR/X01WoC/juZn6vAm4/sQNqlJ9zboPLOKAJ/Z9takKOZHpnPxaO8
+	 A7AvADp2ZCtFoKhIZMwmJMzXFSDaZV4OBQXTnEe4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C4B91F802EB;
-	Mon, 23 Mar 2020 14:47:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D41E5F802FB;
+	Mon, 23 Mar 2020 14:47:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CADCFF8015B; Fri, 20 Mar 2020 21:30:40 +0100 (CET)
-Received: from Galois.linutronix.de (galois.linutronix.de
+ id CCA15F8015B; Fri, 20 Mar 2020 21:32:32 +0100 (CET)
+Received: from Galois.linutronix.de (Galois.linutronix.de
  [IPv6:2a0a:51c0:0:12e:550::1])
  (using TLSv1.2 with cipher DHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C80F5F80126
- for <alsa-devel@alsa-project.org>; Fri, 20 Mar 2020 21:30:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C80F5F80126
+ by alsa1.perex.cz (Postfix) with ESMTPS id 33286F800C0
+ for <alsa-devel@alsa-project.org>; Fri, 20 Mar 2020 21:32:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33286F800C0
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11]
  helo=nanos.tec.linutronix.de)
  by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
  (Exim 4.80) (envelope-from <tglx@linutronix.de>)
- id 1jFOHm-0003TQ-I5; Fri, 20 Mar 2020 21:30:30 +0100
+ id 1jFOJf-0003W5-B3; Fri, 20 Mar 2020 21:32:27 +0100
 Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
- id E29761039FC; Fri, 20 Mar 2020 21:30:29 +0100 (CET)
+ id A95431039FC; Fri, 20 Mar 2020 21:32:26 +0100 (CET)
 From: Thomas Gleixner <tglx@linutronix.de>
 To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [patch 09/22] cpufreq: Convert to new X86 CPU match macros
-In-Reply-To: <CAHp75VdkvyqOaAsLmz8K2j4bdd0sboPoUpRr6U-zvtkSaQfPRQ@mail.gmail.com>
+Subject: Re: [patch 08/22] ACPI: Convert to new X86 CPU match macros
+In-Reply-To: <CAHp75VcK3tL0YayjF=CSkSkHiOpg2zOV3rdkXQWJmLZ9fmevpg@mail.gmail.com>
 References: <20200320131345.635023594@linutronix.de>
- <20200320131509.564059710@linutronix.de>
- <CAHp75VdkvyqOaAsLmz8K2j4bdd0sboPoUpRr6U-zvtkSaQfPRQ@mail.gmail.com>
-Date: Fri, 20 Mar 2020 21:30:29 +0100
-Message-ID: <87eetmpy56.fsf@nanos.tec.linutronix.de>
+ <20200320131509.467730627@linutronix.de>
+ <CAHp75VcK3tL0YayjF=CSkSkHiOpg2zOV3rdkXQWJmLZ9fmevpg@mail.gmail.com>
+Date: Fri, 20 Mar 2020 21:32:26 +0100
+Message-ID: <87bloqpy1x.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Linutronix-Spam-Score: -1.0
@@ -107,29 +107,25 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Andy Shevchenko <andy.shevchenko@gmail.com> writes:
-> On Fri, Mar 20, 2020 at 3:18 PM Thomas Gleixner <tglx@linutronix.de> wrote:
->
->> +       X86_MATCH_VENDOR_FAM_MODEL_FEATURE(INTEL,  6,  9, X86_FEATURE_EST, NULL),
->> +       X86_MATCH_VENDOR_FAM_MODEL_FEATURE(INTEL,  6, 13, X86_FEATURE_EST, NULL),
->> +       X86_MATCH_VENDOR_FAM_MODEL_FEATURE(INTEL, 15,  3, X86_FEATURE_EST, NULL),
->> +       X86_MATCH_VENDOR_FAM_MODEL_FEATURE(INTEL, 15,  4, X86_FEATURE_EST, NULL),
->
->> +       X86_MATCH_VENDOR_FAM_MODEL(INTEL,  6, 0x8, 0),
->> +       X86_MATCH_VENDOR_FAM_MODEL(INTEL,  6, 0xb, 0),
->> +       X86_MATCH_VENDOR_FAM_MODEL(INTEL, 15, 0x2, 0),
->
->> +       X86_MATCH_VENDOR_FAM_MODEL(INTEL,  6, 0x8, 0),
->> +       X86_MATCH_VENDOR_FAM_MODEL(INTEL,  6, 0xb, 0),
->> +       X86_MATCH_VENDOR_FAM_MODEL(INTEL, 15, 0x2, 0),
->
-> Perhaps use names instead of 6 and 15?
 
-Thought about that and did not come up with anyting useful. FAM6 vs. 6
-is not really any better
+> On Fri, Mar 20, 2020 at 3:19 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+>>
+>> The new macro set has a consistent namespace and uses C99 initializers
+>> instead of the grufty C89 ones.
+>>
+>> Rename the local macro wrapper to X86_MATCH for consistency. It stays for
+>> readability sake.
+>
+>> +       X86_MATCH_INTEL_FAM6_MODEL(ATOM_SILVERMONT,     NULL),
+>> +       X86_MATCH_INTEL_FAM6_MODEL(ATOM_AIRMONT,        NULL),
+>
+>> -#define ICPU(model)    { X86_VENDOR_INTEL, 6, model, X86_FEATURE_ANY, }
+>> +#define X86_MATCH(model)       X86_MATCH_INTEL_FAM6_MODEL(model, NULL)
+>
+> Maybe we can do a generic macro to avoid all these ', NULL' repetitions?
 
-> Also, NULL vs. 0?
-
-Both works, but yes I used mostly NULL.
+I opted for having the data argument everywhere to keep the macro maze
+small. And we have enough places where data is actually used.
 
 Thanks,
 
