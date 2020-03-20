@@ -2,93 +2,73 @@ Return-Path: <SRS0=JibJ=5F=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D826FC43332
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Mar 2020 16:37:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C83AC4332B
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Mar 2020 16:40:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6848120767
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Mar 2020 16:37:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9B5A720709
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Mar 2020 16:40:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SjSoq1Rp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6848120767
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="n5Ao/c5B"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9B5A720709
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CA28341;
-	Fri, 20 Mar 2020 17:36:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA28341
+	by alsa0.perex.cz (Postfix) with ESMTPS id 05AE574C;
+	Fri, 20 Mar 2020 17:40:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 05AE574C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584722247;
-	bh=3xK3S9SyPELoF0bIY7oM8yHPmFVwzW3vWsWhIQ4dBaI=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1584722450;
+	bh=0BNF32Ot9S3paqwF1C3COqOTGVZ/vjexQUsZ36K3iI0=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SjSoq1RpUQ03tH6Lc0Bu7YKLpbLfseN67Z2UQHHc0yV7hkd8ZJMyrnExrEEhOLk8+
-	 UcBGC7j9n+4u/1BBBkaPa8v46arJpkY1Pd3V+wN5HB2bFjcKYQF3EbN+Y1PuL1TLVS
-	 +Lywu3R4Neic7tZm6Bg+IaZ7WY4XC/PXhiB1kEPg=
+	b=n5Ao/c5BD9SsfBxO/LNHIY8x9iY1OpRbveH240wMEWAXdnj4VjfD/GIqgwCUg5Z/l
+	 cyGwC3egLcNk6MiV/KMnVUcfiU6h2XWNj48YWpMrX5TlbWrGgjGmMaoFUuyYAAnAg0
+	 DktR+UMpdSPGwWTiPZ6dnWjRWJlTSB58pW4UgymM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6010CF800C0;
-	Fri, 20 Mar 2020 17:36:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 81924F80139;
+	Fri, 20 Mar 2020 17:39:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 845C7F8015B; Fri, 20 Mar 2020 17:36:35 +0100 (CET)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7455CF800C0
- for <alsa-devel@alsa-project.org>; Fri, 20 Mar 2020 17:36:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7455CF800C0
-IronPort-SDR: EzikAXejZHaH2HA0YjpfhY4VCkFWVmzItmv33FQkBedwalRDnuAwS0hyP80Eos2ztu4tLUPtmo
- Ep3CkHui4OFg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Mar 2020 09:36:29 -0700
-IronPort-SDR: OxQvFv6Y9TtecqmiOWaWSvgFu6JCPAAdXBFe2Vfj0jidcVYUlllK7JFot1VBJp3OQXFtagmHg7
- JRVZ/iRQHfVw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,285,1580803200"; d="scan'208";a="392204315"
-Received: from manallet-mobl.amr.corp.intel.com (HELO [10.255.34.12])
- ([10.255.34.12])
- by orsmga004.jf.intel.com with ESMTP; 20 Mar 2020 09:36:26 -0700
-Subject: Re: [PATCH 1/8] soundwire: bus_type: add master_device/driver support
-To: Vinod Koul <vkoul@kernel.org>
-References: <20200305063646.GW4148@vkoul-mobl>
- <eb30ac49-788f-b856-6fcf-84ae580eb3c8@linux.intel.com>
- <20200306050115.GC4148@vkoul-mobl>
- <4fabb135-6fbb-106f-44fd-8155ea716c00@linux.intel.com>
- <20200311063645.GH4885@vkoul-mobl>
- <0fafb567-10e5-a1ea-4a6d-b3c53afb215e@linux.intel.com>
- <20200313115011.GD4885@vkoul-mobl>
- <4cb16467-87d0-ef99-e471-9eafa9e669d2@linux.intel.com>
- <20200314094904.GP4885@vkoul-mobl>
- <3c32830c-cd12-867f-a763-7c3e385cb1e9@linux.intel.com>
- <20200320153334.GJ4885@vkoul-mobl>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <70d6e0cb-22a6-5ada-83a8-b605974bdd84@linux.intel.com>
-Date: Fri, 20 Mar 2020 11:36:26 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+ id 2B365F8015B; Fri, 20 Mar 2020 17:39:58 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 8B60AF800C0;
+ Fri, 20 Mar 2020 17:39:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B60AF800C0
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 443831FB;
+ Fri, 20 Mar 2020 09:39:50 -0700 (PDT)
+Received: from localhost (unknown [172.31.20.19])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ED9833F305;
+ Fri, 20 Mar 2020 09:39:49 -0700 (PDT)
+Date: Fri, 20 Mar 2020 16:39:48 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Subject: Re: [PATCH 06/14] ASoC: SOF: add a power status IPC
+Message-ID: <20200320163948.GD3961@sirena.org.uk>
+References: <20200312144429.17959-1-guennadi.liakhovetski@linux.intel.com>
+ <20200312144429.17959-7-guennadi.liakhovetski@linux.intel.com>
+ <20200313143956.GJ5528@sirena.org.uk>
+ <20200320115203.GA2130@ubuntu>
+ <20200320121952.GC3961@sirena.org.uk>
+ <20200320132732.GC2130@ubuntu> <20200320150727.GD2130@ubuntu>
 MIME-Version: 1.0
-In-Reply-To: <20200320153334.GJ4885@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
- linux-kernel@vger.kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Hui Wang <hui.wang@canonical.com>, broonie@kernel.org,
- srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
- Sanyog Kale <sanyog.r.kale@intel.com>,
- Bard liao <yung-chuan.liao@linux.intel.com>,
- Rander Wang <rander.wang@linux.intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="VV4b6MQE+OnNyhkM"
+Content-Disposition: inline
+In-Reply-To: <20200320150727.GD2130@ubuntu>
+X-Cookie: Laugh when you can
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,31 +85,47 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+--VV4b6MQE+OnNyhkM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 3/20/20 10:33 AM, Vinod Koul wrote:
-> On 16-03-20, 14:15, Pierre-Louis Bossart wrote:
->>
->>
->>>> It's really down to your objection to the use of 'struct driver'... For ASoC
->>>> support we only need the .name and .pm_ops, so there's really no possible
->>>> path forward otherwise.
->>>
->>> It means that we cannot have a solution which is Intel specific into
->>> core. If you has a standalone controller you do not need this.
->>
->> A 'struct driver' is not Intel-specific, sorry.
-> 
-> We are discussing 'struct sdw_master_driver'. Please be very specific in
-> you replies and do not use incorrect terminology which confuses people.
-> 
-> Sorry a 'struct sdw_master_driver' IMHO is. As I have said it is not
-> needed if you have standalone controller even in Intel case, and rest of
-> the world.
+On Fri, Mar 20, 2020 at 04:07:27PM +0100, Guennadi Liakhovetski wrote:
+> On Fri, Mar 20, 2020 at 02:27:32PM +0100, Guennadi Liakhovetski wrote:
 
-You're splitting hair without providing a solution.
+> > No, this isn't a completion - it's a counter. I've used atomic variable=
+s=20
+> > before, I cannot remember seeing any difficulties with their correct us=
+e=20
+> > described. Do you have a pointer?
 
-Please see the series [PATCH 0/5] soundwire: add sdw_master_device 
-support on Qualcomm platforms
+> Actually I'd even say this isn't a problem. I think it's safe to say, you=
+=20
+> won't suspend and resume your audio interface more often than every 10=20
+> seconds. That makes under 3200000 cycles per year. Even with 31 bits for =
+a=20
+> signed integer that makes more than 600 years. I think we're safe.
 
-This solution was tested on Qualcomm platforms, that doesn't require 
-this sdw_master_driver to be used, so your objections are now invalid.
+The problem is that atomics are just incredibly error prone - for
+example they're just a plain number, they're usually counting something
+which is not being locked so you have to be careful any time you do
+anything around them.  Their lack of structure makes them harder to
+reason about than most other locking primitives, often harder than it's
+worth.
+
+--VV4b6MQE+OnNyhkM
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl508dMACgkQJNaLcl1U
+h9AwrAf/eWl+Yb8qB8Fr4u5YFzbxMd1qzAcjCqwrHb7QunWcMmllBJOAYCyPin/C
+3n84GcOZezV6APmoZXx6W8KrrMlYBo5BMHXp8vXCzZ36B3UQgdqjLMsFr4pQxp8H
+BKYXtow+NC9B2/h3HpegWkQ0wSAF2ohd3VI5k7OhPwz2MhWeNO30bxQx7dkxFPtE
+3c3EFq77PB662iGDR4YnKuc1MUDblfMtPg/Je866pg0ZCNgQ7Bq9TVxQzWrF+R4b
+tOsZdeYwGO4Zo7Vj/+9GoVw5kYo30961PXjb9Kywa3rHLuGXXNYC0E4yEyOEKQbw
+dow3mx9kcb6v0fCeINu7R6hxXru/Jw==
+=6VtB
+-----END PGP SIGNATURE-----
+
+--VV4b6MQE+OnNyhkM--
