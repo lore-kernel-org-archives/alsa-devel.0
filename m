@@ -7,53 +7,53 @@ X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 92F9CC10F26
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2020 05:30:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EA873C10F26
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2020 05:31:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1EF9E206F9
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2020 05:30:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 74081206F9
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2020 05:31:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="F6ZQO/5d"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1EF9E206F9
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OrsMHqSm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 74081206F9
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 691C91683;
-	Mon, 23 Mar 2020 06:29:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 691C91683
+	by alsa0.perex.cz (Postfix) with ESMTPS id 719AD167E;
+	Mon, 23 Mar 2020 06:30:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 719AD167E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584941432;
-	bh=Qq7Jsd385I+OctVB9Z82X8FZ83BOtCoO4Wct06b4fgM=;
+	s=default; t=1584941464;
+	bh=tDTwB0XeGJZCDp5T15snztp611MLTcJs5N7EOS6QOPg=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=F6ZQO/5dIc6cpVnZIn/uaQzuknDMJIMQoi5XanKEPQxJplhNPHXNF10qcZVCi+Z4w
-	 0RY5s4vtXPhbnX37Yo6pVy4s7k3ES4rE2Nd/68JWtBunVU6R7T6HFEoWrUB3iKv52S
-	 ntp+AH29SrbzYIvUq3KnfRHbSEkQin55Dns2CXz4=
+	b=OrsMHqSmOJDI61o5Mi6NHLWpmz4KYvB9mf/K/10KNBLIX8SKEYEGBOa11vCpJ+h3k
+	 x5mJbxlzuxmEeJM2FOpCqQ2+T82kvgBJiTiLiyfBJovZjzFRkR2JXh8LR/JBk3CIpS
+	 MHyRor5NbiAN3OtEPnS5IDD/OAB0bLj1vS/XEfKY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AA6C7F80343;
-	Mon, 23 Mar 2020 06:20:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 70999F8034A;
+	Mon, 23 Mar 2020 06:21:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 97588F80349; Mon, 23 Mar 2020 06:20:48 +0100 (CET)
+ id 5C8A4F8034A; Mon, 23 Mar 2020 06:20:59 +0100 (CET)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 984AAF80343
- for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2020 06:20:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 984AAF80343
-Date: 23 Mar 2020 14:20:44 +0900
-X-IronPort-AV: E=Sophos;i="5.72,295,1580742000"; d="scan'208";a="42564584"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 23 Mar 2020 14:20:44 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id A49D0F802A9
+ for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2020 06:20:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A49D0F802A9
+Date: 23 Mar 2020 14:20:52 +0900
+X-IronPort-AV: E=Sophos;i="5.72,295,1580742000"; d="scan'208";a="42564589"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 23 Mar 2020 14:20:52 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 218D04008542;
- Mon, 23 Mar 2020 14:20:44 +0900 (JST)
-Message-ID: <87blonir4j.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 7FC2B416FB87;
+ Mon, 23 Mar 2020 14:20:52 +0900 (JST)
+Message-ID: <87a747ir4b.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 22/36] ASoC: sprd: use asoc_rtd_to_cpu() / asoc_rtd_to_codec()
+Subject: [PATCH 23/36] ASoC: stm: use asoc_rtd_to_cpu() / asoc_rtd_to_codec()
  macro for DAI pointer
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -81,45 +81,81 @@ From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/sprd/sprd-pcm-compress.c | 4 ++--
- sound/soc/sprd/sprd-pcm-dma.c      | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/stm/stm32_adfsdm.c  | 12 ++++++------
+ sound/soc/stm/stm32_sai_sub.c |  2 +-
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/sprd/sprd-pcm-compress.c b/sound/soc/sprd/sprd-pcm-compress.c
-index 6cddf551bc11..74d48340cade 100644
---- a/sound/soc/sprd/sprd-pcm-compress.c
-+++ b/sound/soc/sprd/sprd-pcm-compress.c
-@@ -135,7 +135,7 @@ static int sprd_platform_compr_dma_config(struct snd_compr_stream *cstream,
- 	struct snd_soc_component *component =
- 		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
- 	struct device *dev = component->dev;
--	struct sprd_compr_data *data = snd_soc_dai_get_drvdata(rtd->cpu_dai);
-+	struct sprd_compr_data *data = snd_soc_dai_get_drvdata(asoc_rtd_to_cpu(rtd, 0));
- 	struct sprd_pcm_dma_params *dma_params = data->dma_params;
- 	struct sprd_compr_dma *dma = &stream->dma[channel];
- 	struct dma_slave_config config = { };
-@@ -321,7 +321,7 @@ static int sprd_platform_compr_open(struct snd_compr_stream *cstream)
- 	struct snd_soc_component *component =
- 		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
- 	struct device *dev = component->dev;
--	struct sprd_compr_data *data = snd_soc_dai_get_drvdata(rtd->cpu_dai);
-+	struct sprd_compr_data *data = snd_soc_dai_get_drvdata(asoc_rtd_to_cpu(rtd, 0));
- 	struct sprd_compr_stream *stream;
- 	struct sprd_compr_callback cb;
- 	int stream_id = cstream->direction, ret;
-diff --git a/sound/soc/sprd/sprd-pcm-dma.c b/sound/soc/sprd/sprd-pcm-dma.c
-index 2284558684bc..d12d3cad8cbd 100644
---- a/sound/soc/sprd/sprd-pcm-dma.c
-+++ b/sound/soc/sprd/sprd-pcm-dma.c
-@@ -200,7 +200,7 @@ static int sprd_pcm_hw_params(struct snd_soc_component *component,
- 	unsigned long flags;
- 	int ret, i, j, sg_num;
+diff --git a/sound/soc/stm/stm32_adfsdm.c b/sound/soc/stm/stm32_adfsdm.c
+index 51407a21c440..16ff02953015 100644
+--- a/sound/soc/stm/stm32_adfsdm.c
++++ b/sound/soc/stm/stm32_adfsdm.c
+@@ -215,7 +215,7 @@ static int stm32_adfsdm_trigger(struct snd_soc_component *component,
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct stm32_adfsdm_priv *priv =
+-		snd_soc_dai_get_drvdata(rtd->cpu_dai);
++		snd_soc_dai_get_drvdata(asoc_rtd_to_cpu(rtd, 0));
  
--	dma_params = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
-+	dma_params = snd_soc_dai_get_dma_data(asoc_rtd_to_cpu(rtd, 0), substream);
- 	if (!dma_params) {
- 		dev_warn(component->dev, "no dma parameters setting\n");
- 		dma_private->params = NULL;
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+@@ -235,7 +235,7 @@ static int stm32_adfsdm_pcm_open(struct snd_soc_component *component,
+ 				 struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct stm32_adfsdm_priv *priv = snd_soc_dai_get_drvdata(rtd->cpu_dai);
++	struct stm32_adfsdm_priv *priv = snd_soc_dai_get_drvdata(asoc_rtd_to_cpu(rtd, 0));
+ 	int ret;
+ 
+ 	ret =  snd_soc_set_runtime_hwparams(substream, &stm32_adfsdm_pcm_hw);
+@@ -250,7 +250,7 @@ static int stm32_adfsdm_pcm_close(struct snd_soc_component *component,
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct stm32_adfsdm_priv *priv =
+-		snd_soc_dai_get_drvdata(rtd->cpu_dai);
++		snd_soc_dai_get_drvdata(asoc_rtd_to_cpu(rtd, 0));
+ 
+ 	priv->substream = NULL;
+ 
+@@ -263,7 +263,7 @@ static snd_pcm_uframes_t stm32_adfsdm_pcm_pointer(
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct stm32_adfsdm_priv *priv =
+-		snd_soc_dai_get_drvdata(rtd->cpu_dai);
++		snd_soc_dai_get_drvdata(asoc_rtd_to_cpu(rtd, 0));
+ 
+ 	return bytes_to_frames(substream->runtime, priv->pos);
+ }
+@@ -274,7 +274,7 @@ static int stm32_adfsdm_pcm_hw_params(struct snd_soc_component *component,
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct stm32_adfsdm_priv *priv =
+-		snd_soc_dai_get_drvdata(rtd->cpu_dai);
++		snd_soc_dai_get_drvdata(asoc_rtd_to_cpu(rtd, 0));
+ 
+ 	priv->pcm_buff = substream->runtime->dma_area;
+ 
+@@ -287,7 +287,7 @@ static int stm32_adfsdm_pcm_new(struct snd_soc_component *component,
+ {
+ 	struct snd_pcm *pcm = rtd->pcm;
+ 	struct stm32_adfsdm_priv *priv =
+-		snd_soc_dai_get_drvdata(rtd->cpu_dai);
++		snd_soc_dai_get_drvdata(asoc_rtd_to_cpu(rtd, 0));
+ 	unsigned int size = DFSDM_MAX_PERIODS * DFSDM_MAX_PERIOD_SIZE;
+ 
+ 	snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV,
+diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
+index fe4903260d4e..2bd280c01c33 100644
+--- a/sound/soc/stm/stm32_sai_sub.c
++++ b/sound/soc/stm/stm32_sai_sub.c
+@@ -1238,7 +1238,7 @@ static int stm32_sai_pcm_process_spdif(struct snd_pcm_substream *substream,
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
+ 	struct stm32_sai_sub_data *sai = dev_get_drvdata(cpu_dai->dev);
+ 	int *ptr = (int *)(runtime->dma_area + hwoff +
+ 			   channel * (runtime->dma_bytes / runtime->channels));
 -- 
 2.17.1
 
