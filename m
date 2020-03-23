@@ -6,54 +6,54 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BD109C10F26
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2020 05:19:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F16C8C10F26
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2020 05:19:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 424D520722
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2020 05:19:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7AC9F20409
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2020 05:19:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ddPikB9w"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 424D520722
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vSEgZuSs"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7AC9F20409
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8D47D1664;
-	Mon, 23 Mar 2020 06:18:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D47D1664
+	by alsa0.perex.cz (Postfix) with ESMTPS id D615A15F8;
+	Mon, 23 Mar 2020 06:18:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D615A15F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584940738;
-	bh=wsNMtQIgV6gp3O+STQahSn2aH7CVtirrlZAmMJTPv9k=;
+	s=default; t=1584940765;
+	bh=EndjWkytsviqZzitdjBPH0ljn/aRWPciBX68gJGz0ZI=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ddPikB9w+JJ7vJOVuRvl7ysDwRwdYaxUsYwFAegXD3ng98yvSbuy5AoQ1CHHEn13e
-	 DFBu8arpC8rH6BVPKae+Frl0eQcuHyUemCejYR2Ez6QI5i4J7zwswb/AW+5c/ywMgh
-	 YaqM39i8tcFBfnpXaK0sGiRhxmzqt0PpFvbot7uA=
+	b=vSEgZuSs7j9yULTGNKa6r7uUhObaIw6WAf2+5kxcLzqXhBp/YOAo71AyTiKjFNVV/
+	 o2Fp8pnmHd2gaQvDTjhg4ocT1VKPDU8Vo2zp2IMWAsHXVN5amViGDobdnStlqaa8IJ
+	 AqSB0omkbiPJgpJJ9RgR4bMLLGWkU3UTC9AipTiY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C8FF4F80268;
-	Mon, 23 Mar 2020 06:17:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F2C9FF8028C;
+	Mon, 23 Mar 2020 06:17:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 984D8F80273; Mon, 23 Mar 2020 06:17:21 +0100 (CET)
+ id D7FD9F8028D; Mon, 23 Mar 2020 06:17:27 +0100 (CET)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id A1A25F80147
- for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2020 06:17:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1A25F80147
-Date: 23 Mar 2020 14:17:13 +0900
-X-IronPort-AV: E=Sophos;i="5.72,295,1580742000"; d="scan'208";a="42564194"
+ by alsa1.perex.cz (Postfix) with ESMTP id E8DA1F80273
+ for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2020 06:17:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8DA1F80273
+Date: 23 Mar 2020 14:17:22 +0900
+X-IronPort-AV: E=Sophos;i="5.72,295,1580742000"; d="scan'208";a="42564202"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 23 Mar 2020 14:17:13 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 23 Mar 2020 14:17:22 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id E2210416FED6;
- Mon, 23 Mar 2020 14:17:13 +0900 (JST)
-Message-ID: <874kufk5uu.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 710B2416FED6;
+ Mon, 23 Mar 2020 14:17:22 +0900 (JST)
+Message-ID: <87369zk5ul.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 02/36] ASoC: amd: use asoc_rtd_to_cpu() / asoc_rtd_to_codec()
- macro for DAI pointer
+Subject: [PATCH 03/36] ASoC: atmel: use asoc_rtd_to_cpu() /
+ asoc_rtd_to_codec() macro for DAI pointer
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <877dzbk5wm.wl-kuninori.morimoto.gx@renesas.com>
@@ -80,77 +80,101 @@ From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/amd/acp-da7219-max98357a.c | 2 +-
- sound/soc/amd/acp-rt5645.c           | 4 ++--
- sound/soc/amd/acp3x-rt5682-max9836.c | 6 +++---
- 3 files changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/atmel/atmel-pcm-dma.c  | 4 ++--
+ sound/soc/atmel/atmel-pcm-pdc.c  | 2 +-
+ sound/soc/atmel/atmel_wm8904.c   | 2 +-
+ sound/soc/atmel/mikroe-proto.c   | 2 +-
+ sound/soc/atmel/sam9g20_wm8731.c | 2 +-
+ sound/soc/atmel/sam9x5_wm8731.c  | 2 +-
+ 6 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
-index 7a5621e5e233..9414d7269c4f 100644
---- a/sound/soc/amd/acp-da7219-max98357a.c
-+++ b/sound/soc/amd/acp-da7219-max98357a.c
-@@ -54,7 +54,7 @@ static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
- {
+diff --git a/sound/soc/atmel/atmel-pcm-dma.c b/sound/soc/atmel/atmel-pcm-dma.c
+index db67f5ba1e9a..cb03c4f7324c 100644
+--- a/sound/soc/atmel/atmel-pcm-dma.c
++++ b/sound/soc/atmel/atmel-pcm-dma.c
+@@ -56,7 +56,7 @@ static void atmel_pcm_dma_irq(u32 ssc_sr,
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct atmel_pcm_dma_params *prtd;
+ 
+-	prtd = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
++	prtd = snd_soc_dai_get_dma_data(asoc_rtd_to_cpu(rtd, 0), substream);
+ 
+ 	if (ssc_sr & prtd->mask->ssc_error) {
+ 		if (snd_pcm_running(substream))
+@@ -83,7 +83,7 @@ static int atmel_pcm_configure_dma(struct snd_pcm_substream *substream,
+ 	struct ssc_device *ssc;
  	int ret;
- 	struct snd_soc_card *card = rtd->card;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
- 	struct snd_soc_component *component = codec_dai->component;
  
- 	dev_info(rtd->dev, "codec dai name = %s\n", codec_dai->name);
-diff --git a/sound/soc/amd/acp-rt5645.c b/sound/soc/amd/acp-rt5645.c
-index 91abeb92b648..73b31f88a6b5 100644
---- a/sound/soc/amd/acp-rt5645.c
-+++ b/sound/soc/amd/acp-rt5645.c
-@@ -48,7 +48,7 @@ static int cz_aif1_hw_params(struct snd_pcm_substream *substream,
+-	prtd = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
++	prtd = snd_soc_dai_get_dma_data(asoc_rtd_to_cpu(rtd, 0), substream);
+ 	ssc = prtd->ssc;
+ 
+ 	ret = snd_hwparams_to_dma_slave_config(substream, params, slave_config);
+diff --git a/sound/soc/atmel/atmel-pcm-pdc.c b/sound/soc/atmel/atmel-pcm-pdc.c
+index 59c1331a6984..a8daebcbf6c8 100644
+--- a/sound/soc/atmel/atmel-pcm-pdc.c
++++ b/sound/soc/atmel/atmel-pcm-pdc.c
+@@ -213,7 +213,7 @@ static int atmel_pcm_hw_params(struct snd_soc_component *component,
+ 	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
+ 	runtime->dma_bytes = params_buffer_bytes(params);
+ 
+-	prtd->params = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
++	prtd->params = snd_soc_dai_get_dma_data(asoc_rtd_to_cpu(rtd, 0), substream);
+ 	prtd->params->dma_intr_handler = atmel_pcm_dma_irq;
+ 
+ 	prtd->dma_buffer = runtime->dma_addr;
+diff --git a/sound/soc/atmel/atmel_wm8904.c b/sound/soc/atmel/atmel_wm8904.c
+index 776b27d3686e..148c943cb538 100644
+--- a/sound/soc/atmel/atmel_wm8904.c
++++ b/sound/soc/atmel/atmel_wm8904.c
+@@ -27,7 +27,7 @@ static int atmel_asoc_wm8904_hw_params(struct snd_pcm_substream *substream,
+ 		struct snd_pcm_hw_params *params)
  {
- 	int ret = 0;
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 -	struct snd_soc_dai *codec_dai = rtd->codec_dai;
 +	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
- 
- 	ret = snd_soc_dai_set_pll(codec_dai, 0, RT5645_PLL1_S_MCLK,
- 				  CZ_PLAT_CLK, params_rate(params) * 512);
-@@ -73,7 +73,7 @@ static int cz_init(struct snd_soc_pcm_runtime *rtd)
- 	struct snd_soc_card *card;
- 	struct snd_soc_component *codec;
- 
--	codec = rtd->codec_dai->component;
-+	codec = asoc_rtd_to_codec(rtd, 0)->component;
- 	card = rtd->card;
- 
- 	ret = snd_soc_card_jack_new(card, "Headset Jack",
-diff --git a/sound/soc/amd/acp3x-rt5682-max9836.c b/sound/soc/amd/acp3x-rt5682-max9836.c
-index 8f71c3f7ef79..024a7ee54cd5 100644
---- a/sound/soc/amd/acp3x-rt5682-max9836.c
-+++ b/sound/soc/amd/acp3x-rt5682-max9836.c
-@@ -35,7 +35,7 @@ static int acp3x_5682_init(struct snd_soc_pcm_runtime *rtd)
- {
  	int ret;
- 	struct snd_soc_card *card = rtd->card;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
- 	struct snd_soc_component *component = codec_dai->component;
  
- 	dev_info(rtd->dev, "codec dai name = %s\n", codec_dai->name);
-@@ -183,7 +183,7 @@ static int acp3x_ec_dmic0_startup(struct snd_pcm_substream *substream)
+ 	ret = snd_soc_dai_set_pll(codec_dai, WM8904_FLL_MCLK, WM8904_FLL_MCLK,
+diff --git a/sound/soc/atmel/mikroe-proto.c b/sound/soc/atmel/mikroe-proto.c
+index aa6d0d78566f..f9a85fd01b79 100644
+--- a/sound/soc/atmel/mikroe-proto.c
++++ b/sound/soc/atmel/mikroe-proto.c
+@@ -21,7 +21,7 @@
+ static int snd_proto_init(struct snd_soc_pcm_runtime *rtd)
  {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
  	struct snd_soc_card *card = rtd->card;
 -	struct snd_soc_dai *codec_dai = rtd->codec_dai;
 +	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
- 	struct acp3x_platform_info *machine = snd_soc_card_get_drvdata(card);
  
- 	machine->cap_i2s_instance = I2S_BT_INSTANCE;
-@@ -198,7 +198,7 @@ static int acp3x_ec_dmic1_startup(struct snd_pcm_substream *substream)
+ 	/* Set proto sysclk */
+ 	int ret = snd_soc_dai_set_sysclk(codec_dai, WM8731_SYSCLK_XTAL,
+diff --git a/sound/soc/atmel/sam9g20_wm8731.c b/sound/soc/atmel/sam9g20_wm8731.c
+index b1bef2bf142d..ed1f69b57024 100644
+--- a/sound/soc/atmel/sam9g20_wm8731.c
++++ b/sound/soc/atmel/sam9g20_wm8731.c
+@@ -96,7 +96,7 @@ static const struct snd_soc_dapm_route intercon[] = {
+  */
+ static int at91sam9g20ek_wm8731_init(struct snd_soc_pcm_runtime *rtd)
  {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_card *card = rtd->card;
 -	struct snd_soc_dai *codec_dai = rtd->codec_dai;
 +	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
- 	struct acp3x_platform_info *machine = snd_soc_card_get_drvdata(card);
+ 	struct device *dev = rtd->dev;
+ 	int ret;
  
- 	machine->cap_i2s_instance = I2S_BT_INSTANCE;
+diff --git a/sound/soc/atmel/sam9x5_wm8731.c b/sound/soc/atmel/sam9x5_wm8731.c
+index 7822425d5e61..9fbc3c1113cc 100644
+--- a/sound/soc/atmel/sam9x5_wm8731.c
++++ b/sound/soc/atmel/sam9x5_wm8731.c
+@@ -40,7 +40,7 @@ struct sam9x5_drvdata {
+  */
+ static int sam9x5_wm8731_init(struct snd_soc_pcm_runtime *rtd)
+ {
+-	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
+ 	struct device *dev = rtd->dev;
+ 	int ret;
+ 
 -- 
 2.17.1
 
