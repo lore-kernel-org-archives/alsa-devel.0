@@ -6,54 +6,54 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AAA87C10F26
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2020 05:21:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E6F99C10F26
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2020 05:21:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 336DC20409
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2020 05:21:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 75B8E20409
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2020 05:21:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FpjtAfcC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 336DC20409
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="E2qmT713"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 75B8E20409
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 99772165F;
-	Mon, 23 Mar 2020 06:20:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99772165F
+	by alsa0.perex.cz (Postfix) with ESMTPS id D375686F;
+	Mon, 23 Mar 2020 06:20:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D375686F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584940881;
-	bh=6m0qzH3FCF49OkxbLIBZycyzbjZ21Ka6Z5EytwMC+88=;
+	s=default; t=1584940900;
+	bh=MXDCKlqFKgPRyylgSINHgxgaONW6LRq7wQZNaWaaaaI=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FpjtAfcC2mH87C6xxA0ZpjOtHU3MwPkeiLwI9ysLh6+UJfUX4ILg9B+aX7QPRNpn6
-	 oVk5NndiXBziQX2gDm5iAQQ94SB9yBxQLvi7SvSwyJkF0IcPkiniQplzDHJUdimTG3
-	 N+bsT6dDjUQjTt+3KpzO12jKZV9uJQxeUNAXCuVQ=
+	b=E2qmT713bkHBtsf/mVcFhqh8i40/PK5qFZSpCIpmXBMWukk85bgT5niemHDrg8Aky
+	 eUg8x87iUZ6+cdDq90TyaMyvzeI32v6y/hWLfi2R5NlTgVNVZboU3fH6U7D/YRFKHc
+	 /Vmtqx9PaPDLRkYRrXETpM3qSFmnykTR0AF2f0lA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 12271F8015A;
-	Mon, 23 Mar 2020 06:18:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A7399F802BE;
+	Mon, 23 Mar 2020 06:18:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 01645F8015A; Mon, 23 Mar 2020 06:18:18 +0100 (CET)
+ id BA1E1F802C2; Mon, 23 Mar 2020 06:18:28 +0100 (CET)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 803E4F80095
- for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2020 06:18:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 803E4F80095
-Date: 23 Mar 2020 14:18:11 +0900
-X-IronPort-AV: E=Sophos;i="5.72,295,1580742000"; d="scan'208";a="42564300"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 23 Mar 2020 14:18:11 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 695C9F802BD
+ for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2020 06:18:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 695C9F802BD
+Date: 23 Mar 2020 14:18:20 +0900
+X-IronPort-AV: E=Sophos;i="5.72,295,1580742000"; d="scan'208";a="42564314"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 23 Mar 2020 14:18:20 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id E7DDC41706F3;
- Mon, 23 Mar 2020 14:18:11 +0900 (JST)
-Message-ID: <87y2rrir8s.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id CD237400007F;
+ Mon, 23 Mar 2020 14:18:20 +0900 (JST)
+Message-ID: <87wo7bir8j.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 06/36] ASoC: cirrus: use asoc_rtd_to_cpu() /
- asoc_rtd_to_codec() macro for DAI pointer
+Subject: [PATCH 07/36] ASoC: dwc: use asoc_rtd_to_cpu() / asoc_rtd_to_codec()
+ macro for DAI pointer
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <877dzbk5wm.wl-kuninori.morimoto.gx@renesas.com>
@@ -80,40 +80,22 @@ From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/cirrus/edb93xx.c     | 4 ++--
- sound/soc/cirrus/snappercl15.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/dwc/dwc-pcm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/cirrus/edb93xx.c b/sound/soc/cirrus/edb93xx.c
-index 10961190068e..ccf65f087ea6 100644
---- a/sound/soc/cirrus/edb93xx.c
-+++ b/sound/soc/cirrus/edb93xx.c
-@@ -23,8 +23,8 @@ static int edb93xx_hw_params(struct snd_pcm_substream *substream,
- 			     struct snd_pcm_hw_params *params)
+diff --git a/sound/soc/dwc/dwc-pcm.c b/sound/soc/dwc/dwc-pcm.c
+index 4b25aca3804f..9868e7373d36 100644
+--- a/sound/soc/dwc/dwc-pcm.c
++++ b/sound/soc/dwc/dwc-pcm.c
+@@ -140,7 +140,7 @@ static int dw_pcm_open(struct snd_soc_component *component,
  {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
-+	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
- 	int err;
- 	unsigned int mclk_rate;
- 	unsigned int rate = params_rate(params);
-diff --git a/sound/soc/cirrus/snappercl15.c b/sound/soc/cirrus/snappercl15.c
-index 70c2f3e08d6d..cb133e80b7c3 100644
---- a/sound/soc/cirrus/snappercl15.c
-+++ b/sound/soc/cirrus/snappercl15.c
-@@ -23,8 +23,8 @@ static int snappercl15_hw_params(struct snd_pcm_substream *substream,
- 				 struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
-+	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
- 	int err;
+-	struct dw_i2s_dev *dev = snd_soc_dai_get_drvdata(rtd->cpu_dai);
++	struct dw_i2s_dev *dev = snd_soc_dai_get_drvdata(asoc_rtd_to_cpu(rtd, 0));
  
- 	err = snd_soc_dai_set_sysclk(codec_dai, 0, CODEC_CLOCK, 
+ 	snd_soc_set_runtime_hwparams(substream, &dw_pcm_hardware);
+ 	snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS);
 -- 
 2.17.1
 
