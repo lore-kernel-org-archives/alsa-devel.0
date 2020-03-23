@@ -6,53 +6,54 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D61B8C10F26
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2020 05:18:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BD109C10F26
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2020 05:19:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 563A920722
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2020 05:18:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 424D520722
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2020 05:19:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="D+1Kx2Zp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 563A920722
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ddPikB9w"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 424D520722
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5C36915F8;
-	Mon, 23 Mar 2020 06:17:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C36915F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8D47D1664;
+	Mon, 23 Mar 2020 06:18:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D47D1664
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584940691;
-	bh=1JkxTAs/sg6hUCL/AEr1uhl+oOOK2uDcv4OdLA/1/bA=;
+	s=default; t=1584940738;
+	bh=wsNMtQIgV6gp3O+STQahSn2aH7CVtirrlZAmMJTPv9k=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=D+1Kx2ZpAHCl75NfvF0dQE4P1oyDoDPO4QHIpflx5pUfrb+ACvO9rJp7qbuRRUVl8
-	 wYgd/aopMxrclmpNtYSAvmFPrwISHkiRZNZdg0svmke9SWKdbB4B6BOeceAbn/KRnc
-	 pNoLMYqwxt5wL6wsrP4VAR+8eDr4ARPS3urzmmrA=
+	b=ddPikB9w+JJ7vJOVuRvl7ysDwRwdYaxUsYwFAegXD3ng98yvSbuy5AoQ1CHHEn13e
+	 DFBu8arpC8rH6BVPKae+Frl0eQcuHyUemCejYR2Ez6QI5i4J7zwswb/AW+5c/ywMgh
+	 YaqM39i8tcFBfnpXaK0sGiRhxmzqt0PpFvbot7uA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 10F1AF800F6;
-	Mon, 23 Mar 2020 06:17:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C8FF4F80268;
+	Mon, 23 Mar 2020 06:17:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 49477F8020B; Mon, 23 Mar 2020 06:17:04 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 2258FF800F6
- for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2020 06:16:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2258FF800F6
-Date: 23 Mar 2020 14:16:57 +0900
-X-IronPort-AV: E=Sophos;i="5.72,295,1580742000"; d="scan'208";a="42350136"
+ id 984D8F80273; Mon, 23 Mar 2020 06:17:21 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id A1A25F80147
+ for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2020 06:17:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1A25F80147
+Date: 23 Mar 2020 14:17:13 +0900
+X-IronPort-AV: E=Sophos;i="5.72,295,1580742000"; d="scan'208";a="42564194"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 23 Mar 2020 14:16:57 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 23 Mar 2020 14:17:13 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 09FC7416FBB8;
- Mon, 23 Mar 2020 14:16:57 +0900 (JST)
-Message-ID: <875zevk5va.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id E2210416FED6;
+ Mon, 23 Mar 2020 14:17:13 +0900 (JST)
+Message-ID: <874kufk5uu.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 01/36] ASoC: soc-core: add asoc_rtd_to_cpu/codec() macro
+Subject: [PATCH 02/36] ASoC: amd: use asoc_rtd_to_cpu() / asoc_rtd_to_codec()
+ macro for DAI pointer
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <877dzbk5wm.wl-kuninori.morimoto.gx@renesas.com>
@@ -75,48 +76,81 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-
-Now, snd_soc_pcm_runtime supports multi cpu_dai/codec_dai.
-It still has cpu_dai/codec_dai for single DAI,
-and has cpu_dais/codec_dais for multi DAIs.
-
-	dais  = [][][][][][][][][][][][][][][][][][]
-		^cpu_dais         ^codec_dais
-		|--- num_cpus ---|--- num_codecs --|
-
-	/* for multi DAIs */
-	rtd->cpu_dais   = &rtd->dais[0];
-	rtd->codec_dais = &rtd->dais[dai_link->num_cpus];
-
-	/* for single DAI */
-	rtd->cpu_dai    = rtd->cpu_dais[0];
-	rtd->codec_dai	= rtd->codec_dais[0];
-
-But, these can be replaced by dais.
-This patch adds asoc_rtd_to_cpu() / asoc_rtd_to_codec() macro for it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- include/sound/soc.h | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/amd/acp-da7219-max98357a.c | 2 +-
+ sound/soc/amd/acp-rt5645.c           | 4 ++--
+ sound/soc/amd/acp3x-rt5682-max9836.c | 6 +++---
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 539211bd0f94..13458e4fbb13 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1169,6 +1169,10 @@ struct snd_soc_pcm_runtime {
- 	int num_components;
- 	struct snd_soc_component *components[0]; /* CPU/Codec/Platform */
- };
-+/* see soc_new_pcm_runtime()  */
-+#define asoc_rtd_to_cpu(rtd, n)   (rtd)->dais[n]
-+#define asoc_rtd_to_codec(rtd, n) (rtd)->dais[n + (rtd)->num_cpus]
-+
- #define for_each_rtd_components(rtd, i, component)			\
- 	for ((i) = 0;							\
- 	     ((i) < rtd->num_components) && ((component) = rtd->components[i]);\
+diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
+index 7a5621e5e233..9414d7269c4f 100644
+--- a/sound/soc/amd/acp-da7219-max98357a.c
++++ b/sound/soc/amd/acp-da7219-max98357a.c
+@@ -54,7 +54,7 @@ static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	int ret;
+ 	struct snd_soc_card *card = rtd->card;
+-	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
+ 	struct snd_soc_component *component = codec_dai->component;
+ 
+ 	dev_info(rtd->dev, "codec dai name = %s\n", codec_dai->name);
+diff --git a/sound/soc/amd/acp-rt5645.c b/sound/soc/amd/acp-rt5645.c
+index 91abeb92b648..73b31f88a6b5 100644
+--- a/sound/soc/amd/acp-rt5645.c
++++ b/sound/soc/amd/acp-rt5645.c
+@@ -48,7 +48,7 @@ static int cz_aif1_hw_params(struct snd_pcm_substream *substream,
+ {
+ 	int ret = 0;
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
+ 
+ 	ret = snd_soc_dai_set_pll(codec_dai, 0, RT5645_PLL1_S_MCLK,
+ 				  CZ_PLAT_CLK, params_rate(params) * 512);
+@@ -73,7 +73,7 @@ static int cz_init(struct snd_soc_pcm_runtime *rtd)
+ 	struct snd_soc_card *card;
+ 	struct snd_soc_component *codec;
+ 
+-	codec = rtd->codec_dai->component;
++	codec = asoc_rtd_to_codec(rtd, 0)->component;
+ 	card = rtd->card;
+ 
+ 	ret = snd_soc_card_jack_new(card, "Headset Jack",
+diff --git a/sound/soc/amd/acp3x-rt5682-max9836.c b/sound/soc/amd/acp3x-rt5682-max9836.c
+index 8f71c3f7ef79..024a7ee54cd5 100644
+--- a/sound/soc/amd/acp3x-rt5682-max9836.c
++++ b/sound/soc/amd/acp3x-rt5682-max9836.c
+@@ -35,7 +35,7 @@ static int acp3x_5682_init(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	int ret;
+ 	struct snd_soc_card *card = rtd->card;
+-	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
+ 	struct snd_soc_component *component = codec_dai->component;
+ 
+ 	dev_info(rtd->dev, "codec dai name = %s\n", codec_dai->name);
+@@ -183,7 +183,7 @@ static int acp3x_ec_dmic0_startup(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_soc_card *card = rtd->card;
+-	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
+ 	struct acp3x_platform_info *machine = snd_soc_card_get_drvdata(card);
+ 
+ 	machine->cap_i2s_instance = I2S_BT_INSTANCE;
+@@ -198,7 +198,7 @@ static int acp3x_ec_dmic1_startup(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_soc_card *card = rtd->card;
+-	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
+ 	struct acp3x_platform_info *machine = snd_soc_card_get_drvdata(card);
+ 
+ 	machine->cap_i2s_instance = I2S_BT_INSTANCE;
 -- 
 2.17.1
 
