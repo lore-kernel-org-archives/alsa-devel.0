@@ -7,54 +7,54 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DA35C3F2CD
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2020 05:33:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 914C8C10F26
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2020 05:34:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 839CA206F9
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2020 05:33:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1B4CB206F9
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2020 05:34:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VVuUiKfz"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 839CA206F9
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dSxPFucB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1B4CB206F9
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E40C3168F;
-	Mon, 23 Mar 2020 06:33:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E40C3168F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 70C5A1657;
+	Mon, 23 Mar 2020 06:33:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70C5A1657
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584941637;
-	bh=Y2Ag6qgz9YjqNHc3+H++9NWDg/rRLcvIqUeaQYRaXzQ=;
+	s=default; t=1584941671;
+	bh=NpGDPNi3neWnLpNdrfHxXMDy2DhKFFh0fx7lVikmNEY=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VVuUiKfzq3S2EyKh2KWyzzW+2+ZPC2tpaaUDDRoAK7Zc2jarXxkldOTrO0A+NMsCQ
-	 +U6MRnYew5l0uXWwTNj43JdYH1jwP9wKtD2ZwOtX/aMvRJEOsbwh6Bys/Hh5vg5ACE
-	 ZGaTIjrSsZ7883XiXmEjbZfYQWIMsv8XUwKocWWQ=
+	b=dSxPFucBZ9BYP7AlesqosGX5Wr69uZb/iOBq2PlVuQ7KZOXFMP4UFGnBImCdxlfTA
+	 QjeSbRjRMdRQFelpv9tpfpKD7bVJ7Fn2bwzERYt/4knYBD7KTPX58SVENmpmKTM9Xh
+	 KFktJx75rjCWLFS5erLD4Xcz3Q5+Weep1Y8lhatE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1DD2AF8036F;
-	Mon, 23 Mar 2020 06:21:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BE7DAF80371;
+	Mon, 23 Mar 2020 06:21:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A39A2F8036D; Mon, 23 Mar 2020 06:21:30 +0100 (CET)
+ id 26391F80371; Mon, 23 Mar 2020 06:21:41 +0100 (CET)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 93925F8036C
- for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2020 06:21:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93925F8036C
-Date: 23 Mar 2020 14:21:21 +0900
-X-IronPort-AV: E=Sophos;i="5.72,295,1580742000"; d="scan'208";a="42350608"
+ by alsa1.perex.cz (Postfix) with ESMTP id 54E03F8036C
+ for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2020 06:21:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54E03F8036C
+Date: 23 Mar 2020 14:21:35 +0900
+X-IronPort-AV: E=Sophos;i="5.72,295,1580742000"; d="scan'208";a="42350615"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 23 Mar 2020 14:21:21 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 23 Mar 2020 14:21:35 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 16F5840ADBAB;
- Mon, 23 Mar 2020 14:21:21 +0900 (JST)
-Message-ID: <874kufir3i.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 52150416FB87;
+ Mon, 23 Mar 2020 14:21:35 +0900 (JST)
+Message-ID: <871rpjir34.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 27/36] ASoC: txx9: use asoc_rtd_to_cpu() / asoc_rtd_to_codec()
- macro for DAI pointer
+Subject: [PATCH 29/36] ASoC: ux500: use asoc_rtd_to_cpu() /
+ asoc_rtd_to_codec() macro for DAI pointer
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <877dzbk5wm.wl-kuninori.morimoto.gx@renesas.com>
@@ -81,22 +81,70 @@ From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/txx9/txx9aclc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/ux500/mop500_ab8500.c | 6 +++---
+ sound/soc/ux500/ux500_pcm.c     | 8 ++++----
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/txx9/txx9aclc.c b/sound/soc/txx9/txx9aclc.c
-index 985487cc3a55..4b1cd4da3e36 100644
---- a/sound/soc/txx9/txx9aclc.c
-+++ b/sound/soc/txx9/txx9aclc.c
-@@ -269,7 +269,7 @@ static int txx9aclc_pcm_new(struct snd_soc_component *component,
- 			    struct snd_soc_pcm_runtime *rtd)
+diff --git a/sound/soc/ux500/mop500_ab8500.c b/sound/soc/ux500/mop500_ab8500.c
+index 77655084bbde..6aaa19829a73 100644
+--- a/sound/soc/ux500/mop500_ab8500.c
++++ b/sound/soc/ux500/mop500_ab8500.c
+@@ -215,8 +215,8 @@ static int mop500_ab8500_hw_params(struct snd_pcm_substream *substream,
+ 			struct snd_pcm_hw_params *params)
  {
- 	struct snd_card *card = rtd->card->snd_card;
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+-	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
++	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
+ 	struct device *dev = rtd->card->dev;
+ 	unsigned int fmt;
+ 	int channels, ret = 0, driver_mode, slots;
+@@ -339,7 +339,7 @@ static int mop500_ab8500_hw_params(struct snd_pcm_substream *substream,
+ static int mop500_ab8500_hw_free(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
+ 
+ 	mutex_lock(&mop500_ab8500_params_lock);
+ 	__clear_bit(cpu_dai->id, &mop500_ab8500_usage);
+diff --git a/sound/soc/ux500/ux500_pcm.c b/sound/soc/ux500/ux500_pcm.c
+index 9445dbe8e039..39b96c132bc8 100644
+--- a/sound/soc/ux500/ux500_pcm.c
++++ b/sound/soc/ux500/ux500_pcm.c
+@@ -46,7 +46,7 @@ static const struct snd_pcm_hardware ux500_pcm_hw = {
+ static struct dma_chan *ux500_pcm_request_chan(struct snd_soc_pcm_runtime *rtd,
+ 	struct snd_pcm_substream *substream)
+ {
 -	struct snd_soc_dai *dai = rtd->cpu_dai;
 +	struct snd_soc_dai *dai = asoc_rtd_to_cpu(rtd, 0);
- 	struct snd_pcm *pcm = rtd->pcm;
- 	struct platform_device *pdev = to_platform_device(component->dev);
- 	struct txx9aclc_soc_device *dev;
+ 	u16 per_data_width, mem_data_width;
+ 	struct stedma40_chan_cfg *dma_cfg;
+ 	struct ux500_msp_dma_params *dma_params;
+@@ -86,7 +86,7 @@ static int ux500_pcm_prepare_slave_config(struct snd_pcm_substream *substream,
+ 		struct dma_slave_config *slave_config)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct msp_i2s_platform_data *pdata = rtd->cpu_dai->dev->platform_data;
++	struct msp_i2s_platform_data *pdata = asoc_rtd_to_cpu(rtd, 0)->dev->platform_data;
+ 	struct snd_dmaengine_dai_dma_data *snd_dma_params;
+ 	struct ux500_msp_dma_params *ste_dma_params;
+ 	dma_addr_t dma_addr;
+@@ -94,11 +94,11 @@ static int ux500_pcm_prepare_slave_config(struct snd_pcm_substream *substream,
+ 
+ 	if (pdata) {
+ 		ste_dma_params =
+-			snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
++			snd_soc_dai_get_dma_data(asoc_rtd_to_cpu(rtd, 0), substream);
+ 		dma_addr = ste_dma_params->tx_rx_addr;
+ 	} else {
+ 		snd_dma_params =
+-			snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
++			snd_soc_dai_get_dma_data(asoc_rtd_to_cpu(rtd, 0), substream);
+ 		dma_addr = snd_dma_params->addr;
+ 	}
+ 
 -- 
 2.17.1
 
