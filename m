@@ -2,67 +2,66 @@ Return-Path: <SRS0=HX6w=5I=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A03E9C54FCF
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2020 20:24:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DB34AC10DCE
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2020 20:26:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2141F20663
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2020 20:24:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 66DD82073E
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2020 20:26:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="G0tPX1sL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2141F20663
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="n/K6c1sY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 66DD82073E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7C16686F;
-	Mon, 23 Mar 2020 21:23:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7C16686F
+	by alsa0.perex.cz (Postfix) with ESMTPS id B82B711C;
+	Mon, 23 Mar 2020 21:25:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B82B711C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1584995076;
-	bh=RDQdsJgKMWpBO/oRKARPRK8EW7xQ694BpEAC3TX9t2w=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1584995186;
+	bh=Gq03MQ9iOF7Wjq8UOA0cn/YqRfby2Clw8DqO4TowKUI=;
+	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=G0tPX1sL+3UfCY3TrQ8UKm9xerQrLr/HmwUkDUfr8Nx8w9MxnFVMytrLj8XpaHAOp
-	 rBq9pjR9XB3jHf429c8+1h9ryVgu89tEuuEMvSt4u/842reDlfc/EnDfVJGjNne2OS
-	 s1R/ulwUff3Dm1Ieih0uZBshlsQeHtF8lksdxHPY=
+	b=n/K6c1sYnS+nZPxUauYKH14aZyVYkXNje3qotdsIRNGpMOtrIOT4HIZX9KYKl5PhG
+	 BmCJ2atNcEmnYReLjefZ1w1ZzBSLBbsXQsNj/vlBmMkybq7qaCcK++d7IadNTjaSRi
+	 8aMVdw2ms+JNshyFsyTo+Q+ByqeAY+/DcJSxps8E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 04AA4F800F6;
-	Mon, 23 Mar 2020 21:23:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 47D77F80095;
+	Mon, 23 Mar 2020 21:25:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5118AF80158; Mon, 23 Mar 2020 21:23:39 +0100 (CET)
+ id 1C12EF80158; Mon, 23 Mar 2020 21:25:34 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ED25DF800B9
- for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2020 21:23:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED25DF800B9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6BB0CF80095
+ for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2020 21:25:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6BB0CF80095
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 70D49AFB5;
- Mon, 23 Mar 2020 20:23:35 +0000 (UTC)
-Date: Mon, 23 Mar 2020 21:23:35 +0100
-Message-ID: <s5hftdyom60.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id A6B62AFB5
+ for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2020 20:25:27 +0000 (UTC)
+Date: Mon, 23 Mar 2020 21:25:27 +0100
+Message-ID: <s5heetiom2w.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ALSA: core: sysfs: show components string
-In-Reply-To: <20200323194142.GH4948@sirena.org.uk>
-References: <20200323193623.3587-1-pierre-louis.bossart@linux.intel.com>
- <20200323194142.GH4948@sirena.org.uk>
+To: alsa-devel@alsa-project.org
+Subject: Re: [PATCH 2/2] ALSA: usb-audio: Avoid shoving a new stream into
+ already registered device
+In-Reply-To: <20200323170643.19181-2-tiwai@suse.de>
+References: <20200323170643.19181-1-tiwai@suse.de>
+ <20200323170643.19181-2-tiwai@suse.de>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,22 +77,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 23 Mar 2020 20:41:42 +0100,
-Mark Brown wrote:
+On Mon, 23 Mar 2020 18:06:43 +0100,
+Takashi Iwai wrote:
 > 
-> On Mon, Mar 23, 2020 at 02:36:23PM -0500, Pierre-Louis Bossart wrote:
-> > Add attribute and show the components string. This is useful to see
-> > what is provided to userspace and e.g. used by UCM to understand the
-> > card configuration:
-> > 
-> > root@plb:~# more /sys/class/sound/card0/components
-> > HDA:8086280b,80860101,00100000 cfg-spk:2 hs:rt711 spk:rt1308 mic:rt715
+> USB-audio driver registers the card and its devices at each probe of
+> USB interface, while trying to append a USB substream into the empty
+> PCM stream slot.  This works for most cases where the all PCM streams
+> are declared in the single interface description.  However, when the
+> device provides multiple individual interfaces, this may up with
+> pushing a new stream into the existing snd_pcm object that has been
+> already registered.  From the driver perspective, it's OK, but it
+> doesn't work for PulseAudio and others because they manage in the card
+> registration level, hence they'll miss this new device creation.
 > 
-> Sysfs is supposed to be one value per file so this should be a directory
-> with a file for each component I guess.
+> This patch tries to warn such a too-late-appended stream, and also
+> tries to put rather into a new snd_pcm object.
+> 
+> If we get a report from a user about this, we may add it to an entry
+> for snd_usb_registration_quirk().
+> 
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
 
-Well, the actual representation of components itself is CSV, so this
-can be OK, IMO.
+Let's scratch this.  It's better to be put together with a generic
+module option that allows specifying the delayed registration for the
+given device, and show the warning at the time of snd_card_register()
+call instead.
+
+Will respin the improved version later.
 
 
 Takashi
