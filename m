@@ -2,99 +2,69 @@ Return-Path: <SRS0=1tVn=5J=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7403AC4332B
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Mar 2020 12:33:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 894F5C43331
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Mar 2020 13:31:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F40B42070A
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Mar 2020 12:33:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E414E2076E
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Mar 2020 13:31:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hCgX3VHO";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XvEENzKw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F40B42070A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dnYPOosL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E414E2076E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 45157166A;
-	Tue, 24 Mar 2020 13:33:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45157166A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3A93086F;
+	Tue, 24 Mar 2020 14:30:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A93086F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585053237;
-	bh=MTk1NYcK35bQ52qf8Bxr6inpNQy/0xhtfdcX+IUHsPo=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1585056706;
+	bh=JiUJt1PGd0iokHwRzBHQ3LVubzM54z5IIcs3J098DDM=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hCgX3VHOlX+WbXSKJWYMxVRMS58r/0yTpAue4IXlzbw1PQd900Cxt4oY6hfw9Jx96
-	 zd6cJjAOTnmAAbVOWkfz/iBhbLDb4gj5RLW8jYC6JTIaINEYS9l7pYI4J57G2MHjjK
-	 00jNtx1e4vq0UgLNiwMizF2pVxzz4oeX2jB/1H3g=
+	b=dnYPOosLIbitfV0C82GodrpYLnyHZmzbtialcjp8fQmjcetGVsILKkWOhk2QzcDoE
+	 WHJdxwJh6UI7UiukZus8VSogVecFxjPW75lUZ4Xn6VTdnaxus2LcrByukWy2STU80J
+	 YvoItnMCLR4IPAHQxFlO2igovrisc0L4Tf6ZTD0o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BCCC4F80290;
-	Tue, 24 Mar 2020 13:32:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 81E70F801F8;
+	Tue, 24 Mar 2020 14:30:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6BC58F801F8; Tue, 24 Mar 2020 13:32:10 +0100 (CET)
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
- [IPv6:2a00:1450:4864:20::443])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 58B02F800FE
- for <alsa-devel@alsa-project.org>; Tue, 24 Mar 2020 13:32:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58B02F800FE
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="XvEENzKw"
-Received: by mail-wr1-x443.google.com with SMTP id 31so15170772wrs.3
- for <alsa-devel@alsa-project.org>; Tue, 24 Mar 2020 05:32:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references;
- bh=Q8xyTZiiURMuZz55C+lV5frFi0juzWLh763pjmleRTI=;
- b=XvEENzKw2wGFTbrDGRT3ml/i9ciXc0tz7Wabz9yXGUzdkYE4+jwsp4Oz1tZnNsOQCx
- RmPmOt4EITNYP6enElBEOeeXIbsROyVn/p1lqndCXnzohUIBGvGRb/tiN60CTc0I7iJD
- l/pmAsVQna4eQPy3zsl1/eAfMPmPFeItIjs13dfnfRxcuhygA1DmUnp6Vu6Qm9nrK95+
- C6KCyFvUph3EfIxZqM3ZoEDoFrelVWO3c2sdPswtZjzNRrhkihhX/2HLq+yNX0gom61J
- zOVQeIk0PYGQCuoLabwoEAX8SlcTWE0gGuPQKBMgrN383EZ+iVcL4ZkKcqHdJOK1Htk4
- 62JQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references;
- bh=Q8xyTZiiURMuZz55C+lV5frFi0juzWLh763pjmleRTI=;
- b=O7RYocvz4AJP6XIxXOcRUNKCDktfwiN30TW8xyss3gbSJsLGS6f7c9ivSV/edHkTTx
- 53IxOKpJEpPcvG2HJypNWD+t7m5NOIYFGhzfW7zDk4Vd7VV9bLvn42pEnL/oq3ufyuRv
- 6gSJyzGZC+tVK/lIbsOEtJa9IaOTe1/sqvbtArkONehLw5CwVrJa2SyuVECWJA/eJBEV
- 92m2K+mwYnPHLLuYUk6oFZuHNRiEWli8PO9Kxgws1fjZCB3UHgrDauJ6SIXv43A+DlIf
- cYzGlFI4q3PDn/Kf2ZBKjZeqArpv1/MojUXnSbP5Zdydf+vx4gxA1kNPsZTKO1HSroir
- 2JOA==
-X-Gm-Message-State: ANhLgQ0uKgojsuVSPNEo2gYzu2R3atanAUTxXOyxfBLCYch6JoQnkoMV
- uGrgsaCYAB5ka3PGlAF/Ajo=
-X-Google-Smtp-Source: ADFU+vspS2iaiHICA89DEah3/meoLs+mzhJGZMZqXh2WzZtOitG+ZLB8tygXug0W+SCEjGmNzcIUmg==
-X-Received: by 2002:adf:f892:: with SMTP id u18mr27024616wrp.367.1585053124710; 
- Tue, 24 Mar 2020 05:32:04 -0700 (PDT)
-Received: from debian.home (ip51ccf9cd.speed.planet.nl. [81.204.249.205])
- by smtp.gmail.com with ESMTPSA id k185sm4215029wmb.7.2020.03.24.05.32.03
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Tue, 24 Mar 2020 05:32:04 -0700 (PDT)
-From: Johan Jonker <jbx6244@gmail.com>
-To: lgirdwood@gmail.com
-Subject: [PATCH v2 3/3] dt-bindings: sound: rockchip-spdif: add power-domains
- property
-Date: Tue, 24 Mar 2020 13:31:55 +0100
-Message-Id: <20200324123155.11858-3-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200324123155.11858-1-jbx6244@gmail.com>
-References: <20200324123155.11858-1-jbx6244@gmail.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, heiko@sntech.de,
- linux-kernel@vger.kernel.org, robh+dt@kernel.org,
- linux-rockchip@lists.infradead.org, broonie@kernel.org,
- linux-arm-kernel@lists.infradead.org
+ id 71A84F801F9; Tue, 24 Mar 2020 14:30:51 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 757B5F80095;
+ Tue, 24 Mar 2020 14:30:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 757B5F80095
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 13DC91FB;
+ Tue, 24 Mar 2020 06:30:44 -0700 (PDT)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8B3C43F52E;
+ Tue, 24 Mar 2020 06:30:43 -0700 (PDT)
+Date: Tue, 24 Mar 2020 13:30:42 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Subject: Re: [PATCH 0/2] ASoC: SOF: initialise work immediately
+Message-ID: <20200324133042.GB7039@sirena.org.uk>
+References: <20200324122921.29582-1-guennadi.liakhovetski@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="oLBj+sq0vYjzfsbl"
+Content-Disposition: inline
+In-Reply-To: <20200324122921.29582-1-guennadi.liakhovetski@linux.intel.com>
+X-Cookie: I feel ... JUGULAR ...
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: Takashi Iwai <tiwai@suse.de>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@intel.com>,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -110,30 +80,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-In the old txt situation we add/describe only properties that are used
-by the driver/hardware itself. With yaml it also filters things in a
-node that are used by other drivers like 'power-domains' for rk3399,
-so add it to 'rockchip-spdif.yaml'.
 
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
----
- Documentation/devicetree/bindings/sound/rockchip-spdif.yaml | 3 +++
- 1 file changed, 3 insertions(+)
+--oLBj+sq0vYjzfsbl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml b/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml
-index 0546fd4cc..f79dbd153 100644
---- a/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml
-+++ b/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml
-@@ -51,6 +51,9 @@ properties:
-   dma-names:
-     const: tx
- 
-+  power-domains:
-+    maxItems: 1
-+
-   rockchip,grf:
-     $ref: /schemas/types.yaml#/definitions/phandle
-     description:
--- 
-2.11.0
+On Tue, Mar 24, 2020 at 01:29:19PM +0100, Guennadi Liakhovetski wrote:
+> Fix uninitialised work errors by moving initialisation to directly
+> after allocation.
+>=20
+> Guennadi Liakhovetski (2):
+>   ASoC: SOF: (cosmetic) use for_each_pcm_streams() in sof_dai_load()
+>   ASoC: SOF: fix uninitialised "work" with VirtIO
 
+As documented in submitting-patches.rst please send patches to the=20
+maintainers for the code you would like to change.  The normal kernel
+workflow is that people apply patches from their inboxes, if they aren't
+copied they are likely to not see the patch at all and it is much more
+difficult to apply patches.
+
+--oLBj+sq0vYjzfsbl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl56C4EACgkQJNaLcl1U
+h9Cafgf9FzXgO1Sxg4XYM/bB8k1p0NsTCrMMdmTObwM43Z6bJsCt+RLSg6N3s430
+b/cpM2EF8wTZhw54bXG1JoYwL9hfgl19s1FWi/NvjOAFDuWATjd0jzd3E1a6nBTR
+AVtZ3diQ9j9QEmQiwkHpqZ7XXhWu5Y9DFM18AlBkMv1p4kszNScH7Ecxx8UQKtbx
+h8x/o698AvQeMzEBOVpF8CChGlJEFyOm9Jv+BzMN4k9twk66wJjLT7o6aDy8x+l1
+pRInJVBqLfMACkdUE9Lx3m3pLyfZPYEW0xDziSW3VDUQ8Xl3f9ozGNPIC8m0/94t
+oobhWhWGhPThw77cAwb1g1QSEcVZTg==
+=g8DH
+-----END PGP SIGNATURE-----
+
+--oLBj+sq0vYjzfsbl--
