@@ -6,60 +6,57 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A0E4C43331
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Mar 2020 17:18:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D121C43331
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Mar 2020 17:20:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BCF8B2076F
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Mar 2020 17:18:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EC2E02076F
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Mar 2020 17:20:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uf+NYp/O"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BCF8B2076F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SghjUTGk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC2E02076F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0A27E1657;
-	Tue, 24 Mar 2020 18:18:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A27E1657
+	by alsa0.perex.cz (Postfix) with ESMTPS id 56D8B1669;
+	Tue, 24 Mar 2020 18:19:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 56D8B1669
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585070334;
-	bh=phdX10EbQs8XHpNHIWm7HtuHu+ZagE7py/+TI7E//N0=;
+	s=default; t=1585070435;
+	bh=sBmIAZrMd5INuP5Ib+0t5c6nERa/j5osdrx/0Fmnc3Q=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=uf+NYp/OBX2iZJoveybw7uZCkYOcTmtSRJ4HdB3BdGxBCE+L4XKg/vuwy8cBc92TP
-	 Gck3rG4lR53OcTh/pPoxQNC5oAJpNgh5vDvLNWrODD9hrEibE0U12mf15G3otZijql
-	 2sKhxuQR+b2isI5+F8U1upXmy9dfXRpz3JaRRJ8w=
+	b=SghjUTGkrNOa5F25ka9jaNmtgxOIOaSx53Zhrc18a1AnDAEOwvCBGT6dnPtesQF3K
+	 MWZXYA+SthOdBNLsDQ7V3G6809iAdzotTJSxpSpinBMDBwH0xxYIA4Qkj7JmtGz71t
+	 38hdHCRPyN7ZA17DH7VSfx3v5aFg77Xt1Cage4v0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8F9E2F80273;
-	Tue, 24 Mar 2020 18:16:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4446BF802BC;
+	Tue, 24 Mar 2020 18:16:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 37022F80249; Tue, 24 Mar 2020 18:16:26 +0100 (CET)
+ id 2B02EF802A9; Tue, 24 Mar 2020 18:16:41 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 20D36F801F9
- for <alsa-devel@alsa-project.org>; Tue, 24 Mar 2020 18:16:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 20D36F801F9
+ by alsa1.perex.cz (Postfix) with ESMTP id 89191F802A0
+ for <alsa-devel@alsa-project.org>; Tue, 24 Mar 2020 18:16:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89191F802A0
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0B19B1FB;
- Tue, 24 Mar 2020 10:16:22 -0700 (PDT)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7FFF21045;
+ Tue, 24 Mar 2020 10:16:35 -0700 (PDT)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7A1B53F71F;
- Tue, 24 Mar 2020 10:16:21 -0700 (PDT)
-Date: Tue, 24 Mar 2020 17:16:20 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 04EF33F71F;
+ Tue, 24 Mar 2020 10:16:34 -0700 (PDT)
+Date: Tue, 24 Mar 2020 17:16:33 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Paul Cercueil <paul@crapouillou.net>
-Subject: Applied "ASoC: jz4740-i2s: Add support for the JZ4760" to the asoc
- tree
-In-Reply-To: <20200306222931.39664-5-paul@crapouillou.net>
-Message-Id: <applied-20200306222931.39664-5-paul@crapouillou.net>
+To: YueHaibing <yuehaibing@huawei.com>
+Subject: Applied "ASoC: wm8974: remove unused variables" to the asoc tree
+In-Reply-To: <20200324070615.16248-1-yuehaibing@huawei.com>
+Message-Id: <applied-20200324070615.16248-1-yuehaibing@huawei.com>
 X-Patchwork-Hint: ignore
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, od@zcrc.me,
- Zhou Yanjie <zhouyanjie@wanyeetech.com>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com, tiwai@suse.com,
+ lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,7 +74,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: jz4740-i2s: Add support for the JZ4760
+   ASoC: wm8974: remove unused variables
 
 has been applied to the asoc tree at
 
@@ -102,81 +99,45 @@ to this mail.
 Thanks,
 Mark
 
-From bde8ca7c87d4388e24195f6c84cd9ac775344d2b Mon Sep 17 00:00:00 2001
-From: Paul Cercueil <paul@crapouillou.net>
-Date: Fri, 6 Mar 2020 23:29:30 +0100
-Subject: [PATCH] ASoC: jz4740-i2s: Add support for the JZ4760
+From 6b877cf8bc98e6c574a6d763943c4a92592e431c Mon Sep 17 00:00:00 2001
+From: YueHaibing <yuehaibing@huawei.com>
+Date: Tue, 24 Mar 2020 15:06:15 +0800
+Subject: [PATCH] ASoC: wm8974: remove unused variables
 
-The change of offset for the {rx,tx}_threshold fields in the conf
-register predates the JZ4780, and was first introduced in the JZ4760.
+sound/soc/codecs/wm8974.c:200:38: warning:
+ wm8974_aux_boost_controls defined but not used [-Wunused-const-variable=]
+sound/soc/codecs/wm8974.c:204:38: warning:
+ wm8974_mic_boost_controls defined but not used [-Wunused-const-variable=]
 
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Link: https://lore.kernel.org/r/20200306222931.39664-5-paul@crapouillou.net
+commit 8a123ee2a46d ("ASoC: WM8974 DAPM cleanups")
+left behind this, remove them.
+
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Link: https://lore.kernel.org/r/20200324070615.16248-1-yuehaibing@huawei.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/jz4740/jz4740-i2s.c | 21 ++++++++++++---------
- 1 file changed, 12 insertions(+), 9 deletions(-)
+ sound/soc/codecs/wm8974.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/sound/soc/jz4740/jz4740-i2s.c b/sound/soc/jz4740/jz4740-i2s.c
-index 3f9b2e1b4747..253f8d8ba273 100644
---- a/sound/soc/jz4740/jz4740-i2s.c
-+++ b/sound/soc/jz4740/jz4740-i2s.c
-@@ -49,12 +49,8 @@
- 
- #define JZ_AIC_CONF_FIFO_RX_THRESHOLD_OFFSET 12
- #define JZ_AIC_CONF_FIFO_TX_THRESHOLD_OFFSET 8
--#define JZ4780_AIC_CONF_FIFO_RX_THRESHOLD_OFFSET 24
--#define JZ4780_AIC_CONF_FIFO_TX_THRESHOLD_OFFSET 16
--#define JZ4780_AIC_CONF_FIFO_RX_THRESHOLD_MASK \
--			(0xf << JZ4780_AIC_CONF_FIFO_RX_THRESHOLD_OFFSET)
--#define JZ4780_AIC_CONF_FIFO_TX_THRESHOLD_MASK \
--			(0x1f <<  JZ4780_AIC_CONF_FIFO_TX_THRESHOLD_OFFSET)
-+#define JZ4760_AIC_CONF_FIFO_RX_THRESHOLD_OFFSET 24
-+#define JZ4760_AIC_CONF_FIFO_TX_THRESHOLD_OFFSET 16
- 
- #define JZ_AIC_CTRL_OUTPUT_SAMPLE_SIZE_MASK (0x7 << 19)
- #define JZ_AIC_CTRL_INPUT_SAMPLE_SIZE_MASK (0x7 << 16)
-@@ -90,6 +86,7 @@
- 
- enum jz47xx_i2s_version {
- 	JZ_I2S_JZ4740,
-+	JZ_I2S_JZ4760,
- 	JZ_I2S_JZ4780,
+diff --git a/sound/soc/codecs/wm8974.c b/sound/soc/codecs/wm8974.c
+index dc4fe4f5239d..06ba36595ddd 100644
+--- a/sound/soc/codecs/wm8974.c
++++ b/sound/soc/codecs/wm8974.c
+@@ -196,14 +196,6 @@ SOC_DAPM_SINGLE("MicN Switch", WM8974_INPUT, 1, 1, 0),
+ SOC_DAPM_SINGLE("MicP Switch", WM8974_INPUT, 0, 1, 0),
  };
  
-@@ -403,9 +400,9 @@ static int jz4740_i2s_dai_probe(struct snd_soc_dai *dai)
- 	snd_soc_dai_init_dma_data(dai, &i2s->playback_dma_data,
- 		&i2s->capture_dma_data);
- 
--	if (i2s->soc_info->version >= JZ_I2S_JZ4780) {
--		conf = (7 << JZ4780_AIC_CONF_FIFO_RX_THRESHOLD_OFFSET) |
--			(8 << JZ4780_AIC_CONF_FIFO_TX_THRESHOLD_OFFSET) |
-+	if (i2s->soc_info->version >= JZ_I2S_JZ4760) {
-+		conf = (7 << JZ4760_AIC_CONF_FIFO_RX_THRESHOLD_OFFSET) |
-+			(8 << JZ4760_AIC_CONF_FIFO_TX_THRESHOLD_OFFSET) |
- 			JZ_AIC_CONF_OVERFLOW_PLAY_LAST |
- 			JZ_AIC_CONF_I2S |
- 			JZ_AIC_CONF_INTERNAL_CODEC;
-@@ -467,6 +464,11 @@ static const struct i2s_soc_info jz4740_i2s_soc_info = {
- 	.dai = &jz4740_i2s_dai,
- };
- 
-+static const struct i2s_soc_info jz4760_i2s_soc_info = {
-+	.version = JZ_I2S_JZ4760,
-+	.dai = &jz4740_i2s_dai,
-+};
-+
- static struct snd_soc_dai_driver jz4780_i2s_dai = {
- 	.probe = jz4740_i2s_dai_probe,
- 	.remove = jz4740_i2s_dai_remove,
-@@ -499,6 +501,7 @@ static const struct snd_soc_component_driver jz4740_i2s_component = {
- #ifdef CONFIG_OF
- static const struct of_device_id jz4740_of_matches[] = {
- 	{ .compatible = "ingenic,jz4740-i2s", .data = &jz4740_i2s_soc_info },
-+	{ .compatible = "ingenic,jz4760-i2s", .data = &jz4760_i2s_soc_info },
- 	{ .compatible = "ingenic,jz4780-i2s", .data = &jz4780_i2s_soc_info },
- 	{ /* sentinel */ }
- };
+-/* AUX Input boost vol */
+-static const struct snd_kcontrol_new wm8974_aux_boost_controls =
+-SOC_DAPM_SINGLE("Aux Volume", WM8974_ADCBOOST, 0, 7, 0);
+-
+-/* Mic Input boost vol */
+-static const struct snd_kcontrol_new wm8974_mic_boost_controls =
+-SOC_DAPM_SINGLE("Mic Volume", WM8974_ADCBOOST, 4, 7, 0);
+-
+ static const struct snd_soc_dapm_widget wm8974_dapm_widgets[] = {
+ SND_SOC_DAPM_MIXER("Speaker Mixer", WM8974_POWER3, 2, 0,
+ 	&wm8974_speaker_mixer_controls[0],
 -- 
 2.20.1
 
