@@ -2,69 +2,80 @@ Return-Path: <SRS0=1tVn=5J=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 894F5C43331
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Mar 2020 13:31:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8470FC43331
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Mar 2020 13:35:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E414E2076E
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Mar 2020 13:31:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0D407206F6
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Mar 2020 13:35:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dnYPOosL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E414E2076E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tDwJ7nyY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0D407206F6
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3A93086F;
-	Tue, 24 Mar 2020 14:30:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A93086F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1477586F;
+	Tue, 24 Mar 2020 14:34:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1477586F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585056706;
-	bh=JiUJt1PGd0iokHwRzBHQ3LVubzM54z5IIcs3J098DDM=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1585056901;
+	bh=qrKoGahmaLOmg86hLDhKiGQRqB9icAdFjEQyAhEXC3o=;
+	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dnYPOosLIbitfV0C82GodrpYLnyHZmzbtialcjp8fQmjcetGVsILKkWOhk2QzcDoE
-	 WHJdxwJh6UI7UiukZus8VSogVecFxjPW75lUZ4Xn6VTdnaxus2LcrByukWy2STU80J
-	 YvoItnMCLR4IPAHQxFlO2igovrisc0L4Tf6ZTD0o=
+	b=tDwJ7nyYez0ifx+hrac/k5KUOJukxUoGYh5P30hrFYN85kQtBaMX4pB1FB5YBK2Bg
+	 70NRJkNFPDuEFGpLgWgEOYwdA+7qgScpHouI1yUKXeHhGLrFz55yasNY8+rRwV18YU
+	 zqLeogSvIC4LzLOnvY7D6dOp4btKo4FMLKyq5vP4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 81E70F801F8;
-	Tue, 24 Mar 2020 14:30:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A6818F800B9;
+	Tue, 24 Mar 2020 14:34:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 71A84F801F9; Tue, 24 Mar 2020 14:30:51 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 757B5F80095;
- Tue, 24 Mar 2020 14:30:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 757B5F80095
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 13DC91FB;
- Tue, 24 Mar 2020 06:30:44 -0700 (PDT)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8B3C43F52E;
- Tue, 24 Mar 2020 06:30:43 -0700 (PDT)
-Date: Tue, 24 Mar 2020 13:30:42 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Subject: Re: [PATCH 0/2] ASoC: SOF: initialise work immediately
-Message-ID: <20200324133042.GB7039@sirena.org.uk>
-References: <20200324122921.29582-1-guennadi.liakhovetski@linux.intel.com>
+ id E39C0F80095; Tue, 24 Mar 2020 14:34:09 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4098CF80095
+ for <alsa-devel@alsa-project.org>; Tue, 24 Mar 2020 14:34:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4098CF80095
+IronPort-SDR: 8FkaYvUFhR9t1OU3Rh7j31wvspIGG2yP06du8QpTuAZwrflNELtVBvEwow4ghp5O5AzkT+tva7
+ zWZwbrnDMxQA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 Mar 2020 06:34:03 -0700
+IronPort-SDR: moSkF3Z9ZTQSHtYGy2/SaoXvw7ToEJ+VA2uXlZsncSL+i1XdjmSAnaEmDQURgNVVFfODNLu+4d
+ j97azWW7dF2g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,300,1580803200"; d="scan'208";a="325910636"
+Received: from jgcortes-mobl1.amr.corp.intel.com (HELO [10.251.225.70])
+ ([10.251.225.70])
+ by orsmga001.jf.intel.com with ESMTP; 24 Mar 2020 06:34:02 -0700
+Subject: Re: [PATCH] ALSA: core: sysfs: show components string
+To: alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org
+References: <20200323193623.3587-1-pierre-louis.bossart@linux.intel.com>
+ <20200324015331.GA3679@workstation>
+ <d31659cc-d528-345f-1e56-b0cfae36be5c@linux.intel.com>
+ <20200324043336.GA8342@workstation>
+ <a74e4b68-d6f6-c12d-d600-d8cb7321cc00@linux.intel.com>
+ <20200324090152.GA14579@workstation>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <69761ee4-463b-25ff-1d2d-635a19487663@linux.intel.com>
+Date: Tue, 24 Mar 2020 08:15:44 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="oLBj+sq0vYjzfsbl"
-Content-Disposition: inline
-In-Reply-To: <20200324122921.29582-1-guennadi.liakhovetski@linux.intel.com>
-X-Cookie: I feel ... JUGULAR ...
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Takashi Iwai <tiwai@suse.de>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@intel.com>,
- sound-open-firmware@alsa-project.org
+In-Reply-To: <20200324090152.GA14579@workstation>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,38 +92,28 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---oLBj+sq0vYjzfsbl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 24, 2020 at 01:29:19PM +0100, Guennadi Liakhovetski wrote:
-> Fix uninitialised work errors by moving initialisation to directly
-> after allocation.
->=20
-> Guennadi Liakhovetski (2):
->   ASoC: SOF: (cosmetic) use for_each_pcm_streams() in sof_dai_load()
->   ASoC: SOF: fix uninitialised "work" with VirtIO
+On 3/24/20 4:01 AM, Takashi Sakamoto wrote:
+> On Tue, Mar 24, 2020 at 12:12:15AM -0500, Pierre-Louis Bossart wrote:
+>> when people report that their microphone is not reported by PulseAudio/UCM,
+>> it's very helpful to know what UCM was supposed to use in the first place.
+>> We don't have a debugger or step-by-step mechanisms to figure out what the
+>> configurations are.
+> 
+> If I get your intension correctly, the addition of sysfs node is just to
+> investigate which use-case configuration is applied in cases that people
+> get issues. If so, it's really exaggerative in a point of the concept of
+> sysfs.
+> 
+> I have two alternatives. If it's possible to focus on ALSA SoC part only,
+> addition of node to debugfs is reasonable for this purpose.
+> 
+> Another alternative is to change output of 'cards' node of procfs. The
+> latter is commonly available for all cases. For example:
 
-As documented in submitting-patches.rst please send patches to the=20
-maintainers for the code you would like to change.  The normal kernel
-workflow is that people apply patches from their inboxes, if they aren't
-copied they are likely to not see the patch at all and it is much more
-difficult to apply patches.
+I initially wanted to use /proc but thought it was a thing from the past 
+so I looked at sysfs. If this is the recommendation I don't mind using it.
 
---oLBj+sq0vYjzfsbl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl56C4EACgkQJNaLcl1U
-h9Cafgf9FzXgO1Sxg4XYM/bB8k1p0NsTCrMMdmTObwM43Z6bJsCt+RLSg6N3s430
-b/cpM2EF8wTZhw54bXG1JoYwL9hfgl19s1FWi/NvjOAFDuWATjd0jzd3E1a6nBTR
-AVtZ3diQ9j9QEmQiwkHpqZ7XXhWu5Y9DFM18AlBkMv1p4kszNScH7Ecxx8UQKtbx
-h8x/o698AvQeMzEBOVpF8CChGlJEFyOm9Jv+BzMN4k9twk66wJjLT7o6aDy8x+l1
-pRInJVBqLfMACkdUE9Lx3m3pLyfZPYEW0xDziSW3VDUQ8Xl3f9ozGNPIC8m0/94t
-oobhWhWGhPThw77cAwb1g1QSEcVZTg==
-=g8DH
------END PGP SIGNATURE-----
-
---oLBj+sq0vYjzfsbl--
+debugsfs is not something the average user is familiar with, and it's 
+not available in all cases. I'd like to extend existing pieces of 
+information than add new things.
