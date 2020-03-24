@@ -2,74 +2,99 @@ Return-Path: <SRS0=1tVn=5J=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9C58C43331
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Mar 2020 12:32:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5248C4332B
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Mar 2020 12:33:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 78D162080C
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Mar 2020 12:32:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 729CC2070A
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Mar 2020 12:33:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mRdAaCg9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 78D162080C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HqR3wrew";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TN2CwCxN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 729CC2070A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A4EBA950;
-	Tue, 24 Mar 2020 13:31:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A4EBA950
+	by alsa0.perex.cz (Postfix) with ESMTPS id CD564165F;
+	Tue, 24 Mar 2020 13:32:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD564165F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585053133;
-	bh=b20iB8TIuB1QsL47SxfF4yqbrLz759fxxbjpgh+W9es=;
+	s=default; t=1585053179;
+	bh=VZPEW+INZuo80zGqUU5LogKB9iPrEOG2qN8L40Whyq0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mRdAaCg9GEsXtwJIo9PyqbILZCuYfpcIOy13TfUxOiWu7Te0KURstH5xhNXLynyvw
-	 D8FaAMuSINQXdmMkEbSLfyw5L0n1mV763vYdC/NtjnQ62l8AcQuU3xHn83ckyfF78w
-	 ciUAqyeaMpnRjDO6D0baVrlTW8rfx2ZfDtbuN/Xc=
+	b=HqR3wrewd7g6OVJ83ubNmO4HnzG3iNnE2+wSZMW4XHJSqRiwlJcz/VCWhfMouvpVM
+	 +nZ4TRK2dKTS8NacC1lc1YnJoMnwwDfovpCGCMtto0f9LHqmnz2aTZt4msJvB6n/6O
+	 NphnDqnHDt9E2LkYKfChSonZZaJhU4eqMKE8Hk80=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9370EF80291;
-	Tue, 24 Mar 2020 13:29:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BE1CBF801F9;
+	Tue, 24 Mar 2020 13:32:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0C506F80273; Tue, 24 Mar 2020 13:29:39 +0100 (CET)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id E2298F80227; Tue, 24 Mar 2020 13:32:06 +0100 (CET)
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
+ [IPv6:2a00:1450:4864:20::444])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 31F4BF801F8;
- Tue, 24 Mar 2020 13:29:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31F4BF801F8
-IronPort-SDR: Ryc6cy18Cs+v+SOHXGGEl1meTLas5z/AmlRwoKQWyKSEK1xxBuo4AO2DGkNg9874FMfEcozu+E
- ZAVsFq9U6mhg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Mar 2020 05:29:26 -0700
-IronPort-SDR: PwiRlBKlsoW6TnGuYMzzWrCEGCQuy8w4vGqRfSbXJX60jqzRYDnIYqNRMQ2k0MJzxMxjWIy0R3
- tGZF/Je3jGRg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,300,1580803200"; d="scan'208";a="246638965"
-Received: from gliakhov-mobl2.ger.corp.intel.com (HELO
- ubuntu.ger.corp.intel.com) ([10.249.33.88])
- by orsmga003.jf.intel.com with ESMTP; 24 Mar 2020 05:29:25 -0700
-From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/2] ASoC: SOF: fix uninitialised "work" with VirtIO
-Date: Tue, 24 Mar 2020 13:29:21 +0100
-Message-Id: <20200324122921.29582-3-guennadi.liakhovetski@linux.intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200324122921.29582-1-guennadi.liakhovetski@linux.intel.com>
-References: <20200324122921.29582-1-guennadi.liakhovetski@linux.intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: sound-open-firmware@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2833FF80095
+ for <alsa-devel@alsa-project.org>; Tue, 24 Mar 2020 13:32:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2833FF80095
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="TN2CwCxN"
+Received: by mail-wr1-x444.google.com with SMTP id 65so4495501wrl.1
+ for <alsa-devel@alsa-project.org>; Tue, 24 Mar 2020 05:32:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references;
+ bh=atHO2cCzgOMkDYaDPQrtakvRe3Ydex6Qe9QJS9pzzX8=;
+ b=TN2CwCxNWlYG1JfPYWRaeZ2r0cqpdUtqKj4DxRAJ+Vcp+KYsdavUdDfv5MMVdDam89
+ QsN80wkxMFNnZKozAPaRWDyiNjGIWm6PhzoTyQ4IluC4yb2kXCp4GlMM3MOTkPGhRcrv
+ jg55wqIdWr9IpkIsMIrKYD+pUyQIECB7tWUNtG/DY/Dyoux6kqUgoyMCatfdDPKftdod
+ nUyk7yIZBGb/ZZIWWVo/QXHt0YLbh+mpnA6XO0f8vHvVvsyg5SWsO0z8oGQ5LyzPwZ0u
+ tdtoZFiZgqZKL+s+SDNNFuHRKgGDu2/NE51KiSKcxi2rG1z1IfTz14bey+GX8KqPdW8U
+ tvFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references;
+ bh=atHO2cCzgOMkDYaDPQrtakvRe3Ydex6Qe9QJS9pzzX8=;
+ b=crFJIfdwD/LvYRa6Ty/pdwoqXM8yOlBsVwosoSM7GiqiMhGRp0NFgNbUgAq8CfWnsh
+ B2CqWIZKpfYT+WsVE5mhc/877DyUjyZCzEsH5razOuIT6FRoKIWqSFnI4cjOoTR+rt1+
+ lj2Cm88+9jC+5IfhCP+Ihzw9Oz5NEfk3kYB6FNL2ctIxfAlWWaotVTuNhu+CY2iOIBfX
+ ZuIcMJxf7S/27fHAqLFN86F86mwU1BoeYJU/jIaNX0JjJdYoSTvJJ3d7tlK9i/PILomQ
+ jDqonxALsiak5HJTkTQDs7hCWe+YXuTCe8VbAMsTNTLwKeAn8jAUs3/+oRuWSFISdqza
+ 5B0Q==
+X-Gm-Message-State: ANhLgQ1VZMBjbpL/Cd8UwtahM8BEoaFrp48t1cKAwGIkbttdiNPWne6G
+ BEMg2b2m35zTfPrxafSYKpWlSpH6
+X-Google-Smtp-Source: ADFU+vvwc7ZZX4Hf0V7jwJm1hdyW8wN+2s2AUbaBpJXWj10D0kLU62MU+6Z0rzHvlOwAe0jPxp+BMw==
+X-Received: by 2002:adf:f688:: with SMTP id v8mr36392951wrp.344.1585053123707; 
+ Tue, 24 Mar 2020 05:32:03 -0700 (PDT)
+Received: from debian.home (ip51ccf9cd.speed.planet.nl. [81.204.249.205])
+ by smtp.gmail.com with ESMTPSA id k185sm4215029wmb.7.2020.03.24.05.32.02
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Tue, 24 Mar 2020 05:32:03 -0700 (PDT)
+From: Johan Jonker <jbx6244@gmail.com>
+To: lgirdwood@gmail.com
+Subject: [PATCH v2 2/3] dt-bindings: sound: rockchip-spdif: add
+ #sound-dai-cells property
+Date: Tue, 24 Mar 2020 13:31:54 +0100
+Message-Id: <20200324123155.11858-2-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20200324123155.11858-1-jbx6244@gmail.com>
+References: <20200324123155.11858-1-jbx6244@gmail.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, heiko@sntech.de,
+ linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+ linux-rockchip@lists.infradead.org, broonie@kernel.org,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,87 +110,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-In the VirtIO case the sof_pcm_open() function isn't called on the
-host during guest streaming, which then leaves "work" structures
-uninitialised. However it is then used to handle position update
-messages from the DSP. Move their initialisation to immediately after
-allocation of the containing structure.
+'#sound-dai-cells' is required to properly interpret
+the list of DAI specified in the 'sound-dai' property,
+so add them to 'rockchip-spdif.yaml'
 
-Signed-off-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 ---
- sound/soc/sof/pcm.c       | 4 +---
- sound/soc/sof/sof-audio.h | 3 +++
- sound/soc/sof/topology.c  | 6 +++++-
- 3 files changed, 9 insertions(+), 4 deletions(-)
+ Documentation/devicetree/bindings/sound/rockchip-spdif.yaml | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
-index f4769e1..47cd741 100644
---- a/sound/soc/sof/pcm.c
-+++ b/sound/soc/sof/pcm.c
-@@ -57,7 +57,7 @@ static int sof_pcm_dsp_params(struct snd_sof_pcm *spcm, struct snd_pcm_substream
- /*
-  * sof pcm period elapse work
-  */
--static void sof_pcm_period_elapsed_work(struct work_struct *work)
-+void snd_sof_pcm_period_elapsed_work(struct work_struct *work)
- {
- 	struct snd_sof_pcm_stream *sps =
- 		container_of(work, struct snd_sof_pcm_stream,
-@@ -475,8 +475,6 @@ static int sof_pcm_open(struct snd_soc_component *component,
- 	dev_dbg(component->dev, "pcm: open stream %d dir %d\n",
- 		spcm->pcm.pcm_id, substream->stream);
+diff --git a/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml b/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml
+index d1c72c8a5..0546fd4cc 100644
+--- a/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml
++++ b/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml
+@@ -57,6 +57,9 @@ properties:
+       The phandle of the syscon node for the GRF register.
+       Required property on RK3288.
  
--	INIT_WORK(&spcm->stream[substream->stream].period_elapsed_work,
--		  sof_pcm_period_elapsed_work);
- 
- 	caps = &spcm->pcm.caps[substream->stream];
- 
-diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
-index eacd10e..bf65f31a 100644
---- a/sound/soc/sof/sof-audio.h
-+++ b/sound/soc/sof/sof-audio.h
-@@ -11,6 +11,8 @@
- #ifndef __SOUND_SOC_SOF_AUDIO_H
- #define __SOUND_SOC_SOF_AUDIO_H
- 
-+#include <linux/workqueue.h>
++  "#sound-dai-cells":
++    const: 0
 +
- #include <sound/soc.h>
- #include <sound/control.h>
- #include <sound/sof/stream.h> /* needs to be included before control.h */
-@@ -189,6 +191,7 @@ struct snd_sof_pcm *snd_sof_find_spcm_comp(struct snd_soc_component *scomp,
- struct snd_sof_pcm *snd_sof_find_spcm_pcm_id(struct snd_soc_component *scomp,
- 					     unsigned int pcm_id);
- void snd_sof_pcm_period_elapsed(struct snd_pcm_substream *substream);
-+void snd_sof_pcm_period_elapsed_work(struct work_struct *work);
+ required:
+   - compatible
+   - reg
+@@ -65,6 +68,7 @@ required:
+   - clock-names
+   - dmas
+   - dma-names
++  - "#sound-dai-cells"
  
- /*
-  * Mixer IPC
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index 54437ca..fe8ba3e 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -9,6 +9,7 @@
- //
- 
- #include <linux/firmware.h>
-+#include <linux/workqueue.h>
- #include <sound/tlv.h>
- #include <sound/pcm_params.h>
- #include <uapi/sound/sof/tokens.h>
-@@ -2461,8 +2462,11 @@ static int sof_dai_load(struct snd_soc_component *scomp, int index,
- 
- 	spcm->scomp = scomp;
- 
--	for_each_pcm_streams(stream)
-+	for_each_pcm_streams(stream) {
- 		spcm->stream[stream].comp_id = COMP_ID_UNASSIGNED;
-+		INIT_WORK(&spcm->stream[stream].period_elapsed_work,
-+			  snd_sof_pcm_period_elapsed_work);
-+	}
- 
- 	spcm->pcm = *pcm;
- 	dev_dbg(scomp->dev, "tplg: load pcm %s\n", pcm->dai_name);
+ if:
+   properties:
+@@ -91,4 +95,5 @@ examples:
+       clock-names = "mclk", "hclk";
+       dmas = <&dmac1_s 8>;
+       dma-names = "tx";
++      #sound-dai-cells = <0>;
+     };
 -- 
-1.9.3
+2.11.0
 
