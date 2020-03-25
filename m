@@ -2,76 +2,98 @@ Return-Path: <SRS0=ybvW=5K=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DAC56C54FD0
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 15:06:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 670DBC2D0E5
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 17:45:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6032220789
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 15:06:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EC3B920777
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 17:45:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="R0pVmjd3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6032220789
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sJkPT6QD";
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DJTTxJ4A"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC3B920777
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B9F49167C;
-	Wed, 25 Mar 2020 16:05:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9F49167C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 34A18166E;
+	Wed, 25 Mar 2020 18:44:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 34A18166E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585148779;
-	bh=KaOL/dRSxDJQkGdvQPkIf/ldhHCiCNlaKHL4EJcDyrM=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1585158335;
+	bh=oSit7F6lkqSGVqjpkLsl8p15MmlIg/RTQdEDnUtlgZs=;
+	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=R0pVmjd3znBa2aOPz5gew/UeU8Fc4KB2CgazhI6f7+6qhXwUMr5TlfdFlahevhRsw
-	 xh6socQti3N6yxmKnuf9I+24o2CfuivGTNBmTX6gYrtj6Yisg+PrTXzcJljrxGhlHy
-	 xvbmYi5Ouk3jWA5Qb4ZO/EW0bcZsfg8UIN2iafMQ=
+	b=sJkPT6QD4i23dvemc3KA3VgoCapUNkP3h2mdQ2Z+XR7NBp9PdKzBe7Cjjhcug9gHy
+	 SAyf+dV/j42UC7g4vkhlqsPnvg/zF5dYyyZowVtw9AOdkASpC7zxycV6ET49IRkTmy
+	 15I91RqgL+fTuFfLimROkuvNu1wJ7IzSTB22LY0s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 17283F80255;
-	Wed, 25 Mar 2020 16:03:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 761D6F80147;
+	Wed, 25 Mar 2020 18:44:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CDBDCF8028B; Wed, 25 Mar 2020 16:03:52 +0100 (CET)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 46AC2F80158; Wed, 25 Mar 2020 18:44:42 +0100 (CET)
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
+ [IPv6:2a00:1450:4864:20::335])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BCD4CF80158
- for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2020 16:03:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BCD4CF80158
-IronPort-SDR: lKtzJlOBFuFmi+p/5qwzpS3i5GRIqkXWLzU8MSBPRzTdyvrNvHuXkaxGKXXXqzw9Icz3U7GiQ5
- 7oeVYOKlyF6Q==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Mar 2020 08:03:42 -0700
-IronPort-SDR: p8fzYMVvfWXcArNTYa9VOajBPHpffaMrSpjbM5vqdKYz28l6v8NgQazKnWIz38VAcAzmm05p+V
- fZCuHlb7PqRA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,304,1580803200"; d="scan'208";a="393654622"
-Received: from swmckee-mobl2.amr.corp.intel.com (HELO [10.252.137.27])
- ([10.252.137.27])
- by orsmga004.jf.intel.com with ESMTP; 25 Mar 2020 08:03:41 -0700
-Subject: Re: [PATCH 0/3] ASoC: Intel: boards: Revert SSP0 links to use dummy
-To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
-References: <20200325131611.545-1-cezary.rojewski@intel.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <2c22bea1-3139-260d-153d-04e9d212e3be@linux.intel.com>
-Date: Wed, 25 Mar 2020 09:37:03 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4AC2AF8011E
+ for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2020 18:44:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4AC2AF8011E
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="DJTTxJ4A"
+Received: by mail-wm1-x335.google.com with SMTP id b12so3465506wmj.3
+ for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2020 10:44:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=date:from:to:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to:user-agent;
+ bh=5rXBg+iydjE1cPztD7rnhgHv8Sfifo3FaAFZXVEFMeE=;
+ b=DJTTxJ4AVsEB/O1jhPrSnuPmusRUPMCZNMvD3o3rSm9TG9q/LWiJ0HrYJviPZEQ/lL
+ wiW67wE4Vroz+1z7r7YRgK/rL3Bvcg5V96F8nP0AztjTTxErM8dSwYTXgwT9Rh8LqAgX
+ mlwaFymvnIGx2v9ThIMaoAmeWTaAamBJ5tQOLISHS2rlYqvqmGjGNg1jnHRHeNAp7d6u
+ LZI0eS/ZUVGMrT41UJMyfSH8w9LXi1bqT/o4dSEJ9qRTpKNcQbzBxPPu3CIEeCYty1N7
+ e7XekUjM7ZnK0qiwiYjM9GCCZgfmOPnxgFgDiwf1Pfu3zJuUFDC5avTxE5NlLyfLVvl8
+ RnWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=5rXBg+iydjE1cPztD7rnhgHv8Sfifo3FaAFZXVEFMeE=;
+ b=WNx4Fb7Q05QziLe9BRU+wuFhpS+PKCWJbQ57Hyaa9lzx9O43kfCX/DMbJ1sMEMRWnq
+ DCClzeNahv37RmJQOrikWTPakiMrVY3VtW7youRvjQ6l4Iskr53nF3WAh3ayeQQ9Gv8y
+ ocQuouwYmTzl9obNB2P+8oa5hkQX992ULeRqVKyv7yids33texbNaFwG7Y0igZjdGRox
+ grV3Jgxg+XHOJMaFMaepN26UzxRJW1onuqoFFU9CQeRHXCm5GKyMocHivCAmSFYHSqXT
+ epugJs8vO9NYPR+CqOjoBE6Fkjazgq/kHb/6LelCMP+apbMs7+5EkBAdXlpUzkCK35QO
+ 5Pwg==
+X-Gm-Message-State: ANhLgQ05LYawjV8cRbl6uydxKnwcOjFIhIS5AzkpB3oUPh8RvYfBEMTA
+ UKi1OS7vn03T42oSiyiLh3axZvCw
+X-Google-Smtp-Source: ADFU+vu89NSVXtZVNz4mZ1YdsHaCPTEUzSqh5PcacitSF0Tt/P/HmjNg50rYgVYZC6kHrZAtfb2qKA==
+X-Received: by 2002:a1c:2c85:: with SMTP id s127mr4572283wms.18.1585158277621; 
+ Wed, 25 Mar 2020 10:44:37 -0700 (PDT)
+Received: from localhost (108.78.124.78.rev.sfr.net. [78.124.78.108])
+ by smtp.gmail.com with ESMTPSA id a13sm35398740wrh.80.2020.03.25.10.44.36
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 25 Mar 2020 10:44:37 -0700 (PDT)
+Date: Wed, 25 Mar 2020 17:44:19 +0000
+From: sylvain.bertrand@gmail.com
+To: alsa-devel@alsa-project.org
+Subject: sw_params for a direct-ed(dmix) hw pcm
+Message-ID: <20200325174419.GA1224@freedom>
+References: <20200321155303.GB357@freedom>
 MIME-Version: 1.0
-In-Reply-To: <20200325131611.545-1-cezary.rojewski@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: broonie@kernel.org, tiwai@suse.com, linux@dominikbrodowski.net
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200321155303.GB357@freedom>
+User-Agent: Mutt/ (2018-04-13)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,35 +109,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi,
 
+On this issue, I am doing something fundamentaly wrong, but I don't see how to
+do it right.
 
-On 3/25/20 8:16 AM, Cezary Rojewski wrote:
-> Recent series of patches targeting broadwell boards, while enabling
-> SOF, changed behavior for non-SOF solutions. In essence replacing
-> platform 'dummy' with actual 'platform' causes redundant stream
-> initialization to occur during audio start. hw_params for haswell-pcm
-> destroys initial stream right after its creation - only to recreate it
-> again from proceed from there.
-> 
-> While harmless so far, this flow isn't right and should be corrected.
-> The actual need for dummy components for SSP0 link is questionable but
-> that issue is subject for another series.
-> 
-> Link to first message in conversation:
-> https://lkml.org/lkml/2020/3/18/54
-> 
-> Cezary Rojewski (3):
->    ASoC: Intel: broadwell: Revert back SSP0 link to use dummy components
->    ASoC: Intel: bdw-rt5677: Revert SSP0 link to use dummy components
->    ASoC: Intel: bdw-rt5650: Revert SSP0 link to use dummy components
+While configuring a pcm, I should not use sw_params if it is a "direct-ed"
+(direct::dmix) real hw pcm: in pcm_direct.c, snd_pcm_direct_sw_params
+function is empty and it seems coherent with the fact the real hw pcm is
+actually shared and was probably already configured.
 
-Thanks Cezary, for the series
+How do I know a pcm is actually a "pipeline" of pcms which ends up with a
+"direct-ed" real hw pcm? That would tell my code how to behave regarding
+sw_params usage.
 
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Is this related to the "topology" and "ucm" apis?
 
-> 
->   sound/soc/intel/boards/bdw-rt5650.c | 7 ++++---
->   sound/soc/intel/boards/bdw-rt5677.c | 7 ++++---
->   sound/soc/intel/boards/broadwell.c  | 7 ++++---
->   3 files changed, 12 insertions(+), 9 deletions(-)
-> 
+regards,
+
+-- 
+Sylvain
