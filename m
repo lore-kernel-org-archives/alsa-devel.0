@@ -7,53 +7,53 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8125AC43331
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 10:34:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 14BEFC54FD6
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 10:35:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0A83B20775
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 10:34:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 98D9F2077D
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 10:35:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZffOWNLf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0A83B20775
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nGRyf0Ob"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 98D9F2077D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 270E01661;
-	Wed, 25 Mar 2020 11:33:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 270E01661
+	by alsa0.perex.cz (Postfix) with ESMTPS id 22B3B166F;
+	Wed, 25 Mar 2020 11:34:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22B3B166F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585132487;
-	bh=mXvtwpAwxltXeTQDd++459ShvjZ5eBwR0cq1ucQfv/8=;
+	s=default; t=1585132541;
+	bh=r5kuFg5OndvFkihI2pfV/NatT/cNBi1vRe44y8aWtH4=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZffOWNLfxAIi+6kazwkKT5eyvjrr5BtgCRQqHcfK8LeDvtQ7e8xdQhqDDRJ24hRBc
-	 qSeUaFkeCWnw396s6qgoPpDln1/TdEtb114YSRiUNNnoFYHiGSb+EILNE+jooPfZ3+
-	 RcZ2VvxCqXGxD9/HsImxoZDxpAhAy32c8UDGh5oI=
+	b=nGRyf0ObPb2Z6MqMQdCDkq3dTHrLB4UlGUV+gJCT5bVZojOfIXvCfODN5Ma+dBgbt
+	 7qmPyMrGTknT+mlQbifPB4LHNI3wWcrR9A72MevaqVtecgktKQICi3vRempSisA3pV
+	 mW9SPpugtq2PAE0rl6URrBb6DdE9YItTYqL+hxfA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A6BD3F80147;
-	Wed, 25 Mar 2020 11:33:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C2B5BF8015A;
+	Wed, 25 Mar 2020 11:33:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0D1C5F80255; Wed, 25 Mar 2020 11:33:30 +0100 (CET)
+ id 58A72F80218; Wed, 25 Mar 2020 11:33:30 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DC126F80147
+ by alsa1.perex.cz (Postfix) with ESMTPS id D8945F80095
  for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2020 11:33:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC126F80147
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8945F80095
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 6C59FACC2
+ by mx2.suse.de (Postfix) with ESMTP id 7C5BCACC6
  for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2020 10:33:25 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/4] ALSA: usb-audio: Rewrite registration quirk handling
-Date: Wed, 25 Mar 2020 11:33:19 +0100
-Message-Id: <20200325103322.2508-2-tiwai@suse.de>
+Subject: [PATCH 2/4] ALSA: usb-audio: Add delayed_register option
+Date: Wed, 25 Mar 2020 11:33:20 +0100
+Message-Id: <20200325103322.2508-3-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20200325103322.2508-1-tiwai@suse.de>
 References: <20200325103322.2508-1-tiwai@suse.de>
@@ -72,94 +72,75 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-A slight refactoring of the registration quirk code.  Now it uses the
-table lookup for easy additions in future.  Also the return type was
-changed to bool, and got a few more comments.
+Add a new option for specifying the quirk for delayed registration of
+the certain device.  A list of devices can be passed in a form
+	ID:IFACE,ID:IFACE,ID:IFACE,....
+where ID is the 32bit hex number combo of vendor and device IDs and
+IFACE is the interface number to trigger the register.
+
+When a matching device is probed, the card registration is delayed
+until the given interface is probed.  It's needed for syncing the
+registration until the last interface when multiple interfaces are
+provided for the same card.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/card.c   |  2 +-
- sound/usb/quirks.c | 40 ++++++++++++++++++++++++++++++----------
- sound/usb/quirks.h |  3 +--
- 3 files changed, 32 insertions(+), 13 deletions(-)
+ sound/usb/card.c | 21 ++++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
 
 diff --git a/sound/usb/card.c b/sound/usb/card.c
-index 16bbe2a50fb7..55d563a8154d 100644
+index 55d563a8154d..951134238669 100644
 --- a/sound/usb/card.c
 +++ b/sound/usb/card.c
-@@ -665,7 +665,7 @@ static int usb_audio_probe(struct usb_interface *intf,
+@@ -72,6 +72,7 @@ static int device_setup[SNDRV_CARDS]; /* device parameter for this card */
+ static bool ignore_ctl_error;
+ static bool autoclock = true;
+ static char *quirk_alias[SNDRV_CARDS];
++static char *delayed_register[SNDRV_CARDS];
+ 
+ bool snd_usb_use_vmalloc = true;
+ bool snd_usb_skip_validation;
+@@ -95,6 +96,8 @@ module_param(autoclock, bool, 0444);
+ MODULE_PARM_DESC(autoclock, "Enable auto-clock selection for UAC2 devices (default: yes).");
+ module_param_array(quirk_alias, charp, NULL, 0444);
+ MODULE_PARM_DESC(quirk_alias, "Quirk aliases, e.g. 0123abcd:5678beef.");
++module_param_array(delayed_register, charp, NULL, 0444);
++MODULE_PARM_DESC(delayed_register, "Quirk for delayed registration, given by id:iface, e.g. 0123abcd:4.");
+ module_param_named(use_vmalloc, snd_usb_use_vmalloc, bool, 0444);
+ MODULE_PARM_DESC(use_vmalloc, "Use vmalloc for PCM intermediate buffers (default: yes).");
+ module_param_named(skip_validation, snd_usb_skip_validation, bool, 0444);
+@@ -525,6 +528,21 @@ static bool get_alias_id(struct usb_device *dev, unsigned int *id)
+ 	return false;
+ }
+ 
++static bool check_delayed_register_option(struct snd_usb_audio *chip, int iface)
++{
++	int i;
++	unsigned int id, inum;
++
++	for (i = 0; i < ARRAY_SIZE(delayed_register); i++) {
++		if (delayed_register[i] &&
++		    sscanf(delayed_register[i], "%x:%x", &id, &inum) == 2 &&
++		    id == chip->usb_id)
++			return inum != iface;
++	}
++
++	return false;
++}
++
+ static const struct usb_device_id usb_audio_ids[]; /* defined below */
+ 
+ /* look for the corresponding quirk */
+@@ -665,7 +683,8 @@ static int usb_audio_probe(struct usb_interface *intf,
  	/* we are allowed to call snd_card_register() many times, but first
  	 * check to see if a device needs to skip it or do anything special
  	 */
--	if (snd_usb_registration_quirk(chip, ifnum) == 0) {
-+	if (!snd_usb_registration_quirk(chip, ifnum)) {
+-	if (!snd_usb_registration_quirk(chip, ifnum)) {
++	if (!snd_usb_registration_quirk(chip, ifnum) &&
++	    !check_delayed_register_option(chip, ifnum)) {
  		err = snd_card_register(chip->card);
  		if (err < 0)
  			goto __error;
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index d605aff801b8..86f192a3043d 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1809,16 +1809,36 @@ void snd_usb_audioformat_attributes_quirk(struct snd_usb_audio *chip,
- 	}
- }
- 
--int snd_usb_registration_quirk(struct snd_usb_audio *chip,
--			       int iface)
-+/*
-+ * registration quirk:
-+ * the registration is skipped if a device matches with the given ID,
-+ * unless the interface reaches to the defined one.  This is for delaying
-+ * the registration until the last known interface, so that the card and
-+ * devices appear at the same time.
-+ */
-+
-+struct registration_quirk {
-+	unsigned int usb_id;	/* composed via USB_ID() */
-+	unsigned int interface;	/* the interface to trigger register */
-+};
-+
-+#define REG_QUIRK_ENTRY(vendor, product, iface) \
-+	{ .usb_id = USB_ID(vendor, product), .interface = (iface) }
-+
-+static const struct registration_quirk registration_quirks[] = {
-+	REG_QUIRK_ENTRY(0x0951, 0x16d8, 2),	/* Kingston HyperX AMP */
-+	{ 0 }					/* terminator */
-+};
-+
-+/* return true if skipping registration */
-+bool snd_usb_registration_quirk(struct snd_usb_audio *chip, int iface)
- {
--	switch (chip->usb_id) {
--	case USB_ID(0x0951, 0x16d8): /* Kingston HyperX AMP */
--		/* Register only when we reach interface 2 so that streams can
--		 * merge correctly into PCMs from interface 0
--		 */
--		return (iface != 2);
--	}
-+	const struct registration_quirk *q;
-+
-+	for (q = registration_quirks; q->usb_id; q++)
-+		if (chip->usb_id == q->usb_id)
-+			return iface != q->interface;
-+
- 	/* Register as normal */
--	return 0;
-+	return false;
- }
-diff --git a/sound/usb/quirks.h b/sound/usb/quirks.h
-index 3afc01eabc7e..c76cf24a640a 100644
---- a/sound/usb/quirks.h
-+++ b/sound/usb/quirks.h
-@@ -51,7 +51,6 @@ void snd_usb_audioformat_attributes_quirk(struct snd_usb_audio *chip,
- 					  struct audioformat *fp,
- 					  int stream);
- 
--int snd_usb_registration_quirk(struct snd_usb_audio *chip,
--			       int iface);
-+bool snd_usb_registration_quirk(struct snd_usb_audio *chip, int iface);
- 
- #endif /* __USBAUDIO_QUIRKS_H */
 -- 
 2.16.4
 
