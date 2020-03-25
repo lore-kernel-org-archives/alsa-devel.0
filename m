@@ -7,63 +7,63 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EAA4EC43331
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 12:24:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 60686C1975A
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 12:24:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 67F5520775
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 12:24:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2711D20772
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 12:24:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="u9OyF5pU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 67F5520775
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sBlFwDkU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2711D20772
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6C7B2846;
-	Wed, 25 Mar 2020 13:23:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C7B2846
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2C7AF1667;
+	Wed, 25 Mar 2020 13:24:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C7AF1667
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585139059;
-	bh=yh5hFhSgM9RWfTJ50ur2jsf4kPUiuq/WQSLEqogjUyI=;
+	s=default; t=1585139095;
+	bh=t6ncGAVIytcz6JNDze55mirDswr5KndwGtAwVcYOXkY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=u9OyF5pU+CFRxsNVHaTMBvGmhQBivhrWTJk7AFH2fcN227Iq5dc3f8yYkXF0tGHZd
-	 wOfsauH0uY9LjC8wN/XpF7FdW3DvCuw3AfCGER5XEcwJtKqCDzz+XLgI4RBqbhafs1
-	 zLmsbLqEbEOGsofAZ+7s3OL9R7ypZTPK+ZLLcFLs=
+	b=sBlFwDkUVRzbkZW7yDKNdL+Tz+9eBZlEs8DnrnnuYlfNJwoX+IKDMK79qPyva0Fse
+	 N2rOcZFbCOO17Qy9CSa2GtW2rYSH5CkEMuMpj67sd2VQfzR59j+xllm6azb9f7Ahqd
+	 H5WiT885TQ2R03byd1UcEydwBFeuxHvfAB8vKZEw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 92B4DF8028F;
-	Wed, 25 Mar 2020 13:21:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3C026F802A7;
+	Wed, 25 Mar 2020 13:21:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 17097F80290; Wed, 25 Mar 2020 13:21:42 +0100 (CET)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ id F0C41F8028E; Wed, 25 Mar 2020 13:21:48 +0100 (CET)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 61FF5F80147
- for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2020 13:21:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 61FF5F80147
-IronPort-SDR: WDs0UBDFjeMNQ1y3w3RYSSDW5vh/5FG0ohaolziIlaZejIeeX6vI2mVvbPXSsgyTnBRCYxBIHs
- HIiC3STuqtTw==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3BAFDF8028E
+ for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2020 13:21:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3BAFDF8028E
+IronPort-SDR: Dt2IASCZMcuDzzg2Z+L7IlKeQA6ZKXD8SV2uGV90GTj8r5cpVhOt6NYqeJiJRlJ9kwoF5x4/rH
+ GeLtq5q7XWXw==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Mar 2020 05:21:26 -0700
-IronPort-SDR: 6KnM2GOsV/lOXXNBRr2t93MruC7Y4KFKjQBe2Japi13cIYy+4nwjfC/X+VMLsAW7s69qAKzD2F
- E1Ih5F0e7CZQ==
+ by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Mar 2020 05:21:33 -0700
+IronPort-SDR: Mu6a+avr98WD08bHtMHqKfQHR6Pz5BUfanhq2WLV654AnqlUvJbObFo10YlVVtAdTjsSsSIyAg
+ tQL7/Yap5H9A==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,304,1580803200"; d="scan'208";a="238507742"
+X-IronPort-AV: E=Sophos;i="5.72,304,1580803200"; d="scan'208";a="238507752"
 Received: from mgorski-all-series.igk.intel.com ([10.237.149.201])
- by fmsmga007.fm.intel.com with ESMTP; 25 Mar 2020 05:21:24 -0700
+ by fmsmga007.fm.intel.com with ESMTP; 25 Mar 2020 05:21:30 -0700
 From: Mateusz Gorski <mateusz.gorski@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/3] topology: Add topology conf for generic HDA DSP machine
- driver for devices without DMIC array
-Date: Wed, 25 Mar 2020 13:21:45 +0100
-Message-Id: <20200325122147.12121-2-mateusz.gorski@linux.intel.com>
+Subject: [PATCH 2/3] topology: Add topology conf for generic HDA DSP machine
+ driver for devices with 2 channel DMIC array
+Date: Wed, 25 Mar 2020 13:21:46 +0100
+Message-Id: <20200325122147.12121-3-mateusz.gorski@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200325122147.12121-1-mateusz.gorski@linux.intel.com>
 References: <20200325122147.12121-1-mateusz.gorski@linux.intel.com>
@@ -85,20 +85,20 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Provide conf file with reference topology for generic HDA DSP machine
-driver. This topology does not contain paths for DMIC capture.
+driver. This topology contains paths for stereo DMIC capture.
 
 Signed-off-by: Mateusz Gorski <mateusz.gorski@linux.intel.com>
 ---
- topology/hdadsp/hda_dsp_noDMIC.conf | 6763 +++++++++++++++++++++++++++
- 1 file changed, 6763 insertions(+)
- create mode 100644 topology/hdadsp/hda_dsp_noDMIC.conf
+ topology/hdadsp/hda_dsp_DMIC_2ch.conf | 7453 +++++++++++++++++++++++++
+ 1 file changed, 7453 insertions(+)
+ create mode 100644 topology/hdadsp/hda_dsp_DMIC_2ch.conf
 
-diff --git a/topology/hdadsp/hda_dsp_noDMIC.conf b/topology/hdadsp/hda_dsp_noDMIC.conf
+diff --git a/topology/hdadsp/hda_dsp_DMIC_2ch.conf b/topology/hdadsp/hda_dsp_DMIC_2ch.conf
 new file mode 100644
-index 0000000..ab2d404
+index 0000000..b5aa224
 --- /dev/null
-+++ b/topology/hdadsp/hda_dsp_noDMIC.conf
-@@ -0,0 +1,6763 @@
++++ b/topology/hdadsp/hda_dsp_DMIC_2ch.conf
+@@ -0,0 +1,7453 @@
 +
 +SectionVendorTokens."skl_tokens" {
 +    SKL_TKN_UUID "1"
@@ -6500,6 +6500,648 @@ index 0000000..ab2d404
 +    no_pm "true"
 +}
 +
++SectionVendorTuples."mch_cap_in cpr 18 num_desc" {
++    tokens "skl_tokens"
++
++    tuples."byte.u8_num_blocks" {
++        SKL_TKN_U8_NUM_BLOCKS "1"
++    }
++}
++
++SectionData."mch_cap_in cpr 18 num_desc" {
++    tuples "mch_cap_in cpr 18 num_desc"
++}
++
++SectionVendorTuples."mch_cap_in cpr 18_size_desc" {
++    tokens "skl_tokens"
++
++    tuples."byte.u8_block_type" {
++        SKL_TKN_U8_BLOCK_TYPE "0"
++    }
++
++    tuples."short.u16_size_desc" {
++        SKL_TKN_U16_BLOCK_SIZE "500"
++    }
++}
++
++SectionData."mch_cap_in cpr 18_size_desc" {
++    tuples "mch_cap_in cpr 18_size_desc"
++}
++
++SectionVendorTuples."mch_cap_in cpr 18" {
++    tokens "skl_tokens"
++
++    tuples."uuid" {
++        SKL_TKN_UUID "131, 12, 160, 155, 18, 202, 131, 74, 148, 60, 31, 162, 232, 47, 157, 218"
++    }
++
++    tuples."byte.u8_data" {
++        SKL_TKN_U8_IN_PIN_TYPE "0"
++        SKL_TKN_U8_OUT_PIN_TYPE "0"
++        SKL_TKN_U8_DYN_IN_PIN "1"
++        SKL_TKN_U8_DYN_OUT_PIN "0"
++        SKL_TKN_U8_TIME_SLOT "0"
++        SKL_TKN_U8_CORE_ID "0"
++        SKL_TKN_U8_MODULE_TYPE "1"
++        SKL_TKN_U8_CONN_TYPE "2"
++        SKL_TKN_U8_HW_CONN_TYPE "2"
++        SKL_TKN_U8_DEV_TYPE "1"
++    }
++
++    tuples."short.u16_data" {
++        SKL_TKN_U16_MOD_INST_ID "18"
++    }
++
++    tuples."word.u32_data" {
++        SKL_TKN_U32_VBUS_ID "0"
++        SKL_TKN_U32_PARAMS_FIXUP "0"
++        SKL_TKN_U32_CONVERTER "0"
++        SKL_TKN_U32_PIPE_ID "15"
++        SKL_TKN_U32_PIPE_CONN_TYPE "2"
++        SKL_TKN_U32_PIPE_PRIORITY "0"
++        SKL_TKN_U32_PMODE "0"
++        SKL_TKN_U32_D0I3_CAPS "0"
++        SKL_TKN_U32_PROC_DOMAIN "0"
++        SKL_TKN_U32_PIPE_DIRECTION "1"
++        SKL_TKN_U32_NUM_CONFIGS "1"
++        SKL_TKN_U32_DMA_BUF_SIZE "2"
++    }
++
++    tuples."word._pipe_0" {
++        SKL_TKN_U32_PIPE_CONFIG_ID "0"
++        SKL_TKN_U32_PATH_MEM_PGS "2"
++    }
++
++    tuples."word._pipe_u32_cfg_in_fmt_0" {
++        SKL_TKN_U32_DIR_PIN_COUNT "0"
++        SKL_TKN_U32_CFG_FREQ "48000"
++    }
++
++    tuples."word._pipe_u8_cfg_in_fmt_0" {
++        SKL_TKN_U8_CFG_BPS "16"
++        SKL_TKN_U8_CFG_CHAN "2"
++    }
++
++    tuples."word._pipe_u32_cfg_out_fmt_0" {
++        SKL_TKN_U32_DIR_PIN_COUNT "1"
++        SKL_TKN_U32_CFG_FREQ "48000"
++    }
++
++    tuples."word._pipe_u8_cfg_out_fmt_0" {
++        SKL_TKN_U8_CFG_BPS "16"
++        SKL_TKN_U8_CFG_CHAN "2"
++    }
++
++    tuples."short.u16_pipe_mod_cfg_0" {
++        SKL_TKN_CFG_MOD_RES_ID "11"
++        SKL_TKN_CFG_MOD_FMT_ID "11"
++    }
++
++    tuples."word.in_pin_0" {
++        SKL_TKN_U32_DIR_PIN_COUNT "0"
++        SKL_TKN_U32_PIN_MOD_ID "0"
++        SKL_TKN_U32_PIN_INST_ID "0"
++    }
++
++    tuples."word.out_pin_0" {
++        SKL_TKN_U32_DIR_PIN_COUNT "1"
++        SKL_TKN_U32_PIN_MOD_ID "0"
++        SKL_TKN_U32_PIN_INST_ID "6"
++    }
++
++    tuples."uuid.out_pin_0" {
++        SKL_TKN_UUID "178, 110, 101, 57, 113, 59, 73, 64, 141, 63, 249, 44, 213, 196, 60, 9"
++    }
++
++    tuples."word.out_pin_1" {
++        SKL_TKN_U32_DIR_PIN_COUNT "17"
++        SKL_TKN_U32_PIN_MOD_ID "0"
++        SKL_TKN_U32_PIN_INST_ID "0"
++    }
++
++    tuples."uuid.out_pin_1" {
++        SKL_TKN_UUID "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0"
++    }
++
++    tuples."word.out_pin_2" {
++        SKL_TKN_U32_DIR_PIN_COUNT "33"
++        SKL_TKN_U32_PIN_MOD_ID "0"
++        SKL_TKN_U32_PIN_INST_ID "0"
++    }
++
++    tuples."uuid.out_pin_2" {
++        SKL_TKN_UUID "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0"
++    }
++
++    tuples."word.out_pin_3" {
++        SKL_TKN_U32_DIR_PIN_COUNT "49"
++        SKL_TKN_U32_PIN_MOD_ID "0"
++        SKL_TKN_U32_PIN_INST_ID "0"
++    }
++
++    tuples."uuid.out_pin_3" {
++        SKL_TKN_UUID "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0"
++    }
++}
++
++SectionData."mch_cap_in cpr 18" {
++    tuples "mch_cap_in cpr 18"
++}
++
++SectionWidget."mch_cap_in cpr 18" {
++    index "0"
++    type "mixer"
++    no_pm "true"
++    event_type "3"
++    event_flags "9"
++
++    data [
++        "mch_cap_in cpr 18 num_desc"
++        "mch_cap_in cpr 18_size_desc"
++        "mch_cap_in cpr 18"
++    ]
++}
++
++SectionVendorTuples."mch_cap_in mi num_desc" {
++    tokens "skl_tokens"
++
++    tuples."byte.u8_num_blocks" {
++        SKL_TKN_U8_NUM_BLOCKS "1"
++    }
++}
++
++SectionData."mch_cap_in mi num_desc" {
++    tuples "mch_cap_in mi num_desc"
++}
++
++SectionVendorTuples."mch_cap_in mi_size_desc" {
++    tokens "skl_tokens"
++
++    tuples."byte.u8_block_type" {
++        SKL_TKN_U8_BLOCK_TYPE "0"
++    }
++
++    tuples."short.u16_size_desc" {
++        SKL_TKN_U16_BLOCK_SIZE "416"
++    }
++}
++
++SectionData."mch_cap_in mi_size_desc" {
++    tuples "mch_cap_in mi_size_desc"
++}
++
++SectionVendorTuples."mch_cap_in mi" {
++    tokens "skl_tokens"
++
++    tuples."uuid" {
++        SKL_TKN_UUID "178, 110, 101, 57, 113, 59, 73, 64, 141, 63, 249, 44, 213, 196, 60, 9"
++    }
++
++    tuples."byte.u8_data" {
++        SKL_TKN_U8_IN_PIN_TYPE "0"
++        SKL_TKN_U8_OUT_PIN_TYPE "0"
++        SKL_TKN_U8_DYN_IN_PIN "0"
++        SKL_TKN_U8_DYN_OUT_PIN "1"
++        SKL_TKN_U8_TIME_SLOT "0"
++        SKL_TKN_U8_CORE_ID "0"
++        SKL_TKN_U8_MODULE_TYPE "0"
++        SKL_TKN_U8_CONN_TYPE "0"
++        SKL_TKN_U8_HW_CONN_TYPE "2"
++        SKL_TKN_U8_DEV_TYPE "6"
++    }
++
++    tuples."short.u16_data" {
++        SKL_TKN_U16_MOD_INST_ID "6"
++    }
++
++    tuples."word.u32_data" {
++        SKL_TKN_U32_VBUS_ID "4294967295"
++        SKL_TKN_U32_PARAMS_FIXUP "0"
++        SKL_TKN_U32_CONVERTER "0"
++        SKL_TKN_U32_PIPE_ID "15"
++        SKL_TKN_U32_PIPE_CONN_TYPE "2"
++        SKL_TKN_U32_PIPE_PRIORITY "0"
++        SKL_TKN_U32_PMODE "0"
++        SKL_TKN_U32_D0I3_CAPS "0"
++        SKL_TKN_U32_PROC_DOMAIN "0"
++        SKL_TKN_U32_PIPE_DIRECTION "1"
++        SKL_TKN_U32_NUM_CONFIGS "1"
++        SKL_TKN_U32_DMA_BUF_SIZE "2"
++    }
++
++    tuples."word._pipe_0" {
++        SKL_TKN_U32_PIPE_CONFIG_ID "0"
++        SKL_TKN_U32_PATH_MEM_PGS "2"
++    }
++
++    tuples."word._pipe_u32_cfg_in_fmt_0" {
++        SKL_TKN_U32_DIR_PIN_COUNT "0"
++        SKL_TKN_U32_CFG_FREQ "48000"
++    }
++
++    tuples."word._pipe_u8_cfg_in_fmt_0" {
++        SKL_TKN_U8_CFG_BPS "16"
++        SKL_TKN_U8_CFG_CHAN "2"
++    }
++
++    tuples."word._pipe_u32_cfg_out_fmt_0" {
++        SKL_TKN_U32_DIR_PIN_COUNT "1"
++        SKL_TKN_U32_CFG_FREQ "48000"
++    }
++
++    tuples."word._pipe_u8_cfg_out_fmt_0" {
++        SKL_TKN_U8_CFG_BPS "16"
++        SKL_TKN_U8_CFG_CHAN "2"
++    }
++
++    tuples."short.u16_pipe_mod_cfg_0" {
++        SKL_TKN_CFG_MOD_RES_ID "0"
++        SKL_TKN_CFG_MOD_FMT_ID "0"
++    }
++
++    tuples."word.in_pin_0" {
++        SKL_TKN_U32_DIR_PIN_COUNT "0"
++        SKL_TKN_U32_PIN_MOD_ID "2"
++        SKL_TKN_U32_PIN_INST_ID "18"
++    }
++
++    tuples."uuid.in_pin_0" {
++        SKL_TKN_UUID "131, 12, 160, 155, 18, 202, 131, 74, 148, 60, 31, 162, 232, 47, 157, 218"
++    }
++
++    tuples."word.out_pin_0" {
++        SKL_TKN_U32_DIR_PIN_COUNT "1"
++        SKL_TKN_U32_PIN_MOD_ID "0"
++        SKL_TKN_U32_PIN_INST_ID "0"
++    }
++
++    tuples."word.out_pin_1" {
++        SKL_TKN_U32_DIR_PIN_COUNT "17"
++        SKL_TKN_U32_PIN_MOD_ID "0"
++        SKL_TKN_U32_PIN_INST_ID "0"
++    }
++
++    tuples."word.out_pin_2" {
++        SKL_TKN_U32_DIR_PIN_COUNT "33"
++        SKL_TKN_U32_PIN_MOD_ID "0"
++        SKL_TKN_U32_PIN_INST_ID "0"
++    }
++}
++
++SectionData."mch_cap_in mi" {
++    tuples "mch_cap_in mi"
++}
++
++SectionWidget."mch_cap_in mi" {
++    index "0"
++    type "pga"
++    no_pm "true"
++    subseq "10"
++    event_type "4"
++    event_flags "9"
++
++    data [
++        "mch_cap_in mi num_desc"
++        "mch_cap_in mi_size_desc"
++        "mch_cap_in mi"
++    ]
++}
++
++SectionWidget."DMIC01 Rx" {
++    index "0"
++    type "aif_in"
++    no_pm "true"
++}
++
++SectionVendorTuples."mch_cap_out mo num_desc" {
++    tokens "skl_tokens"
++
++    tuples."byte.u8_num_blocks" {
++        SKL_TKN_U8_NUM_BLOCKS "1"
++    }
++}
++
++SectionData."mch_cap_out mo num_desc" {
++    tuples "mch_cap_out mo num_desc"
++}
++
++SectionVendorTuples."mch_cap_out mo_size_desc" {
++    tokens "skl_tokens"
++
++    tuples."byte.u8_block_type" {
++        SKL_TKN_U8_BLOCK_TYPE "0"
++    }
++
++    tuples."short.u16_size_desc" {
++        SKL_TKN_U16_BLOCK_SIZE "536"
++    }
++}
++
++SectionData."mch_cap_out mo_size_desc" {
++    tuples "mch_cap_out mo_size_desc"
++}
++
++SectionVendorTuples."mch_cap_out mo" {
++    tokens "skl_tokens"
++
++    tuples."uuid" {
++        SKL_TKN_UUID "90, 80, 86, 60, 215, 36, 143, 65, 189, 220, 193, 245, 163, 172, 42, 224"
++    }
++
++    tuples."byte.u8_data" {
++        SKL_TKN_U8_IN_PIN_TYPE "0"
++        SKL_TKN_U8_OUT_PIN_TYPE "0"
++        SKL_TKN_U8_DYN_IN_PIN "1"
++        SKL_TKN_U8_DYN_OUT_PIN "0"
++        SKL_TKN_U8_TIME_SLOT "0"
++        SKL_TKN_U8_CORE_ID "0"
++        SKL_TKN_U8_MODULE_TYPE "0"
++        SKL_TKN_U8_CONN_TYPE "0"
++        SKL_TKN_U8_HW_CONN_TYPE "2"
++        SKL_TKN_U8_DEV_TYPE "6"
++    }
++
++    tuples."short.u16_data" {
++        SKL_TKN_U16_MOD_INST_ID "6"
++    }
++
++    tuples."word.u32_data" {
++        SKL_TKN_U32_VBUS_ID "4294967295"
++        SKL_TKN_U32_PARAMS_FIXUP "0"
++        SKL_TKN_U32_CONVERTER "0"
++        SKL_TKN_U32_PIPE_ID "16"
++        SKL_TKN_U32_PIPE_CONN_TYPE "1"
++        SKL_TKN_U32_PIPE_PRIORITY "0"
++        SKL_TKN_U32_PMODE "0"
++        SKL_TKN_U32_D0I3_CAPS "0"
++        SKL_TKN_U32_PROC_DOMAIN "0"
++        SKL_TKN_U32_PIPE_DIRECTION "1"
++        SKL_TKN_U32_NUM_CONFIGS "1"
++        SKL_TKN_U32_DMA_BUF_SIZE "2"
++    }
++
++    tuples."word._pipe_0" {
++        SKL_TKN_U32_PIPE_CONFIG_ID "0"
++        SKL_TKN_U32_PATH_MEM_PGS "2"
++    }
++
++    tuples."word._pipe_u32_cfg_in_fmt_0" {
++        SKL_TKN_U32_DIR_PIN_COUNT "0"
++        SKL_TKN_U32_CFG_FREQ "48000"
++    }
++
++    tuples."word._pipe_u8_cfg_in_fmt_0" {
++        SKL_TKN_U8_CFG_BPS "16"
++        SKL_TKN_U8_CFG_CHAN "2"
++    }
++
++    tuples."word._pipe_u32_cfg_out_fmt_0" {
++        SKL_TKN_U32_DIR_PIN_COUNT "1"
++        SKL_TKN_U32_CFG_FREQ "48000"
++    }
++
++    tuples."word._pipe_u8_cfg_out_fmt_0" {
++        SKL_TKN_U8_CFG_BPS "16"
++        SKL_TKN_U8_CFG_CHAN "2"
++    }
++
++    tuples."short.u16_pipe_mod_cfg_0" {
++        SKL_TKN_CFG_MOD_RES_ID "0"
++        SKL_TKN_CFG_MOD_FMT_ID "0"
++    }
++
++    tuples."word.in_pin_0" {
++        SKL_TKN_U32_DIR_PIN_COUNT "0"
++        SKL_TKN_U32_PIN_MOD_ID "0"
++        SKL_TKN_U32_PIN_INST_ID "0"
++    }
++
++    tuples."word.in_pin_1" {
++        SKL_TKN_U32_DIR_PIN_COUNT "16"
++        SKL_TKN_U32_PIN_MOD_ID "0"
++        SKL_TKN_U32_PIN_INST_ID "0"
++    }
++
++    tuples."word.in_pin_2" {
++        SKL_TKN_U32_DIR_PIN_COUNT "32"
++        SKL_TKN_U32_PIN_MOD_ID "0"
++        SKL_TKN_U32_PIN_INST_ID "0"
++    }
++
++    tuples."word.in_pin_3" {
++        SKL_TKN_U32_DIR_PIN_COUNT "48"
++        SKL_TKN_U32_PIN_MOD_ID "0"
++        SKL_TKN_U32_PIN_INST_ID "0"
++    }
++
++    tuples."word.in_pin_4" {
++        SKL_TKN_U32_DIR_PIN_COUNT "64"
++        SKL_TKN_U32_PIN_MOD_ID "0"
++        SKL_TKN_U32_PIN_INST_ID "0"
++    }
++
++    tuples."word.in_pin_5" {
++        SKL_TKN_U32_DIR_PIN_COUNT "80"
++        SKL_TKN_U32_PIN_MOD_ID "0"
++        SKL_TKN_U32_PIN_INST_ID "0"
++    }
++
++    tuples."word.in_pin_6" {
++        SKL_TKN_U32_DIR_PIN_COUNT "96"
++        SKL_TKN_U32_PIN_MOD_ID "0"
++        SKL_TKN_U32_PIN_INST_ID "0"
++    }
++
++    tuples."word.in_pin_7" {
++        SKL_TKN_U32_DIR_PIN_COUNT "112"
++        SKL_TKN_U32_PIN_MOD_ID "0"
++        SKL_TKN_U32_PIN_INST_ID "0"
++    }
++
++    tuples."word.out_pin_0" {
++        SKL_TKN_U32_DIR_PIN_COUNT "1"
++        SKL_TKN_U32_PIN_MOD_ID "2"
++        SKL_TKN_U32_PIN_INST_ID "19"
++    }
++
++    tuples."uuid.out_pin_0" {
++        SKL_TKN_UUID "131, 12, 160, 155, 18, 202, 131, 74, 148, 60, 31, 162, 232, 47, 157, 218"
++    }
++}
++
++SectionData."mch_cap_out mo" {
++    tuples "mch_cap_out mo"
++}
++
++SectionWidget."mch_cap_out mo" {
++    index "0"
++    type "mixer"
++    no_pm "true"
++    event_type "3"
++    event_flags "9"
++
++    mixer [
++        "mch_cap_in mi Switch"
++    ]
++
++    data [
++        "mch_cap_out mo num_desc"
++        "mch_cap_out mo_size_desc"
++        "mch_cap_out mo"
++    ]
++}
++
++SectionVendorTuples."mch_cap_out cpr 19 num_desc" {
++    tokens "skl_tokens"
++
++    tuples."byte.u8_num_blocks" {
++        SKL_TKN_U8_NUM_BLOCKS "1"
++    }
++}
++
++SectionData."mch_cap_out cpr 19 num_desc" {
++    tuples "mch_cap_out cpr 19 num_desc"
++}
++
++SectionVendorTuples."mch_cap_out cpr 19_size_desc" {
++    tokens "skl_tokens"
++
++    tuples."byte.u8_block_type" {
++        SKL_TKN_U8_BLOCK_TYPE "0"
++    }
++
++    tuples."short.u16_size_desc" {
++        SKL_TKN_U16_BLOCK_SIZE "440"
++    }
++}
++
++SectionData."mch_cap_out cpr 19_size_desc" {
++    tuples "mch_cap_out cpr 19_size_desc"
++}
++
++SectionVendorTuples."mch_cap_out cpr 19" {
++    tokens "skl_tokens"
++
++    tuples."uuid" {
++        SKL_TKN_UUID "131, 12, 160, 155, 18, 202, 131, 74, 148, 60, 31, 162, 232, 47, 157, 218"
++    }
++
++    tuples."byte.u8_data" {
++        SKL_TKN_U8_IN_PIN_TYPE "0"
++        SKL_TKN_U8_OUT_PIN_TYPE "0"
++        SKL_TKN_U8_DYN_IN_PIN "0"
++        SKL_TKN_U8_DYN_OUT_PIN "1"
++        SKL_TKN_U8_TIME_SLOT "0"
++        SKL_TKN_U8_CORE_ID "0"
++        SKL_TKN_U8_MODULE_TYPE "1"
++        SKL_TKN_U8_CONN_TYPE "0"
++        SKL_TKN_U8_HW_CONN_TYPE "2"
++        SKL_TKN_U8_DEV_TYPE "5"
++    }
++
++    tuples."short.u16_data" {
++        SKL_TKN_U16_MOD_INST_ID "19"
++    }
++
++    tuples."word.u32_data" {
++        SKL_TKN_U32_VBUS_ID "4294967295"
++        SKL_TKN_U32_PARAMS_FIXUP "0"
++        SKL_TKN_U32_CONVERTER "0"
++        SKL_TKN_U32_PIPE_ID "16"
++        SKL_TKN_U32_PIPE_CONN_TYPE "1"
++        SKL_TKN_U32_PIPE_PRIORITY "0"
++        SKL_TKN_U32_PMODE "0"
++        SKL_TKN_U32_D0I3_CAPS "0"
++        SKL_TKN_U32_PROC_DOMAIN "0"
++        SKL_TKN_U32_PIPE_DIRECTION "1"
++        SKL_TKN_U32_NUM_CONFIGS "1"
++        SKL_TKN_U32_DMA_BUF_SIZE "2"
++    }
++
++    tuples."word._pipe_0" {
++        SKL_TKN_U32_PIPE_CONFIG_ID "0"
++        SKL_TKN_U32_PATH_MEM_PGS "2"
++    }
++
++    tuples."word._pipe_u32_cfg_in_fmt_0" {
++        SKL_TKN_U32_DIR_PIN_COUNT "0"
++        SKL_TKN_U32_CFG_FREQ "48000"
++    }
++
++    tuples."word._pipe_u8_cfg_in_fmt_0" {
++        SKL_TKN_U8_CFG_BPS "16"
++        SKL_TKN_U8_CFG_CHAN "2"
++    }
++
++    tuples."word._pipe_u32_cfg_out_fmt_0" {
++        SKL_TKN_U32_DIR_PIN_COUNT "1"
++        SKL_TKN_U32_CFG_FREQ "48000"
++    }
++
++    tuples."word._pipe_u8_cfg_out_fmt_0" {
++        SKL_TKN_U8_CFG_BPS "16"
++        SKL_TKN_U8_CFG_CHAN "2"
++    }
++
++    tuples."short.u16_pipe_mod_cfg_0" {
++        SKL_TKN_CFG_MOD_RES_ID "12"
++        SKL_TKN_CFG_MOD_FMT_ID "12"
++    }
++
++    tuples."word.in_pin_0" {
++        SKL_TKN_U32_DIR_PIN_COUNT "0"
++        SKL_TKN_U32_PIN_MOD_ID "1"
++        SKL_TKN_U32_PIN_INST_ID "6"
++    }
++
++    tuples."uuid.in_pin_0" {
++        SKL_TKN_UUID "90, 80, 86, 60, 215, 36, 143, 65, 189, 220, 193, 245, 163, 172, 42, 224"
++    }
++
++    tuples."word.out_pin_0" {
++        SKL_TKN_U32_DIR_PIN_COUNT "1"
++        SKL_TKN_U32_PIN_MOD_ID "0"
++        SKL_TKN_U32_PIN_INST_ID "0"
++    }
++
++    tuples."word.out_pin_1" {
++        SKL_TKN_U32_DIR_PIN_COUNT "17"
++        SKL_TKN_U32_PIN_MOD_ID "0"
++        SKL_TKN_U32_PIN_INST_ID "0"
++    }
++
++    tuples."word.out_pin_2" {
++        SKL_TKN_U32_DIR_PIN_COUNT "33"
++        SKL_TKN_U32_PIN_MOD_ID "0"
++        SKL_TKN_U32_PIN_INST_ID "0"
++    }
++
++    tuples."word.out_pin_3" {
++        SKL_TKN_U32_DIR_PIN_COUNT "49"
++        SKL_TKN_U32_PIN_MOD_ID "0"
++        SKL_TKN_U32_PIN_INST_ID "0"
++    }
++}
++
++SectionData."mch_cap_out cpr 19" {
++    tuples "mch_cap_out cpr 19"
++}
++
++SectionWidget."mch_cap_out cpr 19" {
++    index "0"
++    type "pga"
++    no_pm "true"
++    subseq "10"
++    event_type "4"
++    event_flags "9"
++
++    data [
++        "mch_cap_out cpr 19 num_desc"
++        "mch_cap_out cpr 19_size_desc"
++        "mch_cap_out cpr 19"
++    ]
++}
++
 +SectionControlMixer."media0_in mi Switch" {
 +    max "1"
 +    invert "false"
@@ -6632,6 +7274,28 @@ index 0000000..ab2d404
 +    }
 +}
 +
++SectionControlMixer."mch_cap_in mi Switch" {
++    max "1"
++    invert "false"
++    index "0"
++
++    channel."fl" {
++        reg "-1"
++        shift "0"
++    }
++
++    channel."fr" {
++        reg "-1"
++        shift "0"
++    }
++
++    ops."ctl" {
++        get "64"
++        put "64"
++        info "1"
++    }
++}
++
 +SectionGraph."Pipeline 1 Graph" {
 +    index "0"
 +
@@ -6671,12 +7335,17 @@ index 0000000..ab2d404
 +        "hdmi3_out cpr 16, , HDMI3 Playback"
 +        "hdmi3_out cpr 17, , hdmi3_out cpr 16"
 +        "iDisp3_out, , hdmi3_out cpr 17"
++        "mch_cap_in cpr 18, , DMIC01 Rx"
++        "mch_cap_in mi, , mch_cap_in cpr 18"
++        "mch_cap_out cpr 19, , mch_cap_out mo"
++        "DMIC-Capture, , mch_cap_out cpr 19"
 +        "codec0_out mo, media0_in mi Switch, media0_in mi"
 +        "codec1_out mo, media1_in mi Switch, media1_in mi"
 +        "codec2_out mo, media2_in mi Switch, media2_in mi"
 +        "media0_out mo, codec0_in mi Switch, codec0_in mi"
 +        "media1_out mo, codec1_in mi Switch, codec1_in mi"
 +        "media2_out mo, codec2_in mi Switch, codec2_in mi"
++        "mch_cap_out mo, mch_cap_in mi Switch, mch_cap_in mi"
 +    ]
 +}
 +
@@ -6839,6 +7508,27 @@ index 0000000..ab2d404
 +
 +    pcm."playback" {
 +        capabilities "HDMI3 Playback"
++    }
++}
++
++SectionPCMCapabilities."DMIC-Capture" {
++    formats "S16_LE"
++    rates "48000"
++    channels_min "2"
++    channels_max "2"
++    sig_bits "16"
++}
++
++SectionPCM."DMIC1" {
++    index "0"
++    id "0"
++
++    dai."hda-dsp-dmic-dai" {
++        id "6"
++    }
++
++    pcm."capture" {
++        capabilities "DMIC-Capture"
 +    }
 +}
 +
