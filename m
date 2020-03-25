@@ -2,67 +2,71 @@ Return-Path: <SRS0=ybvW=5K=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7468BC43331
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 21:41:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CDF5AC43331
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 21:42:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EC4E62076A
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 21:41:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5A86A2076A
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 21:42:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sP9vKi/r"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC4E62076A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uZmEQQMC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5A86A2076A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2FD1215F9;
-	Wed, 25 Mar 2020 22:40:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2FD1215F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id AAD5915F9;
+	Wed, 25 Mar 2020 22:42:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AAD5915F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585172475;
-	bh=UqXLWmiBdmvKALSXkSOg4aH+KMNpSWqIBp0rpbVsFgw=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=sP9vKi/r46BpLTFnv8y5v8VPcfhBZ+sGfzp26ae1sT9t3sVdNe9D4PNIG4GT/KwJx
-	 tmh+wJ+Q29IzUOaBzOb4/PZqjkwXj5yJ6HlPlELRDJ3RCq1YkH4hCssVMOUIvSi4EV
-	 lPBwcNqVtQMg68D7srofWncoLgAaa2NBG3UEPqKA=
+	s=default; t=1585172572;
+	bh=dG8nlJmjN7t26VXvSzvGTw2motg9M/45XH+BAO0xdX8=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=uZmEQQMCL6Sq3mKqE9EtwvqG4/6RDTAkr0/xIjCFP+Z7eL9Y+72j1dlNSfkQ+VxaK
+	 qYptSvK0YiJAf/7AgrnYTEGtiX/siLDH7LLcGPNNXZwKkfY7i0fFf5+B7vwi30xyAm
+	 8Isd1Fdg5mwoTJXAKKBX2RKUBOWdX9mVlOaYb4ng=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E5D0EF80158;
-	Wed, 25 Mar 2020 22:40:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B7F4DF8028D;
+	Wed, 25 Mar 2020 22:42:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 90284F8028E; Wed, 25 Mar 2020 22:34:56 +0100 (CET)
+ id 3029FF8028E; Wed, 25 Mar 2020 22:39:40 +0100 (CET)
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C9674F8011E
- for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2020 22:29:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9674F8011E
-IronPort-SDR: Hmu7xkYLJqHuy/XdCw0TH3qIajUpn9CuIWjrEhNQC6AO14HwWdR5tUeFKilbZNg6ePqZmkC/vx
- lerUXAwECQGg==
+ by alsa1.perex.cz (Postfix) with ESMTPS id CB67FF80158
+ for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2020 22:29:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB67FF80158
+IronPort-SDR: lmuYRefM3WOzk3Z2fN0EfgeQOM+W1hBvZSP9F8sssY+fJGeqSS9ZXoQHlWNPL+lXLBA80t9rj1
+ uamqJ/mMK1wQ==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Mar 2020 14:29:15 -0700
-IronPort-SDR: ihiLkikGCbOfSbCBNNNW9tztEs9XwZeR83vBKt/tectMljWwxUHToaUsZR6rMv9zBlvAu0FRT5
- 7upLLSrxzKQA==
+ 25 Mar 2020 14:29:17 -0700
+IronPort-SDR: jIezQuQEHXSgkpbkecr7EY9jAqLHmDgwFcH3A2UWkvp6r14fle9lXNMjGzNkOoV2OP3BhMvz6N
+ Q+NJfbw0/Izw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,305,1580803200"; d="scan'208";a="393759849"
+X-IronPort-AV: E=Sophos;i="5.72,305,1580803200"; d="scan'208";a="393759860"
 Received: from abeljans.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.251.233.195])
- by orsmga004.jf.intel.com with ESMTP; 25 Mar 2020 14:29:14 -0700
+ by orsmga004.jf.intel.com with ESMTP; 25 Mar 2020 14:29:16 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 0/2] ASoC: rt1308-sdw: configure amplifier with set_tdm_slot()
-Date: Wed, 25 Mar 2020 16:29:03 -0500
-Message-Id: <20200325212905.28145-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 2/2] ASoC: rt1308-sdw: use slot and rx_mask to configure stream
+Date: Wed, 25 Mar 2020 16:29:05 -0500
+Message-Id: <20200325212905.28145-3-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200325212905.28145-1-pierre-louis.bossart@linux.intel.com>
+References: <20200325212905.28145-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: tiwai@suse.de, broonie@kernel.org,
@@ -82,32 +86,55 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When two (or more) amplifiers are on the same link, the integrator may:
-a) assign dedicated slots for each of the amplifiers.
-b) provide the same configuration to all amplifiers, and rely on
-additional controls/processing in the amplifier to generate different
-outputs.
+If the DAI was configured with a set_tdm_slots() call, use the information.
 
-case a) was the initial direction for SoundWire and is required for
-amplifiers with limited capabilities, but to deal with orientation or
-'posture' changes it's easier to implement case b) when the amplifier
-can deal with multiple channels.
+A platform or machine driver may configure each amplifier to extract
+different bitSlots from the frame, or extract the same data and use
+processing to generate the relevant output. The latter case is easier
+to handle in case of orientation changes.
 
-This patchset suggest the use of the set_tdm_slot() API to define
-which of the channels will be consumed by what amplifiers. This maps
-well with SoundWire's 'ChannelEnable' registers. The notion of
-slot_width is however irrelevant here and ignored, and SoundWire ports
-are typically single direction, so only one of the two masks shall be
-used.
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/codecs/rt1308-sdw.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-Pierre-Louis Bossart (2):
-  ASoC: rt1308-sdw: add set_tdm_slot() support
-  ASoC: rt1308-sdw: use slot and rx_mask to configure stream
-
- sound/soc/codecs/rt1308-sdw.c | 38 +++++++++++++++++++++++++++++++----
- sound/soc/codecs/rt1308-sdw.h |  2 ++
- 2 files changed, 36 insertions(+), 4 deletions(-)
-
+diff --git a/sound/soc/codecs/rt1308-sdw.c b/sound/soc/codecs/rt1308-sdw.c
+index 8763192434c4..a5a7e46de246 100644
+--- a/sound/soc/codecs/rt1308-sdw.c
++++ b/sound/soc/codecs/rt1308-sdw.c
+@@ -539,7 +539,7 @@ static int rt1308_sdw_hw_params(struct snd_pcm_substream *substream,
+ 	struct sdw_port_config port_config;
+ 	enum sdw_data_direction direction;
+ 	struct sdw_stream_data *stream;
+-	int retval, port, num_channels;
++	int retval, port, num_channels, ch_mask;
+ 
+ 	dev_dbg(dai->dev, "%s %s", __func__, dai->name);
+ 	stream = snd_soc_dai_get_dma_data(dai, substream);
+@@ -559,13 +559,20 @@ static int rt1308_sdw_hw_params(struct snd_pcm_substream *substream,
+ 		return -EINVAL;
+ 	}
+ 
++	if (rt1308->slots) {
++		num_channels = rt1308->slots;
++		ch_mask = rt1308->rx_mask;
++	} else {
++		num_channels = params_channels(params);
++		ch_mask = (1 << num_channels) - 1;
++	}
++
+ 	stream_config.frame_rate = params_rate(params);
+-	stream_config.ch_count = params_channels(params);
++	stream_config.ch_count = num_channels;
+ 	stream_config.bps = snd_pcm_format_width(params_format(params));
+ 	stream_config.direction = direction;
+ 
+-	num_channels = params_channels(params);
+-	port_config.ch_mask = (1 << (num_channels)) - 1;
++	port_config.ch_mask = ch_mask;
+ 	port_config.num = port;
+ 
+ 	retval = sdw_stream_add_slave(rt1308->sdw_slave, &stream_config,
 -- 
 2.20.1
 
