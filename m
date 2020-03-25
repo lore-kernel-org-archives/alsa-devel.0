@@ -7,69 +7,70 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C95D5C43331
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 21:43:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CD1CC43331
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 21:48:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 566FF2070A
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 21:43:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9C6BC2076A
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 21:48:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NMx+L9e2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 566FF2070A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oAtA9Vb/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9C6BC2076A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B50DF15F8;
-	Wed, 25 Mar 2020 22:42:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B50DF15F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id EF07615F8;
+	Wed, 25 Mar 2020 22:47:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF07615F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585172591;
-	bh=qiYY/ZtPAHBDYBBHj6fs+4fSTdpycFRPP8tUCYaqJ7Y=;
+	s=default; t=1585172907;
+	bh=S9xrvrgph4mBR8seDRmIPm/fDcfQMs0MSpo8Z4RgwUM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NMx+L9e2dtM8/hkEKy6E6YB3n5p/UvH/aBe5vtuYiftDwZCsrODQ3dJkg+Uwwptlu
-	 hJ68JMN/VvUzEX2tHwZx+s+2kc/ccRmfA04rYpQKhxExgcfoeiKFOwD5oVU/3LHFDK
-	 LJx2NvT6mDg7jvrRD7F75ujUon54zu8s+1l9FYmo=
+	b=oAtA9Vb/wzdLGiObXBGBWd/uT5YvOTuoHj2uQeMlxggg3D8uM0u8vPokAT+zT/xLW
+	 GFd66Rszh4wXi3rHonodgSjiYBZny86wHJGka67HRERHO2J1xoKb0XGjS0l96Ntzhc
+	 9b6lcT0hFVDCKVlj6qO1NAhSsDwgjfJlC4P60+Co=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 270F7F8028F;
-	Wed, 25 Mar 2020 22:42:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3B29CF80218;
+	Wed, 25 Mar 2020 22:47:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 17863F8011E; Wed, 25 Mar 2020 22:39:40 +0100 (CET)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ id CF251F80292; Wed, 25 Mar 2020 22:42:43 +0100 (CET)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4295BF800EF
- for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2020 22:29:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4295BF800EF
-IronPort-SDR: BM0xnR6AKXptoQCjdduQm8lI2I9R+chJVEgg7dT3sjC2dt+yR+LTqbE0xevFsiDUd6IRGbO2cE
- dkDLUjpY1ubQ==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 12BEDF8015A
+ for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2020 22:33:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 12BEDF8015A
+IronPort-SDR: /dV5YeI6d6APxrL8kSlb1HjfmNflMM//Rv1GwA5ogs6sl3IfpmNpeO89+19sDUuSpYsDNAqDfg
+ XHQTI1rdEbsQ==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Mar 2020 14:29:16 -0700
-IronPort-SDR: gli4SWSuAIOSKmj7LF61q2T486neciKM3cXL3uP5yONXSLtWNKif0AONwd2kSG6D7gFU4SaHyM
- I3/dUN+WPHng==
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Mar 2020 14:32:50 -0700
+IronPort-SDR: 8J/14FeLVRIPGOR4kHkClsnMpW7VDgS8HCz4TB28Jq+K2Ad1Cdtd6GzYAHE4y1aWOim6DqSx9H
+ HV1MMLq2q6cQ==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,305,1580803200"; d="scan'208";a="393759855"
+X-IronPort-AV: E=Sophos;i="5.72,305,1580803200"; d="scan'208";a="420455873"
 Received: from abeljans.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.251.233.195])
- by orsmga004.jf.intel.com with ESMTP; 25 Mar 2020 14:29:15 -0700
+ by orsmga005.jf.intel.com with ESMTP; 25 Mar 2020 14:32:49 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/2] ASoC: rt1308-sdw: add set_tdm_slot() support
-Date: Wed, 25 Mar 2020 16:29:04 -0500
-Message-Id: <20200325212905.28145-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 1/4] ASoC: Intel: Make glk+rt5682 echo ref dynamic
+Date: Wed, 25 Mar 2020 16:32:42 -0500
+Message-Id: <20200325213245.28247-2-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200325212905.28145-1-pierre-louis.bossart@linux.intel.com>
-References: <20200325212905.28145-1-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20200325213245.28247-1-pierre-louis.bossart@linux.intel.com>
+References: <20200325213245.28247-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org,
+Cc: tiwai@suse.de, Curtis Malainey <cujomalainey@chromium.org>,
+ broonie@kernel.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -86,69 +87,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add ability to select which of the channels is used, or both, in case
-two RT1308 amplifiers are located on the same link.
+From: Curtis Malainey <cujomalainey@chromium.org>
 
+Without the dynamic flag to allow runtime routing, the card cannot
+probe on chromebooks because SOF is constantly waiting for the link.
+Adding flag back to allow upstream kernels to work on rt5682 based
+chromebooks since SOF can now ignore the hard coded front end.
+
+Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/codecs/rt1308-sdw.c | 23 +++++++++++++++++++++++
- sound/soc/codecs/rt1308-sdw.h |  2 ++
- 2 files changed, 25 insertions(+)
+ sound/soc/intel/boards/glk_rt5682_max98357a.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/rt1308-sdw.c b/sound/soc/codecs/rt1308-sdw.c
-index d930f60cb797..8763192434c4 100644
---- a/sound/soc/codecs/rt1308-sdw.c
-+++ b/sound/soc/codecs/rt1308-sdw.c
-@@ -507,6 +507,28 @@ static void rt1308_sdw_shutdown(struct snd_pcm_substream *substream,
- 	kfree(stream);
- }
- 
-+static int rt1308_sdw_set_tdm_slot(struct snd_soc_dai *dai,
-+				   unsigned int tx_mask,
-+				   unsigned int rx_mask,
-+				   int slots, int slot_width)
-+{
-+	struct snd_soc_component *component = dai->component;
-+	struct rt1308_sdw_priv *rt1308 =
-+		snd_soc_component_get_drvdata(component);
-+
-+	if (tx_mask)
-+		return -EINVAL;
-+
-+	if (slots > 2)
-+		return -EINVAL;
-+
-+	rt1308->rx_mask = rx_mask;
-+	rt1308->slots = slots;
-+	/* slot_width is not used since it's irrelevant for SoundWire */
-+
-+	return 0;
-+}
-+
- static int rt1308_sdw_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
- {
-@@ -597,6 +619,7 @@ static const struct snd_soc_dai_ops rt1308_aif_dai_ops = {
- 	.hw_free	= rt1308_sdw_pcm_hw_free,
- 	.set_sdw_stream	= rt1308_set_sdw_stream,
- 	.shutdown	= rt1308_sdw_shutdown,
-+	.set_tdm_slot	= rt1308_sdw_set_tdm_slot,
- };
- 
- #define RT1308_STEREO_RATES SNDRV_PCM_RATE_48000
-diff --git a/sound/soc/codecs/rt1308-sdw.h b/sound/soc/codecs/rt1308-sdw.h
-index c9341e70d6cf..c5ce75666dcc 100644
---- a/sound/soc/codecs/rt1308-sdw.h
-+++ b/sound/soc/codecs/rt1308-sdw.h
-@@ -160,6 +160,8 @@ struct rt1308_sdw_priv {
- 	struct sdw_bus_params params;
- 	bool hw_init;
- 	bool first_hw_init;
-+	int rx_mask;
-+	int slots;
- };
- 
- struct sdw_stream_data {
+diff --git a/sound/soc/intel/boards/glk_rt5682_max98357a.c b/sound/soc/intel/boards/glk_rt5682_max98357a.c
+index ea1de8b3f3cd..3c576b33b9c6 100644
+--- a/sound/soc/intel/boards/glk_rt5682_max98357a.c
++++ b/sound/soc/intel/boards/glk_rt5682_max98357a.c
+@@ -409,6 +409,7 @@ static struct snd_soc_dai_link geminilake_dais[] = {
+ 		.init = NULL,
+ 		.capture_only = 1,
+ 		.nonatomic = 1,
++		.dynamic = 1,
+ 		SND_SOC_DAILINK_REG(echoref, dummy, platform),
+ 	},
+ 	[GLK_DPCM_AUDIO_REF_CP] = {
 -- 
 2.20.1
 
