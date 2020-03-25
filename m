@@ -7,63 +7,63 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60686C1975A
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 12:24:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CCA95C1975A
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 12:25:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2711D20772
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 12:24:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9821420772
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 12:25:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sBlFwDkU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2711D20772
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gQg/QR8o"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9821420772
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2C7AF1667;
-	Wed, 25 Mar 2020 13:24:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C7AF1667
+	by alsa0.perex.cz (Postfix) with ESMTPS id 954AD1683;
+	Wed, 25 Mar 2020 13:24:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 954AD1683
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585139095;
-	bh=t6ncGAVIytcz6JNDze55mirDswr5KndwGtAwVcYOXkY=;
+	s=default; t=1585139142;
+	bh=FdfXqIArH8tu2zabKIqO5Kp0nwjnRXfeRh2TwSY8GNM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sBlFwDkUVRzbkZW7yDKNdL+Tz+9eBZlEs8DnrnnuYlfNJwoX+IKDMK79qPyva0Fse
-	 N2rOcZFbCOO17Qy9CSa2GtW2rYSH5CkEMuMpj67sd2VQfzR59j+xllm6azb9f7Ahqd
-	 H5WiT885TQ2R03byd1UcEydwBFeuxHvfAB8vKZEw=
+	b=gQg/QR8omMcqwkwXWiK+N6gsHBIWVaQsP/J0g5FGLLlY30qPgM17kR6AUd/UMwjxs
+	 wXHqrjxGS4/xP/OBOM+1DDlGFqAjtcmH3D2PFaf31RIzErxhRYktsVSijU84cWc4ZL
+	 V70CwZHThikZAtYgFkDT8reRnPkvjUoVpNZ8sRYw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3C026F802A7;
-	Wed, 25 Mar 2020 13:21:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 97285F802D2;
+	Wed, 25 Mar 2020 13:22:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F0C41F8028E; Wed, 25 Mar 2020 13:21:48 +0100 (CET)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ id E94A6F802BC; Wed, 25 Mar 2020 13:21:54 +0100 (CET)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3BAFDF8028E
- for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2020 13:21:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3BAFDF8028E
-IronPort-SDR: Dt2IASCZMcuDzzg2Z+L7IlKeQA6ZKXD8SV2uGV90GTj8r5cpVhOt6NYqeJiJRlJ9kwoF5x4/rH
- GeLtq5q7XWXw==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 17A9FF80147
+ for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2020 13:21:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17A9FF80147
+IronPort-SDR: PpuRYkAaZZgTWaJJVHiUnMZWWcZuaw6FYt2KmI31Pgu/q0X77CosQRUdS62kFf0G1LQ+vdE2WX
+ p9wTUm1KBqDg==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Mar 2020 05:21:33 -0700
-IronPort-SDR: Mu6a+avr98WD08bHtMHqKfQHR6Pz5BUfanhq2WLV654AnqlUvJbObFo10YlVVtAdTjsSsSIyAg
- tQL7/Yap5H9A==
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Mar 2020 05:21:39 -0700
+IronPort-SDR: 0EkvJ9DIdJ2jL+sZPJDe9tM1pBYY6adg3BB33Iqb/daNoPE6tK0ugtb6Xx+ApiXnUmkN6AUIYF
+ kxHzBRcKZyDA==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,304,1580803200"; d="scan'208";a="238507752"
+X-IronPort-AV: E=Sophos;i="5.72,304,1580803200"; d="scan'208";a="238507767"
 Received: from mgorski-all-series.igk.intel.com ([10.237.149.201])
- by fmsmga007.fm.intel.com with ESMTP; 25 Mar 2020 05:21:30 -0700
+ by fmsmga007.fm.intel.com with ESMTP; 25 Mar 2020 05:21:36 -0700
 From: Mateusz Gorski <mateusz.gorski@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/3] topology: Add topology conf for generic HDA DSP machine
- driver for devices with 2 channel DMIC array
-Date: Wed, 25 Mar 2020 13:21:46 +0100
-Message-Id: <20200325122147.12121-3-mateusz.gorski@linux.intel.com>
+Subject: [PATCH 3/3] topology: Add topology conf for generic HDA DSP machine
+ driver for devices with 4 channel DMIC array
+Date: Wed, 25 Mar 2020 13:21:47 +0100
+Message-Id: <20200325122147.12121-4-mateusz.gorski@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200325122147.12121-1-mateusz.gorski@linux.intel.com>
 References: <20200325122147.12121-1-mateusz.gorski@linux.intel.com>
@@ -85,19 +85,19 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Provide conf file with reference topology for generic HDA DSP machine
-driver. This topology contains paths for stereo DMIC capture.
+driver. This topology contains paths for quatro DMIC capture.
 
 Signed-off-by: Mateusz Gorski <mateusz.gorski@linux.intel.com>
 ---
- topology/hdadsp/hda_dsp_DMIC_2ch.conf | 7453 +++++++++++++++++++++++++
+ topology/hdadsp/hda_dsp_DMIC_4ch.conf | 7453 +++++++++++++++++++++++++
  1 file changed, 7453 insertions(+)
- create mode 100644 topology/hdadsp/hda_dsp_DMIC_2ch.conf
+ create mode 100644 topology/hdadsp/hda_dsp_DMIC_4ch.conf
 
-diff --git a/topology/hdadsp/hda_dsp_DMIC_2ch.conf b/topology/hdadsp/hda_dsp_DMIC_2ch.conf
+diff --git a/topology/hdadsp/hda_dsp_DMIC_4ch.conf b/topology/hdadsp/hda_dsp_DMIC_4ch.conf
 new file mode 100644
-index 0000000..b5aa224
+index 0000000..41a5418
 --- /dev/null
-+++ b/topology/hdadsp/hda_dsp_DMIC_2ch.conf
++++ b/topology/hdadsp/hda_dsp_DMIC_4ch.conf
 @@ -0,0 +1,7453 @@
 +
 +SectionVendorTokens."skl_tokens" {
@@ -6579,7 +6579,7 @@ index 0000000..b5aa224
 +
 +    tuples."word._pipe_u8_cfg_in_fmt_0" {
 +        SKL_TKN_U8_CFG_BPS "16"
-+        SKL_TKN_U8_CFG_CHAN "2"
++        SKL_TKN_U8_CFG_CHAN "4"
 +    }
 +
 +    tuples."word._pipe_u32_cfg_out_fmt_0" {
@@ -6589,12 +6589,12 @@ index 0000000..b5aa224
 +
 +    tuples."word._pipe_u8_cfg_out_fmt_0" {
 +        SKL_TKN_U8_CFG_BPS "16"
-+        SKL_TKN_U8_CFG_CHAN "2"
++        SKL_TKN_U8_CFG_CHAN "4"
 +    }
 +
 +    tuples."short.u16_pipe_mod_cfg_0" {
-+        SKL_TKN_CFG_MOD_RES_ID "11"
-+        SKL_TKN_CFG_MOD_FMT_ID "11"
++        SKL_TKN_CFG_MOD_RES_ID "13"
++        SKL_TKN_CFG_MOD_FMT_ID "13"
 +    }
 +
 +    tuples."word.in_pin_0" {
@@ -6741,7 +6741,7 @@ index 0000000..b5aa224
 +
 +    tuples."word._pipe_u8_cfg_in_fmt_0" {
 +        SKL_TKN_U8_CFG_BPS "16"
-+        SKL_TKN_U8_CFG_CHAN "2"
++        SKL_TKN_U8_CFG_CHAN "4"
 +    }
 +
 +    tuples."word._pipe_u32_cfg_out_fmt_0" {
@@ -6751,12 +6751,12 @@ index 0000000..b5aa224
 +
 +    tuples."word._pipe_u8_cfg_out_fmt_0" {
 +        SKL_TKN_U8_CFG_BPS "16"
-+        SKL_TKN_U8_CFG_CHAN "2"
++        SKL_TKN_U8_CFG_CHAN "4"
 +    }
 +
 +    tuples."short.u16_pipe_mod_cfg_0" {
-+        SKL_TKN_CFG_MOD_RES_ID "0"
-+        SKL_TKN_CFG_MOD_FMT_ID "0"
++        SKL_TKN_CFG_MOD_RES_ID "1"
++        SKL_TKN_CFG_MOD_FMT_ID "1"
 +    }
 +
 +    tuples."word.in_pin_0" {
@@ -6892,7 +6892,7 @@ index 0000000..b5aa224
 +
 +    tuples."word._pipe_u8_cfg_in_fmt_0" {
 +        SKL_TKN_U8_CFG_BPS "16"
-+        SKL_TKN_U8_CFG_CHAN "2"
++        SKL_TKN_U8_CFG_CHAN "4"
 +    }
 +
 +    tuples."word._pipe_u32_cfg_out_fmt_0" {
@@ -6902,12 +6902,12 @@ index 0000000..b5aa224
 +
 +    tuples."word._pipe_u8_cfg_out_fmt_0" {
 +        SKL_TKN_U8_CFG_BPS "16"
-+        SKL_TKN_U8_CFG_CHAN "2"
++        SKL_TKN_U8_CFG_CHAN "4"
 +    }
 +
 +    tuples."short.u16_pipe_mod_cfg_0" {
-+        SKL_TKN_CFG_MOD_RES_ID "0"
-+        SKL_TKN_CFG_MOD_FMT_ID "0"
++        SKL_TKN_CFG_MOD_RES_ID "1"
++        SKL_TKN_CFG_MOD_FMT_ID "1"
 +    }
 +
 +    tuples."word.in_pin_0" {
@@ -7070,7 +7070,7 @@ index 0000000..b5aa224
 +
 +    tuples."word._pipe_u8_cfg_in_fmt_0" {
 +        SKL_TKN_U8_CFG_BPS "16"
-+        SKL_TKN_U8_CFG_CHAN "2"
++        SKL_TKN_U8_CFG_CHAN "4"
 +    }
 +
 +    tuples."word._pipe_u32_cfg_out_fmt_0" {
@@ -7080,12 +7080,12 @@ index 0000000..b5aa224
 +
 +    tuples."word._pipe_u8_cfg_out_fmt_0" {
 +        SKL_TKN_U8_CFG_BPS "16"
-+        SKL_TKN_U8_CFG_CHAN "2"
++        SKL_TKN_U8_CFG_CHAN "4"
 +    }
 +
 +    tuples."short.u16_pipe_mod_cfg_0" {
-+        SKL_TKN_CFG_MOD_RES_ID "12"
-+        SKL_TKN_CFG_MOD_FMT_ID "12"
++        SKL_TKN_CFG_MOD_RES_ID "14"
++        SKL_TKN_CFG_MOD_FMT_ID "14"
 +    }
 +
 +    tuples."word.in_pin_0" {
@@ -7514,8 +7514,8 @@ index 0000000..b5aa224
 +SectionPCMCapabilities."DMIC-Capture" {
 +    formats "S16_LE"
 +    rates "48000"
-+    channels_min "2"
-+    channels_max "2"
++    channels_min "4"
++    channels_max "4"
 +    sig_bits "16"
 +}
 +
