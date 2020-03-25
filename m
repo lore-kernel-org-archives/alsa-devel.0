@@ -1,61 +1,62 @@
-Return-Path: <SRS0=1tVn=5J=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=ybvW=5K=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE01AC43331
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Mar 2020 17:19:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8125AC43331
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 10:34:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5DAC120789
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Mar 2020 17:19:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0A83B20775
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 10:34:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CruSVmiG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5DAC120789
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZffOWNLf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0A83B20775
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A3ADA166B;
-	Tue, 24 Mar 2020 18:19:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3ADA166B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 270E01661;
+	Wed, 25 Mar 2020 11:33:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 270E01661
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585070392;
-	bh=b3kTdJgSfymgGZZXm1zd98cSAgJoUNZa+1fbaMwPM6Y=;
-	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=CruSVmiGptBxnWLuds5y/fY/wNsyg3T5aPcBHuF6lGAIdGH6KarQVUhqFE/wUcav8
-	 l2yGeTn9Nmx8Xj3mbJOqRzt5r4ax1rmLcOQQcz96LguBEKmaeMXv6SP2DTeCK0Aikn
-	 l83MBp9N++WM8VBhfH6z+lR5Xp9fGAnbvIBdFOjA=
+	s=default; t=1585132487;
+	bh=mXvtwpAwxltXeTQDd++459ShvjZ5eBwR0cq1ucQfv/8=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ZffOWNLfxAIi+6kazwkKT5eyvjrr5BtgCRQqHcfK8LeDvtQ7e8xdQhqDDRJ24hRBc
+	 qSeUaFkeCWnw396s6qgoPpDln1/TdEtb114YSRiUNNnoFYHiGSb+EILNE+jooPfZ3+
+	 RcZ2VvxCqXGxD9/HsImxoZDxpAhAy32c8UDGh5oI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 11FB1F802A7;
-	Tue, 24 Mar 2020 18:16:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A6BD3F80147;
+	Wed, 25 Mar 2020 11:33:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D64D8F802A7; Tue, 24 Mar 2020 18:16:36 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 151E9F8028F
- for <alsa-devel@alsa-project.org>; Tue, 24 Mar 2020 18:16:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 151E9F8028F
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 04B611045;
- Tue, 24 Mar 2020 10:16:31 -0700 (PDT)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7AD373F71F;
- Tue, 24 Mar 2020 10:16:30 -0700 (PDT)
-Date: Tue, 24 Mar 2020 17:16:29 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Johan Jonker <jbx6244@gmail.com>
-Subject: Applied "dt-bindings: sound: convert rockchip i2s bindings to yaml"
- to the asoc tree
-In-Reply-To: 
-Message-Id: 
-X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+ id 0D1C5F80255; Wed, 25 Mar 2020 11:33:30 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id DC126F80147
+ for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2020 11:33:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC126F80147
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 6C59FACC2
+ for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2020 10:33:25 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 1/4] ALSA: usb-audio: Rewrite registration quirk handling
+Date: Wed, 25 Mar 2020 11:33:19 +0100
+Message-Id: <20200325103322.2508-2-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
+In-Reply-To: <20200325103322.2508-1-tiwai@suse.de>
+References: <20200325103322.2508-1-tiwai@suse.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -70,222 +71,95 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20200324171629.MFuxPvZbvGpoZxVRuNUxBFD0Vb0Y5uP4wU38r6YC3bo@z>
 
-The patch
+A slight refactoring of the registration quirk code.  Now it uses the
+table lookup for easy additions in future.  Also the return type was
+changed to bool, and got a few more comments.
 
-   dt-bindings: sound: convert rockchip i2s bindings to yaml
-
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From 472abb80fac66b07b6940a40c6392d3dea5dd2a3 Mon Sep 17 00:00:00 2001
-From: Johan Jonker <jbx6244@gmail.com>
-Date: Tue, 24 Mar 2020 10:41:47 +0100
-Subject: [PATCH] dt-bindings: sound: convert rockchip i2s bindings to yaml
-
-Current dts files with 'i2s' nodes are manually verified.
-In order to automate this process rockchip-i2s.txt
-has to be converted to yaml.
-
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Link: https://lore.kernel.org/r/20200324094149.6904-1-jbx6244@gmail.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- .../bindings/sound/rockchip-i2s.txt           |  49 --------
- .../bindings/sound/rockchip-i2s.yaml          | 106 ++++++++++++++++++
- 2 files changed, 106 insertions(+), 49 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/rockchip-i2s.txt
- create mode 100644 Documentation/devicetree/bindings/sound/rockchip-i2s.yaml
+ sound/usb/card.c   |  2 +-
+ sound/usb/quirks.c | 40 ++++++++++++++++++++++++++++++----------
+ sound/usb/quirks.h |  3 +--
+ 3 files changed, 32 insertions(+), 13 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
-deleted file mode 100644
-index 54aefab71f2c..000000000000
---- a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
-+++ /dev/null
-@@ -1,49 +0,0 @@
--* Rockchip I2S controller
--
--The I2S bus (Inter-IC sound bus) is a serial link for digital
--audio data transfer between devices in the system.
--
--Required properties:
--
--- compatible: should be one of the following:
--   - "rockchip,rk3066-i2s": for rk3066
--   - "rockchip,px30-i2s", "rockchip,rk3066-i2s": for px30
--   - "rockchip,rk3036-i2s", "rockchip,rk3066-i2s": for rk3036
--   - "rockchip,rk3188-i2s", "rockchip,rk3066-i2s": for rk3188
--   - "rockchip,rk3228-i2s", "rockchip,rk3066-i2s": for rk3228
--   - "rockchip,rk3288-i2s", "rockchip,rk3066-i2s": for rk3288
--   - "rockchip,rk3328-i2s", "rockchip,rk3066-i2s": for rk3328
--   - "rockchip,rk3366-i2s", "rockchip,rk3066-i2s": for rk3366
--   - "rockchip,rk3368-i2s", "rockchip,rk3066-i2s": for rk3368
--   - "rockchip,rk3399-i2s", "rockchip,rk3066-i2s": for rk3399
--- reg: physical base address of the controller and length of memory mapped
--  region.
--- interrupts: should contain the I2S interrupt.
--- dmas: DMA specifiers for tx and rx dma. See the DMA client binding,
--	Documentation/devicetree/bindings/dma/dma.txt
--- dma-names: should include "tx" and "rx".
--- clocks: a list of phandle + clock-specifer pairs, one for each entry in clock-names.
--- clock-names: should contain the following:
--   - "i2s_hclk": clock for I2S BUS
--   - "i2s_clk" : clock for I2S controller
--- rockchip,playback-channels: max playback channels, if not set, 8 channels default.
--- rockchip,capture-channels: max capture channels, if not set, 2 channels default.
--
--Required properties for controller which support multi channels
--playback/capture:
--
--- rockchip,grf: the phandle of the syscon node for GRF register.
--
--Example for rk3288 I2S controller:
--
--i2s@ff890000 {
--	compatible = "rockchip,rk3288-i2s", "rockchip,rk3066-i2s";
--	reg = <0xff890000 0x10000>;
--	interrupts = <GIC_SPI 85 IRQ_TYPE_LEVEL_HIGH>;
--	dmas = <&pdma1 0>, <&pdma1 1>;
--	dma-names = "tx", "rx";
--	clock-names = "i2s_hclk", "i2s_clk";
--	clocks = <&cru HCLK_I2S0>, <&cru SCLK_I2S0>;
--	rockchip,playback-channels = <8>;
--	rockchip,capture-channels = <2>;
--};
-diff --git a/Documentation/devicetree/bindings/sound/rockchip-i2s.yaml b/Documentation/devicetree/bindings/sound/rockchip-i2s.yaml
-new file mode 100644
-index 000000000000..eff06b4b51db
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/rockchip-i2s.yaml
-@@ -0,0 +1,106 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/rockchip-i2s.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index 16bbe2a50fb7..55d563a8154d 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -665,7 +665,7 @@ static int usb_audio_probe(struct usb_interface *intf,
+ 	/* we are allowed to call snd_card_register() many times, but first
+ 	 * check to see if a device needs to skip it or do anything special
+ 	 */
+-	if (snd_usb_registration_quirk(chip, ifnum) == 0) {
++	if (!snd_usb_registration_quirk(chip, ifnum)) {
+ 		err = snd_card_register(chip->card);
+ 		if (err < 0)
+ 			goto __error;
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index d605aff801b8..86f192a3043d 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1809,16 +1809,36 @@ void snd_usb_audioformat_attributes_quirk(struct snd_usb_audio *chip,
+ 	}
+ }
+ 
+-int snd_usb_registration_quirk(struct snd_usb_audio *chip,
+-			       int iface)
++/*
++ * registration quirk:
++ * the registration is skipped if a device matches with the given ID,
++ * unless the interface reaches to the defined one.  This is for delaying
++ * the registration until the last known interface, so that the card and
++ * devices appear at the same time.
++ */
 +
-+title: Rockchip I2S controller
++struct registration_quirk {
++	unsigned int usb_id;	/* composed via USB_ID() */
++	unsigned int interface;	/* the interface to trigger register */
++};
 +
-+description:
-+  The I2S bus (Inter-IC sound bus) is a serial link for digital
-+  audio data transfer between devices in the system.
++#define REG_QUIRK_ENTRY(vendor, product, iface) \
++	{ .usb_id = USB_ID(vendor, product), .interface = (iface) }
 +
-+maintainers:
-+  - Heiko Stuebner <heiko@sntech.de>
++static const struct registration_quirk registration_quirks[] = {
++	REG_QUIRK_ENTRY(0x0951, 0x16d8, 2),	/* Kingston HyperX AMP */
++	{ 0 }					/* terminator */
++};
 +
-+properties:
-+  compatible:
-+    oneOf:
-+      - const: rockchip,rk3066-i2s
-+      - items:
-+          - enum:
-+            - rockchip,px30-i2s
-+            - rockchip,rk3036-i2s
-+            - rockchip,rk3188-i2s
-+            - rockchip,rk3228-i2s
-+            - rockchip,rk3288-i2s
-+            - rockchip,rk3328-i2s
-+            - rockchip,rk3366-i2s
-+            - rockchip,rk3368-i2s
-+            - rockchip,rk3399-i2s
-+          - const: rockchip,rk3066-i2s
++/* return true if skipping registration */
++bool snd_usb_registration_quirk(struct snd_usb_audio *chip, int iface)
+ {
+-	switch (chip->usb_id) {
+-	case USB_ID(0x0951, 0x16d8): /* Kingston HyperX AMP */
+-		/* Register only when we reach interface 2 so that streams can
+-		 * merge correctly into PCMs from interface 0
+-		 */
+-		return (iface != 2);
+-	}
++	const struct registration_quirk *q;
 +
-+  reg:
-+    maxItems: 1
++	for (q = registration_quirks; q->usb_id; q++)
++		if (chip->usb_id == q->usb_id)
++			return iface != q->interface;
 +
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: clock for I2S controller
-+      - description: clock for I2S BUS
-+
-+  clock-names:
-+    items:
-+      - const: i2s_clk
-+      - const: i2s_hclk
-+
-+  dmas:
-+    items:
-+      - description: TX DMA Channel
-+      - description: RX DMA Channel
-+
-+  dma-names:
-+    items:
-+      - const: tx
-+      - const: rx
-+
-+  rockchip,capture-channels:
-+    allOf:
-+      - $ref: /schemas/types.yaml#/definitions/uint32
-+    default: 2
-+    description:
-+      Max capture channels, if not set, 2 channels default.
-+
-+  rockchip,playback-channels:
-+    allOf:
-+      - $ref: /schemas/types.yaml#/definitions/uint32
-+    default: 8
-+    description:
-+      Max playback channels, if not set, 8 channels default.
-+
-+  rockchip,grf:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description:
-+      The phandle of the syscon node for the GRF register.
-+      Required property for controllers which support multi channel
-+      playback/capture.
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+  - dmas
-+  - dma-names
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/rk3288-cru.h>
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    i2s@ff890000 {
-+      compatible = "rockchip,rk3288-i2s", "rockchip,rk3066-i2s";
-+      reg = <0xff890000 0x10000>;
-+      interrupts = <GIC_SPI 85 IRQ_TYPE_LEVEL_HIGH>;
-+      clocks = <&cru SCLK_I2S0>, <&cru HCLK_I2S0>;
-+      clock-names = "i2s_clk", "i2s_hclk";
-+      dmas = <&pdma1 0>, <&pdma1 1>;
-+      dma-names = "tx", "rx";
-+      rockchip,capture-channels = <2>;
-+      rockchip,playback-channels = <8>;
-+    };
+ 	/* Register as normal */
+-	return 0;
++	return false;
+ }
+diff --git a/sound/usb/quirks.h b/sound/usb/quirks.h
+index 3afc01eabc7e..c76cf24a640a 100644
+--- a/sound/usb/quirks.h
++++ b/sound/usb/quirks.h
+@@ -51,7 +51,6 @@ void snd_usb_audioformat_attributes_quirk(struct snd_usb_audio *chip,
+ 					  struct audioformat *fp,
+ 					  int stream);
+ 
+-int snd_usb_registration_quirk(struct snd_usb_audio *chip,
+-			       int iface);
++bool snd_usb_registration_quirk(struct snd_usb_audio *chip, int iface);
+ 
+ #endif /* __USBAUDIO_QUIRKS_H */
 -- 
-2.20.1
+2.16.4
 
