@@ -2,61 +2,57 @@ Return-Path: <SRS0=ybvW=5K=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 14BEFC54FD6
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 10:35:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A27BC43331
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 10:36:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 98D9F2077D
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 10:35:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 059D92078A
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 10:36:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nGRyf0Ob"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 98D9F2077D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="c0MlKD9A"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 059D92078A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 22B3B166F;
-	Wed, 25 Mar 2020 11:34:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22B3B166F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 518E91676;
+	Wed, 25 Mar 2020 11:35:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 518E91676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585132541;
-	bh=r5kuFg5OndvFkihI2pfV/NatT/cNBi1vRe44y8aWtH4=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=nGRyf0ObPb2Z6MqMQdCDkq3dTHrLB4UlGUV+gJCT5bVZojOfIXvCfODN5Ma+dBgbt
-	 7qmPyMrGTknT+mlQbifPB4LHNI3wWcrR9A72MevaqVtecgktKQICi3vRempSisA3pV
-	 mW9SPpugtq2PAE0rl6URrBb6DdE9YItTYqL+hxfA=
+	s=default; t=1585132588;
+	bh=a0oi+Qm1icIwse0E4b+2xl1lBvomRimsd1Bk2XuJfNc=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=c0MlKD9A/ilVX6TN3NRk0kHki8VpNn3TeV6o95lCf59Ro3UaCXSMjqmx/7TsX8e4L
+	 qxDfaTpx3tHQk1zsjxc4Cycg6cQqJq1vUy19qvDb6HYwgGCpKDcA7tKW1WBgbrdYHb
+	 E4G5PCs1cdfXKoa/r0y6wvWpp2YvUZCenU58p6Kw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C2B5BF8015A;
-	Wed, 25 Mar 2020 11:33:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2D12CF80273;
+	Wed, 25 Mar 2020 11:34:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 58A72F80218; Wed, 25 Mar 2020 11:33:30 +0100 (CET)
+ id 89266F80147; Wed, 25 Mar 2020 11:33:31 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D8945F80095
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5443CF8015A
  for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2020 11:33:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8945F80095
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5443CF8015A
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 7C5BCACC6
+ by mx2.suse.de (Postfix) with ESMTP id 655D9ACB8
  for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2020 10:33:25 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/4] ALSA: usb-audio: Add delayed_register option
-Date: Wed, 25 Mar 2020 11:33:20 +0100
-Message-Id: <20200325103322.2508-3-tiwai@suse.de>
+Subject: [PATCH 0/4] ALSA: usb-audio: Option for delayed registration
+Date: Wed, 25 Mar 2020 11:33:18 +0100
+Message-Id: <20200325103322.2508-1-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20200325103322.2508-1-tiwai@suse.de>
-References: <20200325103322.2508-1-tiwai@suse.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,75 +68,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add a new option for specifying the quirk for delayed registration of
-the certain device.  A list of devices can be passed in a form
-	ID:IFACE,ID:IFACE,ID:IFACE,....
-where ID is the 32bit hex number combo of vendor and device IDs and
-IFACE is the interface number to trigger the register.
+Hi,
 
-When a matching device is probed, the card registration is delayed
-until the given interface is probed.  It's needed for syncing the
-registration until the last interface when multiple interfaces are
-provided for the same card.
+USB-audio driver probes per USB insterface, and this used to be the
+cause of the missing device enumeration on user-space because the
+driver registers the device per interface probe.  The recently added
+quirk allows the delayed registration to sync with the last known
+stream, but we must have far more such devices.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/card.c | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
+This patch set adds a new option to let user specify the delayed
+registration device setup and also inform such devices at probe time.
 
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index 55d563a8154d..951134238669 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -72,6 +72,7 @@ static int device_setup[SNDRV_CARDS]; /* device parameter for this card */
- static bool ignore_ctl_error;
- static bool autoclock = true;
- static char *quirk_alias[SNDRV_CARDS];
-+static char *delayed_register[SNDRV_CARDS];
- 
- bool snd_usb_use_vmalloc = true;
- bool snd_usb_skip_validation;
-@@ -95,6 +96,8 @@ module_param(autoclock, bool, 0444);
- MODULE_PARM_DESC(autoclock, "Enable auto-clock selection for UAC2 devices (default: yes).");
- module_param_array(quirk_alias, charp, NULL, 0444);
- MODULE_PARM_DESC(quirk_alias, "Quirk aliases, e.g. 0123abcd:5678beef.");
-+module_param_array(delayed_register, charp, NULL, 0444);
-+MODULE_PARM_DESC(delayed_register, "Quirk for delayed registration, given by id:iface, e.g. 0123abcd:4.");
- module_param_named(use_vmalloc, snd_usb_use_vmalloc, bool, 0444);
- MODULE_PARM_DESC(use_vmalloc, "Use vmalloc for PCM intermediate buffers (default: yes).");
- module_param_named(skip_validation, snd_usb_skip_validation, bool, 0444);
-@@ -525,6 +528,21 @@ static bool get_alias_id(struct usb_device *dev, unsigned int *id)
- 	return false;
- }
- 
-+static bool check_delayed_register_option(struct snd_usb_audio *chip, int iface)
-+{
-+	int i;
-+	unsigned int id, inum;
-+
-+	for (i = 0; i < ARRAY_SIZE(delayed_register); i++) {
-+		if (delayed_register[i] &&
-+		    sscanf(delayed_register[i], "%x:%x", &id, &inum) == 2 &&
-+		    id == chip->usb_id)
-+			return inum != iface;
-+	}
-+
-+	return false;
-+}
-+
- static const struct usb_device_id usb_audio_ids[]; /* defined below */
- 
- /* look for the corresponding quirk */
-@@ -665,7 +683,8 @@ static int usb_audio_probe(struct usb_interface *intf,
- 	/* we are allowed to call snd_card_register() many times, but first
- 	 * check to see if a device needs to skip it or do anything special
- 	 */
--	if (!snd_usb_registration_quirk(chip, ifnum)) {
-+	if (!snd_usb_registration_quirk(chip, ifnum) &&
-+	    !check_delayed_register_option(chip, ifnum)) {
- 		err = snd_card_register(chip->card);
- 		if (err < 0)
- 			goto __error;
+
+Takashi
+
+===
+
+Takashi Iwai (4):
+  ALSA: usb-audio: Rewrite registration quirk handling
+  ALSA: usb-audio: Add delayed_register option
+  ALSA: usb-audio: Inform devices that need delayed registration
+  ALSA: usb-audio: Update the documentation for the new delayed_register
+    option
+
+ Documentation/sound/alsa-configuration.rst | 13 ++++++++++
+ sound/usb/card.c                           | 28 ++++++++++++++++++++-
+ sound/usb/quirks.c                         | 40 ++++++++++++++++++++++--------
+ sound/usb/quirks.h                         |  3 +--
+ sound/usb/stream.c                         |  3 +++
+ sound/usb/usbaudio.h                       |  1 +
+ 6 files changed, 75 insertions(+), 13 deletions(-)
+
 -- 
 2.16.4
 
