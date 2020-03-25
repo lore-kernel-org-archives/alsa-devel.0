@@ -2,71 +2,83 @@ Return-Path: <SRS0=ybvW=5K=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D84F9C43331
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 11:21:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C458C1975A
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 12:22:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5ACA720771
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 11:21:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BC62020772
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 12:22:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="X9iTRTUl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5ACA720771
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qt0X5rMU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BC62020772
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9EA92165F;
-	Wed, 25 Mar 2020 12:20:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9EA92165F
+	by alsa0.perex.cz (Postfix) with ESMTPS id EE35B1661;
+	Wed, 25 Mar 2020 13:21:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE35B1661
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585135306;
-	bh=dujAf1AHniGnn5gyoLeMUzISPxPcIczMaL2nhA0Knno=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1585138932;
+	bh=lJoKGmSF3FXSDH3T+qg3wuxu3N33Bcgptpat1RVD8n0=;
+	h=From:Subject:To:References:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=X9iTRTUl3jOCss1HBX+unhnxm1wF3vPbDcBHhxzieHoohH7anar7MQcuRKNTue2Gl
-	 m0dAB3X44ZWHDiz90Je/hV4JfWe1z4mMisTsbSrzoR8+De7wmc1Vh2GGj8nJBlJsuC
-	 bEgcLzAr5PoQAsJujI/hTdm3T/UWoOinEW+JC2G0=
+	b=qt0X5rMUcL2aW7PeIitFdoDc972WtSSNtvFpzBEhxZKunwaW0m3gwwZzGFRxKx9vA
+	 1Vv5rwF0GG+lCaFwgLFh5X2WuW/tljfH0fD6Ze86UJSZTjm6usRJA83vOln9AT7W3g
+	 zm7nPJdxu2WcPhqmZ2HVym/VowKEU+fCV2CF9J40=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2F299F80147;
-	Wed, 25 Mar 2020 12:20:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 62B1AF80158;
+	Wed, 25 Mar 2020 13:21:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 26840F80158; Wed, 25 Mar 2020 12:20:54 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 03752F8011E;
- Wed, 25 Mar 2020 12:20:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03752F8011E
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9927531B;
- Wed, 25 Mar 2020 04:20:47 -0700 (PDT)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1C1BE3F71F;
- Wed, 25 Mar 2020 04:20:46 -0700 (PDT)
-Date: Wed, 25 Mar 2020 11:20:45 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Subject: Re: [PATCH 0/2] ASoC: SOF: initialise work immediately
-Message-ID: <20200325112045.GB4346@sirena.org.uk>
-References: <20200324122921.29582-1-guennadi.liakhovetski@linux.intel.com>
- <20200324133042.GB7039@sirena.org.uk>
- <20200325111012.GA7131@ubuntu>
+ id 5554DF8015A; Wed, 25 Mar 2020 13:21:17 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 709E0F800EF
+ for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2020 13:21:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 709E0F800EF
+IronPort-SDR: DHWdNZ06OHufzZCakLpdRNIcwD5z/VCthqTacFGc5yed/u6YBM03Ml9PZ1q4Qk7fxMOOPb/RpP
+ zKQU8H7BpdBA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Mar 2020 05:21:08 -0700
+IronPort-SDR: wovgDthWTp9Ad5EbMzRc00DdoDsM+/fTkI7SxMe6hIed7vOWwRADvLnyA1ODv+hxAzTkwqht+h
+ dcwMxyhHhCxA==
+X-IronPort-AV: E=Sophos;i="5.72,304,1580803200"; d="scan'208";a="270783385"
+Received: from mgorski-mobl.ger.corp.intel.com (HELO [10.254.66.157])
+ ([10.254.66.157])
+ by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Mar 2020 05:21:07 -0700
+From: "Gorski, Mateusz" <mateusz.gorski@linux.intel.com>
+Subject: Re: [PATCH v2] topology: Add topology file for generic HDA DSP
+ machine driver
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org
+References: <20200309120944.15240-1-mateusz.gorski@linux.intel.com>
+ <0d2fb996-2668-e53b-ec91-18bf9e27df31@linux.intel.com>
+ <7334e7b6-c4d3-aac3-46d2-b4fbcb0e3957@linux.intel.com>
+ <27e153ce-f94b-876a-32e7-66dd5842c07b@linux.intel.com>
+ <0efdc802-eb82-2137-19a1-9a7e71fa62d8@linux.intel.com>
+ <00bd3e15-b088-c185-4473-8d928da01b9c@linux.intel.com>
+Message-ID: <07efcaf1-c6fd-49f3-1e76-e20c370d4a70@linux.intel.com>
+Date: Wed, 25 Mar 2020 13:21:05 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="TakKZr9L6Hm6aLOc"
-Content-Disposition: inline
-In-Reply-To: <20200325111012.GA7131@ubuntu>
-X-Cookie: Many are called, few volunteer.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Takashi Iwai <tiwai@suse.de>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@intel.com>,
- sound-open-firmware@alsa-project.org
+In-Reply-To: <00bd3e15-b088-c185-4473-8d928da01b9c@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: pl
+Cc: cezary.rojewski@intel.com, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,39 +95,35 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---TakKZr9L6Hm6aLOc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>>
+>> We have a mechanism to choose the PCM configuration of given topology 
+>> path via amixer control. That way we can include both 2ch and 4ch 
+>> DMIC configurations in one topology file and simply change DMIC 
+>> pipeline configuration on runtime.
+>>
+>> Unfortunately this mechanism is not currently available on upstream.
+>>
+>> As said before, this is a reference topology, if needed I can also 
+>> upload modified version with 4ch DMIC path.
+>
+> I don't understand the concept of 'reference topology'. It's not like 
+> anyone is going to modify this file, which is seriously cryptic, so 
+> it's got to be a 'usable topology', turn-key really.
+>
+> You would need three files, with no dmic, with 2 dmic with 4 dmic and 
+> a driver level code selection. Today the code loads the topology name 
+> coming from NHLT or dfw_sst.bin, you'd need a more elaborate logic to 
+> deal with the hardware variants and without requiring any fiddling, 
+> rename or edits of topology files.
+>
+>
 
-On Wed, Mar 25, 2020 at 12:10:12PM +0100, Guennadi Liakhovetski wrote:
-> On Tue, Mar 24, 2020 at 01:30:42PM +0000, Mark Brown wrote:
+I prepared 3 different topology .conf files and sent them in patch set. 
+These topologies cover all three cases (no DMIC, 2ch DMIC capture and 
+4ch DMIC capture). I also prepared and sent kernel patch adding third 
+way of selecting topology binary file so that its name depends on used 
+machine driver.
 
-> > As documented in submitting-patches.rst please send patches to the=20
-> > maintainers for the code you would like to change.  The normal kernel
-> > workflow is that people apply patches from their inboxes, if they aren't
-> > copied they are likely to not see the patch at all and it is much more
-> > difficult to apply patches.
+Thanks,
+Mateusz
 
-> An update: these patches got merged into the SOF tree, so, no need to=20
-> merge them to ASoC directly.
-
-OK, for reference it's not normal to submit things to both SOF and to
-upstream - one or the other is more normal.
-
---TakKZr9L6Hm6aLOc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl57PowACgkQJNaLcl1U
-h9BU9Qf/R830CV48dU4bfCbl05gGmO1PECxGfxoL53WUWPXr1xvSBee8CsuNmxpf
-2uEQaKKuDJtYQTEoqFsp/tnse/dWr6QTDY43IyobFtijFZJ/fhmMB4eYfOxrsR/P
-817uNfzP1xGurslCMugqADVDbEq62T+fJ+4VEt8Z71qbIpnyjJTuIj/gbi+0hbWb
-c5rbaeBX46kOlEDr0NgbhrBc9mUgqxnoecgIBKOyU60VStuJWROmmKJGBe9YpGel
-d9qMfWUbniL9wZMrZVhdOMIpQMb69qwsezgB6s9kEMxv1dGDtlR+YJLSO5xIqmzE
-z6Leljgi8xBAEJNxKGm8nQDR3zRC0Q==
-=sCV3
------END PGP SIGNATURE-----
-
---TakKZr9L6Hm6aLOc--
