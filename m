@@ -2,68 +2,71 @@ Return-Path: <SRS0=ybvW=5K=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D14EEC43331
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 22:00:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3176C43331
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 22:08:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5D5CE20719
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 22:00:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3EB6A20719
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 22:08:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="J+BFir1T"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5D5CE20719
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="H9G+4c9D"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3EB6A20719
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BEF851673;
-	Wed, 25 Mar 2020 22:59:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BEF851673
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9DD111671;
+	Wed, 25 Mar 2020 23:07:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9DD111671
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585173628;
-	bh=9frJH47f5iN/FIA6vGcLLofwEV7gZc2xR5GYXejNcHo=;
-	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=J+BFir1T2KLiGaQV1V//G+r7L+Po8y5RX8PGjW6dX0fON922ubjmqed4V/CHsFHIl
-	 lWDKeHd7O6pYDJ5a5tr1+FaR6W6QUNDMbt2L2Zwwq0lPoE95nGqOQneHUQUqlBaVb5
-	 sMQehbW1FY5V+DKfvVGB2C2+0qhY3SqtnFtBbTAc=
+	s=default; t=1585174129;
+	bh=u9qMlkVSWgtqL9psR3yAkGIeJopY4mcK7+Ik2feS2ZA=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=H9G+4c9DYjh9n8RLbL4KsIQZG4Cnl6RQro/H7lrJHJvaVB5ziTqKOHWSOPS1HR6sF
+	 4r8sed8vbQ5l6UbF3YINaTnE7RA5gZqppPswajTtU/P2XCWxn0+sI/78SBLzSnpfo/
+	 zrtRBcGTCCwWkWu08dKry5kdG/AlsQE/gSu96EQ8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 044CFF802A7;
-	Wed, 25 Mar 2020 22:51:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 08E94F8011E;
+	Wed, 25 Mar 2020 23:07:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5B143F8028C; Wed, 25 Mar 2020 22:51:44 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id A74C6F8032A
- for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2020 22:51:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A74C6F8032A
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 47C281FB;
- Wed, 25 Mar 2020 14:51:38 -0700 (PDT)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BD9993F71E;
- Wed, 25 Mar 2020 14:51:37 -0700 (PDT)
-Date: Wed, 25 Mar 2020 21:51:36 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Colin Ian King <colin.king@canonical.com>
-Subject: Applied "ASoC: mchp-i2s-mcc: make signed 1 bit bitfields unsigned" to
- the asoc tree
-In-Reply-To: <20200325132913.110115-1-colin.king@canonical.com>
-Message-Id: <applied-20200325132913.110115-1-colin.king@canonical.com>
-X-Patchwork-Hint: ignore
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Nicolas Ferre <nicolas.ferre@microchip.com>, kernel-janitors@vger.kernel.org,
- Liam Girdwood <lgirdwood@gmail.com>,
- Ludovic Desroches <ludovic.desroches@microchip.com>,
- Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
- Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
- linux-arm-kernel@lists.infradead.org
+ id C80DCF801DA; Wed, 25 Mar 2020 23:07:56 +0100 (CET)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id AA6F6F800EF
+ for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2020 23:07:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA6F6F800EF
+IronPort-SDR: AbmNdukjyYR4Fb4n/IyU4V2wm5Q+OikvdcmV9Vk2JCXtVBJhFdwgp7FBOl1xszApyYgTfRqba+
+ d9eWUJleSwXA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Mar 2020 15:07:49 -0700
+IronPort-SDR: bkluYb+fnqlXj2HWaxEz4AJblgutxEVFLMqFkpLGLGvr0XJ3yXu0uHlvK82fRX7iM6aDXPXcqV
+ 30s/9Zn5CUPA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,306,1580803200"; d="scan'208";a="238634735"
+Received: from abeljans.amr.corp.intel.com (HELO
+ pbossart-mobl3.amr.corp.intel.com) ([10.251.233.195])
+ by fmsmga007.fm.intel.com with ESMTP; 25 Mar 2020 15:07:48 -0700
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 0/4] ASoC: Intel: add SoundWire machine driver
+Date: Wed, 25 Mar 2020 17:07:42 -0500
+Message-Id: <20200325220746.29601-1-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: tiwai@suse.de, broonie@kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,67 +82,56 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
+To handle multiple hardware combinations, this patchset suggests a
+single machine driver which will create and initialize dailinks
+dynamically. This allows us to support new configurations easily, as
+shown with the TigerLake rt5682 example.
 
-   ASoC: mchp-i2s-mcc: make signed 1 bit bitfields unsigned
+Each configuration updates the card component string, and UCM can test
+for the presence of components to configure them as needed.
 
-has been applied to the asoc tree at
+Since we use a single the machine driver name, all previous ACPI
+tables need to be updated. That should have no impact since the
+machine drivers listed at the time were not upstreamed and are no
+longer maintained.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Naveen Manohar (2):
+  ASoC: Intel: common: add match table for TGL RT5682 SoundWire driver
+  ASoC: Intel: sof_sdw: Add Volteer support with RT5682 SNDW helper
+    function
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Pierre-Louis Bossart (1):
+  ASoC: Intel: boards: add sof_sdw machine driver
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Rander Wang (1):
+  ASoC: Intel: soc-acpi: update topology and driver name for SoundWire
+    platforms
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+ sound/soc/intel/boards/Kconfig                |  24 +
+ sound/soc/intel/boards/Makefile               |   8 +-
+ sound/soc/intel/boards/sof_sdw.c              | 962 ++++++++++++++++++
+ sound/soc/intel/boards/sof_sdw_common.h       | 114 +++
+ sound/soc/intel/boards/sof_sdw_dmic.c         |  42 +
+ sound/soc/intel/boards/sof_sdw_hdmi.c         |  97 ++
+ sound/soc/intel/boards/sof_sdw_rt1308.c       | 151 +++
+ sound/soc/intel/boards/sof_sdw_rt5682.c       | 126 +++
+ sound/soc/intel/boards/sof_sdw_rt700.c        | 125 +++
+ sound/soc/intel/boards/sof_sdw_rt711.c        | 156 +++
+ sound/soc/intel/boards/sof_sdw_rt715.c        |  42 +
+ .../intel/common/soc-acpi-intel-cml-match.c   |  24 +-
+ .../intel/common/soc-acpi-intel-icl-match.c   |   6 +-
+ .../intel/common/soc-acpi-intel-tgl-match.c   |  30 +-
+ 14 files changed, 1896 insertions(+), 11 deletions(-)
+ create mode 100644 sound/soc/intel/boards/sof_sdw.c
+ create mode 100644 sound/soc/intel/boards/sof_sdw_common.h
+ create mode 100644 sound/soc/intel/boards/sof_sdw_dmic.c
+ create mode 100644 sound/soc/intel/boards/sof_sdw_hdmi.c
+ create mode 100644 sound/soc/intel/boards/sof_sdw_rt1308.c
+ create mode 100644 sound/soc/intel/boards/sof_sdw_rt5682.c
+ create mode 100644 sound/soc/intel/boards/sof_sdw_rt700.c
+ create mode 100644 sound/soc/intel/boards/sof_sdw_rt711.c
+ create mode 100644 sound/soc/intel/boards/sof_sdw_rt715.c
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From 633fddee7355e46a5b5ec471abb58d65e1e41012 Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Wed, 25 Mar 2020 13:29:13 +0000
-Subject: [PATCH] ASoC: mchp-i2s-mcc: make signed 1 bit bitfields unsigned
-
-The signed 1 bit bitfields should be unsigned, so make them unsigned.
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Reviewed-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Link: https://lore.kernel.org/r/20200325132913.110115-1-colin.king@canonical.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/atmel/mchp-i2s-mcc.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/atmel/mchp-i2s-mcc.c b/sound/soc/atmel/mchp-i2s-mcc.c
-index befc2a3a05b0..3cb63886195f 100644
---- a/sound/soc/atmel/mchp-i2s-mcc.c
-+++ b/sound/soc/atmel/mchp-i2s-mcc.c
-@@ -239,10 +239,10 @@ struct mchp_i2s_mcc_dev {
- 	unsigned int				frame_length;
- 	int					tdm_slots;
- 	int					channels;
--	int					gclk_use:1;
--	int					gclk_running:1;
--	int					tx_rdy:1;
--	int					rx_rdy:1;
-+	unsigned int				gclk_use:1;
-+	unsigned int				gclk_running:1;
-+	unsigned int				tx_rdy:1;
-+	unsigned int				rx_rdy:1;
- };
- 
- static irqreturn_t mchp_i2s_mcc_interrupt(int irq, void *dev_id)
 -- 
 2.20.1
 
