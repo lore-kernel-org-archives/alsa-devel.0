@@ -2,75 +2,76 @@ Return-Path: <SRS0=ybvW=5K=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 812B1C43331
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 21:56:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EC28C43331
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 21:57:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 085C420658
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 21:56:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1798120658
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 21:57:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uiJicCAw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 085C420658
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="C+UJuQcd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1798120658
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 443B6166E;
-	Wed, 25 Mar 2020 22:55:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 443B6166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5FEFB1680;
+	Wed, 25 Mar 2020 22:56:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5FEFB1680
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585173387;
-	bh=xX00ycJ41j+Vu+51mYGZpnhFXf71Ot01+H1yEKpkCYc=;
+	s=default; t=1585173446;
+	bh=X9yXKnrkWOyktvLXJhhW3aIgHuEt22U9g7z8gLR5Vys=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uiJicCAwDLkJk0eyJjefVm1kzPqIG9ex1DmKljebLn0ofhHgdmy675MoJGAhzMuBY
-	 WZMzQKN/O2fWpSNWpiQsYQuRBdAa4CnH+82NB4x/0oXrlaERmsW5/9Jle8LYQ+kBBn
-	 LBksQ3SuRJgbySXUtf4idStOxjbTUw+s88lyJoPU=
+	b=C+UJuQcdM1CCATqSP+eFfVLsz/8vBPW894cwnRjOKUajU3iH4NjmYNfve0J2Ks1+8
+	 GUrA5HBUVfXjgymf0yofPA0wk9TXW34sW0VqivLsey1ITvGu2o7gC1BfMAgZRrAFJ3
+	 /YK5Lh0E0oD/qGUF2RSPoKBcSLFqWytPlxgRu19Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E0D57F802F7;
-	Wed, 25 Mar 2020 22:51:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C1942F802FD;
+	Wed, 25 Mar 2020 22:51:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B1718F802E8; Wed, 25 Mar 2020 22:50:51 +0100 (CET)
+ id 3CCC5F802E8; Wed, 25 Mar 2020 22:50:53 +0100 (CET)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2FAA2F801DA
- for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2020 22:50:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2FAA2F801DA
-IronPort-SDR: yeAMh3AY3NM5bcID5N62Cc6z+RiZJP8PUYTm1SRaaWOkVxdPVaXIv4CgiV0odpALmjCf4u+Vcz
- Axw++mHWNQaw==
+ by alsa1.perex.cz (Postfix) with ESMTPS id F3B75F80291
+ for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2020 22:50:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3B75F80291
+IronPort-SDR: sQstGm6PJ1El8Wxbt4lccARDmss2DEMITWIEqgVcXgq/pVx/sTN6SnO3YqTU1siTTj3Z0bCic/
+ t1nfBrXZp/3g==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Mar 2020 14:50:40 -0700
-IronPort-SDR: okGQOdSUjBvCgZ1CUF5b1a046ZPbZWGXX6SWtdJDdsqX7Ea8qFuBk0OQMDQOwxaMPwjo3NOB06
- 3mciY+wdqLug==
+ 25 Mar 2020 14:50:42 -0700
+IronPort-SDR: U8iFI9bK/SUUvq/pr147mN1oMksYoMCDXI6r9ZXqzsr/kDp82GsxnB3/f/gItQOL5e/OOmxpU5
+ F8OJnRV2F2zQ==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,305,1580803200"; d="scan'208";a="265666168"
+X-IronPort-AV: E=Sophos;i="5.72,305,1580803200"; d="scan'208";a="265666191"
 Received: from abeljans.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.251.233.195])
- by orsmga002.jf.intel.com with ESMTP; 25 Mar 2020 14:50:39 -0700
+ by orsmga002.jf.intel.com with ESMTP; 25 Mar 2020 14:50:42 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 04/11] ASoC: SOF: Intel: hda: add SoundWire stream
- config/free callbacks
-Date: Wed, 25 Mar 2020 16:50:20 -0500
-Message-Id: <20200325215027.28716-5-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 07/11] ASoC: SOF: Intel: hda: merge IPC,
+ stream and SoundWire interrupt handlers
+Date: Wed, 25 Mar 2020 16:50:23 -0500
+Message-Id: <20200325215027.28716-8-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200325215027.28716-1-pierre-louis.bossart@linux.intel.com>
 References: <20200325215027.28716-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: tiwai@suse.de, broonie@kernel.org,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -87,111 +88,109 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-These callbacks are invoked when a matching hw_params/hw_free() DAI
-operation takes place, and will result in IPC operations with the SOF
-firmware.
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
 
+We have a single irq handler for SOF interrupts. We can further merge
+SoundWire ones to completely remove MSI interrupts handling issues
+leading to timeouts.
+
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/intel/hda.c | 71 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 71 insertions(+)
+ sound/soc/sof/intel/hda.c | 36 ++++++++++++++++++++++++++++++++++++
+ sound/soc/sof/intel/hda.h | 11 +++++++++++
+ 2 files changed, 47 insertions(+)
 
 diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index c1fe94800da1..1f93124a63cd 100644
+index dea3c385b664..ee4f1ceca883 100644
 --- a/sound/soc/sof/intel/hda.c
 +++ b/sound/soc/sof/intel/hda.c
-@@ -24,6 +24,7 @@
- #include <sound/intel-nhlt.h>
- #include <sound/sof.h>
- #include <sound/sof/xtensa.h>
-+#include "../sof-audio.h"
- #include "../ops.h"
- #include "hda.h"
+@@ -198,6 +198,38 @@ static int hda_sdw_exit(struct snd_sof_dev *sdev)
  
-@@ -38,6 +39,74 @@
- 
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_INTEL_SOUNDWIRE)
- 
-+static int sdw_params_stream(struct device *dev,
-+			     struct sdw_intel_stream_params_data *params_data)
+ 	return 0;
+ }
++
++static bool hda_dsp_check_sdw_irq(struct snd_sof_dev *sdev)
 +{
-+	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
-+	struct snd_soc_dai *d = params_data->dai;
-+	struct sof_ipc_dai_config config;
-+	struct sof_ipc_reply reply;
-+	int link_id = params_data->link_id;
-+	int alh_stream_id = params_data->alh_stream_id;
-+	int ret;
-+	u32 size = sizeof(config);
++	struct sof_intel_hda_dev *hdev;
++	bool ret = false;
++	u32 irq_status;
 +
-+	memset(&config, 0, size);
-+	config.hdr.size = size;
-+	config.hdr.cmd = SOF_IPC_GLB_DAI_MSG | SOF_IPC_DAI_CONFIG;
-+	config.type = SOF_DAI_INTEL_ALH;
-+	config.dai_index = (link_id << 8) | (d->id);
-+	config.alh.stream_id = alh_stream_id;
++	hdev = sdev->pdata->hw_pdata;
 +
-+	/* send message to DSP */
-+	ret = sof_ipc_tx_message(sdev->ipc,
-+				 config.hdr.cmd, &config, size, &reply,
-+				 sizeof(reply));
-+	if (ret < 0) {
-+		dev_err(sdev->dev,
-+			"error: failed to set DAI hw_params for link %d dai->id %d ALH %d\n",
-+			link_id, d->id, alh_stream_id);
-+	}
++	if (!hdev->sdw)
++		return ret;
 +
++	/* store status */
++	irq_status = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_ADSPIS2);
++
++	/* invalid message ? */
++	if (irq_status == 0xffffffff)
++		goto out;
++
++	/* SDW message ? */
++	if (irq_status & HDA_DSP_REG_ADSPIS2_SNDW)
++		ret = true;
++
++out:
 +	return ret;
 +}
 +
-+static int sdw_free_stream(struct device *dev,
-+			   struct sdw_intel_stream_free_data *free_data)
++static irqreturn_t hda_dsp_sdw_thread(int irq, void *context)
 +{
-+	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
-+	struct snd_soc_dai *d = free_data->dai;
-+	struct sof_ipc_dai_config config;
-+	struct sof_ipc_reply reply;
-+	int link_id = free_data->link_id;
-+	int ret;
-+	u32 size = sizeof(config);
-+
-+	memset(&config, 0, size);
-+	config.hdr.size = size;
-+	config.hdr.cmd = SOF_IPC_GLB_DAI_MSG | SOF_IPC_DAI_CONFIG;
-+	config.type = SOF_DAI_INTEL_ALH;
-+	config.dai_index = (link_id << 8) | d->id;
-+	config.alh.stream_id = 0xFFFF; /* invalid value on purpose */
-+
-+	/* send message to DSP */
-+	ret = sof_ipc_tx_message(sdev->ipc,
-+				 config.hdr.cmd, &config, size, &reply,
-+				 sizeof(reply));
-+	if (ret < 0) {
-+		dev_err(sdev->dev,
-+			"error: failed to free stream for link %d dai->id %d\n",
-+			link_id, d->id);
-+	}
-+
-+	return ret;
++	return sdw_intel_thread(irq, context);
 +}
 +
-+static const struct sdw_intel_ops sdw_callback = {
-+	.params_stream = sdw_params_stream,
-+	.free_stream = sdw_free_stream,
-+};
-+
- void hda_sdw_int_enable(struct snd_sof_dev *sdev, bool enable)
+ #endif
+ 
+ /*
+@@ -618,6 +650,7 @@ static irqreturn_t hda_dsp_interrupt_handler(int irq, void *context)
+ static irqreturn_t hda_dsp_interrupt_thread(int irq, void *context)
  {
- 	sdw_intel_enable_irq(sdev->bar[HDA_DSP_BAR], enable);
-@@ -80,6 +149,8 @@ static int hda_sdw_probe(struct snd_sof_dev *sdev)
- 	res.irq = sdev->ipc_irq;
- 	res.handle = hdev->info.handle;
- 	res.parent = sdev->dev;
-+	res.ops = &sdw_callback;
-+	res.dev = sdev->dev;
+ 	struct snd_sof_dev *sdev = context;
++	struct sof_intel_hda_dev *hdev = sdev->pdata->hw_pdata;
  
- 	/*
- 	 * ops and arg fields are not populated for now,
+ 	/* deal with streams and controller first */
+ 	if (hda_dsp_check_stream_irq(sdev))
+@@ -626,6 +659,9 @@ static irqreturn_t hda_dsp_interrupt_thread(int irq, void *context)
+ 	if (hda_dsp_check_ipc_irq(sdev))
+ 		sof_ops(sdev)->irq_thread(irq, sdev);
+ 
++	if (hda_dsp_check_sdw_irq(sdev))
++		hda_dsp_sdw_thread(irq, hdev->sdw);
++
+ 	/* enable GIE interrupt */
+ 	snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR,
+ 				SOF_HDA_INTCTL,
+diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+index 928a3432e9e6..fc104c5ba006 100644
+--- a/sound/soc/sof/intel/hda.h
++++ b/sound/soc/sof/intel/hda.h
+@@ -232,6 +232,8 @@
+ #define HDA_DSP_REG_ADSPIC2		(HDA_DSP_GEN_BASE + 0x10)
+ #define HDA_DSP_REG_ADSPIS2		(HDA_DSP_GEN_BASE + 0x14)
+ 
++#define HDA_DSP_REG_ADSPIS2_SNDW	BIT(5)
++
+ /* Intel HD Audio Inter-Processor Communication Registers */
+ #define HDA_DSP_IPC_BASE		0x40
+ #define HDA_DSP_REG_HIPCT		(HDA_DSP_IPC_BASE + 0x00)
+@@ -696,6 +698,15 @@ static inline void hda_sdw_int_enable(struct snd_sof_dev *sdev, bool enable)
+ {
+ }
+ 
++static inline bool hda_dsp_check_sdw_irq(struct snd_sof_dev *sdev)
++{
++	return false;
++}
++
++static inline irqreturn_t hda_dsp_sdw_thread(int irq, void *context)
++{
++	return IRQ_HANDLED;
++}
+ #endif
+ 
+ /* common dai driver */
 -- 
 2.20.1
 
