@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A4A97C43331
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 13:18:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9C94C1975A
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 13:19:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2D61F2078A
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 13:18:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2C2C92077D
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Mar 2020 13:19:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sK33bbr+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2D61F2078A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SbmPt0LB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2C2C92077D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 70EB71674;
-	Wed, 25 Mar 2020 14:17:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70EB71674
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8BE851665;
+	Wed, 25 Mar 2020 14:18:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8BE851665
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585142309;
-	bh=KQNNlSBz8DWcYoqMsfxwPITyrzGRNtkeXn/NbqsU9pw=;
+	s=default; t=1585142356;
+	bh=4ztqIOoR/orcu+Xb/EUutEUaiMOTdYUdjA5LFUmIXOA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sK33bbr+3g/sHKDXXNYWAuLcdQXiMBJfeUXbx5QAfWEfFvFhK2pQuqRWS6E+viyc/
-	 g9sFga0mon3iStSBm6l1Rb1A/b2CAdNDdydz2agakdNUPJLgiNqfkLUUyaQatnj4U4
-	 s7Biq7awUe453vkago15V1T3alaVnjPTBW7invfg=
+	b=SbmPt0LB0oka+Mn3jNLoHYXPA952usxbQuco8sJ51LTLfa8jUGb9fA6ON0OrLU+oD
+	 WuOXL9pWfoU92La/QxPIeaRIgNhcbtz6mXansfQ/mTo7RoSHBBVCob3H/XsaEdKNLX
+	 NCK2N+m9Jm1FH0p4Lz25QidIvFaC+qHy1NafMNcY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 50416F80218;
-	Wed, 25 Mar 2020 14:16:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A3DC2F80273;
+	Wed, 25 Mar 2020 14:16:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B19A9F801DA; Wed, 25 Mar 2020 14:16:44 +0100 (CET)
+ id F2197F8015A; Wed, 25 Mar 2020 14:16:44 +0100 (CET)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4268FF8015A
- for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2020 14:16:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4268FF8015A
-IronPort-SDR: v+u3CABMh20dqjnJrqiKCTDbW6wD5JHwCH1/6HSM4vmj4mCTLm6ayVbsjSSW39UkupvzwMTMxO
- /2z44u6w8w9g==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1C186F80158
+ for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2020 14:16:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C186F80158
+IronPort-SDR: QrAOyeR7IToTMnVkzUitJZX33g/ugMfagUjEbul7tJDDFP7tSwzC59StfjoZUNzyOWCv09dPLs
+ fhRK1d8dRMOA==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Mar 2020 06:16:38 -0700
-IronPort-SDR: N6+oSDfTFWhTsw4eRQ/JQfRIIXkZo8q5dt2wmr5vR4IogoSaR15dGt/kHNayjWcrJn8dipjsLV
- /vITo1v9h9UA==
+ 25 Mar 2020 06:16:36 -0700
+IronPort-SDR: 8Zyu+BAclJ8GsOKpko2Z2eBRxQGJ/Fj7NBuUsLhPZ0bHUT+6IkEw8IL8CMbGT6X0E3mAktuGzC
+ 19DZCIuj3tTQ==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,304,1580803200"; d="scan'208";a="446618815"
+X-IronPort-AV: E=Sophos;i="5.72,304,1580803200"; d="scan'208";a="446618805"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga005.fm.intel.com with ESMTP; 25 Mar 2020 06:16:36 -0700
+ by fmsmga005.fm.intel.com with ESMTP; 25 Mar 2020 06:16:35 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 3/3] ASoC: Intel: bdw-rt5650: Revert SSP0 link to use dummy
+Subject: [PATCH 2/3] ASoC: Intel: bdw-rt5677: Revert SSP0 link to use dummy
  components
-Date: Wed, 25 Mar 2020 14:16:11 +0100
-Message-Id: <20200325131611.545-4-cezary.rojewski@intel.com>
+Date: Wed, 25 Mar 2020 14:16:10 +0100
+Message-Id: <20200325131611.545-3-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200325131611.545-1-cezary.rojewski@intel.com>
 References: <20200325131611.545-1-cezary.rojewski@intel.com>
@@ -96,17 +96,17 @@ While harmless so far, this flow isn't right and should be corrected.
 The actual need for dummy components for SSP0 link is questionable but
 that issue is subject for another series.
 
-Fixes: a40acc6bfceb ("ASoC: Intel: bdw-rt5650: change cpu_dai and platform components for SOF")
+Fixes: 4865bde187b2 ("ASoC: Intel: bdw-rt5677: change cpu_dai and platform components for SOF")
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/boards/bdw-rt5650.c | 7 ++++---
+ sound/soc/intel/boards/bdw-rt5677.c | 7 ++++---
  1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bdw-rt5650.c b/sound/soc/intel/boards/bdw-rt5650.c
-index 4545dbd48879..fbceea4a66b8 100644
---- a/sound/soc/intel/boards/bdw-rt5650.c
-+++ b/sound/soc/intel/boards/bdw-rt5650.c
-@@ -226,9 +226,6 @@ SND_SOC_DAILINK_DEF(be,
+diff --git a/sound/soc/intel/boards/bdw-rt5677.c b/sound/soc/intel/boards/bdw-rt5677.c
+index 713ef48b36a8..bfcdff747b3b 100644
+--- a/sound/soc/intel/boards/bdw-rt5677.c
++++ b/sound/soc/intel/boards/bdw-rt5677.c
+@@ -298,9 +298,6 @@ SND_SOC_DAILINK_DEF(be,
  #if IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
  SND_SOC_DAILINK_DEF(ssp0_port,
  	    DAILINK_COMP_ARRAY(COMP_CPU("ssp0-port")));
@@ -115,11 +115,11 @@ index 4545dbd48879..fbceea4a66b8 100644
 -	    DAILINK_COMP_ARRAY(COMP_DUMMY()));
  #endif
  
- static struct snd_soc_dai_link bdw_rt5650_dais[] = {
-@@ -263,7 +260,11 @@ static struct snd_soc_dai_link bdw_rt5650_dais[] = {
+ /* Wake on voice interface */
+@@ -349,7 +346,11 @@ static struct snd_soc_dai_link bdw_rt5677_dais[] = {
  		.dpcm_playback = 1,
  		.dpcm_capture = 1,
- 		.init = bdw_rt5650_init,
+ 		.init = bdw_rt5677_init,
 +#if !IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
 +		SND_SOC_DAILINK_REG(dummy, be, dummy),
 +#else
