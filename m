@@ -6,67 +6,67 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4113FC2D0E8
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 23:27:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A40B4C2D0ED
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 23:28:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B97FC20409
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 23:27:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2F4E3208E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 23:28:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oLVtiC+l";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="WRTZ7lKp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B97FC20409
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BqU/iK6E";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="DHOePvVp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2F4E3208E0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2145E1678;
-	Fri, 27 Mar 2020 00:26:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2145E1678
+	by alsa0.perex.cz (Postfix) with ESMTPS id 890B21671;
+	Fri, 27 Mar 2020 00:27:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 890B21671
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585265262;
-	bh=Nk6KRHSuSV+vV3uuL0Fbyt7lBGmFCrHu/aiRdLfbfJw=;
+	s=default; t=1585265302;
+	bh=E3QsCnsuUDRRo8kdeYSkq2UO7hjxNljMU6+avIz5qQ4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oLVtiC+lzgMeA93AzO+ZqHC2pD5LwPPT7YOcHyzyiiVhMVXAaoEuFsiO8oyZhT4NY
-	 /on6e47CmLSgqIB4blGk3tMG+vfCfotKcRl0bLMy4bikenZ+ImfSXieP5ixagWGabE
-	 Gp56d5Gv/y6fZ4BG+wpzH7NNRrOBVBlK2YhysFOY=
+	b=BqU/iK6Ec+IKqh5O0bUwj7mY8bP2msqEZdhvY7Uf6cxTlyaxD1XFl7zqKWdHVMlAr
+	 /OM7Gsz1tcQWp3sm9K/sIeIbKgmQA+tKQVM9GPFM18h0NJFFf8czUWJn1we6qcfDqr
+	 IBLyKSiqUwyjNFdXIIcY/xLJOq4HDYgzzVBvRe64=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AFA77F802A2;
-	Fri, 27 Mar 2020 00:24:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9D455F802BD;
+	Fri, 27 Mar 2020 00:24:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D82C9F802A7; Fri, 27 Mar 2020 00:24:39 +0100 (CET)
+ id 22CDDF802A9; Fri, 27 Mar 2020 00:24:54 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3F1F4F802A0
- for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 00:24:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3F1F4F802A0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9372AF802A9
+ for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 00:24:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9372AF802A9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="WRTZ7lKp"
+ header.b="DHOePvVp"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 16DE32082D;
- Thu, 26 Mar 2020 23:24:35 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 916F7208FE;
+ Thu, 26 Mar 2020 23:24:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1585265075;
- bh=Nk6KRHSuSV+vV3uuL0Fbyt7lBGmFCrHu/aiRdLfbfJw=;
+ s=default; t=1585265090;
+ bh=E3QsCnsuUDRRo8kdeYSkq2UO7hjxNljMU6+avIz5qQ4=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=WRTZ7lKpu0inxg3I9vc5AjPs6v0vMNMQZ2tadk2DggfIPnRiTLXxkAkZCRspMQvum
- MHn20/pSqbFfq+l7fVMBbsTk+hLOzku7gmaqj26kBSudNiKJ1C2EUMp2SOYzPdH525
- TdNGadjeacKMbboITareCm7yIvzGhxhBFa7zJbZU=
+ b=DHOePvVpy4m0+FwiMhczOnBeOu+XG01mngJRCcJuJ4tS7EM2oyvf6WgyaBeY8Qy+H
+ 6wDy808h51eOmDQRnpFyYvJpLDWvoPKOETeMf65pktUcoXvmjHaYGTXgHilivCxlVz
+ 1OLe2nH+aNNeY+mIX9b/S0LVuzU3kWI6aoDI1W90=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 03/19] ALSA: hda/realtek: Fix pop noise on ALC225
-Date: Thu, 26 Mar 2020 19:24:15 -0400
-Message-Id: <20200326232431.7816-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 16/19] ALSA: line6: Fix endless MIDI read loop
+Date: Thu, 26 Mar 2020 19:24:28 -0400
+Message-Id: <20200326232431.7816-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200326232431.7816-1-sashal@kernel.org>
 References: <20200326232431.7816-1-sashal@kernel.org>
@@ -75,7 +75,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
- alsa-devel@alsa-project.org, Kai-Heng Feng <kai.heng.feng@canonical.com>
+ alsa-devel@alsa-project.org,
+ syzbot+cce32521ee0a824c21f7@syzkaller.appspotmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,38 +92,59 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 3b36b13d5e69d6f51ff1c55d1b404a74646c9757 ]
+[ Upstream commit d683469b3c93d7e2afd39e6e1970f24700eb7a68 ]
 
-Commit 317d9313925c ("ALSA: hda/realtek - Set default power save node to
-0") makes the ALC225 have pop noise on S3 resume and cold boot.
+The MIDI input event parser of the LINE6 driver may enter into an
+endless loop when the unexpected data sequence is given, as it tries
+to continue the secondary bytes without termination.  Also, when the
+input data is too short, the parser returns a negative error, while
+the caller doesn't handle it properly.  This would lead to the
+unexpected behavior as well.
 
-So partially revert this commit for ALC225 to fix the regression.
+This patch addresses those issues by checking the return value
+correctly and handling the one-byte event in the parser properly.
 
-Fixes: 317d9313925c ("ALSA: hda/realtek - Set default power save node to 0")
-BugLink: https://bugs.launchpad.net/bugs/1866357
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Link: https://lore.kernel.org/r/20200311061328.17614-1-kai.heng.feng@canonical.com
+The bug was reported by syzkaller.
+
+Reported-by: syzbot+cce32521ee0a824c21f7@syzkaller.appspotmail.com
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/000000000000033087059f8f8fa3@google.com
+Link: https://lore.kernel.org/r/20200309095922.30269-1-tiwai@suse.de
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_realtek.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/usb/line6/driver.c  | 2 +-
+ sound/usb/line6/midibuf.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 12858d95c2c85..73b182db7ef3b 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -8080,6 +8080,8 @@ static int patch_alc269(struct hda_codec *codec)
- 		spec->gen.mixer_nid = 0;
- 		break;
- 	case 0x10ec0225:
-+		codec->power_save_node = 1;
-+		/* fall through */
- 	case 0x10ec0295:
- 	case 0x10ec0299:
- 		spec->codec_variant = ALC269_TYPE_ALC225;
+diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
+index b5a3f754a4f13..4f096685ed654 100644
+--- a/sound/usb/line6/driver.c
++++ b/sound/usb/line6/driver.c
+@@ -305,7 +305,7 @@ static void line6_data_received(struct urb *urb)
+ 				line6_midibuf_read(mb, line6->buffer_message,
+ 						LINE6_MIDI_MESSAGE_MAXLEN);
+ 
+-			if (done == 0)
++			if (done <= 0)
+ 				break;
+ 
+ 			line6->message_length = done;
+diff --git a/sound/usb/line6/midibuf.c b/sound/usb/line6/midibuf.c
+index 8d6eefa0d9362..6a70463f82c4e 100644
+--- a/sound/usb/line6/midibuf.c
++++ b/sound/usb/line6/midibuf.c
+@@ -159,7 +159,7 @@ int line6_midibuf_read(struct midi_buffer *this, unsigned char *data,
+ 			int midi_length_prev =
+ 			    midibuf_message_length(this->command_prev);
+ 
+-			if (midi_length_prev > 0) {
++			if (midi_length_prev > 1) {
+ 				midi_length = midi_length_prev - 1;
+ 				repeat = 1;
+ 			} else
 -- 
 2.20.1
 
