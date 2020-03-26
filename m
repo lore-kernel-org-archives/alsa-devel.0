@@ -6,67 +6,68 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A6927C43331
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 23:30:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C2974C43331
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 23:30:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2682A20663
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 23:30:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 48D7620663
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 23:30:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dIzV1FyY";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="UeZbcDid"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2682A20663
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Hetmp1qu";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="wSMWWDw1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 48D7620663
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7BE1C167A;
-	Fri, 27 Mar 2020 00:29:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7BE1C167A
+	by alsa0.perex.cz (Postfix) with ESMTPS id A45DF166B;
+	Fri, 27 Mar 2020 00:29:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A45DF166B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585265401;
-	bh=kPWJ+BaEWuRs5UqHZpXyj4OWe/1BZNryumcu0upnbzs=;
+	s=default; t=1585265448;
+	bh=HZKph1vlL2+lbjT545LdjST3edbD4zKJanui7XS+8/I=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dIzV1FyYaZ40TL30MyzELwWyQSA1lqEvY2GvjfdjYxjB+WMWiWgfrTKLTgvl3M9NU
-	 3RLqgqcOwlVWLn3cW28Wy2H6QKxQRAII9uarH3w88y0nGFMz6YhIUHTjSvqVZPmuIL
-	 QX3R6faDaa/6/FZZ41ozyOwiJ2bXk99g35y9UZ40=
+	b=Hetmp1quFWoUjLSC/XWKIcsWYCKPy+NomddCFZYXdNZKO04T1EovDuTygQjlSYvLs
+	 OH/pcAi+5TyoThsqmQIzxkKZHlbjb8TV/fBlVoO3+iNfpPQOWB/yTo9GH/4XSaDggO
+	 N1UH1B8E6GNPwa3QdS2yUJ9NV6w61BcwAiVsnC34=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DD036F802E0;
-	Fri, 27 Mar 2020 00:25:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E121FF80249;
+	Fri, 27 Mar 2020 00:25:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5BE9EF802E0; Fri, 27 Mar 2020 00:25:04 +0100 (CET)
+ id 8702AF802F9; Fri, 27 Mar 2020 00:25:16 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DADBAF8011E
- for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 00:25:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DADBAF8011E
+ by alsa1.perex.cz (Postfix) with ESMTPS id C7573F802E9
+ for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 00:25:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7573F802E9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="UeZbcDid"
+ header.b="wSMWWDw1"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id AAD36214D8;
- Thu, 26 Mar 2020 23:24:58 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id A794820A8B;
+ Thu, 26 Mar 2020 23:25:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1585265099;
- bh=kPWJ+BaEWuRs5UqHZpXyj4OWe/1BZNryumcu0upnbzs=;
+ s=default; t=1585265109;
+ bh=HZKph1vlL2+lbjT545LdjST3edbD4zKJanui7XS+8/I=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=UeZbcDid9MuLSeFJJBdtRySpn1ixolRPbfEEIc0QDvyaLLiU5l0jNkoRd1CoSEv7D
- 1BdVePQZkMsso8LJHEGLKXf+cTrLfllK/aiY7JlHq9iqekEuWyJZuD7EpKZddG9EeK
- cpOkWD8KlbBzfZKWg5WFUdXbUNL0cNIs9OrvtCFs=
+ b=wSMWWDw1/NpEuunTdz8VQ6HoEzW8OSGALIY2B8jVct6vKxtpZ7TgrmpQov6hpa1ZJ
+ DKUzIN6dYLZ3RxAMUali20mDHBin0IeGhD/gZebIydBSrKSB/T7rrf+6Z4T/pz50nr
+ a+ZdGYqGcLvhJH1pe7YAHRi7zZ0JiPeQz6EE3mFs=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 03/15] ALSA: hda/realtek: Fix pop noise on ALC225
-Date: Thu, 26 Mar 2020 19:24:43 -0400
-Message-Id: <20200326232455.8029-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 12/15] ALSA: pcm: oss: Avoid plugin buffer
+ overflow
+Date: Thu, 26 Mar 2020 19:24:52 -0400
+Message-Id: <20200326232455.8029-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200326232455.8029-1-sashal@kernel.org>
 References: <20200326232455.8029-1-sashal@kernel.org>
@@ -75,7 +76,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
- alsa-devel@alsa-project.org, Kai-Heng Feng <kai.heng.feng@canonical.com>
+ syzbot+e1fe9f44fb8ecf4fb5dd@syzkaller.appspotmail.com,
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,38 +93,72 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 3b36b13d5e69d6f51ff1c55d1b404a74646c9757 ]
+[ Upstream commit f2ecf903ef06eb1bbbfa969db9889643d487e73a ]
 
-Commit 317d9313925c ("ALSA: hda/realtek - Set default power save node to
-0") makes the ALC225 have pop noise on S3 resume and cold boot.
+Each OSS PCM plugins allocate its internal buffer per pre-calculation
+of the max buffer size through the chain of plugins (calling
+src_frames and dst_frames callbacks).  This works for most plugins,
+but the rate plugin might behave incorrectly.  The calculation in the
+rate plugin involves with the fractional position, i.e. it may vary
+depending on the input position.  Since the buffer size
+pre-calculation is always done with the offset zero, it may return a
+shorter size than it might be; this may result in the out-of-bound
+access as spotted by fuzzer.
 
-So partially revert this commit for ALC225 to fix the regression.
+This patch addresses those possible buffer overflow accesses by simply
+setting the upper limit per the given buffer size for each plugin
+before src_frames() and after dst_frames() calls.
 
-Fixes: 317d9313925c ("ALSA: hda/realtek - Set default power save node to 0")
-BugLink: https://bugs.launchpad.net/bugs/1866357
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Link: https://lore.kernel.org/r/20200311061328.17614-1-kai.heng.feng@canonical.com
+Reported-by: syzbot+e1fe9f44fb8ecf4fb5dd@syzkaller.appspotmail.com
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/000000000000b25ea005a02bcf21@google.com
+Link: https://lore.kernel.org/r/20200309082148.19855-1-tiwai@suse.de
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_realtek.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/core/oss/pcm_plugin.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 86ab022f386ec..23aab2fdac468 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -7828,6 +7828,8 @@ static int patch_alc269(struct hda_codec *codec)
- 		spec->gen.mixer_nid = 0;
- 		break;
- 	case 0x10ec0225:
-+		codec->power_save_node = 1;
-+		/* fall through */
- 	case 0x10ec0295:
- 	case 0x10ec0299:
- 		spec->codec_variant = ALC269_TYPE_ALC225;
+diff --git a/sound/core/oss/pcm_plugin.c b/sound/core/oss/pcm_plugin.c
+index 31cb2acf8afcc..9b588c6a6f099 100644
+--- a/sound/core/oss/pcm_plugin.c
++++ b/sound/core/oss/pcm_plugin.c
+@@ -209,6 +209,8 @@ snd_pcm_sframes_t snd_pcm_plug_client_size(struct snd_pcm_substream *plug, snd_p
+ 	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		plugin = snd_pcm_plug_last(plug);
+ 		while (plugin && drv_frames > 0) {
++			if (drv_frames > plugin->buf_frames)
++				drv_frames = plugin->buf_frames;
+ 			plugin_prev = plugin->prev;
+ 			if (plugin->src_frames)
+ 				drv_frames = plugin->src_frames(plugin, drv_frames);
+@@ -220,6 +222,8 @@ snd_pcm_sframes_t snd_pcm_plug_client_size(struct snd_pcm_substream *plug, snd_p
+ 			plugin_next = plugin->next;
+ 			if (plugin->dst_frames)
+ 				drv_frames = plugin->dst_frames(plugin, drv_frames);
++			if (drv_frames > plugin->buf_frames)
++				drv_frames = plugin->buf_frames;
+ 			plugin = plugin_next;
+ 		}
+ 	} else
+@@ -248,11 +252,15 @@ snd_pcm_sframes_t snd_pcm_plug_slave_size(struct snd_pcm_substream *plug, snd_pc
+ 				if (frames < 0)
+ 					return frames;
+ 			}
++			if (frames > plugin->buf_frames)
++				frames = plugin->buf_frames;
+ 			plugin = plugin_next;
+ 		}
+ 	} else if (stream == SNDRV_PCM_STREAM_CAPTURE) {
+ 		plugin = snd_pcm_plug_last(plug);
+ 		while (plugin) {
++			if (frames > plugin->buf_frames)
++				frames = plugin->buf_frames;
+ 			plugin_prev = plugin->prev;
+ 			if (plugin->src_frames) {
+ 				frames = plugin->src_frames(plugin, frames);
 -- 
 2.20.1
 
