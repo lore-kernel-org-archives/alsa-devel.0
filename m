@@ -7,58 +7,57 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 452C6C2D0E9
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 19:12:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 30CACC43331
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 19:13:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C75B420719
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 19:12:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AEF53206E6
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 19:13:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="S2N+Ap4+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C75B420719
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="W4QSb9wT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AEF53206E6
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2D25D1680;
-	Thu, 26 Mar 2020 20:11:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D25D1680
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0144E167A;
+	Thu, 26 Mar 2020 20:12:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0144E167A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585249947;
-	bh=U+d05L90CS4C2u2NA4pUjfD5/as61Wcl73FmxUyFcXc=;
+	s=default; t=1585249989;
+	bh=YYyOWLP8tyPsNmFcriLMMo1ASAi/gAQeqJtLDHLDU24=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=S2N+Ap4+VRI0JqAqzXKr1r2GsE1at2D5gTEuHEVWv3Wm2UDJi6uv5trHbu4VchzKU
-	 x/dgxjiI+h/Q7aWcCzmYA1D7bFT9OZC6qFpQSPUm5fjCBtoSzl26RmF8YyLH6q0CWU
-	 PKuprk0Wuf/it+MXFlYGdvXxIh2HBUlflGLi+180=
+	b=W4QSb9wTUmUWn0u09vXerysUB6e1Rf0g2rtY6hRsUCXcwrdrvz2ytlpD5EwhOup4m
+	 RBEHTK7KfN00IxEPkgg9JgIWkujIq6F5xGYK7Ic2Z0zdlzVI4Ehks4hcEM1ZObcGak
+	 Z8m+mwnUfmlcDsYFzlgjkcd52WJXxUULRkBsYHpw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1FED2F80306;
-	Thu, 26 Mar 2020 20:05:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C64F0F802FE;
+	Thu, 26 Mar 2020 20:05:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 76BA2F80306; Thu, 26 Mar 2020 20:05:38 +0100 (CET)
+ id 88CC5F80315; Thu, 26 Mar 2020 20:05:46 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 19129F802FE;
- Thu, 26 Mar 2020 20:05:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 19129F802FE
+ by alsa1.perex.cz (Postfix) with ESMTP id 1D1D4F802FE
+ for <alsa-devel@alsa-project.org>; Thu, 26 Mar 2020 20:05:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D1D4F802FE
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 671767FA;
- Thu, 26 Mar 2020 12:05:33 -0700 (PDT)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D40537FA;
+ Thu, 26 Mar 2020 12:05:37 -0700 (PDT)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DEAFC3F71F;
- Thu, 26 Mar 2020 12:05:32 -0700 (PDT)
-Date: Thu, 26 Mar 2020 19:05:31 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 586DC3F71F;
+ Thu, 26 Mar 2020 12:05:37 -0700 (PDT)
+Date: Thu, 26 Mar 2020 19:05:35 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Yong Zhi <yong.zhi@intel.com>
-Subject: Applied "ASoC: intel: sof_da7219_max98373: Add speaker switch" to the
- asoc tree
-In-Reply-To: <20200325213245.28247-3-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20200325213245.28247-3-pierre-louis.bossart@linux.intel.com>
+To: Curtis Malainey <cujomalainey@chromium.org>
+Subject: Applied "ASoC: Intel: Make glk+rt5682 echo ref dynamic" to the asoc
+ tree
+In-Reply-To: <20200325213245.28247-2-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20200325213245.28247-2-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Cc: Bhat@alsa-project.org, alsa-devel@alsa-project.org, tiwai@suse.de,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Mark Brown <broonie@kernel.org>, Uday M <uday.m.bhat@intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,7 +75,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: intel: sof_da7219_max98373: Add speaker switch
+   ASoC: Intel: Make glk+rt5682 echo ref dynamic
 
 has been applied to the asoc tree at
 
@@ -101,153 +100,36 @@ to this mail.
 Thanks,
 Mark
 
-From 90c49d6a1f2446ae61b3631b4d8950842a4b3edf Mon Sep 17 00:00:00 2001
-From: Yong Zhi <yong.zhi@intel.com>
-Date: Wed, 25 Mar 2020 16:32:43 -0500
-Subject: [PATCH] ASoC: intel: sof_da7219_max98373: Add speaker switch
+From d60b55c9edaed31e8e0c961f42237dcb5c83deb8 Mon Sep 17 00:00:00 2001
+From: Curtis Malainey <cujomalainey@chromium.org>
+Date: Wed, 25 Mar 2020 16:32:42 -0500
+Subject: [PATCH] ASoC: Intel: Make glk+rt5682 echo ref dynamic
 
-Add "Spk Switch" and associated widget, route to max98360a
-speaker amp for power saving, also remove the speaker_amp_init()
-callback with complete separated tables for max98373 and max98360a.
+Without the dynamic flag to allow runtime routing, the card cannot
+probe on chromebooks because SOF is constantly waiting for the link.
+Adding flag back to allow upstream kernels to work on rt5682 based
+chromebooks since SOF can now ignore the hard coded front end.
 
-Signed-off-by: Bhat, Uday M <uday.m.bhat@intel.com>
+Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Yong Zhi <yong.zhi@intel.com>
-Link: https://lore.kernel.org/r/20200325213245.28247-3-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20200325213245.28247-2-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/sof_da7219_max98373.c | 67 +++++++++++---------
- 1 file changed, 37 insertions(+), 30 deletions(-)
+ sound/soc/intel/boards/glk_rt5682_max98357a.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/intel/boards/sof_da7219_max98373.c b/sound/soc/intel/boards/sof_da7219_max98373.c
-index 6d210ba06d19..239d8ffdbccd 100644
---- a/sound/soc/intel/boards/sof_da7219_max98373.c
-+++ b/sound/soc/intel/boards/sof_da7219_max98373.c
-@@ -72,11 +72,17 @@ static const struct snd_kcontrol_new controls[] = {
- static const struct snd_kcontrol_new m98360a_controls[] = {
- 	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
- 	SOC_DAPM_PIN_SWITCH("Headset Mic"),
-+	SOC_DAPM_PIN_SWITCH("Spk"),
- };
- 
-+/* For MAX98373 amp */
- static const struct snd_soc_dapm_widget widgets[] = {
- 	SND_SOC_DAPM_HP("Headphone Jack", NULL),
- 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-+
-+	SND_SOC_DAPM_SPK("Left Spk", NULL),
-+	SND_SOC_DAPM_SPK("Right Spk", NULL),
-+
- 	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
- 			    platform_clock_control, SND_SOC_DAPM_POST_PMD |
- 			    SND_SOC_DAPM_PRE_PMU),
-@@ -90,17 +96,33 @@ static const struct snd_soc_dapm_route audio_map[] = {
- 
- 	{ "Headphone Jack", NULL, "Platform Clock" },
- 	{ "Headset Mic", NULL, "Platform Clock" },
-+
-+	{ "Left Spk", NULL, "Left BE_OUT" },
-+	{ "Right Spk", NULL, "Right BE_OUT" },
- };
- 
--/* For MAX98373 amp */
--static const struct snd_soc_dapm_widget max98373_widgets[] = {
--	SND_SOC_DAPM_SPK("Left Spk", NULL),
--	SND_SOC_DAPM_SPK("Right Spk", NULL),
-+/* For MAX98360A amp */
-+static const struct snd_soc_dapm_widget max98360a_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-+	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-+
-+	SND_SOC_DAPM_SPK("Spk", NULL),
-+
-+	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
-+			    platform_clock_control, SND_SOC_DAPM_POST_PMD |
-+			    SND_SOC_DAPM_PRE_PMU),
- };
- 
--static const struct snd_soc_dapm_route max98373_map[] = {
--	{ "Left Spk", NULL, "Left BE_OUT" },
--	{ "Right Spk", NULL, "Right BE_OUT" },
-+static const struct snd_soc_dapm_route max98360a_map[] = {
-+	{ "Headphone Jack", NULL, "HPL" },
-+	{ "Headphone Jack", NULL, "HPR" },
-+
-+	{ "MIC", NULL, "Headset Mic" },
-+
-+	{ "Headphone Jack", NULL, "Platform Clock" },
-+	{ "Headset Mic", NULL, "Platform Clock" },
-+
-+	{"Spk", NULL, "Speaker"},
- };
- 
- static struct snd_soc_jack headset;
-@@ -144,21 +166,6 @@ static int da7219_codec_init(struct snd_soc_pcm_runtime *rtd)
- 	return ret;
- }
- 
--static int speaker_amp_init(struct snd_soc_pcm_runtime *rtd)
--{
--	int ret;
--
--	/* Add widgets */
--	ret = snd_soc_dapm_new_controls(&rtd->card->dapm, max98373_widgets,
--					ARRAY_SIZE(max98373_widgets));
--	if (ret)
--		return ret;
--
--	/* Add routes */
--	return snd_soc_dapm_add_routes(&rtd->card->dapm, max98373_map,
--				       ARRAY_SIZE(max98373_map));
--}
--
- static int ssp1_hw_params(struct snd_pcm_substream *substream,
- 			      struct snd_pcm_hw_params *params)
- {
-@@ -249,8 +256,9 @@ SND_SOC_DAILINK_DEF(ssp1_amps,
- 	DAILINK_COMP_ARRAY(
- 	/* Left */	COMP_CODEC(MAXIM_DEV0_NAME, MAX98373_CODEC_DAI),
- 	/* Right */	COMP_CODEC(MAXIM_DEV1_NAME, MAX98373_CODEC_DAI)));
--/* For the driver-less spk amp */
--SND_SOC_DAILINK_DEF(dummy, DAILINK_COMP_ARRAY(COMP_DUMMY()));
-+
-+SND_SOC_DAILINK_DEF(ssp1_m98360a,
-+	DAILINK_COMP_ARRAY(COMP_CODEC("MX98360A:00", "HiFi")));
- 
- SND_SOC_DAILINK_DEF(dmic_pin,
- 	DAILINK_COMP_ARRAY(COMP_CPU("DMIC01 Pin")));
-@@ -282,7 +290,6 @@ static struct snd_soc_dai_link dais[] = {
- 		.id = 0,
- 		.ignore_pmdown_time = 1,
- 		.no_pcm = 1,
--		.init = speaker_amp_init,
- 		.dpcm_playback = 1,
- 		.dpcm_capture = 1, /* IV feedback */
- 		.ops = &ssp1_ops,
-@@ -356,10 +363,10 @@ static struct snd_soc_card card_da7219_m98360a = {
- 	.num_links = ARRAY_SIZE(dais),
- 	.controls = m98360a_controls,
- 	.num_controls = ARRAY_SIZE(m98360a_controls),
--	.dapm_widgets = widgets,
--	.num_dapm_widgets = ARRAY_SIZE(widgets),
--	.dapm_routes = audio_map,
--	.num_dapm_routes = ARRAY_SIZE(audio_map),
-+	.dapm_widgets = max98360a_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(max98360a_widgets),
-+	.dapm_routes = max98360a_map,
-+	.num_dapm_routes = ARRAY_SIZE(max98360a_map),
- 	.fully_routed = true,
- 	.late_probe = card_late_probe,
- };
-@@ -383,7 +390,7 @@ static int audio_probe(struct platform_device *pdev)
- 			.no_pcm = 1,
- 			.dpcm_playback = 1,
- 			.ignore_pmdown_time = 1,
--			SND_SOC_DAILINK_REG(ssp1_pin, dummy, platform) };
-+			SND_SOC_DAILINK_REG(ssp1_pin, ssp1_m98360a, platform) };
- 	}
- 
- 	INIT_LIST_HEAD(&ctx->hdmi_pcm_list);
+diff --git a/sound/soc/intel/boards/glk_rt5682_max98357a.c b/sound/soc/intel/boards/glk_rt5682_max98357a.c
+index ea1de8b3f3cd..3c576b33b9c6 100644
+--- a/sound/soc/intel/boards/glk_rt5682_max98357a.c
++++ b/sound/soc/intel/boards/glk_rt5682_max98357a.c
+@@ -409,6 +409,7 @@ static struct snd_soc_dai_link geminilake_dais[] = {
+ 		.init = NULL,
+ 		.capture_only = 1,
+ 		.nonatomic = 1,
++		.dynamic = 1,
+ 		SND_SOC_DAILINK_REG(echoref, dummy, platform),
+ 	},
+ 	[GLK_DPCM_AUDIO_REF_CP] = {
 -- 
 2.20.1
 
