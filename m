@@ -2,80 +2,69 @@ Return-Path: <SRS0=OLeW=5L=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA16CC43331
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 09:21:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9141C43331
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 09:30:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4471720719
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 09:21:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 298272073E
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 09:30:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tEZWrVyy";
-	dkim=pass (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="dpTzvrm5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4471720719
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VYjLBluV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 298272073E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A3D401664;
-	Thu, 26 Mar 2020 10:20:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3D401664
+	by alsa0.perex.cz (Postfix) with ESMTPS id 76A9F1665;
+	Thu, 26 Mar 2020 10:29:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 76A9F1665
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585214502;
-	bh=4xVRCuuuQVzi4Y1H5zzGhkRYIbN9GUZrg74uLD+rjMg=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1585215043;
+	bh=1qZp59S8/KSguhKAVgIrqSMKncwS1CkfVuxP0vHUetc=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tEZWrVyyk3e/kQE9SEkvZ/95eTnUggGfbJ/iKXkUhmtNPG6AJUkySowpQfuDXsC59
-	 X0hSi2Ey1PU6VG0GmKI2gbPE1pZjOcNmzHB1DEw+AqAH4sPWCXsAORSLScDxPHuqvZ
-	 l2Sb1K62k9VTb/r7HngYBonIJgJ6B8dRoR3OmSlg=
+	b=VYjLBluVFNL3hSQ3BC1zJvrrs91wmytnxcwCK9Y/fX0+j2qkZh1B1+SQV+UJWgqKg
+	 nCjk7uy44X9bNNJUP++ZnHP1kwRA3SBva5MqcT3+so6MgIAXNzYxsxD1lWIUV5cfeP
+	 l4TCaHjpfEZTsfEa1Qb4MFeVPBS4cF++7I2oN/VA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3AD94F801F9;
-	Thu, 26 Mar 2020 10:20:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 03FA7F80095;
+	Thu, 26 Mar 2020 10:29:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 475F1F80227; Thu, 26 Mar 2020 10:20:51 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ id 55811F80227; Thu, 26 Mar 2020 10:29:49 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 273F1F8011B
- for <alsa-devel@alsa-project.org>; Thu, 26 Mar 2020 10:20:44 +0100 (CET)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 18F9DA0040;
- Thu, 26 Mar 2020 10:20:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 18F9DA0040
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1585214443; bh=P38DdsVe+YFLR9AwHvz3DrIKXB5uNDim2TdvvAs3P4g=;
- h=Subject:To:References:Cc:From:Date:In-Reply-To:From;
- b=dpTzvrm5W3miq2tO4IhbhNboxvbzdXVD5Nq/pihGkd5e84CMUcTHNcXv9or8nwRqh
- VBqsWg98bhZbtTn6dxsVDo+NVOBrfzmsJnMI9QCw+y/ba094UfRxNOk83iElkUA2XB
- sCkyfUbgdkt0J8UFkD7QEfHBZ4KsgZLy7UcsnvoY=
-Received: from p50.perex-int.cz (unknown [192.168.100.94])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Thu, 26 Mar 2020 10:20:40 +0100 (CET)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0C6DAF80095
+ for <alsa-devel@alsa-project.org>; Thu, 26 Mar 2020 10:29:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C6DAF80095
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 6F210AF47;
+ Thu, 26 Mar 2020 09:29:43 +0000 (UTC)
+Date: Thu, 26 Mar 2020 10:29:43 +0100
+Message-ID: <s5h1rpfihvc.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Jaroslav Kysela <perex@perex.cz>
 Subject: Re: [PATCH] quirk for Pioneer DJ DJM-250MK2 usb sound card
-To: =?UTF-8?B?RnJhbnRpxaFlayBLdcSNZXJh?= <konference@frantovo.cz>,
- alsa-devel@alsa-project.org
+In-Reply-To: <83fa897f-035b-5f81-4052-4bba757f6205@perex.cz>
 References: <e1e0dbc4-7fd0-ac7a-9b15-1f89172257e5@frantovo.cz>
  <5e798ba2-8385-e723-3f3a-b7e32da6520e@frantovo.cz>
-From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <83fa897f-035b-5f81-4052-4bba757f6205@perex.cz>
-Date: Thu, 26 Mar 2020 10:20:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <5e798ba2-8385-e723-3f3a-b7e32da6520e@frantovo.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+ <83fa897f-035b-5f81-4052-4bba757f6205@perex.cz>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: Takashi Iwai <tiwai@suse.de>
+Cc: =?UTF-8?B?RnJhbnRpxaFlayBLdcSNZXJh?= <konference@frantovo.cz>,
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,83 +80,91 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 04. 03. 20 v 17:03 František Kučera napsal(a):
-> Dne 24. 02. 20 v 17:29 František Kučera napsal(a):
->> Hello,
->>
->> I have created a quirk that adds support for the Pioneer DJ DJM-250MK2 mixer (acts like a USB sound card, but Vendor Specific Class).
->>
->> Output (from computer to card) is working: 8 channels, 48 000 Hz, S24_3LE.
->>
->> Input is not working. I tried, but I was unable to make it working even under an officially supported OS with Pioneer drivers - Audacity or Mixxx see the channels, but there is no signal. It probably works only with Pioneer proprietary application. But I hope that even mere output support will be useful for someone. (it is usable for playback, just not for DVS)
->>
->> Franta
->>
->> Signed-off-by: František Kučera <franta-linux@frantovo.cz>
->> ---
->>   sound/usb/quirks-table.h | 42 ++++++++++++++++++++++++++++++++++++++++++
->>   1 file changed, 42 insertions(+)
->>
->> diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
->> index d187aa6d50db..dcaf9eed9a41 100644
->> --- a/sound/usb/quirks-table.h
->> +++ b/sound/usb/quirks-table.h
->> @@ -3592,5 +3592,47 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
->>                  }
->>          }
->>   },
->> +{
->> +       /*
->> +        * Pioneer DJ DJM-250MK2
->> +        * PCM is 8 channels out @ 48 fixed (endpoints 0x01).
->> +        * The output from computer to the mixer is usable.
->> +        *
->> +        * The input (phono or line to computer) is not working.
->> +        * It should be at endpoint 0x82 and probably also 8 channels,
->> +        * but it seems that it works only with Pioneer proprietary software.
->> +        * Even on officially supported OS, the Audacity was unable to record
->> +        * and Mixxx to recognize the control vinyls.
->> +        */
->> +       USB_DEVICE_VENDOR_SPEC(0x2b73, 0x0017),
->> +       .driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
->> +               .ifnum = QUIRK_ANY_INTERFACE,
->> +               .type = QUIRK_COMPOSITE,
->> +               .data = (const struct snd_usb_audio_quirk[]) {
->> +                       {
->> +                               .ifnum = 0,
->> +                               .type = QUIRK_AUDIO_FIXED_ENDPOINT,
->> +                               .data = &(const struct audioformat) {
->> +                                       .formats = SNDRV_PCM_FMTBIT_S24_3LE,
->> +                                       .channels = 8, // outputs
->> +                                       .iface = 0,
->> +                                       .altsetting = 1,
->> +                                       .altset_idx = 1,
->> +                                       .endpoint = 0x01,
->> +                                       .ep_attr = USB_ENDPOINT_XFER_ISOC|
->> +                                               USB_ENDPOINT_SYNC_ASYNC,
->> +                                       .rates = SNDRV_PCM_RATE_48000,
->> +                                       .rate_min = 48000,
->> +                                       .rate_max = 48000,
->> +                                       .nr_rates = 1,
->> +                                       .rate_table = (unsigned int[]) { 48000 }
->> +                               }
->> +                       },
->> +                       {
->> +                               .ifnum = -1
->> +                       }
->> +               }
->> +       }
->> +},
->>   
->>   #undef USB_DEVICE_VENDOR_SPEC
->>
-> Can anyone review this patch please?
+On Thu, 26 Mar 2020 10:20:39 +0100,
+Jaroslav Kysela wrote:
+> 
+> Dne 04. 03. 20 v 17:03 František Kučera napsal(a):
+> > Dne 24. 02. 20 v 17:29 František Kučera napsal(a):
+> >> Hello,
+> >>
+> >> I have created a quirk that adds support for the Pioneer DJ DJM-250MK2 mixer (acts like a USB sound card, but Vendor Specific Class).
+> >>
+> >> Output (from computer to card) is working: 8 channels, 48 000 Hz, S24_3LE.
+> >>
+> >> Input is not working. I tried, but I was unable to make it working even under an officially supported OS with Pioneer drivers - Audacity or Mixxx see the channels, but there is no signal. It probably works only with Pioneer proprietary application. But I hope that even mere output support will be useful for someone. (it is usable for playback, just not for DVS)
+> >>
+> >> Franta
+> >>
+> >> Signed-off-by: František Kučera <franta-linux@frantovo.cz>
+> >> ---
+> >>   sound/usb/quirks-table.h | 42 ++++++++++++++++++++++++++++++++++++++++++
+> >>   1 file changed, 42 insertions(+)
+> >>
+> >> diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+> >> index d187aa6d50db..dcaf9eed9a41 100644
+> >> --- a/sound/usb/quirks-table.h
+> >> +++ b/sound/usb/quirks-table.h
+> >> @@ -3592,5 +3592,47 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
+> >>                  }
+> >>          }
+> >>   },
+> >> +{
+> >> +       /*
+> >> +        * Pioneer DJ DJM-250MK2
+> >> +        * PCM is 8 channels out @ 48 fixed (endpoints 0x01).
+> >> +        * The output from computer to the mixer is usable.
+> >> +        *
+> >> +        * The input (phono or line to computer) is not working.
+> >> +        * It should be at endpoint 0x82 and probably also 8 channels,
+> >> +        * but it seems that it works only with Pioneer proprietary software.
+> >> +        * Even on officially supported OS, the Audacity was unable to record
+> >> +        * and Mixxx to recognize the control vinyls.
+> >> +        */
+> >> +       USB_DEVICE_VENDOR_SPEC(0x2b73, 0x0017),
+> >> +       .driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
+> >> +               .ifnum = QUIRK_ANY_INTERFACE,
+> >> +               .type = QUIRK_COMPOSITE,
+> >> +               .data = (const struct snd_usb_audio_quirk[]) {
+> >> +                       {
+> >> +                               .ifnum = 0,
+> >> +                               .type = QUIRK_AUDIO_FIXED_ENDPOINT,
+> >> +                               .data = &(const struct audioformat) {
+> >> +                                       .formats = SNDRV_PCM_FMTBIT_S24_3LE,
+> >> +                                       .channels = 8, // outputs
+> >> +                                       .iface = 0,
+> >> +                                       .altsetting = 1,
+> >> +                                       .altset_idx = 1,
+> >> +                                       .endpoint = 0x01,
+> >> +                                       .ep_attr = USB_ENDPOINT_XFER_ISOC|
+> >> +                                               USB_ENDPOINT_SYNC_ASYNC,
+> >> +                                       .rates = SNDRV_PCM_RATE_48000,
+> >> +                                       .rate_min = 48000,
+> >> +                                       .rate_max = 48000,
+> >> +                                       .nr_rates = 1,
+> >> +                                       .rate_table = (unsigned int[]) { 48000 }
+> >> +                               }
+> >> +                       },
+> >> +                       {
+> >> +                               .ifnum = -1
+> >> +                       }
+> >> +               }
+> >> +       }
+> >> +},
+> >>     #undef USB_DEVICE_VENDOR_SPEC
+> >>
+> > Can anyone review this patch please?
+> 
+> Takashi, could you put this patch to sound-next ? A partial support is
+> better than no support.
 
-Takashi, could you put this patch to sound-next ? A partial support is better 
-than no support.
+František, could you resend the patch in a proper format?
+The original post couldn't be applied via git-am, as it was
+malformed.
 
-						Jaroslav
+Also, please try to adjust the subject line and the changelog text to
+be suitable for merging to the tree.
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+
+thanks,
+
+Takashi
