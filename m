@@ -2,105 +2,62 @@ Return-Path: <SRS0=OLeW=5L=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EB85C43331
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 15:10:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9AAAC43331
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 15:11:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EADEF206F8
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 15:10:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 556F0206F8
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 15:11:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="txk5ti70";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=mind.be header.i=@mind.be header.b="eP2WmCJr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EADEF206F8
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mind.be
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="i5sfWIsr"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 556F0206F8
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 477B91665;
-	Thu, 26 Mar 2020 16:09:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 477B91665
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9BD7E1667;
+	Thu, 26 Mar 2020 16:11:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9BD7E1667
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585235413;
-	bh=hAgR+LP5IwX+LWWAHRkH28o9ATxjJcCI+rhKNwqGWSY=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=txk5ti700Xcrl38+tqzrKLokNXrrRNaQSXoGgxvUGP5PxtcUom06rZe3avyjqk8yd
-	 f7FwqYDZ8eLn5ChuVOWYMbGUQU9NFPZ6FPdETphq0VNWQ9gmT1tXIWZyP9bPcBJZtk
-	 ewcg3mafUKohnxTe8QtJKLZLu/CP5F8b/L0x3jQM=
+	s=default; t=1585235513;
+	bh=9vBbn1uomAVwvzP3tNAMbnxK7ep7/IBeeulz3bW/Nhw=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=i5sfWIsrpUXp9rLnD39kKQKkD1XPgQrE7cCxnwWwJOb8KoADqjvlZru/3PjTZPEID
+	 Camvl8/5+5lTa/np+Dh6GWFG6VmNJDeBfv4tfvrzS+ZECAJYC/USwlPAD38Advla8x
+	 YZb1luoalfaHlIA26F6SQKbqyvsCvYXl6VerFGFk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A8596F8011E;
-	Thu, 26 Mar 2020 16:09:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 30BEDF801F9;
+	Thu, 26 Mar 2020 16:11:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1972CF8011E; Thu, 26 Mar 2020 16:09:21 +0100 (CET)
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
- [IPv6:2a00:1450:4864:20::32d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E1120F8011E
- for <alsa-devel@alsa-project.org>; Thu, 26 Mar 2020 16:09:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1120F8011E
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=mind.be header.i=@mind.be
- header.b="eP2WmCJr"
-Received: by mail-wm1-x32d.google.com with SMTP id a81so7400478wmf.5
- for <alsa-devel@alsa-project.org>; Thu, 26 Mar 2020 08:09:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mind.be; s=google;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-transfer-encoding:content-language;
- bh=E0GJUQPVsMd5TbC3erUCDPkE9bbfDzqYVz1yZ36hycs=;
- b=eP2WmCJrPPRXBcY/RYIcIP4Wqy0UcogG/a65EmNz4OfNcp0/DMu19YCMbsMqvVw6+g
- tgT7whXqfQTzf2xQz3EL+VOOagUBw3/7Bn6r+ayeoENr+eS4h9Bsuz4EyMT0OHV+HYVN
- h+u37NoAay4nNGFkV0ogNEinbvVmx7a6Bilzwb+EadzQOrkdBJpHmrPWaLA4i7+xPx3a
- jSXpZwcuFmsvXKQOwvrtPqxJOsyZq3iLy3ovqlcKJ7MvokpZlbthZlTvttS72Yk/Nc7z
- gTn8VKHbbAYRoK2VfrMRkYArXo95lauU3Yg6FUPwTiapyOvJx6oYdasw6B7Xc6MPa2/x
- uTEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-transfer-encoding
- :content-language;
- bh=E0GJUQPVsMd5TbC3erUCDPkE9bbfDzqYVz1yZ36hycs=;
- b=cazWt3KYG1hu2Ke/eAaYtboZkqo1EtVLhS0hkxxOvKLNvk21Hasm3w6ywweEKbIqO4
- DSrVw4oC+m3Q4Vc2J8SdvSO4RYRFtvTkyJKIjC2p4kl6bn7zyja5DDrM08y4EI9ymcT3
- SczAzvDWc0ldEKDX7fm1PzxmIfx3Trnq2X7TeNdumt2rVm5jaKzu28fG+4Vq5QjkKdRO
- 0kIPP236iqQQw73uoGGHL+wudPTsj4lcWALbor20T7xycOieq+HgDJXgaBD82kvRYOOi
- KEk+bn/sQMuLptNzUzbYU+HsxA4yUVwxOUWOg5P275FBiwSBGYLlKYRKx4iNUOfzeFbl
- lTLw==
-X-Gm-Message-State: ANhLgQ0Iw+Ui3lJoacOzR2/A2LYVcu2SnUcsvsr1sOKt+CfPYqwsek2m
- P6fvE/Etim5DhtLLoWnyptcALzIyt6uDPQ==
-X-Google-Smtp-Source: ADFU+vvNmnw9M189Loxx6OENxpQCbO/5e2+radcNIN6Y5Fh23XaAcmUzBACxoomX+YwWUSWbeNmgCg==
-X-Received: by 2002:a1c:9e97:: with SMTP id h145mr373802wme.61.1585235355218; 
- Thu, 26 Mar 2020 08:09:15 -0700 (PDT)
-Received: from ?IPv6:2a02:a03f:c930:4300:2b1a:3a25:ef77:ee9e?
- ([2a02:a03f:c930:4300:2b1a:3a25:ef77:ee9e])
- by smtp.gmail.com with ESMTPSA id d6sm3979031wrw.10.2020.03.26.08.09.14
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 26 Mar 2020 08:09:14 -0700 (PDT)
-Subject: RESEND: [PATCH 6/6 V3] ASoC: tas5756m: Add DT binding document
-To: Rob Herring <robh@kernel.org>
-References: <20200308142509.27765-1-charles-antoine.couret@mind.be>
- <20200308142509.27765-7-charles-antoine.couret@mind.be>
- <20200309203847.GA31358@bogus>
-From: Couret Charles-Antoine <charles-antoine.couret@mind.be>
-X-Pep-Version: 2.0
-Message-ID: <d732e234-dcb9-d352-2f31-22c5801e8c28@mind.be>
-Date: Thu, 26 Mar 2020 16:09:13 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+ id 4B856F80249; Thu, 26 Mar 2020 16:11:02 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 8B13BF80095
+ for <alsa-devel@alsa-project.org>; Thu, 26 Mar 2020 16:10:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B13BF80095
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3D0967FA;
+ Thu, 26 Mar 2020 08:10:56 -0700 (PDT)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AB7F13F71E;
+ Thu, 26 Mar 2020 08:10:55 -0700 (PDT)
+From: Mark Brown <broonie@kernel.org>
+To: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Liam Girdwood <lgirdwood@gmail.com>
+Subject: [PATCH] ASoC: pxa: Select regmap from AC'97 machines
+Date: Thu, 26 Mar 2020 15:10:53 +0000
+Message-Id: <20200326151053.40806-1-broonie@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20200309203847.GA31358@bogus>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -116,46 +73,84 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Le 09/03/2020 =C3=A0 21:38, Rob Herring a =C3=A9crit=C2=A0:
-> On Sun,  8 Mar 2020 15:25:09 +0100, Charles-Antoine Couret wrote:
->> Document the bindings for the tas5756m driver.
->>
->> Signed-off-by: Charles-Antoine Couret <charles-antoine.couret@mind.be>=
+regmap needs to be selected by users which for machine drivers that select
+AC'97 CODEC drivers means that we need to also select regmap to ensure that
+the CODEC driver will build if nothing else enables regmap as is likely for
+such systems.
 
->> ---
->>  .../devicetree/bindings/sound/tas5756m.yaml   | 64 ++++++++++++++++++=
-+
->>  1 file changed, 64 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/sound/tas5756m.y=
-aml
->>
-> My bot found errors running 'make dt_binding_check' on your patch:
->
-> Error: Documentation/devicetree/bindings/sound/tas5756m.example.dts:23.=
-37-38 syntax error
-> FATAL ERROR: Unable to parse input tree
-> scripts/Makefile.lib:311: recipe for target 'Documentation/devicetree/b=
-indings/sound/tas5756m.example.dt.yaml' failed
-> make[1]: *** [Documentation/devicetree/bindings/sound/tas5756m.example.=
-dt.yaml] Error 1
-> Makefile:1262: recipe for target 'dt_binding_check' failed
-> make: *** [dt_binding_check] Error 2
->
-> See https://patchwork.ozlabs.org/patch/1251057
-> Please check and re-submit.
-Hi Rob,
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/pxa/Kconfig | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-I don't understand this issue. My example is based on a real device tree
-and it works fine.
-
-I don't have access to your
-"Documentation/devicetree/bindings/sound/tas5756m.example.dts" file so I
-can not reproduce it. I executed your script before sending the patch
-(but without extracting the example) and it was fine.
-
-Can you explain the issue please?
-
-Thank you in advance and have a nice day,
-
-Charles-Antoine Couret
+diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
+index 295cfffa4646..1f0c08b06c1d 100644
+--- a/sound/soc/pxa/Kconfig
++++ b/sound/soc/pxa/Kconfig
+@@ -81,6 +81,7 @@ config SND_PXA2XX_SOC_TOSA
+ 	depends on SND_PXA2XX_SOC && MACH_TOSA
+ 	depends on MFD_TC6393XB
+ 	depends on AC97_BUS=n
++	select REGMAP
+ 	select SND_PXA2XX_SOC_AC97
+ 	select SND_SOC_WM9712
+ 	help
+@@ -91,6 +92,7 @@ config SND_PXA2XX_SOC_E740
+ 	tristate "SoC AC97 Audio support for e740"
+ 	depends on SND_PXA2XX_SOC && MACH_E740
+ 	depends on AC97_BUS=n
++	select REGMAP
+ 	select SND_SOC_WM9705
+ 	select SND_PXA2XX_SOC_AC97
+ 	help
+@@ -101,6 +103,7 @@ config SND_PXA2XX_SOC_E750
+ 	tristate "SoC AC97 Audio support for e750"
+ 	depends on SND_PXA2XX_SOC && MACH_E750
+ 	depends on AC97_BUS=n
++	select REGMAP
+ 	select SND_SOC_WM9705
+ 	select SND_PXA2XX_SOC_AC97
+ 	help
+@@ -111,6 +114,7 @@ config SND_PXA2XX_SOC_E800
+ 	tristate "SoC AC97 Audio support for e800"
+ 	depends on SND_PXA2XX_SOC && MACH_E800
+ 	depends on AC97_BUS=n
++	select REGMAP
+ 	select SND_SOC_WM9712
+ 	select SND_PXA2XX_SOC_AC97
+ 	help
+@@ -122,6 +126,7 @@ config SND_PXA2XX_SOC_EM_X270
+ 	depends on SND_PXA2XX_SOC && (MACH_EM_X270 || MACH_EXEDA || \
+ 			MACH_CM_X300)
+ 	depends on AC97_BUS=n
++	select REGMAP
+ 	select SND_PXA2XX_SOC_AC97
+ 	select SND_SOC_WM9712
+ 	help
+@@ -133,6 +138,7 @@ config SND_PXA2XX_SOC_PALM27X
+ 	depends on SND_PXA2XX_SOC && (MACH_PALMLD || MACH_PALMTX || \
+ 			MACH_PALMT5 || MACH_PALMTE2)
+ 	depends on AC97_BUS=n
++	select REGMAP
+ 	select SND_PXA2XX_SOC_AC97
+ 	select SND_SOC_WM9712
+ 	help
+@@ -164,6 +170,7 @@ config SND_SOC_ZYLONITE
+ 	depends on SND_PXA2XX_SOC && MACH_ZYLONITE
+ 	depends on AC97_BUS=n
+ 	select SND_PXA2XX_SOC_AC97
++	select REGMAP
+ 	select SND_PXA_SOC_SSP
+ 	select SND_SOC_WM9713
+ 	help
+@@ -193,6 +200,7 @@ config SND_PXA2XX_SOC_MIOA701
+ 	tristate "SoC Audio support for MIO A701"
+ 	depends on SND_PXA2XX_SOC && MACH_MIOA701
+ 	depends on AC97_BUS=n
++	select REGMAP
+ 	select SND_PXA2XX_SOC_AC97
+ 	select SND_SOC_WM9713
+ 	help
+-- 
+2.20.1
 
