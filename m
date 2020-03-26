@@ -2,83 +2,90 @@ Return-Path: <SRS0=OLeW=5L=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIM_ADSP_ALL,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF994C43331
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 17:21:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BF17C43331
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 17:26:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0461420409
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 17:21:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AD42020737
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 17:26:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="O+Qodr3Z";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=domdv.de header.i=@domdv.de header.b="esx2JXwk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0461420409
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=domdv.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jLxPrQ4L";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="KWyLYlFq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AD42020737
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 142611674;
-	Thu, 26 Mar 2020 18:20:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 142611674
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1B8851665;
+	Thu, 26 Mar 2020 18:25:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B8851665
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585243288;
-	bh=8ruYhPBxpfhZ1HgYnYOdvyekQGeuQb0Tr8c8iz0W5Ck=;
-	h=Subject:From:To:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1585243561;
+	bh=QL0qxUXRw+YhB7WGSfSv8aDkbWewWo73uusg4++o6ZA=;
+	h=Date:Subject:From:To:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=O+Qodr3Z3CRgAGt7/Qn/yxnGacjbwhuHqMWZQ940vJQKWbjn9+M3bq8Un0Yt+xiXj
-	 5H9ZMdYfX4e86LxZe/wvDekctCiguxTtOG4yAxnigxuBoTTyjqnRRUQp+mijP8THPU
-	 GORXMzrSoxAXaNV+zFDudjwtgvsG8uVjCGhNhIjQ=
+	b=jLxPrQ4LaSWgEoLdlY05wvOIaB47Avu21tpENxB5bJa608qSyNJnUjXr0qDtqnC3J
+	 L+hhD27yifRkMaD0FEZAjBcC0ZmT/M9i/Auk4xezzJIwoEbt4/sRZ/Jscgoy/4WfzJ
+	 i14QDGmvmLcdHOx1qxhxYPkBV9wuic1t9VUzGODs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E08E8F80249;
-	Thu, 26 Mar 2020 18:20:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 99BCCF801F9;
+	Thu, 26 Mar 2020 18:25:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 22E53F80258; Thu, 26 Mar 2020 18:20:07 +0100 (CET)
-Received: from zeus.domdv.de (zeus.domdv.de [IPv6:2a02:2ad0:c00::11])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id C92A4F80227; Thu, 26 Mar 2020 18:25:09 +0100 (CET)
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com
+ [IPv6:2607:f8b0:4864:20::449])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8EC3EF801F9
- for <alsa-devel@alsa-project.org>; Thu, 26 Mar 2020 18:20:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8EC3EF801F9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 370E0F80095
+ for <alsa-devel@alsa-project.org>; Thu, 26 Mar 2020 18:25:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 370E0F80095
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=domdv.de header.i=@domdv.de
- header.b="esx2JXwk"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=domdv.de;
- s=dk3; h=Content-Transfer-Encoding:MIME-Version:Content-Type:Date:Cc:To:From
- :Subject:Message-ID:Sender:Reply-To:Content-ID:Content-Description:
- Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
- In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
- List-Post:List-Owner:List-Archive;
- bh=yRQUZJGC3YBmGTFhSSBts+sowM/96XsTMNgEOnZBmCg=; b=esx2JXwkaa0hq5eUqNpjBIgSXs
- MA0rmDxqK2+SAHmNJ05QtliWnypq+7/L37XkHMKj5D4lXKaUYM0tfQT3wamObFz1XhenuIYGMCULr
- 6OK/ItETFV5fkE5JG0jSWNzbRDJToIcoaKFUdWhJiL58gnZCN1EMg65Uzg9of2vvz3Jo=;
-Received: from [fd06:8443:81a1:74b0::212] (port=2054 helo=castor.lan.domdv.de)
- by zeus.domdv.de with esmtpsa
- (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256) (Exim 4.92.3)
- (envelope-from <ast@domdv.de>)
- id 1jHW9f-00040T-VT; Thu, 26 Mar 2020 18:18:56 +0100
-Received: from woody.lan.domdv.de ([10.1.9.28]
- helo=host028-server-9.lan.domdv.de)
- by castor.lan.domdv.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
- (Exim 4.92.3) (envelope-from <ast@domdv.de>)
- id 1jHW9f-0004La-QK; Thu, 26 Mar 2020 18:18:55 +0100
-Message-ID: <00decacc4cac6a9d88fe696f94a077284fb8bbb9.camel@domdv.de>
-Subject: PATCH: ALSA USB MIDI: Fix case when USB MIDI interface has more
- than one extra endpoint descriptor
-From: Andreas Steinmetz <ast@domdv.de>
-To: alsa-devel@alsa-project.org
-Date: Thu, 26 Mar 2020 18:18:55 +0100
-Organization: D.O.M. Datenverarbeitung GmbH
+ dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
+ header.b="KWyLYlFq"
+Received: by mail-pf1-x449.google.com with SMTP id s8so5651665pfd.23
+ for <alsa-devel@alsa-project.org>; Thu, 26 Mar 2020 10:25:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=date:message-id:mime-version:subject:from:to:cc;
+ bh=ORmUSUtMfRthZSgIgNleni10jnUu0xs0YPL13mNZ/NE=;
+ b=KWyLYlFq8o7jxlgnH34j8OJCRRgm9gRtqNBxsed6Sny4C9RwfW3BeeY9a6m4u6EprZ
+ 51jFmyCOmO6jdJbz9Gojk0W0yqxaGHiKuvfw+PMMx9Dn94DfxOJOqANHt1sRzrgPOcKS
+ onFTQsuLpVi0OMF5J+uMwUOevghKQ/8nossTFzpxr6Rd6j3r/Rxzl3AQl7LCVckSdOea
+ XNzOSeHEasDpxzI/PNifOa1bD8eBbuRyR8F5B8soLWsGmZIvWFX1OSjiWRZbr9fYRkhI
+ zNn3CDOHn7Nd/ylM0m6dVLoOCxlfUgvUu0nhrkxxXt/MICG2+GHIdtNmoeBL/DG/k0Fq
+ jaEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+ bh=ORmUSUtMfRthZSgIgNleni10jnUu0xs0YPL13mNZ/NE=;
+ b=L8mgK2yufoEt3CBgquHpnANGuhQg0cqWyflm2faVbumlxJBhqtaXTy822hv9ub6u/x
+ dXXc5Am4SJ9qXmFtrt1PLRQDTjAsKc3O1HLmCbtsgjKYyy5sYT9Mcqj9XuuyKF9yUsFX
+ prol1MjAlgm9t+n557LBV6fOaRyhQwAMbTICbTAa8dQB6az6ftsd2iSNtE0gUd99JHGi
+ pxq7jgdaeMZ9l3as5WIAZ024aK1eY5/630e/jfah4KX4YsmA7Qy2/PoMr1t0sa+No6Dn
+ z4JhaggUSkptJjlKvYDXldm1hd6J6w/4m9NNzqovSuxciXCNpiMYLZiETb6H47czAQQ2
+ gbLA==
+X-Gm-Message-State: ANhLgQ1NKpgI1kAUc/AsHmsPR3AijkBa2925sZSCDpgDiOuVbwRQXBk9
+ rbOBg57YccwFUfwxmibxLP0ciiK7UOgfghI=
+X-Google-Smtp-Source: ADFU+vvCdNOQiMzb+fr/gId1WBu7XP5LxEcHieyQODvhu5d5p5y0gwZ285rhR8riYbkBhrsbX5Li/GnKFW5lkPs=
+X-Received: by 2002:a63:844a:: with SMTP id k71mr9541565pgd.79.1585243503414; 
+ Thu, 26 Mar 2020 10:25:03 -0700 (PDT)
+Date: Thu, 26 Mar 2020 10:24:57 -0700
+Message-Id: <20200326172457.205493-1-saravanak@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.25.1.696.g5e7596f4ac-goog
+Subject: [PATCH v2] slimbus: core: Set fwnode for a device when setting of_node
+From: Saravana Kannan <saravanak@google.com>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.30.5 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: clemens@ladisch.de
+Cc: alsa-devel@alsa-project.org, Saravana Kannan <saravanak@google.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org,
+ John Stultz <john.stultz@linaro.org>, kernel-team@android.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,57 +101,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The Miditech MIDIFACE 16x16 (USB ID 1290:1749) has more than one extra
-endpoint descriptor.
+When setting the of_node for a newly created device, also set the
+fwnode. This allows fw_devlink feature to work for slimbus devices.
 
-The first extra descriptor is: 0x06 0x30 0x00 0x00 0x00 0x00
+Signed-off-by: Saravana Kannan <saravanak@google.com>
+---
+ drivers/slimbus/core.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-As the code in snd_usbmidi_get_ms_info() looks only at the
-first extra descriptor to find USB_DT_CS_ENDPOINT the device
-as such is recognized but there is neither input nor output
-configured.
-
-The patch iterates through the extra descriptors to find the
-proper one. With this patch the device is correctly configured.
-
-Signed-off-by: Andreas Steinmetz <ast@domdv.de>
-
---- a/sourd/usb/midi.c	2020-03-26 17:34:40.073929497 +0100
-+++ b/sound/usb/midi.c	2020-03-26 17:43:39.123252612 +0100
-@@ -1839,7 +1839,8 @@
- 	struct usb_host_endpoint *hostep;
- 	struct usb_endpoint_descriptor *ep;
- 	struct usb_ms_endpoint_descriptor *ms_ep;
--	int i, epidx;
-+	int i, epidx, extralen;
-+	unsigned char *extra;
+diff --git a/drivers/slimbus/core.c b/drivers/slimbus/core.c
+index 526e3215d8fe..44228a5b246d 100644
+--- a/drivers/slimbus/core.c
++++ b/drivers/slimbus/core.c
+@@ -163,8 +163,10 @@ static int slim_add_device(struct slim_controller *ctrl,
+ 	INIT_LIST_HEAD(&sbdev->stream_list);
+ 	spin_lock_init(&sbdev->stream_list_lock);
  
- 	intf = umidi->iface;
- 	if (!intf)
-@@ -1863,12 +1864,21 @@
- 		ep = get_ep_desc(hostep);
- 		if (!usb_endpoint_xfer_bulk(ep) && !usb_endpoint_xfer_int(ep))
- 			continue;
--		ms_ep = (struct usb_ms_endpoint_descriptor *)hostep->extra;
--		if (hostep->extralen < 4 ||
-+		extralen = hostep->extralen;
-+		extra = hostep->extra;
-+repeat:		ms_ep = (struct usb_ms_endpoint_descriptor *)extra;
-+		if (extralen < 1)
-+			continue;
-+		if (extralen < 4 ||
- 		    ms_ep->bLength < 4 ||
- 		    ms_ep->bDescriptorType != USB_DT_CS_ENDPOINT ||
--		    ms_ep->bDescriptorSubtype != UAC_MS_GENERAL)
--			continue;
-+		    ms_ep->bDescriptorSubtype != UAC_MS_GENERAL) {
-+			if (!extra[0])
-+				continue;
-+			extralen -= extra[0];
-+			extra += extra[0];
-+			goto repeat;
-+		}
- 		if (usb_endpoint_dir_out(ep)) {
- 			if (endpoints[epidx].out_ep) {
- 				if (++epidx >= MIDI_MAX_ENDPOINTS) {
+-	if (node)
++	if (node) {
+ 		sbdev->dev.of_node = of_node_get(node);
++		sbdev->dev.fwnode = of_fwnode_handle(node);
++	}
+ 
+ 	dev_set_name(&sbdev->dev, "%x:%x:%x:%x",
+ 				  sbdev->e_addr.manf_id,
+-- 
+2.25.1.696.g5e7596f4ac-goog
 
