@@ -7,58 +7,57 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4EDF4C43331
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 19:09:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A64F1C2D0E5
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 19:10:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CE60320658
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 19:09:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 34604206E6
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 19:10:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pmvA1tuN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CE60320658
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SFH6owE2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 34604206E6
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 31D791678;
-	Thu, 26 Mar 2020 20:08:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31D791678
+	by alsa0.perex.cz (Postfix) with ESMTPS id 872661676;
+	Thu, 26 Mar 2020 20:09:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 872661676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585249745;
-	bh=TiB3+XCwwVN0hKu4rQ5rlT/2AvbbLvqMjTtmHi6CmPs=;
+	s=default; t=1585249841;
+	bh=ES0RR4Wsg1TrtCBuKqPpXDUW8uVWHtsui0hVjyclpSc=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=pmvA1tuNiFbNTV/8EHA/4vkweCJ566y2s5d2PaO47hiV0fdTNqXGggI1egiVhXmID
-	 ZqpweE8575NH4GkOUEt/0f/MmpwK4y+6ezn2yUdacWuH1FUznwW3m7oyRN9VQFpXnv
-	 cc0VIO489eHjSfuh+RDLIJ+PqBroYuYuZlFl6I6g=
+	b=SFH6owE2JKTJ3Phe8tjP+rAp4/woWuomLb+ACHaQ2YmUE8VsUMjyGiDvjV/NYHYQG
+	 uO3iEVHKYMtOGLIXRmjIPSsLp4QO8naSucoobZN4RY9DgVTumMMNPkbWR8Tf23ABGB
+	 8wk/rMchT5Qrj09WPcsnsYGCtMR4RZd3zjcyppmA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 44FF2F802BC;
-	Thu, 26 Mar 2020 20:05:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 87D65F802E1;
+	Thu, 26 Mar 2020 20:05:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 422AFF802BD; Thu, 26 Mar 2020 20:05:10 +0100 (CET)
+ id A5FD3F802E2; Thu, 26 Mar 2020 20:05:23 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 8387BF802A8
- for <alsa-devel@alsa-project.org>; Thu, 26 Mar 2020 20:05:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8387BF802A8
+ by alsa1.perex.cz (Postfix) with ESMTP id CF07DF802DD
+ for <alsa-devel@alsa-project.org>; Thu, 26 Mar 2020 20:05:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF07DF802DD
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D65D87FA;
- Thu, 26 Mar 2020 12:05:06 -0700 (PDT)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0E3D57FA;
+ Thu, 26 Mar 2020 12:05:20 -0700 (PDT)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5A6763F71F;
- Thu, 26 Mar 2020 12:05:06 -0700 (PDT)
-Date: Thu, 26 Mar 2020 19:05:04 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 878FB3F71F;
+ Thu, 26 Mar 2020 12:05:19 -0700 (PDT)
+Date: Thu, 26 Mar 2020 19:05:18 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: Applied "ASoC: SOF: Intel: hda: do not leave clock gating off upon
- error" to the asoc tree
-In-Reply-To: <20200325211233.27394-5-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20200325211233.27394-5-pierre-louis.bossart@linux.intel.com>
+To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: Applied "ASoC: SOF: Intel: hda: Improve DSP state logging" to the
+ asoc tree
+In-Reply-To: <20200325211233.27394-2-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20200325211233.27394-2-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,7 +75,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: Intel: hda: do not leave clock gating off upon error
+   ASoC: SOF: Intel: hda: Improve DSP state logging
 
 has been applied to the asoc tree at
 
@@ -101,67 +100,83 @@ to this mail.
 Thanks,
 Mark
 
-From aae5a6e92f3f3411fdf6abcf41ecadd771abaa4b Mon Sep 17 00:00:00 2001
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Date: Wed, 25 Mar 2020 16:12:32 -0500
-Subject: [PATCH] ASoC: SOF: Intel: hda: do not leave clock gating off upon
- error
+From 66de6beb933d373224f350834fbab68093d24627 Mon Sep 17 00:00:00 2001
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Date: Wed, 25 Mar 2020 16:12:29 -0500
+Subject: [PATCH] ASoC: SOF: Intel: hda: Improve DSP state logging
 
-The misc clock gating (MISCBDCGE) is disabled for controller reset and
-reenabled once reset is complete.
+Improve the DSP power state logs with the state names
+instead of values.
 
-Fix the case when error happens during reset, and clock gating is
-left disabled. The clock gating should be reenabled also in this case.
-
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Link: https://lore.kernel.org/r/20200325211233.27394-5-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20200325211233.27394-2-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/intel/hda-ctrl.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ sound/soc/sof/intel/hda-dsp.c | 43 +++++++++++++++++++++++++++++++++--
+ 1 file changed, 41 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda-ctrl.c b/sound/soc/sof/intel/hda-ctrl.c
-index 871b71a15a63..93be6fc51ccd 100644
---- a/sound/soc/sof/intel/hda-ctrl.c
-+++ b/sound/soc/sof/intel/hda-ctrl.c
-@@ -183,7 +183,7 @@ int hda_dsp_ctrl_init_chip(struct snd_sof_dev *sdev, bool full_reset)
- 		ret = hda_dsp_ctrl_link_reset(sdev, true);
- 		if (ret < 0) {
- 			dev_err(sdev->dev, "error: failed to reset HDA controller\n");
--			return ret;
-+			goto err;
- 		}
+diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
+index 79ce52c32ef1..c396b7ef0328 100644
+--- a/sound/soc/sof/intel/hda-dsp.c
++++ b/sound/soc/sof/intel/hda-dsp.c
+@@ -452,6 +452,46 @@ static int hda_dsp_set_D0_state(struct snd_sof_dev *sdev,
+ 	return ret;
+ }
  
- 		usleep_range(500, 1000);
-@@ -192,7 +192,7 @@ int hda_dsp_ctrl_init_chip(struct snd_sof_dev *sdev, bool full_reset)
- 		ret = hda_dsp_ctrl_link_reset(sdev, false);
- 		if (ret < 0) {
- 			dev_err(sdev->dev, "error: failed to exit HDA controller reset\n");
--			return ret;
-+			goto err;
- 		}
- 
- 		usleep_range(1000, 1200);
-@@ -202,7 +202,8 @@ int hda_dsp_ctrl_init_chip(struct snd_sof_dev *sdev, bool full_reset)
- 	/* check to see if controller is ready */
- 	if (!snd_hdac_chip_readb(bus, GCTL)) {
- 		dev_dbg(bus->dev, "controller not ready!\n");
--		return -EBUSY;
-+		ret = -EBUSY;
-+		goto err;
++/* helper to log DSP state */
++static void hda_dsp_state_log(struct snd_sof_dev *sdev)
++{
++	switch (sdev->dsp_power_state.state) {
++	case SOF_DSP_PM_D0:
++		switch (sdev->dsp_power_state.substate) {
++		case SOF_HDA_DSP_PM_D0I0:
++			dev_dbg(sdev->dev, "Current DSP power state: D0I0\n");
++			break;
++		case SOF_HDA_DSP_PM_D0I3:
++			dev_dbg(sdev->dev, "Current DSP power state: D0I3\n");
++			break;
++		default:
++			dev_dbg(sdev->dev, "Unknown DSP D0 substate: %d\n",
++				sdev->dsp_power_state.substate);
++			break;
++		}
++		break;
++	case SOF_DSP_PM_D1:
++		dev_dbg(sdev->dev, "Current DSP power state: D1\n");
++		break;
++	case SOF_DSP_PM_D2:
++		dev_dbg(sdev->dev, "Current DSP power state: D2\n");
++		break;
++	case SOF_DSP_PM_D3_HOT:
++		dev_dbg(sdev->dev, "Current DSP power state: D3_HOT\n");
++		break;
++	case SOF_DSP_PM_D3:
++		dev_dbg(sdev->dev, "Current DSP power state: D3\n");
++		break;
++	case SOF_DSP_PM_D3_COLD:
++		dev_dbg(sdev->dev, "Current DSP power state: D3_COLD\n");
++		break;
++	default:
++		dev_dbg(sdev->dev, "Unknown DSP power state: %d\n",
++			sdev->dsp_power_state.state);
++		break;
++	}
++}
++
+ /*
+  * All DSP power state transitions are initiated by the driver.
+  * If the requested state change fails, the error is simply returned.
+@@ -511,8 +551,7 @@ int hda_dsp_set_power_state(struct snd_sof_dev *sdev,
  	}
  
- 	/* Accept unsolicited responses */
-@@ -268,6 +269,7 @@ int hda_dsp_ctrl_init_chip(struct snd_sof_dev *sdev, bool full_reset)
- 
- 	bus->chip_init = true;
- 
-+err:
- 	hda_dsp_ctrl_misc_clock_gating(sdev, true);
- 
+ 	sdev->dsp_power_state = *target_state;
+-	dev_dbg(sdev->dev, "New DSP state %d substate %d\n",
+-		target_state->state, target_state->substate);
++	hda_dsp_state_log(sdev);
  	return ret;
+ }
+ 
 -- 
 2.20.1
 
