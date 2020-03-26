@@ -2,95 +2,64 @@ Return-Path: <SRS0=OLeW=5L=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 160C0C43331
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 18:23:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FF22C43331
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 19:05:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9143520722
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 18:23:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CD75220658
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 19:05:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="N8X5lGxW";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HUtCop/N"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9143520722
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nRRyeCdy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CD75220658
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E2CD21665;
-	Thu, 26 Mar 2020 19:22:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E2CD21665
+	by alsa0.perex.cz (Postfix) with ESMTPS id 096301665;
+	Thu, 26 Mar 2020 20:04:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 096301665
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585247024;
-	bh=DxL0ioGFfMwjynlJlfLLWjyZe5fDeVy9kFRmHMW+Zn4=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=N8X5lGxWP6ts7em7NUol8qStHC67c5CRow0nFl3uCkb2sUs6DGZJJ3snYj6K6XAUr
-	 up9+CowXOHtU+QnguIFlpsUZx9EWmFSvyps+cadGHrI+PQvenQKZ2UOxii9jgXem4s
-	 nXRAi/HwqHX/1TEU0VzM12ctkPLmMEwm6Gj1y9h0=
+	s=default; t=1585249543;
+	bh=PX1n56XeQ1mW18TorsGjR64P/xn5v2qjoVYp6XDQiVs=;
+	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=nRRyeCdyazDBolieIA6fORJ56hf/GlrgRBTdHH6LnGfu5sMo6iDB74tcgWJpJRlPn
+	 bW4VRBXTOnYht6JxOzqxzfbli4G8GZjOD7f/ZN1zVjqvQjm4StJA63toaJjSJiC0SK
+	 pL5sonpms0z/YLPVe51o2OL4pv5uxW/+BEQMwE9Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5D305F801F9;
-	Thu, 26 Mar 2020 19:22:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 906DAF80227;
+	Thu, 26 Mar 2020 20:04:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 83B6EF80227; Thu, 26 Mar 2020 19:22:51 +0100 (CET)
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com
- [IPv6:2607:f8b0:4864:20::344])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 01F44F80095
- for <alsa-devel@alsa-project.org>; Thu, 26 Mar 2020 19:22:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01F44F80095
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="HUtCop/N"
-Received: by mail-ot1-x344.google.com with SMTP id a49so6895152otc.11
- for <alsa-devel@alsa-project.org>; Thu, 26 Mar 2020 11:22:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=DxL0ioGFfMwjynlJlfLLWjyZe5fDeVy9kFRmHMW+Zn4=;
- b=HUtCop/N6lNjtvAtGQl3Qm5p2bBQhIlBLItjnkXj5ZKpT5PppcECix1JfOr48DRO4N
- iavXL5M/GEeqb3r7Rq1msl0BQpyCkLqK3Ve3pqzIdC6/icFLJOyCL9QRML8kWvfUN11K
- Vkiskx8LkX2OP9kr+Cz/F9EvejTbX1PmtkMqV46iwKlukQuniFRu6D4dWMNtzALmN4UO
- J1LRjHyLjfvSqMiX3w0CJ1TIfV6fo6HEMGexJE7SVUYm2AJB+o+ujQdi1DIL73voh0rn
- xuEeof8e+1XOjoagT1sxjmbw2ll+A+tolU0hhsZx2FK5/sjirw0gamQH41k21r31Ku5p
- uXLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=DxL0ioGFfMwjynlJlfLLWjyZe5fDeVy9kFRmHMW+Zn4=;
- b=ZjmYEJwaX9IEC925edQlsRSQvbd+2MVRKIDanhso6cvRR4hq4KOchLa7Qg1TT4gzkY
- C+AQLxaGkji1+CsbXs5wB5caDj4OQwbIPsUDTX3TKsGZakAyutzB2Ck5Wd4jKUVEQ8BL
- RLWu7CZDRbsI/HjQuJbR3DCuFZxbJKWiAZZPWzr5WFFJctnUX5RJW3fsPhENmTy6qO/0
- M6VnTBYg0g/VvXlYYx1PGmukVwrv43bQlKUh5+uq9WIoqReG5nzAVuTxcE2lv0QHw1Xf
- GvPiiqBOEIsMzsNRKMAWLfXAm5tfeLAWCx7+aGFvJu85j3GQ9ndW0f/nyzE2+fBgijpd
- uOFA==
-X-Gm-Message-State: ANhLgQ10rX/k4kSz5I6df72KTr7Vfkp6E8LNMABkd0WPbB3v4WQsonSt
- ayyQ6YGhuOMoSD9CtciFXSEwN70NLQgtwLw/h2sBgg==
-X-Google-Smtp-Source: ADFU+vtksZIIqekjFEA7AN+kJkboACCxTSymovsuMEtWozINteGk0Gs4LbaZXL36DLqPAcNR1Tpr+XMZlCKK2XGsTF0=
-X-Received: by 2002:a4a:b507:: with SMTP id r7mr6304216ooo.70.1585246964628;
- Thu, 26 Mar 2020 11:22:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200326172457.205493-1-saravanak@google.com>
-In-Reply-To: <20200326172457.205493-1-saravanak@google.com>
-From: John Stultz <john.stultz@linaro.org>
-Date: Thu, 26 Mar 2020 11:22:32 -0700
-Message-ID: <CALAqxLV6CQkJXdtBD5vUOvLYCe10sEUPa4RS9PuGB2=e4-80rQ@mail.gmail.com>
-Subject: Re: [PATCH v2] slimbus: core: Set fwnode for a device when setting
- of_node
-To: Saravana Kannan <saravanak@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Linux-ALSA <alsa-devel@alsa-project.org>,
- Android Kernel Team <kernel-team@android.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- lkml <linux-kernel@vger.kernel.org>
+ id AF2ECF80227; Thu, 26 Mar 2020 20:04:50 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 6FD4AF80095
+ for <alsa-devel@alsa-project.org>; Thu, 26 Mar 2020 20:04:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6FD4AF80095
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 58D797FA;
+ Thu, 26 Mar 2020 12:04:44 -0700 (PDT)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CFD9C3F71F;
+ Thu, 26 Mar 2020 12:04:43 -0700 (PDT)
+Date: Thu, 26 Mar 2020 19:04:42 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: pxa: Enable AC'97 bus support for PXA machines" to the
+ asoc tree
+In-Reply-To: <20200326180116.21375-1-broonie@kernel.org>
+Message-Id: <applied-20200326180116.21375-1-broonie@kernel.org>
+X-Patchwork-Hint: ignore
+Cc: alsa-devel@alsa-project.org, KernelCI <bot@kernelci.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Daniel Mack <daniel@zonque.org>, Robert Jarzmik <robert.jarzmik@free.fr>,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,14 +75,117 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Mar 26, 2020 at 10:25 AM Saravana Kannan <saravanak@google.com> wrote:
->
-> When setting the of_node for a newly created device, also set the
-> fwnode. This allows fw_devlink feature to work for slimbus devices.
->
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
+The patch
 
-Tested-by: John Stultz <john.stultz@linaro.org>
+   ASoC: pxa: Enable AC'97 bus support for PXA machines
 
-thanks!
--john
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+From 27821f4ddedcaea0f16d03ee3432bddb729daba5 Mon Sep 17 00:00:00 2001
+From: Mark Brown <broonie@kernel.org>
+Date: Thu, 26 Mar 2020 18:01:16 +0000
+Subject: [PATCH] ASoC: pxa: Enable AC'97 bus support for PXA machines
+
+The AC'97 based PXA machines currently don't build reliably as they don't
+ensure that an AC'97 bus is built, causing at least eseries_pxa_defconfig
+to fail to build. Add selects to fix this.
+
+Reported-by: KernelCI <bot@kernelci.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20200326180116.21375-1-broonie@kernel.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/pxa/Kconfig | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
+index 1f0c08b06c1d..d4c0f580a565 100644
+--- a/sound/soc/pxa/Kconfig
++++ b/sound/soc/pxa/Kconfig
+@@ -82,6 +82,8 @@ config SND_PXA2XX_SOC_TOSA
+ 	depends on MFD_TC6393XB
+ 	depends on AC97_BUS=n
+ 	select REGMAP
++	select AC97_BUS_NEW
++	select AC97_BUS_COMPAT
+ 	select SND_PXA2XX_SOC_AC97
+ 	select SND_SOC_WM9712
+ 	help
+@@ -93,6 +95,8 @@ config SND_PXA2XX_SOC_E740
+ 	depends on SND_PXA2XX_SOC && MACH_E740
+ 	depends on AC97_BUS=n
+ 	select REGMAP
++	select AC97_BUS_NEW
++	select AC97_BUS_COMPAT
+ 	select SND_SOC_WM9705
+ 	select SND_PXA2XX_SOC_AC97
+ 	help
+@@ -116,6 +120,8 @@ config SND_PXA2XX_SOC_E800
+ 	depends on AC97_BUS=n
+ 	select REGMAP
+ 	select SND_SOC_WM9712
++	select AC97_BUS_NEW
++	select AC97_BUS_COMPAT
+ 	select SND_PXA2XX_SOC_AC97
+ 	help
+ 	  Say Y if you want to add support for SoC audio on the
+@@ -127,6 +133,8 @@ config SND_PXA2XX_SOC_EM_X270
+ 			MACH_CM_X300)
+ 	depends on AC97_BUS=n
+ 	select REGMAP
++	select AC97_BUS_NEW
++	select AC97_BUS_COMPAT
+ 	select SND_PXA2XX_SOC_AC97
+ 	select SND_SOC_WM9712
+ 	help
+@@ -139,6 +147,8 @@ config SND_PXA2XX_SOC_PALM27X
+ 			MACH_PALMT5 || MACH_PALMTE2)
+ 	depends on AC97_BUS=n
+ 	select REGMAP
++	select AC97_BUS_NEW
++	select AC97_BUS_COMPAT
+ 	select SND_PXA2XX_SOC_AC97
+ 	select SND_SOC_WM9712
+ 	help
+@@ -169,6 +179,8 @@ config SND_SOC_ZYLONITE
+ 	tristate "SoC Audio support for Marvell Zylonite"
+ 	depends on SND_PXA2XX_SOC && MACH_ZYLONITE
+ 	depends on AC97_BUS=n
++	select AC97_BUS_NEW
++	select AC97_BUS_COMPAT
+ 	select SND_PXA2XX_SOC_AC97
+ 	select REGMAP
+ 	select SND_PXA_SOC_SSP
+@@ -201,6 +213,8 @@ config SND_PXA2XX_SOC_MIOA701
+ 	depends on SND_PXA2XX_SOC && MACH_MIOA701
+ 	depends on AC97_BUS=n
+ 	select REGMAP
++	select AC97_BUS_NEW
++	select AC97_BUS_COMPAT
+ 	select SND_PXA2XX_SOC_AC97
+ 	select SND_SOC_WM9713
+ 	help
+-- 
+2.20.1
+
