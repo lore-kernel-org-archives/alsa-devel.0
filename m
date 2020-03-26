@@ -2,69 +2,83 @@ Return-Path: <SRS0=OLeW=5L=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIM_ADSP_ALL,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48AE1C43331
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 17:20:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF994C43331
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 17:21:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C0E6220409
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 17:20:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0461420409
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 17:21:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ee3i7lBV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C0E6220409
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ivitera.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="O+Qodr3Z";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=domdv.de header.i=@domdv.de header.b="esx2JXwk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0461420409
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=domdv.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 21F321666;
-	Thu, 26 Mar 2020 18:19:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21F321666
+	by alsa0.perex.cz (Postfix) with ESMTPS id 142611674;
+	Thu, 26 Mar 2020 18:20:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 142611674
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585243234;
-	bh=ksT3A9f5EH2Q7DNwYO2axGEtGw1mEzEaIYIXGYzZnnk=;
-	h=To:From:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1585243288;
+	bh=8ruYhPBxpfhZ1HgYnYOdvyekQGeuQb0Tr8c8iz0W5Ck=;
+	h=Subject:From:To:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=Ee3i7lBVTFXtFiVd9vDq84p1/+rsD1yzCxYa4AOZMMP4HGmB3bPoh9P3wbWWj8JxP
-	 aMbydmRhW7Nl7w2qtSpQWB+vzYX9j8qBP6ZdU+Gig0DO4MQ/2+Rh/MSAag/KQ0RjSN
-	 LNeQA4ud8XdCLAc+4ZUmbOO03vsVjhXKXJ1i6LNk=
+	b=O+Qodr3Z3CRgAGt7/Qn/yxnGacjbwhuHqMWZQ940vJQKWbjn9+M3bq8Un0Yt+xiXj
+	 5H9ZMdYfX4e86LxZe/wvDekctCiguxTtOG4yAxnigxuBoTTyjqnRRUQp+mijP8THPU
+	 GORXMzrSoxAXaNV+zFDudjwtgvsG8uVjCGhNhIjQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 87FDEF80095;
-	Thu, 26 Mar 2020 18:19:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E08E8F80249;
+	Thu, 26 Mar 2020 18:20:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4B210F80227; Thu, 26 Mar 2020 18:19:41 +0100 (CET)
-Received: from cable.insite.cz (cable.insite.cz [84.242.75.189])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 22E53F80258; Thu, 26 Mar 2020 18:20:07 +0100 (CET)
+Received: from zeus.domdv.de (zeus.domdv.de [IPv6:2a02:2ad0:c00::11])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CA1A7F80095
- for <alsa-devel@alsa-project.org>; Thu, 26 Mar 2020 18:19:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA1A7F80095
-Received: from localhost (localhost [127.0.0.1])
- by cable.insite.cz (Postfix) with ESMTP id CF2EDA1EE2D10
- for <alsa-devel@alsa-project.org>; Thu, 26 Mar 2020 18:19:34 +0100 (CET)
-Received: from cable.insite.cz ([84.242.75.189])
- by localhost (server.insite.cz [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id DNg9ejvah0By for <alsa-devel@alsa-project.org>;
- Thu, 26 Mar 2020 18:19:29 +0100 (CET)
-Received: from [192.168.105.191] (dustin.pilsfree.net [81.201.58.138])
- (Authenticated sender: pavel)
- by cable.insite.cz (Postfix) with ESMTPSA id 8CDE9A1ED7777
- for <alsa-devel@alsa-project.org>; Thu, 26 Mar 2020 18:19:29 +0100 (CET)
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Functionality of pcm_notify in snd-aloop?
-Message-ID: <b4af9071-f8d7-5b47-4d7a-c5743bd67394@ivitera.com>
-Date: Thu, 26 Mar 2020 18:19:24 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8EC3EF801F9
+ for <alsa-devel@alsa-project.org>; Thu, 26 Mar 2020 18:20:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8EC3EF801F9
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=domdv.de header.i=@domdv.de
+ header.b="esx2JXwk"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=domdv.de;
+ s=dk3; h=Content-Transfer-Encoding:MIME-Version:Content-Type:Date:Cc:To:From
+ :Subject:Message-ID:Sender:Reply-To:Content-ID:Content-Description:
+ Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+ In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+ List-Post:List-Owner:List-Archive;
+ bh=yRQUZJGC3YBmGTFhSSBts+sowM/96XsTMNgEOnZBmCg=; b=esx2JXwkaa0hq5eUqNpjBIgSXs
+ MA0rmDxqK2+SAHmNJ05QtliWnypq+7/L37XkHMKj5D4lXKaUYM0tfQT3wamObFz1XhenuIYGMCULr
+ 6OK/ItETFV5fkE5JG0jSWNzbRDJToIcoaKFUdWhJiL58gnZCN1EMg65Uzg9of2vvz3Jo=;
+Received: from [fd06:8443:81a1:74b0::212] (port=2054 helo=castor.lan.domdv.de)
+ by zeus.domdv.de with esmtpsa
+ (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256) (Exim 4.92.3)
+ (envelope-from <ast@domdv.de>)
+ id 1jHW9f-00040T-VT; Thu, 26 Mar 2020 18:18:56 +0100
+Received: from woody.lan.domdv.de ([10.1.9.28]
+ helo=host028-server-9.lan.domdv.de)
+ by castor.lan.domdv.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+ (Exim 4.92.3) (envelope-from <ast@domdv.de>)
+ id 1jHW9f-0004La-QK; Thu, 26 Mar 2020 18:18:55 +0100
+Message-ID: <00decacc4cac6a9d88fe696f94a077284fb8bbb9.camel@domdv.de>
+Subject: PATCH: ALSA USB MIDI: Fix case when USB MIDI interface has more
+ than one extra endpoint descriptor
+From: Andreas Steinmetz <ast@domdv.de>
+To: alsa-devel@alsa-project.org
+Date: Thu, 26 Mar 2020 18:18:55 +0100
+Organization: D.O.M. Datenverarbeitung GmbH
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.30.5 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+Cc: clemens@ladisch.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,20 +94,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+The Miditech MIDIFACE 16x16 (USB ID 1290:1749) has more than one extra
+endpoint descriptor.
 
-Please how is the module params pcm_notify supposed to be used, to do
-what the documentation says: Break capture when PCM format/rate/channels
-changes?
+The first extra descriptor is: 0x06 0x30 0x00 0x00 0x00 0x00
 
-Breaking capture side operation when the playback side changes the
-params is very useful, but I cannot find a way to use this param
-properly. When the capture side is open, the playback side cannot use a
-different parameter than the one currently used by the capture side (the
-configuration space is limited) - how can the param be changed then?
+As the code in snd_usbmidi_get_ms_info() looks only at the
+first extra descriptor to find USB_DT_CS_ENDPOINT the device
+as such is recognized but there is neither input nor output
+configured.
 
-Thanks a lot for help.
+The patch iterates through the extra descriptors to find the
+proper one. With this patch the device is correctly configured.
 
-Best regards,
+Signed-off-by: Andreas Steinmetz <ast@domdv.de>
 
-Pavel.
+--- a/sourd/usb/midi.c	2020-03-26 17:34:40.073929497 +0100
++++ b/sound/usb/midi.c	2020-03-26 17:43:39.123252612 +0100
+@@ -1839,7 +1839,8 @@
+ 	struct usb_host_endpoint *hostep;
+ 	struct usb_endpoint_descriptor *ep;
+ 	struct usb_ms_endpoint_descriptor *ms_ep;
+-	int i, epidx;
++	int i, epidx, extralen;
++	unsigned char *extra;
+ 
+ 	intf = umidi->iface;
+ 	if (!intf)
+@@ -1863,12 +1864,21 @@
+ 		ep = get_ep_desc(hostep);
+ 		if (!usb_endpoint_xfer_bulk(ep) && !usb_endpoint_xfer_int(ep))
+ 			continue;
+-		ms_ep = (struct usb_ms_endpoint_descriptor *)hostep->extra;
+-		if (hostep->extralen < 4 ||
++		extralen = hostep->extralen;
++		extra = hostep->extra;
++repeat:		ms_ep = (struct usb_ms_endpoint_descriptor *)extra;
++		if (extralen < 1)
++			continue;
++		if (extralen < 4 ||
+ 		    ms_ep->bLength < 4 ||
+ 		    ms_ep->bDescriptorType != USB_DT_CS_ENDPOINT ||
+-		    ms_ep->bDescriptorSubtype != UAC_MS_GENERAL)
+-			continue;
++		    ms_ep->bDescriptorSubtype != UAC_MS_GENERAL) {
++			if (!extra[0])
++				continue;
++			extralen -= extra[0];
++			extra += extra[0];
++			goto repeat;
++		}
+ 		if (usb_endpoint_dir_out(ep)) {
+ 			if (endpoints[epidx].out_ep) {
+ 				if (++epidx >= MIDI_MAX_ENDPOINTS) {
+
