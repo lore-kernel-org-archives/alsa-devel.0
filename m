@@ -6,67 +6,67 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B00FFC43331
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 23:35:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13A65C43331
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 23:35:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3874F20663
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 23:35:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8FFA2206F8
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 23:35:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PwQRDLI8";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="qxX1vHcJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3874F20663
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="B1GoWsi8";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="R/4FECVG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8FFA2206F8
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 94A141671;
-	Fri, 27 Mar 2020 00:34:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94A141671
+	by alsa0.perex.cz (Postfix) with ESMTPS id CCCD21668;
+	Fri, 27 Mar 2020 00:35:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CCCD21668
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585265712;
-	bh=BlfqdZa54NDq3OfYObDAkxKzjq23kbgBb8WXlxx7bxU=;
+	s=default; t=1585265751;
+	bh=DMDAmsX01Z1tF2K9W75nHKqQQTSG6LCtx+m5EJLBaZ4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PwQRDLI8NIrFSnxBZs7nRW4HCPXAyhenfqTuWsdooimmjN1JRfKN0k4x4dIozQie8
-	 nvF+JinaViFa+y+3JmJOxNKLp3jr3y9VdWrExRNSrQrv5xkZqhC/LiYMhgCDhQzq2k
-	 qKyAngjvNKo9lKMBucUpJVb1I7PnwivfbCeIqkWw=
+	b=B1GoWsi84gi3Z3d7AM8u/c1q9Wo2xI6CNf7iuDxJSBJYbMWN7C5yAu+JL96m6lWfl
+	 dYj/MbZCFG/U9/mtTwieGvPocC6FoN11qrkHSMVR4TB6niUuHwVhwBBM325e94bTYe
+	 TypB+Qd8VynH7A12Y5jIcEpA+WfI2gkKoFeasB8c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 863D7F8033D;
-	Fri, 27 Mar 2020 00:25:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EF885F8033E;
+	Fri, 27 Mar 2020 00:25:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E92B8F80345; Fri, 27 Mar 2020 00:25:37 +0100 (CET)
+ id 13E29F80339; Fri, 27 Mar 2020 00:25:37 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 10FA1F8033D
- for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 00:25:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10FA1F8033D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 26291F80339
+ for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 00:25:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26291F80339
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="qxX1vHcJ"
+ header.b="R/4FECVG"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 11B8920774;
- Thu, 26 Mar 2020 23:25:32 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id F251D208E0;
+ Thu, 26 Mar 2020 23:25:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1585265133;
- bh=BlfqdZa54NDq3OfYObDAkxKzjq23kbgBb8WXlxx7bxU=;
+ s=default; t=1585265132;
+ bh=DMDAmsX01Z1tF2K9W75nHKqQQTSG6LCtx+m5EJLBaZ4=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=qxX1vHcJK+w4gKVK9dJDKBYljjUwEA2uaWX6zs77oGd+7qdCfEhYddErsY7hWQA9n
- 72bThoDco2GZzG9x059lU8loWsMJB+Lte8ynWKqxS72nqHu9qcXuWvxXuDJe5gUgZE
- su0pZzhEnaAu3bWYDhLrv4zFCiQASJRgaEA63yqY=
+ b=R/4FECVGGKqCnyhX6SmrKvOfaJnJ3xlcYd3A++Drdr7wBYZ3vyAHcpc4MT7t9/nA1
+ 7ADg+HALouubT/CZYdE0xKnF7dcaAT17GMz/yjOl9YNNlHmahI3ftE6+hoG3JC/1XZ
+ wrcHdk8FXM9pt9fvXUa0q5SFUupTy+9RH4R5HdoM=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 6/7] ALSA: line6: Fix endless MIDI read loop
-Date: Thu, 26 Mar 2020 19:25:25 -0400
-Message-Id: <20200326232526.8349-6-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 5/7] ALSA: pcm: oss: Avoid plugin buffer overflow
+Date: Thu, 26 Mar 2020 19:25:24 -0400
+Message-Id: <20200326232526.8349-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200326232526.8349-1-sashal@kernel.org>
 References: <20200326232526.8349-1-sashal@kernel.org>
@@ -75,8 +75,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
- alsa-devel@alsa-project.org,
- syzbot+cce32521ee0a824c21f7@syzkaller.appspotmail.com
+ syzbot+e1fe9f44fb8ecf4fb5dd@syzkaller.appspotmail.com,
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,57 +94,70 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit d683469b3c93d7e2afd39e6e1970f24700eb7a68 ]
+[ Upstream commit f2ecf903ef06eb1bbbfa969db9889643d487e73a ]
 
-The MIDI input event parser of the LINE6 driver may enter into an
-endless loop when the unexpected data sequence is given, as it tries
-to continue the secondary bytes without termination.  Also, when the
-input data is too short, the parser returns a negative error, while
-the caller doesn't handle it properly.  This would lead to the
-unexpected behavior as well.
+Each OSS PCM plugins allocate its internal buffer per pre-calculation
+of the max buffer size through the chain of plugins (calling
+src_frames and dst_frames callbacks).  This works for most plugins,
+but the rate plugin might behave incorrectly.  The calculation in the
+rate plugin involves with the fractional position, i.e. it may vary
+depending on the input position.  Since the buffer size
+pre-calculation is always done with the offset zero, it may return a
+shorter size than it might be; this may result in the out-of-bound
+access as spotted by fuzzer.
 
-This patch addresses those issues by checking the return value
-correctly and handling the one-byte event in the parser properly.
+This patch addresses those possible buffer overflow accesses by simply
+setting the upper limit per the given buffer size for each plugin
+before src_frames() and after dst_frames() calls.
 
-The bug was reported by syzkaller.
-
-Reported-by: syzbot+cce32521ee0a824c21f7@syzkaller.appspotmail.com
+Reported-by: syzbot+e1fe9f44fb8ecf4fb5dd@syzkaller.appspotmail.com
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/000000000000033087059f8f8fa3@google.com
-Link: https://lore.kernel.org/r/20200309095922.30269-1-tiwai@suse.de
+Link: https://lore.kernel.org/r/000000000000b25ea005a02bcf21@google.com
+Link: https://lore.kernel.org/r/20200309082148.19855-1-tiwai@suse.de
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/line6/driver.c  | 2 +-
- sound/usb/line6/midibuf.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ sound/core/oss/pcm_plugin.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
-index 09189249d0d19..ea3a9bd05e687 100644
---- a/sound/usb/line6/driver.c
-+++ b/sound/usb/line6/driver.c
-@@ -306,7 +306,7 @@ static void line6_data_received(struct urb *urb)
- 				line6_midibuf_read(mb, line6->buffer_message,
- 						LINE6_MIDI_MESSAGE_MAXLEN);
- 
--			if (done == 0)
-+			if (done <= 0)
- 				break;
- 
- 			line6->message_length = done;
-diff --git a/sound/usb/line6/midibuf.c b/sound/usb/line6/midibuf.c
-index 36a610ba342ec..c931d48801ebe 100644
---- a/sound/usb/line6/midibuf.c
-+++ b/sound/usb/line6/midibuf.c
-@@ -163,7 +163,7 @@ int line6_midibuf_read(struct midi_buffer *this, unsigned char *data,
- 			int midi_length_prev =
- 			    midibuf_message_length(this->command_prev);
- 
--			if (midi_length_prev > 0) {
-+			if (midi_length_prev > 1) {
- 				midi_length = midi_length_prev - 1;
- 				repeat = 1;
- 			} else
+diff --git a/sound/core/oss/pcm_plugin.c b/sound/core/oss/pcm_plugin.c
+index c6888d76ca5e9..b08b2d2d804bd 100644
+--- a/sound/core/oss/pcm_plugin.c
++++ b/sound/core/oss/pcm_plugin.c
+@@ -209,6 +209,8 @@ snd_pcm_sframes_t snd_pcm_plug_client_size(struct snd_pcm_substream *plug, snd_p
+ 	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		plugin = snd_pcm_plug_last(plug);
+ 		while (plugin && drv_frames > 0) {
++			if (drv_frames > plugin->buf_frames)
++				drv_frames = plugin->buf_frames;
+ 			plugin_prev = plugin->prev;
+ 			if (plugin->src_frames)
+ 				drv_frames = plugin->src_frames(plugin, drv_frames);
+@@ -220,6 +222,8 @@ snd_pcm_sframes_t snd_pcm_plug_client_size(struct snd_pcm_substream *plug, snd_p
+ 			plugin_next = plugin->next;
+ 			if (plugin->dst_frames)
+ 				drv_frames = plugin->dst_frames(plugin, drv_frames);
++			if (drv_frames > plugin->buf_frames)
++				drv_frames = plugin->buf_frames;
+ 			plugin = plugin_next;
+ 		}
+ 	} else
+@@ -248,11 +252,15 @@ snd_pcm_sframes_t snd_pcm_plug_slave_size(struct snd_pcm_substream *plug, snd_pc
+ 				if (frames < 0)
+ 					return frames;
+ 			}
++			if (frames > plugin->buf_frames)
++				frames = plugin->buf_frames;
+ 			plugin = plugin_next;
+ 		}
+ 	} else if (stream == SNDRV_PCM_STREAM_CAPTURE) {
+ 		plugin = snd_pcm_plug_last(plug);
+ 		while (plugin) {
++			if (frames > plugin->buf_frames)
++				frames = plugin->buf_frames;
+ 			plugin_prev = plugin->prev;
+ 			if (plugin->src_frames) {
+ 				frames = plugin->src_frames(plugin, frames);
 -- 
 2.20.1
 
