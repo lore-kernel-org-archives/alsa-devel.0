@@ -1,4 +1,4 @@
-Return-Path: <SRS0=OLeW=5L=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=JTem=5M=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
@@ -7,52 +7,52 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F627C43331
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 19:10:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29064C2D0E5
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 15:36:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BE636206E6
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Mar 2020 19:10:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A6F3D20658
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 15:36:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Z2/VIhyd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BE636206E6
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OV5qjdfd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A6F3D20658
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1AB901675;
-	Thu, 26 Mar 2020 20:09:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1AB901675
+	by alsa0.perex.cz (Postfix) with ESMTPS id 91A17166D;
+	Fri, 27 Mar 2020 16:36:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 91A17166D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585249806;
-	bh=tWVwJbncxgFGfaHXkUVvCxp3hxIXFU+pUxmK9K4e010=;
+	s=default; t=1585323415;
+	bh=Ya3HsJty2c7Rcc6MSbgmBnrHTkfuGQO8uXIYAVoFNTM=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=Z2/VIhydpv6XoseYd7r9Dq7SqTNLHcloG0U8JGyd/54UNwzaK353crah2TaebMaf/
-	 eRiiwUCGcYh7TqCmxtKTWtxKSw0EtF8rr7uxSggtCw6LykHpX7b2YiDESA5gp9oQBG
-	 GzdM4KdMmzcTW+NvU/3zZ54HtXyUUG4C6tp76sKQ=
+	b=OV5qjdfdMj7HXpmHUqEN9/VtJxRdeT0wb4bXz4W/hmffkewmyfG606YQmfoVqpLRg
+	 Bt51xFyNgL0xAXGeUvtWVMM0l09VYNTz0/8ZdBldpMu710P0iUv4JUy5K3EfRNtck+
+	 lsDvbvvx3/cRinRacvai+CdGEqnIeIRLQtknShFE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7585AF802DC;
-	Thu, 26 Mar 2020 20:05:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4BBDEF8029A;
+	Fri, 27 Mar 2020 16:33:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 375AFF802DD; Thu, 26 Mar 2020 20:05:19 +0100 (CET)
+ id 30DC6F80299; Fri, 27 Mar 2020 16:33:45 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 693D3F802C3
- for <alsa-devel@alsa-project.org>; Thu, 26 Mar 2020 20:05:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 693D3F802C3
+ by alsa1.perex.cz (Postfix) with ESMTP id 2EDDAF8011B
+ for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 16:33:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2EDDAF8011B
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A08B37FA;
- Thu, 26 Mar 2020 12:05:15 -0700 (PDT)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CAA6E1FB;
+ Fri, 27 Mar 2020 08:33:40 -0700 (PDT)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2547E3F71F;
- Thu, 26 Mar 2020 12:05:15 -0700 (PDT)
-Date: Thu, 26 Mar 2020 19:05:13 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4E73A3F71F;
+ Fri, 27 Mar 2020 08:33:40 -0700 (PDT)
+Date: Fri, 27 Mar 2020 15:33:38 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Subject: Applied "ASoC: SOF: (cosmetic) use for_each_pcm_streams() in
- sof_dai_load()" to the asoc tree
+To: Rander Wang <rander.wang@intel.com>
+Subject: Applied "Asoc: SOF: Intel: hda: check SoundWire wakeen interrupt in
+ irq thread" to the asoc tree
 In-Reply-To: 
 Message-Id: 
 X-Patchwork-Hint: ignore
@@ -72,11 +72,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20200326190513._obrwyhHJwsLRvWtsPougHECT5pZ8OZu03jhx-amLOM@z>
+Message-ID: <20200327153338.-c1M5Xa_BXqg8ARsWIjrRBnNy7OOGqWMtkvkI1pwTz8@z>
 
 The patch
 
-   ASoC: SOF: (cosmetic) use for_each_pcm_streams() in sof_dai_load()
+   Asoc: SOF: Intel: hda: check SoundWire wakeen interrupt in irq thread
 
 has been applied to the asoc tree at
 
@@ -101,71 +101,83 @@ to this mail.
 Thanks,
 Mark
 
-From c688cf1d3a2cc1bca5737e7849325b3ac8e69a41 Mon Sep 17 00:00:00 2001
-From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Date: Wed, 25 Mar 2020 16:12:30 -0500
-Subject: [PATCH] ASoC: SOF: (cosmetic) use for_each_pcm_streams() in
- sof_dai_load()
+From 90de3281c86ae5378e951e84c76c4759390ff34d Mon Sep 17 00:00:00 2001
+From: Rander Wang <rander.wang@intel.com>
+Date: Wed, 25 Mar 2020 16:50:26 -0500
+Subject: [PATCH] Asoc: SOF: Intel: hda: check SoundWire wakeen interrupt in
+ irq thread
 
-Use for_each_pcm_streams() to enumerate streams in sof_dai_load()
-instead of doing that manually.
+If pci device is in D0, wakeen interrupt will be
+aggregated at cAVS level as interrupt. This commit
+check the wakeen status and process it in irq thread
 
-Signed-off-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Link: https://lore.kernel.org/r/20200325211233.27394-3-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Rander Wang <rander.wang@intel.com>
+Link: https://lore.kernel.org/r/20200325215027.28716-11-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/topology.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ sound/soc/sof/intel/hda.c | 16 ++++++++++++++++
+ sound/soc/sof/intel/hda.h |  6 ++++++
+ 2 files changed, 22 insertions(+)
 
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index 058de94fb8cf..54437caf9488 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -2448,7 +2448,7 @@ static int sof_dai_load(struct snd_soc_component *scomp, int index,
- 	struct snd_soc_tplg_stream_caps *caps;
- 	struct snd_soc_tplg_private *private = &pcm->priv;
- 	struct snd_sof_pcm *spcm;
--	int stream = SNDRV_PCM_STREAM_PLAYBACK;
-+	int stream;
- 	int ret = 0;
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index 7d1aa4c7d82c..211e91e79eae 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -241,6 +241,19 @@ static irqreturn_t hda_dsp_sdw_thread(int irq, void *context)
+ 	return sdw_intel_thread(irq, context);
+ }
  
- 	/* nothing to do for BEs atm */
-@@ -2460,8 +2460,9 @@ static int sof_dai_load(struct snd_soc_component *scomp, int index,
- 		return -ENOMEM;
- 
- 	spcm->scomp = scomp;
--	spcm->stream[SNDRV_PCM_STREAM_PLAYBACK].comp_id = COMP_ID_UNASSIGNED;
--	spcm->stream[SNDRV_PCM_STREAM_CAPTURE].comp_id = COMP_ID_UNASSIGNED;
++static bool hda_sdw_check_wakeen_irq(struct snd_sof_dev *sdev)
++{
++	struct sof_intel_hda_dev *hdev;
 +
-+	for_each_pcm_streams(stream)
-+		spcm->stream[stream].comp_id = COMP_ID_UNASSIGNED;
- 
- 	spcm->pcm = *pcm;
- 	dev_dbg(scomp->dev, "tplg: load pcm %s\n", pcm->dai_name);
-@@ -2482,8 +2483,10 @@ static int sof_dai_load(struct snd_soc_component *scomp, int index,
- 	if (!spcm->pcm.playback)
- 		goto capture;
- 
-+	stream = SNDRV_PCM_STREAM_PLAYBACK;
++	hdev = sdev->pdata->hw_pdata;
++	if (hdev->sdw &&
++	    snd_sof_dsp_read(sdev, HDA_DSP_BAR,
++			     HDA_DSP_REG_SNDW_WAKE_STS))
++		return true;
 +
- 	dev_vdbg(scomp->dev, "tplg: pcm %s stream tokens: playback d0i3:%d\n",
--		 spcm->pcm.pcm_name, spcm->stream[0].d0i3_compatible);
-+		 spcm->pcm.pcm_name, spcm->stream[stream].d0i3_compatible);
++	return false;
++}
++
+ void hda_sdw_process_wakeen(struct snd_sof_dev *sdev)
+ {
+ 	struct sof_intel_hda_dev *hdev;
+@@ -684,6 +697,9 @@ static irqreturn_t hda_dsp_interrupt_thread(int irq, void *context)
+ 	if (hda_dsp_check_sdw_irq(sdev))
+ 		hda_dsp_sdw_thread(irq, hdev->sdw);
  
- 	caps = &spcm->pcm.caps[stream];
++	if (hda_sdw_check_wakeen_irq(sdev))
++		hda_sdw_process_wakeen(sdev);
++
+ 	/* enable GIE interrupt */
+ 	snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR,
+ 				SOF_HDA_INTCTL,
+diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+index 6f1765b1ed1d..e9825798de77 100644
+--- a/sound/soc/sof/intel/hda.h
++++ b/sound/soc/sof/intel/hda.h
+@@ -233,6 +233,7 @@
+ #define HDA_DSP_REG_ADSPIS2		(HDA_DSP_GEN_BASE + 0x14)
  
-@@ -2513,7 +2516,7 @@ static int sof_dai_load(struct snd_soc_component *scomp, int index,
- 		return ret;
+ #define HDA_DSP_REG_ADSPIS2_SNDW	BIT(5)
++#define HDA_DSP_REG_SNDW_WAKE_STS      0x2C192
  
- 	dev_vdbg(scomp->dev, "tplg: pcm %s stream tokens: capture d0i3:%d\n",
--		 spcm->pcm.pcm_name, spcm->stream[1].d0i3_compatible);
-+		 spcm->pcm.pcm_name, spcm->stream[stream].d0i3_compatible);
+ /* Intel HD Audio Inter-Processor Communication Registers */
+ #define HDA_DSP_IPC_BASE		0x40
+@@ -709,6 +710,11 @@ static inline irqreturn_t hda_dsp_sdw_thread(int irq, void *context)
+ 	return IRQ_HANDLED;
+ }
  
- 	caps = &spcm->pcm.caps[stream];
- 
++static inline bool hda_sdw_check_wakeen_irq(struct snd_sof_dev *sdev)
++{
++	return false;
++}
++
+ static inline void hda_sdw_process_wakeen(struct snd_sof_dev *sdev)
+ {
+ }
 -- 
 2.20.1
 
