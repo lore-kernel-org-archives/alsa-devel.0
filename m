@@ -2,68 +2,73 @@ Return-Path: <SRS0=JTem=5M=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 179F5C43331
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 18:39:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AF851C43331
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 18:40:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9DEB1206F2
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 18:39:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 42D18206F2
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 18:40:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WoaUwUS1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9DEB1206F2
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SwIXWLAi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 42D18206F2
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EEAAB1675;
-	Fri, 27 Mar 2020 19:38:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EEAAB1675
+	by alsa0.perex.cz (Postfix) with ESMTPS id C37BB167B;
+	Fri, 27 Mar 2020 19:39:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C37BB167B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585334386;
-	bh=Wj6fgQZFQrufeTll4jYVnF+kmoSocOG+KO7CSarpr/g=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=WoaUwUS16jfKVf1Goj60R9+CgOr28jBzvO5HH/1g0qgxzbQz8xEoNZlm1+U36D6Up
-	 lJiD3AlrGpQy4BPix/RC/CpHB6m8MVQv3XKsXElh8xAJ6UbGAa/J8g7xZlcOFPsSsC
-	 f3MLAYFrvP4MUX+TL7sgnJsaa+oOcJ2icz+sWwdI=
+	s=default; t=1585334430;
+	bh=kdCfXv5yniihX3jhvbKSqBZWTtiYttXYGUK/ahR4BKo=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=SwIXWLAijua73Ue6T8KHJ73+kr3njL+hh7zWnB9KTCY9i/huEziJbHlQlrFJ7flhh
+	 O3jk57WcllML4Cz5jS+dc3JB21+TSOqON50VPeOw3WPdSHfDRlsl5KWEKxe20tx/ks
+	 fL1jj7X0vCKR2lmJVLywGe5JACnemVGsrfd4T7Zs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9866DF80218;
-	Fri, 27 Mar 2020 19:38:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B5015F8028C;
+	Fri, 27 Mar 2020 19:38:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C1A6EF80218; Fri, 27 Mar 2020 19:37:56 +0100 (CET)
+ id EE44EF8015A; Fri, 27 Mar 2020 19:37:57 +0100 (CET)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 07B31F80147
- for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 19:37:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07B31F80147
-IronPort-SDR: NAuUgQ228snFzdZPromidUYIImnrEJ+o2Y59VUodAnAZ3wHwkQXaHZec2IhAbdkp0jIHdXuiFV
- 9XYwipKKqxFQ==
+ by alsa1.perex.cz (Postfix) with ESMTPS id EA24EF80158
+ for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 19:37:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA24EF80158
+IronPort-SDR: 3EC+gXpufFs0EsKC9TLppMKeFqcHDki743CkDJOUfR5uLRp2JJBP7auu16UvE9t/k+iwfObbJd
+ a5AUXY4btHEw==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Mar 2020 11:37:48 -0700
-IronPort-SDR: j5Z7Ap1v5R3ZVHYjEu9mNOJf8WBrgDUW74m/ulE6aFHSssjkQYj8gZcK2wv46CAm02efHCincw
- ZySCGTp1FarA==
+ 27 Mar 2020 11:37:53 -0700
+IronPort-SDR: cGravoHVQtncbBnXnIpHq7lTGyyDwntT9+A0ZZ88Mn6DVrh3HhWTq/hnEPKUuPfdCyldICznh7
+ YKX3+RGsvYdw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,313,1580803200"; d="scan'208";a="421192553"
+X-IronPort-AV: E=Sophos;i="5.72,313,1580803200"; d="scan'208";a="421192569"
 Received: from pi-desktop.igk.intel.com ([10.237.148.102])
- by orsmga005.jf.intel.com with ESMTP; 27 Mar 2020 11:37:45 -0700
+ by orsmga005.jf.intel.com with ESMTP; 27 Mar 2020 11:37:51 -0700
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v2 0/6] ASoC: topology: Propagate error appropriately
-Date: Fri, 27 Mar 2020 16:47:23 -0400
-Message-Id: <20200327204729.397-1-amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH v2 2/6] ASoC: topology: Check return value of
+ soc_tplg_create_tlv
+Date: Fri, 27 Mar 2020 16:47:25 -0400
+Message-Id: <20200327204729.397-3-amadeuszx.slawinski@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200327204729.397-1-amadeuszx.slawinski@linux.intel.com>
+References: <20200327204729.397-1-amadeuszx.slawinski@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -85,27 +90,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-v1: 
-  Check if kstrdup succeeded.
+Function soc_tplg_create_tlv can fail, so we should check if it succeded
+or not and proceed appropriately.
 
-v2:
-  Remove unneeded freeing, which is performed in another place by dobj
-  handlers.
+Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+---
 
-  Additionally for functions which have return status which was ignored,
-  perform success checks and handle failures in appropriate way.
+ v2:
+  Added this patch
 
-Amadeusz Sławiński (6):
-  ASoC: topology: Add missing memory checks
-  ASoC: topology: Check return value of soc_tplg_create_tlv
-  ASoC: topology: Check return value of soc_tplg_*_create
-  ASoC: topology: Check soc_tplg_add_route return value
-  ASoC: topology: Check return value of pcm_new_ver
-  ASoC: topology: Check return value of soc_tplg_dai_config
+ sound/soc/soc-topology.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
- sound/soc/soc-topology.c | 113 ++++++++++++++++++++++++++++++---------
- 1 file changed, 88 insertions(+), 25 deletions(-)
-
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 434e152ac8ee..c3811dd66b68 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -894,7 +894,13 @@ static int soc_tplg_dmixer_create(struct soc_tplg *tplg, unsigned int count,
+ 		}
+ 
+ 		/* create any TLV data */
+-		soc_tplg_create_tlv(tplg, &kc, &mc->hdr);
++		err = soc_tplg_create_tlv(tplg, &kc, &mc->hdr);
++		if (err < 0) {
++			dev_err(tplg->dev, "ASoC: failed to create TLV %s\n",
++				mc->hdr.name);
++			kfree(sm);
++			continue;
++		}
+ 
+ 		/* pass control to driver for optional further init */
+ 		err = soc_tplg_init_kcontrol(tplg, &kc,
+@@ -1355,7 +1361,13 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dmixer_create(
+ 		}
+ 
+ 		/* create any TLV data */
+-		soc_tplg_create_tlv(tplg, &kc[i], &mc->hdr);
++		err = soc_tplg_create_tlv(tplg, &kc[i], &mc->hdr);
++		if (err < 0) {
++			dev_err(tplg->dev, "ASoC: failed to create TLV %s\n",
++				mc->hdr.name);
++			kfree(sm);
++			continue;
++		}
+ 
+ 		/* pass control to driver for optional further init */
+ 		err = soc_tplg_init_kcontrol(tplg, &kc[i],
 -- 
 2.17.1
 
