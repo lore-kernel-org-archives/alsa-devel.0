@@ -7,59 +7,56 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7A26C43331
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 15:35:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 790DCC43331
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 15:36:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 70853214D8
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 15:35:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0052C20BED
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 15:36:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LpwZs+5y"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 70853214D8
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="u5TKvsL/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0052C20BED
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6D5121670;
-	Fri, 27 Mar 2020 16:34:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D5121670
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4948F167C;
+	Fri, 27 Mar 2020 16:35:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4948F167C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585323322;
-	bh=hI2S5kJTu6Ws6sSngOtK+29GJO6z2n3LZy0/haruSkg=;
+	s=default; t=1585323378;
+	bh=F5gOv9fTqMGEDj48fZUMD0I5Itb8kwU9thmcfGBpd+U=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=LpwZs+5yyL1FhyqpTm5NoYzL0QA9INbDzAmgJf8pRJT/cVUEHykL+PjeFEn20AuH+
-	 RGh60QNfCWmZCf7OQ6EcJfi+xOvsX3lbchqQK0KQKLU5P0f3aN7zJhoYMettyZU1kc
-	 b0TaSImtTdlyIDGy77XfZnmQTg+I+c2ov+5OoCE8=
+	b=u5TKvsL/YbB5zDz94H7evLR4TSZY1PZaiN+swMeD+Bmc/fLx2tKIU15LIDpJeIzAF
+	 gGT3f2oYbdzok1t/jCvSt+KXiLI8tQo3frK/XdL9V3XWOc+RKGdptbtPkepL1WnkeP
+	 TvFhKsJvW3mnP5fdtyXEeEw6twsKU+of/qIyw5rA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0C8CDF80248;
-	Fri, 27 Mar 2020 16:33:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2F255F80292;
+	Fri, 27 Mar 2020 16:33:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 98C5CF80158; Fri, 27 Mar 2020 16:33:36 +0100 (CET)
+ id C676BF8028C; Fri, 27 Mar 2020 16:33:40 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id E7430F8011B
- for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 16:33:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7430F8011B
+ by alsa1.perex.cz (Postfix) with ESMTP id C1991F801DA
+ for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 16:33:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1991F801DA
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3C5C21FB;
- Fri, 27 Mar 2020 08:33:27 -0700 (PDT)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5DBA8101E;
+ Fri, 27 Mar 2020 08:33:36 -0700 (PDT)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B48883F71F;
- Fri, 27 Mar 2020 08:33:26 -0700 (PDT)
-Date: Fri, 27 Mar 2020 15:33:25 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D5A033F71F;
+ Fri, 27 Mar 2020 08:33:35 -0700 (PDT)
+Date: Fri, 27 Mar 2020 15:33:34 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Shuming Fan <shumingf@realtek.com>
-Subject: Applied "ASoC: rt5682: move DAI clock registry to I2S mode" to the
- asoc tree
-In-Reply-To: <20200327073849.18291-1-shumingf@realtek.com>
-Message-Id: <applied-20200327073849.18291-1-shumingf@realtek.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: SOF: Intel: hda-ctrl: add reset cycle before parsing
+ capabilities" to the asoc tree
+In-Reply-To: <20200325215027.28716-12-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20200325215027.28716-12-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
- lars@metafoo.de, lgirdwood@gmail.com, rander.wang@intel.com,
- albertchen@realtek.com, Mark Brown <broonie@kernel.org>,
- derek.fang@realtek.com, bard.liao@intel.com, flove@realtek.com
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,7 +74,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: rt5682: move DAI clock registry to I2S mode
+   ASoC: SOF: Intel: hda-ctrl: add reset cycle before parsing capabilities
 
 has been applied to the asoc tree at
 
@@ -102,78 +99,71 @@ to this mail.
 Thanks,
 Mark
 
-From 914f674bec6efe42f9d6b036850a618fd1698290 Mon Sep 17 00:00:00 2001
-From: Shuming Fan <shumingf@realtek.com>
-Date: Fri, 27 Mar 2020 15:38:49 +0800
-Subject: [PATCH] ASoC: rt5682: move DAI clock registry to I2S mode
+From f09e9c7f6331a5a8a5f48ac3d118b641210cbd16 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Wed, 25 Mar 2020 16:50:27 -0500
+Subject: [PATCH] ASoC: SOF: Intel: hda-ctrl: add reset cycle before parsing
+ capabilities
 
-The SoundWire mode doesn't need the DAI clocks.
-Therefore, the DAI clock registry moves to I2S mode case.
+Without this cycle, HDaudio capability parsing fails on some devices.
 
-Signed-off-by: Shuming Fan <shumingf@realtek.com>
-Link: https://lore.kernel.org/r/20200327073849.18291-1-shumingf@realtek.com
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20200325215027.28716-12-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5682.c | 39 +++++++++++++++++++--------------------
- 1 file changed, 19 insertions(+), 20 deletions(-)
+ sound/soc/sof/intel/hda-ctrl.c | 25 +++++++++++++++++++++----
+ 1 file changed, 21 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
-index 923541a52504..ce4fe7a683f9 100644
---- a/sound/soc/codecs/rt5682.c
-+++ b/sound/soc/codecs/rt5682.c
-@@ -2856,26 +2856,6 @@ static int rt5682_probe(struct snd_soc_component *component)
- #endif
- 	rt5682->component = component;
+diff --git a/sound/soc/sof/intel/hda-ctrl.c b/sound/soc/sof/intel/hda-ctrl.c
+index f88dbcc4ba66..6288b2f99540 100644
+--- a/sound/soc/sof/intel/hda-ctrl.c
++++ b/sound/soc/sof/intel/hda-ctrl.c
+@@ -65,15 +65,32 @@ int hda_dsp_ctrl_get_caps(struct snd_sof_dev *sdev)
+ 	struct hdac_bus *bus = sof_to_bus(sdev);
+ 	u32 cap, offset, feature;
+ 	int count = 0;
++	int ret;
++
++	/*
++	 * On some devices, one reset cycle is necessary before reading
++	 * capabilities
++	 */
++	ret = hda_dsp_ctrl_link_reset(sdev, true);
++	if (ret < 0)
++		return ret;
++	ret = hda_dsp_ctrl_link_reset(sdev, false);
++	if (ret < 0)
++		return ret;
  
--#ifdef CONFIG_COMMON_CLK
--	/* Check if MCLK provided */
--	rt5682->mclk = devm_clk_get(component->dev, "mclk");
--	if (IS_ERR(rt5682->mclk)) {
--		if (PTR_ERR(rt5682->mclk) != -ENOENT) {
--			ret = PTR_ERR(rt5682->mclk);
--			return ret;
--		}
--		rt5682->mclk = NULL;
--	}
+ 	offset = snd_sof_dsp_read(sdev, HDA_DSP_HDA_BAR, SOF_HDA_LLCH);
+ 
+ 	do {
+-		cap = snd_sof_dsp_read(sdev, HDA_DSP_HDA_BAR, offset);
 -
--	/* Register CCF DAI clock control */
--	ret = rt5682_register_dai_clks(component);
--	if (ret)
--		return ret;
--
--	/* Initial setup for CCF */
--	rt5682->lrck[RT5682_AIF1] = CLK_48;
--#endif
--
- 	if (rt5682->is_sdw) {
- 		slave = rt5682->slave;
- 		time = wait_for_completion_timeout(
-@@ -2885,6 +2865,25 @@ static int rt5682_probe(struct snd_soc_component *component)
- 			dev_err(&slave->dev, "Initialization not complete, timed out\n");
- 			return -ETIMEDOUT;
- 		}
-+	} else {
-+#ifdef CONFIG_COMMON_CLK
-+		/* Check if MCLK provided */
-+		rt5682->mclk = devm_clk_get(component->dev, "mclk");
-+		if (IS_ERR(rt5682->mclk)) {
-+			if (PTR_ERR(rt5682->mclk) != -ENOENT) {
-+				ret = PTR_ERR(rt5682->mclk);
-+				return ret;
-+			}
-+			rt5682->mclk = NULL;
-+		} else {
-+			/* Register CCF DAI clock control */
-+			ret = rt5682_register_dai_clks(component);
-+			if (ret)
-+				return ret;
+ 		dev_dbg(sdev->dev, "checking for capabilities at offset 0x%x\n",
+ 			offset & SOF_HDA_CAP_NEXT_MASK);
+ 
++		cap = snd_sof_dsp_read(sdev, HDA_DSP_HDA_BAR, offset);
++
++		if (cap == -1) {
++			dev_dbg(bus->dev, "Invalid capability reg read\n");
++			break;
 +		}
-+		/* Initial setup for CCF */
-+		rt5682->lrck[RT5682_AIF1] = CLK_48;
-+#endif
- 	}
++
+ 		feature = (cap & SOF_HDA_CAP_ID_MASK) >> SOF_HDA_CAP_ID_OFF;
  
- 	return 0;
+ 		switch (feature) {
+@@ -106,8 +123,8 @@ int hda_dsp_ctrl_get_caps(struct snd_sof_dev *sdev)
+ 			bus->mlcap = bus->remap_addr + offset;
+ 			break;
+ 		default:
+-			dev_vdbg(sdev->dev, "found capability %d at 0x%x\n",
+-				 feature, offset);
++			dev_dbg(sdev->dev, "found capability %d at 0x%x\n",
++				feature, offset);
+ 			break;
+ 		}
+ 
 -- 
 2.20.1
 
