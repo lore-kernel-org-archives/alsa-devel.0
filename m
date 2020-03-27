@@ -2,82 +2,90 @@ Return-Path: <SRS0=JTem=5M=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2DD74C43331
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 18:57:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96F1FC43331
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 19:14:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AEAE720575
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 18:57:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 27A07206E6
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 19:14:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SUJXNLXz"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AEAE720575
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HeOoObHL";
+	dkim=pass (2048-bit key) header.d=comcastmailservice.net header.i=@comcastmailservice.net header.b="YLYYe93N"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 27A07206E6
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=buinea.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D2AEE1664;
-	Fri, 27 Mar 2020 19:56:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D2AEE1664
+	by alsa0.perex.cz (Postfix) with ESMTPS id 794841664;
+	Fri, 27 Mar 2020 20:14:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 794841664
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585335465;
-	bh=U9pklU9EmfFvzFR7r8ynL/lNjbWhIPl2dars/GXvI7I=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1585336491;
+	bh=i98oBrDHDFMBs5Jqb6KqTCY8GuwMHbCSW8BdCZu/r1M=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SUJXNLXzKGJmZb6HAj9Pr2ebXtYNo5n06bAALLSE7lV9q6xnD2rj0qpPtpSbpoXCm
-	 WRmN0F28neBWdCYZQ96YDlh2GTFs1fVYMa5D0WlMUuL2WNczz0VUQtHGZRXEAXJMOK
-	 FEWhPCPl9Fjj5cZ2+Y/kPNwxbf4IromjZ2IJuZJM=
+	b=HeOoObHLH8cd+taE5g8iRupCgQb3arIcmkbWZn9uonqbkbiu70iexU2lYb55LD9ka
+	 zCuurm6D8AFsUlatncZsUVorIgHj+eWSnUWTe450CfeAC/nhXtGpQlThko3+r2DvW8
+	 /zsfnrHV8v6+Z+/n8FHnElbDSjkcIt0Y0b8FcwN8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5DDA9F80147;
-	Fri, 27 Mar 2020 19:56:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 10D7AF8011E;
+	Fri, 27 Mar 2020 20:14:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0308FF80158; Fri, 27 Mar 2020 19:56:53 +0100 (CET)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ id C4955F80158; Fri, 27 Mar 2020 20:13:59 +0100 (CET)
+Received: from resqmta-po-02v.sys.comcast.net (resqmta-po-02v.sys.comcast.net
+ [IPv6:2001:558:fe16:19:96:114:154:161])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A68AFF800EA
- for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 19:56:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A68AFF800EA
-IronPort-SDR: JYlv6MGo4uLNqLt7NUhgycUNgNb2iGwCsKTBuAS4X2CSDUTir+bznA+g/wZENhwj4+49kZK8SU
- zlVJ3XwngYnw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Mar 2020 11:56:39 -0700
-IronPort-SDR: jrUxe26pdZF91C9fuJav8lcfkOuZZcsLGC/dVjYsR9Du0DcMU3ZYrjX7XpDehfoKjPZV9+yAoo
- YGL0lzcEuhlA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,313,1580803200"; d="scan'208";a="266301825"
-Received: from ghoshsan-mobl1.amr.corp.intel.com (HELO [10.135.26.162])
- ([10.135.26.162])
- by orsmga002.jf.intel.com with ESMTP; 27 Mar 2020 11:56:38 -0700
-Subject: Re: [PATCH v2 3/6] ASoC: topology: Check return value of
- soc_tplg_*_create
-To: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
-References: <20200327204729.397-1-amadeuszx.slawinski@linux.intel.com>
- <20200327204729.397-4-amadeuszx.slawinski@linux.intel.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <ea618248-5c0c-24f2-b1fb-2b5aecb16049@linux.intel.com>
-Date: Fri, 27 Mar 2020 13:56:38 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8FAF9F8011E
+ for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 20:13:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8FAF9F8011E
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=comcastmailservice.net
+ header.i=@comcastmailservice.net header.b="YLYYe93N"
+Received: from resomta-po-02v.sys.comcast.net ([96.114.154.226])
+ by resqmta-po-02v.sys.comcast.net with ESMTP
+ id Htwrjis1JWJ0PHuQNjJBgv; Fri, 27 Mar 2020 19:13:47 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=comcastmailservice.net; s=20180828_2048; t=1585336427;
+ bh=QD274ntNtBxwYXXfn7bhqDewx9j5owkFgeeAbhPYsCk=;
+ h=Received:Received:Received:Date:From:To:Subject:Message-ID:
+ MIME-Version:Content-Type;
+ b=YLYYe93N6H/vYmmJtyRgyL+nC/zRFKjLhSPZ8XwYUl+zhR1oivRhRpzTsrGUzGqKd
+ wOFaS+Dq/stilo6sV2OvH9fnFYh6lOeV3bbZToPSuPsj5jVszIG15TvM6ScsHfr/6w
+ cwQxiRFClw563/vaPm+vj4twTkbngMzgXDVz9+mJh7IEq9EKSCtKg7OvJ1vglZlVst
+ Bla/hbQsQD4xWdJR9lXo7u+icTusgfZRt9vM6+ZpYRM0FcgCNRNKn+6aO8bQCOMwC4
+ enXhygasNcLbluLPB9oFbct57YqJ7H2UeaU+htpOwa/uursWvXMQa4M2fkeiwfWgIX
+ oLtRJPcT4WIKA==
+Received: from moe ([76.21.90.186])
+ by resomta-po-02v.sys.comcast.net with ESMTPA
+ id HuQKjntgLeRQLHuQLjH1Gu; Fri, 27 Mar 2020 19:13:47 +0000
+X-Xfinity-VAAS: gggruggvucftvghtrhhoucdtuddrgedugedrudehledguddulecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucevohhmtggrshhtqdftvghsihdpqfgfvfdppffquffrtefokffrnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepufhtvghvvgcuofhorhhrihhsuceomhhorhhrihhssegsuhhinhgvrgdrtghomheqnecuffhomhgrihhnpegrlhhsrgdqphhrohhjvggtthdrohhrghenucfkphepjeeirddvuddrledtrddukeeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehhvghlohepmhhovgdpihhnvghtpeejiedrvddurdeltddrudekiedpmhgrihhlfhhrohhmpehmohhrrhhishessghuihhnvggrrdgtohhmpdhrtghpthhtoheprghlshgrqdguvghvvghlsegrlhhsrgdqphhrohhjvggtthdrohhrghdprhgtphhtthhopegtlhgvmhgvnhhssehlrgguihhstghhrdguvgdprhgtphhtthhopehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjhhppdhrtghpthhtohepthhifigrihesshhushgvrdguvg
+X-Xfinity-VMeta: sc=-100.00;st=legit
+Received: by moe (Postfix, from userid 1000)
+ id 764AC2012F; Fri, 27 Mar 2020 12:13:44 -0700 (PDT)
+Date: Fri, 27 Mar 2020 12:13:44 -0700
+From: Steve Morris <morris@buinea.com>
+To: Takashi Iwai <tiwai@suse.de>
+Subject: Re: [alsa-devel] [PATCH 1/3] ALSA: bebob: expand sleep just after
+ breaking connections for protocol version 1
+Message-ID: <20200327191344.gbmcyunw75xs6ugm@buinea.com>
+References: <20191101131323.17300-1-o-takashi@sakamocchi.jp>
+ <20191101131323.17300-2-o-takashi@sakamocchi.jp>
+ <20200326214722.7xg2ffrzqrzq7edg@buinea.com>
+ <s5h7dz6fawt.wl-tiwai@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <20200327204729.397-4-amadeuszx.slawinski@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <s5h7dz6fawt.wl-tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,74 +101,97 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Fri, Mar 27, 2020 at 09:40:34AM +0100, Takashi Iwai wrote:
+> On Thu, 26 Mar 2020 22:47:22 +0100,
+> Steve Morris wrote:
+> > 
+> > On Fri, Nov 01, 2019 at 10:13:21PM +0900, Takashi Sakamoto wrote:
+> > > As long as I investigated, some devices with BeBoB protocol version 1
+> > > can be freezed during several hundreds milliseconds after breaking
+> > > connections. When accessing during the freezed time, any transaction
+> > > is corrupted. In the worst case, the device is going to reboot.
+> > > 
+> > > I can see this issue in:
+> > >  * Roland FA-66
+> > >  * M-Audio FireWire Solo
+> > > 
+> > > This commit expands sleep just after breaking connections to avoid
+> > > the freezed time as much as possible. I note that the freeze/reboot
+> > > behaviour is similar to below models:
+> > >  * Focusrite Saffire Pro 10 I/O
+> > >  * Focusrite Saffire Pro 26 I/O
+> > > 
+> > > The above models certainly reboot after breaking connections.
+> > > 
+> > > Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+> > > ---
+> > >  sound/firewire/bebob/bebob_stream.c | 11 ++++++-----
+> > >  1 file changed, 6 insertions(+), 5 deletions(-)
+> > > 
+> > > diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
+> > > index f7f0db5aa811..1b264d0d63eb 100644
+> > > --- a/sound/firewire/bebob/bebob_stream.c
+> > > +++ b/sound/firewire/bebob/bebob_stream.c
+> > > @@ -415,15 +415,16 @@ static int make_both_connections(struct snd_bebob *bebob)
+> > >  	return 0;
+> > >  }
+> > >  
+> > > -static void
+> > > -break_both_connections(struct snd_bebob *bebob)
+> > > +static void break_both_connections(struct snd_bebob *bebob)
+> > >  {
+> > >  	cmp_connection_break(&bebob->in_conn);
+> > >  	cmp_connection_break(&bebob->out_conn);
+> > >  
+> > > -	/* These models seems to be in transition state for a longer time. */
+> > > -	if (bebob->maudio_special_quirk != NULL)
+> > > -		msleep(200);
+> > > +	// These models seem to be in transition state for a longer time. When
+> > > +	// accessing in the state, any transactions is corrupted. In the worst
+> > > +	// case, the device is going to reboot.
+> > > +	if (bebob->version < 2)
+> > > +		msleep(600);
+> > >  }
+> > >  
+> > >  static int
+> > > -- 
+> > > 2.20.1
+> > > 
+> > > _______________________________________________
+> > > Alsa-devel mailing list
+> > > Alsa-devel@alsa-project.org
+> > > https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > 
+> > This patch causes a reboot when I power on my Edirol FA-101. This is
+> > consistent behavior with kernels 5.5.1 - 5.5.11.
+> > 
+> > I've changed msleep(600) back to msleep(200) and rebuilt the module and
+> > I am once again able to power on and use the interface.
+> > 
+> > I am running Arch linux with 5.5.11-arch1-1 #1 SMP PREEMPT Sun, 22 Mar 2020 16:33:15 +0000 x86_64 GNU/Linux.
+> > 
+> > 
+> > I had previously posted to the list on Feb 19, 2020 with the subject:
+> > 
+> > sytem reboots when initializing Edirol FA-101 firewire audio interface
+> > 
+> > Please forgive any lapses in reporting protocol as I generally don't
+> > work at the kernel level. Hopefully this more specific report will help
+> > fix the issue.
+> 
+> This is weird.  If just changing the msleep value from 600 to 200
+> "fixes" the problem, it means that something is already fundamentally
+> broken...
+> 
+> 
+> Takashi
 
+It appears that 'fixed' was too strong a word. While I have managed to
+get it to work a couple of times, generally it is still broken.
 
-On 3/27/20 3:47 PM, Amadeusz Sławiński wrote:
-> Functions soc_tplg_denum_create, soc_tplg_dmixer_create,
-> soc_tplg_dbytes_create can fail, so their return values should be
-> checked and error should be propagated.
-> 
-> Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
-> ---
-> 
->   v2:
->    Added this patch
-> 
->   sound/soc/soc-topology.c | 18 ++++++++++++------
->   1 file changed, 12 insertions(+), 6 deletions(-)
-> 
-> diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-> index c3811dd66b68..860bced933d6 100644
-> --- a/sound/soc/soc-topology.c
-> +++ b/sound/soc/soc-topology.c
-> @@ -1124,6 +1124,7 @@ static int soc_tplg_kcontrol_elems_load(struct soc_tplg *tplg,
->   	struct snd_soc_tplg_hdr *hdr)
->   {
->   	struct snd_soc_tplg_ctl_hdr *control_hdr;
-> +	int ret;
->   	int i;
->   
->   	if (tplg->pass != SOC_TPLG_PASS_MIXER) {
-> @@ -1152,25 +1153,30 @@ static int soc_tplg_kcontrol_elems_load(struct soc_tplg *tplg,
->   		case SND_SOC_TPLG_CTL_RANGE:
->   		case SND_SOC_TPLG_DAPM_CTL_VOLSW:
->   		case SND_SOC_TPLG_DAPM_CTL_PIN:
-> -			soc_tplg_dmixer_create(tplg, 1,
-> -					       le32_to_cpu(hdr->payload_size));
-> +			ret = soc_tplg_dmixer_create(tplg, 1,
-> +					le32_to_cpu(hdr->payload_size));
->   			break;
->   		case SND_SOC_TPLG_CTL_ENUM:
->   		case SND_SOC_TPLG_CTL_ENUM_VALUE:
->   		case SND_SOC_TPLG_DAPM_CTL_ENUM_DOUBLE:
->   		case SND_SOC_TPLG_DAPM_CTL_ENUM_VIRT:
->   		case SND_SOC_TPLG_DAPM_CTL_ENUM_VALUE:
-> -			soc_tplg_denum_create(tplg, 1,
-> -					      le32_to_cpu(hdr->payload_size));
-> +			ret = soc_tplg_denum_create(tplg, 1,
-> +					le32_to_cpu(hdr->payload_size));
->   			break;
->   		case SND_SOC_TPLG_CTL_BYTES:
-> -			soc_tplg_dbytes_create(tplg, 1,
-> -					       le32_to_cpu(hdr->payload_size));
-> +			ret = soc_tplg_dbytes_create(tplg, 1,
-> +					le32_to_cpu(hdr->payload_size));
->   			break;
->   		default:
->   			soc_bind_err(tplg, control_hdr, i);
->   			return -EINVAL;
->   		}
-> +		if (ret < 0) {
-> +			dev_err(tplg->dev, "ASoC: invalid control\n");
-> +			return ret;
-> +		}
+I'm happy to help debug, but this is outside my scope.
 
-Sounds good, but this happens in a loop, so would all the memory 
-previously allocated by denum/dbytes/dmixer_create leak, or is it freed 
-automatically somewhere else?
+Back to the LTS kernel for the moment.
 
-> +
->   	}
->   
->   	return 0;
-> 
+Steve
+
