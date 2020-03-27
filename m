@@ -7,54 +7,54 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 995CCC2D0EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 17:32:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C40EC43331
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 17:32:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1D5F52073B
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 17:32:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B02452072F
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 17:32:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NTGJpP+s"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1D5F52073B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="L6xSt38S"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B02452072F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6EF36166C;
-	Fri, 27 Mar 2020 18:31:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6EF36166C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2478886F;
+	Fri, 27 Mar 2020 18:31:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2478886F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585330324;
-	bh=GqShmFVmCGyVwjCAV20phPD6xyu8BHEsMW0O6kYWWqo=;
+	s=default; t=1585330351;
+	bh=S5B1/iSJ4VVRW+sqz2zpO+diB3IuTgt1qb4n8BbhZuk=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=NTGJpP+sZnNaOaTMpcFp7ZZSY5B1pVAz8OqEr4yDbgvcGcmSlQXtnh1hrh8VgHILh
-	 XKQM+IXod9YkKRXsquK1V86HGvKyoGyCRiW7byg5SEca++9m7LFxQVH70tXu5py2qk
-	 bTTm44hp6irYusNb7bOOUgtMgBx6vgw2waQMFdV4=
+	b=L6xSt38S3ZyXF7ZeASUoV84zhhF+GLP2t/vR8IhS0+hjWe0iVG2YeV7G8UXJHLhq7
+	 fmft9T/jQFYaj9euubsoZ/NkYDNfEuCTeh1ce/iV5hC9Sze3D9L7avdl+qlYUnYzrj
+	 tlHKssy9GTCSEO+lubyKLYeuhJErqMMqLlkIro+g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7D157F8028C;
-	Fri, 27 Mar 2020 18:29:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B6F61F8029A;
+	Fri, 27 Mar 2020 18:29:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 023ECF8015A; Fri, 27 Mar 2020 18:29:08 +0100 (CET)
+ id 09774F8029B; Fri, 27 Mar 2020 18:29:14 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id BD513F80147
- for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 18:29:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BD513F80147
+ by alsa1.perex.cz (Postfix) with ESMTP id 56EE8F8028E
+ for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 18:29:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56EE8F8028E
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 15C0A1042;
- Fri, 27 Mar 2020 10:29:01 -0700 (PDT)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E2520101E;
+ Fri, 27 Mar 2020 10:29:09 -0700 (PDT)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8AD1C3F71E;
- Fri, 27 Mar 2020 10:28:55 -0700 (PDT)
-Date: Fri, 27 Mar 2020 17:28:54 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 654F03F71E;
+ Fri, 27 Mar 2020 10:29:09 -0700 (PDT)
+Date: Fri, 27 Mar 2020 17:29:07 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Naveen Manohar <naveen.m@intel.com>
-Subject: Applied "ASoC: Intel: sof_sdw: Add Volteer support with RT5682 SNDW
- helper function" to the asoc tree
-In-Reply-To: <20200325220746.29601-5-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20200325220746.29601-5-pierre-louis.bossart@linux.intel.com>
+To: Rander Wang <rander.wang@intel.com>
+Subject: Applied "ASoC: Intel: soc-acpi: update topology and driver name for
+ SoundWire platforms" to the asoc tree
+In-Reply-To: <20200325220746.29601-2-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20200325220746.29601-2-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
@@ -75,7 +75,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: Intel: sof_sdw: Add Volteer support with RT5682 SNDW helper function
+   ASoC: Intel: soc-acpi: update topology and driver name for SoundWire platforms
 
 has been applied to the asoc tree at
 
@@ -100,242 +100,134 @@ to this mail.
 Thanks,
 Mark
 
-From 798313f29b6b510a7df386cf7e8e4636afe61e81 Mon Sep 17 00:00:00 2001
-From: Naveen Manohar <naveen.m@intel.com>
-Date: Wed, 25 Mar 2020 17:07:46 -0500
-Subject: [PATCH] ASoC: Intel: sof_sdw: Add Volteer support with RT5682 SNDW
- helper function
+From ba762e67c3f34660f6ac8299296dbc9e96720939 Mon Sep 17 00:00:00 2001
+From: Rander Wang <rander.wang@intel.com>
+Date: Wed, 25 Mar 2020 17:07:43 -0500
+Subject: [PATCH] ASoC: Intel: soc-acpi: update topology and driver name for
+ SoundWire platforms
 
-Add support for Google Volteer device. As per new unified soundwire machine
-driver, add rt5682-sdw helper function, which configures codec to Link0.
+Update topology and reflect change to unified machine driver for SoundWire.
 
+Signed-off-by: Rander Wang <rander.wang@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Naveen Manohar <naveen.m@intel.com>
-Link: https://lore.kernel.org/r/20200325220746.29601-5-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20200325220746.29601-2-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/Kconfig          |   1 +
- sound/soc/intel/boards/Makefile         |   1 +
- sound/soc/intel/boards/sof_sdw.c        |  18 ++++
- sound/soc/intel/boards/sof_sdw_common.h |   6 ++
- sound/soc/intel/boards/sof_sdw_rt5682.c | 126 ++++++++++++++++++++++++
- 5 files changed, 152 insertions(+)
- create mode 100644 sound/soc/intel/boards/sof_sdw_rt5682.c
+ .../intel/common/soc-acpi-intel-cml-match.c   | 24 ++++++++++++++++---
+ .../intel/common/soc-acpi-intel-icl-match.c   |  6 ++---
+ .../intel/common/soc-acpi-intel-tgl-match.c   |  6 ++---
+ 3 files changed, 27 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index 4110ae5db65f..556c3104e641 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -538,6 +538,7 @@ config SND_SOC_INTEL_SOUNDWIRE_SOF_MACH
- 	select SND_SOC_RT1308_SDW
- 	select SND_SOC_RT1308
- 	select SND_SOC_RT715_SDW
-+	select SND_SOC_RT5682_SDW
- 	select SND_SOC_DMIC
-         help
- 	  Add support for Intel SoundWire-based platforms connected to
-diff --git a/sound/soc/intel/boards/Makefile b/sound/soc/intel/boards/Makefile
-index c4ff5166a042..1ef6e60bc2a0 100644
---- a/sound/soc/intel/boards/Makefile
-+++ b/sound/soc/intel/boards/Makefile
-@@ -34,6 +34,7 @@ snd-soc-sof_da7219_max98373-objs := sof_da7219_max98373.o hda_dsp_common.o
- snd-soc-sof-sdw-objs += sof_sdw.o				\
- 			sof_sdw_rt711.o sof_sdw_rt700.o		\
- 			sof_sdw_rt1308.o sof_sdw_rt715.o	\
-+			sof_sdw_rt5682.o			\
- 			sof_sdw_dmic.o sof_sdw_hdmi.o hda_dsp_common.o
- obj-$(CONFIG_SND_SOC_INTEL_SOF_RT5682_MACH) += snd-soc-sof_rt5682.o
- obj-$(CONFIG_SND_SOC_INTEL_HASWELL_MACH) += snd-soc-sst-haswell.o
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 8ed6d2079dee..a64dc563b47e 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -91,6 +91,14 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
- 		},
- 		.driver_data = (void *)SOF_SDW_PCH_DMIC,
- 	},
-+	{
-+		.callback = sof_sdw_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Google"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Volteer"),
-+		},
-+		.driver_data = (void *)(SOF_SDW_TGL_HDMI | SOF_SDW_PCH_DMIC),
-+	},
- 
- 	{}
- };
-@@ -128,6 +136,10 @@ static struct snd_soc_codec_conf codec_conf[] = {
- 		.dlc = COMP_CODEC_CONF("sdw:3:25d:715:0"),
- 		.name_prefix = "rt715",
- 	},
-+	{
-+		.dlc = COMP_CODEC_CONF("sdw:0:25d:5682:0"),
-+		.name_prefix = "rt5682",
-+	},
+diff --git a/sound/soc/intel/common/soc-acpi-intel-cml-match.c b/sound/soc/intel/common/soc-acpi-intel-cml-match.c
+index 3525da79c68a..bcedec6c6117 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-cml-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-cml-match.c
+@@ -80,6 +80,23 @@ static const struct snd_soc_acpi_endpoint spk_r_endpoint = {
+ 	.group_id = 1,
  };
  
- static struct snd_soc_dai_link_component dmic_component[] = {
-@@ -187,6 +199,12 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 		.dai_name = "rt715-aif2",
- 		.init = sof_sdw_rt715_init,
++static const struct snd_soc_acpi_adr_device rt700_1_adr[] = {
++	{
++		.adr = 0x000110025D070000,
++		.num_endpoints = 1,
++		.endpoints = &single_endpoint,
++	}
++};
++
++static const struct snd_soc_acpi_link_adr cml_rvp[] = {
++	{
++		.mask = BIT(1),
++		.num_adr = ARRAY_SIZE(rt700_1_adr),
++		.adr_d = rt700_1_adr,
++	},
++	{}
++};
++
+ static const struct snd_soc_acpi_adr_device rt711_0_adr[] = {
+ 	{
+ 		.adr = 0x000010025D071100,
+@@ -175,7 +192,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_cml_sdw_machines[] = {
+ 	{
+ 		.link_mask = 0xF, /* 4 active links required */
+ 		.links = cml_3_in_1_default,
+-		.drv_name = "sdw_rt711_rt1308_rt715",
++		.drv_name = "sof_sdw",
+ 		.sof_fw_filename = "sof-cml.ri",
+ 		.sof_tplg_filename = "sof-cml-rt711-rt1308-rt715.tplg",
  	},
-+	{
-+		.id = 0x5682,
-+		.direction = {true, true},
-+		.dai_name = "rt5682-sdw",
-+		.init = sof_sdw_rt5682_init,
-+	},
- };
- 
- static inline int find_codec_info_part(unsigned int part_id)
-diff --git a/sound/soc/intel/boards/sof_sdw_common.h b/sound/soc/intel/boards/sof_sdw_common.h
-index 0d738e234bc5..dd593ff3575b 100644
---- a/sound/soc/intel/boards/sof_sdw_common.h
-+++ b/sound/soc/intel/boards/sof_sdw_common.h
-@@ -105,4 +105,10 @@ int sof_sdw_rt715_init(const struct snd_soc_acpi_link_adr *link,
- 		       struct sof_sdw_codec_info *info,
- 		       bool playback);
- 
-+/* RT5682 support */
-+int sof_sdw_rt5682_init(const struct snd_soc_acpi_link_adr *link,
-+			struct snd_soc_dai_link *dai_links,
-+			struct sof_sdw_codec_info *info,
-+			bool playback);
-+
- #endif
-diff --git a/sound/soc/intel/boards/sof_sdw_rt5682.c b/sound/soc/intel/boards/sof_sdw_rt5682.c
-new file mode 100644
-index 000000000000..5aa6211a1ed9
---- /dev/null
-+++ b/sound/soc/intel/boards/sof_sdw_rt5682.c
-@@ -0,0 +1,126 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2020 Intel Corporation
-+
-+/*
-+ *  sof_sdw_rt5682 - Helpers to handle RT5682 from generic machine driver
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/errno.h>
-+#include <linux/input.h>
-+#include <linux/soundwire/sdw.h>
-+#include <linux/soundwire/sdw_type.h>
-+#include <sound/soc.h>
-+#include <sound/soc-acpi.h>
-+#include <sound/jack.h>
-+#include "sof_sdw_common.h"
-+
-+static const struct snd_soc_dapm_widget rt5682_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphone", NULL),
-+	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-+};
-+
-+static const struct snd_soc_dapm_route rt5682_map[] = {
-+	/*Headphones*/
-+	{ "Headphone", NULL, "rt5682 HPOL" },
-+	{ "Headphone", NULL, "rt5682 HPOR" },
-+	{ "rt5682 IN1P", NULL, "Headset Mic" },
-+};
-+
-+static const struct snd_kcontrol_new rt5682_controls[] = {
-+	SOC_DAPM_PIN_SWITCH("Headphone"),
-+	SOC_DAPM_PIN_SWITCH("Headset Mic"),
-+};
-+
-+static struct snd_soc_jack_pin rt5682_jack_pins[] = {
-+	{
-+		.pin    = "Headphone",
-+		.mask   = SND_JACK_HEADPHONE,
-+	},
-+	{
-+		.pin    = "Headset Mic",
-+		.mask   = SND_JACK_MICROPHONE,
-+	},
-+};
-+
-+static int rt5682_rtd_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_card *card = rtd->card;
-+	struct mc_private *ctx = snd_soc_card_get_drvdata(card);
-+	struct snd_soc_component *component = rtd->codec_dai->component;
-+	struct snd_soc_jack *jack;
-+	int ret;
-+
-+	card->components = devm_kasprintf(card->dev, GFP_KERNEL,
-+					  "%s hs:rt5682",
-+					  card->components);
-+	if (!card->components)
-+		return -ENOMEM;
-+
-+	ret = snd_soc_add_card_controls(card, rt5682_controls,
-+					ARRAY_SIZE(rt5682_controls));
-+	if (ret) {
-+		dev_err(card->dev, "rt5682 control addition failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = snd_soc_dapm_new_controls(&card->dapm, rt5682_widgets,
-+					ARRAY_SIZE(rt5682_widgets));
-+	if (ret) {
-+		dev_err(card->dev, "rt5682 widgets addition failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = snd_soc_dapm_add_routes(&card->dapm, rt5682_map,
-+				      ARRAY_SIZE(rt5682_map));
-+
-+	if (ret) {
-+		dev_err(card->dev, "rt5682 map addition failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = snd_soc_card_jack_new(rtd->card, "Headset Jack",
-+				    SND_JACK_HEADSET | SND_JACK_BTN_0 |
-+				    SND_JACK_BTN_1 | SND_JACK_BTN_2 |
-+				    SND_JACK_BTN_3,
-+				    &ctx->sdw_headset,
-+				    rt5682_jack_pins,
-+				    ARRAY_SIZE(rt5682_jack_pins));
-+	if (ret) {
-+		dev_err(rtd->card->dev, "Headset Jack creation failed: %d\n",
-+			ret);
-+		return ret;
-+	}
-+
-+	jack = &ctx->sdw_headset;
-+
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
-+
-+	ret = snd_soc_component_set_jack(component, jack, NULL);
-+
-+	if (ret)
-+		dev_err(rtd->card->dev, "Headset Jack call-back failed: %d\n",
-+			ret);
-+
-+	return ret;
-+}
-+
-+int sof_sdw_rt5682_init(const struct snd_soc_acpi_link_adr *link,
-+			struct snd_soc_dai_link *dai_links,
-+			struct sof_sdw_codec_info *info,
-+			bool playback)
-+{
-+	/*
-+	 * headset should be initialized once.
-+	 * Do it with dai link for playback.
-+	 */
-+	if (!playback)
-+		return 0;
-+
-+	dai_links->init = rt5682_rtd_init;
-+
-+	return 0;
-+}
+@@ -187,13 +204,14 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_cml_sdw_machines[] = {
+ 		 */
+ 		.link_mask = 0xF,
+ 		.links = cml_3_in_1_mono_amp,
+-		.drv_name = "sdw_rt711_rt1308_rt715",
++		.drv_name = "sof_sdw",
+ 		.sof_fw_filename = "sof-cml.ri",
+ 		.sof_tplg_filename = "sof-cml-rt711-rt1308-mono-rt715.tplg",
+ 	},
+ 	{
+ 		.link_mask = 0x2, /* RT700 connected on Link1 */
+-		.drv_name = "sdw_rt700",
++		.links = cml_rvp,
++		.drv_name = "sof_sdw",
+ 		.sof_fw_filename = "sof-cml.ri",
+ 		.sof_tplg_filename = "sof-cml-rt700.tplg",
+ 	},
+diff --git a/sound/soc/intel/common/soc-acpi-intel-icl-match.c b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
+index a05fc083829e..ef8500349f2f 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-icl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
+@@ -166,21 +166,21 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_icl_sdw_machines[] = {
+ 	{
+ 		.link_mask = 0xF, /* 4 active links required */
+ 		.links = icl_3_in_1_default,
+-		.drv_name = "sdw_rt711_rt1308_rt715",
++		.drv_name = "sof_sdw",
+ 		.sof_fw_filename = "sof-icl.ri",
+ 		.sof_tplg_filename = "sof-icl-rt711-rt1308-rt715.tplg",
+ 	},
+ 	{
+ 		.link_mask = 0xB, /* 3 active links required */
+ 		.links = icl_3_in_1_mono_amp,
+-		.drv_name = "sdw_rt711_rt1308_rt715",
++		.drv_name = "sof_sdw",
+ 		.sof_fw_filename = "sof-icl.ri",
+ 		.sof_tplg_filename = "sof-icl-rt711-rt1308-rt715-mono.tplg",
+ 	},
+ 	{
+ 		.link_mask = 0x1, /* rt700 connected on link0 */
+ 		.links = icl_rvp,
+-		.drv_name = "sdw_rt700",
++		.drv_name = "sof_sdw",
+ 		.sof_fw_filename = "sof-icl.ri",
+ 		.sof_tplg_filename = "sof-icl-rt700.tplg",
+ 	},
+diff --git a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+index 3153b44f9053..db360c9a8e5b 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+@@ -87,11 +87,11 @@ static struct snd_soc_acpi_codecs tgl_max98373_amp = {
+ struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_machines[] = {
+ 	{
+ 		.id = "10EC1308",
+-		.drv_name = "rt711_rt1308",
++		.drv_name = "sof_sdw",
+ 		.link_mask = 0x1, /* RT711 on SoundWire link0 */
+ 		.links = tgl_i2s_rt1308,
+ 		.sof_fw_filename = "sof-tgl.ri",
+-		.sof_tplg_filename = "sof-tgl-rt711-rt1308.tplg",
++		.sof_tplg_filename = "sof-tgl-rt711-i2s-rt1308.tplg",
+ 	},
+ 	{
+ 		.id = "10EC5682",
+@@ -118,7 +118,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_sdw_machines[] = {
+ 	{
+ 		.link_mask = 0x3, /* rt711 on link 0 and 2 rt1308s on link 1 */
+ 		.links = tgl_rvp,
+-		.drv_name = "sdw_rt711_rt1308_rt715",
++		.drv_name = "sof_sdw",
+ 		.sof_fw_filename = "sof-tgl.ri",
+ 		.sof_tplg_filename = "sof-tgl-rt711-rt1308.tplg",
+ 	},
 -- 
 2.20.1
 
