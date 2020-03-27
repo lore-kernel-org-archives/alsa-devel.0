@@ -4,61 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D3E4AC43331
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 17:30:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78FC8C43331
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 17:31:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 61E792073E
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 17:30:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 006062072F
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 17:31:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BJ7SIqO3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 61E792073E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gYKHi0xb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 006062072F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A923E166C;
-	Fri, 27 Mar 2020 18:29:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A923E166C
+	by alsa0.perex.cz (Postfix) with ESMTPS id A87A91671;
+	Fri, 27 Mar 2020 18:30:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A87A91671
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585330249;
-	bh=dYpbymi3Hi6fgw1kRTS1bpj2PhjbQ1UXWpPw0ZpUBFY=;
+	s=default; t=1585330296;
+	bh=1bKdvCh07zdum/lhr/u0v/71fqv/2WEzavzsmAoGFuk=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=BJ7SIqO3FBQWznPMdcf0RzJjjEOMauiGmsEws8uMAe5B6/wG5HVocOWW5+2KsoV80
-	 foYNBmrkKVSj+DjEeuGDe8AXQzEKp0UMUsOvpLZhmMF4VrOXO8uMMVJblEbg0d405J
-	 EBBttqp1XZ9JWaZMpXXm7F+qm+A9PEDm1TqOildM=
+	b=gYKHi0xbcbVOKo0qoxsp6ndvkwKcs0JM46SCAOl5WViBwyXBUSi/lWx+qhJv0ceSS
+	 v51V9z2zk7oTglSN2mQxIU6cUGeI4Gv1QWNEFqHJhGF6xKbeyT2E+r75SpTTsAZ79X
+	 Zwk6xvgzIaCfqLwK9b4M34CCG2ZYXLjnj7igHqxE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 47E79F80158;
-	Fri, 27 Mar 2020 18:29:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 50C05F8028B;
+	Fri, 27 Mar 2020 18:29:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EA439F80158; Fri, 27 Mar 2020 18:28:59 +0100 (CET)
+ id D9C0BF80274; Fri, 27 Mar 2020 18:29:07 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 5E3C2F8011B
- for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 18:28:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E3C2F8011B
+ by alsa1.perex.cz (Postfix) with ESMTP id C2692F8015A
+ for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 18:29:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2692F8015A
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 82FB531B;
- Fri, 27 Mar 2020 10:28:51 -0700 (PDT)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 86A4D101E;
+ Fri, 27 Mar 2020 10:29:00 -0700 (PDT)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 05F763F71E;
- Fri, 27 Mar 2020 10:28:50 -0700 (PDT)
-Date: Fri, 27 Mar 2020 17:28:49 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0104B3F85E;
+ Fri, 27 Mar 2020 10:28:59 -0700 (PDT)
+Date: Fri, 27 Mar 2020 17:28:58 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Dan Murphy <dmurphy@ti.com>
-Subject: Applied "ASoC: tlv320adcx140: Remove undocumented property" to the
- asoc tree
-In-Reply-To: <20200327162432.17067-1-dmurphy@ti.com>
-Message-Id: <applied-20200327162432.17067-1-dmurphy@ti.com>
+To: Naveen Manohar <naveen.m@intel.com>
+Subject: Applied "ASoC: Intel: common: add match table for TGL RT5682
+ SoundWire driver" to the asoc tree
+In-Reply-To: <20200325220746.29601-4-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20200325220746.29601-4-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Cc: Rob Herring <robh@kernel.org>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com,
- Mark Brown <broonie@kernel.org>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,7 +75,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: tlv320adcx140: Remove undocumented property
+   ASoC: Intel: common: add match table for TGL RT5682 SoundWire driver
 
 has been applied to the asoc tree at
 
@@ -101,38 +100,71 @@ to this mail.
 Thanks,
 Mark
 
-From d4061518c3982010d8f07b9b327c8e00297b14a3 Mon Sep 17 00:00:00 2001
-From: Dan Murphy <dmurphy@ti.com>
-Date: Fri, 27 Mar 2020 11:24:32 -0500
-Subject: [PATCH] ASoC: tlv320adcx140: Remove undocumented property
+From 095ee71907ea02702f5fd84184d2656572e2c81c Mon Sep 17 00:00:00 2001
+From: Naveen Manohar <naveen.m@intel.com>
+Date: Wed, 25 Mar 2020 17:07:45 -0500
+Subject: [PATCH] ASoC: Intel: common: add match table for TGL RT5682 SoundWire
+ driver
 
-Remove undocumented and unneeded ti,use-internal-reg from the example as
-it was an artifact from initial development.  The code does not query
-for this property and as the document indicates if areg-supply is
-undefined then the internal regulator is used.
+RT5682 is in SoundWire mode on link0.
 
-Fixes: 302c0b7490cd ("dt-bindings: sound: Add TLV320ADCx140 dt
-bindings")
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
-CC: Rob Herring <robh@kernel.org>
-Link: https://lore.kernel.org/r/20200327162432.17067-1-dmurphy@ti.com
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Naveen Manohar <naveen.m@intel.com>
+Link: https://lore.kernel.org/r/20200325220746.29601-4-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/tlv320adcx140.yaml | 1 -
- 1 file changed, 1 deletion(-)
+ .../intel/common/soc-acpi-intel-tgl-match.c   | 24 +++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml b/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
-index 1433ff62b14f..ab2268c0ee67 100644
---- a/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
-+++ b/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
-@@ -76,7 +76,6 @@ examples:
-       codec: codec@4c {
-         compatible = "ti,tlv320adc5140";
-         reg = <0x4c>;
--        ti,use-internal-areg;
-         ti,mic-bias-source = <6>;
-         reset-gpios = <&gpio0 14 GPIO_ACTIVE_HIGH>;
-       };
+diff --git a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+index db360c9a8e5b..449d9d2286ae 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+@@ -56,6 +56,14 @@ static const struct snd_soc_acpi_adr_device rt1308_1_adr[] = {
+ 	}
+ };
+ 
++static const struct snd_soc_acpi_adr_device rt5682_0_adr[] = {
++	{
++		.adr = 0x000021025D568200,
++		.num_endpoints = 1,
++		.endpoints = &single_endpoint,
++	}
++};
++
+ static const struct snd_soc_acpi_link_adr tgl_i2s_rt1308[] = {
+ 	{
+ 		.mask = BIT(0),
+@@ -79,6 +87,15 @@ static const struct snd_soc_acpi_link_adr tgl_rvp[] = {
+ 	{}
+ };
+ 
++static const struct snd_soc_acpi_link_adr tgl_chromebook_base[] = {
++	{
++		.mask = BIT(0),
++		.num_adr = ARRAY_SIZE(rt5682_0_adr),
++		.adr_d = rt5682_0_adr,
++	},
++	{}
++};
++
+ static struct snd_soc_acpi_codecs tgl_max98373_amp = {
+ 	.num_codecs = 1,
+ 	.codecs = {"MX98373"}
+@@ -122,6 +139,13 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_sdw_machines[] = {
+ 		.sof_fw_filename = "sof-tgl.ri",
+ 		.sof_tplg_filename = "sof-tgl-rt711-rt1308.tplg",
+ 	},
++	{
++		.link_mask = 0x1, /* this will only enable rt5682 for now */
++		.links = tgl_chromebook_base,
++		.drv_name = "sof_sdw",
++		.sof_fw_filename = "sof-tgl.ri",
++		.sof_tplg_filename = "sof-tgl-rt5682.tplg",
++	},
+ 	{},
+ };
+ EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_tgl_sdw_machines);
 -- 
 2.20.1
 
