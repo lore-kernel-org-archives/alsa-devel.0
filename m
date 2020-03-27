@@ -2,76 +2,66 @@ Return-Path: <SRS0=JTem=5M=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 253AFC43331
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 16:52:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 677DCC43331
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 16:57:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9F0F820A8B
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 16:51:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7A33E2074A
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 16:57:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JR63DeE6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9F0F820A8B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PoYDBkAZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A33E2074A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EE5371670;
-	Fri, 27 Mar 2020 17:14:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE5371670
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8EEB1168A;
+	Fri, 27 Mar 2020 17:19:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8EEB1168A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585325708;
-	bh=T39a/qIfzzNNxTvKzWHqcQIy6NjCPv/IOGgD4b2qhyY=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1585326034;
+	bh=ZKRODaUv0tqqLQqz2Uw4OZfLiQ2JR71Kv5HoiGHp7ig=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JR63DeE6GuGqe8XBYN6CwEpbF3CCjZPJT/14to8pvPalxO8UNPHlkBKcpKqyhmh9j
-	 0WZz3obqBSLQyOvYg29s5P7IQO14NQp8guGxDMVyGGNU5FuoEKh6ECuHKVdKJ3/wPK
-	 oHuPrpqaoSWz7OA7ETdOxUdCSnIzyYZcHUY/CMtg=
+	b=PoYDBkAZInMVwYIC8VbGW1YFa/RsU0bc+Ahunxg4GXI+XWw4CkSHtUe2c00SCKw2G
+	 QPcZ1r48uynwspbxhAZn2KFmyN1cFedNh5fBpCioNUxfpBYqhvfqhbgeQBnz4ZcpSJ
+	 beoAeKfJzBz8SKu4zsglQAxngitvsjAY5etutIX0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7F821F80147;
-	Fri, 27 Mar 2020 17:14:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0B10DF80147;
+	Fri, 27 Mar 2020 17:19:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 920CBF80158; Fri, 27 Mar 2020 17:14:16 +0100 (CET)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5F664F800EA
- for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 17:14:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F664F800EA
-IronPort-SDR: IrBNMkxvJs2odiu5kqlbxMGu5k3RPtPGSdd/Bq7fc0PUe2QcCh8rFkNp06W1LAx0Nb3vqeXjcI
- XJFpGC5ys4iQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Mar 2020 09:14:06 -0700
-IronPort-SDR: U9x5JaJbgDUHRSJc+7epX8RJdD+0e7W838ZRLhnExYcWGWjGbVCcHxb7H/c8FsXmMfROf1unk/
- sc+WwLmSd1Ng==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,313,1580803200"; d="scan'208";a="239140332"
-Received: from mvargasp-mobl.amr.corp.intel.com (HELO [10.134.103.63])
- ([10.134.103.63])
- by fmsmga007.fm.intel.com with ESMTP; 27 Mar 2020 09:14:06 -0700
+ id B12BEF80158; Fri, 27 Mar 2020 17:19:42 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 43666F8011E
+ for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 17:19:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43666F8011E
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B920C1FB;
+ Fri, 27 Mar 2020 09:19:38 -0700 (PDT)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3D2663F71F;
+ Fri, 27 Mar 2020 09:19:38 -0700 (PDT)
+Date: Fri, 27 Mar 2020 16:19:36 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Subject: Re: [PATCH 0/4] ASoC: Intel: add SoundWire machine driver
-To: Mark Brown <broonie@kernel.org>
+Message-ID: <20200327161936.GH4437@sirena.org.uk>
 References: <20200325220746.29601-1-pierre-louis.bossart@linux.intel.com>
  <20200327160515.GG4437@sirena.org.uk>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <28879805-22b0-8e4d-d204-fa406146cbc1@linux.intel.com>
-Date: Fri, 27 Mar 2020 11:14:04 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="82evfD9Ogz2JrdWZ"
+Content-Disposition: inline
 In-Reply-To: <20200327160515.GG4437@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Cookie: Drop in any mailbox.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -89,15 +79,36 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+--82evfD9Ogz2JrdWZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 3/27/20 11:05 AM, Mark Brown wrote:
+On Fri, Mar 27, 2020 at 04:05:15PM +0000, Mark Brown wrote:
 > On Wed, Mar 25, 2020 at 05:07:42PM -0500, Pierre-Louis Bossart wrote:
->> To handle multiple hardware combinations, this patchset suggests a
->> single machine driver which will create and initialize dailinks
->> dynamically. This allows us to support new configurations easily, as
->> shown with the TigerLake rt5682 example.
-> 
+> > To handle multiple hardware combinations, this patchset suggests a
+> > single machine driver which will create and initialize dailinks
+> > dynamically. This allows us to support new configurations easily, as
+> > shown with the TigerLake rt5682 example.
+>=20
 > This doesn't apply against current code, please check and resend.
 
-ok, will resubmit. Likely the chromebook patch that didn't flow through 
-the SOF tree now that I think of it.
+Oh, never mind - aiaiai seems to have some interesting ideas about what
+commit it's testing against.
+
+--82evfD9Ogz2JrdWZ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl5+J5cACgkQJNaLcl1U
+h9ABHQf+ONn8sOwM4vCUD22aoWy8LTMPb658j8vBtUMxqy+IgxZ5c5ZZjZBt09nx
+LMp5CnxZ07PJHOTNCKKMgweli3h0fD95i13Phe8cMu2e2wnSrZljkxtsJWi+uXAt
+z7J9wEsyEFdqFpj2LCEI8D8+4EbZiYdvRtKwfMq7Q4kxI2TgHdvmK0AQioU9sw+l
+B2RFsqderz73n5Mgna8bSVs75WLXpkIZ9JCobhoZ1rAvHJu+fnJF3OHAUcY62QC4
+NGaiQ3i9gJypJQtfr+9WkVTIhOL9pTFLO/FVWSD2WiagxwnEB92FUK3ZCRb2mGrB
+5+xGtvbYBaSO5N7A1Iudk8FHSc0xTw==
+=a0yU
+-----END PGP SIGNATURE-----
+
+--82evfD9Ogz2JrdWZ--
