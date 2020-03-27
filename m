@@ -6,72 +6,73 @@ X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
 	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CED1C43331
-	for <alsa-devel@archiver.kernel.org>; Sun, 29 Mar 2020 07:55:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB265C43331
+	for <alsa-devel@archiver.kernel.org>; Sun, 29 Mar 2020 07:56:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7814F206CC
-	for <alsa-devel@archiver.kernel.org>; Sun, 29 Mar 2020 07:55:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 346C2206CC
+	for <alsa-devel@archiver.kernel.org>; Sun, 29 Mar 2020 07:56:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hMoDOgzy"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7814F206CC
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AwXNZ1HC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 346C2206CC
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DFB43166E;
-	Sun, 29 Mar 2020 09:54:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DFB43166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 801CF1671;
+	Sun, 29 Mar 2020 09:55:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 801CF1671
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585468511;
-	bh=WF2xT2i6k63kx919Zv+8Qn2aTSc0RxzJJP1cSLjjNh4=;
+	s=default; t=1585468564;
+	bh=7AbdKdFSzsgCRlIe4NW+Zl9Xyz0IX6q+1ymQ6kzuDB8=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hMoDOgzy5uWDNS0PtfHCxrqEzn2AMCDa0VTHbHRS+8v3mEKDWjtTSpOK9/Zd5bJL9
-	 jyTcHD0z9H48Gd6h4F7k4QWwVU/PRhjgyaxv12OQn2J40y8W7xpKQgu2GcYvEDEoLC
-	 Ip4zB3Seq+JlOaH5gZr4bdcjumoegzPMaIMsGnGM=
+	b=AwXNZ1HCWitQOhLK4HmKGHcSJyFG8Xob/dYk+Dettx2rgS6VGZ057zo/nJ4RebFfp
+	 92YgwwxE9k8jIwB2A9k8fOb3MK6ItMqVE9F/OKemzVBpRBx9SNaiGmdfvxtzKFRs3P
+	 jAmiDln1q3H7dRPiqRtV/nAuu45/ePJjsSkwL+0M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 611FAF80140;
-	Sun, 29 Mar 2020 09:54:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 775D3F801F2;
+	Sun, 29 Mar 2020 09:54:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D649DF802A2; Fri, 27 Mar 2020 14:10:50 +0100 (CET)
+ id 9E263F802A8; Fri, 27 Mar 2020 14:15:50 +0100 (CET)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5FE9DF8029B
- for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 14:10:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5FE9DF8029B
-IronPort-SDR: HFHMlhutr4Z1hA+2s0cOAk3qWHpkRcS6UhNHE0yibNvKeWrcAfAZmt3jUfQJMnBmD2W2cYne30
- ikvx+H53/3zQ==
+ by alsa1.perex.cz (Postfix) with ESMTPS id CE527F802A2
+ for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 14:15:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE527F802A2
+IronPort-SDR: +287M6neIhnlC6QWJf4te4GPSxlIhVwaNbMRRzKlugD5xNxu8qTBbHtcHO6swSKo4qYIwQyfoU
+ rrB7hF1lI6vQ==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Mar 2020 06:10:38 -0700
-IronPort-SDR: 01DQWEntcsTieV1v0S6V/sY9ShqDcoMrznK10hItJrV+oim4RQtBGob7Qwhfvr2JWRktq2DtYe
- ipgDMq/JyBdw==
+ 27 Mar 2020 06:15:41 -0700
+IronPort-SDR: XHTT49Zml5OGbcmAOJNZTIDZQS91ZOVq3uN4HpDBmRzC4zWzne4di8SI0Jcxq/yPKD08tI2Guo
+ S2MG0L4zVlEQ==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,312,1580803200"; d="scan'208";a="236630169"
+X-IronPort-AV: E=Sophos;i="5.72,312,1580803200"; d="scan'208";a="293928658"
 Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
- by orsmga007.jf.intel.com with ESMTP; 27 Mar 2020 06:10:26 -0700
+ by FMSMGA003.fm.intel.com with ESMTP; 27 Mar 2020 06:15:30 -0700
 Received: from andy by smile with local (Exim 4.93)
  (envelope-from <andriy.shevchenko@linux.intel.com>)
- id 1jHokk-00DQE2-2b; Fri, 27 Mar 2020 15:10:26 +0200
-Date: Fri, 27 Mar 2020 15:10:26 +0200
+ id 1jHopf-00DQI1-3f; Fri, 27 Mar 2020 15:15:31 +0200
+Date: Fri, 27 Mar 2020 15:15:31 +0200
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Arnd Bergmann <arnd@arndb.de>
+To: Arnd Bergmann <arnd@arndb.de>, Christian Lamparter <chunkeey@gmail.com>
 Subject: Re: [PATCH 0/2] powerpc: Remove support for ppc405/440 Xilinx
  platforms
-Message-ID: <20200327131026.GT1922688@smile.fi.intel.com>
+Message-ID: <20200327131531.GU1922688@smile.fi.intel.com>
 References: <cover.1585311091.git.michal.simek@xilinx.com>
  <CAK8P3a2mKPRFbRE3MWScr9GSiL4cpLg0wqv1Q28XDCZVPWgHfg@mail.gmail.com>
+ <20200327131026.GT1922688@smile.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK8P3a2mKPRFbRE3MWScr9GSiL4cpLg0wqv1Q28XDCZVPWgHfg@mail.gmail.com>
+In-Reply-To: <20200327131026.GT1922688@smile.fi.intel.com>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 X-Mailman-Approved-At: Sun, 29 Mar 2020 09:54:16 +0200
 Cc: Kate Stewart <kstewart@linuxfoundation.org>,
@@ -124,58 +125,68 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Mar 27, 2020 at 01:54:33PM +0100, Arnd Bergmann wrote:
-> On Fri, Mar 27, 2020 at 1:12 PM Michal Simek <michal.simek@xilinx.com> wrote:
-> >
-> > recently we wanted to update xilinx intc driver and we found that function
-> > which we wanted to remove is still wired by ancient Xilinx PowerPC
-> > platforms. Here is the thread about it.
-> > https://lore.kernel.org/linux-next/48d3232d-0f1d-42ea-3109-f44bbabfa2e8@xilinx.com/
-> >
-> > I have been talking about it internally and there is no interest in these
-> > platforms and it is also orphan for quite a long time. None is really
-> > running/testing these platforms regularly that's why I think it makes sense
-> > to remove them also with drivers which are specific to this platform.
-> >
-> > U-Boot support was removed in 2017 without anybody complain about it
-> > https://github.com/Xilinx/u-boot-xlnx/commit/98f705c9cefdfdba62c069821bbba10273a0a8ed
-> >
-> > Based on current ppc/next.
-> >
-> > If anyone has any objection about it, please let me know.
+On Fri, Mar 27, 2020 at 03:10:26PM +0200, Andy Shevchenko wrote:
+> On Fri, Mar 27, 2020 at 01:54:33PM +0100, Arnd Bergmann wrote:
+> > On Fri, Mar 27, 2020 at 1:12 PM Michal Simek <michal.simek@xilinx.com> wrote:
+> > >
+> > > recently we wanted to update xilinx intc driver and we found that function
+> > > which we wanted to remove is still wired by ancient Xilinx PowerPC
+> > > platforms. Here is the thread about it.
+> > > https://lore.kernel.org/linux-next/48d3232d-0f1d-42ea-3109-f44bbabfa2e8@xilinx.com/
+> > >
+> > > I have been talking about it internally and there is no interest in these
+> > > platforms and it is also orphan for quite a long time. None is really
+> > > running/testing these platforms regularly that's why I think it makes sense
+> > > to remove them also with drivers which are specific to this platform.
+> > >
+> > > U-Boot support was removed in 2017 without anybody complain about it
+> > > https://github.com/Xilinx/u-boot-xlnx/commit/98f705c9cefdfdba62c069821bbba10273a0a8ed
+> > >
+> > > Based on current ppc/next.
+> > >
+> > > If anyone has any objection about it, please let me know.
+> > 
+> > Acked-by: Arnd Bergmann <arnd@arndb.de>
+> > 
+> > This looks reasonable to me as well, in particular as the code only
+> > supports the two
+> > ppc44x virtex developer boards and no commercial products.
+> > 
+> > It does raise a follow-up question about ppc40x though: is it time to
+> > retire all of it?
 > 
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
+> Who knows?
 > 
-> This looks reasonable to me as well, in particular as the code only
-> supports the two
-> ppc44x virtex developer boards and no commercial products.
-> 
-> It does raise a follow-up question about ppc40x though: is it time to
-> retire all of it?
+> I have in possession nice WD My Book Live, based on this architecture, and I
+> won't it gone from modern kernel support. OTOH I understand that amount of real
+> users not too big.
 
-Who knows?
++Cc: Christian Lamparter, whom I owe for that WD box.
 
-I have in possession nice WD My Book Live, based on this architecture, and I
-won't it gone from modern kernel support. OTOH I understand that amount of real
-users not too big.
-
-Ah, and I have Amiga board, but that one is being used only for testing, so,
-I don't care much.
-
-> The other ppc405 machines appear to have seen even fewer updates after the
-> OpenBlockS 600 got added in 2011, so it's possible nobody is using them any more
-> with modern kernels.
 > 
-> I see that OpenWRT removed both ppc40x and ppc44x exactly a year ago after
-> they had not been maintained for years.
+> Ah, and I have Amiga board, but that one is being used only for testing, so,
+> I don't care much.
 > 
-> However, 44x (in its ppc476 incarnation) is clearly still is used
-> through the fsp2 platform,
-> and can not be deprecated at least until that is known to have stopped
-> getting kernel
-> updates.
+> > The other ppc405 machines appear to have seen even fewer updates after the
+> > OpenBlockS 600 got added in 2011, so it's possible nobody is using them any more
+> > with modern kernels.
+> > 
+> > I see that OpenWRT removed both ppc40x and ppc44x exactly a year ago after
+> > they had not been maintained for years.
+> > 
+> > However, 44x (in its ppc476 incarnation) is clearly still is used
+> > through the fsp2 platform,
+> > and can not be deprecated at least until that is known to have stopped
+> > getting kernel
+> > updates.
+> > 
+> >         Arnd
 > 
->         Arnd
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
+> 
 
 -- 
 With Best Regards,
