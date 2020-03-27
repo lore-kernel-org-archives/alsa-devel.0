@@ -2,62 +2,83 @@ Return-Path: <SRS0=JTem=5M=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 31A53C43331
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 16:00:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AF4EAC43331
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 16:01:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B05B420716
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 16:00:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3C14620716
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 16:01:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PiDR+pG6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B05B420716
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sVehdO+F";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=axis.com header.i=@axis.com header.b="dINhnmPb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3C14620716
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=axis.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B70BB16B6;
-	Fri, 27 Mar 2020 16:59:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B70BB16B6
+	by alsa0.perex.cz (Postfix) with ESMTPS id C001516DF;
+	Fri, 27 Mar 2020 17:00:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C001516DF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585324848;
-	bh=xg8lSqPfVVEhD4ADvfgI3bWuXQP0wu8iWAvKJ7yi7nU=;
-	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=PiDR+pG6vfbegiNC9JvmJ/b/Pm1uzHbk7PlVKLjSD8oxuNQLZfTjat6D0myR0gqDf
-	 sqcPkW5wo361LwDGeoRN2SNN1mC75NHvKVMEY3AcuScW6CUu8fQauiy+As0ARKPh4A
-	 vve8OeNBuyj45t7Sw3iEZoAF3lcOLXW/c2H5CcbM=
+	s=default; t=1585324894;
+	bh=MX+mORkILjmUZSMVEv3Ioa9yslIfkIHYD+8NZ2isLFg=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=sVehdO+F8J7CeD2T6H0ig5j7y7djgL6XSXaCGPCe3vWSmtBVn9GbAgyFcTuPLxtBl
+	 Aa/szAvyMlahp9rQ6o2MlxiEBDjG+VrgaGN6SqtxMJxySvgI3gJ5jdBziV5Hr7YAxh
+	 VNKQIDxdmKQ+9UZzSnboFOhre4N3OvHytRvfI7P4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BFFB6F80291;
-	Fri, 27 Mar 2020 16:36:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EE8CCF80158;
+	Fri, 27 Mar 2020 16:50:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5FC5FF80491; Fri, 27 Mar 2020 16:36:49 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 6146EF80490
- for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 16:36:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6146EF80490
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AC9611FB;
- Fri, 27 Mar 2020 08:36:45 -0700 (PDT)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 302F13F71F;
- Fri, 27 Mar 2020 08:36:45 -0700 (PDT)
-Date: Fri, 27 Mar 2020 15:36:43 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Applied "ASoC: soc-core: add asoc_rtd_to_cpu/codec() macro" to the
- asoc tree
-In-Reply-To: <875zevk5va.wl-kuninori.morimoto.gx@renesas.com>
-Message-Id: <applied-875zevk5va.wl-kuninori.morimoto.gx@renesas.com>
-X-Patchwork-Hint: ignore
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+ id 0CF2CF8015A; Fri, 27 Mar 2020 16:50:20 +0100 (CET)
+Received: from smtp1.axis.com (smtp1.axis.com [195.60.68.17])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id F0CDAF80147
+ for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 16:50:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0CDAF80147
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=axis.com header.i=@axis.com
+ header.b="dINhnmPb"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=axis.com; l=879; q=dns/txt; s=axis-central1;
+ t=1585324218; x=1616860218;
+ h=date:from:to:cc:subject:message-id:references:
+ mime-version:in-reply-to;
+ bh=tUIZ2TlHSplVOSoFJF5jbQyDhEQ5ZLZTcY52D93ZBxU=;
+ b=dINhnmPb3/LiBNWRhw/3C/j8g8M3PyNPOdWGfrF1QegHbaNCSRUu6xOg
+ in0eBySAgzZbzk25jwk3VXPhE923K+xkAe9Kq5D9c26iVFDqi4MTmqWu3
+ NV+n6Bv9KI06dINSYvA5LZq2Q7Z7oxd2tr+QsVi/L/kNbkRBkfsE7TxW8
+ BxNJQtVlNo1g2RDo+KwvOmw0fn16WCvpWRatsJ7JriRIuJeCOIgjBWjEl
+ jZTsrbIpQm6Mbd7cyvmZOgrsld8XSyrzG+it3NL/lGYm2ycM7qaCmiLu6
+ gwQj6tWnKQyyNg/D8JdUnDjSLluVYgxaetyUu9iJh54heiDcMj8wgyJkq g==;
+IronPort-SDR: FIxgiDnS3+EMgMl6ypl4iztES7WU6efZqhC7D4DPH8H5PJkOQMG4juf4j0VH3IDOykRIurg82R
+ UFcml4+bjyuyfgq24OgPfYGcblUnozt7uPbCcZvrJZnAaoSoHZwHJyGpYkMPQ1EAwJJUPaVoJZ
+ yFLOyMv60ONQN+Yb/f/vaudDLyTOI/XGwT2BJsGKsZXry5AlxXlt/QhUKr9UWYprX69FLGUaS7
+ VxzmtA2B503gk08HmU3l7RGnTgcq+lzLYBnXFumMeCmXXYfiWbpA6jKxmpFYzFVa+qDgfGsBAb
+ Y1w=
+X-IronPort-AV: E=Sophos;i="5.72,313,1580770800"; 
+   d="scan'208";a="7012894"
+Date: Fri, 27 Mar 2020 16:50:13 +0100
+From: Jonas Holmberg <jonashg@axis.com>
+To: <alsa-devel@alsa-project.org>
+Subject: Re: route and chmap
+Message-ID: <20200327155013.GA593298@axis.com>
+References: <20200326134110.GA3784158@axis.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20200326134110.GA3784158@axis.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: tiwai@suse.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,80 +94,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
+CC Takashi.
 
-   ASoC: soc-core: add asoc_rtd_to_cpu/codec() macro
-
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From 2af69581e1b11152bc42f1122d3c16e177bd77cf Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 23 Mar 2020 14:16:57 +0900
-Subject: [PATCH] ASoC: soc-core: add asoc_rtd_to_cpu/codec() macro
-
-Now, snd_soc_pcm_runtime supports multi cpu_dai/codec_dai.
-It still has cpu_dai/codec_dai for single DAI,
-and has cpu_dais/codec_dais for multi DAIs.
-
-	dais  = [][][][][][][][][][][][][][][][][][]
-		^cpu_dais         ^codec_dais
-		|--- num_cpus ---|--- num_codecs --|
-
-	/* for multi DAIs */
-	rtd->cpu_dais   = &rtd->dais[0];
-	rtd->codec_dais = &rtd->dais[dai_link->num_cpus];
-
-	/* for single DAI */
-	rtd->cpu_dai    = rtd->cpu_dais[0];
-	rtd->codec_dai	= rtd->codec_dais[0];
-
-But, these can be replaced by dais.
-This patch adds asoc_rtd_to_cpu() / asoc_rtd_to_codec() macro for it.
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/875zevk5va.wl-kuninori.morimoto.gx@renesas.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- include/sound/soc.h | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 539211bd0f94..13458e4fbb13 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1169,6 +1169,10 @@ struct snd_soc_pcm_runtime {
- 	int num_components;
- 	struct snd_soc_component *components[0]; /* CPU/Codec/Platform */
- };
-+/* see soc_new_pcm_runtime()  */
-+#define asoc_rtd_to_cpu(rtd, n)   (rtd)->dais[n]
-+#define asoc_rtd_to_codec(rtd, n) (rtd)->dais[n + (rtd)->num_cpus]
-+
- #define for_each_rtd_components(rtd, i, component)			\
- 	for ((i) = 0;							\
- 	     ((i) < rtd->num_components) && ((component) = rtd->components[i]);\
--- 
-2.20.1
-
+On Thu, Mar 26, 2020 at 02:41:11PM +0100, Jonas Holmberg wrote:
+> Hi,
+> I use the route plugin to copy mono to both FL and FR (front left and 
+> front right stereo) of the slave during playback. When get_chmap() is 
+> called in the route plugin it will call get_chmap() of the slave, 
+> which returns 2 channels with FL and FR positions, and then route 
+> itself returns 1 channel with FL position. But the application that 
+> called snd_pcm_get_chmap() on the playback device expected to get 
+> position MONO instead of FL since the number of channels is 1.
+> 
+> Is the application wrong in not accepting the chmap or should the 
+> route plugin have changed position from FL to MONO? Is it possible to 
+> add something to the config (asound.conf) to make FL become MONO in 
+> the reply of get_chmap() or solve the problem in any other way?
+> 
+> BR
+> /Jonas
