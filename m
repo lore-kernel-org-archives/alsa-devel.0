@@ -7,58 +7,56 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11037C43331
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 15:39:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 28D5AC43331
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 15:41:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 77E0520936
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 15:39:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A684D20658
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 15:41:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OcBmn7ks"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 77E0520936
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gXJztAg+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A684D20658
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C276C1684;
-	Fri, 27 Mar 2020 16:38:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C276C1684
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1067E1676;
+	Fri, 27 Mar 2020 16:41:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1067E1676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585323581;
-	bh=ddkvhlGTIej1LO6/PT49JPQ4UZdORR/hAm+IHmcPNfA=;
+	s=default; t=1585323717;
+	bh=1LanByFtZo5PsajtE2FDgpY64JbTYbwnLVB7dlcPFZo=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=OcBmn7ksmLYoEV+sHDNqeYqqzJbETHNa3Ih6p7T4vpcY9egdMg9qwJkoxmOkrZ8O0
-	 Gp7KToEypuWDyONqgnFmrFtNMIAhKyaJc/pY4Pac5oOGRBSB4Mmy4uyjEzSqRkjJ86
-	 TKJfGtLQGZ2YgTYGDifQ+j4WetwFcSJ4kfKUSJ70=
+	b=gXJztAg+hz4LXV9tfxlKiwfxe1cjyN7mrV/h7/OagvOFgppEZxlJHoha2kz7VQEhY
+	 Slgvo+IuDhewVvsW3IYwEIp7k0SVZqzG3IRTip85LCSGDl0PDz5EWxjzZU8KfX0fM2
+	 sFkbdEiBRBWEoYuchYnCYvdeWkurFAPGf6doVfZw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CB505F802EA;
-	Fri, 27 Mar 2020 16:34:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 728E2F80316;
+	Fri, 27 Mar 2020 16:34:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D7702F802EC; Fri, 27 Mar 2020 16:34:11 +0100 (CET)
+ id AC9F8F80306; Fri, 27 Mar 2020 16:34:25 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id BA1AEF802E7
- for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 16:34:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA1AEF802E7
+ by alsa1.perex.cz (Postfix) with ESMTP id 21FF7F80303
+ for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 16:34:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21FF7F80303
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E8F271FB;
- Fri, 27 Mar 2020 08:34:02 -0700 (PDT)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3AF7F1FB;
+ Fri, 27 Mar 2020 08:34:21 -0700 (PDT)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6AA3F3F71F;
- Fri, 27 Mar 2020 08:34:02 -0700 (PDT)
-Date: Fri, 27 Mar 2020 15:34:00 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B15D23F71F;
+ Fri, 27 Mar 2020 08:34:20 -0700 (PDT)
+Date: Fri, 27 Mar 2020 15:34:19 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Applied "ASoC: SOF: Intel: hda: initial SoundWire machine driver
- autodetect" to the asoc tree
-In-Reply-To: <20200325215027.28716-6-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20200325215027.28716-6-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: soc-acpi: expand description of _ADR-based devices" to
+ the asoc tree
+In-Reply-To: <20200325215027.28716-2-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20200325215027.28716-2-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Rander Wang <rander.wang@intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,7 +74,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: Intel: hda: initial SoundWire machine driver autodetect
+   ASoC: soc-acpi: expand description of _ADR-based devices
 
 has been applied to the asoc tree at
 
@@ -101,257 +99,460 @@ to this mail.
 Thanks,
 Mark
 
-From b9ddd81bad19ef7b0955156e7590130127cfdaae Mon Sep 17 00:00:00 2001
+From 004bd4163104e4d8b6c1433b31ead10a69c69845 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Wed, 25 Mar 2020 16:50:21 -0500
-Subject: [PATCH] ASoC: SOF: Intel: hda: initial SoundWire machine driver
- autodetect
+Date: Wed, 25 Mar 2020 16:50:17 -0500
+Subject: [PATCH] ASoC: soc-acpi: expand description of _ADR-based devices
 
-For now we have a limited number of machine driver configurations, and
-we can detect them based on the link configuration returned after
-checking hardware and firmware (BIOS) configurations.
+For SoundWire, we need to know if endpoints needs to be 'aggregated'
+(MIPI parlance, meaning logically grouped), e.g. when two speaker
+amplifiers need to be handled as a single logical output.
 
-The link configuration is checked with a link_mask as well as a list
-of _ADR descriptors for each link.
+We don't necessarily have the information at the firmware (BIOS)
+level, so add a notion of endpoints and specify if a device/endpoint
+is part of a group, with a position.
 
-There is a chance that in extreme cases where the BIOS contains too
-much information we would need to detect which Slave devices actually
-report as 'attached'. This would be more accurate than static
-table-based solutions, but it also introduces timing dependencies
-since we don't know when those devices might become attached, so will
-only be only be looked at if we see limitations with static methods
-and the usual quirks based e.g. on DMI information.
+This may be expanded in future solutions, for now only provide a group
+and position information.
+
+Since we modify the header file, change all existing upstream tables
+as well to avoid breaking compilation/bisect.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Rander Wang <rander.wang@intel.com>
-Link: https://lore.kernel.org/r/20200325215027.28716-6-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20200325215027.28716-2-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/intel/hda.c | 165 ++++++++++++++++++++++++++++++++++----
- 1 file changed, 150 insertions(+), 15 deletions(-)
+ include/sound/soc-acpi.h                      | 39 ++++++--
+ .../intel/common/soc-acpi-intel-cml-match.c   | 87 +++++++++++++----
+ .../intel/common/soc-acpi-intel-icl-match.c   | 97 +++++++++++++++----
+ .../intel/common/soc-acpi-intel-tgl-match.c   | 49 ++++++++--
+ 4 files changed, 221 insertions(+), 51 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 1f93124a63cd..dea3c385b664 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -20,6 +20,7 @@
+diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
+index a217a87cae86..392e953d561e 100644
+--- a/include/sound/soc-acpi.h
++++ b/include/sound/soc-acpi.h
+@@ -75,18 +75,45 @@ struct snd_soc_acpi_mach_params {
+ };
  
- #include <linux/acpi.h>
- #include <linux/module.h>
-+#include <linux/soundwire/sdw.h>
- #include <linux/soundwire/sdw_intel.h>
- #include <sound/intel-nhlt.h>
- #include <sound/sof.h>
-@@ -136,11 +137,8 @@ static int hda_sdw_probe(struct snd_sof_dev *sdev)
- {
- 	struct sof_intel_hda_dev *hdev;
- 	struct sdw_intel_res res;
--	acpi_handle handle;
- 	void *sdw;
- 
--	handle = ACPI_HANDLE(sdev->dev);
--
- 	hdev = sdev->pdata->hw_pdata;
- 
- 	memset(&res, 0, sizeof(res));
-@@ -180,6 +178,9 @@ int hda_sdw_startup(struct snd_sof_dev *sdev)
- 
- 	hdev = sdev->pdata->hw_pdata;
- 
-+	if (!hdev->sdw)
-+		return 0;
+ /**
+- * snd_soc_acpi_link_adr: ACPI-based list of _ADR, with a variable
+- * number of devices per link
+- *
++ * snd_soc_acpi_endpoint - endpoint descriptor
++ * @num: endpoint number (mandatory, unique per device)
++ * @aggregated: 0 (independent) or 1 (logically grouped)
++ * @group_position: zero-based order (only when @aggregated is 1)
++ * @group_id: platform-unique group identifier (only when @aggregrated is 1)
++ */
++struct snd_soc_acpi_endpoint {
++	u8 num;
++	u8 aggregated;
++	u8 group_position;
++	u8 group_id;
++};
 +
- 	return sdw_intel_startup(hdev->sdw);
- }
++/**
++ * snd_soc_acpi_adr_device - descriptor for _ADR-enumerated device
++ * @adr: 64 bit ACPI _ADR value
++ * @num_endpoints: number of endpoints for this device
++ * @endpoints: array of endpoints
++ */
++struct snd_soc_acpi_adr_device {
++	const u64 adr;
++	const u8 num_endpoints;
++	const struct snd_soc_acpi_endpoint *endpoints;
++};
++
++/**
++ * snd_soc_acpi_link_adr - ACPI-based list of _ADR enumerated devices
+  * @mask: one bit set indicates the link this list applies to
+- * @num_adr: ARRAY_SIZE of adr
+- * @adr: array of _ADR (represented as u64).
++ * @num_adr: ARRAY_SIZE of devices
++ * @adr_d: array of devices
++ *
++ * The number of devices per link can be more than 1, e.g. in SoundWire
++ * multi-drop configurations.
+  */
  
-@@ -536,24 +537,31 @@ static int hda_init_caps(struct snd_sof_dev *sdev)
- 	/* scan SoundWire capabilities exposed by DSDT */
- 	ret = hda_sdw_acpi_scan(sdev);
- 	if (ret < 0) {
--		dev_err(sdev->dev, "error: SoundWire ACPI scan error\n");
--		return ret;
-+		dev_dbg(sdev->dev, "skipping SoundWire, ACPI scan error\n");
-+		goto skip_soundwire;
- 	}
+ struct snd_soc_acpi_link_adr {
+ 	const u32 mask;
+ 	const u32 num_adr;
+-	const u64 *adr;
++	const struct snd_soc_acpi_adr_device *adr_d;
+ };
  
- 	link_mask = hdev->info.link_mask;
- 	if (!link_mask) {
--		/*
--		 * probe/allocated SoundWire resources.
--		 * The hardware configuration takes place in hda_sdw_startup
--		 * after power rails are enabled.
--		 */
--		ret = hda_sdw_probe(sdev);
--		if (ret < 0) {
--			dev_err(sdev->dev, "error: SoundWire probe error\n");
--			return ret;
--		}
-+		dev_dbg(sdev->dev, "skipping SoundWire, no links enabled\n");
-+		goto skip_soundwire;
- 	}
+ /**
+diff --git a/sound/soc/intel/common/soc-acpi-intel-cml-match.c b/sound/soc/intel/common/soc-acpi-intel-cml-match.c
+index f55634c4c2e8..3525da79c68a 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-cml-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-cml-match.c
+@@ -59,42 +59,95 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_cml_machines[] = {
+ };
+ EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_cml_machines);
  
-+	/*
-+	 * probe/allocate SoundWire resources.
-+	 * The hardware configuration takes place in hda_sdw_startup
-+	 * after power rails are enabled.
-+	 * It's entirely possible to have a mix of I2S/DMIC/SoundWire
-+	 * devices, so we allocate the resources in all cases.
-+	 */
-+	ret = hda_sdw_probe(sdev);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: SoundWire probe error\n");
-+		return ret;
+-static const u64 rt711_0_adr[] = {
+-	0x000010025D071100
++static const struct snd_soc_acpi_endpoint single_endpoint = {
++	.num = 0,
++	.aggregated = 0,
++	.group_position = 0,
++	.group_id = 0,
+ };
+ 
+-static const u64 rt1308_1_adr[] = {
+-	0x000110025D130800
++static const struct snd_soc_acpi_endpoint spk_l_endpoint = {
++	.num = 0,
++	.aggregated = 1,
++	.group_position = 0,
++	.group_id = 1,
+ };
+ 
+-static const u64 rt1308_2_adr[] = {
+-	0x000210025D130800
++static const struct snd_soc_acpi_endpoint spk_r_endpoint = {
++	.num = 0,
++	.aggregated = 1,
++	.group_position = 1,
++	.group_id = 1,
+ };
+ 
+-static const u64 rt715_3_adr[] = {
+-	0x000310025D071500
++static const struct snd_soc_acpi_adr_device rt711_0_adr[] = {
++	{
++		.adr = 0x000010025D071100,
++		.num_endpoints = 1,
++		.endpoints = &single_endpoint,
 +	}
++};
 +
-+skip_soundwire:
-+
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
- 	if (bus->mlcap)
- 		snd_hdac_ext_bus_get_ml_capabilities(bus);
-@@ -949,6 +957,123 @@ static int hda_generic_machine_select(struct snd_sof_dev *sdev)
- }
- #endif
- 
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_INTEL_SOUNDWIRE)
-+/* Check if all Slaves defined on the link can be found */
-+static bool link_slaves_found(struct snd_sof_dev *sdev,
-+			      const struct snd_soc_acpi_link_adr *link,
-+			      struct sdw_intel_ctx *sdw)
-+{
-+	struct hdac_bus *bus = sof_to_bus(sdev);
-+	struct sdw_intel_slave_id *ids = sdw->ids;
-+	int num_slaves = sdw->num_slaves;
-+	unsigned int part_id, link_id, unique_id, mfg_id;
-+	int i, j;
-+
-+	for (i = 0; i < link->num_adr; i++) {
-+		u64 adr = link->adr_d[i].adr;
-+
-+		mfg_id = SDW_MFG_ID(adr);
-+		part_id = SDW_PART_ID(adr);
-+		link_id = SDW_DISCO_LINK_ID(adr);
-+		for (j = 0; j < num_slaves; j++) {
-+			if (ids[j].link_id != link_id ||
-+			    ids[j].id.part_id != part_id ||
-+			    ids[j].id.mfg_id != mfg_id)
-+				continue;
-+			/*
-+			 * we have to check unique id
-+			 * if there is more than one
-+			 * Slave on the link
-+			 */
-+			unique_id = SDW_UNIQUE_ID(adr);
-+			if (link->num_adr == 1 ||
-+			    ids[j].id.unique_id == SDW_IGNORED_UNIQUE_ID ||
-+			    ids[j].id.unique_id == unique_id) {
-+				dev_dbg(bus->dev,
-+					"found %x at link %d\n",
-+					part_id, link_id);
-+				break;
-+			}
-+		}
-+		if (j == num_slaves) {
-+			dev_dbg(bus->dev,
-+				"Slave %x not found\n",
-+				part_id);
-+			return false;
-+		}
++static const struct snd_soc_acpi_adr_device rt1308_1_adr[] = {
++	{
++		.adr = 0x000110025D130800,
++		.num_endpoints = 1,
++		.endpoints = &single_endpoint,
 +	}
-+	return true;
-+}
++};
 +
-+static int hda_sdw_machine_select(struct snd_sof_dev *sdev)
-+{
-+	struct snd_sof_pdata *pdata = sdev->pdata;
-+	const struct snd_soc_acpi_link_adr *link;
-+	struct hdac_bus *bus = sof_to_bus(sdev);
-+	struct snd_soc_acpi_mach *mach;
-+	struct sof_intel_hda_dev *hdev;
-+	u32 link_mask;
-+	int i;
-+
-+	hdev = pdata->hw_pdata;
-+	link_mask = hdev->info.link_mask;
-+
-+	/*
-+	 * Select SoundWire machine driver if needed using the
-+	 * alternate tables. This case deals with SoundWire-only
-+	 * machines, for mixed cases with I2C/I2S the detection relies
-+	 * on the HID list.
-+	 */
-+	if (link_mask && !pdata->machine) {
-+		for (mach = pdata->desc->alt_machines;
-+		     mach && mach->link_mask; mach++) {
-+			if (mach->link_mask != link_mask)
-+				continue;
-+
-+			/* No need to match adr if there is no links defined */
-+			if (!mach->links)
-+				break;
-+
-+			link = mach->links;
-+			for (i = 0; i < hdev->info.count && link->num_adr;
-+			     i++, link++) {
-+				/*
-+				 * Try next machine if any expected Slaves
-+				 * are not found on this link.
-+				 */
-+				if (!link_slaves_found(sdev, link, hdev->sdw))
-+					break;
-+			}
-+			/* Found if all Slaves are checked */
-+			if (i == hdev->info.count || !link->num_adr)
-+				break;
-+		}
-+		if (mach && mach->link_mask) {
-+			dev_dbg(bus->dev,
-+				"SoundWire machine driver %s topology %s\n",
-+				mach->drv_name,
-+				mach->sof_tplg_filename);
-+			pdata->machine = mach;
-+			mach->mach_params.links = mach->links;
-+			mach->mach_params.link_mask = mach->link_mask;
-+			mach->mach_params.platform = dev_name(sdev->dev);
-+			pdata->fw_filename = mach->sof_fw_filename;
-+			pdata->tplg_filename = mach->sof_tplg_filename;
-+		} else {
-+			dev_info(sdev->dev,
-+				 "No SoundWire machine driver found\n");
-+		}
++static const struct snd_soc_acpi_adr_device rt1308_2_adr[] = {
++	{
++		.adr = 0x000210025D130800,
++		.num_endpoints = 1,
++		.endpoints = &single_endpoint,
 +	}
++};
 +
-+	return 0;
-+}
-+#else
-+static int hda_sdw_machine_select(struct snd_sof_dev *sdev)
-+{
-+	return 0;
-+}
-+#endif
++static const struct snd_soc_acpi_adr_device rt1308_1_group1_adr[] = {
++	{
++		.adr = 0x000110025D130800,
++		.num_endpoints = 1,
++		.endpoints = &spk_l_endpoint,
++	}
++};
 +
- void hda_set_mach_params(const struct snd_soc_acpi_mach *mach,
- 			 struct device *dev)
- {
-@@ -968,8 +1093,18 @@ void hda_machine_select(struct snd_sof_dev *sdev)
- 	if (mach) {
- 		sof_pdata->tplg_filename = mach->sof_tplg_filename;
- 		sof_pdata->machine = mach;
++static const struct snd_soc_acpi_adr_device rt1308_2_group1_adr[] = {
++	{
++		.adr = 0x000210025D130800,
++		.num_endpoints = 1,
++		.endpoints = &spk_r_endpoint,
++	}
++};
 +
-+		if (mach->link_mask) {
-+			mach->mach_params.links = mach->links;
-+			mach->mach_params.link_mask = mach->link_mask;
-+		}
- 	}
++static const struct snd_soc_acpi_adr_device rt715_3_adr[] = {
++	{
++		.adr = 0x000310025D071500,
++		.num_endpoints = 1,
++		.endpoints = &single_endpoint,
++	}
+ };
  
-+	/*
-+	 * If I2S fails, try SoundWire
-+	 */
-+	hda_sdw_machine_select(sdev);
+ static const struct snd_soc_acpi_link_adr cml_3_in_1_default[] = {
+ 	{
+ 		.mask = BIT(0),
+ 		.num_adr = ARRAY_SIZE(rt711_0_adr),
+-		.adr = rt711_0_adr,
++		.adr_d = rt711_0_adr,
+ 	},
+ 	{
+ 		.mask = BIT(1),
+-		.num_adr = ARRAY_SIZE(rt1308_1_adr),
+-		.adr = rt1308_1_adr,
++		.num_adr = ARRAY_SIZE(rt1308_1_group1_adr),
++		.adr_d = rt1308_1_group1_adr,
+ 	},
+ 	{
+ 		.mask = BIT(2),
+-		.num_adr = ARRAY_SIZE(rt1308_2_adr),
+-		.adr = rt1308_2_adr,
++		.num_adr = ARRAY_SIZE(rt1308_2_group1_adr),
++		.adr_d = rt1308_2_group1_adr,
+ 	},
+ 	{
+ 		.mask = BIT(3),
+ 		.num_adr = ARRAY_SIZE(rt715_3_adr),
+-		.adr = rt715_3_adr,
++		.adr_d = rt715_3_adr,
+ 	},
+ 	{}
+ };
+@@ -103,17 +156,17 @@ static const struct snd_soc_acpi_link_adr cml_3_in_1_mono_amp[] = {
+ 	{
+ 		.mask = BIT(0),
+ 		.num_adr = ARRAY_SIZE(rt711_0_adr),
+-		.adr = rt711_0_adr,
++		.adr_d = rt711_0_adr,
+ 	},
+ 	{
+ 		.mask = BIT(1),
+ 		.num_adr = ARRAY_SIZE(rt1308_1_adr),
+-		.adr = rt1308_1_adr,
++		.adr_d = rt1308_1_adr,
+ 	},
+ 	{
+ 		.mask = BIT(3),
+ 		.num_adr = ARRAY_SIZE(rt715_3_adr),
+-		.adr = rt715_3_adr,
++		.adr_d = rt715_3_adr,
+ 	},
+ 	{}
+ };
+diff --git a/sound/soc/intel/common/soc-acpi-intel-icl-match.c b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
+index 752733013d54..a05fc083829e 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-icl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
+@@ -33,55 +33,112 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_icl_machines[] = {
+ };
+ EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_icl_machines);
+ 
+-static const u64 rt700_0_adr[] = {
+-	0x000010025D070000
++static const struct snd_soc_acpi_endpoint single_endpoint = {
++	.num = 0,
++	.aggregated = 0,
++	.group_position = 0,
++	.group_id = 0,
++};
 +
- 	/*
- 	 * Choose HDA generic machine driver if mach is NULL.
- 	 * Otherwise, set certain mach params.
++static const struct snd_soc_acpi_endpoint spk_l_endpoint = {
++	.num = 0,
++	.aggregated = 1,
++	.group_position = 0,
++	.group_id = 1,
++};
++
++static const struct snd_soc_acpi_endpoint spk_r_endpoint = {
++	.num = 0,
++	.aggregated = 1,
++	.group_position = 1,
++	.group_id = 1,
++};
++
++static const struct snd_soc_acpi_adr_device rt700_0_adr[] = {
++	{
++		.adr = 0x000010025D070000,
++		.num_endpoints = 1,
++		.endpoints = &single_endpoint,
++	}
+ };
+ 
+ static const struct snd_soc_acpi_link_adr icl_rvp[] = {
+ 	{
+ 		.mask = BIT(0),
+ 		.num_adr = ARRAY_SIZE(rt700_0_adr),
+-		.adr = rt700_0_adr,
++		.adr_d = rt700_0_adr,
+ 	},
+ 	{}
+ };
+ 
+-static const u64 rt711_0_adr[] = {
+-	0x000010025D071100
++static const struct snd_soc_acpi_adr_device rt711_0_adr[] = {
++	{
++		.adr = 0x000010025D071100,
++		.num_endpoints = 1,
++		.endpoints = &single_endpoint,
++	}
++};
++
++static const struct snd_soc_acpi_adr_device rt1308_1_adr[] = {
++	{
++		.adr = 0x000110025D130800,
++		.num_endpoints = 1,
++		.endpoints = &single_endpoint,
++	}
+ };
+ 
+-static const u64 rt1308_1_adr[] = {
+-	0x000110025D130800
++static const struct snd_soc_acpi_adr_device rt1308_2_adr[] = {
++	{
++		.adr = 0x000210025D130800,
++		.num_endpoints = 1,
++		.endpoints = &single_endpoint,
++	}
+ };
+ 
+-static const u64 rt1308_2_adr[] = {
+-	0x000210025D130800
++static const struct snd_soc_acpi_adr_device rt1308_1_group1_adr[] = {
++	{
++		.adr = 0x000110025D130800,
++		.num_endpoints = 1,
++		.endpoints = &spk_l_endpoint,
++	}
+ };
+ 
+-static const u64 rt715_3_adr[] = {
+-	0x000310025D071500
++static const struct snd_soc_acpi_adr_device rt1308_2_group1_adr[] = {
++	{
++		.adr = 0x000210025D130800,
++		.num_endpoints = 1,
++		.endpoints = &spk_r_endpoint,
++	}
++};
++
++static const struct snd_soc_acpi_adr_device rt715_3_adr[] = {
++	{
++		.adr = 0x000310025D071500,
++		.num_endpoints = 1,
++		.endpoints = &single_endpoint,
++	}
+ };
+ 
+ static const struct snd_soc_acpi_link_adr icl_3_in_1_default[] = {
+ 	{
+ 		.mask = BIT(0),
+ 		.num_adr = ARRAY_SIZE(rt711_0_adr),
+-		.adr = rt711_0_adr,
++		.adr_d = rt711_0_adr,
+ 	},
+ 	{
+ 		.mask = BIT(1),
+-		.num_adr = ARRAY_SIZE(rt1308_1_adr),
+-		.adr = rt1308_1_adr,
++		.num_adr = ARRAY_SIZE(rt1308_1_group1_adr),
++		.adr_d = rt1308_1_group1_adr,
+ 	},
+ 	{
+ 		.mask = BIT(2),
+-		.num_adr = ARRAY_SIZE(rt1308_2_adr),
+-		.adr = rt1308_2_adr,
++		.num_adr = ARRAY_SIZE(rt1308_2_group1_adr),
++		.adr_d = rt1308_2_group1_adr,
+ 	},
+ 	{
+ 		.mask = BIT(3),
+ 		.num_adr = ARRAY_SIZE(rt715_3_adr),
+-		.adr = rt715_3_adr,
++		.adr_d = rt715_3_adr,
+ 	},
+ 	{}
+ };
+@@ -90,17 +147,17 @@ static const struct snd_soc_acpi_link_adr icl_3_in_1_mono_amp[] = {
+ 	{
+ 		.mask = BIT(0),
+ 		.num_adr = ARRAY_SIZE(rt711_0_adr),
+-		.adr = rt711_0_adr,
++		.adr_d = rt711_0_adr,
+ 	},
+ 	{
+ 		.mask = BIT(1),
+ 		.num_adr = ARRAY_SIZE(rt1308_1_adr),
+-		.adr = rt1308_1_adr,
++		.adr_d = rt1308_1_adr,
+ 	},
+ 	{
+ 		.mask = BIT(3),
+ 		.num_adr = ARRAY_SIZE(rt715_3_adr),
+-		.adr = rt715_3_adr,
++		.adr_d = rt715_3_adr,
+ 	},
+ 	{}
+ };
+diff --git a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+index c15eae402b18..3153b44f9053 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+@@ -14,20 +14,53 @@ static struct snd_soc_acpi_codecs tgl_codecs = {
+ 	.codecs = {"MX98357A"}
+ };
+ 
+-static const u64 rt711_0_adr[] = {
+-	0x000010025D071100
++static const struct snd_soc_acpi_endpoint single_endpoint = {
++	.num = 0,
++	.aggregated = 0,
++	.group_position = 0,
++	.group_id = 0,
+ };
+ 
+-static const u64 rt1308_1_adr[] = {
+-	0x000120025D130800,
+-	0x000122025D130800
++static const struct snd_soc_acpi_endpoint spk_l_endpoint = {
++	.num = 0,
++	.aggregated = 1,
++	.group_position = 0,
++	.group_id = 1,
++};
++
++static const struct snd_soc_acpi_endpoint spk_r_endpoint = {
++	.num = 0,
++	.aggregated = 1,
++	.group_position = 1,
++	.group_id = 1,
++};
++
++static const struct snd_soc_acpi_adr_device rt711_0_adr[] = {
++	{
++		.adr = 0x000010025D071100,
++		.num_endpoints = 1,
++		.endpoints = &single_endpoint,
++	}
++};
++
++static const struct snd_soc_acpi_adr_device rt1308_1_adr[] = {
++	{
++		.adr = 0x000120025D130800,
++		.num_endpoints = 1,
++		.endpoints = &spk_l_endpoint,
++	},
++	{
++		.adr = 0x000122025D130800,
++		.num_endpoints = 1,
++		.endpoints = &spk_r_endpoint,
++	}
+ };
+ 
+ static const struct snd_soc_acpi_link_adr tgl_i2s_rt1308[] = {
+ 	{
+ 		.mask = BIT(0),
+ 		.num_adr = ARRAY_SIZE(rt711_0_adr),
+-		.adr = rt711_0_adr,
++		.adr_d = rt711_0_adr,
+ 	},
+ 	{}
+ };
+@@ -36,12 +69,12 @@ static const struct snd_soc_acpi_link_adr tgl_rvp[] = {
+ 	{
+ 		.mask = BIT(0),
+ 		.num_adr = ARRAY_SIZE(rt711_0_adr),
+-		.adr = rt711_0_adr,
++		.adr_d = rt711_0_adr,
+ 	},
+ 	{
+ 		.mask = BIT(1),
+ 		.num_adr = ARRAY_SIZE(rt1308_1_adr),
+-		.adr = rt1308_1_adr,
++		.adr_d = rt1308_1_adr,
+ 	},
+ 	{}
+ };
 -- 
 2.20.1
 
