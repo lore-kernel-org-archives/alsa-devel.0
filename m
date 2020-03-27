@@ -7,54 +7,54 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 260C0C43331
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 15:43:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 69D2AC43331
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 15:44:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9E2B520658
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 15:43:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E745620748
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 15:44:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qmDvAdwf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9E2B520658
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pCuzBBNV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E745620748
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ED653167A;
-	Fri, 27 Mar 2020 16:43:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ED653167A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 78C9F166C;
+	Fri, 27 Mar 2020 16:43:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 78C9F166C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585323833;
-	bh=3iYMGm1ChIa/trMKaI+48KwjY7g+xT+PCKvKbvEOxP8=;
+	s=default; t=1585323867;
+	bh=B0JnR2h0eAy1rJ4ETwDDbzKourPsXPzuOUBU9duwKTU=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=qmDvAdwfF8EZjV6yadsU8eSAelfHD42fQB3qB5J0uStG5x50hPNtCwA4BNBDH6G4D
-	 zzIZ+TQa1otl3G8FDcx2eau9vQHgjNaa7tED7foJBmDAXMsOK8J3mhWDetZRFVjhO+
-	 QdiDAZACXmAajphIzPlEGwyFryiAtSdD15mqOAgs=
+	b=pCuzBBNVjLYpFvyWO40OXH6SDbVGPEPfiUyIMkix75zyMg40UGyks8XqQGQgnX9Ik
+	 oYY/638Rvuj4lwI/q7ZOh2EVRuaj/c9UsN0BZllxhI5lhps3HCte242bA16B8N8mEs
+	 MhoV19Ejbb6zIeYI1xIPc3cM8w5kuxiDSq0qfkNw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D416DF80340;
-	Fri, 27 Mar 2020 16:34:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E9F55F80345;
+	Fri, 27 Mar 2020 16:34:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A1526F80342; Fri, 27 Mar 2020 16:34:41 +0100 (CET)
+ id 7210DF8033D; Fri, 27 Mar 2020 16:34:42 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id B4F90F8015A
- for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 16:34:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4F90F8015A
+ by alsa1.perex.cz (Postfix) with ESMTP id B0802F80340
+ for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 16:34:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0802F80340
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 918F21FB;
- Fri, 27 Mar 2020 08:34:34 -0700 (PDT)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 302F91FB;
+ Fri, 27 Mar 2020 08:34:39 -0700 (PDT)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1698F3F71F;
- Fri, 27 Mar 2020 08:34:33 -0700 (PDT)
-Date: Fri, 27 Mar 2020 15:34:32 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A53783F71F;
+ Fri, 27 Mar 2020 08:34:38 -0700 (PDT)
+Date: Fri, 27 Mar 2020 15:34:37 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Applied "ASoC: xtensa: use asoc_rtd_to_cpu() / asoc_rtd_to_codec()
+Subject: Applied "ASoC: ux500: use asoc_rtd_to_cpu() / asoc_rtd_to_codec()
  macro for DAI pointer" to the asoc tree
-In-Reply-To: <87zhc7hcih.wl-kuninori.morimoto.gx@renesas.com>
-Message-Id: <applied-87zhc7hcih.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <871rpjir34.wl-kuninori.morimoto.gx@renesas.com>
+Message-Id: <applied-871rpjir34.wl-kuninori.morimoto.gx@renesas.com>
 X-Patchwork-Hint: ignore
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
@@ -75,7 +75,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: xtensa: use asoc_rtd_to_cpu() / asoc_rtd_to_codec() macro for DAI pointer
+   ASoC: ux500: use asoc_rtd_to_cpu() / asoc_rtd_to_codec() macro for DAI pointer
 
 has been applied to the asoc tree at
 
@@ -100,33 +100,81 @@ to this mail.
 Thanks,
 Mark
 
-From aafa4ef55c80f3c5f216f6b9b76dc469c917fe63 Mon Sep 17 00:00:00 2001
+From 99396e3883672a9073e7458b40504d647351b54f Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 23 Mar 2020 14:21:42 +0900
-Subject: [PATCH] ASoC: xtensa: use asoc_rtd_to_cpu() / asoc_rtd_to_codec()
+Date: Mon, 23 Mar 2020 14:21:35 +0900
+Subject: [PATCH] ASoC: ux500: use asoc_rtd_to_cpu() / asoc_rtd_to_codec()
  macro for DAI pointer
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/87zhc7hcih.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/871rpjir34.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/xtensa/xtfpga-i2s.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/ux500/mop500_ab8500.c | 6 +++---
+ sound/soc/ux500/ux500_pcm.c     | 8 ++++----
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/xtensa/xtfpga-i2s.c b/sound/soc/xtensa/xtfpga-i2s.c
-index bcf442faff7c..68af2176b19c 100644
---- a/sound/soc/xtensa/xtfpga-i2s.c
-+++ b/sound/soc/xtensa/xtfpga-i2s.c
-@@ -373,7 +373,7 @@ static int xtfpga_pcm_open(struct snd_soc_component *component,
- 	void *p;
+diff --git a/sound/soc/ux500/mop500_ab8500.c b/sound/soc/ux500/mop500_ab8500.c
+index 77655084bbde..6aaa19829a73 100644
+--- a/sound/soc/ux500/mop500_ab8500.c
++++ b/sound/soc/ux500/mop500_ab8500.c
+@@ -215,8 +215,8 @@ static int mop500_ab8500_hw_params(struct snd_pcm_substream *substream,
+ 			struct snd_pcm_hw_params *params)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+-	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
++	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
+ 	struct device *dev = rtd->card->dev;
+ 	unsigned int fmt;
+ 	int channels, ret = 0, driver_mode, slots;
+@@ -339,7 +339,7 @@ static int mop500_ab8500_hw_params(struct snd_pcm_substream *substream,
+ static int mop500_ab8500_hw_free(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
  
- 	snd_soc_set_runtime_hwparams(substream, &xtfpga_pcm_hardware);
--	p = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
-+	p = snd_soc_dai_get_dma_data(asoc_rtd_to_cpu(rtd, 0), substream);
- 	runtime->private_data = p;
+ 	mutex_lock(&mop500_ab8500_params_lock);
+ 	__clear_bit(cpu_dai->id, &mop500_ab8500_usage);
+diff --git a/sound/soc/ux500/ux500_pcm.c b/sound/soc/ux500/ux500_pcm.c
+index 9445dbe8e039..39b96c132bc8 100644
+--- a/sound/soc/ux500/ux500_pcm.c
++++ b/sound/soc/ux500/ux500_pcm.c
+@@ -46,7 +46,7 @@ static const struct snd_pcm_hardware ux500_pcm_hw = {
+ static struct dma_chan *ux500_pcm_request_chan(struct snd_soc_pcm_runtime *rtd,
+ 	struct snd_pcm_substream *substream)
+ {
+-	struct snd_soc_dai *dai = rtd->cpu_dai;
++	struct snd_soc_dai *dai = asoc_rtd_to_cpu(rtd, 0);
+ 	u16 per_data_width, mem_data_width;
+ 	struct stedma40_chan_cfg *dma_cfg;
+ 	struct ux500_msp_dma_params *dma_params;
+@@ -86,7 +86,7 @@ static int ux500_pcm_prepare_slave_config(struct snd_pcm_substream *substream,
+ 		struct dma_slave_config *slave_config)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct msp_i2s_platform_data *pdata = rtd->cpu_dai->dev->platform_data;
++	struct msp_i2s_platform_data *pdata = asoc_rtd_to_cpu(rtd, 0)->dev->platform_data;
+ 	struct snd_dmaengine_dai_dma_data *snd_dma_params;
+ 	struct ux500_msp_dma_params *ste_dma_params;
+ 	dma_addr_t dma_addr;
+@@ -94,11 +94,11 @@ static int ux500_pcm_prepare_slave_config(struct snd_pcm_substream *substream,
  
- 	return 0;
+ 	if (pdata) {
+ 		ste_dma_params =
+-			snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
++			snd_soc_dai_get_dma_data(asoc_rtd_to_cpu(rtd, 0), substream);
+ 		dma_addr = ste_dma_params->tx_rx_addr;
+ 	} else {
+ 		snd_dma_params =
+-			snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
++			snd_soc_dai_get_dma_data(asoc_rtd_to_cpu(rtd, 0), substream);
+ 		dma_addr = snd_dma_params->addr;
+ 	}
+ 
 -- 
 2.20.1
 
