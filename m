@@ -4,63 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F0D9C43331
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 15:34:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7A26C43331
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 15:35:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CB62A20658
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 15:34:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 70853214D8
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 15:35:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="swSCIJ5U"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CB62A20658
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LpwZs+5y"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 70853214D8
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 688F81664;
-	Fri, 27 Mar 2020 16:33:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 688F81664
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6D5121670;
+	Fri, 27 Mar 2020 16:34:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D5121670
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585323268;
-	bh=G5tUCjqdy/t+nE+obdoOgJNncNoC78Cx+sFinQYIUuI=;
+	s=default; t=1585323322;
+	bh=hI2S5kJTu6Ws6sSngOtK+29GJO6z2n3LZy0/haruSkg=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=swSCIJ5UxkzpiyJ9LXaIZpLuzIFF61CmPh8UqDleEA9c0otp4HkEe2H+cU13qQckY
-	 gIWk5H9V/vWcRsNxR3HFx8IxYWYUIIiMwPf0WdGVh2iC/627zvHJpZic05QZY4bkIZ
-	 4YcPW9Vobe5BNwPjFsOuRMcDw4pADxN2KtAyDmJw=
+	b=LpwZs+5yyL1FhyqpTm5NoYzL0QA9INbDzAmgJf8pRJT/cVUEHykL+PjeFEn20AuH+
+	 RGh60QNfCWmZCf7OQ6EcJfi+xOvsX3lbchqQK0KQKLU5P0f3aN7zJhoYMettyZU1kc
+	 b0TaSImtTdlyIDGy77XfZnmQTg+I+c2ov+5OoCE8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D2094F80147;
-	Fri, 27 Mar 2020 16:33:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0C8CDF80248;
+	Fri, 27 Mar 2020 16:33:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 631B0F8015A; Fri, 27 Mar 2020 16:33:36 +0100 (CET)
+ id 98C5CF80158; Fri, 27 Mar 2020 16:33:36 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id D4C78F8011E
- for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 16:33:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D4C78F8011E
+ by alsa1.perex.cz (Postfix) with ESMTP id E7430F8011B
+ for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 16:33:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7430F8011B
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B2E0031B;
- Fri, 27 Mar 2020 08:33:31 -0700 (PDT)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3C5C21FB;
+ Fri, 27 Mar 2020 08:33:27 -0700 (PDT)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 36BCF3F71F;
- Fri, 27 Mar 2020 08:33:31 -0700 (PDT)
-Date: Fri, 27 Mar 2020 15:33:29 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B48883F71F;
+ Fri, 27 Mar 2020 08:33:26 -0700 (PDT)
+Date: Fri, 27 Mar 2020 15:33:25 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Subject: Applied "ASoC: pxa: magician: convert to use i2c_new_client_device()"
- to the asoc tree
-In-Reply-To: <20200326211010.13471-2-wsa+renesas@sang-engineering.com>
-Message-Id: <applied-20200326211010.13471-2-wsa+renesas@sang-engineering.com>
+To: Shuming Fan <shumingf@realtek.com>
+Subject: Applied "ASoC: rt5682: move DAI clock registry to I2S mode" to the
+ asoc tree
+In-Reply-To: <20200327073849.18291-1-shumingf@realtek.com>
+Message-Id: <applied-20200327073849.18291-1-shumingf@realtek.com>
 X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- linux-i2c@vger.kernel.org, Daniel Mack <daniel@zonque.org>,
- Robert Jarzmik <robert.jarzmik@free.fr>, linux-arm-kernel@lists.infradead.org
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
+ lars@metafoo.de, lgirdwood@gmail.com, rander.wang@intel.com,
+ albertchen@realtek.com, Mark Brown <broonie@kernel.org>,
+ derek.fang@realtek.com, bard.liao@intel.com, flove@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,7 +77,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: pxa: magician: convert to use i2c_new_client_device()
+   ASoC: rt5682: move DAI clock registry to I2S mode
 
 has been applied to the asoc tree at
 
@@ -103,39 +102,78 @@ to this mail.
 Thanks,
 Mark
 
-From 17fb5433150e8b0b4000a77a21055359a2eab534 Mon Sep 17 00:00:00 2001
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Date: Thu, 26 Mar 2020 22:10:10 +0100
-Subject: [PATCH] ASoC: pxa: magician: convert to use i2c_new_client_device()
+From 914f674bec6efe42f9d6b036850a618fd1698290 Mon Sep 17 00:00:00 2001
+From: Shuming Fan <shumingf@realtek.com>
+Date: Fri, 27 Mar 2020 15:38:49 +0800
+Subject: [PATCH] ASoC: rt5682: move DAI clock registry to I2S mode
 
-Move away from the deprecated API and return the shiny new ERRPTR where
-useful.
+The SoundWire mode doesn't need the DAI clocks.
+Therefore, the DAI clock registry moves to I2S mode case.
 
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Link: https://lore.kernel.org/r/20200326211010.13471-2-wsa+renesas@sang-engineering.com
+Signed-off-by: Shuming Fan <shumingf@realtek.com>
+Link: https://lore.kernel.org/r/20200327073849.18291-1-shumingf@realtek.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/magician.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/rt5682.c | 39 +++++++++++++++++++--------------------
+ 1 file changed, 19 insertions(+), 20 deletions(-)
 
-diff --git a/sound/soc/pxa/magician.c b/sound/soc/pxa/magician.c
-index 6483cff5b73d..3bafd86bfb93 100644
---- a/sound/soc/pxa/magician.c
-+++ b/sound/soc/pxa/magician.c
-@@ -358,10 +358,10 @@ static int __init magician_init(void)
- 	adapter = i2c_get_adapter(0);
- 	if (!adapter)
- 		return -ENODEV;
--	client = i2c_new_device(adapter, i2c_board_info);
-+	client = i2c_new_client_device(adapter, i2c_board_info);
- 	i2c_put_adapter(adapter);
--	if (!client)
--		return -ENODEV;
-+	if (IS_ERR(client))
-+		return PTR_ERR(client);
+diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
+index 923541a52504..ce4fe7a683f9 100644
+--- a/sound/soc/codecs/rt5682.c
++++ b/sound/soc/codecs/rt5682.c
+@@ -2856,26 +2856,6 @@ static int rt5682_probe(struct snd_soc_component *component)
+ #endif
+ 	rt5682->component = component;
  
- 	ret = gpio_request(EGPIO_MAGICIAN_SPK_POWER, "SPK_POWER");
- 	if (ret)
+-#ifdef CONFIG_COMMON_CLK
+-	/* Check if MCLK provided */
+-	rt5682->mclk = devm_clk_get(component->dev, "mclk");
+-	if (IS_ERR(rt5682->mclk)) {
+-		if (PTR_ERR(rt5682->mclk) != -ENOENT) {
+-			ret = PTR_ERR(rt5682->mclk);
+-			return ret;
+-		}
+-		rt5682->mclk = NULL;
+-	}
+-
+-	/* Register CCF DAI clock control */
+-	ret = rt5682_register_dai_clks(component);
+-	if (ret)
+-		return ret;
+-
+-	/* Initial setup for CCF */
+-	rt5682->lrck[RT5682_AIF1] = CLK_48;
+-#endif
+-
+ 	if (rt5682->is_sdw) {
+ 		slave = rt5682->slave;
+ 		time = wait_for_completion_timeout(
+@@ -2885,6 +2865,25 @@ static int rt5682_probe(struct snd_soc_component *component)
+ 			dev_err(&slave->dev, "Initialization not complete, timed out\n");
+ 			return -ETIMEDOUT;
+ 		}
++	} else {
++#ifdef CONFIG_COMMON_CLK
++		/* Check if MCLK provided */
++		rt5682->mclk = devm_clk_get(component->dev, "mclk");
++		if (IS_ERR(rt5682->mclk)) {
++			if (PTR_ERR(rt5682->mclk) != -ENOENT) {
++				ret = PTR_ERR(rt5682->mclk);
++				return ret;
++			}
++			rt5682->mclk = NULL;
++		} else {
++			/* Register CCF DAI clock control */
++			ret = rt5682_register_dai_clks(component);
++			if (ret)
++				return ret;
++		}
++		/* Initial setup for CCF */
++		rt5682->lrck[RT5682_AIF1] = CLK_48;
++#endif
+ 	}
+ 
+ 	return 0;
 -- 
 2.20.1
 
