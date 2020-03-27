@@ -7,52 +7,52 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4343C43331
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 15:40:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18BBAC43331
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 15:40:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6E00220658
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 15:40:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 95CCC20936
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 15:40:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nTwiVVg0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6E00220658
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WMA7azjx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 95CCC20936
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3C0D31677;
-	Fri, 27 Mar 2020 16:39:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C0D31677
+	by alsa0.perex.cz (Postfix) with ESMTPS id F2BE51676;
+	Fri, 27 Mar 2020 16:39:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F2BE51676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585323620;
-	bh=HIarSvpF72sNZLZFzKszwQMIhwacdPu3k4dG8HcY4yY=;
+	s=default; t=1585323642;
+	bh=KpWX9Sk1k5d8cMTrttrMzaO/BCoePR6X+FO2T8JW1ig=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=nTwiVVg0XNFfLtRUOEHFkGhFO9COXXxnPk9kUh62HQTu91eN2933yHEXIQwpD7YWI
-	 cBjZ1zXqTSs+rzZE/E97xsmdEIl6evPTITpsyaA9N/T1Tp01rFw8GgvpfZgsWr7RjX
-	 YoDMDjrqEEtrNpqQVGkNA840ajVenCtnzwvldNhk=
+	b=WMA7azjxXDsmYvgvhme6NEKwN5gcuH3AIozn3shkoiR2sPtmUQ4R+1p+5aIMay/TN
+	 apEWdJhPAE8KgcT+QsP+XRkvyHWlGCrRyVw1LhO4RxqguEAjFgsKvOTLmEz4dC3RjJ
+	 vX3Alr9QhSaHOTSm+/uzMtG2J2m2XOMRbIFTGLvo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BA1EFF802F9;
-	Fri, 27 Mar 2020 16:34:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 03403F802FE;
+	Fri, 27 Mar 2020 16:34:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 26DAFF802EB; Fri, 27 Mar 2020 16:34:12 +0100 (CET)
+ id 85B47F80303; Fri, 27 Mar 2020 16:34:19 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 36D5EF802EA
- for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 16:34:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36D5EF802EA
+ by alsa1.perex.cz (Postfix) with ESMTP id 2247AF802EC
+ for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 16:34:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2247AF802EC
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C5F9A31B;
- Fri, 27 Mar 2020 08:34:07 -0700 (PDT)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4E1321FB;
+ Fri, 27 Mar 2020 08:34:12 -0700 (PDT)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1A68C3F71F;
- Fri, 27 Mar 2020 08:34:06 -0700 (PDT)
-Date: Fri, 27 Mar 2020 15:34:05 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C63AE3F71F;
+ Fri, 27 Mar 2020 08:34:11 -0700 (PDT)
+Date: Fri, 27 Mar 2020 15:34:10 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Applied "ASoC: SOF: Intel: hda: add SoundWire stream config/free
- callbacks" to the asoc tree
+Subject: Applied "ASoC: SOF: IPC: dai-intel: move ALH declarations in header
+ file" to the asoc tree
 In-Reply-To: 
 Message-Id: 
 X-Patchwork-Hint: ignore
@@ -71,11 +71,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20200327153405.bdzQuwoua9w2e4NHUg-XWCFFzxzpmXYjSt3FXxCKgSo@z>
+Message-ID: <20200327153410.42mSvYt4tI5LtAiAXlilPxwuL7lXrR16n1jr4NcXgaM@z>
 
 The patch
 
-   ASoC: SOF: Intel: hda: add SoundWire stream config/free callbacks
+   ASoC: SOF: IPC: dai-intel: move ALH declarations in header file
 
 has been applied to the asoc tree at
 
@@ -100,119 +100,59 @@ to this mail.
 Thanks,
 Mark
 
-From d2c383aa49dce9c5b59930c999099ecc580857fe Mon Sep 17 00:00:00 2001
+From f8e25018801548314b3d908315cbf271e8eceba8 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Wed, 25 Mar 2020 16:50:20 -0500
-Subject: [PATCH] ASoC: SOF: Intel: hda: add SoundWire stream config/free
- callbacks
+Date: Wed, 25 Mar 2020 16:50:19 -0500
+Subject: [PATCH] ASoC: SOF: IPC: dai-intel: move ALH declarations in header
+ file
 
-These callbacks are invoked when a matching hw_params/hw_free() DAI
-operation takes place, and will result in IPC operations with the SOF
-firmware.
+ALH was inserted in the wrong place during integration, add after DMIC
+to mirror the file used by SOF firmware.
+
+No functional change, just text move in the same file to better track
+changes, if any.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200325215027.28716-5-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20200325215027.28716-4-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/intel/hda.c | 71 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 71 insertions(+)
+ include/sound/sof/dai-intel.h | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index c1fe94800da1..1f93124a63cd 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -24,6 +24,7 @@
- #include <sound/intel-nhlt.h>
- #include <sound/sof.h>
- #include <sound/sof/xtensa.h>
-+#include "../sof-audio.h"
- #include "../ops.h"
- #include "hda.h"
+diff --git a/include/sound/sof/dai-intel.h b/include/sound/sof/dai-intel.h
+index 5f1ef5565be6..04e48227f542 100644
+--- a/include/sound/sof/dai-intel.h
++++ b/include/sound/sof/dai-intel.h
+@@ -87,6 +87,15 @@ struct sof_ipc_dai_hda_params {
+ 	uint32_t link_dma_ch;
+ } __packed;
  
-@@ -38,6 +39,74 @@
++/* ALH Configuration Request - SOF_IPC_DAI_ALH_CONFIG */
++struct sof_ipc_dai_alh_params {
++	struct sof_ipc_hdr hdr;
++	uint32_t stream_id;
++
++	/* reserved for future use */
++	uint32_t reserved[15];
++} __packed;
++
+ /* DMIC Configuration Request - SOF_IPC_DAI_DMIC_CONFIG */
  
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_INTEL_SOUNDWIRE)
+ /* This struct is defined per 2ch PDM controller available in the platform.
+@@ -179,13 +188,4 @@ struct sof_ipc_dai_dmic_params {
+ 	struct sof_ipc_dai_dmic_pdm_ctrl pdm[0];
+ } __packed;
  
-+static int sdw_params_stream(struct device *dev,
-+			     struct sdw_intel_stream_params_data *params_data)
-+{
-+	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
-+	struct snd_soc_dai *d = params_data->dai;
-+	struct sof_ipc_dai_config config;
-+	struct sof_ipc_reply reply;
-+	int link_id = params_data->link_id;
-+	int alh_stream_id = params_data->alh_stream_id;
-+	int ret;
-+	u32 size = sizeof(config);
-+
-+	memset(&config, 0, size);
-+	config.hdr.size = size;
-+	config.hdr.cmd = SOF_IPC_GLB_DAI_MSG | SOF_IPC_DAI_CONFIG;
-+	config.type = SOF_DAI_INTEL_ALH;
-+	config.dai_index = (link_id << 8) | (d->id);
-+	config.alh.stream_id = alh_stream_id;
-+
-+	/* send message to DSP */
-+	ret = sof_ipc_tx_message(sdev->ipc,
-+				 config.hdr.cmd, &config, size, &reply,
-+				 sizeof(reply));
-+	if (ret < 0) {
-+		dev_err(sdev->dev,
-+			"error: failed to set DAI hw_params for link %d dai->id %d ALH %d\n",
-+			link_id, d->id, alh_stream_id);
-+	}
-+
-+	return ret;
-+}
-+
-+static int sdw_free_stream(struct device *dev,
-+			   struct sdw_intel_stream_free_data *free_data)
-+{
-+	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
-+	struct snd_soc_dai *d = free_data->dai;
-+	struct sof_ipc_dai_config config;
-+	struct sof_ipc_reply reply;
-+	int link_id = free_data->link_id;
-+	int ret;
-+	u32 size = sizeof(config);
-+
-+	memset(&config, 0, size);
-+	config.hdr.size = size;
-+	config.hdr.cmd = SOF_IPC_GLB_DAI_MSG | SOF_IPC_DAI_CONFIG;
-+	config.type = SOF_DAI_INTEL_ALH;
-+	config.dai_index = (link_id << 8) | d->id;
-+	config.alh.stream_id = 0xFFFF; /* invalid value on purpose */
-+
-+	/* send message to DSP */
-+	ret = sof_ipc_tx_message(sdev->ipc,
-+				 config.hdr.cmd, &config, size, &reply,
-+				 sizeof(reply));
-+	if (ret < 0) {
-+		dev_err(sdev->dev,
-+			"error: failed to free stream for link %d dai->id %d\n",
-+			link_id, d->id);
-+	}
-+
-+	return ret;
-+}
-+
-+static const struct sdw_intel_ops sdw_callback = {
-+	.params_stream = sdw_params_stream,
-+	.free_stream = sdw_free_stream,
-+};
-+
- void hda_sdw_int_enable(struct snd_sof_dev *sdev, bool enable)
- {
- 	sdw_intel_enable_irq(sdev->bar[HDA_DSP_BAR], enable);
-@@ -80,6 +149,8 @@ static int hda_sdw_probe(struct snd_sof_dev *sdev)
- 	res.irq = sdev->ipc_irq;
- 	res.handle = hdev->info.handle;
- 	res.parent = sdev->dev;
-+	res.ops = &sdw_callback;
-+	res.dev = sdev->dev;
- 
- 	/*
- 	 * ops and arg fields are not populated for now,
+-/* ALH Configuration Request - SOF_IPC_DAI_ALH_CONFIG */
+-struct sof_ipc_dai_alh_params {
+-	struct sof_ipc_hdr hdr;
+-	uint32_t stream_id;
+-
+-	/* reserved for future use */
+-	uint32_t reserved[15];
+-} __packed;
+-
+ #endif
 -- 
 2.20.1
 
