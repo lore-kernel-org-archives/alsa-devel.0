@@ -2,61 +2,95 @@ Return-Path: <SRS0=JTem=5M=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EAE2EC2D0EC
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 15:41:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A0D39C2D0ED
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 17:19:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 77FC420658
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 15:41:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2D479206DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 17:19:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dP6IaHOn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 77FC420658
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mV3QpMnh";
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YdmJIKva"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2D479206DB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DCEAC166A;
-	Fri, 27 Mar 2020 16:40:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DCEAC166A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7A15B15F9;
+	Fri, 27 Mar 2020 18:18:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A15B15F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585323681;
-	bh=Kl91rQ9WfXqMROc2EjcRjuPzHAAVKw0ASob3o43Geds=;
-	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=dP6IaHOn6fIdbUT1NCoBdiyEDqmY5scFmTrtAy+fgFSHDvKjahSaBKnwVhVL1DDus
-	 Lrhv58M9fAxwPk/RI4oNm92LeWtg+m5qdodxmfFaHcnPd/DNTjLSEDto44wsLAH7+o
-	 c967gXqKZp7FVb/Nz6EcEt/st358Z3VWwIpkjvOQ=
+	s=default; t=1585329588;
+	bh=dmkyA8pY6y/v1664D9aoiYBvLi5TiltVrZ2SzmdJWR4=;
+	h=Date:From:To:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=mV3QpMnhtdwhV8X3oj/eX0PCb+XSdHX5rzIMSeGTheD2z2ldpadVvHmq93EmhMFAI
+	 Z7PL70JqUafpYl2kLKSKLiDi7d6poMAtusA3l7UrU6HgG6bGZzzaoE0S8q8d40CRN/
+	 e1DmohVYdctye4m/jpSwV1Zo6evmuqZ2MpnY71VE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4227EF80305;
-	Fri, 27 Mar 2020 16:34:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F18CEF80158;
+	Fri, 27 Mar 2020 18:18:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2259DF802FF; Fri, 27 Mar 2020 16:34:21 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id BF8F9F802FD
- for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 16:34:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BF8F9F802FD
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B879E1FB;
- Fri, 27 Mar 2020 08:34:16 -0700 (PDT)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 39F2D3F71F;
- Fri, 27 Mar 2020 08:34:16 -0700 (PDT)
-Date: Fri, 27 Mar 2020 15:34:14 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Applied "ASoC: SOF: Intel: add SoundWire configuration interface" to
- the asoc tree
-In-Reply-To: 
-Message-Id: 
-X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+ id 598F5F8015A; Fri, 27 Mar 2020 18:18:57 +0100 (CET)
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com
+ [IPv6:2a00:1450:4864:20::432])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B19B5F80147
+ for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 18:18:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B19B5F80147
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="YdmJIKva"
+Received: by mail-wr1-x432.google.com with SMTP id p10so12335073wrt.6
+ for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 10:18:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=date:from:to:subject:message-id:mime-version:content-disposition
+ :user-agent; bh=PSUyp9mh9zzGz7WtxUBFm4ZhdtcGHPkm37YZwxddco8=;
+ b=YdmJIKvaFttPZCgBStmjXigcYMLHLGydZgGjsfWl09JxK9iJnGUWujFNtQOcFbpMLw
+ R1V5nRDk5O9Qrhrs6RL/DzRD6Dk9iZDnEq9SWUz65T96vGxDKT0KMvasEYpy7zmzvjzn
+ M4GiwKC+ezrMBx8DnKlveJ/9Bd6ZRFy9D9I2moSyHQ1vh4CohZSFRjoARISqRW9mMfcL
+ 8DZ7dTTB8HHGd5SLyy4G1ghBWbwDx8RwQu/dwojPmKNrRMyiNmFd8mSIBja/tHIxZcxS
+ o1vsPmCYnZZpQHVoy9sl6M66K84gM1XWP7nLsodSlxiVra7+G4+pZV33WjmYUjGTh6kD
+ 4tRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+ :content-disposition:user-agent;
+ bh=PSUyp9mh9zzGz7WtxUBFm4ZhdtcGHPkm37YZwxddco8=;
+ b=SWz14lC0jrQkZyV4UqglKlF3+jmVF/2x6UWrRifxZwJmqxUiWqVIsM2QOI3DhEO/yC
+ 7Kyr2ylR0UWmXMoyc+2iiMNAnGrGTt6fud/NnicLM6UosCWjAwd9FxKcmaoZ3K9daQ+N
+ xcJWxhcmMPFYFjWOc1ZUiPA0hMZYaCBEE/J2XOx0vTG/rwLVqrpeonP3Evk7QeyvRxcD
+ HGyOzc6axh6tL0cdGjujDfITSCqNp4/jyejOtuFbgVIo85oskBOdinopzkgdt0uhJSDc
+ A9im9AATJT8lMqVcY3bVNXjgoHwS0ForRVf2+PftQj3CUCYTZOHRJjufy0AXBLwKBKGN
+ c/5g==
+X-Gm-Message-State: ANhLgQ1Mg1kth3jF7mIPWVvY5fvgJrp1tEJ8U/0ttJUYt05ZtcXBdme2
+ 2pX5xUCiZqHtStAu/T4+uGmz1H5X
+X-Google-Smtp-Source: ADFU+vvx/nvtBIZVYwqNcZbhasecQmKXetHlL9QGaDHq9cmzdYR3QwxxxGd3xe1Kfp9xmzV64QznJg==
+X-Received: by 2002:adf:d4ce:: with SMTP id w14mr441630wrk.101.1585329527592; 
+ Fri, 27 Mar 2020 10:18:47 -0700 (PDT)
+Received: from localhost (108.78.124.78.rev.sfr.net. [78.124.78.108])
+ by smtp.gmail.com with ESMTPSA id u13sm9178496wru.88.2020.03.27.10.18.47
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 27 Mar 2020 10:18:47 -0700 (PDT)
+Date: Fri, 27 Mar 2020 17:18:24 +0000
+From: sylvain.bertrand@gmail.com
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] additional cleanup for "arecord -L show entries which are
+ not capture pcms"
+Message-ID: <20200327171824.GA18675@freedom>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+User-Agent: Mutt/ (2018-04-13)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -71,317 +105,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20200327153414.Gg5fCBddD88H_8ePB4__Fg55IjoSmVnXKyAOLLY6bXA@z>
 
-The patch
+I did post to github, my bad.
 
-   ASoC: SOF: Intel: add SoundWire configuration interface
+On Fri, Mar 27, 2020 at 04:01:57AM -0700, Jaroslav Kysela wrote:
+> Closed #39 via d434638a683c01bd6decf8f41863044055237a50.
 
-has been applied to the asoc tree at
+Tested with the mic from my usb webcam, and it actually needs a little bit more
+tidying.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From 51dfed1e178a38202960b98f6e29df009a06050f Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Wed, 25 Mar 2020 16:50:18 -0500
-Subject: [PATCH] ASoC: SOF: Intel: add SoundWire configuration interface
-
-Now that the SoundWire core supports the multi-step initialization,
-call the relevant APIs.
-
-The actual hardware enablement can be done in two places, ideally we'd
-want to startup the SoundWire IP as soon as possible (while still
-taking power rail dependencies into account)
-
-However when suspend/resume is implemented, the DSP device will be
-resumed first, and only when the DSP firmware is downloaded/booted
-would the SoundWire child devices be resumed, so there are only
-marginal benefits in starting the IP earlier for the first probe.
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200325215027.28716-3-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sof/intel/hda-loader.c |  13 ++++
- sound/soc/sof/intel/hda.c        | 120 +++++++++++++++++++++++++++++++
- sound/soc/sof/intel/hda.h        |  44 ++++++++++++
- 3 files changed, 177 insertions(+)
-
-diff --git a/sound/soc/sof/intel/hda-loader.c b/sound/soc/sof/intel/hda-loader.c
-index 0633b76dab49..2ae94ea53122 100644
---- a/sound/soc/sof/intel/hda-loader.c
-+++ b/sound/soc/sof/intel/hda-loader.c
-@@ -399,6 +399,19 @@ int hda_dsp_pre_fw_run(struct snd_sof_dev *sdev)
- /* post fw run operations */
- int hda_dsp_post_fw_run(struct snd_sof_dev *sdev)
- {
-+	int ret;
-+
-+	if (sdev->first_boot) {
-+		ret = hda_sdw_startup(sdev);
-+		if (ret < 0) {
-+			dev_err(sdev->dev,
-+				"error: could not startup SoundWire links\n");
-+			return ret;
-+		}
-+	}
-+
-+	hda_sdw_int_enable(sdev, true);
-+
- 	/* re-enable clock gating and power gating */
- 	return hda_dsp_ctrl_clock_power_gating(sdev, true);
- }
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index ee1edb53840c..c1fe94800da1 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -18,7 +18,9 @@
- #include <sound/hdaudio_ext.h>
- #include <sound/hda_register.h>
- 
-+#include <linux/acpi.h>
- #include <linux/module.h>
-+#include <linux/soundwire/sdw_intel.h>
- #include <sound/intel-nhlt.h>
- #include <sound/sof.h>
- #include <sound/sof/xtensa.h>
-@@ -34,6 +36,98 @@
- 
- #define EXCEPT_MAX_HDR_SIZE	0x400
- 
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_INTEL_SOUNDWIRE)
-+
-+void hda_sdw_int_enable(struct snd_sof_dev *sdev, bool enable)
-+{
-+	sdw_intel_enable_irq(sdev->bar[HDA_DSP_BAR], enable);
-+}
-+
-+static int hda_sdw_acpi_scan(struct snd_sof_dev *sdev)
-+{
-+	struct sof_intel_hda_dev *hdev;
-+	acpi_handle handle;
-+	int ret;
-+
-+	handle = ACPI_HANDLE(sdev->dev);
-+
-+	/* save ACPI info for the probe step */
-+	hdev = sdev->pdata->hw_pdata;
-+
-+	ret = sdw_intel_acpi_scan(handle, &hdev->info);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "%s failed\n", __func__);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int hda_sdw_probe(struct snd_sof_dev *sdev)
-+{
-+	struct sof_intel_hda_dev *hdev;
-+	struct sdw_intel_res res;
-+	acpi_handle handle;
-+	void *sdw;
-+
-+	handle = ACPI_HANDLE(sdev->dev);
-+
-+	hdev = sdev->pdata->hw_pdata;
-+
-+	memset(&res, 0, sizeof(res));
-+
-+	res.mmio_base = sdev->bar[HDA_DSP_BAR];
-+	res.irq = sdev->ipc_irq;
-+	res.handle = hdev->info.handle;
-+	res.parent = sdev->dev;
-+
-+	/*
-+	 * ops and arg fields are not populated for now,
-+	 * they will be needed when the DAI callbacks are
-+	 * provided
-+	 */
-+
-+	/* we could filter links here if needed, e.g for quirks */
-+	res.count = hdev->info.count;
-+	res.link_mask = hdev->info.link_mask;
-+
-+	sdw = sdw_intel_probe(&res);
-+	if (!sdw) {
-+		dev_err(sdev->dev, "error: SoundWire probe failed\n");
-+		return -EINVAL;
-+	}
-+
-+	/* save context */
-+	hdev->sdw = sdw;
-+
-+	return 0;
-+}
-+
-+int hda_sdw_startup(struct snd_sof_dev *sdev)
-+{
-+	struct sof_intel_hda_dev *hdev;
-+
-+	hdev = sdev->pdata->hw_pdata;
-+
-+	return sdw_intel_startup(hdev->sdw);
-+}
-+
-+static int hda_sdw_exit(struct snd_sof_dev *sdev)
-+{
-+	struct sof_intel_hda_dev *hdev;
-+
-+	hdev = sdev->pdata->hw_pdata;
-+
-+	hda_sdw_int_enable(sdev, false);
-+
-+	if (hdev->sdw)
-+		sdw_intel_exit(hdev->sdw);
-+	hdev->sdw = NULL;
-+
-+	return 0;
-+}
-+#endif
-+
- /*
-  * Debug
-  */
-@@ -346,9 +440,12 @@ static const char *fixup_tplg_name(struct snd_sof_dev *sdev,
- static int hda_init_caps(struct snd_sof_dev *sdev)
- {
- 	struct hdac_bus *bus = sof_to_bus(sdev);
-+	struct snd_sof_pdata *pdata = sdev->pdata;
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
- 	struct hdac_ext_link *hlink;
- #endif
-+	struct sof_intel_hda_dev *hdev = pdata->hw_pdata;
-+	u32 link_mask;
- 	int ret = 0;
- 
- 	device_disable_async_suspend(bus->dev);
-@@ -365,6 +462,27 @@ static int hda_init_caps(struct snd_sof_dev *sdev)
- 		return ret;
- 	}
- 
-+	/* scan SoundWire capabilities exposed by DSDT */
-+	ret = hda_sdw_acpi_scan(sdev);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: SoundWire ACPI scan error\n");
-+		return ret;
-+	}
-+
-+	link_mask = hdev->info.link_mask;
-+	if (!link_mask) {
-+		/*
-+		 * probe/allocated SoundWire resources.
-+		 * The hardware configuration takes place in hda_sdw_startup
-+		 * after power rails are enabled.
-+		 */
-+		ret = hda_sdw_probe(sdev);
-+		if (ret < 0) {
-+			dev_err(sdev->dev, "error: SoundWire probe error\n");
-+			return ret;
-+		}
-+	}
-+
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
- 	if (bus->mlcap)
- 		snd_hdac_ext_bus_get_ml_capabilities(bus);
-@@ -622,6 +740,8 @@ int hda_dsp_remove(struct snd_sof_dev *sdev)
- 	snd_hdac_ext_bus_device_remove(bus);
- #endif
- 
-+	hda_sdw_exit(sdev);
-+
- 	if (!IS_ERR_OR_NULL(hda->dmic_dev))
- 		platform_device_unregister(hda->dmic_dev);
- 
-diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index 2a57fc9f3e58..928a3432e9e6 100644
---- a/sound/soc/sof/intel/hda.h
-+++ b/sound/soc/sof/intel/hda.h
-@@ -11,6 +11,8 @@
- #ifndef __SOF_INTEL_HDA_H
- #define __SOF_INTEL_HDA_H
- 
-+#include <linux/soundwire/sdw.h>
-+#include <linux/soundwire/sdw_intel.h>
- #include <sound/compress_driver.h>
- #include <sound/hda_codec.h>
- #include <sound/hdaudio_ext.h>
-@@ -436,6 +438,12 @@ struct sof_intel_hda_dev {
- 
- 	/* delayed work to enter D0I3 opportunistically */
- 	struct delayed_work d0i3_work;
-+
-+	/* ACPI information stored between scan and probe steps */
-+	struct sdw_intel_acpi_info info;
-+
-+	/* sdw context allocated by SoundWire driver */
-+	struct sdw_intel_ctx *sdw;
- };
- 
- static inline struct hdac_bus *sof_to_bus(struct snd_sof_dev *s)
-@@ -654,6 +662,42 @@ int hda_dsp_trace_init(struct snd_sof_dev *sdev, u32 *stream_tag);
- int hda_dsp_trace_release(struct snd_sof_dev *sdev);
- int hda_dsp_trace_trigger(struct snd_sof_dev *sdev, int cmd);
- 
-+/*
-+ * SoundWire support
-+ */
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_INTEL_SOUNDWIRE)
-+
-+int hda_sdw_startup(struct snd_sof_dev *sdev);
-+void hda_sdw_int_enable(struct snd_sof_dev *sdev, bool enable);
-+
-+#else
-+
-+static inline int hda_sdw_acpi_scan(struct snd_sof_dev *sdev)
-+{
-+	return 0;
-+}
-+
-+static inline int hda_sdw_probe(struct snd_sof_dev *sdev)
-+{
-+	return 0;
-+}
-+
-+static inline int hda_sdw_startup(struct snd_sof_dev *sdev)
-+{
-+	return 0;
-+}
-+
-+static inline int hda_sdw_exit(struct snd_sof_dev *sdev)
-+{
-+	return 0;
-+}
-+
-+static inline void hda_sdw_int_enable(struct snd_sof_dev *sdev, bool enable)
-+{
-+}
-+
-+#endif
-+
- /* common dai driver */
- extern struct snd_soc_dai_driver skl_dai[];
- 
 -- 
-2.20.1
+Sylvain
 
+--- a/share/alsa/pcm/front.conf
++++ b/share/alsa/pcm/front.conf
+@@ -53,6 +53,7 @@
+ 			name defaults.namehint.basic
+ 		}
+ 		description "Front speakers"
+-		device $DEV
++		device_output $DEV
++		omit_noargs true
+ 	}
+ }
+
+--- a/share/alsa/pcm/iec958.conf
++++ b/share/alsa/pcm/iec958.conf
+@@ -78,6 +78,6 @@
+ 			name defaults.namehint.basic
+ 		}
+ 		description "IEC958 (S/PDIF) Digital Audio Output"
+-		device $DEV
++		device_output $DEV
+ 	}
+ }
