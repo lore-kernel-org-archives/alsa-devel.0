@@ -2,68 +2,69 @@ Return-Path: <SRS0=JTem=5M=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DED4C43331
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 08:34:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BAB4DC43331
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 08:41:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5544720705
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 08:34:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 213CE20705
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 08:41:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eI+BfW4v"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5544720705
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="c/kAp76v"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 213CE20705
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B0F1A1668;
-	Fri, 27 Mar 2020 09:33:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0F1A1668
+	by alsa0.perex.cz (Postfix) with ESMTPS id 80F3A1667;
+	Fri, 27 Mar 2020 09:40:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 80F3A1667
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585298072;
-	bh=Ud2dI3mimobrxGam+ue84/HtvNHADC74ACdwrlX1c5U=;
+	s=default; t=1585298493;
+	bh=+oCLp+sDQwmbL0vrojaD6Fr5o2SksEFkSNomUhW5j48=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eI+BfW4vvY5lJWUAyn7EKdTksRwu/OQy/Lrqrtgu+m4kP8ld6z0aHksMo4m4AKSh9
-	 nFQH833oWCNTC4aXU/LBcKryUXstuDrJq7K/ciQ0i1Q0l/kd/PWtfHtOOyx+DH4UwY
-	 P2NhiLsrsK39hiqvNQRy9w1R5UIQZRbYMRiI95Hs=
+	b=c/kAp76v29FZL6BpK6wUm2rLlIsdtw4BHcXxiKHl8qKkVLm2PJB52Dp9QtUrtFSmt
+	 4KEH1cHOpEawbXTHT+E6wzDq0SFi/sUt0TyD1tuK/9x+mPnZEHH00AWr8nasygPtgP
+	 deVRS8ngRPvZN5h/+tlWLeYKPl0ZzW6oNS89SU+U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 43EF8F80147;
-	Fri, 27 Mar 2020 09:33:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 08D50F80147;
+	Fri, 27 Mar 2020 09:40:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 759F3F80147; Fri, 27 Mar 2020 09:33:40 +0100 (CET)
+ id 2133FF80158; Fri, 27 Mar 2020 09:40:42 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CA26EF80147
- for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 09:33:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA26EF80147
+ by alsa1.perex.cz (Postfix) with ESMTPS id E660CF8011E
+ for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 09:40:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E660CF8011E
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 399B3ACCE;
- Fri, 27 Mar 2020 08:33:37 +0000 (UTC)
-Date: Fri, 27 Mar 2020 09:33:36 +0100
-Message-ID: <s5h8sjmfb8f.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 01C01B0F2;
+ Fri, 27 Mar 2020 08:40:35 +0000 (UTC)
+Date: Fri, 27 Mar 2020 09:40:34 +0100
+Message-ID: <s5h7dz6fawt.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Subject: Re: [PATCH 1/1] ALSA: ppc: keywest: convert to use
- i2c_new_client_device()
-In-Reply-To: <20200326211013.13531-2-wsa+renesas@sang-engineering.com>
-References: <20200326211013.13531-1-wsa+renesas@sang-engineering.com>
- <20200326211013.13531-2-wsa+renesas@sang-engineering.com>
+To: Steve Morris <morris@buinea.com>
+Subject: Re: [alsa-devel] [PATCH 1/3] ALSA: bebob: expand sleep just after
+ breaking connections for protocol version 1
+In-Reply-To: <20200326214722.7xg2ffrzqrzq7edg@buinea.com>
+References: <20191101131323.17300-1-o-takashi@sakamocchi.jp>
+ <20191101131323.17300-2-o-takashi@sakamocchi.jp>
+ <20200326214722.7xg2ffrzqrzq7edg@buinea.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>, linux-i2c@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,15 +80,86 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 26 Mar 2020 22:10:12 +0100,
-Wolfram Sang wrote:
+On Thu, 26 Mar 2020 22:47:22 +0100,
+Steve Morris wrote:
 > 
-> Move away from the deprecated API and return the shiny new ERRPTR where
-> useful.
+> On Fri, Nov 01, 2019 at 10:13:21PM +0900, Takashi Sakamoto wrote:
+> > As long as I investigated, some devices with BeBoB protocol version 1
+> > can be freezed during several hundreds milliseconds after breaking
+> > connections. When accessing during the freezed time, any transaction
+> > is corrupted. In the worst case, the device is going to reboot.
+> > 
+> > I can see this issue in:
+> >  * Roland FA-66
+> >  * M-Audio FireWire Solo
+> > 
+> > This commit expands sleep just after breaking connections to avoid
+> > the freezed time as much as possible. I note that the freeze/reboot
+> > behaviour is similar to below models:
+> >  * Focusrite Saffire Pro 10 I/O
+> >  * Focusrite Saffire Pro 26 I/O
+> > 
+> > The above models certainly reboot after breaking connections.
+> > 
+> > Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+> > ---
+> >  sound/firewire/bebob/bebob_stream.c | 11 ++++++-----
+> >  1 file changed, 6 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
+> > index f7f0db5aa811..1b264d0d63eb 100644
+> > --- a/sound/firewire/bebob/bebob_stream.c
+> > +++ b/sound/firewire/bebob/bebob_stream.c
+> > @@ -415,15 +415,16 @@ static int make_both_connections(struct snd_bebob *bebob)
+> >  	return 0;
+> >  }
+> >  
+> > -static void
+> > -break_both_connections(struct snd_bebob *bebob)
+> > +static void break_both_connections(struct snd_bebob *bebob)
+> >  {
+> >  	cmp_connection_break(&bebob->in_conn);
+> >  	cmp_connection_break(&bebob->out_conn);
+> >  
+> > -	/* These models seems to be in transition state for a longer time. */
+> > -	if (bebob->maudio_special_quirk != NULL)
+> > -		msleep(200);
+> > +	// These models seem to be in transition state for a longer time. When
+> > +	// accessing in the state, any transactions is corrupted. In the worst
+> > +	// case, the device is going to reboot.
+> > +	if (bebob->version < 2)
+> > +		msleep(600);
+> >  }
+> >  
+> >  static int
+> > -- 
+> > 2.20.1
+> > 
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 > 
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> This patch causes a reboot when I power on my Edirol FA-101. This is
+> consistent behavior with kernels 5.5.1 - 5.5.11.
+> 
+> I've changed msleep(600) back to msleep(200) and rebuilt the module and
+> I am once again able to power on and use the interface.
+> 
+> I am running Arch linux with 5.5.11-arch1-1 #1 SMP PREEMPT Sun, 22 Mar 2020 16:33:15 +0000 x86_64 GNU/Linux.
+> 
+> 
+> I had previously posted to the list on Feb 19, 2020 with the subject:
+> 
+> sytem reboots when initializing Edirol FA-101 firewire audio interface
+> 
+> Please forgive any lapses in reporting protocol as I generally don't
+> work at the kernel level. Hopefully this more specific report will help
+> fix the issue.
 
-Applied, thanks.
+This is weird.  If just changing the msleep value from 600 to 200
+"fixes" the problem, it means that something is already fundamentally
+broken...
 
 
 Takashi
