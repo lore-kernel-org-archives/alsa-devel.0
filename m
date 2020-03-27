@@ -2,81 +2,77 @@ Return-Path: <SRS0=JTem=5M=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3821AC43331
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 09:41:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 32129C43331
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 13:19:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B6B4D20716
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 09:41:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AE3D52082E
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 13:19:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UtJO1ohP";
-	dkim=pass (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="UwbNfhla"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B6B4D20716
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eX4/HgtI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AE3D52082E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1499F83E;
-	Fri, 27 Mar 2020 10:40:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1499F83E
+	by alsa0.perex.cz (Postfix) with ESMTPS id C829D1673;
+	Fri, 27 Mar 2020 14:18:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C829D1673
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585302067;
-	bh=amIFGdIvDfe1Dr0iTC7JS/zaIXGsKbsydq8XFFVZzE0=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1585315178;
+	bh=4tgPnzm9ftZJBZ/ykZmmOBuwECzQEXcmCGbcxgf01l4=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UtJO1ohPcAM6xpcfJ3VpfcX3VQeKLXAWRGrOcDLTv2w7EwQisUyJEOvqHYJFA3x8n
-	 1jFShSOkWDtojMDmlGya13Ia9/l/c1pffi1T4RQX/manveUijdkdOHmJdrx4R8j3m9
-	 +py92T/TFHOVWdMmV+1TWBGGmKw+vy2+gudIJN0Q=
+	b=eX4/HgtIL34+L4RMD2/MeVEwwOtjFHV006xEgH8LdAladiAu4kLysEm6KDs6+RvKd
+	 FqN8dIRF0Cb9FpniTmuy514A2h3tVi35FPBQbUg3zy0BFRREeSEySG1e2jOLz5YA14
+	 9t5v2TevwM3Y4HhuZVBrnR2vlLdOzrCe0QjqFQNs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 94140F8011E;
-	Fri, 27 Mar 2020 10:40:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F400FF80290;
+	Fri, 27 Mar 2020 14:08:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6D5B7F80158; Fri, 27 Mar 2020 10:40:15 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EF772F8011B
- for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 10:40:11 +0100 (CET)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 40434A003F;
- Fri, 27 Mar 2020 10:40:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 40434A003F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1585302010; bh=wFYQK7d0Ga2PuiXqPnRXGAnnw+PEToIxQj/rlQo5cng=;
- h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
- b=UwbNfhlaEkDbJPpvs3YILyC0FJ09y3mPPIGx5Q48ti/1nfeL4NjxC98Bld5YqDncx
- ZxiyOO6c/BTa0WcGf1uKU/JTjJ/3t5huWtr04Hzl9CAQ77REjpcRNxDw2fDx+O7Jk0
- fgD0XnJ02o+Tp434H0AQEgUb8dJitvKx+8zKuR5g=
-Received: from p50.perex-int.cz (unknown [192.168.100.94])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Fri, 27 Mar 2020 10:40:06 +0100 (CET)
-Subject: Re: sw_params for a direct-ed(dmix) hw pcm
-To: Takashi Iwai <tiwai@suse.de>, sylvain.bertrand@gmail.com
-References: <20200321155303.GB357@freedom> <20200325174419.GA1224@freedom>
- <alpine.DEB.2.21.2003261350380.2957@eliteleevi.tm.intel.com>
- <9d986c48-184a-1d6e-4c5b-172a7ecd98a8@perex.cz>
- <20200326200415.GA1321@freedom> <s5hlfnmfcdt.wl-tiwai@suse.de>
-From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <0b0f5117-3b4b-0c25-cd4b-0ecc72479635@perex.cz>
-Date: Fri, 27 Mar 2020 10:40:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+ id 26D33F80292; Fri, 27 Mar 2020 14:08:06 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 9403AF80290
+ for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 14:08:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9403AF80290
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DA6981FB;
+ Fri, 27 Mar 2020 06:07:59 -0700 (PDT)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5CBD53F71F;
+ Fri, 27 Mar 2020 06:07:59 -0700 (PDT)
+Date: Fri, 27 Mar 2020 13:07:58 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Matt Flax <flatmax@flatmax.org>
+Subject: Re: [PATCH] ASoC: bcm2835-i2s: substream alignment now independent
+ in hwparams
+Message-ID: <20200327130758.GB4437@sirena.org.uk>
+References: <20200324090823.20754-1-flatmax@flatmax.org>
+ <d0684926-3f7a-0b97-a298-4088925442a4@flatmax.org>
 MIME-Version: 1.0
-In-Reply-To: <s5hlfnmfcdt.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="wq9mPyueHGvFACwf"
+Content-Disposition: inline
+In-Reply-To: <d0684926-3f7a-0b97-a298-4088925442a4@flatmax.org>
+X-Cookie: Drop in any mailbox.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: Kate Stewart <kstewart@linuxfoundation.org>, alsa-devel@alsa-project.org,
+ Florian Fainelli <f.fainelli@gmail.com>, Scott Branden <sbranden@broadcom.com>,
+ Ray Jui <rjui@broadcom.com>, Takashi Iwai <tiwai@suse.com>,
+ YueHaibing <yuehaibing@huawei.com>, linux-kernel@vger.kernel.org,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+ bcm-kernel-feedback-list@broadcom.com, Allison Randal <allison@lohutok.net>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Thomas Gleixner <tglx@linutronix.de>, linux-arm-kernel@lists.infradead.org,
+ linux-rpi-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,59 +88,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 27. 03. 20 v 9:08 Takashi Iwai napsal(a):
-> On Thu, 26 Mar 2020 21:04:15 +0100,
-> sylvain.bertrand@gmail.com wrote:
->>
->> On Thu, Mar 26, 2020 at 03:36:23PM +0100, Jaroslav Kysela wrote:
->>> I agree. Also, the snd_pcm_direct_sw_params() does nothing, because the
->>> sw_params are already cached in the pcm structure (see comment). It means
->>> that the dmix (direct) plugins operates with those cached values. Just set
->>> sw_params like for any other PCM handle. The dmix uses those values (if
->>> possible).
->>
->> This is the "if possible" which would impacts the way how code should do setup
->> right, but:
->>
->> Let's take the case of a classic plugin "pipeline":
->> pcm:plug->...->direct::dmix->hw
->>
->> >From the top plugin (usually plug) to the direct::plugin, the "sw_params" pcm
->> op is usually pcm_generic.c:snd_pcm_generic_sw_params which does recurse down.
->> This recursion down will stop once pcm_direct.c:snd_pcm_direct_sw_params is
->> reached, then will recurse up, without error.
->>
->> But pcm.c:snd_pcm_sw_params will copy anyway the provided sw_params into each
->> recursed back pcm if the "sw_params" pcm op return no error code, which is the
->> case.
->>
->> Then looking at pcm.c:snd_pcm_sw_params_current, I get those "wrong" sw_params,
->> then I get no way to know something went wrong.
->>
->> Why "wrong", because they may significantly differ from the bottom hw plugin
->> sw_params which some fields are used to configure the kernel driver.
->>
->> for instance, a fast_op status call will recurse down to
->> pcm_dmix.c:snd_pcm_dmix_status, which will call the hw plugin fast op status
->> function which will use _its_ tstamp_type field for the ioctl call, but will
->> "override" the trigger_tstamp field computed with the "wrong" sw_params
->> tstamp_type!
->>
->> It happens that the monotonic_raw and monotonic clocks can have audio
->> significant difference. Additionally, the other sw_params field might cause
->> similar issues.
-> 
-> The tstamp type handling in dmix is certainly buggy, yes.
-> It should have been restricted with the slave PCM unless it's
-> compatible.
 
-Yes, it's a bug which should be fixed in dmix instead to use a workaround in 
-the app. The easiest way is to return an error in set sw_params, but it may 
-cause problems for the app which assumes that this timestamp mode can be set 
-freely. Perhaps, we can add a timestamp translation layer (not easy, I know).
+--wq9mPyueHGvFACwf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-						Jaroslav
+On Fri, Mar 27, 2020 at 10:56:50AM +1100, Matt Flax wrote:
+>=20
+> Should this patch be handled through the ALSA team the R. Pi team or the =
+BCM
+> team ?
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+Please don't send content free pings and please allow a reasonable time
+for review.  People get busy, go on holiday, attend conferences and so=20
+on so unless there is some reason for urgency (like critical bug fixes)
+please allow at least a couple of weeks for review.  If there have been
+review comments then people may be waiting for those to be addressed.
+
+Sending content free pings adds to the mail volume (if they are seen at
+all) which is often the problem and since they can't be reviewed
+directly if something has gone wrong you'll have to resend the patches
+anyway, so sending again is generally a better approach though there are
+some other maintainers who like them - if in doubt look at how patches
+for the subsystem are normally handled.
+
+--wq9mPyueHGvFACwf
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl59+q0ACgkQJNaLcl1U
+h9AFaAf8Db5emY6EIgD03k5HjtM3kTn5ueFcW3VvYyJOfS7/qgx6q8JE7eDFaqgr
+/61tuP3BmQ08KYkA8TZtvHwOLc+3wjJi/Q/HDpwApmbcfy6LuA34oepLk+wKI5ik
+Os9ZiKsPjYKVKZZ9wVxrXHuVNaveCinKAqz7EU69s48kFbX054Ios83q6poKazm/
+KFnesj0pCLINvrFrXboSoKmhIzLHV6kxMAgO9qmd9mjJictyenNGoNnmk7fsdiM9
+QW/Pjs2YYg58/IOanTmz7OoxAgce3k3/TJRNnS7gRtyktNCcrC85CJkANzHtOst7
+cvwcNrA0SRrKj0A5IfwNhv1BSK2+/A==
+=NOmu
+-----END PGP SIGNATURE-----
+
+--wq9mPyueHGvFACwf--
