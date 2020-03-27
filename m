@@ -7,54 +7,54 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1978CC43331
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 15:54:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7190FC43331
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 15:55:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9899D206E6
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 15:54:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F24E82072F
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2020 15:55:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IGwY8Hkn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9899D206E6
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lFH4PRwu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F24E82072F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C3C59167F;
-	Fri, 27 Mar 2020 16:53:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3C59167F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6661F1694;
+	Fri, 27 Mar 2020 16:54:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6661F1694
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585324459;
-	bh=+Cao8Vj1GQ1Ict+M0HLkDR9bnLwFNFnjgvt9A3zG8lA=;
+	s=default; t=1585324506;
+	bh=6/awo/RRae3K8eHGW31M7+xCOshO97NrMGkqsJIqCaw=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=IGwY8HkntNQ6/D7iBmkwcvq1YTRFaJpVnMm5vnYUke6ory5oO9+R0V1DcUTpBHH6N
-	 GNxxSA9wY/AhCv1xwota+19GwtQNbA/8GMyz/gz28IcG8Mw/zidJ/64HmNsG3+N1qD
-	 TapVuZNxe88vHcY4WUJgh2sI1cTCmsdGD0mD5mXE=
+	b=lFH4PRwuEPqCLtcE+FmVyKkQ/Bb29fEFQM8H8y4QFG01G6Ts6c63FR9UuENnA1Evp
+	 CFBxqf/vx7HM+Wf5V/5oY+eoPR+6WgP+2IbyIMqTmwS7v/fRj+RLnbvw7oEdXeRl8S
+	 ehga91ryv6f4cFwm8G6lSMaqTywl/zqqbTsVJ+Dk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 69E06F803FB;
-	Fri, 27 Mar 2020 16:36:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7B904F80218;
+	Fri, 27 Mar 2020 16:36:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5E50AF803FD; Fri, 27 Mar 2020 16:35:59 +0100 (CET)
+ id A308BF803FE; Fri, 27 Mar 2020 16:36:08 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id C318EF803F9
- for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 16:35:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C318EF803F9
+ by alsa1.perex.cz (Postfix) with ESMTP id 75570F8011B
+ for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 16:36:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75570F8011B
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 43DD231B;
- Fri, 27 Mar 2020 08:35:55 -0700 (PDT)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C77831FB;
+ Fri, 27 Mar 2020 08:36:04 -0700 (PDT)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BB3073F71F;
- Fri, 27 Mar 2020 08:35:54 -0700 (PDT)
-Date: Fri, 27 Mar 2020 15:35:53 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4B7E03F71F;
+ Fri, 27 Mar 2020 08:36:04 -0700 (PDT)
+Date: Fri, 27 Mar 2020 15:36:02 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Applied "ASoC: kirkwood: use asoc_rtd_to_cpu() / asoc_rtd_to_codec()
- macro for DAI pointer" to the asoc tree
-In-Reply-To: <87pnd3ir71.wl-kuninori.morimoto.gx@renesas.com>
-Message-Id: <applied-87pnd3ir71.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: img: use asoc_rtd_to_cpu() / asoc_rtd_to_codec() macro
+ for DAI pointer" to the asoc tree
+In-Reply-To: <87sghzir7m.wl-kuninori.morimoto.gx@renesas.com>
+Message-Id: <applied-87sghzir7m.wl-kuninori.morimoto.gx@renesas.com>
 X-Patchwork-Hint: ignore
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
@@ -75,7 +75,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: kirkwood: use asoc_rtd_to_cpu() / asoc_rtd_to_codec() macro for DAI pointer
+   ASoC: img: use asoc_rtd_to_cpu() / asoc_rtd_to_codec() macro for DAI pointer
 
 has been applied to the asoc tree at
 
@@ -100,47 +100,47 @@ to this mail.
 Thanks,
 Mark
 
-From f844705f15201a9c6c2b4be0a45b3ed76de16b88 Mon Sep 17 00:00:00 2001
+From 4d3801d5f49d6d06cabad7afad97d3a155de4a84 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 23 Mar 2020 14:19:14 +0900
-Subject: [PATCH] ASoC: kirkwood: use asoc_rtd_to_cpu() / asoc_rtd_to_codec()
- macro for DAI pointer
+Date: Mon, 23 Mar 2020 14:18:53 +0900
+Subject: [PATCH] ASoC: img: use asoc_rtd_to_cpu() / asoc_rtd_to_codec() macro
+ for DAI pointer
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/87pnd3ir71.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87sghzir7m.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/kirkwood/armada-370-db.c | 2 +-
- sound/soc/kirkwood/kirkwood-dma.c  | 2 +-
+ sound/soc/img/img-i2s-in.c  | 2 +-
+ sound/soc/img/img-i2s-out.c | 2 +-
  2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/kirkwood/armada-370-db.c b/sound/soc/kirkwood/armada-370-db.c
-index 8c3c808bda9a..4f66b011f1b4 100644
---- a/sound/soc/kirkwood/armada-370-db.c
-+++ b/sound/soc/kirkwood/armada-370-db.c
-@@ -19,7 +19,7 @@ static int a370db_hw_params(struct snd_pcm_substream *substream,
- 			    struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
- 	unsigned int freq;
+diff --git a/sound/soc/img/img-i2s-in.c b/sound/soc/img/img-i2s-in.c
+index fdd2c73fd2fa..a495d1050d49 100644
+--- a/sound/soc/img/img-i2s-in.c
++++ b/sound/soc/img/img-i2s-in.c
+@@ -397,7 +397,7 @@ static int img_i2s_in_dma_prepare_slave_config(struct snd_pcm_substream *st,
+ 	struct snd_dmaengine_dai_dma_data *dma_data;
+ 	int ret;
  
- 	switch (params_rate(params)) {
-diff --git a/sound/soc/kirkwood/kirkwood-dma.c b/sound/soc/kirkwood/kirkwood-dma.c
-index f882b4003edf..e037826b2451 100644
---- a/sound/soc/kirkwood/kirkwood-dma.c
-+++ b/sound/soc/kirkwood/kirkwood-dma.c
-@@ -20,7 +20,7 @@
- static struct kirkwood_dma_data *kirkwood_priv(struct snd_pcm_substream *subs)
- {
- 	struct snd_soc_pcm_runtime *soc_runtime = subs->private_data;
--	return snd_soc_dai_get_drvdata(soc_runtime->cpu_dai);
-+	return snd_soc_dai_get_drvdata(asoc_rtd_to_cpu(soc_runtime, 0));
- }
+-	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, st);
++	dma_data = snd_soc_dai_get_dma_data(asoc_rtd_to_cpu(rtd, 0), st);
  
- static const struct snd_pcm_hardware kirkwood_dma_snd_hw = {
+ 	ret = snd_hwparams_to_dma_slave_config(st, params, sc);
+ 	if (ret)
+diff --git a/sound/soc/img/img-i2s-out.c b/sound/soc/img/img-i2s-out.c
+index 4b1853409633..db052ec17d5d 100644
+--- a/sound/soc/img/img-i2s-out.c
++++ b/sound/soc/img/img-i2s-out.c
+@@ -403,7 +403,7 @@ static int img_i2s_out_dma_prepare_slave_config(struct snd_pcm_substream *st,
+ 	struct snd_dmaengine_dai_dma_data *dma_data;
+ 	int ret;
+ 
+-	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, st);
++	dma_data = snd_soc_dai_get_dma_data(asoc_rtd_to_cpu(rtd, 0), st);
+ 
+ 	ret = snd_hwparams_to_dma_slave_config(st, params, sc);
+ 	if (ret)
 -- 
 2.20.1
 
