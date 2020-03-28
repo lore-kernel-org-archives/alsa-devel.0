@@ -2,79 +2,103 @@ Return-Path: <SRS0=FTRQ=5N=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96C24C43331
-	for <alsa-devel@archiver.kernel.org>; Sat, 28 Mar 2020 19:16:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A05BBC43331
+	for <alsa-devel@archiver.kernel.org>; Sat, 28 Mar 2020 20:39:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E60CB206E6
-	for <alsa-devel@archiver.kernel.org>; Sat, 28 Mar 2020 19:16:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 095A9206F6
+	for <alsa-devel@archiver.kernel.org>; Sat, 28 Mar 2020 20:39:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WteuDWyF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E60CB206E6
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="F2Qp3TIb";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jLEsVJ6N"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 095A9206F6
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4C6A0165D;
-	Sat, 28 Mar 2020 20:15:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4C6A0165D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 50733843;
+	Sat, 28 Mar 2020 21:38:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50733843
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585422996;
-	bh=ZXUXOaFlnExVfXVu1mT/el2VFSRU8rdINHEmfVic2tI=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1585427951;
+	bh=rbUoQ23dTCg6cByib7LP8r2l5E77joa+6xKOEk0f/l8=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WteuDWyFf/wYVInF1CKKfqgasEnMXwgSFjHixkCG4noHohSCggcUlP6BmKUsTGZZ1
-	 kwt61gHLtDyj0XaDiK3CBHF4sJqrykH80OJEWSjfRkid4lHGTByXG35eeFphGNl3DC
-	 +LmjkuZWce7deqDMcEz1hzIF9LKNvXDpCnwDCNJY=
+	b=F2Qp3TIb0UAWQU6DNwD0/Cs5Td23pIZeOUnjBl8oEeJ/BhAo03Om0nnEmAEho/M4x
+	 KrawAOlvJTWaypLIlFtZTlGe/bMl9nVjhPthQYo8dt8mCGZmdlp43/T/aefjKcKpAP
+	 iH6e35gvMQnubCB0awbcG2y5XwJc061PZdnsNdsI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B9C57F80146;
-	Sat, 28 Mar 2020 20:15:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C8463F80227;
+	Sat, 28 Mar 2020 21:38:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E2CDBF80234; Sat, 28 Mar 2020 20:15:43 +0100 (CET)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id BA45EF80234; Sat, 28 Mar 2020 21:38:18 +0100 (CET)
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com
+ [IPv6:2a00:1450:4864:20::342])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 83759F80146
- for <alsa-devel@alsa-project.org>; Sat, 28 Mar 2020 20:15:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83759F80146
-IronPort-SDR: 6Qxq5B4Syr6NY/T1/F7NtTjL3mVKF0+rNncKVO9QnCF/VoJvXT2nh1OmOwMdrhtQW4d+opu3yp
- mEmYXqd6mHcg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 28 Mar 2020 12:15:35 -0700
-IronPort-SDR: FbuZkJRFJU/dG0dgfT/vpDps/g43NOEHl0LcxwbaHFePwshTD3zYEjvsuNz36P0u+RiioqyApW
- vby1tCwXj2GQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,317,1580803200"; d="scan'208";a="236958387"
-Received: from unknown (HELO [10.251.234.208]) ([10.251.234.208])
- by orsmga007.jf.intel.com with ESMTP; 28 Mar 2020 12:15:34 -0700
+ by alsa1.perex.cz (Postfix) with ESMTPS id 294C7F80146
+ for <alsa-devel@alsa-project.org>; Sat, 28 Mar 2020 21:38:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 294C7F80146
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="jLEsVJ6N"
+Received: by mail-wm1-x342.google.com with SMTP id z18so15398994wmk.2
+ for <alsa-devel@alsa-project.org>; Sat, 28 Mar 2020 13:38:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to:user-agent;
+ bh=YZun/LdY5Z7WhVMAoAIg3AxOSNX8DP0RQecMPvgrkMw=;
+ b=jLEsVJ6NxLmtjxKlPqwk44E/a88Do8YJ++z16ywUoz2mskDf1Lne/iSoizR4EsxUp0
+ xr7xMfJpHBrEMVc/Zxese1GYzxXBSwjy4mhlMZtHdNRIOG/uUslQI0UW0j9YMHesfyuz
+ zZDD+GR6JOvxcglBClh5TBP8ESXeEF8EDxKa6BO3XQMjw/fB9gmi/6Cw63qt2sqKPvCq
+ 6xQwYgA0dv1wRJVNnjSqjqENo0ACgdukPqoZ3wQ/1+OThtMqYHoYMb8BfhoOu/PVNcZh
+ vKDYFINLI7Gd++jb8f4zje53UXNYAxIUmW43h8l77Xfi+ggkR2LqrCudlEqV1D8MA8DA
+ tY7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=YZun/LdY5Z7WhVMAoAIg3AxOSNX8DP0RQecMPvgrkMw=;
+ b=i4jvUUXRG6ssLYYuuzvcm3awmUm2zQZ9Hiy47fCHGpfrNBZ/Bo3nUvJHUdmhE2DvAN
+ S3/DQJhZ6ehjoHyxgrzSw3A3xjQdb4lNubTv7tQzCjQMtjZG2I/wRXrx0nKjk8ofFjMD
+ o0i5J0ET9pkQ4SwX5towPMm9IJ2ieYOYtva0rv513GFTqMUjr7YUjHX3Fi2vHNx+UOVo
+ PSb1kdeH+XP3Ej/Ehhsf3Tlut73fJmFtQaBVLV3HpnEWIitfZMCTbGidUNQXj7GNYvT3
+ 6j0saRVKZfRmClv3HGMxUCs5vqcVwF/A+K8+mSoY08pTSbM2rsdYnt+Hkt+DU3P1RLDl
+ 36AA==
+X-Gm-Message-State: ANhLgQ1Pqz4cTopP0rNIwxOZwJDLsCUY7lGknITIQ5bl/x4KfA5aU2LT
+ Yx8JFOwtLQgtKvfPsOhs5As=
+X-Google-Smtp-Source: ADFU+vujAGr6pOiFKZCB7jFfOKRxpAR9iYQfu8B2dJ256q1SeUxrLCmB0eEFQKyrIY3+bj6VwfqsUg==
+X-Received: by 2002:a1c:1f14:: with SMTP id f20mr5341242wmf.61.1585427889618; 
+ Sat, 28 Mar 2020 13:38:09 -0700 (PDT)
+Received: from localhost (108.78.124.78.rev.sfr.net. [78.124.78.108])
+ by smtp.gmail.com with ESMTPSA id i21sm14573954wmb.23.2020.03.28.13.38.09
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sat, 28 Mar 2020 13:38:09 -0700 (PDT)
+Date: Sat, 28 Mar 2020 20:37:44 +0000
+From: sylvain.bertrand@gmail.com
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Subject: Re: sw_params for a direct-ed(dmix) hw pcm
-To: sylvain.bertrand@gmail.com, Jaroslav Kysela <perex@perex.cz>
+Message-ID: <20200328203744.GA2398@freedom>
 References: <20200321155303.GB357@freedom> <20200325174419.GA1224@freedom>
  <alpine.DEB.2.21.2003261350380.2957@eliteleevi.tm.intel.com>
  <9d986c48-184a-1d6e-4c5b-172a7ecd98a8@perex.cz>
  <20200326200415.GA1321@freedom> <s5hlfnmfcdt.wl-tiwai@suse.de>
  <0b0f5117-3b4b-0c25-cd4b-0ecc72479635@perex.cz>
  <20200328182624.GA775@freedom>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <1baab0fd-d802-3707-645f-d5dc4bf6c32c@linux.intel.com>
-Date: Sat, 28 Mar 2020 14:15:34 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+ <1baab0fd-d802-3707-645f-d5dc4bf6c32c@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200328182624.GA775@freedom>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1baab0fd-d802-3707-645f-d5dc4bf6c32c@linux.intel.com>
+User-Agent: Mutt/ (2018-04-13)
 Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
  Kai Vehmanen <kai.vehmanen@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
@@ -92,51 +116,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 3/28/20 1:26 PM, sylvain.bertrand@gmail.com wrote:
-> On Fri, Mar 27, 2020 at 10:40:06AM +0100, Jaroslav Kysela wrote:
->> Yes, it's a bug which should be fixed in dmix instead to use a workaround in
->> the app. The easiest way is to return an error in set sw_params, but it may
->> cause problems for the app which assumes that this timestamp mode can be set
->> freely. Perhaps, we can add a timestamp translation layer (not easy, I
->> know).
+On Sat, Mar 28, 2020 at 02:15:34PM -0500, Pierre-Louis Bossart wrote:
+> I don't think it's possible unless the timestamps are taken really close to
+> each other. There was some work some by Chris Hall in 2016 to revisit how
+> the conversions were done and the past taken into account is a couple of ms,
+> see ("time: Add history to cross timestamp interface supporting slower
+> devices").
 > 
-> I understand that, in the case of a shared hw, reasonable defaults should be
-> enforce to avoid that any audio application which would be first to configure
-> this hw and throwing some audio configuration tantrum, forces it upon all the
-> other audio applications (this is the answer to "why has dmix some defaults?").
+> if your device is "shared", which implies a mixer, the notion of precise
+> timestamps is rather questionable so you might be able to get-by with local
+> interpolation in your plug-ins. Trying a full-blown conversion of the
+> kernel-reported time is not really useful if the mixing granularity is in
+> the ms range or more.
 > 
-> Speaking strictly, snd_pcm_sw_params_set_tstamp_type() has a return
-> value, namely application code must expect a return code which could be an
-> error code. Additionnaly an audio app using the kernel interface/a hw plugin
-> pcm, would have to track anyway the type of timestamp clock at the time of state
-> change: the trigger timestamp of a kernel status ioctl used the type of
-> timestamp clock at the time of the state change, not the type of timestamp
-> clock provided in the ioctl (btw, what about some documentation addition?).
-> 
-> In the use case of a shared device, it seems the right way would be to send an
-> error back to the application (aka "making snd_pcm_sw_params_set_tstamp_type()
-> recurse down the plugin pipeline"), because after giving some thoughts about it
-> I don't see how it is possible to convert a timestamp from one clock type to
-> another: backlog all adjtime deltas, plus the initial values, plus any natural
-> drift? The linux devs in charge of time keeping may be able to answer this.
+> FWIW you also want to take MONOTONIC_RAW with a grain of salt. In a corner
+> case w/ long tests lasting 48 hours we saw the timestamps reported by the
+> kernel drift over time. the drift was minor (double-digit ppb - yes parts
+> per billion) but the fixed-point math for the counters at some point impacts
+> the results. Reading directly the TSC from userspace and doing
+> floating-point math bypassed the rounding errors.
 
-I don't think it's possible unless the timestamps are taken really close 
-to each other. There was some work some by Chris Hall in 2016 to revisit 
-how the conversions were done and the past taken into account is a 
-couple of ms, see ("time: Add history to cross timestamp interface 
-supporting slower devices").
+This is how I got into this: I was writting a naive audio application and
+arrived at the point I needed timing information to do exactly that, a rough,
+but enough, audio linear interpolation (with ffmpeg timestamp). I naively
+configured alsa to use monotonic_raw, because avoiding ntp for audio timing was
+a good idea, and when I did sample on my side the monotonic raw clock, I
+realised that everything was off 100s of ms (alsa defaults to monotonic and
+ignores monotonic_raw setting in the case of a shared device). I followed the
+white rabbit, and here I stand. The cherry on top was the inconsistency about
+the trigger timestamp (which is not meant to be close to the other timestamps).
 
-if your device is "shared", which implies a mixer, the notion of precise 
-timestamps is rather questionable so you might be able to get-by with 
-local interpolation in your plug-ins. Trying a full-blown conversion of 
-the kernel-reported time is not really useful if the mixing granularity 
-is in the ms range or more.
+This pushes to fix snd_pcm_sw_params_set_tstamp_type(): recursive along a pcm
+plugin "pipeline" and return an error in the case of a setting difference from
+the one chosen by dmix.
+I am not confident at all since I have only a minimal perspective on alsa.
 
-FWIW you also want to take MONOTONIC_RAW with a grain of salt. In a 
-corner case w/ long tests lasting 48 hours we saw the timestamps 
-reported by the kernel drift over time. the drift was minor 
-(double-digit ppb - yes parts per billion) but the fixed-point math for 
-the counters at some point impacts the results. Reading directly the TSC 
-from userspace and doing floating-point math bypassed the rounding errors.
+-- 
+Sylvain
