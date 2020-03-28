@@ -2,80 +2,101 @@ Return-Path: <SRS0=QDkj=5O=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EC9BEC43331
-	for <alsa-devel@archiver.kernel.org>; Sun, 29 Mar 2020 07:56:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 26BFEC43331
+	for <alsa-devel@archiver.kernel.org>; Sun, 29 Mar 2020 07:57:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 72A5B206CC
-	for <alsa-devel@archiver.kernel.org>; Sun, 29 Mar 2020 07:56:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 62FAD206CC
+	for <alsa-devel@archiver.kernel.org>; Sun, 29 Mar 2020 07:57:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="H9nBhip/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 72A5B206CC
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dsoHG/kq";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=c-s.fr header.i=@c-s.fr header.b="kJCrULvp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 62FAD206CC
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=c-s.fr
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CB4E81680;
-	Sun, 29 Mar 2020 09:56:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB4E81680
+	by alsa0.perex.cz (Postfix) with ESMTPS id BCDBA1676;
+	Sun, 29 Mar 2020 09:56:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BCDBA1676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585468611;
-	bh=eriHGHSsBmeLGlccVF/spxuMCiGwbzpRXimCT37FgCw=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1585468636;
+	bh=q/15saBkCw6pCFBPuc5+EOuTM4y00iXo9pmW6vbOhc0=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=H9nBhip/qHH/vO/UQiPfqZvL9naAe+CH+H5I9R9lElNZAA0c+H96Nu8mB14dszIFI
-	 52G4VLhrTMQZ1nKRBRoMPSprKZe2+NBdqbPe6yzXlF9aVrKte64lW7GKM0VPl6JPwv
-	 3R3pkGsMEiDB0LUUmnANnNdElcmc3DoLecDKE6YE=
+	b=dsoHG/kq+TyeGvDqJF6uyCa9Jsruouqz+dViYjJpN5gsW8noZgkiNYjYinTwd2zkR
+	 w+T+vc1JC6KXULSXCFBVdTDUhCD+lZF6uM/XpBtIzhu3oIIr2U6MfTXGwyEdVe7OU+
+	 0lz5EUxJNLdbxglMboWbQi1Z76TrV3wzZ1bxNlC4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 57D1CF8028B;
-	Sun, 29 Mar 2020 09:54:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 403ACF8028F;
+	Sun, 29 Mar 2020 09:54:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7EFADF80218; Fri, 27 Mar 2020 15:15:03 +0100 (CET)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 7FC48F80234; Sat, 28 Mar 2020 12:18:16 +0100 (CET)
+Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EB318F80158
- for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2020 15:14:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB318F80158
-IronPort-SDR: 9LrxdHrGx4jm3/ohWwLFKbp0h+R++8YmlIEuMFsXyGxtkQXRin9znks1U4ZeN5ZEma15EnWPO1
- Hop6KhNDOIIQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Mar 2020 07:14:50 -0700
-IronPort-SDR: I38irYb4hVRDgaZenK0A5NlEFWlqDW002YzBRsjcfQHWlmF0VW9VPFK1QZHzLy07/jHWHAI2sL
- Tm6UzhXbLnQQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,312,1580803200"; d="scan'208";a="251156757"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
- by orsmga006.jf.intel.com with ESMTP; 27 Mar 2020 07:14:35 -0700
-Received: from andy by smile with local (Exim 4.93)
- (envelope-from <andriy.shevchenko@linux.intel.com>)
- id 1jHpko-00DQwz-BE; Fri, 27 Mar 2020 16:14:34 +0200
-Date: Fri, 27 Mar 2020 16:14:34 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Arnd Bergmann <arnd@arndb.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 897E7F800EA
+ for <alsa-devel@alsa-project.org>; Sat, 28 Mar 2020 12:18:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 897E7F800EA
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=c-s.fr header.i=@c-s.fr header.b="kJCrULvp"
+Received: from localhost (mailhub1-int [192.168.12.234])
+ by localhost (Postfix) with ESMTP id 48qGRj63y9zB09ZW;
+ Sat, 28 Mar 2020 12:18:09 +0100 (CET)
+Authentication-Results: localhost; dkim=pass
+ reason="1024-bit key; insecure key"
+ header.d=c-s.fr header.i=@c-s.fr header.b=kJCrULvp; dkim-adsp=pass;
+ dkim-atps=neutral
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+ by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+ with ESMTP id Aqeer9tOyAxc; Sat, 28 Mar 2020 12:18:09 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+ by pegase1.c-s.fr (Postfix) with ESMTP id 48qGRj4XtLzB09ZR;
+ Sat, 28 Mar 2020 12:18:09 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
+ t=1585394289; bh=VyBwgOCzEkUZrjyWnViNMulwr9dgKuVbNjydDE7N0r0=;
+ h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+ b=kJCrULvpRXmm5Q3uP6c+IQAHQXHFkw9+Us6HF2mcW2XMH5WBcPUPhSF1avLjMqZTy
+ EHlYoMQgjvfXBgtOc9qWFZnCf+4BPtaQRIP6sMw1o97qkggpKN2pDkxdIwj3MdqzMT
+ 2kv5P4RiMiZFEH9Z8pAGeoajZtpFJdyJEFPBiANM=
+Received: from localhost (localhost [127.0.0.1])
+ by messagerie.si.c-s.fr (Postfix) with ESMTP id C74EE8B76C;
+ Sat, 28 Mar 2020 12:18:10 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+ by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+ with ESMTP id UaW4AG2lp2bR; Sat, 28 Mar 2020 12:18:10 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+ by messagerie.si.c-s.fr (Postfix) with ESMTP id 0D1928B75B;
+ Sat, 28 Mar 2020 12:18:06 +0100 (CET)
 Subject: Re: [PATCH 0/2] powerpc: Remove support for ppc405/440 Xilinx
  platforms
-Message-ID: <20200327141434.GA1922688@smile.fi.intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Arnd Bergmann <arnd@arndb.de>, Michael Ellerman <mpe@ellerman.id.au>
 References: <cover.1585311091.git.michal.simek@xilinx.com>
  <CAK8P3a2mKPRFbRE3MWScr9GSiL4cpLg0wqv1Q28XDCZVPWgHfg@mail.gmail.com>
  <20200327131026.GT1922688@smile.fi.intel.com>
  <20200327131531.GU1922688@smile.fi.intel.com>
  <CAK8P3a1Z+ZPTDzgAjdz0a7d85R62BhUqkdEWgrwXh-OnYe6rog@mail.gmail.com>
+ <20200327141434.GA1922688@smile.fi.intel.com>
+From: Christophe Leroy <christophe.leroy@c-s.fr>
+Message-ID: <b5adcc7a-9d10-d75f-50e3-9c150a7b4989@c-s.fr>
+Date: Sat, 28 Mar 2020 12:17:58 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a1Z+ZPTDzgAjdz0a7d85R62BhUqkdEWgrwXh-OnYe6rog@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20200327141434.GA1922688@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 X-Mailman-Approved-At: Sun, 29 Mar 2020 09:54:16 +0200
 Cc: Kate Stewart <kstewart@linuxfoundation.org>,
  Mark Rutland <mark.rutland@arm.com>,
@@ -90,9 +111,9 @@ Cc: Kate Stewart <kstewart@linuxfoundation.org>,
  Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
  Fabio Estevam <festevam@gmail.com>, Sasha Levin <sashal@kernel.org>,
  Stephen Rothwell <sfr@canb.auug.org.au>, Jonathan Corbet <corbet@lwn.net>,
- Michael Ellerman <mpe@ellerman.id.au>, Masahiro Yamada <masahiroy@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, YueHaibing <yuehaibing@huawei.com>,
- Michal Simek <michal.simek@xilinx.com>, Krzysztof Kozlowski <krzk@kernel.org>,
+ Masahiro Yamada <masahiroy@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ YueHaibing <yuehaibing@huawei.com>, Michal Simek <michal.simek@xilinx.com>,
+ Krzysztof Kozlowski <krzk@kernel.org>,
  Linux ARM <linux-arm-kernel@lists.infradead.org>,
  Leonardo Bras <leonardo@linux.ibm.com>,
  Matt Porter <mporter@kernel.crashing.org>, DTML <devicetree@vger.kernel.org>,
@@ -105,8 +126,8 @@ Cc: Kate Stewart <kstewart@linuxfoundation.org>,
  Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
  Jonathan Cameron <Jonathan.Cameron@huawei.com>,
  Thomas Gleixner <tglx@linutronix.de>, Allison Randal <allison@lohutok.net>,
- Christophe Leroy <christophe.leroy@c-s.fr>, Michal Simek <monstr@monstr.eu>,
- Wei Hu <weh@microsoft.com>, Christian Lamparter <chunkeey@gmail.com>,
+ Michal Simek <monstr@monstr.eu>, Wei Hu <weh@microsoft.com>,
+ Christian Lamparter <chunkeey@gmail.com>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  Nick Desaulniers <ndesaulniers@google.com>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
@@ -128,40 +149,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Mar 27, 2020 at 02:22:55PM +0100, Arnd Bergmann wrote:
-> On Fri, Mar 27, 2020 at 2:15 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Fri, Mar 27, 2020 at 03:10:26PM +0200, Andy Shevchenko wrote:
-> > > On Fri, Mar 27, 2020 at 01:54:33PM +0100, Arnd Bergmann wrote:
-> > > > On Fri, Mar 27, 2020 at 1:12 PM Michal Simek <michal.simek@xilinx.com> wrote:
 
-...
 
-> > > > It does raise a follow-up question about ppc40x though: is it time to
-> > > > retire all of it?
-> > >
-> > > Who knows?
-> > >
-> > > I have in possession nice WD My Book Live, based on this architecture, and I
-> > > won't it gone from modern kernel support. OTOH I understand that amount of real
-> > > users not too big.
-> >
-> > +Cc: Christian Lamparter, whom I owe for that WD box.
+Le 27/03/2020 à 15:14, Andy Shevchenko a écrit :
+> On Fri, Mar 27, 2020 at 02:22:55PM +0100, Arnd Bergmann wrote:
+>> On Fri, Mar 27, 2020 at 2:15 PM Andy Shevchenko
+>> <andriy.shevchenko@linux.intel.com> wrote:
+>>> On Fri, Mar 27, 2020 at 03:10:26PM +0200, Andy Shevchenko wrote:
+>>>> On Fri, Mar 27, 2020 at 01:54:33PM +0100, Arnd Bergmann wrote:
+>>>>> On Fri, Mar 27, 2020 at 1:12 PM Michal Simek <michal.simek@xilinx.com> wrote:
 > 
-> According to https://openwrt.org/toh/wd/mybooklive, that one is based on
-> APM82181/ppc464, so it is about several generations newer than what I
-> asked about (ppc40x).
+> ...
 > 
-> > > Ah, and I have Amiga board, but that one is being used only for testing, so,
-> > > I don't care much.
+>>>>> It does raise a follow-up question about ppc40x though: is it time to
+>>>>> retire all of it?
+>>>>
+>>>> Who knows?
+>>>>
+>>>> I have in possession nice WD My Book Live, based on this architecture, and I
+>>>> won't it gone from modern kernel support. OTOH I understand that amount of real
+>>>> users not too big.
+>>>
+>>> +Cc: Christian Lamparter, whom I owe for that WD box.
+>>
+>> According to https://openwrt.org/toh/wd/mybooklive, that one is based on
+>> APM82181/ppc464, so it is about several generations newer than what I
+>> asked about (ppc40x).
+>>
+>>>> Ah, and I have Amiga board, but that one is being used only for testing, so,
+>>>> I don't care much.
+>>
+>> I think there are a couple of ppc440 based Amiga boards, but again, not 405
+>> to my knowledge.
 > 
-> I think there are a couple of ppc440 based Amiga boards, but again, not 405
-> to my knowledge.
+> Ah, you are right. No objections from ppc40x removal!
+> 
 
-Ah, you are right. No objections from ppc40x removal!
-
--- 
-With Best Regards,
-Andy Shevchenko
+Removing 40x would help cleaning things a bit. For instance 40x is the 
+last platform still having PTE_ATOMIC_UPDATES. So if we can remove 40x 
+we can get rid of PTE_ATOMIC_UPDATES completely.
 
 
+If no one objects, I can prepare a series to drop support for 40x 
+completely.
+
+Michael, any thought ?
+
+Christophe
