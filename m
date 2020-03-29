@@ -1,60 +1,60 @@
 Return-Path: <SRS0=QDkj=5O=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Level: *
+X-Spam-Status: No, score=1.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,PDS_TONAME_EQ_TOLOCAL_SHORT,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA2E6C43331
-	for <alsa-devel@archiver.kernel.org>; Sun, 29 Mar 2020 08:51:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 821E8C43331
+	for <alsa-devel@archiver.kernel.org>; Sun, 29 Mar 2020 08:57:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 31A2D20714
-	for <alsa-devel@archiver.kernel.org>; Sun, 29 Mar 2020 08:51:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0235E20714
+	for <alsa-devel@archiver.kernel.org>; Sun, 29 Mar 2020 08:57:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rqMlIIri"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 31A2D20714
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="A7AYOtGp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0235E20714
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9BDC71657;
-	Sun, 29 Mar 2020 10:51:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9BDC71657
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6D0351657;
+	Sun, 29 Mar 2020 10:56:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D0351657
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585471910;
-	bh=LlORgPEDBUdpq0seZytO6d7phoEW9+XilGHazaNXCBc=;
+	s=default; t=1585472254;
+	bh=wTgZBungnpCO4ph8LopQBlPpFPxRFPPhxpZSu6oVTxI=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rqMlIIriOac61Mhy2QyBgyOPsMwltM8ZlP1HxuCmS8eKv15otUTWDKlSTCE5NpMng
-	 8FIHQjHGXc1hwtUI9QKsoJy7Wst54+6duRlhlO8nirU0lhUlW+YuQ8ojSNLFBdnA4x
-	 jjb0xLInwphXM+i5RLoAXZBskxhfhtasGBO4hugM=
+	b=A7AYOtGp2pObs5ZX54IXOX8G8NznQ7WiCC/eaZpDidUtuC7OGVB9gqmPSDAH5ogST
+	 a6XG1C+PMXRLxg3/Y3P7C5o0tAkFdyo1R03Tn9yKAgxCjiCQL6CEkFDs4aJ6SqHbrY
+	 eAT5De/WGYjWsHJ1DTFLCG9V4eH/Q3l/1Ta5+YI4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2584BF80146;
-	Sun, 29 Mar 2020 10:51:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D922BF80140;
+	Sun, 29 Mar 2020 10:56:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0BBE5F8013F; Sun, 29 Mar 2020 10:50:58 +0200 (CEST)
+ id BADACF80146; Sun, 29 Mar 2020 10:56:42 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 42E1CF8013F
- for <alsa-devel@alsa-project.org>; Sun, 29 Mar 2020 10:50:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42E1CF8013F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 23136F8013F
+ for <alsa-devel@alsa-project.org>; Sun, 29 Mar 2020 10:56:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23136F8013F
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 076D0AE4E;
- Sun, 29 Mar 2020 08:50:54 +0000 (UTC)
-Date: Sun, 29 Mar 2020 10:50:53 +0200
-Message-ID: <s5hftdrczo2.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 630B1AE4E;
+ Sun, 29 Mar 2020 08:56:36 +0000 (UTC)
+Date: Sun, 29 Mar 2020 10:56:35 +0200
+Message-ID: <s5heetbczek.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: scorpio@qelectrotech.org
-Subject: Re: TRX40 Realtek ALC1220-VB USB Audio
-In-Reply-To: <14399276.b7z6KR4yDS@debian>
-References: <14399276.b7z6KR4yDS@debian>
+To: andythe_great <andythe_great@protonmail.com>
+Subject: Re: Port HDA Analyzer to python 3
+In-Reply-To: <ol12k6zTg1bF6sZnv01hgWTqv1uqtvMWljgnxbh_d4uOGiQfSLHsaRbmQ7ddFfSu8taOrpCW0yvBMuxa5JVLs-ZtSDVy1-Eyj30Cp-WymZs=@protonmail.com>
+References: <ol12k6zTg1bF6sZnv01hgWTqv1uqtvMWljgnxbh_d4uOGiQfSLHsaRbmQ7ddFfSu8taOrpCW0yvBMuxa5JVLs-ZtSDVy1-Eyj30Cp-WymZs=@protonmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -76,36 +76,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 07 Mar 2020 14:00:26 +0100,
-laurent Trinques wrote:
+On Sun, 08 Mar 2020 16:10:50 +0100,
+andythe_great wrote:
 > 
 > Hello,
 > 
-> sudo dmesg -lerr -lcrit
->  
-> [    0.386478] ACPI BIOS Error (bug): Failure creating named object 
-> [\_SB.I2CA.WT1A], AE_ALREADY_EXISTS (20191018/dswload2-323)
-(snip)
-> [    2.545332] Error: Driver 'pcspkr' is already registered, aborting...
+> Is it possible to port HDA Analyzer to python 3? https://www.alsa-project.org/main/index.php/HDA_Analyzer
+> 
+> Because openSUSE is retiring python 2.
+> 
+> I tried using python-modernize https://python-modernize.readthedocs.io/en/latest/ but many could not get it to run.
 
-All those are irrelevant with the sound problem.
+It's Jaroslav's pet project, so he might give an answer :)
 
-> [    2.572542] snd_hda_intel 0000:23:00.4: no codecs found!
-
-I guess this is a known "problem", the strange hardware implementation
-where exposing the dummy HD-audio bus with non-existing codec.  So
-this can be ignored as well (maybe we can blacklist the PCI ID for
-ignoring more properly).
-
-The real issue is:
-> [    8.169209] usb 7-5: cannot get ctl value: req = 0x83, wValue = 0xc00, 
-> wIndex = 0x1300, type = 4
-> [    8.169214] usb 7-5: 19:0: cannot get min/max values for control 12 (id 19)
-
-So it's likely a USB audio firmware that doesn't behave correctly as
-advertised, and we'd need a workaround.
-
-Could you give lsusb -v output for this device?
+Would it be worth for moving it to alsa-tools repo once when
+conversion is done?
 
 
 Takashi
