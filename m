@@ -2,76 +2,66 @@ Return-Path: <SRS0=QDkj=5O=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 37FC8C43331
-	for <alsa-devel@archiver.kernel.org>; Sun, 29 Mar 2020 07:44:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 864AEC43331
+	for <alsa-devel@archiver.kernel.org>; Sun, 29 Mar 2020 07:46:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8EF4E20659
-	for <alsa-devel@archiver.kernel.org>; Sun, 29 Mar 2020 07:44:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0196320659
+	for <alsa-devel@archiver.kernel.org>; Sun, 29 Mar 2020 07:46:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kiApV32W"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8EF4E20659
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LOBQ0UG2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0196320659
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0026885D;
-	Sun, 29 Mar 2020 09:43:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0026885D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4FCC3166E;
+	Sun, 29 Mar 2020 09:45:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4FCC3166E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585467858;
-	bh=D2ANeUsZiM+XL3pZdpTdlaMHedh/qH0uRKL1fq01Upw=;
+	s=default; t=1585468008;
+	bh=uSsN1dyDZZGN4g5BBKUXQCVQwpdKsfoim2O75ubKh0M=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kiApV32Wx3KWK90MwC825xTJM1U+yAcY728sKJP1Vkp5g3PvzMdZo3qr7F9NCF429
-	 TWjhtVwYgmsPuUxxnHFGr3Ym99j+gsfN7kjH3RSEIIYEE5xfXEbd48J8Yfm791FOoc
-	 LtBcsD0Njo1zQfZ20TF8hNXk3fbf3B/hWmRiTJD8=
+	b=LOBQ0UG2FmG3SqP/pHqkBzQD6nyPuuJ0lZ4buA/7rABb3qdGemWIgZRI3XI0Uoh6x
+	 Gn+SKeg6o2be6e+apKRqzFtWfbCPQj09z+Cu11FtSgqQejofvvf9OSSnt5iRE2cK3x
+	 G1PyVWiGmq6+CfBgcaEWgsm/ZA5opiz2zpZGhHMY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7BF74F80140;
-	Sun, 29 Mar 2020 09:43:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D7BA5F8013F;
+	Sun, 29 Mar 2020 09:45:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 42E01F80146; Sun, 29 Mar 2020 09:43:21 +0200 (CEST)
+ id 2AA6AF80146; Sun, 29 Mar 2020 09:45:56 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DF54EF800EB
- for <alsa-devel@alsa-project.org>; Sun, 29 Mar 2020 09:43:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF54EF800EB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3A381F8013F
+ for <alsa-devel@alsa-project.org>; Sun, 29 Mar 2020 09:45:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A381F8013F
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id D59B4AF3F;
- Sun, 29 Mar 2020 07:43:13 +0000 (UTC)
-Date: Sun, 29 Mar 2020 09:43:13 +0200
-Message-ID: <s5hr1xbd2su.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 9BDC3AC61;
+ Sun, 29 Mar 2020 07:45:51 +0000 (UTC)
+Date: Sun, 29 Mar 2020 09:45:51 +0200
+Message-ID: <s5hpncvd2og.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: sylvain.bertrand@gmail.com
-Subject: Re: sw_params for a direct-ed(dmix) hw pcm
-In-Reply-To: <20200328222021.GA4610@freedom>
-References: <20200325174419.GA1224@freedom>
- <alpine.DEB.2.21.2003261350380.2957@eliteleevi.tm.intel.com>
- <9d986c48-184a-1d6e-4c5b-172a7ecd98a8@perex.cz>
- <20200326200415.GA1321@freedom> <s5hlfnmfcdt.wl-tiwai@suse.de>
- <0b0f5117-3b4b-0c25-cd4b-0ecc72479635@perex.cz>
- <20200328182624.GA775@freedom>
- <1baab0fd-d802-3707-645f-d5dc4bf6c32c@linux.intel.com>
- <20200328203744.GA2398@freedom>
- <59266c58-96d8-93e9-bc8f-86e9fccf8d60@linux.intel.com>
- <20200328222021.GA4610@freedom>
+To: Rouven Czerwinski <r.czerwinski@pengutronix.de>
+Subject: Re: [PATCH] ALSA: hda: default enable CA0132 DSP support
+In-Reply-To: <20200329053710.4276-1-r.czerwinski@pengutronix.de>
+References: <20200329053710.4276-1-r.czerwinski@pengutronix.de>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ Rouven Czerwinski <rouven@czerwinskis.de>, Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,54 +77,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 28 Mar 2020 23:20:21 +0100,
-sylvain.bertrand@gmail.com wrote:
+On Sun, 29 Mar 2020 07:30:15 +0200,
+Rouven Czerwinski wrote:
 > 
-> On Sat, Mar 28, 2020 at 04:34:01PM -0500, Pierre-Louis Bossart wrote:
-> > Using MONOTONIC_RAW is very nice on paper, until you realize you can't
-> > program a timer using the information. You can only read the timestamp and
-> > not really do much if you want to sleep/wait.
-> > 
-> > In practice, if you really really need super-precise information you'll get
-> > use rdtsc(), and apply you own formulas. And otherwise stick with MONOTONIC,
-> > it's rather unlikely you will ever notice the NTP changes. PulseAudio, CRAS
-> > and a number of Android HALs use MONOTONIC and nobody ever complained.
+> From: Rouven Czerwinski <rouven@czerwinskis.de>
 > 
-> The pb is not about using monotonic_raw, the thing is: it is documented valid
-> to use it which I did as expected from a naive reading of the api documentation
-> and found those issues. I can reasonably believe it will be the case for any
-> new alsa programmer.
+> If SND_HDA_CODEC_CA0132 is enabled, the DSP support should be enabled as
+> well. Disabled DSP support leads to a hanging alsa system and no sound
+> output on the card otherwise. Tested on:
 > 
-> For my code, in the end, I think I'll use the best "audio timestamp" I can get
-> from the status ioctl for linear interpolation with ffmpeg timestamps.
+>   06:00.0 Audio device: Creative Labs Sound Core3D [Sound Blaster Recon3D / Z-Series] (rev 01)
 > 
-> But this is off topic here.
-> 
-> The topic is discussing how to fix this bug, since I had to dig a bit in alsa.
-> It appears to me the recursive fix might be a good way, since it is done for
-> other api functions, but I am not Jaroslav Kysela neither Takashi Iwai then far
-> from grasping all the details of alsa.
+> Signed-off-by: Rouven Czerwinski <rouven@czerwinskis.de>
 
-A problem for now is that we used to allow the arbitrary parameter in
-sw_params because it's sw_params.  Propagating an error would break
-this assumption, and that's the (rather only) concern when we
-introduce the error for an invalid tstamp type.
+OK, since the DSP support has been improved a lot in comparison with
+the early stage, so it makes sense.  I believe most of distros have
+set already this to y, and it won't be any big impact.
 
-OTOH, although the translation of timestamp can work around this
-compatibility problem, it would result in an inaccurate timing that
-applications don't expect, either; apps set up a different tstamp type
-just because they want accurate timing, after all, so it'd becomes
-rather useless.
+Applied now.  Thanks.
 
-So, judging from the both above, I find returning an error is a better
-approach.  Above all, it's simpler.
-
-And for dmix, we may add a new asoundrc option to specify the tstamp
-type.  sw_params returns an error if an incompatible tstamp type is
-specified.  This will leave users the least possibility to use the
-expected tstamp type while keeping the system consistent.
-
-
-thanks,
 
 Takashi
