@@ -1,65 +1,66 @@
 Return-Path: <SRS0=QDkj=5O=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
-X-Spam-Level: *
-X-Spam-Status: No, score=1.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,PDS_TONAME_EQ_TOLOCAL_SHORT,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 821E8C43331
-	for <alsa-devel@archiver.kernel.org>; Sun, 29 Mar 2020 08:57:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D38EEC43331
+	for <alsa-devel@archiver.kernel.org>; Sun, 29 Mar 2020 09:00:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0235E20714
-	for <alsa-devel@archiver.kernel.org>; Sun, 29 Mar 2020 08:57:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5F4F420716
+	for <alsa-devel@archiver.kernel.org>; Sun, 29 Mar 2020 09:00:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="A7AYOtGp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0235E20714
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="a3Q/otpn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5F4F420716
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6D0351657;
-	Sun, 29 Mar 2020 10:56:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D0351657
+	by alsa0.perex.cz (Postfix) with ESMTPS id B6DFF1657;
+	Sun, 29 Mar 2020 11:00:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B6DFF1657
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585472254;
-	bh=wTgZBungnpCO4ph8LopQBlPpFPxRFPPhxpZSu6oVTxI=;
+	s=default; t=1585472457;
+	bh=y/LZyut0UDd0F7IjozPC+F085pk5AQB465sSjr5yyK8=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=A7AYOtGp2pObs5ZX54IXOX8G8NznQ7WiCC/eaZpDidUtuC7OGVB9gqmPSDAH5ogST
-	 a6XG1C+PMXRLxg3/Y3P7C5o0tAkFdyo1R03Tn9yKAgxCjiCQL6CEkFDs4aJ6SqHbrY
-	 eAT5De/WGYjWsHJ1DTFLCG9V4eH/Q3l/1Ta5+YI4=
+	b=a3Q/otpnrK/HrJqGhLTBf1pG8iPe/HHkbei5SgYg5uwIbrzkViHknl4kxLbI5b5+L
+	 a6ZxgcqSewnXO64kBnSq1XXlID6AnwQz28DwAFC7nNI07Xl7ZlDm7rDj+XDDkHWyAD
+	 sHrfAhrZl6wOPDJadanr4kqR4KRQG/naAD6wWePE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D922BF80140;
-	Sun, 29 Mar 2020 10:56:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CFAF5F80140;
+	Sun, 29 Mar 2020 11:00:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BADACF80146; Sun, 29 Mar 2020 10:56:42 +0200 (CEST)
+ id 4372AF80146; Sun, 29 Mar 2020 11:00:03 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 23136F8013F
- for <alsa-devel@alsa-project.org>; Sun, 29 Mar 2020 10:56:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23136F8013F
+ by alsa1.perex.cz (Postfix) with ESMTPS id C07DFF800B5
+ for <alsa-devel@alsa-project.org>; Sun, 29 Mar 2020 10:59:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C07DFF800B5
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 630B1AE4E;
- Sun, 29 Mar 2020 08:56:36 +0000 (UTC)
-Date: Sun, 29 Mar 2020 10:56:35 +0200
-Message-ID: <s5heetbczek.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 73AE5AE4E;
+ Sun, 29 Mar 2020 08:59:55 +0000 (UTC)
+Date: Sun, 29 Mar 2020 10:59:55 +0200
+Message-ID: <s5hd08vcz90.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: andythe_great <andythe_great@protonmail.com>
-Subject: Re: Port HDA Analyzer to python 3
-In-Reply-To: <ol12k6zTg1bF6sZnv01hgWTqv1uqtvMWljgnxbh_d4uOGiQfSLHsaRbmQ7ddFfSu8taOrpCW0yvBMuxa5JVLs-ZtSDVy1-Eyj30Cp-WymZs=@protonmail.com>
-References: <ol12k6zTg1bF6sZnv01hgWTqv1uqtvMWljgnxbh_d4uOGiQfSLHsaRbmQ7ddFfSu8taOrpCW0yvBMuxa5JVLs-ZtSDVy1-Eyj30Cp-WymZs=@protonmail.com>
+To: =?UTF-8?B?5bCk5pmT5p2w?= <yxj790222@163.com>
+Subject: Re: about alc880 no sound and eapd coef
+In-Reply-To: <1748481.d5c7.170c02da914.Coremail.yxj790222@163.com>
+References: <1748481.d5c7.170c02da914.Coremail.yxj790222@163.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -76,21 +77,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 08 Mar 2020 16:10:50 +0100,
-andythe_great wrote:
+On Mon, 09 Mar 2020 17:43:02 +0100,
+尤晓杰 wrote:
 > 
-> Hello,
-> 
-> Is it possible to port HDA Analyzer to python 3? https://www.alsa-project.org/main/index.php/HDA_Analyzer
-> 
-> Because openSUSE is retiring python 2.
-> 
-> I tried using python-modernize https://python-modernize.readthedocs.io/en/latest/ but many could not get it to run.
+> dear friend, I am using ecs g420 laptop, use options snd-hda-intel model=generic the speaker and mic correctly, 2 pop sounds,when the kernel load(left channel) and the x11 load(right channel), but with standard way  only one pop sound when kernel load and silent always. the mic is ok. I have got  datasheet of alc880 and see the eapd function, but in your code I see this need coef parameter. so what should I write using verb to open eapd? the attachment is the schematic of sound part.in summary: the 0x14 hp out, 0x18 mic in,0x1c cd in, 0x1e spif out, no jack sense. eapd shared with spdif in. all are correct with default of datasheet's describe. I use verb to dectt each pin widget's capability , take 0x14 as exaple, no eapd capability.To set 0x14's eapd with hda-verb /dev/snd/hwC0D0 0x70c 0x2, failed to read it again alwas 0. and bios also reported 0x16, I think it is bios's bug. I what to use "Early Patching" method to deal with it without changing source code, is it feasible? could
+  you give me some idea? thanks!!!!
 
-It's Jaroslav's pet project, so he might give an answer :)
-
-Would it be worth for moving it to alsa-tools repo once when
-conversion is done?
+Yes, you can write most of things in the early patching via firmware
+load.  But the very first thing is to make the board working with
+hda-verb.  Once after finding out the verb combo, it's easy to put it
+in the early firmware file or even creating a kernel patch.
 
 
 Takashi
