@@ -2,66 +2,65 @@ Return-Path: <SRS0=QDkj=5O=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 39EA7C43331
-	for <alsa-devel@archiver.kernel.org>; Sun, 29 Mar 2020 08:46:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA2E6C43331
+	for <alsa-devel@archiver.kernel.org>; Sun, 29 Mar 2020 08:51:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6C7CC20714
-	for <alsa-devel@archiver.kernel.org>; Sun, 29 Mar 2020 08:46:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 31A2D20714
+	for <alsa-devel@archiver.kernel.org>; Sun, 29 Mar 2020 08:51:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FM04Bcxo"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C7CC20714
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rqMlIIri"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 31A2D20714
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BD20A1670;
-	Sun, 29 Mar 2020 10:45:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD20A1670
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9BDC71657;
+	Sun, 29 Mar 2020 10:51:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9BDC71657
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585471605;
-	bh=Q3HnEXtDnABXwa1j8UTyUWjIkn4xS8bSeOZBAA4DYps=;
+	s=default; t=1585471910;
+	bh=LlORgPEDBUdpq0seZytO6d7phoEW9+XilGHazaNXCBc=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FM04Bcxol2Y7/RANPWcbRBLAbtdbxOUr96i+s0O1STFEj4TKgzHxQP7qaWTaQ68Iv
-	 KiUPuU9YflLeh2o5luE2NFdJCRvdiV5FTG/6iTVz/4XFuBDhpfW2mtt42De3JW3Drm
-	 HPMQvT4vocopYB5Y8AKioKpiorK/Gdz3rm7YggV4=
+	b=rqMlIIriOac61Mhy2QyBgyOPsMwltM8ZlP1HxuCmS8eKv15otUTWDKlSTCE5NpMng
+	 8FIHQjHGXc1hwtUI9QKsoJy7Wst54+6duRlhlO8nirU0lhUlW+YuQ8ojSNLFBdnA4x
+	 jjb0xLInwphXM+i5RLoAXZBskxhfhtasGBO4hugM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4C3B8F80140;
-	Sun, 29 Mar 2020 10:45:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2584BF80146;
+	Sun, 29 Mar 2020 10:51:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 50815F80146; Sun, 29 Mar 2020 10:45:52 +0200 (CEST)
+ id 0BBE5F8013F; Sun, 29 Mar 2020 10:50:58 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 311B9F8013F
- for <alsa-devel@alsa-project.org>; Sun, 29 Mar 2020 10:45:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 311B9F8013F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 42E1CF8013F
+ for <alsa-devel@alsa-project.org>; Sun, 29 Mar 2020 10:50:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42E1CF8013F
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 47387AB98;
- Sun, 29 Mar 2020 08:45:48 +0000 (UTC)
-Date: Sun, 29 Mar 2020 10:45:47 +0200
-Message-ID: <s5hh7y7czwk.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 076D0AE4E;
+ Sun, 29 Mar 2020 08:50:54 +0000 (UTC)
+Date: Sun, 29 Mar 2020 10:50:53 +0200
+Message-ID: <s5hftdrczo2.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Andreas Steinmetz <ast@domdv.de>
-Subject: Re: PATCH: ALSA USB MIDI: Fix case when USB MIDI interface has more
- than one extra endpoint descriptor
-In-Reply-To: <00decacc4cac6a9d88fe696f94a077284fb8bbb9.camel@domdv.de>
-References: <00decacc4cac6a9d88fe696f94a077284fb8bbb9.camel@domdv.de>
+To: scorpio@qelectrotech.org
+Subject: Re: TRX40 Realtek ALC1220-VB USB Audio
+In-Reply-To: <14399276.b7z6KR4yDS@debian>
+References: <14399276.b7z6KR4yDS@debian>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,70 +76,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 26 Mar 2020 18:18:55 +0100,
-Andreas Steinmetz wrote:
+On Sat, 07 Mar 2020 14:00:26 +0100,
+laurent Trinques wrote:
 > 
-> The Miditech MIDIFACE 16x16 (USB ID 1290:1749) has more than one extra
-> endpoint descriptor.
+> Hello,
 > 
-> The first extra descriptor is: 0x06 0x30 0x00 0x00 0x00 0x00
-> 
-> As the code in snd_usbmidi_get_ms_info() looks only at the
-> first extra descriptor to find USB_DT_CS_ENDPOINT the device
-> as such is recognized but there is neither input nor output
-> configured.
-> 
-> The patch iterates through the extra descriptors to find the
-> proper one. With this patch the device is correctly configured.
-> 
-> Signed-off-by: Andreas Steinmetz <ast@domdv.de>
-> 
-> --- a/sourd/usb/midi.c	2020-03-26 17:34:40.073929497 +0100
-> +++ b/sound/usb/midi.c	2020-03-26 17:43:39.123252612 +0100
-> @@ -1839,7 +1839,8 @@
->  	struct usb_host_endpoint *hostep;
->  	struct usb_endpoint_descriptor *ep;
->  	struct usb_ms_endpoint_descriptor *ms_ep;
-> -	int i, epidx;
-> +	int i, epidx, extralen;
-> +	unsigned char *extra;
+> sudo dmesg -lerr -lcrit
 >  
->  	intf = umidi->iface;
->  	if (!intf)
-> @@ -1863,12 +1864,21 @@
->  		ep = get_ep_desc(hostep);
->  		if (!usb_endpoint_xfer_bulk(ep) && !usb_endpoint_xfer_int(ep))
->  			continue;
-> -		ms_ep = (struct usb_ms_endpoint_descriptor *)hostep->extra;
-> -		if (hostep->extralen < 4 ||
-> +		extralen = hostep->extralen;
-> +		extra = hostep->extra;
-> +repeat:		ms_ep = (struct usb_ms_endpoint_descriptor *)extra;
-> +		if (extralen < 1)
-> +			continue;
-> +		if (extralen < 4 ||
->  		    ms_ep->bLength < 4 ||
->  		    ms_ep->bDescriptorType != USB_DT_CS_ENDPOINT ||
-> -		    ms_ep->bDescriptorSubtype != UAC_MS_GENERAL)
-> -			continue;
-> +		    ms_ep->bDescriptorSubtype != UAC_MS_GENERAL) {
-> +			if (!extra[0])
-> +				continue;
-> +			extralen -= extra[0];
-> +			extra += extra[0];
-> +			goto repeat;
-> +		}
+> [    0.386478] ACPI BIOS Error (bug): Failure creating named object 
+> [\_SB.I2CA.WT1A], AE_ALREADY_EXISTS (20191018/dswload2-323)
+(snip)
+> [    2.545332] Error: Driver 'pcspkr' is already registered, aborting...
 
-This kind of goto-loop in a loop is really cryptic and error-prone.
-In general we use goto in the kernel code but only for limited
-situations such as the unified error code path or the restart of the
-whole loop after an error condition.  But this doesn't fit for such
-exceptions and can be better rewritten with a simple loop (maybe even
-better to factor out to a function).
+All those are irrelevant with the sound problem.
 
-So, could you revise the change to be more readable?
+> [    2.572542] snd_hda_intel 0000:23:00.4: no codecs found!
 
+I guess this is a known "problem", the strange hardware implementation
+where exposing the dummy HD-audio bus with non-existing codec.  So
+this can be ignored as well (maybe we can blacklist the PCI ID for
+ignoring more properly).
 
-thanks,
+The real issue is:
+> [    8.169209] usb 7-5: cannot get ctl value: req = 0x83, wValue = 0xc00, 
+> wIndex = 0x1300, type = 4
+> [    8.169214] usb 7-5: 19:0: cannot get min/max values for control 12 (id 19)
+
+So it's likely a USB audio firmware that doesn't behave correctly as
+advertised, and we'd need a workaround.
+
+Could you give lsusb -v output for this device?
+
 
 Takashi
