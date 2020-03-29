@@ -2,66 +2,70 @@ Return-Path: <SRS0=QDkj=5O=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 864AEC43331
-	for <alsa-devel@archiver.kernel.org>; Sun, 29 Mar 2020 07:46:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 834D8C43331
+	for <alsa-devel@archiver.kernel.org>; Sun, 29 Mar 2020 07:53:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0196320659
-	for <alsa-devel@archiver.kernel.org>; Sun, 29 Mar 2020 07:46:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 26F38206CC
+	for <alsa-devel@archiver.kernel.org>; Sun, 29 Mar 2020 07:53:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LOBQ0UG2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0196320659
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QqF6YFLR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 26F38206CC
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4FCC3166E;
-	Sun, 29 Mar 2020 09:45:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4FCC3166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 85B2D166D;
+	Sun, 29 Mar 2020 09:52:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 85B2D166D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585468008;
-	bh=uSsN1dyDZZGN4g5BBKUXQCVQwpdKsfoim2O75ubKh0M=;
+	s=default; t=1585468403;
+	bh=0appSiwePRzaX7P3v2E2d8q87ccTM7HPGCzDDbhQ470=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LOBQ0UG2FmG3SqP/pHqkBzQD6nyPuuJ0lZ4buA/7rABb3qdGemWIgZRI3XI0Uoh6x
-	 Gn+SKeg6o2be6e+apKRqzFtWfbCPQj09z+Cu11FtSgqQejofvvf9OSSnt5iRE2cK3x
-	 G1PyVWiGmq6+CfBgcaEWgsm/ZA5opiz2zpZGhHMY=
+	b=QqF6YFLRHUI+Td7pwlCj3JgmqLxt6zzisGZ4HxY83mZeLcWnW/T/oibTOJqCzS/jw
+	 pWiANr+/8BMjvc5rOTZucIv7GxJk57jnaz3A/jAWA+hocBylpzu5FEESAXfkbMoVGY
+	 leCU83NvN9PXKK4Jqj4tbO2SPFrrjip/yQMtb1GM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D7BA5F8013F;
-	Sun, 29 Mar 2020 09:45:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EA56EF80140;
+	Sun, 29 Mar 2020 09:52:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2AA6AF80146; Sun, 29 Mar 2020 09:45:56 +0200 (CEST)
+ id 78939F80146; Sun, 29 Mar 2020 09:52:31 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3A381F8013F
- for <alsa-devel@alsa-project.org>; Sun, 29 Mar 2020 09:45:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A381F8013F
+ by alsa1.perex.cz (Postfix) with ESMTPS id DADECF800EB
+ for <alsa-devel@alsa-project.org>; Sun, 29 Mar 2020 09:52:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DADECF800EB
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 9BDC3AC61;
- Sun, 29 Mar 2020 07:45:51 +0000 (UTC)
-Date: Sun, 29 Mar 2020 09:45:51 +0200
-Message-ID: <s5hpncvd2og.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 2599DADF8;
+ Sun, 29 Mar 2020 07:52:26 +0000 (UTC)
+Date: Sun, 29 Mar 2020 09:52:23 +0200
+Message-ID: <s5ho8sfd2dk.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Rouven Czerwinski <r.czerwinski@pengutronix.de>
-Subject: Re: [PATCH] ALSA: hda: default enable CA0132 DSP support
-In-Reply-To: <20200329053710.4276-1-r.czerwinski@pengutronix.de>
-References: <20200329053710.4276-1-r.czerwinski@pengutronix.de>
+To: George Spelvin <lkml@sdf.org>
+Subject: Re: [RFC PATCH v1 13/50] Avoid some useless msecs/jiffies conversions
+In-Reply-To: <202003281643.02SGhBrh000992@sdf.org>
+References: <202003281643.02SGhBrh000992@sdf.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- Rouven Czerwinski <rouven@czerwinskis.de>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, Marek Lindner <mareklindner@neomailbox.ch>,
+ linux-scsi@vger.kernel.org, Simon Wunderlich <sw@simonwunderlich.de>,
+ linux-wireless@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Antonio Quartulli <a@unstable.cc>, linux-kernel@vger.kernel.org,
+ b.a.t.m.a.n@diktynna.open-mesh.org, Hannes Reinecke <hare@suse.de>,
+ Johannes Berg <johannes@sipsolutions.net>, Sven Eckelmann <sven@narfation.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,24 +81,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 29 Mar 2020 07:30:15 +0200,
-Rouven Czerwinski wrote:
-> 
-> From: Rouven Czerwinski <rouven@czerwinskis.de>
-> 
-> If SND_HDA_CODEC_CA0132 is enabled, the DSP support should be enabled as
-> well. Disabled DSP support leads to a hanging alsa system and no sound
-> output on the card otherwise. Tested on:
-> 
->   06:00.0 Audio device: Creative Labs Sound Core3D [Sound Blaster Recon3D / Z-Series] (rev 01)
-> 
-> Signed-off-by: Rouven Czerwinski <rouven@czerwinskis.de>
+On Thu, 22 Aug 2019 02:25:10 +0200,
+George Spelvin wrote:
+> Likewise, "msecs_to_jiffies(seconds * 1000)" is more
+> conveniently written "seconds * HZ".
 
-OK, since the DSP support has been improved a lot in comparison with
-the early stage, so it makes sense.  I believe most of distros have
-set already this to y, and it won't be any big impact.
+I thought the compiler already optimizes to the constant calculation
+for the above case?
 
-Applied now.  Thanks.
 
+thanks,
 
 Takashi
