@@ -7,73 +7,98 @@ X-Spam-Status: No, score=-7.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F55BC2D0EE
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 Mar 2020 14:20:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F2180C43331
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 Mar 2020 14:27:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9D9442073B
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 Mar 2020 14:20:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7C7D420675
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 Mar 2020 14:27:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oqqMbI+T";
-	dkim=pass (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="D0mMgEPF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9D9442073B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="O5m02UuY";
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="v4VSpPJr"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7C7D420675
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EC532886;
-	Mon, 30 Mar 2020 16:19:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC532886
+	by alsa0.perex.cz (Postfix) with ESMTPS id E00A91607;
+	Mon, 30 Mar 2020 16:26:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E00A91607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585578040;
-	bh=vEyItXIHuKRVMMPS3+lsOya/avsl/SpRiXN0ujJhlA4=;
+	s=default; t=1585578420;
+	bh=NCgKYox8kBxzlx6WmJ7s774Zpf7UDB74LJBooOfcG/o=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oqqMbI+T+XwO5jH8H9IkfXYqTaec1c53GyNlfxO5cTVf/7Xd4dDnJHrg1ppB35NR/
-	 aPJy+nbQfqH5tvW8zGhZVgO7wVQ72UbBNHLsKynUMotUlAmKeOnAq9lltUfI832lw1
-	 ktuhVgbQ8Jt2zCuQjTk2UD7hhnWZPkkTTuBK3b2w=
+	b=O5m02UuYmQIjmZXwH1Kcn+85iWoBIZ0yykEHTUZkP7w33O7jTMjfxA7A+sSAsL0ca
+	 NFJnPNZl5YzfRhSPeTTo4KGvm9JzhiqZAb7HDPUeFMhuhzm1lUhxP9ifjdjbryKm00
+	 IZuuvuEHPm9bO0X8ZZi04YILWF29bKG8TcX9juP0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 37E20F80145;
-	Mon, 30 Mar 2020 16:19:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 21574F80145;
+	Mon, 30 Mar 2020 16:26:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 28E1CF80148; Mon, 30 Mar 2020 16:19:47 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 32ED8F800AA
- for <alsa-devel@alsa-project.org>; Mon, 30 Mar 2020 16:19:43 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id BCADFA003F;
- Mon, 30 Mar 2020 16:19:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz BCADFA003F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1585577982; bh=WswNLs19cZ4tz06JZuSEo+yxmDz2F8piEHQTp3LcXg8=;
- h=Subject:To:References:Cc:From:Date:In-Reply-To:From;
- b=D0mMgEPFK+Ipn+aYek6bqA/cGwQ4c4e6Wl6rpN9fbbHp0g8Bg25cnJdd9sxEA2GMM
- jInu5DU1S/u488ZvdCDHaxIzZ4tuE67SmLVbFfnJbf0PhYrnJI4+G9nbcLcKH7fzeW
- RznVXkmnqtlDvh5aKKQOEot4DmAWG4y3PuhZBx/Y=
-Received: from p50.perex-int.cz (unknown [192.168.100.94])
+ id A3985F80148; Mon, 30 Mar 2020 16:26:06 +0200 (CEST)
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com
+ [IPv6:2a00:1450:4864:20::341])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Mon, 30 Mar 2020 16:19:40 +0200 (CEST)
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1C9F0F8010C
+ for <alsa-devel@alsa-project.org>; Mon, 30 Mar 2020 16:26:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C9F0F8010C
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="v4VSpPJr"
+Received: by mail-wm1-x341.google.com with SMTP id z18so20171717wmk.2
+ for <alsa-devel@alsa-project.org>; Mon, 30 Mar 2020 07:26:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=MpBTSEwmaAqAHZkF4ilI23br9Re1qv/0BxVULiNxTeM=;
+ b=v4VSpPJrlOBbvaLpBqiz01Xp7dAhnnXtV3FY8mV8gTed7STPBhsFhFWOpTx8CnLMIm
+ /TntA0lWKai6wf4PgnH1ZhFdpymAR9EN+QJnMrC2NzOERh6ms/IGca3mxhSUEoAgmXfu
+ 1vMdcHd72FX4/Wkdm5EEQINdIYUM0SYclk5FiE2xyx/S7T6Xt3+YOgq35Z5xdgrzAHgl
+ Jzg+GIxceS14Q7Ft7gC/SHLPWbSVLLFbZl5v5G4f93dGyyEkXsrAUXNXtAMwAicUWpaq
+ HGskc1F7qAW+oGSu6lpXHg7HsZY603GO0QPGYCRqxzZu6kzOEthWAMiH0zImJSs5yO34
+ Yx1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=MpBTSEwmaAqAHZkF4ilI23br9Re1qv/0BxVULiNxTeM=;
+ b=uQd7n8/aqkPOW1og77o6Q17hPmIF99u4QbO1Q3+5BlFqzOvBE0B2lBoVbR9iiOmpl3
+ WKPcYMv1KuwsS4BdHAI7JOKagBeQHydwrCoUBhhDNWZPs0C76peOKnfn9nzjHaDWU9Av
+ Uzskvn0IM06FEj2K4CQbF+KQ1lGw6rptU8Y1byTstgZDolw462UPVKYQFpigwNpv6KKR
+ 6uUvKqrc3OMisBFsrXSHZaIA/akIm7IPdkDDWhcjPBW5phSNkrXvxC+SGr/2yZ2XBpZk
+ JzXC/8J/FqUlWktY43qWHMRDuQLVOtxnWvBJkFaQUfAUVkwKXILZZOJofiYxUgIwp+nH
+ Fa4Q==
+X-Gm-Message-State: ANhLgQ39L5/Ig4JbHOhXzWe5ULRClONGItyBo5UUb/JS63d82tgV72oB
+ LFFla/vR5HPva3Q8RdLU2A4ZWO99nSQ=
+X-Google-Smtp-Source: ADFU+vuTdnoQjJEEIhuFO3cDr41Rvn3vOSfGZ/rgR2arGk6FSeayZuf8P48DzBz528XamNqgBsCNvA==
+X-Received: by 2002:a1c:41d4:: with SMTP id o203mr12953168wma.1.1585578360631; 
+ Mon, 30 Mar 2020 07:26:00 -0700 (PDT)
+Received: from [192.168.86.34]
+ (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
+ by smtp.googlemail.com with ESMTPSA id a13sm22508279wrh.80.2020.03.30.07.25.59
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Mon, 30 Mar 2020 07:26:00 -0700 (PDT)
 Subject: Re: [PATCH 0/4] ucm2: Add support to SDM845 based platforms
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: Jaroslav Kysela <perex@perex.cz>
 References: <20200305134404.7690-1-srinivas.kandagatla@linaro.org>
  <41e83744-5164-7cbb-98e6-fb8504c6b44e@linaro.org>
-From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <8732f355-adff-3a28-34b3-a85a027f297e@perex.cz>
-Date: Mon, 30 Mar 2020 16:19:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+ <8732f355-adff-3a28-34b3-a85a027f297e@perex.cz>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <37d24771-d5ff-56fc-9dcc-3590385c61ad@linaro.org>
+Date: Mon, 30 Mar 2020 15:25:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <41e83744-5164-7cbb-98e6-fb8504c6b44e@linaro.org>
+In-Reply-To: <8732f355-adff-3a28-34b3-a85a027f297e@perex.cz>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Cc: ALSA development <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -90,30 +115,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 30. 03. 20 v 16:10 Srinivas Kandagatla napsal(a):
-> Hi Jaroslav,
-> 
-> On 05/03/2020 13:44, Srinivas Kandagatla wrote:
->> This patchset adds UCM support for WSA881x, WCD934x codec and two platforms,
->> DB845c DragonBoard and Lenovo YOGA C360 Laptop that use these codecs.
+
+
+On 30/03/2020 15:19, Jaroslav Kysela wrote:
+> Dne 30. 03. 20 v 16:10 Srinivas Kandagatla napsal(a):
+>> Hi Jaroslav,
 >>
->> Tested on Ubuntu 20.04 with pulseaudio 13 along with
->> with this fix
->>    https://github.com/pulseaudio/pulseaudio/commit/cabd387e26b5fe03661f4b894826c7c6b58d7efa
+>> On 05/03/2020 13:44, Srinivas Kandagatla wrote:
+>>> This patchset adds UCM support for WSA881x, WCD934x codec and two 
+>>> platforms,
+>>> DB845c DragonBoard and Lenovo YOGA C360 Laptop that use these codecs.
+>>>
+>>> Tested on Ubuntu 20.04 with pulseaudio 13 along with
+>>> with this fix
+>>>    
+>>> https://github.com/pulseaudio/pulseaudio/commit/cabd387e26b5fe03661f4b894826c7c6b58d7efa 
+>>>
+>>>
 >>
+>> Are you okay to pick these ucm2 patches?
 > 
-> Are you okay to pick these ucm2 patches?
+> Hi,
+> 
+>    it seems that those changes does not pass through the ucm validator 
+> (https://github.com/alsa-project/alsa-tests - python/ucm-validator 
+> directory).
 
-Hi,
+Thanks, I did not knew that there was an ucm-validator, I try run it and 
+fix those issues before sending a pull request!
 
-   it seems that those changes does not pass through the ucm validator 
-(https://github.com/alsa-project/alsa-tests - python/ucm-validator directory).
+--srini
 
-   I have also some comments, but I would probably prefer to create a pull 
-request on github to do the review for all files with history.
-
-				Thank you,
-					Jaroslav
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+> 
+>    I have also some comments, but I would probably prefer to create a 
+> pull request on github to do the review for all files with history.
+> 
+>                  Thank you,
+>                      Jaroslav
