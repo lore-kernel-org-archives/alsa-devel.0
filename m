@@ -1,110 +1,137 @@
 Return-Path: <SRS0=jBUr=5P=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Level: **
+X-Spam-Status: No, score=2.5 required=3.0 tests=CHARSET_FARAWAY_HEADER,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C1DB2C43331
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 Mar 2020 07:33:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 38E5DC43331
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 Mar 2020 07:36:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4DEC42073B
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 Mar 2020 07:33:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B6FAD20748
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 Mar 2020 07:36:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="g0retpWo";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LncIDrPv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4DEC42073B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="STSCqfwm";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="vBYD9mhO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B6FAD20748
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=samsung.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A43681675;
-	Mon, 30 Mar 2020 09:32:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A43681675
+	by alsa0.perex.cz (Postfix) with ESMTPS id 15EAA15F2;
+	Mon, 30 Mar 2020 09:35:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 15EAA15F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585553626;
-	bh=vNhoGYVnKuisCDVz0bKuroPgac3V2xsV4KBn5pZErMQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=g0retpWoKk3klCFwHeWvJKQHXzGQif1GkYC6sSTHREeRb+E9bkdgKEedfPFSx1xW0
-	 SqZ1FN6G6ORVnKaaX2qRjTKQAVRT/BBDNGYKlf48j0hNWYS6Zbh+IbHt7Dxitspm7g
-	 1ajj4OQOKn5gMtpIrLcNt4vJ2Qyz/Pc0VxFUIMMA=
+	s=default; t=1585553779;
+	bh=3c2k8bENq3mmuPPhJl0hBubHaLBFjokI2prnqp6hg4k=;
+	h=From:To:Subject:Date:References:Cc:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=STSCqfwmZ0yBTg3J06s3WzNEwYZCDYGciInpj9oErZpEkpOroYFbgVB+4tSBVWhKq
+	 Bg6q7WmuGf58/yPQsZX1EQjPik9sGwG+viwHY9LAmZzUIlE4kFNX9vLwQrpNmF8u1R
+	 MN3GJfr+XKSr99Q87cqzPXtdC+chTJ2d0yMuBqsw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E6D28F802A2;
-	Mon, 30 Mar 2020 09:31:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A9946F800AA;
+	Mon, 30 Mar 2020 09:35:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C344FF80299; Mon, 30 Mar 2020 09:30:47 +0200 (CEST)
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com
- [IPv6:2607:f8b0:4864:20::f41])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 44A44F80148; Mon, 30 Mar 2020 09:35:27 +0200 (CEST)
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BA985F8028C
- for <alsa-devel@alsa-project.org>; Mon, 30 Mar 2020 09:30:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA985F8028C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 67930F800AA
+ for <alsa-devel@alsa-project.org>; Mon, 30 Mar 2020 09:35:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67930F800AA
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="LncIDrPv"
-Received: by mail-qv1-xf41.google.com with SMTP id bu9so2406145qvb.13
- for <alsa-devel@alsa-project.org>; Mon, 30 Mar 2020 00:30:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=YSCR8aNaMptUVJblHXzimEhpdjR3BXiCbmHpK02W3lk=;
- b=LncIDrPvKfAaA0dhcA1CA6xSu37hTu7qLw8XmXxotN2+at1XgNjhyFv4Y4I7H4/w0W
- DAWchdINvtcWP8flC+eMYf6hCKTriOhJgVZYvRomEiET7v2tXpQaYI8hiIaCT9BAYkjm
- y7AaQcqmNHSoL5o3zCMd5He3nETzjhpQMyoi9L3oc+EqyuYRQupNNGTcOnnG06WfolPA
- +9cpmsf56FAWCiwrkrr7yeD2N1k1dV3ZFestnmeVy08IF22w8zrTD2/BNwb/2vDBqo3J
- KnbcuxptAesv8x2caZvZy32Jaia2ZCLtDj+TP2gM1PQgnmptCWo19XIPSadg4j/3+6m2
- gR9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=YSCR8aNaMptUVJblHXzimEhpdjR3BXiCbmHpK02W3lk=;
- b=H8ok8PovH797/HoPj8l1cUtRAjN/ZzL8yC5SdMT8esWQdQtFtMkwatCa98vvLjSYr0
- 4fdnSeSXGTnmma+sBGFY4erXxo4antAvnVm9XkKs0KNLtQlUMX9jfn3VznV/x1fKp5Bd
- bnl9msYgrtzba3rhg1bmUHmPCoJKKLoxN7ZSbX/KKl0NkHcOK9+4yUX0AU8N+T/BJwFG
- pzmWJqvUnor5Nb/Hr6g/F6JyLrufT3Qgj6PU8EGmEMnlrq3jNNL5e3VoJHsMovIOEh31
- Xz7GsPJ27YlMOAEepe/mRq/xKRmPRmVWkehOGZAiZpW3ybvyUPKzti7rsJKG1NaGOK4c
- ZW6g==
-X-Gm-Message-State: ANhLgQ1Qz8onzZII4Ml2LZrs8OUmEibQu8M857XQjkDcEV8nFxQCX7JR
- MgLBL6UivnsU7lba+XBHSkVELJp+NBik4A==
-X-Google-Smtp-Source: ADFU+vslCt+RBP2jHzxrwlc3lOO1Rt8opKMEjAVebM0NpBBzZdmUI5QhM+bbgTpwxrVgYbGYdpiuXA==
-X-Received: by 2002:a05:6214:118d:: with SMTP id
- t13mr10076777qvv.192.1585553440691; 
- Mon, 30 Mar 2020 00:30:40 -0700 (PDT)
-Received: from stingray.lan (pool-173-76-255-234.bstnma.fios.verizon.net.
- [173.76.255.234])
- by smtp.gmail.com with ESMTPSA id n63sm10078499qka.80.2020.03.30.00.30.39
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 30 Mar 2020 00:30:40 -0700 (PDT)
-From: Thomas Hebb <tommyhebb@gmail.com>
-To: alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.or
-Subject: [PATCH 2/3] ALSA: hda/realtek - Set principled PC Beep configuration
- for ALC256
-Date: Mon, 30 Mar 2020 03:30:31 -0400
-Message-Id: <d631643464d38603f6d672d9340a331f6a016a1c.1585553414.git.tommyhebb@gmail.com>
-X-Mailer: git-send-email 2.25.2
-In-Reply-To: <cover.1585553414.git.tommyhebb@gmail.com>
-References: <cover.1585553414.git.tommyhebb@gmail.com>
+ dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com
+ header.b="vBYD9mhO"
+Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
+ by mailout4.samsung.com (KnoxPortal) with ESMTP id
+ 20200330073517epoutp04298e8084588ade4d6c18642d28d3574e~BBLSErk0q0558005580epoutp04K
+ for <alsa-devel@alsa-project.org>; Mon, 30 Mar 2020 07:35:17 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com
+ 20200330073517epoutp04298e8084588ade4d6c18642d28d3574e~BBLSErk0q0558005580epoutp04K
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+ s=mail20170921; t=1585553717;
+ bh=SszRmXux7IRugv5j0/sOCKNLwMsdhf5W39E+comTlSE=;
+ h=From:To:Cc:Subject:Date:References:From;
+ b=vBYD9mhOx7aKM1wKYvV3Yy3VMSBIfbNn/NA9Hf1tBCkH338kpqgnfW/DgxqTHYJxh
+ wp8HVo8ChOQH2tBBmG4O5TuTQR+1aR+wKnLzm7YKuV7xm/QIyx/hJN2BsRaepPvrog
+ a5NBulDxCwL+6JhEsZHIxoJITBJDFygYCoe1D3+c=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+ epcas2p4.samsung.com (KnoxPortal) with ESMTP id
+ 20200330073516epcas2p43144ccced2855f49b391d72c3969a906~BBLRdiYYT1761517615epcas2p4S;
+ Mon, 30 Mar 2020 07:35:16 +0000 (GMT)
+Received: from epsmges2p2.samsung.com (unknown [182.195.40.185]) by
+ epsnrtp1.localdomain (Postfix) with ESMTP id 48rPPZ4XwbzMqYm0; Mon, 30 Mar
+ 2020 07:35:14 +0000 (GMT)
+Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
+ epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+ 52.A5.04142.031A18E5; Mon, 30 Mar 2020 16:35:12 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+ epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
+ 20200330073511epcas2p2dd0a6e9dca67734192f0d55b86104cbb~BBLM0DRZj1942719427epcas2p2r;
+ Mon, 30 Mar 2020 07:35:11 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+ epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+ 20200330073511epsmtrp21d8a9701cfa4926aa30b8759d3741397~BBLMylNVg0961209612epsmtrp28;
+ Mon, 30 Mar 2020 07:35:11 +0000 (GMT)
+X-AuditID: b6c32a46-3f9ff7000000102e-e0-5e81a130f545
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+ epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+ 16.CC.04024.F21A18E5; Mon, 30 Mar 2020 16:35:11 +0900 (KST)
+Received: from KORDO025540 (unknown [12.36.182.130]) by epsmtip2.samsung.com
+ (KnoxPortal) with ESMTPA id
+ 20200330073511epsmtip2ddc7aba5024782e3ec56480927a61f38~BBLMlAGNt2051720517epsmtip2h;
+ Mon, 30 Mar 2020 07:35:11 +0000 (GMT)
+From: =?ks_c_5601-1987?B?wMyw5sXD?= <gt82.lee@samsung.com>
+To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <tiwai@suse.com>
+Subject: [PATCH 0/3] fixes for topology
+Date: Mon, 30 Mar 2020 16:35:11 +0900
+Message-ID: <000d01d60665$be93a920$3bbafb60$@samsung.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Kailang Yang <kailang@realtek.com>,
- Tomas Espeleta <tomas.espeleta@gmail.com>,
- Sergey Bostandzhyan <jin@mediatomb.cc>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>,
- stable@vger.kernel.org, Hui Wang <hui.wang@canonical.com>,
- Thomas Hebb <tommyhebb@gmail.com>, Jian-Hong Pan <jian-hong@endlessm.com>,
- =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
- linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="ks_c_5601-1987"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AdYGYvyrH0qwNT3RQHyuZlUsr//4ow==
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTYRjHe3fOzo7W7LSsnvyQ85hFgbbNZmeh0kVkoZhRFIWoBz04cTfO
+ 2SyLYhWYNyK72tKulmVUU6y0G7ZJkpAZaHmhD6J+KNFCuxgsa+6s2Lff+7z///u8f56HxBTV
+ RARZaLZxvJk10kQo/sizZkOs6trRbFXnOMX0vnNLmHPDowTzo7dMwrh+3kObcL1r+hihb3N+
+ lOmbG8sJ/YOWPjwT32dMNHBsPscrOXOeJb/QXJBEp+3M2ZqjTVCpY9U6ZgOtNLMmLolOSc+M
+ TS00+nrSymLWaPeVMllBoNclJ/IWu41TGiyCLYnmrPlGq1ptjRNYk2A3F8TlWUwb1SqVRutT
+ 5hoN3+q+IGszfuC6h3egR1gFCiGBWg9f208TFSiUVFCtCF5OfUXiYQqBo9GNiYcfCJ48vfbf
+ cqfH62cF9RzBzIRNFH1C4Lxw1XdBkgS1Eaoq6TlNOLUZvr9y4HOMUVEw4q3182JqNZyoGSLm
+ GKdiYGbqk5/llA4aHe9lIi+C1xdHA14N1N+9IhE5Eh5P1Ab+o4RfY7ekYq84uD/eFdCHw6Xy
+ Un8AoFwE9Pe14aIhBRoGhpDIi+FzZ4tM5AiYnnxOiIbjCCbfeAMXZxGUVypEjoeWui7JXEig
+ oqFjMNAsDMo8v2ViWQ5lpQE1DU1dswE1wGVX4EE9eNynpKdQlDMopTMopTMopTMozVWEN6Kl
+ nFUwFXCCxqoJnnUz8q/j2tRWVN+d7kYUiegF8pqHjmyFlC0WSkxuBCRGh8uJ7b6SPJ8tOcjx
+ lhzebuQEN9L6plCNRSzJs/iW22zLUWs1CQkqnZbRJmgYepm8ef5AloIqYG1cEcdZOf6fT0KG
+ RDhQ2q7ohowMo/rwiv2zE6nLj+w+WmeRFoeTGeSZky8mtzHnhxd26eJdUZ52h8mbtfLDqtZZ
+ wxZb//74G2di9uT27pVtbcrLfbWDHXMs/dPdM/jW1tZhP5ievOfmvC/M+qbSQ6Ep0wtSbz/z
+ ap6F3aspWp55HOv7NjJeFRsSs4qPfIrxNC4YWPVajBfYv49Rjp6kAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrMLMWRmVeSWpSXmKPExsWy7bCSvK7+wsY4g/mzJC2uXDzEZDH14RM2
+ i29XOpgsNnxfy+jA4rHhcxObx85Zd9k9Nq3qZPNYv+UqSwBLFJdNSmpOZllqkb5dAlfGl7nv
+ GQs2sVQsOlzUwLiNuYuRk0NCwERi5YU/QDYXh5DAbkaJizNWMkEkJCQ+zD/DDmELS9xvOcIK
+ UfScUWLHtBMsXYwcHGwCVhI93UogNSICrhL39zaA1TMLKEo8/jOHBcQWFlCXaJ9xmw3EZhFQ
+ lfjx6SWYzStgKbGq4Ro7hC0ocXLmExaIXhOJxsPdULa8xPa3c6AOVZD4+XQZK8QuPYl1r09B
+ 1YhIzO5sY57AKDgLyahZSEbNQjJqFpKWBYwsqxglUwuKc9Nziw0LDPNSy/WKE3OLS/PS9ZLz
+ czcxgoNeS3MH4+Ul8YcYBTgYlXh4P2xviBNiTSwrrsw9xCjBwawkwsvmDxTiTUmsrEotyo8v
+ Ks1JLT7EKM3BoiTO+zTvWKSQQHpiSWp2ampBahFMlomDU6qBcdHtaTEnUiY/OmgdefXryx/x
+ zkeaX9Zd0lX+v9JlY7LeHfl1r8V8sw2PvfjU+iziTsLUpaqF1/5q7Zgb7zjxp8ukpwsuiznb
+ O9a3BNnEPaj7fjP155ECs/dmXVtkQmylVtX8l2S4P++J9R/vU9rirB2n5bIvv52zNiztDN/G
+ V+k+YVxndh3y+q3EUpyRaKjFXFScCADCQ4iYdgIAAA==
+X-CMS-MailID: 20200330073511epcas2p2dd0a6e9dca67734192f0d55b86104cbb
+X-Msg-Generator: CA
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200330073511epcas2p2dd0a6e9dca67734192f0d55b86104cbb
+References: <CGME20200330073511epcas2p2dd0a6e9dca67734192f0d55b86104cbb@epcas2p2.samsung.com>
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -120,100 +147,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The Realtek PC Beep Hidden Register[1] is currently set by
-patch_realtek.c in two different places:
+Hi,
 
-In alc_fill_eapd_coef(), it's set to the value 0x5757, corresponding to
-non-beep input on 1Ah and no 1Ah loopback to either headphones or
-speakers. (Although, curiously, the loopback amp is still enabled.) This
-write was added fairly recently by commit e3743f431143 ("ALSA:
-hda/realtek - Dell headphone has noise on unmute for ALC236") and is a
-safe default. However, it happens in the wrong place:
-alc_fill_eapd_coef() runs on module load and cold boot but not on S3
-resume, meaning the register loses its value after suspend.
+I'd like to submit couple of patches which will fix few problems
+in corner case scenarios using topology.
+Any feedback will be greatly appreciated.
 
-Conversely, in alc256_init(), the register is updated to unset bit 13
-(disable speaker loopback) and set bit 5 (set non-beep input on 1Ah).
-Although this write does run on S3 resume, it's not quite enough to fix
-up the register's default value of 0x3717. What's missing is a set of
-bit 14 to disable headphone loopback. Without that, we end up with a
-feedback loop where the headphone jack is being driven by amplified
-samples of itself[2].
+Lee
 
-This change eliminates the write in alc_fill_eapd_coef() and replaces
-the update in alc256_init() with a write of the fixed value 0x4727. This
-value ought to have the same behavior as 0x5757--disabling all PC Beep
-routing that isn't part of the HDA node graph--but it has two
-differences:
+Gyeongtaek Lee (3):
+  ASoC: dapm: connect virtual mux with default value
+  ASoC: topology: use name_prefix for new kcontrol
+  ASoC: fix regwmask
 
- 1. To enable non-beep input on 1Ah, the `b` field is set to 1, like the
-    previous code in alc256_init() used, instead of 2, like the value
-    written by alc_fill_eapd_coef() used. My testing shows these two
-    values to behave identically, but, in case there is a difference,
-    a bitwise update of the register seems like a more reliable source
-    of truth than a magic number written without explanation.
+ sound/soc/soc-dapm.c     | 11 ++++++++++-
+ sound/soc/soc-ops.c      |  4 ++--
+ sound/soc/soc-topology.c |  2 +-
+ 3 files changed, 13 insertions(+), 4 deletions(-)
 
- 2. Loopback amplification is disabled (unset L and R bits) because no
-    loopback path is in use.
 
-Affects the ALC255, ALC256, ALC257, ALC235, and ALC236 codecs.
-
-[1] Newly documented in Documentation/sound/hd-audio/realtek-pc-beep.rst
-
-[2] Setting the "Headphone Mic Boost" control from userspace changes
-this feedback loop and has been a widely-shared workaround for headphone
-noise on laptops like the Dell XPS 13 9350. This commit eliminates the
-feedback loop and makes the workaround unnecessary.
-
-Fixes: e3743f431143 ("ALSA: hda/realtek - Dell headphone has noise on unmute for ALC236")
-Cc: stable@vger.kernel.org
-Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
----
-
- sound/pci/hda/patch_realtek.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 63e1a56f705b..024dd61a788b 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -367,7 +367,9 @@ static void alc_fill_eapd_coef(struct hda_codec *codec)
- 	case 0x10ec0215:
- 	case 0x10ec0233:
- 	case 0x10ec0235:
-+	case 0x10ec0236:
- 	case 0x10ec0255:
-+	case 0x10ec0256:
- 	case 0x10ec0257:
- 	case 0x10ec0282:
- 	case 0x10ec0283:
-@@ -379,11 +381,6 @@ static void alc_fill_eapd_coef(struct hda_codec *codec)
- 	case 0x10ec0300:
- 		alc_update_coef_idx(codec, 0x10, 1<<9, 0);
- 		break;
--	case 0x10ec0236:
--	case 0x10ec0256:
--		alc_write_coef_idx(codec, 0x36, 0x5757);
--		alc_update_coef_idx(codec, 0x10, 1<<9, 0);
--		break;
- 	case 0x10ec0275:
- 		alc_update_coef_idx(codec, 0xe, 0, 1<<0);
- 		break;
-@@ -3269,7 +3266,13 @@ static void alc256_init(struct hda_codec *codec)
- 	alc_update_coefex_idx(codec, 0x57, 0x04, 0x0007, 0x4); /* Hight power */
- 	alc_update_coefex_idx(codec, 0x53, 0x02, 0x8000, 1 << 15); /* Clear bit */
- 	alc_update_coefex_idx(codec, 0x53, 0x02, 0x8000, 0 << 15);
--	alc_update_coef_idx(codec, 0x36, 1 << 13, 1 << 5); /* Switch pcbeep path to Line in path*/
-+	/*
-+	 * Expose headphone mic (or possibly Line In on some machines) instead
-+	 * of PC Beep on 1Ah, and disable 1Ah loopback for all outputs. See
-+	 * Documentation/sound/hd-audio/realtek-pc-beep.rst for details of
-+	 * this register.
-+	 */
-+	alc_write_coef_idx(codec, 0x36, 0x4727);
- }
- 
- static void alc256_shutup(struct hda_codec *codec)
+base-commit: 76ccd234269bd05debdbc12c96eafe62dd9a6180
 -- 
-2.25.2
+2.21.0
+
 
