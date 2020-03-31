@@ -2,121 +2,74 @@ Return-Path: <SRS0=BIX5=5Q=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E53F6C43331
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2020 12:16:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D01E3C43331
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2020 12:26:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7194120838
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2020 12:16:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5271420838
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2020 12:26:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dYqE113C";
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dgQu0q73"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7194120838
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="N+Xejai/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5271420838
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B9CC286F;
-	Tue, 31 Mar 2020 14:15:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9CC286F
+	by alsa0.perex.cz (Postfix) with ESMTPS id B684286F;
+	Tue, 31 Mar 2020 14:25:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B684286F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585656970;
-	bh=NuaVBr1UBqZLBmkZ15tLHVvRyGaeXNdRXGR3CYa75AY=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1585657603;
+	bh=lEz1klH4TymFRjb7lKYsi1k0Zi49pYdqaWSFWXTIeuk=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dYqE113C64CZyDLjjERmYrrpWWZjyol8DUyMLNan659p5GequnErLQ1R3NchxgWrB
-	 u88wocR3SEnkZSMOqlau3c+bTk6fDIHbiw5YuQfffrS6m8AdUS9+LkgiTGzm27Kk8t
-	 zyWLuLsnNM7wKXRJWB39Kneez4WmHk5qODjBxYJc=
+	b=N+Xejai/wSJ1eM5JTLjFgvim1t3btWomo+cSx/68tXI4BkL+yZ58HxZJZr/NgmmZh
+	 g8RJnWgVv+lVY6TXK4A4UwsewosBnLFKYlGAVBi9daanC7ll4XWqwwdvWuhnZfdYAV
+	 pK9p5e4zYUdE/Mph88ynht7cYpd5LSAcNW29ERag=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 41B58F80140;
-	Tue, 31 Mar 2020 14:15:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4219CF8010D;
+	Tue, 31 Mar 2020 14:25:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 54A29F8014F; Tue, 31 Mar 2020 14:15:19 +0200 (CEST)
-Received: from us-smtp-delivery-1.mimecast.com (us-smtp-1.mimecast.com
- [205.139.110.61])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5932BF80140
- for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2020 14:15:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5932BF80140
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="dgQu0q73"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1585656914;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=NuaVBr1UBqZLBmkZ15tLHVvRyGaeXNdRXGR3CYa75AY=;
- b=dgQu0q73mzMwzrmT0oYUn6sKFyCi2Dds0rCQQeVpuCL8aTN1gJZA+SDfrHAmoVDDfbEBP/
- 69J+yd8xRUWx1bi3jp3P9OF8gAAyOP2TZ6fj/Zc60khIDHBXScSB4KNdUHuEPjQWe8MUsj
- ZKIgjhGXzSg9DxFOHFGaRZnJN/joVQo=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-140-GYgLohZePz-cDBx_8fWG1w-1; Tue, 31 Mar 2020 08:15:09 -0400
-X-MC-Unique: GYgLohZePz-cDBx_8fWG1w-1
-Received: by mail-wr1-f69.google.com with SMTP id b2so12418228wrq.8
- for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2020 05:15:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=t29uoclohG4cpybZvS5VnvB8PfgsOPbrk0/Y1AsJJhM=;
- b=hSggQUkgqRYc7nAJ4nKXTfUZziy4LgLnDLWjH3+BN2hzjceYhHthA76cdQESymUCiK
- 0FKw+0OZE8ASLs0mZxJUdQ73RdGC7Y2ws7XGQdJFI0GmzuM7UfVPFM4gjdIoBfL844Sn
- Df/E2iig0Ii1UfmzKldQdmfB+i2ncb6gtsUONk4bmQfwZnvH9hagmVmQgTJdcSs6Ee04
- /40bjLoE0AI7rLIbG8621R+fdYF4XXhvGfkadmKgoG8sbyyQxwwnSHYQa8TmcrgTmyeR
- 3VE3Q+0U5lcGTkkmxs8Vrp9hdCJ0Pf6TZIbah+DjuG9BRR2xt1nJSFKm88a3WxNFmKsi
- jsOw==
-X-Gm-Message-State: ANhLgQ2aNWg33AfnXe5Ql+H4J+ff5D1J5v6/O4H14XmtO+GxCNrSFSRi
- njDnFzT3iV/58T4fZqeXFPFfVNDHGWXyFVeU1YNPnEMR72myluQldvrTRUvG4G2BvRF+FVlblAA
- Ani08lptMQ/5NE09QHKQpqGk=
-X-Received: by 2002:adf:ed88:: with SMTP id c8mr13403472wro.118.1585656907920; 
- Tue, 31 Mar 2020 05:15:07 -0700 (PDT)
-X-Google-Smtp-Source: ADFU+vvgGq2/6PQcCtvfEOn2kQTy2Xqq3V9LHCi+qVOAH7YiLn6ZAOttI7XEbQuB0lTy19gfV3s5zg==
-X-Received: by 2002:adf:ed88:: with SMTP id c8mr13403445wro.118.1585656907678; 
- Tue, 31 Mar 2020 05:15:07 -0700 (PDT)
-Received: from x1.localdomain
- (2001-1c00-0c0c-fe00-fc7e-fd47-85c1-1ab3.cable.dynamic.v6.ziggo.nl.
- [2001:1c00:c0c:fe00:fc7e:fd47:85c1:1ab3])
- by smtp.gmail.com with ESMTPSA id b6sm27682304wrp.59.2020.03.31.05.15.06
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 31 Mar 2020 05:15:07 -0700 (PDT)
-Subject: Re: [PATCH 3/4] ASoC: Intel: bdw-rt5677: Remove ignore_suspend flag
- from SSP0 dai link
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
-References: <20200319204947.18963-1-cezary.rojewski@intel.com>
- <20200319204947.18963-4-cezary.rojewski@intel.com>
- <dea20cf7-f324-a933-8f8e-e70a4dffa249@linux.intel.com>
- <259cbb60-9e59-1132-8371-83f837577f86@redhat.com>
- <cfb3612e-e453-526d-8351-9167f26fecca@linux.intel.com>
-From: Hans de Goede <hdegoede@redhat.com>
-Message-ID: <688bd1e5-c481-ea1a-8c3f-9cd8792a7430@redhat.com>
-Date: Tue, 31 Mar 2020 14:15:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+ id 82E45F80146; Tue, 31 Mar 2020 14:25:51 +0200 (CEST)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id E6C62F8010D;
+ Tue, 31 Mar 2020 14:25:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6C62F8010D
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7EB9A31B;
+ Tue, 31 Mar 2020 05:25:42 -0700 (PDT)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 020F63F68F;
+ Tue, 31 Mar 2020 05:25:42 -0700 (PDT)
+Date: Tue, 31 Mar 2020 13:25:40 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Daniel Baluta <daniel.baluta@oss.nxp.com>
+Subject: Re: [PATCH 2/5] ASoC: SOF: imx: fix undefined reference issue
+Message-ID: <20200331122540.GD4802@sirena.org.uk>
+References: <20200319194957.9569-1-daniel.baluta@oss.nxp.com>
+ <20200319194957.9569-3-daniel.baluta@oss.nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <cfb3612e-e453-526d-8351-9167f26fecca@linux.intel.com>
-Content-Language: en-US
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Curtis Malainey <cujomalainey@google.com>, tiwai@suse.com,
- Dominik Brodowski <linux@dominikbrodowski.net>, lgirdwood@gmail.com,
- vkoul@kernel.org, broonie@kernel.org, Ben Zhang <benzh@google.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="sXc4Kmr5FA7axrvy"
+Content-Disposition: inline
+In-Reply-To: <20200319194957.9569-3-daniel.baluta@oss.nxp.com>
+X-Cookie: It's later than you think.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: linux-arm-kernel@lists.infradead.org, pierre-louis.bossart@linux.intel.com,
+ daniel.baluta@gmail.com, Daniel Baluta <daniel.baluta@nxp.com>,
+ kai.vehmanen@linux.intel.com, devicetree@vger.kernel.org, festevam@gmail.com,
+ s.hauer@pengutronix.de, yuehaibing@huawei.com,
+ ranjani.sridharan@linux.intel.com, krzk@kernel.org, lgirdwood@gmail.com,
+ robh+dt@kernel.org, linux-imx@nxp.com, kernel@pengutronix.de,
+ alsa-devel@alsa-project.org, shawnguo@kernel.org, linux-kernel@vger.kernel.org,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -132,55 +85,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
 
-On 3/31/20 1:49 AM, Pierre-Louis Bossart wrote:
->=20
->>> Btw the .ignore_suspend is also set in bytcr_rt5640/51 drivers, so wond=
-ering if additional devices are broken, or if there's something off about B=
-roadwell in general. Hans, have you heard of any regressions on Baytrail de=
-vices?
->>
->> I've just tested 5.6.0 on Bay Trail + a rt5651 codec,
->> using the bytcr_rt5651 machine driver which sets
->> ignore_suspend, as well as on a Cherry Trail + rt5645
->> device using the chtrt5645 machine driver which does
->> _not_ set ignore suspend.
->>
->> Suspend/resume work fine on both and music playing
->> before suspend continues playing after suspend.
->=20
-> Thanks for testing Hans.
->=20
-> I think we should remove those .ignore_suspend from all Baytrail/Cherrytr=
-ail drivers, no one ever enabled advanced power management except in very s=
-pecific Android distributions that are no longer maintained.
+--sXc4Kmr5FA7axrvy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I agree, I believe I even submitted patches for that a couple
-of years ago, but back then I think there was still some
-hope to get S0i1 playback to work so the patches where
-not accepted.
+On Thu, Mar 19, 2020 at 09:49:54PM +0200, Daniel Baluta wrote:
+> From: Daniel Baluta <daniel.baluta@nxp.com>
 
->> Note that the bytcr_rt5651 machine driver also does:
->>
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 snd_soc_dapm_ignore_sus=
-pend(&card->dapm, "Headphone");
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 snd_soc_dapm_ignore_sus=
-pend(&card->dapm, "Speaker");
->>
->> Which the bdw-rt5677 seems to not do...
->=20
->=20
-> On the bytcr_rt5661, these two lines were added in the initial code in 20=
-16, and it's also part of the legacy byt-rt5640, so it's likely a copy/past=
-e more than a feature added on purpose.
+> Fixes: f9ad75468453 ("ASoC: SOF: imx: fix reverse CONFIG_SND_SOC_SOF_OF
+> dependency")
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
 
-Could be, we should probably also drop those 2 calls together
-with dropping the setting of the ignore_suspend flag.
+This has you as the author but you list a signoff by Pierre before you?
 
-Regards,
+--sXc4Kmr5FA7axrvy
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Hans
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6DNsMACgkQJNaLcl1U
+h9AAewf/SRLQsBBj6wlAv5rhKMVQLnmnQY5R9scerh2jz6AEv/pHxINQd4zTWjnh
+pIhrebacgZCwofsY/n31xPI/thHIHJIo4bqgKIQs85UkXwCVHXXctSlyWKPsQz7y
+yuwX5Wp7Yamg32an6JuCQo3KCVC5kZt9TMT36nkVKSyhdxmVAkDj7x78EjJRPBTV
+1kvi+UzHvDghla+wt2olnvA5KfhNc2SlMi7hDBPtXAEnHr3XDwVoeDxIwobdLC4j
+KK0gxmGaHrmB5darIqDjRJeRiG9uzurATnY2GJREkJHgOnRV3mZkeOeQ4yFMoAvG
+iJphl8WUXrpNLg0rdwTMnxFHXL4fPg==
+=aJV2
+-----END PGP SIGNATURE-----
 
-
+--sXc4Kmr5FA7axrvy--
