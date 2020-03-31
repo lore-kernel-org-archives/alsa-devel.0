@@ -6,80 +6,81 @@ X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 441E7C43331
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2020 20:01:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BA96BC43331
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2020 20:02:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BFC2820842
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2020 20:01:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4B37A20658
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2020 20:02:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MJrW3hso"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BFC2820842
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Whc6c+j2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4B37A20658
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 153EA886;
-	Tue, 31 Mar 2020 22:00:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 153EA886
+	by alsa0.perex.cz (Postfix) with ESMTPS id A7D261654;
+	Tue, 31 Mar 2020 22:01:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A7D261654
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585684891;
-	bh=zvJLZ1Yiyd3wNasFIHUvdsiN9vMWVMooFuGGJBtZzKU=;
+	s=default; t=1585684947;
+	bh=o4swV1vDj7xy+g2oomhyj2u5Kn0oFiLjBvW+QPxd+hw=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MJrW3hsoZSzvQavrc/HW3lIU3uEfWBYQats+DVzlEw5a9TSgAE12xgh6bUbkBlX1a
-	 9y8fcB4A4l1gR82cKxjWo1EL8aThbnP8NFImxfwhtm/9MpfXuuTQfTwE7PZOOulfD7
-	 DOfSm3bjFnlWZ0PIbtRZeExPQ1Mqka2PX3pzrX7c=
+	b=Whc6c+j2jUuCP5p85K26XyVpaLcVoKTxviqesN+HTfsXLzZj8+a8HJfzFziLck4Ji
+	 1g08FM9XWV23iLXxLfwIzzNCLjOq/necEeO0lg48gT3sszuc9xOwMCkC0cKRP4clZV
+	 yreWqPloK+SQJC73o0AxAu5NLU37ASM8+CEQK/5o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3F6D5F8010D;
-	Tue, 31 Mar 2020 22:00:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 01EABF8014F;
+	Tue, 31 Mar 2020 22:01:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B27BAF80146; Tue, 31 Mar 2020 22:00:36 +0200 (CEST)
+ id 00AA4F80157; Tue, 31 Mar 2020 22:01:35 +0200 (CEST)
 Received: from mail-io1-f67.google.com (mail-io1-f67.google.com
  [209.85.166.67])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9DE88F8010D
- for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2020 22:00:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9DE88F8010D
-Received: by mail-io1-f67.google.com with SMTP id h131so23112642iof.1
- for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2020 13:00:33 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2D982F800AA
+ for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2020 22:01:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D982F800AA
+Received: by mail-io1-f67.google.com with SMTP id h131so23115994iof.1
+ for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2020 13:01:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to:user-agent;
- bh=s9DFvHioEqxQs6sviOj1Sm2a5WFW4fOhlT5MmKmuEBU=;
- b=OKpyHAMV0VNjJg/T16H7HK7gFvxhMjGBeUaYar/p/eVe+jrLkrqQjtGdDVzoHfCdPy
- OZBffQ0RmOknJ9rCt6r3t9cvBYnAaAKsZKB6W3AGkwSYRGOXzrnRcHXi5uCWvQFp7DTV
- j4ZSljC48CX7lwd41spUXj5zZTi9W9e/bqhkjN3O/SQp3tRn6yb9MbqeQ8lULMLqAzR0
- X1CRFqXiguFzDFH5T3Do2c44Lh+FiXkS3ImCj9d+wmIofGFmMEQ03DCoWl++uuv4G8+u
- sxZW9hheOMcdJ4YPe6yagmH5bdo++wVqpImG06UsGIchvMJm1jHQFTTdickJZgPl0aFS
- 7rZg==
-X-Gm-Message-State: ANhLgQ0e311ZYCqpMXMxhBItdofOdVzgsgwbk8VD87ngrU2ZgAuM8+tz
- CL3dfkrVOEo+6L5A+UnXSw==
-X-Google-Smtp-Source: ADFU+vvHXBGG9b+jJlsNae2tD54vi6RyRFIDg9NuHSbI3xqW9sGB/or7YPwGuRQfIT0By0v/er67tg==
-X-Received: by 2002:a5d:8b57:: with SMTP id c23mr17020954iot.161.1585684831803; 
- Tue, 31 Mar 2020 13:00:31 -0700 (PDT)
+ bh=vkxxip8s1ZW0GnbenbnFeoJyggUhdVdybES6+NRkTls=;
+ b=BWe2rwd8nNgD4f8cMGQ5OWCyRZLrFc1YokxyBP2gyTUQohLYG473lnRVtTWt3Qu2dp
+ 6Zo5OQq//af0EgZjAUxBoZf3WxOPszQ+W2ZDRivnXDzdoXUaFvVVyBGkk9vijTjyXATK
+ y/6Z/2a4kL/mpIlRZ1RPx1oZj0AsBXiWL7wHi7YpD0J4jEdW1e3WJiu72yxI6lB7LOdz
+ 6UZTqTiX8gJKbHgI0X6ZSYBxOX3ns+NT9WDWx6//qItV59LKsH6PuhzTbHB5M0z5kVpA
+ L6ywBkCRYsZ9TO1wNEJ7+FKYKmUwvAfstGtUBV2s5X6FWWcpHFicJI04/n5NqV3Z83VU
+ yN/g==
+X-Gm-Message-State: ANhLgQ33SPFpp77S6Ao9In7jnhgqjnJ6xQdmqOdLcjuCxaCWVwy2VbsO
+ tRfSXwtGIyuI7voOVbyaFQ==
+X-Google-Smtp-Source: ADFU+vvBejlhKFx9aVEK9Es2UC6IoLSf1k2SdAYxRxDFr5MBW3pEn/d1O633AZt6lRcbhYJICsvimw==
+X-Received: by 2002:a02:2505:: with SMTP id g5mr15167286jag.114.1585684891883; 
+ Tue, 31 Mar 2020 13:01:31 -0700 (PDT)
 Received: from rob-hp-laptop ([64.188.179.250])
- by smtp.gmail.com with ESMTPSA id p69sm5718490ill.46.2020.03.31.13.00.29
+ by smtp.gmail.com with ESMTPSA id h29sm6197193ili.19.2020.03.31.13.01.30
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 31 Mar 2020 13:00:29 -0700 (PDT)
-Received: (nullmailer pid 5074 invoked by uid 1000);
- Tue, 31 Mar 2020 20:00:28 -0000
-Date: Tue, 31 Mar 2020 14:00:28 -0600
+ Tue, 31 Mar 2020 13:01:30 -0700 (PDT)
+Received: (nullmailer pid 6517 invoked by uid 1000);
+ Tue, 31 Mar 2020 20:01:29 -0000
+Date: Tue, 31 Mar 2020 14:01:29 -0600
 From: Rob Herring <robh@kernel.org>
 To: Johan Jonker <jbx6244@gmail.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: sound: convert rockchip spdif
- bindings to yaml
-Message-ID: <20200331200028.GA5018@bogus>
+Subject: Re: [PATCH v2 2/3] dt-bindings: sound: rockchip-spdif: add
+ #sound-dai-cells property
+Message-ID: <20200331200129.GA6458@bogus>
 References: <20200324123155.11858-1-jbx6244@gmail.com>
+ <20200324123155.11858-2-jbx6244@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200324123155.11858-1-jbx6244@gmail.com>
+In-Reply-To: <20200324123155.11858-2-jbx6244@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, heiko@sntech.de,
  lgirdwood@gmail.com, robh+dt@kernel.org, linux-kernel@vger.kernel.org,
@@ -100,28 +101,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 24 Mar 2020 13:31:53 +0100, Johan Jonker wrote:
-> Current dts files with 'spdif' nodes are manually verified.
-> In order to automate this process rockchip-spdif.txt
-> has to be converted to yaml.
-> 
-> Also rk3188.dtsi, rk3288.dtsi use an extra fallback string,
-> so change this in the documentation.
-> 
-> Changed:
-> "rockchip,rk3188-spdif", "rockchip,rk3066-spdif"
-> "rockchip,rk3288-spdif", "rockchip,rk3066-spdif"
+On Tue, 24 Mar 2020 13:31:54 +0100, Johan Jonker wrote:
+> '#sound-dai-cells' is required to properly interpret
+> the list of DAI specified in the 'sound-dai' property,
+> so add them to 'rockchip-spdif.yaml'
 > 
 > Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 > ---
-> Changed V2:
->   dmas and dma-names layout
-> ---
->  .../devicetree/bindings/sound/rockchip-spdif.txt   | 45 -----------
->  .../devicetree/bindings/sound/rockchip-spdif.yaml  | 94 ++++++++++++++++++++++
->  2 files changed, 94 insertions(+), 45 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/sound/rockchip-spdif.txt
->  create mode 100644 Documentation/devicetree/bindings/sound/rockchip-spdif.yaml
+>  Documentation/devicetree/bindings/sound/rockchip-spdif.yaml | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
