@@ -6,81 +6,69 @@ X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 37D2DC43331
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2020 11:45:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE9F9C43331
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2020 11:53:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A102C206DB
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2020 11:45:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5B1A820848
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2020 11:53:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="A5XVhEIm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A102C206DB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GAD4z6p2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5B1A820848
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=flatmax.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0157D14E;
-	Tue, 31 Mar 2020 13:44:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0157D14E
+	by alsa0.perex.cz (Postfix) with ESMTPS id A038D86F;
+	Tue, 31 Mar 2020 13:52:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A038D86F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585655148;
-	bh=BWVdIKxNWAYvEAK/BNCqZmthgu/QPHPv20FLhyYumc0=;
+	s=default; t=1585655602;
+	bh=KNKWejapKLE0KFqV9Eo8yhrRafvvMtl1tvP0/l0z4i0=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=A5XVhEImsUifsjlds1J3W91iIjEjhZLneg+voMrkV6Vy6pP4iYeXmh4bdoh5ErIO1
-	 yuzS3hhRQcFn8s9gpya1WgVd0POhaSc9CZW4Rd0gYPsbkf+tERjebuiSdA3dRzx1Ty
-	 ho3TCjouWbNmajjTd5pGhEr1ksfWmV4swoNntwXk=
+	b=GAD4z6p2O4zl+3w8JqpHDqFWn+YbFTWVPGkz6I0S4blk8KD6O+oT/uebtg+OohrUr
+	 NGJglnAguo7M2coIwiIEyZ1DqO+P7Z4og9eGAUySa/3rV/j8aSf849HhQwcIEzkv9a
+	 e4LymSRfVN4jMZmRtAkQ6QUMdBZknEMIX5/sEhYQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 81CC6F80140;
-	Tue, 31 Mar 2020 13:44:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1C271F80140;
+	Tue, 31 Mar 2020 13:52:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0D336F80146; Tue, 31 Mar 2020 13:44:55 +0200 (CEST)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ id 1BC82F80146; Tue, 31 Mar 2020 13:52:29 +0200 (CEST)
+Received: from mx.flatmax.org (mx.flatmax.org [13.55.16.222])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 33106F8010C
- for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2020 13:44:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33106F8010C
-IronPort-SDR: yYcMqNW6XX4Y9ISr1lGQ5n0MF0SV9CyBqiRH0QCZGZgXa331Zh/wAEIYDR/Sc/Rkh+xBXDB5SQ
- bunt1kH4XCAQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Mar 2020 04:44:49 -0700
-IronPort-SDR: bJpfy/KMn0DWCI1YRBwNRIsKjnf1hj9+ubL+8M37duUSoKL8gQjUmMTxoqWR7oqBadrTdz+Cni
- X2bh7PvtSqOA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,327,1580803200"; d="scan'208";a="240100576"
-Received: from kmariste-mobl.amr.corp.intel.com (HELO [10.212.248.138])
- ([10.212.248.138])
- by fmsmga007.fm.intel.com with ESMTP; 31 Mar 2020 04:44:47 -0700
-Subject: Re: [PATCH 3/4] ASoC: Intel: bdw-rt5677: Remove ignore_suspend flag
- from SSP0 dai link
-To: Cezary Rojewski <cezary.rojewski@intel.com>,
- Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org
-References: <20200319204947.18963-1-cezary.rojewski@intel.com>
- <20200319204947.18963-4-cezary.rojewski@intel.com>
- <dea20cf7-f324-a933-8f8e-e70a4dffa249@linux.intel.com>
- <259cbb60-9e59-1132-8371-83f837577f86@redhat.com>
- <9f1884b4-e356-9a8f-6912-0d55c4bcbf06@intel.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <a48d48cb-ab02-1213-88b9-431109e4b468@linux.intel.com>
-Date: Tue, 31 Mar 2020 05:54:44 -0500
+ by alsa1.perex.cz (Postfix) with ESMTPS id 51DEEF8010D
+ for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2020 13:52:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51DEEF8010D
+Received: from 41.68.233.220.static.exetel.com.au ([220.233.68.41]
+ helo=[192.168.1.50])
+ by mx.flatmax.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+ (Exim 4.89) (envelope-from <flatmax@flatmax.org>)
+ id 1jJFRJ-0004IL-Dp; Tue, 31 Mar 2020 22:52:17 +1100
+Subject: Re: [PATCH] ASoC: snd_soc_dai_set_fmt add substream independence.
+To: Mark Brown <broonie@kernel.org>
+References: <20200328015831.6230-1-flatmax@flatmax.org>
+ <20200330103213.GA4792@sirena.org.uk>
+ <3c00bf93-04a8-04af-e0b5-d0f76f5dbb06@flatmax.org>
+ <20200330163142.GI4792@sirena.org.uk>
+ <98c3a94a-9020-9a34-7bdf-0ce504573f79@flatmax.org>
+ <20200331111348.GA4802@sirena.org.uk>
+From: Matt Flax <flatmax@flatmax.org>
+Message-ID: <b09ca467-ac7a-d3b3-c76e-cd76aa70050d@flatmax.org>
+Date: Tue, 31 Mar 2020 22:52:17 +1100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <9f1884b4-e356-9a8f-6912-0d55c4bcbf06@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <20200331111348.GA4802@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Curtis Malainey <cujomalainey@google.com>, tiwai@suse.com,
- Dominik Brodowski <linux@dominikbrodowski.net>, lgirdwood@gmail.com,
- vkoul@kernel.org, broonie@kernel.org, Ben Zhang <benzh@google.com>
+Content-Language: en-US
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com,
+ pierre-louis.bossart@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,21 +85,35 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-> Don't believe WoV for WPT has been added for SST linux so 
-> .ignore_suspend=1 achieves nothing. The offload part is probably just 
-> limited to bigger buffer size compared to system pin than anything else. 
-> So, nothing prevents from removing .ignore_suspend for SST solutions 
-> until WoV is verified. Don't know about SOF side.
-> Pierre, what's your take on this?
+On 31/3/20 10:13 pm, Mark Brown wrote:
+> On Tue, Mar 31, 2020 at 06:40:26PM +1100, Matt Flax wrote:
 
-I think on Baytrail and Broadwell we will most likely never enable 
-hotwording on the Intel DSP, and S0i1-Playback isn't planned either.
+>>> No, my advice is to go down that route if you are doing this.  I'm just
+>>> not convinced that it's going to work reliably since this all sounds
+>>> rather shaky.
+>> OK - I can try to go down that route. However I would like to confirm that
+>> having a codec to codec link doesn't require the original codec or CPU
+>> drivers to have separate DAIs for playback and capture ? In my case both the
+>> CPU and Codec drivers have single DAIs for both streams.
+> OK, that probably won't help then :/
 
-However hotwording is enabled on the RT5677 and there may be clocking 
-dependencies so that the RT5677 remains operational - at least the mclk 
-needs to be on, so the bdw-rt5677 case probably needs more work.
 
-While I am at it, I think the notion of .ignore_suspend has an 
-assumption baked in. It will work if the only suspend mode is S0i1. If 
-the platform can choose between S0i1 and S3, then we would still want to 
-suspend all paths in S3, which currently isn't really possible.
+OK - well, the codec approach was worth a try. My concerns with the 
+codec API is that it chews resources and clock cycles - if it is 
+possible to work around it, then it is a good idea.
+
+I feel that the best way to reduce resource consumption, complexity and 
+overhead is to allow link formats to be defined based on the stream 
+direction.
+
+I can see why we would want different DAIs if the sample rate is 
+asymmetric, however for word alignment perhaps we should let the stream 
+direction seep into the snd_soc_dai opertions. These days CPU and Codec 
+designers seem to treat both streams independently, which is why their 
+registers can be independently configured.
+
+
+thanks for the discussion
+
+Matt
+
