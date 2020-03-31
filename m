@@ -2,71 +2,81 @@ Return-Path: <SRS0=BIX5=5Q=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 85C1DC43331
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2020 13:19:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80ADCC43331
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2020 14:23:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F325A20578
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2020 13:19:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0AACF207FF
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2020 14:23:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="T5Iq7ApH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F325A20578
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="osGnrhi+";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=axis.com header.i=@axis.com header.b="K9wAvzYp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0AACF207FF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=axis.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 94AFD1607;
-	Tue, 31 Mar 2020 15:18:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94AFD1607
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3D314886;
+	Tue, 31 Mar 2020 16:23:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D314886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585660776;
-	bh=0/pzuXErb+0KkvBO+E2ZTaoF5Zls9Ls0iUiUcCffoMI=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=T5Iq7ApHDBzoCZqeyIrzlfegSLnDwZsw2nYNudM8m59ZFPB8Iv0KReDPzVMvUn75q
-	 EzNdNYnD1hkvnIwJOi8STo2BNdhe6R91DfESM2Ry6sewdzSPEPbjc/iPrtkEvm0q3p
-	 qWUqbmbh9TZya2m1typj9+/r3mlUqB0W4JI0n8KQ=
+	s=default; t=1585664637;
+	bh=o0uVieHAL8ikmDvOI1+JWG09VQfiqlxvKn2sJ+dsew4=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=osGnrhi+axaLd4fomdGKeYT8hza4uvPdAJmImLQHZLpcj2PbZFzdxYEPZxIWzc+Rw
+	 Te6Sdi8YC/UjgzeJiAsr/sCm7yHKdeOB1Y++a26FiPXTXifvUjC8oCVRjuwXN6Luq7
+	 N+06qyq5sCNzu7CYjrsUdVRHNKp0eupyOhJgLSNk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 138AFF80140;
-	Tue, 31 Mar 2020 15:18:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B2E4FF80140;
+	Tue, 31 Mar 2020 16:23:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 874B6F80146; Tue, 31 Mar 2020 15:18:44 +0200 (CEST)
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
+ id DAC11F80146; Tue, 31 Mar 2020 16:23:04 +0200 (CEST)
+Received: from smtp1.axis.com (smtp1.axis.com [195.60.68.17])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 395A7F800AA
- for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2020 15:18:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 395A7F800AA
-Received: from [222.130.137.59] (helo=[192.168.2.112])
- by youngberry.canonical.com with esmtpsa
- (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
- (envelope-from <hui.wang@canonical.com>)
- id 1jJGmp-0002G4-HN; Tue, 31 Mar 2020 13:18:36 +0000
-Subject: Re: [PATCH] ALSA: hda/realtek - a fake key event is triggered by
- running shutup
-To: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- tiwai@suse.de, stable@vger.kernel.org
-References: <20200329080642.20287-1-hui.wang@canonical.com>
- <20200331131130.0A72620757@mail.kernel.org>
-From: Hui Wang <hui.wang@canonical.com>
-Message-ID: <67aedfb4-a7c0-7127-b468-99e302863053@canonical.com>
-Date: Tue, 31 Mar 2020 21:18:21 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id BEB77F8010D
+ for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2020 16:22:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BEB77F8010D
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=axis.com header.i=@axis.com
+ header.b="K9wAvzYp"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=axis.com; l=5965; q=dns/txt; s=axis-central1;
+ t=1585664579; x=1617200579;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=2uaSjmOmqzsYAIE9pdvQQOmO7DE0AyPRkbost72PuMU=;
+ b=K9wAvzYppwJ22PifoEYEtF5dfzeXPwFJ7BE6NCuqoErVfuVGKEWWkmGL
+ pjyG2NE0eAZvh/W0dtDkIp7fdNlXaSL2r97dJqjqsWUFBxFgZMFGnLCCy
+ O/+W2de12gY9lb75wmvuiWWoFMTWrNj0a64yTRoypsgogyhOqP1yeLVo8
+ AzX9CJdvZ3xP+28z87/w452LgusNjiTKeD8gXS3wTlmAaxqThnqTpsAHl
+ zv01vXFTMKIvE5Qr8QDqCFAyG2VXPDvm8Fnc+/thjwuieLsS7dvZt5s9D
+ 0GAPMIrU8ePUklf07FpwlX6UNG7N2srwVtoeeAXOmByPtGD8Ad4zQc/mh g==;
+IronPort-SDR: 6HLbwj18BFqgVkYd3XfFQp1C83ATwgtnCA2VThg0RQotOg7ujGRjjG4HynfQtrh/40z9DkKBp5
+ W46NXR2BamEgNpS2SapfrP/QokF53HUpbb+Z0H8zpSYJJnZH1t1Kpk1mj0Dk90Obj/8hrQenXY
+ pIymNQrsQq0GddkAm+z3Upllozr0p71QFGD3s5ffamj51goYPLJR/fxInc6no/Fk+6S0zmyZOE
+ nH3tR2z7njUOAWAeai3MZ1k+S7hucs7JFx6ADbudL+lWMQkclTwc8MZe++Q5suDP0Pzx2u/lvq
+ 9zY=
+X-IronPort-AV: E=Sophos;i="5.72,328,1580770800"; 
+   d="scan'208";a="7161660"
+From: <jonashg@axis.com>
+To: <tiwai@suse.de>
+Subject: [PATCH] pcm: add chmap option to route plugin
+Date: Tue, 31 Mar 2020 16:22:55 +0200
+Message-ID: <20200331142255.786462-1-jonashg@axis.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-In-Reply-To: <20200331131130.0A72620757@mail.kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-Cc: Kailang Yang <kailang@realtek.com>
+Content-Type: text/plain
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,37 +92,215 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Jonas Holmberg <jonashg@axis.com>
 
-On 2020/3/31 下午9:11, Sasha Levin wrote:
-> Hi
->
-> [This is an automated email]
->
-> This commit has been processed because it contains a "Fixes:" tag
-> fixing commit: 78def224f59c ("ALSA: hda/realtek - Add Headset Mic supported").
->
-> The bot has tested the following trees: v5.5.13, v5.4.28, v4.19.113.
->
-> v5.5.13: Build OK!
-> v5.4.28: Build OK!
-> v4.19.113: Failed to apply! Possible dependencies:
->      10f5b1b85ed1 ("ALSA: hda/realtek - Fixed Headset Mic JD not stable")
->      2b3b6497c38d ("ALSA: hda/realtek - Add more codec supported Headset Button")
->      8983eb602af5 ("ALSA: hda/realtek - Move to ACT_INIT state")
->      c8a9afa632f0 ("ALSA: hda/realtek: merge alc_fixup_headset_jack to alc295_fixup_chromebook")
->      d3ba58bb8959 ("ALSA: hda/realtek - Support low power consumption for ALC295")
->      e854747d7593 ("ALSA: hda/realtek - Enable headset button support for new codec")
->
->
-> NOTE: The patch will not be queued to stable trees until it is upstream.
->
-> How should we proceed with this patch?
+Add a config definition "chmap" to override the channel maps in the same
+way as in the hw and null plugins.
 
-Please apply this patch to v5.5.13 and v5.4.28. Drop this patch from 
-v4.19.113.
+Signed-off-by: Jonas Holmberg <jonashg@axis.com>
+---
+ src/pcm/pcm_route.c | 57 +++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 47 insertions(+), 10 deletions(-)
 
-thanks.
+diff --git a/src/pcm/pcm_route.c b/src/pcm/pcm_route.c
+index bbcc6118..a7b6552c 100644
+--- a/src/pcm/pcm_route.c
++++ b/src/pcm/pcm_route.c
+@@ -104,6 +104,7 @@ typedef struct {
+ 	int schannels;
+ 	snd_pcm_route_params_t params;
+ 	snd_pcm_chmap_t *chmap;
++	snd_pcm_chmap_query_t **chmap_override;
+ } snd_pcm_route_t;
+ 
+ #endif /* DOC_HIDDEN */
+@@ -441,6 +442,7 @@ static int snd_pcm_route_close(snd_pcm_t *pcm)
+ 		free(params->dsts);
+ 	}
+ 	free(route->chmap);
++	snd_pcm_free_chmaps(route->chmap_override);
+ 	return snd_pcm_generic_close(pcm);
+ }
+ 
+@@ -634,6 +636,9 @@ static snd_pcm_chmap_t *snd_pcm_route_get_chmap(snd_pcm_t *pcm)
+ 	snd_pcm_chmap_t *map, *slave_map;
+ 	unsigned int src, dst, nsrcs;
+ 
++	if (route->chmap_override)
++		return _snd_pcm_choose_fixed_chmap(pcm, route->chmap_override);
++
+ 	slave_map = snd_pcm_generic_get_chmap(pcm);
+ 	if (!slave_map)
+ 		return NULL;
+@@ -660,8 +665,14 @@ static snd_pcm_chmap_t *snd_pcm_route_get_chmap(snd_pcm_t *pcm)
+ 
+ static snd_pcm_chmap_query_t **snd_pcm_route_query_chmaps(snd_pcm_t *pcm)
+ {
++	snd_pcm_route_t *route = pcm->private_data;
+ 	snd_pcm_chmap_query_t **maps;
+-	snd_pcm_chmap_t *map = snd_pcm_route_get_chmap(pcm);
++	snd_pcm_chmap_t *map;
++
++	if (route->chmap_override)
++		return _snd_pcm_copy_chmap_query(route->chmap_override);
++
++        map = snd_pcm_route_get_chmap(pcm);
+ 	if (!map)
+ 		return NULL;
+ 	maps = _snd_pcm_make_single_query_chmaps(map);
+@@ -818,10 +829,10 @@ err:
+ 	return -EINVAL;
+ }
+ 
+-static int find_matching_chmap(snd_pcm_t *spcm, snd_pcm_chmap_t *tt_chmap,
++static int find_matching_chmap(snd_pcm_chmap_query_t **chmaps,
++			       snd_pcm_chmap_t *tt_chmap,
+ 			       snd_pcm_chmap_t **found_chmap, int *schannels)
+ {
+-	snd_pcm_chmap_query_t** chmaps = snd_pcm_query_chmaps(spcm);
+ 	int i;
+ 
+ 	*found_chmap = NULL;
+@@ -854,7 +865,6 @@ static int find_matching_chmap(snd_pcm_t *spcm, snd_pcm_chmap_t *tt_chmap,
+ 			int size = sizeof(snd_pcm_chmap_t) + c->channels * sizeof(unsigned int);
+ 			*found_chmap = malloc(size);
+ 			if (!*found_chmap) {
+-				snd_pcm_free_chmaps(chmaps);
+ 				return -ENOMEM;
+ 			}
+ 			memcpy(*found_chmap, c, size);
+@@ -863,8 +873,6 @@ static int find_matching_chmap(snd_pcm_t *spcm, snd_pcm_chmap_t *tt_chmap,
+ 		}
+ 	}
+ 
+-	snd_pcm_free_chmaps(chmaps);
+-
+ 	if (*found_chmap == NULL) {
+ 		SNDERR("Found no matching channel map");
+ 		return -EINVAL;
+@@ -1252,6 +1260,7 @@ pcm.name {
+                         SCHANNEL REAL   # route value (0.0 - 1.0)
+                 }
+         }
++	[chmap MAP]		# Override channel maps; MAP is a string array
+ }
+ \endcode
+ 
+@@ -1292,6 +1301,7 @@ int _snd_pcm_route_open(snd_pcm_t **pcmp, const char *name,
+ 	snd_pcm_route_ttable_entry_t *ttable = NULL;
+ 	unsigned int csize, ssize;
+ 	unsigned int cused, sused;
++	snd_pcm_chmap_query_t **chmaps = NULL;
+ 	snd_config_for_each(i, next, conf) {
+ 		snd_config_t *n = snd_config_iterator_entry(i);
+ 		const char *id;
+@@ -1306,31 +1316,45 @@ int _snd_pcm_route_open(snd_pcm_t **pcmp, const char *name,
+ 		if (strcmp(id, "ttable") == 0) {
+ 			if (snd_config_get_type(n) != SND_CONFIG_TYPE_COMPOUND) {
+ 				SNDERR("Invalid type for %s", id);
++				snd_pcm_free_chmaps(chmaps);
+ 				return -EINVAL;
+ 			}
+ 			tt = n;
+ 			continue;
+ 		}
++		if (strcmp(id, "chmap") == 0) {
++			chmaps = _snd_pcm_parse_config_chmaps(n);
++			if (!chmaps) {
++				SNDERR("Invalid channel map for %s", id);
++				return -EINVAL;
++			}
++			continue;
++		}
+ 		SNDERR("Unknown field %s", id);
+ 		return -EINVAL;
+ 	}
+ 	if (!slave) {
+ 		SNDERR("slave is not defined");
++		snd_pcm_free_chmaps(chmaps);
+ 		return -EINVAL;
+ 	}
+ 	if (!tt) {
+ 		SNDERR("ttable is not defined");
++		snd_pcm_free_chmaps(chmaps);
+ 		return -EINVAL;
+ 	}
+ 	err = snd_pcm_slave_conf(root, slave, &sconf, 2,
+ 				 SND_PCM_HW_PARAM_FORMAT, 0, &sformat,
+ 				 SND_PCM_HW_PARAM_CHANNELS, 0, &schannels);
+-	if (err < 0)
++	if (err < 0) {
++		snd_pcm_free_chmaps(chmaps);
+ 		return err;
++	}
+ 	if (sformat != SND_PCM_FORMAT_UNKNOWN &&
+ 	    snd_pcm_format_linear(sformat) != 1) {
+ 	    	snd_config_delete(sconf);
+ 		SNDERR("slave format is not linear");
++		snd_pcm_free_chmaps(chmaps);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -1345,13 +1369,19 @@ int _snd_pcm_route_open(snd_pcm_t **pcmp, const char *name,
+ 	if (err < 0) {
+ 		free(tt_chmap);
+ 		free(ttable);
++		snd_pcm_free_chmaps(chmaps);
+ 		return err;
+ 	}
+ 
+ 	if (tt_chmap) {
+-		err = find_matching_chmap(spcm, tt_chmap, &chmap, &schannels);
++		if (!chmaps)
++			chmaps = snd_pcm_query_chmaps(spcm);
++		if (chmaps)
++			err = find_matching_chmap(chmaps, tt_chmap, &chmap,
++						  &schannels);
+ 		free(tt_chmap);
+-		if (err < 0) {
++		if (chmaps && err < 0) {
++			snd_pcm_free_chmaps(chmaps);
+ 			snd_pcm_close(spcm);
+ 			return err;
+ 		}
+@@ -1360,12 +1390,14 @@ int _snd_pcm_route_open(snd_pcm_t **pcmp, const char *name,
+ 	err = _snd_pcm_route_determine_ttable(tt, &csize, &ssize, chmap);
+ 	if (err < 0) {
+ 		free(chmap);
++		snd_pcm_free_chmaps(chmaps);
+ 		snd_pcm_close(spcm);
+ 		return err;
+ 	}
+ 	ttable = malloc(csize * ssize * sizeof(snd_pcm_route_ttable_entry_t));
+ 	if (ttable == NULL) {
+ 		free(chmap);
++		snd_pcm_free_chmaps(chmaps);
+ 		snd_pcm_close(spcm);
+ 		return -ENOMEM;
+ 	}
+@@ -1374,6 +1406,7 @@ int _snd_pcm_route_open(snd_pcm_t **pcmp, const char *name,
+ 	if (err < 0) {
+ 		free(chmap);
+ 		free(ttable);
++		snd_pcm_free_chmaps(chmaps);
+ 		snd_pcm_close(spcm);
+ 		return err;
+ 	}
+@@ -1385,9 +1418,13 @@ int _snd_pcm_route_open(snd_pcm_t **pcmp, const char *name,
+ 	free(ttable);
+ 	if (err < 0) {
+ 		free(chmap);
++		snd_pcm_free_chmaps(chmaps);
+ 		snd_pcm_close(spcm);
+ 	} else {
+-		((snd_pcm_route_t*) (*pcmp)->private_data)->chmap = chmap;
++		snd_pcm_route_t *route = (*pcmp)->private_data;
++
++		route->chmap = chmap;
++		route->chmap_override = chmaps;
+ 	}
+ 
+ 	return err;
+-- 
+2.24.1
 
-Hui.
-
->
