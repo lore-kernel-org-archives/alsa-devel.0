@@ -6,59 +6,60 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02044C43331
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2020 18:25:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 63AC8C2D0EE
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2020 18:26:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 658E22073B
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2020 18:25:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E9CF720CC7
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2020 18:26:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sosQ3E6v"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 658E22073B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BM0Y8kx5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E9CF720CC7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B250985D;
-	Tue, 31 Mar 2020 20:24:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B250985D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 42ACE166E;
+	Tue, 31 Mar 2020 20:25:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 42ACE166E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585679111;
-	bh=BCXR/dkuVkM4zVY42SwbWpoW6oZXnu/efGI/zOOWzKQ=;
+	s=default; t=1585679165;
+	bh=UhXlMdjn8imPogBSfqo9ymxSSxX08MrvXaAhWCVTTEw=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=sosQ3E6v+YXFBRdtpQXCZLAfiPuhgmJYid2DNBnCpSf0tw6nUtybM03ZwOtGr3y0t
-	 DozBqmAEu8yJndmPO/M+CC1srx9i6l0wWUl8S+ClIWw/k9o9NukjeKxru6mG0zRLn9
-	 OvanorLIFAgtVauIy+9uyaSsmQ1lcdngQPcTZKIc=
+	b=BM0Y8kx5EXaAESznnVnMyXzdaYiPXWMUzVh5vBNQqbzy8L3t2fRDMv8ej6WVn86Ws
+	 5e2J6+rYFMfJfUmsrXW+BnpbF8KdJl62yHrdmvtO3bYU4N8+LCMUqMi9I9PZyS260W
+	 hGOUCzVQ52qKYsfftrozYMaJQxWeOeT0WaEFqp7o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C606AF80157;
-	Tue, 31 Mar 2020 20:24:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7D09CF801F2;
+	Tue, 31 Mar 2020 20:24:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 07457F800AA; Tue, 31 Mar 2020 20:24:17 +0200 (CEST)
+ id C48BAF8014F; Tue, 31 Mar 2020 20:24:20 +0200 (CEST)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id F3C83F800AA
- for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2020 20:24:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3C83F800AA
+ by alsa1.perex.cz (Postfix) with ESMTP id CC9B1F8010D
+ for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2020 20:24:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC9B1F8010D
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3214630E;
- Tue, 31 Mar 2020 11:24:11 -0700 (PDT)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9848A7FA;
+ Tue, 31 Mar 2020 11:24:15 -0700 (PDT)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A9A0B3F68F;
- Tue, 31 Mar 2020 11:24:10 -0700 (PDT)
-Date: Tue, 31 Mar 2020 19:24:09 +0100
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1CE8B3F68F;
+ Tue, 31 Mar 2020 11:24:14 -0700 (PDT)
+Date: Tue, 31 Mar 2020 19:24:13 +0100
 From: Mark Brown <broonie@kernel.org>
-To: 이경택 <gt82.lee@samsung.com>
-Subject: Applied "ASoC: dapm: connect virtual mux with default value" to the
+To: Stephan Gerhold <stephan@gerhold.net>
+Subject: Applied "ASoC: qcom: q6asm-dai: Add SNDRV_PCM_INFO_BATCH flag" to the
  asoc tree
-In-Reply-To: <01a301d60731$b724ea10$256ebe30$@samsung.com>
-Message-Id: <applied-01a301d60731$b724ea10$256ebe30$@samsung.com>
+In-Reply-To: <20200330175210.47518-1-stephan@gerhold.net>
+Message-Id: <applied-20200330175210.47518-1-stephan@gerhold.net>
 X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, 'Lars-Peter Clausen' <lars@metafoo.de>,
- lgirdwood@gmail.com, tiwai@suse.com, Mark Brown <broonie@kernel.org>,
- hmseo@samsung.com, Gyeongtaek Lee <gt82.lee@samsung.com>,
- pilsun.jang@samsung.com, tkjung@samsung.com
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
+ Patrick Lai <plai@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ ~postmarketos/upstreaming@lists.sr.ht
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,7 +77,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: dapm: connect virtual mux with default value
+   ASoC: qcom: q6asm-dai: Add SNDRV_PCM_INFO_BATCH flag
 
 has been applied to the asoc tree at
 
@@ -101,46 +102,67 @@ to this mail.
 Thanks,
 Mark
 
-From 3bbbb7728fc853d71dbce4073fef9f281fbfb4dd Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?=EC=9D=B4=EA=B2=BD=ED=83=9D?= <gt82.lee@samsung.com>
-Date: Tue, 31 Mar 2020 16:55:16 +0900
-Subject: [PATCH] ASoC: dapm: connect virtual mux with default value
+From 7f2430cda819a9ecb1df5a0f3ef4f1c20db3f811 Mon Sep 17 00:00:00 2001
+From: Stephan Gerhold <stephan@gerhold.net>
+Date: Mon, 30 Mar 2020 19:52:10 +0200
+Subject: [PATCH] ASoC: qcom: q6asm-dai: Add SNDRV_PCM_INFO_BATCH flag
 
-Since a virtual mixer has no backing registers
-to decide which path to connect,
-it will try to match with initial state.
-This is to ensure that the default mixer choice will be
-correctly powered up during initialization.
-Invert flag is used to select initial state of the virtual switch.
-Since actual hardware can't be disconnected by virtual switch,
-connected is better choice as initial state in many cases.
+At the moment, playing audio with PulseAudio with the qdsp6 driver
+results in distorted sound. It seems like its timer-based scheduling
+does not work properly with qdsp6 since setting tsched=0 in
+the PulseAudio configuration avoids the issue.
 
-Signed-off-by: Gyeongtaek Lee <gt82.lee@samsung.com>
-Link: https://lore.kernel.org/r/01a301d60731$b724ea10$256ebe30$@samsung.com
+Apparently this happens when the pointer() callback is not accurate
+enough. There is a SNDRV_PCM_INFO_BATCH flag that can be used to stop
+PulseAudio from using timer-based scheduling by default.
+
+According to https://www.alsa-project.org/pipermail/alsa-devel/2014-March/073816.html:
+
+    The flag is being used in the sense explained in the previous audio
+    meeting -- the data transfer granularity isn't fine enough but aligned
+    to the period size (or less).
+
+q6asm-dai reports the position as multiple of
+
+    prtd->pcm_count = snd_pcm_lib_period_bytes(substream)
+
+so it indeed just a multiple of the period size.
+
+Therefore adding the flag here seems appropriate and makes audio
+work out of the box.
+
+Fixes: 2a9e92d371db ("ASoC: qdsp6: q6asm: Add q6asm dai driver")
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20200330175210.47518-1-stephan@gerhold.net
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-dapm.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ sound/soc/qcom/qdsp6/q6asm-dai.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 04da7928c873..679ed60d850e 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -802,7 +802,13 @@ static void dapm_set_mixer_path_status(struct snd_soc_dapm_path *p, int i,
- 			val = max - val;
- 		p->connect = !!val;
- 	} else {
--		p->connect = 0;
-+		/* since a virtual mixer has no backing registers to
-+		 * decide which path to connect, it will try to match
-+		 * with initial state.  This is to ensure
-+		 * that the default mixer choice will be
-+		 * correctly powered up during initialization.
-+		 */
-+		p->connect = invert;
- 	}
- }
+diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
+index f6c7cddf08e8..125af00bba53 100644
+--- a/sound/soc/qcom/qdsp6/q6asm-dai.c
++++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
+@@ -78,7 +78,7 @@ struct q6asm_dai_data {
+ };
  
+ static const struct snd_pcm_hardware q6asm_dai_hardware_capture = {
+-	.info =                 (SNDRV_PCM_INFO_MMAP |
++	.info =                 (SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_BATCH |
+ 				SNDRV_PCM_INFO_BLOCK_TRANSFER |
+ 				SNDRV_PCM_INFO_MMAP_VALID |
+ 				SNDRV_PCM_INFO_INTERLEAVED |
+@@ -100,7 +100,7 @@ static const struct snd_pcm_hardware q6asm_dai_hardware_capture = {
+ };
+ 
+ static struct snd_pcm_hardware q6asm_dai_hardware_playback = {
+-	.info =                 (SNDRV_PCM_INFO_MMAP |
++	.info =                 (SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_BATCH |
+ 				SNDRV_PCM_INFO_BLOCK_TRANSFER |
+ 				SNDRV_PCM_INFO_MMAP_VALID |
+ 				SNDRV_PCM_INFO_INTERLEAVED |
 -- 
 2.20.1
 
