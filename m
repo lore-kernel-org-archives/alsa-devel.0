@@ -2,75 +2,86 @@ Return-Path: <SRS0=BIX5=5Q=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A4AFFC43331
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2020 07:25:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B649EC43331
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2020 07:25:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2A2342072A
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2020 07:25:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4192E2072A
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2020 07:25:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gsqmmZxg";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="OXuI0kpZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2A2342072A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Xf1zGq39";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=c-s.fr header.i=@c-s.fr header.b="IzqkH+Ku"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4192E2072A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=c-s.fr
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6A2941654;
-	Tue, 31 Mar 2020 09:24:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A2941654
+	by alsa0.perex.cz (Postfix) with ESMTPS id 93B381675;
+	Tue, 31 Mar 2020 09:25:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93B381675
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585639505;
-	bh=wBZTBGwXUKd1W8rXBvklBLNI6VWNJG7y8+GiwKSfwyw=;
-	h=From:To:Subject:In-Reply-To:References:Date:Cc:List-Id:
+	s=default; t=1585639552;
+	bh=pKkg+QWz4Wa1wwxjQbxSJCqOMIsxA0+DOWLoRZGLn3U=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gsqmmZxgB+J0ac0L8/903V/Oh2q76F6YQkYpQzkIDRKj17Mgg0FeXQF+4yhBGiKYR
-	 LRyL92dqlZg9WYlrrfNFHAtA3eYr+dhPlnf7tB5ei8bVS48HzhboW35rdKbSVU7Ea4
-	 fNr3eGf+RjcvmwK5NciIZ6sA2X/6mgWznunPON+o=
+	b=Xf1zGq39Qt7UmTYIDmQBmnzEOS3SRzFVpUcUKtY507iqH5qnQV9br8BmMKoO/euqi
+	 LM3ROO+akkByEwd5fNa5HbQjYOEMS4JirMkkkhtWUx3JfJia94jKkpMDflPSg5T3GH
+	 eUfLWQxNmUr8/g1N26X7GKx5w/w/NgJOvb5pYy48=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EF0B2F801F2;
-	Tue, 31 Mar 2020 09:23:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C7E07F8028B;
+	Tue, 31 Mar 2020 09:23:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5680EF80140; Tue, 31 Mar 2020 07:31:12 +0200 (CEST)
-Received: from ozlabs.org (bilbo.ozlabs.org [203.11.71.1])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id E1C0CF80146; Tue, 31 Mar 2020 08:56:35 +0200 (CEST)
+Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 70BB3F800AA
- for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2020 07:31:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70BB3F800AA
+ by alsa1.perex.cz (Postfix) with ESMTPS id B0144F8010D
+ for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2020 08:56:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0144F8010D
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au
- header.b="OXuI0kpZ"
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest
- SHA256) (No client certificate requested)
- by mail.ozlabs.org (Postfix) with ESMTPSA id 48rybT5bWHz9sQt;
- Tue, 31 Mar 2020 16:30:45 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
- s=201909; t=1585632657;
- bh=wBZTBGwXUKd1W8rXBvklBLNI6VWNJG7y8+GiwKSfwyw=;
- h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
- b=OXuI0kpZye/5Qq3R/+8SAFSe9LUM7PwBmIdxrYytUIHSuRxmANIxjUadBh+6TrUAG
- 0/scSdRqozxwIvGpx5YAoqaas6zyYNu1ofRUtDLL9xankqQA8NRoSKsovNe2d8T2ox
- EE+pYrp5vhw+njgE6sz4hE0xSoG5qd1kM70abPp0iLw+8xrK7rbT+X72WYJkdznwIR
- vylvZwmwhjEsCOYWDAkyokOTl5I0EDHTpAOQtvrJic+I553FsdUe6lUqqhTTKeOKtJ
- bEGAgXICIQ9Dnq442VWtcXsV5MEBEXK6DSfOfoTC1imS12aITD0LH3toDAD0wzjxgU
- 0uub9n396MWgw==
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Christophe Leroy <christophe.leroy@c-s.fr>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Arnd Bergmann <arnd@arndb.de>
+ dkim=pass (1024-bit key) header.d=c-s.fr header.i=@c-s.fr header.b="IzqkH+Ku"
+Received: from localhost (mailhub1-int [192.168.12.234])
+ by localhost (Postfix) with ESMTP id 48s0VM3SVRz9tyhf;
+ Tue, 31 Mar 2020 08:56:27 +0200 (CEST)
+Authentication-Results: localhost; dkim=pass
+ reason="1024-bit key; insecure key"
+ header.d=c-s.fr header.i=@c-s.fr header.b=IzqkH+Ku; dkim-adsp=pass;
+ dkim-atps=neutral
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+ by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+ with ESMTP id ReBz4FGiQkHf; Tue, 31 Mar 2020 08:56:27 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+ by pegase1.c-s.fr (Postfix) with ESMTP id 48s0VM1wcxz9tyhY;
+ Tue, 31 Mar 2020 08:56:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
+ t=1585637787; bh=O/pdOKyQoI5LHkYhdMKFbk8RIr6wmY568X2mLktXspE=;
+ h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+ b=IzqkH+Ku1APk6gjzsUC1/DYvNxm6x78Mwd6JqIoS5s436A82mfvQxm8s/m5Z2Lyws
+ ow0hIhv79EifdRBUXao9CV/R0Uk7TDWZYkhfOIsFgdju+SK9MldU1u+Uj7wqIvniPn
+ e+Jh4rXFLThvHszin622sllo1B12s2cdYGEu5A0c=
+Received: from localhost (localhost [127.0.0.1])
+ by messagerie.si.c-s.fr (Postfix) with ESMTP id 354728B784;
+ Tue, 31 Mar 2020 08:56:28 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+ by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+ with ESMTP id TyGeYMHs_2kl; Tue, 31 Mar 2020 08:56:28 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+ by messagerie.si.c-s.fr (Postfix) with ESMTP id AB6248B752;
+ Tue, 31 Mar 2020 08:56:23 +0200 (CEST)
 Subject: Re: [PATCH 0/2] powerpc: Remove support for ppc405/440 Xilinx
  platforms
-In-Reply-To: <b5adcc7a-9d10-d75f-50e3-9c150a7b4989@c-s.fr>
+To: Michael Ellerman <mpe@ellerman.id.au>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Arnd Bergmann <arnd@arndb.de>
 References: <cover.1585311091.git.michal.simek@xilinx.com>
  <CAK8P3a2mKPRFbRE3MWScr9GSiL4cpLg0wqv1Q28XDCZVPWgHfg@mail.gmail.com>
  <20200327131026.GT1922688@smile.fi.intel.com>
@@ -78,17 +89,23 @@ References: <cover.1585311091.git.michal.simek@xilinx.com>
  <CAK8P3a1Z+ZPTDzgAjdz0a7d85R62BhUqkdEWgrwXh-OnYe6rog@mail.gmail.com>
  <20200327141434.GA1922688@smile.fi.intel.com>
  <b5adcc7a-9d10-d75f-50e3-9c150a7b4989@c-s.fr>
-Date: Tue, 31 Mar 2020 16:30:54 +1100
-Message-ID: <87mu7xum41.fsf@mpe.ellerman.id.au>
+ <87mu7xum41.fsf@mpe.ellerman.id.au>
+From: Christophe Leroy <christophe.leroy@c-s.fr>
+Message-ID: <11765c82-bf1a-466c-760d-f9a4c4d1d5f1@c-s.fr>
+Date: Tue, 31 Mar 2020 08:56:23 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <87mu7xum41.fsf@mpe.ellerman.id.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 X-Mailman-Approved-At: Tue, 31 Mar 2020 09:23:19 +0200
 Cc: Kate Stewart <kstewart@linuxfoundation.org>,
  Mark Rutland <mark.rutland@arm.com>,
  "Desnes A. Nunes do Rosario" <desnesn@linux.ibm.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>, "open
- list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
  Benjamin Herrenschmidt <benh@kernel.crashing.org>,
  ALSA Development Mailing List <alsa-devel@alsa-project.org>,
  dri-devel <dri-devel@lists.freedesktop.org>,
@@ -135,62 +152,71 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Christophe Leroy <christophe.leroy@c-s.fr> writes:
-> Le 27/03/2020 =C3=A0 15:14, Andy Shevchenko a =C3=A9crit=C2=A0:
->> On Fri, Mar 27, 2020 at 02:22:55PM +0100, Arnd Bergmann wrote:
->>> On Fri, Mar 27, 2020 at 2:15 PM Andy Shevchenko
->>> <andriy.shevchenko@linux.intel.com> wrote:
->>>> On Fri, Mar 27, 2020 at 03:10:26PM +0200, Andy Shevchenko wrote:
->>>>> On Fri, Mar 27, 2020 at 01:54:33PM +0100, Arnd Bergmann wrote:
->>>>>> On Fri, Mar 27, 2020 at 1:12 PM Michal Simek <michal.simek@xilinx.co=
-m> wrote:
->> ...
->>=20
->>>>>> It does raise a follow-up question about ppc40x though: is it time to
->>>>>> retire all of it?
+
+
+Le 31/03/2020 à 07:30, Michael Ellerman a écrit :
+> Christophe Leroy <christophe.leroy@c-s.fr> writes:
+>> Le 27/03/2020 à 15:14, Andy Shevchenko a écrit :
+>>> On Fri, Mar 27, 2020 at 02:22:55PM +0100, Arnd Bergmann wrote:
+>>>> On Fri, Mar 27, 2020 at 2:15 PM Andy Shevchenko
+>>>> <andriy.shevchenko@linux.intel.com> wrote:
+>>>>> On Fri, Mar 27, 2020 at 03:10:26PM +0200, Andy Shevchenko wrote:
+>>>>>> On Fri, Mar 27, 2020 at 01:54:33PM +0100, Arnd Bergmann wrote:
+>>>>>>> On Fri, Mar 27, 2020 at 1:12 PM Michal Simek <michal.simek@xilinx.com> wrote:
+>>> ...
+>>>
+>>>>>>> It does raise a follow-up question about ppc40x though: is it time to
+>>>>>>> retire all of it?
+>>>>>>
+>>>>>> Who knows?
+>>>>>>
+>>>>>> I have in possession nice WD My Book Live, based on this architecture, and I
+>>>>>> won't it gone from modern kernel support. OTOH I understand that amount of real
+>>>>>> users not too big.
 >>>>>
->>>>> Who knows?
->>>>>
->>>>> I have in possession nice WD My Book Live, based on this architecture=
-, and I
->>>>> won't it gone from modern kernel support. OTOH I understand that amou=
-nt of real
->>>>> users not too big.
+>>>>> +Cc: Christian Lamparter, whom I owe for that WD box.
 >>>>
->>>> +Cc: Christian Lamparter, whom I owe for that WD box.
+>>>> According to https://openwrt.org/toh/wd/mybooklive, that one is based on
+>>>> APM82181/ppc464, so it is about several generations newer than what I
+>>>> asked about (ppc40x).
+>>>>
+>>>>>> Ah, and I have Amiga board, but that one is being used only for testing, so,
+>>>>>> I don't care much.
+>>>>
+>>>> I think there are a couple of ppc440 based Amiga boards, but again, not 405
+>>>> to my knowledge.
 >>>
->>> According to https://openwrt.org/toh/wd/mybooklive, that one is based on
->>> APM82181/ppc464, so it is about several generations newer than what I
->>> asked about (ppc40x).
->>>
->>>>> Ah, and I have Amiga board, but that one is being used only for testi=
-ng, so,
->>>>> I don't care much.
->>>
->>> I think there are a couple of ppc440 based Amiga boards, but again, not=
- 405
->>> to my knowledge.
->>=20
->> Ah, you are right. No objections from ppc40x removal!
->
-> Removing 40x would help cleaning things a bit. For instance 40x is the=20
-> last platform still having PTE_ATOMIC_UPDATES. So if we can remove 40x=20
-> we can get rid of PTE_ATOMIC_UPDATES completely.
->
-> If no one objects, I can prepare a series to drop support for 40x=20
-> completely.
->
-> Michael, any thought ?
+>>> Ah, you are right. No objections from ppc40x removal!
+>>
+>> Removing 40x would help cleaning things a bit. For instance 40x is the
+>> last platform still having PTE_ATOMIC_UPDATES. So if we can remove 40x
+>> we can get rid of PTE_ATOMIC_UPDATES completely.
+>>
+>> If no one objects, I can prepare a series to drop support for 40x
+>> completely.
+>>
+>> Michael, any thought ?
+> 
+> I have no attachment to 40x, and I'd certainly be happy to have less
+> code in the tree, we struggle to keep even the modern platforms well
+> maintained.
+> 
+> At the same time I don't want to render anyone's hardware obsolete
+> unnecessarily. But if there's really no one using 40x then we should
+> remove it, it could well be broken already.
+> 
+> So I guess post a series to do the removal and we'll see if anyone
+> speaks up.
+> 
 
-I have no attachment to 40x, and I'd certainly be happy to have less
-code in the tree, we struggle to keep even the modern platforms well
-maintained.
+Ok, series sent out, see 
+https://patchwork.ozlabs.org/project/linuxppc-dev/list/?series=167757
 
-At the same time I don't want to render anyone's hardware obsolete
-unnecessarily. But if there's really no one using 40x then we should
-remove it, it could well be broken already.
 
-So I guess post a series to do the removal and we'll see if anyone
-speaks up.
+While we are at it, can we also remove the 601 ? This one is also full 
+of workarounds and diverges a bit from other 6xx.
 
-cheers
+I'm unable to find its end of life date, but it was on the market in 
+1994, so I guess it must be outdated by more than 10-15 yr old now ?
+
+Christophe
