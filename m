@@ -2,87 +2,107 @@ Return-Path: <SRS0=BIX5=5Q=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 328D2C43331
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2020 12:41:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 399F6C43331
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2020 12:43:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B1156208E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2020 12:41:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B792A2072E
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2020 12:43:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SeiW7mRx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B1156208E0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tQcYPiWd";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="pDQqfzOT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B792A2072E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E50E785D;
-	Tue, 31 Mar 2020 14:40:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E50E785D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0F68185D;
+	Tue, 31 Mar 2020 14:42:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F68185D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585658473;
-	bh=OsN1YSh1ZJyYeI0u3AL7Wza3jibtmNJaaZBEml7Ad84=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1585658588;
+	bh=vcz0g72rifXSLeWaNnOdJDDcN3baXq4Yt3Uy827zZ2Y=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SeiW7mRxOhqW+7blKYrrXKaM/9B69Gi9YN5OyVjzHLCFn9DNnedJGK2zTmXfrDl97
-	 IoUeg9RD0NM9m+f06WtHbt2blM1y/XWZ7WS5kNf8rTGMsGY0O0SBfXHnUKvoWAF6Xk
-	 JLWib0fKI5CNsjWdeOcz3bp/d6yj4OWkahIFng+g=
+	b=tQcYPiWdm39FUVB1fRHEPsL244v2pKJB6eNoVsBAmcAmZWvncqC6d3Bix3O+G5zZ9
+	 QoDnl3lRi4mtmc3g0R7xCmqmFA4LEkkvbot8PwAFpfOtuL7hJYWuqo8CGfiax7TSea
+	 OV4I3Zc7eh+e65OYZ170GldGioRQ8Y5A/ihl9P+M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 54D29F80140;
-	Tue, 31 Mar 2020 14:40:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9FEB6F80140;
+	Tue, 31 Mar 2020 14:42:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 96599F80146; Tue, 31 Mar 2020 14:40:20 +0200 (CEST)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 8E133F80146; Tue, 31 Mar 2020 14:42:14 +0200 (CEST)
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com
+ [IPv6:2a00:1450:4864:20::343])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AEC6DF8010D
- for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2020 14:40:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AEC6DF8010D
-IronPort-SDR: YyCGp6yFejBBKF0ANPWPBL4No+diogIGMyx8QuvIIR+rS/9sYTL1oCs//HBN/pcslAQr7RlVp/
- 4cTE9BjFy87g==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Mar 2020 05:15:57 -0700
-IronPort-SDR: F5Omn7SM9i5c0IqXIOG0uXgfUEMZ1P3AVz5XA4VK4jZDl0YqXecwPPwiBc0QruATYgb3iUimoY
- UrzlFP41h52g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,327,1580803200"; d="scan'208";a="240106704"
-Received: from kmariste-mobl.amr.corp.intel.com (HELO [10.212.248.138])
- ([10.212.248.138])
- by fmsmga007.fm.intel.com with ESMTP; 31 Mar 2020 05:15:54 -0700
-Subject: Re: [PATCH 3/4] ASoC: Intel: bdw-rt5677: Remove ignore_suspend flag
- from SSP0 dai link
-To: Hans de Goede <hdegoede@redhat.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
-References: <20200319204947.18963-1-cezary.rojewski@intel.com>
- <20200319204947.18963-4-cezary.rojewski@intel.com>
- <dea20cf7-f324-a933-8f8e-e70a4dffa249@linux.intel.com>
- <259cbb60-9e59-1132-8371-83f837577f86@redhat.com>
- <9f1884b4-e356-9a8f-6912-0d55c4bcbf06@intel.com>
- <a48d48cb-ab02-1213-88b9-431109e4b468@linux.intel.com>
- <62061e77-e855-e4e0-1e5d-8d9ccd422011@redhat.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <fcde500a-877e-3fa8-b473-14281ab1683f@linux.intel.com>
-Date: Tue, 31 Mar 2020 07:15:55 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id E9E3AF8010C;
+ Tue, 31 Mar 2020 14:42:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9E3AF8010C
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="pDQqfzOT"
+Received: by mail-wm1-x343.google.com with SMTP id b12so2286672wmj.3;
+ Tue, 31 Mar 2020 05:42:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=vcz0g72rifXSLeWaNnOdJDDcN3baXq4Yt3Uy827zZ2Y=;
+ b=pDQqfzOTiRQ7tL7td5hE81Qm/6VdRKt++vY5nVx42+C+gwdAxA8zZhbXiVzDg1B19m
+ dLAGEfr8aD2VgGiiu4LQLTz7dxR533Oy/5VawYbQIEEe7Ln9dxSfycYxUoFl+HsnFzeN
+ YfxXV6LN3qO0EEAKboOZ577a0Pnb9lepWu3XZeCe5RVq6i8+cqw76YPfOqYPC3Bb+N8N
+ ug9J4xmDmfX0BEwhK0Eh9/c9/ZQGM9U9J/3FRHNF7zdMm9qpfLR79fcCsH5VGCvByR/0
+ WRwSNf5s4EZqq4EcMWo/Qyhp3SHJg6G15DCxJvS8ft8WPAp9z8HLH6FI86zy+kaMVJYg
+ cf6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=vcz0g72rifXSLeWaNnOdJDDcN3baXq4Yt3Uy827zZ2Y=;
+ b=d0/NTI+TfCklJXEbuwt54ZWcb6lms6VIgiRsUusrjt1yDNg5TteR7H31LNeZ4PKUzq
+ Td6Oi3Dtb3U29aNHT6XP4QglCKGti7I6ojSJxS3CwfjNym/Op1W1tYOahcU4uldvpSdB
+ omIIcaw3BwIJyxMDQ/aD+ea68JtwG8VZq0MzPHB688oWLnhSqSUcPVCnwKjCLaWQK2kG
+ tCY2/6CGXO3ggjheLvH72M22NGyzHrKVTcf8zG0YzshmoaJxLX5lTd0bJvAYs5U7o7N7
+ 6K8SucFqo5djNgJPH+R0WFJz/GT0/KfjbroXmOv7FtrHA3eEzfxFdDnDZFzsN/8JiIi6
+ 778A==
+X-Gm-Message-State: ANhLgQ1QKSQ/SwVBEf/MEGty3FDZ0F6cQw0NK+2a9S2sDqRTmwnztHf7
+ hDsm/EIVaLmwQo+Gant3u8QnZHMJwRpo98SANjA=
+X-Google-Smtp-Source: ADFU+vv3upvTMzc++M5CXYzCHX8rdxvQ44BYLbC/mPwEbu0+mM3gc1laM5QzlJ1lMnw37DBAu77fn+1n/4pcdPgbFbI=
+X-Received: by 2002:a1c:c3c3:: with SMTP id t186mr3447283wmf.118.1585658529082; 
+ Tue, 31 Mar 2020 05:42:09 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <62061e77-e855-e4e0-1e5d-8d9ccd422011@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Curtis Malainey <cujomalainey@google.com>, tiwai@suse.com,
- Dominik Brodowski <linux@dominikbrodowski.net>, lgirdwood@gmail.com,
- vkoul@kernel.org, broonie@kernel.org, Ben Zhang <benzh@google.com>
+References: <20200319194957.9569-1-daniel.baluta@oss.nxp.com>
+ <20200319194957.9569-3-daniel.baluta@oss.nxp.com>
+ <20200331122540.GD4802@sirena.org.uk>
+In-Reply-To: <20200331122540.GD4802@sirena.org.uk>
+From: Daniel Baluta <daniel.baluta@gmail.com>
+Date: Tue, 31 Mar 2020 15:41:57 +0300
+Message-ID: <CAEnQRZD_Hjp2vsouUURuZ_zgAnnUXynq_L5YgCZAN4pFkcmGWQ@mail.gmail.com>
+Subject: Re: [PATCH 2/5] ASoC: SOF: imx: fix undefined reference issue
+To: Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Linux-ALSA <alsa-devel@alsa-project.org>,
+ Daniel Baluta <daniel.baluta@nxp.com>, kai.vehmanen@linux.intel.com,
+ Devicetree List <devicetree@vger.kernel.org>,
+ Fabio Estevam <festevam@gmail.com>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Daniel Baluta <daniel.baluta@oss.nxp.com>, Yue Haibing <yuehaibing@huawei.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Krzysztof Kozlowski <krzk@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>, dl-linux-imx <linux-imx@nxp.com>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Shawn Guo <shawnguo@kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,41 +118,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Tue, Mar 31, 2020 at 3:25 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Thu, Mar 19, 2020 at 09:49:54PM +0200, Daniel Baluta wrote:
+> > From: Daniel Baluta <daniel.baluta@nxp.com>
+>
+> > Fixes: f9ad75468453 ("ASoC: SOF: imx: fix reverse CONFIG_SND_SOC_SOF_OF
+> > dependency")
+> > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> > Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+>
+> This has you as the author but you list a signoff by Pierre before you?
 
+Patch was initially designed by Pierre [1] when in the internal SOF
+tree we already had the I.MX8M patches.
+Whereas, in the current patch series I firstly fix the i.MX8 then I
+add support for i.MX8M.
 
-On 3/31/20 7:12 AM, Hans de Goede wrote:
-> Hi,
-> 
-> On 3/31/20 12:54 PM, Pierre-Louis Bossart wrote:
->>
->>> Don't believe WoV for WPT has been added for SST linux so 
->>> .ignore_suspend=1 achieves nothing. The offload part is probably just 
->>> limited to bigger buffer size compared to system pin than anything 
->>> else. So, nothing prevents from removing .ignore_suspend for SST 
->>> solutions until WoV is verified. Don't know about SOF side.
->>> Pierre, what's your take on this?
->>
->> I think on Baytrail and Broadwell we will most likely never enable 
->> hotwording on the Intel DSP, and S0i1-Playback isn't planned either.
->>
->> However hotwording is enabled on the RT5677 and there may be clocking 
->> dependencies so that the RT5677 remains operational - at least the 
->> mclk needs to be on, so the bdw-rt5677 case probably needs more work.
->>
->> While I am at it, I think the notion of .ignore_suspend has an 
->> assumption baked in. It will work if the only suspend mode is S0i1. If 
->> the platform can choose between S0i1 and S3, then we would still want 
->> to suspend all paths in S3, which currently isn't really possible.
-> 
-> You can check if S0i1 will be used by using:
-> 
-> pm_suspend_default_s2idle()
-> 
-> If this returns true then S0i1 will be used, otherwise S3.
-> 
-> This is defined in kernel/power/suspend.c and always build, so it
-> should be ok to also use this in non x86 specific code-paths
-> (it will simply always return false there I believe).
+Should I go back and put Pierre as original author?
 
-Yes, but what I meant is that when the target is S3, we have no way of 
-disabling those .ignore_suspend that were added for S0i1 usages.
+[1] https://github.com/thesofproject/linux/commit/0c7dcfee80d96a8e75684178ab738c1e6175c386
