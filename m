@@ -6,72 +6,71 @@ X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 192D7C43331
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2020 13:13:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56A56C43331
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2020 13:14:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 92C2620772
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2020 13:13:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D4FBA20772
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2020 13:14:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hGUuRHOe";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="uDg/bYpM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 92C2620772
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uraNv1yV";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="jFM65O2q"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D4FBA20772
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CFBF51658;
-	Tue, 31 Mar 2020 15:12:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CFBF51658
+	by alsa0.perex.cz (Postfix) with ESMTPS id 36ADD1612;
+	Tue, 31 Mar 2020 15:13:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36ADD1612
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585660398;
+	s=default; t=1585660446;
 	bh=E0ZiGGpWnxZaGahYOcWQMjN9JjsdC0P9wppib5vRFlY=;
 	h=Date:From:To:To:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hGUuRHOeX0c4vpI9SvuuQd47epTrgC+IidoR9ttG32rYGSYWunaDe0wOC67ki5sqD
-	 K5UHydMp3kEo78YYyPX94nZFBPE3CS7vuFgYe6SWK5br1OCCQBBuXJCugtfJRcymuj
-	 VOZRjIbJ7x3o7AE+g1ncPtWzPjioeB6tuFtNLeKA=
+	b=uraNv1yVi69REkZWJ3asGmkhCdX2riFsw4CjXDuv2UCdLmEhomVzTo8oDYctTusa/
+	 VDn+9uHJ3fLr5URgKvxwQrsnErZ39ZCmjoIQcNRd3s91jMw5LPeoXORwZ0NAKOuMTU
+	 JpsAd/PduhI+FduFEFsyhnEpEuwCvsjfd0YS/b2c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8DC12F8010C;
-	Tue, 31 Mar 2020 15:11:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ECFB2F80255;
+	Tue, 31 Mar 2020 15:11:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 623A7F8014F; Tue, 31 Mar 2020 15:11:31 +0200 (CEST)
+ id 728D6F80146; Tue, 31 Mar 2020 15:11:32 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 60F53F8010C
- for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2020 15:11:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60F53F8010C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6BB16F80140
+ for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2020 15:11:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6BB16F80140
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="uDg/bYpM"
+ header.b="jFM65O2q"
 Received: from localhost (unknown [137.135.114.1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 947B72145D;
- Tue, 31 Mar 2020 13:11:26 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id B95B220786;
+ Tue, 31 Mar 2020 13:11:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1585660286;
+ s=default; t=1585660288;
  bh=E0ZiGGpWnxZaGahYOcWQMjN9JjsdC0P9wppib5vRFlY=;
  h=Date:From:To:To:To:Cc:Cc:Cc:Subject:In-Reply-To:References:From;
- b=uDg/bYpMnSx/D467AXVfBvCoq4T6X5uiJunjmfHrl6y5vi4HI15U9yZ1BGOEQdekd
- ww7iEi9+xowNeAStUL1fvqfU7W2KM8EmmM8EaLyCK1hG5BILztVF34k7QVjrqoRE5l
- uBuhtTztRqTlullZguYvL0mawDfTup5hDModlqqQ=
-Date: Tue, 31 Mar 2020 13:11:25 +0000
+ b=jFM65O2qJCku15188+q3R7FmKYdvYYfHuOq7pF6KY27kuf7S8JnBMGUh8chTmiTRB
+ Ppm/tLE6q0yURG63lG/up/BxnaGVciuAEh0L4x7Fq04+1ciYFrb1Ha9R4gkQZw7UYb
+ ZUt3/QULxz8ARVvTnt96ljyipqTUXLwcCEvvlDBM=
+Date: Tue, 31 Mar 2020 13:11:27 +0000
 From: Sasha Levin <sashal@kernel.org>
 To: Sasha Levin <sashal@kernel.org>
 To: Thomas Hebb <tommyhebb@gmail.com>
-To: alsa-devel@alsa-project.org
-Subject: Re: [PATCH v2 1/3] ALSA: doc: Document PC Beep Hidden Register on
+To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.or
+Subject: Re: [PATCH 1/3] ALSA: doc: Document PC Beep Hidden Register on
  Realtek ALC256
-In-Reply-To: <bd69dfdeaf40ff31c4b7b797c829bb320031739c.1585584498.git.tommyhebb@gmail.com>
-References: <bd69dfdeaf40ff31c4b7b797c829bb320031739c.1585584498.git.tommyhebb@gmail.com>
-Message-Id: <20200331131126.947B72145D@mail.kernel.org>
-Cc: Kailang Yang <kailang@realtek.com>, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
+In-Reply-To: <bd69dfdeaf40ff31c4b7b797c829bb320031739c.1585553414.git.tommyhebb@gmail.com>
+References: <bd69dfdeaf40ff31c4b7b797c829bb320031739c.1585553414.git.tommyhebb@gmail.com>
+Message-Id: <20200331131127.B95B220786@mail.kernel.org>
+Cc: Kailang Yang <kailang@realtek.com>, stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
