@@ -2,77 +2,62 @@ Return-Path: <SRS0=1DJj=5R=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.0 required=3.0 tests=DKIM_ADSP_DISCARD,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82DC2C43331
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Apr 2020 10:00:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A73CC43331
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Apr 2020 11:08:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 08A932073B
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Apr 2020 10:00:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E90592078B
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Apr 2020 11:08:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="n+au0Avi";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=frantovo.cz header.i=@frantovo.cz header.b="WAIX5FIa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 08A932073B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=frantovo.cz
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RiHfvFDv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E90592078B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 57C6F1658;
-	Wed,  1 Apr 2020 11:59:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57C6F1658
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3957A1682;
+	Wed,  1 Apr 2020 13:07:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3957A1682
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585735213;
-	bh=0KwZv8ThkJ6gb0S1hbFVZWP5HiS8UQ3XLg2YnpIxRyQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=n+au0AviXZA5yzUeWw9gQT1ahGSayxvBKfYAsFgXHaNY/QcjhJiejC7pHMWRDawN6
-	 F7znFPCln6mEe4hDk1Xlx/Sk9PXBbuD/VQcqnCwBSM2m63/d0XRbONy1Mcv6JYYiYE
-	 pYkZct3GdGJrYLyEStoW2ZMLIUc4h1tuUA+jBjgM=
+	s=default; t=1585739317;
+	bh=qBtkjsKiEcEjwLsg9nnaxWzC7ThSji/vIyTh/j3UWuQ=;
+	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=RiHfvFDv52XDo9Gv6O1N0f0NuV4sEbiPdH/8sRgp0P7mY0qKoNUcdOrspSvCMePeC
+	 BQDpDHTjVEddvIXOTkrA2j00Q9wY2OqagitL8/2ZPHDD2Y07gnvhZRtOO9VdZFrcEv
+	 Eks0t685ylGzUEnNDXrFQmTxqnmH9rJULjnsa8m8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D3804F80148;
-	Wed,  1 Apr 2020 11:59:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5B372F8014A;
+	Wed,  1 Apr 2020 13:06:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A2E60F8014B; Wed,  1 Apr 2020 11:59:21 +0200 (CEST)
-Received: from posta.frantovo.cz (czf.frantovo.cz [91.219.244.97])
- (using TLSv1.1 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BCD52F80148
- for <alsa-devel@alsa-project.org>; Wed,  1 Apr 2020 11:59:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BCD52F80148
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=frantovo.cz header.i=@frantovo.cz
- header.b="WAIX5FIa"
-Received: from posta.frantovo.cz (localhost [127.0.0.1])
- by posta.frantovo.cz (Postfix) with ESMTP id 8F6A61A05AD;
- Wed,  1 Apr 2020 11:56:05 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=frantovo.cz;
- s=default; t=1585734965;
- bh=0KwZv8ThkJ6gb0S1hbFVZWP5HiS8UQ3XLg2YnpIxRyQ=;
- h=From:To:Subject:Date:In-Reply-To:References;
- b=WAIX5FIapcL06o0dWLMlFkRdMzZclZn4TCMwCL4Pxq1UKtMck6efPbVk40b2uusyT
- 5IP+1i2AJ8e3/c6+RF81RDuoTw9aL/DuVsFaEluluneucQH2HJkorOIWcZ+TwIbPgm
- zvuEv/9qmJF8jSnKUTWBgRXHK43Z+hQAdin2n5gw=
-From: =?UTF-8?q?Franti=C5=A1ek=20Ku=C4=8Dera?= <konference@frantovo.cz>
-To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>,
- =?UTF-8?q?Franti=C5=A1ek=20Ku=C4=8Dera?= <franta-linux@frantovo.cz>
-Subject: [PATCH] ALSA: usb-audio: Add Pioneer DJ DJM-250MK2 quirk
-Date: Wed,  1 Apr 2020 11:59:07 +0200
-Message-Id: <20200401095907.3387-1-konference@frantovo.cz>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <s5h1rpfihvc.wl-tiwai@suse.de>
-References: <s5h1rpfihvc.wl-tiwai@suse.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: clamav-milter 0.98.1 at posta
-X-Virus-Status: Clean
+ id 0223CF8014A; Wed,  1 Apr 2020 13:06:53 +0200 (CEST)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 402E9F8014A
+ for <alsa-devel@alsa-project.org>; Wed,  1 Apr 2020 13:06:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 402E9F8014A
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 16DB230E;
+ Wed,  1 Apr 2020 04:06:48 -0700 (PDT)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8DCA63F68F;
+ Wed,  1 Apr 2020 04:06:47 -0700 (PDT)
+Date: Wed, 01 Apr 2020 12:06:46 +0100
+From: Mark Brown <broonie@kernel.org>
+To: YueHaibing <yuehaibing@huawei.com>
+Subject: Applied "ASoC: rt5682: Fix build error without CONFIG_I2C" to the
+ asoc tree
+In-Reply-To: <20200401091055.34112-1-yuehaibing@huawei.com>
+Message-Id: <applied-20200401091055.34112-1-yuehaibing@huawei.com>
+X-Patchwork-Hint: ignore
+Cc: oder_chiou@realtek.com, pierre-louis.bossart@linux.intel.com,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com,
+ lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,70 +73,80 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: František Kučera <franta-linux@frantovo.cz>
+The patch
 
-Pioneer DJ DJM-250MK2 is a mixer that acts like a USB sound card.
-The MIDI controller part is standard but the PCM part is "vendor specific".
-Output is enabled by this quirk: 8 channels, 48 000 Hz, S24_3LE.
-Input is not working.
+   ASoC: rt5682: Fix build error without CONFIG_I2C
 
-Signed-off-by: František Kučera <franta-linux@frantovo.cz>
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+From 59564e117356d5bb6df6876c03d7d650361781c9 Mon Sep 17 00:00:00 2001
+From: YueHaibing <yuehaibing@huawei.com>
+Date: Wed, 1 Apr 2020 17:10:55 +0800
+Subject: [PATCH] ASoC: rt5682: Fix build error without CONFIG_I2C
+
+If I2C is n but SoundWire is m, building fails:
+
+sound/soc/codecs/rt5682.c:3716:1: warning: data definition has no type or storage class
+ module_i2c_driver(rt5682_i2c_driver);
+ ^~~~~~~~~~~~~~~~~
+sound/soc/codecs/rt5682.c:3716:1: error: type defaults to 'int' in declaration of 'module_i2c_driver' [-Werror=implicit-int]
+sound/soc/codecs/rt5682.c:3716:1: warning: parameter names (without types) in function declaration
+
+Guard this use #ifdef CONFIG_I2C.
+
+Fixes: 5549ea647997 ("ASoC: rt5682: fix unmet dependencies")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Link: https://lore.kernel.org/r/20200401091055.34112-1-yuehaibing@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/usb/quirks-table.h | 42 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+ sound/soc/codecs/rt5682.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index d187aa6d50db..dcaf9eed9a41 100644
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -3592,5 +3592,47 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
- 		}
- 	}
- },
-+{
-+	/*
-+	 * Pioneer DJ DJM-250MK2
-+	 * PCM is 8 channels out @ 48 fixed (endpoints 0x01).
-+	 * The output from computer to the mixer is usable.
-+	 *
-+	 * The input (phono or line to computer) is not working.
-+	 * It should be at endpoint 0x82 and probably also 8 channels,
-+	 * but it seems that it works only with Pioneer proprietary software.
-+	 * Even on officially supported OS, the Audacity was unable to record
-+	 * and Mixxx to recognize the control vinyls.
-+	 */
-+	USB_DEVICE_VENDOR_SPEC(0x2b73, 0x0017),
-+	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
-+		.ifnum = QUIRK_ANY_INTERFACE,
-+		.type = QUIRK_COMPOSITE,
-+		.data = (const struct snd_usb_audio_quirk[]) {
-+			{
-+				.ifnum = 0,
-+				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
-+				.data = &(const struct audioformat) {
-+					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
-+					.channels = 8, // outputs
-+					.iface = 0,
-+					.altsetting = 1,
-+					.altset_idx = 1,
-+					.endpoint = 0x01,
-+					.ep_attr = USB_ENDPOINT_XFER_ISOC|
-+						USB_ENDPOINT_SYNC_ASYNC,
-+					.rates = SNDRV_PCM_RATE_48000,
-+					.rate_min = 48000,
-+					.rate_max = 48000,
-+					.nr_rates = 1,
-+					.rate_table = (unsigned int[]) { 48000 }
-+				}
-+			},
-+			{
-+				.ifnum = -1
-+			}
-+		}
-+	}
-+},
+diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
+index c9268a230daa..d36f560ad7a8 100644
+--- a/sound/soc/codecs/rt5682.c
++++ b/sound/soc/codecs/rt5682.c
+@@ -3703,7 +3703,7 @@ static const struct acpi_device_id rt5682_acpi_match[] = {
+ MODULE_DEVICE_TABLE(acpi, rt5682_acpi_match);
+ #endif
  
- #undef USB_DEVICE_VENDOR_SPEC
+-static struct i2c_driver rt5682_i2c_driver = {
++static struct i2c_driver __maybe_unused rt5682_i2c_driver = {
+ 	.driver = {
+ 		.name = "rt5682",
+ 		.of_match_table = of_match_ptr(rt5682_of_match),
+@@ -3713,7 +3713,10 @@ static struct i2c_driver rt5682_i2c_driver = {
+ 	.shutdown = rt5682_i2c_shutdown,
+ 	.id_table = rt5682_i2c_id,
+ };
++
++#ifdef CONFIG_I2C
+ module_i2c_driver(rt5682_i2c_driver);
++#endif
+ 
+ MODULE_DESCRIPTION("ASoC RT5682 driver");
+ MODULE_AUTHOR("Bard Liao <bardliao@realtek.com>");
 -- 
 2.20.1
 
