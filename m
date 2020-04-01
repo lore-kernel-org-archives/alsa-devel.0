@@ -2,108 +2,107 @@ Return-Path: <SRS0=DopR=5S=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41540C43331
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Apr 2020 15:38:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 533CAC43331
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Apr 2020 15:39:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C2153206F6
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Apr 2020 15:38:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D4828206F6
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Apr 2020 15:39:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oqFYb9CT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C2153206F6
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.crashing.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BoHv/vYh";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="G5WMbSF/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D4828206F6
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2DA221666;
-	Thu,  2 Apr 2020 17:37:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2DA221666
+	by alsa0.perex.cz (Postfix) with ESMTPS id 35BBD1679;
+	Thu,  2 Apr 2020 17:38:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 35BBD1679
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585841895;
-	bh=KAeLQ/NCKarBoJKOXUGvzMb6CoPJ9u84qX+n08Y2t7U=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1585841948;
+	bh=5Eij0H0oCxuYHXBpvkwU455sMVKeqXD4R0I88w1ezf0=;
+	h=From:To:Subject:In-Reply-To:References:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oqFYb9CT/b9AIX2LGK8+8z2fKXpqolhEF6CDTHY2v0C77xRmxId9pq3yfKoma+Soi
-	 fjebFIGVS8Pa6zugq34x9IBzysbqNdjCy3wg8yws5Z3UfTok4Uw0fTXfUI0ReO6kgI
-	 ywhvCm31/s0pVcPOCipF2Wd+OaHsQwEE82MSMeSA=
+	b=BoHv/vYhs0CLyFqFXtxYhVv5xh289ei2c9ApEcZAV5LOD64BMwzFabCG4bM4ySP77
+	 AI8ZsRmLlSMsxuK+8vXhJ8SKOBHYCkSsyqJw7O8N6FURhaCyuz4NSmLIwWIe1NakSo
+	 vjGY8VtxAHM9cbmaCY1Y8YWYk+siZlBrm09Jw7no=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 680AAF80141;
-	Thu,  2 Apr 2020 17:37:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A09CBF801F2;
+	Thu,  2 Apr 2020 17:37:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 040EDF80146; Tue, 31 Mar 2020 19:51:39 +0200 (CEST)
-Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
- by alsa1.perex.cz (Postfix) with ESMTP id AD375F8010D
- for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2020 19:51:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AD375F8010D
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
- by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 02VHpVCd004788;
- Tue, 31 Mar 2020 12:51:31 -0500
-Received: (from segher@localhost)
- by gate.crashing.org (8.14.1/8.14.1/Submit) id 02VHpNtp004787;
- Tue, 31 Mar 2020 12:51:23 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to
- segher@kernel.crashing.org using -f
-Date: Tue, 31 Mar 2020 12:51:23 -0500
-From: Segher Boessenkool <segher@kernel.crashing.org>
-To: Christophe Leroy <christophe.leroy@c-s.fr>
-Subject: Re: [PATCH 0/2] powerpc: Remove support for ppc405/440 Xilinx
+ id 60C96F8014B; Wed,  1 Apr 2020 04:08:11 +0200 (CEST)
+Received: from ozlabs.org (bilbo.ozlabs.org [203.11.71.1])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4555FF8010D
+ for <alsa-devel@alsa-project.org>; Wed,  1 Apr 2020 04:08:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4555FF8010D
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au
+ header.b="G5WMbSF/"
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest
+ SHA256) (No client certificate requested)
+ by mail.ozlabs.org (Postfix) with ESMTPSA id 48sV2t09Dpz9sRf;
+ Wed,  1 Apr 2020 13:07:49 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+ s=201909; t=1585706881;
+ bh=5Eij0H0oCxuYHXBpvkwU455sMVKeqXD4R0I88w1ezf0=;
+ h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+ b=G5WMbSF/9RnD0WcjjTHkS89KfsK9z+Ul8eGUnDsHox4hY9Wd27IV+efsEM5A9xjXL
+ MJ3dPXyUs/OslGrGeTglaohlf/wYAVoh/U7KCAKNEj6mI0qw8p8s0DbLpfhEqbeTyV
+ t+Z1PWfRsrZVOiig4zjml/SlgGTfF8dmLnlxwp4jR2OT0YJWje5TtJp9EyWGnGTtyt
+ grLGNGb3RPjPP8ZdiSyn4fr0jKkcQTDoMnc1TF1TdR0djqWEVFIFD2ft5P+1t2b600
+ wnHLbfV/yqq+RjKSWNFJ/1ksfFPLeqv7ZDLciDyZKTGuY6XmvCvgpcIIt+dSQbWZZd
+ wg3zBk4OWnJcw==
+From: Michael Ellerman <mpe@ellerman.id.au>
+To: Michal Simek <michal.simek@xilinx.com>, linux-kernel@vger.kernel.org,
+ monstr@monstr.eu, michal.simek@xilinx.com, git@xilinx.com,
+ sfr@canb.auug.org.au, maz@kernel.org
+Subject: Re: [PATCH v2 0/2] powerpc: Remove support for ppc405/440 Xilinx
  platforms
-Message-ID: <20200331175123.GV22482@gate.crashing.org>
-References: <cover.1585311091.git.michal.simek@xilinx.com>
- <CAK8P3a2mKPRFbRE3MWScr9GSiL4cpLg0wqv1Q28XDCZVPWgHfg@mail.gmail.com>
- <20200327131026.GT1922688@smile.fi.intel.com>
- <20200327131531.GU1922688@smile.fi.intel.com>
- <CAK8P3a1Z+ZPTDzgAjdz0a7d85R62BhUqkdEWgrwXh-OnYe6rog@mail.gmail.com>
- <20200327141434.GA1922688@smile.fi.intel.com>
- <b5adcc7a-9d10-d75f-50e3-9c150a7b4989@c-s.fr>
- <87mu7xum41.fsf@mpe.ellerman.id.au>
- <11765c82-bf1a-466c-760d-f9a4c4d1d5f1@c-s.fr>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <11765c82-bf1a-466c-760d-f9a4c4d1d5f1@c-s.fr>
-User-Agent: Mutt/1.4.2.3i
+In-Reply-To: <cover.1585575111.git.michal.simek@xilinx.com>
+References: <cover.1585575111.git.michal.simek@xilinx.com>
+Date: Wed, 01 Apr 2020 13:07:55 +1100
+Message-ID: <87imikufes.fsf@mpe.ellerman.id.au>
+MIME-Version: 1.0
+Content-Type: text/plain
 X-Mailman-Approved-At: Thu, 02 Apr 2020 17:37:21 +0200
 Cc: Kate Stewart <kstewart@linuxfoundation.org>,
  Mark Rutland <mark.rutland@arm.com>,
  "Desnes A. Nunes do Rosario" <desnesn@linux.ibm.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
- ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- dri-devel <dri-devel@lists.freedesktop.org>,
- Richard Fontana <rfontana@redhat.com>, Paul Mackerras <paulus@samba.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>, linux-doc@vger.kernel.org,
+ Benjamin Herrenschmidt <benh@kernel.crashing.org>, alsa-devel@alsa-project.org,
+ dri-devel@lists.freedesktop.org, Richard Fontana <rfontana@redhat.com>,
+ Paul Mackerras <paulus@samba.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
  Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
  Fabio Estevam <festevam@gmail.com>, Sasha Levin <sashal@kernel.org>,
- Stephen Rothwell <sfr@canb.auug.org.au>, Jonathan Corbet <corbet@lwn.net>,
- Michael Ellerman <mpe@ellerman.id.au>, Masahiro Yamada <masahiroy@kernel.org>,
- YueHaibing <yuehaibing@huawei.com>, Michal Simek <michal.simek@xilinx.com>,
- Krzysztof Kozlowski <krzk@kernel.org>, Allison Randal <allison@lohutok.net>,
- Leonardo Bras <leonardo@linux.ibm.com>, DTML <devicetree@vger.kernel.org>,
+ Jonathan Corbet <corbet@lwn.net>, Masahiro Yamada <masahiroy@kernel.org>,
+ YueHaibing <yuehaibing@huawei.com>, Krzysztof Kozlowski <krzk@kernel.org>,
+ Allison Randal <allison@lohutok.net>,
+ Matt Porter <mporter@kernel.crashing.org>,
+ linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
  Andrew Donnellan <ajd@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>,
  Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- Marc Zyngier <marc.zyngier@arm.com>, Alistair Popple <alistair@popple.id.au>,
+ Alistair Popple <alistair@popple.id.au>, linuxppc-dev@lists.ozlabs.org,
  Nicholas Piggin <npiggin@gmail.com>, Alexios Zavras <alexios.zavras@intel.com>,
- Mark Brown <broonie@kernel.org>, git@xilinx.com,
- Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+ Mark Brown <broonie@kernel.org>, linux-fbdev@vger.kernel.org,
  Jonathan Cameron <Jonathan.Cameron@huawei.com>,
  Thomas Gleixner <tglx@linutronix.de>,
  Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>,
- Enrico Weigelt <info@metux.net>, Michal Simek <monstr@monstr.eu>,
- Wei Hu <weh@microsoft.com>, Christian Lamparter <chunkeey@gmail.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Dmitry Vyukov <dvyukov@google.com>, Christophe Leroy <christophe.leroy@c-s.fr>,
+ Wei Hu <weh@microsoft.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  Nick Desaulniers <ndesaulniers@google.com>, Takashi Iwai <tiwai@suse.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Armijn Hemel <armijn@tjaldur.nl>, Rob Herring <robh+dt@kernel.org>,
- linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+ Rob Herring <robh+dt@kernel.org>, Enrico Weigelt <info@metux.net>,
  "David S. Miller" <davem@davemloft.net>,
  Thiago Jung Bauermann <bauerman@linux.ibm.com>
 X-BeenThere: alsa-devel@alsa-project.org
@@ -121,14 +120,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Mar 31, 2020 at 08:56:23AM +0200, Christophe Leroy wrote:
-> While we are at it, can we also remove the 601 ? This one is also full 
-> of workarounds and diverges a bit from other 6xx.
-> 
-> I'm unable to find its end of life date, but it was on the market in 
-> 1994, so I guess it must be outdated by more than 10-15 yr old now ?
+Michal Simek <michal.simek@xilinx.com> writes:
+> Hi,
+>
+> recently we wanted to update xilinx intc driver and we found that function
+> which we wanted to remove is still wired by ancient Xilinx PowerPC
+> platforms. Here is the thread about it.
+> https://lore.kernel.org/linux-next/48d3232d-0f1d-42ea-3109-f44bbabfa2e8@xilinx.com/
+>
+> I have been talking about it internally and there is no interest in these
+> platforms and it is also orphan for quite a long time. None is really
+> running/testing these platforms regularly that's why I think it makes sense
+> to remove them also with drivers which are specific to this platform.
+>
+> U-Boot support was removed in 2017 without anybody complain about it
+> https://github.com/Xilinx/u-boot-xlnx/commit/98f705c9cefdfdba62c069821bbba10273a0a8ed
+>
+> Based on current ppc/next.
+>
+> If anyone has any objection about it, please let me know.
 
-There probably are still some people running Linux on 601 powermacs.
+Thanks for taking the time to find all this code and remove it.
 
+I'm not going to take this series for v5.7, it was posted too close to
+the merge window, and doing so wouldn't give people much time to object,
+especially given people are distracted at the moment.
 
-Segher
+I'm happy to take it for v5.8, assuming there's no major objections.
+
+cheers
