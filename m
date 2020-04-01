@@ -2,58 +2,77 @@ Return-Path: <SRS0=1DJj=5R=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.0 required=3.0 tests=DKIM_ADSP_DISCARD,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 807CCC43331
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Apr 2020 09:29:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 82DC2C43331
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Apr 2020 10:00:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 082B820784
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Apr 2020 09:29:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 08A932073B
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Apr 2020 10:00:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JfASQxcl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 082B820784
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="n+au0Avi";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=frantovo.cz header.i=@frantovo.cz header.b="WAIX5FIa"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 08A932073B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=frantovo.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5EBC01655;
-	Wed,  1 Apr 2020 11:28:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5EBC01655
+	by alsa0.perex.cz (Postfix) with ESMTPS id 57C6F1658;
+	Wed,  1 Apr 2020 11:59:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57C6F1658
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585733342;
-	bh=t+uyqHszDhqcF3ag82JzLlL+Czq6BQC9DDOZSgSe7Hk=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1585735213;
+	bh=0KwZv8ThkJ6gb0S1hbFVZWP5HiS8UQ3XLg2YnpIxRyQ=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JfASQxclTIDpvbQG5l2q/cDdCqMoGuxILTRfYZH1eUinpWhjZYvoGN2hFS2FwvxWD
-	 teLO9d1FlymetTQVHsApzMMHtZgDhmQRJqqdbLuzCK2lLcojVD/nExjVU1/CWnGK/8
-	 j9obZb5cfB8AWwFmXf+enWoJlUIj5ZCPu1Zii+WY=
+	b=n+au0AviXZA5yzUeWw9gQT1ahGSayxvBKfYAsFgXHaNY/QcjhJiejC7pHMWRDawN6
+	 F7znFPCln6mEe4hDk1Xlx/Sk9PXBbuD/VQcqnCwBSM2m63/d0XRbONy1Mcv6JYYiYE
+	 pYkZct3GdGJrYLyEStoW2ZMLIUc4h1tuUA+jBjgM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CA6AFF80110;
-	Wed,  1 Apr 2020 11:28:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D3804F80148;
+	Wed,  1 Apr 2020 11:59:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B41DDF8014B; Wed,  1 Apr 2020 11:28:06 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 06C46F80110
- for <alsa-devel@alsa-project.org>; Wed,  1 Apr 2020 11:27:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06C46F80110
+ id A2E60F8014B; Wed,  1 Apr 2020 11:59:21 +0200 (CEST)
+Received: from posta.frantovo.cz (czf.frantovo.cz [91.219.244.97])
+ (using TLSv1.1 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id BCD52F80148
+ for <alsa-devel@alsa-project.org>; Wed,  1 Apr 2020 11:59:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BCD52F80148
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=frantovo.cz header.i=@frantovo.cz
+ header.b="WAIX5FIa"
+Received: from posta.frantovo.cz (localhost [127.0.0.1])
+ by posta.frantovo.cz (Postfix) with ESMTP id 8F6A61A05AD;
+ Wed,  1 Apr 2020 11:56:05 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=frantovo.cz;
+ s=default; t=1585734965;
+ bh=0KwZv8ThkJ6gb0S1hbFVZWP5HiS8UQ3XLg2YnpIxRyQ=;
+ h=From:To:Subject:Date:In-Reply-To:References;
+ b=WAIX5FIapcL06o0dWLMlFkRdMzZclZn4TCMwCL4Pxq1UKtMck6efPbVk40b2uusyT
+ 5IP+1i2AJ8e3/c6+RF81RDuoTw9aL/DuVsFaEluluneucQH2HJkorOIWcZ+TwIbPgm
+ zvuEv/9qmJF8jSnKUTWBgRXHK43Z+hQAdin2n5gw=
+From: =?UTF-8?q?Franti=C5=A1ek=20Ku=C4=8Dera?= <konference@frantovo.cz>
+To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>,
+ =?UTF-8?q?Franti=C5=A1ek=20Ku=C4=8Dera?= <franta-linux@frantovo.cz>
+Subject: [PATCH] ALSA: usb-audio: Add Pioneer DJ DJM-250MK2 quirk
+Date: Wed,  1 Apr 2020 11:59:07 +0200
+Message-Id: <20200401095907.3387-1-konference@frantovo.cz>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <s5h1rpfihvc.wl-tiwai@suse.de>
+References: <s5h1rpfihvc.wl-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1585733277283229113-webhooks-bot@alsa-project.org>
-References: <1585733277283229113-webhooks-bot@alsa-project.org>
-Subject: alsa-gobject: add library to operate ALSA Sequencer character device
- without queue feature
-Message-Id: <20200401092806.B41DDF8014B@alsa1.perex.cz>
-Date: Wed,  1 Apr 2020 11:28:06 +0200 (CEST)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: clamav-milter 0.98.1 at posta
+X-Virus-Status: Clean
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -69,89 +88,70 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-gobject pull request #10 was opened from takaswie:
+From: František Kučera <franta-linux@frantovo.cz>
 
-This request is to add a new library, libalsaseq, to operate ALSA Sequencer
-character device.
+Pioneer DJ DJM-250MK2 is a mixer that acts like a USB sound card.
+The MIDI controller part is standard but the PCM part is "vendor specific".
+Output is enabled by this quirk: 8 channels, 48 000 Hz, S24_3LE.
+Input is not working.
 
-In design of ALSA Sequencer, one character device is added to Linux system.
-Usually a special file, '/dev/snd/seq', is used for the character device.
-Userspace applications can operate ALSA Sequencer via the character device.
+Signed-off-by: František Kučera <franta-linux@frantovo.cz>
+---
+ sound/usb/quirks-table.h | 42 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 42 insertions(+)
 
-The library supports functionalities of ALSA Sequencer but without
-queue-related ones.
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index d187aa6d50db..dcaf9eed9a41 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -3592,5 +3592,47 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
+ 		}
+ 	}
+ },
++{
++	/*
++	 * Pioneer DJ DJM-250MK2
++	 * PCM is 8 channels out @ 48 fixed (endpoints 0x01).
++	 * The output from computer to the mixer is usable.
++	 *
++	 * The input (phono or line to computer) is not working.
++	 * It should be at endpoint 0x82 and probably also 8 channels,
++	 * but it seems that it works only with Pioneer proprietary software.
++	 * Even on officially supported OS, the Audacity was unable to record
++	 * and Mixxx to recognize the control vinyls.
++	 */
++	USB_DEVICE_VENDOR_SPEC(0x2b73, 0x0017),
++	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_COMPOSITE,
++		.data = (const struct snd_usb_audio_quirk[]) {
++			{
++				.ifnum = 0,
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = &(const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
++					.channels = 8, // outputs
++					.iface = 0,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.endpoint = 0x01,
++					.ep_attr = USB_ENDPOINT_XFER_ISOC|
++						USB_ENDPOINT_SYNC_ASYNC,
++					.rates = SNDRV_PCM_RATE_48000,
++					.rate_min = 48000,
++					.rate_max = 48000,
++					.nr_rates = 1,
++					.rate_table = (unsigned int[]) { 48000 }
++				}
++			},
++			{
++				.ifnum = -1
++			}
++		}
++	}
++},
+ 
+ #undef USB_DEVICE_VENDOR_SPEC
+-- 
+2.20.1
 
-The library includes some GObject-derived object. ALSASeq.UserClient
-maintains file descriptor of ALSA Sequencer character device, thus it's
-the center of user operation. The other objects represent data structures
-in UAPI of ALSA Sequencer.
-
- * ALSASeqSystemInfo - struct snd_seq_system_info
- * ALSASeqClientInfo - struct snd_seq_client_info
- * ALSASeqClientPool - struct snd_seq_client_pool
- * ALSASeqPortInfo - struct snd_seq_port_info
- * ALSASeqSubscribeData - struct snd_seq_port_subscribe
-
-The library includes some GObject boxed object just to represent data
-structures. ALSASeq.Addr is a thin wrapper to struct snd_seq_addr, and
-ALSASeq.Tstamp is a thin wrapper to struct snd_seq_timestamp.
-
-For operations without instances of ALSASeq.UserClient, the library
-has some global APIs.
-
-ALSA Sequencer has some macros. They're represented as GObject
-enumerations and flags.
-
- * ALSASeq.ClientType - one of NO_CLIENT, USER_CLIENT, KERNEL_CLIENT
- * ALSASeq.FilterAttrFlag - SNDRV_SEQ_FILTER_XXX
- * ALSASeq.PortCapFlag - SNDRV_PORT_CAP_XXX
- * ALSASeq.PortAttrFlag - NDRV_SEQ_PORT_TYPE_XXX
- * ALSASeq.EventType - SNDRV_SEQ_EVENT_XXX
- * ALSASeq.EventTimestampMode - SNDRV_SEQ_TIME_STAMP_XXX
- * ALSASeq.EventTimeMode - SNDRV_SEQ_TIME_MODE_XXX
- * ALSASeq.EventLengthMode - SNDRV_SEQ_EVENT_LENGTH_XXX
- * ALSASeq.EventPriorityMode - SNDRV_SEQ_PRIORITY_XXX
- * ALSASeq.PortSubscribeFlag - SNDRV_SEQ_PORT_SUBS_XXX
- * ALSASeq.QuerySubscribeType - SNDRV_SEQ_QUERY_SUBS_XXX
-
-Some specific values for addressing are also represented by GObject
-enumerations and flags.
-
- * ALSASeq.SpecificAddress - SNDRV_SEQ_ADDRESS_XXX
- * ALSASeq.SpecificClientId - SNDRV_SEQ_CLIENT_XXX
- * ALSASeq.SpecificPortId - SNDRV_SEQ_PORT_SYSTEM_XXX
- * ALSASeq.SpecificQueueId - SNDRV_SEQ_QUEUE_XXX
-
-ALSA Sequencer has many types of event. The library has an GObject
-abstract object, ALSASeq.Event. Two objects are derived from it:
-
- * ALSASeq.EventFixed
- * ALSASeq.EventVariable
-
-The former has some ways to access to the data of event. The data is
-represented by GObject boxed object if it's complicated structure:
-
- * ALSASeq.EventDataConnect - struct snd_seq_connect
- * ALSASeq.EventDataNote - struct snd_seq_ev_note
- * ALSASeq.EventDataCtl - struct snd_seq_ev_ctrl
- * ALSASeq.EventDataResult - struct snd_seq_result
- * ALSASeq.EventDataQueue - struct snd_seq_ev_queue_control
-
-The latter is for events to have variable length of data blob.
-
-ALSASeq.UserClient has 'schedule_event' API to schedule arbitrary
-event. It also has 'handle-event' GObject signal for applications
-to handle asynchronous event as an instance of ALSASeq.EventFixed or
-ALSASeq.EventVariable.
-
-The library doesn't have support for below structures since they're useless
-practically:
-
- * struct snd_seq_event_bounce
- * struct snd_seq_running_info
-
-In my later work, queue functions will be added.
-
-Request URL   : https://github.com/alsa-project/alsa-gobject/pull/10
-Patch URL     : https://github.com/alsa-project/alsa-gobject/pull/10.patch
-Repository URL: https://github.com/alsa-project/alsa-gobject
