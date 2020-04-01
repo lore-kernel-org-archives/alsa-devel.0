@@ -2,180 +2,131 @@ Return-Path: <SRS0=DopR=5S=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B7338C43331
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Apr 2020 15:41:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E36BC43331
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Apr 2020 15:42:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 46796206F6
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Apr 2020 15:41:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BDBC020737
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Apr 2020 15:42:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JbeWFGXg";
-	dkim=pass (1024-bit key) header.d=xilinx.onmicrosoft.com header.i=@xilinx.onmicrosoft.com header.b="NWZUyQVp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 46796206F6
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=xilinx.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jKjzHIC9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BDBC020737
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AA106167F;
-	Thu,  2 Apr 2020 17:41:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA106167F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 23F241655;
+	Thu,  2 Apr 2020 17:41:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23F241655
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585842116;
-	bh=4RUWJ/LaazCzeKnz4ohBcuwJpF7UpeqH6O1EDeokKRs=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1585842150;
+	bh=VPMcgIBZw/qZ9qiugBiPTif6XCiVXeHsRZR7cPsGp94=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JbeWFGXglLnGCfRM12H7UcH7nsiOhE7XGcZutCGvr4DE4KDsNdypBlWMqiAx2Pl42
-	 Svea48BX3J7z9HI7QGkrhv093CBA5ALm07/2M2D4qrL7/WcMWWMitsSkn/2mGCStYN
-	 BdvaJmHfxv8U82Ub1gXaO+HmOV89DQM50aCMfzI8=
+	b=jKjzHIC97Az+yQUH30zYYoSxP+SvWtSkDTd8gAf0C6Hfi2fvUFtcydnqVmVOem4UO
+	 h8NxC2tTOA5v7D8TrTzxPGO2v8HjGFwDXnIXltonUEVge8Bl3Kxs7DFh6jIkvsZwF/
+	 tpM9jsF3fzpLoli2UtdkayDaZQrdXOp1N5tXVLCc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CFE29F802A8;
-	Thu,  2 Apr 2020 17:37:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 206B5F802C3;
+	Thu,  2 Apr 2020 17:37:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A13D2F8014B; Wed,  1 Apr 2020 13:31:11 +0200 (CEST)
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com
- (mail-bn8nam11on2052.outbound.protection.outlook.com [40.107.236.52])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 92919F8014A; Wed,  1 Apr 2020 23:07:41 +0200 (CEST)
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.10])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B2D07F8010D
- for <alsa-devel@alsa-project.org>; Wed,  1 Apr 2020 13:31:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B2D07F8010D
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=xilinx.onmicrosoft.com
- header.i=@xilinx.onmicrosoft.com header.b="NWZUyQVp"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=T3cm/lTBRoHSSMfIeRwiFzAAWFjjbkUSieFGbUagKxDCqxRstvsaXobzvyUGGkYMrBGK9FvV68Q/9nPldU0Bhsel2FUC2u5qf91Ai+c51FD4ye7bKJ2Jc+6UKOFOqr+L3SpFqbbbuLj8Dy5gdckjIwkmuPYLYRnRahAtnSDD+eYlzDVkoPpEVT89B/OxOiZuc/mXpvn4z7mzLfWhLq3LhNvNbi5hgdLLs6XIvrlmNDhxw7DaoQWEWsOAttKWZnhqUQDYicJAo8YmKgqpcdzrFxDs37fTmL8GbcJaZRqWwVCVvs6ot7ko1wnN/yJ0BsN6sAVGPMUlwvYMeX88finpug==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LsxNFZRykI0/83ykuJMcgdMC6mPCZVa8LDZEpn4HxK0=;
- b=J7SoY8dMzKLsJjQMExWxbdUhKS8GcBSi3SDzvFf1wCOx4/Bc8Cu050oXMqHnIW/n6LUj8DguZks9ei+nalg3pTlnpt84BVOpWJpQ569r2plL8aPU0HwgoxVKKIfw+XbApgCpf9L59yhbj5z2LPf2Xi3ZQYcwTty058cCZhISEJhrpDkYnpunWdTLYmct9JBogcth1FnwWNDIULWPOvU0HC9WWU/lfO4RlipJ2TBAZ3G3mLYiXcXUIjATfINevkdB6jwKVBb1EZjnYYC4gFLFsJhPJijtmuuwmcBfUhq0vzfzuGOaqVy8Iuv3wly+E02Fr5UxOpFq1Ff91ps1fE6kzA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.60.83) smtp.rcpttodomain=suse.de smtp.mailfrom=xilinx.com;
- dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
- not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LsxNFZRykI0/83ykuJMcgdMC6mPCZVa8LDZEpn4HxK0=;
- b=NWZUyQVponiN0BjYc6nQ/vuUHyA9iLZ//ysZx9ojTbO9/ROmhE27IbnXn338wbEW+WcoFPZF3XRBiss6FEaQEEdFuv+FkDMcniGmiY1BdpqpxGLzHnC68FBeGJEIzseLAhOJ8SJ/TIBF42KPEojxfQLBq9jBb7VCUXccQqkIdMI=
-Received: from CY4PR21CA0035.namprd21.prod.outlook.com (2603:10b6:903:12b::21)
- by BL0PR02MB4804.namprd02.prod.outlook.com (2603:10b6:208:5f::10)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2856.20; Wed, 1 Apr
- 2020 11:31:01 +0000
-Received: from CY1NAM02FT042.eop-nam02.prod.protection.outlook.com
- (2603:10b6:903:12b:cafe::fd) by CY4PR21CA0035.outlook.office365.com
- (2603:10b6:903:12b::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.4 via Frontend
- Transport; Wed, 1 Apr 2020 11:31:01 +0000
-Authentication-Results: spf=pass (sender IP is 149.199.60.83)
- smtp.mailfrom=xilinx.com; suse.de; dkim=none (message not signed)
- header.d=none;suse.de; dmarc=bestguesspass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.60.83 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.60.83; helo=xsj-pvapsmtpgw01;
-Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
- CY1NAM02FT042.mail.protection.outlook.com (10.152.75.136) with Microsoft SMTP
- Server id 15.20.2878.15 via Frontend Transport; Wed, 1 Apr 2020 11:31:01
- +0000
-Received: from [149.199.38.66] (port=36160 helo=xsj-pvapsmtp01)
- by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
- (envelope-from <michal.simek@xilinx.com>)
- id 1jJbaE-0008If-6u; Wed, 01 Apr 2020 04:30:58 -0700
-Received: from [127.0.0.1] (helo=localhost)
- by xsj-pvapsmtp01 with smtp (Exim 4.63)
- (envelope-from <michal.simek@xilinx.com>)
- id 1jJbaG-0002uf-JB; Wed, 01 Apr 2020 04:31:00 -0700
-Received: from xsj-pvapsmtp01 (mailman.xilinx.com [149.199.38.66])
- by xsj-smtp-dlp2.xlnx.xilinx.com (8.13.8/8.13.1) with ESMTP id 031BUrWL012673; 
- Wed, 1 Apr 2020 04:30:53 -0700
-Received: from [172.30.17.108] by xsj-pvapsmtp01 with esmtp (Exim 4.63)
- (envelope-from <michals@xilinx.com>)
- id 1jJba8-0002jl-Rf; Wed, 01 Apr 2020 04:30:53 -0700
-Subject: Re: [PATCH v2 0/2] powerpc: Remove support for ppc405/440 Xilinx
- platforms
-To: Takashi Iwai <tiwai@suse.de>, Michael Ellerman <mpe@ellerman.id.au>
-References: <cover.1585575111.git.michal.simek@xilinx.com>
- <87imikufes.fsf@mpe.ellerman.id.au>
- <12db51d6-d848-118e-5ec1-a4172bd47aa4@xilinx.com>
- <87y2rftrx7.fsf@mpe.ellerman.id.au> <s5hk12z4hj5.wl-tiwai@suse.de>
-From: Michal Simek <michal.simek@xilinx.com>
-Message-ID: <02e7f790-b105-de67-799c-0fe065e58320@xilinx.com>
-Date: Wed, 1 Apr 2020 13:30:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9AC48F80110
+ for <alsa-devel@alsa-project.org>; Wed,  1 Apr 2020 23:07:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9AC48F80110
+Received: from mail-qk1-f173.google.com ([209.85.222.173]) by
+ mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MybX9-1j7c553sfl-00yzhM for <alsa-devel@alsa-project.org>; Wed, 01 Apr
+ 2020 23:07:35 +0200
+Received: by mail-qk1-f173.google.com with SMTP id u4so1611659qkj.13
+ for <alsa-devel@alsa-project.org>; Wed, 01 Apr 2020 14:07:34 -0700 (PDT)
+X-Gm-Message-State: AGi0Pub/UGJjcZO9kUUAngzMD5WXxxhvzW3n7s06cCQLdlfhg8emivz0
+ L1wuf69BM6AEFoZ8FP12IzBpDvBHw4d8PLE/2Ss=
+X-Google-Smtp-Source: APiQypK2VxbgsBQWN5zZRldfRvjgPaI6APWLNh/n01B0qErpj4ZP7Mfk8XFNqdw3+ssCzEIWikyHqTkJEucg147IwkM=
+X-Received: by 2002:a37:d85:: with SMTP id 127mr236136qkn.3.1585775253692;
+ Wed, 01 Apr 2020 14:07:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <s5hk12z4hj5.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-RCIS-Action: ALLOW
-X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
-X-TM-AS-User-Approved-Sender: Yes;Yes
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-Forefront-Antispam-Report: CIP:149.199.60.83; CTRY:US; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:xsj-pvapsmtpgw01; PTR:unknown-60-83.xilinx.com; CAT:NONE;
- SFTY:;
- SFS:(10009020)(4636009)(376002)(39860400002)(346002)(136003)(396003)(46966005)(316002)(426003)(110136005)(7416002)(70586007)(2616005)(6666004)(31696002)(186003)(4326008)(54906003)(5660300002)(9786002)(82740400003)(36756003)(70206006)(47076004)(31686004)(356004)(966005)(81156014)(8936002)(336012)(2906002)(7366002)(26005)(44832011)(81166006)(8676002)(478600001)(7406005);
- DIR:OUT; SFP:1101; 
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a4b9b715-2deb-40dc-cf62-08d7d63027d9
-X-MS-TrafficTypeDiagnostic: BL0PR02MB4804:
-X-LD-Processed: 657af505-d5df-48d0-8300-c31994686c5c,ExtAddr
-X-Microsoft-Antispam-PRVS: <BL0PR02MB4804F593C4C82B29D5EFA1D2C6C90@BL0PR02MB4804.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-Forefront-PRVS: 03607C04F0
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XwggZbNoDBd/lXHCqSqSaIaup4xSbalQJLtSnsPXJs+sgVjHqLJAHjiXJUHpl83JlhF1y2u9hRU1t0VXIB6xbNoQv4d+adDDaQzYq4zW2jSIjOoJwTs4vIlAToeMyodKHqFmbirHBzs/0j08s95aetKRFJ9lRPulTe0xUCg+Jd3bisu1qlMGxZQUd/6R1qMbqAKf+LDmHPYz5CQdNu65QUmAai4zvgp4aAzog7sADLWdwiYqQJaobpkPxrF8oI+jN/4kkCf7YGT04gq67lOmVCeZla8tMxnTPJKgzXUYVMUDAEZ4d+c6hkJEU7mScYwUYWxvUEBu5SaRxISh4eo6n0BQ8ZwtgVFZO/vRWgggQfzD3E2adIwO9GmJ5UrDFCZAFh3g1fI+oOL9fhyPqy+mv8Kh3UGZOtkgeelxGDzhZT3gnGlbkm+LVw2M234fFOtYbuXM6/I18wCGP5g6AlxPKEnQUH52ilWLCCA1M8/D/uPzb4QPYFC9/R2wXA/68cJy02xtXE0M2jChGjVOGBtYA+tNcj58zR5Jp0WKFBKQY5GrAdnYtZD1Ufe+r2CGjwcEoo2+Ds/zeKCiZr307brklA==
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2020 11:31:01.0874 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a4b9b715-2deb-40dc-cf62-08d7d63027d9
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c; Ip=[149.199.60.83];
- Helo=[xsj-pvapsmtpgw01]
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR02MB4804
-X-Mailman-Approved-At: Thu, 02 Apr 2020 17:37:22 +0200
-Cc: Kate Stewart <kstewart@linuxfoundation.org>,
- Mark Rutland <mark.rutland@arm.com>,
+References: <cover.1585311091.git.michal.simek@xilinx.com>
+ <CAK8P3a2mKPRFbRE3MWScr9GSiL4cpLg0wqv1Q28XDCZVPWgHfg@mail.gmail.com>
+ <20200327131026.GT1922688@smile.fi.intel.com>
+ <20200327131531.GU1922688@smile.fi.intel.com>
+ <CAK8P3a1Z+ZPTDzgAjdz0a7d85R62BhUqkdEWgrwXh-OnYe6rog@mail.gmail.com>
+ <20200327141434.GA1922688@smile.fi.intel.com>
+ <b5adcc7a-9d10-d75f-50e3-9c150a7b4989@c-s.fr>
+ <87mu7xum41.fsf@mpe.ellerman.id.au>
+ <11765c82-bf1a-466c-760d-f9a4c4d1d5f1@c-s.fr>
+ <20200331175123.GV22482@gate.crashing.org>
+In-Reply-To: <20200331175123.GV22482@gate.crashing.org>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Wed, 1 Apr 2020 23:07:16 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a34Tw+bH9bCBQ9HeDo4m4RE67fNOyL8cfUf-i09ur8seg@mail.gmail.com>
+Message-ID: <CAK8P3a34Tw+bH9bCBQ9HeDo4m4RE67fNOyL8cfUf-i09ur8seg@mail.gmail.com>
+Subject: Re: [PATCH 0/2] powerpc: Remove support for ppc405/440 Xilinx
+ platforms
+To: Segher Boessenkool <segher@kernel.crashing.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:Zv8caBl1SIag0tB7l7NIYAMY9wFregkBv091MxLvhjpY3gq7J2b
+ icVuv5HGIrFPmnw7to8glalz2bLqz9rnFDJomI+TASPYjrdCz1GRJdh1lHF1D6uRZSjkvtv
+ aT9fHiA8RjBpeBk3I0JcPOxk+nKkJ1wJcINE8Z8WIL4Cz7m2m1caLFmAIzUY2VMpDWw9GNk
+ p0HuMYXTnmi4/VxGxQabw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:BwC8uR/wSXQ=:5+yGOIwer1dr6cRVIZQy3x
+ UxJCS35/u64Wa29MCCMC+LElKBakajfIV0ZwbKgPMRTUpCELvCbtDIEM0xc8PFuDHqsEYzg1S
+ HT8K17otJR1j7Uw6O7qEqMYAXMa6qalntci1xTmrJ2N7UuEHgqzXH7gFwj0N2MfM+/di97cz8
+ iOOfY6nNXjXaV0VO29DRzPxbGQQNNT9p1SXz/WuAlUB5bDQSMIkdbhQEW6Q/9ZVFq8UD7rVxS
+ A1d4b88hA56/PaT91tRh4I7pLOHLRfPwYKkeCF3E5dsnKHr7qUplp2dDQAbHRGSyOdpTCbH9t
+ Q+7Sdz4lOCj2PoJlw+bV8pTDOSzLar/Eb+YtjFaeoCdF2W7Fl/V0qq/lek8DtDpf5u8Na2pg2
+ 8qynRKu35Hw3qEFp4ANpenN4x55kosxlCFDdiXF2pYivu6e7TVoc3kLx7mWHpU5pOnkQQV5ps
+ zQlynV2qoewYQkJpnbSn1Tqglm+wMalttZy/qN9eHvvzV/432Qjuy65VcTuHezpobSUEWT5f2
+ tehTsp4U+Nc+NOJvGR2VV4FjES5AmPEl3ZdpFLePe5JGaXIHB+eUvR4VxJ0+CKnRoxO6MBAgg
+ erlXIAeoh0MB8HzQuTfyoxag5YyyCUfyXL0FzPMcIRNN4rU+7noqhUZeDjM7fEB4GkUJqyUhi
+ e2hnLTyxDYStmVZZeUyKdG33Nu2aCBrAZCgT7P2gON7m6gEorQYQmTDdoT0/+l3rd9wEpxX12
+ 7jGbLmFLw/UNIhsn8cEr6JjRJSnAToMUyrQzMyk4bqj5Qj6oGwPKBhGh3NP3WPy2agVwavbnE
+ OuWGkV2MJqbv7OpWqLYWVPCV056/Nra1zVX7k13FWasWaswbjo=
+X-Mailman-Approved-At: Thu, 02 Apr 2020 17:37:21 +0200
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ Kate Stewart <kstewart@linuxfoundation.org>,
  "Desnes A. Nunes do Rosario" <desnesn@linux.ibm.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>, linux-doc@vger.kernel.org,
- Benjamin Herrenschmidt <benh@kernel.crashing.org>, alsa-devel@alsa-project.org,
- dri-devel@lists.freedesktop.org, Richard Fontana <rfontana@redhat.com>,
- Paul Mackerras <paulus@samba.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ dri-devel <dri-devel@lists.freedesktop.org>,
+ Richard Fontana <rfontana@redhat.com>, Paul Mackerras <paulus@samba.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
  Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
  Fabio Estevam <festevam@gmail.com>, Sasha Levin <sashal@kernel.org>,
- sfr@canb.auug.org.au, Jonathan Corbet <corbet@lwn.net>, maz@kernel.org,
- Masahiro Yamada <masahiroy@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Stephen Rothwell <sfr@canb.auug.org.au>, Jonathan Corbet <corbet@lwn.net>,
+ Michael Ellerman <mpe@ellerman.id.au>, Masahiro Yamada <masahiroy@kernel.org>,
  YueHaibing <yuehaibing@huawei.com>, Michal Simek <michal.simek@xilinx.com>,
  Krzysztof Kozlowski <krzk@kernel.org>, Allison Randal <allison@lohutok.net>,
- Matt Porter <mporter@kernel.crashing.org>,
- linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
- Andrew Donnellan <ajd@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>,
+ Leonardo Bras <leonardo@linux.ibm.com>, DTML <devicetree@vger.kernel.org>,
+ Andrew Donnellan <ajd@linux.ibm.com>,
  Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- Alistair Popple <alistair@popple.id.au>, linuxppc-dev@lists.ozlabs.org,
+ Marc Zyngier <marc.zyngier@arm.com>, Alistair Popple <alistair@popple.id.au>,
  Nicholas Piggin <npiggin@gmail.com>, Alexios Zavras <alexios.zavras@intel.com>,
- Mark Brown <broonie@kernel.org>, git@xilinx.com, linux-fbdev@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>, git@xilinx.com,
+ Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
  Jonathan Cameron <Jonathan.Cameron@huawei.com>,
  Thomas Gleixner <tglx@linutronix.de>,
  Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Dmitry Vyukov <dvyukov@google.com>, Christophe Leroy <christophe.leroy@c-s.fr>,
- monstr@monstr.eu, Wei Hu <weh@microsoft.com>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ Christophe Leroy <christophe.leroy@c-s.fr>, Enrico Weigelt <info@metux.net>,
+ Michal Simek <monstr@monstr.eu>, Wei Hu <weh@microsoft.com>,
+ Christian Lamparter <chunkeey@gmail.com>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Nick Desaulniers <ndesaulniers@google.com>, linux-kernel@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, Enrico Weigelt <info@metux.net>,
+ Nick Desaulniers <ndesaulniers@google.com>, Takashi Iwai <tiwai@suse.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Armijn Hemel <armijn@tjaldur.nl>, Rob Herring <robh+dt@kernel.org>,
+ linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
  "David S. Miller" <davem@davemloft.net>,
  Thiago Jung Bauermann <bauerman@linux.ibm.com>
 X-BeenThere: alsa-devel@alsa-project.org
@@ -193,54 +144,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 01. 04. 20 12:38, Takashi Iwai wrote:
-> On Wed, 01 Apr 2020 12:35:16 +0200,
-> Michael Ellerman wrote:
->>
->> Michal Simek <michal.simek@xilinx.com> writes:
->>> On 01. 04. 20 4:07, Michael Ellerman wrote:
->>>> Michal Simek <michal.simek@xilinx.com> writes:
->>>>> Hi,
->>>>>
->>>>> recently we wanted to update xilinx intc driver and we found that function
->>>>> which we wanted to remove is still wired by ancient Xilinx PowerPC
->>>>> platforms. Here is the thread about it.
->>>>> https://lore.kernel.org/linux-next/48d3232d-0f1d-42ea-3109-f44bbabfa2e8@xilinx.com/
->>>>>
->>>>> I have been talking about it internally and there is no interest in these
->>>>> platforms and it is also orphan for quite a long time. None is really
->>>>> running/testing these platforms regularly that's why I think it makes sense
->>>>> to remove them also with drivers which are specific to this platform.
->>>>>
->>>>> U-Boot support was removed in 2017 without anybody complain about it
->>>>> https://github.com/Xilinx/u-boot-xlnx/commit/98f705c9cefdfdba62c069821bbba10273a0a8ed
->>>>>
->>>>> Based on current ppc/next.
->>>>>
->>>>> If anyone has any objection about it, please let me know.
->>>>
->>>> Thanks for taking the time to find all this code and remove it.
->>>>
->>>> I'm not going to take this series for v5.7, it was posted too close to
->>>> the merge window, and doing so wouldn't give people much time to object,
->>>> especially given people are distracted at the moment.
->>>>
->>>> I'm happy to take it for v5.8, assuming there's no major objections.
->>>
->>> Sure. Just to let you know Christophe Leroy included this patch in his
->>> series about ppc405 removal. It should be the same.
->>>
->>> If you don't want to take that alsa patch I can send it separately and
->>> this patch can be taken from his series. I don't really mind but please
->>> let me know what way you prefer.
->>
->> It's better to keep it all together, so I'm happy take the alsa patch as
->> well, it's already been acked.
-> 
-> Sure, please go ahead.
+On Tue, Mar 31, 2020 at 7:51 PM Segher Boessenkool
+<segher@kernel.crashing.org> wrote:
+>
+> On Tue, Mar 31, 2020 at 08:56:23AM +0200, Christophe Leroy wrote:
+> > While we are at it, can we also remove the 601 ? This one is also full
+> > of workarounds and diverges a bit from other 6xx.
+> >
+> > I'm unable to find its end of life date, but it was on the market in
+> > 1994, so I guess it must be outdated by more than 10-15 yr old now ?
+>
+> There probably are still some people running Linux on 601 powermacs.
 
+It could be marked as "BROKEN" for a year to find out for sure ;-)
 
-g8.
+Apparently there were only two or three models that are old enough to
+have a 601 and new enough to run Linux with PCI and OF: 7200/8200
+and 7500. These were sold for less than 18 months around 1996,
+though one can still find them on eBay.
 
-Thanks,
-Michal
+           Arnd
