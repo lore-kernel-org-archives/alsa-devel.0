@@ -2,57 +2,87 @@ Return-Path: <SRS0=DopR=5S=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB978C43331
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Apr 2020 16:53:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 887F5C43331
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Apr 2020 17:44:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5D8C120737
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Apr 2020 16:53:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C46E3206F8
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Apr 2020 17:44:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uYgmsDZ9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5D8C120737
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SWQfZqcB";
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MHlaTHZ+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C46E3206F8
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A50181666;
-	Thu,  2 Apr 2020 18:52:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A50181666
+	by alsa0.perex.cz (Postfix) with ESMTPS id EBA141666;
+	Thu,  2 Apr 2020 19:43:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EBA141666
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585846425;
-	bh=Osivhqm+9pPMVP7mmCZZa4RnR6WOe6TvSQW6dNCfCnA=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=uYgmsDZ9jV8JhDgl63p0X3lhrDGSzCBRsZGOvAiKr+uhdCg9HC9Ajpgg3PO23lH96
-	 weqvUDSd06Qf+LV18obaONJnJvsb8ny0ruL5BbunKt4f0Ch6CwdJ187xyE5wxa1upP
-	 qFOye3c+Uq9bkj4mTvOE1FBWFpA3W5P+9930szgQ=
+	s=default; t=1585849458;
+	bh=klVUlKqJmiDOyhb2liNijj0qxMbkGgirYu4ArEm9OTI=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=SWQfZqcBy4/svutP2VMNhPmNktoY7oeUE7PuE9MPN+v4ps2JFNU9doUhuXBsrvhAL
+	 H9tZIGFfhSgg6rwADcq+HrkSJBZ3lJXptcrgg12n4L+dil8dha940ykqt0TtBTW1h2
+	 Dpe+cpFedhG0yDkz4T07WtrWNwJY+1nZ4tkGSmHg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 15699F80146;
-	Thu,  2 Apr 2020 18:52:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6A7AEF80140;
+	Thu,  2 Apr 2020 19:43:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D778CF80148; Thu,  2 Apr 2020 18:52:51 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 4178CF80141
- for <alsa-devel@alsa-project.org>; Thu,  2 Apr 2020 18:52:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4178CF80141
+ id 69368F80148; Thu,  2 Apr 2020 19:43:25 +0200 (CEST)
+Received: from us-smtp-delivery-1.mimecast.com (us-smtp-1.mimecast.com
+ [205.139.110.61])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 727BBF80141
+ for <alsa-devel@alsa-project.org>; Thu,  2 Apr 2020 19:43:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 727BBF80141
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
+ header.b="MHlaTHZ+"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1585849398;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=zKFdpk7krCi2VIyyhqjptr8JEI4k0y6Kn2eHFfKxT0Y=;
+ b=MHlaTHZ+OGdoVjEBxiDZKBeaMHk2qtzrvYJiK7Qc503HGPrnZP4iWFe4gctgiEi5kXdYM/
+ cqbM9fVZrVw6OWMX2c74QFVGm9L7nBkoAOchkdhX97sxrnuETiTMKaIrkUu26TUQH/gMGk
+ hbZy93i54eJdUca9GIE4oXXWAUlv4gA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-240-QydUYujnOb2m8SlgcZJMFQ-1; Thu, 02 Apr 2020 13:43:16 -0400
+X-MC-Unique: QydUYujnOb2m8SlgcZJMFQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com
+ [10.5.11.16])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 47DE9805721;
+ Thu,  2 Apr 2020 17:43:15 +0000 (UTC)
+Received: from x1.localdomain.com (ovpn-112-135.ams2.redhat.com
+ [10.36.112.135])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 8DAB35C541;
+ Thu,  2 Apr 2020 17:43:13 +0000 (UTC)
+From: Hans de Goede <hdegoede@redhat.com>
+To: Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH] ALSA: hda/realtek - Add quirk for Lenovo Carbon X1 8th gen
+Date: Thu,  2 Apr 2020 19:43:11 +0200
+Message-Id: <20200402174311.238614-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1585846364757230997-webhooks-bot@alsa-project.org>
-References: <1585846364757230997-webhooks-bot@alsa-project.org>
-Subject: sof-hda-dsp: microphone device named "Headphones2"
-Message-Id: <20200402165251.D778CF80148@alsa1.perex.cz>
-Date: Thu,  2 Apr 2020 18:52:51 +0200 (CEST)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: quoted-printable
+Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org,
+ stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,9 +98,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #19 was opened from tanuk:
+The audio setup on the Lenovo Carbon X1 8th gen is the same as that on
+the Lenovo Carbon X1 7th gen, as such it needs the same
+ALC285_FIXUP_THINKPAD_HEADSET_JACK quirk.
 
-I was looking at the sof-hda-dsp UCM config, and I noticed that it defines a device named "Headphones2" which seems to actually represent a microphone.
+This fixes volume control of the speaker not working among other things.
 
-Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/19
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=3D1820196
+Cc: stable@vger.kernel.org
+Suggested-by: Jaroslav Kysela <perex@perex.cz>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.=
+c
+index 63e1a56f705b..9c3bbf1df93e 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -7299,6 +7299,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[=
+] =3D {
+ 	SND_PCI_QUIRK(0x17aa, 0x225d, "Thinkpad T480", ALC269_FIXUP_LIMIT_INT_M=
+IC_BOOST),
+ 	SND_PCI_QUIRK(0x17aa, 0x2292, "Thinkpad X1 Yoga 7th", ALC285_FIXUP_THIN=
+KPAD_HEADSET_JACK),
+ 	SND_PCI_QUIRK(0x17aa, 0x2293, "Thinkpad X1 Carbon 7th", ALC285_FIXUP_TH=
+INKPAD_HEADSET_JACK),
++	SND_PCI_QUIRK(0x17aa, 0x22be, "Thinkpad X1 Carbon 8th", ALC285_FIXUP_TH=
+INKPAD_HEADSET_JACK),
+ 	SND_PCI_QUIRK(0x17aa, 0x30bb, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LI=
+NE2_MIC_HOTKEY),
+ 	SND_PCI_QUIRK(0x17aa, 0x30e2, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LI=
+NE2_MIC_HOTKEY),
+ 	SND_PCI_QUIRK(0x17aa, 0x310c, "ThinkCentre Station", ALC294_FIXUP_LENOV=
+O_MIC_LOCATION),
+--=20
+2.26.0
+
