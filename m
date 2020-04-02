@@ -1,109 +1,148 @@
-Return-Path: <SRS0=1DJj=5R=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=DopR=5S=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86010C43331
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Apr 2020 20:23:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E2DBCC43331
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Apr 2020 02:45:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9473220784
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Apr 2020 20:23:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 46BED20719
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Apr 2020 02:45:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="B1nMUN2U";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Hvk1SIqG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9473220784
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WZEdczGw";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="knVGoB4t"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 46BED20719
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=samsung.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 55B8F166E;
-	Wed,  1 Apr 2020 22:22:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 55B8F166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8124C166F;
+	Thu,  2 Apr 2020 04:44:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8124C166F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585772580;
-	bh=kEMZzx6viJDnoYLofsQS/nPIQaRUgQo2ejYrqha+MsY=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1585795516;
+	bh=9NDEUINdmOZ+noQg4bZQ8ILTlo8By4li4mu3EWkbRWs=;
+	h=From:To:In-Reply-To:Subject:Date:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=B1nMUN2U1IbY4hE+UGdFeOWw34mo5V6qBN1SVFEastTwY/vf2eIfHL31k+8ZYQUXH
-	 kgl6rK/eySa1aYR0slOUWTHLTKMkrxQt9aEyXI30wLDCfgB3yz4gqThO68YHURDKbE
-	 4d0TrfWBbWQfGnHpqakPjTtD7P+2EgFo8NIgMHGg=
+	b=WZEdczGwp/YlR5z6nSU5aUQdpE3IUmpVVq60j/O/FKnIcD8SVMgtzpIqbcmoVjflH
+	 xKngOqJrtzMmTPKo1R8pAi87AKZem9/IBeVoNaXPpmX7GUPvpbhJPBuua7/N5jEvIm
+	 4gv7mM2bcK8EE7O9Bwo1dnMLeunZuswM9wt0OhiI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C361DF80110;
-	Wed,  1 Apr 2020 22:22:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 074FEF80146;
+	Thu,  2 Apr 2020 04:44:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8000BF8014B; Wed,  1 Apr 2020 22:22:07 +0200 (CEST)
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
- [IPv6:2a00:1450:4864:20::443])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id F3F70F80148; Thu,  2 Apr 2020 04:44:19 +0200 (CEST)
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1A3C2F80110
- for <alsa-devel@alsa-project.org>; Wed,  1 Apr 2020 22:22:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A3C2F80110
+ by alsa1.perex.cz (Postfix) with ESMTPS id 52F13F80141
+ for <alsa-devel@alsa-project.org>; Thu,  2 Apr 2020 04:44:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52F13F80141
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="Hvk1SIqG"
-Received: by mail-wr1-x443.google.com with SMTP id h15so1610037wrx.9
- for <alsa-devel@alsa-project.org>; Wed, 01 Apr 2020 13:22:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to:user-agent;
- bh=mh2HHstJfsPQjIMH906dc2gC/rvBJb/RqJewKFAVRuo=;
- b=Hvk1SIqG+ZthJwgc9ELnFu8c3kSBNBLpk336raiRIrCXCo33jqWsqnNsxoJT44gQbt
- eKiZKFNJbjL1eT3r8fhQNcuYEgQZyUbeHrtykU2zRiRXzRKVb8WIrtTj2t1s1pIbTliM
- iCgFi6Uq5XgLtH2GZfsFVLtF28fZVXXlE74eLJ2vOrYl3j6SRmCOz9r2q6N8K/JxKT6h
- 11OX78z01uGGTIEsakP3jjNpqG1j0F4gzcvCeWVHES4up1uZFURqvePzYrI0uxEezGJW
- Zvny6G2/r2+Csc+zzxB9F47l0hiMCeC+VEFYX+b7ZybacYmwg5wA9xWHrDzUIkHNlSGL
- V+fQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=mh2HHstJfsPQjIMH906dc2gC/rvBJb/RqJewKFAVRuo=;
- b=swF25p7H2JR4bdfefVsfYn2rmU1uFn/++iLx41DWN6yH4/hCEGZUmeLgYDVFCQ8pw5
- X4gVmE6LOIPxN6ch7/9wChnI6EKsiv6LKVOWl5hYi5eeemfrpT7YgCKdCZrsctGIxnnh
- Et099xGzyJFbclRtjRLET41+M2McFWBeJh4wf4a0ONXTqf11oPcqvLP05ts/bkaTs4bC
- 1KeywlTjCULjm2xgEGrBkR8w+WUobfnYAENy7nIdU/dCh2M8hEOsD3Bx6uUBfRWpp4wJ
- 312XiZDsT0tcIkT/z62Y2jQnhEvx+/yFY0dOFOreHGTCmnF1cl/npgap3mVRkmPda0Va
- EOGQ==
-X-Gm-Message-State: ANhLgQ06eN3izb9L9jOgdQKkx1sjIcVlucWcHy2sACLK0NyX5MZdHrt4
- CxC82gYE0TjQb7ilC7AKtYc=
-X-Google-Smtp-Source: ADFU+vtsHBgTwUMxrWW/oLhgZDnLjUCkkvB+4MGJzCpQEzDlzMkTO8nXTmV7+Nh0PqF4u1GKrGedJQ==
-X-Received: by 2002:a5d:6a43:: with SMTP id t3mr26474827wrw.87.1585772522706; 
- Wed, 01 Apr 2020 13:22:02 -0700 (PDT)
-Received: from localhost (108.78.124.78.rev.sfr.net. [78.124.78.108])
- by smtp.gmail.com with ESMTPSA id j5sm4423262wrr.47.2020.04.01.13.22.02
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 01 Apr 2020 13:22:02 -0700 (PDT)
-Date: Wed, 1 Apr 2020 20:21:26 +0000
-From: sylvain.bertrand@gmail.com
-To: Takashi Iwai <tiwai@suse.de>
-Subject: Re: sw_params for a direct-ed(dmix) hw pcm
-Message-ID: <20200401202126.GA9511@freedom>
-References: <0b0f5117-3b4b-0c25-cd4b-0ecc72479635@perex.cz>
- <20200328182624.GA775@freedom>
- <1baab0fd-d802-3707-645f-d5dc4bf6c32c@linux.intel.com>
- <20200328203744.GA2398@freedom>
- <59266c58-96d8-93e9-bc8f-86e9fccf8d60@linux.intel.com>
- <20200328222021.GA4610@freedom> <s5hr1xbd2su.wl-tiwai@suse.de>
- <s5hlfng7oaj.wl-tiwai@suse.de> <20200401152538.GA11377@freedom>
- <s5hwo6z2o3r.wl-tiwai@suse.de>
+ dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com
+ header.b="knVGoB4t"
+Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
+ by mailout2.samsung.com (KnoxPortal) with ESMTP id
+ 20200402024406epoutp02da67488f3a16eeef74af572a7a86434b~B4I6NiqDG2978029780epoutp02W
+ for <alsa-devel@alsa-project.org>; Thu,  2 Apr 2020 02:44:06 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com
+ 20200402024406epoutp02da67488f3a16eeef74af572a7a86434b~B4I6NiqDG2978029780epoutp02W
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+ s=mail20170921; t=1585795446;
+ bh=EZaZfY5VrQMR10pqAB9WPakWsZtIDC3z0yVekpltegI=;
+ h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+ b=knVGoB4t79N7DZxy2KvucCzworE4EHlcjkKminoMGo2ifcEfE5g6Cjm4UKeod5Rxl
+ zX3weedmhTXu21Mvrdz0KOTtHuA2uKXwQoe+J0L5U8kiRxFcCwwNsbrcErJqC8HmU/
+ uwJ9Aq2H3qXAtA0NMVHjj38uMCjYhTyMgYTx+tOI=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+ epcas2p3.samsung.com (KnoxPortal) with ESMTP id
+ 20200402024406epcas2p3e5cf5bdef30206a8b1d5fa39eb162a5e~B4I5rz5h12774927749epcas2p3W;
+ Thu,  2 Apr 2020 02:44:06 +0000 (GMT)
+Received: from epsmges2p3.samsung.com (unknown [182.195.40.188]) by
+ epsnrtp2.localdomain (Postfix) with ESMTP id 48t6pD5dpnzMqYkc; Thu,  2 Apr
+ 2020 02:44:04 +0000 (GMT)
+Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
+ epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+ 4E.4E.04105.471558E5; Thu,  2 Apr 2020 11:44:04 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+ epcas2p4.samsung.com (KnoxPortal) with ESMTPA id
+ 20200402024404epcas2p453b6445f43077050a44d74cda5f13043~B4I4Cpml01349813498epcas2p4v;
+ Thu,  2 Apr 2020 02:44:04 +0000 (GMT)
+Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
+ epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+ 20200402024404epsmtrp19a4de34efd5fa061ae7b1906fe33a403~B4I389nfW0351403514epsmtrp1e;
+ Thu,  2 Apr 2020 02:44:04 +0000 (GMT)
+X-AuditID: b6c32a47-15bff70000001009-75-5e8551745174
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+ epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+ FC.43.04158.471558E5; Thu,  2 Apr 2020 11:44:04 +0900 (KST)
+Received: from KORDO025540 (unknown [12.36.182.130]) by epsmtip2.samsung.com
+ (KnoxPortal) with ESMTPA id
+ 20200402024404epsmtip254652f865021098890877fa854d41b06~B4I3v3_E82370423704epsmtip2R;
+ Thu,  2 Apr 2020 02:44:04 +0000 (GMT)
+From: "Gyeongtaek Lee" <gt82.lee@samsung.com>
+To: "'Vinod Koul'" <vkoul@kernel.org>
+In-Reply-To: <00a501d606ff$5ec4ef00$1c4ecd00$@samsung.com>
+Subject: RE: [PATCH 1/1] ASoC: soc-compress: lock pcm_mutex to resolve
+ lockdep error
+Date: Thu, 2 Apr 2020 11:44:03 +0900
+Message-ID: <007901d60898$928c7ca0$b7a575e0$@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <s5hwo6z2o3r.wl-tiwai@suse.de>
-User-Agent: Mutt/ (2018-04-13)
-Cc: alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQFwzVbedZouWCPbUsnJTjAf4rU5iQGklQ1ZAqRUqjYByeFLeqj+/amA
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Sa0hTYRjmO2eXY7Y4TauX/Rqnm5dW22rrKFpBViONDKEfktph+1JrN3Zm
+ pFRYmumCbtiyZdJVwQgvTVFJgmmsrBmBRrMLJVpZEF0sEyzadib573mf93m+93m/76NIeYtE
+ QRVbndhh5cyMZJ6osy9Rr3LuOpGvvhtQsUPPfAR74d2YhK3rPCVibw97CfbXUDXBPnh2g2Bb
+ p+4gtv9YLcF2v3pIbooxtP44LjF0e15LDe3NNRLDaW8zMrR4h0XZ4lxzWhHmTNihxFajzVRs
+ LUxnMnMKNhfo9GqNSpPCrmeUVs6C05mMrGzV1mJzKBGjPMiZS0JUNsfzzJoNaQ5biRMri2y8
+ M53BdpPZrtHYV/OchS+xFq422iypGrVaqwsp95qLgj8HCXtb2qH64E1UjgKpLhRDAb0OLnb0
+ kC40j5LTXQh83VNiofiOoO7HLYlQ/ELQ09NLzlre132XCo1eBK6Rm1H/BIK+T9eJsEpCq2Dy
+ zauII55eDt6xt5GjSPo+guo7tSjciKFT4fUjb8hAUXH0bvh2Ym+YFtHLoP7edEQio1NgdLRX
+ LOCF8OjSmCiMSToZGq99jiZSwvR4o1iYtRXcX59GNfFwuaYqqpmSgOuDQcAZEPh4PsrHwSe/
+ VypgBUycqYpsBnQFgi+BmWijFkHNKbmA14L3ykAkM0knQkvPmjAEein0j0THLoDqvj9SgZZB
+ dVXUyEDbwF9CoAEaWqVnEeOZs5dnzl6eOfk9/0ddRaJmtBjbeUsh5rX2tXPfuh1FPmvSti7U
+ OZjlQzSFmPky5b7KfLmYO8iXWnwIKJKJl13OCFEyE1dahh22AkeJGfM+pAtd+zlSschoC319
+ q7NAo9Pq9eoUHavTa1lmiaw9NrhHThdyTnwAYzt2zPoIKkZRjmKfj2XmOYMX3Ak4L8FtSit7
+ LF/uz5poWnl1MlW12Bc7+dudi1Q2vT/44pq/O//hKIOWWhrrXe9mPEfyHpwcSfm5v2EkubK0
+ Y9Wbl08P1w024CaZJeH2AkWOu+L6wMSOdUNnxqcyL2qMK45qt+98coWht1SO93duDAzvbPWx
+ w7GMiC/iNEmkg+f+AZ1keAnCAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprLIsWRmVeSWpSXmKPExsWy7bCSvG5JYGucwZ12DosrFw8xWUx9+ITN
+ Ysa2bhaL1Ve3MFl8u9LBZHH04mImiw3f1zJaHGmcwmSx884JZgdOjw2fm9g8ds66y+6xaVUn
+ m0ffllWMHuu3XGUJYI3isklJzcksSy3St0vgynjXco+5oEerYkFXI3sD4zylLkZODgkBE4ln
+ Mz6xdzFycQgJ7GaUWLFrLhNEQkLiw/wz7BC2sMT9liOsEEXPGSVu9DezgSTYBHQlvty7wwxi
+ iwioSmx58oANpIhZ4CSjxIPdG9kgOu4ySpxZf4MFpIpTwEri7sktYCuEBUIketf8BJvEIqAi
+ MWfPT0YQm1fAUuLRo72sELagxMmZT8B6mQW0JXoftjLC2MsWvmaGOE9B4ufTZawQV7hJTPtw
+ HqpeRGJ2ZxvzBEbhWUhGzUIyahaSUbOQtCxgZFnFKJlaUJybnltsWGCUl1quV5yYW1yal66X
+ nJ+7iREcaVpaOxhPnIg/xCjAwajEw6uQ1hInxJpYVlyZe4hRgoNZSYR3tgtQiDclsbIqtSg/
+ vqg0J7X4EKM0B4uSOK98/rFIIYH0xJLU7NTUgtQimCwTB6dUA6PHETPXXNGgI96Xgtu0jpz/
+ 3xfxYH7cwhonTv6guMj0mZfevu/8npDftfdC1sYtr2eWP9DZacwamqacac+qqBh/K+VvraO+
+ 8LmqjxK636wF2mTFrScc6Wo+Z3Rw3/Tz7vP85Xy05syfw9I+IYWxX0fn/m2Z2m1vpL5eeNly
+ O0WGq1enfnF1hhJLcUaioRZzUXEiAPk2bJOwAgAA
+X-CMS-MailID: 20200402024404epcas2p453b6445f43077050a44d74cda5f13043
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200330110126epcas2p4525e5c6f61f7452df008696f9153770d
+References: <CGME20200330110126epcas2p4525e5c6f61f7452df008696f9153770d@epcas2p4.samsung.com>
+ <002101d60682$8ec21ed0$ac465c70$@samsung.com>
+ <20200330114716.GA72691@vkoul-mobl>
+ <00a501d606ff$5ec4ef00$1c4ecd00$@samsung.com>
+Cc: alsa-devel@alsa-project.org, kimty@samsung.com, tiwai@suse.com,
+ lgirdwood@gmail.com, broonie@kernel.org, hmseo@samsung.com, tkjung@samsung.com,
+ pilsun.jang@samsung.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -119,263 +158,108 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Apr 01, 2020 at 05:59:52PM +0200, Takashi Iwai wrote:
-> Heh, my initial patch was also with that strong type, but I changed it
-> because I wanted to allow the "system default" value, which isn't
-> represented with that type.
-
-I stand corrected. I noticed that after sending my email :(
-
-The patch actually did not install the tstamp configuration option. I did add
-the installation of the option all direct based plugins (dmix/dsnoop/dshare),
-that with a global configuration option.
-
-I did some testing and quickly found out some defaults for sw_params are
-installed in pcm_params.c:_snd_pcm_hw_params_internal from a snd_pcm_hw_params
-installation call.
-
-Those defaults are defined in pcm_params.c:snd_pcm_sw_params_default which
-tstamp value will break in the case of a plugin pipeline ending with already
-running direct plugin.
-
-It means that all calls to snd_pcm_sw_params done internally should have their
-sw_params values investigated to see if they work with a plugin pipeline ending
-with an already running direct plugin.
-
-For the first case, in pcm_params.c:_snd_pcm_hw_params_internal, it seems that
-"valid" default sw_params for a plugin pipeline should be made sort of
-recursive or "something else".
-
-I'll start to try to find a way to deal with with this first case and will
-start to investigate those internal sw_params uses.
-
-Meanwhile, below is the modified patch.
-
-cheers,
-
--- 
-Sylvain
-
----
-diff --git a/src/conf/alsa.conf b/src/conf/alsa.conf
-index a091b810..0e01c887 100644
---- a/src/conf/alsa.conf
-+++ b/src/conf/alsa.conf
-@@ -69,6 +69,7 @@ defaults.pcm.minperiodtime 5000		# in us
- defaults.pcm.ipc_key 5678293
- defaults.pcm.ipc_gid audio
- defaults.pcm.ipc_perm 0660
-+defaults.pcm.tstamp_type "default"
- defaults.pcm.dmix.max_periods 0
- defaults.pcm.dmix.channels 2
- defaults.pcm.dmix.rate 48000
-diff --git a/src/conf/pcm/dmix.conf b/src/conf/pcm/dmix.conf
-index 7fa5c8b2..50e573da 100644
---- a/src/conf/pcm/dmix.conf
-+++ b/src/conf/pcm/dmix.conf
-@@ -56,6 +56,10 @@ pcm.!dmix {
- 		@func refer
- 		name defaults.pcm.ipc_perm
- 	}
-+	tstamp_type {
-+		@func refer
-+		name defaults.pcm.tstamp_type
-+	}
- 	slave {
- 		pcm {
- 			type hw
-diff --git a/src/conf/pcm/dsnoop.conf b/src/conf/pcm/dsnoop.conf
-index abbd44f7..f4336e5f 100644
---- a/src/conf/pcm/dsnoop.conf
-+++ b/src/conf/pcm/dsnoop.conf
-@@ -49,6 +49,10 @@ pcm.!dsnoop {
- 		@func refer
- 		name defaults.pcm.ipc_perm
- 	}
-+	tstamp_type {
-+		@func refer
-+		name defaults.pcm.tstamp_type
-+	}
- 	slave {
- 		pcm {
- 			type hw
-diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
-index 54d99005..b6f5c731 100644
---- a/src/pcm/pcm_direct.c
-+++ b/src/pcm/pcm_direct.c
-@@ -991,8 +991,13 @@ int snd_pcm_direct_hw_free(snd_pcm_t *pcm ATTRIBUTE_UNUSED)
- 	return 0;
- }
- 
--int snd_pcm_direct_sw_params(snd_pcm_t *pcm ATTRIBUTE_UNUSED, snd_pcm_sw_params_t * params ATTRIBUTE_UNUSED)
-+int snd_pcm_direct_sw_params(snd_pcm_t *pcm, snd_pcm_sw_params_t *params)
- {
-+	snd_pcm_direct_t *dmix = pcm->private_data;
-+
-+	if ((int)params->tstamp_type != dmix->tstamp_type)
-+		return -EINVAL;
-+
- 	/* values are cached in the pcm structure */
- 	return 0;
- }
-@@ -1318,6 +1323,15 @@ int snd_pcm_direct_initialize_slave(snd_pcm_direct_t *dmix, snd_pcm_t *spcm, str
- 		return ret;
- 	}
- 
-+	if (dmix->tstamp_type != -1) {
-+		ret = snd_pcm_sw_params_set_tstamp_type(spcm, &sw_params,
-+							dmix->tstamp_type);
-+		if (ret < 0) {
-+			SNDERR("unable to set tstamp type");
-+			return ret;
-+		}
-+	}
-+
- 	if (dmix->type != SND_PCM_TYPE_DMIX &&
- 	    dmix->type != SND_PCM_TYPE_DSHARE)
- 		goto __skip_silencing;
-@@ -1341,6 +1355,9 @@ int snd_pcm_direct_initialize_slave(snd_pcm_direct_t *dmix, snd_pcm_t *spcm, str
- 		return ret;
- 	}
- 
-+	/* copy back the slave setup */
-+	dmix->tstamp_type = (int)sw_params.tstamp_type;
-+
- 	if (dmix->type == SND_PCM_TYPE_DSHARE) {
- 		const snd_pcm_channel_area_t *dst_areas;
- 		dst_areas = snd_pcm_mmap_areas(spcm);
-@@ -1878,6 +1895,7 @@ int snd_pcm_direct_parse_open_conf(snd_config_t *root, snd_config_t *conf,
- 	rec->var_periodsize = 0;
- 	rec->direct_memory_access = 1;
- 	rec->hw_ptr_alignment = SND_PCM_HW_PTR_ALIGNMENT_AUTO;
-+	rec->tstamp_type = -1;
- 
- 	/* read defaults */
- 	if (snd_config_search(root, "defaults.pcm.dmix_max_periods", &n) >= 0) {
-@@ -1941,6 +1959,27 @@ int snd_pcm_direct_parse_open_conf(snd_config_t *root, snd_config_t *conf,
- 
- 			continue;
- 		}
-+		if (strcmp(id, "tstamp_type") == 0) {
-+			const char *str;
-+			err = snd_config_get_string(n, &str);
-+			if (err < 0) {
-+				SNDERR("Invalid type for %s", id);
-+				return -EINVAL;
-+			}
-+			if (strcmp(str, "default") == 0)
-+				rec->tstamp_type = -1;
-+			else if (strcmp(str, "gettimeofday") == 0)
-+				rec->tstamp_type = SND_PCM_TSTAMP_TYPE_GETTIMEOFDAY;
-+			else if (strcmp(str, "monotonic") == 0)
-+				rec->tstamp_type = SND_PCM_TSTAMP_TYPE_MONOTONIC;
-+			else if (strcmp(str, "monotonic_raw") == 0)
-+				rec->tstamp_type = SND_PCM_TSTAMP_TYPE_MONOTONIC_RAW;
-+			else {
-+				SNDERR("The field tstamp_type is invalid : %s", str);
-+				return -EINVAL;
-+			}
-+			continue;
-+		}
- 		if (strcmp(id, "ipc_gid") == 0) {
- 			char *group;
- 			char *endp;
-diff --git a/src/pcm/pcm_direct.h b/src/pcm/pcm_direct.h
-index 221edbe1..63dd645b 100644
---- a/src/pcm/pcm_direct.h
-+++ b/src/pcm/pcm_direct.h
-@@ -173,6 +173,7 @@ struct snd_pcm_direct {
- 	unsigned int recoveries;	/* mirror of executed recoveries on slave */
- 	int direct_memory_access;	/* use arch-optimized buffer RW */
- 	snd_pcm_direct_hw_ptr_alignment_t hw_ptr_alignment;
-+	int tstamp_type;
- 	union {
- 		struct {
- 			int shmid_sum;			/* IPC global sum ring buffer memory identification */
-@@ -357,6 +358,7 @@ struct snd_pcm_direct_open_conf {
- 	int var_periodsize;
- 	int direct_memory_access;
- 	snd_pcm_direct_hw_ptr_alignment_t hw_ptr_alignment;
-+	int tstamp_type;
- 	snd_config_t *slave;
- 	snd_config_t *bindings;
- };
-diff --git a/src/pcm/pcm_dmix.c b/src/pcm/pcm_dmix.c
-index d533f40c..843fa316 100644
---- a/src/pcm/pcm_dmix.c
-+++ b/src/pcm/pcm_dmix.c
-@@ -1038,6 +1038,7 @@ int snd_pcm_dmix_open(snd_pcm_t **pcmp, const char *name,
- 	dmix->ipc_key = opts->ipc_key;
- 	dmix->ipc_perm = opts->ipc_perm;
- 	dmix->ipc_gid = opts->ipc_gid;
-+	dmix->tstamp_type = opts->tstamp_type;
- 	dmix->semid = -1;
- 	dmix->shmid = -1;
- 
-@@ -1237,6 +1238,9 @@ pcm.name {
- 				# roundup
- 				# rounddown
- 				# auto (default)
-+	tstamp_type STR		# timestamp type
-+				# STR can be one of the below strings :
-+				# default, gettimeofday, monotonic, monotonic_raw
- 	slave STR
- 	# or
- 	slave {			# Slave definition
-diff --git a/src/pcm/pcm_dshare.c b/src/pcm/pcm_dshare.c
-index 59448cfb..6a99452b 100644
---- a/src/pcm/pcm_dshare.c
-+++ b/src/pcm/pcm_dshare.c
-@@ -723,6 +723,7 @@ int snd_pcm_dshare_open(snd_pcm_t **pcmp, const char *name,
- 	dshare->ipc_key = opts->ipc_key;
- 	dshare->ipc_perm = opts->ipc_perm;
- 	dshare->ipc_gid = opts->ipc_gid;
-+	dshare->tstamp_type = opts->tstamp_type;
- 	dshare->semid = -1;
- 	dshare->shmid = -1;
- 
-@@ -929,6 +930,9 @@ pcm.name {
- 		# roundup
- 		# rounddown
- 		# auto (default)
-+	tstamp_type STR		# timestamp type
-+				# STR can be one of the below strings :
-+				# default, gettimeofday, monotonic, monotonic_raw
- 	slave STR
- 	# or
- 	slave {			# Slave definition
-diff --git a/src/pcm/pcm_dsnoop.c b/src/pcm/pcm_dsnoop.c
-index 24f472c7..c64df381 100644
---- a/src/pcm/pcm_dsnoop.c
-+++ b/src/pcm/pcm_dsnoop.c
-@@ -591,6 +591,7 @@ int snd_pcm_dsnoop_open(snd_pcm_t **pcmp, const char *name,
- 	dsnoop->ipc_key = opts->ipc_key;
- 	dsnoop->ipc_perm = opts->ipc_perm;
- 	dsnoop->ipc_gid = opts->ipc_gid;
-+	dsnoop->tstamp_type = opts->tstamp_type;
- 	dsnoop->semid = -1;
- 	dsnoop->shmid = -1;
- 
-@@ -780,6 +781,9 @@ pcm.name {
- 		# roundup
- 		# rounddown
- 		# auto (default)
-+	tstamp_type STR		# timestamp type
-+				# STR can be one of the below strings :
-+				# default, gettimeofday, monotonic, monotonic_raw
- 	slave STR
- 	# or
- 	slave {			# Slave definition
-diff --git a/src/pcm/pcm_local.h b/src/pcm/pcm_local.h
-index 05ed935f..89d4125b 100644
---- a/src/pcm/pcm_local.h
-+++ b/src/pcm/pcm_local.h
-@@ -928,6 +928,8 @@ int INTERNAL(snd_pcm_hw_params_set_buffer_size_last)(snd_pcm_t *pcm, snd_pcm_hw_
- 
- int snd_pcm_sw_params_set_tstamp_mode(snd_pcm_t *pcm, snd_pcm_sw_params_t *params, snd_pcm_tstamp_t val);
- int INTERNAL(snd_pcm_sw_params_get_tstamp_mode)(const snd_pcm_sw_params_t *params, snd_pcm_tstamp_t *val);
-+int snd_pcm_sw_params_set_tstamp_type(snd_pcm_t *pcm, snd_pcm_sw_params_t *params, snd_pcm_tstamp_type_t val);
-+int snd_pcm_sw_params_get_tstamp_type(const snd_pcm_sw_params_t *params, snd_pcm_tstamp_type_t *val);
- int snd_pcm_sw_params_set_avail_min(snd_pcm_t *pcm, snd_pcm_sw_params_t *params, snd_pcm_uframes_t val);
- int INTERNAL(snd_pcm_sw_params_get_avail_min)(const snd_pcm_sw_params_t *params, snd_pcm_uframes_t *val);
- int snd_pcm_sw_params_set_start_threshold(snd_pcm_t *pcm, snd_pcm_sw_params_t *params, snd_pcm_uframes_t val);
+On Tuesday, March 31, 2020 10:55 AM, Gyeongtaek Lee wrote:
+>Hi,
+>
+>On 30-03-20, 17:17, Vinod Koul wrote:
+>>Hello,
+>>
+>>On 30-03-20, 20:01,  =CC=B0=20=20=20=20wrote:=0D=0A>>>=20snd_soc_runtime_=
+activate()=20and=20snd_soc_runtime_deactivate()=20require=20=0D=0A>>>=20loc=
+ked=20pcm_mutex.=0D=0A>>>=20=0D=0A>>>=20Signed-off-by:=20Gyeongtaek=20Lee=
+=20<gt82.lee=40samsung.com>=0D=0A>>>=20---=0D=0A>>>=20=20sound/soc/soc-comp=
+ress.c=20=7C=204=20++++=0D=0A>>>=20=201=20file=20changed,=204=20insertions(=
++)=0D=0A>>>=20=0D=0A>>>=20diff=20--git=20a/sound/soc/soc-compress.c=20b/sou=
+nd/soc/soc-compress.c=20index=20=0D=0A>>>=20392a1c5b15d3..42d416ac7e9b=2010=
+0644=0D=0A>>>=20---=20a/sound/soc/soc-compress.c=0D=0A>>>=20+++=20b/sound/s=
+oc/soc-compress.c=0D=0A>>>=20=40=40=20-207,7=20+207,9=20=40=40=20static=20i=
+nt=20soc_compr_open_fe(struct=20=0D=0A>>>=20snd_compr_stream=0D=0A>>>=20*cs=
+tream)=0D=0A>>>=20=20=09fe->dpcm=5Bstream=5D.state=20=3D=20SND_SOC_DPCM_STA=
+TE_OPEN;=0D=0A>>>=20=20=09fe->dpcm=5Bstream=5D.runtime_update=20=3D=20SND_S=
+OC_DPCM_UPDATE_NO;=0D=0A>>>=20=20=0D=0A>>>=20+=09mutex_lock_nested(&fe->pcm=
+_mutex,=20fe->pcm_subclass);=0D=0A>>>=20=20=09snd_soc_runtime_activate(fe,=
+=20stream);=0D=0A>>>=20+=09mutex_unlock(&fe->pcm_mutex);=0D=0A>>=0D=0A>>Can=
+=20you=20please=20explain=20why=20you=20need=20the=20lock=20here,=20as=0D=
+=0A>>>=20=20=0D=0A>>>=20=20=09mutex_unlock(&fe->card->mutex);=0D=0A>>=0D=0A=
+>>we=20already=20have=20a=20lock=20here..=0D=0A>>=0D=0A>>>=20=40=40=20-285,=
+7=20+287,9=20=40=40=20static=20int=20soc_compr_free_fe(struct=20=0D=0A>>>=
+=20snd_compr_stream=0D=0A>>>=20*cstream)=0D=0A>>>=20=20=09else=0D=0A>>>=20=
+=20=09=09stream=20=3D=20SNDRV_PCM_STREAM_CAPTURE;=0D=0A>>>=20=20=0D=0A>>>=
+=20+=09mutex_lock_nested(&fe->pcm_mutex,=20fe->pcm_subclass);=0D=0A>>>=20=
+=20=09snd_soc_runtime_deactivate(fe,=20stream);=0D=0A>>>=20+=09mutex_unlock=
+(&fe->pcm_mutex);=0D=0A>>=0D=0A>>And=20this=20instance=20is=20also=20using=
+=20fe->card->mutex..=20so=20I=20think=20double=20lock=20may=20not=20serve=
+=20any=20purpose=20here..=0D=0A>>=0D=0A>>Can=20you=20explain=20why=20we=20n=
+eed=20the=20extra=20lock?=0D=0A>You=20are=20right.=0D=0A>The=20mutex_lock=
+=20with=20fe->pcm_mutex=20has=20no=20purpose.=0D=0A>It=20just=20removes=20l=
+ockdep=20warning=20like=20the=20below=0D=0A><4>=5B=201437.857354=5D=20=20=
+=5B5:=20=20=20=20=20=20=20=20=20=20cplay:11547=5D=20------------=5B=20cut=
+=20here=20=5D------------=0D=0A><4>=5B=201437.857463=5D=20=20=5B5:=20=20=20=
+=20=20=20=20=20=20=20cplay:11547=5D=20WARNING:=20CPU:=205=20PID:=2011547=20=
+at=20sound/soc/soc-pcm.c:99=20snd_soc_runtime_deactivate+0x88/0x140=0D=0A><=
+4>=5B=201437.857498=5D=20=20=5B5:=20=20=20=20=20=20=20=20=20=20cplay:11547=
+=5D=20Modules=20linked=20in:=0D=0A><4>=5B=201437.857557=5D=20=20=5B5:=20=20=
+=20=20=20=20=20=20=20=20cplay:11547=5D=20CPU:=205=20PID:=2011547=20Comm:=20=
+cplay=20Tainted:=20G=20S=20=20=20=20=20=20W=20=20=20=20=20=20=20=20=204.19.=
+65-00198-ge6c3a8b64f3d-dirty=20=23146=0D=0A><4>=5B=201437.857590=5D=20=20=
+=5B5:=20=20=20=20=20=20=20=20=20=20cplay:11547=5D=20Hardware=20name:=20Sams=
+ung=20xxx=20board=20based=20on=20xxx=20(DT)=0D=0A><4>=5B=201437.857620=5D=
+=20=20=5B5:=20=20=20=20=20=20=20=20=20=20cplay:11547=5D=20Call=20trace:=0D=
+=0A><4>=5B=201437.857662=5D=20=20=5B5:=20=20=20=20=20=20=20=20=20=20cplay:1=
+1547=5D=20=5B<ffffff800808d598>=5D=20dump_backtrace+0x0/0x404=0D=0A><4>=5B=
+=201437.857704=5D=20=20=5B5:=20=20=20=20=20=20=20=20=20=20cplay:11547=5D=20=
+=5B<ffffff800808d9b0>=5D=20show_stack+0x14/0x1c=0D=0A><4>=5B=201437.857745=
+=5D=20=20=5B5:=20=20=20=20=20=20=20=20=20=20cplay:11547=5D=20=5B<ffffff8008=
+c5dc24>=5D=20dump_stack+0xa0/0xd8=0D=0A><4>=5B=201437.857784=5D=20=20=5B5:=
+=20=20=20=20=20=20=20=20=20=20cplay:11547=5D=20=5B<ffffff80080a4b28>=5D=20_=
+_warn+0xcc/0x12c=0D=0A><4>=5B=201437.857821=5D=20=20=5B5:=20=20=20=20=20=20=
+=20=20=20=20cplay:11547=5D=20=5B<ffffff8008c5cd78>=5D=20report_bug+0x78/0xc=
+c=0D=0A><4>=5B=201437.857857=5D=20=20=5B5:=20=20=20=20=20=20=20=20=20=20cpl=
+ay:11547=5D=20=5B<ffffff800808e5c0>=5D=20bug_handler+0x2c/0x88=0D=0A><4>=5B=
+=201437.857895=5D=20=20=5B5:=20=20=20=20=20=20=20=20=20=20cplay:11547=5D=20=
+=5B<ffffff8008085510>=5D=20brk_handler+0x88/0xc8=0D=0A><4>=5B=201437.857930=
+=5D=20=20=5B5:=20=20=20=20=20=20=20=20=20=20cplay:11547=5D=20=5B<ffffff8008=
+080f0c>=5D=20do_debug_exception+0x108/0x194=0D=0A><4>=5B=201437.857968=5D=
+=20=20=5B5:=20=20=20=20=20=20=20=20=20=20cplay:11547=5D=20Exception=20stack=
+(0xffffff8028b0b960=20to=200xffffff8028b0baa0)=0D=0A><4>=5B=201437.858002=
+=5D=20=20=5B5:=20=20=20=20=20=20=20=20=20=20cplay:11547=5D=20b960:=20000000=
+0000000024=20ffffff8008e28a97=20ffffffc975bb40a0=20ffffff8028b0b748=0D=0A><=
+4>=5B=201437.858035=5D=20=20=5B5:=20=20=20=20=20=20=20=20=20=20cplay:11547=
+=5D=20b980:=200000000000000080=200000000000000000=20ffffff8008129638=200000=
+000000000000=0D=0A><4>=5B=201437.858066=5D=20=20=5B5:=20=20=20=20=20=20=20=
+=20=20=20cplay:11547=5D=20b9a0:=20e0b1dc92eba18f00=20e0b1dc92eba18f00=20000=
+0000000000003=200000000000000000=0D=0A><4>=5B=201437.858098=5D=20=20=5B5:=
+=20=20=20=20=20=20=20=20=20=20cplay:11547=5D=20b9c0:=200000000000240022=200=
+000000000000004=20ffffff8009b2f420=2000000000fffffff5=0D=0A><4>=5B=201437.8=
+58130=5D=20=20=5B5:=20=20=20=20=20=20=20=20=20=20cplay:11547=5D=20b9e0:=20f=
+fffff8008c6baac=20000000000000002c=2000000000000000b0=20ffffffc9673c1e80=0D=
+=0A><4>=5B=201437.858161=5D=20=20=5B5:=20=20=20=20=20=20=20=20=20=20cplay:1=
+1547=5D=20ba00:=200000000000000000=20ffffffc8190e6100=200000000000000000=20=
+ffffffc95c262e88=0D=0A><4>=5B=201437.858193=5D=20=20=5B5:=20=20=20=20=20=20=
+=20=20=20=20cplay:11547=5D=20ba20:=200000000000000008=20ffffffc8ec3050d0=20=
+ffffffc8fb81a4d0=200000000000000004=0D=0A><4>=5B=201437.858224=5D=20=20=5B5=
+:=20=20=20=20=20=20=20=20=20=20cplay:11547=5D=20ba40:=200000000000000009=20=
+ffffff8028b0bac0=20ffffff8008a895c8=20ffffff8028b0baa0=0D=0A><4>=5B=201437.=
+858256=5D=20=20=5B5:=20=20=20=20=20=20=20=20=20=20cplay:11547=5D=20ba60:=20=
+ffffff8008a895c8=200000000060400005=20ffffff8028b0ba48=20ffffff800811d7b4=
+=0D=0A><4>=5B=201437.858287=5D=20=20=5B5:=20=20=20=20=20=20=20=20=20=20cpla=
+y:11547=5D=20ba80:=200000007fffffffff=20e0b1dc92eba18f00=20ffffff8028b0bac0=
+=20ffffff8008a895c8=0D=0A><4>=5B=201437.858318=5D=20=20=5B5:=20=20=20=20=20=
+=20=20=20=20=20cplay:11547=5D=20=5B<ffffff8008082b18>=5D=20el1_dbg+0x18/0x7=
+8=0D=0A><4>=5B=201437.858355=5D=20=20=5B5:=20=20=20=20=20=20=20=20=20=20cpl=
+ay:11547=5D=20=5B<ffffff8008a895c8>=5D=20snd_soc_runtime_deactivate+0x88/0x=
+140=0D=0A>=0D=0A>from=20here=0D=0A>void=20snd_soc_runtime_activate(struct=
+=20snd_soc_pcm_runtime=20*rtd,=20int=20stream)=0D=0A>=7B=0D=0A>=09struct=20=
+snd_soc_dai=20*cpu_dai=20=3D=20rtd->cpu_dai;=0D=0A>=09int=20i;=0D=0A>=0D=0A=
+>=09lockdep_assert_held(&rtd->pcm_mutex);=0D=0A>=0D=0A>and=20here.=0D=0A>vo=
+id=20snd_soc_runtime_deactivate(struct=20snd_soc_pcm_runtime=20*rtd,=20int=
+=20stream)=0D=0A>=7B=0D=0A>=09struct=20snd_soc_dai=20*cpu_dai=20=3D=20rtd->=
+cpu_dai;=0D=0A>=09int=20i;=0D=0A>=0D=0A>=09lockdep_assert_held(&rtd->pcm_mu=
+tex);=0D=0A>=0D=0A>Approach=20method=20of=20this=20patch=20is=20too=20simpl=
+e=20but,=0D=0A>I=20think=20that=20simple=20approach=20can=20be=20used=20unt=
+il=20the=20nicer=20patch=20arrives.=0D=0A>=0D=0A>Thank=20you=20for=20your=
+=20fast=20review.=0D=0A>>=0D=0A>>Thanks=0D=0A>>--=0D=0A>>=7EVinod=0D=0A>>=
+=0D=0A=0D=0AHi,=0D=0A=0D=0ACould=20you=20review=20my=20answer=20and=20patch=
+=20and=20give=20me=20a=20comment?=0D=0AIf=20you=20have=20any=20suggestion,=
+=20just=20let=20me=20know=20it.=0D=0A=0D=0AThanks=0D=0A=0D=0AGyeongtaek=0D=
+=0A=0D=0A
