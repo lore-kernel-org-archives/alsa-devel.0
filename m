@@ -2,78 +2,125 @@ Return-Path: <SRS0=+eNr=5T=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C3BDC43331
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2020 16:11:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CDDD6C43331
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2020 16:21:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A78E9206E9
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2020 16:11:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5694620721
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2020 16:21:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sr3RdnxP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A78E9206E9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="F/OAq/bg";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="nwDK+Zhi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5694620721
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0269886F;
-	Fri,  3 Apr 2020 18:10:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0269886F
+	by alsa0.perex.cz (Postfix) with ESMTPS id B532D14E;
+	Fri,  3 Apr 2020 18:20:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B532D14E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585930286;
-	bh=3Z3iPjxAMl7+7KTQ4m2RT0yibP2LPn5y57Uu0b4Fyz0=;
-	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1585930885;
+	bh=koYVW8+QvgurOimf4wuCFmPOFY+nRMwdFMub/0jhHZY=;
+	h=From:To:Subject:In-Reply-To:References:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sr3RdnxPVE3qX+DnRruhUPJSaNYra8TBj6qpsBOvP5+GMo8fxjcthVWfxnPKxJpKi
-	 wWroK/1lxdKodxG/pqjp3lVAEgfR37Iwtz2nGxmNGznVdRA4IVnqCTkM4gXHLlnN7V
-	 YwT5OYEEBaEkhbuvcC6a+7nlxEDuJA+8MqgJGlXM=
+	b=F/OAq/bgrzzuosFsANJ2j68zG/8yc5lT5yMGA6RQ3xCvIgWMn5W/qNfrfI8u99EJ3
+	 Yben9nXqm6MvEl3wGbj1Wcn7S7ujQrZj0DvUYxqeY5dlJPUAY5Tdk00bkP4ygsyU2d
+	 ZPWhPCvBA3vDOXzJXUakmv/5ihZBysfo5/OJ0uVI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8435DF8014B;
-	Fri,  3 Apr 2020 18:10:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3DE21F8014B;
+	Fri,  3 Apr 2020 18:20:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C3755F8014B; Fri,  3 Apr 2020 18:10:33 +0200 (CEST)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id E951FF800C2; Fri,  3 Apr 2020 06:59:45 +0200 (CEST)
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EB037F800C2;
- Fri,  3 Apr 2020 18:10:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB037F800C2
-IronPort-SDR: co0zuTOLLuZnpwaShfr4mRq+4BnnHCYThuRHdrKIPFIepMwWzkpEG6/y6DOpmJjkacDJN2AWj3
- tksExLvoszBQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Apr 2020 09:10:24 -0700
-IronPort-SDR: MDZlxxxjyn/0l5oSCTV5sKUbt8lBL/3vmHzoZ7pMVeR4YHZIf171db2suK/3OvnkhG/1jsnqem
- GnF2mhFgv40A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,340,1580803200"; d="scan'208";a="329206146"
-Received: from unknown (HELO hod) ([10.252.63.212])
- by orsmga001.jf.intel.com with ESMTP; 03 Apr 2020 09:10:22 -0700
-Message-ID: <29be8be8d9b8700588da693d93b9f10adbb10016.camel@linux.intel.com>
-Subject: Re: [Sound-open-firmware] [PATCH v2 00/12] [RESEND] ASoC: SOF DSP
- virtualisation
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-To: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>, Mark
- Brown <broonie@kernel.org>
-Date: Fri, 03 Apr 2020 17:10:20 +0100
-In-Reply-To: <20200403110404.GA23734@ubuntu>
-References: <20200403091406.22381-1-guennadi.liakhovetski@linux.intel.com>
- <20200403092842.GB4286@sirena.org.uk> <20200403110404.GA23734@ubuntu>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- sound-open-firmware@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2769DF800C2
+ for <alsa-devel@alsa-project.org>; Fri,  3 Apr 2020 06:59:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2769DF800C2
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au
+ header.b="nwDK+Zhi"
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest
+ SHA256) (No client certificate requested)
+ by mail.ozlabs.org (Postfix) with ESMTPSA id 48tnlr1WLCz9sP7;
+ Fri,  3 Apr 2020 15:59:20 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+ s=201909; t=1585889968;
+ bh=koYVW8+QvgurOimf4wuCFmPOFY+nRMwdFMub/0jhHZY=;
+ h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+ b=nwDK+ZhiEWknY+358l34LoaogRVndV4GhHNy5EZDHG90fqoXBFV8V3G/97NyM9i3P
+ hAQL0RCcyQuLU4Yqm/VxtVpvPIIDIG7dTw+3cRRbcRuhbEnLcDKAouyshmJ/OE6Rni
+ 2m0ZkoE0JhABRUuSMWpbVp5kyPdiWQivRv3OfFv+SniE8QXq4Ldm273KUTpcLZi9a5
+ MKlqhnU2CQebiGyXSCqRnfK12DCJv0lZuzNnnQL7N69FyGbfRE1N2g7fdi6YPPpB2Z
+ orO4wHWgp5g/lCSRjdcZf3NmOgHTGFM4kWC2imnOELqNKbKe7C2sRnPhv3KdHE2abO
+ tEa55yVhXWN6g==
+From: Michael Ellerman <mpe@ellerman.id.au>
+To: Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ Christophe Leroy <christophe.leroy@c-s.fr>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 0/2] powerpc: Remove support for ppc405/440 Xilinx
+ platforms
+In-Reply-To: <bac9af641140cf6df04e3532589a11c2f3bccd2f.camel@kernel.crashing.org>
+References: <cover.1585311091.git.michal.simek@xilinx.com>
+ <CAK8P3a2mKPRFbRE3MWScr9GSiL4cpLg0wqv1Q28XDCZVPWgHfg@mail.gmail.com>
+ <20200327131026.GT1922688@smile.fi.intel.com>
+ <20200327131531.GU1922688@smile.fi.intel.com>
+ <CAK8P3a1Z+ZPTDzgAjdz0a7d85R62BhUqkdEWgrwXh-OnYe6rog@mail.gmail.com>
+ <20200327141434.GA1922688@smile.fi.intel.com>
+ <b5adcc7a-9d10-d75f-50e3-9c150a7b4989@c-s.fr>
+ <87mu7xum41.fsf@mpe.ellerman.id.au>
+ <bac9af641140cf6df04e3532589a11c2f3bccd2f.camel@kernel.crashing.org>
+Date: Fri, 03 Apr 2020 15:59:30 +1100
+Message-ID: <87pncprwp9.fsf@mpe.ellerman.id.au>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Mailman-Approved-At: Fri, 03 Apr 2020 18:20:33 +0200
+Cc: Kate Stewart <kstewart@linuxfoundation.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ "Desnes A. Nunes do Rosario" <desnesn@linux.ibm.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ dri-devel <dri-devel@lists.freedesktop.org>,
+ Richard Fontana <rfontana@redhat.com>, Paul Mackerras <paulus@samba.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+ Fabio Estevam <festevam@gmail.com>, Sasha Levin <sashal@kernel.org>,
+ Stephen Rothwell <sfr@canb.auug.org.au>, Jonathan Corbet <corbet@lwn.net>,
+ Masahiro Yamada <masahiroy@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ YueHaibing <yuehaibing@huawei.com>, Michal Simek <michal.simek@xilinx.com>,
+ Krzysztof Kozlowski <krzk@kernel.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ Leonardo Bras <leonardo@linux.ibm.com>,
+ Matt Porter <mporter@kernel.crashing.org>, DTML <devicetree@vger.kernel.org>,
+ Andrew Donnellan <ajd@linux.ibm.com>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Marc Zyngier <marc.zyngier@arm.com>, Alistair Popple <alistair@popple.id.au>,
+ linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+ Nicholas Piggin <npiggin@gmail.com>, Alexios Zavras <alexios.zavras@intel.com>,
+ Mark Brown <broonie@kernel.org>, git@xilinx.com,
+ Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Allison Randal <allison@lohutok.net>,
+ Michal Simek <monstr@monstr.eu>, Wei Hu <weh@microsoft.com>,
+ Christian Lamparter <chunkeey@gmail.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Nick Desaulniers <ndesaulniers@google.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Armijn Hemel <armijn@tjaldur.nl>, Rob Herring <robh+dt@kernel.org>,
+ Enrico Weigelt <info@metux.net>, "David S. Miller" <davem@davemloft.net>,
+ Thiago Jung Bauermann <bauerman@linux.ibm.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,48 +136,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 2020-04-03 at 13:04 +0200, Guennadi Liakhovetski wrote:
-> Hi Mark,
-> 
-> On Fri, Apr 03, 2020 at 10:28:42AM +0100, Mark Brown wrote:
-> > On Fri, Apr 03, 2020 at 11:13:54AM +0200, Guennadi Liakhovetski
-> > wrote:
-> > > This patch series extends the SOF driver to add support for DSP
-> > > virtualisation to ASoC. It is built on top of VirtIO, contains a
-> > > guest driver and a vhost in-kernel guest driver. This version
-> > > supports a single playback and a single capture interface on the
-> > > guest. The specific guest audio topology is supplied by the host
-> > 
-> > I've asked a couple of times for documentation of the protocol here
-> > but
-> > don't think I've seen anything yet?
+Benjamin Herrenschmidt <benh@kernel.crashing.org> writes:
+> On Tue, 2020-03-31 at 16:30 +1100, Michael Ellerman wrote:
+>> I have no attachment to 40x, and I'd certainly be happy to have less
+>> code in the tree, we struggle to keep even the modern platforms well
+>> maintained.
+>> 
+>> At the same time I don't want to render anyone's hardware obsolete
+>> unnecessarily. But if there's really no one using 40x then we should
+>> remove it, it could well be broken already.
+>> 
+>> So I guess post a series to do the removal and we'll see if anyone
+>> speaks up.
+>
+> We shouldn't remove 40x completely. Just remove the Xilinx 405 stuff.
 
-Sorry Mark, the whole series should not have been sent since we are
-still pending on some OASIS standards being ratified. Guennadi, please
-just send the patches that add the protocol independent dependencies to
-ASoC and SOF driver only for review atm (patches 1,2,3,5,6 & 7).
+Congratulations on becoming the 40x maintainer!
 
-The full series is blocking on
-
-1) the virto-snd patches being merged. This will then allow the code
-(when modified) to run HDA like audio on SOF DSPs.
-
-2) virtio DMA buffer sharing being concluded for "zero copy" usage.
-
-3) rpmsg integration. The SOF IPC will use rpmsg virtio transport
-between host and guests.
-
-This series does not mandate a DSP IPC standard, since this may differ
-between DSP vendors, but it will use OASIS standards for virtio-snd,
-DMA buffers and rpmsg.
-
-I would say that parts of the "SOF protocol" may be useful for other
-vendors in the DAPM/topology areas where users want to connect guest
-topologies to host topologies (connected internally with DAPM).
-
-Thanks
-
-Liam
-
-
-
+cheers
