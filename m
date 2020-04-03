@@ -1,82 +1,119 @@
-Return-Path: <SRS0=+eNr=5T=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=ossE=5U=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 39E7AC43331
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2020 18:10:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 49E25C43331
+	for <alsa-devel@archiver.kernel.org>; Sat,  4 Apr 2020 01:16:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9C87D2077D
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2020 18:10:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C38C32074B
+	for <alsa-devel@archiver.kernel.org>; Sat,  4 Apr 2020 01:16:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="J6JIZUxI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9C87D2077D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="V9JWrsD6";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="eCT4h8tk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C38C32074B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=samsung.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E2BE41657;
-	Fri,  3 Apr 2020 20:09:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E2BE41657
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0FE471655;
+	Sat,  4 Apr 2020 03:15:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FE471655
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585937425;
-	bh=hpHVyBP9VXRjdb1/MNntk0ehfYCTa2oQE0INhxXESLU=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=J6JIZUxIo+A9gFNFa32iuj1cw9sDuo2zZcnf7BrdnWmd3LaTcTGlA2PJefbQG3jVy
-	 NB7NhVsDUQGCRaTaO/sSz6TWsKsAlez99T44fYfST+WupurLVsQIISR01JYCgJx/VK
-	 eMdmcDYPFYIXaVa3ki/gkLuEr/FEfIc3qlOqehMo=
+	s=default; t=1585962976;
+	bh=5lJjnPepBaGKOS0OXRRjPSVxiznLGpmmBv145M0KXbw=;
+	h=From:To:Subject:Date:References:Cc:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=V9JWrsD6brEw6I56vGxodng0K4pqqSMvgY4XCUt7EKiPEZTp+3uVV/pN/3ZbxFgdO
+	 8FS+kZFGzYaJsDBA/7uOeTJrQRRhM6VAe13xclJe5zrJDLES57RGZgmFBNx2gl69ha
+	 EZl1nMOQFsbYIaa+PkRWjiyAjtrHjRqPVrEhKYMk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5F68CF800E4;
-	Fri,  3 Apr 2020 20:09:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5F9E5F8014B;
+	Sat,  4 Apr 2020 03:15:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2684FF8014C; Fri,  3 Apr 2020 20:09:32 +0200 (CEST)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 5B1CEF8014C; Sat,  4 Apr 2020 03:15:14 +0200 (CEST)
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D1104F800E4;
- Fri,  3 Apr 2020 20:09:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1104F800E4
-IronPort-SDR: 4K/Zhmjn+F1GGV3QY4SoY7weaVyuQscuK6a97EEhZg/AIFzzc612+Tc3nKkYtKNxs0n6pT6Maz
- bSxnjPI3HVZQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Apr 2020 11:09:22 -0700
-IronPort-SDR: m2ipRex36t3AXAuj3ykNFv0QHOblvbNn2BGRca01wj1bFrjaLOYVFVuzAKjePSzL1uC+rIGDU9
- vLJzkiIKakTQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,340,1580803200"; d="scan'208";a="241184620"
-Received: from gliakhov-mobl2.ger.corp.intel.com (HELO ubuntu)
- ([10.249.36.113])
- by fmsmga007.fm.intel.com with ESMTP; 03 Apr 2020 11:09:20 -0700
-Date: Fri, 3 Apr 2020 20:09:19 +0200
-From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [Sound-open-firmware] [PATCH v2 00/12] [RESEND] ASoC: SOF DSP
- virtualisation
-Message-ID: <20200403180918.GA25646@ubuntu>
-References: <20200403091406.22381-1-guennadi.liakhovetski@linux.intel.com>
- <20200403092842.GB4286@sirena.org.uk>
- <20200403110404.GA23734@ubuntu>
- <29be8be8d9b8700588da693d93b9f10adbb10016.camel@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6136CF800C2
+ for <alsa-devel@alsa-project.org>; Sat,  4 Apr 2020 03:15:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6136CF800C2
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com
+ header.b="eCT4h8tk"
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+ by mailout3.samsung.com (KnoxPortal) with ESMTP id
+ 20200404011502epoutp039d007a8b3e73e49feff357a4cf0dac89~CeNtnNO5L0695906959epoutp03E
+ for <alsa-devel@alsa-project.org>; Sat,  4 Apr 2020 01:15:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com
+ 20200404011502epoutp039d007a8b3e73e49feff357a4cf0dac89~CeNtnNO5L0695906959epoutp03E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+ s=mail20170921; t=1585962902;
+ bh=PvDPnEeL38qwNjUsp6lgQLyDbYk60hp7979iwMWeQaY=;
+ h=From:To:Cc:Subject:Date:References:From;
+ b=eCT4h8tkh5BBQpm0VenMzRgub2gdHvT2ct+4BgdsYdH2jVGsl5voUlKTAhRLfhfBU
+ NK9LARiuoCXuX3dnsb7hglgKMi43zpLO4oyfg0zr9Sx+SE1tAtBBYEBOtpwm5NX3bf
+ reYqPwQWBxoUzBgKyjcDykK0sxqaXc3wWkPCZyCI=
+Received: from epcpadp1 (unknown [182.195.40.11]) by epcas1p4.samsung.com
+ (KnoxPortal) with ESMTP id
+ 20200404011501epcas1p489e695112a7a0fbd8e37c67ab769ee72~CeNs7z78v1802018020epcas1p4F;
+ Sat,  4 Apr 2020 01:15:01 +0000 (GMT)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+ epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
+ 20200403041724epcas2p233810a68ae04a15427c33e5b82bc200a~CNDpZmCjr0654106541epcas2p2D;
+ Fri,  3 Apr 2020 04:17:24 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+ epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+ 20200403041723epsmtrp2ee17d63b6d31f07acc45858c1fc379cd~CNDpYvFR73171631716epsmtrp2e;
+ Fri,  3 Apr 2020 04:17:23 +0000 (GMT)
+X-AuditID: b6c32a29-2dfff70000000fb8-e3-5e86b8d39bd1
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+ epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+ FD.50.04024.3D8B68E5; Fri,  3 Apr 2020 13:17:23 +0900 (KST)
+Received: from KORDO025540 (unknown [12.36.182.130]) by epsmtip1.samsung.com
+ (KnoxPortal) with ESMTPA id
+ 20200403041723epsmtip1ad30a327ab13d2a79b75b0fd73d856c5~CNDpPR89L3066230662epsmtip19;
+ Fri,  3 Apr 2020 04:17:23 +0000 (GMT)
+From: "Gyeongtaek Lee" <gt82.lee@samsung.com>
+To: "'Mark Brown'" <broonie@kernel.org>, <kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH v2 1/1] ASoC: soc-component: add snd_soc_component_ack()
+Date: Fri, 3 Apr 2020 13:17:23 +0900
+Message-ID: <1019298652.01585962901762.JavaMail.epsvc@epcpadp1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <29be8be8d9b8700588da693d93b9f10adbb10016.camel@linux.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- sound-open-firmware@alsa-project.org
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AdYJbrRSoxcxjOniTkOYVNEBV7kQiQ==
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpjkeLIzCtJLcpLzFFi42LZdlhJTvfyjrY4g1uTLC2uXDzEZDH14RM2
+ i5eHNC1mbOtmsXh1eBejxbcrHUwWRy8uZrLY8H0to8WRxilMDpweGz43sXnsnHWX3WPTqk42
+ j29nJrJ49G1ZxeixfstVlgC2KC6blNSczLLUIn27BK6MZZ8XshbcEa6Yc2sNcwPjWYEuRk4O
+ CQETidN/77F0MXJxCAnsZpQ4dvUiM0RCQuLD/DPsELawxP2WI6wgtpDAc0aJ61vAbDYBXYkv
+ 9+6A1YsI+EpcedTCCDKIWWADo8SEyQ+ZQBLCAh4SvzccZQSxWQRUJF5umAc0lIODV8BSYvpb
+ R5Awr4CgxMmZT1hAbGYBbYmnN59C2fIS29/OgbpHQeLn02WsELv0JB7eXsgOUSMiMbuzjXkC
+ o+AsJKNmIRk1C8moWUhaFjCyrGKUTC0ozk3PLTYsMMxLLdcrTswtLs1L10vOz93ECI4dLc0d
+ jJeXxB9iFOBgVOLhZTjYGifEmlhWXJl7iFGCg1lJhNdxBlCINyWxsiq1KD++qDQntfgQozQH
+ i5I479O8Y5FCAumJJanZqakFqUUwWSYOTqkGxr6Fr2d8nHjgPmvBbr9E8y3HzSxuzRP4s3ih
+ 16/DTV3XA9itlW0WNh6b7iuUcOe/cvUUGU7TG/tqbgkIvjXZ3GkVGb/loFhUvUFI5a24XXsS
+ M954fNOx5tz0Qe7MxQDjiYbcraXvVvhwWv//NUt3jdKW2wauOV8uC71iPG+7x/6QmXr5k9kX
+ 9JVYijMSDbWYi4oTAc1YN/qZAgAA
+X-CMS-MailID: 20200403041724epcas2p233810a68ae04a15427c33e5b82bc200a
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20200403041724epcas2p233810a68ae04a15427c33e5b82bc200a
+References: <CGME20200403041724epcas2p233810a68ae04a15427c33e5b82bc200a@epcas2p2.samsung.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.com,
+ hmseo@samsung.com, cpgs@samsung.com, tkjung@samsung.com,
+ pilsun.jang@samsung.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,74 +129,77 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Liam,
+Current ALSA SoC is directly using component->driver->ops->xxx,
+thus, it is deep nested, and makes code difficult to read,
+and is not good for encapsulation.
+This patch adds new snd_soc_component_ack() and use it.
+Ack callback is revived because some ASoC driver is using it.
 
-Thanks for the clarifications.
+Signed-off-by: Gyeongtaek Lee <gt82.lee@samsung.com>
+---
+ include/sound/soc-component.h |  1 +
+ sound/soc/soc-component.c     | 18 ++++++++++++++++++
+ sound/soc/soc-pcm.c           |  2 ++
+ 3 files changed, 21 insertions(+)
 
-On Fri, Apr 03, 2020 at 05:10:20PM +0100, Liam Girdwood wrote:
-> On Fri, 2020-04-03 at 13:04 +0200, Guennadi Liakhovetski wrote:
-> > Hi Mark,
-> > 
-> > On Fri, Apr 03, 2020 at 10:28:42AM +0100, Mark Brown wrote:
-> > > On Fri, Apr 03, 2020 at 11:13:54AM +0200, Guennadi Liakhovetski
-> > > wrote:
-> > > > This patch series extends the SOF driver to add support for DSP
-> > > > virtualisation to ASoC. It is built on top of VirtIO, contains a
-> > > > guest driver and a vhost in-kernel guest driver. This version
-> > > > supports a single playback and a single capture interface on the
-> > > > guest. The specific guest audio topology is supplied by the host
-> > > 
-> > > I've asked a couple of times for documentation of the protocol here
-> > > but
-> > > don't think I've seen anything yet?
-> 
-> Sorry Mark, the whole series should not have been sent since we are
-> still pending on some OASIS standards being ratified. Guennadi, please
-> just send the patches that add the protocol independent dependencies to
-> ASoC and SOF driver only for review atm (patches 1,2,3,5,6 & 7).
-> 
-> The full series is blocking on
-> 
-> 1) the virto-snd patches being merged. This will then allow the code
-> (when modified) to run HDA like audio on SOF DSPs.
-> 
-> 2) virtio DMA buffer sharing being concluded for "zero copy" usage.
+diff --git a/include/sound/soc-component.h b/include/sound/soc-component.h
+index 5d80b2eef525..50b079272b47 100644
+--- a/include/sound/soc-component.h
++++ b/include/sound/soc-component.h
+@@ -381,6 +381,7 @@ struct page *snd_soc_pcm_component_page(struct snd_pcm_substream *substream,
+ 					unsigned long offset);
+ int snd_soc_pcm_component_mmap(struct snd_pcm_substream *substream,
+ 			       struct vm_area_struct *vma);
++int snd_soc_pcm_component_ack(struct snd_pcm_substream *substream);
+ int snd_soc_pcm_component_new(struct snd_pcm *pcm);
+ void snd_soc_pcm_component_free(struct snd_pcm *pcm);
+ 
+diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
+index 79ffc2820ba9..b4be91cb9fa0 100644
+--- a/sound/soc/soc-component.c
++++ b/sound/soc/soc-component.c
+@@ -526,6 +526,24 @@ int snd_soc_pcm_component_mmap(struct snd_pcm_substream *substream,
+ 	return -EINVAL;
+ }
+ 
++int snd_soc_pcm_component_ack(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_rtdcom_list *rtdcom;
++	struct snd_soc_component *component;
++
++	for_each_rtdcom(rtd, rtdcom) {
++		component = rtdcom->component;
++
++		/* FIXME. it returns 1st ack now */
++		if (component->driver->ops &&
++		    component->driver->ops->ack)
++			return component->driver->ops->ack(substream);
++	}
++
++	return -EINVAL;
++}
++
+ int snd_soc_pcm_component_new(struct snd_pcm *pcm)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = pcm->private_data;
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index b600d3eaaf5c..c8a5a9a9d35f 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2941,6 +2941,8 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ 		if (!ops)
+ 			continue;
+ 
++		if (ops->ack)
++			rtd->ops.ack		= snd_soc_pcm_component_ack;
+ 		if (ops->copy_user)
+ 			rtd->ops.copy_user	= snd_soc_pcm_component_copy_user;
+ 		if (ops->page)
 
-I don't think we're blocked by this. If I understand correctly it is our 
-intention to first upstream the present copying solution and then 
-implement zero-copy as a next step.
+base-commit: ef8e14794308a428b194f8b06ad9ae06b43466e4
+-- 
+2.21.0
 
-> 3) rpmsg integration. The SOF IPC will use rpmsg virtio transport
-> between host and guests.
 
-We started discussing this on github, unfortunately this didn't come to a 
-conclusion. From what I've read in the kernel, RPMSG is currencly used 
-there in scenarios, that are very different from ours. Typically you have 
-a Linux host, that uses RPMSG to communicate with an "embedded" 
-counterpart, where that communication includes boooting ELF firmware on 
-that counterpart, and then using RPMSG on top of Virtual Queues to 
-communicate with it. Our case is quite different. I'm not saying, that it 
-is impossible to use the Linux RPMSG subsystem for use-cases like ours, 
-but it seems to me, that this would require a significant effort on the 
-Linux RPMSG core implementation, and we would be the first use-case for 
-this.
 
-The rest has to be discussed.
-
-Thanks
-Guennadi
-
-> This series does not mandate a DSP IPC standard, since this may differ
-> between DSP vendors, but it will use OASIS standards for virtio-snd,
-> DMA buffers and rpmsg.
-> 
-> I would say that parts of the "SOF protocol" may be useful for other
-> vendors in the DAPM/topology areas where users want to connect guest
-> topologies to host topologies (connected internally with DAPM).
-> 
-> Thanks
-> 
-> Liam
-> 
-> 
-> 
