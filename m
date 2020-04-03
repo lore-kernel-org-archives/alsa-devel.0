@@ -2,117 +2,73 @@ Return-Path: <SRS0=+eNr=5T=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.4 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0AF1CC2D0E8
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2020 08:02:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 49235C43331
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2020 09:15:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8ECB0206F8
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2020 08:02:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A44A8206B8
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2020 09:15:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="B+2IWvqJ";
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QhIWt3lF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8ECB0206F8
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jVxug+A4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A44A8206B8
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CBA8D1674;
-	Fri,  3 Apr 2020 10:01:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CBA8D1674
+	by alsa0.perex.cz (Postfix) with ESMTPS id DADED1658;
+	Fri,  3 Apr 2020 11:14:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DADED1658
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585900931;
-	bh=f6aBFhaK/VwvUALsmnmoRJuqc2+Lb+f+HEOjzaHNNSE=;
-	h=From:Subject:To:References:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=B+2IWvqJPuZH/iFZqD6URKNKbIs8ZF6YQbDXS0eIYSks5CoqRd51ke0bOVL/WYyBB
-	 kcbZCLGsHmkzzUvInQDjc/MnHGTcKH/R1fmWE9ij6egbY8i3crVCkXDExZ8EYkhhDB
-	 /VYyv4eVkN66szQ7ez+aSvYRMXKIb9P2UoO8I0xk=
+	s=default; t=1585905318;
+	bh=vdYfIrD89VyW8x6aSFUVqbXJlo9ZLqCdswU5StNKJ4s=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=jVxug+A4wxwZDFMxc0Rds0oV42SWNgCCx/0YHtlYKO1iuRPMOWyuFXtnz6hsNvMaa
+	 Q9VUS9nvM78WAoFwXYntP9Ot8uGUvxmbeMdVO4Rn6WMVFpaaOo++qCe4eEGsEyYoy7
+	 +0xeWhqFSbMd1GXuxWuq4ZUlc2XA6YGw8CmsLA0Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 57FBEF8014B;
-	Fri,  3 Apr 2020 10:01:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 411AFF8022D;
+	Fri,  3 Apr 2020 11:14:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 190AFF8014C; Fri,  3 Apr 2020 10:01:19 +0200 (CEST)
-Received: from us-smtp-1.mimecast.com (us-smtp-delivery-1.mimecast.com
- [207.211.31.120])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ id 2AB4BF80268; Fri,  3 Apr 2020 11:14:26 +0200 (CEST)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 177DFF800C2
- for <alsa-devel@alsa-project.org>; Fri,  3 Apr 2020 10:01:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 177DFF800C2
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="QhIWt3lF"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1585900873;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=f6aBFhaK/VwvUALsmnmoRJuqc2+Lb+f+HEOjzaHNNSE=;
- b=QhIWt3lFjDWvO1GyLYuqab8rbcQiz9wBdiL7/hzZVkQ1fnzZ3Y6ZwwsGsayLmBKoVQKFrV
- G+hVRSr/Hpq/MURDz7dncd/mJPigsFXgw2ix9HFHQXNtvlsgILt0bFw/qVOFkhMSVj3A+Z
- G8i3w6RLFCO8MN7qWbmuxqnKgEfK9sU=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-205-NDCL5z4vOZWwEZq6Cpgeaw-1; Fri, 03 Apr 2020 04:01:10 -0400
-X-MC-Unique: NDCL5z4vOZWwEZq6Cpgeaw-1
-Received: by mail-wr1-f69.google.com with SMTP id v14so2693955wrq.13
- for <alsa-devel@alsa-project.org>; Fri, 03 Apr 2020 01:01:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:subject:to:cc:references:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=kNBMssSj0+XRlE6QYNkKz7rOdqNuhUURKMH2z+oyxjE=;
- b=KEAZ//26GFDmh13GjYeKG60CaM9KLUwt8/Q0qAMy6/Rg8J2isF7ZqQ/VgfaRpq41BD
- rMPHCOtth7g7vLdRovAqDConYtWcQICZo8FGtufFEeih7o/j7T7ZVDMFFs2+lc1lNT2J
- rSJTHIKOQU4OZgBUPi0sIum2wcmkQJ8xxmNNAuCSkYTlMAcbz5Ygiq1TxlggZ6oeHzQ9
- nXrmFK/MvSLXP8sHhktKsUoKLvsJnU569rz2n2K+/AzCEJDJHDTdveFYgc4ywmT7mi9a
- 0JwfLuRx5Ho6yjNojBqu5joUfIxVimbuTFQVRiUBuYdr5jSmW+OgQ3xefCmr//DeoirL
- 9z1Q==
-X-Gm-Message-State: AGi0Pubd38PSPi72CVcmgpLstrKM07p0bwF+MucXgdr/EwEo12ACyzrf
- VCRKfcxEBYG/xVU882g6OW3KWwbSOFAS0XNFK9dcNmS+F89Z27G7QBerpaHL8bqUGLSTyntCZzJ
- h7Cpvf3duuaKm/Im6Qx/OJ8U=
-X-Received: by 2002:a7b:c1d2:: with SMTP id a18mr7517831wmj.180.1585900869001; 
- Fri, 03 Apr 2020 01:01:09 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJTajfi8ZZ8BPG2wQcyUqF7XdbRpfXBCNlAdQjuTT/pP7FrUY15/9ivTuWVIoBjw1SiSm5cvA==
-X-Received: by 2002:a7b:c1d2:: with SMTP id a18mr7517804wmj.180.1585900868714; 
- Fri, 03 Apr 2020 01:01:08 -0700 (PDT)
-Received: from x1.localdomain
- (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl.
- [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
- by smtp.gmail.com with ESMTPSA id z203sm10609566wmg.12.2020.04.03.01.01.07
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 03 Apr 2020 01:01:07 -0700 (PDT)
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH 1/2] ASoC: SOF: Fix "no reply expected" error during
- firmware-boot
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>
-References: <20200402184948.3014-1-hdegoede@redhat.com>
- <1ecf6c31-4eb1-0288-2353-7a7a421fe5e7@linux.intel.com>
-Message-ID: <a0d5d95e-113b-3543-cfc5-43dfa3f9142c@redhat.com>
-Date: Fri, 3 Apr 2020 10:01:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id D5003F80141;
+ Fri,  3 Apr 2020 11:14:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5003F80141
+IronPort-SDR: IYrG0kFOaWibhgA9OuwtcRqvvAUt0IkNHWZ//hhBR07+il83X3nVrcl5EqU98oWInyzeP4FjIs
+ EfR3OisORS/w==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+ by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 03 Apr 2020 02:14:09 -0700
+IronPort-SDR: I8NYR4KiiYPSWbESOQDqDylSL/RVUGHhPwsa56RJQ8/Ool6yJVG4GqA6vKW6tMvZwoNQY5XuTT
+ B4YdP0rePYoQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,339,1580803200"; d="scan'208";a="451234915"
+Received: from gliakhov-mobl2.ger.corp.intel.com (HELO
+ ubuntu.ger.corp.intel.com) ([10.249.36.113])
+ by fmsmga006.fm.intel.com with ESMTP; 03 Apr 2020 02:14:07 -0700
+From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH v2 00/12] [RESEND] ASoC: SOF DSP virtualisation
+Date: Fri,  3 Apr 2020 11:13:54 +0200
+Message-Id: <20200403091406.22381-1-guennadi.liakhovetski@linux.intel.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <1ecf6c31-4eb1-0288-2353-7a7a421fe5e7@linux.intel.com>
-Content-Language: en-US
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -128,73 +84,77 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+This patch series extends the SOF driver to add support for DSP
+virtualisation to ASoC. It is built on top of VirtIO, contains a
+guest driver and a vhost in-kernel guest driver. This version
+supports a single playback and a single capture interface on the
+guest. The specific guest audio topology is supplied by the host
+from a file, specified on the QEMU command line. This solution is
+designed to use advanced DSP functionality, available on the host.
+In case no DSP is available on the host, a fall-back should be
+provided in the future to the pure audio virtualisation standard,
+currently developed by OASIS.
 
-On 4/2/20 9:15 PM, Pierre-Louis Bossart wrote:
->=20
->=20
-> On 4/2/20 1:49 PM, Hans de Goede wrote:
->> At least on Canon Lake each time the SOF firmware is booted,
->> the following error is logged in dmesg:
->>
->> [=C2=A0=C2=A0 36.711803] sof-audio-pci 0000:00:1f.3: error: no reply exp=
-ected, received 0x0
->>
->> Since the DSP is powered down when not in used this happens everytime
->> e.g. a notification plays, polluting dmesg with these false-positive
->> errors.
->=20
-> What kernel are you using Hans? I thought this was solved with
+Extensive documentation is available at [1].
 
-5.6.0
+I'd like to have at least a tentative approval on this series to send 
+vhost patches 3 and 9 to virtualisation lists / maintainers for 
+review and eventual merging.
 
-> 8354d9b44530b ("ASoC: SOF: Intel: hda-loader: clear the IPC ack bit after=
- FW_PURGE done") >
-> Set DONE bit after the FW_PURGE IPC is polled successfully, to clear the
-> interrupt and avoid the arrival of the confusing unexpected ipc.
+v2: one patch merged, one patch resubmitted separately, otherwise 
+no changes.
 
-That commit is not in Torvald's tree yet, but it is in
-broonie/sound.git, I've cherry picked it into my local tree
-and reverted my own fix.
+[1] https://thesofproject.github.io/latest/developer_guides/virtualization/virtualization.html
 
-Unfortunately even with that patch cherry picked the errors my
-patch silences still happen.
+Guennadi Liakhovetski (12):
+  ASoC: add function parameters to enable forced path pruning
+  ASoC: SOF: extract firmware-related operation into a function
+  ASoC: SOF: VirtIO: make a function global
+  vhost: convert VHOST_VSOCK_SET_RUNNING to a generic ioctl
+  ASoC: SOF: support IPC with immediate response
+  ASoC: SOF: add a power status IPC
+  ASoC: SOF: add two helper lookup functions
+  ASoC: SOF: add a VirtIO DSP driver
+  ASoC: SOF: add a vhost driver: sound part
+  vhost: add an SOF DSP driver
+  ASoC: SOF: VirtIO: free guest pipelines upon termination
+  ASoC: SOF: VirtIO: enable simultaneous playback and capture
 
-Regards,
+ drivers/vhost/Kconfig            |    7 +
+ drivers/vhost/Makefile           |    5 +
+ drivers/vhost/dsp.c              |  731 ++++++++++++++++++++++
+ include/sound/soc-dpcm.h         |   28 +-
+ include/sound/soc-topology.h     |    3 +
+ include/sound/sof.h              |    4 +
+ include/sound/sof/header.h       |    3 +
+ include/sound/sof/topology.h     |    1 +
+ include/sound/sof/virtio.h       |  206 +++++++
+ include/uapi/linux/vhost.h       |    9 +-
+ include/uapi/linux/vhost_types.h |    7 +
+ include/uapi/linux/virtio_ids.h  |    1 +
+ sound/soc/soc-compress.c         |    2 +-
+ sound/soc/soc-dapm.c             |    8 +-
+ sound/soc/soc-pcm.c              |   98 ++-
+ sound/soc/sof/Kconfig            |    8 +
+ sound/soc/sof/Makefile           |    8 +
+ sound/soc/sof/core.c             |  114 ++--
+ sound/soc/sof/ipc.c              |   39 +-
+ sound/soc/sof/loader.c           |    4 +
+ sound/soc/sof/ops.h              |   10 +-
+ sound/soc/sof/pcm.c              |   13 +-
+ sound/soc/sof/pm.c               |    4 +
+ sound/soc/sof/sof-audio.c        |   33 +
+ sound/soc/sof/sof-audio.h        |   21 +
+ sound/soc/sof/sof-priv.h         |   52 ++
+ sound/soc/sof/topology.c         |   71 ++-
+ sound/soc/sof/vhost-be.c         | 1248 ++++++++++++++++++++++++++++++++++++++
+ sound/soc/sof/virtio-fe.c        |  922 ++++++++++++++++++++++++++++
+ 29 files changed, 3552 insertions(+), 108 deletions(-)
+ create mode 100644 drivers/vhost/dsp.c
+ create mode 100644 include/sound/sof/virtio.h
+ create mode 100644 sound/soc/sof/vhost-be.c
+ create mode 100644 sound/soc/sof/virtio-fe.c
 
-Hans
-
-
-
->> Add a check to snd_sof_ipc_reply() which makes it return success when
->> receiving an unexpected msg_id 0 during fw-boot, fixing these
->> false-positive errors being logged.
->>
->> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
->> ---
->> =C2=A0 sound/soc/sof/ipc.c | 5 +++++
->> =C2=A0 1 file changed, 5 insertions(+)
->>
->> diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
->> index 78aa1da7c7a9..7303b3d42f12 100644
->> --- a/sound/soc/sof/ipc.c
->> +++ b/sound/soc/sof/ipc.c
->> @@ -312,6 +312,11 @@ int snd_sof_ipc_reply(struct snd_sof_dev *sdev, u32=
- msg_id)
->> =C2=A0 {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct snd_sof_ipc_msg *msg =3D &sdev->ip=
-c->msg;
->> +=C2=A0=C2=A0=C2=A0 /* Ignore msg_id 0 being send during fw-boot */
->> +=C2=A0=C2=A0=C2=A0 if (msg->ipc_complete && sdev->fw_state =3D=3D SOF_F=
-W_BOOT_IN_PROGRESS &&
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 msg_id =3D=3D 0)
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
->> +
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (msg->ipc_complete) {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dev_err(sdev->dev=
-, "error: no reply expected, received 0x%x",
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 msg_id);
->>
->=20
+-- 
+1.9.3
 
