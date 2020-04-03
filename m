@@ -2,58 +2,68 @@ Return-Path: <SRS0=+eNr=5T=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FAAAC43331
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2020 07:39:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 83189C43331
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2020 07:42:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CEB3020721
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2020 07:39:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3456820787
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2020 07:42:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="awTJ684B"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CEB3020721
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gBJYjTzL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3456820787
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1C5121676;
-	Fri,  3 Apr 2020 09:38:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C5121676
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8095F1679;
+	Fri,  3 Apr 2020 09:41:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8095F1679
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585899558;
-	bh=J4voEMZ505zK9sjm/pk+PwAeG6oXkA4CXqIZ21Lm3y4=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=awTJ684BZFJkDjSqwwMJt1PsO5crXftKb7jKsOEEveCFcVywp6lqoXYUWK/TG+DZH
-	 GUG1EcPdY9SMtSbENE6z5X+Rt4zF8VGPJxPATDr+FhJp9HGqQFkNb/QMhxEca7cLTd
-	 cKRV5iQctsld2hT2/v9xHJSezxPnl3sZSB0iYyPY=
+	s=default; t=1585899758;
+	bh=u/HXtl1ZDjBTloyY0YJ2zuO9apOWmraysYps3YJKj58=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=gBJYjTzLrAdTUyp2O6HLU85aYUZl294xVUEh2ghHYCWJQWSMeZJlLcUTm5nSZCmEc
+	 aV7XizsZDc79OmQiKHDmuFfxRwyvs1B9O77hRjSGI8NAInfzY3mpvZ4PaVQT9/kSgG
+	 otw/OouUwaBYzZg035k0o6nMuk9V39hg0meNsMJ4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9185CF8014B;
-	Fri,  3 Apr 2020 09:38:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 21FA2F8014B;
+	Fri,  3 Apr 2020 09:41:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3CAF9F8014C; Fri,  3 Apr 2020 09:38:25 +0200 (CEST)
+ id A53D9F800C2; Fri,  3 Apr 2020 09:41:46 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C9CCCF800C2
- for <alsa-devel@alsa-project.org>; Fri,  3 Apr 2020 09:38:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9CCCF800C2
+ by alsa1.perex.cz (Postfix) with ESMTPS id E10FAF800C2
+ for <alsa-devel@alsa-project.org>; Fri,  3 Apr 2020 09:41:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E10FAF800C2
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 99DB6AC92
- for <alsa-devel@alsa-project.org>; Fri,  3 Apr 2020 07:38:19 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id AF258AE19;
+ Fri,  3 Apr 2020 07:41:42 +0000 (UTC)
+Date: Fri, 03 Apr 2020 09:41:42 +0200
+Message-ID: <s5hwo6xrp6x.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: pcm: oss: Fix regression by buffer overflow fix (again)
-Date: Fri,  3 Apr 2020 09:38:18 +0200
-Message-Id: <20200403073818.27943-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.16.4
+To: =?UTF-8?B?RnJhbnRpxaFlayBLdcSNZXJh?= <konference@frantovo.cz>
+Subject: Re: [PATCH] ALSA: usb-audio: Add Pioneer DJ DJM-250MK2 quirk
+In-Reply-To: <20200401095907.3387-1-konference@frantovo.cz>
+References: <s5h1rpfihvc.wl-tiwai@suse.de>
+ <20200401095907.3387-1-konference@frantovo.cz>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org,
+ =?UTF-8?B?RnJhbnRpxaFlayBLdcSNZXJh?= <franta-linux@frantovo.cz>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -69,107 +79,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-[ This is essentially the same fix as commit ae769d355664, but it's
-  adapted to the latest code for 5.7; hence it contains no Fixes or
-  other tags for avoid backport confusion -- tiwai ]
+On Wed, 01 Apr 2020 11:59:07 +0200,
+František Kučera wrote:
+> 
+> From: František Kučera <franta-linux@frantovo.cz>
+> 
+> Pioneer DJ DJM-250MK2 is a mixer that acts like a USB sound card.
+> The MIDI controller part is standard but the PCM part is "vendor specific".
+> Output is enabled by this quirk: 8 channels, 48 000 Hz, S24_3LE.
+> Input is not working.
+> 
+> Signed-off-by: František Kučera <franta-linux@frantovo.cz>
 
-The recent fix for the OOB access in PCM OSS plugins (commit
-f2ecf903ef06: "ALSA: pcm: oss: Avoid plugin buffer overflow") caused a
-regression on OSS applications.  The patch introduced the size check
-in client and slave size calculations to limit to each plugin's buffer
-size, but I overlooked that some code paths call those without
-allocating the buffer but just for estimation.
+Applied, thanks.
 
-This patch fixes the bug by skipping the size check for those code
-paths while keeping checking in the actual transfer calls.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/oss/pcm_plugin.c | 22 ++++++++++++----------
- 1 file changed, 12 insertions(+), 10 deletions(-)
-
-diff --git a/sound/core/oss/pcm_plugin.c b/sound/core/oss/pcm_plugin.c
-index fbda4ebf38b3..59d62f05658f 100644
---- a/sound/core/oss/pcm_plugin.c
-+++ b/sound/core/oss/pcm_plugin.c
-@@ -197,7 +197,8 @@ int snd_pcm_plugin_free(struct snd_pcm_plugin *plugin)
- }
- 
- static snd_pcm_sframes_t calc_dst_frames(struct snd_pcm_substream *plug,
--					 snd_pcm_sframes_t frames)
-+					 snd_pcm_sframes_t frames,
-+					 bool check_size)
- {
- 	struct snd_pcm_plugin *plugin, *plugin_next;
- 
-@@ -209,7 +210,7 @@ static snd_pcm_sframes_t calc_dst_frames(struct snd_pcm_substream *plug,
- 			if (frames < 0)
- 				return frames;
- 		}
--		if (frames > plugin->buf_frames)
-+		if (check_size && frames > plugin->buf_frames)
- 			frames = plugin->buf_frames;
- 		plugin = plugin_next;
- 	}
-@@ -217,13 +218,14 @@ static snd_pcm_sframes_t calc_dst_frames(struct snd_pcm_substream *plug,
- }
- 
- static snd_pcm_sframes_t calc_src_frames(struct snd_pcm_substream *plug,
--					 snd_pcm_sframes_t frames)
-+					 snd_pcm_sframes_t frames,
-+					 bool check_size)
- {
- 	struct snd_pcm_plugin *plugin, *plugin_prev;
- 
- 	plugin = snd_pcm_plug_last(plug);
- 	while (plugin && frames > 0) {
--		if (frames > plugin->buf_frames)
-+		if (check_size && frames > plugin->buf_frames)
- 			frames = plugin->buf_frames;
- 		plugin_prev = plugin->prev;
- 		if (plugin->src_frames) {
-@@ -242,9 +244,9 @@ snd_pcm_sframes_t snd_pcm_plug_client_size(struct snd_pcm_substream *plug, snd_p
- 		return -ENXIO;
- 	switch (snd_pcm_plug_stream(plug)) {
- 	case SNDRV_PCM_STREAM_PLAYBACK:
--		return calc_src_frames(plug, drv_frames);
-+		return calc_src_frames(plug, drv_frames, false);
- 	case SNDRV_PCM_STREAM_CAPTURE:
--		return calc_dst_frames(plug, drv_frames);
-+		return calc_dst_frames(plug, drv_frames, false);
- 	default:
- 		snd_BUG();
- 		return -EINVAL;
-@@ -257,9 +259,9 @@ snd_pcm_sframes_t snd_pcm_plug_slave_size(struct snd_pcm_substream *plug, snd_pc
- 		return -ENXIO;
- 	switch (snd_pcm_plug_stream(plug)) {
- 	case SNDRV_PCM_STREAM_PLAYBACK:
--		return calc_dst_frames(plug, clt_frames);
-+		return calc_dst_frames(plug, clt_frames, false);
- 	case SNDRV_PCM_STREAM_CAPTURE:
--		return calc_src_frames(plug, clt_frames);
-+		return calc_src_frames(plug, clt_frames, false);
- 	default:
- 		snd_BUG();
- 		return -EINVAL;
-@@ -622,7 +624,7 @@ snd_pcm_sframes_t snd_pcm_plug_write_transfer(struct snd_pcm_substream *plug, st
- 		src_channels = dst_channels;
- 		plugin = next;
- 	}
--	return snd_pcm_plug_client_size(plug, frames);
-+	return calc_src_frames(plug, frames, true);
- }
- 
- snd_pcm_sframes_t snd_pcm_plug_read_transfer(struct snd_pcm_substream *plug, struct snd_pcm_plugin_channel *dst_channels_final, snd_pcm_uframes_t size)
-@@ -632,7 +634,7 @@ snd_pcm_sframes_t snd_pcm_plug_read_transfer(struct snd_pcm_substream *plug, str
- 	snd_pcm_sframes_t frames = size;
- 	int err;
- 
--	frames = snd_pcm_plug_slave_size(plug, frames);
-+	frames = calc_src_frames(plug, frames, true);
- 	if (frames < 0)
- 		return frames;
- 
--- 
-2.16.4
-
+Takashi
