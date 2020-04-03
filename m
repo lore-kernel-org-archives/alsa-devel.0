@@ -2,67 +2,58 @@ Return-Path: <SRS0=+eNr=5T=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 190EFC43331
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2020 05:04:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FFFEC43331
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2020 07:26:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 68DF320787
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2020 05:04:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EBF3E206F8
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2020 07:26:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RyzdrpIC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 68DF320787
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YsZO/ZvG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EBF3E206F8
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C0BCE1672;
-	Fri,  3 Apr 2020 07:03:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C0BCE1672
+	by alsa0.perex.cz (Postfix) with ESMTPS id 333A11672;
+	Fri,  3 Apr 2020 09:25:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 333A11672
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585890250;
-	bh=S3ctxW7o7EZereeeWMbWr/RqcfdpZImGbg/BaaZHJqU=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=RyzdrpICoRfte0pAcL3bnVrbwkq+S2BGo6+EXBFk3xXXrw+QkCCjLlXjtmc+vpXmG
-	 mrZY+S286+Y9ipDuKfKEUno1qhio1FYXVDe0zBeKQH6rtW/08BPaXdLV2/WBXKoGRs
-	 02jLksac+0dJ7s1ZBjWWRJ/NtpXe+n0fX56Ogmes=
+	s=default; t=1585898774;
+	bh=jjwsCjuCzUzBAlEFAT1ylvRYYTynhwMVHEIAtSSf73w=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=YsZO/ZvGK463E3A34xNv3PnQ3h+GT2IgCMdkwtYad9EKNesB6gQRi0THGYOlO5dRD
+	 H6z3cM3+RefClzKBqPejzVrLz0S5j1sy1Hp+fy9s9F2wHJjlcNVUjPv40c/uI0MqVP
+	 lM+ulaQ1U7qSosQWaPf5EfN8DSYxskOWKPmFXoMA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4A057F80141;
-	Fri,  3 Apr 2020 07:03:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8EBE8F8014B;
+	Fri,  3 Apr 2020 09:25:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C8C95F8014C; Fri,  3 Apr 2020 07:03:18 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 21B0EF80141
- for <alsa-devel@alsa-project.org>; Fri,  3 Apr 2020 07:03:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21B0EF80141
-Date: 03 Apr 2020 14:03:09 +0900
-X-IronPort-AV: E=Sophos;i="5.72,338,1580742000"; d="scan'208";a="43388233"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 03 Apr 2020 14:03:09 +0900
-Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 035DD4199177;
- Fri,  3 Apr 2020 14:03:09 +0900 (JST)
-Message-ID: <87sghlnotv.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: "Gyeongtaek Lee" <gt82.lee@samsung.com>
-Subject: Re: [PATCH 0/1] reviving ack callback for 5.7(latest)
-In-Reply-To: <1019298652.01585883881138.JavaMail.epsvc@epcpadp2>
-References: <CGME20200403022148epcas2p26dd2bc9071a69f08102af082d813cd36@epcas2p2.samsung.com>
- <1019298652.01585883881138.JavaMail.epsvc@epcpadp2>
-User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.com,
- 'Mark Brown' <broonie@kernel.org>, hmseo@samsung.com, cpgs@samsung.com,
- tkjung@samsung.com, pilsun.jang@samsung.com
+ id 3E368F8014C; Fri,  3 Apr 2020 09:25:22 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4AF25F80141
+ for <alsa-devel@alsa-project.org>; Fri,  3 Apr 2020 09:25:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4AF25F80141
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id EB3C6AF5C
+ for <alsa-devel@alsa-project.org>; Fri,  3 Apr 2020 07:25:15 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: pcm: oss: Fix regression by buffer overflow fix
+Date: Fri,  3 Apr 2020 09:25:15 +0200
+Message-Id: <20200403072515.25539-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,24 +69,122 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+The recent fix for the OOB access in PCM OSS plugins (commit
+f2ecf903ef06: "ALSA: pcm: oss: Avoid plugin buffer overflow") caused a
+regression on OSS applications.  The patch introduced the size check
+in client and slave size calculations to limit to each plugin's buffer
+size, but I overlooked that some code paths call those without
+allocating the buffer but just for estimation.
 
-Hi
+This patch fixes the bug by skipping the size check for those code
+paths while keeping checking in the actual transfer calls.
 
-Thank you for the patch
-
-> ACK callback is useful to notify application pointer in DMA buffer to DSP,
-> because it is called after application pointer is updated in ALSA.
-> DSP can use the pointer to control preprocessing, detect underrun and so on.
-> I'd like to revive it from 5.4 if it is possible.
-> This patch is created in for-linus branch.
-
-If you want to revive ACK,
-post with user driver patch is nice idea IMO.
-Otherwise, it will/might be removed again
-because of "there is no user driver".
-
-Thank you for your help !!
-
-Best regards
+Fixes: f2ecf903ef06 ("ALSA: pcm: oss: Avoid plugin buffer overflow")
+Tested-and-reported-by: Jari Ruusu <jari.ruusu@gmail.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
-Kuninori Morimoto
+ sound/core/oss/pcm_plugin.c | 32 ++++++++++++++++++++++++--------
+ 1 file changed, 24 insertions(+), 8 deletions(-)
+
+diff --git a/sound/core/oss/pcm_plugin.c b/sound/core/oss/pcm_plugin.c
+index 752d078908e9..50c35ecc8953 100644
+--- a/sound/core/oss/pcm_plugin.c
++++ b/sound/core/oss/pcm_plugin.c
+@@ -196,7 +196,9 @@ int snd_pcm_plugin_free(struct snd_pcm_plugin *plugin)
+ 	return 0;
+ }
+ 
+-snd_pcm_sframes_t snd_pcm_plug_client_size(struct snd_pcm_substream *plug, snd_pcm_uframes_t drv_frames)
++static snd_pcm_sframes_t plug_client_size(struct snd_pcm_substream *plug,
++					  snd_pcm_uframes_t drv_frames,
++					  bool check_size)
+ {
+ 	struct snd_pcm_plugin *plugin, *plugin_prev, *plugin_next;
+ 	int stream;
+@@ -209,7 +211,7 @@ snd_pcm_sframes_t snd_pcm_plug_client_size(struct snd_pcm_substream *plug, snd_p
+ 	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		plugin = snd_pcm_plug_last(plug);
+ 		while (plugin && drv_frames > 0) {
+-			if (drv_frames > plugin->buf_frames)
++			if (check_size && drv_frames > plugin->buf_frames)
+ 				drv_frames = plugin->buf_frames;
+ 			plugin_prev = plugin->prev;
+ 			if (plugin->src_frames)
+@@ -222,7 +224,7 @@ snd_pcm_sframes_t snd_pcm_plug_client_size(struct snd_pcm_substream *plug, snd_p
+ 			plugin_next = plugin->next;
+ 			if (plugin->dst_frames)
+ 				drv_frames = plugin->dst_frames(plugin, drv_frames);
+-			if (drv_frames > plugin->buf_frames)
++			if (check_size && drv_frames > plugin->buf_frames)
+ 				drv_frames = plugin->buf_frames;
+ 			plugin = plugin_next;
+ 		}
+@@ -231,7 +233,9 @@ snd_pcm_sframes_t snd_pcm_plug_client_size(struct snd_pcm_substream *plug, snd_p
+ 	return drv_frames;
+ }
+ 
+-snd_pcm_sframes_t snd_pcm_plug_slave_size(struct snd_pcm_substream *plug, snd_pcm_uframes_t clt_frames)
++static snd_pcm_sframes_t plug_slave_size(struct snd_pcm_substream *plug,
++					 snd_pcm_uframes_t clt_frames,
++					 bool check_size)
+ {
+ 	struct snd_pcm_plugin *plugin, *plugin_prev, *plugin_next;
+ 	snd_pcm_sframes_t frames;
+@@ -252,14 +256,14 @@ snd_pcm_sframes_t snd_pcm_plug_slave_size(struct snd_pcm_substream *plug, snd_pc
+ 				if (frames < 0)
+ 					return frames;
+ 			}
+-			if (frames > plugin->buf_frames)
++			if (check_size && frames > plugin->buf_frames)
+ 				frames = plugin->buf_frames;
+ 			plugin = plugin_next;
+ 		}
+ 	} else if (stream == SNDRV_PCM_STREAM_CAPTURE) {
+ 		plugin = snd_pcm_plug_last(plug);
+ 		while (plugin) {
+-			if (frames > plugin->buf_frames)
++			if (check_size && frames > plugin->buf_frames)
+ 				frames = plugin->buf_frames;
+ 			plugin_prev = plugin->prev;
+ 			if (plugin->src_frames) {
+@@ -274,6 +278,18 @@ snd_pcm_sframes_t snd_pcm_plug_slave_size(struct snd_pcm_substream *plug, snd_pc
+ 	return frames;
+ }
+ 
++snd_pcm_sframes_t snd_pcm_plug_client_size(struct snd_pcm_substream *plug,
++					   snd_pcm_uframes_t drv_frames)
++{
++	return plug_client_size(plug, drv_frames, false);
++}
++
++snd_pcm_sframes_t snd_pcm_plug_slave_size(struct snd_pcm_substream *plug,
++					  snd_pcm_uframes_t clt_frames)
++{
++	return plug_slave_size(plug, clt_frames, false);
++}
++
+ static int snd_pcm_plug_formats(const struct snd_mask *mask,
+ 				snd_pcm_format_t format)
+ {
+@@ -630,7 +646,7 @@ snd_pcm_sframes_t snd_pcm_plug_write_transfer(struct snd_pcm_substream *plug, st
+ 		src_channels = dst_channels;
+ 		plugin = next;
+ 	}
+-	return snd_pcm_plug_client_size(plug, frames);
++	return plug_client_size(plug, frames, true);
+ }
+ 
+ snd_pcm_sframes_t snd_pcm_plug_read_transfer(struct snd_pcm_substream *plug, struct snd_pcm_plugin_channel *dst_channels_final, snd_pcm_uframes_t size)
+@@ -640,7 +656,7 @@ snd_pcm_sframes_t snd_pcm_plug_read_transfer(struct snd_pcm_substream *plug, str
+ 	snd_pcm_sframes_t frames = size;
+ 	int err;
+ 
+-	frames = snd_pcm_plug_slave_size(plug, frames);
++	frames = plug_slave_size(plug, frames, true);
+ 	if (frames < 0)
+ 		return frames;
+ 
+-- 
+2.16.4
+
