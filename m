@@ -6,115 +6,63 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE749C43331
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2020 03:21:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 190EFC43331
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2020 05:04:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 77C002077D
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2020 03:21:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 68DF320787
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2020 05:04:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EXfUpv2h";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="MY+pGZVp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 77C002077D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=samsung.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RyzdrpIC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 68DF320787
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DAD231679;
-	Fri,  3 Apr 2020 05:20:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DAD231679
+	by alsa0.perex.cz (Postfix) with ESMTPS id C0BCE1672;
+	Fri,  3 Apr 2020 07:03:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C0BCE1672
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585884080;
-	bh=Aj6oXDkb9P+Zn6vAISsYEy03qawdcVtPqsqjcGtUrJQ=;
-	h=From:To:In-Reply-To:Subject:Date:References:Cc:List-Id:
+	s=default; t=1585890250;
+	bh=S3ctxW7o7EZereeeWMbWr/RqcfdpZImGbg/BaaZHJqU=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EXfUpv2h4n2bjT4pCzbMSAgQeXD82jzK2Ac4Pp6ndGv+5gKzdQeYrnvjetJ7TmI00
-	 Slo7kBXfTkiQY5Cx9x/tB2JdXGSfRLy8qeC6oLOniHK4+mAbblI4aEPmp2jn9rCQXL
-	 7HEuvWgxkPweI1DX7XFSi2Pw/3wGOg7Zk858IYXM=
+	b=RyzdrpICoRfte0pAcL3bnVrbwkq+S2BGo6+EXBFk3xXXrw+QkCCjLlXjtmc+vpXmG
+	 mrZY+S286+Y9ipDuKfKEUno1qhio1FYXVDe0zBeKQH6rtW/08BPaXdLV2/WBXKoGRs
+	 02jLksac+0dJ7s1ZBjWWRJ/NtpXe+n0fX56Ogmes=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D93D3F80141;
-	Fri,  3 Apr 2020 05:20:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4A057F80141;
+	Fri,  3 Apr 2020 07:03:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1C982F8028C; Fri,  3 Apr 2020 05:20:16 +0200 (CEST)
-Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6EE18F8014B
- for <alsa-devel@alsa-project.org>; Fri,  3 Apr 2020 05:20:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6EE18F8014B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com
- header.b="MY+pGZVp"
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
- by mailout2.samsung.com (KnoxPortal) with ESMTP id
- 20200403032002epoutp020119af1cc9770573d1a144d8d9055d71~CMRkdDvuL0597205972epoutp02Y
- for <alsa-devel@alsa-project.org>; Fri,  3 Apr 2020 03:20:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com
- 20200403032002epoutp020119af1cc9770573d1a144d8d9055d71~CMRkdDvuL0597205972epoutp02Y
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
- s=mail20170921; t=1585884002;
- bh=8yiV7JoozVO5Eur9/GvWYyNm0ktX1cMQbYJUSZXPD/k=;
- h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
- b=MY+pGZVpghFrHpwPU5Pxk+SptxawC+vqwEdUJPJb60WEV7cFukziJhrtntFajiKQb
- 5qWE3WwiqcyT9Ybua93HLtO7leoRGCEh041bnUbbp/+LZgmZK4+l6ubVH8CuGZATks
- I3xwlcTXnqEWgbiOGHF4K/h+rFeZL7X1Pl2FEybg=
-Received: from epcpadp1 (unknown [182.195.40.11]) by epcas1p2.samsung.com
- (KnoxPortal) with ESMTP id
- 20200403032002epcas1p23303c75140dbe5ddbfff33e084300459~CMRj7mrpU2241122411epcas1p2n;
- Fri,  3 Apr 2020 03:20:02 +0000 (GMT)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
- epcas2p1.samsung.com (KnoxPortal) with ESMTPA id
- 20200403021853epcas2p1cec9bf3facf123393608134af3e96b75~CLcLbNjm43235232352epcas2p1d;
- Fri,  3 Apr 2020 02:18:53 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
- epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
- 20200403021853epsmtrp185585bc203536921dc80b19e55882279~CLcLagcYg1628716287epsmtrp15;
- Fri,  3 Apr 2020 02:18:53 +0000 (GMT)
-X-AuditID: b6c32a29-2dfff70000000fb8-20-5e869d0d27b6
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
- epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
- CE.58.04024.D0D968E5; Fri,  3 Apr 2020 11:18:53 +0900 (KST)
-Received: from KORDO025540 (unknown [12.36.182.130]) by epsmtip2.samsung.com
- (KnoxPortal) with ESMTPA id
- 20200403021853epsmtip28533fba67088d71628e41ab7b489bb75~CLcLL_2cp1303513035epsmtip2j;
- Fri,  3 Apr 2020 02:18:53 +0000 (GMT)
-From: "Gyeongtaek Lee" <gt82.lee@samsung.com>
-To: "'Mark Brown'" <broonie@kernel.org>, <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: 
-Subject: [PATCH 0/1] reviving ack callback for 5.4
-Date: Fri, 3 Apr 2020 11:18:53 +0900
-Message-ID: <1019298652.01585884002144.JavaMail.epsvc@epcpadp1>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AdYJXEhnCPDd1oOCR0aWW6LKHWvARQAAcY9A
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprLIsWRmVeSWpSXmKPExsWy7bCSvC7v3LY4gyt3VCyuXDzEZDH14RM2
- i5eHNC1mbOtmsXh1eBejxbcrHUwWRy8uZrLY8H0to8WRxilMDpweGz43sXnsnHWX3WPTqk42
- j29nJrJ49G1ZxeixfstVlgC2KC6blNSczLLUIn27BK6MP+t2sBRcZamY+HMJUwPjTeYuRk4O
- CQETibtNP4BsLg4hgd2MEhM2TGKBSEhIfJh/hh3CFpa433KEFaLoOaNEZ/M8sG42AV2JL/fu
- gNkiAr4SVx61MIIUMQtsAJo0+SETSEJIgEfi1Yb9QAkODk4BXokJ/6xBTGEBI4lzO2VAKlgE
- VCTWL7nOCGLzClhKzDl6nBnCFpQ4OfMJ2D3MAtoST28+hbLlJba/nQP1gILEz6fLWEFGigCN
- /HdBE6JERGJ2ZxvzBEbhWUgmzUIyaRaSSbOQtCxgZFnFKJlaUJybnltsWGCYl1quV5yYW1ya
- l66XnJ+7iREcaVqaOxgvL4k/xCjAwajEw8twsDVOiDWxrLgy9xCjBAezkgiv4wygEG9KYmVV
- alF+fFFpTmrxIUZpDhYlcd6neccihQTSE0tSs1NTC1KLYLJMHJxSDYxLDq5fHLx207qrfK/1
- bgV/vWl2vnXjA+PVN46w6Ca5O7SfcJyusV3onAHD0Q0XDS+/+NBvceWmw/91R+OvmK71tPXo
- eCnC5aIw6dU6y38HzO9XTnDIUgpuSDv5Oeag4O0lK94aWT/4H7db2GVxCuuPtz3bb/ctKC+d
- 0Op+7mPbThvNeXrX5zAmKbEUZyQaajEXFScCAD9ylDGwAgAA
-X-CMS-MailID: 20200403021853epcas2p1cec9bf3facf123393608134af3e96b75
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20200403021853epcas2p1cec9bf3facf123393608134af3e96b75
-References: <CGME20200403021853epcas2p1cec9bf3facf123393608134af3e96b75@epcas2p1.samsung.com>
+ id C8C95F8014C; Fri,  3 Apr 2020 07:03:18 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 21B0EF80141
+ for <alsa-devel@alsa-project.org>; Fri,  3 Apr 2020 07:03:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21B0EF80141
+Date: 03 Apr 2020 14:03:09 +0900
+X-IronPort-AV: E=Sophos;i="5.72,338,1580742000"; d="scan'208";a="43388233"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 03 Apr 2020 14:03:09 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 035DD4199177;
+ Fri,  3 Apr 2020 14:03:09 +0900 (JST)
+Message-ID: <87sghlnotv.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: "Gyeongtaek Lee" <gt82.lee@samsung.com>
+Subject: Re: [PATCH 0/1] reviving ack callback for 5.7(latest)
+In-Reply-To: <1019298652.01585883881138.JavaMail.epsvc@epcpadp2>
+References: <CGME20200403022148epcas2p26dd2bc9071a69f08102af082d813cd36@epcas2p2.samsung.com>
+ <1019298652.01585883881138.JavaMail.epsvc@epcpadp2>
+User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
 Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.com,
- hmseo@samsung.com, cpgs@samsung.com, tkjung@samsung.com,
- pilsun.jang@samsung.com
+ 'Mark Brown' <broonie@kernel.org>, hmseo@samsung.com, cpgs@samsung.com,
+ tkjung@samsung.com, pilsun.jang@samsung.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -130,23 +78,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-ACK callback is useful to notify application pointer in DMA buffer to DSP,
-because it is called after application pointer is updated in ALSA.
-DSP can use the pointer to control preprocessing, detect underrun and so on.
-I'd like to revive it from 5.4 if it is possible.
 
-Gyeongtaek Lee (1):
-  ASoC: soc-component: add snd_soc_component_ack()
+Hi
 
- include/sound/soc-component.h |  1 +
- sound/soc/soc-component.c     | 18 ++++++++++++++++++
- sound/soc/soc-pcm.c           |  2 ++
- 3 files changed, 21 insertions(+)
+Thank you for the patch
 
+> ACK callback is useful to notify application pointer in DMA buffer to DSP,
+> because it is called after application pointer is updated in ALSA.
+> DSP can use the pointer to control preprocessing, detect underrun and so on.
+> I'd like to revive it from 5.4 if it is possible.
+> This patch is created in for-linus branch.
 
-base-commit: ef8e14794308a428b194f8b06ad9ae06b43466e4
--- 
-2.21.0
+If you want to revive ACK,
+post with user driver patch is nice idea IMO.
+Otherwise, it will/might be removed again
+because of "there is no user driver".
 
+Thank you for your help !!
 
-
+Best regards
+---
+Kuninori Morimoto
