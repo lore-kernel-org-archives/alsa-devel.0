@@ -7,63 +7,64 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CAA0C43331
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2020 09:17:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BAC8BC43331
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2020 09:18:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CCA75206B8
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2020 09:17:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4547A20721
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2020 09:18:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KsWQTUAV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CCA75206B8
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iFd1ZW7C"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4547A20721
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E1F8B1688;
-	Fri,  3 Apr 2020 11:16:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1F8B1688
+	by alsa0.perex.cz (Postfix) with ESMTPS id A00C4168B;
+	Fri,  3 Apr 2020 11:17:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A00C4168B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585905462;
-	bh=TpPMrpIkkgYuhlRzBG4aJuJ2CHgJ8mo9zCjiquqXOyY=;
+	s=default; t=1585905483;
+	bh=ypn/OERoUpG1c3RInrBL42GgO22kfXAkU3XbwZw77e0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KsWQTUAVCWhNlaeTvgyIGOpM804Lff3xVvIO8M4vYVm/0822CmhmGPQDjNs1Ct203
-	 gcIBVHrZxh7zjQ26Ta0jZccRp6UIzEIlXN6xKSzNnhOdfwcV1jDE2l4rW7shkEr0cj
-	 2KJu/GhtHl6ZG4lX8T5jvBB+UbBvUtjq6FOLAXVI=
+	b=iFd1ZW7C65vBx+ThkQCWp2EytiYbysTw3tmHPF39oVEy2mI3kO6Gk36lUX6ddKN2v
+	 0qj3umg4NePspk7cYTwLP4szVj1HwXuPJVhwg8qHWdWXJwAxVYPrNtzbvFJ+cHRihx
+	 I1q5xu+C9pJR8tKe4ZQJ6DTLRAdJSn2VEY/7RREU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 40E16F80292;
-	Fri,  3 Apr 2020 11:14:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5B8EEF802BE;
+	Fri,  3 Apr 2020 11:14:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D4AC9F8029A; Fri,  3 Apr 2020 11:14:30 +0200 (CEST)
+ id 5B5E9F80299; Fri,  3 Apr 2020 11:14:31 +0200 (CEST)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7A6AFF8021E;
- Fri,  3 Apr 2020 11:14:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A6AFF8021E
-IronPort-SDR: n0TQS1SVutP+CuDVX77IFe/9VAa68q4E6nZwJ5fgXDva1Hw6NBrfjyjJnqKUYLiKx3+S57GnWs
- Q00OQgrX00OQ==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9F9ECF800E4;
+ Fri,  3 Apr 2020 11:14:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F9ECF800E4
+IronPort-SDR: 2KlW0af+Nou8W6e72BUrmnsLZ7SVgMv3xj2Y9BF41tnu+1NpqiKEwEs/P6SSGIUwdxypb4c96G
+ qR9yOycExaQA==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Apr 2020 02:14:21 -0700
-IronPort-SDR: Uwhk2Q7L2dIhayK0yLkYdiIGa5rpdQGb9YK6S+zJXim8Y0w7zPMnxzV2arAfm/F/FIPxYHwgAK
- N6c8EjPtflDA==
+ 03 Apr 2020 02:14:13 -0700
+IronPort-SDR: hwptRmh1wOUSp0gzRh/t7hYfPEBwQvzG4k9Lxt80ArNgIIqw/Ed+x1599IxlTix0BirPXjDO5y
+ pJkXDtTC6jrw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,339,1580803200"; d="scan'208";a="451234977"
+X-IronPort-AV: E=Sophos;i="5.72,339,1580803200"; d="scan'208";a="451234934"
 Received: from gliakhov-mobl2.ger.corp.intel.com (HELO
  ubuntu.ger.corp.intel.com) ([10.249.36.113])
- by fmsmga006.fm.intel.com with ESMTP; 03 Apr 2020 02:14:19 -0700
+ by fmsmga006.fm.intel.com with ESMTP; 03 Apr 2020 02:14:11 -0700
 From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 07/12] [RESEND] ASoC: SOF: add two helper lookup functions
-Date: Fri,  3 Apr 2020 11:14:01 +0200
-Message-Id: <20200403091406.22381-8-guennadi.liakhovetski@linux.intel.com>
+Subject: [PATCH v2 02/12] [RESEND] ASoC: SOF: extract firmware-related
+ operation into a function
+Date: Fri,  3 Apr 2020 11:13:56 +0200
+Message-Id: <20200403091406.22381-3-guennadi.liakhovetski@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200403091406.22381-1-guennadi.liakhovetski@linux.intel.com>
 References: <20200403091406.22381-1-guennadi.liakhovetski@linux.intel.com>
@@ -88,65 +89,126 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add two helper lookup functions for finding a widget by its component
-ID and a DAI by a pipeline ID.
+In the VirtIO guest case the SOF will not be dealing with the
+firmware directly. Extract related functionality into a function to
+make the separation easier.
 
 Signed-off-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 ---
- sound/soc/sof/sof-audio.c | 24 ++++++++++++++++++++++++
- sound/soc/sof/sof-audio.h |  4 ++++
- 2 files changed, 28 insertions(+)
+ sound/soc/sof/core.c | 85 ++++++++++++++++++++++++++++++----------------------
+ 1 file changed, 49 insertions(+), 36 deletions(-)
 
-diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
-index fc4ed2a..b4c5fe2 100644
---- a/sound/soc/sof/sof-audio.c
-+++ b/sound/soc/sof/sof-audio.c
-@@ -395,6 +395,30 @@ struct snd_sof_dai *snd_sof_find_dai(struct snd_soc_component *scomp,
- 	return NULL;
- }
- 
-+struct snd_sof_widget *snd_sof_find_swidget_id(struct snd_sof_dev *sdev,
-+					       unsigned int comp_id)
-+{
-+	struct snd_sof_widget *swidget;
-+
-+	list_for_each_entry(swidget, &sdev->widget_list, list)
-+		if (swidget->comp_id == comp_id)
-+			return swidget;
-+
-+	return NULL;
-+}
-+
-+struct snd_sof_dai *snd_sof_find_dai_pipe(struct snd_sof_dev *sdev,
-+					  unsigned int pipeline_id)
-+{
-+	struct snd_sof_dai *dai;
-+
-+	list_for_each_entry(dai, &sdev->dai_list, list)
-+		if (dai->pipeline_id == pipeline_id)
-+			return dai;
-+
-+	return NULL;
-+}
-+
- /*
-  * SOF Driver enumeration.
+diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
+index 91acfae..ca30d67 100644
+--- a/sound/soc/sof/core.c
++++ b/sound/soc/sof/core.c
+@@ -135,6 +135,53 @@ void snd_sof_get_status(struct snd_sof_dev *sdev, u32 panic_code,
+  *	(System Suspend/Runtime Suspend)
   */
-diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
-index bf65f31a..4880b32 100644
---- a/sound/soc/sof/sof-audio.h
-+++ b/sound/soc/sof/sof-audio.h
-@@ -190,6 +190,10 @@ struct snd_sof_pcm *snd_sof_find_spcm_comp(struct snd_soc_component *scomp,
- 					   int *direction);
- struct snd_sof_pcm *snd_sof_find_spcm_pcm_id(struct snd_soc_component *scomp,
- 					     unsigned int pcm_id);
-+struct snd_sof_widget *snd_sof_find_swidget_id(struct snd_sof_dev *sdev,
-+					       unsigned int comp_id);
-+struct snd_sof_dai *snd_sof_find_dai_pipe(struct snd_sof_dev *sdev,
-+					  unsigned int pipeline_id);
- void snd_sof_pcm_period_elapsed(struct snd_pcm_substream *substream);
- void snd_sof_pcm_period_elapsed_work(struct work_struct *work);
  
++static int sof_load_and_run_firmware(struct snd_sof_dev *sdev)
++{
++	/* load the firmware */
++	int ret = snd_sof_load_firmware(sdev);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: failed to load DSP firmware %d\n",
++			ret);
++		return ret;
++	}
++
++	sdev->fw_state = SOF_FW_BOOT_IN_PROGRESS;
++
++	/*
++	 * Boot the firmware. The FW boot status will be modified
++	 * in snd_sof_run_firmware() depending on the outcome.
++	 */
++	ret = snd_sof_run_firmware(sdev);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: failed to boot DSP firmware %d\n",
++			ret);
++		goto fw_run_err;
++	}
++
++	if (IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_ENABLE_FIRMWARE_TRACE) ||
++	    (sof_core_debug & SOF_DBG_ENABLE_TRACE)) {
++		sdev->dtrace_is_supported = true;
++
++		/* init DMA trace */
++		ret = snd_sof_init_trace(sdev);
++		if (ret < 0) {
++			/* non fatal */
++			dev_warn(sdev->dev,
++				 "warning: failed to initialize trace %d\n",
++				 ret);
++		}
++	} else {
++		dev_dbg(sdev->dev, "SOF firmware trace disabled\n");
++	}
++
++	return 0;
++
++fw_run_err:
++	snd_sof_fw_unload(sdev);
++
++	return ret;
++}
++
+ static int sof_probe_continue(struct snd_sof_dev *sdev)
+ {
+ 	struct snd_sof_pdata *plat_data = sdev->pdata;
+@@ -180,42 +227,9 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
+ 		goto ipc_err;
+ 	}
+ 
+-	/* load the firmware */
+-	ret = snd_sof_load_firmware(sdev);
+-	if (ret < 0) {
+-		dev_err(sdev->dev, "error: failed to load DSP firmware %d\n",
+-			ret);
++	ret = sof_load_and_run_firmware(sdev);
++	if (ret < 0)
+ 		goto fw_load_err;
+-	}
+-
+-	sdev->fw_state = SOF_FW_BOOT_IN_PROGRESS;
+-
+-	/*
+-	 * Boot the firmware. The FW boot status will be modified
+-	 * in snd_sof_run_firmware() depending on the outcome.
+-	 */
+-	ret = snd_sof_run_firmware(sdev);
+-	if (ret < 0) {
+-		dev_err(sdev->dev, "error: failed to boot DSP firmware %d\n",
+-			ret);
+-		goto fw_run_err;
+-	}
+-
+-	if (IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_ENABLE_FIRMWARE_TRACE) ||
+-	    (sof_core_debug & SOF_DBG_ENABLE_TRACE)) {
+-		sdev->dtrace_is_supported = true;
+-
+-		/* init DMA trace */
+-		ret = snd_sof_init_trace(sdev);
+-		if (ret < 0) {
+-			/* non fatal */
+-			dev_warn(sdev->dev,
+-				 "warning: failed to initialize trace %d\n",
+-				 ret);
+-		}
+-	} else {
+-		dev_dbg(sdev->dev, "SOF firmware trace disabled\n");
+-	}
+ 
+ 	/* hereafter all FW boot flows are for PM reasons */
+ 	sdev->first_boot = false;
+@@ -249,7 +263,6 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
+ 
+ fw_trace_err:
+ 	snd_sof_free_trace(sdev);
+-fw_run_err:
+ 	snd_sof_fw_unload(sdev);
+ fw_load_err:
+ 	snd_sof_ipc_free(sdev);
 -- 
 1.9.3
 
