@@ -7,61 +7,59 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67DF6C43331
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2020 13:42:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D08F8C43331
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2020 13:43:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E4DDE207FF
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2020 13:42:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5D6392078C
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2020 13:43:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Rp6JfmmL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E4DDE207FF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Lk7d7LwC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5D6392078C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 42F831679;
-	Fri,  3 Apr 2020 15:42:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 42F831679
+	by alsa0.perex.cz (Postfix) with ESMTPS id BD8841612;
+	Fri,  3 Apr 2020 15:42:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD8841612
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585921371;
-	bh=I7kRUwfeIo8aKOPy9fiapTzomDIU03woZEUhO7Wfl0s=;
+	s=default; t=1585921416;
+	bh=q6AdiMxvzw7MArM+ejlb2N6oB8jNJ3xHUlwDq5Ofmxg=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=Rp6JfmmLHKs97FMYKMgoLJJNf3mqlGcs6NS+OCycrsSBurkWqtBYH5NFDoVr0Mlyc
-	 m7qhqZAYtFYuuuyzTBCnmfLKb3MsTpHJozeYTS2cGXdzJapsHE1VXhsu/E4KUb7050
-	 GUUrt4/7VO0a6VL2Rf8XBpuZ8NFr8pg/kklCDgHA=
+	b=Lk7d7LwC1xYX6CUcNsg0frZw6cidY6xp7kkB/5ensl+Bn0dCTAL4M9uGD7QgwVw0N
+	 DjPQUyBszLY2vaXINEu0wIXehuMnnRXHWBA3sPJ6DKDo4Bly5hZ9BuXtcCvc90XHNS
+	 jtIoF7xTt96h7u/rfOLXlnfzesRZ85Dug6wqgqA4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4B30EF8028D;
-	Fri,  3 Apr 2020 15:40:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 30812F802A0;
+	Fri,  3 Apr 2020 15:40:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F1570F8028D; Fri,  3 Apr 2020 15:40:24 +0200 (CEST)
+ id 57159F80299; Fri,  3 Apr 2020 15:40:27 +0200 (CEST)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id B833BF800C2
- for <alsa-devel@alsa-project.org>; Fri,  3 Apr 2020 15:40:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B833BF800C2
+ by alsa1.perex.cz (Postfix) with ESMTP id C44DBF80268
+ for <alsa-devel@alsa-project.org>; Fri,  3 Apr 2020 15:40:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C44DBF80268
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9A6E7101E;
- Fri,  3 Apr 2020 06:40:19 -0700 (PDT)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0A6F71045;
+ Fri,  3 Apr 2020 06:40:24 -0700 (PDT)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1C9383F68F;
- Fri,  3 Apr 2020 06:40:18 -0700 (PDT)
-Date: Fri, 03 Apr 2020 14:40:17 +0100
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7F6A53F68F;
+ Fri,  3 Apr 2020 06:40:23 -0700 (PDT)
+Date: Fri, 03 Apr 2020 14:40:22 +0100
 From: Mark Brown <broonie@kernel.org>
 To: Hans de Goede <hdegoede@redhat.com>
-Subject: Applied "ASoC: Intel: atom: Take the drv->lock mutex before calling
- sst_send_slot_map()" to the asoc tree
-In-Reply-To: <20200402185359.3424-1-hdegoede@redhat.com>
-Message-Id: <applied-20200402185359.3424-1-hdegoede@redhat.com>
+Subject: Applied "ASoC: SOF: Turn "firmware boot complete" message into a dbg
+ message" to the asoc tree
+In-Reply-To: <20200402184948.3014-2-hdegoede@redhat.com>
+Message-Id: <applied-20200402184948.3014-2-hdegoede@redhat.com>
 X-Patchwork-Hint: ignore
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>, Jie Yang <yang.jie@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Mark Brown <broonie@kernel.org>, shumingf@realtek.com, flove@realtek.com
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,7 +77,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: Intel: atom: Take the drv->lock mutex before calling sst_send_slot_map()
+   ASoC: SOF: Turn "firmware boot complete" message into a dbg message
 
 has been applied to the asoc tree at
 
@@ -104,41 +102,47 @@ to this mail.
 Thanks,
 Mark
 
-From 81630dc042af998b9f58cd8e2c29dab9777ea176 Mon Sep 17 00:00:00 2001
+From 904f353d0e508fb4b3a3f902a02b0a028cda33a6 Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
-Date: Thu, 2 Apr 2020 20:53:57 +0200
-Subject: [PATCH] ASoC: Intel: atom: Take the drv->lock mutex before calling
- sst_send_slot_map()
+Date: Thu, 2 Apr 2020 20:49:48 +0200
+Subject: [PATCH] ASoC: SOF: Turn "firmware boot complete" message into a dbg
+ message
 
-sst_send_slot_map() uses sst_fill_and_send_cmd_unlocked() because in some
-places it is called with the drv->lock mutex already held.
+Using a Canon Lake machine with the SOF driver causes dmesg to fill
+up with a ton of these messages:
 
-So it must always be called with the mutex locked. This commit adds missing
-locking in the sst_set_be_modules() code-path.
+[  275.902194] sof-audio-pci 0000:00:1f.3: firmware boot complete
+[  351.529358] sof-audio-pci 0000:00:1f.3: firmware boot complete
+[  560.049047] sof-audio-pci 0000:00:1f.3: firmware boot complete
+etc.
 
-Fixes: 24c8d14192cc ("ASoC: Intel: mrfld: add DSP core controls")
+Since the DSP is powered down when not in used this happens everytime
+e.g. a notification plays, polluting dmesg.
+
+Turn this messages into a debug message, matching what the code already
+does for the ""booting DSP firmware" message.
+
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200402185359.3424-1-hdegoede@redhat.com
+Link: https://lore.kernel.org/r/20200402184948.3014-2-hdegoede@redhat.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/atom/sst-atom-controls.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/sof/loader.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/atom/sst-atom-controls.c b/sound/soc/intel/atom/sst-atom-controls.c
-index f883c9340eee..df8f7994d3b7 100644
---- a/sound/soc/intel/atom/sst-atom-controls.c
-+++ b/sound/soc/intel/atom/sst-atom-controls.c
-@@ -966,7 +966,9 @@ static int sst_set_be_modules(struct snd_soc_dapm_widget *w,
- 	dev_dbg(c->dev, "Enter: widget=%s\n", w->name);
+diff --git a/sound/soc/sof/loader.c b/sound/soc/sof/loader.c
+index 1f2e0be812bd..64af08293daa 100644
+--- a/sound/soc/sof/loader.c
++++ b/sound/soc/sof/loader.c
+@@ -597,7 +597,7 @@ int snd_sof_run_firmware(struct snd_sof_dev *sdev)
+ 	}
  
- 	if (SND_SOC_DAPM_EVENT_ON(event)) {
-+		mutex_lock(&drv->lock);
- 		ret = sst_send_slot_map(drv);
-+		mutex_unlock(&drv->lock);
- 		if (ret)
- 			return ret;
- 		ret = sst_send_pipe_module_params(w, k);
+ 	if (sdev->fw_state == SOF_FW_BOOT_COMPLETE)
+-		dev_info(sdev->dev, "firmware boot complete\n");
++		dev_dbg(sdev->dev, "firmware boot complete\n");
+ 	else
+ 		return -EIO; /* FW boots but fw_ready op failed */
+ 
 -- 
 2.20.1
 
