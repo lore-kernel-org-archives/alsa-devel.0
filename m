@@ -7,64 +7,63 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C5F62C2BA17
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2020 09:20:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DE157C43331
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2020 09:21:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 54830206B8
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2020 09:20:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6A0B720721
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2020 09:21:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iNoMwgjP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 54830206B8
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ndM4KFO9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6A0B720721
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BB2B616A3;
-	Fri,  3 Apr 2020 11:19:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BB2B616A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id B557F169D;
+	Fri,  3 Apr 2020 11:20:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B557F169D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1585905635;
-	bh=CzDuwL0kjtKcimHd1XbGl/22092bJljLNeREghNsiYI=;
+	s=default; t=1585905664;
+	bh=n+Yry3DaOvGT+CCP+YAKlBTHewR4Ot0fpbZIughT3sk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iNoMwgjPDKxa8f2rzVoQRKkXDbNbwkuXoYU7fdBBbfNrNJv1SZU+RNZAS1YWVxn/b
-	 6qIK1bCetlw5/eNnzV5QEOYDd/rxkZE1pALgu38HrQKjef3yf2KQF9F5l1o7h0HiYl
-	 ZjT1JLAVuX5GRKlMVwVbGYcmN+ii+bsEnC72X1Kg=
+	b=ndM4KFO96uu9zTs3xWDg/IkTESIS8d5kg1Wi2RnZHxUrccOlkSG0KgPY1Q96iP+av
+	 +c8ouNqe6rerOUBoqXJUlwkpT3dlJxvVo0vCgYMPtTTN8W5HeeWC2OLnPwxt6st2xc
+	 9bx61isCTop3R68jqGumjKPrut4UovD2dbah3nbU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 028B5F8033F;
-	Fri,  3 Apr 2020 11:15:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CD7A3F80346;
+	Fri,  3 Apr 2020 11:15:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 43CE3F802A7; Fri,  3 Apr 2020 11:14:42 +0200 (CEST)
+ id D306EF8028F; Fri,  3 Apr 2020 11:14:42 +0200 (CEST)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2B796F801A3;
- Fri,  3 Apr 2020 11:14:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B796F801A3
-IronPort-SDR: bj8Asu47c3GV/g9aLhVVuwWmk4ZrqNe3evVqvAIytzCOnLuVRhOrCSiG40arhF+SPNd1Y6yUcR
- //+I4JWVy3IA==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2D7DBF80141;
+ Fri,  3 Apr 2020 11:14:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D7DBF80141
+IronPort-SDR: liStt8SelMKVdoLP2217AnPQ3fXN4X7uMLI2KQHf/dqhxBwGvae1FBLIBkdDuEorKmJFRi6ofq
+ 1q82mMsPZVzA==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Apr 2020 02:14:16 -0700
-IronPort-SDR: Q5Cf3lZ7vgC+WNvukTdV+zEAvfTz+S5lJs3UqA73F7SLgMLho5O7+IxNl6BrfXsU65erSstBtF
- RuN/hnfOd2qA==
+ 03 Apr 2020 02:14:19 -0700
+IronPort-SDR: SXdd6sJIvOq2FQKMxKZXYKZYKe97lmkEoGDoD4rUKNq6qkDBqINvKqPxeoSitUtBgL3EmHu+vr
+ bE0FYFZpog/Q==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,339,1580803200"; d="scan'208";a="451234944"
+X-IronPort-AV: E=Sophos;i="5.72,339,1580803200"; d="scan'208";a="451234959"
 Received: from gliakhov-mobl2.ger.corp.intel.com (HELO
  ubuntu.ger.corp.intel.com) ([10.249.36.113])
- by fmsmga006.fm.intel.com with ESMTP; 03 Apr 2020 02:14:14 -0700
+ by fmsmga006.fm.intel.com with ESMTP; 03 Apr 2020 02:14:18 -0700
 From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 04/12] [RESEND] vhost: convert VHOST_VSOCK_SET_RUNNING to a
- generic ioctl
-Date: Fri,  3 Apr 2020 11:13:58 +0200
-Message-Id: <20200403091406.22381-5-guennadi.liakhovetski@linux.intel.com>
+Subject: [PATCH v2 06/12] [RESEND] ASoC: SOF: add a power status IPC
+Date: Fri,  3 Apr 2020 11:14:00 +0200
+Message-Id: <20200403091406.22381-7-guennadi.liakhovetski@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200403091406.22381-1-guennadi.liakhovetski@linux.intel.com>
 References: <20200403091406.22381-1-guennadi.liakhovetski@linux.intel.com>
@@ -89,40 +88,113 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-VHOST_VSOCK_SET_RUNNING is used by the vhost vsock driver to perform
-crucial VirtQueue initialisation, like assigning .private fields and
-calling vhost_vq_init_access(), and clean up. However, this ioctl is
-actually extremely useful for any vhost driver, that doesn't have a
-side channel to inform it of a status change, e.g. upon a guest
-reboot. This patch makes that ioctl generic, while preserving its
-numeric value and also keeping the original alias.
+In a virtualised configuration the runtime PM of the host and any
+guests aren't synchronised. But guests have to be able to tell the
+host when they suspend and resume and know, whether the host has been
+runtime suspended since that guests's topology had been sent to the
+host last time. This is needed to decide whether to re-send the
+topology again. To support this we add a new PM IPC message
+SOF_IPC_PM_VFE_POWER_STATUS and a reset counter to track the state of
+the DSP.
 
 Signed-off-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 ---
- include/uapi/linux/vhost.h | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ include/sound/sof/header.h | 1 +
+ sound/soc/sof/core.c       | 2 ++
+ sound/soc/sof/ipc.c        | 2 ++
+ sound/soc/sof/loader.c     | 4 ++++
+ sound/soc/sof/sof-priv.h   | 4 ++++
+ 5 files changed, 13 insertions(+)
 
-diff --git a/include/uapi/linux/vhost.h b/include/uapi/linux/vhost.h
-index 40d028ee..c628103 100644
---- a/include/uapi/linux/vhost.h
-+++ b/include/uapi/linux/vhost.h
-@@ -93,6 +93,8 @@
- #define VHOST_SET_BACKEND_FEATURES _IOW(VHOST_VIRTIO, 0x25, __u64)
- #define VHOST_GET_BACKEND_FEATURES _IOR(VHOST_VIRTIO, 0x26, __u64)
+diff --git a/include/sound/sof/header.h b/include/sound/sof/header.h
+index b794795..1aaccb5a 100644
+--- a/include/sound/sof/header.h
++++ b/include/sound/sof/header.h
+@@ -77,6 +77,7 @@
+ #define SOF_IPC_PM_CLK_REQ			SOF_CMD_TYPE(0x006)
+ #define SOF_IPC_PM_CORE_ENABLE			SOF_CMD_TYPE(0x007)
+ #define SOF_IPC_PM_GATE				SOF_CMD_TYPE(0x008)
++#define SOF_IPC_PM_VFE_POWER_STATUS		SOF_CMD_TYPE(0x010)
  
-+#define VHOST_SET_RUNNING _IOW(VHOST_VIRTIO, 0x61, int)
-+
- /* VHOST_NET specific defines */
+ /* component runtime config - multiple different types */
+ #define SOF_IPC_COMP_SET_VALUE			SOF_CMD_TYPE(0x001)
+diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
+index ca30d67..42dd72e 100644
+--- a/sound/soc/sof/core.c
++++ b/sound/soc/sof/core.c
+@@ -8,6 +8,7 @@
+ // Author: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+ //
  
- /* Attach virtio net ring to a raw socket, or tap device.
-@@ -114,6 +116,6 @@
- /* VHOST_VSOCK specific defines */
- 
- #define VHOST_VSOCK_SET_GUEST_CID	_IOW(VHOST_VIRTIO, 0x60, __u64)
--#define VHOST_VSOCK_SET_RUNNING		_IOW(VHOST_VIRTIO, 0x61, int)
-+#define VHOST_VSOCK_SET_RUNNING		VHOST_SET_RUNNING
- 
++#include <linux/atomic.h>
+ #include <linux/firmware.h>
+ #include <linux/module.h>
+ #include <sound/soc.h>
+@@ -311,6 +312,7 @@ int snd_sof_device_probe(struct device *dev, struct snd_sof_pdata *plat_data)
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_PROBES)
+ 	sdev->extractor_stream_tag = SOF_PROBE_INVALID_NODE_ID;
  #endif
++	atomic_set(&sdev->reset_count, 0);
+ 	dev_set_drvdata(dev, sdev);
+ 
+ 	/* check all mandatory ops */
+diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
+index 6fa501c1..b0b38ca 100644
+--- a/sound/soc/sof/ipc.c
++++ b/sound/soc/sof/ipc.c
+@@ -105,6 +105,8 @@ static void ipc_log_header(struct device *dev, u8 *text, u32 cmd)
+ 			str2 = "CLK_REQ"; break;
+ 		case SOF_IPC_PM_CORE_ENABLE:
+ 			str2 = "CORE_ENABLE"; break;
++		case SOF_IPC_PM_VFE_POWER_STATUS:
++			str2 = "VFE_POWER_STATUS"; break;
+ 		default:
+ 			str2 = "unknown type"; break;
+ 		}
+diff --git a/sound/soc/sof/loader.c b/sound/soc/sof/loader.c
+index 1f2e0be..80854c9 100644
+--- a/sound/soc/sof/loader.c
++++ b/sound/soc/sof/loader.c
+@@ -10,6 +10,7 @@
+ // Generic firmware loader.
+ //
+ 
++#include <linux/atomic.h>
+ #include <linux/firmware.h>
+ #include <sound/sof.h>
+ #include "ops.h"
+@@ -611,6 +612,9 @@ int snd_sof_run_firmware(struct snd_sof_dev *sdev)
+ 	/* fw boot is complete. Update the active cores mask */
+ 	sdev->enabled_cores_mask = init_core_mask;
+ 
++	/* increment reset count */
++	atomic_add(1, &sdev->reset_count);
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL(snd_sof_run_firmware);
+diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
+index 922b671..0792125 100644
+--- a/sound/soc/sof/sof-priv.h
++++ b/sound/soc/sof/sof-priv.h
+@@ -11,6 +11,7 @@
+ #ifndef __SOUND_SOC_SOF_PRIV_H
+ #define __SOUND_SOC_SOF_PRIV_H
+ 
++#include <linux/atomic.h>
+ #include <linux/device.h>
+ #include <sound/hdaudio.h>
+ #include <sound/sof.h>
+@@ -425,6 +426,9 @@ struct snd_sof_dev {
+ 	unsigned int extractor_stream_tag;
+ #endif
+ 
++	/* VirtIO fields for host and guest */
++	atomic_t reset_count;
++
+ 	/* DMA for Trace */
+ 	struct snd_dma_buffer dmatb;
+ 	struct snd_dma_buffer dmatp;
 -- 
 1.9.3
 
