@@ -8,86 +8,86 @@ X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7143DC2BA16
-	for <alsa-devel@archiver.kernel.org>; Sat,  4 Apr 2020 11:53:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B70AC2BA16
+	for <alsa-devel@archiver.kernel.org>; Sat,  4 Apr 2020 11:54:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ED01B20659
-	for <alsa-devel@archiver.kernel.org>; Sat,  4 Apr 2020 11:53:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 06206206CC
+	for <alsa-devel@archiver.kernel.org>; Sat,  4 Apr 2020 11:54:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OY4cKw4b";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KMcn9it0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ED01B20659
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="o/Azf/Mf";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IQ1elwuQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 06206206CC
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3F6E51615;
-	Sat,  4 Apr 2020 13:52:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F6E51615
+	by alsa0.perex.cz (Postfix) with ESMTPS id 60658167D;
+	Sat,  4 Apr 2020 13:53:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 60658167D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586001215;
-	bh=Wxxcle3Czx0yK4uTtWA6VEa/+0e6YbDsd9Ftg4Y8sIo=;
+	s=default; t=1586001268;
+	bh=+0qzPleM6LaDg7z9hgC73FCUyZiBTSFAjdFv7h5QrkQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OY4cKw4b8g+JGXL54D7Cpqi7YjPvaC71VA2802Hfmz2K50xM0JMoIjZQEY8d99FRl
-	 FoNvgMFSozuWsQo6vjNEX9io+SLAOPa64+ntv0yh94WgDsfcw93yx6xYkTZI4te/9z
-	 wEt3MWlAuT6GrE+oqud2cy8SXoum8ekzgxVUVDk4=
+	b=o/Azf/MftoVYm18oGZ5lU76uVT9Z3JyQ9gtYsJq8T9qf1G3OrhFgqg2ZQlVvG9ioC
+	 Tr8bbJxgjvwL6rajCXgJIzwTuBIqjNWloYyfcIAY13Lw74YC+45PAARb9Lnqf9Yhpu
+	 bPNVSRURMSRyAOLE2Sjhd6hQe2QKFLdeT9RU3JnM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BB0C8F80146;
-	Sat,  4 Apr 2020 13:52:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8C78FF80157;
+	Sat,  4 Apr 2020 13:52:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1617CF8014B; Sat,  4 Apr 2020 13:52:42 +0200 (CEST)
+ id B9585F80148; Sat,  4 Apr 2020 13:52:42 +0200 (CEST)
 Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com
  [IPv6:2a00:1450:4864:20::342])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 54E49F80058
- for <alsa-devel@alsa-project.org>; Sat,  4 Apr 2020 13:52:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54E49F80058
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5919CF80146
+ for <alsa-devel@alsa-project.org>; Sat,  4 Apr 2020 13:52:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5919CF80146
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="KMcn9it0"
-Received: by mail-wm1-x342.google.com with SMTP id t128so9876249wma.0
- for <alsa-devel@alsa-project.org>; Sat, 04 Apr 2020 04:52:35 -0700 (PDT)
+ header.b="IQ1elwuQ"
+Received: by mail-wm1-x342.google.com with SMTP id z7so9807580wmk.1
+ for <alsa-devel@alsa-project.org>; Sat, 04 Apr 2020 04:52:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references;
- bh=J7JWQaNHlZkGey2CYstynUU1J9hNrgdTpL9zcYilbqk=;
- b=KMcn9it08ctna9tgMEQrsjpXRPY/0IlCndUov70cazbmUWifl1XfERwQwaWbxb8fnc
- CLSlKcbbvKF41FGA533Eo8T6KEFilYbQfMX6N8aj2xG5UyjGjz1EHWEzRMlxi47pQ6l/
- JbVRLrHt/o1cYKG4K+Cbl8/dAuKYYNau7sL18LJTBtmT5ZB7yvb5lxVrEYqrw+VOQPLg
- tHdn3DP5eElLfpIwficpxfYtQwSeKfIcHOzvNeTewtwjILWrUU9eROXl2mfMeT+3XpiG
- D2wB2Z5h4oRkvkYHL/5jX95ZgLH6PaAb1G/9UpiUXrBwceXrAL3QjS4G40EoPA50iojj
- fLtg==
+ bh=NEH69Or2hzeYwgynW/zdgYOrxtAvoDOcH/4r2+cx3GQ=;
+ b=IQ1elwuQfrv7z7KBKqsfXe+nJtZ9EpUmkp/QEgxZh1eGAsSzPCh4Pw9aelJPkO1lwd
+ GeHg5B8Yg8SksRakKG3s5qyUWai+DwoUPCZzPAX9VG59mZ3lxjpIlgM0qT2LqFV6RMDS
+ EzQPLB+oY5i/+g/hbAt3vmNL/foVckzdilsQWAa85V+uD0PM+vwECrMcaaBiGOvtVXMO
+ aOuDKZxfO2lKiCVnsOC0uXYKUNBEplAHX6PjShJbIFLpuaLTL+JD2FH7FdjUgA778seH
+ R9zIV+cnmbX28Q/5I+reBqMmD5G6QBn6dCZ1GnBrfcinWAFvtlhPJuY7FBJqNa7HtoEE
+ ZlKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references;
- bh=J7JWQaNHlZkGey2CYstynUU1J9hNrgdTpL9zcYilbqk=;
- b=hFevr1SIyzbDCwyYXqdWTVUaUvvaXbYHEUtaBLQUaECcnSgyR23wzTsGp5QhSGgEgO
- rqnFjUMxgAQLZ4M3kpGiot7WhrmxzFcEtvDszAEAOh5gErisIJgtlwVo7BxnlhBvYGhe
- NKbl/ZK8FYM5Ji8oTXgWO2at5Lv/7J9SY0f2aa1LEvhy0g9/8L1YioeB9kmsPO03wWET
- li7STxwSvT1DFbZOHDpaacUPcdVOnUadFGHANQg+XRSUxABUQR28f4M61/ngJbk35jCn
- thdSdWMOHEMfcggOmgULdv6iOOFRLckzBOqzuP/GCqcKLsw/eOFK2xMNcrZlxDnXhYVB
- 12Kw==
-X-Gm-Message-State: AGi0Pubek97Y2o5ybkl9PmdMGXQzHOvWLmWGV8t5ne30dU63GsX328LR
- UHz9PbuS9NXmDI3cgpcj120=
-X-Google-Smtp-Source: APiQypJOBCdxMEJ3ncc/Kkyn7t6jJ/t0d4nR31OFtbx1bKw5Uw1QEC7QFaR1ybRs/cSapZBPKEkpqg==
-X-Received: by 2002:a7b:cbd6:: with SMTP id n22mr12504001wmi.29.1586001154733; 
- Sat, 04 Apr 2020 04:52:34 -0700 (PDT)
+ bh=NEH69Or2hzeYwgynW/zdgYOrxtAvoDOcH/4r2+cx3GQ=;
+ b=fxwrCeLFFChocMj3jVBtdHZz6DHdc+Ry66PPhDrTB6JV95zqSMiGID1Vg4b81UF5RG
+ uxGAfBh9qD0Zs3vFRy60groxnvYyG03z3gnlE/lAIveoIHgsZZW1rnDeA1eUwlaRadov
+ JKYgYvROkHHVv3QyUIDT2mTVBg27+SXGInHCMFAwjkk4JQleza8a+psU+/SNirCwR3LE
+ 4fkQdxldgDHR9B8gXOgP1+cwvUObMdQg8TxO5OZN9T67Ja4lbuxT0Szf1Os8tkBHTC82
+ bJTqZPMnB1a8fUdl7oHYBRM5ZVCQOlI1T6xjx7r9qCFkdwiYNF7bkBPpir8GKsarrDNI
+ 2ciw==
+X-Gm-Message-State: AGi0PuZ+JBCFCzAcxWnKqsUgK/ktsD6xa54rx07XQNWfjwgY3so7ImqH
+ puvUg5+Z8DKYO7Mtq30DHbk=
+X-Google-Smtp-Source: APiQypLsS+luw94/uZOvPuvg8cKZwf3UNkI9eP06vdLN8Yj2UZWLbMLjom9VgzDkuQr2GPlhAP/WPg==
+X-Received: by 2002:a1c:cc11:: with SMTP id h17mr13428237wmb.39.1586001153735; 
+ Sat, 04 Apr 2020 04:52:33 -0700 (PDT)
 Received: from debian.home (ip51ccf9cd.speed.planet.nl. [81.204.249.205])
- by smtp.gmail.com with ESMTPSA id g186sm16183276wmg.36.2020.04.04.04.52.33
+ by smtp.gmail.com with ESMTPSA id g186sm16183276wmg.36.2020.04.04.04.52.32
  (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Sat, 04 Apr 2020 04:52:34 -0700 (PDT)
+ Sat, 04 Apr 2020 04:52:33 -0700 (PDT)
 From: Johan Jonker <jbx6244@gmail.com>
 To: lgirdwood@gmail.com
-Subject: [PATCH v3 3/3] dt-bindings: sound: rockchip-spdif: add power-domains
- property
-Date: Sat,  4 Apr 2020 13:52:25 +0200
-Message-Id: <20200404115225.4314-3-jbx6244@gmail.com>
+Subject: [PATCH v3 2/3] dt-bindings: sound: rockchip-spdif: add
+ #sound-dai-cells property
+Date: Sat,  4 Apr 2020 13:52:24 +0200
+Message-Id: <20200404115225.4314-2-jbx6244@gmail.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20200404115225.4314-1-jbx6244@gmail.com>
 References: <20200404115225.4314-1-jbx6244@gmail.com>
@@ -110,10 +110,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-In the old txt situation we add/describe only properties that are used
-by the driver/hardware itself. With yaml it also filters things in a
-node that are used by other drivers like 'power-domains' for rk3399,
-so add it to 'rockchip-spdif.yaml'.
+'#sound-dai-cells' is required to properly interpret
+the list of DAI specified in the 'sound-dai' property,
+so add them to 'rockchip-spdif.yaml'
 
 Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 Reviewed-by: Rob Herring <robh@kernel.org>
@@ -121,23 +120,37 @@ Reviewed-by: Rob Herring <robh@kernel.org>
 Changes v3:
   Add reviewed by
 ---
- Documentation/devicetree/bindings/sound/rockchip-spdif.yaml | 3 +++
- 1 file changed, 3 insertions(+)
+ Documentation/devicetree/bindings/sound/rockchip-spdif.yaml | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml b/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml
-index f381dbbf5..c46715265 100644
+index bfd44fd8e..f381dbbf5 100644
 --- a/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml
 +++ b/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml
-@@ -51,6 +51,9 @@ properties:
-   dma-names:
-     const: tx
+@@ -57,6 +57,9 @@ properties:
+       The phandle of the syscon node for the GRF register.
+       Required property on RK3288.
  
-+  power-domains:
-+    maxItems: 1
++  "#sound-dai-cells":
++    const: 0
 +
-   rockchip,grf:
-     $ref: /schemas/types.yaml#/definitions/phandle
-     description:
+ required:
+   - compatible
+   - reg
+@@ -65,6 +68,7 @@ required:
+   - clock-names
+   - dmas
+   - dma-names
++  - "#sound-dai-cells"
+ 
+ if:
+   properties:
+@@ -90,4 +94,5 @@ examples:
+       clock-names = "mclk", "hclk";
+       dmas = <&dmac1_s 8>;
+       dma-names = "tx";
++      #sound-dai-cells = <0>;
+     };
 -- 
 2.11.0
 
