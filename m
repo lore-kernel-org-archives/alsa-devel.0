@@ -2,78 +2,74 @@ Return-Path: <SRS0=oqyN=5V=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 89D10C2BA17
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Apr 2020 23:52:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 82909C2BA17
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Apr 2020 23:53:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0416620678
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Apr 2020 23:52:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0FC2C20678
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Apr 2020 23:53:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gV/qukZ7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0416620678
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Y2M9EBd+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0FC2C20678
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6416B1670;
-	Mon,  6 Apr 2020 01:51:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6416B1670
+	by alsa0.perex.cz (Postfix) with ESMTPS id 60CEF1671;
+	Mon,  6 Apr 2020 01:52:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 60CEF1671
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586130768;
-	bh=mbaiy0lsMEpKpeCN6k3U9qxGEEwiPT9uEYlhmJvLMF0=;
+	s=default; t=1586130816;
+	bh=irrxEVtgN1yAh5zDPWAyddBvR6BlBzWnQc5QfukCMjM=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gV/qukZ7nTJFqQfLH5nYtZmHWdOsrtuQ6RsEGt5Yf+lRFSgpgVDdn9cdu55KlQwsO
-	 NQ4EGd5sp6eD91f4Scvi4FozQDHN4D9LzhTAaiMqryxGu5fz7sO5u0kVqPNXUyCtpb
-	 NNAM1o1sj6x3FsZWzx6GaeL0Sb5Gm4riRgB65ut0=
+	b=Y2M9EBd+Z29HeNc/pvi97ShtKIKVn/zFPK+rJidT2f4gNxTzAualw4jM447D/DIAr
+	 UmQiJelirQuvMm1y/m9wUY5K66cTAgXS3BBHMfI5lNO1xLTdJwD1CIJxkCqgl24Jq0
+	 whZyqN1eYc35YnCWK2BxIIUfSj6k42o2EGIZ7VTk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8952AF80213;
-	Mon,  6 Apr 2020 01:51:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AE418F80257;
+	Mon,  6 Apr 2020 01:51:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ACA49F80213; Mon,  6 Apr 2020 01:51:01 +0200 (CEST)
+ id 370A6F801D8; Mon,  6 Apr 2020 01:51:03 +0200 (CEST)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5D2E9F800E4
- for <alsa-devel@alsa-project.org>; Mon,  6 Apr 2020 01:50:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D2E9F800E4
-IronPort-SDR: JQ3LmOQ8akR+isOQzFTOQ70iWk7uhdbsGlVMHifUjDxND5nDiVXGjW7EenT0j2pFr4cF6a4dEl
- hmUbi0sHxC7g==
+ by alsa1.perex.cz (Postfix) with ESMTPS id C18C0F8015A
+ for <alsa-devel@alsa-project.org>; Mon,  6 Apr 2020 01:50:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C18C0F8015A
+IronPort-SDR: SIZDlnjKVq9CO8RjdwTxkVJHKp8KnLUS6Vko/eZe1GtEXFephquDXBoBfqW6EcRCdDY8TKHQfA
+ 1uedNHaEe66w==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Apr 2020 16:50:51 -0700
-IronPort-SDR: XKreq45w3WuCrO4UPWxmUy7CINTEiNdVtEx+N/XqKdo+6FzU7N+IoQD00z+uWDFvpVvGok6Rtx
- 3wZQB2GVlCDA==
+ 05 Apr 2020 16:50:54 -0700
+IronPort-SDR: hKvwIj+s9g1SH4j/zl6ZE97VMLWJSsE+llXvRRQOtO7LgGuEPMdhqiMk78iXMqSW80eatX9Ag2
+ /T3bi17R4Zlg==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,349,1580803200"; d="scan'208";a="253949526"
+X-IronPort-AV: E=Sophos;i="5.72,349,1580803200"; d="scan'208";a="253949530"
 Received: from tecook-mobl1.amr.corp.intel.com (HELO [10.212.185.245])
  ([10.212.185.245])
- by orsmga006.jf.intel.com with ESMTP; 05 Apr 2020 16:50:50 -0700
-Subject: Re: [PATCH v3] ASoC: Intel: bytcr_rt5640: Add quirk for MPMAN
- MPWIN895CL tablet
-To: Hans de Goede <hdegoede@redhat.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>,
- flove@realtek.com, shumingf@realtek.com, Oder Chiou <oder_chiou@realtek.com>
-References: <20200405133726.24154-1-hdegoede@redhat.com>
+ by orsmga006.jf.intel.com with ESMTP; 05 Apr 2020 16:50:54 -0700
+Subject: Re: [PATCH 4/5] chtrt5645: Remove bogus JackHWMute settings
+To: Hans de Goede <hdegoede@redhat.com>, Jaroslav Kysela <perex@perex.cz>
+References: <20200405183454.34515-1-hdegoede@redhat.com>
+ <20200405183454.34515-4-hdegoede@redhat.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <0b7cfac8-857c-c4c1-0f79-7ce6522e073e@linux.intel.com>
-Date: Sun, 5 Apr 2020 17:55:54 -0500
+Message-ID: <d06f3894-6cd7-fd4e-2261-94505fc0db4a@linux.intel.com>
+Date: Sun, 5 Apr 2020 18:22:05 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200405133726.24154-1-hdegoede@redhat.com>
+In-Reply-To: <20200405183454.34515-4-hdegoede@redhat.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -95,43 +91,111 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 4/5/20 8:37 AM, Hans de Goede wrote:
-> The MPMAN MPWIN895CL tablet almost fully works with out default settings.
-> The only problem is that it has only 1 speaker so any sounds only playing
-> on the right channel get lost.
+On 4/5/20 1:34 PM, Hans de Goede wrote:
+> There is no reason why the internal microphone or speakers cannot
+> be used when a headset is plugged in.
 > 
-> Add a quirk for this model using the default settings + MONO_SPEAKER.
-> 
+> The jack does not physically disconnect these, so the JackHWMute settings
+> are wrong, remove them.
+
+Are you sure about the internal mic and headset input not conflicting? 
+IIRC they use the same path after the initial routing selector. I may be 
+wrong but I'd be surprised if you can use both.
+
+Now that I think of it further, in case the SSP0 is used an I2S link is 
+configured, so you cannot have both streams in parallel. It may be 
+possible to use headset and dmic in parallel with the 4 slot version but 
+we also have 1 PCM capture only.
+
+So overall it seems rather unlikely that we can support dmic + headset 
+mic in parallel?
+
 > Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-Thanks Hans!
-
 > ---
->   sound/soc/intel/boards/bytcr_rt5640.c | 11 +++++++++++
->   1 file changed, 11 insertions(+)
+>   ucm2/chtrt5645/HiFi-dmic1.conf                   | 2 --
+>   ucm2/chtrt5645/HiFi-dmic2.conf                   | 2 --
+>   ucm2/chtrt5645/HiFi-mono-speaker-analog-mic.conf | 2 --
+>   ucm2/chtrt5645/HiFi.conf                         | 2 --
+>   4 files changed, 8 deletions(-)
 > 
-> diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-> index 6bd9ae813be2..d14d5f7db168 100644
-> --- a/sound/soc/intel/boards/bytcr_rt5640.c
-> +++ b/sound/soc/intel/boards/bytcr_rt5640.c
-> @@ -591,6 +591,17 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
->   					BYT_RT5640_SSP0_AIF1 |
->   					BYT_RT5640_MCLK_EN),
->   	},
-> +	{
-> +		/* MPMAN MPWIN895CL */
-> +		.matches = {
-> +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "MPMAN"),
-> +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "MPWIN8900CL"),
-> +		},
-> +		.driver_data = (void *)(BYTCR_INPUT_DEFAULTS |
-> +					BYT_RT5640_MONO_SPEAKER |
-> +					BYT_RT5640_SSP0_AIF1 |
-> +					BYT_RT5640_MCLK_EN),
-> +	},
->   	{	/* MSI S100 tablet */
->   		.matches = {
->   			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Micro-Star International Co., Ltd."),
+> diff --git a/ucm2/chtrt5645/HiFi-dmic1.conf b/ucm2/chtrt5645/HiFi-dmic1.conf
+> index 1a8ee0a..c7e12c9 100644
+> --- a/ucm2/chtrt5645/HiFi-dmic1.conf
+> +++ b/ucm2/chtrt5645/HiFi-dmic1.conf
+> @@ -50,7 +50,6 @@ SectionDevice."Headphones" {
+>   		PlaybackPriority 200
+>   		PlaybackPCM "hw:${CardId}"
+>   		JackControl "Headphone Jack"
+> -		JackHWMute "Speaker"
+>   	}
+>   
+>   	ConflictingDevice [
+> @@ -96,7 +95,6 @@ SectionDevice."Headset" {
+>   		CapturePriority 200
+>   		CapturePCM "hw:${CardId}"
+>   		JackControl "Headset Mic Jack"
+> -		JackHWMute "Mic"
+>   	}
+>   
+>   	EnableSequence [
+> diff --git a/ucm2/chtrt5645/HiFi-dmic2.conf b/ucm2/chtrt5645/HiFi-dmic2.conf
+> index d3f880a..95fedb3 100644
+> --- a/ucm2/chtrt5645/HiFi-dmic2.conf
+> +++ b/ucm2/chtrt5645/HiFi-dmic2.conf
+> @@ -50,7 +50,6 @@ SectionDevice."Headphones" {
+>   		PlaybackPriority 200
+>   		PlaybackPCM "hw:${CardId}"
+>   		JackControl "Headphone Jack"
+> -		JackHWMute "Speaker"
+>   	}
+>   
+>   	ConflictingDevice [
+> @@ -98,7 +97,6 @@ SectionDevice."Headset" {
+>   		CapturePriority 200
+>   		CapturePCM "hw:${CardId}"
+>   		JackControl "Headset Mic Jack"
+> -		JackHWMute "Mic"
+>   	}
+>   
+>   	EnableSequence [
+> diff --git a/ucm2/chtrt5645/HiFi-mono-speaker-analog-mic.conf b/ucm2/chtrt5645/HiFi-mono-speaker-analog-mic.conf
+> index db866cd..f6180a4 100644
+> --- a/ucm2/chtrt5645/HiFi-mono-speaker-analog-mic.conf
+> +++ b/ucm2/chtrt5645/HiFi-mono-speaker-analog-mic.conf
+> @@ -54,7 +54,6 @@ SectionDevice."Headphones" {
+>   		PlaybackPriority 200
+>   		PlaybackPCM "hw:${CardId}"
+>   		JackControl "Headphone Jack"
+> -		JackHWMute "Speaker"
+>   	}
+>   
+>   	ConflictingDevice [
+> @@ -84,7 +83,6 @@ SectionDevice."Headset" {
+>   		CapturePriority 200
+>   		CapturePCM "hw:${CardId}"
+>   		JackControl "Headset Mic Jack"
+> -		JackHWMute "Mic"
+>   	}
+>   
+>   	EnableSequence [
+> diff --git a/ucm2/chtrt5645/HiFi.conf b/ucm2/chtrt5645/HiFi.conf
+> index 58468a8..116d456 100644
+> --- a/ucm2/chtrt5645/HiFi.conf
+> +++ b/ucm2/chtrt5645/HiFi.conf
+> @@ -50,7 +50,6 @@ SectionDevice."Headphones" {
+>   		PlaybackPriority 200
+>   		PlaybackPCM "hw:${CardId}"
+>   		JackControl "Headphone Jack"
+> -		JackHWMute "Speaker"
+>   	}
+>   
+>   	ConflictingDevice [
+> @@ -76,7 +75,6 @@ SectionDevice."Headset" {
+>   		CapturePriority 200
+>   		CapturePCM "hw:${CardId}"
+>   		JackControl "Headset Mic Jack"
+> -		JackHWMute "Mic"
+>   	}
+>   
+>   	EnableSequence [
 > 
