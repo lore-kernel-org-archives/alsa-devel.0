@@ -7,78 +7,77 @@ X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1C2DC2BA15
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Apr 2020 18:38:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9ADA0C2BA15
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Apr 2020 18:38:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8133E2051A
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Apr 2020 18:38:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 24E322051A
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Apr 2020 18:38:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="usic+y8M";
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JARdVQgf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8133E2051A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ojgtyaOq";
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="S47K8tEv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 24E322051A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E16811675;
-	Sun,  5 Apr 2020 20:37:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E16811675
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8717A83B;
+	Sun,  5 Apr 2020 20:37:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8717A83B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586111894;
-	bh=iHEkUq0IUK55nHoSxmM4+QS78Ikzk095quaQYY5zsQE=;
+	s=default; t=1586111916;
+	bh=f/Ie4YXO4lRUQdMYtWhaNDzbqaFZIPHdGTFi6O8/bac=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=usic+y8M8Z9ExzpLdrOEAeBfVmM6QQvURCeRZCP3oT5c1MKhnJNWzfm1qBx4akH0d
-	 LqZO/Rlx5YvUB+5qSjXRxeeMUienJ+m2VWvB8kTj27+giMu90bram0OIMDliLQynAc
-	 tirAEVAuqO290hLU4VIgnAAvFqvnkw8t4Q7HXLJM=
+	b=ojgtyaOq6EAJHmFQiXJRWG3m8brfNcQ7IklL4T05TviLkePhqt9CD9SDOhP3qbvTf
+	 CRJxVA3LWs/tb1fm+chq7Av1Rr3ope8rvwcPgP8PE3pHgthxP/qn/WkGPt+rJwidRw
+	 1R39j8uYjT0v9oaZmKO+c/9a+uembt5dd6USBoLE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0FB65F80290;
-	Sun,  5 Apr 2020 20:35:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3A21AF802A0;
+	Sun,  5 Apr 2020 20:35:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 92921F80216; Sun,  5 Apr 2020 20:35:11 +0200 (CEST)
-Received: from us-smtp-delivery-1.mimecast.com (us-smtp-1.mimecast.com
- [205.139.110.61])
+ id 3F274F80229; Sun,  5 Apr 2020 20:35:13 +0200 (CEST)
+Received: from us-smtp-1.mimecast.com (us-smtp-delivery-1.mimecast.com
+ [205.139.110.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C5850F801DA
- for <alsa-devel@alsa-project.org>; Sun,  5 Apr 2020 20:35:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5850F801DA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 80717F800E4
+ for <alsa-devel@alsa-project.org>; Sun,  5 Apr 2020 20:35:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80717F800E4
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="JARdVQgf"
+ header.b="S47K8tEv"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1586111705;
+ s=mimecast20190719; t=1586111704;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=tDVqz1CEwwlFtzdvOTwRVcni+AzFty+d+ZTbj+MDgHU=;
- b=JARdVQgfnUXykqr4M2nDuEZYIhh84jqL8jvKJWzLM1SgWIO9uHtNPMb3hZpdZMXIGdypiM
- nbBWeZP7L6HUDN8iQYyyvo+rjneHloj77rwpygCmhUJMs431EG41yvFr74xsNki3LyMdpK
- YegOJaUAefd2grlv8vjSXjiYusrFP6Y=
+ bh=WA6G08Ulv5OayV027H73TwKJ2gRcdxET4LDkXo5JQm8=;
+ b=S47K8tEvA9pWWpDj0s38I+a8+soeWAyOxfYG6YGb3S/EyDXooSkvUA1hdrXF/gulKpZNk1
+ 3sSLhQl4lH33t+FnUL81GfbLyZOugUCPbT0QXm+xjPYs2Bdmmo9O98RJl0yXR1+l+CF9zc
+ b8S0q8giOuCTPU/GSA93Cmozk9pDEOU=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-202-8WFJYjDpM5ujgabYTYcCAA-1; Sun, 05 Apr 2020 14:35:03 -0400
-X-MC-Unique: 8WFJYjDpM5ujgabYTYcCAA-1
+ us-mta-162-RTXVWoboMQ6GN22RuvWENw-1; Sun, 05 Apr 2020 14:35:02 -0400
+X-MC-Unique: RTXVWoboMQ6GN22RuvWENw-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com
  [10.5.11.13])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7C94F107ACC7;
- Sun,  5 Apr 2020 18:35:02 +0000 (UTC)
-Received: from x1.localdomain.com (ovpn-112-60.ams2.redhat.com [10.36.112.60])
- by smtp.corp.redhat.com (Postfix) with ESMTP id A858F98A51;
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5B8AF100551A;
  Sun,  5 Apr 2020 18:35:01 +0000 (UTC)
+Received: from x1.localdomain.com (ovpn-112-60.ams2.redhat.com [10.36.112.60])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 8727798A51;
+ Sun,  5 Apr 2020 18:35:00 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH 5/5] cht-bsw-rt5672: Fix HiFi-stereo-dmic2 conf not loading /
- working
-Date: Sun,  5 Apr 2020 20:34:54 +0200
-Message-Id: <20200405183454.34515-5-hdegoede@redhat.com>
+Subject: [PATCH 4/5] chtrt5645: Remove bogus JackHWMute settings
+Date: Sun,  5 Apr 2020 20:34:53 +0200
+Message-Id: <20200405183454.34515-4-hdegoede@redhat.com>
 In-Reply-To: <20200405183454.34515-1-hdegoede@redhat.com>
 References: <20200405183454.34515-1-hdegoede@redhat.com>
 MIME-Version: 1.0
@@ -103,152 +102,103 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Fix HiFi-stereo-dmic2 conf not loading because of references to
-non existing devices in the ConflictingDevices sections.
+There is no reason why the internal microphone or speakers cannot
+be used when a headset is plugged in.
 
-Stop playing Rename + Remove tricks with the output (Speaker2) and
-input (DMIC1) devices which we do not want to be part of this config,
-this does not work now that we only allow devices which are actually
-part of our config in the ConflictingDevices sections.
+The jack does not physically disconnect these, so the JackHWMute settings
+are wrong, remove them.
 
-Instead start with only having devices which all configs have in
-the ConflictingDevices sections (Headphones / Headset) and add the
-other ones from our HiFi*.conf files after including the shared
-basic configs.
-
-BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=3D1786723
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
-I have tested that both HiFi.conf and HiFi-stereo-dmic2.conf work
-properly after these changes.
----
- ucm2/cht-bsw-rt5672/HiFi-stereo-dmic2.conf | 6 ++----
- ucm2/cht-bsw-rt5672/HiFi.conf              | 8 ++++++++
- ucm2/codecs/rt5672/DMIC1.conf              | 1 -
- ucm2/codecs/rt5672/DMIC2.conf              | 1 -
- ucm2/codecs/rt5672/HeadPhones.conf         | 2 --
- ucm2/codecs/rt5672/HeadsetMic.conf         | 2 --
- ucm2/codecs/rt5672/MonoSpeaker.conf        | 1 -
- ucm2/codecs/rt5672/Speaker.conf            | 1 -
- 8 files changed, 10 insertions(+), 12 deletions(-)
+ ucm2/chtrt5645/HiFi-dmic1.conf                   | 2 --
+ ucm2/chtrt5645/HiFi-dmic2.conf                   | 2 --
+ ucm2/chtrt5645/HiFi-mono-speaker-analog-mic.conf | 2 --
+ ucm2/chtrt5645/HiFi.conf                         | 2 --
+ 4 files changed, 8 deletions(-)
 
-diff --git a/ucm2/cht-bsw-rt5672/HiFi-stereo-dmic2.conf b/ucm2/cht-bsw-rt56=
-72/HiFi-stereo-dmic2.conf
-index 82c976b..5e06b42 100644
---- a/ucm2/cht-bsw-rt5672/HiFi-stereo-dmic2.conf
-+++ b/ucm2/cht-bsw-rt5672/HiFi-stereo-dmic2.conf
-@@ -12,11 +12,9 @@ SectionVerb {
- }
-=20
- <codecs/rt5672/Speaker.conf>
--RenameDevice."Speaker1" "Speaker"
--RemoveDevice."Speaker2" "Speaker2"
- <codecs/rt5672/HeadPhones.conf>
-+SectionDevice."Headphones".ConflictingDevice.0 "Speaker1"
-=20
- <codecs/rt5672/DMIC2.conf>
--RenameDevice."Mic2" "Mic"
--RemoveDevice."Mic1" "Mic1"
- <codecs/rt5672/HeadsetMic.conf>
-+SectionDevice."Headset".ConflictingDevice.0 "Mic2"
-diff --git a/ucm2/cht-bsw-rt5672/HiFi.conf b/ucm2/cht-bsw-rt5672/HiFi.conf
-index 9a64cc3..2dfa479 100644
---- a/ucm2/cht-bsw-rt5672/HiFi.conf
-+++ b/ucm2/cht-bsw-rt5672/HiFi.conf
-@@ -14,7 +14,15 @@ SectionVerb {
- <codecs/rt5672/Speaker.conf>
- <codecs/rt5672/MonoSpeaker.conf>
- <codecs/rt5672/HeadPhones.conf>
-+SectionDevice."Speaker1".ConflictingDevice.1 "Speaker2"
-+SectionDevice."Speaker2".ConflictingDevice.1 "Speaker1"
-+SectionDevice."Headphones".ConflictingDevice.0 "Speaker1"
-+SectionDevice."Headphones".ConflictingDevice.1 "Speaker2"
-=20
- <codecs/rt5672/DMIC1.conf>
- <codecs/rt5672/DMIC2.conf>
- <codecs/rt5672/HeadsetMic.conf>
-+SectionDevice."Mic1".ConflictingDevice.1 "Mic2"
-+SectionDevice."Mic2".ConflictingDevice.1 "Mic1"
-+SectionDevice."Headset".ConflictingDevice.0 "Mic1"
-+SectionDevice."Headset".ConflictingDevice.1 "Mic2"
-diff --git a/ucm2/codecs/rt5672/DMIC1.conf b/ucm2/codecs/rt5672/DMIC1.conf
-index 2018283..acc26f7 100644
---- a/ucm2/codecs/rt5672/DMIC1.conf
-+++ b/ucm2/codecs/rt5672/DMIC1.conf
-@@ -2,7 +2,6 @@ SectionDevice."Mic1" {
- =09Comment "Internal Digital Microphone on DMIC1"
+diff --git a/ucm2/chtrt5645/HiFi-dmic1.conf b/ucm2/chtrt5645/HiFi-dmic1.con=
+f
+index 1a8ee0a..c7e12c9 100644
+--- a/ucm2/chtrt5645/HiFi-dmic1.conf
++++ b/ucm2/chtrt5645/HiFi-dmic1.conf
+@@ -50,7 +50,6 @@ SectionDevice."Headphones" {
+ =09=09PlaybackPriority 200
+ =09=09PlaybackPCM "hw:${CardId}"
+ =09=09JackControl "Headphone Jack"
+-=09=09JackHWMute "Speaker"
+ =09}
 =20
  =09ConflictingDevice [
--=09=09"Mic2"
- =09=09"Headset"
- =09]
-=20
-diff --git a/ucm2/codecs/rt5672/DMIC2.conf b/ucm2/codecs/rt5672/DMIC2.conf
-index 48e6170..abe139b 100644
---- a/ucm2/codecs/rt5672/DMIC2.conf
-+++ b/ucm2/codecs/rt5672/DMIC2.conf
-@@ -2,7 +2,6 @@ SectionDevice."Mic2" {
- =09Comment "Internal Digital Microphone on DMIC2"
-=20
- =09ConflictingDevice [
--=09=09"Mic1"
- =09=09"Headset"
- =09]
-=20
-diff --git a/ucm2/codecs/rt5672/HeadPhones.conf b/ucm2/codecs/rt5672/HeadPh=
-ones.conf
-index 2c8d6e8..9178607 100644
---- a/ucm2/codecs/rt5672/HeadPhones.conf
-+++ b/ucm2/codecs/rt5672/HeadPhones.conf
-@@ -2,8 +2,6 @@ SectionDevice."Headphones" {
- =09Comment "Headphones"
-=20
- =09ConflictingDevice [
--=09=09"Speaker1"
--=09=09"Speaker2"
- =09]
+@@ -96,7 +95,6 @@ SectionDevice."Headset" {
+ =09=09CapturePriority 200
+ =09=09CapturePCM "hw:${CardId}"
+ =09=09JackControl "Headset Mic Jack"
+-=09=09JackHWMute "Mic"
+ =09}
 =20
  =09EnableSequence [
-diff --git a/ucm2/codecs/rt5672/HeadsetMic.conf b/ucm2/codecs/rt5672/Headse=
-tMic.conf
-index a764d82..e04c3ce 100644
---- a/ucm2/codecs/rt5672/HeadsetMic.conf
-+++ b/ucm2/codecs/rt5672/HeadsetMic.conf
-@@ -2,8 +2,6 @@ SectionDevice."Headset" {
- =09Comment "Headset Microphone"
+diff --git a/ucm2/chtrt5645/HiFi-dmic2.conf b/ucm2/chtrt5645/HiFi-dmic2.con=
+f
+index d3f880a..95fedb3 100644
+--- a/ucm2/chtrt5645/HiFi-dmic2.conf
++++ b/ucm2/chtrt5645/HiFi-dmic2.conf
+@@ -50,7 +50,6 @@ SectionDevice."Headphones" {
+ =09=09PlaybackPriority 200
+ =09=09PlaybackPCM "hw:${CardId}"
+ =09=09JackControl "Headphone Jack"
+-=09=09JackHWMute "Speaker"
+ =09}
 =20
  =09ConflictingDevice [
--=09=09"Mic1"
--=09=09"Mic2"
- =09]
+@@ -98,7 +97,6 @@ SectionDevice."Headset" {
+ =09=09CapturePriority 200
+ =09=09CapturePCM "hw:${CardId}"
+ =09=09JackControl "Headset Mic Jack"
+-=09=09JackHWMute "Mic"
+ =09}
 =20
  =09EnableSequence [
-diff --git a/ucm2/codecs/rt5672/MonoSpeaker.conf b/ucm2/codecs/rt5672/MonoS=
-peaker.conf
-index f08c9c6..88c39d2 100644
---- a/ucm2/codecs/rt5672/MonoSpeaker.conf
-+++ b/ucm2/codecs/rt5672/MonoSpeaker.conf
-@@ -2,7 +2,6 @@ SectionDevice."Speaker2" {
- =09Comment "Mono Speaker"
+diff --git a/ucm2/chtrt5645/HiFi-mono-speaker-analog-mic.conf b/ucm2/chtrt5=
+645/HiFi-mono-speaker-analog-mic.conf
+index db866cd..f6180a4 100644
+--- a/ucm2/chtrt5645/HiFi-mono-speaker-analog-mic.conf
++++ b/ucm2/chtrt5645/HiFi-mono-speaker-analog-mic.conf
+@@ -54,7 +54,6 @@ SectionDevice."Headphones" {
+ =09=09PlaybackPriority 200
+ =09=09PlaybackPCM "hw:${CardId}"
+ =09=09JackControl "Headphone Jack"
+-=09=09JackHWMute "Speaker"
+ =09}
 =20
  =09ConflictingDevice [
--=09=09"Speaker1"
- =09=09"Headphones"
- =09]
+@@ -84,7 +83,6 @@ SectionDevice."Headset" {
+ =09=09CapturePriority 200
+ =09=09CapturePCM "hw:${CardId}"
+ =09=09JackControl "Headset Mic Jack"
+-=09=09JackHWMute "Mic"
+ =09}
 =20
-diff --git a/ucm2/codecs/rt5672/Speaker.conf b/ucm2/codecs/rt5672/Speaker.c=
-onf
-index 8b7bcf8..c70ffae 100644
---- a/ucm2/codecs/rt5672/Speaker.conf
-+++ b/ucm2/codecs/rt5672/Speaker.conf
-@@ -2,7 +2,6 @@ SectionDevice."Speaker1" {
- =09Comment "Stereo Speakers"
+ =09EnableSequence [
+diff --git a/ucm2/chtrt5645/HiFi.conf b/ucm2/chtrt5645/HiFi.conf
+index 58468a8..116d456 100644
+--- a/ucm2/chtrt5645/HiFi.conf
++++ b/ucm2/chtrt5645/HiFi.conf
+@@ -50,7 +50,6 @@ SectionDevice."Headphones" {
+ =09=09PlaybackPriority 200
+ =09=09PlaybackPCM "hw:${CardId}"
+ =09=09JackControl "Headphone Jack"
+-=09=09JackHWMute "Speaker"
+ =09}
 =20
  =09ConflictingDevice [
--=09=09"Speaker2"
- =09=09"Headphones"
- =09]
+@@ -76,7 +75,6 @@ SectionDevice."Headset" {
+ =09=09CapturePriority 200
+ =09=09CapturePCM "hw:${CardId}"
+ =09=09JackControl "Headset Mic Jack"
+-=09=09JackHWMute "Mic"
+ =09}
 =20
+ =09EnableSequence [
 --=20
 2.26.0
 
