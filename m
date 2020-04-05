@@ -2,85 +2,82 @@ Return-Path: <SRS0=oqyN=5V=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BE7E6C2BA17
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Apr 2020 23:51:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89D10C2BA17
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Apr 2020 23:52:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 25A4120675
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Apr 2020 23:51:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0416620678
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Apr 2020 23:52:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BaUw2XjA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 25A4120675
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gV/qukZ7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0416620678
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 65C5C82E;
-	Mon,  6 Apr 2020 01:51:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 65C5C82E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6416B1670;
+	Mon,  6 Apr 2020 01:51:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6416B1670
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586130715;
-	bh=16OpPYwPMRdzFmmKY8d2HlrnKAcdShren9QBK4jAbq4=;
+	s=default; t=1586130768;
+	bh=mbaiy0lsMEpKpeCN6k3U9qxGEEwiPT9uEYlhmJvLMF0=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BaUw2XjA5V0+IA5I1cRNejjMt/y8F/xRZ95/czHC110f8MRZtTdRZAOcHu60+2PXt
-	 HL06bbNYZGE7XjKrgKXQbXRUJ64091uXHi7TbMjXWcfnljbyhGhtjbvYNfO15iCm50
-	 EV9pojslITD0uTwbRsDEu9TiR4VCE1pT5VmzRPxA=
+	b=gV/qukZ7nTJFqQfLH5nYtZmHWdOsrtuQ6RsEGt5Yf+lRFSgpgVDdn9cdu55KlQwsO
+	 NQ4EGd5sp6eD91f4Scvi4FozQDHN4D9LzhTAaiMqryxGu5fz7sO5u0kVqPNXUyCtpb
+	 NNAM1o1sj6x3FsZWzx6GaeL0Sb5Gm4riRgB65ut0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E08C8F800E4;
-	Mon,  6 Apr 2020 01:51:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8952AF80213;
+	Mon,  6 Apr 2020 01:51:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 509D2F801DA; Mon,  6 Apr 2020 01:51:02 +0200 (CEST)
+ id ACA49F80213; Mon,  6 Apr 2020 01:51:01 +0200 (CEST)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 70F76F80058
- for <alsa-devel@alsa-project.org>; Mon,  6 Apr 2020 01:50:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70F76F80058
-IronPort-SDR: Bgc7xU6uRslUSGniNRivMgcNG+nv0ilwktjukibf2/7pjvsd0Npjvtf9gB0N/y+1HgAMcRgSkg
- P1xDvOufrsuA==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5D2E9F800E4
+ for <alsa-devel@alsa-project.org>; Mon,  6 Apr 2020 01:50:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D2E9F800E4
+IronPort-SDR: JQ3LmOQ8akR+isOQzFTOQ70iWk7uhdbsGlVMHifUjDxND5nDiVXGjW7EenT0j2pFr4cF6a4dEl
+ hmUbi0sHxC7g==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Apr 2020 16:50:53 -0700
-IronPort-SDR: e0Z+hUnwpMG43shiVck803kEt5nPO5j6lIc58BqxfeS+MBttSFPIVskYe+8Ro8LL9sKeayW9Zm
- gbHjbZs8xR9g==
+ 05 Apr 2020 16:50:51 -0700
+IronPort-SDR: XKreq45w3WuCrO4UPWxmUy7CINTEiNdVtEx+N/XqKdo+6FzU7N+IoQD00z+uWDFvpVvGok6Rtx
+ 3wZQB2GVlCDA==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,349,1580803200"; d="scan'208";a="253949529"
+X-IronPort-AV: E=Sophos;i="5.72,349,1580803200"; d="scan'208";a="253949526"
 Received: from tecook-mobl1.amr.corp.intel.com (HELO [10.212.185.245])
  ([10.212.185.245])
- by orsmga006.jf.intel.com with ESMTP; 05 Apr 2020 16:50:52 -0700
-Subject: Re: [PATCH 3/4] ASoC: Intel: bdw-rt5677: Remove ignore_suspend flag
- from SSP0 dai link
+ by orsmga006.jf.intel.com with ESMTP; 05 Apr 2020 16:50:50 -0700
+Subject: Re: [PATCH v3] ASoC: Intel: bytcr_rt5640: Add quirk for MPMAN
+ MPWIN895CL tablet
 To: Hans de Goede <hdegoede@redhat.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
-References: <20200319204947.18963-1-cezary.rojewski@intel.com>
- <20200319204947.18963-4-cezary.rojewski@intel.com>
- <dea20cf7-f324-a933-8f8e-e70a4dffa249@linux.intel.com>
- <259cbb60-9e59-1132-8371-83f837577f86@redhat.com>
- <fdb1f5f5-53a2-f1ae-c193-145c8a7f4f42@redhat.com>
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>,
+ flove@realtek.com, shumingf@realtek.com, Oder Chiou <oder_chiou@realtek.com>
+References: <20200405133726.24154-1-hdegoede@redhat.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <3af264d9-7064-dad4-b937-af45ffad4e65@linux.intel.com>
-Date: Sun, 5 Apr 2020 18:11:34 -0500
+Message-ID: <0b7cfac8-857c-c4c1-0f79-7ce6522e073e@linux.intel.com>
+Date: Sun, 5 Apr 2020 17:55:54 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <fdb1f5f5-53a2-f1ae-c193-145c8a7f4f42@redhat.com>
+In-Reply-To: <20200405133726.24154-1-hdegoede@redhat.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Curtis Malainey <cujomalainey@google.com>, tiwai@suse.com,
- Dominik Brodowski <linux@dominikbrodowski.net>, lgirdwood@gmail.com,
- vkoul@kernel.org, broonie@kernel.org, Ben Zhang <benzh@google.com>
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,43 +94,44 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+
+On 4/5/20 8:37 AM, Hans de Goede wrote:
+> The MPMAN MPWIN895CL tablet almost fully works with out default settings.
+> The only problem is that it has only 1 speaker so any sounds only playing
+> on the right channel get lost.
 > 
-> I just noticed something which is somewhat related to this
-> discussion (and also somewhat off topic).
+> Add a quirk for this model using the default settings + MONO_SPEAKER.
 > 
-> I just noticed on a Bay Trail device with a RT5672 codec
-> and on a Cherry Trail device with a RT5645 codec that
-> if an input / recording audio stream is active while
-> suspending the tablet, then after resume audio is broken,
-> playback seems to work (audio samples get consumed at normal
-> speed) but it is silent.  Recording also is broken, not
-> sure if it is broken, or just silent too.
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
+Thanks Hans!
+
+> ---
+>   sound/soc/intel/boards/bytcr_rt5640.c | 11 +++++++++++
+>   1 file changed, 11 insertions(+)
 > 
-> When this happens, closing all apps which consume audio
-> and waiting 5 seconds for a runtime-suspend to kick in
-> fixes things. After this both record and playback
-> works again.
+> diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+> index 6bd9ae813be2..d14d5f7db168 100644
+> --- a/sound/soc/intel/boards/bytcr_rt5640.c
+> +++ b/sound/soc/intel/boards/bytcr_rt5640.c
+> @@ -591,6 +591,17 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+>   					BYT_RT5640_SSP0_AIF1 |
+>   					BYT_RT5640_MCLK_EN),
+>   	},
+> +	{
+> +		/* MPMAN MPWIN895CL */
+> +		.matches = {
+> +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "MPMAN"),
+> +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "MPWIN8900CL"),
+> +		},
+> +		.driver_data = (void *)(BYTCR_INPUT_DEFAULTS |
+> +					BYT_RT5640_MONO_SPEAKER |
+> +					BYT_RT5640_SSP0_AIF1 |
+> +					BYT_RT5640_MCLK_EN),
+> +	},
+>   	{	/* MSI S100 tablet */
+>   		.matches = {
+>   			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Micro-Star International Co., Ltd."),
 > 
-> Any idea what the cause for this problem might be?
-
-Power management for the Atom/sst stuff is far from clear for me, it 
-uses .prepare/.complete callbacks where 
-snd_soc_suspend()/poweroff()/resume() are invoked, so there's a bit of 
-confusion IMO between that the framework does and what the driver should do.
-
-It's also unclear to me why the INFO_RESUME flag was set, since the 
-driver cannot restart from the same position.
-
-I would try and triangulate with the more traditional bytcr-rt5640, to 
-rule out a codec-specific or machine driver issue (handling of rt5645 
-and 5672 was done by different people and the machine driver is quite 
-different).
-
-I would also remove the INFO_RESUME, that will force the ALSA core to 
-call the .prepare steps and maybe restore settings that are not applied 
-with the current resume.
-
-Either way, it's a bit of a shot in the dark :-(
-
-My 2 cents
--Pierre
