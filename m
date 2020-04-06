@@ -4,76 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D7BAC2BA19
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Apr 2020 14:04:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F3807C2BA19
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Apr 2020 14:05:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A9DCB2220A
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Apr 2020 14:04:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7898423132
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Apr 2020 14:05:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bj8n4vwr";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="t6XnXZT7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A9DCB2220A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="r54t7EFg";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="F8Wsfrq0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7898423132
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 078CE15E2;
-	Mon,  6 Apr 2020 16:03:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 078CE15E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id A72E81678;
+	Mon,  6 Apr 2020 16:04:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A72E81678
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586181884;
-	bh=8TVbTcM8qIKxR5nIgC/S57FDoJgBwJiTPqUB+qW6qPM=;
+	s=default; t=1586181936;
+	bh=UbkFYXsatuzQbUdxGVDQAxnHxupZla2aqzUmbNgnnGI=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=bj8n4vwrtvR7HWi9vvRv2wT2NaV1ydqyjZQBlQ2whKnHPY4DyiLVd2u1NMPT+9LE6
-	 yHtrKK3TuntdoZ6ez8HUvt1koQ+qKK7Zl93aN1omR2Ma7O5uJJfu1QRSq1+NTxQuk5
-	 8WddmohI6XWizxXsf/94XsjS+w5iYtANVdeXtwPo=
+	b=r54t7EFgj/2anytCPTx/4+T36D8rjKL1C0DuORAG69+pS2Rpz/FlgDD5RHGatasFK
+	 6K0B5rPCGkRGdxQ4m3CHFHlvBLFfE2CFZ1V+LjALVcxowTI0iKnkEAim+j5RP7MtBl
+	 cv2zsYO9JOwxiQGo+dRm7LRA+uSbG0rbAqKoTuas=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 58E69F80143;
-	Mon,  6 Apr 2020 16:03:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ADD74F80161;
+	Mon,  6 Apr 2020 16:03:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E651FF80143; Mon,  6 Apr 2020 16:03:50 +0200 (CEST)
+ id E5467F80121; Mon,  6 Apr 2020 16:03:53 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EBDDFF80121
- for <alsa-devel@alsa-project.org>; Mon,  6 Apr 2020 16:03:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EBDDFF80121
+ by alsa1.perex.cz (Postfix) with ESMTPS id F1ACDF80121
+ for <alsa-devel@alsa-project.org>; Mon,  6 Apr 2020 16:03:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1ACDF80121
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="t6XnXZT7"
+ header.b="F8Wsfrq0"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id C6B2E233FE;
- Mon,  6 Apr 2020 14:03:43 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id F061C23433;
+ Mon,  6 Apr 2020 14:03:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1586181824;
- bh=8TVbTcM8qIKxR5nIgC/S57FDoJgBwJiTPqUB+qW6qPM=;
+ s=default; t=1586181829;
+ bh=UbkFYXsatuzQbUdxGVDQAxnHxupZla2aqzUmbNgnnGI=;
  h=Date:From:To:Cc:Subject:In-Reply-To:From;
- b=t6XnXZT7lNyg+7hN9HE5ZDjjiuhQyt1dSrW0KYpTq+Ihb8O2bf2CzDfurH4OD91Li
- syc66Y836zA0XcTqDzVVdk+ZKmSZNR6AwYv01CQP3k0nyxwhDsnyQXtUqTbSi9qYo9
- gxeTwbES+8HNW3xdhW9z3qYxegrGFVfdRm2eDRrg=
-Date: Mon, 06 Apr 2020 15:03:41 +0100
+ b=F8Wsfrq0K11uyIa+GRybKbyBxjyoiQ72PIhjJXXAD60jFxbbOrC4Q4w3iv3l/BCOg
+ lJlT3GYD87feNnOAUIEaPoSpOJQBWeGU4GmwpJPLNmpRQZAqKLlBlFIku2Bnqr6+Je
+ TKQsB7z6IBrmoerd2HKKbinAfmIEktdHGKNMqioo=
+Date: Mon, 06 Apr 2020 15:03:46 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Hans de Goede <hdegoede@redhat.com>
-Subject: Applied "ASoC: Intel: bytcr_rt5640: Add quirk for MPMAN MPWIN895CL
- tablet" to the asoc tree
-In-Reply-To: <20200405133726.24154-1-hdegoede@redhat.com>
-Message-Id: <applied-20200405133726.24154-1-hdegoede@redhat.com>
+To: Julia Lawall <Julia.Lawall@inria.fr>
+Subject: Applied "ASoC: stm32: sai: Add missing cleanup" to the asoc tree
+In-Reply-To: <1586099028-5104-1-git-send-email-Julia.Lawall@inria.fr>
+Message-Id: <applied-1586099028-5104-1-git-send-email-Julia.Lawall@inria.fr>
 X-Patchwork-Hint: ignore
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
- Jie Yang <yang.jie@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Mark Brown <broonie@kernel.org>, shumingf@realtek.com, flove@realtek.com
+Cc: alsa-devel@alsa-project.org, Olivier Moysan <olivier.moysan@st.com>,
+ Alexandre Torgue <alexandre.torgue@st.com>,
+ Arnaud Pouliquen <arnaud.pouliquen@st.com>, Takashi Iwai <tiwai@suse.com>,
+ kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,7 +91,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: Intel: bytcr_rt5640: Add quirk for MPMAN MPWIN895CL tablet
+   ASoC: stm32: sai: Add missing cleanup
 
 has been applied to the asoc tree at
 
@@ -116,48 +116,44 @@ to this mail.
 Thanks,
 Mark
 
-From c8b78f24c1247b7bd0882885c672d9dec5800bc6 Mon Sep 17 00:00:00 2001
-From: Hans de Goede <hdegoede@redhat.com>
-Date: Sun, 5 Apr 2020 15:37:26 +0200
-Subject: [PATCH] ASoC: Intel: bytcr_rt5640: Add quirk for MPMAN MPWIN895CL
- tablet
+From 7506baeed8d05fc164254c64af14cfed2ac14446 Mon Sep 17 00:00:00 2001
+From: Julia Lawall <Julia.Lawall@inria.fr>
+Date: Sun, 5 Apr 2020 17:03:48 +0200
+Subject: [PATCH] ASoC: stm32: sai: Add missing cleanup
 
-The MPMAN MPWIN895CL tablet almost fully works with out default settings.
-The only problem is that it has only 1 speaker so any sounds only playing
-on the right channel get lost.
+The commit 0d6defc7e0e4 ("ASoC: stm32: sai: manage rebind issue")
+converts some function calls to their non-devm equivalents.  The
+appropriate cleanup code was added to the remove function, but not
+to the probe function.  Add a call to snd_dmaengine_pcm_unregister
+to compensate for the call to snd_dmaengine_pcm_register in case
+of subsequent failure.
 
-Add a quirk for this model using the default settings + MONO_SPEAKER.
+Fixes: commit 0d6defc7e0e4 ("ASoC: stm32: sai: manage rebind issue")
+Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200405133726.24154-1-hdegoede@redhat.com
+Acked-by: Olivier Moysan <olivier.moysan@st.com>
+Link: https://lore.kernel.org/r/1586099028-5104-1-git-send-email-Julia.Lawall@inria.fr
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ sound/soc/stm/stm32_sai_sub.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 33fb8ea4e5cb..08f4ae964b02 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -591,6 +591,17 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 					BYT_RT5640_SSP0_AIF1 |
- 					BYT_RT5640_MCLK_EN),
- 	},
-+	{
-+		/* MPMAN MPWIN895CL */
-+		.matches = {
-+			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "MPMAN"),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "MPWIN8900CL"),
-+		},
-+		.driver_data = (void *)(BYTCR_INPUT_DEFAULTS |
-+					BYT_RT5640_MONO_SPEAKER |
-+					BYT_RT5640_SSP0_AIF1 |
-+					BYT_RT5640_MCLK_EN),
-+	},
- 	{	/* MSI S100 tablet */
- 		.matches = {
- 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Micro-Star International Co., Ltd."),
+diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
+index 2bd280c01c33..0d0c9afd8791 100644
+--- a/sound/soc/stm/stm32_sai_sub.c
++++ b/sound/soc/stm/stm32_sai_sub.c
+@@ -1556,8 +1556,10 @@ static int stm32_sai_sub_probe(struct platform_device *pdev)
+ 
+ 	ret = snd_soc_register_component(&pdev->dev, &stm32_component,
+ 					 &sai->cpu_dai_drv, 1);
+-	if (ret)
++	if (ret) {
++		snd_dmaengine_pcm_unregister(&pdev->dev);
+ 		return ret;
++	}
+ 
+ 	if (STM_SAI_PROTOCOL_IS_SPDIF(sai))
+ 		conf = &stm32_sai_pcm_config_spdif;
 -- 
 2.20.1
 
