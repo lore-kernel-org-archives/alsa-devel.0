@@ -2,79 +2,79 @@ Return-Path: <SRS0=9St4=5W=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF521C2BA17
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Apr 2020 16:06:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59AE9C2BA1E
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Apr 2020 16:07:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2426C2492C
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Apr 2020 16:06:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D685A24930
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Apr 2020 16:07:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IT+jfYGf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2426C2492C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DRu1qyN8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D685A24930
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6614A166D;
-	Mon,  6 Apr 2020 18:05:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6614A166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 34CAA167C;
+	Mon,  6 Apr 2020 18:06:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 34CAA167C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586189195;
-	bh=2Z9RwhPGVJJDgcNSj0YAjiqLZA6stb3+3hGvblRifVo=;
+	s=default; t=1586189248;
+	bh=E2ZF6ePEb4ZuZka/H0BZRMmepuDSGAYc8dOFjjoErVg=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IT+jfYGfLMDvoxHL9Hw0kdxUWYk7yuGMexa2eG2rEZamt/SACSB8NSsyLo5uCQrng
-	 BKOzyB3CSOi3/EiKJzqGMrk1vZeEFejyaobgBjQnVT9eAYLBAByRsefnDXFn0nT+iz
-	 y/8M8WX6IRSN9lSHh9+NUlzE8rwfLvDvwMqBm4H4=
+	b=DRu1qyN89PiZgFBaTfP2vbLOUI/JUgdmqKZVM9Ul+jh/rDEtIXRrM3VsGk1AHYznP
+	 EFpKbFKDAGpMev/TwiH+/pX1Wa2HdVBbH+MBeXzpM9wtqWzcvO/PG471uu+4NCy9mN
+	 4y2C+U5unui5swbIYyXzu3Oigd+9RwkpQrTCGQEw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EC93FF80121;
-	Mon,  6 Apr 2020 18:05:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 05270F8015D;
+	Mon,  6 Apr 2020 18:05:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 245B7F80121; Mon,  6 Apr 2020 18:05:42 +0200 (CEST)
+ id 8D690F8015D; Mon,  6 Apr 2020 18:05:42 +0200 (CEST)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 55685F80121
- for <alsa-devel@alsa-project.org>; Mon,  6 Apr 2020 18:05:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55685F80121
-IronPort-SDR: AW/RSCp4utbdiYMTTUc+YZpBt0eJC8xOTcysPTORrtQRzfOCfrc4vAFJVz+423cg1IYuo+iyTD
- VZfxB8OYXUYw==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5AB79F800CC
+ for <alsa-devel@alsa-project.org>; Mon,  6 Apr 2020 18:05:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5AB79F800CC
+IronPort-SDR: IszRwbxzHnoT45Qlofc+LApK9dxVE5RZIAXZRpTIS1Dby1oFFDANs5VVLBtnJmCMQKaqFDUS4f
+ on5rX3eHmaEg==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Apr 2020 09:05:32 -0700
-IronPort-SDR: vhyd0vxreIMGFYq5oJgBBhnNAj7O7uHBEngXgEVFKK7JahBwDKPTD52rcpKM3MaSbr3EdKjcRZ
- amXeYPHqZ/pQ==
+ 06 Apr 2020 09:05:31 -0700
+IronPort-SDR: uz3vHQb5nBj8PaopWVqGPmPAa7VzFYcvgVEZ1Nwf3Mb6qWt0SjZ7JOiKwHOQRhb25WEru3JSIG
+ 8KoO6tsPTrSA==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,351,1580803200"; d="scan'208";a="361256312"
+X-IronPort-AV: E=Sophos;i="5.72,351,1580803200"; d="scan'208";a="361256308"
 Received: from mmarathe-mobl1.amr.corp.intel.com (HELO [10.212.38.219])
  ([10.212.38.219])
- by fmsmga001.fm.intel.com with ESMTP; 06 Apr 2020 09:05:32 -0700
-Subject: Re: [PATCH 4/5] chtrt5645: Remove bogus JackHWMute settings
-To: Hans de Goede <hdegoede@redhat.com>, Jaroslav Kysela <perex@perex.cz>
-References: <20200405183454.34515-1-hdegoede@redhat.com>
- <20200405183454.34515-4-hdegoede@redhat.com>
- <d06f3894-6cd7-fd4e-2261-94505fc0db4a@linux.intel.com>
- <c19aadd5-80b4-91de-4e0a-344e21125883@redhat.com>
+ by fmsmga001.fm.intel.com with ESMTP; 06 Apr 2020 09:05:31 -0700
+Subject: Re: [PATCH] ASoC: Intel: haswell: Power transition refactor
+To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
+References: <20200330194520.13253-1-cezary.rojewski@intel.com>
+ <293372ae-5270-a1d4-2577-04991c08e33f@intel.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <3198cbfb-f498-2c82-88cd-c8b7d0b53574@linux.intel.com>
-Date: Mon, 6 Apr 2020 10:17:49 -0500
+Message-ID: <ee6c0545-a325-8df4-9c26-d823582735af@linux.intel.com>
+Date: Mon, 6 Apr 2020 10:02:50 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <c19aadd5-80b4-91de-4e0a-344e21125883@redhat.com>
+In-Reply-To: <293372ae-5270-a1d4-2577-04991c08e33f@intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org
+Cc: vkoul@kernel.org, broonie@kernel.org, Ross Zwisler <zwisler@google.com>,
+ lgirdwood@gmail.com, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,59 +91,43 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
->> So overall it seems rather unlikely that we can support dmic + headset 
->> mic in parallel?
-> 
-> Right that is what the ConflictingDevices sections are for.
-> 
-> Removing the JackHWMute does not allow using both add the same time,
-> it merely allows overriding which of the 2 to use (if the headset mic
-> is detected by the jack, the JackControl setting is kept).
-> 
-> So lets say the internal mic is crappy, but the user prefers to
-> have their ears free, then they can use a headset around there neck,
-> using just the headset-mic and select speakers as output even though
-> a jack is inserted.
-> 
-> Note pulseaudio will still automatically switch to the headphones /
-> headsetmic when plugged in, this merely allows overriding that
-> choice manually.
-> 
-> Jacks which actually physically disable (or re-route) signals are
-> quite rare now a days so having a JackHWMute in the UCM conf is
-> often wrong. After this patch only a few cases are left:
-> 
-> [hans@x1 alsa-ucm-conf]$ ack -l JackHWMute ucm2
-> ucm2/HDA-Intel/HiFi-dual.conf
-> ucm2/chtrt5650/HiFi.conf
-> ucm2/hda-dsp/HiFi.conf
-> ucm2/codecs/es8316/HeadPhones.conf
-> ucm2/sof-bdw-rt5677/HiFi.conf
-> ucm2/broxton-rt298/HiFi.conf
-> ucm2/skylake-rt286/HiFi.conf
-> 
-> The es8316 case is actually correct, the es8316 has only 1
-> output (which is amplified for e.g. a speaker) and at
-> least the reference design suggests routing the speaker signal
-> through the jack and using a jack which will interrupt the
-> signal when headphones are plugged in.
-> 
-> Note most actual designs implement this with an analog
-> switch and a GPIO to control that switch, since 3.5 mm
-> jacks which actually can disconnect a signal are rare
-> (if they exist at all, but I guess they do). For the
-> designs using the GPIO controlled analog switch, the
-> JackHWMute technically also is wrong, but I put it
-> there (IIRC it was me) because it matches the reference
-> design.
-> 
-> I'm not familiar enough with any of the others to say anything
-> about them, but most of them are for HDA setups, where this
-> is somewhat more normal I guess.
 
-If I follow the logic, I guess we should also remove the JackHWMute for 
-sof-bdw-rt5677, hda-dsp and HDA-Intel. I can't think of a hardware 
-limitation preventing the headset mic from being used while the speakers 
-are used for playback. Likewise the rt5650 is a cheaper version of 
-rt5645 so the same applies.
+On 4/6/20 3:48 AM, Cezary Rojewski wrote:
+> On 2020-03-30 21:45, Cezary Rojewski wrote:
+>> Update D0 <-> D3 sequence to correctly transition hardware and DSP core
+>> from and to D3. On top of that, set SHIM registers to their recommended
+>> defaults during D0 and D3 proceduces as HW does not reset registers for
+>> us.
+>>
+>> Connected to:
+>> [alsa-devel][BUG] bdw-rt5650 DSP boot timeout
+>> https://mailman.alsa-project.org/pipermail/alsa-devel/2019-July/153098.html 
+>>
+>>
+>> Github issue ticket reference:
+>> https://github.com/thesofproject/linux/pull/1842
+>>
+>> Tested on:
+>> - BDW-Y RVP with rt286
+>> - SAMUS with rt5677
+>>
+>> Proposed solution (both in July 2019 and on github):
+>> 'Revert "ASoC: Intel: Work around to fix HW d3 potential crash issue"'
+>> is NAKed as it only covers the problem up and actually brings back the
+>> undefined behavior: some registers (e.g.: APLLSE) are describing LPT
+>> offsets rather than WPT ones. In consequence, during power-transitions
+>> driver issues incorrect writes and leaves the regs of interest alone.
+>>
+>> Existing patch - the non-revert - does not resolve the HW D3 issue at
+>> all as it ignores the recommended sequence and does not initialize
+>> hardware registers as expected. And thus, leaving things as are is also
+>> unacceptable.
+>>
+>> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+>> ---
+> 
+> Pierre, your thoughts on this? This has already been confirmed working.
 
+I don't have any specific knowledge on Broadwell to comment. I also 
+haven't had time to test this patch, I was expecting Ross to provide his 
+Tested-by tag?
