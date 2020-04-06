@@ -2,106 +2,78 @@ Return-Path: <SRS0=9St4=5W=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E95D0C2BA19
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Apr 2020 13:51:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D7BAC2BA19
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Apr 2020 14:04:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7539A22525
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Apr 2020 13:51:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A9DCB2220A
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Apr 2020 14:04:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qqIzY62n";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="myHgc5Nt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7539A22525
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bj8n4vwr";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="t6XnXZT7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A9DCB2220A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9AEB3825;
-	Mon,  6 Apr 2020 15:50:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9AEB3825
+	by alsa0.perex.cz (Postfix) with ESMTPS id 078CE15E2;
+	Mon,  6 Apr 2020 16:03:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 078CE15E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586181061;
-	bh=icwFCVKZycTZ4Pj8x9eG2QtwcjKz1cGUJNJvf0PQNlU=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=qqIzY62nV6Cz//D6iu3k2kIbuVUlF2sdwF//AnGPGEAXgjwUTwDq5UmTvTUH86z42
-	 oHnJ7fezgA7tRszonAYMfYZuu015v0OYC9pqdhvUZs09G4aXpUL+zTolnMOJjVegLb
-	 yUJND10Md+8cpXre7nelcQ/e0R7j7wbXUacAeqZA=
+	s=default; t=1586181884;
+	bh=8TVbTcM8qIKxR5nIgC/S57FDoJgBwJiTPqUB+qW6qPM=;
+	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=bj8n4vwrtvR7HWi9vvRv2wT2NaV1ydqyjZQBlQ2whKnHPY4DyiLVd2u1NMPT+9LE6
+	 yHtrKK3TuntdoZ6ez8HUvt1koQ+qKK7Zl93aN1omR2Ma7O5uJJfu1QRSq1+NTxQuk5
+	 8WddmohI6XWizxXsf/94XsjS+w5iYtANVdeXtwPo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1B01EF80140;
-	Mon,  6 Apr 2020 15:50:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 58E69F80143;
+	Mon,  6 Apr 2020 16:03:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D53CEF80121; Mon,  6 Apr 2020 15:50:09 +0200 (CEST)
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com
- [IPv6:2a00:1450:4864:20::441])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id E651FF80143; Mon,  6 Apr 2020 16:03:50 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B7ABBF80121
- for <alsa-devel@alsa-project.org>; Mon,  6 Apr 2020 15:50:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7ABBF80121
+ by alsa1.perex.cz (Postfix) with ESMTPS id EBDDFF80121
+ for <alsa-devel@alsa-project.org>; Mon,  6 Apr 2020 16:03:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EBDDFF80121
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="myHgc5Nt"
-Received: by mail-wr1-x441.google.com with SMTP id w15so11307235wrv.10
- for <alsa-devel@alsa-project.org>; Mon, 06 Apr 2020 06:50:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to:user-agent;
- bh=1ZBXAkSNw7rN3Vg/64u1/mtjj5o3RF5dmotAwUEzNXY=;
- b=myHgc5Nt2kD5Fr+CT43bdkvCmIzudFhzhOwNkoRG25SZi35VCGrxuwmEjjFOjw1B8e
- JGag06K3HBNOor0LX051mDJvYuxWcZSkM4iflE+kY+Tx8v5xRkOvAIGD/PfAUU0+NY1Z
- CV4j/MfGpOAhlw1uJVHy4cRh6eLOCjbAviNs8l4UMfSb1lg9pYyWRRptavAzdtpdh/Wn
- 1Npp2C2KNn316rL6xFPDwOfMmgWXnfLusewrF/pB95kaPwacIapFv1JwhDf5efqt2dOd
- y+RSDk5MzgAKR6mWkTPINbOQLuSzM4jEmkjnCBXrAPR9VKj5GbbcSYm1okRB2GekpJUC
- i5TQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=1ZBXAkSNw7rN3Vg/64u1/mtjj5o3RF5dmotAwUEzNXY=;
- b=d1MUYmoT28zOUz6sDbGyUJQ4zx6+pQ0kVCf7y9C/HZZ6rboF7ubqc4Lp8gykZDmpai
- kYyuYh8c3eMS1xKD23djNOrigTSm8aTKizybMiDx9CPtoDx1s7gWdFKaygKMB7QfRlxg
- v3L0SjVPZ6lO39ObgdE+zWPGvGiaT5EXefE3XG2Pmo2Cf8tz7tx0mBV6cza0FCCgSz9E
- mIIXRwz01D7+Qd8zSfFcs4JlTawLQuZ4RGCqDHT6nZHUkWIHvzkpXLKXjQxOIVRjFTCz
- iBkinx3Ae8SQCTBmVZ4XvH1pLds2zi+VnyUqSN3Jb5dnTqPQC+MJwj3kks8SvVAUrTQ6
- frDw==
-X-Gm-Message-State: AGi0PubW2M1GuEhVKIqY3OMyi9InFi+n2mt5QrVWuqr/C1hD8Ed+FA3E
- MS45msDOuiM5RxAWLxpkNCI=
-X-Google-Smtp-Source: APiQypL14gh+vxsVIEoFPY9HTJvWYM3t7xRLIxgktYWk4KQsLq+jp/DkXlyXE6WGyHIU56+FPr3/Ow==
-X-Received: by 2002:adf:ee0c:: with SMTP id y12mr1809348wrn.85.1586181000465; 
- Mon, 06 Apr 2020 06:50:00 -0700 (PDT)
-Received: from localhost (108.78.124.78.rev.sfr.net. [78.124.78.108])
- by smtp.gmail.com with ESMTPSA id o145sm25487425wme.42.2020.04.06.06.49.59
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 06 Apr 2020 06:50:00 -0700 (PDT)
-Date: Mon, 6 Apr 2020 13:49:57 +0000
-From: sylvain.bertrand@gmail.com
-To: Takashi Iwai <tiwai@suse.de>
-Subject: Re: sw_params for a direct-ed(dmix) hw pcm
-Message-ID: <20200406134957.GA643@freedom>
-References: <1baab0fd-d802-3707-645f-d5dc4bf6c32c@linux.intel.com>
- <20200328203744.GA2398@freedom>
- <59266c58-96d8-93e9-bc8f-86e9fccf8d60@linux.intel.com>
- <20200328222021.GA4610@freedom> <s5hr1xbd2su.wl-tiwai@suse.de>
- <s5hlfng7oaj.wl-tiwai@suse.de> <20200401152538.GA11377@freedom>
- <s5hwo6z2o3r.wl-tiwai@suse.de> <20200401202126.GA9511@freedom>
- <20200402190326.GA12391@freedom>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200402190326.GA12391@freedom>
-User-Agent: Mutt/ (2018-04-13)
-Cc: alsa-devel@alsa-project.org,
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="t6XnXZT7"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id C6B2E233FE;
+ Mon,  6 Apr 2020 14:03:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1586181824;
+ bh=8TVbTcM8qIKxR5nIgC/S57FDoJgBwJiTPqUB+qW6qPM=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:From;
+ b=t6XnXZT7lNyg+7hN9HE5ZDjjiuhQyt1dSrW0KYpTq+Ihb8O2bf2CzDfurH4OD91Li
+ syc66Y836zA0XcTqDzVVdk+ZKmSZNR6AwYv01CQP3k0nyxwhDsnyQXtUqTbSi9qYo9
+ gxeTwbES+8HNW3xdhW9z3qYxegrGFVfdRm2eDRrg=
+Date: Mon, 06 Apr 2020 15:03:41 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Hans de Goede <hdegoede@redhat.com>
+Subject: Applied "ASoC: Intel: bytcr_rt5640: Add quirk for MPMAN MPWIN895CL
+ tablet" to the asoc tree
+In-Reply-To: <20200405133726.24154-1-hdegoede@redhat.com>
+Message-Id: <applied-20200405133726.24154-1-hdegoede@redhat.com>
+X-Patchwork-Hint: ignore
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
+ Jie Yang <yang.jie@linux.intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>, shumingf@realtek.com, flove@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -117,14 +89,75 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-No pb so far (I tested mostly monotonic_raw and default)
+The patch
 
-Can anybody test it with the pulseaudio alsa plugin?
+   ASoC: Intel: bytcr_rt5640: Add quirk for MPMAN MPWIN895CL tablet
 
-Because building pulseaudio is an accute pain on a lean gnu/linux distro like
-mine.
+has been applied to the asoc tree at
 
-regards,
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+From c8b78f24c1247b7bd0882885c672d9dec5800bc6 Mon Sep 17 00:00:00 2001
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Sun, 5 Apr 2020 15:37:26 +0200
+Subject: [PATCH] ASoC: Intel: bytcr_rt5640: Add quirk for MPMAN MPWIN895CL
+ tablet
+
+The MPMAN MPWIN895CL tablet almost fully works with out default settings.
+The only problem is that it has only 1 speaker so any sounds only playing
+on the right channel get lost.
+
+Add a quirk for this model using the default settings + MONO_SPEAKER.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20200405133726.24154-1-hdegoede@redhat.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/boards/bytcr_rt5640.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 33fb8ea4e5cb..08f4ae964b02 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -591,6 +591,17 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 					BYT_RT5640_SSP0_AIF1 |
+ 					BYT_RT5640_MCLK_EN),
+ 	},
++	{
++		/* MPMAN MPWIN895CL */
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "MPMAN"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "MPWIN8900CL"),
++		},
++		.driver_data = (void *)(BYTCR_INPUT_DEFAULTS |
++					BYT_RT5640_MONO_SPEAKER |
++					BYT_RT5640_SSP0_AIF1 |
++					BYT_RT5640_MCLK_EN),
++	},
+ 	{	/* MSI S100 tablet */
+ 		.matches = {
+ 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Micro-Star International Co., Ltd."),
 -- 
-Sylvain
+2.20.1
+
