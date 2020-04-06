@@ -2,78 +2,79 @@ Return-Path: <SRS0=9St4=5W=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F3807C2BA19
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Apr 2020 14:05:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF521C2BA17
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Apr 2020 16:06:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7898423132
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Apr 2020 14:05:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2426C2492C
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Apr 2020 16:06:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="r54t7EFg";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="F8Wsfrq0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7898423132
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IT+jfYGf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2426C2492C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A72E81678;
-	Mon,  6 Apr 2020 16:04:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A72E81678
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6614A166D;
+	Mon,  6 Apr 2020 18:05:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6614A166D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586181936;
-	bh=UbkFYXsatuzQbUdxGVDQAxnHxupZla2aqzUmbNgnnGI=;
-	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=r54t7EFgj/2anytCPTx/4+T36D8rjKL1C0DuORAG69+pS2Rpz/FlgDD5RHGatasFK
-	 6K0B5rPCGkRGdxQ4m3CHFHlvBLFfE2CFZ1V+LjALVcxowTI0iKnkEAim+j5RP7MtBl
-	 cv2zsYO9JOwxiQGo+dRm7LRA+uSbG0rbAqKoTuas=
+	s=default; t=1586189195;
+	bh=2Z9RwhPGVJJDgcNSj0YAjiqLZA6stb3+3hGvblRifVo=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=IT+jfYGfLMDvoxHL9Hw0kdxUWYk7yuGMexa2eG2rEZamt/SACSB8NSsyLo5uCQrng
+	 BKOzyB3CSOi3/EiKJzqGMrk1vZeEFejyaobgBjQnVT9eAYLBAByRsefnDXFn0nT+iz
+	 y/8M8WX6IRSN9lSHh9+NUlzE8rwfLvDvwMqBm4H4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ADD74F80161;
-	Mon,  6 Apr 2020 16:03:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EC93FF80121;
+	Mon,  6 Apr 2020 18:05:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E5467F80121; Mon,  6 Apr 2020 16:03:53 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F1ACDF80121
- for <alsa-devel@alsa-project.org>; Mon,  6 Apr 2020 16:03:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1ACDF80121
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="F8Wsfrq0"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ id 245B7F80121; Mon,  6 Apr 2020 18:05:42 +0200 (CEST)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id F061C23433;
- Mon,  6 Apr 2020 14:03:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1586181829;
- bh=UbkFYXsatuzQbUdxGVDQAxnHxupZla2aqzUmbNgnnGI=;
- h=Date:From:To:Cc:Subject:In-Reply-To:From;
- b=F8Wsfrq0K11uyIa+GRybKbyBxjyoiQ72PIhjJXXAD60jFxbbOrC4Q4w3iv3l/BCOg
- lJlT3GYD87feNnOAUIEaPoSpOJQBWeGU4GmwpJPLNmpRQZAqKLlBlFIku2Bnqr6+Je
- TKQsB7z6IBrmoerd2HKKbinAfmIEktdHGKNMqioo=
-Date: Mon, 06 Apr 2020 15:03:46 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Julia Lawall <Julia.Lawall@inria.fr>
-Subject: Applied "ASoC: stm32: sai: Add missing cleanup" to the asoc tree
-In-Reply-To: <1586099028-5104-1-git-send-email-Julia.Lawall@inria.fr>
-Message-Id: <applied-1586099028-5104-1-git-send-email-Julia.Lawall@inria.fr>
-X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, Olivier Moysan <olivier.moysan@st.com>,
- Alexandre Torgue <alexandre.torgue@st.com>,
- Arnaud Pouliquen <arnaud.pouliquen@st.com>, Takashi Iwai <tiwai@suse.com>,
- kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 55685F80121
+ for <alsa-devel@alsa-project.org>; Mon,  6 Apr 2020 18:05:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55685F80121
+IronPort-SDR: AW/RSCp4utbdiYMTTUc+YZpBt0eJC8xOTcysPTORrtQRzfOCfrc4vAFJVz+423cg1IYuo+iyTD
+ VZfxB8OYXUYw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 06 Apr 2020 09:05:32 -0700
+IronPort-SDR: vhyd0vxreIMGFYq5oJgBBhnNAj7O7uHBEngXgEVFKK7JahBwDKPTD52rcpKM3MaSbr3EdKjcRZ
+ amXeYPHqZ/pQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,351,1580803200"; d="scan'208";a="361256312"
+Received: from mmarathe-mobl1.amr.corp.intel.com (HELO [10.212.38.219])
+ ([10.212.38.219])
+ by fmsmga001.fm.intel.com with ESMTP; 06 Apr 2020 09:05:32 -0700
+Subject: Re: [PATCH 4/5] chtrt5645: Remove bogus JackHWMute settings
+To: Hans de Goede <hdegoede@redhat.com>, Jaroslav Kysela <perex@perex.cz>
+References: <20200405183454.34515-1-hdegoede@redhat.com>
+ <20200405183454.34515-4-hdegoede@redhat.com>
+ <d06f3894-6cd7-fd4e-2261-94505fc0db4a@linux.intel.com>
+ <c19aadd5-80b4-91de-4e0a-344e21125883@redhat.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <3198cbfb-f498-2c82-88cd-c8b7d0b53574@linux.intel.com>
+Date: Mon, 6 Apr 2020 10:17:49 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+MIME-Version: 1.0
+In-Reply-To: <c19aadd5-80b4-91de-4e0a-344e21125883@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,71 +90,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
 
-   ASoC: stm32: sai: Add missing cleanup
+>> So overall it seems rather unlikely that we can support dmic + headset 
+>> mic in parallel?
+> 
+> Right that is what the ConflictingDevices sections are for.
+> 
+> Removing the JackHWMute does not allow using both add the same time,
+> it merely allows overriding which of the 2 to use (if the headset mic
+> is detected by the jack, the JackControl setting is kept).
+> 
+> So lets say the internal mic is crappy, but the user prefers to
+> have their ears free, then they can use a headset around there neck,
+> using just the headset-mic and select speakers as output even though
+> a jack is inserted.
+> 
+> Note pulseaudio will still automatically switch to the headphones /
+> headsetmic when plugged in, this merely allows overriding that
+> choice manually.
+> 
+> Jacks which actually physically disable (or re-route) signals are
+> quite rare now a days so having a JackHWMute in the UCM conf is
+> often wrong. After this patch only a few cases are left:
+> 
+> [hans@x1 alsa-ucm-conf]$ ack -l JackHWMute ucm2
+> ucm2/HDA-Intel/HiFi-dual.conf
+> ucm2/chtrt5650/HiFi.conf
+> ucm2/hda-dsp/HiFi.conf
+> ucm2/codecs/es8316/HeadPhones.conf
+> ucm2/sof-bdw-rt5677/HiFi.conf
+> ucm2/broxton-rt298/HiFi.conf
+> ucm2/skylake-rt286/HiFi.conf
+> 
+> The es8316 case is actually correct, the es8316 has only 1
+> output (which is amplified for e.g. a speaker) and at
+> least the reference design suggests routing the speaker signal
+> through the jack and using a jack which will interrupt the
+> signal when headphones are plugged in.
+> 
+> Note most actual designs implement this with an analog
+> switch and a GPIO to control that switch, since 3.5 mm
+> jacks which actually can disconnect a signal are rare
+> (if they exist at all, but I guess they do). For the
+> designs using the GPIO controlled analog switch, the
+> JackHWMute technically also is wrong, but I put it
+> there (IIRC it was me) because it matches the reference
+> design.
+> 
+> I'm not familiar enough with any of the others to say anything
+> about them, but most of them are for HDA setups, where this
+> is somewhat more normal I guess.
 
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From 7506baeed8d05fc164254c64af14cfed2ac14446 Mon Sep 17 00:00:00 2001
-From: Julia Lawall <Julia.Lawall@inria.fr>
-Date: Sun, 5 Apr 2020 17:03:48 +0200
-Subject: [PATCH] ASoC: stm32: sai: Add missing cleanup
-
-The commit 0d6defc7e0e4 ("ASoC: stm32: sai: manage rebind issue")
-converts some function calls to their non-devm equivalents.  The
-appropriate cleanup code was added to the remove function, but not
-to the probe function.  Add a call to snd_dmaengine_pcm_unregister
-to compensate for the call to snd_dmaengine_pcm_register in case
-of subsequent failure.
-
-Fixes: commit 0d6defc7e0e4 ("ASoC: stm32: sai: manage rebind issue")
-Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
-
-Acked-by: Olivier Moysan <olivier.moysan@st.com>
-Link: https://lore.kernel.org/r/1586099028-5104-1-git-send-email-Julia.Lawall@inria.fr
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/stm/stm32_sai_sub.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
-index 2bd280c01c33..0d0c9afd8791 100644
---- a/sound/soc/stm/stm32_sai_sub.c
-+++ b/sound/soc/stm/stm32_sai_sub.c
-@@ -1556,8 +1556,10 @@ static int stm32_sai_sub_probe(struct platform_device *pdev)
- 
- 	ret = snd_soc_register_component(&pdev->dev, &stm32_component,
- 					 &sai->cpu_dai_drv, 1);
--	if (ret)
-+	if (ret) {
-+		snd_dmaengine_pcm_unregister(&pdev->dev);
- 		return ret;
-+	}
- 
- 	if (STM_SAI_PROTOCOL_IS_SPDIF(sai))
- 		conf = &stm32_sai_pcm_config_spdif;
--- 
-2.20.1
+If I follow the logic, I guess we should also remove the JackHWMute for 
+sof-bdw-rt5677, hda-dsp and HDA-Intel. I can't think of a hardware 
+limitation preventing the headset mic from being used while the speakers 
+are used for playback. Likewise the rt5650 is a cheaper version of 
+rt5645 so the same applies.
 
