@@ -2,68 +2,87 @@ Return-Path: <SRS0=QmEo=5X=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A078C2BA16
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Apr 2020 08:47:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E47E0C2BA16
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Apr 2020 08:52:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1351D20719
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Apr 2020 08:47:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 65EE120719
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Apr 2020 08:52:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eRFIuWKx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1351D20719
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=univ-grenoble-alpes.fr
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nDAfD5d4";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="QZrQdIpD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 65EE120719
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7F51C1665;
-	Tue,  7 Apr 2020 10:46:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F51C1665
+	by alsa0.perex.cz (Postfix) with ESMTPS id C2FD2822;
+	Tue,  7 Apr 2020 10:51:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C2FD2822
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586249224;
-	bh=s0zJVWi2IEfFN108u+M/VjTiB1n/SWtdx/HXNBybmbo=;
-	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1586249544;
+	bh=4Ud6l67/V9wg6wPLRDKH+s0O5muhTEE0cRfge6//ga4=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=eRFIuWKxLqYwdNYnLiTdRhY95UJ8NYtPl6xwrtEodCzQ0uJBexuU/JRxX5gIcDF/e
-	 D6L1pj3tKbyL7O3z6QPWpohr5inOPXXDzIRH0llzkVPVnY5n/MdgVd07RIM0IzCR6s
-	 W4cJ5kiXfG8RHiuszxQcPO6gINo8wHym9PhaYlu0=
+	b=nDAfD5d4yWPLtG+GLeLlzZQ+WMhSknb79WdKgAVsvUYWzGOZto37a0fvrAjQUUG3e
+	 9UzTyQfZ5H6GEA1xa6jQj31DxGwaW80Bcld1X9ZCMxjS1evOJHk513Wuu2m0T4sfXi
+	 jqnizpWJ9ByEAC/IkWoJqvxLIUsYcii2ilkC+mOg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F2906F80213;
-	Tue,  7 Apr 2020 10:45:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 56C36F8011B;
+	Tue,  7 Apr 2020 10:51:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2FB28F8028A; Tue,  7 Apr 2020 10:45:14 +0200 (CEST)
-Received: from zm-mta-out-3.u-ga.fr (zm-mta-out-3.u-ga.fr [152.77.200.56])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 6D30CF80150; Mon,  6 Apr 2020 15:56:57 +0200 (CEST)
+Received: from mo6-p01-ob.smtp.rzone.de (mo6-p01-ob.smtp.rzone.de
+ [IPv6:2a01:238:20a:202:5301::1])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E2AD8F80121
- for <alsa-devel@alsa-project.org>; Tue,  7 Apr 2020 10:45:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2AD8F80121
-Received: from zm-mta-out.u-ga.fr (zm-mta-out.u-ga.fr [152.77.200.53])
- by zm-mta-out-3.u-ga.fr (Postfix) with ESMTP id AC5BD41132;
- Tue,  7 Apr 2020 10:45:08 +0200 (CEST)
-Received: from zm-mbx06.u-ga.fr (zm-mbx06.u-ga.fr [152.77.200.20])
- by zm-mta-out.u-ga.fr (Postfix) with ESMTP id A67A18048A;
- Tue,  7 Apr 2020 10:45:08 +0200 (CEST)
-Date: Tue, 7 Apr 2020 10:45:08 +0200 (CEST)
-From: =?utf-8?B?RlLDiUTDiVJJQw==?= RECOULES
- <frederic.recoules@univ-grenoble-alpes.fr>
-To: alsa-devel@alsa-project.org
-Message-ID: <1251950055.5920131.1586249108652.JavaMail.zimbra@univ-grenoble-alpes.fr>
-Subject: [inline assembly compliance] Issues and patches
+ by alsa1.perex.cz (Postfix) with ESMTPS id 74512F80121
+ for <alsa-devel@alsa-project.org>; Mon,  6 Apr 2020 15:56:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74512F80121
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net
+ header.b="QZrQdIpD"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1586181410;
+ s=strato-dkim-0002; d=gerhold.net;
+ h=Message-Id:Date:Subject:Cc:To:From:X-RZG-CLASS-ID:X-RZG-AUTH:From:
+ Subject:Sender;
+ bh=IITu+NanlcIJX52gLPjRou+laNLOAcxtxp7r92paWjg=;
+ b=QZrQdIpDPQW8HQgBS6ytyk/gZrkuehCWiVw6VWLJFEGEjOgjRZpsuL+obZ4sX0zyif
+ n30fDckVaoQW1kL5C7I16j6nnUiwcf/lEVCj1+EuhS1qv3BBxCnc4AzuhXY+R4Igeqww
+ AIc3T+MjjbC3OlN7dsX4MIhqpo/Gaa0D3F367LqukhUrP2kyHj4CVc3DgzA6tOzyMhqn
+ 0oJbBdswz1xcTJLHhYe2OoVOQhX7mkF2cGH2VKbqCZFziGxb1maL4CYP66Rswa9N8Nx3
+ L5HV/xg7ZZgeFq1RzVlDyRV7eVv+DS3XytzsCTm/E6GkmTP7J8DuSsDVnibL7wUWaPh1
+ 7ybw==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVORvLd4SsytBXS7IYBkLahKxB5m6NBgYo"
+X-RZG-CLASS-ID: mo00
+Received: from localhost.localdomain by smtp.strato.de (RZmta 46.2.1 DYNA|AUTH)
+ with ESMTPSA id u043b8w36Dug2OM
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+ (Client did not present a certificate);
+ Mon, 6 Apr 2020 15:56:42 +0200 (CEST)
+From: Stephan Gerhold <stephan@gerhold.net>
+To: Mark Brown <broonie@kernel.org>
+Subject: [PATCH 1/2] dt-bindings: sound: lpass-cpu: Document DAI subnodes
+Date: Mon,  6 Apr 2020 15:56:07 +0200
+Message-Id: <20200406135608.126171-1-stephan@gerhold.net>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [46.193.2.18]
-X-Mailer: Zimbra 8.8.15_GA_3918 (ZimbraWebClient - FF72 (Linux)/8.8.15_GA_3895)
-Thread-Index: Du8r7gxw4hc+FA/CBbUr+pIWv/EZEg==
-Thread-Topic: Issues and patches
-Cc: Richard Bonichon <richard.bonichon@gmail.com>,
- =?utf-8?Q?S=C3=A9bastien?= Bardin <sebastien.bardin@cea.fr>
+Content-Transfer-Encoding: 8bit
+X-Mailman-Approved-At: Tue, 07 Apr 2020 10:51:32 +0200
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
+ Stephan Gerhold <stephan@gerhold.net>, Patrick Lai <plai@codeaurora.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ ~postmarketos/upstreaming@lists.sr.ht,
+ Kenneth Westfield <kwestfie@codeaurora.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,391 +98,62 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dear developpers,
+The lpass-cpu driver now allows configuring the MI2S SD lines
+by defining subnodes for one of the DAIs.
 
+Document this in the device tree bindings.
 
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+---
+ .../bindings/sound/qcom,lpass-cpu.txt         | 23 +++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-we are academic researchers working in automated program analysis.
-We are currently interested in checking compliance of inline asm chunks
-as found in C programs.
-
-While benchmarking our tool and technique, we found 5 significant issues in
-ALSA. We report them to you, as well as adequate patches with explanations.
-
-* All these bugs are related to compliance between the block of asm and its
-surrounding "contract" (in gcc-style notation). They are akin to undefined =
-or
-implementation-defined behaviours  in C: they currently do not manifest
-themselves in your program, but at some point in time with compiler
-optimizations becoming more and more aggressive or changes in undocumented
-compiler choices regarding asm chunks, they can suddenly trigger a
-(hard-to-find) bug.
-
-* The typical problems come from the compiler missing dataflow information
-and performing undue optimizations on this wrong basis, or the compiler
-allocating an already used register. Actually, we demonstrate "in lab" prob=
-lems
-with all these categories of bugs in case of inlining
-(especially with LTO enabler) or code refactoring.
-
-* Some of those issues may seems benign or irrealistic but it cost nothing
-to patch so, why not do it?
-
-
-
-We would be very interested to hear your opinion on these matters.
-Are you interested in such errors and patches?
-Also, besides the patches, we are currently working on a code analyzer
-prototype designed to check asm compliance and to propose patches when the
-chunk is not compliant. This is still work in progress and we are finalizin=
-g it.
-The errors and patches I reported to you came from my prototype.
-In case such a prototype would be made available, would you consider using =
-it?
-
-
-
-Best regards
-
-Fr=C3=A9d=C3=A9ric Recoules
-
-
------------------------------------Details---------------------------------=
----------
-
-
-The issues are the sames for the five macro-functions defined in
-pcm/pcm_dmix_i386.h.
-
-1. "memory" clobber is missing
-------------------------------
-
-The memory is read from src and written from dst and sum.
-For instance, the compiler may believe that the memory pointed by src has
-never been read and decide to get rid of its initialization
-(dead store elimination).
-
-Patched by adding "memory" to the clobbers
-
-2. the read-only input size is clobbered
-----------------------------------------
-
-The compiler may assume the old value of size is still present at the
-location and may misuse the new value (i.e. 0).
-
-Patched by moving size from read-only input to read-write output.
-
-3. ebx is not declared in clobbers
-----------------------------------
-
-We know that prior to the version 5.0, GCC refused to give ebx as clobber.
-It is no longer true and may become risky as it can be used to compute the
-address of one of the others memory inputs.
-
-Patched by creating a switch to add ebx in clobber
-(and removing the manual save/restore) if GCC is newer than 5.0 or other
-compiler is used.
-
-
-The following issue concern the MIX_AREAS_16_MMX macro-function.
-
-4. mm0 is clobbered, mm1 is used uninitialized
-----------------------------------------------
-
-Patched by adding mm0 and mm1 to clobbers and adding a pxor instruction for=
- mm1.
-
-
-Then here are some minor improvements:
-- add "cc" to the clobbers even if it is, for now, redundant;
-- allow to use a register (i.e. ebp) for size
-- allow to pass dst_step, src_step and sum_step through immediates
-
-
------------------------------------Patches---------------------------------=
----------
-
-
-diff --git a/src/pcm/pcm_dmix_i386.h b/src/pcm/pcm_dmix_i386.h
-index 2778cb1d..af2f4630 100644
---- a/src/pcm/pcm_dmix_i386.h
-+++ b/src/pcm/pcm_dmix_i386.h
-@@ -26,6 +26,13 @@
-  *
-  */
-=20
-+#define COMMA ,
-+#if __GNUC__ < 5 && defined(__PIC__)
-+#  define GCC_PIC_SWITCH(before,after) before
-+#else
-+#  define GCC_PIC_SWITCH(before,after) after
-+#endif
+diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
+index 21c648328be9..df53a10502f7 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
++++ b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
+@@ -30,6 +30,8 @@ Required properties:
+ - reg			: Must contain an address for each entry in reg-names.
+ - reg-names		: A list which must include the following entries:
+ 				* "lpass-lpaif"
++- #address-cells	: Must be 1
++- #size-cells		: Must be 0
+ 
+ 
+ 
+@@ -37,6 +39,18 @@ Optional properties:
+ 
+ - qcom,adsp		: Phandle for the audio DSP node
+ 
++By default, the driver uses up to 4 MI2S SD lines, for a total of 8 channels.
++The SD lines to use can be configured by adding subnodes for each of the DAIs.
 +
- /*
-  *  for plain i386
-  */
-@@ -47,13 +54,14 @@ static void MIX_AREAS_16(unsigned int size,
- =09__asm__ __volatile__ (
- =09=09"\n"
-=20
--=09=09"\tmovl %%ebx, %7\n"=09/* ebx is GOT pointer (-fPIC) */
-+=09=09/* ebx is GOT pointer (-fPIC) */
-+=09=09GCC_PIC_SWITCH("\tmovl %%ebx, %1\n",)
- =09=09/*
- =09=09 *  initialization, load ESI, EDI, EBX registers
- =09=09 */
--=09=09"\tmovl %1, %%edi\n"
--=09=09"\tmovl %2, %%esi\n"
--=09=09"\tmovl %3, %%ebx\n"
-+=09=09"\tmovl %2, %%edi\n"
-+=09=09"\tmovl %3, %%esi\n"
-+=09=09"\tmovl %4, %%ebx\n"
- =09=09"\tcmpl $0, %0\n"
- =09=09"\tjnz 2f\n"
- =09=09"\tjmp 7f\n"
-@@ -64,9 +72,9 @@ static void MIX_AREAS_16(unsigned int size,
- =09=09 */
- =09=09"\t.p2align 4,,15\n"
- =09=09"1:"
--=09=09"\tadd %4, %%edi\n"
--=09=09"\tadd %5, %%esi\n"
--=09=09"\tadd %6, %%ebx\n"
-+=09=09"\tadd %5, %%edi\n"
-+=09=09"\tadd %6, %%esi\n"
-+=09=09"\tadd %7, %%ebx\n"
-=20
- =09=09/*
- =09=09 *   sample =3D *src;
-@@ -138,15 +146,16 @@ static void MIX_AREAS_16(unsigned int size,
- =09=09"\tjnz 4b\n"
- =09=09"\tdecl %0\n"
- =09=09"\tjnz 1b\n"
--=09=09
--=09=09"7:"
--=09=09"\tmovl %7, %%ebx\n"=09/* ebx is GOT pointer (-fPIC) */
-=20
--=09=09: /* no output regs */
--=09=09: "m" (size), "m" (dst), "m" (src),
--=09=09  "m" (sum), "m" (dst_step), "m" (src_step),
--=09=09  "m" (sum_step), "m" (old_ebx)
--=09=09: "esi", "edi", "edx", "ecx", "eax"
-+=09=09"7:"
-+=09=09/* ebx is GOT pointer (-fPIC) */
-+=09=09GCC_PIC_SWITCH("\tmovl %1, %%ebx\n",)
++Required properties for each DAI (represented by a subnode):
++- reg			: Must be one of the DAI IDs
++			  (usually part of dt-bindings header)
++- qcom,playback-sd-lines: List of serial data lines (0-3) to use for playback
++- qcom,capture-sd-lines	: List of serial data lines (0-3) to use for capture
 +
-+=09=09: "+&rm" (size), GCC_PIC_SWITCH("=3Dm","=3DX") (old_ebx)
-+=09=09: "m" (dst), "m" (src), "m" (sum),
-+=09=09  "im" (dst_step), "im" (src_step), "im" (sum_step)
-+=09=09: "esi", "edi", "edx", "ecx", GCC_PIC_SWITCH(,"ebx"COMMA) "eax",
-+=09=09  "memory", "cc"
- =09);
- }
-=20
-@@ -171,22 +180,24 @@ static void MIX_AREAS_16_MMX(unsigned int size,
- =09__asm__ __volatile__ (
- =09=09"\n"
-=20
--=09=09"\tmovl %%ebx, %7\n"=09/* ebx is GOT pointer (-fPIC) */
-+=09=09/* ebx is GOT pointer (-fPIC) */
-+=09=09GCC_PIC_SWITCH("\tmovl %%ebx, %1\n",)
- =09=09/*
--=09=09 *  initialization, load ESI, EDI, EBX registers
-+=09=09 *  initialization, load ESI, EDI, EBX registers, clear MM1
- =09=09 */
--=09=09"\tmovl %1, %%edi\n"
--=09=09"\tmovl %2, %%esi\n"
--=09=09"\tmovl %3, %%ebx\n"
-+=09=09"\tpxor %%mm1, %%mm1\n"
-+=09=09"\tmovl %2, %%edi\n"
-+=09=09"\tmovl %3, %%esi\n"
-+=09=09"\tmovl %4, %%ebx\n"
- =09=09"\tcmpl $0, %0\n"
- =09=09"\tjnz 2f\n"
- =09=09"\tjmp 5f\n"
-=20
- =09=09"\t.p2align 4,,15\n"
- =09=09"1:"
--=09=09"\tadd %4, %%edi\n"
--=09=09"\tadd %5, %%esi\n"
--=09=09"\tadd %6, %%ebx\n"
-+=09=09"\tadd %5, %%edi\n"
-+=09=09"\tadd %6, %%esi\n"
-+=09=09"\tadd %7, %%ebx\n"
-=20
- =09=09"2:"
- =09=09/*
-@@ -230,13 +241,14 @@ static void MIX_AREAS_16_MMX(unsigned int size,
- =09=09"\tjnz 1b\n"
- =09=09"\temms\n"
-                 "5:"
--=09=09"\tmovl %7, %%ebx\n"=09/* ebx is GOT pointer (-fPIC) */
--
--=09=09: /* no output regs */
--=09=09: "m" (size), "m" (dst), "m" (src),
--=09=09  "m" (sum), "m" (dst_step), "m" (src_step),
--=09=09  "m" (sum_step), "m" (old_ebx)
--=09=09: "esi", "edi", "edx", "ecx", "eax"
-+=09=09/* ebx is GOT pointer (-fPIC) */
-+=09=09GCC_PIC_SWITCH("\tmovl %1, %%ebx\n",)
++Note that adding a subnode changes the default to "no lines configured",
++so both playback and capture lines should be configured when a subnode is added.
 +
-+=09=09: "+&rm" (size), GCC_PIC_SWITCH("=3Dm","=3DX") (old_ebx)
-+=09=09: "m" (dst), "m" (src), "m" (sum),
-+=09=09  "im" (dst_step), "im" (src_step), "im" (sum_step)
-+=09=09: "esi", "edi", "edx", "ecx", GCC_PIC_SWITCH(,"ebx"COMMA) "eax",
-+=09=09  "mm0", "mm1", "memory", "cc"
- =09);
- }
-=20
-@@ -261,13 +273,14 @@ static void MIX_AREAS_32(unsigned int size,
- =09__asm__ __volatile__ (
- =09=09"\n"
-=20
--=09=09"\tmovl %%ebx, %7\n"=09/* ebx is GOT pointer (-fPIC) */
-+=09=09/* ebx is GOT pointer (-fPIC) */
-+=09=09GCC_PIC_SWITCH("\tmovl %%ebx, %1\n",)
- =09=09/*
- =09=09 *  initialization, load ESI, EDI, EBX registers
- =09=09 */
--=09=09"\tmovl %1, %%edi\n"
--=09=09"\tmovl %2, %%esi\n"
--=09=09"\tmovl %3, %%ebx\n"
-+=09=09"\tmovl %2, %%edi\n"
-+=09=09"\tmovl %3, %%esi\n"
-+=09=09"\tmovl %4, %%ebx\n"
- =09=09"\tcmpl $0, %0\n"
- =09=09"\tjnz 1f\n"
- =09=09"\tjmp 6f\n"
-@@ -337,19 +350,20 @@ static void MIX_AREAS_32(unsigned int size,
- =09=09 */
- =09=09"\tdecl %0\n"
- =09=09"\tjz 6f\n"
--=09=09"\tadd %4, %%edi\n"
--=09=09"\tadd %5, %%esi\n"
--=09=09"\tadd %6, %%ebx\n"
-+=09=09"\tadd %5, %%edi\n"
-+=09=09"\tadd %6, %%esi\n"
-+=09=09"\tadd %7, %%ebx\n"
- =09=09"\tjmp 1b\n"
--=09=09
--=09=09"6:"
--=09=09"\tmovl %7, %%ebx\n"=09/* ebx is GOT pointer (-fPIC) */
-=20
--=09=09: /* no output regs */
--=09=09: "m" (size), "m" (dst), "m" (src),
--=09=09  "m" (sum), "m" (dst_step), "m" (src_step),
--=09=09  "m" (sum_step), "m" (old_ebx)
--=09=09: "esi", "edi", "edx", "ecx", "eax"
-+=09=09"6:"
-+=09=09/* ebx is GOT pointer (-fPIC) */
-+=09=09GCC_PIC_SWITCH("\tmovl %1, %%ebx\n",)
+ Example:
+ 
+ lpass@28100000 {
+@@ -51,4 +65,13 @@ lpass@28100000 {
+ 	reg = <0x28100000 0x10000>;
+ 	reg-names = "lpass-lpaif";
+ 	qcom,adsp = <&adsp>;
 +
-+=09=09: "+&rm" (size), GCC_PIC_SWITCH("=3Dm","=3DX") (old_ebx)
-+=09=09: "m" (dst), "m" (src), "m" (sum),
-+=09=09  "im" (dst_step), "im" (src_step), "im" (sum_step)
-+=09=09: "esi", "edi", "edx", "ecx", GCC_PIC_SWITCH(,"ebx"COMMA) "eax",
-+=09=09  "memory", "cc"
- =09);
- }
-=20
-@@ -374,13 +388,14 @@ static void MIX_AREAS_24(unsigned int size,
- =09__asm__ __volatile__ (
- =09=09"\n"
-=20
--=09=09"\tmovl %%ebx, %7\n"=09/* ebx is GOT pointer (-fPIC) */
-+=09=09/* ebx is GOT pointer (-fPIC) */
-+=09=09GCC_PIC_SWITCH("\tmovl %%ebx, %1\n",)
- =09=09/*
- =09=09 *  initialization, load ESI, EDI, EBX registers
- =09=09 */
--=09=09"\tmovl %1, %%edi\n"
--=09=09"\tmovl %2, %%esi\n"
--=09=09"\tmovl %3, %%ebx\n"
-+=09=09"\tmovl %2, %%edi\n"
-+=09=09"\tmovl %3, %%esi\n"
-+=09=09"\tmovl %4, %%ebx\n"
- =09=09"\tcmpl $0, %0\n"
- =09=09"\tjnz 1f\n"
- =09=09"\tjmp 6f\n"
-@@ -443,19 +458,20 @@ static void MIX_AREAS_24(unsigned int size,
- =09=09 */
- =09=09"\tdecl %0\n"
- =09=09"\tjz 6f\n"
--=09=09"\tadd %4, %%edi\n"
--=09=09"\tadd %5, %%esi\n"
--=09=09"\tadd %6, %%ebx\n"
-+=09=09"\tadd %5, %%edi\n"
-+=09=09"\tadd %6, %%esi\n"
-+=09=09"\tadd %7, %%ebx\n"
- =09=09"\tjmp 1b\n"
--=09=09
--=09=09"6:"
--=09=09"\tmovl %7, %%ebx\n"=09/* ebx is GOT pointer (-fPIC) */
-=20
--=09=09: /* no output regs */
--=09=09: "m" (size), "m" (dst), "m" (src),
--=09=09  "m" (sum), "m" (dst_step), "m" (src_step),
--=09=09  "m" (sum_step), "m" (old_ebx)
--=09=09: "esi", "edi", "edx", "ecx", "eax"
-+=09=09"6:"
-+=09=09/* ebx is GOT pointer (-fPIC) */
-+=09=09GCC_PIC_SWITCH("\tmovl %1, %%ebx\n",)
++	#address-cells = <1>;
++	#size-cells = <0>;
 +
-+=09=09: "+&rm" (size), GCC_PIC_SWITCH("=3Dm","=3DX") (old_ebx)
-+=09=09: "m" (dst), "m" (src), "m" (sum),
-+=09=09  "im" (dst_step), "im" (src_step), "im" (sum_step)
-+=09=09: "esi", "edi", "edx", "ecx", GCC_PIC_SWITCH(,"ebx"COMMA) "eax",
-+=09=09  "memory", "cc"
- =09);
- }
-=20
-@@ -480,13 +496,14 @@ static void MIX_AREAS_24_CMOV(unsigned int size,
- =09__asm__ __volatile__ (
- =09=09"\n"
-=20
--=09=09"\tmovl %%ebx, %7\n"=09/* ebx is GOT pointer (-fPIC) */
-+=09=09/* ebx is GOT pointer (-fPIC) */
-+=09=09GCC_PIC_SWITCH("\tmovl %%ebx, %1\n",)
- =09=09/*
- =09=09 *  initialization, load ESI, EDI, EBX registers
- =09=09 */
--=09=09"\tmovl %1, %%edi\n"
--=09=09"\tmovl %2, %%esi\n"
--=09=09"\tmovl %3, %%ebx\n"
-+=09=09"\tmovl %2, %%edi\n"
-+=09=09"\tmovl %3, %%esi\n"
-+=09=09"\tmovl %4, %%ebx\n"
- =09=09"\tcmpl $0, %0\n"
- =09=09"\tjz 6f\n"
-=20
-@@ -541,19 +558,20 @@ static void MIX_AREAS_24_CMOV(unsigned int size,
- =09=09/*
- =09=09 * while (size-- > 0)
- =09=09 */
--=09=09"\tadd %4, %%edi\n"
--=09=09"\tadd %5, %%esi\n"
--=09=09"\tadd %6, %%ebx\n"
-+=09=09"\tadd %5, %%edi\n"
-+=09=09"\tadd %6, %%esi\n"
-+=09=09"\tadd %7, %%ebx\n"
- =09=09"\tdecl %0\n"
- =09=09"\tjnz 1b\n"
--=09=09
--=09=09"6:"
--=09=09"\tmovl %7, %%ebx\n"=09/* ebx is GOT pointer (-fPIC) */
-=20
--=09=09: /* no output regs */
--=09=09: "m" (size), "m" (dst), "m" (src),
--=09=09  "m" (sum), "m" (dst_step), "m" (src_step),
--=09=09  "m" (sum_step), "m" (old_ebx)
--=09=09: "esi", "edi", "edx", "ecx", "eax"
-+=09=09"6:"
-+=09=09/* ebx is GOT pointer (-fPIC) */
-+=09=09GCC_PIC_SWITCH("\tmovl %1, %%ebx\n",)
-+
-+=09=09: "+&rm" (size), GCC_PIC_SWITCH("=3Dm","=3DX") (old_ebx)
-+=09=09: "m" (dst), "m" (src), "m" (sum),
-+=09=09  "im" (dst_step), "im" (src_step), "im" (sum_step)
-+=09=09: "esi", "edi", "edx", "ecx", GCC_PIC_SWITCH(,"ebx"COMMA) "eax",
-+=09=09  "memory", "cc"
- =09);
- }
++	/* Optional to set different MI2S SD lines */
++	mi2s-quaternary@3 {
++		reg = <MI2S_QUATERNARY>;
++		qcom,playback-sd-lines = <0 1>;
++	};
+ };
+-- 
+2.26.0
+
