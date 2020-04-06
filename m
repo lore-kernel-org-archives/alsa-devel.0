@@ -1,79 +1,101 @@
-Return-Path: <SRS0=oqyN=5V=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=9St4=5W=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82909C2BA17
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Apr 2020 23:53:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CB15C2BA17
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Apr 2020 00:33:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0FC2C20678
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Apr 2020 23:53:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2544720678
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Apr 2020 00:33:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Y2M9EBd+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0FC2C20678
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="S4EdlQxZ";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="G8TvgV1d"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2544720678
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 60CEF1671;
-	Mon,  6 Apr 2020 01:52:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 60CEF1671
+	by alsa0.perex.cz (Postfix) with ESMTPS id 77BA4950;
+	Mon,  6 Apr 2020 02:32:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77BA4950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586130816;
-	bh=irrxEVtgN1yAh5zDPWAyddBvR6BlBzWnQc5QfukCMjM=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Y2M9EBd+Z29HeNc/pvi97ShtKIKVn/zFPK+rJidT2f4gNxTzAualw4jM447D/DIAr
-	 UmQiJelirQuvMm1y/m9wUY5K66cTAgXS3BBHMfI5lNO1xLTdJwD1CIJxkCqgl24Jq0
-	 whZyqN1eYc35YnCWK2BxIIUfSj6k42o2EGIZ7VTk=
+	s=default; t=1586133223;
+	bh=RUbTLmh08erfcKK1r1t9hTYey0RWb0SxG0uuyMvYo/E=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=S4EdlQxZY837fVfFkDcy4Kp3u+/I0P0ZKCXW/Ag8svY4dslR96vXeyVNSF5MvzuCa
+	 Owy5Oy3ZNTiGRDOwK83GP29RXg6puBqQJNKkHZM3SWwWP01EMpgKB5Z4075qKkcMDb
+	 +2VcKcTHGvV+4p1hsRARTgRopMDz32jwOrxW9kRk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AE418F80257;
-	Mon,  6 Apr 2020 01:51:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EA392F8015A;
+	Mon,  6 Apr 2020 02:32:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 370A6F801D8; Mon,  6 Apr 2020 01:51:03 +0200 (CEST)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 1BE29F801D8; Mon,  6 Apr 2020 02:32:51 +0200 (CEST)
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com
+ [IPv6:2607:f8b0:4864:20::642])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C18C0F8015A
- for <alsa-devel@alsa-project.org>; Mon,  6 Apr 2020 01:50:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C18C0F8015A
-IronPort-SDR: SIZDlnjKVq9CO8RjdwTxkVJHKp8KnLUS6Vko/eZe1GtEXFephquDXBoBfqW6EcRCdDY8TKHQfA
- 1uedNHaEe66w==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Apr 2020 16:50:54 -0700
-IronPort-SDR: hKvwIj+s9g1SH4j/zl6ZE97VMLWJSsE+llXvRRQOtO7LgGuEPMdhqiMk78iXMqSW80eatX9Ag2
- /T3bi17R4Zlg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,349,1580803200"; d="scan'208";a="253949530"
-Received: from tecook-mobl1.amr.corp.intel.com (HELO [10.212.185.245])
- ([10.212.185.245])
- by orsmga006.jf.intel.com with ESMTP; 05 Apr 2020 16:50:54 -0700
-Subject: Re: [PATCH 4/5] chtrt5645: Remove bogus JackHWMute settings
-To: Hans de Goede <hdegoede@redhat.com>, Jaroslav Kysela <perex@perex.cz>
-References: <20200405183454.34515-1-hdegoede@redhat.com>
- <20200405183454.34515-4-hdegoede@redhat.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <d06f3894-6cd7-fd4e-2261-94505fc0db4a@linux.intel.com>
-Date: Sun, 5 Apr 2020 18:22:05 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id BD588F80121
+ for <alsa-devel@alsa-project.org>; Mon,  6 Apr 2020 02:32:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BD588F80121
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="G8TvgV1d"
+Received: by mail-pl1-x642.google.com with SMTP id x1so5232998plm.4
+ for <alsa-devel@alsa-project.org>; Sun, 05 Apr 2020 17:32:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=BmHMcZC/yhqWoXwUpcTR1X3nyLa2fdxVh+jOQWGNruk=;
+ b=G8TvgV1dRjX+fRqES+PvYyblutibdQ+P/vUKP4kXMgLJ8QXvsJpCkLqY7GYhC1rHvN
+ 1ZrNlnzsXp2bywZsXx4NrWY5qAIbv8otScQR6P6WZa7e6za4D7bJT++2Yc8ayhgT7bBk
+ acYzOcUW3F6xjxZIq+crF+l1OfBmgK/ailCCvNVncd4HVPKrGOf6ZTj/mHp7RWpkYl+s
+ K4mPU6A7AUkckZHywHJhpIH3rhYUyPASo95a8BhsPGMH2ou0ViDqPD7MvgW+iceualnc
+ 0LjycEfoZLmfOyujZYeQdJT5rKtMQC8mRhJZH67GsgoZ3vrXwLXXw0X0UNdf9Raenjmz
+ w/9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=BmHMcZC/yhqWoXwUpcTR1X3nyLa2fdxVh+jOQWGNruk=;
+ b=mRTPm95S16lG3jtTRa9rgqAbhEk3qhE3woSOICNS8i4X3l+/y1oTy5JwnfJQsxcgyo
+ KNzddu28DdRbRO7trYJnvrj7YbUj1NDgTiegmRS9ftUpINDWILmLa6PSC4yO+7PJ5sWr
+ GV8wuQqLCMPCPVT4OwQ873LjSzFJQMl4rB/siOVGw6JQmRJHp8lOkT13LGTmzTrEhcNa
+ IuSNx78B3vH5v3g6w09ymEkPrscAiDIeLtG3UztgvEgqWa9yE5VYoDHEMt0pbXu4O0Ng
+ CMr2hK03GULhuivx9qiCTuJtSqSgjvd33FP6hUcWL7RkLEQ9e8X8e5IVsb7B3Usa1K3j
+ 56uQ==
+X-Gm-Message-State: AGi0PuZTghwfYBmQqSstkB1irb4RbJeOtXl/cZC3krXQa4/Ga5+lBmRP
+ BrD8InsGyI6/q17GLn2P9hudwQ==
+X-Google-Smtp-Source: APiQypL96eZMSILPhO0ZW9MTIR6nTEF+9EUJkE883OgIqnJB3GN0SbdobCnDKKaqMYLdx9cfyr82IQ==
+X-Received: by 2002:a17:902:b48b:: with SMTP id
+ y11mr18041570plr.131.1586133164846; 
+ Sun, 05 Apr 2020 17:32:44 -0700 (PDT)
+Received: from localhost.localdomain
+ (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+ by smtp.gmail.com with ESMTPSA id q91sm10685212pjb.11.2020.04.05.17.32.43
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sun, 05 Apr 2020 17:32:44 -0700 (PDT)
+From: Bjorn Andersson <bjorn.andersson@linaro.org>
+To: Patrick Lai <plai@codeaurora.org>,
+ Banajit Goswami <bgoswami@codeaurora.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH] ASoC: qcom: common: Silence duplicate parse error messages
+Date: Sun,  5 Apr 2020 17:32:29 -0700
+Message-Id: <20200406003229.2354631-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-In-Reply-To: <20200405183454.34515-4-hdegoede@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, srinivas.kandagatla@linaro.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,113 +111,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+All error paths in qcom_snd_parse_of() prints more specific error
+messages, so silence the one in apq8096_platform_probe() and
+sdm845_snd_platform_probe() to avoid spamming the kernel log.
 
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+ sound/soc/qcom/apq8096.c | 4 +---
+ sound/soc/qcom/sdm845.c  | 4 +---
+ 2 files changed, 2 insertions(+), 6 deletions(-)
 
-On 4/5/20 1:34 PM, Hans de Goede wrote:
-> There is no reason why the internal microphone or speakers cannot
-> be used when a headset is plugged in.
-> 
-> The jack does not physically disconnect these, so the JackHWMute settings
-> are wrong, remove them.
+diff --git a/sound/soc/qcom/apq8096.c b/sound/soc/qcom/apq8096.c
+index d55e3ad96716..287ad2aa27f3 100644
+--- a/sound/soc/qcom/apq8096.c
++++ b/sound/soc/qcom/apq8096.c
+@@ -116,10 +116,8 @@ static int apq8096_platform_probe(struct platform_device *pdev)
+ 	card->dev = dev;
+ 	dev_set_drvdata(dev, card);
+ 	ret = qcom_snd_parse_of(card);
+-	if (ret) {
+-		dev_err(dev, "Error parsing OF data\n");
++	if (ret)
+ 		goto err;
+-	}
+ 
+ 	apq8096_add_be_ops(card);
+ 	ret = snd_soc_register_card(card);
+diff --git a/sound/soc/qcom/sdm845.c b/sound/soc/qcom/sdm845.c
+index b2de65c7f95c..68e9388ff46f 100644
+--- a/sound/soc/qcom/sdm845.c
++++ b/sound/soc/qcom/sdm845.c
+@@ -559,10 +559,8 @@ static int sdm845_snd_platform_probe(struct platform_device *pdev)
+ 	card->dev = dev;
+ 	dev_set_drvdata(dev, card);
+ 	ret = qcom_snd_parse_of(card);
+-	if (ret) {
+-		dev_err(dev, "Error parsing OF data\n");
++	if (ret)
+ 		goto parse_dt_fail;
+-	}
+ 
+ 	data->card = card;
+ 	snd_soc_card_set_drvdata(card, data);
+-- 
+2.24.0
 
-Are you sure about the internal mic and headset input not conflicting? 
-IIRC they use the same path after the initial routing selector. I may be 
-wrong but I'd be surprised if you can use both.
-
-Now that I think of it further, in case the SSP0 is used an I2S link is 
-configured, so you cannot have both streams in parallel. It may be 
-possible to use headset and dmic in parallel with the 4 slot version but 
-we also have 1 PCM capture only.
-
-So overall it seems rather unlikely that we can support dmic + headset 
-mic in parallel?
-
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> ---
->   ucm2/chtrt5645/HiFi-dmic1.conf                   | 2 --
->   ucm2/chtrt5645/HiFi-dmic2.conf                   | 2 --
->   ucm2/chtrt5645/HiFi-mono-speaker-analog-mic.conf | 2 --
->   ucm2/chtrt5645/HiFi.conf                         | 2 --
->   4 files changed, 8 deletions(-)
-> 
-> diff --git a/ucm2/chtrt5645/HiFi-dmic1.conf b/ucm2/chtrt5645/HiFi-dmic1.conf
-> index 1a8ee0a..c7e12c9 100644
-> --- a/ucm2/chtrt5645/HiFi-dmic1.conf
-> +++ b/ucm2/chtrt5645/HiFi-dmic1.conf
-> @@ -50,7 +50,6 @@ SectionDevice."Headphones" {
->   		PlaybackPriority 200
->   		PlaybackPCM "hw:${CardId}"
->   		JackControl "Headphone Jack"
-> -		JackHWMute "Speaker"
->   	}
->   
->   	ConflictingDevice [
-> @@ -96,7 +95,6 @@ SectionDevice."Headset" {
->   		CapturePriority 200
->   		CapturePCM "hw:${CardId}"
->   		JackControl "Headset Mic Jack"
-> -		JackHWMute "Mic"
->   	}
->   
->   	EnableSequence [
-> diff --git a/ucm2/chtrt5645/HiFi-dmic2.conf b/ucm2/chtrt5645/HiFi-dmic2.conf
-> index d3f880a..95fedb3 100644
-> --- a/ucm2/chtrt5645/HiFi-dmic2.conf
-> +++ b/ucm2/chtrt5645/HiFi-dmic2.conf
-> @@ -50,7 +50,6 @@ SectionDevice."Headphones" {
->   		PlaybackPriority 200
->   		PlaybackPCM "hw:${CardId}"
->   		JackControl "Headphone Jack"
-> -		JackHWMute "Speaker"
->   	}
->   
->   	ConflictingDevice [
-> @@ -98,7 +97,6 @@ SectionDevice."Headset" {
->   		CapturePriority 200
->   		CapturePCM "hw:${CardId}"
->   		JackControl "Headset Mic Jack"
-> -		JackHWMute "Mic"
->   	}
->   
->   	EnableSequence [
-> diff --git a/ucm2/chtrt5645/HiFi-mono-speaker-analog-mic.conf b/ucm2/chtrt5645/HiFi-mono-speaker-analog-mic.conf
-> index db866cd..f6180a4 100644
-> --- a/ucm2/chtrt5645/HiFi-mono-speaker-analog-mic.conf
-> +++ b/ucm2/chtrt5645/HiFi-mono-speaker-analog-mic.conf
-> @@ -54,7 +54,6 @@ SectionDevice."Headphones" {
->   		PlaybackPriority 200
->   		PlaybackPCM "hw:${CardId}"
->   		JackControl "Headphone Jack"
-> -		JackHWMute "Speaker"
->   	}
->   
->   	ConflictingDevice [
-> @@ -84,7 +83,6 @@ SectionDevice."Headset" {
->   		CapturePriority 200
->   		CapturePCM "hw:${CardId}"
->   		JackControl "Headset Mic Jack"
-> -		JackHWMute "Mic"
->   	}
->   
->   	EnableSequence [
-> diff --git a/ucm2/chtrt5645/HiFi.conf b/ucm2/chtrt5645/HiFi.conf
-> index 58468a8..116d456 100644
-> --- a/ucm2/chtrt5645/HiFi.conf
-> +++ b/ucm2/chtrt5645/HiFi.conf
-> @@ -50,7 +50,6 @@ SectionDevice."Headphones" {
->   		PlaybackPriority 200
->   		PlaybackPCM "hw:${CardId}"
->   		JackControl "Headphone Jack"
-> -		JackHWMute "Speaker"
->   	}
->   
->   	ConflictingDevice [
-> @@ -76,7 +75,6 @@ SectionDevice."Headset" {
->   		CapturePriority 200
->   		CapturePCM "hw:${CardId}"
->   		JackControl "Headset Mic Jack"
-> -		JackHWMute "Mic"
->   	}
->   
->   	EnableSequence [
-> 
