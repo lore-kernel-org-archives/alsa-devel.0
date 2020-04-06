@@ -6,78 +6,77 @@ X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D89ECC2BA19
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Apr 2020 11:08:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AA99EC2BA19
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Apr 2020 11:14:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 66C9E2072A
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Apr 2020 11:08:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 372A5206F5
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Apr 2020 11:14:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="M96z3BQM";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="vYBvA3+s"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 66C9E2072A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uuV3bdYJ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="lNHthtXX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 372A5206F5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 91EC2822;
-	Mon,  6 Apr 2020 13:07:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 91EC2822
+	by alsa0.perex.cz (Postfix) with ESMTPS id 70CA4822;
+	Mon,  6 Apr 2020 13:13:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70CA4822
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586171283;
-	bh=MW0KG31dJrppaZHP8FQnU1F/hl4SWfSAkuygfDdzRsY=;
+	s=default; t=1586171667;
+	bh=MtJm1ZXy274Rt4S8/t5pgen0tFyzkY5ae3KXw6x6In4=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=M96z3BQM9XqKOoMrPQ7zihsZ2FzYIUshHVdPKRsnkWZC4DfNwTuYxO8iCS8jIZ/0m
-	 kXfmjTzjjv+wWtqDYMYxdEbrCirTip16thJIl3Yb5JTBAcYRPnxGpf0DPMiOrkdQ6D
-	 9cMr58INpoIEqjoFAR51bpLUsfDMQMEec0A9ldco=
-Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EC498F80142;
-	Mon,  6 Apr 2020 13:07:12 +0200 (CEST)
+	b=uuV3bdYJKgD1j16rH7WwuviWrMsOwFMaGm50NsRjJajG+AU3h44z7Z5dxigNqlX5W
+	 sI14g4CdH9ZlJK7Mj5Oro9LSdmdKmKPITQWQXfghL7TgxpU+c9j/SblYLjmDBzLQcL
+	 o+Lj3gApluEcd9dDh4UPao9s8jc+ZelOuxIiFo8E=
+Received: from vmi242170.contaboserver.net (localhost.localdomain [127.0.0.1])
+	by alsa1.perex.cz (Postfix) with ESMTP id E5A94F80142;
+	Mon,  6 Apr 2020 13:13:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2DCDBF80143; Mon,  6 Apr 2020 13:07:11 +0200 (CEST)
+ id E5B1AF80143; Mon,  6 Apr 2020 13:13:30 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7AA59F80121
- for <alsa-devel@alsa-project.org>; Mon,  6 Apr 2020 13:07:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7AA59F80121
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7C504F80121
+ for <alsa-devel@alsa-project.org>; Mon,  6 Apr 2020 13:12:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C504F80121
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="vYBvA3+s"
+ header.b="lNHthtXX"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 31DE6206F8;
- Mon,  6 Apr 2020 11:07:05 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 711A9206F8;
+ Mon,  6 Apr 2020 11:12:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1586171225;
- bh=MW0KG31dJrppaZHP8FQnU1F/hl4SWfSAkuygfDdzRsY=;
+ s=default; t=1586171571;
+ bh=MtJm1ZXy274Rt4S8/t5pgen0tFyzkY5ae3KXw6x6In4=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=vYBvA3+sGFhq3yTKh+ucCBVysSRVEhv8kbTZ7mUax4BlKAv3D4fK5qjUXj7Z5gLgl
- TISEdcdQC4Yw6kKUo0xsMd21GDTjBeoWPMIjRqPbpl8tuQjZBP5dWfsAI/LfpptVzJ
- V/SAs1M5qygo+k2m9swv+YpL4hpf8/q5LkRknr1E=
-Date: Mon, 6 Apr 2020 12:07:03 +0100
+ b=lNHthtXXVAZNLmOMZ96NGSDiYyfoZhPYjEMJKtUifhay6eh9SXGgyIehffxgM+sxh
+ B8Rs4JGbzAnLTxPe1UErYuV9SemkVmkobtrBLQ96RC1+maODilYaeozsPW6/X7gyCb
+ dJrTUI2RhDh+0wHqRGtnSahzuWKdo2K5t+GZz32U=
+Date: Mon, 6 Apr 2020 12:12:48 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Johan Jonker <jbx6244@gmail.com>
-Subject: Re: [PATCH v3 1/3] dt-bindings: sound: convert rockchip spdif
- bindings to yaml
-Message-ID: <20200406110703.GA6837@sirena.org.uk>
-References: <20200404115225.4314-1-jbx6244@gmail.com>
+To: Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: Re: [PATCH] ASoC: qcom: common: Silence EPROBE_DEFER messages
+Message-ID: <20200406111248.GB6837@sirena.org.uk>
+References: <20200406003656.2383978-1-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="TB36FDmn/VVEgNH/"
+ protocol="application/pgp-signature"; boundary="oC1+HKm2/end4ao3"
 Content-Disposition: inline
-In-Reply-To: <20200404115225.4314-1-jbx6244@gmail.com>
+In-Reply-To: <20200406003656.2383978-1-bjorn.andersson@linaro.org>
 X-Cookie: Serfs up!
 User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, heiko@sntech.de,
- lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
- linux-rockchip@lists.infradead.org, robh+dt@kernel.org,
- linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
+ linux-kernel@vger.kernel.org, Patrick Lai <plai@codeaurora.org>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ srinivas.kandagatla@linaro.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,48 +93,32 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---TB36FDmn/VVEgNH/
+--oC1+HKm2/end4ao3
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Sat, Apr 04, 2020 at 01:52:23PM +0200, Johan Jonker wrote:
-> Current dts files with 'spdif' nodes are manually verified.
-> In order to automate this process rockchip-spdif.txt
-> has to be converted to yaml.
+On Sun, Apr 05, 2020 at 05:36:56PM -0700, Bjorn Andersson wrote:
+> The Qualcomm sound card typically depends on several other drivers,
+> resulting in plenty of noise in the kernel log due to probe deferral.
+> Silence these errors.
 
-Please don't send content free pings and please allow a reasonable time
-for review.  People get busy, go on holiday, attend conferences and so=20
-on so unless there is some reason for urgency (like critical bug fixes)
-please allow at least a couple of weeks for review.  If there have been
-review comments then people may be waiting for those to be addressed.
+This then means that if something is missing a depdenceny it becomes
+impossible to tell what the problem is from the logs.  Please at most
+reduce these to a dev_dbg().
 
-Sending content free pings adds to the mail volume (if they are seen at
-all) which is often the problem and since they can't be reviewed
-directly if something has gone wrong you'll have to resend the patches
-anyway, so sending again is generally a better approach though there are
-some other maintainers who like them - if in doubt look at how patches
-for the subsystem are normally handled.
-
-Please submit patches using subject lines reflecting the style for the
-subsystem, this makes it easier for people to identify relevant patches.
-Look at what existing commits in the area you're changing are doing and
-make sure your subject lines visually resemble what they're doing.
-There's no need to resubmit to fix this alone.
-
---TB36FDmn/VVEgNH/
+--oC1+HKm2/end4ao3
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6LDVQACgkQJNaLcl1U
-h9At1Af9FC3z9FsNzTwUOLATMox+yRod2jIFEGJXPViju4E8V2EuoclTbhXAgNQ+
-HpPLozVdeSMKzCNs57EAKph0W6rKpkaGz5R9NliqRohe0OiQpnIhftVJMHawgqCl
-0e0hzX3E+R+1hOa6R2BDTdTHuA+xk2oni8V6w/MW4LVuZZ13fl2Pxa2y5dOdp+ER
-woZL3J56Q1b6NkKdYWyCMZgj/GfOb8FFVfC0Dp4BTQh0VO0V2KvwCdklmWXqYC8D
-kkHkggw+t/98qhSUrBu+L4FvXYwc17OzhJszkbJWGLoA83ogbf12Nqm4X2ftyteA
-p+R0xiHc+axQuwhe8ch0Ei0ZBAJxvg==
-=VqFs
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6LDq8ACgkQJNaLcl1U
+h9AnqAf/WP5/shM+o0NVDoSTzFDUIwsFx0+zD0HAUSjwRszIvxR7LzYmyk4crsOI
+izVV3xQVPYb1Ra+nGtGTEdJbU5UqJ5H7GDAHFCE0D4/eb2VP8qPCWYv+GWt9ipZz
+lopYieoo8ws+7qnd6l/DMfSjj2Ik7eSsIPUMmL4YOiUACTF1ypqtAzG0NF5bs0pR
+jtgllpDgeOwJwHKel+Lz7edKrHxqaQtPk5LdlxOqGbQU4Mm3isGP6oRAROn0p+iG
+P08qGMACi1nUfCe31/lym4z0bTOd9QCy7OXe/oIqJ2DvLdnZ/ASbRweGUWSbnxBU
+JljNw+dvdosofc2QP/WFVlg2jC9p+w==
+=gEl1
 -----END PGP SIGNATURE-----
 
---TB36FDmn/VVEgNH/--
+--oC1+HKm2/end4ao3--
