@@ -2,80 +2,84 @@ Return-Path: <SRS0=QmEo=5X=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+X-Spam-Status: No, score=-2.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D7F7C2BB1D
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Apr 2020 11:25:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80D09C2BB54
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Apr 2020 11:31:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BA97C20678
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Apr 2020 11:25:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 11E93206F7
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Apr 2020 11:31:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kiVDK/Kr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BA97C20678
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ouW3TNdK";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Emoth3fv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 11E93206F7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1519F852;
-	Tue,  7 Apr 2020 13:24:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1519F852
+	by alsa0.perex.cz (Postfix) with ESMTPS id 67054852;
+	Tue,  7 Apr 2020 13:30:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 67054852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586258716;
-	bh=ejUUSnoisJW40wSwNHezfSBxmL645g0X2x1oDrRFdD4=;
+	s=default; t=1586259087;
+	bh=aUG4dbOPyE3FNO6Yx6gqCIj937P2XJdRoNN45ANKWjs=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kiVDK/KrbmMYrjkmPegCOjBLwwSyOk1pozzmHyPUo7qe/7evJKFJV1dxJBjMhbTSr
-	 LksGEpGEktDY5hL4p7/kZq1soiyhQOpdxBIiA85R+f8cbvaUoUZVt0M3jyN7hIqF2P
-	 WLHq7mOnB8yfCsRCpVapcAO0R7SjauPCXfN/aK6k=
+	b=ouW3TNdKcm4yiKtFe37nxVTcvqulfnj3SzntRX4kBKpgmpH1rsbdBxlmFwYdu4XaL
+	 PGsRvAPa7GO17QM7eFzRZYNfSk8F//fmFuspS1LkvMrNecpA/HkTBFLkxRzGqiCgSA
+	 XSdAhZnMZKjwgJmAKcDK0Nd5xXXhKWgQ1YxTyjxo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 95846F801D8;
-	Tue,  7 Apr 2020 13:24:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F4049F801D8;
+	Tue,  7 Apr 2020 13:30:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 04791F801DA; Tue,  7 Apr 2020 13:24:23 +0200 (CEST)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ id A641DF801DA; Tue,  7 Apr 2020 13:30:35 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8A192F8011B;
+ Tue,  7 Apr 2020 13:30:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8A192F8011B
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="Emoth3fv"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 52BD8F80121;
- Tue,  7 Apr 2020 13:24:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52BD8F80121
-IronPort-SDR: X0UDSfQE1uO5pCg79y0juMlu4zRXXfFj0E6UXZtlXzbXgbMXfnQSEL3evI/RuaewNDNEN5wxms
- SpwEKmWHj7EA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Apr 2020 04:24:14 -0700
-IronPort-SDR: oTeaQZXU5o0sC8QTIgjLyGfCu4Dlvh6iu/Fn0wWvdTZ2QbDsdrN2ImFYmFbpFItqjFdqNbT46H
- LiK2RJL+aVmQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,353,1580803200"; d="scan'208";a="451187923"
-Received: from gliakhov-mobl2.ger.corp.intel.com (HELO ubuntu)
- ([10.252.39.168])
- by fmsmga005.fm.intel.com with ESMTP; 07 Apr 2020 04:24:12 -0700
-Date: Tue, 7 Apr 2020 13:24:11 +0200
-From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+ by mail.kernel.org (Postfix) with ESMTPSA id 98AB72063A;
+ Tue,  7 Apr 2020 11:30:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1586259029;
+ bh=aUG4dbOPyE3FNO6Yx6gqCIj937P2XJdRoNN45ANKWjs=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=Emoth3fvvL4Dywrqae968UgZSlx+4x24bamqPoQ6VfX1Q4zxkoIeUfdQjkwUQyhSc
+ NGYBBiz7R/POdbgT7Rs3eSLMs1Mv1HBYkMt6/CXSs8ADNhhsijr3ozErBjmdK0X5fH
+ A/7ZtackWECUMTk99pMlZ/1Vk5s425DSOLvqZNFY=
+Date: Tue, 7 Apr 2020 12:30:26 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Subject: Re: [Sound-open-firmware] [PATCH v2 00/12] [RESEND] ASoC: SOF DSP
  virtualisation
-Message-ID: <20200407112411.GA10133@ubuntu>
+Message-ID: <20200407113026.GB5247@sirena.org.uk>
 References: <20200403091406.22381-1-guennadi.liakhovetski@linux.intel.com>
  <20200403092842.GB4286@sirena.org.uk>
  <20200403110404.GA23734@ubuntu>
  <29be8be8d9b8700588da693d93b9f10adbb10016.camel@linux.intel.com>
- <20200403180918.GA25646@ubuntu>
+ <20200403180918.GA25646@ubuntu> <20200407112411.GA10133@ubuntu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="4bRzO86E/ozDv8r1"
 Content-Disposition: inline
-In-Reply-To: <20200403180918.GA25646@ubuntu>
+In-Reply-To: <20200407112411.GA10133@ubuntu>
+X-Cookie: Just to have it is enough.
 User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>,
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
@@ -93,85 +97,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Apr 03, 2020 at 08:09:19PM +0200, Guennadi Liakhovetski wrote:
-> Hi Liam,
-> 
-> Thanks for the clarifications.
-> 
-> On Fri, Apr 03, 2020 at 05:10:20PM +0100, Liam Girdwood wrote:
-> > On Fri, 2020-04-03 at 13:04 +0200, Guennadi Liakhovetski wrote:
-> > > Hi Mark,
-> > > 
-> > > On Fri, Apr 03, 2020 at 10:28:42AM +0100, Mark Brown wrote:
-> > > > On Fri, Apr 03, 2020 at 11:13:54AM +0200, Guennadi Liakhovetski
-> > > > wrote:
-> > > > > This patch series extends the SOF driver to add support for DSP
-> > > > > virtualisation to ASoC. It is built on top of VirtIO, contains a
-> > > > > guest driver and a vhost in-kernel guest driver. This version
-> > > > > supports a single playback and a single capture interface on the
-> > > > > guest. The specific guest audio topology is supplied by the host
-> > > > 
-> > > > I've asked a couple of times for documentation of the protocol here
-> > > > but
-> > > > don't think I've seen anything yet?
-> > 
-> > Sorry Mark, the whole series should not have been sent since we are
-> > still pending on some OASIS standards being ratified. Guennadi, please
-> > just send the patches that add the protocol independent dependencies to
-> > ASoC and SOF driver only for review atm (patches 1,2,3,5,6 & 7).
-> > 
-> > The full series is blocking on
-> > 
-> > 1) the virto-snd patches being merged. This will then allow the code
-> > (when modified) to run HDA like audio on SOF DSPs.
-> > 
-> > 2) virtio DMA buffer sharing being concluded for "zero copy" usage.
-> 
-> I don't think we're blocked by this. If I understand correctly it is our 
-> intention to first upstream the present copying solution and then 
-> implement zero-copy as a next step.
-> 
-> > 3) rpmsg integration. The SOF IPC will use rpmsg virtio transport
-> > between host and guests.
-> 
-> We started discussing this on github, unfortunately this didn't come to a 
-> conclusion. From what I've read in the kernel, RPMSG is currencly used 
-> there in scenarios, that are very different from ours. Typically you have 
-> a Linux host, that uses RPMSG to communicate with an "embedded" 
-> counterpart, where that communication includes boooting ELF firmware on 
-> that counterpart, and then using RPMSG on top of Virtual Queues to 
-> communicate with it. Our case is quite different. I'm not saying, that it 
-> is impossible to use the Linux RPMSG subsystem for use-cases like ours, 
-> but it seems to me, that this would require a significant effort on the 
-> Linux RPMSG core implementation, and we would be the first use-case for 
-> this.
 
-After a discussion we agreed, that we shall try to port SOF VirtIO support on 
-top of RPMSG, even though this would be the first ever such use of RPMSG. And 
-since this likely will take a while and be a big change we suspend this 
-review process for now. 
+--4bRzO86E/ozDv8r1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-We'll be back.
+On Tue, Apr 07, 2020 at 01:24:11PM +0200, Guennadi Liakhovetski wrote:
 
-Thanks
-Guennadi
+> After a discussion we agreed, that we shall try to port SOF VirtIO suppor=
+t on=20
+> top of RPMSG, even though this would be the first ever such use of RPMSG.=
+ And=20
+> since this likely will take a while and be a big change we suspend this=
+=20
+> review process for now.=20
 
-> The rest has to be discussed.
-> 
-> Thanks
-> Guennadi
-> 
-> > This series does not mandate a DSP IPC standard, since this may differ
-> > between DSP vendors, but it will use OASIS standards for virtio-snd,
-> > DMA buffers and rpmsg.
-> > 
-> > I would say that parts of the "SOF protocol" may be useful for other
-> > vendors in the DAPM/topology areas where users want to connect guest
-> > topologies to host topologies (connected internally with DAPM).
-> > 
-> > Thanks
-> > 
-> > Liam
-> > 
-> > 
-> > 
+OK...  the generic patches (IIRC it was about the list that Liam
+identified) looked OK so if you want to send them by themselves then I
+can apply them and it's less diff for you to carry.
+
+--4bRzO86E/ozDv8r1
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6MZFEACgkQJNaLcl1U
+h9CukAf+I3T4IuSvvpX3Jkp4rkZ6wb5VC0HWWKqYDDQcYPJHY3B/vbzoUzC2hWQ6
+XxDfDEcjmlDw33SbISSETJrWUnMQ/eH4oKCIqVB9gAmek7FtJ0+JBqsya1w64zpK
+3isYH8UVYBVBtTbHtTWGT1k8iXNhuaJGUqtdIFTLEoJ2OXHPCR96iYTU+BhOkqt+
+0VTXkM9WIQ/FxBNthaWHJolyhpPcgKfcm1J5yJ2o4mUQbC1DvCC/yrxGOStt+qk8
+gnjlJS5b8JkpJnKcQIAOcbg+LUncpITTVkDmSBMrerLkxV6Yzq+rp9pWU6pmjWI1
+FKr7a4DOYYSbXVt2M7142uuNDqfzmw==
+=F9H/
+-----END PGP SIGNATURE-----
+
+--4bRzO86E/ozDv8r1--
