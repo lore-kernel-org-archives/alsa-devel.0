@@ -7,57 +7,56 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42E9AC2BA16
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Apr 2020 08:55:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0480BC2BABC
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Apr 2020 08:55:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B84722074F
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Apr 2020 08:55:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 85CBB20748
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Apr 2020 08:55:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Pt74lH/1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B84722074F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="siM/LAIK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 85CBB20748
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1D86F167B;
-	Tue,  7 Apr 2020 10:54:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D86F167B
+	by alsa0.perex.cz (Postfix) with ESMTPS id CE0EE168B;
+	Tue,  7 Apr 2020 10:54:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE0EE168B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586249701;
-	bh=ESeN2fVEMIHkP4A4xVX1pyGYrIqzwOoIpEgNsYp7q+w=;
+	s=default; t=1586249746;
+	bh=IBuZNHn84qLTSsqhjrA8rmLMUXzHfCSRElhXswVWtHk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Pt74lH/1n571TftDDdI+G2v3HS/NiNi0guVQcaxAIQz8TJhmRmOCb0XouLhMcKMGw
-	 ZLvE57+b7Eqbw3uB0ah+DNrw8cOIMvajRYQ/XcqWsCLHNzchF0y21ZBOu+onJA2uZV
-	 LElUxzrrC6cYkxj222ACjTK0yzDKYk+UO5fhnf3o=
+	b=siM/LAIKg8MtsXyDWMOfHE1vVKX1yqs5IlIvSBopW8OWSfw4dvjtgTw4f41RclKHQ
+	 gaHrzDfuRV0R1DVC1g6HpW6UH0t19hruD06ahzfgf4MaINFbbxb6H6pjsxBJGwVCS6
+	 uPWWj00ykIs/VcLp8q+f9AlKbeV3CF9evhE8PR9Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5A813F80292;
-	Tue,  7 Apr 2020 10:51:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 21C71F802A2;
+	Tue,  7 Apr 2020 10:51:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 21BB6F801DA; Tue,  7 Apr 2020 10:31:14 +0200 (CEST)
+ id 92336F801D8; Tue,  7 Apr 2020 10:31:21 +0200 (CEST)
 Received: from huawei.com (szxga05-in.huawei.com [45.249.212.191])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 16B00F801D8
- for <alsa-devel@alsa-project.org>; Tue,  7 Apr 2020 10:31:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16B00F801D8
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
- by Forcepoint Email with ESMTP id 4439BAEA954144C91373;
- Tue,  7 Apr 2020 16:31:05 +0800 (CST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 227F5F8011B
+ for <alsa-devel@alsa-project.org>; Tue,  7 Apr 2020 10:31:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 227F5F8011B
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+ by Forcepoint Email with ESMTP id CCCB54623A193D4511BD;
+ Tue,  7 Apr 2020 16:31:10 +0800 (CST)
 Received: from huawei.com (10.175.124.28) by DGGEMS408-HUB.china.huawei.com
  (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Tue, 7 Apr 2020
- 16:30:58 +0800
+ 16:31:00 +0800
 From: Jason Yan <yanaijie@huawei.com>
 To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
  <tiwai@suse.com>, <alsa-devel@alsa-project.org>
-Subject: [PATCH 2/4] ASoC: wm8991: remove defined but not used
- 'wm8991_dapm_rxvoice_controls'
-Date: Tue, 7 Apr 2020 16:29:30 +0800
-Message-ID: <20200407082932.41511-3-yanaijie@huawei.com>
+Subject: [PATCH 4/4] ASoC: wm8900: remove some defined but not used symbols
+Date: Tue, 7 Apr 2020 16:29:32 +0800
+Message-ID: <20200407082932.41511-5-yanaijie@huawei.com>
 X-Mailer: git-send-email 2.17.2
 In-Reply-To: <20200407082932.41511-1-yanaijie@huawei.com>
 References: <20200407082932.41511-1-yanaijie@huawei.com>
@@ -85,37 +84,40 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Fix the following gcc warning:
 
-sound/soc/codecs/wm8991.c:480:38: warning:
-‘wm8991_dapm_rxvoice_controls’ defined but not used
+sound/soc/codecs/wm8900.c:449:38: warning:
+‘wm8900_dapm_routput2_control’ defined but not used
 [-Wunused-const-variable=]
- static const struct snd_kcontrol_new wm8991_dapm_rxvoice_controls[] = {
+ static const struct snd_kcontrol_new wm8900_dapm_routput2_control =
+                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+sound/soc/codecs/wm8900.c:446:38: warning:
+‘wm8900_dapm_loutput2_control’ defined but not used
+[-Wunused-const-variable=]
+ static const struct snd_kcontrol_new wm8900_dapm_loutput2_control =
                                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Jason Yan <yanaijie@huawei.com>
 ---
- sound/soc/codecs/wm8991.c | 8 --------
- 1 file changed, 8 deletions(-)
+ sound/soc/codecs/wm8900.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8991.c b/sound/soc/codecs/wm8991.c
-index 93c156782d59..f8375d67e901 100644
---- a/sound/soc/codecs/wm8991.c
-+++ b/sound/soc/codecs/wm8991.c
-@@ -476,14 +476,6 @@ static SOC_ENUM_SINGLE_DECL(wm8991_ainrmux_enum,
- static const struct snd_kcontrol_new wm8991_dapm_ainrmux_controls =
- 	SOC_DAPM_ENUM("Route", wm8991_ainrmux_enum);
+diff --git a/sound/soc/codecs/wm8900.c b/sound/soc/codecs/wm8900.c
+index 271235a69c01..3e239fa9bc8d 100644
+--- a/sound/soc/codecs/wm8900.c
++++ b/sound/soc/codecs/wm8900.c
+@@ -443,12 +443,6 @@ SOC_SINGLE("LINEOUT2 LP -12dB", WM8900_REG_LOUTMIXCTL1,
  
--/* RXVOICE */
--static const struct snd_kcontrol_new wm8991_dapm_rxvoice_controls[] = {
--	SOC_DAPM_SINGLE_TLV("LIN4RXN", WM8991_INPUT_MIXER5, WM8991_LR4BVOL_SHIFT,
--		WM8991_LR4BVOL_MASK, 0, in_mix_tlv),
--	SOC_DAPM_SINGLE_TLV("RIN4RXP", WM8991_INPUT_MIXER6, WM8991_RL4BVOL_SHIFT,
--		WM8991_RL4BVOL_MASK, 0, in_mix_tlv),
--};
+ };
+ 
+-static const struct snd_kcontrol_new wm8900_dapm_loutput2_control =
+-SOC_DAPM_SINGLE("LINEOUT2L Switch", WM8900_REG_POWER3, 6, 1, 0);
 -
- /* LOMIX */
- static const struct snd_kcontrol_new wm8991_dapm_lomix_controls[] = {
- 	SOC_DAPM_SINGLE("LOMIX Right ADC Bypass Switch", WM8991_OUTPUT_MIXER1,
+-static const struct snd_kcontrol_new wm8900_dapm_routput2_control =
+-SOC_DAPM_SINGLE("LINEOUT2R Switch", WM8900_REG_POWER3, 5, 1, 0);
+-
+ static const struct snd_kcontrol_new wm8900_loutmix_controls[] = {
+ SOC_DAPM_SINGLE("LINPUT3 Bypass Switch", WM8900_REG_LOUTMIXCTL1, 7, 1, 0),
+ SOC_DAPM_SINGLE("AUX Bypass Switch", WM8900_REG_AUXOUT_CTL, 7, 1, 0),
 -- 
 2.17.2
 
