@@ -2,77 +2,67 @@ Return-Path: <SRS0=QmEo=5X=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CD8AC2BA2B
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Apr 2020 14:32:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5EA53C2BA2B
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Apr 2020 15:43:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CA3DB2072A
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Apr 2020 14:32:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B0AE420730
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Apr 2020 15:43:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sU15Iqe8";
-	dkim=pass (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="NX1SMakU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CA3DB2072A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hQ7aedlb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B0AE420730
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 340C8166D;
-	Tue,  7 Apr 2020 16:31:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 340C8166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0E159852;
+	Tue,  7 Apr 2020 17:42:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E159852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586269927;
-	bh=ZzdCILTN9bsf7l4OVJUuDn7daBMP6lkVmAnJwGE8Mc0=;
-	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
+	s=default; t=1586274214;
+	bh=J3EzmD7kfhdsoPiSQbUfIO0K9MdRmsWQC7R9tNlk4Uo=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sU15Iqe8FGMap/AEET9alaGdgaJYRKwAoZYnxfhn9KP9lA1tUBlgTZdgUtfE623F3
-	 /AzmWQnxFuijdelJI1RdYXGNravY0DaZIXUaHZlORypAGGqy+Lxmz/URJyFaM4J+LY
-	 IsxE1y9YZ8Yc5M3XlPILpg8hbrRFA0eFV6z1NiDk=
+	b=hQ7aedlbd98u6Z+QTYcB0821Le8b3y0IdAhDF0yHli3bKTV49d4Jt8XiiU9Hh97eS
+	 Lrbmp2zP+4w1IkE5nfKAbdwDW1EF8j3r2ntyMHFbPLiCq9g7d6MmAXU9iL7/2FNbIU
+	 1HXiZslvDzQxz5oYtAVmGGw+SmiqfmUBhisg8eds=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D8D96F80213;
-	Tue,  7 Apr 2020 16:30:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 86235F801D8;
+	Tue,  7 Apr 2020 17:42:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 74A0EF80216; Tue,  7 Apr 2020 16:30:56 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ id 3896BF801DA; Tue,  7 Apr 2020 17:42:40 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BFA2EF8011B
- for <alsa-devel@alsa-project.org>; Tue,  7 Apr 2020 16:30:53 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 7E364A0040;
- Tue,  7 Apr 2020 16:30:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 7E364A0040
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1586269850; bh=A1CFJ2CNDVVBt3yn+QHJ+uG6jCdSanTakN77Cz01Bz0=;
- h=Subject:To:References:From:Date:In-Reply-To:From;
- b=NX1SMakUMG8W+7B1/txH0tO6KTrYmf+nU+dYSAwS++XoT5QdfjL1wq5yI8T+ttt9b
- PGJUtIS42EJACcnE4CwujHqk/mRV530JOrtOPqCou/AGTXPFnUxVfiNatWpq+ZXnrk
- 9nhWxLGaNmw9rdAZGW5mGGJaDzb48mY46UzqiZ+k=
-Received: from p50.perex-int.cz (unknown [192.168.100.94])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Tue,  7 Apr 2020 16:30:48 +0200 (CEST)
-Subject: Re: [PATCH 0/2] ALSA: Fix for bad ctl access patterns
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-References: <20200407084402.25589-1-tiwai@suse.de>
-From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <584b4afd-ea44-a89b-9cdb-e53876cc8a69@perex.cz>
-Date: Tue, 7 Apr 2020 16:30:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <20200407084402.25589-1-tiwai@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+ by alsa1.perex.cz (Postfix) with ESMTPS id 26F71F80121
+ for <alsa-devel@alsa-project.org>; Tue,  7 Apr 2020 17:42:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26F71F80121
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 7E1EAAC77;
+ Tue,  7 Apr 2020 15:42:30 +0000 (UTC)
+Date: Tue, 07 Apr 2020 17:42:29 +0200
+Message-ID: <s5h7dyrmhei.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: scorpio@qelectrotech.org
+Subject: Re: TRX40 Realtek ALC1220-VB USB Audio
+In-Reply-To: <1904096.ym1ZuGme22@debian>
+References: <14399276.b7z6KR4yDS@debian> <s5hftdrczo2.wl-tiwai@suse.de>
+ <1904096.ym1ZuGme22@debian>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,32 +78,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 07. 04. 20 v 10:44 Takashi Iwai napsal(a):
-> Hi,
+On Sun, 29 Mar 2020 16:20:49 +0200,
+laurent Trinques wrote:
 > 
-> the recently introduced ctl access validator succeessfully caught some
-> real issues.  Here are some fixes.
+> Le dimanche 29 mars 2020, 10:50:53 CEST Takashi Iwai a écrit :
+> > On Sat, 07 Mar 2020 14:00:26 +0100,
+> > 
+> > laurent Trinques wrote:
+> > > Hello,
+> > > 
+> > > sudo dmesg -lerr -lcrit
+> > > 
+> > > [    0.386478] ACPI BIOS Error (bug): Failure creating named object
+> > > [\_SB.I2CA.WT1A], AE_ALREADY_EXISTS (20191018/dswload2-323)
+> > 
+> > (snip)
+> > 
+> > > [    2.545332] Error: Driver 'pcspkr' is already registered, aborting...
+> > 
+> > All those are irrelevant with the sound problem.
+> > 
+> > > [    2.572542] snd_hda_intel 0000:23:00.4: no codecs found!
+> > 
+> > I guess this is a known "problem", the strange hardware implementation
+> > where exposing the dummy HD-audio bus with non-existing codec.  So
+> > this can be ignored as well (maybe we can blacklist the PCI ID for
+> > ignoring more properly).
+> > 
+> > The real issue is:
+> > > [    8.169209] usb 7-5: cannot get ctl value: req = 0x83, wValue = 0xc00,
+> > > wIndex = 0x1300, type = 4
+> > > [    8.169214] usb 7-5: 19:0: cannot get min/max values for control 12 (id
+> > > 19)
+> > So it's likely a USB audio firmware that doesn't behave correctly as
+> > advertised, and we'd need a workaround.
+> > 
+> > Could you give lsusb -v output for this device?
+> 
+> Yes 
+> Bus 007 Device 002: ID 0db0:543d Micro Star International USB Audio
+> 
+> See attached output.
 
-Thanks Takashi for the fixes. For both
+Thanks.  This looks like the same issue as reported by others.
+  https://bugzilla.kernel.org/show_bug.cgi?id=206543
 
-Reviewed-by: Jaroslav Kysela <perex@perex.cz>
-
-> 
-> 
-> Takashi
-> 
-> ===
-> 
-> Takashi Iwai (2):
->    ALSA: hda: Fix potential access overflow in beep helper
->    ALSA: ice1724: Fix invalid access for enumerated ctl items
-> 
->   sound/pci/hda/hda_beep.c         | 6 +++++-
->   sound/pci/ice1712/prodigy_hifi.c | 4 ++--
->   2 files changed, 7 insertions(+), 3 deletions(-)
-> 
+Could you try two patches found in the bugzilla above?
 
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+thanks,
+
+Takashi
