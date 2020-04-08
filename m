@@ -2,66 +2,81 @@ Return-Path: <SRS0=n4Uk=5Y=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E931C2D0EA
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Apr 2020 16:12:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D704CC2D0F4
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Apr 2020 16:53:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DDA762076D
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Apr 2020 16:12:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5BB8320730
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Apr 2020 16:53:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bJpyBi8s"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DDA762076D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RH90ZZW3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5BB8320730
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3214D82A;
-	Wed,  8 Apr 2020 18:11:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3214D82A
+	by alsa0.perex.cz (Postfix) with ESMTPS id AB51A82A;
+	Wed,  8 Apr 2020 18:52:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB51A82A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586362327;
-	bh=6BbdwxnhHBJp2OG/1ms4MDMauYRGyocXY87FcMcEqzE=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1586364814;
+	bh=4yCXTf43uBNqiLCcxRPdhdzXfmZB5L9Xuwtg74Ufb3s=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bJpyBi8sLSuam7owOiH31ncaItYkiabyZoF6zJNSaF97L7kfxnHTzf9rtmaIUVd9X
-	 AHxiBrYjwImjqI+69yyGot0WeGErrh/GKeFknfguPNnySdTbX5E2vJUhPW4cXCVvg5
-	 noeBxEodnkUuuMYKNJJYwMAQDXhurUWUfYY0uXmg=
+	b=RH90ZZW3yim8+S/6Ju202jRe5oA6MlQVapMZxR/njWvkzne8i2aHdMicFFsz2uXqs
+	 xNySctwKGhezUqyTZM3JO4hUdQz2n0+CxbC7BlcarVrmWXAIENEjAyRQxZ3q22aNxi
+	 VmVuE8xdJsP0oLAlBTezhNHrHKQrziUjfJBPVRgg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B9383F80142;
-	Wed,  8 Apr 2020 18:11:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4015CF80142;
+	Wed,  8 Apr 2020 18:52:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 11D58F80143; Wed,  8 Apr 2020 18:11:15 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 0D5A1F80143; Wed,  8 Apr 2020 18:52:43 +0200 (CEST)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 75ADAF80105
- for <alsa-devel@alsa-project.org>; Wed,  8 Apr 2020 18:11:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75ADAF80105
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id C2B93AC26;
- Wed,  8 Apr 2020 16:11:10 +0000 (UTC)
-Date: Wed, 08 Apr 2020 18:11:10 +0200
-Message-ID: <s5h1royq7oh.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [GIT PULL] ASoC fixes for v5.7
-In-Reply-To: <20200408155251.GB5177@sirena.org.uk>
-References: <20200408155251.GB5177@sirena.org.uk>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 709A8F80105
+ for <alsa-devel@alsa-project.org>; Wed,  8 Apr 2020 18:52:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 709A8F80105
+IronPort-SDR: VG6WSLJ6PfBNmngC7Xr1Isr1MMz69dprKpqy5EnWRCpo+soXHkAkFCaBrKaep63sjTh/RBsp2T
+ yJ95eBiALpew==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 08 Apr 2020 09:52:28 -0700
+IronPort-SDR: yitxkepZ3b8f8H1BdGYLf6nkY4x4WuOsVc1a0aWY+qaTsEQe6VP4E8qUgQxICfiKX7yjfNjl5T
+ yNOizh0HMEiw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,359,1580803200"; d="scan'208";a="253845686"
+Received: from ktseng-mobl1.amr.corp.intel.com ([10.252.143.39])
+ by orsmga008.jf.intel.com with ESMTP; 08 Apr 2020 09:52:27 -0700
+Message-ID: <0021e9d8401927e1e42516c11d2789a8ecd93385.camel@linux.intel.com>
+Subject: Re: [PATCH v2 0/6] ASoC: topology: Propagate error appropriately
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+To: Amadeusz =?UTF-8?Q?S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>, Pierre-Louis Bossart
+ <pierre-louis.bossart@linux.intel.com>, Liam Girdwood
+ <lgirdwood@gmail.com>,  Mark Brown <broonie@kernel.org>, Takashi Iwai
+ <tiwai@suse.com>
+Date: Wed, 08 Apr 2020 09:52:26 -0700
+In-Reply-To: <2022e6f2-e3d0-746d-1d98-be4ea8e5d8f1@linux.intel.com>
+References: <20200327204729.397-1-amadeuszx.slawinski@linux.intel.com>
+ <e345ffe1-1593-49c0-32bd-4637bc1764da@linux.intel.com>
+ <a7b5e659-01c9-f966-2d26-cac8d10b96bb@linux.intel.com>
+ <f924fe56-0395-11af-244f-7074b7a704e5@linux.intel.com>
+ <2022e6f2-e3d0-746d-1d98-be4ea8e5d8f1@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,28 +92,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 08 Apr 2020 17:52:51 +0200,
-Mark Brown wrote:
+On Wed, 2020-04-08 at 16:46 +0200, Amadeusz Sławiński wrote:
 > 
-> The following changes since commit 3d2cdb854659851d991f5b8e97e847e3fd240625:
+> On 4/8/2020 4:20 PM, Pierre-Louis Bossart wrote:
+> > 
+> > > > Looks good to me
+> > > > 
+> > > > Reviewed-by: Pierre-Louis Bossart <
+> > > > pierre-louis.bossart@linux.intel.com>
+> > > > 
+> > > > We probably want Ranjani to double-check this series though.
+> > > > 
+> > > 
+> > > Hi Ranjani, can you take another look, I would like for this to
+> > > get 
+> > > merged before I forget about it ;)
+> > 
+> > Ranjani provided her Reviewed-by tag on March 30 - likely our
+> > emails 
+> > crossed.
 > 
->   Merge series "ASoC: Intel: add SoundWire machine driver" from Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>: (2020-03-27 17:28:36 +0000)
-> 
-> are available in the Git repository at:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v5.7
-> 
-> for you to fetch changes up to ccfc531695f3a4aada042f6bdb33ac6be24e1aec:
-> 
->   ASoC: cs4270: pull reset GPIO low then high (2020-04-07 15:29:54 +0100)
-> 
-> ----------------------------------------------------------------
-> ASoC: Fixes for v5.7
-> 
-> A collection of fixes that have been accumilated since the merge window,
-> mainly relating to x86 platform support.
+> That's probably what happened, I only asked, because "double-check" 
+> comment above caused me to think it may need another look. Thanks,
+> for 
+> confirming it's good.
+Sorry for the confusion, Amadeusz/Pierre. Yes, I didnt want to reply
+and add noise as I had already reviewed the series.
 
-Pulled now.  Thanks.
+Thanks,
+Ranjani
 
-
-Takashi
