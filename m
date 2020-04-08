@@ -2,87 +2,76 @@ Return-Path: <SRS0=n4Uk=5Y=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4949FC2D0EA
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Apr 2020 14:15:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 124EBC2D0EA
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Apr 2020 14:15:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C6A42206BE
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Apr 2020 14:15:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7E8AC206F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Apr 2020 14:15:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cm/BQ2S7";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=c-s.fr header.i=@c-s.fr header.b="YciLEzQc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C6A42206BE
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=c-s.fr
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HJ6TfMpe";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="WgCLIiUS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7E8AC206F5
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 04D1C1694;
-	Wed,  8 Apr 2020 16:14:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 04D1C1694
+	by alsa0.perex.cz (Postfix) with ESMTPS id DD6DC1677;
+	Wed,  8 Apr 2020 16:14:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DD6DC1677
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586355316;
-	bh=vNaqYl+XC6AqdxFCyt6ROao5RH3uQSuubUqQ4zq2amg=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1586355340;
+	bh=6sGJZKVDnng9zkVvNLQaMC2QdaABiEArzNpdTqX8bmw=;
+	h=From:To:Subject:In-Reply-To:References:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cm/BQ2S7wcldZlc3MgHRhCAbX3WEhXLFNMKRDt24DGahSSQqvwkZMJfGFUW6K7BdD
-	 TQR3/9STEeeDQlL3Y31IjkRX8QR34HWLnGOjJU7rv6QRW7HlJKNk8IKKARNgnK6Wxy
-	 z1msRqN+gPOK0DQtXERWLnyiS1OWHGdsHf49k7sk=
+	b=HJ6TfMpeQwSwTsyAmF49VAz1w3JM3mS/qNmzdptiexu45OgHyTxDE/a34snWl3n/o
+	 uGvzarW8XEbqUWfY2yxAo8H3JrOEc9zY73sv71QE3bPxpMxuWCxtL46lhoZGnl9DHr
+	 nIT1dKiH2Bp36iwDY+OFcjMIjEPi4Py3HNsJnCgs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 88F32F8025E;
-	Wed,  8 Apr 2020 16:12:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7BE8DF8028F;
+	Wed,  8 Apr 2020 16:12:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 23699F80143; Wed,  8 Apr 2020 09:09:37 +0200 (CEST)
-Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 3F3E7F80143; Wed,  8 Apr 2020 14:04:39 +0200 (CEST)
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 04E91F80107
- for <alsa-devel@alsa-project.org>; Wed,  8 Apr 2020 09:09:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04E91F80107
+ by alsa1.perex.cz (Postfix) with ESMTPS id 62BEFF80105
+ for <alsa-devel@alsa-project.org>; Wed,  8 Apr 2020 14:04:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62BEFF80105
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=c-s.fr header.i=@c-s.fr header.b="YciLEzQc"
-Received: from localhost (mailhub1-int [192.168.12.234])
- by localhost (Postfix) with ESMTP id 48xwPg1PVNz9vBmp;
- Wed,  8 Apr 2020 09:09:27 +0200 (CEST)
-Authentication-Results: localhost; dkim=pass
- reason="1024-bit key; insecure key"
- header.d=c-s.fr header.i=@c-s.fr header.b=YciLEzQc; dkim-adsp=pass;
- dkim-atps=neutral
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
- by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
- with ESMTP id qm163DxO4FIF; Wed,  8 Apr 2020 09:09:27 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
- by pegase1.c-s.fr (Postfix) with ESMTP id 48xwPg00DWz9txdM;
- Wed,  8 Apr 2020 09:09:27 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
- t=1586329767; bh=pUeE3SL5El2YFZ5sFHqfFXCAVMS+8JYvmMUNbR2W01c=;
- h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
- b=YciLEzQcehZFGIvXSnJq/jjzJOffxI2B9Wb0pJ8YYb1TiUbEUWiegILdTGyiKDQ63
- BmGvTs967vstc709cUkGGe7SjAsGaj3J+NJsAjl+vU+N0LBCE4Vlggkx3lgUcfcTUB
- Z/3AmE7zIy4GUL9qhwixgdmO6VfaYlICZilZbP0A=
-Received: from localhost (localhost [127.0.0.1])
- by messagerie.si.c-s.fr (Postfix) with ESMTP id E20A88B7DF;
- Wed,  8 Apr 2020 09:09:27 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
- by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
- with ESMTP id X2_-UCI9h0Et; Wed,  8 Apr 2020 09:09:27 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
- by messagerie.si.c-s.fr (Postfix) with ESMTP id 93D988B7D2;
- Wed,  8 Apr 2020 09:09:24 +0200 (CEST)
-Subject: Re: [PATCH 0/2] powerpc: Remove support for ppc405/440 Xilinx
- platforms
+ dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au
+ header.b="WgCLIiUS"
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest
+ SHA256) (No client certificate requested)
+ by mail.ozlabs.org (Postfix) with ESMTPSA id 48y2xf5jGrz9sRN;
+ Wed,  8 Apr 2020 22:04:06 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+ s=201909; t=1586347456;
+ bh=6sGJZKVDnng9zkVvNLQaMC2QdaABiEArzNpdTqX8bmw=;
+ h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+ b=WgCLIiUSpuBsBXqCPlZzidFYcoWAD1ZBafu6SLBHzZHI+KFxAv7gNGzohVSd3+CkZ
+ IjvhKsP9osZnu3lCySdAybzilsNS5UuZVHP2nBng/RcjGp+I2iwlz3bGKgwdxSLfan
+ RhhMHnZOWMh674CxamV9uQKAeJdSdBbIl7K9JR/0ZDotvPVrPq5/wwFcEiEoh3mmdU
+ sR8oL6kx73gdZYGqcrQsBBazPSQJXlHsc69IbBSwlLt7NNI9qV7j1a3MoYAgnxAUdL
+ oc/KwIMFjt+mCgfa7YMzF6zDhbuaisEd4kaeid/FO/VP19aJRTr51+VjFj5KwmoJ9p
+ vxLrPhfdg8W9w==
+From: Michael Ellerman <mpe@ellerman.id.au>
 To: Benjamin Herrenschmidt <benh@kernel.crashing.org>,
- Michael Ellerman <mpe@ellerman.id.au>,
+ Christophe Leroy <christophe.leroy@c-s.fr>,
  Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
  Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 0/2] powerpc: Remove support for ppc405/440 Xilinx
+ platforms
+In-Reply-To: <5782f9a42ad8acd8b234fa9c15a09db93552dc6b.camel@kernel.crashing.org>
 References: <cover.1585311091.git.michal.simek@xilinx.com>
  <CAK8P3a2mKPRFbRE3MWScr9GSiL4cpLg0wqv1Q28XDCZVPWgHfg@mail.gmail.com>
  <20200327131026.GT1922688@smile.fi.intel.com>
@@ -94,22 +83,16 @@ References: <cover.1585311091.git.michal.simek@xilinx.com>
  <bac9af641140cf6df04e3532589a11c2f3bccd2f.camel@kernel.crashing.org>
  <87pncprwp9.fsf@mpe.ellerman.id.au>
  <5782f9a42ad8acd8b234fa9c15a09db93552dc6b.camel@kernel.crashing.org>
-From: Christophe Leroy <christophe.leroy@c-s.fr>
-Message-ID: <7dead7f4-57e5-fa98-e9af-4beace2794a8@c-s.fr>
-Date: Wed, 8 Apr 2020 09:09:18 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+Date: Wed, 08 Apr 2020 22:04:17 +1000
+Message-ID: <871roykwu6.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-In-Reply-To: <5782f9a42ad8acd8b234fa9c15a09db93552dc6b.camel@kernel.crashing.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-Mailman-Approved-At: Wed, 08 Apr 2020 16:12:43 +0200
 Cc: Kate Stewart <kstewart@linuxfoundation.org>,
  Mark Rutland <mark.rutland@arm.com>,
  "Desnes A. Nunes do Rosario" <desnesn@linux.ibm.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+ Geert Uytterhoeven <geert+renesas@glider.be>, "open
+ list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
  ALSA Development Mailing List <alsa-devel@alsa-project.org>,
  dri-devel <dri-devel@lists.freedesktop.org>,
  Richard Fontana <rfontana@redhat.com>, Paul Mackerras <paulus@samba.org>,
@@ -155,45 +138,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-Le 08/04/2020 à 01:32, Benjamin Herrenschmidt a écrit :
+Benjamin Herrenschmidt <benh@kernel.crashing.org> writes:
 > On Fri, 2020-04-03 at 15:59 +1100, Michael Ellerman wrote:
 >> Benjamin Herrenschmidt <benh@kernel.crashing.org> writes:
->>> On Tue, 2020-03-31 at 16:30 +1100, Michael Ellerman wrote:
->>>> I have no attachment to 40x, and I'd certainly be happy to have
->>>> less
->>>> code in the tree, we struggle to keep even the modern platforms
->>>> well
->>>> maintained.
->>>>
->>>> At the same time I don't want to render anyone's hardware
->>>> obsolete
->>>> unnecessarily. But if there's really no one using 40x then we
->>>> should
->>>> remove it, it could well be broken already.
->>>>
->>>> So I guess post a series to do the removal and we'll see if
->>>> anyone
->>>> speaks up.
->>>
->>> We shouldn't remove 40x completely. Just remove the Xilinx 405
->>> stuff.
->>
+>> > On Tue, 2020-03-31 at 16:30 +1100, Michael Ellerman wrote:
+>> > > I have no attachment to 40x, and I'd certainly be happy to have
+>> > > less
+>> > > code in the tree, we struggle to keep even the modern platforms
+>> > > well
+>> > > maintained.
+>> > > 
+>> > > At the same time I don't want to render anyone's hardware
+>> > > obsolete
+>> > > unnecessarily. But if there's really no one using 40x then we
+>> > > should
+>> > > remove it, it could well be broken already.
+>> > > 
+>> > > So I guess post a series to do the removal and we'll see if
+>> > > anyone
+>> > > speaks up.
+>> > 
+>> > We shouldn't remove 40x completely. Just remove the Xilinx 405
+>> > stuff.
+>> 
 >> Congratulations on becoming the 40x maintainer!
-> 
-> Didn't I give you my last 40x system ? :-) IBM still put 40x cores
-> inside POWER chips no ?
-> 
+>
+> Didn't I give you my last 40x system ? :-)
 
-According to Wikipedia (https://en.wikipedia.org/wiki/PowerPC_400), 405 
-cores are used in modern equipments (how modern ?), however 403 has 
-never reached the market.
+Probably, but my desk is nearly as messy as yours so it's probably
+buried under some even more obscure hardware :P
 
-Can we start removing 403 stuff ? That's not a lot, but still.
+> IBM still put 40x cores inside POWER chips no ?
 
-Does anybody knows anything about this ERRATUM 77 stuff ? Is that still 
-an issue with all 405 cores or has this been fixed long time ago and can 
-be removed ?
+Oh yeah that's true. I guess most folks don't know that, or that they
+run RHEL on them.
 
-Christophe
+cheers
