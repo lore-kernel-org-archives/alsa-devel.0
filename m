@@ -1,111 +1,82 @@
-Return-Path: <SRS0=QmEo=5X=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=n4Uk=5Y=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2929CC2D0EC
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Apr 2020 20:14:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2FF5C2D0EA
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Apr 2020 08:52:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9A6252075E
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Apr 2020 20:14:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3D2C220769
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Apr 2020 08:52:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YwaFh2xE";
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=gmarqu.es header.i=@gmarqu.es header.b="J7HJx4u3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9A6252075E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gmarqu.es
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="p8dZjsO6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3D2C220769
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CD276852;
-	Tue,  7 Apr 2020 22:13:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD276852
+	by alsa0.perex.cz (Postfix) with ESMTPS id 79013825;
+	Wed,  8 Apr 2020 10:51:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 79013825
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586290447;
-	bh=Eg1+KrZa9/gAeLKATnV44tLbO0NLFMjlqF12GbZWbHw=;
-	h=From:Date:Subject:To:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=YwaFh2xEUPa6mSfiQdvDK9795blAukvWLdsoFcctkKEd743Zd82eme/zsdBZfbs6o
-	 yvvi4DTkuTr9IpkSlseVuQ9laaoJiW77wM2hHJ2AC9kmNHQtB+SyNCH4IVffl2yWXG
-	 J6zzc4HUSzm6tHlpEr7d88+v+07HX5oQP3GcbfWc=
+	s=default; t=1586335954;
+	bh=ySY+joU40yI+EghBT5irMpMuY/0ZXfrHbIXwSFKP9FA=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=p8dZjsO6BanfGYllCe5ROknAojKjFR1yyR2uYipuJXboM08uR2LoSHRbLBNaEDsQp
+	 BF//g1hJinkLgU2GxHlQYKzTHyz0ov7XYXDZyCDRjB8osxIKmt3T05wz/8WSnXILti
+	 QLH19RgzpSpj/OaGpBPErHdhFKmsg2vvdBAkRWM4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3C400F801D8;
-	Tue,  7 Apr 2020 22:13:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 06AC9F80142;
+	Wed,  8 Apr 2020 10:51:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7FEB9F801DA; Tue,  7 Apr 2020 22:13:14 +0200 (CEST)
-Received: from gateway36.websitewelcome.com (gateway36.websitewelcome.com
- [192.185.186.5])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 40433F80143; Wed,  8 Apr 2020 10:51:42 +0200 (CEST)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B59AEF80121
- for <alsa-devel@alsa-project.org>; Tue,  7 Apr 2020 22:13:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B59AEF80121
-Authentication-Results: alsa1.perex.cz;
- dkim=fail reason="key not found in DNS" (0-bit key) header.d=gmarqu.es
- header.i=@gmarqu.es header.b="J7HJx4u3"
-Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
- by gateway36.websitewelcome.com (Postfix) with ESMTP id 7268F400CA057
- for <alsa-devel@alsa-project.org>; Tue,  7 Apr 2020 14:21:42 -0500 (CDT)
-Received: from br760.hostgator.com.br ([50.116.86.55]) by cmsmtp with SMTP
- id LuSZjmGM91s2xLuSZjREww; Tue, 07 Apr 2020 15:04:35 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=gmarqu.es; 
- s=default;
- h=Content-Type:To:Subject:Message-ID:Date:From:MIME-Version:
- Sender:Reply-To:Cc:Content-Transfer-Encoding:Content-ID:Content-Description:
- Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
- In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
- List-Post:List-Owner:List-Archive;
- bh=eEZoi2YnIRGDSxoLoBiK/wOZpeYPwis28Mt6pX7UvcY=; b=J7HJx4u3MXpLGEiLnQnAwQrQhL
- mN/R7HOpWZ5icpC5RXO5uqLnsbsoVzCV8jS+4QbVOjHRmcxKP82+tsesKUrLQ7VaFqd7ArY9lHCUY
- xUgSgKQgBYCzidR+72xitBAh3DOEEvTENuagy/l75daW66WlInJQHhoLL0SoU0C6tybK+wy3SoFmA
- ut87rh3bYY10YA9Ha5pzKZEYeZ2KfPCQSKYvXl0+hYmEhqhxUhWtOyhYtYU/TO7MKjXBfYWZ6Q3Zm
- 2Kync9HMlytvWacOaj1aUbMH65EjvPcvsBducU2YGAY/cRGcgurC7V57pc9Mq8vOks0IQc2MLZbPH
- WKenSh8g==;
-Received: from mail-il1-f181.google.com ([209.85.166.181]:35377)
- by br760.hostgator.com.br with esmtpsa
- (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128) (Exim 4.92)
- (envelope-from <george@gmarqu.es>) id 1jLuSZ-003Mvp-0T
- for alsa-devel@alsa-project.org; Tue, 07 Apr 2020 17:04:35 -0300
-Received: by mail-il1-f181.google.com with SMTP id u15so4262418ilm.2
- for <alsa-devel@alsa-project.org>; Tue, 07 Apr 2020 13:04:34 -0700 (PDT)
-X-Gm-Message-State: AGi0PuYt4qnE7yRfHGCYCq5uI/4xQoT32GPLxaxmAUIqUA8QzIsEKpMg
- hRkEPDTmZ1HVO8Jxve0NAYRT0nmG8pcibHLay0c=
-X-Google-Smtp-Source: APiQypIsO82zwQk5s7sxksF7outkOiCIwaq6UWXTcfS4Zy2kAfpN3lWKNv346WhlgnGmpqzvCrk2N7U8DmjTbIbTGBg=
-X-Received: by 2002:a92:8659:: with SMTP id g86mr4411045ild.267.1586289874551; 
- Tue, 07 Apr 2020 13:04:34 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0EF47F80105
+ for <alsa-devel@alsa-project.org>; Wed,  8 Apr 2020 10:51:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0EF47F80105
+IronPort-SDR: 4K6BBVN5oX1o3786bLcpMNGzM/PAsHJB+HFJ8dht/j5YTM6E0d8WkYCVbLxvz3zzxoaDI98omJ
+ mu6lCZnac1Lw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 08 Apr 2020 01:51:30 -0700
+IronPort-SDR: VVVLq9DGjj84f69mSu0cDtZ6idWZulcyc6c/GumD4a167miInOd2idGL0+IH9PZCfZRxHm+iDt
+ Jh8HyH1lh6jw==
+X-IronPort-AV: E=Sophos;i="5.72,357,1580803200"; d="scan'208";a="398140142"
+Received: from aslawinx-mobl1.ger.corp.intel.com (HELO [10.249.156.141])
+ ([10.249.156.141])
+ by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 08 Apr 2020 01:51:28 -0700
+Subject: Re: [PATCH v2 0/6] ASoC: topology: Propagate error appropriately
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Takashi Iwai <tiwai@suse.com>
+References: <20200327204729.397-1-amadeuszx.slawinski@linux.intel.com>
+ <e345ffe1-1593-49c0-32bd-4637bc1764da@linux.intel.com>
+From: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+Message-ID: <a7b5e659-01c9-f966-2d26-cac8d10b96bb@linux.intel.com>
+Date: Wed, 8 Apr 2020 10:51:26 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-From: George Marques <george@gmarqu.es>
-Date: Tue, 7 Apr 2020 17:04:23 -0300
-X-Gmail-Original-Message-ID: <CAHWuuHnFKgbZicK-3YADXoKccZZsEsZk4fM4OJMe7cV36ZwZdQ@mail.gmail.com>
-Message-ID: <CAHWuuHnFKgbZicK-3YADXoKccZZsEsZk4fM4OJMe7cV36ZwZdQ@mail.gmail.com>
-Subject: M-Audio Fast Track Ultra S/PDIF clock source
-To: alsa-devel@alsa-project.org
-X-AntiAbuse: This header was added to track abuse,
- please include it with any abuse report
-X-AntiAbuse: Primary Hostname - br760.hostgator.com.br
-X-AntiAbuse: Original Domain - alsa-project.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - gmarqu.es
-X-BWhitelist: no
-X-Source-IP: 209.85.166.181
-X-Source-L: No
-X-Exim-ID: 1jLuSZ-003Mvp-0T
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: mail-il1-f181.google.com [209.85.166.181]:35377
-X-Source-Auth: george@gmarqu.es
-X-Email-Count: 1
-X-Source-Cap: dmVyc2kwNDk7dmVyc2kwNDk7YnI3NjAuaG9zdGdhdG9yLmNvbS5icg==
-X-Local-Domain: yes
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+In-Reply-To: <e345ffe1-1593-49c0-32bd-4637bc1764da@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -121,38 +92,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello, I have my trusty old FTU audio interface and I've been super happy
-of how it works well on Linux with ALSA.
 
-Today I finally found some use for the S/PDIF input, which would allow me
-to free up two analog inputs in my setup. However, I found out it's not
-possible to change the clock source using ALSA, so I cannot use the S/PDIF
-input on Linux.
 
-This issue was raised by Felix Homann back in 2011:
-https://www.alsa-project.org/pipermail/alsa-devel/2011-June/040846.html but
-I couldn't find any new development, even though other issues were fixed.
+On 3/30/2020 6:38 PM, Pierre-Louis Bossart wrote:
+> 
+> 
+> On 3/27/20 3:47 PM, Amadeusz Sławiński wrote:
+>> v1:
+>>    Check if kstrdup succeeded.
+>>
+>> v2:
+>>    Remove unneeded freeing, which is performed in another place by dobj
+>>    handlers.
+>>
+>>    Additionally for functions which have return status which was ignored,
+>>    perform success checks and handle failures in appropriate way.
+>>
+>> Amadeusz Sławiński (6):
+>>    ASoC: topology: Add missing memory checks
+>>    ASoC: topology: Check return value of soc_tplg_create_tlv
+>>    ASoC: topology: Check return value of soc_tplg_*_create
+>>    ASoC: topology: Check soc_tplg_add_route return value
+>>    ASoC: topology: Check return value of pcm_new_ver
+>>    ASoC: topology: Check return value of soc_tplg_dai_config
+> 
+> Looks good to me
+> 
+> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> 
+> We probably want Ranjani to double-check this series though.
+> 
 
-On Windows the proprietary driver naturally has an option for that, which
-allowed me to verify that the input is in fact working correctly. Changing
-on Windows and then rebooting into Linux does not work, so either this is
-not persisted or something on Linux is unknowingly changing it back.
+Hi Ranjani, can you take another look, I would like for this to get 
+merged before I forget about it ;)
 
-I actually want to help add this option to the driver, so I can use it
-myself but also make it available to others who still rely on this
-interface.
+>>
+>>   sound/soc/soc-topology.c | 113 ++++++++++++++++++++++++++++++---------
+>>   1 file changed, 88 insertions(+), 25 deletions(-)
+>>
 
-My questions are:
-
-1) Was there any progress in this regard? Most of work has been done around
-2012 for what I could find, nothing newer, so can I assume no work was done
-after the concern was raised?
-
-2) If I were to develop this option, where could I start? I can get myself
-around with C, but I have no idea how to debug and test my patches, nor how
-to find the exact control.
-
-I know it's an old card, but it works very well for me so I have no excuse
-to just replace it at this point.
-
-I hope someone can help me.
