@@ -7,63 +7,63 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 99049C2BA19
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 20:07:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CAE86C2BA19
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 20:07:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 15E6020730
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 20:07:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 52EEC20730
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 20:07:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KFFQIGBi"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 15E6020730
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TM9x9rRH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 52EEC20730
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7211016A8;
-	Thu,  9 Apr 2020 22:06:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7211016A8
+	by alsa0.perex.cz (Postfix) with ESMTPS id B0E9216A3;
+	Thu,  9 Apr 2020 22:07:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0E9216A3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586462849;
-	bh=9NYBbzvX8+A6Wsc+qrOddNJyYMdCwgevxtUFDkQXyzo=;
+	s=default; t=1586462874;
+	bh=SgdWB+kSJhSChQrBGR5bEcQCs7u+ZcmvH+5eqrBYsgY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KFFQIGBio6VAvHU3bAMR7nvUYmLgQTLYrQLkxl5i03zcJYS7n1PafhUgjxeWELZau
-	 HcQOqoCwEVqXdJDcF6DsckCc/49snbq5dDU7BdLznxYahxh9YxEKn1Hv7jdoJ2koyP
-	 /EVwu05sWnhyonaifpfv3jaMRB5v4qMxE46GHunY=
+	b=TM9x9rRHrGkl41M2XVbNz1zhRaVFf29uj2xKd9MHBZ/k6OpWqL3Zh1jYBdXNXaoqY
+	 8IMimRzcGWO8nNIn2rrfrr3olPlCtXpSpnhav5/aR2j/i0WSp37vGm8RdZZaWQpFVK
+	 IHSTXpjlqeLme7iEuucpESwzNb7b3dVZ7KGy+NXM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 702D0F80308;
-	Thu,  9 Apr 2020 21:59:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6A12CF80323;
+	Thu,  9 Apr 2020 21:59:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AB1E4F802E7; Thu,  9 Apr 2020 21:59:27 +0200 (CEST)
+ id 78901F802EB; Thu,  9 Apr 2020 21:59:29 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5CC1AF802E1
- for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2020 21:59:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5CC1AF802E1
-IronPort-SDR: /eFbRDcDYK3v20JuGFVeaOVA89rhfzSS+vJ0WAAQmypuwhXxj3s7hzaRb4jgN0rKfrcuRANCwn
- p/iJwwQpOasg==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6B188F8028F
+ for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2020 21:59:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B188F8028F
+IronPort-SDR: k4Unlj3aKK8fnv4hSmV76Wdpv8dNFLNvbQZKO1/6Ja47SJj6xo6E8w/kew52eur/epo05pD9bj
+ ubDHpz8bPr4Q==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Apr 2020 12:59:23 -0700
-IronPort-SDR: b2ecK7vShH+XHBN68K5eq38Q6xB/ZlfLdSj2GUn3HZlQw8hQy1ZNu+k3yBPgEiJzy7cqkICB4R
- spWMQDt8Afnw==
+ 09 Apr 2020 12:59:25 -0700
+IronPort-SDR: dHP/bYIuIXTrVPUaQy+yzFaahuuDr9UKCMFuLiMQJKE4xPbdL5qLhqrC5rosaIRiHayHfiw6Jd
+ nFqdBJVE8Adw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,363,1580803200"; d="scan'208";a="242745389"
+X-IronPort-AV: E=Sophos;i="5.72,363,1580803200"; d="scan'208";a="242745396"
 Received: from davidadu-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.212.151.218])
- by fmsmga007.fm.intel.com with ESMTP; 09 Apr 2020 12:59:21 -0700
+ by fmsmga007.fm.intel.com with ESMTP; 09 Apr 2020 12:59:23 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [RFC PATCH 12/16] clk: hifiberry-dacpro: add ACPI support
-Date: Thu,  9 Apr 2020 14:58:37 -0500
-Message-Id: <20200409195841.18901-13-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH 13/16] clk: hifiberry-dacpro: add "sclk" lookup
+Date: Thu,  9 Apr 2020 14:58:38 -0500
+Message-Id: <20200409195841.18901-14-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200409195841.18901-1-pierre-louis.bossart@linux.intel.com>
 References: <20200409195841.18901-1-pierre-louis.bossart@linux.intel.com>
@@ -92,38 +92,64 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On ACPI platforms the of_ functions are irrelevant, conditionally
-compile them out and add devm_clk_hw_register_clkdev() call instead.
+devm_clk_get() fails on ACPI platforms when a NULL string is used.
+Create a "sclk" lookup to make sure codec and machine drivers can get
+the clock.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/clk/clk-hifiberry-dacpro.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/clk/clk-hifiberry-dacpro.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
 diff --git a/drivers/clk/clk-hifiberry-dacpro.c b/drivers/clk/clk-hifiberry-dacpro.c
-index bf0616c959da..d01a90fed51b 100644
+index d01a90fed51b..36210f52c624 100644
 --- a/drivers/clk/clk-hifiberry-dacpro.c
 +++ b/drivers/clk/clk-hifiberry-dacpro.c
-@@ -114,15 +114,22 @@ static int clk_hifiberry_dacpro_probe(struct platform_device *pdev)
- 		return ret;
- 	}
+@@ -24,10 +24,12 @@
+  * struct clk_hifiberry_hw - Common struct to the HiFiBerry DAC Pro
+  * @hw: clk_hw for the common clk framework
+  * @mode: 0 => CLK44EN, 1 => CLK48EN
++ * @sclk_lookup: handle for "sclk"
+  */
+ struct clk_hifiberry_hw {
+ 	struct clk_hw hw;
+ 	u8 mode;
++	struct clk_lookup *sclk_lookup;
+ };
  
+ #define to_hifiberry_clk(_hw) container_of(_hw, struct clk_hifiberry_hw, hw)
+@@ -121,15 +123,34 @@ static int clk_hifiberry_dacpro_probe(struct platform_device *pdev)
+ 	ret = devm_clk_hw_register_clkdev(dev, &proclk->hw,
+ 					  init.name, NULL);
+ #endif
++	if (ret) {
++		dev_err(dev, "Fail to add clock driver\n");
++		return ret;
++	}
++
++	proclk->sclk_lookup = clkdev_hw_create(&proclk->hw, "sclk", NULL);
++	if (!proclk->sclk_lookup) {
 +#ifndef CONFIG_ACPI
- 	ret = of_clk_add_hw_provider(dev->of_node, of_clk_hw_simple_get,
- 				     &proclk->hw);
-+#else
-+	ret = devm_clk_hw_register_clkdev(dev, &proclk->hw,
-+					  init.name, NULL);
++		of_clk_del_provider(dev->of_node);
 +#endif
++		return -ENOMEM;
++	}
++
++	platform_set_drvdata(pdev, proclk);
  
  	return ret;
  }
  
  static int clk_hifiberry_dacpro_remove(struct platform_device *pdev)
  {
-+#ifndef CONFIG_ACPI
++	struct clk_hifiberry_hw *proclk = platform_get_drvdata(pdev);
++
++	clkdev_drop(proclk->sclk_lookup);
++
+ #ifndef CONFIG_ACPI
  	of_clk_del_provider(pdev->dev.of_node);
-+#endif
+ #endif
++
  	return 0;
  }
  
