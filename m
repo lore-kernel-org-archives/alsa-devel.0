@@ -7,73 +7,72 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05DACC2BA19
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 19:02:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C5246C2BA19
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 19:02:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8441C2082D
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 19:02:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4D5672082D
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 19:02:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="k6alsMoU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8441C2082D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="S1/ccqes"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4D5672082D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0C5CB16AE;
-	Thu,  9 Apr 2020 21:01:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C5CB16AE
+	by alsa0.perex.cz (Postfix) with ESMTPS id AA9B516A6;
+	Thu,  9 Apr 2020 21:01:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA9B516A6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586458925;
-	bh=ODQJuZ8zP1i3FLdGKeCCer6+sD//I5HpdVYMvpK/ZB8=;
+	s=default; t=1586458968;
+	bh=t7qxo2IMUWDYjpH/DtJSFFRkDae01aJ1DXyFj5bVu44=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=k6alsMoU3alBuHaTtD+9a1r3E8KuDbCPucQh1F6HJpVnl52z2ltVioS+8jb7wN7fC
-	 OpyMbndbFDV4zxP5tVhWjDjtiZ/h/OfWnlQUfVKz3F6F8OYawbR69UDYCNVUit3A+P
-	 m6IPQruGo4e9ZnTIyiy63zki7kO1eRjsgTNR2ZtA=
+	b=S1/ccqesTwyUtjoVl2habPDf38RNflfxwEZFdWmT3YAtC0WtwRLkkGCtMKZTvDXEC
+	 3GbfvCACPkK8dWfYQOyKsVM0Zchyixkcn0k8SUqdFJlgAFxQAzY93Fow6spZN6UW5z
+	 1qTza8DCAh+KYHRodTQkBiomLiF0B3KA3x31OJbo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 22592F802A0;
-	Thu,  9 Apr 2020 20:58:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0F1DBF802A8;
+	Thu,  9 Apr 2020 20:58:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2BAD3F80290; Thu,  9 Apr 2020 20:58:45 +0200 (CEST)
+ id 7BA2BF802A0; Thu,  9 Apr 2020 20:58:46 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2D237F80107
+ by alsa1.perex.cz (Postfix) with ESMTPS id 302F1F801D8
  for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2020 20:58:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D237F80107
-IronPort-SDR: YS//novGR/RnMzHvlAa3Kn5Xnm16k9aNEGWqtS0wiY8/ViYBU2XZ+Wf96/Qr+q5n5EIPeZcTKn
- /y1eNbDCc1fQ==
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 302F1F801D8
+IronPort-SDR: m8UiqsdehsEEAFSFwm67CP1q6aE07DbohxCAZ2BKZ9OsEUniNYkNf4B0YWEFxnyOc1HkrvksBz
+ rcm0R5Urifvw==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Apr 2020 11:58:41 -0700
-IronPort-SDR: Nb48kRfn/QHKAyidRfqAt1DQNhFXTMr3FP7SYeKKGcMXypiOJhMB/feeRv5a2vuZYuiocHZBhq
- V4tbgMxKHwGg==
+ 09 Apr 2020 11:58:40 -0700
+IronPort-SDR: XaSOxcAk4igOEXPAJekgNHkSxaQUVQwK/FVeWQTzLBKP5hnNdZOVqRTh1OcREjL9aEIk0Ff5zX
+ N2N+GyTGKjFw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,363,1580803200"; d="scan'208";a="255248854"
+X-IronPort-AV: E=Sophos;i="5.72,363,1580803200"; d="scan'208";a="255248845"
 Received: from davidadu-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.212.151.218])
- by orsmga006.jf.intel.com with ESMTP; 09 Apr 2020 11:58:40 -0700
+ by orsmga006.jf.intel.com with ESMTP; 09 Apr 2020 11:58:39 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 08/13] ASoC: Intel: sof_sdw_hdmi: fix compilation issue in
- fallback mode
-Date: Thu,  9 Apr 2020 13:58:22 -0500
-Message-Id: <20200409185827.16255-9-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 07/13] ASoC: Intel: sof-da7219-max98373: add DMIC widget and
+ route
+Date: Thu,  9 Apr 2020 13:58:21 -0500
+Message-Id: <20200409185827.16255-8-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200409185827.16255-1-pierre-louis.bossart@linux.intel.com>
 References: <20200409185827.16255-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, tiwai@suse.de,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org
+Cc: tiwai@suse.de, broonie@kernel.org, Keyon Jie <yang.jie@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,29 +88,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Missing prefix causing build fail when NOCODEC option is selected
+From: Keyon Jie <yang.jie@linux.intel.com>
+
+Add DMIC endpoint widget and route to make DMIC DAPM routes completed,
+to make DAPM Power Management works for DMIC streams.
 
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_sdw_hdmi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/boards/sof_da7219_max98373.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/sound/soc/intel/boards/sof_sdw_hdmi.c b/sound/soc/intel/boards/sof_sdw_hdmi.c
-index c7b5612a39e6..93e00b03cf85 100644
---- a/sound/soc/intel/boards/sof_sdw_hdmi.c
-+++ b/sound/soc/intel/boards/sof_sdw_hdmi.c
-@@ -90,7 +90,7 @@ int sof_sdw_hdmi_card_late_probe(struct snd_soc_card *card)
- 	return hdac_hdmi_jack_port_init(component, &card->dapm);
- }
- #else
--int hdmi_card_late_probe(struct snd_soc_card *card)
-+int sof_sdw_hdmi_card_late_probe(struct snd_soc_card *card)
- {
- 	return 0;
- }
+diff --git a/sound/soc/intel/boards/sof_da7219_max98373.c b/sound/soc/intel/boards/sof_da7219_max98373.c
+index 8b5b74ba349f..8ca8f76470fa 100644
+--- a/sound/soc/intel/boards/sof_da7219_max98373.c
++++ b/sound/soc/intel/boards/sof_da7219_max98373.c
+@@ -86,6 +86,8 @@ static const struct snd_soc_dapm_widget widgets[] = {
+ 	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
+ 			    platform_clock_control, SND_SOC_DAPM_POST_PMD |
+ 			    SND_SOC_DAPM_PRE_PMU),
++
++	SND_SOC_DAPM_MIC("SoC DMIC", NULL),
+ };
+ 
+ static const struct snd_soc_dapm_route audio_map[] = {
+@@ -99,6 +101,9 @@ static const struct snd_soc_dapm_route audio_map[] = {
+ 
+ 	{ "Left Spk", NULL, "Left BE_OUT" },
+ 	{ "Right Spk", NULL, "Right BE_OUT" },
++
++	/* digital mics */
++	{"DMic", NULL, "SoC DMIC"},
+ };
+ 
+ /* For MAX98360A amp */
+@@ -111,6 +116,8 @@ static const struct snd_soc_dapm_widget max98360a_widgets[] = {
+ 	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
+ 			    platform_clock_control, SND_SOC_DAPM_POST_PMD |
+ 			    SND_SOC_DAPM_PRE_PMU),
++
++	SND_SOC_DAPM_MIC("SoC DMIC", NULL),
+ };
+ 
+ static const struct snd_soc_dapm_route max98360a_map[] = {
+@@ -123,6 +130,9 @@ static const struct snd_soc_dapm_route max98360a_map[] = {
+ 	{ "Headset Mic", NULL, "Platform Clock" },
+ 
+ 	{"Spk", NULL, "Speaker"},
++
++	/* digital mics */
++	{"DMic", NULL, "SoC DMIC"},
+ };
+ 
+ static struct snd_soc_jack headset;
 -- 
 2.20.1
 
