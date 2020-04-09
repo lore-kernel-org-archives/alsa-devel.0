@@ -7,63 +7,64 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2E8DC2BA19
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 20:04:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BFB01C2BB55
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 20:04:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 496712074F
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 20:04:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4B29E20678
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 20:04:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ryrY44V4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 496712074F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lWHcNhO4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4B29E20678
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9798A16A1;
-	Thu,  9 Apr 2020 22:03:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9798A16A1
+	by alsa0.perex.cz (Postfix) with ESMTPS id AC95B169D;
+	Thu,  9 Apr 2020 22:03:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC95B169D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586462647;
-	bh=lyDwRWuncuJKeJ922nuuk0EKcHmd3wTiKs989WK7CXM=;
+	s=default; t=1586462665;
+	bh=urXD5joPbnaMv+4WMAzm+NfQ0M4GBk/3ogxO2OkhLXE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ryrY44V4VC+Yt/9Ob7SxPWp2kAlnOr4n3GpXEqTJWjoXaUoKdzaIbaFLAuIoOF+iT
-	 B+nBhWdUwTDJEn482XE2sCoK4ZXHgBdsU9V+WDmnsTNZ6nlFoi8atn1uiZsu6YdZxS
-	 MYsAKNI6Orykr+OEmQ1ftSQxISvqC2N06a7bEZmQ=
+	b=lWHcNhO4+qvqXkxFOqyPvXy1kqQgKymJOYumCyVG4SHEYVB8co8rm09bZCmzI0ZuQ
+	 Ng8wndP3+ZBSLVJKCT2rXOgjm83GTVh7xdP6fBmVLpnqoAvuPgo1Fyj+O1pbz01+GJ
+	 jW3g7j99hnviLjfvYnWxQjCCFxyopYa1mFod1pqU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 08653F802DC;
-	Thu,  9 Apr 2020 21:59:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 37F25F802E0;
+	Thu,  9 Apr 2020 21:59:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BFA67F802A0; Thu,  9 Apr 2020 21:59:21 +0200 (CEST)
+ id 1EE97F8028F; Thu,  9 Apr 2020 21:59:17 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B4B9CF802A0
- for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2020 21:59:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4B9CF802A0
-IronPort-SDR: elj9it1Tevp8J+FAP0oFIXwQmsUVoZn9BsH9mVBcNRDm8NkUtlsUmjIYt0odq+s/uPWyKCcfBG
- 6U2+pyeaz0Cw==
+ by alsa1.perex.cz (Postfix) with ESMTPS id A2C91F80213
+ for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2020 21:59:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2C91F80213
+IronPort-SDR: 7l0xL8Jxxw+z7aRCnv7SO2apMLOLBhdt5sqB+Kg++t3KcM7dRY+S5qNhIY6lYnzm832n11L9JJ
+ TqkqnFN2LCdw==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Apr 2020 12:59:17 -0700
-IronPort-SDR: 3WujSN8sErlH4LsZZeBQSMcfeDIlK8/K1hfbi8ZRpRH8qOmudVT8BrRdvDgS1VkJLQv2wo7pfZ
- H4yYlItESZ/g==
+ 09 Apr 2020 12:59:09 -0700
+IronPort-SDR: 6jL3jkk0QBWptiRUVfPumFqS71jtUzgGaS44vAnp+tf98qIV5Y02n6vQUnku29ZiAHleaErZhG
+ JdUu3IZ6uy4g==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,363,1580803200"; d="scan'208";a="242745352"
+X-IronPort-AV: E=Sophos;i="5.72,363,1580803200"; d="scan'208";a="242745317"
 Received: from davidadu-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.212.151.218])
- by fmsmga007.fm.intel.com with ESMTP; 09 Apr 2020 12:59:15 -0700
+ by fmsmga007.fm.intel.com with ESMTP; 09 Apr 2020 12:59:07 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [RFC PATCH 09/16] clk: hifiberry-dacpro: style cleanups, use devm_
-Date: Thu,  9 Apr 2020 14:58:34 -0500
-Message-Id: <20200409195841.18901-10-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH 05/16] ASoC: Intel: sof-pcm512x: reconfigure sclk in
+ hw_params if needed
+Date: Thu,  9 Apr 2020 14:58:30 -0500
+Message-Id: <20200409195841.18901-6-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200409195841.18901-1-pierre-louis.bossart@linux.intel.com>
 References: <20200409195841.18901-1-pierre-louis.bossart@linux.intel.com>
@@ -92,126 +93,141 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Lots of small issues, xmas style, alignment, wrong comments, memory leak
+The SCLK is resumed by the codec driver. In case the rate specified in
+hw_params does not match the current configuration, disable, set the
+new rate and restart the clock.
+
+There is no operation on hw_free, the codec suspend routine will
+disable/deprepare the clock.
+
+Note that we don't change the DAI configuration when the DAC+ PRO is
+detected. All changes for the codec master mode are handled in the
+topology file (DAI configuration change and scheduling change)
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/clk/clk-hifiberry-dacpro.c | 42 +++++++++++-------------------
- 1 file changed, 15 insertions(+), 27 deletions(-)
+ sound/soc/intel/boards/sof_pcm512x.c | 94 ++++++++++++++++++++++++++++
+ 1 file changed, 94 insertions(+)
 
-diff --git a/drivers/clk/clk-hifiberry-dacpro.c b/drivers/clk/clk-hifiberry-dacpro.c
-index eb67a8c47c49..78ede325d237 100644
---- a/drivers/clk/clk-hifiberry-dacpro.c
-+++ b/drivers/clk/clk-hifiberry-dacpro.c
-@@ -21,13 +21,13 @@
- #define CLK_48EN_RATE 24576000UL
- 
- /**
-- * struct hifiberry_dacpro_clk - Common struct to the HiFiBerry DAC Pro
-+ * struct clk_hifiberry_hw - Common struct to the HiFiBerry DAC Pro
-  * @hw: clk_hw for the common clk framework
-  * @mode: 0 => CLK44EN, 1 => CLK48EN
-  */
- struct clk_hifiberry_hw {
- 	struct clk_hw hw;
--	uint8_t mode;
-+	u8 mode;
- };
- 
- #define to_hifiberry_clk(_hw) container_of(_hw, struct clk_hifiberry_hw, hw)
-@@ -39,14 +39,15 @@ static const struct of_device_id clk_hifiberry_dacpro_dt_ids[] = {
- MODULE_DEVICE_TABLE(of, clk_hifiberry_dacpro_dt_ids);
- 
- static unsigned long clk_hifiberry_dacpro_recalc_rate(struct clk_hw *hw,
--	unsigned long parent_rate)
-+						      unsigned long parent_rate)
- {
- 	return (to_hifiberry_clk(hw)->mode == 0) ? CLK_44EN_RATE :
- 		CLK_48EN_RATE;
- }
- 
- static long clk_hifiberry_dacpro_round_rate(struct clk_hw *hw,
--	unsigned long rate, unsigned long *parent_rate)
-+					    unsigned long rate,
-+					    unsigned long *parent_rate)
- {
- 	long actual_rate;
- 
-@@ -66,21 +67,20 @@ static long clk_hifiberry_dacpro_round_rate(struct clk_hw *hw,
- 	return actual_rate;
- }
- 
--
- static int clk_hifiberry_dacpro_set_rate(struct clk_hw *hw,
--	unsigned long rate, unsigned long parent_rate)
-+					 unsigned long rate,
-+					 unsigned long parent_rate)
- {
--	unsigned long actual_rate;
- 	struct clk_hifiberry_hw *clk = to_hifiberry_clk(hw);
-+	unsigned long actual_rate;
- 
- 	actual_rate = (unsigned long)clk_hifiberry_dacpro_round_rate(hw, rate,
--		&parent_rate);
-+								&parent_rate);
- 	clk->mode = (actual_rate == CLK_44EN_RATE) ? 0 : 1;
+diff --git a/sound/soc/intel/boards/sof_pcm512x.c b/sound/soc/intel/boards/sof_pcm512x.c
+index c1d2a53c1ec8..b5153ce954c7 100644
+--- a/sound/soc/intel/boards/sof_pcm512x.c
++++ b/sound/soc/intel/boards/sof_pcm512x.c
+@@ -145,6 +145,31 @@ static int sof_pcm512x_codec_init(struct snd_soc_pcm_runtime *rtd)
  	return 0;
  }
  
--
--const struct clk_ops clk_hifiberry_dacpro_rate_ops = {
-+static const struct clk_ops clk_hifiberry_dacpro_rate_ops = {
- 	.recalc_rate = clk_hifiberry_dacpro_recalc_rate,
- 	.round_rate = clk_hifiberry_dacpro_round_rate,
- 	.set_rate = clk_hifiberry_dacpro_set_rate,
-@@ -88,15 +88,15 @@ const struct clk_ops clk_hifiberry_dacpro_rate_ops = {
- 
- static int clk_hifiberry_dacpro_probe(struct platform_device *pdev)
++static int aif1_update_rate_den(struct snd_pcm_substream *substream,
++				struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct sof_card_private *ctx = snd_soc_card_get_drvdata(rtd->card);
++	struct snd_ratnum rats_no_pll;
++	unsigned int num = 0, den = 0;
++	int err;
++
++	rats_no_pll.num = clk_get_rate(ctx->sclk) / 64;
++	rats_no_pll.den_min = 1;
++	rats_no_pll.den_max = 128;
++	rats_no_pll.den_step = 1;
++
++	err = snd_interval_ratnum(hw_param_interval(params,
++						    SNDRV_PCM_HW_PARAM_RATE),
++				  1, &rats_no_pll, &num, &den);
++	if (err >= 0 && den) {
++		params->rate_num = num;
++		params->rate_den = den;
++	}
++
++	return 0;
++}
++
+ static int aif1_startup(struct snd_pcm_substream *substream)
  {
--	int ret;
- 	struct clk_hifiberry_hw *proclk;
--	struct clk *clk;
--	struct device *dev;
- 	struct clk_init_data init;
-+	struct device *dev;
-+	struct clk *clk;
-+	int ret;
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+@@ -156,6 +181,74 @@ static int aif1_startup(struct snd_pcm_substream *substream)
+ 	return 0;
+ }
  
- 	dev = &pdev->dev;
++static int aif1_hw_params(struct snd_pcm_substream *substream,
++			  struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct sof_card_private *ctx = snd_soc_card_get_drvdata(rtd->card);
++	struct device *dev = rtd->card->dev;
++	int current_rate;
++	int sclk_rate;
++	int channels;
++	int width;
++	int rate;
++	int ret = 0;
++
++	if (ctx->is_dac_pro) {
++		rate = params_rate(params);
++		channels = params_channels(params);
++		width = snd_pcm_format_physical_width(params_format(params));
++
++		if (rate % 24000)
++			sclk_rate = 22579200;
++		else
++			sclk_rate = 24576000;
++
++		current_rate = clk_get_rate(ctx->sclk);
++		if (current_rate != sclk_rate) {
++			/*
++			 * The sclk clock is started and stopped by the codec
++			 * resume/suspend functions. If the rate isn't correct,
++			 * stop, set the new rate and restart the clock
++			 */
++
++			dev_dbg(dev, "reconfiguring SCLK to rate %d\n",
++				sclk_rate);
++
++			clk_disable_unprepare(ctx->sclk);
++
++			ret = clk_set_rate(ctx->sclk, sclk_rate);
++			if (ret) {
++				dev_err(dev, "Could not set SCLK rate %d\n",
++					sclk_rate);
++				return ret;
++			}
++
++			ret = clk_prepare_enable(ctx->sclk);
++			if (ret) {
++				dev_err(dev, "Failed to enable SCLK: %d\n",
++					ret);
++				return ret;
++			}
++		}
++
++		ret = aif1_update_rate_den(substream, params);
++		if (ret) {
++			dev_err(dev, "Failed to update rate denominator: %d\n", ret);
++			return ret;
++		}
++
++		ret = snd_soc_dai_set_bclk_ratio(rtd->codec_dai,
++						 channels * width);
++		if (ret) {
++			dev_err(dev, "Failed to set bclk ratio : %d\n", ret);
++			return ret;
++		}
++	}
++
++	return ret;
++}
++
+ static void aif1_shutdown(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+@@ -167,6 +260,7 @@ static void aif1_shutdown(struct snd_pcm_substream *substream)
  
--	proclk = kzalloc(sizeof(struct clk_hifiberry_hw), GFP_KERNEL);
-+	proclk = devm_kzalloc(dev, sizeof(*proclk), GFP_KERNEL);
- 	if (!proclk)
- 		return -ENOMEM;
- 
-@@ -115,7 +115,6 @@ static int clk_hifiberry_dacpro_probe(struct platform_device *pdev)
- 			clk);
- 	} else {
- 		dev_err(dev, "Fail to register clock driver\n");
--		kfree(proclk);
- 		ret = PTR_ERR(clk);
- 	}
- 	return ret;
-@@ -135,18 +134,7 @@ static struct platform_driver clk_hifiberry_dacpro_driver = {
- 		.of_match_table = clk_hifiberry_dacpro_dt_ids,
- 	},
+ static const struct snd_soc_ops sof_pcm512x_ops = {
+ 	.startup = aif1_startup,
++	.hw_params = aif1_hw_params,
+ 	.shutdown = aif1_shutdown,
  };
--
--static int __init clk_hifiberry_dacpro_init(void)
--{
--	return platform_driver_register(&clk_hifiberry_dacpro_driver);
--}
--core_initcall(clk_hifiberry_dacpro_init);
--
--static void __exit clk_hifiberry_dacpro_exit(void)
--{
--	platform_driver_unregister(&clk_hifiberry_dacpro_driver);
--}
--module_exit(clk_hifiberry_dacpro_exit);
-+module_platform_driver(clk_hifiberry_dacpro_driver);
  
- MODULE_DESCRIPTION("HiFiBerry DAC Pro clock driver");
- MODULE_LICENSE("GPL v2");
 -- 
 2.20.1
 
