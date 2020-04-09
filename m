@@ -2,110 +2,104 @@ Return-Path: <SRS0=I0Ma=5Z=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DDAECC2BA19
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 17:34:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 555EEC2BB85
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 18:13:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6B60520753
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 17:34:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D852C20757
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 18:13:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XT6mI8Xo";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i33YDFJb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6B60520753
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="q/IrEbsq";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="PJ+FCQbV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D852C20757
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A7F3D1607;
-	Thu,  9 Apr 2020 19:33:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A7F3D1607
+	by alsa0.perex.cz (Postfix) with ESMTPS id 296ED1658;
+	Thu,  9 Apr 2020 20:12:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 296ED1658
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586453662;
-	bh=DXYjomrc/f5bEEPEFQgzhXexRrc97dUampv4VzpUuGg=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=XT6mI8Xo48RTz/ZXGlQk8ykmuOcndqLBLyV9J4Um94PU3OK4cY7V9tkmn3R/89ZsF
-	 bP3dlavw1hMUggjfRK5LsqT9uhV70nZGCgLfI9lou4KduAcKVmO6z7VKY8vXhwHKtT
-	 gm1QgxAdPmOyWl0cUHx2q9d6FEZqozjGOLmFXN8Q=
+	s=default; t=1586455991;
+	bh=Wo5cIS2V5G8HCGM13QtN9+aQaDrP9gGK3/yiDKU7W8g=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=q/IrEbsqzp/soFhWv5KwhZGjvUAuVcSRM8UkuuLDbBx65PqqNdknQbWT+BnlaVHaT
+	 AGK3vEF14BN+Vs2ibBeG207wpbe0+CXgbN2UwuCjCzmKO3LCabEuhfhEAEAjRw9+Rw
+	 QGZEdCOpJaBcofFVJPLVQBC0xhiBKMbdfSHMXO20=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3603BF80107;
-	Thu,  9 Apr 2020 19:33:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B31CAF80107;
+	Thu,  9 Apr 2020 20:12:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 094F7F801D8; Thu,  9 Apr 2020 19:33:31 +0200 (CEST)
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com
- [IPv6:2a00:1450:4864:20::241])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 4B1ACF80216; Thu,  9 Apr 2020 20:12:18 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 294EDF800CB
- for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2020 19:33:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 294EDF800CB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 59637F800FD
+ for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2020 20:12:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59637F800FD
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="i33YDFJb"
-Received: by mail-lj1-x241.google.com with SMTP id h25so512468lja.10
- for <alsa-devel@alsa-project.org>; Thu, 09 Apr 2020 10:33:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=w6oua6pgdDdSLqZ3ElhE13JK0x2D0ixah/qXhh6Ol1s=;
- b=i33YDFJbxAY1klyUDrn2OSxE4UVt9CzORk36sK2BG/j0PsNrBCtaMIKE+7iaPewQJt
- PB4k7YFlnp7LTU0Rl9P9t+XEqXnQOuOK3m0fcKC7UBGcPKwDOD2KC7fYfGqZrpQqiLVH
- 4P4KUpeLgqtjuHbmkH1Kol4U6zu3/EtBcC+1xPcqiPY7gAU5/trfH4HZPStaH44Q8Ocj
- YEDus66YJHWajYVDdHMSFW9zbAIi2/Ih9Q/AfLeqB6LGr/sWvSfOxRmv0X6c+6qh/n6u
- Lt6BEuRkvBkEuU51VvtT34BKIta0ENM9TVh1jIjqxGeuypqu1VvVIaS6iPU0pIOy2M2U
- Es3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=w6oua6pgdDdSLqZ3ElhE13JK0x2D0ixah/qXhh6Ol1s=;
- b=UxdnKD8WLF58ImFZ2Vrr9/8VomefsL/zV1VDsWpgDZ1jn/Sh/7/5PZsqN7NZjukjlR
- DcO889DpeChtYa3HCGAWPHPgPenBC8P2Mmo3ADx1QgVYeJeVKdoPqEDILCKaygiTBgHk
- iGkr4ZeXueAgWnBLxubMJn58O78K4SzOiLGUIN+IJ9yF3FRJoJkBqBzWTBom7nZ1lsTC
- unQkAkmx1fvJJveZfEfyrgUSDOHB4bslfT4F8CvKY/+WMLvPhuYBzgDw7JY0AS6V5XoI
- W83cZuY4RhzvDQ2txHT54f6Z8H2yl1N1/V6DvjRXH4nEGXCdaXGCklCshTEtYI/Fgbt/
- szww==
-X-Gm-Message-State: AGi0PuawfDyjqPQT41vO93SXfXbDZgrHFvgs495xr/r7zxZiuLEOdC+0
- vTh9tRw5CYZFjY0ZU+2jG0o=
-X-Google-Smtp-Source: APiQypIFKzX2orBYpj3ZpvYChLybojahKGx4VgxULoLxhE1PIkc77vnIGEr1STj82ZoZhDpkUZ+Vhg==
-X-Received: by 2002:a2e:9757:: with SMTP id f23mr513176ljj.269.1586453606298; 
- Thu, 09 Apr 2020 10:33:26 -0700 (PDT)
-Received: from [192.168.2.145] (ppp91-78-208-152.pppoe.mtu-net.ru.
- [91.78.208.152])
- by smtp.googlemail.com with ESMTPSA id y25sm10535877lfy.59.2020.04.09.10.33.25
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 09 Apr 2020 10:33:25 -0700 (PDT)
-Subject: Re: [PATCH v1 0/2] Support headset on Tegra boards that use WM8903
-To: Mark Brown <broonie@kernel.org>
-References: <20200330204011.18465-1-digetx@gmail.com>
- <5c9c995a-a571-e543-e680-30739cb1561c@gmail.com>
- <848cc6c5-e8e4-2796-3ee1-3e12a3e92c54@wwwdotorg.org>
- <a7159a8e-4987-0c08-ce3a-fa82d926218e@gmail.com>
- <20200409172952.GG5399@sirena.org.uk>
-From: Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <0a82ccac-7a4c-ca0c-9a88-3a77c7bc24e6@gmail.com>
-Date: Thu, 9 Apr 2020 20:33:24 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="PJ+FCQbV"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
+ 039IC10E030906; Thu, 9 Apr 2020 13:12:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : mime-version : content-type;
+ s=PODMain02222019; bh=Im4hEQkRMc+g5JP5gOMOSBTo29iO7B3/J7dcjNFYotU=;
+ b=PJ+FCQbVnQtWHhYiiZi2lGPZ2t4lXOiP/U9XcGZhC5u7s3/EEa/IoOHxvPeuNBZ9aiYo
+ 7wtF2HkdV8O6bOzlPUOj1Q2YxJ3JAmGBUkuwv7I4W0/qgFXtFJJEf9qyqLMWlVOjIxpR
+ f3452mqEaJc9KVJT4kwdDxEk+SYqXtEQsK808Hp8FCM+q8UYCIO9fzrzlxEUgsZn9J+5
+ tfxlC/tUKT7lcuczZXEQqY4PHyzoZHaqCt5G1dIMBxY8cI3SxWj4oXGFhP03TQXgeD0O
+ geHRDZxsvwR2Cro4E4DJNCSUjl+QtUfMX/PEeRe56q376XXFu/PpPWAXKB4s3eCWnWKA 2Q== 
+Authentication-Results: ppops.net;
+ spf=fail smtp.mailfrom=ckeepax@opensource.cirrus.com
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+ by mx0b-001ae601.pphosted.com with ESMTP id 3091p0m0sb-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Thu, 09 Apr 2020 13:12:11 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1591.10; Thu, 9 Apr
+ 2020 19:12:09 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1591.10 via
+ Frontend Transport; Thu, 9 Apr 2020 19:12:09 +0100
+Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 92ED32AB;
+ Thu,  9 Apr 2020 18:12:09 +0000 (UTC)
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: <broonie@kernel.org>
+Subject: [PATCH 1/3] ASoC: dapm: Fix regression introducing multiple copies of
+ DAI widgets
+Date: Thu, 9 Apr 2020 19:12:07 +0100
+Message-ID: <20200409181209.30130-1-ckeepax@opensource.cirrus.com>
+X-Mailer: git-send-email 2.11.0
 MIME-Version: 1.0
-In-Reply-To: <20200409172952.GG5399@sirena.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Stephen Warren <swarren@wwwdotorg.org>, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>, Rob Herring <robh+dt@kernel.org>,
- linux-tegra@vger.kernel.org
+Content-Type: text/plain
+X-Proofpoint-SPF-Result: fail
+X-Proofpoint-SPF-Record: v=spf1 include:spf-001ae601.pphosted.com
+ include:spf.protection.outlook.com
+ ip4:5.172.152.52 -all
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0
+ lowpriorityscore=0
+ phishscore=0 mlxlogscore=996 impostorscore=0 priorityscore=1501
+ spamscore=0 suspectscore=1 mlxscore=0 clxscore=1011 malwarescore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004090132
+Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com,
+ patches@opensource.cirrus.com, lgirdwood@gmail.com,
+ pierre-louis.bossart@linux.intel.com, vkoul@kernel.org, shreyas.nc@intel.com,
+ yung-chuan.liao@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -121,20 +115,189 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-09.04.2020 20:29, Mark Brown пишет:
-> On Thu, Apr 09, 2020 at 08:13:54PM +0300, Dmitry Osipenko wrote:
-> 
->> The code change doesn't affect any of the old users, so it should be
->> safe anyways.
-> 
->> I understand that you don't feel comfortable to give an ACK if you're
->> unsure, but I assume that Jon is in the same position, and thus, I'm not
->> sure how to move forward.
-> 
->> Mark, could you please help with reviewing this series?
-> 
-> It is currently the merge window.  Nothing other than bug fixes is going
-> to get applied until the merge window is over, probably Sunday or Monday.
-> 
+Refactoring was done to factor out the linking of DAI widgets into
+a helper function, dapm_add_valid_dai_widget. However when this was
+done, a regression was introduced for CODEC to CODEC links. It was
+over looked that the playback and capture variables persisted across
+all CODEC DAIs being processed, which ensured that the special DAI
+widget that is added for CODEC to CODEC links was only created once.
+This bug causes kernel panics during DAPM shutdown.
 
-Will be awesome, thank you :)
+To stick with the spirit of the original refactoring whilst fixing the
+issue, variables to hold the DAI widgets are added to snd_soc_dai_link.
+Furthermore the dapm_add_valid_dai_widget function is renamed to
+dapm_connect_dai_pair, the function only adds DAI widgets in the CODEC
+to CODEC case and its primary job is to add routes connecting two DAI
+widgets, making the original name quite misleading.
+
+Fixes: 6c4b13b51aa3 ("ASoC: Add dapm_add_valid_dai_widget helper")
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
+ include/sound/soc.h  |  3 ++
+ sound/soc/soc-dapm.c | 91 +++++++++++++++++++++++++++-------------------------
+ 2 files changed, 51 insertions(+), 43 deletions(-)
+
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 13458e4fbb132..946f88a6c63d1 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -790,6 +790,9 @@ struct snd_soc_dai_link {
+ 	const struct snd_soc_pcm_stream *params;
+ 	unsigned int num_params;
+ 
++	struct snd_soc_dapm_widget *playback_widget;
++	struct snd_soc_dapm_widget *capture_widget;
++
+ 	unsigned int dai_fmt;           /* format to set on init */
+ 
+ 	enum snd_soc_dpcm_trigger trigger[2]; /* trigger type for DPCM */
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 679ed60d850ec..fe907f0cc709b 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -4283,52 +4283,63 @@ int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card)
+ 	return 0;
+ }
+ 
+-static void dapm_add_valid_dai_widget(struct snd_soc_card *card,
+-				      struct snd_soc_pcm_runtime *rtd,
+-				      struct snd_soc_dai *codec_dai,
+-				      struct snd_soc_dai *cpu_dai)
++static void dapm_connect_dai_routes(struct snd_soc_dapm_context *dapm,
++				    struct snd_soc_dai *src_dai,
++				    struct snd_soc_dapm_widget *src,
++				    struct snd_soc_dapm_widget *dai,
++				    struct snd_soc_dai *sink_dai,
++				    struct snd_soc_dapm_widget *sink)
+ {
+-	struct snd_soc_dapm_widget *playback = NULL, *capture = NULL;
+-	struct snd_soc_dapm_widget *codec, *playback_cpu, *capture_cpu;
++	dev_dbg(dapm->dev, "connected DAI link %s:%s -> %s:%s\n",
++		src_dai->component->name, src->name,
++		sink_dai->component->name, sink->name);
++
++	if (dai) {
++		snd_soc_dapm_add_path(dapm, src, dai, NULL, NULL);
++		src = dai;
++	}
++
++	snd_soc_dapm_add_path(dapm, src, sink, NULL, NULL);
++}
++
++static void dapm_connect_dai_pair(struct snd_soc_card *card,
++				  struct snd_soc_pcm_runtime *rtd,
++				  struct snd_soc_dai *codec_dai,
++				  struct snd_soc_dai *cpu_dai)
++{
++	struct snd_soc_dai_link *dai_link = rtd->dai_link;
++	struct snd_soc_dapm_widget *dai, *codec, *playback_cpu, *capture_cpu;
+ 	struct snd_pcm_substream *substream;
+ 	struct snd_pcm_str *streams = rtd->pcm->streams;
+ 
+-	if (rtd->dai_link->params) {
++	if (dai_link->params) {
+ 		playback_cpu = cpu_dai->capture_widget;
+ 		capture_cpu = cpu_dai->playback_widget;
+ 	} else {
+-		playback = cpu_dai->playback_widget;
+-		capture = cpu_dai->capture_widget;
+-		playback_cpu = playback;
+-		capture_cpu = capture;
++		playback_cpu = cpu_dai->playback_widget;
++		capture_cpu = cpu_dai->capture_widget;
+ 	}
+ 
+ 	/* connect BE DAI playback if widgets are valid */
+ 	codec = codec_dai->playback_widget;
+ 
+ 	if (playback_cpu && codec) {
+-		if (!playback) {
++		if (dai_link->params && !dai_link->playback_widget) {
+ 			substream = streams[SNDRV_PCM_STREAM_PLAYBACK].substream;
+-			playback = snd_soc_dapm_new_dai(card, substream,
+-							"playback");
+-			if (IS_ERR(playback)) {
++			dai = snd_soc_dapm_new_dai(card, substream, "playback");
++			if (IS_ERR(dai)) {
+ 				dev_err(rtd->dev,
+ 					"ASoC: Failed to create DAI %s: %ld\n",
+ 					codec_dai->name,
+-					PTR_ERR(playback));
++					PTR_ERR(dai));
+ 				goto capture;
+ 			}
+-
+-			snd_soc_dapm_add_path(&card->dapm, playback_cpu,
+-					      playback, NULL, NULL);
++			dai_link->playback_widget = dai;
+ 		}
+ 
+-		dev_dbg(rtd->dev, "connected DAI link %s:%s -> %s:%s\n",
+-			cpu_dai->component->name, playback_cpu->name,
+-			codec_dai->component->name, codec->name);
+-
+-		snd_soc_dapm_add_path(&card->dapm, playback, codec,
+-				      NULL, NULL);
++		dapm_connect_dai_routes(&card->dapm, cpu_dai, playback_cpu,
++					dai_link->playback_widget,
++					codec_dai, codec);
+ 	}
+ 
+ capture:
+@@ -4336,28 +4347,22 @@ static void dapm_add_valid_dai_widget(struct snd_soc_card *card,
+ 	codec = codec_dai->capture_widget;
+ 
+ 	if (codec && capture_cpu) {
+-		if (!capture) {
++		if (dai_link->params && !dai_link->capture_widget) {
+ 			substream = streams[SNDRV_PCM_STREAM_CAPTURE].substream;
+-			capture = snd_soc_dapm_new_dai(card, substream,
+-						       "capture");
+-			if (IS_ERR(capture)) {
++			dai = snd_soc_dapm_new_dai(card, substream, "capture");
++			if (IS_ERR(dai)) {
+ 				dev_err(rtd->dev,
+ 					"ASoC: Failed to create DAI %s: %ld\n",
+ 					codec_dai->name,
+-					PTR_ERR(capture));
++					PTR_ERR(dai));
+ 				return;
+ 			}
+-
+-			snd_soc_dapm_add_path(&card->dapm, capture,
+-					      capture_cpu, NULL, NULL);
++			dai_link->capture_widget = dai;
+ 		}
+ 
+-		dev_dbg(rtd->dev, "connected DAI link %s:%s -> %s:%s\n",
+-			codec_dai->component->name, codec->name,
+-			cpu_dai->component->name, capture_cpu->name);
+-
+-		snd_soc_dapm_add_path(&card->dapm, codec, capture,
+-				      NULL, NULL);
++		dapm_connect_dai_routes(&card->dapm, codec_dai, codec,
++					dai_link->capture_widget,
++					cpu_dai, capture_cpu);
+ 	}
+ }
+ 
+@@ -4369,12 +4374,12 @@ static void dapm_connect_dai_link_widgets(struct snd_soc_card *card,
+ 
+ 	if (rtd->num_cpus == 1) {
+ 		for_each_rtd_codec_dais(rtd, i, codec_dai)
+-			dapm_add_valid_dai_widget(card, rtd, codec_dai,
+-						  rtd->cpu_dais[0]);
++			dapm_connect_dai_pair(card, rtd, codec_dai,
++					      rtd->cpu_dais[0]);
+ 	} else if (rtd->num_codecs == rtd->num_cpus) {
+ 		for_each_rtd_codec_dais(rtd, i, codec_dai)
+-			dapm_add_valid_dai_widget(card, rtd, codec_dai,
+-						  rtd->cpu_dais[i]);
++			dapm_connect_dai_pair(card, rtd, codec_dai,
++					      rtd->cpu_dais[i]);
+ 	} else {
+ 		dev_err(card->dev,
+ 			"N cpus to M codecs link is not supported yet\n");
+-- 
+2.11.0
+
