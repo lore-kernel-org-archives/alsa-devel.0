@@ -2,68 +2,68 @@ Return-Path: <SRS0=I0Ma=5Z=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0959CC2BA19
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 20:03:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C2E8DC2BA19
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 20:04:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8708020730
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 20:03:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 496712074F
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 20:04:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DwD66TGE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8708020730
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ryrY44V4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 496712074F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EB09616B0;
-	Thu,  9 Apr 2020 22:02:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB09616B0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9798A16A1;
+	Thu,  9 Apr 2020 22:03:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9798A16A1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586462604;
-	bh=9OlZxfe8+OMEdL2eNJCyWNdbCXCU82MkmbsvZQb8UU0=;
+	s=default; t=1586462647;
+	bh=lyDwRWuncuJKeJ922nuuk0EKcHmd3wTiKs989WK7CXM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DwD66TGEjuL7bMs2HOy2w9rdZ5qkXY+BA2EcQj9rOfQjGMX0PYOpaFcnIDYmaE+NR
-	 cANcyrnY3koGNm1lMRKYVOwqqW/FcDkJqm/Pv+81mIbybZ/7cNKGW+d/A6zPbD5uY3
-	 Gik0pm2vsg8Q0fnWOzd/wyVXCv3xCjgv/AxZ0+oM=
+	b=ryrY44V4VC+Yt/9Ob7SxPWp2kAlnOr4n3GpXEqTJWjoXaUoKdzaIbaFLAuIoOF+iT
+	 B+nBhWdUwTDJEn482XE2sCoK4ZXHgBdsU9V+WDmnsTNZ6nlFoi8atn1uiZsu6YdZxS
+	 MYsAKNI6Orykr+OEmQ1ftSQxISvqC2N06a7bEZmQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6A237F802C4;
-	Thu,  9 Apr 2020 21:59:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 08653F802DC;
+	Thu,  9 Apr 2020 21:59:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4E01AF8028A; Thu,  9 Apr 2020 21:59:15 +0200 (CEST)
+ id BFA67F802A0; Thu,  9 Apr 2020 21:59:21 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BE77EF801F9
- for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2020 21:59:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE77EF801F9
-IronPort-SDR: OC9YB8qGfwpWVC1abKVGbgNQi0obC4ybrENpkGNDvzicgHwRCdPpf27HZUgqeuoXEQVfrT9UAd
- IOK3Fxwyl0OA==
+ by alsa1.perex.cz (Postfix) with ESMTPS id B4B9CF802A0
+ for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2020 21:59:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4B9CF802A0
+IronPort-SDR: elj9it1Tevp8J+FAP0oFIXwQmsUVoZn9BsH9mVBcNRDm8NkUtlsUmjIYt0odq+s/uPWyKCcfBG
+ 6U2+pyeaz0Cw==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Apr 2020 12:59:05 -0700
-IronPort-SDR: Xm4qqKX+D50Bu8qrr8/HRy9uXDhGIjH2KH56eGzv88z6EOX7KEXPqJSN6ShC5Eqj8Pmv/EKVGC
- nCNOLyANLT0A==
+ 09 Apr 2020 12:59:17 -0700
+IronPort-SDR: 3WujSN8sErlH4LsZZeBQSMcfeDIlK8/K1hfbi8ZRpRH8qOmudVT8BrRdvDgS1VkJLQv2wo7pfZ
+ H4yYlItESZ/g==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,363,1580803200"; d="scan'208";a="242745310"
+X-IronPort-AV: E=Sophos;i="5.72,363,1580803200"; d="scan'208";a="242745352"
 Received: from davidadu-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.212.151.218])
- by fmsmga007.fm.intel.com with ESMTP; 09 Apr 2020 12:59:03 -0700
+ by fmsmga007.fm.intel.com with ESMTP; 09 Apr 2020 12:59:15 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [RFC PATCH 03/16] ASoC: Intel: sof-pcm512x: use gpiod for LED
-Date: Thu,  9 Apr 2020 14:58:28 -0500
-Message-Id: <20200409195841.18901-4-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH 09/16] clk: hifiberry-dacpro: style cleanups, use devm_
+Date: Thu,  9 Apr 2020 14:58:34 -0500
+Message-Id: <20200409195841.18901-10-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200409195841.18901-1-pierre-louis.bossart@linux.intel.com>
 References: <20200409195841.18901-1-pierre-louis.bossart@linux.intel.com>
@@ -92,118 +92,126 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Remove direct regmap access, use gpios exposed by PCM512x codec
-Keep the codec_init function, this will be used in following patches
-
-The gpios handling is done with an explicit lookup table. We cannot
-use ACPI-based mappings since we don't have an ACPI device for the
-machine driver, and the gpiochip is created during the probe of the
-PCM512x driver.
+Lots of small issues, xmas style, alignment, wrong comments, memory leak
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_pcm512x.c | 45 ++++++++++++++++++++--------
- 1 file changed, 32 insertions(+), 13 deletions(-)
+ drivers/clk/clk-hifiberry-dacpro.c | 42 +++++++++++-------------------
+ 1 file changed, 15 insertions(+), 27 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_pcm512x.c b/sound/soc/intel/boards/sof_pcm512x.c
-index fb7811899999..dcd769b352fa 100644
---- a/sound/soc/intel/boards/sof_pcm512x.c
-+++ b/sound/soc/intel/boards/sof_pcm512x.c
-@@ -10,6 +10,8 @@
- #include <linux/i2c.h>
- #include <linux/input.h>
- #include <linux/module.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/gpio/machine.h>
- #include <linux/platform_device.h>
- #include <linux/types.h>
- #include <sound/core.h>
-@@ -43,6 +45,7 @@ struct sof_hdmi_pcm {
- struct sof_card_private {
- 	struct list_head hdmi_pcm_list;
- 	bool idisp_codec;
-+	struct gpio_desc *gpio_4;
+diff --git a/drivers/clk/clk-hifiberry-dacpro.c b/drivers/clk/clk-hifiberry-dacpro.c
+index eb67a8c47c49..78ede325d237 100644
+--- a/drivers/clk/clk-hifiberry-dacpro.c
++++ b/drivers/clk/clk-hifiberry-dacpro.c
+@@ -21,13 +21,13 @@
+ #define CLK_48EN_RATE 24576000UL
+ 
+ /**
+- * struct hifiberry_dacpro_clk - Common struct to the HiFiBerry DAC Pro
++ * struct clk_hifiberry_hw - Common struct to the HiFiBerry DAC Pro
+  * @hw: clk_hw for the common clk framework
+  * @mode: 0 => CLK44EN, 1 => CLK48EN
+  */
+ struct clk_hifiberry_hw {
+ 	struct clk_hw hw;
+-	uint8_t mode;
++	u8 mode;
  };
  
- static int sof_pcm512x_quirk_cb(const struct dmi_system_id *id)
-@@ -84,23 +87,16 @@ static int sof_hdmi_init(struct snd_soc_pcm_runtime *rtd)
+ #define to_hifiberry_clk(_hw) container_of(_hw, struct clk_hifiberry_hw, hw)
+@@ -39,14 +39,15 @@ static const struct of_device_id clk_hifiberry_dacpro_dt_ids[] = {
+ MODULE_DEVICE_TABLE(of, clk_hifiberry_dacpro_dt_ids);
  
- static int sof_pcm512x_codec_init(struct snd_soc_pcm_runtime *rtd)
+ static unsigned long clk_hifiberry_dacpro_recalc_rate(struct clk_hw *hw,
+-	unsigned long parent_rate)
++						      unsigned long parent_rate)
  {
--	struct snd_soc_component *codec = asoc_rtd_to_codec(rtd, 0)->component;
+ 	return (to_hifiberry_clk(hw)->mode == 0) ? CLK_44EN_RATE :
+ 		CLK_48EN_RATE;
+ }
+ 
+ static long clk_hifiberry_dacpro_round_rate(struct clk_hw *hw,
+-	unsigned long rate, unsigned long *parent_rate)
++					    unsigned long rate,
++					    unsigned long *parent_rate)
+ {
+ 	long actual_rate;
+ 
+@@ -66,21 +67,20 @@ static long clk_hifiberry_dacpro_round_rate(struct clk_hw *hw,
+ 	return actual_rate;
+ }
+ 
 -
--	snd_soc_component_update_bits(codec, PCM512x_GPIO_EN, 0x08, 0x08);
--	snd_soc_component_update_bits(codec, PCM512x_GPIO_OUTPUT_4, 0x0f, 0x02);
--	snd_soc_component_update_bits(codec, PCM512x_GPIO_CONTROL_1,
--				      0x08, 0x08);
--
+ static int clk_hifiberry_dacpro_set_rate(struct clk_hw *hw,
+-	unsigned long rate, unsigned long parent_rate)
++					 unsigned long rate,
++					 unsigned long parent_rate)
+ {
+-	unsigned long actual_rate;
+ 	struct clk_hifiberry_hw *clk = to_hifiberry_clk(hw);
++	unsigned long actual_rate;
+ 
+ 	actual_rate = (unsigned long)clk_hifiberry_dacpro_round_rate(hw, rate,
+-		&parent_rate);
++								&parent_rate);
+ 	clk->mode = (actual_rate == CLK_44EN_RATE) ? 0 : 1;
  	return 0;
  }
  
- static int aif1_startup(struct snd_pcm_substream *substream)
+-
+-const struct clk_ops clk_hifiberry_dacpro_rate_ops = {
++static const struct clk_ops clk_hifiberry_dacpro_rate_ops = {
+ 	.recalc_rate = clk_hifiberry_dacpro_recalc_rate,
+ 	.round_rate = clk_hifiberry_dacpro_round_rate,
+ 	.set_rate = clk_hifiberry_dacpro_set_rate,
+@@ -88,15 +88,15 @@ const struct clk_ops clk_hifiberry_dacpro_rate_ops = {
+ 
+ static int clk_hifiberry_dacpro_probe(struct platform_device *pdev)
  {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_component *codec = asoc_rtd_to_codec(rtd, 0)->component;
-+	struct sof_card_private *ctx = snd_soc_card_get_drvdata(rtd->card);
+-	int ret;
+ 	struct clk_hifiberry_hw *proclk;
+-	struct clk *clk;
+-	struct device *dev;
+ 	struct clk_init_data init;
++	struct device *dev;
++	struct clk *clk;
++	int ret;
  
--	snd_soc_component_update_bits(codec, PCM512x_GPIO_CONTROL_1,
--				      0x08, 0x08);
-+	/* Turn LED on */
-+	gpiod_set_value(ctx->gpio_4, 1);
+ 	dev = &pdev->dev;
  
- 	return 0;
- }
-@@ -108,10 +104,10 @@ static int aif1_startup(struct snd_pcm_substream *substream)
- static void aif1_shutdown(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_component *codec = asoc_rtd_to_codec(rtd, 0)->component;
-+	struct sof_card_private *ctx = snd_soc_card_get_drvdata(rtd->card);
+-	proclk = kzalloc(sizeof(struct clk_hifiberry_hw), GFP_KERNEL);
++	proclk = devm_kzalloc(dev, sizeof(*proclk), GFP_KERNEL);
+ 	if (!proclk)
+ 		return -ENOMEM;
  
--	snd_soc_component_update_bits(codec, PCM512x_GPIO_CONTROL_1,
--				      0x08, 0x00);
-+	/* Turn LED off */
-+	gpiod_set_value(ctx->gpio_4, 0);
- }
+@@ -115,7 +115,6 @@ static int clk_hifiberry_dacpro_probe(struct platform_device *pdev)
+ 			clk);
+ 	} else {
+ 		dev_err(dev, "Fail to register clock driver\n");
+-		kfree(proclk);
+ 		ret = PTR_ERR(clk);
+ 	}
+ 	return ret;
+@@ -135,18 +134,7 @@ static struct platform_driver clk_hifiberry_dacpro_driver = {
+ 		.of_match_table = clk_hifiberry_dacpro_dt_ids,
+ 	},
+ };
+-
+-static int __init clk_hifiberry_dacpro_init(void)
+-{
+-	return platform_driver_register(&clk_hifiberry_dacpro_driver);
+-}
+-core_initcall(clk_hifiberry_dacpro_init);
+-
+-static void __exit clk_hifiberry_dacpro_exit(void)
+-{
+-	platform_driver_unregister(&clk_hifiberry_dacpro_driver);
+-}
+-module_exit(clk_hifiberry_dacpro_exit);
++module_platform_driver(clk_hifiberry_dacpro_driver);
  
- static const struct snd_soc_ops sof_pcm512x_ops = {
-@@ -354,6 +350,14 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
- 	return NULL;
- }
- 
-+static struct gpiod_lookup_table pcm512x_gpios_table = {
-+	/* .dev_id set during probe */
-+	.table = {
-+		GPIO_LOOKUP("pcm512x-gpio", 3, "PCM512x-GPIO4", GPIO_ACTIVE_HIGH),
-+		{ },
-+	},
-+};
-+
- static int sof_audio_probe(struct platform_device *pdev)
- {
- 	struct snd_soc_acpi_mach *mach = pdev->dev.platform_data;
-@@ -413,6 +417,21 @@ static int sof_audio_probe(struct platform_device *pdev)
- 
- 	snd_soc_card_set_drvdata(&sof_audio_card_pcm512x, ctx);
- 
-+	/*
-+	 * Enable GPIO4 for LED
-+	 */
-+	pcm512x_gpios_table.dev_id = dev_name(&pdev->dev);
-+	gpiod_add_lookup_table(&pcm512x_gpios_table);
-+
-+	ctx->gpio_4 = devm_gpiod_get(&pdev->dev, "PCM512x-GPIO4",
-+				     GPIOD_OUT_LOW);
-+
-+	if (IS_ERR(ctx->gpio_4)) {
-+		dev_err(&pdev->dev, "gpio4 not found\n");
-+		ret = PTR_ERR(ctx->gpio_4);
-+		return ret;
-+	}
-+
- 	return devm_snd_soc_register_card(&pdev->dev,
- 					  &sof_audio_card_pcm512x);
- }
+ MODULE_DESCRIPTION("HiFiBerry DAC Pro clock driver");
+ MODULE_LICENSE("GPL v2");
 -- 
 2.20.1
 
