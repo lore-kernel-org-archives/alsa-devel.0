@@ -2,66 +2,60 @@ Return-Path: <SRS0=I0Ma=5Z=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7282FC2BA2B
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 12:08:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 644CDC2BA2B
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 12:23:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2419220771
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 12:08:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DFE8620857
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 12:23:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jS1/khcl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2419220771
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EH3+3rWk"
+Authentication-Results: mail.kernel.org; dmarc=permerror header.from=codethink.co.uk
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 90A6F165D;
-	Thu,  9 Apr 2020 14:08:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 90A6F165D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3E922829;
+	Thu,  9 Apr 2020 14:22:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E922829
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586434135;
-	bh=DQ2Flj2jlZ5UqqYQNBbcHxv7f12cLDKO6qHKfVo0J7c=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=jS1/khclra3keiMmHnZaa0mLFGzIVaWCa9W/SN3MJFQgUtxj6KeW5zctWjas612PE
-	 2gnItPE7aA0uRkbI/itChJLZaezmsJgVQ7HLA4cKN1TvBDrjWpN/ADI8U60IBqNfVN
-	 yRpVzL21ufVtfYp9nDyBJAB9W9I0LI6ZARL2/sdU=
+	s=default; t=1586434993;
+	bh=zyko2dMtIuiDFgoNXei9YB2XqCuvrhnXemqjZtUDAmc=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=EH3+3rWkMpNxpt0TPcin7qUS10sCxymC/THBzdfElONEzMMajGm2nvvigjjiFXDdf
+	 mQXIFESFPuXbzQ9YuVwhJnxHacwlIWaFG3GdIRnZaV4AOgDvUojVMiaxjq8wfFirT7
+	 jxp1EnHxKmK2IkCrSAT/q5t5vrLnv/X5geMCBk0c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 266A6F800FD;
-	Thu,  9 Apr 2020 14:08:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BB961F801D8;
+	Thu,  9 Apr 2020 14:22:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3D94DF801DA; Thu,  9 Apr 2020 14:08:03 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 94767F800CB; Thu,  9 Apr 2020 14:22:21 +0200 (CEST)
+Received: from imap3.hz.codethink.co.uk (imap3.hz.codethink.co.uk [176.9.8.87])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ACFE8F800FD
- for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2020 14:07:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ACFE8F800FD
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 634A3AE7B;
- Thu,  9 Apr 2020 12:07:56 +0000 (UTC)
-Date: Thu, 09 Apr 2020 14:07:56 +0200
-Message-ID: <s5htv1soo9v.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Xu Wang <vulab@iscas.ac.cn>
-Subject: Re: [PATCH] ALSA: ctxfi: Remove unnecessary cast in kfree
-In-Reply-To: <20200409112052.13402-1-vulab@iscas.ac.cn>
-References: <20200409112052.13402-1-vulab@iscas.ac.cn>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com,
- tglx@linutronix.de, allison@lohutok.net
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4BB74F800CB
+ for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2020 14:22:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4BB74F800CB
+Received: from 79-69-55-226.dynamic.dsl.as9105.com ([79.69.55.226]
+ helo=localhost.localdomain)
+ by imap3.hz.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
+ id 1jMWCF-000293-EA; Thu, 09 Apr 2020 13:22:15 +0100
+From: Tom Eccles <tom.eccles@codethink.co.uk>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ASoC: soc-core: Remove name length truncation
+Date: Thu,  9 Apr 2020 13:21:50 +0100
+Message-Id: <20200409122150.15473-1-tom.eccles@codethink.co.uk>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: tiwai@suse.com, Tom Eccles <tom.eccles@codethink.co.uk>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,14 +71,84 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 09 Apr 2020 13:20:52 +0200,
-Xu Wang wrote:
-> 
-> Remove unnecassary casts in the argument to kfree.
-> 
-> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+snd_soc_dai.name and snd_soc_component.name are a simplified version of
+the parent device's name, truncated to NAME_SIZE characters (see
+fmt_single_name). NAME_SIZE was 32 characters.
 
-Applied, thanks.
+Some device names may share a common prefix longer than 32 characters,
+which leads to non-unique snd_soc_dai.name and snd_soc_component.name.
+When these are added to debugfs, the .name is used for the file. If the
+names are not unique, adding to debugfs fails.
 
+Instead, dynamically allocate name buffers to be as long as needed.
 
-Takashi
+Signed-off-by: Tom Eccles <tom.eccles@codethink.co.uk>
+---
+ sound/soc/soc-core.c | 21 ++++++++++++---------
+ 1 file changed, 12 insertions(+), 9 deletions(-)
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 843b8b1c89d4..7803222ede54 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -43,8 +43,6 @@
+ #define CREATE_TRACE_POINTS
+ #include <trace/events/asoc.h>
+ 
+-#define NAME_SIZE	32
+-
+ static DEFINE_MUTEX(client_mutex);
+ static LIST_HEAD(component_list);
+ static LIST_HEAD(unbind_card_list);
+@@ -2291,13 +2289,15 @@ EXPORT_SYMBOL_GPL(snd_soc_unregister_card);
+  */
+ static char *fmt_single_name(struct device *dev, int *id)
+ {
+-	char *found, name[NAME_SIZE];
++	char *found, *name;
+ 	int id1, id2;
+ 
+ 	if (dev_name(dev) == NULL)
+ 		return NULL;
+ 
+-	strlcpy(name, dev_name(dev), NAME_SIZE);
++	name = devm_kstrdup(dev, dev_name(dev), GFP_KERNEL);
++	if (!name)
++		return NULL;
+ 
+ 	/* are we a "%s.%d" name (platform and SPI components) */
+ 	found = strstr(name, dev->driver->name);
+@@ -2313,20 +2313,23 @@ static char *fmt_single_name(struct device *dev, int *id)
+ 	} else {
+ 		/* I2C component devices are named "bus-addr" */
+ 		if (sscanf(name, "%x-%x", &id1, &id2) == 2) {
+-			char tmp[NAME_SIZE];
++			char *tmp;
+ 
+ 			/* create unique ID number from I2C addr and bus */
+ 			*id = ((id1 & 0xffff) << 16) + id2;
+ 
+ 			/* sanitize component name for DAI link creation */
+-			snprintf(tmp, NAME_SIZE, "%s.%s", dev->driver->name,
+-				 name);
+-			strlcpy(name, tmp, NAME_SIZE);
++			tmp = devm_kasprintf(dev, GFP_KERNEL, "%s.%s",
++				 dev->driver->name, name);
++			devm_kfree(dev, name);
++			if (!tmp)
++				return NULL;
++			name = tmp;
+ 		} else
+ 			*id = 0;
+ 	}
+ 
+-	return devm_kstrdup(dev, name, GFP_KERNEL);
++	return name;
+ }
+ 
+ /*
+
+base-commit: fff876253c1e1b329257ba33045195c93e25adcd
+-- 
+2.20.1
+
