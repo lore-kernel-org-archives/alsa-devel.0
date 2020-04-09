@@ -2,101 +2,71 @@ Return-Path: <SRS0=I0Ma=5Z=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7D91C2BA19
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 18:15:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A6C6EC2BA19
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 18:45:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 71E9620753
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 18:15:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2798620757
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 18:45:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ct1Xrmx7";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="BIM7HSfq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 71E9620753
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mXhkMlbw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2798620757
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C097D166D;
-	Thu,  9 Apr 2020 20:14:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C097D166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7CE9C1690;
+	Thu,  9 Apr 2020 20:44:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CE9C1690
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586456137;
-	bh=UkNEFKWnn9l1FRBar1NYUbHRTXJdX2PaPI0MT7aePT4=;
+	s=default; t=1586457937;
+	bh=aQDwjIsnLslr/gOkPenV5IwzLpBOT2EwmTrqX/lZ8G0=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=ct1Xrmx75N2A+B1jY7UOcM/NkC7pN5Tw8YaDjtZnd+7W3oenOsPiSurXyJ4pEfh75
-	 ugOlCWkkvc0hNPeRwfXIIUH2Ds1W2hevjVWVS91Co/XeWBJFWKPaRXlgcd+d/NFsyy
-	 JiGMX6qVtfjM8fCdc8kFXRBdIHRnJPTYEN1WoBO0=
+	b=mXhkMlbwAMo8neOtzJqGvEJBJEc1Eh3MU94t2nJX7WwmCmDi/jf5JU1VcmDP249yo
+	 tNyyyUScPLMlIpYvswp/ffAKsgm+GbpCzTrMhom6ybNhjBlyMXShENfROVNNvGr6Ru
+	 KcWXEyqpBKYAzHpZDh5ukFlqzmwVjcxZn7roTzKU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 304B9F80299;
-	Thu,  9 Apr 2020 20:13:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B824BF801F9;
+	Thu,  9 Apr 2020 20:44:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 31A33F8029B; Thu,  9 Apr 2020 20:13:19 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id 4E339F801F9; Thu,  9 Apr 2020 20:44:42 +0200 (CEST)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1F10EF801D8
- for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2020 20:13:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F10EF801D8
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="BIM7HSfq"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
- 039I8fvb023538; Thu, 9 Apr 2020 13:13:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : mime-version : content-type;
- s=PODMain02222019; bh=CyBPf/5pxEI0S5sYR1eZmn1Ws0Pp5pzjJSOL3EYR7yc=;
- b=BIM7HSfqV+SiUoyyw7ZHrtI9F5i3eR3QvbXfH1i/Lb7KTvqGqNYeFVr/DZlACdCyC1Ko
- WQjpmiGeKn+py6Qd82nRlotXYBLtjin9ykb6Z7bsOu8cZBVWHDpZiH4kADYV1ZMTyqf0
- GMP8hk1iVd1OXPRBh2qa8vIN7EYjnlft86o0RZl7Eb9KvQ+bzpiSIh3R+/GL/EbaDW3c
- w+I9yaDwiYd6XIDx3RmJ4DBcvZaxXRiAYxTunBF4Uu6WiAGYMsVfCF0A7tCsrKrRcX86
- DXBREuag4tUFzwc5jOSTFI7xsVTgBtRvUvru/pGBE4mbtNYyRdcQzRtT72t5p7cviABP 9Q== 
-Authentication-Results: ppops.net;
- spf=fail smtp.mailfrom=ckeepax@opensource.cirrus.com
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 3091q3413j-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 09 Apr 2020 13:13:13 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1591.10; Thu, 9 Apr
- 2020 19:13:11 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1591.10 via
- Frontend Transport; Thu, 9 Apr 2020 19:13:11 +0100
-Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id AEE662AB;
- Thu,  9 Apr 2020 18:13:11 +0000 (UTC)
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: <broonie@kernel.org>
-Subject: [PATCH] ASoC: madera: Remove a couple of stray blank lines
-Date: Thu, 9 Apr 2020 19:13:11 +0100
-Message-ID: <20200409181311.30247-1-ckeepax@opensource.cirrus.com>
-X-Mailer: git-send-email 2.11.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id E58D1F80107
+ for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2020 20:44:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E58D1F80107
+IronPort-SDR: RDgqFgM5fWHr+u6EoDLnxxjaL3Wl0169+BeR6gSYRXcPdgcGSbs+FcGbW9pJKn73mieUWw9wYa
+ m/Vcws1ia+tw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Apr 2020 11:44:30 -0700
+IronPort-SDR: pkUMwMfkcdABUtYKWuZI3d7OJ+B+mp7djG/70W2U4v2xw74XqkHcgt3ttTQUxLEE2CzDuYpKAC
+ EaiToY5axIug==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,363,1580803200"; d="scan'208";a="251981334"
+Received: from davidadu-mobl1.amr.corp.intel.com (HELO
+ pbossart-mobl3.amr.corp.intel.com) ([10.212.151.218])
+ by orsmga003.jf.intel.com with ESMTP; 09 Apr 2020 11:44:29 -0700
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 0/4] ASoC: SOF: adjust dmesg verbosity
+Date: Thu,  9 Apr 2020 13:44:12 -0500
+Message-Id: <20200409184416.15591-1-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-SPF-Result: fail
-X-Proofpoint-SPF-Record: v=spf1 include:spf-001ae601.pphosted.com
- include:spf.protection.outlook.com
- ip4:5.172.152.52 -all
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0
- suspectscore=1
- impostorscore=0 bulkscore=0 adultscore=0 lowpriorityscore=0 clxscore=1015
- mlxlogscore=860 spamscore=0 phishscore=0 priorityscore=1501 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004090131
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- lgirdwood@gmail.com
+Content-Transfer-Encoding: 8bit
+Cc: tiwai@suse.de, broonie@kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,47 +82,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
- sound/soc/codecs/madera.c | 4 ----
- 1 file changed, 4 deletions(-)
+Decrease the dmesg verbosity to remove unnecessary logs on SoundWire
+platforms, and conversely add more information to help the community
+and downstream distros with HDaudio/SOF support (DMIC detection and card
+instanciation are the most prevalent issues on GitHub).
 
-diff --git a/sound/soc/codecs/madera.c b/sound/soc/codecs/madera.c
-index 40de9d7811d1f..a448d2a2918a9 100644
---- a/sound/soc/codecs/madera.c
-+++ b/sound/soc/codecs/madera.c
-@@ -1903,7 +1903,6 @@ const struct soc_enum madera_isrc_fsh[] = {
- 			      MADERA_ISRC4_FSH_SHIFT, 0xf,
- 			      MADERA_RATE_ENUM_SIZE,
- 			      madera_rate_text, madera_rate_val),
--
- };
- EXPORT_SYMBOL_GPL(madera_isrc_fsh);
- 
-@@ -1924,7 +1923,6 @@ const struct soc_enum madera_isrc_fsl[] = {
- 			      MADERA_ISRC4_FSL_SHIFT, 0xf,
- 			      MADERA_RATE_ENUM_SIZE,
- 			      madera_rate_text, madera_rate_val),
--
- };
- EXPORT_SYMBOL_GPL(madera_isrc_fsl);
- 
-@@ -1938,7 +1936,6 @@ const struct soc_enum madera_asrc1_rate[] = {
- 			      MADERA_ASYNC_RATE_ENUM_SIZE,
- 			      madera_rate_text + MADERA_SYNC_RATE_ENUM_SIZE,
- 			      madera_rate_val + MADERA_SYNC_RATE_ENUM_SIZE),
--
- };
- EXPORT_SYMBOL_GPL(madera_asrc1_rate);
- 
-@@ -1964,7 +1961,6 @@ const struct soc_enum madera_asrc2_rate[] = {
- 			      MADERA_ASYNC_RATE_ENUM_SIZE,
- 			      madera_rate_text + MADERA_SYNC_RATE_ENUM_SIZE,
- 			      madera_rate_val + MADERA_SYNC_RATE_ENUM_SIZE),
--
- };
- EXPORT_SYMBOL_GPL(madera_asrc2_rate);
- 
+Pierre-Louis Bossart (3):
+  ASoC: codecs: rt1308-sdw: reduce verbosity
+  ASoC: SOF: Intel: hda: reduce verbosity on SoundWire detection
+  ASoC: SOF: Intel: hda: log number of microphones detected in NHLT
+    tables
+
+Ranjani Sridharan (1):
+  ASoC: soc-core: Add dynamic debug logs in soc_dai_link_sanity_check()
+
+ sound/soc/codecs/rt1308-sdw.c |  4 ++--
+ sound/soc/soc-core.c          | 18 +++++++++++++++---
+ sound/soc/sof/intel/hda.c     | 10 ++++++----
+ 3 files changed, 23 insertions(+), 9 deletions(-)
+
+
+base-commit: dd8e871d4e560eeb8d22af82dde91457ad835a63
 -- 
-2.11.0
+2.20.1
 
