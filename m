@@ -7,73 +7,70 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E8C4C2BA19
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 19:07:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1CC5C2BA19
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 19:07:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CC35F206F5
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 19:07:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3513D206F5
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 19:07:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eQfaq1Mh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC35F206F5
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="D9s+7bF5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3513D206F5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 348F216A1;
-	Thu,  9 Apr 2020 21:06:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 348F216A1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8D063168F;
+	Thu,  9 Apr 2020 21:07:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D063168F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586459249;
-	bh=50ksXARJDjV70HIacfPX5C/DhuiRXvz8bbOvGqy43B8=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=eQfaq1Mha+LEari3ptAsbegwQ9YlSwDjKJNtnVK9uYv9YIpkVaBd+XfcKa+qSid+s
-	 Nhp1+jTx2hBql+t79W9LnPorKFfmC4c7YuL2EqF0pqXSmr7JtKGcEL2kSanmYqXAWc
-	 jpM21+uopCukZb8pwAxpKbeHhyUYHpQSEbpmIaXc=
+	s=default; t=1586459274;
+	bh=aiR8kmQZ40dqXApUoCdvm1wAlsMkderNBDvQx7GOuxo=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=D9s+7bF5QOpGAc6iAxRQem6obIWTLszTY+R9ddHTT616whuwAqpiYKd/oBgFmR+q0
+	 IXhH8x8kNAO/uShTuDxmCKAauD1FUL/NbjIhwlE4S7q4ewPRzdx+2jjl3d3KbmSiVZ
+	 KQnBTBR8q2lLhma/zu4GDOzmnPGUn8iVCKVWS1rA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E42B2F80321;
-	Thu,  9 Apr 2020 20:59:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1122AF801D8;
+	Thu,  9 Apr 2020 21:03:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1A8C2F802EB; Thu,  9 Apr 2020 20:59:01 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ id 3B7C6F80213; Thu,  9 Apr 2020 21:03:11 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 55C4FF801F9
- for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2020 20:58:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55C4FF801F9
-IronPort-SDR: 05i7epPQQOA7YvyuqJWEi6falIcyaUNW0Px4tb5tQfOxDxJBWrkeDbOwnMCFHHWK04R517KswT
- N0GUm++nWoAw==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3AA28F80107
+ for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2020 21:03:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3AA28F80107
+IronPort-SDR: eiA43xCyLroJ4Qkk4gIYpPPyDSfBdzyaOrBQY3QcW6isFhcqgg6vdGR+2ZR+DdN6koMtCL/Kdl
+ wb1jFqjwR7ig==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Apr 2020 11:58:36 -0700
-IronPort-SDR: gZHWVtnEYJSPs9yQRz5ZTc1zF/1A77koWxX2XUzMh7PR7um4/5Tvj4pCBYx/Zg3+y6o7A8Ud1Z
- iZa3e8U16weA==
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Apr 2020 12:03:03 -0700
+IronPort-SDR: NYYnLB5WkXk6v1wqR318cQ5P1QAYZxOAwjuCuJtFR0hi5xXat2TUpBCIfdLFMICFfuFyGLDYvj
+ 5IF2BuJbunKA==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,363,1580803200"; d="scan'208";a="255248818"
+X-IronPort-AV: E=Sophos;i="5.72,363,1580803200"; d="scan'208";a="242734635"
 Received: from davidadu-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.212.151.218])
- by orsmga006.jf.intel.com with ESMTP; 09 Apr 2020 11:58:35 -0700
+ by fmsmga007.fm.intel.com with ESMTP; 09 Apr 2020 12:03:01 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 04/13] ASoC: SOF: Intel: add PCI ID for ElkhartLake
-Date: Thu,  9 Apr 2020 13:58:18 -0500
-Message-Id: <20200409185827.16255-5-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH] ALSA: hda: add autodetection for SoundWire
+Date: Thu,  9 Apr 2020 14:02:51 -0500
+Message-Id: <20200409190251.16569-1-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200409185827.16255-1-pierre-louis.bossart@linux.intel.com>
-References: <20200409185827.16255-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
  Kai Vehmanen <kai.vehmanen@linux.intel.com>, tiwai@suse.de,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- broonie@kernel.org, Libin Yang <libin.yang@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>
+ broonie@kernel.org, Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,32 +86,211 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Libin Yang <libin.yang@linux.intel.com>
+When an ACPI companion device is present and the SoundWire link mask
+information is available, use SoundWire instead of legacy HDA or
+Skylake drivers.
 
-Add PCI ID for ElkhartLake platform.
+The SOF driver is selected when SoundWire or DMIC are detected. There
+is no precedence at this level. In the SOF driver proper, SoundWire
+will be handled first since it is mutually exclusive with HDaudio.
 
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Known devices with an existing DMI quirk bypass this detection to
+avoid any dependency on ACPI/DSDT tables.
+
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/sof-pci-dev.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/hda/intel-dsp-config.c | 97 ++++++++++++++++++++++++++++++------
+ 1 file changed, 81 insertions(+), 16 deletions(-)
 
-diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
-index cec631a1389b..b5f0221d624f 100644
---- a/sound/soc/sof/sof-pci-dev.c
-+++ b/sound/soc/sof/sof-pci-dev.c
-@@ -435,6 +435,8 @@ static const struct pci_device_id sof_pci_ids[] = {
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_ELKHARTLAKE)
- 	{ PCI_DEVICE(0x8086, 0x4b55),
- 		.driver_data = (unsigned long)&ehl_desc},
-+	{ PCI_DEVICE(0x8086, 0x4b58),
-+		.driver_data = (unsigned long)&ehl_desc},
+diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
+index be1df80ed013..1c1fdab2a55f 100644
+--- a/sound/hda/intel-dsp-config.c
++++ b/sound/hda/intel-dsp-config.c
+@@ -1,10 +1,13 @@
+ // SPDX-License-Identifier: GPL-2.0
+ // Copyright (c) 2019 Jaroslav Kysela <perex@perex.cz>
+ 
++#include <linux/acpi.h>
+ #include <linux/bits.h>
+ #include <linux/dmi.h>
+ #include <linux/module.h>
+ #include <linux/pci.h>
++#include <linux/soundwire/sdw.h>
++#include <linux/soundwire/sdw_intel.h>
+ #include <sound/core.h>
+ #include <sound/intel-dsp-config.h>
+ #include <sound/intel-nhlt.h>
+@@ -14,9 +17,13 @@ static int dsp_driver;
+ module_param(dsp_driver, int, 0444);
+ MODULE_PARM_DESC(dsp_driver, "Force the DSP driver for Intel DSP (0=auto, 1=legacy, 2=SST, 3=SOF)");
+ 
+-#define FLAG_SST		BIT(0)
+-#define FLAG_SOF		BIT(1)
+-#define FLAG_SOF_ONLY_IF_DMIC	BIT(16)
++#define FLAG_SST			BIT(0)
++#define FLAG_SOF			BIT(1)
++#define FLAG_SOF_ONLY_IF_DMIC		BIT(16)
++#define FLAG_SOF_ONLY_IF_SOUNDWIRE	BIT(17)
++
++#define FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE (FLAG_SOF_ONLY_IF_DMIC | \
++					    FLAG_SOF_ONLY_IF_SOUNDWIRE)
+ 
+ struct config_entry {
+ 	u32 flags;
+@@ -166,7 +173,7 @@ static const struct config_entry config_table[] = {
+ 		}
+ 	},
+ 	{
+-		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC,
++		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+ 		.device = 0x9dc8,
+ 	},
  #endif
- 	{ 0, }
- };
+@@ -187,7 +194,7 @@ static const struct config_entry config_table[] = {
+ 		}
+ 	},
+ 	{
+-		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC,
++		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+ 		.device = 0xa348,
+ 	},
+ #endif
+@@ -204,18 +211,50 @@ static const struct config_entry config_table[] = {
+ 					DMI_MATCH(DMI_SYS_VENDOR, "Google"),
+ 				}
+ 			},
++			{
++				.matches = {
++					DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc"),
++					DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "09C6")
++				},
++			},
++			{
++				/* early version of SKU 09C6 */
++				.matches = {
++					DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc"),
++					DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "0983")
++				},
++			},
+ 			{}
+ 		}
+ 	},
+ 	{
+-		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC,
++		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+ 		.device = 0x02c8,
+ 	},
+ #endif
+ /* Cometlake-H */
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_COMETLAKE_H)
+ 	{
+-		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC,
++		.flags = FLAG_SOF,
++		.device = 0x06c8,
++		.dmi_table = (const struct dmi_system_id []) {
++			{
++				.matches = {
++					DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc"),
++					DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "098F"),
++				},
++			},
++			{
++				.matches = {
++					DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc"),
++					DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "0990"),
++				},
++			},
++			{}
++		}
++	},
++	{
++		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+ 		.device = 0x06c8,
+ 	},
+ #endif
+@@ -236,7 +275,7 @@ static const struct config_entry config_table[] = {
+ 		}
+ 	},
+ 	{
+-		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC,
++		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+ 		.device = 0x34c8,
+ 	},
+ #endif
+@@ -256,9 +295,8 @@ static const struct config_entry config_table[] = {
+ 			{}
+ 		}
+ 	},
+-
+ 	{
+-		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC,
++		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+ 		.device = 0xa0c8,
+ 	},
+ #endif
+@@ -303,6 +341,28 @@ static int snd_intel_dsp_check_dmic(struct pci_dev *pci)
+ 	return ret;
+ }
+ 
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_INTEL_SOUNDWIRE)
++static int snd_intel_dsp_check_soundwire(struct pci_dev *pci)
++{
++	struct sdw_intel_acpi_info info;
++	acpi_handle handle;
++	int ret;
++
++	handle = ACPI_HANDLE(&pci->dev);
++
++	ret = sdw_intel_acpi_scan(handle, &info);
++	if (ret < 0)
++		return ret;
++
++	return info.link_mask;
++}
++#else
++static int snd_intel_dsp_check_soundwire(struct pci_dev *pci)
++{
++	return 0;
++}
++#endif
++
+ int snd_intel_dsp_driver_probe(struct pci_dev *pci)
+ {
+ 	const struct config_entry *cfg;
+@@ -336,14 +396,18 @@ int snd_intel_dsp_driver_probe(struct pci_dev *pci)
+ 		return SND_INTEL_DSP_DRIVER_ANY;
+ 
+ 	if (cfg->flags & FLAG_SOF) {
+-		if (cfg->flags & FLAG_SOF_ONLY_IF_DMIC) {
+-			if (snd_intel_dsp_check_dmic(pci)) {
+-				dev_info(&pci->dev, "Digital mics found on Skylake+ platform, using SOF driver\n");
+-				return SND_INTEL_DSP_DRIVER_SOF;
+-			}
+-		} else {
++		if (cfg->flags & FLAG_SOF_ONLY_IF_SOUNDWIRE &&
++		    snd_intel_dsp_check_soundwire(pci) > 0) {
++			dev_info(&pci->dev, "SoundWire enabled on CannonLake+ platform, using SOF driver\n");
++			return SND_INTEL_DSP_DRIVER_SOF;
++		}
++		if (cfg->flags & FLAG_SOF_ONLY_IF_DMIC &&
++		    snd_intel_dsp_check_dmic(pci)) {
++			dev_info(&pci->dev, "Digital mics found on Skylake+ platform, using SOF driver\n");
+ 			return SND_INTEL_DSP_DRIVER_SOF;
+ 		}
++		if (!(cfg->flags & FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE))
++			return SND_INTEL_DSP_DRIVER_SOF;
+ 	}
+ 
+ 	if (cfg->flags & FLAG_SST)
+@@ -355,3 +419,4 @@ EXPORT_SYMBOL_GPL(snd_intel_dsp_driver_probe);
+ 
+ MODULE_LICENSE("GPL v2");
+ MODULE_DESCRIPTION("Intel DSP config driver");
++MODULE_IMPORT_NS(SOUNDWIRE_INTEL_INIT);
 -- 
 2.20.1
 
