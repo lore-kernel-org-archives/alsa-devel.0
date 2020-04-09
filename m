@@ -7,64 +7,63 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BFB01C2BB55
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 20:04:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E03A3C2BA19
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 20:05:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4B29E20678
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 20:04:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 673D62074F
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 20:05:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lWHcNhO4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4B29E20678
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RsH/B2CM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 673D62074F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AC95B169D;
-	Thu,  9 Apr 2020 22:03:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC95B169D
+	by alsa0.perex.cz (Postfix) with ESMTPS id C3DE1168F;
+	Thu,  9 Apr 2020 22:04:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3DE1168F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586462665;
-	bh=urXD5joPbnaMv+4WMAzm+NfQ0M4GBk/3ogxO2OkhLXE=;
+	s=default; t=1586462703;
+	bh=Ds3Q74m08WSe2QoMymJoGTAvCoss3uhcSxJSGB6MegY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lWHcNhO4+qvqXkxFOqyPvXy1kqQgKymJOYumCyVG4SHEYVB8co8rm09bZCmzI0ZuQ
-	 Ng8wndP3+ZBSLVJKCT2rXOgjm83GTVh7xdP6fBmVLpnqoAvuPgo1Fyj+O1pbz01+GJ
-	 jW3g7j99hnviLjfvYnWxQjCCFxyopYa1mFod1pqU=
+	b=RsH/B2CMa4IG40GGh395TtFgr6Q6XCl3nIpE0fJ0mEwwXgyRewzOa86WJIGavT3ff
+	 S/Q/NeoPlYkNncutlW+p9JaN3EpkRq9w0xLXI0VrSlvmoxeNGu1XZuS+l0IHOvtqDQ
+	 LxDB9soGSRSULVIkGVl1d9w4Pusci54kto/2QTNI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 37F25F802E0;
-	Thu,  9 Apr 2020 21:59:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 56D43F802DF;
+	Thu,  9 Apr 2020 21:59:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1EE97F8028F; Thu,  9 Apr 2020 21:59:17 +0200 (CEST)
+ id 99B31F802E1; Thu,  9 Apr 2020 21:59:23 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A2C91F80213
- for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2020 21:59:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2C91F80213
-IronPort-SDR: 7l0xL8Jxxw+z7aRCnv7SO2apMLOLBhdt5sqB+Kg++t3KcM7dRY+S5qNhIY6lYnzm832n11L9JJ
- TqkqnFN2LCdw==
+ by alsa1.perex.cz (Postfix) with ESMTPS id D31EEF80291
+ for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2020 21:59:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D31EEF80291
+IronPort-SDR: uK5/whRekm08ZjQM0bIZhCvoTD3obqjQTdRBmEXwXvrUAbOPw3ANSU2Isd7I2FNINh1y1L+O4e
+ wtKkX6B5Tztw==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Apr 2020 12:59:09 -0700
-IronPort-SDR: 6jL3jkk0QBWptiRUVfPumFqS71jtUzgGaS44vAnp+tf98qIV5Y02n6vQUnku29ZiAHleaErZhG
- JdUu3IZ6uy4g==
+ 09 Apr 2020 12:59:15 -0700
+IronPort-SDR: XrnvCafH4QA2xjoimj7XtbVNmucH9aRBHPtPgoAPz3tP2HKRr1+QyCLoWJHp5s1A0zeGV3I/GP
+ S6+RQTDi0Alg==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,363,1580803200"; d="scan'208";a="242745317"
+X-IronPort-AV: E=Sophos;i="5.72,363,1580803200"; d="scan'208";a="242745340"
 Received: from davidadu-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.212.151.218])
- by fmsmga007.fm.intel.com with ESMTP; 09 Apr 2020 12:59:07 -0700
+ by fmsmga007.fm.intel.com with ESMTP; 09 Apr 2020 12:59:13 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [RFC PATCH 05/16] ASoC: Intel: sof-pcm512x: reconfigure sclk in
- hw_params if needed
-Date: Thu,  9 Apr 2020 14:58:30 -0500
-Message-Id: <20200409195841.18901-6-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH 08/16] clk: hifiberry-dacpro: update SDPX/copyright
+Date: Thu,  9 Apr 2020 14:58:33 -0500
+Message-Id: <20200409195841.18901-9-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200409195841.18901-1-pierre-louis.bossart@linux.intel.com>
 References: <20200409195841.18901-1-pierre-louis.bossart@linux.intel.com>
@@ -93,141 +92,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The SCLK is resumed by the codec driver. In case the rate specified in
-hw_params does not match the current configuration, disable, set the
-new rate and restart the clock.
-
-There is no operation on hw_free, the codec suspend routine will
-disable/deprepare the clock.
-
-Note that we don't change the DAI configuration when the DAC+ PRO is
-detected. All changes for the codec master mode are handled in the
-topology file (DAI configuration change and scheduling change)
+Reformat license information and add Intel copyright
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_pcm512x.c | 94 ++++++++++++++++++++++++++++
- 1 file changed, 94 insertions(+)
+ drivers/clk/clk-hifiberry-dacpro.c | 15 ++++-----------
+ 1 file changed, 4 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_pcm512x.c b/sound/soc/intel/boards/sof_pcm512x.c
-index c1d2a53c1ec8..b5153ce954c7 100644
---- a/sound/soc/intel/boards/sof_pcm512x.c
-+++ b/sound/soc/intel/boards/sof_pcm512x.c
-@@ -145,6 +145,31 @@ static int sof_pcm512x_codec_init(struct snd_soc_pcm_runtime *rtd)
- 	return 0;
- }
+diff --git a/drivers/clk/clk-hifiberry-dacpro.c b/drivers/clk/clk-hifiberry-dacpro.c
+index 9e2634465823..eb67a8c47c49 100644
+--- a/drivers/clk/clk-hifiberry-dacpro.c
++++ b/drivers/clk/clk-hifiberry-dacpro.c
+@@ -1,17 +1,10 @@
++// SPDX-License-Identifier: GPL-2.0
+ /*
+- * Clock Driver for HiFiBerry DAC Pro
+- *
+- * Author: Stuart MacLean
+- *         Copyright 2015
++ * Copyright (c) 2015 Stuart MacLean
++ * Copyright (c) 2020 Intel Corporation
+  *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License
+- * version 2 as published by the Free Software Foundation.
++ * Clock Driver for HiFiBerry DAC Pro
+  *
+- * This program is distributed in the hope that it will be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+- * General Public License for more details.
+  */
  
-+static int aif1_update_rate_den(struct snd_pcm_substream *substream,
-+				struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct sof_card_private *ctx = snd_soc_card_get_drvdata(rtd->card);
-+	struct snd_ratnum rats_no_pll;
-+	unsigned int num = 0, den = 0;
-+	int err;
-+
-+	rats_no_pll.num = clk_get_rate(ctx->sclk) / 64;
-+	rats_no_pll.den_min = 1;
-+	rats_no_pll.den_max = 128;
-+	rats_no_pll.den_step = 1;
-+
-+	err = snd_interval_ratnum(hw_param_interval(params,
-+						    SNDRV_PCM_HW_PARAM_RATE),
-+				  1, &rats_no_pll, &num, &den);
-+	if (err >= 0 && den) {
-+		params->rate_num = num;
-+		params->rate_den = den;
-+	}
-+
-+	return 0;
-+}
-+
- static int aif1_startup(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-@@ -156,6 +181,74 @@ static int aif1_startup(struct snd_pcm_substream *substream)
- 	return 0;
- }
- 
-+static int aif1_hw_params(struct snd_pcm_substream *substream,
-+			  struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct sof_card_private *ctx = snd_soc_card_get_drvdata(rtd->card);
-+	struct device *dev = rtd->card->dev;
-+	int current_rate;
-+	int sclk_rate;
-+	int channels;
-+	int width;
-+	int rate;
-+	int ret = 0;
-+
-+	if (ctx->is_dac_pro) {
-+		rate = params_rate(params);
-+		channels = params_channels(params);
-+		width = snd_pcm_format_physical_width(params_format(params));
-+
-+		if (rate % 24000)
-+			sclk_rate = 22579200;
-+		else
-+			sclk_rate = 24576000;
-+
-+		current_rate = clk_get_rate(ctx->sclk);
-+		if (current_rate != sclk_rate) {
-+			/*
-+			 * The sclk clock is started and stopped by the codec
-+			 * resume/suspend functions. If the rate isn't correct,
-+			 * stop, set the new rate and restart the clock
-+			 */
-+
-+			dev_dbg(dev, "reconfiguring SCLK to rate %d\n",
-+				sclk_rate);
-+
-+			clk_disable_unprepare(ctx->sclk);
-+
-+			ret = clk_set_rate(ctx->sclk, sclk_rate);
-+			if (ret) {
-+				dev_err(dev, "Could not set SCLK rate %d\n",
-+					sclk_rate);
-+				return ret;
-+			}
-+
-+			ret = clk_prepare_enable(ctx->sclk);
-+			if (ret) {
-+				dev_err(dev, "Failed to enable SCLK: %d\n",
-+					ret);
-+				return ret;
-+			}
-+		}
-+
-+		ret = aif1_update_rate_den(substream, params);
-+		if (ret) {
-+			dev_err(dev, "Failed to update rate denominator: %d\n", ret);
-+			return ret;
-+		}
-+
-+		ret = snd_soc_dai_set_bclk_ratio(rtd->codec_dai,
-+						 channels * width);
-+		if (ret) {
-+			dev_err(dev, "Failed to set bclk ratio : %d\n", ret);
-+			return ret;
-+		}
-+	}
-+
-+	return ret;
-+}
-+
- static void aif1_shutdown(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-@@ -167,6 +260,7 @@ static void aif1_shutdown(struct snd_pcm_substream *substream)
- 
- static const struct snd_soc_ops sof_pcm512x_ops = {
- 	.startup = aif1_startup,
-+	.hw_params = aif1_hw_params,
- 	.shutdown = aif1_shutdown,
- };
- 
+ #include <linux/clk-provider.h>
 -- 
 2.20.1
 
