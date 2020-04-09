@@ -4,68 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC64CC2BA2B
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 12:03:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A13ECC2BA2B
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 12:04:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 64DE920753
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 12:03:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2B85220753
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 12:04:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gH+VaUGj";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ay8M6/YQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 64DE920753
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Uv/SL6OA";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="YXVNfeVu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2B85220753
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BCFF4852;
-	Thu,  9 Apr 2020 14:02:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BCFF4852
+	by alsa0.perex.cz (Postfix) with ESMTPS id 921DE1658;
+	Thu,  9 Apr 2020 14:03:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 921DE1658
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586433803;
-	bh=w+qb2x6Li/GfK5SmwEhqtpdsMm/v72drG89m/vkKBC4=;
+	s=default; t=1586433856;
+	bh=GvSwav3XdtAfWd655t2xKIVTYn/DVD1FkY62Qh/pzS8=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=gH+VaUGjotTGeVxpIfXULhk8x5EAH0tgeCdOl5iXexhluovmmUH7EL6UptUTwUsG2
-	 Wj11cOyWXQUo1v01/au5++Nmz/fqtMnZ28SCHob97Izt3ei4nPhE09IzuB0UoqTEwj
-	 aqvXKyQCD77AP3DVUkj2Zs38Tp1iZLXzuDMV+EJg=
+	b=Uv/SL6OAI99jH+l31fMq6TORppMfy6g5ZWk9UC23sCGZmA2kzwq3T+CLdoxaeXHib
+	 QjodcnVFOZzpCZ/A1hRleWJSg92Wrl3TFW5SQUNSXIH3lLKx57LxpAzaMwG4KIak/h
+	 ejAsebK4bbYy/++f/jOrGsAJJSF4KEFjx5AG7DnI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 599CEF80107;
-	Thu,  9 Apr 2020 14:02:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2CCEDF80213;
+	Thu,  9 Apr 2020 14:02:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 35B27F801DA; Thu,  9 Apr 2020 14:02:32 +0200 (CEST)
+ id 14735F80216; Thu,  9 Apr 2020 14:02:37 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5FBFAF80107
- for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2020 14:02:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5FBFAF80107
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1B9C9F80213
+ for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2020 14:02:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B9C9F80213
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Ay8M6/YQ"
+ header.b="YXVNfeVu"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 703C020753;
- Thu,  9 Apr 2020 12:02:26 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id D3B7B20753;
+ Thu,  9 Apr 2020 12:02:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1586433747;
- bh=w+qb2x6Li/GfK5SmwEhqtpdsMm/v72drG89m/vkKBC4=;
+ s=default; t=1586433752;
+ bh=GvSwav3XdtAfWd655t2xKIVTYn/DVD1FkY62Qh/pzS8=;
  h=Date:From:To:Cc:Subject:In-Reply-To:From;
- b=Ay8M6/YQcryKf2+r+CvA129eqHad8DT1W6PfiovoE+XctvcHX/Bu9NR8cMgu6JQoi
- tPJWuqicLoeULyl/W1rhOCIBLMXD46F2AIZspSRHhvfCbKB9SDw/9PtLV2Ty0NKYHJ
- 2eRRGk9drZlpS0L7sTdTV5PUFlX8ORUjuJkjucB4=
-Date: Thu, 09 Apr 2020 13:02:24 +0100
+ b=YXVNfeVuphmxDEipWEc+dblexKfVoConS37aSMv4E3XKPF0WKi/OfACpnhSHdppQu
+ 5HW3AbMhWm3U0T+KcnX8wZjMDGdCmZR6CR9MhgN97Ham9GnKz2N1HMJd0IkRZi4veO
+ QhyrCSF6GDfwSs7hCejGuujLTL+HS4GGRFiIO4IY=
+Date: Thu, 09 Apr 2020 13:02:29 +0100
 From: Mark Brown <broonie@kernel.org>
 To: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
-Subject: Applied "ASoC: topology: Check return value of soc_tplg_dai_config"
- to the asoc tree
-In-Reply-To: <20200327204729.397-7-amadeuszx.slawinski@linux.intel.com>
-Message-Id: <applied-20200327204729.397-7-amadeuszx.slawinski@linux.intel.com>
+Subject: Applied "ASoC: topology: Check return value of pcm_new_ver" to the
+ asoc tree
+In-Reply-To: <20200327204729.397-6-amadeuszx.slawinski@linux.intel.com>
+Message-Id: <applied-20200327204729.397-6-amadeuszx.slawinski@linux.intel.com>
 X-Patchwork-Hint: ignore
 Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
@@ -88,7 +89,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: topology: Check return value of soc_tplg_dai_config
+   ASoC: topology: Check return value of pcm_new_ver
 
 has been applied to the asoc tree at
 
@@ -113,54 +114,42 @@ to this mail.
 Thanks,
 Mark
 
-From dd8e871d4e560eeb8d22af82dde91457ad835a63 Mon Sep 17 00:00:00 2001
+From b3677fc3d68dd942c92de52f0bd9dd8b472a40e6 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
-Date: Fri, 27 Mar 2020 16:47:29 -0400
-Subject: [PATCH] ASoC: topology: Check return value of soc_tplg_dai_config
+Date: Fri, 27 Mar 2020 16:47:28 -0400
+Subject: [PATCH] ASoC: topology: Check return value of pcm_new_ver
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Function soc_tplg_dai_config can fail, check for and handle possible
-failure.
+Function pcm_new_ver can fail, so we should check it's return value and
+handle possible error.
 
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200327204729.397-7-amadeuszx.slawinski@linux.intel.com
+Link: https://lore.kernel.org/r/20200327204729.397-6-amadeuszx.slawinski@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-topology.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ sound/soc/soc-topology.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 818657b06799..33e8d189ba2f 100644
+index cb43994089de..818657b06799 100644
 --- a/sound/soc/soc-topology.c
 +++ b/sound/soc/soc-topology.c
-@@ -2524,7 +2524,7 @@ static int soc_tplg_dai_elems_load(struct soc_tplg *tplg,
- {
- 	struct snd_soc_tplg_dai *dai;
- 	int count;
--	int i;
-+	int i, ret;
- 
- 	count = le32_to_cpu(hdr->count);
- 
-@@ -2539,7 +2539,12 @@ static int soc_tplg_dai_elems_load(struct soc_tplg *tplg,
- 			return -EINVAL;
+@@ -2135,7 +2135,9 @@ static int soc_tplg_pcm_elems_load(struct soc_tplg *tplg,
+ 			_pcm = pcm;
+ 		} else {
+ 			abi_match = false;
+-			pcm_new_ver(tplg, pcm, &_pcm);
++			ret = pcm_new_ver(tplg, pcm, &_pcm);
++			if (ret < 0)
++				return ret;
  		}
  
--		soc_tplg_dai_config(tplg, dai);
-+		ret = soc_tplg_dai_config(tplg, dai);
-+		if (ret < 0) {
-+			dev_err(tplg->dev, "ASoC: failed to configure DAI\n");
-+			return ret;
-+		}
-+
- 		tplg->pos += (sizeof(*dai) + le32_to_cpu(dai->priv.size));
- 	}
- 
+ 		/* create the FE DAIs and DAI links */
 -- 
 2.20.1
 
