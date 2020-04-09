@@ -2,71 +2,78 @@ Return-Path: <SRS0=I0Ma=5Z=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A6C6EC2BA19
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 18:45:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 83BB5C2BA19
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 18:46:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2798620757
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 18:45:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 013202082D
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 18:46:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mXhkMlbw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2798620757
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VuH88SLv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 013202082D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7CE9C1690;
-	Thu,  9 Apr 2020 20:44:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CE9C1690
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4574516A1;
+	Thu,  9 Apr 2020 20:45:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4574516A1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586457937;
-	bh=aQDwjIsnLslr/gOkPenV5IwzLpBOT2EwmTrqX/lZ8G0=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=mXhkMlbwAMo8neOtzJqGvEJBJEc1Eh3MU94t2nJX7WwmCmDi/jf5JU1VcmDP249yo
-	 tNyyyUScPLMlIpYvswp/ffAKsgm+GbpCzTrMhom6ybNhjBlyMXShENfROVNNvGr6Ru
-	 KcWXEyqpBKYAzHpZDh5ukFlqzmwVjcxZn7roTzKU=
+	s=default; t=1586457990;
+	bh=a96EFOApqYfM86h9kPMYOJ18uZaYaIX6/jHeVoe9/uk=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=VuH88SLvIRVH2iDbsqZHRxy82nztlQpUKSoRWoj0lrO2cyL2WC+owo3sxFyTGAEku
+	 A9dov/3Yrms/nJ+CEzx9EJOANgerg9bmsQ6oKaG4QqghBs2M+SwW8/QwRk+wKZWQH0
+	 cIhZkYpO7/P0Wg7oe+Hn3GngiQjXKnj760CMKTk8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B824BF801F9;
-	Thu,  9 Apr 2020 20:44:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F0F40F801DA;
+	Thu,  9 Apr 2020 20:44:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4E339F801F9; Thu,  9 Apr 2020 20:44:42 +0200 (CEST)
+ id 6C066F801D8; Thu,  9 Apr 2020 20:44:44 +0200 (CEST)
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E58D1F80107
- for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2020 20:44:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E58D1F80107
-IronPort-SDR: RDgqFgM5fWHr+u6EoDLnxxjaL3Wl0169+BeR6gSYRXcPdgcGSbs+FcGbW9pJKn73mieUWw9wYa
- m/Vcws1ia+tw==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 21065F801D8
+ for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2020 20:44:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21065F801D8
+IronPort-SDR: Qw0EXld9g+1KsvyV95jDsQwBTKTzCobt8jzVTfMofh/dMDUKbyJPwcWw7PP4YGEVa9afC2dqi/
+ 0N2ADUW7BMWw==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Apr 2020 11:44:30 -0700
-IronPort-SDR: pkUMwMfkcdABUtYKWuZI3d7OJ+B+mp7djG/70W2U4v2xw74XqkHcgt3ttTQUxLEE2CzDuYpKAC
- EaiToY5axIug==
+ 09 Apr 2020 11:44:31 -0700
+IronPort-SDR: fvZTBeO25t8sbkK/qX/WlJvxu0uxgC/aCc8hQyD7jTJp6D0ofoa+PYgqPEpHxC/nG1gPSWETN1
+ fWmXxjSQjuqA==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,363,1580803200"; d="scan'208";a="251981334"
+X-IronPort-AV: E=Sophos;i="5.72,363,1580803200"; d="scan'208";a="251981335"
 Received: from davidadu-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.212.151.218])
- by orsmga003.jf.intel.com with ESMTP; 09 Apr 2020 11:44:29 -0700
+ by orsmga003.jf.intel.com with ESMTP; 09 Apr 2020 11:44:30 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 0/4] ASoC: SOF: adjust dmesg verbosity
-Date: Thu,  9 Apr 2020 13:44:12 -0500
-Message-Id: <20200409184416.15591-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 1/4] ASoC: codecs: rt1308-sdw: reduce verbosity
+Date: Thu,  9 Apr 2020 13:44:13 -0500
+Message-Id: <20200409184416.15591-2-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200409184416.15591-1-pierre-louis.bossart@linux.intel.com>
+References: <20200409184416.15591-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de,
+ Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ broonie@kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,27 +89,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Decrease the dmesg verbosity to remove unnecessary logs on SoundWire
-platforms, and conversely add more information to help the community
-and downstream distros with HDaudio/SOF support (DMIC detection and card
-instanciation are the most prevalent issues on GitHub).
+These messages are generated at each enumeration, this is
+overkill. Move to dev_dbg
 
-Pierre-Louis Bossart (3):
-  ASoC: codecs: rt1308-sdw: reduce verbosity
-  ASoC: SOF: Intel: hda: reduce verbosity on SoundWire detection
-  ASoC: SOF: Intel: hda: log number of microphones detected in NHLT
-    tables
+[   86.481709] rt1308 sdw:1:25d:1308:0: rt1308_io_init m_btl_l=0xffee, m_btl_r=0xffff
+[   86.481714] rt1308 sdw:1:25d:1308:0: rt1308_io_init c_btl_l=0x28c, c_btl_r=0x113
 
-Ranjani Sridharan (1):
-  ASoC: soc-core: Add dynamic debug logs in soc_dai_link_sanity_check()
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/codecs/rt1308-sdw.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- sound/soc/codecs/rt1308-sdw.c |  4 ++--
- sound/soc/soc-core.c          | 18 +++++++++++++++---
- sound/soc/sof/intel/hda.c     | 10 ++++++----
- 3 files changed, 23 insertions(+), 9 deletions(-)
-
-
-base-commit: dd8e871d4e560eeb8d22af82dde91457ad835a63
+diff --git a/sound/soc/codecs/rt1308-sdw.c b/sound/soc/codecs/rt1308-sdw.c
+index a5a7e46de246..1502a22b0d4a 100644
+--- a/sound/soc/codecs/rt1308-sdw.c
++++ b/sound/soc/codecs/rt1308-sdw.c
+@@ -235,9 +235,9 @@ static int rt1308_io_init(struct device *dev, struct sdw_slave *slave)
+ 	efuse_c_btl_r = tmp;
+ 	regmap_read(rt1308->regmap, 0xc872, &tmp);
+ 	efuse_c_btl_r = efuse_c_btl_r | (tmp << 8);
+-	dev_info(&slave->dev, "%s m_btl_l=0x%x, m_btl_r=0x%x\n", __func__,
++	dev_dbg(&slave->dev, "%s m_btl_l=0x%x, m_btl_r=0x%x\n", __func__,
+ 		efuse_m_btl_l, efuse_m_btl_r);
+-	dev_info(&slave->dev, "%s c_btl_l=0x%x, c_btl_r=0x%x\n", __func__,
++	dev_dbg(&slave->dev, "%s c_btl_l=0x%x, c_btl_r=0x%x\n", __func__,
+ 		efuse_c_btl_l, efuse_c_btl_r);
+ 
+ 	/* initial settings */
 -- 
 2.20.1
 
