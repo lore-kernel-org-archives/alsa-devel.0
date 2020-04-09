@@ -2,68 +2,68 @@ Return-Path: <SRS0=I0Ma=5Z=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2029C2BA19
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 20:00:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D314C2BB85
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 20:01:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 291772074F
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 20:00:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 213F920730
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Apr 2020 20:01:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lV+bxm7I"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 291772074F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WIzkdQhm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 213F920730
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7FA26168E;
-	Thu,  9 Apr 2020 22:00:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7FA26168E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 689EC16AB;
+	Thu,  9 Apr 2020 22:00:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 689EC16AB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586462456;
-	bh=SEyh1KtOhmn1V16O/kUsWI/JyZ/H1iTbf8RbvFUOiZ8=;
+	s=default; t=1586462504;
+	bh=x4ZZpdDaRcOeQkyZ9+AB4P41obCTd+8dxapbT6cRtN4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lV+bxm7I9SG6K2Qp6ktkskp4GqjOh1NChN1o9o8wBOx6FH40E+CQwnEsbL8QCEOmF
-	 J/8HUkxcNabq1N1U6hLKCX2PrD4fKLTenHkpLz0NNjJNPGGl6SKTHNqawWzs7MmUOz
-	 wasUCBgLIcEeusTzNjewfHzF5P51ASG0O2rkFaX0=
+	b=WIzkdQhmpTj8TCgHGx5sao7S9T5fQYcOtlesrFGmht9mgnbbMmPWIvhICT0DLYGCY
+	 qsYnJQzyqau2AQqOUgvt5H5vViB6hnM11GMvPjxzb3dFkZ+uciDaLMjKFQ/3d9Qaaq
+	 RhejLMKc6lcAjwYnEkM6WvJj/LVlGAS7n0hCvdw8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A38FEF80218;
-	Thu,  9 Apr 2020 21:59:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 85EB3F80278;
+	Thu,  9 Apr 2020 21:59:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AF9F2F800FD; Thu,  9 Apr 2020 21:59:09 +0200 (CEST)
+ id 98E4EF80216; Thu,  9 Apr 2020 21:59:11 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3D269F800FD
- for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2020 21:59:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3D269F800FD
-IronPort-SDR: YDwQiRrB/f0PCInS78X6f4gEGL5j5CDrLG6z3oiNFtX1iqWrhE/3rkU/pPcCDKIjGsG8ZV4XMl
- gRJQ9NigIk7Q==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 97CC4F801DA
+ for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2020 21:59:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97CC4F801DA
+IronPort-SDR: lVccfWay23FgvVi9CjppaZK5iN5Y6mwBOXHW+Bql1EP0ybATyOYHKtxRbfmy3nVdI7GtVtf5JX
+ dAbTJZDZo7rQ==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Apr 2020 12:59:01 -0700
-IronPort-SDR: zsBoogpDr0xCLQhOQuZGn/J3+C17ujzvoAH00VGakkshqxRHh5LiH77aD24T7xzO9BYY9XqE5E
- WPB4xf//z4Tg==
+ 09 Apr 2020 12:59:07 -0700
+IronPort-SDR: W+Q0KmlcAo+MokzG3Z67qeXNbJTY7EV16ikLqX0KcazAVyjUPGA26DGgo6Hb4TVKb6PFY84NbN
+ E9+YYdPSP79A==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,363,1580803200"; d="scan'208";a="242745277"
+X-IronPort-AV: E=Sophos;i="5.72,363,1580803200"; d="scan'208";a="242745316"
 Received: from davidadu-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.212.151.218])
- by fmsmga007.fm.intel.com with ESMTP; 09 Apr 2020 12:58:59 -0700
+ by fmsmga007.fm.intel.com with ESMTP; 09 Apr 2020 12:59:05 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [RFC PATCH 01/16] ASoC: pcm512x: expose 6 GPIOs
-Date: Thu,  9 Apr 2020 14:58:26 -0500
-Message-Id: <20200409195841.18901-2-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH 04/16] ASoC: Intel: sof-pcm512x: detect Hifiberry DAC+ PRO
+Date: Thu,  9 Apr 2020 14:58:29 -0500
+Message-Id: <20200409195841.18901-5-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200409195841.18901-1-pierre-louis.bossart@linux.intel.com>
 References: <20200409195841.18901-1-pierre-louis.bossart@linux.intel.com>
@@ -92,159 +92,86 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The GPIOs are used e.g. on HifiBerry DAC+ HATs to control the LED
-(GPIO3) and the choice of the 44.1 (GPIO6) or 48 (GPIO3) kHz
-oscillator (when present).
-
-Enable basic gpio_chip to get/set values and get/set
-directions. Tested with GPIO_LIB from sys/class/gpio, the LED turns
-on/off as desired.
+Try to detect HifiBerry 44.1 and 48kHz oscillators on codec init
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/codecs/pcm512x.c | 108 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 108 insertions(+)
+ sound/soc/intel/boards/sof_pcm512x.c | 55 ++++++++++++++++++++++++++++
+ 1 file changed, 55 insertions(+)
 
-diff --git a/sound/soc/codecs/pcm512x.c b/sound/soc/codecs/pcm512x.c
-index 4cbef9affffd..4f895a588c31 100644
---- a/sound/soc/codecs/pcm512x.c
-+++ b/sound/soc/codecs/pcm512x.c
-@@ -10,6 +10,7 @@
- #include <linux/init.h>
- #include <linux/module.h>
- #include <linux/clk.h>
-+#include <linux/gpio/driver.h>
- #include <linux/kernel.h>
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
-@@ -32,6 +33,7 @@ static const char * const pcm512x_supply_names[PCM512x_NUM_SUPPLIES] = {
- struct pcm512x_priv {
- 	struct regmap *regmap;
- 	struct clk *sclk;
-+	struct gpio_chip chip;
- 	struct regulator_bulk_data supplies[PCM512x_NUM_SUPPLIES];
- 	struct notifier_block supply_nb[PCM512x_NUM_SUPPLIES];
- 	int fmt;
-@@ -1503,6 +1505,102 @@ const struct regmap_config pcm512x_regmap = {
+diff --git a/sound/soc/intel/boards/sof_pcm512x.c b/sound/soc/intel/boards/sof_pcm512x.c
+index dcd769b352fa..c1d2a53c1ec8 100644
+--- a/sound/soc/intel/boards/sof_pcm512x.c
++++ b/sound/soc/intel/boards/sof_pcm512x.c
+@@ -46,6 +46,8 @@ struct sof_card_private {
+ 	struct list_head hdmi_pcm_list;
+ 	bool idisp_codec;
+ 	struct gpio_desc *gpio_4;
++	struct clk *sclk;
++	bool is_dac_pro;
  };
- EXPORT_SYMBOL_GPL(pcm512x_regmap);
  
-+static int pcm512x_gpio_get_direction(struct gpio_chip *chip,
-+				      unsigned int offset)
-+{
-+	struct pcm512x_priv *pcm512x = gpiochip_get_data(chip);
-+	unsigned int val;
-+	int ret;
-+
-+	ret = regmap_read(pcm512x->regmap, PCM512x_GPIO_EN, &val);
-+	if (ret < 0)
-+		return ret;
-+
-+	val = (val >> offset) & 1;
-+
-+	/* val is 0 for input, 1 for output, return inverted */
-+	return val ? GPIO_LINE_DIRECTION_OUT : GPIO_LINE_DIRECTION_IN;
-+}
-+
-+static int pcm512x_gpio_direction_input(struct gpio_chip *chip,
-+					unsigned int offset)
-+{
-+	struct pcm512x_priv *pcm512x = gpiochip_get_data(chip);
-+
-+	return regmap_update_bits(pcm512x->regmap, PCM512x_GPIO_EN,
-+				  BIT(offset), 0);
-+}
-+
-+static int pcm512x_gpio_direction_output(struct gpio_chip *chip,
-+					 unsigned int offset,
-+					 int value)
-+{
-+	struct pcm512x_priv *pcm512x = gpiochip_get_data(chip);
-+	unsigned int reg;
-+	int ret;
-+
-+	/* select Register GPIOx output for OUTPUT_x (1..6) */
-+	reg = PCM512x_GPIO_OUTPUT_1 + offset;
-+	ret = regmap_update_bits(pcm512x->regmap, reg, 0x0f, 0x02);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* enable output x */
-+	ret = regmap_update_bits(pcm512x->regmap, PCM512x_GPIO_EN,
-+				 BIT(offset), BIT(offset));
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set value */
-+	return regmap_update_bits(pcm512x->regmap, PCM512x_GPIO_CONTROL_1,
-+				  BIT(offset), value << offset);
-+}
-+
-+static int pcm512x_gpio_get(struct gpio_chip *chip, unsigned int offset)
-+{
-+	struct pcm512x_priv *pcm512x = gpiochip_get_data(chip);
-+	unsigned int val;
-+	int ret;
-+
-+	ret = regmap_read(pcm512x->regmap, PCM512x_GPIO_CONTROL_1, &val);
-+	if (ret < 0)
-+		return ret;
-+
-+	return (val >> offset) & 1;
-+}
-+
-+static void pcm512x_gpio_set(struct gpio_chip *chip, unsigned int offset,
-+			     int value)
-+{
-+	struct pcm512x_priv *pcm512x = gpiochip_get_data(chip);
-+	int ret;
-+
-+	ret = regmap_update_bits(pcm512x->regmap, PCM512x_GPIO_CONTROL_1,
-+				 BIT(offset), value << offset);
-+
-+	if (ret < 0)
-+		pr_debug("%s: regmap_update_bits failed: %d\n", __func__, ret);
-+}
-+
-+/* list human-readable names, makes GPIOLIB usage straightforward */
-+static const char * const pcm512x_gpio_names[] = {
-+	"PCM512x-GPIO1", "PCM512x-GPIO2", "PCM512x-GPIO3",
-+	"PCM512x-GPIO4", "PCM512x-GPIO5", "PCM512x-GPIO6"
-+};
-+
-+static const struct gpio_chip template_chip = {
-+	.label			= "pcm512x-gpio",
-+	.names			= pcm512x_gpio_names,
-+	.owner			= THIS_MODULE,
-+	.get_direction		= pcm512x_gpio_get_direction,
-+	.direction_input	= pcm512x_gpio_direction_input,
-+	.direction_output	= pcm512x_gpio_direction_output,
-+	.get			= pcm512x_gpio_get,
-+	.set			= pcm512x_gpio_set,
-+	.base			= -1, /* let gpiolib select the base */
-+	.ngpio			= ARRAY_SIZE(pcm512x_gpio_names),
-+};
-+
- int pcm512x_probe(struct device *dev, struct regmap *regmap)
+ static int sof_pcm512x_quirk_cb(const struct dmi_system_id *id)
+@@ -87,6 +89,59 @@ static int sof_hdmi_init(struct snd_soc_pcm_runtime *rtd)
+ 
+ static int sof_pcm512x_codec_init(struct snd_soc_pcm_runtime *rtd)
  {
- 	struct pcm512x_priv *pcm512x;
-@@ -1563,6 +1661,16 @@ int pcm512x_probe(struct device *dev, struct regmap *regmap)
- 		goto err;
- 	}
- 
-+	/* expose 6 GPIO pins, numbered from 1 to 6 */
-+	pcm512x->chip = template_chip;
-+	pcm512x->chip.parent = dev;
++	struct sof_card_private *ctx = snd_soc_card_get_drvdata(rtd->card);
++	struct device *dev = rtd->card->dev;
++	unsigned int sck;
++	int ret;
 +
-+	ret = devm_gpiochip_add_data(dev, &pcm512x->chip, pcm512x);
-+	if (ret != 0) {
-+		dev_err(dev, "Failed to register gpio chip: %d\n", ret);
-+		goto err;
++	ctx->sclk = devm_clk_get(rtd->card->dev, "sclk");
++	if (IS_ERR(ctx->sclk)) {
++		dev_info(dev, "Could not get SCLK, will operate in SOC master mode\n");
++		goto skip_dacpro;
 +	}
 +
- 	pcm512x->sclk = devm_clk_get(dev, NULL);
- 	if (PTR_ERR(pcm512x->sclk) == -EPROBE_DEFER) {
- 		ret = -EPROBE_DEFER;
++	/*
++	 * now we have a clk, see if it's really present or if we are on
++	 * plain vanilla DAC+
++	 */
++
++	/* Try 48 kHz */
++	clk_set_rate(ctx->sclk, 24576000UL);
++	ret = clk_prepare_enable(ctx->sclk);
++	if (ret) {
++		dev_info(dev, "Failed to enable SCLK for DAC+ PRO 48 kHz: %d\n", ret);
++		goto skip_dacpro;
++	}
++
++	snd_soc_component_read(rtd->codec_dai->component,
++			       PCM512x_RATE_DET_4, &sck);
++	clk_disable_unprepare(ctx->sclk);
++	if (sck & 0x40) {
++		dev_info(dev, "No SCLK detected for DAC+ PRO 48 kHz\n");
++		goto skip_dacpro;
++	}
++
++	/* Try 44.1 kHz */
++	clk_set_rate(ctx->sclk, 22579200UL);
++	ret = clk_prepare_enable(ctx->sclk);
++	if (ret) {
++		dev_info(dev, "Failed to enable SCLK for DAC+ PRO 44.1 kHz: %d\n", ret);
++		goto skip_dacpro;
++	}
++
++	snd_soc_component_read(rtd->codec_dai->component,
++			       PCM512x_RATE_DET_4, &sck);
++	clk_disable_unprepare(ctx->sclk);
++
++	if (sck & 0x40) {
++		dev_info(dev, "No SCLK detected for DAC+ PRO 44.1 kHz\n");
++		goto skip_dacpro;
++	}
++
++	dev_info(dev, "DAC+ PRO detected\n");
++	ctx->is_dac_pro = true;
++
++skip_dacpro:
+ 	return 0;
+ }
+ 
 -- 
 2.20.1
 
