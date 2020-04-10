@@ -2,95 +2,98 @@ Return-Path: <SRS0=tzaW=56=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CDB55C2BA19
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 07:44:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E649BC2BA19
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 07:45:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 55919206B6
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 07:44:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6B2BB206B6
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 07:45:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hSXUhGHi";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mg.codeaurora.org header.i=@mg.codeaurora.org header.b="FEzc0nJI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 55919206B6
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WYAjrurx";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J9ZjsgUi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6B2BB206B6
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B551E1696;
-	Tue, 14 Apr 2020 09:43:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B551E1696
+	by alsa0.perex.cz (Postfix) with ESMTPS id A1B63168D;
+	Tue, 14 Apr 2020 09:44:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A1B63168D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586850281;
-	bh=iXw/90kgNgV+65nLurqRVw7PQEne8xVE+CBqzlCo//I=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=hSXUhGHiSKVFF3wMAvC/As12xs1lNhBwb56KmiqgG5sLBk0bE7xQHRocavYe/hxdt
-	 v9w9Zc3/WzXeCbWHM/TokjBzzYcwJRieQpt7zv7TCpbj/7R4C6eQxgzkQ88OEfJQtt
-	 33/sq0PSZOXpBuKFJbWC505jvP7JQzmHyHsmfDCM=
+	s=default; t=1586850310;
+	bh=CAYrFtHFpo5cukQEHXl2LKlTP2p+Q7WbPgOtX6onlBc=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=WYAjrurxwGSZU50XXS5+8nclFaoXQRh14QKE3y3wJADq2uuy1KfH/6L0NwBDSkveQ
+	 qx67gGdcJZ52eMnVoVOn+RZXZC+Dn08Vo9UFBxdFGxAzKzdTuJHrG55J8bN5xeM+04
+	 HCnudeciSK53nQ5Yp3DS0lQhi83dCpQWa9JtVEeA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 403A4F8028A;
-	Tue, 14 Apr 2020 09:42:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3B163F8028B;
+	Tue, 14 Apr 2020 09:42:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7C4E2F801DA; Sat, 11 Apr 2020 10:04:05 +0200 (CEST)
-Received: from mail27.static.mailgun.info (mail27.static.mailgun.info
- [104.130.122.27])
+ id B7A5BF80143; Fri, 10 Apr 2020 11:00:46 +0200 (CEST)
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com
+ [IPv6:2607:f8b0:4864:20::542])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 88CF6F800B9
- for <alsa-devel@alsa-project.org>; Sat, 11 Apr 2020 10:04:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88CF6F800B9
+ by alsa1.perex.cz (Postfix) with ESMTPS id DA707F800CB
+ for <alsa-devel@alsa-project.org>; Fri, 10 Apr 2020 11:00:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA707F800CB
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=mg.codeaurora.org
- header.i=@mg.codeaurora.org header.b="FEzc0nJI"
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
- q=dns/txt; 
- s=smtp; t=1586592243; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=KXy1loHb2FhxhHhKQrd5okL0GUCoCdYflO1LTaz/12I=;
- b=FEzc0nJISJ7RwMZsT8AhK+wJtUOe+StmRc9yajntkuMYhVKh29O0sfxp0CIB7FcRAhHNCme7
- VuZ8l963S+XNBMVvPaD45gw8TmSkoU1Vf5UfnsPVu0xdt0zFK78DYoOGIzhDHPMpIMSl4Wmr
- 43GwPEYNZuAISH0O+nw9XoQnsR4=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5e9179e9.7f266d4e3848-smtp-out-n05;
- Sat, 11 Apr 2020 08:03:53 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id 69BD6C432C2; Sat, 11 Apr 2020 08:03:53 +0000 (UTC)
-Received: from c-ajitp-linux.qualcomm.com
- (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: ajitp)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id 857D6C433CB;
- Sat, 11 Apr 2020 08:03:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 857D6C433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- spf=none smtp.mailfrom=ajitp@codeaurora.org
-From: Ajit Pandey <ajitp@codeaurora.org>
-To: alsa-devel@alsa-project.org, broonie@kernel.org,
- devicetree@vger.kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
- srinivas.kandagatla@linaro.org
-Subject: [PATCH 02/11] ASoC: qcom: lpass: Add struct lpass_dai to store dai
- clocks pointer
-Date: Sat, 11 Apr 2020 13:32:42 +0530
-Message-Id: <1586592171-31644-3-git-send-email-ajitp@codeaurora.org>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1586592171-31644-1-git-send-email-ajitp@codeaurora.org>
-References: <1586592171-31644-1-git-send-email-ajitp@codeaurora.org>
-X-Mailman-Approved-At: Tue, 14 Apr 2020 09:41:46 +0200
-Cc: Ajit Pandey <ajitp@codeaurora.org>, linux-kernel@vger.kernel.org,
- tiwai@suse.com
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="J9ZjsgUi"
+Received: by mail-pg1-x542.google.com with SMTP id c5so744199pgi.7
+ for <alsa-devel@alsa-project.org>; Fri, 10 Apr 2020 02:00:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=ZkHYjRBtSg5f4SMiK1TxUiRMi16PL9sTwB+WM20uZ64=;
+ b=J9ZjsgUiczZp8NgMIvzvWB5725WBjM/RJM3ETufT4nu3bVy09GO4vMLhqhMy/byZ+w
+ vo+84d70WduKUZAoGqNuqvO3L3YGTNVGRQLHeBT0xvVC6/FrJV2zvRAJRd4ty8PMb5Tt
+ g0+jXYkHsWjFHrpSPE+s+CRj/gmbl3Rv7WCUD/IGM6r2Bgzz8R7zddjztEiUVVyR938S
+ xErcScdcRTWMmUJ1wAsUr5Q+tk9ilreUASFRnxngeqEFK1kvz3Oo3xrHR8vYngsdMnCA
+ ic1nIoRrOAMf0Q+H79ryH8rfyUyCJdwJ13vMYJ+ivHsD9+JgSMaTom95T/0uhV+ZjmpS
+ waqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=ZkHYjRBtSg5f4SMiK1TxUiRMi16PL9sTwB+WM20uZ64=;
+ b=DUV83OIlsDyRPZ6iCJ+/o0fa0ttYl3KL+7Or6TCc+gd/g8NVrkSOHhG7EdTiXSkpiK
+ THAwL23ZvbCH61PqdCFufcLnUNlMDSrVhW0y6d7lzaFyGJh0k4aGmCMgpNPCU31fvxgk
+ sb3CRsiFWzijv/UH8KBmww3r3dP3JCB2fPqoLnZO1GNSSOMnJMubWbghtzcYTJLvbbTS
+ +ir7CsCyGeruAlrJtz1We/2a0MTK8wDDsFF+NZRuyyYTctZ+JnE4nUP79brudgrpd+Xq
+ NozXiz5R0j/oppytUM54XWFZH0CrtWONtd/OO4ZpmOFLZ7TDEaG9yFSdilsi7cw+L3J8
+ 8KfA==
+X-Gm-Message-State: AGi0PuZOgPZ9zUWwX1uSlWErvynNvY+jhrEjWlOpDW/+c70hw+lAPE1B
+ B7pg9VqEOvHeXW7s44rLZRE=
+X-Google-Smtp-Source: APiQypLk+xq0lULGO3RsR87xahCZO+Ow4IgPC/pNZOw3H897oD5P38ap6qd3fSWtSIcbloxXgHiRHQ==
+X-Received: by 2002:aa7:96b2:: with SMTP id g18mr4166990pfk.221.1586509238563; 
+ Fri, 10 Apr 2020 02:00:38 -0700 (PDT)
+Received: from localhost.localdomain (220-136-87-101.dynamic-ip.hinet.net.
+ [220.136.87.101])
+ by smtp.gmail.com with ESMTPSA id c8sm1244529pfj.108.2020.04.10.02.00.36
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 10 Apr 2020 02:00:37 -0700 (PDT)
+From: Adam Barber <barberadam995@gmail.com>
+To: tiwai@suse.com
+Subject: [PATCH] ALSA: hda/realtek - Enable the headset mic on Asus FX505DT
+Date: Fri, 10 Apr 2020 17:00:32 +0800
+Message-Id: <20200410090032.2759-1-barberadam995@gmail.com>
+X-Mailer: git-send-email 2.26.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Mailman-Approved-At: Tue, 14 Apr 2020 09:41:55 +0200
+Cc: Adam Barber <barberadam995@gmail.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,208 +109,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-lpass_dai will store clocks related to respective dai's and it will
-be initialized during probe based on variant clock names.
+On Asus FX505DT with Realtek ALC233, the headset mic is connected
+to pin 0x19, with default 0x411111f0.
 
-Signed-off-by: Ajit Pandey <ajitp@codeaurora.org>
+Enable headset mic by reconfiguring the pin to an external mic
+associated with the headphone on 0x21. Mic jack detection was also
+found to be working.
+
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207131
+Signed-off-by: Adam Barber <barberadam995@gmail.com>
 ---
- sound/soc/qcom/lpass-cpu.c | 89 ++++++++++++++++++++++++++--------------------
- sound/soc/qcom/lpass.h     | 18 +++++-----
- 2 files changed, 61 insertions(+), 46 deletions(-)
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index dbce7e9..492f27b 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -23,13 +23,15 @@ static int lpass_cpu_daiops_set_sysclk(struct snd_soc_dai *dai, int clk_id,
- 		unsigned int freq, int dir)
- {
- 	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
--	int ret;
--
--	ret = clk_set_rate(drvdata->mi2s_osr_clk[dai->driver->id], freq);
--	if (ret)
--		dev_err(dai->dev, "error setting mi2s osrclk to %u: %d\n",
--			freq, ret);
-+	struct lpass_dai *dai_data = drvdata->dai_priv[dai->driver->id];
-+	int ret = 0;
- 
-+	if (dai_data->osr_clk != NULL) {
-+		ret = clk_set_rate(dai_data->osr_clk, freq);
-+		if (ret)
-+			dev_err(dai->dev, "error setting mi2s osrclk to %u:%d\n",
-+				freq, ret);
-+	}
- 	return ret;
- }
- 
-@@ -37,18 +39,22 @@ static int lpass_cpu_daiops_startup(struct snd_pcm_substream *substream,
- 		struct snd_soc_dai *dai)
- {
- 	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
-+	struct lpass_dai *dai_data = drvdata->dai_priv[dai->driver->id];
- 	int ret;
- 
--	ret = clk_prepare_enable(drvdata->mi2s_osr_clk[dai->driver->id]);
--	if (ret) {
--		dev_err(dai->dev, "error in enabling mi2s osr clk: %d\n", ret);
--		return ret;
-+	if (dai_data->osr_clk != NULL) {
-+		ret = clk_prepare_enable(dai_data->osr_clk);
-+		if (ret) {
-+			dev_err(dai->dev,
-+				"error in enabling mi2s osr clk: %d\n", ret);
-+			return ret;
-+		}
- 	}
- 
--	ret = clk_prepare_enable(drvdata->mi2s_bit_clk[dai->driver->id]);
-+	ret = clk_prepare_enable(dai_data->bit_clk);
- 	if (ret) {
- 		dev_err(dai->dev, "error in enabling mi2s bit clk: %d\n", ret);
--		clk_disable_unprepare(drvdata->mi2s_osr_clk[dai->driver->id]);
-+		clk_disable_unprepare(dai_data->osr_clk);
- 		return ret;
- 	}
- 
-@@ -59,16 +65,18 @@ static void lpass_cpu_daiops_shutdown(struct snd_pcm_substream *substream,
- 		struct snd_soc_dai *dai)
- {
- 	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
-+	struct lpass_dai *dai_data = drvdata->dai_priv[dai->driver->id];
- 
--	clk_disable_unprepare(drvdata->mi2s_bit_clk[dai->driver->id]);
-+	clk_disable_unprepare(dai_data->bit_clk);
- 
--	clk_disable_unprepare(drvdata->mi2s_osr_clk[dai->driver->id]);
-+	clk_disable_unprepare(dai_data->osr_clk);
- }
- 
- static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
- 		struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
- {
- 	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
-+	struct lpass_dai *dai_data = drvdata->dai_priv[dai->driver->id];
- 	snd_pcm_format_t format = params_format(params);
- 	unsigned int channels = params_channels(params);
- 	unsigned int rate = params_rate(params);
-@@ -163,8 +171,7 @@ static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
- 		return ret;
- 	}
- 
--	ret = clk_set_rate(drvdata->mi2s_bit_clk[dai->driver->id],
--			   rate * bitwidth * 2);
-+	ret = clk_set_rate(dai_data->bit_clk, rate * bitwidth * 2);
- 	if (ret) {
- 		dev_err(dai->dev, "error setting mi2s bitclk to %u: %d\n",
- 			rate * bitwidth * 2, ret);
-@@ -413,6 +420,25 @@ static bool lpass_cpu_regmap_volatile(struct device *dev, unsigned int reg)
- 	.cache_type = REGCACHE_FLAT,
- };
- 
-+static int lpass_init_dai_clocks(struct device *dev,
-+			   struct lpass_data *drvdata)
-+{
-+	struct lpass_dai *dai;
-+	struct lpass_variant *v = drvdata->variant;
-+	int i;
-+
-+	for (i = 0; i < v->num_dai; i++) {
-+
-+		dai = drvdata->dai_priv[i];
-+
-+		dai->osr_clk = devm_clk_get_optional(dev,
-+						     v->dai_osr_clk_names[i]);
-+		dai->bit_clk = devm_clk_get(dev, v->dai_bit_clk_names[i]);
-+	}
-+
-+	return 0;
-+}
-+
- int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
- {
- 	struct lpass_data *drvdata;
-@@ -421,7 +447,7 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
- 	struct lpass_variant *variant;
- 	struct device *dev = &pdev->dev;
- 	const struct of_device_id *match;
--	int ret, i, dai_id;
-+	int ret, i;
- 
- 	dsp_of_node = of_parse_phandle(pdev->dev.of_node, "qcom,adsp", 0);
- 	if (dsp_of_node) {
-@@ -467,28 +493,15 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
- 		variant->init(pdev);
- 
- 	for (i = 0; i < variant->num_dai; i++) {
--		dai_id = variant->dai_driver[i].id;
--		drvdata->mi2s_osr_clk[dai_id] = devm_clk_get(&pdev->dev,
--					     variant->dai_osr_clk_names[i]);
--		if (IS_ERR(drvdata->mi2s_osr_clk[dai_id])) {
--			dev_warn(&pdev->dev,
--				"%s() error getting optional %s: %ld\n",
--				__func__,
--				variant->dai_osr_clk_names[i],
--				PTR_ERR(drvdata->mi2s_osr_clk[dai_id]));
--
--			drvdata->mi2s_osr_clk[dai_id] = NULL;
--		}
-+		drvdata->dai_priv[i] = devm_kzalloc(dev,
-+						sizeof(struct lpass_dai),
-+						GFP_KERNEL);
-+	}
- 
--		drvdata->mi2s_bit_clk[dai_id] = devm_clk_get(&pdev->dev,
--						variant->dai_bit_clk_names[i]);
--		if (IS_ERR(drvdata->mi2s_bit_clk[dai_id])) {
--			dev_err(&pdev->dev,
--				"error getting %s: %ld\n",
--				variant->dai_bit_clk_names[i],
--				PTR_ERR(drvdata->mi2s_bit_clk[dai_id]));
--			return PTR_ERR(drvdata->mi2s_bit_clk[dai_id]);
--		}
-+	ret = lpass_init_dai_clocks(dev, drvdata);
-+	if (ret) {
-+		dev_err(&pdev->dev, "error intializing dai clock: %d\n", ret);
-+		return ret;
- 	}
- 
- 	drvdata->ahbix_clk = devm_clk_get(&pdev->dev, "ahbix-clk");
-diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
-index 17113d3..b729686 100644
---- a/sound/soc/qcom/lpass.h
-+++ b/sound/soc/qcom/lpass.h
-@@ -13,9 +13,14 @@
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
- 
--#define LPASS_AHBIX_CLOCK_FREQUENCY		131072000
--#define LPASS_MAX_MI2S_PORTS			(8)
--#define LPASS_MAX_DMA_CHANNELS			(8)
-+#define LPASS_AHBIX_CLOCK_FREQUENCY            131072000
-+#define LPASS_MAX_MI2S_PORTS                   (8)
-+#define LPASS_MAX_DMA_CHANNELS                 (8)
-+
-+struct lpass_dai {
-+	struct clk *osr_clk;
-+	struct clk *bit_clk;
-+};
- 
- /* Both the CPU DAI and platform drivers will access this data */
- struct lpass_data {
-@@ -23,11 +28,8 @@ struct lpass_data {
- 	/* AHB-I/X bus clocks inside the low-power audio subsystem (LPASS) */
- 	struct clk *ahbix_clk;
- 
--	/* MI2S system clock */
--	struct clk *mi2s_osr_clk[LPASS_MAX_MI2S_PORTS];
--
--	/* MI2S bit clock (derived from system clock by a divider */
--	struct clk *mi2s_bit_clk[LPASS_MAX_MI2S_PORTS];
-+	/* MI2S dai specific configuration */
-+	struct lpass_dai *dai_priv[LPASS_MAX_MI2S_PORTS];
- 
- 	/* low-power audio interface (LPAIF) registers */
- 	void __iomem *lpaif;
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index f66a48154a57..5016fa50956a 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -7252,6 +7252,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1043, 0x16e3, "ASUS UX50", ALC269_FIXUP_STEREO_DMIC),
+ 	SND_PCI_QUIRK(0x1043, 0x17d1, "ASUS UX431FL", ALC294_FIXUP_ASUS_DUAL_SPK),
+ 	SND_PCI_QUIRK(0x1043, 0x18b1, "Asus MJ401TA", ALC256_FIXUP_ASUS_HEADSET_MIC),
++	SND_PCI_QUIRK(0x1043, 0x18f1, "Asus FX505DT", ALC256_FIXUP_ASUS_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x19ce, "ASUS B9450FA", ALC294_FIXUP_ASUS_HPE),
+ 	SND_PCI_QUIRK(0x1043, 0x1a13, "Asus G73Jw", ALC269_FIXUP_ASUS_G73JW),
+ 	SND_PCI_QUIRK(0x1043, 0x1a30, "ASUS X705UD", ALC256_FIXUP_ASUS_MIC),
 -- 
-1.9.1
+2.26.0
+
