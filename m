@@ -7,49 +7,50 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34A80C2BA2B
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Apr 2020 08:14:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FCA1C2BA2B
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Apr 2020 08:15:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AEE9720787
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Apr 2020 08:14:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A5A0E20787
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Apr 2020 08:15:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZLX6D7eC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AEE9720787
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="d2MdKH6a"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A5A0E20787
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0B3AF1679;
-	Fri, 10 Apr 2020 10:13:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B3AF1679
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0655B169F;
+	Fri, 10 Apr 2020 10:14:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0655B169F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586506468;
-	bh=4TPSnrChqpWz8ZUWhFyhHNEZP/Y/EyhIAcJRuXyVlpk=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=ZLX6D7eCo1F725CDHarPoASf4ByBop/oQ+8j/wMB1NSvjNQH7lJQHX7G7farSb3aI
-	 9DUebFe4uH8qcgX1ls+MYRv9vjq7YYR3jj8zceZRlt/4GYKV6bnTe/CiwWSecjm+Yn
-	 rXJ7q/lXU5RZqdKvjEfletHZHwWs9bGLVEPcGWJo=
+	s=default; t=1586506521;
+	bh=JEx8yawejMufLu7maq5+pnznJm+MEbkmXj46mo/wfgc=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=d2MdKH6at0d50GAr3KpaMHIELYmtJNQ2fye3net4eAJNHN01Gr8MLevmyjDor6Fnd
+	 Rd3uuv44ilVYURrXh1kfOVfRvnYA6ITUSbzN7Q+yuTTcDiG4O1rRVhRElku/12s+s6
+	 HUpzjcptJwdn7AJIkkVeoCF7AeVJS3+/eOsLtDVM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 97093F80142;
-	Fri, 10 Apr 2020 10:13:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8581AF8019B;
+	Fri, 10 Apr 2020 10:13:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D6AF6F80143; Fri, 10 Apr 2020 10:13:09 +0200 (CEST)
+ id D1F63F80143; Fri, 10 Apr 2020 10:13:16 +0200 (CEST)
 Received: from huawei.com (szxga05-in.huawei.com [45.249.212.191])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 806EBF800CB
- for <alsa-devel@alsa-project.org>; Fri, 10 Apr 2020 10:13:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 806EBF800CB
+ by alsa1.perex.cz (Postfix) with ESMTPS id AEC3FF800CB
+ for <alsa-devel@alsa-project.org>; Fri, 10 Apr 2020 10:13:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AEC3FF800CB
 Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
- by Forcepoint Email with ESMTP id 9248FDF15B8EDFE74E27;
+ by Forcepoint Email with ESMTP id 883BBF5DE01656036ADB;
  Fri, 10 Apr 2020 16:12:58 +0800 (CST)
 Received: from huawei.com (10.175.124.28) by DGGEMS405-HUB.china.huawei.com
  (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Fri, 10 Apr 2020
- 16:12:47 +0800
+ 16:12:48 +0800
 From: Jason Yan <yanaijie@huawei.com>
 To: <cezary.rojewski@intel.com>, <pierre-louis.bossart@linux.intel.com>,
  <liam.r.girdwood@linux.intel.com>, <yang.jie@linux.intel.com>,
@@ -57,11 +58,13 @@ To: <cezary.rojewski@intel.com>, <pierre-louis.bossart@linux.intel.com>,
  <yung-chuan.liao@linux.intel.com>, <ranjani.sridharan@linux.intel.com>,
  <rander.wang@intel.com>, <christophe.jaillet@wanadoo.fr>,
  <yanaijie@huawei.com>, <alsa-devel@alsa-project.org>
-Subject: [PATCH 1/2] ASoC: intel: soc-acpi-intel-icl-match: remove useless
+Subject: [PATCH 2/2] ASoC: Intel: soc-acpi-intel-cml-match: remove useless
  'rt1308_2_adr'
-Date: Fri, 10 Apr 2020 16:11:16 +0800
-Message-ID: <20200410081117.21319-1-yanaijie@huawei.com>
+Date: Fri, 10 Apr 2020 16:11:17 +0800
+Message-ID: <20200410081117.21319-2-yanaijie@huawei.com>
 X-Mailer: git-send-email 2.17.2
+In-Reply-To: <20200410081117.21319-1-yanaijie@huawei.com>
+References: <20200410081117.21319-1-yanaijie@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
@@ -84,7 +87,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Fix the following gcc warning:
 
-sound/soc/intel/common/soc-acpi-intel-icl-match.c:90:45: warning:
+sound/soc/intel/common/soc-acpi-intel-cml-match.c:116:45: warning:
 ‘rt1308_2_adr’ defined but not used [-Wunused-const-variable=]
  static const struct snd_soc_acpi_adr_device rt1308_2_adr[] = {
                                              ^~~~~~~~~~~~
@@ -92,14 +95,14 @@ sound/soc/intel/common/soc-acpi-intel-icl-match.c:90:45: warning:
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Jason Yan <yanaijie@huawei.com>
 ---
- sound/soc/intel/common/soc-acpi-intel-icl-match.c | 8 --------
+ sound/soc/intel/common/soc-acpi-intel-cml-match.c | 8 --------
  1 file changed, 8 deletions(-)
 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-icl-match.c b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
-index ef8500349f2f..16ec9f382b0f 100644
---- a/sound/soc/intel/common/soc-acpi-intel-icl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
-@@ -87,14 +87,6 @@ static const struct snd_soc_acpi_adr_device rt1308_1_adr[] = {
+diff --git a/sound/soc/intel/common/soc-acpi-intel-cml-match.c b/sound/soc/intel/common/soc-acpi-intel-cml-match.c
+index bcedec6c6117..7d85bd5aff9f 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-cml-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-cml-match.c
+@@ -113,14 +113,6 @@ static const struct snd_soc_acpi_adr_device rt1308_1_adr[] = {
  	}
  };
  
