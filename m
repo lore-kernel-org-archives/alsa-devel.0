@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 652F6C2BBC7
-	for <alsa-devel@archiver.kernel.org>; Sat, 11 Apr 2020 23:07:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D4F5C352B6
+	for <alsa-devel@archiver.kernel.org>; Sat, 11 Apr 2020 23:08:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E737821BE5
-	for <alsa-devel@archiver.kernel.org>; Sat, 11 Apr 2020 23:07:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C61EF20708
+	for <alsa-devel@archiver.kernel.org>; Sat, 11 Apr 2020 23:08:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="m82kXLtk";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="lpPxBLcR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E737821BE5
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uVkZvJZD";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="abKp1SR7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C61EF20708
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 40F9116A6;
-	Sun, 12 Apr 2020 01:06:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 40F9116A6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 257F01695;
+	Sun, 12 Apr 2020 01:07:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 257F01695
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586646448;
-	bh=joOxo1Zr/oT1gUdgtaRz8hThdw45IxDOqajylLDLVvs=;
+	s=default; t=1586646496;
+	bh=vkkBVzW/sRQX6NVpM58Zt+UhlaswQDSkXRNwMThHjj4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=m82kXLtkq210XETgpEhWx1Lq4jsmyv0cCNTuoO+RzyY3fTJyeyYitBosGdKtRcFKz
-	 mmeeieSKmwJ8z4lsVwxQw3eFuQLYIzYVYp82uWR+K/6kwQfhBWu7SmrRNRk/PNnMLQ
-	 fPmbH3UwN/08/iBta6+aiSDTYZGllNpPou1VyrOQ=
+	b=uVkZvJZDzYZs+F2j6ETQh9m5Uxi7nLwmtl8oGJU3HLY01KfnQMC131+YxSb2K45Ei
+	 NKZudK+OE4JINPEVtJukLt1dRe+BqUGu02ninqCy+LHRpYIuDGz6gm8/y1XghKyFSm
+	 Gt58ZJGkn2M1fVkitIQDB8rmb8frrr+giS5YcRL4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3C5E4F80216;
-	Sun, 12 Apr 2020 01:05:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 63DA5F80278;
+	Sun, 12 Apr 2020 01:06:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9CE90F801DA; Sun, 12 Apr 2020 01:05:39 +0200 (CEST)
+ id 135D8F80278; Sun, 12 Apr 2020 01:06:22 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5ECD1F800CB
- for <alsa-devel@alsa-project.org>; Sun, 12 Apr 2020 01:05:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5ECD1F800CB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 66DCEF80218
+ for <alsa-devel@alsa-project.org>; Sun, 12 Apr 2020 01:06:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66DCEF80218
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="lpPxBLcR"
+ header.b="abKp1SR7"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 1025620708;
- Sat, 11 Apr 2020 23:05:33 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 1C1C6217D8;
+ Sat, 11 Apr 2020 23:06:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1586646334;
- bh=joOxo1Zr/oT1gUdgtaRz8hThdw45IxDOqajylLDLVvs=;
+ s=default; t=1586646378;
+ bh=vkkBVzW/sRQX6NVpM58Zt+UhlaswQDSkXRNwMThHjj4=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=lpPxBLcRiYtciYR/f4whJOwE9hUKJWaUi8A3jnNZTwlinDibZwhhJVzg28ODzr0hW
- 9LWkTtu5urhakrHVsNAgNW3PHkIiuPyX0vdRC7+qh/IZEOf+F7InwtQ9O1Q/EmNTmG
- FTgUDCID/OeGQ/Mi9daGHFGZrJA5Rwk5MiMCQ3wY=
+ b=abKp1SR72Rn+z1P+EY7C0Y1ecCBSKjUbWx6ihXlnHvi4jgjGp8UYTux2a6cB60ECy
+ rdm9W+LKckN/yW+Xx907hWz5G4i1fm5lFEswwtG10LPMSi/ipmz9D3stl97jL7zzGb
+ UrAQCS6DjwqpkU4iqTDnEWjg72vBAYdkJ7yLAC4M=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 086/149] ASoC: soc-pcm: fix regression in
- soc_new_pcm()
-Date: Sat, 11 Apr 2020 19:02:43 -0400
-Message-Id: <20200411230347.22371-86-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.6 119/149] ASoC: stm32: spdifrx: fix regmap status
+ check
+Date: Sat, 11 Apr 2020 19:03:16 -0400
+Message-Id: <20200411230347.22371-119-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200411230347.22371-1-sashal@kernel.org>
 References: <20200411230347.22371-1-sashal@kernel.org>
@@ -76,8 +76,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Stephan Gerhold <stephan@gerhold.net>, Sameer Pujar <spujar@nvidia.com>,
- Mark Brown <broonie@kernel.org>, Jerome Brunet <jbrunet@baylibre.com>
+ Olivier Moysan <olivier.moysan@st.com>, Mark Brown <broonie@kernel.org>,
+ linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,74 +93,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Stephan Gerhold <stephan@gerhold.net>
+From: Olivier Moysan <olivier.moysan@st.com>
 
-[ Upstream commit a4877a6fb2bd2e356a5eaacd86d6b6d69ff84e69 ]
+[ Upstream commit a168dae5ea14283e8992d5282237bb0d6a3e1c06 ]
 
-Commit af4bac11531f ("ASoC: soc-pcm: crash in snd_soc_dapm_new_dai")
-swapped the SNDRV_PCM_STREAM_* parameter in the
-snd_soc_dai_stream_valid(cpu_dai, ...) checks. But that works only
-for codec2codec links. For normal links it breaks registration of
-playback/capture-only PCM devices.
+Release resources when exiting on error.
 
-E.g. on qcom/apq8016_sbc there is usually one playback-only and one
-capture-only PCM device, but they disappeared after the commit.
+Fixes: 1a5c0b28fc56 ("ASoC: stm32: spdifrx: manage identification registers")
 
-The codec2codec case was added in commit a342031cdd08
-("ASoC: create pcm for codec2codec links as well") as an extra check
-(e.g. `playback = playback && cpu_playback->channels_min`).
-
-We should be able to simplify the code by checking directly for
-the correct stream type in the loop.
-This also fixes the regression because we check for PLAYBACK for
-both codec and cpu dai again when codec2codec is not used.
-
-Fixes: af4bac11531f ("ASoC: soc-pcm: crash in snd_soc_dapm_new_dai")
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-Tested-by: Jerome Brunet <jbrunet@baylibre.com>
-Reviewed-by: Jerome Brunet <jbrunet@baylibre.com>
-Cc: Jerome Brunet <jbrunet@baylibre.com>
-Cc: Sameer Pujar <spujar@nvidia.com>
-Link: https://lore.kernel.org/r/20200218103824.26708-1-stephan@gerhold.net
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+Link: https://lore.kernel.org/r/20200318144125.9163-2-olivier.moysan@st.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/soc-pcm.c | 15 ++++++---------
- 1 file changed, 6 insertions(+), 9 deletions(-)
+ sound/soc/stm/stm32_spdifrx.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 2c59b3688ca01..a08ebbf5a37f3 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -2888,22 +2888,19 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
- 		capture = rtd->dai_link->dpcm_capture;
- 	} else {
- 		/* Adapt stream for codec2codec links */
--		struct snd_soc_pcm_stream *cpu_capture = rtd->dai_link->params ?
--			&cpu_dai->driver->playback : &cpu_dai->driver->capture;
--		struct snd_soc_pcm_stream *cpu_playback = rtd->dai_link->params ?
--			&cpu_dai->driver->capture : &cpu_dai->driver->playback;
-+		int cpu_capture = rtd->dai_link->params ?
-+			SNDRV_PCM_STREAM_PLAYBACK : SNDRV_PCM_STREAM_CAPTURE;
-+		int cpu_playback = rtd->dai_link->params ?
-+			SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
+diff --git a/sound/soc/stm/stm32_spdifrx.c b/sound/soc/stm/stm32_spdifrx.c
+index 3769d9ce5dbef..e6e75897cce83 100644
+--- a/sound/soc/stm/stm32_spdifrx.c
++++ b/sound/soc/stm/stm32_spdifrx.c
+@@ -1009,6 +1009,8 @@ static int stm32_spdifrx_probe(struct platform_device *pdev)
  
- 		for_each_rtd_codec_dai(rtd, i, codec_dai) {
- 			if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_PLAYBACK) &&
--			    snd_soc_dai_stream_valid(cpu_dai,   SNDRV_PCM_STREAM_CAPTURE))
-+			    snd_soc_dai_stream_valid(cpu_dai,   cpu_playback))
- 				playback = 1;
- 			if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_CAPTURE) &&
--			    snd_soc_dai_stream_valid(cpu_dai,   SNDRV_PCM_STREAM_PLAYBACK))
-+			    snd_soc_dai_stream_valid(cpu_dai,   cpu_capture))
- 				capture = 1;
- 		}
--
--		capture = capture && cpu_capture->channels_min;
--		playback = playback && cpu_playback->channels_min;
- 	}
+ 	if (idr == SPDIFRX_IPIDR_NUMBER) {
+ 		ret = regmap_read(spdifrx->regmap, STM32_SPDIFRX_VERR, &ver);
++		if (ret)
++			goto error;
  
- 	if (rtd->dai_link->playback_only) {
+ 		dev_dbg(&pdev->dev, "SPDIFRX version: %lu.%lu registered\n",
+ 			FIELD_GET(SPDIFRX_VERR_MAJ_MASK, ver),
 -- 
 2.20.1
 
