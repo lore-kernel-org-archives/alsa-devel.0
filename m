@@ -6,61 +6,65 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C525FC2BB85
-	for <alsa-devel@archiver.kernel.org>; Sat, 11 Apr 2020 06:52:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7F27C2BBC7
+	for <alsa-devel@archiver.kernel.org>; Sat, 11 Apr 2020 10:30:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 56833212CC
-	for <alsa-devel@archiver.kernel.org>; Sat, 11 Apr 2020 06:52:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 35D862084D
+	for <alsa-devel@archiver.kernel.org>; Sat, 11 Apr 2020 10:30:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="V0awQl8o"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 56833212CC
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jf61GKBI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 35D862084D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B083B168E;
-	Sat, 11 Apr 2020 08:51:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B083B168E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 694181676;
+	Sat, 11 Apr 2020 12:29:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 694181676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586587946;
-	bh=QLcCqa+0B/cJUewXooQxbcphO5haIgHh3KrbTWz8eew=;
+	s=default; t=1586601022;
+	bh=DqEZXH2eIhKQKC9WdTt6zR/E1+64taJc35DAZPBqBjM=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=V0awQl8o397Vb0mqlG+9wqezqKArBXjcnIOGqobQ8gSdBFDD2/cENehrbtx34rfkk
-	 IwMOyuL1y+DELFt/eZicZCFEajiPKJFvlNrhhTa7qLcDfddKbj/fjcdkVJ7XM4kz/u
-	 MB9bc9gQfeAAka+tt/AydfIIcCNXs+DDeY5Vg7qY=
+	b=jf61GKBIumw4RaqnXhYGYcOHAD59y6E2grWz9pUwqpxwo+tkaMtBfgKI3mMyTv5jb
+	 9ludb21fKZuMD+gs2VuuNj7wXpPXsb252u7hwtXLP0PMWKuFLAFKVDXPclKw2cUiIF
+	 ACLCa4m/Z8jQv8TrpSzawzHwZvYfM3HpeCldxCRc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 325BEF8007E;
-	Sat, 11 Apr 2020 08:51:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EAD98F801D8;
+	Sat, 11 Apr 2020 12:29:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4B6E4F801DA; Sat, 11 Apr 2020 08:51:32 +0200 (CEST)
+ id 096F2F801DA; Sat, 11 Apr 2020 12:29:29 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BB9AEF8007E
- for <alsa-devel@alsa-project.org>; Sat, 11 Apr 2020 08:51:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB9AEF8007E
+ by alsa1.perex.cz (Postfix) with ESMTPS id E1658F800CB
+ for <alsa-devel@alsa-project.org>; Sat, 11 Apr 2020 12:29:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1658F800CB
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 2DCA6AC4D;
- Sat, 11 Apr 2020 06:51:26 +0000 (UTC)
-Date: Sat, 11 Apr 2020 08:51:26 +0200
-Message-ID: <s5hlfn2ms5t.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 66726AC64;
+ Sat, 11 Apr 2020 10:29:23 +0000 (UTC)
+Date: Sat, 11 Apr 2020 12:29:23 +0200
+Message-ID: <s5hd08emi2k.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Adam Barber <barberadam995@gmail.com>
-Subject: Re: [PATCH] ALSA: hda/realtek - Enable the headset mic on Asus FX505DT
-In-Reply-To: <20200410090032.2759-1-barberadam995@gmail.com>
-References: <20200410090032.2759-1-barberadam995@gmail.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 03/13] ALSA: hda: Add ElkhartLake HDMI codec vid
+In-Reply-To: <20200409185827.16255-4-pierre-louis.bossart@linux.intel.com>
+References: <20200409185827.16255-1-pierre-louis.bossart@linux.intel.com>
+ <20200409185827.16255-4-pierre-louis.bossart@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, tiwai@suse.com, linux-kernel@vger.kernel.org
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ broonie@kernel.org, Libin Yang <libin.yang@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,20 +80,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 10 Apr 2020 11:00:32 +0200,
-Adam Barber wrote:
+On Thu, 09 Apr 2020 20:58:17 +0200,
+Pierre-Louis Bossart wrote:
 > 
-> On Asus FX505DT with Realtek ALC233, the headset mic is connected
-> to pin 0x19, with default 0x411111f0.
+> From: Libin Yang <libin.yang@linux.intel.com>
 > 
-> Enable headset mic by reconfiguring the pin to an external mic
-> associated with the headphone on 0x21. Mic jack detection was also
-> found to be working.
+> Add HDMI codec vid for the Intel ElkhartLake platform
 > 
-> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207131
-> Signed-off-by: Adam Barber <barberadam995@gmail.com>
+> Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+> Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+> Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+> Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Thanks, applied now with Cc to stable.
+I suppose this can go through ASoC tree unless HDA legacy driver
+supports the device.
 
+Acked-by: Takashi Iwai <tiwai@suse.de>
+
+
+thanks,
 
 Takashi
