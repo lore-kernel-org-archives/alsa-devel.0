@@ -6,56 +6,55 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7F27C2BBC7
-	for <alsa-devel@archiver.kernel.org>; Sat, 11 Apr 2020 10:30:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98426C2BA2B
+	for <alsa-devel@archiver.kernel.org>; Sat, 11 Apr 2020 10:41:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 35D862084D
-	for <alsa-devel@archiver.kernel.org>; Sat, 11 Apr 2020 10:30:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 182D82087E
+	for <alsa-devel@archiver.kernel.org>; Sat, 11 Apr 2020 10:41:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jf61GKBI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 35D862084D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nCljulex"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 182D82087E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 694181676;
-	Sat, 11 Apr 2020 12:29:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 694181676
+	by alsa0.perex.cz (Postfix) with ESMTPS id 706251691;
+	Sat, 11 Apr 2020 12:40:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 706251691
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586601022;
-	bh=DqEZXH2eIhKQKC9WdTt6zR/E1+64taJc35DAZPBqBjM=;
+	s=default; t=1586601685;
+	bh=iJxbjB042K8cT1exxNOgIKHH8S9KK90qoIaSDl0G9eA=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jf61GKBIumw4RaqnXhYGYcOHAD59y6E2grWz9pUwqpxwo+tkaMtBfgKI3mMyTv5jb
-	 9ludb21fKZuMD+gs2VuuNj7wXpPXsb252u7hwtXLP0PMWKuFLAFKVDXPclKw2cUiIF
-	 ACLCa4m/Z8jQv8TrpSzawzHwZvYfM3HpeCldxCRc=
+	b=nCljulexsXdKQ6iOZBuXD+gNiu2ftq0YHsyc8JNNeVuXomf/vEvWX65Tl8Bu01aEX
+	 L9U7/9cJ8dFS8oCW1EellCXi75DE5Pbwznb5i4kfFioX1blMhOVPRt1IXuM0A9qP9g
+	 i8kW8Ty42URuhF4yW7jgGZpdyy87aKVvuPwUYrWc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EAD98F801D8;
-	Sat, 11 Apr 2020 12:29:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0E6BAF801D8;
+	Sat, 11 Apr 2020 12:40:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 096F2F801DA; Sat, 11 Apr 2020 12:29:29 +0200 (CEST)
+ id A3BF0F801DA; Sat, 11 Apr 2020 12:40:33 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E1658F800CB
- for <alsa-devel@alsa-project.org>; Sat, 11 Apr 2020 12:29:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1658F800CB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3F47FF800B9
+ for <alsa-devel@alsa-project.org>; Sat, 11 Apr 2020 12:40:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3F47FF800B9
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 66726AC64;
- Sat, 11 Apr 2020 10:29:23 +0000 (UTC)
-Date: Sat, 11 Apr 2020 12:29:23 +0200
-Message-ID: <s5hd08emi2k.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 31A7AAC64;
+ Sat, 11 Apr 2020 10:40:28 +0000 (UTC)
+Date: Sat, 11 Apr 2020 12:40:28 +0200
+Message-ID: <s5hblnymhk3.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 03/13] ALSA: hda: Add ElkhartLake HDMI codec vid
-In-Reply-To: <20200409185827.16255-4-pierre-louis.bossart@linux.intel.com>
-References: <20200409185827.16255-1-pierre-louis.bossart@linux.intel.com>
- <20200409185827.16255-4-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ALSA: hda: add autodetection for SoundWire
+In-Reply-To: <20200409190251.16569-1-pierre-louis.bossart@linux.intel.com>
+References: <20200409190251.16569-1-pierre-louis.bossart@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -63,7 +62,7 @@ MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
  alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- broonie@kernel.org, Libin Yang <libin.yang@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
  Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -80,25 +79,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 09 Apr 2020 20:58:17 +0200,
+On Thu, 09 Apr 2020 21:02:51 +0200,
 Pierre-Louis Bossart wrote:
 > 
-> From: Libin Yang <libin.yang@linux.intel.com>
+> When an ACPI companion device is present and the SoundWire link mask
+> information is available, use SoundWire instead of legacy HDA or
+> Skylake drivers.
 > 
-> Add HDMI codec vid for the Intel ElkhartLake platform
+> The SOF driver is selected when SoundWire or DMIC are detected. There
+> is no precedence at this level. In the SOF driver proper, SoundWire
+> will be handled first since it is mutually exclusive with HDaudio.
 > 
-> Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+> Known devices with an existing DMI quirk bypass this detection to
+> avoid any dependency on ACPI/DSDT tables.
+> 
+> Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 > Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 > Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-> Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
+> Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-I suppose this can go through ASoC tree unless HDA legacy driver
-supports the device.
+Applied to topic/for-5.8 branch.  Thanks.
 
-Acked-by: Takashi Iwai <tiwai@suse.de>
-
-
-thanks,
 
 Takashi
