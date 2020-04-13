@@ -2,62 +2,83 @@ Return-Path: <SRS0=SID+=55=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 953F9C2BA19
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Apr 2020 08:25:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B4E1C2BA19
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Apr 2020 08:26:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 23AE220678
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Apr 2020 08:25:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BB8AA20678
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Apr 2020 08:26:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="imT/4yG+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 23AE220678
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fmL6AWeK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BB8AA20678
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6080A16E9;
-	Mon, 13 Apr 2020 10:24:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6080A16E9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 13B1216F8;
+	Mon, 13 Apr 2020 10:25:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13B1216F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586766325;
-	bh=714HRTyR6VfjnfNDZtcRMQz3hO7iWlOPmmbnFB6MeV8=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1586766361;
+	bh=wSNu/Tuvnh4j0eFpEUS8HciuBpfp5S3XtIHXITwW+Qg=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=imT/4yG+wXhp03/Trbv8mc7wAMPyikhdta9hCbaxbsm02/suppGGluTIX2eUhh8Sf
-	 HsJEY58tuSqWf1XlgEK1+Bo66HHgCF2O8wsSkTBB4M41iOF0SV4k67mgR+sKYtcY7G
-	 jYKjRWIzCQkreAQI5IRTEv9Be0EBjAiu40ZXV66k=
+	b=fmL6AWeKVAOSZ8PbVVHi61mVvrSygsArzj9izd4DfeoeSQLkv1eP+DNCnZTJnK+SK
+	 UyLkU8eKb+We31YFUQYFxpln+9yycbmK6f//RO4fnY2TyPcLZ5PnHVmbNlYeODLjBn
+	 /eBXvmP5aETYmcpHlLMwZK/4VnQSXo/CqvSVg8tI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B2874F802A9;
-	Mon, 13 Apr 2020 10:20:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 37C63F80229;
+	Mon, 13 Apr 2020 10:24:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CC72AF8025F; Mon, 13 Apr 2020 10:20:51 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 4D7DBF80245; Mon, 13 Apr 2020 10:24:54 +0200 (CEST)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1C301F800B9
- for <alsa-devel@alsa-project.org>; Mon, 13 Apr 2020 10:20:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C301F800B9
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 99194AD08;
- Mon, 13 Apr 2020 08:20:39 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 3/6] ALSA: hda: Release resources at error in delayed probe
-Date: Mon, 13 Apr 2020 10:20:31 +0200
-Message-Id: <20200413082034.25166-4-tiwai@suse.de>
-X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20200413082034.25166-1-tiwai@suse.de>
-References: <20200413082034.25166-1-tiwai@suse.de>
-Cc: Roy Spliet <nouveau@spliet.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0FB77F800B9
+ for <alsa-devel@alsa-project.org>; Mon, 13 Apr 2020 10:24:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0FB77F800B9
+IronPort-SDR: 8zFZFGc4BgyLHzMsGIpfyrNDcdULRoBZXyWyjjepojidgWv/x+o3HnEH1vP7CEN07MLp2x4K8G
+ XpBX5JE1lHRA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+ by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 13 Apr 2020 01:24:48 -0700
+IronPort-SDR: 89OuDTtVm7GFv4SzRRMrenZSTb2zYhZCJ/a2q2ZWqGGEak0vg31sUCDLb6kKpDrKjcybHD+WQC
+ xQNibDVPwHgA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,378,1580803200"; d="scan'208";a="454141300"
+Received: from keyon-x299.sh.intel.com (HELO [10.239.159.75]) ([10.239.159.75])
+ by fmsmga006.fm.intel.com with ESMTP; 13 Apr 2020 01:24:44 -0700
+Subject: Re: [PATCH] ASoC: bdw-rt5650: incorrect rate of PCM data
+To: Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
+References: <1586765358-18474-1-git-send-email-brent.lu@intel.com>
+From: Keyon Jie <yang.jie@linux.intel.com>
+Message-ID: <751b03e3-c4de-cbcb-e1b6-dc6f3f572aab@linux.intel.com>
+Date: Mon, 13 Apr 2020 16:35:52 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+MIME-Version: 1.0
+In-Reply-To: <1586765358-18474-1-git-send-email-brent.lu@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Ben Zhang <benzh@chromium.org>, Mac Chiang <mac.chiang@intel.com>,
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,133 +94,70 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-snd-hda-intel driver handles the most of its probe task in the delayed
-work (either via workqueue or via firmware loader).  When an error
-happens in the later delayed probe, we can't deregister the device
-itself because the probe callback already returned success and the
-device was bound.  So, for now, we set hda->init_failed flag and make
-the rest untouched until the device gets really unbound.
-However, this leaves the device up running, keeping the resources
-without any use that prevents other operations.
 
-In this patch, we release the resources at first when a probe error
-happens in the delayed probe stage, but keeps the top-level object, so
-that the PM and other ops can still refer to the object itself.
+On 2020/4/13 下午4:09, Brent Lu wrote:
+> Implement a constrain to exclude 3-channel capture since only 2 and 4
+> channel capture are supported on the platform.
 
-Also for simplicity, snd_hda_intel object is allocated via devm, so
-that we can get rid of the explicit kfree calls.
+The patch looks good to me, except that the subject seems unrelated? you 
+are changing the channel number, not the sample rate?
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207043
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/hda_intel.c | 29 ++++++++++++++++-------------
- sound/pci/hda/hda_intel.h |  1 +
- 2 files changed, 17 insertions(+), 13 deletions(-)
+Thanks,
+~Keyon
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index f41d8b7864c1..692857904d49 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -1203,10 +1203,8 @@ static void azx_vs_set_state(struct pci_dev *pci,
- 		if (!disabled) {
- 			dev_info(chip->card->dev,
- 				 "Start delayed initialization\n");
--			if (azx_probe_continue(chip) < 0) {
-+			if (azx_probe_continue(chip) < 0)
- 				dev_err(chip->card->dev, "initialization error\n");
--				hda->init_failed = true;
--			}
- 		}
- 	} else {
- 		dev_info(chip->card->dev, "%s via vga_switcheroo\n",
-@@ -1339,12 +1337,15 @@ static int register_vga_switcheroo(struct azx *chip)
- /*
-  * destructor
-  */
--static int azx_free(struct azx *chip)
-+static void azx_free(struct azx *chip)
- {
- 	struct pci_dev *pci = chip->pci;
- 	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
- 	struct hdac_bus *bus = azx_bus(chip);
- 
-+	if (hda->freed)
-+		return;
-+
- 	if (azx_has_pm_runtime(chip) && chip->running)
- 		pm_runtime_get_noresume(&pci->dev);
- 	chip->running = 0;
-@@ -1388,9 +1389,8 @@ static int azx_free(struct azx *chip)
- 
- 	if (chip->driver_caps & AZX_DCAPS_I915_COMPONENT)
- 		snd_hdac_i915_exit(bus);
--	kfree(hda);
- 
--	return 0;
-+	hda->freed = 1;
- }
- 
- static int azx_dev_disconnect(struct snd_device *device)
-@@ -1406,7 +1406,8 @@ static int azx_dev_disconnect(struct snd_device *device)
- 
- static int azx_dev_free(struct snd_device *device)
- {
--	return azx_free(device->device_data);
-+	azx_free(device->device_data);
-+	return 0;
- }
- 
- #ifdef SUPPORT_VGA_SWITCHEROO
-@@ -1773,7 +1774,7 @@ static int azx_create(struct snd_card *card, struct pci_dev *pci,
- 	if (err < 0)
- 		return err;
- 
--	hda = kzalloc(sizeof(*hda), GFP_KERNEL);
-+	hda = devm_kzalloc(&pci->dev, sizeof(*hda), GFP_KERNEL);
- 	if (!hda) {
- 		pci_disable_device(pci);
- 		return -ENOMEM;
-@@ -1814,7 +1815,6 @@ static int azx_create(struct snd_card *card, struct pci_dev *pci,
- 
- 	err = azx_bus_init(chip, model[dev]);
- 	if (err < 0) {
--		kfree(hda);
- 		pci_disable_device(pci);
- 		return err;
- 	}
-@@ -2340,13 +2340,16 @@ static int azx_probe_continue(struct azx *chip)
- 		pm_runtime_put_autosuspend(&pci->dev);
- 
- out_free:
--	if (err < 0 || !hda->need_i915_power)
-+	if (err < 0) {
-+		azx_free(chip);
-+		return err;
-+	}
-+
-+	if (!hda->need_i915_power)
- 		display_power(chip, false);
--	if (err < 0)
--		hda->init_failed = 1;
- 	complete_all(&hda->probe_wait);
- 	to_hda_bus(bus)->bus_probing = 0;
--	return err;
-+	return 0;
- }
- 
- static void azx_remove(struct pci_dev *pci)
-diff --git a/sound/pci/hda/hda_intel.h b/sound/pci/hda/hda_intel.h
-index 2acfff3da1a0..3fb119f09040 100644
---- a/sound/pci/hda/hda_intel.h
-+++ b/sound/pci/hda/hda_intel.h
-@@ -27,6 +27,7 @@ struct hda_intel {
- 	unsigned int use_vga_switcheroo:1;
- 	unsigned int vga_switcheroo_registered:1;
- 	unsigned int init_failed:1; /* delayed init failed */
-+	unsigned int freed:1; /* resources already released */
- 
- 	bool need_i915_power:1; /* the hda controller needs i915 power */
- };
--- 
-2.16.4
-
+> 
+> Signed-off-by: Brent Lu <brent.lu@intel.com>
+> ---
+>   sound/soc/intel/boards/bdw-rt5650.c | 31 +++++++++++++++++++++++++++++++
+>   1 file changed, 31 insertions(+)
+> 
+> diff --git a/sound/soc/intel/boards/bdw-rt5650.c b/sound/soc/intel/boards/bdw-rt5650.c
+> index af2f502..eedbdad 100644
+> --- a/sound/soc/intel/boards/bdw-rt5650.c
+> +++ b/sound/soc/intel/boards/bdw-rt5650.c
+> @@ -83,6 +83,36 @@ static struct snd_soc_jack_pin mic_jack_pin = {
+>   	.mask	= SND_JACK_MICROPHONE,
+>   };
+>   
+> +static const unsigned int channels[] = {
+> +	2, 4,
+> +};
+> +
+> +static const struct snd_pcm_hw_constraint_list constraints_channels = {
+> +	.count = ARRAY_SIZE(channels),
+> +	.list = channels,
+> +	.mask = 0,
+> +};
+> +
+> +static int bdw_fe_startup(struct snd_pcm_substream *substream)
+> +{
+> +	struct snd_pcm_runtime *runtime = substream->runtime;
+> +
+> +	/*
+> +	 * On this platform for PCM device we support,
+> +	 * 2 or 4 channel capture
+> +	 */
+> +	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
+> +		snd_pcm_hw_constraint_list(runtime, 0,
+> +					   SNDRV_PCM_HW_PARAM_CHANNELS,
+> +					   &constraints_channels);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct snd_soc_ops bdw_rt5650_fe_ops = {
+> +	.startup = bdw_fe_startup,
+> +};
+> +
+>   static int broadwell_ssp0_fixup(struct snd_soc_pcm_runtime *rtd,
+>   			struct snd_pcm_hw_params *params)
+>   {
+> @@ -234,6 +264,7 @@ static struct snd_soc_dai_link bdw_rt5650_dais[] = {
+>   		.name = "System PCM",
+>   		.stream_name = "System Playback",
+>   		.dynamic = 1,
+> +		.ops = &bdw_rt5650_fe_ops,
+>   #if !IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
+>   		.init = bdw_rt5650_rtd_init,
+>   #endif
+> 
