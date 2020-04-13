@@ -2,57 +2,81 @@ Return-Path: <SRS0=SID+=55=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC800C2BA19
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Apr 2020 16:27:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E6FCC2BA19
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Apr 2020 16:39:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 90BA320692
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Apr 2020 16:27:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BE8A1206E9
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Apr 2020 16:39:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sGoOpS9g"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 90BA320692
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hY0f3Dud"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BE8A1206E9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D862816A2;
-	Mon, 13 Apr 2020 18:26:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D862816A2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0BB34168C;
+	Mon, 13 Apr 2020 18:38:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0BB34168C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586795238;
-	bh=ZtSw/ynOZlGCFCEBSdGGsERaRW2z/mdeXGM18Qw7qq0=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1586795961;
+	bh=ZzounlKCf+SxmeVsHr72GHByriM7Obo+AUkjPeADrfY=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sGoOpS9ghCnr1hD42MP8R+aLIu9JRL0+aIxrGI8kxj3+SWoNoJ6hAHcpPAwoBG8uM
-	 8pwzYi1223sBSs7FhzRscy3t2UWNkvnqx2bbPe2wenZtLW8It6E8VLwkg4N1mt/LQL
-	 uyGvkea/Qqzbo2sPYmBUJgfMyzB+oQe+JRmS+5VU=
+	b=hY0f3DudY/ibaTQF5aNUWmgTy6pR0+RGYeYlQqXDFYJ7pLOYXYmcJMbsa6ruTixsj
+	 Llbi2UqGie1w4YxPGL+SW/ghfIAu8Tn+79lFqMPRSXZb+1nxqUnKF3wEK1y9jMOHFu
+	 UNqN2CwI8YkMUD14Yr27xwUAO+04ZSLtOyBTYfEs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 87E69F80264;
-	Mon, 13 Apr 2020 18:26:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8A825F80229;
+	Mon, 13 Apr 2020 18:38:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3E7C9F80266; Mon, 13 Apr 2020 18:25:59 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id ADEB9F8025F
- for <alsa-devel@alsa-project.org>; Mon, 13 Apr 2020 18:25:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ADEB9F8025F
+ id 1796FF80245; Mon, 13 Apr 2020 18:38:28 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 88299F800B9
+ for <alsa-devel@alsa-project.org>; Mon, 13 Apr 2020 18:38:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88299F800B9
+IronPort-SDR: PXdkpLF5QhfUW9CLES92pGDF+cljKoSyjLjiWfEu/uwlApnfDPcsYZSdZB7mwoXKKGfyBSwTka
+ QxF++sG6ae2A==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 13 Apr 2020 09:38:20 -0700
+IronPort-SDR: P9MFAD5hVIj6/D40Krm6yqjswCFuhWRupgfdJE7Pg8y2o+TMWXaFI02khNJnf0/EmV45Ctho3z
+ 45xTLCIP8dIA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,378,1580803200"; d="scan'208";a="454262343"
+Received: from crojewsk-mobl1.ger.corp.intel.com (HELO [10.213.25.178])
+ ([10.213.25.178])
+ by fmsmga006.fm.intel.com with ESMTP; 13 Apr 2020 09:38:18 -0700
+Subject: Re: [PATCH] ASoC: Intel: haswell: Power transition refactor
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org
+References: <20200330194520.13253-1-cezary.rojewski@intel.com>
+ <293372ae-5270-a1d4-2577-04991c08e33f@intel.com>
+ <ee6c0545-a325-8df4-9c26-d823582735af@linux.intel.com>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+Message-ID: <49a16c64-5951-f327-c12a-d3264353b74b@intel.com>
+Date: Mon, 13 Apr 2020 18:38:17 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <ee6c0545-a325-8df4-9c26-d823582735af@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1586795156453360081-webhooks-bot@alsa-project.org>
-References: <1586795156453360081-webhooks-bot@alsa-project.org>
-Subject: SOF support for Baytrail/CherryTrail
-Message-Id: <20200413162559.3E7C9F80266@alsa1.perex.cz>
-Date: Mon, 13 Apr 2020 18:25:59 +0200 (CEST)
+Cc: vkoul@kernel.org, broonie@kernel.org, Ross Zwisler <zwisler@google.com>,
+ lgirdwood@gmail.com, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,17 +92,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #20 was edited from plbossart:
+On 2020-04-06 17:02, Pierre-Louis Bossart wrote:
+> On 4/6/20 3:48 AM, Cezary Rojewski wrote:
+>> On 2020-03-30 21:45, Cezary Rojewski wrote:
+>>> Update D0 <-> D3 sequence to correctly transition hardware and DSP core
+>>> from and to D3. On top of that, set SHIM registers to their recommended
+>>> defaults during D0 and D3 proceduces as HW does not reset registers for
+>>> us.
+>>>
+>>> Connected to:
+>>> [alsa-devel][BUG] bdw-rt5650 DSP boot timeout
+>>> https://mailman.alsa-project.org/pipermail/alsa-devel/2019-July/153098.html 
+>>>
+>>>
+>>> Github issue ticket reference:
+>>> https://github.com/thesofproject/linux/pull/1842
+>>>
+>>> Tested on:
+>>> - BDW-Y RVP with rt286
+>>> - SAMUS with rt5677
+>>>
+>>> Proposed solution (both in July 2019 and on github):
+>>> 'Revert "ASoC: Intel: Work around to fix HW d3 potential crash issue"'
+>>> is NAKed as it only covers the problem up and actually brings back the
+>>> undefined behavior: some registers (e.g.: APLLSE) are describing LPT
+>>> offsets rather than WPT ones. In consequence, during power-transitions
+>>> driver issues incorrect writes and leaves the regs of interest alone.
+>>>
+>>> Existing patch - the non-revert - does not resolve the HW D3 issue at
+>>> all as it ignores the recommended sequence and does not initialize
+>>> hardware registers as expected. And thus, leaving things as are is also
+>>> unacceptable.
+>>>
+>>> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+>>> ---
+>>
+>> Pierre, your thoughts on this? This has already been confirmed working.
+> 
+> I don't have any specific knowledge on Broadwell to comment. I also 
+> haven't had time to test this patch, I was expecting Ross to provide his 
+> Tested-by tag?
 
-Add symlink and simple test to reuse legacy settings as is.
+Hello,
 
-tested on Baytrail/Asus T100TA only with SOF and legacy drivers, all other platforms are just based on same changes.
+Ross has provided his Tested-by tag already. Patch has been tested by 
+Intel & Google side both. Given problem's impact, this fix is considered 
+a critical one. I think we are good-to-go for quite a while now?
 
-sof-bytcr-rt5640 is here:
- http://alsa-project.org/db/?f=6f8be0520e2bbda94cb744ce66232174feec03d4
-
-UCM validator seems to have problems with the conditional statement?
-
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/20
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/20.patch
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+Czarek
