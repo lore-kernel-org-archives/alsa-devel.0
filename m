@@ -7,64 +7,64 @@ X-Spam-Status: No, score=-12.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B5F1C38A29
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93496C38A2C
 	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 15:13:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 074A42076D
+	by mail.kernel.org (Postfix) with ESMTPS id 205CE20857
 	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 15:13:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gL2KYDnx";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="PaRLRd/q"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 074A42076D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KNwyazeh";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="oR/ytNXI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 205CE20857
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CC6D616F3;
-	Tue, 14 Apr 2020 17:04:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC6D616F3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 97A7316E9;
+	Tue, 14 Apr 2020 17:04:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 97A7316E9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586876703;
-	bh=t6HhPthXOeudzf4EoTUu9Wb5jBRGgu3IJn0173Tyybs=;
+	s=default; t=1586876733;
+	bh=QwSPeLgXvGoQzjt35NVPIUOZRJSyfgdQqyWgS6iVWqs=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=gL2KYDnxthDfCzz0C29fjC7SkXOv7R2KinoGtwhWtyd8ywlqZURLVzUgTdcxQC9Na
-	 oilFaQ/IrxqvjqAQx5v0JBpdbw2Y3KkThGg79+LY4jmzJcQnKbLIscRCAaDQa/IjMo
-	 UOl4xgX7JbznRDSsMeWHJ71oylQodNjDd0Gs4zMY=
+	b=KNwyazehAEQ6irNgKeswyJNkmf8qSmgh9KVQmpYJfBDLjdiotSqTSixQjm2PtjNXc
+	 BdA5aY8fgNeRjSxQSUD9LmBGSTyWSIKrB2nW11lr3PMqpg5Jo1MqVrzOqqhAJr4RK8
+	 vOR9EnYsr3rjtFuaY6yaCAs1i6j2avBceGUxOJgo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1E8FEF803CB;
-	Tue, 14 Apr 2020 16:48:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2F6D8F803CE;
+	Tue, 14 Apr 2020 16:48:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C944CF803CB; Tue, 14 Apr 2020 16:48:44 +0200 (CEST)
+ id 63355F803CF; Tue, 14 Apr 2020 16:48:47 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5EE00F80394
- for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 16:48:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5EE00F80394
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3801CF803AD
+ for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 16:48:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3801CF803AD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="PaRLRd/q"
+ header.b="oR/ytNXI"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 2585A20578;
- Tue, 14 Apr 2020 14:48:32 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 2EC102076D;
+ Tue, 14 Apr 2020 14:48:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1586875713;
- bh=t6HhPthXOeudzf4EoTUu9Wb5jBRGgu3IJn0173Tyybs=;
+ s=default; t=1586875718;
+ bh=QwSPeLgXvGoQzjt35NVPIUOZRJSyfgdQqyWgS6iVWqs=;
  h=Date:From:To:Cc:Subject:In-Reply-To:From;
- b=PaRLRd/qZETZhLKej5zTVhEMkM1d3Xv0zol/25ulqj+w3MpotOWPpExsZhwuEFs2I
- 6hwXkazTMAM7lV/MqVpUSR9QIK7c96m3HyHP2DAY9heT8qqGDpYrXfj2iTHfR+lCLM
- RYkktkFfCH7NySLNBM2/U2Vd+8ygJibVkTeECOqk=
-Date: Tue, 14 Apr 2020 15:48:31 +0100
+ b=oR/ytNXIZMlDAVazCnmkNIZbauKOoen4PPYYt0W+/2fO6bdS8OCS56KExZaX9XxZg
+ N2I4Ft3BjOXBS/b8uDZoKThSbvGdz0dzUO1j550PPjUZCd9NUVv2VmZBkE95IAF1CM
+ k55kOUSVKWoIhGomq3eT/f5vc0CkWjgpH66ucaP0=
+Date: Tue, 14 Apr 2020 15:48:36 +0100
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Applied "ASoC: soc-core: remove
- cpu_dai/codec_dai/cpu_dais/codec_dais" to the asoc tree
+Subject: Applied "ASoC: soc-core: tidyup soc_new_pcm_runtime() rtd setups" to
+ the asoc tree
 In-Reply-To: 
 Message-Id: 
 X-Patchwork-Hint: ignore
@@ -84,11 +84,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20200414144831.2FVEVpG7cmX1hBSGoywbsPuZwgU-3si8fYMCg0cXb_w@z>
+Message-ID: <20200414144836.Qa5atsy49Rm1EFG30AHMZwTKpKZLA24E5Qs0t1JaLmc@z>
 
 The patch
 
-   ASoC: soc-core: remove cpu_dai/codec_dai/cpu_dais/codec_dais
+   ASoC: soc-core: tidyup soc_new_pcm_runtime() rtd setups
 
 has been applied to the asoc tree at
 
@@ -113,87 +113,47 @@ to this mail.
 Thanks,
 Mark
 
-From 1729025b04b9f242dca37f50dba8dd3705eb1ea1 Mon Sep 17 00:00:00 2001
+From 01faf501eefa86fa6f334bb9c71a48498de653e6 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 30 Mar 2020 10:48:27 +0900
-Subject: [PATCH] ASoC: soc-core: remove cpu_dai/codec_dai/cpu_dais/codec_dais
+Date: Mon, 30 Mar 2020 10:48:14 +0900
+Subject: [PATCH] ASoC: soc-core: tidyup soc_new_pcm_runtime() rtd setups
 
-No-one is using cpu_dai/codec_dai/cpu_dais/codec_dais.
-Let's remove these from snd_soc_pcm_runtime
+soc_new_pcm_runtime() setups rtd, but code is very random.
+This patch tidyup it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/87eetabok4.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87ftdqbokh.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h  | 14 ++++++++------
  sound/soc/soc-core.c | 11 +++--------
- 2 files changed, 11 insertions(+), 14 deletions(-)
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 4dff6745b067..a904086b8ef6 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1143,14 +1143,16 @@ struct snd_soc_pcm_runtime {
- 	/* runtime devices */
- 	struct snd_pcm *pcm;
- 	struct snd_compr *compr;
--	struct snd_soc_dai *codec_dai;
--	struct snd_soc_dai *cpu_dai;
--	struct snd_soc_dai **dais;
- 
--	struct snd_soc_dai **codec_dais;
-+	/*
-+	 * dais = cpu_dai + codec_dai
-+	 * see
-+	 *	soc_new_pcm_runtime()
-+	 *	asoc_rtd_to_cpu()
-+	 *	asoc_rtd_to_codec()
-+	 */
-+	struct snd_soc_dai **dais;
- 	unsigned int num_codecs;
--
--	struct snd_soc_dai **cpu_dais;
- 	unsigned int num_cpus;
- 
- 	struct delayed_work delayed_work;
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 4d617c495864..7ea9725e33b3 100644
+index 8cef4fd6df36..4d617c495864 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -487,9 +487,10 @@ static struct snd_soc_pcm_runtime *soc_new_pcm_runtime(
- 	 * dais = [][][][][][][][][][][][][][][][][][]
- 	 *	  ^cpu_dais         ^codec_dais
- 	 *	  |--- num_cpus ---|--- num_codecs --|
-+	 * see
-+	 *	asoc_rtd_to_cpu()
-+	 *	asoc_rtd_to_codec()
- 	 */
--	rtd->cpu_dais	= &rtd->dais[0];
--	rtd->codec_dais	= &rtd->dais[dai_link->num_cpus];
+@@ -492,17 +492,12 @@ static struct snd_soc_pcm_runtime *soc_new_pcm_runtime(
+ 	rtd->codec_dais	= &rtd->dais[dai_link->num_cpus];
  	rtd->num_cpus	= dai_link->num_cpus;
  	rtd->num_codecs	= dai_link->num_codecs;
- 	rtd->card	= card;
-@@ -996,9 +997,6 @@ int snd_soc_add_pcm_runtime(struct snd_soc_card *card,
- 		snd_soc_rtd_add_component(rtd, asoc_rtd_to_cpu(rtd, i)->component);
- 	}
- 
--	/* Single cpu links expect cpu and cpu_dai in runtime data */
--	rtd->cpu_dai = rtd->cpu_dais[0];
 -
- 	/* Find CODEC from registered CODECs */
- 	for_each_link_codecs(dai_link, i, codec) {
- 		asoc_rtd_to_codec(rtd, i) = snd_soc_find_dai(codec);
-@@ -1011,9 +1009,6 @@ int snd_soc_add_pcm_runtime(struct snd_soc_card *card,
- 		snd_soc_rtd_add_component(rtd, asoc_rtd_to_codec(rtd, i)->component);
- 	}
+-	/*
+-	 * rtd remaining settings
+-	 */
+-	rtd->card = card;
+-	rtd->dai_link = dai_link;
++	rtd->card	= card;
++	rtd->dai_link	= dai_link;
++	rtd->num	= card->num_rtd++;
  
--	/* Single codec links expect codec and codec_dai in runtime data */
--	rtd->codec_dai = rtd->codec_dais[0];
--
- 	/* Find PLATFORM from registered PLATFORMs */
- 	for_each_link_platforms(dai_link, i, platform) {
- 		for_each_component(component) {
+ 	/* see for_each_card_rtds */
+ 	list_add_tail(&rtd->list, &card->rtd_list);
+-	rtd->num = card->num_rtd;
+-	card->num_rtd++;
+ 
+ 	return rtd;
+ 
 -- 
 2.20.1
 
