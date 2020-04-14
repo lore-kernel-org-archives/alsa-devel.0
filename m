@@ -7,66 +7,66 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C3E4C2BA19
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 14:54:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AC1A7C2BA19
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 14:54:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DA3BF20787
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 14:54:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 398132076B
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 14:54:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PCiUvREN";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="xHATSOuS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DA3BF20787
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ANT5GA33";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="O2hGsWeQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 398132076B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 322DB16A1;
-	Tue, 14 Apr 2020 16:53:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 322DB16A1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8F32C16AE;
+	Tue, 14 Apr 2020 16:53:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F32C16AE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586876050;
-	bh=ASF6LkUhxcrDTAUPAw3OuesI60wD6OBCqOnOXYE90Ls=;
+	s=default; t=1586876087;
+	bh=6FlzVgFnR7/VbGHrT+q6MkJEf3k+sVZfZKqi8DjGpRE=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=PCiUvRENGNWSNHk+YDoG1r2QWseWiymVJ10ZDc51Gd1BcWCP93DOX1B6yEH6VABUC
-	 60zMI5D1ujlIbQKbOC9VEddEXhSKNHeczUh1HC/iX4CpXU7fkBhqLCNXSdl5EuIMQy
-	 IaB6SpYW4apELZdW7GVhBqrynHI0W2rpg8r3+ZSA=
+	b=ANT5GA33AedBIQbDoGZRK+srcTM+f2GMu+OUo7T67wViOMqmkt/tN1MGk0FLY/x3s
+	 akKusITgKyvUYPOgAlSEH2MaEjhW/K7KTRQDERgNarVTEuZ7rcNZYRLwrwKC2CVgYw
+	 Xx6NPh1yw/5VV5DNb5J76jjpAgVE+CC76C+9J+Mk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 88108F8014E;
-	Tue, 14 Apr 2020 16:47:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 81605F8031A;
+	Tue, 14 Apr 2020 16:47:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C7FE8F80321; Tue, 14 Apr 2020 16:46:59 +0200 (CEST)
+ id 15C51F8031A; Tue, 14 Apr 2020 16:47:12 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0C472F80317
- for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 16:46:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C472F80317
+ by alsa1.perex.cz (Postfix) with ESMTPS id 41AE3F80317
+ for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 16:47:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41AE3F80317
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="xHATSOuS"
+ header.b="O2hGsWeQ"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 047DD2076D;
- Tue, 14 Apr 2020 14:46:54 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 3B9052085B;
+ Tue, 14 Apr 2020 14:47:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1586875615;
- bh=ASF6LkUhxcrDTAUPAw3OuesI60wD6OBCqOnOXYE90Ls=;
+ s=default; t=1586875625;
+ bh=6FlzVgFnR7/VbGHrT+q6MkJEf3k+sVZfZKqi8DjGpRE=;
  h=Date:From:To:Cc:Subject:In-Reply-To:From;
- b=xHATSOuSFhjSn+7j5wZTQu5MQAzyWKfBJQo91eT/UcyNEezxWjMyf07sDTvBpTlRI
- k/bmiLaRkbPq866dtxn3j5DmbTxtxRbYgOZ+dcc6KQQnKkmFWJFCiJ5NLI6HlKr3oG
- dpeicreDvNv6FiP7zas+e0XJCRtWeohawKyRgEHs=
-Date: Tue, 14 Apr 2020 15:46:52 +0100
+ b=O2hGsWeQgz1uXI04jUf2u5UfQTik+aYdUmfQK7aBdH8jA/NaZI6X2qSQdcDLDS1D+
+ SyK9vZaufojA5p15LNY1Mw8EnCTIPtRVMBNrYSm9aY1ykPmYbpIjERQqIXhXXQTISu
+ aTF5BqRN5x15H3S74YIs1xi961M1y1muZKa8wLxs=
+Date: Tue, 14 Apr 2020 15:47:03 +0100
 From: Mark Brown <broonie@kernel.org>
 To: Jason Yan <yanaijie@huawei.com>
-Subject: Applied "ASoC: wm8900: remove some defined but not used symbols" to
- the asoc tree
-In-Reply-To: <20200407082932.41511-5-yanaijie@huawei.com>
-Message-Id: <applied-20200407082932.41511-5-yanaijie@huawei.com>
+Subject: Applied "ASoC: wm8991: remove defined but not used
+ 'wm8991_dapm_rxvoice_controls'" to the asoc tree
+In-Reply-To: <20200407082932.41511-3-yanaijie@huawei.com>
+Message-Id: <applied-20200407082932.41511-3-yanaijie@huawei.com>
 X-Patchwork-Hint: ignore
 Cc: alsa-devel@alsa-project.org, tiwai@suse.com, lgirdwood@gmail.com,
  Hulk Robot <hulkci@huawei.com>, Mark Brown <broonie@kernel.org>
@@ -87,7 +87,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: wm8900: remove some defined but not used symbols
+   ASoC: wm8991: remove defined but not used 'wm8991_dapm_rxvoice_controls'
 
 has been applied to the asoc tree at
 
@@ -112,52 +112,50 @@ to this mail.
 Thanks,
 Mark
 
-From 4c979a775432f8a1c9b6cfd9bf466eba05e96c9d Mon Sep 17 00:00:00 2001
+From cdab86902d07800a6393af1967fe8d343a27e526 Mon Sep 17 00:00:00 2001
 From: Jason Yan <yanaijie@huawei.com>
-Date: Tue, 7 Apr 2020 16:29:32 +0800
-Subject: [PATCH] ASoC: wm8900: remove some defined but not used symbols
+Date: Tue, 7 Apr 2020 16:29:30 +0800
+Subject: [PATCH] ASoC: wm8991: remove defined but not used
+ 'wm8991_dapm_rxvoice_controls'
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 Fix the following gcc warning:
 
-sound/soc/codecs/wm8900.c:449:38: warning:
-‘wm8900_dapm_routput2_control’ defined but not used
+sound/soc/codecs/wm8991.c:480:38: warning:
+‘wm8991_dapm_rxvoice_controls’ defined but not used
 [-Wunused-const-variable=]
- static const struct snd_kcontrol_new wm8900_dapm_routput2_control =
-                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-sound/soc/codecs/wm8900.c:446:38: warning:
-‘wm8900_dapm_loutput2_control’ defined but not used
-[-Wunused-const-variable=]
- static const struct snd_kcontrol_new wm8900_dapm_loutput2_control =
+ static const struct snd_kcontrol_new wm8991_dapm_rxvoice_controls[] = {
                                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Jason Yan <yanaijie@huawei.com>
-Link: https://lore.kernel.org/r/20200407082932.41511-5-yanaijie@huawei.com
+Link: https://lore.kernel.org/r/20200407082932.41511-3-yanaijie@huawei.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8900.c | 6 ------
- 1 file changed, 6 deletions(-)
+ sound/soc/codecs/wm8991.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8900.c b/sound/soc/codecs/wm8900.c
-index 271235a69c01..3e239fa9bc8d 100644
---- a/sound/soc/codecs/wm8900.c
-+++ b/sound/soc/codecs/wm8900.c
-@@ -443,12 +443,6 @@ SOC_SINGLE("LINEOUT2 LP -12dB", WM8900_REG_LOUTMIXCTL1,
+diff --git a/sound/soc/codecs/wm8991.c b/sound/soc/codecs/wm8991.c
+index 93c156782d59..f8375d67e901 100644
+--- a/sound/soc/codecs/wm8991.c
++++ b/sound/soc/codecs/wm8991.c
+@@ -476,14 +476,6 @@ static SOC_ENUM_SINGLE_DECL(wm8991_ainrmux_enum,
+ static const struct snd_kcontrol_new wm8991_dapm_ainrmux_controls =
+ 	SOC_DAPM_ENUM("Route", wm8991_ainrmux_enum);
  
- };
- 
--static const struct snd_kcontrol_new wm8900_dapm_loutput2_control =
--SOC_DAPM_SINGLE("LINEOUT2L Switch", WM8900_REG_POWER3, 6, 1, 0);
+-/* RXVOICE */
+-static const struct snd_kcontrol_new wm8991_dapm_rxvoice_controls[] = {
+-	SOC_DAPM_SINGLE_TLV("LIN4RXN", WM8991_INPUT_MIXER5, WM8991_LR4BVOL_SHIFT,
+-		WM8991_LR4BVOL_MASK, 0, in_mix_tlv),
+-	SOC_DAPM_SINGLE_TLV("RIN4RXP", WM8991_INPUT_MIXER6, WM8991_RL4BVOL_SHIFT,
+-		WM8991_RL4BVOL_MASK, 0, in_mix_tlv),
+-};
 -
--static const struct snd_kcontrol_new wm8900_dapm_routput2_control =
--SOC_DAPM_SINGLE("LINEOUT2R Switch", WM8900_REG_POWER3, 5, 1, 0);
--
- static const struct snd_kcontrol_new wm8900_loutmix_controls[] = {
- SOC_DAPM_SINGLE("LINPUT3 Bypass Switch", WM8900_REG_LOUTMIXCTL1, 7, 1, 0),
- SOC_DAPM_SINGLE("AUX Bypass Switch", WM8900_REG_AUXOUT_CTL, 7, 1, 0),
+ /* LOMIX */
+ static const struct snd_kcontrol_new wm8991_dapm_lomix_controls[] = {
+ 	SOC_DAPM_SINGLE("LOMIX Right ADC Bypass Switch", WM8991_OUTPUT_MIXER1,
 -- 
 2.20.1
 
