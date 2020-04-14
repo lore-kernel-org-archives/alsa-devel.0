@@ -7,58 +7,59 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D344C2BA19
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 12:41:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE033C2BBC7
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 12:42:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 275B32075E
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 12:41:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 790292075E
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 12:42:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="biiJXfhV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 275B32075E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hai57pnS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 790292075E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 83D501695;
-	Tue, 14 Apr 2020 14:40:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 83D501695
+	by alsa0.perex.cz (Postfix) with ESMTPS id D064B16A2;
+	Tue, 14 Apr 2020 14:42:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D064B16A2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586868095;
-	bh=FVVeCNV9T74VPMmqrVZaIiWlYfzhX0LpHxEJbHmY5Ps=;
+	s=default; t=1586868174;
+	bh=qKSaG62CpfCu5i07mnF41kOh2irSiwQqFghsClQ4rJc=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=biiJXfhVmcdqo5YosD6flgeAgQNtCKS+6I8fICwLntpVMyPbHhrtgm1fYYAS2cuYq
-	 WHNwftwrvUDf53Uo9zQLIITEd1JefS5KjlGNMIjLE5t1FdvnK5Gl6YlRklXG6rY5BT
-	 yVLTARs8bsmhOqi9naBMU5UsIH/PfrlSTPhv3wd4=
+	b=hai57pnSFUjmEu6dvWH7OmLXrQTpTllC4S6vbdpWNLmYr6gepJW3qcDkuaMK6Bc8N
+	 fxtEYPnBbHPZKIp9bgzSl0Tnf51NXzSLCOWR6Q8SKmfVMHlPCX05ZEVQ7avIaiY9Ym
+	 IUiSf3H7rq6+gJ92tEbCiQrxt0LdCwMaFCrFU5pw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0C19FF80126;
-	Tue, 14 Apr 2020 14:40:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 689B1F80126;
+	Tue, 14 Apr 2020 14:42:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 12BD1F8013D; Tue, 14 Apr 2020 14:40:43 +0200 (CEST)
+ id 9C8E5F8016F; Tue, 14 Apr 2020 14:41:59 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5DDE8F800B9
- for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 14:40:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5DDE8F800B9
+ by alsa1.perex.cz (Postfix) with ESMTPS id E4F1BF800B9
+ for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 14:41:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4F1BF800B9
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 40E62AC53;
- Tue, 14 Apr 2020 12:40:35 +0000 (UTC)
-Date: Tue, 14 Apr 2020 14:40:35 +0200
-Message-ID: <s5h4ktmjl4s.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 5E058AD63;
+ Tue, 14 Apr 2020 12:41:55 +0000 (UTC)
+Date: Tue, 14 Apr 2020 14:41:55 +0200
+Message-ID: <s5h3696jl2k.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Hui Wang <hui.wang@canonical.com>
 Subject: Re: [PATCH] ALSA: hda: enable the runtime_pm for non-vgaswitcheroo
  hda controllers
-In-Reply-To: <121237cf-8ef9-2a21-8ee3-6c6954e846e2@canonical.com>
+In-Reply-To: <s5h4ktmjl4s.wl-tiwai@suse.de>
 References: <20200414101405.6992-1-hui.wang@canonical.com>
  <s5hmu7ejra2.wl-tiwai@suse.de>
  <121237cf-8ef9-2a21-8ee3-6c6954e846e2@canonical.com>
+ <s5h4ktmjl4s.wl-tiwai@suse.de>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -81,74 +82,88 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 14 Apr 2020 14:35:50 +0200,
-Hui Wang wrote:
+On Tue, 14 Apr 2020 14:40:35 +0200,
+Takashi Iwai wrote:
 > 
+> On Tue, 14 Apr 2020 14:35:50 +0200,
+> Hui Wang wrote:
+> > 
+> > 
+> > On 2020/4/14 下午6:27, Takashi Iwai wrote:
+> > > On Tue, 14 Apr 2020 12:14:05 +0200,
+> > > Hui Wang wrote:
+> > >> Before the pci_driver->probe() is called, the pci subsystem calls
+> > >> runtime_forbib() and runtime_get_sync() on this pci dev, so only call
+> > >> runtime_put_autosuspend() is not enough to enable the runtime_pm on
+> > >> this device.
+> > >>
+> > >> For controllers with vgaswitcheroo feature, the pci/quirks.c will call
+> > >> runtime_allow() for this dev, then the controllers could enter
+> > >> rt_idle/suspend/resume, but for non-vgaswitcheroo controllers like
+> > >> Intel hda controllers, the runtime_pm is not enabled even it calls
+> > >> put_autosuspend(). Need to call runtime_allow() for those controllers
+> > >> in the hda driver.
+> > >>
+> > >> Signed-off-by: Hui Wang <hui.wang@canonical.com>
+> > > Was this behavior changed from the earlier kernels?  I thought this
+> > > was left untouched because it's supposed to be set via udev rules or
+> > > such.
+> > 
+> > Oh, I don't know that,  according to my test with ubuntu rootfs, the
+> > runtime pm is not enabled on Intel's hda controllers. But with the sof
+> > driver, the controller driver calls runtime_allow()
+> > (soc/sof/sof-pci-dev.c), so I sent this patch.
 > 
-> On 2020/4/14 下午6:27, Takashi Iwai wrote:
-> > On Tue, 14 Apr 2020 12:14:05 +0200,
-> > Hui Wang wrote:
-> >> Before the pci_driver->probe() is called, the pci subsystem calls
-> >> runtime_forbib() and runtime_get_sync() on this pci dev, so only call
-> >> runtime_put_autosuspend() is not enough to enable the runtime_pm on
-> >> this device.
-> >>
-> >> For controllers with vgaswitcheroo feature, the pci/quirks.c will call
-> >> runtime_allow() for this dev, then the controllers could enter
-> >> rt_idle/suspend/resume, but for non-vgaswitcheroo controllers like
-> >> Intel hda controllers, the runtime_pm is not enabled even it calls
-> >> put_autosuspend(). Need to call runtime_allow() for those controllers
-> >> in the hda driver.
-> >>
-> >> Signed-off-by: Hui Wang <hui.wang@canonical.com>
-> > Was this behavior changed from the earlier kernels?  I thought this
-> > was left untouched because it's supposed to be set via udev rules or
-> > such.
-> 
-> Oh, I don't know that,  according to my test with ubuntu rootfs, the
-> runtime pm is not enabled on Intel's hda controllers. But with the sof
-> driver, the controller driver calls runtime_allow()
-> (soc/sof/sof-pci-dev.c), so I sent this patch.
+> OK, I just watned to know the situation.  So it's no regression but
+> rather to align the behavior among drivers, and that's fine.
+> Let's take the patch, then.
 
-OK, I just watned to know the situation.  So it's no regression but
-rather to align the behavior among drivers, and that's fine.
-Let's take the patch, then.
+On the second thought, we can drop the vga_switcheroo check and always
+allow it?  We do want to enable in anyway, and calling it twice should
+be fine.
 
 
 thanks,
 
 Takashi
 
+
 > 
-> Regards,
 > 
-> Hui.
+> thanks,
 > 
-> > OTOH, enabling the runtime PM is almost mandatory for modern systems,
-> > and I'm fine to apply this kind of forcible enablement.
-> >
-> >
-> > thanks,
-> >
-> > Takashi
-> >
-> >
-> >> ---
-> >>   sound/pci/hda/hda_intel.c | 2 ++
-> >>   1 file changed, 2 insertions(+)
-> >>
-> >> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> >> index 8519051a426e..779705bef88b 100644
-> >> --- a/sound/pci/hda/hda_intel.c
-> >> +++ b/sound/pci/hda/hda_intel.c
-> >> @@ -2356,6 +2356,8 @@ static int azx_probe_continue(struct azx *chip)
-> >>     	if (azx_has_pm_runtime(chip)) {
-> >>   		pm_runtime_use_autosuspend(&pci->dev);
-> >> +		if (!use_vga_switcheroo(chip))
-> >> +			pm_runtime_allow(&pci->dev);
-> >>   		pm_runtime_put_autosuspend(&pci->dev);
-> >>   	}
-> >>   -- 
-> >> 2.17.1
-> >>
+> Takashi
 > 
+> > 
+> > Regards,
+> > 
+> > Hui.
+> > 
+> > > OTOH, enabling the runtime PM is almost mandatory for modern systems,
+> > > and I'm fine to apply this kind of forcible enablement.
+> > >
+> > >
+> > > thanks,
+> > >
+> > > Takashi
+> > >
+> > >
+> > >> ---
+> > >>   sound/pci/hda/hda_intel.c | 2 ++
+> > >>   1 file changed, 2 insertions(+)
+> > >>
+> > >> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> > >> index 8519051a426e..779705bef88b 100644
+> > >> --- a/sound/pci/hda/hda_intel.c
+> > >> +++ b/sound/pci/hda/hda_intel.c
+> > >> @@ -2356,6 +2356,8 @@ static int azx_probe_continue(struct azx *chip)
+> > >>     	if (azx_has_pm_runtime(chip)) {
+> > >>   		pm_runtime_use_autosuspend(&pci->dev);
+> > >> +		if (!use_vga_switcheroo(chip))
+> > >> +			pm_runtime_allow(&pci->dev);
+> > >>   		pm_runtime_put_autosuspend(&pci->dev);
+> > >>   	}
+> > >>   -- 
+> > >> 2.17.1
+> > >>
+> > 
