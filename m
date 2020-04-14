@@ -2,84 +2,76 @@ Return-Path: <SRS0=tzaW=56=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93215C38A2C
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 15:10:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 70E08C2BA19
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 15:13:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 218162085B
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 15:10:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EF87A20768
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 15:13:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZhLcFY7C"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 218162085B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="P+iRD5OG";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="YG9F8gg2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EF87A20768
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7ABE716E3;
-	Tue, 14 Apr 2020 17:09:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7ABE716E3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3447716E6;
+	Tue, 14 Apr 2020 17:03:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3447716E6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586877045;
-	bh=oFMy1k18mvmf4OUSUBrAoalbWKdnhowqEDmrwSF7/J8=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=ZhLcFY7CBwCcAssxk7OIbyQnDmLgh8PJFg6SECmU4E3/9NnblXT7hrr0ON4s4zLvw
-	 BEoirWILRyjErHfbkALpakB3/+ct7QkmX8eIPBFZhgBhcTsx9houRBdUWanNJKX44b
-	 uTRuvBFOLaTmVegXlL/3cSBKi8g/6+Z9oF5xjdpc=
+	s=default; t=1586876672;
+	bh=Y9T3JF07Rbt2p7DDoNici8aob1hVC38JPFHnL5AV/CI=;
+	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=P+iRD5OG1AQNXoLLuwbM8M0jp2u9b4ZmcGqLUlrnh55kQephNGz7y+x+3LreBhG1w
+	 uai5scdaR8ApqkbxQYB7FbQg6wDIl/jZWGKo4OCbsY7P9A8TnsJPE5bfzc4Ts/5Zq8
+	 ikzGS9q1W1q9AgC2z3SwbIGpKuxSlHGruDCyl+EY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DE2DCF8029A;
-	Tue, 14 Apr 2020 16:50:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BE115F803BD;
+	Tue, 14 Apr 2020 16:48:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 17483F802A0; Tue, 14 Apr 2020 16:50:33 +0200 (CEST)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ id C8DC5F80377; Tue, 14 Apr 2020 16:48:36 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 378C7F8036D
+ for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 16:48:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 378C7F8036D
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="YG9F8gg2"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 75637F800F5
- for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 16:50:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75637F800F5
-IronPort-SDR: HAui0ScrFw/ipP2kYCbVwFlJ1+skFfpzJov1NPlJsFpM756YJV3i16mhci1WJZBwX4GcOkQUOf
- 9noXTq/YQOzQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
- by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Apr 2020 07:50:26 -0700
-IronPort-SDR: oa2zvcLMiMYunwJX3n9IURpRxFu+jBxtLqXxgNWnLVssizVt+6mI3tJD51M0AcDg3FlHIzddx0
- hJZpPg6b0YGw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,382,1580803200"; d="scan'208";a="288238064"
-Received: from bjkulkar-mobl.amr.corp.intel.com (HELO [10.212.152.71])
- ([10.212.152.71])
- by fmsmga002.fm.intel.com with ESMTP; 14 Apr 2020 07:50:24 -0700
-Subject: Re: [PATCH] ASoC: Intel: sst: ipc command timeout
-To: Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
-References: <1586506705-3194-1-git-send-email-brent.lu@intel.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <4f495cf1-4740-cf3b-196f-cc850c503b43@linux.intel.com>
-Date: Tue, 14 Apr 2020 09:50:24 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
-MIME-Version: 1.0
-In-Reply-To: <1586506705-3194-1-git-send-email-brent.lu@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: Kate Stewart <kstewart@linuxfoundation.org>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Richard Fontana <rfontana@redhat.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- linux-kernel@vger.kernel.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- clang-built-linux@googlegroups.com, Mark Brown <broonie@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>, Allison Randal <allison@lohutok.net>
+ by mail.kernel.org (Postfix) with ESMTPSA id 1744F2078B;
+ Tue, 14 Apr 2020 14:48:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1586875708;
+ bh=Y9T3JF07Rbt2p7DDoNici8aob1hVC38JPFHnL5AV/CI=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:From;
+ b=YG9F8gg24h5sDhOFdzfDIrciXaXCzKVhrd64W0ELoW2d1JK6UpRrKG0542z/yAzEu
+ H7vJbuF5LzHAUFL/rGJzHCbCyDfEzNoYhwn6ca/ovFvQ5K7jfyn5NpgAi9TT6Jhv4l
+ DgYAaH21dkvxTmQjD5jXxOUHwc0oW9q/1hM6Bde8=
+Date: Tue, 14 Apr 2020 15:48:26 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Yong Zhi <yong.zhi@intel.com>
+Subject: Applied "ASoC: Intel: sof_da7219_max98373: Add BE dailink for
+ dmic16k" to the asoc tree
+In-Reply-To: <20200409185827.16255-2-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20200409185827.16255-2-pierre-louis.bossart@linux.intel.com>
+X-Patchwork-Hint: ignore
+Cc: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,53 +87,80 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+The patch
 
+   ASoC: Intel: sof_da7219_max98373: Add BE dailink for dmic16k
 
-On 4/10/20 3:18 AM, Brent Lu wrote:
-> After sending an ipc command to DSP, the host waits for the reply message
-> which will be read from SST_IPCD register in sst_byt_irq_thread() to
-> complete the transaction. Sometimes the value read from SST_IPCD register
-> is still the reply message for previous command instead of the waiting
-> command so ipc command timeout happens.
-> 
-> In an experiment we read the same SST_IPCD register again when the defect
-> happens and found the value of second read is different from previous one
-> and is the correct reply message. It suggests the DSP is okay but the way
-> we read the register may be the cause.
-> 
-> Currently the driver is using memcpy_fromio() to read the value of 64-bit
-> registers. This function is based on __builtin_memcpy() call and depends
-> on the implementation of compiler. Since this issue happens right after
-> the toolchain switched from clang 10 to clang 11, we replace the register
-> read with two readl() function calls to avoid all optimization from
-> compiler's library.
+has been applied to the asoc tree at
 
-I have mixed feelings about this.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-One one hand, this looks simple enough.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-But on the other hand we have other users of memcpy_fromio(), including 
-SOF drivers, so what are the odds we have the same problems in other 
-places? Wouldn't it be safer to either change this function so that it's 
-behavior is not ambiguous or compiler-dependent, or fix the compiler?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> 
-> Signed-off-by: Brent Lu <brent.lu@intel.com>
-> ---
->   sound/soc/intel/common/sst-dsp.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/intel/common/sst-dsp.c b/sound/soc/intel/common/sst-dsp.c
-> index ec66be2..12af7aa 100644
-> --- a/sound/soc/intel/common/sst-dsp.c
-> +++ b/sound/soc/intel/common/sst-dsp.c
-> @@ -42,7 +42,7 @@ u64 sst_shim32_read64(void __iomem *addr, u32 offset)
->   {
->   	u64 val;
->   
-> -	memcpy_fromio(&val, addr + offset, sizeof(val));
-> +	sst_memcpy_fromio_32(NULL, &val, addr + offset, sizeof(val));
->   	return val;
->   }
->   EXPORT_SYMBOL_GPL(sst_shim32_read64);
-> 
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+From a8bb72f160020db5d7f81824b2dba6c8e29ef67a Mon Sep 17 00:00:00 2001
+From: Yong Zhi <yong.zhi@intel.com>
+Date: Thu, 9 Apr 2020 13:58:15 -0500
+Subject: [PATCH] ASoC: Intel: sof_da7219_max98373: Add BE dailink for dmic16k
+
+Add dmic16k BE dailink for keyword detection support, FE is
+added in topology tplg file.
+
+Signed-off-by: Yong Zhi <yong.zhi@intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Link: https://lore.kernel.org/r/20200409185827.16255-2-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/boards/sof_da7219_max98373.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/sound/soc/intel/boards/sof_da7219_max98373.c b/sound/soc/intel/boards/sof_da7219_max98373.c
+index b707dd3b5625..8b5b74ba349f 100644
+--- a/sound/soc/intel/boards/sof_da7219_max98373.c
++++ b/sound/soc/intel/boards/sof_da7219_max98373.c
+@@ -265,6 +265,9 @@ SND_SOC_DAILINK_DEF(dmic_pin,
+ SND_SOC_DAILINK_DEF(dmic_codec,
+ 	DAILINK_COMP_ARRAY(COMP_CODEC("dmic-codec", "dmic-hifi")));
+ 
++SND_SOC_DAILINK_DEF(dmic16k_pin,
++	DAILINK_COMP_ARRAY(COMP_CPU("DMIC16k Pin")));
++
+ SND_SOC_DAILINK_DEF(idisp1_pin,
+ 	DAILINK_COMP_ARRAY(COMP_CPU("iDisp1 Pin")));
+ SND_SOC_DAILINK_DEF(idisp1_codec,
+@@ -337,6 +340,14 @@ static struct snd_soc_dai_link dais[] = {
+ 		.no_pcm = 1,
+ 		SND_SOC_DAILINK_REG(idisp3_pin, idisp3_codec, platform),
+ 	},
++	{
++		.name = "dmic16k",
++		.id = 6,
++		.ignore_suspend = 1,
++		.dpcm_capture = 1,
++		.no_pcm = 1,
++		SND_SOC_DAILINK_REG(dmic16k_pin, dmic_codec, platform),
++	}
+ };
+ 
+ static struct snd_soc_card card_da7219_m98373 = {
+-- 
+2.20.1
+
