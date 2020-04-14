@@ -2,77 +2,73 @@ Return-Path: <SRS0=tzaW=56=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0371CC2BA19
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 15:18:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A0FCC38A2B
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 15:19:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8090D2076B
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 15:18:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9DDB8206D5
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 15:19:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HwrCDjKx";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="FTatq+8/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8090D2076B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="R+z2IRJq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9DDB8206D5
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2AD0616C5;
-	Tue, 14 Apr 2020 17:06:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2AD0616C5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1154516B6;
+	Tue, 14 Apr 2020 17:18:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1154516B6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586876841;
-	bh=ldEEL4cIepMUOxNBtqmrBP7HCQyLCKajKpKDVOEqdyk=;
-	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=HwrCDjKx8mFNbXP094BiWsrcs2uKRHAz0iCpDRHT/SJfdOgn0lDGwKq/HAu9oGViF
-	 SrRxTwQFnS/KK6ipqPuaYGQk0Wumh3zipkS2BZtHa3gGaJXqRDS5Pf0ypJUfbIARhg
-	 ne6ODK+YxFuKV57zfk+UfWnMrld7XvxkG+kW9YLk=
+	s=default; t=1586877563;
+	bh=N+K9nFQn6zQK1PUyuepi7c8O02AuuL+Lf00AhsuMHiI=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=R+z2IRJqe1z/gVfffa+8TvcuNvy0lu8igUqSe73mNz/Po99rimaVxINnH1Ln3bxY6
+	 de80U5lJCeZjEpDAjztJLDy1/Lwi1wPV86zyhI07/ZqgSxN4QK/C4z+VWEexWHPBM6
+	 0s9lDF26CKk9ptcg1fxoIQuoSz/bRKPcyn5d7L/A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9C0E0F803E0;
-	Tue, 14 Apr 2020 16:49:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A8E7FF80115;
+	Tue, 14 Apr 2020 17:18:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F29CEF803DF; Tue, 14 Apr 2020 16:48:59 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id A15B8F8013D; Tue, 14 Apr 2020 17:18:30 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BC576F803DF
- for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 16:48:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC576F803DF
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="FTatq+8/"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id B047C2076D;
- Tue, 14 Apr 2020 14:48:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1586875734;
- bh=ldEEL4cIepMUOxNBtqmrBP7HCQyLCKajKpKDVOEqdyk=;
- h=Date:From:To:Cc:Subject:In-Reply-To:From;
- b=FTatq+8/TzyshmqpGd3OzEgfzJrTDl76HyxcHvWIa9fIRJOeUqGAqaafLvKlTqDOq
- Hzvr7DIrVOmWVvISK08xL+zc/yByd5CNckgMbbFkQ/Zj/ykY5jF6zyfnjq17kL2rrQ
- kFfzbrJdzvhmtxvpXQo0a1jx+M+Y+PYqwsIX0uxQ=
-Date: Tue, 14 Apr 2020 15:48:51 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: Applied "ASoC: soc-core: Add dynamic debug logs in
- soc_dai_link_sanity_check()" to the asoc tree
-In-Reply-To: <20200409184416.15591-5-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20200409184416.15591-5-pierre-louis.bossart@linux.intel.com>
-X-Patchwork-Hint: ignore
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- tiwai@suse.de, Daniel Baluta <daniel.baluta@gmail.com>,
+ by alsa1.perex.cz (Postfix) with ESMTPS id 21B0FF800B9
+ for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 17:18:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21B0FF800B9
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 086DEACCE;
+ Tue, 14 Apr 2020 15:18:27 +0000 (UTC)
+Date: Tue, 14 Apr 2020 17:18:27 +0200
+Message-ID: <s5hk12ihz98.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: sylvain.bertrand@gmail.com
+Subject: Re: sw_params for a direct-ed(dmix) hw pcm
+In-Reply-To: <20200406134957.GA643@freedom>
+References: <1baab0fd-d802-3707-645f-d5dc4bf6c32c@linux.intel.com>
+ <20200328203744.GA2398@freedom>
+ <59266c58-96d8-93e9-bc8f-86e9fccf8d60@linux.intel.com>
+ <20200328222021.GA4610@freedom> <s5hr1xbd2su.wl-tiwai@suse.de>
+ <s5hlfng7oaj.wl-tiwai@suse.de> <20200401152538.GA11377@freedom>
+ <s5hwo6z2o3r.wl-tiwai@suse.de> <20200401202126.GA9511@freedom>
+ <20200402190326.GA12391@freedom> <20200406134957.GA643@freedom>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Mark Brown <broonie@kernel.org>
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,101 +84,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
+On Mon, 06 Apr 2020 15:49:57 +0200,
+sylvain.bertrand@gmail.com wrote:
+> 
+> No pb so far (I tested mostly monotonic_raw and default)
+> 
+> Can anybody test it with the pulseaudio alsa plugin?
 
-   ASoC: soc-core: Add dynamic debug logs in soc_dai_link_sanity_check()
+Well, using dmix/dsnoop together with PA is a very rare usage, so it's
+not really cared much.
 
-has been applied to the asoc tree at
+If the patch worked for you, basically it's OK to accept.
+So, could you post the proper patch for the merge?
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+thanks,
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From b2acc24c805a42b6ebfe8b8ae09dbf9c994c5604 Mon Sep 17 00:00:00 2001
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Date: Thu, 9 Apr 2020 13:44:16 -0500
-Subject: [PATCH] ASoC: soc-core: Add dynamic debug logs in
- soc_dai_link_sanity_check()
-
-When a platform device is created successfully but the machine driver
-probe fails due to errors with missing components during the card bind
-stage, no error is propagated or logged. To help flag such problems,
-add a dynamic debug log.
-
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Reviewed-by: Daniel Baluta <daniel.baluta@gmail.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Link: https://lore.kernel.org/r/20200409184416.15591-5-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/soc-core.c | 18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 843b8b1c89d4..8b2f6dd2fc8e 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -865,8 +865,12 @@ static int soc_dai_link_sanity_check(struct snd_soc_card *card,
- 		 * Defer card registration if codec component is not added to
- 		 * component list.
- 		 */
--		if (!soc_find_component(codec))
-+		if (!soc_find_component(codec)) {
-+			dev_dbg(card->dev,
-+				"ASoC: codec component %s not found for link %s\n",
-+				codec->name, link->name);
- 			return -EPROBE_DEFER;
-+		}
- 	}
- 
- 	for_each_link_platforms(link, i, platform) {
-@@ -886,8 +890,12 @@ static int soc_dai_link_sanity_check(struct snd_soc_card *card,
- 		 * Defer card registration if platform component is not added to
- 		 * component list.
- 		 */
--		if (!soc_find_component(platform))
-+		if (!soc_find_component(platform)) {
-+			dev_dbg(card->dev,
-+				"ASoC: platform component %s not found for link %s\n",
-+				platform->name, link->name);
- 			return -EPROBE_DEFER;
-+		}
- 	}
- 
- 	for_each_link_cpus(link, i, cpu) {
-@@ -908,8 +916,12 @@ static int soc_dai_link_sanity_check(struct snd_soc_card *card,
- 		 * component list.
- 		 */
- 		if ((cpu->of_node || cpu->name) &&
--		    !soc_find_component(cpu))
-+		    !soc_find_component(cpu)) {
-+			dev_dbg(card->dev,
-+				"ASoC: cpu component %s not found for link %s\n",
-+				cpu->name, link->name);
- 			return -EPROBE_DEFER;
-+		}
- 
- 		/*
- 		 * At least one of CPU DAI name or CPU device name/node must be
--- 
-2.20.1
-
+Takashi
