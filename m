@@ -2,67 +2,96 @@ Return-Path: <SRS0=tzaW=56=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D86F1C2BA19
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 10:28:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D8FBDC2BA19
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 11:04:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 55AF42076B
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 10:28:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 647892072D
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 11:04:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vB3wbhc8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 55AF42076B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vXs1skmQ";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DT7CG0ss"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 647892072D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9F3ED168D;
-	Tue, 14 Apr 2020 12:27:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F3ED168D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 98644168D;
+	Tue, 14 Apr 2020 13:04:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98644168D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586860125;
-	bh=o6lolCB+yHIlu1upDMQQYQj6bQ/5pNSLPBgHZZ7LRvo=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=vB3wbhc80o9gNDBXlBcd6rGcY8D517+RvgmdkhuPJafG/iBysm5x/wrs1CyLzc8rr
-	 TnEd8/pjvBjBxVY/28qMtY+BbMmiClPJtsegBNnCDtc8b6m7q6KP0NlRDqkOtxaRRt
-	 jl8PaD6L4kkCuUiRNE2vAhtetDCBFTXgrIUBAyus=
+	s=default; t=1586862291;
+	bh=NEXF3ezdf542MnbQ15GHQkULaaUEy4QyP2AyRlL6ogE=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=vXs1skmQicuP7KX4myU/Kg1Q+nWpcewdKz3MABFHvNw4hEnn+Mka5wVlqcI5H9/cE
+	 7+KF6N7g7rIRzPhu8A5WmRNXqahn5u7U9zGzpjihfxn1dogHjy6Bq5WiRF2dctTvi5
+	 OGMxXtQNZBO/ckPP3mWhSbYz3hdq5nZAC/4clR88=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 318E1F80126;
-	Tue, 14 Apr 2020 12:27:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 28168F80126;
+	Tue, 14 Apr 2020 13:04:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 82A42F8013D; Tue, 14 Apr 2020 12:27:54 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 8CE1AF8013D; Tue, 14 Apr 2020 13:03:59 +0200 (CEST)
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
+ [IPv6:2a00:1450:4864:20::443])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 99845F800F5
- for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 12:27:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99845F800F5
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id EAA94AAFD;
- Tue, 14 Apr 2020 10:27:48 +0000 (UTC)
-Date: Tue, 14 Apr 2020 12:27:49 +0200
-Message-ID: <s5hmu7ejra2.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Hui Wang <hui.wang@canonical.com>
-Subject: Re: [PATCH] ALSA: hda: enable the runtime_pm for non-vgaswitcheroo
- hda controllers
-In-Reply-To: <20200414101405.6992-1-hui.wang@canonical.com>
-References: <20200414101405.6992-1-hui.wang@canonical.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 88F85F80115
+ for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 13:03:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88F85F80115
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="DT7CG0ss"
+Received: by mail-wr1-x443.google.com with SMTP id h9so13797676wrc.8
+ for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 04:03:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=Kozp6i3Lacgef5+4DSMHoj7MA9dOzLCEz2jUPeMWfbA=;
+ b=DT7CG0ssfUne9lNYdPJ9Ecue56wKlgS2k6+ncHI0dPVClo4XpziRxwmp23K8foCmoW
+ Ies2xoFcXT9MXxE5iA+V6bHWY+JTD6hewBKACAJeqfyZDKIu8GPbEaLyvgNm+U3awvAt
+ mbopGWym3uqalLQSDP58sUntlxfxDSo4HkgjF/Hk+TLm9DQOgxAbf3YLvRuHfd5iQ8LN
+ waM/w2GqFMv0wIzsspgGB4Q9OZRyN7XXo9NgIMwnnkJDf5ZLlvpdoJnatqsbTlL1FUGF
+ sG2ZBK/c90tuKWrzt4k0obq2TMLvpzB1+Ny8vy/agL4I3jM4rhJ8kO4XAHSm675H/RBU
+ 4y0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=Kozp6i3Lacgef5+4DSMHoj7MA9dOzLCEz2jUPeMWfbA=;
+ b=jK3/FtH5Vi/qDEjDIMNQKZIpWiiHWaRfpjPHmp5mT2+xsnrC/Sn+iO8+sE6yeZdSZ4
+ 4ZHlYt2Vd2UzXqaS5guZcLEkHH+jaBUNx/bBuyduj0Ck7PCrBJXJC6SCvqxzoX5VwVlv
+ UghGWG8FhHmqnRBxW/IDJw8xBvEPzX4wy/LU5TFhuGtldGNTTSZLbLKzbk5CoJsuaREh
+ Ciq2L3py3vf/FVkLy/E4nLtzF6EQ4vI2XZuMy06IaiFJ0HQb7CTLh2cqLDaEDx/EE9vd
+ +VbJnEu9m0+4t1f2UVrs7zoNL0QxfWRW+tIaDSGUab3YpR94+Z3Oe64SYambQGAIXF5U
+ 6mQQ==
+X-Gm-Message-State: AGi0PuabX/jCTZv1YMbDxRDDXMUX6d3A6d0ztuQ9q8pgeh2PbxbjVu8n
+ xC8vBcLuH6susBKr2Y52h4Vl4Rk6Q5s=
+X-Google-Smtp-Source: APiQypLnFggHzw40uCeOKStfMH7DEa3ix/MQQT+27B0+i0Gpd4CjYgAioKfmQb4l8jR9Raq4nljbAA==
+X-Received: by 2002:a5d:664f:: with SMTP id f15mr22603091wrw.72.1586862235663; 
+ Tue, 14 Apr 2020 04:03:55 -0700 (PDT)
+Received: from srini-hackbox.lan
+ (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
+ by smtp.gmail.com with ESMTPSA id 5sm17989784wmg.34.2020.04.14.04.03.54
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 14 Apr 2020 04:03:55 -0700 (PDT)
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: broonie@kernel.org
+Subject: [RESEND PATCH] ASoC: wsa881x: mark read_only_wordlength flag
+Date: Tue, 14 Apr 2020 12:03:47 +0100
+Message-Id: <20200414110347.23829-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: vkoul@kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,53 +107,65 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 14 Apr 2020 12:14:05 +0200,
-Hui Wang wrote:
-> 
-> Before the pci_driver->probe() is called, the pci subsystem calls
-> runtime_forbib() and runtime_get_sync() on this pci dev, so only call
-> runtime_put_autosuspend() is not enough to enable the runtime_pm on
-> this device.
-> 
-> For controllers with vgaswitcheroo feature, the pci/quirks.c will call
-> runtime_allow() for this dev, then the controllers could enter
-> rt_idle/suspend/resume, but for non-vgaswitcheroo controllers like
-> Intel hda controllers, the runtime_pm is not enabled even it calls
-> put_autosuspend(). Need to call runtime_allow() for those controllers
-> in the hda driver.
-> 
-> Signed-off-by: Hui Wang <hui.wang@canonical.com>
+WSA881x works in PDM mode so the wordlength is fixed, which also makes
+the only field "WordLength" in DPN_BlockCtrl1 register a read-only.
+Writing to this register will throw up errors with Qualcomm Controller.
+So use ro_blockctrl1_reg flag to mark this field as read-only so that
+core will not write to this register.
 
-Was this behavior changed from the earlier kernels?  I thought this
-was left untouched because it's supposed to be set via udev rules or
-such.
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+Hi Mark,
 
-OTOH, enabling the runtime PM is almost mandatory for modern systems,
-and I'm fine to apply this kind of forcible enablement.
+For some reason this patch was missed during last merge window,
+Other patch in this series is already in mainline.
+Without this patch audio is not functional on DB845c and other SDM845
+based platforms.
 
+Can you please take this for next possible rc.
 
-thanks,
+Thanks,
+srini
 
-Takashi
+ sound/soc/codecs/wsa881x.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
+diff --git a/sound/soc/codecs/wsa881x.c b/sound/soc/codecs/wsa881x.c
+index f2d6f2f81f14..d39d479e2378 100644
+--- a/sound/soc/codecs/wsa881x.c
++++ b/sound/soc/codecs/wsa881x.c
+@@ -394,6 +394,7 @@ static struct sdw_dpn_prop wsa_sink_dpn_prop[WSA881X_MAX_SWR_PORTS] = {
+ 		.min_ch = 1,
+ 		.max_ch = 1,
+ 		.simple_ch_prep_sm = true,
++		.read_only_wordlength = true,
+ 	}, {
+ 		/* COMP */
+ 		.num = 2,
+@@ -401,6 +402,7 @@ static struct sdw_dpn_prop wsa_sink_dpn_prop[WSA881X_MAX_SWR_PORTS] = {
+ 		.min_ch = 1,
+ 		.max_ch = 1,
+ 		.simple_ch_prep_sm = true,
++		.read_only_wordlength = true,
+ 	}, {
+ 		/* BOOST */
+ 		.num = 3,
+@@ -408,6 +410,7 @@ static struct sdw_dpn_prop wsa_sink_dpn_prop[WSA881X_MAX_SWR_PORTS] = {
+ 		.min_ch = 1,
+ 		.max_ch = 1,
+ 		.simple_ch_prep_sm = true,
++		.read_only_wordlength = true,
+ 	}, {
+ 		/* VISENSE */
+ 		.num = 4,
+@@ -415,6 +418,7 @@ static struct sdw_dpn_prop wsa_sink_dpn_prop[WSA881X_MAX_SWR_PORTS] = {
+ 		.min_ch = 1,
+ 		.max_ch = 1,
+ 		.simple_ch_prep_sm = true,
++		.read_only_wordlength = true,
+ 	}
+ };
+ 
+-- 
+2.21.0
 
-> ---
->  sound/pci/hda/hda_intel.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> index 8519051a426e..779705bef88b 100644
-> --- a/sound/pci/hda/hda_intel.c
-> +++ b/sound/pci/hda/hda_intel.c
-> @@ -2356,6 +2356,8 @@ static int azx_probe_continue(struct azx *chip)
->  
->  	if (azx_has_pm_runtime(chip)) {
->  		pm_runtime_use_autosuspend(&pci->dev);
-> +		if (!use_vga_switcheroo(chip))
-> +			pm_runtime_allow(&pci->dev);
->  		pm_runtime_put_autosuspend(&pci->dev);
->  	}
->  
-> -- 
-> 2.17.1
-> 
