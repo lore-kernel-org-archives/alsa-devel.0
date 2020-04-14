@@ -2,66 +2,73 @@ Return-Path: <SRS0=tzaW=56=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9579C2BA19
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 12:53:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46C19C2BA19
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 12:57:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 48699206A2
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 12:53:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B2C1C2078B
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 12:57:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="E+GtLqM3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 48699206A2
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pironex.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uTLhF5p9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B2C1C2078B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A62EF16AD;
-	Tue, 14 Apr 2020 14:52:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A62EF16AD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0DD1C1696;
+	Tue, 14 Apr 2020 14:56:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0DD1C1696
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586868784;
-	bh=7tt+EjWGTNaHTNvghQ41Refisdw52rkXhsMzSI24SE8=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1586869052;
+	bh=BU9x1tm1AUKAnMTwNLwQJGM84CaHqKKkFKQce2k/a7U=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=E+GtLqM3vhF+iigqtII/sR3Io2M0m5qB8IxIUgtKIkEnmQtKOBpc4h0Z6zCgNr9cc
-	 HthDkXsosEbXFJugD2KO2EdgGfFkHvAlXw8+eBv40e7S58Km0G52h2Esdut/GmWFG1
-	 JYBdWNXkMw5fVj3kjgZ7cehHRIuTpoVB0x034A6k=
+	b=uTLhF5p9IBNixuzSC0f10ZrZUnqqDO5JA+JRHUq+lN43YCZ92ltSLwhlwECVSsVPW
+	 VJrq4g1EwoW25L5Y+Zl4RKQDkw8k8kRXDUOP9ejTqT0V46tq92H73rajVhfo158Irs
+	 Vp5D7Q5YM6YB+pgG0uU1OzKWYgRFgAMvmWBgV7ms=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 554F4F8016F;
-	Tue, 14 Apr 2020 14:51:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 014D5F80126;
+	Tue, 14 Apr 2020 14:56:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7A937F8013D; Tue, 14 Apr 2020 14:25:46 +0200 (CEST)
-Received: from dd10228.kasserver.com (dd10228.kasserver.com [85.13.133.23])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id A4D2BF8013D; Tue, 14 Apr 2020 14:56:37 +0200 (CEST)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D2179F800B9
- for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 14:25:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D2179F800B9
-Received: from devpool17.fritz.box (ip1f107c11.dynamic.kabel-deutschland.de
- [31.16.124.17])
- by dd10228.kasserver.com (Postfix) with ESMTPSA id 0940F6CC00F4;
- Tue, 14 Apr 2020 14:25:41 +0200 (CEST)
-From: Philipp Puschmann <p.puschmann@pironex.de>
-To: broonie@kernel.org
-Subject: Re: Re: [PATCH] ASoC: tas571x: disable regulators on failed probe
-Date: Tue, 14 Apr 2020 14:25:40 +0200
-Message-Id: <20200414122540.3367658-1-p.puschmann@pironex.de>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200414113635.GD5412@sirena.org.uk>
-References: <20200414113635.GD5412@sirena.org.uk>
+ by alsa1.perex.cz (Postfix) with ESMTPS id D9141F800B9
+ for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 14:56:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9141F800B9
+Received: from [222.130.141.248] (helo=[192.168.2.104])
+ by youngberry.canonical.com with esmtpsa
+ (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
+ (envelope-from <hui.wang@canonical.com>)
+ id 1jOL7B-00033s-Uh; Tue, 14 Apr 2020 12:56:34 +0000
+Subject: Re: [PATCH] ALSA: hda: enable the runtime_pm for non-vgaswitcheroo
+ hda controllers
+To: Roy Spliet <nouveau@spliet.org>, Takashi Iwai <tiwai@suse.de>
+References: <20200414101405.6992-1-hui.wang@canonical.com>
+ <s5hmu7ejra2.wl-tiwai@suse.de>
+ <121237cf-8ef9-2a21-8ee3-6c6954e846e2@canonical.com>
+ <d73a3c02-360b-12d9-6e4b-fff60f819cd6@spliet.org>
+From: Hui Wang <hui.wang@canonical.com>
+Message-ID: <9e8a7b1b-decc-d149-6b86-01946df82d54@canonical.com>
+Date: Tue, 14 Apr 2020 20:56:26 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
+In-Reply-To: <d73a3c02-360b-12d9-6e4b-fff60f819cd6@spliet.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Mailman-Approved-At: Tue, 14 Apr 2020 14:51:17 +0200
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- lgirdwood@gmail.com, nhuck@google.com, p.puschmann@pironex.de,
- tglx@linutronix.de, cernekee@chromium.org
+Content-Language: en-US
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,24 +84,85 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
->> If probe fails after enabling the regulators regulator_put is called for
->> each supply without having them disabled before. This produces some
->> warnings like
->>=20
->> WARNING: CPU: 0 PID: 90 at drivers/regulator/core.c:2044 _regulator_put.part.0+0x154/0x15c
->> [<c010f7a8>] (unwind_backtrace) from [<c010c544>] (show_stack+0x10/0x14)
->> [<c010c544>] (show_stack) from [<c012b640>] (__warn+0xd0/0xf4)
->> [<c012b640>] (__warn) from [<c012b9b4>] (warn_slowpath_fmt+0x64/0xc4)
->> [<c012b9b4>] (warn_slowpath_fmt) from [<c04c4064>] (_regulator_put.part.0+0x154/0x15c)
+
+On 2020/4/14 下午8:42, Roy Spliet wrote:
+> Dear Hui, Takashi,
 >
->Please think hard before including complete backtraces in upstream
->reports, they are very large and contain almost no useful information
->relative to their size so often obscure the relevant content in your
->message. If part of the backtrace is usefully illustrative (it often is
->for search engines if nothing else) then it's usually better to pull out
->the relevant sections.
+> Op 14-04-2020 om 13:35 schreef Hui Wang:
+>>
+>> On 2020/4/14 下午6:27, Takashi Iwai wrote:
+>>> On Tue, 14 Apr 2020 12:14:05 +0200,
+>>> Hui Wang wrote:
+>>>> Before the pci_driver->probe() is called, the pci subsystem calls
+>>>> runtime_forbib() and runtime_get_sync() on this pci dev, so only call
+>>>> runtime_put_autosuspend() is not enough to enable the runtime_pm on
+>>>> this device.
+>>>>
+>>>> For controllers with vgaswitcheroo feature, the pci/quirks.c will call
+>>>> runtime_allow() for this dev, then the controllers could enter
+>>>> rt_idle/suspend/resume, but for non-vgaswitcheroo controllers like
+>>>> Intel hda controllers, the runtime_pm is not enabled even it calls
+>>>> put_autosuspend(). Need to call runtime_allow() for those controllers
+>>>> in the hda driver.
+>
+> From what I can tell there are no ill effects of calling 
+> runtime_allow() twice. Technically, the check against 
+> use_vga_switcheroo() is thus redundant.
+> Is there a good reason why runtime_allow() is called in the pci quirks 
+> rather than in hda_intel? Is it a suggestion to perform this call in 
+> hda_intel regardless of whether it's a switcheroo-device or not, and 
+> removing calls to runtime_allow() from the PCI quirks?
 
-You are right. I will take care next time.
+I guess after the hda driver calls the _allow() unconditionally, we 
+could remove the _allow() in the pci/quirks.c. But it is no harm keeping 
+it since _allow() could be called many times.
 
-Regards,
-Philipp
+Thanks,
+
+Hui.
+
+> Thanks. Best,
+>
+> Roy
+>>>>
+>>>> Signed-off-by: Hui Wang <hui.wang@canonical.com>
+>>> Was this behavior changed from the earlier kernels?  I thought this
+>>> was left untouched because it's supposed to be set via udev rules or
+>>> such.
+>>
+>> Oh, I don't know that,  according to my test with ubuntu rootfs, the 
+>> runtime pm is not enabled on Intel's hda controllers. But with the 
+>> sof driver, the controller driver calls runtime_allow() 
+>> (soc/sof/sof-pci-dev.c), so I sent this patch.
+>>
+>> Regards,
+>>
+>> Hui.
+>>
+>>> OTOH, enabling the runtime PM is almost mandatory for modern systems,
+>>> and I'm fine to apply this kind of forcible enablement.
+>>>
+>>>
+>>> thanks,
+>>>
+>>> Takashi
+>>>
+>>>
+>>>> ---
+>>>>   sound/pci/hda/hda_intel.c | 2 ++
+>>>>   1 file changed, 2 insertions(+)
+>>>>
+>>>> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+>>>> index 8519051a426e..779705bef88b 100644
+>>>> --- a/sound/pci/hda/hda_intel.c
+>>>> +++ b/sound/pci/hda/hda_intel.c
+>>>> @@ -2356,6 +2356,8 @@ static int azx_probe_continue(struct azx *chip)
+>>>>       if (azx_has_pm_runtime(chip)) {
+>>>>           pm_runtime_use_autosuspend(&pci->dev);
+>>>> +        if (!use_vga_switcheroo(chip))
+>>>> +            pm_runtime_allow(&pci->dev);
+>>>>           pm_runtime_put_autosuspend(&pci->dev);
+>>>>       }
+>>>> -- 
+>>>> 2.17.1
+>>>>
