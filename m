@@ -7,71 +7,70 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 70E08C2BA19
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DB0FC3815B
 	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 15:13:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EF87A20768
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 15:13:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 163302078B
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 15:13:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="P+iRD5OG";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="YG9F8gg2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EF87A20768
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vpkgKs5a";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ImsnNJN/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 163302078B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3447716E6;
-	Tue, 14 Apr 2020 17:03:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3447716E6
+	by alsa0.perex.cz (Postfix) with ESMTPS id C004E16EA;
+	Tue, 14 Apr 2020 17:02:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C004E16EA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586876672;
-	bh=Y9T3JF07Rbt2p7DDoNici8aob1hVC38JPFHnL5AV/CI=;
+	s=default; t=1586876604;
+	bh=jrTCms1HdtB8Eq6KSmPL6lxMJTcFpDfjPaODsWWh/Hc=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=P+iRD5OG1AQNXoLLuwbM8M0jp2u9b4ZmcGqLUlrnh55kQephNGz7y+x+3LreBhG1w
-	 uai5scdaR8ApqkbxQYB7FbQg6wDIl/jZWGKo4OCbsY7P9A8TnsJPE5bfzc4Ts/5Zq8
-	 ikzGS9q1W1q9AgC2z3SwbIGpKuxSlHGruDCyl+EY=
+	b=vpkgKs5arni+jo2SsH2e3bxKPVYJUy85Wkf0ZtfPQWhfZ5GTIrJr53CbK72Mp6Yab
+	 6g7rM0jA5yZNFzkubUqYqLwrBPAZAvptt0rz/wY16V34PSzJ0XMNtpJtGTIGKFbSkh
+	 02dpOZd6R8o6srrAh5BHrAGf5hX5nd9/5NDVv1JE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BE115F803BD;
-	Tue, 14 Apr 2020 16:48:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 93D25F80393;
+	Tue, 14 Apr 2020 16:48:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C8DC5F80377; Tue, 14 Apr 2020 16:48:36 +0200 (CEST)
+ id DDC7AF8034B; Tue, 14 Apr 2020 16:48:23 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 378C7F8036D
- for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 16:48:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 378C7F8036D
+ by alsa1.perex.cz (Postfix) with ESMTPS id DC399F80348
+ for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 16:48:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC399F80348
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="YG9F8gg2"
+ header.b="ImsnNJN/"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 1744F2078B;
- Tue, 14 Apr 2020 14:48:27 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id C6E9E20578;
+ Tue, 14 Apr 2020 14:48:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1586875708;
- bh=Y9T3JF07Rbt2p7DDoNici8aob1hVC38JPFHnL5AV/CI=;
+ s=default; t=1586875698;
+ bh=jrTCms1HdtB8Eq6KSmPL6lxMJTcFpDfjPaODsWWh/Hc=;
  h=Date:From:To:Cc:Subject:In-Reply-To:From;
- b=YG9F8gg24h5sDhOFdzfDIrciXaXCzKVhrd64W0ELoW2d1JK6UpRrKG0542z/yAzEu
- H7vJbuF5LzHAUFL/rGJzHCbCyDfEzNoYhwn6ca/ovFvQ5K7jfyn5NpgAi9TT6Jhv4l
- DgYAaH21dkvxTmQjD5jXxOUHwc0oW9q/1hM6Bde8=
-Date: Tue, 14 Apr 2020 15:48:26 +0100
+ b=ImsnNJN/PcXL89ts6Wq1/tnme9++4a8j4khI6ZKffLnfWHrZMMvJydCZ2pqjquZE3
+ w0NO6CR2y/rRpkak2jFMtYHTtNhbF+iRrPMnRzhMuJxWIG+P3FPpZuaXBKVR6oJN6f
+ 47bdj4+TpHeraI7hFDLzEiwezQIbo4yYszBBt4aM=
+Date: Tue, 14 Apr 2020 15:48:15 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Yong Zhi <yong.zhi@intel.com>
-Subject: Applied "ASoC: Intel: sof_da7219_max98373: Add BE dailink for
- dmic16k" to the asoc tree
-In-Reply-To: <20200409185827.16255-2-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20200409185827.16255-2-pierre-louis.bossart@linux.intel.com>
+To: Libin Yang <libin.yang@linux.intel.com>
+Subject: Applied "ALSA: hda: Add ElkhartLake HDMI codec vid" to the asoc tree
+In-Reply-To: <20200409185827.16255-4-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20200409185827.16255-4-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
  tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Mark Brown <broonie@kernel.org>
+ Mark Brown <broonie@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,7 +88,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: Intel: sof_da7219_max98373: Add BE dailink for dmic16k
+   ALSA: hda: Add ElkhartLake HDMI codec vid
 
 has been applied to the asoc tree at
 
@@ -114,53 +113,37 @@ to this mail.
 Thanks,
 Mark
 
-From a8bb72f160020db5d7f81824b2dba6c8e29ef67a Mon Sep 17 00:00:00 2001
-From: Yong Zhi <yong.zhi@intel.com>
-Date: Thu, 9 Apr 2020 13:58:15 -0500
-Subject: [PATCH] ASoC: Intel: sof_da7219_max98373: Add BE dailink for dmic16k
+From d233c4941630af0ec2e14be7c2a693e9c9ce3087 Mon Sep 17 00:00:00 2001
+From: Libin Yang <libin.yang@linux.intel.com>
+Date: Thu, 9 Apr 2020 13:58:17 -0500
+Subject: [PATCH] ALSA: hda: Add ElkhartLake HDMI codec vid
 
-Add dmic16k BE dailink for keyword detection support, FE is
-added in topology tplg file.
+Add HDMI codec vid for the Intel ElkhartLake platform
 
-Signed-off-by: Yong Zhi <yong.zhi@intel.com>
+Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Link: https://lore.kernel.org/r/20200409185827.16255-2-pierre-louis.bossart@linux.intel.com
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Acked-by: Takashi Iwai <tiwai@suse.de>
+Link: https://lore.kernel.org/r/20200409185827.16255-4-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/sof_da7219_max98373.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ sound/pci/hda/patch_hdmi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/intel/boards/sof_da7219_max98373.c b/sound/soc/intel/boards/sof_da7219_max98373.c
-index b707dd3b5625..8b5b74ba349f 100644
---- a/sound/soc/intel/boards/sof_da7219_max98373.c
-+++ b/sound/soc/intel/boards/sof_da7219_max98373.c
-@@ -265,6 +265,9 @@ SND_SOC_DAILINK_DEF(dmic_pin,
- SND_SOC_DAILINK_DEF(dmic_codec,
- 	DAILINK_COMP_ARRAY(COMP_CODEC("dmic-codec", "dmic-hifi")));
- 
-+SND_SOC_DAILINK_DEF(dmic16k_pin,
-+	DAILINK_COMP_ARRAY(COMP_CPU("DMIC16k Pin")));
-+
- SND_SOC_DAILINK_DEF(idisp1_pin,
- 	DAILINK_COMP_ARRAY(COMP_CPU("iDisp1 Pin")));
- SND_SOC_DAILINK_DEF(idisp1_codec,
-@@ -337,6 +340,14 @@ static struct snd_soc_dai_link dais[] = {
- 		.no_pcm = 1,
- 		SND_SOC_DAILINK_REG(idisp3_pin, idisp3_codec, platform),
- 	},
-+	{
-+		.name = "dmic16k",
-+		.id = 6,
-+		.ignore_suspend = 1,
-+		.dpcm_capture = 1,
-+		.no_pcm = 1,
-+		SND_SOC_DAILINK_REG(dmic16k_pin, dmic_codec, platform),
-+	}
- };
- 
- static struct snd_soc_card card_da7219_m98373 = {
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index bb287a916dae..403baca89452 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -4156,6 +4156,7 @@ HDA_CODEC_ENTRY(0x8086280d, "Geminilake HDMI",	patch_i915_glk_hdmi),
+ HDA_CODEC_ENTRY(0x8086280f, "Icelake HDMI",	patch_i915_icl_hdmi),
+ HDA_CODEC_ENTRY(0x80862812, "Tigerlake HDMI",	patch_i915_tgl_hdmi),
+ HDA_CODEC_ENTRY(0x8086281a, "Jasperlake HDMI",	patch_i915_icl_hdmi),
++HDA_CODEC_ENTRY(0x8086281b, "Elkhartlake HDMI",	patch_i915_icl_hdmi),
+ HDA_CODEC_ENTRY(0x80862880, "CedarTrail HDMI",	patch_generic_hdmi),
+ HDA_CODEC_ENTRY(0x80862882, "Valleyview2 HDMI",	patch_i915_byt_hdmi),
+ HDA_CODEC_ENTRY(0x80862883, "Braswell HDMI",	patch_i915_byt_hdmi),
 -- 
 2.20.1
 
