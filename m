@@ -4,68 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BBB7C38A29
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 14:58:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 546AFC2BA19
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 14:58:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9C4752076B
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 14:58:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CB99420578
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 14:58:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FIkkiRgv";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="0zVNhdL4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9C4752076B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WzP1spvz";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="wqIOKEpH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CB99420578
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0626C16C0;
-	Tue, 14 Apr 2020 16:57:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0626C16C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 30C5316B6;
+	Tue, 14 Apr 2020 16:57:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 30C5316B6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586876284;
-	bh=gTu2AfOA1KhAiMCjHhYOVvYlufQjCsLNiQivRN8pIsg=;
+	s=default; t=1586876319;
+	bh=r1NhfXyWJb62VFF1vOYE70l9Pg/OYGbv67upAzhuxTU=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=FIkkiRgv1G/8a/yv/hD7cp20K0MEeP1fw6PFJVOws4OaSLaeM93ETRLitm3Z6/HbU
-	 jWQSmcx1mXyjoZDgcFN1cegQ3s2EVJqSC0jLRu4gl5gLi5rKI3NTdve60E+ARLM9yE
-	 Myom2RBD2Sx3c+ruRRhDO8Ge5bUvFDpiCANw55eQ=
+	b=WzP1spvzKRu9HTNQd9Mes1oOiurJpMWUJsIADtAB53wUCOCrEZvR7y5T4TNj2MUqB
+	 9s2WmFx7WFjQsGyatLxCQkxxbhInmeQ+igrr0EoXmkbOVG3D6nRbI/XrAQd9xB5xxD
+	 7dyARpOYTHJ4IuXHU3L+qx4oPrRpRiI6pG/oPvxU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6DC05F80341;
-	Tue, 14 Apr 2020 16:48:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AFE10F80345;
+	Tue, 14 Apr 2020 16:48:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8311CF80331; Tue, 14 Apr 2020 16:47:37 +0200 (CEST)
+ id 742CBF80332; Tue, 14 Apr 2020 16:47:42 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D7E2AF800B9
- for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 16:47:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7E2AF800B9
+ by alsa1.perex.cz (Postfix) with ESMTPS id DE688F80331
+ for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 16:47:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE688F80331
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="0zVNhdL4"
+ header.b="wqIOKEpH"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id DDAAB20578;
- Tue, 14 Apr 2020 14:47:30 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 0B8E82076D;
+ Tue, 14 Apr 2020 14:47:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1586875651;
- bh=gTu2AfOA1KhAiMCjHhYOVvYlufQjCsLNiQivRN8pIsg=;
+ s=default; t=1586875656;
+ bh=r1NhfXyWJb62VFF1vOYE70l9Pg/OYGbv67upAzhuxTU=;
  h=Date:From:To:Cc:Subject:In-Reply-To:From;
- b=0zVNhdL4BZLW+2mykrt2OYSNLFqcqmDZLmg8pVPjwijBsxc22ai1S6PaksX+1SSsE
- DGEjOEePmwSnDDAAeiAGy/BN9ACZoJdEuNSzGIwsdfjyJI7H6IxtD/SzCfD8h6XPIc
- J9WxQbl3ZB3EokIVZPGsettbdLSrBcGuDynxytdA=
-Date: Tue, 14 Apr 2020 15:47:28 +0100
+ b=wqIOKEpHpDH0STmOhP3RQn/jGbDrUNqf4IusxdtpDE+H7ppli5y6DRleE8qPD9S4K
+ 6NmEXG19j2eJqxHnnnA8fksleLM1TD12QoBTPH8uWIht/KqlroZkTrTzKnqCCWwIkU
+ EzOZg3qw+IfxdvASOEiNtBwUJUtT8jQzrDvgZ5V8=
+Date: Tue, 14 Apr 2020 15:47:34 +0100
 From: Mark Brown <broonie@kernel.org>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Applied "ASoC: Intel: sof_sdw_rt700: remove codec_dai use" to the
+Subject: Applied "ASoC: Intel: sof_sdw_rt5682: remove codec_dai use" to the
  asoc tree
-In-Reply-To: <20200409185827.16255-13-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20200409185827.16255-13-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20200409185827.16255-12-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20200409185827.16255-12-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
@@ -85,7 +86,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: Intel: sof_sdw_rt700: remove codec_dai use
+   ASoC: Intel: sof_sdw_rt5682: remove codec_dai use
 
 has been applied to the asoc tree at
 
@@ -110,25 +111,25 @@ to this mail.
 Thanks,
 Mark
 
-From 6a739362211b14c1cfe56929c1da71f15c5e6143 Mon Sep 17 00:00:00 2001
+From f11633da41bd00cc436e4e9b143bd6a00b9b65c6 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Thu, 9 Apr 2020 13:58:26 -0500
-Subject: [PATCH] ASoC: Intel: sof_sdw_rt700: remove codec_dai use
+Date: Thu, 9 Apr 2020 13:58:25 -0500
+Subject: [PATCH] ASoC: Intel: sof_sdw_rt5682: remove codec_dai use
 
-Use macro
+Use macro.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200409185827.16255-13-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20200409185827.16255-12-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/sof_sdw_rt700.c | 3 ++-
+ sound/soc/intel/boards/sof_sdw_rt5682.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/sof_sdw_rt700.c b/sound/soc/intel/boards/sof_sdw_rt700.c
-index 2ee4e6910d7f..d3725bb91e43 100644
---- a/sound/soc/intel/boards/sof_sdw_rt700.c
-+++ b/sound/soc/intel/boards/sof_sdw_rt700.c
-@@ -47,7 +47,8 @@ static int rt700_rtd_init(struct snd_soc_pcm_runtime *rtd)
+diff --git a/sound/soc/intel/boards/sof_sdw_rt5682.c b/sound/soc/intel/boards/sof_sdw_rt5682.c
+index 5aa6211a1ed9..6680dde76682 100644
+--- a/sound/soc/intel/boards/sof_sdw_rt5682.c
++++ b/sound/soc/intel/boards/sof_sdw_rt5682.c
+@@ -47,7 +47,8 @@ static int rt5682_rtd_init(struct snd_soc_pcm_runtime *rtd)
  {
  	struct snd_soc_card *card = rtd->card;
  	struct mc_private *ctx = snd_soc_card_get_drvdata(card);
