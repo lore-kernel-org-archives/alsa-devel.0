@@ -4,74 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 517F8C2BA19
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 14:50:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EADDC2BA19
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 14:52:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D18AC20787
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 14:50:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BE50920578
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 14:52:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nFRJAnO6";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="HG9bX83O"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D18AC20787
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mjQB40n/";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="GfyFgj1I"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BE50920578
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3E9C416BA;
-	Tue, 14 Apr 2020 16:49:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E9C416BA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2EA2216A5;
+	Tue, 14 Apr 2020 16:51:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2EA2216A5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586875840;
-	bh=qjA05PCJaUeAVGIYRRdnwMLM3D2449bOe/G3vC8w9zY=;
+	s=default; t=1586875942;
+	bh=g00iJtPzZcf8VyQjYtKqA/aEufNyrZ17hJE2UFDSDTQ=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=nFRJAnO6t6QchWqqN5g1LvONKa9CMBaRn5YbtXFD5ZOPsiX5uJ9cITtLF85p3u8ig
-	 AD9n56skKbNGU6qcs+KDTICkuVnuIcCQGzidJmybGWK2YbQZj/rbb86OJ6oT9ze/Uv
-	 vgz8D5YJRysS2M8xMTM8UyJaU5brqz2Ws0cvpE5k=
+	b=mjQB40n/zb7DKO0PAUGbNoPd/1wNXD9xOMKkw07AIHw8te5uX40sE8bk4xaVXMxmk
+	 fCUc6CvWYXD3Iy4Od388wtkMVIxqyh+CRUsZCstcv8AqmMLGrNgUEo/0+hbpB5kkfs
+	 Pur/jYjtVy54sFspxeMtL1HTQEE947ZOg0DTxwcw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B753DF802DB;
-	Tue, 14 Apr 2020 16:46:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E6724F802EB;
+	Tue, 14 Apr 2020 16:46:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CD331F802DC; Tue, 14 Apr 2020 16:46:28 +0200 (CEST)
+ id EE372F802EC; Tue, 14 Apr 2020 16:46:44 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 346C4F802C4
- for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 16:46:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 346C4F802C4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 85791F802EA
+ for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 16:46:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85791F802EA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="HG9bX83O"
+ header.b="GfyFgj1I"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 2E3E72085B;
- Tue, 14 Apr 2020 14:46:24 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id A724320578;
+ Tue, 14 Apr 2020 14:46:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1586875584;
- bh=qjA05PCJaUeAVGIYRRdnwMLM3D2449bOe/G3vC8w9zY=;
+ s=default; t=1586875600;
+ bh=g00iJtPzZcf8VyQjYtKqA/aEufNyrZ17hJE2UFDSDTQ=;
  h=Date:From:To:Cc:Subject:In-Reply-To:From;
- b=HG9bX83OW/KSz+tCeLYIEQ+bZNtvDSICXD9vznzptBIbPiBETs+qcjGhn2wQkCREW
- pqUW7A4Tbzgcn5ciO+31IKf/Db3PST8Ow7iuOZ63qEgBrpaKpXKcIkez0Yq4pLPO91
- VDwdp8johqFbIJpbFoWeusdhhIAEln2gSXk9lXl4=
-Date: Tue, 14 Apr 2020 15:46:22 +0100
+ b=GfyFgj1INwbbPMiBOE/dh73dseOTY8FQWx5w2qLHZcdhWARYrmAhDHLVzbscAufN5
+ MjP3PjLHDbYM7xri2xXaWV5AiJ3LgXzuw+tL8R2mKxCfgeObRfdlDX9o18UKWA3Tzy
+ VYxT8QgDXyqRREidWCFZZA3Ck8Eu9LioF5Nqy4CY=
+Date: Tue, 14 Apr 2020 15:46:37 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Applied "ASoC: dapm: Move error message to avoid some duplication" to
- the asoc tree
-In-Reply-To: <20200409181209.30130-2-ckeepax@opensource.cirrus.com>
-Message-Id: <applied-20200409181209.30130-2-ckeepax@opensource.cirrus.com>
+To: Johan Jonker <jbx6244@gmail.com>
+Subject: Applied "ASoC: convert rockchip spdif bindings to yaml" to the asoc
+ tree
+In-Reply-To: <20200404115225.4314-1-jbx6244@gmail.com>
+Message-Id: <applied-20200404115225.4314-1-jbx6244@gmail.com>
 X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com,
- patches@opensource.cirrus.com, lgirdwood@gmail.com,
- pierre-louis.bossart@linux.intel.com, vkoul@kernel.org,
- Mark Brown <broonie@kernel.org>, shreyas.nc@intel.com,
- yung-chuan.liao@linux.intel.com
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, heiko@sntech.de,
+ lgirdwood@gmail.com, robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+ linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,7 +88,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: dapm: Move error message to avoid some duplication
+   ASoC: convert rockchip spdif bindings to yaml
 
 has been applied to the asoc tree at
 
@@ -114,65 +113,183 @@ to this mail.
 Thanks,
 Mark
 
-From 9a1bb600ecafcb07391c83f7c31057abdd3757b7 Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Date: Thu, 9 Apr 2020 19:12:08 +0100
-Subject: [PATCH] ASoC: dapm: Move error message to avoid some duplication
+From 4d1a015a203c0249e3332ea217a38ec978118daa Mon Sep 17 00:00:00 2001
+From: Johan Jonker <jbx6244@gmail.com>
+Date: Sat, 4 Apr 2020 13:52:23 +0200
+Subject: [PATCH] ASoC: convert rockchip spdif bindings to yaml
 
-Move the error message into snd_soc_dapm_new_dai from
-dapm_connect_dai_pair, since the two copies are almost identical and
-are the only callers.
+Current dts files with 'spdif' nodes are manually verified.
+In order to automate this process rockchip-spdif.txt
+has to be converted to yaml.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20200409181209.30130-2-ckeepax@opensource.cirrus.com
+Also rk3188.dtsi, rk3288.dtsi use an extra fallback string,
+so change this in the documentation.
+
+Changed:
+"rockchip,rk3188-spdif", "rockchip,rk3066-spdif"
+"rockchip,rk3288-spdif", "rockchip,rk3066-spdif"
+
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Link: https://lore.kernel.org/r/20200404115225.4314-1-jbx6244@gmail.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-dapm.c | 16 ++++------------
- 1 file changed, 4 insertions(+), 12 deletions(-)
+ .../bindings/sound/rockchip-spdif.txt         | 45 ---------
+ .../bindings/sound/rockchip-spdif.yaml        | 93 +++++++++++++++++++
+ 2 files changed, 93 insertions(+), 45 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/rockchip-spdif.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/rockchip-spdif.yaml
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index fe907f0cc709..33168980619b 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -4165,6 +4165,8 @@ snd_soc_dapm_new_dai(struct snd_soc_card *card,
- 	w = snd_soc_dapm_new_control_unlocked(&card->dapm, &template);
- 	if (IS_ERR(w)) {
- 		ret = PTR_ERR(w);
-+		dev_err(rtd->dev, "ASoC: Failed to create %s widget: %d\n",
-+			link_name, ret);
- 		goto outfree_kcontrol_news;
- 	}
- 
-@@ -4327,13 +4329,8 @@ static void dapm_connect_dai_pair(struct snd_soc_card *card,
- 		if (dai_link->params && !dai_link->playback_widget) {
- 			substream = streams[SNDRV_PCM_STREAM_PLAYBACK].substream;
- 			dai = snd_soc_dapm_new_dai(card, substream, "playback");
--			if (IS_ERR(dai)) {
--				dev_err(rtd->dev,
--					"ASoC: Failed to create DAI %s: %ld\n",
--					codec_dai->name,
--					PTR_ERR(dai));
-+			if (IS_ERR(dai))
- 				goto capture;
--			}
- 			dai_link->playback_widget = dai;
- 		}
- 
-@@ -4350,13 +4347,8 @@ static void dapm_connect_dai_pair(struct snd_soc_card *card,
- 		if (dai_link->params && !dai_link->capture_widget) {
- 			substream = streams[SNDRV_PCM_STREAM_CAPTURE].substream;
- 			dai = snd_soc_dapm_new_dai(card, substream, "capture");
--			if (IS_ERR(dai)) {
--				dev_err(rtd->dev,
--					"ASoC: Failed to create DAI %s: %ld\n",
--					codec_dai->name,
--					PTR_ERR(dai));
-+			if (IS_ERR(dai))
- 				return;
--			}
- 			dai_link->capture_widget = dai;
- 		}
- 
+diff --git a/Documentation/devicetree/bindings/sound/rockchip-spdif.txt b/Documentation/devicetree/bindings/sound/rockchip-spdif.txt
+deleted file mode 100644
+index ec20c1271e92..000000000000
+--- a/Documentation/devicetree/bindings/sound/rockchip-spdif.txt
++++ /dev/null
+@@ -1,45 +0,0 @@
+-* Rockchip SPDIF transceiver
+-
+-The S/PDIF audio block is a stereo transceiver that allows the
+-processor to receive and transmit digital audio via an coaxial cable or
+-a fibre cable.
+-
+-Required properties:
+-
+-- compatible: should be one of the following:
+-   - "rockchip,rk3066-spdif"
+-   - "rockchip,rk3188-spdif"
+-   - "rockchip,rk3228-spdif"
+-   - "rockchip,rk3288-spdif"
+-   - "rockchip,rk3328-spdif"
+-   - "rockchip,rk3366-spdif"
+-   - "rockchip,rk3368-spdif"
+-   - "rockchip,rk3399-spdif"
+-- reg: physical base address of the controller and length of memory mapped
+-  region.
+-- interrupts: should contain the SPDIF interrupt.
+-- dmas: DMA specifiers for tx dma. See the DMA client binding,
+-  Documentation/devicetree/bindings/dma/dma.txt
+-- dma-names: should be "tx"
+-- clocks: a list of phandle + clock-specifier pairs, one for each entry
+-  in clock-names.
+-- clock-names: should contain following:
+-   - "hclk": clock for SPDIF controller
+-   - "mclk" : clock for SPDIF bus
+-
+-Required properties on RK3288:
+-  - rockchip,grf: the phandle of the syscon node for the general register
+-                   file (GRF)
+-
+-Example for the rk3188 SPDIF controller:
+-
+-spdif: spdif@1011e000 {
+-	compatible = "rockchip,rk3188-spdif", "rockchip,rk3066-spdif";
+-	reg = <0x1011e000 0x2000>;
+-	interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
+-	dmas = <&dmac1_s 8>;
+-	dma-names = "tx";
+-	clock-names = "hclk", "mclk";
+-	clocks = <&cru HCLK_SPDIF>, <&cru SCLK_SPDIF>;
+-	#sound-dai-cells = <0>;
+-};
+diff --git a/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml b/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml
+new file mode 100644
+index 000000000000..bfd44fd8ecbc
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml
+@@ -0,0 +1,93 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/rockchip-spdif.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Rockchip SPDIF transceiver
++
++description:
++  The S/PDIF audio block is a stereo transceiver that allows the
++  processor to receive and transmit digital audio via a coaxial or
++  fibre cable.
++
++maintainers:
++  - Heiko Stuebner <heiko@sntech.de>
++
++properties:
++  compatible:
++    oneOf:
++      - const: rockchip,rk3066-spdif
++      - const: rockchip,rk3228-spdif
++      - const: rockchip,rk3328-spdif
++      - const: rockchip,rk3366-spdif
++      - const: rockchip,rk3368-spdif
++      - const: rockchip,rk3399-spdif
++      - items:
++          - enum:
++            - rockchip,rk3188-spdif
++            - rockchip,rk3288-spdif
++          - const: rockchip,rk3066-spdif
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description: clock for SPDIF bus
++      - description: clock for SPDIF controller
++
++  clock-names:
++    items:
++      - const: mclk
++      - const: hclk
++
++  dmas:
++    maxItems: 1
++
++  dma-names:
++    const: tx
++
++  rockchip,grf:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description:
++      The phandle of the syscon node for the GRF register.
++      Required property on RK3288.
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++  - dmas
++  - dma-names
++
++if:
++  properties:
++    compatible:
++      contains:
++        const: rockchip,rk3288-spdif
++
++then:
++  required:
++    - rockchip,grf
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/rk3188-cru.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    spdif: spdif@1011e000 {
++      compatible = "rockchip,rk3188-spdif", "rockchip,rk3066-spdif";
++      reg = <0x1011e000 0x2000>;
++      interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
++      clocks = <&cru SCLK_SPDIF>, <&cru HCLK_SPDIF>;
++      clock-names = "mclk", "hclk";
++      dmas = <&dmac1_s 8>;
++      dma-names = "tx";
++    };
 -- 
 2.20.1
 
