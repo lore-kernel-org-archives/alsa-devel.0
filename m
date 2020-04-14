@@ -7,64 +7,64 @@ X-Spam-Status: No, score=-12.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD54FC3815B
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 14:48:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CEACC2BA19
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 14:51:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3C78620578
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 14:48:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8B0D720578
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 14:51:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QvOIvJgW";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="vjB+X8Ve"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3C78620578
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ut71GxXQ";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="A9z4kGoZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8B0D720578
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9DD0616A0;
-	Tue, 14 Apr 2020 16:47:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9DD0616A0
+	by alsa0.perex.cz (Postfix) with ESMTPS id E9CE216BB;
+	Tue, 14 Apr 2020 16:50:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E9CE216BB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586875709;
-	bh=mpVKItI1FPPfN/gbBhLGz5jUlFal1zEoAn6lKwc4wP8=;
+	s=default; t=1586875883;
+	bh=AvWDYceu/cqkZhWEjKP7V8S3OaqMmOo5h9aewVP1Dpk=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=QvOIvJgWHL1hqREv0pUM5dnEemTW7ETOeZJzVYUXoIl41mtqFWFDMPr5kQbEe01UG
-	 UzdxpcmykL2Dhjgk5reTNdYgZ6A9j2CkB1Q518wJm8QT0AEKopbNVshvbFCh6bBiOe
-	 Wqy79x0OL0Iwc71gy3m5XZe3NIUhwFXRL/uQ+Hm4=
+	b=Ut71GxXQL6I77bTetHsbv58+wfcRzJylayeOttHVeEcE/fJM8/bK/N7ougwKccZ/m
+	 PUXBe42yRo61gaFyRwZ4IoBYVwIXtGMcUyzMJ0dFrI8fHlxESwLzP9bJiEgQPRD8Gv
+	 B4Ec30wlplbuhS5L1uutNB+/IM93vDnWlXDr1yyc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A9605F8028F;
-	Tue, 14 Apr 2020 16:46:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CD0F6F802E0;
+	Tue, 14 Apr 2020 16:46:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D6687F8028F; Tue, 14 Apr 2020 16:46:08 +0200 (CEST)
+ id 318FBF802E1; Tue, 14 Apr 2020 16:46:34 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 95F84F80278
- for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 16:46:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95F84F80278
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8CF7CF802DC
+ for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 16:46:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8CF7CF802DC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="vjB+X8Ve"
+ header.b="A9z4kGoZ"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id EE1322076D;
- Tue, 14 Apr 2020 14:46:02 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 5E3232078B;
+ Tue, 14 Apr 2020 14:46:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1586875563;
- bh=mpVKItI1FPPfN/gbBhLGz5jUlFal1zEoAn6lKwc4wP8=;
+ s=default; t=1586875589;
+ bh=AvWDYceu/cqkZhWEjKP7V8S3OaqMmOo5h9aewVP1Dpk=;
  h=Date:From:To:Cc:Subject:In-Reply-To:From;
- b=vjB+X8VePvvwIr7nj1DDpcc8NyWu/itzQh7UcJiwcJ/XTDSxLvPupsoRVoghMSFyf
- UNOPncwMJ2nuwhU7CaC0dSt3xmhEyvApwh+1HeH0Ir9mM+hwKLucxcwK6sQxyOpixn
- ETvdr1CKTRFTTnu0efn4+ount96mSlm340jBiB8U=
-Date: Tue, 14 Apr 2020 15:46:00 +0100
+ b=A9z4kGoZZr7BpfDI4eYJx0FPbQm/FqOHkymXgDHe8gv8MwJVN3xroMPqoxDt/y55+
+ YCVk0yrCwoPoR3lFXfA4x5f1Ei4C+PPEXit5p8u63DOYn4zBOn0y9ysr2tbMLbISjB
+ +JcIcyd2vGf0KG+zhUgt1F7+hp0AOBcffKADUDe0=
+Date: Tue, 14 Apr 2020 15:46:27 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Applied "ASoC: wsa881x: mark read_only_wordlength flag" to the asoc
- tree
+To: Johan Jonker <jbx6244@gmail.com>
+Subject: Applied "ASoC: rockchip-spdif: add power-domains property" to the
+ asoc tree
 In-Reply-To: 
 Message-Id: 
 X-Patchwork-Hint: ignore
@@ -83,11 +83,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20200414144600.HW6ccyzytc_WCpHhRJnyPsgmYdDBLABIQ0RESuqGs-U@z>
+Message-ID: <20200414144627.sdT3fkzetC_b6GGOeInHvlVOynADrFO7T1yluXUrBzY@z>
 
 The patch
 
-   ASoC: wsa881x: mark read_only_wordlength flag
+   ASoC: rockchip-spdif: add power-domains property
 
 has been applied to the asoc tree at
 
@@ -112,61 +112,38 @@ to this mail.
 Thanks,
 Mark
 
-From 0f2a3b02274c02eb97697c4d89c019d1d21ac225 Mon Sep 17 00:00:00 2001
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Tue, 14 Apr 2020 12:03:47 +0100
-Subject: [PATCH] ASoC: wsa881x: mark read_only_wordlength flag
+From 65f1d3d9cee7e10d105756b6ef678885a23a31d7 Mon Sep 17 00:00:00 2001
+From: Johan Jonker <jbx6244@gmail.com>
+Date: Sat, 4 Apr 2020 13:52:25 +0200
+Subject: [PATCH] ASoC: rockchip-spdif: add power-domains property
 
-WSA881x works in PDM mode so the wordlength is fixed, which also makes
-the only field "WordLength" in DPN_BlockCtrl1 register a read-only.
-Writing to this register will throw up errors with Qualcomm Controller.
-So use ro_blockctrl1_reg flag to mark this field as read-only so that
-core will not write to this register.
+In the old txt situation we add/describe only properties that are used
+by the driver/hardware itself. With yaml it also filters things in a
+node that are used by other drivers like 'power-domains' for rk3399,
+so add it to 'rockchip-spdif.yaml'.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Reviewed-by: Vinod Koul <vkoul@kernel.org>
-Link: https://lore.kernel.org/r/20200414110347.23829-1-srinivas.kandagatla@linaro.org
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Link: https://lore.kernel.org/r/20200404115225.4314-3-jbx6244@gmail.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wsa881x.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ Documentation/devicetree/bindings/sound/rockchip-spdif.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/codecs/wsa881x.c b/sound/soc/codecs/wsa881x.c
-index f2d6f2f81f14..d39d479e2378 100644
---- a/sound/soc/codecs/wsa881x.c
-+++ b/sound/soc/codecs/wsa881x.c
-@@ -394,6 +394,7 @@ static struct sdw_dpn_prop wsa_sink_dpn_prop[WSA881X_MAX_SWR_PORTS] = {
- 		.min_ch = 1,
- 		.max_ch = 1,
- 		.simple_ch_prep_sm = true,
-+		.read_only_wordlength = true,
- 	}, {
- 		/* COMP */
- 		.num = 2,
-@@ -401,6 +402,7 @@ static struct sdw_dpn_prop wsa_sink_dpn_prop[WSA881X_MAX_SWR_PORTS] = {
- 		.min_ch = 1,
- 		.max_ch = 1,
- 		.simple_ch_prep_sm = true,
-+		.read_only_wordlength = true,
- 	}, {
- 		/* BOOST */
- 		.num = 3,
-@@ -408,6 +410,7 @@ static struct sdw_dpn_prop wsa_sink_dpn_prop[WSA881X_MAX_SWR_PORTS] = {
- 		.min_ch = 1,
- 		.max_ch = 1,
- 		.simple_ch_prep_sm = true,
-+		.read_only_wordlength = true,
- 	}, {
- 		/* VISENSE */
- 		.num = 4,
-@@ -415,6 +418,7 @@ static struct sdw_dpn_prop wsa_sink_dpn_prop[WSA881X_MAX_SWR_PORTS] = {
- 		.min_ch = 1,
- 		.max_ch = 1,
- 		.simple_ch_prep_sm = true,
-+		.read_only_wordlength = true,
- 	}
- };
+diff --git a/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml b/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml
+index f381dbbf5de6..c467152656f7 100644
+--- a/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml
++++ b/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml
+@@ -51,6 +51,9 @@ properties:
+   dma-names:
+     const: tx
  
++  power-domains:
++    maxItems: 1
++
+   rockchip,grf:
+     $ref: /schemas/types.yaml#/definitions/phandle
+     description:
 -- 
 2.20.1
 
