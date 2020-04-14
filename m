@@ -6,66 +6,66 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 77C54C2BA19
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 14:50:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 517F8C2BA19
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 14:50:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 010B120578
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 14:50:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D18AC20787
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 14:50:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sVlHJWJn";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="lcyJBoXq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 010B120578
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nFRJAnO6";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="HG9bX83O"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D18AC20787
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5990E16A5;
-	Tue, 14 Apr 2020 16:49:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5990E16A5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3E9C416BA;
+	Tue, 14 Apr 2020 16:49:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E9C416BA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586875825;
-	bh=maahfHpptY+luBTTaPHS+bGGlkOEHHVUGyfuhf0vmbM=;
+	s=default; t=1586875840;
+	bh=qjA05PCJaUeAVGIYRRdnwMLM3D2449bOe/G3vC8w9zY=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=sVlHJWJnMT1tk5zashLDm3PbUWOnCDsAanTHqsxMHVp8yqkovQYktdrLLvmZ4zh/o
-	 hFFtk/POehk+cICcnFovRKgdymkqqz/ZS3B9TU11bhx350SVKg6w4j7m5TqOowBNMh
-	 8tK+dhFT7u2V0drj5Tl+VilqL5oiKf9MVMHRSeLU=
+	b=nFRJAnO6t6QchWqqN5g1LvONKa9CMBaRn5YbtXFD5ZOPsiX5uJ9cITtLF85p3u8ig
+	 AD9n56skKbNGU6qcs+KDTICkuVnuIcCQGzidJmybGWK2YbQZj/rbb86OJ6oT9ze/Uv
+	 vgz8D5YJRysS2M8xMTM8UyJaU5brqz2Ws0cvpE5k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A1BEDF802C2;
-	Tue, 14 Apr 2020 16:46:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B753DF802DB;
+	Tue, 14 Apr 2020 16:46:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 97F13F802C4; Tue, 14 Apr 2020 16:46:24 +0200 (CEST)
+ id CD331F802DC; Tue, 14 Apr 2020 16:46:28 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0ABC9F802A0
- for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 16:46:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0ABC9F802A0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 346C4F802C4
+ for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 16:46:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 346C4F802C4
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="lcyJBoXq"
+ header.b="HG9bX83O"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 071DA20787;
- Tue, 14 Apr 2020 14:46:18 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 2E3E72085B;
+ Tue, 14 Apr 2020 14:46:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1586875579;
- bh=maahfHpptY+luBTTaPHS+bGGlkOEHHVUGyfuhf0vmbM=;
+ s=default; t=1586875584;
+ bh=qjA05PCJaUeAVGIYRRdnwMLM3D2449bOe/G3vC8w9zY=;
  h=Date:From:To:Cc:Subject:In-Reply-To:From;
- b=lcyJBoXqUcmyt1frRT9Sn2AF4JFjr0MyTS6hZBfYQouAbheNPQZYhHzV9sCyU5uXX
- AoFGQJdNO6qFUHJ2dAEFix5sXw9vdZ2Pfvi9UutbA4ISrZaJ+4W1MPIpE2UmPk4X4f
- guie4TGgoU9NnHmdYbNohNC4PiDmHQSn4UD0GKwA=
-Date: Tue, 14 Apr 2020 15:46:17 +0100
+ b=HG9bX83OW/KSz+tCeLYIEQ+bZNtvDSICXD9vznzptBIbPiBETs+qcjGhn2wQkCREW
+ pqUW7A4Tbzgcn5ciO+31IKf/Db3PST8Ow7iuOZ63qEgBrpaKpXKcIkez0Yq4pLPO91
+ VDwdp8johqFbIJpbFoWeusdhhIAEln2gSXk9lXl4=
+Date: Tue, 14 Apr 2020 15:46:22 +0100
 From: Mark Brown <broonie@kernel.org>
 To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Applied "ASoC: dapm: Remove dapm_connect_dai_link_widgets helper" to
+Subject: Applied "ASoC: dapm: Move error message to avoid some duplication" to
  the asoc tree
-In-Reply-To: <20200409181209.30130-3-ckeepax@opensource.cirrus.com>
-Message-Id: <applied-20200409181209.30130-3-ckeepax@opensource.cirrus.com>
+In-Reply-To: <20200409181209.30130-2-ckeepax@opensource.cirrus.com>
+Message-Id: <applied-20200409181209.30130-2-ckeepax@opensource.cirrus.com>
 X-Patchwork-Hint: ignore
 Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com,
  patches@opensource.cirrus.com, lgirdwood@gmail.com,
@@ -89,7 +89,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: dapm: Remove dapm_connect_dai_link_widgets helper
+   ASoC: dapm: Move error message to avoid some duplication
 
 has been applied to the asoc tree at
 
@@ -114,81 +114,64 @@ to this mail.
 Thanks,
 Mark
 
-From 0eaef95e3cef1f849e8873f929bef3039409c4fc Mon Sep 17 00:00:00 2001
+From 9a1bb600ecafcb07391c83f7c31057abdd3757b7 Mon Sep 17 00:00:00 2001
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Date: Thu, 9 Apr 2020 19:12:09 +0100
-Subject: [PATCH] ASoC: dapm: Remove dapm_connect_dai_link_widgets helper
+Date: Thu, 9 Apr 2020 19:12:08 +0100
+Subject: [PATCH] ASoC: dapm: Move error message to avoid some duplication
 
-This helper is adding very little both it and is one caller are very
-small functions simply combine the two.
+Move the error message into snd_soc_dapm_new_dai from
+dapm_connect_dai_pair, since the two copies are almost identical and
+are the only callers.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20200409181209.30130-3-ckeepax@opensource.cirrus.com
+Link: https://lore.kernel.org/r/20200409181209.30130-2-ckeepax@opensource.cirrus.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-dapm.c | 36 ++++++++++++++----------------------
- 1 file changed, 14 insertions(+), 22 deletions(-)
+ sound/soc/soc-dapm.c | 16 ++++------------
+ 1 file changed, 4 insertions(+), 12 deletions(-)
 
 diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 33168980619b..a4143ca190d0 100644
+index fe907f0cc709..33168980619b 100644
 --- a/sound/soc/soc-dapm.c
 +++ b/sound/soc/soc-dapm.c
-@@ -4358,27 +4358,6 @@ static void dapm_connect_dai_pair(struct snd_soc_card *card,
+@@ -4165,6 +4165,8 @@ snd_soc_dapm_new_dai(struct snd_soc_card *card,
+ 	w = snd_soc_dapm_new_control_unlocked(&card->dapm, &template);
+ 	if (IS_ERR(w)) {
+ 		ret = PTR_ERR(w);
++		dev_err(rtd->dev, "ASoC: Failed to create %s widget: %d\n",
++			link_name, ret);
+ 		goto outfree_kcontrol_news;
  	}
- }
  
--static void dapm_connect_dai_link_widgets(struct snd_soc_card *card,
--					  struct snd_soc_pcm_runtime *rtd)
--{
--	struct snd_soc_dai *codec_dai;
--	int i;
--
--	if (rtd->num_cpus == 1) {
--		for_each_rtd_codec_dais(rtd, i, codec_dai)
--			dapm_connect_dai_pair(card, rtd, codec_dai,
--					      rtd->cpu_dais[0]);
--	} else if (rtd->num_codecs == rtd->num_cpus) {
--		for_each_rtd_codec_dais(rtd, i, codec_dai)
--			dapm_connect_dai_pair(card, rtd, codec_dai,
--					      rtd->cpu_dais[i]);
--	} else {
--		dev_err(card->dev,
--			"N cpus to M codecs link is not supported yet\n");
--	}
--
--}
--
- static void soc_dapm_dai_stream_event(struct snd_soc_dai *dai, int stream,
- 	int event)
- {
-@@ -4419,6 +4398,8 @@ static void soc_dapm_dai_stream_event(struct snd_soc_dai *dai, int stream,
- void snd_soc_dapm_connect_dai_link_widgets(struct snd_soc_card *card)
- {
- 	struct snd_soc_pcm_runtime *rtd;
-+	struct snd_soc_dai *codec_dai;
-+	int i;
+@@ -4327,13 +4329,8 @@ static void dapm_connect_dai_pair(struct snd_soc_card *card,
+ 		if (dai_link->params && !dai_link->playback_widget) {
+ 			substream = streams[SNDRV_PCM_STREAM_PLAYBACK].substream;
+ 			dai = snd_soc_dapm_new_dai(card, substream, "playback");
+-			if (IS_ERR(dai)) {
+-				dev_err(rtd->dev,
+-					"ASoC: Failed to create DAI %s: %ld\n",
+-					codec_dai->name,
+-					PTR_ERR(dai));
++			if (IS_ERR(dai))
+ 				goto capture;
+-			}
+ 			dai_link->playback_widget = dai;
+ 		}
  
- 	/* for each BE DAI link... */
- 	for_each_card_rtds(card, rtd)  {
-@@ -4429,7 +4410,18 @@ void snd_soc_dapm_connect_dai_link_widgets(struct snd_soc_card *card)
- 		if (rtd->dai_link->dynamic)
- 			continue;
- 
--		dapm_connect_dai_link_widgets(card, rtd);
-+		if (rtd->num_cpus == 1) {
-+			for_each_rtd_codec_dais(rtd, i, codec_dai)
-+				dapm_connect_dai_pair(card, rtd, codec_dai,
-+						      rtd->cpu_dais[0]);
-+		} else if (rtd->num_codecs == rtd->num_cpus) {
-+			for_each_rtd_codec_dais(rtd, i, codec_dai)
-+				dapm_connect_dai_pair(card, rtd, codec_dai,
-+						      rtd->cpu_dais[i]);
-+		} else {
-+			dev_err(card->dev,
-+				"N cpus to M codecs link is not supported yet\n");
-+		}
- 	}
- }
+@@ -4350,13 +4347,8 @@ static void dapm_connect_dai_pair(struct snd_soc_card *card,
+ 		if (dai_link->params && !dai_link->capture_widget) {
+ 			substream = streams[SNDRV_PCM_STREAM_CAPTURE].substream;
+ 			dai = snd_soc_dapm_new_dai(card, substream, "capture");
+-			if (IS_ERR(dai)) {
+-				dev_err(rtd->dev,
+-					"ASoC: Failed to create DAI %s: %ld\n",
+-					codec_dai->name,
+-					PTR_ERR(dai));
++			if (IS_ERR(dai))
+ 				return;
+-			}
+ 			dai_link->capture_widget = dai;
+ 		}
  
 -- 
 2.20.1
