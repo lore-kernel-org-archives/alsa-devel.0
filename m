@@ -2,69 +2,86 @@ Return-Path: <SRS0=tzaW=56=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 969FBC2BA19
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 17:37:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA759C2BA19
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 17:46:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 02112206B6
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 17:37:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 587062074D
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 17:46:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="C6+1ptlb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 02112206B6
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sV+qYWpz";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="m3R9ysoV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 587062074D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 609121691;
-	Tue, 14 Apr 2020 19:36:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 609121691
+	by alsa0.perex.cz (Postfix) with ESMTPS id 89751168C;
+	Tue, 14 Apr 2020 19:45:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89751168C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586885848;
-	bh=uExQLK073p6XcJrCs+dCgBSK3qeL4fXyB1+jJBZO+tQ=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1586886398;
+	bh=TcrgRAaCCn5C89p9zkdB+nBvjexBsT4Fl+qQqU3nKsM=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=C6+1ptlbTG5lZ+7slSAmyGne9eJt3smviGqOpSxoMXYW9E1vLp/iL0nHvZeICqBIN
-	 sHn76hlZ4ILb2fUT4kfwS3WdZSCMmCVPSknb4IUPRWzm6MLMxS2O5kpe5q8NPaafhd
-	 kkIgRIQ6gUhTpqn7aXp8ThVra6NN2PeDABDqFc08=
+	b=sV+qYWpzI8pL+iFUT+8qgrX2SwYa8MD68Ao2GNbSnCjswoFZY05f76UMSUPBFXq3u
+	 G2wldpf01uvlg8b2BH86NPWNLpcbsSg6NpFpK+YK8FqUgTncImvG8jemQTOeuCOxrH
+	 bnQAcb9qJCYdjwCH876iIHTBzSjCnIf2C2lCzGNo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 66B7AF80126;
-	Tue, 14 Apr 2020 19:36:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 176C9F800B9;
+	Tue, 14 Apr 2020 19:45:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F30FCF8013D; Tue, 14 Apr 2020 19:36:34 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id E1422F8013D; Tue, 14 Apr 2020 19:45:38 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 00028F800F5
- for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 19:36:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00028F800F5
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 2D37BAD1E;
- Tue, 14 Apr 2020 17:36:29 +0000 (UTC)
-Date: Tue, 14 Apr 2020 19:36:29 +0200
-Message-ID: <s5h5ze2hsv6.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Michael <michael@wizard.ca>
-Subject: Re: [FRUSTRATED] Missing Sound Codecs for Lenovo ThinkCentre M710e
-In-Reply-To: <8ab4b52c-5397-0fed-97ff-c8be7d4ae168@wizard.ca>
-References: <7046b5fa-af79-5221-f54f-3d4be22e879e@wizard.ca>
- <34cfffec-39f7-d0e5-bab6-c4b0eb47943b@spliet.org>
- <8ab4b52c-5397-0fed-97ff-c8be7d4ae168@wizard.ca>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Roy Spliet <nouveau@spliet.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id EF889F800B9
+ for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 19:45:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF889F800B9
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="m3R9ysoV"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 145392074D;
+ Tue, 14 Apr 2020 17:45:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1586886333;
+ bh=TcrgRAaCCn5C89p9zkdB+nBvjexBsT4Fl+qQqU3nKsM=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=m3R9ysoVEbkDNXoNnHdUSYSWAxPaom9kykXJTjcElSsM3gjBKsU6VTXo4sk5l5Ckg
+ jye8BoG+8CqxCd2FahBTI8Annje94Zzz0OrSXiY8k6RG10GspQ3ZNsXgULnNTBHf8q
+ SXRiNP8nTfC/YW/vSJbtz5j/o6PUKuOGzBDWfj8Q=
+Date: Tue, 14 Apr 2020 18:45:30 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [RFC PATCH 02/16] ASoC: pcm512x: use "sclk" string to retrieve
+ clock
+Message-ID: <20200414174530.GK5412@sirena.org.uk>
+References: <20200409195841.18901-1-pierre-louis.bossart@linux.intel.com>
+ <20200409195841.18901-3-pierre-louis.bossart@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="aqWxf8ydqYKP8htK"
+Content-Disposition: inline
+In-Reply-To: <20200409195841.18901-3-pierre-louis.bossart@linux.intel.com>
+X-Cookie: I've only got 12 cards.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: alsa-devel@alsa-project.org, Rob Herring <robh+dt@kernel.org>,
+ linux-gpio@vger.kernel.org, tiwai@suse.de,
+ Linus Walleij <linus.walleij@linaro.org>, Stephen Boyd <sboyd@kernel.org>,
+ Daniel Matuschek <daniel@hifiberry.com>, Hui Wang <hui.wang@canonical.com>,
+ Matthias Reichl <hias@horus.com>, Michael Turquette <mturquette@baylibre.com>,
+ Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>, linux-clk@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,105 +97,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 14 Apr 2020 19:13:14 +0200,
-Michael wrote:
-> 
-> Appreciate the response, but running the 16.04 LTE with the hwe
-> kernel, which should have updated support.  I would expect that at
-> least an older codec should be supported on the board, highly doubt a
-> completely new sound card shipset would be used.
-> 
-> How do I try to resolve this WITHOUT going to a 5.6 kernel?
 
-The best is to ask your distro.  It's a distro kernel, and we have no
-idea what's missing and what's fixed, after all.
+--aqWxf8ydqYKP8htK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-But, if you can just test 5.6.y kernel while keeping the rest of your
-system, and it still shows the same problem, then it becomes more
-interesting to us.  Installing and testing a new kernel takes only a
-couple of minutes.  Any reason to hesitate to do it so much...?
+On Thu, Apr 09, 2020 at 02:58:27PM -0500, Pierre-Louis Bossart wrote:
+> Using devm_clk_get() with a NULL string fails on ACPI platforms, use
+> the "sclk" string as a fallback.
 
+Is this something that could be fixed at the ACPI level?
 
-thanks,
+--aqWxf8ydqYKP8htK
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Takashi
+-----BEGIN PGP SIGNATURE-----
 
-> 
-> On 2020-04-14 8:55 a.m., Roy Spliet wrote:
-> > The 4.15.0 kernel was released in January 2018. Your computer was
-> > first sold around May 2018 (at least where I'm from). It's hardly
-> > surprising that some components in your computer aren't
-> > supported. First try upgrading to a newer kernel (ideally 5.6)
-> > before you try other steps to debug your issues.
-> >
-> > Roy
-> >
-> > Op 14-04-2020 om 15:16 schreef Michael:
-> >> Hi All,
-> >>
-> >> Technically this probably should go to a support channnel, and not
-> >> a development list, but at my wits end.
-> >>
-> >> Kernel:  4.15.0-91-generic #92~16.04.1-Ubuntu SMP
-> >>
-> >> dmesg | grep snd
-> >> [   12.656843] snd_hda_intel 0000:00:1f.3: bound 0000:00:02.0 (ops
-> >> i915_audio_component_bind_ops [i915])
-> >> [   12.807521] snd_hda_intel 0000:00:1f.3: CORB reset timeout#1,
-> >> CORBRP = 0
-> >> [   12.810429] snd_hda_intel 0000:00:1f.3: no codecs found!
-> >>
-> >> I have been playing with settings in the modprobe directory for
-> >> Also with no effect.. current settings are..
-> >>
-> >> options snd-hda-intel single_cmd=1
-> >> options snd-hda-intel probe_mask=1
-> >> options snd-hda-intel model=thinkpad
-> >> options snd-hda-intel position_fix=3
-> >>
-> >> Have tried model=generic, and various other suggestions from
-> >> online, but at a loss.  Don't see anything in:
-> >>
-> >> https://github.com/torvalds/linux/blob/master/Documentation/sound/hd-audio/models.rst 
-> >>
-> >>
-> >> Your ALSA information is located at
-> >> http://alsa-project.org/db/?f=7898b30139e9a91fecec22f3ee46049f33248b85
-> >>
-> >> Can anyone point me to how to debug this further, or any way to
-> >> force detection of a proper codec for this model?
-> >>
-> >> 00:1f.3 Audio device [0403]: Intel Corporation 200 Series PCH HD
-> >> Audio [8086:a2f0]
-> >>      Subsystem: Lenovo Device [17aa:313c]
-> >>      Kernel driver in use: snd_hda_intel
-> >>
-> >>
-> >>         description: Motherboard
-> >>         product: 313C
-> >>         vendor: LENOVO
-> >>         physical id: 0
-> >>         version: SDK0J40697 WIN 3305181519567
-> >>         slot: Default string
-> >>
-> >> Booting in legacy OS mode, not EUFI..
-> >>
-> >>
-> >>
-> 
-> 
-> -- 
-> "Catch the Magic of Linux..."
-> ------------------------------------------------------------------------
-> Michael Peddemors, President/CEO LinuxMagic Inc.
-> Visit us at http://www.linuxmagic.com @linuxmagic
-> A Wizard IT Company - For More Info http://www.wizard.ca
-> "MagicSpam" is a Registered TradeMark of Wizard Tower TechnoServices Ltd.
-> ------------------------------------------------------------------------
-> 604-682-0300 Beautiful British Columbia, Canada
-> 
-> This email and any electronic data contained are confidential and intended
-> solely for the use of the individual or entity to which they are addressed.
-> Please note that any views or opinions presented in this email are solely
-> those of the author and are not intended to represent those of the company.
-> 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6V9roACgkQJNaLcl1U
+h9BjSwf+Pss0RQ4uA5Mylj+hH2CPMjVyKi4bXcMsc0WKzPqaEjAl7piwqVzzlCzr
+z1G7YxB8Azwdu5vQYLVXDBpUDUPqaxzYr5/9JkqjrXNKn2oquMs0aqpdP2Vir+In
+zUogWkOk2zrRbf8uHYwXVN85CY5b3xbf2CDkA6RNZOzAJ1M4MnIylSXNmGlEfPqS
+DPgtxVAB+7PDCN41/egJGbTmddfD/r1uHc7ePHBMdNgPvoxO4bGFzt+7dvIhPKms
+V+gTxUY6IWDXxlXrQeCV0S+iT3BM7UdNcKd6xJDbLwISy7ApTtoNtyUyMU1ZSek9
+zsjTBu467jgS9V0USWLBlD9nq9VDyw==
+=y8RE
+-----END PGP SIGNATURE-----
+
+--aqWxf8ydqYKP8htK--
