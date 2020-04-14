@@ -1,95 +1,74 @@
-Return-Path: <SRS0=3aoS=6E=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=tzaW=56=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+X-Spam-Status: No, score=-12.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16805C54FD0
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 21:57:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 15D77C2BA19
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 12:01:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 928842084D
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 21:57:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 957EC2076B
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 12:01:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="l+ruY0C3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 928842084D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TPYnCs0r";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="bXeZtBrf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 957EC2076B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EFC571687;
-	Mon, 20 Apr 2020 23:56:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EFC571687
+	by alsa0.perex.cz (Postfix) with ESMTPS id 00ECB16A6;
+	Tue, 14 Apr 2020 14:00:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00ECB16A6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587419819;
-	bh=kkxLaqrl/6cWfSDOWzUOUYNLiePShm6BNfGrHZJ42mM=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=l+ruY0C3iCQutdgd1u3KAlVz43xtxoEs1xou6N5aCxGDOQT53zuowwiKoZxZ3+NKp
-	 X9p1VlRDUp05Rgn6yGR2jXhJD5EfGK2Dg+t166/dWa6gGjlo+w0ErnVePdbU4Nqh1w
-	 CFUBKvUCb0NfPwG2YDEZDZHTPDzdB8blKPJNfmj8=
+	s=default; t=1586865676;
+	bh=Kk6Glg27PmiUIbJHtAYB1vVo0hJ0EZ7DGxJRzOg/UZw=;
+	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=TPYnCs0rS/5UuMmag/XNDPn1MF2mYJQdjk8MYdq9O4q4WZGxVBPgaXPZH60SmGqsR
+	 OKhCVK3VdhtzArP6UnB1CYFW4LUcwaHYXTkA1E/bMcFiWNRFsFbKGbY6NPMDd/QyCm
+	 GITr3+loFElp5nPztwaHYMgv9H/oXZraUvFEDdC8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6ABEEF8013E;
-	Mon, 20 Apr 2020 23:56:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0A1A8F800F5;
+	Tue, 14 Apr 2020 13:59:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 46DCAF801D9; Mon, 20 Apr 2020 23:56:03 +0200 (CEST)
-Received: from mail-ot1-f65.google.com (mail-ot1-f65.google.com
- [209.85.210.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 0AD75F80278; Tue, 14 Apr 2020 13:59:35 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DB27BF800E7
- for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2020 23:55:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB27BF800E7
-Received: by mail-ot1-f65.google.com with SMTP id 72so3103807otu.1
- for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2020 14:55:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=iCw71v93X288tPDb+ouK6ph9U/I5qrL2nm2iv5gfjUo=;
- b=s1zvV92rD+ywZJFoOLs6/R0pf6MdGlxjAFqcNBCgRweS7g2MCbiR0ZYXRJbZHq2lCA
- DyXMVfjveDBCGhPNC2RUFBEhr32rVrmSfXwbVSydp0jY2KvYIhEA8B+RgM1WUHCi1djY
- JbxOk33FiyNDrKSwX0kgbgTtjFmLzyUVAa+Js8t7MmaNLOaVCBsJwaCC5PJlk6bNmugT
- ICgOor45zcUcupdpgETNnW4DGmysatqYE8+2PYoEvRx03Hc71l1vgEeGIspXF4xD23+m
- wErkWsWb9nmWPWkOitwgFHvaC12fKyl/5ONUr8iEsC5Xb9CxEu5/lmnL6pcJh94LegmF
- gOEw==
-X-Gm-Message-State: AGi0PuaYxWSYHV5E1D7GUNaCCFuc3gQ9RWRbfOql3glxjzKPdeXnbudr
- GxHURo/RHPFCLRtDWa+WDw==
-X-Google-Smtp-Source: APiQypJ2UbkICoX7+yXMjbxjcdQP7ntZI5u01giYlSzLCtyuo2QmFFLftwRDKn7Lr2RxloPjBms4KA==
-X-Received: by 2002:a05:6830:2439:: with SMTP id
- k25mr1339863ots.76.1587419754478; 
- Mon, 20 Apr 2020 14:55:54 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net.
- [24.155.109.49])
- by smtp.gmail.com with ESMTPSA id h64sm192630oia.11.2020.04.20.14.55.53
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 20 Apr 2020 14:55:53 -0700 (PDT)
-Received: (nullmailer pid 32546 invoked by uid 1000);
- Mon, 20 Apr 2020 21:55:52 -0000
-Date: Mon, 20 Apr 2020 16:55:52 -0500
-From: Rob Herring <robh@kernel.org>
-To: Stephan Gerhold <stephan@gerhold.net>
-Subject: Re: [PATCH 2/2] dt-bindings: soc: qcom: apr: Use generic node names
- for APR services
-Message-ID: <20200420215552.GA32508@bogus>
-References: <20200415081159.1098-1-stephan@gerhold.net>
- <20200415081159.1098-2-stephan@gerhold.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200415081159.1098-2-stephan@gerhold.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Stephan Gerhold <stephan@gerhold.net>, linux-arm-msm@vger.kernel.org,
- Andy Gross <agross@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Bjorn Andersson <bjorn.andersson@linaro.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 864B0F800F5
+ for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 13:59:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 864B0F800F5
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="bXeZtBrf"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id A1CFE206A2;
+ Tue, 14 Apr 2020 11:59:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1586865570;
+ bh=Kk6Glg27PmiUIbJHtAYB1vVo0hJ0EZ7DGxJRzOg/UZw=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:From;
+ b=bXeZtBrf8TnDxrFUrNK5eyd4aDS58oP9LY6vZvkR7LDjrLWKlPlgyPRDGaWgiTGFV
+ KBHuL+YSaMLGakc7DDEgrFFlWIiygxKQf2Fm9PccnNWTT8brVuv7RH3x1AMvgscraX
+ M+3egCNLMcxhvKAidFPPKU8Ran0wL7caReJL4lbA=
+Date: Tue, 14 Apr 2020 12:59:27 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Philipp Puschmann <p.puschmann@pironex.de>
+Subject: Applied "ASoC: tas571x: disable regulators on failed probe" to the
+ asoc tree
+In-Reply-To: 
+Message-Id: 
+X-Patchwork-Hint: ignore
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,18 +83,123 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+Message-ID: <20200414115927.WvBvI9vr_xndAtqD94Sb-52QmzKpyfOpHFnPyr3mhGg@z>
 
-On Wed, 15 Apr 2020 10:11:59 +0200, Stephan Gerhold wrote:
-> Device nodes should be named according to the class of devices
-> they belong to. Change the suggested names of the subnodes to
-> apr-service@<id>, which is already in use in
-> arch/arm64/boot/dts/qcom/sdm845.dtsi.
-> 
-> Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-> ---
->  .../devicetree/bindings/soc/qcom/qcom,apr.txt | 20 +++++++++----------
->  1 file changed, 10 insertions(+), 10 deletions(-)
-> 
+The patch
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+   ASoC: tas571x: disable regulators on failed probe
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+From 9df8ba7c63073508e5aa677dade48fcab6a6773e Mon Sep 17 00:00:00 2001
+From: Philipp Puschmann <p.puschmann@pironex.de>
+Date: Tue, 14 Apr 2020 13:27:54 +0200
+Subject: [PATCH] ASoC: tas571x: disable regulators on failed probe
+
+If probe fails after enabling the regulators regulator_put is called for
+each supply without having them disabled before. This produces some
+warnings like
+
+WARNING: CPU: 0 PID: 90 at drivers/regulator/core.c:2044 _regulator_put.part.0+0x154/0x15c
+[<c010f7a8>] (unwind_backtrace) from [<c010c544>] (show_stack+0x10/0x14)
+[<c010c544>] (show_stack) from [<c012b640>] (__warn+0xd0/0xf4)
+[<c012b640>] (__warn) from [<c012b9b4>] (warn_slowpath_fmt+0x64/0xc4)
+[<c012b9b4>] (warn_slowpath_fmt) from [<c04c4064>] (_regulator_put.part.0+0x154/0x15c)
+[<c04c4064>] (_regulator_put.part.0) from [<c04c4094>] (regulator_put+0x28/0x38)
+[<c04c4094>] (regulator_put) from [<c04c40cc>] (regulator_bulk_free+0x28/0x38)
+[<c04c40cc>] (regulator_bulk_free) from [<c0579b2c>] (release_nodes+0x1d0/0x22c)
+[<c0579b2c>] (release_nodes) from [<c05756dc>] (really_probe+0x108/0x34c)
+[<c05756dc>] (really_probe) from [<c0575aec>] (driver_probe_device+0xb8/0x16c)
+[<c0575aec>] (driver_probe_device) from [<c0575d40>] (device_driver_attach+0x58/0x60)
+[<c0575d40>] (device_driver_attach) from [<c0575da0>] (__driver_attach+0x58/0xcc)
+[<c0575da0>] (__driver_attach) from [<c0573978>] (bus_for_each_dev+0x78/0xc0)
+[<c0573978>] (bus_for_each_dev) from [<c0574b5c>] (bus_add_driver+0x188/0x1e0)
+[<c0574b5c>] (bus_add_driver) from [<c05768b0>] (driver_register+0x74/0x108)
+[<c05768b0>] (driver_register) from [<c061ab7c>] (i2c_register_driver+0x3c/0x88)
+[<c061ab7c>] (i2c_register_driver) from [<c0102df8>] (do_one_initcall+0x58/0x250)
+[<c0102df8>] (do_one_initcall) from [<c01a91bc>] (do_init_module+0x60/0x244)
+[<c01a91bc>] (do_init_module) from [<c01ab5a4>] (load_module+0x2180/0x2540)
+[<c01ab5a4>] (load_module) from [<c01abbd4>] (sys_finit_module+0xd0/0xe8)
+[<c01abbd4>] (sys_finit_module) from [<c01011e0>] (__sys_trace_return+0x0/0x20)
+
+Fixes: 3fd6e7d9a146 (ASoC: tas571x: New driver for TI TAS571x power amplifiers)
+Signed-off-by: Philipp Puschmann <p.puschmann@pironex.de>
+Link: https://lore.kernel.org/r/20200414112754.3365406-1-p.puschmann@pironex.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/tas571x.c | 20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/codecs/tas571x.c b/sound/soc/codecs/tas571x.c
+index 1554631cb397..5b7f9fcf6cbf 100644
+--- a/sound/soc/codecs/tas571x.c
++++ b/sound/soc/codecs/tas571x.c
+@@ -820,8 +820,10 @@ static int tas571x_i2c_probe(struct i2c_client *client,
+ 
+ 	priv->regmap = devm_regmap_init(dev, NULL, client,
+ 					priv->chip->regmap_config);
+-	if (IS_ERR(priv->regmap))
+-		return PTR_ERR(priv->regmap);
++	if (IS_ERR(priv->regmap)) {
++		ret = PTR_ERR(priv->regmap);
++		goto disable_regs;
++	}
+ 
+ 	priv->pdn_gpio = devm_gpiod_get_optional(dev, "pdn", GPIOD_OUT_LOW);
+ 	if (IS_ERR(priv->pdn_gpio)) {
+@@ -845,7 +847,7 @@ static int tas571x_i2c_probe(struct i2c_client *client,
+ 
+ 	ret = regmap_write(priv->regmap, TAS571X_OSC_TRIM_REG, 0);
+ 	if (ret)
+-		return ret;
++		goto disable_regs;
+ 
+ 	usleep_range(50000, 60000);
+ 
+@@ -861,12 +863,20 @@ static int tas571x_i2c_probe(struct i2c_client *client,
+ 		 */
+ 		ret = regmap_update_bits(priv->regmap, TAS571X_MVOL_REG, 1, 0);
+ 		if (ret)
+-			return ret;
++			goto disable_regs;
+ 	}
+ 
+-	return devm_snd_soc_register_component(&client->dev,
++	ret = devm_snd_soc_register_component(&client->dev,
+ 				      &priv->component_driver,
+ 				      &tas571x_dai, 1);
++	if (ret)
++		goto disable_regs;
++
++	return ret;
++
++disable_regs:
++	regulator_bulk_disable(priv->chip->num_supply_names, priv->supplies);
++	return ret;
+ }
+ 
+ static int tas571x_i2c_remove(struct i2c_client *client)
+-- 
+2.20.1
+
