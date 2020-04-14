@@ -2,67 +2,74 @@ Return-Path: <SRS0=tzaW=56=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B69CCC2BA19
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 07:05:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A714C2BBFD
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 07:06:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3E664206E9
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 07:05:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 26D80206E9
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 07:06:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="A62rV5v7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3E664206E9
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WBwo1rOK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 26D80206E9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8C4931685;
-	Tue, 14 Apr 2020 09:04:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C4931685
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1F50D16A0;
+	Tue, 14 Apr 2020 09:05:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F50D16A0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586847926;
-	bh=X0m05KxE7+iyIXhqgfawSA7AMbhw+iNskf8u0BWleZE=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=A62rV5v72Z1RUQtsjMbrahcYisa4bmLHsvj5GLupMtrT760giMezXQZ4s5Vw3bwg7
-	 DCmI2XqFN5GxPumfkEWyV+JWGVJAt2k+YEaAXQCHifRDY9IVaeHbcfea5unnr9tI56
-	 eprDFQKl5OKAoxgB7xhU7soDqzZWzV8biRVFaFRs=
+	s=default; t=1586847979;
+	bh=6SRURPaJsU8a2hsDTDqwstESBhVi87IZoQIGGTfuTFQ=;
+	h=From:To:Subject:Date:In-Reply-To:References:In-Reply-To:
+	 References:Cc:List-Id:List-Unsubscribe:List-Archive:List-Post:
+	 List-Help:List-Subscribe:From;
+	b=WBwo1rOKzkiN58hjFd3KaMcFpvkzhU+FoexNbVoupgSc+vTMn01FZcWlst904l1Ly
+	 LwIBcueYFitsp0VC+K3+FIDApm+QojMc10oGAHd7Pr5mHRVmTIG+Tccdb/RYPi6Opd
+	 Jn42GcHXxMUqNEjVckRZTSWL/Uy5gtU9st/bZc/c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DB801F80126;
-	Tue, 14 Apr 2020 09:04:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 797BEF8028B;
+	Tue, 14 Apr 2020 09:04:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D4F7BF8016F; Tue, 14 Apr 2020 09:04:31 +0200 (CEST)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+ id B5C7EF8016F; Tue, 14 Apr 2020 09:04:34 +0200 (CEST)
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 48EAEF800B9
- for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 09:04:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48EAEF800B9
-Received: from inva020.nxp.com (localhost [127.0.0.1])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 377AC1A0317;
- Tue, 14 Apr 2020 09:04:26 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9F499F8013D
+ for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 09:04:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F499F8013D
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 9B99120005B;
+ Tue, 14 Apr 2020 09:04:28 +0200 (CEST)
 Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
  [165.114.16.14])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 9161F1A0300;
- Tue, 14 Apr 2020 09:04:20 +0200 (CEST)
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 0053D200336;
+ Tue, 14 Apr 2020 09:04:23 +0200 (CEST)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 834104028B;
- Tue, 14 Apr 2020 15:04:13 +0800 (SGT)
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id DDE8A402E2;
+ Tue, 14 Apr 2020 15:04:15 +0800 (SGT)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
  festevam@gmail.com, broonie@kernel.org, alsa-devel@alsa-project.org,
  lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, robh+dt@kernel.org,
  mark.rutland@arm.com, devicetree@vger.kernel.org
-Subject: [PATCH v8 0/7] ASoC: Add new module driver for new ASRC
-Date: Tue, 14 Apr 2020 14:56:00 +0800
-Message-Id: <cover.1586845137.git.shengjiu.wang@nxp.com>
+Subject: [PATCH v8 2/7] ASoC: dt-bindings: fsl_asrc: Add new property fsl,
+ asrc-format
+Date: Tue, 14 Apr 2020 14:56:02 +0800
+Message-Id: <f952cd0ead3816d0c208891d7c8c3895187394a3.1586845137.git.shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <cover.1586845137.git.shengjiu.wang@nxp.com>
+References: <cover.1586845137.git.shengjiu.wang@nxp.com>
+In-Reply-To: <cover.1586845137.git.shengjiu.wang@nxp.com>
+References: <cover.1586845137.git.shengjiu.wang@nxp.com>
 X-Virus-Scanned: ClamAV using ClamSMTP
 Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
@@ -80,63 +87,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add new module driver for new ASRC in i.MX8MN, several commits
-are added for new property fsl,asrc-format
+In order to support new EASRC and simplify the code structure,
+We decide to share the common structure between them. This bring
+a problem that EASRC accept format directly from devicetree, but
+ASRC accept width from devicetree.
 
-Shengjiu Wang (7):
-  ASoC: fsl_asrc: rename asrc_priv to asrc
-  ASoC: dt-bindings: fsl_asrc: Add new property fsl,asrc-format
-  ASoC: fsl-asoc-card: Support new property fsl,asrc-format
-  ASoC: fsl_asrc: Support new property fsl,asrc-format
-  ASoC: fsl_asrc: Move common definition to fsl_asrc_common
-  ASoC: dt-bindings: fsl_easrc: Add document for EASRC
-  ASoC: fsl_easrc: Add EASRC ASoC CPU DAI drivers
+In order to align with new ESARC, we add new property fsl,asrc-format.
+The fsl,asrc-format can replace the fsl,asrc-width, then driver
+can accept format from devicetree, don't need to convert it to
+format through width.
 
-changes in v8
-- change get_pair_priv_size to pair_priv_size variable
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+---
+ Documentation/devicetree/bindings/sound/fsl,asrc.txt | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-changes in v7
-- updated according to Nicoin's comments.
-- add get_pair_priv_size to replace PAIR_PRIVATE_SIZE
-
-changes in v6
-- updated according to Nicoin's and Rob's comments.
-
-changes in v5
-- Add new property fsl,asrc-format, rather than change fsl,asrc-width
-  to fsl,asrc-formt.
-- code change for above change.
-
-changes in v4
-- Add several commit for changing DT binding asrc-width to asrc-format
-- rename asrc_priv to asrc
-
-changes in v3
-- add new commit "ASoC: fsl_asrc: Change asrc_width to asrc_format"
-- modify binding doc to yaml format
-- remove fsl_easrc_dma.c, make fsl_asrc_dma.c useable for easrc.
-
-changes in v2
-- change i.MX815 to i.MX8MN
-- Add changes in Kconfig and Makefile
-
- .../devicetree/bindings/sound/fsl,asrc.txt    |    4 +
- .../devicetree/bindings/sound/fsl,easrc.yaml  |  101 +
- sound/soc/fsl/Kconfig                         |   11 +
- sound/soc/fsl/Makefile                        |    2 +
- sound/soc/fsl/fsl-asoc-card.c                 |   24 +-
- sound/soc/fsl/fsl_asrc.c                      |  305 +--
- sound/soc/fsl/fsl_asrc.h                      |   74 +-
- sound/soc/fsl/fsl_asrc_common.h               |  106 +
- sound/soc/fsl/fsl_asrc_dma.c                  |   54 +-
- sound/soc/fsl/fsl_easrc.c                     | 2114 +++++++++++++++++
- sound/soc/fsl/fsl_easrc.h                     |  651 +++++
- 11 files changed, 3212 insertions(+), 234 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/fsl,easrc.yaml
- create mode 100644 sound/soc/fsl/fsl_asrc_common.h
- create mode 100644 sound/soc/fsl/fsl_easrc.c
- create mode 100644 sound/soc/fsl/fsl_easrc.h
-
+diff --git a/Documentation/devicetree/bindings/sound/fsl,asrc.txt b/Documentation/devicetree/bindings/sound/fsl,asrc.txt
+index cb9a25165503..998b4c8a7f78 100644
+--- a/Documentation/devicetree/bindings/sound/fsl,asrc.txt
++++ b/Documentation/devicetree/bindings/sound/fsl,asrc.txt
+@@ -51,6 +51,10 @@ Optional properties:
+ 			  will be in use as default. Otherwise, the big endian
+ 			  mode will be in use for all the device registers.
+ 
++   - fsl,asrc-format	: Defines a mutual sample format used by DPCM Back
++			  Ends, which can replace the fsl,asrc-width.
++			  The value is 2 (S16_LE), or 6 (S24_LE).
++
+ Example:
+ 
+ asrc: asrc@2034000 {
 -- 
 2.21.0
 
