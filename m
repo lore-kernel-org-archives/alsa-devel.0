@@ -4,73 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C6AEC3815B
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 14:47:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D8B33C2BA19
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 14:48:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 182D82085B
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 14:47:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 641C02078B
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 14:48:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="j9grTjAz";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xj0eRvpc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 182D82085B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EXWsands";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="QdZMnmSC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 641C02078B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6C1D816AB;
-	Tue, 14 Apr 2020 16:46:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C1D816AB
+	by alsa0.perex.cz (Postfix) with ESMTPS id BDCB816BA;
+	Tue, 14 Apr 2020 16:47:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BDCB816BA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586875633;
-	bh=BKt0ly0X0uSnzjL/jCTuX7kQW79brFOyTVWQb3pvaVg=;
+	s=default; t=1586875681;
+	bh=IutWf6tVbjBkpct5Tu3pL3Kx0ZUbXBXAJ5rrXZM3Slo=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=j9grTjAz2moBO5Mleh6dI+NfL6rGPgXfp/KoO2wYxmbEH7i9sec3ku2RIu7oAKfUz
-	 ZjjEz+PoRrgLDXh9MC3jZjq+Uo4HzJc7X2I4CDiY0fujEMKVLYKZ7PEL0ezRVI4Ioa
-	 HIO7xSTwWfr5XkpU9SaVg5TqBhYOQru8y8It8zVI=
+	b=EXWsandsTAOsaz1d2w4T+SOMyP6gk+I8rNWkXVkBD6uBkkWEbddRcorkH74J3znaE
+	 gTDvLlVsI0LKMovvaDibFdbXXlWLAbVAVK9KXvh6iLQfUqkeKs4lm1NxPaj9priuXt
+	 an392dZoHZJq7i2yOwhVTQEjrYRXiNZlINQgheNU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BDDECF8014E;
-	Tue, 14 Apr 2020 16:46:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 89E47F8028B;
+	Tue, 14 Apr 2020 16:46:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 571F2F8021E; Tue, 14 Apr 2020 16:45:58 +0200 (CEST)
+ id 51373F8028B; Tue, 14 Apr 2020 16:46:06 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C8F13F8014E
- for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 16:45:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8F13F8014E
+ by alsa1.perex.cz (Postfix) with ESMTPS id A204AF8016F
+ for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 16:45:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A204AF8016F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Xj0eRvpc"
+ header.b="QdZMnmSC"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 7EA4320578;
- Tue, 14 Apr 2020 14:45:52 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id BC37F2076D;
+ Tue, 14 Apr 2020 14:45:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1586875553;
- bh=BKt0ly0X0uSnzjL/jCTuX7kQW79brFOyTVWQb3pvaVg=;
+ s=default; t=1586875558;
+ bh=IutWf6tVbjBkpct5Tu3pL3Kx0ZUbXBXAJ5rrXZM3Slo=;
  h=Date:From:To:Cc:Subject:In-Reply-To:From;
- b=Xj0eRvpcd0zAHHGgS+wlkuC4N5yFk7/Jl/HNtK96l4XQMHdwnPoEAvivqpMhgIeM0
- vPngoZWMyKMqw4h4vqjDFcvzCxx/XMchC3Fwy/4lD2/mzfQ7AASvzYHB+w1bkMcJI+
- NNDw8/wBVhwYCKjYJlDHd/tPPcA8jAUWZt/e+Xmw=
-Date: Tue, 14 Apr 2020 15:45:50 +0100
+ b=QdZMnmSC3jo7Ek/0LUhLRrcvc/r4RcN8KTScM8T6J9XxoI7anzE/TbhNEnm67J1//
+ NBT1wSbmaNDMEtitSTBRAnCkyGU7GWwcg6BU9JeMGk3A++syr7zZ7NS/r7vmci6O2O
+ 5RIAXQ9phKaEHsny6ZZyQ+fXerF84z9PxN+IxTvg=
+Date: Tue, 14 Apr 2020 15:45:55 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Johan Jonker <jbx6244@gmail.com>
-Subject: Applied "ASoC: rockchip-i2s: add power-domains property" to the asoc
- tree
-In-Reply-To: <20200324094149.6904-3-jbx6244@gmail.com>
-Message-Id: <applied-20200324094149.6904-3-jbx6244@gmail.com>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Applied "ASoC: madera: Remove a couple of stray blank lines" to the
+ asoc tree
+In-Reply-To: <20200409181311.30247-1-ckeepax@opensource.cirrus.com>
+Message-Id: <applied-20200409181311.30247-1-ckeepax@opensource.cirrus.com>
 X-Patchwork-Hint: ignore
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, heiko@sntech.de,
- lgirdwood@gmail.com, robh+dt@kernel.org, linux-kernel@vger.kernel.org,
- linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>,
- linux-arm-kernel@lists.infradead.org
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,7 +86,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: rockchip-i2s: add power-domains property
+   ASoC: madera: Remove a couple of stray blank lines
 
 has been applied to the asoc tree at
 
@@ -113,38 +111,54 @@ to this mail.
 Thanks,
 Mark
 
-From 2a79c31a498e002eeb7c7d759241c3cca95b28d9 Mon Sep 17 00:00:00 2001
-From: Johan Jonker <jbx6244@gmail.com>
-Date: Tue, 24 Mar 2020 10:41:49 +0100
-Subject: [PATCH] ASoC: rockchip-i2s: add power-domains property
+From bcbc13d28f7f7bcacb3594f72e68c8e57167a836 Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Date: Thu, 9 Apr 2020 19:13:11 +0100
+Subject: [PATCH] ASoC: madera: Remove a couple of stray blank lines
 
-In the old txt situation we add/describe only properties that are used
-by the driver/hardware itself. With yaml it also filters things in a
-node that are used by other drivers like 'power-domains' for rk3399,
-so add it to 'rockchip-i2s.yaml'.
-
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Link: https://lore.kernel.org/r/20200324094149.6904-3-jbx6244@gmail.com
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20200409181311.30247-1-ckeepax@opensource.cirrus.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/rockchip-i2s.yaml | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/codecs/madera.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/rockchip-i2s.yaml b/Documentation/devicetree/bindings/sound/rockchip-i2s.yaml
-index 7cd0e278ed85..a3ba2186d6a1 100644
---- a/Documentation/devicetree/bindings/sound/rockchip-i2s.yaml
-+++ b/Documentation/devicetree/bindings/sound/rockchip-i2s.yaml
-@@ -56,6 +56,9 @@ properties:
-       - const: tx
-       - const: rx
+diff --git a/sound/soc/codecs/madera.c b/sound/soc/codecs/madera.c
+index 40de9d7811d1..a448d2a2918a 100644
+--- a/sound/soc/codecs/madera.c
++++ b/sound/soc/codecs/madera.c
+@@ -1903,7 +1903,6 @@ const struct soc_enum madera_isrc_fsh[] = {
+ 			      MADERA_ISRC4_FSH_SHIFT, 0xf,
+ 			      MADERA_RATE_ENUM_SIZE,
+ 			      madera_rate_text, madera_rate_val),
+-
+ };
+ EXPORT_SYMBOL_GPL(madera_isrc_fsh);
  
-+  power-domains:
-+    maxItems: 1
-+
-   rockchip,capture-channels:
-     allOf:
-       - $ref: /schemas/types.yaml#/definitions/uint32
+@@ -1924,7 +1923,6 @@ const struct soc_enum madera_isrc_fsl[] = {
+ 			      MADERA_ISRC4_FSL_SHIFT, 0xf,
+ 			      MADERA_RATE_ENUM_SIZE,
+ 			      madera_rate_text, madera_rate_val),
+-
+ };
+ EXPORT_SYMBOL_GPL(madera_isrc_fsl);
+ 
+@@ -1938,7 +1936,6 @@ const struct soc_enum madera_asrc1_rate[] = {
+ 			      MADERA_ASYNC_RATE_ENUM_SIZE,
+ 			      madera_rate_text + MADERA_SYNC_RATE_ENUM_SIZE,
+ 			      madera_rate_val + MADERA_SYNC_RATE_ENUM_SIZE),
+-
+ };
+ EXPORT_SYMBOL_GPL(madera_asrc1_rate);
+ 
+@@ -1964,7 +1961,6 @@ const struct soc_enum madera_asrc2_rate[] = {
+ 			      MADERA_ASYNC_RATE_ENUM_SIZE,
+ 			      madera_rate_text + MADERA_SYNC_RATE_ENUM_SIZE,
+ 			      madera_rate_val + MADERA_SYNC_RATE_ENUM_SIZE),
+-
+ };
+ EXPORT_SYMBOL_GPL(madera_asrc2_rate);
+ 
 -- 
 2.20.1
 
