@@ -4,74 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B1509C2BA19
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 14:57:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C7BEC2BA19
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 14:57:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 360CA20578
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 14:57:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D8A152076B
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 14:57:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ly5AbX2s";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="TFsPuBZ7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 360CA20578
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jjMkHTmP";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="SDUnpX3s"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D8A152076B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 96A0D167F;
-	Tue, 14 Apr 2020 16:56:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 96A0D167F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 374ED16B9;
+	Tue, 14 Apr 2020 16:56:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 374ED16B9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586876220;
-	bh=MeT05xutcLyt46QAxJJeGX5eCJ3rJjq4JQ++BK18pMo=;
+	s=default; t=1586876247;
+	bh=cJrGG4yiej9TCD9AKARgX2YIrPkIqSEEZI1+VbdzPvc=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=Ly5AbX2s0IaHDYv1LqrdPxwruKy7hX/vk67E2OboN53YIaPcn+I0tDfZU/hijjULp
-	 64W9dvq0hqzBatU4adgQIVBBEUlYz4HVT3tIQpYG0s7Cc34rzWp+EowpIGaONldgKy
-	 N+cDOeOVUss11LRKx295f8yZ2RICYK3zGZINZO7w=
+	b=jjMkHTmPOwZovOYvX2l4ZQz4FA8IMK01YQjyOjlY6znfbiJ1kw477oGravgyMDQmY
+	 Yg3mWMIiEPZzvC/Y4met+8Cbek3dTqxSPu9R8A/hBg2v6yoG+TjVAjNkt7MUqMcNeO
+	 bQPr08Lqq2tbKHX4pNpgGZGYcglKTUarV3/QZpbM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C2A36F80292;
-	Tue, 14 Apr 2020 16:48:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3EB1DF80339;
+	Tue, 14 Apr 2020 16:48:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7693FF80332; Tue, 14 Apr 2020 16:47:27 +0200 (CEST)
+ id 16D4FF80332; Tue, 14 Apr 2020 16:47:36 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6E7C9F80331
- for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 16:47:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E7C9F80331
+ by alsa1.perex.cz (Postfix) with ESMTPS id 659C1F80334
+ for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 16:47:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 659C1F80334
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="TFsPuBZ7"
+ header.b="SDUnpX3s"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 8E3E220787;
- Tue, 14 Apr 2020 14:47:20 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id B2A0B20578;
+ Tue, 14 Apr 2020 14:47:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1586875641;
- bh=MeT05xutcLyt46QAxJJeGX5eCJ3rJjq4JQ++BK18pMo=;
+ s=default; t=1586875646;
+ bh=cJrGG4yiej9TCD9AKARgX2YIrPkIqSEEZI1+VbdzPvc=;
  h=Date:From:To:Cc:Subject:In-Reply-To:From;
- b=TFsPuBZ7FSNOtnSAug8XW4IXwbyWaVpeFFbM9cedU9et3qHJyz1nV2uAJsPo6rIVN
- gdqQ7KdGTJHWPQR4XxT+sUOSTDXOd6zT7eAGdKDy0PdIPwIkTEC4VtnkHp6sPDwEj9
- H50SXjgTY0FPCRLNGDSp0IPfRiLn6Bf0tLf8kIKE=
-Date: Tue, 14 Apr 2020 15:47:18 +0100
+ b=SDUnpX3sX7nVMDh1PeFH+AKvCO8Zw1hksbJPISukppA6s8SjATFTJHWJDXJtVklBu
+ k52DU3X5MlrhUXECkITFwwu3hRzv6QDgpG0iT90Ja8ClVpP0Yb95Nk0eEalQWYznb1
+ jGwMoC5l5P4OhubjNebjMqzWrNyyDxgXb1QAvb9k=
+Date: Tue, 14 Apr 2020 15:47:23 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Dmitry Osipenko <digetx@gmail.com>
-Subject: Applied "ASoC: tegra: tegra_wm8903: Support nvidia,
- headset property" to the asoc tree
-In-Reply-To: <20200330204011.18465-3-digetx@gmail.com>
-Message-Id: <applied-20200330204011.18465-3-digetx@gmail.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: sof_sdw_rt711: remove codec_dai use" to the
+ asoc tree
+In-Reply-To: <20200409185827.16255-14-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20200409185827.16255-14-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Stephen Warren <swarren@wwwdotorg.org>, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Rob Herring <robh+dt@kernel.org>, Jonathan Hunter <jonathanh@nvidia.com>,
- Mark Brown <broonie@kernel.org>, linux-tegra@vger.kernel.org
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,7 +85,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: tegra: tegra_wm8903: Support nvidia, headset property
+   ASoC: Intel: sof_sdw_rt711: remove codec_dai use
 
 has been applied to the asoc tree at
 
@@ -114,51 +110,33 @@ to this mail.
 Thanks,
 Mark
 
-From 3ef9d5073b552d56bd6daf2af1e89b7e8d4df183 Mon Sep 17 00:00:00 2001
-From: Dmitry Osipenko <digetx@gmail.com>
-Date: Mon, 30 Mar 2020 23:40:11 +0300
-Subject: [PATCH] ASoC: tegra: tegra_wm8903: Support nvidia, headset property
+From 30e3edfbd1bf2f79287a5586508bb51f3fce5826 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Thu, 9 Apr 2020 13:58:27 -0500
+Subject: [PATCH] ASoC: Intel: sof_sdw_rt711: remove codec_dai use
 
-The microphone-jack state needs to be masked in a case of a 4-pin jack
-when microphone and ground pins are shorted. Presence of nvidia,headset
-tells that WM8903 CODEC driver should mask microphone's status if short
-circuit is detected, i.e headphones are inserted.
+Use macro.
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-Link: https://lore.kernel.org/r/20200330204011.18465-3-digetx@gmail.com
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20200409185827.16255-14-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/tegra/tegra_wm8903.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ sound/soc/intel/boards/sof_sdw_rt711.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/tegra/tegra_wm8903.c b/sound/soc/tegra/tegra_wm8903.c
-index 9b5651502f12..3aca354f9e08 100644
---- a/sound/soc/tegra/tegra_wm8903.c
-+++ b/sound/soc/tegra/tegra_wm8903.c
-@@ -177,6 +177,7 @@ static int tegra_wm8903_init(struct snd_soc_pcm_runtime *rtd)
- 	struct snd_soc_component *component = codec_dai->component;
+diff --git a/sound/soc/intel/boards/sof_sdw_rt711.c b/sound/soc/intel/boards/sof_sdw_rt711.c
+index 2a4917e3d561..8590a8a8889f 100644
+--- a/sound/soc/intel/boards/sof_sdw_rt711.c
++++ b/sound/soc/intel/boards/sof_sdw_rt711.c
+@@ -71,7 +71,8 @@ static int rt711_rtd_init(struct snd_soc_pcm_runtime *rtd)
+ {
  	struct snd_soc_card *card = rtd->card;
- 	struct tegra_wm8903 *machine = snd_soc_card_get_drvdata(card);
-+	int shrt = 0;
- 
- 	if (gpio_is_valid(machine->gpio_hp_det)) {
- 		tegra_wm8903_hp_jack_gpio.gpio = machine->gpio_hp_det;
-@@ -189,12 +190,15 @@ static int tegra_wm8903_init(struct snd_soc_pcm_runtime *rtd)
- 					&tegra_wm8903_hp_jack_gpio);
- 	}
- 
-+	if (of_property_read_bool(card->dev->of_node, "nvidia,headset"))
-+		shrt = SND_JACK_MICROPHONE;
-+
- 	snd_soc_card_jack_new(rtd->card, "Mic Jack", SND_JACK_MICROPHONE,
- 			      &tegra_wm8903_mic_jack,
- 			      tegra_wm8903_mic_jack_pins,
- 			      ARRAY_SIZE(tegra_wm8903_mic_jack_pins));
- 	wm8903_mic_detect(component, &tegra_wm8903_mic_jack, SND_JACK_MICROPHONE,
--				0);
-+				shrt);
- 
- 	snd_soc_dapm_force_enable_pin(&card->dapm, "MICBIAS");
+ 	struct mc_private *ctx = snd_soc_card_get_drvdata(card);
+-	struct snd_soc_component *component = rtd->codec_dai->component;
++	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
++	struct snd_soc_component *component = codec_dai->component;
+ 	struct snd_soc_jack *jack;
+ 	int ret;
  
 -- 
 2.20.1
