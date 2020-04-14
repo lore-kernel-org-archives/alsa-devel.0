@@ -7,70 +7,71 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD629C2BA19
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 15:08:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0131BC38A2B
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 15:08:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 375602076D
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 15:08:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7B107208E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 15:08:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uP9qSSxW";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="mBn8b2xs"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 375602076D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="B6bV688A";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="mLCwhPLa"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7B107208E0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 94531170B;
-	Tue, 14 Apr 2020 17:07:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94531170B
+	by alsa0.perex.cz (Postfix) with ESMTPS id AEB0916D6;
+	Tue, 14 Apr 2020 17:00:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AEB0916D6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586876886;
-	bh=zxxglKCwONkxQvlp+eACcSzxEjvzXi7T8JNshXROFDU=;
+	s=default; t=1586876495;
+	bh=xxyiVMF9lycQ4TsjvrEy8U/B5q58rRmqqi1TQM/G86A=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=uP9qSSxW8ouxfjnfUL1v7o3lTSV7tRS2MhGm3tpPhg64WidheUc3aAdV379z02WUE
-	 8GChAlvb7PeKEkk2wXdd3QMYIzHi/iyDWqKDJVh02eFt6QHPo0QmBMGuYM4Se8Sqt3
-	 6cVrPJ2lROzqKTVv3/MlkwBTQ+u0IiA3npJAat0g=
+	b=B6bV688AilFBhwsvT5qJJkKt/doNSiyrRrGIOt0jVIJGOZ++RJndgbc7ux5SmTpEO
+	 td41yZ0+K1ehIIJCR6pCKFRIWPQLGGuCXGR3BgsORKkg+ltHLaULgm5+2OT1koD9uT
+	 4gaQujcZyK3BRtwtWiTFSPRXpginosLab230x4Ug=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C713CF803FC;
-	Tue, 14 Apr 2020 16:49:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 45EB3F80371;
+	Tue, 14 Apr 2020 16:48:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8D1A7F803FC; Tue, 14 Apr 2020 16:49:03 +0200 (CEST)
+ id 0A48AF80334; Tue, 14 Apr 2020 16:48:07 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1B00FF803F3
- for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 16:49:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B00FF803F3
+ by alsa1.perex.cz (Postfix) with ESMTPS id D319EF8021E
+ for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 16:48:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D319EF8021E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="mBn8b2xs"
+ header.b="mLCwhPLa"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 1351120787;
- Tue, 14 Apr 2020 14:48:58 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id C64BE2076D;
+ Tue, 14 Apr 2020 14:48:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1586875739;
- bh=zxxglKCwONkxQvlp+eACcSzxEjvzXi7T8JNshXROFDU=;
+ s=default; t=1586875682;
+ bh=xxyiVMF9lycQ4TsjvrEy8U/B5q58rRmqqi1TQM/G86A=;
  h=Date:From:To:Cc:Subject:In-Reply-To:From;
- b=mBn8b2xsr4N20yQqj0LXBnD5lVnmIWM9Mnx/7Td6Q+X9AIcALeLmWbdN6bUGOzz9Y
- vifV9oQPo/4uACuEbP4ZlKLoOVjxGs2dyxLQAJCS5NVQLVNNbk1sJ6p5kru001kcbF
- R4CULgFaaGMC6/5R87os+Sp8y3yOQ6JQiLg41jjU=
-Date: Tue, 14 Apr 2020 15:48:56 +0100
+ b=mLCwhPLaAXG8jo9N/EJbGjk5k8k0yDo/b2Frqlbx62nJqgD1gKVEMlQOX2wri4VyH
+ w7YhSU56igyHsVVND3zvU9ysypcKJBThI+39Xb78pJ1W92sObaLjHnGJXttN8LPfqs
+ FnalfkTCPmlhFiWgE8ge8vpCyvBaOGM1LCqutY9g=
+Date: Tue, 14 Apr 2020 15:47:59 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Applied "ASoC: SOF: Intel: hda: log number of microphones detected in
- NHLT tables" to the asoc tree
-In-Reply-To: <20200409184416.15591-4-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20200409184416.15591-4-pierre-louis.bossart@linux.intel.com>
+To: Bard Liao <yung-chuan.liao@linux.intel.com>
+Subject: Applied "ASoC: intel: sof_sdw: init all aggregated codecs" to the
+ asoc tree
+In-Reply-To: <20200409185827.16255-7-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20200409185827.16255-7-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
 Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
  alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- tiwai@suse.de, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
  Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -89,7 +90,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: Intel: hda: log number of microphones detected in NHLT tables
+   ASoC: intel: sof_sdw: init all aggregated codecs
 
 has been applied to the asoc tree at
 
@@ -114,40 +115,88 @@ to this mail.
 Thanks,
 Mark
 
-From 642646cc4f84e1a7a0002f8ac4660576011abffe Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Thu, 9 Apr 2020 13:44:15 -0500
-Subject: [PATCH] ASoC: SOF: Intel: hda: log number of microphones detected in
- NHLT tables
+From 5930d02c2d533aa9cbc2b55ad27b41802858da16 Mon Sep 17 00:00:00 2001
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
+Date: Thu, 9 Apr 2020 13:58:20 -0500
+Subject: [PATCH] ASoC: intel: sof_sdw: init all aggregated codecs
 
-Log the information extracted from NHLT tables to help support users
-who report non-functional digital mics with SOF.
+Init codecs which belong to the same group id on all links.
 
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Link: https://lore.kernel.org/r/20200409184416.15591-4-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20200409185827.16255-7-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/intel/hda.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/intel/boards/sof_sdw.c | 41 ++++++++++++++++++++------------
+ 1 file changed, 26 insertions(+), 15 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 6cbe2edc868c..263937357ea3 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -1006,6 +1006,10 @@ static int hda_generic_machine_select(struct snd_sof_dev *sdev)
- 			if (!tplg_filename)
- 				return -EINVAL;
+diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
+index a64dc563b47e..6a1b51c0546b 100644
+--- a/sound/soc/intel/boards/sof_sdw.c
++++ b/sound/soc/intel/boards/sof_sdw.c
+@@ -411,25 +411,36 @@ static int create_codec_dai_name(struct device *dev,
  
-+			dev_info(bus->dev,
-+				 "DMICs detected in NHLT tables: %d\n",
-+				 dmic_num);
-+
- 			pdata->machine = hda_mach;
- 			pdata->tplg_filename = tplg_filename;
- 		}
+ static int set_codec_init_func(const struct snd_soc_acpi_link_adr *link,
+ 			       struct snd_soc_dai_link *dai_links,
+-			       bool playback)
++			       bool playback, int group_id)
+ {
+ 	int i;
+ 
+-	for (i = 0; i < link->num_adr; i++) {
+-		unsigned int part_id;
+-		int codec_index;
+-
+-		part_id = SDW_PART_ID(link->adr_d[i].adr);
+-		codec_index = find_codec_info_part(part_id);
++	do {
++		/*
++		 * Initialize the codec. If codec is part of an aggregated
++		 * group (group_id>0), initialize all codecs belonging to
++		 * same group.
++		 */
++		for (i = 0; i < link->num_adr; i++) {
++			unsigned int part_id;
++			int codec_index;
+ 
+-		if (codec_index < 0)
+-			return codec_index;
++			part_id = SDW_PART_ID(link->adr_d[i].adr);
++			codec_index = find_codec_info_part(part_id);
+ 
+-		if (codec_info_list[codec_index].init)
+-			codec_info_list[codec_index].init(link, dai_links,
+-						 &codec_info_list[codec_index],
+-						 playback);
+-	}
++			if (codec_index < 0)
++				return codec_index;
++			/* The group_id is > 0 iff the codec is aggregated */
++			if (link->adr_d[i].endpoints->group_id != group_id)
++				continue;
++			if (codec_info_list[codec_index].init)
++				codec_info_list[codec_index].init(link,
++						dai_links,
++						&codec_info_list[codec_index],
++						playback);
++		}
++		link++;
++	} while (link->mask && group_id);
+ 
+ 	return 0;
+ }
+@@ -623,7 +634,7 @@ static int create_sdw_dailink(struct device *dev, int *be_index,
+ 			      NULL, &sdw_ops);
+ 
+ 		ret = set_codec_init_func(link, dai_links + (*be_index)++,
+-					  playback);
++					  playback, group_id);
+ 		if (ret < 0) {
+ 			dev_err(dev, "failed to init codec %d", codec_index);
+ 			return ret;
 -- 
 2.20.1
 
