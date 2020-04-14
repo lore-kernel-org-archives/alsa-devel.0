@@ -6,72 +6,72 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D96FC2BA19
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 17:21:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47F43C3815B
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 17:26:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CAC0920678
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 17:21:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C8A6F206A2
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 17:25:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="r7OkaEO/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CAC0920678
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iGSaxse1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C8A6F206A2
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2B181168C;
-	Tue, 14 Apr 2020 19:20:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B181168C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 24B5A168D;
+	Tue, 14 Apr 2020 19:25:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 24B5A168D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586884868;
-	bh=8WyLkdTf7Vus9l1tDgM2yZD55eWTM36zJzqT2Lk/T7c=;
+	s=default; t=1586885158;
+	bh=LfisnQrfyusSdLWGF7Z1+gGkwgbBMGegkSobI9BzgtI=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=r7OkaEO/79YMyUXofv5jXu2GvvBxD6th2RH2xm+8EGgbxVKkaaSQSwgPUfGnsSeaM
-	 FSAs12PRUVfAbWOSarCXe+v2XSkJXXFVTQ9lSQz6drot48B9cMXS9k//YtTO7zPrm0
-	 BE9A0I1bdITwyYetzvvm9p9Q+vcjsr4hLKsajN+w=
+	b=iGSaxse1HXYrpVllG+fT5x+cITjDdW1t36DJgM+FN9tC1uPW9iT5YymK+Yzbf9bs7
+	 L7Cx2AcasRGvE+QbGmBHhkPxSTTR+Ab7h/Vumir70J5H3XB2jAqYdufiWX45A8sPCe
+	 nl45bLg7UNe0OiX4GB1j6BjyFO5us8W64RzPXspc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B9B93F80126;
-	Tue, 14 Apr 2020 19:20:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9277FF800B9;
+	Tue, 14 Apr 2020 19:25:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C434FF8013D; Tue, 14 Apr 2020 19:20:15 +0200 (CEST)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ id EC2B5F8013D; Tue, 14 Apr 2020 19:25:05 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D401CF800F5
- for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 19:20:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D401CF800F5
-IronPort-SDR: g7p+DyhWJQ2Fdu3eCmozEY8CT2uEo1mnMDVy6XNMUYw6KW1RZzmWSZKSudGcigH1Rx6ROJoMhj
- K4rcVNHbSCXQ==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 96C8EF800B9
+ for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 19:25:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96C8EF800B9
+IronPort-SDR: ebEafDlZJPUvH7XKJVaoK7MwLs3M1Y2kxxYYRtNQCMXfx3MnUSislUIAzE7R/m9fofQMR9AEAI
+ +ExTbLbAt0IQ==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
- by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Apr 2020 10:20:03 -0700
-IronPort-SDR: bSS1Nmn6QIYvVt6eG1P31MxIMX8W8f8wtxfvg+5BLrp+IUu5zPjMkka5UlDxHaLD17LH95cidT
- Jx54Onedqa9g==
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 14 Apr 2020 10:24:59 -0700
+IronPort-SDR: xlHs8W7KkTNiYUqjgzghdeYN2bxqCo5LerU2aDyjK9kylOT0QjL+HpDdT2nXSFZCMyW9ghrHWu
+ LQ7pKUVKR8vA==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,383,1580803200"; d="scan'208";a="271463800"
+X-IronPort-AV: E=Sophos;i="5.72,383,1580803200"; d="scan'208";a="454631045"
 Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
- by orsmga002.jf.intel.com with ESMTP; 14 Apr 2020 10:19:59 -0700
+ by fmsmga006.fm.intel.com with ESMTP; 14 Apr 2020 10:24:56 -0700
 Received: from andy by smile with local (Exim 4.93)
  (envelope-from <andriy.shevchenko@linux.intel.com>)
- id 1jOPEA-000Zpr-0r; Tue, 14 Apr 2020 20:20:02 +0300
-Date: Tue, 14 Apr 2020 20:20:02 +0300
+ id 1jOPIx-000ZtJ-5F; Tue, 14 Apr 2020 20:24:59 +0300
+Date: Tue, 14 Apr 2020 20:24:59 +0300
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [RFC PATCH 04/16] ASoC: Intel: sof-pcm512x: detect Hifiberry
- DAC+ PRO
-Message-ID: <20200414172002.GD34613@smile.fi.intel.com>
+Subject: Re: [RFC PATCH 05/16] ASoC: Intel: sof-pcm512x: reconfigure sclk in
+ hw_params if needed
+Message-ID: <20200414172459.GE34613@smile.fi.intel.com>
 References: <20200409195841.18901-1-pierre-louis.bossart@linux.intel.com>
- <20200409195841.18901-5-pierre-louis.bossart@linux.intel.com>
+ <20200409195841.18901-6-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200409195841.18901-5-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20200409195841.18901-6-pierre-louis.bossart@linux.intel.com>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Cc: alsa-devel@alsa-project.org, Rob Herring <robh+dt@kernel.org>,
  linux-gpio@vger.kernel.org, tiwai@suse.de,
@@ -95,23 +95,119 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Apr 09, 2020 at 02:58:29PM -0500, Pierre-Louis Bossart wrote:
-> Try to detect HifiBerry 44.1 and 48kHz oscillators on codec init
+On Thu, Apr 09, 2020 at 02:58:30PM -0500, Pierre-Louis Bossart wrote:
+> The SCLK is resumed by the codec driver. In case the rate specified in
+> hw_params does not match the current configuration, disable, set the
+> new rate and restart the clock.
+> 
+> There is no operation on hw_free, the codec suspend routine will
+> disable/deprepare the clock.
+> 
+> Note that we don't change the DAI configuration when the DAC+ PRO is
+> detected. All changes for the codec master mode are handled in the
+> topology file (DAI configuration change and scheduling change)
 
 ...
 
-> +	ctx->sclk = devm_clk_get(rtd->card->dev, "sclk");
+> +	err = snd_interval_ratnum(hw_param_interval(params,
+> +						    SNDRV_PCM_HW_PARAM_RATE),
+> +				  1, &rats_no_pll, &num, &den);
 
-Is this in the bindings?
+> +	if (err >= 0 && den) {
 
-> +	if (IS_ERR(ctx->sclk)) {
+Perhaps usual pattern, i.e.
 
-> +		dev_info(dev, "Could not get SCLK, will operate in SOC master mode\n");
+	if (err < 0 || !den)
+		return 0;
+(so, above seems optional configuration)
 
-Sounds like devm_clk_get_optional().
+	params...;
+	return 0;
 
-> +		goto skip_dacpro;
+> +		params->rate_num = num;
+> +		params->rate_den = den;
 > +	}
+> +
+> +	return 0;
+
+...
+
+> +static int aif1_hw_params(struct snd_pcm_substream *substream,
+> +			  struct snd_pcm_hw_params *params)
+> +{
+> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> +	struct sof_card_private *ctx = snd_soc_card_get_drvdata(rtd->card);
+> +	struct device *dev = rtd->card->dev;
+> +	int current_rate;
+> +	int sclk_rate;
+> +	int channels;
+> +	int width;
+> +	int rate;
+> +	int ret = 0;
+> +
+
+> +	if (ctx->is_dac_pro) {
+
+	if (!...)
+		return 0;
+
+...and drop the redundant ret assignment above.
+
+> +		rate = params_rate(params);
+> +		channels = params_channels(params);
+> +		width = snd_pcm_format_physical_width(params_format(params));
+> +
+> +		if (rate % 24000)
+> +			sclk_rate = 22579200;
+> +		else
+> +			sclk_rate = 24576000;
+> +
+> +		current_rate = clk_get_rate(ctx->sclk);
+> +		if (current_rate != sclk_rate) {
+> +			/*
+> +			 * The sclk clock is started and stopped by the codec
+> +			 * resume/suspend functions. If the rate isn't correct,
+> +			 * stop, set the new rate and restart the clock
+> +			 */
+> +
+> +			dev_dbg(dev, "reconfiguring SCLK to rate %d\n",
+> +				sclk_rate);
+> +
+> +			clk_disable_unprepare(ctx->sclk);
+> +
+> +			ret = clk_set_rate(ctx->sclk, sclk_rate);
+> +			if (ret) {
+> +				dev_err(dev, "Could not set SCLK rate %d\n",
+> +					sclk_rate);
+> +				return ret;
+> +			}
+> +
+> +			ret = clk_prepare_enable(ctx->sclk);
+> +			if (ret) {
+> +				dev_err(dev, "Failed to enable SCLK: %d\n",
+> +					ret);
+> +				return ret;
+> +			}
+> +		}
+> +
+> +		ret = aif1_update_rate_den(substream, params);
+> +		if (ret) {
+> +			dev_err(dev, "Failed to update rate denominator: %d\n", ret);
+> +			return ret;
+> +		}
+
+Do you still need below steps when current_rate == sclk_rate?
+
+> +		ret = snd_soc_dai_set_bclk_ratio(rtd->codec_dai,
+> +						 channels * width);
+> +		if (ret) {
+> +			dev_err(dev, "Failed to set bclk ratio : %d\n", ret);
+> +			return ret;
+> +		}
+> +	}
+> +
+> +	return ret;
+> +}
 
 -- 
 With Best Regards,
