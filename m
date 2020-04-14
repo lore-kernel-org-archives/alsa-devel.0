@@ -7,64 +7,64 @@ X-Spam-Status: No, score=-12.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15D77C2BA19
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 12:01:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD54FC3815B
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 14:48:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 957EC2076B
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 12:01:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3C78620578
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 14:48:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TPYnCs0r";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="bXeZtBrf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 957EC2076B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QvOIvJgW";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="vjB+X8Ve"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3C78620578
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 00ECB16A6;
-	Tue, 14 Apr 2020 14:00:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00ECB16A6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9DD0616A0;
+	Tue, 14 Apr 2020 16:47:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9DD0616A0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586865676;
-	bh=Kk6Glg27PmiUIbJHtAYB1vVo0hJ0EZ7DGxJRzOg/UZw=;
+	s=default; t=1586875709;
+	bh=mpVKItI1FPPfN/gbBhLGz5jUlFal1zEoAn6lKwc4wP8=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=TPYnCs0rS/5UuMmag/XNDPn1MF2mYJQdjk8MYdq9O4q4WZGxVBPgaXPZH60SmGqsR
-	 OKhCVK3VdhtzArP6UnB1CYFW4LUcwaHYXTkA1E/bMcFiWNRFsFbKGbY6NPMDd/QyCm
-	 GITr3+loFElp5nPztwaHYMgv9H/oXZraUvFEDdC8=
+	b=QvOIvJgWHL1hqREv0pUM5dnEemTW7ETOeZJzVYUXoIl41mtqFWFDMPr5kQbEe01UG
+	 UzdxpcmykL2Dhjgk5reTNdYgZ6A9j2CkB1Q518wJm8QT0AEKopbNVshvbFCh6bBiOe
+	 Wqy79x0OL0Iwc71gy3m5XZe3NIUhwFXRL/uQ+Hm4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0A1A8F800F5;
-	Tue, 14 Apr 2020 13:59:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A9605F8028F;
+	Tue, 14 Apr 2020 16:46:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0AD75F80278; Tue, 14 Apr 2020 13:59:35 +0200 (CEST)
+ id D6687F8028F; Tue, 14 Apr 2020 16:46:08 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 864B0F800F5
- for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 13:59:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 864B0F800F5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 95F84F80278
+ for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 16:46:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95F84F80278
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="bXeZtBrf"
+ header.b="vjB+X8Ve"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id A1CFE206A2;
- Tue, 14 Apr 2020 11:59:29 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id EE1322076D;
+ Tue, 14 Apr 2020 14:46:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1586865570;
- bh=Kk6Glg27PmiUIbJHtAYB1vVo0hJ0EZ7DGxJRzOg/UZw=;
+ s=default; t=1586875563;
+ bh=mpVKItI1FPPfN/gbBhLGz5jUlFal1zEoAn6lKwc4wP8=;
  h=Date:From:To:Cc:Subject:In-Reply-To:From;
- b=bXeZtBrf8TnDxrFUrNK5eyd4aDS58oP9LY6vZvkR7LDjrLWKlPlgyPRDGaWgiTGFV
- KBHuL+YSaMLGakc7DDEgrFFlWIiygxKQf2Fm9PccnNWTT8brVuv7RH3x1AMvgscraX
- M+3egCNLMcxhvKAidFPPKU8Ran0wL7caReJL4lbA=
-Date: Tue, 14 Apr 2020 12:59:27 +0100
+ b=vjB+X8VePvvwIr7nj1DDpcc8NyWu/itzQh7UcJiwcJ/XTDSxLvPupsoRVoghMSFyf
+ UNOPncwMJ2nuwhU7CaC0dSt3xmhEyvApwh+1HeH0Ir9mM+hwKLucxcwK6sQxyOpixn
+ ETvdr1CKTRFTTnu0efn4+ount96mSlm340jBiB8U=
+Date: Tue, 14 Apr 2020 15:46:00 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Philipp Puschmann <p.puschmann@pironex.de>
-Subject: Applied "ASoC: tas571x: disable regulators on failed probe" to the
- asoc tree
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Applied "ASoC: wsa881x: mark read_only_wordlength flag" to the asoc
+ tree
 In-Reply-To: 
 Message-Id: 
 X-Patchwork-Hint: ignore
@@ -83,11 +83,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20200414115927.WvBvI9vr_xndAtqD94Sb-52QmzKpyfOpHFnPyr3mhGg@z>
+Message-ID: <20200414144600.HW6ccyzytc_WCpHhRJnyPsgmYdDBLABIQ0RESuqGs-U@z>
 
 The patch
 
-   ASoC: tas571x: disable regulators on failed probe
+   ASoC: wsa881x: mark read_only_wordlength flag
 
 has been applied to the asoc tree at
 
@@ -112,94 +112,61 @@ to this mail.
 Thanks,
 Mark
 
-From 9df8ba7c63073508e5aa677dade48fcab6a6773e Mon Sep 17 00:00:00 2001
-From: Philipp Puschmann <p.puschmann@pironex.de>
-Date: Tue, 14 Apr 2020 13:27:54 +0200
-Subject: [PATCH] ASoC: tas571x: disable regulators on failed probe
+From 0f2a3b02274c02eb97697c4d89c019d1d21ac225 Mon Sep 17 00:00:00 2001
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Date: Tue, 14 Apr 2020 12:03:47 +0100
+Subject: [PATCH] ASoC: wsa881x: mark read_only_wordlength flag
 
-If probe fails after enabling the regulators regulator_put is called for
-each supply without having them disabled before. This produces some
-warnings like
+WSA881x works in PDM mode so the wordlength is fixed, which also makes
+the only field "WordLength" in DPN_BlockCtrl1 register a read-only.
+Writing to this register will throw up errors with Qualcomm Controller.
+So use ro_blockctrl1_reg flag to mark this field as read-only so that
+core will not write to this register.
 
-WARNING: CPU: 0 PID: 90 at drivers/regulator/core.c:2044 _regulator_put.part.0+0x154/0x15c
-[<c010f7a8>] (unwind_backtrace) from [<c010c544>] (show_stack+0x10/0x14)
-[<c010c544>] (show_stack) from [<c012b640>] (__warn+0xd0/0xf4)
-[<c012b640>] (__warn) from [<c012b9b4>] (warn_slowpath_fmt+0x64/0xc4)
-[<c012b9b4>] (warn_slowpath_fmt) from [<c04c4064>] (_regulator_put.part.0+0x154/0x15c)
-[<c04c4064>] (_regulator_put.part.0) from [<c04c4094>] (regulator_put+0x28/0x38)
-[<c04c4094>] (regulator_put) from [<c04c40cc>] (regulator_bulk_free+0x28/0x38)
-[<c04c40cc>] (regulator_bulk_free) from [<c0579b2c>] (release_nodes+0x1d0/0x22c)
-[<c0579b2c>] (release_nodes) from [<c05756dc>] (really_probe+0x108/0x34c)
-[<c05756dc>] (really_probe) from [<c0575aec>] (driver_probe_device+0xb8/0x16c)
-[<c0575aec>] (driver_probe_device) from [<c0575d40>] (device_driver_attach+0x58/0x60)
-[<c0575d40>] (device_driver_attach) from [<c0575da0>] (__driver_attach+0x58/0xcc)
-[<c0575da0>] (__driver_attach) from [<c0573978>] (bus_for_each_dev+0x78/0xc0)
-[<c0573978>] (bus_for_each_dev) from [<c0574b5c>] (bus_add_driver+0x188/0x1e0)
-[<c0574b5c>] (bus_add_driver) from [<c05768b0>] (driver_register+0x74/0x108)
-[<c05768b0>] (driver_register) from [<c061ab7c>] (i2c_register_driver+0x3c/0x88)
-[<c061ab7c>] (i2c_register_driver) from [<c0102df8>] (do_one_initcall+0x58/0x250)
-[<c0102df8>] (do_one_initcall) from [<c01a91bc>] (do_init_module+0x60/0x244)
-[<c01a91bc>] (do_init_module) from [<c01ab5a4>] (load_module+0x2180/0x2540)
-[<c01ab5a4>] (load_module) from [<c01abbd4>] (sys_finit_module+0xd0/0xe8)
-[<c01abbd4>] (sys_finit_module) from [<c01011e0>] (__sys_trace_return+0x0/0x20)
-
-Fixes: 3fd6e7d9a146 (ASoC: tas571x: New driver for TI TAS571x power amplifiers)
-Signed-off-by: Philipp Puschmann <p.puschmann@pironex.de>
-Link: https://lore.kernel.org/r/20200414112754.3365406-1-p.puschmann@pironex.de
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Reviewed-by: Vinod Koul <vkoul@kernel.org>
+Link: https://lore.kernel.org/r/20200414110347.23829-1-srinivas.kandagatla@linaro.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tas571x.c | 20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+ sound/soc/codecs/wsa881x.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/codecs/tas571x.c b/sound/soc/codecs/tas571x.c
-index 1554631cb397..5b7f9fcf6cbf 100644
---- a/sound/soc/codecs/tas571x.c
-+++ b/sound/soc/codecs/tas571x.c
-@@ -820,8 +820,10 @@ static int tas571x_i2c_probe(struct i2c_client *client,
- 
- 	priv->regmap = devm_regmap_init(dev, NULL, client,
- 					priv->chip->regmap_config);
--	if (IS_ERR(priv->regmap))
--		return PTR_ERR(priv->regmap);
-+	if (IS_ERR(priv->regmap)) {
-+		ret = PTR_ERR(priv->regmap);
-+		goto disable_regs;
-+	}
- 
- 	priv->pdn_gpio = devm_gpiod_get_optional(dev, "pdn", GPIOD_OUT_LOW);
- 	if (IS_ERR(priv->pdn_gpio)) {
-@@ -845,7 +847,7 @@ static int tas571x_i2c_probe(struct i2c_client *client,
- 
- 	ret = regmap_write(priv->regmap, TAS571X_OSC_TRIM_REG, 0);
- 	if (ret)
--		return ret;
-+		goto disable_regs;
- 
- 	usleep_range(50000, 60000);
- 
-@@ -861,12 +863,20 @@ static int tas571x_i2c_probe(struct i2c_client *client,
- 		 */
- 		ret = regmap_update_bits(priv->regmap, TAS571X_MVOL_REG, 1, 0);
- 		if (ret)
--			return ret;
-+			goto disable_regs;
+diff --git a/sound/soc/codecs/wsa881x.c b/sound/soc/codecs/wsa881x.c
+index f2d6f2f81f14..d39d479e2378 100644
+--- a/sound/soc/codecs/wsa881x.c
++++ b/sound/soc/codecs/wsa881x.c
+@@ -394,6 +394,7 @@ static struct sdw_dpn_prop wsa_sink_dpn_prop[WSA881X_MAX_SWR_PORTS] = {
+ 		.min_ch = 1,
+ 		.max_ch = 1,
+ 		.simple_ch_prep_sm = true,
++		.read_only_wordlength = true,
+ 	}, {
+ 		/* COMP */
+ 		.num = 2,
+@@ -401,6 +402,7 @@ static struct sdw_dpn_prop wsa_sink_dpn_prop[WSA881X_MAX_SWR_PORTS] = {
+ 		.min_ch = 1,
+ 		.max_ch = 1,
+ 		.simple_ch_prep_sm = true,
++		.read_only_wordlength = true,
+ 	}, {
+ 		/* BOOST */
+ 		.num = 3,
+@@ -408,6 +410,7 @@ static struct sdw_dpn_prop wsa_sink_dpn_prop[WSA881X_MAX_SWR_PORTS] = {
+ 		.min_ch = 1,
+ 		.max_ch = 1,
+ 		.simple_ch_prep_sm = true,
++		.read_only_wordlength = true,
+ 	}, {
+ 		/* VISENSE */
+ 		.num = 4,
+@@ -415,6 +418,7 @@ static struct sdw_dpn_prop wsa_sink_dpn_prop[WSA881X_MAX_SWR_PORTS] = {
+ 		.min_ch = 1,
+ 		.max_ch = 1,
+ 		.simple_ch_prep_sm = true,
++		.read_only_wordlength = true,
  	}
+ };
  
--	return devm_snd_soc_register_component(&client->dev,
-+	ret = devm_snd_soc_register_component(&client->dev,
- 				      &priv->component_driver,
- 				      &tas571x_dai, 1);
-+	if (ret)
-+		goto disable_regs;
-+
-+	return ret;
-+
-+disable_regs:
-+	regulator_bulk_disable(priv->chip->num_supply_names, priv->supplies);
-+	return ret;
- }
- 
- static int tas571x_i2c_remove(struct i2c_client *client)
 -- 
 2.20.1
 
