@@ -2,70 +2,93 @@ Return-Path: <SRS0=tzaW=56=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02312C2BA19
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 15:38:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5810BC2BA19
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 15:48:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 808862076D
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 15:38:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 65E8B206D5
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2020 15:48:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="m+wMQpxY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 808862076D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=wizard.ca
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="misR3PR1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 65E8B206D5
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AC663823;
-	Tue, 14 Apr 2020 17:37:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC663823
+	by alsa0.perex.cz (Postfix) with ESMTPS id 49C1B1692;
+	Tue, 14 Apr 2020 17:47:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 49C1B1692
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586878682;
-	bh=TopLtIuPTaHDGTvwaQM7ety90vS4Hxi+hihQLX6wfGg=;
-	h=To:From:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=m+wMQpxYL9t0ywV3AI/szIKJoRgc+xbM2WAXShalhnp0pFh3uSGl8Ti/myIO0M0H8
-	 Ss+BGOKs7Rf2ucaMvvf2sQq0FhQrLfHkDy8u/nVmpLTeHyWIHorMFm50PGe31DEja2
-	 Vyj8BKR04eHyu9rAwVq+tIv/MEkbgh/vJUy1Q6wg=
+	s=default; t=1586879316;
+	bh=yDomIilinKjKK4g9W8MaLiIgzrCHzp7UDmwVuhtnFmk=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=misR3PR1uT7POCuFDCCk6Z93t1nwB3WrEZgl8lIn4XlywRpTxBQwZ55A9UlPrHN/f
+	 JANW0/0C6F4MVerrT5deAJlD9Cy4ap41S2eTQUoG2TbdWI3yHF3dGi5V2OGR6qJKfF
+	 yR4xO9EfEGfYORjKGhJxVkzVLIlL3SbagUl5xHVE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2A5F4F80115;
-	Tue, 14 Apr 2020 17:37:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 79F84F80126;
+	Tue, 14 Apr 2020 17:47:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1067EF8013D; Tue, 14 Apr 2020 16:17:15 +0200 (CEST)
-Received: from mail-ob1.cityemail.com (mail-ob1.cityemail.com [104.128.152.18])
- by alsa1.perex.cz (Postfix) with ESMTP id 4F442F800B9
- for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 16:17:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F442F800B9
-Received: (qmail 3418 invoked from network); 14 Apr 2020 14:16:59 -0000
-Received: from riddle.wizard.ca (HELO [192.168.1.55])
- (michael@wizard.ca@104.128.144.8)
- by fe1.cityemail.com with (AES128-SHA encrypted) SMTP
- (9aaf64c8-7e5a-11ea-af0b-9b6207e2f18b); Tue, 14 Apr 2020 07:16:59 -0700
-To: alsa-devel@alsa-project.org
-From: Michael <michael@wizard.ca>
-Subject: [FRUSTRATED] Missing Sound Codecs for Lenovo ThinkCentre M710e
-Message-ID: <7046b5fa-af79-5221-f54f-3d4be22e879e@wizard.ca>
-Date: Tue, 14 Apr 2020 07:16:59 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+ id 5C1EAF80126; Tue, 14 Apr 2020 17:47:07 +0200 (CEST)
+Received: from mail-oi1-f196.google.com (mail-oi1-f196.google.com
+ [209.85.167.196])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id DEF6CF800F5
+ for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 17:46:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DEF6CF800F5
+Received: by mail-oi1-f196.google.com with SMTP id x10so1373202oie.1
+ for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 08:46:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=5/QdFs0H17QBuX1uwsHW6SudnkNXUrD80svVL4aPMwA=;
+ b=qQCoR2NijLrx/3kfre/z6RoGsEoliCp5xO3Q2gBugpPogk0836dLV9s1YIUOkUPNsc
+ TODSkqcU1zXqaMy5ENxe228rSDvl0j1THr/rwS54KSA7V+t6kfod+0NTr8W3403GAOLr
+ AlzzIv1wdI+mAkF7KYfWbqxm8bq6tVTItlHXkLZBXFIuOcZRuMj+RNTLR9kU2Sc3RRKn
+ c2B1qvT9PARkDz/QatvC8fozVOuEyoF91/F9jNc6+FAaAMEDUpPILQuoTs6kFCqJPr6K
+ fFXd/dIrs5IO5W6qCgQKyFx44Knr4Ryib4wi0wHqUCYqKBl6PqJG81G3TLIdGpjfy3yG
+ Iu3A==
+X-Gm-Message-State: AGi0PuZV2U4BJdcIQg69SEX+W1l8OcDmgGQx1bJULcmgRDcQetwHKJte
+ WagNV/1HdnE/JpXXiJDTaQ==
+X-Google-Smtp-Source: APiQypJ3eP83Z2ZO3/8+TVOT/jGS5+ZbScl3AXJZ0ygf+ficXnDSMlWcvhkIksYNLU3yBioFZCcKvA==
+X-Received: by 2002:aca:2209:: with SMTP id b9mr16431716oic.103.1586879206591; 
+ Tue, 14 Apr 2020 08:46:46 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net.
+ [24.155.109.49])
+ by smtp.gmail.com with ESMTPSA id z24sm1428489otq.75.2020.04.14.08.46.44
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 14 Apr 2020 08:46:45 -0700 (PDT)
+Received: (nullmailer pid 28325 invoked by uid 1000);
+ Tue, 14 Apr 2020 15:46:43 -0000
+Date: Tue, 14 Apr 2020 10:46:43 -0500
+From: Rob Herring <robh@kernel.org>
+To: Shengjiu Wang <shengjiu.wang@nxp.com>
+Subject: Re: [PATCH v6 6/7] ASoC: dt-bindings: fsl_easrc: Add document for
+ EASRC
+Message-ID: <20200414154643.GA29098@bogus>
+References: <cover.1585726761.git.shengjiu.wang@nxp.com>
+ <68208297b49e85adfddf843bc205d154790a49de.1585726761.git.shengjiu.wang@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-MagicMail-OS: Linux 2.2.x-3.x
-X-MagicMail-UUID: 9aaf64c8-7e5a-11ea-af0b-9b6207e2f18b
-X-MagicMail-Authenticated: michael@wizard.ca
-X-MagicMail-SourceIP: 104.128.144.8
-X-MagicMail-RegexMatch: 0
-X-MagicMail-EnvelopeFrom: <michael@wizard.ca>
-X-Archive: Yes
-X-Mailman-Approved-At: Tue, 14 Apr 2020 17:37:00 +0200
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <68208297b49e85adfddf843bc205d154790a49de.1585726761.git.shengjiu.wang@nxp.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, timur@kernel.org, Xiubo.Lee@gmail.com,
+ linuxppc-dev@lists.ozlabs.org, tiwai@suse.com, lgirdwood@gmail.com,
+ nicoleotsuka@gmail.com, broonie@kernel.org, festevam@gmail.com,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,66 +104,132 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi All,
+On Wed, Apr 01, 2020 at 04:45:39PM +0800, Shengjiu Wang wrote:
+> EASRC (Enhanced Asynchronous Sample Rate Converter) is a new
+> IP module found on i.MX8MN.
+> 
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> ---
+>  .../devicetree/bindings/sound/fsl,easrc.yaml  | 101 ++++++++++++++++++
+>  1 file changed, 101 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/fsl,easrc.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/fsl,easrc.yaml b/Documentation/devicetree/bindings/sound/fsl,easrc.yaml
+> new file mode 100644
+> index 000000000000..14ea60084420
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/fsl,easrc.yaml
+> @@ -0,0 +1,101 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/sound/fsl,easrc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: NXP Asynchronous Sample Rate Converter (ASRC) Controller
+> +
+> +maintainers:
+> +  - Shengjiu Wang <shengjiu.wang@nxp.com>
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: "^easrc@.*"
+> +
+> +  compatible:
+> +    const: fsl,imx8mn-easrc
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    items:
+> +      - description: Peripheral clock
+> +
+> +  clock-names:
+> +    items:
+> +      - const: mem
+> +
+> +  dmas:
+> +    maxItems: 8
+> +
+> +  dma-names:
+> +    items:
+> +      - const: ctx0_rx
+> +      - const: ctx0_tx
+> +      - const: ctx1_rx
+> +      - const: ctx1_tx
+> +      - const: ctx2_rx
+> +      - const: ctx2_tx
+> +      - const: ctx3_rx
+> +      - const: ctx3_tx
+> +
+> +  firmware-name:
+> +    allOf:
+> +      - $ref: /schemas/types.yaml#/definitions/string
+> +      - const: imx/easrc/easrc-imx8mn.bin
+> +    description: The coefficient table for the filters
+> +
+> +  fsl,asrc-rate:
 
-Technically this probably should go to a support channnel, and not a 
-development list, but at my wits end.
+fsl,asrc-rate-hz
 
-Kernel:  4.15.0-91-generic #92~16.04.1-Ubuntu SMP
+> +    allOf:
+> +      - $ref: /schemas/types.yaml#/definitions/uint32
 
-dmesg | grep snd
-[   12.656843] snd_hda_intel 0000:00:1f.3: bound 0000:00:02.0 (ops 
-i915_audio_component_bind_ops [i915])
-[   12.807521] snd_hda_intel 0000:00:1f.3: CORB reset timeout#1, CORBRP = 0
-[   12.810429] snd_hda_intel 0000:00:1f.3: no codecs found!
+And then you can drop this.
 
-I have been playing with settings in the modprobe directory for Also 
-with no effect.. current settings are..
+> +      - minimum: 8000
+> +      - maximum: 192000
+> +    description: Defines a mutual sample rate used by DPCM Back Ends
+> +
+> +  fsl,asrc-format:
+> +    allOf:
+> +      - $ref: /schemas/types.yaml#/definitions/uint32
+> +      - enum: [2, 6, 10, 32, 36]
+> +        default: 2
+> +    description:
+> +      Defines a mutual sample format used by DPCM Back Ends
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +  - dmas
+> +  - dma-names
+> +  - firmware-name
+> +  - fsl,asrc-rate
+> +  - fsl,asrc-format
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/imx8mn-clock.h>
+> +
+> +    easrc: easrc@300C0000 {
 
-options snd-hda-intel single_cmd=1
-options snd-hda-intel probe_mask=1
-options snd-hda-intel model=thinkpad
-options snd-hda-intel position_fix=3
+Lowercase hex
 
-Have tried model=generic, and various other suggestions from online, but 
-at a loss.  Don't see anything in:
-
-https://github.com/torvalds/linux/blob/master/Documentation/sound/hd-audio/models.rst
-
-Your ALSA information is located at 
-http://alsa-project.org/db/?f=7898b30139e9a91fecec22f3ee46049f33248b85
-
-Can anyone point me to how to debug this further, or any way to force 
-detection of a proper codec for this model?
-
-00:1f.3 Audio device [0403]: Intel Corporation 200 Series PCH HD Audio 
-[8086:a2f0]
-	Subsystem: Lenovo Device [17aa:313c]
-	Kernel driver in use: snd_hda_intel
-
-
-        description: Motherboard
-        product: 313C
-        vendor: LENOVO
-        physical id: 0
-        version: SDK0J40697 WIN 3305181519567
-        slot: Default string
-
-Booting in legacy OS mode, not EUFI..
-
-
-
--- 
-"Catch the Magic of Linux..."
-------------------------------------------------------------------------
-Michael Peddemors, President/CEO LinuxMagic Inc.
-Visit us at http://www.linuxmagic.com @linuxmagic
-A Wizard IT Company - For More Info http://www.wizard.ca
-"MagicSpam" is a Registered TradeMark of Wizard Tower TechnoServices Ltd.
-------------------------------------------------------------------------
-604-682-0300 Beautiful British Columbia, Canada
-
-This email and any electronic data contained are confidential and intended
-solely for the use of the individual or entity to which they are addressed.
-Please note that any views or opinions presented in this email are solely
-those of the author and are not intended to represent those of the company.
+> +           compatible = "fsl,imx8mn-easrc";
+> +           reg = <0x0 0x300C0000 0x0 0x10000>;
+> +           interrupts = <0x0 122 0x4>;
+> +           clocks = <&clk IMX8MN_CLK_ASRC_ROOT>;
+> +           clock-names = "mem";
+> +           dmas = <&sdma2 16 23 0> , <&sdma2 17 23 0>,
+> +                  <&sdma2 18 23 0> , <&sdma2 19 23 0>,
+> +                  <&sdma2 20 23 0> , <&sdma2 21 23 0>,
+> +                  <&sdma2 22 23 0> , <&sdma2 23 23 0>;
+> +           dma-names = "ctx0_rx", "ctx0_tx",
+> +                       "ctx1_rx", "ctx1_tx",
+> +                       "ctx2_rx", "ctx2_tx",
+> +                       "ctx3_rx", "ctx3_tx";
+> +           firmware-name = "imx/easrc/easrc-imx8mn.bin";
+> +           fsl,asrc-rate  = <8000>;
+> +           fsl,asrc-format = <2>;
+> +    };
+> -- 
+> 2.21.0
+> 
