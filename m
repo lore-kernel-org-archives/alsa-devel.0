@@ -2,99 +2,95 @@ Return-Path: <SRS0=riqU=57=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 66DBBC2BA2B
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 06:31:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F2A01C2BA2B
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 06:43:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E7A06206F9
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 06:31:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7F444206F9
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 06:43:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Lomw+Z/c";
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iEm4uxcI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E7A06206F9
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="R9rasns6";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JBaxlwxM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7F444206F9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4AA3A1673;
-	Wed, 15 Apr 2020 08:30:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4AA3A1673
+	by alsa0.perex.cz (Postfix) with ESMTPS id DC2DA165D;
+	Wed, 15 Apr 2020 08:43:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC2DA165D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586932278;
-	bh=UMZWS4rmA48CcZdr5MmCRqrm3XrMtE+HCKm/ggk65N0=;
+	s=default; t=1586933035;
+	bh=Kn0UdrJgbD3EWsm7YqhVT7kyhAmGfBTHZHhYMoD953Q=;
 	h=In-Reply-To:References:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Lomw+Z/cSC+hWQHdVTCwsOAye8koMhWKLBs8+yTkkFe96f5GJt6xWDmr8ololYJ93
-	 lxxTYiYvoQuspyDDhXlVPx0ajUUyeq6/FeV4R0Hg+XkjDlxmmBH8K75DStJNYtK6DV
-	 j4R8rdjYgN745n13KflSHDzZeLv+SXv6dYEmom1c=
+	b=R9rasns6NECSis9gDxegheR8YpmGLJ54RNXN/1k+4axeTb9EvMiC+duoGJweCZ7qO
+	 w21Vb8u+JcwJcA88Ws88jbCUIDtn48uC22UaZk5ozuHucipkz136G//sMLgLb8PSc4
+	 WE1RlQmCXYE2ztCnlDwAwU2zrPzgCGtPpl1P5uCg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C4DF8F80229;
-	Wed, 15 Apr 2020 08:30:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6906BF80115;
+	Wed, 15 Apr 2020 08:43:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8E1B9F80245; Wed, 15 Apr 2020 08:30:24 +0200 (CEST)
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com
- [IPv6:2607:f8b0:4864:20::d41])
+ id CF6EBF80245; Wed, 15 Apr 2020 08:42:58 +0200 (CEST)
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com
+ [IPv6:2607:f8b0:4864:20::d44])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4DACDF800ED
- for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2020 08:30:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4DACDF800ED
+ by alsa1.perex.cz (Postfix) with ESMTPS id 548C4F800ED
+ for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2020 08:42:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 548C4F800ED
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="iEm4uxcI"
-Received: by mail-io1-xd41.google.com with SMTP id b12so15943564ion.8
- for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 23:30:17 -0700 (PDT)
+ header.b="JBaxlwxM"
+Received: by mail-io1-xd44.google.com with SMTP id 19so119827ioz.10
+ for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2020 23:42:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=mime-version:in-reply-to:references:from:date:message-id:subject:to
- :cc:content-transfer-encoding;
- bh=ls1XhUem9yTYUvPdkwlL5SvgaksFH/LnsF6FBq0ImXU=;
- b=iEm4uxcIcxLnug55av4tiGWuBfSunaU7SMHn3+Qj2YSYU8XsgE61qgnYry4JTtYPQH
- sbNNjqpoLLKeaWCwZfLFAJsDb3hrilbmgF7FfO+7u6XrD+YRPZXzp5lHAWsFDlVwmI3y
- Sf+aIbTFKtiPwBUvZpMBPm2vQFT3MoWKfyyjjHY6G0XN6Odo33zpz21Z3whmlFDcO7Xr
- 8x8Nm7EXR2deNcMpi8JSQKJR36svuLqZ0uFjXxqMOBPqx+pPGSo0oWwxPCgyAfaN6xex
- zcXfeZIOUIX5bu7nDrgeiLVF8Xa42m4GPhdJI12/YktvkiuNBOGBJ8BoYIi4bGt5G8hz
- a5IQ==
+ :cc; bh=7xLwOvqOG3eN1Mc2nvKJ9XeCkdGO4gaYkFyy85CGQGE=;
+ b=JBaxlwxM0ExhYWUj/BwYXdk4kebiuGHK69qeigfiH9ZkhuodzwC15WNkkrvSCF21Da
+ nJ1h5gRjat/dkV4iUJQTy13JnfffzAjPvmD06NHq/Fj1SeRTcJTymHu9exzl974OoPX9
+ hEaR89FXZRXknWXH4WkdkBwSdg+a99bxjchIc2w8SEFGCN4YNN2fyU7BuJFuUMNUO85j
+ S+DJXpXn9OuqzjOaNPNRotCGwfWTvmQOcy69K3tpypkjYC/fPcA1prAFgPwumvzqOhNs
+ EfMyGUHBy41F2Rog7G520I5PzmoUcH32678vDburBdJCllQ8jsX0f1tm32OshI7RturR
+ UI5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:in-reply-to:references:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=ls1XhUem9yTYUvPdkwlL5SvgaksFH/LnsF6FBq0ImXU=;
- b=i5+HMmuBn9QU8FL+LXm0lQxcJxzdLZCmvbaWUodHy9Ts8w/7nYvVbnM6VTJJzcCRcW
- txNpTGP2/wsLRruwNvh54wSpwXFTuOBpftyWphT4YdmFJCQVlQLM0ebQkbKVmh7zT27q
- ZLxyJ4Uaz6Ieeh3rduyD7IpD1n8NC+JG0kyXQkihRRSJrKTPqZgB8GGbGTOIcv963Cjx
- +wT+wcsTwfu843ASxsYDZY10OWMvdXqTeqwXIzQ+dkXY//BrPH9gzX8HeXbqNIDOB20N
- Q7+uY6QKA6K27fYFJcEWi8+LotTuCbQeEyobMuQENNVs/OZMupQIy7JuRomtr+ScFKVs
- 3oew==
-X-Gm-Message-State: AGi0PuYxJs13kItZmhiRnLGt5DjApoXuoIYXm3ucF9Wl6alptIHn4uo0
- vsrfLd0IPpQBeuYx+jMwhSi/QUPr3Qp6y39Zl/4=
-X-Google-Smtp-Source: APiQypIgLTxl+w9IuwS+AiSlcsxnN9qSocoMEthCz7iDhY7eB8Iqn0JU5wGrPuphr45YWmPCmPK/MnhNc1ko8N+wQnE=
-X-Received: by 2002:a02:40c9:: with SMTP id n192mr15821405jaa.91.1586932214123; 
- Tue, 14 Apr 2020 23:30:14 -0700 (PDT)
+ :message-id:subject:to:cc;
+ bh=7xLwOvqOG3eN1Mc2nvKJ9XeCkdGO4gaYkFyy85CGQGE=;
+ b=YtpbpNa1Jcm3E9IRC9CWDUbkBaspYAfLqGB65F216B843UBgwajwOqSKePTCYirbrs
+ YahaLasntdxeE+JNewqfegsEilkbE6GJOIgDT6OnWLRYaJmsqOxQkAj2EdQAgbNBDGol
+ FCzK8Q5k/0grh7FvqYlZNWn6DOUg7V4kmG85vLFNSvJWoJskQsosz4bKUM9y37Qlb9Uz
+ 1A9mxcf+1e9ECZRS6cB7babN2DQmYDVOkLg733s7i76fpIduStv5TQe3SvkCroIRd6/T
+ aiiXSeKp1S7jQtFenijI4QsGBGgkXSiOUxgUwNKjnn+yXPpmVNYgxjFdB9NSNJV4dbJi
+ LELA==
+X-Gm-Message-State: AGi0PubXJ9j0dzV+riGKpk4z9V/5xeNB7jNcRSn0LEFY0oc3OwbSC4QB
+ jOsQ5gpP7EcwG7MgJ8dpuHYV98owbrLgy4lzwX4=
+X-Google-Smtp-Source: APiQypL88g8zK8yM5nrtDLUOIXo7AeIswLd2eRd8Z53lvmX4oDCUGwLmiZMSWazl4moBtsnK/e9H79F5TmLmxVrMxJc=
+X-Received: by 2002:a6b:b547:: with SMTP id e68mr21814952iof.173.1586932970705; 
+ Tue, 14 Apr 2020 23:42:50 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:ac0:a58b:0:0:0:0:0 with HTTP; Tue, 14 Apr 2020 23:30:13
+Received: by 2002:ac0:a58b:0:0:0:0:0 with HTTP; Tue, 14 Apr 2020 23:42:50
  -0700 (PDT)
-In-Reply-To: <CAOzgRdbgOykctcteVMLJqqyeXwww2ekzUrbzLbu0jtCoU_5Xgg@mail.gmail.com>
+In-Reply-To: <ae69c1b0-b347-4366-4bb0-383aed69c4b1@redhat.com>
 References: <20200413145957.22459-1-youling257@gmail.com>
  <ae69c1b0-b347-4366-4bb0-383aed69c4b1@redhat.com>
- <d6146d62-a20a-f6a0-64f0-65cea7253948@perex.cz>
- <CAOzgRdbgOykctcteVMLJqqyeXwww2ekzUrbzLbu0jtCoU_5Xgg@mail.gmail.com>
 From: youling 257 <youling257@gmail.com>
-Date: Wed, 15 Apr 2020 14:30:13 +0800
-Message-ID: <CAOzgRdbWCCVB_UWe8s0crWkWhDDqGTy+9nd2oK9UcRaGLDLvxQ@mail.gmail.com>
+Date: Wed, 15 Apr 2020 14:42:50 +0800
+Message-ID: <CAOzgRdboPmLBZBMOdcPFXPne9faf5BtuY3thmes1+Sz8PNRJnQ@mail.gmail.com>
 Subject: Re: [PATCH] bytcht-es8316: fix Speaker or Headphone no sound if
  enable Mic or Headset
-To: Jaroslav Kysela <perex@perex.cz>
+To: Hans de Goede <hdegoede@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -110,56 +106,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-please remove es8316 cx2072x rt5672 Disable all inputs / outputs.
+2020-04-13 23:46 GMT+08:00, Hans de Goede <hdegoede@redhat.com>:
+> Also you say you use pulseaudio for your testing,
+> AFAIK pulse does not suffer from the problem the
+> alsaucm commands you mention do,
+I said "remove the EnableSeq.conf Disable all output, i can get speaker
+and headphone work on ubuntu focal with pulseaudio."
+>so as long as
+> you only use pulse things should work.
+Disable all inputs / outputs, pulseaudio sound not work.
 
-2020-04-15 14:26 GMT+08:00, youling 257 <youling257@gmail.com>:
-> boot enter ubuntu no sound at all if EnableSeq.conf disable all output.
-> =E2=80=9C The PA should activate HiFi verb only once.=E2=80=9D i don't th=
-ink so.
+> Regards,
+>
+> Hans
 >
 >
-> 2020-04-14 16:07 GMT+08:00, Jaroslav Kysela <perex@perex.cz>:
->> Dne 13. 04. 20 v 17:46 Hans de Goede napsal(a):
->>> Hi,
->>>
->>> On 4/13/20 4:59 PM, youling257 wrote:
->>>> alsaucm -c bytcht-es8316 set _verb HiFi set _enadev Mic, Speaker will
->>>> no
->>>> sound.
->>>> alsaucm -c bytcht-es8316 set _verb HiFi set _enadev Headset, Headphone
->>>> will no sound.
->>>
->>> I see the problem, so the idea of the global EnableSequence is
->>> to set defaults and then the EnableSequence of currently active
->>> devices run on top.
+>
+>
 >>
->> It's ok, it's just a wrong use of the alsaucm command. The PA should
->> activate
->> HiFi verb only once. Those two commands run the verb EnableSequence
->> twice.
+>> Signed-off-by: youling257 <youling257@gmail.com>
+>> ---
+>>   ucm2/codecs/es8316/EnableSeq.conf | 2 --
+>>   1 file changed, 2 deletions(-)
 >>
->> The correct test should be:
+>> diff --git a/ucm2/codecs/es8316/EnableSeq.conf
+>> b/ucm2/codecs/es8316/EnableSeq.conf
+>> index 551b79b..53bb115 100644
+>> --- a/ucm2/codecs/es8316/EnableSeq.conf
+>> +++ b/ucm2/codecs/es8316/EnableSeq.conf
+>> @@ -1,6 +1,4 @@
+>>   # Disable all inputs / outputs
+>> -cset "name='Speaker Switch' off"
+>> -cset "name='Headphone Switch' off"
+>>   cset "name='Headset Mic Switch' off"
+>>   cset "name='Internal Mic Switch' off"
 >>
->> alsaucm -i -c bytcht-es8316 set _verb HiFi
->> alsaucm>> set _enadev Speaker
->> alsaucm>> set _enadev Headphone
->> alsaucm>> set _enadev Mic
->> alsaucm>> set _enadev Headset
 >>
->> ... you may run the enable commands with a delay for tests.
->>
->> The current UCM is designed for one task (application). I am playing wit=
-h
->> an
->>
->> idea to extend the alsactl state daemon to preserve the UCM settings and
->> state
->> for multiple applications using an RPC mechanism (dbus?).
->>
->> 						Jaroslav
->>
->> --
->> Jaroslav Kysela <perex@perex.cz>
->> Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
->>
+>
 >
