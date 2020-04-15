@@ -2,79 +2,77 @@ Return-Path: <SRS0=riqU=57=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 683CDC2BA2B
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 20:31:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BB945C38A2B
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 20:32:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DEC6020774
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 20:31:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 488DD20787
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 20:32:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PYc49gaj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DEC6020774
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XqoVVFPh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 488DD20787
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 44C2E1663;
-	Wed, 15 Apr 2020 22:30:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 44C2E1663
+	by alsa0.perex.cz (Postfix) with ESMTPS id 95FEE1671;
+	Wed, 15 Apr 2020 22:31:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95FEE1671
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586982695;
-	bh=3fesIT905a7VsNuDdR2r1uuGGyqfzQ8R6wDr8SllvHs=;
+	s=default; t=1586982724;
+	bh=sAIwtCm9bpq1aLkb4xKrVEUwnsvaxtB8liQnTo9yGI4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PYc49gajYoE78H9XwrgdIQQJ/i6OSv6mgMhMWAv85GnKfpZAJlWLFiV9WhOtihuHX
-	 h1SA710MCOZpgNrQTnnBKPAa54ukLZI8p3RNa3mNEM6fKSaIoiF4MyYy4/xsACFosa
-	 lp1LUfZOBjjD8CEw9pELQDkikswsDuBC8xwSpKxc=
+	b=XqoVVFPh8akmeT/fuXIZN/SH5VRTYExCapjzCvagX9jkN8R33bnu6oU4DyySfe3AC
+	 AC+dMMcEJ3a1NN9C/OWxanWX34AXVXGX2EDPgATkjS/Q9C6ZQGVYb+t0S7LGtqx6pT
+	 i3x0dRam6Kh/aTj08WpexWTPu3p01noWawJ3v7ow=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5C49FF80266;
-	Wed, 15 Apr 2020 22:29:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 43E81F80291;
+	Wed, 15 Apr 2020 22:29:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0F28DF8027D; Wed, 15 Apr 2020 22:29:02 +0200 (CEST)
+ id 939D8F80124; Wed, 15 Apr 2020 22:29:03 +0200 (CEST)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1795DF80245
- for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2020 22:28:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1795DF80245
-IronPort-SDR: 0A/aEezSVWTGfiK5GSCfRFrYKjPAjelPCkZoLfgGroK6HK4IkxkDroTC/ASK6iVcvlwOXeepVO
- 6xE7hAlJnrkQ==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 39667F80124
+ for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2020 22:28:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39667F80124
+IronPort-SDR: oWyni8ldOQLddNXqTOVv5VsjpVIK/7NiuziaL8r9wuLrg3eeiURBs1QlZO875uA2BZRrQb+NJk
+ GpgbgaN0/p0w==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Apr 2020 13:28:50 -0700
-IronPort-SDR: F1e4yPdID7Vpku1o1xUMJlyuneNNBBydXFH3hTziduHkVYU2CmMifwCtBGeiEtBUlW3z/nieHV
- k4+2qI+XPYzw==
+ 15 Apr 2020 13:28:53 -0700
+IronPort-SDR: 2B3cy3yX3ypLGGIJOdFYqtZHLz+tiFU/5/IzkVgIbu2+9ag7etJE5Y7XAa8v5CoU2/cKAMtiKH
+ ss0xJRIDzGMQ==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,388,1580803200"; d="scan'208";a="288656227"
+X-IronPort-AV: E=Sophos;i="5.72,388,1580803200"; d="scan'208";a="288656237"
 Received: from jplam-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.209.82.197])
- by fmsmga002.fm.intel.com with ESMTP; 15 Apr 2020 13:28:49 -0700
+ by fmsmga002.fm.intel.com with ESMTP; 15 Apr 2020 13:28:52 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 01/24] ASoC: SOF: topology: fix: handle DAI widget connections
- properly with multiple CPU DAI's
-Date: Wed, 15 Apr 2020 15:27:53 -0500
-Message-Id: <20200415202816.934-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 03/24] ASoC: SOF: Introduce offset in firmware data
+Date: Wed, 15 Apr 2020 15:27:55 -0500
+Message-Id: <20200415202816.934-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200415202816.934-1-pierre-louis.bossart@linux.intel.com>
 References: <20200415202816.934-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, tiwai@suse.de,
+Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>, tiwai@suse.de,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- broonie@kernel.org, Bard Liao <yung-chuan.liao@linux.intel.com>
+ broonie@kernel.org, Karol Trzcinski <karolx.trzcinski@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,82 +88,143 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
+From: Karol Trzcinski <karolx.trzcinski@linux.intel.com>
 
-Currently, when connecting a DAI widget to the BE CPU DAI, we overwrite
-the previous connections. This worked because we only ever had 1 CPU DAI
-for each rtd until now. But with multiple CPU DAI's, a new connection
-between a BE CPU DAI and the DAI widget should be established without
-affecting the previous connections. So, modify the loop to set the
-playback/capture widget for the first BE CPU DAI that does not have a
-connection established previously.
+It makes possible to provide extra information to host
+before downloading firmware. Extra data should be put
+at the beginning of firmware binary.
+Exchange is done without any effort on DSP side.
+This mechanism will be used in extended manifest.
 
-Fixes: 4a7e26a4d833 ("ASoC: SOF: topology: connect dai widget to all
-cpu-dais")
-
+Signed-off-by: Karol Trzcinski <karolx.trzcinski@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/topology.c | 38 ++++++++++++++++++++++++++++++++++----
- 1 file changed, 34 insertions(+), 4 deletions(-)
+ include/sound/sof.h              |  3 +++
+ sound/soc/sof/intel/hda-loader.c |  9 +++++++--
+ sound/soc/sof/loader.c           | 29 +++++++++++++++++++----------
+ 3 files changed, 29 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index fe8ba3e05e08..3386886fd743 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -1257,15 +1257,45 @@ static int sof_connect_dai_widget(struct snd_soc_component *scomp,
+diff --git a/include/sound/sof.h b/include/sound/sof.h
+index a0cbca021230..969f554b0b7d 100644
+--- a/include/sound/sof.h
++++ b/include/sound/sof.h
+@@ -27,6 +27,9 @@ struct snd_sof_pdata {
  
- 		switch (w->id) {
- 		case snd_soc_dapm_dai_out:
--			for_each_rtd_cpu_dais(rtd, i, cpu_dai)
--				cpu_dai->capture_widget = w;
-+			for_each_rtd_cpu_dais(rtd, i, cpu_dai) {
-+				/*
-+				 * Please create DAI widget in the right order
-+				 * to ensure BE will connect to the right DAI
-+				 * widget.
-+				 */
-+				if (!cpu_dai->capture_widget) {
-+					cpu_dai->capture_widget = w;
-+					break;
-+				}
-+			}
-+			if (i == rtd->num_cpus) {
-+				dev_err(scomp->dev, "error: can't find BE for DAI %s\n",
-+					w->name);
+ 	struct device *dev;
+ 
++	/* indicate how many first bytes shouldn't be loaded into DSP memory. */
++	size_t fw_offset;
 +
-+				return -EINVAL;
-+			}
- 			dai->name = rtd->dai_link->name;
- 			dev_dbg(scomp->dev, "tplg: connected widget %s -> DAI link %s\n",
- 				w->name, rtd->dai_link->name);
- 			break;
- 		case snd_soc_dapm_dai_in:
--			for_each_rtd_cpu_dais(rtd, i, cpu_dai)
--				cpu_dai->playback_widget = w;
-+			for_each_rtd_cpu_dais(rtd, i, cpu_dai) {
-+				/*
-+				 * Please create DAI widget in the right order
-+				 * to ensure BE will connect to the right DAI
-+				 * widget.
-+				 */
-+				if (!cpu_dai->playback_widget) {
-+					cpu_dai->playback_widget = w;
-+					break;
-+				}
-+			}
-+			if (i == rtd->num_cpus) {
-+				dev_err(scomp->dev, "error: can't find BE for DAI %s\n",
-+					w->name);
+ 	/*
+ 	 * notification callback used if the hardware initialization
+ 	 * can take time or is handled in a workqueue. This callback
+diff --git a/sound/soc/sof/intel/hda-loader.c b/sound/soc/sof/intel/hda-loader.c
+index e1550ccd0a49..1beaaf5879e2 100644
+--- a/sound/soc/sof/intel/hda-loader.c
++++ b/sound/soc/sof/intel/hda-loader.c
+@@ -293,8 +293,13 @@ int hda_dsp_cl_boot_firmware(struct snd_sof_dev *sdev)
+ 
+ 	chip_info = desc->chip_info;
+ 
+-	stripped_firmware.data = plat_data->fw->data;
+-	stripped_firmware.size = plat_data->fw->size;
++	if (plat_data->fw->size < plat_data->fw_offset) {
++		dev_err(sdev->dev, "error: firmware size must be greater than firmware offset\n");
++		return -EINVAL;
++	}
 +
-+				return -EINVAL;
-+			}
- 			dai->name = rtd->dai_link->name;
- 			dev_dbg(scomp->dev, "tplg: connected widget %s -> DAI link %s\n",
- 				w->name, rtd->dai_link->name);
++	stripped_firmware.data = plat_data->fw->data + plat_data->fw_offset;
++	stripped_firmware.size = plat_data->fw->size - plat_data->fw_offset;
+ 
+ 	/* init for booting wait */
+ 	init_waitqueue_head(&sdev->boot_wait);
+diff --git a/sound/soc/sof/loader.c b/sound/soc/sof/loader.c
+index 312f7fffcb2c..89f35db2577d 100644
+--- a/sound/soc/sof/loader.c
++++ b/sound/soc/sof/loader.c
+@@ -379,12 +379,19 @@ int snd_sof_parse_module_memcpy(struct snd_sof_dev *sdev,
+ }
+ EXPORT_SYMBOL(snd_sof_parse_module_memcpy);
+ 
+-static int check_header(struct snd_sof_dev *sdev, const struct firmware *fw)
++static int check_header(struct snd_sof_dev *sdev, const struct firmware *fw,
++			size_t fw_offset)
+ {
+ 	struct snd_sof_fw_header *header;
++	size_t fw_size = fw->size - fw_offset;
++
++	if (fw->size < fw_offset) {
++		dev_err(sdev->dev, "error: firmware size must be greater than firmware offset\n");
++		return -EINVAL;
++	}
+ 
+ 	/* Read the header information from the data pointer */
+-	header = (struct snd_sof_fw_header *)fw->data;
++	header = (struct snd_sof_fw_header *)(fw->data + fw_offset);
+ 
+ 	/* verify FW sig */
+ 	if (strncmp(header->sig, SND_SOF_FW_SIG, SND_SOF_FW_SIG_SIZE) != 0) {
+@@ -393,9 +400,9 @@ static int check_header(struct snd_sof_dev *sdev, const struct firmware *fw)
+ 	}
+ 
+ 	/* check size is valid */
+-	if (fw->size != header->file_size + sizeof(*header)) {
++	if (fw_size != header->file_size + sizeof(*header)) {
+ 		dev_err(sdev->dev, "error: invalid filesize mismatch got 0x%zx expected 0x%zx\n",
+-			fw->size, header->file_size + sizeof(*header));
++			fw_size, header->file_size + sizeof(*header));
+ 		return -EINVAL;
+ 	}
+ 
+@@ -406,7 +413,8 @@ static int check_header(struct snd_sof_dev *sdev, const struct firmware *fw)
+ 	return 0;
+ }
+ 
+-static int load_modules(struct snd_sof_dev *sdev, const struct firmware *fw)
++static int load_modules(struct snd_sof_dev *sdev, const struct firmware *fw,
++			size_t fw_offset)
+ {
+ 	struct snd_sof_fw_header *header;
+ 	struct snd_sof_mod_hdr *module;
+@@ -415,14 +423,15 @@ static int load_modules(struct snd_sof_dev *sdev, const struct firmware *fw)
+ 	int ret, count;
+ 	size_t remaining;
+ 
+-	header = (struct snd_sof_fw_header *)fw->data;
++	header = (struct snd_sof_fw_header *)(fw->data + fw_offset);
+ 	load_module = sof_ops(sdev)->load_module;
+ 	if (!load_module)
+ 		return -EINVAL;
+ 
+ 	/* parse each module */
+-	module = (struct snd_sof_mod_hdr *)((u8 *)(fw->data) + sizeof(*header));
+-	remaining = fw->size - sizeof(*header);
++	module = (struct snd_sof_mod_hdr *)(fw->data + fw_offset +
++					    sizeof(*header));
++	remaining = fw->size - sizeof(*header) - fw_offset;
+ 	/* check for wrap */
+ 	if (remaining > fw->size) {
+ 		dev_err(sdev->dev, "error: fw size smaller than header size\n");
+@@ -502,7 +511,7 @@ int snd_sof_load_firmware_memcpy(struct snd_sof_dev *sdev)
+ 		return ret;
+ 
+ 	/* make sure the FW header and file is valid */
+-	ret = check_header(sdev, plat_data->fw);
++	ret = check_header(sdev, plat_data->fw, plat_data->fw_offset);
+ 	if (ret < 0) {
+ 		dev_err(sdev->dev, "error: invalid FW header\n");
+ 		goto error;
+@@ -516,7 +525,7 @@ int snd_sof_load_firmware_memcpy(struct snd_sof_dev *sdev)
+ 	}
+ 
+ 	/* parse and load firmware modules to DSP */
+-	ret = load_modules(sdev, plat_data->fw);
++	ret = load_modules(sdev, plat_data->fw, plat_data->fw_offset);
+ 	if (ret < 0) {
+ 		dev_err(sdev->dev, "error: invalid FW modules\n");
+ 		goto error;
 -- 
 2.20.1
 
