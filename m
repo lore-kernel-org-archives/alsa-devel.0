@@ -2,75 +2,80 @@ Return-Path: <SRS0=riqU=57=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90D79C2BA19
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 14:20:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 750B0C2BA19
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 14:23:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 07350206D5
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 14:20:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F3EF720857
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 14:23:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vJnKQiJ+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 07350206D5
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nsymtJWp";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pogo.org.uk header.i=@pogo.org.uk header.b="ktRyiSU8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F3EF720857
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=xwax.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6C7A03E;
-	Wed, 15 Apr 2020 16:19:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C7A03E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4F52A852;
+	Wed, 15 Apr 2020 16:22:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F52A852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586960436;
-	bh=uRTx3Uw3M66GVuY4Xz6as8E0+YmeQonfHmvRks83Q4w=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1586960590;
+	bh=2mm/RcZ+8JC8zdkbrOu85sQAh18VB+ZiFSvT+it/mD4=;
+	h=Date:From:To:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=vJnKQiJ+bkX/F6iF/m4Wk3DchxddDCwBRqN32fcRwFliLib3q4VMRKgWECqicPCFe
-	 6oi27T/9GHU4YIJZYjLXgSAWd/r39Vp20tCo6up+8awLIfhjIqnl4nzTft5aK6G/4U
-	 MSVFuytaR+k1M6jfyc2oyY4Gqzpri/SNCsnKk6gI=
+	b=nsymtJWpGM6vzBNZq4IF61uG1o9XGeck19RzSgdtKuQP/I1utMKvVE/AV4oKQHEeo
+	 N4q6bRjrklX0SbhuNOwyVNfosM1AeEhIkj/cBrmhXDuvz40Mau1mXg1xopRnwxc3o2
+	 zxpYTfQ5LeXS4IJ321PV7bPO7DuCJkflmpoTZTgA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D0304F80229;
-	Wed, 15 Apr 2020 16:19:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D9F31F80229;
+	Wed, 15 Apr 2020 16:22:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BA254F80124; Wed, 15 Apr 2020 16:19:43 +0200 (CEST)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ id 8D0E0F80245; Wed, 15 Apr 2020 16:22:18 +0200 (CEST)
+Received: from jazz.pogo.org.uk (jazz.pogo.org.uk [213.138.114.167])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DFD63F80124
- for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2020 16:19:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DFD63F80124
-IronPort-SDR: 1/V77jipPkDgbNS9R5xDahAPp6FEVLmO0qzr7iWSalqFuGFhHlTxxatQdiKfsUsB0Ai/yZAmnJ
- oQ6em99i7NDg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Apr 2020 07:19:33 -0700
-IronPort-SDR: tCWXMGZgkMMQuXn65NPlJ7WtiIo4kNmLnWH+D5xHmPFSJXSZJIu6lHrUh1DqT6oHWa3Y7/lcbz
- fP85v3z/LaGQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,387,1580803200"; d="scan'208";a="242317080"
-Received: from pi-desktop.igk.intel.com ([10.237.148.102])
- by orsmga007.jf.intel.com with ESMTP; 15 Apr 2020 07:19:30 -0700
-From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 1/3] ASoC: codecs: hdac_hdmi: Fix incorrect use of
- list_for_each_entry
-Date: Wed, 15 Apr 2020 12:28:49 -0400
-Message-Id: <20200415162849.308-1-amadeuszx.slawinski@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 773C7F80124
+ for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2020 16:22:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 773C7F80124
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=pogo.org.uk header.i=@pogo.org.uk
+ header.b="ktRyiSU8"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=pogo.org.uk
+ ; s=a;
+ h=Content-Type:MIME-Version:Message-ID:Subject:To:From:Date:Sender:
+ Reply-To:Cc:Content-Transfer-Encoding:Content-ID:Content-Description:
+ Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+ In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+ List-Post:List-Owner:List-Archive;
+ bh=1GgMiSCOWHfDjDdkJD6pJbAGY2Y+x0HVVKjxljVw8uI=; b=ktRyiSU8jVBwnp8htvNY8p+Bp4
+ hs1mp9R0n5h3UTbrRMJWZH4XyIvmUf5FxM1yn4xqfDeayqwuufqz/DENc576F+dZHzgiTABZQbfkQ
+ gDhNckoHSm6ZwgK8h13n6V7URQeMvRalxXDqBtpmpEpmDsYDaLazFQw5qX6gNOeK8zSamJjPGet9f
+ 9DK7qIrg/hx++g90QE0ok+tRzxn3bObIJDczIK8MyN/RCZU7EoZhIZ7CWJY+MITPAiSEyQarSubYm
+ DJPUSs2Qcfji72ygQRnVu2dHVzIbHAMVbxYDADavnk0nIjjtVFBLfGLIJQx2/RWECfmwnJgF1ETQY
+ uIV+JJWQ==;
+Received: from cpc1-hari17-2-0-cust102.20-2.cable.virginm.net ([86.18.4.103]
+ helo=stax.localdomain) by jazz.pogo.org.uk with esmtps (TLS1.2) tls
+ TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.93.0.4 (FreeBSD))
+ (envelope-from <mark@xwax.org>) id 1jOiva-00060c-O0
+ for alsa-devel@alsa-project.org; Wed, 15 Apr 2020 15:22:10 +0100
+Received: from mark (helo=localhost)
+ by stax.localdomain with local-esmtp (Exim 4.84)
+ (envelope-from <mark@xwax.org>) id 1jOiva-0003sq-BQ
+ for alsa-devel@alsa-project.org; Wed, 15 Apr 2020 15:22:10 +0100
+Date: Wed, 15 Apr 2020 15:22:10 +0100 (BST)
+From: Mark Hills <mark@xwax.org>
+To: alsa-devel@alsa-project.org
+Subject: Debugging dmix?
+Message-ID: <2004151441360.13529@stax.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
+Content-Type: text/plain; charset=US-ASCII
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,37 +91,76 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-If we don't find any pcm, pcm will point at address at an offset from
-the the list head and not a meaningful structure. Fix this by returning
-correct pcm if found and NULL if not. Found with coccinelle.
+Recommendations for debugging dmix?
 
-Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+For a long time I have a problem where audio output regresses to glitches, 
+only solved by closing all applications using audio and reopening.
+
+Especially common when Chromium is used: 3-4 times a day, frustrating.
+
+I have a very explicit dmix configuration (see below); no PulseAudio. 
+Reproducable on latest alsa-lib (fb48ad9e; later than v1.2.2)
+
+I can rule out _some_ aspects of hardware/drivers (Layla3G); eg. when the 
+fault occurs, other soundcard channels are fine.
+
+Any way to understand what dmix is doing? Clients? Control process?
+
+Here's a recording taken from the analogue output (L+R chanel get zero'd):
+
+  http://www.pogo.org.uk/~mark/tmp/dmix-glitch.png 
+  http://www.pogo.org.uk/~mark/tmp/dmix-glitch.flac
+
+Some process overwriting the ring buffer? Not high enough thread priority?
+
+Seems like it might be more prevalant with more applications using sound. 
+Maybe why Chromium makes it worse; several threads/sandboxes, perhaps.
+
+dmix has all the trappings of something fiendishly clever and concise, but 
+quite opaque. I'd need time to study the code (it has few comments, a lot 
+of assumed knowledge) to understand its IPC. Can anyone give a head start?
+
+Specifically, how does the final mix get written to the output? eg. Thread 
+priorities, if that process goes away etc.
+
+Thanks
+
 ---
- sound/soc/codecs/hdac_hdmi.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index fba9b749839d..f26b77faed59 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -142,14 +142,14 @@ static struct hdac_hdmi_pcm *
- hdac_hdmi_get_pcm_from_cvt(struct hdac_hdmi_priv *hdmi,
- 			   struct hdac_hdmi_cvt *cvt)
- {
--	struct hdac_hdmi_pcm *pcm = NULL;
-+	struct hdac_hdmi_pcm *pcm;
- 
- 	list_for_each_entry(pcm, &hdmi->pcm_list, head) {
- 		if (pcm->cvt == cvt)
--			break;
-+			return pcm;
- 	}
- 
--	return pcm;
-+	return NULL;
- }
- 
- static void hdac_hdmi_jack_report(struct hdac_hdmi_pcm *pcm,
+pcm.layla_multi {
+        type route
+
+        slave.pcm {
+                type dmix
+                ipc_key 833282
+                ipc_key_add_uid true
+                slave {
+                        pcm "hw:Layla3G,0,0"
+                        period_size 256
+                        buffer_size 32768
+                        channels 4
+                        rate 48000
+                        format S24_3LE
+                }
+        }
+
+        ttable {
+                # Headphones
+
+                0.0 1
+                1.1 1
+
+                # Speakers
+
+                0.2 1
+                1.3 1
+        }
+}
+
+pcm.!default {
+        type plug
+        slave.pcm layla_multi
+}
+
 -- 
-2.17.1
-
+Mark
