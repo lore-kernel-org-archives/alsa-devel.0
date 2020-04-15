@@ -2,88 +2,101 @@ Return-Path: <SRS0=riqU=57=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD7CDC2BA19
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 15:01:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0609CC2BA19
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 15:01:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 52BAD2076A
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 15:01:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8439320857
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 15:01:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pE2MRk/a";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HgJ7sm1u"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 52BAD2076A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LkztS0J4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8439320857
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cetitec.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 78DAD1675;
-	Wed, 15 Apr 2020 17:00:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 78DAD1675
+	by alsa0.perex.cz (Postfix) with ESMTPS id BDFA01662;
+	Wed, 15 Apr 2020 17:00:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BDFA01662
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586962863;
-	bh=0t99Q1f/N/zmsEp8uCh6vG3OKb1kxkYhbkNPmJvw48I=;
-	h=From:Date:Subject:To:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1586962889;
+	bh=R2ui3V1fBRvMg6XwEcl5g0t1TMGJAyL118heTVC002E=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=pE2MRk/aL46/wgcEPznsoFC1JMqj9d6YawhNVFtQgEecB1b6k2aKfFHI7QGhaNzrx
-	 riVT/2UzlYciQVZTPGZ27DbAkTBVJbRmJTuPCmmTiPcG0DE2GLoETe4Vm1IdibHF5Y
-	 msgfjcGg1ZmF89NJ/60ZPUikrIexeq9p7SxGB+fQ=
+	b=LkztS0J4dGb7DPn2rKM5HDPdQS6NCpIaJIUHeuqL/I78i3WSsFGUxdXeTlIa9UJly
+	 PUfcMT5MQM6mu5eQjeKD7DewL8rx3IboY2+pvFNXhYQSkRB0vhKB6OkazGhl2gGTLD
+	 mrVDWoGWNjuYPlXJ76Z6p/+AJO1HnWCyC/SyTx50=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9A6C6F8026A;
-	Wed, 15 Apr 2020 16:58:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E1907F802C2;
+	Wed, 15 Apr 2020 16:58:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 04B7EF80245; Wed, 15 Apr 2020 12:10:25 +0200 (CEST)
-Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com
- [IPv6:2607:f8b0:4864:20::e35])
+ id 42508F80245; Wed, 15 Apr 2020 16:10:57 +0200 (CEST)
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.131])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 36C43F80115
- for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2020 12:10:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36C43F80115
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="HgJ7sm1u"
-Received: by mail-vs1-xe35.google.com with SMTP id o3so1866618vsd.4
- for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2020 03:10:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:from:date:message-id:subject:to;
- bh=kUOyQBNGIOYS6YObZzMg5DeXN/7ujUUM8WPLG0eocdc=;
- b=HgJ7sm1uic6CbrRm+DLnVQK3dg3gSDAaEffLhFeFqniLeZMQHBkI0Q7Gst9uv7q6Jp
- sqH4w9zBmMmzKwnj44VS2E0e87MVOXO+LeMUC0gXupeskEqb3DEkXVVYnL2PAf1w/OHc
- +zAvpzAcuawOqZ+ZCH//JnSZuczbWNAWKSfCiLgIG8xMkK6nlISK8Mcxht2OjCYd9gya
- VaTH2oG6Di2+QG3al3qd0u4OchSRe9ugxj9EdA4bxQ4dI+PV9wCY1DXxUy/DuFFB/D/B
- NlkA8cc5seADl8WHivZe6ePxnpuRAF9K5T1Ms1pjA/KwOaLSDNt9NOA2mM7ZFgRZVv1v
- izWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
- bh=kUOyQBNGIOYS6YObZzMg5DeXN/7ujUUM8WPLG0eocdc=;
- b=Macnbnu1xdwRHL6QkzL2vQIIN4x7Rpb8+7P/KeZhhD0stnKqmK2sEotPGOMzIM7IW5
- 9xIa87fZvwwjqCeKL3hzFArTtvxqAg2OoNOCmww1WQUWOYrlxSeXIcVBx4vz5zXz4GbN
- Gg1RTayytdyN2z+rRtV+5F0pWQjl9Rv0dts2LF+t2NwGwr5uo1pArJ86rOVFGDrGe05m
- IDp1sA//ACWZLnXpQjkdiB9oDNxtSWGnYgQpsg9XssYJ0v1RbKHrXcijC3uIF9ymdmNy
- rtdRoBOMb7mk0tkr+zAW7DImK4Xny7eM9pAQ0ll1F1M2iY0yqvArx71xyMati4KFjASQ
- 9LdQ==
-X-Gm-Message-State: AGi0PuYcViWgLtDuPSA8vegqhP2MbDJXgYvbBY0yAOoo7xHMgDckYAa9
- 6hIDyGRN0WFD0T4UWGHojmhHtC+n52hLsEPjxG9UVSK2OWs=
-X-Google-Smtp-Source: APiQypKr7cxxNU6DlWlwDaVVVFbUheCmwJxUlLARRunMShW04OONLVrv2/94qUz/yb9Pc8E6KJ8AYEOSCffYs1/gc8o=
-X-Received: by 2002:a67:3344:: with SMTP id z65mr3569292vsz.236.1586945418769; 
- Wed, 15 Apr 2020 03:10:18 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id BCEA0F80115
+ for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2020 16:10:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BCEA0F80115
+Received: from mail.cetitecgmbh.com ([87.190.42.90]) by
+ mrelayeu.kundenserver.de (mreue011 [212.227.15.167]) with ESMTPSA (Nemesis)
+ id 1M433w-1jOikV1ArA-0008D6; Wed, 15 Apr 2020 16:10:43 +0200
+Received: from pflvmailgateway.corp.cetitec.com (unknown [127.0.0.1])
+ by mail.cetitecgmbh.com (Postfix) with ESMTP id 0D300650EBC;
+ Wed, 15 Apr 2020 14:10:42 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at cetitec.com
+Received: from mail.cetitecgmbh.com ([127.0.0.1])
+ by pflvmailgateway.corp.cetitec.com (pflvmailgateway.corp.cetitec.com
+ [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id a9FxySuCWEi3; Wed, 15 Apr 2020 16:10:41 +0200 (CEST)
+Received: from pfwsexchange.corp.cetitec.com (unknown [10.10.1.99])
+ by mail.cetitecgmbh.com (Postfix) with ESMTPS id A77C564C0D9;
+ Wed, 15 Apr 2020 16:10:41 +0200 (CEST)
+Received: from pflmmbl.corp.cetitec.com (10.8.5.60) by
+ PFWSEXCHANGE.corp.cetitec.com (10.10.1.99) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 15 Apr 2020 16:10:41 +0200
+From: Matthias Blankertz <matthias.blankertz@cetitec.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: [PATCH 0/2] ASoC: rsnd: Fixes for multichannel HDMI audio output
+Date: Wed, 15 Apr 2020 16:10:15 +0200
+Message-ID: <20200415141017.384017-1-matthias.blankertz@cetitec.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-From: Jaime Perez <19.jaime.91@gmail.com>
-Date: Wed, 15 Apr 2020 12:10:07 +0200
-Message-ID: <CAM2dokvhFWfXev+JMfKnCxCPdLrFgG7xqf=8Dt5N92BPqOGKcA@mail.gmail.com>
-Subject: Baytrail audio not working on next branch
-To: alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.8.5.60]
+X-ClientProxiedBy: PFWSEXCHANGE.corp.cetitec.com (10.10.1.99) To
+ PFWSEXCHANGE.corp.cetitec.com (10.10.1.99)
+X-EsetResult: clean, is OK
+X-EsetId: 37303A290D7F536B647460
+X-Provags-ID: V03:K1:ls00uf4IlbrL5k+iWkD/WTmWYJj2Y84rUbhh+RZdOmEf3f68PT4
+ FNEAZa4F7Phw66UR0nWjFpSj8t3Voz1xizvTTK53uk9EADtZ/ZitvNm85mdgfti69qH5I6a
+ UinE9tuhDB0krwi7u8TPxThlkypNIWsC2fBFky4+MKCdLbwLUA/ZpnQ0gmR5QyyZnHw6A8N
+ SX51zgcEnCyz2rJlqvYYg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:jytcsZGxxWc=:QLEgfUO1mDZFEbghCIOVbk
+ KY+vl+FRwGZVX9VdnmNGQ6fM4ZUfxE6XOkLI077L9TkwYRBnBXzKcVeqYliL1Q2mV+1krDhQ6
+ xrSmfpQUMiDNkobLrBMGVHbAzsbUs6IBqNp7H+//64Dyrlmz6MS8lhnUoVnNnNMr/wTrnR9FM
+ uYNwExBslY3O1/9A2KrKX0lSXJLk2DyYBRzQoe2DgwQQJyWckGy/vR1X7qrvbVYkWZbYDtkTY
+ iOMF1RvasrIZVG2abdGuXQoxBkAKjUyx6Uod+7UOD7emQoBKCtp1oe6Jpr3g49IFbKRT7pMOM
+ gmYiyyiDxEDCRoidNw2p5sfyKiN4I+gXNfs4bkEDy4m5GsnBQRwNIO8gYnrZK1APEyU4C+617
+ lyG5PDKwP6m23PSdajBjRTyiQblQBAAMk7M8ldOM4h16as43qnrqrmwGejLHElNva0Rt5UuRk
+ f3PYk2i8fD35JeRwsuZQChyc1Xyf5S5MS34WIRwZxla1sz2A9oHff3pvxRHKL8Yu3jkxCzkR9
+ SyvMqAyxjLprSDRe20DED+C9DDYMY6j4FwSUh/Xyw2N/Jxy4XKrMj6s7WrvuJlNsTOMGUkSzA
+ 5/cr+B20n9elSaNcdGRwIGGMuhI4YH54Jjynpm7etXzSazH48vIScId0YUnL6du+UaJyMyYZz
+ r4YDm9AJrRfAL9J2txtkE0GvTkvvNCe5xH9BFMj++CtyRgYFYQtNcRMCRlmkN/kArtDEu8uvv
+ OSDK7PfRzQPfozY+pxYJTeURAeQkMNkDpgoFJMNFUPrtUl0qwnIdC0Xo0/IjygnHU2UBKRFbw
+ YqD9znHvaYh/PPI5m3GFlY34NtLW+uz06NpxrjVqO8wx1z3dDV1xhvxgYfHWzKCQkUk+IfrL5
+ s4eP2fOsKWedPqZtPvYw==
 X-Mailman-Approved-At: Wed, 15 Apr 2020 16:57:55 +0200
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: alsa-devel@alsa-project.org,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, linux-renesas-soc@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,7 +112,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-tested 20200409 20200413 20200414 tags
+This fixes two issues in the snd-soc-rcar driver blocking multichannel
+HDMI audio out: The parent SSI in a multi-SSI configuration is not
+correctly set up and started, and the SSI->HDMI channel mapping is
+wrong.
 
-maybe related issue
- https://bugzilla.kernel.org/show_bug.cgi?id=201787
+With these patches, the following device tree snippet can be used on an
+r8a7795-based platform (Salvator-X) to enable multichannel HDMI audio on
+HDMI0:
+
+rsnd_port1: port@1 {
+	rsnd_endpoint1: endpoint {
+		remote-endpoint = <&dw_hdmi0_snd_in>;
+
+		dai-format = "i2s";
+		bitclock-master = <&rsnd_endpoint1>;
+		frame-master = <&rsnd_endpoint1>;
+
+		playback = <&ssi0 &ssi1 &ssi2 &ssi9>;
+	};
+};
+
+With a capable receiver attached, all of 2ch (stereo), 6ch (e.g. 5.1)
+and 8ch audio output should work.
+
+
+Matthias Blankertz (2):
+  ASoC: rsnd: Fix parent SSI start/stop in multi-SSI mode
+  ASoC: rsnd: Fix HDMI channel mapping for multi-SSI mode
+
+ sound/soc/sh/rcar/ssi.c  | 8 ++++----
+ sound/soc/sh/rcar/ssiu.c | 2 +-
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+
+base-commit: 7111951b8d4973bda27ff663f2cf18b663d15b48
+-- 
+2.26.0
+
