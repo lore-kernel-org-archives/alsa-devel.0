@@ -7,71 +7,73 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 94B0FC2BA19
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 20:38:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68F4FC2BA19
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 20:38:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 19A06206E9
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 20:38:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D97FC206E9
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 20:38:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bKZaCBN1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 19A06206E9
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Uq7pvufT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D97FC206E9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 75F93165D;
-	Wed, 15 Apr 2020 22:37:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75F93165D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3C2F91665;
+	Wed, 15 Apr 2020 22:37:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C2F91665
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586983078;
-	bh=ZvVLE6rHuMNHacWfb4ndNwVdi1scp68aUBMDvLFaGE4=;
+	s=default; t=1586983115;
+	bh=Ubmny7jgIsvoVLRpTEfuYbjZsv8kBd5PaSIE7D4ai4E=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bKZaCBN1ADT2sFX65qLECzAdYUlHsS2SF8ilkdYgTE1F4AD41E2l4Xjh4ltAuLXVx
-	 k1kUDKd7UQfsd4i/7TbYGoQvaPGCVHgBcoWKkx7rIfUMBUhPq+bpbPBqaVht60p04I
-	 R96OP9urSot9jgTe9BgNwCXzSaj7IhdhuCNUYDIM=
+	b=Uq7pvufTg9Q6zuYyKSzqhjVu8sNDw352ddsW/5EH3lAGbooeSNUNSht2DF1m9XHAl
+	 oUqIeote7QkkmsaN14YUtKErQ/w31Jm20n4mAA+Xl4LHxSsDKEGRjbqcpd/P0g47pv
+	 itoLwpAG08es5n7ZevrznihNIn05RZotCAvobba8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 28F0CF80305;
-	Wed, 15 Apr 2020 22:29:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8DA31F802F9;
+	Wed, 15 Apr 2020 22:29:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E5FB1F802BD; Wed, 15 Apr 2020 22:29:18 +0200 (CEST)
+ id DA549F802DF; Wed, 15 Apr 2020 22:29:21 +0200 (CEST)
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A93BFF8027D
- for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2020 22:29:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A93BFF8027D
-IronPort-SDR: dQpQ4jIbnYE7RP+/m8JPwWYGEhZuFZK1vB4yNtIM3x3GIYaF6VftnjJeG9D3v9K0Du4zO5XQyo
- 1GhBHfNC7JRQ==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 64AC1F8029B
+ for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2020 22:29:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64AC1F8029B
+IronPort-SDR: TyG1uX221U9lGn/owLybDBk7/YZi/U239WFxJBqoioxgty1HPxfbD9joa2SygcSk7YxFgymjXz
+ 84i/eLpw7Deg==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Apr 2020 13:29:10 -0700
-IronPort-SDR: CfjThzDCE6+v79qL/R7Rq8PXRYRpy7dcjiEQKXRNZsoPtGeinxkGMOfrbBQZfVlKTWV1O+EIol
- jUVFyW+0ZZ7A==
+ 15 Apr 2020 13:29:12 -0700
+IronPort-SDR: WHX6YV2kUNE2oUTNtx4XN0zo+Cvd/4qSpJ5xQpyRVnL3aQ64tSYXZpir2ggCLPyA2aj2VnkSoB
+ oxkzBR9/RzmA==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,388,1580803200"; d="scan'208";a="288656315"
+X-IronPort-AV: E=Sophos;i="5.72,388,1580803200"; d="scan'208";a="288656322"
 Received: from jplam-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.209.82.197])
- by fmsmga002.fm.intel.com with ESMTP; 15 Apr 2020 13:29:08 -0700
+ by fmsmga002.fm.intel.com with ESMTP; 15 Apr 2020 13:29:11 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 14/24] ASoC: SOF: make sof_ipc_cc_version to fixed length
-Date: Wed, 15 Apr 2020 15:28:06 -0500
-Message-Id: <20200415202816.934-15-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 16/24] ASoC: SOF: Intel: Fix typo in header file comment text
+Date: Wed, 15 Apr 2020 15:28:08 -0500
+Message-Id: <20200415202816.934-17-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200415202816.934-1-pierre-louis.bossart@linux.intel.com>
 References: <20200415202816.934-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org, Pan Xiuli <xiuli.pan@linux.intel.com>,
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ Seppo Ingalsuo <seppo.ingalsuo@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, tiwai@suse.de,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>
+ broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,54 +89,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Pan Xiuli <xiuli.pan@linux.intel.com>
+From: Seppo Ingalsuo <seppo.ingalsuo@linux.intel.com>
 
-Align struct sof_ipc_cc_version to firmware definition in SOF ABI 3.15.0.
-
-The struct definition was changed due to errors in FW build.
-The Cadence XCC compiler produces incorrect linkage section sizes, when a
-variable length array is used in the compiler version struct. The firmware
-definition was changed to a fixed 32 byte compiler description string.
-This length covers all released firmware binaries and thus only a minor
-ABI change is needed.
-
-As the same structure is used in IPC messages between driver and firmware,
-the kernel needs to be aligned to firmware change.
+This patch fixes the typo in word "microphone".
 
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Signed-off-by: Pan Xiuli <xiuli.pan@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Signed-off-by: Seppo Ingalsuo <seppo.ingalsuo@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- include/sound/sof/info.h     | 2 +-
- include/uapi/sound/sof/abi.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ include/sound/sof/dai-intel.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/sound/sof/info.h b/include/sound/sof/info.h
-index 2ef98b2fee1f..d5eff3179a39 100644
---- a/include/sound/sof/info.h
-+++ b/include/sound/sof/info.h
-@@ -113,7 +113,7 @@ struct sof_ipc_cc_version {
- 
- 	uint8_t name[16]; /* null terminated compiler name */
- 	uint8_t optim[4]; /* null terminated compiler -O flag value */
--	uint8_t desc[]; /* null terminated compiler description */
-+	uint8_t desc[32]; /* null terminated compiler description */
- } __packed;
- 
- /* extended data: Probe setup */
-diff --git a/include/uapi/sound/sof/abi.h b/include/uapi/sound/sof/abi.h
-index e0fa2939d49c..6c802a2386ef 100644
---- a/include/uapi/sound/sof/abi.h
-+++ b/include/uapi/sound/sof/abi.h
-@@ -26,7 +26,7 @@
- 
- /* SOF ABI version major, minor and patch numbers */
- #define SOF_ABI_MAJOR 3
--#define SOF_ABI_MINOR 14
-+#define SOF_ABI_MINOR 15
- #define SOF_ABI_PATCH 0
- 
- /* SOF ABI version number. Format within 32bit word is MMmmmppp */
+diff --git a/include/sound/sof/dai-intel.h b/include/sound/sof/dai-intel.h
+index 04e48227f542..988cddb8b04b 100644
+--- a/include/sound/sof/dai-intel.h
++++ b/include/sound/sof/dai-intel.h
+@@ -135,7 +135,7 @@ struct sof_ipc_dai_dmic_pdm_ctrl {
+  * version number used in configuration data is checked vs. version used by
+  * device driver src/drivers/dmic.c need to match. It is incremented from
+  * initial value 1 if updates done for the to driver would alter the operation
+- * of the microhone.
++ * of the microphone.
+  *
+  * Note: The microphone clock (pdmclk_min, pdmclk_max, duty_min, duty_max)
+  * parameters need to be set as defined in microphone data sheet. E.g. clock
 -- 
 2.20.1
 
