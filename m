@@ -7,64 +7,67 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 00FFAC2BA19
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 14:16:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D8AF2C2BA19
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 14:17:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 78F5920857
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 14:16:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 613C220857
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 14:17:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aK0kUxet"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 78F5920857
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pZyMBYwy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 613C220857
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D895186E;
-	Wed, 15 Apr 2020 16:15:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D895186E
+	by alsa0.perex.cz (Postfix) with ESMTPS id A401F1666;
+	Wed, 15 Apr 2020 16:16:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A401F1666
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586960182;
-	bh=D8xP8huWyUJFRfUYmqEfOvchR4QcJYXqnRcoD59IGW4=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=aK0kUxetXHt7ERdheNtu7e/1DlNW/aN//r8chH9l/RgyZKIoyeD45E55ahVMjgUdx
-	 U1W0ydWjZ+NkoMbhyMD23+PdAUO9yceTI4CYF2yksTyPJvsi+TvqY65KfsmobdlGt+
-	 ZUPrPmCHGk6WTL4KBNaL6c0ew7mFAsi8zps6PaC8=
+	s=default; t=1586960235;
+	bh=p9o9hufIK/yrSdgktx+UBgDMPDTjcDw3OFi3y7wSftA=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=pZyMBYwy3dcfMuizlIXFxKVYD3Cy7a22ZOzTvGCeIHboIDVxi5V/2tuX0mW+MyMVp
+	 Sa2iE8lYtaTgEyF+HnwG/fS+1tOyT3vbl1CZ8WLY1h2nUBezmEWieIF08EHFIPvalC
+	 1vqeMF5xhPQ3i5pWrZ8QyqE0LYq1C8f5eGUx2lzU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 74964F80229;
-	Wed, 15 Apr 2020 16:15:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 31AF8F80264;
+	Wed, 15 Apr 2020 16:15:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EEDB1F8025F; Wed, 15 Apr 2020 16:15:30 +0200 (CEST)
+ id 4800AF80124; Wed, 15 Apr 2020 16:15:33 +0200 (CEST)
 Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A11DCF80115
- for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2020 16:15:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A11DCF80115
-IronPort-SDR: TjNzbx/UsmrotgoI9q0NOKKKCQLNrLsboVyGSVC5ZCXU0IYkGJYYUWCZ2Ri63ntmuPJiZuwO4B
- 3bhCy/3VQh9w==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2F71BF80124
+ for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2020 16:15:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F71BF80124
+IronPort-SDR: UcL6DPLfVX2B1Y3tR0kkMQ0MuBZi5CsN4jR4zQhOZlPdg4Vg8DErbxylnjvMTZ7wMwMrRlXUPO
+ LeslyJOGL9qw==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Apr 2020 07:15:20 -0700
-IronPort-SDR: m2f/gIHEk97gcL66ER1BTBd5BjciFeoZVA/kFmJ4C3Bs4R1yxJcqSJ+ok1vvCdaYgpVW+f7scf
- DSmR1mrJL67w==
+ 15 Apr 2020 07:15:22 -0700
+IronPort-SDR: j47obdvQl74ZC/8q4sJZsCIj5Vbah2cc/DY4g/UjAAKe2jK2NhOxjd+wbMaF6kElzRAo9brkDf
+ gJj7KD5Do2Sg==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,387,1580803200"; d="scan'208";a="271738607"
+X-IronPort-AV: E=Sophos;i="5.72,387,1580803200"; d="scan'208";a="271738618"
 Received: from pi-desktop.igk.intel.com ([10.237.148.102])
- by orsmga002.jf.intel.com with ESMTP; 15 Apr 2020 07:15:17 -0700
+ by orsmga002.jf.intel.com with ESMTP; 15 Apr 2020 07:15:20 -0700
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 1/2] ASoC: topology: Remove unneeded semicolon
-Date: Wed, 15 Apr 2020 12:24:34 -0400
-Message-Id: <20200415162435.31859-1-amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH 2/2] ASoC: topology: Fix endianness issue
+Date: Wed, 15 Apr 2020 12:24:35 -0400
+Message-Id: <20200415162435.31859-2-amadeuszx.slawinski@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200415162435.31859-1-amadeuszx.slawinski@linux.intel.com>
+References: <20200415162435.31859-1-amadeuszx.slawinski@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -85,8 +88,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-There is unnecessary semicolon after last bracket of if statement,
-remove it.
+As done in already existing cases, we should use le32_to_cpu macro while
+accessing hdr->magic. Found with sparse.
 
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 ---
@@ -94,18 +97,18 @@ Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 33e8d189ba2f..a5cd73742dc5 100644
+index a5cd73742dc5..49875978a1ce 100644
 --- a/sound/soc/soc-topology.c
 +++ b/sound/soc/soc-topology.c
-@@ -2390,7 +2390,7 @@ static int soc_tplg_link_elems_load(struct soc_tplg *tplg,
- 		tplg->pos += le32_to_cpu(hdr->size) +
- 			le32_to_cpu(hdr->payload_size);
- 		return 0;
--	};
-+	}
+@@ -2652,7 +2652,7 @@ static int soc_valid_header(struct soc_tplg *tplg,
+ 	}
  
- 	/* check the element size and count */
- 	link = (struct snd_soc_tplg_link_config *)tplg->pos;
+ 	/* big endian firmware objects not supported atm */
+-	if (hdr->magic == SOC_TPLG_MAGIC_BIG_ENDIAN) {
++	if (le32_to_cpu(hdr->magic) == SOC_TPLG_MAGIC_BIG_ENDIAN) {
+ 		dev_err(tplg->dev,
+ 			"ASoC: pass %d big endian not supported header got %x at offset 0x%lx size 0x%zx.\n",
+ 			tplg->pass, hdr->magic,
 -- 
 2.17.1
 
