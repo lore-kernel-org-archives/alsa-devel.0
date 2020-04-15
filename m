@@ -2,76 +2,76 @@ Return-Path: <SRS0=riqU=57=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A7E5C2BA19
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 20:39:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CF7CFC2BA19
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 20:39:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 89E25206E9
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 20:39:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5475820768
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 20:39:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FLefRXMb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 89E25206E9
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iMXgFzNj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5475820768
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9FABD15E2;
-	Wed, 15 Apr 2020 22:38:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9FABD15E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id B6012166D;
+	Wed, 15 Apr 2020 22:38:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B6012166D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586983148;
-	bh=mdW3O3vbW9Ngd7ViM5bA5gNK2T0DNNg3KJ8e7CwwfP0=;
+	s=default; t=1586983180;
+	bh=qzWXwqC8Votutm/HTTozwrA7dWD20ya0bIuJk8O3XpM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FLefRXMb5eFKylhBzC303QJczR+3jeT8R74PqHOig0bf1GpzqsColLdGgrrD5AGy2
-	 9YkNurG9tGd94capjY0VimnWYEWcbD9CivVhaIK227B+wE6zoWJ6s9TQHM5PXXgMje
-	 n4Bx1UNE3JpDqiyJ80siI6iuhdXXyDSPN/krxeq8=
+	b=iMXgFzNjyecNRvnmoEPmtSoYwXZBaeLzC7GxfRaTP8mN+Gzds503IjvOjJ0RAQcys
+	 arRDZQffqhm73g0G1hkEPTVH71ZHh7OYr1CwkqDVYQUWqm8u5pG5/FowybS3Z6kWLQ
+	 MU1dPe3XkgUeEN0M8+xbCv4seR1U+t6kHydBDRMs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9A0ECF80322;
-	Wed, 15 Apr 2020 22:29:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A4776F80328;
+	Wed, 15 Apr 2020 22:29:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 20DE3F8029B; Wed, 15 Apr 2020 22:29:21 +0200 (CEST)
+ id EAB3FF802EC; Wed, 15 Apr 2020 22:29:25 +0200 (CEST)
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 432B0F802BC
- for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2020 22:29:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 432B0F802BC
-IronPort-SDR: qV3Er59W6S+I2iQU1940XPZ8r+bE93R5nZlSyT8wQe5VVRiQbhsaE+PFGCX+JUwJwNtHMmJfaR
- Kc7fY1xim1mQ==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7D846F8029A
+ for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2020 22:29:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D846F8029A
+IronPort-SDR: hPCX33bGLCRhVKBbhPcVlu3qDaHBYRKqEpSKOQwru67W0rsu0AJ3j5QxKA+YPILDm8lvWA948F
+ rgq8i/IjxvZQ==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Apr 2020 13:29:11 -0700
-IronPort-SDR: pMkQenf13uke2zT5uqVPQtJIvYpNIQDGeQEkbP+AE0hgxS3a0WA3mMrv+x0pYws08KHkoAEuUR
- okJltFH3nI8A==
+ 15 Apr 2020 13:29:16 -0700
+IronPort-SDR: +HPEYfK6btPyhgeikKO5+7HSK5I9G2ydfUT7gUyt20SRT1IZwKKJYGMBKihjwGWYZ3i50ZafHQ
+ fgm6Hm5KgXPA==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,388,1580803200"; d="scan'208";a="288656316"
+X-IronPort-AV: E=Sophos;i="5.72,388,1580803200"; d="scan'208";a="288656331"
 Received: from jplam-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.209.82.197])
- by fmsmga002.fm.intel.com with ESMTP; 15 Apr 2020 13:29:09 -0700
+ by fmsmga002.fm.intel.com with ESMTP; 15 Apr 2020 13:29:14 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 15/24] ASoC: SOF: Add XRUN flags field to struct
- sof_ipc_buffer.
-Date: Wed, 15 Apr 2020 15:28:07 -0500
-Message-Id: <20200415202816.934-16-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 18/24] ASoC: SOF: Intel: Rename deprecated DMIC IPC struct
+ field
+Date: Wed, 15 Apr 2020 15:28:10 -0500
+Message-Id: <20200415202816.934-19-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200415202816.934-1-pierre-louis.bossart@linux.intel.com>
 References: <20200415202816.934-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- Artur Kloniecki <arturx.kloniecki@linux.intel.com>,
+ Seppo Ingalsuo <seppo.ingalsuo@linux.intel.com>,
  Kai Vehmanen <kai.vehmanen@linux.intel.com>, tiwai@suse.de,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  broonie@kernel.org
@@ -90,74 +90,56 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Artur Kloniecki <arturx.kloniecki@linux.intel.com>
+From: Seppo Ingalsuo <seppo.ingalsuo@linux.intel.com>
 
-Currently if a component source buffer underruns or a component sink
-buffer overruns the pipeline will enter an XRUN status and attempt
-recovery. This is desired in most pipelines but some topologies need to
-support use cases where we expect buffers to underrun or overrun.
-
-Host ---> Proc----> Selector0 --> Buf0 ---- > DAI Playback
-                      |
-                      v
-                     Buf1
-                      |
-                      v
-Host <---------------Selector1 <----- Buf2 <----- Echo Ref DAI
-
-In the example above we two host PCMs that can be independently
-started/stopped thereby causing buf1 to either underrun or overrun
-(and stop the pipelines). Buf1 should be permitted to underrun or overrun
-without invoking pipeline XRUN logic and should over write oldest data
-(for overrun) and readback 0s (for underrun).
-
-2 flags have been added for use during buffer instantiation:
-SOF_BUF_OVERRUN_PERMITTED and SOF_BUF_UNDERRUN_PERMITTED,
-along with struct sof_ipc_buffer member fields: flags and reserved.
-Flags field is supposed to hold the above-mentioned flags to allow
-some control over XRUN behaviour.
-Also added reserved field to the structure in case it comes in handy
-some time in the future.
-
-This is an incremental ABI change as the new fields are ignored by older
-versions of the firmware.
+This patch restores the field name to fifo_bits_b since the
+legacy firmware compatibility code (for firmware ABI 3.0.0 or earlier)
+sets it in sof_link_dmic_load() function in topology.c. Setting of
+reserved_2 didn't look appropriate.
 
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Signed-off-by: Artur Kloniecki <arturx.kloniecki@linux.intel.com>
+Signed-off-by: Seppo Ingalsuo <seppo.ingalsuo@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- include/sound/sof/topology.h | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ include/sound/sof/dai-intel.h |  2 +-
+ sound/soc/sof/topology.c      | 10 ++++++----
+ 2 files changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/include/sound/sof/topology.h b/include/sound/sof/topology.h
-index 6a6b4791eaf6..08267d284edc 100644
---- a/include/sound/sof/topology.h
-+++ b/include/sound/sof/topology.h
-@@ -76,11 +76,23 @@ struct sof_ipc_comp {
- #define SOF_MEM_CAPS_CACHE			(1 << 6) /**< cacheable */
- #define SOF_MEM_CAPS_EXEC			(1 << 7) /**< executable */
+diff --git a/include/sound/sof/dai-intel.h b/include/sound/sof/dai-intel.h
+index 59fa73f3e34d..4dcea5aed878 100644
+--- a/include/sound/sof/dai-intel.h
++++ b/include/sound/sof/dai-intel.h
+@@ -173,7 +173,7 @@ struct sof_ipc_dai_dmic_params {
+ 	uint32_t fifo_fs;	/**< FIFO sample rate in Hz (8000..96000) */
+ 	uint32_t reserved_1;	/**< Reserved */
+ 	uint16_t fifo_bits;	/**< FIFO word length (16 or 32) */
+-	uint16_t reserved_2;	/**< Reserved */
++	uint16_t fifo_bits_b;	/**< Deprecated since firmware ABI 3.0.1 */
  
-+/*
-+ * overrun will cause ring buffer overwrite, instead of XRUN.
-+ */
-+#define SOF_BUF_OVERRUN_PERMITTED	BIT(0)
-+
-+/*
-+ * underrun will cause readback of 0s, instead of XRUN.
-+ */
-+#define SOF_BUF_UNDERRUN_PERMITTED	BIT(1)
-+
- /* create new component buffer - SOF_IPC_TPLG_BUFFER_NEW */
- struct sof_ipc_buffer {
- 	struct sof_ipc_comp comp;
- 	uint32_t size;		/**< buffer size in bytes */
- 	uint32_t caps;		/**< SOF_MEM_CAPS_ */
-+	uint32_t flags;		/**< SOF_BUF_ flags defined above */
-+	uint32_t reserved;	/**< reserved for future use */
- } __packed;
+ 	uint16_t duty_min;	/**< Min. mic clock duty cycle in % (20..80) */
+ 	uint16_t duty_max;	/**< Max. mic clock duty cycle in % (min..80) */
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index 602406ff8e4c..3670b4221ba6 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -2957,10 +2957,12 @@ static int sof_link_dmic_load(struct snd_soc_component *scomp, int index,
+ 			config->dmic.pdm[j].skew);
+ 	}
  
- /* generic component config data - must always be after struct sof_ipc_comp */
+-	if (SOF_ABI_VER(v->major, v->minor, v->micro) < SOF_ABI_VER(3, 0, 1)) {
+-		/* this takes care of backwards compatible handling of fifo_bits_b */
+-		config->dmic.reserved_2 = config->dmic.fifo_bits;
+-	}
++	/*
++	 * this takes care of backwards compatible handling of fifo_bits_b.
++	 * It is deprecated since firmware ABI version 3.0.1.
++	 */
++	if (SOF_ABI_VER(v->major, v->minor, v->micro) < SOF_ABI_VER(3, 0, 1))
++		config->dmic.fifo_bits_b = config->dmic.fifo_bits;
+ 
+ 	/* send message to DSP */
+ 	ret = sof_ipc_tx_message(sdev->ipc, config->hdr.cmd, config, size,
 -- 
 2.20.1
 
