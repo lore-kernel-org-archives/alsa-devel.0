@@ -2,104 +2,86 @@ Return-Path: <SRS0=riqU=57=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A957CC2BA19
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 16:24:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 621CFC2BA19
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 16:26:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2C94220737
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 16:24:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E111B20737
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 16:26:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rBiMkKiU";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fJ7OMWyy"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2C94220737
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qTJtgpTz";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="kLk1w3Tm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E111B20737
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 89F8C15E2;
-	Wed, 15 Apr 2020 18:23:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89F8C15E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3CD721614;
+	Wed, 15 Apr 2020 18:25:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3CD721614
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586967886;
-	bh=JQT+HuM/zCJTs/fwRKaUbyNCMqGquigm+0jCk+etBu4=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1586967966;
+	bh=AYPtS0WYn7H0E9PHyEfI6x2/DOj+Yai+eeorng2znKI=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rBiMkKiUXxHusC4RDsq8lX4gPg0LUBk69IaKyEKW0GT6clsJFdbu2edolHeqbI1Ra
-	 7sQuwZI1QY9KOkF732KNVDDCeaEWDbp/3mTdpASU4Yo9c97wA1CO/7T8jXd5etjWMG
-	 bZuA7uEe0SQGa2/SdCotGBRGqCvfKjWuDeCtQhDA=
+	b=qTJtgpTzC1x1S/3NNeb1aBNktTRFCViTMLqc79Mi2XY954ErV4f30VHSMrgD4LpGl
+	 TCIPOyyrznnoXvzvQOYoroKefX6qWhl6iK0kNVPNHOMqndKM0VAyKfEpyY/TWMSBz+
+	 Wy/FJOREVQR7mCFuZFloJ7L7WjkW7C+YzER+GMfY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4EF2BF80264;
-	Wed, 15 Apr 2020 18:23:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D13B8F80245;
+	Wed, 15 Apr 2020 18:25:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7919EF80266; Wed, 15 Apr 2020 18:23:46 +0200 (CEST)
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
- [IPv6:2a00:1450:4864:20::443])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 0E132F8025F; Wed, 15 Apr 2020 18:25:14 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5E3E6F80115
- for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2020 18:23:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E3E6F80115
+ by alsa1.perex.cz (Postfix) with ESMTPS id 66910F80124
+ for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2020 18:25:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66910F80124
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="fJ7OMWyy"
-Received: by mail-wr1-x443.google.com with SMTP id d27so632776wra.1
- for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2020 09:23:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=kcC5qrP6lxTN1bpMkTFtJey878YdcmfOfdqMdienk8M=;
- b=fJ7OMWyy7qFjUirTnI0docDJt58yTpgVEo6ANazO+reesGXk76M7yy6aJaNPPbNI3y
- sd5bj1WtrWFdAItXHxclSwqqwj6FNpoM51grUgNZMv9JLeyLFTG4uECZ2bkiqdapSYAs
- pSCLmTxHGDXNZdSa3aRXnP0p7Dbs/2/5h6jX8/FUmGqHnYjGsVkkbufxU+Z+36wmbskf
- B7pCrc0cuckvf+iS4b6hcIiGTgJwhBwiq7gTuaAiWUVSEbImXvl9hF7UFWMpklUAKlqZ
- ZKH5hopTA1EjtJ1pDYd8SQtIFxVfVTs7Gy1yLQsBXn1WOEwF8biNONcmG5lh1WMkTbAu
- udNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=kcC5qrP6lxTN1bpMkTFtJey878YdcmfOfdqMdienk8M=;
- b=RA3aSB4emLapj8aQb1A+I1Yf07psp5QHI7Ro7HJpJK4N8s+iddWZigsUmE8ergfZ8r
- 2Z3+KPGhF+W+EMRlYWsk0GHZscZsWAooMXG/+n/KCV8l6h8YcD79zi/ED8vYUNotftDd
- +zn9PS9sR123Iz9yW9mXduL91wG+SgeDAVXX+m9pR4k3u+oq0PvLlg6C2uh6A1bCBDMr
- sOjLexd09a/4n6QlCmqNtMlLklx1A0RLh+sY5uPk0Z1UcD5JjbEEQRrm0bSat0yi0Lv0
- 7+tLJWHyVObcoN37UmD6AVZOhJWu/kEHI3PhXpsAtisyR2AmOoXQz0p7EV9Q9HPBoGUz
- LXPg==
-X-Gm-Message-State: AGi0PuYefGrTAm2vPm1w8Z9cF+dv7/t6dDThit9UXUoasgO5sleCm11C
- j6vRYn9khEMlrAWJqiPhHvQPmA==
-X-Google-Smtp-Source: APiQypL4bpCX/4+MH2JpnPfyGaDtORfMr5BfRwUzdf/j2p47frdwbq3qevkXrlCJWx4ErCfvXwoRYQ==
-X-Received: by 2002:a5d:4cd0:: with SMTP id c16mr23693829wrt.98.1586967817240; 
- Wed, 15 Apr 2020 09:23:37 -0700 (PDT)
-Received: from [192.168.86.34]
- (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
- by smtp.googlemail.com with ESMTPSA id h188sm112330wme.8.2020.04.15.09.23.36
- (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Wed, 15 Apr 2020 09:23:36 -0700 (PDT)
-Subject: Re: [PATCH] ASoC: q6dsp6: q6afe-dai: add missing channels to MI2S DAIs
-To: Stephan Gerhold <stephan@gerhold.net>, Mark Brown <broonie@kernel.org>
-References: <20200415150050.616392-1-stephan@gerhold.net>
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <30d5c723-d840-3e0f-17c8-dcbfb45a3528@linaro.org>
-Date: Wed, 15 Apr 2020 17:23:35 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="kLk1w3Tm"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 5F0A2206F9;
+ Wed, 15 Apr 2020 16:25:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1586967909;
+ bh=AYPtS0WYn7H0E9PHyEfI6x2/DOj+Yai+eeorng2znKI=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=kLk1w3TmchJiUPIe10WuPbeSkMldK/0Wq18qjxpzYBAl3uQY4SqrCC/8Bv7D4tVvD
+ TEmkSlnhTOw0Rokgd9YNTV78Ne4d/VRzuLuE4soUhGi9hUm3yKoNoL9rLi1XdgRaH4
+ sMqE69DntHmURf7FN2A7K9yihVim0wjoENhwK1Mo=
+Date: Wed, 15 Apr 2020 17:25:07 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v4 8/9] ASoC: rt5645: Switch DMI table match to a test of
+ variable
+Message-ID: <20200415162507.GG5265@sirena.org.uk>
+References: <20200415145524.31745-1-andriy.shevchenko@linux.intel.com>
+ <20200415145524.31745-9-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200415150050.616392-1-stephan@gerhold.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: Banajit Goswami <bgoswami@codeaurora.org>, alsa-devel@alsa-project.org,
- Patrick Lai <plai@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>,
- ~postmarketos/upstreaming@lists.sr.ht
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="/Zw+/jwnNHcBRYYu"
+Content-Disposition: inline
+In-Reply-To: <20200415145524.31745-9-andriy.shevchenko@linux.intel.com>
+X-Cookie: Hire the morally handicapped.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
+ x86@kernel.org, Jie Yang <yang.jie@linux.intel.com>,
+ linux-kernel@vger.kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ "H. Peter Anvin" <hpa@zytor.com>, Thomas Gleixner <tglx@linutronix.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -116,121 +98,47 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+--/Zw+/jwnNHcBRYYu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 15/04/2020 16:00, Stephan Gerhold wrote:
-> For some reason, the MI2S DAIs do not have channels_min/max defined.
-> This means that snd_soc_dai_stream_valid() returns false,
-> i.e. the DAIs have neither valid playback nor capture stream.
-> 
-> It's quite surprising that this ever worked correctly,
-> but in 5.7-rc1 this is now failing badly: :)
-> 
-> Commit 0e9cf4c452ad ("ASoC: pcm: check if cpu-dai supports a given stream")
-> introduced a check for snd_soc_dai_stream_valid() before calling
-> hw_params(), which means that the q6i2s_hw_params() function
-> was never called, eventually resulting in:
-> 
->      qcom-q6afe aprsvc:q6afe:4:4: no line is assigned
-> 
-> ... even though "qcom,sd-lines" is set in the device tree.
-> 
-> Commit 9b5db059366a ("ASoC: soc-pcm: dpcm: Only allow playback/capture if supported")
-> now even avoids creating PCM devices if the stream is not supported,
-> which means that it is failing even earlier with e.g.:
-> 
->      Primary MI2S: ASoC: no backend playback stream
-> 
-> Avoid all that trouble by adding channels_min/max for the MI2S DAIs.
-> 
-> Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> Fixes: 24c4cbcfac09 ("ASoC: qdsp6: q6afe: Add q6afe dai driver")
-> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+On Wed, Apr 15, 2020 at 05:55:23PM +0300, Andy Shevchenko wrote:
+> Since we have a common x86 quirk that provides an exported variable,
+> use it instead of local DMI table match.
+>=20
+> Note, arch/x86/kernel/quirks.c::early_platform_detect_quirk() prints
+> the detected platform.
 
+> @@ -3674,13 +3675,6 @@ static const struct dmi_system_id dmi_platform_dat=
+a[] =3D {
+>  		},
+>  		.driver_data =3D (void *)&intel_braswell_platform_data,
+>  	},
+> -	{
+> -		.ident =3D "Microsoft Surface 3",
+> -		.matches =3D {
+> -			DMI_MATCH(DMI_PRODUCT_NAME, "Surface 3"),
+> -		},
+> -		.driver_data =3D (void *)&intel_braswell_platform_data,
+> -	},
+>  	{
 
-Thanks for the patch,
+Are we going to convert all the other platforms to using a variable too?
 
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+--/Zw+/jwnNHcBRYYu
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6XNWIACgkQJNaLcl1U
+h9CV0wf/em9G/ERwnZy11DLRg2vrxZxULM/L8dpShtUtkEt3v/SYJ85NTVR9CAJD
+vjbPS3J/WeRpLmdCalBk8O/QTApngJnK/q4xz0v+/qaYTWQYwlE+NXvsHa1l70Fb
+v5H1hEMwq+2ZeDv3TwU0yAuDK2HlC/IDlppdWDGT5k5tQDAaCVzbs8sMm8fbCa2b
+avEyI1dX3f9ovT6qZUiFEhudRVXLKrb56f7pecBIXtP/jalNrZ8MtKGxNHgDzDzf
+tpXHfW9UH+7cvEn2ZShxvm6O++ye1gmRlzfnHLtf0Y7qlGN1dTVlVgJ2Vw1DubvW
+9SJPbBT5dfSidGq/aedmAqzpVbddKQ==
+=HWhC
+-----END PGP SIGNATURE-----
 
-> ---
->   sound/soc/qcom/qdsp6/q6afe-dai.c | 16 ++++++++++++++++
->   1 file changed, 16 insertions(+)
-> 
-> diff --git a/sound/soc/qcom/qdsp6/q6afe-dai.c b/sound/soc/qcom/qdsp6/q6afe-dai.c
-> index c1a7624eaf17..2a5302f1db98 100644
-> --- a/sound/soc/qcom/qdsp6/q6afe-dai.c
-> +++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
-> @@ -902,6 +902,8 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
->   				 SNDRV_PCM_RATE_16000,
->   			.formats = SNDRV_PCM_FMTBIT_S16_LE |
->   				   SNDRV_PCM_FMTBIT_S24_LE,
-> +			.channels_min = 1,
-> +			.channels_max = 8,
->   			.rate_min =     8000,
->   			.rate_max =     48000,
->   		},
-> @@ -917,6 +919,8 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
->   				 SNDRV_PCM_RATE_16000,
->   			.formats = SNDRV_PCM_FMTBIT_S16_LE |
->   				   SNDRV_PCM_FMTBIT_S24_LE,
-> +			.channels_min = 1,
-> +			.channels_max = 8,
->   			.rate_min =     8000,
->   			.rate_max =     48000,
->   		},
-> @@ -931,6 +935,8 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
->   			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
->   				 SNDRV_PCM_RATE_16000,
->   			.formats = SNDRV_PCM_FMTBIT_S16_LE,
-> +			.channels_min = 1,
-> +			.channels_max = 8,
->   			.rate_min =     8000,
->   			.rate_max =     48000,
->   		},
-> @@ -946,6 +952,8 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
->   				 SNDRV_PCM_RATE_16000,
->   			.formats = SNDRV_PCM_FMTBIT_S16_LE |
->   				   SNDRV_PCM_FMTBIT_S24_LE,
-> +			.channels_min = 1,
-> +			.channels_max = 8,
->   			.rate_min =     8000,
->   			.rate_max =     48000,
->   		},
-> @@ -960,6 +968,8 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
->   			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
->   				 SNDRV_PCM_RATE_16000,
->   			.formats = SNDRV_PCM_FMTBIT_S16_LE,
-> +			.channels_min = 1,
-> +			.channels_max = 8,
->   			.rate_min =     8000,
->   			.rate_max =     48000,
->   		},
-> @@ -975,6 +985,8 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
->   				 SNDRV_PCM_RATE_16000,
->   			.formats = SNDRV_PCM_FMTBIT_S16_LE |
->   				   SNDRV_PCM_FMTBIT_S24_LE,
-> +			.channels_min = 1,
-> +			.channels_max = 8,
->   			.rate_min =     8000,
->   			.rate_max =     48000,
->   		},
-> @@ -989,6 +1001,8 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
->   			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
->   				 SNDRV_PCM_RATE_16000,
->   			.formats = SNDRV_PCM_FMTBIT_S16_LE,
-> +			.channels_min = 1,
-> +			.channels_max = 8,
->   			.rate_min =     8000,
->   			.rate_max =     48000,
->   		},
-> @@ -1004,6 +1018,8 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
->   				 SNDRV_PCM_RATE_16000,
->   			.formats = SNDRV_PCM_FMTBIT_S16_LE |
->   				   SNDRV_PCM_FMTBIT_S24_LE,
-> +			.channels_min = 1,
-> +			.channels_max = 8,
->   			.rate_min =     8000,
->   			.rate_max =     48000,
->   		},
-> 
+--/Zw+/jwnNHcBRYYu--
