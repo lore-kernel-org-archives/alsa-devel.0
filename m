@@ -2,65 +2,85 @@ Return-Path: <SRS0=riqU=57=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E59FCC2BA19
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 08:09:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B09D1C2BA19
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 08:14:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 96EE02051A
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 08:09:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3BF5A2051A
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 08:14:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Y2dGS9qC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 96EE02051A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lZdw00Ru";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="pptK1fNe"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3BF5A2051A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EEC1586E;
-	Wed, 15 Apr 2020 10:08:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EEC1586E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9181686E;
+	Wed, 15 Apr 2020 10:13:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9181686E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586938166;
-	bh=XdDFm5lj2KY+zkCg/Qfcr2hDiMVK9M5p/0bz4IJin8I=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Y2dGS9qC45NHXKHOiqScf8+i9YduhFbS+3tt86BBmta6MfGva/NQxJe/pxRjSUcvQ
-	 xsgNAEp8JaUQGYSQtX5EMAkvLRVxv0Sf87L9kxKbD4Pq/S5s0pPA/jQcdmX9xLCSCJ
-	 F8FdGcbObDnWScAZiAgof1LD0yB7vvFnwBhfgsJQ=
+	s=default; t=1586938450;
+	bh=RATGt4gBNU8AVlvWDKbkSxAX72jp3SzOvIStmOeK+LU=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=lZdw00Ru+uJQT47ZmA2M/qXUeLPkMExBOW81JHtG3PfGYe+SrJM0URCSMnYnl1kXh
+	 fpcbKvKSXEHfMFJ1t1FaWUsgSmxQIWtHKq8tOZumNSILVB6k512QVurABLQNf7GyEl
+	 9RbBZyCCcBJWbbiwc1y93aBTOjpVTpOXMbE/Loms=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 87BB6F80115;
-	Wed, 15 Apr 2020 10:08:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0855CF80124;
+	Wed, 15 Apr 2020 10:13:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 66E2BF80245; Wed, 15 Apr 2020 10:08:30 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 15A74F8025F; Wed, 15 Apr 2020 10:13:11 +0200 (CEST)
+Received: from mo6-p01-ob.smtp.rzone.de (mo6-p01-ob.smtp.rzone.de
+ [IPv6:2a01:238:20a:202:5301::3])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6EB04F80115
- for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2020 10:08:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6EB04F80115
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 32D95AD57;
- Wed, 15 Apr 2020 08:08:21 +0000 (UTC)
-Date: Wed, 15 Apr 2020 10:08:21 +0200
-Message-ID: <s5hv9m1goi2.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Thomas Ebeling <penguins@bollie.de>
-Subject: Re: [PATCH] ALSA: usb-audio: RME Babyface Pro mixer patch
-In-Reply-To: <20200414211019.qprg7whepg2y7nei@bollie.ca9.eu>
-References: <20200414211019.qprg7whepg2y7nei@bollie.ca9.eu>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, tiwai@suse.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 615E1F80124
+ for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2020 10:13:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 615E1F80124
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net
+ header.b="pptK1fNe"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1586938382;
+ s=strato-dkim-0002; d=gerhold.net;
+ h=Message-Id:Date:Subject:Cc:To:From:X-RZG-CLASS-ID:X-RZG-AUTH:From:
+ Subject:Sender;
+ bh=MEGcVkcXAjSuizW8Ns4m/GZAOVbeWi0P2cUdPTTRoN8=;
+ b=pptK1fNe15JdoNvzeFWwDJ2uuDQUxS10TACaxph4ccA+I4u6V1m4jvWiEHLnpOkdUh
+ cRbNjvkIzLAPR0BlC4TeuF+OzpFX07UGuWi61Xh53Jy7/K+F1fRX49tjY9vrUQ4Kwe0/
+ 3Td9VpixnGSrtvJ7nilFLVtsfbNkB1EeiS3lSRwfEI1rueK2TW3Bhgp9xy2+o9jADO9t
+ 8acoagNoylyaFWHegdkVsClYYnek1zwerlK66LJ9/1VG2eu8a7E8wrQgty1notNHc2mJ
+ gTWRZyOOL39iLFU28kwh9EKFebc3S3JRWNQuF/gzxe1E8yLdYeC4aLDugdtvUm6VKzly
+ fUpw==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVORvLd4SsytBXS7IYBkLahKxB526NccuO"
+X-RZG-CLASS-ID: mo00
+Received: from localhost.localdomain by smtp.strato.de (RZmta 46.4.0 DYNA|AUTH)
+ with ESMTPSA id k074e0w3F8D10Do
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+ (Client did not present a certificate);
+ Wed, 15 Apr 2020 10:13:01 +0200 (CEST)
+From: Stephan Gerhold <stephan@gerhold.net>
+To: Rob Herring <robh+dt@kernel.org>
+Subject: [PATCH 1/2] dt-bindings: ASoC: qdsp6: Suggest more generic node names
+Date: Wed, 15 Apr 2020 10:11:58 +0200
+Message-Id: <20200415081159.1098-1-stephan@gerhold.net>
+X-Mailer: git-send-email 2.26.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Stephan Gerhold <stephan@gerhold.net>, linux-arm-msm@vger.kernel.org,
+ Andy Gross <agross@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,15 +96,176 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 14 Apr 2020 23:10:29 +0200,
-Thomas Ebeling wrote:
-> 
-> Added mixer quirks to allow controlling the internal DSP of the
-> RME Babyface Pro and its successor Babyface Pro FS.
-> 
-> Signed-off-by: Thomas Ebeling <penguins@bollie.de>
+Change the listed examples to use more generic node names, representing
+the class of the device nodes:
 
-Applied now.  Thanks.
+  - apr-service@<id>
+  - dai@<id>
 
+Both names are already in use in arch/arm64/boot/dts/qcom/sdm845.dtsi.
 
-Takashi
+Also add #address-cells + #size-cells to the q6asm example,
+without them the example produces dtc warnings.
+
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+---
+ .../devicetree/bindings/sound/qcom,q6adm.txt  |  2 +-
+ .../devicetree/bindings/sound/qcom,q6afe.txt  | 46 +++++++++----------
+ .../devicetree/bindings/sound/qcom,q6asm.txt  |  7 ++-
+ .../devicetree/bindings/sound/qcom,q6core.txt |  2 +-
+ 4 files changed, 30 insertions(+), 27 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/sound/qcom,q6adm.txt b/Documentation/devicetree/bindings/sound/qcom,q6adm.txt
+index bbae426cdfb1..15c353a20de8 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,q6adm.txt
++++ b/Documentation/devicetree/bindings/sound/qcom,q6adm.txt
+@@ -29,7 +29,7 @@ used by the apr service device.
+ 	Definition: Must be 0
+ 
+ = EXAMPLE
+-q6adm@8 {
++apr-service@8 {
+ 	compatible = "qcom,q6adm";
+ 	reg = <APR_SVC_ADM>;
+ 	q6routing: routing {
+diff --git a/Documentation/devicetree/bindings/sound/qcom,q6afe.txt b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+index d74888b9f1bb..4916dd6a0896 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
++++ b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+@@ -100,7 +100,7 @@ configuration of each dai. Must contain the following properties.
+ 
+ = EXAMPLE
+ 
+-q6afe@4 {
++apr-service@4 {
+ 	compatible = "qcom,q6afe";
+ 	reg = <APR_SVC_AFE>;
+ 
+@@ -110,12 +110,12 @@ q6afe@4 {
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 
+-		hdmi@1 {
+-			reg = <1>;
++		dai@1 {
++			reg = <HDMI_RX>;
+ 		};
+ 
+-		tdm@24 {
+-			reg = <24>;
++		dai@24 {
++			reg = <PRIMARY_TDM_RX_0>;
+ 			qcom,tdm-sync-mode = <1>:
+ 			qcom,tdm-sync-src = <1>;
+ 			qcom,tdm-data-out = <0>;
+@@ -125,8 +125,8 @@ q6afe@4 {
+ 
+ 		};
+ 
+-		tdm@25 {
+-			reg = <25>;
++		dai@25 {
++			reg = <PRIMARY_TDM_TX_0>;
+ 			qcom,tdm-sync-mode = <1>:
+ 			qcom,tdm-sync-src = <1>;
+ 			qcom,tdm-data-out = <0>;
+@@ -135,43 +135,43 @@ q6afe@4 {
+ 			qcom,tdm-data-align = <0>;
+ 		};
+ 
+-		prim-mi2s-rx@16 {
+-			reg = <16>;
++		dai@16 {
++			reg = <PRIMARY_MI2S_RX>;
+ 			qcom,sd-lines = <0 2>;
+ 		};
+ 
+-		prim-mi2s-tx@17 {
+-			reg = <17>;
++		dai@17 {
++			reg = <PRIMARY_MI2S_TX>;
+ 			qcom,sd-lines = <1>;
+ 		};
+ 
+-		sec-mi2s-rx@18 {
+-			reg = <18>;
++		dai@18 {
++			reg = <SECONDARY_MI2S_RX>;
+ 			qcom,sd-lines = <0 3>;
+ 		};
+ 
+-		sec-mi2s-tx@19 {
+-			reg = <19>;
++		dai@19 {
++			reg = <SECONDARY_MI2S_TX>;
+ 			qcom,sd-lines = <1>;
+ 		};
+ 
+-		tert-mi2s-rx@20 {
+-			reg = <20>;
++		dai@20 {
++			reg = <TERTIARY_MI2S_RX>;
+ 			qcom,sd-lines = <1 3>;
+ 		};
+ 
+-		tert-mi2s-tx@21 {
+-			reg = <21>;
++		dai@21 {
++			reg = <TERTIARY_MI2S_TX>;
+ 			qcom,sd-lines = <0>;
+ 		};
+ 
+-		quat-mi2s-rx@22 {
+-			reg = <22>;
++		dai@22 {
++			reg = <QUATERNARY_MI2S_RX>;
+ 			qcom,sd-lines = <0>;
+ 		};
+ 
+-		quat-mi2s-tx@23 {
+-			reg = <23>;
++		dai@23 {
++			reg = <QUATERNARY_MI2S_TX>;
+ 			qcom,sd-lines = <1>;
+ 		};
+ 	};
+diff --git a/Documentation/devicetree/bindings/sound/qcom,q6asm.txt b/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
+index 9f5378c51686..6b9a88d0ea3f 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
++++ b/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
+@@ -51,13 +51,16 @@ configuration of each dai. Must contain the following properties.
+ 
+ = EXAMPLE
+ 
+-q6asm@7 {
++apr-service@7 {
+ 	compatible = "qcom,q6asm";
+ 	reg = <APR_SVC_ASM>;
+ 	q6asmdai: dais {
+ 		compatible = "qcom,q6asm-dais";
++		#address-cells = <1>;
++		#size-cells = <0>;
+ 		#sound-dai-cells = <1>;
+-		mm@0 {
++
++		dai@0 {
+ 			reg = <0>;
+ 			direction = <2>;
+ 			is-compress-dai;
+diff --git a/Documentation/devicetree/bindings/sound/qcom,q6core.txt b/Documentation/devicetree/bindings/sound/qcom,q6core.txt
+index 7f36ff8bec18..5cd4cc9b1fde 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,q6core.txt
++++ b/Documentation/devicetree/bindings/sound/qcom,q6core.txt
+@@ -15,7 +15,7 @@ used by the apr service device.
+ 		   example "qcom,q6core-v2.0"
+ 
+ = EXAMPLE
+-q6core@3 {
++apr-service@3 {
+ 	compatible = "qcom,q6core";
+ 	reg = <APR_SVC_ADSP_CORE>;
+ };
+-- 
+2.26.1
+
