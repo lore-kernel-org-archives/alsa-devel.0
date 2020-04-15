@@ -7,70 +7,72 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F8E4C2BA19
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 17:00:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DB6D6C2BB85
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 17:01:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8AFE1206F9
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 17:00:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 66B7620784
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 17:01:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="p7Az0wQ0";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="mGyJYLlN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8AFE1206F9
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EAU9jQ6t";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="YQ7Y2wSI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 66B7620784
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D75D3852;
-	Wed, 15 Apr 2020 18:59:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D75D3852
+	by alsa0.perex.cz (Postfix) with ESMTPS id B678D1666;
+	Wed, 15 Apr 2020 19:00:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B678D1666
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586970012;
-	bh=TsaN0gPfYDdnHXfzGe1ancvTHT6mAwteLwnmKODNIEo=;
+	s=default; t=1586970065;
+	bh=9ZxEymkXsB+7RAR4MZSXPVlcvFpkMV1pJjIvKk5pO6E=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=p7Az0wQ0cj2rE/TMQE2wHAo528Z6l9N1h+Ao8efMi0T0VuojR3yjO+YvLctirUs+0
-	 PPBRdOemGAwLWyhd7nP3RIKxEyIe+XznRPCltsvh2HnyL1M9LfZl70HDAHvoJXhGym
-	 QZZAxnuN1/FANhGXcaEAA04JnebA/9AGIFqOZJFs=
+	b=EAU9jQ6t6q801oCNndOY4pItq8+md23P1Uo25WsPps8Ef+ZbGZTtruMy+fHzELVPO
+	 HwA1+dfhH83zzFRvL6k9bBw0YkWE4CNSTSGZ+LX7fEg0n8OdRGtqFQJjCo5IjtcqE3
+	 8NpeiOCeL0kl8aecOCKLNMYQNheqsQaajIU2paIo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 667C2F80245;
-	Wed, 15 Apr 2020 18:59:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8E8DFF80264;
+	Wed, 15 Apr 2020 18:59:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7A5B0F8025F; Wed, 15 Apr 2020 18:59:21 +0200 (CEST)
+ id 62E6EF80266; Wed, 15 Apr 2020 18:59:25 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 51610F80115
- for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2020 18:59:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51610F80115
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2E320F80229
+ for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2020 18:59:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E320F80229
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="mGyJYLlN"
+ header.b="YQ7Y2wSI"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id D34D1206F9;
- Wed, 15 Apr 2020 16:59:11 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 28EA1206F9;
+ Wed, 15 Apr 2020 16:59:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1586969952;
- bh=TsaN0gPfYDdnHXfzGe1ancvTHT6mAwteLwnmKODNIEo=;
+ s=default; t=1586969957;
+ bh=9ZxEymkXsB+7RAR4MZSXPVlcvFpkMV1pJjIvKk5pO6E=;
  h=Date:From:To:Cc:Subject:In-Reply-To:From;
- b=mGyJYLlNU0jz95PqcZPzRx+bJvGZXzg3ryMBMm/Ts0WFOjIkrgq2DZoPp/R0aX8m5
- W2UJwtgOSqbVCY6CiFGosgcfPVfASGbc/zVNDTOza3QBcTiqA6zlyzHZv3sXoUorw7
- 0zMOovaOq7lQRychW3tE2oUuPUNgxGkuWcY38C/c=
-Date: Wed, 15 Apr 2020 17:59:09 +0100
+ b=YQ7Y2wSIpSgBifnexpW7TOG/dDBAsmGLTMe3WDscs3L/pXxnmiTNYcz1PgnV0MTTG
+ XUVEDat7CUOdrgiCD8NUGGU1SpPIRe7WNXIH24qdghV1lORlTktYR3JoTb/Dru+y3p
+ u+4usJOEwGLibYXCd4B1UxuxE5Pj8Zh+AhZ5cMkE=
+Date: Wed, 15 Apr 2020 17:59:15 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
-Subject: Applied "ASoC: topology: Fix endianness issue" to the asoc tree
-In-Reply-To: <20200415162435.31859-2-amadeuszx.slawinski@linux.intel.com>
-Message-Id: <applied-20200415162435.31859-2-amadeuszx.slawinski@linux.intel.com>
+To: Stephan Gerhold <stephan@gerhold.net>
+Subject: Applied "ASoC: q6dsp6: q6afe-dai: add missing channels to MI2S DAIs"
+ to the asoc tree
+In-Reply-To: <20200415150050.616392-1-stephan@gerhold.net>
+Message-Id: <applied-20200415150050.616392-1-stephan@gerhold.net>
 X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>,
- =?utf-8?q?Amadeusz_S=C5=82awi=C5=84ski?= <amadeuszx.slawinski@linux.intel.com>,
- Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
+ Patrick Lai <plai@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ ~postmarketos/upstreaming@lists.sr.ht
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,7 +90,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: topology: Fix endianness issue
+   ASoC: q6dsp6: q6afe-dai: add missing channels to MI2S DAIs
 
 has been applied to the asoc tree at
 
@@ -113,38 +115,121 @@ to this mail.
 Thanks,
 Mark
 
-From 26d87881590fd55ccdd8f829498d7b3033f81990 Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-Date: Wed, 15 Apr 2020 12:24:35 -0400
-Subject: [PATCH] ASoC: topology: Fix endianness issue
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+From 0c824ec094b5cda766c80d88c2036e28c24a4cb1 Mon Sep 17 00:00:00 2001
+From: Stephan Gerhold <stephan@gerhold.net>
+Date: Wed, 15 Apr 2020 17:00:50 +0200
+Subject: [PATCH] ASoC: q6dsp6: q6afe-dai: add missing channels to MI2S DAIs
 
-As done in already existing cases, we should use le32_to_cpu macro while
-accessing hdr->magic. Found with sparse.
+For some reason, the MI2S DAIs do not have channels_min/max defined.
+This means that snd_soc_dai_stream_valid() returns false,
+i.e. the DAIs have neither valid playback nor capture stream.
 
-Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
-Link: https://lore.kernel.org/r/20200415162435.31859-2-amadeuszx.slawinski@linux.intel.com
+It's quite surprising that this ever worked correctly,
+but in 5.7-rc1 this is now failing badly: :)
+
+Commit 0e9cf4c452ad ("ASoC: pcm: check if cpu-dai supports a given stream")
+introduced a check for snd_soc_dai_stream_valid() before calling
+hw_params(), which means that the q6i2s_hw_params() function
+was never called, eventually resulting in:
+
+    qcom-q6afe aprsvc:q6afe:4:4: no line is assigned
+
+... even though "qcom,sd-lines" is set in the device tree.
+
+Commit 9b5db059366a ("ASoC: soc-pcm: dpcm: Only allow playback/capture if supported")
+now even avoids creating PCM devices if the stream is not supported,
+which means that it is failing even earlier with e.g.:
+
+    Primary MI2S: ASoC: no backend playback stream
+
+Avoid all that trouble by adding channels_min/max for the MI2S DAIs.
+
+Fixes: 24c4cbcfac09 ("ASoC: qdsp6: q6afe: Add q6afe dai driver")
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20200415150050.616392-1-stephan@gerhold.net
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-topology.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/qcom/qdsp6/q6afe-dai.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 33e8d189ba2f..6df3b0d12d87 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -2652,7 +2652,7 @@ static int soc_valid_header(struct soc_tplg *tplg,
- 	}
- 
- 	/* big endian firmware objects not supported atm */
--	if (hdr->magic == SOC_TPLG_MAGIC_BIG_ENDIAN) {
-+	if (le32_to_cpu(hdr->magic) == SOC_TPLG_MAGIC_BIG_ENDIAN) {
- 		dev_err(tplg->dev,
- 			"ASoC: pass %d big endian not supported header got %x at offset 0x%lx size 0x%zx.\n",
- 			tplg->pass, hdr->magic,
+diff --git a/sound/soc/qcom/qdsp6/q6afe-dai.c b/sound/soc/qcom/qdsp6/q6afe-dai.c
+index c1a7624eaf17..2a5302f1db98 100644
+--- a/sound/soc/qcom/qdsp6/q6afe-dai.c
++++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
+@@ -902,6 +902,8 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
+ 				   SNDRV_PCM_FMTBIT_S24_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
+@@ -917,6 +919,8 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
+ 				   SNDRV_PCM_FMTBIT_S24_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
+@@ -931,6 +935,8 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
+ 			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
+@@ -946,6 +952,8 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
+ 				   SNDRV_PCM_FMTBIT_S24_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
+@@ -960,6 +968,8 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
+ 			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
+@@ -975,6 +985,8 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
+ 				   SNDRV_PCM_FMTBIT_S24_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
+@@ -989,6 +1001,8 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
+ 			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
+@@ -1004,6 +1018,8 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
+ 				   SNDRV_PCM_FMTBIT_S24_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
 -- 
 2.20.1
 
