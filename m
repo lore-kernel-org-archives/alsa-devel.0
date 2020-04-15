@@ -2,119 +2,83 @@ Return-Path: <SRS0=riqU=57=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF5DDC2BB55
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 14:56:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D79CEC2BA19
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 14:56:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4E2B920936
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 14:56:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 63EB62054F
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 14:56:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nFH/rJH/";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YqAtwUu2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4E2B920936
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="b1Z9sIxK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 63EB62054F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 89290852;
-	Wed, 15 Apr 2020 16:55:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89290852
+	by alsa0.perex.cz (Postfix) with ESMTPS id C7B4D1670;
+	Wed, 15 Apr 2020 16:56:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7B4D1670
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586962561;
-	bh=2pdEJSKHf8MPZcsGwYWfNh2yt8/VEr0ylVnNNs3hPug=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1586962614;
+	bh=v8O10uhI3rFO5z++1EImdugu8MrcttY02i+gBXPZnrQ=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nFH/rJH/M+fATDNJLV9/zU4LK1v4FrQacnQb93LNZt9UA7+wA4Iu3a7+l9fqmL4cI
-	 4npB98A9LhRu/rbRmIDb8eDqS5R4bHSNUcmUSCCSFK6FweXsyfJIBMLyMCI+O24kfd
-	 iWOuAC8ZBi7rHk1aEMICBjiT9C0NIsDaI217JEpA=
+	b=b1Z9sIxKcZv9d+3+ETz7eW7njHL4PyBXNLAT6XbtNPYWiymz60Vaz2HtJ8pP82WRw
+	 SBxSBmaspVAqYt+3NBWyug6Uyw+80jA5IF264tZjfJpJGJs05Mh9HLoegDukuIPIWS
+	 3i8gXF71JbGn2xeIT/HRuuPSENYqG6oIuPyMb3bE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0F730F80115;
-	Wed, 15 Apr 2020 16:55:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7C26DF80266;
+	Wed, 15 Apr 2020 16:55:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4DBB5F80245; Wed, 15 Apr 2020 16:55:09 +0200 (CEST)
-Received: from us-smtp-delivery-1.mimecast.com (us-smtp-2.mimecast.com
- [205.139.110.61])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ id 63603F8028C; Wed, 15 Apr 2020 16:55:56 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F0476F80115
- for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2020 16:55:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0476F80115
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="YqAtwUu2"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1586962501;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=2pdEJSKHf8MPZcsGwYWfNh2yt8/VEr0ylVnNNs3hPug=;
- b=YqAtwUu2A/XNy3jGCd9A9Bv2FsqKiwFKpUI7bX2gwU+WUABnAmprYJh/6/7qNjeFY4OOhW
- pNunJVsBbje3h0WGtB/uYS9dYAJiSCoamFbcXdu8l27lUMLHpaHO0bEOK67bdJPTY7TGQk
- X6SF725MYTb7sQW4cV7dJMosotVI/I8=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-366-RVdbBeWtMpS4_M37QIklwA-1; Wed, 15 Apr 2020 10:54:56 -0400
-X-MC-Unique: RVdbBeWtMpS4_M37QIklwA-1
-Received: by mail-wm1-f71.google.com with SMTP id y1so5897824wmj.3
- for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2020 07:54:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=4Z3Z1eorx2LwhJZCEaKpIw7Et/DDHWLyQzNaVssy5vk=;
- b=o1w6M6G5suoRBE43ms5MVeIiTCTHopJNf7gYK0NmfVK/NBLVBy+siagxmhuJ0btGX9
- 02ycGLfb3JvJMxLCMgf3TpypD3mOW5f01Oo7PW/+wzqkQhrrITLvWgWqcHNCMIcFIucP
- NY/zjvYrzLU+QVHrXSM7Ji6vF8XPAvD4cme697cOxS2prntT2gboEf4eQSVF4D02ef34
- xNGcN7VGcnyPFL+KoTqNQAUFdJ7uSrCUqYign9WbTN5kcZ8cNAm/c7aFMusXBz44iIyQ
- pr/iirl2juMxObEd6tSbSIOIq1Mkt6+3JghdmUNAJg/YNL78hXV6pos8yoOx47woD17t
- HxZg==
-X-Gm-Message-State: AGi0PuZ5ZYvJDRfAJ8kEE8+v+QtaNbxGDJswgakqhbZ4TvamD7oluQ5u
- 252lIiu7uCShfOuD2mmGECBIT37BOfCdYRSiU/Tf0aVvlFz6X0QR3pwo86vVTZkrQYfcLQa4Ey1
- hkfQZYzBAEKF9CYzKft/OXFQ=
-X-Received: by 2002:a7b:c842:: with SMTP id c2mr5954766wml.154.1586962495348; 
- Wed, 15 Apr 2020 07:54:55 -0700 (PDT)
-X-Google-Smtp-Source: APiQypLC7h1tis961uANfyfeuEt/4QvynNNo5KdrYVqYIGn1oDYq2QD7CwbJoADcY63DsHHaKYktjw==
-X-Received: by 2002:a7b:c842:: with SMTP id c2mr5954750wml.154.1586962495072; 
- Wed, 15 Apr 2020 07:54:55 -0700 (PDT)
-Received: from x1.localdomain
- (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl.
- [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
- by smtp.gmail.com with ESMTPSA id b4sm18745962wrv.42.2020.04.15.07.54.54
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 15 Apr 2020 07:54:54 -0700 (PDT)
-Subject: Re: [PATCH] bytcht-es8316: fix Speaker or Headphone no sound if
- enable Mic or Headset
-To: youling 257 <youling257@gmail.com>
-References: <20200413145957.22459-1-youling257@gmail.com>
- <ae69c1b0-b347-4366-4bb0-383aed69c4b1@redhat.com>
- <d6146d62-a20a-f6a0-64f0-65cea7253948@perex.cz>
- <CAOzgRdbgOykctcteVMLJqqyeXwww2ekzUrbzLbu0jtCoU_5Xgg@mail.gmail.com>
- <2c1d70d1-6a77-9d06-96df-86c602c1e2e8@redhat.com>
- <CAOzgRdYsy3MZCO4NvuBL_-SDpSyiLrnc5oesfMhqHdeg+zAhgA@mail.gmail.com>
- <21488b92-601f-9acf-09fd-4537c8eb9b1a@redhat.com>
- <CAOzgRda2vkNzibgwMzcHFWBryVddn9WyjmpVu7swVa+JzecpwA@mail.gmail.com>
-From: Hans de Goede <hdegoede@redhat.com>
-Message-ID: <759c6592-880e-93d0-66a6-598089695ec9@redhat.com>
-Date: Wed, 15 Apr 2020 16:54:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6788AF80264
+ for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2020 16:55:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6788AF80264
+IronPort-SDR: V7bHYo2UPlc60n7mFQG33fCj1UmJU3B5S6UQkgoZI+30UmCXoYuFGV2sRbgfbOvOske6gjwYpa
+ TzkW8Dcd4CMw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Apr 2020 07:55:46 -0700
+IronPort-SDR: +KYJznJZrPzuyOD3Y42B+qzVt0oL0BhBCIGbGaF9acPAG1/G8vWQV6uHF6RjJTK9LzWrruuNdO
+ C6H0y9RvFOdA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,387,1580803200"; d="scan'208";a="453951224"
+Received: from black.fi.intel.com ([10.237.72.28])
+ by fmsmga005.fm.intel.com with ESMTP; 15 Apr 2020 07:55:44 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+ id 684B2DD7; Wed, 15 Apr 2020 17:55:40 +0300 (EEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
+ x86@kernel.org, Mark Brown <broonie@kernel.org>,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH v4 8/9] ASoC: rt5645: Switch DMI table match to a test of
+ variable
+Date: Wed, 15 Apr 2020 17:55:23 +0300
+Message-Id: <20200415145524.31745-9-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200415145524.31745-1-andriy.shevchenko@linux.intel.com>
+References: <20200415145524.31745-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CAOzgRda2vkNzibgwMzcHFWBryVddn9WyjmpVu7swVa+JzecpwA@mail.gmail.com>
-Content-Language: en-US
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
+ Jie Yang <yang.jie@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -130,35 +94,70 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+Since we have a common x86 quirk that provides an exported variable,
+use it instead of local DMI table match.
 
-On 4/15/20 4:50 PM, youling 257 wrote:
-> 2020-04-15 16:45 GMT+08:00, Hans de Goede <hdegoede@redhat.com>:
->> Hi,
->>
->> On 4/15/20 10:18 AM, youling 257 wrote:
->>> 2020-04-15 16:04 GMT+08:00, Hans de Goede <hdegoede@redhat.com>:
->>>> Hi,
->>>>
->>>> On 4/15/20 8:26 AM, youling 257 wrote:
->>>>> boot enter ubuntu no sound at all if EnableSeq.conf disable all outpu=
-t.
->>>>> =E2=80=9C The PA should activate HiFi verb only once.=E2=80=9D i don'=
-t think so.
->>>>
->>>> Which version of pulseaudio does the Ubuntu you are using have?
->>> pulseaudio (1:13.99.1-1ubuntu2) packages.ubuntu.com/focal/pulseaudio
->>
->> Ah yes then you are likely hitting the bug I was talking about.
->>
->> Can you please file a bug against Ubuntu for this?
->=20
-> open a bug, https://bugs.launchpad.net/ubuntu/+source/pulseaudio/+bug/187=
-2970
+Note, arch/x86/kernel/quirks.c::early_platform_detect_quirk() prints
+the detected platform.
 
-Great, thank you.
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: Jie Yang <yang.jie@linux.intel.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/rt5645.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-Regards,
-
-Hans
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 6ba1849a77b0..06bd3560b736 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -12,6 +12,7 @@
+ #include <linux/delay.h>
+ #include <linux/pm.h>
+ #include <linux/i2c.h>
++#include <linux/platform_data/x86/machine.h>
+ #include <linux/platform_device.h>
+ #include <linux/spi/spi.h>
+ #include <linux/gpio.h>
+@@ -3674,13 +3675,6 @@ static const struct dmi_system_id dmi_platform_data[] = {
+ 		},
+ 		.driver_data = (void *)&intel_braswell_platform_data,
+ 	},
+-	{
+-		.ident = "Microsoft Surface 3",
+-		.matches = {
+-			DMI_MATCH(DMI_PRODUCT_NAME, "Surface 3"),
+-		},
+-		.driver_data = (void *)&intel_braswell_platform_data,
+-	},
+ 	{
+ 		/*
+ 		 * Match for the GPDwin which unfortunately uses somewhat
+@@ -3797,7 +3791,7 @@ static int rt5645_parse_dt(struct rt5645_priv *rt5645, struct device *dev)
+ static int rt5645_i2c_probe(struct i2c_client *i2c,
+ 		    const struct i2c_device_id *id)
+ {
+-	struct rt5645_platform_data *pdata = dev_get_platdata(&i2c->dev);
++	const struct rt5645_platform_data *pdata = dev_get_platdata(&i2c->dev);
+ 	const struct dmi_system_id *dmi_data;
+ 	struct rt5645_priv *rt5645;
+ 	int ret, i;
+@@ -3812,6 +3806,10 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
+ 	rt5645->i2c = i2c;
+ 	i2c_set_clientdata(i2c, rt5645);
+ 
++	/* Put it first to allow DMI to override, if needed */
++	if (x86_microsoft_surface_3_machine)
++		pdata = &intel_braswell_platform_data;
++
+ 	dmi_data = dmi_first_match(dmi_platform_data);
+ 	if (dmi_data) {
+ 		dev_info(&i2c->dev, "Detected %s platform\n", dmi_data->ident);
+-- 
+2.25.1
 
