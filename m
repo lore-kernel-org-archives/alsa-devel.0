@@ -7,66 +7,66 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7464DC2BA19
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 15:02:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA25EC2BA19
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 15:02:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EC80E20857
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 15:02:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5B5AC2076A
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 15:02:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SQ/1SkB/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC80E20857
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PuqK3Al+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5B5AC2076A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cetitec.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 542A3167B;
-	Wed, 15 Apr 2020 17:01:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 542A3167B
+	by alsa0.perex.cz (Postfix) with ESMTPS id DC4EE1671;
+	Wed, 15 Apr 2020 17:01:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC4EE1671
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586962920;
-	bh=/xDqnpy1jBBhwyXDvNNz7csMidna8+HGlQ16lUcxan8=;
+	s=default; t=1586962961;
+	bh=J7HEXdDp90oZCA/EXpRap9kq3sQyOa4ONYntpNLKVwg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SQ/1SkB/SmSd2DWYJAm1+j56KyYzDBSFzJVWsevx/4iMwPQxQGcyNhVNcrOrvDuSe
-	 buVHnQCb5YVzklfvPYa2grP91nVkap5D3iNrrLYKpwqysTyM0UW2rnkbYImdF0pMdL
-	 GwDY1YXxXilTYokbUJ4LjE1+Xtz7StJyYEkc6cCQ=
+	b=PuqK3Al+2XtNXrp6LV850yamiZ+NMWA5rZgG1XxO1VCE8/fPrsXFlB/CCLBbdwHaO
+	 vH6hAB0GWi0mTRSSJWvfqknlY2aFjiWYYAXFUFPZMWE9Kfa0T6DdoYeIKAkU5w84lS
+	 yjHupsaYs2bX7NTuLei6t9WpWV/kHv1byWgl1C6M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B8B67F802DB;
-	Wed, 15 Apr 2020 16:58:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 65290F80292;
+	Wed, 15 Apr 2020 16:58:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7C94FF80245; Wed, 15 Apr 2020 16:11:06 +0200 (CEST)
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.133])
+ id 063D6F80124; Wed, 15 Apr 2020 16:11:13 +0200 (CEST)
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.187])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6A9ACF80124
- for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2020 16:11:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A9ACF80124
+ by alsa1.perex.cz (Postfix) with ESMTPS id C641EF80124
+ for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2020 16:11:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C641EF80124
 Received: from mail.cetitecgmbh.com ([87.190.42.90]) by
  mrelayeu.kundenserver.de (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis)
- id 1MW9zm-1jmSvh2yJ0-00XeCD; Wed, 15 Apr 2020 16:10:43 +0200
+ id 1Md76B-1iopto2yJ9-00aCVS; Wed, 15 Apr 2020 16:10:43 +0200
 Received: from pflvmailgateway.corp.cetitec.com (unknown [127.0.0.1])
- by mail.cetitecgmbh.com (Postfix) with ESMTP id 13B9E650EE0;
- Wed, 15 Apr 2020 14:10:43 +0000 (UTC)
+ by mail.cetitecgmbh.com (Postfix) with ESMTP id 7C05D650ECB;
+ Wed, 15 Apr 2020 14:10:42 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at cetitec.com
 Received: from mail.cetitecgmbh.com ([127.0.0.1])
  by pflvmailgateway.corp.cetitec.com (pflvmailgateway.corp.cetitec.com
  [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id iaMgQKlB-XP9; Wed, 15 Apr 2020 16:10:42 +0200 (CEST)
+ with ESMTP id k87RMMoqYIEv; Wed, 15 Apr 2020 16:10:42 +0200 (CEST)
 Received: from pfwsexchange.corp.cetitec.com (unknown [10.10.1.99])
- by mail.cetitecgmbh.com (Postfix) with ESMTPS id BABD964C0D9;
+ by mail.cetitecgmbh.com (Postfix) with ESMTPS id 2A57C64C0D9;
  Wed, 15 Apr 2020 16:10:42 +0200 (CEST)
 Received: from pflmmbl.corp.cetitec.com (10.8.5.60) by
  PFWSEXCHANGE.corp.cetitec.com (10.10.1.99) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 15 Apr 2020 16:10:42 +0200
+ id 15.0.1497.2; Wed, 15 Apr 2020 16:10:41 +0200
 From: Matthias Blankertz <matthias.blankertz@cetitec.com>
 To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 2/2] ASoC: rsnd: Fix HDMI channel mapping for multi-SSI mode
-Date: Wed, 15 Apr 2020 16:10:17 +0200
-Message-ID: <20200415141017.384017-3-matthias.blankertz@cetitec.com>
+Subject: [PATCH 1/2] ASoC: rsnd: Fix parent SSI start/stop in multi-SSI mode
+Date: Wed, 15 Apr 2020 16:10:16 +0200
+Message-ID: <20200415141017.384017-2-matthias.blankertz@cetitec.com>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200415141017.384017-1-matthias.blankertz@cetitec.com>
 References: <20200415141017.384017-1-matthias.blankertz@cetitec.com>
@@ -78,24 +78,24 @@ X-ClientProxiedBy: PFWSEXCHANGE.corp.cetitec.com (10.10.1.99) To
  PFWSEXCHANGE.corp.cetitec.com (10.10.1.99)
 X-EsetResult: clean, is OK
 X-EsetId: 37303A290D7F536B647460
-X-Provags-ID: V03:K1:0bkCn+Y0mevlv5VttZgpahUL4dKGYZZLQ4y1vvto+7mMavfUh+o
- 8JGMv4vZZjzQNhUrBFQ1NJ5bqdFYSn9yLfj6IZYnF4K8i4qGsq0671JsWt8ZgMT0qAUxb4z
- iUw86CuhTpzSWPug0kC7Q0uEs8W+bPnw8jGw4WrtSfdEmcfiMleogPsFKNQ4hDl/yXLkkxr
- 6BjIqXo2hOtKSu7et7mCQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:hIseBVQO+QY=:5enC21lnRILGCyitLuxCKO
- nrxFYTneYV5nnsqfjD3XwMp6PxensbaQmXS+TRUj+DDZx1mNUZq79Y1fvHyoKSbP2m19FnEHP
- 6zXUVDRsQqEGYacWsUfhH23Q7c0NvdrOqXt8rxaw2abJyCuk0lPAC/47lXBeUUoM9zjKs25FJ
- upZM8ldpICdQ016k6mxBhkMfhRUZTWvo8bLbLJOHaHDzatN+07BmMG9y51JUNZjuJGJINfO09
- Ma7hFf7tICJGVnGmuRJ2XjCku60J5xTvMrLJKALi2ibsdi5FQxSoWTJJf9Jm/QRCllWdOpWsg
- gWqGHgQ7+yLhbUBbwy9XK/RjsHd//91Y4hF25AYDqGt3P3CfdJBmO38Nf7Yz5HQLEyfmwUvCP
- NDNgRDPMKN8yLkusWQ8X1V3Y1VaUUJyYMB4a1FbVwgHf9j69k2DeFqwQmsrJGNlcLOJZOJGVz
- CX10xmcGqciw2n4Bne85zsNnbSS7cHXsywZMswGEfjtvEK4JI5Y2XNk1VVkPfxRQozW1eTLwD
- HT9w9yKiaKY45UMgLyeMACxRV/TXSLS4I1kKFUNeKpXGtREm9er+DyI1WXnPHQQVB84EBS4tI
- iGjqCsI8tzkhhx8OCi2HF1vuMz7BM9bwqiedyDgVH2lAPCpP+yFrwPFU4AK5PWkyJrTakQCYD
- LUVwmgahT4MguqYCGOu8QRxrob8UB3E+VFsY4uIGtet+W7FQTZ7lJpp41fvQxTUMgHuY1z6b8
- WhP3lng9zG6PIK2bvE37kDlTc+Y24oBDyKCYMTW5vb8obo4IYUvw7amdYKqaVO9a76pHDO15J
- v8xKATPopjrCRDaQo+CsP3Fwla3O5cdcA3WeikuDxsg1qD4oWww7aKv/KLuEVnhG2Bn6bCuI1
- 1Ncz9Tm+FGLjw5Ke8AMg==
+X-Provags-ID: V03:K1:Dg6FDtPdZsmgRsmMhlYWEnuKvaX3qALipIH+tGzjN+bZlhcIpLG
+ Cjm71wsq+PDb5HVHH7otRr0JdxVQxqQVAD4vQbSjTodxSb3ZxgezV7S8TNoMO7GFhyljKwK
+ bfc28VW2hC2+0v8epqcVvmc0ND+s9PDElcpyYXOqmJX55YoNYFRjdX8A4nXBKacLQDL+Q+v
+ 5FOcztZ3beD7MT7/i3LDQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:XuLeWtvK6/Q=:nA3Lgcclveqc8WDV4TER4Y
+ N6WNnNU0eLJ1AQhNnVf+SvDq9fpE6OyVTjAl0XBU4TfNf60bjJbNMaztkqQsCbTBrFs9xmvr1
+ F7o66/kKj65TZMdDEMN41rrEgdXAm4QkfkuLreDnq0O4bFX5poIhvTBq7+/a6+wbNMdDbwbjz
+ lqD8FPeTx7RpymGUDVYrmUG0THbC5Kd3+8AYv5Vo1mlx14eShhj/55uk2lAvf4k79KF7WT8xZ
+ QfhVHmyjhqXuotHOAIhauiDjU/WDQWsia9Vidw6xyPTcr8FMyEZHWNKcDxY4+8qsMnADSjAnW
+ T7naX8LpNBT6n37/mULKBXFstq4aG1vTcPkH4HPrDFCotR10jl7mNGUf+7XTEGjie3W3sUM8P
+ 4S9vUjh+HaeMNsW9QCtBA7/PuVB29wPaeowm02Ds1noKPsIbX9xOECUXsKIC4JCQjyR56DPzW
+ nqHHAMBMYyLoPcHvJLcK2ea5UNfj1oeanHeyzgvBa5B6E6sUWF6BjtrImKdLkWADMp0cLHKqL
+ GUI6LNkA3aHpqKMocXCFiEJwLp3WA5oEY/hDNdjU8nLtlCjfaDTKnwhf8stJO0s7/iC+M2/UR
+ F32v5hzm4caVzWzAV6uIgOPfe23usQEpRTtZlu0V/9MfwUk0HLsH0+XSA33VV4y931XzVIck6
+ +SsMX3yYEUUvZD/FPrK8S4UlDC2Xj9HTD/y6hdps2lKo6Hnp2aHGy2SyYSSwnM6BH5Cz1Lm3R
+ ps/qHh7Q0Biof/0yFu2Xgbl0JfgfLHSQgQJhqmxc8IbA786EhxAra/a+bjNwkOPWcj9ogdUki
+ Y/4jGpBXIE2ZCIihl0lVbV4gglu9AJnLUuexLk4WbUGMMvw9SLvWAIEzBbYH6vfa+4pTOZqOM
+ TsrtSHQSbdMJR7m+Y2QQ==
 X-Mailman-Approved-At: Wed, 15 Apr 2020 16:57:55 +0200
 Cc: alsa-devel@alsa-project.org,
  Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
@@ -116,39 +116,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The HDMI?_SEL register maps up to four stereo SSI data lanes onto the
-sdata[0..3] inputs of the HDMI output block. The upper half of the
-register contains four blocks of 4 bits, with the most significant
-controlling the sdata3 line and the least significant the sdata0 line.
-
-The shift calculation has an off-by-one error, causing the parent SSI to
-be mapped to sdata3, the first multi-SSI child to sdata0 and so forth.
-As the parent SSI transmits the stereo L/R channels, and the HDMI core
-expects it on the sdata0 line, this causes no audio to be output when
-playing stereo audio on a multichannel capable HDMI out, and
-multichannel audio has permutated channels.
-
-Fix the shift calculation to map the parent SSI to sdata0, the first
-child to sdata1 etc.
+The parent SSI of a multi-SSI setup must be fully setup, started and
+stopped since it is also part of the playback/capture setup. So only
+skip the SSI (as per commit 203cdf51f288 ("ASoC: rsnd: SSI parent cares
+SWSP bit") and commit 597b046f0d99 ("ASoC: rsnd: control SSICR::EN
+correctly")) if the SSI is parent outside of a multi-SSI setup.
 
 Signed-off-by: Matthias Blankertz <matthias.blankertz@cetitec.com>
 ---
- sound/soc/sh/rcar/ssiu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sh/rcar/ssi.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
-index f35d88211887..9c7c3e7539c9 100644
---- a/sound/soc/sh/rcar/ssiu.c
-+++ b/sound/soc/sh/rcar/ssiu.c
-@@ -221,7 +221,7 @@ static int rsnd_ssiu_init_gen2(struct rsnd_mod *mod,
- 			i;
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index fc5d089868df..d51fb3a39448 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -407,7 +407,7 @@ static void rsnd_ssi_config_init(struct rsnd_mod *mod,
+ 	 * We shouldn't exchange SWSP after running.
+ 	 * This means, parent needs to care it.
+ 	 */
+-	if (rsnd_ssi_is_parent(mod, io))
++	if (rsnd_ssi_is_parent(mod, io) && !rsnd_ssi_multi_slaves(io))
+ 		goto init_end;
  
- 		for_each_rsnd_mod_array(i, pos, io, rsnd_ssi_array) {
--			shift	= (i * 4) + 16;
-+			shift	= (i * 4) + 20;
- 			val	= (val & ~(0xF << shift)) |
- 				rsnd_mod_id(pos) << shift;
- 		}
+ 	if (rsnd_io_is_play(io))
+@@ -559,7 +559,7 @@ static int rsnd_ssi_start(struct rsnd_mod *mod,
+ 	 * EN is for data output.
+ 	 * SSI parent EN is not needed.
+ 	 */
+-	if (rsnd_ssi_is_parent(mod, io))
++	if (rsnd_ssi_is_parent(mod, io) && !rsnd_ssi_multi_slaves(io))
+ 		return 0;
+ 
+ 	ssi->cr_en = EN;
+@@ -582,7 +582,7 @@ static int rsnd_ssi_stop(struct rsnd_mod *mod,
+ 	if (!rsnd_ssi_is_run_mods(mod, io))
+ 		return 0;
+ 
+-	if (rsnd_ssi_is_parent(mod, io))
++	if (rsnd_ssi_is_parent(mod, io) && !rsnd_ssi_multi_slaves(io))
+ 		return 0;
+ 
+ 	cr  =	ssi->cr_own	|
+@@ -620,7 +620,7 @@ static int rsnd_ssi_irq(struct rsnd_mod *mod,
+ 	if (rsnd_is_gen1(priv))
+ 		return 0;
+ 
+-	if (rsnd_ssi_is_parent(mod, io))
++	if (rsnd_ssi_is_parent(mod, io) && !rsnd_ssi_multi_slaves(io))
+ 		return 0;
+ 
+ 	if (!rsnd_ssi_is_run_mods(mod, io))
 -- 
 2.26.0
 
