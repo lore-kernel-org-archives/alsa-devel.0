@@ -7,64 +7,64 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90922C2BA19
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 20:43:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AFF90C2BA19
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 20:44:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1A1F720787
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 20:43:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 379F220787
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 20:44:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DThfBVFD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1A1F720787
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bDy9DRCE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 379F220787
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7C2FA886;
-	Wed, 15 Apr 2020 22:42:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7C2FA886
+	by alsa0.perex.cz (Postfix) with ESMTPS id 95177169A;
+	Wed, 15 Apr 2020 22:43:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95177169A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586983400;
-	bh=NiNFEi4w0IgYGzRBRvd4XoA0gBJkpX2R+DfLvPEL/i8=;
+	s=default; t=1586983447;
+	bh=aWvdBcytoBT+Jpy6qZDARkbNPkc4Wnqf/pV9Gjh08jQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DThfBVFD3dKCfM7tWXdN+pnbV+e+18CUNu0xNTbKqO4ecszZ7WR8pWedozMICdU1p
-	 +0CnRXJDz8Pplbjg9Fxx+7wcMB9C1MlS8YYJK+5eHkWVhpnOn/wGqpJMkGdtB8pMG5
-	 +Dddo3w2eK8oV8fQenJ4Jf5NfQCddKZaK9n6ibfY=
+	b=bDy9DRCEXMJ33iP1FLoOZEDEBb52/kDU7xnbTCsh0DuV8KYYfkvCa5oIzaUWu1Bpq
+	 TiLmHEDq9vG34R6oYygfrs3JMwV+ow5DXC7sfDQWfHK8imSBe7OqOEWvVuyHjPu1j/
+	 h5GPWu46dLZfOzOfOJAAQwjPkA+Fe/udvlgRF3/k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B5945F80369;
-	Wed, 15 Apr 2020 22:29:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 41174F8037E;
+	Wed, 15 Apr 2020 22:29:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 37160F80303; Wed, 15 Apr 2020 22:29:34 +0200 (CEST)
+ id B166FF80316; Wed, 15 Apr 2020 22:29:36 +0200 (CEST)
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CDC07F802E9
- for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2020 22:29:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CDC07F802E9
-IronPort-SDR: yfKHmNLf6AgOKwZMrKnGT9gt3O46BC8g/jompYdRRslR3ZjWjxetBsxwvW5abpcYuya2SpkfCS
- gKXECR/cV2NQ==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 29C88F802F9
+ for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2020 22:29:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 29C88F802F9
+IronPort-SDR: q+W1DdREwuSZR1n9erBqhlPUu5jj9MaTRybIY/trvZMb5tD0RzcPjCIvV+gt9ppYCRJC7gtF3S
+ qhtBeX2CRiaQ==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Apr 2020 13:29:24 -0700
-IronPort-SDR: YzChBrrvbSnFGAOIfpXMTDqq9+1Hq4kFRAsn3DXQH9WpmhGbYna5l5/ZrO0bjJbvDVuNjDkVgT
- YOPqyt8MWaCQ==
+ 15 Apr 2020 13:29:26 -0700
+IronPort-SDR: QTc/qygLe/khjOFBXTFE66uKmB+SXKpuVI4o7SDWhLpAY0hp6masVEGwpgXONaVp4O2Y0oA0AN
+ Z5a4f1JBDwsw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,388,1580803200"; d="scan'208";a="288656347"
+X-IronPort-AV: E=Sophos;i="5.72,388,1580803200"; d="scan'208";a="288656357"
 Received: from jplam-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.209.82.197])
- by fmsmga002.fm.intel.com with ESMTP; 15 Apr 2020 13:29:22 -0700
+ by fmsmga002.fm.intel.com with ESMTP; 15 Apr 2020 13:29:24 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 23/24] ASoC: SOF: topology: stop parsing when all tokens have
- been found
-Date: Wed, 15 Apr 2020 15:28:15 -0500
-Message-Id: <20200415202816.934-24-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 24/24] ASoC: SOF: topology: handle multiple sets of tuple
+ arrays
+Date: Wed, 15 Apr 2020 15:28:16 -0500
+Message-Id: <20200415202816.934-25-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200415202816.934-1-pierre-louis.bossart@linux.intel.com>
 References: <20200415202816.934-1-pierre-louis.bossart@linux.intel.com>
@@ -92,8 +92,23 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Jaska Uimonen <jaska.uimonen@linux.intel.com>
 
-Optimize the parsing so that it will stop after all required tokens
-have been found as there is no reason to continue after that.
+Widget's parameters are set in topology and they usually consist of
+several different types of tuple arrays like strings, words and bytes.
+Here this kind of combination is called a "set".
+
+Lately we've seen more complex widget definitions with multiple
+identical sets of tuple arrays. One example is the dmic pdm
+configuration, which is currently handled as a special case in token
+parsing. This is not scalable for other components with multiple sets.
+
+So add a new function sof_parse_token_sets, which can be used to parse
+multiple sets. This function defines the number of sets and an offset to
+copy the tokens to correct positions in the destination ipc struct. Old
+sof_parse_token function will be a special case of calling
+sof_parse_token_sets to parse 1 set with offset 0.
+
+Finally modify the dmic dai link loading to use the new
+sof_parse_array_sets to load multiple pdm configs.
 
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
@@ -101,142 +116,227 @@ Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Signed-off-by: Jaska Uimonen <jaska.uimonen@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/topology.c | 60 +++++++++++++++++++++++++---------------
- 1 file changed, 38 insertions(+), 22 deletions(-)
+ sound/soc/sof/topology.c | 123 +++++++++++++++++++++------------------
+ 1 file changed, 67 insertions(+), 56 deletions(-)
 
 diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index a1287924a12d..d4d0c39d6e6e 100644
+index d4d0c39d6e6e..e88ffc25025f 100644
 --- a/sound/soc/sof/topology.c
 +++ b/sound/soc/sof/topology.c
-@@ -769,13 +769,14 @@ static const struct sof_topology_token led_tokens[] = {
- 	 get_token_u32, offsetof(struct snd_sof_led_control, direction), 0},
- };
- 
--static void sof_parse_uuid_tokens(struct snd_soc_component *scomp,
--				  void *object,
--				  const struct sof_topology_token *tokens,
--				  int count,
--				  struct snd_soc_tplg_vendor_array *array)
-+static int sof_parse_uuid_tokens(struct snd_soc_component *scomp,
-+				 void *object,
-+				 const struct sof_topology_token *tokens,
-+				 int count,
-+				 struct snd_soc_tplg_vendor_array *array)
+@@ -773,7 +773,8 @@ static int sof_parse_uuid_tokens(struct snd_soc_component *scomp,
+ 				 void *object,
+ 				 const struct sof_topology_token *tokens,
+ 				 int count,
+-				 struct snd_soc_tplg_vendor_array *array)
++				 struct snd_soc_tplg_vendor_array *array,
++				 size_t offset)
  {
  	struct snd_soc_tplg_vendor_uuid_elem *elem;
-+	int found = 0;
- 	int i, j;
+ 	int found = 0;
+@@ -794,7 +795,8 @@ static int sof_parse_uuid_tokens(struct snd_soc_component *scomp,
+ 				continue;
  
- 	/* parse element by element */
-@@ -795,17 +796,22 @@ static void sof_parse_uuid_tokens(struct snd_soc_component *scomp,
  			/* matched - now load token */
- 			tokens[j].get_token(elem, object, tokens[j].offset,
+-			tokens[j].get_token(elem, object, tokens[j].offset,
++			tokens[j].get_token(elem, object,
++					    offset + tokens[j].offset,
  					    tokens[j].size);
-+
-+			found++;
- 		}
- 	}
-+
-+	return found;
- }
  
--static void sof_parse_string_tokens(struct snd_soc_component *scomp,
--				    void *object,
--				    const struct sof_topology_token *tokens,
--				    int count,
--				    struct snd_soc_tplg_vendor_array *array)
-+static int sof_parse_string_tokens(struct snd_soc_component *scomp,
-+				   void *object,
-+				   const struct sof_topology_token *tokens,
-+				   int count,
-+				   struct snd_soc_tplg_vendor_array *array)
+ 			found++;
+@@ -808,7 +810,8 @@ static int sof_parse_string_tokens(struct snd_soc_component *scomp,
+ 				   void *object,
+ 				   const struct sof_topology_token *tokens,
+ 				   int count,
+-				   struct snd_soc_tplg_vendor_array *array)
++				   struct snd_soc_tplg_vendor_array *array,
++				   size_t offset)
  {
  	struct snd_soc_tplg_vendor_string_elem *elem;
-+	int found = 0;
+ 	int found = 0;
+@@ -829,7 +832,8 @@ static int sof_parse_string_tokens(struct snd_soc_component *scomp,
+ 				continue;
+ 
+ 			/* matched - now load token */
+-			tokens[j].get_token(elem, object, tokens[j].offset,
++			tokens[j].get_token(elem, object,
++					    offset + tokens[j].offset,
+ 					    tokens[j].size);
+ 
+ 			found++;
+@@ -843,15 +847,12 @@ static int sof_parse_word_tokens(struct snd_soc_component *scomp,
+ 				 void *object,
+ 				 const struct sof_topology_token *tokens,
+ 				 int count,
+-				 struct snd_soc_tplg_vendor_array *array)
++				 struct snd_soc_tplg_vendor_array *array,
++				 size_t offset)
+ {
+-	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
+ 	struct snd_soc_tplg_vendor_value_elem *elem;
+-	size_t size = sizeof(struct sof_ipc_dai_dmic_pdm_ctrl);
+ 	int found = 0;
  	int i, j;
+-	u32 offset;
+-	u32 *index = NULL;
  
  	/* parse element by element */
-@@ -825,19 +831,24 @@ static void sof_parse_string_tokens(struct snd_soc_component *scomp,
- 			/* matched - now load token */
- 			tokens[j].get_token(elem, object, tokens[j].offset,
- 					    tokens[j].size);
-+
-+			found++;
- 		}
- 	}
-+
-+	return found;
- }
+ 	for (i = 0; i < le32_to_cpu(array->num_elems); i++) {
+@@ -870,40 +871,6 @@ static int sof_parse_word_tokens(struct snd_soc_component *scomp,
+ 			if (tokens[j].token != le32_to_cpu(elem->token))
+ 				continue;
  
--static void sof_parse_word_tokens(struct snd_soc_component *scomp,
--				  void *object,
--				  const struct sof_topology_token *tokens,
--				  int count,
--				  struct snd_soc_tplg_vendor_array *array)
-+static int sof_parse_word_tokens(struct snd_soc_component *scomp,
-+				 void *object,
-+				 const struct sof_topology_token *tokens,
-+				 int count,
-+				 struct snd_soc_tplg_vendor_array *array)
- {
- 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
- 	struct snd_soc_tplg_vendor_value_elem *elem;
- 	size_t size = sizeof(struct sof_ipc_dai_dmic_pdm_ctrl);
-+	int found = 0;
- 	int i, j;
- 	u32 offset;
- 	u32 *index = NULL;
-@@ -897,8 +908,12 @@ static void sof_parse_word_tokens(struct snd_soc_component *scomp,
+-			/* pdm config array index */
+-			if (sdev->private)
+-				index = sdev->private;
+-
+-			/* matched - determine offset */
+-			switch (tokens[j].token) {
+-			case SOF_TKN_INTEL_DMIC_PDM_CTRL_ID:
+-
+-				/* inc number of pdm array index */
+-				if (index)
+-					(*index)++;
+-				/* fallthrough */
+-			case SOF_TKN_INTEL_DMIC_PDM_MIC_A_Enable:
+-			case SOF_TKN_INTEL_DMIC_PDM_MIC_B_Enable:
+-			case SOF_TKN_INTEL_DMIC_PDM_POLARITY_A:
+-			case SOF_TKN_INTEL_DMIC_PDM_POLARITY_B:
+-			case SOF_TKN_INTEL_DMIC_PDM_CLK_EDGE:
+-			case SOF_TKN_INTEL_DMIC_PDM_SKEW:
+-
+-				/* check if array index is valid */
+-				if (!index || *index == 0) {
+-					dev_err(scomp->dev,
+-						"error: invalid array offset\n");
+-					continue;
+-				} else {
+-					/* offset within the pdm config array */
+-					offset = size * (*index - 1);
+-				}
+-				break;
+-			default:
+-				offset = 0;
+-				break;
+-			}
+-
+ 			/* load token */
  			tokens[j].get_token(elem, object,
  					    offset + tokens[j].offset,
- 					    tokens[j].size);
-+
-+			found++;
- 		}
- 	}
-+
-+	return found;
+@@ -916,17 +883,33 @@ static int sof_parse_word_tokens(struct snd_soc_component *scomp,
+ 	return found;
  }
  
- static int sof_parse_tokens(struct snd_soc_component *scomp,
-@@ -908,9 +923,10 @@ static int sof_parse_tokens(struct snd_soc_component *scomp,
- 			    struct snd_soc_tplg_vendor_array *array,
- 			    int priv_size)
- {
-+	int found = 0;
+-static int sof_parse_tokens(struct snd_soc_component *scomp,
+-			    void *object,
+-			    const struct sof_topology_token *tokens,
+-			    int count,
+-			    struct snd_soc_tplg_vendor_array *array,
+-			    int priv_size)
+-{
++/**
++ * sof_parse_token_sets - Parse multiple sets of tokens
++ * @scomp: pointer to soc component
++ * @object: target ipc struct for parsed values
++ * @tokens: token definition array describing what tokens to parse
++ * @count: number of tokens in definition array
++ * @array: source pointer to consecutive vendor arrays to be parsed
++ * @priv_size: total size of the consecutive source arrays
++ * @sets: number of similar token sets to be parsed, 1 set has count elements
++ * @object_size: offset to next target ipc struct with multiple sets
++ *
++ * This function parses multiple sets of tokens in vendor arrays into
++ * consecutive ipc structs.
++ */
++static int sof_parse_token_sets(struct snd_soc_component *scomp,
++				void *object,
++				const struct sof_topology_token *tokens,
++				int count,
++				struct snd_soc_tplg_vendor_array *array,
++				int priv_size, int sets, size_t object_size)
++{
++	size_t offset = 0;
+ 	int found = 0;
++	int total = 0;
  	int asize;
  
--	while (priv_size > 0) {
-+	while (priv_size > 0 && found < count) {
+-	while (priv_size > 0 && found < count) {
++	while (priv_size > 0 && total < count * sets) {
  		asize = le32_to_cpu(array->size);
  
  		/* validate asize */
-@@ -931,19 +947,19 @@ static int sof_parse_tokens(struct snd_soc_component *scomp,
- 		/* call correct parser depending on type */
+@@ -948,18 +931,18 @@ static int sof_parse_tokens(struct snd_soc_component *scomp,
  		switch (le32_to_cpu(array->type)) {
  		case SND_SOC_TPLG_TUPLE_TYPE_UUID:
--			sof_parse_uuid_tokens(scomp, object, tokens, count,
--					      array);
-+			found += sof_parse_uuid_tokens(scomp, object, tokens,
-+						       count, array);
+ 			found += sof_parse_uuid_tokens(scomp, object, tokens,
+-						       count, array);
++						       count, array, offset);
  			break;
  		case SND_SOC_TPLG_TUPLE_TYPE_STRING:
--			sof_parse_string_tokens(scomp, object, tokens, count,
--						array);
-+			found += sof_parse_string_tokens(scomp, object, tokens,
-+							 count, array);
+ 			found += sof_parse_string_tokens(scomp, object, tokens,
+-							 count, array);
++							 count, array, offset);
  			break;
  		case SND_SOC_TPLG_TUPLE_TYPE_BOOL:
  		case SND_SOC_TPLG_TUPLE_TYPE_BYTE:
  		case SND_SOC_TPLG_TUPLE_TYPE_WORD:
  		case SND_SOC_TPLG_TUPLE_TYPE_SHORT:
--			sof_parse_word_tokens(scomp, object, tokens, count,
--					      array);
-+			found += sof_parse_word_tokens(scomp, object, tokens,
-+						       count, array);
+ 			found += sof_parse_word_tokens(scomp, object, tokens,
+-						       count, array);
++						       count, array, offset);
  			break;
  		default:
  			dev_err(scomp->dev, "error: unknown token type %d\n",
+@@ -970,10 +953,35 @@ static int sof_parse_tokens(struct snd_soc_component *scomp,
+ 		/* next array */
+ 		array = (struct snd_soc_tplg_vendor_array *)((u8 *)array
+ 			+ asize);
++
++		/* move to next target struct */
++		if (found >= count) {
++			offset += object_size;
++			total += found;
++			found = 0;
++		}
+ 	}
++
+ 	return 0;
+ }
+ 
++static int sof_parse_tokens(struct snd_soc_component *scomp,
++			    void *object,
++			    const struct sof_topology_token *tokens,
++			    int count,
++			    struct snd_soc_tplg_vendor_array *array,
++			    int priv_size)
++{
++	/*
++	 * sof_parse_tokens is used when topology contains only a single set of
++	 * identical tuples arrays. So additional parameters to
++	 * sof_parse_token_sets are sets = 1 (only 1 set) and
++	 * object_size = 0 (irrelevant).
++	 */
++	return sof_parse_token_sets(scomp, object, tokens, count, array,
++				    priv_size, 1, 0);
++}
++
+ static void sof_dbg_comp_config(struct snd_soc_component *scomp,
+ 				struct sof_ipc_comp_config *config)
+ {
+@@ -2951,9 +2959,12 @@ static int sof_link_dmic_load(struct snd_soc_component *scomp, int index,
+ 		return -ENOMEM;
+ 
+ 	/* get DMIC PDM tokens */
+-	ret = sof_parse_tokens(scomp, &config->dmic.pdm[0], dmic_pdm_tokens,
++	ret = sof_parse_token_sets(scomp, &config->dmic.pdm[0], dmic_pdm_tokens,
+ 			       ARRAY_SIZE(dmic_pdm_tokens), private->array,
+-			       le32_to_cpu(private->size));
++			       le32_to_cpu(private->size),
++			       config->dmic.num_pdm_active,
++			       sizeof(struct sof_ipc_dai_dmic_pdm_ctrl));
++
+ 	if (ret != 0) {
+ 		dev_err(scomp->dev, "error: parse dmic pdm tokens failed %d\n",
+ 			le32_to_cpu(private->size));
 -- 
 2.20.1
 
