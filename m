@@ -7,63 +7,63 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B1277C2BA19
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 20:36:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67416C2BA19
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 20:37:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2F0EB206E9
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 20:36:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CF676206E9
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 20:37:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Gcoubm3Q"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2F0EB206E9
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oNI0h7As"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CF676206E9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9151C1672;
-	Wed, 15 Apr 2020 22:36:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9151C1672
+	by alsa0.perex.cz (Postfix) with ESMTPS id 378601666;
+	Wed, 15 Apr 2020 22:36:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 378601666
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586983015;
-	bh=Gk3KNs5jxEJvzJfLdVhBcHyZjK7nu3QXD2ar7R/hSkY=;
+	s=default; t=1586983051;
+	bh=cKRUMPPzSZS76s1Sd0DlJgKICgmtLuEy3ZCcFQRJ9rA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Gcoubm3QUiDxClJ2Iw5bstqgBoDxMuslX7wy6Vf1R/4BfXKT85UrpJizBZ4U5bFRj
-	 5xJ2v3PIva8QgSDc9ymyv8zXVWAazGitdrvxxH48+rRtJGR8EstTVbA/FF85W+iSpw
-	 KD/c5at4aac77QSTE+XXbeJcynRyr2Pa0hiV9tqs=
+	b=oNI0h7As02fxnm/JGiv94RQVG7jkUz90jkK7nIMHgj0tvA3RLJ968hKiU5YO0PorF
+	 q41CfFFGP7C2io0PPprKuhCwdFQbjxmj5UBc0twpZ0xlGsWHzTojtF1a+/Kh+cgFSw
+	 TyasB4I8Uo5n6DSzblmrDd1oHK3UA8rRfGV1ctyc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A9872F802E2;
-	Wed, 15 Apr 2020 22:29:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2A6B7F80303;
+	Wed, 15 Apr 2020 22:29:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2541EF8029A; Wed, 15 Apr 2020 22:29:17 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ id 4980BF802BE; Wed, 15 Apr 2020 22:29:17 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1F097F802A0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 81D2BF8029B
  for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2020 22:29:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F097F802A0
-IronPort-SDR: pr7OIcchErumjsToJPIo6i2QJHuZgKeKApxhMOip18n/45hb3Mt/2xGJ2UoS4HPCzFSUexve9/
- 2AkB69lqvf4Q==
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81D2BF8029B
+IronPort-SDR: Chp74Y7ru1SpAZMgpj2ACHSz0MOKpWaPqI/V3x4vMpDpkM9ap3OleU7/70XbDFvLMbGUxqWGqF
+ azx7P4ua2Jug==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Apr 2020 13:29:08 -0700
-IronPort-SDR: ZGnsAhazzbMVphvsUNMSzxA7N39x9H+W6hkvokbk3usErLcgxvpFE6gDLFak6tfMYNzy9B9gS2
- 2FVY5yCn0Qsg==
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Apr 2020 13:29:09 -0700
+IronPort-SDR: OwdXQlHamOH9b1onKwpwQkJlDAVM9vqkZkDRqvgCqtoiu/wD/DfWOYyne6ltX6Ysu/uPEJcZqv
+ oFZJsXoKeqhA==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,388,1580803200"; d="scan'208";a="288656308"
+X-IronPort-AV: E=Sophos;i="5.72,388,1580803200"; d="scan'208";a="288656290"
 Received: from jplam-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.209.82.197])
- by fmsmga002.fm.intel.com with ESMTP; 15 Apr 2020 13:29:07 -0700
+ by fmsmga002.fm.intel.com with ESMTP; 15 Apr 2020 13:29:03 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 13/24] ASoC: SOF: change type char to uint8_t in topology.h
-Date: Wed, 15 Apr 2020 15:28:05 -0500
-Message-Id: <20200415202816.934-14-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 10/24] ASoC: SOF: add debug ABI version
+Date: Wed, 15 Apr 2020 15:28:02 -0500
+Message-Id: <20200415202816.934-11-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200415202816.934-1-pierre-louis.bossart@linux.intel.com>
 References: <20200415202816.934-1-pierre-louis.bossart@linux.intel.com>
@@ -89,29 +89,44 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pan Xiuli <xiuli.pan@linux.intel.com>
 
-Use uint8_t to replace char in packed ABI structs
-to have fixed length for struct.
+Add new debug ABI version to be increased when changing user space debug
+interfaces while the the main FW ABI is not affected.
+
+The abi_dbg_version share same definition with SOF_ABI_VER
+
+This change main ABI to 3.14.0
 
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Signed-off-by: Pan Xiuli <xiuli.pan@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- include/sound/sof/topology.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/sound/sof/info.h | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/include/sound/sof/topology.h b/include/sound/sof/topology.h
-index 8f8d1cf649f2..6a6b4791eaf6 100644
---- a/include/sound/sof/topology.h
-+++ b/include/sound/sof/topology.h
-@@ -220,7 +220,7 @@ struct sof_ipc_comp_process {
- 	/* reserved for future use */
- 	uint32_t reserved[7];
+diff --git a/include/sound/sof/info.h b/include/sound/sof/info.h
+index 68e92b550439..162f38430958 100644
+--- a/include/sound/sof/info.h
++++ b/include/sound/sof/info.h
+@@ -32,6 +32,7 @@ enum sof_ipc_ext_data {
+ 	SOF_IPC_EXT_WINDOW		= 1,
+ 	SOF_IPC_EXT_CC_INFO		= 2,
+ 	SOF_IPC_EXT_PROBE_INFO		= 3,
++	SOF_IPC_EXT_USER_ABI_INFO	= 4,
+ };
  
--	unsigned char data[0];
-+	uint8_t data[0];
+ /* FW version - SOF_IPC_GLB_VERSION */
+@@ -126,4 +127,11 @@ struct sof_ipc_probe_support {
+ 	uint32_t reserved[2];
  } __packed;
  
- /* frees components, buffers and pipelines
++/* extended data: user abi version(s) */
++struct sof_ipc_user_abi_version {
++	struct sof_ipc_ext_data_hdr ext_hdr;
++
++	uint32_t abi_dbg_version;
++}  __packed;
++
+ #endif
 -- 
 2.20.1
 
