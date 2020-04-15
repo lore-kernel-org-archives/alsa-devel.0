@@ -2,86 +2,83 @@ Return-Path: <SRS0=riqU=57=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88B90C2BA19
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 10:01:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 85B66C2BB55
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 10:52:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0FC8A20768
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 10:01:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 11C6920768
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 10:52:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FpPY1J+Z"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0FC8A20768
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="A2vjzVk/";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="Od8AfhV1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 11C6920768
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 71D5F950;
-	Wed, 15 Apr 2020 12:00:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 71D5F950
+	by alsa0.perex.cz (Postfix) with ESMTPS id 74C08886;
+	Wed, 15 Apr 2020 12:51:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 74C08886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586944897;
-	bh=LFemcOdm1Ppq1Vmy/M2H8Ve4zSk/HlnpiwyMGUVy/9U=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=FpPY1J+ZYH27WxWqsIfNXTQdpPNBgnzGRpX4TVkI0N7WSDMZrsXyDHIUozarYAD4i
-	 xqrHiw3Z1GOYhVhvsx8NNdfNe3X4U3EzXZOPJ2SN5jL3UAXFQInq2qUjOJf8FPH+hw
-	 WMlaCOYiRXuxO9PDqxV/gqUCqlUlyx/HSrYjqqkw=
+	s=default; t=1586947968;
+	bh=DxkYZ9nz+Ih74whTbkyHi3u5c0U9lp7Qr9ftKdAwbLU=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=A2vjzVk//bWC2loA4MLK6oujZCan+WPFa8TEjhjdfdmN6JQ3/uTlECZe4g1LmYI1J
+	 gvdJpBkDJZ2aEchKD3ASBS92gkfYA1en0yexSAmm3GpcYx+fvLCwA0Fc+C9th0p2p7
+	 V/ADGNe42ELELuObxW2MpZXifORucH9sMe8kfF3Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 14348F80245;
-	Wed, 15 Apr 2020 12:00:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E71D5F80229;
+	Wed, 15 Apr 2020 12:51:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 49E65F8026A; Wed, 15 Apr 2020 12:00:33 +0200 (CEST)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ id ACF8BF80245; Wed, 15 Apr 2020 12:51:55 +0200 (CEST)
+Received: from mo6-p00-ob.smtp.rzone.de (mo6-p00-ob.smtp.rzone.de
+ [IPv6:2a01:238:20a:202:5300::7])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7B282F80229
- for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2020 12:00:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B282F80229
-IronPort-SDR: c3mty3RBgDT2Vq7ZhHT3AqlwtQ5uWOMdFDreapnLQLHDPtS1qMYAZnyH/VRI7763iDOwhvZKmn
- aPlhatOXb0rw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Apr 2020 03:00:27 -0700
-IronPort-SDR: Ar2EFutLqMhbsnWlBemUKP4XSSJ8a0f6fMvHaHDtIvtZ1DSoJ94PMS483/QAZD0YIhxFj5TQHM
- 112+e9iRo6AA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,386,1580803200"; d="scan'208";a="400264550"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
- by orsmga004.jf.intel.com with ESMTP; 15 Apr 2020 03:00:22 -0700
-Received: from andy by smile with local (Exim 4.93)
- (envelope-from <andriy.shevchenko@linux.intel.com>)
- id 1jOeqG-000kI3-Bw; Wed, 15 Apr 2020 13:00:24 +0300
-Date: Wed, 15 Apr 2020 13:00:24 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [RFC PATCH 07/16] clk: hifiberry-dacpro: initial import
-Message-ID: <20200415100024.GQ34613@smile.fi.intel.com>
-References: <20200409195841.18901-1-pierre-louis.bossart@linux.intel.com>
- <20200409195841.18901-8-pierre-louis.bossart@linux.intel.com>
- <20200414173110.GG34613@smile.fi.intel.com>
- <1483c322-66b9-d68e-c8e9-81f826b01108@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 83939F80115
+ for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2020 12:51:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83939F80115
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net
+ header.b="Od8AfhV1"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1586947907;
+ s=strato-dkim-0002; d=gerhold.net;
+ h=Message-Id:Date:Subject:Cc:To:From:X-RZG-CLASS-ID:X-RZG-AUTH:From:
+ Subject:Sender;
+ bh=cVq/7MP0xAmdxa2v69WcJUbaw9HnEQAsVNq/kWIpl5w=;
+ b=Od8AfhV1Mly3cVBLojm81lP1/2cOwYj+LsUJl2xA+X8MtTVm+Jm98IX5e9md+fb1ZV
+ PsxfaC30X6uPawCPoz3matWyNGxsfRmurnDNScONw3DKDI4RxTiWYi6O3A0PN4/0dCuN
+ Ps+lNmJsLi++lDEpfRI9Y7exhAkfvJYuhij8Kp7ifDVfXtkRvdgjPgPmfhA5A+e1QDxU
+ IR4E6B0CVO7nkOsmbfEq/070hKxmCjIGTVgdBOLeJgwKY4g9y+KZQTTUrGh4Ra4GdMDn
+ sRrZWJ3Io6T2RVo4S+nFHO9NHZGChX2H1t23660kNmhzlhytdTJVCXW2ROLW4STqNbkW
+ YtRw==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVORvLd4SsytBXS7IYBkLahKxB526NccuO"
+X-RZG-CLASS-ID: mo00
+Received: from localhost.localdomain by smtp.strato.de (RZmta 46.4.0 DYNA|AUTH)
+ with ESMTPSA id k074e0w3FApg1NW
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+ (Client did not present a certificate);
+ Wed, 15 Apr 2020 12:51:42 +0200 (CEST)
+From: Stephan Gerhold <stephan@gerhold.net>
+To: Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: soc-pcm: dpcm: Only allow playback/capture if supported
+Date: Wed, 15 Apr 2020 12:49:28 +0200
+Message-Id: <20200415104928.86091-1-stephan@gerhold.net>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1483c322-66b9-d68e-c8e9-81f826b01108@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-Cc: alsa-devel@alsa-project.org, Matthias Reichl <hias@horus.com>,
- tiwai@suse.de, DigitalDreamtime <clive.messer@digitaldreamtime.co.uk>,
- Linus Walleij <linus.walleij@linaro.org>, Stephen Boyd <sboyd@kernel.org>,
- Daniel Matuschek <daniel@hifiberry.com>, linux-clk@vger.kernel.org,
- Hui Wang <hui.wang@canonical.com>, linux-gpio@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, broonie@kernel.org,
- Bartosz Golaszewski <bgolaszewski@baylibre.com>,
- Michael Turquette <mturquette@baylibre.com>
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Stephan Gerhold <stephan@gerhold.net>,
+ ~postmarketos/upstreaming@lists.sr.ht
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,45 +94,88 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Apr 14, 2020 at 01:09:28PM -0500, Pierre-Louis Bossart wrote:
-> On 4/14/20 12:31 PM, Andy Shevchenko wrote:
-> > On Thu, Apr 09, 2020 at 02:58:32PM -0500, Pierre-Louis Bossart wrote:
-> > > From: Daniel Matuschek <daniel@hifiberry.com>
-> > > 
-> > > This patch imports the clock code from the Raspberry v5.5-y tree. The
-> > > ASoC machine driver initially present in this patch was dropped. The
-> > > comments are also dropped but all sign-offs are kept below. The patch
-> > > authorship was modified with explicit permission from Daniel Matuschek
-> > > to make sure it matches the Signed-off tag.
-> > > 
-> > > This patch generates a lot of checkpatch.pl warnings that are
-> > > corrected in follow-up patches.
-> > 
-> > I guess it will be waste of time to review this part without squashing it first.
-> 
-> I wasn't sure if squashing was desired, so kept all my changes separate.
+At the moment, PCM devices for DPCM are only created based on the
+dpcm_playback/capture parameters of the DAI link, without considering
+if the CPU/FE DAI is actually capable of playback/capture.
 
-At the end, yes. It's a new contribution that can be at least cleaned before
-hands to more-or-less acceptable point. With so many subtle issues it's not
-good that we dump an ugly code outside of drivers/staging.
+Normally the dpcm_playback/capture parameter should match the
+capabilities of the CPU DAI. However, there is no way to set that
+parameter from the device tree (e.g. with simple-audio-card or
+qcom sound cards). dpcm_playback/capture are always both set to 1.
 
-> There are some changes from the legacy clk to the clk_hw parts plus
-> introduction of ACPI support that are easier to review if kept separate.
+This causes problems when the CPU DAI does only support playback
+or capture. Attemting to open that PCM device with an unsupported
+stream type then results in a null pointer dereference:
 
-Yes, for review purposes it's okay.
+    Unable to handle kernel NULL pointer dereference at virtual address 0000000000000128
+    Internal error: Oops: 96000044 [#1] PREEMPT SMP
+    CPU: 3 PID: 1582 Comm: arecord Not tainted 5.7.0-rc1
+    pc : invalidate_paths_ep+0x30/0xe0
+    lr : snd_soc_dapm_dai_get_connected_widgets+0x170/0x1a8
+    Call trace:
+     invalidate_paths_ep+0x30/0xe0
+     snd_soc_dapm_dai_get_connected_widgets+0x170/0x1a8
+     dpcm_path_get+0x38/0xd0
+     dpcm_fe_dai_open+0x70/0x920
+     snd_pcm_open_substream+0x564/0x840
+     snd_pcm_open+0xfc/0x228
+     snd_pcm_capture_open+0x4c/0x78
+     snd_open+0xac/0x1a8
+     ...
 
-You always can put your name as a SoB + Co-developed-by tag or give credits to
-other people in the commit message differently (depending to amount of work
-they do vs. yours).
+... because the DAI playback/capture_widget is not set in that case.
 
-> Maybe I should have squashed the cosmetic parts in patch8, and kept the
-> functional changes as separate patches.
+We could add checks there to fix the problem (maybe we should
+anyway), but much easier is to not expose the device as
+playback/capture in the first place. Attemting to use that
+device would always fail later anyway.
 
-Use a common sense, you know your work better than me :-)
-Just explain this in cover letter (like you do for this version).
+Add checks for snd_soc_dai_stream_valid() to the DPCM case
+to avoid exposing playback/capture if it is not supported.
 
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+---
+This can be reproduced with q6asm-dai with a device tree
+configuration like:
+
+&q6asmdai {
+	dai@0 {
+		reg = <0>;
+		direction = <Q6ASM_DAI_RX>;
+	};
+};
+
+Then a simple "arecord output.wav" will result in the crash
+above, since it attempts to use that FE DAI for capture
+(even though it is limited to playback).
+---
+ sound/soc/soc-pcm.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 454735f8fa92..77a680da366f 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2911,8 +2911,17 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ 	int i;
+ 
+ 	if (rtd->dai_link->dynamic || rtd->dai_link->no_pcm) {
+-		playback = rtd->dai_link->dpcm_playback;
+-		capture = rtd->dai_link->dpcm_capture;
++		cpu_dai = asoc_rtd_to_cpu(rtd, 0);
++		if (rtd->num_cpus > 1) {
++			dev_err(rtd->dev,
++				"DPCM doesn't support Multi CPU yet\n");
++			return -EINVAL;
++		}
++
++		playback = rtd->dai_link->dpcm_playback &&
++			   snd_soc_dai_stream_valid(cpu_dai, SNDRV_PCM_STREAM_PLAYBACK);
++		capture = rtd->dai_link->dpcm_capture &&
++			  snd_soc_dai_stream_valid(cpu_dai, SNDRV_PCM_STREAM_CAPTURE);
+ 	} else {
+ 		/* Adapt stream for codec2codec links */
+ 		int cpu_capture = rtd->dai_link->params ?
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.26.1
 
