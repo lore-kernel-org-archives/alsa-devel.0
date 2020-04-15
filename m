@@ -4,103 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA25EC2BA19
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 15:02:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B116C2BA19
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 15:03:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5B5AC2076A
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 15:02:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D4F162076A
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 15:03:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PuqK3Al+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5B5AC2076A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cetitec.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ePl0xPYU";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="q0p6UbH3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D4F162076A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DC4EE1671;
-	Wed, 15 Apr 2020 17:01:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC4EE1671
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1B12D1662;
+	Wed, 15 Apr 2020 17:03:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B12D1662
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586962961;
-	bh=J7HEXdDp90oZCA/EXpRap9kq3sQyOa4ONYntpNLKVwg=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=PuqK3Al+2XtNXrp6LV850yamiZ+NMWA5rZgG1XxO1VCE8/fPrsXFlB/CCLBbdwHaO
-	 vH6hAB0GWi0mTRSSJWvfqknlY2aFjiWYYAXFUFPZMWE9Kfa0T6DdoYeIKAkU5w84lS
-	 yjHupsaYs2bX7NTuLei6t9WpWV/kHv1byWgl1C6M=
+	s=default; t=1586963037;
+	bh=oCNfmM7ZiiZ18PTZ9bnqcUBKyD9fnlCjvHxaTstvljg=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=ePl0xPYUeTaRLxiRA7spF7ABaUA6GHvivN51A9ZaCVJz3LEGrc8ijYRWJ54Zj816X
+	 QEK9LJZROx8QWKq7JzNf7/zMTnkBC0vIjgSRQVVHJx5oK26uUsghN7U5JGTro1TucT
+	 Nk0mVIKJQINVQJBhnDU9XhSMLjtqgUPsieVmIFr0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 65290F80292;
-	Wed, 15 Apr 2020 16:58:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9C937F80229;
+	Wed, 15 Apr 2020 17:03:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 063D6F80124; Wed, 15 Apr 2020 16:11:13 +0200 (CEST)
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.187])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 23A89F80245; Wed, 15 Apr 2020 17:03:05 +0200 (CEST)
+Received: from mo6-p01-ob.smtp.rzone.de (mo6-p01-ob.smtp.rzone.de
+ [IPv6:2a01:238:20a:202:5301::1])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C641EF80124
- for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2020 16:11:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C641EF80124
-Received: from mail.cetitecgmbh.com ([87.190.42.90]) by
- mrelayeu.kundenserver.de (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis)
- id 1Md76B-1iopto2yJ9-00aCVS; Wed, 15 Apr 2020 16:10:43 +0200
-Received: from pflvmailgateway.corp.cetitec.com (unknown [127.0.0.1])
- by mail.cetitecgmbh.com (Postfix) with ESMTP id 7C05D650ECB;
- Wed, 15 Apr 2020 14:10:42 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at cetitec.com
-Received: from mail.cetitecgmbh.com ([127.0.0.1])
- by pflvmailgateway.corp.cetitec.com (pflvmailgateway.corp.cetitec.com
- [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id k87RMMoqYIEv; Wed, 15 Apr 2020 16:10:42 +0200 (CEST)
-Received: from pfwsexchange.corp.cetitec.com (unknown [10.10.1.99])
- by mail.cetitecgmbh.com (Postfix) with ESMTPS id 2A57C64C0D9;
- Wed, 15 Apr 2020 16:10:42 +0200 (CEST)
-Received: from pflmmbl.corp.cetitec.com (10.8.5.60) by
- PFWSEXCHANGE.corp.cetitec.com (10.10.1.99) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 15 Apr 2020 16:10:41 +0200
-From: Matthias Blankertz <matthias.blankertz@cetitec.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id B38B5F80124
+ for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2020 17:02:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B38B5F80124
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net
+ header.b="q0p6UbH3"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1586962974;
+ s=strato-dkim-0002; d=gerhold.net;
+ h=Message-Id:Date:Subject:Cc:To:From:X-RZG-CLASS-ID:X-RZG-AUTH:From:
+ Subject:Sender;
+ bh=xDuCPScXE9/990DG2gOjJqdVEzDJ5sTN++PmNXCAIRs=;
+ b=q0p6UbH3BYq9ZRkBKNu2F0/1qEqi+rB1sPMgtLHywUvHakkAm2+1RBy1ImpUjWOE2x
+ bL2ekZPGwwXt+uxtYbhwDNsUqMm2GN395AYvDbFPvR59snUZXJdlKS9OaGf79/pW7q+5
+ VVk61uyGGpHe0wOdzTTht1g2d5QRCR138FX/oiGnZCgVjdjV0hDzzKPxB7jZu6Ae3sR+
+ M6iqAg/VCTdLScxJ/f+4oVrP0dqZNa9w7DRchZlr2keolUe6lgrwN2NSiGJQ7RKaU5/X
+ qwX/H79grU+UysMqH05+8otCihTzpdWF/+ixsePeDT3ZmslOlivQtvKNjHXsvgCjfUbb
+ AOTQ==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVORvLd4SsytBXS7IYBkLahKxB526NccuO"
+X-RZG-CLASS-ID: mo00
+Received: from localhost.localdomain by smtp.strato.de (RZmta 46.4.0 DYNA|AUTH)
+ with ESMTPSA id k074e0w3FF2j3Gq
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+ (Client did not present a certificate);
+ Wed, 15 Apr 2020 17:02:45 +0200 (CEST)
+From: Stephan Gerhold <stephan@gerhold.net>
 To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 1/2] ASoC: rsnd: Fix parent SSI start/stop in multi-SSI mode
-Date: Wed, 15 Apr 2020 16:10:16 +0200
-Message-ID: <20200415141017.384017-2-matthias.blankertz@cetitec.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200415141017.384017-1-matthias.blankertz@cetitec.com>
-References: <20200415141017.384017-1-matthias.blankertz@cetitec.com>
+Subject: [PATCH] ASoC: q6dsp6: q6afe-dai: add missing channels to MI2S DAIs
+Date: Wed, 15 Apr 2020 17:00:50 +0200
+Message-Id: <20200415150050.616392-1-stephan@gerhold.net>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.8.5.60]
-X-ClientProxiedBy: PFWSEXCHANGE.corp.cetitec.com (10.10.1.99) To
- PFWSEXCHANGE.corp.cetitec.com (10.10.1.99)
-X-EsetResult: clean, is OK
-X-EsetId: 37303A290D7F536B647460
-X-Provags-ID: V03:K1:Dg6FDtPdZsmgRsmMhlYWEnuKvaX3qALipIH+tGzjN+bZlhcIpLG
- Cjm71wsq+PDb5HVHH7otRr0JdxVQxqQVAD4vQbSjTodxSb3ZxgezV7S8TNoMO7GFhyljKwK
- bfc28VW2hC2+0v8epqcVvmc0ND+s9PDElcpyYXOqmJX55YoNYFRjdX8A4nXBKacLQDL+Q+v
- 5FOcztZ3beD7MT7/i3LDQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:XuLeWtvK6/Q=:nA3Lgcclveqc8WDV4TER4Y
- N6WNnNU0eLJ1AQhNnVf+SvDq9fpE6OyVTjAl0XBU4TfNf60bjJbNMaztkqQsCbTBrFs9xmvr1
- F7o66/kKj65TZMdDEMN41rrEgdXAm4QkfkuLreDnq0O4bFX5poIhvTBq7+/a6+wbNMdDbwbjz
- lqD8FPeTx7RpymGUDVYrmUG0THbC5Kd3+8AYv5Vo1mlx14eShhj/55uk2lAvf4k79KF7WT8xZ
- QfhVHmyjhqXuotHOAIhauiDjU/WDQWsia9Vidw6xyPTcr8FMyEZHWNKcDxY4+8qsMnADSjAnW
- T7naX8LpNBT6n37/mULKBXFstq4aG1vTcPkH4HPrDFCotR10jl7mNGUf+7XTEGjie3W3sUM8P
- 4S9vUjh+HaeMNsW9QCtBA7/PuVB29wPaeowm02Ds1noKPsIbX9xOECUXsKIC4JCQjyR56DPzW
- nqHHAMBMYyLoPcHvJLcK2ea5UNfj1oeanHeyzgvBa5B6E6sUWF6BjtrImKdLkWADMp0cLHKqL
- GUI6LNkA3aHpqKMocXCFiEJwLp3WA5oEY/hDNdjU8nLtlCjfaDTKnwhf8stJO0s7/iC+M2/UR
- F32v5hzm4caVzWzAV6uIgOPfe23usQEpRTtZlu0V/9MfwUk0HLsH0+XSA33VV4y931XzVIck6
- +SsMX3yYEUUvZD/FPrK8S4UlDC2Xj9HTD/y6hdps2lKo6Hnp2aHGy2SyYSSwnM6BH5Cz1Lm3R
- ps/qHh7Q0Biof/0yFu2Xgbl0JfgfLHSQgQJhqmxc8IbA786EhxAra/a+bjNwkOPWcj9ogdUki
- Y/4jGpBXIE2ZCIihl0lVbV4gglu9AJnLUuexLk4WbUGMMvw9SLvWAIEzBbYH6vfa+4pTOZqOM
- TsrtSHQSbdMJR7m+Y2QQ==
-X-Mailman-Approved-At: Wed, 15 Apr 2020 16:57:55 +0200
-Cc: alsa-devel@alsa-project.org,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, linux-renesas-soc@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
+ Stephan Gerhold <stephan@gerhold.net>, Patrick Lai <plai@codeaurora.org>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ ~postmarketos/upstreaming@lists.sr.ht
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -116,57 +95,113 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The parent SSI of a multi-SSI setup must be fully setup, started and
-stopped since it is also part of the playback/capture setup. So only
-skip the SSI (as per commit 203cdf51f288 ("ASoC: rsnd: SSI parent cares
-SWSP bit") and commit 597b046f0d99 ("ASoC: rsnd: control SSICR::EN
-correctly")) if the SSI is parent outside of a multi-SSI setup.
+For some reason, the MI2S DAIs do not have channels_min/max defined.
+This means that snd_soc_dai_stream_valid() returns false,
+i.e. the DAIs have neither valid playback nor capture stream.
 
-Signed-off-by: Matthias Blankertz <matthias.blankertz@cetitec.com>
+It's quite surprising that this ever worked correctly,
+but in 5.7-rc1 this is now failing badly: :)
+
+Commit 0e9cf4c452ad ("ASoC: pcm: check if cpu-dai supports a given stream")
+introduced a check for snd_soc_dai_stream_valid() before calling
+hw_params(), which means that the q6i2s_hw_params() function
+was never called, eventually resulting in:
+
+    qcom-q6afe aprsvc:q6afe:4:4: no line is assigned
+
+... even though "qcom,sd-lines" is set in the device tree.
+
+Commit 9b5db059366a ("ASoC: soc-pcm: dpcm: Only allow playback/capture if supported")
+now even avoids creating PCM devices if the stream is not supported,
+which means that it is failing even earlier with e.g.:
+
+    Primary MI2S: ASoC: no backend playback stream
+
+Avoid all that trouble by adding channels_min/max for the MI2S DAIs.
+
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Fixes: 24c4cbcfac09 ("ASoC: qdsp6: q6afe: Add q6afe dai driver")
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
 ---
- sound/soc/sh/rcar/ssi.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/qcom/qdsp6/q6afe-dai.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index fc5d089868df..d51fb3a39448 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -407,7 +407,7 @@ static void rsnd_ssi_config_init(struct rsnd_mod *mod,
- 	 * We shouldn't exchange SWSP after running.
- 	 * This means, parent needs to care it.
- 	 */
--	if (rsnd_ssi_is_parent(mod, io))
-+	if (rsnd_ssi_is_parent(mod, io) && !rsnd_ssi_multi_slaves(io))
- 		goto init_end;
- 
- 	if (rsnd_io_is_play(io))
-@@ -559,7 +559,7 @@ static int rsnd_ssi_start(struct rsnd_mod *mod,
- 	 * EN is for data output.
- 	 * SSI parent EN is not needed.
- 	 */
--	if (rsnd_ssi_is_parent(mod, io))
-+	if (rsnd_ssi_is_parent(mod, io) && !rsnd_ssi_multi_slaves(io))
- 		return 0;
- 
- 	ssi->cr_en = EN;
-@@ -582,7 +582,7 @@ static int rsnd_ssi_stop(struct rsnd_mod *mod,
- 	if (!rsnd_ssi_is_run_mods(mod, io))
- 		return 0;
- 
--	if (rsnd_ssi_is_parent(mod, io))
-+	if (rsnd_ssi_is_parent(mod, io) && !rsnd_ssi_multi_slaves(io))
- 		return 0;
- 
- 	cr  =	ssi->cr_own	|
-@@ -620,7 +620,7 @@ static int rsnd_ssi_irq(struct rsnd_mod *mod,
- 	if (rsnd_is_gen1(priv))
- 		return 0;
- 
--	if (rsnd_ssi_is_parent(mod, io))
-+	if (rsnd_ssi_is_parent(mod, io) && !rsnd_ssi_multi_slaves(io))
- 		return 0;
- 
- 	if (!rsnd_ssi_is_run_mods(mod, io))
+diff --git a/sound/soc/qcom/qdsp6/q6afe-dai.c b/sound/soc/qcom/qdsp6/q6afe-dai.c
+index c1a7624eaf17..2a5302f1db98 100644
+--- a/sound/soc/qcom/qdsp6/q6afe-dai.c
++++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
+@@ -902,6 +902,8 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
+ 				   SNDRV_PCM_FMTBIT_S24_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
+@@ -917,6 +919,8 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
+ 				   SNDRV_PCM_FMTBIT_S24_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
+@@ -931,6 +935,8 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
+ 			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
+@@ -946,6 +952,8 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
+ 				   SNDRV_PCM_FMTBIT_S24_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
+@@ -960,6 +968,8 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
+ 			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
+@@ -975,6 +985,8 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
+ 				   SNDRV_PCM_FMTBIT_S24_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
+@@ -989,6 +1001,8 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
+ 			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
+@@ -1004,6 +1018,8 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
+ 				   SNDRV_PCM_FMTBIT_S24_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
 -- 
-2.26.0
+2.26.1
 
