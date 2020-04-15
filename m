@@ -2,93 +2,81 @@ Return-Path: <SRS0=riqU=57=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8851C38A2C
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 17:28:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11807C2BA19
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 17:29:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3AD1B20784
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 17:28:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 92C2120784
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Apr 2020 17:29:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DKd9g0MQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3AD1B20784
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Sb4xqgst";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="lgXdq6RZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 92C2120784
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8C7B2886;
-	Wed, 15 Apr 2020 19:27:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C7B2886
+	by alsa0.perex.cz (Postfix) with ESMTPS id F2F18886;
+	Wed, 15 Apr 2020 19:28:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F2F18886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1586971680;
-	bh=sKTfzVEcuDEtxUT/7JCKkv2DJ/bDEh/jdwSXNWToYNQ=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1586971757;
+	bh=Up2EZrSuJmR+/Ct9e0Zig4VEgFWU7CsIcOYsNq9adSA=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DKd9g0MQ2H41BOc+VfVNB6xu3TFJZxlh64fEIEMpI6QpFYa3DKsPWoTuSYufQIWDg
-	 rNNE+PWXj92K2VRB6j5k9FNnaaJxK+EgrAPNjMskwlUxXvEGpoiEwutk3Yg6Q5jTrt
-	 PrCxwPInVmlScjlBZjEjvZqEwcAgoMzfrFdiaMeo=
+	b=Sb4xqgstavPA4AXPbeCHx0DjhCZ1pCHyyGQThKFJ5wXgaedapSHzxbokZtBl7YmSC
+	 TY6K3mPFCCYF2I3q02CABqLPfpAJhqL19Muxzoi/1a7oBZC4gSEWsaFw+qePy8PdvS
+	 rwmJimbDoX3AJlpBgBMZ1WeCOP3A0xA76mbhK1SA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2A4CFF80245;
-	Wed, 15 Apr 2020 19:27:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8A183F80229;
+	Wed, 15 Apr 2020 19:28:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7E4CBF8025F; Wed, 15 Apr 2020 19:27:08 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ id 86AFDF80264; Wed, 15 Apr 2020 19:28:23 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9DB93F80229
+ for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2020 19:28:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9DB93F80229
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="lgXdq6RZ"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4F84DF800ED
- for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2020 19:27:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F84DF800ED
-IronPort-SDR: Y1rt0P2xmE4OXVXHQT4l2ia38nq33jFsuxingE5FMugYCxDEn+KXjt8sXZYKNHbw5WA9CvXJqg
- vBVBKnk/gphQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Apr 2020 10:26:59 -0700
-IronPort-SDR: mSk6aOISQhPtyVxBoM3CwHC1wCmHkRux0rvXtc6dsTm0VfMBf0EFhMxn3GGLZyAWqeKcLqI6xk
- CZlyMDkirMZg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,387,1580803200"; d="scan'208";a="271795362"
-Received: from jplam-mobl1.amr.corp.intel.com (HELO [10.209.82.197])
- ([10.209.82.197])
- by orsmga002.jf.intel.com with ESMTP; 15 Apr 2020 10:26:58 -0700
-Subject: Re: [RFC PATCH 02/16] ASoC: pcm512x: use "sclk" string to retrieve
- clock
-To: Mark Brown <broonie@kernel.org>
-References: <20200409195841.18901-1-pierre-louis.bossart@linux.intel.com>
- <20200409195841.18901-3-pierre-louis.bossart@linux.intel.com>
- <20200414174530.GK5412@sirena.org.uk>
- <8ee01a4f-ceb2-d207-7cef-cf766fa670af@linux.intel.com>
- <20200414182728.GM5412@sirena.org.uk>
- <3017b762-7a0c-cee2-06dd-1e96f52eb849@linux.intel.com>
- <20200414195031.GP5412@sirena.org.uk>
- <0d2aed9b-5c79-9ed2-6ca1-67b2688e4c99@linux.intel.com>
- <20200415113630.GC5265@sirena.org.uk>
- <4635e57b-fccd-d8a9-fa99-8124debb3428@linux.intel.com>
- <20200415162247.GF5265@sirena.org.uk>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <9a7fbbac-818a-01d0-7a32-8ae313f9ad50@linux.intel.com>
-Date: Wed, 15 Apr 2020 12:26:57 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ by mail.kernel.org (Postfix) with ESMTPSA id 8979A20787;
+ Wed, 15 Apr 2020 17:28:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1586971698;
+ bh=Up2EZrSuJmR+/Ct9e0Zig4VEgFWU7CsIcOYsNq9adSA=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=lgXdq6RZoxW+yz0bP0F/wDIm7vdvNvmED9v2AKxDpnPgNw82mcA+WLUP6GUUlhK5t
+ /3dHGJI8ZOLa0s6bBp6RbwI0Ymm1bBg1lUWAvTZQn5e+hzkdMkir1Z3jzqBg422lq/
+ VOj7XPKkTjmXCGWAACDbNe4wkbeCpVWLFEB11ncE=
+Date: Wed, 15 Apr 2020 18:28:15 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [RFC TEST] ASoC: soc-dai: revert all changes to DAI
+ startup/shutdown sequence
+Message-ID: <20200415172815.GJ5265@sirena.org.uk>
+References: <20200415030437.23803-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200415162247.GF5265@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, Rob Herring <robh+dt@kernel.org>,
- linux-gpio@vger.kernel.org, tiwai@suse.de,
- Linus Walleij <linus.walleij@linaro.org>, Stephen Boyd <sboyd@kernel.org>,
- Daniel Matuschek <daniel@hifiberry.com>, Hui Wang <hui.wang@canonical.com>,
- Matthias Reichl <hias@horus.com>, Michael Turquette <mturquette@baylibre.com>,
- Bartosz Golaszewski <bgolaszewski@baylibre.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>, linux-clk@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="GlnCQLZWzqLRJED8"
+Content-Disposition: inline
+In-Reply-To: <20200415030437.23803-1-pierre-louis.bossart@linux.intel.com>
+X-Cookie: Hire the morally handicapped.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: tiwai@suse.de, Hans de Goede <hdegoede@redhat.com>,
+ alsa-devel@alsa-project.org,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,70 +93,33 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
->> the SST/SOF driver creates a platform device using the codec _HID as a key
->> to hard-coded lookup tables in sound/soc/intel/common/soc-acpi*.c - it will
->> be probed *after* the codec driver probes. I really don't see how to use the
->> machine driver as currently implemented to establish board-level connections
->> that would influence the codec driver probe and its use of a clock.
-> 
-> You have the opportunity to run whatever code you want to run at the
-> point where you're registering your drivers with the system on module
-> init, things like DMI quirk tables (which is what you're going to need
-> to do here AFAICT) should work just as well there as they do later on
-> when the driver loads.
+--GlnCQLZWzqLRJED8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The idea here was to have one single build, and then rely on what the 
-user configured with initrd override to probe the right I2C codec driver 
-and indirectly the machine driver. It's similar to device tree overlays.
+On Tue, Apr 14, 2020 at 10:04:37PM -0500, Pierre-Louis Bossart wrote:
 
-With the same up2 board, I change the .aml file in 
-/lib/firmware/acpi-upgrades, swap one HAT board for another and the new 
-board is handled automagically.
+> Sending as RFC since I don't have a good understanding of the
+> root-cause and for others to confirm my findings. Tested on top of
+> v5.7-rc1.
 
-I don't see how I can use hard-coded DMI tables or board-specific things 
-without losing the single build?
+Hans?  Morimoto-san?  I'm fine with this as a fix, it's not ideal but
+I'm guessing anything more substantial is going to be unsuitable for a
+-rc series.
 
->>> I think you're giving up way too easily here.  The kernel has really
->>> good support for systems that don't have any firmware description at
->>> all, this shouldn't be complex or breaking new ground.
-> 
->> See above, I don't think the machine driver can do what you had in mind?
-> 
->> I don't see how to proceed unless we remove all support for ACPI, both for
->> codec and clock driver, and trigger their probe "manually" with a
->> board-level initialization.
-> 
-> The clkdev stuff can use dev_name() so so long as the devices appear
-> with predictable names you should be fine.  If not IIRC everything in
-> ACPI is named in the AML so clkdev could be extended to be able to find
-> things based on the names it gives.
+--GlnCQLZWzqLRJED8
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I had a discussion with Andy Shevchenko that we should precisely not be 
-using dev_name() since we don't control the names that ACPI selects for 
-us. And since I was using the generic PRP0001 thing for the clock device 
-to probe using the 'compatible' string it's actually even less reliable 
-and unique...
+-----BEGIN PGP SIGNATURE-----
 
->> And btw there's already a precedent for using global names, it's what the
->> Skylake driver does for the mclk and ssp clocks. To the best of my knowledge
->> the device specific namespacing does not exist on any ACPI platform. We have
-> 
-> No machine description at all exists on board file systems other than
-> what we write in C and they manage to cope with this, I'm sure we can
-> find a way to do it with ACPI.  I mentioned clkdev before, that is
-> something that's done entirely at the Linux level.
-> 
->> a request from Dialog to implement the same thing for SOF to solve
->> dependencies on the clock being stable before turning on the codec, so if
->> global names are not acceptable we have a real problem.
-> 
-> If existing usages that have ended up getting merged are going to be
-> used to push for additional adoption then that's not encouraging.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6XRC4ACgkQJNaLcl1U
+h9Ajfwf8DP38+XB2QLA/Iv7hScLp6vKUgfU5N+o0dioKetvISNoURXLOH545LnOc
+IqGzmLBcTaVbVb9f7Y9NnuSVc0qCsw3N+kUIJojNIlB+m8li9sUMVekHj8kUgbjp
+y6mFyK9my8mqn3WZDcMC4eIFZq/6PSDOHXfomkC35QZUpGbvp/VjKLhujkS1uGkg
+VohMLJG3RnA52Pw7cbWlZR/1BhK4RFW/lIapwYmQJlUpBAVuhZRWwnUh6o28nQL7
+ctGu4UGlw77tmdYbZ7NzXLTpTn6N2wy5Ug6/UnYO9LGNEYS7RF13vCmvZ5BWS+T0
+fJcR0ZSvA4vU8vDanqcpIOx65831Jg==
+=7Nan
+-----END PGP SIGNATURE-----
 
-I wasn't trying to push this against your will, rather I wanted to 
-highlight that we should be clear on the direction for all these uses of 
-the clk API in an ACPI context. If what I suggested here is not the 
-right path, then how do we deal with all the existing cases? This 
-PCM512x use is not a mainstream usage, we use this board mainly for 
-validation and for community support, the other cases with 'mclk' and 
-'sspX_fsync' are critical and impact devices shipping in large volumes.
+--GlnCQLZWzqLRJED8--
