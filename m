@@ -3,73 +3,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D9B5BC2BB55
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Apr 2020 15:35:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81C81C3815B
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Apr 2020 15:36:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 69350214AF
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Apr 2020 15:35:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 10FD822242
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Apr 2020 15:36:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mDQXVJWL";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="0jVthHTM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 69350214AF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="X1OSY3D0";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="b4W9GgOX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 10FD822242
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C6C9682A;
-	Thu, 16 Apr 2020 17:34:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C6C9682A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 838CB1614;
+	Thu, 16 Apr 2020 17:35:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 838CB1614
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587051319;
-	bh=uDzDRO2ytFQpd/vpRcyE5E3H4we81F4KkMdHp4892QQ=;
+	s=default; t=1587051372;
+	bh=cm5eKnHDf7WtBLQg4e4NaXwt9ZqZ+pLml8cOimogapc=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mDQXVJWLnuI09kZPOPDIeUdKX0wUJCh/k1ick3CSxyEty0WQCOAW2VEqxVlHXbGfw
-	 TY+RrAX5NOjq3KL3uj+hngUE6DWYeyl8G2ThOR2mxp+fqwV41L99SdwSe0pTLq7/+t
-	 tqGLqcXsKJ63q9AsluQPgQVXSMzilKvEK71a4ArA=
+	b=X1OSY3D0Y6rohLmPCIBbEDB/cacjIFZJbACvSZo/C0v3WEsjJ3woykWNbgxQLofgC
+	 y5X4KfE3ROSkiitdluzRYsxmmOyc2gsiK2YPV/N7eMZuMJqLgWlfO7+hX+4nJVbGbi
+	 VrG+fIKnfil9gUdnrgp9CBDIPOQYELNqa3yyTxSU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 54D7FF8013D;
-	Thu, 16 Apr 2020 17:34:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7A509F80240;
+	Thu, 16 Apr 2020 17:34:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9371EF80115; Thu, 16 Apr 2020 17:34:23 +0200 (CEST)
+ id 3A125F8014E; Thu, 16 Apr 2020 17:34:26 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 84463F80115
- for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2020 17:34:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84463F80115
+ by alsa1.perex.cz (Postfix) with ESMTPS id 894ECF800AB
+ for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2020 17:34:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 894ECF800AB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="0jVthHTM"
+ header.b="b4W9GgOX"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 66B0521927;
- Thu, 16 Apr 2020 15:34:15 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 8132F22244;
+ Thu, 16 Apr 2020 15:34:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1587051256;
- bh=uDzDRO2ytFQpd/vpRcyE5E3H4we81F4KkMdHp4892QQ=;
+ s=default; t=1587051262;
+ bh=cm5eKnHDf7WtBLQg4e4NaXwt9ZqZ+pLml8cOimogapc=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=0jVthHTM4Q1PC0DLm4/7zyTFyXkXqQ9oURTeu65LFK32h6apzQp5OQe8r6spQYx7D
- exZpNA3pKIzfLh7hh8kejYoTzVqXPDKsYcg29n6M2YxH+7RRMC3sWtLlJAyWAISZo2
- htCo+NO3nQTw1x39+HMbBBGG53gyiwWUjlaVmdNU=
-Date: Thu, 16 Apr 2020 16:34:13 +0100
+ b=b4W9GgOXN/tS7grTIz9CDv4DUjSrIlCNQHob785c8VYERJqv1rOX4qR6zIw/deXRv
+ n2hQyhWBnifk8HYUqbbUoVkxBYpVd4U4qgXO2JMRxoGuqYpuJXh16xzjvZ2iTrlWbS
+ V/OOISaMNNInmoGKm9GsYAjr/rggvJeb0Z2B0B/8=
+Date: Thu, 16 Apr 2020 16:34:19 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Daniel Vetter <daniel@ffwll.ch>, Michael Hennerich <Michael.Hennerich@analog.com>, Stefan Popa <stefan.popa@analog.com>, Lars-Peter Clausen <lars@metafoo.de>, Jonathan Cameron <jic23@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Vinod Koul <vkoul@kernel.org>, Geert Uytterhoeven <geert+renesas@glider.be>, Nuno Sá <nuno.sa@analog.com>, David Airlie <airlied@linux.ie>, Rob Herring <robh+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Jiri Kosina <trivial@kernel.org>
-In-Reply-To: <20200416103058.15269-1-geert+renesas@glider.be>
-References: <20200416103058.15269-1-geert+renesas@glider.be>
-Subject: Re: [PATCH trivial 0/6] Fix misspellings of "Analog Devices"
-Message-Id: <158705078452.48712.14851203073650565435.b4-ty@kernel.org>
+To: Rob Herring <robh+dt@kernel.org>, Stephan Gerhold <stephan@gerhold.net>
+In-Reply-To: <20200415081159.1098-1-stephan@gerhold.net>
+References: <20200415081159.1098-1-stephan@gerhold.net>
+Subject: Re: [PATCH 1/2] dt-bindings: ASoC: qdsp6: Suggest more generic node
+ names
+Message-Id: <158705078452.48712.10956473806918313608.b4-ty@kernel.org>
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, dmaengine@vger.kernel.org
+ linux-arm-msm@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>, Andy Gross <agross@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,31 +87,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 16 Apr 2020 12:30:52 +0200, Geert Uytterhoeven wrote:
-> 	Hi all,
+On Wed, 15 Apr 2020 10:11:58 +0200, Stephan Gerhold wrote:
+> Change the listed examples to use more generic node names, representing
+> the class of the device nodes:
 > 
-> In several files the company also known as ADI is spelled as "Analog
-> Device".  However, according to https://www.analog.com/, the company
-> name is spelled "Analog Devices".
+>   - apr-service@<id>
+>   - dai@<id>
 > 
-> Hence this patch series, one per subsystem, fixes these misspellings.
+> Both names are already in use in arch/arm64/boot/dts/qcom/sdm845.dtsi.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/6] dt-bindings: Fix misspellings of "Analog Devices"
+[1/2] ASoC: qdsp6: Suggest more generic node names
+      commit: 35c638d039bbabbca7affb52960d468951d811c1
+[2/2] dt-bindings: soc: qcom: apr: Use generic node names for APR services
       (not applied)
-[2/6] dma: Fix misspelling of "Analog Devices"
-      (not applied)
-[3/6] drm: Fix misspellings of "Analog Devices"
-      (not applied)
-[4/6] iio: Fix misspellings of "Analog Devices"
-      (not applied)
-[5/6] ALSA: Fix misspellings of "Analog Devices"
-      (not applied)
-[6/6] ASoC: Fix misspellings of "Analog Devices"
-      commit: b938b25f49cdb47397b0215b69cdd5251b4b2f8b
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
