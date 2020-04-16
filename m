@@ -2,104 +2,117 @@ Return-Path: <SRS0=OoyA=6A=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_SANE_1
+X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42127C352BE
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Apr 2020 08:06:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E8804C2BB85
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Apr 2020 08:48:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C374E206E9
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Apr 2020 08:06:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4FE472076A
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Apr 2020 08:48:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BCrRTIBI";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ljCN0Eh8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C374E206E9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LUt1MWDL";
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dvlrNHrC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4FE472076A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 25E5A41;
-	Thu, 16 Apr 2020 10:06:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 25E5A41
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8479482A;
+	Thu, 16 Apr 2020 10:47:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8479482A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587024416;
-	bh=VxSllAJH/zVv/mARLGCkb021wqovSASU9gMj8cwSFZQ=;
+	s=default; t=1587026890;
+	bh=WIsXpk3XPnzowa+SSRiFGuS3z4FCqT9kvH4YaPYP/t0=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BCrRTIBI8uBWiMJGEaf6XCPisj4pHT17UBEFDccdwGeJhtzlFPhYFJ35soaamu6Q3
-	 3btb7f8OY2ikIuAC3w7+efFT34UQOXCud1S+31lC8huzD2ugMTYFISDFPeAlAtXBHa
-	 gv+7BHUnLbF8WHbHVvjdSlobcVOzrr8HrAIBgUHQ=
+	b=LUt1MWDLleKN4Vt0CfQbbGQArdZ8P46+FUeb4km9FasrGtwMM94GQe/NvSdkf3Gdw
+	 QIfAHp72YSuaMcEqfNt0dL0LFBU0SKgh9zZAShr4VFZob3Fx120EIoiXtC2evSwiOJ
+	 sLS66K5BtAxcFsedZ6YdEBDke0czPR53gYkU7EIQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B02F4F8013D;
-	Thu, 16 Apr 2020 10:06:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EEA71F8013D;
+	Thu, 16 Apr 2020 10:47:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 292E7F8014E; Thu, 16 Apr 2020 10:06:03 +0200 (CEST)
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com
- [IPv6:2a00:1450:4864:20::344])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id E6A67F8014E; Thu, 16 Apr 2020 10:47:15 +0200 (CEST)
+Received: from us-smtp-delivery-1.mimecast.com (us-smtp-2.mimecast.com
+ [207.211.31.81])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5AD35F8012E
- for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2020 10:05:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5AD35F8012E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1E373F80115
+ for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2020 10:47:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E373F80115
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="ljCN0Eh8"
-Received: by mail-wm1-x344.google.com with SMTP id x4so3561815wmj.1
- for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2020 01:05:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=uV16bW5Qou5HX/ecLg8k6CUH6HA5iJ8FFoob8YYamBs=;
- b=ljCN0Eh8i0yJ4+SXVeS8uWjAW7ZFvAZJwKpZ6fLDVwjGW0e0Ehfcf1AEfaWthyab7o
- 2FDZt6F/h9cJMPeHORes/2aQElMBh/q6ri1YKBxOuaZcX+Gj9Q/8WHIqWYXdYS1qLTQx
- bfFGjpPm98kDJjPq3KAYPa56+q4LakqovsK8WZzKFPdTr/L94OjT9/7rH1OAW6E9gR+W
- JFQiEv+r7VIOHA2qEJiL73R6mhtpsawbtsAlYHk/f3uSifyTm3cGDY6Vf6ciRpGEH3pz
- JT3yNCMwEOkIjG61/Qk/vBqLyhd29BBp0TC+MT7XEcbpLelji96T5FAdiQUEMvigVGEZ
- B4EQ==
+ dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
+ header.b="dvlrNHrC"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1587026823;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=WIsXpk3XPnzowa+SSRiFGuS3z4FCqT9kvH4YaPYP/t0=;
+ b=dvlrNHrCUjVGbgyxR6RKos690JPXXrA6UnGmS6tAeL+HCsFHn16I5XTff/NLsJ+lVbizoH
+ kt/LzUCvsev8nQaJnWdHrHkUFzDVNabTW8DngD+nKTf6ePzpFOm++qfEREuFplGhHw/zcg
+ 2L/F47uBfzamYwIgywrTDs9YFUtaNIA=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-51-futKd9_vPTCw79KiansHPg-1; Thu, 16 Apr 2020 04:47:01 -0400
+X-MC-Unique: futKd9_vPTCw79KiansHPg-1
+Received: by mail-wr1-f72.google.com with SMTP id f2so1369799wrm.9
+ for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2020 01:47:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:subject:to:cc:references:from:message-id:date
  :user-agent:mime-version:in-reply-to:content-language
  :content-transfer-encoding;
- bh=uV16bW5Qou5HX/ecLg8k6CUH6HA5iJ8FFoob8YYamBs=;
- b=hDCHnO1CPNNyIrQC61S+rglJ5KDdLklfhfoNUXs2sPs4gkbwqV+nnwKHMe+BT4q/H7
- 5woaigEmXnBVX5CfsXoGI/LFS3djIUzOWKd2XuCIcIYYsuu6an0qxpwv07fPqWMYgYnd
- CvVxyytL4r5zu1FwJu1/oysgmWR5WziiSzz/OuClcn+fyJYaIBwiI2xaQarn5uD5xqyK
- illIaKq1upjcRWAJEVpiYh6sfNMl5myYOq5/+pboWU+Rs4nLfabokf+wN1eIG2xnokUZ
- n4ynLRxfCBEPK5D487i7BrxbyRxU9F6yLFP4mJXrfu8xF2WeHPFsAELMi0jR+OzDMq/w
- 4ieQ==
-X-Gm-Message-State: AGi0PubCvMesMY3y7vLgfSvVGi8smTjXfonnagx9Ul64245JZl4MU/0z
- jEzGIwTeGeZzbktqU1PUFJ7KtA==
-X-Google-Smtp-Source: APiQypIRGcjIwp1s+fOs+F0CzIqeFfO2L62PN8lr+ClPBiAGKeNKI2rZAgQCnriNtLAp60EQECv19Q==
-X-Received: by 2002:a05:600c:22d1:: with SMTP id
- 17mr3296204wmg.167.1587024356884; 
- Thu, 16 Apr 2020 01:05:56 -0700 (PDT)
-Received: from [192.168.86.34]
- (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
- by smtp.googlemail.com with ESMTPSA id t67sm2687859wmg.40.2020.04.16.01.05.55
- (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Thu, 16 Apr 2020 01:05:56 -0700 (PDT)
-Subject: Re: [PATCH] ASoC: qcom: lpass-cpu: support full duplex operation
-To: broonie@kernel.org
-References: <20200306130147.27452-1-srinivas.kandagatla@linaro.org>
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <841cb73b-82d3-9fb9-0ed3-547882872085@linaro.org>
-Date: Thu, 16 Apr 2020 09:05:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ bh=56x3l2HyCOzFttcsLgv18xUx346bcxBacQxPmQPagRE=;
+ b=MrQqfcfopMSTw6ujPU9LXB7+CwxfpmJZf1lU6IkhIlkqqRrwEUIEEsfk6ZgSv8Mnhj
+ 2K6HgYF3L/iUKy5asDfeEm9K6YJpBnp2hpmc7LDPBwaF9w6HT+MkmMtj6/BEHtEDJvSa
+ Yq3Vo43W/NNvlEjpj8j2U55prxhxon9L/Alrg7sC5E5zjx0ikmUgkRRwrKFPA7haHp5q
+ 54zHtd84CyNF9YSp+C80MVFUoAuIzwhDd8cYRtPv6nc80El4v4mNS1QrYlFnDTNVxccp
+ w+cZtg36UEAKSVIfY84CD7PuxrjZE191b8Xsu93Occ+laJ8mVCAKM6raeNx6Cilk0TqW
+ zUPQ==
+X-Gm-Message-State: AGi0PuZqBvXgby7FDBili5rfxUhY4OQJs8YZ7sjBJekfDsqkCgq76oMY
+ 9Y5Y4gqxrUgKZiExwPVy8cCrUaphfnNUjEND4P7wGFYRE+pAZvNiiF+o2qumh4jv7sEUzoMePuh
+ oq4euz3guYY6Vi1Qk20JQsqw=
+X-Received: by 2002:adf:f844:: with SMTP id d4mr14669570wrq.362.1587026820554; 
+ Thu, 16 Apr 2020 01:47:00 -0700 (PDT)
+X-Google-Smtp-Source: APiQypL8l2rD6xQ/MtiSpj9VBxr5dw2dS29eVadr/vOZ/Ohn0eERYTezco+j3EFCftbDJc8oq/O67w==
+X-Received: by 2002:adf:f844:: with SMTP id d4mr14669549wrq.362.1587026820335; 
+ Thu, 16 Apr 2020 01:47:00 -0700 (PDT)
+Received: from x1.localdomain
+ (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl.
+ [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+ by smtp.gmail.com with ESMTPSA id d13sm2703582wmb.39.2020.04.16.01.46.59
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 16 Apr 2020 01:46:59 -0700 (PDT)
+Subject: Re: [RFC TEST] ASoC: soc-dai: revert all changes to DAI
+ startup/shutdown sequence
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org
+References: <20200415030437.23803-1-pierre-louis.bossart@linux.intel.com>
+ <9bbb1e49-6542-b1a3-d9e6-8dd30b79d07f@redhat.com>
+ <fd1a219b-28b4-e324-6657-9fb4a65ec640@linux.intel.com>
+From: Hans de Goede <hdegoede@redhat.com>
+Message-ID: <e9d4b66b-6f61-f941-03e6-7114ce11b06d@redhat.com>
+Date: Thu, 16 Apr 2020 10:46:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20200306130147.27452-1-srinivas.kandagatla@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <fd1a219b-28b4-e324-6657-9fb4a65ec640@linux.intel.com>
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, Takahide Higuchi <takahidehiguchi@gmail.com>,
- linux-kernel@vger.kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset=WINDOWS-1252; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: tiwai@suse.de, broonie@kernel.org,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -115,131 +128,81 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Mark,
+Hi,
 
+On 4/15/20 11:56 PM, Pierre-Louis Bossart wrote:
+>=20
+>=20
+> On 4/15/20 4:26 PM, Hans de Goede wrote:
+>> Hi,
+>>
+>> On 4/15/20 5:04 AM, Pierre-Louis Bossart wrote:
+>>> On Baytrail/Cherrytrail, the Atom/SST driver fails miserably:
+>>>
+>>> [=A0=A0=A0 9.741953] intel_sst_acpi 80860F28:00: FW Version 01.0c.00.01
+>>> [=A0=A0=A0 9.832992] intel_sst_acpi 80860F28:00: FW sent error response=
+ 0x40034
+>>> [=A0=A0=A0 9.833019] intel_sst_acpi 80860F28:00: FW alloc failed ret -4
+>>> [=A0=A0=A0 9.833028] intel_sst_acpi 80860F28:00: sst_get_stream returne=
+d err -5
+>>> [=A0=A0=A0 9.833033] sst-mfld-platform sst-mfld-platform: ASoC: DAI pre=
+pare error: -5
+>>> [=A0=A0=A0 9.833037]=A0 Baytrail Audio Port: ASoC: prepare FE Baytrail =
+Audio Port failed
+>>> [=A0=A0=A0 9.853942] intel_sst_acpi 80860F28:00: FW sent error response=
+ 0x40034
+>>> [=A0=A0=A0 9.853974] intel_sst_acpi 80860F28:00: FW alloc failed ret -4
+>>> [=A0=A0=A0 9.853984] intel_sst_acpi 80860F28:00: sst_get_stream returne=
+d err -5
+>>> [=A0=A0=A0 9.853990] sst-mfld-platform sst-mfld-platform: ASoC: DAI pre=
+pare error: -5
+>>> [=A0=A0=A0 9.853994]=A0 Baytrail Audio Port: ASoC: prepare FE Baytrail =
+Audio Port failed
+>>>
+>>> Commit b56be800f1292 ("ASoC: soc-pcm: call
+>>> snd_soc_dai_startup()/shutdown() once") was the initial problematic
+>>> commit.
+>>>
+>>> Commit 1ba616bd1a6d5e ("ASoC: soc-dai: fix DAI startup/shutdown sequenc=
+e")
+>>> was an attempt to fix things but it does not work on Baytrail,
+>>> reverting all changes seems necessary for now.
+>>>
+>>> Fixes: 1ba616bd1a6d5e ("ASoC: soc-dai: fix DAI startup/shutdown sequenc=
+e")
+>>> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.c=
+om>
+>>
+>> Thank you for figuring this out!
+>>
+>> I've tested this on the 2 devices where I have seen the problem
+>> (the only 2 devices on which I've tested 5.7-rc1 so far):
+>>
+>> One Cherry Trail device with a RT5645 codec and another
+>> Cherry Trail device with an ES8316 and I can confirm that this
+>> fixes the issue on both devices:
+>>
+>> Tested-by: Hans de Goede <hdegoede@redhat.com>
+>=20
+> Thanks Hans for checking.
+>=20
+> I must admit it was one of the more complicated bisects I've ever done, w=
+e had 3 different regressions so I end-up merging sound-v5.7-rc1 on top of =
+v5.7-rc1, then do a manual rebase to create a linear branch, then squash fi=
+xes with the original problematic commits, and then bisecting once I had a =
+single issue left.
+>=20
+> I'll see if we can retask some of the SOF CI Baytrail/Cherrytrail machine=
+s to run regressions on the legacy driver on a periodic basis, e.g. during =
+week-ends when no one is around.
 
-On 06/03/2020 13:01, Srinivas Kandagatla wrote:
-> From: Takahide Higuchi <takahidehiguchi@gmail.com>
-> 
-> This patch fixes a bug where playback on bidirectional I2S interface stops
-> when we start recording on the same interface.
-> 
-> We use regmap_update_bits instead of regmap_write so that we will not clear
-> SPKEN and SPKMODE bits when we start/stop recording.
-> 
-> Signed-off-by: Takahide Higuchi <takahidehiguchi@gmail.com>
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+If you can do that, that would be great. Currently the QA model for
+new kernels for BYT/CHT seems to be: if there are any regression's
+let Hans hit them when he starts running rc1 on his set of test
+devices and also let Hans figure out a fix, which is why I'm
+grateful that you fixed this, thanks!
 
-Looks like this patch was missed in last cycle, Should I resend this one 
-or are you okay to apply this. This patch is required to get full duplex 
-on msm8916 based platforms.
+Regards,
 
+Hans
 
-thanks,
-srini
-
-> ---
->   sound/soc/qcom/lpass-apq8016.c   |  2 ++
->   sound/soc/qcom/lpass-cpu.c       | 24 ++++++++++++++++++------
->   sound/soc/qcom/lpass-lpaif-reg.h |  2 +-
->   3 files changed, 21 insertions(+), 7 deletions(-)
-> 
-> diff --git a/sound/soc/qcom/lpass-apq8016.c b/sound/soc/qcom/lpass-apq8016.c
-> index 6575da549237..85079c697faa 100644
-> --- a/sound/soc/qcom/lpass-apq8016.c
-> +++ b/sound/soc/qcom/lpass-apq8016.c
-> @@ -121,6 +121,8 @@ static struct snd_soc_dai_driver apq8016_lpass_cpu_dai_driver[] = {
->   		},
->   		.probe	= &asoc_qcom_lpass_cpu_dai_probe,
->   		.ops    = &asoc_qcom_lpass_cpu_dai_ops,
-> +		.symmetric_samplebits   = 1,
-> +		.symmetric_rates        = 1,
->   	},
->   };
->   
-> diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-> index dbce7e92baf3..dc8acb380b6f 100644
-> --- a/sound/soc/qcom/lpass-cpu.c
-> +++ b/sound/soc/qcom/lpass-cpu.c
-> @@ -72,6 +72,7 @@ static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
->   	snd_pcm_format_t format = params_format(params);
->   	unsigned int channels = params_channels(params);
->   	unsigned int rate = params_rate(params);
-> +	unsigned int mask;
->   	unsigned int regval;
->   	int bitwidth, ret;
->   
-> @@ -81,6 +82,9 @@ static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
->   		return bitwidth;
->   	}
->   
-> +	mask   = LPAIF_I2SCTL_LOOPBACK_MASK |
-> +			LPAIF_I2SCTL_WSSRC_MASK |
-> +			LPAIF_I2SCTL_BITWIDTH_MASK;
->   	regval = LPAIF_I2SCTL_LOOPBACK_DISABLE |
->   			LPAIF_I2SCTL_WSSRC_INTERNAL;
->   
-> @@ -100,6 +104,7 @@ static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
->   	}
->   
->   	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-> +		mask   |= LPAIF_I2SCTL_SPKMODE_MASK | LPAIF_I2SCTL_SPKMONO_MASK;
->   		switch (channels) {
->   		case 1:
->   			regval |= LPAIF_I2SCTL_SPKMODE_SD0;
-> @@ -127,6 +132,7 @@ static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
->   			return -EINVAL;
->   		}
->   	} else {
-> +		mask   |= LPAIF_I2SCTL_MICMODE_MASK | LPAIF_I2SCTL_MICMONO_MASK;
->   		switch (channels) {
->   		case 1:
->   			regval |= LPAIF_I2SCTL_MICMODE_SD0;
-> @@ -155,9 +161,9 @@ static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
->   		}
->   	}
->   
-> -	ret = regmap_write(drvdata->lpaif_map,
-> -			   LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id),
-> -			   regval);
-> +	ret = regmap_update_bits(drvdata->lpaif_map,
-> +			 LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id),
-> +			 mask, regval);
->   	if (ret) {
->   		dev_err(dai->dev, "error writing to i2sctl reg: %d\n", ret);
->   		return ret;
-> @@ -178,11 +184,17 @@ static int lpass_cpu_daiops_hw_free(struct snd_pcm_substream *substream,
->   		struct snd_soc_dai *dai)
->   {
->   	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
-> +	unsigned int mask;
->   	int ret;
->   
-> -	ret = regmap_write(drvdata->lpaif_map,
-> -			   LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id),
-> -			   0);
-> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-> +		mask   = LPAIF_I2SCTL_SPKMODE_MASK;
-> +	else
-> +		mask   = LPAIF_I2SCTL_MICMODE_MASK;
-> +
-> +	ret = regmap_update_bits(drvdata->lpaif_map,
-> +			 LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id),
-> +			 mask, 0);
->   	if (ret)
->   		dev_err(dai->dev, "error writing to i2sctl reg: %d\n", ret);
->   
-> diff --git a/sound/soc/qcom/lpass-lpaif-reg.h b/sound/soc/qcom/lpass-lpaif-reg.h
-> index 3d74ae123e9d..7a2b9cf99976 100644
-> --- a/sound/soc/qcom/lpass-lpaif-reg.h
-> +++ b/sound/soc/qcom/lpass-lpaif-reg.h
-> @@ -56,7 +56,7 @@
->   #define LPAIF_I2SCTL_MICMODE_6CH	(7 << LPAIF_I2SCTL_MICMODE_SHIFT)
->   #define LPAIF_I2SCTL_MICMODE_8CH	(8 << LPAIF_I2SCTL_MICMODE_SHIFT)
->   
-> -#define LPAIF_I2SCTL_MIMONO_MASK	GENMASK(3, 3)
-> +#define LPAIF_I2SCTL_MICMONO_MASK	GENMASK(3, 3)
->   #define LPAIF_I2SCTL_MICMONO_SHIFT	3
->   #define LPAIF_I2SCTL_MICMONO_STEREO	(0 << LPAIF_I2SCTL_MICMONO_SHIFT)
->   #define LPAIF_I2SCTL_MICMONO_MONO	(1 << LPAIF_I2SCTL_MICMONO_SHIFT)
-> 
