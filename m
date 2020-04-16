@@ -2,89 +2,84 @@ Return-Path: <SRS0=OoyA=6A=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B04E1C2BB55
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Apr 2020 16:52:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 154F4C2BB55
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Apr 2020 17:17:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 33EBF2222D
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Apr 2020 16:52:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 948F821924
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Apr 2020 17:17:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WsgkUUao"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 33EBF2222D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ILu1+BYv";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="DnXLVc5H"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 948F821924
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 720C615E4;
-	Thu, 16 Apr 2020 18:51:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 720C615E4
+	by alsa0.perex.cz (Postfix) with ESMTPS id DDCF315E4;
+	Thu, 16 Apr 2020 19:16:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DDCF315E4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587055949;
-	bh=kBp32Fy4rhflMsBnqndyf8RvRac1ntz6I3fcKAN3CXo=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1587057452;
+	bh=s4Z7H5RfTmkpy5uEBBhU8C39pnbL3WOD7eDX1iiAziQ=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WsgkUUaoc+TY/U9L+0ORDkfaYY3Q9U0BxDcFL63betiePXrQGKvOY0bKpzZRLeLO4
-	 289azrRh8NkIMkqnat24t0KiXuz5SKYaSjl8+rbTtqj9ZF1PH0VSXJYw5UYtDAa7w7
-	 MclLgQAmSbFJ8xEYqCgC0ccATbySqRNKmDOGb/mQ=
+	b=ILu1+BYvNUSnwTE63TtkBpV5yoVBYSNfsG8cRX6PFb0BthvN5DQk583oaJ1KZbLS3
+	 cmHTLvqoAsJ9Lod0BISs7nYNsn6eZmeSyVJsS6vk2+n7Kn23jy4qdC06bhBJZg8Hue
+	 Kk3K8ot+JAZxgpF+PnxNG+vyZJPliK8M8u7BfgAM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B68ADF800AB;
-	Thu, 16 Apr 2020 18:51:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4E95CF8013D;
+	Thu, 16 Apr 2020 19:16:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E23F8F8014E; Thu, 16 Apr 2020 18:51:36 +0200 (CEST)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ id BB857F8014E; Thu, 16 Apr 2020 19:16:40 +0200 (CEST)
+Received: from mo6-p00-ob.smtp.rzone.de (mo6-p00-ob.smtp.rzone.de
+ [IPv6:2a01:238:20a:202:5300::4])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 07F16F800AB
- for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2020 18:51:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07F16F800AB
-IronPort-SDR: e0R+K5WEnw4kbW8UoV8JET1U88n2mmdwvaq8GgZ0IbBRpw7ql3fdmuV7llzPxknXies5mlxAjK
- 8RDESu98xWSQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Apr 2020 09:51:25 -0700
-IronPort-SDR: BFJewqmLyHxlwPPIzbmpaDcWq2/78eGWBs6jbDpOcKLssIPLdS5UDrylMxYYckHIXKF9clIUA+
- 2JGaJL3drs4w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,391,1580803200"; d="scan'208";a="278060214"
-Received: from ernestom-mobl.amr.corp.intel.com (HELO [10.251.128.102])
- ([10.251.128.102])
- by fmsmga004.fm.intel.com with ESMTP; 16 Apr 2020 09:51:23 -0700
-Subject: Re: [RFC PATCH 01/16] ASoC: pcm512x: expose 6 GPIOs
-To: Linus Walleij <linus.walleij@linaro.org>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Michael Walle <michael@walle.cc>
-References: <20200409195841.18901-1-pierre-louis.bossart@linux.intel.com>
- <20200409195841.18901-2-pierre-louis.bossart@linux.intel.com>
- <20200414170934.GA34613@smile.fi.intel.com>
- <CACRpkdZRnSUhmVPKjJ6dWnSfhnvrAKUrBY6tWLkxPgT28CzbHw@mail.gmail.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <2cd8d540-8bd0-4a42-4d11-7dea0fb03c22@linux.intel.com>
-Date: Thu, 16 Apr 2020 09:25:21 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1C3EDF8012E
+ for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2020 19:16:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C3EDF8012E
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net
+ header.b="DnXLVc5H"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1587057394;
+ s=strato-dkim-0002; d=gerhold.net;
+ h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:
+ X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+ bh=gQAshWE/P5d+q8GSxfuiqFoIRojHnDC1rboPu/Wp8h8=;
+ b=DnXLVc5Hs4XvCiB+GXqi1QYL0bnBA1Uk+BYz3b7cA55VqTiQ/eYXurHp62AL7fV0AV
+ oUM+xrzUUfxgrtYTDfjRMLK4/0SQ6l0WWRZ1cQOGOsvObx2sbfpq+gS/i5tmht/nXYyv
+ B3r670H++dqCWT67gmHDcFXkTe+Zok/FukZyG5NqW3aExRhSwM3/5CLloIHWV0PCZTM/
+ w6kfeUFnmGRzfHXagEMFv3GzEa5p+TJiGcP3XOxpw8U8ZywhyHI52BFLUU1fiY37QK73
+ qZggMM2Z6NioNClban52cEj90z4VZpccGj6wO9Yp0DTo1MdLiiiqWPJeaTUE3EURom3p
+ RktQ==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j6IczFaoo="
+X-RZG-CLASS-ID: mo00
+Received: from gerhold.net by smtp.strato.de (RZmta 46.4.0 DYNA|AUTH)
+ with ESMTPSA id k074e0w3GHGVBm9
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+ (Client did not present a certificate);
+ Thu, 16 Apr 2020 19:16:31 +0200 (CEST)
+Date: Thu, 16 Apr 2020 19:16:24 +0200
+From: Stephan Gerhold <stephan@gerhold.net>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH] ASoC: qcom: lpass-cpu: support full duplex operation
+Message-ID: <20200416171624.GA174353@gerhold.net>
+References: <20200306130147.27452-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <CACRpkdZRnSUhmVPKjJ6dWnSfhnvrAKUrBY6tWLkxPgT28CzbHw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
- <alsa-devel@alsa-project.org>, Rob Herring <robh+dt@kernel.org>,
- "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
- Takashi Iwai <tiwai@suse.de>, Michael Turquette <mturquette@baylibre.com>,
- Stephen Boyd <sboyd@kernel.org>, Daniel Matuschek <daniel@hifiberry.com>,
- Hui Wang <hui.wang@canonical.com>, Matthias Reichl <hias@horus.com>,
- Mark Brown <broonie@kernel.org>,
- Bartosz Golaszewski <bgolaszewski@baylibre.com>,
- linux-clk <linux-clk@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200306130147.27452-1-srinivas.kandagatla@linaro.org>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org,
+ Takahide Higuchi <takahidehiguchi@gmail.com>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,32 +95,186 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 4/16/20 6:42 AM, Linus Walleij wrote:
-> On Tue, Apr 14, 2020 at 7:09 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
->> On Thu, Apr 09, 2020 at 02:58:26PM -0500, Pierre-Louis Bossart wrote:
->>> The GPIOs are used e.g. on HifiBerry DAC+ HATs to control the LED
->>> (GPIO3) and the choice of the 44.1 (GPIO6) or 48 (GPIO3) kHz
->>> oscillator (when present).
->>>
->>> Enable basic gpio_chip to get/set values and get/set
->>> directions. Tested with GPIO_LIB from sys/class/gpio, the LED turns
->>> on/off as desired.
->>
->>
->> One question, can this use existing GPIO infrastructure, like bgpio_init()?
->> Ah, I see, that one operates over MMIO, while we would need something based on
->> regmap API.
->>
->> Bartosz, do we have plans to have bgpio_regmap_init() or alike?
+On Fri, Mar 06, 2020 at 01:01:47PM +0000, Srinivas Kandagatla wrote:
+> From: Takahide Higuchi <takahidehiguchi@gmail.com>
 > 
-> Michael Walle is working on that:
-> https://lore.kernel.org/linux-gpio/20200402203656.27047-11-michael@walle.cc/
+> This patch fixes a bug where playback on bidirectional I2S interface stops
+> when we start recording on the same interface.
 > 
-> I think we should try to merge it sooner rather than later.
-> I can provide an ib-* branch for ASoC whenever we agreed
-> on a basic generic driver.
+> We use regmap_update_bits instead of regmap_write so that we will not clear
+> SPKEN and SPKMODE bits when we start/stop recording.
+> 
 
-Thanks for the pointer, I will give it a try.
+Thanks for the patch! I don't have suitable hardware to test this
+feature, but I checked if playback-only is still working correctly:
+
+With this patch I can only play audio once. Further playback
+never starts, it gets stuck immediately. Suggested fix below.
+(Also a minor code style suggestion...)
+
+> Signed-off-by: Takahide Higuchi <takahidehiguchi@gmail.com>
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  sound/soc/qcom/lpass-apq8016.c   |  2 ++
+>  sound/soc/qcom/lpass-cpu.c       | 24 ++++++++++++++++++------
+>  sound/soc/qcom/lpass-lpaif-reg.h |  2 +-
+>  3 files changed, 21 insertions(+), 7 deletions(-)
+> 
+> diff --git a/sound/soc/qcom/lpass-apq8016.c b/sound/soc/qcom/lpass-apq8016.c
+> index 6575da549237..85079c697faa 100644
+> --- a/sound/soc/qcom/lpass-apq8016.c
+> +++ b/sound/soc/qcom/lpass-apq8016.c
+> @@ -121,6 +121,8 @@ static struct snd_soc_dai_driver apq8016_lpass_cpu_dai_driver[] = {
+>  		},
+>  		.probe	= &asoc_qcom_lpass_cpu_dai_probe,
+>  		.ops    = &asoc_qcom_lpass_cpu_dai_ops,
+> +		.symmetric_samplebits   = 1,
+> +		.symmetric_rates        = 1,
+>  	},
+>  };
+>  
+> diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+> index dbce7e92baf3..dc8acb380b6f 100644
+> --- a/sound/soc/qcom/lpass-cpu.c
+> +++ b/sound/soc/qcom/lpass-cpu.c
+> @@ -72,6 +72,7 @@ static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
+>  	snd_pcm_format_t format = params_format(params);
+>  	unsigned int channels = params_channels(params);
+>  	unsigned int rate = params_rate(params);
+> +	unsigned int mask;
+>  	unsigned int regval;
+>  	int bitwidth, ret;
+>  
+> @@ -81,6 +82,9 @@ static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
+>  		return bitwidth;
+>  	}
+>  
+> +	mask   = LPAIF_I2SCTL_LOOPBACK_MASK |
+> +			LPAIF_I2SCTL_WSSRC_MASK |
+> +			LPAIF_I2SCTL_BITWIDTH_MASK;
+>  	regval = LPAIF_I2SCTL_LOOPBACK_DISABLE |
+>  			LPAIF_I2SCTL_WSSRC_INTERNAL;
+>  
+
+I understand the space after "mask" here (to align the =) ...
+
+> @@ -100,6 +104,7 @@ static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
+>  	}
+>  
+>  	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+> +		mask   |= LPAIF_I2SCTL_SPKMODE_MASK | LPAIF_I2SCTL_SPKMONO_MASK;
+>  		switch (channels) {
+>  		case 1:
+>  			regval |= LPAIF_I2SCTL_SPKMODE_SD0;
+> @@ -127,6 +132,7 @@ static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
+>  			return -EINVAL;
+>  		}
+>  	} else {
+> +		mask   |= LPAIF_I2SCTL_MICMODE_MASK | LPAIF_I2SCTL_MICMONO_MASK;
+>  		switch (channels) {
+>  		case 1:
+>  			regval |= LPAIF_I2SCTL_MICMODE_SD0;
+
+... but they don't make much sense to me in these two cases.
+It looks a bit weird in my opinion :)
+
+> @@ -155,9 +161,9 @@ static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
+>  		}
+>  	}
+>  
+> -	ret = regmap_write(drvdata->lpaif_map,
+> -			   LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id),
+> -			   regval);
+> +	ret = regmap_update_bits(drvdata->lpaif_map,
+> +			 LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id),
+> +			 mask, regval);
+>  	if (ret) {
+>  		dev_err(dai->dev, "error writing to i2sctl reg: %d\n", ret);
+>  		return ret;
+> @@ -178,11 +184,17 @@ static int lpass_cpu_daiops_hw_free(struct snd_pcm_substream *substream,
+>  		struct snd_soc_dai *dai)
+>  {
+>  	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
+> +	unsigned int mask;
+>  	int ret;
+>  
+> -	ret = regmap_write(drvdata->lpaif_map,
+> -			   LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id),
+> -			   0);
+> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+> +		mask   = LPAIF_I2SCTL_SPKMODE_MASK;
+> +	else
+> +		mask   = LPAIF_I2SCTL_MICMODE_MASK;
+
+Same here with the spaces after "mask", but more importantly:
+
+This changes the behavior slightly. Previously we reset the entire
+register, now only the SPKMODE/MICMODE. This means that SPKEN/MICEN
+does not get reset to 0 when this function is called.
+
+Everything seems to work fine again for me if I reset SPKEN/MICEN too:
+
+diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+index dc8acb380b6f..49a36c1f5640 100644
+--- a/sound/soc/qcom/lpass-cpu.c
++++ b/sound/soc/qcom/lpass-cpu.c
+@@ -188,9 +188,9 @@ static int lpass_cpu_daiops_hw_free(struct snd_pcm_substream *substream,
+ 	int ret;
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-		mask   = LPAIF_I2SCTL_SPKMODE_MASK;
++		mask   = LPAIF_I2SCTL_SPKEN_MASK | LPAIF_I2SCTL_SPKMODE_MASK;
+ 	else
+-		mask   = LPAIF_I2SCTL_MICMODE_MASK;
++		mask   = LPAIF_I2SCTL_MICEN_MASK | LPAIF_I2SCTL_MICMODE_MASK;
+ 
+ 	ret = regmap_update_bits(drvdata->lpaif_map,
+ 			 LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id),
+
+After looking at the code a bit more I wonder why SPKEN/MICEN is set in
+prepare() at all? It is already set/un-set in trigger() on
+SNDRV_PCM_TRIGGER_START and SNDRV_PCM_TRIGGER_STOP.
+
+In fact, my problem only happens because prepare() is called again
+after the stream was stopped (and therefore sets SPKEN again):
+
+[   32.809915] lpass_cpu_daiops_hw_params
+[   32.810598] lpass_cpu_daiops_prepare
+[   32.823092] lpass_cpu_daiops_prepare
+[   32.837901] lpass_cpu_daiops_trigger: SNDRV_PCM_TRIGGER_START
+[   37.565261] lpass_cpu_daiops_trigger: SNDRV_PCM_TRIGGER_STOP
+[   37.565402] lpass_cpu_daiops_prepare
+[   37.565854] lpass_cpu_daiops_hw_free
+
+In other words, a much better fix in my opinion would be to
+simply remove(!) the entire lpass_cpu_daiops_prepare() method.
+
+I tested it and that also fixes the problem, without my diff above to
+unset SPKEN/MICEN in lpass_cpu_daiops_hw_free().
+
+Thanks,
+Stephan
+
+> +
+> +	ret = regmap_update_bits(drvdata->lpaif_map,
+> +			 LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id),
+> +			 mask, 0);
+>  	if (ret)
+>  		dev_err(dai->dev, "error writing to i2sctl reg: %d\n", ret);
+>  
+> diff --git a/sound/soc/qcom/lpass-lpaif-reg.h b/sound/soc/qcom/lpass-lpaif-reg.h
+> index 3d74ae123e9d..7a2b9cf99976 100644
+> --- a/sound/soc/qcom/lpass-lpaif-reg.h
+> +++ b/sound/soc/qcom/lpass-lpaif-reg.h
+> @@ -56,7 +56,7 @@
+>  #define LPAIF_I2SCTL_MICMODE_6CH	(7 << LPAIF_I2SCTL_MICMODE_SHIFT)
+>  #define LPAIF_I2SCTL_MICMODE_8CH	(8 << LPAIF_I2SCTL_MICMODE_SHIFT)
+>  
+> -#define LPAIF_I2SCTL_MIMONO_MASK	GENMASK(3, 3)
+> +#define LPAIF_I2SCTL_MICMONO_MASK	GENMASK(3, 3)
+>  #define LPAIF_I2SCTL_MICMONO_SHIFT	3
+>  #define LPAIF_I2SCTL_MICMONO_STEREO	(0 << LPAIF_I2SCTL_MICMONO_SHIFT)
+>  #define LPAIF_I2SCTL_MICMONO_MONO	(1 << LPAIF_I2SCTL_MICMONO_SHIFT)
+> -- 
+> 2.21.0
+> 
