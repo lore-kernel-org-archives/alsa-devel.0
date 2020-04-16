@@ -2,102 +2,102 @@ Return-Path: <SRS0=OoyA=6A=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 305F4C38A2C
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Apr 2020 07:58:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E9C33C2BA2B
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Apr 2020 07:59:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B12762078B
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Apr 2020 07:58:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 779CF206E9
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Apr 2020 07:59:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cPJUqca7";
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VCUgW+gv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B12762078B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Lhlwpt1d";
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="V+92JQII"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 779CF206E9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 354D71675;
-	Thu, 16 Apr 2020 09:57:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 354D71675
+	by alsa0.perex.cz (Postfix) with ESMTPS id BF45B1673;
+	Thu, 16 Apr 2020 09:58:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF45B1673
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587023902;
-	bh=mU/o4EvJ4t4Et8b+5jyhLG7U0PJdQ6d20/ZyyN4kUpo=;
+	s=default; t=1587023942;
+	bh=75nl5rR7HAjoWsPJD9lmExdiaeuYKXkfw1imM39nU7M=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cPJUqca7XyHJcR2lsm848AAWWdzjyM2bu27qKOCExi4IaQXN3UbnlpU173FalyZUE
-	 5D6ZLTxsb4s5NtzhrpYKbEG3RnMRfNQyJGzkbWwNKJMF4v0IiYDI4O+rLEyLM11AKE
-	 FCuhil9vmrwpG3cGJtuUvUwpKrMWARGknSuyp5rQ=
+	b=Lhlwpt1dfDne/y+qxJ3M/btOpnaYXEkyGU53Pjjxs/Y1bJ2x1INNA8YprebDDynag
+	 6jgmBK/CqMaJRTBf8BAz3EcBzSt18b5i3Dc00KdhROTgRH0b+ug3aZCY8sv1qmIGd1
+	 vzaPCffp8Kz4EXvXGkmUa+w9KMiEBBbA5GPY6wSg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D0916F8028A;
-	Thu, 16 Apr 2020 09:56:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BFB4BF80292;
+	Thu, 16 Apr 2020 09:56:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E7F58F8014E; Thu, 16 Apr 2020 09:56:30 +0200 (CEST)
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com
- [IPv6:2a00:1450:4864:20::344])
+ id CE32EF80278; Thu, 16 Apr 2020 09:56:36 +0200 (CEST)
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com
+ [IPv6:2a00:1450:4864:20::341])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7C1C0F8013D
- for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2020 09:56:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C1C0F8013D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 882D7F8014E
+ for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2020 09:56:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 882D7F8014E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="VCUgW+gv"
-Received: by mail-wm1-x344.google.com with SMTP id c195so1856080wme.1
- for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2020 00:56:23 -0700 (PDT)
+ header.b="V+92JQII"
+Received: by mail-wm1-x341.google.com with SMTP id x25so3539020wmc.0
+ for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2020 00:56:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=subject:to:cc:references:from:message-id:date:user-agent
  :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=ulm6HXP6hdRkHQzW/BLmx++TLB4SCHFqhDCHGDLiv5k=;
- b=VCUgW+gvGSo/XCfIqo2sYI3PBbjb3wawnETBSCwGVfPCiqHKGOv3DPYvC1eL+jRpLt
- OeywBaxuHAlyazt97+Ff3g8Sq7DIzxIMjfcC4xCku9dfiNfTXm8Oo84NC5YMuNNdMdx7
- 3fowegU2XrojDa5oIOLxE3D5zHJq2AN/yfPtZqshseVia0n4w6SyyTUGN1zgaWTobRNy
- ic140FiDKZCKRz79WZ+WkhVse+vyuAXAygWsoclijbqWjQvxrLlURtw+9s7dXcZM8u/m
- K6mJI3w4e84YnG29lpmarSFNCGD3uKRXaU9mBDutOBZPAyRvR4NMDhecfumiT1c+gQ2L
- dvow==
+ bh=Kox1QxtahOd3osgWGMNatL/3WlQIWrSz32253M5/lF0=;
+ b=V+92JQIIZjdcgco4btvgFG/iteh1q+0MLX70rPI2MGIuuDVP3vVQReGKfMarxs+Zta
+ C5CQG5qoCn3eIgicA17GU2C9WDKmoL80EmGMBpU1/LUvdZwASEN95FstsDrQopoTuNtU
+ 3i9E9Dyfk6Wpx1xGAL7NfoYq7EclvZumOHRPwoBbIUHpqZpEr08EUVVu4y1zQOYvq5ju
+ FTaoVpYkmqtpq+lp+Oi4b2Q/p17S146c52E4qOC5KnjlPTtm7sjj3lLqM0VGYgdly4Go
+ ztIxXGmG+gVvETvZ/IBzNn6dM71b0ZCuXzh8Zrwyf2OnSCDVwnGRyqwzHyh+pooLiAru
+ IuIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:subject:to:cc:references:from:message-id:date
  :user-agent:mime-version:in-reply-to:content-language
  :content-transfer-encoding;
- bh=ulm6HXP6hdRkHQzW/BLmx++TLB4SCHFqhDCHGDLiv5k=;
- b=YXiggyHkEfiDs3SoYhUDE00cr4wFEd2Jvexu7alA7SRWB4oTsGq+Xnm1QpJ3/05SxF
- 96RwjKjXD1J4MhUZpREV+3jL8d22hhEkd8Pkqon4LzB8EdGXS0A0vlWsYzFkBR7BZrXv
- YbbLlWZPqGAVlGa/3LbIDIcmc9RTUs+UTey9U/1iWCa2K+IDErFG8vsMJ2440TVc7KRH
- WTGqL7MepqU0mQLIBxW/gG0R2z4K6ihFpRErk8je4hqh2ULClMhBmPfKzE1eBaYQvbtW
- JIyQOJ1jlSrRanNocgPb7T6uykwMRFXUEryipcZGFK78pWAWnaWVde46vRW1cXPZK0H5
- if7g==
-X-Gm-Message-State: AGi0Pub/lqkyP4mlUhAI+U4zztjHwqi9FNc1VJnN/Bo8+OjsPxVrhRhf
- sh3u9pIPpaHxLu9vw3zUL6BVRg==
-X-Google-Smtp-Source: APiQypIuyuTdkSr1XavGzGP+CH0F5J2V8jUq1iDBI93URi223iG8SPHxhzLzFDRV4YsUAnVC0qlN2w==
-X-Received: by 2002:a1c:3d83:: with SMTP id k125mr3751097wma.177.1587023782932; 
- Thu, 16 Apr 2020 00:56:22 -0700 (PDT)
+ bh=Kox1QxtahOd3osgWGMNatL/3WlQIWrSz32253M5/lF0=;
+ b=J8TkC+Ozwo3BJNXniSxL6XVqkw4SugNgv96913EqZuNAtKURoDRIS9QQ5ev3ECRu7L
+ aLgFzx8Jl5niXToGPshjzsy/zsFTte8hGCMSBjOPvtlO9x/SRnAke4IbYmScwGeyeNan
+ OqSckCb3FwiEFvlA0ZDfUPthgQc4j+2AbelhISllrKcF3LacJwaCJrTX2Iek3xdSbq9H
+ 4ip94jhFcQhi5CTZpD/QxpD17xhGhbBkH0l/nkZ4AKbbTF/EB26zvNdC+euG7EEV2pz9
+ T2ujdVGjd963B+RK0gwygMR+IFMS5z6Vcpe9OrEYULViUDGzGKphpybzullsF03gk6nW
+ HjSQ==
+X-Gm-Message-State: AGi0PuZzoAZQHYc9PxJC2/bUIM2+n4nzcGZCdUTr9U5Cs0ffRuIsjzoR
+ RyEmBuhsL2CZZWJRS6Gd59+5mA==
+X-Google-Smtp-Source: APiQypLjmf5r74x3HUYZnkW/IPjGxXrvT2N38yPWo5rdm9IEUQaAASgf3S69VUg0RsMZ+W2jo4ynZg==
+X-Received: by 2002:a1c:9e42:: with SMTP id h63mr3297924wme.115.1587023787696; 
+ Thu, 16 Apr 2020 00:56:27 -0700 (PDT)
 Received: from [192.168.86.34]
  (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
- by smtp.googlemail.com with ESMTPSA id s27sm17430055wra.94.2020.04.16.00.56.21
+ by smtp.googlemail.com with ESMTPSA id c17sm26766247wrp.28.2020.04.16.00.56.26
  (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Thu, 16 Apr 2020 00:56:22 -0700 (PDT)
-Subject: Re: [PATCH 02/11] ASoC: qcom: lpass: Add struct lpass_dai to store
- dai clocks pointer
+ Thu, 16 Apr 2020 00:56:27 -0700 (PDT)
+Subject: Re: [PATCH 04/11] ASoC: qcom: lpass-cpu: Make "ahbix-clk" an optional
+ clock.
 To: Ajit Pandey <ajitp@codeaurora.org>, alsa-devel@alsa-project.org,
  broonie@kernel.org, devicetree@vger.kernel.org, plai@codeaurora.org,
  bgoswami@codeaurora.org
 References: <1586592171-31644-1-git-send-email-ajitp@codeaurora.org>
- <1586592171-31644-3-git-send-email-ajitp@codeaurora.org>
+ <1586592171-31644-5-git-send-email-ajitp@codeaurora.org>
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <3b6fb5bf-c580-a543-ab70-d08113193a34@linaro.org>
-Date: Thu, 16 Apr 2020 08:56:21 +0100
+Message-ID: <090b1b81-3c33-7d37-e0bb-a5f73ab76ad0@linaro.org>
+Date: Thu, 16 Apr 2020 08:56:26 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <1586592171-31644-3-git-send-email-ajitp@codeaurora.org>
+In-Reply-To: <1586592171-31644-5-git-send-email-ajitp@codeaurora.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -120,214 +120,70 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 On 11/04/2020 09:02, Ajit Pandey wrote:
-> lpass_dai will store clocks related to respective dai's and it will
-> be initialized during probe based on variant clock names.
+> AHB-I/X bus clocks inside LPASS coreis not a mandatory clocks for
+s/coreis/core is/
+> newer lpass variants, hence make it an optional one.
 > 
+
+Can you add more detail on which version of IP would not have this clk.
+
 > Signed-off-by: Ajit Pandey <ajitp@codeaurora.org>
+> ---
+>   sound/soc/qcom/lpass-cpu.c | 31 ++++++++++++++++++-------------
+>   1 file changed, 18 insertions(+), 13 deletions(-)
+> 
+> diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+> index 492f27b..f177932 100644
+> --- a/sound/soc/qcom/lpass-cpu.c
+> +++ b/sound/soc/qcom/lpass-cpu.c
+> @@ -504,26 +504,31 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
+>   		return ret;
+>   	}
+>   
+> -	drvdata->ahbix_clk = devm_clk_get(&pdev->dev, "ahbix-clk");
+> +	drvdata->ahbix_clk = devm_clk_get_optional(&pdev->dev, "ahbix-clk");
+>   	if (IS_ERR(drvdata->ahbix_clk)) {
+>   		dev_err(&pdev->dev, "error getting ahbix-clk: %ld\n",
+>   			PTR_ERR(drvdata->ahbix_clk));
+>   		return PTR_ERR(drvdata->ahbix_clk);
+>   	}
+>   
+> -	ret = clk_set_rate(drvdata->ahbix_clk, LPASS_AHBIX_CLOCK_FREQUENCY);
+> -	if (ret) {
+> -		dev_err(&pdev->dev, "error setting rate on ahbix_clk: %d\n",
+> -			ret);
+> -		return ret;
+> -	}
+> -	dev_dbg(&pdev->dev, "set ahbix_clk rate to %lu\n",
+> -		clk_get_rate(drvdata->ahbix_clk));
+> +	if (drvdata->ahbix_clk != NULL) {
 
-I dont understand why do we need this change? What is the advantage of 
-doing this way vs the existing one?
-
+No need for NULL checks here, clk apis already have checks.
 
 --srini
 
-> ---
->   sound/soc/qcom/lpass-cpu.c | 89 ++++++++++++++++++++++++++--------------------
->   sound/soc/qcom/lpass.h     | 18 +++++-----
->   2 files changed, 61 insertions(+), 46 deletions(-)
-> 
-> diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-> index dbce7e9..492f27b 100644
-> --- a/sound/soc/qcom/lpass-cpu.c
-> +++ b/sound/soc/qcom/lpass-cpu.c
-> @@ -23,13 +23,15 @@ static int lpass_cpu_daiops_set_sysclk(struct snd_soc_dai *dai, int clk_id,
->   		unsigned int freq, int dir)
->   {
->   	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
-> -	int ret;
-> -
-> -	ret = clk_set_rate(drvdata->mi2s_osr_clk[dai->driver->id], freq);
-> -	if (ret)
-> -		dev_err(dai->dev, "error setting mi2s osrclk to %u: %d\n",
-> -			freq, ret);
-> +	struct lpass_dai *dai_data = drvdata->dai_priv[dai->driver->id];
-> +	int ret = 0;
->   
-> +	if (dai_data->osr_clk != NULL) {
-> +		ret = clk_set_rate(dai_data->osr_clk, freq);
-> +		if (ret)
-> +			dev_err(dai->dev, "error setting mi2s osrclk to %u:%d\n",
-> +				freq, ret);
-> +	}
->   	return ret;
->   }
->   
-> @@ -37,18 +39,22 @@ static int lpass_cpu_daiops_startup(struct snd_pcm_substream *substream,
->   		struct snd_soc_dai *dai)
->   {
->   	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
-> +	struct lpass_dai *dai_data = drvdata->dai_priv[dai->driver->id];
->   	int ret;
->   
-> -	ret = clk_prepare_enable(drvdata->mi2s_osr_clk[dai->driver->id]);
-> -	if (ret) {
-> -		dev_err(dai->dev, "error in enabling mi2s osr clk: %d\n", ret);
-> -		return ret;
-> +	if (dai_data->osr_clk != NULL) {
-> +		ret = clk_prepare_enable(dai_data->osr_clk);
+> +		ret = clk_set_rate(drvdata->ahbix_clk,
+> +				   LPASS_AHBIX_CLOCK_FREQUENCY);
 > +		if (ret) {
-> +			dev_err(dai->dev,
-> +				"error in enabling mi2s osr clk: %d\n", ret);
+> +			dev_err(&pdev->dev,
+> +				"error setting rate on ahbix_clk: %d\n", ret);
+> +			return ret;
+> +		}
+>   
+> -	ret = clk_prepare_enable(drvdata->ahbix_clk);
+> -	if (ret) {
+> -		dev_err(&pdev->dev, "error enabling ahbix_clk: %d\n", ret);
+> -		return ret;
+> +		dev_dbg(&pdev->dev, "set ahbix_clk rate to %lu\n",
+> +			clk_get_rate(drvdata->ahbix_clk));
+> +
+> +		ret = clk_prepare_enable(drvdata->ahbix_clk);
+> +		if (ret) {
+> +			dev_err(&pdev->dev,
+> +				"error enabling ahbix_clk: %d\n", ret);
 > +			return ret;
 > +		}
 >   	}
 >   
-> -	ret = clk_prepare_enable(drvdata->mi2s_bit_clk[dai->driver->id]);
-> +	ret = clk_prepare_enable(dai_data->bit_clk);
->   	if (ret) {
->   		dev_err(dai->dev, "error in enabling mi2s bit clk: %d\n", ret);
-> -		clk_disable_unprepare(drvdata->mi2s_osr_clk[dai->driver->id]);
-> +		clk_disable_unprepare(dai_data->osr_clk);
->   		return ret;
->   	}
->   
-> @@ -59,16 +65,18 @@ static void lpass_cpu_daiops_shutdown(struct snd_pcm_substream *substream,
->   		struct snd_soc_dai *dai)
->   {
->   	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
-> +	struct lpass_dai *dai_data = drvdata->dai_priv[dai->driver->id];
->   
-> -	clk_disable_unprepare(drvdata->mi2s_bit_clk[dai->driver->id]);
-> +	clk_disable_unprepare(dai_data->bit_clk);
->   
-> -	clk_disable_unprepare(drvdata->mi2s_osr_clk[dai->driver->id]);
-> +	clk_disable_unprepare(dai_data->osr_clk);
->   }
->   
->   static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
->   		struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
->   {
->   	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
-> +	struct lpass_dai *dai_data = drvdata->dai_priv[dai->driver->id];
->   	snd_pcm_format_t format = params_format(params);
->   	unsigned int channels = params_channels(params);
->   	unsigned int rate = params_rate(params);
-> @@ -163,8 +171,7 @@ static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
->   		return ret;
->   	}
->   
-> -	ret = clk_set_rate(drvdata->mi2s_bit_clk[dai->driver->id],
-> -			   rate * bitwidth * 2);
-> +	ret = clk_set_rate(dai_data->bit_clk, rate * bitwidth * 2);
->   	if (ret) {
->   		dev_err(dai->dev, "error setting mi2s bitclk to %u: %d\n",
->   			rate * bitwidth * 2, ret);
-> @@ -413,6 +420,25 @@ static bool lpass_cpu_regmap_volatile(struct device *dev, unsigned int reg)
->   	.cache_type = REGCACHE_FLAT,
->   };
->   
-> +static int lpass_init_dai_clocks(struct device *dev,
-> +			   struct lpass_data *drvdata)
-> +{
-> +	struct lpass_dai *dai;
-> +	struct lpass_variant *v = drvdata->variant;
-> +	int i;
-> +
-> +	for (i = 0; i < v->num_dai; i++) {
-> +
-> +		dai = drvdata->dai_priv[i];
-> +
-> +		dai->osr_clk = devm_clk_get_optional(dev,
-> +						     v->dai_osr_clk_names[i]);
-> +		dai->bit_clk = devm_clk_get(dev, v->dai_bit_clk_names[i]);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->   int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
->   {
->   	struct lpass_data *drvdata;
-> @@ -421,7 +447,7 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
->   	struct lpass_variant *variant;
->   	struct device *dev = &pdev->dev;
->   	const struct of_device_id *match;
-> -	int ret, i, dai_id;
-> +	int ret, i;
->   
->   	dsp_of_node = of_parse_phandle(pdev->dev.of_node, "qcom,adsp", 0);
->   	if (dsp_of_node) {
-> @@ -467,28 +493,15 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
->   		variant->init(pdev);
->   
->   	for (i = 0; i < variant->num_dai; i++) {
-> -		dai_id = variant->dai_driver[i].id;
-> -		drvdata->mi2s_osr_clk[dai_id] = devm_clk_get(&pdev->dev,
-> -					     variant->dai_osr_clk_names[i]);
-> -		if (IS_ERR(drvdata->mi2s_osr_clk[dai_id])) {
-> -			dev_warn(&pdev->dev,
-> -				"%s() error getting optional %s: %ld\n",
-> -				__func__,
-> -				variant->dai_osr_clk_names[i],
-> -				PTR_ERR(drvdata->mi2s_osr_clk[dai_id]));
-> -
-> -			drvdata->mi2s_osr_clk[dai_id] = NULL;
-> -		}
-> +		drvdata->dai_priv[i] = devm_kzalloc(dev,
-> +						sizeof(struct lpass_dai),
-> +						GFP_KERNEL);
-> +	}
->   
-> -		drvdata->mi2s_bit_clk[dai_id] = devm_clk_get(&pdev->dev,
-> -						variant->dai_bit_clk_names[i]);
-> -		if (IS_ERR(drvdata->mi2s_bit_clk[dai_id])) {
-> -			dev_err(&pdev->dev,
-> -				"error getting %s: %ld\n",
-> -				variant->dai_bit_clk_names[i],
-> -				PTR_ERR(drvdata->mi2s_bit_clk[dai_id]));
-> -			return PTR_ERR(drvdata->mi2s_bit_clk[dai_id]);
-> -		}
-> +	ret = lpass_init_dai_clocks(dev, drvdata);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "error intializing dai clock: %d\n", ret);
-> +		return ret;
->   	}
->   
->   	drvdata->ahbix_clk = devm_clk_get(&pdev->dev, "ahbix-clk");
-> diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
-> index 17113d3..b729686 100644
-> --- a/sound/soc/qcom/lpass.h
-> +++ b/sound/soc/qcom/lpass.h
-> @@ -13,9 +13,14 @@
->   #include <linux/platform_device.h>
->   #include <linux/regmap.h>
->   
-> -#define LPASS_AHBIX_CLOCK_FREQUENCY		131072000
-> -#define LPASS_MAX_MI2S_PORTS			(8)
-> -#define LPASS_MAX_DMA_CHANNELS			(8)
-> +#define LPASS_AHBIX_CLOCK_FREQUENCY            131072000
-> +#define LPASS_MAX_MI2S_PORTS                   (8)
-> +#define LPASS_MAX_DMA_CHANNELS                 (8)
-> +
-> +struct lpass_dai {
-> +	struct clk *osr_clk;
-> +	struct clk *bit_clk;
-> +};
->   
->   /* Both the CPU DAI and platform drivers will access this data */
->   struct lpass_data {
-> @@ -23,11 +28,8 @@ struct lpass_data {
->   	/* AHB-I/X bus clocks inside the low-power audio subsystem (LPASS) */
->   	struct clk *ahbix_clk;
->   
-> -	/* MI2S system clock */
-> -	struct clk *mi2s_osr_clk[LPASS_MAX_MI2S_PORTS];
-> -
-> -	/* MI2S bit clock (derived from system clock by a divider */
-> -	struct clk *mi2s_bit_clk[LPASS_MAX_MI2S_PORTS];
-> +	/* MI2S dai specific configuration */
-> +	struct lpass_dai *dai_priv[LPASS_MAX_MI2S_PORTS];
->   
->   	/* low-power audio interface (LPAIF) registers */
->   	void __iomem *lpaif;
+>   	ret = devm_snd_soc_register_component(&pdev->dev,
 > 
