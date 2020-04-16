@@ -4,57 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F611C2BB85
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Apr 2020 10:34:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47645C2BB85
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Apr 2020 10:34:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CC90F221EB
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Apr 2020 10:34:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C53C3206D6
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Apr 2020 10:34:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="S9mkoCIJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC90F221EB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dVTSSh/z"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C53C3206D6
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 236C51616;
-	Thu, 16 Apr 2020 12:33:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 236C51616
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1A86C166F;
+	Thu, 16 Apr 2020 12:33:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A86C166F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587033262;
-	bh=FSCrJVIHrHP1m+H2f5bWgdd26OKdJg2LRMbZ6X8EL5E=;
+	s=default; t=1587033287;
+	bh=k6eIJFinVW/EfNbPQThpZK/M7ES5kp3REb6Qw7Hn1Mg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=S9mkoCIJKFSthe41QTdvf4hnmFbdwkYRLsAuBNV6NZksVaClfPR698rd/HxNf+TSa
-	 GlnVHEy8TAsbQsRvAL02op25B4mFjohKN+Jgs9WiYPub+iqua4gy/FpIGrv4Y81jda
-	 2uYrPOhKmEdAUy9mqJxiedmUu1k/YAQtQYsiHwE4=
+	b=dVTSSh/zvqfBegmucLH1GvVCam801r3IdFUY3Kq4h3TDfxXZ+u70EbPZWJeYm03G+
+	 JHLTzqJsQTIqluU+jNaDPGLapGq6nFUBWNbPV3deMe1OzIcPoL53umBsyP2w4dw7qe
+	 mLPy+2g3sKNGRbx7QADunNXprRb3T/gM6oADiucU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1AF3FF8028F;
-	Thu, 16 Apr 2020 12:31:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 67F6BF80299;
+	Thu, 16 Apr 2020 12:31:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 011F8F8027D; Thu, 16 Apr 2020 12:31:22 +0200 (CEST)
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be
- [IPv6:2a02:1800:120:4::f00:13])
+ id 05A40F8028F; Thu, 16 Apr 2020 12:31:25 +0200 (CEST)
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be
+ [IPv6:2a02:1800:120:4::f00:14])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A1965F8014E
+ by alsa1.perex.cz (Postfix) with ESMTPS id F2530F8021E
  for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2020 12:31:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1965F8014E
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2530F8021E
 Received: from ramsan ([IPv6:2a02:1810:ac12:ed60:fd83:81bb:c1d7:433d])
- by baptiste.telenet-ops.be with bizsmtp
- id TNWz2200j4dKHqf01NWzN6; Thu, 16 Apr 2020 12:31:11 +0200
+ by xavier.telenet-ops.be with bizsmtp
+ id TNWz2200l4dKHqf01NWzxG; Thu, 16 Apr 2020 12:31:11 +0200
 Received: from rox.of.borg ([192.168.97.57]) by ramsan with esmtp (Exim 4.90_1)
  (envelope-from <geert@linux-m68k.org>)
- id 1jP1nP-0001cz-Q0; Thu, 16 Apr 2020 12:30:59 +0200
+ id 1jP1nP-0001cq-O4; Thu, 16 Apr 2020 12:30:59 +0200
 Received: from geert by rox.of.borg with local (Exim 4.90_1)
  (envelope-from <geert@linux-m68k.org>)
- id 1jP1nP-0003zO-OP; Thu, 16 Apr 2020 12:30:59 +0200
+ id 1jP1nP-0003zI-Me; Thu, 16 Apr 2020 12:30:59 +0200
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 To: Rob Herring <robh+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
  David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
@@ -65,9 +65,9 @@ To: Rob Herring <robh+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
  =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Jiri Kosina <trivial@kernel.org>
-Subject: [PATCH trivial 6/6] ASoC: Fix misspellings of "Analog Devices"
-Date: Thu, 16 Apr 2020 12:30:58 +0200
-Message-Id: <20200416103058.15269-7-geert+renesas@glider.be>
+Subject: [PATCH trivial 4/6] iio: Fix misspellings of "Analog Devices"
+Date: Thu, 16 Apr 2020 12:30:56 +0200
+Message-Id: <20200416103058.15269-5-geert+renesas@glider.be>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200416103058.15269-1-geert+renesas@glider.be>
 References: <20200416103058.15269-1-geert+renesas@glider.be>
@@ -95,50 +95,48 @@ According to https://www.analog.com/, the company name is spelled
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
- sound/soc/codecs/ad1980.c  | 2 +-
- sound/soc/codecs/ad73311.c | 2 +-
- sound/soc/codecs/wm8782.c  | 2 +-
+ drivers/iio/adc/ad7791.c                       | 2 +-
+ drivers/iio/trigger/iio-trig-hrtimer.c         | 2 +-
+ drivers/staging/iio/Documentation/overview.txt | 2 +-
  3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/ad1980.c b/sound/soc/codecs/ad1980.c
-index c4414c725c1f945a..43b1337bac37f70f 100644
---- a/sound/soc/codecs/ad1980.c
-+++ b/sound/soc/codecs/ad1980.c
-@@ -2,7 +2,7 @@
- /*
-  * ad1980.c  --  ALSA Soc AD1980 codec support
-  *
-- * Copyright:	Analog Device Inc.
-+ * Copyright:	Analog Devices Inc.
-  * Author:	Roy Huang <roy.huang@analog.com>
-  * 		Cliff Cai <cliff.cai@analog.com>
-  */
-diff --git a/sound/soc/codecs/ad73311.c b/sound/soc/codecs/ad73311.c
-index 10daf61f02940b46..b98bf19f594e097f 100644
---- a/sound/soc/codecs/ad73311.c
-+++ b/sound/soc/codecs/ad73311.c
-@@ -2,7 +2,7 @@
- /*
-  * ad73311.c  --  ALSA Soc AD73311 codec support
-  *
-- * Copyright:	Analog Device Inc.
-+ * Copyright:	Analog Devices Inc.
-  * Author:	Cliff Cai <cliff.cai@analog.com>
-  */
+diff --git a/drivers/iio/adc/ad7791.c b/drivers/iio/adc/ad7791.c
+index abb2393926317087..70bfc41052db2740 100644
+--- a/drivers/iio/adc/ad7791.c
++++ b/drivers/iio/adc/ad7791.c
+@@ -444,5 +444,5 @@ static struct spi_driver ad7791_driver = {
+ module_spi_driver(ad7791_driver);
  
-diff --git a/sound/soc/codecs/wm8782.c b/sound/soc/codecs/wm8782.c
-index aa5577e364d01360..f89855c616ebe6e6 100644
---- a/sound/soc/codecs/wm8782.c
-+++ b/sound/soc/codecs/wm8782.c
-@@ -7,7 +7,7 @@
-  * Author: Johannes Stezenbach <js@sig21.net>
+ MODULE_AUTHOR("Lars-Peter Clausen <lars@metafoo.de>");
+-MODULE_DESCRIPTION("Analog Device AD7787/AD7788/AD7789/AD7790/AD7791 ADC driver");
++MODULE_DESCRIPTION("Analog Devices AD7787/AD7788/AD7789/AD7790/AD7791 ADC driver");
+ MODULE_LICENSE("GPL v2");
+diff --git a/drivers/iio/trigger/iio-trig-hrtimer.c b/drivers/iio/trigger/iio-trig-hrtimer.c
+index a5e670726717f0d8..f59bf8d585866ea2 100644
+--- a/drivers/iio/trigger/iio-trig-hrtimer.c
++++ b/drivers/iio/trigger/iio-trig-hrtimer.c
+@@ -4,7 +4,7 @@
   *
-  * based on ad73311.c
-- * Copyright:	Analog Device Inc.
-+ * Copyright:	Analog Devices Inc.
-  * Author:	Cliff Cai <cliff.cai@analog.com>
+  * Copyright (C) Intuitive Aerial AB
+  * Written by Marten Svanfeldt, marten@intuitiveaerial.com
+- * Copyright (C) 2012, Analog Device Inc.
++ * Copyright (C) 2012, Analog Devices Inc.
+  *	Author: Lars-Peter Clausen <lars@metafoo.de>
+  * Copyright (C) 2015, Intel Corporation
   */
+diff --git a/drivers/staging/iio/Documentation/overview.txt b/drivers/staging/iio/Documentation/overview.txt
+index 43f92b06bc3e5574..ebdc64f451d7c798 100644
+--- a/drivers/staging/iio/Documentation/overview.txt
++++ b/drivers/staging/iio/Documentation/overview.txt
+@@ -34,7 +34,7 @@ turned on or off (if possible) via sysfs interfaces.
+ fifo / ring buffers on the sensor chip.  These greatly reduce the load
+ on the host CPU by buffering relatively large numbers of data samples
+ based on an internal sampling clock. Examples include VTI SCA3000
+-series and Analog Device ADXL345 accelerometers.  Each buffer supports
++series and Analog Devices ADXL345 accelerometers.  Each buffer supports
+ polling to establish when data is available.
  
+ * Trigger and software buffer support. In many data analysis
 -- 
 2.17.1
 
