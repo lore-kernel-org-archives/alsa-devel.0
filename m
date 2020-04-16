@@ -2,85 +2,82 @@ Return-Path: <SRS0=YLi8=6B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E275C352BE
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 09:26:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EC40C352BE
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 09:27:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8DA7F221EA
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 09:26:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 07879206B9
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 09:27:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DFi01Pji";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="OJtBap6g"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8DA7F221EA
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dEporV5J";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="UpLjGQfN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 07879206B9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DB0381663;
-	Fri, 17 Apr 2020 11:25:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB0381663
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5E386167E;
+	Fri, 17 Apr 2020 11:26:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5E386167E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587115590;
-	bh=lAG6zzq1Sqen9mJhj5pG0jXwK1qfgmptfKCYtqRavfc=;
+	s=default; t=1587115624;
+	bh=MMYlJuOL0lJfSjjO9OZrF5NfvXGQobqN9Rg04mTNFAM=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DFi01PjigEcYc7kkIR+3cl4nELNFba6BGa5kwunogRfYjQtrRbTeGdja+UTTO21z1
-	 BxQ/soblonUsRnz8QRnmwOqfpgo61yBnAss39aUfsEXGRp3SzJjHztfj1jxK/p7IdT
-	 DhmxRrUUAGNv3793wSLKnbNgtNl7L2ihAwhn9Rsg=
+	b=dEporV5Jl0qU/06mPsoWupMmbqZcT3UeaYe2drtgkiwxIH6XJB5kXAwbcVKZyJhYr
+	 cOlqryGqAtPkX1OeVcRqtJ2EAkuIPuuv16+ohvbF9k23XbERUUDn0CUrxARMarMEms
+	 2H2Rn/V68L1VUZs/qEh7LsDxOPMoHTCH5JdpXjfs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6AB6FF8032A;
-	Fri, 17 Apr 2020 11:16:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8E06DF80331;
+	Fri, 17 Apr 2020 11:16:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9257FF8012E; Thu, 16 Apr 2020 15:55:44 +0200 (CEST)
+ id B1D8FF8014E; Thu, 16 Apr 2020 16:38:14 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 529E3F8012E
- for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2020 15:55:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 529E3F8012E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 92F1BF8012E
+ for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2020 16:38:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92F1BF8012E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="OJtBap6g"
-Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com
- [209.85.219.45])
+ header.b="UpLjGQfN"
+Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com
+ [209.85.160.175])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 1E3B322247
- for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2020 13:55:34 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id AFEAE2224F
+ for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2020 14:38:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1587045334;
- bh=lAG6zzq1Sqen9mJhj5pG0jXwK1qfgmptfKCYtqRavfc=;
+ s=default; t=1587047883;
+ bh=MMYlJuOL0lJfSjjO9OZrF5NfvXGQobqN9Rg04mTNFAM=;
  h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=OJtBap6gxkn7B64p6YI3gTyfG+37GXhLma2wex7puLnTvEPVIckcw2EWyHIlGxpbU
- axCPq/uLuHBCHTtrTyk9e9F01ZRfk1h5UwSfOVyg7KnEYG4Mh0g9CUMFFZUUhlg6Dn
- cKIhtKmwFJOdPx1PSLWhEzhafdvl/OQ5lWzBbqUw=
-Received: by mail-qv1-f45.google.com with SMTP id fb4so2009615qvb.7
- for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2020 06:55:34 -0700 (PDT)
-X-Gm-Message-State: AGi0Pub4HRZQg/dpL/JmwQ7XT1y6boaZ/i/IoQIAPA3Y04hKmJS/dAuu
- RqnldxyHgsPfLL4gMaXdvJ4HRBDnXBdLdICqdA==
-X-Google-Smtp-Source: APiQypJP5/uECHnZPqCD8aDFNOvB3C1OTKaRvvNdGUWUD6LvJ9HnhAL59x+YqONzfmAtrwzd6yqnrOF4qnSJIJfw8nM=
-X-Received: by 2002:a05:6214:a8a:: with SMTP id
- ev10mr9484527qvb.20.1587045333124; 
- Thu, 16 Apr 2020 06:55:33 -0700 (PDT)
+ b=UpLjGQfNJ7AhEjZREeHuVboKWCCQCByhNFkhI3WqLPo8Mlcf5oIw7jZd/2OdH9yBT
+ aIZAbAKEnJu3xdtXVBzL/qPq3GoSs/S1q0m4B9Y5XFUKpQPqq24X4l78b+Pj+tLnJg
+ NtrdiAaH0zhwyAYQB4MpxL0IotfCh/UB+NTCxFbM=
+Received: by mail-qt1-f175.google.com with SMTP id o10so16505026qtr.6
+ for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2020 07:38:03 -0700 (PDT)
+X-Gm-Message-State: AGi0PuZrtl5sB39nOSdZFN6VadRYr/Q6LqLIdtrIE6QHBW8EXqXowID+
+ zCeSMjaLZJZE69RiRyzXi/8rdMA4Gl7I153ODQ==
+X-Google-Smtp-Source: APiQypKfVD+tFYP8p52n1yv1KvQa1nwC0OwG10Vnv04PQ+j0umFoj6sJCylT4GddENC8rGvDyZyW05FDoL7hFDARgK8=
+X-Received: by 2002:ac8:39e5:: with SMTP id v92mr26657152qte.224.1587047882719; 
+ Thu, 16 Apr 2020 07:38:02 -0700 (PDT)
 MIME-Version: 1.0
 References: <20200416005549.9683-1-robh@kernel.org>
- <20200416005549.9683-2-robh@kernel.org>
- <d93f90bbcc99967ed5ba458ba99d7e73de12e3b2.camel@perches.com>
-In-Reply-To: <d93f90bbcc99967ed5ba458ba99d7e73de12e3b2.camel@perches.com>
+ <20200416124359.GB5785@ravnborg.org>
+In-Reply-To: <20200416124359.GB5785@ravnborg.org>
 From: Rob Herring <robh@kernel.org>
-Date: Thu, 16 Apr 2020 08:55:21 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLcJrFow_+-o2CxoPRCv4U-ELb2FHSbUgG=Mzt8PFn_CA@mail.gmail.com>
-Message-ID: <CAL_JsqLcJrFow_+-o2CxoPRCv4U-ELb2FHSbUgG=Mzt8PFn_CA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] dt-bindings: Remove cases of 'allOf' containing a
- '$ref'
-To: Joe Perches <joe@perches.com>
+Date: Thu, 16 Apr 2020 09:37:50 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKYTRh-cgMQSD=DHS2aud9TnLjKepqd9z0F9Wj2oe=jDg@mail.gmail.com>
+Message-ID: <CAL_JsqKYTRh-cgMQSD=DHS2aud9TnLjKepqd9z0F9Wj2oe=jDg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: Clean-up schema indentation formatting
+To: Sam Ravnborg <sam@ravnborg.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Mailman-Approved-At: Fri, 17 Apr 2020 11:15:49 +0200
 Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
@@ -96,10 +93,10 @@ Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
  MTD Maling List <linux-mtd@lists.infradead.org>,
  Linux I2C <linux-i2c@vger.kernel.org>, Pavel Machek <pavel@ucw.cz>,
  linux-riscv <linux-riscv@lists.infradead.org>,
- Lee Jones <lee.jones@linaro.org>, linux-clk <linux-clk@vger.kernel.org>,
+ Fabio Estevam <festevam@gmail.com>, linux-clk <linux-clk@vger.kernel.org>,
  Linux LED Subsystem <linux-leds@vger.kernel.org>,
  "open list:REAL TIME CLOCK \(RTC\) SUBSYSTEM" <linux-rtc@vger.kernel.org>,
- Florian Fainelli <f.fainelli@gmail.com>, Sam Ravnborg <sam@ravnborg.org>,
+ Florian Fainelli <f.fainelli@gmail.com>, Lee Jones <lee.jones@linaro.org>,
  Daniel Lezcano <daniel.lezcano@linaro.org>,
  Krzysztof Kozlowski <krzk@kernel.org>,
  Bartosz Golaszewski <bgolaszewski@baylibre.com>,
@@ -111,7 +108,7 @@ Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
  linux-can@vger.kernel.org,
  "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
  Mark Brown <broonie@kernel.org>, Jacek Anaszewski <jacek.anaszewski@gmail.com>,
- Fabio Estevam <festevam@gmail.com>, Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
  "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE"
  <linux-arm-kernel@lists.infradead.org>,
  Linux HWMON List <linux-hwmon@vger.kernel.org>,
@@ -138,29 +135,132 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Apr 16, 2020 at 1:52 AM Joe Perches <joe@perches.com> wrote:
+On Thu, Apr 16, 2020 at 7:44 AM Sam Ravnborg <sam@ravnborg.org> wrote:
 >
-> On Wed, 2020-04-15 at 19:55 -0500, Rob Herring wrote:
-> > json-schema versions draft7 and earlier have a weird behavior in that
-> > any keywords combined with a '$ref' are ignored (silently). The correct
-> > form was to put a '$ref' under an 'allOf'. This behavior is now changed
-> > in the 2019-09 json-schema spec and '$ref' can be mixed with other
-> > keywords. The json-schema library doesn't yet support this, but the
-> > tooling now does a fixup for this and either way works.
+> Hi Rob.
+>
+> On Wed, Apr 15, 2020 at 07:55:48PM -0500, Rob Herring wrote:
+> > Fix various inconsistencies in schema indentation. Most of these are
+> > list indentation which should be 2 spaces more than the start of the
+> > enclosing keyword. This doesn't matter functionally, but affects running
+> > scripts which do transforms on the schema files.
+>
+> Are there any plans to improve the tooling so we get warnigns for this?
+
+I've been experimenting with yamllint some. I haven't figured out how
+to best integrate it in. Probably need to start with something minimal
+and warning free for the tree and then add to it.
+
+There's also yaml-format in the dtschema repo which just reads in and
+writes out a yaml file using ruamel round trip yaml parser. That's
+what I used here.
+
+> Otherwise I am afraid we will see a lot of patches that gets this wrong.
+>
+> As a follow-up patch it would be good if example-schema.yaml
+> could gain some comments about the correct indentions.
+
+Sure, I can do that.
+
+>
+> Some comments in the following.
+>
+> > diff --git a/Documentation/devicetree/bindings/arm/altera.yaml b/Documentation/devicetree/bindings/arm/altera.yaml
+> > index 49e0362ddc11..b388c5aa7984 100644
+> > --- a/Documentation/devicetree/bindings/arm/altera.yaml
+> > +++ b/Documentation/devicetree/bindings/arm/altera.yaml
+> > @@ -13,8 +13,8 @@ properties:
+> >    compatible:
+> >      items:
+> >        - enum:
+> > -        - altr,socfpga-cyclone5
+> > -        - altr,socfpga-arria5
+> > -        - altr,socfpga-arria10
+> > +          - altr,socfpga-cyclone5
+> > +          - altr,socfpga-arria5
+> > +          - altr,socfpga-arria10
+> >        - const: altr,socfpga
+>
+> So here "- enum" do not need the extra indent.
+> Is it because this is not a list?
+
+Right. Indentation is 2 more spaces than the parent keyword ignoring
+any hyphen in the parent.
+
+> > diff --git a/Documentation/devicetree/bindings/arm/amlogic/amlogic,meson-gx-ao-secure.yaml b/Documentation/devicetree/bindings/arm/amlogic/amlogic,meson-gx-ao-secure.yaml
+> > index 66213bd95e6e..6cc74523ebfd 100644
+> > --- a/Documentation/devicetree/bindings/arm/amlogic/amlogic,meson-gx-ao-secure.yaml
+> > +++ b/Documentation/devicetree/bindings/arm/amlogic/amlogic,meson-gx-ao-secure.yaml
+> > @@ -25,7 +25,7 @@ select:
 > >
-> > This has been a constant source of review comments, so let's change this
-> > treewide so everyone copies the simpler syntax.
+> >  properties:
+> >    compatible:
+> > -   items:
+> > +    items:
+> >        - const: amlogic,meson-gx-ao-secure
+> >        - const: syscon
 >
-> This is a large change.
+> This is something I had expected the tooling to notice.
+> I had expected the two "- const" to be indented with 4 spaces, not two.
+> So there is something I do not understand.
+
+As above, correct indenting is 2 spaces from the parent not counting
+any '-' in the parent, but the '-' counts for indenting the children.
+
+Arguably, this style is inconsistent that sometimes the '-' counts and
+sometimes it doesn't. However, I think this style is better because it
+distinguishes lists vs. dicts more clearly. It's easy to miss the '-'
+when the indentation is the same:
+
+- foo:
+  - bar
+  - baz
+
+- foo:
+    bar
+    baz
+
+Or worse:
+
+- foo:
+  - bar
+    baz
+
+Both styles are valid. It's just a tabs vs. spaces debate, and I just
+picked one.
+
+
+> > diff --git a/Documentation/devicetree/bindings/arm/nxp/lpc32xx.yaml b/Documentation/devicetree/bindings/arm/nxp/lpc32xx.yaml
+> > index 07f39d3eee7e..f7f024910e71 100644
+> > --- a/Documentation/devicetree/bindings/arm/nxp/lpc32xx.yaml
+> > +++ b/Documentation/devicetree/bindings/arm/nxp/lpc32xx.yaml
+> > @@ -17,9 +17,8 @@ properties:
+> >            - nxp,lpc3230
+> >            - nxp,lpc3240
+> >        - items:
+> > -        - enum:
+> > -            - ea,ea3250
+> > -            - phytec,phy3250
+> > -        - const: nxp,lpc3250
+> > -
+> > +          - enum:
+> > +              - ea,ea3250
+> > +              - phytec,phy3250
+> > +          - const: nxp,lpc3250
+> >  ...
 >
-> Was this done manually or by some script?
+> And here "- enum" receive extra indent.
+>
+> I trust you know what you are doing - but I do not get it.
+>
+> Some pointers or examples for the correct indention would be great.
 
-Scripted with python ruamel yaml, but then I had to filter out all the
-re-formatting (hence the first patch to cut down some of that).
+With this patch, the tree is all correct examples. :)
 
-> If it was done manually, how likely is it there are defects
-> in the conversion?
-
-Either way, the schemas still have to pass the meta-schema checks.
-
-Rob
+> I cannot review this patch as long as I do not know the rules.
+>
+> My request to update example-schema.yaml was one way to teach me.
+> (Some people will say that is difficult/impossible to teach me,
+> but thats another story:-) ).
+>
+>         Sam
