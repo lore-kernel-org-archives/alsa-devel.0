@@ -2,67 +2,80 @@ Return-Path: <SRS0=YLi8=6B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A6239C352BE
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 09:20:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5264BC352BE
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 09:20:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2A8F72137B
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 09:20:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CAC752137B
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 09:20:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="J5I5XstL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2A8F72137B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=the-dreams.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qU4PDq5l";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="O1d6NWlK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CAC752137B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7D1161663;
-	Fri, 17 Apr 2020 11:19:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D1161663
+	by alsa0.perex.cz (Postfix) with ESMTPS id 235221666;
+	Fri, 17 Apr 2020 11:20:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 235221666
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587115232;
-	bh=sN+2N7h74bCeaKXl4/0R/hwo2RkIOyMHe1dWZ3JENdA=;
+	s=default; t=1587115257;
+	bh=6kwbxJH2RDveXqsZesbfmy1W3FzqE56YVY6CxJmBpFo=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=J5I5XstLhteK7BTek9n3OpebgZOgozZhBmG96QNY49ltYOBoy9pwq3NDWoTYRevS6
-	 qB4ROlmJa1apLvlC3TxjAdBr7T2fbhDxRXRh9jb4CfvFgCevlVlJ++uOLAeIg9ab73
-	 FW375nZ0bWtc9elGme4JqssZfcnh3d8vDlhnusoc=
+	b=qU4PDq5lGALm5RbDU1upoUmfM1L1Jh+6Q02qspiATJw1KoeEroVqJd2ITvH/b9WgT
+	 +rha/Scjtf9zNBLaFJG2o3aff9MCEBWP6x528Zu1ZfUQ9hkP+moXV0Xrtrjl+f3/79
+	 uL3X9hUFIpmm2mZ+lK2cgMw4SwQle4WInIerLtIY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6942BF802A9;
-	Fri, 17 Apr 2020 11:15:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5C378F802C2;
+	Fri, 17 Apr 2020 11:15:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4AA52F802A2; Thu, 16 Apr 2020 09:28:02 +0200 (CEST)
-Received: from pokefinder.org (sauhun.de [88.99.104.3])
- by alsa1.perex.cz (Postfix) with ESMTP id 250D8F8029B
- for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2020 09:27:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 250D8F8029B
-Received: from localhost (p54B33393.dip0.t-ipconnect.de [84.179.51.147])
- by pokefinder.org (Postfix) with ESMTPSA id E4E0B2C1FDE;
- Thu, 16 Apr 2020 09:27:55 +0200 (CEST)
-Date: Thu, 16 Apr 2020 09:27:54 +0200
-From: Wolfram Sang <wsa@the-dreams.de>
+ id 070FFF8021E; Thu, 16 Apr 2020 10:07:22 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id EEAECF8013D
+ for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2020 10:07:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EEAECF8013D
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="O1d6NWlK"
+Received: from localhost (unknown [223.235.195.235])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 69F85206E9;
+ Thu, 16 Apr 2020 08:07:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1587024434;
+ bh=6kwbxJH2RDveXqsZesbfmy1W3FzqE56YVY6CxJmBpFo=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=O1d6NWlKFfnyKMYlp3FSfoZyP6WL58llnMOPAcukWE4NK15IAgUmTc9Oy1CJfBrQJ
+ FzFh77ntmk81ok6QNhBa7Fsxt0mRWxySPBmmQLISyBFjZXKruM2zAQoNUgGwtCZMXr
+ hATzQxclu6p7VFesf/GI28sOVbjEiU4zdOe4G2WA=
+Date: Thu, 16 Apr 2020 13:37:10 +0530
+From: Vinod Koul <vkoul@kernel.org>
 To: Rob Herring <robh@kernel.org>
 Subject: Re: [PATCH 1/2] dt-bindings: Clean-up schema indentation formatting
-Message-ID: <20200416072754.GB1023@kunai>
+Message-ID: <20200416080710.GI72691@vkoul-mobl>
 References: <20200416005549.9683-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="PmA2V3Z32TCmWXqI"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20200416005549.9683-1-robh@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Mailman-Approved-At: Fri, 17 Apr 2020 11:15:50 +0200
 Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
- Heiko Stuebner <heiko@sntech.de>, linux-pwm@vger.kernel.org,
- linux-iio@vger.kernel.org, linux-pci@vger.kernel.org,
- Linus Walleij <linus.walleij@linaro.org>, linux-remoteproc@vger.kernel.org,
+ Heiko Stuebner <heiko@sntech.de>, Sam Ravnborg <sam@ravnborg.org>,
+ linux-pwm@vger.kernel.org, linux-iio@vger.kernel.org,
+ linux-pci@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
+ linux-remoteproc@vger.kernel.org,
  Alexandre Belloni <alexandre.belloni@bootlin.com>,
  dri-devel@lists.freedesktop.org, Bjorn Andersson <bjorn.andersson@linaro.org>,
  Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org,
@@ -70,7 +83,7 @@ Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
  linux-riscv@lists.infradead.org, Lee Jones <lee.jones@linaro.org>,
  linux-clk@vger.kernel.org, linux-leds@vger.kernel.org,
  linux-rtc@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
- Sam Ravnborg <sam@ravnborg.org>, Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Fabio Estevam <festevam@gmail.com>, Daniel Lezcano <daniel.lezcano@linaro.org>,
  Krzysztof Kozlowski <krzk@kernel.org>,
  Bartosz Golaszewski <bgolaszewski@baylibre.com>, linux-serial@vger.kernel.org,
  linux-input@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
@@ -79,14 +92,14 @@ Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
  Maxime Ripard <mripard@kernel.org>, linux-can@vger.kernel.org,
  linux-gpio@vger.kernel.org, Mark Brown <broonie@kernel.org>,
  Jacek Anaszewski <jacek.anaszewski@gmail.com>,
- Fabio Estevam <festevam@gmail.com>, Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
  linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
  Stephen Boyd <sboyd@kernel.org>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-mmc@vger.kernel.org,
  linux-kernel@vger.kernel.org, Amit Kucheria <amit.kucheria@linaro.org>,
- linux-spi@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
- netdev@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>
+ linux-spi@vger.kernel.org, netdev@vger.kernel.org,
+ Jonathan Cameron <jic23@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,41 +115,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
---PmA2V3Z32TCmWXqI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Apr 15, 2020 at 07:55:48PM -0500, Rob Herring wrote:
+On 15-04-20, 19:55, Rob Herring wrote:
 > Fix various inconsistencies in schema indentation. Most of these are
 > list indentation which should be 2 spaces more than the start of the
 > enclosing keyword. This doesn't matter functionally, but affects running
 > scripts which do transforms on the schema files.
->=20
+> 
 > Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  .../devicetree/bindings/arm/altera.yaml       |  6 +-
+>  .../amlogic/amlogic,meson-gx-ao-secure.yaml   |  2 +-
+>  .../devicetree/bindings/arm/bitmain.yaml      |  2 +-
+>  .../devicetree/bindings/arm/nxp/lpc32xx.yaml  |  9 ++-
+>  .../bindings/arm/socionext/uniphier.yaml      | 26 ++++----
+>  .../bindings/arm/stm32/st,mlahb.yaml          |  2 +-
+>  .../bindings/arm/stm32/st,stm32-syscon.yaml   |  6 +-
+>  .../bindings/ata/faraday,ftide010.yaml        |  4 +-
+>  .../bindings/bus/allwinner,sun8i-a23-rsb.yaml |  4 +-
+>  .../clock/allwinner,sun4i-a10-gates-clk.yaml  |  8 +--
+>  .../devicetree/bindings/clock/fsl,plldig.yaml | 17 +++--
+>  .../devicetree/bindings/clock/qcom,mmcc.yaml  | 16 ++---
+>  .../bindings/connector/usb-connector.yaml     |  6 +-
+>  .../crypto/allwinner,sun4i-a10-crypto.yaml    | 14 ++--
+>  .../bindings/crypto/allwinner,sun8i-ce.yaml   | 16 ++---
+>  .../bindings/crypto/amlogic,gxl-crypto.yaml   |  2 +-
+>  .../display/allwinner,sun4i-a10-hdmi.yaml     | 40 ++++++------
+>  .../display/allwinner,sun4i-a10-tcon.yaml     | 58 ++++++++---------
+>  .../display/allwinner,sun6i-a31-mipi-dsi.yaml | 28 ++++----
+>  .../display/allwinner,sun8i-a83t-dw-hdmi.yaml | 10 +--
+>  .../bindings/display/bridge/lvds-codec.yaml   | 18 +++---
+>  .../display/panel/sony,acx424akp.yaml         |  2 +-
+>  .../display/panel/xinpeng,xpp055c272.yaml     |  4 +-
+>  .../bindings/display/renesas,cmm.yaml         | 16 ++---
+>  .../devicetree/bindings/dma/ti/k3-udma.yaml   |  8 +--
 
-Acked-by: Wolfram Sang <wsa@the-dreams.de> # for I2C
+Acked-By: Vinod Koul <vkoul@kernel.org>
 
-
---PmA2V3Z32TCmWXqI
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl6YCPoACgkQFA3kzBSg
-KbYO9w/+I4SkxzsKIBEPYPlNhQjpS6257EsfctnShX5MtTXuuVlEM9PKrWOlHqUv
-VPZp1gNSi0U/GchhYvzhAQ0yia0RzJoIb9lP8a+B/i2n77CDCgIRyWBqSA/dX2Ts
-FqwsTUS4HND9WJve1vPA6xRF0GlFYSCgXTHGgqxWNOdZHkTjIog1Pm+3C6pk+CbX
-eKDEHPFiVzkgUvkspatPeh/+nVLQSJ1CA0V0Qstqqu6+c2ciLJxYnh3cstsjThRS
-u+Hp1Tj1TGmJtiHEoDYpNbUuGxu8dE+iHMeM4EnePh2KraRRQ+o35bx0QdhhzcU2
-2AZf2VMtoqV5XgcyRM6B05wxjD5XQWSEcRPaA4KSiR2G3tFi+WYiVRHI8Pekbgzl
-0HPDsprCCwqNPUVqeqcyMOlYPYpOCIcCz17nZKd0ZDv9SphmwAXjvc2KNHg3lnVi
-U7BU6i+P4fM8P7Lx496uw1CjUOKtLdM74WYDliTT3timGh1ZYB9l2AC8yTJqBQDY
-zRnBeFyItoXVtZbkAQgoGOTuIn6ZUY+ZzUquour0XK2PGJuxxArp0rFcEFAAeccC
-/iHPV6k2vWKT/r/wRa5qjwZZrvi0N98xyWX89B0rfqjVasG6DqrTcEnfY/0g8JOo
-S0O569k351VYcMrKIrtqc6RsnSOAwPpJskVLGf4j5KhQ1waxcTg=
-=JRiG
------END PGP SIGNATURE-----
-
---PmA2V3Z32TCmWXqI--
+-- 
+~Vinod
