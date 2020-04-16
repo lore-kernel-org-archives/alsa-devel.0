@@ -2,99 +2,63 @@ Return-Path: <SRS0=YLi8=6B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C92AC352BE
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 09:19:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B8F76C352BE
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 09:20:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F13802137B
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 09:19:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 42E212137B
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 09:20:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ywrmi4Px";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fWro629A"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F13802137B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eryyS7hj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 42E212137B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=the-dreams.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4AF321680;
-	Fri, 17 Apr 2020 11:18:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4AF321680
+	by alsa0.perex.cz (Postfix) with ESMTPS id 61CD61669;
+	Fri, 17 Apr 2020 11:19:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 61CD61669
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587115156;
-	bh=TJaHW+6o56AgW2zkADAxk+nGy4W+OhjnPF3CbXtJdGg=;
+	s=default; t=1587115201;
+	bh=ocB+fuskP5X2vqz2mK9JfzPGdCvpvwqfP2GKzu4sCYQ=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ywrmi4PxwFtaZJP5mf7gKCQ0p+6UfLxYD4Z7kUVkf84voVE2t3xgprsPryoxIynNx
-	 Ba629n1f80t9TLpwpRhQ0HoFCtyRdt9+NrohNuWjMeHpvOkRT1Y14kuF85/4d7VstR
-	 I8xTJrZPoXP1kJYmo3uWtLELQXPKTthaPdN3cCzg=
+	b=eryyS7hjGT/n21UOzTrnLqAVBjOz36hCJzhxb1LmckMbm2VqhChGrv3zLlI+HZQLP
+	 BvfurZpzIQKtmQrCJ+pM8YGkwbO+EoVxB2UwdeE4+uuhD+v1GqzHYRyYyrAI9iVhhc
+	 pgAdT96vYWdZ6w0KtO3IPMaNlimZVJSALHvkOppI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AEEC2F80299;
-	Fri, 17 Apr 2020 11:15:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8610EF8029B;
+	Fri, 17 Apr 2020 11:15:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A4A3BF8014E; Thu, 16 Apr 2020 09:21:38 +0200 (CEST)
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com
- [IPv6:2a00:1450:4864:20::343])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8D0B1F800AB
- for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2020 09:21:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D0B1F800AB
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="fWro629A"
-Received: by mail-wm1-x343.google.com with SMTP id h2so3402090wmb.4
- for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2020 00:21:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:content-transfer-encoding:in-reply-to;
- bh=PfcEIjHVOwJJoI3IG1yq+hLuJEPuCeMcpBtriOzJSVE=;
- b=fWro629AKCHe7c1PY8qWNnc/MO1FUAtCQOwruVmdsj4Kyvr1SDGr9Xgc/VGuT4Ao08
- aszgwv1hJNkmDxBtLtWK7K2S9mv6z5/c8TCmg4n+kwj4eAnnvC2Dt4pvdKuMnlfnbcGf
- puxMyauwUmvCn/LNyQLnyjFrS1Kzkios1/MsF6m/I4GPnRVdRC2+tstnjmmO650ZwQzj
- 4aWRTSNgkZKvvDPkpZ/B7oqv4O1vvl2M0bRRRPUNQCjnZDrbzcP/JjjuClCaNvbDFuVJ
- cZP/dedvaVFsRZKmIeGsiWSNvkLi9aAZR4c6U1deMU+GHzWLDixE4IBaBhe7BLuqYxXC
- CRaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:content-transfer-encoding
- :in-reply-to;
- bh=PfcEIjHVOwJJoI3IG1yq+hLuJEPuCeMcpBtriOzJSVE=;
- b=SJS9W9Tc/Nsct7QX59GySv9D3ZV0JjD7UvAyA/ycehRjQF69NHeu0CDH1MbsM/VCBU
- BkUso8z1zu0071xrsOTcpKfNBp3XAllN8ZQl156+y8f8Titt0sEc6GXAwj83rgtNd7nP
- CDywX0dw0EuBTmMFYx/+FaDtlmMfUtLyQb3BBYTwm0p8ThR51L40LZ7PZ7UO/q+YodnY
- 0uivsHO6Bp1SpRJ0WH94JF0qxMkNGHEMx6uyQaVsPmPzgpf1ut21ETK78u8LYuSRgrOz
- JL8h1/O8ibcQOzurwyUl7qVkB900JhMMdTYfaG+CZpVJHNfEASrtGqDTrE8r/G8hXwP1
- Id0A==
-X-Gm-Message-State: AGi0PuZqximtrj4MrSeIcyWCPTu5X8Yg/ml3TOJvkTQ9KMrIiHZmadpS
- /BRekYavpvrTAfZOKrtRh5uuPg==
-X-Google-Smtp-Source: APiQypKxoroogYo0WPMcKERsdRMrzAoaU5nNn92qAMbIpRzZIzICMY0kveTYaemzAUSe6fR6V9LLBA==
-X-Received: by 2002:a1c:990d:: with SMTP id b13mr3217540wme.179.1587021691888; 
- Thu, 16 Apr 2020 00:21:31 -0700 (PDT)
-Received: from dell ([95.149.164.124])
- by smtp.gmail.com with ESMTPSA id h188sm2608116wme.8.2020.04.16.00.21.29
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 16 Apr 2020 00:21:31 -0700 (PDT)
-Date: Thu, 16 Apr 2020 08:22:31 +0100
-From: Lee Jones <lee.jones@linaro.org>
+ id B1B41F80290; Thu, 16 Apr 2020 09:27:41 +0200 (CEST)
+Received: from pokefinder.org (sauhun.de [88.99.104.3])
+ by alsa1.perex.cz (Postfix) with ESMTP id 576F8F8028C
+ for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2020 09:27:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 576F8F8028C
+Received: from localhost (p54B33393.dip0.t-ipconnect.de [84.179.51.147])
+ by pokefinder.org (Postfix) with ESMTPSA id 898972C1F4B;
+ Thu, 16 Apr 2020 09:27:37 +0200 (CEST)
+Date: Thu, 16 Apr 2020 09:27:37 +0200
+From: Wolfram Sang <wsa@the-dreams.de>
 To: Rob Herring <robh@kernel.org>
 Subject: Re: [PATCH 2/2] dt-bindings: Remove cases of 'allOf' containing a
  '$ref'
-Message-ID: <20200416072231.GT2167633@dell>
+Message-ID: <20200416072737.GA1023@kunai>
 References: <20200416005549.9683-1-robh@kernel.org>
  <20200416005549.9683-2-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="ZGiS0Q5IWpPtfppv"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
 In-Reply-To: <20200416005549.9683-2-robh@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Mailman-Approved-At: Fri, 17 Apr 2020 11:15:50 +0200
 Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
  Heiko Stuebner <heiko@sntech.de>, linux-pwm@vger.kernel.org,
@@ -104,7 +68,7 @@ Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
  dri-devel@lists.freedesktop.org, Bjorn Andersson <bjorn.andersson@linaro.org>,
  Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org,
  linux-i2c@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
- linux-riscv@lists.infradead.org, Fabio Estevam <festevam@gmail.com>,
+ linux-riscv@lists.infradead.org, Lee Jones <lee.jones@linaro.org>,
  linux-clk@vger.kernel.org, linux-leds@vger.kernel.org,
  linux-rtc@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
  Sam Ravnborg <sam@ravnborg.org>, Daniel Lezcano <daniel.lezcano@linaro.org>,
@@ -116,7 +80,7 @@ Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
  Maxime Ripard <mripard@kernel.org>, linux-can@vger.kernel.org,
  linux-gpio@vger.kernel.org, Mark Brown <broonie@kernel.org>,
  Jacek Anaszewski <jacek.anaszewski@gmail.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Fabio Estevam <festevam@gmail.com>, Mauro Carvalho Chehab <mchehab@kernel.org>,
  linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
  Stephen Boyd <sboyd@kernel.org>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -139,119 +103,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 15 Apr 2020, Rob Herring wrote:
 
+--ZGiS0Q5IWpPtfppv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Apr 15, 2020 at 07:55:49PM -0500, Rob Herring wrote:
 > json-schema versions draft7 and earlier have a weird behavior in that
 > any keywords combined with a '$ref' are ignored (silently). The correct
 > form was to put a '$ref' under an 'allOf'. This behavior is now changed
 > in the 2019-09 json-schema spec and '$ref' can be mixed with other
 > keywords. The json-schema library doesn't yet support this, but the
 > tooling now does a fixup for this and either way works.
-> 
+>=20
 > This has been a constant source of review comments, so let's change this
 > treewide so everyone copies the simpler syntax.
-> 
+>=20
 > Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  .../devicetree/bindings/arm/cpus.yaml         |  81 +++---
->  .../devicetree/bindings/arm/l2c2x0.yaml       |  87 +++---
->  .../devicetree/bindings/arm/psci.yaml         |  15 +-
->  .../bindings/arm/samsung/exynos-chipid.yaml   |   5 +-
->  .../bus/allwinner,sun50i-a64-de2.yaml         |   5 +-
->  .../bindings/clock/fixed-factor-clock.yaml    |   5 +-
->  .../bindings/connector/usb-connector.yaml     |  28 +-
->  .../bindings/crypto/st,stm32-hash.yaml        |   9 +-
->  .../allwinner,sun4i-a10-display-engine.yaml   |   7 +-
->  .../display/allwinner,sun4i-a10-tcon.yaml     |   5 +-
->  .../bindings/display/panel/panel-common.yaml  |   5 +-
->  .../devicetree/bindings/dma/dma-common.yaml   |   3 +-
->  .../devicetree/bindings/dma/ti/k3-udma.yaml   |  18 +-
->  .../devicetree/bindings/eeprom/at24.yaml      |  11 +-
->  .../devicetree/bindings/example-schema.yaml   |  17 +-
->  .../bindings/hwmon/adi,ltc2947.yaml           |  32 +--
->  .../devicetree/bindings/hwmon/ti,tmp513.yaml  |  21 +-
->  .../devicetree/bindings/i2c/st,stm32-i2c.yaml |   9 +-
->  .../bindings/iio/adc/adi,ad7124.yaml          |   5 +-
->  .../bindings/iio/adc/lltc,ltc2496.yaml        |   3 +-
->  .../bindings/iio/adc/microchip,mcp3911.yaml   |   7 +-
->  .../bindings/iio/adc/st,stm32-dfsdm-adc.yaml  |  31 +-
->  .../bindings/iio/light/tsl2772.yaml           |  13 +-
->  .../bindings/iio/temperature/adi,ltc2983.yaml |  56 ++--
->  .../input/allwinner,sun4i-a10-lradc-keys.yaml |   5 +-
->  .../devicetree/bindings/input/input.yaml      |   9 +-
->  .../interrupt-controller/arm,gic-v3.yaml      |  39 ++-
->  .../devicetree/bindings/iommu/arm,smmu.yaml   |   3 +-
->  .../devicetree/bindings/leds/common.yaml      |  13 +-
->  .../devicetree/bindings/leds/leds-gpio.yaml   |   3 +-
->  .../bindings/leds/rohm,bd71828-leds.yaml      |  10 +-
->  .../bindings/mailbox/st,stm32-ipcc.yaml       |   5 +-
->  .../bindings/media/amlogic,gx-vdec.yaml       |   6 +-
->  .../media/amlogic,meson-gx-ao-cec.yaml        |   3 +-
->  .../devicetree/bindings/media/rc.yaml         | 265 +++++++++---------
->  .../bindings/media/renesas,vin.yaml           |   7 +-
->  .../memory-controllers/exynos-srom.yaml       |  14 +-
->  .../nvidia,tegra124-emc.yaml                  |   9 +-
->  .../nvidia,tegra124-mc.yaml                   |   3 +-
->  .../nvidia,tegra30-emc.yaml                   |   9 +-
->  .../memory-controllers/nvidia,tegra30-mc.yaml |   3 +-
 
->  .../bindings/mfd/allwinner,sun4i-a10-ts.yaml  |  20 +-
->  .../bindings/mfd/st,stm32-timers.yaml         |  33 ++-
->  .../devicetree/bindings/mfd/st,stpmic1.yaml   |   9 +-
->  .../devicetree/bindings/mfd/syscon.yaml       |   5 +-
+Acked-by: Wolfram Sang <wsa@the-dreams.de> # for I2C
 
-Acked-by: Lee Jones <lee.jones@linaro.org>
 
->  .../devicetree/bindings/mmc/aspeed,sdhci.yaml |   4 +-
->  .../devicetree/bindings/mmc/cdns,sdhci.yaml   |  77 +++--
->  .../bindings/mmc/mmc-controller.yaml          |  37 ++-
->  .../bindings/mmc/rockchip-dw-mshc.yaml        |   6 +-
->  .../bindings/mmc/synopsys-dw-mshc-common.yaml |  14 +-
->  .../mtd/allwinner,sun4i-a10-nand.yaml         |  13 +-
->  .../bindings/mtd/nand-controller.yaml         |  27 +-
->  .../bindings/net/can/bosch,m_can.yaml         |  59 ++--
->  .../bindings/net/ethernet-controller.yaml     |  34 +--
->  .../devicetree/bindings/net/qca,ar803x.yaml   |  17 +-
->  .../devicetree/bindings/net/snps,dwmac.yaml   |  22 +-
->  .../bindings/net/ti,cpsw-switch.yaml          |   3 +-
->  .../bindings/net/ti,davinci-mdio.yaml         |   7 +-
->  .../bindings/pci/intel-gw-pcie.yaml           |   7 +-
->  .../pinctrl/allwinner,sun4i-a10-pinctrl.yaml  |  12 +-
->  .../pinctrl/aspeed,ast2400-pinctrl.yaml       |  37 ++-
->  .../pinctrl/aspeed,ast2500-pinctrl.yaml       |  45 ++-
->  .../pinctrl/aspeed,ast2600-pinctrl.yaml       | 108 ++++---
->  .../bindings/pinctrl/fsl,imx8mp-pinctrl.yaml  |  31 +-
->  .../bindings/pinctrl/intel,lgm-io.yaml        |   4 +-
->  .../bindings/pinctrl/pinmux-node.yaml         |   3 +-
->  .../bindings/pinctrl/st,stm32-pinctrl.yaml    |  56 ++--
->  .../bindings/power/amlogic,meson-ee-pwrc.yaml |   3 +-
->  .../devicetree/bindings/pwm/pwm-samsung.yaml  |  11 +-
->  .../bindings/regulator/gpio-regulator.yaml    |  35 ++-
->  .../bindings/regulator/mps,mpq7920.yaml       |  31 +-
->  .../bindings/regulator/regulator.yaml         |   5 +-
->  .../regulator/rohm,bd71828-regulator.yaml     |  34 +--
->  .../bindings/regulator/st,stm32-booster.yaml  |   3 +-
->  .../regulator/st,stm32mp1-pwr-reg.yaml        |   3 +-
->  .../bindings/remoteproc/st,stm32-rproc.yaml   |   9 +-
->  .../bindings/reset/intel,rcu-gw.yaml          |   3 +-
->  .../devicetree/bindings/riscv/cpus.yaml       |  20 +-
->  .../devicetree/bindings/rtc/st,stm32-rtc.yaml |   9 +-
->  .../devicetree/bindings/serial/pl011.yaml     |  10 +-
->  .../devicetree/bindings/serial/rs485.yaml     |  26 +-
->  .../bindings/serial/samsung_uart.yaml         |   5 +-
->  .../bindings/sound/adi,adau7118.yaml          |  20 +-
->  .../sound/allwinner,sun4i-a10-codec.yaml      |  41 ++-
->  .../bindings/sound/qcom,wcd934x.yaml          |   3 +-
->  .../bindings/spi/renesas,sh-msiof.yaml        |  42 ++-
->  .../bindings/spi/spi-controller.yaml          |  14 +-
->  .../devicetree/bindings/spi/spi-pl022.yaml    |  55 ++--
->  .../devicetree/bindings/spi/spi-sifive.yaml   |  14 +-
->  .../bindings/thermal/qcom-tsens.yaml          |   7 +-
->  .../bindings/timer/arm,arch_timer_mmio.yaml   |   7 +-
->  91 files changed, 881 insertions(+), 1103 deletions(-)
+--ZGiS0Q5IWpPtfppv
+Content-Type: application/pgp-signature; name="signature.asc"
 
--- 
-Lee Jones [李琼斯]
-Linaro Services Technical Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl6YCOQACgkQFA3kzBSg
+KbZcAg/7BNCS6Plzd0nif30LvUASyKL2fqZ54PDaxkVsHFZ6ILioIzHIss7e8ai/
+YkJmKgNKbLtEgg6dNTfoqLN5p52ekU7WvY/r9pDTFJiW0Lllc3aF1LNIC/owey/B
+GVXJCFK5qNr0hkMOsS55AW6rBaHMKA73o4hbAByJkdet+EtP0hMphL/0iC6P3g85
+edXGHYYNs2ZFcKE4mMMGWc6/kEFsokOp/hWh4nxpGZz9Rpe6C2Q97bvwivhJTLs8
++ef1qvMxtLOjAKNsUB6Kx8yjLKw6qMx/4o0l9ybVUc7WIUxG5E8dNenqDTyqUXej
+C1ZQLA8r7cVz6tLihoEeXMNPRBMFXwijjbDA2ai8kVt1nU5eY7/W9MmJfYOdmERQ
+fBc8c9sk7nHQGqzXlLD4uONayWHGecD52lns65PUrrCPgyH3tMK2Ds8NPthfl7A/
+sx9ezOIP+wbAP07OKg2tPI+q6GdCnGgHpIzUVS0UZjbMGawC/yeW7Kszqa8Dhsp/
+xH9sIw5p4Bmwvpct9Y/yFJ7zK0Udyd8Ro4AeF0oeHG7dmWb1RhLGZfg5yfmCJw30
+xOMgjKhuD+Uh7raT2JnX3h2lTbKtoZtHldcjOVBmwRDFd7vo3b9yU73FcuGf6QHC
+zfdSI05xzxbecqL9It624taFNLcWV0SKltTN2XHG/9EeTqfo+gA=
+=vXQq
+-----END PGP SIGNATURE-----
+
+--ZGiS0Q5IWpPtfppv--
