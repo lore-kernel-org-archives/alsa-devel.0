@@ -2,129 +2,118 @@ Return-Path: <SRS0=YLi8=6B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 79473C352BE
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 09:18:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BB47CC352BE
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 09:18:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 013DE2137B
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 09:18:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 419CB2137B
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 09:18:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nQLbQvgB";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cerno.tech header.i=@cerno.tech header.b="Mz6xjOho";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="eMPRhPF7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 013DE2137B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cerno.tech
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="p1ecf8jn";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="x+7x1SRD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 419CB2137B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 51EE215F2;
-	Fri, 17 Apr 2020 11:17:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 51EE215F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 995EC829;
+	Fri, 17 Apr 2020 11:18:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 995EC829
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587115103;
-	bh=qCRyzl00MQBivzL68vkel39NEbd7kC6dFuyLRxBAey0=;
+	s=default; t=1587115131;
+	bh=4ZCVK/ucVmPEcOFmQ7mzFqcyE/vkAxhn7z0M62TqGoY=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nQLbQvgBPXjOd6aB/TtNmfPpjm4E3skF4LDwN3Sz2NMvmQKICfk82MTYXLoJuu33j
-	 cD0FlQ4oR+yNGuFCkig/yVz0KIrlZ95UiYBIcHJedY7Y8ZJVXuJRTOzyVBmdJOMCpt
-	 oYP3NDzobcUyMExNow6V0+RLJmV1vW+4f8ECIHIk=
+	b=p1ecf8jng6/dUe+lLbAxN9PPEEHihU1eBEA1ArZCosoYj6Vv/z0eY4PeaIAnQ1hvB
+	 e9BT4qFAMkwP9kEoaw1pOZrHa291ERuAHb/vEhTEzjQqsZtJq8Knbek5Z8ttAG+Zts
+	 HVvKu2E+jqEJc93DA0f7x5bhgqceQAofS2rsc17o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 81C42F8028A;
-	Fri, 17 Apr 2020 11:15:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9C877F8028F;
+	Fri, 17 Apr 2020 11:15:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E5D81F8014E; Thu, 16 Apr 2020 08:43:06 +0200 (CEST)
-Received: from wnew1-smtp.messagingengine.com (wnew1-smtp.messagingengine.com
- [64.147.123.26])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 25F55F8014E; Thu, 16 Apr 2020 09:19:24 +0200 (CEST)
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
+ [IPv6:2a00:1450:4864:20::444])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D9D3AF80115
- for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2020 08:42:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9D3AF80115
+ by alsa1.perex.cz (Postfix) with ESMTPS id D8545F8012E
+ for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2020 09:19:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8545F8012E
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cerno.tech header.i=@cerno.tech
- header.b="Mz6xjOho"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="eMPRhPF7"
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
- by mailnew.west.internal (Postfix) with ESMTP id BE3AB7D6;
- Thu, 16 Apr 2020 02:42:47 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
- by compute4.internal (MEProxy); Thu, 16 Apr 2020 02:42:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
- date:from:to:cc:subject:message-id:references:mime-version
- :content-type:in-reply-to; s=fm2; bh=qCRyzl00MQBivzL68vkel39NEbd
- 7kC6dFuyLRxBAey0=; b=Mz6xjOhoyl6u3JLJF3XNH/WDRWC0mCT6w/uiIwB8GXd
- UpxsH9oudz3X48RMKQfGJbGVDAHug8ZXney1LdfZdZRq90LqW1W0/A6iVYMtK1mN
- EU59olTzwMNiYltMNJBPysQF0H63fbn5e/tsDm+LApzpl9Y1Sw18AZHKdzIsmaEf
- 9+M1vvWOyW669ZVwQQ7awZo8Cj7vc6UYa6yBhQm8s+v3rqgHnFf6xakj6sV5HtJy
- j8vNj53XWuWvnoqroGZji7jvJbTKs9v3cgxRMfEEZdJgii7uQdjwtKHH0A6lf3I6
- 8ffKsfT/ph6VFQvi+fA3JKKLi4LFnglOMoqGVSlscBQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to:x-me-proxy
- :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=qCRyzl
- 00MQBivzL68vkel39NEbd7kC6dFuyLRxBAey0=; b=eMPRhPF78n2AJHUnF3n8N7
- nDj6R2uaCMywF1zqUJb8H41DWXRLIqM1X1ixKQ+5du5Sep0O62e5Zg70DW4miS5c
- q+6UZlgUneRQ5zBCZRQTn2+qXHpcWSINUMIVtTQcMv4fBlmNQ0cDxvod+yis2IMy
- Qn9LgZrrIPxvZU1tIvrIvajwPmKsY2XzJGObIt+ux8BDMn9VQLisIuN1sQagIjTc
- 2yVfkg9fn7+7uqJ5UWxMBZLYc2drb5gpFG/CrUVannsfz1vkv8nOhZz7tV+2yvw0
- Ini85WXCVW9bOz1VY1ANTmk22DTeHV41NcnSM3ax/Ybs4KlWFUPVQUigEqOYYq4Q
- ==
-X-ME-Sender: <xms:ZP6XXpgBOuLk6y78w-8QXnLsPxfPb8tJCQV-nhCw3w9E3J6Z_6umzA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrfeeggdduudduucetufdoteggodetrfdotf
- fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
- cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
- vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecukfhppeeltd
- drkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghi
- lhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:ZP6XXlHUnHhPoyiEoNq4uvG-eeIU9F7rJ3L8YM4tBAlhX9jwZlg92Q>
- <xmx:ZP6XXgxO_UPW-eCgOnJDSb4q6E6_zvBdAp-UhPR4OHFshAivUQ-klg>
- <xmx:ZP6XXkq3F6zITJzf5EbL-eKRftc0jlz2H_3d673Bq8y2Zr17XFw4_g>
- <xmx:Z_6XXi9WoWOt_JDiBWjK2eTP19mseq86rp4c8pS9eo_D669xJmpieNKZPV8>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr
- [90.89.68.76])
- by mail.messagingengine.com (Postfix) with ESMTPA id 59AE0328005E;
- Thu, 16 Apr 2020 02:42:44 -0400 (EDT)
-Date: Thu, 16 Apr 2020 08:42:42 +0200
-From: Maxime Ripard <maxime@cerno.tech>
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="x+7x1SRD"
+Received: by mail-wr1-x444.google.com with SMTP id k11so3560454wrp.5
+ for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2020 00:19:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:content-transfer-encoding:in-reply-to;
+ bh=3AEaWn5XeJ7hcX74F4NzwZbogUqZr77xLF5d73BlBfw=;
+ b=x+7x1SRD1y/LTZJxHdO7NBoPBhyXEErUVgwIai9Txb2aqME7MbBYVN8PkA7MmFMlG/
+ +PTNeDQuJeOieuyql513BpDrE+TR0fX/mGtYOkCA4N6z7VRTvWgnydlKHHjdN1pHbDi6
+ FcrLT7q9Xm6W6XF2DKy+sVxRvrx2e8zXuCLbQfQ8d2nPd/iJ34SsziQVe8hgIZhAVDz1
+ X39oeCEgZoTyWJybNtbP4u4Ik4a22WiM6sS1Gf+7ektT/jxfmy4EaiaU+raISKCA976c
+ DL5uziLMISTg53DG/aGMYXA9DS9lwHatzi8LUvPjSHKrnZk+uf82Nr0GKjoaC8YAX62l
+ Ovyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:content-transfer-encoding
+ :in-reply-to;
+ bh=3AEaWn5XeJ7hcX74F4NzwZbogUqZr77xLF5d73BlBfw=;
+ b=Bnc26LcHyElFzasLA5aDC7AOSzu9YVuqI18t4WdaHoWk20CEt5ji+zRqtxp5hnDuTn
+ e/dRb/d9tL8eHMkkQIJDZSD1Kd7Z9EA+6F64GmWETYvHYD8al8AtyAg7YfQsmsrohBQB
+ Cq+iFmLxPoXVbAw76CM140pxq7Y1qaQHzKuaemghc4I/Mt8VaRT3qrySciAv6IWhlL3O
+ vmBwu6nxGKQlX3JOu3/nSeNJebJ3xsmpZe2Y98BFBf0gqnpcklH8zQr/zqmbQOnVWeDO
+ l354kpUZLYZMxJeqlmtqUg7rYyjkSPQV1438jAlKndpu1UtmtkxYQkZd9DVFgINXt6tD
+ mX5A==
+X-Gm-Message-State: AGi0PubJDs2fVVcj9ye0MxNZFScRAAC9WZmYY0LJxD1JK0rA7CteYEKo
+ cWDm2Hvr3Dx+KpAehcKGJGYMsQ==
+X-Google-Smtp-Source: APiQypLCNVZBL4RMlNf7UZFX5oU2xDT6SF7MjxuD7BsWZie9pUbnFA9tcL+f+7W6lePE+UdiJ1fBjg==
+X-Received: by 2002:adf:e4cc:: with SMTP id v12mr8967305wrm.106.1587021558557; 
+ Thu, 16 Apr 2020 00:19:18 -0700 (PDT)
+Received: from dell ([95.149.164.124])
+ by smtp.gmail.com with ESMTPSA id p16sm19943946wro.21.2020.04.16.00.19.16
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 16 Apr 2020 00:19:17 -0700 (PDT)
+Date: Thu, 16 Apr 2020 08:20:18 +0100
+From: Lee Jones <lee.jones@linaro.org>
 To: Rob Herring <robh@kernel.org>
 Subject: Re: [PATCH 1/2] dt-bindings: Clean-up schema indentation formatting
-Message-ID: <20200416064242.azdjulo76ymwgpfq@gilmour.lan>
+Message-ID: <20200416072018.GS2167633@dell>
 References: <20200416005549.9683-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="s675c5ai5d6avmtq"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 In-Reply-To: <20200416005549.9683-1-robh@kernel.org>
 X-Mailman-Approved-At: Fri, 17 Apr 2020 11:15:50 +0200
 Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
- Heiko Stuebner <heiko@sntech.de>, Sam Ravnborg <sam@ravnborg.org>,
- linux-pwm@vger.kernel.org, linux-iio@vger.kernel.org,
- linux-pci@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
- linux-remoteproc@vger.kernel.org,
+ Heiko Stuebner <heiko@sntech.de>, linux-pwm@vger.kernel.org,
+ linux-iio@vger.kernel.org, linux-pci@vger.kernel.org,
+ Linus Walleij <linus.walleij@linaro.org>, linux-remoteproc@vger.kernel.org,
  Alexandre Belloni <alexandre.belloni@bootlin.com>,
  dri-devel@lists.freedesktop.org, Bjorn Andersson <bjorn.andersson@linaro.org>,
  Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org,
  linux-i2c@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
- linux-riscv@lists.infradead.org, Lee Jones <lee.jones@linaro.org>,
+ linux-riscv@lists.infradead.org, Fabio Estevam <festevam@gmail.com>,
  linux-clk@vger.kernel.org, linux-leds@vger.kernel.org,
  linux-rtc@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
- Fabio Estevam <festevam@gmail.com>, Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Sam Ravnborg <sam@ravnborg.org>, Daniel Lezcano <daniel.lezcano@linaro.org>,
  Krzysztof Kozlowski <krzk@kernel.org>,
  Bartosz Golaszewski <bgolaszewski@baylibre.com>, linux-serial@vger.kernel.org,
  linux-input@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
  linux-media@vger.kernel.org, devicetree@vger.kernel.org,
  Alexandre Torgue <alexandre.torgue@st.com>, alsa-devel@alsa-project.org,
- linux-can@vger.kernel.org, linux-gpio@vger.kernel.org,
- Mark Brown <broonie@kernel.org>, Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+ Maxime Ripard <mripard@kernel.org>, linux-can@vger.kernel.org,
+ linux-gpio@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ Jacek Anaszewski <jacek.anaszewski@gmail.com>,
  Mauro Carvalho Chehab <mchehab@kernel.org>,
  linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
  Stephen Boyd <sboyd@kernel.org>,
@@ -148,34 +137,100 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Wed, 15 Apr 2020, Rob Herring wrote:
 
---s675c5ai5d6avmtq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Apr 15, 2020 at 07:55:48PM -0500, Rob Herring wrote:
 > Fix various inconsistencies in schema indentation. Most of these are
 > list indentation which should be 2 spaces more than the start of the
 > enclosing keyword. This doesn't matter functionally, but affects running
 > scripts which do transforms on the schema files.
->
+> 
 > Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  .../devicetree/bindings/arm/altera.yaml       |  6 +-
+>  .../amlogic/amlogic,meson-gx-ao-secure.yaml   |  2 +-
+>  .../devicetree/bindings/arm/bitmain.yaml      |  2 +-
+>  .../devicetree/bindings/arm/nxp/lpc32xx.yaml  |  9 ++-
+>  .../bindings/arm/socionext/uniphier.yaml      | 26 ++++----
+>  .../bindings/arm/stm32/st,mlahb.yaml          |  2 +-
+>  .../bindings/arm/stm32/st,stm32-syscon.yaml   |  6 +-
+>  .../bindings/ata/faraday,ftide010.yaml        |  4 +-
+>  .../bindings/bus/allwinner,sun8i-a23-rsb.yaml |  4 +-
+>  .../clock/allwinner,sun4i-a10-gates-clk.yaml  |  8 +--
+>  .../devicetree/bindings/clock/fsl,plldig.yaml | 17 +++--
+>  .../devicetree/bindings/clock/qcom,mmcc.yaml  | 16 ++---
+>  .../bindings/connector/usb-connector.yaml     |  6 +-
+>  .../crypto/allwinner,sun4i-a10-crypto.yaml    | 14 ++--
+>  .../bindings/crypto/allwinner,sun8i-ce.yaml   | 16 ++---
+>  .../bindings/crypto/amlogic,gxl-crypto.yaml   |  2 +-
+>  .../display/allwinner,sun4i-a10-hdmi.yaml     | 40 ++++++------
+>  .../display/allwinner,sun4i-a10-tcon.yaml     | 58 ++++++++---------
+>  .../display/allwinner,sun6i-a31-mipi-dsi.yaml | 28 ++++----
+>  .../display/allwinner,sun8i-a83t-dw-hdmi.yaml | 10 +--
+>  .../bindings/display/bridge/lvds-codec.yaml   | 18 +++---
+>  .../display/panel/sony,acx424akp.yaml         |  2 +-
+>  .../display/panel/xinpeng,xpp055c272.yaml     |  4 +-
+>  .../bindings/display/renesas,cmm.yaml         | 16 ++---
+>  .../devicetree/bindings/dma/ti/k3-udma.yaml   |  8 +--
+>  .../bindings/gpio/brcm,xgs-iproc-gpio.yaml    |  2 +-
+>  .../bindings/gpu/arm,mali-midgard.yaml        | 18 +++---
+>  .../devicetree/bindings/gpu/vivante,gc.yaml   |  2 +-
+>  .../devicetree/bindings/i2c/i2c-rk3x.yaml     | 10 +--
+>  .../bindings/iio/adc/adi,ad7124.yaml          |  4 +-
+>  .../bindings/iio/adc/lltc,ltc2496.yaml        |  6 +-
+>  .../input/allwinner,sun4i-a10-lradc-keys.yaml |  4 +-
+>  .../bindings/input/touchscreen/goodix.yaml    |  2 +-
+>  .../bindings/interconnect/qcom,msm8916.yaml   |  4 +-
+>  .../bindings/interconnect/qcom,msm8974.yaml   |  4 +-
+>  .../bindings/interconnect/qcom,qcs404.yaml    |  4 +-
+>  .../allwinner,sun7i-a20-sc-nmi.yaml           | 12 ++--
+>  .../intel,ixp4xx-interrupt.yaml               |  8 +--
+>  .../interrupt-controller/st,stm32-exti.yaml   | 12 ++--
+>  .../bindings/iommu/samsung,sysmmu.yaml        | 10 +--
+>  .../bindings/mailbox/st,stm32-ipcc.yaml       |  2 +-
+>  .../media/allwinner,sun4i-a10-csi.yaml        | 28 ++++----
+>  .../bindings/media/amlogic,gx-vdec.yaml       | 14 ++--
+>  .../bindings/media/renesas,ceu.yaml           | 28 ++++----
+>  .../bindings/media/renesas,vin.yaml           |  8 +--
+>  .../devicetree/bindings/media/ti,vpe.yaml     |  2 +-
+>  .../memory-controllers/fsl/imx8m-ddrc.yaml    |  6 +-
 
-For allwinner,
-Acked-by: Maxime Ripard <mripard@kernel.org>
+>  .../bindings/mfd/st,stm32-lptimer.yaml        |  4 +-
+>  .../bindings/mfd/st,stm32-timers.yaml         |  4 +-
+>  .../devicetree/bindings/mfd/syscon.yaml       | 12 ++--
 
-Thanks!
-Maxime
+Acked-by: Lee Jones <lee.jones@linaro.org>
 
---s675c5ai5d6avmtq
-Content-Type: application/pgp-signature; name="signature.asc"
+>  .../devicetree/bindings/mmc/cdns,sdhci.yaml   |  2 +-
+>  .../bindings/mmc/rockchip-dw-mshc.yaml        | 16 ++---
+>  .../bindings/mmc/socionext,uniphier-sd.yaml   | 14 ++--
+>  .../devicetree/bindings/mtd/denali,nand.yaml  |  4 +-
+>  .../net/allwinner,sun8i-a83t-emac.yaml        |  4 +-
+>  .../bindings/net/can/bosch,m_can.yaml         | 52 +++++++--------
+>  .../bindings/net/renesas,ether.yaml           |  4 +-
+>  .../bindings/net/ti,cpsw-switch.yaml          | 12 ++--
+>  .../bindings/net/ti,davinci-mdio.yaml         | 27 ++++----
+>  .../bindings/phy/intel,lgm-emmc-phy.yaml      |  2 +-
+>  .../devicetree/bindings/pwm/pwm-samsung.yaml  | 16 ++---
+>  .../bindings/remoteproc/st,stm32-rproc.yaml   |  2 +-
+>  .../reset/brcm,bcm7216-pcie-sata-rescal.yaml  |  4 +-
+>  .../devicetree/bindings/rtc/st,stm32-rtc.yaml | 38 +++++------
+>  .../bindings/serial/amlogic,meson-uart.yaml   | 16 ++---
+>  .../devicetree/bindings/serial/rs485.yaml     | 17 ++---
+>  .../bindings/soc/amlogic/amlogic,canvas.yaml  | 10 +--
+>  .../bindings/sound/renesas,fsi.yaml           | 16 ++---
+>  .../bindings/spi/qcom,spi-qcom-qspi.yaml      | 10 +--
+>  .../devicetree/bindings/spi/renesas,hspi.yaml |  4 +-
+>  .../devicetree/bindings/spi/spi-pl022.yaml    |  2 +-
+>  .../bindings/spi/st,stm32-qspi.yaml           |  4 +-
+>  .../allwinner,sun4i-a10-system-control.yaml   | 64 +++++++++----------
+>  .../bindings/thermal/amlogic,thermal.yaml     | 10 +--
+>  .../bindings/timer/arm,arch_timer.yaml        |  4 +-
+>  .../bindings/timer/arm,arch_timer_mmio.yaml   |  4 +-
+>  .../devicetree/bindings/usb/dwc2.yaml         |  8 +--
+>  77 files changed, 450 insertions(+), 450 deletions(-)
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXpf+YgAKCRDj7w1vZxhR
-xZmqAPwLCqvPnd6KBgcsRgWmwe8BxcsE0xhduyc59wNSaliiHQEAhUMizDtya0EL
-yGrmpfvuS8/nRsvbMHGM2twyMWfc6QE=
-=F+e6
------END PGP SIGNATURE-----
-
---s675c5ai5d6avmtq--
+-- 
+Lee Jones [李琼斯]
+Linaro Services Technical Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
