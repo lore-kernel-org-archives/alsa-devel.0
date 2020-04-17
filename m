@@ -2,70 +2,68 @@ Return-Path: <SRS0=YLi8=6B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 21185C2BB55
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 08:58:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C05AC2BB55
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 09:06:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9659A2063A
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 08:58:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 03ED0221E9
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 09:06:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kTFWvRr7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9659A2063A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NfKdsJ0g"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 03ED0221E9
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E98C115F9;
-	Fri, 17 Apr 2020 10:57:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E98C115F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 06F7015F2;
+	Fri, 17 Apr 2020 11:05:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 06F7015F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587113912;
-	bh=PS4FV4N33pcy6INuFdG+Ux1KYeVwiajQKZmLOf4qLk4=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=kTFWvRr7gh+ak83gqAJHFOHkkHeJZD1kn9AqLebpgBsrK3MrpL2ok5LSwsv3Wq7Zh
-	 MqKiffSEMJOA11GgTeWRogj5nHOpntFw3sytrVuXotmD38ctnPubgh230NuZQze1fc
-	 bux07NLSO6gLPGlav1EsbuY7wLVLAonnkRL3OpiQ=
+	s=default; t=1587114368;
+	bh=PeJxnbBwvfaRxChyQ5lZYsscC+stPe8+qOIdAl1h1PM=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=NfKdsJ0gr1OMfTenkQ1n2bRdXgJs0qH7bGirb2w3l567JoghxMzr0aYuUmyXF35o2
+	 mAEzUTjA+H58hCdIGzzHF3WTtAXsCuUCe5kq449sfS15C7JpfWKNv98eUmScz74QV2
+	 Iyiul4nuWzObEi7jR5PfJboAt1JLOxnClGy9Ocio=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 77B93F8025F;
-	Fri, 17 Apr 2020 10:57:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 74657F80229;
+	Fri, 17 Apr 2020 11:05:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A709AF80264; Fri, 17 Apr 2020 10:57:38 +0200 (CEST)
-Received: from huawei.com (szxga05-in.huawei.com [45.249.212.191])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id BD81BF80245; Fri, 17 Apr 2020 11:05:15 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6BAEAF80229
- for <alsa-devel@alsa-project.org>; Fri, 17 Apr 2020 10:57:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6BAEAF80229
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
- by Forcepoint Email with ESMTP id EF823D445A7E116B46C7;
- Fri, 17 Apr 2020 16:57:26 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Fri, 17 Apr 2020
- 16:57:18 +0800
-From: Jason Yan <yanaijie@huawei.com>
-To: <cezary.rojewski@intel.com>, <pierre-louis.bossart@linux.intel.com>,
- <liam.r.girdwood@linux.intel.com>, <yang.jie@linux.intel.com>,
- <broonie@kernel.org>, <perex@perex.cz>, <tiwai@suse.com>,
- <hdegoede@redhat.com>, <tglx@linutronix.de>, <alsa-devel@alsa-project.org>,
- <linux-kernel@vger.kernel.org>
-Subject: [PATCH] ASoC: Intel: atom: remove unused 'sst_mix_voip_controls'
-Date: Fri, 17 Apr 2020 17:23:44 +0800
-Message-ID: <20200417092344.14301-1-yanaijie@huawei.com>
-X-Mailer: git-send-email 2.21.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+ by alsa1.perex.cz (Postfix) with ESMTPS id EE6ECF800DE
+ for <alsa-devel@alsa-project.org>; Fri, 17 Apr 2020 11:05:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE6ECF800DE
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 92E8AAB76;
+ Fri, 17 Apr 2020 09:05:06 +0000 (UTC)
+Date: Fri, 17 Apr 2020 11:05:06 +0200
+Message-ID: <s5ho8rqbhz1.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Jason Yan <yanaijie@huawei.com>
+Subject: Re: [PATCH] ALSA: au88x0: remove some dead code
+In-Reply-To: <20200417092232.13371-1-yanaijie@huawei.com>
+References: <20200417092232.13371-1-yanaijie@huawei.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.124.28]
-X-CFilter-Loop: Reflected
-Cc: Hulk Robot <hulkci@huawei.com>, Jason Yan <yanaijie@huawei.com>
+Cc: hariprasad.kelam@gmail.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, Hulk Robot <hulkci@huawei.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,31 +79,129 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Fix the following gcc warning:
+On Fri, 17 Apr 2020 11:22:32 +0200,
+Jason Yan wrote:
+> 
+> Fix the following gcc warning:
+> 
+> sound/pci/au88x0/au88x0_a3ddata.c:62:25: warning: ‘A3dHrirDImpulse’
+> defined but not used [-Wunused-const-variable=]
+>  static const a3d_Hrtf_t A3dHrirDImpulse = {
+>                          ^~~~~~~~~~~~~~~
+> sound/pci/au88x0/au88x0_a3ddata.c:50:25: warning: ‘A3dHrirSatTest’
+> defined but not used [-Wunused-const-variable=]
+>  static const a3d_Hrtf_t A3dHrirSatTest = {
+>                          ^~~~~~~~~~~~~~
+> sound/pci/au88x0/au88x0_a3ddata.c:33:25: warning: ‘A3dHrirOnes’ defined
+> but not used [-Wunused-const-variable=]
+>  static const a3d_Hrtf_t A3dHrirOnes = {
+>                          ^~~~~~~~~~~
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Jason Yan <yanaijie@huawei.com>
 
-sound/soc/intel/atom/sst-atom-controls.c:710:30: warning:
-‘sst_mix_voip_controls’ defined but not used [-Wunused-const-variable=]
- SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_voip_controls);
-                              ^
+I'd rather keep them but disable with #if 0, if it's only about the
+minor compiler warnings.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Jason Yan <yanaijie@huawei.com>
----
- sound/soc/intel/atom/sst-atom-controls.c | 1 -
- 1 file changed, 1 deletion(-)
+The whole code is a result of reverse engineering and those dead code
+are simply there just because of lack of testing.  Removing makes it
+impossible for retesting (if any).
 
-diff --git a/sound/soc/intel/atom/sst-atom-controls.c b/sound/soc/intel/atom/sst-atom-controls.c
-index 69f3af4524ab..541f0059ba7a 100644
---- a/sound/soc/intel/atom/sst-atom-controls.c
-+++ b/sound/soc/intel/atom/sst-atom-controls.c
-@@ -707,7 +707,6 @@ SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_pcm2_controls);
- SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_sprot_l0_controls);
- SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_media_l1_controls);
- SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_media_l2_controls);
--SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_voip_controls);
- SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_codec0_controls);
- SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_codec1_controls);
- SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_modem_controls);
--- 
-2.21.1
 
+thanks,
+
+Takashi
+
+> ---
+>  sound/pci/au88x0/au88x0_a3d.c     | 23 -------------------
+>  sound/pci/au88x0/au88x0_a3ddata.c | 38 -------------------------------
+>  2 files changed, 61 deletions(-)
+> 
+> diff --git a/sound/pci/au88x0/au88x0_a3d.c b/sound/pci/au88x0/au88x0_a3d.c
+> index 2db183f8826a..4d3b79a34c69 100644
+> --- a/sound/pci/au88x0/au88x0_a3d.c
+> +++ b/sound/pci/au88x0/au88x0_a3d.c
+> @@ -512,31 +512,8 @@ static void a3dsrc_ProgramPipe(a3dsrc_t * a)
+>  	/* Single spike leads to identity transfer function. */
+>  	a3dsrc_SetHrtfCurrent(a, A3dHrirImpulse, A3dHrirImpulse);
+>  	a3dsrc_SetHrtfTarget(a, A3dHrirImpulse, A3dHrirImpulse);
+> -
+> -	/* Test: Sounds saturated. */
+> -	//a3dsrc_SetHrtfCurrent(a, A3dHrirSatTest, A3dHrirSatTest);
+> -	//a3dsrc_SetHrtfTarget(a, A3dHrirSatTest, A3dHrirSatTest);      
+>  }
+>  
+> -/* VDB = Vortex audio Dataflow Bus */
+> -#if 0
+> -static void a3dsrc_ClearVDBData(a3dsrc_t * a, unsigned long aa)
+> -{
+> -	vortex_t *vortex = (vortex_t *) (a->vortex);
+> -
+> -	// ((aa >> 2) << 8) - (aa >> 2)
+> -	hwwrite(vortex->mmio,
+> -		a3d_addrS(a->slice, A3D_SLICE_VDBDest) + (a->source << 2), 0);
+> -	hwwrite(vortex->mmio,
+> -		a3d_addrS(a->slice,
+> -			  A3D_SLICE_VDBDest + 4) + (a->source << 2), 0);
+> -	/*
+> -	   hwwrite(vortex->mmio, 0x19c00 + (((aa>>2)*255*4)+aa)*8, 0);
+> -	   hwwrite(vortex->mmio, 0x19c04 + (((aa>>2)*255*4)+aa)*8, 0);
+> -	 */
+> -}
+> -#endif
+> -
+>  /* A3D HwSource stuff. */
+>  
+>  static void vortex_A3dSourceHw_Initialize(vortex_t * v, int source, int slice)
+> diff --git a/sound/pci/au88x0/au88x0_a3ddata.c b/sound/pci/au88x0/au88x0_a3ddata.c
+> index 18623cb6bc52..cc41ea67a6d3 100644
+> --- a/sound/pci/au88x0/au88x0_a3ddata.c
+> +++ b/sound/pci/au88x0/au88x0_a3ddata.c
+> @@ -30,44 +30,6 @@ static const a3d_Hrtf_t A3dHrirImpulse = {
+>  	0, 0, 0
+>  };
+>  
+> -static const a3d_Hrtf_t A3dHrirOnes = {
+> -	0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff,
+> -	0x7fff,
+> -	0x7fff,
+> -	0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff,
+> -	0x7fff,
+> -	0x7fff,
+> -	0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff,
+> -	0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff,
+> -	0x7fff,
+> -	0x7fff,
+> -	0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff,
+> -	0x7fff,
+> -	0x7fff,
+> -	0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff
+> -};
+> -
+> -static const a3d_Hrtf_t A3dHrirSatTest = {
+> -	0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff,
+> -	0x7fff,
+> -	0x7fff,
+> -	0x8001, 0x8001, 0x8001, 0x8001, 0x8001, 0x8001, 0x8001, 0x8001,
+> -	0x8001,
+> -	0x8001,
+> -	0x7fff, 0x0000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+> -	0, 0, 0,
+> -	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+> -};
+> -
+> -static const a3d_Hrtf_t A3dHrirDImpulse = {
+> -	0, 0x7fff, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+> -	0, 0, 0,
+> -	0, 0, 0, 0,
+> -	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+> -	0, 0, 0,
+> -	0, 0, 0
+> -};
+> -
+>  static const a3d_ItdDline_t A3dItdDlineZeros = {
+>  	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+>  	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+> -- 
+> 2.21.1
+> 
