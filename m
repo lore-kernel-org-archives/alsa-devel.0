@@ -2,80 +2,79 @@ Return-Path: <SRS0=YLi8=6B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17550C2D0EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 15:50:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E8C5C2D0EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 15:51:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 944752087E
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 15:50:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DBEAC2223C
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 15:51:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fwc77RVZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 944752087E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="o8uK8fVk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DBEAC2223C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E3D1F1663;
-	Fri, 17 Apr 2020 17:50:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3D1F1663
+	by alsa0.perex.cz (Postfix) with ESMTPS id 438C61665;
+	Fri, 17 Apr 2020 17:50:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 438C61665
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587138654;
-	bh=Ggll7FIc1bJiU6ggC4/myk1ClM5AFVJh4WMyf7QxHZk=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1587138698;
+	bh=+1X6e1Ue2Ua+AIBBlY4glumRj9YSHQw1O5yE+owvPX0=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fwc77RVZdFQivQ9eBV9GfbSRZMmo3FNR6LLk3SeCjZZvu8QYxT8lhNBKhKPuBTbj1
-	 SL70Id4H1GOnQefUKoTJq4Sq4ZxD5XPFXie28O/748mgSy8RHVBF8PudPyWRhuC9n1
-	 FiTTltHkJMAG/dzP8EY5Wz9wM5vPxwZuEQPepSMk=
+	b=o8uK8fVksm3xaVhAu1fnRfuqgWUjADxiPGGm0xVUhx+qyjpaC8pHwvHN4Iowsd1R/
+	 KerIirpka2TXSuGyNVCLuKyP92DhmZF/a+qzp13X60v5MGGlXNEKP8+OLE1bMP0R4k
+	 roFY1Tk2aY5YSn9CfEvolpE/8XyshCztfIwNAGvI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 681B8F80291;
-	Fri, 17 Apr 2020 17:48:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DC3E6F80229;
+	Fri, 17 Apr 2020 17:50:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 47870F8028B; Fri, 17 Apr 2020 17:48:35 +0200 (CEST)
+ id 3B80FF80245; Fri, 17 Apr 2020 17:50:45 +0200 (CEST)
 Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C2ACBF8028B
- for <alsa-devel@alsa-project.org>; Fri, 17 Apr 2020 17:48:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2ACBF8028B
-IronPort-SDR: Nrb75Oxw112On7Sqk/Sl0g1Gh5NSj3GsQomF/BdF8nVPJklc2DL60GWHkeJ2f7jted7k1Icqrr
- FSoBXUDquqmw==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 547CCF8012E
+ for <alsa-devel@alsa-project.org>; Fri, 17 Apr 2020 17:50:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 547CCF8012E
+IronPort-SDR: XYMAa6XTDKoTW7zpun19OYvtXgQKT07ns0eRV45MHZBZTxBEO8K5Cp60q4B6rcxrE+iDQgBFLU
+ 0/KkTksDX9lA==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Apr 2020 08:48:23 -0700
-IronPort-SDR: ZBwe2yhen/Cg4VzUVmdatNxrnAr9gr2mfLpMqbuIjwHNm8+JZZMJryQnFAdgH7o+9ulVtWAxwR
- X5jV6k+GoP8A==
+ 17 Apr 2020 08:50:39 -0700
+IronPort-SDR: EzrDw1oBE0PEh4YcjVY+GCa4Dt66pnIHJimDNlSxXFLMdiyoW0fj5LHLajwuCp32SYet24adRR
+ DF3sIDLInKlw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,395,1580803200"; d="scan'208";a="278417849"
-Received: from dsbrown-mobl.amr.corp.intel.com (HELO [10.251.128.242])
- ([10.251.128.242])
- by fmsmga004.fm.intel.com with ESMTP; 17 Apr 2020 08:48:21 -0700
-Subject: Re: [PATCH] ASoC: Intel: atom: remove unused 'sst_mix_voip_controls'
-To: Jason Yan <yanaijie@huawei.com>, cezary.rojewski@intel.com,
- liam.r.girdwood@linux.intel.com, yang.jie@linux.intel.com,
- broonie@kernel.org, perex@perex.cz, tiwai@suse.com, hdegoede@redhat.com,
- tglx@linutronix.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-References: <20200417092344.14301-1-yanaijie@huawei.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <8cd0ba8d-138d-d4da-d6fb-d2457ea2db13@linux.intel.com>
-Date: Fri, 17 Apr 2020 08:43:12 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <20200417092344.14301-1-yanaijie@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-Cc: Hulk Robot <hulkci@huawei.com>
+X-IronPort-AV: E=Sophos;i="5.72,395,1580803200"; d="scan'208";a="244738840"
+Received: from ccnelson-mobl.amr.corp.intel.com ([10.254.185.99])
+ by fmsmga007.fm.intel.com with ESMTP; 17 Apr 2020 08:50:39 -0700
+Message-ID: <ea5c2287a9e6f2fa45e5f5332fc30664f482aebd.camel@linux.intel.com>
+Subject: Re: Question about snd_soc_card_register()
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Date: Fri, 17 Apr 2020 08:50:39 -0700
+In-Reply-To: <s5hmu7abhnk.wl-tiwai@suse.de>
+References: <DM6PR11MB29052BDEDBB872123FE6410FE8D80@DM6PR11MB2905.namprd11.prod.outlook.com>
+ <s5ho8rrewrq.wl-tiwai@suse.de>
+ <1799db6034f66d3c3e65e2cb4dd7a0f158c41047.camel@linux.intel.com>
+ <0557d9630b96b4111d294017dc621f672fef7fc5.camel@linux.intel.com>
+ <s5hmu7abhnk.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, "Sridharan,
+ Ranjani" <ranjani.sridharan@intel.com>, Takashi Iwai <tiwai@suse.com>,
+ "Bossart, Pierre-louis" <pierre-louis.bossart@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,40 +90,100 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 4/17/20 4:23 AM, Jason Yan wrote:
-> Fix the following gcc warning:
+On Fri, 2020-04-17 at 11:11 +0200, Takashi Iwai wrote:
+> On Thu, 16 Apr 2020 19:34:50 +0200,
+> Ranjani Sridharan wrote:
+> > 
+> > On Thu, 2020-04-16 at 06:18 -0700, Ranjani Sridharan wrote:
+> > > On Thu, 2020-04-16 at 09:04 +0200, Takashi Iwai wrote:
+> > > > On Thu, 16 Apr 2020 07:52:45 +0200,
+> > > > Sridharan, Ranjani wrote:
+> > > > > 
+> > > > > Hi Takashi,
+> > > > > 
+> > > > > While working on implementing the probes features in SOF
+> > > > > using a
+> > > > > separate card
+> > > > > for the probe DAI links, I noticed that calling
+> > > > > snd_soc_register_card() 
+> > > > > results in
+> > > > > incrementing the usage_count for the device that registers
+> > > > > the
+> > > > > card
+> > > > > by 2 and
+> > > > > it is not decremented until the card is freed.
+> > > > > 
+> > > > > Is this the expected behaviour? Typically, we register a
+> > > > > separate
+> > > > > platform
+> > > > > device for the Intel machines which in turn register the card
+> > > > > and
+> > > > > none of them
+> > > > > ever enable runtime PM. So this has no impact on the parent
+> > > > > device's runtime
+> > > > > PM status. 
+> > > > > 
+> > > > > I'd like to avoid creating a separate platform device just to
+> > > > > register the
+> > > > > card if possible while also enabling runtime PM . But when I
+> > > > > do
+> > > > > this today,
+> > > > > the device cannot enter runtime suspend at all. Could you
+> > > > > please
+> > > > > shed some
+> > > > > light on this?
+> > > > 
+> > > > It's not clear how you see the things.  Which device are you
+> > > > looking
+> > > > at?  Typically a card object points to two different devices,
+> > > > one
+> > > > is 
+> > > > the real device that the chip belongs to (card->dev), and
+> > > > another
+> > > > the
+> > > > own device object for managing the device files
+> > > > (card.card_dev).
+> > > > And in general, snd_soc_card_register() or snd_card_register()
+> > > > don't
+> > > > manipulate the runtime PM stuff by itself at all.
+> > > 
+> > > Its the card->dev that I am looking at. This is the device that
+> > > calls
+> > > devm_snd_soc_register_card(). 
+> > > In my tests, the usage_count for this device is 0 before calling
+> > > devm_snd_soc_register_card and it is 2 after the card
+> > > registration is
+> > > complete.
+> > 
+> > I dug a bit deeper and found that this happens only if the card-
+> > > dapm.idle_bias_off is not set to true.
+> > 
+> > To be honest, I dont quite understand what the idle_bas_off setting
+> > is
+> > meant for exactly but it does prevent card->dev 's being runtime
+> > resumed in dapm_pre_sequence_async() and solves my issue.
+> > 
+> > I dont see this being set for most of the cards in the Intel
+> > machine
+> > drivers and they all manifest the same symptom I was seeing. But,
+> > it
+> > hasnt really caused any real problems because runtime PM for these
+> > platform devices is never enabled.
 > 
-> sound/soc/intel/atom/sst-atom-controls.c:710:30: warning:
-> ‘sst_mix_voip_controls’ defined but not used [-Wunused-const-variable=]
->   SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_voip_controls);
-
-I'd prefer it if we didn't change this but only added __maybe_unused in 
-the macro.
-
-This is 2013/2014 legacy stuff, some parts were not upstreamed and this 
-was used by out-of-tree Android variations, and I don't know the 
-consequences of taking this out.
-
-Better just squelch the warning but not change anything, no?
-
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Jason Yan <yanaijie@huawei.com>
-> ---
->   sound/soc/intel/atom/sst-atom-controls.c | 1 -
->   1 file changed, 1 deletion(-)
+> Hrm, that's puzzling behavior indeed.
 > 
-> diff --git a/sound/soc/intel/atom/sst-atom-controls.c b/sound/soc/intel/atom/sst-atom-controls.c
-> index 69f3af4524ab..541f0059ba7a 100644
-> --- a/sound/soc/intel/atom/sst-atom-controls.c
-> +++ b/sound/soc/intel/atom/sst-atom-controls.c
-> @@ -707,7 +707,6 @@ SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_pcm2_controls);
->   SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_sprot_l0_controls);
->   SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_media_l1_controls);
->   SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_media_l2_controls);
-> -SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_voip_controls);
->   SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_codec0_controls);
->   SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_codec1_controls);
->   SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_modem_controls);
-> 
+> And it seems that Intel byt drivers are the only machine drivers that
+> set idle_bias_off.  I guess those set the flag for some workaround?
+
+I have two theories about this:
+1. Some of the BYT machine drivers that set this, do it in their codec
+init functions. My guess is this is likely to prevent the codec from
+being permanently runtime active.
+2. Others are simply copy/paste's and probably not needed.
+
+I can investigate further and confirm my thoeries. But do you foresee
+any issues with setting the idle_bias_off for the card's DAPM context?
+
+Thanks,
+Ranjani
+
