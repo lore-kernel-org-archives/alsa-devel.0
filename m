@@ -2,103 +2,82 @@ Return-Path: <SRS0=YLi8=6B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 148F3C2D0EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 15:49:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80E0CC2D0EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 15:50:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8E8B020857
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 15:49:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0C19820857
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 15:50:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NiccKNgf";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com header.i=@baylibre-com.20150623.gappssmtp.com header.b="ti8XE6/h"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8E8B020857
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FO7fd5+H"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0C19820857
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EC1191607;
-	Fri, 17 Apr 2020 17:48:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC1191607
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4E0541672;
+	Fri, 17 Apr 2020 17:49:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E0541672
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587138553;
-	bh=s5ompJemPj5nkFkQa7E2O+z6zThClxElK+l7uOD37zo=;
-	h=References:From:To:Subject:In-reply-to:Date:Cc:List-Id:
+	s=default; t=1587138612;
+	bh=ZkUqKOLdWSU5KtJY2CX3GQeH7HX+zO3ThyjF84Hqltg=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NiccKNgfiTBbjXfkOOEN18PUtwM3243WOEk91+fcXHU0OPRTAnf2PCZ6dMPpLCcMC
-	 3tkllBsym/cs9Yqdel4IeDB+E0X5q7JTo/67zheiLw0sZyDh+unvc7gxHPcABqNEIr
-	 BQwSqXfxBVA8uwSzOvAffzCXNS3NqiH5r8x+H2JE=
+	b=FO7fd5+HrgosKvdHPXIEalplRJ4sEuGqp9Y+XzFx2hrpozfhE0AHvoNtM2utPPKbr
+	 bcXW5S9AJ/SuLVkiv9SZw1KmxcHUWUd7scbRRYm6RrQON66K7HwSN8V896b6fncfaK
+	 0Oe1knmRlyPa+E9yAOY6By5ZolgHpVaynAsx8kyQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 797F5F80229;
-	Fri, 17 Apr 2020 17:48:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4129AF8012E;
+	Fri, 17 Apr 2020 17:48:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2322FF80245; Fri, 17 Apr 2020 17:48:20 +0200 (CEST)
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com
- [IPv6:2a00:1450:4864:20::342])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 716D0F8028F; Fri, 17 Apr 2020 17:48:33 +0200 (CEST)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8AD40F800DE
- for <alsa-devel@alsa-project.org>; Fri, 17 Apr 2020 17:48:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8AD40F800DE
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com
- header.i=@baylibre-com.20150623.gappssmtp.com header.b="ti8XE6/h"
-Received: by mail-wm1-x342.google.com with SMTP id e26so3383734wmk.5
- for <alsa-devel@alsa-project.org>; Fri, 17 Apr 2020 08:48:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=baylibre-com.20150623.gappssmtp.com; s=20150623;
- h=references:user-agent:from:to:cc:subject:in-reply-to:date
- :message-id:mime-version;
- bh=XW0yyDJ3kGL4YSfjIQtbTA8LpO0pn5CH4q5LKE3KInk=;
- b=ti8XE6/hbOuRL9X87vEgxSaxrmUnuZfEEJPNF0eKb9msnnNlMwF12NkfwXVUD61tgt
- 85Y8ypSqgpF2QKG4Ew1zoHQd3GIgUZ8uof5OfBeOPWy8WR8mbMXGSChHDMvWOP8yjMYx
- 8q+6S5s0EAnACWmO7xAWmTMvMiOD0Idb8faKS4pnxSCLGgvbUNHXp7ZZknVUs266deMr
- fpioIU2DZby/FNekEXfgzMR33lzrogfqM0uZ+mFISf1hI+yedObliffXi1a7uBRIaf4u
- ro6Aa5VHtJrRu19XDaZZepbyDPxBkYMS280kZA7qMtm8SzFg4abgvxgTtg8HwWUhze4F
- SCyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:references:user-agent:from:to:cc:subject
- :in-reply-to:date:message-id:mime-version;
- bh=XW0yyDJ3kGL4YSfjIQtbTA8LpO0pn5CH4q5LKE3KInk=;
- b=mf3AZCx/KHsO87l6KS1L7s7mmfOR1D+oI8w61Pqa/e1UpHBZBYg7M4/Tu1N4SeAy8f
- qjJYkqnI32UWKRdcn63mZRl55XUVM4+AZkLVwDBArBTy/RyJznah6WXG45LYKzQn5wmc
- CnN7mdEDIbyKoPIAv9Eq1QLQjUtXlTlTG0SHMx1Z74C4g+Z0BKTQkUIC22g/EnuV2Q+r
- qKUAFmZAxbOwRDTVhKBCCCefpVrsCb5Zdohm6d80D006wbw4UjKaHtF20fvW7kxnv+UL
- KMKn2W/BqxZsxBzKVvAP1GjsRZ9H3FD/IqxACaG+l3N92CYDOs1pcT3XBG4XQbF+PTfM
- XF7w==
-X-Gm-Message-State: AGi0PuYm3dV6isHELfN/f8l4lZU2CWuJvKwEOtim5CzTteZQmSuel3jZ
- Qc82sRftg6UcrFu31eqghwgstw==
-X-Google-Smtp-Source: APiQypKYcQE1ZtwlD/WS2UyWIai8cEgF8Xxh1VwH3Gw03gDC5tZzsHXTTaMjUTTCPH5swTLBowkMLA==
-X-Received: by 2002:a1c:dd8a:: with SMTP id u132mr3835241wmg.87.1587138489840; 
- Fri, 17 Apr 2020 08:48:09 -0700 (PDT)
-Received: from localhost (cag06-3-82-243-161-21.fbx.proxad.net.
- [82.243.161.21])
- by smtp.gmail.com with ESMTPSA id z18sm26042362wrw.41.2020.04.17.08.48.08
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 17 Apr 2020 08:48:09 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C8EEAF8012E
+ for <alsa-devel@alsa-project.org>; Fri, 17 Apr 2020 17:48:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8EEAF8012E
+IronPort-SDR: hngQofWnKgbDi6801B34WEtgAqERPNACRvTbDbRTVP0BQEbeyOlHhq9hEr6IY0sWS/ybZgxoKZ
+ McxhfNHvjatw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 17 Apr 2020 08:48:25 -0700
+IronPort-SDR: T0+ME0f6DRaD4prFFV2qOkrVRiMqkfv8fMtQhp6AmwSlhLcYQi4BASsGb0uLXrJu3sxCuV3hpS
+ RMiw+WQeqtMg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,395,1580803200"; d="scan'208";a="278417854"
+Received: from dsbrown-mobl.amr.corp.intel.com (HELO [10.251.128.242])
+ ([10.251.128.242])
+ by fmsmga004.fm.intel.com with ESMTP; 17 Apr 2020 08:48:24 -0700
+Subject: Re: next/master bisection: baseline.dmesg.alert on meson-sm1-sei610
+To: Jerome Brunet <jbrunet@baylibre.com>, Mark Brown <broonie@kernel.org>,
+ Stephan Gerhold <stephan@gerhold.net>
 References: <5e997ca0.1c69fb81.f69a1.620e@mx.google.com>
  <20200417122732.GC5315@sirena.org.uk>
-User-agent: mu4e 1.3.3; emacs 26.3
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Mark Brown <broonie@kernel.org>, Stephan Gerhold <stephan@gerhold.net>
-Subject: Re: next/master bisection: baseline.dmesg.alert on meson-sm1-sei610
-In-reply-to: <20200417122732.GC5315@sirena.org.uk>
-Date: Fri, 17 Apr 2020 17:48:08 +0200
-Message-ID: <1j5zdyazbb.fsf@starbuckisacylon.baylibre.com>
+ <1j7dyeb6pt.fsf@starbuckisacylon.baylibre.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <931552e3-f0f7-b577-9b5d-5c7eb678fee6@linux.intel.com>
+Date: Fri, 17 Apr 2020 08:52:34 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <1j7dyeb6pt.fsf@starbuckisacylon.baylibre.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Cc: alsa-devel@alsa-project.org,
  Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
  tomeu.vizoso@collabora.com, khilman@baylibre.com, mgalka@collabora.com,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  guillaume.tucker@collabora.com, enric.balletbo@collabora.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -116,178 +95,29 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-On Fri 17 Apr 2020 at 14:27, Mark Brown <broonie@kernel.org> wrote:
+>>> Summary:
+>>>    Start:      a3ca59b9af21e Add linux-next specific files for 20200416
+>>>    Plain log:  https://storage.kernelci.org//next/master/next-20200416/arm64/defconfig+CONFIG_RANDOMIZE_BASE=y/gcc-8/lab-baylibre/baseline-meson-sm1-sei610.txt
+>>>    HTML log:   https://storage.kernelci.org//next/master/next-20200416/arm64/defconfig+CONFIG_RANDOMIZE_BASE=y/gcc-8/lab-baylibre/baseline-meson-sm1-sei610.html
+>>>    Result:     9b5db059366ae ASoC: soc-pcm: dpcm: Only allow playback/capture if supported
+>>
+>> This change to check the playback and capture constraints is also
+>> causing issues on at least Meson - I'm a bit worried that this is also
+>> causing oopses here, not just audio problems so copying in Morimoto-san
+>> too.  We should fix the things that are broken by this change since it's
+>> a thing we should be able to rely on and do enforce for non-DPCm links
+>> but I'm wondering if we should revert for 5.7 and reapply for 5.8.
+>>
+>> Including complete report so people have it.
+>>
+> 
+> I have the device with me. I'll check an report back
 
-> On Fri, Apr 17, 2020 at 02:53:36AM -0700, kernelci.org bot wrote:
->
->> next/master bisection: baseline.dmesg.alert on meson-sm1-sei610
->
->> Summary:
->>   Start:      a3ca59b9af21e Add linux-next specific files for 20200416
->>   Plain log:  https://storage.kernelci.org//next/master/next-20200416/arm64/defconfig+CONFIG_RANDOMIZE_BASE=y/gcc-8/lab-baylibre/baseline-meson-sm1-sei610.txt
->>   HTML log:   https://storage.kernelci.org//next/master/next-20200416/arm64/defconfig+CONFIG_RANDOMIZE_BASE=y/gcc-8/lab-baylibre/baseline-meson-sm1-sei610.html
->>   Result:     9b5db059366ae ASoC: soc-pcm: dpcm: Only allow playback/capture if supported
->
-> This change to check the playback and capture constraints is also
-> causing issues on at least Meson - I'm a bit worried that this is also
-> causing oopses here, not just audio problems so copying in Morimoto-san
-> too.  We should fix the things that are broken by this change since it's
-> a thing we should be able to rely on and do enforce for non-DPCm links
-> but I'm wondering if we should revert for 5.7 and reapply for 5.8.
->
-> Including complete report so people have it.
+The fix for Intel Baytrail/Broadwell platforms was to add a 
+.min_channels field for all DAIs:
 
-The Oops on this device is due to the CPU side of a codec-to-codec
-link. Since these are no supposed to be exposed to the userspace,
-I have marked them with ".no_pcm" so the dai_link is not going through
-the appropriate code path. It was working so far, so it went unnoticed.
+https://github.com/thesofproject/linux/pull/2018/commits/4fa10638dca8aad7a320e85cc3e00b179b8de410
 
-I'll send a fix for this.
-
-On a more general note, the dpcm_playback and dcpm_capture is only there
-to force a particular direction off, since it a bit difficult for ASoC
-to figure out when the link are mostly made of dummy codecs.
-
-This seems like a duplicate of the properties "playback_only" and
-"capture_only"
-
-Maybe we could:
-1) Merge the 2 kind of properties. The "_only" form might be a bit
-   annoying to work with in dpcm.
-   What about a boolean table "force_disable" with the stream direction
-   as indices ?
-2) Get rid of the if clause below and handle DPCM and non-DPCM with a
-   single code path.
-
-Thoughts ?
-
->
->> Checks:
->>   revert:     PASS
->>   verify:     PASS
->
->> Parameters:
->>   Tree:       next
->>   URL:        https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
->>   Branch:     master
->>   Target:     meson-sm1-sei610
->>   CPU arch:   arm64
->>   Lab:        lab-baylibre
->>   Compiler:   gcc-8
->>   Config:     defconfig+CONFIG_RANDOMIZE_BASE=y
->>   Test case:  baseline.dmesg.alert
->> 
->> Breaking commit found:
->> 
->> -------------------------------------------------------------------------------
->> commit 9b5db059366ae2087e07892b5fc108f81f4ec189
->> Author: Stephan Gerhold <stephan@gerhold.net>
->> Date:   Wed Apr 15 12:49:28 2020 +0200
->> 
->>     ASoC: soc-pcm: dpcm: Only allow playback/capture if supported
->>     
->>     At the moment, PCM devices for DPCM are only created based on the
->>     dpcm_playback/capture parameters of the DAI link, without considering
->>     if the CPU/FE DAI is actually capable of playback/capture.
->>     
->>     Normally the dpcm_playback/capture parameter should match the
->>     capabilities of the CPU DAI. However, there is no way to set that
->>     parameter from the device tree (e.g. with simple-audio-card or
->>     qcom sound cards). dpcm_playback/capture are always both set to 1.
->>     
->>     This causes problems when the CPU DAI does only support playback
->>     or capture. Attemting to open that PCM device with an unsupported
->>     stream type then results in a null pointer dereference:
->>     
->>         Unable to handle kernel NULL pointer dereference at virtual address 0000000000000128
->>         Internal error: Oops: 96000044 [#1] PREEMPT SMP
->>         CPU: 3 PID: 1582 Comm: arecord Not tainted 5.7.0-rc1
->>         pc : invalidate_paths_ep+0x30/0xe0
->>         lr : snd_soc_dapm_dai_get_connected_widgets+0x170/0x1a8
->>         Call trace:
->>          invalidate_paths_ep+0x30/0xe0
->>          snd_soc_dapm_dai_get_connected_widgets+0x170/0x1a8
->>          dpcm_path_get+0x38/0xd0
->>          dpcm_fe_dai_open+0x70/0x920
->>          snd_pcm_open_substream+0x564/0x840
->>          snd_pcm_open+0xfc/0x228
->>          snd_pcm_capture_open+0x4c/0x78
->>          snd_open+0xac/0x1a8
->>          ...
->>     
->>     ... because the DAI playback/capture_widget is not set in that case.
->>     
->>     We could add checks there to fix the problem (maybe we should
->>     anyway), but much easier is to not expose the device as
->>     playback/capture in the first place. Attemting to use that
->>     device would always fail later anyway.
->>     
->>     Add checks for snd_soc_dai_stream_valid() to the DPCM case
->>     to avoid exposing playback/capture if it is not supported.
->>     
->>     Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
->>     Link: https://lore.kernel.org/r/20200415104928.86091-1-stephan@gerhold.net
->>     Signed-off-by: Mark Brown <broonie@kernel.org>
->> 
->> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
->> index 289aebc155293..1f302de440525 100644
->> --- a/sound/soc/soc-pcm.c
->> +++ b/sound/soc/soc-pcm.c
->> @@ -2911,8 +2911,17 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
->>  	int i;
->>  
->>  	if (rtd->dai_link->dynamic || rtd->dai_link->no_pcm) {
->> -		playback = rtd->dai_link->dpcm_playback;
->> -		capture = rtd->dai_link->dpcm_capture;
->> +		cpu_dai = asoc_rtd_to_cpu(rtd, 0);
->> +		if (rtd->num_cpus > 1) {
->> +			dev_err(rtd->dev,
->> +				"DPCM doesn't support Multi CPU yet\n");
->> +			return -EINVAL;
->> +		}
->> +
->> +		playback = rtd->dai_link->dpcm_playback &&
->> +			   snd_soc_dai_stream_valid(cpu_dai, SNDRV_PCM_STREAM_PLAYBACK);
->> +		capture = rtd->dai_link->dpcm_capture &&
->> +			  snd_soc_dai_stream_valid(cpu_dai, SNDRV_PCM_STREAM_CAPTURE);
->>  	} else {
->>  		/* Adapt stream for codec2codec links */
->>  		int cpu_capture = rtd->dai_link->params ?
->> -------------------------------------------------------------------------------
->> 
->> 
->> Git bisection log:
->> 
->> -------------------------------------------------------------------------------
->> git bisect start
->> # good: [87b0f983f66f23762921129fd35966eddc3f2dae] net: mscc: ocelot: fix untagged packet drops when enslaving to vlan aware bridge
->> git bisect good 87b0f983f66f23762921129fd35966eddc3f2dae
->> # bad: [a3ca59b9af21e68069555ffff1ad89bd2a7c40fc] Add linux-next specific files for 20200416
->> git bisect bad a3ca59b9af21e68069555ffff1ad89bd2a7c40fc
->> # bad: [feb09551bfe34ccf0ba462188a1aee651be0f2c3] Merge remote-tracking branch 'i2c/i2c/for-next'
->> git bisect bad feb09551bfe34ccf0ba462188a1aee651be0f2c3
->> # good: [a4721ced760684d1776bf31f7925aa41bb3f4846] Merge v5.7-rc1 into drm-misc-fixes
->> git bisect good a4721ced760684d1776bf31f7925aa41bb3f4846
->> # bad: [e75043c693af6a10c9e2087adeef243cf05ce3bd] Merge remote-tracking branch 'rockchip/for-next'
->> git bisect bad e75043c693af6a10c9e2087adeef243cf05ce3bd
->> # bad: [08a315860a1b462fef5969d2e6ab4cdab26df8e3] Merge remote-tracking branch 'arm-soc/for-next'
->> git bisect bad 08a315860a1b462fef5969d2e6ab4cdab26df8e3
->> # bad: [80dbfa57508c36c2b3798b387ef3eb92954b9c09] Merge remote-tracking branch 'slave-dma-fixes/fixes'
->> git bisect bad 80dbfa57508c36c2b3798b387ef3eb92954b9c09
->> # good: [a723380c6f0a3723db72da6c6097b32b23f5564c] Merge remote-tracking branch 'sound-current/for-linus'
->> git bisect good a723380c6f0a3723db72da6c6097b32b23f5564c
->> # bad: [5bd70440cb0a6f5c6a84019bb2aa93ab8310a5cd] ASoC: soc-dai: revert all changes to DAI startup/shutdown sequence
->> git bisect bad 5bd70440cb0a6f5c6a84019bb2aa93ab8310a5cd
->> # good: [4d1a015a203c0249e3332ea217a38ec978118daa] ASoC: convert rockchip spdif bindings to yaml
->> git bisect good 4d1a015a203c0249e3332ea217a38ec978118daa
->> # good: [0f2a3b02274c02eb97697c4d89c019d1d21ac225] ASoC: wsa881x: mark read_only_wordlength flag
->> git bisect good 0f2a3b02274c02eb97697c4d89c019d1d21ac225
->> # good: [aa7812737f2877e192d57626cbe8825cc7cf6de9] ASoC: sgtl5000: Fix VAG power-on handling
->> git bisect good aa7812737f2877e192d57626cbe8825cc7cf6de9
->> # bad: [0c824ec094b5cda766c80d88c2036e28c24a4cb1] ASoC: q6dsp6: q6afe-dai: add missing channels to MI2S DAIs
->> git bisect bad 0c824ec094b5cda766c80d88c2036e28c24a4cb1
->> # bad: [9b5db059366ae2087e07892b5fc108f81f4ec189] ASoC: soc-pcm: dpcm: Only allow playback/capture if supported
->> git bisect bad 9b5db059366ae2087e07892b5fc108f81f4ec189
->> # first bad commit: [9b5db059366ae2087e07892b5fc108f81f4ec189] ASoC: soc-pcm: dpcm: Only allow playback/capture if supported
->> -------------------------------------------------------------------------------
-
+I think this new check is a good one, but by setting the bar higher it 
+will break any platform which didn't initialize these fields, so we are 
+likely to see such reports trickle one after the other.
