@@ -2,84 +2,73 @@ Return-Path: <SRS0=YLi8=6B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C4D56C2D0EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 14:29:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CBB24C2D0EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 14:39:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4CF922087E
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 14:29:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5812820936
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 14:39:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rAjIzEkA";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="mjTtoAaY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4CF922087E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pv7AE/4U"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5812820936
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A03EF15F2;
-	Fri, 17 Apr 2020 16:28:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A03EF15F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 98D1815F9;
+	Fri, 17 Apr 2020 16:38:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98D1815F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587133781;
-	bh=txzchbzT5cI72CRmQqeLJjyrLrAIn+FVo7sH6SEzmyg=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=rAjIzEkAYe/f9/EkI0ZnvYaRXfz7KeCflPKugIj6COT3NiQKJZ0jQw7Mt7eIrn5+j
-	 8ZwaMjyzRHapvszG4ijjI7dfl3e8UfmiSpg8FDMA6gJnM5+x88tdy02GGfk9fG/IZ+
-	 hhKDzGHmh9AwccHeylUH1UfHE/DLNIyI0liW67Qk=
+	s=default; t=1587134377;
+	bh=p8zQhRJ5bmzbPNeKvQhJZTyclP+HhQCjJRStO5ZTIpI=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=pv7AE/4Uqko3LQNBuT1APytVZj9lu9tOJn2cLfomk7Mr1z7IA3SOeGhRYoW0fX4O1
+	 Z5C4tlF6E/Wzt524l6JLD7DOGwWN918bbOl7hGv8dBaDe/cfQ19sVWJZ5WGQX7gLcP
+	 yMp4skvquQ6CXuO0gxwBQgjvxOpouX0Gdw9EKmSw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2CF5EF80229;
-	Fri, 17 Apr 2020 16:28:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2516AF80229;
+	Fri, 17 Apr 2020 16:38:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 48495F80245; Fri, 17 Apr 2020 16:28:45 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CC6CEF800AB
- for <alsa-devel@alsa-project.org>; Fri, 17 Apr 2020 16:28:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC6CEF800AB
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="mjTtoAaY"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ id EE62AF80245; Fri, 17 Apr 2020 16:38:45 +0200 (CEST)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 7C64720B1F;
- Fri, 17 Apr 2020 14:28:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1587133717;
- bh=txzchbzT5cI72CRmQqeLJjyrLrAIn+FVo7sH6SEzmyg=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=mjTtoAaYh5dgQ+OUnmDkh9HZkIbruhhZBoJkQFr6nffDHw6FXL1hvM9VML91ACDx9
- hdDx4IwwZluuGvmKQDWYZthQoU0jMiE+6+oX1wamnylFrhAxwweoyhiEKLw9cJRh8d
- Ft4Dxp70q+jAv5Q7t4ZYv7msg5mXdu/hJ2Kt5Zek=
-Date: Fri, 17 Apr 2020 15:28:34 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Jerome Brunet <jbrunet@baylibre.com>
-Subject: Re: next/master bisection: baseline.dmesg.alert on meson-sm1-sei610
-Message-ID: <20200417142834.GF5315@sirena.org.uk>
-References: <5e997ca0.1c69fb81.f69a1.620e@mx.google.com>
- <20200417122732.GC5315@sirena.org.uk>
- <1j7dyeb6pt.fsf@starbuckisacylon.baylibre.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id AAECBF800AB
+ for <alsa-devel@alsa-project.org>; Fri, 17 Apr 2020 16:38:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AAECBF800AB
+IronPort-SDR: gqygIFz88J+4oUBmlWYN9wYfSI+9+0oR22XPcxzA5vV0cgoBYPqmWE9HVIszL1FhQ/hRugynQN
+ 0tYTN7NDJ9UQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 17 Apr 2020 07:38:32 -0700
+IronPort-SDR: baXknFGLCSkkGUBZzBc6qb+BU4tK/xCLn1Y2IDUQIV/ERg4d8a7IXxLlFZYNRV0UeOPWIn/ebr
+ AzwqymPM5//Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,395,1580803200"; d="scan'208";a="278397148"
+Received: from pi-desktop.igk.intel.com ([10.237.148.102])
+ by fmsmga004.fm.intel.com with ESMTP; 17 Apr 2020 07:38:32 -0700
+From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+To: Jaroslav Kysela <perex@perex.cz>
+Subject: [ALSA-LIB PATCH] topology: Use bool parser to parse boolean value
+Date: Fri, 17 Apr 2020 12:47:47 -0400
+Message-Id: <20200417164747.673-1-amadeuszx.slawinski@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="QNDPHrPUIc00TOLW"
-Content-Disposition: inline
-In-Reply-To: <1j7dyeb6pt.fsf@starbuckisacylon.baylibre.com>
-X-Cookie: MOUNT TAPE U1439 ON B3, NO RING
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org, Stephan Gerhold <stephan@gerhold.net>,
- tomeu.vizoso@collabora.com, khilman@baylibre.com, mgalka@collabora.com,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- guillaume.tucker@collabora.com, enric.balletbo@collabora.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,41 +84,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+It should be safe to change this as correct values with int would be 0
+or 1 and bool parser handles them correctly.
 
---QNDPHrPUIc00TOLW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+---
+ src/topology/dapm.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-On Fri, Apr 17, 2020 at 03:08:14PM +0200, Jerome Brunet wrote:
-> On Fri 17 Apr 2020 at 14:27, Mark Brown <broonie@kernel.org> wrote:
+diff --git a/src/topology/dapm.c b/src/topology/dapm.c
+index 70645126..cd1a8770 100644
+--- a/src/topology/dapm.c
++++ b/src/topology/dapm.c
+@@ -595,7 +595,8 @@ int tplg_parse_dapm_widget(snd_tplg_t *tplg,
+ 		}
+ 
+ 		if (strcmp(id, "invert") == 0) {
+-			if (tplg_get_integer(n, &ival, 0))
++			ival = snd_config_get_bool(n);
++			if (ival < 0)
+ 				return -EINVAL;
+ 
+ 			widget->invert = ival;
+-- 
+2.17.1
 
-> >>   Result:     9b5db059366ae ASoC: soc-pcm: dpcm: Only allow playback/capture if supported
-
-> > This change to check the playback and capture constraints is also
-> > causing issues on at least Meson - I'm a bit worried that this is also
-> > causing oopses here, not just audio problems so copying in Morimoto-san
-> > too.  We should fix the things that are broken by this change since it's
-> > a thing we should be able to rely on and do enforce for non-DPCm links
-> > but I'm wondering if we should revert for 5.7 and reapply for 5.8.
-
-> I have the device with me. I'll check an report back
-
-Thanks!  Note that the commit above got dropped from -next due to some
-scripting stuff, it's in my tree or yesterday's -next.
-
---QNDPHrPUIc00TOLW
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6ZvREACgkQJNaLcl1U
-h9BhXAf/UP7MBZ2vl7VlkE8bu38A+aovGQQFQZJRgruyN2JNg7n2YeUq/2Qp6sOw
-QsG96PvOrAIN847qzanvuSmBwTlmDS10l2RjKXDWC0x9VX5L0pHX5KaPgywyOZv7
-z5DptFt6sqmE9BhwCOUBwc/z47sZduhMyT6UGhlhAfkf+Fn6DAJfihJXbZsnl1jA
-3CULs/u7DXvCjM6/M5ySAB3qzOu2EjHYjoly90fdDQp9oHWrMeW8ZOsWBSmX8FjV
-eU5HNmboEHfsMrzSGR11X4JIbPrJHR3StCblpISPokfIhLizyOehaxd8eEZKoFqF
-o4AtRCQaXruki9X+6Z3Fd+807u2zCA==
-=lkBa
------END PGP SIGNATURE-----
-
---QNDPHrPUIc00TOLW--
