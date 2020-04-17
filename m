@@ -7,67 +7,98 @@ X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E95AC352BE
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 09:29:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BA86DC352BE
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 09:36:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0619F20776
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 09:29:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3BA2F208E4
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 09:36:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vShlYjEB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0619F20776
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ORWqs/lB";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="T6IptGXX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3BA2F208E4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 60E47829;
-	Fri, 17 Apr 2020 11:28:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 60E47829
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8DA0F1660;
+	Fri, 17 Apr 2020 11:35:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8DA0F1660
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587115780;
-	bh=PCnXCdaH14OqsPrtKwwoKYCJd1+eW3kLIu93vUWUCzE=;
+	s=default; t=1587116201;
+	bh=yi+RI7Jq7DKzEp1bkMfDRvmmT49oQ65xsDKb+xXDhG0=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vShlYjEBYn5kUHWhMdgj+v3rHZ+1ofvlB94sSxSfajMErobarW27jAoHqcdYXkif4
-	 QQ0jObGMf6aswSkcYt43wAFWAUi5lNFreCubThbh08GPhAiLEwq/rS7VZYpa1seZHd
-	 oNFTk3NAieitLpXH3Gwf6gWtuG+rq4/LNlRL1i7M=
+	b=ORWqs/lBGca/RN4d0FoBrq7UyC4M8TEULzOP3PJdS+OS4qG2eVkSkA3e2cM9EeOKN
+	 hzy+x7qBDHBXKZ8ZdP2+D0/wAhcoecDoN8ZwWRmOXVw7ObH8P+CimjnfDmM23WkoT/
+	 +QpmTDeepdUxSo3huvJRBApd4A300tt3bu1nUN7o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 904B4F8028A;
-	Fri, 17 Apr 2020 11:23:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 211D5F800DE;
+	Fri, 17 Apr 2020 11:35:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 22616F8028B; Fri, 17 Apr 2020 11:23:29 +0200 (CEST)
-Received: from huawei.com (szxga07-in.huawei.com [45.249.212.35])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 93A97F80245; Fri, 17 Apr 2020 11:35:49 +0200 (CEST)
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com
+ [IPv6:2a00:1450:4864:20::441])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 33F5BF80264
- for <alsa-devel@alsa-project.org>; Fri, 17 Apr 2020 11:23:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33F5BF80264
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
- by Forcepoint Email with ESMTP id 0F167F3F89FD44370F11;
- Fri, 17 Apr 2020 17:23:18 +0800 (CST)
-Received: from [127.0.0.1] (10.166.213.7) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Fri, 17 Apr 2020
- 17:23:07 +0800
-Subject: Re: [PATCH] ALSA: au88x0: remove some dead code
-To: Takashi Iwai <tiwai@suse.de>
-References: <20200417092232.13371-1-yanaijie@huawei.com>
- <s5ho8rqbhz1.wl-tiwai@suse.de>
-From: Jason Yan <yanaijie@huawei.com>
-Message-ID: <3caeb0e2-0f4a-3f98-07e9-dd8f78a33dc3@huawei.com>
-Date: Fri, 17 Apr 2020 17:23:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 653ECF800DE
+ for <alsa-devel@alsa-project.org>; Fri, 17 Apr 2020 11:35:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 653ECF800DE
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="T6IptGXX"
+Received: by mail-wr1-x441.google.com with SMTP id u13so2291005wrp.3
+ for <alsa-devel@alsa-project.org>; Fri, 17 Apr 2020 02:35:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=eCVHboKKWOnwvWAz8+xL2mDoaCizI1H5EPD58JQK6Rk=;
+ b=T6IptGXXEQkhtJrMUTTA3jtihdAaJ+tHkexXg51Vh/hdym9qz6otEVa7epFXYPt0pg
+ TrjvTI3txaGa9GjA5HnEn3PgSx0/w3UAkIIJUYDfxEKKyvIGJse0wuWVDPGE/NxA+XaU
+ 4tbwKw4ROj0kINMZRN8exQ8EmkktRpO1NQjnUDI706IXO9y+g1pQ8d7GIooWXpg2x2gp
+ MVMaRT0Y2gfp8nP0eq9iaxnfZ2+30LpGFbN8Za5fJIScOv+NQhkZUJoGDlUxSs9NTc9l
+ s/hCwy9lNBJhlGy18L9093l+xRIByTaz/sKhqo8gGGmYfcHUJLntHrf746YMhxk01acH
+ szQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=eCVHboKKWOnwvWAz8+xL2mDoaCizI1H5EPD58JQK6Rk=;
+ b=JR8jeYWx9uCiGIV6edhV5WUn0Q8Bqn7Hq3r0TsJyeoLW/8MjzQWIrW8P7zuweZyDuP
+ RVAB44tKqMWMpGsUijehyPC58LW8XNCt4OXkdw1AfdcESrqhtTK8+vDNI5+tF8SIu5Yf
+ EvP7PDW29z90B8h+iYSCa406ei2ZTZESl/sdZzcA78TxeBncc9QPutPhWpMiIHIkIyVW
+ EHPtXtjZXFImTTHel3fsIaQMfcR4PUVn8PEeTqcf2O8pj3yKCZj+M1XiLwvNfLp4sDnP
+ t9ffxAljrIKXgTj2rRYsLz+EhoZi7ZSiC//0LihZLNxRBlx1KP63Bs5KTkFgzaI2saXt
+ z1CA==
+X-Gm-Message-State: AGi0PuaGycCH8blpR5vchywWJpCCdeqTBP1r22KckDKyc3L+Sm4mMn+X
+ 0Yf88lY7NJMtz9qoZtY2n2JEUQ==
+X-Google-Smtp-Source: APiQypJIfwLF/8KROwCfC+/ond22ImgZcm7Tb1JWQFyUHiQTIwCxofND0HxoXClayCvlxRkhoaJEuA==
+X-Received: by 2002:a5d:634d:: with SMTP id b13mr2843037wrw.353.1587116142734; 
+ Fri, 17 Apr 2020 02:35:42 -0700 (PDT)
+Received: from [192.168.86.34]
+ (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
+ by smtp.googlemail.com with ESMTPSA id h188sm7519481wme.8.2020.04.17.02.35.41
+ (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+ Fri, 17 Apr 2020 02:35:42 -0700 (PDT)
+Subject: Re: [PATCH v1] slimbus: core: Fix mismatch in of_node_get/put
+To: Saravana Kannan <saravanak@google.com>
+References: <20200326173457.29233-1-saravanak@google.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <5b5ec594-9e17-8504-4711-0db8a6a53c22@linaro.org>
+Date: Fri, 17 Apr 2020 10:35:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <s5ho8rqbhz1.wl-tiwai@suse.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.166.213.7]
-X-CFilter-Loop: Reflected
-Cc: hariprasad.kelam@gmail.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, tiwai@suse.com, Hulk Robot <hulkci@huawei.com>
+In-Reply-To: <20200326173457.29233-1-saravanak@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org, kernel-team@android.com,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,143 +116,43 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-在 2020/4/17 17:05, Takashi Iwai 写道:
-> On Fri, 17 Apr 2020 11:22:32 +0200,
-> Jason Yan wrote:
->>
->> Fix the following gcc warning:
->>
->> sound/pci/au88x0/au88x0_a3ddata.c:62:25: warning: ‘A3dHrirDImpulse’
->> defined but not used [-Wunused-const-variable=]
->>   static const a3d_Hrtf_t A3dHrirDImpulse = {
->>                           ^~~~~~~~~~~~~~~
->> sound/pci/au88x0/au88x0_a3ddata.c:50:25: warning: ‘A3dHrirSatTest’
->> defined but not used [-Wunused-const-variable=]
->>   static const a3d_Hrtf_t A3dHrirSatTest = {
->>                           ^~~~~~~~~~~~~~
->> sound/pci/au88x0/au88x0_a3ddata.c:33:25: warning: ‘A3dHrirOnes’ defined
->> but not used [-Wunused-const-variable=]
->>   static const a3d_Hrtf_t A3dHrirOnes = {
->>                           ^~~~~~~~~~~
->>
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+On 26/03/2020 17:34, Saravana Kannan wrote:
+> Also, remove some unnecessary NULL checks. The functions in question
+> already do NULL checks.
 > 
-> I'd rather keep them but disable with #if 0, if it's only about the
-> minor compiler warnings.
-> 
-> The whole code is a result of reverse engineering and those dead code
-> are simply there just because of lack of testing.  Removing makes it
-> impossible for retesting (if any).
-> 
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
 
-Actually you can easily recover the code from git history.
+Applied Thanks,
+--srini
 
-Anyway, it's all your choice.
-
-Thanks,
-
-Jason
-
+> ---
+>   drivers/slimbus/core.c | 8 +++-----
+>   1 file changed, 3 insertions(+), 5 deletions(-)
 > 
-> thanks,
+> diff --git a/drivers/slimbus/core.c b/drivers/slimbus/core.c
+> index 44228a5b246d..ae1e248a8fb8 100644
+> --- a/drivers/slimbus/core.c
+> +++ b/drivers/slimbus/core.c
+> @@ -162,11 +162,8 @@ static int slim_add_device(struct slim_controller *ctrl,
+>   	sbdev->ctrl = ctrl;
+>   	INIT_LIST_HEAD(&sbdev->stream_list);
+>   	spin_lock_init(&sbdev->stream_list_lock);
+> -
+> -	if (node) {
+> -		sbdev->dev.of_node = of_node_get(node);
+> -		sbdev->dev.fwnode = of_fwnode_handle(node);
+> -	}
+> +	sbdev->dev.of_node = of_node_get(node);
+> +	sbdev->dev.fwnode = of_fwnode_handle(node);
+>   
+>   	dev_set_name(&sbdev->dev, "%x:%x:%x:%x",
+>   				  sbdev->e_addr.manf_id,
+> @@ -285,6 +282,7 @@ EXPORT_SYMBOL_GPL(slim_register_controller);
+>   /* slim_remove_device: Remove the effect of slim_add_device() */
+>   static void slim_remove_device(struct slim_device *sbdev)
+>   {
+> +	of_node_put(sbdev->dev.of_node);
+>   	device_unregister(&sbdev->dev);
+>   }
+>   
 > 
-> Takashi
-> 
->> ---
->>   sound/pci/au88x0/au88x0_a3d.c     | 23 -------------------
->>   sound/pci/au88x0/au88x0_a3ddata.c | 38 -------------------------------
->>   2 files changed, 61 deletions(-)
->>
->> diff --git a/sound/pci/au88x0/au88x0_a3d.c b/sound/pci/au88x0/au88x0_a3d.c
->> index 2db183f8826a..4d3b79a34c69 100644
->> --- a/sound/pci/au88x0/au88x0_a3d.c
->> +++ b/sound/pci/au88x0/au88x0_a3d.c
->> @@ -512,31 +512,8 @@ static void a3dsrc_ProgramPipe(a3dsrc_t * a)
->>   	/* Single spike leads to identity transfer function. */
->>   	a3dsrc_SetHrtfCurrent(a, A3dHrirImpulse, A3dHrirImpulse);
->>   	a3dsrc_SetHrtfTarget(a, A3dHrirImpulse, A3dHrirImpulse);
->> -
->> -	/* Test: Sounds saturated. */
->> -	//a3dsrc_SetHrtfCurrent(a, A3dHrirSatTest, A3dHrirSatTest);
->> -	//a3dsrc_SetHrtfTarget(a, A3dHrirSatTest, A3dHrirSatTest);
->>   }
->>   
->> -/* VDB = Vortex audio Dataflow Bus */
->> -#if 0
->> -static void a3dsrc_ClearVDBData(a3dsrc_t * a, unsigned long aa)
->> -{
->> -	vortex_t *vortex = (vortex_t *) (a->vortex);
->> -
->> -	// ((aa >> 2) << 8) - (aa >> 2)
->> -	hwwrite(vortex->mmio,
->> -		a3d_addrS(a->slice, A3D_SLICE_VDBDest) + (a->source << 2), 0);
->> -	hwwrite(vortex->mmio,
->> -		a3d_addrS(a->slice,
->> -			  A3D_SLICE_VDBDest + 4) + (a->source << 2), 0);
->> -	/*
->> -	   hwwrite(vortex->mmio, 0x19c00 + (((aa>>2)*255*4)+aa)*8, 0);
->> -	   hwwrite(vortex->mmio, 0x19c04 + (((aa>>2)*255*4)+aa)*8, 0);
->> -	 */
->> -}
->> -#endif
->> -
->>   /* A3D HwSource stuff. */
->>   
->>   static void vortex_A3dSourceHw_Initialize(vortex_t * v, int source, int slice)
->> diff --git a/sound/pci/au88x0/au88x0_a3ddata.c b/sound/pci/au88x0/au88x0_a3ddata.c
->> index 18623cb6bc52..cc41ea67a6d3 100644
->> --- a/sound/pci/au88x0/au88x0_a3ddata.c
->> +++ b/sound/pci/au88x0/au88x0_a3ddata.c
->> @@ -30,44 +30,6 @@ static const a3d_Hrtf_t A3dHrirImpulse = {
->>   	0, 0, 0
->>   };
->>   
->> -static const a3d_Hrtf_t A3dHrirOnes = {
->> -	0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff,
->> -	0x7fff,
->> -	0x7fff,
->> -	0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff,
->> -	0x7fff,
->> -	0x7fff,
->> -	0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff,
->> -	0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff,
->> -	0x7fff,
->> -	0x7fff,
->> -	0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff,
->> -	0x7fff,
->> -	0x7fff,
->> -	0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff
->> -};
->> -
->> -static const a3d_Hrtf_t A3dHrirSatTest = {
->> -	0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff,
->> -	0x7fff,
->> -	0x7fff,
->> -	0x8001, 0x8001, 0x8001, 0x8001, 0x8001, 0x8001, 0x8001, 0x8001,
->> -	0x8001,
->> -	0x8001,
->> -	0x7fff, 0x0000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
->> -	0, 0, 0,
->> -	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
->> -};
->> -
->> -static const a3d_Hrtf_t A3dHrirDImpulse = {
->> -	0, 0x7fff, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
->> -	0, 0, 0,
->> -	0, 0, 0, 0,
->> -	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
->> -	0, 0, 0,
->> -	0, 0, 0
->> -};
->> -
->>   static const a3d_ItdDline_t A3dItdDlineZeros = {
->>   	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
->>   	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
->> -- 
->> 2.21.1
->>
-> 
-> .
-> 
-
