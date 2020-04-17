@@ -2,77 +2,98 @@ Return-Path: <SRS0=YLi8=6B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 65857C352BE
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 09:40:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DBFAC352BE
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 09:40:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E3D7321D91
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 09:40:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BB2E721D91
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 09:40:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="o18OEXrR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E3D7321D91
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PXceP3um";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JbqKbSdc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BB2E721D91
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 43F4C1663;
-	Fri, 17 Apr 2020 11:39:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 43F4C1663
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1465A167D;
+	Fri, 17 Apr 2020 11:40:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1465A167D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587116400;
-	bh=HiGfUT3+FQ6i7FqJqnrg8PKX27I6UK3LFxLUoEy11kQ=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=o18OEXrRVkX7iu14zwRB1qQJl7JncqWi6a3svBMTcE7T4h5TTAMmYSW7DIi3jxC+G
-	 4LRJTUZaYumguRWKMlEjrbvFAi1QLoBfnN2oE0P/zvujY6sse0hTwV2di2/0jl4SRS
-	 s+ZAH2hp/2CjGSeG+KwvNCADBIaPpSgIZMgBwMk0=
+	s=default; t=1587116453;
+	bh=CozJzqObR4ZMQYz5OtALhVg6I2Gs00Yp2ed0ncFR734=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=PXceP3umJ2YsODFmiZDtb/56uv7KCZSXgYzMRRlPnoNSYbAhYodhdsvba9eHh8oim
+	 y55hqBOyJDSufw0vIxPusJ6F7TONV5DLkwRqw4l1IX0O3aCnh5RAG9J99CZckYppQK
+	 OFymQB7YeHgjAq+2pKW3BnJNNYGfUWuJOa0FVxf8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D00BFF800AB;
-	Fri, 17 Apr 2020 11:39:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 025DDF8025F;
+	Fri, 17 Apr 2020 11:39:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7E69DF80245; Fri, 17 Apr 2020 11:39:08 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id EDF23F80266; Fri, 17 Apr 2020 11:39:26 +0200 (CEST)
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com
+ [IPv6:2a00:1450:4864:20::343])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 83CC9F800AB
- for <alsa-devel@alsa-project.org>; Fri, 17 Apr 2020 11:39:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83CC9F800AB
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 4FB76B02B;
- Fri, 17 Apr 2020 09:39:00 +0000 (UTC)
-Date: Fri, 17 Apr 2020 11:39:00 +0200
-Message-ID: <s5hd086bgej.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: Re: [PATCH trivial 5/6] ALSA: Fix misspellings of "Analog Devices"
-In-Reply-To: <20200416103058.15269-6-geert+renesas@glider.be>
-References: <20200416103058.15269-1-geert+renesas@glider.be>
- <20200416103058.15269-6-geert+renesas@glider.be>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Lars-Peter Clausen <lars@metafoo.de>, Jiri Kosina <trivial@kernel.org>,
- Stefan Popa <stefan.popa@analog.com>,
- Michael Hennerich <Michael.Hennerich@analog.com>,
- Liam Girdwood <lgirdwood@gmail.com>, David Airlie <airlied@linux.ie>,
- linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, dri-devel@lists.freedesktop.org,
- linux-iio@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
- Rob Herring <robh+dt@kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
- dmaengine@vger.kernel.org, Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>,
- Jonathan Cameron <jic23@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id A7CB1F8012E
+ for <alsa-devel@alsa-project.org>; Fri, 17 Apr 2020 11:39:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7CB1F8012E
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="JbqKbSdc"
+Received: by mail-wm1-x343.google.com with SMTP id e26so2239309wmk.5
+ for <alsa-devel@alsa-project.org>; Fri, 17 Apr 2020 02:39:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=sNSs/WMMs8v8LjUrmuY7lbgWrm5/KMfPWOpJUMEIGMY=;
+ b=JbqKbSdcMZexzofzc9Tq5ioiUHPtcqHNoP80MWNiHMvtWkRfplPiXtpRt7drnCbcN9
+ rKjiG756xPwfC6l1JaF/NFRdW+2kWQDPFrX1OwBZQauIi4x+sy2x4Dqc1HoNBgJSLgYX
+ eIijShSPioui6pcAky8KsSWFNu51TS5FZaBjH/4MNOVs4Tc6tuDvMflchE+v/bev1YAT
+ 6NMfglbEG9f47JiuYUo2Dgz/WCeNpjdIhdUme0OZgQ3WbR0tdI5gmZ+9Zy4845YvNPmG
+ FW48wgsMsMaXEbZu8WmM3LcdW8DjOmE8GNwx+HMk/5H2b6lH7qF969czt/QGWjVvFXGy
+ XFeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=sNSs/WMMs8v8LjUrmuY7lbgWrm5/KMfPWOpJUMEIGMY=;
+ b=rwMlgWO2BAeikLCq1OphYXwKB7QsJZASR+Ig8VKwqYH3CV6uMQQAvmSyNJBYrDEjws
+ AnE6eUXBatci7DAXPCv6hvvQOmX9uA8dB3SpZr4nZKdoDyqEu9zA0SirFZUVevlcTRcG
+ xM52G7y6szI/UZw7E92lNPe/Xm1OFALw+zSnh72wR9LyfgqbAwRaHUVaPwp779gz6UQk
+ 5vJF2HMiuRutdSBRj2Oh/w0AXKKk25IGEICHbcZ9zylMF9B5sG9UREGyNKUFROYL0DEw
+ j/Geozm/eQEsRmwOEvx+qOWil2+JkiEEwzmiQ3fxWoZiOSU3dN355h3USpcCNSypn6x0
+ E5Jw==
+X-Gm-Message-State: AGi0PubD5NwrD7TCo8ox3D7zmJYPLCM6seqIG7jk6P0fLuHSb9tGHFU6
+ R097gtV8bDgpOWm+rYuosQl5GA==
+X-Google-Smtp-Source: APiQypLjCDr+lHOQd9iORXNvwi4wAxPgeC5qmc2MlHGFNNmFnbrdDVk1ilQZTEUF+aK84deHja4gzg==
+X-Received: by 2002:a1c:1b88:: with SMTP id b130mr2417599wmb.75.1587116357734; 
+ Fri, 17 Apr 2020 02:39:17 -0700 (PDT)
+Received: from srini-hackbox.lan
+ (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
+ by smtp.gmail.com with ESMTPSA id y18sm7719884wmc.45.2020.04.17.02.39.16
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 17 Apr 2020 02:39:16 -0700 (PDT)
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: srini@kernel.org,
+	gregkh@linuxfoundation.org
+Subject: [PATCH] slimbus: ngd: remove redundant assignment
+Date: Fri, 17 Apr 2020 10:39:14 +0100
+Message-Id: <20200417093914.22052-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,71 +109,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 16 Apr 2020 12:30:57 +0200,
-Geert Uytterhoeven wrote:
-> 
-> According to https://www.analog.com/, the company name is spelled
-> "Analog Devices".
-> 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+remove redundant assignment, as this is already done fewlines lines before.
 
-Applied this patch to sound git tree for-next branch.
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ drivers/slimbus/qcom-ngd-ctrl.c | 1 -
+ 1 file changed, 1 deletion(-)
 
+diff --git a/drivers/slimbus/qcom-ngd-ctrl.c b/drivers/slimbus/qcom-ngd-ctrl.c
+index 7426b5884218..743ee7b4e63f 100644
+--- a/drivers/slimbus/qcom-ngd-ctrl.c
++++ b/drivers/slimbus/qcom-ngd-ctrl.c
+@@ -1365,7 +1365,6 @@ static int of_qcom_slim_ngd_register(struct device *parent,
+ 		platform_device_add(ngd->pdev);
+ 		ngd->base = ctrl->base + ngd->id * data->offset +
+ 					(ngd->id - 1) * data->size;
+-		ctrl->ngd = ngd;
+ 
+ 		return 0;
+ 	}
+-- 
+2.21.0
 
-thanks,
-
-Takashi
-
-
-> ---
->  sound/isa/ad1816a/ad1816a.c | 2 +-
->  sound/pci/ac97/ac97_patch.c | 2 +-
->  sound/pci/hda/Kconfig       | 4 ++--
->  3 files changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/sound/isa/ad1816a/ad1816a.c b/sound/isa/ad1816a/ad1816a.c
-> index ce4c8ba2fa9873e7..ca18fe3ff8a59a9f 100644
-> --- a/sound/isa/ad1816a/ad1816a.c
-> +++ b/sound/isa/ad1816a/ad1816a.c
-> @@ -54,7 +54,7 @@ MODULE_PARM_DESC(clockfreq, "Clock frequency for ad1816a driver (default = 0).")
->  static const struct pnp_card_device_id snd_ad1816a_pnpids[] = {
->  	/* Analog Devices AD1815 */
->  	{ .id = "ADS7150", .devs = { { .id = "ADS7150" }, { .id = "ADS7151" } } },
-> -	/* Analog Device AD1816? */
-> +	/* Analog Devices AD1816? */
->  	{ .id = "ADS7180", .devs = { { .id = "ADS7180" }, { .id = "ADS7181" } } },
->  	/* Analog Devices AD1816A - added by Kenneth Platz <kxp@atl.hp.com> */
->  	{ .id = "ADS7181", .devs = { { .id = "ADS7180" }, { .id = "ADS7181" } } },
-> diff --git a/sound/pci/ac97/ac97_patch.c b/sound/pci/ac97/ac97_patch.c
-> index ebf926728c5f84af..45ef0f52ec55b803 100644
-> --- a/sound/pci/ac97/ac97_patch.c
-> +++ b/sound/pci/ac97/ac97_patch.c
-> @@ -1356,7 +1356,7 @@ static int patch_cx20551(struct snd_ac97 *ac97)
->  }
->  
->  /*
-> - * Analog Device AD18xx, AD19xx codecs
-> + * Analog Devices AD18xx, AD19xx codecs
->   */
->  #ifdef CONFIG_PM
->  static void ad18xx_resume(struct snd_ac97 *ac97)
-> diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
-> index e1d3082a4fe93153..7ba542e45a3d7f88 100644
-> --- a/sound/pci/hda/Kconfig
-> +++ b/sound/pci/hda/Kconfig
-> @@ -99,10 +99,10 @@ comment "Set to Y if you want auto-loading the codec driver"
->  	depends on SND_HDA=y && SND_HDA_CODEC_REALTEK=m
->  
->  config SND_HDA_CODEC_ANALOG
-> -	tristate "Build Analog Device HD-audio codec support"
-> +	tristate "Build Analog Devices HD-audio codec support"
->  	select SND_HDA_GENERIC
->  	help
-> -	  Say Y or M here to include Analog Device HD-audio codec support in
-> +	  Say Y or M here to include Analog Devices HD-audio codec support in
->  	  snd-hda-intel driver, such as AD1986A.
->  
->  comment "Set to Y if you want auto-loading the codec driver"
-> -- 
-> 2.17.1
-> 
