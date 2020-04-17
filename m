@@ -2,73 +2,121 @@ Return-Path: <SRS0=YLi8=6B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CBB24C2D0EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 14:39:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09307C2D0EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 15:03:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5812820936
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 14:39:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7E79920857
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Apr 2020 15:03:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pv7AE/4U"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5812820936
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RSuRkBST";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="Co8VCB7j"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7E79920857
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 98D1815F9;
-	Fri, 17 Apr 2020 16:38:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98D1815F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id B629F1607;
+	Fri, 17 Apr 2020 17:02:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B629F1607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587134377;
-	bh=p8zQhRJ5bmzbPNeKvQhJZTyclP+HhQCjJRStO5ZTIpI=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=pv7AE/4Uqko3LQNBuT1APytVZj9lu9tOJn2cLfomk7Mr1z7IA3SOeGhRYoW0fX4O1
-	 Z5C4tlF6E/Wzt524l6JLD7DOGwWN918bbOl7hGv8dBaDe/cfQ19sVWJZ5WGQX7gLcP
-	 yMp4skvquQ6CXuO0gxwBQgjvxOpouX0Gdw9EKmSw=
+	s=default; t=1587135808;
+	bh=TN9QuMfFDd+Rh3J6OWLbcgtmbYQ+wtBHg1QNWzy8xYw=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=RSuRkBSTdS/h5EwMQAyrR2A/+G7bkA0DVhey9q/ZwyD+A1asU4hUjOYKRCHGuVgv+
+	 YOB2hrhrkAftMI3hCdzeuQ2zjmT8DugsuvNZhikQ4bSYrXY4mFOJcThqOBa0RJh+Zt
+	 8Ri8pZ83crVfkLRDvRZ1ZleyDu7Tmx1expe1zmZM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2516AF80229;
-	Fri, 17 Apr 2020 16:38:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 50C97F80229;
+	Fri, 17 Apr 2020 17:02:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EE62AF80245; Fri, 17 Apr 2020 16:38:45 +0200 (CEST)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 03D0AF80245; Fri, 17 Apr 2020 17:02:36 +0200 (CEST)
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com
+ [IPv6:2a00:1450:4864:20::441])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AAECBF800AB
- for <alsa-devel@alsa-project.org>; Fri, 17 Apr 2020 16:38:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AAECBF800AB
-IronPort-SDR: gqygIFz88J+4oUBmlWYN9wYfSI+9+0oR22XPcxzA5vV0cgoBYPqmWE9HVIszL1FhQ/hRugynQN
- 0tYTN7NDJ9UQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Apr 2020 07:38:32 -0700
-IronPort-SDR: baXknFGLCSkkGUBZzBc6qb+BU4tK/xCLn1Y2IDUQIV/ERg4d8a7IXxLlFZYNRV0UeOPWIn/ebr
- AzwqymPM5//Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,395,1580803200"; d="scan'208";a="278397148"
-Received: from pi-desktop.igk.intel.com ([10.237.148.102])
- by fmsmga004.fm.intel.com with ESMTP; 17 Apr 2020 07:38:32 -0700
-From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-To: Jaroslav Kysela <perex@perex.cz>
-Subject: [ALSA-LIB PATCH] topology: Use bool parser to parse boolean value
-Date: Fri, 17 Apr 2020 12:47:47 -0400
-Message-Id: <20200417164747.673-1-amadeuszx.slawinski@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 58F0DF800DE
+ for <alsa-devel@alsa-project.org>; Fri, 17 Apr 2020 17:02:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58F0DF800DE
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch
+ header.b="Co8VCB7j"
+Received: by mail-wr1-x441.google.com with SMTP id j2so3394580wrs.9
+ for <alsa-devel@alsa-project.org>; Fri, 17 Apr 2020 08:02:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ffwll.ch; s=google;
+ h=date:from:to:cc:subject:message-id:mail-followup-to:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=MZOx11K7BVkb9vfDngpczKG72DuQTl/mUltDtknINYM=;
+ b=Co8VCB7jRRt1O8+H04fdcxwEtJQvvJ85wW4SvxgTv/mHipUFj+ltqVgCL7M0LxDbBm
+ Pb7tEFjXMUdCDK1W7VoRTpT556UNIZvUATsFGTDHXX4ngalCQfdP4rjg3fEM8Y0uLOUu
+ QsIi+ueZ6e8w8tapH3hrUwyBDQ4rCmAD5wsU8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id
+ :mail-followup-to:references:mime-version:content-disposition
+ :in-reply-to;
+ bh=MZOx11K7BVkb9vfDngpczKG72DuQTl/mUltDtknINYM=;
+ b=QSQsMiP8R1o5czHs+S1AlThJIuD2BRK7ugqtb0u3QsOXxPp0fRxdY1L66aAcJ+mYei
+ +u8fViKlcuYv6j0yzSdaIleXPNDTDIqlwGTEEIdbjLgxFcE5bL8B2LwWRg3/G9PEJQQ2
+ /NmcnAps3JW+EH2vbRV5DF5TjUs6wM6h86afrOR6OLOYxvs/h5pBxRRtGSTRm9KxWacj
+ CzA5ygGhez2hv2qnIMwWBQQMlzrOQS1Fw12UhujSnOwNRth0noyQEX99f6BaaEHlG+Mw
+ oln+RkYlV9K8q7g1fVwkspqYoc4TVBlZ/Exp5POJTcbRdTJrj5aRjiSAF20mVaaUpd/3
+ boXg==
+X-Gm-Message-State: AGi0PubfhULp3yTzWX894fC21zKX7BAzZ+9Mcf50lYQbeJHJozzIgKMo
+ nTe8p2Vaoltr/K1KJdZfAysy+A==
+X-Google-Smtp-Source: APiQypJc7M6g4SJSxadMb830ZLUuNjVyEPZxJsFHSeWGeY7zkoZSsxwQWcW79Vv6OwRGwssTlFoC0w==
+X-Received: by 2002:a5d:438c:: with SMTP id i12mr4404415wrq.14.1587135747372; 
+ Fri, 17 Apr 2020 08:02:27 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+ by smtp.gmail.com with ESMTPSA id e5sm33270104wru.92.2020.04.17.08.02.26
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 17 Apr 2020 08:02:26 -0700 (PDT)
+Date: Fri, 17 Apr 2020 17:02:24 +0200
+From: Daniel Vetter <daniel@ffwll.ch>
+To: Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: Re: [PATCH trivial 3/6] drm: Fix misspellings of "Analog Devices"
+Message-ID: <20200417150224.GO3456981@phenom.ffwll.local>
+Mail-Followup-To: Geert Uytterhoeven <geert+renesas@glider.be>,
+ Rob Herring <robh+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+ David Airlie <airlied@linux.ie>,
+ Jonathan Cameron <jic23@kernel.org>,
+ Lars-Peter Clausen <lars@metafoo.de>,
+ Michael Hennerich <Michael.Hennerich@analog.com>,
+ Stefan Popa <stefan.popa@analog.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Jiri Kosina <trivial@kernel.org>,
+ devicetree@vger.kernel.org, dmaengine@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-iio@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+References: <20200416103058.15269-1-geert+renesas@glider.be>
+ <20200416103058.15269-4-geert+renesas@glider.be>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200416103058.15269-4-geert+renesas@glider.be>
+X-Operating-System: Linux phenom 5.3.0-3-amd64 
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Lars-Peter Clausen <lars@metafoo.de>, Jiri Kosina <trivial@kernel.org>,
+ Stefan Popa <stefan.popa@analog.com>,
+ Michael Hennerich <Michael.Hennerich@analog.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, David Airlie <airlied@linux.ie>,
+ linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, dri-devel@lists.freedesktop.org,
+ linux-iio@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
+ dmaengine@vger.kernel.org, Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
+ Jonathan Cameron <jic23@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,28 +132,65 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-It should be safe to change this as correct values with int would be 0
-or 1 and bool parser handles them correctly.
+On Thu, Apr 16, 2020 at 12:30:55PM +0200, Geert Uytterhoeven wrote:
+> According to https://www.analog.com/, the company name is spelled
+> "Analog Devices".
+> 
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
----
- src/topology/dapm.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Queued for 5.8 in drm-misc-next, thanks for your patch.
+-Daniel
 
-diff --git a/src/topology/dapm.c b/src/topology/dapm.c
-index 70645126..cd1a8770 100644
---- a/src/topology/dapm.c
-+++ b/src/topology/dapm.c
-@@ -595,7 +595,8 @@ int tplg_parse_dapm_widget(snd_tplg_t *tplg,
- 		}
- 
- 		if (strcmp(id, "invert") == 0) {
--			if (tplg_get_integer(n, &ival, 0))
-+			ival = snd_config_get_bool(n);
-+			if (ival < 0)
- 				return -EINVAL;
- 
- 			widget->invert = ival;
+> ---
+>  drivers/gpu/drm/bridge/adv7511/Kconfig | 2 +-
+>  drivers/gpu/drm/drm_fb_cma_helper.c    | 2 +-
+>  drivers/gpu/drm/tegra/fb.c             | 2 +-
+>  3 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/bridge/adv7511/Kconfig b/drivers/gpu/drm/bridge/adv7511/Kconfig
+> index 47d4eb9e845d085c..f46a5e26b5dd6406 100644
+> --- a/drivers/gpu/drm/bridge/adv7511/Kconfig
+> +++ b/drivers/gpu/drm/bridge/adv7511/Kconfig
+> @@ -6,7 +6,7 @@ config DRM_I2C_ADV7511
+>  	select REGMAP_I2C
+>  	select DRM_MIPI_DSI
+>  	help
+> -	  Support for the Analog Device ADV7511(W)/13/33/35 HDMI encoders.
+> +	  Support for the Analog Devices ADV7511(W)/13/33/35 HDMI encoders.
+>  
+>  config DRM_I2C_ADV7511_AUDIO
+>  	bool "ADV7511 HDMI Audio driver"
+> diff --git a/drivers/gpu/drm/drm_fb_cma_helper.c b/drivers/gpu/drm/drm_fb_cma_helper.c
+> index 9801c0333eca29e9..cb2349ad338d953b 100644
+> --- a/drivers/gpu/drm/drm_fb_cma_helper.c
+> +++ b/drivers/gpu/drm/drm_fb_cma_helper.c
+> @@ -2,7 +2,7 @@
+>  /*
+>   * drm kms/fb cma (contiguous memory allocator) helper functions
+>   *
+> - * Copyright (C) 2012 Analog Device Inc.
+> + * Copyright (C) 2012 Analog Devices Inc.
+>   *   Author: Lars-Peter Clausen <lars@metafoo.de>
+>   *
+>   * Based on udl_fbdev.c
+> diff --git a/drivers/gpu/drm/tegra/fb.c b/drivers/gpu/drm/tegra/fb.c
+> index b8a328f538626e7a..2b0666ac681b8721 100644
+> --- a/drivers/gpu/drm/tegra/fb.c
+> +++ b/drivers/gpu/drm/tegra/fb.c
+> @@ -4,7 +4,7 @@
+>   * Copyright (C) 2012 NVIDIA CORPORATION.  All rights reserved.
+>   *
+>   * Based on the KMS/FB CMA helpers
+> - *   Copyright (C) 2012 Analog Device Inc.
+> + *   Copyright (C) 2012 Analog Devices Inc.
+>   */
+>  
+>  #include <linux/console.h>
+> -- 
+> 2.17.1
+> 
+
 -- 
-2.17.1
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
