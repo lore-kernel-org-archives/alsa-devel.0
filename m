@@ -7,68 +7,68 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 138FFC38A30
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 13:52:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D784C38A2F
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 13:53:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 96550214AF
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 13:52:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2BA6D21BE5
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 13:53:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vnOpnRsU";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="sLyRygJk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 96550214AF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Z8wy2hm9";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="WFu4uq1l"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2BA6D21BE5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EB9B11670;
-	Sat, 18 Apr 2020 15:52:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB9B11670
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8C6931676;
+	Sat, 18 Apr 2020 15:52:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C6931676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587217975;
-	bh=B4bMlNkd5p86XZw4dYVYeRK/tVq+Bue8h8ry5C9RHwk=;
+	s=default; t=1587218006;
+	bh=YJIxCNr0UP8TqTCKe4sYeYk4yVVj08ql7ZOB7G577O8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vnOpnRsUj885y5X4f9hnKTfCp7SxwUUg/MXmtDRBvBAp9dIVGc6DbPmPLPUMNmt0d
-	 VmMV4ARkUTxLdU3728I9yCE7+OyoUAoXN6HnOJaa5grei5YqSS24jwhzd7YEdrbGro
-	 wnfxvbMEuTQRMq9ZPCQNYHS04lHYPFeKQ6O70rWE=
+	b=Z8wy2hm9Kgwma2gH4vbsUItzGDHwvyCi7VVdEY+AWUSSkW04FbLxkbbI7sdQq6zp/
+	 UAnBUQftsPbJLq0GUfpcb3iPfnUnyYs7SLs/YT2//owxyy5Ml9JgVrQ251ofd2WNHN
+	 EmJVI5GIw/zzj2rz36vwBOENKHGsV4E+qEEqWbG0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D60C7F8012E;
-	Sat, 18 Apr 2020 15:49:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DD332F8029B;
+	Sat, 18 Apr 2020 15:49:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3EC94F80292; Sat, 18 Apr 2020 15:49:41 +0200 (CEST)
+ id 4B878F8012E; Sat, 18 Apr 2020 15:49:41 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C0C1AF8028F
- for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 15:49:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0C1AF8028F
+ by alsa1.perex.cz (Postfix) with ESMTPS id AEBE0F80290
+ for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 15:49:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AEBE0F80290
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="sLyRygJk"
+ header.b="WFu4uq1l"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 9C4D821BE5;
- Sat, 18 Apr 2020 13:49:32 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id B44BD214AF;
+ Sat, 18 Apr 2020 13:49:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1587217773;
- bh=B4bMlNkd5p86XZw4dYVYeRK/tVq+Bue8h8ry5C9RHwk=;
+ s=default; t=1587217774;
+ bh=YJIxCNr0UP8TqTCKe4sYeYk4yVVj08ql7ZOB7G577O8=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=sLyRygJk7YH/gE3zacWF8ZWE0IAgqtJGgMH6fVttcnzZ5UlreWa8aVbjZ59owQchf
- I0tbptovC0DAPeNzP+mmTe8wqLVW3p6AeAamaOPDZ1mTAs0gns0vT9NwqzqaIVZrLp
- v7mkXL/IU8T+sXgmNY7l9kS9R8QHV/04qs1T1kIw=
+ b=WFu4uq1l0WUs8qkFekn7QVgDH5h9g1DU7oXudUItyXvxPxTIDB31g3SRsPEYlR3Vy
+ yiKXlUoyxfzBp9ptbzP2Z6/rbshhVOcfhI+9c5NSv+E7EX+gpnDuX4wDmjc17eVO92
+ AQUlCguPMWfLO8lsgRTrtHJAkewvYFpL1MRp0QHU=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 62/73] ALSA: ice1724: Fix invalid access for
- enumerated ctl items
-Date: Sat, 18 Apr 2020 09:48:04 -0400
-Message-Id: <20200418134815.6519-62-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.6 63/73] ALSA: hda: Fix potential access overflow in
+ beep helper
+Date: Sat, 18 Apr 2020 09:48:05 -0400
+Message-Id: <20200418134815.6519-63-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200418134815.6519-1-sashal@kernel.org>
 References: <20200418134815.6519-1-sashal@kernel.org>
@@ -95,46 +95,46 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit c47914c00be346bc5b48c48de7b0da5c2d1a296c ]
+[ Upstream commit 0ad3f0b384d58f3bd1f4fb87d0af5b8f6866f41a ]
 
-The access to Analog Capture Source control value implemented in
-prodigy_hifi.c is wrong, as caught by the recently introduced sanity
-check; it should be accessing value.enumerated.item[] instead of
-value.integer.value[].  This patch corrects the wrong access pattern.
+The beep control helper function blindly stores the values in two
+stereo channels no matter whether the actual control is mono or
+stereo.  This is practically harmless, but it annoys the recently
+introduced sanity check, resulting in an error when the checker is
+enabled.
 
-Fixes: 6b8d6e5518e2 ("[ALSA] ICE1724: Added support for Audiotrak Prodigy 7.1 HiFi & HD2, Hercules Fortissimo IV")
+This patch corrects the behavior to store only on the defined array
+member.
+
+Fixes: 0401e8548eac ("ALSA: hda - Move beep helper functions to hda_beep.c")
 BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207139
 Reviewed-by: Jaroslav Kysela <perex@perex.cz>
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200407084402.25589-3-tiwai@suse.de
+Link: https://lore.kernel.org/r/20200407084402.25589-2-tiwai@suse.de
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/ice1712/prodigy_hifi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/pci/hda/hda_beep.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/sound/pci/ice1712/prodigy_hifi.c b/sound/pci/ice1712/prodigy_hifi.c
-index 91f83cef0e56c..9aa12a67d3705 100644
---- a/sound/pci/ice1712/prodigy_hifi.c
-+++ b/sound/pci/ice1712/prodigy_hifi.c
-@@ -536,7 +536,7 @@ static int wm_adc_mux_enum_get(struct snd_kcontrol *kcontrol,
- 	struct snd_ice1712 *ice = snd_kcontrol_chip(kcontrol);
- 
- 	mutex_lock(&ice->gpio_mutex);
--	ucontrol->value.integer.value[0] = wm_get(ice, WM_ADC_MUX) & 0x1f;
-+	ucontrol->value.enumerated.item[0] = wm_get(ice, WM_ADC_MUX) & 0x1f;
- 	mutex_unlock(&ice->gpio_mutex);
- 	return 0;
- }
-@@ -550,7 +550,7 @@ static int wm_adc_mux_enum_put(struct snd_kcontrol *kcontrol,
- 
- 	mutex_lock(&ice->gpio_mutex);
- 	oval = wm_get(ice, WM_ADC_MUX);
--	nval = (oval & 0xe0) | ucontrol->value.integer.value[0];
-+	nval = (oval & 0xe0) | ucontrol->value.enumerated.item[0];
- 	if (nval != oval) {
- 		wm_put(ice, WM_ADC_MUX, nval);
- 		change = 1;
+diff --git a/sound/pci/hda/hda_beep.c b/sound/pci/hda/hda_beep.c
+index f5fd62ed4df5b..841523f6b88de 100644
+--- a/sound/pci/hda/hda_beep.c
++++ b/sound/pci/hda/hda_beep.c
+@@ -290,8 +290,12 @@ int snd_hda_mixer_amp_switch_get_beep(struct snd_kcontrol *kcontrol,
+ {
+ 	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
+ 	struct hda_beep *beep = codec->beep;
++	int chs = get_amp_channels(kcontrol);
++
+ 	if (beep && (!beep->enabled || !ctl_has_mute(kcontrol))) {
+-		ucontrol->value.integer.value[0] =
++		if (chs & 1)
++			ucontrol->value.integer.value[0] = beep->enabled;
++		if (chs & 2)
+ 			ucontrol->value.integer.value[1] = beep->enabled;
+ 		return 0;
+ 	}
 -- 
 2.20.1
 
