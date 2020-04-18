@@ -2,106 +2,101 @@ Return-Path: <SRS0=riU+=6C=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D772C2BA19
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 22:33:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B510CC2BA19
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 22:45:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8987921973
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 22:33:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3EB9D21D6C
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 22:45:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KBAnbqbx";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="loO7Qmrt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8987921973
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NrAg7vXg";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S8KltfH+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3EB9D21D6C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DED22846;
-	Sun, 19 Apr 2020 00:32:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DED22846
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8A7801612;
+	Sun, 19 Apr 2020 00:44:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A7801612
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587249191;
-	bh=TqqW7zvRUpzzu17/Rh6B1P9TrXoHQwTTJEm6DbNuDpw=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=KBAnbqbx7giEz8yC1AN1DFkMocKTv+wpE+xdWwKO8Qbhs/GyvXVp0TM+bQqX8ReHS
-	 D+noQLQWN2T4es4GCevbkKz3Dhkt3pY1/l6bifGxzF5wy4XsJ0yTvv9ra5x/7QyBFZ
-	 v9F1qQUOSP0l9/mHfTDCn44GVa7ifufraU10C+js=
+	s=default; t=1587249937;
+	bh=YXemFhkVFhzuZ07SroHOFCZPF3V9COJNfF6AwQVuobI=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=NrAg7vXgSI8J+0uH3fmm+/8f05HsACMRv1ZtIVTOCdJBW6uc3w+xd4LQHSONbkgIA
+	 x0yoe/g8lcUPLoHmgtJH2Prk7KZNt47C/JRCGUuIHKqwrYNrXDRTxoiVIn/ljE5RiJ
+	 ty3dDfbVVv+OSGDkRwJq3+xKNInP4fmpJCM1Qssw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7182AF8013D;
-	Sun, 19 Apr 2020 00:32:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3239FF8016F;
+	Sun, 19 Apr 2020 00:44:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 51601F8014E; Sun, 19 Apr 2020 00:32:19 +0200 (CEST)
-Received: from bombadil.infradead.org (bombadil.infradead.org
- [IPv6:2607:7c80:54:e::133])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 736A6F8016F; Sun, 19 Apr 2020 00:44:44 +0200 (CEST)
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
+ [IPv6:2a00:1450:4864:20::443])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EF265F8012E
- for <alsa-devel@alsa-project.org>; Sun, 19 Apr 2020 00:32:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF265F8012E
+ by alsa1.perex.cz (Postfix) with ESMTPS id DA404F80122
+ for <alsa-devel@alsa-project.org>; Sun, 19 Apr 2020 00:44:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA404F80122
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="loO7Qmrt"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
- Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
- Subject:Sender:Reply-To:Content-ID:Content-Description;
- bh=zyG1QPS3RY2nWyGdHwcEoZL1dyrlEFupJ3Qi8VlAHRo=; b=loO7QmrtjVUfmmDDXVlI56bim3
- vaQVMQJheKFM/fE/1PTtCTTNe5XzeE/U7X2nTTSIWa2jsTphcpKDjL38BHOFJmFjIERkw1AXdISWE
- voAskfcYnobN2Cg1+P9xUb2INjXTpWf5cHvlbdHJX8AvFR/Nh2KWcL+zidNsbp7aa5RWLcbm4tdBY
- Q0wqgJei4sy2H6/qPY4WvoBul6hgnZd/9ZU74LcYk0mKxiyoJ+abZZmI+6EKaHmhxW62rGd+bzcYi
- uN5aQpL4TxGWtDU3C4cNci1ZCHm1UWwy33ZzvpUBRGHVtwzMJ6QU7jRANEHTNyCknHb8PG26nUhi/
- eFavfSdg==;
-Received: from [2601:1c0:6280:3f0::19c2]
- by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jPw0Q-0000cZ-8H; Sat, 18 Apr 2020 22:32:10 +0000
-Subject: Re: [PATCH 6/9] nfsd: fix empty-body warning in nfs4state.c
-To: Trond Myklebust <trondmy@hammerspace.com>,
- "chuck.lever@oracle.com" <chuck.lever@oracle.com>
-References: <20200418184111.13401-1-rdunlap@infradead.org>
- <20200418184111.13401-7-rdunlap@infradead.org>
- <CDCF7717-7CBC-47CA-9E83-3A18ECB3AB89@oracle.com>
- <d2e2f7967804446a825ec0ff61095e6640b5a968.camel@hammerspace.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <c838fc1d-3973-9cd8-ecc6-8739af514dd0@infradead.org>
-Date: Sat, 18 Apr 2020 15:32:05 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="S8KltfH+"
+Received: by mail-wr1-x443.google.com with SMTP id d17so7375961wrg.11
+ for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 15:44:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=wutgCaF9Zt/dkeWGofK0wxzxUn+L+6837DjwQz9y1UY=;
+ b=S8KltfH+/O56KBksVXD14TzKEOLFfEQyo4KgSjFu66oO3Uk5cwNWg5nBnLAjoS5ztX
+ 4xjow8fTnW0ns/pNDHxBa5a5+HshR5W40o9c/ct5OZrf1o1ZG4g/xKmOfwpk1WBfCTQ0
+ ojGBTITEANi7ER1oclt1vO3TzETC08kH/nIk2fi7a9QfgpGFae5VLrbgydJdH1SHsDAX
+ o1rZrKERoVYwEZEV+PLbbMA7oMVaXf7LID9r6dRhyaPDcSslUQfQlZglgE/ClFrKpR80
+ syrlPCDBugz7YHcQpyH8KXBE/bZOSNAz4isuXF2RD/fSJPp3i54pYPc9E2Bpl5wTZwIC
+ fKuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=wutgCaF9Zt/dkeWGofK0wxzxUn+L+6837DjwQz9y1UY=;
+ b=G2q6o+nJMRfaVujC4CMZVoBIDJ7LSjjcUXwDTJa0VUWJ69SqMqecTeRm3dJLRgBK/u
+ lAq3eA/fRdbmPlg78zKl/8WQiOBJIN/GhRMkXUN+oKeMY2TlMHSHXDtxUd35ow3ETjlv
+ Vn3/tcmAu6fXS3cO2YwKqNTKMpLFJxi8j2JPKlOwMaUfxRb8K0JBkRHHAGR+WhSCiamf
+ 4une14dsTmFaNP7qoNYDwAZf82ovjZNM5R4k1G/dvT6RyGAjUBTrbw/ZPPt5IKGZ5xN+
+ nQtZYqE1LorRia17S/6c8jfpeVqr6iClDIDQAZAFjyO40wkWIA9NNh8KQlBdB+ZZ/qjD
+ 7Rkw==
+X-Gm-Message-State: AGi0PuZ64KP58l+vxo/FNsdcwBi0CU6CyDana6m/ui++FEfuXYGggImT
+ uSmQQ6FFjZbdBqQmLWTk2Ps=
+X-Google-Smtp-Source: APiQypLOwYrHCgIWndZgkcTL4l0O4nIwWLNdaqPiGUU1qxzWWClq+DqLkuqfQGwqt4juRRHwGPellQ==
+X-Received: by 2002:adf:dd07:: with SMTP id a7mr10688193wrm.349.1587249878341; 
+ Sat, 18 Apr 2020 15:44:38 -0700 (PDT)
+Received: from localhost.localdomain (91-167-199-67.subs.proxad.net.
+ [91.167.199.67])
+ by smtp.gmail.com with ESMTPSA id t16sm13371559wmi.27.2020.04.18.15.44.36
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sat, 18 Apr 2020 15:44:37 -0700 (PDT)
+From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>, Maxime Ripard <mripard@kernel.org>,
+ Chen-Yu Tsai <wens@csie.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH v2 0/7] Add H6 I2S support
+Date: Sun, 19 Apr 2020 00:44:28 +0200
+Message-Id: <20200418224435.23672-1-peron.clem@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <d2e2f7967804446a825ec0ff61095e6640b5a968.camel@hammerspace.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
- "zzy@zzywysm.com" <zzy@zzywysm.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "bfields@fieldses.org" <bfields@fieldses.org>,
- "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
- "dave.jiang@intel.com" <dave.jiang@intel.com>,
- "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
- "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
- "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
- "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
- "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
- "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
- "johannes@sipsolutions.net" <johannes@sipsolutions.net>,
- "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
- "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
- "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
- "dmitry.torokhov@gmail.com" <dmitry.torokhov@gmail.com>,
- "tiwai@suse.com" <tiwai@suse.com>,
- "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
- "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
- "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -117,66 +112,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 4/18/20 3:28 PM, Trond Myklebust wrote:
-> On Sat, 2020-04-18 at 14:45 -0400, Chuck Lever wrote:
->>> On Apr 18, 2020, at 2:41 PM, Randy Dunlap <rdunlap@infradead.org>
->>> wrote:
->>>
->>> Fix gcc empty-body warning when -Wextra is used:
->>>
->>> ../fs/nfsd/nfs4state.c:3898:3: warning: suggest braces around empty
->>> body in an ‘else’ statement [-Wempty-body]
->>>
->>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->>> Cc: Linus Torvalds <torvalds@linux-foundation.org>
->>> Cc: Andrew Morton <akpm@linux-foundation.org>
->>> Cc: "J. Bruce Fields" <bfields@fieldses.org>
->>> Cc: Chuck Lever <chuck.lever@oracle.com>
->>> Cc: linux-nfs@vger.kernel.org
->>
->> I have a patch in my queue that addresses this particular warning,
->> but your change works for me too.
->>
->> Acked-by: Chuck Lever <chuck.lever@oracle.com>
->>
->> Unless Bruce objects.
->>
->>
->>> ---
->>> fs/nfsd/nfs4state.c |    3 ++-
->>> 1 file changed, 2 insertions(+), 1 deletion(-)
->>>
->>> --- linux-next-20200417.orig/fs/nfsd/nfs4state.c
->>> +++ linux-next-20200417/fs/nfsd/nfs4state.c
->>> @@ -34,6 +34,7 @@
->>>
->>> #include <linux/file.h>
->>> #include <linux/fs.h>
->>> +#include <linux/kernel.h>
->>> #include <linux/slab.h>
->>> #include <linux/namei.h>
->>> #include <linux/swap.h>
->>> @@ -3895,7 +3896,7 @@ nfsd4_setclientid(struct svc_rqst *rqstp
->>> 		copy_clid(new, conf);
->>> 		gen_confirm(new, nn);
->>> 	} else /* case 4 (new client) or cases 2, 3 (client reboot): */
->>> -		;
->>> +		do_empty();
-> 
-> Urgh... This is just for documentation purposes anyway, so why not just
-> turn it all into a comment by moving the 'else' into the comment field?
-> 
-> i.e.
-> 	} /* else case 4 (.... */
-> 
-> 	new->cl_minorversion = 0;
->>> 	gen_callback(new, setclid, rqstp);
->>> 	add_to_unconfirmed(new);
+Hi,
 
-Like I said earlier, since Chuck has a patch that addresses this,
-let's just go with that.
+This is a sequel of Marcus Cooper serie[0], where remarks made by Maxime
+have been fixed.
 
-thanks.
+I have tested it on my Beelink GS1 board.
+
+Thanks,
+Clement
+
+0: https://lore.kernel.org/patchwork/cover/1139949/
+
+Changes since v1:
+ - Fix missing header in set sign extend sample
+
+Jernej Skrabec (3):
+  dt-bindings: ASoC: sun4i-i2s: Add H6 compatible
+  ASoC: sun4i-i2s: Add support for H6 I2S
+  arm64: dts: sun50i-h6: Add HDMI audio to H6 DTSI
+
+Marcus Cooper (4):
+  ASoC: sun4i-i2s: Adjust LRCLK width
+  ASoC: sun4i-i2s: Set sign extend sample
+  ASoc: sun4i-i2s: Add 20 and 24 bit support
+  ASoC: sun4i-i2s: Adjust regmap settings
+
+ .../sound/allwinner,sun4i-a10-i2s.yaml        |   2 +
+ arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi  |  31 ++
+ sound/soc/sunxi/sun4i-i2s.c                   | 292 ++++++++++++++++--
+ 3 files changed, 301 insertions(+), 24 deletions(-)
+
 -- 
-~Randy
+2.20.1
 
