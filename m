@@ -2,58 +2,66 @@ Return-Path: <SRS0=riU+=6C=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EEC30C352BE
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 19:07:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 25BD7C352BE
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 19:10:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6C61D221F7
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 19:07:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9DB7521BE5
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 19:10:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ujrby/XA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C61D221F7
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EBOVs0oB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9DB7521BE5
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B93EB15E0;
-	Sat, 18 Apr 2020 21:06:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B93EB15E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 04B761612;
+	Sat, 18 Apr 2020 21:09:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 04B761612
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587236861;
-	bh=AP5fSImu5Kx/MIrtRWC/94G5zhnkhINWcbgNg/lsExk=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Ujrby/XA91W/vpPh6Wa2T+piv6YaXk83za8TZUMQUh1LCBf15l0pYxNufSoNT9avQ
-	 Kd2VvljHpVelWCf3SVD/gSNrBjnItfTUJ7wJrs67GzIjcBxoKB4gEA7HSVd46g3Slu
-	 edlX7qWO2LT170yzT7rMPIdAIuyDrrdXXo0kz3Mk=
+	s=default; t=1587237049;
+	bh=LUmTLa9ypVtGtKOeZirPwX/lPXBkva+pU4tvF5Uv6Ko=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=EBOVs0oBtEal6ZRi/3hujk9VW2c0d8bhrSO4TKckWN5pT0dqIHJ23NjbF2uXunOUM
+	 vlFI6RKkRsARYkz2mkE4WNdXXX24ZTCBCC+QpCslF7ObectN+TUnfX629QK+fTgrCI
+	 0j875BJ1th6IuQb93dVq8/OQ5Dm8hCHkx17Md6cs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 41A7DF8013D;
-	Sat, 18 Apr 2020 21:06:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 926FAF8013D;
+	Sat, 18 Apr 2020 21:09:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C0763F8014E; Sat, 18 Apr 2020 21:06:49 +0200 (CEST)
+ id AD637F8014E; Sat, 18 Apr 2020 21:09:56 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EC697F80122
- for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 21:06:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC697F80122
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6133BF800E7
+ for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 21:09:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6133BF800E7
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 8E186AD72
- for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 19:06:41 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id E42F0ABF6;
+ Sat, 18 Apr 2020 19:09:46 +0000 (UTC)
+Date: Sat, 18 Apr 2020 21:09:46 +0200
+Message-ID: <s5h36908vb9.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: hda/realtek - Fix unexpected init_amp override
-Date: Sat, 18 Apr 2020 21:06:39 +0200
-Message-Id: <20200418190639.10082-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.16.4
+To: Alexander Tsoy <alexander@tsoy.me>
+Subject: Re: [PATCH v2] ALSA: usb-audio: Filter out unsupported sample rates
+ on Focusrite devices
+In-Reply-To: <20200418175815.12211-1-alexander@tsoy.me>
+References: <20200418175815.12211-1-alexander@tsoy.me>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, Alexey Skobkin <skobkin-ru@ya.ru>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -69,49 +77,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The commit 1c76aa5fb48d ("ALSA: hda/realtek - Allow skipping
-spec->init_amp detection") changed the way to assign spec->init_amp
-field that specifies the way to initialize the amp.  Along with the
-change, the commit also replaced a few fixups that set spec->init_amp
-in HDA_FIXUP_ACT_PROBE with HDA_FIXUP_ACT_PRE_PROBE.  This was rather
-aligning to the other fixups, and not supposed to change the actual
-behavior.
+On Sat, 18 Apr 2020 19:58:15 +0200,
+Alexander Tsoy wrote:
+> 
+> Many Focusrite devices supports a limited set of sample rates per
+> altsetting. These includes audio interfaces with ADAT ports:
+>  - Scarlett 18i6, 18i8 1st gen, 18i20 1st gen;
+>  - Scarlett 18i8 2nd gen, 18i20 2nd gen;
+>  - Scarlett 18i8 3rd gen, 18i20 3rd gen;
+>  - Clarett 2Pre USB, 4Pre USB, 8Pre USB.
+> 
+> Maximum rate is exposed in the last 4 bytes of Format Type descriptor
+> which has a non-standard bLength = 10.
+> 
+> Tested-by: Alexey Skobkin <skobkin-ru@ya.ru>
+> Signed-off-by: Alexander Tsoy <alexander@tsoy.me>
 
-However, this change turned out to cause a regression on FSC S7020,
-which hit exactly the above.  The reason was that there is still one
-place that overrides spec->init_amp after HDA_FIXUP_ACT_PRE_PROBE
-call, namely in alc_ssid_check().
+Applied now.  It deserves for Cc to stable, so added the tag, too.
 
-This patch fixes the regression by adding the proper spec->init_amp
-override check, i.e. verifying whether it's still ALC_INIT_UNDEFINED.
 
-Fixes: 1c76aa5fb48d ("ALSA: hda/realtek - Allow skipping spec->init_amp detection")
-Cc: <stable@vger.kernel.org>
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207329
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_realtek.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+thanks,
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index dc5557d79c43..54e1c9c0a33f 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -797,9 +797,11 @@ static void alc_ssid_check(struct hda_codec *codec, const hda_nid_t *ports)
- {
- 	if (!alc_subsystem_id(codec, ports)) {
- 		struct alc_spec *spec = codec->spec;
--		codec_dbg(codec,
--			  "realtek: Enable default setup for auto mode as fallback\n");
--		spec->init_amp = ALC_INIT_DEFAULT;
-+		if (spec->init_amp == ALC_INIT_UNDEFINED) {
-+			codec_dbg(codec,
-+				  "realtek: Enable default setup for auto mode as fallback\n");
-+			spec->init_amp = ALC_INIT_DEFAULT;
-+		}
- 	}
- }
- 
--- 
-2.25.0
-
+Takashi
