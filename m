@@ -2,73 +2,72 @@ Return-Path: <SRS0=riU+=6C=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15AF9C38A2F
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 14:46:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA3B9C38A29
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 14:46:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 990DF21D6C
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 14:46:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6894921BE5
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 14:46:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lR6wdDpZ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="v+JTI84T"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 990DF21D6C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tAj7cBrx";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dxib1z5C"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6894921BE5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0E71E1680;
-	Sat, 18 Apr 2020 16:45:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E71E1680
+	by alsa0.perex.cz (Postfix) with ESMTPS id CD9C41657;
+	Sat, 18 Apr 2020 16:45:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD9C41657
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587221174;
-	bh=1RYs4Lz/2BnS7f8Vf4aqmZgljBRSOk3rbVPrrg1Tko4=;
+	s=default; t=1587221195;
+	bh=mB2qUxOwz7H7+t2VXUIz0ESIb9S4rCzBsqKWNvGsaTU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lR6wdDpZGd5IJs9To8W3fscFJDM93rqnDjJJqz9JtUGJ0mTBMDf7Rj+PF+NZ/fsto
-	 5AW4ppf5ORDXQEgCpVKBO9vnUvslir3w017VIayXRMSp6E45OR95otsozCby93JPx5
-	 q8dBYNe0Vgi51ItpEbqE1414Y7cXYWcVe1VVyvws=
+	b=tAj7cBrxozgMVhbiRbMMCjnPbRefFSKmtN3amImtw1SIZN7Udf9W6SscNkIqE+5i2
+	 +4JaJkjp17n2YAcgpP15V7BxQIABCSiDWup6aTKp0cBGZlK4ft6QbRv2ACE6YfFwGv
+	 WScPao95HmRxgZ0uMWqgik5Q3pNKDaRhzlpD0OSk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3CB14F802E9;
-	Sat, 18 Apr 2020 16:41:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 41C21F802F7;
+	Sat, 18 Apr 2020 16:41:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 969C9F8028A; Sat, 18 Apr 2020 16:41:18 +0200 (CEST)
+ id 2EDD3F802EA; Sat, 18 Apr 2020 16:41:56 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4ECB9F802DF
- for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 16:41:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4ECB9F802DF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4C5E5F802EA
+ for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 16:41:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C5E5F802EA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="v+JTI84T"
+ header.b="Dxib1z5C"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 34B442220A;
- Sat, 18 Apr 2020 14:41:10 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 27FC921D82;
+ Sat, 18 Apr 2020 14:41:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1587220871;
- bh=1RYs4Lz/2BnS7f8Vf4aqmZgljBRSOk3rbVPrrg1Tko4=;
+ s=default; t=1587220908;
+ bh=mB2qUxOwz7H7+t2VXUIz0ESIb9S4rCzBsqKWNvGsaTU=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=v+JTI84TmsJ8Cq1KveSfFt9FcY9roYXoCxTJ2WfQPd0TpdXb/kkpJCsIA+OYkxD7t
- bsUWdnumwxLR5GUP01X+45QQb75l/2nBVrIASm1hn8yWOtW4hZ36fJjSVIYoMVRKc+
- f7tigYuq8uBJhHoxXFdTPpFoizmWkicXMtJBU9/o=
+ b=Dxib1z5CMdrdb3b5xIj6YLx4Rnmc9H6o/oLx+vzcN/3Hqxj/M5RdsGIRd+69WAiIY
+ Fb2FBOUNcoO87IWToT0p99j5Z8fmBR5rIakajQ1gM9RMFhD/o2fq8UI7AOGx+1gbs1
+ ribk3u8BkvdyP1u7dbWIOrsuDus0h4CsHhxHeX2o=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 19/78] ASoC: Intel: atom: Take the drv->lock mutex
- before calling sst_send_slot_map()
-Date: Sat, 18 Apr 2020 10:39:48 -0400
-Message-Id: <20200418144047.9013-19-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 48/78] ALSA: hda: Add driver blacklist
+Date: Sat, 18 Apr 2020 10:40:17 -0400
+Message-Id: <20200418144047.9013-48-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200418144047.9013-1-sashal@kernel.org>
 References: <20200418144047.9013-1-sashal@kernel.org>
@@ -76,9 +75,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
- alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,40 +92,65 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 81630dc042af998b9f58cd8e2c29dab9777ea176 ]
+[ Upstream commit 3c6fd1f07ed03a04debbb9a9d782205f1ef5e2ab ]
 
-sst_send_slot_map() uses sst_fill_and_send_cmd_unlocked() because in some
-places it is called with the drv->lock mutex already held.
+The recent AMD platform exposes an HD-audio bus but without any actual
+codecs, which is internally tied with a USB-audio device, supposedly.
+It results in "no codecs" error of HD-audio bus driver, and it's
+nothing but a waste of resources.
 
-So it must always be called with the mutex locked. This commit adds missing
-locking in the sst_set_be_modules() code-path.
+This patch introduces a static blacklist table for skipping such a
+known bogus PCI SSID entry.  As of writing this patch, the known SSIDs
+are:
+* 1043:874f - ASUS ROG Zenith II / Strix
+* 1462:cb59 - MSI TRX40 Creator
+* 1462:cb60 - MSI TRX40
 
-Fixes: 24c8d14192cc ("ASoC: Intel: mrfld: add DSP core controls")
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200402185359.3424-1-hdegoede@redhat.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=206543
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200408140449.22319-2-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/atom/sst-atom-controls.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/pci/hda/hda_intel.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/sound/soc/intel/atom/sst-atom-controls.c b/sound/soc/intel/atom/sst-atom-controls.c
-index baef461a99f19..2c3798034b1de 100644
---- a/sound/soc/intel/atom/sst-atom-controls.c
-+++ b/sound/soc/intel/atom/sst-atom-controls.c
-@@ -966,7 +966,9 @@ static int sst_set_be_modules(struct snd_soc_dapm_widget *w,
- 	dev_dbg(c->dev, "Enter: widget=%s\n", w->name);
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 85beb172d8108..1db9d0579c72a 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2024,6 +2024,17 @@ static void pcm_mmap_prepare(struct snd_pcm_substream *substream,
+ #endif
+ }
  
- 	if (SND_SOC_DAPM_EVENT_ON(event)) {
-+		mutex_lock(&drv->lock);
- 		ret = sst_send_slot_map(drv);
-+		mutex_unlock(&drv->lock);
- 		if (ret)
- 			return ret;
- 		ret = sst_send_pipe_module_params(w, k);
++/* Blacklist for skipping the whole probe:
++ * some HD-audio PCI entries are exposed without any codecs, and such devices
++ * should be ignored from the beginning.
++ */
++static const struct snd_pci_quirk driver_blacklist[] = {
++	SND_PCI_QUIRK(0x1043, 0x874f, "ASUS ROG Zenith II / Strix", 0),
++	SND_PCI_QUIRK(0x1462, 0xcb59, "MSI TRX40 Creator", 0),
++	SND_PCI_QUIRK(0x1462, 0xcb60, "MSI TRX40", 0),
++	{}
++};
++
+ static const struct hda_controller_ops pci_hda_ops = {
+ 	.disable_msi_reset_irq = disable_msi_reset_irq,
+ 	.pcm_mmap_prepare = pcm_mmap_prepare,
+@@ -2059,6 +2070,11 @@ static int azx_probe(struct pci_dev *pci,
+ 	bool schedule_probe;
+ 	int err;
+ 
++	if (snd_pci_quirk_lookup(pci, driver_blacklist)) {
++		dev_info(&pci->dev, "Skipping the blacklisted device\n");
++		return -ENODEV;
++	}
++
+ 	if (dev >= SNDRV_CARDS)
+ 		return -ENODEV;
+ 	if (!enable[dev]) {
 -- 
 2.20.1
 
