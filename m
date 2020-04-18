@@ -7,77 +7,79 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DF1AC38A29
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 14:48:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C51E6C38A2F
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 14:48:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EEEDF2072B
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 14:48:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 54AD021BE5
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 14:48:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kFgAZ3kM";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="PaKFNRa+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EEEDF2072B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="a/MbsB2x";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="HJ3ujVtX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 54AD021BE5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 582CD1678;
-	Sat, 18 Apr 2020 16:47:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 582CD1678
+	by alsa0.perex.cz (Postfix) with ESMTPS id B552D167C;
+	Sat, 18 Apr 2020 16:48:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B552D167C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587221297;
-	bh=XlFxx7w9tq9hPc8Jl4nJlyASCZqXKW6voGb0AIZjCWM=;
+	s=default; t=1587221331;
+	bh=SC/vqzeMx1k3k9AAbtjSE5BmU6VVJ9MANDBe3abuSXk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kFgAZ3kMdF8klmyW3PM4b0XMX/OvNXyvnUPLifQHupmRzVo6maftiyBLQxZHnp/Ai
-	 ioPNJSShFyknz158P4cEfStzMURinbO0/mDrzabi+X+G0MAZPrxemahwTAGc5MhXQX
-	 B8TT5asRUJnl6Fy+QRPeYUfwmaC3a2/BtNjQApvk=
+	b=a/MbsB2xiucJPsa8XpJRYSoEJ1RbIhZIDM98FHqvmZAttw7heJLZa6OiWU5yR5jzp
+	 JbR0Ro+xqk0gOlDCWA4JrXImM7WcOvj86w1tOYX6M6cABYuW2akMGFu/OTd+M0Jg9M
+	 /D1bpKNV8yIjdpwAK4vEwKZ0lEFbKYnjOxp+szk4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 10FFAF80307;
-	Sat, 18 Apr 2020 16:42:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 48111F8028D;
+	Sat, 18 Apr 2020 16:42:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8B3D9F802EC; Sat, 18 Apr 2020 16:42:02 +0200 (CEST)
+ id BFA82F80316; Sat, 18 Apr 2020 16:42:07 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A1873F802F8
- for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 16:41:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1873F802F8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8C652F80303
+ for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 16:42:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C652F80303
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="PaKFNRa+"
+ header.b="HJ3ujVtX"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id A278321D7E;
- Sat, 18 Apr 2020 14:41:54 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 676292224F;
+ Sat, 18 Apr 2020 14:41:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1587220915;
- bh=XlFxx7w9tq9hPc8Jl4nJlyASCZqXKW6voGb0AIZjCWM=;
+ s=default; t=1587220920;
+ bh=SC/vqzeMx1k3k9AAbtjSE5BmU6VVJ9MANDBe3abuSXk=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=PaKFNRa+9QdR82IZFrmf/1EIBmqxhcXNZG7rR8I1BYGUJLiVBrrnfWQ7Ubh3JNz5R
- vTiClzRFrAfdYucPLZiPdsnDk67LEfrS6/aFFHCUKKlHyYKfYrtARQ18PgUdxmDnSX
- wFifpXoIt6MB8QWGfMqBct1tXns93xlQ847VVFZU=
+ b=HJ3ujVtXKNApUgyMIYJ5qtwCHZ3xirDfQyarkQxK95iX5NO3tOiartrji0/IL0/I1
+ UJWRM/QzuZgxKL8zt/kYGYdQoEw49Z0mYxd6zhmgUSCiv9yYeaXn85tXsWGXKQBeXU
+ nwFgkvqky+qqr89+NaH4ApIhfLgga5GNnMVW/Tqc=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 54/78] ALSA: hda: Fix potential access overflow in
- beep helper
-Date: Sat, 18 Apr 2020 10:40:23 -0400
-Message-Id: <20200418144047.9013-54-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 58/78] ALSA: usb-audio: Add Pioneer DJ DJM-250MK2
+ quirk
+Date: Sat, 18 Apr 2020 10:40:27 -0400
+Message-Id: <20200418144047.9013-58-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200418144047.9013-1-sashal@kernel.org>
 References: <20200418144047.9013-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
- alsa-devel@alsa-project.org
+ alsa-devel@alsa-project.org,
+ =?UTF-8?q?Franti=C5=A1ek=20Ku=C4=8Dera?= <franta-linux@frantovo.cz>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,48 +95,75 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Takashi Iwai <tiwai@suse.de>
+From: František Kučera <franta-linux@frantovo.cz>
 
-[ Upstream commit 0ad3f0b384d58f3bd1f4fb87d0af5b8f6866f41a ]
+[ Upstream commit 73d8c94084341e2895169a0462dbc18167f01683 ]
 
-The beep control helper function blindly stores the values in two
-stereo channels no matter whether the actual control is mono or
-stereo.  This is practically harmless, but it annoys the recently
-introduced sanity check, resulting in an error when the checker is
-enabled.
+Pioneer DJ DJM-250MK2 is a mixer that acts like a USB sound card.
+The MIDI controller part is standard but the PCM part is "vendor specific".
+Output is enabled by this quirk: 8 channels, 48 000 Hz, S24_3LE.
+Input is not working.
 
-This patch corrects the behavior to store only on the defined array
-member.
-
-Fixes: 0401e8548eac ("ALSA: hda - Move beep helper functions to hda_beep.c")
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207139
-Reviewed-by: Jaroslav Kysela <perex@perex.cz>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200407084402.25589-2-tiwai@suse.de
+Signed-off-by: František Kučera <franta-linux@frantovo.cz>
+Link: https://lore.kernel.org/r/20200401095907.3387-1-konference@frantovo.cz
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/hda_beep.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ sound/usb/quirks-table.h | 42 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 42 insertions(+)
 
-diff --git a/sound/pci/hda/hda_beep.c b/sound/pci/hda/hda_beep.c
-index b7d9160ed8688..c6e1e03a5e4da 100644
---- a/sound/pci/hda/hda_beep.c
-+++ b/sound/pci/hda/hda_beep.c
-@@ -290,8 +290,12 @@ int snd_hda_mixer_amp_switch_get_beep(struct snd_kcontrol *kcontrol,
- {
- 	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
- 	struct hda_beep *beep = codec->beep;
-+	int chs = get_amp_channels(kcontrol);
-+
- 	if (beep && (!beep->enabled || !ctl_has_mute(kcontrol))) {
--		ucontrol->value.integer.value[0] =
-+		if (chs & 1)
-+			ucontrol->value.integer.value[0] = beep->enabled;
-+		if (chs & 2)
- 			ucontrol->value.integer.value[1] = beep->enabled;
- 		return 0;
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index d187aa6d50db0..dcaf9eed9a415 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -3592,5 +3592,47 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
+ 		}
  	}
+ },
++{
++	/*
++	 * Pioneer DJ DJM-250MK2
++	 * PCM is 8 channels out @ 48 fixed (endpoints 0x01).
++	 * The output from computer to the mixer is usable.
++	 *
++	 * The input (phono or line to computer) is not working.
++	 * It should be at endpoint 0x82 and probably also 8 channels,
++	 * but it seems that it works only with Pioneer proprietary software.
++	 * Even on officially supported OS, the Audacity was unable to record
++	 * and Mixxx to recognize the control vinyls.
++	 */
++	USB_DEVICE_VENDOR_SPEC(0x2b73, 0x0017),
++	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_COMPOSITE,
++		.data = (const struct snd_usb_audio_quirk[]) {
++			{
++				.ifnum = 0,
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = &(const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
++					.channels = 8, // outputs
++					.iface = 0,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.endpoint = 0x01,
++					.ep_attr = USB_ENDPOINT_XFER_ISOC|
++						USB_ENDPOINT_SYNC_ASYNC,
++					.rates = SNDRV_PCM_RATE_48000,
++					.rate_min = 48000,
++					.rate_max = 48000,
++					.nr_rates = 1,
++					.rate_table = (unsigned int[]) { 48000 }
++				}
++			},
++			{
++				.ifnum = -1
++			}
++		}
++	}
++},
+ 
+ #undef USB_DEVICE_VENDOR_SPEC
 -- 
 2.20.1
 
