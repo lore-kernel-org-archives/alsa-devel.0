@@ -2,122 +2,84 @@ Return-Path: <SRS0=riU+=6C=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2D8EC2D0EF
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 10:44:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CF1BC38A2F
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 13:49:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5E06021D79
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 10:44:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C0D4022202
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 13:49:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="M9UAEz8M";
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="pEPOWvtQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E06021D79
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=outlook.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="g70P3Yie";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="MwChRvRE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C0D4022202
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A46D415E0;
-	Sat, 18 Apr 2020 12:43:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A46D415E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 061F31612;
+	Sat, 18 Apr 2020 15:48:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 061F31612
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587206644;
-	bh=8p7AhXXcRyBTQ3Ragm6Gx3+cDM+dZgcgFEoVUj0pSzM=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=M9UAEz8MhxnRuIG9I8O+A0e3D0VyJa+HYMYKgOM0O2VcIY30yAuGsHprPo8aHxCVn
-	 QnaOz6THMwPmgbwb0VP4HdTi1nx/3UyCHxpIt0O4rimpjTJ579rMLtKjTLicu++1nA
-	 HqULjlECM/kypq7OwtXlEARouRNNoHZLuqZ4knsI=
+	s=default; t=1587217776;
+	bh=0tTVy2cifvjkYAguZoxHvbmgMCssyRY48Ll7njglOCo=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=g70P3YiePXTAXxJf50sQLlVUHBonOJvMCP8VRh2wyxTlCbPRfVLMZx5hsuekn1UVX
+	 46QF/n0CuIEFAZmnSm5z0P0PAiADKHX6Bq8GU8cn1jlCKh27tT4/LX6r/sLorohsoC
+	 2vQS6jV8jDs02tFT4vqQ9xHqX1d2OxX1vLa+pKPU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 22BABF8013D;
-	Sat, 18 Apr 2020 12:43:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 75F3AF8016F;
+	Sat, 18 Apr 2020 15:48:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C38BFF8014E; Sat, 18 Apr 2020 12:43:05 +0200 (CEST)
-Received: from APC01-PU1-obe.outbound.protection.outlook.com
- (mail-oln040092254080.outbound.protection.outlook.com [40.92.254.80])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 3C506F8016F; Sat, 18 Apr 2020 15:48:43 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E2342F8012E
- for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 12:42:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2342F8012E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8DEB6F80122
+ for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 15:48:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8DEB6F80122
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com
- header.b="pEPOWvtQ"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KWdmemVETOtmtDkkwTfRL03dt2btwDqozZAgvYbGrykwqhdHrBiRDKFW9gy5tRaaGn3Gv+YoJCBuM4ajSPjWhc/r3eEw8iCxujS6kESAUJLLbijjRwNFvLd9HOqMF705sVVWXnZ61p8nLr6SVUZ1cMgw5Ke++TmFTicwVQwYiDka/e2YO+7beYa7sju/8FpOwwgcb6jaHlEvhdUGcamYcdiyNMn7jFL7BkPclfl19p2yBbEo5gvvMp8MqhHik0/gCryeFtgZ1CnFTW+FfWpuUCuyKdaoQ41RwglbXumfAM6rKUfKyNcO5LV7todFxsbHB7upp2ISjWEx2zjuhFXADQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8p7AhXXcRyBTQ3Ragm6Gx3+cDM+dZgcgFEoVUj0pSzM=;
- b=Qzw9gmFfEXkiu8xmR2IHkemjR7gSFdxdQiO5cutzhkSeMegmho5AI7C+k2am3NFi88/pyEVoBIQUYt2yydW+GJcZpPCrKWMw5ak2DOUSQwXfC76UdlTH6jSbRFOvDm71uMa1cucnIorvafGI0w2WDqz2MQBlKwcOMF1asBz/rEjg703LVq0WpFHu2Cc7rVtt1kovwwm9PwSzHhBIg/hJ6q1hIRNMJZFHVkI2T6r4uO0Gyj80ZeE5LWVM9cwb/jKTrHukVL/IydtQxJ4PFVd/WLmCFsOfJ1MvIY2BXDrGddugQq2oKHgHrfC+LEU4EjpcZ1oUjq4iu3f+r37H+Ua8FA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8p7AhXXcRyBTQ3Ragm6Gx3+cDM+dZgcgFEoVUj0pSzM=;
- b=pEPOWvtQZ4vypCgyEQc5Zg76X8h3aOnYn8JojeNQ6M4fC7VmYfzKV7cCadutkvRAEjZAtleyw1izYEvtrKt+bIUQqv5eGt5r+xcuqa0iQWkECp7ZfWH67eKqDUmhgQazZM9NenLKskGNED9nNhLC5nQP01sZDLdelNT/1oxjJQZlwGV8clrGof70OnK2G3kv69BEjzttc8EwS7+egv4lasomqLHK0Y4BuP+PBv6QZs5yXpYVKAiYnq4EpLktk2fhB5rVG8RBMZY+VH++8TeEzp/kTI7//e3m4ul/B+4zuEQxMyyfIRqxrZp2LsGjAGgjlq1V+/bVgz1FRS4BxvVWWA==
-Received: from HK2APC01FT012.eop-APC01.prod.protection.outlook.com
- (2a01:111:e400:7ebc::4a) by
- HK2APC01HT105.eop-APC01.prod.protection.outlook.com (2a01:111:e400:7ebc::384)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.25; Sat, 18 Apr
- 2020 10:42:50 +0000
-Received: from TY2PR02MB3886.apcprd02.prod.outlook.com
- (2a01:111:e400:7ebc::41) by HK2APC01FT012.mail.protection.outlook.com
- (2a01:111:e400:7ebc::165) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.25 via Frontend
- Transport; Sat, 18 Apr 2020 10:42:50 +0000
-Received: from TY2PR02MB3886.apcprd02.prod.outlook.com
- ([fe80::bc31:a01f:f2b8:2a8d]) by TY2PR02MB3886.apcprd02.prod.outlook.com
- ([fe80::bc31:a01f:f2b8:2a8d%2]) with mapi id 15.20.2921.027; Sat, 18 Apr 2020
- 10:42:50 +0000
-From: Moosa Mahsoom <mahsoom_m@outlook.com>
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Subject: State of hda-analyser.py
-Thread-Topic: State of hda-analyser.py
-Thread-Index: AQHWFW4bJrlw5iY6pUy+HkYNKLNH7g==
-Date: Sat, 18 Apr 2020 10:42:50 +0000
-Message-ID: <305468a60f09cd8ee07d1617e8998f932f8ce877.camel@outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-incomingtopheadermarker: OriginalChecksum:34DABF3793E259681C1C04324C46EB6158B83DE6264694CE356513084E67CD2C;
- UpperCasedChecksum:13F9579D2DB388D686EB299DE0DDFFDE79940EBCF75C40B917B6D92A4F94A53D;
- SizeAsReceived:6678; Count:43
-x-ms-exchange-messagesentrepresentingtype: 1
-x-tmn: [y4eRKkHLHeRT16IeFqw108iaDA84YGVP]
-x-ms-publictraffictype: Email
-x-incomingheadercount: 43
-x-eopattributedmessage: 0
-x-ms-office365-filtering-correlation-id: e7bfeb78-db05-469a-9658-08d7e3853e00
-x-ms-traffictypediagnostic: HK2APC01HT105:
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: E4EId0gnmnavtwFJTVhS5pMjzCke8NexUMOaKbCdI4oGHh7IesaBoKkc+Ar4yEUk4vfiCRh8xyoGJNpW8EyqPl0falye8MqIqOmQBQVItQpp3QrTTRIGjrSM8uOQUdJMGJcEmAyc9dZbxNISeCFVw0JB/R2+Iu07XBRGNfBpUzAawWn89BPng4+BIRw0dYgRbgfrjuDF9LlnQYm4TWf1eQ==
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:0; SRV:;
- IPV:NLI; SFV:NSPM; H:TY2PR02MB3886.apcprd02.prod.outlook.com; PTR:; CAT:NONE;
- SFTY:; SFS:; DIR:OUT; SFP:1901; 
-x-ms-exchange-antispam-messagedata: gw2mdGHVFX7nAA7VTnoDK1bHNis6Z6MofkTMfUhFOLPjO4coF0fiorW0yZZNFa+V+4G3HQaEv9TIVF3+Ooo9+28J5XGHvPIVcfjioc3DDnujjwy3W0Th74cqtA6PetYOSAwQwKnvSC3veMlbH1Wnew==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <64589DF0276E28438700C566BA34A382@apcprd02.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="MwChRvRE"
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
+ [73.47.72.35])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 1D22422245;
+ Sat, 18 Apr 2020 13:48:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1587217718;
+ bh=0tTVy2cifvjkYAguZoxHvbmgMCssyRY48Ll7njglOCo=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=MwChRvRE+OzZ/TaDZ+I1svFaHyqRauDs6QevCyhi9ntjAd7iGnow1lUhq0oJGt9jg
+ X/l+Q2OFz4qTuDdktFIaOUooBD4FDmY7jroMJIEMVCuNCoG0TDw52TmfraSU9JDjtT
+ jtLZoxTvICEi5pFxBBROEFoEe/jb74+1VeAPxC2E=
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.6 19/73] ASoC: dpcm: allow start or stop during
+ pause for backend
+Date: Sat, 18 Apr 2020 09:47:21 -0400
+Message-Id: <20200418134815.6519-19-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200418134815.6519-1-sashal@kernel.org>
+References: <20200418134815.6519-1-sashal@kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: e7bfeb78-db05-469a-9658-08d7e3853e00
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Apr 2020 10:42:50.4407 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Internet
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK2APC01HT105
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Sasha Levin <sashal@kernel.org>,
+ =?UTF-8?q?=EC=9D=B4=EA=B2=BD=ED=83=9D?= <gt82.lee@samsung.com>,
+ Mark Brown <broonie@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -133,10 +95,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-SGksIA0KSSBhbSBhIGZpbmFsIHllYXIgc3R1ZGVudCBmcm9tIEJJVFMgUGlsYW5pLCBJbmRpYS4g
-SSBoYXZlIGJlZW4gZmFjaW5nDQpzb21lIGlzc3VlcyB3aXRoIG15IGxhcHRvcCBhdWRpbyBhbmQg
-aGVuY2Ugd2FudGVkIHRvIHVzZSB0aGUNCmhkYV9hbmFseXNlciBzY3JpcHQuIEhvd2V2ZXIsIEkg
-bm90aWNlZCB0aGF0IHRoZSBweXRob24gc2NyaXB0IGRvZXNuJ3QNCnNlZW0gdG8gY29tcGF0aWJs
-ZSB3aXRoIHRoZSBjdXJyZW50IHB5Z3RrIGxpYnJhcmllcy4gSWYgcG9zc2libGUsSQ0Kd291bGQg
-bGlrZSB0byBjb250cmlidXRlIHRvd2FyZHMgYnJpbmdpbmcgdGhlIHNjcmlwdHMgdG8gcGFyaXR5
-LiANCg0KWW91cnMgU2luY2VyZWx5LA0KTW9vc2EgTWFoc29vbQ0K
+From: 이경택 <gt82.lee@samsung.com>
+
+[ Upstream commit 21fca8bdbb64df1297e8c65a746c4c9f4a689751 ]
+
+soc_compr_trigger_fe() allows start or stop after pause_push.
+In dpcm_be_dai_trigger(), however, only pause_release is allowed
+command after pause_push.
+So, start or stop after pause in compress offload is always
+returned as error if the compress offload is used with dpcm.
+To fix the problem, SND_SOC_DPCM_STATE_PAUSED should be allowed
+for start or stop command.
+
+Signed-off-by: Gyeongtaek Lee <gt82.lee@samsung.com>
+Reviewed-by: Vinod Koul <vkoul@kernel.org>
+Link: https://lore.kernel.org/r/004d01d607c1$7a3d5250$6eb7f6f0$@samsung.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ sound/soc/soc-pcm.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 2c59b3688ca01..8f6f0ad502880 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2236,7 +2236,8 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 		switch (cmd) {
+ 		case SNDRV_PCM_TRIGGER_START:
+ 			if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_PREPARE) &&
+-			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP))
++			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP) &&
++			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
+ 				continue;
+ 
+ 			ret = dpcm_do_trigger(dpcm, be_substream, cmd);
+@@ -2266,7 +2267,8 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
+ 			break;
+ 		case SNDRV_PCM_TRIGGER_STOP:
+-			if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_START)
++			if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_START) &&
++			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
+ 				continue;
+ 
+ 			if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
+-- 
+2.20.1
+
