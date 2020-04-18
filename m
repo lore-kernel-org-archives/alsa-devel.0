@@ -8,90 +8,90 @@ X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74254C2BA19
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 22:46:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AE4DC352BE
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 22:47:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 026B221D6C
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 22:46:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2622D21D6C
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 22:47:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Num+iX+s";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c8cF3XH6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 026B221D6C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="E1mspvqB";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mBpMCKqH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2622D21D6C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6CFF31677;
-	Sun, 19 Apr 2020 00:45:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6CFF31677
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7D3851676;
+	Sun, 19 Apr 2020 00:46:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D3851676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587249996;
-	bh=wpUfhNpsZQrgo3wEIYQ6F1huHLWhs14ZYbax9BNVsB8=;
+	s=default; t=1587250038;
+	bh=IUgancft0SADpgZSaUIF5wfQaDfThpDAV5DRYanoE2I=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Num+iX+s4ZDkM0006p/VY9TQOOE0ZgFOBz2UKzx6jvA8zRY26ILCJKMv+pp9/i8mV
-	 AvW1VE+f61940Fhyy8Od1p9GkuCUM6+NP4XqQ8Hett5ZRsM8usnhQR17T3SN9GAqVS
-	 YK1ClGBfCGN2XNwAqNFT19yetuTbM6zykoGBF/+U=
+	b=E1mspvqBIHlH0uHK9o7ACz4PXZ+vgtpwoIf1T1CRNYzrBBbXi/A36QKhdYrGKdcPL
+	 uVYWhqIpy2pFXQPmqxWbddOJCjkNZw92r4Z7iQOrcMRYjpG6DXXj6ZcKn+4/ueNOW2
+	 fqw64D3UdruxYdlhbCRYWUuFp7mUWwa+ULn6PP60=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B79F6F8028F;
-	Sun, 19 Apr 2020 00:44:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F2D3CF80292;
+	Sun, 19 Apr 2020 00:44:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6C131F8021E; Sun, 19 Apr 2020 00:44:45 +0200 (CEST)
+ id 11A08F8028F; Sun, 19 Apr 2020 00:44:50 +0200 (CEST)
 Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com
  [IPv6:2a00:1450:4864:20::442])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7ECFBF8012E
- for <alsa-devel@alsa-project.org>; Sun, 19 Apr 2020 00:44:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7ECFBF8012E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 94A34F80240
+ for <alsa-devel@alsa-project.org>; Sun, 19 Apr 2020 00:44:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94A34F80240
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="c8cF3XH6"
-Received: by mail-wr1-x442.google.com with SMTP id t14so7368604wrw.12
- for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 15:44:41 -0700 (PDT)
+ header.b="mBpMCKqH"
+Received: by mail-wr1-x442.google.com with SMTP id k1so7427940wrx.4
+ for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 15:44:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=8DEFjpIBB2sTg55bEJY9HmamuD/w0H5V9QfSFLKTLl8=;
- b=c8cF3XH6qZJcJPkN9nADZfE8ZdxqJJNLek9MBPzd976KNgLjfAOvhXssjXgfR0qUXZ
- z5SbODX1HI8kSbTahGSNYROR6DUal2jkuISdlMolZvPcEr70LFjcykcK1MP0UOcKBhIU
- Ff5QtHea/ZcWq77sRWFG1qP7w6fn1pfjPGu5tFfutPE2Hj96sJkLdvi4XAKDYYyMKNqx
- R00g3cSrpQeA/7DOSY1CCSiEIqPbTrTVBzDoq3hp++7L21hPafhxjXx5u7ZowEpl0AKz
- t2dofmvt7RGD5O8ClZ3VCGllQKrDMZ7oHQNsKAdP0RKpixpqN3OalmxOd//da9ZJC8dw
- C0sQ==
+ bh=WxlFylBEMHP1jAoGZfSxBsIHY2H4BZ1sTMv7tdFsx0k=;
+ b=mBpMCKqHG2SfOXcnCap8iR0f/B7HGFhKZdMy5ig7HK/OlFABYDm0hIll3vV+Fs3/E2
+ MemLzcDWcEG1eZMGEt11QJROvMFeBiyeNFxbsdzZFsz30iRkOKq0KNsC499z52Y3PnIb
+ rgUcOHM5l+Klk14ppPMaXuELw7kaIsqP5bFwyhXI8JiWWSzYx7mBW7XeuKjtZv3mcw8+
+ BMy3XFU/sneRsFANUoXTvZdJ3YS99DW3zLWFR4nLpdboc51AHWkDqIchI+7NfrUzPUvQ
+ GQZIK46c81MLKZ1cEHupP2QrODrt6n98Ko2z2YpzgmRUaiTYbsPSD79+KEkgy7cxRn44
+ mOCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=8DEFjpIBB2sTg55bEJY9HmamuD/w0H5V9QfSFLKTLl8=;
- b=j3o0+5ngcXb3XxGAb8hpSmJS1F+y8zUmoh5RGyFwEonO6cMiyF6NodIqXrHkAphXon
- zyTUBbMrJdH++kiGDCuBKR6tKHDh7HyMfR65bzLIEsA0UfG55Yv0NjEibkyXaHAGgf7f
- JKw2NZJFjFLwCv6j17Rp9FrtydPCauTPeser9eHfht9CPUcJnAbjMCEb6g6RKoV6N+WB
- fiRE5b2Iz3MmCRXj/3N7MKcno8N9Ex4/5rZJybqgqhmMtZZ8c7XDDzzKWNaYUb/i6Psw
- ilbXr75OOVi8vVoBRlII/FMPkR0BLt5fYxoo0/y9UnWu8OOcdmNQ9USAavHA0SD8wDha
- 55Og==
-X-Gm-Message-State: AGi0PuYbPV0tOHhxcgl3saczbM1w/jHqQoqiVcFXL7n3S/gsJV9S1oMn
- wRqniKeKNZ7j//W9xHP7p+U=
-X-Google-Smtp-Source: APiQypLzc6502sCH/dr5KEi1k3BQRUxUNmwEVNQJvwCGsDJys1dWkVAT0BXLftMcmhDCZMKxtYFX6Q==
-X-Received: by 2002:a5d:5304:: with SMTP id e4mr10337697wrv.87.1587249879909; 
- Sat, 18 Apr 2020 15:44:39 -0700 (PDT)
+ bh=WxlFylBEMHP1jAoGZfSxBsIHY2H4BZ1sTMv7tdFsx0k=;
+ b=ZBB7mMe8j70Gi+YiCyoADnUAjmClGIUqkMQoZqmC/5eJyalUkqjB12S2Da2JT7Kr7T
+ 6xbU5lfObOR3N8+173MrOJ/xV5ydJso3HCXIL2ixWB1d9EK3zx3ZX11nBHJDuDWZO4jf
+ TJ+YL0KwO+308mnmDKBvnYXjbNY2MV7m7/c27XP2nFbdpnz/BpwMk4Q8ZswEJ9+L5uWG
+ kyK/MVhKTluAVXb9EVoO3ewspdIvRGsxcDe2M/JZmZvVwoBycQw1ca2aKitXRbV/eGfw
+ t/NVkq4I57au0qTy4b6JA47NkoAutzQUbxEThI529cXYOOUR7iIyqnVAHkwXaRTdUODr
+ YifQ==
+X-Gm-Message-State: AGi0PuYcDG6937aMaX3dIzhPsIcFgIy85E0PboDGZiqYYgbSZ0CxBttH
+ AVyQ+bcXC6uy7VQJRbye9wY=
+X-Google-Smtp-Source: APiQypKTnGAMc2x527csx6OG/t51sbyg6UU1kp5+g0xKPogZNyMX2T0dDmdRAiavu+QJY/l+rzDfcQ==
+X-Received: by 2002:adf:ef51:: with SMTP id c17mr10700285wrp.130.1587249885925; 
+ Sat, 18 Apr 2020 15:44:45 -0700 (PDT)
 Received: from localhost.localdomain (91-167-199-67.subs.proxad.net.
  [91.167.199.67])
- by smtp.gmail.com with ESMTPSA id t16sm13371559wmi.27.2020.04.18.15.44.38
+ by smtp.gmail.com with ESMTPSA id t16sm13371559wmi.27.2020.04.18.15.44.44
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 18 Apr 2020 15:44:39 -0700 (PDT)
+ Sat, 18 Apr 2020 15:44:45 -0700 (PDT)
 From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Rob Herring <robh+dt@kernel.org>, Maxime Ripard <mripard@kernel.org>,
  Chen-Yu Tsai <wens@csie.org>, Jaroslav Kysela <perex@perex.cz>,
  Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v2 1/7] ASoC: sun4i-i2s: Adjust LRCLK width
-Date: Sun, 19 Apr 2020 00:44:29 +0200
-Message-Id: <20200418224435.23672-2-peron.clem@gmail.com>
+Subject: [PATCH v2 5/7] ASoc: sun4i-i2s: Add 20 and 24 bit support
+Date: Sun, 19 Apr 2020 00:44:33 +0200
+Message-Id: <20200418224435.23672-6-peron.clem@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200418224435.23672-1-peron.clem@gmail.com>
 References: <20200418224435.23672-1-peron.clem@gmail.com>
@@ -119,31 +119,57 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Marcus Cooper <codekipper@gmail.com>
 
-Some codecs such as i2s based HDMI audio and the Pine64 DAC require
-a different amount of bit clocks per frame than what is calculated
-by the sample width. Use the values obtained by the tdm slot bindings
-to adjust the LRCLK width accordingly.
+Extend the functionality of the driver to include support of 20 and
+24 bits per sample.
 
 Signed-off-by: Marcus Cooper <codekipper@gmail.com>
 Signed-off-by: Clément Péron <peron.clem@gmail.com>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/sunxi/sun4i-i2s.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index d0a8d5810c0a..4198a5410bf9 100644
+index 618bbc5156f1..9778af37fbca 100644
 --- a/sound/soc/sunxi/sun4i-i2s.c
 +++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -455,6 +455,9 @@ static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
- 		return -EINVAL;
- 	}
+@@ -577,6 +577,9 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	case 16:
+ 		width = DMA_SLAVE_BUSWIDTH_2_BYTES;
+ 		break;
++	case 32:
++		width = DMA_SLAVE_BUSWIDTH_4_BYTES;
++		break;
+ 	default:
+ 		dev_err(dai->dev, "Unsupported physical sample width: %d\n",
+ 			params_physical_width(params));
+@@ -1063,6 +1066,10 @@ static int sun4i_i2s_dai_probe(struct snd_soc_dai *dai)
+ 	return 0;
+ }
  
-+	if (i2s->slot_width)
-+		lrck_period = i2s->slot_width;
++#define SUN4I_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | \
++			 SNDRV_PCM_FMTBIT_S20_LE | \
++			 SNDRV_PCM_FMTBIT_S24_LE)
 +
- 	regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT0_REG,
- 			   SUN8I_I2S_FMT0_LRCK_PERIOD_MASK,
- 			   SUN8I_I2S_FMT0_LRCK_PERIOD(lrck_period));
+ static struct snd_soc_dai_driver sun4i_i2s_dai = {
+ 	.probe = sun4i_i2s_dai_probe,
+ 	.capture = {
+@@ -1070,14 +1077,14 @@ static struct snd_soc_dai_driver sun4i_i2s_dai = {
+ 		.channels_min = 1,
+ 		.channels_max = 8,
+ 		.rates = SNDRV_PCM_RATE_8000_192000,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++		.formats = SUN4I_FORMATS,
+ 	},
+ 	.playback = {
+ 		.stream_name = "Playback",
+ 		.channels_min = 1,
+ 		.channels_max = 8,
+ 		.rates = SNDRV_PCM_RATE_8000_192000,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++		.formats = SUN4I_FORMATS,
+ 	},
+ 	.ops = &sun4i_i2s_dai_ops,
+ 	.symmetric_rates = 1,
 -- 
 2.20.1
 
