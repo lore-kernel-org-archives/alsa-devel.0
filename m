@@ -7,79 +7,77 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 75607C5321D
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 14:14:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E4057C38A29
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 14:14:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 04E7422244
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 14:14:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6A08321BE5
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 14:14:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cG+rRS2Q";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="T2COPg4S"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 04E7422244
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eTyy/S/I";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="pFautUt7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6A08321BE5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4C49C1662;
-	Sat, 18 Apr 2020 16:13:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4C49C1662
+	by alsa0.perex.cz (Postfix) with ESMTPS id AB9731676;
+	Sat, 18 Apr 2020 16:14:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB9731676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587219272;
-	bh=SC/vqzeMx1k3k9AAbtjSE5BmU6VVJ9MANDBe3abuSXk=;
+	s=default; t=1587219293;
+	bh=cpAMGGfP/vuBzpkFWI/SKvrGzpquAnEwlNg3K7foEDU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cG+rRS2QgBupKkvt3F0GsSbZXu6IyYLQ7MbO1+oaUkc+xHukg2fX25xzkAdaoaGzO
-	 CaNGTimc6WsmOudnadFM2UKA7jPUXHeQWgkGdRTeb87QNsP+LEiSsw+1b9xnfh/y3f
-	 BYWOYatRC4ioINUDKyF0giLPUYLpwEqTj+cpEx+c=
+	b=eTyy/S/ICTfPcJsOj65lzNVF1+YsL6dTekVPE16pOHfBQ6RDNU7MdcnfDOHD06b2+
+	 bKwpGmrDbYVJauvGrUtxLJ5gUB8BWsH/iBtb3pcU6J6VCja0EODci1q35ubNrKe7+2
+	 OXbjHBUo1C8EnkFC+NvZj33kRbCFQBXK+pJvxJ6M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 244D6F802C2;
-	Sat, 18 Apr 2020 16:10:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2C68EF802DB;
+	Sat, 18 Apr 2020 16:10:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 195E9F802C2; Sat, 18 Apr 2020 16:10:36 +0200 (CEST)
+ id 107A8F802D2; Sat, 18 Apr 2020 16:10:39 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 20FECF802A7
- for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 16:10:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 20FECF802A7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 40221F802A2
+ for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 16:10:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40221F802A2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="T2COPg4S"
+ header.b="pFautUt7"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id EF11F2220A;
- Sat, 18 Apr 2020 14:10:27 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 091FE21D79;
+ Sat, 18 Apr 2020 14:10:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1587219028;
- bh=SC/vqzeMx1k3k9AAbtjSE5BmU6VVJ9MANDBe3abuSXk=;
+ s=default; t=1587219029;
+ bh=cpAMGGfP/vuBzpkFWI/SKvrGzpquAnEwlNg3K7foEDU=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=T2COPg4SdTh/8TczdaIUExhQyRWawndAuyl3nBtO0Vs2XjWV5eOJ+KSbr5B+Xh/Xe
- l0/bBkBcCej7bC+QTubQ2JEZeblM2VwIY1Ab/zTANfsGwDISi+Gt+4ruHTzlNIKW4m
- 2PDF+bJQ1OEWF1mvHCsnnNh2jf+R7ng/VpG3iHo0=
+ b=pFautUt7Oby/mErimggAA8IuixWmJ6ItMmCvK1Df5FfqGqyhB0/9dSBHVcEpYqRDO
+ EtF/K4N1pyAwdpdoLjfQxbSpCY7C9LIJmw8ejRteujq/weGOYR3rPhdK6pRpXnG4HI
+ 1PSCoIxtG/VJJ4slHKO6zrOL2RDX0XOqgae82ZJo=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.5 63/75] ALSA: usb-audio: Add Pioneer DJ DJM-250MK2
- quirk
-Date: Sat, 18 Apr 2020 10:08:58 -0400
-Message-Id: <20200418140910.8280-63-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.5 64/75] ALSA: hda/realtek - Add quirk for Lenovo
+ Carbon X1 8th gen
+Date: Sat, 18 Apr 2020 10:08:59 -0400
+Message-Id: <20200418140910.8280-64-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200418140910.8280-1-sashal@kernel.org>
 References: <20200418140910.8280-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
- alsa-devel@alsa-project.org,
- =?UTF-8?q?Franti=C5=A1ek=20Ku=C4=8Dera?= <franta-linux@frantovo.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, Hans de Goede <hdegoede@redhat.com>,
+ alsa-devel@alsa-project.org, Sasha Levin <sashal@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,75 +93,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: František Kučera <franta-linux@frantovo.cz>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 73d8c94084341e2895169a0462dbc18167f01683 ]
+[ Upstream commit ca707b3f00b4f31a6e1eb37e8ae99f15f2bb1fe5 ]
 
-Pioneer DJ DJM-250MK2 is a mixer that acts like a USB sound card.
-The MIDI controller part is standard but the PCM part is "vendor specific".
-Output is enabled by this quirk: 8 channels, 48 000 Hz, S24_3LE.
-Input is not working.
+The audio setup on the Lenovo Carbon X1 8th gen is the same as that on
+the Lenovo Carbon X1 7th gen, as such it needs the same
+ALC285_FIXUP_THINKPAD_HEADSET_JACK quirk.
 
-Signed-off-by: František Kučera <franta-linux@frantovo.cz>
-Link: https://lore.kernel.org/r/20200401095907.3387-1-konference@frantovo.cz
+This fixes volume control of the speaker not working among other things.
+
+BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1820196
+Cc: stable@vger.kernel.org
+Suggested-by: Jaroslav Kysela <perex@perex.cz>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Reviewed-by: Jaroslav Kysela <perex@perex.cz>
+Link: https://lore.kernel.org/r/20200402174311.238614-1-hdegoede@redhat.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/quirks-table.h | 42 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index d187aa6d50db0..dcaf9eed9a415 100644
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -3592,5 +3592,47 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
- 		}
- 	}
- },
-+{
-+	/*
-+	 * Pioneer DJ DJM-250MK2
-+	 * PCM is 8 channels out @ 48 fixed (endpoints 0x01).
-+	 * The output from computer to the mixer is usable.
-+	 *
-+	 * The input (phono or line to computer) is not working.
-+	 * It should be at endpoint 0x82 and probably also 8 channels,
-+	 * but it seems that it works only with Pioneer proprietary software.
-+	 * Even on officially supported OS, the Audacity was unable to record
-+	 * and Mixxx to recognize the control vinyls.
-+	 */
-+	USB_DEVICE_VENDOR_SPEC(0x2b73, 0x0017),
-+	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
-+		.ifnum = QUIRK_ANY_INTERFACE,
-+		.type = QUIRK_COMPOSITE,
-+		.data = (const struct snd_usb_audio_quirk[]) {
-+			{
-+				.ifnum = 0,
-+				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
-+				.data = &(const struct audioformat) {
-+					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
-+					.channels = 8, // outputs
-+					.iface = 0,
-+					.altsetting = 1,
-+					.altset_idx = 1,
-+					.endpoint = 0x01,
-+					.ep_attr = USB_ENDPOINT_XFER_ISOC|
-+						USB_ENDPOINT_SYNC_ASYNC,
-+					.rates = SNDRV_PCM_RATE_48000,
-+					.rate_min = 48000,
-+					.rate_max = 48000,
-+					.nr_rates = 1,
-+					.rate_table = (unsigned int[]) { 48000 }
-+				}
-+			},
-+			{
-+				.ifnum = -1
-+			}
-+		}
-+	}
-+},
- 
- #undef USB_DEVICE_VENDOR_SPEC
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 62eac992ebd55..e2c77d2ab26e9 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -7300,6 +7300,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x225d, "Thinkpad T480", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+ 	SND_PCI_QUIRK(0x17aa, 0x2292, "Thinkpad X1 Yoga 7th", ALC285_FIXUP_THINKPAD_HEADSET_JACK),
+ 	SND_PCI_QUIRK(0x17aa, 0x2293, "Thinkpad X1 Carbon 7th", ALC285_FIXUP_THINKPAD_HEADSET_JACK),
++	SND_PCI_QUIRK(0x17aa, 0x22be, "Thinkpad X1 Carbon 8th", ALC285_FIXUP_THINKPAD_HEADSET_JACK),
+ 	SND_PCI_QUIRK(0x17aa, 0x30bb, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
+ 	SND_PCI_QUIRK(0x17aa, 0x30e2, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
+ 	SND_PCI_QUIRK(0x17aa, 0x310c, "ThinkCentre Station", ALC294_FIXUP_LENOVO_MIC_LOCATION),
 -- 
 2.20.1
 
