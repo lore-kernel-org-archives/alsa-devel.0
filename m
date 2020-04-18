@@ -2,96 +2,96 @@ Return-Path: <SRS0=riU+=6C=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AE4DC352BE
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 22:47:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 70E78C352BE
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 22:47:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2622D21D6C
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 22:47:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EF38721D6C
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 22:47:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="E1mspvqB";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mBpMCKqH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2622D21D6C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lI7nVG1L";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a32N8wG+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EF38721D6C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7D3851676;
-	Sun, 19 Apr 2020 00:46:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D3851676
+	by alsa0.perex.cz (Postfix) with ESMTPS id 59797846;
+	Sun, 19 Apr 2020 00:46:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 59797846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587250038;
-	bh=IUgancft0SADpgZSaUIF5wfQaDfThpDAV5DRYanoE2I=;
+	s=default; t=1587250055;
+	bh=CH6NU2YIggBc2lkNGMGqWGtiabxsX41aZtr85Il799g=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=E1mspvqBIHlH0uHK9o7ACz4PXZ+vgtpwoIf1T1CRNYzrBBbXi/A36QKhdYrGKdcPL
-	 uVYWhqIpy2pFXQPmqxWbddOJCjkNZw92r4Z7iQOrcMRYjpG6DXXj6ZcKn+4/ueNOW2
-	 fqw64D3UdruxYdlhbCRYWUuFp7mUWwa+ULn6PP60=
+	b=lI7nVG1L5CAjdX7Q6H0G+02ZRcpZhJRXf7k74sVfWHUxkDilzi+Pmyj1BXr8am96f
+	 oETe27104C2GQplTjWpKhQ4I/8fz3k5w/y/fu5SlxtA8P2jKu924Iw3RRfE1PERb0L
+	 uFzPYHd0ZbmJr1sbb3sf4S/nsnps9rOL2I9DvO4M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F2D3CF80292;
-	Sun, 19 Apr 2020 00:44:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 519FFF802A0;
+	Sun, 19 Apr 2020 00:44:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 11A08F8028F; Sun, 19 Apr 2020 00:44:50 +0200 (CEST)
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com
- [IPv6:2a00:1450:4864:20::442])
+ id 77E5DF80290; Sun, 19 Apr 2020 00:44:50 +0200 (CEST)
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
+ [IPv6:2a00:1450:4864:20::443])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 94A34F80240
- for <alsa-devel@alsa-project.org>; Sun, 19 Apr 2020 00:44:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94A34F80240
+ by alsa1.perex.cz (Postfix) with ESMTPS id 940D8F8013D
+ for <alsa-devel@alsa-project.org>; Sun, 19 Apr 2020 00:44:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 940D8F8013D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="mBpMCKqH"
-Received: by mail-wr1-x442.google.com with SMTP id k1so7427940wrx.4
- for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 15:44:46 -0700 (PDT)
+ header.b="a32N8wG+"
+Received: by mail-wr1-x443.google.com with SMTP id d17so7376049wrg.11
+ for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 15:44:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=WxlFylBEMHP1jAoGZfSxBsIHY2H4BZ1sTMv7tdFsx0k=;
- b=mBpMCKqHG2SfOXcnCap8iR0f/B7HGFhKZdMy5ig7HK/OlFABYDm0hIll3vV+Fs3/E2
- MemLzcDWcEG1eZMGEt11QJROvMFeBiyeNFxbsdzZFsz30iRkOKq0KNsC499z52Y3PnIb
- rgUcOHM5l+Klk14ppPMaXuELw7kaIsqP5bFwyhXI8JiWWSzYx7mBW7XeuKjtZv3mcw8+
- BMy3XFU/sneRsFANUoXTvZdJ3YS99DW3zLWFR4nLpdboc51AHWkDqIchI+7NfrUzPUvQ
- GQZIK46c81MLKZ1cEHupP2QrODrt6n98Ko2z2YpzgmRUaiTYbsPSD79+KEkgy7cxRn44
- mOCg==
+ bh=V/lpQn53gdEXltFH79q8XmCEGM5dgBCWmNxBGwbhAXM=;
+ b=a32N8wG+5ag2ojOmPuOJuQCoAn95+wI5FWPfKNwqexGw5oJHYjBzAYCAcaUiJxbLw1
+ 0sAvD55q1CeCgoSC0vr0nzEoZJabsdGT7/cZcBHMmv3+SIDBaz2NNLEz0aBndWXj6x83
+ NBgD53VlrrUkn3Y327+eoK4kY6ogRVfgJ13Ru3z7m34MKjy+6Cl9BgW3MgJnxBIi2M9E
+ ee66jGJMmh7utL/sVXaPVcYpxwaooGbcPhugt6gnkJwuJ1RgtfgHHYG5j5qfLL85ZMrW
+ MlfWD7V/fsrpQd5gA5B/wDlbXhOKT5MEwewIbiPf0dZPpInOxgXO5ybtYhtkEEPdOLTU
+ 8gIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=WxlFylBEMHP1jAoGZfSxBsIHY2H4BZ1sTMv7tdFsx0k=;
- b=ZBB7mMe8j70Gi+YiCyoADnUAjmClGIUqkMQoZqmC/5eJyalUkqjB12S2Da2JT7Kr7T
- 6xbU5lfObOR3N8+173MrOJ/xV5ydJso3HCXIL2ixWB1d9EK3zx3ZX11nBHJDuDWZO4jf
- TJ+YL0KwO+308mnmDKBvnYXjbNY2MV7m7/c27XP2nFbdpnz/BpwMk4Q8ZswEJ9+L5uWG
- kyK/MVhKTluAVXb9EVoO3ewspdIvRGsxcDe2M/JZmZvVwoBycQw1ca2aKitXRbV/eGfw
- t/NVkq4I57au0qTy4b6JA47NkoAutzQUbxEThI529cXYOOUR7iIyqnVAHkwXaRTdUODr
- YifQ==
-X-Gm-Message-State: AGi0PuYcDG6937aMaX3dIzhPsIcFgIy85E0PboDGZiqYYgbSZ0CxBttH
- AVyQ+bcXC6uy7VQJRbye9wY=
-X-Google-Smtp-Source: APiQypKTnGAMc2x527csx6OG/t51sbyg6UU1kp5+g0xKPogZNyMX2T0dDmdRAiavu+QJY/l+rzDfcQ==
-X-Received: by 2002:adf:ef51:: with SMTP id c17mr10700285wrp.130.1587249885925; 
- Sat, 18 Apr 2020 15:44:45 -0700 (PDT)
+ bh=V/lpQn53gdEXltFH79q8XmCEGM5dgBCWmNxBGwbhAXM=;
+ b=pTIHHnbTa8/KT8lz5r3YekcoyUd99bSvP+2DDeA302XPwdc2ZktzuiipsvOfDezM4k
+ wEHdlmmGRtNQFFLrvqjtyV7ZaNfsVqMoRqDmvUzWcr/KIRvZvfetFLZpcP67MQFHeIeQ
+ TRx1gAGPdJSqR0JaNTy66lbpOc/BRutDk/C7ObLbxF/WYMlENCii2dHBTOoJOxWsMqvM
+ KWqqJe8dEM2MeGgRAMIz7kElUCRYG04CTPVbYtGMme8o+ReefMNNHoa9sWZaoXU/Ujjj
+ Hdm+csnrfRJpW1A975pXAtCahgZE8J1EqVJjtwZVCvttBoF10ux/Ms5XkSAstFoNKBl/
+ Sd4w==
+X-Gm-Message-State: AGi0PuaqVprLypiXXD3Iby7cwDzL+BSgVoJfZesqUOgaMVxjX0bQg6MS
+ BaOBar4qrvzfE+n7B9G6uEk=
+X-Google-Smtp-Source: APiQypLlVNnXTzRiABRJC2v2Bpj0arub7fRlTwhNbvCex+zLQNQMa3j6U5tCAAZUhV7wZxXu/1/MEw==
+X-Received: by 2002:a5d:51c6:: with SMTP id n6mr10827370wrv.314.1587249883078; 
+ Sat, 18 Apr 2020 15:44:43 -0700 (PDT)
 Received: from localhost.localdomain (91-167-199-67.subs.proxad.net.
  [91.167.199.67])
- by smtp.gmail.com with ESMTPSA id t16sm13371559wmi.27.2020.04.18.15.44.44
+ by smtp.gmail.com with ESMTPSA id t16sm13371559wmi.27.2020.04.18.15.44.41
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 18 Apr 2020 15:44:45 -0700 (PDT)
+ Sat, 18 Apr 2020 15:44:42 -0700 (PDT)
 From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Rob Herring <robh+dt@kernel.org>, Maxime Ripard <mripard@kernel.org>,
  Chen-Yu Tsai <wens@csie.org>, Jaroslav Kysela <perex@perex.cz>,
  Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v2 5/7] ASoc: sun4i-i2s: Add 20 and 24 bit support
-Date: Sun, 19 Apr 2020 00:44:33 +0200
-Message-Id: <20200418224435.23672-6-peron.clem@gmail.com>
+Subject: [PATCH v2 3/7] ASoC: sun4i-i2s: Add support for H6 I2S
+Date: Sun, 19 Apr 2020 00:44:31 +0200
+Message-Id: <20200418224435.23672-4-peron.clem@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200418224435.23672-1-peron.clem@gmail.com>
 References: <20200418224435.23672-1-peron.clem@gmail.com>
@@ -99,7 +99,8 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Marcus Cooper <codekipper@gmail.com>,
+ Jernej Skrabec <jernej.skrabec@siol.net>, linux-kernel@vger.kernel.org,
+ Marcus Cooper <codekipper@gmail.com>,
  =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>,
  linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
@@ -117,59 +118,298 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Marcus Cooper <codekipper@gmail.com>
+From: Jernej Skrabec <jernej.skrabec@siol.net>
 
-Extend the functionality of the driver to include support of 20 and
-24 bits per sample.
+H6 I2S is very similar to that in H3, except it supports up to 16
+channels.
 
+Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
 Signed-off-by: Marcus Cooper <codekipper@gmail.com>
 Signed-off-by: Clément Péron <peron.clem@gmail.com>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ sound/soc/sunxi/sun4i-i2s.c | 227 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 227 insertions(+)
 
 diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 618bbc5156f1..9778af37fbca 100644
+index 4198a5410bf9..a23c9f2a3f8c 100644
 --- a/sound/soc/sunxi/sun4i-i2s.c
 +++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -577,6 +577,9 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
- 	case 16:
- 		width = DMA_SLAVE_BUSWIDTH_2_BYTES;
- 		break;
-+	case 32:
-+		width = DMA_SLAVE_BUSWIDTH_4_BYTES;
-+		break;
- 	default:
- 		dev_err(dai->dev, "Unsupported physical sample width: %d\n",
- 			params_physical_width(params));
-@@ -1063,6 +1066,10 @@ static int sun4i_i2s_dai_probe(struct snd_soc_dai *dai)
+@@ -124,6 +124,21 @@
+ #define SUN8I_I2S_RX_CHAN_SEL_REG	0x54
+ #define SUN8I_I2S_RX_CHAN_MAP_REG	0x58
+ 
++/* Defines required for sun50i-h6 support */
++#define SUN50I_H6_I2S_TX_CHAN_SEL_OFFSET_MASK	GENMASK(21, 20)
++#define SUN50I_H6_I2S_TX_CHAN_SEL_OFFSET(offset)	((offset) << 20)
++#define SUN50I_H6_I2S_TX_CHAN_SEL_MASK		GENMASK(19, 16)
++#define SUN50I_H6_I2S_TX_CHAN_SEL(chan)		((chan - 1) << 16)
++#define SUN50I_H6_I2S_TX_CHAN_EN_MASK		GENMASK(15, 0)
++#define SUN50I_H6_I2S_TX_CHAN_EN(num_chan)	(((1 << num_chan) - 1))
++
++#define SUN50I_H6_I2S_TX_CHAN_MAP0_REG	0x44
++#define SUN50I_H6_I2S_TX_CHAN_MAP1_REG	0x48
++
++#define SUN50I_H6_I2S_RX_CHAN_SEL_REG	0x64
++#define SUN50I_H6_I2S_RX_CHAN_MAP0_REG	0x68
++#define SUN50I_H6_I2S_RX_CHAN_MAP1_REG	0x6C
++
+ struct sun4i_i2s;
+ 
+ /**
+@@ -469,6 +484,65 @@ static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
  	return 0;
  }
  
-+#define SUN4I_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | \
-+			 SNDRV_PCM_FMTBIT_S20_LE | \
-+			 SNDRV_PCM_FMTBIT_S24_LE)
++static int sun50i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
++				   const struct snd_pcm_hw_params *params)
++{
++	unsigned int channels = params_channels(params);
++	unsigned int slots = channels;
++	unsigned int lrck_period;
 +
- static struct snd_soc_dai_driver sun4i_i2s_dai = {
- 	.probe = sun4i_i2s_dai_probe,
- 	.capture = {
-@@ -1070,14 +1077,14 @@ static struct snd_soc_dai_driver sun4i_i2s_dai = {
- 		.channels_min = 1,
- 		.channels_max = 8,
- 		.rates = SNDRV_PCM_RATE_8000_192000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		.formats = SUN4I_FORMATS,
++	if (i2s->slots)
++		slots = i2s->slots;
++
++	/* Map the channels for playback and capture */
++	regmap_write(i2s->regmap, SUN50I_H6_I2S_TX_CHAN_MAP1_REG, 0x76543210);
++	regmap_write(i2s->regmap, SUN50I_H6_I2S_RX_CHAN_MAP1_REG, 0x76543210);
++
++	/* Configure the channels */
++	regmap_update_bits(i2s->regmap, SUN8I_I2S_TX_CHAN_SEL_REG,
++			   SUN50I_H6_I2S_TX_CHAN_SEL_MASK,
++			   SUN50I_H6_I2S_TX_CHAN_SEL(channels));
++	regmap_update_bits(i2s->regmap, SUN50I_H6_I2S_RX_CHAN_SEL_REG,
++			   SUN50I_H6_I2S_TX_CHAN_SEL_MASK,
++			   SUN50I_H6_I2S_TX_CHAN_SEL(channels));
++
++	regmap_update_bits(i2s->regmap, SUN8I_I2S_CHAN_CFG_REG,
++			   SUN8I_I2S_CHAN_CFG_TX_SLOT_NUM_MASK,
++			   SUN8I_I2S_CHAN_CFG_TX_SLOT_NUM(channels));
++	regmap_update_bits(i2s->regmap, SUN8I_I2S_CHAN_CFG_REG,
++			   SUN8I_I2S_CHAN_CFG_RX_SLOT_NUM_MASK,
++			   SUN8I_I2S_CHAN_CFG_RX_SLOT_NUM(channels));
++
++	switch (i2s->format & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_DSP_A:
++	case SND_SOC_DAIFMT_DSP_B:
++	case SND_SOC_DAIFMT_LEFT_J:
++	case SND_SOC_DAIFMT_RIGHT_J:
++		lrck_period = params_physical_width(params) * slots;
++		break;
++
++	case SND_SOC_DAIFMT_I2S:
++		lrck_period = params_physical_width(params);
++		break;
++
++	default:
++		return -EINVAL;
++	}
++
++	if (i2s->slot_width)
++		lrck_period = i2s->slot_width;
++
++	regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT0_REG,
++			   SUN8I_I2S_FMT0_LRCK_PERIOD_MASK,
++			   SUN8I_I2S_FMT0_LRCK_PERIOD(lrck_period));
++
++	regmap_update_bits(i2s->regmap, SUN8I_I2S_TX_CHAN_SEL_REG,
++			   SUN50I_H6_I2S_TX_CHAN_EN_MASK,
++			   SUN50I_H6_I2S_TX_CHAN_EN(channels));
++
++	return 0;
++}
++
+ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+ 			       struct snd_pcm_hw_params *params,
+ 			       struct snd_soc_dai *dai)
+@@ -694,6 +768,108 @@ static int sun8i_i2s_set_soc_fmt(const struct sun4i_i2s *i2s,
+ 	return 0;
+ }
+ 
++static int sun50i_i2s_set_soc_fmt(const struct sun4i_i2s *i2s,
++				 unsigned int fmt)
++{
++	u32 mode, val;
++	u8 offset;
++
++	/*
++	 * DAI clock polarity
++	 *
++	 * The setup for LRCK contradicts the datasheet, but under a
++	 * scope it's clear that the LRCK polarity is reversed
++	 * compared to the expected polarity on the bus.
++	 */
++	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++	case SND_SOC_DAIFMT_IB_IF:
++		/* Invert both clocks */
++		val = SUN8I_I2S_FMT0_BCLK_POLARITY_INVERTED;
++		break;
++	case SND_SOC_DAIFMT_IB_NF:
++		/* Invert bit clock */
++		val = SUN8I_I2S_FMT0_BCLK_POLARITY_INVERTED |
++		      SUN8I_I2S_FMT0_LRCLK_POLARITY_INVERTED;
++		break;
++	case SND_SOC_DAIFMT_NB_IF:
++		/* Invert frame clock */
++		val = 0;
++		break;
++	case SND_SOC_DAIFMT_NB_NF:
++		val = SUN8I_I2S_FMT0_LRCLK_POLARITY_INVERTED;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT0_REG,
++			   SUN8I_I2S_FMT0_LRCLK_POLARITY_MASK |
++			   SUN8I_I2S_FMT0_BCLK_POLARITY_MASK,
++			   val);
++
++	/* DAI Mode */
++	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_DSP_A:
++		mode = SUN8I_I2S_CTRL_MODE_PCM;
++		offset = 1;
++		break;
++
++	case SND_SOC_DAIFMT_DSP_B:
++		mode = SUN8I_I2S_CTRL_MODE_PCM;
++		offset = 0;
++		break;
++
++	case SND_SOC_DAIFMT_I2S:
++		mode = SUN8I_I2S_CTRL_MODE_LEFT;
++		offset = 1;
++		break;
++
++	case SND_SOC_DAIFMT_LEFT_J:
++		mode = SUN8I_I2S_CTRL_MODE_LEFT;
++		offset = 0;
++		break;
++
++	case SND_SOC_DAIFMT_RIGHT_J:
++		mode = SUN8I_I2S_CTRL_MODE_RIGHT;
++		offset = 0;
++		break;
++
++	default:
++		return -EINVAL;
++	}
++
++	regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
++			   SUN8I_I2S_CTRL_MODE_MASK, mode);
++	regmap_update_bits(i2s->regmap, SUN8I_I2S_TX_CHAN_SEL_REG,
++			   SUN50I_H6_I2S_TX_CHAN_SEL_OFFSET_MASK,
++			   SUN50I_H6_I2S_TX_CHAN_SEL_OFFSET(offset));
++	regmap_update_bits(i2s->regmap, SUN50I_H6_I2S_RX_CHAN_SEL_REG,
++			   SUN50I_H6_I2S_TX_CHAN_SEL_OFFSET_MASK,
++			   SUN50I_H6_I2S_TX_CHAN_SEL_OFFSET(offset));
++
++	/* DAI clock master masks */
++	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
++	case SND_SOC_DAIFMT_CBS_CFS:
++		/* BCLK and LRCLK master */
++		val = SUN8I_I2S_CTRL_BCLK_OUT |	SUN8I_I2S_CTRL_LRCK_OUT;
++		break;
++
++	case SND_SOC_DAIFMT_CBM_CFM:
++		/* BCLK and LRCLK slave */
++		val = 0;
++		break;
++
++	default:
++		return -EINVAL;
++	}
++
++	regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
++			   SUN8I_I2S_CTRL_BCLK_OUT | SUN8I_I2S_CTRL_LRCK_OUT,
++			   val);
++
++	return 0;
++}
++
+ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ {
+ 	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+@@ -974,6 +1150,22 @@ static const struct reg_default sun8i_i2s_reg_defaults[] = {
+ 	{ SUN8I_I2S_RX_CHAN_MAP_REG, 0x00000000 },
+ };
+ 
++static const struct reg_default sun50i_i2s_reg_defaults[] = {
++	{ SUN4I_I2S_CTRL_REG, 0x00060000 },
++	{ SUN4I_I2S_FMT0_REG, 0x00000033 },
++	{ SUN4I_I2S_FMT1_REG, 0x00000030 },
++	{ SUN4I_I2S_FIFO_CTRL_REG, 0x000400f0 },
++	{ SUN4I_I2S_DMA_INT_CTRL_REG, 0x00000000 },
++	{ SUN4I_I2S_CLK_DIV_REG, 0x00000000 },
++	{ SUN8I_I2S_CHAN_CFG_REG, 0x00000000 },
++	{ SUN8I_I2S_TX_CHAN_SEL_REG, 0x00000000 },
++	{ SUN50I_H6_I2S_TX_CHAN_MAP0_REG, 0x00000000 },
++	{ SUN50I_H6_I2S_TX_CHAN_MAP1_REG, 0x00000000 },
++	{ SUN50I_H6_I2S_RX_CHAN_SEL_REG, 0x00000000 },
++	{ SUN50I_H6_I2S_RX_CHAN_MAP0_REG, 0x00000000 },
++	{ SUN50I_H6_I2S_RX_CHAN_MAP1_REG, 0x00000000 },
++};
++
+ static const struct regmap_config sun4i_i2s_regmap_config = {
+ 	.reg_bits	= 32,
+ 	.reg_stride	= 4,
+@@ -1001,6 +1193,19 @@ static const struct regmap_config sun8i_i2s_regmap_config = {
+ 	.volatile_reg	= sun8i_i2s_volatile_reg,
+ };
+ 
++static const struct regmap_config sun50i_i2s_regmap_config = {
++	.reg_bits	= 32,
++	.reg_stride	= 4,
++	.val_bits	= 32,
++	.max_register	= SUN50I_H6_I2S_RX_CHAN_MAP1_REG,
++	.cache_type	= REGCACHE_FLAT,
++	.reg_defaults	= sun50i_i2s_reg_defaults,
++	.num_reg_defaults	= ARRAY_SIZE(sun50i_i2s_reg_defaults),
++	.writeable_reg	= sun4i_i2s_wr_reg,
++	.readable_reg	= sun8i_i2s_rd_reg,
++	.volatile_reg	= sun8i_i2s_volatile_reg,
++};
++
+ static int sun4i_i2s_runtime_resume(struct device *dev)
+ {
+ 	struct sun4i_i2s *i2s = dev_get_drvdata(dev);
+@@ -1159,6 +1364,24 @@ static const struct sun4i_i2s_quirks sun50i_a64_codec_i2s_quirks = {
+ 	.set_fmt		= sun4i_i2s_set_soc_fmt,
+ };
+ 
++static const struct sun4i_i2s_quirks sun50i_h6_i2s_quirks = {
++	.has_reset		= true,
++	.reg_offset_txdata	= SUN8I_I2S_FIFO_TX_REG,
++	.sun4i_i2s_regmap	= &sun50i_i2s_regmap_config,
++	.field_clkdiv_mclk_en	= REG_FIELD(SUN4I_I2S_CLK_DIV_REG, 8, 8),
++	.field_fmt_wss		= REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 2),
++	.field_fmt_sr		= REG_FIELD(SUN4I_I2S_FMT0_REG, 4, 6),
++	.bclk_dividers		= sun8i_i2s_clk_div,
++	.num_bclk_dividers	= ARRAY_SIZE(sun8i_i2s_clk_div),
++	.mclk_dividers		= sun8i_i2s_clk_div,
++	.num_mclk_dividers	= ARRAY_SIZE(sun8i_i2s_clk_div),
++	.get_bclk_parent_rate	= sun8i_i2s_get_bclk_parent_rate,
++	.get_sr			= sun8i_i2s_get_sr_wss,
++	.get_wss		= sun8i_i2s_get_sr_wss,
++	.set_chan_cfg		= sun50i_i2s_set_chan_cfg,
++	.set_fmt		= sun50i_i2s_set_soc_fmt,
++};
++
+ static int sun4i_i2s_init_regmap_fields(struct device *dev,
+ 					struct sun4i_i2s *i2s)
+ {
+@@ -1328,6 +1551,10 @@ static const struct of_device_id sun4i_i2s_match[] = {
+ 		.compatible = "allwinner,sun50i-a64-codec-i2s",
+ 		.data = &sun50i_a64_codec_i2s_quirks,
  	},
- 	.playback = {
- 		.stream_name = "Playback",
- 		.channels_min = 1,
- 		.channels_max = 8,
- 		.rates = SNDRV_PCM_RATE_8000_192000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		.formats = SUN4I_FORMATS,
- 	},
- 	.ops = &sun4i_i2s_dai_ops,
- 	.symmetric_rates = 1,
++	{
++		.compatible = "allwinner,sun50i-h6-i2s",
++		.data = &sun50i_h6_i2s_quirks,
++	},
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, sun4i_i2s_match);
 -- 
 2.20.1
 
