@@ -2,71 +2,75 @@ Return-Path: <SRS0=riU+=6C=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 59D2DC352BE
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 18:44:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BD503C352BE
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 18:44:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D8D57221E9
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 18:44:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 474F421D6C
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 18:44:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Mdze4yy8";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="XCwSjlVe"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D8D57221E9
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tTfhTdAJ";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="rJ3FSC6+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 474F421D6C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 423651616;
-	Sat, 18 Apr 2020 20:43:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 423651616
+	by alsa0.perex.cz (Postfix) with ESMTPS id AAC8E1612;
+	Sat, 18 Apr 2020 20:43:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AAC8E1612
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587235447;
-	bh=B+xXdJ6NZQ/rsQFYwTYkDR6IG+JhHN+WLmoRcnyff5A=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Mdze4yy8s7nw9JUdgf7BJ1orZvC6QIe4C+aEqqwEuc1zX10JKAdFv7EiH2PxyztIx
-	 5oH8lii1zl/TXzyg3ksRfy+cRPaSqQnBtI6zpJexW3Kkn3Xc91U8kdMFc3l8VsLb0R
-	 M/r13XWQ4hxf37+DhzSLdSrIDvTQoIPMPBoaBnoA=
+	s=default; t=1587235475;
+	bh=6t6e9Euqct0/BGzvIoTcm5FqRObQ6kis9QcjoINxgW4=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=tTfhTdAJ15iQzrMbUKGB5Ifvwsg25EGA/GaNarValEPAtTOX9xdqv1sDWWmEzzk1X
+	 Z/Hy40req4f5yoAYs1unCAlA9TKDdtrcBrAKn6JQvpSYzPLduKN5nmsKpftw87QRTL
+	 5Tg5rrfO4QJjl5NabNugBz6u66kI5V45W6TI9bN0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 09AF7F8021E;
-	Sat, 18 Apr 2020 20:41:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7C9ABF80248;
+	Sat, 18 Apr 2020 20:41:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DB6FDF8028B; Sat, 18 Apr 2020 20:41:38 +0200 (CEST)
+ id EB737F80292; Sat, 18 Apr 2020 20:41:40 +0200 (CEST)
 Received: from bombadil.infradead.org (bombadil.infradead.org
  [IPv6:2607:7c80:54:e::133])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 682FCF8016F
- for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 20:41:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 682FCF8016F
+ by alsa1.perex.cz (Postfix) with ESMTPS id B27A3F80240
+ for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 20:41:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B27A3F80240
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="XCwSjlVe"
+ header.b="rJ3FSC6+"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
- Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
- Content-ID:Content-Description:In-Reply-To:References;
- bh=d5zfrylOKoUmkiJ/VV8Fl3fzLkxXbmDEJr/3MIsevyo=; b=XCwSjlVez+qHxOPmcyTIK6oiMp
- olawr70vtpi0V1QI9XKQUEdNlzc7gZtydJwYjHnNgNwCiR0Y8ytqLU1885mYKcfU2nNRcSQ+hBEej
- MiJH64ZiTrBz5h80SHKV7B2XhV/8NA5dx2/XMstBP2kRcY+jAyFTPEP07dibSEvWPpw6URRhjEARq
- GsW6VSkFXNXfFpWKtacsKtxhxuNePEr2gYhZGljGT1rr1HkTT8hxKqdKHdiJLDwOvTjuHdAESVOeL
- NqEnuUJjyC5UmLntvc7lJwAg8Acv/O1w1fMRoAZtCHCPa4lyuiz4kTPN/HiIYqU17pqZ6fxYiBEQ9
- d15hNa1Q==;
+ Content-Type:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:
+ To:From:Sender:Reply-To:Content-ID:Content-Description;
+ bh=Z/ABBV2vtDLyfRcjamC38HwxTrQtSwsZcb0OzbkWsUE=; b=rJ3FSC6+DaZYG5qDC0wUPtN1SQ
+ 6kc24pbTmZHwpWQG5VbJcOvhSND5w9lvWyU0STq3J5awSJ+mQGR6mBrLgoi2n3O6n9Jw35QUg9Y74
+ 9mmpZhqsG2g9ClzjoUATTOR7PYeSeWpeoKr+IpZYuUcbVJVRFfFgNbPYgpOz2vwvO1ArJnNTugkXf
+ e5UqMYAoTNEErclRAZHOgSgCt9idLwF4FUQ0aYMp3ZrqvF+UofS5GPLc/CzBRVxKIeIMKMq5oaCq0
+ LHXEtvPs6ntRLkN71ahJU4FlZPCqVhnccZu4pp1C/uv0wBPvLn5xg26bBKm46QINfwvrPOOMyxieh
+ 11sA8ibQ==;
 Received: from [2601:1c0:6280:3f0::19c2] (helo=smtpauth.infradead.org)
  by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jPsOv-0007rZ-9I; Sat, 18 Apr 2020 18:41:13 +0000
+ id 1jPsP2-0007rZ-8t; Sat, 18 Apr 2020 18:41:20 +0000
 From: Randy Dunlap <rdunlap@infradead.org>
 To: linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 0/9] fix -Wempty-body build warnings
-Date: Sat, 18 Apr 2020 11:41:02 -0700
-Message-Id: <20200418184111.13401-1-rdunlap@infradead.org>
+Subject: [PATCH 7/9] drivers/base: fix empty-body warnings in devcoredump.c
+Date: Sat, 18 Apr 2020 11:41:09 -0700
+Message-Id: <20200418184111.13401-8-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.16.4
+In-Reply-To: <20200418184111.13401-1-rdunlap@infradead.org>
+References: <20200418184111.13401-1-rdunlap@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -99,53 +103,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+Fix gcc empty-body warning when -Wextra is used:
 
-When -Wextra is used, gcc emits many warnings about an empty 'if' or
-'else' body, like this:
+../drivers/base/devcoredump.c:297:42: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
+../drivers/base/devcoredump.c:301:42: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
 
-../fs/posix_acl.c: In function ‘get_acl’:
-../fs/posix_acl.c:127:22: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
-   /* fall through */ ;
-                      ^
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+---
+ drivers/base/devcoredump.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-To quieten these warnings, add a new macro "do_empty()".
-I originally wanted to use do_nothing(), but that's already in use.
-
-It would sorta be nice if "fallthrough" could be coerced for this
-instead of using something like do_empty().
-
-Or should we just use "{}" in place of ";"?
-This causes some odd coding style issue IMO. E.g., see this change:
-
-original:
- 	if (cmpxchg(p, ACL_NOT_CACHED, sentinel) != ACL_NOT_CACHED)
-		/* fall through */ ;
-
-with new macro:
- 	if (cmpxchg(p, ACL_NOT_CACHED, sentinel) != ACL_NOT_CACHED)
-		do_empty(); /* fall through */
-
-using {}:
- 	if (cmpxchg(p, ACL_NOT_CACHED, sentinel) != ACL_NOT_CACHED)
-		{} /* fall through */
-or
-		{ /* fall through */ }
-or even
- 	if (cmpxchg(p, ACL_NOT_CACHED, sentinel) != ACL_NOT_CACHED) {
-		/* fall through */ }
-or
- 	if (cmpxchg(p, ACL_NOT_CACHED, sentinel) != ACL_NOT_CACHED) {
-		} /* fall through */
-
-
- drivers/base/devcoredump.c         |    5 +++--
- drivers/dax/bus.c                  |    5 +++--
- drivers/input/mouse/synaptics.c    |    3 ++-
- drivers/target/target_core_pscsi.c |    3 ++-
- drivers/usb/core/sysfs.c           |    2 +-
- fs/nfsd/nfs4state.c                |    3 ++-
- fs/posix_acl.c                     |    2 +-
- include/linux/kernel.h             |    8 ++++++++
- sound/drivers/vx/vx_core.c         |    3 ++-
- 9 files changed, 24 insertions(+), 10 deletions(-)
+--- linux-next-20200417.orig/drivers/base/devcoredump.c
++++ linux-next-20200417/drivers/base/devcoredump.c
+@@ -9,6 +9,7 @@
+  *
+  * Author: Johannes Berg <johannes@sipsolutions.net>
+  */
++#include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/device.h>
+ #include <linux/devcoredump.h>
+@@ -294,11 +295,11 @@ void dev_coredumpm(struct device *dev, s
+ 
+ 	if (sysfs_create_link(&devcd->devcd_dev.kobj, &dev->kobj,
+ 			      "failing_device"))
+-		/* nothing - symlink will be missing */;
++		do_empty(); /* nothing - symlink will be missing */
+ 
+ 	if (sysfs_create_link(&dev->kobj, &devcd->devcd_dev.kobj,
+ 			      "devcoredump"))
+-		/* nothing - symlink will be missing */;
++		do_empty(); /* nothing - symlink will be missing */
+ 
+ 	INIT_DELAYED_WORK(&devcd->del_wk, devcd_del);
+ 	schedule_delayed_work(&devcd->del_wk, DEVCD_TIMEOUT);
