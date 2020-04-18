@@ -2,87 +2,78 @@ Return-Path: <SRS0=riU+=6C=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AFB5C352BE
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 18:48:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B4510C352BE
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 18:49:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AD1CD21D93
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 18:48:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 39A6721D93
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 18:49:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XhDNnl5Y";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="nqtHk9Rc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AD1CD21D93
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XkvqW648"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 39A6721D93
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1A423166D;
-	Sat, 18 Apr 2020 20:47:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A423166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 97C24167D;
+	Sat, 18 Apr 2020 20:48:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 97C24167D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587235720;
-	bh=qJ9ZRRipWsRhXR39p1+akt73YbVrxrjMQ0jJtNxyl+E=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1587235753;
+	bh=5ymsXNiuHyrMfrARiiIgk9s3jHf+ieH2hrciNDNB9Ts=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XhDNnl5YTJHeWLm0k5rbWq1/uy+4Mw5seHEmRCvsGS+QwLEZuLnSgyz+8L5zUPu9H
-	 KZgoFLOEk96V6Q7RnMNPNKu7bPEFXageQjuxHqS0frb2ukjvJSyNSj0S0dBwz0l9OD
-	 TKEkKqGvcmNjjOvnP//A1FC6tMsWg3wffVbldiN4=
+	b=XkvqW648aRHSYFvkmJWyXzH0WByeYRNFuxNLnQms9LqKRet2c195uPJTMlmH8McuX
+	 UfBrGvxj2r0EPn7yhAKwh3H6yPYqbXvWZYP4HLsMCJU90OcrUp17TUgXlEYTSGZMBI
+	 74GIRBwJcbNZm3h5YapIGLp/VoI5PLpHMxQSp/HA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CE701F80240;
-	Sat, 18 Apr 2020 20:46:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F2778F8028A;
+	Sat, 18 Apr 2020 20:47:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8297FF80248; Sat, 18 Apr 2020 20:46:46 +0200 (CEST)
-Received: from bombadil.infradead.org (bombadil.infradead.org
- [IPv6:2607:7c80:54:e::133])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 6F718F8028C; Sat, 18 Apr 2020 20:47:11 +0200 (CEST)
+Received: from smtprelay.hostedemail.com (smtprelay0093.hostedemail.com
+ [216.40.44.93])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 04F94F80122
- for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 20:46:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04F94F80122
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="nqtHk9Rc"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
- Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
- Subject:Sender:Reply-To:Content-ID:Content-Description;
- bh=VISMEuIrdwsT06Me0Ojm4dxgrzpFN+IXsxHmlBlB8Qk=; b=nqtHk9RcEHVzyndzlvZR0ApTMu
- IN1fIO34WRJMJqoiVj7+SryUcbwhljitvqy/ICpkyIIe3BbMMImIye+e0/hX/bK155cyiYWUCLYSi
- BtcqtD6RrusuGCd9kZzO2uiwoFPl/pFtQB+EGVC0bUi41qqnl4Vd22sCWLoaS3qMDLJU6B+8Y/b3B
- pwlcV/D8BHV05r1/Bqcf3oReONTpcDhMqDTzxTxGSy3/capPzIfLqB6dlPwacRlKAaiVeGpJyRWHw
- KugYiErRe0UugJTz9HVHOvQZE01XSsMXRBvnxI0dM+ehHI+0RgwUw4Yb5V/AkkYq+jOPkS4NBxqRm
- SktMceiA==;
-Received: from [2601:1c0:6280:3f0::19c2]
- by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jPsU6-0002Y8-4x; Sat, 18 Apr 2020 18:46:34 +0000
-Subject: Re: [PATCH 5/9] usb: fix empty-body warning in sysfs.c
-To: Matthew Wilcox <willy@infradead.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id C6D70F8028A
+ for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 20:47:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6D70F8028A
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net
+ [216.40.38.60])
+ by smtprelay05.hostedemail.com (Postfix) with ESMTP id 3F8761802EC1C;
+ Sat, 18 Apr 2020 18:47:01 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-HE-Tag: loss63_59e6ce4dc9051
+X-Filterd-Recvd-Size: 2163
+Received: from XPS-9350.home (unknown [47.151.136.130])
+ (Authenticated sender: joe@perches.com)
+ by omf12.hostedemail.com (Postfix) with ESMTPA;
+ Sat, 18 Apr 2020 18:46:57 +0000 (UTC)
+Message-ID: <6bb8d99e6e56fa1622fc7238c1ae37c3b3510ded.camel@perches.com>
+Subject: Re: [RFC PATCH 1/9] kernel.h: add do_empty() macro
+From: Joe Perches <joe@perches.com>
+To: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Date: Sat, 18 Apr 2020 11:44:43 -0700
+In-Reply-To: <20200418184111.13401-2-rdunlap@infradead.org>
 References: <20200418184111.13401-1-rdunlap@infradead.org>
- <20200418184111.13401-6-rdunlap@infradead.org>
- <20200418184409.GP5820@bombadil.infradead.org>
-From: Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <3998d056-e115-4e36-2705-eea132cce7de@infradead.org>
-Date: Sat, 18 Apr 2020 11:46:32 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+ <20200418184111.13401-2-rdunlap@infradead.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.34.1-2 
 MIME-Version: 1.0
-In-Reply-To: <20200418184409.GP5820@bombadil.infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Cc: alsa-devel@alsa-project.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Zzy Wysm <zzy@zzywysm.com>, linux-kernel@vger.kernel.org,
- "J. Bruce Fields" <bfields@fieldses.org>, target-devel@vger.kernel.org,
- Dave Jiang <dave.jiang@intel.com>, linux-scsi@vger.kernel.org,
- linux-nvdimm@lists.01.org, Vishal Verma <vishal.l.verma@intel.com>,
- linux-input@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
+ Zzy Wysm <zzy@zzywysm.com>, "J. Bruce Fields" <bfields@fieldses.org>,
+ target-devel@vger.kernel.org, Dave Jiang <dave.jiang@intel.com>,
+ linux-scsi@vger.kernel.org, linux-nvdimm@lists.01.org,
+ Vishal Verma <vishal.l.verma@intel.com>, linux-input@vger.kernel.org,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
  Dan Williams <dan.j.williams@intel.com>,
  Andrew Morton <akpm@linux-foundation.org>, linux-nfs@vger.kernel.org,
  "Martin K. Petersen" <martin.petersen@oracle.com>,
@@ -105,26 +96,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 4/18/20 11:44 AM, Matthew Wilcox wrote:
-> On Sat, Apr 18, 2020 at 11:41:07AM -0700, Randy Dunlap wrote:
->> +++ linux-next-20200327/drivers/usb/core/sysfs.c
->> @@ -1263,7 +1263,7 @@ void usb_create_sysfs_intf_files(struct
->>  	if (!alt->string && !(udev->quirks & USB_QUIRK_CONFIG_INTF_STRINGS))
->>  		alt->string = usb_cache_string(udev, alt->desc.iInterface);
->>  	if (alt->string && device_create_file(&intf->dev, &dev_attr_interface))
->> -		;	/* We don't actually care if the function fails. */
->> +		do_empty(); /* We don't actually care if the function fails. */
->>  	intf->sysfs_files_created = 1;
->>  }
+On Sat, 2020-04-18 at 11:41 -0700, Randy Dunlap wrote:
+> Add the do_empty() macro to silence gcc warnings about an empty body
+> following an "if" statement when -Wextra is used.
 > 
-> Why not just?
-> 
-> +	if (alt->string)
-> +		device_create_file(&intf->dev, &dev_attr_interface);
-> 
+> However, for debug printk calls that are being disabled, use either
+> no_printk() or pr_debug() [and optionally dynamic printk debugging]
+> instead.
+[]
+> +#define do_empty()		do { } while (0)
 
-Yes, looks good. Thanks.
+If this is really useful
+(I think the warning is somewhat silly)
 
--- 
-~Randy
+bikeshed:
+
+I think do_nothing() is more descriptive
+
 
