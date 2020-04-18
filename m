@@ -2,91 +2,93 @@ Return-Path: <SRS0=riU+=6C=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BECC6C352BE
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 18:48:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AFB5C352BE
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 18:48:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4A9AD21D6C
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 18:48:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AD1CD21D93
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 18:48:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BILwri/h";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="qUPAX78G"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4A9AD21D6C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XhDNnl5Y";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="nqtHk9Rc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AD1CD21D93
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A91C81670;
-	Sat, 18 Apr 2020 20:47:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A91C81670
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1A423166D;
+	Sat, 18 Apr 2020 20:47:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A423166D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587235696;
-	bh=eK/88O6FI5H2/cR7qV6g37Bkt5cHIjz9rwRGU97p5/M=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1587235720;
+	bh=qJ9ZRRipWsRhXR39p1+akt73YbVrxrjMQ0jJtNxyl+E=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BILwri/hi/DkLNI7Z5cWls7gOWMgp9cROQxMxl1mPXxMPecv7Es7oSi0xOXjwlVt9
-	 WW4RXs2lHbn5ETtzDeoq7to30IYkeWTf3rU9o2j++/AERsDCqEfZle+Ev3xFaDIcLh
-	 fCeBHo8V3iOUNvlnpXfeOwKqg73KSdljlL+tkpF4=
+	b=XhDNnl5YTJHeWLm0k5rbWq1/uy+4Mw5seHEmRCvsGS+QwLEZuLnSgyz+8L5zUPu9H
+	 KZgoFLOEk96V6Q7RnMNPNKu7bPEFXageQjuxHqS0frb2ukjvJSyNSj0S0dBwz0l9OD
+	 TKEkKqGvcmNjjOvnP//A1FC6tMsWg3wffVbldiN4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2B887F802EC;
-	Sat, 18 Apr 2020 20:42:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CE701F80240;
+	Sat, 18 Apr 2020 20:46:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 445B8F80122; Sat, 18 Apr 2020 20:41:45 +0200 (CEST)
+ id 8297FF80248; Sat, 18 Apr 2020 20:46:46 +0200 (CEST)
 Received: from bombadil.infradead.org (bombadil.infradead.org
  [IPv6:2607:7c80:54:e::133])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DB523F8021E
- for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 20:41:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB523F8021E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 04F94F80122
+ for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 20:46:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04F94F80122
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="qUPAX78G"
+ header.b="nqtHk9Rc"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
- Content-Type:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:
- To:From:Sender:Reply-To:Content-ID:Content-Description;
- bh=LOicRCPeL82g+7UhQ7W6knJ0Xcg7BEBtrZpHvQi2Xvs=; b=qUPAX78GmStmrzI/GjQeS30C2C
- pf+JS26rMvDzwnc2Eicv/E6iYddiBqeB8nvkVcgSW2j/uHe3NwddNiMvUjPHgrYQrMTB6NBEJ6Q4j
- Rmevyte62j1lID7vgkcJqqYHGR2MOeuzttD0VlNCXVRCcyTVd3GSoufQdGDlcNf+0ThcfvOl9CRWa
- Ht+LS8ZEFX/rH894i3z4iad3ZPVXY1Udf3RqCd/qSxW56OPRStx5/BhopFFsaYXhXitaPPN84WLos
- fDoyVBiGWJ7uO4FMNjLq8+6J2A3ZeS/prafMTg+o4HUDBJXsY7KFv8UjH8Xb/sVT1g7Gs5uV5n4n7
- om//euPw==;
-Received: from [2601:1c0:6280:3f0::19c2] (helo=smtpauth.infradead.org)
+ Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+ Subject:Sender:Reply-To:Content-ID:Content-Description;
+ bh=VISMEuIrdwsT06Me0Ojm4dxgrzpFN+IXsxHmlBlB8Qk=; b=nqtHk9RcEHVzyndzlvZR0ApTMu
+ IN1fIO34WRJMJqoiVj7+SryUcbwhljitvqy/ICpkyIIe3BbMMImIye+e0/hX/bK155cyiYWUCLYSi
+ BtcqtD6RrusuGCd9kZzO2uiwoFPl/pFtQB+EGVC0bUi41qqnl4Vd22sCWLoaS3qMDLJU6B+8Y/b3B
+ pwlcV/D8BHV05r1/Bqcf3oReONTpcDhMqDTzxTxGSy3/capPzIfLqB6dlPwacRlKAaiVeGpJyRWHw
+ KugYiErRe0UugJTz9HVHOvQZE01XSsMXRBvnxI0dM+ehHI+0RgwUw4Yb5V/AkkYq+jOPkS4NBxqRm
+ SktMceiA==;
+Received: from [2601:1c0:6280:3f0::19c2]
  by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jPsOz-0007rZ-FM; Sat, 18 Apr 2020 18:41:17 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH 4/9] sound: fix empty-body warning in vx_core.c
-Date: Sat, 18 Apr 2020 11:41:06 -0700
-Message-Id: <20200418184111.13401-5-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20200418184111.13401-1-rdunlap@infradead.org>
+ id 1jPsU6-0002Y8-4x; Sat, 18 Apr 2020 18:46:34 +0000
+Subject: Re: [PATCH 5/9] usb: fix empty-body warning in sysfs.c
+To: Matthew Wilcox <willy@infradead.org>
 References: <20200418184111.13401-1-rdunlap@infradead.org>
+ <20200418184111.13401-6-rdunlap@infradead.org>
+ <20200418184409.GP5820@bombadil.infradead.org>
+From: Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <3998d056-e115-4e36-2705-eea132cce7de@infradead.org>
+Date: Sat, 18 Apr 2020 11:46:32 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Randy Dunlap <rdunlap@infradead.org>,
- Zzy Wysm <zzy@zzywysm.com>, "J. Bruce Fields" <bfields@fieldses.org>,
- target-devel@vger.kernel.org, Dave Jiang <dave.jiang@intel.com>,
- linux-scsi@vger.kernel.org, linux-nvdimm@lists.01.org,
- Vishal Verma <vishal.l.verma@intel.com>, Chuck Lever <chuck.lever@oracle.com>,
+In-Reply-To: <20200418184409.GP5820@bombadil.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Zzy Wysm <zzy@zzywysm.com>, linux-kernel@vger.kernel.org,
+ "J. Bruce Fields" <bfields@fieldses.org>, target-devel@vger.kernel.org,
+ Dave Jiang <dave.jiang@intel.com>, linux-scsi@vger.kernel.org,
+ linux-nvdimm@lists.01.org, Vishal Verma <vishal.l.verma@intel.com>,
  linux-input@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
  Dan Williams <dan.j.williams@intel.com>,
  Andrew Morton <akpm@linux-foundation.org>, linux-nfs@vger.kernel.org,
  "Martin K. Petersen" <martin.petersen@oracle.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- linux-usb@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- Johannes Berg <johannes@sipsolutions.net>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Chuck Lever <chuck.lever@oracle.com>,
+ linux-fsdevel@vger.kernel.org, Johannes Berg <johannes@sipsolutions.net>,
  Linus Torvalds <torvalds@linux-foundation.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -103,36 +105,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Fix gcc empty-body warning when -Wextra is used:
+On 4/18/20 11:44 AM, Matthew Wilcox wrote:
+> On Sat, Apr 18, 2020 at 11:41:07AM -0700, Randy Dunlap wrote:
+>> +++ linux-next-20200327/drivers/usb/core/sysfs.c
+>> @@ -1263,7 +1263,7 @@ void usb_create_sysfs_intf_files(struct
+>>  	if (!alt->string && !(udev->quirks & USB_QUIRK_CONFIG_INTF_STRINGS))
+>>  		alt->string = usb_cache_string(udev, alt->desc.iInterface);
+>>  	if (alt->string && device_create_file(&intf->dev, &dev_attr_interface))
+>> -		;	/* We don't actually care if the function fails. */
+>> +		do_empty(); /* We don't actually care if the function fails. */
+>>  	intf->sysfs_files_created = 1;
+>>  }
+> 
+> Why not just?
+> 
+> +	if (alt->string)
+> +		device_create_file(&intf->dev, &dev_attr_interface);
+> 
 
-../sound/drivers/vx/vx_core.c:515:3: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
+Yes, looks good. Thanks.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
----
- sound/drivers/vx/vx_core.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+-- 
+~Randy
 
---- linux-next-20200327.orig/sound/drivers/vx/vx_core.c
-+++ linux-next-20200327/sound/drivers/vx/vx_core.c
-@@ -13,6 +13,7 @@
- #include <linux/init.h>
- #include <linux/device.h>
- #include <linux/firmware.h>
-+#include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/io.h>
- #include <sound/core.h>
-@@ -512,7 +513,7 @@ irqreturn_t snd_vx_threaded_irq_handler(
- 	 * received by the board is equal to one of those given to it).
- 	 */
- 	if (events & TIME_CODE_EVENT_PENDING)
--		; /* so far, nothing to do yet */
-+		do_empty(); /* so far, nothing to do yet */
- 
- 	/* The frequency has changed on the board (UER mode). */
- 	if (events & FREQUENCY_CHANGE_EVENT_PENDING)
