@@ -2,97 +2,117 @@ Return-Path: <SRS0=riU+=6C=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ED27CC352BE
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 18:59:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64785C352BE
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 19:01:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 77B74221F7
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 18:59:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E4BAD21BE5
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 19:01:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tkD1plW7";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="KyiJJMam"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 77B74221F7
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RZbAhxBC";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Dab8X2Ct"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E4BAD21BE5
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4CDEC1670;
-	Sat, 18 Apr 2020 20:58:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4CDEC1670
+	by alsa0.perex.cz (Postfix) with ESMTPS id 419841616;
+	Sat, 18 Apr 2020 21:00:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 419841616
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587236348;
-	bh=Bv6Bkf8b1+I9/IReMTbHed/kL6+Wfd742fbyE3NOyTA=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1587236494;
+	bh=UgXOgSwIMyfiGPkOtWwuniPLy2NcYx/OJ8KMhNGbheM=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tkD1plW7LvNC0PDChL+v+GF6Q1Ls3m5Jpj11pwkgbd+l12h+xDHR0tKlnWEvUAFC2
-	 W3Z1Fx0z4aXR1q3eFoetPJ1ivW5HY4fjfTNddAKFnxgpN68dkHCfMXB7uRuN6OtKDT
-	 uGUHGjTiE9U0oh9gGeHz6nO151ZS4lDhf3W/1268=
+	b=RZbAhxBCi6Rg4dp6mAbXNYlHSIkbTGgz/YwTvKgAL1jt4uT+be2tzty6d0gGgG0L8
+	 1TQ5R4g3hKldk2BPk8WFMxh7Cm6JAPvlcDvqWuS9jTZyKivqr7fOyFhbGxuWivm24a
+	 SpHIB39cAHjaLV+m0lyL3QkAkVMRDRxkYVlCBrGc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6E0F1F8012E;
-	Sat, 18 Apr 2020 20:57:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C12AAF8013D;
+	Sat, 18 Apr 2020 21:00:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9C655F8016F; Sat, 18 Apr 2020 20:57:44 +0200 (CEST)
-Received: from bombadil.infradead.org (bombadil.infradead.org
- [IPv6:2607:7c80:54:e::133])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 71E6EF8014E; Sat, 18 Apr 2020 21:00:41 +0200 (CEST)
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com
+ [IPv6:2a00:1450:4864:20::143])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6EC50F80122
- for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 20:57:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6EC50F80122
+ by alsa1.perex.cz (Postfix) with ESMTPS id BC77AF80122
+ for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 21:00:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC77AF80122
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="KyiJJMam"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
- Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
- Subject:Sender:Reply-To:Content-ID:Content-Description;
- bh=v6goMSiM3JqD5eRdn45ZDeyVAxJCt3W7fqpeEGrJJtc=; b=KyiJJMamxfOIjVFL72tLsYD7re
- sd31vDw2o9XAGj4cjlL0iY4LlaG6HfVp+RX/eAnF8cs7BFGA7rm1P50OIDl4CJaSxdZP9IFpIodWa
- qKFndBfM+66S0aonynhdQTK/wJPSVS1Y4GHEToI5QjfeKxEM5UcdrBqdzJ3gwI+cd+itnETKujVao
- no3xr+EdUuBl8Nn1gwFz9atcofq1XkfodTx5dSOb3avPvgI/1CgyqkUdIR/uY0+1yXAWS0ASg6Ion
- xZd3LmWJA+40BpAwWMUlGbYNQaWIgBlBDowZN86RmjMlnIBdG8kobJ5e86SBZIZs/svVAtt0wyDuC
- yjEBGuCw==;
-Received: from [2601:1c0:6280:3f0::19c2]
- by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jPseh-0000VM-7j; Sat, 18 Apr 2020 18:57:31 +0000
-Subject: Re: [PATCH 6/9] nfsd: fix empty-body warning in nfs4state.c
-To: Joe Perches <joe@perches.com>, Chuck Lever <chuck.lever@oracle.com>
-References: <20200418184111.13401-1-rdunlap@infradead.org>
- <20200418184111.13401-7-rdunlap@infradead.org>
- <CDCF7717-7CBC-47CA-9E83-3A18ECB3AB89@oracle.com>
- <6c796219ea79d87093409f2dd1d3bf8e4a157ed7.camel@perches.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <c13ddc03-dfb4-9664-ce38-fc56389b67cd@infradead.org>
-Date: Sat, 18 Apr 2020 11:57:28 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+ dkim=pass (1024-bit key) header.d=linux-foundation.org
+ header.i=@linux-foundation.org header.b="Dab8X2Ct"
+Received: by mail-lf1-x143.google.com with SMTP id f8so4560456lfe.12
+ for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 12:00:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=linux-foundation.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=pJRI8oZ6j+rGEg2+OCymOS7794uvyRZcSR2Htjt5TI4=;
+ b=Dab8X2CtWipiSivi9nyLxp8nBHQpWedKwzW35yNj8kBU3VxCHrB+3Kn5U3rtIjeKoA
+ Lw3k/ndceMaBnN8HktM5POukz2zYdQKxOk+s6N6D5bBob3ys4IoAy4L7IIPc1NiF89LI
+ qpPs2HFFi+SoqSVPJ7yi1QNfgGKP7Teiklti0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=pJRI8oZ6j+rGEg2+OCymOS7794uvyRZcSR2Htjt5TI4=;
+ b=evJimkp2r09JYDnCB3pPfbxViogA6rK3LOdCZHWcIfghVU6tj37qjK0mUQxVGU7AAd
+ Xn96Ppabgvq4G2aDL1aCK8Ochs4izZJuA/FYSmrNluLpb2I5XScfaEayivmpEA+yn48u
+ u0+B3X3oadgzDsBIUjtbw/ZYsb4HbZJ9vWSJ9GZX8yTO0aXDBcZFkBhwXK2+4TiIjI+G
+ EbA6hAOlXtxYZfAqnUELhlt9virfeUXmJj3ETwTa5f4OSMPlL8XCbER5dwV8+WrHP5Qd
+ EKEEpDv6QUiSZwppyoRxoF4TGWCNFd4CFL6QMCpxhqvsuf0DqfDfp//7m6yWCLLX8kR1
+ kgBg==
+X-Gm-Message-State: AGi0Puadi5kQR/KqL8I3xg0qZ0d49GigcWa98Vg8UErH/Jz7bKheanCF
+ bNsT/3m4WfDxTbKlQhJjmYykmgQJYfk=
+X-Google-Smtp-Source: APiQypJH6lUa6+Tl/KObD+gTa0fdoSEhLwcd25FR6EMjyAwUG8RwXjWashQau7d7rhKZ0ZyhYuojfg==
+X-Received: by 2002:ac2:569b:: with SMTP id 27mr5688760lfr.134.1587236432687; 
+ Sat, 18 Apr 2020 12:00:32 -0700 (PDT)
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com.
+ [209.85.167.50])
+ by smtp.gmail.com with ESMTPSA id l12sm18455925lfp.35.2020.04.18.12.00.32
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Sat, 18 Apr 2020 12:00:32 -0700 (PDT)
+Received: by mail-lf1-f50.google.com with SMTP id m2so4562738lfo.6
+ for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 12:00:32 -0700 (PDT)
+X-Received: by 2002:a05:6512:405:: with SMTP id
+ u5mr5483360lfk.192.1587235998911; 
+ Sat, 18 Apr 2020 11:53:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <6c796219ea79d87093409f2dd1d3bf8e4a157ed7.camel@perches.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200418184111.13401-1-rdunlap@infradead.org>
+ <20200418184111.13401-3-rdunlap@infradead.org>
+In-Reply-To: <20200418184111.13401-3-rdunlap@infradead.org>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Sat, 18 Apr 2020 11:53:03 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjSzuTyyBkmMDG4fx_sXzLJsh+9Xk-ubgbpJzJq_kzPsA@mail.gmail.com>
+Message-ID: <CAHk-=wjSzuTyyBkmMDG4fx_sXzLJsh+9Xk-ubgbpJzJq_kzPsA@mail.gmail.com>
+Subject: Re: [PATCH 2/9] fs: fix empty-body warning in posix_acl.c
+To: Randy Dunlap <rdunlap@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Cc: alsa-devel@alsa-project.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Zzy Wysm <zzy@zzywysm.com>, LKML <linux-kernel@vger.kernel.org>,
- Bruce Fields <bfields@fieldses.org>, target-devel@vger.kernel.org,
- Dave Jiang <dave.jiang@intel.com>, linux-scsi@vger.kernel.org,
- linux-nvdimm@lists.01.org, Vishal Verma <vishal.l.verma@intel.com>,
- linux-input@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+ Zzy Wysm <zzy@zzywysm.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ "J. Bruce Fields" <bfields@fieldses.org>,
+ target-devel <target-devel@vger.kernel.org>, Dave Jiang <dave.jiang@intel.com>,
+ linux-scsi <linux-scsi@vger.kernel.org>,
+ linux-nvdimm <linux-nvdimm@lists.01.org>,
+ Vishal Verma <vishal.l.verma@intel.com>, linux-input@vger.kernel.org,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
  Dan Williams <dan.j.williams@intel.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, "open list:NFS, SUNRPC,
+ AND..." <linux-nfs@vger.kernel.org>,
  "Martin K. Petersen" <martin.petersen@oracle.com>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, linux-fsdevel@vger.kernel.org,
- Johannes Berg <johannes@sipsolutions.net>,
- Linus Torvalds <torvalds@linux-foundation.org>
+ Takashi Iwai <tiwai@suse.com>, Chuck Lever <chuck.lever@oracle.com>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ Johannes Berg <johannes@sipsolutions.net>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,68 +128,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 4/18/20 11:53 AM, Joe Perches wrote:
-> On Sat, 2020-04-18 at 14:45 -0400, Chuck Lever wrote:
->>> On Apr 18, 2020, at 2:41 PM, Randy Dunlap <rdunlap@infradead.org> wrote:
->>>
->>> Fix gcc empty-body warning when -Wextra is used:
->>>
->>> ../fs/nfsd/nfs4state.c:3898:3: warning: suggest braces around empty body in an ‘else’ statement [-Wempty-body]
->>>
->>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->>> Cc: Linus Torvalds <torvalds@linux-foundation.org>
->>> Cc: Andrew Morton <akpm@linux-foundation.org>
->>> Cc: "J. Bruce Fields" <bfields@fieldses.org>
->>> Cc: Chuck Lever <chuck.lever@oracle.com>
->>> Cc: linux-nfs@vger.kernel.org
->>
->> I have a patch in my queue that addresses this particular warning,
->> but your change works for me too.
->>
->> Acked-by: Chuck Lever <chuck.lever@oracle.com>
->>
->> Unless Bruce objects.
->>
->>
->>> ---
->>> fs/nfsd/nfs4state.c |    3 ++-
->>> 1 file changed, 2 insertions(+), 1 deletion(-)
->>>
->>> --- linux-next-20200417.orig/fs/nfsd/nfs4state.c
->>> +++ linux-next-20200417/fs/nfsd/nfs4state.c
->>> @@ -34,6 +34,7 @@
->>>
->>> #include <linux/file.h>
->>> #include <linux/fs.h>
->>> +#include <linux/kernel.h>
->>> #include <linux/slab.h>
->>> #include <linux/namei.h>
->>> #include <linux/swap.h>
->>> @@ -3895,7 +3896,7 @@ nfsd4_setclientid(struct svc_rqst *rqstp
->>> 		copy_clid(new, conf);
->>> 		gen_confirm(new, nn);
->>> 	} else /* case 4 (new client) or cases 2, 3 (client reboot): */
->>> -		;
->>> +		do_empty();
->>> 	new->cl_minorversion = 0;
->>> 	gen_callback(new, setclid, rqstp);
->>> 	add_to_unconfirmed(new);
-> 
-> This empty else seems silly and could likely be better handled by
-> a comment above the first if, something like:
-> 
-> 	/* for now only handle case 1: probable callback update */
-> 	if (conf && same_verf(&conf->cl_verifier, &clverifier)) {
-> 		copy_clid(new, conf);
-> 		gen_confirm(new, nn);
-> 	}
-> 
-> with no else use.
+On Sat, Apr 18, 2020 at 11:41 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> Fix gcc empty-body warning when -Wextra is used:
 
-I'll just let Chuck handle it with his current patch,
-whatever it is.
+Please don't do this.
 
-thanks.
--- 
-~Randy
+First off, "do_empty()" adds nothing but confusion. Now it
+syntactically looks like it does something, and it's a new pattern to
+everybody. I've never seen it before.
 
+Secondly, even if we were to do this, then the patch would be wrong:
+
+>         if (cmpxchg(p, ACL_NOT_CACHED, sentinel) != ACL_NOT_CACHED)
+> -               /* fall through */ ;
+> +               do_empty(); /* fall through */
+
+That comment made little sense before, but it makes _no_ sense now.
+
+What fall-through? I'm guessing it meant to say "nothing", and
+somebody was confused. With "do_empty()", it's even more confusing.
+
+Thirdly, there's a *reason* why "-Wextra" isn't used.
+
+The warnings enabled by -Wextra are usually complete garbage, and
+trying to fix them often makes the code worse. Exactly like here.
+
+             Linus
