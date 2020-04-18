@@ -2,88 +2,75 @@ Return-Path: <SRS0=riU+=6C=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A575AC38A29
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 15:18:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53DBDC38A29
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 17:20:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2DDD52072B
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 15:18:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C953C20776
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 17:20:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="d+PBbxp3";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="BkhkS6zE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2DDD52072B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gQhZpKxq";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=tsoy.me header.i=@tsoy.me header.b="ju5jacMh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C953C20776
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=tsoy.me
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 857E09F6;
-	Sat, 18 Apr 2020 17:17:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 857E09F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1C21E1612;
+	Sat, 18 Apr 2020 19:19:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C21E1612
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587223098;
-	bh=qugxNfPkvqYi5+IUgteDQlgxWnSNpZvobR+yGLVDicc=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=d+PBbxp3N7JcE2mzFZEwU8Qpo0K2yvQcc5byDJ8K9EYusIWMQ/vdSvmVZUYWE1HHp
-	 0bSK34bHfw+iPEbsoJ91sCm911kZQr7qNeNQsvQ2pndxWktc4T6r+AUR8JoC0kStNv
-	 Qou6/4SFJkz4knomlAQL4HQQCWJClnbN8Y97O0gU=
+	s=default; t=1587230418;
+	bh=vGOsgdAW/IN5jS4Hv45FLJSyLamJDnD+VuNAQpHp5x8=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=gQhZpKxqPXK9KGmspvk/lTxMEhHPe9c3BU9fpLngBQVp0QCqgfqylZRXLsBahLavk
+	 CwwLTTQBsMH8jCp2o/tG3E46j17UCdNnU3DR9owjR2WcwhzZav142cn5uOzsV4zQNH
+	 iED8kufw+ox4uHFWGjmROBRYLzCC7xeIE4jKbdqo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 10D13F8013D;
-	Sat, 18 Apr 2020 17:17:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8B4C9F8014E;
+	Sat, 18 Apr 2020 19:19:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 845E1F8014E; Sat, 18 Apr 2020 17:17:26 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9A7F4F80122
- for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 17:17:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A7F4F80122
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="BkhkS6zE"
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net
- [82.4.196.95])
+ id CD2EAF8021E; Sat, 18 Apr 2020 19:19:24 +0200 (CEST)
+Received: from puleglot.ru (puleglot.ru [IPv6:2a01:4f8:1c0c:58e8::2])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 489D22072B;
- Sat, 18 Apr 2020 15:17:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1587223036;
- bh=qugxNfPkvqYi5+IUgteDQlgxWnSNpZvobR+yGLVDicc=;
- h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=BkhkS6zEdLKRGqWQpRLzde6OxUxvIwlsvwGWQPRdCua2pBb8tHU3aRvh2C5SCmGxF
- hJJb3A/+a666MlSl69WLezjGQ6lb9GPV3C8sSkDhE+D/DkCU8wBeqbBydQz5q1+cfp
- Px4H65dHyixYKeb6TjYi7fnmo/ai+VhYvqh6vU6A=
-Date: Sat, 18 Apr 2020 16:17:10 +0100
-From: Jonathan Cameron <jic23@kernel.org>
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: Re: [PATCH trivial 4/6] iio: Fix misspellings of "Analog Devices"
-Message-ID: <20200418161710.55ccf37c@archlinux>
-In-Reply-To: <20200416103058.15269-5-geert+renesas@glider.be>
-References: <20200416103058.15269-1-geert+renesas@glider.be>
- <20200416103058.15269-5-geert+renesas@glider.be>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 98A29F8012E
+ for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 19:19:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98A29F8012E
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=tsoy.me header.i=@tsoy.me
+ header.b="ju5jacMh"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=tsoy.me;
+ s=mymail; h=Sender:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:
+ Subject:Cc:To:From:Reply-To:Content-Type:Content-ID:Content-Description:
+ Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+ In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+ List-Post:List-Owner:List-Archive;
+ bh=LC4FI5qCqT1TXBHO72NCXSGVI2xp52OATPzLvat5yR4=; b=ju5jacMh3BS9XrVwC1VSeEuTbm
+ a+gGH/W3+Cvbrxd7pHfNWiVwfJkim0r+geiBY/7mDJJ8XUDZUVf5R6UxLwRlHbgBcdO9BMVI8iz/V
+ 7jWS8pNtZiQcJpUXjjVXF6yfRy0SDxb4LaEfFPg7UAWEKfz0wdjtjzc4o6hZWScIS3z0=;
+Received: from [2a00:1370:8125:3f98:890:f100:d37d:7ada] (helo=home.puleglot.ru)
+ by puleglot.ru with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+ (Exim 4.92.3) (envelope-from <puleglot@puleglot.ru>)
+ id 1jPr7W-00010j-7T; Sat, 18 Apr 2020 20:19:10 +0300
+From: Alexander Tsoy <alexander@tsoy.me>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: usb-audio: Filter out unsupported sample rates on
+ Focusrite devices
+Date: Sat, 18 Apr 2020 20:19:08 +0300
+Message-Id: <20200418171908.10402-1-alexander@tsoy.me>
+X-Mailer: git-send-email 2.25.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Lars-Peter Clausen <lars@metafoo.de>, Jiri Kosina <trivial@kernel.org>,
- Stefan Popa <stefan.popa@analog.com>,
- Michael Hennerich <Michael.Hennerich@analog.com>,
- Liam Girdwood <lgirdwood@gmail.com>, David Airlie <airlied@linux.ie>,
- linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, dri-devel@lists.freedesktop.org,
- linux-iio@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
- Rob Herring <robh+dt@kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
- dmaengine@vger.kernel.org, Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>
+Content-Transfer-Encoding: 8bit
+Cc: Takashi Iwai <tiwai@suse.de>, Alexey Skobkin <skobkin-ru@ya.ru>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,62 +86,90 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 16 Apr 2020 12:30:56 +0200
-Geert Uytterhoeven <geert+renesas@glider.be> wrote:
+Many Focusrite devices supports a limited set of sample rates per
+altsetting. This includes interfaces with ADAT ports and interfaces with
+dedicated feedback channels:
+ - Scarlett 18i6, 18i8 1st gen, 18i20 1st gen;
+ - Scarlett 18i8 2nd gen, 18i20 2nd gen;
+ - all Scarlett 3rd gen devices (feedback channels works only up to 96
+   kHz);
+ - Clarett 2Pre USB, 4Pre USB, 8Pre USB.
 
-> According to https://www.analog.com/, the company name is spelled
-> "Analog Devices".
-> 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Tested-by: Alexey Skobkin <skobkin-ru@ya.ru>
+Signed-off-by: Alexander Tsoy <alexander@tsoy.me>
+---
+ sound/usb/format.c | 51 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 51 insertions(+)
 
-Applied to the togreg branch of iio.git and pushed out as testing as there
-are other things in that tree that need a build test.
-
-Thanks,
-
-Jonathan
-
-> ---
->  drivers/iio/adc/ad7791.c                       | 2 +-
->  drivers/iio/trigger/iio-trig-hrtimer.c         | 2 +-
->  drivers/staging/iio/Documentation/overview.txt | 2 +-
->  3 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/ad7791.c b/drivers/iio/adc/ad7791.c
-> index abb2393926317087..70bfc41052db2740 100644
-> --- a/drivers/iio/adc/ad7791.c
-> +++ b/drivers/iio/adc/ad7791.c
-> @@ -444,5 +444,5 @@ static struct spi_driver ad7791_driver = {
->  module_spi_driver(ad7791_driver);
->  
->  MODULE_AUTHOR("Lars-Peter Clausen <lars@metafoo.de>");
-> -MODULE_DESCRIPTION("Analog Device AD7787/AD7788/AD7789/AD7790/AD7791 ADC driver");
-> +MODULE_DESCRIPTION("Analog Devices AD7787/AD7788/AD7789/AD7790/AD7791 ADC driver");
->  MODULE_LICENSE("GPL v2");
-> diff --git a/drivers/iio/trigger/iio-trig-hrtimer.c b/drivers/iio/trigger/iio-trig-hrtimer.c
-> index a5e670726717f0d8..f59bf8d585866ea2 100644
-> --- a/drivers/iio/trigger/iio-trig-hrtimer.c
-> +++ b/drivers/iio/trigger/iio-trig-hrtimer.c
-> @@ -4,7 +4,7 @@
->   *
->   * Copyright (C) Intuitive Aerial AB
->   * Written by Marten Svanfeldt, marten@intuitiveaerial.com
-> - * Copyright (C) 2012, Analog Device Inc.
-> + * Copyright (C) 2012, Analog Devices Inc.
->   *	Author: Lars-Peter Clausen <lars@metafoo.de>
->   * Copyright (C) 2015, Intel Corporation
->   */
-> diff --git a/drivers/staging/iio/Documentation/overview.txt b/drivers/staging/iio/Documentation/overview.txt
-> index 43f92b06bc3e5574..ebdc64f451d7c798 100644
-> --- a/drivers/staging/iio/Documentation/overview.txt
-> +++ b/drivers/staging/iio/Documentation/overview.txt
-> @@ -34,7 +34,7 @@ turned on or off (if possible) via sysfs interfaces.
->  fifo / ring buffers on the sensor chip.  These greatly reduce the load
->  on the host CPU by buffering relatively large numbers of data samples
->  based on an internal sampling clock. Examples include VTI SCA3000
-> -series and Analog Device ADXL345 accelerometers.  Each buffer supports
-> +series and Analog Devices ADXL345 accelerometers.  Each buffer supports
->  polling to establish when data is available.
->  
->  * Trigger and software buffer support. In many data analysis
+diff --git a/sound/usb/format.c b/sound/usb/format.c
+index 50e1874c847c..5ffb457cc88c 100644
+--- a/sound/usb/format.c
++++ b/sound/usb/format.c
+@@ -277,6 +277,52 @@ static bool s1810c_valid_sample_rate(struct audioformat *fp,
+ 	return false;
+ }
+ 
++/*
++ * Many Focusrite devices supports a limited set of sampling rates per
++ * altsetting. Maximum rate is exposed in the last 4 bytes of Format Type
++ * descriptor which has a non-standard bLength = 10.
++ */
++static bool focusrite_valid_sample_rate(struct snd_usb_audio *chip,
++					struct audioformat *fp,
++					unsigned int rate)
++{
++	struct usb_interface *iface;
++	struct usb_host_interface *alts;
++	unsigned char *fmt;
++	unsigned int max_rate;
++
++	iface = usb_ifnum_to_if(chip->dev, fp->iface);
++	if (!iface)
++		return true;
++
++	alts = &iface->altsetting[fp->altset_idx];
++	fmt = snd_usb_find_csint_desc(alts->extra, alts->extralen,
++				      NULL, UAC_FORMAT_TYPE);
++	if (!fmt)
++		return true;
++
++	if (fmt[0] == 10) { /* bLength */
++		max_rate = combine_quad(&fmt[6]);
++
++		/* Validate max rate */
++		if (max_rate != 48000 &&
++		    max_rate != 96000 &&
++		    max_rate != 192000 &&
++		    max_rate != 384000) {
++
++			usb_audio_info(chip,
++				"%u:%d : unexpected max rate: %u\n",
++				fp->iface, fp->altsetting, max_rate);
++
++			return true;
++		}
++
++		return rate <= max_rate;
++	}
++
++	return true;
++}
++
+ /*
+  * Helper function to walk the array of sample rate triplets reported by
+  * the device. The problem is that we need to parse whole array first to
+@@ -319,6 +365,11 @@ static int parse_uac2_sample_rate_range(struct snd_usb_audio *chip,
+ 			    !s1810c_valid_sample_rate(fp, rate))
+ 				goto skip_rate;
+ 
++			/* Filter out invalid rates on Focusrite devices */
++			if (USB_ID_VENDOR(chip->usb_id) == 0x1235 &&
++			    !focusrite_valid_sample_rate(chip, fp, rate))
++				goto skip_rate;
++
+ 			if (fp->rate_table)
+ 				fp->rate_table[nr_rates] = rate;
+ 			if (!fp->rate_min || rate < fp->rate_min)
+-- 
+2.25.3
 
