@@ -4,71 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4057C38A29
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 14:14:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A4B8C38A29
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 14:15:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6A08321BE5
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 14:14:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8866A2076A
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 14:15:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eTyy/S/I";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="pFautUt7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6A08321BE5
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rSHhe8KH";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ieYRvYnP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8866A2076A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AB9731676;
-	Sat, 18 Apr 2020 16:14:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB9731676
+	by alsa0.perex.cz (Postfix) with ESMTPS id E34081678;
+	Sat, 18 Apr 2020 16:14:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E34081678
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587219293;
-	bh=cpAMGGfP/vuBzpkFWI/SKvrGzpquAnEwlNg3K7foEDU=;
+	s=default; t=1587219333;
+	bh=djjlQD49nGvDfZ8Xq1ihlGnvcW0C3lWCW9SYDIgq2iU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eTyy/S/ICTfPcJsOj65lzNVF1+YsL6dTekVPE16pOHfBQ6RDNU7MdcnfDOHD06b2+
-	 bKwpGmrDbYVJauvGrUtxLJ5gUB8BWsH/iBtb3pcU6J6VCja0EODci1q35ubNrKe7+2
-	 OXbjHBUo1C8EnkFC+NvZj33kRbCFQBXK+pJvxJ6M=
+	b=rSHhe8KHlmvYrvrx2kIpo+KNeM6Rs9rMOc/apXdHNoJuZxVz6TIuOawnQGMt9Q+eN
+	 4f63D1p8NTxjGNeS+sYw6VL+RBhtTbg4FK5AGhMTuJIXtb3wHn1wSH/BguzpO2x7tw
+	 SdfRi9HkkruYhHUKS3MEHDt8HWYTSg4H8Uz4Sxv4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2C68EF802DB;
+	by alsa1.perex.cz (Postfix) with ESMTP id E6FA9F802DC;
 	Sat, 18 Apr 2020 16:10:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 107A8F802D2; Sat, 18 Apr 2020 16:10:39 +0200 (CEST)
+ id A25A0F8012E; Sat, 18 Apr 2020 16:10:39 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 40221F802A2
- for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 16:10:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40221F802A2
+ by alsa1.perex.cz (Postfix) with ESMTPS id A031AF802A9
+ for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 16:10:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A031AF802A9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="pFautUt7"
+ header.b="ieYRvYnP"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 091FE21D79;
- Sat, 18 Apr 2020 14:10:28 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 7BCFB21D82;
+ Sat, 18 Apr 2020 14:10:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1587219029;
- bh=cpAMGGfP/vuBzpkFWI/SKvrGzpquAnEwlNg3K7foEDU=;
+ s=default; t=1587219026;
+ bh=djjlQD49nGvDfZ8Xq1ihlGnvcW0C3lWCW9SYDIgq2iU=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=pFautUt7Oby/mErimggAA8IuixWmJ6ItMmCvK1Df5FfqGqyhB0/9dSBHVcEpYqRDO
- EtF/K4N1pyAwdpdoLjfQxbSpCY7C9LIJmw8ejRteujq/weGOYR3rPhdK6pRpXnG4HI
- 1PSCoIxtG/VJJ4slHKO6zrOL2RDX0XOqgae82ZJo=
+ b=ieYRvYnPZ7Ny47sRDI++kiSCs7CRG9fekgKYpW0RiH3XMjtHkLrpGWapfQsTMpOqF
+ 64s8Pv6wjHfwZ88GGOHM4SKcYon6zKpr1J1ZIivVRnMGXq5WEdZQUSTyX4UrUbxy85
+ 2seXBYZV44TpiTMapgOSnGZr7GeTdME0smoqco4Y=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.5 64/75] ALSA: hda/realtek - Add quirk for Lenovo
- Carbon X1 8th gen
-Date: Sat, 18 Apr 2020 10:08:59 -0400
-Message-Id: <20200418140910.8280-64-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.5 61/75] ASoC: Intel: bytcr_rt5640: Add quirk for
+ MPMAN MPWIN895CL tablet
+Date: Sat, 18 Apr 2020 10:08:56 -0400
+Message-Id: <20200418140910.8280-61-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200418140910.8280-1-sashal@kernel.org>
 References: <20200418140910.8280-1-sashal@kernel.org>
@@ -76,8 +75,9 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Takashi Iwai <tiwai@suse.de>, Hans de Goede <hdegoede@redhat.com>,
- alsa-devel@alsa-project.org, Sasha Levin <sashal@kernel.org>
+Cc: Sasha Levin <sashal@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
+ alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,38 +95,45 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit ca707b3f00b4f31a6e1eb37e8ae99f15f2bb1fe5 ]
+[ Upstream commit c8b78f24c1247b7bd0882885c672d9dec5800bc6 ]
 
-The audio setup on the Lenovo Carbon X1 8th gen is the same as that on
-the Lenovo Carbon X1 7th gen, as such it needs the same
-ALC285_FIXUP_THINKPAD_HEADSET_JACK quirk.
+The MPMAN MPWIN895CL tablet almost fully works with out default settings.
+The only problem is that it has only 1 speaker so any sounds only playing
+on the right channel get lost.
 
-This fixes volume control of the speaker not working among other things.
+Add a quirk for this model using the default settings + MONO_SPEAKER.
 
-BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1820196
-Cc: stable@vger.kernel.org
-Suggested-by: Jaroslav Kysela <perex@perex.cz>
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Reviewed-by: Jaroslav Kysela <perex@perex.cz>
-Link: https://lore.kernel.org/r/20200402174311.238614-1-hdegoede@redhat.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20200405133726.24154-1-hdegoede@redhat.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/intel/boards/bytcr_rt5640.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 62eac992ebd55..e2c77d2ab26e9 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -7300,6 +7300,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x225d, "Thinkpad T480", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x17aa, 0x2292, "Thinkpad X1 Yoga 7th", ALC285_FIXUP_THINKPAD_HEADSET_JACK),
- 	SND_PCI_QUIRK(0x17aa, 0x2293, "Thinkpad X1 Carbon 7th", ALC285_FIXUP_THINKPAD_HEADSET_JACK),
-+	SND_PCI_QUIRK(0x17aa, 0x22be, "Thinkpad X1 Carbon 8th", ALC285_FIXUP_THINKPAD_HEADSET_JACK),
- 	SND_PCI_QUIRK(0x17aa, 0x30bb, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
- 	SND_PCI_QUIRK(0x17aa, 0x30e2, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
- 	SND_PCI_QUIRK(0x17aa, 0x310c, "ThinkCentre Station", ALC294_FIXUP_LENOVO_MIC_LOCATION),
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 243f683bc02a7..e62e1d7815aa9 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -591,6 +591,17 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 					BYT_RT5640_SSP0_AIF1 |
+ 					BYT_RT5640_MCLK_EN),
+ 	},
++	{
++		/* MPMAN MPWIN895CL */
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "MPMAN"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "MPWIN8900CL"),
++		},
++		.driver_data = (void *)(BYTCR_INPUT_DEFAULTS |
++					BYT_RT5640_MONO_SPEAKER |
++					BYT_RT5640_SSP0_AIF1 |
++					BYT_RT5640_MCLK_EN),
++	},
+ 	{	/* MSI S100 tablet */
+ 		.matches = {
+ 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Micro-Star International Co., Ltd."),
 -- 
 2.20.1
 
