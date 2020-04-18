@@ -2,72 +2,73 @@ Return-Path: <SRS0=riU+=6C=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 112EAC38A30
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 13:52:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 138FFC38A30
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 13:52:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 897DA214AF
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 13:52:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 96550214AF
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 13:52:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Xi4qi102";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="CD5dMuwG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 897DA214AF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vnOpnRsU";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="sLyRygJk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 96550214AF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EC37C167E;
-	Sat, 18 Apr 2020 15:51:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC37C167E
+	by alsa0.perex.cz (Postfix) with ESMTPS id EB9B11670;
+	Sat, 18 Apr 2020 15:52:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB9B11670
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587217930;
-	bh=0GNb6rxPT1B1+6wYTXosHyXLmqOPUQC+2pvgf+5TjDk=;
+	s=default; t=1587217975;
+	bh=B4bMlNkd5p86XZw4dYVYeRK/tVq+Bue8h8ry5C9RHwk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Xi4qi102KVZswMXPvzQgnv4iDIg4jMBdHzVutaTaQHRFsKyNHkhgVQ7t3Yt5N6hnP
-	 WW52ePOT2uNsDhWvKGwEZhS9o/vSe8wquqOQ4bnfrO1KZhvr1lUYsNDIfVkWsyvurX
-	 g5E3V4WzAVbM/NihEAST/IH+9aqQl+2iHU4mWVo0=
+	b=vnOpnRsUj885y5X4f9hnKTfCp7SxwUUg/MXmtDRBvBAp9dIVGc6DbPmPLPUMNmt0d
+	 VmMV4ARkUTxLdU3728I9yCE7+OyoUAoXN6HnOJaa5grei5YqSS24jwhzd7YEdrbGro
+	 wnfxvbMEuTQRMq9ZPCQNYHS04lHYPFeKQ6O70rWE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 23B3CF80290;
-	Sat, 18 Apr 2020 15:49:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D60C7F8012E;
+	Sat, 18 Apr 2020 15:49:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1227FF80291; Sat, 18 Apr 2020 15:49:36 +0200 (CEST)
+ id 3EC94F80292; Sat, 18 Apr 2020 15:49:41 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1EC5EF8028A
- for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 15:49:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1EC5EF8028A
+ by alsa1.perex.cz (Postfix) with ESMTPS id C0C1AF8028F
+ for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 15:49:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0C1AF8028F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="CD5dMuwG"
+ header.b="sLyRygJk"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 3949121BE5;
- Sat, 18 Apr 2020 13:49:28 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 9C4D821BE5;
+ Sat, 18 Apr 2020 13:49:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1587217768;
- bh=0GNb6rxPT1B1+6wYTXosHyXLmqOPUQC+2pvgf+5TjDk=;
+ s=default; t=1587217773;
+ bh=B4bMlNkd5p86XZw4dYVYeRK/tVq+Bue8h8ry5C9RHwk=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=CD5dMuwGjsgnTDdIPeTDj3cBHp3lFOzL3SD6vEzc0iEO+H+IQ2RGYoVpjJkUFcaCL
- xb3Sxr3paFnxC9DIcTCJMieutuBbGUmSxm8PAjKiKsd6HsWoWy/D7x6AZZRZDFmmQj
- AXf5f0BV+0iFM0sF6spxRLcrRB+yA4jgwwEEA3tc=
+ b=sLyRygJk7YH/gE3zacWF8ZWE0IAgqtJGgMH6fVttcnzZ5UlreWa8aVbjZ59owQchf
+ I0tbptovC0DAPeNzP+mmTe8wqLVW3p6AeAamaOPDZ1mTAs0gns0vT9NwqzqaIVZrLp
+ v7mkXL/IU8T+sXgmNY7l9kS9R8QHV/04qs1T1kIw=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 58/73] ALSA: hda/realtek - Add quirk for MSI GL63
-Date: Sat, 18 Apr 2020 09:48:00 -0400
-Message-Id: <20200418134815.6519-58-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.6 62/73] ALSA: ice1724: Fix invalid access for
+ enumerated ctl items
+Date: Sat, 18 Apr 2020 09:48:04 -0400
+Message-Id: <20200418134815.6519-62-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200418134815.6519-1-sashal@kernel.org>
 References: <20200418134815.6519-1-sashal@kernel.org>
@@ -94,34 +95,46 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 1d3aa4a5516d2e4933fe3cca11d3349ef63bc547 ]
+[ Upstream commit c47914c00be346bc5b48c48de7b0da5c2d1a296c ]
 
-MSI GL63 laptop requires the similar quirk like other MSI models,
-ALC1220_FIXUP_CLEVO_P950.  The board BIOS doesn't provide a PCI SSID
-for the device, hence we need to take the codec SSID (1462:1275)
-instead.
+The access to Analog Capture Source control value implemented in
+prodigy_hifi.c is wrong, as caught by the recently introduced sanity
+check; it should be accessing value.enumerated.item[] instead of
+value.integer.value[].  This patch corrects the wrong access pattern.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207157
+Fixes: 6b8d6e5518e2 ("[ALSA] ICE1724: Added support for Audiotrak Prodigy 7.1 HiFi & HD2, Hercules Fortissimo IV")
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207139
+Reviewed-by: Jaroslav Kysela <perex@perex.cz>
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200408135645.21896-1-tiwai@suse.de
+Link: https://lore.kernel.org/r/20200407084402.25589-3-tiwai@suse.de
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/pci/ice1712/prodigy_hifi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 63e1a56f705b7..5cced684cf41f 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -2449,6 +2449,7 @@ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1458, 0xa0b8, "Gigabyte AZ370-Gaming", ALC1220_FIXUP_GB_DUAL_CODECS),
- 	SND_PCI_QUIRK(0x1458, 0xa0cd, "Gigabyte X570 Aorus Master", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1462, 0x1228, "MSI-GP63", ALC1220_FIXUP_CLEVO_P950),
-+	SND_PCI_QUIRK(0x1462, 0x1275, "MSI-GL63", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1462, 0x1276, "MSI-GL73", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1462, 0x1293, "MSI-GP65", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1462, 0x7350, "MSI-7350", ALC889_FIXUP_CD),
+diff --git a/sound/pci/ice1712/prodigy_hifi.c b/sound/pci/ice1712/prodigy_hifi.c
+index 91f83cef0e56c..9aa12a67d3705 100644
+--- a/sound/pci/ice1712/prodigy_hifi.c
++++ b/sound/pci/ice1712/prodigy_hifi.c
+@@ -536,7 +536,7 @@ static int wm_adc_mux_enum_get(struct snd_kcontrol *kcontrol,
+ 	struct snd_ice1712 *ice = snd_kcontrol_chip(kcontrol);
+ 
+ 	mutex_lock(&ice->gpio_mutex);
+-	ucontrol->value.integer.value[0] = wm_get(ice, WM_ADC_MUX) & 0x1f;
++	ucontrol->value.enumerated.item[0] = wm_get(ice, WM_ADC_MUX) & 0x1f;
+ 	mutex_unlock(&ice->gpio_mutex);
+ 	return 0;
+ }
+@@ -550,7 +550,7 @@ static int wm_adc_mux_enum_put(struct snd_kcontrol *kcontrol,
+ 
+ 	mutex_lock(&ice->gpio_mutex);
+ 	oval = wm_get(ice, WM_ADC_MUX);
+-	nval = (oval & 0xe0) | ucontrol->value.integer.value[0];
++	nval = (oval & 0xe0) | ucontrol->value.enumerated.item[0];
+ 	if (nval != oval) {
+ 		wm_put(ice, WM_ADC_MUX, nval);
+ 		change = 1;
 -- 
 2.20.1
 
