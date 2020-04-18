@@ -7,67 +7,67 @@ X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4232AC352BE
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 18:45:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BDE8C352BE
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 18:45:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C6C63221E9
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 18:45:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DBDD321D6C
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2020 18:45:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gWyWNGT/";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="j5q/SQ1+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C6C63221E9
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="c0lLvjLw";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="jiUzn1PA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DBDD321D6C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 31221167D;
-	Sat, 18 Apr 2020 20:44:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31221167D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3D6A11669;
+	Sat, 18 Apr 2020 20:44:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D6A11669
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587235500;
-	bh=PiPBc4fJl2XiNscOjYOGbaP6QhoANzt0JSu+mMj9eRY=;
+	s=default; t=1587235545;
+	bh=A5adWBmPGS4tpgfOHIGGxtWeshpYC+EdVZFX493tCaw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gWyWNGT/FZppeoasJdFjN9nmvcHcmtKKlUMJ0MQppqGtO3/Hwkx2YYN39i+cgyJe9
-	 vckUgxiK9uBtFhhDk2i6LJd78FY243LVOdW3Fu//Pzt7e1d+z6jdX4wZvEb5oyen9m
-	 L5LeXMbZY2rCNFAoys0ZxWDYYDhsPkTqo2Bo4P/4=
+	b=c0lLvjLwgPzY/2L0f7JTqxvXES6rquaVmaNO/Uwv3Y9rAZfGL6VH0c0tOnqVBsZ1A
+	 KoXng7DvAngnMIVXSo6RmfiNJX1o1zyXyCSB0F0eqnr6NvsG/S5Xo7TauQvnYntWX0
+	 77CRtKEMHFCVII0wY+8fZipvD3juAg+ooSAkjoOA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6F104F8029A;
-	Sat, 18 Apr 2020 20:41:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BCE7CF802A2;
+	Sat, 18 Apr 2020 20:41:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 48D64F8014E; Sat, 18 Apr 2020 20:41:41 +0200 (CEST)
+ id 30AECF80240; Sat, 18 Apr 2020 20:41:41 +0200 (CEST)
 Received: from bombadil.infradead.org (bombadil.infradead.org
  [IPv6:2607:7c80:54:e::133])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C9FB9F8026A
- for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 20:41:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9FB9F8026A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6561DF8014E
+ for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 20:41:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6561DF8014E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="j5q/SQ1+"
+ header.b="jiUzn1PA"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
  Content-Type:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:
  To:From:Sender:Reply-To:Content-ID:Content-Description;
- bh=RAwgh7dK6Aq2GUmD2z2q67RSpKe0Qba5fsNnenVzxMI=; b=j5q/SQ1+k3/+/NWSTV/WCIkHyr
- zch6FAcwYZsrW1PmSwaW8sUH6ZWeOC45ea2Cw5ovOtRwJLJOkQhRg13tWis5r+icV/DhjmdEjwv79
- s2h+fCIcRl3RnLCdtSGFczimDTd9m/8AzLPWV2hp+UzgF8z2XnH0R/f/a5DQg9nNd3Y73Ad9ZrO4P
- SE8YtJq+oauVuVNS6MyEi2RLVp6TVtw40sWJHw1JEOXlVu7aGBz0X1bug3Vw49BLE3fO57MGGN/q0
- Pmq5oXAMF6sIRcv8GgeZALDInNNSJ4NKJzYxSO84gAsonX87pABbmdSy94HL9m+wa0jkyxTrzud66
- 2h6YWfaA==;
+ bh=a1s3aPpvGKpLdiCJSF1xLoCWRs8yNfGARacikYyrDtI=; b=jiUzn1PA4booMrgyt5t3GsYFr/
+ ZqbT1yqWuAseTRoPR1cZ03WbQhbWrvrfb3Shktw7TgEPLJPejITeFAbVpfnenXWRmF7BSdlw5fufc
+ 5xVlLn5sdiZQghsGwMmWWL3arC3NhWrkyBajNutMr9ImoAPpM5lUCW04FYz0kBfqOP3r4nEhct+h+
+ TCAeoRiWqPwZ5aMwlmi2X9WUo2e8C3nduhVceISsZ3l3t8Xh7FJIDIIpigt0+kncqSYZfrE4lZsBt
+ 6TUBNG1H8zQfQhU58PLzemrg6gBhYWrYtkQmRG8kcbMriC/faW7nNfRC00eH2Qpc13GljIFfSJ2mg
+ RiFLp/YA==;
 Received: from [2601:1c0:6280:3f0::19c2] (helo=smtpauth.infradead.org)
  by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jPsP3-0007rZ-5p; Sat, 18 Apr 2020 18:41:21 +0000
+ id 1jPsP1-0007rZ-9Y; Sat, 18 Apr 2020 18:41:19 +0000
 From: Randy Dunlap <rdunlap@infradead.org>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 8/9] dax: fix empty-body warnings in bus.c
-Date: Sat, 18 Apr 2020 11:41:10 -0700
-Message-Id: <20200418184111.13401-9-rdunlap@infradead.org>
+Subject: [PATCH 6/9] nfsd: fix empty-body warning in nfs4state.c
+Date: Sat, 18 Apr 2020 11:41:08 -0700
+Message-Id: <20200418184111.13401-7-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20200418184111.13401-1-rdunlap@infradead.org>
 References: <20200418184111.13401-1-rdunlap@infradead.org>
@@ -105,42 +105,34 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Fix gcc empty-body warning when -Wextra is used:
 
-../drivers/dax/bus.c:93:27: warning: suggest braces around empty body in an ‘else’ statement [-Wempty-body]
-../drivers/dax/bus.c:98:29: warning: suggest braces around empty body in an ‘else’ statement [-Wempty-body]
+../fs/nfsd/nfs4state.c:3898:3: warning: suggest braces around empty body in an ‘else’ statement [-Wempty-body]
 
 Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: Vishal Verma <vishal.l.verma@intel.com>
-Cc: Dave Jiang <dave.jiang@intel.com>
-Cc: linux-nvdimm@lists.01.org
 Cc: Linus Torvalds <torvalds@linux-foundation.org>
 Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: "J. Bruce Fields" <bfields@fieldses.org>
+Cc: Chuck Lever <chuck.lever@oracle.com>
+Cc: linux-nfs@vger.kernel.org
 ---
- drivers/dax/bus.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ fs/nfsd/nfs4state.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- linux-next-20200417.orig/drivers/dax/bus.c
-+++ linux-next-20200417/drivers/dax/bus.c
-@@ -2,6 +2,7 @@
- /* Copyright(c) 2017-2018 Intel Corporation. All rights reserved. */
- #include <linux/memremap.h>
- #include <linux/device.h>
-+#include <linux/kernel.h>
- #include <linux/mutex.h>
- #include <linux/list.h>
- #include <linux/slab.h>
-@@ -90,12 +91,12 @@ static ssize_t do_id_store(struct device
- 			} else
- 				rc = -ENOMEM;
- 		} else
--			/* nothing to remove */;
-+			do_empty(); /* nothing to remove */
- 	} else if (action == ID_REMOVE) {
- 		list_del(&dax_id->list);
- 		kfree(dax_id);
- 	} else
--		/* dax_id already added */;
-+		do_empty(); /* dax_id already added */
- 	mutex_unlock(&dax_bus_lock);
+--- linux-next-20200417.orig/fs/nfsd/nfs4state.c
++++ linux-next-20200417/fs/nfsd/nfs4state.c
+@@ -34,6 +34,7 @@
  
- 	if (rc < 0)
+ #include <linux/file.h>
+ #include <linux/fs.h>
++#include <linux/kernel.h>
+ #include <linux/slab.h>
+ #include <linux/namei.h>
+ #include <linux/swap.h>
+@@ -3895,7 +3896,7 @@ nfsd4_setclientid(struct svc_rqst *rqstp
+ 		copy_clid(new, conf);
+ 		gen_confirm(new, nn);
+ 	} else /* case 4 (new client) or cases 2, 3 (client reboot): */
+-		;
++		do_empty();
+ 	new->cl_minorversion = 0;
+ 	gen_callback(new, setclid, rqstp);
+ 	add_to_unconfirmed(new);
