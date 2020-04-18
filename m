@@ -2,99 +2,100 @@ Return-Path: <SRS0=/ZdJ=6D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60DE8C2BA2B
-	for <alsa-devel@archiver.kernel.org>; Sun, 19 Apr 2020 07:43:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B352BC2BA2B
+	for <alsa-devel@archiver.kernel.org>; Sun, 19 Apr 2020 07:43:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DF2132145D
-	for <alsa-devel@archiver.kernel.org>; Sun, 19 Apr 2020 07:43:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3D6802145D
+	for <alsa-devel@archiver.kernel.org>; Sun, 19 Apr 2020 07:43:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="W3X5k7WH";
-	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="Ce6A4T+T"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DF2132145D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gmx.at
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="H6SGMFYJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3D6802145D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=acm.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 42F359F6;
-	Sun, 19 Apr 2020 09:42:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 42F359F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9E2121669;
+	Sun, 19 Apr 2020 09:42:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E2121669
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587282186;
-	bh=0CUGCz8/5TiP6Ufqia5Cgb8EYAj0sqfBm845dVqP5k4=;
-	h=From:Subject:To:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=W3X5k7WHSSHPxR7zM6g2TDaNMGIWjJ6d7FcMLbt4AP5wepXNXXAQvAWNb3S8loTFR
-	 3VTOXOJH2otwOeJxdoabu+cQGZR7vLT5iTU5bBIlnrw8HEWLsQDsSL+2D+gsnZkS1U
-	 XTuMKbFyrgoxypHXDV/t51LOqWbQHwMVg0/0ukP8=
+	s=default; t=1587282211;
+	bh=SBnaJXMWlP5Jfz/aC8h2Gcq214H5zmesYB/TAZzBqdc=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=H6SGMFYJzMeHAMLYKCpb45RD+112z1Zvn0y6GKbClVyNtDDBS4UGc9JBTVgrP8KBL
+	 eq4ZuuSJAkH5ESw+oY5fjTPb2Yv63zDYijEcsMx6KuqmVe9EaFoSa+z4DTgyswLCUK
+	 lvTf4pHdqEhmLFwC/++C9TdJzUSrBspJU3kplkNw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3B9CBF802A9;
-	Sun, 19 Apr 2020 09:38:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5CCBAF802BD;
+	Sun, 19 Apr 2020 09:38:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5045BF8014E; Sat, 18 Apr 2020 23:22:50 +0200 (CEST)
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+ id 71604F8014E; Sun, 19 Apr 2020 00:20:40 +0200 (CEST)
+Received: from mail-pg1-f195.google.com (mail-pg1-f195.google.com
+ [209.85.215.195])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F191BF800E7
- for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 23:22:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F191BF800E7
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net
- header.b="Ce6A4T+T"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
- s=badeba3b8450; t=1587244962;
- bh=0CUGCz8/5TiP6Ufqia5Cgb8EYAj0sqfBm845dVqP5k4=;
- h=X-UI-Sender-Class:From:Subject:To:Cc:Date;
- b=Ce6A4T+TeVEqvnV9t7F+3kroNK3RqNki4uLRYIMbSxLpqzSfQ67oTReAhu2aJeVhp
- QKVJAPPW0x9lAQyHc4kCCBPW9bWDLdhoga9vrg1pnAIXPoKonbYoUJh9onDrwBGrha
- dbKuFCnU39PRH1A9dC2jv2LcIScPti87caDgVp1w=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.178.36] ([85.127.240.3]) by mail.gmx.com (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MJVDW-1jfEss1g2i-00Jqhw; Sat, 18
- Apr 2020 23:22:42 +0200
-From: Johnathan Smithinovic <johnathan.smithinovic@gmx.at>
-Subject: PROBLEM: No sound on ASUS ROG Zenith Extreme in 5.6.5
-To: tiwai@suse.com
-Message-ID: <f19e2e93-8d6d-207b-202a-5ceeab0f8571@gmx.at>
-Date: Sat, 18 Apr 2020 23:22:41 +0200
+ by alsa1.perex.cz (Postfix) with ESMTPS id BD170F80122
+ for <alsa-devel@alsa-project.org>; Sun, 19 Apr 2020 00:20:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BD170F80122
+Received: by mail-pg1-f195.google.com with SMTP id r4so3095155pgg.4
+ for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2020 15:20:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=5lJaFjYcZIrKINzwKQy1R3xgWxtfsMwR6sB1R/eMtwU=;
+ b=G/zPv4kEALqr3LRHjq+1CF4CnGa85IP57YhPb3gg8Njleo4BYoS/HdAexKCnzfpcJu
+ /Mgure+yJcEBFmPKej/HYBBatzeNAZx9OsPlzMupCsEScuWGQc+VXP97hS3CcDQcXccD
+ etYBCFc/SaK1rD9fvsor3rESr8l7KCWvPozkes/3pJqOVdkDH1sCIoolzjyTf2+3C0e0
+ oejykpXh08tH8T1vxHF3Kn3NNgVn/QBxuuJORyNgrMOWugetKfHXpe4ORKC67OSDr3Bl
+ PRtrh8973HO5jboA+zV6dkXaL9t4C+L4giJEUDCXEiVoCqQt5x9NpIzsJWOYaV0G0sk/
+ oiXA==
+X-Gm-Message-State: AGi0PubNQhp4wEMgqFgdWQwunHJuhj5v84Y4ZnCAFkf66UhbUdlbbreQ
+ K3SjWw/kOPTUAteW3gFYrxI=
+X-Google-Smtp-Source: APiQypKrKkW1CP9zvg0HpaxgHFnkJUL1mC4k4+CRal+TZ48iPbm1ertqTrjT7jN+bYBQFGm5GWkzYw==
+X-Received: by 2002:a63:554b:: with SMTP id f11mr3245678pgm.343.1587248435352; 
+ Sat, 18 Apr 2020 15:20:35 -0700 (PDT)
+Received: from [100.124.15.238] ([104.129.198.61])
+ by smtp.gmail.com with ESMTPSA id b189sm14519134pfb.163.2020.04.18.15.20.32
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Sat, 18 Apr 2020 15:20:34 -0700 (PDT)
+Subject: Re: [RFC PATCH 1/9] kernel.h: add do_empty() macro
+To: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+References: <20200418184111.13401-1-rdunlap@infradead.org>
+ <20200418184111.13401-2-rdunlap@infradead.org>
+From: Bart Van Assche <bvanassche@acm.org>
+Message-ID: <f097242a-1bf0-218b-4890-3ee82c5a0a23@acm.org>
+Date: Sat, 18 Apr 2020 15:20:31 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ Thunderbird/68.6.0
 MIME-Version: 1.0
+In-Reply-To: <20200418184111.13401-2-rdunlap@infradead.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Y9QSTNdqf1Z5zsK4TmLWsR7G5M09rZqNEveIOoMOJb/zHcvbqTu
- 6HFHuGDsv4H7lY+9Eoi83DffsvMCYemQgCAb6r7q7+UL5RSwxOAsx/rSHlPtmNZhORkZLNW
- bpz7aRaBUMWSeLf3QYsJi2axcsIPq+VfYZm7NHG2FNQ9j/cQb5FhcH14QtdfPj5yI2++QOe
- 9qagHKpD104SM7qrhocEA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:5oMSYX0pp78=:3fjguAHctVSsMtOYcSKnLK
- EH6C87gFZH+SIpo8rDW8JIVzRnIWNRtT0JiH0gXIOTjliF8Sx3deR2BhkOuq2S923Vok1Zvdk
- xAcS8A0P/bQWp6NaneBB2DEVVSjjzg7mX5+2oNUkx95neTBCRJOW6ykq9yY11VkQ67bUqjPNf
- xdAkTEkRgU7HHJoTR0EKwOS6J9ZYqSKYtnT2c/ZXpfYXFTuAOrrZawpNdHxxCjaKFZbJD0Ty7
- gHLxwoQyimJrgLtRjTWTAc5ykkz3Wf2KQnj1a6Bl9U9rHIWJ0RHqJh5bzkoqf8goxirNK/FfY
- O2VBA09kBLJggbhnvjTuAavNqqegtBxHEJGCSkGpy+Ui2MxiabdfT90HR6DjS3ynF01FN5+x7
- rFKmKiTgB8Ib3t9ec9kU+4RSRkPLEAPNLQN2UNNiVCaTyPG1rLE0ngcs43w6yRW+B7zw1VLgs
- LbVLHW+BysSPuK/08Yj72W53kE9QhvDR4dKDocI+IxJ/pD+T3RHQkq7X4rtiKiP263KIBGLcq
- 3iwbJj8NgBT3Gz3NlDrrfmkMInPFKATd/iyvZR5PHUC1mxd6SjeS+70y9dcJ6+NtCTI7ODDWk
- pY6Lwe/NLjVk7kGd6Cmzf1ugd68jaX00Lpe8x7T5QLWDWT8BS5G5bngrnsFoxoPUFk4FRV47k
- zIRmx1lKK2wOYkvNZDdeYSAoBsrOis2ca39aD1+wC1uDQ9fBGnkgZ/0K6DrKbMkE06v60lLQx
- ETKrSYac8tcagNDRy4uOxXtUTRL1yALvshT9fy5e/re/+uNswfJBcucvX6bJz+1DNIBGz4OvW
- xk9zUmTxPUIwWgIDu15RgGk0JnAHFosMkSpQH6L2acPLTbFL8YAhlLAk/6/HSIdu3dtsoWOKh
- bnJ8b2k9VMHkStUj5KMc6ey3YnlGoGrk48KLOTKDvQK72W+U+VrY/Q/MFZIGGn0VXEf3UNuS4
- s9nlApG4raRakmqZYonilIevghqUjL5QnGjOwO2aCrTcNE6Q8v8q7Hz+tuLYh3LjRVQKBYyoV
- JBZ8A3Y6kyo5o//fVp3u8bEVKnjN3esX9pAWc6qURtYYJzi8RuO8bMj798P1gXWGK7Or8Ueh3
- 61jZ25R2qXdwe8snqkinJZ/hz39h6hdE6VrDQXMmmCTsFu7XocDBGk2w+LF+VIP61d9pr4gbC
- w6LYDWXNUGAcYTnuBgmHCijywMMnjTdzsBq9gGjUxrUZhEtjqMbrNmECAydAXvAl/YK2B6i/m
- tG+l16vnTYe1cdNSVfrggukPiGUCtfsu6A35RfQ==
-X-Mailman-Approved-At: Sun, 19 Apr 2020 09:38:23 +0200
-Cc: alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 8bit
+X-Mailman-Approved-At: Sun, 19 Apr 2020 09:38:22 +0200
+Cc: alsa-devel@alsa-project.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Zzy Wysm <zzy@zzywysm.com>, "J. Bruce Fields" <bfields@fieldses.org>,
+ target-devel@vger.kernel.org, Dave Jiang <dave.jiang@intel.com>,
+ linux-scsi@vger.kernel.org, linux-nvdimm@lists.01.org,
+ Vishal Verma <vishal.l.verma@intel.com>, linux-input@vger.kernel.org,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-nfs@vger.kernel.org,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Chuck Lever <chuck.lever@oracle.com>,
+ linux-fsdevel@vger.kernel.org, Johannes Berg <johannes@sipsolutions.net>,
+ Linus Torvalds <torvalds@linux-foundation.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -110,28 +111,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-PROBLEM: No sound on ASUS ROG Zenith Extreme since 5.6.5
+On 4/18/20 11:41 AM, Randy Dunlap wrote:
+> --- linux-next-20200327.orig/include/linux/kernel.h
+> +++ linux-next-20200327/include/linux/kernel.h
+> @@ -40,6 +40,14 @@
+>   #define READ			0
+>   #define WRITE			1
+>   
+> +/*
+> + * When using -Wextra, an "if" statement followed by an empty block
+> + * (containing only a ';'), produces a warning from gcc:
+> + * warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
+> + * Replace the empty body with do_empty() to silence this warning.
+> + */
+> +#define do_empty()		do { } while (0)
+> +
+>   /**
+>    * ARRAY_SIZE - get the number of elements in array @arr
+>    * @arr: array to be sized
 
-When I upgraded from 5.6.4 to 5.6.5 I noticed that my sound stopped workin=
-g.
+I'm less than enthusiast about introducing a new macro to suppress 
+"empty body" warnings. Anyone who encounters code in which this macro is 
+used will have to look up the definition of this macro to learn what it 
+does. Has it been considered to suppress empty body warnings by changing 
+the empty bodies from ";" into "{}"?
 
-My motherboard is a first generation "ASUS ROG Zenith Extreme".
-(I'm running Ubuntu 18.04 in case that matters.)
+Thanks,
 
-I'm pretty sure it comes from stable kernel release commit
-7f722d9aa00fde795834840cc84e13a94efb29ed
-(git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git) which
-notes "commit 3c6fd1f07ed03a04debbb9a9d782205f1ef5e2ab upstream."
-("ALSA: hda: Add driver blacklist").
-
-When I comment out 'SND_PCI_QUIRK(0x1043, 0x874f, "ASUS ROG Zenith II /
-Strix", 0),' in sound/pci/hda/hda_intel.c my sound works again.
-
-(In case I chose incorrect places to write this mail to I'm sorry. I
-tried to follow
-https://www.kernel.org/doc/html/latest/admin-guide/reporting-bugs.html
-while keeping this report minimal.)
-
-
-Kind regards
-John
+Bart.
