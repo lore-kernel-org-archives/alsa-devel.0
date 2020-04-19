@@ -7,63 +7,63 @@ X-Spam-Status: No, score=-8.6 required=3.0 tests=DATE_IN_PAST_06_12,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88F18C3815B
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 06:49:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AAB87C3815B
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 06:49:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0AFFF2080C
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 06:49:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 367272080C
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 06:49:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="N6dzR+LK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0AFFF2080C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eOEV4+Wn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 367272080C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5FCC11685;
-	Mon, 20 Apr 2020 08:48:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5FCC11685
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8FDB71669;
+	Mon, 20 Apr 2020 08:48:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8FDB71669
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587365340;
-	bh=qyFALTExVXcDffyFf0irIbyzdCO8jIXi60eG/JicvVs=;
+	s=default; t=1587365379;
+	bh=Rb6BOj/mE5hE3papW8pmEJeYFfn9NkW7r27ac4OoWbc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=N6dzR+LKxaBiDMgYIy5LC6j2CnewJWydPiUZLxRdxrWe9ek4fPgknheWZUJN/+HlI
-	 WlXQVCxU65VydgtIln01boZAwuEDR88snRcvM8o331CNbBNs3M8Nm3zV0RFVzpqqYw
-	 GwkPXkkCLRsdlDLz0G8VPrvu+GnZfA2utkkGdi1g=
+	b=eOEV4+WncFi+Ie0/iEsegTDK0vu1BCNqpcTvZ2Hf3pF/fdHQwqBJZ+E882lFwM4uS
+	 Y5JxrC4CWuHo/SlerSRilEN5HYJtSAOvyBT0BRDaxSe6o+RQZVs8/Li+6ae/pjNjqU
+	 67QZoaTCoQdDMGPSgz3oCfEqUB6zpNlj24ase63Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AFB60F80290;
-	Mon, 20 Apr 2020 08:46:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C65FCF8029B;
+	Mon, 20 Apr 2020 08:46:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A55D8F8020C; Mon, 20 Apr 2020 08:46:25 +0200 (CEST)
+ id E9D66F802A0; Mon, 20 Apr 2020 08:46:34 +0200 (CEST)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CC9B3F8013E
- for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2020 08:46:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC9B3F8013E
-IronPort-SDR: lHv6qLemlZ7ySYAknlvxw3SwpDYYwRU0MuXvqBKNd4nDzov7/G3uKEVndIqFAhTqqWnMcArwdX
- RprVjoEBsdkg==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1A6DAF800E7
+ for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2020 08:46:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A6DAF800E7
+IronPort-SDR: 7UQGC29OkJoryrxvkX57JNOQloUzZ1zC0evXVj0Wzs1svKWNauLdJKC82bl85qEb7O5QF7NVfk
+ PzC+BCCI6OHA==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Apr 2020 23:46:18 -0700
-IronPort-SDR: T4KuRKpBastEipwwcrHj56w6uBy88P3DfXnn8EcpQIXCDxzl9CtqmmLg+B7x3rlSmHQUlPzCP2
- WqZ72Z0WLG2Q==
+ 19 Apr 2020 23:46:22 -0700
+IronPort-SDR: 1hIjqnFsmjxCqW/SsUJrW0agOg7YlfuopBvTXfe1eDrX2yGroLKkHinBhEtTHrie5flPqXPBkK
+ WLvX6uCu4wlg==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,406,1580803200"; d="scan'208";a="254845045"
+X-IronPort-AV: E=Sophos;i="5.72,406,1580803200"; d="scan'208";a="254845081"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
- by orsmga003.jf.intel.com with ESMTP; 19 Apr 2020 23:46:14 -0700
+ by orsmga003.jf.intel.com with ESMTP; 19 Apr 2020 23:46:18 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH 3/4] soundwire: debugfs: clarify SDPX license with GPL-2.0-only
-Date: Mon, 20 Apr 2020 02:51:16 +0800
-Message-Id: <20200419185117.4233-3-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 4/4] soundwire: bus: reduce verbosity on enumeration
+Date: Mon, 20 Apr 2020 02:51:17 +0800
+Message-Id: <20200419185117.4233-4-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200419185117.4233-1-yung-chuan.liao@linux.intel.com>
 References: <20200419185117.4233-1-yung-chuan.liao@linux.intel.com>
@@ -90,26 +90,34 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Follow recommendation to use GPL-2.0-only
+No need to repeat the same info log on all enumerations (essentially
+each power-up), keep it as debug information.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- drivers/soundwire/debugfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/soundwire/bus.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/soundwire/debugfs.c b/drivers/soundwire/debugfs.c
-index fb1140e82b86..b6cad0d59b7b 100644
---- a/drivers/soundwire/debugfs.c
-+++ b/drivers/soundwire/debugfs.c
-@@ -1,4 +1,4 @@
--// SPDX-License-Identifier: GPL-2.0
-+// SPDX-License-Identifier: GPL-2.0-only
- // Copyright(c) 2017-2019 Intel Corporation.
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index 488c3c9e4947..f9a078ce76bc 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -563,9 +563,9 @@ static int sdw_assign_device_num(struct sdw_slave *slave)
+ 	}
  
- #include <linux/device.h>
+ 	if (!new_device)
+-		dev_info(slave->bus->dev,
+-			 "Slave already registered, reusing dev_num:%d\n",
+-			 slave->dev_num);
++		dev_dbg(slave->bus->dev,
++			"Slave already registered, reusing dev_num:%d\n",
++			slave->dev_num);
+ 
+ 	/* Clear the slave->dev_num to transfer message on device 0 */
+ 	dev_num = slave->dev_num;
 -- 
 2.17.1
 
