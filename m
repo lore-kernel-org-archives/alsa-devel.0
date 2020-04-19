@@ -2,65 +2,59 @@ Return-Path: <SRS0=/ZdJ=6D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D9F34C2BA2B
-	for <alsa-devel@archiver.kernel.org>; Sun, 19 Apr 2020 07:18:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E4200C2BA2B
+	for <alsa-devel@archiver.kernel.org>; Sun, 19 Apr 2020 07:20:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5BA3621473
-	for <alsa-devel@archiver.kernel.org>; Sun, 19 Apr 2020 07:18:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5FFF421D82
+	for <alsa-devel@archiver.kernel.org>; Sun, 19 Apr 2020 07:20:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tpwIv0Sj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5BA3621473
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KElkQIVc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5FFF421D82
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AA33115F2;
-	Sun, 19 Apr 2020 09:17:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA33115F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id CBAEA1663;
+	Sun, 19 Apr 2020 09:19:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CBAEA1663
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587280720;
-	bh=IUgN8401wNRtMWOEDcPPbWkBnjRvVrv9KYkIXMdMbcU=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=tpwIv0SjMm4Uey87Xjw3kcQWLmhLaHQuPAb5j6qXrhqSJCwkfX3AUBRkq4exZFWj7
-	 q7vYHD2lI9NXOPMcsftvGa/b+bsFSn+g72/N3x6u8TSVR/PW9x5IFR7AhtValsNMze
-	 prRzRCN6n2bOUcWO0hZZL3fgu8+XvubGwHQHTFbA=
+	s=default; t=1587280824;
+	bh=NY+Np638p15qSLolt6P9fviXEUQWlQYNLLV9nWh40A8=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=KElkQIVcRCSmdkw1e7mayKcctzRw4j/b49qGm1EzOmiuvfmFzXrAjUnbG2onZ2Ce3
+	 IzFGvLIuiQg+0580kq4ygyg66HzNAVOBLKrA0wLu2etSU4Uzd06E9yKsic4V8luOzn
+	 F07P7cMk8lD0CW3fMokBEnSUs3zf50MgqHZ9r/BI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 18FD2F8011F;
-	Sun, 19 Apr 2020 09:17:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D5C2AF800BA;
+	Sun, 19 Apr 2020 09:19:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0B84DF801EC; Sun, 19 Apr 2020 09:17:46 +0200 (CEST)
+ id 32DBFF801F5; Sun, 19 Apr 2020 09:19:31 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5DC9BF8011F
- for <alsa-devel@alsa-project.org>; Sun, 19 Apr 2020 09:17:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5DC9BF8011F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 98FFEF8011F
+ for <alsa-devel@alsa-project.org>; Sun, 19 Apr 2020 09:19:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98FFEF8011F
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 5B9ACAB3D;
- Sun, 19 Apr 2020 07:17:40 +0000 (UTC)
-Date: Sun, 19 Apr 2020 09:17:40 +0200
-Message-ID: <s5hwo6c6j1n.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id B84ECABE7;
+ Sun, 19 Apr 2020 07:19:27 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
-To: Johnathan Smithinovic <johnathan.smithinovic@gmx.at>
-Subject: Re: PROBLEM: No sound on ASUS ROG Zenith Extreme in 5.6.5
-In-Reply-To: <f19e2e93-8d6d-207b-202a-5ceeab0f8571@gmx.at>
-References: <f19e2e93-8d6d-207b-202a-5ceeab0f8571@gmx.at>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, tiwai@suse.com
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: hda: Remove ASUS ROG Zenith from the blacklist
+Date: Sun, 19 Apr 2020 09:19:26 +0200
+Message-Id: <20200419071926.22683-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
+Cc: Johnathan Smithinovic <johnathan.smithinovic@gmx.at>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,39 +70,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 18 Apr 2020 23:22:41 +0200,
-Johnathan Smithinovic wrote:
-> 
-> PROBLEM: No sound on ASUS ROG Zenith Extreme since 5.6.5
-> 
-> When I upgraded from 5.6.4 to 5.6.5 I noticed that my sound stopped working.
-> 
-> My motherboard is a first generation "ASUS ROG Zenith Extreme".
-> (I'm running Ubuntu 18.04 in case that matters.)
-> 
-> I'm pretty sure it comes from stable kernel release commit
-> 7f722d9aa00fde795834840cc84e13a94efb29ed
-> (git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git) which
-> notes "commit 3c6fd1f07ed03a04debbb9a9d782205f1ef5e2ab upstream."
-> ("ALSA: hda: Add driver blacklist").
-> 
-> When I comment out 'SND_PCI_QUIRK(0x1043, 0x874f, "ASUS ROG Zenith II /
-> Strix", 0),' in sound/pci/hda/hda_intel.c my sound works again.
-> 
-> (In case I chose incorrect places to write this mail to I'm sorry. I
-> tried to follow
-> https://www.kernel.org/doc/html/latest/admin-guide/reporting-bugs.html
-> while keeping this report minimal.)
+The commit 3c6fd1f07ed0 ("ALSA: hda: Add driver blacklist") added a
+new blacklist for the devices that are known to have empty codecs, and
+one of the entries was ASUS ROG Zenith II (PCI SSID 1043:874f).
+However, it turned out that the very same PCI SSID is used for the
+previous model that does have the valid HD-audio codecs and the change
+broke the sound on it.
 
-Oh that's bad, ASUS didn't give a unique ID for each model.
+This patch reverts the corresponding entry as a temporary solution.
+Although Zenith II and co will see get the empty HD-audio bus again,
+it'd be merely resource wastes and won't affect the functionality,
+so it's no end of the world.  We'll need to address this later,
+e.g. by either switching to DMI string matching or using PCI ID &
+SSID pairs.
 
-I'm going to remove the entry for ASUS ROG Zenith as a quick solution,
-and we'll need to address in a different way, either switching to DMI
-matching or matching of both PCI ID and SSID later.
+Fixes: 3c6fd1f07ed0 ("ALSA: hda: Add driver blacklist")
+Reported-by: Johnathan Smithinovic <johnathan.smithinovic@gmx.at>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/hda_intel.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Could you give "lspci -nv" output for the corresponding device?
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index a5fab12defde..d7adae316c0d 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2092,7 +2092,6 @@ static void pcm_mmap_prepare(struct snd_pcm_substream *substream,
+  * should be ignored from the beginning.
+  */
+ static const struct snd_pci_quirk driver_blacklist[] = {
+-	SND_PCI_QUIRK(0x1043, 0x874f, "ASUS ROG Zenith II / Strix", 0),
+ 	SND_PCI_QUIRK(0x1462, 0xcb59, "MSI TRX40 Creator", 0),
+ 	SND_PCI_QUIRK(0x1462, 0xcb60, "MSI TRX40", 0),
+ 	{}
+-- 
+2.16.4
 
-
-thanks,
-
-Takashi
