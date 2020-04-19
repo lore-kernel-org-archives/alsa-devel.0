@@ -7,63 +7,67 @@ X-Spam-Status: No, score=-8.6 required=3.0 tests=DATE_IN_PAST_06_12,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 18959C3815B
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 06:47:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D0CDC3815B
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 06:48:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9458E2072B
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 06:47:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B4A5B2072B
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 06:48:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tMPce/UF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9458E2072B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mPOR/Rtx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B4A5B2072B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EEAD39F6;
-	Mon, 20 Apr 2020 08:46:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EEAD39F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id B3A051671;
+	Mon, 20 Apr 2020 08:47:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3A051671
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587365237;
-	bh=/+XsRIRTH9fgPZkHp38Flj4+a/9jYmsOaYBVSPFCu28=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=tMPce/UF5oScyW3NWl3bvVssIyzinKes5ks5I8yPyzUaDfwIlXqmFOaDzQSVThf/N
-	 7+gRUPZ0C8nriCg8KXEP/12kfT6/YPeD5jPf76ZnHkbGwZdFXPJHTiTblLKYtuwaAe
-	 Zp1ywNmRNSO6JAiD++Nb0LFjVkE14irmCogggPJc=
+	s=default; t=1587365289;
+	bh=UPO63IA0et1J4dPogihqVT364iAzPTcSgK1yZK+KSWo=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=mPOR/Rtx82R65QVfPbSK+drUyPHoSuHTa+FK2rE9YxY52Kbnu5aB2Jr4+hyOSGnhI
+	 U5KtrFt0nbYYKbgnZJrO2V/RTbobZBuDlKwMF++LVEQ3QwjZc6Qg7AhBODONxscbyZ
+	 UN3jWkgQwoJDUScGC+3V608AQnAVuEjuDS38fkmk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 645B9F801D9;
-	Mon, 20 Apr 2020 08:46:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 88894F8025E;
+	Mon, 20 Apr 2020 08:46:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ECF7AF8020C; Mon, 20 Apr 2020 08:46:20 +0200 (CEST)
+ id 57AB1F8020C; Mon, 20 Apr 2020 08:46:23 +0200 (CEST)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7D6C3F800E7
- for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2020 08:46:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D6C3F800E7
-IronPort-SDR: LcGnTsbIrtDREBHMOn7Hd3KGQ9Necx2OjxxvT9IWYo8INgUN4hERZr0B5cDZMmLV70wJ+199Uz
- iYHurt7I8Mpg==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0472BF8012F
+ for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2020 08:46:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0472BF8012F
+IronPort-SDR: mzvBz/5DiQB21vKkJlwCPwg25xaLLP2PrJXqKBwRtPss3NxTyOo6BtfdMUsoPCpMLxNV1KETQR
+ Rfz1WCjI7bKQ==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Apr 2020 23:46:11 -0700
-IronPort-SDR: CEQtgG2TlUFykrrmk1GKgfeLqWwsttNnsS0NGryxHW7Vz/K5W/HCCcTcYK1gppwZ8oYXG+803K
- 2vLggYJXz9Mg==
+ 19 Apr 2020 23:46:14 -0700
+IronPort-SDR: kYsZmxlvfHVouUJz0fAMsoxJ/AXjI3zVXW7Ypty2ZvLx/CCneH2fs77gev+QuMC2YYzH7s4JJO
+ GD7KISwO7cOg==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,406,1580803200"; d="scan'208";a="254845023"
+X-IronPort-AV: E=Sophos;i="5.72,406,1580803200"; d="scan'208";a="254845027"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
- by orsmga003.jf.intel.com with ESMTP; 19 Apr 2020 23:46:06 -0700
+ by orsmga003.jf.intel.com with ESMTP; 19 Apr 2020 23:46:10 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH 1/4] Documentation: SoundWire: clarify TDM mode support
-Date: Mon, 20 Apr 2020 02:51:14 +0800
-Message-Id: <20200419185117.4233-1-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 2/4] soundwire: slave: don't init debugfs on device
+ registration error
+Date: Mon, 20 Apr 2020 02:51:15 +0800
+Message-Id: <20200419185117.4233-2-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200419185117.4233-1-yung-chuan.liao@linux.intel.com>
+References: <20200419185117.4233-1-yung-chuan.liao@linux.intel.com>
 Cc: pierre-louis.bossart@linux.intel.com, tiwai@suse.de,
  gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
  ranjani.sridharan@linux.intel.com, hui.wang@canonical.com, broonie@kernel.org,
@@ -87,137 +91,30 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-The current description of stream topologies does not explicitly
-mention 'mirror' topologies used for audio amplifiers, where all
-amplifiers see the same data and generate a different output based on
-configuration or dynamic information. Add examples and notes to
-explain how channels can be transmitted and mapped.
+The error handling flow seems incorrect, there is no reason to try and
+add debugfs support if the device registration did not
+succeed. Return on error.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 ---
- Documentation/driver-api/soundwire/stream.rst | 89 ++++++++++++++++++-
- 1 file changed, 86 insertions(+), 3 deletions(-)
+ drivers/soundwire/slave.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/driver-api/soundwire/stream.rst b/Documentation/driver-api/soundwire/stream.rst
-index 8bceece51554..1b386076402c 100644
---- a/Documentation/driver-api/soundwire/stream.rst
-+++ b/Documentation/driver-api/soundwire/stream.rst
-@@ -75,8 +75,33 @@ Slaves are using single port. ::
- 	                                                   |     (Data)    |
- 	                                                   +---------------+
- 
-+Example 4: Stereo Stream with L and R channels is rendered by
-+Master. Both of the L and R channels are received by two different
-+Slaves. Master and both Slaves are using single port handling
-+L+R. Each Slave device processes the L + R data locally, typically
-+based on static configuration or dynamic orientation, and may drive
-+one or more speakers. ::
- 
--Example 4: Stereo Stream with L and R channel is rendered by two different
-+	+---------------+                    Clock Signal  +---------------+
-+	|    Master     +---------+------------------------+     Slave     |
-+	|   Interface   |         |                        |   Interface   |
-+	|               |         |                        |       1       |
-+	|               |         |           Data Signal  |               |
-+	|    L  +  R    +---+------------------------------+     L + R     |
-+	|     (Data)    |   |     |    Data Direction      |     (Data)    |
-+	+---------------+   |     |   +------------->      +---------------+
-+	                    |     |
-+	                    |     |
-+	                    |     |                        +---------------+
-+	                    |     +----------------------> |     Slave     |
-+	                    |                              |   Interface   |
-+	                    |                              |       2       |
-+	                    |                              |               |
-+	                    +----------------------------> |     L + R     |
-+	                                                   |     (Data)    |
-+	                                                   +---------------+
+diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
+index aace57fae7f8..4bacdb187eab 100644
+--- a/drivers/soundwire/slave.c
++++ b/drivers/soundwire/slave.c
+@@ -68,6 +68,8 @@ static int sdw_slave_add(struct sdw_bus *bus,
+ 		list_del(&slave->node);
+ 		mutex_unlock(&bus->bus_lock);
+ 		put_device(&slave->dev);
 +
-+Example 5: Stereo Stream with L and R channel is rendered by two different
- Ports of the Master and is received by only single Port of the Slave
- interface. ::
- 
-@@ -101,7 +126,7 @@ interface. ::
- 	+--------------------+                             |                |
- 							   +----------------+
- 
--Example 5: Stereo Stream with L and R channel is rendered by 2 Masters, each
-+Example 6: Stereo Stream with L and R channel is rendered by 2 Masters, each
- rendering one channel, and is received by two different Slaves, each
- receiving one channel. Both Masters and both Slaves are using single port. ::
- 
-@@ -123,12 +148,70 @@ receiving one channel. Both Masters and both Slaves are using single port. ::
- 	|     (Data)    |     Data Direction               |     (Data)    |
- 	+---------------+  +----------------------->       +---------------+
- 
--Note: In multi-link cases like above, to lock, one would acquire a global
-+Example 7: Stereo Stream with L and R channel is rendered by 2
-+Masters, each rendering both channels. Each Slave receives L + R. This
-+is the same application as Example 4 but with Slaves placed on
-+separate links. ::
-+
-+	+---------------+                    Clock Signal  +---------------+
-+	|    Master     +----------------------------------+     Slave     |
-+	|   Interface   |                                  |   Interface   |
-+	|       1       |                                  |       1       |
-+	|               |                     Data Signal  |               |
-+	|     L + R     +----------------------------------+     L + R     |
-+	|     (Data)    |     Data Direction               |     (Data)    |
-+	+---------------+  +----------------------->       +---------------+
-+
-+	+---------------+                    Clock Signal  +---------------+
-+	|    Master     +----------------------------------+     Slave     |
-+	|   Interface   |                                  |   Interface   |
-+	|       2       |                                  |       2       |
-+	|               |                     Data Signal  |               |
-+	|     L + R     +----------------------------------+     L + R     |
-+	|     (Data)    |     Data Direction               |     (Data)    |
-+	+---------------+  +----------------------->       +---------------+
-+
-+Example 8: 4-channel Stream is rendered by 2 Masters, each rendering a
-+2 channels. Each Slave receives 2 channels. ::
-+
-+	+---------------+                    Clock Signal  +---------------+
-+	|    Master     +----------------------------------+     Slave     |
-+	|   Interface   |                                  |   Interface   |
-+	|       1       |                                  |       1       |
-+	|               |                     Data Signal  |               |
-+	|    L1 + R1    +----------------------------------+    L1 + R1    |
-+	|     (Data)    |     Data Direction               |     (Data)    |
-+	+---------------+  +----------------------->       +---------------+
-+
-+	+---------------+                    Clock Signal  +---------------+
-+	|    Master     +----------------------------------+     Slave     |
-+	|   Interface   |                                  |   Interface   |
-+	|       2       |                                  |       2       |
-+	|               |                     Data Signal  |               |
-+	|     L2 + R2   +----------------------------------+    L2 + R2    |
-+	|     (Data)    |     Data Direction               |     (Data)    |
-+	+---------------+  +----------------------->       +---------------+
-+
-+Note1: In multi-link cases like above, to lock, one would acquire a global
- lock and then go on locking bus instances. But, in this case the caller
- framework(ASoC DPCM) guarantees that stream operations on a card are
- always serialized. So, there is no race condition and hence no need for
- global lock.
- 
-+Note2: A Slave device may be configured to receive all channels
-+transmitted on a link for a given Stream (Example 4) or just a subset
-+of the data (Example 3). The configuration of the Slave device is not
-+handled by a SoundWire subsystem API, but instead by the
-+snd_soc_dai_set_tdm_slot() API. The platform or machine driver will
-+typically configure which of the slots are used. For Example 4, the
-+same slots would be used by all Devices, while for Example 3 the Slave
-+Device1 would use e.g. Slot 0 and Slave device2 slot 1.
-+
-+Note3: Multiple Sink ports can extract the same information for the
-+same bitSlots in the SoundWire frame, however multiple Source ports
-+shall be configured with different bitSlot configurations. This is the
-+same limitation as with I2S/PCM TDM usages.
-+
- SoundWire Stream Management flow
- ================================
++		return ret;
+ 	}
+ 	sdw_slave_debugfs_init(slave);
  
 -- 
 2.17.1
