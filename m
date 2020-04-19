@@ -2,97 +2,102 @@ Return-Path: <SRS0=/ZdJ=6D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 51211C38A30
-	for <alsa-devel@archiver.kernel.org>; Sun, 19 Apr 2020 12:04:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 891D5C38A30
+	for <alsa-devel@archiver.kernel.org>; Sun, 19 Apr 2020 13:10:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C4C8121744
-	for <alsa-devel@archiver.kernel.org>; Sun, 19 Apr 2020 12:04:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 120A222202
+	for <alsa-devel@archiver.kernel.org>; Sun, 19 Apr 2020 13:10:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IsQBphYJ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="BQIo366f"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C4C8121744
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SEq3lVU+";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="b6jiTsUP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 120A222202
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gmx.at
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2215C1663;
-	Sun, 19 Apr 2020 14:03:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2215C1663
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5DE50823;
+	Sun, 19 Apr 2020 15:09:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5DE50823
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587297850;
-	bh=x2vOiaCnxxSwfQdLjmqVJM8lbr3nu9ilx4uLADcHgbI=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1587301798;
+	bh=XMOjf4v4FytdGkRxekhA0bRnpespfugoVEYzub+5rGM=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IsQBphYJhyEOqaN2zFRqUnqmjGWmH9nZu1/bybZ4TzZdERTdi3sIZTdBnen0wgJ4n
-	 A1/P46lGJxIviTLuF2FL3Bj8pfLZ7IxvfHfDUJp4Q2K6BM7Y2EIKgRhMK/ZHq14xhS
-	 qP6+nKa0g2FGJy6cmB664zcdEDcxeb+AAp6qisyU=
+	b=SEq3lVU+wYVsFiEu8n2r2VZ+e6M0XzDC8SZHdYF+fodz+AfBStQ86KVJrbvK6n9W2
+	 nHvUT+JxgBe228u4q6Xcn9ohZnDWo6dtMDe/SSDPe3vHaci5vRrg4V45qIomdIljgc
+	 cmWFiVCKM9EOu1en2uQN8gdMC3mMQ1U0zqxryJ1U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B33B9F800E7;
-	Sun, 19 Apr 2020 14:03:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D3851F800E7;
+	Sun, 19 Apr 2020 15:09:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E438FF801EC; Sun, 19 Apr 2020 14:03:17 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 9BA71F801EC; Sun, 19 Apr 2020 15:09:05 +0200 (CEST)
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AA23DF800E7
- for <alsa-devel@alsa-project.org>; Sun, 19 Apr 2020 14:03:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA23DF800E7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 45618F800E7
+ for <alsa-devel@alsa-project.org>; Sun, 19 Apr 2020 15:09:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45618F800E7
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="BQIo366f"
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl
- [83.86.89.107])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id EEB2F21841;
- Sun, 19 Apr 2020 12:03:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1587297788;
- bh=x2vOiaCnxxSwfQdLjmqVJM8lbr3nu9ilx4uLADcHgbI=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=BQIo366fubUyRRR8gy2ghwhRQu0Kwnh4p0dbM2JbxKVFUDW8yZ1SDgiYSl5JqwVeR
- wZ5SL8Ku8jXAHvkI6SEOWx2BKIwYfUnNkbRnpiO/xRR81S6FYbEAx2Q4OceLmb8Ctn
- LwJSFTVsq/8XLc3RC94BktgRcZXJ/hdv3QPM50lA=
-Date: Sun, 19 Apr 2020 14:03:04 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH 7/9] drivers/base: fix empty-body warnings in devcoredump.c
-Message-ID: <20200419120304.GA3668771@kroah.com>
-References: <20200418184111.13401-1-rdunlap@infradead.org>
- <20200418184111.13401-8-rdunlap@infradead.org>
- <20200418185033.GQ5820@bombadil.infradead.org>
- <b88d6f8b-e6af-7071-cefa-dc12e79116b6@infradead.org>
- <d018321b0f281ff29efb04dd1496c8e6499812fb.camel@perches.com>
- <CAHk-=wi4QU90W1j1VVUrqdrkrq-0XPA06sjGUm-g1VHRB-35YA@mail.gmail.com>
+ dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net
+ header.b="b6jiTsUP"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+ s=badeba3b8450; t=1587301736;
+ bh=XMOjf4v4FytdGkRxekhA0bRnpespfugoVEYzub+5rGM=;
+ h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+ b=b6jiTsUPtD5qnyhwlk/bkhVbj9Nd1THncQdXOB92gLLvAfetEAgkac4awOKEN7ROG
+ HFxLWlJ4m52/7qY3P8DKZS5OJdqKrKl++naTEdSBvtwNA7aXfl9lG5DkeqCY2uSzAf
+ 7Bk4aBDTZzYbQKow9xhYZqAEePOBr39KbX8hxnOM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.178.36] ([85.127.240.3]) by mail.gmx.com (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MbzyJ-1iobod1jWZ-00dVLR; Sun, 19
+ Apr 2020 15:08:56 +0200
+Subject: Re: PROBLEM: No sound on ASUS ROG Zenith Extreme in 5.6.5
+To: Takashi Iwai <tiwai@suse.de>
+References: <f19e2e93-8d6d-207b-202a-5ceeab0f8571@gmx.at>
+ <s5hwo6c6j1n.wl-tiwai@suse.de>
+From: Johnathan Smithinovic <johnathan.smithinovic@gmx.at>
+Message-ID: <6c4228e1-198e-1647-dc59-45910eafaec5@gmx.at>
+Date: Sun, 19 Apr 2020 15:08:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wi4QU90W1j1VVUrqdrkrq-0XPA06sjGUm-g1VHRB-35YA@mail.gmail.com>
-Cc: alsa-devel@alsa-project.org, Randy Dunlap <rdunlap@infradead.org>,
- Rafael Wysocki <rafael@kernel.org>, Zzy Wysm <zzy@zzywysm.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- "J. Bruce Fields" <bfields@fieldses.org>,
- target-devel <target-devel@vger.kernel.org>, Dave Jiang <dave.jiang@intel.com>,
- linux-scsi <linux-scsi@vger.kernel.org>,
- linux-nvdimm <linux-nvdimm@lists.01.org>,
- Vishal Verma <vishal.l.verma@intel.com>, Matthew Wilcox <willy@infradead.org>,
- Chuck Lever <chuck.lever@oracle.com>, linux-input@vger.kernel.org,
- Joe Perches <joe@perches.com>, Alexander Viro <viro@zeniv.linux.org.uk>,
- Dan Williams <dan.j.williams@intel.com>,
- Andrew Morton <akpm@linux-foundation.org>, "open list:NFS, SUNRPC,
- AND..." <linux-nfs@vger.kernel.org>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- linux-usb@vger.kernel.org, linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- Johannes Berg <johannes@sipsolutions.net>
+In-Reply-To: <s5hwo6c6j1n.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:f2XVojTiuKepvjjseq8aYIngeLiqOIVCCvVuZdvIxFR57DuTxtf
+ U08Pz3U3CHSLkhL99eV1gm0H54CBBfFeFE9fi8dOuRbZsl5rk52Dd3hXdEnsOFCoXT395N+
+ e8NVSx3cRzS2+NsW3oYljV5CLA+J+kD8f3A+NwuXRP0yDFNYvlSCnbgnFr5pdosjtWyvRvW
+ 9F9+6ba8QMf8A2uXYmX9w==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:bFVJTuRdhJM=:xMgdJbgH/NCHoMqz5s5G0+
+ APe/5OxJzPLKopYyPIyr29wyeZaBQnywH4/mcg3E5aCkP7vwQJRsYqfAt4/o891Fk8dP4v5ss
+ TwCKyynSf7tnGx9iprCXghttkaHV8QtdCk58gq2HcTLZtp1hPCIu+2Fvr/SNY+VcmDaw7ZGgA
+ QqLCaRFBbB+N6QAXaKC3rRQO6XD9xVZQorzZ8BxW3hXnwkdI/a5ZwLEceCPfmxHPvLQoyYNTc
+ +9DlWZQ7UrX6yIZ9t4/Gckhze4tQPd7Ovt4r+EX4cC5tY6nW6SULnZ0DwhtDGPD7iJXbiW4h8
+ 6LBsOJCBMpUSxXP3mqm+D38OsFsgkMCBx4YUU1r38B4aPt1fZ2Y5uhdEvHXCgtAF8etxyWugi
+ Xr74tGSHzPB7sUg/y5uESqKchXgS7Bsmg8BOle04eKxA32mKKx+LkBjobK+mIGGPacWYk/m1V
+ JpImYXtXPXD+RKgg+f+WvdDw7rREtItdyP3VuXPaRyaajw5a9piNHV84MD7ljcFUUwKxE7T7r
+ sKBFS7T2cn+rmhEMUGOkKW+mnSEv/vvfMWQLSVqZ7EUtlK/Zt1nxeu4ShY5irOVs1mcu24Bdd
+ 9YnsW0LCj9a4D1EyWL9G2b2e2+rCqEREci9YYhf7juC+Ab4VBf2QpaIVT8t/EmSJl3DzGJxKo
+ jULdF3P0Y6pS2Bg9D95hos+YB1JVhz9THFvQGPyeIsCA5j0qWV2BJHjoz1CP4l9GEUcbr9mAS
+ UsyX8HptGsczMXa1rYfeO5dGl2d3QJCYBqjBWsE7RAVZwOT9cTbFjG0o+q/ag1z1q2QVio3N3
+ ANlvWXpChl27X7Y+r03gWr6hQIA1fWXJxYSedBDsSUXk2jCX3ZlkZ4fJXS8vkSfEG8HR9QPHx
+ /uwuz1eC3r1QhiY15Tlwny7KVZPAXKfWI+Hxwvi80dLf6AQrSNey+vq0DTS+/YhZMlsnhHBdk
+ dkx/ODMXkT9XJrJkhVUT7DhCs0t9u1it6sF3K3ofpswBCihiFOrFDfCSR/KsLU1GYVQK2S5Z/
+ 2fCj2dTfpJ2vunGOFFF+ME752iaTYdCUSpExyCxm/Rl/abWcLIhM+Phc9McbMx/gsdbexJ5Xn
+ Khp8e+9WCHfa/wkos6bczEn4qMd3QsRUq09Axh0I3sALM6pGzcNyxLX+RNEd2LU+aG4BhnQxq
+ 71SMSxpn8eO7+I+EIDbAg6Wo22GEVic9nZ8SN03Xt1LNn6KfD+ShNpvIBTWqTDCS9MOBEU97w
+ WTjJVGT5Rz7AG4SRCNJlhRziyit5YR7yqgAhA1Q==
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,35 +113,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, Apr 18, 2020 at 12:15:57PM -0700, Linus Torvalds wrote:
-> On Sat, Apr 18, 2020 at 11:57 AM Joe Perches <joe@perches.com> wrote:
-> >
-> > sysfs_create_link is __must_check
-> 
-> The way to handle __must_check if you really really don't want to test
-> and have good reasons is
-> 
->  (a) add a big comment about why this case ostensibly doesn't need the check
-> 
->  (b) cast a test of it to '(void)' or something (I guess we could add
-> a helper for this). So something like
-> 
->         /* We will always clean up, we don't care whether this fails
-> or succeeds */
->         (void)!!sysfs_create_link(...)
-> 
-> There are other alternatives (like using WARN_ON_ONCE() instead, for
-> example). So it depends on the code. Which is why that comment is
-> important to show why the code chose that option.
-> 
-> However, I wonder if in this case we should just remove the
-> __must_check. Greg? It goes back a long long time.
+On 19/04/2020 09:17, Takashi Iwai wrote:
+> On Sat, 18 Apr 2020 23:22:41 +0200,
+> Johnathan Smithinovic wrote:
+>>
+>> PROBLEM: No sound on ASUS ROG Zenith Extreme since 5.6.5
+>>
+>> When I upgraded from 5.6.4 to 5.6.5 I noticed that my sound stopped wor=
+king.
+>>
+>> My motherboard is a first generation "ASUS ROG Zenith Extreme".
+>> (I'm running Ubuntu 18.04 in case that matters.)
+>>
+>> I'm pretty sure it comes from stable kernel release commit
+>> 7f722d9aa00fde795834840cc84e13a94efb29ed
+>> (git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git) which
+>> notes "commit 3c6fd1f07ed03a04debbb9a9d782205f1ef5e2ab upstream."
+>> ("ALSA: hda: Add driver blacklist").
+>>
+>> When I comment out 'SND_PCI_QUIRK(0x1043, 0x874f, "ASUS ROG Zenith II /
+>> Strix", 0),' in sound/pci/hda/hda_intel.c my sound works again.
+>>
+>> (In case I chose incorrect places to write this mail to I'm sorry. I
+>> tried to follow
+>> https://www.kernel.org/doc/html/latest/admin-guide/reporting-bugs.html
+>> while keeping this report minimal.)
+>
+> Oh that's bad, ASUS didn't give a unique ID for each model.
+>
+> I'm going to remove the entry for ASUS ROG Zenith as a quick solution,
+> and we'll need to address in a different way, either switching to DMI
+> matching or matching of both PCI ID and SSID later.
+>
+> Could you give "lspci -nv" output for the corresponding device?
 
-Yeah, maybe it is time to remove it, the gyrations people go through to
-remove the warning when they "know" they are doing it right feels pretty
-bad compared to forcing people to check things for "normal" calls to the
-function.
+Hi,
 
-thanks,
+Output of `sudo lspci -nvs 09:00.3`:
+09:00.3 0403: 1022:1457
+	Subsystem: 1043:874f
+	Flags: bus master, fast devsel, latency 0, IRQ 146, NUMA node 0
+	Memory at b1800000 (32-bit, non-prefetchable) [size=3D32K]
+	Capabilities: [48] Vendor Specific Information: Len=3D08 <?>
+	Capabilities: [50] Power Management version 3
+	Capabilities: [64] Express Endpoint, MSI 00
+	Capabilities: [a0] MSI: Enable+ Count=3D1/1 Maskable- 64bit+
+	Capabilities: [100] Vendor Specific Information: ID=3D0001 Rev=3D1 Len=3D=
+010 <?>
+	Capabilities: [150] Advanced Error Reporting
+	Capabilities: [2a0] Access Control Services
+	Kernel driver in use: snd_hda_intel
+	Kernel modules: snd_hda_intel
 
-greg k-h
+Thanks a lot!
+John
+
