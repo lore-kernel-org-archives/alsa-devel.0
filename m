@@ -2,107 +2,89 @@ Return-Path: <SRS0=3aoS=6E=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B55E8C3815B
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 08:15:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9FFFC3815B
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 08:16:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 414EE20BED
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 08:15:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 60C42206B8
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 08:16:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="N39hbX+m";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="F96kxGnw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 414EE20BED
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="n8EuYQhd";
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Uru540pI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 60C42206B8
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9A279845;
-	Mon, 20 Apr 2020 10:14:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A279845
+	by alsa0.perex.cz (Postfix) with ESMTPS id BC6BD829;
+	Mon, 20 Apr 2020 10:15:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC6BD829
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587370522;
-	bh=bOt9BTn/I9BtpLW6MYPux7kH7zXf1KQ4OwttSbOUgxw=;
-	h=In-Reply-To:References:Subject:From:To:Date:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=N39hbX+mTOWazDxwkQV01qS0WKamn3VhvzCSQXldQeraBQCoQeOtltlfY9WhvVBXS
-	 K7njFHrwfrJd5+z9/0IAHOHtorlytHQR7DI3bW9LEB6vebFkHLdp8VCeh3HUdsPLZs
-	 x1r9o3CYxIAJDaYUU84iSgSlkkP/zjmC0fWMh5TE=
+	s=default; t=1587370570;
+	bh=lJPmfIhxskuEVN0sQJrDkjM6OLotlmIxpqTJj4OYe/8=;
+	h=From:Date:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=n8EuYQhd1XO08Gyqu08pYSO3jlAh/+lW6o3bGbfJ/zSmLuHAfKEOyA1jjij+DEeD3
+	 Qz3vBNo4Yexqsl43xrTz0wtaGxCCFA5p3hB+7b0/F09Xgi8X4gaY5w63op8Eox0Zdz
+	 X3Njr9AXwfn7EcdQWaisCI66653wEX9OXWqJNOCM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 444DFF8020C;
-	Mon, 20 Apr 2020 10:13:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 44901F8028C;
+	Mon, 20 Apr 2020 10:13:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 09529F801EC; Sun, 19 Apr 2020 20:14:45 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 445E5F801D9; Mon, 20 Apr 2020 09:22:28 +0200 (CEST)
+Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com
+ [IPv6:2607:f8b0:4864:20::c35])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1FB06F800E7
- for <alsa-devel@alsa-project.org>; Sun, 19 Apr 2020 20:14:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1FB06F800E7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7D6C3F8012F
+ for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2020 09:22:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D6C3F8012F
 Authentication-Results: alsa1.perex.cz;
- dkim=fail reason="signature verification failed" (1024-bit key)
- header.d=kernel.org header.i=@kernel.org header.b="F96kxGnw"
-Received: from kernel.org (unknown [104.132.0.74])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 3440920771;
- Sun, 19 Apr 2020 18:14:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1587320079;
- bh=bOt9BTn/I9BtpLW6MYPux7kH7zXf1KQ4OwttSbOUgxw=;
- h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
- b=F96kxGnwb5hbRo2uaveExMkh4pG5tmsfXC/X4f7LcIR9NVVk3+CXqwPimCRGIZsLq
- 200DZ+NlYkyxPrNFkbuYootDCzDqqWFu0hJkAVPZpKUAgkDDPBPfI6mIZvHi8k+VtM
- aJNXnDOzYimf/GSU7Z8wIQIZEF7kJxvbDOxdjZqA=
-Content-Type: text/plain; charset="utf-8"
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="Uru540pI"
+Received: by mail-oo1-xc35.google.com with SMTP id 190so1900759ooa.12
+ for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2020 00:22:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:from:date:message-id:subject:to:cc;
+ bh=xln4YDfUucddPO2RJjviiXNHhEKT4FTEt8hSue+CsDQ=;
+ b=Uru540pIiEOaCaISeIQGvJld/naAvaf7lbWhlsPgpwc3GBkVHkw4z5rNHQlmSqa2Dl
+ PCjDgbMNvaqP+KbVRk+DS6g0rRj2Xqrx1bwxsMMI+w8z+98mV+MfvSOEqq9t5iTkyMwF
+ wzAiHqKZfkKW1WzGChL4C+GoCY4mQ4zreOSOTlcgxkgeVA+GWqWXXaJEcR0dE0dE2vBZ
+ PNM0ZlrHftCXwZ+qnNbAIOQI6J5dyCXJmu7nrTTdhFoaZM1JAx6V5CO9XX5ConnneQuE
+ 2EdVb3dfBHJEzP6xSy7dHxUDNb7UqNU1sv+gI+FVfr6YcbLHPu4lrYkTdYRHMTPd1eyC
+ QZ3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+ bh=xln4YDfUucddPO2RJjviiXNHhEKT4FTEt8hSue+CsDQ=;
+ b=VTZtCoZuwE6xlPGj0kKsmaHn0PYAHuXsndo7W/SW5LebA8GWAggZ4lYkTf+A6AU0EL
+ E4Wgz4rnVfkRt2NJPQZw6NlaQfCnuf0wyQLiJSfrug+W1UaAPpwdg+etz6U3CEL8sNTH
+ c7uqQOe8PsVxCefE95eenkW5k7d7il4TW0EBPBsj02OQl0j0v1TmLlXjaR7CYI6ZlrTH
+ zPkgUoAbPl2/Bk3BF5bdLVodou4cvI56hM0SWqIxC0RQBqlBUNUZYY+4qbS0eI1cBqjL
+ WVVNbLb+5NYL5U4s7GqZZ/AYCRBQmwZWWcP7v9ajIoOg1GG9hhN359wuJlVz668GT6O6
+ JOiA==
+X-Gm-Message-State: AGi0Puaujw4rXL/c4+ClMpEemQr+dFj8WRQhVMhJHQmozDXPp2c03gzJ
+ 3JTKn+i2WBPbY2ABZtKH4ZrQAUKvcms8PSRxnBE=
+X-Google-Smtp-Source: APiQypJ94PMbnFeJkrXdWncuhwQBjB4LSv+S6Ay8r/DRlCK2D8qmSGR8nNJ5iX+VclsVx1/UqrSWOkmATESVaKQPSs0=
+X-Received: by 2002:a4a:a54a:: with SMTP id s10mr12010459oom.73.1587367342093; 
+ Mon, 20 Apr 2020 00:22:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200416005549.9683-2-robh@kernel.org>
-References: <20200416005549.9683-1-robh@kernel.org>
- <20200416005549.9683-2-robh@kernel.org>
-Subject: Re: [PATCH 2/2] dt-bindings: Remove cases of 'allOf' containing a
- '$ref'
-From: Stephen Boyd <sboyd@kernel.org>
-To: Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Date: Sun, 19 Apr 2020 11:14:38 -0700
-Message-ID: <158732007844.132238.3936257450130949073@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
-X-Mailman-Approved-At: Mon, 20 Apr 2020 10:13:36 +0200
-Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
- Heiko Stuebner <heiko@sntech.de>, Sam Ravnborg <sam@ravnborg.org>,
- linux-iio@vger.kernel.org, linux-pci@vger.kernel.org,
- Linus Walleij <linus.walleij@linaro.org>, linux-remoteproc@vger.kernel.org,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- dri-devel@lists.freedesktop.org, Bjorn Andersson <bjorn.andersson@linaro.org>,
- Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org,
- linux-i2c@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
- linux-riscv@lists.infradead.org, Lee Jones <lee.jones@linaro.org>,
- linux-clk@vger.kernel.org, linux-leds@vger.kernel.org,
- linux-rtc@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
- Fabio Estevam <festevam@gmail.com>,
- Danie l Lezcano <daniel.lezcano@linaro.org>,
- Krzysztof Kozlowski <krzk@kernel.org>,
- Bartosz Golaszewski <bgolaszewski@baylibre.com>, linux-serial@vger.kernel.org,
- linux-input@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
- linux-media@vger.kernel.org, linux-pwm@vger.kernel.org,
- Alexandre Torgue <alexandre.torgue@st.com>, alsa-devel@alsa-project.org,
- Maxime Ripard <mripard@kernel.org>, linux-can@vger.kernel.org,
- linux-gpio@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- Jacek Anaszewski <jacek.anaszewski@gmail.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-mmc@vger.kernel.org,
- Amit Kucheria <amit.kucheria@linaro.org>, linux-spi@vger.kernel.org,
- Vinod Koul <vkoul@kernel.org>, netdev@vger.kernel.org,
- Jonathan Cameron <jic23@kernel.org>
+From: =?UTF-8?B?5Lq/5LiA?= <teroincn@gmail.com>
+Date: Mon, 20 Apr 2020 15:22:11 +0800
+Message-ID: <CANTwqXB+Lq1fq0dXUjToL9JhjcfSFwtqPpiFoRcFZeJC3o0s-g@mail.gmail.com>
+Subject: sound: usb: usx2y: is it a null pointer deference in function
+ usX2Y_rate_set?
+To: perex@perex.cz, tiwai@suse.com
+Content-Type: text/plain; charset="UTF-8"
+X-Mailman-Approved-At: Mon, 20 Apr 2020 10:13:37 +0200
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -118,19 +100,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Quoting Rob Herring (2020-04-15 17:55:49)
-> json-schema versions draft7 and earlier have a weird behavior in that
-> any keywords combined with a '$ref' are ignored (silently). The correct
-> form was to put a '$ref' under an 'allOf'. This behavior is now changed
-> in the 2019-09 json-schema spec and '$ref' can be mixed with other
-> keywords. The json-schema library doesn't yet support this, but the
-> tooling now does a fixup for this and either way works.
->=20
-> This has been a constant source of review comments, so let's change this
-> treewide so everyone copies the simpler syntax.
->=20
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  .../bindings/clock/fixed-factor-clock.yaml    |   5 +-
-
-Reviewed-by: Stephen Boyd <sboyd@kernel.org> # clock
+Hi, all:
+    when reviewing function usX2Y_rate_set, here may exist a NULL
+pointer deference if kmalloc_array failed or usb_alloc_urb failed,
+in cleanup,  we should judge whether us->urb[i] is NULL first.
+static int usX2Y_rate_set(struct usX2Ydev *usX2Y, int rate)
+{
+    us = kzalloc(sizeof(*us) + sizeof(struct urb*) *
+NOOF_SETRATE_URBS, GFP_KERNEL);
+    if (NULL == us) {
+        err = -ENOMEM;
+        goto cleanup;
+    }
+    usbdata = kmalloc_array(NOOF_SETRATE_URBS, sizeof(int),
+                GFP_KERNEL);
+    if (NULL == usbdata) {
+        err = -ENOMEM;
+        goto cleanup;
+    }
+    for (i = 0; i < NOOF_SETRATE_URBS; ++i) {
+        if (NULL == (us->urb[i] = usb_alloc_urb(0, GFP_KERNEL))) {
+            err = -ENOMEM;
+            goto cleanup;
+        }
+        ...
+    }
+    ...
+cleanup:
+    if (us) {
+        us->submitted = 2*NOOF_SETRATE_URBS;
+        for (i = 0; i < NOOF_SETRATE_URBS; ++i) {
+            struct urb *urb = us->urb[i];
+            if (urb->status) {
+                if (!err)
+                    err = -ENODEV;
+                usb_kill_urb(urb);
+            }
+            usb_free_urb(urb);
