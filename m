@@ -2,77 +2,66 @@ Return-Path: <SRS0=3aoS=6E=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DATE_IN_PAST_06_12,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AAB87C3815B
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 06:49:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56C8AC3815B
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 06:57:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 367272080C
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 06:49:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D6539221F4
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 06:57:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eOEV4+Wn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 367272080C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gXXJDH1q"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D6539221F4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8FDB71669;
-	Mon, 20 Apr 2020 08:48:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8FDB71669
+	by alsa0.perex.cz (Postfix) with ESMTPS id 279119F6;
+	Mon, 20 Apr 2020 08:56:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 279119F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587365379;
-	bh=Rb6BOj/mE5hE3papW8pmEJeYFfn9NkW7r27ac4OoWbc=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1587365838;
+	bh=g9XLM4gHHmKUqBz3Onrg78Qcz/+TlyLwCexQIyhvjQI=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eOEV4+WncFi+Ie0/iEsegTDK0vu1BCNqpcTvZ2Hf3pF/fdHQwqBJZ+E882lFwM4uS
-	 Y5JxrC4CWuHo/SlerSRilEN5HYJtSAOvyBT0BRDaxSe6o+RQZVs8/Li+6ae/pjNjqU
-	 67QZoaTCoQdDMGPSgz3oCfEqUB6zpNlj24ase63Y=
+	b=gXXJDH1qZ0qMvDPcwM3rkOkx9nyaiEwxlWPTa5BmwqFmVbPJ97sRj8mkDws9Qlu8w
+	 p4veJB47T88iwFymbrrdTTGCsqprqgin5qtIiH/ePGTNX4udyJTdxknt6lfGsMyxhH
+	 vmjJEkopz+fwEn75mBbrALANmfDAav2F4gKxTjc0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C65FCF8029B;
-	Mon, 20 Apr 2020 08:46:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 97257F8013E;
+	Mon, 20 Apr 2020 08:56:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E9D66F802A0; Mon, 20 Apr 2020 08:46:34 +0200 (CEST)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1A6DAF800E7
- for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2020 08:46:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A6DAF800E7
-IronPort-SDR: 7UQGC29OkJoryrxvkX57JNOQloUzZ1zC0evXVj0Wzs1svKWNauLdJKC82bl85qEb7O5QF7NVfk
- PzC+BCCI6OHA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Apr 2020 23:46:22 -0700
-IronPort-SDR: 1hIjqnFsmjxCqW/SsUJrW0agOg7YlfuopBvTXfe1eDrX2yGroLKkHinBhEtTHrie5flPqXPBkK
- WLvX6uCu4wlg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,406,1580803200"; d="scan'208";a="254845081"
-Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
- by orsmga003.jf.intel.com with ESMTP; 19 Apr 2020 23:46:18 -0700
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	vkoul@kernel.org
-Subject: [PATCH 4/4] soundwire: bus: reduce verbosity on enumeration
-Date: Mon, 20 Apr 2020 02:51:17 +0800
-Message-Id: <20200419185117.4233-4-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200419185117.4233-1-yung-chuan.liao@linux.intel.com>
-References: <20200419185117.4233-1-yung-chuan.liao@linux.intel.com>
-Cc: pierre-louis.bossart@linux.intel.com, tiwai@suse.de,
- gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
- ranjani.sridharan@linux.intel.com, hui.wang@canonical.com, broonie@kernel.org,
- srinivas.kandagatla@linaro.org, jank@cadence.com, mengdong.lin@intel.com,
- slawomir.blauciak@intel.com, sanyog.r.kale@intel.com,
- rander.wang@linux.intel.com, bard.liao@intel.com
+ id 9CFBAF801D9; Mon, 20 Apr 2020 08:56:26 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id F307CF800E7
+ for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2020 08:56:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F307CF800E7
+Date: 20 Apr 2020 15:56:16 +0900
+X-IronPort-AV: E=Sophos;i="5.72,406,1580742000"; d="scan'208";a="45178307"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 20 Apr 2020 15:56:16 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 7093F419A530;
+ Mon, 20 Apr 2020 15:56:16 +0900 (JST)
+Message-ID: <87zhb6ve5r.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: Re: [PATCH 6/8] ASoC: sof: use snd_compress_ops
+In-Reply-To: <9401d09f060ea3143c4304fd2944dafe738f1643.camel@linux.intel.com>
+References: <87blnqpuqp.wl-kuninori.morimoto.gx@renesas.com>
+ <873692puof.wl-kuninori.morimoto.gx@renesas.com>
+ <9401d09f060ea3143c4304fd2944dafe738f1643.camel@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,36 +77,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-No need to repeat the same info log on all enumerations (essentially
-each power-up), keep it as debug information.
+Hi Ranjani
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Thank you for your review
+
+> > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> > 
+> > We can use snd_compress_ops.
+> > Let's switch to use it.
+> > 
+> > Upstream code doesn't have sof_compressed_ops.
+> > This patch assume it is implemented at out-of-tree.
+> > 
+> > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> > ---
+(snip)
+> > -int sof_probe_compr_open(struct snd_compr_stream *cstream,
+> > -		struct snd_soc_dai *dai)
+> > +int sof_probe_compr_open(struct snd_soc_component *component,
+> > +			 struct snd_compr_stream *cstream,
+> > +			 struct snd_soc_dai *dai)
+> 
+> But this one seems incorrect? This op (and the ones below except for
+> copy) is actually the startup op in struct snd_soc_cdai_ops.
+
+Ohh, yes, indeed.
+My compile test didn't have CONFIG_SND_SOC_SOF_HDA somehow.
+Thank you for pointing it. I will fixit in v2
+
+Thank you for your help !!
+
+Best regards
 ---
- drivers/soundwire/bus.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index 488c3c9e4947..f9a078ce76bc 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -563,9 +563,9 @@ static int sdw_assign_device_num(struct sdw_slave *slave)
- 	}
- 
- 	if (!new_device)
--		dev_info(slave->bus->dev,
--			 "Slave already registered, reusing dev_num:%d\n",
--			 slave->dev_num);
-+		dev_dbg(slave->bus->dev,
-+			"Slave already registered, reusing dev_num:%d\n",
-+			slave->dev_num);
- 
- 	/* Clear the slave->dev_num to transfer message on device 0 */
- 	dev_num = slave->dev_num;
--- 
-2.17.1
-
+Kuninori Morimoto
