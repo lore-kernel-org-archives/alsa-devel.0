@@ -2,89 +2,97 @@ Return-Path: <SRS0=3aoS=6E=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D9FFFC3815B
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 08:16:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D8B8EC3815B
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 08:16:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 60C42206B8
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 08:16:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 663EB206B8
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 08:16:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="n8EuYQhd";
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Uru540pI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 60C42206B8
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FbzByrQH";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ETqClMEa"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 663EB206B8
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BC6BD829;
-	Mon, 20 Apr 2020 10:15:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC6BD829
+	by alsa0.perex.cz (Postfix) with ESMTPS id CA2051665;
+	Mon, 20 Apr 2020 10:15:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA2051665
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587370570;
-	bh=lJPmfIhxskuEVN0sQJrDkjM6OLotlmIxpqTJj4OYe/8=;
-	h=From:Date:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=n8EuYQhd1XO08Gyqu08pYSO3jlAh/+lW6o3bGbfJ/zSmLuHAfKEOyA1jjij+DEeD3
-	 Qz3vBNo4Yexqsl43xrTz0wtaGxCCFA5p3hB+7b0/F09Xgi8X4gaY5w63op8Eox0Zdz
-	 X3Njr9AXwfn7EcdQWaisCI66653wEX9OXWqJNOCM=
+	s=default; t=1587370596;
+	bh=lcag6KEH3cWnkQrerBf97Iun089rQdmB+Tl33zPBS1k=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=FbzByrQHaDnxIpkwmLACm0uz0frODTl2/uZRUzCzm70BFahK77dsYvMtRD3YAEXJL
+	 CP5TcVC6yX0T/BI9W7n6TcGe/e51R27yTQlx65NZvcVy4J7I/rv77Fp6oqcB+d9wLk
+	 PQowRB/FnZV7nQLeAH5XReGzPHJOG31PcZbd3Fq0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 44901F8028C;
-	Mon, 20 Apr 2020 10:13:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AB514F8028B;
+	Mon, 20 Apr 2020 10:13:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 445E5F801D9; Mon, 20 Apr 2020 09:22:28 +0200 (CEST)
-Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com
- [IPv6:2607:f8b0:4864:20::c35])
+ id 2822CF801D9; Mon, 20 Apr 2020 09:49:26 +0200 (CEST)
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com
+ [IPv6:2607:f8b0:4864:20::32e])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7D6C3F8012F
- for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2020 09:22:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D6C3F8012F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2F3BDF800C8
+ for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2020 09:49:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F3BDF800C8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="Uru540pI"
-Received: by mail-oo1-xc35.google.com with SMTP id 190so1900759ooa.12
- for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2020 00:22:24 -0700 (PDT)
+ header.b="ETqClMEa"
+Received: by mail-ot1-x32e.google.com with SMTP id i22so7262700otp.12
+ for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2020 00:49:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:from:date:message-id:subject:to:cc;
- bh=xln4YDfUucddPO2RJjviiXNHhEKT4FTEt8hSue+CsDQ=;
- b=Uru540pIiEOaCaISeIQGvJld/naAvaf7lbWhlsPgpwc3GBkVHkw4z5rNHQlmSqa2Dl
- PCjDgbMNvaqP+KbVRk+DS6g0rRj2Xqrx1bwxsMMI+w8z+98mV+MfvSOEqq9t5iTkyMwF
- wzAiHqKZfkKW1WzGChL4C+GoCY4mQ4zreOSOTlcgxkgeVA+GWqWXXaJEcR0dE0dE2vBZ
- PNM0ZlrHftCXwZ+qnNbAIOQI6J5dyCXJmu7nrTTdhFoaZM1JAx6V5CO9XX5ConnneQuE
- 2EdVb3dfBHJEzP6xSy7dHxUDNb7UqNU1sv+gI+FVfr6YcbLHPu4lrYkTdYRHMTPd1eyC
- QZ3A==
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc:content-transfer-encoding;
+ bh=kupX88peHj7z03pMK+BIy6RR5VeQ/oEo17K/fUIVFI8=;
+ b=ETqClMEaRQGsBDrkRvZOpIv+A/gJTJp/ISa0kGwXW8Es0ItmXWBa12avReKrR4hKlh
+ 4PAwRHLeOLNTVbMmefdF99Kwbz9KCcCyAAH8kg/P9ejwtdGUElVUV53Rr24PIQWpOnWM
+ SJAxV8BlZUXbD7rQDIjBAImGQTqEAWI27yfP1bOlxACW+P4neiWM4gaZy8hYF9A5LMx3
+ R2DRv89Zy5V9AisuFyWm/JWUkXa8gMybuupP2K9VCV291csLjFmGWqNqsZQVj+bAaSf0
+ N124XD9BzIsKVivCgIwEPrdm78hZpAYPD8I+hsZ27xoU4qd4OVHkx7aKrmqPGsMHgR0z
+ +/gA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
- bh=xln4YDfUucddPO2RJjviiXNHhEKT4FTEt8hSue+CsDQ=;
- b=VTZtCoZuwE6xlPGj0kKsmaHn0PYAHuXsndo7W/SW5LebA8GWAggZ4lYkTf+A6AU0EL
- E4Wgz4rnVfkRt2NJPQZw6NlaQfCnuf0wyQLiJSfrug+W1UaAPpwdg+etz6U3CEL8sNTH
- c7uqQOe8PsVxCefE95eenkW5k7d7il4TW0EBPBsj02OQl0j0v1TmLlXjaR7CYI6ZlrTH
- zPkgUoAbPl2/Bk3BF5bdLVodou4cvI56hM0SWqIxC0RQBqlBUNUZYY+4qbS0eI1cBqjL
- WVVNbLb+5NYL5U4s7GqZZ/AYCRBQmwZWWcP7v9ajIoOg1GG9hhN359wuJlVz668GT6O6
- JOiA==
-X-Gm-Message-State: AGi0Puaujw4rXL/c4+ClMpEemQr+dFj8WRQhVMhJHQmozDXPp2c03gzJ
- 3JTKn+i2WBPbY2ABZtKH4ZrQAUKvcms8PSRxnBE=
-X-Google-Smtp-Source: APiQypJ94PMbnFeJkrXdWncuhwQBjB4LSv+S6Ay8r/DRlCK2D8qmSGR8nNJ5iX+VclsVx1/UqrSWOkmATESVaKQPSs0=
-X-Received: by 2002:a4a:a54a:: with SMTP id s10mr12010459oom.73.1587367342093; 
- Mon, 20 Apr 2020 00:22:22 -0700 (PDT)
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=kupX88peHj7z03pMK+BIy6RR5VeQ/oEo17K/fUIVFI8=;
+ b=Me3P69sGsaT8jvhuj32k+Q02lgiev/Nbn1bs638GwxiIMC4zkE5ZNa5cevF/V9nwXk
+ gO80ZZP+Zhe3/V9Xn/9M3egjItMhc5vODlaBoP7EVKL9Y+0+7b+jYMJJhwaAsOOpltm0
+ q85AI28PUMDYMwiybZq8QSLchdXP4tZARSjV4PRSqIPXyuTg+TzS5iGD+7aOSrRYB7Qt
+ cyjBZlL4T8v4HXoD41Af5oyR8lom5ttE6YAdH1gHA1KRKkJ4ymuxHHRlS/oD9FxlKE0x
+ V/zCNLkwM1JU0ykqtv0pynVdMOhDtjAlHwQsnhKu+6IYIM7Y/t6vKM8A1A2Y9qBeFU9p
+ koqg==
+X-Gm-Message-State: AGi0PuaF+fB9WQQiiaZeTMING/rIFjAVfcSLolXJw5IfDKI44tqAok0I
+ XdhS2E3BwpimOmE43innDSRfpfgskFh/KK53NRo=
+X-Google-Smtp-Source: APiQypIYgLJ4p85nuk+m8qbyCQDui2Fan3kA5AKYexSlb6eiFzikHLe6x10TeUTfMOcjwgPK6FZbC6iT6teI6wEmmfI=
+X-Received: by 2002:a05:6830:3150:: with SMTP id
+ c16mr8097421ots.251.1587368956872; 
+ Mon, 20 Apr 2020 00:49:16 -0700 (PDT)
 MIME-Version: 1.0
+References: <CANTwqXB+Lq1fq0dXUjToL9JhjcfSFwtqPpiFoRcFZeJC3o0s-g@mail.gmail.com>
+ <s5hftcy7gr8.wl-tiwai@suse.de>
+In-Reply-To: <s5hftcy7gr8.wl-tiwai@suse.de>
 From: =?UTF-8?B?5Lq/5LiA?= <teroincn@gmail.com>
-Date: Mon, 20 Apr 2020 15:22:11 +0800
-Message-ID: <CANTwqXB+Lq1fq0dXUjToL9JhjcfSFwtqPpiFoRcFZeJC3o0s-g@mail.gmail.com>
-Subject: sound: usb: usx2y: is it a null pointer deference in function
+Date: Mon, 20 Apr 2020 15:49:06 +0800
+Message-ID: <CANTwqXD41wbSV_44AQZU6MmGNGChjjKzL_4VCYVBzZYwjVauDQ@mail.gmail.com>
+Subject: Re: sound: usb: usx2y: is it a null pointer deference in function
  usX2Y_rate_set?
-To: perex@perex.cz, tiwai@suse.com
+To: Takashi Iwai <tiwai@suse.de>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Mailman-Approved-At: Mon, 20 Apr 2020 10:13:37 +0200
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,40 +108,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi, all:
-    when reviewing function usX2Y_rate_set, here may exist a NULL
-pointer deference if kmalloc_array failed or usb_alloc_urb failed,
-in cleanup,  we should judge whether us->urb[i] is NULL first.
-static int usX2Y_rate_set(struct usX2Ydev *usX2Y, int rate)
-{
-    us = kzalloc(sizeof(*us) + sizeof(struct urb*) *
-NOOF_SETRATE_URBS, GFP_KERNEL);
-    if (NULL == us) {
-        err = -ENOMEM;
-        goto cleanup;
-    }
-    usbdata = kmalloc_array(NOOF_SETRATE_URBS, sizeof(int),
-                GFP_KERNEL);
-    if (NULL == usbdata) {
-        err = -ENOMEM;
-        goto cleanup;
-    }
-    for (i = 0; i < NOOF_SETRATE_URBS; ++i) {
-        if (NULL == (us->urb[i] = usb_alloc_urb(0, GFP_KERNEL))) {
-            err = -ENOMEM;
-            goto cleanup;
-        }
-        ...
-    }
-    ...
-cleanup:
-    if (us) {
-        us->submitted = 2*NOOF_SETRATE_URBS;
-        for (i = 0; i < NOOF_SETRATE_URBS; ++i) {
-            struct urb *urb = us->urb[i];
-            if (urb->status) {
-                if (!err)
-                    err = -ENODEV;
-                usb_kill_urb(urb);
-            }
-            usb_free_urb(urb);
+you can patch it and add a Reported by  Lin Yi <teroincn@gmail.com>
+if  pleasure.~
+
+thanks,
+
+Lin Yi
+
+Takashi Iwai <tiwai@suse.de> =E4=BA=8E2020=E5=B9=B44=E6=9C=8820=E6=97=A5=E5=
+=91=A8=E4=B8=80 =E4=B8=8B=E5=8D=883:34=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Mon, 20 Apr 2020 09:22:11 +0200,
+> =E4=BA=BF=E4=B8=80 wrote:
+> >
+> > Hi, all:
+> >     when reviewing function usX2Y_rate_set, here may exist a NULL
+> > pointer deference if kmalloc_array failed or usb_alloc_urb failed,
+> > in cleanup,  we should judge whether us->urb[i] is NULL first.
+>
+> Right, that's a missing check.  Would you submit the fix patch, or
+> shall I write quickly?
+>
+>
+> thanks,
+>
+> Takashi
