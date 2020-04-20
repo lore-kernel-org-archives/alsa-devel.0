@@ -2,65 +2,61 @@ Return-Path: <SRS0=3aoS=6E=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 03A48C54FCC
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 07:02:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E14DC3815B
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 07:06:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7DDCA2078E
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 07:02:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A92A121473
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 07:06:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Laqq7Fh5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7DDCA2078E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ONmSPp+g"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A92A121473
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DCED2846;
-	Mon, 20 Apr 2020 09:01:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DCED2846
+	by alsa0.perex.cz (Postfix) with ESMTPS id E33469F6;
+	Mon, 20 Apr 2020 09:05:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E33469F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587366121;
-	bh=3YHrcuHusEuL1+4ke2B4xLVhbWN/X5g6djjkEEwpo6M=;
+	s=default; t=1587366403;
+	bh=jn1dIKa1QRrykU5bQhgEeKd+45nNXNRoc0P9NxAPuyY=;
 	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=Laqq7Fh5yyrokloN11VyJFmBtWeXkMaS8DZVyC/QRvrjFn9f8lyMi9TBZaJ4Kb2k0
-	 5EV09e3S51CaKTre39mFh3CXthLJShQcHAZooEpKyijtZQcxDXdZ2xadconRf3IuKH
-	 I2Q4V7L9yQ7UrghU7w42zr9ytshsy72WJ8uey0DQ=
+	b=ONmSPp+goRgRi8jQPTTFIPPhqTqvrQZwVEB9nUHv3tvqwyisAIAH1F01cJgXtoitu
+	 2JcxNn4gtM77fykujsA4DVSWk3Mbb+Pn6FNYl+5HDxnREfzKvZKafw1fOZJCuwOmxn
+	 sJGpGEzYCnGXPRTRLXCM5/EYn0ill8G4jjK/C/9Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D9A5EF801D9;
-	Mon, 20 Apr 2020 09:01:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7C710F8013E;
+	Mon, 20 Apr 2020 09:05:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1AA5CF8021C; Mon, 20 Apr 2020 09:01:09 +0200 (CEST)
+ id 9538EF8013E; Mon, 20 Apr 2020 09:05:51 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 394EEF801D9
- for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2020 09:01:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 394EEF801D9
-Date: 20 Apr 2020 16:01:01 +0900
-X-IronPort-AV: E=Sophos;i="5.72,405,1580742000"; d="scan'208";a="44964827"
+ by alsa1.perex.cz (Postfix) with ESMTP id B98DFF8012F
+ for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2020 09:05:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B98DFF8012F
+Date: 20 Apr 2020 16:05:42 +0900
+X-IronPort-AV: E=Sophos;i="5.72,405,1580742000"; d="scan'208";a="44965346"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 20 Apr 2020 16:01:01 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 20 Apr 2020 16:05:42 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 57EF84008C45;
- Mon, 20 Apr 2020 16:01:01 +0900 (JST)
-Message-ID: <87y2qqvdxu.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id DD15E4007524;
+ Mon, 20 Apr 2020 16:05:42 +0900 (JST)
+Message-ID: <87wo6avdq1.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH] soundwire: intel: use asoc_rtd_to_cpu() / asoc_rtd_to_codec()
- macro for DAI pointer
+Subject: [PATCH v2 0/8] ASoC: add snd_compress_ops and replace
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
-To: Mark Brown <broonie@kernel.org>, Vinod Koul <vkoul@kernel.org>,
- Sanyog Kale <sanyog.r.kale@intel.com>
+To: Mark Brown <broonie@kernel.org>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- linux-kernel@vger.kernel.org
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,34 +72,62 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Now ALSA SoC needs to use asoc_rtd_to_codec(),
-otherwise, it will be compile error.
+Hi Mark
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
----
- drivers/soundwire/intel.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Current snd_soc_component_driver has compr_ops,
+but it is created for ALSA, not for ALSA SoC.
+This means it doesn't know the callback is for which component,
+thus, each callback needs to get component via lookup function.
 
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 3c83e76c6bf9..ed8d576bf5dc 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -669,11 +669,11 @@ static int sdw_stream_setup(struct snd_pcm_substream *substream,
- 
- 	/* Set stream pointer on all CODEC DAIs */
- 	for (i = 0; i < rtd->num_codecs; i++) {
--		ret = snd_soc_dai_set_sdw_stream(rtd->codec_dais[i], sdw_stream,
-+		ret = snd_soc_dai_set_sdw_stream(asoc_rtd_to_codec(rtd, i), sdw_stream,
- 						 substream->stream);
- 		if (ret < 0) {
- 			dev_err(dai->dev, "failed to set stream pointer on codec dai %s",
--				rtd->codec_dais[i]->name);
-+				asoc_rtd_to_codec(rtd, i)->name);
- 			goto release_stream;
- 		}
- 	}
+It is not good design, and will not work in the future,
+because ASoC can have multipul same name component which
+current lookup function can't handle.
+
+This v2 patch-set adds new snd_compress_ops and call
+callbacks with component.
+v1 is here
+
+Link: https://lore.kernel.org/alsa-devel/87blnqpuqp.wl-kuninori.morimoto.gx@renesas.com/
+
+Kuninori Morimoto (8):
+  ASoC: soc-compress: add snd_compress_ops
+  ASoC: codec: wm_adsp: use snd_compress_ops
+  ASoC: uniphier: use snd_compress_ops
+  ASoC: qcom: q6sp6: use snd_compress_ops
+  ASoC: intel: atom: use snd_compress_ops
+  ASoC: sof: use snd_compress_ops
+  ASoC: sprd: use snd_compress_ops
+  ASoC: soc-compress: remove snd_compr_ops
+
+ include/sound/soc-component.h                 | 40 ++++++++-
+ sound/soc/codecs/cs47l15.c                    |  9 +-
+ sound/soc/codecs/cs47l24.c                    |  8 +-
+ sound/soc/codecs/cs47l35.c                    |  9 +-
+ sound/soc/codecs/cs47l85.c                    |  9 +-
+ sound/soc/codecs/cs47l90.c                    |  9 +-
+ sound/soc/codecs/cs47l92.c                    |  9 +-
+ sound/soc/codecs/wm5102.c                     |  9 +-
+ sound/soc/codecs/wm5110.c                     |  8 +-
+ sound/soc/codecs/wm_adsp.c                    | 18 ++--
+ sound/soc/codecs/wm_adsp.h                    | 18 ++--
+ .../intel/atom/sst-mfld-platform-compress.c   | 43 +++++----
+ sound/soc/intel/atom/sst-mfld-platform-pcm.c  |  2 +-
+ sound/soc/intel/atom/sst-mfld-platform.h      |  2 +-
+ sound/soc/qcom/qdsp6/q6asm-dai.c              | 51 ++++++-----
+ sound/soc/soc-compress.c                      | 89 ++++++++++---------
+ sound/soc/sof/compress.c                      |  7 +-
+ sound/soc/sof/compress.h                      |  7 +-
+ sound/soc/sof/pcm.c                           |  4 +-
+ sound/soc/sof/sof-priv.h                      |  2 +-
+ sound/soc/sprd/sprd-pcm-compress.c            | 49 +++++-----
+ sound/soc/sprd/sprd-pcm-dma.c                 |  2 +-
+ sound/soc/sprd/sprd-pcm-dma.h                 |  2 +-
+ sound/soc/uniphier/aio-compress.c             | 45 ++++++----
+ sound/soc/uniphier/aio-dma.c                  |  2 +-
+ sound/soc/uniphier/aio.h                      |  2 +-
+ 26 files changed, 265 insertions(+), 190 deletions(-)
+
 -- 
 2.17.1
 
