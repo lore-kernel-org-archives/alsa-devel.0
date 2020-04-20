@@ -2,76 +2,75 @@ Return-Path: <SRS0=3aoS=6E=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 538B9C3A5A0
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 13:39:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CCB4C54FCB
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 13:40:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CF87620B1F
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 13:39:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0B5F720857
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 13:40:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kwka6Xpw";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="fQryNMJo"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CF87620B1F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Wn8N9li4";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="iM1yKWrC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0B5F720857
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 28A911694;
-	Mon, 20 Apr 2020 15:38:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28A911694
+	by alsa0.perex.cz (Postfix) with ESMTPS id 658311689;
+	Mon, 20 Apr 2020 15:39:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 658311689
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587389982;
-	bh=8pBXPljPGGgD7G9G7WPPoDba5tlB3IeSIJiJ8A4QQrc=;
-	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
+	s=default; t=1587389998;
+	bh=LabIAdcjRXkFzanlO5dwkADJ/hSPssTCX7vloN7yEXM=;
+	h=Date:From:To:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kwka6XpwocK9FDop8PhFvdFMhkAtU/TXuo8zXcG52E6LUnuKXpOZfrfRPvYU1WZom
-	 T3ld+Ky4/+DEhIM+YYjV0psSvmWdtxhXLNbp5WoTJM7/4CLG/wCXB2GTENLlsmhcM1
-	 eBBe5IUCy/GTHBQneSrwZnCpcQz1Ew5N89JBhlzc=
+	b=Wn8N9li4Zw6e9YSCIfGYmD0tUD66+awp1V0wtTCFbsSFJtZOPiYbmWHIRvEjhG7lb
+	 nPqJON9g+H39F7e/RzXa5Naq9+pIuCSyYxXXuY83jcxg/fXZsD0HfwQ0vhoVio4jVQ
+	 wSGalv2HnzFXpoQQEm23U9aKK+hsSCLBT29KKwII=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 07179F80291;
-	Mon, 20 Apr 2020 15:37:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 30F47F8029B;
+	Mon, 20 Apr 2020 15:37:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E7184F80290; Mon, 20 Apr 2020 15:37:19 +0200 (CEST)
+ id A2313F802A0; Mon, 20 Apr 2020 15:37:28 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8C87BF80290
- for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2020 15:37:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C87BF80290
+ by alsa1.perex.cz (Postfix) with ESMTPS id E47E4F8029A
+ for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2020 15:37:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E47E4F8029A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="fQryNMJo"
+ header.b="iM1yKWrC"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 834CE2070B;
- Mon, 20 Apr 2020 13:37:07 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id DC4CA20735;
+ Mon, 20 Apr 2020 13:37:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1587389828;
- bh=8pBXPljPGGgD7G9G7WPPoDba5tlB3IeSIJiJ8A4QQrc=;
+ s=default; t=1587389835;
+ bh=LabIAdcjRXkFzanlO5dwkADJ/hSPssTCX7vloN7yEXM=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=fQryNMJoGFgeXErMNgMY3bHlPoXglQjc2CEsWr7H1VQ2pmV4VpLKGwhw4nrPZ68Iq
- vRM4k1TxElw7ope8fFA4M+irqxoIQLXv44ARYr9OK6XW9cCZv9ORk/e08KpQHWjVqE
- XmkCMEiNWCjSdU8GBc9tX+W+FA7VCAPoHv1Y2d2A=
-Date: Mon, 20 Apr 2020 14:37:05 +0100
+ b=iM1yKWrCDAx0nbJXQwLmEZfNlQFjZX7GQvb2CK2OLYBlINsvcNS34icauslzLlciW
+ DsUmahSAchoUj66nhcnfnY9RB74I8l1SsDSgdmuUnx2syEbAj0IxSEmXBr/SAtAEak
+ E7XF2p1uniIGZMiKKiNRrkQ925kj6RtAy3Qcb/rw=
+Date: Mon, 20 Apr 2020 14:37:12 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Matthias Blankertz <matthias.blankertz@cetitec.com>,
- Liam Girdwood <lgirdwood@gmail.com>
-In-Reply-To: <20200417153017.1744454-1-matthias.blankertz@cetitec.com>
-References: <20200417153017.1744454-1-matthias.blankertz@cetitec.com>
-Subject: Re: [PATCH 0/2] ASoC: rsnd: multi-SSI setup fixes
-Message-Id: <158738981359.28730.2521567380411409191.b4-ty@kernel.org>
-Cc: linux-renesas-soc@vger.kernel.org, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+To: pierre-louis.bossart@linux.intel.com, tiwai@suse.com,
+ ranjani.sridharan@linux.intel.com, lgirdwood@gmail.com,
+ amadeuszx.slawinski@linux.intel.com, perex@perex.cz,
+ Jason Yan <yanaijie@huawei.com>, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org
+In-Reply-To: <20200420042858.19298-1-yanaijie@huawei.com>
+References: <20200420042858.19298-1-yanaijie@huawei.com>
+Subject: Re: [PATCH] ASoC: topology: remove unneeded semicolon
+Message-Id: <158738983288.28866.14153649784300796683.b4-ty@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,28 +86,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 17 Apr 2020 17:30:15 +0200, Matthias Blankertz wrote:
-> Fix rsnd_dai_call() operations being performed twice for the master SSI
-> in multi-SSI setups, and fix the rsnd_ssi_stop operation for multi-SSI
-> setups.
-> The only visible effect of these issues was some "status check failed"
-> spam when the rsnd_ssi_stop was called, but overall the code is cleaner
-> now, and some questionable writes to the SSICR register which did not
-> lead to any observable misbehaviour but were contrary to the datasheet
-> are fixed.
+On Mon, 20 Apr 2020 12:28:58 +0800, Jason Yan wrote:
+> Fix the following coccicheck warning:
+> 
+> sound/soc/soc-topology.c:2344:2-3: Unneeded semicolon
+> 
+> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+> ---
+>  sound/soc/soc-topology.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
 > [...]
 
 Applied to
 
-	broonie/sound.git for-5.7
+	broonie/sound.git for-5.8
 
 Thanks!
 
-[1/2] ASoC: rsnd: Don't treat master SSI in multi SSI setup as parent
-      commit: 0c258657ddfe81b4fc0183378d800c97ba0b7cdd
-[2/2] ASoC: rsnd: Fix "status check failed" spam for multi-SSI
-      commit: 54cb6221688660670a2e430892d7f4e6370263b8
+[1/1] ASoC: topology: Remove unneeded semicolon
+      commit: 980f91778a2f4dcca43d16b7a83feda8df5c96e7
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
