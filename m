@@ -2,104 +2,83 @@ Return-Path: <SRS0=3aoS=6E=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E33FC3A5A0
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 11:47:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DADE7C3815B
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 12:04:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0705E20724
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 11:47:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 67FE12072B
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 12:04:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kRL+NNzG";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com header.i=@baylibre-com.20150623.gappssmtp.com header.b="1SIVE6W4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0705E20724
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CpFFfQQn";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="VwLVwy+T"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 67FE12072B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 57A7F168B;
-	Mon, 20 Apr 2020 13:47:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57A7F168B
+	by alsa0.perex.cz (Postfix) with ESMTPS id A16E41675;
+	Mon, 20 Apr 2020 14:03:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A16E41675
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587383275;
-	bh=X9wiZ2+KyP2lyYptE1yNTeVRG9Ea8yXyjko0usqZzj0=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1587384288;
+	bh=Uz/u8Mva1bGcBUWnr+fKCRbTRah6M1SnMjedSw2/cwc=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kRL+NNzGP7ZKWiwLRqs4W0Bq2jCTSLWbzKLvkKMX+GW4mrXUI+3h3D2SV53S4BWw1
-	 MwG8orEVDrbC0LZ1T7VlPgInLEbq295dIe7VaHlsM67S9EiIbQHp4eq6oZ2gBYa3p4
-	 bGcwzlr3bC+7xsF/9wwtXClG/JetZj3QvZUgEgYc=
+	b=CpFFfQQnRWoju1LpxyC2LwrJB31FB4U5t+Nc5k24kmI/T+n9pCFghQwcfQD/un84G
+	 rRXRnTiNT8IDdBNyAzUi12yQ4Wm+mYqcTp+VRIjzBHJ3YiddM/HBY4cstov9yDivQg
+	 ejPjEFTuuRI78CpjWhKVt2g3nRuvhD+UKgMCoLjc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B9D9FF80278;
-	Mon, 20 Apr 2020 13:45:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 226D9F8012F;
+	Mon, 20 Apr 2020 14:03:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 85446F8025E; Mon, 20 Apr 2020 13:45:25 +0200 (CEST)
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com
- [IPv6:2a00:1450:4864:20::343])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id B7827F801D9; Mon, 20 Apr 2020 14:03:56 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 99A39F800C8
- for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2020 13:45:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99A39F800C8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0C677F8012F
+ for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2020 14:03:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C677F8012F
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com
- header.i=@baylibre-com.20150623.gappssmtp.com header.b="1SIVE6W4"
-Received: by mail-wm1-x343.google.com with SMTP id h2so10634291wmb.4
- for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2020 04:45:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=baylibre-com.20150623.gappssmtp.com; s=20150623;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=/Eo7z/bW/75JbK01dAXq1seEbWg98VkTUnan0t5hkQw=;
- b=1SIVE6W4mcJTTZWKBGYOHiT3uHXcmVOkHZQEgxjGTgee8IoV3FNLpqrFJnZH923Fbc
- O39HPbopLAKYTRR45NG3vTPnxj5NHjj8qR2uA+BkBQj7XtBehqKHLrfwwLN7f+/st2WD
- fbmTHYA24mggSSRuPIZwNruyXT4eWW+uMBp2QCLJ05Ap7oFG8pcGGCEZ1duH0RK3cDr7
- UTuoV9A8YjhkemvD0Ex9zHzyjnoM5DW9pegWP7m3SOic/0r97TfutOjBBdrHU1zi/cyk
- nyebTDYjUvVUl/iTOyJ0Fcg+K7pnhJpb/4JoVs+q0Cg4QXq/DEhIl6IVNC1z2LV3HU84
- E4Fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=/Eo7z/bW/75JbK01dAXq1seEbWg98VkTUnan0t5hkQw=;
- b=ZOzwl+J1Li0VTLBAE4xvsQKgmLqFlNosBZR65U8PSptKRQZ9KF4RKNrkP+419LTmo+
- 3wkxEYPOmRwrlrXNojSwtYwk8scpFYzmOELl2+vyvkUDRkYbz8OS3CY8Ox89LTi/PGV9
- nyKKA0Xa834o6en4oY/DeZktsFeifUmNBDhCZihCH1VC8KiOJJbZkKhzccXSjDk2gjoO
- Dppovcpk4JPQJ71cJz/0AU9k2k9OYnjM2GirS8n259NCGWJFO3qK/c/LZBqdNpEtxsJ6
- SxNAXpnZNTafsd64wPKUgmnf2Dcg8AMk9zDyOZ92FMUuC2/g2v91Njm8d0npgZoHCyJR
- fqLA==
-X-Gm-Message-State: AGi0PubeBSiQlE9ZP5pOEmvqFWOJC4EwfWQNHwbIOujvOFfcmJ9+5soG
- slFRfXNhSMkI3wxhj81CZv70GbRQzfg=
-X-Google-Smtp-Source: APiQypIXImpuNN70wYFRkSp5hlI7aYph/2B0xZyzWhfHsi7Idg5iyDUi1yNEDGrbmDiFOIN9oJI1fQ==
-X-Received: by 2002:a05:600c:29c2:: with SMTP id
- s2mr17145704wmd.111.1587383117186; 
- Mon, 20 Apr 2020 04:45:17 -0700 (PDT)
-Received: from starbuck.lan (cag06-3-82-243-161-21.fbx.proxad.net.
- [82.243.161.21])
- by smtp.googlemail.com with ESMTPSA id k6sm1079182wma.19.2020.04.20.04.45.16
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 20 Apr 2020 04:45:16 -0700 (PDT)
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Mark Brown <broonie@kernel.org>,
-	Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH 1/2] ASoC: meson: axg-card: fix codec-to-codec link setup
-Date: Mon, 20 Apr 2020 13:45:10 +0200
-Message-Id: <20200420114511.450560-2-jbrunet@baylibre.com>
-X-Mailer: git-send-email 2.25.2
-In-Reply-To: <20200420114511.450560-1-jbrunet@baylibre.com>
-References: <20200420114511.450560-1-jbrunet@baylibre.com>
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="VwLVwy+T"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 63C7B2051A;
+ Mon, 20 Apr 2020 12:03:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1587384231;
+ bh=Uz/u8Mva1bGcBUWnr+fKCRbTRah6M1SnMjedSw2/cwc=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=VwLVwy+TMYRkAkS/gh4iSe/qgG+jao+3rXaiCw2vv+AQZhmaTJrssFW6+E1RE8VL0
+ 1ulxmBLXavpIBjD+6zR//4dbb+LWwdDieM5X8lY17xI4EK287uMSsXsdkugPPzuHvU
+ lOYL3XqhzT3zHwjN/VhhkfGOXDOnNJ9jADLxiyPw=
+Date: Mon, 20 Apr 2020 13:03:48 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Vinod Koul <vkoul@kernel.org>
+Subject: Re: [PATCH] soundwire: intel: use asoc_rtd_to_cpu() /
+ asoc_rtd_to_codec() macro for DAI pointer
+Message-ID: <20200420120348.GA6507@sirena.org.uk>
+References: <87y2qqvdxu.wl-kuninori.morimoto.gx@renesas.com>
+ <20200420070816.GU72691@vkoul-mobl>
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Kevin Hilman <khilman@baylibre.com>, linux-kernel@vger.kernel.org,
- linux-amlogic@lists.infradead.org, Jerome Brunet <jbrunet@baylibre.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="G4iJoqBmSsgzjUCe"
+Content-Disposition: inline
+In-Reply-To: <20200420070816.GU72691@vkoul-mobl>
+X-Cookie: Can you MAIL a BEAN CAKE?
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: linux-kernel@vger.kernel.org, Sanyog Kale <sanyog.r.kale@intel.com>,
+ Linux-ALSA <alsa-devel@alsa-project.org>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -115,55 +94,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Since the addition of commit 9b5db059366a ("ASoC: soc-pcm: dpcm: Only allow
-playback/capture if supported"), meson-axg cards which have codec-to-codec
-links fail to init and Oops:
 
-  Unable to handle kernel NULL pointer dereference at virtual address 0000000000000128
-  Internal error: Oops: 96000044 [#1] PREEMPT SMP
-  CPU: 3 PID: 1582 Comm: arecord Not tainted 5.7.0-rc1
-  pc : invalidate_paths_ep+0x30/0xe0
-  lr : snd_soc_dapm_dai_get_connected_widgets+0x170/0x1a8
-  Call trace:
-   invalidate_paths_ep+0x30/0xe0
-   snd_soc_dapm_dai_get_connected_widgets+0x170/0x1a8
-   dpcm_path_get+0x38/0xd0
-   dpcm_fe_dai_open+0x70/0x920
-   snd_pcm_open_substream+0x564/0x840
-   snd_pcm_open+0xfc/0x228
-   snd_pcm_capture_open+0x4c/0x78
-   snd_open+0xac/0x1a8
-   ...
+--G4iJoqBmSsgzjUCe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-While initiliazing the links, ASoC treats the codec-to-codec links of this
-card type as a DPCM backend. This error eventually leads to the Oops.
+On Mon, Apr 20, 2020 at 12:38:16PM +0530, Vinod Koul wrote:
+> On 20-04-20, 16:01, Kuninori Morimoto wrote:
 
-Most of the card driver code is shared between DPCM backends and
-codec-to-codec links. The property "no_pcm" marking DCPM BE was left set on
-codec-to-codec links, leading to this problem. This commit fixes that.
+> > Now ALSA SoC needs to use asoc_rtd_to_codec(),
+> > otherwise, it will be compile error.
 
-Fixes: 0a8f1117a680 ("ASoC: meson: axg-card: add basic codec-to-codec link support")
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
----
- sound/soc/meson/axg-card.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+> Applied, thanks
 
-diff --git a/sound/soc/meson/axg-card.c b/sound/soc/meson/axg-card.c
-index af46845f4ef2..89f7f64747cd 100644
---- a/sound/soc/meson/axg-card.c
-+++ b/sound/soc/meson/axg-card.c
-@@ -338,8 +338,10 @@ static int axg_card_add_link(struct snd_soc_card *card, struct device_node *np,
- 
- 	if (axg_card_cpu_is_tdm_iface(dai_link->cpus->of_node))
- 		ret = axg_card_parse_tdm(card, np, index);
--	else if (axg_card_cpu_is_codec(dai_link->cpus->of_node))
-+	else if (axg_card_cpu_is_codec(dai_link->cpus->of_node)) {
- 		dai_link->params = &codec_params;
-+		dai_link->no_pcm = 0; /* link is not a DPCM BE */
-+	}
- 
- 	return ret;
- }
--- 
-2.25.2
+This fix is needed in the ASoC tree - are you OK with me applying it
+there?
 
+--G4iJoqBmSsgzjUCe
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6dj6EACgkQJNaLcl1U
+h9A7tQf+NlpjcVDSx9Wy6gSlg4Xu5wRpfne2xXViBwEpyhpx8CDbEYzkpAo7cK2j
+iHKps3mihF/Q+DkHVcI+vZ7KIfAX1SGxKv6IxnlXb2xI61WiYoiyoBZTJ4DYtqmc
+96/ZRqcepdytZeLoK1p6haNtJK7yxA0MmNp1x7hK11Vv51DL1SbUfd4zBCwLbwux
+uaNbtTH/4SQBQFmrYwetsAo9xaRBVhtfGl8b/oF7alnQa+ug18EEsTB8t+WcTPw4
+pL5eK2AIeyA6eKsB4+wct1XZBwosTV10JpYTjr0o4dDUUYhTN6NaSfLmsNUD0T3k
+QtXAXGKRs0y4NNswDWeub7Z8hpgr7Q==
+=iK34
+-----END PGP SIGNATURE-----
+
+--G4iJoqBmSsgzjUCe--
