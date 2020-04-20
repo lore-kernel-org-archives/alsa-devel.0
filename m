@@ -7,53 +7,53 @@ X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD929C54FCC
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 07:11:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19ACFC3815B
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 07:12:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6B5F6206E9
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 07:11:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9998A206E9
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 07:12:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AGy77EtK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6B5F6206E9
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CIxsS5Pi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9998A206E9
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CC2A09F6;
-	Mon, 20 Apr 2020 09:10:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC2A09F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 022721678;
+	Mon, 20 Apr 2020 09:11:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 022721678
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587366696;
-	bh=EPBzKxDCnzJrxa8W85PoI/G++f7GUdkMC4M2/EEjrWU=;
+	s=default; t=1587366732;
+	bh=138Q8XCfIUGiGVT6B62dgn4IyQvX3j7d1L4OqoIgJaU=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AGy77EtKveP7LM+DZhshNB9uv9YSjis/0hVN2yDzNqFtNRqnqBYxsR83Wsb7DY0DI
-	 OuZyC2sGo0MgW00MhhQgHrCYIwn7fZOfTyfziRRsgPPrKZJCdYw1oxiDmKTe35EXER
-	 pwXT94DOTQKQAO2WjIB6skV4aXnyxIKzhlvssj6U=
+	b=CIxsS5Piqa75HlukiqR9snTykubhcEC7hoybOdFEo6XY0kRG004hfMynIaQOHHCeS
+	 wXicWRtnj2GgYT2rxWg+v8epe8ZG64p/D5C1gm/kFnCmVRhQo43vfgaUnbBk25SbPG
+	 KaYXEIHkmKpgjapVuEW+6QTVuVxcBTUV9tLVh5WE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0DF12F8023F;
-	Mon, 20 Apr 2020 09:09:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7069EF8028B;
+	Mon, 20 Apr 2020 09:09:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0814DF8029B; Mon, 20 Apr 2020 09:08:50 +0200 (CEST)
+ id A6993F8028B; Mon, 20 Apr 2020 09:09:16 +0200 (CEST)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id E6D41F8029B
- for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2020 09:08:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6D41F8029B
-Date: 20 Apr 2020 16:08:44 +0900
-X-IronPort-AV: E=Sophos;i="5.72,406,1580742000"; d="scan'208";a="45179747"
+ by alsa1.perex.cz (Postfix) with ESMTP id A4753F8020C
+ for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2020 09:09:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4753F8020C
+Date: 20 Apr 2020 16:09:09 +0900
+X-IronPort-AV: E=Sophos;i="5.72,406,1580742000"; d="scan'208";a="45180051"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 20 Apr 2020 16:08:44 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 20 Apr 2020 16:09:09 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id AEFFE40062AF;
- Mon, 20 Apr 2020 16:08:44 +0900 (JST)
-Message-ID: <87r1wivdkz.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 839A74008C41;
+ Mon, 20 Apr 2020 16:09:09 +0900 (JST)
+Message-ID: <87pnc2vdka.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v2 4/8] ASoC: qcom: q6sp6: use snd_compress_ops
+Subject: [PATCH v2 5/8] ASoC: intel: atom: use snd_compress_ops
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87wo6avdq1.wl-kuninori.morimoto.gx@renesas.com>
@@ -79,7 +79,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-We can use snd_compress_ops.
+vWe can use snd_compress_ops.
 Let's switch to use it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
@@ -88,171 +88,159 @@ v1 -> v2
 
    - no change
 
- sound/soc/qcom/qdsp6/q6asm-dai.c | 51 ++++++++++++++++++--------------
- 1 file changed, 28 insertions(+), 23 deletions(-)
+ .../intel/atom/sst-mfld-platform-compress.c   | 43 +++++++++++--------
+ sound/soc/intel/atom/sst-mfld-platform-pcm.c  |  2 +-
+ sound/soc/intel/atom/sst-mfld-platform.h      |  2 +-
+ 3 files changed, 27 insertions(+), 20 deletions(-)
 
-diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
-index 125af00bba53..ce77446dbbdd 100644
---- a/sound/soc/qcom/qdsp6/q6asm-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
-@@ -540,19 +540,19 @@ static void compress_event_handler(uint32_t opcode, uint32_t token,
- 	}
+diff --git a/sound/soc/intel/atom/sst-mfld-platform-compress.c b/sound/soc/intel/atom/sst-mfld-platform-compress.c
+index 4a7a9426a3b9..1595e01a7e12 100644
+--- a/sound/soc/intel/atom/sst-mfld-platform-compress.c
++++ b/sound/soc/intel/atom/sst-mfld-platform-compress.c
+@@ -39,7 +39,8 @@ static void sst_drain_notify(void *arg)
+ 		snd_compr_drain_notify(cstream);
  }
  
--static int q6asm_dai_compr_open(struct snd_compr_stream *stream)
-+static int q6asm_dai_compr_open(struct snd_soc_component *component,
-+				struct snd_compr_stream *stream)
+-static int sst_platform_compr_open(struct snd_compr_stream *cstream)
++static int sst_platform_compr_open(struct snd_soc_component *component,
++				   struct snd_compr_stream *cstream)
  {
- 	struct snd_soc_pcm_runtime *rtd = stream->private_data;
--	struct snd_soc_component *c = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
- 	struct snd_compr_runtime *runtime = stream->runtime;
- 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
- 	struct q6asm_dai_data *pdata;
--	struct device *dev = c->dev;
-+	struct device *dev = component->dev;
- 	struct q6asm_dai_rtd *prtd;
- 	int stream_id, size, ret;
  
- 	stream_id = cpu_dai->driver->id;
--	pdata = snd_soc_component_get_drvdata(c);
-+	pdata = snd_soc_component_get_drvdata(component);
- 	if (!pdata) {
- 		dev_err(dev, "Drv data not found ..\n");
- 		return -EINVAL;
-@@ -600,7 +600,8 @@ static int q6asm_dai_compr_open(struct snd_compr_stream *stream)
- 	return ret;
+ 	int ret_val = 0;
+@@ -72,7 +73,8 @@ static int sst_platform_compr_open(struct snd_compr_stream *cstream)
+ 	return ret_val;
  }
  
--static int q6asm_dai_compr_free(struct snd_compr_stream *stream)
-+static int q6asm_dai_compr_free(struct snd_soc_component *component,
-+				struct snd_compr_stream *stream)
+-static int sst_platform_compr_free(struct snd_compr_stream *cstream)
++static int sst_platform_compr_free(struct snd_soc_component *component,
++				   struct snd_compr_stream *cstream)
  {
- 	struct snd_compr_runtime *runtime = stream->runtime;
- 	struct q6asm_dai_rtd *prtd = runtime->private_data;
-@@ -622,13 +623,13 @@ static int q6asm_dai_compr_free(struct snd_compr_stream *stream)
+ 	struct sst_runtime_stream *stream;
+ 	int ret_val = 0, str_id;
+@@ -91,15 +93,14 @@ static int sst_platform_compr_free(struct snd_compr_stream *cstream)
  	return 0;
  }
  
--static int q6asm_dai_compr_set_params(struct snd_compr_stream *stream,
-+static int q6asm_dai_compr_set_params(struct snd_soc_component *component,
-+				      struct snd_compr_stream *stream,
- 				      struct snd_compr_params *params)
+-static int sst_platform_compr_set_params(struct snd_compr_stream *cstream,
+-					struct snd_compr_params *params)
++static int sst_platform_compr_set_params(struct snd_soc_component *component,
++					 struct snd_compr_stream *cstream,
++					 struct snd_compr_params *params)
  {
- 	struct snd_compr_runtime *runtime = stream->runtime;
- 	struct q6asm_dai_rtd *prtd = runtime->private_data;
- 	struct snd_soc_pcm_runtime *rtd = stream->private_data;
--	struct snd_soc_component *c = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
- 	int dir = stream->direction;
- 	struct q6asm_dai_data *pdata;
- 	struct q6asm_flac_cfg flac_cfg;
-@@ -636,7 +637,7 @@ static int q6asm_dai_compr_set_params(struct snd_compr_stream *stream,
- 	struct q6asm_alac_cfg alac_cfg;
- 	struct q6asm_ape_cfg ape_cfg;
- 	unsigned int wma_v9 = 0;
--	struct device *dev = c->dev;
-+	struct device *dev = component->dev;
- 	int ret;
- 	union snd_codec_options *codec_options;
- 	struct snd_dec_flac *flac;
-@@ -649,7 +650,7 @@ static int q6asm_dai_compr_set_params(struct snd_compr_stream *stream,
+ 	struct sst_runtime_stream *stream;
+ 	int retval;
+ 	struct snd_sst_params str_params;
+ 	struct sst_compress_cb cb;
+-	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
+ 	struct sst_data *ctx = snd_soc_component_get_drvdata(component);
  
- 	memcpy(&prtd->codec_param, params, sizeof(*params));
- 
--	pdata = snd_soc_component_get_drvdata(c);
-+	pdata = snd_soc_component_get_drvdata(component);
- 	if (!pdata)
- 		return -EINVAL;
- 
-@@ -842,7 +843,8 @@ static int q6asm_dai_compr_set_params(struct snd_compr_stream *stream,
+ 	stream = cstream->runtime->private_data;
+@@ -166,7 +167,8 @@ static int sst_platform_compr_set_params(struct snd_compr_stream *cstream,
  	return 0;
  }
  
--static int q6asm_dai_compr_trigger(struct snd_compr_stream *stream, int cmd)
-+static int q6asm_dai_compr_trigger(struct snd_soc_component *component,
-+				   struct snd_compr_stream *stream, int cmd)
+-static int sst_platform_compr_trigger(struct snd_compr_stream *cstream, int cmd)
++static int sst_platform_compr_trigger(struct snd_soc_component *component,
++				      struct snd_compr_stream *cstream, int cmd)
  {
- 	struct snd_compr_runtime *runtime = stream->runtime;
- 	struct q6asm_dai_rtd *prtd = runtime->private_data;
-@@ -870,8 +872,9 @@ static int q6asm_dai_compr_trigger(struct snd_compr_stream *stream, int cmd)
- 	return ret;
+ 	struct sst_runtime_stream *stream = cstream->runtime->private_data;
+ 
+@@ -199,8 +201,9 @@ static int sst_platform_compr_trigger(struct snd_compr_stream *cstream, int cmd)
+ 	return -EINVAL;
  }
  
--static int q6asm_dai_compr_pointer(struct snd_compr_stream *stream,
--		struct snd_compr_tstamp *tstamp)
-+static int q6asm_dai_compr_pointer(struct snd_soc_component *component,
-+				   struct snd_compr_stream *stream,
-+				   struct snd_compr_tstamp *tstamp)
+-static int sst_platform_compr_pointer(struct snd_compr_stream *cstream,
+-					struct snd_compr_tstamp *tstamp)
++static int sst_platform_compr_pointer(struct snd_soc_component *component,
++				      struct snd_compr_stream *cstream,
++				      struct snd_compr_tstamp *tstamp)
  {
- 	struct snd_compr_runtime *runtime = stream->runtime;
- 	struct q6asm_dai_rtd *prtd = runtime->private_data;
-@@ -887,8 +890,9 @@ static int q6asm_dai_compr_pointer(struct snd_compr_stream *stream,
+ 	struct sst_runtime_stream *stream;
+ 
+@@ -212,8 +215,9 @@ static int sst_platform_compr_pointer(struct snd_compr_stream *cstream,
  	return 0;
  }
  
--static int q6asm_dai_compr_ack(struct snd_compr_stream *stream,
--				size_t count)
-+static int q6asm_dai_compr_ack(struct snd_soc_component *component,
-+			       struct snd_compr_stream *stream,
-+			       size_t count)
+-static int sst_platform_compr_ack(struct snd_compr_stream *cstream,
+-					size_t bytes)
++static int sst_platform_compr_ack(struct snd_soc_component *component,
++				  struct snd_compr_stream *cstream,
++				  size_t bytes)
  {
- 	struct snd_compr_runtime *runtime = stream->runtime;
- 	struct q6asm_dai_rtd *prtd = runtime->private_data;
-@@ -901,21 +905,21 @@ static int q6asm_dai_compr_ack(struct snd_compr_stream *stream,
- 	return count;
- }
+ 	struct sst_runtime_stream *stream;
  
--static int q6asm_dai_compr_mmap(struct snd_compr_stream *stream,
--		struct vm_area_struct *vma)
-+static int q6asm_dai_compr_mmap(struct snd_soc_component *component,
-+				struct snd_compr_stream *stream,
-+				struct vm_area_struct *vma)
- {
- 	struct snd_compr_runtime *runtime = stream->runtime;
- 	struct q6asm_dai_rtd *prtd = runtime->private_data;
--	struct snd_soc_pcm_runtime *rtd = stream->private_data;
--	struct snd_soc_component *c = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
--	struct device *dev = c->dev;
-+	struct device *dev = component->dev;
- 
- 	return dma_mmap_coherent(dev, vma,
- 			prtd->dma_buffer.area, prtd->dma_buffer.addr,
- 			prtd->dma_buffer.bytes);
- }
- 
--static int q6asm_dai_compr_get_caps(struct snd_compr_stream *stream,
-+static int q6asm_dai_compr_get_caps(struct snd_soc_component *component,
-+				    struct snd_compr_stream *stream,
- 				    struct snd_compr_caps *caps)
- {
- 	caps->direction = SND_COMPRESS_PLAYBACK;
-@@ -933,7 +937,8 @@ static int q6asm_dai_compr_get_caps(struct snd_compr_stream *stream,
+@@ -224,8 +228,9 @@ static int sst_platform_compr_ack(struct snd_compr_stream *cstream,
  	return 0;
  }
  
--static int q6asm_dai_compr_get_codec_caps(struct snd_compr_stream *stream,
-+static int q6asm_dai_compr_get_codec_caps(struct snd_soc_component *component,
-+					  struct snd_compr_stream *stream,
- 					  struct snd_compr_codec_caps *codec)
+-static int sst_platform_compr_get_caps(struct snd_compr_stream *cstream,
+-					struct snd_compr_caps *caps)
++static int sst_platform_compr_get_caps(struct snd_soc_component *component,
++				       struct snd_compr_stream *cstream,
++				       struct snd_compr_caps *caps)
  {
- 	switch (codec->codec) {
-@@ -947,7 +952,7 @@ static int q6asm_dai_compr_get_codec_caps(struct snd_compr_stream *stream,
- 	return 0;
+ 	struct sst_runtime_stream *stream =
+ 		cstream->runtime->private_data;
+@@ -233,8 +238,9 @@ static int sst_platform_compr_get_caps(struct snd_compr_stream *cstream,
+ 	return stream->compr_ops->get_caps(caps);
  }
  
--static struct snd_compr_ops q6asm_dai_compr_ops = {
-+static struct snd_compress_ops q6asm_dai_compress_ops = {
- 	.open		= q6asm_dai_compr_open,
- 	.free		= q6asm_dai_compr_free,
- 	.set_params	= q6asm_dai_compr_set_params,
-@@ -1021,7 +1026,7 @@ static const struct snd_soc_component_driver q6asm_fe_dai_component = {
- 	.mmap		= q6asm_dai_mmap,
- 	.pcm_construct	= q6asm_dai_pcm_new,
- 	.pcm_destruct	= q6asm_dai_pcm_free,
--	.compr_ops	= &q6asm_dai_compr_ops,
-+	.compress_ops	= &q6asm_dai_compress_ops,
+-static int sst_platform_compr_get_codec_caps(struct snd_compr_stream *cstream,
+-					struct snd_compr_codec_caps *codec)
++static int sst_platform_compr_get_codec_caps(struct snd_soc_component *component,
++					     struct snd_compr_stream *cstream,
++					     struct snd_compr_codec_caps *codec)
+ {
+ 	struct sst_runtime_stream *stream =
+ 		cstream->runtime->private_data;
+@@ -242,8 +248,9 @@ static int sst_platform_compr_get_codec_caps(struct snd_compr_stream *cstream,
+ 	return stream->compr_ops->get_codec_caps(codec);
+ }
+ 
+-static int sst_platform_compr_set_metadata(struct snd_compr_stream *cstream,
+-					struct snd_compr_metadata *metadata)
++static int sst_platform_compr_set_metadata(struct snd_soc_component *component,
++					   struct snd_compr_stream *cstream,
++					   struct snd_compr_metadata *metadata)
+ {
+ 	struct sst_runtime_stream *stream  =
+ 		 cstream->runtime->private_data;
+@@ -251,7 +258,7 @@ static int sst_platform_compr_set_metadata(struct snd_compr_stream *cstream,
+ 	return stream->compr_ops->set_metadata(sst->dev, stream->id, metadata);
+ }
+ 
+-const struct snd_compr_ops sst_platform_compr_ops = {
++const struct snd_compress_ops sst_platform_compress_ops = {
+ 
+ 	.open = sst_platform_compr_open,
+ 	.free = sst_platform_compr_free,
+diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+index 82f2b6357778..2e9222ed9daa 100644
+--- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
++++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+@@ -684,7 +684,7 @@ static const struct snd_soc_component_driver sst_soc_platform_drv  = {
+ 	.open		= sst_soc_open,
+ 	.trigger	= sst_soc_trigger,
+ 	.pointer	= sst_soc_pointer,
+-	.compr_ops	= &sst_platform_compr_ops,
++	.compress_ops	= &sst_platform_compress_ops,
+ 	.pcm_construct	= sst_soc_pcm_new,
  };
  
- static struct snd_soc_dai_driver q6asm_fe_dais_template[] = {
+diff --git a/sound/soc/intel/atom/sst-mfld-platform.h b/sound/soc/intel/atom/sst-mfld-platform.h
+index fe4749cfa4f5..10c9ecfa7038 100644
+--- a/sound/soc/intel/atom/sst-mfld-platform.h
++++ b/sound/soc/intel/atom/sst-mfld-platform.h
+@@ -17,7 +17,7 @@
+ #include "sst-atom-controls.h"
+ 
+ extern struct sst_device *sst;
+-extern const struct snd_compr_ops sst_platform_compr_ops;
++extern const struct snd_compress_ops sst_platform_compress_ops;
+ 
+ #define DRV_NAME "sst"
+ 
 -- 
 2.17.1
 
