@@ -2,65 +2,67 @@ Return-Path: <SRS0=3aoS=6E=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A83F2C3815B
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 07:28:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 45B04C3A5A0
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 07:35:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 51F18206CD
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 07:28:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F0B9820BED
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 07:35:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Z5azrLrR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 51F18206CD
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Kz7AQtAG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F0B9820BED
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A627B166F;
-	Mon, 20 Apr 2020 09:27:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A627B166F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5F7DB950;
+	Mon, 20 Apr 2020 09:34:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5F7DB950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587367713;
-	bh=iGwhJpZljJ5HD/xTogQHJipG1I1P5qZhQcIlq9rRLKM=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1587368099;
+	bh=VQmsOHHHDrdxlZnMOxRIqhQHwB/nRfb1Bf1QPbeOe+Y=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Z5azrLrRvz9mFEa3cajjUJoptjhNnMABbJadAcM1v88DYSnphhemIVLgSZvIQFE+q
-	 eRqBRwCAfqSyCS49+I3hpqih6RnUzoDuzZIkKYuL+NRprg3tdoNnH5mDEskY7d6GF1
-	 r6UMoQgZ1QCTcM0S9djgO/o7rrZMboYsdOS8GLJE=
+	b=Kz7AQtAGt0WTZjNkqREq+OaXSqKwDekCWvrRC8Lr8EQYxl/wROspH4lFGIE5frLEz
+	 4QNHmgSHSfUvJ41F9bFmaxyyt1sb5e3gYaERlZ+ZXtVuWNnqWyi4fBdMdwTSXmI7Kd
+	 eN1ENQRdFLhbPi9yN6JotDIHHEYCkw606pxJTy30=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4D6C8F8013E;
-	Mon, 20 Apr 2020 09:27:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E7817F8013E;
+	Mon, 20 Apr 2020 09:34:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 90937F8021C; Mon, 20 Apr 2020 09:27:42 +0200 (CEST)
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
- by alsa1.perex.cz (Postfix) with ESMTP id 2357CF8012F
- for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2020 09:27:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2357CF8012F
-Received: from uucp (helo=alpha)
- by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
- id 1jQQqA-00070o-01; Mon, 20 Apr 2020 09:27:38 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
- id C3D0DC0181; Mon, 20 Apr 2020 09:02:40 +0200 (CEST)
-Date: Mon, 20 Apr 2020 09:02:40 +0200
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Christoph Hellwig <hch@lst.de>
-Subject: Re: MIPS ioremap cleanups v2
-Message-ID: <20200420070240.GB4627@alpha.franken.de>
-References: <20200416150011.820984-1-hch@lst.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200416150011.820984-1-hch@lst.de>
-User-Agent: Mutt/1.5.23 (2014-03-12)
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- linux-mips@vger.kernel.org
+ id 9CA0DF801D9; Mon, 20 Apr 2020 09:34:07 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id AA1D8F800E7
+ for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2020 09:34:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA1D8F800E7
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 1C5D0AC7F;
+ Mon, 20 Apr 2020 07:34:03 +0000 (UTC)
+Date: Mon, 20 Apr 2020 09:34:03 +0200
+Message-ID: <s5hftcy7gr8.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: =?UTF-8?B?5Lq/5LiA?= <teroincn@gmail.com>
+Subject: Re: sound: usb: usx2y: is it a null pointer deference in function
+ usX2Y_rate_set?
+In-Reply-To: <CANTwqXB+Lq1fq0dXUjToL9JhjcfSFwtqPpiFoRcFZeJC3o0s-g@mail.gmail.com>
+References: <CANTwqXB+Lq1fq0dXUjToL9JhjcfSFwtqPpiFoRcFZeJC3o0s-g@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,21 +78,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Apr 16, 2020 at 05:00:04PM +0200, Christoph Hellwig wrote:
-> Hi Thomas,
+On Mon, 20 Apr 2020 09:22:11 +0200,
+亿一 wrote:
 > 
-> below is a bunch of cleanups for the MIPS ioremap code.  Compile tested
-> only.
-> 
-> Changes since v1:
->  - don't remove cpu_has_64bit_gp_regs
->  - add a new prep patch to stop txx9aclc-ac97 from poking into ioremap
->    internals
+> Hi, all:
+>     when reviewing function usX2Y_rate_set, here may exist a NULL
+> pointer deference if kmalloc_array failed or usb_alloc_urb failed,
+> in cleanup,  we should judge whether us->urb[i] is NULL first.
 
-series applied to mips-next.
+Right, that's a missing check.  Would you submit the fix patch, or
+shall I write quickly?
 
-Thomas.
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+thanks,
+
+Takashi
