@@ -2,73 +2,73 @@ Return-Path: <SRS0=3aoS=6E=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CA131C3815B
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 14:29:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CCCF8C3A5A0
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 14:30:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4CF7B20735
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 14:29:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 50E7420775
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 14:30:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hpN0Bb6J";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ch9lIrqr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4CF7B20735
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="M4yHhnlK";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="OD/T4g2C"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 50E7420775
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A7FD21678;
-	Mon, 20 Apr 2020 16:29:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A7FD21678
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9EBA21682;
+	Mon, 20 Apr 2020 16:29:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9EBA21682
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587392997;
-	bh=IyynnK8UeratkZoR39Dsyukzq1BV8ghVhci6oQBjUb4=;
-	h=Date:From:To:In-Reply-To:References:Subject:List-Id:
+	s=default; t=1587393042;
+	bh=dcc8TEqP56glDATskmdRD92f9tPx8qJ1MkwXi6NrCrs=;
+	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hpN0Bb6JPYrm0eQfHS7FLQ1wR15BaLj5f+M5JzlU9xEH89AWAsuscH+CFrolV7bZ/
-	 w+DY010KvEGCiQKFv8f2HVJQm3G3LMlxw6DLc7ZRHgYWU7sncuE/kfR0lmV9O1/xGY
-	 UfjHvjHREr4lsfp38Qx+eGpjpCP4FUeoUkhENklQ=
+	b=M4yHhnlKy0DH6BihNVZpFH8PgBKMCnqoNrbpZnGM/T/dnCPyCLej5WC0gUJBBRXAk
+	 4F2uJiX1PSkm4M9VUSkr2D87zVOQKvpWeOONFz1tRgsSV2LcfFO/Tnnm7MYMR7GZAI
+	 W1HoyMrClHk8WWsZKl3d47cJaoQo40UIFjAGiKok=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 84126F80278;
-	Mon, 20 Apr 2020 16:27:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 40D1DF8029B;
+	Mon, 20 Apr 2020 16:27:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EE352F8028B; Mon, 20 Apr 2020 16:27:39 +0200 (CEST)
+ id EB548F8028F; Mon, 20 Apr 2020 16:27:41 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8CBC9F8021C
- for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2020 16:27:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8CBC9F8021C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8C7FFF8021C
+ for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2020 16:27:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C7FFF8021C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ch9lIrqr"
+ header.b="OD/T4g2C"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 83A4D21D79;
- Mon, 20 Apr 2020 14:27:31 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 869BF20857;
+ Mon, 20 Apr 2020 14:27:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1587392852;
- bh=IyynnK8UeratkZoR39Dsyukzq1BV8ghVhci6oQBjUb4=;
+ s=default; t=1587392858;
+ bh=dcc8TEqP56glDATskmdRD92f9tPx8qJ1MkwXi6NrCrs=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=ch9lIrqr1zDGiwJLRoVegmOQq4icxhS0s3aoRK7NrJ1NUHioZ79cQJCnp+75/ztPe
- 64QpOa0eaSQnE1A4PSmMtkl77rhFfdn3A/aDPPVgdz8siIPRKByOFI+K2qi73EF45T
- chjCB23u5KNA19JbQx+VBQfI5mIlXJKOMoLPbIlE=
-Date: Mon, 20 Apr 2020 15:27:29 +0100
+ b=OD/T4g2CfIXPiogmjau5DsHG3oZy32csl9YVP2aayvGI917uMuHOBbAwTkpaogeO9
+ KitpUbWRJNFfhkUh8HX2hlHY46aa/WTwccDb3iNxetnk43GzM1h+mjqjKN5gayXnq9
+ sZWRZaU84sEhapUmifPyayJ1Q7dutahhq1ERRtK4=
+Date: Mon, 20 Apr 2020 15:27:35 +0100
 From: Mark Brown <broonie@kernel.org>
-To: tiwai@suse.com, linux-kernel@vger.kernel.org,
- Jason Yan <yanaijie@huawei.com>, alsa-devel@alsa-project.org,
- lgirdwood@gmail.com, srinivas.kandagatla@linaro.org, perex@perex.cz
-In-Reply-To: <20200420042833.19116-1-yanaijie@huawei.com>
-References: <20200420042833.19116-1-yanaijie@huawei.com>
-Subject: Re: [PATCH] ASoC: wcd934x: remove unnecessary comparisons to bool
-Message-Id: <158739283775.7647.6482976074027263195.b4-ty@kernel.org>
+To: tiwai@suse.com, Wei Li <liwei391@huawei.com>, rdunlap@infradead.org,
+ lgirdwood@gmail.com, geert@linux-m68k.org, perex@perex.cz
+In-Reply-To: <20200420202410.47327-1-liwei391@huawei.com>
+References: <20200420202410.47327-1-liwei391@huawei.com>
+Subject: Re: [PATCH 0/2] ASoC: Fix dependency issues of SND_SOC
+Message-Id: <158739283776.7647.4620361063260583314.b4-ty@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,13 +84,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 20 Apr 2020 12:28:33 +0800, Jason Yan wrote:
-> Fix the following coccicheck warning:
+On Tue, 21 Apr 2020 04:24:08 +0800, Wei Li wrote:
+> Fix dependency issues of SND_SOC introduced by commit ea00d95200d02 
+> ("ASoC: Use imply for SND_SOC_ALL_CODECS").
 > 
-> sound/soc/codecs/wcd934x.c:3881:8-17: WARNING: Comparison of 0/1 to bool
-> variable
-> 
-> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+> Wei Li (2):
+>   ASoC: wm89xx: Fix build errors caused by I2C dependency
+>   ASoC: Fix wrong dependency of da7210 and wm8983
 > 
 > [...]
 
@@ -100,8 +100,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: wcd934x: remove unnecessary comparisons to bool
-      commit: 836cca3a2658e9ea2a252ef78a24fdb002a9f5ba
+[1/2] ASoC: wm89xx: Add missing dependency
+      commit: 9bff3d3024e51122c0c09634056debcd6c7359ec
+[2/2] ASoC: Fix wrong dependency of da7210 and wm8983
+      (not applied)
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
