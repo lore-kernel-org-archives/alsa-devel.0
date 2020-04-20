@@ -7,46 +7,46 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DATE_IN_FUTURE_06_12,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C6C98C3815B
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 12:56:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1681AC3815B
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 12:57:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4C2C021473
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 12:56:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 97088206DD
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2020 12:57:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BE81LpSj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4C2C021473
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WnRnU+W2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 97088206DD
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 148A11686;
-	Mon, 20 Apr 2020 14:55:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 148A11686
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2891E1696;
+	Mon, 20 Apr 2020 14:56:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2891E1696
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587387405;
-	bh=qZiyP0CEU5dTUgbO9irAYGWwKK0X3o5eVLiD6Yof2DE=;
+	s=default; t=1587387454;
+	bh=wsK/9dU9PrYnuBYz2GOVIjNOK+Le5NdKjVuV1pFv1w4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BE81LpSj1h0Tl/D47+nMCzkInbdUvzsQYBgVLIRFUResuH4zZA/bStrm8ec0M6Pc+
-	 5AWoIxDYKMCP43eOZsH9bMe4xn/8p+l4JkqeXBg0WD1sX2PZotutX43INUICXxUah1
-	 PhT3UMtejr4qViZoxg1wYnLEIClPB0tVaOwuP+H4=
+	b=WnRnU+W2gzJxp4kb9NumMYLStrrZ1/a+G46sG/5oNIO7RlfIivc8qCNazBBwUf2ml
+	 7YuuNAzEWyZ1pUEIITGNp0uJ6gNNpFLZTF6XqR1nbyYerTdrivXC9oqazXqMTCK6P/
+	 uUnk0wEyKsdk+/+optzB5jzn9PUoXz6sMTNofIvk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9CA33F8025E;
-	Mon, 20 Apr 2020 14:55:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 19E4DF80278;
+	Mon, 20 Apr 2020 14:55:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3C92DF8025E; Mon, 20 Apr 2020 14:26:41 +0200 (CEST)
+ id 55A4BF8023F; Mon, 20 Apr 2020 14:26:45 +0200 (CEST)
 Received: from huawei.com (szxga07-in.huawei.com [45.249.212.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 25064F801D9
- for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2020 14:26:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25064F801D9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 55EBEF800E7
+ for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2020 14:26:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55EBEF800E7
 Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
- by Forcepoint Email with ESMTP id 1234D41BD4D12F86F4A3;
+ by Forcepoint Email with ESMTP id 1776992AF7BEDEBF3F29;
  Mon, 20 Apr 2020 20:26:29 +0800 (CST)
 Received: from euler.huawei.com (10.175.104.193) by
  DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
@@ -54,9 +54,9 @@ Received: from euler.huawei.com (10.175.104.193) by
 From: Wei Li <liwei391@huawei.com>
 To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
  <tiwai@suse.com>, <rdunlap@infradead.org>, <geert@linux-m68k.org>
-Subject: [PATCH 2/2] ASoC: Fix wrong dependency of da7210 and wm8983
-Date: Tue, 21 Apr 2020 04:24:10 +0800
-Message-ID: <20200420202410.47327-3-liwei391@huawei.com>
+Subject: [PATCH 1/2] ASoC: wm89xx: Fix build errors caused by I2C dependency
+Date: Tue, 21 Apr 2020 04:24:09 +0800
+Message-ID: <20200420202410.47327-2-liwei391@huawei.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200420202410.47327-1-liwei391@huawei.com>
 References: <20200420202410.47327-1-liwei391@huawei.com>
@@ -81,37 +81,65 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-As these two drivers support I2C and SPI, we should add the SND_SOC_I2C_AND_SPI
-dependency instead.
+When I2C=m, SND_SOC_WM8900=y, SND_SOC_WM8988=y, SND_SOC_WM8995=y:
 
-Fixes: ce0c97f8a2936 ("ASoC: Fix SND_SOC_ALL_CODECS imply SPI fallout")
+sound/soc/codecs/wm8900.o: In function `wm8900_i2c_probe':
+wm8900.c:(.text+0xa16): undefined reference to `__devm_regmap_init_i2c'
+sound/soc/codecs/wm8900.o: In function `wm8900_modinit':
+wm8900.c:(.init.text+0xb): undefined reference to `i2c_register_driver'
+sound/soc/codecs/wm8900.o: In function `wm8900_exit':
+wm8900.c:(.exit.text+0x8): undefined reference to `i2c_del_driver'
+sound/soc/codecs/wm8988.o: In function `wm8988_i2c_probe':
+wm8988.c:(.text+0x86b): undefined reference to `__devm_regmap_init_i2c'
+sound/soc/codecs/wm8988.o: In function `wm8988_modinit':
+wm8988.c:(.init.text+0xb): undefined reference to `i2c_register_driver'
+sound/soc/codecs/wm8988.o: In function `wm8988_exit':
+wm8988.c:(.exit.text+0x8): undefined reference to `i2c_del_driver'
+sound/soc/codecs/wm8995.o: In function `wm8995_i2c_probe':
+wm8995.c:(.text+0x1b5b): undefined reference to `__devm_regmap_init_i2c'
+sound/soc/codecs/wm8995.o: In function `wm8995_modinit':
+wm8995.c:(.init.text+0xb): undefined reference to `i2c_register_driver'
+sound/soc/codecs/wm8995.o: In function `wm8995_exit':
+wm8995.c:(.exit.text+0x8): undefined reference to `i2c_del_driver'
+
+As these drivers support I2C and SPI, we add the SND_SOC_I2C_AND_SPI
+dependency to solve it.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Fixes: ea00d95200d02 ("ASoC: Use imply for SND_SOC_ALL_CODECS")
 Signed-off-by: Wei Li <liwei391@huawei.com>
 ---
- sound/soc/codecs/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/Kconfig | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index e60e0b6a689c..d0fec1b90256 100644
+index e6a0c5d05fa5..e60e0b6a689c 100644
 --- a/sound/soc/codecs/Kconfig
 +++ b/sound/soc/codecs/Kconfig
-@@ -717,7 +717,7 @@ config SND_SOC_L3
+@@ -1525,6 +1525,7 @@ config SND_SOC_WM8804_SPI
  
- config SND_SOC_DA7210
+ config SND_SOC_WM8900
  	tristate
--	depends on I2C
 +	depends on SND_SOC_I2C_AND_SPI
  
- config SND_SOC_DA7213
- 	tristate "Dialog DA7213 CODEC"
-@@ -1569,7 +1569,7 @@ config SND_SOC_WM8978
+ config SND_SOC_WM8903
+ 	tristate "Wolfson Microelectronics WM8903 CODEC"
+@@ -1576,6 +1577,7 @@ config SND_SOC_WM8985
  
- config SND_SOC_WM8983
+ config SND_SOC_WM8988
  	tristate
--	depends on I2C
 +	depends on SND_SOC_I2C_AND_SPI
  
- config SND_SOC_WM8985
- 	tristate "Wolfson Microelectronics WM8985 and WM8758 codec driver"
+ config SND_SOC_WM8990
+ 	tristate
+@@ -1594,6 +1596,7 @@ config SND_SOC_WM8994
+ 
+ config SND_SOC_WM8995
+ 	tristate
++	depends on SND_SOC_I2C_AND_SPI
+ 
+ config SND_SOC_WM8996
+ 	tristate
 -- 
 2.17.1
 
