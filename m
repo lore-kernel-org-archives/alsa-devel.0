@@ -2,98 +2,80 @@ Return-Path: <SRS0=/Ps/=6F=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11BBCC54FCC
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Apr 2020 21:22:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 39CF8C54FCC
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Apr 2020 22:02:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 91D9720724
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Apr 2020 21:22:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B497D206E9
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Apr 2020 22:02:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qKuMCZtf";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XIKtgmre"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 91D9720724
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fOwqRmFd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B497D206E9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E004D169A;
-	Tue, 21 Apr 2020 23:21:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E004D169A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 01DE016B6;
+	Wed, 22 Apr 2020 00:01:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 01DE016B6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587504148;
-	bh=kJ6FYcQjswI1ftVVPnhOBdcV8lBKm4np5uypm78flfM=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=qKuMCZtf9hdMJKWZ/KUIt4YjdAG3JsrJHkkop6B0AI4+gBSLhSpJBKYajIa4AXnLl
-	 bv0syN0bDxwrHM6m2DVO0nJZ0bvas8ZV2GGzQb/5uOEcN37P/EKaClpAtscVwC511d
-	 6Ndt/tcNsL8qBIADDXdFxteRb52AcCI3mUKqsV0s=
+	s=default; t=1587506557;
+	bh=jezG8jIJrcRUz8ZI+cUx4uVeo5mIICz/cio3VM+MIfM=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=fOwqRmFdhNdtnUI7ge2D52ZQIpVxZWbOfhJPd6GMFxLcJ9hVDx7+0oVCEG19R5lqL
+	 //e+MvFqpuqSh+oaeG8i6SRpF3B6wVWfIhDieG8njq4FQ7+3p5/LZ5aNJYlNlAeiHZ
+	 dGCe2vnVscQCbgp1AerjvzalBUq8DAY8OIdGsKh4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 58333F80143;
-	Tue, 21 Apr 2020 23:21:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 85A2CF80143;
+	Wed, 22 Apr 2020 00:01:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 41CCEF801EC; Tue, 21 Apr 2020 23:21:35 +0200 (CEST)
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com
- [IPv6:2a00:1450:4864:20::342])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 240F2F801ED; Wed, 22 Apr 2020 00:01:38 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9B522F800FF
- for <alsa-devel@alsa-project.org>; Tue, 21 Apr 2020 23:21:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B522F800FF
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="XIKtgmre"
-Received: by mail-wm1-x342.google.com with SMTP id t63so4984329wmt.3
- for <alsa-devel@alsa-project.org>; Tue, 21 Apr 2020 14:21:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=TK7n//gPeG36lihND5HMtLgm//L8iTOGVH+6m3LoRfw=;
- b=XIKtgmreyS0Cr6MKPOKrYxqNc93UbzcWrhNvLYFT9vLZAJagyeJmTIQ8Pm6cD7ezdx
- YuSb9y/DnY/LbqShUXWjH1D/onnkNjCoYWLZ0dxFZABe5sx7vS4Aqb+dfLMKUJTRWbnH
- 5C8mmPYlFP52as320wX32lNV88wLvHtEG69BFpT8ikKSIqwSrgdXHbxqSnEnpdtP1CDn
- RImCkCDSIg8OFs0iBA8I6UYsDPm1hJlLz7wVj/DmxOmpK7U6G//o6WIbS5/7eL9jNb/p
- cK/zTDFubnJx7n+7DlAplKXWQN5lvh8PajC5LUnyFvlsvVPJLQnZfzhwq9QLajgPLZcV
- Ia5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=TK7n//gPeG36lihND5HMtLgm//L8iTOGVH+6m3LoRfw=;
- b=fzTXBbIG3iJ6570dwfdUUMyOOBakTZYN7lo5PPBPJZpyNigQX0VXw1fJLoNRWZDThm
- QUFdtH05Lr1cyN7D4E2Z3PZBtFrrRCjOcrZd9XrmHIy9PFvium8ss+rTBnWDY3v0RzCe
- IMTNlt3ZTRnHRglWRw8VG+doKyPWXh+r4fL/W8W1UVbs0O1J9H1fPaNUez+hw0+1MmEX
- s9goKTQe20AKaByqq5kRafAnHtvP89LHg8U2QpHqvI9LNFqg98ETgrjdiCK3zz+lOz/O
- ptvXSamjn1doj9i3KBZI3KulSK4BcGiGvFGTRKDM5TwgXbQrJhm8UThwhvJjfK9iqS65
- adag==
-X-Gm-Message-State: AGi0PuaRdRcaINH67OnnmL2bam/I7cE5lSnEmdU2xiTKJ4W/33jA+T4e
- 9TuxGDshvCht+RUzQ+0lr1w=
-X-Google-Smtp-Source: APiQypJHCYt/qQSBjjIeoumdlZTCo2ETQ8TRw1e0/LrPSZlVZ38YwA2+3pNHXDSq+tHbVExjrJwweA==
-X-Received: by 2002:a7b:c306:: with SMTP id k6mr6630963wmj.40.1587504091656;
- Tue, 21 Apr 2020 14:21:31 -0700 (PDT)
-Received: from localhost (p2E5BEDBA.dip0.t-ipconnect.de. [46.91.237.186])
- by smtp.gmail.com with ESMTPSA id c190sm5252751wme.10.2020.04.21.14.21.30
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 21 Apr 2020 14:21:30 -0700 (PDT)
-From: Thierry Reding <thierry.reding@gmail.com>
-To: Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] ASoC: tegra: Fixes for v5.7-rc3
-Date: Tue, 21 Apr 2020 23:21:21 +0200
-Message-Id: <20200421212121.3286517-1-thierry.reding@gmail.com>
-X-Mailer: git-send-email 2.24.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id ED817F800FF
+ for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2020 00:01:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED817F800FF
+IronPort-SDR: y0fPmGcpUtBbyoX3qJgKDnJIQN3uQoXhV2+bVyPcsRpBswFy5Dm5gdj20bFsR+AZhbH3TqSsm+
+ zY5SKLv//BZQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 Apr 2020 15:01:27 -0700
+IronPort-SDR: /IPInb68liflrj3aBrHS1R/CkZuyBJDZTCqMeYT6CZFyVUmDCBRWixOpHhfgDlZ8IzDUB6r1RS
+ kSPbLmS9TC/Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,411,1580803200"; d="scan'208";a="456921723"
+Received: from sabeliak-mobl.amr.corp.intel.com (HELO [10.254.24.98])
+ ([10.254.24.98])
+ by fmsmga006.fm.intel.com with ESMTP; 21 Apr 2020 15:01:26 -0700
+Subject: Re: [PATCH 1/4] ASoC: Intel: Skylake: Change the order of machine
+ device and platform registration
+To: Mateusz Gorski <mateusz.gorski@linux.intel.com>,
+ alsa-devel@alsa-project.org
+References: <20200421202519.4008-1-mateusz.gorski@linux.intel.com>
+ <20200421202519.4008-2-mateusz.gorski@linux.intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <bd0e8d65-74ea-8b17-9f92-ed980e265a1c@linux.intel.com>
+Date: Tue, 21 Apr 2020 15:49:17 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
- Sowjanya Komatineni <skomatineni@nvidia.com>,
- Jonathan Hunter <jonathanh@nvidia.com>
+In-Reply-To: <20200421202519.4008-2-mateusz.gorski@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: cezary.rojewski@intel.com, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,58 +91,56 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Liam, Mark,
 
-The following changes since commit 8f3d9f354286745c751374f5f1fcafee6b3f3136:
 
-  Linux 5.7-rc1 (2020-04-12 12:35:55 -0700)
+On 4/21/20 3:25 PM, Mateusz Gorski wrote:
+> Swap the order of machine device and platform device registration.
+> This change ensures that even if the codec enumeration falls late - during
+> the driver module or topology reload - i2s_dev field is always ready to
+> be used.
 
-are available in the Git repository at:
+Are you sure?
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tegra/linux.git tags/tegra-for-5.7-asoc
+The platform device will register the DAIs that are used by the machine 
+driver, don't you have a risk of missing dependencies during the card 
+registration with this change?
 
-for you to fetch changes up to ff5d18cb04f4ecccbcf05b7f83ab6df2a0d95c16:
+Put differently, why do this now when the existing code has been 
+'working' for a number of years without needing such a change?
 
-  ASoC: tegra: Enable audio mclk during tegra_asoc_utils_init() (2020-04-21 16:53:15 +0200)
 
-This is a set of patches that I was supposed to send out during the
-merge window[0], but I somehow messed up my scripts and then didn't
-notice that this was missing. I've rebased these patches on top of
-v5.7-rc1.
-
-The lack of these are now causing some issues with unbalanced clock
-reference counts.
-
-Is there any chance you can pick these up for v5.7-rc3?
-
-Thanks,
-Thierry
-
-[0]: https://lore.kernel.org/lkml/20200327154506.GF4437@sirena.org.uk/
-
-----------------------------------------------------------------
-ASoC: tegra: Fixes for v5.7-rc3
-
-This contains a couple of fixes that are needed to properly reconfigure
-the audio clocks on older Tegra devices.
-
-----------------------------------------------------------------
-Sowjanya Komatineni (4):
-      ASoC: tegra: Use device managed resource APIs to get the clock
-      ASoC: nau8825: Change Tegra clk_out_2 provider to PMC
-      ASoC: tegra: Add audio mclk parent configuration
-      ASoC: tegra: Enable audio mclk during tegra_asoc_utils_init()
-
- .../devicetree/bindings/sound/nau8825.txt          |   2 +-
- sound/soc/tegra/tegra_alc5632.c                    |   7 +-
- sound/soc/tegra/tegra_asoc_utils.c                 | 113 ++++++++++-----------
- sound/soc/tegra/tegra_asoc_utils.h                 |   1 -
- sound/soc/tegra/tegra_max98090.c                   |  22 ++--
- sound/soc/tegra/tegra_rt5640.c                     |  22 ++--
- sound/soc/tegra/tegra_rt5677.c                     |   7 +-
- sound/soc/tegra/tegra_sgtl5000.c                   |   7 +-
- sound/soc/tegra/tegra_wm8753.c                     |  22 ++--
- sound/soc/tegra/tegra_wm8903.c                     |  22 ++--
- sound/soc/tegra/tegra_wm9712.c                     |   8 +-
- sound/soc/tegra/trimslice.c                        |  18 +---
- 12 files changed, 90 insertions(+), 161 deletions(-)
+> Follow-up patch uses data from this field to create alternative topology
+> name based on used machine device.
+> 
+> Signed-off-by: Mateusz Gorski <mateusz.gorski@linux.intel.com>
+> ---
+>   sound/soc/intel/skylake/skl.c | 10 +++++-----
+>   1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+> index 63182bfd7941..8473eb13ea65 100644
+> --- a/sound/soc/intel/skylake/skl.c
+> +++ b/sound/soc/intel/skylake/skl.c
+> @@ -819,16 +819,16 @@ static void skl_probe_work(struct work_struct *work)
+>   	/* create codec instances */
+>   	skl_codec_create(bus);
+>   
+> -	/* register platform dai and controls */
+> -	err = skl_platform_register(bus->dev);
+> +	err = skl_machine_device_register(skl);
+>   	if (err < 0) {
+> -		dev_err(bus->dev, "platform register failed: %d\n", err);
+> +		dev_err(bus->dev, "machine register failed: %d\n", err);
+>   		goto out_err;
+>   	}
+>   
+> -	err = skl_machine_device_register(skl);
+> +	/* register platform dai and controls */
+> +	err = skl_platform_register(bus->dev);
+>   	if (err < 0) {
+> -		dev_err(bus->dev, "machine register failed: %d\n", err);
+> +		dev_err(bus->dev, "platform register failed: %d\n", err);
+>   		goto out_err;
+>   	}
+>   
+> 
