@@ -2,66 +2,98 @@ Return-Path: <SRS0=/Ps/=6F=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-13.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42BC7C54FCC
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Apr 2020 20:28:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11BBCC54FCC
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Apr 2020 21:22:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BB6C4206D9
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Apr 2020 20:28:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 91D9720724
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Apr 2020 21:22:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dNtsQHhE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BB6C4206D9
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qKuMCZtf";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XIKtgmre"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 91D9720724
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 262DF16D4;
-	Tue, 21 Apr 2020 22:27:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 262DF16D4
+	by alsa0.perex.cz (Postfix) with ESMTPS id E004D169A;
+	Tue, 21 Apr 2020 23:21:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E004D169A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587500914;
-	bh=NcFCpQFMpXpAP1jJUb9f5zAe0JJxbaH6NbyubIbfUVw=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=dNtsQHhEHzKI6dLyLJqpsvd5B84b82pMks+BWCJV2fx9Db/AEjKPFSYmSChYkbkAR
-	 yRRyn7tsATy8Ap3XF0owWlTV6DxR8AsacY+Y2D+ay+uYZVYbi4PqhjXwfk8Gj5R/M9
-	 oTi1s2NipyWJ1NxWM6Sf38G2Hs48NTy0N7lSSNJE=
+	s=default; t=1587504148;
+	bh=kJ6FYcQjswI1ftVVPnhOBdcV8lBKm4np5uypm78flfM=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=qKuMCZtf9hdMJKWZ/KUIt4YjdAG3JsrJHkkop6B0AI4+gBSLhSpJBKYajIa4AXnLl
+	 bv0syN0bDxwrHM6m2DVO0nJZ0bvas8ZV2GGzQb/5uOEcN37P/EKaClpAtscVwC511d
+	 6Ndt/tcNsL8qBIADDXdFxteRb52AcCI3mUKqsV0s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 858F3F801EC;
-	Tue, 21 Apr 2020 22:26:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 58333F80143;
+	Tue, 21 Apr 2020 23:21:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 47C9BF80212; Tue, 21 Apr 2020 22:26:48 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 41CCEF801EC; Tue, 21 Apr 2020 23:21:35 +0200 (CEST)
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com
+ [IPv6:2a00:1450:4864:20::342])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E924BF80143
- for <alsa-devel@alsa-project.org>; Tue, 21 Apr 2020 22:26:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E924BF80143
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 761B7ABC7;
- Tue, 21 Apr 2020 20:26:44 +0000 (UTC)
-Date: Tue, 21 Apr 2020 22:26:44 +0200
-Message-ID: <s5hftcw1t6j.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [GIT PULL] ASoC fix v5.7-rc2
-In-Reply-To: <20200421193357.GI4540@sirena.org.uk>
-References: <20200421193357.GI4540@sirena.org.uk>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9B522F800FF
+ for <alsa-devel@alsa-project.org>; Tue, 21 Apr 2020 23:21:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B522F800FF
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="XIKtgmre"
+Received: by mail-wm1-x342.google.com with SMTP id t63so4984329wmt.3
+ for <alsa-devel@alsa-project.org>; Tue, 21 Apr 2020 14:21:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=TK7n//gPeG36lihND5HMtLgm//L8iTOGVH+6m3LoRfw=;
+ b=XIKtgmreyS0Cr6MKPOKrYxqNc93UbzcWrhNvLYFT9vLZAJagyeJmTIQ8Pm6cD7ezdx
+ YuSb9y/DnY/LbqShUXWjH1D/onnkNjCoYWLZ0dxFZABe5sx7vS4Aqb+dfLMKUJTRWbnH
+ 5C8mmPYlFP52as320wX32lNV88wLvHtEG69BFpT8ikKSIqwSrgdXHbxqSnEnpdtP1CDn
+ RImCkCDSIg8OFs0iBA8I6UYsDPm1hJlLz7wVj/DmxOmpK7U6G//o6WIbS5/7eL9jNb/p
+ cK/zTDFubnJx7n+7DlAplKXWQN5lvh8PajC5LUnyFvlsvVPJLQnZfzhwq9QLajgPLZcV
+ Ia5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=TK7n//gPeG36lihND5HMtLgm//L8iTOGVH+6m3LoRfw=;
+ b=fzTXBbIG3iJ6570dwfdUUMyOOBakTZYN7lo5PPBPJZpyNigQX0VXw1fJLoNRWZDThm
+ QUFdtH05Lr1cyN7D4E2Z3PZBtFrrRCjOcrZd9XrmHIy9PFvium8ss+rTBnWDY3v0RzCe
+ IMTNlt3ZTRnHRglWRw8VG+doKyPWXh+r4fL/W8W1UVbs0O1J9H1fPaNUez+hw0+1MmEX
+ s9goKTQe20AKaByqq5kRafAnHtvP89LHg8U2QpHqvI9LNFqg98ETgrjdiCK3zz+lOz/O
+ ptvXSamjn1doj9i3KBZI3KulSK4BcGiGvFGTRKDM5TwgXbQrJhm8UThwhvJjfK9iqS65
+ adag==
+X-Gm-Message-State: AGi0PuaRdRcaINH67OnnmL2bam/I7cE5lSnEmdU2xiTKJ4W/33jA+T4e
+ 9TuxGDshvCht+RUzQ+0lr1w=
+X-Google-Smtp-Source: APiQypJHCYt/qQSBjjIeoumdlZTCo2ETQ8TRw1e0/LrPSZlVZ38YwA2+3pNHXDSq+tHbVExjrJwweA==
+X-Received: by 2002:a7b:c306:: with SMTP id k6mr6630963wmj.40.1587504091656;
+ Tue, 21 Apr 2020 14:21:31 -0700 (PDT)
+Received: from localhost (p2E5BEDBA.dip0.t-ipconnect.de. [46.91.237.186])
+ by smtp.gmail.com with ESMTPSA id c190sm5252751wme.10.2020.04.21.14.21.30
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 21 Apr 2020 14:21:30 -0700 (PDT)
+From: Thierry Reding <thierry.reding@gmail.com>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] ASoC: tegra: Fixes for v5.7-rc3
+Date: Tue, 21 Apr 2020 23:21:21 +0200
+Message-Id: <20200421212121.3286517-1-thierry.reding@gmail.com>
+X-Mailer: git-send-email 2.24.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
+ Sowjanya Komatineni <skomatineni@nvidia.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,34 +109,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 21 Apr 2020 21:33:57 +0200,
-Mark Brown wrote:
-> 
-> The following changes since commit ccfc531695f3a4aada042f6bdb33ac6be24e1aec:
-> 
->   ASoC: cs4270: pull reset GPIO low then high (2020-04-07 15:29:54 +0100)
-> 
-> are available in the Git repository at:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v5.7-rc2
-> 
-> for you to fetch changes up to 1e060a453c8604311fb45ae2f84f67ed673329b4:
-> 
->   ASoC: wm8960: Fix wrong clock after suspend & resume (2020-04-21 15:43:22 +0100)
-> 
-> ----------------------------------------------------------------
-> ASoC: Fixes for v5.7
-> 
-> Quite a lot of fixes here, a lot of driver specific ones but the biggest
-> one is the revert of changes to the startup and shutdown sequence for
-> DAIs that went in during the merge window - they broke some older x86
-> platforms and attempts to fix them didn't succeed so it's safer to just
-> roll them back and try to make sure those platforms are handled properly
-> in any future attempt.
-> 
-> The rockchip S/PDIF DT stuff was IIRC for validation issues.
+Hi Liam, Mark,
 
-Pulled now.  Thanks.
+The following changes since commit 8f3d9f354286745c751374f5f1fcafee6b3f3136:
 
+  Linux 5.7-rc1 (2020-04-12 12:35:55 -0700)
 
-Takashi
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tegra/linux.git tags/tegra-for-5.7-asoc
+
+for you to fetch changes up to ff5d18cb04f4ecccbcf05b7f83ab6df2a0d95c16:
+
+  ASoC: tegra: Enable audio mclk during tegra_asoc_utils_init() (2020-04-21 16:53:15 +0200)
+
+This is a set of patches that I was supposed to send out during the
+merge window[0], but I somehow messed up my scripts and then didn't
+notice that this was missing. I've rebased these patches on top of
+v5.7-rc1.
+
+The lack of these are now causing some issues with unbalanced clock
+reference counts.
+
+Is there any chance you can pick these up for v5.7-rc3?
+
+Thanks,
+Thierry
+
+[0]: https://lore.kernel.org/lkml/20200327154506.GF4437@sirena.org.uk/
+
+----------------------------------------------------------------
+ASoC: tegra: Fixes for v5.7-rc3
+
+This contains a couple of fixes that are needed to properly reconfigure
+the audio clocks on older Tegra devices.
+
+----------------------------------------------------------------
+Sowjanya Komatineni (4):
+      ASoC: tegra: Use device managed resource APIs to get the clock
+      ASoC: nau8825: Change Tegra clk_out_2 provider to PMC
+      ASoC: tegra: Add audio mclk parent configuration
+      ASoC: tegra: Enable audio mclk during tegra_asoc_utils_init()
+
+ .../devicetree/bindings/sound/nau8825.txt          |   2 +-
+ sound/soc/tegra/tegra_alc5632.c                    |   7 +-
+ sound/soc/tegra/tegra_asoc_utils.c                 | 113 ++++++++++-----------
+ sound/soc/tegra/tegra_asoc_utils.h                 |   1 -
+ sound/soc/tegra/tegra_max98090.c                   |  22 ++--
+ sound/soc/tegra/tegra_rt5640.c                     |  22 ++--
+ sound/soc/tegra/tegra_rt5677.c                     |   7 +-
+ sound/soc/tegra/tegra_sgtl5000.c                   |   7 +-
+ sound/soc/tegra/tegra_wm8753.c                     |  22 ++--
+ sound/soc/tegra/tegra_wm8903.c                     |  22 ++--
+ sound/soc/tegra/tegra_wm9712.c                     |   8 +-
+ sound/soc/tegra/trimslice.c                        |  18 +---
+ 12 files changed, 90 insertions(+), 161 deletions(-)
