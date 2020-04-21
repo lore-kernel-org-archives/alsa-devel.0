@@ -4,66 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 28779C54FC9
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Apr 2020 11:38:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95EC3C54FD0
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Apr 2020 12:11:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9FF512064C
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Apr 2020 11:38:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 147AD20753
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Apr 2020 12:11:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="X7iC/71H"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9FF512064C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NZtGxiVw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 147AD20753
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EBDAF167E;
-	Tue, 21 Apr 2020 13:37:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EBDAF167E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 68CED167E;
+	Tue, 21 Apr 2020 14:10:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 68CED167E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587469100;
-	bh=yLlAzl/8V8U4PxCXDY2CvpVSAEylhgRRcMzRRXQN/UE=;
+	s=default; t=1587471103;
+	bh=Jb1k54xRCSwUTs44eeaF/tPuhLwmWp/BFZhTnZr5Wc8=;
 	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=X7iC/71HUmunNB2YEZRM1oZm4sl8oej7zeExy1yKXEJ7wA6P05mJwse/fEzCH3BSD
-	 rpYaiyOViNSY4LzXiOcDpTNvz7OXU7izTb7n+i2MbT2w+KviTj3TbVNo3IW2aGeXxM
-	 +kOCe2pw8rhxIrY4nOxQdaUPNC2KQ0pPi3lqic/Y=
+	b=NZtGxiVw2X45B84bxphUapbRyEaxl4uQyiV/g6AmVwL/3/hKW8n2RoAg4Wi4NIHM5
+	 T7urV8r9ycjQtGlUlia8kAeTE5kK92KZZuUejTqeG02SN+PX6vdXBdH35JskXaRQdB
+	 mev+t+ll3RhqWNgBXSPRaTGXOgdwTKj4t2OEYm8s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 64179F80143;
-	Tue, 21 Apr 2020 13:37:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CDDE1F80143;
+	Tue, 21 Apr 2020 14:10:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 13436F801EC; Tue, 21 Apr 2020 13:37:27 +0200 (CEST)
+ id 60639F801EC; Tue, 21 Apr 2020 14:10:51 +0200 (CEST)
 Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7E04DF800E7
- for <alsa-devel@alsa-project.org>; Tue, 21 Apr 2020 13:37:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E04DF800E7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 57E9BF800E7
+ for <alsa-devel@alsa-project.org>; Tue, 21 Apr 2020 14:10:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57E9BF800E7
 Received: from inva021.nxp.com (localhost [127.0.0.1])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 8D59020044D;
- Tue, 21 Apr 2020 13:37:18 +0200 (CEST)
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 246E4200C8F;
+ Tue, 21 Apr 2020 14:10:43 +0200 (CEST)
 Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
  [165.114.16.14])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 48960200C61;
- Tue, 21 Apr 2020 13:37:13 +0200 (CEST)
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 8FD72200C7B;
+ Tue, 21 Apr 2020 14:10:38 +0200 (CEST)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 9BD60402A8;
- Tue, 21 Apr 2020 19:37:06 +0800 (SGT)
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id C567A4029E;
+ Tue, 21 Apr 2020 20:10:32 +0800 (SGT)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- kstewart@linuxfoundation.org, allison@lohutok.net, shengjiu.wang@nxp.com,
- tglx@linutronix.de, info@metux.net, ckeepax@opensource.wolfsonmicro.com,
- patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ shengjiu.wang@nxp.com, tglx@linutronix.de, allison@lohutok.net,
+ info@metux.net, patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: wm8960: Fix wrong clock after suspend & resume
-Date: Tue, 21 Apr 2020 19:28:45 +0800
-Message-Id: <1587468525-27514-1-git-send-email-shengjiu.wang@nxp.com>
+Subject: [PATCH] ASoC: wm8962: restore the CLOCKING2 register in resume
+Date: Tue, 21 Apr 2020 20:02:15 +0800
+Message-Id: <1587470535-20469-1-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 X-Virus-Scanned: ClamAV using ClamSMTP
 X-BeenThere: alsa-devel@alsa-project.org
@@ -81,34 +80,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-After suspend & resume, wm8960_hw_params may be called when
-bias_level is not SND_SOC_BIAS_ON, then wm8960_configure_clocking
-is not called. But if sample rate is changed at that time, then
-the output clock rate will be not correct.
+The CLOCKING2 is a volatile register, but some bits should
+be restored when resume, for example SYSCLK_SRC. otherwise
+the output clock is wrong
 
-So judgement of bias_level is SND_SOC_BIAS_ON in wm8960_hw_params
-is not necessary and it causes above issue.
-
-Fixes: 3176bf2d7ccd ("ASoC: wm8960: update pll and clock setting function")
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- sound/soc/codecs/wm8960.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/codecs/wm8962.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index 55112c1bba5e..6cf0f6612bda 100644
---- a/sound/soc/codecs/wm8960.c
-+++ b/sound/soc/codecs/wm8960.c
-@@ -860,8 +860,7 @@ static int wm8960_hw_params(struct snd_pcm_substream *substream,
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index d9d59f45833f..6e96c0c5ad2a 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -82,6 +82,7 @@ struct wm8962_priv {
+ #endif
  
- 	wm8960->is_stream_in_use[tx] = true;
+ 	int irq;
++	u32 regcache_clocking2;
+ };
  
--	if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_ON &&
--	    !wm8960->is_stream_in_use[!tx])
-+	if (!wm8960->is_stream_in_use[!tx])
- 		return wm8960_configure_clocking(component);
+ /* We can't use the same notifier block for more than one supply and
+@@ -3813,6 +3814,10 @@ static int wm8962_runtime_resume(struct device *dev)
  
- 	return 0;
+ 	regcache_sync(wm8962->regmap);
+ 
++	regmap_update_bits(wm8962->regmap, WM8962_CLOCKING2,
++			   WM8962_SYSCLK_SRC_MASK,
++			   wm8962->regcache_clocking2);
++
+ 	regmap_update_bits(wm8962->regmap, WM8962_ANTI_POP,
+ 			   WM8962_STARTUP_BIAS_ENA | WM8962_VMID_BUF_ENA,
+ 			   WM8962_STARTUP_BIAS_ENA | WM8962_VMID_BUF_ENA);
+@@ -3842,6 +3847,9 @@ static int wm8962_runtime_suspend(struct device *dev)
+ 			   WM8962_STARTUP_BIAS_ENA |
+ 			   WM8962_VMID_BUF_ENA, 0);
+ 
++	regmap_read(wm8962->regmap, WM8962_CLOCKING2,
++		    &wm8962->regcache_clocking2);
++
+ 	regcache_cache_only(wm8962->regmap, true);
+ 
+ 	regulator_bulk_disable(ARRAY_SIZE(wm8962->supplies),
 -- 
 2.21.0
 
