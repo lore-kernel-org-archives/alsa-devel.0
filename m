@@ -7,52 +7,53 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35715C2BA19
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Apr 2020 05:19:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76300C55182
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Apr 2020 05:20:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B58612076C
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Apr 2020 05:19:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 03EDC208E4
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Apr 2020 05:20:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RlYO8MZp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B58612076C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="q8dyZxkl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 03EDC208E4
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 392F31690;
-	Tue, 21 Apr 2020 07:18:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 392F31690
+	by alsa0.perex.cz (Postfix) with ESMTPS id 61D96169E;
+	Tue, 21 Apr 2020 07:19:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 61D96169E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587446383;
-	bh=15xNu8yB2sxuFM4oNiIN94qNQvl4dVqEeBNBq79MaZA=;
+	s=default; t=1587446434;
+	bh=zQpxwAiMlZ6ypFDYjln6QLIKOuVeBXyHHlTLYd3kw8E=;
 	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=RlYO8MZplIEBvy1LOCE4W2QOlQz01DePJ1Pcw0sP1pTBYWbcPP4HstlkNHHQmXhIj
-	 HgVwEncRbdAEk6GOqkCfxjTALYvFyvRHkfMJpzb8ZWFNZKKQLIAijwfXCZbAU6m1V+
-	 84Wxum86dKKuRg5JHqtAgksh1FdcNYSbXcgNONsU=
+	b=q8dyZxklSJ8yGeuw0DkGmrQl9XD/Sz6Mv0yzmrVw4gPXHlxv1O8/kPEFwF0MqqHTV
+	 H0o7DkMYLffUeVMebbSA3Z0wjGFNx+cgDiHxxr7fENQtBBaQ8NUdLbcy0EfdC6sOBF
+	 OF9h3JHy1V+PQb8GPfTm94XJIKKDSkNjK4SNFmGs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 17227F801ED;
-	Tue, 21 Apr 2020 07:18:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 106BEF80291;
+	Tue, 21 Apr 2020 07:18:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D0105F80246; Tue, 21 Apr 2020 07:18:01 +0200 (CEST)
+ id 1A0FFF80292; Tue, 21 Apr 2020 07:18:27 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 85318F80143
- for <alsa-devel@alsa-project.org>; Tue, 21 Apr 2020 07:17:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85318F80143
-Date: 21 Apr 2020 14:17:53 +0900
-X-IronPort-AV: E=Sophos;i="5.72,409,1580742000"; d="scan'208";a="45062963"
+ by alsa1.perex.cz (Postfix) with ESMTP id 707D0F8028D
+ for <alsa-devel@alsa-project.org>; Tue, 21 Apr 2020 07:18:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 707D0F8028D
+Date: 21 Apr 2020 14:18:15 +0900
+X-IronPort-AV: E=Sophos;i="5.72,409,1580742000"; d="scan'208";a="45062989"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 21 Apr 2020 14:17:53 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 21 Apr 2020 14:18:15 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id CBBF441AEF48;
- Tue, 21 Apr 2020 14:17:53 +0900 (JST)
-Message-ID: <87h7xdv2m6.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id A3BFD41AEF58;
+ Tue, 21 Apr 2020 14:18:15 +0900 (JST)
+Message-ID: <87ftcxv2lk.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH] ASoC: dt-bindings: ak4642: switch to yaml base Documentation
+Subject: [PATCH] ASoC: dt-bindings: audio-graph-card: switch to yaml base
+ Documentation
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
@@ -81,117 +82,775 @@ This patch switches from .txt base to .yaml base Document.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- .../devicetree/bindings/sound/ak4642.txt      | 37 ------------
- .../devicetree/bindings/sound/ak4642.yaml     | 58 +++++++++++++++++++
- 2 files changed, 58 insertions(+), 37 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/ak4642.txt
- create mode 100644 Documentation/devicetree/bindings/sound/ak4642.yaml
+ .../bindings/sound/audio-graph-card.txt       | 337 --------------
+ .../bindings/sound/audio-graph-card.yaml      | 416 ++++++++++++++++++
+ 2 files changed, 416 insertions(+), 337 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/audio-graph-card.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/audio-graph-card.yaml
 
-diff --git a/Documentation/devicetree/bindings/sound/ak4642.txt b/Documentation/devicetree/bindings/sound/ak4642.txt
+diff --git a/Documentation/devicetree/bindings/sound/audio-graph-card.txt b/Documentation/devicetree/bindings/sound/audio-graph-card.txt
 deleted file mode 100644
-index 58e48ee97175..000000000000
---- a/Documentation/devicetree/bindings/sound/ak4642.txt
+index 269682619a70..000000000000
+--- a/Documentation/devicetree/bindings/sound/audio-graph-card.txt
 +++ /dev/null
-@@ -1,37 +0,0 @@
--AK4642 I2C transmitter
+@@ -1,337 +0,0 @@
+-Audio Graph Card:
 -
--This device supports I2C mode only.
+-Audio Graph Card specifies audio DAI connections of SoC <-> codec.
+-It is based on common bindings for device graphs.
+-see ${LINUX}/Documentation/devicetree/bindings/graph.txt
+-
+-Basically, Audio Graph Card property is same as Simple Card.
+-see ${LINUX}/Documentation/devicetree/bindings/sound/simple-card.txt
+-
+-Below are same as Simple-Card.
+-
+-- label
+-- widgets
+-- routing
+-- dai-format
+-- frame-master
+-- bitclock-master
+-- bitclock-inversion
+-- frame-inversion
+-- mclk-fs
+-- hp-det-gpio
+-- mic-det-gpio
+-- dai-tdm-slot-num
+-- dai-tdm-slot-width
+-- clocks / system-clock-frequency
 -
 -Required properties:
 -
--  - compatible : "asahi-kasei,ak4642" or "asahi-kasei,ak4643" or "asahi-kasei,ak4648"
--  - reg : The chip select number on the I2C bus
+-- compatible				: "audio-graph-card";
+-- dais					: list of CPU DAI port{s}
 -
 -Optional properties:
+-- pa-gpios: GPIO used to control external amplifier.
 -
--  - #clock-cells :		common clock binding; shall be set to 0
--  - clocks :			common clock binding; MCKI clock
--  - clock-frequency :		common clock binding; frequency of MCKO
--  - clock-output-names :	common clock binding; MCKO clock name
+------------------------
+-Example: Single DAI case
+------------------------
 -
--Example 1:
+-	sound_card {
+-		compatible = "audio-graph-card";
 -
--&i2c {
--	ak4648: ak4648@12 {
--		compatible = "asahi-kasei,ak4642";
--		reg = <0x12>;
+-		dais = <&cpu_port>;
 -	};
--};
 -
--Example 2:
+-	dai-controller {
+-		...
+-		cpu_port: port {
+-			cpu_endpoint: endpoint {
+-				remote-endpoint = <&codec_endpoint>;
 -
--&i2c {
--	ak4643: codec@12 {
--		compatible = "asahi-kasei,ak4643";
--		reg = <0x12>;
--		#clock-cells = <0>;
--		clocks = <&audio_clock>;
--		clock-frequency = <12288000>;
--		clock-output-names = "ak4643_mcko";
+-				dai-format = "left_j";
+-				...
+-			};
+-		};
 -	};
--};
-diff --git a/Documentation/devicetree/bindings/sound/ak4642.yaml b/Documentation/devicetree/bindings/sound/ak4642.yaml
+-
+-	audio-codec {
+-		...
+-		port {
+-			codec_endpoint: endpoint {
+-				remote-endpoint = <&cpu_endpoint>;
+-			};
+-		};
+-	};
+-
+------------------------
+-Example: Multi DAI case
+------------------------
+-
+-	sound-card {
+-		compatible = "audio-graph-card";
+-
+-		label = "sound-card";
+-
+-		dais = <&cpu_port0
+-			&cpu_port1
+-			&cpu_port2>;
+-	};
+-
+-	audio-codec@0 {
+-		...
+-		port {
+-			codec0_endpoint: endpoint {
+-				remote-endpoint = <&cpu_endpoint0>;
+-			};
+-		};
+-	};
+-
+-	audio-codec@1 {
+-		...
+-		port {
+-			codec1_endpoint: endpoint {
+-				remote-endpoint = <&cpu_endpoint1>;
+-			};
+-		};
+-	};
+-
+-	audio-codec@2 {
+-		...
+-		port {
+-			codec2_endpoint: endpoint {
+-				remote-endpoint = <&cpu_endpoint2>;
+-			};
+-		};
+-	};
+-
+-	dai-controller {
+-		...
+-		ports {
+-			cpu_port0: port@0 {
+-				cpu_endpoint0: endpoint {
+-					remote-endpoint = <&codec0_endpoint>;
+-
+-					dai-format = "left_j";
+-					...
+-				};
+-			};
+-			cpu_port1: port@1 {
+-				cpu_endpoint1: endpoint {
+-					remote-endpoint = <&codec1_endpoint>;
+-
+-					dai-format = "i2s";
+-					...
+-				};
+-			};
+-			cpu_port2: port@2 {
+-				cpu_endpoint2: endpoint {
+-					remote-endpoint = <&codec2_endpoint>;
+-
+-					dai-format = "i2s";
+-					...
+-				};
+-			};
+-		};
+-	};
+-
+-
+------------------------
+-Example: Sampling Rate Conversion
+------------------------
+-
+-	sound_card {
+-		compatible = "audio-graph-card";
+-
+-		label = "sound-card";
+-		prefix = "codec";
+-		routing = "codec Playback", "DAI0 Playback",
+-			  "DAI0 Capture",   "codec Capture";
+-		convert-rate = <48000>;
+-
+-		dais = <&cpu_port>;
+-	};
+-
+-	audio-codec {
+-		...
+-		port {
+-			codec_endpoint: endpoint {
+-				remote-endpoint = <&cpu_endpoint>;
+-			};
+-		};
+-	};
+-
+-	dai-controller {
+-		...
+-		cpu_port: port {
+-			cpu_endpoint: endpoint {
+-				remote-endpoint = <&codec_endpoint>;
+-
+-				dai-format = "left_j";
+-				...
+-			};
+-		};
+-	};
+-
+------------------------
+-Example: 2 CPU 1 Codec (Mixing)
+------------------------
+-
+-	sound_card {
+-		compatible = "audio-graph-card";
+-
+-		label = "sound-card";
+-		routing = "codec Playback", "DAI0 Playback",
+-			  "codec Playback", "DAI1 Playback",
+-			  "DAI0 Capture",   "codec Capture";
+-
+-		dais = <&cpu_port>;
+-	};
+-
+-	audio-codec {
+-		...
+-
+-		audio-graph-card,prefix = "codec";
+-		audio-graph-card,convert-rate = <48000>;
+-		port {
+-			reg = <0>;
+-			codec_endpoint0: endpoint@0 {
+-				remote-endpoint = <&cpu_endpoint0>;
+-			};
+-			codec_endpoint1: endpoint@1 {
+-				remote-endpoint = <&cpu_endpoint1>;
+-			};
+-		};
+-	};
+-
+-	dai-controller {
+-		...
+-		cpu_port: port {
+-			cpu_endpoint0: endpoint@0 {
+-				remote-endpoint = <&codec_endpoint0>;
+-
+-				dai-format = "left_j";
+-				...
+-			};
+-			cpu_endpoint1: endpoint@1 {
+-				remote-endpoint = <&codec_endpoint1>;
+-
+-				dai-format = "left_j";
+-				...
+-			};
+-		};
+-	};
+-
+------------------------
+-Example: Multi DAI with DPCM
+------------------------
+-
+-	CPU0 ------ ak4613
+-	CPU1 ------ HDMI
+-	CPU2 ------ PCM3168A-p	/* DPCM 1ch/2ch */
+-	CPU3 --/		/* DPCM 3ch/4ch */
+-	CPU4 --/		/* DPCM 5ch/6ch */
+-	CPU5 --/		/* DPCM 7ch/8ch */
+-	CPU6 ------ PCM3168A-c
+-
+-	sound_card: sound {
+-		compatible = "audio-graph-card";
+-
+-		label = "sound-card";
+-
+-		routing =	"pcm3168a Playback", "DAI2 Playback",
+-				"pcm3168a Playback", "DAI3 Playback",
+-				"pcm3168a Playback", "DAI4 Playback",
+-				"pcm3168a Playback", "DAI5 Playback";
+-
+-		dais = <&snd_port0	/* ak4613 */
+-			&snd_port1	/* HDMI0  */
+-			&snd_port2	/* pcm3168a playback */
+-			&snd_port3	/* pcm3168a capture  */
+-			>;
+-	};
+-
+-	ak4613: codec@10 {
+-		...
+-		port {
+-			ak4613_endpoint: endpoint {
+-				remote-endpoint = <&rsnd_endpoint0>;
+-			};
+-		};
+-	};
+-
+-	pcm3168a: audio-codec@44 {
+-		...
+-		audio-graph-card,prefix = "pcm3168a";
+-		audio-graph-card,convert-channels = <8>; /* TDM Split */
+-		ports {
+-			port@0 {
+-				reg = <0>;
+-				pcm3168a_endpoint_p1: endpoint@1 {
+-					remote-endpoint = <&rsnd_endpoint2>;
+-					...
+-				};
+-				pcm3168a_endpoint_p2: endpoint@2 {
+-					remote-endpoint = <&rsnd_endpoint3>;
+-					...
+-				};
+-				pcm3168a_endpoint_p3: endpoint@3 {
+-					remote-endpoint = <&rsnd_endpoint4>;
+-					...
+-				};
+-				pcm3168a_endpoint_p4: endpoint@4 {
+-					remote-endpoint = <&rsnd_endpoint5>;
+-					...
+-				};
+-			};
+-			port@1 {
+-				reg = <1>;
+-				pcm3168a_endpoint_c: endpoint {
+-					remote-endpoint = <&rsnd_endpoint6>;
+-					...
+-				};
+-			};
+-		};
+-	};
+-
+-	&sound {
+-		ports {
+-			snd_port0: port@0 {
+-				rsnd_endpoint0: endpoint {
+-					remote-endpoint = <&ak4613_endpoint>;
+-					...
+-				};
+-			};
+-			snd_port1: port@1 {
+-				rsnd_endpoint1: endpoint {
+-					remote-endpoint = <&dw_hdmi0_snd_in>;
+-					...
+-				};
+-			};
+-			snd_port2: port@2 {
+-				#address-cells = <1>;
+-				#size-cells = <0>;
+-				rsnd_endpoint2: endpoint@2 {
+-					remote-endpoint = <&pcm3168a_endpoint_p1>;
+-					...
+-				};
+-				rsnd_endpoint3: endpoint@3 {
+-					remote-endpoint = <&pcm3168a_endpoint_p2>;
+-					...
+-				};
+-				rsnd_endpoint4: endpoint@4 {
+-					remote-endpoint = <&pcm3168a_endpoint_p3>;
+-					...
+-				};
+-				rsnd_endpoint5: endpoint@5 {
+-					remote-endpoint = <&pcm3168a_endpoint_p4>;
+-					...
+-				};
+-			};
+-			snd_port3: port@6 {
+-				rsnd_endpoint6: endpoint {
+-					remote-endpoint = <&pcm3168a_endpoint_c>;
+-					...
+-				};
+-			};
+-		};
+-	};
+diff --git a/Documentation/devicetree/bindings/sound/audio-graph-card.yaml b/Documentation/devicetree/bindings/sound/audio-graph-card.yaml
 new file mode 100644
-index 000000000000..6cd213be2266
+index 000000000000..fd0ac87ee2ed
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/ak4642.yaml
-@@ -0,0 +1,58 @@
++++ b/Documentation/devicetree/bindings/sound/audio-graph-card.yaml
+@@ -0,0 +1,416 @@
 +# SPDX-License-Identifier: GPL-2.0
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/sound/ak4642.yaml#
++$id: http://devicetree.org/schemas/sound/audio-graph-card.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: AK4642 I2C transmitter Device Tree Bindings
++title: Audio Graph Card Driver Device Tree Bindings
 +
 +maintainers:
 +  - Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 +
++definitions:
++  endpoint:
++    type: object
++    properties:
++      remote-endpoint:
++        maxItems: 1
++      mclk-fs:
++        $ref: "simple-card.yaml#/definitions/mclk-fs"
++      frame-inversion:
++        $ref: "simple-card.yaml#/definitions/frame-inversion"
++      bitclock-inversion:
++        $ref: "simple-card.yaml#/definitions/bitclock-inversion"
++      frame-master:
++        $ref: "simple-card.yaml#/definitions/frame-master"
++      bitclock-master:
++        $ref: "simple-card.yaml#/definitions/bitclock-master"
++      dai-format:
++        $ref: "simple-card.yaml#/definitions/format"
++      convert-rate:
++        $ref: "simple-card.yaml#/definitions/convert-rate"
++      convert-channels:
++        $ref: "simple-card.yaml#/definitions/convert-channels"
++    required:
++      - remote-endpoint
++
++  port:
++    description: single OF-Graph subnode
++    type: object
++    properties:
++      prefix:
++        $ref: "simple-card.yaml#/definitions/prefix"
++      convert-rate:
++        $ref: "simple-card.yaml#/definitions/convert-rate"
++      convert-channels:
++        $ref: "simple-card.yaml#/definitions/convert-channels"
++      endpoint:
++        $ref: "#/definitions/endpoint"
++
++  ports:
++    description: multi OF-Graph subnode
++    type: object
++    properties:
++      prefix:
++        $ref: "simple-card.yaml#/definitions/prefix"
++      convert-rate:
++        $ref: "simple-card.yaml#/definitions/convert-rate"
++      convert-channels:
++        $ref: "simple-card.yaml#/definitions/convert-channels"
++    patternProperties:
++      "^port(@[0-9a-f]+)$":
++        $ref: "#/definitions/port"
++    additionalProperties: false
++
 +properties:
 +  compatible:
-+    enum:
-+      - asahi-kasei,ak4642
-+      - asahi-kasei,ak4643
-+      - asahi-kasei,ak4648
++    contains:
++      enum:
++        - audio-graph-card
++        - audio-graph-scu-card
 +
-+  reg:
++  dais:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++  label:
 +    maxItems: 1
-+
-+  "#clock-cells":
-+    const: 0
-+  "#sound-dai-cells":
-+    const: 0
-+
-+  clocks:
++  prefix:
++    $ref: "simple-card.yaml#/definitions/prefix"
++  routing:
++    $ref: "simple-card.yaml#/definitions/routing"
++  widgets:
++    $ref: "simple-card.yaml#/definitions/widgets"
++  convert-rate:
++    $ref: "simple-card.yaml#/definitions/convert-rate"
++  convert-channels:
++    $ref: "simple-card.yaml#/definitions/convert-channels"
++  pa-gpios:
 +    maxItems: 1
-+
-+  clock-frequency:
-+    description: common clock binding; frequency of MCKO
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+
-+  clock-output-names:
-+    description: common clock name
-+    $ref: /schemas/types.yaml#/definitions/string
++  hp-det-gpio:
++    maxItems: 1
++  mic-det-gpio:
++    maxItems: 1
 +
 +required:
 +  - compatible
-+  - reg
 +
 +additionalProperties: false
 +
 +examples:
++#-----------------------
++# Single DAI (_s)
++#-----------------------
 +  - |
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        ak4643: codec@12 {
-+            compatible = "asahi-kasei,ak4643";
-+            #sound-dai-cells = <0>;
-+            reg = <0x12>;
-+            #clock-cells = <0>;
-+            clocks = <&audio_clock>;
-+            clock-frequency = <12288000>;
-+            clock-output-names = "ak4643_mcko";
++    sound {
++        compatible = "audio-graph-card";
++
++        dais = <&cpu_port_a>;
++    };
++
++    dai-controller {
++        /*
++         * dai-controller own settings
++         */
++
++        cpu_port_s: port {
++            cpu_endpoint_s: endpoint {
++                remote-endpoint = <&codec_endpoint_s>;
++                dai-format = "left_j";
++                /* ... */
++            };
++        };
++    };
++
++    codec {
++        /*
++         * codec own settings
++         */
++
++        port {
++            codec_endpoint_s: endpoint {
++                remote-endpoint = <&cpu_endpoint_s>;
++            };
++        };
++    };
++
++#-----------------------
++# Multi DAI (_m)
++#-----------------------
++  - |
++    sound {
++        compatible = "audio-graph-card";
++
++        label = "sound-card";
++
++        dais = <&cpu_port0
++                &cpu_port1
++                &cpu_port2>;
++    };
++
++    audio-codec@0 {
++        /*
++         * codec0 own settings
++         */
++
++        port {
++            codec_endpoint_m0: endpoint {
++                remote-endpoint = <&cpu_endpoint_m0>;
++            };
++        };
++    };
++
++    audio-codec@1 {
++        /*
++         * codec1 own settings
++         */
++
++        port {
++            codec_endpoint_m1: endpoint {
++                remote-endpoint = <&cpu_endpoint_m1>;
++            };
++        };
++    };
++
++    audio-codec@2 {
++        /*
++         * codec2 own settings
++         */
++
++        port {
++            codec_endpoint_m2: endpoint {
++                remote-endpoint = <&cpu_endpoint_m2>;
++            };
++        };
++    };
++
++    dai-controller {
++        /*
++         * dai-controller own settings
++         */
++
++         ports {
++            cpu_port_m0: port@0 {
++                cpu_endpoint_m0: endpoint {
++                    remote-endpoint = <&codec_endpoint_m0>;
++                    dai-format = "left_j";
++                };
++            };
++
++            cpu_port_m1: port@1 {
++                cpu_endpoint_m1: endpoint {
++                    remote-endpoint = <&codec_endpoint_m1>;
++                    dai-format = "i2s";
++                };
++            };
++
++            cpu_port_m2: port@2 {
++                cpu_endpoint_m2: endpoint {
++                    remote-endpoint = <&codec_endpoint_m2>;
++                    dai-format = "i2s";
++                };
++            };
++        };
++    };
++
++#-----------------------
++# Sampling Rate Conversion (_r)
++#-----------------------
++
++  - |
++    sound {
++        compatible = "audio-graph-card";
++
++        label = "sound-card";
++        prefix = "codec";
++        routing = "codec Playback", "DAI0 Playback",
++                  "DAI0 Capture",   "codec Capture";
++        convert-rate = <48000>;
++
++        dais = <&cpu_port_x>;
++    };
++
++    codec {
++        /*
++         * codec own settings
++         */
++
++         port {
++            codec_endpoint_r: endpoint {
++                remote-endpoint = <&cpu_endpoint_r>;
++            };
++        };
++    };
++
++    dai-controller {
++        /*
++         * dai-controller own settings
++         */
++
++         cpu_port_r: port {
++            cpu_endpoint_r: endpoint {
++                remote-endpoint = <&codec_endpoint_r>;
++                dai-format = "left_j";
++            };
++        };
++    };
++
++#-----------------------
++# 2 CPU 1 Codec (Mixing) (_x)
++#-----------------------
++
++  - |
++    sound {
++        compatible = "audio-graph-card";
++
++        label = "sound-card";
++        routing = "codec Playback", "DAI0 Playback",
++                  "codec Playback", "DAI1 Playback",
++                  "DAI0 Capture",   "codec Capture";
++
++        dais = <&cpu_port_y>;
++    };
++
++    codec {
++        /*
++         * codec own settings
++         */
++
++         audio-graph-card,prefix = "codec";
++         audio-graph-card,convert-rate = <48000>;
++
++         port {
++            codec_endpoint_x0: endpoint@0 {
++                remote-endpoint = <&cpu_endpoint_x0>;
++            };
++            codec_endpoint_x1: endpoint@1 {
++                remote-endpoint = <&cpu_endpoint_x1>;
++            };
++        };
++    };
++
++    dai-controller {
++        /*
++         * dai-controller own settings
++         */
++
++         port {
++            cpu_endpoint_x0: endpoint@0 {
++                remote-endpoint = <&codec_endpoint_x0>;
++                dai-format = "left_j";
++            };
++            cpu_endpoint_x1: endpoint@1 {
++                remote-endpoint = <&codec_endpoint_x1>;
++                dai-format = "left_j";
++            };
++        };
++    };
++
++#-----------------------
++# Multi DAI with DPCM
++#
++#	CPU0 ------ ak4613
++#	CPU1 ------ HDMI
++#	CPU2 ------ PCM3168A-p	/* DPCM 1ch/2ch */
++#	CPU3 --/		/* DPCM 3ch/4ch */
++#	CPU4 --/		/* DPCM 5ch/6ch */
++#	CPU5 --/		/* DPCM 7ch/8ch */
++#	CPU6 ------ PCM3168A-c
++#-----------------------
++  - |
++
++    sound {
++        compatible = "audio-graph-card";
++        label = "sound-card";
++        routing =   "pcm3168a Playback", "DAI2 Playback",
++                    "pcm3168a Playback", "DAI3 Playback",
++                    "pcm3168a Playback", "DAI4 Playback",
++                    "pcm3168a Playback", "DAI5 Playback";
++
++        dais = <&snd_port0	/* ak4613 */
++                &snd_port1	/* HDMI0  */
++                &snd_port2	/* pcm3168a playback */
++                &snd_port3>;	/* pcm3168a capture  */
++    };
++
++    ak4613: codec {
++        /*
++         * ak4613 own settings
++         */
++
++         port {
++            ak4613_endpoint: endpoint {
++                remote-endpoint = <&rsnd_endpoint0>;
++            };
++        };
++    };
++
++    pcm3168a: audio-codec@44 {
++        /*
++         * pcm3168a own settings
++         */
++
++         audio-graph-card,prefix = "pcm3168a";
++         audio-graph-card,convert-channels = <8>; /* TDM Split */
++         ports {
++            #address-cells = <1>;
++            #size-cells = <0>;
++            port@0 {
++                reg = <0>;
++                pcm3168a_endpoint_p1: endpoint@1 {
++                    remote-endpoint = <&rsnd_endpoint2>;
++                };
++                pcm3168a_endpoint_p2: endpoint@2 {
++                    remote-endpoint = <&rsnd_endpoint3>;
++                };
++                pcm3168a_endpoint_p3: endpoint@3 {
++                    remote-endpoint = <&rsnd_endpoint4>;
++                };
++                pcm3168a_endpoint_p4: endpoint@4 {
++                    remote-endpoint = <&rsnd_endpoint5>;
++                };
++            };
++            port@1 {
++                reg = <1>;
++                pcm3168a_endpoint_c: endpoint {
++                    remote-endpoint = <&rsnd_endpoint6>;
++                };
++            };
++        };
++    };
++
++    dai-controller {
++        /*
++         * dai-controller own settings
++         */
++
++         ports {
++            snd_port0: port@0 {
++                rsnd_endpoint0: endpoint {
++                    remote-endpoint = <&ak4613_endpoint>;
++                };
++            };
++            snd_port1: port@1 {
++                rsnd_endpoint1: endpoint {
++                    remote-endpoint = <&dw_hdmi0_snd_in>;
++                };
++            };
++            snd_port2: port@2 {
++                rsnd_endpoint2: endpoint@2 {
++                    remote-endpoint = <&pcm3168a_endpoint_p1>;
++                };
++                rsnd_endpoint3: endpoint@3 {
++                    remote-endpoint = <&pcm3168a_endpoint_p2>;
++                };
++                rsnd_endpoint4: endpoint@4 {
++                    remote-endpoint = <&pcm3168a_endpoint_p3>;
++                };
++                rsnd_endpoint5: endpoint@5 {
++                    remote-endpoint = <&pcm3168a_endpoint_p4>;
++                };
++            };
++            snd_port3: port@6 {
++                rsnd_endpoint6: endpoint {
++                    remote-endpoint = <&pcm3168a_endpoint_c>;
++                };
++            };
 +        };
 +    };
 -- 
