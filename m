@@ -2,92 +2,84 @@ Return-Path: <SRS0=We8V=6G=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 69C4DC55186
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 10:00:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 189DBC55189
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 11:10:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D74B520735
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 10:00:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 87E6920774
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 11:10:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jutkEkRD";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="eQh8+ITX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D74B520735
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kKEc0D0+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 87E6920774
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3446916A8;
-	Wed, 22 Apr 2020 11:59:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3446916A8
+	by alsa0.perex.cz (Postfix) with ESMTPS id EA4B2168B;
+	Wed, 22 Apr 2020 13:09:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA4B2168B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587549625;
-	bh=P5izvElOmtTq5iYRVHHoZxeD9w+gOORw8a47EJo2N0o=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1587553843;
+	bh=cXQIrcxk7DwRNMc7uf7/IchJwrBTPbpiVuu4mc7xxS0=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jutkEkRDSAQQ63Uk17Cxzf+qybR8hXpQzjWg1UOlLf5NH1NcDzdpbLTUAGQQX1UN4
-	 069oRCfLsRb5bc8eNfduY88WnSqq7ZCz/mx4FQJSpM42VfFvpeI3xgN+GcyBzMCCn8
-	 k9BFgiIZYv5Wj25wqBWBu6QReAYtfVgqHekMmGoM=
+	b=kKEc0D0+E75+aN9auOMqC5v+Mkh32w3nPl03dL0mwm5hzYtmkzOEuugLY3F0wHwTE
+	 Qih/Erjq1xwvLO4xwTkHiID4mSQrClxt+w3i5dNiV5Opur2TyUiN0zf678no1RONbh
+	 tPmJHbNQJl3y8SjX8K3cx1fdCAFg0AM5FcYw/PBk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 99714F80142;
-	Wed, 22 Apr 2020 11:59:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 34EF8F80142;
+	Wed, 22 Apr 2020 13:09:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0D6CFF800F2; Wed, 22 Apr 2020 11:59:33 +0200 (CEST)
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com
- [IPv6:2607:f8b0:4864:20::d41])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 1A25DF800F2; Wed, 22 Apr 2020 13:09:50 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C7D86F800F2
- for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2020 11:59:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7D86F800F2
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="eQh8+ITX"
-Received: by mail-io1-xd41.google.com with SMTP id b12so1681660ion.8
- for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2020 02:59:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=P5izvElOmtTq5iYRVHHoZxeD9w+gOORw8a47EJo2N0o=;
- b=eQh8+ITXgOFqdvcsGMWAVRZFJouNahjtWGoEsg1Hf71TpYgBq6HHkyqn2LB46VXI8j
- sdG0ZTVrFj0V/S7zuZpL3WbQpsfIqCtc51BTEIEq6mAhGLgHEtYxHONu+8fBuyQngqaf
- OaHNzVTcnDbtu2yqatZ6l0tnZxRfRNdHuT2PizWq93ULiDS1uO2HUlxirypIEgo0NF3v
- ZSN+/YZiAEgqpMlRR2qo6ossbYv9AghbFCgtoAxNWLqZydbbNBGTE70CYArQVVKOsipf
- kASBTM0oC9ibh4zqGUjJ+qnOrscUrEfT0jHpJAVNpftqWGmQyE6J23/Gp9wwoZyUItpe
- ctvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=P5izvElOmtTq5iYRVHHoZxeD9w+gOORw8a47EJo2N0o=;
- b=WQgEO9+3o2g7IjRYp58JKPys1VmXWyS3vJunHEPo25X5oW9Y8YtBSZM1S8NwDqL9px
- xU5BP4P6kVrTtFQ66b+imCmbXSVy2zXDoVVXP9h01r4w1FbQCD1QgygYtL61tYBxVHBW
- o1RUsESV1yTJZNHiaeIaqxPPUIinq3XVTboY2n/DQmXhvYkJ02AdmUMNKTzhOkvhoT22
- PIh/SkdMfb/APrmWr+0h65Bhf8dZV5ivLkDriqKCkIZ9LUYBWNsioikDUIzzr3vGAs7c
- B2JCu4ThrKIG2JqaV4rwAZyqoyuqs8prP+PZpb5JUa7/2GTLgZ66PdhZ+bcb67bATRDG
- 23Mw==
-X-Gm-Message-State: AGi0PuZbESpGYhywdRBpp8V+FRUF1nxJ13EDrTh7mdTnYurVYCd8AF/P
- 1+bqG8M6ElOkZ/RS+jg3Xkf/byQW3nAicW5AqFtjVw==
-X-Google-Smtp-Source: APiQypIpbq9jgp8hPLmgLdnrMpfk7zO+RBTVNTz4rmcXOxnv+oyKWFv/se8X5iOj3f31j97RNYLiiLM1vVLA7nu7lIw=
-X-Received: by 2002:a5d:9c46:: with SMTP id 6mr24601321iof.146.1587549566706; 
- Wed, 22 Apr 2020 02:59:26 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9A347F800F2
+ for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2020 13:09:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A347F800F2
+IronPort-SDR: xIeZdoYkaUhHzju1wDh2ty86eMt4sJzrLCXrbShaj1ln8l2tzni5HSI231O1rl8IFMpT53WG84
+ SvCW81zqpCKQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 22 Apr 2020 04:09:37 -0700
+IronPort-SDR: C8gBEMh74DJeDpXbU7qrvhRVlQBYlnTsVVaUFYIoZGnnyDwZ/+ZG2r1FEdHQ7lc4xpWXXlpWMu
+ NJKRArDDUW6A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,414,1580803200"; d="scan'208";a="457108260"
+Received: from ajavier-mobl1.amr.corp.intel.com (HELO [10.255.68.153])
+ ([10.255.68.153])
+ by fmsmga006.fm.intel.com with ESMTP; 22 Apr 2020 04:09:36 -0700
+Subject: Re: [RFC PATCH 13/16] clk: hifiberry-dacpro: add "sclk" lookup
+To: Stephen Boyd <sboyd@kernel.org>, alsa-devel@alsa-project.org
+References: <20200409195841.18901-1-pierre-louis.bossart@linux.intel.com>
+ <20200409195841.18901-14-pierre-louis.bossart@linux.intel.com>
+ <158754810745.132238.7647643247125302962@swboyd.mtv.corp.google.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <c52e0f7d-1eaf-a89b-ff5d-b2a02ad56021@linux.intel.com>
+Date: Wed, 22 Apr 2020 04:51:52 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20200422083550.50711-1-broonie@kernel.org>
-In-Reply-To: <20200422083550.50711-1-broonie@kernel.org>
-From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Wed, 22 Apr 2020 17:59:15 +0800
-Message-ID: <CA+Px+wUo1N5ATiQaUJg-9yiUizWXxjv5j7KW-N5UQcynxD399Q@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: dmic: Allow GPIO operations to sleep
-To: Mark Brown <broonie@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Cc: ALSA development <alsa-devel@alsa-project.org>,
- Liam Girdwood <lgirdwood@gmail.com>
+In-Reply-To: <158754810745.132238.7647643247125302962@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: Rob Herring <robh+dt@kernel.org>, linux-gpio@vger.kernel.org, tiwai@suse.de,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Daniel Matuschek <daniel@hifiberry.com>, Hui Wang <hui.wang@canonical.com>,
+ Matthias Reichl <hias@horus.com>, broonie@kernel.org,
+ Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Michael Turquette <mturquette@baylibre.com>, linux-clk@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -103,12 +95,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Apr 22, 2020 at 4:37 PM Mark Brown <broonie@kernel.org> wrote:
->
-> If there is a power GPIO provided we control it from DAPM context so there
-> is no problem with a sleeping GPIO, use the _cansleep() version of the API
-> to allow this.
->
-> Signed-off-by: Mark Brown <broonie@kernel.org>
 
-Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
+
+>> +       proclk->sclk_lookup = clkdev_hw_create(&proclk->hw, "sclk", NULL);
+>> +       if (!proclk->sclk_lookup) {
+>> +#ifndef CONFIG_ACPI
+> 
+> Is it to save code space? Otherwise the ifdefs are pretty ugly and I'd
+> prefer we just call of_clk APIs and rely on the inline stubs when
+> CONFIG_OF isn't enabled to be optimized out.
+
+CONFIG_OF was added as a dependency (see patch 10/16) so that we can use 
+the 'compatible' string to probe w/ the PRP0001 device.
+
+I must admit I don't know what these functions do so I just filtered 
+them out in the ACPI case.
+
+>> +               of_clk_del_provider(dev->of_node);
+>> +#endif
+>> +               return -ENOMEM;
+>> +       }
+>> +
