@@ -2,93 +2,79 @@ Return-Path: <SRS0=We8V=6G=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50CAAC5518B
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 19:09:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED51FC55185
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 19:27:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CF6F120644
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 19:09:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 742022075A
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 19:27:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bk4V3kqT";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="sopfsph4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CF6F120644
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="usyanDEG";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=tsoy.me header.i=@tsoy.me header.b="gz1UKihG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 742022075A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=tsoy.me
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 338D3169B;
-	Wed, 22 Apr 2020 21:08:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 338D3169B
+	by alsa0.perex.cz (Postfix) with ESMTPS id BAC94169C;
+	Wed, 22 Apr 2020 21:26:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BAC94169C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587582556;
-	bh=k95E3PF5/wpb9CdGZcaR8eT2Xnh3c/SMQCEl3xb01O8=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=bk4V3kqTyVEy8bHdRGHPubXCmtrb/0/XhpcqfL3+DQqDFbgRFWjx0PMTIZELkgt1p
-	 T+TAsCgRcPsK7iB/yjfrVXJJ1b0HzwLBmxREWXlr81NF34xCRk9fwAXCmk40spuryo
-	 pgNEJijOr75v7hNp4cL4rnPU4CGzENsKrdq/uXF8=
+	s=default; t=1587583643;
+	bh=SQTNnzm0ikaOhC81TNkBFa81/z7sJ4fpcVS/jLsn9eE=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=usyanDEGkgqDDIMEHrBxkK5OXoaD5bC+7p0gwfGvBTTKVBacbNIj27nSw+gP6QoFL
+	 uMuhqt3eE3g36XH7mEpFYWp9a6eazBscWnUakr9lPLeeULdXRe9c1JRLimI4jAQCIg
+	 aHqg8nAVJS/q6KaDptDSgWSd7tcz1v62PLOIKn4k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B94B8F80142;
-	Wed, 22 Apr 2020 21:08:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4A0DCF80142;
+	Wed, 22 Apr 2020 21:26:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1C2A2F80108; Wed, 22 Apr 2020 21:08:23 +0200 (CEST)
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com
- [IPv6:2a00:1450:4864:20::342])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 040D6F801D9; Wed, 22 Apr 2020 21:26:32 +0200 (CEST)
+Received: from puleglot.ru (puleglot.ru [IPv6:2a01:4f8:1c0c:58e8::2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 65ECDF80108
- for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2020 21:08:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65ECDF80108
+ by alsa1.perex.cz (Postfix) with ESMTPS id 68645F80108
+ for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2020 21:26:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68645F80108
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="sopfsph4"
-Received: by mail-wm1-x342.google.com with SMTP id y24so3769425wma.4
- for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2020 12:08:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id;
- bh=+zDLeLkxWO2+hMNosAqgOgGEHIDnT4PWh0YVuszpFwo=;
- b=sopfsph4Ox9cam1LRYncWs+ATliTvE3+yCH1/n3zC+PX+46tWteEs5pbbO09FpD9Ld
- r/T8sQSTxn6hVmtEs5YuDM251mPwNVnwDPNvrrEdFtU/Ia5ZpYHG2mWVZp/WgoY7RzSf
- 2zcKZDO5Skbh8RJr81lsXpB7rciNEqJdeFtu7FyXpJj6pEdA+xmnQUJj4L/F1enZxBep
- GJs7gobSR07T3i7GHMWgpHZec4chFv030zhxoWPVGqwYz9wZKBdv6ufhXypKqK87WOVS
- A4sCOjXPpfzDVmpHQit1mR5bJuE1U0tQNOUWNYqhNDefBIPReC8am1RubNFKiXDTpUIW
- w+dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=+zDLeLkxWO2+hMNosAqgOgGEHIDnT4PWh0YVuszpFwo=;
- b=lhYjXIN/mFm07J8UZvIXmc+9uwuEytD2VwARSsPuWxx4n5Evg3QCacPf/wd6Ul8GMY
- 3u6LcaYTWMYCDQqlST2MLRg1IBcSBZh7SFPd9/V5/z9ci3/240ZKvxinwOZ/f2Gm0XKT
- RP2NcoeLJLNQUkFrYDFRqJ9oDTTJZMJDFUPQhM+Nk6SfGQKEBjP8o2z959Bq6mo+1X5s
- TnnVCqvteFT/saxBINwshnl/tzVBIgXIT4rWw3U6+Ab/y+bWiypMBqohSnzrK1XdSYvR
- 5eqPUJULyvTNgxKxeWwy6XPC27EpIBy5Fa4W0WVrqF8T7NuDaoggEMoIhnOuyTrwI2Xv
- VLPw==
-X-Gm-Message-State: AGi0PubUofoy7eYNm6Y8Sf7lQ5+PzcSWgr17oB+JJHhl/V0JLyVtyVSQ
- xHbuSlyeIz9XLLb88Jl5MrM=
-X-Google-Smtp-Source: APiQypKKOtJHSktS3ZUja/AxftlJ/XBl/AguO72IhuFkq9dh8eOQNeBgIAM46126fomV+VYhlr96FA==
-X-Received: by 2002:a1c:5403:: with SMTP id i3mr12817772wmb.10.1587582497902; 
- Wed, 22 Apr 2020 12:08:17 -0700 (PDT)
-Received: from debian.lan (host-84-13-17-86.opaltelecom.net. [84.13.17.86])
- by smtp.gmail.com with ESMTPSA id f8sm201837wrm.14.2020.04.22.12.08.16
- (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Wed, 22 Apr 2020 12:08:17 -0700 (PDT)
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To: Vinod Koul <vkoul@kernel.org>, Sanyog Kale <sanyog.r.kale@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH] soundwire: intel: Remove unused function
-Date: Wed, 22 Apr 2020 20:08:15 +0100
-Message-Id: <20200422190815.5975-1-sudipm.mukherjee@gmail.com>
-X-Mailer: git-send-email 2.11.0
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+ dkim=pass (1024-bit key) header.d=tsoy.me header.i=@tsoy.me
+ header.b="gz1UKihG"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=tsoy.me;
+ s=mymail; h=Sender:Content-Transfer-Encoding:MIME-Version:Content-Type:
+ References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID
+ :Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
+ Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe
+ :List-Post:List-Owner:List-Archive;
+ bh=dk9x8ADLsDcda6lkgnfZ4Y210uDQ32Gq27zDqYJzR88=; b=gz1UKihG36H3+zbpYbulsJqKvN
+ CwdZ9jN5WsLR3pUUE0O5+wR7+o6QpTrqxFw+UNTRFk6MbeLreYXMp7CHCa1T28EEUgPZ0pODEXqIW
+ SHtIpVSW1HVwL/lqmdtAF5Vk7aU8Tg59Ki9i2UVQqVxbDqYPEq1vO+Arim2Wl4vI0mQk=;
+Received: from [2a00:1370:8125:3f98:890:f100:d37d:7ada] (helo=home)
+ by puleglot.ru with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+ (Exim 4.92.3) (envelope-from <puleglot@puleglot.ru>)
+ id 1jRL0r-0000gl-Dt; Wed, 22 Apr 2020 22:26:25 +0300
+Message-ID: <a45d18d7922d780f29f89cff855eb30fbdd1fce8.camel@tsoy.me>
+Subject: Re: [PATCH] ALSA: usb-audio: Apply async workaround for Scarlett
+ 2i4 2nd gen
+From: Alexander Tsoy <alexander@tsoy.me>
+To: Gregor Pintar <grpintar@gmail.com>
+Date: Wed, 22 Apr 2020 22:26:23 +0300
+In-Reply-To: <20200422185522.3347-1-grpintar@gmail.com>
+References: <7190177d62f349eea7a5d1056924a63fc4270d43.camel@tsoy.me>
+ <20200422185522.3347-1-grpintar@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,47 +90,66 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The function sdw_intel_init() is not used anywhere, remove it for now.
+В Ср, 22/04/2020 в 20:55 +0200, Gregor Pintar пишет:
+> On Wed, 22 Apr 2020 Alexander Tsoy wrote:
+> > В Вт, 21/04/2020 в 21:31 +0200, Takashi Iwai пишет:
+> > > I wonder, though, whether we can correct the rounding error in
+> > > the
+> > > driver code, too.
+> > 
+> > I'm not sure if it's possible with currently used Q16.16
+> > arithmetic.
+> 
+> Maybe calculate fixed correction shifts (like it would be feedback)?
+> Something like leap year.
+> 
+> In endpoint.c:
+> static inline unsigned get_usb_high_speed_rate(unsigned int rate)
+> {
+> 	return ((rate << 10) + 62) / 125;
+> }
+> I guess 62 tries to round it, but exact number is needed. So exact
+> value for
+> 44100 should be 361267.2. For 48000 it is 360448.
+> If only we can deliver that 0.2 by shifting rate somehow?
+> 
+> At least maybe it would be better to disable sample rates that do not
+> divide
+> by 1000 on SYNC playback endpoints, if there are others sample rates.
+> 
+> But I'm not familar with the code or USB.
 
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
----
- drivers/soundwire/intel_init.c | 23 -----------------------
- 1 file changed, 23 deletions(-)
+I think instead of accumulating the fractional part of fs/fps in Q16.16
+format we should accumulating remainder of division fs/fps.
 
-diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
-index ad7053463889..2f37dad06321 100644
---- a/drivers/soundwire/intel_init.c
-+++ b/drivers/soundwire/intel_init.c
-@@ -183,29 +183,6 @@ static acpi_status sdw_intel_acpi_cb(acpi_handle handle, u32 level,
- }
- 
- /**
-- * sdw_intel_init() - SoundWire Intel init routine
-- * @parent_handle: ACPI parent handle
-- * @res: resource data
-- *
-- * This scans the namespace and creates SoundWire link controller devices
-- * based on the info queried.
-- */
--static void *sdw_intel_init(acpi_handle *parent_handle,
--			    struct sdw_intel_res *res)
--{
--	acpi_status status;
--
--	status = acpi_walk_namespace(ACPI_TYPE_DEVICE,
--				     parent_handle, 1,
--				     sdw_intel_acpi_cb,
--				     NULL, res, NULL);
--	if (ACPI_FAILURE(status))
--		return NULL;
--
--	return sdw_intel_add_controller(res);
--}
--
--/**
-  * sdw_intel_exit() - SoundWire Intel exit
-  * @arg: callback context
-  *
--- 
-2.11.0
+So for 44100 Hz and High Speed USB the calculations would be:
+
+fs = 44100
+fps = 8000
+rem = 44100 % 8000 = 4100
+accum = 0
+packet_size_min = 44100 / 8000 = 5
+packet_size_max = 44100 + (8000 - 1) / 8000 = 6
+
+
+1. accum += rem = 4100
+   accum < fps => packet_size = packet_size_min = 5
+
+2. accum += rem = 8200
+   accum >= fps => {
+       packet_size = packet_size_max = 6
+       accum -= fps = 200
+   }
+
+3. accum += rem = 4300
+   accum < fps => packet_size = packet_size_min = 5
+
+...
+
+80. accum += rem = 8000
+    accum >= fps => {
+        packet_size = packet_size_max = 6
+        accum -= fps = 0
+    }
+...
 
