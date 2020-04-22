@@ -2,90 +2,78 @@ Return-Path: <SRS0=We8V=6G=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86B40C55186
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 09:26:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9FD2C55186
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 09:28:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 11E092073A
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 09:26:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3F6AD20735
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 09:28:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FW//zHOy";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="ZAs2V+lU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 11E092073A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fhGG4zmx";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="eUYROwYS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3F6AD20735
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 55E6516A9;
-	Wed, 22 Apr 2020 11:25:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 55E6516A9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9213D16B5;
+	Wed, 22 Apr 2020 11:27:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9213D16B5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587547567;
-	bh=5aeCjWTdqPWPzb1goDChpHsmnqlUMywMUXA0Ei2GBjQ=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1587547685;
+	bh=Ci4JF1NHPJ0yO0zqX5/6pxnEG3LL0hLpPBCaXrYTTY4=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FW//zHOyTT5oMhVrjP8rQx/7oItzZjXHRnGJRs9NyfgxJrNJBw7ExoxibVBLOWMMR
-	 wtzadpP1eVcxJHEiTmj5ZTqszBzR//ak/b8HJMTG+VPswOgPsUga7yiV9tH2/adZ/s
-	 P4ochzI8d5BKvMGkt67bLoaGS+lstlvM9gfoLWYk=
+	b=fhGG4zmxm5y+/2j6SDofDH6Iv9oCyVJKivCzXeKY+AMxXUTsn/1KaWCiYKFskwTp7
+	 QMT/eb4Jfzr3WgiozQaRRFAZwEYbShk8ldywnruIFoJPEjpr9FPCRj9YeO+W8OCqE1
+	 +Lt6CxwN/EV71MMGjLymHe/Deov4/u52cnGwRaHg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CCE9DF80142;
-	Wed, 22 Apr 2020 11:25:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 200C5F80142;
+	Wed, 22 Apr 2020 11:27:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C65C2F801D9; Wed, 22 Apr 2020 11:25:15 +0200 (CEST)
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com
- [IPv6:2607:f8b0:4864:20::144])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 0B8E1F801D9; Wed, 22 Apr 2020 11:27:13 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C6997F80108
- for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2020 11:25:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6997F80108
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1E79CF80108
+ for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2020 11:27:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E79CF80108
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="ZAs2V+lU"
-Received: by mail-il1-x144.google.com with SMTP id u189so1189703ilc.4
- for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2020 02:25:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=s2KOo5DN2tQHC0ttBGqJLKqcOpz5bYVgQnDC4CjvClk=;
- b=ZAs2V+lUe93nujpIJ5+JhZZTOeDEONMpOVYNTYGO2doZAzF0TlL7PlDdcFQtLLe7S2
- 9N1saTGc1W6HUZ71rpytWhbO8ZMC7fmNWWIk6/6cBmYtXN9riRtBE+WEWTs5ltlg7tuM
- Ghm7zikO8PJDRYS8NOqF61dbZ6/HqHwgBIryRURT4FDOyoOEOtBWfxoB2A9qAXu9B4Gv
- HzQri354TaeTyf1J2sLo4oYCuyNZITBp1kW7k0pKCldiVgWb3TmL06gLeStWT5nPxWfO
- w3AEeCAmYhUmC9MV7OQGTuqnjF4x+AoY81SnbvzVGNsmU/5a93m0xkOO8yssGHAeiWsx
- RKAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=s2KOo5DN2tQHC0ttBGqJLKqcOpz5bYVgQnDC4CjvClk=;
- b=ffTvV/oZ3z00ofZvCTwhjRfkEdjjJ0LpjyVSpG908M/xlPXFipDBU+Z9RaLwn3umSl
- OVqy2WeXsuuHP1WG6z+vVgX5w2Q3H/C4NFtOQOv5Z96xZb4OGv0m+SVhyMUkBlFNjnZ0
- yGKbpnck/H6LX1L2AhXbII1p99Dnsrc5GKQUWgNlPBXnfvLmSHeTCDIifhGFAaqCQ0a1
- 8BBAjK8kfDembzRTFW7uYWP6c//ZvYmeI432xTiTQ5CuJ65Kw1nrBBYzFwqqQxaYsCN3
- TNLjL8JiOfSF/MCTVJGEC7URsieWGgWzmp/oz00A9HLOQM3CRyMsAJQVlp6KKh3GQLvw
- paiw==
-X-Gm-Message-State: AGi0PuYiVBsdTB/Pva7EFBmN2QbF6fAe42w1dumUQBYWzzqgcTDvlw3r
- 6eEm9o5xBtvIqort+is5F275RMuZTFIEoLp4p/k/lg==
-X-Google-Smtp-Source: APiQypJgyckQ2MQp5BO2H/uyX8MsVT3MvPc+pdQJlBFrT5jjUilrKtVyvlFUQkUOdrUdaQe07WwCX65FWGv4TwcHLlA=
-X-Received: by 2002:a92:798f:: with SMTP id
- u137mr11579542ilc.235.1587547505829; 
- Wed, 22 Apr 2020 02:25:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200422083550.50711-1-broonie@kernel.org>
-In-Reply-To: <20200422083550.50711-1-broonie@kernel.org>
-From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Wed, 22 Apr 2020 17:24:54 +0800
-Message-ID: <CA+Px+wUFgz0MP0vwkJ+5L5V5G6AK7-6iDbRuUerFBmwnm-CYFA@mail.gmail.com>
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="eUYROwYS"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 4EC6E20735;
+ Wed, 22 Apr 2020 09:27:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1587547624;
+ bh=Ci4JF1NHPJ0yO0zqX5/6pxnEG3LL0hLpPBCaXrYTTY4=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=eUYROwYS0Wer3r94OOt6gI8KJmZYeDDFgn4Wwuo+qVAELkm6EZw3U+BZuYdiPKLY1
+ wpSAw0wf/Xtddx6oxPos/SpElp3L7VNqRSvoh6nBj3FPUFlDa24GQAQ0HjrYL6EMWP
+ wUlOXnjzqcnDLecsJSj4RTOHxQ5hNfnMAQrLj5z8=
+Date: Wed, 22 Apr 2020 10:27:02 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Tzung-Bi Shih <tzungbi@google.com>
 Subject: Re: [PATCH] ASoC: dmic: Allow GPIO operations to sleep
-To: Mark Brown <broonie@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <20200422092702.GC4898@sirena.org.uk>
+References: <20200422083550.50711-1-broonie@kernel.org>
+ <CA+Px+wUFgz0MP0vwkJ+5L5V5G6AK7-6iDbRuUerFBmwnm-CYFA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="vEao7xgI/oilGqZ+"
+Content-Disposition: inline
+In-Reply-To: <CA+Px+wUFgz0MP0vwkJ+5L5V5G6AK7-6iDbRuUerFBmwnm-CYFA@mail.gmail.com>
+X-Cookie: A stitch in time saves nine.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Cc: ALSA development <alsa-devel@alsa-project.org>,
  Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
@@ -103,32 +91,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Apr 22, 2020 at 4:37 PM Mark Brown <broonie@kernel.org> wrote:
->
-> If there is a power GPIO provided we control it from DAPM context so there
-> is no problem with a sleeping GPIO, use the _cansleep() version of the API
-> to allow this.
 
-Compared gpiod_set_value_cansleep() vs. gpiod_set_value().
+--vEao7xgI/oilGqZ+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-gpiod_set_value_cansleep()
-+        might_sleep_if(extra_checks);
+On Wed, Apr 22, 2020 at 05:24:54PM +0800, Tzung-Bi Shih wrote:
 
-gpiod_set_value()
-+        /* Should be using gpiod_set_value_cansleep() */
-+        WARN_ON(desc->gdev->chip->can_sleep);
+> Wondering about:
+> - Did you get any warning message to inspire you to use _cansleep() version?
 
-And the extra_checks is:
-#ifdef  DEBUG
-#define extra_checks    1
-#else
-#define extra_checks    0
-#endif
+No, pure code inspection.  I don't know that I've got any systems that
+can run this driver.
 
-Looks like it only changes behavior when DEBUG.
+> - Does that imply in any _can sleep_ context, it is more encouraged to
+> call _cansleep() version?  (e.g.
+> https://elixir.bootlin.com/linux/v5.7-rc2/source/sound/soc/codecs/max98357a.c#L41)
 
-Wondering about:
-- Did you get any warning message to inspire you to use _cansleep() version?
-- Does that imply in any _can sleep_ context, it is more encouraged to
-call _cansleep() version?  (e.g.
-https://elixir.bootlin.com/linux/v5.7-rc2/source/sound/soc/codecs/max98357a.c#L41)
+Yes, it's better.
+
+--vEao7xgI/oilGqZ+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6gDeUACgkQJNaLcl1U
+h9Arfgf7BLMy3BY4Q7Uguyk9KcMhn3e6DT8wkv5vV4KzjAGQCbB+Wyh87hQJqkNk
+utF8W6c5Zy7pxNq1NvZP1xPb34ac4+bM8JgbG5YJHpId7HsYpmlPEWjTWYV0yGmA
+ioMI1xvEGhegBWgrdjGvcrWs4pf5CPT7QPsJOuYR99vYrNpqdUekrtoTRN8nVWrT
+zckJEgLJoKxhgxc8Goz6yFy2LppdWWiLBXKMW5ZTYVLHRDYXrCnbEqSFNWFnjaUD
+hF1gAUdtN53qvrwCgfvCC+GwO/+vL0khtIrNS88JEp+AXS6AAGMy0ZW8G9Cjni1v
+pAr12C4JW2kaRNeqE88T/3yQGKzXZw==
+=5cly
+-----END PGP SIGNATURE-----
+
+--vEao7xgI/oilGqZ+--
