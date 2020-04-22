@@ -2,65 +2,78 @@ Return-Path: <SRS0=We8V=6G=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D66FCC55185
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 23:24:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C52E4C55186
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 23:25:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6069E20706
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 23:24:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4F38E20706
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 23:25:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VBp33NDu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6069E20706
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Lwt3hTCB";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZlR+o4j/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4F38E20706
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C1D9316DD;
-	Thu, 23 Apr 2020 01:23:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C1D9316DD
+	by alsa0.perex.cz (Postfix) with ESMTPS id AE61A16DA;
+	Thu, 23 Apr 2020 01:24:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE61A16DA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587597872;
-	bh=KZIpa8r4O7+2QyBKGUQ2dwf1auCR5Ldl/h9jYLxHfgM=;
-	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=VBp33NDu9uMH8xaz8WX/KpS50TX+Z5IZfOedgh+4cqChlIk2NZspGk7PoO7Wumizo
-	 dkKTaAnu1TBJtD5wTLfh6j3gH1RbsntFg6owfMuDLN/rK09btpBSsQ4c4dUpSUL+na
-	 15oSoyrPyOc75hBaKKlX4c05g3SdEcBD4DlsOQLs=
+	s=default; t=1587597907;
+	bh=eQWN3pP46KHM49RJh6DB+rLU7u/InpAf2XNNJk3Uh0A=;
+	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=Lwt3hTCBZ3UKk5ni1UTzpuq2OiEublVDDa+Mrj7hN+Jztd99emXMh2GvDL+ihQ+rH
+	 mGwokVU4TwsHx3Mqp1LeDG8Bz7ti9vGpkRisGPFotYigb1+IvR2Nil1F4oLUDv50fg
+	 b4OoKN+Gb9Y5lyddG8galzxKlp5yIeNMGerbDfs4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F0E29F80331;
-	Thu, 23 Apr 2020 01:16:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4AEFDF8020C;
+	Thu, 23 Apr 2020 01:21:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CF73DF80332; Thu, 23 Apr 2020 01:16:10 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 4A69DF80329
- for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 01:16:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4A69DF80329
-Date: 23 Apr 2020 08:16:07 +0900
-X-IronPort-AV: E=Sophos;i="5.73,304,1583161200"; d="scan'208";a="45450155"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 23 Apr 2020 08:16:07 +0900
-Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 1886A40F2DC1;
- Thu, 23 Apr 2020 08:16:07 +0900 (JST)
-Message-ID: <87d07zt8lk.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 17/17] ASoC: soc-dai: add snd_soc_dai_compr_get_metadata()
-User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
-To: Mark Brown <broonie@kernel.org>
-In-Reply-To: <871rofunaq.wl-kuninori.morimoto.gx@renesas.com>
-References: <871rofunaq.wl-kuninori.morimoto.gx@renesas.com>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+ id 05628F8021C; Thu, 23 Apr 2020 01:21:35 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A082DF80108
+ for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 01:21:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A082DF80108
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="ZlR+o4j/"
+Received: from localhost (mobile-166-175-187-227.mycingular.net
+ [166.175.187.227])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 529712076C;
+ Wed, 22 Apr 2020 23:21:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1587597689;
+ bh=eQWN3pP46KHM49RJh6DB+rLU7u/InpAf2XNNJk3Uh0A=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:From;
+ b=ZlR+o4j/dIfsKlG85ZyM/YXf5IjN3j5mL315OQtJva0g0unK7gSvSEvf93zO6/i9D
+ RXsaegX5CNyrsxE8zkl9PnrDZXu5bGH8raTLZ40pfFSDEBdGUpy9GmQDya+o6RsQrc
+ KS9fX0bRBoDa5BlL1cBbNhSkocIzs8LGohDtrQaQ=
+Date: Wed, 22 Apr 2020 18:21:27 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Subject: Re: Unrecoverable AER error when resuming from RAM (hda regression
+ in 5.7-rc2)
+Message-ID: <20200422232127.GA24666@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <s5h8sinxlfz.wl-tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, linux-pm@vger.kernel.org,
+ linux-pci@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+ linux-kernel@vger.kernel.org, "Alex Xu \(Hello71\)" <alex_y_xu@yahoo.ca>,
+ Roy Spliet <nouveau@spliet.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,74 +89,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Wed, Apr 22, 2020 at 11:25:04PM +0200, Takashi Iwai wrote:
+> On Wed, 22 Apr 2020 22:50:28 +0200,
+> Bjorn Helgaas wrote:
+> > ...
+> > I feel like this UR issue could be a PCI core issue or maybe some sort
+> > of misuse of PCI power management, but I can't seem to get traction on
+> > it.
+> > 
+> > > Then the display freezes and the system basically falls apart (can't 
+> > > even sudo reboot -f, need to use magic sysrq).
+> > > 
+> > > I bisected this to "ALSA: hda: Skip controller resume if not needed". 
+> > > Setting snd_hda_intel.power_save=0 resolves the issue.
+> > 
+> > FWIW, the complete citation is c4c8dd6ef807 ("ALSA: hda: Skip
+> > controller resume if not needed"),
+> > https://git.kernel.org/linus/c4c8dd6ef807, which first appeared in
+> > v5.7-rc2.
+> 
+> Yes, and I posted the fix patch right now:
+>   https://lore.kernel.org/r/20200422203744.26299-1-tiwai@suse.de
+> 
+> The possible cause was the tricky resume code that both HD-audio
+> controller (the parent PCI device) and the codec devices used.
+> 
+> At least the patch above seems working for the reporter's machine.
+> Now we need a bit more testing before merging, but it looks promising,
+> so far.
 
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Great, I'm glad you figured something out because I sure wasn't
+getting anywhere!
 
-dai related function should be implemented at soc-dai.c.
-This patch adds snd_soc_dai_compr_get_metadata().
+Maybe this is a tangent, but I can't figure out what
+snd_power_change_state() is doing.  It *looks* like it's supposed to
+change the PCI power state, but I gave up trying to figure out where
+it actually touches the device.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
----
- include/sound/soc-dai.h  |  3 +++
- sound/soc/soc-compress.c |  8 +++-----
- sound/soc/soc-dai.c      | 14 ++++++++++++++
- 3 files changed, 20 insertions(+), 5 deletions(-)
+It seems like sound has more magic in power management than other
+device types, which makes me wonder if we're not providing the right
+interfaces or something.
 
-diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index d21a2a33b7bc..2a0a5af1c1ae 100644
---- a/include/sound/soc-dai.h
-+++ b/include/sound/soc-dai.h
-@@ -191,6 +191,9 @@ int snd_soc_dai_compr_pointer(struct snd_soc_dai *dai,
- int snd_soc_dai_compr_set_metadata(struct snd_soc_dai *dai,
- 				   struct snd_compr_stream *cstream,
- 				   struct snd_compr_metadata *metadata);
-+int snd_soc_dai_compr_get_metadata(struct snd_soc_dai *dai,
-+				   struct snd_compr_stream *cstream,
-+				   struct snd_compr_metadata *metadata);
- 
- struct snd_soc_dai_ops {
- 	/*
-diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index 01f10204efdc..1dd043e1e407 100644
---- a/sound/soc/soc-compress.c
-+++ b/sound/soc/soc-compress.c
-@@ -723,11 +723,9 @@ static int soc_compr_get_metadata(struct snd_compr_stream *cstream,
- 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
- 	int i, ret;
- 
--	if (cpu_dai->driver->cops && cpu_dai->driver->cops->get_metadata) {
--		ret = cpu_dai->driver->cops->get_metadata(cstream, metadata, cpu_dai);
--		if (ret < 0)
--			return ret;
--	}
-+	ret = snd_soc_dai_compr_get_metadata(cpu_dai, cstream, metadata);
-+	if (ret < 0)
-+		return ret;
- 
- 	for_each_rtd_components(rtd, i, component) {
- 		if (!component->driver->compress_ops ||
-diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
-index 88990792fe49..8e5fe012aa1d 100644
---- a/sound/soc/soc-dai.c
-+++ b/sound/soc/soc-dai.c
-@@ -609,3 +609,17 @@ int snd_soc_dai_compr_set_metadata(struct snd_soc_dai *dai,
- 	return soc_dai_ret(dai, ret);
- }
- EXPORT_SYMBOL_GPL(snd_soc_dai_compr_set_metadata);
-+
-+int snd_soc_dai_compr_get_metadata(struct snd_soc_dai *dai,
-+				   struct snd_compr_stream *cstream,
-+				   struct snd_compr_metadata *metadata)
-+{
-+	int ret = 0;
-+
-+	if (dai->driver->cops &&
-+	    dai->driver->cops->get_metadata)
-+		ret = dai->driver->cops->get_metadata(cstream, metadata, dai);
-+
-+	return soc_dai_ret(dai, ret);
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_dai_compr_get_metadata);
--- 
-2.17.1
-
+Bjorn
