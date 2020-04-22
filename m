@@ -7,53 +7,53 @@ X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DE53BC55186
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 23:15:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 174EEC55185
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 23:16:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6862220776
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 23:15:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 953DD20724
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 23:16:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SqBmCt7U"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6862220776
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fMndx9uI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 953DD20724
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B1C0716A4;
-	Thu, 23 Apr 2020 01:14:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1C0716A4
+	by alsa0.perex.cz (Postfix) with ESMTPS id ED75316B0;
+	Thu, 23 Apr 2020 01:15:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ED75316B0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587597312;
-	bh=2bMWASza7/EB+nS4t0iwd2FG7XGVdRoFnmNNu8l1yJU=;
+	s=default; t=1587597361;
+	bh=bmPxZUopXKJ2Ne+XbkdUb6GmMYoUSqsj+I2UBufJ+CI=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SqBmCt7U5Q/GM2wWwmNs/ifQ/c3jJrKlb27RwXL7jSGwFBjRdVsml+lJkcF3BSOxc
-	 wXckQemSTgVq1hoUefOXuuKE/cpyXFJoSbnpAnVO90lrz72Dh6nNr+tH3jUiCyCpsY
-	 hKJ+1SyYmfswUq/qu4G1h95FTSiCzUK+CmZEDSgE=
+	b=fMndx9uIC3PTvGbmOQ7GjlyNHU9IntUvXA/x5QEm/CFtD4ZLSrHJFTm+9nS+Vr2qR
+	 AQgSq0oOpgiptdOGsxMLu2G0OLV2rwlVMR3Qt6AuDm3CrcQRVPROw5BaPZ4mq6Fr2G
+	 udM52mVLkQaOBTWTn++ygNBxDO/v/Q59yxX80Gg0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 945E7F8023F;
-	Thu, 23 Apr 2020 01:14:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B7124F800FF;
+	Thu, 23 Apr 2020 01:14:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4D788F8023F; Thu, 23 Apr 2020 01:14:06 +0200 (CEST)
+ id 8DE61F8028B; Thu, 23 Apr 2020 01:14:09 +0200 (CEST)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 27B6EF801D9
- for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 01:13:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27B6EF801D9
-Date: 23 Apr 2020 08:13:58 +0900
-X-IronPort-AV: E=Sophos;i="5.73,304,1583161200"; d="scan'208";a="45449967"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 23 Apr 2020 08:13:58 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id D1158F800FF
+ for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 01:14:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1158F800FF
+Date: 23 Apr 2020 08:14:05 +0900
+X-IronPort-AV: E=Sophos;i="5.73,304,1583161200"; d="scan'208";a="45449975"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 23 Apr 2020 08:14:05 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 0DF18400A8A3;
- Thu, 23 Apr 2020 08:13:58 +0900 (JST)
-Message-ID: <87zhb3t8p5.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 72A2640F1EAC;
+ Thu, 23 Apr 2020 08:14:05 +0900 (JST)
+Message-ID: <87y2qnt8oy.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 01/17] ASoC: soc-dai: add soc_dai_err()
+Subject: [PATCH 02/17] ASoC: soc-dai: don't overwide dai->driver->ops
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <871rofunaq.wl-kuninori.morimoto.gx@renesas.com>
@@ -79,325 +79,239 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-At soc-dai.c, it is good idea to indicate error function and
-its component name if there was error.
-This patch adds soc_dai_err() for it.
+Current ASoC overwides dai->driver->ops if it was NULL.
+But, it is not good idea, because dai->driver might be reused
+when modprobe/rmmod or bind/unbind, etc.
+
+This patch checks dai->driver->ops when use DAI callbacks,
+and removes null_dai_ops from ASoC.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-dai.c | 155 +++++++++++++++++++++++++++-----------------
- 1 file changed, 96 insertions(+), 59 deletions(-)
+ sound/soc/soc-core.c |  5 ----
+ sound/soc/soc-dai.c  | 58 +++++++++++++++++++++++++++++---------------
+ 2 files changed, 39 insertions(+), 24 deletions(-)
 
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 8321e75ff244..6778eeffb48f 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -742,9 +742,6 @@ static inline void soc_resume_init(struct snd_soc_card *card)
+ }
+ #endif
+ 
+-static const struct snd_soc_dai_ops null_dai_ops = {
+-};
+-
+ static struct device_node
+ *soc_component_to_node(struct snd_soc_component *component)
+ {
+@@ -2406,8 +2403,6 @@ struct snd_soc_dai *snd_soc_register_dai(struct snd_soc_component *component,
+ 	dai->component = component;
+ 	dai->dev = dev;
+ 	dai->driver = dai_drv;
+-	if (!dai->driver->ops)
+-		dai->driver->ops = &null_dai_ops;
+ 
+ 	/* see for_each_component_dais */
+ 	list_add_tail(&dai->list, &component->dai_list);
 diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
-index 31c41559034b..d591b3bd8b99 100644
+index d591b3bd8b99..93e03c9ec164 100644
 --- a/sound/soc/soc-dai.c
 +++ b/sound/soc/soc-dai.c
-@@ -9,6 +9,24 @@
- #include <sound/soc.h>
- #include <sound/soc-dai.h>
- 
-+#define soc_dai_ret(dai, ret) _soc_dai_ret(dai, __func__, ret)
-+static inline int _soc_dai_ret(struct snd_soc_dai *dai,
-+			       const char *func, int ret)
-+{
-+	switch (ret) {
-+	case -EPROBE_DEFER:
-+	case -ENOTSUPP:
-+	case 0:
-+		break;
-+	default:
-+		dev_err(dai->dev,
-+			"ASoC: error at %s on %s: %d\n",
-+			func, dai->name, ret);
-+	}
-+
-+	return ret;
-+}
-+
- /**
-  * snd_soc_dai_set_sysclk - configure DAI system or master clock.
-  * @dai: DAI
-@@ -21,11 +39,15 @@
- int snd_soc_dai_set_sysclk(struct snd_soc_dai *dai, int clk_id,
- 			   unsigned int freq, int dir)
+@@ -41,7 +41,8 @@ int snd_soc_dai_set_sysclk(struct snd_soc_dai *dai, int clk_id,
  {
-+	int ret;
-+
- 	if (dai->driver->ops->set_sysclk)
--		return dai->driver->ops->set_sysclk(dai, clk_id, freq, dir);
-+		ret = dai->driver->ops->set_sysclk(dai, clk_id, freq, dir);
-+	else
-+		ret = snd_soc_component_set_sysclk(dai->component, clk_id, 0,
-+						   freq, dir);
+ 	int ret;
  
--	return snd_soc_component_set_sysclk(dai->component, clk_id, 0,
--					    freq, dir);
-+	return soc_dai_ret(dai, ret);
- }
- EXPORT_SYMBOL_GPL(snd_soc_dai_set_sysclk);
- 
-@@ -42,10 +64,12 @@ EXPORT_SYMBOL_GPL(snd_soc_dai_set_sysclk);
- int snd_soc_dai_set_clkdiv(struct snd_soc_dai *dai,
- 			   int div_id, int div)
+-	if (dai->driver->ops->set_sysclk)
++	if (dai->driver->ops &&
++	    dai->driver->ops->set_sysclk)
+ 		ret = dai->driver->ops->set_sysclk(dai, clk_id, freq, dir);
+ 	else
+ 		ret = snd_soc_component_set_sysclk(dai->component, clk_id, 0,
+@@ -66,7 +67,8 @@ int snd_soc_dai_set_clkdiv(struct snd_soc_dai *dai,
  {
-+	int ret = -EINVAL;
-+
- 	if (dai->driver->ops->set_clkdiv)
--		return dai->driver->ops->set_clkdiv(dai, div_id, div);
--	else
--		return -EINVAL;
-+		ret = dai->driver->ops->set_clkdiv(dai, div_id, div);
-+
-+	return soc_dai_ret(dai, ret);
- }
- EXPORT_SYMBOL_GPL(snd_soc_dai_set_clkdiv);
+ 	int ret = -EINVAL;
  
-@@ -62,12 +86,16 @@ EXPORT_SYMBOL_GPL(snd_soc_dai_set_clkdiv);
- int snd_soc_dai_set_pll(struct snd_soc_dai *dai, int pll_id, int source,
- 			unsigned int freq_in, unsigned int freq_out)
+-	if (dai->driver->ops->set_clkdiv)
++	if (dai->driver->ops &&
++	    dai->driver->ops->set_clkdiv)
+ 		ret = dai->driver->ops->set_clkdiv(dai, div_id, div);
+ 
+ 	return soc_dai_ret(dai, ret);
+@@ -88,7 +90,8 @@ int snd_soc_dai_set_pll(struct snd_soc_dai *dai, int pll_id, int source,
  {
-+	int ret;
-+
- 	if (dai->driver->ops->set_pll)
--		return dai->driver->ops->set_pll(dai, pll_id, source,
--						 freq_in, freq_out);
-+		ret = dai->driver->ops->set_pll(dai, pll_id, source,
-+						freq_in, freq_out);
-+	else
-+		ret = snd_soc_component_set_pll(dai->component, pll_id, source,
-+						freq_in, freq_out);
+ 	int ret;
  
--	return snd_soc_component_set_pll(dai->component, pll_id, source,
--					 freq_in, freq_out);
-+	return soc_dai_ret(dai, ret);
- }
- EXPORT_SYMBOL_GPL(snd_soc_dai_set_pll);
- 
-@@ -80,10 +108,12 @@ EXPORT_SYMBOL_GPL(snd_soc_dai_set_pll);
-  */
- int snd_soc_dai_set_bclk_ratio(struct snd_soc_dai *dai, unsigned int ratio)
+-	if (dai->driver->ops->set_pll)
++	if (dai->driver->ops &&
++	    dai->driver->ops->set_pll)
+ 		ret = dai->driver->ops->set_pll(dai, pll_id, source,
+ 						freq_in, freq_out);
+ 	else
+@@ -110,7 +113,8 @@ int snd_soc_dai_set_bclk_ratio(struct snd_soc_dai *dai, unsigned int ratio)
  {
-+	int ret = -EINVAL;
-+
- 	if (dai->driver->ops->set_bclk_ratio)
--		return dai->driver->ops->set_bclk_ratio(dai, ratio);
--	else
--		return -EINVAL;
-+		ret = dai->driver->ops->set_bclk_ratio(dai, ratio);
-+
-+	return soc_dai_ret(dai, ret);
- }
- EXPORT_SYMBOL_GPL(snd_soc_dai_set_bclk_ratio);
+ 	int ret = -EINVAL;
  
-@@ -96,9 +126,12 @@ EXPORT_SYMBOL_GPL(snd_soc_dai_set_bclk_ratio);
-  */
- int snd_soc_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- {
--	if (dai->driver->ops->set_fmt == NULL)
--		return -ENOTSUPP;
--	return dai->driver->ops->set_fmt(dai, fmt);
-+	int ret = -ENOTSUPP;
-+
-+	if (dai->driver->ops->set_fmt)
-+		ret = dai->driver->ops->set_fmt(dai, fmt);
-+
-+	return soc_dai_ret(dai, ret);
- }
- EXPORT_SYMBOL_GPL(snd_soc_dai_set_fmt);
+-	if (dai->driver->ops->set_bclk_ratio)
++	if (dai->driver->ops &&
++	    dai->driver->ops->set_bclk_ratio)
+ 		ret = dai->driver->ops->set_bclk_ratio(dai, ratio);
  
-@@ -153,6 +186,8 @@ int snd_soc_dai_set_tdm_slot(struct snd_soc_dai *dai,
- 			     unsigned int tx_mask, unsigned int rx_mask,
- 			     int slots, int slot_width)
+ 	return soc_dai_ret(dai, ret);
+@@ -128,7 +132,8 @@ int snd_soc_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
  {
-+	int ret = -ENOTSUPP;
-+
- 	if (dai->driver->ops->xlate_tdm_slot_mask)
+ 	int ret = -ENOTSUPP;
+ 
+-	if (dai->driver->ops->set_fmt)
++	if (dai->driver->ops &&
++	    dai->driver->ops->set_fmt)
+ 		ret = dai->driver->ops->set_fmt(dai, fmt);
+ 
+ 	return soc_dai_ret(dai, ret);
+@@ -188,7 +193,8 @@ int snd_soc_dai_set_tdm_slot(struct snd_soc_dai *dai,
+ {
+ 	int ret = -ENOTSUPP;
+ 
+-	if (dai->driver->ops->xlate_tdm_slot_mask)
++	if (dai->driver->ops &&
++	    dai->driver->ops->xlate_tdm_slot_mask)
  		dai->driver->ops->xlate_tdm_slot_mask(slots,
  						      &tx_mask, &rx_mask);
-@@ -163,10 +198,9 @@ int snd_soc_dai_set_tdm_slot(struct snd_soc_dai *dai,
+ 	else
+@@ -197,7 +203,8 @@ int snd_soc_dai_set_tdm_slot(struct snd_soc_dai *dai,
+ 	dai->tx_mask = tx_mask;
  	dai->rx_mask = rx_mask;
  
- 	if (dai->driver->ops->set_tdm_slot)
--		return dai->driver->ops->set_tdm_slot(dai, tx_mask, rx_mask,
-+		ret = dai->driver->ops->set_tdm_slot(dai, tx_mask, rx_mask,
+-	if (dai->driver->ops->set_tdm_slot)
++	if (dai->driver->ops &&
++	    dai->driver->ops->set_tdm_slot)
+ 		ret = dai->driver->ops->set_tdm_slot(dai, tx_mask, rx_mask,
  						      slots, slot_width);
--	else
--		return -ENOTSUPP;
-+	return soc_dai_ret(dai, ret);
- }
- EXPORT_SYMBOL_GPL(snd_soc_dai_set_tdm_slot);
- 
-@@ -186,11 +220,12 @@ int snd_soc_dai_set_channel_map(struct snd_soc_dai *dai,
- 				unsigned int tx_num, unsigned int *tx_slot,
- 				unsigned int rx_num, unsigned int *rx_slot)
+ 	return soc_dai_ret(dai, ret);
+@@ -222,7 +229,8 @@ int snd_soc_dai_set_channel_map(struct snd_soc_dai *dai,
  {
-+	int ret = -ENOTSUPP;
-+
- 	if (dai->driver->ops->set_channel_map)
--		return dai->driver->ops->set_channel_map(dai, tx_num, tx_slot,
--							 rx_num, rx_slot);
--	else
--		return -ENOTSUPP;
-+		ret = dai->driver->ops->set_channel_map(dai, tx_num, tx_slot,
-+							rx_num, rx_slot);
-+	return soc_dai_ret(dai, ret);
- }
- EXPORT_SYMBOL_GPL(snd_soc_dai_set_channel_map);
+ 	int ret = -ENOTSUPP;
  
-@@ -208,11 +243,12 @@ int snd_soc_dai_get_channel_map(struct snd_soc_dai *dai,
- 				unsigned int *tx_num, unsigned int *tx_slot,
- 				unsigned int *rx_num, unsigned int *rx_slot)
+-	if (dai->driver->ops->set_channel_map)
++	if (dai->driver->ops &&
++	    dai->driver->ops->set_channel_map)
+ 		ret = dai->driver->ops->set_channel_map(dai, tx_num, tx_slot,
+ 							rx_num, rx_slot);
+ 	return soc_dai_ret(dai, ret);
+@@ -245,7 +253,8 @@ int snd_soc_dai_get_channel_map(struct snd_soc_dai *dai,
  {
-+	int ret = -ENOTSUPP;
-+
- 	if (dai->driver->ops->get_channel_map)
--		return dai->driver->ops->get_channel_map(dai, tx_num, tx_slot,
--							 rx_num, rx_slot);
--	else
--		return -ENOTSUPP;
-+		ret = dai->driver->ops->get_channel_map(dai, tx_num, tx_slot,
-+							rx_num, rx_slot);
-+	return soc_dai_ret(dai, ret);
- }
- EXPORT_SYMBOL_GPL(snd_soc_dai_get_channel_map);
+ 	int ret = -ENOTSUPP;
  
-@@ -225,10 +261,12 @@ EXPORT_SYMBOL_GPL(snd_soc_dai_get_channel_map);
-  */
- int snd_soc_dai_set_tristate(struct snd_soc_dai *dai, int tristate)
+-	if (dai->driver->ops->get_channel_map)
++	if (dai->driver->ops &&
++	    dai->driver->ops->get_channel_map)
+ 		ret = dai->driver->ops->get_channel_map(dai, tx_num, tx_slot,
+ 							rx_num, rx_slot);
+ 	return soc_dai_ret(dai, ret);
+@@ -263,7 +272,8 @@ int snd_soc_dai_set_tristate(struct snd_soc_dai *dai, int tristate)
  {
-+	int ret = -EINVAL;
-+
- 	if (dai->driver->ops->set_tristate)
--		return dai->driver->ops->set_tristate(dai, tristate);
--	else
--		return -EINVAL;
-+		ret = dai->driver->ops->set_tristate(dai, tristate);
-+
-+	return soc_dai_ret(dai, ret);
- }
- EXPORT_SYMBOL_GPL(snd_soc_dai_set_tristate);
+ 	int ret = -EINVAL;
  
-@@ -243,13 +281,15 @@ EXPORT_SYMBOL_GPL(snd_soc_dai_set_tristate);
- int snd_soc_dai_digital_mute(struct snd_soc_dai *dai, int mute,
- 			     int direction)
+-	if (dai->driver->ops->set_tristate)
++	if (dai->driver->ops &&
++	    dai->driver->ops->set_tristate)
+ 		ret = dai->driver->ops->set_tristate(dai, tristate);
+ 
+ 	return soc_dai_ret(dai, ret);
+@@ -283,9 +293,11 @@ int snd_soc_dai_digital_mute(struct snd_soc_dai *dai, int mute,
  {
-+	int ret = -ENOTSUPP;
-+
- 	if (dai->driver->ops->mute_stream)
--		return dai->driver->ops->mute_stream(dai, mute, direction);
-+		ret = dai->driver->ops->mute_stream(dai, mute, direction);
+ 	int ret = -ENOTSUPP;
+ 
+-	if (dai->driver->ops->mute_stream)
++	if (dai->driver->ops &&
++	    dai->driver->ops->mute_stream)
+ 		ret = dai->driver->ops->mute_stream(dai, mute, direction);
  	else if (direction == SNDRV_PCM_STREAM_PLAYBACK &&
++		 dai->driver->ops &&
  		 dai->driver->ops->digital_mute)
--		return dai->driver->ops->digital_mute(dai, mute);
--	else
--		return -ENOTSUPP;
-+		ret = dai->driver->ops->digital_mute(dai, mute);
-+
-+	return soc_dai_ret(dai, ret);
- }
- EXPORT_SYMBOL_GPL(snd_soc_dai_digital_mute);
+ 		ret = dai->driver->ops->digital_mute(dai, mute);
  
-@@ -258,29 +298,19 @@ int snd_soc_dai_hw_params(struct snd_soc_dai *dai,
- 			  struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	int ret;
-+	int ret = 0;
- 
- 	/* perform any topology hw_params fixups before DAI  */
- 	if (rtd->dai_link->be_hw_params_fixup) {
- 		ret = rtd->dai_link->be_hw_params_fixup(rtd, params);
--		if (ret < 0) {
--			dev_err(rtd->dev,
--				"ASoC: hw_params topology fixup failed %d\n",
--				ret);
--			return ret;
--		}
-+		if (ret < 0)
-+			goto end;
+@@ -307,7 +319,8 @@ int snd_soc_dai_hw_params(struct snd_soc_dai *dai,
+ 			goto end;
  	}
  
--	if (dai->driver->ops->hw_params) {
-+	if (dai->driver->ops->hw_params)
+-	if (dai->driver->ops->hw_params)
++	if (dai->driver->ops &&
++	    dai->driver->ops->hw_params)
  		ret = dai->driver->ops->hw_params(substream, params, dai);
--		if (ret < 0) {
--			dev_err(dai->dev, "ASoC: can't set %s hw params: %d\n",
--				dai->name, ret);
--			return ret;
--		}
--	}
--
--	return 0;
-+end:
-+	return soc_dai_ret(dai, ret);
+ end:
+ 	return soc_dai_ret(dai, ret);
+@@ -316,7 +329,8 @@ int snd_soc_dai_hw_params(struct snd_soc_dai *dai,
+ void snd_soc_dai_hw_free(struct snd_soc_dai *dai,
+ 			 struct snd_pcm_substream *substream)
+ {
+-	if (dai->driver->ops->hw_free)
++	if (dai->driver->ops &&
++	    dai->driver->ops->hw_free)
+ 		dai->driver->ops->hw_free(substream, dai);
  }
  
- void snd_soc_dai_hw_free(struct snd_soc_dai *dai,
-@@ -298,7 +328,7 @@ int snd_soc_dai_startup(struct snd_soc_dai *dai,
- 	if (dai->driver->ops->startup)
+@@ -325,7 +339,8 @@ int snd_soc_dai_startup(struct snd_soc_dai *dai,
+ {
+ 	int ret = 0;
+ 
+-	if (dai->driver->ops->startup)
++	if (dai->driver->ops &&
++	    dai->driver->ops->startup)
  		ret = dai->driver->ops->startup(substream, dai);
  
--	return ret;
-+	return soc_dai_ret(dai, ret);
+ 	return soc_dai_ret(dai, ret);
+@@ -334,7 +349,8 @@ int snd_soc_dai_startup(struct snd_soc_dai *dai,
+ void snd_soc_dai_shutdown(struct snd_soc_dai *dai,
+ 			 struct snd_pcm_substream *substream)
+ {
+-	if (dai->driver->ops->shutdown)
++	if (dai->driver->ops &&
++	    dai->driver->ops->shutdown)
+ 		dai->driver->ops->shutdown(substream, dai);
  }
  
- void snd_soc_dai_shutdown(struct snd_soc_dai *dai,
-@@ -316,7 +346,7 @@ int snd_soc_dai_prepare(struct snd_soc_dai *dai,
- 	if (dai->driver->ops->prepare)
+@@ -343,7 +359,8 @@ int snd_soc_dai_prepare(struct snd_soc_dai *dai,
+ {
+ 	int ret = 0;
+ 
+-	if (dai->driver->ops->prepare)
++	if (dai->driver->ops &&
++	    dai->driver->ops->prepare)
  		ret = dai->driver->ops->prepare(substream, dai);
  
--	return ret;
-+	return soc_dai_ret(dai, ret);
- }
+ 	return soc_dai_ret(dai, ret);
+@@ -355,7 +372,8 @@ int snd_soc_dai_trigger(struct snd_soc_dai *dai,
+ {
+ 	int ret = 0;
  
- int snd_soc_dai_trigger(struct snd_soc_dai *dai,
-@@ -340,7 +370,7 @@ int snd_soc_dai_bespoke_trigger(struct snd_soc_dai *dai,
- 	if (dai->driver->ops->bespoke_trigger)
+-	if (dai->driver->ops->trigger)
++	if (dai->driver->ops &&
++	    dai->driver->ops->trigger)
+ 		ret = dai->driver->ops->trigger(substream, cmd, dai);
+ 
+ 	return ret;
+@@ -367,7 +385,8 @@ int snd_soc_dai_bespoke_trigger(struct snd_soc_dai *dai,
+ {
+ 	int ret = 0;
+ 
+-	if (dai->driver->ops->bespoke_trigger)
++	if (dai->driver->ops &&
++	    dai->driver->ops->bespoke_trigger)
  		ret = dai->driver->ops->bespoke_trigger(substream, cmd, dai);
  
--	return ret;
-+	return soc_dai_ret(dai, ret);
- }
- 
- snd_pcm_sframes_t snd_soc_dai_delay(struct snd_soc_dai *dai,
-@@ -356,24 +386,31 @@ snd_pcm_sframes_t snd_soc_dai_delay(struct snd_soc_dai *dai,
- 
- int snd_soc_dai_probe(struct snd_soc_dai *dai)
+ 	return soc_dai_ret(dai, ret);
+@@ -378,7 +397,8 @@ snd_pcm_sframes_t snd_soc_dai_delay(struct snd_soc_dai *dai,
  {
-+	int ret = 0;
-+
- 	if (dai->driver->probe)
--		return dai->driver->probe(dai);
--	return 0;
-+		ret = dai->driver->probe(dai);
-+
-+	return soc_dai_ret(dai, ret);
- }
+ 	int delay = 0;
  
- int snd_soc_dai_remove(struct snd_soc_dai *dai)
- {
-+	int ret = 0;
-+
- 	if (dai->driver->remove)
--		return dai->driver->remove(dai);
--	return 0;
-+		ret = dai->driver->remove(dai);
-+
-+	return soc_dai_ret(dai, ret);
- }
+-	if (dai->driver->ops->delay)
++	if (dai->driver->ops &&
++	    dai->driver->ops->delay)
+ 		delay = dai->driver->ops->delay(substream, dai);
  
- int snd_soc_dai_compress_new(struct snd_soc_dai *dai,
- 			     struct snd_soc_pcm_runtime *rtd, int num)
- {
-+	int ret = -ENOTSUPP;
- 	if (dai->driver->compress_new)
--		return dai->driver->compress_new(rtd, num);
--	return -ENOTSUPP;
-+		ret = dai->driver->compress_new(rtd, num);
-+	return soc_dai_ret(dai, ret);
- }
- 
- /*
+ 	return delay;
 -- 
 2.17.1
 
