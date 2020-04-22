@@ -7,53 +7,53 @@ X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DB06C55186
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 23:19:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B093BC55186
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 23:20:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CD0B120776
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 23:19:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 33D892076C
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 23:20:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="O+ukizfo"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CD0B120776
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BDczmN/L"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 33D892076C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3096A16D9;
-	Thu, 23 Apr 2020 01:18:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3096A16D9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8F3A21685;
+	Thu, 23 Apr 2020 01:19:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F3A21685
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587597571;
-	bh=Ijx/pj5LlnXoCVpAKJPNkrM4Q1LpxmLlzSx7yBiC3Xk=;
+	s=default; t=1587597604;
+	bh=SsCqvz7IDK6xifYzrFcCv5XB368Xs36+GQ+2UMdWceU=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=O+ukizfotwv6nNcITnvVgfIsk3oFi1urNsJFyCnxIMpY2zD7QgnHHLFO1hrHaI5RX
-	 dpXk7lef8+8Wek0begScOOmshNBSfhOo7OL8zZBbaJaBxZwC9Zowi/vJYetapMTd/J
-	 9LCeZ/J71C4tnABWm2TESRqlEY/Jmt/P0KxeVfPo=
+	b=BDczmN/LSmFEk3bzuXWngXFRXvZvVIr8tFuPM10VIaTptdxEZDfDV2f04udOnyrrq
+	 slzv/+iAcfbN6hdAMD0ObNpSrPYrkzQx6NNiDBiyW/13zn5TvXPxaSx96CyTvelIZs
+	 ke1q2MA9Gsm+QP2fL1+LFHjfG9OrbwxEeh0lSkNI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 601BEF802E2;
-	Thu, 23 Apr 2020 01:15:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 59613F802E7;
+	Thu, 23 Apr 2020 01:15:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AB645F802DF; Thu, 23 Apr 2020 01:15:13 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 39856F80108
- for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 01:15:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39856F80108
-Date: 23 Apr 2020 08:15:09 +0900
-X-IronPort-AV: E=Sophos;i="5.73,304,1583161200"; d="scan'208";a="45236954"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 23 Apr 2020 08:15:09 +0900
+ id 805E8F802E8; Thu, 23 Apr 2020 01:15:19 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id CAA58F802E8
+ for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 01:15:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CAA58F802E8
+Date: 23 Apr 2020 08:15:15 +0900
+X-IronPort-AV: E=Sophos;i="5.73,304,1583161200"; d="scan'208";a="45450108"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 23 Apr 2020 08:15:15 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id CEE0540F28F1;
- Thu, 23 Apr 2020 08:15:09 +0900 (JST)
-Message-ID: <87pnbzt8n6.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id AB9CE400007B;
+ Thu, 23 Apr 2020 08:15:15 +0900 (JST)
+Message-ID: <87o8rjt8n0.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 08/17] ASoC: soc-dai: add snd_soc_pcm_dai_remove()
+Subject: [PATCH 09/17] ASoC: soc-dai: add snd_soc_dai_compr_start()
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <871rofunaq.wl-kuninori.morimoto.gx@renesas.com>
@@ -79,130 +79,93 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-We have 2 type of component functions
-snd_soc_dai_xxx()     is focusing to dai itself,
-snd_soc_pcm_dai_xxx() is focusing to rtd related dai.
-
-Now we can update snd_soc_dai_remove() to
-snd_soc_pcm_dai_remove(). This patch do it.
+dai related function should be implemented at soc-dai.c.
+This patch adds snd_soc_dai_compr_start().
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- include/sound/soc-dai.h |  2 +-
- sound/soc/soc-core.c    | 24 ++----------------------
- sound/soc/soc-dai.c     | 32 ++++++++++++++++++++++----------
- 3 files changed, 25 insertions(+), 33 deletions(-)
+ include/sound/soc-dai.h  |  3 +++
+ sound/soc/soc-compress.c | 24 ++++++------------------
+ sound/soc/soc-dai.c      | 13 +++++++++++++
+ 3 files changed, 22 insertions(+), 18 deletions(-)
 
 diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index bdb79df637af..cf7d09f210bc 100644
+index cf7d09f210bc..deb99b1469b4 100644
 --- a/include/sound/soc-dai.h
 +++ b/include/sound/soc-dai.h
-@@ -158,12 +158,12 @@ snd_pcm_sframes_t snd_soc_dai_delay(struct snd_soc_dai *dai,
- 				    struct snd_pcm_substream *substream);
- void snd_soc_dai_suspend(struct snd_soc_dai *dai);
- void snd_soc_dai_resume(struct snd_soc_dai *dai);
--int snd_soc_dai_remove(struct snd_soc_dai *dai);
- int snd_soc_dai_compress_new(struct snd_soc_dai *dai,
- 			     struct snd_soc_pcm_runtime *rtd, int num);
- bool snd_soc_dai_stream_valid(struct snd_soc_dai *dai, int stream);
+@@ -170,6 +170,9 @@ int snd_soc_pcm_dai_trigger(struct snd_pcm_substream *substream, int cmd);
+ int snd_soc_pcm_dai_bespoke_trigger(struct snd_pcm_substream *substream,
+ 				    int cmd);
  
- int snd_soc_pcm_dai_probe(struct snd_soc_pcm_runtime *rtd, int order);
-+int snd_soc_pcm_dai_remove(struct snd_soc_pcm_runtime *rtd, int order);
- int snd_soc_pcm_dai_new(struct snd_soc_pcm_runtime *rtd);
- int snd_soc_pcm_dai_prepare(struct snd_pcm_substream *substream);
- int snd_soc_pcm_dai_trigger(struct snd_pcm_substream *substream, int cmd);
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 8cafca4e1405..95d8189e45ab 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1256,35 +1256,15 @@ static int soc_probe_component(struct snd_soc_card *card,
- 	return ret;
- }
++int snd_soc_dai_compr_startup(struct snd_soc_dai *dai,
++			      struct snd_compr_stream *cstream);
++
+ struct snd_soc_dai_ops {
+ 	/*
+ 	 * DAI clocking configuration, all optional.
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index ceaf976db0bb..4065e7b4138d 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -87,15 +87,9 @@ static int soc_compr_open(struct snd_compr_stream *cstream)
  
--static void soc_remove_dai(struct snd_soc_dai *dai, int order)
--{
--	int err;
--
--	if (!dai || !dai->probed || !dai->driver ||
--	    dai->driver->remove_order != order)
--		return;
--
--	err = snd_soc_dai_remove(dai);
--	if (err < 0)
--		dev_err(dai->dev,
--			"ASoC: failed to remove %s: %d\n",
--			dai->name, err);
--
--	dai->probed = 0;
--}
--
- static void soc_remove_link_dais(struct snd_soc_card *card)
- {
--	int i;
--	struct snd_soc_dai *dai;
- 	struct snd_soc_pcm_runtime *rtd;
- 	int order;
+ 	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
  
- 	for_each_comp_order(order) {
- 		for_each_card_rtds(card, rtd) {
--			/* remove DAIs */
--			for_each_rtd_dais(rtd, i, dai)
--				soc_remove_dai(dai, order);
-+			/* remove all rtd connected DAIs in good order */
-+			snd_soc_pcm_dai_remove(rtd, order);
- 		}
+-	if (cpu_dai->driver->cops && cpu_dai->driver->cops->startup) {
+-		ret = cpu_dai->driver->cops->startup(cstream, cpu_dai);
+-		if (ret < 0) {
+-			dev_err(cpu_dai->dev,
+-				"Compress ASoC: can't open interface %s: %d\n",
+-				cpu_dai->name, ret);
+-			goto out;
+-		}
+-	}
++	ret = snd_soc_dai_compr_startup(cpu_dai, cstream);
++	if (ret < 0)
++		goto out;
+ 
+ 	ret = soc_compr_components_open(cstream, &component);
+ 	if (ret < 0)
+@@ -178,15 +172,9 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
+ 		goto out;
  	}
- }
+ 
+-	if (cpu_dai->driver->cops && cpu_dai->driver->cops->startup) {
+-		ret = cpu_dai->driver->cops->startup(cstream, cpu_dai);
+-		if (ret < 0) {
+-			dev_err(cpu_dai->dev,
+-				"Compress ASoC: can't open interface %s: %d\n",
+-				cpu_dai->name, ret);
+-			goto out;
+-		}
+-	}
++	ret = snd_soc_dai_compr_startup(cpu_dai, cstream);
++	if (ret < 0)
++		goto out;
+ 
+ 	ret = soc_compr_components_open(cstream, &component);
+ 	if (ret < 0)
 diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
-index 48f5eb5ef387..2bc452fe02ff 100644
+index 2bc452fe02ff..5c88f80b781d 100644
 --- a/sound/soc/soc-dai.c
 +++ b/sound/soc/soc-dai.c
-@@ -366,16 +366,6 @@ snd_pcm_sframes_t snd_soc_dai_delay(struct snd_soc_dai *dai,
- 	return delay;
- }
+@@ -504,3 +504,16 @@ int snd_soc_pcm_dai_bespoke_trigger(struct snd_pcm_substream *substream,
  
--int snd_soc_dai_remove(struct snd_soc_dai *dai)
--{
--	int ret = 0;
--
--	if (dai->driver->remove)
--		ret = dai->driver->remove(dai);
--
--	return soc_dai_ret(dai, ret);
--}
--
- int snd_soc_dai_compress_new(struct snd_soc_dai *dai,
- 			     struct snd_soc_pcm_runtime *rtd, int num)
- {
-@@ -420,6 +410,28 @@ int snd_soc_pcm_dai_probe(struct snd_soc_pcm_runtime *rtd, int order)
  	return 0;
  }
- 
-+int snd_soc_pcm_dai_remove(struct snd_soc_pcm_runtime *rtd, int order)
++
++int snd_soc_dai_compr_startup(struct snd_soc_dai *dai,
++			      struct snd_compr_stream *cstream)
 +{
-+	struct snd_soc_dai *dai;
-+	int i, r, ret = 0;
++	int ret = 0;
 +
-+	for_each_rtd_dais(rtd, i, dai) {
-+		if (dai->driver->remove_order != order)
-+			continue;
++	if (dai->driver->cops &&
++	    dai->driver->cops->startup)
++		ret = dai->driver->cops->startup(cstream, dai);
 +
-+		if (dai->probed &&
-+		    dai->driver->remove) {
-+			r = dai->driver->remove(dai);
-+			if (r < 0)
-+				ret = r; /* use last error */
-+		}
-+
-+		dai->probed = 0;
-+	}
-+
-+	return ret;
++	return soc_dai_ret(dai, ret);
 +}
-+
- int snd_soc_pcm_dai_new(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct snd_soc_dai *dai;
++EXPORT_SYMBOL_GPL(snd_soc_dai_compr_startup);
 -- 
 2.17.1
 
