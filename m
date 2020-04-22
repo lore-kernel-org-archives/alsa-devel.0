@@ -2,58 +2,62 @@ Return-Path: <SRS0=We8V=6G=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3231EC55185
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 23:14:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DE53BC55186
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 23:15:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A71DB20724
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 23:14:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6862220776
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 23:15:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="h/+FakA2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A71DB20724
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SqBmCt7U"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6862220776
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 097E2169C;
-	Thu, 23 Apr 2020 01:13:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 097E2169C
+	by alsa0.perex.cz (Postfix) with ESMTPS id B1C0716A4;
+	Thu, 23 Apr 2020 01:14:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1C0716A4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587597260;
-	bh=HO1F+UPCdk4etwG1ctNHVGN72IBsw8a65/Qq4jDAE/4=;
-	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=h/+FakA2pl5jIFySTT+dvGCgBgfQ9fhYmiLgbYHUotnTLShrAtdOFYCWK3l9cnLTz
-	 4KVhQcsA2DVpgpq01F1SRwSPs7Lfbm3hzgtX9XOxo686UsDrskvdQ2AZAy09bEFTMC
-	 ixPF6IpYbsfFKsXwoiOJ409E0Q2vN8gvjgRl3s/E=
+	s=default; t=1587597312;
+	bh=2bMWASza7/EB+nS4t0iwd2FG7XGVdRoFnmNNu8l1yJU=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=SqBmCt7U5Q/GM2wWwmNs/ifQ/c3jJrKlb27RwXL7jSGwFBjRdVsml+lJkcF3BSOxc
+	 wXckQemSTgVq1hoUefOXuuKE/cpyXFJoSbnpAnVO90lrz72Dh6nNr+tH3jUiCyCpsY
+	 hKJ+1SyYmfswUq/qu4G1h95FTSiCzUK+CmZEDSgE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 73D24F80142;
-	Thu, 23 Apr 2020 01:13:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 945E7F8023F;
+	Thu, 23 Apr 2020 01:14:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6C051F801D9; Thu, 23 Apr 2020 01:13:27 +0200 (CEST)
+ id 4D788F8023F; Thu, 23 Apr 2020 01:14:06 +0200 (CEST)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id B2C33F80108
- for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 01:13:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B2C33F80108
-Date: 23 Apr 2020 08:13:17 +0900
-X-IronPort-AV: E=Sophos;i="5.73,304,1583161200"; d="scan'208";a="45449944"
+ by alsa1.perex.cz (Postfix) with ESMTP id 27B6EF801D9
+ for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 01:13:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27B6EF801D9
+Date: 23 Apr 2020 08:13:58 +0900
+X-IronPort-AV: E=Sophos;i="5.73,304,1583161200"; d="scan'208";a="45449967"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 23 Apr 2020 08:13:17 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 23 Apr 2020 08:13:58 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id EAD7D400A8A8;
- Thu, 23 Apr 2020 08:13:17 +0900 (JST)
-Message-ID: <871rofunaq.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 0DF18400A8A3;
+ Thu, 23 Apr 2020 08:13:58 +0900 (JST)
+Message-ID: <87zhb3t8p5.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 00/17] ASoC: soc-dai: add snd_soc_dai_xxx()
+Subject: [PATCH 01/17] ASoC: soc-dai: add soc_dai_err()
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <871rofunaq.wl-kuninori.morimoto.gx@renesas.com>
+References: <871rofunaq.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
@@ -73,38 +77,327 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-We have soc-dai.c today. DAI related functions
-should be implemented in it.
-These patches are do it.
+At soc-dai.c, it is good idea to indicate error function and
+its component name if there was error.
+This patch adds soc_dai_err() for it.
 
-Kuninori Morimoto (17):
-  ASoC: soc-dai: add soc_dai_err()
-  ASoC: soc-dai: don't overwide dai->driver->ops
-  ASoC: soc-dai: add snd_soc_pcm_dai_new()
-  ASoC: soc-dai: add snd_soc_pcm_dai_prepare()
-  ASoC: soc-dai: add snd_soc_pcm_dai_trigger()
-  ASoC: soc-dai: add snd_soc_pcm_dai_bespoke_trigger()
-  ASoC: soc-dai: add snd_soc_pcm_dai_probe()
-  ASoC: soc-dai: add snd_soc_pcm_dai_remove()
-  ASoC: soc-dai: add snd_soc_dai_compr_start()
-  ASoC: soc-dai: add snd_soc_dai_compr_shutdown()
-  ASoC: soc-dai: add snd_soc_dai_compr_trigger()
-  ASoC: soc-dai: add snd_soc_dai_compr_set_params()
-  ASoC: soc-dai: add snd_soc_dai_compr_get_params()
-  ASoC: soc-dai: add snd_soc_dai_compr_ack()
-  ASoC: soc-dai: add snd_soc_dai_compr_pointer()
-  ASoC: soc-dai: add snd_soc_dai_compr_set_metadata()
-  ASoC: soc-dai: add snd_soc_dai_compr_get_metadata()
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ sound/soc/soc-dai.c | 155 +++++++++++++++++++++++++++-----------------
+ 1 file changed, 96 insertions(+), 59 deletions(-)
 
- include/sound/soc-dai.h  |  41 +++-
- sound/soc/soc-compress.c | 104 ++++-----
- sound/soc/soc-core.c     |  85 +-------
- sound/soc/soc-dai.c      | 453 +++++++++++++++++++++++++++++----------
- sound/soc/soc-pcm.c      |  50 ++---
- 5 files changed, 436 insertions(+), 297 deletions(-)
-
+diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
+index 31c41559034b..d591b3bd8b99 100644
+--- a/sound/soc/soc-dai.c
++++ b/sound/soc/soc-dai.c
+@@ -9,6 +9,24 @@
+ #include <sound/soc.h>
+ #include <sound/soc-dai.h>
+ 
++#define soc_dai_ret(dai, ret) _soc_dai_ret(dai, __func__, ret)
++static inline int _soc_dai_ret(struct snd_soc_dai *dai,
++			       const char *func, int ret)
++{
++	switch (ret) {
++	case -EPROBE_DEFER:
++	case -ENOTSUPP:
++	case 0:
++		break;
++	default:
++		dev_err(dai->dev,
++			"ASoC: error at %s on %s: %d\n",
++			func, dai->name, ret);
++	}
++
++	return ret;
++}
++
+ /**
+  * snd_soc_dai_set_sysclk - configure DAI system or master clock.
+  * @dai: DAI
+@@ -21,11 +39,15 @@
+ int snd_soc_dai_set_sysclk(struct snd_soc_dai *dai, int clk_id,
+ 			   unsigned int freq, int dir)
+ {
++	int ret;
++
+ 	if (dai->driver->ops->set_sysclk)
+-		return dai->driver->ops->set_sysclk(dai, clk_id, freq, dir);
++		ret = dai->driver->ops->set_sysclk(dai, clk_id, freq, dir);
++	else
++		ret = snd_soc_component_set_sysclk(dai->component, clk_id, 0,
++						   freq, dir);
+ 
+-	return snd_soc_component_set_sysclk(dai->component, clk_id, 0,
+-					    freq, dir);
++	return soc_dai_ret(dai, ret);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dai_set_sysclk);
+ 
+@@ -42,10 +64,12 @@ EXPORT_SYMBOL_GPL(snd_soc_dai_set_sysclk);
+ int snd_soc_dai_set_clkdiv(struct snd_soc_dai *dai,
+ 			   int div_id, int div)
+ {
++	int ret = -EINVAL;
++
+ 	if (dai->driver->ops->set_clkdiv)
+-		return dai->driver->ops->set_clkdiv(dai, div_id, div);
+-	else
+-		return -EINVAL;
++		ret = dai->driver->ops->set_clkdiv(dai, div_id, div);
++
++	return soc_dai_ret(dai, ret);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dai_set_clkdiv);
+ 
+@@ -62,12 +86,16 @@ EXPORT_SYMBOL_GPL(snd_soc_dai_set_clkdiv);
+ int snd_soc_dai_set_pll(struct snd_soc_dai *dai, int pll_id, int source,
+ 			unsigned int freq_in, unsigned int freq_out)
+ {
++	int ret;
++
+ 	if (dai->driver->ops->set_pll)
+-		return dai->driver->ops->set_pll(dai, pll_id, source,
+-						 freq_in, freq_out);
++		ret = dai->driver->ops->set_pll(dai, pll_id, source,
++						freq_in, freq_out);
++	else
++		ret = snd_soc_component_set_pll(dai->component, pll_id, source,
++						freq_in, freq_out);
+ 
+-	return snd_soc_component_set_pll(dai->component, pll_id, source,
+-					 freq_in, freq_out);
++	return soc_dai_ret(dai, ret);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dai_set_pll);
+ 
+@@ -80,10 +108,12 @@ EXPORT_SYMBOL_GPL(snd_soc_dai_set_pll);
+  */
+ int snd_soc_dai_set_bclk_ratio(struct snd_soc_dai *dai, unsigned int ratio)
+ {
++	int ret = -EINVAL;
++
+ 	if (dai->driver->ops->set_bclk_ratio)
+-		return dai->driver->ops->set_bclk_ratio(dai, ratio);
+-	else
+-		return -EINVAL;
++		ret = dai->driver->ops->set_bclk_ratio(dai, ratio);
++
++	return soc_dai_ret(dai, ret);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dai_set_bclk_ratio);
+ 
+@@ -96,9 +126,12 @@ EXPORT_SYMBOL_GPL(snd_soc_dai_set_bclk_ratio);
+  */
+ int snd_soc_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ {
+-	if (dai->driver->ops->set_fmt == NULL)
+-		return -ENOTSUPP;
+-	return dai->driver->ops->set_fmt(dai, fmt);
++	int ret = -ENOTSUPP;
++
++	if (dai->driver->ops->set_fmt)
++		ret = dai->driver->ops->set_fmt(dai, fmt);
++
++	return soc_dai_ret(dai, ret);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dai_set_fmt);
+ 
+@@ -153,6 +186,8 @@ int snd_soc_dai_set_tdm_slot(struct snd_soc_dai *dai,
+ 			     unsigned int tx_mask, unsigned int rx_mask,
+ 			     int slots, int slot_width)
+ {
++	int ret = -ENOTSUPP;
++
+ 	if (dai->driver->ops->xlate_tdm_slot_mask)
+ 		dai->driver->ops->xlate_tdm_slot_mask(slots,
+ 						      &tx_mask, &rx_mask);
+@@ -163,10 +198,9 @@ int snd_soc_dai_set_tdm_slot(struct snd_soc_dai *dai,
+ 	dai->rx_mask = rx_mask;
+ 
+ 	if (dai->driver->ops->set_tdm_slot)
+-		return dai->driver->ops->set_tdm_slot(dai, tx_mask, rx_mask,
++		ret = dai->driver->ops->set_tdm_slot(dai, tx_mask, rx_mask,
+ 						      slots, slot_width);
+-	else
+-		return -ENOTSUPP;
++	return soc_dai_ret(dai, ret);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dai_set_tdm_slot);
+ 
+@@ -186,11 +220,12 @@ int snd_soc_dai_set_channel_map(struct snd_soc_dai *dai,
+ 				unsigned int tx_num, unsigned int *tx_slot,
+ 				unsigned int rx_num, unsigned int *rx_slot)
+ {
++	int ret = -ENOTSUPP;
++
+ 	if (dai->driver->ops->set_channel_map)
+-		return dai->driver->ops->set_channel_map(dai, tx_num, tx_slot,
+-							 rx_num, rx_slot);
+-	else
+-		return -ENOTSUPP;
++		ret = dai->driver->ops->set_channel_map(dai, tx_num, tx_slot,
++							rx_num, rx_slot);
++	return soc_dai_ret(dai, ret);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dai_set_channel_map);
+ 
+@@ -208,11 +243,12 @@ int snd_soc_dai_get_channel_map(struct snd_soc_dai *dai,
+ 				unsigned int *tx_num, unsigned int *tx_slot,
+ 				unsigned int *rx_num, unsigned int *rx_slot)
+ {
++	int ret = -ENOTSUPP;
++
+ 	if (dai->driver->ops->get_channel_map)
+-		return dai->driver->ops->get_channel_map(dai, tx_num, tx_slot,
+-							 rx_num, rx_slot);
+-	else
+-		return -ENOTSUPP;
++		ret = dai->driver->ops->get_channel_map(dai, tx_num, tx_slot,
++							rx_num, rx_slot);
++	return soc_dai_ret(dai, ret);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dai_get_channel_map);
+ 
+@@ -225,10 +261,12 @@ EXPORT_SYMBOL_GPL(snd_soc_dai_get_channel_map);
+  */
+ int snd_soc_dai_set_tristate(struct snd_soc_dai *dai, int tristate)
+ {
++	int ret = -EINVAL;
++
+ 	if (dai->driver->ops->set_tristate)
+-		return dai->driver->ops->set_tristate(dai, tristate);
+-	else
+-		return -EINVAL;
++		ret = dai->driver->ops->set_tristate(dai, tristate);
++
++	return soc_dai_ret(dai, ret);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dai_set_tristate);
+ 
+@@ -243,13 +281,15 @@ EXPORT_SYMBOL_GPL(snd_soc_dai_set_tristate);
+ int snd_soc_dai_digital_mute(struct snd_soc_dai *dai, int mute,
+ 			     int direction)
+ {
++	int ret = -ENOTSUPP;
++
+ 	if (dai->driver->ops->mute_stream)
+-		return dai->driver->ops->mute_stream(dai, mute, direction);
++		ret = dai->driver->ops->mute_stream(dai, mute, direction);
+ 	else if (direction == SNDRV_PCM_STREAM_PLAYBACK &&
+ 		 dai->driver->ops->digital_mute)
+-		return dai->driver->ops->digital_mute(dai, mute);
+-	else
+-		return -ENOTSUPP;
++		ret = dai->driver->ops->digital_mute(dai, mute);
++
++	return soc_dai_ret(dai, ret);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dai_digital_mute);
+ 
+@@ -258,29 +298,19 @@ int snd_soc_dai_hw_params(struct snd_soc_dai *dai,
+ 			  struct snd_pcm_hw_params *params)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	int ret;
++	int ret = 0;
+ 
+ 	/* perform any topology hw_params fixups before DAI  */
+ 	if (rtd->dai_link->be_hw_params_fixup) {
+ 		ret = rtd->dai_link->be_hw_params_fixup(rtd, params);
+-		if (ret < 0) {
+-			dev_err(rtd->dev,
+-				"ASoC: hw_params topology fixup failed %d\n",
+-				ret);
+-			return ret;
+-		}
++		if (ret < 0)
++			goto end;
+ 	}
+ 
+-	if (dai->driver->ops->hw_params) {
++	if (dai->driver->ops->hw_params)
+ 		ret = dai->driver->ops->hw_params(substream, params, dai);
+-		if (ret < 0) {
+-			dev_err(dai->dev, "ASoC: can't set %s hw params: %d\n",
+-				dai->name, ret);
+-			return ret;
+-		}
+-	}
+-
+-	return 0;
++end:
++	return soc_dai_ret(dai, ret);
+ }
+ 
+ void snd_soc_dai_hw_free(struct snd_soc_dai *dai,
+@@ -298,7 +328,7 @@ int snd_soc_dai_startup(struct snd_soc_dai *dai,
+ 	if (dai->driver->ops->startup)
+ 		ret = dai->driver->ops->startup(substream, dai);
+ 
+-	return ret;
++	return soc_dai_ret(dai, ret);
+ }
+ 
+ void snd_soc_dai_shutdown(struct snd_soc_dai *dai,
+@@ -316,7 +346,7 @@ int snd_soc_dai_prepare(struct snd_soc_dai *dai,
+ 	if (dai->driver->ops->prepare)
+ 		ret = dai->driver->ops->prepare(substream, dai);
+ 
+-	return ret;
++	return soc_dai_ret(dai, ret);
+ }
+ 
+ int snd_soc_dai_trigger(struct snd_soc_dai *dai,
+@@ -340,7 +370,7 @@ int snd_soc_dai_bespoke_trigger(struct snd_soc_dai *dai,
+ 	if (dai->driver->ops->bespoke_trigger)
+ 		ret = dai->driver->ops->bespoke_trigger(substream, cmd, dai);
+ 
+-	return ret;
++	return soc_dai_ret(dai, ret);
+ }
+ 
+ snd_pcm_sframes_t snd_soc_dai_delay(struct snd_soc_dai *dai,
+@@ -356,24 +386,31 @@ snd_pcm_sframes_t snd_soc_dai_delay(struct snd_soc_dai *dai,
+ 
+ int snd_soc_dai_probe(struct snd_soc_dai *dai)
+ {
++	int ret = 0;
++
+ 	if (dai->driver->probe)
+-		return dai->driver->probe(dai);
+-	return 0;
++		ret = dai->driver->probe(dai);
++
++	return soc_dai_ret(dai, ret);
+ }
+ 
+ int snd_soc_dai_remove(struct snd_soc_dai *dai)
+ {
++	int ret = 0;
++
+ 	if (dai->driver->remove)
+-		return dai->driver->remove(dai);
+-	return 0;
++		ret = dai->driver->remove(dai);
++
++	return soc_dai_ret(dai, ret);
+ }
+ 
+ int snd_soc_dai_compress_new(struct snd_soc_dai *dai,
+ 			     struct snd_soc_pcm_runtime *rtd, int num)
+ {
++	int ret = -ENOTSUPP;
+ 	if (dai->driver->compress_new)
+-		return dai->driver->compress_new(rtd, num);
+-	return -ENOTSUPP;
++		ret = dai->driver->compress_new(rtd, num);
++	return soc_dai_ret(dai, ret);
+ }
+ 
+ /*
 -- 
 2.17.1
 
