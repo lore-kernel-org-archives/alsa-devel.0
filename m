@@ -2,85 +2,92 @@ Return-Path: <SRS0=We8V=6G=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96F6DC55189
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 09:48:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 69C4DC55186
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 10:00:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 22B8C2076C
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 09:48:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D74B520735
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 10:00:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QyizhBws"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 22B8C2076C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jutkEkRD";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="eQh8+ITX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D74B520735
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6219B169D;
-	Wed, 22 Apr 2020 11:47:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6219B169D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3446916A8;
+	Wed, 22 Apr 2020 11:59:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3446916A8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587548906;
-	bh=6PD/53qNMiyPZw/NZZBQuHzDuCI5uFDu1XpNJqp1aJQ=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1587549625;
+	bh=P5izvElOmtTq5iYRVHHoZxeD9w+gOORw8a47EJo2N0o=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QyizhBwse8CcxJCa5dLk/TYBOe63IE5Kai5reudLIjHpl/S7X0iA7+jFSsnsV7qIy
-	 R/RQGWCe9qZoho4XWAeVE4f86QEEYi7RXFeJgYFFiU3V11IAOyd3dL5ZYLngIQxxol
-	 N6ErUZRvSYqH9ibXjX7D4+AxliYbN7Ob7JfK3Hro=
+	b=jutkEkRDSAQQ63Uk17Cxzf+qybR8hXpQzjWg1UOlLf5NH1NcDzdpbLTUAGQQX1UN4
+	 069oRCfLsRb5bc8eNfduY88WnSqq7ZCz/mx4FQJSpM42VfFvpeI3xgN+GcyBzMCCn8
+	 k9BFgiIZYv5Wj25wqBWBu6QReAYtfVgqHekMmGoM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D0FC4F800F2;
-	Wed, 22 Apr 2020 11:47:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 99714F80142;
+	Wed, 22 Apr 2020 11:59:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 88300F801D9; Wed, 22 Apr 2020 11:47:34 +0200 (CEST)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 0D6CFF800F2; Wed, 22 Apr 2020 11:59:33 +0200 (CEST)
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com
+ [IPv6:2607:f8b0:4864:20::d41])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 110C5F800F2
- for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2020 11:47:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 110C5F800F2
-IronPort-SDR: nVipJak5yNl4p4cKFpC9K9C1uSNQ3S8XeevW/KbHS0uOBUpmGmbLYEyjxNI1JspX0wlDl6pVeH
- pZ+9LKglgq9w==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Apr 2020 02:47:28 -0700
-IronPort-SDR: 3aN7PojsIhZcUS0QDEfAJyxsjD1t1zD6WtaWFaWz45joO8ATB/Jbbakkgv8rZUN3zxRGc+3uB0
- QjpKwd1cSl2A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,413,1580803200"; d="scan'208";a="402489946"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
- by orsmga004.jf.intel.com with ESMTP; 22 Apr 2020 02:47:24 -0700
-Received: from andy by smile with local (Exim 4.93)
- (envelope-from <andriy.shevchenko@linux.intel.com>)
- id 1jRByZ-002PzX-07; Wed, 22 Apr 2020 12:47:27 +0300
-Date: Wed, 22 Apr 2020 12:47:26 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Stephen Boyd <sboyd@kernel.org>
-Subject: Re: [RFC PATCH 12/16] clk: hifiberry-dacpro: add ACPI support
-Message-ID: <20200422094726.GZ185537@smile.fi.intel.com>
-References: <20200409195841.18901-1-pierre-louis.bossart@linux.intel.com>
- <20200409195841.18901-13-pierre-louis.bossart@linux.intel.com>
- <158754793532.132238.9824423478783177623@swboyd.mtv.corp.google.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id C7D86F800F2
+ for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2020 11:59:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7D86F800F2
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
+ header.b="eQh8+ITX"
+Received: by mail-io1-xd41.google.com with SMTP id b12so1681660ion.8
+ for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2020 02:59:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=P5izvElOmtTq5iYRVHHoZxeD9w+gOORw8a47EJo2N0o=;
+ b=eQh8+ITXgOFqdvcsGMWAVRZFJouNahjtWGoEsg1Hf71TpYgBq6HHkyqn2LB46VXI8j
+ sdG0ZTVrFj0V/S7zuZpL3WbQpsfIqCtc51BTEIEq6mAhGLgHEtYxHONu+8fBuyQngqaf
+ OaHNzVTcnDbtu2yqatZ6l0tnZxRfRNdHuT2PizWq93ULiDS1uO2HUlxirypIEgo0NF3v
+ ZSN+/YZiAEgqpMlRR2qo6ossbYv9AghbFCgtoAxNWLqZydbbNBGTE70CYArQVVKOsipf
+ kASBTM0oC9ibh4zqGUjJ+qnOrscUrEfT0jHpJAVNpftqWGmQyE6J23/Gp9wwoZyUItpe
+ ctvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=P5izvElOmtTq5iYRVHHoZxeD9w+gOORw8a47EJo2N0o=;
+ b=WQgEO9+3o2g7IjRYp58JKPys1VmXWyS3vJunHEPo25X5oW9Y8YtBSZM1S8NwDqL9px
+ xU5BP4P6kVrTtFQ66b+imCmbXSVy2zXDoVVXP9h01r4w1FbQCD1QgygYtL61tYBxVHBW
+ o1RUsESV1yTJZNHiaeIaqxPPUIinq3XVTboY2n/DQmXhvYkJ02AdmUMNKTzhOkvhoT22
+ PIh/SkdMfb/APrmWr+0h65Bhf8dZV5ivLkDriqKCkIZ9LUYBWNsioikDUIzzr3vGAs7c
+ B2JCu4ThrKIG2JqaV4rwAZyqoyuqs8prP+PZpb5JUa7/2GTLgZ66PdhZ+bcb67bATRDG
+ 23Mw==
+X-Gm-Message-State: AGi0PuZbESpGYhywdRBpp8V+FRUF1nxJ13EDrTh7mdTnYurVYCd8AF/P
+ 1+bqG8M6ElOkZ/RS+jg3Xkf/byQW3nAicW5AqFtjVw==
+X-Google-Smtp-Source: APiQypIpbq9jgp8hPLmgLdnrMpfk7zO+RBTVNTz4rmcXOxnv+oyKWFv/se8X5iOj3f31j97RNYLiiLM1vVLA7nu7lIw=
+X-Received: by 2002:a5d:9c46:: with SMTP id 6mr24601321iof.146.1587549566706; 
+ Wed, 22 Apr 2020 02:59:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <158754793532.132238.9824423478783177623@swboyd.mtv.corp.google.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-Cc: alsa-devel@alsa-project.org, Rob Herring <robh+dt@kernel.org>,
- linux-gpio@vger.kernel.org, tiwai@suse.de,
- Linus Walleij <linus.walleij@linaro.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Daniel Matuschek <daniel@hifiberry.com>, Hui Wang <hui.wang@canonical.com>,
- Matthias Reichl <hias@horus.com>, broonie@kernel.org,
- Bartosz Golaszewski <bgolaszewski@baylibre.com>,
- Michael Turquette <mturquette@baylibre.com>, linux-clk@vger.kernel.org
+References: <20200422083550.50711-1-broonie@kernel.org>
+In-Reply-To: <20200422083550.50711-1-broonie@kernel.org>
+From: Tzung-Bi Shih <tzungbi@google.com>
+Date: Wed, 22 Apr 2020 17:59:15 +0800
+Message-ID: <CA+Px+wUo1N5ATiQaUJg-9yiUizWXxjv5j7KW-N5UQcynxD399Q@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: dmic: Allow GPIO operations to sleep
+To: Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: ALSA development <alsa-devel@alsa-project.org>,
+ Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,28 +103,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Apr 22, 2020 at 02:32:15AM -0700, Stephen Boyd wrote:
-> Quoting Pierre-Louis Bossart (2020-04-09 12:58:37)
-> > On ACPI platforms the of_ functions are irrelevant, conditionally
-> > compile them out and add devm_clk_hw_register_clkdev() call instead.
+On Wed, Apr 22, 2020 at 4:37 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> If there is a power GPIO provided we control it from DAPM context so there
+> is no problem with a sleeping GPIO, use the _cansleep() version of the API
+> to allow this.
+>
+> Signed-off-by: Mark Brown <broonie@kernel.org>
 
-...
-
-> Use if (!IS_ENABLED(CONFIG_ACPI)) instead?
-> 
-> >         ret = of_clk_add_hw_provider(dev->of_node, of_clk_hw_simple_get,
-> >                                      &proclk->hw);
-
-I'm rather wondering if we have OF stuff integrated properly to CLK framework
-to avoid first branch completely.
-
-> > +#else
-> > +       ret = devm_clk_hw_register_clkdev(dev, &proclk->hw,
-> > +                                         init.name, NULL);
-> > +#endif
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
