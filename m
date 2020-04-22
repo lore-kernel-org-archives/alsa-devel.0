@@ -7,53 +7,53 @@ X-Spam-Status: No, score=-3.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16B74C55185
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 23:17:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FC59C55186
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 23:18:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9471E20724
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 23:17:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9FCDD20724
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 23:18:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VL1rAPbn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9471E20724
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oOwidCug"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9FCDD20724
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0216B16C7;
-	Thu, 23 Apr 2020 01:16:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0216B16C7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0B2E1169F;
+	Thu, 23 Apr 2020 01:17:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B2E1169F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587597462;
-	bh=eBfZZFYjXrfG8T/VsMqt6ryI8JNSi6TH3e/wPG2wsUQ=;
+	s=default; t=1587597503;
+	bh=Fj2nJhU9+hCZjPzG0EsETm5ZHs5cQlX3YeKpz0Lp6us=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VL1rAPbnp/8tPLtdKOIZ5p1xAB4KLB9dJkOJ8ta66WT7YZCIUpuS6tSsaUaoiAfb/
-	 C0niG3RYafX1QIWa/j8ndZ3T45KwxC0+gNN0F9VzEi4508JJCQP/N59MrP3NzXS+eX
-	 yf//IEqrPAaPZMjwe1xV243hmYbjQtUBVigcjwpw=
+	b=oOwidCuguQ9J1zlt+BZTu5IE93DZ/0BIIr5isOh3JOuxrI8gvcfHMXn96w9NhXRwF
+	 pVtgqXAopZLxg9S8G3KQFmUT+/zB8LfivnUXnvTnLh4Hece2tuA5edSP5OyX14JSzQ
+	 KimElv/mprHHYkGBysSktbZgzeEYW+HTFmJted5A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B0519F802A9;
-	Thu, 23 Apr 2020 01:14:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AC4A7F802C2;
+	Thu, 23 Apr 2020 01:14:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1C266F802BC; Thu, 23 Apr 2020 01:14:27 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id EC452F802A7
- for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 01:14:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC452F802A7
-Date: 23 Apr 2020 08:14:22 +0900
-X-IronPort-AV: E=Sophos;i="5.73,304,1583161200"; d="scan'208";a="45236874"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 23 Apr 2020 08:14:22 +0900
+ id 7664EF802C3; Thu, 23 Apr 2020 01:14:34 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id E83FAF802BC
+ for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 01:14:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E83FAF802BC
+Date: 23 Apr 2020 08:14:29 +0900
+X-IronPort-AV: E=Sophos;i="5.73,304,1583161200"; d="scan'208";a="45450020"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 23 Apr 2020 08:14:29 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id D742E40F1D63;
- Thu, 23 Apr 2020 08:14:22 +0900 (JST)
-Message-ID: <87tv1bt8oh.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id CD1DD400007B;
+ Thu, 23 Apr 2020 08:14:29 +0900 (JST)
+Message-ID: <87sggvt8oa.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 05/17] ASoC: soc-dai: add snd_soc_pcm_dai_trigger()
+Subject: [PATCH 06/17] ASoC: soc-dai: add snd_soc_pcm_dai_bespoke_trigger()
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <871rofunaq.wl-kuninori.morimoto.gx@renesas.com>
@@ -83,68 +83,69 @@ We have 2 type of component functions
 snd_soc_dai_xxx()     is focusing to dai itself,
 snd_soc_pcm_dai_xxx() is focusing to rtd related dai.
 
-Now we can update snd_soc_dai_trigger() to
-snd_soc_pcm_dai_trigger(). This patch do it.
+Now we can update soc_pcm_bespoke_trigger() to
+snd_soc_pcm_dai_bespoke_trigger(). This patch do it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- include/sound/soc-dai.h |  3 +--
- sound/soc/soc-dai.c     | 32 +++++++++++++++++++-------------
- sound/soc/soc-pcm.c     | 18 ++++++------------
- 3 files changed, 26 insertions(+), 27 deletions(-)
+ include/sound/soc-dai.h |  4 ++--
+ sound/soc/soc-dai.c     | 33 ++++++++++++++++++++-------------
+ sound/soc/soc-pcm.c     | 21 +++------------------
+ 3 files changed, 25 insertions(+), 33 deletions(-)
 
 diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index 1b25318b6325..3da850b4aefe 100644
+index 3da850b4aefe..a0c7ac112b86 100644
 --- a/include/sound/soc-dai.h
 +++ b/include/sound/soc-dai.h
 @@ -154,8 +154,6 @@ int snd_soc_dai_startup(struct snd_soc_dai *dai,
  			struct snd_pcm_substream *substream);
  void snd_soc_dai_shutdown(struct snd_soc_dai *dai,
  			  struct snd_pcm_substream *substream);
--int snd_soc_dai_trigger(struct snd_soc_dai *dai,
+-int snd_soc_dai_bespoke_trigger(struct snd_soc_dai *dai,
 -			struct snd_pcm_substream *substream, int cmd);
- int snd_soc_dai_bespoke_trigger(struct snd_soc_dai *dai,
- 			struct snd_pcm_substream *substream, int cmd);
  snd_pcm_sframes_t snd_soc_dai_delay(struct snd_soc_dai *dai,
-@@ -170,6 +168,7 @@ bool snd_soc_dai_stream_valid(struct snd_soc_dai *dai, int stream);
- 
+ 				    struct snd_pcm_substream *substream);
+ void snd_soc_dai_suspend(struct snd_soc_dai *dai);
+@@ -169,6 +167,8 @@ bool snd_soc_dai_stream_valid(struct snd_soc_dai *dai, int stream);
  int snd_soc_pcm_dai_new(struct snd_soc_pcm_runtime *rtd);
  int snd_soc_pcm_dai_prepare(struct snd_pcm_substream *substream);
-+int snd_soc_pcm_dai_trigger(struct snd_pcm_substream *substream, int cmd);
+ int snd_soc_pcm_dai_trigger(struct snd_pcm_substream *substream, int cmd);
++int snd_soc_pcm_dai_bespoke_trigger(struct snd_pcm_substream *substream,
++				    int cmd);
  
  struct snd_soc_dai_ops {
  	/*
 diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
-index 1a9cfdcfc736..29587d7e75ca 100644
+index 29587d7e75ca..226c51b9089c 100644
 --- a/sound/soc/soc-dai.c
 +++ b/sound/soc/soc-dai.c
 @@ -354,19 +354,6 @@ void snd_soc_dai_shutdown(struct snd_soc_dai *dai,
  		dai->driver->ops->shutdown(substream, dai);
  }
  
--int snd_soc_dai_trigger(struct snd_soc_dai *dai,
--			struct snd_pcm_substream *substream,
--			int cmd)
+-int snd_soc_dai_bespoke_trigger(struct snd_soc_dai *dai,
+-				struct snd_pcm_substream *substream,
+-				int cmd)
 -{
 -	int ret = 0;
 -
 -	if (dai->driver->ops &&
--	    dai->driver->ops->trigger)
--		ret = dai->driver->ops->trigger(substream, cmd, dai);
+-	    dai->driver->ops->bespoke_trigger)
+-		ret = dai->driver->ops->bespoke_trigger(substream, cmd, dai);
 -
--	return ret;
+-	return soc_dai_ret(dai, ret);
 -}
 -
- int snd_soc_dai_bespoke_trigger(struct snd_soc_dai *dai,
- 				struct snd_pcm_substream *substream,
- 				int cmd)
-@@ -467,3 +454,22 @@ int snd_soc_pcm_dai_prepare(struct snd_pcm_substream *substream)
+ snd_pcm_sframes_t snd_soc_dai_delay(struct snd_soc_dai *dai,
+ 				    struct snd_pcm_substream *substream)
+ {
+@@ -473,3 +460,23 @@ int snd_soc_pcm_dai_trigger(struct snd_pcm_substream *substream,
  
  	return 0;
  }
 +
-+int snd_soc_pcm_dai_trigger(struct snd_pcm_substream *substream,
-+			    int cmd)
++int snd_soc_pcm_dai_bespoke_trigger(struct snd_pcm_substream *substream,
++				    int cmd)
 +{
 +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 +	struct snd_soc_dai *dai;
@@ -152,8 +153,9 @@ index 1a9cfdcfc736..29587d7e75ca 100644
 +
 +	for_each_rtd_dais(rtd, i, dai) {
 +		if (dai->driver->ops &&
-+		    dai->driver->ops->trigger) {
-+			ret = dai->driver->ops->trigger(substream, cmd, dai);
++		    dai->driver->ops->bespoke_trigger) {
++			ret = dai->driver->ops->bespoke_trigger(substream,
++								cmd, dai);
 +			if (ret < 0)
 +				return soc_dai_ret(dai, ret);
 +		}
@@ -162,50 +164,58 @@ index 1a9cfdcfc736..29587d7e75ca 100644
 +	return 0;
 +}
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index f7b3dca1d152..bc55a249aa61 100644
+index bc55a249aa61..ff54d25f303f 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -1192,7 +1192,6 @@ static int soc_pcm_trigger_start(struct snd_pcm_substream *substream, int cmd)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_component *component;
--	struct snd_soc_dai *dai;
- 	int i, ret;
- 
- 	ret = soc_rtd_trigger(rtd, substream, cmd);
-@@ -1205,11 +1204,9 @@ static int soc_pcm_trigger_start(struct snd_pcm_substream *substream, int cmd)
- 			return ret;
- 	}
- 
--	for_each_rtd_dais(rtd, i, dai) {
--		ret = snd_soc_dai_trigger(dai, substream, cmd);
--		if (ret < 0)
--			return ret;
--	}
-+	ret = snd_soc_pcm_dai_trigger(substream, cmd);
-+	if (ret < 0)
-+		return ret;
- 
- 	return 0;
+@@ -1256,21 +1256,6 @@ static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	return ret;
  }
-@@ -1218,14 +1215,11 @@ static int soc_pcm_trigger_stop(struct snd_pcm_substream *substream, int cmd)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_component *component;
--	struct snd_soc_dai *dai;
- 	int i, ret;
  
+-static int soc_pcm_bespoke_trigger(struct snd_pcm_substream *substream,
+-				   int cmd)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *dai;
+-	int i, ret;
+-
 -	for_each_rtd_dais(rtd, i, dai) {
--		ret = snd_soc_dai_trigger(dai, substream, cmd);
+-		ret = snd_soc_dai_bespoke_trigger(dai, substream, cmd);
 -		if (ret < 0)
 -			return ret;
 -	}
-+	ret = snd_soc_pcm_dai_trigger(substream, cmd);
-+	if (ret < 0)
-+		return ret;
+-
+-	return 0;
+-}
+ /*
+  * soc level wrapper for pointer callback
+  * If cpu_dai, codec_dai, component driver has the delay callback, then
+@@ -2474,7 +2459,7 @@ static int dpcm_fe_dai_do_trigger(struct snd_pcm_substream *substream, int cmd)
+ 		dev_dbg(fe->dev, "ASoC: bespoke trigger FE %s cmd %d\n",
+ 				fe->dai_link->name, cmd);
  
- 	for_each_rtd_components(rtd, i, component) {
- 		ret = snd_soc_component_trigger(component, substream, cmd);
+-		ret = soc_pcm_bespoke_trigger(substream, cmd);
++		ret = snd_soc_pcm_dai_bespoke_trigger(substream, cmd);
+ 		break;
+ 	default:
+ 		dev_err(fe->dev, "ASoC: invalid trigger cmd %d for %s\n", cmd,
+@@ -2619,7 +2604,7 @@ static int dpcm_run_update_shutdown(struct snd_soc_pcm_runtime *fe, int stream)
+ 		dev_dbg(fe->dev, "ASoC: bespoke trigger FE %s cmd stop\n",
+ 				fe->dai_link->name);
+ 
+-		err = soc_pcm_bespoke_trigger(substream, SNDRV_PCM_TRIGGER_STOP);
++		err = snd_soc_pcm_dai_bespoke_trigger(substream, SNDRV_PCM_TRIGGER_STOP);
+ 		if (err < 0)
+ 			dev_err(fe->dev,"ASoC: trigger FE failed %d\n", err);
+ 	} else {
+@@ -2697,7 +2682,7 @@ static int dpcm_run_update_startup(struct snd_soc_pcm_runtime *fe, int stream)
+ 		dev_dbg(fe->dev, "ASoC: bespoke trigger FE %s cmd start\n",
+ 				fe->dai_link->name);
+ 
+-		ret = soc_pcm_bespoke_trigger(substream, SNDRV_PCM_TRIGGER_START);
++		ret = snd_soc_pcm_dai_bespoke_trigger(substream, SNDRV_PCM_TRIGGER_START);
+ 		if (ret < 0) {
+ 			dev_err(fe->dev,"ASoC: bespoke trigger FE failed %d\n", ret);
+ 			goto hw_free;
 -- 
 2.17.1
 
