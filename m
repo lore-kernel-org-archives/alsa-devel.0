@@ -2,71 +2,102 @@ Return-Path: <SRS0=JLiH=6H=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FEC1C2BA19
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 07:23:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 38338C2BA19
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 07:26:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BEB8721569
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 07:23:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B770020736
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 07:26:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MaKdZ7AJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BEB8721569
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="e9Csl8on";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="o616xSUI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B770020736
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0E96316D8;
-	Thu, 23 Apr 2020 09:22:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E96316D8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2452916B0;
+	Thu, 23 Apr 2020 09:25:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2452916B0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587626616;
-	bh=gM5e/IkY63Fn4kmnuH0bSc5A07DaBGbXG4hAaNSTomI=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1587626763;
+	bh=ZBYbrHc9gCXcCuzO2lECvk3wELc9S8J5/i/PXerFdr0=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MaKdZ7AJG88jq2wV1ASBsEBi790uYNPKF/XiJVHEqnvuTsUoMq/vs7v2E535C3jnF
-	 ADalrI5xsYNym0zbJ95lS5ttKgibfQRUQ9HEsVocoJIapd+O3EGRuflvy7T/+xIPi5
-	 Y65XorMtkXx+w0axeCaRy1MRECXiM8DOcA+lBtKw=
+	b=e9Csl8on4XOr42ncpESVwQrLBAOBM2G2wVt2coxdF9wtqxx4sX9MnjO5VP5I7/2Qr
+	 ggVR95tv9Zd1eGKzFbSJsU0FYA15Y4tw7RYNy+KeBPNBYs9t7iPyJD90Phz9rss/77
+	 k+rXcktS/jcHKkVFkI8m6mkMadrAqmd8M48nWg/o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8AB57F80121;
-	Thu, 23 Apr 2020 09:22:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B8A35F80121;
+	Thu, 23 Apr 2020 09:25:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5305BF801EC; Thu, 23 Apr 2020 09:22:40 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id CE363F801D9; Wed, 22 Apr 2020 20:55:36 +0200 (CEST)
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com
+ [IPv6:2a00:1450:4864:20::341])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9E8E1F800FF
- for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 09:22:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E8E1F800FF
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id E0C2FAEDA;
- Thu, 23 Apr 2020 07:22:35 +0000 (UTC)
-Date: Thu, 23 Apr 2020 09:22:36 +0200
-Message-ID: <s5hy2qmwts3.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Alexander Tsoy <alexander@tsoy.me>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 32485F800F2
+ for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2020 20:55:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32485F800F2
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="o616xSUI"
+Received: by mail-wm1-x341.google.com with SMTP id u127so3729146wmg.1
+ for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2020 11:55:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=hkalyHJqg5ugOHKHuOFHI5AizfqrqyG86NTtO7Wz1Bc=;
+ b=o616xSUIWsXUZfomNboyu/h8ArKESuhk0FtuGwCsMq6kL9BhmyjqH3dcHuB6mKgtEj
+ bzxvU8hgmNPz4EFPF78sp5Ib9xIxttNhF9KWK5vxENRPRH7D4hyaE99zJyH6+PeioE4H
+ jBRuShkyAQOipnSws+heJ+ARZyr97zJJ+ZZMgvK5vIYTUTPonF4rN7XYOMcaFYBN0KaP
+ iu5fbYsk9vBo6bnjQk9/mKSpY277R7thivsLBi/elUDGZ3XIS5N6JoZRLb3PQZKmCzvj
+ GQ+8uR6861mxeS2iheJfeD6rWeo2h2WS3lum3I9nLjsQsmNqz69yHTwNhv3oCs7Kd1TO
+ 9lYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=hkalyHJqg5ugOHKHuOFHI5AizfqrqyG86NTtO7Wz1Bc=;
+ b=p85rL+vepxCHeUqEqY5BV+rf0yOcW5o3uY/kX2zWczRvCfOCF0dba9JtikJZA0t9nf
+ EzuzNKrKMZ3+RwoVUwwXU2dthtzanTNdAWkAuGVjDQyqGYK+HBpFY//EY1dDce0E56Mm
+ kHKwBDohF26SV9dY43H8sCMi5SDQHTWS/Ca67/7PCnP1uMxYhzT/Rk9yarct9oZvL1MR
+ JC7nPJWoP73P/R6pS3q1MNzeN1mUWXnQuqZcOHpcc6LVMhz0cC2tbOBfKHzqujX1qRoE
+ U7CycMCCvQTGcahg46fz5Booae9rkiJMuunaT7gl4hkFYKqfTXNSSKSvChEZlSzxx/bg
+ 5pJw==
+X-Gm-Message-State: AGi0PuZNSlpVJg99+Vyv4ykANdzNGKYL1JE2cWsxnMO5XrC7W81MAlQe
+ EKMhWqpC/+jQVdwDlxcv3Q0=
+X-Google-Smtp-Source: APiQypJLC7phBF0Yw8BoGoCloB2GTITOavOKuDxc7rGEQWR0RgqUB6wattNHXMe8HqoWNPsT7DRGrw==
+X-Received: by 2002:a1c:c2d4:: with SMTP id
+ s203mr12900240wmf.128.1587581730932; 
+ Wed, 22 Apr 2020 11:55:30 -0700 (PDT)
+Received: from localhost.localdomain ([91.221.170.230])
+ by smtp.googlemail.com with ESMTPSA id a67sm244292wmc.30.2020.04.22.11.55.29
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 22 Apr 2020 11:55:30 -0700 (PDT)
+From: Gregor Pintar <grpintar@gmail.com>
+To: alexander@tsoy.me
 Subject: Re: [PATCH] ALSA: usb-audio: Apply async workaround for Scarlett 2i4
  2nd gen
-In-Reply-To: <c0cb78664e3acd94f07e59f3a4216c16ab9f497d.camel@tsoy.me>
+Date: Wed, 22 Apr 2020 20:55:22 +0200
+Message-Id: <20200422185522.3347-1-grpintar@gmail.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <7190177d62f349eea7a5d1056924a63fc4270d43.camel@tsoy.me>
 References: <7190177d62f349eea7a5d1056924a63fc4270d43.camel@tsoy.me>
- <20200422185522.3347-1-grpintar@gmail.com>
- <a45d18d7922d780f29f89cff855eb30fbdd1fce8.camel@tsoy.me>
- <s5heesfxo2o.wl-tiwai@suse.de>
- <c0cb78664e3acd94f07e59f3a4216c16ab9f497d.camel@tsoy.me>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: Gregor Pintar <grpintar@gmail.com>, alsa-devel@alsa-project.org
+X-Mailman-Approved-At: Thu, 23 Apr 2020 09:25:07 +0200
+Cc: tiwai@suse.de, Gregor Pintar <grpintar@gmail.com>,
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,223 +113,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 23 Apr 2020 01:45:01 +0200,
-Alexander Tsoy wrote:
+On Wed, 22 Apr 2020 Alexander Tsoy wrote:
+> В Вт, 21/04/2020 в 21:31 +0200, Takashi Iwai пишет:
+> > I wonder, though, whether we can correct the rounding error in the
+> > driver code, too.
 > 
-> В Ср, 22/04/2020 в 22:28 +0200, Takashi Iwai пишет:
-> > On Wed, 22 Apr 2020 21:26:23 +0200,
-> > Alexander Tsoy wrote:
-> > > В Ср, 22/04/2020 в 20:55 +0200, Gregor Pintar пишет:
-> > > > On Wed, 22 Apr 2020 Alexander Tsoy wrote:
-> > > > > В Вт, 21/04/2020 в 21:31 +0200, Takashi Iwai пишет:
-> > > > > > I wonder, though, whether we can correct the rounding error
-> > > > > > in
-> > > > > > the
-> > > > > > driver code, too.
-> > > > > 
-> > > > > I'm not sure if it's possible with currently used Q16.16
-> > > > > arithmetic.
-> > > > 
-> > > > Maybe calculate fixed correction shifts (like it would be
-> > > > feedback)?
-> > > > Something like leap year.
-> > > > 
-> > > > In endpoint.c:
-> > > > static inline unsigned get_usb_high_speed_rate(unsigned int rate)
-> > > > {
-> > > > 	return ((rate << 10) + 62) / 125;
-> > > > }
-> > > > I guess 62 tries to round it, but exact number is needed. So
-> > > > exact
-> > > > value for
-> > > > 44100 should be 361267.2. For 48000 it is 360448.
-> > > > If only we can deliver that 0.2 by shifting rate somehow?
-> > > > 
-> > > > At least maybe it would be better to disable sample rates that do
-> > > > not
-> > > > divide
-> > > > by 1000 on SYNC playback endpoints, if there are others sample
-> > > > rates.
-> > > > 
-> > > > But I'm not familar with the code or USB.
-> > > 
-> > > I think instead of accumulating the fractional part of fs/fps in
-> > > Q16.16
-> > > format we should accumulating remainder of division fs/fps.
-> > > 
-> > > So for 44100 Hz and High Speed USB the calculations would be:
-> > > 
-> > > fs = 44100
-> > > fps = 8000
-> > > rem = 44100 % 8000 = 4100
-> > > accum = 0
-> > > packet_size_min = 44100 / 8000 = 5
-> > > packet_size_max = 44100 + (8000 - 1) / 8000 = 6
-> > > 
-> > > 
-> > > 1. accum += rem = 4100
-> > >    accum < fps => packet_size = packet_size_min = 5
-> > > 
-> > > 2. accum += rem = 8200
-> > >    accum >= fps => {
-> > >        packet_size = packet_size_max = 6
-> > >        accum -= fps = 200
-> > >    }
-> > > 
-> > > 3. accum += rem = 4300
-> > >    accum < fps => packet_size = packet_size_min = 5
-> > > 
-> > > ...
-> > > 
-> > > 80. accum += rem = 8000
-> > >     accum >= fps => {
-> > >         packet_size = packet_size_max = 6
-> > >         accum -= fps = 0
-> > >     }
-> > > ...
-> > 
-> > Yeah, something like that is what I had in my mind.
-> > It'd be greatly appreciated if someone can experiment it.
-> > Unfortunately I have no proper USB-audio device now at hands...
-> 
-> OK, here is a quick hacky patch, that seems to work for me:
+> I'm not sure if it's possible with currently used Q16.16 arithmetic.
 
-Awesome, thanks!
+Maybe calculate fixed correction shifts (like it would be feedback)?
+Something like leap year.
 
-The patch looks good enough.  A minor fix would be reset sample_accum
-at snd_usb_pcm_prepare().
+In endpoint.c:
+static inline unsigned get_usb_high_speed_rate(unsigned int rate)
+{
+	return ((rate << 10) + 62) / 125;
+}
+I guess 62 tries to round it, but exact number is needed. So exact value for
+44100 should be 361267.2. For 48000 it is 360448.
+If only we can deliver that 0.2 by shifting rate somehow?
 
-If someone can test more and it shows the positive result, I'd happy
-take it.
+At least maybe it would be better to disable sample rates that do not divide
+by 1000 on SYNC playback endpoints, if there are others sample rates.
 
+But I'm not familar with the code or USB.
 
-thanks,
-
-Takashi
-
-> diff --git a/sound/usb/card.h b/sound/usb/card.h
-> index 395403a2d33f..fc5e3e391219 100644
-> --- a/sound/usb/card.h
-> +++ b/sound/usb/card.h
-> @@ -84,6 +84,10 @@ struct snd_usb_endpoint {
->  	dma_addr_t sync_dma;		/* DMA address of syncbuf */
->  
->  	unsigned int pipe;		/* the data i/o pipe */
-> +	unsigned int framesize[2];	/* min/max frame size in samples */
-> +	unsigned int sample_rem;	/* remainder of division fs/fps */
-> +	unsigned int sample_accum;	/* fs % fps accumulator */
-> +	unsigned int fps;		/* frames per second */
->  	unsigned int freqn;		/* nominal sampling rate in fs/fps in Q16.16 format */
->  	unsigned int freqm;		/* momentary sampling rate in fs/fps in Q16.16 format */
->  	int	   freqshift;		/* how much to shift the feedback value to get Q16.16 */
-> diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-> index 4a9a2f6ef5a4..e0e4dc5cfe0e 100644
-> --- a/sound/usb/endpoint.c
-> +++ b/sound/usb/endpoint.c
-> @@ -124,12 +124,12 @@ int snd_usb_endpoint_implicit_feedback_sink(struct snd_usb_endpoint *ep)
->  
->  /*
->   * For streaming based on information derived from sync endpoints,
-> - * prepare_outbound_urb_sizes() will call next_packet_size() to
-> + * prepare_outbound_urb_sizes() will call slave_next_packet_size() to
->   * determine the number of samples to be sent in the next packet.
->   *
-> - * For implicit feedback, next_packet_size() is unused.
-> + * For implicit feedback, slave_next_packet_size() is unused.
->   */
-> -int snd_usb_endpoint_next_packet_size(struct snd_usb_endpoint *ep)
-> +int snd_usb_endpoint_slave_next_packet_size(struct snd_usb_endpoint *ep)
->  {
->  	unsigned long flags;
->  	int ret;
-> @@ -146,6 +146,32 @@ int snd_usb_endpoint_next_packet_size(struct snd_usb_endpoint *ep)
->  	return ret;
->  }
->  
-> +/*
-> + * For adaptive and synchronous endpoints, prepare_outbound_urb_sizes()
-> + * will call next_packet_size() to determine the number of samples to be
-> + * sent in the next packet.
-> + */
-> +int snd_usb_endpoint_next_packet_size(struct snd_usb_endpoint *ep)
-> +{
-> +	unsigned long flags;
-> +	int ret;
-> +
-> +	if (ep->fill_max)
-> +		return ep->maxframesize;
-> +
-> +	spin_lock_irqsave(&ep->lock, flags);
-> +	ep->sample_accum += ep->sample_rem;
-> +	if (ep->sample_accum >= ep->fps) {
-> +		ep->sample_accum -= ep->fps;
-> +		ret = ep->framesize[1];
-> +	} else {
-> +		ret = ep->framesize[0];
-> +	}
-> +	spin_unlock_irqrestore(&ep->lock, flags);
-> +
-> +	return ret;
-> +}
-> +
->  static void retire_outbound_urb(struct snd_usb_endpoint *ep,
->  				struct snd_urb_ctx *urb_ctx)
->  {
-> @@ -190,6 +216,8 @@ static void prepare_silent_urb(struct snd_usb_endpoint *ep,
->  
->  		if (ctx->packet_size[i])
->  			counts = ctx->packet_size[i];
-> +		else if (ep->sync_master)
-> +			counts = snd_usb_endpoint_slave_next_packet_size(ep);
->  		else
->  			counts = snd_usb_endpoint_next_packet_size(ep);
->  
-> @@ -874,10 +902,17 @@ int snd_usb_endpoint_set_params(struct snd_usb_endpoint *ep,
->  	ep->maxpacksize = fmt->maxpacksize;
->  	ep->fill_max = !!(fmt->attributes & UAC_EP_CS_ATTR_FILL_MAX);
->  
-> -	if (snd_usb_get_speed(ep->chip->dev) == USB_SPEED_FULL)
-> +	if (snd_usb_get_speed(ep->chip->dev) == USB_SPEED_FULL) {
->  		ep->freqn = get_usb_full_speed_rate(rate);
-> -	else
-> +		ep->fps = 1000;
-> +	} else {
->  		ep->freqn = get_usb_high_speed_rate(rate);
-> +		ep->fps = 8000;
-> +	}
-> +
-> +	ep->sample_rem = rate % ep->fps;
-> +	ep->framesize[0] = rate / ep->fps;
-> +	ep->framesize[1] = (rate + (ep->fps - 1)) / ep->fps;
->  
->  	/* calculate the frequency in 16.16 format */
->  	ep->freqm = ep->freqn;
-> diff --git a/sound/usb/endpoint.h b/sound/usb/endpoint.h
-> index 63a39d4fa8d8..d23fa0a8c11b 100644
-> --- a/sound/usb/endpoint.h
-> +++ b/sound/usb/endpoint.h
-> @@ -28,6 +28,7 @@ void snd_usb_endpoint_release(struct snd_usb_endpoint *ep);
->  void snd_usb_endpoint_free(struct snd_usb_endpoint *ep);
->  
->  int snd_usb_endpoint_implicit_feedback_sink(struct snd_usb_endpoint *ep);
-> +int snd_usb_endpoint_slave_next_packet_size(struct snd_usb_endpoint *ep);
->  int snd_usb_endpoint_next_packet_size(struct snd_usb_endpoint *ep);
->  
->  void snd_usb_handle_sync_urb(struct snd_usb_endpoint *ep,
-> diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-> index a4e4064f9aee..b50965ab3b3a 100644
-> --- a/sound/usb/pcm.c
-> +++ b/sound/usb/pcm.c
-> @@ -1579,6 +1579,8 @@ static void prepare_playback_urb(struct snd_usb_substream *subs,
->  	for (i = 0; i < ctx->packets; i++) {
->  		if (ctx->packet_size[i])
->  			counts = ctx->packet_size[i];
-> +		else if (ep->sync_master)
-> +			counts = snd_usb_endpoint_slave_next_packet_size(ep);
->  		else
->  			counts = snd_usb_endpoint_next_packet_size(ep);
->  
-> -- 
-> 2.25.3
-> 
-> 
