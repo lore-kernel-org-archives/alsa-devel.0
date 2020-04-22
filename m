@@ -1,80 +1,80 @@
-Return-Path: <SRS0=/Ps/=6F=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=We8V=6G=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7532C54FCC
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Apr 2020 22:03:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02EB7C38A30
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 03:58:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5789F206B9
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Apr 2020 22:03:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 76CDD2064C
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 03:58:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QJLqcvHn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5789F206B9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qrCpUDx/";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=tsoy.me header.i=@tsoy.me header.b="DSLiF70h"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 76CDD2064C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=tsoy.me
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C3ADF16CA;
-	Wed, 22 Apr 2020 00:02:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3ADF16CA
+	by alsa0.perex.cz (Postfix) with ESMTPS id C3FC616B5;
+	Wed, 22 Apr 2020 05:57:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3FC616B5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587506610;
-	bh=VRbdKW7Kc3KtskubmkEA9uM6tVINZnWJKwgth9t0qVo=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1587527887;
+	bh=23BzqynphMFq9fbVMYqMQH112Itx56HxH3+TOWzwEO0=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QJLqcvHnQ3NM0wGeEVSTJJ/WLxEjLJXWtQREgaQHDxok89D8U+cmF1YUJKGQliGRO
-	 rRiH3YSpAFQGC9mmhkbJ4OETxu/HOLhvvRuWTT3h5sw9jt2FKgEF/SZIEwm3UxV39t
-	 dJ+bHwgYuzvVVfzlVnNjabC9+xSppps6sQVuAe2Y=
+	b=qrCpUDx/1HAKEkvHVPMZ5Yyt+26hto14iKcRTxYjlgs6XRBt75zk5rhhvuzirYktD
+	 NkQfoR8tZgES8qIf8Pe6W6tNUe0uNyfp87r55vYc2MTUO7iLDE+ZLeeDU8I3S2NGsZ
+	 kh4d86T17PdvBtfmNyCiTXZZOlg6bjdDM/YoasKU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D5F34F801ED;
-	Wed, 22 Apr 2020 00:01:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DC3EDF80108;
+	Wed, 22 Apr 2020 05:57:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F3F91F800E7; Wed, 22 Apr 2020 00:01:39 +0200 (CEST)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ id AAFE4F801D9; Wed, 22 Apr 2020 05:57:14 +0200 (CEST)
+Received: from puleglot.ru (puleglot.ru [IPv6:2a01:4f8:1c0c:58e8::2])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EA220F800E7
- for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2020 00:01:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA220F800E7
-IronPort-SDR: CDIWaKSez0veWEqF+LEl7vqvDbOcQjSlX0iO3G7tSBNbRxbPaEV5UrJlqgKa0e3XhgWZn6zfyq
- hSCKsNWft28w==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Apr 2020 15:01:29 -0700
-IronPort-SDR: XW6i3mAjmpNPMWbyA+0u8KCpFbBNf13oozWBVPqZoRD0H2yFVKWUyTHmuhHKvuam4D2zio2otp
- YFec63mpSyAA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,411,1580803200"; d="scan'208";a="456921738"
-Received: from sabeliak-mobl.amr.corp.intel.com (HELO [10.254.24.98])
- ([10.254.24.98])
- by fmsmga006.fm.intel.com with ESMTP; 21 Apr 2020 15:01:28 -0700
-Subject: Re: [PATCH 4/4] ASoC: Intel: Skylake: Automatic DMIC format
- configuration according to information from NHLT
-To: Mateusz Gorski <mateusz.gorski@linux.intel.com>,
- alsa-devel@alsa-project.org
-References: <20200421202519.4008-1-mateusz.gorski@linux.intel.com>
- <20200421202519.4008-5-mateusz.gorski@linux.intel.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <5530780f-9e86-1db3-b83b-9940560d27a2@linux.intel.com>
-Date: Tue, 21 Apr 2020 15:55:03 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7E1ABF80108
+ for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2020 05:57:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E1ABF80108
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=tsoy.me header.i=@tsoy.me
+ header.b="DSLiF70h"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=tsoy.me;
+ s=mymail; h=Sender:Content-Transfer-Encoding:MIME-Version:Content-Type:
+ References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID
+ :Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
+ Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe
+ :List-Post:List-Owner:List-Archive;
+ bh=j4Ls9wRVE3rzrnjPn4jr+wNKwnnaHQT5dpsn0hB2le4=; b=DSLiF70hGIJpZAwlRs3SpnBt0Q
+ QQW8HASY5Qz0V07Y/7tmrphyYJgTvlnPrSaMMgRWY+Pr0MLRUg2pJPI/WBLGnPCPylXkzvVJCooYm
+ gVj7FXR/hyeslZqR6HGNJfUdnkDGWSEDfJ4Uz3LBfkSJbxyj4+fcE6//5tDw2z7NITF4=;
+Received: from [2a00:1370:8125:3f98:890:f100:d37d:7ada] (helo=home)
+ by puleglot.ru with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+ (Exim 4.92.3) (envelope-from <puleglot@puleglot.ru>)
+ id 1jR6VU-000coH-Ix; Wed, 22 Apr 2020 06:57:04 +0300
+Message-ID: <7190177d62f349eea7a5d1056924a63fc4270d43.camel@tsoy.me>
+Subject: Re: [PATCH] ALSA: usb-audio: Apply async workaround for Scarlett
+ 2i4 2nd gen
+From: Alexander Tsoy <alexander@tsoy.me>
+To: Takashi Iwai <tiwai@suse.de>
+Date: Wed, 22 Apr 2020 06:57:03 +0300
+In-Reply-To: <s5hpnc01vq5.wl-tiwai@suse.de>
+References: <20200421190908.462860-1-alexander@tsoy.me>
+ <s5hpnc01vq5.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.32.5 
 MIME-Version: 1.0
-In-Reply-To: <20200421202519.4008-5-mateusz.gorski@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: cezary.rojewski@intel.com, tiwai@suse.com
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,25 +90,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+В Вт, 21/04/2020 в 21:31 +0200, Takashi Iwai пишет:
+> On Tue, 21 Apr 2020 21:09:08 +0200,
+> Alexander Tsoy wrote:
+> > Due to rounding error driver sometimes incorrectly calculate next
+> > packet
+> > size, which results in audible clicks on devices with synchronous
+> > playback
+> > endpoints. For example on a high speed bus and a sample rate 44.1
+> > kHz it
+> > loses one sample every ~40.9 seconds. Fortunately playback
+> > interface on
+> > Scarlett 2i4 2nd gen has a working explicit feedback endpoint, so
+> > we can
+> > switch playback data endpoint to asynchronous mode as a workaround.
+> > 
+> > Signed-off-by: Alexander Tsoy <alexander@tsoy.me>
+> 
+> Applied now, thanks.
+> 
+> I wonder, though, whether we can correct the rounding error in the
+> driver code, too.
 
+I'm not sure if it's possible with currently used Q16.16 arithmetic.
 
-
-> @@ -3123,12 +3141,15 @@ static int skl_tplg_control_load(struct snd_soc_component *cmpnt,
->   	case SND_SOC_TPLG_CTL_ENUM:
->   		tplg_ec = container_of(hdr,
->   				struct snd_soc_tplg_enum_control, hdr);
-> -		if (kctl->access & SNDRV_CTL_ELEM_ACCESS_READWRITE) {
-> +		if (kctl->access & SNDRV_CTL_ELEM_ACCESS_READ) {
->   			se = (struct soc_enum *)kctl->private_value;
->   			if (tplg_ec->priv.size)
-> -				return skl_init_enum_data(bus->dev, se,
-> -						tplg_ec);
-> +				skl_init_enum_data(bus->dev, se, tplg_ec);
->   		}
-> +
-> +		if (hdr->ops.get == SKL_CONTROL_TYPE_MULTI_IO_SELECT_DMIC)
-> +			kctl->access = SNDRV_CTL_ELEM_ACCESS_READ;
-> +
-
-Is it intentional that you first test the kctrl->access as READ only, 
-and then later set it to READ only for DMICs? The sequence looks rather odd?
