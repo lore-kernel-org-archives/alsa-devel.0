@@ -2,116 +2,85 @@ Return-Path: <SRS0=We8V=6G=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	UNPARSEABLE_RELAY,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82E21C55189
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 11:46:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C01E3C55189
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 11:55:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 07AB120784
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 11:46:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5013A2077D
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 11:55:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OEsj0k30";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="vBNjvxlE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 07AB120784
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ip2J8aip"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5013A2077D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 54115169E;
-	Wed, 22 Apr 2020 13:45:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 54115169E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9EB45169E;
+	Wed, 22 Apr 2020 13:54:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9EB45169E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587555999;
-	bh=oko/UMJWnNJEv9USOpFTIPo97ODyaVCQvIy1PxCWoP8=;
+	s=default; t=1587556518;
+	bh=IQ1l7CLlu40p/Vs6vI8dvQjETuZgN3rdkRhPNeh8uzA=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OEsj0k30IvZY21ReLt9t9F5I8MA8zo7vt9IU+uxJXL/+bnPaUGLo3SchsgFc6v55n
-	 +R9Sg+t5JX5pqYh5Cio8Zfaxbw7DwlsfYjfeNVbC6qA3qsUfD6HxHHVhtjAdO/yVav
-	 TN9bJBRnNr/KNbNUmYp8vcPKLBjiFEqYRUamrIbU=
+	b=Ip2J8aipk8zTM3xnGQUYO5aMEMUSKBl18yGF2ycYRlrllXw0c/h1d7InYW3fGMCYQ
+	 jYRyWGkhnBfaAGmzjikJmqycDNZUF6VelBXV/hPGxzjVDOAMg4OyRvHfyNZCICFBtB
+	 80EtpJrN9Xz0m3qklFgpOWGYDqS0KEE1m1zL5144=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D1A24F80108;
-	Wed, 22 Apr 2020 13:45:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3303BF80108;
+	Wed, 22 Apr 2020 13:54:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 80233F80142; Wed, 22 Apr 2020 13:45:47 +0200 (CEST)
-Received: from aserp2120.oracle.com (aserp2120.oracle.com [141.146.126.78])
+ id F352BF80142; Wed, 22 Apr 2020 13:54:25 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9E227F800FF;
- Wed, 22 Apr 2020 13:45:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E227F800FF
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com
- header.b="vBNjvxlE"
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
- by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03MBgSpP068303;
- Wed, 22 Apr 2020 11:45:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=iXHNVaJY3ekqt8rrsqzyayGiIuYPuZ10JP8uzOTtyBM=;
- b=vBNjvxlES5ioi7aQXEXoJ8OYSuZOF6cDwtNh8kpa9OAcTffTDn5fCmfrLmtipCy76zRW
- nvmhgyoJbyRTjXGaSSGE1o0V7OKkD34F9dt+GFXAf69s3JCf8QFHBiGAxQxkIM+NC+cw
- cFSQv5kRrjEZfx1mt5gIiDDyUps1yeVniTIcLsId9ep2WpL53VqypIqYHHsYK8tCHmeD
- uhkdLkcC3ImCBOO5D7nPEwmoIEkeztne43bgIY6ME47ye0Los+4iLHDSx3xNsM6T/kUg
- JL+ho3msLiI3KkSE0niDAx/Hnat3v3G4syLIVpbVDI1YMjMb7qvX4o/EZwk/LnaO64R9 JA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
- by aserp2120.oracle.com with ESMTP id 30fsgm29gy-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 22 Apr 2020 11:45:35 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
- by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03MBgXiv118837;
- Wed, 22 Apr 2020 11:45:35 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
- by aserp3020.oracle.com with ESMTP id 30gbbgps60-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 22 Apr 2020 11:45:35 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
- by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03MBjWgC022078;
- Wed, 22 Apr 2020 11:45:32 GMT
-Received: from kadam (/41.57.98.10) by default (Oracle Beehive Gateway v4.0)
- with ESMTP ; Wed, 22 Apr 2020 04:45:31 -0700
-Date: Wed, 22 Apr 2020 14:45:22 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: Colin King <colin.king@canonical.com>
-Subject: Re: [PATCH] ASoC: SOF: ensure all fields in header are zero'd before
- copying back to userspace
-Message-ID: <20200422114522.GK2659@kadam>
-References: <20200422112417.208843-1-colin.king@canonical.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 096A5F800FF
+ for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2020 13:54:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 096A5F800FF
+IronPort-SDR: eG5DU3Q6MMbX9H3tA235lF2H8u+22PhL5FTfI6q7lXnBkx1FVeVcA25HM/aI4CrFgx8KZwmWRb
+ 1kuYXzADSxuA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 22 Apr 2020 04:54:18 -0700
+IronPort-SDR: O9CjOCHYmPwWZIqf6i+YiDP/7wq2CxiygWwU1a6RtXS81F0b1Jyas3sJgTJCR5gv1Gf/eIs2Gw
+ Dw3hScIsZsvw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,414,1580803200"; d="scan'208";a="273860164"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+ by orsmga002.jf.intel.com with ESMTP; 22 Apr 2020 04:54:14 -0700
+Received: from andy by smile with local (Exim 4.93)
+ (envelope-from <andriy.shevchenko@linux.intel.com>)
+ id 1jRDxJ-002RAE-6g; Wed, 22 Apr 2020 14:54:17 +0300
+Date: Wed, 22 Apr 2020 14:54:17 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [RFC PATCH 13/16] clk: hifiberry-dacpro: add "sclk" lookup
+Message-ID: <20200422115417.GG185537@smile.fi.intel.com>
+References: <20200409195841.18901-1-pierre-louis.bossart@linux.intel.com>
+ <20200409195841.18901-14-pierre-louis.bossart@linux.intel.com>
+ <158754810745.132238.7647643247125302962@swboyd.mtv.corp.google.com>
+ <c52e0f7d-1eaf-a89b-ff5d-b2a02ad56021@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200422112417.208843-1-colin.king@canonical.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9598
- signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0
- malwarescore=0
- suspectscore=0 mlxlogscore=856 adultscore=0 mlxscore=0 phishscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004220094
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9598
- signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0
- priorityscore=1501
- lowpriorityscore=0 mlxlogscore=908 malwarescore=0 clxscore=1011
- spamscore=0 bulkscore=0 phishscore=0 suspectscore=0 impostorscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004220094
-Cc: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Mark Brown <broonie@kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>,
- sound-open-firmware@alsa-project.org
+In-Reply-To: <c52e0f7d-1eaf-a89b-ff5d-b2a02ad56021@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Cc: alsa-devel@alsa-project.org, Rob Herring <robh+dt@kernel.org>,
+ Matthias Reichl <hias@horus.com>, Stephen Boyd <sboyd@kernel.org>,
+ linux-gpio@vger.kernel.org, Daniel Matuschek <daniel@hifiberry.com>,
+ linux-clk@vger.kernel.org, Hui Wang <hui.wang@canonical.com>, tiwai@suse.de,
+ broonie@kernel.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+ Michael Turquette <mturquette@baylibre.com>,
+ Linus Walleij <linus.walleij@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -127,17 +96,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Apr 22, 2020 at 12:24:17PM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Wed, Apr 22, 2020 at 04:51:52AM -0500, Pierre-Louis Bossart wrote:
+> > > +       proclk->sclk_lookup = clkdev_hw_create(&proclk->hw, "sclk", NULL);
+> > > +       if (!proclk->sclk_lookup) {
+> > > +#ifndef CONFIG_ACPI
+> > 
+> > Is it to save code space? Otherwise the ifdefs are pretty ugly and I'd
+> > prefer we just call of_clk APIs and rely on the inline stubs when
+> > CONFIG_OF isn't enabled to be optimized out.
 > 
-> Field header.tlv is uninitialized and being copied back to userspace
-        ^^^^^^^^^^
-header.tlv is a zero element array so it doens't have any stack data.
+> CONFIG_OF was added as a dependency (see patch 10/16) so that we can use the
+> 'compatible' string to probe w/ the PRP0001 device.
 
-> and hence leaking data from the stack to userspace.  Fix this by
-> ensuring the header structure is zero'd.
+PRP0001 does not require CONFIG_OF to be set.
 
-regards,
-dan carpenter
+> I must admit I don't know what these functions do so I just filtered them
+> out in the ACPI case.
+
+I think you have to check if one is a superposition of the other.
+
+> > > +               of_clk_del_provider(dev->of_node);
+> > > +#endif
+> > > +               return -ENOMEM;
+> > > +       }
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
