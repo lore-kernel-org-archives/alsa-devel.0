@@ -2,87 +2,70 @@ Return-Path: <SRS0=We8V=6G=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 12A24C54FCB
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 21:09:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ACED1C55185
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 21:26:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 32F6220787
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 21:09:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 37F3A2076E
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 21:26:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LNjOY5rh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 32F6220787
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ipeQAZPH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 37F3A2076E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7BB01169A;
-	Wed, 22 Apr 2020 23:09:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7BB01169A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 924BC169A;
+	Wed, 22 Apr 2020 23:25:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 924BC169A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587589791;
-	bh=no3DMx3qXTw9j+8QvCUgB3Fqq4mU42PO4t4LEz4LCis=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1587590765;
+	bh=O3EKrXgbhULC79XkRRBuXgwHHHZrkUImf4HSWX5+j6M=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LNjOY5rhn7JwaIcmVkxlyltunxLsFBYYHHa+h/3+vv+KmfPqCegpd4xuIKp+E0rxG
-	 +0c/tHy5Vor+LdNh1zCzRCEsTdIokHqEpyt/ZM+GqYcMI5Rnz9UOtXIgmeWJZ9CTIZ
-	 XviZ42MxW+s7erKKWbcMzA5U+noFYYjBfXRJ1uGE=
+	b=ipeQAZPHrchn7If7rH+rRYoAx9K/wAcIiZyYSoP9ahcxss1Wkubas6lUxP/Q0VOZx
+	 ain/RuLQfrpNdvOlcTw62S2AdWGNH41bo1iLKJzvmqBQhsJH/cpDd1m2V29Kw4VO7d
+	 Q06SVBTpjtObknDT5nPoxZAle0Zj23FJwtXfJuEk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D64E8F80142;
-	Wed, 22 Apr 2020 23:09:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A459DF80108;
+	Wed, 22 Apr 2020 23:25:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F2532F801D9; Wed, 22 Apr 2020 23:08:58 +0200 (CEST)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id CBD16F801D9; Wed, 22 Apr 2020 23:25:13 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CF4DCF80108
- for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2020 23:08:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF4DCF80108
-IronPort-SDR: Y8c8sVH3A5ZxelI2kB7SUJ3mfVj8YyFyg5oY/EPHeSIuHNF3sB+PedYFupZ+BfYM9JUtKoenRB
- UzRJAFp5LV+Q==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
- by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Apr 2020 14:08:48 -0700
-IronPort-SDR: OR9zGtfyQpMcV4afdZVH3NnBLr3lk7xcncQE4cUHbgMbM+idqrkVVLGwx7GuDbpx41mMXv0KmV
- j65tepvaTZ5A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,304,1583222400"; d="scan'208";a="457280305"
-Received: from jpilli-mobl.amr.corp.intel.com (HELO [10.254.51.39])
- ([10.254.51.39])
- by fmsmga006.fm.intel.com with ESMTP; 22 Apr 2020 14:08:45 -0700
-Subject: Re: [RFC PATCH 12/16] clk: hifiberry-dacpro: add ACPI support
-To: Stephen Boyd <sboyd@kernel.org>, alsa-devel@alsa-project.org
-References: <20200409195841.18901-1-pierre-louis.bossart@linux.intel.com>
- <20200409195841.18901-13-pierre-louis.bossart@linux.intel.com>
- <158754793532.132238.9824423478783177623@swboyd.mtv.corp.google.com>
- <60402718-f36c-cab3-2766-9ae180dd7504@linux.intel.com>
- <158758876497.163502.13202465070681172627@swboyd.mtv.corp.google.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <8054d4a1-8889-5ccf-a685-59fa16502822@linux.intel.com>
-Date: Wed, 22 Apr 2020 16:08:44 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <158758876497.163502.13202465070681172627@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: linux-gpio@vger.kernel.org, tiwai@suse.de,
- Linus Walleij <linus.walleij@linaro.org>,
- Daniel Matuschek <daniel@hifiberry.com>, Hui Wang <hui.wang@canonical.com>,
- Matthias Reichl <hias@horus.com>, Rob Herring <robh+dt@kernel.org>,
- broonie@kernel.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Michael Turquette <mturquette@baylibre.com>, linux-clk@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 11D4DF800FF
+ for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2020 23:25:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11D4DF800FF
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id E5BF4AE8C;
+ Wed, 22 Apr 2020 21:25:04 +0000 (UTC)
+Date: Wed, 22 Apr 2020 23:25:04 +0200
+Message-ID: <s5h8sinxlfz.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Bjorn Helgaas <helgaas@kernel.org>
+Subject: Re: Unrecoverable AER error when resuming from RAM (hda regression in
+ 5.7-rc2)
+In-Reply-To: <20200422205028.GA223132@google.com>
+References: <1587494585.7pihgq0z3i.none@localhost>
+ <20200422205028.GA223132@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, linux-pm@vger.kernel.org,
+ linux-pci@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+ linux-kernel@vger.kernel.org, "Alex Xu \(Hello71\)" <alex_y_xu@yahoo.ca>,
+ Roy Spliet <nouveau@spliet.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,39 +81,66 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 4/22/20 3:52 PM, Stephen Boyd wrote:
-> Quoting Pierre-Louis Bossart (2020-04-22 02:54:38)
->>
->>
->> On 4/22/20 4:32 AM, Stephen Boyd wrote:
->>> Quoting Pierre-Louis Bossart (2020-04-09 12:58:37)
->>>> On ACPI platforms the of_ functions are irrelevant, conditionally
->>>> compile them out and add devm_clk_hw_register_clkdev() call instead.
->>>>
->>>> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->>>> ---
->>>>    drivers/clk/clk-hifiberry-dacpro.c | 7 +++++++
->>>>    1 file changed, 7 insertions(+)
->>>>
->>>> diff --git a/drivers/clk/clk-hifiberry-dacpro.c b/drivers/clk/clk-hifiberry-dacpro.c
->>>> index bf0616c959da..d01a90fed51b 100644
->>>> --- a/drivers/clk/clk-hifiberry-dacpro.c
->>>> +++ b/drivers/clk/clk-hifiberry-dacpro.c
->>>> @@ -114,15 +114,22 @@ static int clk_hifiberry_dacpro_probe(struct platform_device *pdev)
->>>>                   return ret;
->>>>           }
->>>>    
->>>> +#ifndef CONFIG_ACPI
->>>
->>> Use if (!IS_ENABLED(CONFIG_ACPI)) instead?
->>
->> git grep CONFIG_ACPI shows most of the kernel code uses #if(n)def
->> CONFIG_ACPI. It's equivalent, it's a boolean.
+On Wed, 22 Apr 2020 22:50:28 +0200,
+Bjorn Helgaas wrote:
 > 
-> It's not equivalent. It is a pre-processor directive vs. an if statement
-> that evaluates to 0 or 1 and lets the compiler see both sides of the
-> code to check types.
+> [+cc Rafael, linux-pm]
+> 
+> On Tue, Apr 21, 2020 at 03:08:44PM -0400, Alex Xu (Hello71) wrote:
+> > With 5.7-rc2, after resuming from suspend to RAM, I get:
+> > 
+> > [   55.679382] pcieport 0000:00:03.1: AER: Multiple Uncorrected (Non-Fatal) error received: 0000:00:00.0
+> > [   55.679405] pcieport 0000:00:03.1: AER: PCIe Bus Error: severity=Uncorrected (Non-Fatal), type=Transaction Layer, (Requester ID)
+> > [   55.679410] pcieport 0000:00:03.1: AER:   device [1022:1453] error status/mask=00100000/04400000
+> > [   55.679414] pcieport 0000:00:03.1: AER:    [20] UnsupReq               (First)
+> > [   55.679417] pcieport 0000:00:03.1: AER:   TLP Header: 40000004 0a0000ff fffc0e80 00000000
+> > [   55.679423] amdgpu 0000:0a:00.0: AER: can't recover (no error_detected callback)
+> > [   55.679425] snd_hda_intel 0000:0a:00.1: AER: can't recover (no error_detected callback)
+> > [   55.679455] pcieport 0000:00:03.1: AER: device recovery failed
+> 
+> I'm not at all confident in my decoding skills, but I *think* the TLP
+> header decodes to:
+> 
+>   Fmt           010b         3 DW header with data (32-bit address)
+>   Type          00000b       MWr
+>   Length        0x4          4 DW = 16 bytes
+>   Requester ID  0x0a00       0a:00.0
+>   Byte enables  0xff
+>   Address       0xfffc0e80
+> 
+> which would mean the 0a:00.0 GPU did a 16-byte write to 0xfffc0e80,
+> and the 00:03.1 Root Port reported that as an Unsupported Request.
+> I don't know why that would be unless the address is invalid.
+> 
+> Maybe that's supposed to be an MSI address?  Maybe a complete dmesg or
+> /proc/iomem would have a clue?
+> 
+> I feel like this UR issue could be a PCI core issue or maybe some sort
+> of misuse of PCI power management, but I can't seem to get traction on
+> it.
+> 
+> > Then the display freezes and the system basically falls apart (can't 
+> > even sudo reboot -f, need to use magic sysrq).
+> > 
+> > I bisected this to "ALSA: hda: Skip controller resume if not needed". 
+> > Setting snd_hda_intel.power_save=0 resolves the issue.
+> 
+> FWIW, the complete citation is c4c8dd6ef807 ("ALSA: hda: Skip
+> controller resume if not needed"),
+> https://git.kernel.org/linus/c4c8dd6ef807, which first appeared in
+> v5.7-rc2.
 
-Ah, yes I misunderstood your point.
+Yes, and I posted the fix patch right now:
+  https://lore.kernel.org/r/20200422203744.26299-1-tiwai@suse.de
+
+The possible cause was the tricky resume code that both HD-audio
+controller (the parent PCI device) and the codec devices used.
+
+At least the patch above seems working for the reporter's machine.
+Now we need a bit more testing before merging, but it looks promising,
+so far.
+
+
+thanks,
+
+Takashi
