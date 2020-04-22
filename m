@@ -2,68 +2,69 @@ Return-Path: <SRS0=We8V=6G=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C8A74C54FCB
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 20:24:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E6440C54FCB
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 20:29:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4E1A920857
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 20:24:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5F9512071E
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 20:29:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GUHFvZDs"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4E1A920857
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uc2rj59k"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5F9512071E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 94EBE169B;
-	Wed, 22 Apr 2020 22:23:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94EBE169B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 957D7167E;
+	Wed, 22 Apr 2020 22:28:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 957D7167E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587587072;
-	bh=nSHoD5R5XnFFR6Rz98j4QhvoxxJ61DndzPy3X6Q0JlE=;
+	s=default; t=1587587359;
+	bh=fY0jnV7niFlIBJIWbBuPnDLzaaDytzFZKCQXuMReZz8=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GUHFvZDsaOS5Bs/fcV/3e1h9h8KEYpazI806zPQEcV0xnoMr7SBgc909sm7rW3llr
-	 O2FUcsiqTMRn3ZyAh0cQTc/17WpBW+wt3f8ziwSXwVpE7dDBHXrYfCXojQApgt6B36
-	 oMMGhN3jCSeD+AQUNc8NV9hkjuN4FEp7Sbg0/yak=
+	b=uc2rj59kZuwebHHgDq1QDQpNTxH//tROzQreGbLmjKIBiQkUGN8BlNlLDhaRSyAI7
+	 HrZFVxKyarViiw6kKVv7h2i0kRTYABzjUs3KMeoqBEtRazYLy9yvcL3NdKuJBi+PY3
+	 X80V6e7Hs/5cWwb+zadu6ZpwZYOr8rkDKTzdZ6m4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 25146F80142;
-	Wed, 22 Apr 2020 22:23:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A234CF80142;
+	Wed, 22 Apr 2020 22:28:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D0656F801D9; Wed, 22 Apr 2020 22:23:39 +0200 (CEST)
+ id 07D1BF801D9; Wed, 22 Apr 2020 22:28:19 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 66AADF800F2
- for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2020 22:23:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66AADF800F2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5713DF800F2
+ for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2020 22:28:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5713DF800F2
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id E85D0AE9A;
- Wed, 22 Apr 2020 20:23:34 +0000 (UTC)
-Date: Wed, 22 Apr 2020 22:23:34 +0200
-Message-ID: <s5hh7xbxoah.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 53344AEA8;
+ Wed, 22 Apr 2020 20:28:15 +0000 (UTC)
+Date: Wed, 22 Apr 2020 22:28:15 +0200
+Message-ID: <s5heesfxo2o.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: ASoC driver names
-In-Reply-To: <c57f21dc-412d-3057-6150-b96d96a20727@perex.cz>
-References: <c57f21dc-412d-3057-6150-b96d96a20727@perex.cz>
+To: Alexander Tsoy <alexander@tsoy.me>
+Subject: Re: [PATCH] ALSA: usb-audio: Apply async workaround for Scarlett 2i4
+ 2nd gen
+In-Reply-To: <a45d18d7922d780f29f89cff855eb30fbdd1fce8.camel@tsoy.me>
+References: <7190177d62f349eea7a5d1056924a63fc4270d43.camel@tsoy.me>
+ <20200422185522.3347-1-grpintar@gmail.com>
+ <a45d18d7922d780f29f89cff855eb30fbdd1fce8.camel@tsoy.me>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: ALSA development <alsa-devel@alsa-project.org>,
- Mark Brown <broonie@kernel.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Pierre-louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Gregor Pintar <grpintar@gmail.com>, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,42 +80,75 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 22 Apr 2020 19:04:36 +0200,
-Jaroslav Kysela wrote:
+On Wed, 22 Apr 2020 21:26:23 +0200,
+Alexander Tsoy wrote:
 > 
-> Hi all,
+> В Ср, 22/04/2020 в 20:55 +0200, Gregor Pintar пишет:
+> > On Wed, 22 Apr 2020 Alexander Tsoy wrote:
+> > > В Вт, 21/04/2020 в 21:31 +0200, Takashi Iwai пишет:
+> > > > I wonder, though, whether we can correct the rounding error in
+> > > > the
+> > > > driver code, too.
+> > > 
+> > > I'm not sure if it's possible with currently used Q16.16
+> > > arithmetic.
+> > 
+> > Maybe calculate fixed correction shifts (like it would be feedback)?
+> > Something like leap year.
+> > 
+> > In endpoint.c:
+> > static inline unsigned get_usb_high_speed_rate(unsigned int rate)
+> > {
+> > 	return ((rate << 10) + 62) / 125;
+> > }
+> > I guess 62 tries to round it, but exact number is needed. So exact
+> > value for
+> > 44100 should be 361267.2. For 48000 it is 360448.
+> > If only we can deliver that 0.2 by shifting rate somehow?
+> > 
+> > At least maybe it would be better to disable sample rates that do not
+> > divide
+> > by 1000 on SYNC playback endpoints, if there are others sample rates.
+> > 
+> > But I'm not familar with the code or USB.
 > 
->   I am fighting actually with the ASoC driver names. The current
-> situation, where each hardware variant (card name) is mapped to the
-> driver name is not very practical (and not correct). The driver name
-> should describe the common part (usually the controller - like
-> 'HDA-Intel' or bus 'USB-Audio').
+> I think instead of accumulating the fractional part of fs/fps in Q16.16
+> format we should accumulating remainder of division fs/fps.
 > 
->   I am talking about the situation, where the ASoC card name is set
-> via the device tree (snd_soc_of_parse_card_name) like in [1], but the
-> change may be considered for other drivers like Intel SST:
+> So for 44100 Hz and High Speed USB the calculations would be:
 > 
-> Card driver name: Lenovo-YOGA-C63
-> Card name: Lenovo-YOGA-C630-13Q50
-> Card long name: LENOVO-81JL-LenovoYOGAC630_13Q50-LNVNB161216
+> fs = 44100
+> fps = 8000
+> rem = 44100 % 8000 = 4100
+> accum = 0
+> packet_size_min = 44100 / 8000 = 5
+> packet_size_max = 44100 + (8000 - 1) / 8000 = 6
 > 
-> [1]
-> https://github.com/alsa-project/alsa-tests/pull/3/commits/1b5a552cff06c6039fbcf41b3117fc73712010df
 > 
->   My question is, can we change / add the more apropriate driver names
-> conditionally with a new kernel CONFIG option? Will you accept this
-> change?
+> 1. accum += rem = 4100
+>    accum < fps => packet_size = packet_size_min = 5
+> 
+> 2. accum += rem = 8200
+>    accum >= fps => {
+>        packet_size = packet_size_max = 6
+>        accum -= fps = 200
+>    }
+> 
+> 3. accum += rem = 4300
+>    accum < fps => packet_size = packet_size_min = 5
+> 
+> ...
+> 
+> 80. accum += rem = 8000
+>     accum >= fps => {
+>         packet_size = packet_size_max = 6
+>         accum -= fps = 0
+>     }
+> ...
 
-It's a last resort, but it's more or less acceptable, IMO.
-
->   The goal is to group the related UCM2 configurations and do the
-> required split inside the UCM2 top-level configuration file based on
-> card components string or other card identificators (related to the
-> driver).
-
-Wasn't an idea to use the component string feasible?
-e.g. if a driver sets a certain component string, it's preferred over
-the standard driver name / long name mapping.
+Yeah, something like that is what I had in my mind.
+It'd be greatly appreciated if someone can experiment it.
+Unfortunately I have no proper USB-audio device now at hands...
 
 
 thanks,
