@@ -2,78 +2,93 @@ Return-Path: <SRS0=We8V=6G=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04A68C54FCB
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 17:05:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50CAAC5518B
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 19:09:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7441620776
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 17:05:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CF6F120644
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Apr 2020 19:09:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cm1eP56L";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="jeUmwDU6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7441620776
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bk4V3kqT";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="sopfsph4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CF6F120644
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C3A73169D;
-	Wed, 22 Apr 2020 19:04:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3A73169D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 338D3169B;
+	Wed, 22 Apr 2020 21:08:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 338D3169B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587575145;
-	bh=BH8tpbpe981/e0pANkwZtQltucd09KtWoHay2+u8+iI=;
-	h=From:Subject:To:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1587582556;
+	bh=k95E3PF5/wpb9CdGZcaR8eT2Xnh3c/SMQCEl3xb01O8=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=cm1eP56LRND8FJPjRNNMcA7z8oeP72ZIF41H0mDwLbZbJiJWpnXLGM4xMchHs1sdW
-	 NBnLOL73brlERfXlSpD+4nF0yWH96CCX6a8v5GmPZo6F+D99nHrR49xGxLv7mzft/e
-	 RtTM2Pk9MTk1PMQ2vzWgZvzjvlgbuPPgrd3Ks4ag=
+	b=bk4V3kqTyVEy8bHdRGHPubXCmtrb/0/XhpcqfL3+DQqDFbgRFWjx0PMTIZELkgt1p
+	 T+TAsCgRcPsK7iB/yjfrVXJJ1b0HzwLBmxREWXlr81NF34xCRk9fwAXCmk40spuryo
+	 pgNEJijOr75v7hNp4cL4rnPU4CGzENsKrdq/uXF8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 525B8F80142;
-	Wed, 22 Apr 2020 19:04:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B94B8F80142;
+	Wed, 22 Apr 2020 21:08:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AE86FF801D9; Wed, 22 Apr 2020 19:04:50 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A203EF80108
- for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2020 19:04:43 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id CA56FA003F;
- Wed, 22 Apr 2020 19:04:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz CA56FA003F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1587575081; bh=/R1VvLAqQHPrpWwdJMq8nH56YnfP3SEUEtkNev9MYy8=;
- h=From:Subject:To:Cc:Date:From;
- b=jeUmwDU6kYtjs0becdQug3xHsWiU20eWa0EDHG+Zs5ps6b0I134//RtJ9OQs9inT2
- jgqnQQJqKHeXsTKHP/qbG8jSCw6eNif7sW0Auzpx54+hG1xWOx/HQ+fd/Zfb2VTMID
- F8jV5ENVy0AyHTOnwOEFL7hKcZOTyWjpoj9+uwps=
-Received: from p50.perex-int.cz (unknown [192.168.100.94])
+ id 1C2A2F80108; Wed, 22 Apr 2020 21:08:23 +0200 (CEST)
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com
+ [IPv6:2a00:1450:4864:20::342])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Wed, 22 Apr 2020 19:04:36 +0200 (CEST)
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: ASoC driver names
-To: Mark Brown <broonie@kernel.org>
-Message-ID: <c57f21dc-412d-3057-6150-b96d96a20727@perex.cz>
-Date: Wed, 22 Apr 2020 19:04:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: Takashi Iwai <tiwai@suse.de>,
- ALSA development <alsa-devel@alsa-project.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Pierre-louis Bossart <pierre-louis.bossart@linux.intel.com>
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 65ECDF80108
+ for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2020 21:08:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65ECDF80108
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="sopfsph4"
+Received: by mail-wm1-x342.google.com with SMTP id y24so3769425wma.4
+ for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2020 12:08:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id;
+ bh=+zDLeLkxWO2+hMNosAqgOgGEHIDnT4PWh0YVuszpFwo=;
+ b=sopfsph4Ox9cam1LRYncWs+ATliTvE3+yCH1/n3zC+PX+46tWteEs5pbbO09FpD9Ld
+ r/T8sQSTxn6hVmtEs5YuDM251mPwNVnwDPNvrrEdFtU/Ia5ZpYHG2mWVZp/WgoY7RzSf
+ 2zcKZDO5Skbh8RJr81lsXpB7rciNEqJdeFtu7FyXpJj6pEdA+xmnQUJj4L/F1enZxBep
+ GJs7gobSR07T3i7GHMWgpHZec4chFv030zhxoWPVGqwYz9wZKBdv6ufhXypKqK87WOVS
+ A4sCOjXPpfzDVmpHQit1mR5bJuE1U0tQNOUWNYqhNDefBIPReC8am1RubNFKiXDTpUIW
+ w+dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id;
+ bh=+zDLeLkxWO2+hMNosAqgOgGEHIDnT4PWh0YVuszpFwo=;
+ b=lhYjXIN/mFm07J8UZvIXmc+9uwuEytD2VwARSsPuWxx4n5Evg3QCacPf/wd6Ul8GMY
+ 3u6LcaYTWMYCDQqlST2MLRg1IBcSBZh7SFPd9/V5/z9ci3/240ZKvxinwOZ/f2Gm0XKT
+ RP2NcoeLJLNQUkFrYDFRqJ9oDTTJZMJDFUPQhM+Nk6SfGQKEBjP8o2z959Bq6mo+1X5s
+ TnnVCqvteFT/saxBINwshnl/tzVBIgXIT4rWw3U6+Ab/y+bWiypMBqohSnzrK1XdSYvR
+ 5eqPUJULyvTNgxKxeWwy6XPC27EpIBy5Fa4W0WVrqF8T7NuDaoggEMoIhnOuyTrwI2Xv
+ VLPw==
+X-Gm-Message-State: AGi0PubUofoy7eYNm6Y8Sf7lQ5+PzcSWgr17oB+JJHhl/V0JLyVtyVSQ
+ xHbuSlyeIz9XLLb88Jl5MrM=
+X-Google-Smtp-Source: APiQypKKOtJHSktS3ZUja/AxftlJ/XBl/AguO72IhuFkq9dh8eOQNeBgIAM46126fomV+VYhlr96FA==
+X-Received: by 2002:a1c:5403:: with SMTP id i3mr12817772wmb.10.1587582497902; 
+ Wed, 22 Apr 2020 12:08:17 -0700 (PDT)
+Received: from debian.lan (host-84-13-17-86.opaltelecom.net. [84.13.17.86])
+ by smtp.gmail.com with ESMTPSA id f8sm201837wrm.14.2020.04.22.12.08.16
+ (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+ Wed, 22 Apr 2020 12:08:17 -0700 (PDT)
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To: Vinod Koul <vkoul@kernel.org>, Sanyog Kale <sanyog.r.kale@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH] soundwire: intel: Remove unused function
+Date: Wed, 22 Apr 2020 20:08:15 +0100
+Message-Id: <20200422190815.5975-1-sudipm.mukherjee@gmail.com>
+X-Mailer: git-send-email 2.11.0
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,34 +104,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi all,
+The function sdw_intel_init() is not used anywhere, remove it for now.
 
-   I am fighting actually with the ASoC driver names. The current situation, 
-where each hardware variant (card name) is mapped to the driver name is not 
-very practical (and not correct). The driver name should describe the common 
-part (usually the controller - like 'HDA-Intel' or bus 'USB-Audio').
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+---
+ drivers/soundwire/intel_init.c | 23 -----------------------
+ 1 file changed, 23 deletions(-)
 
-   I am talking about the situation, where the ASoC card name is set via the 
-device tree (snd_soc_of_parse_card_name) like in [1], but the change may be 
-considered for other drivers like Intel SST:
-
-Card driver name: Lenovo-YOGA-C63
-Card name: Lenovo-YOGA-C630-13Q50
-Card long name: LENOVO-81JL-LenovoYOGAC630_13Q50-LNVNB161216
-
-[1] 
-https://github.com/alsa-project/alsa-tests/pull/3/commits/1b5a552cff06c6039fbcf41b3117fc73712010df
-
-   My question is, can we change / add the more apropriate driver names 
-conditionally with a new kernel CONFIG option? Will you accept this change?
-
-   The goal is to group the related UCM2 configurations and do the required 
-split inside the UCM2 top-level configuration file based on card components 
-string or other card identificators (related to the driver).
-
-				Thanks,
-					Jaroslav
-
+diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
+index ad7053463889..2f37dad06321 100644
+--- a/drivers/soundwire/intel_init.c
++++ b/drivers/soundwire/intel_init.c
+@@ -183,29 +183,6 @@ static acpi_status sdw_intel_acpi_cb(acpi_handle handle, u32 level,
+ }
+ 
+ /**
+- * sdw_intel_init() - SoundWire Intel init routine
+- * @parent_handle: ACPI parent handle
+- * @res: resource data
+- *
+- * This scans the namespace and creates SoundWire link controller devices
+- * based on the info queried.
+- */
+-static void *sdw_intel_init(acpi_handle *parent_handle,
+-			    struct sdw_intel_res *res)
+-{
+-	acpi_status status;
+-
+-	status = acpi_walk_namespace(ACPI_TYPE_DEVICE,
+-				     parent_handle, 1,
+-				     sdw_intel_acpi_cb,
+-				     NULL, res, NULL);
+-	if (ACPI_FAILURE(status))
+-		return NULL;
+-
+-	return sdw_intel_add_controller(res);
+-}
+-
+-/**
+  * sdw_intel_exit() - SoundWire Intel exit
+  * @arg: callback context
+  *
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+2.11.0
+
