@@ -2,70 +2,83 @@ Return-Path: <SRS0=JLiH=6H=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 72F64C54FCB
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 12:25:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F75DC54FCB
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 13:50:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F27062076C
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 12:25:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8C73320728
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 13:50:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="F227hZrl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F27062076C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hIF6+YL+";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="qvr+wOAn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8C73320728
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3FFE8168F;
-	Thu, 23 Apr 2020 14:25:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3FFE8168F
+	by alsa0.perex.cz (Postfix) with ESMTPS id DDF1F168F;
+	Thu, 23 Apr 2020 15:49:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DDF1F168F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587644752;
-	bh=h72wOO6Cc6Z5MTc/wObVKUKg1Fh/IE7Srlc1ycm0q0Y=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1587649828;
+	bh=L5kU010tRLvlDykx2R2LNiOC7P2uliyNrRS983QiysA=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=F227hZrlAxCDUeAzkcn2u8L+J4zca+KosYA4NgP7OaymIiHhhXoIu2LXypj0getel
-	 HFbSwHxbssSewbht1QiVeaJ+Epd4Tdyvu+d4RGjHBDtB6JYGHRkmVNRmpqOMVQ8Jrm
-	 iUhp2zvpothXUiDdryjFee2g0aHXlJcaLhbr/cmg=
+	b=hIF6+YL+SESJ9PsDeacDGJNnB01dgJoiOpyVxB5JcqL5kRLdeE9AWoZSrlgTzPoby
+	 qz0X+H6j2seEleVX/NdzWYTodvoqL3yCjqbt4HYPv6zcBZXH5tkcSiNql+OtMiJvPr
+	 Ia0uLFegS5Imq59tBsk6217FM9/pkV3jsoD4SgRE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A35A7F8014A;
-	Thu, 23 Apr 2020 14:25:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 63B31F8014A;
+	Thu, 23 Apr 2020 15:49:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 45F64F801EC; Thu, 23 Apr 2020 14:25:00 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id EC9FBF801EC; Thu, 23 Apr 2020 15:49:34 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ED8F4F80121
- for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 14:24:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED8F4F80121
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id CE7BEABE2;
- Thu, 23 Apr 2020 12:24:52 +0000 (UTC)
-Date: Thu, 23 Apr 2020 14:24:53 +0200
-Message-ID: <s5h4ktawfsa.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [PATCH] ALSA: hda: Refactor Intel NHLT init
-In-Reply-To: <57dca563-b79c-3721-0057-22057db0e5a9@intel.com>
-References: <20200423112136.25207-1-cezary.rojewski@intel.com>
- <s5hd07ywikl.wl-tiwai@suse.de>
- <b37cb05b-f4c2-e747-c3f0-1582ed3afadd@intel.com>
- <s5h7dy6wg89.wl-tiwai@suse.de>
- <57dca563-b79c-3721-0057-22057db0e5a9@intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.com,
- pierre-louis.bossart@linux.intel.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4973EF800F2
+ for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 15:49:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4973EF800F2
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="qvr+wOAn"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 0F87D20728;
+ Thu, 23 Apr 2020 13:49:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1587649767;
+ bh=L5kU010tRLvlDykx2R2LNiOC7P2uliyNrRS983QiysA=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=qvr+wOAne/Dt5gCDxSwumAQtaM06h6Rcx2mWfPYuxyWvAg3INOrC9pI0TVoGhWBJ3
+ jkiC3PBLU2ox2NIZk0eLhWl5o06CytG87FVIoGtj8Hb6SQ5VaJo5kYvFjWZZJvLkJI
+ yoTLzM0JfEldXK7OyD+07JPX6BdYQbwWSboj1+44=
+Date: Thu, 23 Apr 2020 14:49:24 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Rong Chen <rong.a.chen@intel.com>
+Subject: Re: [PATCH] ASoC: soc-compress: avoid false-positive Wuninitialized
+ warning
+Message-ID: <20200423134924.GA53068@sirena.org.uk>
+References: <202004201540.vYPhhYMs%lkp@intel.com>
+ <20200422073543.1671-1-rong.a.chen@intel.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="ikeVEW9yuYc//A+q"
+Content-Disposition: inline
+In-Reply-To: <20200422073543.1671-1-rong.a.chen@intel.com>
+X-Cookie: Must be under 48 inches in height.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: alsa-devel@alsa-project.org, kbuild test robot <lkp@intel.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Vinod Koul <vkoul@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,57 +94,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 23 Apr 2020 14:21:15 +0200,
-Cezary Rojewski wrote:
-> 
-> On 2020-04-23 14:15, Takashi Iwai wrote:
-> > On Thu, 23 Apr 2020 13:40:10 +0200,
-> > Cezary Rojewski wrote:
-> >>
-> >> On 2020-04-23 13:24, Takashi Iwai wrote:
-> >>> On Thu, 23 Apr 2020 13:21:36 +0200,
-> >>> Cezary Rojewski wrote:
-> >>>>
-> >>>> NHLT fetch based on _DSM prevents ACPI table override mechanism from
-> >>>> being utilized. Make use of acpi_get_table to enable it and get rid of
-> >>>> redundant code.
-> >>>>
-> >>>> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-> >>>
-> >>> This looks like a nice cleanup and I'll happily apply if anyone can
-> >>> test with the actual hardware -- currently mine has no DSP, so unable
-> >>> to check.
-> >>>
-> >>>
-> >>> thanks,
-> >>>
-> >>> Takashi
-> >>>
-> >>
-> >> NHLT override method has been added for internal use half a year ago
-> >> and is for some time the default method within our CI. This is tested
-> >> on a wide spread of hardware, that is any Intel AVS archtecture,
-> >> including production laptops.
-> >
-> > This could be mentioned in the changelog, otherwise we have no idea
-> > about the test coverage.
-> >
-> 
-> My apologizes Takashi, indeed I should have mentioned that :(
-> 
-> I've forgotten about one more positive news:
-> https://bugs.acpica.org/show_bug.cgi?id=1525
-> 
-> Robert is working on official NHLT support for iASL. Currently, only
-> header gets decompilled while the rest is dumped as binary array.
-> 
-> Do you want me to resubmit the patch with this entire info appended to
-> the commit message?
 
-Yes, it would be appreciated.  Especially the additional information
-is helpful.
+--ikeVEW9yuYc//A+q
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Apr 22, 2020 at 03:35:43PM +0800, Rong Chen wrote:
+> gcc-6.5 and earlier show a new warning:
+>=20
+> sound/soc/soc-compress.c: In function =E2=80=98soc_compr_open=E2=80=99:
+> sound/soc/soc-compress.c:75:28: warning: =E2=80=98component=E2=80=99 is u=
+sed uninitialized in this function [-Wuninitialized]
+>   struct snd_soc_component *component, *save =3D NULL;
+>                               ^~~~~~~~~
 
-thanks,
+> Simplest fix is to initialize it to avoid the warning.
 
-Takashi
+This doesn't apply against current code, please check and resend.  TBH
+I'm not 100% sure the benefit here is worth it, this is a very old
+compiler and it seems like a bug in the compiler.
+
+--ikeVEW9yuYc//A+q
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6hnOQACgkQJNaLcl1U
+h9B11gf+Oc9Yy/dxZEWmYZXf4NvQ//qzlH4elElRYAl5NqjfV3NVh5GQmoZRnerX
+uA8j0Nkb9lM/Tw+mpj7W4YYu8seuBqFolV94YnsPGnlsVcePMlFZuZGcAeeMQ3QW
+3oMOcmp8EqlC2jtKTK4apSqOqJSnJdhRWRcGl/4KiFAodJ12bRASMJIKONxVDfT9
+tRqC7l4xmIoblzQ58tocFy6cTZMFzC9Rtx90T/3QFMVaDICCWEU0AwKmUqLeWxXW
+d3dbyaDaabfmjbSFGAdUY5/mEAiJZN3g9MgJUcxTdtuXZcW+Dw3+ERCmS5XHIeVd
+75wiLWNECNnXTUKVn6QWhSJjEDdEgQ==
+=IV9o
+-----END PGP SIGNATURE-----
+
+--ikeVEW9yuYc//A+q--
