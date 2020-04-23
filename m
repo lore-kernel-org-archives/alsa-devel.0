@@ -2,69 +2,72 @@ Return-Path: <SRS0=JLiH=6H=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 55E1AC2BA19
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 07:06:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B180C2BA19
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 07:12:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C00C4208E4
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 07:06:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 88257208E4
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 07:12:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WaVpKuFp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C00C4208E4
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pb8DH7JD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 88257208E4
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0F68F16D8;
-	Thu, 23 Apr 2020 09:06:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F68F16D8
+	by alsa0.perex.cz (Postfix) with ESMTPS id D5FD516DB;
+	Thu, 23 Apr 2020 09:11:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D5FD516DB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587625615;
-	bh=dMdZfYUeFp6hD3OAlB5zjL1UFZ4WZBEfGD2JhZkJu84=;
+	s=default; t=1587625934;
+	bh=YkjjGi+ZQtlS8uHxPka6cZ5175LAyRZHZBsCyOQY+hg=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WaVpKuFpKSuzknKPrh5zPaKBndmW/p5yQ/GUIezQ4K3MtkKd2H3VJw+T8dBp348Wp
-	 6cRAoTLMFPEt/aOJAZjgrKa5Xa42PTLeUUKmI+IHmk/KDttMNDXU2NQOonD+EbSQnb
-	 saS0CPRA+IHKA2emlYudnqQQpw0Cfs1GRg3fehHI=
+	b=pb8DH7JDsRKxKDfGhHdgFGLwqUvTT6aQvPrjZ+GBUngl4+P/WALYYVFBr1SdJbfHs
+	 +vXbRnInzKTXkxYyCrhlBoOIWy4s/YpBTJNZ+gpcauNC1QPoV2O3aCP2ctWZqCPFpO
+	 Za9IUhjDpBfuh7UPU5P4+P8Rpb95THiu+viQOGms=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 316CFF8014A;
-	Thu, 23 Apr 2020 09:06:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 61AF7F800F2;
+	Thu, 23 Apr 2020 09:11:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8D146F801EC; Thu, 23 Apr 2020 09:06:00 +0200 (CEST)
+ id 48AF7F801EC; Thu, 23 Apr 2020 09:11:19 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4FDE3F800F2
- for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 09:05:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4FDE3F800F2
+ by alsa1.perex.cz (Postfix) with ESMTPS id ECC3EF800F2
+ for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 09:11:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ECC3EF800F2
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id A2910AE38;
- Thu, 23 Apr 2020 07:05:54 +0000 (UTC)
-Date: Thu, 23 Apr 2020 09:05:54 +0200
-Message-ID: <s5h368uy94d.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 7FC0EAE39;
+ Thu, 23 Apr 2020 07:11:11 +0000 (UTC)
+Date: Thu, 23 Apr 2020 09:11:10 +0200
+Message-ID: <s5h1roey8vl.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Bjorn Helgaas <helgaas@kernel.org>
-Subject: Re: Unrecoverable AER error when resuming from RAM (hda regression in
- 5.7-rc2)
-In-Reply-To: <20200422232127.GA24666@google.com>
-References: <s5h8sinxlfz.wl-tiwai@suse.de> <20200422232127.GA24666@google.com>
+To: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Subject: Re: [PATCH] ALSA: usb-audio: Fix usb audio refcnt leak when getting
+ spdif
+In-Reply-To: <1587617711-13200-1-git-send-email-xiyuyang19@fudan.edu.cn>
+References: <1587617711-13200-1-git-send-email-xiyuyang19@fudan.edu.cn>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, linux-pm@vger.kernel.org,
- linux-pci@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
- linux-kernel@vger.kernel.org, "Alex Xu \(Hello71\)" <alex_y_xu@yahoo.ca>,
- Roy Spliet <nouveau@spliet.org>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Xin Tan <tanxin.ctf@gmail.com>, alsa-devel@alsa-project.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, yuanxzhang@fudan.edu.cn,
+ kjlu@umn.edu, Takashi Iwai <tiwai@suse.com>,
+ Colin Ian King <colin.king@canonical.com>,
+ Thomas Gleixner <tglx@linutronix.de>, "Geoffrey D. Bennett" <g@b4.vu>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,57 +83,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 23 Apr 2020 01:21:27 +0200,
-Bjorn Helgaas wrote:
+On Thu, 23 Apr 2020 06:54:19 +0200,
+Xiyu Yang wrote:
 > 
-> On Wed, Apr 22, 2020 at 11:25:04PM +0200, Takashi Iwai wrote:
-> > On Wed, 22 Apr 2020 22:50:28 +0200,
-> > Bjorn Helgaas wrote:
-> > > ...
-> > > I feel like this UR issue could be a PCI core issue or maybe some sort
-> > > of misuse of PCI power management, but I can't seem to get traction on
-> > > it.
-> > > 
-> > > > Then the display freezes and the system basically falls apart (can't 
-> > > > even sudo reboot -f, need to use magic sysrq).
-> > > > 
-> > > > I bisected this to "ALSA: hda: Skip controller resume if not needed". 
-> > > > Setting snd_hda_intel.power_save=0 resolves the issue.
-> > > 
-> > > FWIW, the complete citation is c4c8dd6ef807 ("ALSA: hda: Skip
-> > > controller resume if not needed"),
-> > > https://git.kernel.org/linus/c4c8dd6ef807, which first appeared in
-> > > v5.7-rc2.
-> > 
-> > Yes, and I posted the fix patch right now:
-> >   https://lore.kernel.org/r/20200422203744.26299-1-tiwai@suse.de
-> > 
-> > The possible cause was the tricky resume code that both HD-audio
-> > controller (the parent PCI device) and the codec devices used.
-> > 
-> > At least the patch above seems working for the reporter's machine.
-> > Now we need a bit more testing before merging, but it looks promising,
-> > so far.
+> snd_microii_spdif_default_get() invokes snd_usb_lock_shutdown(), which
+> increases the refcount of the snd_usb_audio object "chip".
 > 
-> Great, I'm glad you figured something out because I sure wasn't
-> getting anywhere!
+> When snd_microii_spdif_default_get() returns, local variable "chip"
+> becomes invalid, so the refcount should be decreased to keep refcount
+> balanced.
 > 
-> Maybe this is a tangent, but I can't figure out what
-> snd_power_change_state() is doing.  It *looks* like it's supposed to
-> change the PCI power state, but I gave up trying to figure out where
-> it actually touches the device.
+> The reference counting issue happens in several exception handling paths
+> of snd_microii_spdif_default_get(). When those error scenarios occur
+> such as usb_ifnum_to_if() returns NULL, the function forgets to decrease
+> the refcnt increased by snd_usb_lock_shutdown(), causing a refcnt leak.
+> 
+> Fix this issue by jumping to "end" label when those error scenarios
+> occur.
+> 
+> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
 
-Not really, it merely updates the internal state field stored in the
-sound card object, see in include/sound/core.h:
-
-static inline void snd_power_change_state(struct snd_card *card, unsigned int state)
-{
-	card->power_state = state;
-	wake_up(&card->power_sleep);
-}
-
-The sound API blocks the operation while suspend/resume explicitly
-with this card top-level signal.
+Applied now (with Cc-to-stable and Fixes tags).
 
 
 thanks,
