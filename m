@@ -2,92 +2,127 @@ Return-Path: <SRS0=JLiH=6H=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,HK_RANDOM_FROM,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AD20C54FD0
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 07:27:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D60CAC2BA19
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 07:39:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AC43520736
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 07:27:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5DCFB208E4
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 07:39:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hFubZ6SM";
-	dkim=pass (1024-bit key) header.d=fudan.edu.cn header.i=@fudan.edu.cn header.b="3gfq+gpd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AC43520736
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=fudan.edu.cn
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oL+sDb70";
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="rel7F6qG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5DCFB208E4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0CE751701;
-	Thu, 23 Apr 2020 09:26:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0CE751701
+	by alsa0.perex.cz (Postfix) with ESMTPS id B5610169C;
+	Thu, 23 Apr 2020 09:38:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5610169C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587626864;
-	bh=LrjWODa0X+DhJjf9qk4KdS3bXX4r23p+duv4y71ajts=;
+	s=default; t=1587627543;
+	bh=BHHvbz4zpO5DsdZ4vOmFS2v/7IAcMeRnaX3pfxYi4nk=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=hFubZ6SMTuz99LN97ZTbd4k5znxelO4IpQ6cTCRPn2ZSgcxZs8IVeZHD6z9A2cmZv
-	 dKK6+gwI0d2YkLxRXpZm64u9OvhvdI5ZbeX4C/hySSzv9N50V2LWJlrR/65TfFAn7s
-	 03+RCpu5Ut7yxaBVvjmfgAK93FDvkNL/iC3QjPSE=
+	b=oL+sDb70bWOWcqR1jBn2pXgxK3Js3WJVqHz1L528j3BMVZRuUWClqN4Rgb6xkmmwM
+	 jDE5S0UZgHeLRg+2Q6N3vf6gPI+MoHf3PJzZN1bk29cnXxqVfPInORxGNRtppGKur1
+	 WOOgGTUb4XRs1QvuHIpr/uW8DH62CFU+EEdSHPyE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E21A8F80279;
-	Thu, 23 Apr 2020 09:25:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 39AD1F80121;
+	Thu, 23 Apr 2020 09:38:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 272D8F801EC; Thu, 23 Apr 2020 07:02:07 +0200 (CEST)
-Received: from fudan.edu.cn (mail.fudan.edu.cn [202.120.224.73])
- by alsa1.perex.cz (Postfix) with ESMTP id 6FD47F800FF
- for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 07:01:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6FD47F800FF
+ id 52993F801EC; Thu, 23 Apr 2020 09:38:11 +0200 (CEST)
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com
+ (mail-eopbgr60054.outbound.protection.outlook.com [40.107.6.54])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 43F4BF800F2
+ for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 09:38:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43F4BF800F2
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=fudan.edu.cn header.i=@fudan.edu.cn
- header.b="3gfq+gpd"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
- Message-Id; bh=FzFFOupEbTJiKCO0+vjZwkaOJbfDiGf31CZ3WKTh5eI=; b=3
- gfq+gpdSWJL6dCPSa7mWohhjKPqPIrzUPVPR8PZi4VQQwYuAThZKEq3p4J+n0VIP
- FeweYYqwE8HcipEcUV7W5wRyUqxDK1H7qiiM79ripExcNVO+DZPfAlomMXtX8bFy
- 4WmA3fOdKlXZ71ZQFVIuvdbWasW6XYgOwVyEFMO2AA=
-Received: from localhost.localdomain (unknown [120.229.255.80])
- by app2 (Coremail) with SMTP id XQUFCgDXiOErIaFe4opPAA--.26330S3;
- Thu, 23 Apr 2020 13:01:34 +0800 (CST)
-From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Xin Tan <tanxin.ctf@gmail.com>, "Geoffrey D. Bennett" <g@b4.vu>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Colin Ian King <colin.king@canonical.com>,
- Thomas Gleixner <tglx@linutronix.de>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Xiyu Yang <xiyuyang19@fudan.edu.cn>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
-Subject: [PATCH] ALSA: usb-audio: Fix usb audio refcnt leak when getting spdif
-Date: Thu, 23 Apr 2020 12:54:19 +0800
-Message-Id: <1587617711-13200-1-git-send-email-xiyuyang19@fudan.edu.cn>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: XQUFCgDXiOErIaFe4opPAA--.26330S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7CryrGFy3WFWkCr1rZr1DWrg_yoW8Ar13pr
- W3WrWvyF1YqFW3X3Z8tr4kuF95Za1Iya93GFWfKwn7Zw47Jas3Xw48t34Yvr4jk397G34a
- va1jvF18ua98C37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
- 9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
- rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
- 1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26rxl
- 6s0DM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
- 0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
- 64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
- Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAG
- YxC7M4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
- AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
- 17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
- IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq
- 3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
- nIWIevJa73UjIFyTuYvjfUOlksUUUUU
-X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
-X-Mailman-Approved-At: Thu, 23 Apr 2020 09:25:07 +0200
-Cc: yuanxzhang@fudan.edu.cn, kjlu@umn.edu
+ dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com
+ header.b="rel7F6qG"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SRu7JTYFnogXoTNcW8GQSKi5s9VhLlu04zEhNkyZBgB0SK0jqyrrtee1frTW5XNjXpFyC5+WlS3JYeZYFQ+ncdtosjt5qcVaBPymosomSTxWc1ESET6s9pe5BCZSktV2LSlYmLeesm1oOV8IZ9ZlEt7l1GWU1mlB4A69KLeLxzHzI2xzp4vxrQbC6XLs+fSSnAcb+INeYQAW1Du/AaIae3tXmrWLipwiAhBnCnzhuY9oqGsno0+RwIFR92yAHO7XxTtu62qkRj5Gtgpsuwe3Rs9DHTiged6cDCYY65qmiwMX7XP6WLXNjuF99I8XMsp3iXSfzpPAuheLNJlDdeNcBw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DyqK3YEtIl8Lv4Z1U8+JHGKKgMKXFexlIZSFylSMOWQ=;
+ b=bloZ8j3c6ZAdMoZSlBE69Qlz3FqxkhZRLUGxQoFM+7S479kgufrULfsCeBBpFs8wKEifsTBTn9OAvul3GmOHu963F/rcla7Sno3ks+zPlFlyVnFfd634wNuEGb8ggZCGhjbycn5kI5FX25c/jdysyqMi+b+eStubWoTOm/tw0Vjre/pIEoxvilJ5HG4R1lmnikvEGIbZa0+GZ+bojafX8ecQEvdfZOZ3PmP8g59HQs82h/teEL++pC4teL4nnMZHDtKCsulMOvQe9P7eZ6HZDhVBGZB2EV4+P5qBEerXBrQoDcmAAi7GOa7K3tD0lHhlfNt+g+q5GSJewuZcsuEkZA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2; 
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DyqK3YEtIl8Lv4Z1U8+JHGKKgMKXFexlIZSFylSMOWQ=;
+ b=rel7F6qGlcFPRVhXAB+EqcM/yt6nz22JHHiGKd4nxCZSZqxPBOB7pqYIlZqcf4VpLOKXCk7YeBFOmDFHWV6YsyCGzF50e2l+ywHYBHRa4cGgsZT74EqukadPRtxm9ytM1TWVuT1r4Uggw2qsOSHDOhTlV/x8hAlImQmV7OL1QMc=
+Received: from VI1PR0402MB3342.eurprd04.prod.outlook.com
+ (2603:10a6:803:11::14) by VI1PR0402MB3454.eurprd04.prod.outlook.com
+ (2603:10a6:803:a::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13; Thu, 23 Apr
+ 2020 07:38:04 +0000
+Received: from VI1PR0402MB3342.eurprd04.prod.outlook.com
+ ([fe80::c0d8:b266:77f1:ed8c]) by VI1PR0402MB3342.eurprd04.prod.outlook.com
+ ([fe80::c0d8:b266:77f1:ed8c%6]) with mapi id 15.20.2937.012; Thu, 23 Apr 2020
+ 07:38:04 +0000
+From: "S.j. Wang" <shengjiu.wang@nxp.com>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH] ASoC: wm8962: restore the CLOCKING2 register in resume
+Thread-Topic: [PATCH] ASoC: wm8962: restore the CLOCKING2 register in resume
+Thread-Index: AdYZQfo76p2wS61GRuCd1txp3pItIQ==
+Date: Thu, 23 Apr 2020 07:38:04 +0000
+Message-ID: <VI1PR0402MB3342492AE94B24C7E92F1ABDE3D30@VI1PR0402MB3342.eurprd04.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=shengjiu.wang@nxp.com; 
+x-originating-ip: [119.31.174.66]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: f4a6c756-481b-46f9-223e-08d7e759425e
+x-ms-traffictypediagnostic: VI1PR0402MB3454:
+x-microsoft-antispam-prvs: <VI1PR0402MB3454002C7691594D8197394DE3D30@VI1PR0402MB3454.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 03827AF76E
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:VI1PR0402MB3342.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
+ SFTY:;
+ SFS:(4636009)(39860400002)(136003)(346002)(366004)(396003)(376002)(2906002)(478600001)(7416002)(26005)(316002)(7696005)(6506007)(71200400001)(8936002)(6916009)(33656002)(81156014)(8676002)(52536014)(9686003)(86362001)(5660300002)(76116006)(54906003)(66476007)(66946007)(66556008)(4326008)(64756008)(55016002)(66446008)(186003);
+ DIR:OUT; SFP:1101; 
+received-spf: None (protection.outlook.com: nxp.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: wWh5pKZVxPmzvo3xYq7Wgggn5XeqlFkrltx63MVHiweBNqDcuWlqx4mru4fzb1SeeY0dMz1ZNMdfPgowN5P1arhAe4x3kl/lMqFQaQsdt/8JQ8jz6ehn12Ifzd4QSOJvWKkGo9Cf0MyjLo1lCHKAPwLOw/ukn+HujvQhNcmSukZffxgp1N+WT2yrLqxQGRcCBA5ImP6Ix7PUcRbETcYNzRxEtn23qA75OySbM0EIQhycufz+O94zD/ZKh6vvL2PIF79jR67Q3GbuCfpfX7GtlNbKfgWLm85jrRsUSseiKRskWT16Dc2Y1moZrqnNxq+y4amkJt9o1A+rzEWG5bgaxWwSpuDpPuJEf8s/Vsv7VCqIQm5E8RXMuSPa5VL5yW+mmq6cYgexVffGvHOegMtbBmI2AeiYpTTvCkMMDTWzAhduu6W+NrYjM9+hRqgMq/xN
+x-ms-exchange-antispam-messagedata: I6Wna6y8yCT/lnOadigxqod3dmhf3SJl7jqgGXWJbKFgX8+ONSRDVtsdj7n5D1MmTpwrhPcYNT945YfPmWV7s8qgFUy8YjSENT+2kixXna56aKpwjCBllwuL2TEG3ZhTVJxi2NZHBRJk50uh2OP4sHEoLzT7e9UAC9G3W1FlYUvaLTMnBlO7IfRMSv/pX2P58SAy+bhWyLOTnOlyOJgCDONUt04LOyUR7VAJnbt/7wOgYFWoWkhIEWE9mz7Pu7atNyo78lRKcGcph2R8Qsid/GJFdDE2aX4l8hUaESH9A7UfEm41QXKvbhchB1BVlZKOR2q4q4cWpv54uuwk6LI6qq0Oym9hwqbT52RrYUH1uzx5c0wTEf0RFED/jDXUkm8w3eNU2H0c+dgp6qt7IP8zJo6Nkuq2v7hNMok9i7NiqNFWSwLbFV8LyO+7w3rTH4+VLNwJANSn0DO/M9FYnq29AOnQviNzsP/eBsJZ1QIMWNlaVdl+BNto8MU6C1FuPCu/Rc7bezCMKtrsvhlObFHi+WEXDw7N14+bHmRJZpJpN0uzuSUQ5oqzLeTTKiO323KbEaQXe+Qj4EuTiBAF5HRoiriz9Ow5LVXn7PCDujMbZOpzFgbxCZGevthkRWZL+lLL97SswiceQTd50DPIOND8NxJzwN2x3Eo1aRmhtyRYRK/5QTJLmQARyxKwR8vJHcXaNkbjjg+5TdyE9A5lEOd1SNk8N503jSgJfj6y/SipPPH3neQLKO0R6x7Hac/PRD1pWOZ3pAWB/qdEA6c2sjANbyvBFw13Y21higzAv5IAOVc=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f4a6c756-481b-46f9-223e-08d7e759425e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Apr 2020 07:38:04.6138 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: xlqCGUFYF15Tzuu261n1OAyd/XfM/grLP5FQTLGnOq4bxvMr99DSxhXmW8k4+tJkiFY0ff6sj7vwHJNQI41aCw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3454
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "patches@opensource.cirrus.com" <patches@opensource.cirrus.com>,
+ "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+ "broonie@kernel.org" <broonie@kernel.org>,
+ "tglx@linutronix.de" <tglx@linutronix.de>, "info@metux.net" <info@metux.net>,
+ "allison@lohutok.net" <allison@lohutok.net>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -103,51 +138,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-snd_microii_spdif_default_get() invokes snd_usb_lock_shutdown(), which
-increases the refcount of the snd_usb_audio object "chip".
 
-When snd_microii_spdif_default_get() returns, local variable "chip"
-becomes invalid, so the refcount should be decreased to keep refcount
-balanced.
+>=20
+> On Tue, Apr 21, 2020 at 08:02:15PM +0800, Shengjiu Wang wrote:
+> > The CLOCKING2 is a volatile register, but some bits should be restored
+> > when resume, for example SYSCLK_SRC. otherwise the output clock is
+> > wrong
+> >
+> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> > ---
+> >  sound/soc/codecs/wm8962.c | 8 ++++++++
+> >  1 file changed, 8 insertions(+)
+> >
+> > diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+> > index d9d59f45833f..6e96c0c5ad2a 100644
+> > --- a/sound/soc/codecs/wm8962.c
+> > +++ b/sound/soc/codecs/wm8962.c
+> > @@ -82,6 +82,7 @@ struct wm8962_priv {  #endif
+> >
+> >       int irq;
+> > +     u32 regcache_clocking2;
+> >  };
+> >
+> >  /* We can't use the same notifier block for more than one supply and
+> > @@ -3813,6 +3814,10 @@ static int wm8962_runtime_resume(struct
+> device
+> > *dev)
+> >
+> >       regcache_sync(wm8962->regmap);
+> >
+> > +     regmap_update_bits(wm8962->regmap, WM8962_CLOCKING2,
+> > +                        WM8962_SYSCLK_SRC_MASK,
+> > +                        wm8962->regcache_clocking2);
+> > +
+>=20
+> I wonder if it might just be better to make the register non-volatile? Fr=
+om
+> looking through the datasheet I am guessing this is volatile for the
+> CLASSD_CLK_DIV bits, which are controlled by the chip itself. But the
+> datasheet claims these are read only and protected by the security key, a=
+nd
+> they are not read by the driver at all.
+>=20
+> Thanks,
+> Charles
+>=20
+Use non-volatile also can fix the issue, I will send v2 for it
 
-The reference counting issue happens in several exception handling paths
-of snd_microii_spdif_default_get(). When those error scenarios occur
-such as usb_ifnum_to_if() returns NULL, the function forgets to decrease
-the refcnt increased by snd_usb_lock_shutdown(), causing a refcnt leak.
-
-Fix this issue by jumping to "end" label when those error scenarios
-occur.
-
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
----
- sound/usb/mixer_quirks.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
-
-diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
-index c237e24f08d9..0f072426b84c 100644
---- a/sound/usb/mixer_quirks.c
-+++ b/sound/usb/mixer_quirks.c
-@@ -1508,11 +1508,15 @@ static int snd_microii_spdif_default_get(struct snd_kcontrol *kcontrol,
- 
- 	/* use known values for that card: interface#1 altsetting#1 */
- 	iface = usb_ifnum_to_if(chip->dev, 1);
--	if (!iface || iface->num_altsetting < 2)
--		return -EINVAL;
-+	if (!iface || iface->num_altsetting < 2) {
-+		err = -EINVAL;
-+		goto end;
-+	}
- 	alts = &iface->altsetting[1];
--	if (get_iface_desc(alts)->bNumEndpoints < 1)
--		return -EINVAL;
-+	if (get_iface_desc(alts)->bNumEndpoints < 1) {
-+		err = -EINVAL;
-+		goto end;
-+	}
- 	ep = get_endpoint(alts, 0)->bEndpointAddress;
- 
- 	err = snd_usb_ctl_msg(chip->dev,
--- 
-2.7.4
-
+Best regards
+Wang shengjiu
