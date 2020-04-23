@@ -2,74 +2,80 @@ Return-Path: <SRS0=JLiH=6H=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D25AC54FD0
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 17:36:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EC683C54FCB
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 17:37:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D27AE20776
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 17:36:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 783B720736
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 17:37:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ighi/JlM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D27AE20776
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PSY9vAJb";
+	dkim=pass (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="OPFPgto7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 783B720736
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 32ED1168D;
-	Thu, 23 Apr 2020 19:35:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32ED1168D
+	by alsa0.perex.cz (Postfix) with ESMTPS id B77C3169C;
+	Thu, 23 Apr 2020 19:36:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B77C3169C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587663368;
-	bh=uKDZVhYeC2mtY2+7cOEflkxW7LKe15x81oNiiuVub+E=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1587663427;
+	bh=Hj4numYq+Pf8UZS4RjrUcJGml4jnQjBPUvbIs/3kBTw=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ighi/JlMSx0aLxydhjdgAn6aFz+XXHKxMCZdJUrBezRwEW6i03KDyjUSbu+mBzp5k
-	 JvcbyhZ4zuTq3GcFi/otQssFVyhqeo7JUv4SMXYWScnogMgWYhbWEOIK2J9HXkX0k6
-	 VFFK+ikurrM1ZjUOW+M20jNDaQKxSDQxCsa9Qo1c=
+	b=PSY9vAJbk2jLU5IepjTMzuE2J6ER4AN+ROvj6iWmtSadKRRgaHXDC6+o/HUtPKUda
+	 I4Mf1zeYAs5jCq5/DlkDKinPgiEpDg7ph2o8RGLVCMhP4Ru42ONE0Hj+SBlVmzqFAh
+	 4wEs6V9Ed8e1zTM1sM2RRubsPWTGBasPy/WF2bog=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B3D4BF80121;
-	Thu, 23 Apr 2020 19:35:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 55667F8014A;
+	Thu, 23 Apr 2020 19:36:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 23A08F801EC; Thu, 23 Apr 2020 19:35:16 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id ED4C5F801F5; Thu, 23 Apr 2020 19:36:15 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CF51FF800FF
- for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 19:35:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF51FF800FF
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id C5CEAADE8;
- Thu, 23 Apr 2020 17:35:12 +0000 (UTC)
-Date: Thu, 23 Apr 2020 19:35:13 +0200
-Message-ID: <s5hr1wet8a6.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Alexander Tsoy <alexander@tsoy.me>
-Subject: Re: [PATCH] ALSA: usb-audio: Apply async workaround for Scarlett 2i4
- 2nd gen
-In-Reply-To: <s5htv1at8kb.wl-tiwai@suse.de>
-References: <7190177d62f349eea7a5d1056924a63fc4270d43.camel@tsoy.me>
- <20200422185522.3347-1-grpintar@gmail.com>
- <a45d18d7922d780f29f89cff855eb30fbdd1fce8.camel@tsoy.me>
- <s5heesfxo2o.wl-tiwai@suse.de>
- <c0cb78664e3acd94f07e59f3a4216c16ab9f497d.camel@tsoy.me>
- <s5hy2qmwts3.wl-tiwai@suse.de> <s5heesewip1.wl-tiwai@suse.de>
- <470d034599514e83454663f389bad30fd98ad3e2.camel@tsoy.me>
- <99bb394ff162a16442fd83c0ab56a9d8c0055877.camel@tsoy.me>
- <s5htv1at8kb.wl-tiwai@suse.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: Gregor Pintar <grpintar@gmail.com>, alsa-devel@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id C45B2F80121
+ for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 19:36:09 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id E3524A0040;
+ Thu, 23 Apr 2020 19:36:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz E3524A0040
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1587663367; bh=vSj8/Qy2kNXIcWX2PH5tOXhlXmsfmgsKIJ5idyCj0YI=;
+ h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+ b=OPFPgto7T2rzKcc7Itopxz0jzuO1qWE1LVw3RgsJyxCwwyxzz8ue3I6h1B0HeT381
+ TNJe5jN6bShXMTWSGPF/KrDkZfpuRwZTcSDFiBiHWm1lqom6YDqlpE79HmSaAjoe3X
+ 0gx3yT3h4NE47KbL1SOnE8stbt2NM0KS2ZHpg+rY=
+Received: from p50.perex-int.cz (unknown [192.168.100.94])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Thu, 23 Apr 2020 19:36:03 +0200 (CEST)
+Subject: Re: [alsa-devel] [alsa-lib][RFC PATCH] ucm: reset config id of
+ condition items
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ libin.yang@linux.intel.com, alsa-devel@alsa-project.org
+References: <1587607135-20106-1-git-send-email-libin.yang@linux.intel.com>
+ <4b5a1e72-9d8c-221d-f0ea-df44f1ffb1d5@linux.intel.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Message-ID: <79a9e97e-c58a-403a-9ffb-b9d3f9f70ad2@perex.cz>
+Date: Thu, 23 Apr 2020 19:36:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <4b5a1e72-9d8c-221d-f0ea-df44f1ffb1d5@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: libin.yang@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,56 +91,99 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 23 Apr 2020 19:29:08 +0200,
-Takashi Iwai wrote:
+Dne 23. 04. 20 v 15:06 Pierre-Louis Bossart napsal(a):
 > 
-> On Thu, 23 Apr 2020 18:57:34 +0200,
-> Alexander Tsoy wrote:
-> > 
-> > And some further notes:
-> > 
-> > - I removed locking from snd_usb_endpoint_next_packet_size() and this
-> > seems completely fixed an issue with large URBs I reported here:
-> > 
-> > https://bugzilla.kernel.org/show_bug.cgi?id=199327#c28
-> > 
-> > So playing at 96 kHz, driver packs 48 frames per URB and no more audio
-> > discontinuities.
 > 
-> Hmm, that's weird.
+> On 4/22/20 8:58 PM, libin.yang@linux.intel.com wrote:
+>> From: Libin Yang <libin.yang@intel.com>
+>>
+>> UCMv2 supports "If" statement and will merge the same items with
+>> compound_merge(). If the items have the same id, it will fail to
+>> add the config items. And the id of the item in an array is
+>> automatically generated with the increased number. It is probably
+>> that some items to be merged have the same id. Let's add prefix
+>> in the id to avoid such situation.
+>>
+>> For example:
+>>
+>> If.seq1 {
+>> 	Condition {
+>> 		Type ControlExists
+>> 		Control "name='PGA1.0 1 Master Playback Volume'"
+>> 	}
+>> 	True {
+>> 		EnableSequence [
+>> 			cset "name='PGA1.0 1 Master Playback Volume' 50"
+>> 		]
+>> 	}
+>> }
+>>
+>> If.seq2 {
+>> 	Condition {
+>> 		Type ControlExists
+>> 		Control "name='PGA2.0 2 Master Playback Volume'"
+>> 	}
+>> 	True {
+>> 		EnableSequence [
+>> 			cset "name='PGA2.0 2 Master Playback Volume' 50"
+>> 		]
+>> 	}
+>> }
+>>
+>> If.seq3 {
+>> 	Condition {
+>> 		Type ControlExists
+>> 		Control "name='PGA3.0 3 Master Playback Volume'"
+>> 	}
+>> 	True {
+>> 		EnableSequence [
+>> 			cset "name='PGA3.0 3 Master Playback Volume' 50"
+>> 		]
+>> 	}
+>> }
+>>
+>> If seq1, seq2 and seq3 conditions are true, UCM will fail to initialize.
+>>
+>> This patch rename the config id to avoid the same id conflict.
 > 
-> If removing the lock from snd_usb_endpoint_next_packet_size() really
-> fixes the problem, it implies the lock contention.  But as far as I
-> see the code performed in this lock isn't conflicting so much.  The
-> URB processing shouldn't happen in parallel for the same EP.
+> The example confuses me completely, I checked three times and the seq1,
+> seq2 and seq3 parts configure different controls.
+> 
+> Can you clarify what the conflict is and what id you were referring to?
 
-BTW, one potential racy code I found while looking at the code is the
-list management in queue_pending_output_urbs().  The fix patch is
-below.
+The arrays in the ALSA configs are represented like:
 
+User syntax:
 
-Takashi
+name [
+   value0
+   value1
+]
 
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -321,17 +321,17 @@ static void queue_pending_output_urbs(struct snd_usb_endpoint *ep)
- 			ep->next_packet_read_pos %= MAX_URBS;
- 
- 			/* take URB out of FIFO */
--			if (!list_empty(&ep->ready_playback_urbs))
-+			if (!list_empty(&ep->ready_playback_urbs)) {
- 				ctx = list_first_entry(&ep->ready_playback_urbs,
- 					       struct snd_urb_ctx, ready_list);
-+				list_del_init(&ctx->ready_list);
-+			}
- 		}
- 		spin_unlock_irqrestore(&ep->lock, flags);
- 
- 		if (ctx == NULL)
- 			return;
- 
--		list_del_init(&ctx->ready_list);
--
- 		/* copy over the length information */
- 		for (i = 0; i < packet->packets; i++)
- 			ctx->packet_size[i] = packet->packet_size[i];
+Internal tree:
+
+name.0 value0
+name.1 value1
+
+or
+
+name {
+   0 value0
+   1 value1
+}
+
+(all three syntaxes are equal, the array just removes the indexes for the 
+readability)
+
+This patch tries to change name.0 to something like name.unique-0 or so which 
+is not so much pretty.
+
+You can just declare the new sequences like this to avoid clash:
+
+EnableSequence.seq3.cset "name='PGA3.0 3 Master Playback Volume' 50"
+
+					Jaroslav
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
