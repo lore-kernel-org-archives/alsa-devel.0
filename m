@@ -2,80 +2,79 @@ Return-Path: <SRS0=JLiH=6H=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 52188C2BA19
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 10:43:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2028CC2BA19
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 10:47:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C96A52076C
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 10:43:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9EC032098B
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 10:47:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="a9C/Nbuj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C96A52076C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="H3+vgQRE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9EC032098B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2BC32168B;
-	Thu, 23 Apr 2020 12:43:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2BC32168B
+	by alsa0.perex.cz (Postfix) with ESMTPS id EA72E1684;
+	Thu, 23 Apr 2020 12:46:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA72E1684
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587638636;
-	bh=QGC+GiNW3P9m4GxPzCbD1ArTBfv39vEtIRbX9EdJf6M=;
+	s=default; t=1587638828;
+	bh=u/WpKl3YPbT214r0GRIqUd6AIbVt/welZLu2uZ8r6nk=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=a9C/Nbuj/1M1qCv12BgMRvs4B5vP7SCCnyj+FcrRu1Mjv1Ad64XRWmLAFEw7hfycy
-	 Bd+r4iL9lTpu19pGkcJryHzoFtfZUMDBNVeZbaQ4S5HiFrV03dRMZdU16dF2PUzDGL
-	 5KSmMrI7xlGEpl+AYO7uKP6V+BIyH07Lt8GJRYsc=
+	b=H3+vgQRE6z59VmUzzriEDOoURlo9SV/YPTYPHRK21ynFqzyC+4pMfC6rNDFJ4G16i
+	 2J3uC0lFfWbkihA25UD80spn4j6KjN+fVlrF6BtYbMoW3NGRxvAF6qaOOIuO34ZAKd
+	 vRWWYJoEoMHtHO0+58xjXkg/W+tP0DiMhkw98H6s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9D826F8014A;
-	Thu, 23 Apr 2020 12:43:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 76551F8014A;
+	Thu, 23 Apr 2020 12:46:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 442D9F801EC; Thu, 23 Apr 2020 12:42:56 +0200 (CEST)
+ id 5D140F801EC; Thu, 23 Apr 2020 12:46:14 +0200 (CEST)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1E56AF800FF
- for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 12:42:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E56AF800FF
-IronPort-SDR: 5fnq+xklqkjv4cuTGipheTqta9heqzwjQV2knrkXfFgJhi4QspfkSIpZJSzN07J+Ni+69Lwo8r
- nPOFuMboTRfw==
+ by alsa1.perex.cz (Postfix) with ESMTPS id D8BCAF800F2
+ for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 12:46:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8BCAF800F2
+IronPort-SDR: aZ+pwk3azVc3BQxL0Hr4Xlx5sDsHlehyRJmxS7ChyCbtLUSIEMx6/GElQHv4ippEDjcX+so+8M
+ kLCYfhihZP2w==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Apr 2020 03:42:44 -0700
-IronPort-SDR: 4Sb3Ia5LTMYNWNFUkEnop6kS5+L6Dbo+FekZ1Ja/k6zQGAk770SRrOzrkZkyk992OsfQgiB3x/
- 310YVgt/CHDg==
+ 23 Apr 2020 03:46:08 -0700
+IronPort-SDR: wijmJ2ni+uPoQc+wmoyu7LzERXZoKLsp7Qfe+iqfydkBy+yFj93w00DNN21rrGoqlaSgjgVupo
+ z4v39d3BPVcQ==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,307,1583222400"; d="scan'208";a="456862856"
+X-IronPort-AV: E=Sophos;i="5.73,307,1583222400"; d="scan'208";a="456863767"
 Received: from crojewsk-mobl1.ger.corp.intel.com (HELO [10.213.5.100])
  ([10.213.5.100])
- by fmsmga005.fm.intel.com with ESMTP; 23 Apr 2020 03:42:42 -0700
-Subject: Re: [PATCH v2 0/3] Add support for different DMIC configurations
-To: Mark Brown <broonie@kernel.org>
+ by fmsmga005.fm.intel.com with ESMTP; 23 Apr 2020 03:46:06 -0700
+Subject: Re: [PATCH v2 2/3] ASoC: Intel: Multiple I/O PCM format support for
+ pipe
+To: Mateusz Gorski <mateusz.gorski@linux.intel.com>,
+ alsa-devel@alsa-project.org
 References: <20200422120532.31492-1-mateusz.gorski@linux.intel.com>
- <89873366-c063-5754-0e18-511477c3daa5@intel.com>
- <20200423102116.GB4808@sirena.org.uk>
+ <20200422120532.31492-3-mateusz.gorski@linux.intel.com>
 From: Cezary Rojewski <cezary.rojewski@intel.com>
-Message-ID: <20dcc0a1-1306-1eb9-1060-42b46eb2d56a@intel.com>
-Date: Thu, 23 Apr 2020 12:42:42 +0200
+Message-ID: <3e2a9e70-add2-77d4-58ae-4e64ac92efe4@intel.com>
+Date: Thu, 23 Apr 2020 12:46:05 +0200
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20200423102116.GB4808@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+In-Reply-To: <20200422120532.31492-3-mateusz.gorski@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org, tiwai@suse.com,
- Mateusz Gorski <mateusz.gorski@linux.intel.com>
+Cc: Pavan K <pavan.k.s@intel.com>, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,30 +90,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 2020-04-23 12:21, Mark Brown wrote:
-> On Thu, Apr 23, 2020 at 11:11:05AM +0200, Cezary Rojewski wrote:
->> On 2020-04-22 14:05, Mateusz Gorski wrote:
+On 2020-04-22 14:05, Mateusz Gorski wrote:
+> For pipes supporting multiple input/output formats, kcontrol is
+> created and selection of pipe input and output configuration
+> is done based on control set.
 > 
->>> Changes in v2:
->>> - removed patch 1/4 swapping machine device and platform device
->>>     registration order
->>> - alt_tplg_name creation now uses different field to read machine driver
->>>     name
->>> - including of <sound/soc-acpi.h> moved to different patch
-> 
->> Ain't change-block supposed to be just below message body?
-> 
-> Only in patches to stop them getting included in the git changelog.
+> If more than one configuration is supported, then this patch
+> allows user to select configuration of choice
+> using amixer settings.
 > 
 
-Thanks for info, Mark.
+> diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+> index 58f77b6c5cda..2e6eca619c4e 100644
+> --- a/sound/soc/intel/skylake/skl-topology.c
+> +++ b/sound/soc/intel/skylake/skl-topology.c
+> @@ -579,6 +579,38 @@ static int skl_tplg_unload_pipe_modules(struct skl_dev *skl,
+>   	return ret;
+>   }
+>   
+> +static bool skl_tplg_is_multi_fmt(struct skl_dev *skl, struct skl_pipe *pipe)
+> +{
+> +	int i;
+> +	struct skl_pipe_fmt *cur_fmt;
+> +	struct skl_pipe_fmt *next_fmt;
+> +
 
->> Don't believe series need to be resend just to fix cosmetics:
->> Acked-by: Cezary Rojewski <cezary.rojewski@intel.com>
-> 
-> Well, I don't seem to have a copy of it so it'll need a resend for that
-> unless it's just held up somewhere and arrives shortly.
-> 
-
-Doubt it will as Mateusz forgot to include you & Pierre in v2.
-Resend it is then!
+Hmm, some code-cosmetics are left unattended too.
+Please reorder 'i' declaration to the bottom.
