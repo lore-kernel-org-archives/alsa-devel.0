@@ -2,62 +2,62 @@ Return-Path: <SRS0=JLiH=6H=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E248C55189
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 01:45:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B0CBC55189
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 01:47:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2AEF820787
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 01:45:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 02D3220787
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 01:47:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bo0D2eEP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2AEF820787
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EFVm2NJQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 02D3220787
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 57EC416CF;
-	Thu, 23 Apr 2020 03:44:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57EC416CF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4A27816D4;
+	Thu, 23 Apr 2020 03:46:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A27816D4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587606336;
-	bh=l5M1dpE9L1OjiYzq/bQIxrvab4M70Cm3vLE3wpW3gdI=;
+	s=default; t=1587606433;
+	bh=TMW4JKYqc3n4cDTD1nnInMSSud8zk7NbGOxUFxDHb20=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bo0D2eEPmM6+JNn74Y6a8NHtURwllq4EyTyGZydkgHjrHCjcLim6uPw+6uFsV9cLe
-	 8cjpJv8BThKQC5QP1qQXxeYGYC/MBTcZlZ4i16u9m0I4MrYTTGiGr/JkCvZme42y2r
-	 bPwA6EYvbftStsgVaU7qvM6LXUDSLD368sggrHnY=
+	b=EFVm2NJQlxf3iAkR0lUqqnXx+VWRUPdbOiPteeoGVfmZMtW6728qB7wRjjQBrpSao
+	 MsyT/yI/GCYRCOpTsMVUodBb+zgpGBJhItRrkL2kafBZfQPuC/l+9lsjYw7cH0p0x0
+	 pJ62s415MHGnoRUwqgfWm1JypMXxpts5lqTd/cDw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D302EF8014A;
-	Thu, 23 Apr 2020 03:44:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D3F91F801ED;
+	Thu, 23 Apr 2020 03:46:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7316FF801EC; Thu, 23 Apr 2020 03:44:42 +0200 (CEST)
+ id D43A3F801F5; Thu, 23 Apr 2020 03:46:21 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 1AAC9F80121
- for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 03:44:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1AAC9F80121
-Date: 23 Apr 2020 10:44:29 +0900
-X-IronPort-AV: E=Sophos;i="5.73,305,1583161200"; d="scan'208";a="45252440"
+ by alsa1.perex.cz (Postfix) with ESMTP id 531D3F80121
+ for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 03:46:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 531D3F80121
+Date: 23 Apr 2020 10:46:13 +0900
+X-IronPort-AV: E=Sophos;i="5.73,305,1583161200"; d="scan'208";a="45252671"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 23 Apr 2020 10:44:29 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 23 Apr 2020 10:46:13 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id ADA9F4134A54;
- Thu, 23 Apr 2020 10:44:29 +0900 (JST)
-Message-ID: <878sint1qa.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 30E684134E35;
+ Thu, 23 Apr 2020 10:46:13 +0900 (JST)
+Message-ID: <877dy7t1ne.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: Re: [PATCH 05/17] ASoC: soc-dai: add snd_soc_pcm_dai_trigger()
-In-Reply-To: <96824f434b84853c189da5abd906421c59ea3727.camel@linux.intel.com>
+Subject: Re: [PATCH 10/17] ASoC: soc-dai: add snd_soc_dai_compr_shutdown()
+In-Reply-To: <263fb934bf4808c0ddcc024df32ef1f385dad45b.camel@linux.intel.com>
 References: <871rofunaq.wl-kuninori.morimoto.gx@renesas.com>
- <87tv1bt8oh.wl-kuninori.morimoto.gx@renesas.com>
- <96824f434b84853c189da5abd906421c59ea3727.camel@linux.intel.com>
+ <87mu73t8mu.wl-kuninori.morimoto.gx@renesas.com>
+ <263fb934bf4808c0ddcc024df32ef1f385dad45b.camel@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -80,35 +80,29 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Hi Ranjani
 
-Thank you for reviewing
+Thank you for reviwing
 
 > > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > > 
-> > We have 2 type of component functions
-> > snd_soc_dai_xxx()     is focusing to dai itself,
-> > snd_soc_pcm_dai_xxx() is focusing to rtd related dai.
-> > 
-> > Now we can update snd_soc_dai_trigger() to
-> > snd_soc_pcm_dai_trigger(). This patch do it.
+> > dai related function should be implemented at soc-dai.c.
+> > This patch adds snd_soc_dai_compr_shutdown().
 > > 
 > > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > > ---
 (snip)
-> > -	for_each_rtd_dais(rtd, i, dai) {
-> > -		ret = snd_soc_dai_trigger(dai, substream, cmd);
-> > -		if (ret < 0)
-> > -			return ret;
-> > -	}
-> > +	ret = snd_soc_pcm_dai_trigger(substream, cmd);
-> > +	if (ret < 0)
-> > +		return ret;
-> >  
-> >  	return 0;
-> Maybe just "return snd_soc_pcm_dai_trigger(substream, cmd);" here?
+> > +void snd_soc_dai_compr_shutdown(struct snd_soc_dai *dai,
+> > +				struct snd_compr_stream *cstream)
+> > +{
+> > +	if (dai->driver->cops &&
+> > +	    dai->driver->cops->shutdown)
+> > +		dai->driver->cops->shutdown(cstream, dai);
+> I see the original code doesnt check the return value. But I think we
+> should here, no?
 
-Ohh, yes indeed.
-Thank you. will fix in v2
-
+Yes, indeed.
+But it is shutdown function.
+Just reporting dev_err() is enough I think.
+What do you think ?
 
 Thank you for your help !!
 
