@@ -2,78 +2,79 @@ Return-Path: <SRS0=JLiH=6H=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.2 required=3.0 tests=DATE_IN_PAST_03_06,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C8659C54FCB
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 16:31:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9060C54FD0
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 16:31:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4D6B520728
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 16:31:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 576E520767
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 16:31:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YgLpEyqS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4D6B520728
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vsiSEpSh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 576E520767
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9808B167D;
-	Thu, 23 Apr 2020 18:30:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9808B167D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4743E169D;
+	Thu, 23 Apr 2020 18:31:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4743E169D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587659463;
-	bh=Ozu45AcB0akaiqA7a7nCWaxFnxVzLeQ6GqdX5qNnSkQ=;
+	s=default; t=1587659516;
+	bh=gCFTW3c9HRk5DgY0KUJIKGjVJ7efRmARh3nAj/vc9hY=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YgLpEyqSxxeUyTCRtKQBALH0HUFOKq4lQU6/McJ3oRVeJjqUg+Qqr3oEvYJkKwSlz
-	 t10C+ymZpymrckk7pMpLdMK/6FdmtgUvoBxmp34UMpb40Qrt6bIgusS4r6k7TCVrlG
-	 KpnJoPKVsVEYAK4bXgNad1beAtyCneDwLmTaq9bI=
+	b=vsiSEpSh2CXWPvT0kdbhdJLO/vgRbiDAsiSz/Bfcz/nFKX3zwJhZaBojgjLAG69Z2
+	 vE1g8nNiRYX6rMCD65xKWQLNyka1TheXmmu8E9zaGBlu39/pEv5kKIflrZOLmR6KSt
+	 5QkGIMQ2g7AM1PK/+tmj5nIcrui9JhLv+KFTnacI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 16022F8014A;
-	Thu, 23 Apr 2020 18:30:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9DA4BF80278;
+	Thu, 23 Apr 2020 18:30:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D8CCCF800FF; Thu, 23 Apr 2020 18:30:10 +0200 (CEST)
+ id 406A2F801ED; Thu, 23 Apr 2020 18:30:12 +0200 (CEST)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 18CFDF800FF
- for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 18:30:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18CFDF800FF
-IronPort-SDR: JfyMQhAl0N8pjeVn2txo7i6PRkvDX66dXOZ2kW43qxLJJVo5ms0wr8I8BeND8WiGAGNPKfNOyc
- +12QB/TvRavw==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1CA60F800F2
+ for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 18:30:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1CA60F800F2
+IronPort-SDR: sgJvIe0qqU484fzaJatnUHt4CcHoVpGgA4EMqoiu7CE204Fqx4jllu1Ov8pguMUSRe72SwNdy5
+ 9p/3YQo/l63w==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Apr 2020 09:30:04 -0700
-IronPort-SDR: UNefJvYbiTcKTk792Mp5r3nPF0Fy7J/OJ8QqHVado8TorxELV8QjsBZc/v/FE10dJyryO4dNSZ
- nxqKRVn8Mu1A==
+ 23 Apr 2020 09:30:06 -0700
+IronPort-SDR: t6eNuzXADWSkWXujuF4qJtxrE8xQ8kQWtALD7r3L2Zg/x8zY69+nV7SkUqjSSAXU+XXNL4sY6W
+ bqImTkgh/wfg==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,307,1583222400"; d="scan'208";a="256040227"
+X-IronPort-AV: E=Sophos;i="5.73,307,1583222400"; d="scan'208";a="256040289"
 Received: from lsatpatx-mobl.gar.corp.intel.com (HELO [10.251.150.156])
  ([10.251.150.156])
- by orsmga003.jf.intel.com with ESMTP; 23 Apr 2020 09:30:03 -0700
-Subject: Re: [alsa-devel] [alsa-lib][RFC PATCH] ucm: reset config id of
- condition items
-To: libin.yang@linux.intel.com, perex@perex.cz, alsa-devel@alsa-project.org
-References: <1587607135-20106-1-git-send-email-libin.yang@linux.intel.com>
+ by orsmga003.jf.intel.com with ESMTP; 23 Apr 2020 09:30:06 -0700
+Subject: Re: [PATCH v3 3/3] ASoC: Intel: Skylake: Automatic DMIC format
+ configuration according to information from NHLT
+To: Mateusz Gorski <mateusz.gorski@linux.intel.com>,
+ alsa-devel@alsa-project.org
+References: <20200423111148.6977-1-mateusz.gorski@linux.intel.com>
+ <20200423111148.6977-4-mateusz.gorski@linux.intel.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <4b5a1e72-9d8c-221d-f0ea-df44f1ffb1d5@linux.intel.com>
-Date: Thu, 23 Apr 2020 08:06:16 -0500
+Message-ID: <553f82d4-625d-b4d7-6663-2e01fd300eaa@linux.intel.com>
+Date: Thu, 23 Apr 2020 10:53:41 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <1587607135-20106-1-git-send-email-libin.yang@linux.intel.com>
+In-Reply-To: <20200423111148.6977-4-mateusz.gorski@linux.intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Cc: libin.yang@intel.com
+Cc: cezary.rojewski@intel.com, broonie@kernel.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,62 +91,28 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+> @@ -3124,12 +3141,15 @@ static int skl_tplg_control_load(struct snd_soc_component *cmpnt,
+>   	case SND_SOC_TPLG_CTL_ENUM:
+>   		tplg_ec = container_of(hdr,
+>   				struct snd_soc_tplg_enum_control, hdr);
+> -		if (kctl->access & SNDRV_CTL_ELEM_ACCESS_READWRITE) {
+> +		if (kctl->access & SNDRV_CTL_ELEM_ACCESS_READ) {
+>   			se = (struct soc_enum *)kctl->private_value;
+>   			if (tplg_ec->priv.size)
+> -				return skl_init_enum_data(bus->dev, se,
+> -						tplg_ec);
+> +				skl_init_enum_data(bus->dev, se, tplg_ec);
+>   		}
 
-On 4/22/20 8:58 PM, libin.yang@linux.intel.com wrote:
-> From: Libin Yang <libin.yang@intel.com>
-> 
-> UCMv2 supports "If" statement and will merge the same items with
-> compound_merge(). If the items have the same id, it will fail to
-> add the config items. And the id of the item in an array is
-> automatically generated with the increased number. It is probably
-> that some items to be merged have the same id. Let's add prefix
-> in the id to avoid such situation.
-> 
-> For example:
-> 
-> If.seq1 {
-> 	Condition {
-> 		Type ControlExists
-> 		Control "name='PGA1.0 1 Master Playback Volume'"
-> 	}
-> 	True {
-> 		EnableSequence [
-> 			cset "name='PGA1.0 1 Master Playback Volume' 50"
-> 		]
-> 	}
-> }
-> 
-> If.seq2 {
-> 	Condition {
-> 		Type ControlExists
-> 		Control "name='PGA2.0 2 Master Playback Volume'"
-> 	}
-> 	True {
-> 		EnableSequence [
-> 			cset "name='PGA2.0 2 Master Playback Volume' 50"
-> 		]
-> 	}
-> }
-> 
-> If.seq3 {
-> 	Condition {
-> 		Type ControlExists
-> 		Control "name='PGA3.0 3 Master Playback Volume'"
-> 	}
-> 	True {
-> 		EnableSequence [
-> 			cset "name='PGA3.0 3 Master Playback Volume' 50"
-> 		]
-> 	}
-> }
-> 
-> If seq1, seq2 and seq3 conditions are true, UCM will fail to initialize.
-> 
-> This patch rename the config id to avoid the same id conflict.
+I finally got the explanations and it wouldn't hurt to have a comment here:
 
-The example confuses me completely, I checked three times and the seq1, 
-seq2 and seq3 parts configure different controls.
+/*
+  * now that the initializations are done, remove write permissions for
+  *  the DMIC to avoid conflicts between NHLT settings and user
+  * interaction
+  */
 
-Can you clarify what the conflict is and what id you were referring to?
-
+> +		if (hdr->ops.get == SKL_CONTROL_TYPE_MULTI_IO_SELECT_DMIC)
+> +			kctl->access = SNDRV_CTL_ELEM_ACCESS_READ;
+> +
 
