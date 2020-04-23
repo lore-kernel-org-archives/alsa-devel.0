@@ -2,81 +2,79 @@ Return-Path: <SRS0=JLiH=6H=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-10.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EEFAC55191
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 16:33:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D0A73C54FD0
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 16:33:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BBC9821582
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 16:33:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5C18A20728
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 16:33:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Sro4Xla3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BBC9821582
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NLAt+030"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5C18A20728
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 26A4B167D;
-	Thu, 23 Apr 2020 18:32:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 26A4B167D
+	by alsa0.perex.cz (Postfix) with ESMTPS id AE9A316B5;
+	Thu, 23 Apr 2020 18:32:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE9A316B5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587659597;
-	bh=W3uD2gwryLuskQHLPCX8Akn/QB77A4eru/o/IX4cj2s=;
+	s=default; t=1587659619;
+	bh=cJ9sRTleosi8OVbDnMxeczyRJdVcP94ZoybYpp0BsxY=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Sro4Xla3bCrv9whvgpNB/u9km04zo5QHnkS4HtaKEWjsH09r02wGcWYLxkTlBp5gW
-	 1Le+DTrK2BVcx3rIlwOVLFdJRBC8x4YnoHS/KTAPguxNCW+Vlf02uMnESZREDyBA82
-	 Mzb4eKcFjGFmEjbSmQklJLAVnhqd+nBpk/dggZs8=
+	b=NLAt+030TTeqMjeoNk49CYqDyLyofxBy/h9i08p4hXA03Gj18Btbd/ug5EaHcF4rT
+	 KozDxXK2h034y6mBeVv/Crops3ap5QEskeosP+hG3incSoo76WvsdCEF6KVC6exlso
+	 wDJYJguPLzjqqBpmmTlk+jzUAXz+Mq74oxXVM0RY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 65D63F80292;
-	Thu, 23 Apr 2020 18:30:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8FA91F801F5;
+	Thu, 23 Apr 2020 18:30:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 46200F8028B; Thu, 23 Apr 2020 18:30:15 +0200 (CEST)
+ id 54A23F802A0; Thu, 23 Apr 2020 18:30:22 +0200 (CEST)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 55401F800FF
- for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 18:30:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55401F800FF
-IronPort-SDR: WZDsYOkL1ZeR3a+wCHxv0/X2nwkf3LkkSee30v7qtUb+6ktt67qx4ZEWOiMcB98+c5b8q1wh6P
- Gqp9Fwy3zunQ==
+ by alsa1.perex.cz (Postfix) with ESMTPS id AB4D4F80228
+ for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 18:30:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB4D4F80228
+IronPort-SDR: s21UdoUYFbF8l1Mdn5YVC1CQvzfPA/t92kNpYpjdChR5VIgPtcYHIV7hOyT3xe9yBL7Ly+tJcL
+ PyuMLYfmCbOg==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Apr 2020 09:30:08 -0700
-IronPort-SDR: uHiq6D+GWhLPsWP5TaI/Afuzmd3GMTkOI9Fch2IrixFERvxXLJ1sTQwJOWwJsPLeSQ61e0x08f
- KDEs1rjWj2Gw==
+ 23 Apr 2020 09:30:10 -0700
+IronPort-SDR: N14StEzhABvVdcgKcBUb+vMAD258MuLFlwVU1h3gsPH0Y/ioeY6lU7PYs/IYKmv9FZ62EeYQMe
+ lfxEcOzPsDwQ==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,307,1583222400"; d="scan'208";a="256040300"
+X-IronPort-AV: E=Sophos;i="5.73,307,1583222400"; d="scan'208";a="256040318"
 Received: from lsatpatx-mobl.gar.corp.intel.com (HELO [10.251.150.156])
  ([10.251.150.156])
- by orsmga003.jf.intel.com with ESMTP; 23 Apr 2020 09:30:08 -0700
-Subject: Re: ASoC driver names
-To: Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>
-References: <c57f21dc-412d-3057-6150-b96d96a20727@perex.cz>
- <20200423110437.GF4808@sirena.org.uk>
- <e31a20e6-91ab-2f30-f496-064bea07762a@perex.cz>
+ by orsmga003.jf.intel.com with ESMTP; 23 Apr 2020 09:30:10 -0700
+Subject: Re: [PATCH] ALSA: hda: Refactor Intel NHLT init
+To: Cezary Rojewski <cezary.rojewski@intel.com>, Takashi Iwai <tiwai@suse.de>
+References: <20200423112136.25207-1-cezary.rojewski@intel.com>
+ <s5hd07ywikl.wl-tiwai@suse.de>
+ <b37cb05b-f4c2-e747-c3f0-1582ed3afadd@intel.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <7b44a625-fe88-5eac-280f-daa15a7c83dc@linux.intel.com>
-Date: Thu, 23 Apr 2020 11:17:30 -0500
+Message-ID: <8e3d7780-d776-d964-d8a8-4618b7ae045a@linux.intel.com>
+Date: Thu, 23 Apr 2020 11:29:38 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <e31a20e6-91ab-2f30-f496-064bea07762a@perex.cz>
+In-Reply-To: <b37cb05b-f4c2-e747-c3f0-1582ed3afadd@intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Cc: Takashi Iwai <tiwai@suse.de>,
- ALSA development <alsa-devel@alsa-project.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,47 +92,44 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-> +#ifdef CONFIG_SND_SOC_DRIVER_NAMES
-> +       if (!card->driver_name) {
-> +               dev_warn(card->dev,
-> +                        "ASoC: Card driver does not set the driver name\n");
-> +               return -EINVAL;
-> +       }
+On 4/23/20 6:40 AM, Cezary Rojewski wrote:
+> On 2020-04-23 13:24, Takashi Iwai wrote:
+>> On Thu, 23 Apr 2020 13:21:36 +0200,
+>> Cezary Rojewski wrote:
+>>>
+>>> NHLT fetch based on _DSM prevents ACPI table override mechanism from
+>>> being utilized. Make use of acpi_get_table to enable it and get rid of
+>>> redundant code.
+>>>
+>>> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+>>
+>> This looks like a nice cleanup and I'll happily apply if anyone can
+>> test with the actual hardware -- currently mine has no DSP, so unable
+>> to check.
+>>
+>>
+>> thanks,
+>>
+>> Takashi
+>>
+> 
+> NHLT override method has been added for internal use half a year ago and 
+> is for some time the default method within our CI. This is tested on a 
+> wide spread of hardware, that is any Intel AVS archtecture, including 
+> production laptops.
 
-I am all for Jaroslav's proposal of making the driver name the basis for 
-UCM identification. we've been working on this since e.g. the addition 
-of the sof- prefix creates a driver name that makes no sense after a 
-truncation of the card name to 16 characters [1] [2] - still WIP.
+We are checking independently with SOF CI [1], the NHLT is used to 
+detect microphone counts so we'll see if there's a regression.
 
-Making the card name more user-friendly is also a good thing, there's 
-also a nice hidden feature when the card name contains spaces, the last 
-word - typically the codec - is used for the card ID.
+That said, for my education Cezary an you clarify what you typically 
+override? the settings are usually tied to specific hardware configs.
+Also the NHLT may point to a topology file name but with your recent 
+changes an alternate file can be used, so it's not clear to me how 
+non-Intel folks might use the override and for what?
 
-But reporting an error when the driver name is not set is a bit extreme 
-and would break all Intel boards. I think we want to encourage people to 
-move to the suggested solution, but do we want to break existing setups?
-I must admit I also don't see a generic solution when the card is 
-generated from a DT description, it's not straightforward to translate 
-parsed elements into human-readable ones.
+While I am at it, we recently had a bug report where a user provided the 
+NHLT, and I had no idea how to go about parsing it to check its 
+contents. Are there any tools to dump the contents in human-readable 
+representation?
 
-While I am at it, I think we should probably avoid using the DMI 
-information for the long card name. It's just awful. It might be a 
-better idea to add it in the component strings (if it fits) so that UCM 
-can use it internally, but it's really horrible. Even with the clean-ups 
-suggested by Jaroslav I ended-up with this horror of a long name on my 
-test device:
-
-root@Zotac:~# cat /proc/asound/cards
-  0 [rt5640         ]: SOF - sof-bytcht rt5640
-                       ZOTAC-XXXXXX-XX-CherryTrailFFD
-
-If we really wanted to be user-friendly we'd use something like
-
-"SOF card for Baytrail/Cherrytrail devices with Realtek RT5640 codec"
-
-and apply the same pattern for all machine drivers.
-
-[1] https://github.com/thesofproject/linux/pull/2021
-
-[2] 
-https://github.com/alsa-project/alsa-ucm-conf/pull/20/commits/4cc7fe4493c237253cb43cf7d33c32ec975a0691
+[1] https://github.com/thesofproject/linux/pull/2046
