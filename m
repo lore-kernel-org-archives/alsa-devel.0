@@ -4,75 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81243C54FD0
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 14:46:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89FD5C54FD0
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 14:47:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 09B192087E
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 14:46:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 165EB2087E
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 14:47:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IfSf6cy7";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Mo017Odn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 09B192087E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BOKDb8cl";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ru1gOba4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 165EB2087E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4470C168F;
-	Thu, 23 Apr 2020 16:45:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4470C168F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1A010169D;
+	Thu, 23 Apr 2020 16:46:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A010169D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587653209;
-	bh=ouaLyaFaXouhSIb+wrWnSlt9DqALrAhjlqjCElpgS7g=;
-	h=Date:From:To:In-Reply-To:References:Subject:List-Id:
+	s=default; t=1587653262;
+	bh=ANqknJSxVOzlNxsyyTwkD/70QAGgpY8SByw/9DBpl70=;
+	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IfSf6cy7H+P8/6wuTzbDaGRohQSFjkZpac1q29TPpXAvFbJAuKg7omuhexWFuTkHX
-	 fzXmt3soo5RsuBfwKzgdTxNIztBiHt2SN9qcPPVoIJzQcZd6FEE8lpW1jAMAByM3ZY
-	 4F917/gAf4MbOl8qrvW3IdXglb81AaTdbdUPL7A8=
+	b=BOKDb8clf5xe9iyazWFpgcZsyJ6xUJLugaPJCcXAaeqh/W2b5ur5UaGWbl7lOnEvv
+	 nU29j6QUEGNGcn7EJ9QSiVR2qcfBWTu9XKvjHaZG+aZ9Ml4kMnqRvC8OBjZAYtjpH3
+	 WOfnvVdQyhQdVTzfXLoeLpcxTm2mLvVGW3ujnG7U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AD098F80121;
-	Thu, 23 Apr 2020 16:45:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A789CF801F5;
+	Thu, 23 Apr 2020 16:46:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 09985F801EC; Thu, 23 Apr 2020 16:45:57 +0200 (CEST)
+ id 4A564F80212; Thu, 23 Apr 2020 16:46:04 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 68E50F80121
- for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 16:45:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68E50F80121
+ by alsa1.perex.cz (Postfix) with ESMTPS id A4900F8014A
+ for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 16:45:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4900F8014A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Mo017Odn"
+ header.b="ru1gOba4"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id CA8F92074F;
- Thu, 23 Apr 2020 14:45:49 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id C1C2F2074F;
+ Thu, 23 Apr 2020 14:45:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1587653150;
- bh=ouaLyaFaXouhSIb+wrWnSlt9DqALrAhjlqjCElpgS7g=;
+ s=default; t=1587653156;
+ bh=ANqknJSxVOzlNxsyyTwkD/70QAGgpY8SByw/9DBpl70=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=Mo017OdnUQuNzRU/DoH52zW/Bx1O1/3BpXiiCet5NjjUSD6ySgyWo3uyf6w2wU357
- W3lJ2nnoy8Wf0At10D3aNn/4uo2PKVh6XztYcf1Fjl9kmCvZvNgu12PVoT7GmDt4qn
- M8Dh5kFbl5xRMU3NitZh2o7l7yB62evy9eY4nPhs=
-Date: Thu, 23 Apr 2020 15:45:47 +0100
+ b=ru1gOba4KuQhYQr69+Ue5CA1nHDc7RKD/v/hHPrWGOixDUP3cqFyHcd++D4/E742t
+ Ap80b1l07EsIu1XQXZrcVjBSVaSNCd6G0gy0URpbdN6XEqvGk8l63iEEfm/gHfMVf7
+ BfTnRVXjYEi0ngQ/lbcBcNZPgG3kp2ZBjNxTXCXM=
+Date: Thu, 23 Apr 2020 15:45:53 +0100
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Jie Yang <yang.jie@linux.intel.com>
-In-Reply-To: <20200422130443.38815-1-andriy.shevchenko@linux.intel.com>
-References: <20200422130443.38815-1-andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v1] ASoC: Intel: Skylake: Replace guid_copy() with
- import_guid()
-Message-Id: <158765314784.33774.15097394581404247333.b4-ty@kernel.org>
+To: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
+ Timur Tabi <timur@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Nicolin Chen <nicoleotsuka@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
+ Takashi Iwai <tiwai@suse.com>, Colin King <colin.king@canonical.com>
+In-Reply-To: <20200423083922.8159-1-colin.king@canonical.com>
+References: <20200423083922.8159-1-colin.king@canonical.com>
+Subject: Re: [PATCH][next] ASoC: fsl_easrc: fix spelling mistake "prefitler"
+ -> "prefilter"
+Message-Id: <158765314784.33774.8027671793681805498.b4-ty@kernel.org>
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,15 +88,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 22 Apr 2020 16:04:43 +0300, Andy Shevchenko wrote:
-> There is a specific API to treat raw data as GUID, i.e. import_guid().
-> Use it instead of guid_copy() with explicit casting.
+On Thu, 23 Apr 2020 09:39:22 +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> There is a spelling mistake in a deb_dbg message, fix it.
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 > ---
->  sound/soc/intel/skylake/skl-sst-utils.c | 2 +-
->  sound/soc/intel/skylake/skl-topology.c  | 6 +++---
->  2 files changed, 4 insertions(+), 4 deletions(-)
+>  sound/soc/fsl/fsl_easrc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
 > [...]
 
@@ -106,8 +106,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Intel: Skylake: Replace guid_copy() with import_guid()
-      commit: cade2f59e7ae3d1ccec9c1e0e971308ca6a74296
+[1/1] ASoC: fsl_easrc: fix spelling mistake "prefitler" -> "prefilter"
+      commit: 76ec4aea9fd8117f064caa63ee6f7fbcb70eeb2c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
