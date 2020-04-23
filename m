@@ -2,74 +2,78 @@ Return-Path: <SRS0=JLiH=6H=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.2 required=3.0 tests=DATE_IN_PAST_03_06,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46BBAC54FCB
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 16:28:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C8659C54FCB
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 16:31:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BDC0320706
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 16:28:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4D6B520728
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 16:31:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IfFwnIxg";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="aP2EYC+l"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BDC0320706
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YgLpEyqS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4D6B520728
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E8348168D;
-	Thu, 23 Apr 2020 18:27:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8348168D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9808B167D;
+	Thu, 23 Apr 2020 18:30:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9808B167D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587659322;
-	bh=ky5iXn5UEpgEUlyZWT7+68OWaubhRbOKsYG2GFRYvWA=;
-	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
+	s=default; t=1587659463;
+	bh=Ozu45AcB0akaiqA7a7nCWaxFnxVzLeQ6GqdX5qNnSkQ=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IfFwnIxgMhLtgJZUcWCVlp2syCdBkKhW5CfFDgnJi6RT06kUZA96FSfyU9uwu60Ak
-	 IQNh1fGoUx7egRKtD6jlxr1EkrAkFJWrt/TZyyQNrEuDkTC9+ZA+EtcDPxN8bvD6Zf
-	 OsCrk5uD4NU9syWPTIM/x2fcwSFBIlVp9j5SJVEM=
+	b=YgLpEyqSxxeUyTCRtKQBALH0HUFOKq4lQU6/McJ3oRVeJjqUg+Qqr3oEvYJkKwSlz
+	 t10C+ymZpymrckk7pMpLdMK/6FdmtgUvoBxmp34UMpb40Qrt6bIgusS4r6k7TCVrlG
+	 KpnJoPKVsVEYAK4bXgNad1beAtyCneDwLmTaq9bI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 71EF4F8014A;
-	Thu, 23 Apr 2020 18:27:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 16022F8014A;
+	Thu, 23 Apr 2020 18:30:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 68CE7F801EC; Thu, 23 Apr 2020 18:27:49 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D02EBF800FF
- for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 18:27:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D02EBF800FF
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="aP2EYC+l"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ id D8CCCF800FF; Thu, 23 Apr 2020 18:30:10 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id DBA7320704;
- Thu, 23 Apr 2020 16:27:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1587659265;
- bh=ky5iXn5UEpgEUlyZWT7+68OWaubhRbOKsYG2GFRYvWA=;
- h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=aP2EYC+lPMFuUeOSQngeMc+6mufBTSxfrfefsDqZhgV29T1ysrWLRJlfCdqevQau8
- ERH/LJzvuLWRV4ajXbxHi84jR2Lyju/nka0ASTVI+sBymEXGaDtQjKMQuWPff5hHXs
- yAU1G6rvORnd+0jTBxPUPZY26Mwr8bXShQKieymc=
-Date: Thu, 23 Apr 2020 17:27:42 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Mark Brown <broonie@kernel.org>
-In-Reply-To: <20200423142805.52757-1-broonie@kernel.org>
-References: <20200423142805.52757-1-broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: SOF: Add missing dependency on IMX_SCU
-Message-Id: <158765926266.52275.12049804642333754117.b4-ty@kernel.org>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 18CFDF800FF
+ for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 18:30:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18CFDF800FF
+IronPort-SDR: JfyMQhAl0N8pjeVn2txo7i6PRkvDX66dXOZ2kW43qxLJJVo5ms0wr8I8BeND8WiGAGNPKfNOyc
+ +12QB/TvRavw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 23 Apr 2020 09:30:04 -0700
+IronPort-SDR: UNefJvYbiTcKTk792Mp5r3nPF0Fy7J/OJ8QqHVado8TorxELV8QjsBZc/v/FE10dJyryO4dNSZ
+ nxqKRVn8Mu1A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,307,1583222400"; d="scan'208";a="256040227"
+Received: from lsatpatx-mobl.gar.corp.intel.com (HELO [10.251.150.156])
+ ([10.251.150.156])
+ by orsmga003.jf.intel.com with ESMTP; 23 Apr 2020 09:30:03 -0700
+Subject: Re: [alsa-devel] [alsa-lib][RFC PATCH] ucm: reset config id of
+ condition items
+To: libin.yang@linux.intel.com, perex@perex.cz, alsa-devel@alsa-project.org
+References: <1587607135-20106-1-git-send-email-libin.yang@linux.intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <4b5a1e72-9d8c-221d-f0ea-df44f1ffb1d5@linux.intel.com>
+Date: Thu, 23 Apr 2020 08:06:16 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <1587607135-20106-1-git-send-email-libin.yang@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: libin.yang@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,41 +89,63 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 23 Apr 2020 15:28:05 +0100, Mark Brown wrote:
-> This broke PowerPC allyesconfig.
+
+
+On 4/22/20 8:58 PM, libin.yang@linux.intel.com wrote:
+> From: Libin Yang <libin.yang@intel.com>
 > 
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> ---
->  sound/soc/sof/imx/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
+> UCMv2 supports "If" statement and will merge the same items with
+> compound_merge(). If the items have the same id, it will fail to
+> add the config items. And the id of the item in an array is
+> automatically generated with the increased number. It is probably
+> that some items to be merged have the same id. Let's add prefix
+> in the id to avoid such situation.
 > 
-> [...]
+> For example:
+> 
+> If.seq1 {
+> 	Condition {
+> 		Type ControlExists
+> 		Control "name='PGA1.0 1 Master Playback Volume'"
+> 	}
+> 	True {
+> 		EnableSequence [
+> 			cset "name='PGA1.0 1 Master Playback Volume' 50"
+> 		]
+> 	}
+> }
+> 
+> If.seq2 {
+> 	Condition {
+> 		Type ControlExists
+> 		Control "name='PGA2.0 2 Master Playback Volume'"
+> 	}
+> 	True {
+> 		EnableSequence [
+> 			cset "name='PGA2.0 2 Master Playback Volume' 50"
+> 		]
+> 	}
+> }
+> 
+> If.seq3 {
+> 	Condition {
+> 		Type ControlExists
+> 		Control "name='PGA3.0 3 Master Playback Volume'"
+> 	}
+> 	True {
+> 		EnableSequence [
+> 			cset "name='PGA3.0 3 Master Playback Volume' 50"
+> 		]
+> 	}
+> }
+> 
+> If seq1, seq2 and seq3 conditions are true, UCM will fail to initialize.
+> 
+> This patch rename the config id to avoid the same id conflict.
 
-Applied to
+The example confuses me completely, I checked three times and the seq1, 
+seq2 and seq3 parts configure different controls.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.8
+Can you clarify what the conflict is and what id you were referring to?
 
-Thanks!
 
-[1/1] ASoC: SOF: Add missing dependency on IMX_SCU
-      commit: fe57a92c88580ae7894b9c71d2d520ba98eb1591
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
