@@ -2,86 +2,83 @@ Return-Path: <SRS0=JLiH=6H=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D6A2C54FCB
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 18:25:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A981EC54FD0
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 18:42:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DF79820776
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 18:25:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 347DA20767
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 18:42:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="U8yTpu++";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=tsoy.me header.i=@tsoy.me header.b="FLAfhu7n"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DF79820776
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=tsoy.me
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BfU4nXDU";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="NCcOv6Py"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 347DA20767
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4BA3B168D;
-	Thu, 23 Apr 2020 20:24:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4BA3B168D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6D55D168D;
+	Thu, 23 Apr 2020 20:41:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D55D168D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587666324;
-	bh=U4iOCggwr08IlCK0p6WzDd/L+LwU0xm0GqyOcYXvukk=;
-	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1587667319;
+	bh=oYkwurOVZg81RslFyHFFzzH5Q8hJevd0/981yqPwwCQ=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=U8yTpu++ZHw8PT8zahGSnxwc46oja2IiMZEzylgrKVFdSG/CWsa33mvQxM+5H7RiI
-	 /7+1XOsvUKDkP9S8F5vP0fRqu65vpYKPqyccTOKLi4dqMiE7vAwaWarEpokCzJ+a4t
-	 zkC0Ipn/g9xLA0VPXqpFst+xTflQEDRpXF9OVzuo=
+	b=BfU4nXDUNyup2S+SyTrO+ZhhNQ/rMubkRXpjf2tSQsTRWyGTFLhsKYQOJpAfVMaWb
+	 KZ2hp1bNLHn0kXsqpOaj+nNjHv8B1cLFsQ4zBlpIqkKNWG1B7WSQCsJtqSfnrLziq6
+	 Z9TQs0xaUNwuBD7CJHM/mS1v0cvKpsWWaJZAnAXg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CD049F8014A;
-	Thu, 23 Apr 2020 20:24:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F090DF8014A;
+	Thu, 23 Apr 2020 20:41:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D9681F8014A; Thu, 23 Apr 2020 20:24:31 +0200 (CEST)
-Received: from puleglot.ru (puleglot.ru [IPv6:2a01:4f8:1c0c:58e8::2])
+ id B5BD5F801EC; Thu, 23 Apr 2020 20:41:06 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id AA106F800F2
+ for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 20:41:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA106F800F2
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="NCcOv6Py"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6AF51F80121
- for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 20:24:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6AF51F80121
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=tsoy.me header.i=@tsoy.me
- header.b="FLAfhu7n"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=tsoy.me;
- s=mymail; h=Sender:Content-Transfer-Encoding:MIME-Version:Content-Type:
- References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID
- :Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
- Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe
- :List-Post:List-Owner:List-Archive;
- bh=DkCIpxeE1qckMdUC4ykuoGildI0DGC3fXdg110TAukM=; b=FLAfhu7nP5ZXd+Dts4LyIAPFzf
- 0O7HBwjybJ6+zFcNrZEy61dJvStcRNTWBrSDOLet1Z8MBgOj0E7QAYRudpuVjec990DpA6L5xYIX+
- cprHyCyV35LNSwMAxwqLnEfnmCd9c11TVxrd4b3/u38BmHF009XXEPqRg18ztzRZHV84=;
-Received: from [2a00:1370:8125:3f98:890:f100:d37d:7ada] (helo=home)
- by puleglot.ru with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
- (Exim 4.92.3) (envelope-from <puleglot@puleglot.ru>)
- id 1jRgWM-00023Z-H4; Thu, 23 Apr 2020 21:24:22 +0300
-Message-ID: <ac1a28783cfc4e6f5d2109da411a1372158f3ad7.camel@tsoy.me>
-Subject: Re: [PATCH] ALSA: usb-audio: Apply async workaround for Scarlett
- 2i4 2nd gen
-From: Alexander Tsoy <alexander@tsoy.me>
-To: Takashi Iwai <tiwai@suse.de>
-Date: Thu, 23 Apr 2020 21:24:19 +0300
-In-Reply-To: <s5hr1wet8a6.wl-tiwai@suse.de>
-References: <7190177d62f349eea7a5d1056924a63fc4270d43.camel@tsoy.me>
- <20200422185522.3347-1-grpintar@gmail.com>
- <a45d18d7922d780f29f89cff855eb30fbdd1fce8.camel@tsoy.me>
- <s5heesfxo2o.wl-tiwai@suse.de>
- <c0cb78664e3acd94f07e59f3a4216c16ab9f497d.camel@tsoy.me>
- <s5hy2qmwts3.wl-tiwai@suse.de> <s5heesewip1.wl-tiwai@suse.de>
- <470d034599514e83454663f389bad30fd98ad3e2.camel@tsoy.me>
- <99bb394ff162a16442fd83c0ab56a9d8c0055877.camel@tsoy.me>
- <s5htv1at8kb.wl-tiwai@suse.de> <s5hr1wet8a6.wl-tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+ by mail.kernel.org (Postfix) with ESMTPSA id 8D91820767;
+ Thu, 23 Apr 2020 18:40:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1587667259;
+ bh=oYkwurOVZg81RslFyHFFzzH5Q8hJevd0/981yqPwwCQ=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=NCcOv6PyWvahW8ekC/G3WaPxUp0eGL1Va+hSJJNfaT1mpa7KF49WbXNWOsnWhxGGU
+ psNkL0YMu1k8o/25LJBk4RiW6K5qyLBSNeae3/6zVuwhQ6gJtErU1/VPywysERcB+o
+ UNSn1RZhBeNy2Q30zpwBqKTK7JchAO/DyKGZSpaU=
+Date: Thu, 23 Apr 2020 19:40:56 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: ASoC driver names
+Message-ID: <20200423184056.GS4808@sirena.org.uk>
+References: <c57f21dc-412d-3057-6150-b96d96a20727@perex.cz>
+ <20200423110437.GF4808@sirena.org.uk>
+ <e31a20e6-91ab-2f30-f496-064bea07762a@perex.cz>
+ <7b44a625-fe88-5eac-280f-daa15a7c83dc@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Gregor Pintar <grpintar@gmail.com>, alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="Er1qpsOqk0l6oMce"
+Content-Disposition: inline
+In-Reply-To: <7b44a625-fe88-5eac-280f-daa15a7c83dc@linux.intel.com>
+X-Cookie: This unit... must... survive.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: Takashi Iwai <tiwai@suse.de>,
+ ALSA development <alsa-devel@alsa-project.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,36 +94,86 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-В Чт, 23/04/2020 в 19:35 +0200, Takashi Iwai пишет:
-> On Thu, 23 Apr 2020 19:29:08 +0200,
-> Takashi Iwai wrote:
-> > On Thu, 23 Apr 2020 18:57:34 +0200,
-> > Alexander Tsoy wrote:
-> > > And some further notes:
-> > > 
-> > > - I removed locking from snd_usb_endpoint_next_packet_size() and
-> > > this
-> > > seems completely fixed an issue with large URBs I reported here:
-> > > 
-> > > https://bugzilla.kernel.org/show_bug.cgi?id=199327#c28
-> > > 
-> > > So playing at 96 kHz, driver packs 48 frames per URB and no more
-> > > audio
-> > > discontinuities.
-> > 
-> > Hmm, that's weird.
-> > 
-> > If removing the lock from snd_usb_endpoint_next_packet_size()
-> > really
-> > fixes the problem, it implies the lock contention.  But as far as I
-> > see the code performed in this lock isn't conflicting so much.  The
-> > URB processing shouldn't happen in parallel for the same EP.
-> 
-> BTW, one potential racy code I found while looking at the code is the
-> list management in queue_pending_output_urbs().  The fix patch is
-> below.
 
-OK, it seems like it was just a luck. I'm still getting clicking
-artifacts with and without your patch, with and without locking. Will
-investigate further.
+--Er1qpsOqk0l6oMce
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Thu, Apr 23, 2020 at 11:17:30AM -0500, Pierre-Louis Bossart wrote:
+
+> I am all for Jaroslav's proposal of making the driver name the basis for UCM
+> identification. we've been working on this since e.g. the addition of the
+> sof- prefix creates a driver name that makes no sense after a truncation of
+> the card name to 16 characters [1] [2] - still WIP.
+
+> Making the card name more user-friendly is also a good thing, there's also a
+> nice hidden feature when the card name contains spaces, the last word -
+> typically the codec - is used for the card ID.
+
+> But reporting an error when the driver name is not set is a bit extreme and
+> would break all Intel boards. I think we want to encourage people to move to
+> the suggested solution, but do we want to break existing setups?
+
+That's an issue, yes - it makes me think we need a really strong case to
+change things.
+
+> I must admit I also don't see a generic solution when the card is generated
+> from a DT description, it's not straightforward to translate parsed elements
+> into human-readable ones.
+
+We do let people just fill in an arbatrary string in the generic cards,
+not actually checked how many do something sensible though.  This is a
+big worry for me, if we're solving the problem by doing something that
+doesn't work for generic cards that means that as the generic cards get
+better and we need fewer custom cards whatever issues the current
+situation causes in userspace will get worse.  For them the commonality
+is likely to come from one or more of the components in the card and the
+card itself isn't really interesting.
+
+My instinct is that the machine driver name is being used as a
+proxy for something else here and that if we need to change the ABI
+perhaps we need to extend it rather than trying to shoehorn things into
+what's there.
+
+> While I am at it, I think we should probably avoid using the DMI information
+> for the long card name. It's just awful. It might be a better idea to add it
+> in the component strings (if it fits) so that UCM can use it internally, but
+> it's really horrible. Even with the clean-ups suggested by Jaroslav I
+> ended-up with this horror of a long name on my test device:
+
+> root@Zotac:~# cat /proc/asound/cards
+>  0 [rt5640         ]: SOF - sof-bytcht rt5640
+>                       ZOTAC-XXXXXX-XX-CherryTrailFFD
+
+I don't actually appear to have any DMI equipped systems with non-HDA
+sound cards but looking at the systems I have (a mix of Lenovo and Dell)
+they all have sensible display names in the DMI corresponding to the
+model name.  But yeah, outside of enterprise users nobody really pays
+attention to DMI so there's serious QoI issues in general.
+
+> If we really wanted to be user-friendly we'd use something like
+
+> "SOF card for Baytrail/Cherrytrail devices with Realtek RT5640 codec"
+
+> and apply the same pattern for all machine drivers.
+
+It kind of depends on how well filled in the DMI stuff is - if it's
+badly filled in it's obviously not useful but if you have a clear model
+name it works fairly well and matches what a lot of Windows systems do.
+
+--Er1qpsOqk0l6oMce
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6h4TcACgkQJNaLcl1U
+h9DDBgf+IgTyCjP1WaMVWrGmx/woAXQzKj0krf+NXWFO/DMvQqdZZUI/Et4rqYuZ
+MwGEMM0i5IAWKkQJTy+2jXzg0qb3hgQH0rFG+BgX09fVAvg2cVzznSv251iVGvU1
+sdP+2lYR1zExWEZVBILwFYdGIsrl7v97COToQvqXJEXU+J0fDIhxzTV1A+L5naUN
+vRIbWnDAmsr1PGiU2MQTGAm6wjaQKI/vSQ55mR+Y8JvynKKs4CLmSA86CJRD3iCu
+QX/HY6zsKyovEUzxKHiw7SecSQ+fbrXtzp4RfoY7s2HWtkYZoqA+bUtBk9oSvHMm
+zKGZ45WuiKg3IXFG0ebefJXAE5B3yA==
+=OgZZ
+-----END PGP SIGNATURE-----
+
+--Er1qpsOqk0l6oMce--
