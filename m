@@ -6,79 +6,78 @@ X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C0C8C54FD0
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 16:14:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A0C5BC54FD0
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 16:18:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BB36520704
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 16:14:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 29A0E20776
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 16:18:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Y4M4Q+YJ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="GZK12FzW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BB36520704
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VaYwbDbU";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="m/q/JGZO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 29A0E20776
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 01B65168F;
-	Thu, 23 Apr 2020 18:13:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 01B65168F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 759E7829;
+	Thu, 23 Apr 2020 18:18:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 759E7829
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587658454;
-	bh=vDHVx4FW0XNnRYZbKBU9+aaxnz2beeSbDiBL6DfrOvE=;
+	s=default; t=1587658733;
+	bh=b0lDH9Mfc1vYyUclWZeFPw/yRYBNO2AbnWd5/GTal1k=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Y4M4Q+YJs57feI81AOxS91W7oy5SzzeokGuKp3ejfhmYquieHJvV7DN87UNQOGwTT
-	 R1tx2QuezKIruGL9UHarSNVR05gsX6NFNXv8Eht+TJrQlLBixVAlTN4ho8gG929ldb
-	 +HgphbG++zezrRjXaYQZ/uQcNQyLQ18d9OMnMS6I=
+	b=VaYwbDbUaYhITmgxQA8Kldsew2OOiY5urVcgjPmKVz1DiKr/s07ztk+0lQmTO3xIq
+	 FRH7LlUdlN5dXdjK/d0NkSNWd+u9eVb7Thm497YKIFcwspxp4tBL+kzC9Llz64EoTE
+	 pL9uJqHE+fzxvSV+FH9FBgW9RZ4kE03E/Z/n2Shw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 88442F8014A;
-	Thu, 23 Apr 2020 18:13:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 01D90F8014A;
+	Thu, 23 Apr 2020 18:18:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E5F44F801EC; Thu, 23 Apr 2020 18:13:19 +0200 (CEST)
+ id E69F5F801EC; Thu, 23 Apr 2020 18:18:00 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 194E3F800F2
- for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 18:13:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 194E3F800F2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 34AF1F800F2
+ for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 18:17:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34AF1F800F2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="GZK12FzW"
+ header.b="m/q/JGZO"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id D521520728;
- Thu, 23 Apr 2020 16:13:09 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 185A920704;
+ Thu, 23 Apr 2020 16:17:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1587658390;
- bh=vDHVx4FW0XNnRYZbKBU9+aaxnz2beeSbDiBL6DfrOvE=;
+ s=default; t=1587658676;
+ bh=b0lDH9Mfc1vYyUclWZeFPw/yRYBNO2AbnWd5/GTal1k=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=GZK12FzWq1ySsNfwDW1hsUp6FVLN/UCi7+FgM54YUEcI03ERqBpBQU4FXN8pamH4f
- nhgj09ezW1gjVunuu7PLK/XmwFnMWjZ2YIBFS/CEQWyYsp5uRMFHMZo3lB6idW0inu
- iu1fjHVSi9t6J9LEsnAZDOpvTGHVHlcw09uLgJC4=
-Date: Thu, 23 Apr 2020 17:13:07 +0100
+ b=m/q/JGZOiOuULK8FBCg6+kzEZzijCRb/kOIagFAGm+mmT1SJCEpMKP71Ir2VhCyN9
+ KMdfp/h2o0MTQ4fRkdM6BUbYO2A6fhjALWrkRE5JSCtc89Qscx2Ls6iu3dJ0AKQze/
+ E3BDDPxuaHaj6GzsRck6xzs8FI/Z0QwbtnKcnA08=
+Date: Thu, 23 Apr 2020 17:17:54 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: ASoC driver names
-Message-ID: <20200423161307.GP4808@sirena.org.uk>
-References: <c57f21dc-412d-3057-6150-b96d96a20727@perex.cz>
- <20200423110437.GF4808@sirena.org.uk>
- <e31a20e6-91ab-2f30-f496-064bea07762a@perex.cz>
+To: Daniel Baluta <daniel.baluta@gmail.com>
+Subject: Re: [PATCH] ASoC: SOF: Add missing dependency on IMX_SCU
+Message-ID: <20200423161753.GQ4808@sirena.org.uk>
+References: <20200423142805.52757-1-broonie@kernel.org>
+ <CAEnQRZDqNRfUu1Yak=8AM98sAicxnv+Cpm0y2UcCMeABcRQPWQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="jh06fhy6YTawvwPV"
+ protocol="application/pgp-signature"; boundary="+r+clu82y77Ss1pj"
 Content-Disposition: inline
-In-Reply-To: <e31a20e6-91ab-2f30-f496-064bea07762a@perex.cz>
+In-Reply-To: <CAEnQRZDqNRfUu1Yak=8AM98sAicxnv+Cpm0y2UcCMeABcRQPWQ@mail.gmail.com>
 X-Cookie: This unit... must... survive.
 User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Takashi Iwai <tiwai@suse.de>,
- ALSA development <alsa-devel@alsa-project.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Pierre-louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
+ Linux-ALSA <alsa-devel@alsa-project.org>, Shawn Guo <shawnguo@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,74 +94,60 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---jh06fhy6YTawvwPV
+--+r+clu82y77Ss1pj
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 23, 2020 at 01:19:31PM +0200, Jaroslav Kysela wrote:
-> Dne 23. 04. 20 v 13:04 Mark Brown napsal(a):
+On Thu, Apr 23, 2020 at 06:21:40PM +0300, Daniel Baluta wrote:
 
-> > With ASoC systems there is no clear controller - you've got a bunch of
-> > different components, usually connected by separate buses, and it's not
-> > super obvious what if anything should be the singular name that gets
-> > picked for some grouping of devices.  The whole point of the subsystem
-> > is to glue a bunch of independent devices together, we've generally
-> > picked that glue as the driver name.
+Please don't top post, reply in line with needed context.  This allows
+readers to readily follow the flow of conversation and understand what
+you are talking about and also helps ensure that everything in the
+discussion is being addressed.
 
-> I refer mostly the top-level code which creates and registers the ASoC card structure.
-> So it seems the platform name for many ASoC drivers should be there.
+> This should no longer be a problem after the following patch is merged:
+>=20
+> https://patchwork.kernel.org/patch/11395247/
 
-At that level you could just say ASoC...  bear in mind that a huge
-proportion of cards are going to come out as one of the generic cards
-(especially on DT platforms where the firmware situation is less
-shambolic) which I'm not sure is super useful for grouping things.
+That's "firmware: imx: add dummy functions".  That'll fix the issue but
+we'll still see stuff in -next unless the firmware tree gets merged
+before ASoC.
 
-> > Without knowing what you're actually proposing it's hard to know, and
-> > there is the risk of userspace breakage here when you change things
-> > people are relying on.
+Please include human readable descriptions of things like commits and
+issues being discussed in e-mail in your mails, this makes them much
+easier for humans to read especially when they have no internet access.
+I do frequently catch up on my mail on flights or while otherwise
+travelling so this is even more pressing for me than just being about
+making things a bit easier to read.
 
-> +#ifdef CONFIG_SND_SOC_DRIVER_NAMES
-> +       card->driver_name = "SDM845";
-> +#endif
+> Anyone,
 
-OK, so really I think your actual need here sounds like reference
-platforms here.  There's obviously some overlap with drivers but only
-for the things which use DPCM and ideally we'll be able to move these
-things over to drivers going forwards which would mean that you'd have
-the same problem again.
+> What is the exact difference between 'depends on' and 'selects'. This
+> is a question I try
+> to clarify for myself for a while. And most important when to use one
+> or another?
 
-> >>    The goal is to group the related UCM2 configurations and do the required
-> >> split inside the UCM2 top-level configuration file based on card components
-> >> string or other card identificators (related to the driver).
+depends on says "this configuration can't be enabled without X already
+being enabled".  select says "force X on" but ignores any dependencies
+that X itself has so the thing doing the selecting has to figure those
+out.  select is mainly for enabling library type things that users
+shouldn't have to deal with directly either because they are libraries
+or because they're just not independently useful somehow.
 
-> > This sounds like you either want some enumeration of the card components
-> > or perhaps you're looking for some for some indication of the reference
-> > design that an individual board is based off so you can have a generic
-> > configuration for that reference design and then override bits of it?
-
-> I'd like to group the related configuration files and it seems that the driver
-> name field in the CTL info structure is misused (duplicate information).
-
-For the generic cards you're not going to get a useful grouping based on
-the name of the machine driver, they are flexible enough that there can
-be minimal similarities in the underlying hardware or what it looks like
-to control in userspace.  You are likely to be able to get useful
-groupings based on things like the CODEC or the SoC from them but the
-machine driver name isn't going to help much.
-
---jh06fhy6YTawvwPV
+--+r+clu82y77Ss1pj
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6hvpIACgkQJNaLcl1U
-h9CayQf9FL8v7yIavrfZo0jCEKe6B/9Ds9FikDgIFXkbddydZovau7ePkIscX7VI
-uCQz3u9A7f0/OAWKufDqiSwHFC/Pxx/fhIjFdvhbhWNDts8pbgs24736TqkXCoDg
-RNcATbXGwrcPIIxuuOhLZkhNEpqil4khSVqHwC3VhZOH0pdwvpqf8XksekoarLH9
-oFQx1i7nD6AtV6vsX6r/aFbhmroXbGe/Rl4thZziPl0sHMfjMeN/VsGkE0HDCPTm
-Cy8VONsAjywDn45WbRBT9LtrzmtvAFcXePuyznOUX02PeExraieJ+d39txbO3BFC
-IkdWTy9Ndo7rwTJK8hV2TX3j4Gdprg==
-=f/+U
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6hv7EACgkQJNaLcl1U
+h9A3nQf+I2bTW/3PPXkZyv7VzVCJ+XuQryQSyRp5MPeQYsFnyDaIFjANu2BSQO38
+1LE5Y6fHXOwkgp7p0Vp9KvAynueUuv3U6pgbfgIdYIiWT/VaPCqHQ0+rKqKtUxSV
+W/7A8ib61CopaBbAa1ttdSj9VtXbUidJs++m+dQ74UzoZsyy1DNCeDEQ5KP/oYVe
+7LfPHCv+UJPlJmSSTzh+gWtTGwflM7v+uvBaqC9o8x8x/qGRaTi2C9J9KBDADNZ4
+D+ZPRSR3+v4v8d4POtAQzaaVAFoNtfRz+Q3KBvv8OiS1GetOIKhwwneVSQLnrfZz
+eeXN7w9nRs5PBi9G7X3noZPzaygvIg==
+=9vPM
 -----END PGP SIGNATURE-----
 
---jh06fhy6YTawvwPV--
+--+r+clu82y77Ss1pj--
