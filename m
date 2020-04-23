@@ -2,82 +2,74 @@ Return-Path: <SRS0=JLiH=6H=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A0C5BC54FD0
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 16:18:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46BBAC54FCB
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 16:28:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 29A0E20776
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 16:18:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BDC0320706
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 16:28:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VaYwbDbU";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="m/q/JGZO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 29A0E20776
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IfFwnIxg";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="aP2EYC+l"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BDC0320706
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 759E7829;
-	Thu, 23 Apr 2020 18:18:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 759E7829
+	by alsa0.perex.cz (Postfix) with ESMTPS id E8348168D;
+	Thu, 23 Apr 2020 18:27:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8348168D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587658733;
-	bh=b0lDH9Mfc1vYyUclWZeFPw/yRYBNO2AbnWd5/GTal1k=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1587659322;
+	bh=ky5iXn5UEpgEUlyZWT7+68OWaubhRbOKsYG2GFRYvWA=;
+	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VaYwbDbUaYhITmgxQA8Kldsew2OOiY5urVcgjPmKVz1DiKr/s07ztk+0lQmTO3xIq
-	 FRH7LlUdlN5dXdjK/d0NkSNWd+u9eVb7Thm497YKIFcwspxp4tBL+kzC9Llz64EoTE
-	 pL9uJqHE+fzxvSV+FH9FBgW9RZ4kE03E/Z/n2Shw=
+	b=IfFwnIxgMhLtgJZUcWCVlp2syCdBkKhW5CfFDgnJi6RT06kUZA96FSfyU9uwu60Ak
+	 IQNh1fGoUx7egRKtD6jlxr1EkrAkFJWrt/TZyyQNrEuDkTC9+ZA+EtcDPxN8bvD6Zf
+	 OsCrk5uD4NU9syWPTIM/x2fcwSFBIlVp9j5SJVEM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 01D90F8014A;
-	Thu, 23 Apr 2020 18:18:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 71EF4F8014A;
+	Thu, 23 Apr 2020 18:27:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E69F5F801EC; Thu, 23 Apr 2020 18:18:00 +0200 (CEST)
+ id 68CE7F801EC; Thu, 23 Apr 2020 18:27:49 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 34AF1F800F2
- for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 18:17:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34AF1F800F2
+ by alsa1.perex.cz (Postfix) with ESMTPS id D02EBF800FF
+ for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 18:27:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D02EBF800FF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="m/q/JGZO"
+ header.b="aP2EYC+l"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 185A920704;
- Thu, 23 Apr 2020 16:17:55 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id DBA7320704;
+ Thu, 23 Apr 2020 16:27:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1587658676;
- bh=b0lDH9Mfc1vYyUclWZeFPw/yRYBNO2AbnWd5/GTal1k=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=m/q/JGZOiOuULK8FBCg6+kzEZzijCRb/kOIagFAGm+mmT1SJCEpMKP71Ir2VhCyN9
- KMdfp/h2o0MTQ4fRkdM6BUbYO2A6fhjALWrkRE5JSCtc89Qscx2Ls6iu3dJ0AKQze/
- E3BDDPxuaHaj6GzsRck6xzs8FI/Z0QwbtnKcnA08=
-Date: Thu, 23 Apr 2020 17:17:54 +0100
+ s=default; t=1587659265;
+ bh=ky5iXn5UEpgEUlyZWT7+68OWaubhRbOKsYG2GFRYvWA=;
+ h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+ b=aP2EYC+lPMFuUeOSQngeMc+6mufBTSxfrfefsDqZhgV29T1ysrWLRJlfCdqevQau8
+ ERH/LJzvuLWRV4ajXbxHi84jR2Lyju/nka0ASTVI+sBymEXGaDtQjKMQuWPff5hHXs
+ yAU1G6rvORnd+0jTBxPUPZY26Mwr8bXShQKieymc=
+Date: Thu, 23 Apr 2020 17:27:42 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Daniel Baluta <daniel.baluta@gmail.com>
-Subject: Re: [PATCH] ASoC: SOF: Add missing dependency on IMX_SCU
-Message-ID: <20200423161753.GQ4808@sirena.org.uk>
-References: <20200423142805.52757-1-broonie@kernel.org>
- <CAEnQRZDqNRfUu1Yak=8AM98sAicxnv+Cpm0y2UcCMeABcRQPWQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="+r+clu82y77Ss1pj"
-Content-Disposition: inline
-In-Reply-To: <CAEnQRZDqNRfUu1Yak=8AM98sAicxnv+Cpm0y2UcCMeABcRQPWQ@mail.gmail.com>
-X-Cookie: This unit... must... survive.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
- Linux-ALSA <alsa-devel@alsa-project.org>, Shawn Guo <shawnguo@kernel.org>,
+To: Liam Girdwood <lgirdwood@gmail.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>
+ Mark Brown <broonie@kernel.org>
+In-Reply-To: <20200423142805.52757-1-broonie@kernel.org>
+References: <20200423142805.52757-1-broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: SOF: Add missing dependency on IMX_SCU
+Message-Id: <158765926266.52275.12049804642333754117.b4-ty@kernel.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,61 +85,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Thu, 23 Apr 2020 15:28:05 +0100, Mark Brown wrote:
+> This broke PowerPC allyesconfig.
+> 
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> ---
+>  sound/soc/sof/imx/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> [...]
 
---+r+clu82y77Ss1pj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied to
 
-On Thu, Apr 23, 2020 at 06:21:40PM +0300, Daniel Baluta wrote:
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.8
 
-Please don't top post, reply in line with needed context.  This allows
-readers to readily follow the flow of conversation and understand what
-you are talking about and also helps ensure that everything in the
-discussion is being addressed.
+Thanks!
 
-> This should no longer be a problem after the following patch is merged:
->=20
-> https://patchwork.kernel.org/patch/11395247/
+[1/1] ASoC: SOF: Add missing dependency on IMX_SCU
+      commit: fe57a92c88580ae7894b9c71d2d520ba98eb1591
 
-That's "firmware: imx: add dummy functions".  That'll fix the issue but
-we'll still see stuff in -next unless the firmware tree gets merged
-before ASoC.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-Please include human readable descriptions of things like commits and
-issues being discussed in e-mail in your mails, this makes them much
-easier for humans to read especially when they have no internet access.
-I do frequently catch up on my mail on flights or while otherwise
-travelling so this is even more pressing for me than just being about
-making things a bit easier to read.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> Anyone,
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> What is the exact difference between 'depends on' and 'selects'. This
-> is a question I try
-> to clarify for myself for a while. And most important when to use one
-> or another?
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-depends on says "this configuration can't be enabled without X already
-being enabled".  select says "force X on" but ignores any dependencies
-that X itself has so the thing doing the selecting has to figure those
-out.  select is mainly for enabling library type things that users
-shouldn't have to deal with directly either because they are libraries
-or because they're just not independently useful somehow.
-
---+r+clu82y77Ss1pj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6hv7EACgkQJNaLcl1U
-h9A3nQf+I2bTW/3PPXkZyv7VzVCJ+XuQryQSyRp5MPeQYsFnyDaIFjANu2BSQO38
-1LE5Y6fHXOwkgp7p0Vp9KvAynueUuv3U6pgbfgIdYIiWT/VaPCqHQ0+rKqKtUxSV
-W/7A8ib61CopaBbAa1ttdSj9VtXbUidJs++m+dQ74UzoZsyy1DNCeDEQ5KP/oYVe
-7LfPHCv+UJPlJmSSTzh+gWtTGwflM7v+uvBaqC9o8x8x/qGRaTi2C9J9KBDADNZ4
-D+ZPRSR3+v4v8d4POtAQzaaVAFoNtfRz+Q3KBvv8OiS1GetOIKhwwneVSQLnrfZz
-eeXN7w9nRs5PBi9G7X3noZPzaygvIg==
-=9vPM
------END PGP SIGNATURE-----
-
---+r+clu82y77Ss1pj--
+Thanks,
+Mark
