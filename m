@@ -2,74 +2,71 @@ Return-Path: <SRS0=JLiH=6H=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC6E0C55185
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 02:39:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 837E2C2BA19
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 05:26:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6AE9220747
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 02:39:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 10CB3208E4
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Apr 2020 05:26:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uZftg5IH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6AE9220747
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QOeZXd1x"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 10CB3208E4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B522816D4;
-	Thu, 23 Apr 2020 04:39:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B522816D4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5F1AA1695;
+	Thu, 23 Apr 2020 07:25:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5F1AA1695
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587609592;
-	bh=T/xKIP/6dMLHaAEx5a0awJZWSmmSYUkFRd5dckf4SUQ=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=uZftg5IHjuEehcgT5YtXoRW591IezqAOycIjEyoXAzjToyNasi5TvCUGYosscrUuR
-	 nPm/FWe/jKbV234Iy10eHkqPCjh2Kg691eWgKpx8Y6T68VvDeq8dRuE1bPTmwXkRiG
-	 QPTbQcMfUCBCJjkyzdf/AdVwNxh6xAvIfraf3eQ8=
+	s=default; t=1587619589;
+	bh=3XhKSAiiPz2i6EsNSwOQ5oT23yODaSlmAHZBehfINHg=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=QOeZXd1xWKnZ2KNp9Yf69fUrhP+c0VGyJBs0izpspDcalyPdWDuGQSMA01YdmVMN2
+	 yIwjGChfT8rWgLQ+DsMIcaC4lW1yPzzQMBho3DrOQl3uqtmSkqr6tgcNR6qtySJQkE
+	 cwDriuuDUrrQhE0vH4npkvlIW5ujwP93UkgvnoUM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C9BC4F8014A;
-	Thu, 23 Apr 2020 04:39:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C2AAEF8014A;
+	Thu, 23 Apr 2020 07:25:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2FB75F801EC; Thu, 23 Apr 2020 04:38:59 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 8DC22F801EC; Thu, 23 Apr 2020 07:24:22 +0200 (CEST)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0CE55F80121
- for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 04:38:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0CE55F80121
-IronPort-SDR: H151l9299kwOpQULmDdIxRCWUU9YtobMqxjYkiQyM5HhcfszBmUjjIcNbsLqmPTNd7h3SfVHFb
- OMdQN+GJJPpg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Apr 2020 19:38:48 -0700
-IronPort-SDR: puJ0u6Me41J+kW8WWuUvuTuLlXVf3W+ZCLN1ha0QUSQefA3i6IeN9QLEe0qROkFVE5A9ev83ev
- qDKW1Z0UaYHw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,305,1583222400"; d="scan'208";a="402762454"
-Received: from linux.intel.com ([10.54.29.200])
- by orsmga004.jf.intel.com with ESMTP; 22 Apr 2020 19:38:47 -0700
-Received: from younglee-svr.sh.intel.com (younglee-svr.sh.intel.com
- [10.239.159.43])
- by linux.intel.com (Postfix) with ESMTP id BBEAD580665;
- Wed, 22 Apr 2020 19:38:41 -0700 (PDT)
-From: libin.yang@linux.intel.com
-To: perex@perex.cz,
-	alsa-devel@alsa-project.org
-Subject: [alsa-devel] [alsa-lib][RFC PATCH] ucm: reset config id of condition
- items
-Date: Thu, 23 Apr 2020 09:58:55 +0800
-Message-Id: <1587607135-20106-1-git-send-email-libin.yang@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
-Cc: libin.yang@intel.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 12712F800FF
+ for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2020 07:24:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 12712F800FF
+Received: from [111.196.67.54] (helo=[192.168.2.106])
+ by youngberry.canonical.com with esmtpsa
+ (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
+ (envelope-from <hui.wang@canonical.com>)
+ id 1jRULB-0002Qi-6j; Thu, 23 Apr 2020 05:24:01 +0000
+Subject: Re: [PATCH] ALSA: hda: Always use jackpoll helper for jack update
+ after resume
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+References: <20200422203744.26299-1-tiwai@suse.de>
+ <s5hblnjxn7i.wl-tiwai@suse.de>
+From: Hui Wang <hui.wang@canonical.com>
+Message-ID: <a9c9886b-9707-a4fe-639c-3b1b6a87723e@canonical.com>
+Date: Thu, 23 Apr 2020 13:23:52 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <s5hblnjxn7i.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,205 +82,162 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Libin Yang <libin.yang@intel.com>
 
-UCMv2 supports "If" statement and will merge the same items with
-compound_merge(). If the items have the same id, it will fail to
-add the config items. And the id of the item in an array is
-automatically generated with the increased number. It is probably
-that some items to be merged have the same id. Let's add prefix
-in the id to avoid such situation.
+On 2020/4/23 上午4:46, Takashi Iwai wrote:
+> On Wed, 22 Apr 2020 22:37:44 +0200,
+> Takashi Iwai wrote:
+>> HD-audio codec driver applies a tricky procedure to forcibly perform
+>> the runtime resume by mimicking the usage count even if the device has
+>> been runtime-suspended beforehand.  This was needed to assure to
+>> trigger the jack detection update after the system resume.
+>>
+>> And recently we also applied the similar logic to the HD-audio
+>> controller side.  However this seems leading to some inconsistency,
+>> and eventually PCI controller gets screwed up.
+>>
+>> This patch is an attempt to fix and clean up those behavior: instead
+>> of the tricky runtime resume procedure, the existing jackpoll work is
+>> scheduled when such a forced codec resume is required.  The jackpoll
+>> work will power up the codec, and this alone should suffice for the
+>> jack status update in usual cases.  If the extra polling is requested
+>> (by checking codec->jackpoll_interval), the manual update is invoked
+>> after that, and the codec is powered down again.
+>>
+>> Also, we filter the spurious wake up of the codec from the controller
+>> runtime resume by checking codec->relaxed_resume flag.  If this flag
+>> is set, basically we don't need to wake up explicitly, but it's
+>> supposed to be done via the audio component notifier.
+>>
+>> Fixes: c4c8dd6ef807 ("ALSA: hda: Skip controller resume if not needed")
+>> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> Note that this patch discards the previous forced resume logic
+> introduced in commit b5a236c175b0
+>      ALSA: hda - Enforces runtime_resume after S3 and S4 for each codec
+>
+> So, Hui, could you check whether it still works for such a device?
+> Or at least tests with a few known working devices are helpful.
 
-For example:
+I tested the patch on the machine which has the detection issue of  
+"ALSA: hda - Enforces runtime_resume after S3 and S4 for each codec", 
+the new patch worked well. The headphone could be detected after s3/s4.
 
-If.seq1 {
-	Condition {
-		Type ControlExists
-		Control "name='PGA1.0 1 Master Playback Volume'"
-	}
-	True {
-		EnableSequence [
-			cset "name='PGA1.0 1 Master Playback Volume' 50"
-		]
-	}
-}
+And I don't have other machines at the moment since I worked at home 
+recently, so only tested this patch on one machine, it worked well.
 
-If.seq2 {
-	Condition {
-		Type ControlExists
-		Control "name='PGA2.0 2 Master Playback Volume'"
-	}
-	True {
-		EnableSequence [
-			cset "name='PGA2.0 2 Master Playback Volume' 50"
-		]
-	}
-}
+Regards,
 
-If.seq3 {
-	Condition {
-		Type ControlExists
-		Control "name='PGA3.0 3 Master Playback Volume'"
-	}
-	True {
-		EnableSequence [
-			cset "name='PGA3.0 3 Master Playback Volume' 50"
-		]
-	}
-}
+Hui.
 
-If seq1, seq2 and seq3 conditions are true, UCM will fail to initialize.
 
-This patch rename the config id to avoid the same id conflict.
-
-Signed-off-by: Libin Yang <libin.yang@intel.com>
----
- include/conf.h     |  2 +-
- src/conf.c         | 21 +++++++++++++++++++++
- src/ucm/ucm_cond.c | 28 ++++++++++++++++++++++++----
- 3 files changed, 46 insertions(+), 5 deletions(-)
-
-diff --git a/include/conf.h b/include/conf.h
-index 456b272..adb3d84 100644
---- a/include/conf.h
-+++ b/include/conf.h
-@@ -139,7 +139,7 @@ int snd_config_imake_safe_string(snd_config_t **config, const char *key, const c
- int snd_config_imake_pointer(snd_config_t **config, const char *key, const void *ptr);
- 
- snd_config_type_t snd_config_get_type(const snd_config_t *config);
--
-+int snd_config_of_array(const snd_config_t *config);
- int snd_config_set_id(snd_config_t *config, const char *id);
- int snd_config_set_integer(snd_config_t *config, long value);
- int snd_config_set_integer64(snd_config_t *config, long long value);
-diff --git a/src/conf.c b/src/conf.c
-index 50d0403..43d565b 100644
---- a/src/conf.c
-+++ b/src/conf.c
-@@ -435,6 +435,8 @@ struct _snd_config {
- 	char *id;
- 	snd_config_type_t type;
- 	int refcount; /* default = 0 */
-+	/* member of an array */
-+	int of_array;
- 	union {
- 		long integer;
- 		long long integer64;
-@@ -1123,6 +1125,7 @@ static int _snd_config_make(snd_config_t **config, char **id, snd_config_type_t
- 		*id = NULL;
- 	}
- 	n->type = type;
-+	n->of_array = 0;
- 	if (type == SND_CONFIG_TYPE_COMPOUND)
- 		INIT_LIST_HEAD(&n->u.compound.fields);
- 	*config = n;
-@@ -1316,6 +1319,8 @@ static int parse_array_def(snd_config_t *parent, input_t *input, int *idx, int s
- 	default:
- 		unget_char(c, input);
- 		err = parse_value(&n, parent, input, &id, skip);
-+		/* this is a member of an array */
-+		n->of_array = 1;
- 		if (err < 0)
- 			goto __end;
- 		break;
-@@ -1784,6 +1789,22 @@ snd_config_type_t snd_config_get_type(const snd_config_t *config)
- }
- 
- /**
-+ * \brief Returns the of_array of a configuration node.
-+ * \param config Handle to the configuration node.
-+ * \return of_array of the node
-+ *
-+ * The returned value indicates whether the node is a member of an array.
-+ *
-+ * \par Conforming to:
-+ * LSB 3.2
-+ */
-+int snd_config_of_array(const snd_config_t *config)
-+{
-+	assert(config);
-+	return config->of_array;
-+}
-+
-+/**
-  * \brief Returns the id of a configuration node.
-  * \param[in] config Handle to the configuration node.
-  * \param[out] id The function puts the pointer to the id string at the
-diff --git a/src/ucm/ucm_cond.c b/src/ucm/ucm_cond.c
-index 22b418d..725a69e 100644
---- a/src/ucm/ucm_cond.c
-+++ b/src/ucm/ucm_cond.c
-@@ -347,14 +347,15 @@ static void config_dump(snd_config_t *cfg)
- }
- #endif
- 
--static int compound_merge(const char *id,
-+static int compound_merge(const char *id, const char *cname,
- 			  snd_config_t *dst, snd_config_t *src,
- 			  snd_config_t *before, snd_config_t *after)
- {
- 	snd_config_iterator_t i, next;
- 	snd_config_t *n, *_before = NULL, *_after = NULL;
- 	const char *s;
--	int err;
-+	char s1[32];
-+	int err, cnt;
- 
- 	if (snd_config_get_type(src) != SND_CONFIG_TYPE_COMPOUND) {
- 		uc_error("compound type expected for If True/False block");
-@@ -387,8 +388,22 @@ static int compound_merge(const char *id,
- 		return -EINVAL;
- 	}
- 
-+	cnt = 0;
- 	snd_config_for_each(i, next, src) {
- 		n = snd_config_iterator_entry(i);
-+		/*
-+		 * If n is an array member, n->id is automatically generated.
-+		 * It is prossible that n->id is used by other array member,
-+		 * which will be merged with this one. So let's add prefix
-+		 * to the id to avoid the conflict.
-+		 */
-+		if (snd_config_of_array(n)) {
-+			err = snd_config_get_id(n, &s);
-+			if (err < 0)
-+				return err; /* FIXME: this will never happen */
-+			snprintf(s1, sizeof(s1), "%s-%d-%s", cname, cnt++, s);
-+			snd_config_set_id(n, (const char *)s1);
-+		}
- 		err = snd_config_remove(n);
- 		if (err < 0)
- 			return err;
-@@ -422,7 +437,7 @@ int uc_mgr_evaluate_condition(snd_use_case_mgr_t *uc_mgr,
- {
- 	snd_config_iterator_t i, i2, next, next2;
- 	snd_config_t *a, *n, *n2, *parent2, *before, *after;
--	const char *id;
-+	const char *id, *cname;
- 	int err;
- 
- 	if (uc_mgr->conf_format < 2) {
-@@ -437,6 +452,10 @@ int uc_mgr_evaluate_condition(snd_use_case_mgr_t *uc_mgr,
- 
- 	snd_config_for_each(i, next, cond) {
- 		n = snd_config_iterator_entry(i);
-+		err = snd_config_get_id(n, &cname);
-+		if (err < 0)
-+			return err; /* FIXME: this will never happen */
-+
- 		before = after = NULL;
- 		err = if_eval_one(uc_mgr, n, &a, &before, &after);
- 		if (err < 0)
-@@ -469,7 +488,8 @@ __add:
- 				err = snd_config_search(parent, id, &parent2);
- 				if (err == -ENOENT)
- 					goto __add;
--				err = compound_merge(id, parent2, n2, before, after);
-+				err = compound_merge(id, cname, parent2, n2,
-+						     before, after);
- 				if (err < 0)
- 					return err;
- 			}
--- 
-2.7.4
-
+>
+> Also, Kai, it'd be appreciated if you can test whether it causes
+> regression on Intel HDMI audio.  Currently I have no enough test
+> machines due to lockdown, unfortunately.
+>
+>
+> Thanks!
+>
+> Takashi
+>
+>
+>> ---
+>>   sound/pci/hda/hda_codec.c | 28 +++++++++++++++++-----------
+>>   sound/pci/hda/hda_intel.c | 17 ++---------------
+>>   2 files changed, 19 insertions(+), 26 deletions(-)
+>>
+>> diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+>> index 86a632bf4d50..7e3ae4534df9 100644
+>> --- a/sound/pci/hda/hda_codec.c
+>> +++ b/sound/pci/hda/hda_codec.c
+>> @@ -641,8 +641,18 @@ static void hda_jackpoll_work(struct work_struct *work)
+>>   	struct hda_codec *codec =
+>>   		container_of(work, struct hda_codec, jackpoll_work.work);
+>>   
+>> -	snd_hda_jack_set_dirty_all(codec);
+>> -	snd_hda_jack_poll_all(codec);
+>> +	/* for non-polling trigger: we need nothing if already powered on */
+>> +	if (!codec->jackpoll_interval && snd_hdac_is_power_on(&codec->core))
+>> +		return;
+>> +
+>> +	/* the power-up/down sequence triggers the runtime resume */
+>> +	snd_hda_power_up_pm(codec);
+>> +	/* update jacks manually if polling is required, too */
+>> +	if (codec->jackpoll_interval) {
+>> +		snd_hda_jack_set_dirty_all(codec);
+>> +		snd_hda_jack_poll_all(codec);
+>> +	}
+>> +	snd_hda_power_down_pm(codec);
+>>   
+>>   	if (!codec->jackpoll_interval)
+>>   		return;
+>> @@ -2951,18 +2961,14 @@ static int hda_codec_runtime_resume(struct device *dev)
+>>   static int hda_codec_force_resume(struct device *dev)
+>>   {
+>>   	struct hda_codec *codec = dev_to_hda_codec(dev);
+>> -	bool forced_resume = hda_codec_need_resume(codec);
+>>   	int ret;
+>>   
+>> -	/* The get/put pair below enforces the runtime resume even if the
+>> -	 * device hasn't been used at suspend time.  This trick is needed to
+>> -	 * update the jack state change during the sleep.
+>> -	 */
+>> -	if (forced_resume)
+>> -		pm_runtime_get_noresume(dev);
+>>   	ret = pm_runtime_force_resume(dev);
+>> -	if (forced_resume)
+>> -		pm_runtime_put(dev);
+>> +	/* schedule jackpoll work for jack detection update */
+>> +	if (codec->jackpoll_interval ||
+>> +	    (pm_runtime_suspended(dev) && hda_codec_need_resume(codec)))
+>> +		schedule_delayed_work(&codec->jackpoll_work,
+>> +				      codec->jackpoll_interval);
+>>   	return ret;
+>>   }
+>>   
+>> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+>> index 9f995576cff1..0310193ea1bd 100644
+>> --- a/sound/pci/hda/hda_intel.c
+>> +++ b/sound/pci/hda/hda_intel.c
+>> @@ -1004,7 +1004,8 @@ static void __azx_runtime_resume(struct azx *chip, bool from_rt)
+>>   
+>>   	if (status && from_rt) {
+>>   		list_for_each_codec(codec, &chip->bus)
+>> -			if (status & (1 << codec->addr))
+>> +			if (!codec->relaxed_resume &&
+>> +			    (status & (1 << codec->addr)))
+>>   				schedule_delayed_work(&codec->jackpoll_work,
+>>   						      codec->jackpoll_interval);
+>>   	}
+>> @@ -1044,9 +1045,7 @@ static int azx_suspend(struct device *dev)
+>>   static int azx_resume(struct device *dev)
+>>   {
+>>   	struct snd_card *card = dev_get_drvdata(dev);
+>> -	struct hda_codec *codec;
+>>   	struct azx *chip;
+>> -	bool forced_resume = false;
+>>   
+>>   	if (!azx_is_pm_ready(card))
+>>   		return 0;
+>> @@ -1058,19 +1057,7 @@ static int azx_resume(struct device *dev)
+>>   	if (azx_acquire_irq(chip, 1) < 0)
+>>   		return -EIO;
+>>   
+>> -	/* check for the forced resume */
+>> -	list_for_each_codec(codec, &chip->bus) {
+>> -		if (hda_codec_need_resume(codec)) {
+>> -			forced_resume = true;
+>> -			break;
+>> -		}
+>> -	}
+>> -
+>> -	if (forced_resume)
+>> -		pm_runtime_get_noresume(dev);
+>>   	pm_runtime_force_resume(dev);
+>> -	if (forced_resume)
+>> -		pm_runtime_put(dev);
+>>   	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
+>>   
+>>   	trace_azx_resume(chip);
+>> -- 
+>> 2.16.4
+>>
