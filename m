@@ -2,81 +2,79 @@ Return-Path: <SRS0=j21J=6I=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 239F4C54FD0
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Apr 2020 12:34:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 756CEC54FD0
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Apr 2020 12:35:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A596920736
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Apr 2020 12:34:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F326120700
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Apr 2020 12:35:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LQ97tUQu";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="kklnnEjH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A596920736
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="knZBgvlX";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="1Z3V5lMd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F326120700
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
+Authentication-Results: mail.kernel.org; spf=tempfail smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E316D844;
-	Fri, 24 Apr 2020 14:33:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E316D844
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5E22E16CA;
+	Fri, 24 Apr 2020 14:34:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5E22E16CA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587731669;
-	bh=OHarCE3z2KwdDvsY2ukKKecY1NjLvv7Vo6kyrUUarDw=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=LQ97tUQugBFMsJtGFihBwUI2OhR8fohM1Ujyae0hHkZ3VvIPuRTEw6dagOxGcUfM+
-	 6K5xPEliXnGqT9ZwjDW8cofOM/uxzVcFVjoPvGObbsR0w8WYfLjl4UgEgjYOyveWfy
-	 uQjjqFSqTnoFYIZnkafW2JPym2gEqqI0L9fVnzPc=
+	s=default; t=1587731705;
+	bh=NuRlHIjlB91sUF8amoWtOUcTAyrC/yg678lKo8O7yEI=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=knZBgvlXs9wRqC4iirPBwvL7SR2YKDlN3nQn1cdBycGsqs9WLwq/0nobWoxE/eSqU
+	 4fcII8LHE8VZvZlHPAA7ojsORPET7uRlFFj2XzCmBiIVKYUbXef0f82DyUMskwATuD
+	 XHYE3Dhrrum23nYOttd6FcMkoxYsbu6AdpEK6APg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8D940F8033D;
-	Fri, 24 Apr 2020 14:25:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E5770F80346;
+	Fri, 24 Apr 2020 14:25:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 13400F8033E; Fri, 24 Apr 2020 14:25:10 +0200 (CEST)
+ id 39DFCF80343; Fri, 24 Apr 2020 14:25:13 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AA78DF80142
- for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2020 14:25:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA78DF80142
+ by alsa1.perex.cz (Postfix) with ESMTPS id C2F3FF80117
+ for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2020 14:25:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2F3FF80117
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="kklnnEjH"
+ header.b="1Z3V5lMd"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id B020921473;
- Fri, 24 Apr 2020 12:25:05 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id B9A2E20700;
+ Fri, 24 Apr 2020 12:25:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1587731106;
- bh=OHarCE3z2KwdDvsY2ukKKecY1NjLvv7Vo6kyrUUarDw=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=kklnnEjH3JhgBl3A0amsTVWK08SORJbp3OkTqQ5HDmW9VA+Fqd6zsTwwDt5Sr/Pkb
- SzDCKwjzaYOb6leUN1pWM7cb8lU6dU4yzsKetpJt9X2hdziPwYmTg5cM0+OLW5qHK1
- y3Zr1JE1uDJZrRIeGNG4s/BUVU6bMej+Kd+O0W+M=
+ s=default; t=1587731105;
+ bh=NuRlHIjlB91sUF8amoWtOUcTAyrC/yg678lKo8O7yEI=;
+ h=From:To:Cc:Subject:Date:From;
+ b=1Z3V5lMd9sVlkZnsFRXb69XxMbUZ/mTZA1+F/8RsAxb5UPCCYD/nwM5p8jwsKCzBP
+ /KaP2FKOWtDtAbGwSZ5IujbxksLodazcNSb2M1ppM0A6IseoDzW1pt32jodEr8XhwC
+ kiu1F5hKWnSXJRlDrBkE4qJI6yJmzzRqmjos+xHc=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 2/8] ALSA: hda: Keep the controller initialization
- even if no codecs found
-Date: Fri, 24 Apr 2020 08:24:57 -0400
-Message-Id: <20200424122503.11046-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.4 1/8] ALSA: hda: Don't release card at firmware
+ loading error
+Date: Fri, 24 Apr 2020 08:24:56 -0400
+Message-Id: <20200424122503.11046-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200424122503.11046-1-sashal@kernel.org>
-References: <20200424122503.11046-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
- alsa-devel@alsa-project.org, Roy Spliet <nouveau@spliet.org>
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,67 +92,59 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 9479e75fca370a5220784f7596bf598c4dad0b9b ]
+[ Upstream commit 25faa4bd37c10f19e4b848b9032a17a3d44c6f09 ]
 
-Currently, when the HD-audio controller driver doesn't detect any
-codecs, it tries to abort the probe.  But this abort happens at the
-delayed probe, i.e. the primary probe call already returned success,
-hence the driver is never unbound until user does so explicitly.
-As a result, it may leave the HD-audio device in the running state
-without the runtime PM.  More badly, if the device is a HD-audio bus
-that is tied with a GPU, GPU cannot reach to the full power down and
-consumes unnecessarily much power.
+At the error path of the firmware loading error, the driver tries to
+release the card object and set NULL to drvdata.  This may be referred
+badly at the possible PM action, as the driver itself is still bound
+and the PM callbacks read the card object.
 
-This patch changes the logic after no-codec situation; it continues
-probing without the further codec initialization but keep the
-controller driver running normally.
+Instead, we continue the probing as if it were no option set.  This is
+often a better choice than the forced abort, too.
 
+Fixes: 5cb543dba986 ("ALSA: hda - Deferred probing with request_firmware_nowait()")
 BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207043
-Tested-by: Roy Spliet <nouveau@spliet.org>
-Link: https://lore.kernel.org/r/20200413082034.25166-5-tiwai@suse.de
+Link: https://lore.kernel.org/r/20200413082034.25166-2-tiwai@suse.de
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/hda_intel.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ sound/pci/hda/hda_intel.c | 19 +++++--------------
+ 1 file changed, 5 insertions(+), 14 deletions(-)
 
 diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 0fa0c33660087..8bcf67fe84eb5 100644
+index 3e3277100f08a..0fa0c33660087 100644
 --- a/sound/pci/hda/hda_intel.c
 +++ b/sound/pci/hda/hda_intel.c
-@@ -1817,7 +1817,7 @@ static int azx_first_init(struct azx *chip)
- 	/* codec detection */
- 	if (!azx_bus(chip)->codec_mask) {
- 		dev_err(card->dev, "no codecs found!\n");
--		return -ENODEV;
-+		/* keep running the rest for the runtime PM */
+@@ -1839,24 +1839,15 @@ static void azx_firmware_cb(const struct firmware *fw, void *context)
+ {
+ 	struct snd_card *card = context;
+ 	struct azx *chip = card->private_data;
+-	struct pci_dev *pci = chip->pci;
+-
+-	if (!fw) {
+-		dev_err(card->dev, "Cannot load firmware, aborting\n");
+-		goto error;
+-	}
+ 
+-	chip->fw = fw;
++	if (fw)
++		chip->fw = fw;
++	else
++		dev_err(card->dev, "Cannot load firmware, continue without patching\n");
+ 	if (!chip->disabled) {
+ 		/* continue probing */
+-		if (azx_probe_continue(chip))
+-			goto error;
++		azx_probe_continue(chip);
  	}
- 
- 	if (azx_acquire_irq(chip, 0) < 0)
-@@ -2140,9 +2140,11 @@ static int azx_probe_continue(struct azx *chip)
+-	return; /* OK */
+-
+- error:
+-	snd_card_free(card);
+-	pci_set_drvdata(pci, NULL);
+ }
  #endif
  
- 	/* create codec instances */
--	err = azx_probe_codecs(chip, azx_max_codecs[chip->driver_type]);
--	if (err < 0)
--		goto out_free;
-+	if (bus->codec_mask) {
-+		err = azx_probe_codecs(chip, azx_max_codecs[chip->driver_type]);
-+		if (err < 0)
-+			goto out_free;
-+	}
- 
- #ifdef CONFIG_SND_HDA_PATCH_LOADER
- 	if (chip->fw) {
-@@ -2156,7 +2158,7 @@ static int azx_probe_continue(struct azx *chip)
- #endif
- 	}
- #endif
--	if ((probe_only[dev] & 1) == 0) {
-+	if (bus->codec_mask && !(probe_only[dev] & 1)) {
- 		err = azx_codec_configure(chip);
- 		if (err < 0)
- 			goto out_free;
 -- 
 2.20.1
 
