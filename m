@@ -2,66 +2,70 @@ Return-Path: <SRS0=j21J=6I=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2A4FC2BA1A
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Apr 2020 04:33:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1B9DC2BA1A
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Apr 2020 04:35:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 98B212076C
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Apr 2020 04:33:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 388BD2076C
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Apr 2020 04:35:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YRuIPCeL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 98B212076C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hZVNDI84"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 388BD2076C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EA44C168F;
-	Fri, 24 Apr 2020 06:32:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA44C168F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 87481168F;
+	Fri, 24 Apr 2020 06:34:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 87481168F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587702792;
-	bh=1xX5/ej+l0nzy3s/HfaBFHscwTzlRPWI2ln9H5tv6Tw=;
+	s=default; t=1587702939;
+	bh=kXpmqfS9kFalYWAI8203fVI/r0kAIAtIWnyr10aR+8A=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YRuIPCeLgcuzhfb5YyT8r/43qmvaBS24s7cZHUuIjOe86e8HXsOhXcBlx55x71qun
-	 3hHMZXGZAxN7/AmQ7sIBWjV41asMmZ5KogTfKTK6FB0i1Awz6err4LmaOYmUIEkP64
-	 koWFOwPP5b05MVFpkNEbpmBhJcvXueHWIXmDkhjY=
+	b=hZVNDI84IchrwLHsQ18yw48NntaEj/aGlmCS0eNTJPA9NzGm154SUO683azkrIN+E
+	 A4tBp9Xkw6kRzDCZHv952Px/tci3mm0DngIMM9oNEswaElvHHK6rTEWIXgkvDAcM52
+	 iDP0BOIBfvdMsG+E5QJwfq+aRkgcXopxhiurB3Aw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4E899F80121;
-	Fri, 24 Apr 2020 06:32:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 22F79F80121;
+	Fri, 24 Apr 2020 06:34:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 10C21F80142; Fri, 24 Apr 2020 06:32:18 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 7B895F800BE
- for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2020 06:32:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B895F800BE
-Date: 24 Apr 2020 13:32:03 +0900
-X-IronPort-AV: E=Sophos;i="5.73,310,1583161200"; d="scan'208";a="45380085"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 24 Apr 2020 13:32:03 +0900
+ id 6F3CFF80142; Fri, 24 Apr 2020 06:34:48 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 38F65F80116
+ for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2020 06:34:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38F65F80116
+Date: 24 Apr 2020 13:34:39 +0900
+X-IronPort-AV: E=Sophos;i="5.73,310,1583161200"; d="scan'208";a="45593552"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 24 Apr 2020 13:34:39 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 21370400D0CB;
- Fri, 24 Apr 2020 13:32:03 +0900 (JST)
-Message-ID: <87d07xsdvg.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 688FB4188CF9;
+ Fri, 24 Apr 2020 13:34:39 +0900 (JST)
+Message-ID: <87blnhsdr4.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 01/17] ASoC: soc-dai: add soc_dai_err()
-In-Reply-To: <bf6b80e9-79ef-eddd-29ec-fc54bcac37db@linux.intel.com>
-References: <871rofunaq.wl-kuninori.morimoto.gx@renesas.com>
- <87zhb3t8p5.wl-kuninori.morimoto.gx@renesas.com>
- <bf6b80e9-79ef-eddd-29ec-fc54bcac37db@linux.intel.com>
+To: Rong Chen <rong.a.chen@intel.com>
+Subject: Re: [PATCH v2] ASoC: soc-compress: avoid false-positive
+ Wuninitialized warning
+In-Reply-To: <20200424005437.3941-1-rong.a.chen@intel.com>
+References: <202004201540.vYPhhYMs%lkp@intel.com>
+ <20200424005437.3941-1-rong.a.chen@intel.com>
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset=ISO-8859-7
+Content-Transfer-Encoding: quoted-printable
+Cc: alsa-devel@alsa-project.org, kbuild test robot <lkp@intel.com>,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Vinod Koul <vkoul@kernel.org>,
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,21 +82,25 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Pierre-Louis
+Hi
 
-> > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> > 
-> > At soc-dai.c, it is good idea to indicate error function and
-> > its component name if there was error.
-> > This patch adds soc_dai_err() for it.
-> 
-> the code below adds soc_dai_ret(), is this a typo?
+> gcc-6.5 and earlier show a new warning:
+>=20
+> sound/soc/soc-compress.c: In function =A1soc_compr_open=A2:
+> sound/soc/soc-compress.c:75:28: warning: =A1component=A2 is used uninitia=
+lized in this function [-Wuninitialized]
+>   struct snd_soc_component *component, *save =3D NULL;
+>                               ^~~~~~~~~
+>=20
+> Simplest fix is to initialize it to avoid the warning.
+>=20
+> Reported-by: kbuild test robot <lkp@intel.com>
+> Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> Link: https://lore.kernel.org/lkml/202004201540.vYPhhYMs%25lkp@intel.com
+> Signed-off-by: Rong Chen <rong.a.chen@intel.com>
+> ---
 
-Oops, It is typo.
-The original code was _err, and I updated it to _ret
-
-Mark
-Do I need to post v3 patch ?
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
 Thank you for your help !!
 
