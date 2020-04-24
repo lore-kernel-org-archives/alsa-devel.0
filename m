@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B167AC54FD0
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Apr 2020 12:27:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BCC30C54FCB
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Apr 2020 12:27:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 41CC22087E
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Apr 2020 12:27:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4B0CC20767
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Apr 2020 12:27:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HQ0vPy+b";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="tPayMWdE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 41CC22087E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ESrrJAPR";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="sTH4SOD3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4B0CC20767
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A109F16D1;
-	Fri, 24 Apr 2020 14:26:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A109F16D1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9727F844;
+	Fri, 24 Apr 2020 14:27:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9727F844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587731228;
-	bh=GIXh259zkAV973E6JlrJai6TvZR6jjhBMMdVrHzuVcA=;
+	s=default; t=1587731270;
+	bh=v6KNJMAThACxl173RUXa9EVAziAlMPIDlPYr3zXtyVk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HQ0vPy+bqAfNLzcqiLp1Gk/u03qjYbsrlSJQhdbHw52JyaFZUwlkrfqobXpGQPfDg
-	 ktumGDLt3sXDP4CiZEHRJFMnC9cIF9y/vK/x01U09GPBL72375c6J24aB/iTB2a7UD
-	 /vJEP7UMcX3YbzIVBv5qz0Scm0nwAzIprOrY5nt4=
+	b=ESrrJAPRppKyz+WqX3hEMqqPN20SwLvBabAberxyPKK0lfsUJUFxABp2C0yCZ1PDL
+	 AgCgCrA9CGc3ozfvj1Gwri66V5l0SX7HDUFZjyyj3jpwdFHn3OyfSawZDwQA8s2OBJ
+	 WWcmlyESQf8H0woUXgiyzsgL3CKuAaDe/hMoGg2c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 60879F802A7;
-	Fri, 24 Apr 2020 14:23:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B4C2DF802DB;
+	Fri, 24 Apr 2020 14:23:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9DC9CF802A7; Fri, 24 Apr 2020 14:23:37 +0200 (CEST)
+ id 3DFC7F802BD; Fri, 24 Apr 2020 14:23:40 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DF0A3F8029A
- for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2020 14:23:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF0A3F8029A
+ by alsa1.perex.cz (Postfix) with ESMTPS id D1536F8029A
+ for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2020 14:23:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1536F8029A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="tPayMWdE"
+ header.b="sTH4SOD3"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id D4E8721775;
- Fri, 24 Apr 2020 12:23:32 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id EA3AF20706;
+ Fri, 24 Apr 2020 12:23:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1587731013;
- bh=GIXh259zkAV973E6JlrJai6TvZR6jjhBMMdVrHzuVcA=;
+ s=default; t=1587731015;
+ bh=v6KNJMAThACxl173RUXa9EVAziAlMPIDlPYr3zXtyVk=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=tPayMWdEte/R/vOBKMUqld2SSbbxEAtctb2IuRKkvgjE2a10vqhrzTp/zV4Y/UlLa
- uHUp3LI0T09BQIz6+hTR0JyubEhji5v34NDDCjM8dPTtw17AjxkdFoOTTdb5yklaeN
- Z64U21GgIpz64D6nLMullSwloKTuCZYtlvNc8e9k=
+ b=sTH4SOD3Y246VIL9s2L0TCDRh7B+V2o7E9I+iDcg3R4iT2PVDmGuFl8PRRqX+SkO8
+ gZfA9JFVpbu+UolpCJjj1SlPoYHxYOBCJrpsSEuPsxLshz8lr+NRzh9+/cFJsZysS0
+ 5hzW+ktvkSPnyKDT9ocMNnICyKJ6kSZf9SvYulys=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 08/26] ALSA: hda: Release resources at error in
- delayed probe
-Date: Fri, 24 Apr 2020 08:23:05 -0400
-Message-Id: <20200424122323.10194-8-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 10/26] ALSA: hda: Skip controller resume if not
+ needed
+Date: Fri, 24 Apr 2020 08:23:07 -0400
+Message-Id: <20200424122323.10194-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200424122323.10194-1-sashal@kernel.org>
 References: <20200424122323.10194-1-sashal@kernel.org>
@@ -95,137 +95,167 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 2393e7555b531a534152ffe7bfd1862cacedaacb ]
+[ Upstream commit c4c8dd6ef807663e42a5f04ea77cd62029eb99fa ]
 
-snd-hda-intel driver handles the most of its probe task in the delayed
-work (either via workqueue or via firmware loader).  When an error
-happens in the later delayed probe, we can't deregister the device
-itself because the probe callback already returned success and the
-device was bound.  So, for now, we set hda->init_failed flag and make
-the rest untouched until the device gets really unbound.
-However, this leaves the device up running, keeping the resources
-without any use that prevents other operations.
+The HD-audio controller does system-suspend and resume operations by
+directly calling its helpers __azx_runtime_suspend() and
+__azx_runtime_resume().  However, in general, we don't have to resume
+always the device fully at the system resume; typically, if a device
+has been runtime-suspended, we can leave it to runtime resume.
 
-In this patch, we release the resources at first when a probe error
-happens in the delayed probe stage, but keeps the top-level object, so
-that the PM and other ops can still refer to the object itself.
+Usually for achieving this, the driver would call
+pm_runtime_force_suspend() and pm_runtime_force_resume() pairs in the
+system suspend and resume ops.  Unfortunately, this doesn't work for
+the resume path in our case.  For handling the jack detection at the
+system resume, a child codec device may need the (literally) forcibly
+resume even if it's been runtime-suspended, and for that, the
+controller device must be also resumed even if it's been suspended.
 
-Also for simplicity, snd_hda_intel object is allocated via devm, so
-that we can get rid of the explicit kfree calls.
+This patch is an attempt to improve the situation.  It replaces the
+direct __azx_runtime_suspend()/_resume() calls with with
+pm_runtime_force_suspend() and pm_runtime_force_resume() with a slight
+trick as we've done for the codec side.  More exactly:
+
+- azx_has_pm_runtime() check is dropped from azx_runtime_suspend() and
+  azx_runtime_resume(), so that it can be properly executed from the
+  system-suspend/resume path
+
+- The WAKEEN handling depends on the card's power state now; it's set
+  and cleared only for the runtime-suspend
+
+- azx_resume() checks whether any codec may need the forcible resume
+  beforehand.  If the forcible resume is required, it does temporary
+  PM refcount up/down for actually triggering the runtime resume.
+
+- A new helper function, hda_codec_need_resume(), is introduced for
+  checking whether the codec needs a forcible runtime-resume, and the
+  existing code is rewritten with that.
 
 BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207043
-Link: https://lore.kernel.org/r/20200413082034.25166-4-tiwai@suse.de
+Link: https://lore.kernel.org/r/20200413082034.25166-6-tiwai@suse.de
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/hda_intel.c | 29 ++++++++++++++++-------------
- sound/pci/hda/hda_intel.h |  1 +
- 2 files changed, 17 insertions(+), 13 deletions(-)
+ include/sound/hda_codec.h |  5 +++++
+ sound/pci/hda/hda_codec.c |  2 +-
+ sound/pci/hda/hda_intel.c | 38 +++++++++++++++++++++++++++-----------
+ 3 files changed, 33 insertions(+), 12 deletions(-)
 
+diff --git a/include/sound/hda_codec.h b/include/sound/hda_codec.h
+index 9a0393cf024c2..65c056ce91128 100644
+--- a/include/sound/hda_codec.h
++++ b/include/sound/hda_codec.h
+@@ -494,6 +494,11 @@ void snd_hda_update_power_acct(struct hda_codec *codec);
+ static inline void snd_hda_set_power_save(struct hda_bus *bus, int delay) {}
+ #endif
+ 
++static inline bool hda_codec_need_resume(struct hda_codec *codec)
++{
++	return !codec->relaxed_resume && codec->jacktbl.used;
++}
++
+ #ifdef CONFIG_SND_HDA_PATCH_LOADER
+ /*
+  * patch firmware
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 6cb72336433ad..1bc45c8507858 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -2948,7 +2948,7 @@ static int hda_codec_runtime_resume(struct device *dev)
+ static int hda_codec_force_resume(struct device *dev)
+ {
+ 	struct hda_codec *codec = dev_to_hda_codec(dev);
+-	bool forced_resume = !codec->relaxed_resume && codec->jacktbl.used;
++	bool forced_resume = hda_codec_need_resume(codec);
+ 	int ret;
+ 
+ 	/* The get/put pair below enforces the runtime resume even if the
 diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 72bbfeddea24a..2b288c523dce0 100644
+index 6ccf34840e8a1..4604d1e16150d 100644
 --- a/sound/pci/hda/hda_intel.c
 +++ b/sound/pci/hda/hda_intel.c
-@@ -1200,10 +1200,8 @@ static void azx_vs_set_state(struct pci_dev *pci,
- 		if (!disabled) {
- 			dev_info(chip->card->dev,
- 				 "Start delayed initialization\n");
--			if (azx_probe_continue(chip) < 0) {
-+			if (azx_probe_continue(chip) < 0)
- 				dev_err(chip->card->dev, "initialization error\n");
--				hda->init_failed = true;
--			}
- 		}
- 	} else {
- 		dev_info(chip->card->dev, "%s via vga_switcheroo\n",
-@@ -1336,12 +1334,15 @@ static int register_vga_switcheroo(struct azx *chip)
- /*
-  * destructor
-  */
--static int azx_free(struct azx *chip)
-+static void azx_free(struct azx *chip)
+@@ -1025,7 +1025,7 @@ static int azx_suspend(struct device *dev)
+ 	chip = card->private_data;
+ 	bus = azx_bus(chip);
+ 	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
+-	__azx_runtime_suspend(chip);
++	pm_runtime_force_suspend(dev);
+ 	if (bus->irq >= 0) {
+ 		free_irq(bus->irq, chip);
+ 		bus->irq = -1;
+@@ -1041,7 +1041,9 @@ static int azx_suspend(struct device *dev)
+ static int azx_resume(struct device *dev)
  {
- 	struct pci_dev *pci = chip->pci;
- 	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
- 	struct hdac_bus *bus = azx_bus(chip);
+ 	struct snd_card *card = dev_get_drvdata(dev);
++	struct hda_codec *codec;
+ 	struct azx *chip;
++	bool forced_resume = false;
  
-+	if (hda->freed)
-+		return;
+ 	if (!azx_is_pm_ready(card))
+ 		return 0;
+@@ -1052,7 +1054,20 @@ static int azx_resume(struct device *dev)
+ 			chip->msi = 0;
+ 	if (azx_acquire_irq(chip, 1) < 0)
+ 		return -EIO;
+-	__azx_runtime_resume(chip, false);
 +
- 	if (azx_has_pm_runtime(chip) && chip->running)
- 		pm_runtime_get_noresume(&pci->dev);
- 	chip->running = 0;
-@@ -1385,9 +1386,8 @@ static int azx_free(struct azx *chip)
- 
- 	if (chip->driver_caps & AZX_DCAPS_I915_COMPONENT)
- 		snd_hdac_i915_exit(bus);
--	kfree(hda);
- 
--	return 0;
-+	hda->freed = 1;
- }
- 
- static int azx_dev_disconnect(struct snd_device *device)
-@@ -1403,7 +1403,8 @@ static int azx_dev_disconnect(struct snd_device *device)
- 
- static int azx_dev_free(struct snd_device *device)
- {
--	return azx_free(device->device_data);
-+	azx_free(device->device_data);
-+	return 0;
- }
- 
- #ifdef SUPPORT_VGA_SWITCHEROO
-@@ -1717,7 +1718,7 @@ static int azx_create(struct snd_card *card, struct pci_dev *pci,
- 	if (err < 0)
- 		return err;
- 
--	hda = kzalloc(sizeof(*hda), GFP_KERNEL);
-+	hda = devm_kzalloc(&pci->dev, sizeof(*hda), GFP_KERNEL);
- 	if (!hda) {
- 		pci_disable_device(pci);
- 		return -ENOMEM;
-@@ -1758,7 +1759,6 @@ static int azx_create(struct snd_card *card, struct pci_dev *pci,
- 
- 	err = azx_bus_init(chip, model[dev]);
- 	if (err < 0) {
--		kfree(hda);
- 		pci_disable_device(pci);
- 		return err;
- 	}
-@@ -2306,13 +2306,16 @@ static int azx_probe_continue(struct azx *chip)
- 		pm_runtime_put_autosuspend(&pci->dev);
- 
- out_free:
--	if (err < 0 || !hda->need_i915_power)
-+	if (err < 0) {
-+		azx_free(chip);
-+		return err;
++	/* check for the forced resume */
++	list_for_each_codec(codec, &chip->bus) {
++		if (hda_codec_need_resume(codec)) {
++			forced_resume = true;
++			break;
++		}
 +	}
 +
-+	if (!hda->need_i915_power)
- 		display_power(chip, false);
--	if (err < 0)
--		hda->init_failed = 1;
- 	complete_all(&hda->probe_wait);
- 	to_hda_bus(bus)->bus_probing = 0;
--	return err;
-+	return 0;
- }
++	if (forced_resume)
++		pm_runtime_get_noresume(dev);
++	pm_runtime_force_resume(dev);
++	if (forced_resume)
++		pm_runtime_put(dev);
+ 	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
  
- static void azx_remove(struct pci_dev *pci)
-diff --git a/sound/pci/hda/hda_intel.h b/sound/pci/hda/hda_intel.h
-index 2acfff3da1a04..3fb119f090408 100644
---- a/sound/pci/hda/hda_intel.h
-+++ b/sound/pci/hda/hda_intel.h
-@@ -27,6 +27,7 @@ struct hda_intel {
- 	unsigned int use_vga_switcheroo:1;
- 	unsigned int vga_switcheroo_registered:1;
- 	unsigned int init_failed:1; /* delayed init failed */
-+	unsigned int freed:1; /* resources already released */
+ 	trace_azx_resume(chip);
+@@ -1099,12 +1114,12 @@ static int azx_runtime_suspend(struct device *dev)
+ 	if (!azx_is_pm_ready(card))
+ 		return 0;
+ 	chip = card->private_data;
+-	if (!azx_has_pm_runtime(chip))
+-		return 0;
  
- 	bool need_i915_power:1; /* the hda controller needs i915 power */
- };
+ 	/* enable controller wake up event */
+-	azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) |
+-		  STATESTS_INT_MASK);
++	if (snd_power_get_state(card) == SNDRV_CTL_POWER_D0) {
++		azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) |
++			   STATESTS_INT_MASK);
++	}
+ 
+ 	__azx_runtime_suspend(chip);
+ 	trace_azx_runtime_suspend(chip);
+@@ -1115,17 +1130,18 @@ static int azx_runtime_resume(struct device *dev)
+ {
+ 	struct snd_card *card = dev_get_drvdata(dev);
+ 	struct azx *chip;
++	bool from_rt = snd_power_get_state(card) == SNDRV_CTL_POWER_D0;
+ 
+ 	if (!azx_is_pm_ready(card))
+ 		return 0;
+ 	chip = card->private_data;
+-	if (!azx_has_pm_runtime(chip))
+-		return 0;
+-	__azx_runtime_resume(chip, true);
++	__azx_runtime_resume(chip, from_rt);
+ 
+ 	/* disable controller Wake Up event*/
+-	azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) &
+-			~STATESTS_INT_MASK);
++	if (from_rt) {
++		azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) &
++			   ~STATESTS_INT_MASK);
++	}
+ 
+ 	trace_azx_runtime_resume(chip);
+ 	return 0;
 -- 
 2.20.1
 
