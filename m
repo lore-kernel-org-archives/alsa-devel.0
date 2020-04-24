@@ -2,79 +2,86 @@ Return-Path: <SRS0=j21J=6I=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3BCE8C55196
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Apr 2020 16:45:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 99F01C54FD0
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Apr 2020 16:50:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BF8DE20728
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Apr 2020 16:45:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 293822098B
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Apr 2020 16:50:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uQKQaSIv";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=tsoy.me header.i=@tsoy.me header.b="WIjljSRp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BF8DE20728
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=tsoy.me
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cA5E/WH3";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="tr+KgBDK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 293822098B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1380616A9;
-	Fri, 24 Apr 2020 18:44:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1380616A9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7D4DC16A8;
+	Fri, 24 Apr 2020 18:49:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D4DC16A8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587746704;
-	bh=x8wYLP8hAa5PznsYf/TIOnd/57ue/xTM9UGsqsdRU/U=;
-	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1587747045;
+	bh=MybT2iqsn9jaRlTPmSjAHRlwU3TMM/SESgNPmA5yhhM=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uQKQaSIv5y2hLwyt+ZsYekbd42UF5hFJ0kdtEs8MGod3mIBiLdt1JqeTlyswZ6/RI
-	 lgyDgsz/uH+KRKEXTyk21N2iGqg6AevElfPzsNxtdkLL0TfYseAzs8mTu4lHbVW23S
-	 OxrF5vt7oZi3iGREtLHX6H71j8SYbFV26+9GMaLQ=
+	b=cA5E/WH3H5VrSxlujqQkNEsBPZO2dHGXWcXoAJT7WcUaraS64io2WaVciA6xyfO+O
+	 H0OpRypJZLuaaN/wx4Czn3omtbLZM+/rVdFHfsgW2MObwtiZZP357WQ0tErRuwaOk0
+	 WTjlpUMxh59DQB3geRf19WHMUNZWmKLPktQQ+JAY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 53E34F800BE;
-	Fri, 24 Apr 2020 18:44:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 02C80F80121;
+	Fri, 24 Apr 2020 18:49:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5F498F80142; Fri, 24 Apr 2020 18:44:10 +0200 (CEST)
-Received: from puleglot.ru (puleglot.ru [IPv6:2a01:4f8:1c0c:58e8::2])
+ id 8B78CF800BE; Fri, 24 Apr 2020 18:49:53 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id ADD3EF800BE
+ for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2020 18:49:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ADD3EF800BE
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="tr+KgBDK"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5821BF800BE
- for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2020 18:44:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5821BF800BE
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=tsoy.me header.i=@tsoy.me
- header.b="WIjljSRp"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=tsoy.me;
- s=mymail; h=Sender:Content-Transfer-Encoding:MIME-Version:Content-Type:
- References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID
- :Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
- Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe
- :List-Post:List-Owner:List-Archive;
- bh=iy7kKW3KRxN43S6oMkD+6O7aD3qGwVjJqWdNvcqDlXg=; b=WIjljSRpdyt9EaYtUKVL0by5sP
- 2m0cLjIvXSSAEz2KvR7LGaFB3IjoCQApoRyhntgj7HRZJqmVWf0lJmobikkUt15cO9rMvcqcEX+QA
- huSXEWcC432GiHiWXhcMqQO5uDCsMgmd7dPgY9Z6msMom/JlutQ3oisVlBEfkb1H8Mx8=;
-Received: from [2a00:1370:8125:3f98:890:f100:d37d:7ada] (helo=home)
- by puleglot.ru with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
- (Exim 4.92.3) (envelope-from <puleglot@puleglot.ru>)
- id 1jS1Ql-0002RI-Cy; Fri, 24 Apr 2020 19:43:59 +0300
-Message-ID: <6eb7b878b82659f7e9b9859186dfe40320402438.camel@tsoy.me>
-Subject: Re: [PATCH 1/2] ALSA: usb-audio: Improve frames size computation
-From: Alexander Tsoy <alexander@tsoy.me>
-To: Gregor Pintar <grpintar@gmail.com>
-Date: Fri, 24 Apr 2020 19:43:58 +0300
-In-Reply-To: <CAOPXC2kF-k9xH8KhP_s+RmebgTdZW7avn9uedMRAooOB5WhzCA@mail.gmail.com>
-References: <20200424022449.14972-1-alexander@tsoy.me>
- <CAOPXC2kF-k9xH8KhP_s+RmebgTdZW7avn9uedMRAooOB5WhzCA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+ by mail.kernel.org (Postfix) with ESMTPSA id BCC1E20728;
+ Fri, 24 Apr 2020 16:49:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1587746987;
+ bh=MybT2iqsn9jaRlTPmSjAHRlwU3TMM/SESgNPmA5yhhM=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=tr+KgBDKUWNQSFvlwrMSBAd01MsOdX8z0z1ckwRQzvHixzaVPW5j26HRrYUf9VKa+
+ D3ov9Lwb7wFWPrLCEYqCGwJTr4+T/e+P10QQDDJP/NNK6ZruE+9RtM6vnOW/a4mXgo
+ un5vesSYtGmilppyy8vkqpewejOLcPdVQnoNJaoo=
+Date: Fri, 24 Apr 2020 17:49:44 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: ASoC driver names
+Message-ID: <20200424164944.GI5850@sirena.org.uk>
+References: <c57f21dc-412d-3057-6150-b96d96a20727@perex.cz>
+ <20200423110437.GF4808@sirena.org.uk>
+ <e31a20e6-91ab-2f30-f496-064bea07762a@perex.cz>
+ <7b44a625-fe88-5eac-280f-daa15a7c83dc@linux.intel.com>
+ <20200423184056.GS4808@sirena.org.uk>
+ <aaff591f-9f3a-257b-4fba-71c39b3bf3ea@perex.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
- Roope Salmi <rpsalmi@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="k9xkV0rc9XGsukaG"
+Content-Disposition: inline
+In-Reply-To: <aaff591f-9f3a-257b-4fba-71c39b3bf3ea@perex.cz>
+X-Cookie: Information is the inverse of entropy.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: Takashi Iwai <tiwai@suse.de>,
+ ALSA development <alsa-devel@alsa-project.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,23 +97,69 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-В Пт, 24/04/2020 в 17:02 +0200, Gregor Pintar пишет:
-> On Fri, Apr 24, 2020 at 4:24 AM Alexander Tsoy <alexander@tsoy.me>
-> wrote:
-> > This patch fixes this issue by implementing a different algorithm
-> > for
-> > frame size computation. It is based on accumulating of the
-> > remainders
-> > from division fs/fps and it doesn't accumulate errors over time.
-> > This
-> > new method is enabled for synchronous and adaptive playback
-> > endpoints.
-> > 
-> 
-> Hm, I still sometimes get click usually in about first 2 seconds,
-> but it is hard to reproduce.
 
-I wonder if it's because the driver doesn't honor wLockDelay. Anyway,
-the second patch can be reverted if there are still issues with 2nd gen
-Scarletts.
+--k9xkV0rc9XGsukaG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Fri, Apr 24, 2020 at 10:52:38AM +0200, Jaroslav Kysela wrote:
+> Dne 23. 04. 20 v 20:40 Mark Brown napsal(a):
+
+> > My instinct is that the machine driver name is being used as a
+> > proxy for something else here and that if we need to change the ABI
+> > perhaps we need to extend it rather than trying to shoehorn things into
+> > what's there.
+
+> My point is that this information is duplicated in the sense, that we have
+> three fields with the similar contents passed from the audio driver by the
+> ASoC drivers whose set only snd_soc_card->name from the device tree.
+
+> For generic drivers: They can pass a generic driver name (like 'ASoC
+> Simple') for the simple card driver (soc/generic/simple-card.c).
+
+> So my proposal is to change the driver_name to the right contents (it was
+> the initial intention for this field - changed somehow for ASoC). An
+> information about the used driver which is independent on the real
+> configuration (device tree, ACPI, component enumeration etc.). In other
+> words, the name should be more close to the source (top-level driver) code
+> name than the hardware configuration.
+
+So if it's not really going to be used for anything particularly
+concrete then I'm having a hard time summoning the enthusiasm for a
+change.  It feels more like a neatness thing than anything else and the
+postitive case just isn't jumping out at me, certainly not as a thing to
+force for everything.  New stuff, sure.  I guess I'm not bothered enough
+to block any platform that has a burning desire to convert either though
+if users start coming and complaining about kernel upgrades breaking
+things we'd have to revert.
+
+> I would prefer to have the sound hardware description in the long name field
+> than the whole hardware platform info here, too.
+
+Does it also cope with the DT equivalents (and I guess there's nothing
+we can do for board file based systems)?  This stuff does get used for
+embedded systems where the plastics are often important for the
+configuration.
+
+BTW I think the reason why we're putting the board name in as the driver
+name is that historically there used to be pretty much one machine
+driver per board, I can't remember if they were just always taken from
+the same place or if someone noticed duplicate strings all over the
+place and removed the duplication.
+
+--k9xkV0rc9XGsukaG
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6jGKcACgkQJNaLcl1U
+h9BS0Af/TxL/dw1rlI4TcWxvlelIzndYWFn7rGMozgb7Jbo1bSG8gu/+YzKzlUep
+N17Sk6Ip9TeuADREXCV740XEnZtnhGtLfy8k/cHgdE5HMoJXWbR8ZPYalCOSdXgj
+OWTY9QDN/IucWrZRO8ihrC8mKHosAL2YoqGScB4nyjft2qeYRhxzjWlAnl8n+tMH
+OJOKqSL+O8P5UfMyYz9be1K8GM9l5Cd7z6BMxvZ4hcx82ptSHU5Ar9JZYREaoRqH
+Z+WK43CHECL2WrHkozMNIfwCNg5Fw+zar1beiJkA93NMkWcFX2uZpPM9MfcB6gc2
+HMxPKtInXO/8RPinXJXaZ46poSNCnQ==
+=UEUR
+-----END PGP SIGNATURE-----
+
+--k9xkV0rc9XGsukaG--
