@@ -2,66 +2,69 @@ Return-Path: <SRS0=j21J=6I=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 61FC6C2BA1A
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Apr 2020 06:30:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 28D0BC2BA1A
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Apr 2020 07:04:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DFFD620706
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Apr 2020 06:30:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A4C8320700
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Apr 2020 07:04:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HTvydwNe"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DFFD620706
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZO5fh8R1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A4C8320700
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 45D7316A4;
-	Fri, 24 Apr 2020 08:29:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45D7316A4
+	by alsa0.perex.cz (Postfix) with ESMTPS id F02C2168F;
+	Fri, 24 Apr 2020 09:03:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F02C2168F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587709846;
-	bh=CddAkn/zokiR5YNG028z7OJY7ajzX3f2mYdxQXk0Wh0=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=HTvydwNewbTY59M3i71TCreO7V0pLIr6En/Z+5ywYIMRIk0WZWM0mu716Xjutu7TO
-	 2C3E9jWjZW58OdrAwUthzByN69s9/AGP7/r/kNS5u42nOkZFKENP+NnzYAqBjWtKKC
-	 tMJX4IS+HuQ9H7GAukudU4iss3arZ1c8KoYTqrqg=
+	s=default; t=1587711872;
+	bh=uHwqAm/wCjvDc6Ob2inEso9BM5vID9H7oN7DwxobKWc=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=ZO5fh8R1xBbvcgLojsUIsTZ/zw4Y3qlXUeljzRrt5aVFTaZRUuuyaZ/TPGWR6Z8/A
+	 ojurdWIzIc1qVGDyhZCf6VnhieV0CylzyR6a3Jad+/p/mcMaotRVyKqBdH7kf8BaQX
+	 kQziE0QasYVuA7FgxoW/LTNJOQV1f7OL6lSpmuAw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D5CACF8023F;
-	Fri, 24 Apr 2020 08:29:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5DD50F80121;
+	Fri, 24 Apr 2020 09:03:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 44FD8F8028B; Fri, 24 Apr 2020 08:29:01 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id AA45BF80142; Fri, 24 Apr 2020 09:03:39 +0200 (CEST)
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EA35AF8023F
- for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2020 08:28:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA35AF8023F
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id BD3EAADEB;
- Fri, 24 Apr 2020 06:28:53 +0000 (UTC)
-Date: Fri, 24 Apr 2020 08:28:54 +0200
-Message-ID: <s5hh7x9tn15.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [PATCH v2] ALSA: hda: Refactor Intel NHLT init
-In-Reply-To: <20200423160310.28019-1-cezary.rojewski@intel.com>
-References: <20200423160310.28019-1-cezary.rojewski@intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.com,
- pierre-louis.bossart@linux.intel.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7D0ADF800BE
+ for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2020 09:03:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D0ADF800BE
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id DACB1205243;
+ Fri, 24 Apr 2020 09:03:29 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
+ [165.114.16.14])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 666D9204FE9;
+ Fri, 24 Apr 2020 09:03:25 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 121E74034F;
+ Fri, 24 Apr 2020 15:02:32 +0800 (SGT)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+ festevam@gmail.com, broonie@kernel.org, lgirdwood@gmail.com,
+ perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+ linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: fsl_esai: Remove the tasklet
+Date: Fri, 24 Apr 2020 14:54:06 +0800
+Message-Id: <1587711246-27226-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,34 +80,86 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 23 Apr 2020 18:03:10 +0200,
-Cezary Rojewski wrote:
-> 
-> NHLT fetch based on _DSM prevents ACPI table override mechanism from
-> being utilized. Make use of acpi_get_table to enable it and get rid of
-> redundant code. In consequence, NHLT can be overridden just like any
-> other ACPI table, e.g.: DSDT or SSDT.
-> 
-> Change has been verified on all Intel AVS architecture platforms, RVP
-> and production laptops both.
-> 
-> Change possible due to addition of NHLT signature to the list of
-> standard ACPI tables:
-> https://patchwork.kernel.org/patch/11463235/
-> 
-> Override helps not only with debug purposes but also allows user for
-> table adjustment when one found on their production hardware is invalid.
-> Shared official NHLT spec is now available to community at:
-> https://01.org/blogs/intel-smart-sound-technology-audio-dsp
-> 
-> NHLT support for iASL is still ongoing subject but should be available
-> in nearest future.
-> 
-> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Remove tasklet for it may cause the reset operation
+can't be handled immediately, then there will be
+endless xrun interrupt.
 
-Applied to for-next branch now.
+Fixes: 7ccafa2b3879 ("ASoC: fsl_esai: recover the channel swap after xrun")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/fsl/fsl_esai.c | 15 ++++-----------
+ 1 file changed, 4 insertions(+), 11 deletions(-)
 
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index c7a49d03463a..1ad0859da5e2 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -32,7 +32,6 @@
+  * @extalclk: esai clock source to derive HCK, SCK and FS
+  * @fsysclk: system clock source to derive HCK, SCK and FS
+  * @spbaclk: SPBA clock (optional, depending on SoC design)
+- * @task: tasklet to handle the reset operation
+  * @lock: spin lock between hw_reset() and trigger()
+  * @fifo_depth: depth of tx/rx FIFO
+  * @slot_width: width of each DAI slot
+@@ -56,7 +55,6 @@ struct fsl_esai {
+ 	struct clk *extalclk;
+ 	struct clk *fsysclk;
+ 	struct clk *spbaclk;
+-	struct tasklet_struct task;
+ 	spinlock_t lock; /* Protect hw_reset and trigger */
+ 	u32 fifo_depth;
+ 	u32 slot_width;
+@@ -74,6 +72,8 @@ struct fsl_esai {
+ 	char name[32];
+ };
+ 
++static void fsl_esai_hw_reset(struct fsl_esai *esai_priv);
++
+ static irqreturn_t esai_isr(int irq, void *devid)
+ {
+ 	struct fsl_esai *esai_priv = (struct fsl_esai *)devid;
+@@ -87,7 +87,7 @@ static irqreturn_t esai_isr(int irq, void *devid)
+ 	if ((saisr & (ESAI_SAISR_TUE | ESAI_SAISR_ROE)) &&
+ 	    esai_priv->reset_at_xrun) {
+ 		dev_dbg(&pdev->dev, "reset module for xrun\n");
+-		tasklet_schedule(&esai_priv->task);
++		fsl_esai_hw_reset(esai_priv);
+ 	}
+ 
+ 	if (esr & ESAI_ESR_TINIT_MASK)
+@@ -674,9 +674,8 @@ static void fsl_esai_trigger_stop(struct fsl_esai *esai_priv, bool tx)
+ 			   ESAI_xFCR_xFR, 0);
+ }
+ 
+-static void fsl_esai_hw_reset(unsigned long arg)
++static void fsl_esai_hw_reset(struct fsl_esai *esai_priv)
+ {
+-	struct fsl_esai *esai_priv = (struct fsl_esai *)arg;
+ 	bool tx = true, rx = false, enabled[2];
+ 	unsigned long lock_flags;
+ 	u32 tfcr, rfcr;
+@@ -1034,9 +1033,6 @@ static int fsl_esai_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	tasklet_init(&esai_priv->task, fsl_esai_hw_reset,
+-		     (unsigned long)esai_priv);
+-
+ 	pm_runtime_enable(&pdev->dev);
+ 
+ 	regcache_cache_only(esai_priv->regmap, true);
+@@ -1050,10 +1046,7 @@ static int fsl_esai_probe(struct platform_device *pdev)
+ 
+ static int fsl_esai_remove(struct platform_device *pdev)
+ {
+-	struct fsl_esai *esai_priv = platform_get_drvdata(pdev);
+-
+ 	pm_runtime_disable(&pdev->dev);
+-	tasklet_kill(&esai_priv->task);
+ 
+ 	return 0;
+ }
+-- 
+2.21.0
 
-thanks,
-
-Takashi
