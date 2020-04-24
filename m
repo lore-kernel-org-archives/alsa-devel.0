@@ -2,69 +2,69 @@ Return-Path: <SRS0=j21J=6I=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82B78C54FD0
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Apr 2020 12:39:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9A05C54FCB
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Apr 2020 12:42:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0F46D20736
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Apr 2020 12:39:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4611120704
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Apr 2020 12:42:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HqfHHI27"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0F46D20736
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hf9VeoF4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4611120704
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5F36516A9;
-	Fri, 24 Apr 2020 14:38:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5F36516A9
+	by alsa0.perex.cz (Postfix) with ESMTPS id A251F16B4;
+	Fri, 24 Apr 2020 14:41:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A251F16B4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587731982;
-	bh=iyPoKt48W4RfwFR37FDH9/wd1vPuRvdX4QsvtA3p1ZE=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=HqfHHI27KGjLz2JMH7eSGEmP9/GDCZGBGySix6pzPRv0eiREsFEWuyQd3c6vufimj
-	 4XxBce6IzaN0JQio3vfMBhM8H3VxQBB9J1sARFjTuJOwwYkc4wq2FLZS31ygxca7Al
-	 GvhOa6RjXIy5Lavt1fXetCJylYkPNjA0ptNu1Huo=
+	s=default; t=1587732143;
+	bh=xTbPbOMEBENl0h3StC1WBHP2Aw+Z7DPMDw/3Sd38p5U=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=hf9VeoF484F9/yPPQEQjEt7x6gh8YMd62WppXtqVvNanKj/ab1/lkD5U5LOARi5M6
+	 0/8GTMEYfyq1v7BUEW8RUuxldq+0OfiBsU/RBHQtaJW9qtSHH7uNgimmIqc3IFVHrC
+	 C4oV2xoeZ08hZTdVSWKiia0J84bT8R+vWxq48+ec=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8E278F80121;
-	Fri, 24 Apr 2020 14:38:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3B16BF80116;
+	Fri, 24 Apr 2020 14:41:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 35661F80142; Fri, 24 Apr 2020 14:38:49 +0200 (CEST)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 316A4F80142; Fri, 24 Apr 2020 14:41:31 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 31283F800BE
- for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2020 14:38:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31283F800BE
-Received: from inva020.nxp.com (localhost [127.0.0.1])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 875331A03CA;
- Fri, 24 Apr 2020 14:38:41 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
- [165.114.16.14])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 067471A03BE;
- Fri, 24 Apr 2020 14:38:37 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 24BD8402C7;
- Fri, 24 Apr 2020 20:38:31 +0800 (SGT)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
- festevam@gmail.com, broonie@kernel.org, alsa-devel@alsa-project.org,
- lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com
-Subject: [PATCH] ASoC: fsl_easrc: Check NULL pinter before dereference
-Date: Fri, 24 Apr 2020 20:30:04 +0800
-Message-Id: <1587731404-29750-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 307C1F80116
+ for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2020 14:41:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 307C1F80116
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 84C15AD0F;
+ Fri, 24 Apr 2020 12:41:17 +0000 (UTC)
+Date: Fri, 24 Apr 2020 14:41:17 +0200
+Message-ID: <s5hk125rr82.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH] ASoC: snd-sof-intel-hda-common - add hda_model parameter
+ and pass it to HDA codec driver
+In-Reply-To: <alpine.DEB.2.21.2004241517530.2957@eliteleevi.tm.intel.com>
+References: <20200424092520.23989-1-perex@perex.cz>
+ <alpine.DEB.2.21.2004241517530.2957@eliteleevi.tm.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: ALSA development <alsa-devel@alsa-project.org>,
+ Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,54 +80,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch 955ac624058f: "ASoC: fsl_easrc: Add EASRC ASoC CPU DAI
-drivers" from Apr 16, 2020, leads to the following Smatch complaint:
+On Fri, 24 Apr 2020 14:24:30 +0200,
+Kai Vehmanen wrote:
+> 
+> Hey,
+> 
+> On Fri, 24 Apr 2020, Jaroslav Kysela wrote:
+> 
+> > It may be useful to pass the specific model to the generic HDA codec
+> > routines like the legacy HDA driver (snd-hda-intel) allows.
+> [...]
+> > Original proposal: https://lore.kernel.org/alsa-devel/20191203161908.7496-1-perex@perex.cz/
+> 
+> not sure why this got stuck last year, but seems like a welcome
+> addition:
+> 
+> Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+> 
+> > The model name "sofbus" is tricky anyway.
+> 
+> Hmm, I wonder is this now doing more harm than good. Based on browsing 
+> through the related code in hda-codec.c and friends, it would seem 
+> "sofbus" as the default is mostly harmless, but I could have missed
+> something.
 
-sound/soc/fsl/fsl_easrc.c:1529 fsl_easrc_hw_free()
-warn: variable dereferenced before check 'ctx' (see line 1527)
+That's currently harmless since no codec driver defines "sofbus"
+model, hence the HDA parser continues to match with the default
+quirks. OTOH, the fixed "sofbus" model is fairly useless.  So, feel
+free to take my ack, too:
 
-sound/soc/fsl/fsl_easrc.c
-  1526          struct fsl_asrc_pair *ctx = runtime->private_data;
-  1527          struct fsl_easrc_ctx_priv *ctx_priv = ctx->private;
-                                                      ^^^^^
-Dereference
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
 
-  1528
-  1529          if (ctx && (ctx_priv->ctx_streams & BIT(substream->stream))) {
-                    ^^^
-This check is too late, to prevent a NULL dereference.
 
-  1530                  ctx_priv->ctx_streams &= ~BIT(substream->stream);
-  1531                  fsl_easrc_release_context(ctx);
+thanks,
 
-Fixes: 955ac624058f ("ASoC: fsl_easrc: Add EASRC ASoC CPU DAI drivers")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/fsl_easrc.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/fsl/fsl_easrc.c b/sound/soc/fsl/fsl_easrc.c
-index 97658e1f4989..20326bffab64 100644
---- a/sound/soc/fsl/fsl_easrc.c
-+++ b/sound/soc/fsl/fsl_easrc.c
-@@ -1524,9 +1524,14 @@ static int fsl_easrc_hw_free(struct snd_pcm_substream *substream,
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct fsl_asrc_pair *ctx = runtime->private_data;
--	struct fsl_easrc_ctx_priv *ctx_priv = ctx->private;
-+	struct fsl_easrc_ctx_priv *ctx_priv;
-+
-+	if (!ctx)
-+		return -EINVAL;
-+
-+	ctx_priv = ctx->private;
- 
--	if (ctx && (ctx_priv->ctx_streams & BIT(substream->stream))) {
-+	if (ctx_priv->ctx_streams & BIT(substream->stream)) {
- 		ctx_priv->ctx_streams &= ~BIT(substream->stream);
- 		fsl_easrc_release_context(ctx);
- 	}
--- 
-2.21.0
-
+Takashi
