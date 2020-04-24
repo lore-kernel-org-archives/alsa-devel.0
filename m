@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5FA90C54FD0
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Apr 2020 12:23:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AE622C55191
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Apr 2020 12:24:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E3EE921707
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Apr 2020 12:23:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 336CA21582
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Apr 2020 12:24:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fv6k1XZM";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="hSWxtVEG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E3EE921707
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="N878N3Yv";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="MRtY/2Xl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 336CA21582
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4D074843;
-	Fri, 24 Apr 2020 14:22:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4D074843
+	by alsa0.perex.cz (Postfix) with ESMTPS id 87E0116C3;
+	Fri, 24 Apr 2020 14:23:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 87E0116C3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587731029;
-	bh=+IpdCvSrrMlIO5bYtEAPQGW5UebOGBJelOOYntb8ZG0=;
+	s=default; t=1587731086;
+	bh=oL+8TEkGErZ9ILv0k+jhUSJahhEcOSEpINEPR+DQHUQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fv6k1XZMAV6MDXVcTeIEJ7aKcBz+kwKF7gjFfA8tIR6gfXwaekgG6REIbGYxd3KP+
-	 e1WmWUTwL/CSsh2UJP9Pz5SLR409/JCGoIPYek16y8T4dg4GlnF4DXwvaY0MxL0pPY
-	 +rhIeIPrKuVznFsEjGrhHzhN/XvbWaE3UIxHsrKw=
+	b=N878N3YvIEZ0vgcjVKLnF3VGN4sTSJ/FwJe61c3Hcnjkd4HLUiTW9c0vR5KIvEOS6
+	 YGTBl3McQCo0GBzkHcauMyg++pH2O2Y+2jnYbK3nA7nx1RGsDxO3wiqvuOwhvTMLni
+	 8ulAjnblyiQoIxt2w/2bD/YX4c7YfW47ZKRKqiiA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6846AF8020C;
-	Fri, 24 Apr 2020 14:22:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 85B5FF80142;
+	Fri, 24 Apr 2020 14:23:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B3DFEF8021C; Fri, 24 Apr 2020 14:22:57 +0200 (CEST)
+ id DDF8DF80279; Fri, 24 Apr 2020 14:22:59 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5510CF80117
- for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2020 14:22:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5510CF80117
+ by alsa1.perex.cz (Postfix) with ESMTPS id 76F2CF80142
+ for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2020 14:22:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76F2CF80142
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="hSWxtVEG"
+ header.b="MRtY/2Xl"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 5836421582;
- Fri, 24 Apr 2020 12:22:49 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 63F77215A4;
+ Fri, 24 Apr 2020 12:22:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1587730970;
- bh=+IpdCvSrrMlIO5bYtEAPQGW5UebOGBJelOOYntb8ZG0=;
+ s=default; t=1587730972;
+ bh=oL+8TEkGErZ9ILv0k+jhUSJahhEcOSEpINEPR+DQHUQ=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=hSWxtVEG7qZcO/I3BM6QjAfS39u/mRBWuk31DOEBQsjGlxdWXjtRZ20AIY6tO+7Ww
- qrrQammUPbCau6q6IGrPPkGkpDUiyMh5A47y0w646IVyzE0DGAnSVRSxop8kka6vrn
- hLchslAos0go7E8iiU9hWMdT/L18ontwLVx4YyZ8=
+ b=MRtY/2XlgeDyNRCHY6GAsLAIP/+6DObSOgtfT2ngde5+KGtgZtSMVJkKH+sWLlT+4
+ Nl3UWHPMBN9/RccuSg3YkkYTiO7hJKmCTHecdSPHwqaKShFmuis1w+dHLWYGyI1VoA
+ hK4wGkUhHlF1cRt7zocfbCCRaYTcHmNouGPE1OYk=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 11/38] ALSA: hda: Keep the controller
- initialization even if no codecs found
-Date: Fri, 24 Apr 2020 08:22:09 -0400
-Message-Id: <20200424122237.9831-11-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.6 13/38] ALSA: hda: Explicitly permit using
+ autosuspend if runtime PM is supported
+Date: Fri, 24 Apr 2020 08:22:11 -0400
+Message-Id: <20200424122237.9831-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200424122237.9831-1-sashal@kernel.org>
 References: <20200424122237.9831-1-sashal@kernel.org>
@@ -92,69 +92,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Roy Spliet <nouveau@spliet.org>
 
-[ Upstream commit 9479e75fca370a5220784f7596bf598c4dad0b9b ]
+[ Upstream commit 3ba21113bd33d49f3c300a23fc08cf114c434995 ]
 
-Currently, when the HD-audio controller driver doesn't detect any
-codecs, it tries to abort the probe.  But this abort happens at the
-delayed probe, i.e. the primary probe call already returned success,
-hence the driver is never unbound until user does so explicitly.
-As a result, it may leave the HD-audio device in the running state
-without the runtime PM.  More badly, if the device is a HD-audio bus
-that is tied with a GPU, GPU cannot reach to the full power down and
-consumes unnecessarily much power.
-
-This patch changes the logic after no-codec situation; it continues
-probing without the further codec initialization but keep the
-controller driver running normally.
+This fixes runtime PM not working after a suspend-to-RAM cycle at least for
+the codec-less HDA device found on NVIDIA GPUs.
 
 BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207043
-Tested-by: Roy Spliet <nouveau@spliet.org>
-Link: https://lore.kernel.org/r/20200413082034.25166-5-tiwai@suse.de
+Signed-off-by: Roy Spliet <nouveau@spliet.org>
+Link: https://lore.kernel.org/r/20200413082034.25166-7-tiwai@suse.de
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/hda_intel.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ sound/pci/hda/hda_intel.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 692857904d49e..aa0be85614b6c 100644
+index 02c6308502b1e..8519051a426e7 100644
 --- a/sound/pci/hda/hda_intel.c
 +++ b/sound/pci/hda/hda_intel.c
-@@ -2009,7 +2009,7 @@ static int azx_first_init(struct azx *chip)
- 	/* codec detection */
- 	if (!azx_bus(chip)->codec_mask) {
- 		dev_err(card->dev, "no codecs found!\n");
--		return -ENODEV;
-+		/* keep running the rest for the runtime PM */
- 	}
+@@ -2354,8 +2354,10 @@ static int azx_probe_continue(struct azx *chip)
  
- 	if (azx_acquire_irq(chip, 0) < 0)
-@@ -2303,9 +2303,11 @@ static int azx_probe_continue(struct azx *chip)
- #endif
+ 	set_default_power_save(chip);
  
- 	/* create codec instances */
--	err = azx_probe_codecs(chip, azx_max_codecs[chip->driver_type]);
--	if (err < 0)
--		goto out_free;
-+	if (bus->codec_mask) {
-+		err = azx_probe_codecs(chip, azx_max_codecs[chip->driver_type]);
-+		if (err < 0)
-+			goto out_free;
+-	if (azx_has_pm_runtime(chip))
++	if (azx_has_pm_runtime(chip)) {
++		pm_runtime_use_autosuspend(&pci->dev);
+ 		pm_runtime_put_autosuspend(&pci->dev);
 +	}
  
- #ifdef CONFIG_SND_HDA_PATCH_LOADER
- 	if (chip->fw) {
-@@ -2319,7 +2321,7 @@ static int azx_probe_continue(struct azx *chip)
- #endif
- 	}
- #endif
--	if ((probe_only[dev] & 1) == 0) {
-+	if (bus->codec_mask && !(probe_only[dev] & 1)) {
- 		err = azx_codec_configure(chip);
- 		if (err < 0)
- 			goto out_free;
+ out_free:
+ 	if (err < 0) {
 -- 
 2.20.1
 
