@@ -6,64 +6,62 @@ X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 548F4C2BA1A
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Apr 2020 06:30:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 61FC6C2BA1A
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Apr 2020 06:30:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0942820706
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Apr 2020 06:30:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DFFD620706
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Apr 2020 06:30:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="k/xUcBZZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0942820706
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HTvydwNe"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DFFD620706
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5EDA0169D;
-	Fri, 24 Apr 2020 08:29:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5EDA0169D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 45D7316A4;
+	Fri, 24 Apr 2020 08:29:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45D7316A4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587709798;
-	bh=60/NAisSVtr4DJ8VnRTKD97woES3FGM0sTAB7umoUmc=;
+	s=default; t=1587709846;
+	bh=CddAkn/zokiR5YNG028z7OJY7ajzX3f2mYdxQXk0Wh0=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=k/xUcBZZ7TH1tyRbFnzcrcTMRYKTnkeVif3XvZnN+LBUm8SpUINVDswhZ9vZriFLS
-	 C+j41jRErREWfTeNSWM1Uf5Qs6zf09AEZjBl6oBMWQJNc8RY5DA8KGx8CxJ4IsVTBG
-	 wztGcrHQbP3Hs24bp2GIOhWprgTT+5qHVZ45uc20=
+	b=HTvydwNewbTY59M3i71TCreO7V0pLIr6En/Z+5ywYIMRIk0WZWM0mu716Xjutu7TO
+	 2C3E9jWjZW58OdrAwUthzByN69s9/AGP7/r/kNS5u42nOkZFKENP+NnzYAqBjWtKKC
+	 tMJX4IS+HuQ9H7GAukudU4iss3arZ1c8KoYTqrqg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 465C7F8020C;
-	Fri, 24 Apr 2020 08:28:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D5CACF8023F;
+	Fri, 24 Apr 2020 08:29:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 01530F8021C; Fri, 24 Apr 2020 08:28:24 +0200 (CEST)
+ id 44FD8F8028B; Fri, 24 Apr 2020 08:29:01 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B6075F801D9
- for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2020 08:28:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6075F801D9
+ by alsa1.perex.cz (Postfix) with ESMTPS id EA35AF8023F
+ for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2020 08:28:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA35AF8023F
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id AA447ADCD;
- Fri, 24 Apr 2020 06:28:17 +0000 (UTC)
-Date: Fri, 24 Apr 2020 08:28:18 +0200
-Message-ID: <s5himhptn25.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id BD3EAADEB;
+ Fri, 24 Apr 2020 06:28:53 +0000 (UTC)
+Date: Fri, 24 Apr 2020 08:28:54 +0200
+Message-ID: <s5hh7x9tn15.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Alexander Tsoy <alexander@tsoy.me>
-Subject: Re: [PATCH 2/2] ALSA: usb-audio: Remove async workaround for Scarlett
- 2nd gen
-In-Reply-To: <20200424022449.14972-2-alexander@tsoy.me>
-References: <20200424022449.14972-1-alexander@tsoy.me>
- <20200424022449.14972-2-alexander@tsoy.me>
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: Re: [PATCH v2] ALSA: hda: Refactor Intel NHLT init
+In-Reply-To: <20200423160310.28019-1-cezary.rojewski@intel.com>
+References: <20200423160310.28019-1-cezary.rojewski@intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: Gregor Pintar <grpintar@gmail.com>, alsa-devel@alsa-project.org,
- Roope Salmi <rpsalmi@gmail.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.com,
+ pierre-louis.bossart@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,13 +77,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 24 Apr 2020 04:24:49 +0200,
-Alexander Tsoy wrote:
+On Thu, 23 Apr 2020 18:03:10 +0200,
+Cezary Rojewski wrote:
 > 
-> Frame size computation has been fixed and the workaround is no longer
-> needed.
+> NHLT fetch based on _DSM prevents ACPI table override mechanism from
+> being utilized. Make use of acpi_get_table to enable it and get rid of
+> redundant code. In consequence, NHLT can be overridden just like any
+> other ACPI table, e.g.: DSDT or SSDT.
 > 
-> Signed-off-by: Alexander Tsoy <alexander@tsoy.me>
+> Change has been verified on all Intel AVS architecture platforms, RVP
+> and production laptops both.
+> 
+> Change possible due to addition of NHLT signature to the list of
+> standard ACPI tables:
+> https://patchwork.kernel.org/patch/11463235/
+> 
+> Override helps not only with debug purposes but also allows user for
+> table adjustment when one found on their production hardware is invalid.
+> Shared official NHLT spec is now available to community at:
+> https://01.org/blogs/intel-smart-sound-technology-audio-dsp
+> 
+> NHLT support for iASL is still ongoing subject but should be available
+> in nearest future.
+> 
+> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 
 Applied to for-next branch now.
 
