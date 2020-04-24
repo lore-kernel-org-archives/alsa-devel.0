@@ -2,71 +2,58 @@ Return-Path: <SRS0=j21J=6I=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 061A0C2BA1A
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Apr 2020 07:22:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FA8EC2BA1A
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Apr 2020 07:41:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 85C1720700
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Apr 2020 07:22:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EACDC20724
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Apr 2020 07:41:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Fcx4oVSD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 85C1720700
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nuvoton.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HiOIP5It"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EACDC20724
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D04851695;
-	Fri, 24 Apr 2020 09:21:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D04851695
+	by alsa0.perex.cz (Postfix) with ESMTPS id 36351168F;
+	Fri, 24 Apr 2020 09:40:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36351168F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587712932;
-	bh=nUDtujpkA05q9hjDHsG634xQm9Nh49rewyyDiP/Vm7Y=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1587714078;
+	bh=DBtlLfr2wuZutsVafmnUyTshYpkLkcQ6x9YJOwDTAwA=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=Fcx4oVSDc2ZNTGmvMekxSIHtKte80vVLCpfGDFd9G6YLBxm4nmOnQfTqgP9mZWJh6
-	 szq4qO2Uqez4LE5r9Z/BUBlTGJKgDaJBlboIAReL6LhKQuCL9f6euyA3T6gDSXqne0
-	 19DuLsQrzC3jyVb+VWkilIIz9lvuOKMmIemcJUys=
+	b=HiOIP5Itz+B1pEV2zAiCkMTzRbmevDQ27CMJCwwezqEsvqrlCvYE1ycwWLmXz5kKg
+	 t/Nv8gMt+ypwKg+PUKDccVYQjlArkC25UFCqKceQpoDJEq6oOG3btTl+0/KDZ8ArqQ
+	 oo+9+q0f5ZIILzFmAv26OJT/GYOUBKPylGfX7lTM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6ACEDF80121;
-	Fri, 24 Apr 2020 09:21:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A6108F80121;
+	Fri, 24 Apr 2020 09:40:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1296AF80142; Fri, 24 Apr 2020 09:20:49 +0200 (CEST)
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa1.perex.cz (Postfix) with ESMTP id 12652F80116
- for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2020 09:20:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 12652F80116
-Received: from NTHCCAS01.nuvoton.com (nthccas01.nuvoton.com [10.1.8.28])
- by maillog.nuvoton.com (Postfix) with ESMTP id A87B71C80C5D;
- Fri, 24 Apr 2020 15:20:31 +0800 (CST)
-Received: from NTHCML01B.nuvoton.com (10.1.8.178) by NTHCCAS01.nuvoton.com
- (10.1.8.28) with Microsoft SMTP Server (TLS) id 15.0.1130.7; Fri, 24 Apr 2020
- 15:20:31 +0800
-Received: from NTHCCAS01.nuvoton.com (10.1.8.28) by NTHCML01B.nuvoton.com
- (10.1.8.178) with Microsoft SMTP Server (TLS) id 15.0.1130.7; Fri, 24 Apr
- 2020 15:20:31 +0800
-Received: from localhost.localdomain (10.4.36.27) by NTHCCAS01.nuvoton.com
- (10.1.12.25) with Microsoft SMTP Server id 15.0.1130.7 via Frontend
- Transport; Fri, 24 Apr 2020 15:20:31 +0800
-From: Seven Lee <wtli@nuvoton.com>
-To: <broonie@kernel.org>
-Subject: [PATCH] ASoc: nau8810: add AUX related dapm widgets and routes
-Date: Fri, 24 Apr 2020 15:17:40 +0800
-Message-ID: <20200424071739.20854-1-wtli@nuvoton.com>
-X-Mailer: git-send-email 2.25.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Mailman-Approved-At: Fri, 24 Apr 2020 09:21:21 +0200
-Cc: alsa-devel@alsa-project.org, Seven Lee <wtli@nuvoton.com>,
- KCHSU0@nuvoton.com, lgirdwood@gmail.com, YHCHuang@nuvoton.com,
- CTLIN0@nuvoton.com
+ id 87174F80142; Fri, 24 Apr 2020 09:40:25 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id DD63BF80116
+ for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2020 09:40:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD63BF80116
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 01DE9AC20
+ for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2020 07:40:16 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: usb-audio: Fix racy list management in output queue
+Date: Fri, 24 Apr 2020 09:40:16 +0200
+Message-Id: <20200424074016.14301-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,105 +69,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch implements the following features:
-- AUX input for recording.
-- An input AUX output to SPK/MOUT.
+The linked list entry from FIFO is peeked at
+queue_pending_output_urbs() but the actual element pop-out is
+performed outside the spinlock, and it's potentially racy.
 
-Signed-off-by: Seven Lee <wtli@nuvoton.com>
+Do delete the link at the right place inside the spinlock.
+
+Fixes: 8fdff6a319e7 ("ALSA: snd-usb: implement new endpoint streaming model")
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/nau8810.c | 19 ++++++++++++++++++-
- 1 file changed, 18 insertions(+), 1 deletion(-)
+ sound/usb/endpoint.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/nau8810.c b/sound/soc/codecs/nau8810.c
-index de26758c30a8..2a04243ffeaa 100644
---- a/sound/soc/codecs/nau8810.c
-+++ b/sound/soc/codecs/nau8810.c
-@@ -355,6 +355,8 @@ static const struct snd_kcontrol_new nau8810_snd_controls[] = {
+diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+index d8dc7cb56d43..50104f658ed4 100644
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -346,17 +346,17 @@ static void queue_pending_output_urbs(struct snd_usb_endpoint *ep)
+ 			ep->next_packet_read_pos %= MAX_URBS;
  
- /* Speaker Output Mixer */
- static const struct snd_kcontrol_new nau8810_speaker_mixer_controls[] = {
-+	SOC_DAPM_SINGLE("AUX Bypass Switch", NAU8810_REG_SPKMIX,
-+		NAU8810_AUXSPK_SFT, 1, 0),
- 	SOC_DAPM_SINGLE("Line Bypass Switch", NAU8810_REG_SPKMIX,
- 		NAU8810_BYPSPK_SFT, 1, 0),
- 	SOC_DAPM_SINGLE("PCM Playback Switch", NAU8810_REG_SPKMIX,
-@@ -363,6 +365,8 @@ static const struct snd_kcontrol_new nau8810_speaker_mixer_controls[] = {
+ 			/* take URB out of FIFO */
+-			if (!list_empty(&ep->ready_playback_urbs))
++			if (!list_empty(&ep->ready_playback_urbs)) {
+ 				ctx = list_first_entry(&ep->ready_playback_urbs,
+ 					       struct snd_urb_ctx, ready_list);
++				list_del_init(&ctx->ready_list);
++			}
+ 		}
+ 		spin_unlock_irqrestore(&ep->lock, flags);
  
- /* Mono Output Mixer */
- static const struct snd_kcontrol_new nau8810_mono_mixer_controls[] = {
-+	SOC_DAPM_SINGLE("AUX Bypass Switch", NAU8810_REG_MONOMIX,
-+		NAU8810_AUXMOUT_SFT, 1, 0),
- 	SOC_DAPM_SINGLE("Line Bypass Switch", NAU8810_REG_MONOMIX,
- 		NAU8810_BYPMOUT_SFT, 1, 0),
- 	SOC_DAPM_SINGLE("PCM Playback Switch", NAU8810_REG_MONOMIX,
-@@ -371,6 +375,8 @@ static const struct snd_kcontrol_new nau8810_mono_mixer_controls[] = {
+ 		if (ctx == NULL)
+ 			return;
  
- /* PGA Mute */
- static const struct snd_kcontrol_new nau8810_pgaboost_mixer_controls[] = {
-+	SOC_DAPM_SINGLE("AUX PGA Switch", NAU8810_REG_ADCBOOST,
-+		NAU8810_AUXBSTGAIN_SFT, 0x7, 0),
- 	SOC_DAPM_SINGLE("PGA Mute Switch", NAU8810_REG_PGAGAIN,
- 		NAU8810_PGAMT_SFT, 1, 1),
- 	SOC_DAPM_SINGLE("PMIC PGA Switch", NAU8810_REG_ADCBOOST,
-@@ -379,6 +385,8 @@ static const struct snd_kcontrol_new nau8810_pgaboost_mixer_controls[] = {
- 
- /* Input PGA */
- static const struct snd_kcontrol_new nau8810_inpga[] = {
-+	SOC_DAPM_SINGLE("AUX Switch", NAU8810_REG_INPUT_SIGNAL,
-+		NAU8810_AUXPGA_SFT, 1, 0),
- 	SOC_DAPM_SINGLE("MicN Switch", NAU8810_REG_INPUT_SIGNAL,
- 		NAU8810_NMICPGA_SFT, 1, 0),
- 	SOC_DAPM_SINGLE("MicP Switch", NAU8810_REG_INPUT_SIGNAL,
-@@ -425,6 +433,8 @@ static const struct snd_soc_dapm_widget nau8810_dapm_widgets[] = {
- 	SND_SOC_DAPM_MIXER("Input Boost Stage", NAU8810_REG_POWER2,
- 		NAU8810_BST_EN_SFT, 0, nau8810_pgaboost_mixer_controls,
- 		ARRAY_SIZE(nau8810_pgaboost_mixer_controls)),
-+	SND_SOC_DAPM_PGA("AUX Input", NAU8810_REG_POWER1,
-+		NAU8810_AUX_EN_SFT, 0, NULL, 0),
- 
- 	SND_SOC_DAPM_SUPPLY("Mic Bias", NAU8810_REG_POWER1,
- 		NAU8810_MICBIAS_EN_SFT, 0, NULL, 0),
-@@ -434,6 +444,7 @@ static const struct snd_soc_dapm_widget nau8810_dapm_widgets[] = {
- 	SND_SOC_DAPM_SWITCH("Digital Loopback", SND_SOC_NOPM, 0, 0,
- 		&nau8810_loopback),
- 
-+	SND_SOC_DAPM_INPUT("AUX"),
- 	SND_SOC_DAPM_INPUT("MICN"),
- 	SND_SOC_DAPM_INPUT("MICP"),
- 	SND_SOC_DAPM_OUTPUT("MONOOUT"),
-@@ -445,10 +456,12 @@ static const struct snd_soc_dapm_route nau8810_dapm_routes[] = {
- 	{"DAC", NULL, "PLL", check_mclk_select_pll},
- 
- 	/* Mono output mixer */
-+	{"Mono Mixer", "AUX Bypass Switch", "AUX Input"},
- 	{"Mono Mixer", "PCM Playback Switch", "DAC"},
- 	{"Mono Mixer", "Line Bypass Switch", "Input Boost Stage"},
- 
- 	/* Speaker output mixer */
-+	{"Speaker Mixer", "AUX Bypass Switch", "AUX Input"},
- 	{"Speaker Mixer", "PCM Playback Switch", "DAC"},
- 	{"Speaker Mixer", "Line Bypass Switch", "Input Boost Stage"},
- 
-@@ -463,14 +476,18 @@ static const struct snd_soc_dapm_route nau8810_dapm_routes[] = {
- 	/* Input Boost Stage */
- 	{"ADC", NULL, "Input Boost Stage"},
- 	{"ADC", NULL, "PLL", check_mclk_select_pll},
-+	{"Input Boost Stage", "AUX PGA Switch", "AUX Input"},
- 	{"Input Boost Stage", "PGA Mute Switch", "Input PGA"},
- 	{"Input Boost Stage", "PMIC PGA Switch", "MICP"},
- 
- 	/* Input PGA */
--	{"Input PGA", NULL, "Mic Bias"},
-+	{"Input PGA", NULL, "Mic Bias", check_mic_enabled},
-+	{"Input PGA", "AUX Switch", "AUX Input"},
- 	{"Input PGA", "MicN Switch", "MICN"},
- 	{"Input PGA", "MicP Switch", "MICP"},
- 
-+	{"AUX Input", NULL, "AUX"},
-+
- 	/* Digital Looptack */
- 	{"Digital Loopback", "Switch", "ADC"},
- 	{"DAC", NULL, "Digital Loopback"},
+-		list_del_init(&ctx->ready_list);
+-
+ 		/* copy over the length information */
+ 		for (i = 0; i < packet->packets; i++)
+ 			ctx->packet_size[i] = packet->packet_size[i];
 -- 
-2.25.2
+2.16.4
 
