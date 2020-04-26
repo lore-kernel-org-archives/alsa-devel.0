@@ -2,68 +2,66 @@ Return-Path: <SRS0=mTWV=6K=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 108E1C2BA1A
-	for <alsa-devel@archiver.kernel.org>; Sun, 26 Apr 2020 07:13:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9F1DC2BA1A
+	for <alsa-devel@archiver.kernel.org>; Sun, 26 Apr 2020 07:19:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B55CE20700
-	for <alsa-devel@archiver.kernel.org>; Sun, 26 Apr 2020 07:13:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 45BD9206D4
+	for <alsa-devel@archiver.kernel.org>; Sun, 26 Apr 2020 07:19:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TjgHK56z"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B55CE20700
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IREsvv7+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 45BD9206D4
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0FB661680;
-	Sun, 26 Apr 2020 09:12:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FB661680
+	by alsa0.perex.cz (Postfix) with ESMTPS id 956461680;
+	Sun, 26 Apr 2020 09:18:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 956461680
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587885198;
-	bh=OxkWk2eYdqJF1sWjSZ2NHJbS9gVDLD2lDLHmJNAHZY0=;
+	s=default; t=1587885545;
+	bh=IP/tKK3doQMCoOvDaDWgXuxa3yS0aXGIra2S2dQYFkU=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TjgHK56zTtlN2Bu0QTtAdSOUONnO55W0nJ7rR6irkxi78ibMCC4ZqwgZL3uszhaMB
-	 S1JcJCGKQQ51OTd2t+zGPt0BbJkCnfUHLqSJTFl7EBgvvnxWr8FMSalphJ6s4WHFkx
-	 ka2bJPMWCHzNfOUlzQK2INK5zhAkyumlfBpU6dxY=
+	b=IREsvv7+JR2emJ1Oo/ZDj9sNQ2A5MwjkBrnu9Yq0wWBq5Qf3bcv0WU7Xw3crYBSe1
+	 NtV9ViErh2KIK+DHrAx0+xkRjzt3LoJ4aZELimtzTTRFiz1nbAZ/slkT9D6mUiGtYu
+	 THLdTk3CTx8Gxw0kPyYTL7G1yTDTpmfj665+4PZs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 622D4F80113;
-	Sun, 26 Apr 2020 09:12:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 16212F80136;
+	Sun, 26 Apr 2020 09:18:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 82B48F801DB; Sun, 26 Apr 2020 09:12:25 +0200 (CEST)
+ id C8C08F801DB; Sun, 26 Apr 2020 09:18:12 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 29473F80113
- for <alsa-devel@alsa-project.org>; Sun, 26 Apr 2020 09:12:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 29473F80113
+ by alsa1.perex.cz (Postfix) with ESMTPS id 647A7F80105
+ for <alsa-devel@alsa-project.org>; Sun, 26 Apr 2020 09:18:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 647A7F80105
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 91B8DAD35;
- Sun, 26 Apr 2020 07:12:20 +0000 (UTC)
-Date: Sun, 26 Apr 2020 09:12:19 +0200
-Message-ID: <s5hd07ura98.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 761A9ABAD;
+ Sun, 26 Apr 2020 07:18:08 +0000 (UTC)
+Date: Sun, 26 Apr 2020 09:18:08 +0200
+Message-ID: <s5ha72yr9zj.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: Re: [PATCH] ALSA: line6: Fix POD HD500 audio playback
-In-Reply-To: <20200425201115.3430-1-anarsoul@gmail.com>
-References: <20200425201115.3430-1-anarsoul@gmail.com>
+To: Michael Gebetsroither <michael@mgeb.org>
+Subject: Re: MOTU M2 stopped working after upgrade to 5.5
+In-Reply-To: <e214ccb3-9e9a-13e5-e7b0-148e74bbc078@mgeb.org>
+References: <b07c3b1b-dbc7-32d5-77bc-a2d9ef80db3c@mgeb.org>
+ <e214ccb3-9e9a-13e5-e7b0-148e74bbc078@mgeb.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>,
- Kai-Heng Feng <kai.heng.feng@canonical.com>,
- Thomas Gleixner <tglx@linutronix.de>, Allison Randal <allison@lohutok.net>
+Cc: alsa-devel@alsa-project.org, Alexander Tsoy <alexander@tsoy.me>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,16 +77,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 25 Apr 2020 22:11:15 +0200,
-Vasily Khoruzhick wrote:
+On Sat, 25 Apr 2020 23:40:04 +0200,
+Michael Gebetsroither wrote:
 > 
-> Apparently interface 1 is control interface akin to HD500X,
-> setting LINE6_CAP_CONTROL and choosing it as ctrl_if fixes
-> audio playback on POD HD500.
+> On 25.04.20 21:29, Michael Gebetsroither wrote:
+> Hi,
 > 
-> Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+> > I suspect c249177944b650816069f6c49b769baaa94339dc to be the reason for this
+> > "ALSA: usb-audio: add implicit fb quirk for MOTU M Series"
+> 
+> Confirmed, if i revert this commit my Motu M2 interface works again as expected.
+> With full sound quality (no audio drops or cracks in either in or output).
+> And with the headset fully working again.
 
-Applied now.  Thanks.
+Then likely the issue being tracked on the bugzilla
+  https://bugzilla.kernel.org/show_bug.cgi?id=207023
+
+Feel free to join there.
 
 
 Takashi
