@@ -2,74 +2,75 @@ Return-Path: <SRS0=y76W=6L=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D302AC54FD0
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 13:13:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6134CC54FCB
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 13:14:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5994520661
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 13:13:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D5EB920728
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 13:14:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Go8AQNhA";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="xoIA2sNe"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5994520661
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WmEROZWm";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="q8QVKDZ2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D5EB920728
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B5D0716A6;
-	Mon, 27 Apr 2020 15:12:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5D0716A6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3FFD61676;
+	Mon, 27 Apr 2020 15:13:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3FFD61676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587993219;
-	bh=uUImpmvEx491O9ztYoJkf0f+0HuJG0KG4PbPfXnRmi4=;
+	s=default; t=1587993266;
+	bh=oLAkO5I8sHm5bFau0W6wglLolrcnVrPC69eOGnt+QRI=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Go8AQNhAK0CKtWpeL6mgXCtfhDGoD67AuXlDeoJKv2AWEREWzOXARAV3T4dDHTaFj
-	 ActGYkAKu+p57zs01jk98mE5XXK5F9yM9mV/qgHmjb76YFkr7pnoraYo5i64u6oDER
-	 62JypR380NFG7H41N4oNEXQVEsYwoqTLH+EL2k18=
+	b=WmEROZWmGBljVSvvqgGsyiEZyCIj6JD69JYLBDbjGuYx14/wXyHVYaFH6tuZRuZ2f
+	 bFxr5JVtXbEZ/wwf6bEyn8cpeWWwkUaPQHKM9YovKor9QCgAPeUTEjuoSFbkmbEPzs
+	 7aIyCb1CvaUCMNkvjXrcIlYzvikbpip9QGEd79g8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 465A6F80291;
-	Mon, 27 Apr 2020 15:10:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 02EEEF802A1;
+	Mon, 27 Apr 2020 15:10:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E8179F8022B; Mon, 27 Apr 2020 15:09:33 +0200 (CEST)
+ id 4595DF8022B; Mon, 27 Apr 2020 15:09:39 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2C43AF80112
- for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2020 15:09:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C43AF80112
+ by alsa1.perex.cz (Postfix) with ESMTPS id 22753F8010A
+ for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2020 15:09:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22753F8010A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="xoIA2sNe"
+ header.b="q8QVKDZ2"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 297D520775;
- Mon, 27 Apr 2020 13:09:24 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 1C8B92076A;
+ Mon, 27 Apr 2020 13:09:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1587992965;
- bh=uUImpmvEx491O9ztYoJkf0f+0HuJG0KG4PbPfXnRmi4=;
+ s=default; t=1587992971;
+ bh=oLAkO5I8sHm5bFau0W6wglLolrcnVrPC69eOGnt+QRI=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=xoIA2sNepM5pdACYDbTVdBPPnjWOfPu9z8vuKssI6nAKxpX2oS7RW3HW61zf5Z//p
- FQv33tczriYeH9bqz4+w5lzySf3c8tyt7Y8WecEnrRh/l90tP7F/YjCDiTH9d8J6tU
- fO1MgDlWltbMMTNm0bkkv0H1xX0qrI3WZGEsT2po=
-Date: Mon, 27 Apr 2020 14:09:23 +0100
+ b=q8QVKDZ2XFWhQVe8XrBElgPdWbNSB/mPsB/EtEAY/fsNZUWHkGoSwNxNgCpFdzXuX
+ A77egwRNVRGTk6YcumRlqeC/pd0sFhQsh72VkAG47P+3Tccru9bvrEX+5FvtUSl4iu
+ lFCjr8QtrWI+DQzbGYlTHol8cWJjr0ckRxoiVTJI=
+Date: Mon, 27 Apr 2020 14:09:28 +0100
 From: Mark Brown <broonie@kernel.org>
-To: tiwai@suse.de, Bard Liao <yung-chuan.liao@linux.intel.com>
-In-Reply-To: <20200419183509.4134-1-yung-chuan.liao@linux.intel.com>
-References: <20200419183509.4134-1-yung-chuan.liao@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: sof_sdw: add amp number in components string
- for ucm
-Message-Id: <158799293954.30174.17553763332925149533.b4-ty@kernel.org>
-Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
- bard.liao@intel.com
+To: Tang Bin <tangbin@cmss.chinamobile.com>, perex@perex.cz, tiwai@suse.com,
+ lgirdwood@gmail.com
+In-Reply-To: <20200427091145.4268-1-tangbin@cmss.chinamobile.com>
+References: <20200427091145.4268-1-tangbin@cmss.chinamobile.com>
+Subject: Re: [PATCH] ASoC: hisilicon: Use IS_ERR() instead of IS_ERR_OR_NULL()
+Message-Id: <158799293954.30174.15623611340968433375.b4-ty@kernel.org>
+Cc: alsa-devel@alsa-project.org,
+ Zhang Shengju <zhangshengju@cmss.chinamobile.com>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,13 +86,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 20 Apr 2020 02:35:09 +0800, Bard Liao wrote:
-> From: randerwang <rander.wang@linux.intel.com>
+On Mon, 27 Apr 2020 17:11:45 +0800, Tang Bin wrote:
+> In the function hi6210_i2s_probe(), devm_clk_get() doesn't return NULL.
+> Thus use IS_ERR() to validate the return value instead of IS_ERR_OR_NULL().
 > 
-> The number of speaker amplifiers may vary between platforms. UCM
-> needs to check amp number to include different configuration files.
-> This patch keeps track of the number of speaker amplifiers and
-> stores it in components string of the card.
+> Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+> ---
+>  sound/soc/hisilicon/hi6210-i2s.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
 > [...]
 
@@ -101,8 +104,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Intel: sof_sdw: add amp number in components string for ucm
-      commit: b1ca2f63e20b471e8f86e35b4b5f9407f8cb3021
+[1/1] ASoC: hisilicon: Use IS_ERR() instead of IS_ERR_OR_NULL()
+      commit: e782ddbb0873d4d96bda890b295130696e0739fc
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
