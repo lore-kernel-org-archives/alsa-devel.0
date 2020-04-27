@@ -2,81 +2,69 @@ Return-Path: <SRS0=y76W=6L=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FF9BC4CECC
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 18:51:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0795AC4CECD
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 19:34:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1F06920775
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 18:51:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 901152078C
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 19:34:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bf9hu/d9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1F06920775
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eA3win0m"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 901152078C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 66D9E167D;
-	Mon, 27 Apr 2020 20:50:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66D9E167D
+	by alsa0.perex.cz (Postfix) with ESMTPS id DFB57167E;
+	Mon, 27 Apr 2020 21:33:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DFB57167E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588013477;
-	bh=ZVQCp/SFnBPmSLWaR0/P4hpecsJkiyChWCtrVvt8wSQ=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=bf9hu/d9qAIDPTMYY3qiA8vXC8QMycjmUdTLVKPsA/8EGV46QTdbtlQrm6fd8bG9I
-	 cpmfU9Or1s3Yq/bDE2u1cKCzs/HVIKI6HEvZqQyYvY3p3CisEbQrERdBcKobS0KFsH
-	 vQrG8nW+UjbE9rnC8orh+haqPylKq2MPNPO31Ns8=
+	s=default; t=1588016051;
+	bh=pPmrhtogYKTtF86SWYgNIwrEpIfv9P2OMMYOgj7ATXs=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=eA3win0m8upSzFGd9nvFhk16fYJO1/2g04UkyC7HtRNb5u+UOc1FeRBSiGWLiJJk7
+	 SgwVAWFSieS79Fa853yIpF8rKW07gXZZyEqEF5FXbxkbgrR7VajpPxR+mr5etT0Wqy
+	 v0ZS01LeXaUulNy6fGDe1z2T9opghVHlt1p1yaho=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CEFCBF80113;
-	Mon, 27 Apr 2020 20:50:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4F89AF80217;
+	Mon, 27 Apr 2020 21:33:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A4DFAF8022B; Mon, 27 Apr 2020 20:50:24 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ id 513CCF8022B; Mon, 27 Apr 2020 21:33:18 +0200 (CEST)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5DF7BF80113
- for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2020 20:50:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5DF7BF80113
-IronPort-SDR: GErLBPhUHKYZotpEOioHWlazfLWU44P/pI9O2jyGu+rgm1CCwngnSDYvOUW69rzDH+7Ja6tVLQ
- oNBNnoJ4Aqcw==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3227DF80113
+ for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2020 21:33:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3227DF80113
+IronPort-SDR: qSOZfv/QzCrc1kD09NYteBbXsgZeV5wpGICDYz5i3kWZb8EzyNt/ikajNpPwaHo8CapqMdBcYD
+ CEB7vqX3qVCw==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Apr 2020 11:50:14 -0700
-IronPort-SDR: k6fGQjY5zDoVnhEwniGYbb5hHv7BMpYDJiTB4hMuK7siOIKOgQvYOh0kpULwb/lg/JW5wfE90S
- R6n1X0moitBA==
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Apr 2020 12:33:06 -0700
+IronPort-SDR: myd5VbH0OJSCCzzyp5/nFpi1+dqGAx+ELC0f0IIQsxBcwh+w1As/BuCqJsBMU0i/7WgrC5MMvG
+ Pqill3uP++9w==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,325,1583222400"; d="scan'208";a="281866779"
-Received: from unknown (HELO [10.254.177.143]) ([10.254.177.143])
- by fmsmga004.fm.intel.com with ESMTP; 27 Apr 2020 11:50:14 -0700
-Subject: Re: [PATCH v2 0/3] add channel constraint for BDW machine drivers
-To: Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
-References: <1588007614-25061-1-git-send-email-brent.lu@intel.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <866ef71f-8794-558b-bd4d-c491ab4effc4@linux.intel.com>
-Date: Mon, 27 Apr 2020 12:59:20 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <1588007614-25061-1-git-send-email-brent.lu@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Jie Yang <yang.jie@linux.intel.com>, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Ben Zhang <benzh@chromium.org>, Mac Chiang <mac.chiang@intel.com>,
- Mark Brown <broonie@kernel.org>
+X-IronPort-AV: E=Sophos;i="5.73,325,1583222400"; d="scan'208";a="458502178"
+Received: from dbombien-mobl.amr.corp.intel.com (HELO localhost.localdomain)
+ ([10.254.51.189])
+ by fmsmga005.fm.intel.com with ESMTP; 27 Apr 2020 12:33:06 -0700
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ASoC: core: Make sure component driver names are unique
+Date: Mon, 27 Apr 2020 12:33:06 -0700
+Message-Id: <20200427193306.31198-1-ranjani.sridharan@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
+Cc: broonie@kernel.org, kuninori.morimoto.gx@renesas.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,34 +80,71 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+When registering a component, make sure that the driver names
+are unique. This will ensure that the snd_soc_rtdcom_lookup()
+function returns the right component based on the name.
 
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+---
+ sound/soc/soc-core.c | 31 +++++++++++++++++++++++--------
+ 1 file changed, 23 insertions(+), 8 deletions(-)
 
-On 4/27/20 12:13 PM, Brent Lu wrote:
-> The machine driver bdw-rt5650 (for Google buddy) supports 2 or 4-channel
-> recording while other two drivers support only 2-channel recording. HW
-> constraints are implemented to reflect the hardware limitation on BDW
-> platform.
-> 
-> Changes since v1:
-> - Change the patch title.
-> - Remove the DUAL_CHANNEL and QUAD_CHANNEL macros which are too obvious.
-> - Follow the naming convertion, using 'bdw_rt5650_' and 'bdw_rt5677_' to
->    name startup functions.
-> - Refine the comments in startup functions.
-> - Redesign the bdw_rt5650_fe_startup() function for readability.
-> - Add an assignment to initialize runtime->hw.channels_max variable.
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 8321e75ff244..00c1f8ce46af 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -286,14 +286,6 @@ struct snd_soc_component *snd_soc_rtdcom_lookup(struct snd_soc_pcm_runtime *rtd,
+ 	if (!driver_name)
+ 		return NULL;
+ 
+-	/*
+-	 * NOTE
+-	 *
+-	 * snd_soc_rtdcom_lookup() will find component from rtd by using
+-	 * specified driver name.
+-	 * But, if many components which have same driver name are connected
+-	 * to 1 rtd, this function will return 1st found component.
+-	 */
+ 	for_each_rtd_components(rtd, i, component) {
+ 		const char *component_name = component->driver->name;
+ 
+@@ -2640,6 +2632,22 @@ int snd_soc_add_component(struct device *dev,
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_add_component);
+ 
++static bool
++snd_soc_component_driver_name_is_unique(const struct snd_soc_component_driver *component_driver)
++{
++	struct snd_soc_component *component;
++
++	mutex_lock(&client_mutex);
++	for_each_component(component)
++		if (!strcmp(component->driver->name, component_driver->name)) {
++			mutex_unlock(&client_mutex);
++			return false;
++		}
++
++	mutex_unlock(&client_mutex);
++	return true;
++}
++
+ int snd_soc_register_component(struct device *dev,
+ 			const struct snd_soc_component_driver *component_driver,
+ 			struct snd_soc_dai_driver *dai_drv,
+@@ -2647,6 +2655,13 @@ int snd_soc_register_component(struct device *dev,
+ {
+ 	struct snd_soc_component *component;
+ 
++	if (component_driver->name &&
++	    !snd_soc_component_driver_name_is_unique(component_driver)) {
++		dev_err(dev, "component driver name %s is not unique\n",
++			component_driver->name);
++		return -EINVAL;
++	}
++
+ 	component = devm_kzalloc(dev, sizeof(*component), GFP_KERNEL);
+ 	if (!component)
+ 		return -ENOMEM;
+-- 
+2.17.1
 
-For the series
-
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-> Brent Lu (3):
->    ASoC: bdw-rt5677: add channel constraint
->    ASoC: bdw-rt5650: add channel constraint
->    ASoC: broadwell: add channel constraint
-> 
->   sound/soc/intel/boards/bdw-rt5650.c | 29 +++++++++++++++++++++++++++++
->   sound/soc/intel/boards/bdw-rt5677.c | 26 ++++++++++++++++++++++++++
->   sound/soc/intel/boards/broadwell.c  | 26 ++++++++++++++++++++++++++
->   3 files changed, 81 insertions(+)
-> 
