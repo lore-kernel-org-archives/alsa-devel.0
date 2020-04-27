@@ -2,75 +2,73 @@ Return-Path: <SRS0=y76W=6L=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6134CC54FCB
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 13:14:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0269FC54FD0
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 13:28:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D5EB920728
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 13:14:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7DD8820656
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 13:28:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WmEROZWm";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="q8QVKDZ2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D5EB920728
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="G6uCK4xt"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7DD8820656
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3FFD61676;
-	Mon, 27 Apr 2020 15:13:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3FFD61676
+	by alsa0.perex.cz (Postfix) with ESMTPS id 709A41685;
+	Mon, 27 Apr 2020 15:27:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 709A41685
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587993266;
-	bh=oLAkO5I8sHm5bFau0W6wglLolrcnVrPC69eOGnt+QRI=;
-	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
+	s=default; t=1587994116;
+	bh=mysuHGtNlVze4lJL0JPP+ukt9AFJ8sdO0zF6bDEMHnA=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WmEROZWmGBljVSvvqgGsyiEZyCIj6JD69JYLBDbjGuYx14/wXyHVYaFH6tuZRuZ2f
-	 bFxr5JVtXbEZ/wwf6bEyn8cpeWWwkUaPQHKM9YovKor9QCgAPeUTEjuoSFbkmbEPzs
-	 7aIyCb1CvaUCMNkvjXrcIlYzvikbpip9QGEd79g8=
+	b=G6uCK4xtlFKA+WYyGfIi6Q0b7cLIMS+Y/mY01el8kdReeUzVlMUq3v4JZB9PbQpRc
+	 txTgADnmCGV1puvc89ziAA12UOxU0k7raIiZR209OtuEJRYnP0PFgT9yjBvWE8QGW9
+	 bj+F/akGKLZs4h5ju1d+1tddah/9GX4HuPFljn5Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 02EEEF802A1;
-	Mon, 27 Apr 2020 15:10:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C2D0AF80112;
+	Mon, 27 Apr 2020 15:27:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4595DF8022B; Mon, 27 Apr 2020 15:09:39 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 22753F8010A
- for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2020 15:09:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22753F8010A
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="q8QVKDZ2"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ id 017B2F80245; Mon, 27 Apr 2020 15:27:41 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 1C8B92076A;
- Mon, 27 Apr 2020 13:09:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1587992971;
- bh=oLAkO5I8sHm5bFau0W6wglLolrcnVrPC69eOGnt+QRI=;
- h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=q8QVKDZ2XFWhQVe8XrBElgPdWbNSB/mPsB/EtEAY/fsNZUWHkGoSwNxNgCpFdzXuX
- A77egwRNVRGTk6YcumRlqeC/pd0sFhQsh72VkAG47P+3Tccru9bvrEX+5FvtUSl4iu
- lFCjr8QtrWI+DQzbGYlTHol8cWJjr0ckRxoiVTJI=
-Date: Mon, 27 Apr 2020 14:09:28 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Tang Bin <tangbin@cmss.chinamobile.com>, perex@perex.cz, tiwai@suse.com,
- lgirdwood@gmail.com
-In-Reply-To: <20200427091145.4268-1-tangbin@cmss.chinamobile.com>
-References: <20200427091145.4268-1-tangbin@cmss.chinamobile.com>
-Subject: Re: [PATCH] ASoC: hisilicon: Use IS_ERR() instead of IS_ERR_OR_NULL()
-Message-Id: <158799293954.30174.15623611340968433375.b4-ty@kernel.org>
-Cc: alsa-devel@alsa-project.org,
- Zhang Shengju <zhangshengju@cmss.chinamobile.com>,
- linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4066CF80217
+ for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2020 15:27:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4066CF80217
+IronPort-SDR: fhuU5nayKU1UbidMkLZnfS/M8dFu6m+q7tgR/ZotmdvD60WlclMX3+jJkaCYbijLuzrgL73+BT
+ 3MGSaBZREP0Q==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Apr 2020 06:27:35 -0700
+IronPort-SDR: YieW0qC/nAqW7E10bYLLH1NQcP3XquWAUnnKRVTa2aorF8LYMI2BxXa+HX7YKkuM3M73jFZCvI
+ zqTKG683n7yg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,324,1583222400"; d="scan'208";a="458856204"
+Received: from mgorski-all-series.igk.intel.com ([10.237.149.201])
+ by fmsmga006.fm.intel.com with ESMTP; 27 Apr 2020 06:27:33 -0700
+From: Mateusz Gorski <mateusz.gorski@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH v6 1/3] ASoC: Intel: Skylake: Add alternative topology binary
+ name
+Date: Mon, 27 Apr 2020 15:27:25 +0200
+Message-Id: <20200427132727.24942-2-mateusz.gorski@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200427132727.24942-1-mateusz.gorski@linux.intel.com>
+References: <20200427132727.24942-1-mateusz.gorski@linux.intel.com>
+Cc: Mateusz Gorski <mateusz.gorski@linux.intel.com>, cezary.rojewski@intel.com,
+ broonie@kernel.org, tiwai@suse.com, pierre-louis.bossart@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,42 +84,80 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 27 Apr 2020 17:11:45 +0800, Tang Bin wrote:
-> In the function hi6210_i2s_probe(), devm_clk_get() doesn't return NULL.
-> Thus use IS_ERR() to validate the return value instead of IS_ERR_OR_NULL().
-> 
-> Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
-> ---
->  sound/soc/hisilicon/hi6210-i2s.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> [...]
+Add alternative topology binary file name based on used machine driver
+and fallback to use this name after failed attempt to load topology file
+with name based on NHLT.
+This change addresses multiple issues with current mechanism, for
+example - there are devices without NHLT table, and that currently
+results in tplg_name being empty.
 
-Applied to
+Signed-off-by: Mateusz Gorski <mateusz.gorski@linux.intel.com>
+Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
+---
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.8
+Changes in v2:
+- added <sound/soc-acpi.h> include
+- machine driver name is now read from different field
 
-Thanks!
+Changes in v3:
+- deleted additional newline after component_load:
 
-[1/1] ASoC: hisilicon: Use IS_ERR() instead of IS_ERR_OR_NULL()
-      commit: e782ddbb0873d4d96bda890b295130696e0739fc
+Changes in v4:
+--none--
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+Changes in v5:
+- addressed "checkpatch.pl --strict" warnings
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Changes in v6:
+--none--
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+ sound/soc/intel/skylake/skl-topology.c | 19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 69cd7a81bf2a..4b114ece58c6 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -14,6 +14,7 @@
+ #include <linux/uuid.h>
+ #include <sound/intel-nhlt.h>
+ #include <sound/soc.h>
++#include <sound/soc-acpi.h>
+ #include <sound/soc-topology.h>
+ #include <uapi/sound/snd_sst_tokens.h>
+ #include <uapi/sound/skl-tplg-interface.h>
+@@ -3565,8 +3566,20 @@ int skl_tplg_init(struct snd_soc_component *component, struct hdac_bus *bus)
+ 
+ 	ret = request_firmware(&fw, skl->tplg_name, bus->dev);
+ 	if (ret < 0) {
+-		dev_info(bus->dev, "tplg fw %s load failed with %d, falling back to dfw_sst.bin",
+-				skl->tplg_name, ret);
++		char alt_tplg_name[64];
++
++		snprintf(alt_tplg_name, sizeof(alt_tplg_name), "%s-tplg.bin",
++			 skl->mach->drv_name);
++		dev_info(bus->dev, "tplg fw %s load failed with %d, trying alternative tplg name %s",
++			 skl->tplg_name, ret, alt_tplg_name);
++
++		ret = request_firmware(&fw, alt_tplg_name, bus->dev);
++		if (!ret)
++			goto component_load;
++
++		dev_info(bus->dev, "tplg %s failed with %d, falling back to dfw_sst.bin",
++			 alt_tplg_name, ret);
++
+ 		ret = request_firmware(&fw, "dfw_sst.bin", bus->dev);
+ 		if (ret < 0) {
+ 			dev_err(bus->dev, "Fallback tplg fw %s load failed with %d\n",
+@@ -3575,6 +3588,8 @@ int skl_tplg_init(struct snd_soc_component *component, struct hdac_bus *bus)
+ 		}
+ 	}
+ 
++component_load:
++
+ 	/*
+ 	 * The complete tplg for SKL is loaded as index 0, we don't use
+ 	 * any other index
+-- 
+2.17.1
 
-Thanks,
-Mark
