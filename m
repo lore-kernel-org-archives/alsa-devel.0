@@ -2,65 +2,77 @@ Return-Path: <SRS0=y76W=6L=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AEDCC54FD0
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 07:01:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ACCC2C54FD0
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 07:09:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E0B50206B6
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 07:01:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 374BE206B6
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 07:09:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VJ0m5ErT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E0B50206B6
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KrYh0fBb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 374BE206B6
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3A52F15F9;
-	Mon, 27 Apr 2020 09:00:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A52F15F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8DEF4844;
+	Mon, 27 Apr 2020 09:08:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8DEF4844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587970894;
-	bh=m//IMoZvlZ72ujEqlsRMAJ0nWE6G6XQO74MZTJ0u4Tg=;
+	s=default; t=1587971379;
+	bh=kng2lmqPQ1NLzn8CDevifnTbJUM/Wv5QvQ2Ib4ctaqs=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VJ0m5ErTDleKArXU+hQm0NBAd+hYQ3I6gobH8NAFT7e59z+WhqAXDlK8fvXYSFWxC
-	 M8PpQcSSNhCH8VHro8vwPT4rSAmIh21osixaw5F3kK/mO3TvSazqtGXTI/Bz1/4YZc
-	 WTifMI+mQUgcYsA/fR2mJRYUpfp9i67I3EjN2GEE=
+	b=KrYh0fBblws0HkrhHsuYu6jxI8GR8z6RXn79p1q/ORdqt3ibGOjy+yVoMjqJWKL2E
+	 YWwPrZDwPTJreycr0OkXqyZdpfgNDBKCCRBiq7Xljs5feUYXmycFbVLeptw8jtXw5S
+	 Bz+Z4RrKvpozP7rFcX0QhM6nkp4+QUhTet+XCmBg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 54FDFF80245;
-	Mon, 27 Apr 2020 09:00:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 21765F8010A;
+	Mon, 27 Apr 2020 09:08:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1B4B4F80247; Mon, 27 Apr 2020 09:00:37 +0200 (CEST)
+ id 249ACF8022B; Mon, 27 Apr 2020 09:08:47 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BE0D3F80232
- for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2020 09:00:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE0D3F80232
+ by alsa1.perex.cz (Postfix) with ESMTPS id DD3F3F80113
+ for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2020 09:08:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD3F3F80113
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 491A6ABD7;
- Mon, 27 Apr 2020 07:00:32 +0000 (UTC)
-Date: Mon, 27 Apr 2020 09:00:32 +0200
-Message-ID: <s5h1ro9qupb.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 961CFAE17;
+ Mon, 27 Apr 2020 07:08:37 +0000 (UTC)
+Date: Mon, 27 Apr 2020 09:08:37 +0200
+Message-ID: <s5hy2qhpfre.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Hui Wang <hui.wang@canonical.com>
-Subject: Re: [PATCH] ALSA: hda/realtek - Two front mics on a Lenovo ThinkCenter
-In-Reply-To: <20200427030039.10121-1-hui.wang@canonical.com>
-References: <20200427030039.10121-1-hui.wang@canonical.com>
+To: Alexander Tsoy <alexander@tsoy.me>
+Subject: Re: [PATCH] ALSA: usb-audio: Apply async workaround for Scarlett 2i4
+ 2nd gen
+In-Reply-To: <55d78d082f97aa70cb9bb0b90c7a48b8de72f9c5.camel@tsoy.me>
+References: <7190177d62f349eea7a5d1056924a63fc4270d43.camel@tsoy.me>
+ <20200422185522.3347-1-grpintar@gmail.com>
+ <a45d18d7922d780f29f89cff855eb30fbdd1fce8.camel@tsoy.me>
+ <s5heesfxo2o.wl-tiwai@suse.de>
+ <c0cb78664e3acd94f07e59f3a4216c16ab9f497d.camel@tsoy.me>
+ <s5hy2qmwts3.wl-tiwai@suse.de> <s5heesewip1.wl-tiwai@suse.de>
+ <470d034599514e83454663f389bad30fd98ad3e2.camel@tsoy.me>
+ <99bb394ff162a16442fd83c0ab56a9d8c0055877.camel@tsoy.me>
+ <s5htv1at8kb.wl-tiwai@suse.de> <s5hr1wet8a6.wl-tiwai@suse.de>
+ <ac1a28783cfc4e6f5d2109da411a1372158f3ad7.camel@tsoy.me>
+ <55d78d082f97aa70cb9bb0b90c7a48b8de72f9c5.camel@tsoy.me>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Gregor Pintar <grpintar@gmail.com>, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,17 +88,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 27 Apr 2020 05:00:39 +0200,
-Hui Wang wrote:
+On Sun, 26 Apr 2020 19:12:41 +0200,
+Alexander Tsoy wrote:
 > 
-> This new Lenovo ThinkCenter has two front mics which can't be handled
-> by PA so far, so apply the fixup ALC283_FIXUP_HEADSET_MIC to change
-> the location for one of the mics.
+> В Чт, 23/04/2020 в 21:24 +0300, Alexander Tsoy пишет:
+> > В Чт, 23/04/2020 в 19:35 +0200, Takashi Iwai пишет:
+> > > On Thu, 23 Apr 2020 19:29:08 +0200,
+> > > Takashi Iwai wrote:
+> > > > On Thu, 23 Apr 2020 18:57:34 +0200,
+> > > > Alexander Tsoy wrote:
+> > > > > And some further notes:
+> > > > > 
+> > > > > - I removed locking from snd_usb_endpoint_next_packet_size()
+> > > > > and
+> > > > > this
+> > > > > seems completely fixed an issue with large URBs I reported
+> > > > > here:
+> > > > > 
+> > > > > https://bugzilla.kernel.org/show_bug.cgi?id=199327#c28
+> > > > > 
+> > > > > So playing at 96 kHz, driver packs 48 frames per URB and no
+> > > > > more
+> > > > > audio
+> > > > > discontinuities.
+> > > > 
+> > > > Hmm, that's weird.
+> > > > 
+> > > > If removing the lock from snd_usb_endpoint_next_packet_size()
+> > > > really
+> > > > fixes the problem, it implies the lock contention.  But as far as
+> > > > I
+> > > > see the code performed in this lock isn't conflicting so
+> > > > much.  The
+> > > > URB processing shouldn't happen in parallel for the same EP.
+> > > 
+> > > BTW, one potential racy code I found while looking at the code is
+> > > the
+> > > list management in queue_pending_output_urbs().  The fix patch is
+> > > below.
+> > 
+> > OK, it seems like it was just a luck. I'm still getting clicking
+> > artifacts with and without your patch, with and without locking. Will
+> > investigate further.
 > 
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Hui Wang <hui.wang@canonical.com>
+> After more testing, it seems that with large URBs the transfer size is
+> too large for timer-based scheduling to work correctly in pulseaudio.
+> And looks like pulseaudio sometimes fail to adjust tsched watermark or
+> something like that. And it is not 100% reproducible.
 
-Applied now.  Thanks.
+Aha, that's interesting.  Basically that's natural that the timer
+scheduling doesn't work reliably for the device buffer management like
+USB-audio, but it was enabled on PA because it works in most of
+cases.
 
 
 Takashi
