@@ -4,64 +4,134 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82969C54FD0
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 07:37:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75C09C5519A
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 07:49:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 04DA92087E
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 07:37:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F2D39214D8
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 07:49:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UAwRUbZu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 04DA92087E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=univ-grenoble-alpes.fr
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DWUvLGQG";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="nSMCkTkz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F2D39214D8
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=samsung.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 50CF215E0;
-	Mon, 27 Apr 2020 09:36:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50CF215E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3F17315E0;
+	Mon, 27 Apr 2020 09:48:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F17315E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587973043;
-	bh=AqbKp0t60rT0xmpAEQu2dG7pqIjKDaGqJ/3S+JGUUlE=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=UAwRUbZuKAsHpsTOBy/epKEGidMl6fOnL3C2zMYm6+R+Qp17dlFQUViK12pYUZ+nG
-	 624zE3koeWuuOpFhbloQgM/vzWuyoHbYP/vATPAfWqB1jgMLS1x0EmilS+PhUVxiTl
-	 tWwivdVJ0s7M1z8kbDLyBubNEvB2GrCdtNiTYbSE=
+	s=default; t=1587973781;
+	bh=tnMKI0rc1V9SPpyUv/UwwdA+8Ww1BIlzpRK1gC7SLwU=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=DWUvLGQGPBv3PO0qoQrc5nl29WLvXtrgCfRNvg65D8jRKehkAPvijojlP08QN5hmd
+	 miUdmgzHVyySk9Pwng/nK847I0L9xcA69yxL1QQEoU3wQBjSiqbOuS4CLzlAZsA5BX
+	 fIwThoTo+b42bZFSzRV2EiOvUI8Tp+R4TZclDgWQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BA22BF8010A;
-	Mon, 27 Apr 2020 09:36:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C1ED3F80217;
+	Mon, 27 Apr 2020 09:48:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5AEC5F8022B; Mon, 27 Apr 2020 09:36:26 +0200 (CEST)
-Received: from smtp.smtpout.orange.fr (smtp05.smtpout.orange.fr
- [80.12.242.127])
- (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+ id 83BE5F80257; Mon, 27 Apr 2020 09:48:48 +0200 (CEST)
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com
+ [210.118.77.12])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 80CB7F80113
- for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2020 09:36:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80CB7F80113
-Received: from is232189.intra.cea.fr ([46.193.2.18]) by mwinf5d10 with ME
- id XjcG2200E0PJwDa03jcHJk; Mon, 27 Apr 2020 09:36:18 +0200
-X-ME-Helo: is232189.intra.cea.fr
-X-ME-Auth: ZnJlZGVyaWMucmVjb3VsZXNAb3JhbmdlLmZy
-X-ME-Date: Mon, 27 Apr 2020 09:36:18 +0200
-X-ME-IP: 46.193.2.18
-From: frederic.recoules@univ-grenoble-alpes.fr
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] [inline assembly] fix pcm_dmix_i386.h assembly chunk
- interfaces
-Date: Mon, 27 Apr 2020 09:36:04 +0200
-Message-Id: <20200427073604.26662-1-frederic.recoules@univ-grenoble-alpes.fr>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 14E22F80217
+ for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2020 09:48:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14E22F80217
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com
+ header.b="nSMCkTkz"
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+ by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id
+ 20200427074843euoutp020a324b6bd967e00ab79bfdb7c393e6b1~JnbAQbUox3069530695euoutp02y
+ for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2020 07:48:43 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com
+ 20200427074843euoutp020a324b6bd967e00ab79bfdb7c393e6b1~JnbAQbUox3069530695euoutp02y
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+ s=mail20170921; t=1587973723;
+ bh=BlPYhTkuuXU4W6a42ZfvT9Z3Mq0rbD+ikTxhs9HG92s=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=nSMCkTkzQtZmvXbrn/G6oOM0rxcDX7tEQC1Sc1n2hMo07eHmfmWZw+Z/YJ5z/m3l/
+ BWteAOFEwQZTmRZf2EgnfYrSuNQh/YoohSPBrTxCEf5T7ekaee6g0Lff2v0f24let+
+ 5jom3z45TS4w9GdydRUU+pm/sNMKG9JDKq31JOdY=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+ eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+ 20200427074842eucas1p18e2d11e1a88a255d8a5bb2b512a77c16~JnbAB8qU92249322493eucas1p1a;
+ Mon, 27 Apr 2020 07:48:42 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+ eusmges1new.samsung.com (EUCPMTA) with SMTP id B1.91.61286.A5E86AE5; Mon, 27
+ Apr 2020 08:48:42 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+ eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+ 20200427074842eucas1p1abfb9af74f0d898ba381700f37820318~Jna-joXJD2249322493eucas1p1Z;
+ Mon, 27 Apr 2020 07:48:42 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+ eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+ 20200427074842eusmtrp270ef1508ddad3aed8dbc553636c99585~Jna-i8Qa00599405994eusmtrp2g;
+ Mon, 27 Apr 2020 07:48:42 +0000 (GMT)
+X-AuditID: cbfec7f2-ef1ff7000001ef66-72-5ea68e5af15d
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+ eusmgms2.samsung.com (EUCPMTA) with SMTP id 46.1A.07950.A5E86AE5; Mon, 27
+ Apr 2020 08:48:42 +0100 (BST)
+Received: from AMDC2765.digital.local (unknown [106.120.51.73]) by
+ eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+ 20200427074841eusmtip210ac6e5be1c4cc1e11973682146daa84~Jna-GsUfA0961909619eusmtip2K;
+ Mon, 27 Apr 2020 07:48:41 +0000 (GMT)
+From: Marek Szyprowski <m.szyprowski@samsung.com>
+To: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH 1/4] mfd: wm8994: Fix driver operation if loaded as modules
+Date: Mon, 27 Apr 2020 09:48:29 +0200
+Message-Id: <20200427074832.22134-2-m.szyprowski@samsung.com>
 X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: =?UTF-8?q?Fr=C3=A9d=C3=A9ric=20Recoules?= <frederic.recoules@orange.fr>
+In-Reply-To: <20200427074832.22134-1-m.szyprowski@samsung.com>
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuphleLIzCtJLcpLzFFi42LZduzned2ovmVxBp9OG1tcuXiIyWLqwyds
+ FldaNzFa3P96lNHi25UOJovLu+awWaw9cpfd4vP7/awWh9+0szpwemz43MTmsXPWXXaPTas6
+ 2TzuXNvD5jF9zn9Gj74tqxg9Pm+SC2CP4rJJSc3JLEst0rdL4MpYP6GyYA1nxa1Jr9gbGLs4
+ uhg5OSQETCTeHWpn6WLk4hASWMEoMf9XIxOE84VRYnvfAWaQKiGBz4wSnSvqYDq2f53IDFG0
+ nFHi+YTLbHAd84/sYwepYhMwlOh628UGYosIxEksX7wAbCyzwC9Gic+fNjGBJIQFvCWOrTzE
+ CGKzCKhKnOjoBIvzCthKzJo7hx1inbzE6g0gZ3BwcArYSSyc7gYyR0Kgn11i8d85rCBxCQEX
+ if7r/hDlwhKvjm+BapWR+L9zPhNEfTOjxMNza9khnB5GictNMxghqqwl7pz7xQYyiFlAU2L9
+ Ln2ImY4SnZOsIEw+iRtvBUGKmYHMSdumM0OEeSU62oQgZqhJzDq+Dm7rwQuXoEo8JA5cDoaE
+ zkRGiVuPv7FNYJSfhbBqASPjKkbx1NLi3PTUYsO81HK94sTc4tK8dL3k/NxNjMA0cvrf8U87
+ GL9eSjrEKMDBqMTDy7F9aZwQa2JZcWXuIUYJDmYlEd5HGcvihHhTEiurUovy44tKc1KLDzFK
+ c7AoifMaL3oZKySQnliSmp2aWpBaBJNl4uCUamDcqSDMf9EtR+ZRX5vmveVeJl4tZvv/Gpcs
+ M1ZdX79i0Z3NKwysYsS7FfYvL+v482rb/k1rc1seGs7JtVvMd1mL+8n30KNNC8t+Lz84J/4D
+ o8aWXRFLZ57ZuNsu8lxzkOZfNzET+btLj9ese/+cJ0ov/m//4lI7p+7PWuukQ50aume5egfN
+ u+evxFKckWioxVxUnAgA6i009x8DAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrALMWRmVeSWpSXmKPExsVy+t/xe7pRfcviDJpuCllcuXiIyWLqwyds
+ FldaNzFa3P96lNHi25UOJovLu+awWaw9cpfd4vP7/awWh9+0szpwemz43MTmsXPWXXaPTas6
+ 2TzuXNvD5jF9zn9Gj74tqxg9Pm+SC2CP0rMpyi8tSVXIyC8usVWKNrQw0jO0tNAzMrHUMzQ2
+ j7UyMlXSt7NJSc3JLEst0rdL0MtYP6GyYA1nxa1Jr9gbGLs4uhg5OSQETCS2f53I3MXIxSEk
+ sJRR4unquWwQCRmJk9MaWCFsYYk/17rYIIo+MUrcaTzMApJgEzCU6HrbBdYgIpAgcWh5C9gk
+ ZoF/jBLvHt1kBkkIC3hLHFt5iBHEZhFQlTjR0ckEYvMK2ErMmjuHHWKDvMTqDQeA6jk4OAXs
+ JBZOdwMJCwGVfPz+lnkCI98CRoZVjCKppcW56bnFRnrFibnFpXnpesn5uZsYgaG97djPLTsY
+ u94FH2IU4GBU4uHl2L40Tog1say4MvcQowQHs5II76OMZXFCvCmJlVWpRfnxRaU5qcWHGE2B
+ bprILCWanA+Mu7ySeENTQ3MLS0NzY3NjMwslcd4OgYMxQgLpiSWp2ampBalFMH1MHJxSDYzz
+ bou0WIhmHz/+6M7NWzatJbzmP6y7Njxedzq/+fbJTDex7R+DZPXT5eZE1bxfNls7783mGYva
+ MpbumJB84JQPy8nuL//KTk95o3Egwph3S1vdpp3HSvYv0GVdMqnahTvaZumtm0I7pPk/2764
+ sfPI7k3bKx2rxMX2H/1kzZbW61G6kjnZ56i/EktxRqKhFnNRcSIALGsBtIMCAAA=
+X-CMS-MailID: 20200427074842eucas1p1abfb9af74f0d898ba381700f37820318
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200427074842eucas1p1abfb9af74f0d898ba381700f37820318
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200427074842eucas1p1abfb9af74f0d898ba381700f37820318
+References: <20200427074832.22134-1-m.szyprowski@samsung.com>
+ <CGME20200427074842eucas1p1abfb9af74f0d898ba381700f37820318@eucas1p1.samsung.com>
+Cc: Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Lee Jones <lee.jones@linaro.org>, Marek Szyprowski <m.szyprowski@samsung.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,310 +147,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Frédéric Recoules <frederic.recoules@orange.fr>
+WM8994 chip has built-in regulators, which might be used for chip
+operation. They are controlled by a separate wm8994-regulator driver,
+which should be loaded before this driver calls regulator_get(), because
+that driver also provides consumer-supply mapping for the them. If that
+driver is not yet loaded, regulator core substitute them with dummy
+regulator, what breaks chip operation, because the built-in regulators are
+never enabled. Fix this by annotating this driver with MODULE_SOFTDEP()
+"pre" dependency to "wm8994_regulator" module.
 
-Main changes are:
-  - move 'size' and 'old_ebx' to the output list since they are clobbered
-  - add the "memory" keyword since input pointers are dereferenced
-  - add mmx registers in the clobber list and add an initialization for mm1
-  - add ebx in clobbers via a set of macro when GCC is newer than 5.0
-    (it will work for other compilers or non-PIC mode too)
-
-Minor changes are:
-  - keep consistent the token numbering in the template
-  - remove the manual save/restore ebx when it is in the clobber list
-  - allows 'dst_step', 'src_step' and 'sum_step' to be given by immediates
-  - allows 'size' to be given by register (e.g. ebp)
-  - add "cc" keyword since the eflag register is clobbered
-
-Signed-off-by: Frédéric Recoules <frederic.recoules@orange.fr>
+Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- src/pcm/pcm_dmix_i386.h | 168 ++++++++++++++++++++++------------------
- 1 file changed, 93 insertions(+), 75 deletions(-)
+ drivers/mfd/wm8994-core.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/src/pcm/pcm_dmix_i386.h b/src/pcm/pcm_dmix_i386.h
-index 2778cb1d..af2f4630 100644
---- a/src/pcm/pcm_dmix_i386.h
-+++ b/src/pcm/pcm_dmix_i386.h
-@@ -26,6 +26,13 @@
-  *
-  */
- 
-+#define COMMA ,
-+#if __GNUC__ < 5 && defined(__PIC__)
-+#  define GCC_PIC_SWITCH(before,after) before
-+#else
-+#  define GCC_PIC_SWITCH(before,after) after
-+#endif
-+
- /*
-  *  for plain i386
-  */
-@@ -47,13 +54,14 @@ static void MIX_AREAS_16(unsigned int size,
- 	__asm__ __volatile__ (
- 		"\n"
- 
--		"\tmovl %%ebx, %7\n"	/* ebx is GOT pointer (-fPIC) */
-+		/* ebx is GOT pointer (-fPIC) */
-+		GCC_PIC_SWITCH("\tmovl %%ebx, %1\n",)
- 		/*
- 		 *  initialization, load ESI, EDI, EBX registers
- 		 */
--		"\tmovl %1, %%edi\n"
--		"\tmovl %2, %%esi\n"
--		"\tmovl %3, %%ebx\n"
-+		"\tmovl %2, %%edi\n"
-+		"\tmovl %3, %%esi\n"
-+		"\tmovl %4, %%ebx\n"
- 		"\tcmpl $0, %0\n"
- 		"\tjnz 2f\n"
- 		"\tjmp 7f\n"
-@@ -64,9 +72,9 @@ static void MIX_AREAS_16(unsigned int size,
- 		 */
- 		"\t.p2align 4,,15\n"
- 		"1:"
--		"\tadd %4, %%edi\n"
--		"\tadd %5, %%esi\n"
--		"\tadd %6, %%ebx\n"
-+		"\tadd %5, %%edi\n"
-+		"\tadd %6, %%esi\n"
-+		"\tadd %7, %%ebx\n"
- 
- 		/*
- 		 *   sample = *src;
-@@ -138,15 +146,16 @@ static void MIX_AREAS_16(unsigned int size,
- 		"\tjnz 4b\n"
- 		"\tdecl %0\n"
- 		"\tjnz 1b\n"
--		
--		"7:"
--		"\tmovl %7, %%ebx\n"	/* ebx is GOT pointer (-fPIC) */
- 
--		: /* no output regs */
--		: "m" (size), "m" (dst), "m" (src),
--		  "m" (sum), "m" (dst_step), "m" (src_step),
--		  "m" (sum_step), "m" (old_ebx)
--		: "esi", "edi", "edx", "ecx", "eax"
-+		"7:"
-+		/* ebx is GOT pointer (-fPIC) */
-+		GCC_PIC_SWITCH("\tmovl %1, %%ebx\n",)
-+
-+		: "+&rm" (size), GCC_PIC_SWITCH("=m","=X") (old_ebx)
-+		: "m" (dst), "m" (src), "m" (sum),
-+		  "im" (dst_step), "im" (src_step), "im" (sum_step)
-+		: "esi", "edi", "edx", "ecx", GCC_PIC_SWITCH(,"ebx"COMMA) "eax",
-+		  "memory", "cc"
- 	);
- }
- 
-@@ -171,22 +180,24 @@ static void MIX_AREAS_16_MMX(unsigned int size,
- 	__asm__ __volatile__ (
- 		"\n"
- 
--		"\tmovl %%ebx, %7\n"	/* ebx is GOT pointer (-fPIC) */
-+		/* ebx is GOT pointer (-fPIC) */
-+		GCC_PIC_SWITCH("\tmovl %%ebx, %1\n",)
- 		/*
--		 *  initialization, load ESI, EDI, EBX registers
-+		 *  initialization, load ESI, EDI, EBX registers, clear MM1
- 		 */
--		"\tmovl %1, %%edi\n"
--		"\tmovl %2, %%esi\n"
--		"\tmovl %3, %%ebx\n"
-+		"\tpxor %%mm1, %%mm1\n"
-+		"\tmovl %2, %%edi\n"
-+		"\tmovl %3, %%esi\n"
-+		"\tmovl %4, %%ebx\n"
- 		"\tcmpl $0, %0\n"
- 		"\tjnz 2f\n"
- 		"\tjmp 5f\n"
- 
- 		"\t.p2align 4,,15\n"
- 		"1:"
--		"\tadd %4, %%edi\n"
--		"\tadd %5, %%esi\n"
--		"\tadd %6, %%ebx\n"
-+		"\tadd %5, %%edi\n"
-+		"\tadd %6, %%esi\n"
-+		"\tadd %7, %%ebx\n"
- 
- 		"2:"
- 		/*
-@@ -230,13 +241,14 @@ static void MIX_AREAS_16_MMX(unsigned int size,
- 		"\tjnz 1b\n"
- 		"\temms\n"
-                 "5:"
--		"\tmovl %7, %%ebx\n"	/* ebx is GOT pointer (-fPIC) */
--
--		: /* no output regs */
--		: "m" (size), "m" (dst), "m" (src),
--		  "m" (sum), "m" (dst_step), "m" (src_step),
--		  "m" (sum_step), "m" (old_ebx)
--		: "esi", "edi", "edx", "ecx", "eax"
-+		/* ebx is GOT pointer (-fPIC) */
-+		GCC_PIC_SWITCH("\tmovl %1, %%ebx\n",)
-+
-+		: "+&rm" (size), GCC_PIC_SWITCH("=m","=X") (old_ebx)
-+		: "m" (dst), "m" (src), "m" (sum),
-+		  "im" (dst_step), "im" (src_step), "im" (sum_step)
-+		: "esi", "edi", "edx", "ecx", GCC_PIC_SWITCH(,"ebx"COMMA) "eax",
-+		  "mm0", "mm1", "memory", "cc"
- 	);
- }
- 
-@@ -261,13 +273,14 @@ static void MIX_AREAS_32(unsigned int size,
- 	__asm__ __volatile__ (
- 		"\n"
- 
--		"\tmovl %%ebx, %7\n"	/* ebx is GOT pointer (-fPIC) */
-+		/* ebx is GOT pointer (-fPIC) */
-+		GCC_PIC_SWITCH("\tmovl %%ebx, %1\n",)
- 		/*
- 		 *  initialization, load ESI, EDI, EBX registers
- 		 */
--		"\tmovl %1, %%edi\n"
--		"\tmovl %2, %%esi\n"
--		"\tmovl %3, %%ebx\n"
-+		"\tmovl %2, %%edi\n"
-+		"\tmovl %3, %%esi\n"
-+		"\tmovl %4, %%ebx\n"
- 		"\tcmpl $0, %0\n"
- 		"\tjnz 1f\n"
- 		"\tjmp 6f\n"
-@@ -337,19 +350,20 @@ static void MIX_AREAS_32(unsigned int size,
- 		 */
- 		"\tdecl %0\n"
- 		"\tjz 6f\n"
--		"\tadd %4, %%edi\n"
--		"\tadd %5, %%esi\n"
--		"\tadd %6, %%ebx\n"
-+		"\tadd %5, %%edi\n"
-+		"\tadd %6, %%esi\n"
-+		"\tadd %7, %%ebx\n"
- 		"\tjmp 1b\n"
--		
--		"6:"
--		"\tmovl %7, %%ebx\n"	/* ebx is GOT pointer (-fPIC) */
- 
--		: /* no output regs */
--		: "m" (size), "m" (dst), "m" (src),
--		  "m" (sum), "m" (dst_step), "m" (src_step),
--		  "m" (sum_step), "m" (old_ebx)
--		: "esi", "edi", "edx", "ecx", "eax"
-+		"6:"
-+		/* ebx is GOT pointer (-fPIC) */
-+		GCC_PIC_SWITCH("\tmovl %1, %%ebx\n",)
-+
-+		: "+&rm" (size), GCC_PIC_SWITCH("=m","=X") (old_ebx)
-+		: "m" (dst), "m" (src), "m" (sum),
-+		  "im" (dst_step), "im" (src_step), "im" (sum_step)
-+		: "esi", "edi", "edx", "ecx", GCC_PIC_SWITCH(,"ebx"COMMA) "eax",
-+		  "memory", "cc"
- 	);
- }
- 
-@@ -374,13 +388,14 @@ static void MIX_AREAS_24(unsigned int size,
- 	__asm__ __volatile__ (
- 		"\n"
- 
--		"\tmovl %%ebx, %7\n"	/* ebx is GOT pointer (-fPIC) */
-+		/* ebx is GOT pointer (-fPIC) */
-+		GCC_PIC_SWITCH("\tmovl %%ebx, %1\n",)
- 		/*
- 		 *  initialization, load ESI, EDI, EBX registers
- 		 */
--		"\tmovl %1, %%edi\n"
--		"\tmovl %2, %%esi\n"
--		"\tmovl %3, %%ebx\n"
-+		"\tmovl %2, %%edi\n"
-+		"\tmovl %3, %%esi\n"
-+		"\tmovl %4, %%ebx\n"
- 		"\tcmpl $0, %0\n"
- 		"\tjnz 1f\n"
- 		"\tjmp 6f\n"
-@@ -443,19 +458,20 @@ static void MIX_AREAS_24(unsigned int size,
- 		 */
- 		"\tdecl %0\n"
- 		"\tjz 6f\n"
--		"\tadd %4, %%edi\n"
--		"\tadd %5, %%esi\n"
--		"\tadd %6, %%ebx\n"
-+		"\tadd %5, %%edi\n"
-+		"\tadd %6, %%esi\n"
-+		"\tadd %7, %%ebx\n"
- 		"\tjmp 1b\n"
--		
--		"6:"
--		"\tmovl %7, %%ebx\n"	/* ebx is GOT pointer (-fPIC) */
- 
--		: /* no output regs */
--		: "m" (size), "m" (dst), "m" (src),
--		  "m" (sum), "m" (dst_step), "m" (src_step),
--		  "m" (sum_step), "m" (old_ebx)
--		: "esi", "edi", "edx", "ecx", "eax"
-+		"6:"
-+		/* ebx is GOT pointer (-fPIC) */
-+		GCC_PIC_SWITCH("\tmovl %1, %%ebx\n",)
-+
-+		: "+&rm" (size), GCC_PIC_SWITCH("=m","=X") (old_ebx)
-+		: "m" (dst), "m" (src), "m" (sum),
-+		  "im" (dst_step), "im" (src_step), "im" (sum_step)
-+		: "esi", "edi", "edx", "ecx", GCC_PIC_SWITCH(,"ebx"COMMA) "eax",
-+		  "memory", "cc"
- 	);
- }
- 
-@@ -480,13 +496,14 @@ static void MIX_AREAS_24_CMOV(unsigned int size,
- 	__asm__ __volatile__ (
- 		"\n"
- 
--		"\tmovl %%ebx, %7\n"	/* ebx is GOT pointer (-fPIC) */
-+		/* ebx is GOT pointer (-fPIC) */
-+		GCC_PIC_SWITCH("\tmovl %%ebx, %1\n",)
- 		/*
- 		 *  initialization, load ESI, EDI, EBX registers
- 		 */
--		"\tmovl %1, %%edi\n"
--		"\tmovl %2, %%esi\n"
--		"\tmovl %3, %%ebx\n"
-+		"\tmovl %2, %%edi\n"
-+		"\tmovl %3, %%esi\n"
-+		"\tmovl %4, %%ebx\n"
- 		"\tcmpl $0, %0\n"
- 		"\tjz 6f\n"
- 
-@@ -541,19 +558,20 @@ static void MIX_AREAS_24_CMOV(unsigned int size,
- 		/*
- 		 * while (size-- > 0)
- 		 */
--		"\tadd %4, %%edi\n"
--		"\tadd %5, %%esi\n"
--		"\tadd %6, %%ebx\n"
-+		"\tadd %5, %%edi\n"
-+		"\tadd %6, %%esi\n"
-+		"\tadd %7, %%ebx\n"
- 		"\tdecl %0\n"
- 		"\tjnz 1b\n"
--		
--		"6:"
--		"\tmovl %7, %%ebx\n"	/* ebx is GOT pointer (-fPIC) */
- 
--		: /* no output regs */
--		: "m" (size), "m" (dst), "m" (src),
--		  "m" (sum), "m" (dst_step), "m" (src_step),
--		  "m" (sum_step), "m" (old_ebx)
--		: "esi", "edi", "edx", "ecx", "eax"
-+		"6:"
-+		/* ebx is GOT pointer (-fPIC) */
-+		GCC_PIC_SWITCH("\tmovl %1, %%ebx\n",)
-+
-+		: "+&rm" (size), GCC_PIC_SWITCH("=m","=X") (old_ebx)
-+		: "m" (dst), "m" (src), "m" (sum),
-+		  "im" (dst_step), "im" (src_step), "im" (sum_step)
-+		: "esi", "edi", "edx", "ecx", GCC_PIC_SWITCH(,"ebx"COMMA) "eax",
-+		  "memory", "cc"
- 	);
- }
+diff --git a/drivers/mfd/wm8994-core.c b/drivers/mfd/wm8994-core.c
+index 1e9fe7d92597..737dede4a95c 100644
+--- a/drivers/mfd/wm8994-core.c
++++ b/drivers/mfd/wm8994-core.c
+@@ -690,3 +690,4 @@ module_i2c_driver(wm8994_i2c_driver);
+ MODULE_DESCRIPTION("Core support for the WM8994 audio CODEC");
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
++MODULE_SOFTDEP("pre: wm8994_regulator");
 -- 
 2.17.1
 
