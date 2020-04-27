@@ -2,75 +2,75 @@ Return-Path: <SRS0=y76W=6L=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
+X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E9A7C5519F
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 13:11:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EC824C54FD0
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 13:12:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ADD4B20728
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 13:11:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 76E7C20735
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 13:12:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Tr0B/jSy";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="dXYMY5LR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ADD4B20728
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oLVBE5aB";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="TGwGFnbh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 76E7C20735
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B75401684;
-	Mon, 27 Apr 2020 15:10:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B75401684
+	by alsa0.perex.cz (Postfix) with ESMTPS id BF5B91686;
+	Mon, 27 Apr 2020 15:11:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF5B91686
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587993066;
-	bh=pB4iFyAh9VaSFr6AV9fX9xSoxAlH6RoVnNZL7aR2xwQ=;
+	s=default; t=1587993118;
+	bh=F2J5+tCyCW2blznWC3DoSWefBae/flCTMt9vpZT3jpQ=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Tr0B/jSyoxRLy6bppjdJU/X+FmqbzKwuzgF8EwYOxBBk6rnM2B0wh/DBYqs/bLkK5
-	 ndygYFi02OEZP2CLxBvDcgQhnlvT4fsCUUHG6nhgzpZMeNB39xLMe/YqMoTqijVjUv
-	 p6b7078Tklkvlgh+car1p4q1h9Gng6+HH28/kelk=
+	b=oLVBE5aBIQ8oam9ikskY06YFBc6PeC5QWT+rXQIYfKqIzjvoar5uT5dFOdE7wFOfu
+	 6VNlTOVQ3lxsXRBuJjVzVQyCoyMYm+3dXtWubN/a/gH/COVVpGXfLPqGbjzhcyhoFd
+	 9Vo0ymAuY0mFquFLnZ+5+Wo70GmM6TSqZrlS6JPU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2C71BF80217;
-	Mon, 27 Apr 2020 15:10:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C7A61F80232;
+	Mon, 27 Apr 2020 15:10:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7FA1FF8022B; Mon, 27 Apr 2020 15:09:12 +0200 (CEST)
+ id D4593F8022B; Mon, 27 Apr 2020 15:09:17 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6AADFF80112
- for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2020 15:09:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6AADFF80112
+ by alsa1.perex.cz (Postfix) with ESMTPS id 65F86F80112
+ for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2020 15:09:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65F86F80112
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="dXYMY5LR"
+ header.b="TGwGFnbh"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 89E21206E2;
- Mon, 27 Apr 2020 13:09:07 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 643F22074F;
+ Mon, 27 Apr 2020 13:09:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1587992948;
- bh=pB4iFyAh9VaSFr6AV9fX9xSoxAlH6RoVnNZL7aR2xwQ=;
+ s=default; t=1587992953;
+ bh=F2J5+tCyCW2blznWC3DoSWefBae/flCTMt9vpZT3jpQ=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=dXYMY5LRP9lCqOlKe+8ZzEqIF6K5e4ylgXZsWft2JC5j+3SY17/h2MjQwmIqigQs0
- hpCpul3RZ5cz1g7kDs3LmLWOL9z0rNntSuybiYLbf+lRlIgB9HQws/eEgkxl8CP4sW
- 8NzzFmglg2U3O0z50QKwMbekeI8BXysCPdik3Stk=
-Date: Mon, 27 Apr 2020 14:09:05 +0100
+ b=TGwGFnbhgQsP++okUZdhRpPetk91J/pmzJ3IZb7o7KWrWLNaye1tT9g9iFKbb6HOP
+ R5Mz+EMS9WZ7ajlO028s1+ZYpR1BABPxXrJI7jV5I2HqBFQPiUdJXuMna/DYWGF0NI
+ 2/8/qwkasN9awJw28hjtggcP5QFH8Wi/l08yoROs=
+Date: Mon, 27 Apr 2020 14:09:11 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Tang Bin <tangbin@cmss.chinamobile.com>, perex@perex.cz, tiwai@suse.com,
- lgirdwood@gmail.com
-In-Reply-To: <20200427091520.12412-1-tangbin@cmss.chinamobile.com>
-References: <20200427091520.12412-1-tangbin@cmss.chinamobile.com>
-Subject: Re: [PATCH] ASoC: hisilicon: Use the defined variable to clean code
-Message-Id: <158799293954.30174.17557167078734797875.b4-ty@kernel.org>
-Cc: alsa-devel@alsa-project.org,
- Zhang Shengju <zhangshengju@cmss.chinamobile.com>,
- linux-kernel@vger.kernel.org
+To: perex@perex.cz, timur@kernel.org, alsa-devel@alsa-project.org,
+ tiwai@suse.com, festevam@gmail.com, Shengjiu Wang <shengjiu.wang@nxp.com>,
+ Xiubo.Lee@gmail.com, nicoleotsuka@gmail.com, lgirdwood@gmail.com
+In-Reply-To: <d23c939f1c9eeb3fce34b6c34d44e2d6156f663a.1587799355.git.shengjiu.wang@nxp.com>
+References: <d23c939f1c9eeb3fce34b6c34d44e2d6156f663a.1587799355.git.shengjiu.wang@nxp.com>
+Subject: Re: [PATCH v2] ASoC: fsl_easrc: Check for null pointer before
+ dereferencing "ctx" in fsl_easrc_hw_free()
+Message-Id: <158799293953.30174.7045413410563193676.b4-ty@kernel.org>
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,14 +86,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 27 Apr 2020 17:15:20 +0800, Tang Bin wrote:
-> Use the defined variable "dev" to make the code cleaner.
+On Sat, 25 Apr 2020 15:19:29 +0800, Shengjiu Wang wrote:
+> The patch 955ac624058f: "ASoC: fsl_easrc: Add EASRC ASoC CPU DAI
+> drivers" from Apr 16, 2020, leads to the following Smatch complaint:
 > 
-> Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
-> ---
->  sound/soc/hisilicon/hi6210-i2s.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
+> sound/soc/fsl/fsl_easrc.c:1529 fsl_easrc_hw_free()
+> warn: variable dereferenced before check 'ctx' (see line 1527)
+> 
+> sound/soc/fsl/fsl_easrc.c
+>   1526          struct fsl_asrc_pair *ctx = runtime->private_data;
+>   1527          struct fsl_easrc_ctx_priv *ctx_priv = ctx->private;
+>                                                       ^^^^^
+> Dereference
 > 
 > [...]
 
@@ -103,8 +107,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: hisilicon: Use the defined variable to clean code
-      commit: 77060f4f71dfb08309f461766d2e7453ce68aa76
+[1/1] ASoC: fsl_easrc: Check for null pointer before dereferencing "ctx" in fsl_easrc_hw_free()
+      commit: f3fc1ea011f09156886e8f4beb240ea814f2197a
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
