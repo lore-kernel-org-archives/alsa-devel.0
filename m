@@ -2,81 +2,75 @@ Return-Path: <SRS0=y76W=6L=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27C4EC54FD0
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 12:15:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E9A7C5519F
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 13:11:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9652920656
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 12:15:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ADD4B20728
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 13:11:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fcTpIiq/";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="cAA15cIG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9652920656
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Tr0B/jSy";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="dXYMY5LR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ADD4B20728
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 01B4A167E;
-	Mon, 27 Apr 2020 14:14:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 01B4A167E
+	by alsa0.perex.cz (Postfix) with ESMTPS id B75401684;
+	Mon, 27 Apr 2020 15:10:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B75401684
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587989700;
-	bh=yGzhsU6WhWm7uamQy2CRWWpAW8P1mXU8LbyMHZ1Xkk8=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1587993066;
+	bh=pB4iFyAh9VaSFr6AV9fX9xSoxAlH6RoVnNZL7aR2xwQ=;
+	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fcTpIiq/50rl/k6HK25jBMAeqL4n4jWnEjA9VrUmYJ+niYlGcoNM+eIGGoKAjSB6E
-	 xzOtzbvvEBH9OGYFxsH3yNBoWohmernn178TDaJwb9Q+ggh4kMbOn/qgCmShhlYWCI
-	 jKc4jkjec0UpS4mZrLgWUT/OEkar7JiaB0MHD4Bg=
+	b=Tr0B/jSyoxRLy6bppjdJU/X+FmqbzKwuzgF8EwYOxBBk6rnM2B0wh/DBYqs/bLkK5
+	 ndygYFi02OEZP2CLxBvDcgQhnlvT4fsCUUHG6nhgzpZMeNB39xLMe/YqMoTqijVjUv
+	 p6b7078Tklkvlgh+car1p4q1h9Gng6+HH28/kelk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8986DF80113;
-	Mon, 27 Apr 2020 14:14:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2C71BF80217;
+	Mon, 27 Apr 2020 15:10:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C7C26F8022B; Mon, 27 Apr 2020 14:14:08 +0200 (CEST)
+ id 7FA1FF8022B; Mon, 27 Apr 2020 15:09:12 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E07EAF80113
- for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2020 14:14:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E07EAF80113
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6AADFF80112
+ for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2020 15:09:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6AADFF80112
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="cAA15cIG"
+ header.b="dXYMY5LR"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 7107020656;
- Mon, 27 Apr 2020 12:14:03 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 89E21206E2;
+ Mon, 27 Apr 2020 13:09:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1587989644;
- bh=yGzhsU6WhWm7uamQy2CRWWpAW8P1mXU8LbyMHZ1Xkk8=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=cAA15cIGfhTDviM32WxhxH4Hh0HAkfBnu4l1HNP7cuvmkoGYnafEZblFVU1gnicG2
- PcPRm4/rYzZlafSmiLQrgWmzCdnc+0b66R9DrHhx2+uyHJtAIAJhgeqi8Azoc+dmYJ
- OH0xnjQ6ZPpW3wbblrf0kej6S6EfW8Wi3mYOftHc=
-Date: Mon, 27 Apr 2020 13:14:01 +0100
+ s=default; t=1587992948;
+ bh=pB4iFyAh9VaSFr6AV9fX9xSoxAlH6RoVnNZL7aR2xwQ=;
+ h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+ b=dXYMY5LRP9lCqOlKe+8ZzEqIF6K5e4ylgXZsWft2JC5j+3SY17/h2MjQwmIqigQs0
+ hpCpul3RZ5cz1g7kDs3LmLWOL9z0rNntSuybiYLbf+lRlIgB9HQws/eEgkxl8CP4sW
+ 8NzzFmglg2U3O0z50QKwMbekeI8BXysCPdik3Stk=
+Date: Mon, 27 Apr 2020 14:09:05 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Mateusz Gorski <mateusz.gorski@linux.intel.com>
-Subject: Re: [PATCH v5 1/3] ASoC: Intel: Skylake: Add alternative topology
- binary name
-Message-ID: <20200427121401.GB4383@sirena.org.uk>
-References: <20200427111520.12076-1-mateusz.gorski@linux.intel.com>
- <20200427111520.12076-2-mateusz.gorski@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="gatW/ieO32f1wygP"
-Content-Disposition: inline
-In-Reply-To: <20200427111520.12076-2-mateusz.gorski@linux.intel.com>
-X-Cookie: If your bread is stale, make toast.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: cezary.rojewski@intel.com, alsa-devel@alsa-project.org, tiwai@suse.com,
- pierre-louis.bossart@linux.intel.com
+To: Tang Bin <tangbin@cmss.chinamobile.com>, perex@perex.cz, tiwai@suse.com,
+ lgirdwood@gmail.com
+In-Reply-To: <20200427091520.12412-1-tangbin@cmss.chinamobile.com>
+References: <20200427091520.12412-1-tangbin@cmss.chinamobile.com>
+Subject: Re: [PATCH] ASoC: hisilicon: Use the defined variable to clean code
+Message-Id: <158799293954.30174.17557167078734797875.b4-ty@kernel.org>
+Cc: alsa-devel@alsa-project.org,
+ Zhang Shengju <zhangshengju@cmss.chinamobile.com>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,40 +86,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Mon, 27 Apr 2020 17:15:20 +0800, Tang Bin wrote:
+> Use the defined variable "dev" to make the code cleaner.
+> 
+> Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+> ---
+>  sound/soc/hisilicon/hi6210-i2s.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> [...]
 
---gatW/ieO32f1wygP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied to
 
-On Mon, Apr 27, 2020 at 01:15:18PM +0200, Mateusz Gorski wrote:
-> Add alternative topology binary file name based on used machine driver
-> and fallback to use this name after failed attempt to load topology file
-> with name based on NHLT.
-> This change addresses multiple issues with current mechanism, for
-> example - there are devices without NHLT table, and that currently
-> results in tplg_name being empty.
->=20
-> Changes in v2:
-> - added <sound/soc-acpi.h> include
-> - machine driver name is now read from different field
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.8
 
-As covered in submitting-patches.rst the changelog should go after the
---- so it doesn't end up in the git changelog.
+Thanks!
 
---gatW/ieO32f1wygP
-Content-Type: application/pgp-signature; name="signature.asc"
+[1/1] ASoC: hisilicon: Use the defined variable to clean code
+      commit: 77060f4f71dfb08309f461766d2e7453ce68aa76
 
------BEGIN PGP SIGNATURE-----
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6mzIgACgkQJNaLcl1U
-h9BGZgf+NETZ6FUopPy2Olqhoo9KcENfg42ZV6fmDySSU8m/nXJ+0BCy93M3mEqc
-Y7AGoL3eHaM7F5zCB2EcD3WDcszkNcWwiqCPyGAEJ8TwC6xf7WN3+jotBrlU0AzC
-V+DvpWOwZR2vpj7bUWR1Emig30R1S3Fb4RtJnBRAJ84zd+zFXMUvYUG4H0TCW994
-+zvxzW0MONUzqnjq2nrn1AK9AHZZNIsf5N8n2TivgFd5YV4wV1ZgrARikRCMx2CK
-+qBc+CXrbvvXoQ2bElC8UaGphcP7bRVK/2FLNTC+p9EEVUOFnqXNdYtUP2RvkTaK
-MX8f4IgAhbKwB6Bgf928bU8jtOWBcw==
-=HLKN
------END PGP SIGNATURE-----
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---gatW/ieO32f1wygP--
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
