@@ -2,74 +2,72 @@ Return-Path: <SRS0=y76W=6L=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A4B3DC54FD0
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 11:01:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C0C81C54FD0
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 11:02:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 32F032063A
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 11:01:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4BB322063A
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 11:02:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dndm5lDo"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 32F032063A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CRBrm7VN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4BB322063A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8C02D16AA;
-	Mon, 27 Apr 2020 13:00:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C02D16AA
+	by alsa0.perex.cz (Postfix) with ESMTPS id B1F0A168E;
+	Mon, 27 Apr 2020 13:01:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1F0A168E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587985282;
-	bh=sR4Ay7ba2G34kARTCgYlDGMzxPKvRjbIQOSiiFY37CY=;
+	s=default; t=1587985336;
+	bh=MWfAwFQg0hgvAV/UXTols4QxuZQuKuyOZo6FABoZqQ0=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dndm5lDoJFVGKxPuv4yGCWrCirQePiH2oymwfEOqQrnkDhnzCiSQRx7jsLvd44800
-	 Ckv5YYdpTj6jJ6G8p/XIDk0eTp72G1jsVD8yRnq5L69Ay6AVlAhh1eRz+kJsHSCPyQ
-	 EszmDktLf304EES0WbKJyZAWNCvOcsYYsl98GhA0=
+	b=CRBrm7VNwnemZwPLf0Hi5erE1Wusqs2b1V7y5Lbc8KM7hINUGMhGxqbFIz0sBrlO2
+	 N5E4P0zB+sh+22Q1WmLqKvjq2lilU6TB78R1UlYLhK8Cqh1i5fB81uHkD5nc/L1ck0
+	 yic5A4U8X+WLWR/hEIHDQg6HlMA2CF6rvaaKS+Mk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 74AFCF8025F;
-	Mon, 27 Apr 2020 12:59:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 470B9F8010A;
+	Mon, 27 Apr 2020 13:01:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5632FF8027D; Mon, 27 Apr 2020 12:59:03 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ id C414BF80217; Mon, 27 Apr 2020 13:01:24 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C8037F80113
- for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2020 12:58:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8037F80113
-IronPort-SDR: +AOGzdeIqLDMmf2GXVcVZsUOUROVnzlLywMl+FVAdX3vJCXhomtve20/rT1MTlbmi4TJsxHn0s
- nMKy6JW6MVHA==
+ by alsa1.perex.cz (Postfix) with ESMTPS id EBD73F80113
+ for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2020 13:01:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EBD73F80113
+IronPort-SDR: wV+MjeCBHOLCLG6BfsFv+91h8HuXBlrmZtBiSFD+9wZZp9qg+bViYlL1s8c3ck4XDuAKwuZm01
+ A9TkskiBaSDw==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Apr 2020 03:58:51 -0700
-IronPort-SDR: t2AoJtXKtF6iKW8T6Ypc8cCdIq9cDAiQUXNV6d208AOSMaqN8PO8/JLtN1sqKUod5leSmTxaCm
- jYYAarts2AGw==
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Apr 2020 04:01:18 -0700
+IronPort-SDR: MWGPKE2LfyupxpqM1+pDGLkX2OftspcC8m2J3vn7tkq7q2JkA04hpyxaogOBIZP6x4OOVTOT0g
+ vQWWsRvS9LyQ==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,323,1583222400"; d="scan'208";a="302340875"
+X-IronPort-AV: E=Sophos;i="5.73,323,1583222400"; d="scan'208";a="302341415"
 Received: from crojewsk-mobl1.ger.corp.intel.com (HELO [10.213.7.127])
  ([10.213.7.127])
- by FMSMGA003.fm.intel.com with ESMTP; 27 Apr 2020 03:58:48 -0700
-Subject: Re: [PATCH 3/3] ASoC: broadwell: channel constraint support
+ by FMSMGA003.fm.intel.com with ESMTP; 27 Apr 2020 04:01:14 -0700
+Subject: Re: [PATCH 0/3] add channel constraint for BDW machine drivers
 To: Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
 References: <1587976638-29806-1-git-send-email-brent.lu@intel.com>
- <1587976638-29806-4-git-send-email-brent.lu@intel.com>
 From: Cezary Rojewski <cezary.rojewski@intel.com>
-Message-ID: <51b8fa84-5835-74e9-703f-30d608ace736@intel.com>
-Date: Mon, 27 Apr 2020 12:58:48 +0200
+Message-ID: <1375d0b1-fafa-95b5-9a06-eefb1897ca42@intel.com>
+Date: Mon, 27 Apr 2020 13:01:14 +0200
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <1587976638-29806-4-git-send-email-brent.lu@intel.com>
+In-Reply-To: <1587976638-29806-1-git-send-email-brent.lu@intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -97,92 +95,28 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 On 2020-04-27 10:37, Brent Lu wrote:
-> BDW boards using this machine driver supports only stereo capture and
-> playback. Implement a constraint to enforce it.
+> The machine driver bdw-rt5650 (for Google buddy) supports 2 or 4-channel
+> recording while other two drivers support only 2-channel recording. HW
+> constraints are implemented to reflect the hardware limitation on BDW
+> platform.
 > 
 
-Title for the overall series fits better than the one chosen for actual 
-patches. "channel constraint support" is misleading. Constraints are 
-added or removed but certainly not supported.
+Message body relates to bdw-rt5650 while the series touches every of BDW 
+boards.
 
-> Signed-off-by: Brent Lu <brent.lu@intel.com>
-> ---
->   sound/soc/intel/boards/broadwell.c | 33 +++++++++++++++++++++++++++++++++
->   1 file changed, 33 insertions(+)
+Apart from review given for each and every patch (although most issues 
+are shared so there is not as much to address) my question is:
+- are these hw limitations or software (machine board) limitations?
+
+Czarek
+
+> Brent Lu (3):
+>    ASoC: bdw-rt5677: channel constraint support
+>    ASoC: bdw-rt5650: channel constraint support
+>    ASoC: broadwell: channel constraint support
 > 
-> diff --git a/sound/soc/intel/boards/broadwell.c b/sound/soc/intel/boards/broadwell.c
-> index f9a8336..09347f2 100644
-> --- a/sound/soc/intel/boards/broadwell.c
-> +++ b/sound/soc/intel/boards/broadwell.c
-> @@ -19,6 +19,8 @@
->   
->   #include "../../codecs/rt286.h"
->   
-> +#define DUAL_CHANNEL 2
-> +
-
-Remove, we need not additional too-obvious macro. One could argue 
-'STEREO' is a better choice too.
-
->   static struct snd_soc_jack broadwell_headset;
->   /* Headset jack detection DAPM pins */
->   static struct snd_soc_jack_pin broadwell_headset_pins[] = {
-> @@ -143,6 +145,36 @@ static int broadwell_rtd_init(struct snd_soc_pcm_runtime *rtd)
->   }
->   #endif
->   
-> +static const unsigned int channels[] = {
-> +	DUAL_CHANNEL,
-
-Inline as stated above.
-
-> +};
-> +
-> +static const struct snd_pcm_hw_constraint_list constraints_channels = {
-> +	.count = ARRAY_SIZE(channels),
-> +	.list = channels,
-> +	.mask = 0,
-> +};
-> +
-> +static int broadwell_fe_startup(struct snd_pcm_substream *substream)
-> +{
-> +	struct snd_pcm_runtime *runtime = substream->runtime;
-> +
-> +	/*
-> +	 * On this platform for PCM device we support,
-> +	 * stereo audio
-> +	 */
-> +
-
-Sometimes you add a newline add and before, while other times just one, 
-before the comment. Please streamline the format across all patches in 
-the series. Comment can be more strict too
-	/* Board supports stereo configuration only */
-
-> +	runtime->hw.channels_max = DUAL_CHANNEL;
-
-Inline. If you really want to avoid using 2, make use of 0-entry of 
-constrains_channels array.
-
-> +	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
-> +					   &constraints_channels);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct snd_soc_ops broadwell_fe_ops = {
-> +	.startup = broadwell_fe_startup,
-> +};
-> +
->   SND_SOC_DAILINK_DEF(system,
->   	DAILINK_COMP_ARRAY(COMP_CPU("System Pin")));
->   
-> @@ -180,6 +212,7 @@ static struct snd_soc_dai_link broadwell_rt286_dais[] = {
->   		.init = broadwell_rtd_init,
->   #endif
->   		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
-> +		.ops = &broadwell_fe_ops,
->   		.dpcm_playback = 1,
->   		.dpcm_capture = 1,
->   		SND_SOC_DAILINK_REG(system, dummy, platform),
+>   sound/soc/intel/boards/bdw-rt5650.c | 34 ++++++++++++++++++++++++++++++++++
+>   sound/soc/intel/boards/bdw-rt5677.c | 33 +++++++++++++++++++++++++++++++++
+>   sound/soc/intel/boards/broadwell.c  | 33 +++++++++++++++++++++++++++++++++
+>   3 files changed, 100 insertions(+)
 > 
