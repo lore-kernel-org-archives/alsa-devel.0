@@ -2,71 +2,77 @@ Return-Path: <SRS0=y76W=6L=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B62CC54FD0
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 14:06:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46D29C54FD0
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 14:09:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B8DFA2064C
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 14:06:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C0E162063A
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 14:09:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="d5XG82UY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B8DFA2064C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HSYA+yWm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C0E162063A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 05C9D167F;
-	Mon, 27 Apr 2020 16:05:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 05C9D167F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 272A3167D;
+	Mon, 27 Apr 2020 16:09:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 272A3167D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587996399;
-	bh=xocaWQi737FNUDH/M7o8zL3tThKIFWhQdU4IYcFxvnI=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1587996596;
+	bh=LfVXsHAmAAR7zisPA2s9NJx81ZCsvHgOFxPxz/X4o18=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=d5XG82UY6SuEuCJjAEvsHAtQj5KVJmGjDRm67LRlLsEQVU0coO8nPlr7cCcsNfijV
-	 KIIcTzBWhyNpktvKPRTwFcxeXH87ICWUnUwwWESn7Oagi2eqXEa+5HznWESFMyhgoe
-	 XDg4qLERsDqucpoZgkyXxBnqvbhUP5YgivRKh+t0=
+	b=HSYA+yWmNYcdDRDNBc8JrFHzIlRm8S0/xpY/bEyEFYSkje+PZ3o5GSiD+2w9pZp6G
+	 KEWnKP3pSK7iEH2h3ja5pDhY8YIyejRRVJoTYTXSSm7oFW1arupbF1+Kvzi/jxtete
+	 em0nswkp8lNYg0pf7qYi1KiS70JX7c+Q9kG9Ci5c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 87C30F80217;
-	Mon, 27 Apr 2020 16:05:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 81049F80113;
+	Mon, 27 Apr 2020 16:09:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BC1E4F8022B; Mon, 27 Apr 2020 16:05:45 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 599CEF8022B; Mon, 27 Apr 2020 16:09:03 +0200 (CEST)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 05C7EF80113
- for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2020 16:05:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05C7EF80113
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id DA3D2AB91;
- Mon, 27 Apr 2020 14:05:37 +0000 (UTC)
-Date: Mon, 27 Apr 2020 16:05:37 +0200
-Message-ID: <s5hv9llnhvy.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Re: High-bandwidth/multiple transactions per microframe in usb audio?
-In-Reply-To: <dbaba3f0-88b8-21f2-b7dc-5e1c5fadc675@ivitera.com>
-References: <ee53ad0d-2d61-545b-7afd-64a5ed37c702@ivitera.com>
- <548c8312bd8ad65993c3169faf30054fdfa83558.camel@tsoy.me>
- <3a44ca23-f0ed-af54-3e63-8bf77d833c8f@ivitera.com>
- <253259a4ef8a2bcfa0568982b8fd23d5e2d0937a.camel@tsoy.me>
- <dbaba3f0-88b8-21f2-b7dc-5e1c5fadc675@ivitera.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Alexander Tsoy <alexander@tsoy.me>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7C5F5F80113
+ for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2020 16:08:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C5F5F80113
+IronPort-SDR: q/UvkNj8NaVQwDa5iqwD1JeXgMEnSxRh1galFrWTYXFbl9/cSF4s+6tLL1COtDGpeO2A45J3NE
+ Dn7Jm6SulfVw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Apr 2020 07:08:53 -0700
+IronPort-SDR: GobTRMgy3OfjcVKMlDiPXfhDit2+wkqNnnXn8CmJIeUb4CRJhClZ4iqmEU45CX3HC0otXWKfuq
+ +tG30TzUMMqA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,324,1583222400"; d="scan'208";a="248887328"
+Received: from amedirat-mobl3.amr.corp.intel.com (HELO [10.254.24.88])
+ ([10.254.24.88])
+ by fmsmga008.fm.intel.com with ESMTP; 27 Apr 2020 07:08:37 -0700
+Subject: Re: [PATCH v6 0/3] Add support for different DMIC configurations
+To: Mateusz Gorski <mateusz.gorski@linux.intel.com>,
+ alsa-devel@alsa-project.org
+References: <20200427132727.24942-1-mateusz.gorski@linux.intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <ccec5162-ae44-3a71-5118-2539ade442f4@linux.intel.com>
+Date: Mon, 27 Apr 2020 08:30:55 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20200427132727.24942-1-mateusz.gorski@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: cezary.rojewski@intel.com, broonie@kernel.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,32 +88,53 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 26 Apr 2020 10:55:32 +0200,
-Pavel Hofman wrote:
-> 
-> Dne 25. 04. 20 v 21:50 Alexander Tsoy napsal(a):
-> > В Сб, 25/04/2020 в 20:06 +0200, Pavel Hofman пишет:
-> > 
-> > And I just noticed that USB-audio driver can't properly parse max
-> > packet size for SuperSpeed and SuperSpeed+ devices yet. See
-> > audio_format_alloc_init().
-> 
-> Very good catch. IIUC there are two basically equivalent calculations
-> for HighSpeed -
-> 
-> https://elixir.bootlin.com/linux/v5.6.7/source/drivers/usb/core/urb.c#L445
-> 
-> 
-> https://elixir.bootlin.com/linux/v5.6.7/source/sound/usb/stream.c#L691
-> 
-> 
-> And audio_format_alloc_init missing the sections for SS, SS+ in
-> usb_submit_urb . Perhpas a common method to make the calculation for all
-> cases would make it more robust?
-
-Yes, a common USB helper function sounds like a good idea.
 
 
-thanks,
+On 4/27/20 8:27 AM, Mateusz Gorski wrote:
+> Set of patches to enable DMIC capture on different hardware
+> configurations.
+> Information about supported DMIC configuration is read from NHLT and
+> correct pipeline configuration is selected automatically.
+> Also, adding additional option for topology binary name which is
+> based on used machine driver.
+> 
+> Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
 
-Takashi
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
+> 
+> Mateusz Gorski (3):
+>    ASoC: Intel: Skylake: Add alternative topology binary name
+>    ASoC: Intel: Multiple I/O PCM format support for pipe
+>    ASoC: Intel: Skylake: Automatic DMIC format configuration according to
+>      information from NHLT
+> 
+> Changes in v2:
+> - removed patch 1/4 swapping machine device and platform device
+>    registration order
+> - alt_tplg_name creation now uses different field to read machine driver
+>    name
+> - including of <sound/soc-acpi.h> moved to different patch
+> 
+> Changes in v3:
+> - cosmetic changes in skl-topology.c file
+> 
+> Changes in v4:
+> - refactored patch 2/3 to use one common helper function to deal with both
+>    set and get pipe configuration operations, as suggested by Pierre
+> - adjusted patch 3/3 to also use this helper function for DMIC pipes
+> - added comment in patch 3/3 explaining the change of access rights for
+>    DMIC enums
+> 
+> Changes in v5:
+> - fixed alignment issue in patch 2/3
+> - addressed "checkpatch.pl --strict" warnings in patches
+> 
+> Changes in v6:
+> - fixed commit message in patch 2/3
+> 
+>   include/uapi/sound/skl-tplg-interface.h |   2 +
+>   sound/soc/intel/skylake/skl-topology.c  | 178 +++++++++++++++++++++++-
+>   sound/soc/intel/skylake/skl-topology.h  |   1 +
+>   3 files changed, 176 insertions(+), 5 deletions(-)
+> 
