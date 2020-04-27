@@ -7,52 +7,52 @@ X-Spam-Status: No, score=-5.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DEF42C5519B
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 08:41:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FC71C54FD0
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 08:42:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 91B7C2080C
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 08:41:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D616D20656
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 08:42:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IMnRxR6W"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 91B7C2080C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="i+4eqgj4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D616D20656
 Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D44F615E0;
-	Mon, 27 Apr 2020 10:41:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D44F615E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 075381670;
+	Mon, 27 Apr 2020 10:41:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 075381670
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587976915;
-	bh=8V695ec+yCR20bZGikPyZxvTRLGzwSI1ARn9ADe5wPc=;
+	s=default; t=1587976969;
+	bh=e5LyU/0FMQg+LlOtUzu5uyfXh4rkgWOXRMiuJey7AJ0=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IMnRxR6WgQQ5AI9CwDct/ep8owuNj3Ps6e0Kx3N8er1p3BB6HH2nEgBTZ4L4N4lM6
-	 Wd8z1xeMhzygtwDbeBaWyoVyUAjdnsvOf8PYtv764ux/wbZF08GNk9wfJRg9sOxopI
-	 Nua0in9Z4hiKhaywTrXu3UhG8qsIn+y3TGfUY9Lk=
+	b=i+4eqgj43ZmCIfNNZNqzqZN794SSbfkQ1o9taJLr7eERHLnBIxK30wH01j5AxIZCV
+	 C49Kxa91RMLp19fmvjRbgbQUwEfMtyx1sVRVKOEeGQ2Us0YpKAvXPoNCU7vdhGMtlf
+	 n8nuOMy9seSfHEERFUe0R7eoY1/+UfffCSlUWCJE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 463A5F8010A;
-	Mon, 27 Apr 2020 10:41:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 12C8BF80112;
+	Mon, 27 Apr 2020 10:41:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 89321F8022B; Mon, 27 Apr 2020 10:41:03 +0200 (CEST)
+ id A9D5DF80245; Mon, 27 Apr 2020 10:41:51 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id E4B3FF8010A
- for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2020 10:40:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4B3FF8010A
+ by alsa1.perex.cz (Postfix) with ESMTP id 47885F80217
+ for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2020 10:41:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47885F80217
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1587976854206866026-webhooks-bot@alsa-project.org>
-References: <1587976854206866026-webhooks-bot@alsa-project.org>
+In-Reply-To: <1587976909115041018-webhooks-bot@alsa-project.org>
+References: <1587976909115041018-webhooks-bot@alsa-project.org>
 Subject: error: possibly undefined macro: AM_PATH_ALSA
-Message-Id: <20200427084103.89321F8022B@alsa1.perex.cz>
-Date: Mon, 27 Apr 2020 10:41:03 +0200 (CEST)
+Message-Id: <20200427084151.A9D5DF80245@alsa1.perex.cz>
+Date: Mon, 27 Apr 2020 10:41:51 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,14 +68,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-utils issue #40 was opened from zeerd:
+alsa-project/alsa-utils issue #40 was edited from zeerd:
 
-Hello!
-
-Seems alsa-utils using gettext, but have no check in the configure.ac
-
-But my question is , could we just ignore the using of gettext by some parameter of configure?
-My target-board-sdk has no gettext.
+Sorry, I pressed the wrong button. I deleted this.
 
 Issue URL     : https://github.com/alsa-project/alsa-utils/issues/40
 Repository URL: https://github.com/alsa-project/alsa-utils
