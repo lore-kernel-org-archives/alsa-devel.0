@@ -2,75 +2,69 @@ Return-Path: <SRS0=y76W=6L=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6545AC4CECD
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 17:43:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7C42C4CECD
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 17:44:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E2C332098B
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 17:43:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3FA52214AF
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 17:44:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DUJ1UUuh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E2C332098B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Qbj6QOdv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3FA52214AF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 34F9D169B;
-	Mon, 27 Apr 2020 19:42:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 34F9D169B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5DEE716B4;
+	Mon, 27 Apr 2020 19:43:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5DEE716B4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588009401;
-	bh=BELKh+Sy2qDZDfbxgdHYPvJs7h9p+t4pDeBQBx2r7k0=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=DUJ1UUuhbbemJYXBnELR41rtDYN19Hek2Sn9wooQAZKtCUu/WqyVBnquskLocjuSl
-	 3qk9mc6tt+KHHtAGQeNCyOElwtcDyzeT/ngkfeeAYvKNKPxUnFi0q/npusNsG/pZYB
-	 9AJFSkAnygXqWQ9s7dfRwBAFa6JreC33Cq/OBQek=
+	s=default; t=1588009441;
+	bh=6tkcbpyBPGzJdJGUX0ZV12RAluHQ3xJYAVCl86rmzu8=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Qbj6QOdv/32w2aWYptm/AtL7kjJciAhagfsmuVsHPFPm4ueOy38vqjKCu3PvjLitD
+	 ARewsjXzcCNgmM+zy2VaEgNzEAshAjVsU9tvJSrzlb7roya5K/BlGZUrToP+JVuHkh
+	 vQLw7Til6L+4BK1WMBJIF6f0Qg/dhz78giOg8tcY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5A117F802DB;
-	Mon, 27 Apr 2020 19:29:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6B57DF802DF;
+	Mon, 27 Apr 2020 19:29:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BECB1F8027D; Mon, 27 Apr 2020 19:29:49 +0200 (CEST)
+ id 74A2AF802DB; Mon, 27 Apr 2020 19:29:48 +0200 (CEST)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A101BF8027D
- for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2020 19:29:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A101BF8027D
-IronPort-SDR: mnEv2ljwajyROW4M43tpOi14pzRtd+kx/HwV8vTG6jz3cwT1cOP/4YVwFYnS63TYsC0wk5QIYd
- IMhDG/wESDzQ==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4B70DF80247
+ for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2020 19:29:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B70DF80247
+IronPort-SDR: kwGZFomapaYZEw8Ka1mfsfgZ6fu1IRHyt2sLE+DcW3n6MEpPSuJn221JICJVqc87hHeGlj64BN
+ QWMlD4I4mIpA==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Apr 2020 10:29:40 -0700
-IronPort-SDR: 8SAuGUhLQG3OqaJ8h0zWy7T0pbLvCCzLRFhXWrS1fiQdhz6ZSN3cFL/gIUF4ESHKV2gSt7wgSa
- deH5rmFJi5LQ==
+ 27 Apr 2020 10:29:39 -0700
+IronPort-SDR: AMq8eLszGw2hJ8uvdwqckXyKEk71pXEi0WAcvlp3UMXAWiuVxillX7Qrp2//SKCyD9EX9MKLnT
+ UcLdPg9u5G5A==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,324,1583222400"; d="scan'208";a="458935996"
+X-IronPort-AV: E=Sophos;i="5.73,324,1583222400"; d="scan'208";a="458935995"
 Received: from dbombien-mobl.amr.corp.intel.com (HELO localhost.localdomain)
  ([10.254.51.189])
  by fmsmga006.fm.intel.com with ESMTP; 27 Apr 2020 10:29:39 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/4] ASoC: SOF: topology: send ipc for all found DAIs in
- sof_set_dai_config
-Date: Mon, 27 Apr 2020 10:29:36 -0700
-Message-Id: <20200427172939.25848-2-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 0/4] SOF topology parsing updates
+Date: Mon, 27 Apr 2020 10:29:35 -0700
+Message-Id: <20200427172939.25848-1-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200427172939.25848-1-ranjani.sridharan@linux.intel.com>
-References: <20200427172939.25848-1-ranjani.sridharan@linux.intel.com>
-Cc: tiwai@suse.de, broonie@kernel.org,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- pierre-louis.bossart@linux.intel.com, kai.vehmanen@linux.intel.com
+Cc: tiwai@suse.de, broonie@kernel.org, pierre-louis.bossart@linux.intel.com,
+ kai.vehmanen@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,188 +80,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
+This series includes updates in the topology parser for DAIs
+and their config.
 
-We may find more than one DAIs in sof_set_dai_config() and we should
-send message to DSP for each DAI we found.
+The first three patches address the problem of sending the DAI
+config to the DSP when there are multiple DAIs associated with
+a DAI link.
 
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
----
- sound/soc/sof/topology.c | 81 +++++++++-------------------------------
- 1 file changed, 18 insertions(+), 63 deletions(-)
+The last patch deals with setting the default trigger order 
+for all links. Exceptions needed for HDA links are moved to
+the DAI link fixup() callback.
 
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index e88ffc25025f..0b15b4055f32 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -2673,7 +2673,11 @@ static void sof_dai_set_format(struct snd_soc_tplg_hw_config *hw_config,
- 	}
- }
- 
--/* set config for all DAI's with name matching the link name */
-+/*
-+ * Send IPC and set the same config for all DAIs with name matching the link
-+ * name. Note that the function can only be used for the case that all DAIs
-+ * have a common DAI config for now.
-+ */
- static int sof_set_dai_config(struct snd_sof_dev *sdev, u32 size,
- 			      struct snd_soc_dai_link *link,
- 			      struct sof_ipc_dai_config *config)
-@@ -2686,6 +2690,19 @@ static int sof_set_dai_config(struct snd_sof_dev *sdev, u32 size,
- 			continue;
- 
- 		if (strcmp(link->name, dai->name) == 0) {
-+			struct sof_ipc_reply reply;
-+			int ret;
-+
-+			/* send message to DSP */
-+			ret = sof_ipc_tx_message(sdev->ipc,
-+						 config->hdr.cmd, config, size,
-+						 &reply, sizeof(reply));
-+
-+			if (ret < 0) {
-+				dev_err(sdev->dev, "error: failed to set DAI config for %s index %d\n",
-+					dai->name, config->dai_index);
-+				return ret;
-+			}
- 			dai->dai_config = kmemdup(config, size, GFP_KERNEL);
- 			if (!dai->dai_config)
- 				return -ENOMEM;
-@@ -2718,7 +2735,6 @@ static int sof_link_ssp_load(struct snd_soc_component *scomp, int index,
- {
- 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
- 	struct snd_soc_tplg_private *private = &cfg->priv;
--	struct sof_ipc_reply reply;
- 	u32 size = sizeof(*config);
- 	int ret;
- 
-@@ -2767,17 +2783,6 @@ static int sof_link_ssp_load(struct snd_soc_component *scomp, int index,
- 		return -EINVAL;
- 	}
- 
--	/* send message to DSP */
--	ret = sof_ipc_tx_message(sdev->ipc,
--				 config->hdr.cmd, config, size, &reply,
--				 sizeof(reply));
--
--	if (ret < 0) {
--		dev_err(scomp->dev, "error: failed to set DAI config for SSP%d\n",
--			config->dai_index);
--		return ret;
--	}
--
- 	/* set config for all DAI's with name matching the link name */
- 	ret = sof_set_dai_config(sdev, size, link, config);
- 	if (ret < 0)
-@@ -2795,7 +2800,6 @@ static int sof_link_sai_load(struct snd_soc_component *scomp, int index,
- {
- 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
- 	struct snd_soc_tplg_private *private = &cfg->priv;
--	struct sof_ipc_reply reply;
- 	u32 size = sizeof(*config);
- 	int ret;
- 
-@@ -2835,17 +2839,6 @@ static int sof_link_sai_load(struct snd_soc_component *scomp, int index,
- 		return -EINVAL;
- 	}
- 
--	/* send message to DSP */
--	ret = sof_ipc_tx_message(sdev->ipc,
--				 config->hdr.cmd, config, size, &reply,
--				 sizeof(reply));
--
--	if (ret < 0) {
--		dev_err(scomp->dev, "error: failed to set DAI config for SAI%d\n",
--			config->dai_index);
--		return ret;
--	}
--
- 	/* set config for all DAI's with name matching the link name */
- 	ret = sof_set_dai_config(sdev, size, link, config);
- 	if (ret < 0)
-@@ -2863,7 +2856,6 @@ static int sof_link_esai_load(struct snd_soc_component *scomp, int index,
- {
- 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
- 	struct snd_soc_tplg_private *private = &cfg->priv;
--	struct sof_ipc_reply reply;
- 	u32 size = sizeof(*config);
- 	int ret;
- 
-@@ -2904,16 +2896,6 @@ static int sof_link_esai_load(struct snd_soc_component *scomp, int index,
- 		return -EINVAL;
- 	}
- 
--	/* send message to DSP */
--	ret = sof_ipc_tx_message(sdev->ipc,
--				 config->hdr.cmd, config, size, &reply,
--				 sizeof(reply));
--	if (ret < 0) {
--		dev_err(scomp->dev, "error: failed to set DAI config for ESAI%d\n",
--			config->dai_index);
--		return ret;
--	}
--
- 	/* set config for all DAI's with name matching the link name */
- 	ret = sof_set_dai_config(sdev, size, link, config);
- 	if (ret < 0)
-@@ -2931,7 +2913,6 @@ static int sof_link_dmic_load(struct snd_soc_component *scomp, int index,
- {
- 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
- 	struct snd_soc_tplg_private *private = &cfg->priv;
--	struct sof_ipc_reply reply;
- 	struct sof_ipc_fw_ready *ready = &sdev->fw_ready;
- 	struct sof_ipc_fw_version *v = &ready->version;
- 	size_t size = sizeof(*config);
-@@ -3007,17 +2988,6 @@ static int sof_link_dmic_load(struct snd_soc_component *scomp, int index,
- 	if (SOF_ABI_VER(v->major, v->minor, v->micro) < SOF_ABI_VER(3, 0, 1))
- 		config->dmic.fifo_bits_b = config->dmic.fifo_bits;
- 
--	/* send message to DSP */
--	ret = sof_ipc_tx_message(sdev->ipc, config->hdr.cmd, config, size,
--				 &reply, sizeof(reply));
--
--	if (ret < 0) {
--		dev_err(scomp->dev,
--			"error: failed to set DAI config for DMIC%d\n",
--			config->dai_index);
--		goto err;
--	}
--
- 	/* set config for all DAI's with name matching the link name */
- 	ret = sof_set_dai_config(sdev, size, link, config);
- 	if (ret < 0)
-@@ -3142,7 +3112,6 @@ static int sof_link_alh_load(struct snd_soc_component *scomp, int index,
- {
- 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
- 	struct snd_soc_tplg_private *private = &cfg->priv;
--	struct sof_ipc_reply reply;
- 	u32 size = sizeof(*config);
- 	int ret;
- 
-@@ -3158,20 +3127,6 @@ static int sof_link_alh_load(struct snd_soc_component *scomp, int index,
- 	/* init IPC */
- 	config->hdr.size = size;
- 
--	dev_dbg(scomp->dev, "ALH config rate %d channels %d\n",
--		config->alh.rate, config->alh.channels);
--
--	/* send message to DSP */
--	ret = sof_ipc_tx_message(sdev->ipc,
--				 config->hdr.cmd, config, size, &reply,
--				 sizeof(reply));
--
--	if (ret < 0) {
--		dev_err(scomp->dev, "error: failed to set DAI config for ALH %d\n",
--			config->dai_index);
--		return ret;
--	}
--
- 	/* set config for all DAI's with name matching the link name */
- 	ret = sof_set_dai_config(sdev, size, link, config);
- 	if (ret < 0)
+Bard Liao (3):
+  ASoC: SOF: topology: send ipc for all found DAIs in sof_set_dai_config
+  ASoC: topology: set component dai_index to ipc dai config dai_index
+  ASoC: SOF: topology: replace sof_link_hda_process by
+    sof_set_dai_config
+
+randerwang (1):
+  ASoC: SOF: Intel: change trigger sequence to fix pop noise when
+    stopping playback on sdw platforms
+
+ sound/soc/sof/pcm.c      |  12 ++-
+ sound/soc/sof/topology.c | 167 ++++++++++-----------------------------
+ 2 files changed, 51 insertions(+), 128 deletions(-)
+
 -- 
 2.17.1
 
