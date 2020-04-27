@@ -2,57 +2,75 @@ Return-Path: <SRS0=y76W=6L=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FC71C54FD0
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 08:42:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80CB7C55199
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 08:44:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D616D20656
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 08:42:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 01A09206D4
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Apr 2020 08:44:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="i+4eqgj4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D616D20656
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Mnc8S8DH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 01A09206D4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 075381670;
-	Mon, 27 Apr 2020 10:41:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 075381670
+	by alsa0.perex.cz (Postfix) with ESMTPS id 646351614;
+	Mon, 27 Apr 2020 10:43:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 646351614
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1587976969;
-	bh=e5LyU/0FMQg+LlOtUzu5uyfXh4rkgWOXRMiuJey7AJ0=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=i+4eqgj43ZmCIfNNZNqzqZN794SSbfkQ1o9taJLr7eERHLnBIxK30wH01j5AxIZCV
-	 C49Kxa91RMLp19fmvjRbgbQUwEfMtyx1sVRVKOEeGQ2Us0YpKAvXPoNCU7vdhGMtlf
-	 n8nuOMy9seSfHEERFUe0R7eoY1/+UfffCSlUWCJE=
+	s=default; t=1587977063;
+	bh=oo9d4CuAmu9CeUNvpO3Gsy9twarzo4P3bzBUx8vd0kM=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Mnc8S8DHpq72mceBM7FDmsguYwfL+MB+DEPnM9eoTKkSbd8yfisH4rKP7KjNU5R0D
+	 OijKcjHAtDvTqMFSaPCkWfAg5ZfhQnCfOETj6V5ZYvitLxB3EM/b1UYC2J/IuUxJLd
+	 AhRriXMA9/xCfxTGiv5NzdA28axrpMCU7Rkcspyw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 12C8BF80112;
-	Mon, 27 Apr 2020 10:41:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F1654F8022B;
+	Mon, 27 Apr 2020 10:43:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A9D5DF80245; Mon, 27 Apr 2020 10:41:51 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 47885F80217
- for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2020 10:41:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47885F80217
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
+ id 552E5F8022B; Mon, 27 Apr 2020 10:43:31 +0200 (CEST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id DD93AF8010A
+ for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2020 10:43:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD93AF8010A
+IronPort-SDR: O6FvGHKhwTRhWmiP+mm8k5qoSV5Lmhcr9WORFUd1LEaL7uSFzziU31YcRc07w+bCjagxN4Jdws
+ Dlb1mKYGhzog==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Apr 2020 01:43:21 -0700
+IronPort-SDR: VemkF1BSfDr8+m1vWMNfQ9oiEJlrq/vAWoJMxvZNd9BMuLKnpgsOHprvrTtmARAJkjF4V+W02A
+ +lmcugod51rA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,323,1583222400"; d="scan'208";a="431673859"
+Received: from brentlu-desk0.itwn.intel.com ([10.5.253.11])
+ by orsmga005.jf.intel.com with ESMTP; 27 Apr 2020 01:43:18 -0700
+From: Brent Lu <brent.lu@intel.com>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1587976909115041018-webhooks-bot@alsa-project.org>
-References: <1587976909115041018-webhooks-bot@alsa-project.org>
-Subject: error: possibly undefined macro: AM_PATH_ALSA
-Message-Id: <20200427084151.A9D5DF80245@alsa1.perex.cz>
-Date: Mon, 27 Apr 2020 10:41:51 +0200 (CEST)
+Subject: [PATCH 0/3] add channel constraint for BDW machine drivers
+Date: Mon, 27 Apr 2020 16:37:15 +0800
+Message-Id: <1587976638-29806-1-git-send-email-brent.lu@intel.com>
+X-Mailer: git-send-email 2.7.4
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Jie Yang <yang.jie@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Ben Zhang <benzh@chromium.org>, Mac Chiang <mac.chiang@intel.com>,
+ Mark Brown <broonie@kernel.org>, Brent Lu <brent.lu@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,9 +86,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-utils issue #40 was edited from zeerd:
+The machine driver bdw-rt5650 (for Google buddy) supports 2 or 4-channel
+recording while other two drivers support only 2-channel recording. HW
+constraints are implemented to reflect the hardware limitation on BDW
+platform.
 
-Sorry, I pressed the wrong button. I deleted this.
+Brent Lu (3):
+  ASoC: bdw-rt5677: channel constraint support
+  ASoC: bdw-rt5650: channel constraint support
+  ASoC: broadwell: channel constraint support
 
-Issue URL     : https://github.com/alsa-project/alsa-utils/issues/40
-Repository URL: https://github.com/alsa-project/alsa-utils
+ sound/soc/intel/boards/bdw-rt5650.c | 34 ++++++++++++++++++++++++++++++++++
+ sound/soc/intel/boards/bdw-rt5677.c | 33 +++++++++++++++++++++++++++++++++
+ sound/soc/intel/boards/broadwell.c  | 33 +++++++++++++++++++++++++++++++++
+ 3 files changed, 100 insertions(+)
+
+-- 
+2.7.4
+
