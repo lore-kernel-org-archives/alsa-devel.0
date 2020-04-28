@@ -2,96 +2,72 @@ Return-Path: <SRS0=jEei=6M=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-14.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 947DAC83000
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Apr 2020 12:10:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 577C5C83000
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Apr 2020 12:40:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1DC1E206D6
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Apr 2020 12:10:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DA2BB206F0
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Apr 2020 12:40:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="F2+J+uiW";
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P2/U5JJE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1DC1E206D6
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Jh00MLdc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DA2BB206F0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A0F2B1683;
-	Tue, 28 Apr 2020 14:09:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A0F2B1683
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0CE301683;
+	Tue, 28 Apr 2020 14:39:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0CE301683
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588075819;
-	bh=vRCFeQRMB2kDXqxE6pFIKGmuO+n0FlyEp0mQsscstPo=;
-	h=Date:From:To:Subject:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1588077601;
+	bh=XL1QtG2NnBAQVBQJlNr9ZKRK6Qrpjvb7ghzUv9MmWFs=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=F2+J+uiWkyr3KBs/rFfV3cykHPIZIgCi+k20NEkfu9D9kqxUmPHUPjhq+7bU47231
-	 P/JK7G/xSYMcjGbuGvlJvly/6t0TqH5mrL2HUPX4jhLX9+OOekhCa9OCuoPvbSNzyc
-	 6bHBufrN1GnxrpzeBTifD4Dm+vJZSDM7lYndUNCw=
+	b=Jh00MLdc1Pfslc5MbmsEHVrJmrnNXx/uJPYQzd2BQajavqYj0Lb6LW2qRoW7uP3ev
+	 u/Za2LEon+X6w8oTQgEHSiKNiOafni7gXnR5O1XyWJptXcaGVjyJB4FKtJrI88Yofh
+	 aTD8jfRv4RT9G+/Ifr8llytP3x+ymizdmPVJoXaU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 17CF0F80136;
-	Tue, 28 Apr 2020 14:09:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EF804F80136;
+	Tue, 28 Apr 2020 14:39:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F1EC0F801DB; Tue, 28 Apr 2020 14:09:25 +0200 (CEST)
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com
- [IPv6:2a00:1450:4864:20::343])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 06A90F800B8; Tue, 28 Apr 2020 14:39:02 +0200 (CEST)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4B8ABF800B8
- for <alsa-devel@alsa-project.org>; Tue, 28 Apr 2020 14:09:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B8ABF800B8
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="P2/U5JJE"
-Received: by mail-wm1-x343.google.com with SMTP id v8so2216004wma.0
- for <alsa-devel@alsa-project.org>; Tue, 28 Apr 2020 05:09:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:subject:message-id:mime-version:content-disposition
- :user-agent; bh=wgWj8BoJXv74+3Yf2H736Z9Z1857na1U2iISg5vEznk=;
- b=P2/U5JJE5oxWC1fsSKSPHzX52Vxx+BMLYm718xsRCGK3cCOdukE3hyIinLrhZVwbaP
- AhVsJIdhxOvJm3uATidob975Hke+Q7b2NO1j+W+rbmept4+80frOanp+V2OusHQujgcP
- tMWrZjv7drIRefcq6BvjJcKfVYNoFjp19WHGgg4+mD9U7OUuptUjDsV9K0FzhTb42g6m
- Rg+fT4pyPoNFXHNzaPNkUePYNnibFgHnaMApQmrITM6JXSJCA7aumPzuKVkS1BAr7ZP+
- YyB5qG48Fn+b2vDjAYG8kc8ov9SfcBPjZhEdjhRoW5AEjagb6HpfO+UpvfaS/LI8sstB
- 4EQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:subject:message-id:mime-version
- :content-disposition:user-agent;
- bh=wgWj8BoJXv74+3Yf2H736Z9Z1857na1U2iISg5vEznk=;
- b=gpKqUo+9RMS4hNqW2TAXDlIZi8QAKO7J4ULBz5OXVfD9YM4Xf5xmhkHY+ymsar+mwr
- bDmoFG+UzeWGqE9mGdnQWQ6gXV/9CJyfbopMJZVSkfvI+ElusPExOzpb+uRvrA6P3ZMh
- GD60h9SR0Mrj+5i5F7Q0jUvTX6xzEsqyLTGcV3E6Yz+3nBYiuXR/zld/u47Qd6B/orOj
- eRWu28XHKauwADo/ChMJFL80tOHuo9/Dd6SpAtVYd08R61XkMr+bXoW8Fq4CivlRHDrT
- hvbuROCRCQkbKScc5/XJaKwB837abFvQRgKKHgSjWi0mW8qrDDt7emGxpAZi3G4naj2B
- hNfw==
-X-Gm-Message-State: AGi0Pua9DkPq12wde3GgbCLixKAaP5n/GeC6QvNPq+Bwcu5jCSiek2/Z
- P5D4HQ5O50V+PJ/1lENB/5JM05lD
-X-Google-Smtp-Source: APiQypIA1RgpVNhg8hARyfORs0JETiJ0/wX9bAgW81WvDCv465J4JRw1rvDwlmXq7jjs2vGoiNt7Hw==
-X-Received: by 2002:a1c:7c07:: with SMTP id x7mr4233491wmc.63.1588075761667;
- Tue, 28 Apr 2020 05:09:21 -0700 (PDT)
-Received: from localhost (108.78.124.78.rev.sfr.net. [78.124.78.108])
- by smtp.gmail.com with ESMTPSA id y10sm2978262wma.5.2020.04.28.05.09.20
- for <alsa-devel@alsa-project.org>
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 28 Apr 2020 05:09:21 -0700 (PDT)
-Date: Tue, 28 Apr 2020 12:09:18 +0000
-From: sylvain.bertrand@gmail.com
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] fix infinite draining of the rate plugin in SND_PCM_NONBLOCK
- mode
-Message-ID: <20200428120918.GA459@freedom>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0BD90F800B8
+ for <alsa-devel@alsa-project.org>; Tue, 28 Apr 2020 14:38:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0BD90F800B8
+IronPort-SDR: r9nL0nXEgYKdWU6dBFtXxGYThjf//7XoCQFBz61quN1SVuMlgCoMeFJT9ttdIIymJjmwiZFg8v
+ 7aW+ofdz6rZA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 28 Apr 2020 05:38:47 -0700
+IronPort-SDR: 3A3oT3Ut5bK1qHKmZ1l2IvUG2WZR/xYuPhQlMst8N9GeLsZeleDl/Rom7Z9//CkCidRAwpoyql
+ G+3urqc8KBow==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,327,1583222400"; d="scan'208";a="282128681"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+ by fmsmga004.fm.intel.com with ESMTP; 28 Apr 2020 05:38:46 -0700
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+To: alsa-devel@alsa-project.org,
+	tiwai@suse.de,
+	nmahale@nvidia.com
+Subject: [PATCH] ALSA: hda/hdmi: fix race in monitor detection during probe
+Date: Tue, 28 Apr 2020 15:38:36 +0300
+Message-Id: <20200428123836.24512-1-kai.vehmanen@linux.intel.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-User-Agent: Mutt/ (2018-04-13)
+Content-Transfer-Encoding: 8bit
+Cc: kai.vehmanen@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,66 +83,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The draining function of the rate plugin does not handle properly the
-SND_PCM_NONBLOCK case. It can write data to the slave plugin each time the
-function is called, but does not update its internal state in order to
-reach a stopping condition. Use a last_commit_ptr workaround to reach such
-condition.
+A race exists between build_pcms() and build_controls() phases of codec
+setup. Build_pcms() sets up notifier for jack events. If a monitor event
+is received before build_controls() is run, the initial jack state is
+lost and never reported via mixer controls.
 
-signed-off-by: Sylvain BERTRAND <sylvain.bertrand@legeek.net>
+The problem can be hit at least with SOF as the controller driver. SOF
+calls snd_hda_codec_build_controls() in its workqueue-based probe and
+this can be delayed enough to hit the race condition.
+
+Fix the issue by invalidating the per-pin ELD information when
+build_controls() is called. The existing call to hdmi_present_sense()
+will update the ELD contents. This ensures initial monitor state is
+correctly reflected via mixer controls.
+
+BugLink: https://github.com/thesofproject/linux/issues/1687
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- src/pcm/pcm_rate.c | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
----
-diff --git a/src/pcm/pcm_rate.c b/src/pcm/pcm_rate.c
-index 21611f62..25574a50 100644
---- a/src/pcm/pcm_rate.c
-+++ b/src/pcm/pcm_rate.c
-@@ -1051,6 +1051,7 @@ static int snd_pcm_rate_drain(snd_pcm_t *pcm)
- 		/* commit the remaining fraction (if any) */
- 		snd_pcm_uframes_t size, ofs, saved_avail_min;
- 		snd_pcm_sw_params_t sw_params;
-+		int commit_err;
+ sound/pci/hda/patch_hdmi.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 403baca89452..e8f0ae5af3d8 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -2194,7 +2194,9 @@ static int generic_hdmi_build_controls(struct hda_codec *codec)
  
- 		__snd_pcm_lock(pcm);
- 		/* temporarily set avail_min to one */
-@@ -1066,7 +1067,7 @@ static int snd_pcm_rate_drain(snd_pcm_t *pcm)
- 		while (size > 0) {
- 			snd_pcm_uframes_t psize, spsize;
- 			int err;
--
-+			
- 			err = __snd_pcm_wait_in_lock(rate->gen.slave, -1);
- 			if (err < 0)
- 				break;
-@@ -1079,14 +1080,29 @@ static int snd_pcm_rate_drain(snd_pcm_t *pcm)
- 				if (! spsize)
- 					break;
- 			}
--			snd_pcm_rate_commit_area(pcm, rate, ofs,
-+			commit_err = snd_pcm_rate_commit_area(pcm, rate, ofs,
- 						 psize, spsize);
-+			if (commit_err == 1) {
-+				rate->last_commit_ptr += psize;
-+				if (rate->last_commit_ptr >= pcm->boundary)
-+					rate->last_commit_ptr = 0;
-+			} else if (commit_err == 0) {
-+				if (pcm->mode & SND_PCM_NONBLOCK != 0) {
-+					commit_err = -EAGAIN;
-+					break;
-+				}
-+				continue;
-+			} else
-+				break;
-+
- 			ofs = (ofs + psize) % pcm->buffer_size;
- 			size -= psize;
- 		}
- 		sw_params.avail_min = saved_avail_min;
- 		snd_pcm_sw_params(rate->gen.slave, &sw_params);
- 		__snd_pcm_unlock(pcm);
-+		if (commit_err < 0)
-+			return commit_err;
+ 	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
+ 		struct hdmi_spec_per_pin *per_pin = get_pin(spec, pin_idx);
++		struct hdmi_eld *pin_eld = &per_pin->sink_eld;
+ 
++		pin_eld->eld_valid = false;
+ 		hdmi_present_sense(per_pin, 0);
  	}
- 	return snd_pcm_drain(rate->gen.slave);
- }
+ 
+-- 
+2.26.0
+
