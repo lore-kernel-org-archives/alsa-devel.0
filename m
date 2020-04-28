@@ -2,71 +2,77 @@ Return-Path: <SRS0=jEei=6M=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8D81C83000
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Apr 2020 15:45:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 88469C83009
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Apr 2020 15:53:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 41849206C0
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Apr 2020 15:45:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 18278205C9
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Apr 2020 15:53:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UGjRZeVY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 41849206C0
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aeOKJpXJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 18278205C9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 75F661682;
-	Tue, 28 Apr 2020 17:44:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75F661682
+	by alsa0.perex.cz (Postfix) with ESMTPS id 77169167E;
+	Tue, 28 Apr 2020 17:52:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77169167E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588088728;
-	bh=SkOI/F8Tnpf6EJuQuEMm3KWINvfVbiD4kIGZh78mXE4=;
+	s=default; t=1588089182;
+	bh=iHgphTzQx4OdJqEPN0gPCGiUqJ1TeECU8kb+ZmK/Aes=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UGjRZeVYw8gHsH6HE8x9BoxacJki7N8b9IKJTeEIBKf6umyh37/Z4a4Un9fHs3vuD
-	 KuQVsNLqKCKLC4YFzhvMqda4Kv10L34oWCEo9mGnWM4SbDer9OOvtd3DyXbFTuhMvx
-	 k/BtXcmWn47nx/aXq+FfxU788bKcJLjMYLRLDg4M=
+	b=aeOKJpXJnyB1D66aOlowJZBcHyWZhFEKw7aUdlJBIRLjd9AWU/qBDMlIIykYkRjcb
+	 24bh5hKmVumfiEHUKkcbevpG+gcSJuRnNg1wuqnbVX7Tq7a2QTJ9I7CIv2sEbatPAN
+	 0uXRhqihzL1CKF4jhEyPbacAI30jW0I62K3oVM1M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 028B6F80136;
-	Tue, 28 Apr 2020 17:44:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E134CF80136;
+	Tue, 28 Apr 2020 17:52:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 164EFF801DB; Tue, 28 Apr 2020 17:44:36 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id E9748F801DB; Tue, 28 Apr 2020 17:52:09 +0200 (CEST)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9F770F8010A
- for <alsa-devel@alsa-project.org>; Tue, 28 Apr 2020 17:44:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F770F8010A
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 9E01CAFB7;
- Tue, 28 Apr 2020 15:44:26 +0000 (UTC)
-Date: Tue, 28 Apr 2020 17:44:26 +0200
-Message-ID: <s5hmu6vlin9.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Functionality of pcm_notify in snd-aloop?
-In-Reply-To: <a325c165-5ced-618b-0b71-c0c4381473a1@perex.cz>
-References: <b4af9071-f8d7-5b47-4d7a-c5743bd67394@ivitera.com>
- <61d837f1-de1a-7aa6-ca8f-d0cfaa36ea69@perex.cz>
- <28a05a44-55bf-1831-aa3c-875e0499caea@ivitera.com>
- <28063dd1-71ab-a313-04b8-f4d97312b1b5@ivitera.com>
- <a325c165-5ced-618b-0b71-c0c4381473a1@perex.cz>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+ by alsa1.perex.cz (Postfix) with ESMTPS id 54086F800B8
+ for <alsa-devel@alsa-project.org>; Tue, 28 Apr 2020 17:52:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54086F800B8
+IronPort-SDR: fIoGAizaPLu0prWZQ+X8X1uUPESgArKJlaagKeQnHYrBigH+DCCzZwBs4vMNRmA4qEUpMcTlMA
+ +dk4eFphCnaQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+ by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 28 Apr 2020 08:52:03 -0700
+IronPort-SDR: 7QYS8B33nuswxisYRyX6NgFGmcXzGcWc17qz2xunWrMYRbi9mMTOAbb5udhQVvj0UWS2Fgnzdz
+ eheZgXXBYvIQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,328,1583222400"; d="scan'208";a="275880001"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+ by orsmga002.jf.intel.com with ESMTP; 28 Apr 2020 08:52:02 -0700
+Date: Tue, 28 Apr 2020 18:52:02 +0300 (EEST)
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@eliteleevi.tm.intel.com
+To: robert rozee <rozee@mail.com>
+Subject: Re: underrun problems after setting parameters with
+ snd_pcm_set_params()
+In-Reply-To: <trinity-86378cc8-0b7e-4b09-ae35-8342d01fae5c-1588059797517@3c-app-mailcom-lxa01>
+Message-ID: <alpine.DEB.2.21.2004281842250.2957@eliteleevi.tm.intel.com>
+References: <trinity-86378cc8-0b7e-4b09-ae35-8342d01fae5c-1588059797517@3c-app-mailcom-lxa01>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
+MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Pavel Hofman <pavel.hofman@ivitera.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Transfer-Encoding: 8BIT
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,72 +88,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 30 Mar 2020 17:09:58 +0200,
-Jaroslav Kysela wrote:
-> 
-> Dne 30. 03. 20 v 16:43 Pavel Hofman napsal(a):
-> >
-> > Dne 26. 03. 20 v 18:59 Pavel Hofman napsal(a):
-> >> Dne 26. 03. 20 v 18:44 Jaroslav Kysela napsal(a):
-> >>> Dne 26. 03. 20 v 18:19 Pavel Hofman napsal(a):
-> >>>> Hi,
-> >>>>
-> >>>> Please how is the module params pcm_notify supposed to be used, to do
-> >>>> what the documentation says: Break capture when PCM format/rate/channels
-> >>>> changes?
-> >>>>
-> >>>> Breaking capture side operation when the playback side changes the
-> >>>> params is very useful, but I cannot find a way to use this param
-> >>>> properly. When the capture side is open, the playback side cannot use a
-> >>>> different parameter than the one currently used by the capture side (the
-> >>>> configuration space is limited)
-> >>>
-> >>> Really? Then it's a bug introduced by the last changes.
-> >>>
-> >>> If you look to sources:
-> >>>
-> >>>        if (get_notify(dpcm))
-> >>>                  runtime->hw = loopback_pcm_hardware;
-> >>>          else
-> >>>                  runtime->hw = cable->hw;
-> >>>
-> >>> And:
-> >>>
-> >>>        if (!(cable->valid & ~(1 << substream->stream)) ||
-> >>>              (get_setup(dpcm)->notify &&
-> >>>               substream->stream == SNDRV_PCM_STREAM_PLAYBACK))
-> >>>                  params_change(substream);
-> >>>
-> >>> So the functionality should be there.
-> >>
-> >> I am using older kernels (4.15 and 3.16), but this is an old functionality.
-> >>
-> >> modprobe snd-aloop pcm_substreams=1 pcm_notify=1,1
-> >>
-> >
-> > Please is there any way to solve this issue? Thanks a lot for your patience.
-> 
-> I can reproduce this. It appears that the driver should be fixed, but
-> I don't have a solution at the moment.
-> 
-> It seems that 898dfe4687f460ba337a01c11549f87269a13fa2 from Takashi
-> broke this functionality (tied the cable parameters more strictly, so
-> the playback cannot set freely own parameters for the pcm_notify=1
-> case). We need to find another way to detach capture stream in this
-> case.
-
-I believe the missing piece here is a generic way to tell user-space
-that the stream got invalidated.  This would be useful not only for
-aloop but can be applied in general when a stream becomes temporarily
-unavailable (e.g. the HDMI monitor disconnected or the DSP route
-switched).
-
-Currently we may return -EPIPE for xrun, but this doesn't really tell
-the situation correctly.  The xrun should be recoverable by simple
-PREPARE call, but the case like aloop would need the complete re-setup
-or reopen of the stream.
+Hey,
 
 
-thanks,
+On Tue, 28 Apr 2020, robert rozee wrote:
 
-Takashi
+> the problem only occurs with SHORT sound clips. i found that clips longer than 
+> 1111ms played without flaw. clips less that 500ms generally failed to play to 
+> the end, but there was no error code returned.
+
+in general, given you have sources available to all the popular apps, it's 
+good to check how other apps use the API. I.e. aplay.c may be useful 
+simple additional reference for you to see how to use the interfaces.
+
+I think you are missing draining the samples at the end, and then 
+your latency is setting is incorrect. I.e.
+
+> snd_pcm_set_params(handle, SND_PCM_FORMAT_U8,
+>                            SND_PCM_ACCESS_RW_INTERLEAVED,
+>                            1,                           // number of channels
+>                            48000,                       // bitrate (bps)
+>                            1,                           // resampling on/off
+>                            min(500000, sample_length)); // latency
+
+That sample_length does not look, the unit is usecs here. Please try
+just putting latency of 500000 (i.e. 0.5sec).
+
+> // send out current buffer content
+>   frames=snd_pcm_writei(handle, @buffer, frames_to_write_now);
+>   if frames<0 then frames=snd_pcm_recover(handle, frames, 0);
+>   if frames<0 then break;
+> }
+
+When you have finished writing the audio samples to the ALSA device, you 
+need to wait until ALSA has a chance to play all samples out. If you look 
+at playback_go() in aplay.c, you'll see:
+
+       snd_pcm_nonblock(handle, 0);
+       snd_pcm_drain(handle);
+       snd_pcm_nonblock(handle, nonblock);
+
+... at the end. 
+
+Br, Kai
