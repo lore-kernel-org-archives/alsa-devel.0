@@ -2,83 +2,102 @@ Return-Path: <SRS0=jEei=6M=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08C89C83000
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Apr 2020 21:49:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0425FC83000
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Apr 2020 22:03:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 879922072A
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Apr 2020 21:49:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 83DB9206D6
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Apr 2020 22:02:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qB0UaWOT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 879922072A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KcRqQ8tx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 83DB9206D6
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E3BD4168E;
-	Tue, 28 Apr 2020 23:48:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3BD4168E
+	by alsa0.perex.cz (Postfix) with ESMTPS id D9F001676;
+	Wed, 29 Apr 2020 00:02:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D9F001676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588110555;
-	bh=Eibu7ltdEXaFd8J0CWyq/u8+wuK2se+iUyrPK1bvzqk=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=qB0UaWOTY0tIbkK/B9gFt17H+GGY6m8fzikXJxbqANIb6O5/MMNlSjgdEOCYk7HE3
-	 hSDmhAAeb+09F2ntQb7U4K2d7N+tp+DbxHeCS1b3AWYTbjF8uyOAddTaFur7Q+y23f
-	 sCtd6o5FFAs8awE+Kyv98JWmQpJe3sTDzHQJ05Yc=
+	s=default; t=1588111377;
+	bh=yBdzRD8y2FjCwtx9oFavLCDG09QUikIt6251cQJ8gqc=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=KcRqQ8txxC0txCUy7RYWo6EpAmbJsJsq1rKCKgD1gEvGWrbV8OVq2tjfNEw982vDR
+	 QBO90u3uf4id6m/PF1iGtSoxUgQaYvnidQbw+jwsRVnI1OW0UcjoiEY+lUujmI4g/N
+	 c+iRRnTof4+EexwVINiNr7qV9MXMA8Ld47hYh4AM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 73AEAF801EB;
-	Tue, 28 Apr 2020 23:48:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 34DF6F800B8;
+	Wed, 29 Apr 2020 00:02:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BCD38F80136; Tue, 28 Apr 2020 23:48:22 +0200 (CEST)
-Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.75])
+ id 37DDAF801DB; Wed, 29 Apr 2020 00:02:05 +0200 (CEST)
+Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.73])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DA188F80136
- for <alsa-devel@alsa-project.org>; Tue, 28 Apr 2020 23:48:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA188F80136
-Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
- (mreue108 [212.227.15.145]) with ESMTPA (Nemesis) id
- 1MLi0U-1jlDUS435U-00HhCE; Tue, 28 Apr 2020 23:47:57 +0200
-From: Arnd Bergmann <arnd@arndb.de>
-To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: component: suppress uninitialized-variable warning
-Date: Tue, 28 Apr 2020 23:47:31 +0200
-Message-Id: <20200428214754.3925368-1-arnd@arndb.de>
-X-Mailer: git-send-email 2.26.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 067EBF8010A;
+ Wed, 29 Apr 2020 00:01:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 067EBF8010A
+Received: from mail-lf1-f48.google.com ([209.85.167.48]) by
+ mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MD9Gh-1jKzav3YZt-009B7u; Wed, 29 Apr 2020 00:01:56 +0200
+Received: by mail-lf1-f48.google.com with SMTP id f8so18119845lfe.12;
+ Tue, 28 Apr 2020 15:01:56 -0700 (PDT)
+X-Gm-Message-State: AGi0Puag32BBkiCzt9lFpPIYp05OpZ8B8HYMoHJGlScSrkrHQ2aPUe/c
+ Rp0ORfcIyL6RwRm8uB2iXzYVzm6f8uTcQJW7hvQ=
+X-Google-Smtp-Source: APiQypKRCC3KPD04zAsw5+cxuEvdnddfpLWkPhoC2m7sjHNQVxlSGSJA7IqZ0gPza4uX18XwephNlgb4sPXRsKwTwuc=
+X-Received: by 2002:a05:6512:10cd:: with SMTP id
+ k13mr20513654lfg.173.1588111316217; 
+ Tue, 28 Apr 2020 15:01:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:CwaJqqI8UP3UYQa9QLeTXBcxWgnAERLM8vCOxjOOEAo6dfRILDf
- LeO9h10wirIWDwv/JYCpujsz5ihmwXnxr5ZVnF6fjlXBTOrFpjkS7YaQllg/u4+ORwbI1DA
- kxCRbtdDyAV9QhcaU6Ziis4Gf2mVE3FsnWg1aXZZw9CUh5bIjY2/t57C93Zp4lBmTZ7TttH
- +ODOByIu1hjDFoMEOa2qA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:6OOAtvjEG8Y=:39ln5prj9KTgnldiZQ01UN
- 4E3DgmxckBBa2DYf+ZhSgu5LP8rnoU4Hn209TkYgCfE1JcUIQUVKc/WxtcufErSo5Cc7wuQ0C
- HzlYNLD3iSHxe5f1tCMwO8ru5sj5J/nmxJyQgnRJBVi8lw1vkMQkGitCz+OLeOY+Xkm7LQHj+
- V91Wxldp5CR+OCHKLSESyA5Nj6Rzkrh4nqMngtnppNsj2qvsL9xrnD2Iga7qBJaHX/dL+PStU
- dtKwcK1elD3BzM2KXiqaHTMVVuFlCz1zUpsUv/cikpiuzJamzjci0ZWzeBdl6RiWJiHjH+lsM
- hx3dh4hwNbG2rLrazrEwtbyddf5jJ/nAkstwqCtI0eLABTQw2U3fFUd8uTvw6hkJXQJy1RsHp
- 6hfMFZo5TnxcX6XNMqRQ0wyGPO0xDafn/aDE0+zEY0JnYszQKfE85vev6MjWpsKXu8Vff+iY/
- CU4S0ZY0Dqo0udPP37uRzHRDaPBBCezqthWPPmnYPOxpIKRoZpQeqOxjJVqshsVgo/eS/XOhz
- sVaaRy6A9tzG6A/Fr3p6EEbmQlKG7/Coa6/JJX2HNLK7iCBoiqtV1Krye5+yFtr5g/qx44Vjn
- JI0JvW5voZeBQ7Z3Wg6rkaQwb4KjEIq8PIcqU6rHlwMQcACLtK1cKXHsD4RtvxI1cbLwsNrem
- gjSO8tyhRV/HJgNb/CJDwwLG3BcVxxs3gNsQHaCBW2oxsagTe4FiE7kCNQ96DGWhLp0m/g6HK
- cPul8V6+pl7neS9mdT0KYU4hbbof7Giftobzl2I8G7gB/qL5AIBUhBfchAoLWZkBBgZyLdXyK
- 7RbxwSNM9GBeW26VXpc/C6BmMmULaQ6gPa4JRNaynwd9MnuCKQ=
-Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Takashi Iwai <tiwai@suse.com>,
+References: <20200428212752.2901778-1-arnd@arndb.de>
+ <6b39fbba-c65d-2c02-14bf-11c2d00547af@linux.intel.com>
+In-Reply-To: <6b39fbba-c65d-2c02-14bf-11c2d00547af@linux.intel.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Wed, 29 Apr 2020 00:01:39 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a24whg2RhJE3Vf5u3EWy+wvFqhXdp7EQZuQx0shPsMARw@mail.gmail.com>
+Message-ID: <CAK8P3a24whg2RhJE3Vf5u3EWy+wvFqhXdp7EQZuQx0shPsMARw@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: SOF: sort out Kconfig, again
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:WkZiKFhAn1HlSi4wS0h4drQRCOwELZ1kfmz5Vmt8nFq+zNJibC6
+ iPHLAuClUIbkFENhYdARdhFy/LAJ7AYCXetLjTyZibZCYG0N2y5S/7f85XaFZreG01PHWO/
+ ddqNJsrAsIEVIRQI2Bx+xFJGdvTOopafDNId9QzrYmP0M16w4omCgqt1ACrfoRYMHhm4/T5
+ L89mFlPDW1zmE6xzW0vXA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:WHaKt7DR+t8=:r8oR3Zwys7H5urwosxL922
+ PyMUiPVYFioudFrewkXY1OZn8ZwqReVLwx3M6l1OOvGklRJawA0sPmshsjvsWCGbJuAmj3kRl
+ u0xckawfaZrk1APe1NSlv3b7dXCxMr77qrsYSXjX8aUVjpMxOqfKNvsv34Z7oELEQNufZi6FB
+ Rp5XbcoEoZXRKrfe/5FH1r7LsXgalKjXbWzMIi5i/hhdGkdr7xdrC+Y/lQBb+EsBoXnwisGE5
+ qLEoEQTxOaD9xKRZQt6PLfWvjSM8JamMH8ZKykvDHrTY1oBiF0ovaUIeS13AKy9b9mFrdXeHz
+ 9En6aMnG4RAh+7wMyX2uvUxU8bq9xWBHQUiDKYO1mgxQT1YciDLJELjkbMZhSrzr+zPwBjNWA
+ bT62qK4ce8A6d/KdWH0gYZlaqjl9nbdRB6bDltR8eHXnF0yo/d18Sg0fVq9nLDN15C64EhlJd
+ uIBKa+rcdwriKkswS+sxMx1dKH/0y6Amz+0tJcMvA88AMWVdM/s89d0n34iDN84/Mc15ZSYvt
+ +Heq+aaEZMNQfx8lwqK/9/N7cZaltXJTopd8cabxLKaAeMmVMQu8FxmSh7vMeL5dTl0t2PGK+
+ GH2muFOhyqdF5t5H0KyQgfugKbEe1P+MklINC4ur7nJr2HI4kM4xMiBB7vbrDxb5aK5JPloGF
+ Qd5FgPqS5vH4p5s7h9H+vCJnk3w99YluNglZ2xay88Tjhy5FbYFViBEiA1zjdF4VSi4I8AxDH
+ nLdVSpjl2RsZAo3y5M91+2t5jbWlGRB4C9lfg6byv/r+fBSBtr/LyHM/ZhF9MkL2gyCahWYhi
+ 4DQDhkga3vdZL0T9lSKHOd1FC5KyYit3uDsgVHI0lDNSMtWNtA=
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Fabio Estevam <festevam@gmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Takashi Iwai <tiwai@suse.com>,
+ YueHaibing <yuehaibing@huawei.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Krzysztof Kozlowski <krzk@kernel.org>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Shreyas NC <shreyas.nc@intel.com>
+ Mark Brown <broonie@kernel.org>, NXP Linux Team <linux-imx@nxp.com>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Daniel Baluta <daniel.baluta@nxp.com>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,34 +113,53 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Old versions of gcc (tested on gcc-4.8) produce a warning for
-correct code:
+On Tue, Apr 28, 2020 at 11:43 PM Pierre-Louis Bossart
+<pierre-louis.bossart@linux.intel.com> wrote:
+> On 4/28/20 4:27 PM, Arnd Bergmann wrote:
+> > The imx8 config keeps causing issues:
+> >
+> > WARNING: unmet direct dependencies detected for SND_SOC_SOF_IMX8M
+> >    Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=m] && SND_SOC_SOF_TOPLEVEL [=y] && SND_SOC_SOF_IMX_TOPLEVEL [=y] && IMX_DSP [=n]
+> >    Selected by [m]:
+> >    - SND_SOC_SOF_IMX_OF [=m] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=m] && SND_SOC_SOF_TOPLEVEL [=y] && SND_SOC_SOF_IMX_TOPLEVEL [=y] && SND_SOC_SOF_IMX8M_SUPPORT [=y]
+> >
+> > This is complicated by two drivers having dependencies on both
+> > platform specific drivers and the SND_SOC_SOF_OF framework code,
+> > and using an somewhat obscure method to build them the same way
+> > as the SOC_SOF_OF symbol (built-in or modular).
+> >
+> > My solution now ensures that the two drivers can only be enabled
+> > when the dependencies are met:
+> >
+> > - When the platform specific drivers are built-in, everything is
+> >    fine, as SOC_SOF_OF is either =y or =m
+> >
+> > - When both are loadable modules, it also works, both for Kconfig
+> >    and at runtime
+> >
+> > - When the hardware drivers are loadable modules or disabled, and
+> >    SOC_SOF_OF=y, prevent the IMX_SOF_OF drivers from being turned on,
+> >    as this would be broken.
+> >
+> > It seems that this is just an elaborate way to describe two tristate
+> > symbols that have straight dependencies, but maybe I'm missing some
+> > subtle point. It seems to always build for me now.
+>
+> Thanks Arnd, do you mind sharing your config?
 
-sound/soc/soc-compress.c: In function 'soc_compr_open':
-sound/soc/soc-compress.c:75:28: error: 'component' is used uninitialized in this function [-Werror=uninitialized]
-  struct snd_soc_component *component, *save = NULL;
+https://pastebin.com/HRX5xi3R
 
-Change the for_each_rtd_components() macro to ensure 'component'
-gets initialized to a value the compiler does not complain about.
+> We noticed last week that
+> there's a depend/select confusion might be simpler to fix, see
+> https://github.com/thesofproject/linux/pull/2047/commits
+>
+> If I look at the first line I see a IMX_DSP=n which looks exactly like
+> what we wanted to fix.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- include/sound/soc.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yes, I think that fix addresses the build warning as well, but looking
+more closely I don't think it's what you want: If you do this on
+a config that has the IMX_DSP disabled, it would appear to the
+user that you have enabled the drivers, but the actual code is still
+disabled.
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 907afbc652f2..69a82487fa9b 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1179,7 +1179,7 @@ struct snd_soc_pcm_runtime {
- #define asoc_rtd_to_codec(rtd, n) (rtd)->dais[n + (rtd)->num_cpus]
- 
- #define for_each_rtd_components(rtd, i, component)			\
--	for ((i) = 0;							\
-+	for ((i) = 0, component = NULL;					\
- 	     ((i) < rtd->num_components) && ((component) = rtd->components[i]);\
- 	     (i)++)
- #define for_each_rtd_cpu_dais(rtd, i, dai)				\
--- 
-2.26.0
-
+      Arnd
