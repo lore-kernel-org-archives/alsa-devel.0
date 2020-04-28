@@ -2,57 +2,66 @@ Return-Path: <SRS0=jEei=6M=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 10337C83000
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Apr 2020 13:34:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 251C7C83009
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Apr 2020 14:06:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8D48E206D6
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Apr 2020 13:34:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A9617208E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Apr 2020 14:06:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="luNsrbg+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8D48E206D6
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dM7+kjX/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A9617208E0
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E81AD1686;
-	Tue, 28 Apr 2020 15:34:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E81AD1686
+	by alsa0.perex.cz (Postfix) with ESMTPS id D7DBB1683;
+	Tue, 28 Apr 2020 16:05:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D7DBB1683
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588080894;
-	bh=GskfDYLo5v4/vUgj6W6OhzMEr+WnSc+Jj9KdJMUePtQ=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1588082789;
+	bh=l3spUXNm6JNLOUr2ke+qRYxMVzr630mdy7IhH/iPlEk=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=luNsrbg+rSkgYwhXmGko41iLdwHnaD9OrIvHAP8S8nhsVIAgFah7O5d5pLLV9u2De
-	 bwBBilzR1lYkWzR4/1sgtMeAYWA3BHYGGEhZ2RjtNt7AlrPvRJzmOfuFTbUdLe3dSj
-	 FoyssCzv9pWHOaWdH8IF+E+edQwW5G2MRjewkl6M=
+	b=dM7+kjX/CY3+ziWPVlURt1dF/xzaAeh4uO0s6vsoN66DGxplb+6I997r8AN3sfJSw
+	 2Ok/1hjW9mXM++GMjB4NOQFnvV8XAqr/hhUgaK6VjUxyrQTNhEy+9yFnzclYUBXtYR
+	 8yCK/WcVaciQBYMcSxyMa0jjoz8agp7sBbvoWywk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7AD87F800B8;
-	Tue, 28 Apr 2020 15:34:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5EA4EF80136;
+	Tue, 28 Apr 2020 16:05:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B1F14F801F7; Tue, 28 Apr 2020 15:34:01 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id D4C03F800B8
- for <alsa-devel@alsa-project.org>; Tue, 28 Apr 2020 15:33:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D4C03F800B8
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1588080838689686060-webhooks-bot@alsa-project.org>
-References: <1588080838689686060-webhooks-bot@alsa-project.org>
-Subject: documentation incomplete for *avail_min, *avail_max
-Message-Id: <20200428133401.B1F14F801F7@alsa1.perex.cz>
-Date: Tue, 28 Apr 2020 15:34:01 +0200 (CEST)
+ id 61CE4F801DB; Tue, 28 Apr 2020 16:05:33 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 41423F8010A
+ for <alsa-devel@alsa-project.org>; Tue, 28 Apr 2020 16:05:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41423F8010A
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 0F440AD63;
+ Tue, 28 Apr 2020 14:05:21 +0000 (UTC)
+Date: Tue, 28 Apr 2020 16:05:21 +0200
+Message-ID: <s5hwo5zln8e.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH] ALSA: hda/hdmi: fix race in monitor detection during probe
+In-Reply-To: <20200428123836.24512-1-kai.vehmanen@linux.intel.com>
+References: <20200428123836.24512-1-kai.vehmanen@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, nmahale@nvidia.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,35 +77,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #44 was opened from archenemies:
+On Tue, 28 Apr 2020 14:38:36 +0200,
+Kai Vehmanen wrote:
+> 
+> A race exists between build_pcms() and build_controls() phases of codec
+> setup. Build_pcms() sets up notifier for jack events. If a monitor event
+> is received before build_controls() is run, the initial jack state is
+> lost and never reported via mixer controls.
+> 
+> The problem can be hit at least with SOF as the controller driver. SOF
+> calls snd_hda_codec_build_controls() in its workqueue-based probe and
+> this can be delayed enough to hit the race condition.
+> 
+> Fix the issue by invalidating the per-pin ELD information when
+> build_controls() is called. The existing call to hdmi_present_sense()
+> will update the ELD contents. This ensures initial monitor state is
+> correctly reflected via mixer controls.
+> 
+> BugLink: https://github.com/thesofproject/linux/issues/1687
+> Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 
-The following documentation is incomplete. It doesn't explain what "avail min" or "avail max" means. It's like asking someone you just met "what is your maximum age?". We need more context for the phrase "maximum number of frames available" to be meaningful. Is it maximum allowed before frames start getting dropped? Is it the maximum that we've seen over the course of operating the device?
+Applied, thanks.
 
-https://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m___s_w___params.html
 
-    snd_pcm_sw_params_get_avail_min()
-
-        Get avail min from a software configuration container.
-
-https://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m___status.html#gac58d13e4d03c9420c57428ddffd94964
-
-    snd_pcm_status_get_avail_max()
-
-        Get maximum number of frames available from a PCM status container after last
-        snd_pcm_status call.
-
-        Returns
-            Maximum number of frames ready to be read/written
-
-The following is less important, but it still should be fixed. We need to explain what a "software configuration container" is. The phrase is used all over the place; it only needs to be defined once:
-
-https://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m.html#ga7e082d9ea701709270b0674a0be23b09
-
-    snd_pcm_sw_params_t
-
-    typedef struct _snd_pcm_sw_params snd_pcm_sw_params_t
-
-    PCM software configuration container
-
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/44
-Repository URL: https://github.com/alsa-project/alsa-lib
+Takashi
