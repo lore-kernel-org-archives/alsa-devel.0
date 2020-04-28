@@ -2,78 +2,116 @@ Return-Path: <SRS0=jEei=6M=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B7D02C8300A
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Apr 2020 07:58:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 88D48C83000
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Apr 2020 07:59:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4484D206A5
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Apr 2020 07:58:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 12F9D206D7
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Apr 2020 07:59:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GH/2f9qk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4484D206A5
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FVmoVnbE";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cerno.tech header.i=@cerno.tech header.b="e+s/MFO1";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="G+Do9nny"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 12F9D206D7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cerno.tech
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9B777167E;
-	Tue, 28 Apr 2020 09:57:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B777167E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 507991682;
+	Tue, 28 Apr 2020 09:58:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 507991682
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588060704;
-	bh=FsPfqvhMCmARNgpfq+/ij75faMs2cfikvCu/c2iUoMM=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1588060757;
+	bh=l9tMYpEpRsM3tTPXKRcy/GaLeXW8ktaIad3r641T/qc=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GH/2f9qkg3sq4ySy81Shq1uu0/h/8QWhrbLoYH8mpaM6FzVBLb8QrN02X3J9ozkDj
-	 wVkw8+RTJwvpsRR36+vWy89ktQ0R0Ncj8l+L1FyUnY1Bm30UpRJi5DrUaL5NJU5pHL
-	 wJQtc/imV5rZORReckTM760xQ41ZK7XmmyYwc7Dc=
+	b=FVmoVnbEW8HKTJFZqIlHHBICon4t7AHJtJ3n0o/RMtkj6xIw19BJIrKXKECkrLYeu
+	 nyg3tKGmjrfu7p1gecf4hhqF+1HuVlDpJqkievaEd+vhbXQqJbYKMOx/33ZnbqrKXP
+	 LTE0OHQL2xksNlWVswvFxaQwG6zaf569nnjNGQtE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 27A2DF80136;
-	Tue, 28 Apr 2020 09:57:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 537A6F801DB;
+	Tue, 28 Apr 2020 09:58:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EC53FF801DB; Tue, 28 Apr 2020 09:57:32 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id 607E0F801F7; Tue, 28 Apr 2020 09:58:25 +0200 (CEST)
+Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com
+ [66.111.4.221])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DF87CF8010A
- for <alsa-devel@alsa-project.org>; Tue, 28 Apr 2020 09:57:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF87CF8010A
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 775A0B16B;
- Tue, 28 Apr 2020 07:57:24 +0000 (UTC)
-Date: Tue, 28 Apr 2020 09:57:24 +0200
-Message-ID: <s5hv9lkm49n.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Alex Deucher <alexdeucher@gmail.com>
-Subject: Re: [PATCH 0/1] Fiji GPU audio register timeout when in BACO state
-In-Reply-To: <CADnq5_MMQ5_MjEg=bkJJGMJP53RjB3yxvOW0nUDeWxzg3Q0pVQ@mail.gmail.com>
-References: <PSXP216MB0438D2AF96CE0D4F83F48C4D80AE0@PSXP216MB0438.KORP216.PROD.OUTLOOK.COM>
- <MN2PR12MB4488E4909C1488FB507E0BF5F7AF0@MN2PR12MB4488.namprd12.prod.outlook.com>
- <s5ho8rdnems.wl-tiwai@suse.de>
- <PSXP216MB04387BF6B5F8DA84749E5D6F80AF0@PSXP216MB0438.KORP216.PROD.OUTLOOK.COM>
- <CADnq5_M=QEqxuCKjb_qZvFSvwM5eLEFfsepxYYXoouFoe5bn7A@mail.gmail.com>
- <s5h4kt4ojrf.wl-tiwai@suse.de>
- <CADnq5_MMQ5_MjEg=bkJJGMJP53RjB3yxvOW0nUDeWxzg3Q0pVQ@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: "Zhou, David\(ChunMing\)" <David1.Zhou@amd.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- Nicholas Johnson <nicholas.johnson-opensource@outlook.com.au>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
- Takashi Iwai <tiwai@suse.com>, Lukas Wunner <lukas@wunner.de>, "Deucher,
- Alexander" <Alexander.Deucher@amd.com>, "Koenig,
- Christian" <Christian.Koenig@amd.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 53710F801DB
+ for <alsa-devel@alsa-project.org>; Tue, 28 Apr 2020 09:58:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53710F801DB
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cerno.tech header.i=@cerno.tech
+ header.b="e+s/MFO1"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="G+Do9nny"
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+ by mailnew.nyi.internal (Postfix) with ESMTP id 53D78580139;
+ Tue, 28 Apr 2020 03:58:19 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute4.internal (MEProxy); Tue, 28 Apr 2020 03:58:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+ date:from:to:cc:subject:message-id:references:mime-version
+ :content-type:in-reply-to; s=fm2; bh=E2zDRhRAXT59srKZrN/sdPOtf/1
+ VxLhZFcu+n6RQ+70=; b=e+s/MFO1aKDyXc98fjOF6sGkjUtEDWkRrtpM1gXl59Y
+ /4bEIjhRPD8pcErFk+EStYtKDaXCs3erk4Cifkz4VNoPzt7YcisKqsXB3oemRy9G
+ jWXc95m9/dApLNcaJ78xwkS/aUmQ+3Gq2GS5OLevDuwMjFs+v4rWl2SFJ2l4r//M
+ g8tXmawyEt7QgMxu2cKcvQA5dHWxVI7+HSSBhGxjD3QC9Rm6f1sedhccHvfZo9kN
+ UCCGHR/QdLfbOW5j8iSpojFHZGXIFfM5RI2RE33GrhW+OZi5jv14ChIpm4OyV1IW
+ vAxuwUvzNrz4V5a0+qrUIxfw3EzSJD/zAYqpSPNPRAg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to:x-me-proxy
+ :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=E2zDRh
+ RAXT59srKZrN/sdPOtf/1VxLhZFcu+n6RQ+70=; b=G+Do9nnyXMVKs+tVrfUW/x
+ lPzV2CSYXrAZkSaVCBm8LxW0KlOHZVn9VpMs49KE4FlxhYhgJO/d/Q53fJcYnF+8
+ 6ls8hCtb2voX1zGPjVnPqdyhV4fv4uCxKDJPytvXJvJZkUS/JHqHG6WYheSXpFy5
+ CxI/V1qdyujXz/Cdvy+bGl8wEk1XFGFB+jSqCug+MjESFUqjs3ZCKpcxNX3fBoYd
+ z2NjTa32fi4kGAWZrUsom6+C5weSGcXrvjKADn6MhaUAzKqpxAgY+pcp+99oR4XY
+ ST0uuaNKIQ07k83mmeCygu2IHyLZw7lw0z1bbJ7adAE1JAxPAwQ7w1ounSwPMseA
+ ==
+X-ME-Sender: <xms:GuKnXlQp9-TvG0uZNDh0JTcfGTyDVOWb_vI5cCDQ7sHPnzaPNX-U3Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedriedtgdduvddvucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+ cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddunecuhfhrohhmpeforgigihhm
+ vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecukfhppeeltd
+ drkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghi
+ lhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:GuKnXpCuCThrunnZ6dFJYzWl3_95Qc-NEcGLy3N09_n9Nz8qtkDHdw>
+ <xmx:GuKnXsmBtkjBZaH7hPWjH0_OynDP__2OulZYbSq882aHtQ-wCIC7tA>
+ <xmx:GuKnXhkewsyxDRHdqfwjYNbJ49HYxCPwbj3_A4iYLuIMRF6pUtU41g>
+ <xmx:G-KnXhewACw1mmiW1mKWwm47E5k5TAvNIRXUXQPs-9F1wK6umaOnwg>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr
+ [90.89.68.76])
+ by mail.messagingengine.com (Postfix) with ESMTPA id 025803280067;
+ Tue, 28 Apr 2020 03:58:17 -0400 (EDT)
+Date: Tue, 28 Apr 2020 09:58:16 +0200
+From: Maxime Ripard <maxime@cerno.tech>
+To: =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Subject: Re: [PATCH 2/7] arm: dts: sunxi: h3/h5: Add HDMI audio
+Message-ID: <20200428075816.p46abv7rrnlg6my6@gilmour.lan>
+References: <20200426120442.11560-1-peron.clem@gmail.com>
+ <20200426120442.11560-3-peron.clem@gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="bats57frlj3pqipa"
+Content-Disposition: inline
+In-Reply-To: <20200426120442.11560-3-peron.clem@gmail.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, linux-sunxi <linux-sunxi@googlegroups.com>,
+ Jernej Skrabec <jernej.skrabec@siol.net>, Takashi Iwai <tiwai@suse.com>,
+ Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Marcus Cooper <codekipper@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
+ Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,166 +127,76 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 27 Apr 2020 20:43:54 +0200,
-Alex Deucher wrote:
-> 
-> On Mon, Apr 27, 2020 at 2:39 PM Takashi Iwai <tiwai@suse.de> wrote:
-> >
-> > On Mon, 27 Apr 2020 20:28:12 +0200,
-> > Alex Deucher wrote:
-> > >
-> > > On Mon, Apr 27, 2020 at 2:07 PM Nicholas Johnson
-> > > <nicholas.johnson-opensource@outlook.com.au> wrote:
-> > > >
-> > > > On Mon, Apr 27, 2020 at 05:15:55PM +0200, Takashi Iwai wrote:
-> > > > > On Mon, 27 Apr 2020 16:22:21 +0200,
-> > > > > Deucher, Alexander wrote:
-> > > > > >
-> > > > > > [AMD Public Use]
-> > > > > >
-> > > > > > > -----Original Message-----
-> > > > > > > From: Nicholas Johnson <nicholas.johnson-opensource@outlook.com.au>
-> > > > > > > Sent: Sunday, April 26, 2020 12:02 PM
-> > > > > > > To: linux-kernel@vger.kernel.org
-> > > > > > > Cc: Deucher, Alexander <Alexander.Deucher@amd.com>; Koenig, Christian
-> > > > > > > <Christian.Koenig@amd.com>; Zhou, David(ChunMing)
-> > > > > > > <David1.Zhou@amd.com>; Nicholas Johnson <nicholas.johnson-
-> > > > > > > opensource@outlook.com.au>
-> > > > > > > Subject: [PATCH 0/1] Fiji GPU audio register timeout when in BACO state
-> > > > > > >
-> > > > > > > Hi all,
-> > > > > > >
-> > > > > > > Since Linux v5.7-rc1 / commit 4fdda2e66de0 ("drm/amdgpu/runpm: enable
-> > > > > > > runpm on baco capable VI+ asics"), my AMD R9 Nano has been using runpm /
-> > > > > > > BACO. You can tell visually when it sleeps, because the fan on the graphics
-> > > > > > > card is switched off to save power. It did not spin down the fan in v5.6.x.
-> > > > > > >
-> > > > > > > This is great (I love it), except that when it is sleeping, the PCIe audio function
-> > > > > > > of the GPU has issues if anything tries to access it. You get dmesg errors such
-> > > > > > > as these:
-> > > > > > >
-> > > > > > > snd_hda_intel 0000:08:00.1: spurious response 0x0:0x0, last cmd=0x170500
-> > > > > > > snd_hda_intel 0000:08:00.1: azx_get_response timeout, switching to polling
-> > > > > > > mode: last cmd=0x001f0500 snd_hda_intel 0000:08:00.1: No response from
-> > > > > > > codec, disabling MSI: last cmd=0x001f0500 snd_hda_intel 0000:08:00.1: No
-> > > > > > > response from codec, resetting bus: last cmd=0x001f0500
-> > > > > > > snd_hda_codec_hdmi hdaudioC1D0: Unable to sync register 0x2f0d00. -11
-> > > > > > >
-> > > > > > > The above is with the Fiji XT GPU at 0000:08:00.0 in a Thunderbolt enclosure
-> > > > > > > (not that Thunderbolt should affect it, but I feel I should mention it just in
-> > > > > > > case). I dropped a lot of duplicate dmesg lines, as some of them repeated a
-> > > > > > > lot of times before the driver gave up.
-> > > > > > >
-> > > > > > > I offer this patch to disable runpm for Fiji while a fix is found, if you decide
-> > > > > > > that is the best approach. Regardless, I will gladly test any patches you come
-> > > > > > > up with instead and confirm that the above issue has been fixed.
-> > > > > > >
-> > > > > > > I cannot tell if any other GPUs are affected. The only other cards to which I
-> > > > > > > have access are a couple of AMD R9 280X (Tahiti XT), which use radeon driver
-> > > > > > > instead of amdgpu driver.
-> > > > > >
-> > > > > > Adding a few more people.  Do you know what is accessing the audio?  The audio should have a dependency on the GPU device.  The GPU won't enter runtime pm until the audio has entered runtime pm and vice versa on resume. Please attach a copy of your dmesg output and lspci output.
-> > > >
-> > > > pci 0000:08:00.1: D0 power state depends on 0000:08:00.0
-> > > > The above must be the dependency of which you speak from dmesg.
-> > > >
-> > > > Accessing the audio? I did not have a single method for triggering it.
-> > > > Sometimes it happened on shutdown. Sometimes when restarting gdm.
-> > > > Sometimes when playing with audio settings in Cinnamon Desktop. But most
-> > > > often when changing displays. It might have something to do with the
-> > > > audio device associated with a monitor being created when the monitor is
-> > > > found. If an audio device is created, then pulseaudio might touch it.
-> > > > Sorry, this is a very verbose "not quite sure".
-> > > >
-> > > > To trigger the bug, this time I did the following:
-> > > >
-> > > > 1. Boot laptop without Fiji and log in
-> > > >
-> > > > 2. Attach Fiji via Thunderbolt (no displays attached to Fiji) and
-> > > > approve Thunderbolt device
-> > > >
-> > > > 3. Log in again because the session gets killed when GPU is hot-added
-> > > >
-> > > > 4. Wait for Fiji to fall asleep (fan stops)
-> > > >
-> > > > 5. Open "dmesg -w" on laptop display
-> > > >
-> > > > 6. Attach display to DisplayPort on Fiji (it should still stay asleep)
-> > > >
-> > > > 7. Do WindowsKey+P to activate external display. The error appears in
-> > > > dmesg window that instant.
-> > > >
-> > > > Could it be a race condition when waking the card up?
-> > > >
-> > > > I cannot get the graphics card fan to spin down if the Thunderbolt
-> > > > enclosure is attached at boot time. It only does it if hot-added.
-> > > >
-> > > > If you think it will help, I can take out the Fiji and put it in a test
-> > > > rig and try to replicate the issue without Thunderbolt, but it looks
-> > > > like it will not spin the fan down if Fiji is attached at boot time.
-> > > >
-> > > > Question, why would the fan not spin down if Fiji is attached at boot
-> > > > time, and how would one make the said fan turn off? Aside from being
-> > > > useful for pinning down the audio register issue, I would like to make
-> > > > sure the power savings are realised whenever the GPU is not being used.
-> > >
-> > > Presumably something is using the device.  Maybe a framebuffer console
-> > > or X?  Or maybe the something like tlp has disabled runtime pm on your
-> > > device?  You can see the current status by reading the files in
-> > > /sys/class/drm/cardX/device/power/ .  Replace cardX with card0, card1,
-> > > etc. depending on which device is the radeon card.
-> > >
-> > > FWIW, I have a fiji board in a desktop system and it worked fine when
-> > > this code was enabled.
-> >
-> > Is the new DC code used for Fiji boards?  IIRC, the audio component
-> > binding from amdgpu is enabled only for DC, and without the audio
-> > component binding the runtime PM won't be linked up, hence you can't
-> > power up GPU from the audio side access automatically.
-> >
-> 
-> Yes, DC is enabled by default for all cards with runtime pm enabled.
 
-OK, thanks, I found that amdgpu got bound via component in the dmesg
-output, too:
+--bats57frlj3pqipa
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[   21.294927] snd_hda_intel 0000:08:00.1: bound 0000:08:00.0 (ops amdgpu_dm_audio_component_bind_ops [amdgpu])
+Hi,
 
-This is the place soon after amdgpu driver gets initialized.
-Then we see later another initialization phase:
+On Sun, Apr 26, 2020 at 02:04:37PM +0200, Cl=E9ment P=E9ron wrote:
+> From: Marcus Cooper <codekipper@gmail.com>
+>=20
+> Add a simple-soundcard to link audio between HDMI and I2S.
+>=20
+> Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+> Signed-off-by: Marcus Cooper <codekipper@gmail.com>
+> Signed-off-by: Cl=E9ment P=E9ron <peron.clem@gmail.com>
+> ---
+>  arch/arm/boot/dts/sunxi-h3-h5.dtsi | 21 +++++++++++++++++++++
+>  1 file changed, 21 insertions(+)
+>=20
+> diff --git a/arch/arm/boot/dts/sunxi-h3-h5.dtsi b/arch/arm/boot/dts/sunxi=
+-h3-h5.dtsi
+> index 9be13378d4df..3a4262294950 100644
+> --- a/arch/arm/boot/dts/sunxi-h3-h5.dtsi
+> +++ b/arch/arm/boot/dts/sunxi-h3-h5.dtsi
+> @@ -105,6 +105,25 @@
+>  		status =3D "disabled";
+>  	};
+> =20
+> +	hdmi_sound: hdmi-sound {
+> +		compatible =3D "simple-audio-card";
+> +		simple-audio-card,format =3D "i2s";
+> +		simple-audio-card,name =3D "allwinner,hdmi";
+> +		simple-audio-card,mclk-fs =3D <128>;
+> +		simple-audio-card,frame-inversion;
+> +		status =3D "disabled";
+> +
+> +		simple-audio-card,codec {
+> +			sound-dai =3D <&hdmi>;
+> +		};
+> +
+> +		simple-audio-card,cpu {
+> +			sound-dai =3D <&i2s2>;
+> +			dai-tdm-slot-num =3D <2>;
+> +			dai-tdm-slot-width =3D <32>;
+> +		};
+> +	};
+> +
+>  	soc {
+>  		compatible =3D "simple-bus";
+>  		#address-cells =3D <1>;
+> @@ -672,6 +691,7 @@
+>  			dmas =3D <&dma 27>;
+>  			resets =3D <&ccu RST_BUS_I2S2>;
+>  			dma-names =3D "tx";
+> +			allwinner,playback-channels =3D <8>;
 
-[   26.904127] rfkill: input handler enabled
-[   37.264152] [drm] PCIE GART of 1024M enabled (table at 0x000000F400000000).
+This property doesn't exist in the binding
 
-here shows 10 seconds between them.  Then, it complained something:
+Maxime
 
+--bats57frlj3pqipa
+Content-Type: application/pgp-signature; name="signature.asc"
 
-[   37.363287] [drm] UVD initialized successfully.
-[   37.473340] [drm] VCE initialized successfully.
-[   37.477942] amdgpu 0000:08:00.0: [drm] Cannot find any crtc or sizes
+-----BEGIN PGP SIGNATURE-----
 
-... and go further, and hitting HD-audio error:
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXqfiGAAKCRDj7w1vZxhR
+xXKlAQCv6MNWlrAX1U69XHGf0wvaL+nfygE1iVSzCRhMAp+wdAD/d9UJm7+SpDnw
+YKDqJ4jLcBeUm3rEGjBnSLcIByUUNwI=
+=l3WT
+-----END PGP SIGNATURE-----
 
-
-[   38.936624] [drm] fb mappable at 0x4B0696000
-[   38.936626] [drm] vram apper at 0x4B0000000
-[   38.936626] [drm] size 33177600
-[   38.936627] [drm] fb depth is 24
-[   38.936627] [drm]    pitch is 15360
-[   38.936673] amdgpu 0000:08:00.0: fb1: amdgpudrmfb frame buffer device
-[   40.092223] snd_hda_intel 0000:08:00.1: azx_get_response timeout, switching to polling mode: last cmd=0x00170500
-
-After this point, HD-audio communication was screwed up.
-
-This lastcmd in the above message is AC_SET_POWER_STATE verb for the
-root node to D0, so the very first command to power up the codec. 
-The rest commands are also about the power up of each node, so the
-whole error indicate that the power up at runtime resume failed.
-
-So, this looks to me as if the device gets runtime-resumed at the bad
-moment?
-
-
-thanks,
-
-Takashi
+--bats57frlj3pqipa--
