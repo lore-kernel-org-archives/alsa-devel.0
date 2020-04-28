@@ -2,74 +2,76 @@ Return-Path: <SRS0=jEei=6M=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BDD98C83000
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Apr 2020 15:41:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 818A3C83000
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Apr 2020 15:42:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4048B206C0
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Apr 2020 15:41:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 02AF7206C0
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Apr 2020 15:42:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Qg1xIbAI";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="w3N52jYR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4048B206C0
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="s+6+B28D";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="lxqkJh4c"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 02AF7206C0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 900401680;
-	Tue, 28 Apr 2020 17:41:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 900401680
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5A670169B;
+	Tue, 28 Apr 2020 17:41:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5A670169B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588088512;
-	bh=UwOEbjuqqZnNh4bPD15G3mJ8BwNUK3zuC+NFaXG/Wis=;
+	s=default; t=1588088565;
+	bh=m3hQm8gosMVcEzwy0eRzhmbhb9xpXvL9MpTX2D3IkBg=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Qg1xIbAIx4Ub3WRtwQYQ1RunZvDpEZQl9PpMVqj3y9hzKoVjLBdkokagnc7yrNKse
-	 XpH7/gLgcdYI57wY9hOE15k0L2ps1VqWWrH8msKALcSl9sUtqW0TF7IjQszlKnExfy
-	 SGO3bV/sFpI1BYZ9Wq23K6CmmfFUhB0dA95AWYhw=
+	b=s+6+B28Ddps8ZwghbjNt+dcE/Puuj/VMhnNbSJg1NOvfGlgCaNCfWR/GQ+9IYdeiE
+	 tdAyh5CsYpnIZdRbenqB1644vbCUyvLvqcOtzQruiBR5mwcvucrEmbduJmgbSNJfKX
+	 806JA19ugTwLQrUkofM3VbdAJkkHUzPYkT6Danaw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1B61FF80136;
-	Tue, 28 Apr 2020 17:41:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 388EFF801EB;
+	Tue, 28 Apr 2020 17:41:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6DF99F8010A; Tue, 28 Apr 2020 17:41:01 +0200 (CEST)
+ id A1B79F801F7; Tue, 28 Apr 2020 17:41:05 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7DA39F8010A
- for <alsa-devel@alsa-project.org>; Tue, 28 Apr 2020 17:40:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7DA39F8010A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2C6D1F801EB
+ for <alsa-devel@alsa-project.org>; Tue, 28 Apr 2020 17:41:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C6D1F801EB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="w3N52jYR"
+ header.b="lxqkJh4c"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 22D4D206C0;
- Tue, 28 Apr 2020 15:40:54 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 21E21206D7;
+ Tue, 28 Apr 2020 15:41:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1588088455;
- bh=UwOEbjuqqZnNh4bPD15G3mJ8BwNUK3zuC+NFaXG/Wis=;
+ s=default; t=1588088461;
+ bh=m3hQm8gosMVcEzwy0eRzhmbhb9xpXvL9MpTX2D3IkBg=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=w3N52jYR2mcAMUn0+EKOk0EMrIElOdRAwiiSyJI3ihKNop9LbAETyeJVJzf0O97gm
- 1bIO0GPYRulEi2FuLf242QJnLmxgxbkvwVdT0FY7y4iZcDJSXK2M47h/HVfqb0VtML
- 1OAfpVXA5yM7Bmk6uCMQEhe26h848wq4NdrJOyuA=
-Date: Tue, 28 Apr 2020 16:40:53 +0100
+ b=lxqkJh4chgjEtNIOCO5x/UqvWUOjcx7z/KGvdDrwKEPx5xYj89TjLuQtxgx9vSnf3
+ JQpSUSWGQCA4GNDypq6TfgEbaSst2iifF5p6g6iGna7Hc6dNofOzy33E5pUF6cGRau
+ OoOM72nLdxg0zm7JV5OwUMd4A9CE+CduxQtzEB4c=
+Date: Tue, 28 Apr 2020 16:40:59 +0100
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, Dan Murphy <dmurphy@ti.com>, perex@perex.cz,
- tiwai@suse.com
-In-Reply-To: <20200427203608.7031-1-dmurphy@ti.com>
-References: <20200427203608.7031-1-dmurphy@ti.com>
-Subject: Re: [PATCH] ASoC: tlv320adcx140: Fix mic gain registers
-Message-Id: <158808845301.38316.11380096383404552191.b4-ty@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
+To: linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Peter Ujfalusi <peter.ujfalusi@ti.com>, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ alsa-devel@alsa-project.org
+In-Reply-To: <1587818916-38730-1-git-send-email-xiyuyang19@fudan.edu.cn>
+References: <1587818916-38730-1-git-send-email-xiyuyang19@fudan.edu.cn>
+Subject: Re: [PATCH] ASoC: davinci-mcasp: Fix dma_chan refcnt leak when
+ getting dma type
+Message-Id: <158808845301.38316.4295335202430928614.b4-ty@kernel.org>
+Cc: Xin Tan <tanxin.ctf@gmail.com>, yuanxzhang@fudan.edu.cn, kjlu@umn.edu
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,14 +87,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 27 Apr 2020 15:36:08 -0500, Dan Murphy wrote:
-> Fix the mic gain registers for channels 2-4.
-> The incorret register was being set as it was touching the CH1 config
-> registers.
+On Sat, 25 Apr 2020 20:48:35 +0800, Xiyu Yang wrote:
+> davinci_mcasp_get_dma_type() invokes dma_request_chan(), which returns a
+> reference of the specified dma_chan object to "chan" with increased
+> refcnt.
 > 
-> Fixes: 37bde5acf040 ("ASoC: tlv320adcx140: Add the tlv320adcx140 codec driver family")
-> Signed-off-by: Dan Murphy <dmurphy@ti.com>
-> Cc: stable@vger.kernel.org
+> When davinci_mcasp_get_dma_type() returns, local variable "chan" becomes
+> invalid, so the refcount should be decreased to keep refcount balanced.
 > 
 > [...]
 
@@ -102,8 +103,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: tlv320adcx140: Fix mic gain registers
-      commit: be8499c48f115b912f5747c420f66a5e2c31defe
+[1/1] ASoC: davinci-mcasp: Fix dma_chan refcnt leak when getting dma type
+      commit: a697ae6ea56e23397341b027098c1b11d9ab13da
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
