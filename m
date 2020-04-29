@@ -4,73 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7472AC83000
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Apr 2020 16:28:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4716BC83000
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Apr 2020 16:29:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EAC3120787
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Apr 2020 16:28:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BB39C2073E
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Apr 2020 16:29:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YYhHMf0Y";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="BIiFzqNu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EAC3120787
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="txIm53a1";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ImdakZ0V"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BB39C2073E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 55A191697;
-	Wed, 29 Apr 2020 18:28:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 55A191697
+	by alsa0.perex.cz (Postfix) with ESMTPS id 25AD11676;
+	Wed, 29 Apr 2020 18:28:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 25AD11676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588177732;
-	bh=ZxG00pU6mh+bsa3od1jPgbNbeOCwD7dTA7vu7VZxcds=;
+	s=default; t=1588177761;
+	bh=6zVZteVRVyX5I354HP1/dG37cgKVYpeN2xvEFSePs+w=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YYhHMf0Y0eVLFQrzk9MnMYxfOmzNXaTF28gWKjoXqxWy7/5w6S7kazd968ld+/B57
-	 c4M+gJFW/AC4IN4C0MQSXKmFyweCloY8KVGBCYdpTYsOXfXxH7Q40MqSSugrQK90ne
-	 kRD8jYurJyem2cusIx5CooJpPH4SbGeJ0xryDxzE=
+	b=txIm53a1Do6qvRRuStnQp6jmi/KXVvEHHJpzKmPv5kHTlu2p6HIxzk4D7TfvCjni6
+	 mVaMIDUJlSY1lIeoqAFNdBPDxPFva7EkElycUMpqziGylUTUDrvtLwRqUXwjJ1SfDo
+	 X6XIUMxUs+dfhB+ByiaRodcivKe5lFINOzOX9zKc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CB4D1F8028C;
-	Wed, 29 Apr 2020 18:26:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 09032F80290;
+	Wed, 29 Apr 2020 18:26:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F2B78F8028C; Wed, 29 Apr 2020 18:26:28 +0200 (CEST)
+ id 6B84AF80291; Wed, 29 Apr 2020 18:26:31 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7BB3BF80232
- for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2020 18:26:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7BB3BF80232
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4633FF8026F
+ for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2020 18:26:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4633FF8026F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="BIiFzqNu"
+ header.b="ImdakZ0V"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 699DD208E0;
- Wed, 29 Apr 2020 16:26:20 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 3DFBA2076B;
+ Wed, 29 Apr 2020 16:26:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1588177581;
- bh=ZxG00pU6mh+bsa3od1jPgbNbeOCwD7dTA7vu7VZxcds=;
+ s=default; t=1588177586;
+ bh=6zVZteVRVyX5I354HP1/dG37cgKVYpeN2xvEFSePs+w=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=BIiFzqNu5iPwGOBNXDpDBcob5SyW973d/kLZVuKjlbT/FfPFk7AhvVXaBtHd+IN8z
- zz7sXxBd9dC76ogdj2LICsR6t/mZV0bwK2HV0fANXCvrZndi8LhmxVlsGP96t1V/7Y
- M078OF279W+7Cls7Q7UdZiNdmngc2M/DYut3PoFg=
-Date: Wed, 29 Apr 2020 17:26:18 +0100
+ b=ImdakZ0ViLiXJn+DdmuWq8bSCFhsPVn7v5uxOPuY6KCy1hmz2TvC9Qj+PJtezvMSQ
+ P9d5W1EbWhxRjDwqKvCQiRLoQ0ZfwBlGZ4iiMrXuI67DljUuoguj6uYsfxzEyzqV4o
+ 2s1/a6IMDLcrxzjS/TydNtBq1eQ3jMDyWrvQF4sM=
+Date: Wed, 29 Apr 2020 17:26:24 +0100
 From: Mark Brown <broonie@kernel.org>
-To: tiwai@suse.com, s.hauer@pengutronix.de, lgirdwood@gmail.com,
- shawnguo@kernel.org, perex@perex.cz, Tang Bin <tangbin@cmss.chinamobile.com>
-In-Reply-To: <20200429093823.1372-1-tangbin@cmss.chinamobile.com>
-References: <20200429093823.1372-1-tangbin@cmss.chinamobile.com>
-Subject: Re: [PATCH] ASoC: mxs-saif: Fix unused assignment
-Message-Id: <158817756638.27768.4592113861894397863.b4-ty@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+To: Seven Lee <wtli@nuvoton.com>
+In-Reply-To: <20200429090002.28556-1-wtli@nuvoton.com>
+References: <20200429090002.28556-1-wtli@nuvoton.com>
+Subject: Re: [PATCH] ASoc: nau8810: add AUX related dapm widgets and routes
+Message-Id: <158817756637.27768.14407446322073240411.b4-ty@kernel.org>
+Cc: YHCHuang@nuvoton.com, alsa-devel@alsa-project.org, KCHSU0@nuvoton.comgit,
+ CTLIN0@nuvoton.com, lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,15 +84,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 29 Apr 2020 17:38:23 +0800, Tang Bin wrote:
-> Delete unused initialized value, because 'ret' will be assigined
-> by the function of_alias_get_id().
+On Wed, 29 Apr 2020 17:00:02 +0800, Seven Lee wrote:
+> This patch implements the following features:
+> - AUX input for recording.
+> - An input AUX output to SPK/MOUT.
 > 
-> Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+> Signed-off-by: Seven Lee <wtli@nuvoton.com>
 > ---
->  sound/soc/mxs/mxs-saif.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  sound/soc/codecs/nau8810.c | 35 ++++++++++++++++++++++++++++++++++-
+>  sound/soc/codecs/nau8810.h |  8 ++++++++
+>  2 files changed, 42 insertions(+), 1 deletion(-)
 > 
 > [...]
 
@@ -104,8 +103,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: mxs-saif: Fix unused assignment
-      commit: da33574f7f1c110ec58ea43251a9a85801d6e015
+[1/1] ASoc: nau8810: add AUX related dapm widgets and routes
+      commit: 77be181e2c8e435692424ff2e5ee3d0380cabb90
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
