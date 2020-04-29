@@ -7,58 +7,58 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EED5C83007
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Apr 2020 09:39:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CF3CCC83003
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Apr 2020 09:41:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2C1782073E
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Apr 2020 09:39:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 58B132073E
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Apr 2020 09:41:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JsTujaE7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2C1782073E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="c/KWB3I6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 58B132073E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cmss.chinamobile.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 74F8B1689;
-	Wed, 29 Apr 2020 11:38:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 74F8B1689
+	by alsa0.perex.cz (Postfix) with ESMTPS id ABB7F1690;
+	Wed, 29 Apr 2020 11:40:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ABB7F1690
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588153183;
-	bh=hbwrboC6Rasvk5JFkBQOQ28k+0CTrMSKgFdIB1jOa5c=;
+	s=default; t=1588153288;
+	bh=c8FTL2kAQffp332pA8R6sgGbEdLDmFscdAC8XxyHsnA=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=JsTujaE7ohdmPuAK2ZBQ7j+0IZKzOfZJSAYZCFKlkx+jIazA1VrjT6t8FLSHQ/eNj
-	 Yfgp+gv7iZh61UPnd4VN6sU606yaGDBP7IJxaxTCjrMG0FMPf6447MaZbHfsuNtSfJ
-	 ZIMVYtlKMmqRPEOQRrVCInUzrdaywJgpaJxuDihk=
+	b=c/KWB3I6Y0SyoMIIsDr6ydZMskc38fwX/cj6V2/rj375bAohx/Ny9h0IySZEsttRZ
+	 PXSJXfvV+oZ5GwRQwqUk3WbgYxbTmeYQenn2msO+ixaWcuJA4YDklt6qUIxh3264Ni
+	 BWbA5+K6Xq3OEJ+aXYvBF9e5f5ciIng7mDYbqSFY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E960DF80217;
-	Wed, 29 Apr 2020 11:38:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4A932F80217;
+	Wed, 29 Apr 2020 11:40:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0B1D0F8022B; Wed, 29 Apr 2020 11:38:51 +0200 (CEST)
-Received: from cmccmta3.chinamobile.com (cmccmta3.chinamobile.com
- [221.176.66.81])
- by alsa1.perex.cz (Postfix) with ESMTP id EC73FF80109
- for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2020 11:38:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC73FF80109
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.11]) by
- rmmx-syy-dmz-app09-12009 (RichMail) with SMTP id 2ee95ea94af6598-ad742;
- Wed, 29 Apr 2020 17:37:58 +0800 (CST)
-X-RM-TRANSID: 2ee95ea94af6598-ad742
+ id 13C52F8022B; Wed, 29 Apr 2020 11:40:37 +0200 (CEST)
+Received: from cmccmta2.chinamobile.com (cmccmta2.chinamobile.com
+ [221.176.66.80])
+ by alsa1.perex.cz (Postfix) with ESMTP id 913D1F80217
+ for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2020 11:40:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 913D1F80217
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.5]) by
+ rmmx-syy-dmz-app07-12007 (RichMail) with SMTP id 2ee75ea94b759d6-addd1;
+ Wed, 29 Apr 2020 17:40:05 +0800 (CST)
+X-RM-TRANSID: 2ee75ea94b759d6-addd1
 X-RM-TagInfo: emlType=0                                       
 X-RM-SPAM-FLAG: 00000000
 Received: from localhost.localdomain (unknown[223.104.146.39])
- by rmsmtp-syy-appsvr06-12006 (RichMail) with SMTP id 2ee65ea94af2f5a-e8bde;
- Wed, 29 Apr 2020 17:37:58 +0800 (CST)
-X-RM-TRANSID: 2ee65ea94af2f5a-e8bde
+ by rmsmtp-syy-appsvr03-12003 (RichMail) with SMTP id 2ee35ea94b714a2-d9f76;
+ Wed, 29 Apr 2020 17:40:04 +0800 (CST)
+X-RM-TRANSID: 2ee35ea94b714a2-d9f76
 From: Tang Bin <tangbin@cmss.chinamobile.com>
 To: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
  shawnguo@kernel.org, s.hauer@pengutronix.de
-Subject: [PATCH] ASoC: mxs-saif: Fix unused assignment
-Date: Wed, 29 Apr 2020 17:38:23 +0800
-Message-Id: <20200429093823.1372-1-tangbin@cmss.chinamobile.com>
+Subject: [PATCH] ASoC: mxs-saif: Add variable dev to simplify code
+Date: Wed, 29 Apr 2020 17:40:23 +0800
+Message-Id: <20200429094023.12856-1-tangbin@cmss.chinamobile.com>
 X-Mailer: git-send-email 2.20.1.windows.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -81,28 +81,119 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Delete unused initialized value, because 'ret' will be assigined
-by the function of_alias_get_id().
+Add variable 'dev' to make the code cleaner in the function
+mxs_saif_probe(). And now that the function mxs_saif_mclk_init()
+have defined the variables 'ret' as the error returned value,
+then it should be used instead in this place.
 
 Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
 Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
 ---
- sound/soc/mxs/mxs-saif.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/mxs/mxs-saif.c | 32 ++++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
 diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-index 1e38ce858..dc197883e 100644
+index dc197883e..f4e441183 100644
 --- a/sound/soc/mxs/mxs-saif.c
 +++ b/sound/soc/mxs/mxs-saif.c
-@@ -733,7 +733,7 @@ static int mxs_saif_probe(struct platform_device *pdev)
+@@ -719,7 +719,7 @@ static int mxs_saif_mclk_init(struct platform_device *pdev)
+ 		if (ret == -EEXIST)
+ 			return 0;
+ 		dev_err(&pdev->dev, "failed to register mclk: %d\n", ret);
+-		return PTR_ERR(clk);
++		return ret;
+ 	}
+ 
+ 	ret = of_clk_add_provider(np, of_clk_src_simple_get, clk);
+@@ -732,6 +732,7 @@ static int mxs_saif_mclk_init(struct platform_device *pdev)
+ static int mxs_saif_probe(struct platform_device *pdev)
  {
  	struct device_node *np = pdev->dev.of_node;
++	struct device *dev = &pdev->dev;
  	struct mxs_saif *saif;
--	int irq, ret = 0;
-+	int irq, ret;
+ 	int irq, ret;
  	struct device_node *master;
- 
+@@ -739,7 +740,7 @@ static int mxs_saif_probe(struct platform_device *pdev)
  	if (!np)
+ 		return -EINVAL;
+ 
+-	saif = devm_kzalloc(&pdev->dev, sizeof(*saif), GFP_KERNEL);
++	saif = devm_kzalloc(dev, sizeof(*saif), GFP_KERNEL);
+ 	if (!saif)
+ 		return -ENOMEM;
+ 
+@@ -750,7 +751,7 @@ static int mxs_saif_probe(struct platform_device *pdev)
+ 		saif->id = ret;
+ 
+ 	if (saif->id >= ARRAY_SIZE(mxs_saif)) {
+-		dev_err(&pdev->dev, "get wrong saif id\n");
++		dev_err(dev, "get wrong saif id\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -770,18 +771,17 @@ static int mxs_saif_probe(struct platform_device *pdev)
+ 			saif->master_id = ret;
+ 
+ 		if (saif->master_id >= ARRAY_SIZE(mxs_saif)) {
+-			dev_err(&pdev->dev, "get wrong master id\n");
++			dev_err(dev, "get wrong master id\n");
+ 			return -EINVAL;
+ 		}
+ 	}
+ 
+ 	mxs_saif[saif->id] = saif;
+ 
+-	saif->clk = devm_clk_get(&pdev->dev, NULL);
++	saif->clk = devm_clk_get(dev, NULL);
+ 	if (IS_ERR(saif->clk)) {
+ 		ret = PTR_ERR(saif->clk);
+-		dev_err(&pdev->dev, "Cannot get the clock: %d\n",
+-			ret);
++		dev_err(dev, "Cannot get the clock: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+@@ -793,11 +793,11 @@ static int mxs_saif_probe(struct platform_device *pdev)
+ 	if (irq < 0)
+ 		return irq;
+ 
+-	saif->dev = &pdev->dev;
+-	ret = devm_request_irq(&pdev->dev, irq, mxs_saif_irq, 0,
+-			       dev_name(&pdev->dev), saif);
++	saif->dev = dev;
++	ret = devm_request_irq(dev, irq, mxs_saif_irq, 0,
++			       dev_name(dev), saif);
+ 	if (ret) {
+-		dev_err(&pdev->dev, "failed to request irq\n");
++		dev_err(dev, "failed to request irq\n");
+ 		return ret;
+ 	}
+ 
+@@ -807,19 +807,19 @@ static int mxs_saif_probe(struct platform_device *pdev)
+ 	if (saif->id == 0) {
+ 		ret = mxs_saif_mclk_init(pdev);
+ 		if (ret)
+-			dev_warn(&pdev->dev, "failed to init clocks\n");
++			dev_warn(dev, "failed to init clocks\n");
+ 	}
+ 
+-	ret = devm_snd_soc_register_component(&pdev->dev, &mxs_saif_component,
++	ret = devm_snd_soc_register_component(dev, &mxs_saif_component,
+ 					      &mxs_saif_dai, 1);
+ 	if (ret) {
+-		dev_err(&pdev->dev, "register DAI failed\n");
++		dev_err(dev, "register DAI failed\n");
+ 		return ret;
+ 	}
+ 
+-	ret = mxs_pcm_platform_register(&pdev->dev);
++	ret = mxs_pcm_platform_register(dev);
+ 	if (ret) {
+-		dev_err(&pdev->dev, "register PCM failed: %d\n", ret);
++		dev_err(dev, "register PCM failed: %d\n", ret);
+ 		return ret;
+ 	}
+ 
 -- 
 2.20.1.windows.1
 
