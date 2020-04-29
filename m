@@ -7,63 +7,67 @@ X-Spam-Status: No, score=-8.6 required=3.0 tests=DATE_IN_PAST_06_12,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EA91FC83006
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 06:46:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4AC93C83001
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 06:47:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6DC7E214D8
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 06:46:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C372D2173E
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 06:47:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="APd+Y0Tg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6DC7E214D8
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dsF7jOmv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C372D2173E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BB4161673;
-	Thu, 30 Apr 2020 08:45:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BB4161673
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0196B169B;
+	Thu, 30 Apr 2020 08:46:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0196B169B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588229209;
-	bh=K8AT0yB40/HEjFbMjNUcFwyvDpHzlKSVnzSVpcrU3cs=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=APd+Y0TgZeH+Jt+cGuGY7/qOUwdpiidBzLYnqAI4V+FpVZVw2FeEMZe3yVNxj9yPc
-	 iKFiWWqvoDAbKPi6hgsfApKNf27qMah4NEE9Lya61RS8voSYSpJzvC9OA6xBSej9Lx
-	 Og+xmbaMj6lgtDlOjiPE8wCuhiqFv1BlB67w1XN0=
+	s=default; t=1588229269;
+	bh=WryodMwVF0rRWiuGKMD4EUGlDV3GVHnZlqkRQddXFXg=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=dsF7jOmvv60k3afaQq+vQ0E4oHrOvQd2qaexMvXao6Fc5t6AERH/VrLERXIXIwjuA
+	 o3ymh91vIUmLLXNmL0mAdgKhcII8E8jYGLRwMSa1YKi7MtfOj3YoFqtV2QyLKG5jZR
+	 r0KD2v9adWgTFk/YpyaB3y10YqvU7TME12WHHUNw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2A12AF80136;
-	Thu, 30 Apr 2020 08:45:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BDDB8F800E5;
+	Thu, 30 Apr 2020 08:46:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 63F54F801DB; Thu, 30 Apr 2020 08:45:57 +0200 (CEST)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ id B3C36F800E5; Thu, 30 Apr 2020 08:46:46 +0200 (CEST)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3564DF80123
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 08:45:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3564DF80123
-IronPort-SDR: Rcs4+psfb1bzxmmzm5oVaa2gyISeSxVBKLOBulpxwsDa0kxpGRL9A4tTzrnOEHinW1O+Wh6Yny
- 3Xn7bWvHDvzQ==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3FF11F800E5
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 08:46:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3FF11F800E5
+IronPort-SDR: xz+FBdt3uprGnorRjmuVlr0UMrafotFlEv90n+oUO9UnO8zbQ+X33Z1mpmzkSXchNVZ84UXde9
+ pk6346tXNLTQ==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 29 Apr 2020 23:45:46 -0700
-IronPort-SDR: 5JDk6IlEH4J//G4hxGQbGfk9EcsA4GLTNYnOGk+Najmtr/DTUSKoGbTimstED8jiExCOByLXVE
- 4m48v6OIp3rw==
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 29 Apr 2020 23:46:37 -0700
+IronPort-SDR: EQtOCt5eBesmLQbG5D1fSWZ+Ch5cYQn4VzLEXlzBsb2ya/YKXgrcpTAjGdSYr5g7PIsYDgzVxz
+ R2qNHZTi2UmQ==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,334,1583222400"; d="scan'208";a="459460044"
+X-IronPort-AV: E=Sophos;i="5.73,334,1583222400"; d="scan'208";a="249662780"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
- by fmsmga005.fm.intel.com with ESMTP; 29 Apr 2020 23:45:42 -0700
+ by fmsmga008.fm.intel.com with ESMTP; 29 Apr 2020 23:46:34 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH] soundwire: qcom: fix error handling in probe
-Date: Thu, 30 Apr 2020 02:50:57 +0800
-Message-Id: <20200429185057.12810-1-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 1/3] soundwire: bus: rename sdw_bus_master_add/delete,
+ add arguments
+Date: Thu, 30 Apr 2020 02:51:43 +0800
+Message-Id: <20200429185145.12891-2-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200429185145.12891-1-yung-chuan.liao@linux.intel.com>
+References: <20200429185145.12891-1-yung-chuan.liao@linux.intel.com>
 Cc: pierre-louis.bossart@linux.intel.com, tiwai@suse.de,
  gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
  ranjani.sridharan@linux.intel.com, hui.wang@canonical.com, broonie@kernel.org,
@@ -87,86 +91,181 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Make sure all error cases are properly handled and all resources freed.
+In preparation for future extensions, rename functions to use
+sdw_bus_master prefix and add a parent and fwnode argument to
+sdw_bus_master_add to help with device registration in follow-up
+patches.
+
+No functionality change, just renames and additional arguments.
+
+The Intel code is currently unused, the two additional arguments are
+only needed for compilation.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/soundwire/qcom.c | 26 +++++++++++++++++---------
- 1 file changed, 17 insertions(+), 9 deletions(-)
+ Documentation/driver-api/soundwire/summary.rst |  7 ++++---
+ drivers/soundwire/bus.c                        | 15 +++++++++------
+ drivers/soundwire/intel.c                      |  9 +++++----
+ drivers/soundwire/qcom.c                       |  6 +++---
+ include/linux/soundwire/sdw.h                  |  5 +++--
+ 5 files changed, 24 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-index d6c9ad231873..e08a17c13f92 100644
---- a/drivers/soundwire/qcom.c
-+++ b/drivers/soundwire/qcom.c
-@@ -765,12 +765,16 @@ static int qcom_swrm_probe(struct platform_device *pdev)
- 	}
+diff --git a/Documentation/driver-api/soundwire/summary.rst b/Documentation/driver-api/soundwire/summary.rst
+index 8193125a2bfb..01dcb954f6d7 100644
+--- a/Documentation/driver-api/soundwire/summary.rst
++++ b/Documentation/driver-api/soundwire/summary.rst
+@@ -101,10 +101,11 @@ Following is the Bus API to register the SoundWire Bus:
  
- 	ctrl->irq = of_irq_get(dev->of_node, 0);
--	if (ctrl->irq < 0)
--		return ctrl->irq;
-+	if (ctrl->irq < 0) {
-+		ret = ctrl->irq;
-+		goto err_init;
-+	}
+ .. code-block:: c
  
- 	ctrl->hclk = devm_clk_get(dev, "iface");
--	if (IS_ERR(ctrl->hclk))
--		return PTR_ERR(ctrl->hclk);
-+	if (IS_ERR(ctrl->hclk)) {
-+		ret = PTR_ERR(ctrl->hclk);
-+		goto err_init;
-+	}
+-	int sdw_add_bus_master(struct sdw_bus *bus)
++	int sdw_bus_master_add(struct sdw_bus *bus,
++				struct device *parent,
++				struct fwnode_handle)
+ 	{
+-		if (!bus->dev)
+-			return -ENODEV;
++		sdw_master_device_add(bus, parent, fwnode);
  
- 	clk_prepare_enable(ctrl->hclk);
+ 		mutex_init(&bus->lock);
+ 		INIT_LIST_HEAD(&bus->slaves);
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index 488c3c9e4947..18024ff770f8 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -10,13 +10,16 @@
+ #include "bus.h"
  
-@@ -787,7 +791,7 @@ static int qcom_swrm_probe(struct platform_device *pdev)
- 
- 	ret = qcom_swrm_get_port_config(ctrl);
- 	if (ret)
--		return ret;
-+		goto err_clk;
- 
- 	params = &ctrl->bus.params;
- 	params->max_dr_freq = DEFAULT_CLK_FREQ;
-@@ -814,28 +818,32 @@ static int qcom_swrm_probe(struct platform_device *pdev)
- 					"soundwire", ctrl);
- 	if (ret) {
- 		dev_err(dev, "Failed to request soundwire irq\n");
--		goto err;
-+		goto err_clk;
- 	}
- 
- 	ret = sdw_add_bus_master(&ctrl->bus);
- 	if (ret) {
- 		dev_err(dev, "Failed to register Soundwire controller (%d)\n",
- 			ret);
--		goto err;
-+		goto err_clk;
- 	}
- 
- 	qcom_swrm_init(ctrl);
- 	ret = qcom_swrm_register_dais(ctrl);
- 	if (ret)
--		goto err;
-+		goto err_master_add;
- 
- 	dev_info(dev, "Qualcomm Soundwire controller v%x.%x.%x Registered\n",
- 		 (ctrl->version >> 24) & 0xff, (ctrl->version >> 16) & 0xff,
- 		 ctrl->version & 0xffff);
+ /**
+- * sdw_add_bus_master() - add a bus Master instance
++ * sdw_bus_master_add() - add a bus Master instance
+  * @bus: bus instance
++ * @parent: parent device
++ * @fwnode: firmware node handle
+  *
+  * Initializes the bus instance, read properties and create child
+  * devices.
+  */
+-int sdw_add_bus_master(struct sdw_bus *bus)
++int sdw_bus_master_add(struct sdw_bus *bus, struct device *parent,
++		       struct fwnode_handle *fwnode)
+ {
+ 	struct sdw_master_prop *prop = NULL;
+ 	int ret;
+@@ -107,7 +110,7 @@ int sdw_add_bus_master(struct sdw_bus *bus)
  
  	return 0;
--err:
-+
-+err_master_add:
-+	sdw_delete_bus_master(&ctrl->bus);
-+err_clk:
- 	clk_disable_unprepare(ctrl->hclk);
-+err_init:
+ }
+-EXPORT_SYMBOL(sdw_add_bus_master);
++EXPORT_SYMBOL(sdw_bus_master_add);
+ 
+ static int sdw_delete_slave(struct device *dev, void *data)
+ {
+@@ -131,18 +134,18 @@ static int sdw_delete_slave(struct device *dev, void *data)
+ }
+ 
+ /**
+- * sdw_delete_bus_master() - delete the bus master instance
++ * sdw_bus_master_delete() - delete the bus master instance
+  * @bus: bus to be deleted
+  *
+  * Remove the instance, delete the child devices.
+  */
+-void sdw_delete_bus_master(struct sdw_bus *bus)
++void sdw_bus_master_delete(struct sdw_bus *bus)
+ {
+ 	device_for_each_child(bus->dev, NULL, sdw_delete_slave);
+ 
+ 	sdw_bus_debugfs_exit(bus);
+ }
+-EXPORT_SYMBOL(sdw_delete_bus_master);
++EXPORT_SYMBOL(sdw_bus_master_delete);
+ 
+ /*
+  * SDW IO Calls
+diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+index ed8d576bf5dc..1b600f423d8b 100644
+--- a/drivers/soundwire/intel.c
++++ b/drivers/soundwire/intel.c
+@@ -1110,9 +1110,10 @@ static int intel_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, sdw);
+ 
+-	ret = sdw_add_bus_master(&sdw->cdns.bus);
++	/* 2nd and 3rd arguments are just added for compilation */
++	ret = sdw_bus_master_add(&sdw->cdns.bus, NULL, NULL);
+ 	if (ret) {
+-		dev_err(&pdev->dev, "sdw_add_bus_master fail: %d\n", ret);
++		dev_err(&pdev->dev, "sdw_bus_master_add fail: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+@@ -1173,7 +1174,7 @@ static int intel_probe(struct platform_device *pdev)
+ 	sdw_cdns_enable_interrupt(&sdw->cdns, false);
+ 	free_irq(sdw->link_res->irq, sdw);
+ err_init:
+-	sdw_delete_bus_master(&sdw->cdns.bus);
++	sdw_bus_master_delete(&sdw->cdns.bus);
  	return ret;
  }
  
+@@ -1189,7 +1190,7 @@ static int intel_remove(struct platform_device *pdev)
+ 		free_irq(sdw->link_res->irq, sdw);
+ 		snd_soc_unregister_component(sdw->cdns.dev);
+ 	}
+-	sdw_delete_bus_master(&sdw->cdns.bus);
++	sdw_bus_master_delete(&sdw->cdns.bus);
+ 
+ 	return 0;
+ }
+diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+index e08a17c13f92..401811d6627e 100644
+--- a/drivers/soundwire/qcom.c
++++ b/drivers/soundwire/qcom.c
+@@ -821,7 +821,7 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+ 		goto err_clk;
+ 	}
+ 
+-	ret = sdw_add_bus_master(&ctrl->bus);
++	ret = sdw_bus_master_add(&ctrl->bus, dev, dev->fwnode);
+ 	if (ret) {
+ 		dev_err(dev, "Failed to register Soundwire controller (%d)\n",
+ 			ret);
+@@ -840,7 +840,7 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+ 	return 0;
+ 
+ err_master_add:
+-	sdw_delete_bus_master(&ctrl->bus);
++	sdw_bus_master_delete(&ctrl->bus);
+ err_clk:
+ 	clk_disable_unprepare(ctrl->hclk);
+ err_init:
+@@ -851,7 +851,7 @@ static int qcom_swrm_remove(struct platform_device *pdev)
+ {
+ 	struct qcom_swrm_ctrl *ctrl = dev_get_drvdata(&pdev->dev);
+ 
+-	sdw_delete_bus_master(&ctrl->bus);
++	sdw_bus_master_delete(&ctrl->bus);
+ 	clk_disable_unprepare(ctrl->hclk);
+ 
+ 	return 0;
+diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+index 00f5826092e3..2003e8c55538 100644
+--- a/include/linux/soundwire/sdw.h
++++ b/include/linux/soundwire/sdw.h
+@@ -832,8 +832,9 @@ struct sdw_bus {
+ 	bool multi_link;
+ };
+ 
+-int sdw_add_bus_master(struct sdw_bus *bus);
+-void sdw_delete_bus_master(struct sdw_bus *bus);
++int sdw_bus_master_add(struct sdw_bus *bus, struct device *parent,
++		       struct fwnode_handle *fwnode);
++void sdw_bus_master_delete(struct sdw_bus *bus);
+ 
+ /**
+  * sdw_port_config: Master or Slave Port configuration
 -- 
 2.17.1
 
