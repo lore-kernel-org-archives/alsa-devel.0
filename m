@@ -6,71 +6,69 @@ X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64340C83000
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Apr 2020 16:30:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94C23C83000
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Apr 2020 16:31:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E38332073E
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Apr 2020 16:30:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 207092076B
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Apr 2020 16:31:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cwXsJfdC";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="jNtwpDlN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E38332073E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SfUWeqLy";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="g7ATxj0S"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 207092076B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 47C821666;
-	Wed, 29 Apr 2020 18:29:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 47C821666
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7DF7A167D;
+	Wed, 29 Apr 2020 18:30:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7DF7A167D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588177835;
-	bh=+ZFmSTfRlzLSqIImDH7J+JHuq7zyyWHC0ptJUMmXft0=;
+	s=default; t=1588177873;
+	bh=RgPmeUZllXtirgmPRnh3nwQ41QJGEdm8EDdeOOZDzrw=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cwXsJfdCgof0nK4N9h1nUqvaAxyK+YHmRb/NytmI1LEtD+Wwgmkyh4MV9jS2g17Ls
-	 3XBPrDBL0O8f2nA4WXMWEQDXwNT/y2raQrscmCiSieyaZwnYktNn84LofGn6RxsQIW
-	 JUlw94XHKgoUtl4EpAYQ6aWwnAe68nW3S2ZfN8Tk=
+	b=SfUWeqLywp4XTFXruwPvE/4SBTIidSn658JPC9HdXm+HNyxzhL0+wAk6ZbGPzHKQI
+	 1WFtZNdm+13IkoLKwba7jdWb6Ez5J1KYy4I62e5DyR5GgkeAUE3GaZh3duiOk3ol77
+	 UlSwswxVEclBykfTGS0ljdxZFZ2ei5UwshoS+ePE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 61B3AF802BE;
-	Wed, 29 Apr 2020 18:26:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6E246F802DB;
+	Wed, 29 Apr 2020 18:26:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7D041F802BE; Wed, 29 Apr 2020 18:26:42 +0200 (CEST)
+ id 8AB97F802DB; Wed, 29 Apr 2020 18:26:52 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 17AD1F802A1
- for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2020 18:26:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17AD1F802A1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0DF11F802C3
+ for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2020 18:26:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0DF11F802C3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="jNtwpDlN"
+ header.b="g7ATxj0S"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 10CFF2076B;
- Wed, 29 Apr 2020 16:26:37 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 0465020787;
+ Wed, 29 Apr 2020 16:26:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1588177598;
- bh=+ZFmSTfRlzLSqIImDH7J+JHuq7zyyWHC0ptJUMmXft0=;
+ s=default; t=1588177604;
+ bh=RgPmeUZllXtirgmPRnh3nwQ41QJGEdm8EDdeOOZDzrw=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=jNtwpDlN2/yGU87aQZnyuN1IH98wv1CpRVpBC4Uwt/70lA0qwy5OTnoe2aHRSBp1D
- h8Ozoh62f6XvG7IfwUZLY8MseaEy1tb57+jJf+GZoEy6PcVaUQdJlvbxcCr3Rrl35A
- vXmxiQ+oXRTxE74U6ugksHMR6+IwBMln6lqNHRR8=
-Date: Wed, 29 Apr 2020 17:26:36 +0100
+ b=g7ATxj0SrrWjJMZGiZ95dLJiaRR8ZWhv29KHHXqp5w/HNIL+8QZDBvI3KWFJjJ5t5
+ e3PeziQYim2SczDKhMpkbBX89HuyUd7slp/oGTxTr0/lcJ3UV0ufBqp1F6RbuEuV3R
+ eYInyzTdM+BkMiPllU+7soEeVT+Csl+k3Wdu8+94=
+Date: Wed, 29 Apr 2020 17:26:42 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Arnd Bergmann <arnd@arndb.de>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20200428214642.3925004-1-arnd@arndb.de>
-References: <20200428214642.3925004-1-arnd@arndb.de>
-Subject: Re: [PATCH] ASoC: rt5682: fix I2C/Soundwire dependencies
-Message-Id: <158817756638.27768.13590393174406922978.b4-ty@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
- Charles Keepax <ckeepax@opensource.cirrus.com>,
- kbuild test robot <lkp@intel.com>, linux-kernel@vger.kernel.org,
+To: Arnd Bergmann <arnd@arndb.de>
+In-Reply-To: <20200428212721.2877627-1-arnd@arndb.de>
+References: <20200428212721.2877627-1-arnd@arndb.de>
+Subject: Re: [PATCH] ASoC: codecs: wm97xx: fix ac97 dependency
+Message-Id: <158817756638.27768.14951334654894863306.b4-ty@kernel.org>
+Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>,
+ linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
  Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
  Geert Uytterhoeven <geert@linux-m68k.org>,
  Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
@@ -89,14 +87,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 28 Apr 2020 23:46:14 +0200, Arnd Bergmann wrote:
-> If one of the two is a loadable module, the combined driver must
-> not be built-in:
+On Tue, 28 Apr 2020 23:26:59 +0200, Arnd Bergmann wrote:
+> A recent build fix got the dependency slightly wrong, breaking
+> builds with CONFIG_AC97_BUS_NEW:
 > 
-> aarch64-linux-ld: sound/soc/codecs/rt5682.o: in function `rt5682_sdw_hw_free':
-> rt5682.c:(.text+0xb34): undefined reference to `sdw_stream_remove_slave'
-> aarch64-linux-ld: sound/soc/codecs/rt5682.o: in function `rt5682_sdw_hw_params':
-> rt5682.c:(.text+0xe78): undefined reference to `sdw_stream_add_slave'
+> WARNING: unmet direct dependencies detected for SND_SOC_WM9713
+>   Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_AC97_BUS [=n]
+>   Selected by [m]:
+>   - SND_SOC_ZYLONITE [=m] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_PXA2XX_SOC [=m] && MACH_ZYLONITE [=y] && AC97_BUS [=n]=n
 > 
 > [...]
 
@@ -106,8 +104,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: rt5682: fix I2C/Soundwire dependencies
-      commit: fd443a20c2f0950f3c31765a08f7dd49b3bc69cb
+[1/1] ASoC: codecs: wm97xx: fix ac97 dependency
+      commit: ee2cbe06935bfa58f1fe07dc2a2283945f4b97dc
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
