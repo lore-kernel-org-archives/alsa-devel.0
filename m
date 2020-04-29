@@ -2,85 +2,110 @@ Return-Path: <SRS0=Op9s=6N=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3454DC83008
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Apr 2020 09:57:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E519BC83007
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Apr 2020 10:43:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B7D812082E
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Apr 2020 09:57:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 726372074A
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Apr 2020 10:43:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="deslRmNz";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="hk0vatEy"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B7D812082E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eyninQM1";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AtVONm21"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 726372074A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1D59E1673;
-	Wed, 29 Apr 2020 11:56:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D59E1673
+	by alsa0.perex.cz (Postfix) with ESMTPS id ADE0D1689;
+	Wed, 29 Apr 2020 12:42:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ADE0D1689
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588154235;
-	bh=FwWtS3zRCjsJI2YMIBpLfYxO1MWQjhptPjdsF2oub2E=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1588157027;
+	bh=n6/ay3QeJrJ5ELBkOk861UqODjAYVcIfpMmBUaw7w78=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=deslRmNz6ouGP6VtgXWxIdOPga88vku++OwIqh8h6zCHTT4pcEPAOpgfq/pgcNDVr
-	 wdj44T3WOBev6OCZfNokHWRqkIGjZr10XUFa6ZYUIddsAHtl8dfay+VO8Cd/XNVYW+
-	 w+mnhbAAQt/lWETwX6TPug2jFU4yyPAY11OsEz9E=
+	b=eyninQM1JOFy/topL/7jTO4/NaL04zAI/WYz66hGqVoRNzWaF9m+6GaXL+Gj0GFjY
+	 yw6OzAZBOPpqklJdKR5oiKFHJPvnLQj+8k4jyiVUWivvFOtcU0hKhNeqGXf+YwTHxJ
+	 E4FEtEJVZUpHnEmqC5bRXV10nmUQI0oJqjUVcd+g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9B9DAF80109;
-	Wed, 29 Apr 2020 11:56:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 35DE7F80109;
+	Wed, 29 Apr 2020 12:42:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2A5C5F8022B; Wed, 29 Apr 2020 11:56:23 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id A524EF80217; Wed, 29 Apr 2020 12:42:54 +0200 (CEST)
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com
+ [IPv6:2607:f8b0:4864:20::141])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BFD75F80109
- for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2020 11:56:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BFD75F80109
+ by alsa1.perex.cz (Postfix) with ESMTPS id E42A8F800D2
+ for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2020 12:42:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E42A8F800D2
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="hk0vatEy"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 7EC3820775;
- Wed, 29 Apr 2020 09:56:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1588154176;
- bh=FwWtS3zRCjsJI2YMIBpLfYxO1MWQjhptPjdsF2oub2E=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=hk0vatEy+pgK6VYcHbSL62/4Xw9E5vtY1cHL3aLlx/bczOnEAY5aJ+hT4VtpvLF29
- C8PNd+XdHsK71bkwULURGK1CSkmxqj3qcX0h2vJ0kARFiFzcxDbTk3QQMJRmySaqGi
- MOPf6t02D8tCEOVWYLjSVASwS3Pt5d5VHEpzoOlw=
-Date: Wed, 29 Apr 2020 10:56:13 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 4/4] ASoC: wm8994: Silence warnings during deferred probe
-Message-ID: <20200429095613.GC4201@sirena.org.uk>
-References: <20200427074832.22134-1-m.szyprowski@samsung.com>
- <CGME20200427074843eucas1p1a3a265df0c7f14b0aaec25eb65daf606@eucas1p1.samsung.com>
- <20200427074832.22134-5-m.szyprowski@samsung.com>
- <20200427112202.GB4272@sirena.org.uk> <20200428103638.GP3559@dell>
- <20200428111413.GD5677@sirena.org.uk> <20200429071553.GW3559@dell>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="AtVONm21"
+Received: by mail-il1-x141.google.com with SMTP id b18so1962929ilf.2
+ for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2020 03:42:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc:content-transfer-encoding;
+ bh=HQCeKCJ5flepvrlwaiupKHsPEVU0GNt4+HY/TULi0WE=;
+ b=AtVONm21nVueyYOEjkLYejUuBgYmxhMXAOBhsMlPX4Y63BJoJJznDF9cqHZmyfgW0O
+ 04PtTzKuPGXkTqiqqqBvOSFQU/tY5aTy3h+MquydTM6cAPaBtEd6QeD2Uzsepwoacgm7
+ EUrA3PX0EU8XgdtbJ+bZsdmKkufFj0oNquC3cxRGn+RecOq7qZDjjp7hZ3uPz2wH+Ry3
+ NBfwS8axrMNb1W6FT32Z/fQgaiBUd8Qps4nva+s2HqC0qOFnAJ9rzcatLlD9PeMgx70t
+ 136uEHWPN8bvCD/EyvQ9ojuvl8tslWqieT1qIV8Aa3jT2L0yGihxHY1V4GtkXlSo53l+
+ B9EA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=HQCeKCJ5flepvrlwaiupKHsPEVU0GNt4+HY/TULi0WE=;
+ b=b2aUT4J187Ft72MwZxDEVolrXzHluHS8LMn15FwNLrcD8pOweHQ7JZTJ3pYPU/rZQY
+ RGhYu2qUClGpCsBJZWcTsXC/moRp9Gzj6FrPPYb6fz3YSVDoyNMFatt5m/iIZUuD1jdg
+ vWoHOFX0zC1YbqtG592c7CZmIsFoxdNQ5AeanczzKqTAINeL+kiCIo5Gb20T84cAD8jK
+ 5nXs3mJOJpQ01Kgkj4JwBCvOSY7w3qRM7NikRrvqEA+rVgyfZ818FjqVBXx1UGSFU+FA
+ TqH6X5zGchog7zVyhZA053UF/YWTFtCGt4jyB5VHPC9LYUJjyDnBrmRSreBJqIX4WoZA
+ KSlA==
+X-Gm-Message-State: AGi0PuYG6iTuNtQTCKtzr1M0OCy3hPzW1ih1YGzHMDltliAOfRgUmJKs
+ W+BPK7BsU3bYWTwANmdOC1D6c+HbKyOepaewCY4=
+X-Google-Smtp-Source: APiQypKL531i2NUS2jYYEqcP5uqHNVeBcZJLsXULczyPxkeF1g0mvYUtPJLWYzGXNriIVhhoi4PDnZCKXk4FbGoGWwc=
+X-Received: by 2002:a92:d443:: with SMTP id r3mr31485691ilm.293.1588156964317; 
+ Wed, 29 Apr 2020 03:42:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="/e2eDi0V/xtL+Mc8"
-Content-Disposition: inline
-In-Reply-To: <20200429071553.GW3559@dell>
-X-Cookie: I know how to do SPECIAL EFFECTS!!
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>,
- patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
- Liam Girdwood <lgirdwood@gmail.com>,
- Marek Szyprowski <m.szyprowski@samsung.com>
+References: <20200426120442.11560-1-peron.clem@gmail.com>
+ <20200426120442.11560-5-peron.clem@gmail.com>
+ <20200428080020.35qcuylwq2ylmubu@gilmour.lan>
+ <CAJiuCcc2LQ4L36KSfO8iLVFBUO6k+zsZFX+_Ovm_10PoWO4AsA@mail.gmail.com>
+ <20200428160417.6q5oab2guaumhhwi@gilmour.lan>
+ <CAJiuCccFFUJJzXwygLQbDK4fGJ61p72Hv7vj3WVP-=z=J1Yj0Q@mail.gmail.com>
+ <031ee5d3-8a30-82ee-76db-c0e8a1073046@arm.com>
+ <CAGb2v65rRbRpUTdkTF3hd5LnLQQt19YVOyVzM5te5XNVhQQH=A@mail.gmail.com>
+ <20200429081729.qa3gqtl5sof2jhem@gilmour.lan>
+In-Reply-To: <20200429081729.qa3gqtl5sof2jhem@gilmour.lan>
+From: =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Date: Wed, 29 Apr 2020 12:42:33 +0200
+Message-ID: <CAJiuCceGDm3HJydesXvL=Wr1_LCAsewfKAB73YV5J7eAgTRpOA@mail.gmail.com>
+Subject: Re: [linux-sunxi] Re: Audio sound card name [was [PATCH 4/7] arm64:
+ dts: allwinner: a64: Add HDMI audio]
+To: Maxime Ripard <maxime@cerno.tech>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Cc: devicetree <devicetree@vger.kernel.org>,
+ Linux-ALSA <alsa-devel@alsa-project.org>,
+ linux-sunxi <linux-sunxi@googlegroups.com>, Takashi Iwai <tiwai@suse.com>,
+ Jernej Skrabec <jernej.skrabec@siol.net>, Liam Girdwood <lgirdwood@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>,
+ Marcus Cooper <codekipper@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
+ Mark Brown <broonie@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,37 +121,125 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi,
 
---/e2eDi0V/xtL+Mc8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Wed, 29 Apr 2020 at 10:17, Maxime Ripard <maxime@cerno.tech> wrote:
+>
+> On Wed, Apr 29, 2020 at 02:24:00PM +0800, Chen-Yu Tsai wrote:
+> > On Wed, Apr 29, 2020 at 1:11 AM Robin Murphy <robin.murphy@arm.com> wro=
+te:
+> > >
+> > > On 2020-04-28 5:49 pm, Cl=C3=A9ment P=C3=A9ron wrote:
+> > > > Hi Mark, Rob,
+> > > >
+> > > > On Tue, 28 Apr 2020 at 18:04, Maxime Ripard <maxime@cerno.tech> wro=
+te:
+> > > >>
+> > > >> On Tue, Apr 28, 2020 at 10:54:00AM +0200, Cl=C3=A9ment P=C3=A9ron =
+wrote:
+> > > >>> Hi Maxime,
+> > > >>>
+> > > >>> On Tue, 28 Apr 2020 at 10:00, Maxime Ripard <maxime@cerno.tech> w=
+rote:
+> > > >>>>
+> > > >>>> On Sun, Apr 26, 2020 at 02:04:39PM +0200, Cl=C3=A9ment P=C3=A9ro=
+n wrote:
+> > > >>>>> From: Marcus Cooper <codekipper@gmail.com>
+> > > >>>>>
+> > > >>>>> Add a simple-soundcard to link audio between HDMI and I2S.
+> > > >>>>>
+> > > >>>>> Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+> > > >>>>> Signed-off-by: Marcus Cooper <codekipper@gmail.com>
+> > > >>>>> Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
+> > > >>>>> ---
+> > > >>>>>   arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 21 ++++++++++=
++++++++++
+> > > >>>>>   1 file changed, 21 insertions(+)
+> > > >>>>>
+> > > >>>>> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/ar=
+ch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
+> > > >>>>> index e56e1e3d4b73..08ab6b5e72a5 100644
+> > > >>>>> --- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
+> > > >>>>> +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
+> > > >>>>> @@ -102,6 +102,25 @@
+> > > >>>>>                status =3D "disabled";
+> > > >>>>>        };
+> > > >>>>>
+> > > >>>>> +     hdmi_sound: hdmi-sound {
+> > > >>>>> +             compatible =3D "simple-audio-card";
+> > > >>>>> +             simple-audio-card,format =3D "i2s";
+> > > >>>>> +             simple-audio-card,name =3D "allwinner,hdmi";
+> > > >>>>
+> > > >>>> I'm not sure what the usual card name should be like though. I w=
+ould assume that
+> > > >>>> this should be something specific enough so that you're able to =
+differentiate
+> > > >>>> between boards / SoC so that the userspace can choose a differen=
+t configuration
+> > > >>>> based on it?
+> > > >>>
+> > > >>> I really don't know what we should use here,
+> > > >>> I just have a look at other SoC:
+> > > >>> rk3328: "HDMI"
+> > > >>> rk3399: "hdmi-sound"
+> > > >>> r8a774c0-cat874: "CAT874 HDMI sound"
+> > > >>>
+> > > >>> But maybe it's time to introduce proper name:
+> > > >>> What about :
+> > > >>> pat
+> > > >>> sun50i-h6-hdmi
+> > > >>
+> > > >> It's pretty much what we've been using for the other sound cards w=
+e have, so it
+> > > >> makes sense to me.
+> > > >
+> > > > I have a question regarding the simple-audio-card,name.
+> > > > In this patch, I would like to introduce a simple-audio-card for th=
+e
+> > > > Allwinner A64 HDMI.
+> > > >
+> > > > What should be the preferred name for this sound card?
+> > > > "sun50i-a64-hdmi" ? "allwinner, sun50i-a64-hdmi" ?
+> > >
+> > > I can at least speak for RK3328, and the reasoning there was that as =
+the
+> > > user looking at what `aplay -l` says, I don't give a hoot about what =
+the
+> > > SoC may be called, I see two cards and I want to know, with the least
+> > > amount of uncertainty, which one will make the sound come out of the
+> > > port that's labelled "HDMI" on the box ;)
+> >
+> > I agree. The user really doesn't care what SoC the system uses. The onl=
+y
+> > real requirement is to be able to tell which output the card is related
+> > to, i.e. is it onboard or an external DAC, is it analog or HDMI, etc..
+>
+> Yeah, but it's exactly the point.
+>
+> If we also end up with "HDMI" as our card name, then the userspace has no=
+ way to
+> tell anymore if it's running from an rk3328 or an allwinner SoC, or somet=
+hing
+> else entirely. And therefore it cannot really configure anything to work =
+out of
+> the box anymore.
 
-On Wed, Apr 29, 2020 at 08:15:53AM +0100, Lee Jones wrote:
-> On Tue, 28 Apr 2020, Mark Brown wrote:
+Yes the final user doesn't care if it's sun50i A64 HDMI or sun50i H6
+HDMI, but like Maxime said between final user and the sound-card name
+you may want to have a configuration layer.
+This configuration layer can apply different settings depending on the
+sound card.
+Having too generic name will make impossible specific card configuration.
 
-> > One of the really common cases is that someone forgot to build the
-> > driver for the dependency so it'll just defer forever waiting for
-> > something that never loads.
+Also you can have specific name per board which can be quite clear for
+final user.
+ - sun50i-a64-hdmi
+ - sun50i-a64-spdif
+is not so hard to understand that one point to the HDMI whereas the
+other point to SPDIF.
 
-> Need to find another way to identify these failures.  There are 10's
-> if not 100's of cases of silently returning if -EPROBE_DEFER is
-> caught.
+Regards,
+Clement
 
-Or someone could go through and improve the diagnostics on those cases.
-
---/e2eDi0V/xtL+Mc8
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6pTzwACgkQJNaLcl1U
-h9D6Xgf9Guv3gkkSrA83WP59TlOCdVlc9WjLo4TwW/puCgPrbYPbbmVFcPlAEuw1
-xwkTQ+DV/GI5bYhfgn7/ClPRasITAnfWuTrbc2g0loWrgvpJo3Uh2LXAvUvjGP6A
-p4zn5WVTueSRjSJS21/N48q9Scv42sZyeWT+XY0fdRDPf8Gxad44kSCLBXBw2Fwa
-ez6bfzmdSASyBSPPeQO+blWMeaMc0aFfOBUmbBDzs0hqYE2jHyZkGDrfRD3y9qem
-vhr2gkKcaXV6GAcSMML5RXXWXpwVAAeKdWQ6qb1RihjeMOZlpfFod7TFqy6dDGsJ
-JEQ2bIuaNNps/dF3xFH9egl9H6ug7A==
-=3L8S
------END PGP SIGNATURE-----
-
---/e2eDi0V/xtL+Mc8--
+>
+> Maxime
