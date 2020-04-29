@@ -2,62 +2,87 @@ Return-Path: <SRS0=nm6W=6O=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 87800C47247
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 16:56:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17EC6C47247
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 16:56:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 119C120731
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 16:56:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9639D20731
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 16:56:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="A0Zi6L+f"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 119C120731
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=depni.sinp.msu.ru
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tV8m20Co";
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CDWiz+Ge"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9639D20731
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7CE711690;
-	Thu, 30 Apr 2020 18:55:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CE711690
+	by alsa0.perex.cz (Postfix) with ESMTPS id EFDB91693;
+	Thu, 30 Apr 2020 18:56:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EFDB91693
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588265774;
-	bh=2torgxbSpiwnaw7cxzwyIZZb9ZsnHbyDrFzwlAgJSIw=;
-	h=From:To:Subject:References:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=A0Zi6L+fVTJstbpZb+4y+nfwrT9tUHuuyEAwlEtdsCPgzpHFIq6Q7uW+/ruVowOeN
-	 bjj/rTnRLQcZM7OIZYHQ5+jNjveg1FiJzxXwhwnXmTFgNAPD45/QKaif+1pUngIUwF
-	 fY7lm59F386eSNTehQ2qvxMuxDggCy2s+3fVH/MM=
+	s=default; t=1588265812;
+	bh=ZhZYSsk5hS0xWWkSuDd/PIxg8h9PWndf6r1doa8ylkE=;
+	h=From:Date:Subject:To:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=tV8m20CoqcJKUN4D8iCJy+xP9vFdP0+7sv1AGHT7MNAALwKuMjf7faQM2AB57R+6g
+	 2w06iCj5jrvtar/WKdBxxJQM5reeDZjwEjXe62FM0qFSP7LCS83rh3p+EvgpFhvRE9
+	 53KYTiGa1oQY317mPM3T+VQQRfH+CoWy7Xu5DL9Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 11F82F80292;
+	by alsa1.perex.cz (Postfix) with ESMTP id E4F32F8029A;
 	Thu, 30 Apr 2020 18:53:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 307DEF801DB; Thu, 30 Apr 2020 18:34:08 +0200 (CEST)
-Received: from depni-mx.sinp.msu.ru (depni-mx.sinp.msu.ru [213.131.7.21])
- by alsa1.perex.cz (Postfix) with ESMTP id C9B76F80123
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 18:34:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9B76F80123
-Received: from spider (unknown [176.192.247.171])
- by depni-mx.sinp.msu.ru (Postfix) with ESMTPSA id EB35D1BF453;
- Thu, 30 Apr 2020 19:34:23 +0300 (MSK)
-From: Serge Belyshev <belyshev@depni.sinp.msu.ru>
-To: Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH] ALSA: pcm: oss: Avoid plugin buffer overflow
-References: <20200309082148.19855-1-tiwai@suse.de>
-Date: Thu, 30 Apr 2020 19:34:02 +0300
-In-Reply-To: <20200309082148.19855-1-tiwai@suse.de> (Takashi Iwai's message of
- "Mon, 9 Mar 2020 09:21:48 +0100")
-Message-ID: <87v9lhkk5h.fsf@depni.sinp.msu.ru>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+ id 5B658F8022B; Wed, 29 Apr 2020 05:35:52 +0200 (CEST)
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com
+ [IPv6:2a00:1450:4864:20::12d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5E7D9F800B6
+ for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2020 05:35:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E7D9F800B6
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="CDWiz+Ge"
+Received: by mail-lf1-x12d.google.com with SMTP id u10so421233lfo.8
+ for <alsa-devel@alsa-project.org>; Tue, 28 Apr 2020 20:35:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:from:date:message-id:subject:to;
+ bh=/A4gfRgYVIRAk1K6THZaRTL9fcdNV1OglXttEjxzMnY=;
+ b=CDWiz+Ge/Y9712NS8uE0axs6XCuaQZ7EAXUiKBAmp0Z0aqPrsLIcK+aEQskirHVHCO
+ EzsZuQu4EU4YFjt5X0Kcm7BeNkn/+mbszUbQf6QNUtVf7aQUcCOFQpNs4DhumDNsG7KA
+ 2avmKoJnCn3zjEMFpvvenCMMukBJpSc+GUR5FVODnMPDoBkVk/5UlgZgE6w68uutqtGD
+ d/93nPLTv5F0rO23EoZd3VsZc7e5OatSF7LZjSwoVfncTysEdZ6NjR2ZeOOUwiJlJ/UY
+ et8XnxKUmvO1QxdeK5ULlGc0aMUdu3EdyBxb8pMdapP+ZW07vZpZSgxZQKnDVnDYURdY
+ aEog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+ bh=/A4gfRgYVIRAk1K6THZaRTL9fcdNV1OglXttEjxzMnY=;
+ b=WlJb5l0GY7lQtbMmRlc7L+a26n/Qq0hzhZaozIaGtCJryKl4y+GNwcMZopKhyhK6Rn
+ CiZ0Jz9JK4QOGBt61NG/6gcK/6qiGhQmTlr/oduHpmMiVNLHySP69AAWTPYHwUxNUgCj
+ 9k8h6nML4h7bdaPrw9Vfa0xExOaysd+Syh7+uefmBz4i6aXpzMOiiGPX9snPwZbvIegf
+ Fgk70H8CLNF5NfSivSaiTqL34GGj1seUW68zm4Bdzjr8EAyE1mlOhIFfokQDENOq7pH1
+ rbioAguuzSEWk6yxW7G6wRhmONKf6p+NVQOwH8A2E7cOUdG+dGjq7A2aWuNalj88RusD
+ eqeA==
+X-Gm-Message-State: AGi0PuY+iZakNOcup5xPQusbhMlBsPhNKnWs6ND9kdI8IFDopwDOsjRa
+ CGJOstDX8b/NzR/zIRcOVztXIeu4wTmcYTlm1LzxpB3OvsM=
+X-Google-Smtp-Source: APiQypJnWMad78Ip9qDoPpZtGq6LKSU8ExmGP7x3Ku86rWX6hpxwM8o25dsMmRjoeS7b8WT61NYbdm56Yh4Hz2J0xko=
+X-Received: by 2002:a19:ca0e:: with SMTP id a14mr21351564lfg.105.1588131338891; 
+ Tue, 28 Apr 2020 20:35:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+From: Naoaki Ueda <nao.uedder@gmail.com>
+Date: Wed, 29 Apr 2020 12:35:27 +0900
+Message-ID: <CAHuMTPn7tNxste99VGfX=w=YnpwYhFc2xph=qj9A19YF8LN_VQ@mail.gmail.com>
+Subject: Issue report: HDMI audio problem with kernel 5.6.6-300 and Nvidia
+To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
 X-Mailman-Approved-At: Thu, 30 Apr 2020 18:53:43 +0200
-Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,32 +98,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-> ...
->
-> This patch addresses those possible buffer overflow accesses by simply
-> setting the upper limit per the given buffer size for each plugin
-> before src_frames() and after dst_frames() calls.
+Hi,
+Thank you for developing the awesome products.
 
-Hi!
+I notice my machine doesn't output any sounds from the HDMI port with
+kernel-5.6.6-300 and Nvidia.
+I have tried booting my machine with kernel-5.3.7-301.fc31.x86_64, it
+works fine.
+So I'm reporting those here referring
+https://bugzilla.redhat.com/show_bug.cgi?id=1784839.
 
-This patch breaks any output via oss interface, as evident by "mpv
---ao=oss somefile.mp3" or "mpg123 -o oss somefile.mp3" or just "cat
-/dev/urandom > /dev/dsp", which worked previously in kernel version 5.5
-but not any longer starting with 5.6.
+Following are the part of the outputs from `lspci -v -k` on my machine:
 
-It appears here that plugin->buf_frames is zero which results in ENXIO
-returned to userspace.
+```
+05:00.0 VGA compatible controller: NVIDIA Corporation GP106 [GeForce
+GTX 1060 3GB] (rev a1) (prog-if 00 [VGA controller])
+        Subsystem: NVIDIA Corporation Device 11c2
+        Physical Slot: 2
+        Flags: bus master, fast devsel, latency 0, IRQ 47
+        Memory at ee000000 (32-bit, non-prefetchable) [size=16M]
+        Memory at d0000000 (64-bit, prefetchable) [size=256M]
+        Memory at e0000000 (64-bit, prefetchable) [size=32M]
+        I/O ports at c000 [size=128]
+        Expansion ROM at 000c0000 [disabled] [size=128K]
+        Capabilities: [60] Power Management version 3
+        Capabilities: [68] MSI: Enable+ Count=1/1 Maskable- 64bit+
+        Capabilities: [78] Express Legacy Endpoint, MSI 00
+        Capabilities: [100] Virtual Channel
+        Capabilities: [250] Latency Tolerance Reporting
+        Capabilities: [128] Power Budgeting <?>
+        Capabilities: [420] Advanced Error Reporting
+        Capabilities: [600] Vendor Specific Information: ID=0001 Rev=1
+Len=024 <?>
+        Capabilities: [900] Secondary PCI Express
+        Kernel driver in use: nouveau
+        Kernel modules: nouveau
 
-> ...
-> --- a/sound/core/oss/pcm_plugin.c
-> +++ b/sound/core/oss/pcm_plugin.c
-> @@ -209,6 +209,8 @@ snd_pcm_sframes_t snd_pcm_plug_client_size(struct snd_pcm_substream *plug, snd_p
->  	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
->  		plugin = snd_pcm_plug_last(plug);
->  		while (plugin && drv_frames > 0) {
-> +			if (drv_frames > plugin->buf_frames)
-> +				drv_frames = plugin->buf_frames;
->  			plugin_prev = plugin->prev;
->  			if (plugin->src_frames)
->  				drv_frames = plugin->src_frames(plugin, drv_frames);
-> ...
+05:00.1 Audio device: NVIDIA Corporation GP106 High Definition Audio
+Controller (rev a1)
+        Subsystem: NVIDIA Corporation Device 11c2
+        Physical Slot: 2
+        Flags: bus master, fast devsel, latency 0, IRQ 50
+        Memory at ef080000 (32-bit, non-prefetchable) [size=16K]
+        Capabilities: [60] Power Management version 3
+        Capabilities: [68] MSI: Enable- Count=1/1 Maskable- 64bit+
+        Capabilities: [78] Express Endpoint, MSI 00
+        Capabilities: [100] Advanced Error Reporting
+        Kernel driver in use: snd_hda_intel
+        Kernel modules: snd_hda_intel
+```
+
+Best regards,
+
+Nao Ueda
+Japan
