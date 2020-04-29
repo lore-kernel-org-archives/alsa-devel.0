@@ -2,144 +2,74 @@ Return-Path: <SRS0=nm6W=6O=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DATE_IN_PAST_06_12,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9291C83001
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 06:37:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EA91FC83006
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 06:46:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 34A2020784
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 06:37:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6DC7E214D8
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 06:46:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RSTJvNzS";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=web.de header.i=@web.de header.b="r81s+PrO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 34A2020784
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=web.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="APd+Y0Tg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6DC7E214D8
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8798D1673;
-	Thu, 30 Apr 2020 08:36:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8798D1673
+	by alsa0.perex.cz (Postfix) with ESMTPS id BB4161673;
+	Thu, 30 Apr 2020 08:45:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BB4161673
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588228655;
-	bh=KZCiJelB915GdDeY6yZOiv3DCz7MnMD9XgkS3Be+SHs=;
-	h=Subject:From:To:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1588229209;
+	bh=K8AT0yB40/HEjFbMjNUcFwyvDpHzlKSVnzSVpcrU3cs=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=RSTJvNzSUGkpUbLi2gg3URyGNWa0de0pZCzHktw3YOo3uj/fL28EmTSHTFMxm/MLO
-	 iNZIoUmg+ynNPGM86BWlWxEQR8jZCJwhm0WPhrLqZezxEbF5agD4XENrCm5UzV3jmU
-	 m6KZsSdvAWKICcxeczXreMNMAYcOnRImbA0ICmWA=
+	b=APd+Y0TgZeH+Jt+cGuGY7/qOUwdpiidBzLYnqAI4V+FpVZVw2FeEMZe3yVNxj9yPc
+	 iKFiWWqvoDAbKPi6hgsfApKNf27qMah4NEE9Lya61RS8voSYSpJzvC9OA6xBSej9Lx
+	 Og+xmbaMj6lgtDlOjiPE8wCuhiqFv1BlB67w1XN0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 05D26F80136;
-	Thu, 30 Apr 2020 08:36:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2A12AF80136;
+	Thu, 30 Apr 2020 08:45:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 31CA7F801DB; Thu, 30 Apr 2020 08:36:43 +0200 (CEST)
-Received: from mout.web.de (mout.web.de [212.227.15.3])
+ id 63F54F801DB; Thu, 30 Apr 2020 08:45:57 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0C663F800E5
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 08:36:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C663F800E5
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=web.de header.i=@web.de header.b="r81s+PrO"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
- s=dbaedf251592; t=1588228569;
- bh=KZCiJelB915GdDeY6yZOiv3DCz7MnMD9XgkS3Be+SHs=;
- h=X-UI-Sender-Class:Cc:Subject:From:To:Date;
- b=r81s+PrOwfrq8uHwSz10p7Lee7zBTtHWjcUs1NFIJ0exWID8z2nOUCi81l5PIFieP
- WwUACI7MEubSKKIVJ9cbxYKBfB+eE/m5DAC3zZMnsTLdzW20veRKZSm502xYe/l796
- g1B/b8UqVSVqowIrmGF6NOZR+B00J0QlMSaxdZFY=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([93.131.175.216]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MIyeU-1jippT0iyI-00KPWR; Thu, 30
- Apr 2020 08:36:09 +0200
-Subject: Re: [PATCH] ASoC: mxs-saif: Add variable dev to simplify code
-From: Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-To: Tang Bin <tangbin@cmss.chinamobile.com>,
- Zhang Shengju <zhangshengju@cmss.chinamobile.com>,
- alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
-Message-ID: <a397e9c0-343c-685a-dd3f-53be09429a70@web.de>
-Date: Thu, 30 Apr 2020 08:36:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-X-Provags-ID: V03:K1:pFXJmbLz0evcvGeJgjU24her/TXjelDrCuPpmwp4KZfCHczWWO4
- Fcn2Zut66ov8Kp57rxjbt8qy/SM0Xk9G4TY2vhIGgZMnz6OrN183qHTSHZWpNigcwdXgjW1
- sdml72J1sf2//3oP9Dyj3M+6B1f4Bo/WlTlfS5SS99SRI4sVsQHRblpo6S0P6m66Pl7bjwO
- m1nrmC9OI7OA8tbaKU99g==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:jK6EbBZbMPo=:nOdHmU5SnJtTlrZ16YLujs
- jtRmq1V6HMvuuHnQN9fpvM85soOVxe+dmdS0/+sobUw68ggI+3pnym/+mzuCoauiCkMgJjz3v
- UzoOHgaMnGsfLtfJyKM1GFOIhPWnHXbieeDCPEUNX+iz51oDkg3NEYVzsDCKQ1VMswpvM8dbB
- wiDG6ByM5rbyQQNaDYW4ckp8nqoNpqU7uYcLnXPj/HMer/y+Drz//pWE5XMu6DuDxK5LqCg4M
- sgxTYQd733Jzl6bFd6LYbc8WLYHbTHqC84XpeL7dQ3BMSOBA8QF4SHL6vp+IfuNZlZfEanmRJ
- SUWHsOJ93N8QTHn0wxiMKl4jJFHpBWyikUbWTzKyvgdaHHzmC0OpGrxcdcXtdOXlM1Mq6dAgP
- mF8YS1RpCatR3a3YrWEzBwWJsZHoZ4zIthPGmnm5WJ9wXnO83wc09+HQWPZcGWxwJy7JJY7S0
- TuOgMYoYQhV9jQzJxVARQPN+7ZT7+JApeIxXdNMiVGtUSDvpXPvUi8NgwzCervpqQKRLHWD6D
- J62iQmXGmQbm2VK8uXbj86TE3sHmVv1D2VhpF50jDZUkhQ2WCCyl76z40jbyyEOIdGJlvfX1r
- FuLYsZdrMWBw1e3UeCCgET580myHthW4/36cHog7zlG3fBMoi21BYtA1GkKEEGVqqmL1t7vkE
- O9HYkdBKpmRm/OkAITodPnRKsSVox+sfX6kIILahING+6ck0vJtuei+45FEP9YSTWutEAJFZF
- vfD9+b6Gj5sRDWi1BWp/rHPrjRLXNaWXVP+YVleDJgQS2Mdx7ZAg2Dkuwf9/dWCov04lcAzpK
- +C525+o3E9a+tIvXcqPAUCp01HxMCb1n2VTQ0CIQdj9K+UBeAraGWbFIDua+TjfTSVgsBz5rM
- QV1MyW69V//ClSSdCkIvjNirkJeYsaBMYGVa1ShqI+8YtQMSVkm3SRCrG7uFRDvSMBBBYuXzL
- Cx39xL7hVypBjHKnDtQgatZJGL1w19e8wmitgqjoLl4DaUHU6g6dsa4OZHYHinY7UWmdQhy+/
- xsX4Rpn/yPlXPMLf0WFWFPGjaoDU9WHOVa1b7eUc5VdV6BPhMB7MZP8X4A6pUz4vQFNP1BxKO
- TgOv1PnNb+LslgPZBuZN3BDRy5myGqHsyG7wik7H3VDhBv2paKiVwuiqr3qACwWCM6Qvbcskl
- A+RCcRcuTA13WLvxYGcmyiWhVIszFkKkWtTleFFwIAPCgKXQnLMMeMaGt+MwdmFTQLcnVvlRZ
- 5GI1x10iJRgAHi5sl
-Cc: Sascha Hauer <s.hauer@pengutronix.de>, Takashi Iwai <tiwai@suse.com>,
- kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- Shawn Guo <shawnguo@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3564DF80123
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 08:45:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3564DF80123
+IronPort-SDR: Rcs4+psfb1bzxmmzm5oVaa2gyISeSxVBKLOBulpxwsDa0kxpGRL9A4tTzrnOEHinW1O+Wh6Yny
+ 3Xn7bWvHDvzQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 29 Apr 2020 23:45:46 -0700
+IronPort-SDR: 5JDk6IlEH4J//G4hxGQbGfk9EcsA4GLTNYnOGk+Najmtr/DTUSKoGbTimstED8jiExCOByLXVE
+ 4m48v6OIp3rw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,334,1583222400"; d="scan'208";a="459460044"
+Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
+ by fmsmga005.fm.intel.com with ESMTP; 29 Apr 2020 23:45:42 -0700
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
+To: alsa-devel@alsa-project.org,
+	vkoul@kernel.org
+Subject: [PATCH] soundwire: qcom: fix error handling in probe
+Date: Thu, 30 Apr 2020 02:50:57 +0800
+Message-Id: <20200429185057.12810-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
+Cc: pierre-louis.bossart@linux.intel.com, tiwai@suse.de,
+ gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+ ranjani.sridharan@linux.intel.com, hui.wang@canonical.com, broonie@kernel.org,
+ srinivas.kandagatla@linaro.org, jank@cadence.com, mengdong.lin@intel.com,
+ slawomir.blauciak@intel.com, sanyog.r.kale@intel.com,
+ rander.wang@linux.intel.com, bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -155,18 +85,88 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-> Add variable 'dev' to make the code cleaner in the function
-> mxs_saif_probe(). And now that the function mxs_saif_mclk_init()
-> have defined the variables 'ret' as the error returned value,
-> then it should be used instead in this place.
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-I find it clearer to integrate such source code adjustments by separate patches
-together with improved commit messages.
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=1d2cc5ac6f6668cc15216d51051103c61467d7e8#n138
+Make sure all error cases are properly handled and all resources freed.
 
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ drivers/soundwire/qcom.c | 26 +++++++++++++++++---------
+ 1 file changed, 17 insertions(+), 9 deletions(-)
 
-Would you become interested to search for similar update candidates
-by the means of the semantic patch language (Coccinelle software)?
+diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+index d6c9ad231873..e08a17c13f92 100644
+--- a/drivers/soundwire/qcom.c
++++ b/drivers/soundwire/qcom.c
+@@ -765,12 +765,16 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	ctrl->irq = of_irq_get(dev->of_node, 0);
+-	if (ctrl->irq < 0)
+-		return ctrl->irq;
++	if (ctrl->irq < 0) {
++		ret = ctrl->irq;
++		goto err_init;
++	}
+ 
+ 	ctrl->hclk = devm_clk_get(dev, "iface");
+-	if (IS_ERR(ctrl->hclk))
+-		return PTR_ERR(ctrl->hclk);
++	if (IS_ERR(ctrl->hclk)) {
++		ret = PTR_ERR(ctrl->hclk);
++		goto err_init;
++	}
+ 
+ 	clk_prepare_enable(ctrl->hclk);
+ 
+@@ -787,7 +791,7 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+ 
+ 	ret = qcom_swrm_get_port_config(ctrl);
+ 	if (ret)
+-		return ret;
++		goto err_clk;
+ 
+ 	params = &ctrl->bus.params;
+ 	params->max_dr_freq = DEFAULT_CLK_FREQ;
+@@ -814,28 +818,32 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+ 					"soundwire", ctrl);
+ 	if (ret) {
+ 		dev_err(dev, "Failed to request soundwire irq\n");
+-		goto err;
++		goto err_clk;
+ 	}
+ 
+ 	ret = sdw_add_bus_master(&ctrl->bus);
+ 	if (ret) {
+ 		dev_err(dev, "Failed to register Soundwire controller (%d)\n",
+ 			ret);
+-		goto err;
++		goto err_clk;
+ 	}
+ 
+ 	qcom_swrm_init(ctrl);
+ 	ret = qcom_swrm_register_dais(ctrl);
+ 	if (ret)
+-		goto err;
++		goto err_master_add;
+ 
+ 	dev_info(dev, "Qualcomm Soundwire controller v%x.%x.%x Registered\n",
+ 		 (ctrl->version >> 24) & 0xff, (ctrl->version >> 16) & 0xff,
+ 		 ctrl->version & 0xffff);
+ 
+ 	return 0;
+-err:
++
++err_master_add:
++	sdw_delete_bus_master(&ctrl->bus);
++err_clk:
+ 	clk_disable_unprepare(ctrl->hclk);
++err_init:
+ 	return ret;
+ }
+ 
+-- 
+2.17.1
 
-Regards,
-Markus
