@@ -2,76 +2,79 @@ Return-Path: <SRS0=Op9s=6N=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2453AC83000
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Apr 2020 17:04:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C45AEC83000
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Apr 2020 19:03:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9E611208FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Apr 2020 17:04:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 518C4205C9
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Apr 2020 19:03:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iqbADLpg";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xt40PtfY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9E611208FE
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VrUyq3Qr"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 518C4205C9
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CF3511673;
-	Wed, 29 Apr 2020 19:03:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF3511673
+	by alsa0.perex.cz (Postfix) with ESMTPS id A218E1671;
+	Wed, 29 Apr 2020 21:02:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A218E1671
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588179884;
-	bh=7jC9IDuFARUTSjXTY+0/VvRprFL9zCdJIskFeQ3UjIc=;
-	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=iqbADLpgTXIc+9a6mB/kzRCG1ZkhrayQlCBtOCJrIlPtHYrQpTkUdTx+CskgrhabP
-	 9rHuwtkCOt9TJQQEibUxwCaNJGqQM6t8Mz1zrkK3xsFt6rwN0AO9KrII67X6l+h/gg
-	 VagYYGpymR+nOHuVlKs6/gkAgORqqGcUwdnGeKyE=
+	s=default; t=1588187010;
+	bh=k1c7skf26uck2a+94CZdd64alO29RBND7c74GvqRTck=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=VrUyq3Qr0SG8rKs+9FY8YX3CJJOQ4psAz0ma0rLYl/IzslGnzaFanvZg///KHwKYD
+	 7DE/pAgNFSkuk54tz5Rp8gbRrY7pTGR9MQYNgFWehj+r7cBL/sQZeFvqWCDvNlpz07
+	 nqtZZ/2LscLYb1KxGxKmOFxXAQ1hRyJdGuWp8uiE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4200BF800D2;
-	Wed, 29 Apr 2020 19:03:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 07201F80217;
+	Wed, 29 Apr 2020 21:02:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 88A31F8022B; Wed, 29 Apr 2020 19:03:52 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id F2B58F8022B; Wed, 29 Apr 2020 21:02:37 +0200 (CEST)
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.134])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C0332F800D2
- for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2020 19:03:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0332F800D2
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Xt40PtfY"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 6387920B80;
- Wed, 29 Apr 2020 17:03:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1588179826;
- bh=7jC9IDuFARUTSjXTY+0/VvRprFL9zCdJIskFeQ3UjIc=;
- h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=Xt40PtfYySz0xeIL+8IivMPM0lRD3l7gpSEYrvsExi31y37cjrYA4+1YQDXT+l2YA
- tC4cTzIHqVc3UWA8EyOlUUIRGwkLmq7qTk3CZUvmKayYQMG+rumNEdZ4Hy9sqQP2Ph
- wY20WMpsdwnL8CZdqmlMtd3GjEGTumGkgSU+ZUj0=
-Date: Wed, 29 Apr 2020 18:03:44 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87sghovzwb.wl-kuninori.morimoto.gx@renesas.com>
-References: <87sghovzwb.wl-kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH v4] ASoC: dt-bindings: simple-card: switch to yaml base
- Documentation
-Message-Id: <158817982434.15847.3216748804713168341.b4-ty@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 18381F800B6
+ for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2020 21:02:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18381F800B6
+Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
+ (mreue011 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1MLRDv-1jlfhp0Uz5-00IWDA; Wed, 29 Apr 2020 21:02:18 +0200
+From: Arnd Bergmann <arnd@arndb.de>
+To: Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH] ALSA: opti9xx: shut up gcc-10 range warning
+Date: Wed, 29 Apr 2020 21:02:03 +0200
+Message-Id: <20200429190216.85919-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:+pDqwisosq8IRMVZs9c7qvMueRcXlRjdnVdd/4nRecwJrh6oDHT
+ Hk2Bj3hLCzMNMvJv5ipHRa0YzqmfJVD5xHFL8KaWvVWN35+kdWmb2gpK+sePVacbkQrr5nQ
+ azKLanUlr1s5veUtSELmvDYCpNSUPW+dn4tPimfRra0N/Z9W2M4XSn4ht86XufpMjpB89bo
+ t3GO9kGViXWXGNMtR4J0A==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:9cO2hF9lnlU=:/v7dR+GNPbFvFEJ1vkKpKS
+ wxaE29IFQ8i4X/RNJk3qQBnKMPsfw/dBIykU/RpE94huZCjxIuEuI8mHvmuK2A64sS9lY7e+W
+ Jxlo1vrWI930gBbR1qIPvdrYE8NiO8QadB+yGE4O2+JCydkw20/yYxaH11nx4uQjwMrjl3Rag
+ 39Lo/vbX9R97KI3FwOQWKsrAZBUZ60WUwBeGbEGdNU/SNOcazbQgMw0C3tWHX4yJoIJPgzACE
+ GsoGOZl/n0aatAENgvTvMG+/FGzWW1m5c418qVK+SgMaFghvMW81tvdjb9BT57+OaKC1m604g
+ q98VuycwUTnCuakAqKnq3vTLZ40xyyd9KIwinX6jPsh1nN1TTOG8Pz9EOCx4qK/Ur1oZOwSRf
+ nuFBmgxE/HqGMKgysxqvmjXHGwReXx4TwVp32rjONRbu5Zk7L19npgclts1BK0AVdtJwVpV6Q
+ u8QugluZn0yPwQKDdlp8mh75jl4ZTw63snCWBRbSPbWKdNwaJ+KHT08mUYHdrpkXaZNuLKyAi
+ aimjTmHuxsAJ7iTfh7gFTdrH4+mTbYmFkdS6IcnGPxHmQe1/4K/RvtodHCMM57IoCiHhlfkll
+ mqYO7OfuQQKH6ycavc4CG07pDLpDDnXNwYiEUkFIvPh8cKTjASTutzEyTW4bbE3pcNzVSqagg
+ uww/RNxxMa1dMWT+WXiuGcE5SEr2UFNP4y8+d4Vlp01XdQ3AFUZVBOlJtXw3XQ62oIfhpy/m5
+ ABbnFWBCQOqT/C6YwkzrKHSVxIvQfWYd3H7yHHg0RvvDdGEFLi2I2OYc7SQEN+y9134fL5KMW
+ fxqRVo5+RVqiKAT4u/lJbm522qA9y/kzNsE3oAOHPuCMQnGOmg=
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,40 +90,81 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 01 Apr 2020 09:00:04 +0900, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> 
-> This patch switches from .txt base to .yaml base Document.
-> 
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> 
-> [...]
+gcc-10 points out a few instances of suspicious integer arithmetic
+leading to value truncation:
 
-Applied to
+sound/isa/opti9xx/opti92x-ad1848.c: In function 'snd_opti9xx_configure':
+sound/isa/opti9xx/opti92x-ad1848.c:322:43: error: overflow in conversion from 'int' to 'unsigned char' changes value from '(int)snd_opti9xx_read(chip, 3) & -256 | 240' to '240' [-Werror=overflow]
+  322 |   (snd_opti9xx_read(chip, reg) & ~(mask)) | ((value) & (mask)))
+      |   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
+sound/isa/opti9xx/opti92x-ad1848.c:351:3: note: in expansion of macro 'snd_opti9xx_write_mask'
+  351 |   snd_opti9xx_write_mask(chip, OPTi9XX_MC_REG(3), 0xf0, 0xff);
+      |   ^~~~~~~~~~~~~~~~~~~~~~
+sound/isa/opti9xx/miro.c: In function 'snd_miro_configure':
+sound/isa/opti9xx/miro.c:873:40: error: overflow in conversion from 'int' to 'unsigned char' changes value from '(int)snd_miro_read(chip, 3) & -256 | 240' to '240' [-Werror=overflow]
+  873 |   (snd_miro_read(chip, reg) & ~(mask)) | ((value) & (mask)))
+      |   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
+sound/isa/opti9xx/miro.c:1010:3: note: in expansion of macro 'snd_miro_write_mask'
+ 1010 |   snd_miro_write_mask(chip, OPTi9XX_MC_REG(3), 0xf0, 0xff);
+      |   ^~~~~~~~~~~~~~~~~~~
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.8
+These are all harmless here as only the low 8 bit are passed down
+anyway. Change the macros to inline functions to make the code
+more readable and also avoid the warning.
 
-Thanks!
+Strictly speaking those functions also need locking to make the
+read/write pair atomic, but it seems unlikely that anyone would
+still run into that issue.
 
-[1/1] ASoC: dt-bindings: simple-card: switch to yaml base Documentation
-      commit: 79149fb835d762493db6b8b545527069d592d51b
+Fixes: 1841f613fd2e ("[ALSA] Add snd-miro driver")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ sound/isa/opti9xx/miro.c           | 9 ++++++---
+ sound/isa/opti9xx/opti92x-ad1848.c | 9 ++++++---
+ 2 files changed, 12 insertions(+), 6 deletions(-)
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+diff --git a/sound/isa/opti9xx/miro.c b/sound/isa/opti9xx/miro.c
+index e764816a8f7a..b039429e6871 100644
+--- a/sound/isa/opti9xx/miro.c
++++ b/sound/isa/opti9xx/miro.c
+@@ -867,10 +867,13 @@ static void snd_miro_write(struct snd_miro *chip, unsigned char reg,
+ 	spin_unlock_irqrestore(&chip->lock, flags);
+ }
+ 
++static inline void snd_miro_write_mask(struct snd_miro *chip,
++		unsigned char reg, unsigned char value, unsigned char mask)
++{
++	unsigned char oldval = snd_miro_read(chip, reg);
+ 
+-#define snd_miro_write_mask(chip, reg, value, mask)	\
+-	snd_miro_write(chip, reg,			\
+-		(snd_miro_read(chip, reg) & ~(mask)) | ((value) & (mask)))
++	snd_miro_write(chip, reg, (oldval & ~mask) | (value & mask));
++}
+ 
+ /*
+  *  Proc Interface
+diff --git a/sound/isa/opti9xx/opti92x-ad1848.c b/sound/isa/opti9xx/opti92x-ad1848.c
+index d06b29693c85..0e6d20e49158 100644
+--- a/sound/isa/opti9xx/opti92x-ad1848.c
++++ b/sound/isa/opti9xx/opti92x-ad1848.c
+@@ -317,10 +317,13 @@ static void snd_opti9xx_write(struct snd_opti9xx *chip, unsigned char reg,
+ }
+ 
+ 
+-#define snd_opti9xx_write_mask(chip, reg, value, mask)	\
+-	snd_opti9xx_write(chip, reg,			\
+-		(snd_opti9xx_read(chip, reg) & ~(mask)) | ((value) & (mask)))
++static inline void snd_opti9xx_write_mask(struct snd_opti9xx *chip,
++		unsigned char reg, unsigned char value, unsigned char mask)
++{
++	unsigned char oldval = snd_opti9xx_read(chip, reg);
+ 
++	snd_opti9xx_write(chip, reg, (oldval & ~mask) | (value & mask));
++}
+ 
+ static int snd_opti9xx_configure(struct snd_opti9xx *chip,
+ 					   long port,
+-- 
+2.26.0
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
