@@ -2,83 +2,67 @@ Return-Path: <SRS0=Op9s=6N=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95A3AC83003
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Apr 2020 13:48:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BCA70C83000
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Apr 2020 14:00:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1EBCC2074A
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Apr 2020 13:48:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 70CF12083B
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Apr 2020 14:00:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cglq6Top";
-	dkim=pass (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="DTjR1/uY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1EBCC2074A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MR4BfOC5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 70CF12083B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 676F31675;
-	Wed, 29 Apr 2020 15:47:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 676F31675
+	by alsa0.perex.cz (Postfix) with ESMTPS id B0FC283D;
+	Wed, 29 Apr 2020 15:59:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0FC283D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588168089;
-	bh=7V+sht2yELa1pBbNgCpi4oqnkCgw/9InXUyEVUGwEWs=;
-	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
+	s=default; t=1588168848;
+	bh=nECQC45sv064E67Qtmx6pZkd9yWu1xQJ3h7F3CuRVxg=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cglq6Top8ayG8ooSz/B5yV31l6sjEK7s0UP+Gd5eQzYZtYnz7bj538+mMO6/jWWCH
-	 CAvYVSdz2yZq6csfo5uAWPa+JaQP6Mpvg8/S4UyNIH4tO6hSTLg65cp3jaizSNAu57
-	 HNwDjIe3GWAbQOkJ9FbIr3OB1AZoTWDKgaOcB+Io=
+	b=MR4BfOC5MsyBwzln74Q6XLPGCbPiIrP42HZtWL/mb8YvfSAtZOOoQh1a4vz0plg26
+	 BdwEImNqasBmyDbcB6wb11vgTUwZbL9um/9lwttjwgQxBFIvUEvav6orPM6oQNI25u
+	 L+IKTlU5AyIF2tPDnVxfFaEvCLrmCLjhhMGOGfpc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CEADCF80217;
-	Wed, 29 Apr 2020 15:47:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 804AAF80109;
+	Wed, 29 Apr 2020 15:59:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 04230F800B6; Wed, 29 Apr 2020 15:47:16 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ id 35022F8022B; Wed, 29 Apr 2020 15:59:53 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B5D6BF800B6
- for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2020 15:47:12 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 64807A0042;
- Wed, 29 Apr 2020 15:47:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 64807A0042
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1588168031; bh=4Lqkr6o8drolT2N9pf+I1mPGBAta8DXzqnmx3RuXNqc=;
- h=Subject:To:References:From:Date:In-Reply-To:From;
- b=DTjR1/uYAOSyspu5tpCxGxeF5bMzqScM3ACq9gXzsJcTS3+9ypRxL3lbiy2JE7Cqc
- tGKmQspQVzkJkMzecBzs7VLzhhmY6BavcrHnzuWmLoVVVFzYMZuIu9FWyuFSm0jNre
- 2ob/iNLp66aYhsjk6SDwveWW72ylIxtJ/r7oSeTs=
-Received: from p50.perex-int.cz (unknown [192.168.100.94])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Wed, 29 Apr 2020 15:47:07 +0200 (CEST)
-Subject: Re: [alsa-devel] [alsa-lib][RFC PATCH] ucm: reset config id of
- condition items
-To: "Yang, Libin" <libin.yang@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- "libin.yang@linux.intel.com" <libin.yang@linux.intel.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-References: <1587607135-20106-1-git-send-email-libin.yang@linux.intel.com>
- <4b5a1e72-9d8c-221d-f0ea-df44f1ffb1d5@linux.intel.com>
- <79a9e97e-c58a-403a-9ffb-b9d3f9f70ad2@perex.cz>
- <BYAPR11MB2614DF61F17186141D35059C90D00@BYAPR11MB2614.namprd11.prod.outlook.com>
-From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <45ac8cce-e925-e795-0bca-4b924360cf9a@perex.cz>
-Date: Wed, 29 Apr 2020 15:47:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <BYAPR11MB2614DF61F17186141D35059C90D00@BYAPR11MB2614.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+ by alsa1.perex.cz (Postfix) with ESMTPS id 923F3F80109
+ for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2020 15:59:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 923F3F80109
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id F2172AC5B;
+ Wed, 29 Apr 2020 13:59:47 +0000 (UTC)
+Date: Wed, 29 Apr 2020 15:59:47 +0200
+Message-ID: <s5hh7x2jsto.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: YueHaibing <yuehaibing@huawei.com>
+Subject: Re: [PATCH -next] ALSA: seq: oss: remove unused inline function
+ snd_seq_oss_timer_is_realtime
+In-Reply-To: <20200429132805.18712-1-yuehaibing@huawei.com>
+References: <20200429132805.18712-1-yuehaibing@huawei.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-kernel@vger.kernel.org, tglx@linutronix.de, tiwai@suse.com,
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,114 +78,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 24. 04. 20 v 5:22 Yang, Libin napsal(a):
-> Hi Jaroslav,
+On Wed, 29 Apr 2020 15:28:05 +0200,
+YueHaibing wrote:
 > 
->>>
->>> Can you clarify what the conflict is and what id you were referring to?
->>
->> The arrays in the ALSA configs are represented like:
->>
->> User syntax:
->>
->> name [
->>     value0
->>     value1
->> ]
->>
->> Internal tree:
->>
->> name.0 value0
->> name.1 value1
->>
->> or
->>
->> name {
->>     0 value0
->>     1 value1
->> }
->>
->> (all three syntaxes are equal, the array just removes the indexes for the
->> readability)
->>
->> This patch tries to change name.0 to something like name.unique-0 or so which
->> is not so much pretty.
->>
->> You can just declare the new sequences like this to avoid clash:
->>
->> EnableSequence.seq3.cset "name='PGA3.0 3 Master Playback Volume' 50"
+> There's no callers in-tree.
 > 
-> I tried your suggestion, the code like:
-> If.seq1p {
->          Condition {
->                  Type ControlExists
->                  Control "name='PGA1.0 1 Master Playback Volume'"
->          }
->          True {
->                  EnableSequence.seq1p.cset "name='PGA1.0 1 Master Playback Volume' 50"
->          }
-> }
-> 
-> It seems not work. When I run "alsaucm -c sof-soundwire open sof-soundwire"
-> It shows:
-> ALSA lib parser.c:470:(parse_sequence) error: string type is expected for sequence command
-> ALSA lib parser.c:1257:(parse_verb) error: failed to parse verb enable sequence
-> ALSA lib parser.c:1370:(parse_verb_file) error: HiFi.conf failed to parse verb
-> ALSA lib main.c:962:(snd_use_case_mgr_open) error: failed to import sof-soundwire use case configuration -22
-> alsaucm: error failed to open sound card sof-soundwire: Invalid argument
-> 
-> My understanding is that "EnableSequence.seq1p.cset" will create
-> a new snd_config_t "seq1p" between "EnableSequence" and "cset".
-> This will cause executing EnableSequence failure.
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
-Oops. I was too quick in the idea. The configuration is the tree inside memory 
-and [] is just a special case where the ids are replaced with the continuous 
-integer range, thus:
+Applied, thanks.
 
-EnableSequence [
-   cmd1 arg1
-   cms2 arg2
-]
 
-is expanded to:
-
-EnableSequence {
-   0 cmd1
-   1 arg1
-   2 cmd2
-   3 arg2
-}
-
-or
-
-EnableSequence.0 cmd1
-EnableSequence.1 arg1
-EnableSequence.2 cmd2
-EnableSequence.3 arg2
-
-So if you like to add a new sequence which is outside the declared array, then 
-you need to add this:
-
-EnableSequence { cmdid3 cmd3 argid3 arg3 }
-
-or (maybe more readable):
-
-EnableSequence { cmdid3=cmd3 argid3=arg3 }
-
-or:
-
-EnableSequence.cmdid3 cmd3
-EnableSequence.argid3 arg3
-
-The ids names can be anything but they must be unique in the block (tree leaf).
-
-The declaration order matters in this context (_arg_ must be right behind 
-_cmd_ for the sequences). Note that the functions which works on top of the 
-configuration tree (like the in-place evaluation - If blocks) are executed on 
-top of this tree (which is parsed at first)! Keep it in the mind.
-
-					Jaroslav
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+Takashi
