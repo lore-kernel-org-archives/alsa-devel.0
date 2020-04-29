@@ -2,104 +2,97 @@ Return-Path: <SRS0=Op9s=6N=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B540C83001
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Apr 2020 01:58:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8FB1C83003
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Apr 2020 05:36:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9660D2073E
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Apr 2020 01:58:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2DC7F20757
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Apr 2020 05:36:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cQE9Y0HG";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IZbdQf1a"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9660D2073E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WqqH4WKK";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mail.com header.i=@mail.com header.b="cykbz0aH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2DC7F20757
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C79AE1679;
-	Wed, 29 Apr 2020 03:57:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C79AE1679
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6E896167D;
+	Wed, 29 Apr 2020 07:36:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E896167D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588125499;
-	bh=5aGXILf0SoG4xP1tKUlsHLgZVeol8OS3DTcwRqZJjWw=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1588138616;
+	bh=Dty+dfvFjiM56TcKPoX1IczO3PEPl7VY7rGav88Mgq4=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cQE9Y0HGK+MlxzOcJUpUuUwFHR/ojs/4nK2BJ1sR5y0jCzIpUG9uK4xE9u3oLEZ3p
-	 5isD6H5EZZ5PxnqhlCMpEGFuhSITrAcJNiVG1KjJk68Nl9z3PIDH9+SOpwaivGLMLK
-	 eThsFFWPn9U/kwAcSmWx8oM03rlFkGAQumaabNCQ=
+	b=WqqH4WKKu1gnDZm7VGmgUiTZwpcTMwMRQNawT34WbslYDmsYZezZnsW/kZzp290au
+	 /52LnuLraCR5XVS7zNJ3gpRE3w2RRisw+EYDZiAGXqz+ep0LadSIhHUQFZLIr/D31n
+	 2VFlLFUrCd12RqlfzkLid1VvRfXndAV7kT4vLkJs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3EB4AF80217;
-	Wed, 29 Apr 2020 03:57:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DC320F80109;
+	Wed, 29 Apr 2020 07:36:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 64430F8022B; Wed, 29 Apr 2020 03:57:22 +0200 (CEST)
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com
- [IPv6:2607:f8b0:4864:20::442])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 3EA3FF8022B; Wed, 29 Apr 2020 07:36:03 +0200 (CEST)
+Received: from mout.gmx.com (mout.gmx.com [74.208.4.200])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E94B4F80109
- for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2020 03:57:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E94B4F80109
+ by alsa1.perex.cz (Postfix) with ESMTPS id D0BAEF80109
+ for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2020 07:35:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0BAEF80109
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="IZbdQf1a"
-Received: by mail-pf1-x442.google.com with SMTP id x77so338516pfc.0
- for <alsa-devel@alsa-project.org>; Tue, 28 Apr 2020 18:57:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to:user-agent;
- bh=piyFAQuE1nQbg6TLe0uPF76+MOhAF84QvXHI7/T29lI=;
- b=IZbdQf1arsR3leQH3qkMB/7zjjQNiHdLMfuqXBARYJxDJI0GWKrDArn1qrVOvNnTcd
- jNtWkvKsvdexhMVmVeYCMGbWXAO2guv1bNPNSVdoJnddu7oT9/jZL8z8n2Fj85Rh4nva
- H+izmnO9F/lum+wM/2TKvYmYeDLAPu9CRi0kMzBktOnYuln3Ep+WEGmb5207YDLIek17
- pCVah/bsAqmIec6gXibW5MZPHXo+uVvt9P9Xjm+xqtR631dwDP1pL7YqaTnQKsKNAvit
- lO4rNjKxOxoYYPRC484WnBIyQyzDi6cwcy5Oo3U2m4sPfYzxPA9T8XfHL7SJFRv6v9TU
- Vz7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=piyFAQuE1nQbg6TLe0uPF76+MOhAF84QvXHI7/T29lI=;
- b=GDB4I6KUDOogKkbsubH57EohWDWhxPpJi9bPD2PEvpPL1VICF+ZEdjxjh2lKkI4Sk9
- uOzijT9be6GSl4lQTkT4SzfLIHn6vRF+jrJT8kje+s1fEBirJJ+SJAHiCpku13tqynVY
- zAJriwRrpiZZEGIJ5cF48D2xzbdpIq1++hLLHx5vT8URE35MzxPHt54cOm2f+LI7rhOe
- o+9DFPAOP/1gZhoj483rgCGTX2PGSZRqWL7br9qJW14kFkr34IAyniHeJGePU/xqmtMk
- 8DxUuyGHOOMrVHkBxhWe/9OaRfZ8kNxRBhRyRLjtgPkzZdtXqgsRySUfZwD8kek5EYtN
- kaqA==
-X-Gm-Message-State: AGi0PuaS1q8drE9PLF7T8mabST4QJTwHqORe+UmDLEWmjuu7pqkZsLqE
- 7k3Jo4/maq2cjKzGN3AQt5k=
-X-Google-Smtp-Source: APiQypJ8YEslaSIUMAz5iAgOMHXRXcLYU5tW9zTih3fsaaHOhEGTJzvS7w36/0kdqam3M6gdfAu8xA==
-X-Received: by 2002:a63:df0c:: with SMTP id u12mr29713898pgg.387.1588125434585; 
- Tue, 28 Apr 2020 18:57:14 -0700 (PDT)
-Received: from Asurada-Nvidia (searspoint.nvidia.com. [216.228.112.21])
- by smtp.gmail.com with ESMTPSA id b24sm16226326pfd.175.2020.04.28.18.57.13
- (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
- Tue, 28 Apr 2020 18:57:14 -0700 (PDT)
-Date: Tue, 28 Apr 2020 18:56:34 -0700
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] ASoC: fsl_easrc: mark PM functions __maybe_unused
-Message-ID: <20200429015632.GA15142@Asurada-Nvidia>
-References: <20200428212847.2926376-1-arnd@arndb.de>
+ dkim=pass (1024-bit key) header.d=mail.com header.i=@mail.com
+ header.b="cykbz0aH"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mail.com;
+ s=dbd5af2cbaf7; t=1588138539;
+ bh=O8CRrvrzasQ/Y1D2P6XYsfQYwS+j9z7W8nzqP9gscjM=;
+ h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+ b=cykbz0aHwy09HIuTft/8qWSSuHwCUAt1gYmNpfl0oS1gVIm6nEgLvKip08pkT2DLN
+ 0epcY/88mxj56Cvq+vAvZVR1CwHGwZ6mLUzUr8mC1pGIhICRIdKZWKT2MffaBnCmnl
+ tCsVV3ows1kuBJW6oue76rL16q+XTLN6NRvaMzpM=
+X-UI-Sender-Class: 214d933f-fd2f-45c7-a636-f5d79ae31a79
+Received: from [125.236.144.10] ([125.236.144.10]) by web-mail.mail.com
+ (3c-app-mailcom-lxa07.server.lan [10.76.45.8]) (via HTTP); Wed, 29 Apr 2020
+ 07:35:39 +0200
+Message-ID: <trinity-e21ed2f9-efc6-4950-b2e8-432d8622e570-1588138539644@3c-app-mailcom-lxa07>
+From: "robert rozee" <rozee@mail.com>
+To: "Kai Vehmanen" <kai.vehmanen@linux.intel.com>
+Subject: Re: underrun problems after setting parameters with
+ snd_pcm_set_params()
+Date: Wed, 29 Apr 2020 07:35:39 +0200
+Importance: normal
+Sensitivity: Normal
+In-Reply-To: <alpine.DEB.2.21.2004281842250.2957@eliteleevi.tm.intel.com>
+References: <trinity-86378cc8-0b7e-4b09-ae35-8342d01fae5c-1588059797517@3c-app-mailcom-lxa01>
+ <alpine.DEB.2.21.2004281842250.2957@eliteleevi.tm.intel.com>
+X-UI-Message-Type: mail
+X-Priority: 3
+X-Provags-ID: V03:K1:VEVhQg6silU6WE355rbGklEZPX5GO+vpd9iquIp4y7x5iZ5wf1L8wqt+YlkHuFEpCMH4m
+ UXul+9aelt+N9hIiKfo1Eo+LW/yI7gx/ZLXvjFPc9xStdLmdW2iGZat8VS6r/9gxW0MUTQmTBuhq
+ l+TPpQ6Zw1hUzmQImOE4bs80cDA2ymjBtExEZwncC9jCRweVwOh1kaR7PsXXDV4etTsAbS13Yc92
+ ExRzAAMUntaLkeeNbet/YklpNYKqpMs5pqwp+xOqxhD2TTx33pgimOXUCFgzhWxQP/sZXkNT1I4O
+ qw=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:fN4ga6iX/94=:xCgW6Ll6ivrJ1wJS39nt2O
+ asfev/yIfFWia72w+CGJw4NSnfjM89hF/H/xQSQYk/HJmQVkBdRfhLGpv3UtD9eN+Kx5bwAIy
+ znN084IQarlSePjh5VoQK2y7wEwLKTNcQvT0KT28i9QXtkyLzrZ9kgGJvKkJs4Sx2LFTJpKez
+ 2tyLk3M2wcpuQZybzOgrpHZKW6SN43ClL4wOyL+ihBmdiILhl/CHaFLjtXcFXXUlgiXBTt3LS
+ jHADwevz6QxaXDiF4pWpg0bMWBxYo9rdoM5pj51o8EXqFxcKBVVSsQ6Y7nqF40QoXkD9KvIuo
+ VQ/CJg06Dnu+wPit4DsRQRwjaGY1vREIhdd0vcKH3Zq201KFVhO7w+C1OblhKMsed+XUzrvBZ
+ YsLDLcem97frSCtqP+FOUtlj72RsKpBSI9B3/MDwTHdb5P49Wr0DKNvAUE3dulme8t7oOQTWI
+ yUXEj8GQU3Dt7aRlymMXmj57FlY64wTiT82l7uicUZVYOfjLhkgHcaaKRTxADa0psWaNr6ooS
+ WTr+346YWgbVmAwEbsW0e1AStYVumyYxdIz716nAjfYlmUWWDvKyyp297KJvO4gyigfmMtdVQ
+ GNikpfDG357ADv7BED5FxfDQ8uRTZWPIoJrTfyDSbb3yDztq2C9Iqr8DkgeI0Wl7Qijyov4Aa
+ ta7NnewpqJ9CUyPLWG3mhhDtvo5COCa2QOswGXCMj5YYBd+aizML3cE6bkF4xDDxyXe8=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200428212847.2926376-1-arnd@arndb.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@kernel.org>,
- Xiubo Li <Xiubo.Lee@gmail.com>, linux-kernel@vger.kernel.org,
- Shengjiu Wang <shengjiu.wang@nxp.com>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>,
- Fabio Estevam <festevam@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -115,22 +108,73 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Apr 28, 2020 at 11:28:08PM +0200, Arnd Bergmann wrote:
-> ifdefs are hard, and in this driver the suspend/resume functions are
-> the only callers of some other helpers that trigger a harmless warning
-> when CONFIG_PM is disabled:
-> 
-> sound/soc/fsl/fsl_easrc.c:1807:12: warning: 'fsl_easrc_get_firmware' defined but not used [-Wunused-function]
->  1807 | static int fsl_easrc_get_firmware(struct fsl_asrc *easrc)
->       |            ^~~~~~~~~~~~~~~~~~~~~~
-> sound/soc/fsl/fsl_easrc.c:303:12: warning: 'fsl_easrc_resampler_config' defined but not used [-Wunused-function]
->   303 | static int fsl_easrc_resampler_config(struct fsl_asrc *easrc)
->       |            ^~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Remove the #ifdef and just mark the callers as __maybe_unused to
-> suppress the warnings altogether.
-> 
-> Fixes: 955ac624058f ("ASoC: fsl_easrc: Add EASRC ASoC CPU DAI drivers")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+   hi Kai,
+       well, that's embarrassing! the problem was indeed largely with the
+   latency setting.
 
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+   the min(500000, sample_length) was to allow for samples of as short as
+   50ms.
+   i had found that short clips they were not playing at all - but that
+   was before i added in
+   snd_pcm_drain(handle).
+
+   with latency fixed at 500000 and snd_pcm_drain(handle) at the end,
+   everything
+   now seems to be working perfectly!
+
+   much appreciate your help   :-)
+
+
+   cheers,
+   rob   :-)
+
+
+   robert rozee
+   p.o. box 25-232
+   christchurch, new zealand
+   phone: +64 21 123-2603
+   email: rozee@mail.com
+
+
+   Sent: Wednesday, April 29, 2020 at 3:52 AM
+   From: "Kai Vehmanen" <kai.vehmanen@linux.intel.com>
+   To: "robert rozee" <rozee@mail.com>
+   Cc: alsa-devel@alsa-project.org
+   Subject: Re: underrun problems after setting parameters with
+   snd_pcm_set_params()
+   Hey,
+   On Tue, 28 Apr 2020, robert rozee wrote:
+   > the problem only occurs with SHORT sound clips. i found that clips
+   longer than
+   > 1111ms played without flaw. clips less that 500ms generally failed to
+   play to
+   > the end, but there was no error code returned.
+   in general, given you have sources available to all the popular apps,
+   it's
+   good to check how other apps use the API. I.e. aplay.c may be useful
+   simple additional reference for you to see how to use the interfaces.
+   I think you are missing draining the samples at the end, and then
+   your latency is setting is incorrect. I.e.
+   > snd_pcm_set_params(handle, SND_PCM_FORMAT_U8,
+   > SND_PCM_ACCESS_RW_INTERLEAVED,
+   > 1, // number of channels
+   > 48000, // bitrate (bps)
+   > 1, // resampling on/off
+   > min(500000, sample_length)); // latency
+   That sample_length does not look, the unit is usecs here. Please try
+   just putting latency of 500000 (i.e. 0.5sec).
+   > // send out current buffer content
+   >   frames=snd_pcm_writei(handle, @buffer, frames_to_write_now);
+   >   if frames<0 then frames=snd_pcm_recover(handle, frames, 0);
+   >   if frames<0 then break;
+   > }
+   When you have finished writing the audio samples to the ALSA device,
+   you
+   need to wait until ALSA has a chance to play all samples out. If you
+   look
+   at playback_go() in aplay.c, you'll see:
+   snd_pcm_nonblock(handle, 0);
+   snd_pcm_drain(handle);
+   snd_pcm_nonblock(handle, nonblock);
+   ... at the end.
+   Br, Kai
