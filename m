@@ -2,85 +2,79 @@ Return-Path: <SRS0=nm6W=6O=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B0EABC8300A
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 12:19:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E0985C8300A
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 12:23:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3BEE92076D
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 12:19:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6BB3D2076D
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 12:23:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BDYKn8nO";
-	dkim=pass (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="rDENUDqq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3BEE92076D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="snX8ad5T";
+	dkim=pass (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="2zcTUsYg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6BB3D2076D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7EF111663;
-	Thu, 30 Apr 2020 14:18:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7EF111663
+	by alsa0.perex.cz (Postfix) with ESMTPS id B7C981675;
+	Thu, 30 Apr 2020 14:22:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B7C981675
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588249166;
-	bh=WuAj7CujJVQg2QGmb7VuVZBHuB0DBpvRKzAoAmqHk+g=;
+	s=default; t=1588249389;
+	bh=rNoo6l6fQ/DyMt+aHN7Zfr9LxknaXzRvnbiujCHSfIk=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BDYKn8nOKc1OccikSVkPcwCmkQBh32vT9NPcoh/Ei1vMjWofactr7FJusrYs3IhQB
-	 C8Y96ZtHkbHnfiwJXuafJ+qoWlrlt8c14jedzMwuEu3+Tjij5OZr/lDIEHHQnmo5bZ
-	 IB1dc1vv9jyxEPErNE6CJMsIbHtO32aCNhno2RAw=
+	b=snX8ad5TP2hF9a6/IbkZFPuvHsZdVlMv7VUGkXSYkP6HoWy3XxKl6Drs2hXTU96zS
+	 wUpDJrs8iUfe64NrfiR4ydK27dxBnR7Urlxbw1xcqzBKPukNPnjkAR7/s045H3sC9T
+	 E244KO6jDZB48hGkMbkOC9e85nvlyDWgyPr0IINk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 07730F80136;
-	Thu, 30 Apr 2020 14:18:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 32D87F80136;
+	Thu, 30 Apr 2020 14:22:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DDC91F801DB; Thu, 30 Apr 2020 14:18:08 +0200 (CEST)
+ id 805F2F801DB; Thu, 30 Apr 2020 14:22:15 +0200 (CEST)
 Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6EAB4F80123
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 14:18:01 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 22BD2F80123
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 14:22:08 +0200 (CEST)
 Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id B85EAA0049;
- Thu, 30 Apr 2020 14:18:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz B85EAA0049
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 37E9EA004B;
+ Thu, 30 Apr 2020 14:22:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 37E9EA004B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1588249080; bh=kSThcjYaLU2W/yRFT3bl2//s2xiXdaMIN34TmTupPbM=;
+ t=1588249328; bh=TKedc6NcRINKXohc1MPBKlW6F/9YSuY86R731USNWwA=;
  h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
- b=rDENUDqq6gH+CqMSLpyhawXMIvFESCSgdmJRsGDTpH6YOaVe5EIZz6AsFgOz5PfC4
- 4Wh2MLRXCU6ectWORTcWaW1MmytYI4gCGYpa8+KOUhsSLI4b9QD8h9Wr4d5B++FLSg
- 0tiFg/od2pzJnHz2N3yO0cqSQkjfUMkOxbVIC4/Y=
+ b=2zcTUsYgGTI/6jfoPIJlpY/jaTYVcqZuB4H8A5y6RI8y4Kja1qDwk8bnNeaHyYb3o
+ uU0AOTI6mwhVhtEAEbVHWtMkc19airW6kxDmn/3gIbMSepbSOeb5VhS4Xi0LMWEqx0
+ 3GTn6q7e3u3FTIX3Iw6dm/L19qsdnIvSpC+9374A=
 Received: from p50.perex-int.cz (unknown [192.168.100.94])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested) (Authenticated sender: perex)
  by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Thu, 30 Apr 2020 14:17:56 +0200 (CEST)
-Subject: Re: Functionality of pcm_notify in snd-aloop?
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>, Takashi Iwai <tiwai@suse.de>
-References: <b4af9071-f8d7-5b47-4d7a-c5743bd67394@ivitera.com>
- <61d837f1-de1a-7aa6-ca8f-d0cfaa36ea69@perex.cz>
- <28a05a44-55bf-1831-aa3c-875e0499caea@ivitera.com>
- <28063dd1-71ab-a313-04b8-f4d97312b1b5@ivitera.com>
- <a325c165-5ced-618b-0b71-c0c4381473a1@perex.cz>
- <s5hmu6vlin9.wl-tiwai@suse.de>
- <alpine.DEB.2.21.2004281910520.2957@eliteleevi.tm.intel.com>
+ Thu, 30 Apr 2020 14:22:06 +0200 (CEST)
+Subject: Re: [ALSA-LIB PATCH] topology: Use bool parser to parse boolean value
+To: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+References: <20200417164747.673-1-amadeuszx.slawinski@linux.intel.com>
 From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <f6fa39ec-9675-ce3c-c77e-3a438433ea6b@perex.cz>
-Date: Thu, 30 Apr 2020 14:17:56 +0200
+Message-ID: <5ea63f7b-6740-7193-d504-90bf9f4786cb@perex.cz>
+Date: Thu, 30 Apr 2020 14:22:05 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.21.2004281910520.2957@eliteleevi.tm.intel.com>
+In-Reply-To: <20200417164747.673-1-amadeuszx.slawinski@linux.intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: Pavel Hofman <pavel.hofman@ivitera.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,50 +90,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 28. 04. 20 v 18:19 Kai Vehmanen napsal(a):
-> Hey,
+Dne 17. 04. 20 v 18:47 Amadeusz Sławiński napsal(a):
+> It should be safe to change this as correct values with int would be 0
+> or 1 and bool parser handles them correctly.
 > 
-> On Tue, 28 Apr 2020, Takashi Iwai wrote:
-> 
->> I believe the missing piece here is a generic way to tell user-space
->> that the stream got invalidated.  This would be useful not only for
->> aloop but can be applied in general when a stream becomes temporarily
->> unavailable (e.g. the HDMI monitor disconnected or the DSP route
->> switched).
-> 
-> ack on that. I've been preparing this patch to add -ENODATA to alsa-lib
-> documentation:
-> "[RFC] pcm: add documentation for -ENODATA error code handling"
-> https://github.com/kv2019i/alsa-lib/commit/87b298106e04054489ee93b26a610e37f99a3171
-> 
-> Have not yet had time to send a proper version to the list, but it's
-> addressing specifically this need. This would serve as the interface for
-> SOF DSP to tell that a given PCM node will not be providing data (as the
-> DSP topology is not fully connected) [1].
-> 
-> To test the above, I've used a small hack to aplay/arecord that keeps
-> trying to restart the PCM after a delay, in case -ENODATA is returned:
-> https://github.com/kv2019i/alsa-utils/commit/a2ba541ea0b3e86a65687de88a41f10cf0a8ddc2
+> Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 
-This code calls wrongly snd_pcm_resume() here. Also, we should really think 
-about the whole mechanism when the stream cannot be activated (also for 
-playback - Intel HDMI LPE driver [2]). I mean that the poll multiplexer should 
-handle this state, too. If we don't find a way to notify the user space that 
-the stream can be started using the poll(), we can use another interface like 
-control API for the notifications.
+Applied thanks.
 
-We may also instroduce a new PCM state "WAIT" to wait on the hardware / link 
-availability (SETUP -> -ENODATA -> WAIT -> use poll() for the link status -> 
-success -> SETUP -> PREPARE) - talking about SNDRV_PCM_STATE states here.
-
-					Jaroslav
-
-
-> [1] https://github.com/thesofproject/sof/issues/2564
-
-[2] 
-https://gitlab.freedesktop.org/pulseaudio/pulseaudio/-/blob/36a4923f9bd05d4c5e2e8b1765f18edf452b9251/src/modules/alsa/module-alsa-card.c#L928-933
-
+				Jaroslav
 
 -- 
 Jaroslav Kysela <perex@perex.cz>
