@@ -2,73 +2,85 @@ Return-Path: <SRS0=nm6W=6O=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-7.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD706C8300A
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 11:27:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B0EABC8300A
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 12:19:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5957420774
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 11:27:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3BEE92076D
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 12:19:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CdHCKgAq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5957420774
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BDYKn8nO";
+	dkim=pass (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="rDENUDqq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3BEE92076D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AFBCE1614;
-	Thu, 30 Apr 2020 13:26:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AFBCE1614
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7EF111663;
+	Thu, 30 Apr 2020 14:18:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7EF111663
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588246054;
-	bh=fM1oToogOF4WJCAaPL+YG1iYXk8nDsvrJMs1qB7ybqQ=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1588249166;
+	bh=WuAj7CujJVQg2QGmb7VuVZBHuB0DBpvRKzAoAmqHk+g=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CdHCKgAq1SdpVjH8QmGQRHyBmsW1j1TW+0HjyL6GLGxdXTvSPxOypc4Jidt1LR5A0
-	 P5R2LybhvlygPM0G3BVvPMDsBrsHyEYU2rAl57Hp42MBYo6cc6Rqbz7No9IW+dzN13
-	 yJC6I0VwiGl9lGcB7k9SCFzrarrNWBXBjqcfkreg=
+	b=BDYKn8nOKc1OccikSVkPcwCmkQBh32vT9NPcoh/Ei1vMjWofactr7FJusrYs3IhQB
+	 C8Y96ZtHkbHnfiwJXuafJ+qoWlrlt8c14jedzMwuEu3+Tjij5OZr/lDIEHHQnmo5bZ
+	 IB1dc1vv9jyxEPErNE6CJMsIbHtO32aCNhno2RAw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3B3E9F80136;
-	Thu, 30 Apr 2020 13:26:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 07730F80136;
+	Thu, 30 Apr 2020 14:18:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 369BEF801DB; Thu, 30 Apr 2020 13:26:42 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id DDC91F801DB; Thu, 30 Apr 2020 14:18:08 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BC457F800E5
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 13:26:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC457F800E5
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 52181ACB1;
- Thu, 30 Apr 2020 11:26:35 +0000 (UTC)
-Date: Thu, 30 Apr 2020 13:26:34 +0200
-Message-ID: <s5hd07pi591.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: Re: [PATCH 3/3] ALSA: hda/realtek - Add LED class support for micmute
- LED
-In-Reply-To: <20200430083255.5093-3-kai.heng.feng@canonical.com>
-References: <20200430083255.5093-1-kai.heng.feng@canonical.com>
- <20200430083255.5093-3-kai.heng.feng@canonical.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>,
- Kailang Yang <kailang@realtek.com>, Tomas Espeleta <tomas.espeleta@gmail.com>,
- open list <linux-kernel@vger.kernel.org>, tiwai@suse.com,
- Hui Wang <hui.wang@canonical.com>, Thomas Hebb <tommyhebb@gmail.com>,
- Jian-Hong Pan <jian-hong@endlessm.com>,
- =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6EAB4F80123
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 14:18:01 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id B85EAA0049;
+ Thu, 30 Apr 2020 14:18:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz B85EAA0049
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1588249080; bh=kSThcjYaLU2W/yRFT3bl2//s2xiXdaMIN34TmTupPbM=;
+ h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+ b=rDENUDqq6gH+CqMSLpyhawXMIvFESCSgdmJRsGDTpH6YOaVe5EIZz6AsFgOz5PfC4
+ 4Wh2MLRXCU6ectWORTcWaW1MmytYI4gCGYpa8+KOUhsSLI4b9QD8h9Wr4d5B++FLSg
+ 0tiFg/od2pzJnHz2N3yO0cqSQkjfUMkOxbVIC4/Y=
+Received: from p50.perex-int.cz (unknown [192.168.100.94])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Thu, 30 Apr 2020 14:17:56 +0200 (CEST)
+Subject: Re: Functionality of pcm_notify in snd-aloop?
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>, Takashi Iwai <tiwai@suse.de>
+References: <b4af9071-f8d7-5b47-4d7a-c5743bd67394@ivitera.com>
+ <61d837f1-de1a-7aa6-ca8f-d0cfaa36ea69@perex.cz>
+ <28a05a44-55bf-1831-aa3c-875e0499caea@ivitera.com>
+ <28063dd1-71ab-a313-04b8-f4d97312b1b5@ivitera.com>
+ <a325c165-5ced-618b-0b71-c0c4381473a1@perex.cz>
+ <s5hmu6vlin9.wl-tiwai@suse.de>
+ <alpine.DEB.2.21.2004281910520.2957@eliteleevi.tm.intel.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Message-ID: <f6fa39ec-9675-ce3c-c77e-3a438433ea6b@perex.cz>
+Date: Thu, 30 Apr 2020 14:17:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <alpine.DEB.2.21.2004281910520.2957@eliteleevi.tm.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: Pavel Hofman <pavel.hofman@ivitera.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,90 +96,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 30 Apr 2020 10:32:53 +0200,
-Kai-Heng Feng wrote:
+Dne 28. 04. 20 v 18:19 Kai Vehmanen napsal(a):
+> Hey,
 > 
-> Currently DMIC controls micmute LED via "audio mute LED trigger".
+> On Tue, 28 Apr 2020, Takashi Iwai wrote:
 > 
-> However, unlike Dell and Lenovo platforms, HP platforms don't provide a
-> way to control micmute LED via ACPI, it's controlled by HDA codec
-> instead.
+>> I believe the missing piece here is a generic way to tell user-space
+>> that the stream got invalidated.  This would be useful not only for
+>> aloop but can be applied in general when a stream becomes temporarily
+>> unavailable (e.g. the HDMI monitor disconnected or the DSP route
+>> switched).
 > 
-> So let's register an LED class for micmute so other subsystems like DMIC
-> can facilitate the codec-controlled LED.
+> ack on that. I've been preparing this patch to add -ENODATA to alsa-lib
+> documentation:
+> "[RFC] pcm: add documentation for -ENODATA error code handling"
+> https://github.com/kv2019i/alsa-lib/commit/87b298106e04054489ee93b26a610e37f99a3171
 > 
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> Have not yet had time to send a proper version to the list, but it's
+> addressing specifically this need. This would serve as the interface for
+> SOF DSP to tell that a given PCM node will not be providing data (as the
+> DSP topology is not fully connected) [1].
+> 
+> To test the above, I've used a small hack to aplay/arecord that keeps
+> trying to restart the PCM after a delay, in case -ENODATA is returned:
+> https://github.com/kv2019i/alsa-utils/commit/a2ba541ea0b3e86a65687de88a41f10cf0a8ddc2
 
-I guess this requires the Kconfig change to select CONFIG_LEDS_*
-or make the code conditionally built.  So far the latter strategy is
-taken for the code in hda_generic.c.
+This code calls wrongly snd_pcm_resume() here. Also, we should really think 
+about the whole mechanism when the stream cannot be activated (also for 
+playback - Intel HDMI LPE driver [2]). I mean that the poll multiplexer should 
+handle this state, too. If we don't find a way to notify the user space that 
+the stream can be started using the poll(), we can use another interface like 
+control API for the notifications.
+
+We may also instroduce a new PCM state "WAIT" to wait on the hardware / link 
+availability (SETUP -> -ENODATA -> WAIT -> use poll() for the link status -> 
+success -> SETUP -> PREPARE) - talking about SNDRV_PCM_STATE states here.
+
+					Jaroslav
 
 
-thanks,
+> [1] https://github.com/thesofproject/sof/issues/2564
 
-Takashi
+[2] 
+https://gitlab.freedesktop.org/pulseaudio/pulseaudio/-/blob/36a4923f9bd05d4c5e2e8b1765f18edf452b9251/src/modules/alsa/module-alsa-card.c#L928-933
 
-> ---
->  sound/pci/hda/patch_realtek.c | 25 +++++++++++++++++++++++++
->  1 file changed, 25 insertions(+)
-> 
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> index 6f164ccddde3..82eb7624bbba 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -17,6 +17,7 @@
->  #include <linux/dmi.h>
->  #include <linux/module.h>
->  #include <linux/input.h>
-> +#include <linux/leds.h>
->  #include <sound/core.h>
->  #include <sound/jack.h>
->  #include <sound/hda_codec.h>
-> @@ -4103,6 +4104,24 @@ static void alc_gpio_micmute_update(struct hda_codec *codec)
->  			    spec->gen.micmute_led.led_value);
->  }
->  
-> +static int micmute_led_set(struct led_classdev *led_cdev,
-> +			   enum led_brightness brightness)
-> +{
-> +	struct hda_codec *codec = dev_to_hda_codec(led_cdev->dev->parent);
-> +	struct alc_spec *spec = codec->spec;
-> +
-> +	alc_update_gpio_led(codec, spec->gpio_mic_led_mask,
-> +			    spec->micmute_led_polarity, !!brightness);
-> +	return 0;
-> +}
-> +
-> +static struct led_classdev micmute_led_cdev = {
-> +	.name = "hda::micmute",
-> +	.max_brightness = 1,
-> +	.brightness_set_blocking = micmute_led_set,
-> +	.default_trigger = "audio-micmute",
-> +};
-> +
->  /* setup mute and mic-mute GPIO bits, add hooks appropriately */
->  static void alc_fixup_hp_gpio_led(struct hda_codec *codec,
->  				  int action,
-> @@ -4110,6 +4129,7 @@ static void alc_fixup_hp_gpio_led(struct hda_codec *codec,
->  				  unsigned int micmute_mask)
->  {
->  	struct alc_spec *spec = codec->spec;
-> +	int err;
->  
->  	alc_fixup_gpio(codec, action, mute_mask | micmute_mask);
->  
-> @@ -4122,6 +4142,11 @@ static void alc_fixup_hp_gpio_led(struct hda_codec *codec,
->  	if (micmute_mask) {
->  		spec->gpio_mic_led_mask = micmute_mask;
->  		snd_hda_gen_add_micmute_led(codec, alc_gpio_micmute_update);
-> +
-> +		micmute_led_cdev.brightness = ledtrig_audio_get(LED_AUDIO_MICMUTE);
-> +		err = devm_led_classdev_register(&codec->core.dev, &micmute_led_cdev);
-> +		if (err)
-> +			codec_warn(codec, "failed to register micmute LED\n");
->  	}
->  }
->  
-> -- 
-> 2.17.1
-> 
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
