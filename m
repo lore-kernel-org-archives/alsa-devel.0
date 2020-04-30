@@ -6,81 +6,79 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF95EC47253
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:05:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A680BC28CBC
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:05:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4022A2063A
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:05:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 303202063A
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:05:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gmTRG56w";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="B4tQu3a3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4022A2063A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PfsLLEfx";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="AvTkE/MD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 303202063A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 914A316C2;
-	Thu, 30 Apr 2020 16:04:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 914A316C2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8CF5A169D;
+	Thu, 30 Apr 2020 16:05:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8CF5A169D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588255517;
-	bh=nYvNC5mp3p9E42LUYjMDSuncRs7p9od0b/nf87IZNn8=;
+	s=default; t=1588255550;
+	bh=NCEMTGfWpoYFw/KeMl/To3iZwdhBGM7JjgTt34Xc6Y4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gmTRG56wByzOB9oBtr9Tr4ytQ583VFoz6NGEyzhGObXyDbRqL9cuEQbdrA5Vq6H6L
-	 h4CoK8jJ6A1myZ2RTX5FNneoiZS0ctBoD4+2F1q78z/U/DLp7KPFf72DD1i3INpEK3
-	 CxXmuomxqKQcjX5xGZ3iI2IeGRPVm2y58uTHK0WE=
+	b=PfsLLEfxMt0yBCjFu1xGAwKkgvs+G3CmInNBaejD42lXGd0OvUVftl/+GC4/U17DS
+	 6gTKx9JOzTmk0tWcwc8ubiquxmxnah4+NKrmgX+zy//Qyy8AckDckQSBNq6mfPI+UZ
+	 XDwbFXLxeszgntsag2VS7uwjDrlArahdquUb6Udk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3DBECF8036F;
-	Thu, 30 Apr 2020 15:52:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DCC7AF80370;
+	Thu, 30 Apr 2020 15:52:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6D210F80361; Thu, 30 Apr 2020 15:52:35 +0200 (CEST)
+ id BA2BDF80371; Thu, 30 Apr 2020 15:52:43 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 37873F8035E
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 15:52:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 37873F8035E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 99B79F80351
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 15:52:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99B79F80351
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="B4tQu3a3"
+ header.b="AvTkE/MD"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 089DE24965;
- Thu, 30 Apr 2020 13:52:26 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 753E2208D5;
+ Thu, 30 Apr 2020 13:52:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1588254747;
- bh=nYvNC5mp3p9E42LUYjMDSuncRs7p9od0b/nf87IZNn8=;
+ s=default; t=1588254753;
+ bh=NCEMTGfWpoYFw/KeMl/To3iZwdhBGM7JjgTt34Xc6Y4=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=B4tQu3a3ykmzTDTVcJLPFx0KMCKj6hiI2OZKVR+ApH0iNQc04gnFhUhRUvuz1KGSW
- /JsGrVhyYasScJ+SRF09f5hU+MPeoGIyHkORV5jKBTzDqxMRt524itZlcoST7Y9EqX
- gPqHGaF1KIq8TjETN/gFahDIMv2fRic3oXVSMVVU=
+ b=AvTkE/MDL/0QzFniPgbaG1hxvEK0ZmqdCDssX25pUpcZ4EQ5IW0EqSjzp5HNNHV05
+ GPyHhdZNnlLARmXy9MEkwTHrm7LdxxQsjl27OzBNFWMBXZdg1aX+VXWzd8JpYEhudU
+ stdIyKRwc2AYFd2KsFXregFz9P4ZC0XflAfmUX1w=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 07/57] ASoC: topology: Check return value of
- soc_tplg_dai_config
-Date: Thu, 30 Apr 2020 09:51:28 -0400
-Message-Id: <20200430135218.20372-7-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 12/57] ASoC: q6dsp6: q6afe-dai: add missing
+ channels to MI2S DAIs
+Date: Thu, 30 Apr 2020 09:51:33 -0400
+Message-Id: <20200430135218.20372-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200430135218.20372-1-sashal@kernel.org>
 References: <20200430135218.20372-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Mark Brown <broonie@kernel.org>, =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
+ Mark Brown <broonie@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Stephan Gerhold <stephan@gerhold.net>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,50 +94,121 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+From: Stephan Gerhold <stephan@gerhold.net>
 
-[ Upstream commit dd8e871d4e560eeb8d22af82dde91457ad835a63 ]
+[ Upstream commit 0c824ec094b5cda766c80d88c2036e28c24a4cb1 ]
 
-Function soc_tplg_dai_config can fail, check for and handle possible
-failure.
+For some reason, the MI2S DAIs do not have channels_min/max defined.
+This means that snd_soc_dai_stream_valid() returns false,
+i.e. the DAIs have neither valid playback nor capture stream.
 
-Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200327204729.397-7-amadeuszx.slawinski@linux.intel.com
+It's quite surprising that this ever worked correctly,
+but in 5.7-rc1 this is now failing badly: :)
+
+Commit 0e9cf4c452ad ("ASoC: pcm: check if cpu-dai supports a given stream")
+introduced a check for snd_soc_dai_stream_valid() before calling
+hw_params(), which means that the q6i2s_hw_params() function
+was never called, eventually resulting in:
+
+    qcom-q6afe aprsvc:q6afe:4:4: no line is assigned
+
+... even though "qcom,sd-lines" is set in the device tree.
+
+Commit 9b5db059366a ("ASoC: soc-pcm: dpcm: Only allow playback/capture if supported")
+now even avoids creating PCM devices if the stream is not supported,
+which means that it is failing even earlier with e.g.:
+
+    Primary MI2S: ASoC: no backend playback stream
+
+Avoid all that trouble by adding channels_min/max for the MI2S DAIs.
+
+Fixes: 24c4cbcfac09 ("ASoC: qdsp6: q6afe: Add q6afe dai driver")
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20200415150050.616392-1-stephan@gerhold.net
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/soc-topology.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ sound/soc/qcom/qdsp6/q6afe-dai.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 22960f5932c7f..2d4a5a3058c41 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -2431,7 +2431,7 @@ static int soc_tplg_dai_elems_load(struct soc_tplg *tplg,
- {
- 	struct snd_soc_tplg_dai *dai;
- 	int count;
--	int i;
-+	int i, ret;
- 
- 	count = le32_to_cpu(hdr->count);
- 
-@@ -2446,7 +2446,12 @@ static int soc_tplg_dai_elems_load(struct soc_tplg *tplg,
- 			return -EINVAL;
- 		}
- 
--		soc_tplg_dai_config(tplg, dai);
-+		ret = soc_tplg_dai_config(tplg, dai);
-+		if (ret < 0) {
-+			dev_err(tplg->dev, "ASoC: failed to configure DAI\n");
-+			return ret;
-+		}
-+
- 		tplg->pos += (sizeof(*dai) + le32_to_cpu(dai->priv.size));
- 	}
- 
+diff --git a/sound/soc/qcom/qdsp6/q6afe-dai.c b/sound/soc/qcom/qdsp6/q6afe-dai.c
+index c1a7624eaf175..2a5302f1db98a 100644
+--- a/sound/soc/qcom/qdsp6/q6afe-dai.c
++++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
+@@ -902,6 +902,8 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
+ 				   SNDRV_PCM_FMTBIT_S24_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
+@@ -917,6 +919,8 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
+ 				   SNDRV_PCM_FMTBIT_S24_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
+@@ -931,6 +935,8 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
+ 			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
+@@ -946,6 +952,8 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
+ 				   SNDRV_PCM_FMTBIT_S24_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
+@@ -960,6 +968,8 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
+ 			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
+@@ -975,6 +985,8 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
+ 				   SNDRV_PCM_FMTBIT_S24_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
+@@ -989,6 +1001,8 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
+ 			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
+@@ -1004,6 +1018,8 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
+ 				   SNDRV_PCM_FMTBIT_S24_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
 -- 
 2.20.1
 
