@@ -7,79 +7,79 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7750C4724C
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:07:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B98BDC4724C
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:08:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 35B1E2076D
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:07:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 47BA320774
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:08:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cbf3SQI2";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ytZhzZN7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 35B1E2076D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jYo7x3+j";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="dadSrEuY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 47BA320774
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8E6991693;
-	Thu, 30 Apr 2020 16:06:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E6991693
+	by alsa0.perex.cz (Postfix) with ESMTPS id 98AF916A6;
+	Thu, 30 Apr 2020 16:07:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98AF916A6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588255657;
-	bh=8zk+QF+qhgskiuTgcQ5ftCBfM2M46oQfz0+/HdbgpwY=;
+	s=default; t=1588255692;
+	bh=jlkHXoihReddzPOAJ1lmAMz3Qsw9jgoxpyqzH4jRIE4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cbf3SQI27SUaPEZSspfGRJ1PnnFF3atfyqLLmWXv167FV2sOUOopmn1y8gEYb9tmC
-	 a0k/TRL26MIxxENLt8pBELpKFUB/5w6cltF73JXFqXj2DQYoRB4yDn5dnC2LGCZiqp
-	 78FaNwFtgH0acOR40q/kqDIcCokYSe69BR+RhPn8=
+	b=jYo7x3+j6FUz1oUaDjWauazulkc7Y18yihHZf1BWZtK+5aoeWyXM66sV5W1U3gXem
+	 /Vc53ogQU3GpVog0dF55g1ux3+lsnMW4EmFQRyAFSX7D6efO59MFIfk7Q0HJvR8O+n
+	 4RdUO9gESEgRd+IKxmxhb3gA8SJ3FU6wGT+Uqi0I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 29C91F80392;
-	Thu, 30 Apr 2020 15:52:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5850BF801DB;
+	Thu, 30 Apr 2020 15:53:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 91781F80384; Thu, 30 Apr 2020 15:52:53 +0200 (CEST)
+ id F3243F80383; Thu, 30 Apr 2020 15:52:53 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3134EF80368
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 15:52:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3134EF80368
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3F0F6F8036D
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 15:52:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3F0F6F8036D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ytZhzZN7"
+ header.b="dadSrEuY"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id E9E8D208D5;
- Thu, 30 Apr 2020 13:52:36 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 18A6324958;
+ Thu, 30 Apr 2020 13:52:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1588254757;
- bh=8zk+QF+qhgskiuTgcQ5ftCBfM2M46oQfz0+/HdbgpwY=;
+ s=default; t=1588254759;
+ bh=jlkHXoihReddzPOAJ1lmAMz3Qsw9jgoxpyqzH4jRIE4=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ytZhzZN7MC1SSruLQyzq0j9mDwKSRssuLrkGgLXLhVgM+s0aSzjEYNEBHhQ6ncUrI
- obgFWGOIHS9YFf/XHyp2ANfCXJRP3KXchQzd8VwNVOpNCA/BPKLkmT6u4q+JoJWZwA
- GW2QAj+EZS0R56/RCk+9dubd8Zep5X5W0reN+tkk=
+ b=dadSrEuY/9yI+9i8tdexAUX1Hw2y9YJK3iftDwusu/1et+52sdeoDXwfPw9qlZPL/
+ FYpQSVlY+3BZ6XPTWgc7Fx6SbtQcHGGcTzamnRbM97+tBOOYrGQGoydYRPcJSB1iB2
+ uhuOyQFlKTw0CocEcfey6kJgKMiPeV41n2MB45G8=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 16/57] ASoC: rsnd: Fix parent SSI start/stop in
- multi-SSI mode
-Date: Thu, 30 Apr 2020 09:51:37 -0400
-Message-Id: <20200430135218.20372-16-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 18/57] ASoC: codecs: hdac_hdmi: Fix incorrect use
+ of list_for_each_entry
+Date: Thu, 30 Apr 2020 09:51:39 -0400
+Message-Id: <20200430135218.20372-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200430135218.20372-1-sashal@kernel.org>
 References: <20200430135218.20372-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Matthias Blankertz <matthias.blankertz@cetitec.com>,
- Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>, =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,65 +95,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Matthias Blankertz <matthias.blankertz@cetitec.com>
+From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 
-[ Upstream commit a09fb3f28a60ba3e928a1fa94b0456780800299d ]
+[ Upstream commit 326b509238171d37402dbe308e154cc234ed1960 ]
 
-The parent SSI of a multi-SSI setup must be fully setup, started and
-stopped since it is also part of the playback/capture setup. So only
-skip the SSI (as per commit 203cdf51f288 ("ASoC: rsnd: SSI parent cares
-SWSP bit") and commit 597b046f0d99 ("ASoC: rsnd: control SSICR::EN
-correctly")) if the SSI is parent outside of a multi-SSI setup.
+If we don't find any pcm, pcm will point at address at an offset from
+the the list head and not a meaningful structure. Fix this by returning
+correct pcm if found and NULL if not. Found with coccinelle.
 
-Signed-off-by: Matthias Blankertz <matthias.blankertz@cetitec.com>
-Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/20200415141017.384017-2-matthias.blankertz@cetitec.com
+Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+Link: https://lore.kernel.org/r/20200415162849.308-1-amadeuszx.slawinski@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sh/rcar/ssi.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/codecs/hdac_hdmi.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index fc5d089868dfc..d51fb3a394486 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -407,7 +407,7 @@ static void rsnd_ssi_config_init(struct rsnd_mod *mod,
- 	 * We shouldn't exchange SWSP after running.
- 	 * This means, parent needs to care it.
- 	 */
--	if (rsnd_ssi_is_parent(mod, io))
-+	if (rsnd_ssi_is_parent(mod, io) && !rsnd_ssi_multi_slaves(io))
- 		goto init_end;
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 18c173e6a13b2..78d5b4d31bb69 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -150,14 +150,14 @@ static struct hdac_hdmi_pcm *
+ hdac_hdmi_get_pcm_from_cvt(struct hdac_hdmi_priv *hdmi,
+ 			   struct hdac_hdmi_cvt *cvt)
+ {
+-	struct hdac_hdmi_pcm *pcm = NULL;
++	struct hdac_hdmi_pcm *pcm;
  
- 	if (rsnd_io_is_play(io))
-@@ -559,7 +559,7 @@ static int rsnd_ssi_start(struct rsnd_mod *mod,
- 	 * EN is for data output.
- 	 * SSI parent EN is not needed.
- 	 */
--	if (rsnd_ssi_is_parent(mod, io))
-+	if (rsnd_ssi_is_parent(mod, io) && !rsnd_ssi_multi_slaves(io))
- 		return 0;
+ 	list_for_each_entry(pcm, &hdmi->pcm_list, head) {
+ 		if (pcm->cvt == cvt)
+-			break;
++			return pcm;
+ 	}
  
- 	ssi->cr_en = EN;
-@@ -582,7 +582,7 @@ static int rsnd_ssi_stop(struct rsnd_mod *mod,
- 	if (!rsnd_ssi_is_run_mods(mod, io))
- 		return 0;
+-	return pcm;
++	return NULL;
+ }
  
--	if (rsnd_ssi_is_parent(mod, io))
-+	if (rsnd_ssi_is_parent(mod, io) && !rsnd_ssi_multi_slaves(io))
- 		return 0;
- 
- 	cr  =	ssi->cr_own	|
-@@ -620,7 +620,7 @@ static int rsnd_ssi_irq(struct rsnd_mod *mod,
- 	if (rsnd_is_gen1(priv))
- 		return 0;
- 
--	if (rsnd_ssi_is_parent(mod, io))
-+	if (rsnd_ssi_is_parent(mod, io) && !rsnd_ssi_multi_slaves(io))
- 		return 0;
- 
- 	if (!rsnd_ssi_is_run_mods(mod, io))
+ static void hdac_hdmi_jack_report(struct hdac_hdmi_pcm *pcm,
 -- 
 2.20.1
 
