@@ -7,79 +7,81 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 63813C28CBC
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:12:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02671C47253
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:13:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E285F206D9
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:12:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 780EE206D9
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:13:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KbBk9oUI";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="PQDe6tM8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E285F206D9
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rZzIhNMs";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="W0mrmZYF"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 780EE206D9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 485B21669;
-	Thu, 30 Apr 2020 16:11:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 485B21669
+	by alsa0.perex.cz (Postfix) with ESMTPS id D38FE16CB;
+	Thu, 30 Apr 2020 16:12:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D38FE16CB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588255960;
-	bh=Kl08CSxK9cTZLizw5W56/tm53VbSYubwztTv1wcNJCs=;
+	s=default; t=1588255999;
+	bh=G+XhWuodZsxbLJtlCk/40wVd2/t6S+dPVSqrfZJM3wY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KbBk9oUIXYRNtL9evm8Ywah0JlSFvJbfGdznchUk1kQBnte2imBQdEUKruYZtgyE4
-	 RYvlyHOwO11E3SLGfWti/l79R0b1R32q1X2TJqzqeENbewC4htL65AtBMEane1Ju/8
-	 A3eRU/YAII3hbuk7kWel9nTJW37cNgrY3Fz00fnI=
+	b=rZzIhNMsOmpG/b1kUqTqxpyZiE573y871xJu5n3l/UZ/BAY/P4NaQnc0p7j1j80hy
+	 taCC495kQTUuTrC2aQ+bCZ0bv7G2cL0VyHmurZeU3KLTpuZHZDEYrWiOv+e1h0WJ1A
+	 +le+5/+qeyynbc346kf6wuvx3nADJGTyNsLh54xw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 39DCCF803FC;
-	Thu, 30 Apr 2020 15:53:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A2EA2F8028C;
+	Thu, 30 Apr 2020 15:53:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D1497F803BD; Thu, 30 Apr 2020 15:53:09 +0200 (CEST)
+ id E8495F80405; Thu, 30 Apr 2020 15:53:32 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 75FBDF80391
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 15:52:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75FBDF80391
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5C1FEF801F7
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 15:53:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C1FEF801F7
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="PQDe6tM8"
+ header.b="W0mrmZYF"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 5F0E424954;
- Thu, 30 Apr 2020 13:52:55 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 1540B20870;
+ Thu, 30 Apr 2020 13:53:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1588254776;
- bh=Kl08CSxK9cTZLizw5W56/tm53VbSYubwztTv1wcNJCs=;
+ s=default; t=1588254808;
+ bh=G+XhWuodZsxbLJtlCk/40wVd2/t6S+dPVSqrfZJM3wY=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=PQDe6tM8lUqR44W+S5zy0jgkYyk0DfAnSReYsYOqvJEEUbw/2CQdDWSnNRLgpPsu5
- gRxPIK1ytRK7eex7ZImuy/vfqBIft3d67bLhXg6d/XKL0BRmeXFWn7GbwcXOF1Uhgi
- qF++SeqsuSNoBiuUURVz3p0loQKX9GgXqIIdYZ5c=
+ b=W0mrmZYFZiy3TjsZhbiQCeM4NBUgX+nBzFJiG/zMPFGs3uME9bl/LSCPW8vaeAoZv
+ +F8UOW74+YS8ZauxriTTwc9eY2wTqlVUTT+gIJqNFux7vZxp33Nb7CMHJpB2JHLDYq
+ aX2aO0fk268nOanFHKDO5Ub8fG6ftIEM8FRYSsZ0=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 33/57] ASoC: rsnd: Fix "status check failed" spam
- for multi-SSI
-Date: Thu, 30 Apr 2020 09:51:54 -0400
-Message-Id: <20200430135218.20372-33-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 02/30] ASoC: topology: Check return value of
+ pcm_new_ver
+Date: Thu, 30 Apr 2020 09:52:57 -0400
+Message-Id: <20200430135325.20762-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200430135218.20372-1-sashal@kernel.org>
-References: <20200430135218.20372-1-sashal@kernel.org>
+In-Reply-To: <20200430135325.20762-1-sashal@kernel.org>
+References: <20200430135325.20762-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Matthias Blankertz <matthias.blankertz@cetitec.com>,
- Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>, =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,50 +97,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Matthias Blankertz <matthias.blankertz@cetitec.com>
+From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 
-[ Upstream commit 54cb6221688660670a2e430892d7f4e6370263b8 ]
+[ Upstream commit b3677fc3d68dd942c92de52f0bd9dd8b472a40e6 ]
 
-Fix the rsnd_ssi_stop function to skip disabling the individual SSIs of
-a multi-SSI setup, as the actual stop is performed by rsnd_ssiu_stop_gen2
-- the same logic as in rsnd_ssi_start. The attempt to disable these SSIs
-was harmless, but caused a "status check failed" message to be printed
-for every SSI in the multi-SSI setup.
-The disabling of interrupts is still performed, as they are enabled for
-all SSIs in rsnd_ssi_init, but care is taken to not accidentally set the
-EN bit for an SSI where it was not set by rsnd_ssi_start.
+Function pcm_new_ver can fail, so we should check it's return value and
+handle possible error.
 
-Signed-off-by: Matthias Blankertz <matthias.blankertz@cetitec.com>
-Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/20200417153017.1744454-3-matthias.blankertz@cetitec.com
+Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20200327204729.397-6-amadeuszx.slawinski@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sh/rcar/ssi.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ sound/soc/soc-topology.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index 9900a4f6f4e53..4a7d3413917fc 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -594,10 +594,16 @@ static int rsnd_ssi_stop(struct rsnd_mod *mod,
- 	 * Capture:  It might not receave data. Do nothing
- 	 */
- 	if (rsnd_io_is_play(io)) {
--		rsnd_mod_write(mod, SSICR, cr | EN);
-+		rsnd_mod_write(mod, SSICR, cr | ssi->cr_en);
- 		rsnd_ssi_status_check(mod, DIRQ);
- 	}
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 756dd23031063..2c6598e07dde3 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -1923,7 +1923,9 @@ static int soc_tplg_pcm_elems_load(struct soc_tplg *tplg,
+ 			_pcm = pcm;
+ 		} else {
+ 			abi_match = false;
+-			pcm_new_ver(tplg, pcm, &_pcm);
++			ret = pcm_new_ver(tplg, pcm, &_pcm);
++			if (ret < 0)
++				return ret;
+ 		}
  
-+	/* In multi-SSI mode, stop is performed by setting ssi0129 in
-+	 * SSI_CONTROL to 0 (in rsnd_ssio_stop_gen2). Do nothing here.
-+	 */
-+	if (rsnd_ssi_multi_slaves_runtime(io))
-+		return 0;
-+
- 	/*
- 	 * disable SSI,
- 	 * and, wait idle state
+ 		/* create the FE DAIs and DAI links */
 -- 
 2.20.1
 
