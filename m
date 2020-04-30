@@ -2,67 +2,88 @@ Return-Path: <SRS0=nm6W=6O=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 31414C83006
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 08:23:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 042B9C83001
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 08:24:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B43772068E
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 08:23:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 853F02073E
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 08:24:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vYhqAlFX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B43772068E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ROwmux/Q";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="CNB9+TKO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 853F02073E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 11AE81671;
-	Thu, 30 Apr 2020 10:22:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 11AE81671
+	by alsa0.perex.cz (Postfix) with ESMTPS id C8ABB1693;
+	Thu, 30 Apr 2020 10:23:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C8ABB1693
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588235011;
-	bh=2rrI+UCw9wFH85yJsb/vU/GyVMrHrR1Y7R38yZiqDvg=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=vYhqAlFXURR4EXaVi8kfWzIBJL17JfO0qWaBSj6LzzUgmmtrHFueazXuKY18PdQic
-	 FADjZofFOiAkhTzNSReevOHBJqmpHh+SpVPjv8C8s4A9PAd5DuUD/i+4RCX0CNISXi
-	 EaZdoypOgfIS3XotZhQx5Kwa63UvmXTCCzTs/lmA=
+	s=default; t=1588235063;
+	bh=t15x5Vb4DTvKP5MHJMOItoN1DowY80RmVr3Rid133gc=;
+	h=Date:Subject:From:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=ROwmux/Qu2FLyXRwQkosB3oeoCvcjTOTnZ3WehEs7Esmnx+sq9LPpfIgEjCVIHc9l
+	 H+win8lzClv3ht/9hwu25YsAM+mWdPKf8Y2oU1pdCFb30d1wCU8cy5s/gNtexNpZBj
+	 Vy5C4Vj/yOqHwAlZCdV+16blqy4p3bmoT5ZY8FVw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9C226F800B6;
-	Thu, 30 Apr 2020 10:22:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B6EBBF801EB;
+	Thu, 30 Apr 2020 10:22:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3FDF4F801DB; Thu, 30 Apr 2020 10:22:39 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 186D9F801F7; Thu, 30 Apr 2020 10:22:46 +0200 (CEST)
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com
+ [IPv6:2607:f8b0:4864:20::849])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A2ADFF800B6
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 10:22:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2ADFF800B6
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 73FCFABB2;
- Thu, 30 Apr 2020 08:22:34 +0000 (UTC)
-Date: Thu, 30 Apr 2020 10:22:34 +0200
-Message-ID: <s5hlfmdidrp.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] ALSA: opti9xx: shut up gcc-10 range warning
-In-Reply-To: <s5hv9lhijt4.wl-tiwai@suse.de>
-References: <20200429190216.85919-1-arnd@arndb.de>
- <s5hv9lhijt4.wl-tiwai@suse.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id C9B71F801EB
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 10:22:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9B71F801EB
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
+ header.b="CNB9+TKO"
+Received: by mail-qt1-x849.google.com with SMTP id x7so6175118qtv.23
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 01:22:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=date:message-id:mime-version:subject:from:to:cc;
+ bh=1+GEtmVFuX/2EXcfu2CNuJAhwznrW7W2shal2KNKf4U=;
+ b=CNB9+TKOKXQ/5/0uH/nkpXmSJ9ypm/qhcK5DttdMyunrYumKR7tULVzVeWynb0luYw
+ 9cuI2fHrTXEJr6utz2SuCLBLA8vU3SZLcZvmwn6tw58ITtOMiWDiyNtbqMylie+g4PY6
+ RbNime1t0LAKPDdboYzaXqgSNNQIi/BhOfm+2E9HNaF/RWzSMQEgPRhtKryFd3Whp6HV
+ xZn/Par9HXPUcSTv2aZdDJunbQKS+DbAWyFIffBNBXgwjtrpS+XjIoRnjuF9HX886im3
+ aCz1zcTF2KK7B/8d+HaGPrIiHZu7qTF5CAoBcGbUkatnaJpDNNTo3yy8tf0OSvj5NSTV
+ eWjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+ bh=1+GEtmVFuX/2EXcfu2CNuJAhwznrW7W2shal2KNKf4U=;
+ b=gPdVvRAEz5CRO4yBXPMOOOqjmZH8oagaaahshBugeyLn1Mbn6aRX+w4/JGAfqxpQgc
+ FqzKPD62wMi3Ek3wnR6XDlMvAA8w7nBf1aDnjTbjsH3Hma3hayr2cLOgPMrptMUIoRdQ
+ a1D4NutajS2NhdV3n1jX7hy92+AKLAbnkxLSgX/oZky4SrubrH8HfQXFJ5IeP6y6RIRy
+ r+rMeelsurhxQ5vBdQQDgA5f/PUQ1cJbMDz71uXdkSUCDFuabtY3HIHF2d9sJWtbH2pd
+ jzbFh2a1mzVS7+L1NVdjOlseZ+CLNQOiysOa4u+XQys5llqGAxItW4pGcF8x+++a9kRq
+ urhg==
+X-Gm-Message-State: AGi0PubLed+XRoN86zTytCj+DhncL6r1zzhcM8Qmh5NviH5s8CpnxTkh
+ Nz7kQGiJ7y1/docrH1zDZAGt5QTkkgM3
+X-Google-Smtp-Source: APiQypJxOgB1DhHa3WPp5+/isZqPO9vC/p/vFV9YVW6y00EVs9ikoiiE0yJLuTLpd3KeJffkUIwqg1u1IgVj
+X-Received: by 2002:ad4:4e83:: with SMTP id dy3mr1862442qvb.1.1588234959917;
+ Thu, 30 Apr 2020 01:22:39 -0700 (PDT)
+Date: Thu, 30 Apr 2020 16:22:25 +0800
+Message-Id: <20200430082231.151127-1-tzungbi@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.26.2.303.gf8c07b1a785-goog
+Subject: [PATCH 0/6] ASoC: rt5682: apply some refactors
+From: Tzung-Bi Shih <tzungbi@google.com>
+To: broonie@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Cc: tzungbi@google.com, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,48 +99,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 30 Apr 2020 08:12:07 +0200,
-Takashi Iwai wrote:
-> 
-> On Wed, 29 Apr 2020 21:02:03 +0200,
-> Arnd Bergmann wrote:
-> > 
-> > gcc-10 points out a few instances of suspicious integer arithmetic
-> > leading to value truncation:
-> > 
-> > sound/isa/opti9xx/opti92x-ad1848.c: In function 'snd_opti9xx_configure':
-> > sound/isa/opti9xx/opti92x-ad1848.c:322:43: error: overflow in conversion from 'int' to 'unsigned char' changes value from '(int)snd_opti9xx_read(chip, 3) & -256 | 240' to '240' [-Werror=overflow]
-> >   322 |   (snd_opti9xx_read(chip, reg) & ~(mask)) | ((value) & (mask)))
-> >       |   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
-> > sound/isa/opti9xx/opti92x-ad1848.c:351:3: note: in expansion of macro 'snd_opti9xx_write_mask'
-> >   351 |   snd_opti9xx_write_mask(chip, OPTi9XX_MC_REG(3), 0xf0, 0xff);
-> >       |   ^~~~~~~~~~~~~~~~~~~~~~
-> > sound/isa/opti9xx/miro.c: In function 'snd_miro_configure':
-> > sound/isa/opti9xx/miro.c:873:40: error: overflow in conversion from 'int' to 'unsigned char' changes value from '(int)snd_miro_read(chip, 3) & -256 | 240' to '240' [-Werror=overflow]
-> >   873 |   (snd_miro_read(chip, reg) & ~(mask)) | ((value) & (mask)))
-> >       |   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
-> > sound/isa/opti9xx/miro.c:1010:3: note: in expansion of macro 'snd_miro_write_mask'
-> >  1010 |   snd_miro_write_mask(chip, OPTi9XX_MC_REG(3), 0xf0, 0xff);
-> >       |   ^~~~~~~~~~~~~~~~~~~
-> > 
-> > These are all harmless here as only the low 8 bit are passed down
-> > anyway. Change the macros to inline functions to make the code
-> > more readable and also avoid the warning.
-> > 
-> > Strictly speaking those functions also need locking to make the
-> > read/write pair atomic, but it seems unlikely that anyone would
-> > still run into that issue.
-> > 
-> > Fixes: 1841f613fd2e ("[ALSA] Add snd-miro driver")
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> 
-> Applied now, thanks.
+The series tries to refactor the coding style to follow most conventions.
 
-BTW, the lack of locking is no problem in this code.
-Those lines are called only at the initialization in the probe
-function, so can't race.
+The 4th patch converts pr_() to dev_().
+(https://mailman.alsa-project.org/pipermail/alsa-devel/2020-March/164849.html)
 
+The 6th patch changes the behavior a bit to restore its original intent.
 
-thanks,
+Tzung-Bi Shih (6):
+  ASoC: rt5682: simplify assertions
+  ASoC: rt5682: fix space issues
+  ASoC: rt5682: remove empty default case
+  ASoC: rt5682: replace message printing from pr_() to dev_()
+  ASoC: rt5682: remove duplicate rt5682_reset() calls
+  ASoC: rt5682: remove unwanted btn_type assignment
 
-Takashi
+ sound/soc/codecs/rt5682.c | 198 ++++++++++++++++----------------------
+ 1 file changed, 84 insertions(+), 114 deletions(-)
+
+-- 
+2.26.2.303.gf8c07b1a785-goog
+
