@@ -2,59 +2,59 @@ Return-Path: <SRS0=nm6W=6O=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A11DDC47247
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 17:09:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A813FC47247
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 17:19:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 29E8D206D6
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 17:09:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 28DE621775
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 17:19:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YNck3vhA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 29E8D206D6
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dt+VNQLB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 28DE621775
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8A62A1689;
-	Thu, 30 Apr 2020 19:09:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A62A1689
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6163283D;
+	Thu, 30 Apr 2020 19:18:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6163283D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588266596;
-	bh=mDXhZFhvhEJks28EhWZ1XPWA7a4PoRroNnSnmCfkID8=;
+	s=default; t=1588267180;
+	bh=ElQ5oZfTvWadhwEJAtHNn5zyEu1Wgizy+FgkC3PjrGo=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YNck3vhA39CZIfQ5ep7nlrQ/2UyV1zvol3hG60OjHTUrHGdTeVvQhbu7fXC/yPYMF
-	 seNZbohiTOShEO6H2ljxkws5b+NsQ0RxW+zpDt7zsIwZJg9j8m+tvfkxNUYFNuTZAl
-	 C2UmY07Ra1HJ2z/RZ9tm5hsrWnVMlfhoGTFoj3Z4=
+	b=dt+VNQLBCggCoKxnMLcohh4MrIrCXm1w0vHtAlG9G7Q+wcKaktJ5G+UX49HsYjXh2
+	 VSTpkml+1+mvQQ35XFL7siKUOqJyYybi00Djd+iwlwBKmJmtaBncHrRquNePP17Jcu
+	 34H/Qqoy+PkkqcnpE6a9W/ihARvHjXbEXMHNolcI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C2E90F80136;
-	Thu, 30 Apr 2020 19:09:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DEAF4F80123;
+	Thu, 30 Apr 2020 19:18:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6973FF801DB; Thu, 30 Apr 2020 19:09:04 +0200 (CEST)
+ id 4C8CDF801DB; Thu, 30 Apr 2020 19:18:44 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C3F3BF80123
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 19:08:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3F3BF80123
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6BC1FF80123
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 19:18:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6BC1FF80123
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 179B6AE4B;
- Thu, 30 Apr 2020 17:08:57 +0000 (UTC)
-Date: Thu, 30 Apr 2020 19:08:57 +0200
-Message-ID: <s5hftckkija.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id E00D8ABC2;
+ Thu, 30 Apr 2020 17:18:36 +0000 (UTC)
+Date: Thu, 30 Apr 2020 19:18:37 +0200
+Message-ID: <s5hees4ki36.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Naoaki Ueda <nao.uedder@gmail.com>
-Subject: Re: Issue report: HDMI audio problem with kernel 5.6.6-300 and Nvidia
-In-Reply-To: <CAHuMTPn7tNxste99VGfX=w=YnpwYhFc2xph=qj9A19YF8LN_VQ@mail.gmail.com>
-References: <CAHuMTPn7tNxste99VGfX=w=YnpwYhFc2xph=qj9A19YF8LN_VQ@mail.gmail.com>
+To: Dmitry Panchenko | d-Systems <dmitry@d-systems.ee>
+Subject: Re: Pioneer DJ DJM-900NXS2 support patches
+In-Reply-To: <b1f8414d-81d3-3f8b-e2c7-d536858d1bb6@d-systems.ee>
+References: <b1f8414d-81d3-3f8b-e2c7-d536858d1bb6@d-systems.ee>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -76,62 +76,87 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 29 Apr 2020 05:35:27 +0200,
-Naoaki Ueda wrote:
+On Wed, 29 Apr 2020 11:56:37 +0200,
+Dmitry Panchenko | d-Systems wrote:
 > 
-> Hi,
-> Thank you for developing the awesome products.
-> 
-> I notice my machine doesn't output any sounds from the HDMI port with
-> kernel-5.6.6-300 and Nvidia.
-> I have tried booting my machine with kernel-5.3.7-301.fc31.x86_64, it
-> works fine.
-> So I'm reporting those here referring
-> https://bugzilla.redhat.com/show_bug.cgi?id=1784839.
-> 
-> Following are the part of the outputs from `lspci -v -k` on my machine:
-> 
-> ```
-> 05:00.0 VGA compatible controller: NVIDIA Corporation GP106 [GeForce
-> GTX 1060 3GB] (rev a1) (prog-if 00 [VGA controller])
->         Subsystem: NVIDIA Corporation Device 11c2
->         Physical Slot: 2
->         Flags: bus master, fast devsel, latency 0, IRQ 47
->         Memory at ee000000 (32-bit, non-prefetchable) [size=16M]
->         Memory at d0000000 (64-bit, prefetchable) [size=256M]
->         Memory at e0000000 (64-bit, prefetchable) [size=32M]
->         I/O ports at c000 [size=128]
->         Expansion ROM at 000c0000 [disabled] [size=128K]
->         Capabilities: [60] Power Management version 3
->         Capabilities: [68] MSI: Enable+ Count=1/1 Maskable- 64bit+
->         Capabilities: [78] Express Legacy Endpoint, MSI 00
->         Capabilities: [100] Virtual Channel
->         Capabilities: [250] Latency Tolerance Reporting
->         Capabilities: [128] Power Budgeting <?>
->         Capabilities: [420] Advanced Error Reporting
->         Capabilities: [600] Vendor Specific Information: ID=0001 Rev=1
-> Len=024 <?>
->         Capabilities: [900] Secondary PCI Express
->         Kernel driver in use: nouveau
->         Kernel modules: nouveau
-> 
-> 05:00.1 Audio device: NVIDIA Corporation GP106 High Definition Audio
-> Controller (rev a1)
->         Subsystem: NVIDIA Corporation Device 11c2
->         Physical Slot: 2
->         Flags: bus master, fast devsel, latency 0, IRQ 50
->         Memory at ef080000 (32-bit, non-prefetchable) [size=16K]
->         Capabilities: [60] Power Management version 3
->         Capabilities: [68] MSI: Enable- Count=1/1 Maskable- 64bit+
->         Capabilities: [78] Express Endpoint, MSI 00
->         Capabilities: [100] Advanced Error Reporting
->         Kernel driver in use: snd_hda_intel
->         Kernel modules: snd_hda_intel
-> ```
+> Pioneer DJ DJM-900NXS2 is a widely used DJ mixer with 2 audio USB
+> interfaces. Both have a MIDI controller, 10 playback and 12 capture
+> channels. Audio endpoints are vendor-specific and 3 files need to be
+> patched. All playback and capture channels work fine with all
+> supported sample rates (44.1k, 48k, 96k). Patches are attached.
 
-It's a known regression in nouveau driver side, and the fix was
-already submitted to drm nouveau upstream:
-  https://lore.kernel.org/r/20200416075428.25521-1-tiwai@suse.de
+Thanks for the patch.
+The code changes look good in general.
+
+Some nitpicking:
+
+> --- /tmp/linux-5.4.0/sound/usb/pcm.c	2020-04-29 11:56:36.000000000 +0300
+> +++ linux-5.4.0/sound/usb/pcm.c	2020-04-29 12:01:31.916954625 +0300
+> @@ -355,6 +355,10 @@
+>  	case USB_ID(0x0582, 0x01d8): /* BOSS Katana */
+>  		/* BOSS Katana amplifiers do not need quirks */
+>  		return 0;
+> +	case USB_ID(0x2b73, 0x000a): /* Pioneer DJ DJM-900NXS2 */
+> +		ep = 0x82;
+> +		ifnum = 0;
+> +		goto add_sync_ep_from_ifnum;
+
+I'd put this entry before BOSS Katana, right after other
+sync_ep_from_ifnum entries.
+
+> --- /tmp/linux-5.4.0/sound/usb/quirks.c	2020-04-29 11:56:36.000000000 +0300
+> +++ linux-5.4.0/sound/usb/quirks.c	2020-04-29 12:00:04.232521294 +0300
+> @@ -1414,6 +1414,29 @@
+>  	subs->pkt_offset_adj = (emu_samplerate_id >= EMU_QUIRK_SR_176400HZ) ? 4 : 0;
+>  }
+>  
+> +
+> +/* 
+> + * Pioneer DJ DJM-900NXS2
+> + * Device needs to know the sample rate when substream is started
+> + */
+> +static int pioneer_djm_set_format_quirk (struct snd_usb_substream *subs)
+> +{
+> +
+> +    /* Convert sample rate to little endian */
+> +	u8 sr[3];
+> +	sr[0] = subs->cur_rate&0xff;
+> +	sr[1] = (subs->cur_rate>>8)&0xff;
+> +	sr[2] = (subs->cur_rate>>16)&0xff;
+
+Some minor coding style issues (need space, remove space, use tab,
+etc).  Please check once scripts/checkpatch.pl and try to fix the
+errors.  The error in the quirk table format is known and can be left
+as is, though.
+
+> +	
+> +	/* Configure device */
+> +	usb_set_interface(subs->stream->chip->dev, 0, 1);
+
+You can use subs->dev.
+
+> +	snd_usb_ctl_msg(subs->stream->chip->dev,
+> +	    usb_rcvctrlpipe(subs->stream->chip->dev, 0),
+> +	    0x01, 0x22, 0x0100, 0x0082, &sr, 0x0003);
+> +
+> +	return 0;
+> +}
+> +
+>  void snd_usb_set_format_quirk(struct snd_usb_substream *subs,
+>  			      struct audioformat *fmt)
+>  {
+> @@ -1424,6 +1447,8 @@
+>  	case USB_ID(0x041e, 0x3f19): /* E-Mu 0204 USB */
+>  		set_format_emu_quirk(subs, fmt);
+>  		break;
+> +    case USB_ID(0x2b73, 0x000a): /* Pioneer DJ DJM-900NXS2 */
+> +        pioneer_djm_set_format_quirk(subs);
+break is missing here.
+
+Could you address the problems above, and most importantly, give your
+Signed-off-by line and resumit?  The SOB is mandatory for merging to
+upstream.  See Documentation/process/submitting-patches.rst for
+details.
 
 
 thanks,
