@@ -2,83 +2,67 @@ Return-Path: <SRS0=nm6W=6O=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F774C8300A
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 08:16:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 31414C83006
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 08:23:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BE4F92073E
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 08:16:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B43772068E
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 08:23:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UQONtgiw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BE4F92073E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=ACULAB.COM
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vYhqAlFX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B43772068E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EF5CA1671;
-	Thu, 30 Apr 2020 10:15:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF5CA1671
+	by alsa0.perex.cz (Postfix) with ESMTPS id 11AE81671;
+	Thu, 30 Apr 2020 10:22:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 11AE81671
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588234564;
-	bh=OzxPLCUofmP4kmP7kkYcE7k4r/lVdwcXTAMwAnUh9fI=;
-	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1588235011;
+	bh=2rrI+UCw9wFH85yJsb/vU/GyVMrHrR1Y7R38yZiqDvg=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UQONtgiw0L8H0VFblKaGXPebWSXYVczYmzOJRfCS0LXfQxbQl9rVdM5gcRRSR0C7S
-	 Jo+XCiXnpe1l51EUSZfuPmDTI3fCIZhzoq2NRKQejCBDF7jhWSsB7W8v/mqdFnUiah
-	 hCe9NAnCi8F9SNFfJ1tUh1LvVp1Qr4XIr+wCvkY4=
+	b=vYhqAlFXURR4EXaVi8kfWzIBJL17JfO0qWaBSj6LzzUgmmtrHFueazXuKY18PdQic
+	 FADjZofFOiAkhTzNSReevOHBJqmpHh+SpVPjv8C8s4A9PAd5DuUD/i+4RCX0CNISXi
+	 EaZdoypOgfIS3XotZhQx5Kwa63UvmXTCCzTs/lmA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 713A1F80136;
-	Thu, 30 Apr 2020 10:15:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9C226F800B6;
+	Thu, 30 Apr 2020 10:22:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 417A9F801DB; Thu, 30 Apr 2020 10:15:11 +0200 (CEST)
-Received: from eu-smtp-delivery-151.mimecast.com
- (eu-smtp-delivery-151.mimecast.com [146.101.78.151])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ id 3FDF4F801DB; Thu, 30 Apr 2020 10:22:39 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 64BDAF800B6
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 10:15:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64BDAF800B6
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-163-g0_seeJgO5ihcWbcW0LISw-1; Thu, 30 Apr 2020 09:15:03 +0100
-X-MC-Unique: g0_seeJgO5ihcWbcW0LISw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Thu, 30 Apr 2020 09:15:02 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000; 
- Thu, 30 Apr 2020 09:15:02 +0100
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Arnd Bergmann' <arnd@arndb.de>, Jaroslav Kysela <perex@perex.cz>,
- "Takashi Iwai" <tiwai@suse.com>
-Subject: RE: [PATCH] ALSA: opti9xx: shut up gcc-10 range warning
-Thread-Topic: [PATCH] ALSA: opti9xx: shut up gcc-10 range warning
-Thread-Index: AQHWHljP0SPhFOMubESmHZ4J5JyFcqiRUaDQ
-Date: Thu, 30 Apr 2020 08:15:02 +0000
-Message-ID: <c513eb4c4a01470eb3c47d8134afbec1@AcuMS.aculab.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id A2ADFF800B6
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 10:22:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2ADFF800B6
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 73FCFABB2;
+ Thu, 30 Apr 2020 08:22:34 +0000 (UTC)
+Date: Thu, 30 Apr 2020 10:22:34 +0200
+Message-ID: <s5hlfmdidrp.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] ALSA: opti9xx: shut up gcc-10 range warning
+In-Reply-To: <s5hv9lhijt4.wl-tiwai@suse.de>
 References: <20200429190216.85919-1-arnd@arndb.de>
-In-Reply-To: <20200429190216.85919-1-arnd@arndb.de>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
-MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Takashi Iwai <tiwai@suse.de>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+ <s5hv9lhijt4.wl-tiwai@suse.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,76 +78,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Arnd Bergmann
-> Sent: 29 April 2020 20:02
-> gcc-10 points out a few instances of suspicious integer arithmetic
-> leading to value truncation:
->=20
-> sound/isa/opti9xx/opti92x-ad1848.c: In function 'snd_opti9xx_configure':
-> sound/isa/opti9xx/opti92x-ad1848.c:322:43: error: overflow in conversion =
-from 'int' to 'unsigned char'
-> changes value from '(int)snd_opti9xx_read(chip, 3) & -256 | 240' to '240'=
- [-Werror=3Doverflow]
->   322 |   (snd_opti9xx_read(chip, reg) & ~(mask)) | ((value) & (mask)))
->       |   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
-> sound/isa/opti9xx/opti92x-ad1848.c:351:3: note: in expansion of macro 'sn=
-d_opti9xx_write_mask'
->   351 |   snd_opti9xx_write_mask(chip, OPTi9XX_MC_REG(3), 0xf0, 0xff);
->       |   ^~~~~~~~~~~~~~~~~~~~~~
-> sound/isa/opti9xx/miro.c: In function 'snd_miro_configure':
-> sound/isa/opti9xx/miro.c:873:40: error: overflow in conversion from 'int'=
- to 'unsigned char' changes
-> value from '(int)snd_miro_read(chip, 3) & -256 | 240' to '240' [-Werror=
-=3Doverflow]
->   873 |   (snd_miro_read(chip, reg) & ~(mask)) | ((value) & (mask)))
->       |   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
-> sound/isa/opti9xx/miro.c:1010:3: note: in expansion of macro 'snd_miro_wr=
-ite_mask'
->  1010 |   snd_miro_write_mask(chip, OPTi9XX_MC_REG(3), 0xf0, 0xff);
->       |   ^~~~~~~~~~~~~~~~~~~
->=20
-> These are all harmless here as only the low 8 bit are passed down
-> anyway. Change the macros to inline functions to make the code
-> more readable and also avoid the warning.
->=20
-> Strictly speaking those functions also need locking to make the
-> read/write pair atomic, but it seems unlikely that anyone would
-> still run into that issue.
->=20
-> Fixes: 1841f613fd2e ("[ALSA] Add snd-miro driver")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  sound/isa/opti9xx/miro.c           | 9 ++++++---
->  sound/isa/opti9xx/opti92x-ad1848.c | 9 ++++++---
->  2 files changed, 12 insertions(+), 6 deletions(-)
->=20
-> diff --git a/sound/isa/opti9xx/miro.c b/sound/isa/opti9xx/miro.c
-> index e764816a8f7a..b039429e6871 100644
-> --- a/sound/isa/opti9xx/miro.c
-> +++ b/sound/isa/opti9xx/miro.c
-> @@ -867,10 +867,13 @@ static void snd_miro_write(struct snd_miro *chip, u=
-nsigned char reg,
->  =09spin_unlock_irqrestore(&chip->lock, flags);
->  }
->=20
-> +static inline void snd_miro_write_mask(struct snd_miro *chip,
-> +=09=09unsigned char reg, unsigned char value, unsigned char mask)
-> +{
-> +=09unsigned char oldval =3D snd_miro_read(chip, reg);
->=20
-> -#define snd_miro_write_mask(chip, reg, value, mask)=09\
-> -=09snd_miro_write(chip, reg,=09=09=09\
-> -=09=09(snd_miro_read(chip, reg) & ~(mask)) | ((value) & (mask)))
-> +=09snd_miro_write(chip, reg, (oldval & ~mask) | (value & mask));
-> +}
+On Thu, 30 Apr 2020 08:12:07 +0200,
+Takashi Iwai wrote:
+> 
+> On Wed, 29 Apr 2020 21:02:03 +0200,
+> Arnd Bergmann wrote:
+> > 
+> > gcc-10 points out a few instances of suspicious integer arithmetic
+> > leading to value truncation:
+> > 
+> > sound/isa/opti9xx/opti92x-ad1848.c: In function 'snd_opti9xx_configure':
+> > sound/isa/opti9xx/opti92x-ad1848.c:322:43: error: overflow in conversion from 'int' to 'unsigned char' changes value from '(int)snd_opti9xx_read(chip, 3) & -256 | 240' to '240' [-Werror=overflow]
+> >   322 |   (snd_opti9xx_read(chip, reg) & ~(mask)) | ((value) & (mask)))
+> >       |   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
+> > sound/isa/opti9xx/opti92x-ad1848.c:351:3: note: in expansion of macro 'snd_opti9xx_write_mask'
+> >   351 |   snd_opti9xx_write_mask(chip, OPTi9XX_MC_REG(3), 0xf0, 0xff);
+> >       |   ^~~~~~~~~~~~~~~~~~~~~~
+> > sound/isa/opti9xx/miro.c: In function 'snd_miro_configure':
+> > sound/isa/opti9xx/miro.c:873:40: error: overflow in conversion from 'int' to 'unsigned char' changes value from '(int)snd_miro_read(chip, 3) & -256 | 240' to '240' [-Werror=overflow]
+> >   873 |   (snd_miro_read(chip, reg) & ~(mask)) | ((value) & (mask)))
+> >       |   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
+> > sound/isa/opti9xx/miro.c:1010:3: note: in expansion of macro 'snd_miro_write_mask'
+> >  1010 |   snd_miro_write_mask(chip, OPTi9XX_MC_REG(3), 0xf0, 0xff);
+> >       |   ^~~~~~~~~~~~~~~~~~~
+> > 
+> > These are all harmless here as only the low 8 bit are passed down
+> > anyway. Change the macros to inline functions to make the code
+> > more readable and also avoid the warning.
+> > 
+> > Strictly speaking those functions also need locking to make the
+> > read/write pair atomic, but it seems unlikely that anyone would
+> > still run into that issue.
+> > 
+> > Fixes: 1841f613fd2e ("[ALSA] Add snd-miro driver")
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> 
+> Applied now, thanks.
 
-Isn't that likely to add additional masking with 0xff at the call sites?
-You will probably get better code if the arguments are 'unsigned int'.
+BTW, the lack of locking is no problem in this code.
+Those lines are called only at the initialization in the probe
+function, so can't race.
 
-=09David
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
-PT, UK
-Registration No: 1397386 (Wales)
+thanks,
 
+Takashi
