@@ -6,68 +6,68 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24B87C28CBC
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:01:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9ED9FC47247
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:02:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A99C8206D9
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:01:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2B8F220873
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:02:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NInJdrA2";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="e8Zbt/oL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A99C8206D9
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KCKz+382";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="gmGcuZ/D"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2B8F220873
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0F15516A6;
-	Thu, 30 Apr 2020 16:01:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F15516A6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8ED6816B0;
+	Thu, 30 Apr 2020 16:01:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8ED6816B0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588255312;
-	bh=HvgQtozXPajYVnHS90k19ocaTh/Mfax+KW0Y9WIaGKY=;
+	s=default; t=1588255356;
+	bh=dOA8n0tJWKHGY0ZgO52Pl8gFZpj1lU4mNQIpj3C22lk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NInJdrA23X9M2rMMSGXgK2KYEkZw9noxlEGOM4VtLcg8+KMmu/WbMNXGKCGxg6rnk
-	 fM9nntNNLGsUhTVlSsOUxJcAgUOHkoCs6IYcH48ojZ3c/BKWxBaFz9aN6Wc+rxCWvr
-	 urwNe3HgsQZNVtJe37YvLySP+sHigxpHu3WurF9U=
+	b=KCKz+3825faIb9VHWXf2KrPtxlX4/hESwGms2ZCZmJx8/eqNn0P4FOHd+poIjKs8d
+	 IWghtxm8+zS0M0cU8m0v587KMk/lA3rCHmycjH2pjGV8ZrxOaf1fFxOYvuYcBhG0V6
+	 9tX9GrLq3ceG+AtyNwKdWX3ouAlnThO/euksMoSY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 311E0F80346;
-	Thu, 30 Apr 2020 15:51:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 48CCBF80348;
+	Thu, 30 Apr 2020 15:51:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B6B65F8033D; Thu, 30 Apr 2020 15:51:44 +0200 (CEST)
+ id B745AF80348; Thu, 30 Apr 2020 15:51:55 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EEDD2F80321
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 15:51:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EEDD2F80321
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7831AF80348
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 15:51:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7831AF80348
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="e8Zbt/oL"
+ header.b="gmGcuZ/D"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id CCBC4208D5;
- Thu, 30 Apr 2020 13:51:34 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 2C5BE20873;
+ Thu, 30 Apr 2020 13:51:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1588254695;
- bh=HvgQtozXPajYVnHS90k19ocaTh/Mfax+KW0Y9WIaGKY=;
+ s=default; t=1588254708;
+ bh=dOA8n0tJWKHGY0ZgO52Pl8gFZpj1lU4mNQIpj3C22lk=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=e8Zbt/oLXNVBN2tX4ubBEhZrbuDKcIdIEq5nxPtFk+ke+xT65NV2sBELAoDSQIBDu
- 34W3r8M4KwSSTWhII08tvhy8Z4wSf59kXnSN/Okix6fUD5Rkv+FPmAzzV7v/dwcmpb
- lRE7p4kXVl7U0VvZaZ8NmImJJxPxwnXWL4+Ftees=
+ b=gmGcuZ/DZnf+4SY0nSggB1iB1UbMSgZ5B54Y4RedYgnsbbBrW3TKqNDgQb8oU/R1K
+ eKrf5vdhz6iSSE+0oiDlaRs2WCjLEEorltQI09MEildfoLqvfKImmMgdBGLnSQ31bV
+ X0rOS7uHZyflCk7BQoVh1CCcmo9v/OGwcZmhhKI8=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 45/79] ASoC: meson: axg-card: fix codec-to-codec
- link setup
-Date: Thu, 30 Apr 2020 09:50:09 -0400
-Message-Id: <20200430135043.19851-45-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.6 56/79] ASoC: wm8960: Fix wrong clock after suspend
+ & resume
+Date: Thu, 30 Apr 2020 09:50:20 -0400
+Message-Id: <20200430135043.19851-56-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200430135043.19851-1-sashal@kernel.org>
 References: <20200430135043.19851-1-sashal@kernel.org>
@@ -76,7 +76,9 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, Jerome Brunet <jbrunet@baylibre.com>
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Shengjiu Wang <shengjiu.wang@nxp.com>, patches@opensource.wolfsonmicro.com,
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,62 +94,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Jerome Brunet <jbrunet@baylibre.com>
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-[ Upstream commit 1164284270779e1865cc2046a2a01b58a1e858a9 ]
+[ Upstream commit 1e060a453c8604311fb45ae2f84f67ed673329b4 ]
 
-Since the addition of commit 9b5db059366a ("ASoC: soc-pcm: dpcm: Only allow
-playback/capture if supported"), meson-axg cards which have codec-to-codec
-links fail to init and Oops:
+After suspend & resume, wm8960_hw_params may be called when
+bias_level is not SND_SOC_BIAS_ON, then wm8960_configure_clocking
+is not called. But if sample rate is changed at that time, then
+the output clock rate will be not correct.
 
-  Unable to handle kernel NULL pointer dereference at virtual address 0000000000000128
-  Internal error: Oops: 96000044 [#1] PREEMPT SMP
-  CPU: 3 PID: 1582 Comm: arecord Not tainted 5.7.0-rc1
-  pc : invalidate_paths_ep+0x30/0xe0
-  lr : snd_soc_dapm_dai_get_connected_widgets+0x170/0x1a8
-  Call trace:
-   invalidate_paths_ep+0x30/0xe0
-   snd_soc_dapm_dai_get_connected_widgets+0x170/0x1a8
-   dpcm_path_get+0x38/0xd0
-   dpcm_fe_dai_open+0x70/0x920
-   snd_pcm_open_substream+0x564/0x840
-   snd_pcm_open+0xfc/0x228
-   snd_pcm_capture_open+0x4c/0x78
-   snd_open+0xac/0x1a8
-   ...
+So judgement of bias_level is SND_SOC_BIAS_ON in wm8960_hw_params
+is not necessary and it causes above issue.
 
-While initiliazing the links, ASoC treats the codec-to-codec links of this
-card type as a DPCM backend. This error eventually leads to the Oops.
-
-Most of the card driver code is shared between DPCM backends and
-codec-to-codec links. The property "no_pcm" marking DCPM BE was left set on
-codec-to-codec links, leading to this problem. This commit fixes that.
-
-Fixes: 0a8f1117a680 ("ASoC: meson: axg-card: add basic codec-to-codec link support")
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Link: https://lore.kernel.org/r/20200420114511.450560-2-jbrunet@baylibre.com
+Fixes: 3176bf2d7ccd ("ASoC: wm8960: update pll and clock setting function")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/1587468525-27514-1-git-send-email-shengjiu.wang@nxp.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/meson/axg-card.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/codecs/wm8960.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/meson/axg-card.c b/sound/soc/meson/axg-card.c
-index 1f698adde506c..2b04ac3d8fd3b 100644
---- a/sound/soc/meson/axg-card.c
-+++ b/sound/soc/meson/axg-card.c
-@@ -586,8 +586,10 @@ static int axg_card_add_link(struct snd_soc_card *card, struct device_node *np,
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+index 55112c1bba5e7..6cf0f6612bdaf 100644
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -860,8 +860,7 @@ static int wm8960_hw_params(struct snd_pcm_substream *substream,
  
- 	if (axg_card_cpu_is_tdm_iface(dai_link->cpus->of_node))
- 		ret = axg_card_parse_tdm(card, np, index);
--	else if (axg_card_cpu_is_codec(dai_link->cpus->of_node))
-+	else if (axg_card_cpu_is_codec(dai_link->cpus->of_node)) {
- 		dai_link->params = &codec_params;
-+		dai_link->no_pcm = 0; /* link is not a DPCM BE */
-+	}
+ 	wm8960->is_stream_in_use[tx] = true;
  
- 	return ret;
- }
+-	if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_ON &&
+-	    !wm8960->is_stream_in_use[!tx])
++	if (!wm8960->is_stream_in_use[!tx])
+ 		return wm8960_configure_clocking(component);
+ 
+ 	return 0;
 -- 
 2.20.1
 
