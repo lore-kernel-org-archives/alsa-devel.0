@@ -7,68 +7,68 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74905C47254
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:04:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E87DC47247
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:04:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0556A2082E
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:04:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B1FB02063A
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:04:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Cque9bP0";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ViV5JstT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0556A2082E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YKTqxEAQ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="aqmGyaRP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B1FB02063A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3978F16C2;
-	Thu, 30 Apr 2020 16:03:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3978F16C2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 171BC16B0;
+	Thu, 30 Apr 2020 16:03:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 171BC16B0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588255453;
-	bh=wIKXzFqMTAINVGKW6QkWm/9DSbQ3VQX2Ny4HMXoVPb4=;
+	s=default; t=1588255488;
+	bh=GhV41PhBvlAjEwasQh4AUtzyCWM8FhV3HZQZzw5lOMM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Cque9bP0fDuJHfreQ8vRPo5tK/V/vhRWaTeOVXljg/VAU4SgLFn6h84vCjfaaDfqh
-	 Y9cRFJBHNuwKmenIGYDcqxNaGfnARn8UgNbugnO46s209ogq+znITvzfg01qSoyP5W
-	 4/SmQMf+w942aJyrWZ89bY3ALJLqMA/+VERP4cB4=
+	b=YKTqxEAQ45K62gVxsyp9cD3YE+OZxNRi4ZzXnI7yGTijASovHk4uGrXd4CU4lHify
+	 yy7rrkIyzbr1NMcSj+Uur8Tx+8IE+oWklPvqZNcbENYaKE8NEpZhhmGNQe6JvYeyLN
+	 E69dNt1Rd2kY0/R5X81c66L0OQB/8D7YXDwvzex8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 46785F80363;
-	Thu, 30 Apr 2020 15:52:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 89F48F8036B;
+	Thu, 30 Apr 2020 15:52:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 14FBEF8035F; Thu, 30 Apr 2020 15:52:33 +0200 (CEST)
+ id 90B70F8035F; Thu, 30 Apr 2020 15:52:34 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C3088F8034C
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 15:52:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3088F8034C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0C323F8034D
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 15:52:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C323F8034D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ViV5JstT"
+ header.b="aqmGyaRP"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 8E8B924955;
- Thu, 30 Apr 2020 13:52:24 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id C4C8924958;
+ Thu, 30 Apr 2020 13:52:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1588254745;
- bh=wIKXzFqMTAINVGKW6QkWm/9DSbQ3VQX2Ny4HMXoVPb4=;
+ s=default; t=1588254746;
+ bh=GhV41PhBvlAjEwasQh4AUtzyCWM8FhV3HZQZzw5lOMM=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ViV5JstT8FiocrN5BT+izMBksRhuxSFt585Kp1GJVUJ5MYM0J8cFudmAwAUQf4kU7
- Mqft8vr54v05LnxoxYerO+u73mzZjQ8ntFBShM8Kc2+GXArN/+epb14GVt9kWkUIXj
- obex8JlRSIKVtnhhGgHE610z9Bcj/ZJdAdu+P7oA=
+ b=aqmGyaRPUQMGiLQwVPf7wZFE2yuOH34LisFxPw/r87YyiS+aVcS767LBXmfkpBIQr
+ egw6jIKrloDu30EXqYYICoTqi5KLA596HpfNJPPO7FstXw6KQDF/AaXMpXEcDtKbCL
+ SPIJxEBeik0+yOpQv6G2FZREvZnDEDS38IxmaOXE=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 05/57] ASoC: topology: Check soc_tplg_add_route
- return value
-Date: Thu, 30 Apr 2020 09:51:26 -0400
-Message-Id: <20200430135218.20372-5-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 06/57] ASoC: topology: Check return value of
+ pcm_new_ver
+Date: Thu, 30 Apr 2020 09:51:27 -0400
+Message-Id: <20200430135218.20372-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200430135218.20372-1-sashal@kernel.org>
 References: <20200430135218.20372-1-sashal@kernel.org>
@@ -99,15 +99,15 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 
-[ Upstream commit 6856e887eae3efc0fe56899cb3f969fe063171c5 ]
+[ Upstream commit b3677fc3d68dd942c92de52f0bd9dd8b472a40e6 ]
 
-Function soc_tplg_add_route can propagate error code from callback, we
-should check its return value and handle fail in correct way.
+Function pcm_new_ver can fail, so we should check it's return value and
+handle possible error.
 
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200327204729.397-5-amadeuszx.slawinski@linux.intel.com
+Link: https://lore.kernel.org/r/20200327204729.397-6-amadeuszx.slawinski@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
@@ -115,20 +115,20 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index efe6ad3bfcd9b..e0b40d4d8784c 100644
+index e0b40d4d8784c..22960f5932c7f 100644
 --- a/sound/soc/soc-topology.c
 +++ b/sound/soc/soc-topology.c
-@@ -1283,7 +1283,9 @@ static int soc_tplg_dapm_graph_elems_load(struct soc_tplg *tplg,
- 		routes[i]->dobj.index = tplg->index;
- 		list_add(&routes[i]->dobj.list, &tplg->comp->dobj_list);
+@@ -2092,7 +2092,9 @@ static int soc_tplg_pcm_elems_load(struct soc_tplg *tplg,
+ 			_pcm = pcm;
+ 		} else {
+ 			abi_match = false;
+-			pcm_new_ver(tplg, pcm, &_pcm);
++			ret = pcm_new_ver(tplg, pcm, &_pcm);
++			if (ret < 0)
++				return ret;
+ 		}
  
--		soc_tplg_add_route(tplg, routes[i]);
-+		ret = soc_tplg_add_route(tplg, routes[i]);
-+		if (ret < 0)
-+			break;
- 
- 		/* add route, but keep going if some fail */
- 		snd_soc_dapm_add_routes(dapm, routes[i], 1);
+ 		/* create the FE DAIs and DAI links */
 -- 
 2.20.1
 
