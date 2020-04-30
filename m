@@ -2,60 +2,61 @@ Return-Path: <SRS0=nm6W=6O=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE202C4724C
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 17:22:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A169C47247
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 17:23:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 520B020787
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 17:22:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 26E1F20787
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 17:23:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Kd+cOA0f"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 520B020787
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QAwHmRGN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 26E1F20787
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B483C1671;
-	Thu, 30 Apr 2020 19:21:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B483C1671
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5D5D91677;
+	Thu, 30 Apr 2020 19:22:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D5D91677
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588267355;
-	bh=kx6RgxquIsAeySWdPIarGSgoGt+IQaJwtPBx3bGZD7I=;
+	s=default; t=1588267408;
+	bh=iCbe1e1dTJ3nWh9+g2VcfnVclAcSqGzxnKhRp4rweTg=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Kd+cOA0fSnAWaasfNLhafzReL9LaVKYVKYLCdgkdCtqXVrnyKHwvKvjW2z+LLv4UO
-	 rwvixoF6qDLW/akaqff2N/c0ZYwE35qP5Kj1slgUWsChMIN/8mV3GxogiXyo1J3zlq
-	 fYKb11ePxRUjBNRo1kl1KZullfI5ZpSW8GORuelI=
+	b=QAwHmRGNiLkGPKn9r0a6RE+fePtdb3wFHyb2IL/HTR4HNozblVIOnsRNQm3CpxBLl
+	 Z/mPYBp/lyuz22dRUWl6TcfiOUnrvHXIGNfcMI0PI5/mrIEQlK/R1SPdPeQzRhP257
+	 aTDJgoV6L3yD28DnGD/SqOA18DH62QyNSvwst2r8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4C5E3F80136;
-	Thu, 30 Apr 2020 19:21:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 750EEF801F7;
+	Thu, 30 Apr 2020 19:22:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 62177F801DB; Thu, 30 Apr 2020 19:21:44 +0200 (CEST)
+ id 09C7EF8021C; Thu, 30 Apr 2020 19:22:29 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 95ED9F80123
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 19:21:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95ED9F80123
+ by alsa1.perex.cz (Postfix) with ESMTPS id C9387F80123
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 19:22:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9387F80123
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 64F38AC64;
- Thu, 30 Apr 2020 17:21:37 +0000 (UTC)
-Date: Thu, 30 Apr 2020 19:21:36 +0200
-Message-ID: <s5hd07okhy7.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 91D27ABC2;
+ Thu, 30 Apr 2020 17:22:25 +0000 (UTC)
+Date: Thu, 30 Apr 2020 19:22:25 +0200
+Message-ID: <s5hbln8khwu.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: Re: [PATCH 1/3] ALSA: hda/realtek - Introduce polarity for micmute
- LED GPIO
-In-Reply-To: <20200430083255.5093-1-kai.heng.feng@canonical.com>
+Subject: Re: [PATCH 2/3] ALSA: hda/realtek - Enable micmute LED on and HP
+ system
+In-Reply-To: <20200430083255.5093-2-kai.heng.feng@canonical.com>
 References: <20200430083255.5093-1-kai.heng.feng@canonical.com>
+ <20200430083255.5093-2-kai.heng.feng@canonical.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -82,13 +83,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 30 Apr 2020 10:32:51 +0200,
+On Thu, 30 Apr 2020 10:32:52 +0200,
 Kai-Heng Feng wrote:
 > 
-> Currently mute LED and micmute LED share the same GPIO polarity.
+> Though the system uses DMIC, headset mic still uses the HDA, let's use
+> GPIO 0x1 to control the micmute LED.
 > 
-> So split the polarity for mute and micmute, in case they have different
-> polarities.
+> The micmute LED GPIO has a different polarity to the mute LED GPIO, we
+> can use the newly added micmute_led_polarity to indicate that.
 > 
 > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
