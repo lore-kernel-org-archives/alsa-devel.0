@@ -7,68 +7,68 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97B1EC47253
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:11:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE3A0C4724C
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:11:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 275D9206D9
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:11:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4D27D2063A
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:11:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rEt0ux2E";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="V6Ml/ZeG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 275D9206D9
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YAV1Jdvf";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="BjQbMM48"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4D27D2063A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8266C16D4;
-	Thu, 30 Apr 2020 16:10:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8266C16D4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 99C9116CE;
+	Thu, 30 Apr 2020 16:10:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99C9116CE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588255861;
-	bh=HvgQtozXPajYVnHS90k19ocaTh/Mfax+KW0Y9WIaGKY=;
+	s=default; t=1588255898;
+	bh=MPyBt+js+ZFj7/UkvTMgEb63O/0/GYa3hNOG0libZHE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rEt0ux2EQpQJh4U7m0sSfPHeW/ceTvtG1Cft4uvPFN+/7yObipAYrnFn5u89IoVnZ
-	 mizCCs8YTej8rmwFecQ6VvBZNJ8u0IHKh9s47VRpAW8jzcl25p/Su+lgmdx29erlvR
-	 E94SHymDvRVS49vKwbQNSgHIkSqBzzMPi+d3i7fw=
+	b=YAV1Jdvf2bcNgYm9ck2ITii78BFxrHIgYG3SktKnkHKdM7yEYuFsudYmgEOBwL1u5
+	 Fq4jnKz6uJJvHwCEnnLRUMItPMR8YfTYCE4AsnzoP/PECN/GM2kgEE4k/8XbvAUSZF
+	 tFzJDA+4ThXCxpQzGo61diPOTginZgUz4hn5tuuM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DEA92F803D5;
-	Thu, 30 Apr 2020 15:53:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CF70CF803EB;
+	Thu, 30 Apr 2020 15:53:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 80C37F803B1; Thu, 30 Apr 2020 15:53:03 +0200 (CEST)
+ id 02D12F803BD; Thu, 30 Apr 2020 15:53:05 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 77C71F80384
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 15:52:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77C71F80384
+ by alsa1.perex.cz (Postfix) with ESMTPS id 63E53F8038E
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 15:52:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63E53F8038E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="V6Ml/ZeG"
+ header.b="BjQbMM48"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 4AF422495A;
- Thu, 30 Apr 2020 13:52:53 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 4E933208DB;
+ Thu, 30 Apr 2020 13:52:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1588254774;
- bh=HvgQtozXPajYVnHS90k19ocaTh/Mfax+KW0Y9WIaGKY=;
+ s=default; t=1588254775;
+ bh=MPyBt+js+ZFj7/UkvTMgEb63O/0/GYa3hNOG0libZHE=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=V6Ml/ZeGHiw3Scnezk5pPMbodQuziMA7mHKyPxHoCBtY6AT9QVg2Fu8vxJc7vNQFk
- uKKNl6wlPlSM/0PwQxUQ3r1kuOcEgiWJv7ls5jgcc2uSFZuG8fL5cdwIy+/5PlCIF3
- o3BUj+uoA1hnTw40FER20yQsXFFGM3Oypc2rtM4w=
+ b=BjQbMM4806GocKYVyQ7NBjGz3cQdNvCxbVut8kH9oe+20/OR4tSwN/r8gb5xrIZwf
+ 0S4JNO46D+fLO+RH5/kDFauJ68eQJOWfVaBNvlRjQXX8ulbjgDMLulImV7+1jO18iT
+ 7WNdU7QEGgE/2uby4NowbXEbH3cAxA8PqExKsXnQ=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 31/57] ASoC: meson: axg-card: fix codec-to-codec
- link setup
-Date: Thu, 30 Apr 2020 09:51:52 -0400
-Message-Id: <20200430135218.20372-31-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 32/57] ASoC: rsnd: Don't treat master SSI in multi
+ SSI setup as parent
+Date: Thu, 30 Apr 2020 09:51:53 -0400
+Message-Id: <20200430135218.20372-32-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200430135218.20372-1-sashal@kernel.org>
 References: <20200430135218.20372-1-sashal@kernel.org>
@@ -76,8 +76,10 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, Jerome Brunet <jbrunet@baylibre.com>
+Cc: Matthias Blankertz <matthias.blankertz@cetitec.com>,
+ Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,62 +95,83 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Jerome Brunet <jbrunet@baylibre.com>
+From: Matthias Blankertz <matthias.blankertz@cetitec.com>
 
-[ Upstream commit 1164284270779e1865cc2046a2a01b58a1e858a9 ]
+[ Upstream commit 0c258657ddfe81b4fc0183378d800c97ba0b7cdd ]
 
-Since the addition of commit 9b5db059366a ("ASoC: soc-pcm: dpcm: Only allow
-playback/capture if supported"), meson-axg cards which have codec-to-codec
-links fail to init and Oops:
+The master SSI of a multi-SSI setup was attached both to the
+RSND_MOD_SSI slot and the RSND_MOD_SSIP slot of the rsnd_dai_stream.
+This is not correct wrt. the meaning of being "parent" in the rest of
+the SSI code, where it seems to indicate an SSI that provides clock and
+word sync but is not transmitting/receiving audio data.
 
-  Unable to handle kernel NULL pointer dereference at virtual address 0000000000000128
-  Internal error: Oops: 96000044 [#1] PREEMPT SMP
-  CPU: 3 PID: 1582 Comm: arecord Not tainted 5.7.0-rc1
-  pc : invalidate_paths_ep+0x30/0xe0
-  lr : snd_soc_dapm_dai_get_connected_widgets+0x170/0x1a8
-  Call trace:
-   invalidate_paths_ep+0x30/0xe0
-   snd_soc_dapm_dai_get_connected_widgets+0x170/0x1a8
-   dpcm_path_get+0x38/0xd0
-   dpcm_fe_dai_open+0x70/0x920
-   snd_pcm_open_substream+0x564/0x840
-   snd_pcm_open+0xfc/0x228
-   snd_pcm_capture_open+0x4c/0x78
-   snd_open+0xac/0x1a8
-   ...
+Not treating the multi-SSI master as parent allows removal of various
+special cases to the rsnd_ssi_is_parent conditions introduced in commit
+a09fb3f28a60 ("ASoC: rsnd: Fix parent SSI start/stop in multi-SSI mode").
+It also fixes the issue that operations performed via rsnd_dai_call()
+were performed twice for the master SSI. This caused some "status check
+failed" spam when stopping a multi-SSI stream as the driver attempted to
+stop the master SSI twice.
 
-While initiliazing the links, ASoC treats the codec-to-codec links of this
-card type as a DPCM backend. This error eventually leads to the Oops.
-
-Most of the card driver code is shared between DPCM backends and
-codec-to-codec links. The property "no_pcm" marking DCPM BE was left set on
-codec-to-codec links, leading to this problem. This commit fixes that.
-
-Fixes: 0a8f1117a680 ("ASoC: meson: axg-card: add basic codec-to-codec link support")
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Link: https://lore.kernel.org/r/20200420114511.450560-2-jbrunet@baylibre.com
+Signed-off-by: Matthias Blankertz <matthias.blankertz@cetitec.com>
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/20200417153017.1744454-2-matthias.blankertz@cetitec.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/meson/axg-card.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/sh/rcar/ssi.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/meson/axg-card.c b/sound/soc/meson/axg-card.c
-index 1f698adde506c..2b04ac3d8fd3b 100644
---- a/sound/soc/meson/axg-card.c
-+++ b/sound/soc/meson/axg-card.c
-@@ -586,8 +586,10 @@ static int axg_card_add_link(struct snd_soc_card *card, struct device_node *np,
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index d51fb3a394486..9900a4f6f4e53 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -407,7 +407,7 @@ static void rsnd_ssi_config_init(struct rsnd_mod *mod,
+ 	 * We shouldn't exchange SWSP after running.
+ 	 * This means, parent needs to care it.
+ 	 */
+-	if (rsnd_ssi_is_parent(mod, io) && !rsnd_ssi_multi_slaves(io))
++	if (rsnd_ssi_is_parent(mod, io))
+ 		goto init_end;
  
- 	if (axg_card_cpu_is_tdm_iface(dai_link->cpus->of_node))
- 		ret = axg_card_parse_tdm(card, np, index);
--	else if (axg_card_cpu_is_codec(dai_link->cpus->of_node))
-+	else if (axg_card_cpu_is_codec(dai_link->cpus->of_node)) {
- 		dai_link->params = &codec_params;
-+		dai_link->no_pcm = 0; /* link is not a DPCM BE */
-+	}
+ 	if (rsnd_io_is_play(io))
+@@ -559,7 +559,7 @@ static int rsnd_ssi_start(struct rsnd_mod *mod,
+ 	 * EN is for data output.
+ 	 * SSI parent EN is not needed.
+ 	 */
+-	if (rsnd_ssi_is_parent(mod, io) && !rsnd_ssi_multi_slaves(io))
++	if (rsnd_ssi_is_parent(mod, io))
+ 		return 0;
  
- 	return ret;
- }
+ 	ssi->cr_en = EN;
+@@ -582,7 +582,7 @@ static int rsnd_ssi_stop(struct rsnd_mod *mod,
+ 	if (!rsnd_ssi_is_run_mods(mod, io))
+ 		return 0;
+ 
+-	if (rsnd_ssi_is_parent(mod, io) && !rsnd_ssi_multi_slaves(io))
++	if (rsnd_ssi_is_parent(mod, io))
+ 		return 0;
+ 
+ 	cr  =	ssi->cr_own	|
+@@ -620,7 +620,7 @@ static int rsnd_ssi_irq(struct rsnd_mod *mod,
+ 	if (rsnd_is_gen1(priv))
+ 		return 0;
+ 
+-	if (rsnd_ssi_is_parent(mod, io) && !rsnd_ssi_multi_slaves(io))
++	if (rsnd_ssi_is_parent(mod, io))
+ 		return 0;
+ 
+ 	if (!rsnd_ssi_is_run_mods(mod, io))
+@@ -737,6 +737,9 @@ static void rsnd_ssi_parent_attach(struct rsnd_mod *mod,
+ 	if (!rsnd_rdai_is_clk_master(rdai))
+ 		return;
+ 
++	if (rsnd_ssi_is_multi_slave(mod, io))
++		return;
++
+ 	switch (rsnd_mod_id(mod)) {
+ 	case 1:
+ 	case 2:
 -- 
 2.20.1
 
