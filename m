@@ -7,77 +7,78 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BA44C28CBC
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:06:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D8C4BC47247
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:07:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9B5EC2063A
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:06:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5F82C2063A
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:07:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="stJBP/ce";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZqSUheWz"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9B5EC2063A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qzrnNWJN";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="vIKSmQad"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5F82C2063A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0CE7216A3;
-	Thu, 30 Apr 2020 16:05:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0CE7216A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id BB6E716C3;
+	Thu, 30 Apr 2020 16:06:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BB6E716C3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588255587;
-	bh=5hhbYVQCTy75BKT8wdUxSHaCzVbKKnijehTwzZXWmEI=;
+	s=default; t=1588255625;
+	bh=LNu0u4m1TpX1W4ZZjSTKvd48EX1thU7V29jKjQvWTMc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=stJBP/cem4gBNsUhcWCD1yW2AjCC678CQUlBEuakGd262vq/kl0Yc7JmhUivEbx+Y
-	 Ag8kvOZSfbZOXvrfVqdrgRzdrTuCsY1UHhO03xlkiD2kX8TLSlEkOTh6E07tmzDXdA
-	 uCXaryzorOJ0svFAzZHrpSkZ/ONrgqu67VUOU8Qo=
+	b=qzrnNWJN+MPBsVIvaLxt2U1cUm0A3xrppNYyP4P3UquSXgfRu8DMTe++D6ZKVW7Tj
+	 q2dKHxyBsBbUGMnEq02rqOj5MkZlwYTv0craKg9jUkbwI2ANBFtYbM2o+JKgOpCNGw
+	 1FX/08zdHU/i7l2jhEnPo5fTw0vEJFzc7uhK3V28=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4A965F8037E;
-	Thu, 30 Apr 2020 15:52:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 22B5AF8038D;
+	Thu, 30 Apr 2020 15:52:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4C53FF80372; Thu, 30 Apr 2020 15:52:44 +0200 (CEST)
+ id 1F37CF80384; Thu, 30 Apr 2020 15:52:52 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9ECA5F8034C
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 15:52:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9ECA5F8034C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 99864F8035E
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 15:52:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99864F8035E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ZqSUheWz"
+ header.b="vIKSmQad"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 5E91520870;
- Thu, 30 Apr 2020 13:52:31 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 89E7024956;
+ Thu, 30 Apr 2020 13:52:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1588254752;
- bh=5hhbYVQCTy75BKT8wdUxSHaCzVbKKnijehTwzZXWmEI=;
+ s=default; t=1588254754;
+ bh=LNu0u4m1TpX1W4ZZjSTKvd48EX1thU7V29jKjQvWTMc=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ZqSUheWzN20cAN9P3F9OIlUxw23XxQCL/P2Jcl0zx9cbQBzhlMyQ6Mgor6RVIUOON
- WapvaEcAilR2/Ux2puWJWDEiUTWEEhRrqDDlkpUkL+53UmZH4Aq81e1CKgj4xptVkc
- a8sfeMeTa1HWufVUahPagc1nYMXsfaoB0XljOYoc=
+ b=vIKSmQad2MdmAkFHv0XEozlv8HCZJ/6BBbb6YhQxu3ZKqUraDsWRGFrMekBjR5EcD
+ LAp5n9Be9atpTacv4CvjO/M7iU4lQCSW0lzyfs13/KaWDw/RVJ+9jXdG208vWE2W5E
+ pGEmpE4ueNCWqTHu3MLYlleteRMYlT2ubojI9W7g=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 11/57] ASoC: sgtl5000: Fix VAG power-on handling
-Date: Thu, 30 Apr 2020 09:51:32 -0400
-Message-Id: <20200430135218.20372-11-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 13/57] ASoC: topology: Fix endianness issue
+Date: Thu, 30 Apr 2020 09:51:34 -0400
+Message-Id: <20200430135218.20372-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200430135218.20372-1-sashal@kernel.org>
 References: <20200430135218.20372-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, Fabio Estevam <festivem@gmail.com>,
- Sebastian Reichel <sebastian.reichel@collabora.com>
+ Mark Brown <broonie@kernel.org>, =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,87 +94,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Sebastian Reichel <sebastian.reichel@collabora.com>
+From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 
-[ Upstream commit aa7812737f2877e192d57626cbe8825cc7cf6de9 ]
+[ Upstream commit 26d87881590fd55ccdd8f829498d7b3033f81990 ]
 
-As mentioned slightly out of patch context in the code, there
-is no reset routine for the chip. On boards where the chip is
-supplied by a fixed regulator, it might not even be resetted
-during (e.g. watchdog) reboot and can be in any state.
+As done in already existing cases, we should use le32_to_cpu macro while
+accessing hdr->magic. Found with sparse.
 
-If the device is probed with VAG enabled, the driver's probe
-routine will generate a loud pop sound when ANA_POWER is
-being programmed. Avoid this by properly disabling just the
-VAG bit and waiting the required power down time.
-
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-Reviewed-by: Fabio Estevam <festivem@gmail.com>
-Link: https://lore.kernel.org/r/20200414181140.145825-1-sebastian.reichel@collabora.com
+Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+Link: https://lore.kernel.org/r/20200415162435.31859-2-amadeuszx.slawinski@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/sgtl5000.c | 34 ++++++++++++++++++++++++++++++++++
- sound/soc/codecs/sgtl5000.h |  1 +
- 2 files changed, 35 insertions(+)
+ sound/soc/soc-topology.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index e949b372ceada..f5b59305c957a 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -1645,6 +1645,40 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
- 		dev_err(&client->dev,
- 			"Error %d initializing CHIP_CLK_CTRL\n", ret);
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 2d4a5a3058c41..65c91abb9462f 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -2559,7 +2559,7 @@ static int soc_valid_header(struct soc_tplg *tplg,
+ 	}
  
-+	/* Mute everything to avoid pop from the following power-up */
-+	ret = regmap_write(sgtl5000->regmap, SGTL5000_CHIP_ANA_CTRL,
-+			   SGTL5000_CHIP_ANA_CTRL_DEFAULT);
-+	if (ret) {
-+		dev_err(&client->dev,
-+			"Error %d muting outputs via CHIP_ANA_CTRL\n", ret);
-+		goto disable_clk;
-+	}
-+
-+	/*
-+	 * If VAG is powered-on (e.g. from previous boot), it would be disabled
-+	 * by the write to ANA_POWER in later steps of the probe code. This
-+	 * may create a loud pop even with all outputs muted. The proper way
-+	 * to circumvent this is disabling the bit first and waiting the proper
-+	 * cool-down time.
-+	 */
-+	ret = regmap_read(sgtl5000->regmap, SGTL5000_CHIP_ANA_POWER, &value);
-+	if (ret) {
-+		dev_err(&client->dev, "Failed to read ANA_POWER: %d\n", ret);
-+		goto disable_clk;
-+	}
-+	if (value & SGTL5000_VAG_POWERUP) {
-+		ret = regmap_update_bits(sgtl5000->regmap,
-+					 SGTL5000_CHIP_ANA_POWER,
-+					 SGTL5000_VAG_POWERUP,
-+					 0);
-+		if (ret) {
-+			dev_err(&client->dev, "Error %d disabling VAG\n", ret);
-+			goto disable_clk;
-+		}
-+
-+		msleep(SGTL5000_VAG_POWERDOWN_DELAY);
-+	}
-+
- 	/* Follow section 2.2.1.1 of AN3663 */
- 	ana_pwr = SGTL5000_ANA_POWER_DEFAULT;
- 	if (sgtl5000->num_supplies <= VDDD) {
-diff --git a/sound/soc/codecs/sgtl5000.h b/sound/soc/codecs/sgtl5000.h
-index a4bf4bca95bf7..56ec5863f2507 100644
---- a/sound/soc/codecs/sgtl5000.h
-+++ b/sound/soc/codecs/sgtl5000.h
-@@ -233,6 +233,7 @@
- /*
-  * SGTL5000_CHIP_ANA_CTRL
-  */
-+#define SGTL5000_CHIP_ANA_CTRL_DEFAULT		0x0133
- #define SGTL5000_LINE_OUT_MUTE			0x0100
- #define SGTL5000_HP_SEL_MASK			0x0040
- #define SGTL5000_HP_SEL_SHIFT			6
+ 	/* big endian firmware objects not supported atm */
+-	if (hdr->magic == SOC_TPLG_MAGIC_BIG_ENDIAN) {
++	if (le32_to_cpu(hdr->magic) == SOC_TPLG_MAGIC_BIG_ENDIAN) {
+ 		dev_err(tplg->dev,
+ 			"ASoC: pass %d big endian not supported header got %x at offset 0x%lx size 0x%zx.\n",
+ 			tplg->pass, hdr->magic,
 -- 
 2.20.1
 
