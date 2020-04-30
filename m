@@ -2,72 +2,62 @@ Return-Path: <SRS0=nm6W=6O=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 73EB2C47247
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 17:24:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 668AFC47247
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 17:36:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F10C02082E
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 17:24:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EB87C208C3
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 17:36:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Q8UYf5Da"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F10C02082E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kUQxIbOK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EB87C208C3
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=depni.sinp.msu.ru
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4B67A1694;
-	Thu, 30 Apr 2020 19:23:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B67A1694
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6180A1669;
+	Thu, 30 Apr 2020 19:36:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6180A1669
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588267456;
-	bh=ZJOZY/9i6hT7JP1gKkaf4LtZ6CFAvovibTfQsVczr3I=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1588268215;
+	bh=PZ48SsLzwfT9t2FGibzbBtbh8cmNkqmewGA9KyuPYcQ=;
+	h=From:To:Subject:References:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Q8UYf5DaP4BibUdtNz0Tcs//+aflL8lJZIdCPW+HGcAWtQ546FjM/Fin79RxrX6Xi
-	 WaOtlvvNfBA/6tyRbSwSMnaRhV08BRw1f4SrJz4rl8uK3Vq25RsS4Axshq9xaX9tKz
-	 bin2LA3yOBuVufH7mLTSaintAP/3H8ypMvkpZ/0E=
-Received: from vmi242170.contaboserver.net (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6871DF8021C;
-	Thu, 30 Apr 2020 19:22:57 +0200 (CEST)
+	b=kUQxIbOK94w2n3AkzXqUXDKHihetoOECRXKjdEN2lmDRbwmsGJBAhR2w8yODyqYwK
+	 IY/abQwmWSEeax41mwVXZVeTlC4+8cCCWgXCbjBMYn/OejMFxq1h6J8vOhDsQLb+oM
+	 NoY41N/c2jPJTfb2eW3iin5lVp9drEM67Y9YBc5M=
+Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
+	by alsa1.perex.cz (Postfix) with ESMTP id D461AF80136;
+	Thu, 30 Apr 2020 19:36:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2B0EAF80136; Thu, 30 Apr 2020 19:22:51 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5A50EF801EB
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 19:22:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A50EF801EB
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 25C96AC64;
- Thu, 30 Apr 2020 17:22:44 +0000 (UTC)
-Date: Thu, 30 Apr 2020 19:22:44 +0200
-Message-ID: <s5ha72skhwb.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: Re: [PATCH v2 3/3] ALSA: hda/realtek - Add LED class support for
- micmute LED
-In-Reply-To: <20200430135209.14703-1-kai.heng.feng@canonical.com>
-References: <20200430083255.5093-3-kai.heng.feng@canonical.com>
- <20200430135209.14703-1-kai.heng.feng@canonical.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>,
- Kailang Yang <kailang@realtek.com>, Tomas Espeleta <tomas.espeleta@gmail.com>,
- open list <linux-kernel@vger.kernel.org>, tiwai@suse.com,
- Hui Wang <hui.wang@canonical.com>, Thomas Hebb <tommyhebb@gmail.com>,
- Jian-Hong Pan <jian-hong@endlessm.com>,
- =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+ id 0D91AF801DB; Thu, 30 Apr 2020 19:36:03 +0200 (CEST)
+Received: from depni-mx.sinp.msu.ru (depni-mx.sinp.msu.ru [213.131.7.21])
+ by alsa1.perex.cz (Postfix) with ESMTP id 5E01FF80123
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 19:35:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E01FF80123
+Received: from spider (unknown [176.192.247.171])
+ by depni-mx.sinp.msu.ru (Postfix) with ESMTPSA id E49C11BF43D;
+ Thu, 30 Apr 2020 20:36:17 +0300 (MSK)
+From: Serge Belyshev <belyshev@depni.sinp.msu.ru>
+To: Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH] ALSA: pcm: oss: Avoid plugin buffer overflow
+References: <20200309082148.19855-1-tiwai@suse.de>
+ <87v9lhkk5h.fsf@depni.sinp.msu.ru> <s5hlfmckjne.wl-tiwai@suse.de>
+Date: Thu, 30 Apr 2020 20:35:54 +0300
+In-Reply-To: <s5hlfmckjne.wl-tiwai@suse.de> (Takashi Iwai's message of "Thu,
+ 30 Apr 2020 18:44:53 +0200")
+Message-ID: <87r1w4lvut.fsf@depni.sinp.msu.ru>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,24 +73,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 30 Apr 2020 15:52:07 +0200,
-Kai-Heng Feng wrote:
-> 
-> Currently DMIC controls micmute LED via "audio mute LED trigger".
-> 
-> However, unlike Dell and Lenovo platforms, HP platforms don't provide a
-> way to control micmute LED via ACPI, it's controlled by HDA codec
-> instead.
-> 
-> So let's register an LED class for micmute so other subsystems like DMIC
-> can facilitate the codec-controlled LED.
-> 
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> ---
-> v2:
->  - Only compile the code when CONFIG_LEDS_TRIGGER_AUDIO is reachable.
+> The fix is already in sound git tree, and will be in the next pull
+> request to 5.7-rc4.
+>
 
-Applied to for-next branch.  Thanks.
-
-
-Takashi
+I have tested sound-5.7-rc4 tag in sound git tree and it worked for me,
+thanks!
