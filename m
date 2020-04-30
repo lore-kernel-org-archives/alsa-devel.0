@@ -2,92 +2,68 @@ Return-Path: <SRS0=nm6W=6O=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3080BC83001
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 08:27:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 03B0FC83001
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 08:28:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B197B2073E
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 08:27:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 82D4C2073E
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 08:28:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IgAum2fW";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="bV+QKGRA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B197B2073E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="s0MgeUxS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 82D4C2073E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 13E5C1673;
-	Thu, 30 Apr 2020 10:27:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13E5C1673
+	by alsa0.perex.cz (Postfix) with ESMTPS id DFFFD169E;
+	Thu, 30 Apr 2020 10:27:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DFFFD169E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588235274;
-	bh=5fB3+K47H7NlKHeXFfwi1dM8Q0oNd8xdDPgWa4m/H54=;
-	h=Date:In-Reply-To:References:Subject:From:To:Cc:List-Id:
+	s=default; t=1588235311;
+	bh=8Cm0JigTHbGB65BTBD8qCTMNnAC7YG7InyK+PJwHtKQ=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IgAum2fWOJCi28lYSbXl8CJT2jLcO78GgoSrrAVrRIQPXcPRD/XUg9La02VF2jxxx
-	 zueu0kp6IT7MMLQ13Et9qEe8NwytUeCH9uK+nD6QPPG094g6KyCNKQbE9mpzYvid/5
-	 OAqyrHmQKwrsqWk1SYXxZ4MPqpDVAOos2lFKsOk4=
+	b=s0MgeUxSXFu1UdH4rQA+GPLIPGRJgpsqNgdsebEMDrbnDlVtR980pAY/iVf+PmZVf
+	 SFWxpDIYtDe4/LxXDq7cHppe3rKXoUiG/or5IMmW+y7yZOooWiMtr9JwznvJbk1x6L
+	 1oZUq16IK1gjCXWO8S0mKV3vi5+EXf4FefyTCpUI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 08253F802DF;
-	Thu, 30 Apr 2020 10:23:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6DB7AF800E5;
+	Thu, 30 Apr 2020 10:24:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 443E0F802E0; Thu, 30 Apr 2020 10:23:09 +0200 (CEST)
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com
- [IPv6:2607:f8b0:4864:20::f4a])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 14DABF801EB; Thu, 30 Apr 2020 10:24:40 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 90D20F802BC
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 10:23:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90D20F802BC
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="bV+QKGRA"
-Received: by mail-qv1-xf4a.google.com with SMTP id bm3so5674943qvb.0
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 01:23:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=date:in-reply-to:message-id:mime-version:references:subject:from:to
- :cc; bh=XVssmcUVddcBidhvz5kFSAVQSpL+gm7QgTGDD8dkeuQ=;
- b=bV+QKGRAgD3aTwZRxOJpx3+9xfL9bC88uaMWDnd9v4pn2gNkJRF/bautGarRcwtA23
- non5+DCQWOabmRRz4IGKFh0upYvXOl92UNQgid7P0K9U8aFexNEUFqZkVYDeE+yBNGk2
- 1UlqKBU6c7xQ46pDM8/8fgjLpq+WPF4ewv2ly/QNKt3hkY8GYphOtMjogV1L4kh3Z78B
- eNZf1KEirM+r6saILEIQITdHxmOhEbJPAcaJnm/I9VfU7Hg07Alo+ZZax94FhG+JeFiE
- bm4cVSwGuzPuj/dESojXrL2kTzsOSuDQknPwVbnNKT/6smsLuIjYhsYEE8TqrFCPQ3ln
- W2PA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:in-reply-to:message-id:mime-version
- :references:subject:from:to:cc;
- bh=XVssmcUVddcBidhvz5kFSAVQSpL+gm7QgTGDD8dkeuQ=;
- b=ssuGm72EQalDYSaAZVC2O+EiIhnq4hV3U99TehstNrO7nu88x77V9sznsAuhg4Wprr
- wZH67RRiETYq9DqmUpNJk6nrXsyoPaHQwLA2D/oxx/GY12ofBUgs2ubD/qOOpegDqOVk
- BIHEAFgDrhCyuj4L0ohsmj++YSsNdKtfeHjNESifYLcdUhiLElC3wU3D1nhMXETe4VKT
- g/k510yatgVZMzE8nB07y3KqYsU5lqOr+L6bfrFUAWezdh8fpoy1R4nq+d1wim5n8+/9
- XQDH5ns4Fsr1XILPyEW+rfzWhi0YvnFLyL5KCx6Qh676SSsxc26ameuD9AIXQENalOyq
- +8Ug==
-X-Gm-Message-State: AGi0PuaWoFPiwquT7oQES9bcwKDu/BdLz9KGMduET4ziXTchXwATgabG
- L6z+ydRWIEhHtEweJvbRRww0FTG7eau+
-X-Google-Smtp-Source: APiQypLxXBaRVULdlxMtwVhZe0TJmdqYrYQDwkLoSJiaL4kVNuo+i6gaQe0cDELTFhIaZnSenPmb1wUGeGen
-X-Received: by 2002:a0c:f1d1:: with SMTP id u17mr1870971qvl.146.1588234981615; 
- Thu, 30 Apr 2020 01:23:01 -0700 (PDT)
-Date: Thu, 30 Apr 2020 16:22:31 +0800
-In-Reply-To: <20200430082231.151127-1-tzungbi@google.com>
-Message-Id: <20200430082231.151127-7-tzungbi@google.com>
-Mime-Version: 1.0
-References: <20200430082231.151127-1-tzungbi@google.com>
-X-Mailer: git-send-email 2.26.2.303.gf8c07b1a785-goog
-Subject: [PATCH 6/6] ASoC: rt5682: remove unwanted btn_type assignment
-From: Tzung-Bi Shih <tzungbi@google.com>
-To: broonie@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Cc: tzungbi@google.com, alsa-devel@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9893AF800E5
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 10:24:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9893AF800E5
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 14780AD79;
+ Thu, 30 Apr 2020 08:24:36 +0000 (UTC)
+Date: Thu, 30 Apr 2020 10:24:36 +0200
+Message-ID: <s5hk11xidob.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: David Laight <David.Laight@ACULAB.COM>
+Subject: Re: [PATCH] ALSA: opti9xx: shut up gcc-10 range warning
+In-Reply-To: <c513eb4c4a01470eb3c47d8134afbec1@AcuMS.aculab.com>
+References: <20200429190216.85919-1-arnd@arndb.de>
+ <c513eb4c4a01470eb3c47d8134afbec1@AcuMS.aculab.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ Takashi Iwai <tiwai@suse.com>, 'Arnd Bergmann' <arnd@arndb.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -103,26 +79,73 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The following dev_err() is intended to print unexpected btn_type.
-Removes the unwanted btn_type assignment.
+On Thu, 30 Apr 2020 10:15:02 +0200,
+David Laight wrote:
+> 
+> From: Arnd Bergmann
+> > Sent: 29 April 2020 20:02
+> > gcc-10 points out a few instances of suspicious integer arithmetic
+> > leading to value truncation:
+> > 
+> > sound/isa/opti9xx/opti92x-ad1848.c: In function 'snd_opti9xx_configure':
+> > sound/isa/opti9xx/opti92x-ad1848.c:322:43: error: overflow in conversion from 'int' to 'unsigned char'
+> > changes value from '(int)snd_opti9xx_read(chip, 3) & -256 | 240' to '240' [-Werror=overflow]
+> >   322 |   (snd_opti9xx_read(chip, reg) & ~(mask)) | ((value) & (mask)))
+> >       |   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
+> > sound/isa/opti9xx/opti92x-ad1848.c:351:3: note: in expansion of macro 'snd_opti9xx_write_mask'
+> >   351 |   snd_opti9xx_write_mask(chip, OPTi9XX_MC_REG(3), 0xf0, 0xff);
+> >       |   ^~~~~~~~~~~~~~~~~~~~~~
+> > sound/isa/opti9xx/miro.c: In function 'snd_miro_configure':
+> > sound/isa/opti9xx/miro.c:873:40: error: overflow in conversion from 'int' to 'unsigned char' changes
+> > value from '(int)snd_miro_read(chip, 3) & -256 | 240' to '240' [-Werror=overflow]
+> >   873 |   (snd_miro_read(chip, reg) & ~(mask)) | ((value) & (mask)))
+> >       |   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
+> > sound/isa/opti9xx/miro.c:1010:3: note: in expansion of macro 'snd_miro_write_mask'
+> >  1010 |   snd_miro_write_mask(chip, OPTi9XX_MC_REG(3), 0xf0, 0xff);
+> >       |   ^~~~~~~~~~~~~~~~~~~
+> > 
+> > These are all harmless here as only the low 8 bit are passed down
+> > anyway. Change the macros to inline functions to make the code
+> > more readable and also avoid the warning.
+> > 
+> > Strictly speaking those functions also need locking to make the
+> > read/write pair atomic, but it seems unlikely that anyone would
+> > still run into that issue.
+> > 
+> > Fixes: 1841f613fd2e ("[ALSA] Add snd-miro driver")
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > ---
+> >  sound/isa/opti9xx/miro.c           | 9 ++++++---
+> >  sound/isa/opti9xx/opti92x-ad1848.c | 9 ++++++---
+> >  2 files changed, 12 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/sound/isa/opti9xx/miro.c b/sound/isa/opti9xx/miro.c
+> > index e764816a8f7a..b039429e6871 100644
+> > --- a/sound/isa/opti9xx/miro.c
+> > +++ b/sound/isa/opti9xx/miro.c
+> > @@ -867,10 +867,13 @@ static void snd_miro_write(struct snd_miro *chip, unsigned char reg,
+> >  	spin_unlock_irqrestore(&chip->lock, flags);
+> >  }
+> > 
+> > +static inline void snd_miro_write_mask(struct snd_miro *chip,
+> > +		unsigned char reg, unsigned char value, unsigned char mask)
+> > +{
+> > +	unsigned char oldval = snd_miro_read(chip, reg);
+> > 
+> > -#define snd_miro_write_mask(chip, reg, value, mask)	\
+> > -	snd_miro_write(chip, reg,			\
+> > -		(snd_miro_read(chip, reg) & ~(mask)) | ((value) & (mask)))
+> > +	snd_miro_write(chip, reg, (oldval & ~mask) | (value & mask));
+> > +}
+> 
+> Isn't that likely to add additional masking with 0xff at the call sites?
+> You will probably get better code if the arguments are 'unsigned int'.
 
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
----
- sound/soc/codecs/rt5682.c | 1 -
- 1 file changed, 1 deletion(-)
+I don't think such a micro optimization is needed.  
+All registers, values and masks in the driver are 8bit, so keeping all
+unsigned char is rather an improvement of readability.
 
-diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
-index 19fb9f1d8f49..5d3b11756a34 100644
---- a/sound/soc/codecs/rt5682.c
-+++ b/sound/soc/codecs/rt5682.c
-@@ -1134,7 +1134,6 @@ static void rt5682_jack_detect_handler(struct work_struct *work)
- 			case 0x0000: /* unpressed */
- 				break;
- 			default:
--				btn_type = 0;
- 				dev_err(rt5682->component->dev,
- 					"Unexpected button code 0x%04x\n",
- 					btn_type);
--- 
-2.26.2.303.gf8c07b1a785-goog
 
+thanks,
+
+Takashi
