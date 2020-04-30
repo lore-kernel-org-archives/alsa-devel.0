@@ -6,70 +6,70 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3BC86C83000
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:20:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 54049C83000
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:20:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B67C320774
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:20:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D05A4206D9
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:20:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DCH/nebf";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ry3UICEl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B67C320774
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="anlms5c3";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="QFJtDDXr"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D05A4206D9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2026116E9;
-	Thu, 30 Apr 2020 16:19:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2026116E9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3467916D1;
+	Thu, 30 Apr 2020 16:19:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3467916D1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588256417;
-	bh=3/POyiqtelTVhdORwpZ36G6ZaXCF8YcncynUzPf+djo=;
+	s=default; t=1588256445;
+	bh=1zmpipjnMooc1w5cUbGhIiwypqc7ZZkCX0Tk+H7CoTU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DCH/nebfLDedmpWhC7sLn4rYS77GCLs5Fdtqc0NW6S8hs2IrZgS23yrhU/DOkQVK6
-	 LFRvhmqAop+tScKsF0Ck33rJ2gs2QTZNRKABRcCN6Zgq+Rrg3ZVCKW7B1Q5gzOnJQH
-	 IEqkOTrfxfWf+XcgOmJMw1VOoP9+JAISjmfFtGP4=
+	b=anlms5c3f4O1b8HgXy0J5J2NESrVtLxPoiXIuDxyai9qu894a52CgGgM2R8PuyKyG
+	 setIUynIr4NX+QXSPp2SffI5/ysUPoC89q4xaEkGtMLEuzyqSOhnKZAhDoNwDMjNlw
+	 bmvT55ybNiLZIlyTesnPNFZUcp0JMfoqyDrTfshk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 801FBF804AB;
-	Thu, 30 Apr 2020 15:54:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 83288F80291;
+	Thu, 30 Apr 2020 15:54:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 58735F80491; Thu, 30 Apr 2020 15:54:18 +0200 (CEST)
+ id 2AA7BF804B0; Thu, 30 Apr 2020 15:54:43 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 685D2F80292
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 15:54:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 685D2F80292
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6E924F8021C
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 15:54:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E924F8021C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Ry3UICEl"
+ header.b="QFJtDDXr"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id E6C4820873;
- Thu, 30 Apr 2020 13:54:08 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 3885024953;
+ Thu, 30 Apr 2020 13:54:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1588254849;
- bh=3/POyiqtelTVhdORwpZ36G6ZaXCF8YcncynUzPf+djo=;
+ s=default; t=1588254879;
+ bh=1zmpipjnMooc1w5cUbGhIiwypqc7ZZkCX0Tk+H7CoTU=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=Ry3UICElTD3yXk1nXxgz7xENlenctsToLfzc+lw0e5XPeRl9j+YAm43+2tRrIQwB4
- 6XsIjACQ2zzC3O24fA+QKjRl76TqEEMZyGCbi1XalGS7jOSBy2XqNif1gumktuJ5wQ
- rW3ZmN0i/4sukD2Bnn9Bpmtmc/4RrC/G0ceaBkoU=
+ b=QFJtDDXrQZnFaL5IkHDv3/IO7wzCklw9Dl1BoOVBtlTapUrlDp8pvUTyI86Cck2Td
+ ZxKvLpuKiyCY3L0nOemKl3qp1ENKn/rgZRVAGYcrwqTcFGBnfX6NJSy2Y7Yc9NHM7P
+ homfqiX4UIypOIWMvu92wc80J/b83HPtMAeEvN5o=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 06/27] ASoC: sgtl5000: Fix VAG power-on handling
-Date: Thu, 30 Apr 2020 09:53:41 -0400
-Message-Id: <20200430135402.20994-6-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 04/17] ASoC: sgtl5000: Fix VAG power-on handling
+Date: Thu, 30 Apr 2020 09:54:20 -0400
+Message-Id: <20200430135433.21204-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200430135402.20994-1-sashal@kernel.org>
-References: <20200430135402.20994-1-sashal@kernel.org>
+In-Reply-To: <20200430135433.21204-1-sashal@kernel.org>
+References: <20200430135433.21204-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -117,10 +117,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 35 insertions(+)
 
 diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index ca8a70ab22a82..d64cb28e8dc5c 100644
+index 39810b713d5f2..0c2a1413a8f57 100644
 --- a/sound/soc/codecs/sgtl5000.c
 +++ b/sound/soc/codecs/sgtl5000.c
-@@ -1563,6 +1563,40 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
+@@ -1464,6 +1464,40 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
  		dev_err(&client->dev,
  			"Error %d initializing CHIP_CLK_CTRL\n", ret);
  
