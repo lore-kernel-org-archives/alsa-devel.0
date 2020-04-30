@@ -7,67 +7,68 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B801FC28CBC
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 13:52:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CC56C4724C
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 13:53:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 463E120774
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 13:52:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EFDEC21775
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 13:53:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JxpptZoe";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rf5jTpt/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 463E120774
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mIji+rNL";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="1op5tT/6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EFDEC21775
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A86F41695;
-	Thu, 30 Apr 2020 15:51:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A86F41695
+	by alsa0.perex.cz (Postfix) with ESMTPS id 284DF168E;
+	Thu, 30 Apr 2020 15:52:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 284DF168E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588254764;
-	bh=V8mornNvh3gvp/ggw/EEbCBaN2cEIA1Pmm4A05Vn8uM=;
+	s=default; t=1588254812;
+	bh=72QHCKyTOD6djEwTkkbPYc1VL+si3jHQnpEU95wSY6o=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JxpptZoe8Zo2Y69eS3rQej3HFiKM6k1dSYPop5f+NHwYROANDhi+9FHsQgFgNqLsO
-	 3dgG2PuHDN1vSldYzJLyTtohRZ1LlO9Qf97bY2J0Q/mrk9ra4XvhJXgjDlku0GDM8a
-	 lxuuXpdO2tMQYs/QoybN3HgTIolg733jZSkhx/ew=
+	b=mIji+rNLB+FxIx5XsQLZQfzGQ9/qJ55mt8fzhHvTxmdcltw8zZ4n1DYAJALXoo/Ai
+	 YdMO7xny8v7hJpD864xrgzOBxH4vTbIpbAFKffayU+Nrg3/01QH+1yw0MsVZHlpXhK
+	 khaSN/jjyGDeV/xjSbR2aVgHviSZc3YX+gN8HNow=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 91CC4F801DB;
-	Thu, 30 Apr 2020 15:51:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D5652F8028C;
+	Thu, 30 Apr 2020 15:51:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 42695F8021C; Thu, 30 Apr 2020 15:51:01 +0200 (CEST)
+ id 7F038F8028C; Thu, 30 Apr 2020 15:51:03 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F1DE4F800E5
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 15:50:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1DE4F800E5
+ by alsa1.perex.cz (Postfix) with ESMTPS id EF2DFF801EB
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 15:50:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF2DFF801EB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Rf5jTpt/"
+ header.b="1op5tT/6"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 0F323217BA;
- Thu, 30 Apr 2020 13:50:51 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id C6471208D6;
+ Thu, 30 Apr 2020 13:50:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1588254652;
- bh=V8mornNvh3gvp/ggw/EEbCBaN2cEIA1Pmm4A05Vn8uM=;
+ s=default; t=1588254657;
+ bh=72QHCKyTOD6djEwTkkbPYc1VL+si3jHQnpEU95wSY6o=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=Rf5jTpt/JwbfIHusZjmeQ0sNq4P982xMKIeWmj2i5BBfslQpGHGfZUU+0yfpcw6o4
- H+A7lXwtZop68gW+so/XsbXvsnlJ4T+wSpU3E5F+mtNtY7d00UkDWfBqHM94TEQYFH
- EjXT/PSXs4iGUw/bA2Qiqayj9emIG8K8TIMB29a4=
+ b=1op5tT/6NAaxqIY4COsrgC2Gi85+JEAcnh9uRr3662+lCU8kzVnZsZ6S//kNayz00
+ 2UmkIPfPF2c9ku1iBnKXVngjwLMB+IuqBqJCGYMIxXDXAz7BqBsQxvHswDAJSpwORG
+ ksrjiwdC4CN5a2/U/uuewT6tlElo81BtH6orEWEg=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 07/79] ASoC: topology: Add missing memory checks
-Date: Thu, 30 Apr 2020 09:49:31 -0400
-Message-Id: <20200430135043.19851-7-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.6 11/79] ASoC: topology: Check return value of
+ pcm_new_ver
+Date: Thu, 30 Apr 2020 09:49:35 -0400
+Message-Id: <20200430135043.19851-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200430135043.19851-1-sashal@kernel.org>
 References: <20200430135043.19851-1-sashal@kernel.org>
@@ -98,173 +99,36 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 
-[ Upstream commit abc3caac24501008465fdb55c5e89e16d58d5a3d ]
+[ Upstream commit b3677fc3d68dd942c92de52f0bd9dd8b472a40e6 ]
 
-kstrdup is an allocation function and it can fail, so its return value
-should be checked and handled appropriately.
-
-In order to check all cases, we need to modify set_stream_info to return
-a value, so check that everything went correctly when doing kstrdup().
-Later add proper checks and error handlers.
+Function pcm_new_ver can fail, so we should check it's return value and
+handle possible error.
 
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200327204729.397-2-amadeuszx.slawinski@linux.intel.com
+Link: https://lore.kernel.org/r/20200327204729.397-6-amadeuszx.slawinski@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/soc-topology.c | 62 +++++++++++++++++++++++++++++++---------
- 1 file changed, 49 insertions(+), 13 deletions(-)
+ sound/soc/soc-topology.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index a152409e8746e..7a7c427de95d6 100644
+index aa7714f2b78fd..ca0ac5372b293 100644
 --- a/sound/soc/soc-topology.c
 +++ b/sound/soc/soc-topology.c
-@@ -1766,10 +1766,13 @@ static int soc_tplg_dapm_complete(struct soc_tplg *tplg)
- 	return 0;
- }
+@@ -2135,7 +2135,9 @@ static int soc_tplg_pcm_elems_load(struct soc_tplg *tplg,
+ 			_pcm = pcm;
+ 		} else {
+ 			abi_match = false;
+-			pcm_new_ver(tplg, pcm, &_pcm);
++			ret = pcm_new_ver(tplg, pcm, &_pcm);
++			if (ret < 0)
++				return ret;
+ 		}
  
--static void set_stream_info(struct snd_soc_pcm_stream *stream,
-+static int set_stream_info(struct snd_soc_pcm_stream *stream,
- 	struct snd_soc_tplg_stream_caps *caps)
- {
- 	stream->stream_name = kstrdup(caps->name, GFP_KERNEL);
-+	if (!stream->stream_name)
-+		return -ENOMEM;
-+
- 	stream->channels_min = le32_to_cpu(caps->channels_min);
- 	stream->channels_max = le32_to_cpu(caps->channels_max);
- 	stream->rates = le32_to_cpu(caps->rates);
-@@ -1777,6 +1780,8 @@ static void set_stream_info(struct snd_soc_pcm_stream *stream,
- 	stream->rate_max = le32_to_cpu(caps->rate_max);
- 	stream->formats = le64_to_cpu(caps->formats);
- 	stream->sig_bits = le32_to_cpu(caps->sig_bits);
-+
-+	return 0;
- }
- 
- static void set_dai_flags(struct snd_soc_dai_driver *dai_drv,
-@@ -1812,20 +1817,29 @@ static int soc_tplg_dai_create(struct soc_tplg *tplg,
- 	if (dai_drv == NULL)
- 		return -ENOMEM;
- 
--	if (strlen(pcm->dai_name))
-+	if (strlen(pcm->dai_name)) {
- 		dai_drv->name = kstrdup(pcm->dai_name, GFP_KERNEL);
-+		if (!dai_drv->name) {
-+			ret = -ENOMEM;
-+			goto err;
-+		}
-+	}
- 	dai_drv->id = le32_to_cpu(pcm->dai_id);
- 
- 	if (pcm->playback) {
- 		stream = &dai_drv->playback;
- 		caps = &pcm->caps[SND_SOC_TPLG_STREAM_PLAYBACK];
--		set_stream_info(stream, caps);
-+		ret = set_stream_info(stream, caps);
-+		if (ret < 0)
-+			goto err;
- 	}
- 
- 	if (pcm->capture) {
- 		stream = &dai_drv->capture;
- 		caps = &pcm->caps[SND_SOC_TPLG_STREAM_CAPTURE];
--		set_stream_info(stream, caps);
-+		ret = set_stream_info(stream, caps);
-+		if (ret < 0)
-+			goto err;
- 	}
- 
- 	if (pcm->compress)
-@@ -1835,11 +1849,7 @@ static int soc_tplg_dai_create(struct soc_tplg *tplg,
- 	ret = soc_tplg_dai_load(tplg, dai_drv, pcm, NULL);
- 	if (ret < 0) {
- 		dev_err(tplg->comp->dev, "ASoC: DAI loading failed\n");
--		kfree(dai_drv->playback.stream_name);
--		kfree(dai_drv->capture.stream_name);
--		kfree(dai_drv->name);
--		kfree(dai_drv);
--		return ret;
-+		goto err;
- 	}
- 
- 	dai_drv->dobj.index = tplg->index;
-@@ -1860,6 +1870,14 @@ static int soc_tplg_dai_create(struct soc_tplg *tplg,
- 		return ret;
- 	}
- 
-+	return 0;
-+
-+err:
-+	kfree(dai_drv->playback.stream_name);
-+	kfree(dai_drv->capture.stream_name);
-+	kfree(dai_drv->name);
-+	kfree(dai_drv);
-+
- 	return ret;
- }
- 
-@@ -1916,11 +1934,20 @@ static int soc_tplg_fe_link_create(struct soc_tplg *tplg,
- 	if (strlen(pcm->pcm_name)) {
- 		link->name = kstrdup(pcm->pcm_name, GFP_KERNEL);
- 		link->stream_name = kstrdup(pcm->pcm_name, GFP_KERNEL);
-+		if (!link->name || !link->stream_name) {
-+			ret = -ENOMEM;
-+			goto err;
-+		}
- 	}
- 	link->id = le32_to_cpu(pcm->pcm_id);
- 
--	if (strlen(pcm->dai_name))
-+	if (strlen(pcm->dai_name)) {
- 		link->cpus->dai_name = kstrdup(pcm->dai_name, GFP_KERNEL);
-+		if (!link->cpus->dai_name) {
-+			ret = -ENOMEM;
-+			goto err;
-+		}
-+	}
- 
- 	link->codecs->name = "snd-soc-dummy";
- 	link->codecs->dai_name = "snd-soc-dummy-dai";
-@@ -2436,13 +2463,17 @@ static int soc_tplg_dai_config(struct soc_tplg *tplg,
- 	if (d->playback) {
- 		stream = &dai_drv->playback;
- 		caps = &d->caps[SND_SOC_TPLG_STREAM_PLAYBACK];
--		set_stream_info(stream, caps);
-+		ret = set_stream_info(stream, caps);
-+		if (ret < 0)
-+			goto err;
- 	}
- 
- 	if (d->capture) {
- 		stream = &dai_drv->capture;
- 		caps = &d->caps[SND_SOC_TPLG_STREAM_CAPTURE];
--		set_stream_info(stream, caps);
-+		ret = set_stream_info(stream, caps);
-+		if (ret < 0)
-+			goto err;
- 	}
- 
- 	if (d->flag_mask)
-@@ -2454,10 +2485,15 @@ static int soc_tplg_dai_config(struct soc_tplg *tplg,
- 	ret = soc_tplg_dai_load(tplg, dai_drv, NULL, dai);
- 	if (ret < 0) {
- 		dev_err(tplg->comp->dev, "ASoC: DAI loading failed\n");
--		return ret;
-+		goto err;
- 	}
- 
- 	return 0;
-+
-+err:
-+	kfree(dai_drv->playback.stream_name);
-+	kfree(dai_drv->capture.stream_name);
-+	return ret;
- }
- 
- /* load physical DAI elements */
+ 		/* create the FE DAIs and DAI links */
 -- 
 2.20.1
 
