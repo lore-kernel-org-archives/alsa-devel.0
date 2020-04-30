@@ -7,68 +7,67 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6750FC28CBC
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:10:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29320C28CBC
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:10:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EB8C7206D9
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:10:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ABFEB2076D
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:10:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eazcoboh";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="i1L6XItP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EB8C7206D9
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hApLqW99";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="YSMFJE9O"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ABFEB2076D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5148416C7;
-	Thu, 30 Apr 2020 16:09:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5148416C7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0073016C3;
+	Thu, 30 Apr 2020 16:09:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0073016C3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588255800;
-	bh=t4pVoz7J8jkAn/McnyM5UibjHvcOHSChe4RvxUmvIPw=;
+	s=default; t=1588255832;
+	bh=yVDzDf7BPjN8V3Q1sj6RasbrxByVjWam1uXEnqFNqCI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eazcobohYPN5/zWrsmQBoaOxjh286WdXRep0Dl9Y0R5F3QTSzFOkVKCJLTPCGoQ0N
-	 JuPdaMKUQZ5TnvgZOqrOcbnIRtJAUXOP9cwYVbxwrf64nDTVRQyJdlbp0mt0h8zHqU
-	 +gD1TF94UoYMe/jXiquA9wp/Th57tAaNklyPlNWc=
+	b=hApLqW99mfBWfX1Zzl18ShArst/sTCjG8Xn+lMSrpY0HKXTrHHJi+YW2l8eS7qKi/
+	 uTRPGGF6EuG1QPmXQc9vwqQEMaeFQY55EmwK1M4ghQCc4BUE978G47uB1sYu7C7iB6
+	 C3+vxQr3ZfxgJnrVhr6UYRAnhZ6wJTPXc6AxQv7I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DFB9BF803CD;
-	Thu, 30 Apr 2020 15:53:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 07CDCF803D1;
+	Thu, 30 Apr 2020 15:53:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BD155F803AE; Thu, 30 Apr 2020 15:53:00 +0200 (CEST)
+ id AD52BF803AF; Thu, 30 Apr 2020 15:53:01 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 06778F801DB
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 15:52:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06778F801DB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 83458F80371
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 15:52:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83458F80371
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="i1L6XItP"
+ header.b="YSMFJE9O"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 650C924962;
- Thu, 30 Apr 2020 13:52:45 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 484EC208D6;
+ Thu, 30 Apr 2020 13:52:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1588254766;
- bh=t4pVoz7J8jkAn/McnyM5UibjHvcOHSChe4RvxUmvIPw=;
+ s=default; t=1588254765;
+ bh=yVDzDf7BPjN8V3Q1sj6RasbrxByVjWam1uXEnqFNqCI=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=i1L6XItPMQGZH89D+v6QbeY1nfH0wyMvryGUwysLP/B97McMSDTa1fEutjt+Ila9L
- yOPej5OSjhQ36zq09htXXXGJioy4MugVn+571FryCSS61nJpHtWn1C+rq/CTrysm1y
- IG0gJZf9xFYGt3d710OHYqMbReluO+Lbmk5Hfdcw=
+ b=YSMFJE9OiX3uoaACvAsghtvRXNeshOFE856YUdaLMBtM+opDBhu3E2HPefVXnILN2
+ j2kmmYw0Kjg+lgacxxXoDGNl0vauE33NgpDQ2T9FTjegxEILXOvIrPFtqdFDFimnmo
+ ky3sZoKvPckTAyutniKwxh24nuMwS9HL3lgaN3Ho=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 24/57] ASoC: SOF: Intel: add min/max channels for
- SSP on Baytrail/Broadwell
-Date: Thu, 30 Apr 2020 09:51:45 -0400
-Message-Id: <20200430135218.20372-24-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 23/57] ASoC: stm32: sai: fix sai probe
+Date: Thu, 30 Apr 2020 09:51:44 -0400
+Message-Id: <20200430135218.20372-23-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200430135218.20372-1-sashal@kernel.org>
 References: <20200430135218.20372-1-sashal@kernel.org>
@@ -77,10 +76,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Mark Brown <broonie@kernel.org>
+ Mark Brown <broonie@kernel.org>, Olivier Moysan <olivier.moysan@st.com>,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,139 +93,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Olivier Moysan <olivier.moysan@st.com>
 
-[ Upstream commit 8c05246c0b58cbe80580ea4be05f6d51228af8a9 ]
+[ Upstream commit e2bcb65782f91390952e849e21b82ed7cb05697f ]
 
-Major regressions were detected by SOF CI on CherryTrail and Broadwell:
+pcm config must be set before snd_dmaengine_pcm_register() call.
 
-[   25.705750]  SSP2-Codec: ASoC: no backend playback stream
-[   27.923378]  SSP2-Codec: ASoC: no users playback at close - state
+Fixes: 0d6defc7e0e4 ("ASoC: stm32: sai: manage rebind issue")
 
-This is root-caused to the introduction of the DAI capability checks
-with snd_soc_dai_stream_valid(). Its use in soc-pcm.c makes it a
-requirement for all DAIs to report at least a non-zero min_channels
-field.
-
-For some reason the SSP structures used for SKL+ did provide this
-information but legacy platforms didn't.
-
-Fixes: 9b5db059366ae2 ("ASoC: soc-pcm: dpcm: Only allow playback/capture if supported")
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Link: https://lore.kernel.org/r/20200417172014.11760-1-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+Link: https://lore.kernel.org/r/20200417142122.10212-1-olivier.moysan@st.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sof/intel/bdw.c | 16 +++++++++++++
- sound/soc/sof/intel/byt.c | 48 +++++++++++++++++++++++++++++++++++++++
- 2 files changed, 64 insertions(+)
+ sound/soc/stm/stm32_sai_sub.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/sof/intel/bdw.c b/sound/soc/sof/intel/bdw.c
-index 80e2826fb447b..8ede5fd0d0c0f 100644
---- a/sound/soc/sof/intel/bdw.c
-+++ b/sound/soc/sof/intel/bdw.c
-@@ -520,9 +520,25 @@ static int bdw_probe(struct snd_sof_dev *sdev)
- static struct snd_soc_dai_driver bdw_dai[] = {
- {
- 	.name = "ssp0-port",
-+	.playback = {
-+		.channels_min = 1,
-+		.channels_max = 8,
-+	},
-+	.capture = {
-+		.channels_min = 1,
-+		.channels_max = 8,
-+	},
- },
- {
- 	.name = "ssp1-port",
-+	.playback = {
-+		.channels_min = 1,
-+		.channels_max = 8,
-+	},
-+	.capture = {
-+		.channels_min = 1,
-+		.channels_max = 8,
-+	},
- },
- };
+diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
+index d3259de43712b..7e965848796c3 100644
+--- a/sound/soc/stm/stm32_sai_sub.c
++++ b/sound/soc/stm/stm32_sai_sub.c
+@@ -1543,6 +1543,9 @@ static int stm32_sai_sub_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
  
-diff --git a/sound/soc/sof/intel/byt.c b/sound/soc/sof/intel/byt.c
-index 41008c974ac6c..cdffdc5d40759 100644
---- a/sound/soc/sof/intel/byt.c
-+++ b/sound/soc/sof/intel/byt.c
-@@ -366,21 +366,69 @@ static int byt_reset(struct snd_sof_dev *sdev)
- static struct snd_soc_dai_driver byt_dai[] = {
- {
- 	.name = "ssp0-port",
-+	.playback = {
-+		.channels_min = 1,
-+		.channels_max = 8,
-+	},
-+	.capture = {
-+		.channels_min = 1,
-+		.channels_max = 8,
-+	},
- },
- {
- 	.name = "ssp1-port",
-+	.playback = {
-+		.channels_min = 1,
-+		.channels_max = 8,
-+	},
-+	.capture = {
-+		.channels_min = 1,
-+		.channels_max = 8,
-+	},
- },
- {
- 	.name = "ssp2-port",
-+	.playback = {
-+		.channels_min = 1,
-+		.channels_max = 8,
-+	},
-+	.capture = {
-+		.channels_min = 1,
-+		.channels_max = 8,
-+	}
- },
- {
- 	.name = "ssp3-port",
-+	.playback = {
-+		.channels_min = 1,
-+		.channels_max = 8,
-+	},
-+	.capture = {
-+		.channels_min = 1,
-+		.channels_max = 8,
-+	},
- },
- {
- 	.name = "ssp4-port",
-+	.playback = {
-+		.channels_min = 1,
-+		.channels_max = 8,
-+	},
-+	.capture = {
-+		.channels_min = 1,
-+		.channels_max = 8,
-+	},
- },
- {
- 	.name = "ssp5-port",
-+	.playback = {
-+		.channels_min = 1,
-+		.channels_max = 8,
-+	},
-+	.capture = {
-+		.channels_min = 1,
-+		.channels_max = 8,
-+	},
- },
- };
++	if (STM_SAI_PROTOCOL_IS_SPDIF(sai))
++		conf = &stm32_sai_pcm_config_spdif;
++
+ 	ret = snd_dmaengine_pcm_register(&pdev->dev, conf, 0);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Could not register pcm dma\n");
+@@ -1551,15 +1554,10 @@ static int stm32_sai_sub_probe(struct platform_device *pdev)
  
+ 	ret = snd_soc_register_component(&pdev->dev, &stm32_component,
+ 					 &sai->cpu_dai_drv, 1);
+-	if (ret) {
++	if (ret)
+ 		snd_dmaengine_pcm_unregister(&pdev->dev);
+-		return ret;
+-	}
+-
+-	if (STM_SAI_PROTOCOL_IS_SPDIF(sai))
+-		conf = &stm32_sai_pcm_config_spdif;
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ static int stm32_sai_sub_remove(struct platform_device *pdev)
 -- 
 2.20.1
 
