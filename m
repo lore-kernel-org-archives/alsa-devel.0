@@ -4,69 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B275C28CBC
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:13:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE1E2C28CBC
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:14:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EA3592063A
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:13:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 76A81206D9
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 14:14:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EGm60Whb";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="xYcEI7v0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EA3592063A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aNdNBAHm";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="NmEyc8SH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 76A81206D9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 544D916AE;
-	Thu, 30 Apr 2020 16:12:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 544D916AE
+	by alsa0.perex.cz (Postfix) with ESMTPS id CB24616C0;
+	Thu, 30 Apr 2020 16:13:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB24616C0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588256026;
-	bh=hdhau5x237LBx7BVJYuRDozB3xA1U7LTwu5kqngl8TY=;
+	s=default; t=1588256058;
+	bh=dUI/gqqz5X+jR1udD0N8RtQtkFl5ejhA8YncUXES4cY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EGm60WhbTknXTl3YPSmtZnZt3uPjsv/dbzV5e5iz7mYFcVHroMAnnfNJy4M+4zTRI
-	 nsSoE4HY5RYB9dj8LnlHRgxy4hiYzsI8C/2P7c7uIhxNHyiYaqx1bTnsFQPFFuKbEv
-	 spF2K2wpkIADSjJn1dVHs0IiOiE2cVal3F9owvD0=
+	b=aNdNBAHm5X/AvE3s4FYb2Fa6N7Zfv6vft4LtS5luLuDEpMIX40UrwEKinGOKCfvZW
+	 Y0uGMsOiK3pSLhL7hGLmb691iz4bn/vd6glSIw5+GQbBOjZpE+/ptzXWOZvl2Vxowd
+	 2Fdw8G+7qdHDyGs9rGqLZIRP20JQqT42HlhiC9L8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8FEB9F8041D;
-	Thu, 30 Apr 2020 15:53:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D496CF8042A;
+	Thu, 30 Apr 2020 15:53:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 28B80F8041D; Thu, 30 Apr 2020 15:53:36 +0200 (CEST)
+ id 9D2F4F80405; Thu, 30 Apr 2020 15:53:40 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6CD8EF800E5
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 15:53:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6CD8EF800E5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1689DF800E5
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 15:53:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1689DF800E5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="xYcEI7v0"
+ header.b="NmEyc8SH"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 5302024953;
- Thu, 30 Apr 2020 13:53:31 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id DB7EC2063A;
+ Thu, 30 Apr 2020 13:53:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1588254812;
- bh=hdhau5x237LBx7BVJYuRDozB3xA1U7LTwu5kqngl8TY=;
+ s=default; t=1588254816;
+ bh=dUI/gqqz5X+jR1udD0N8RtQtkFl5ejhA8YncUXES4cY=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=xYcEI7v0i1SZUk6yKOosiJiBX9qxIJ07Ke0F+1FXnuyZ7PyzyAJcKK4Ge8llBtbU+
- txqM1aQRlp0x03mFhX51cNT3bznsg5ppdu8ui938kDztpp/i6xaMAXP6OdGe5CmEHl
- ZwayrALOuW391lL6vCDN3jhXwn4bLeYOU3YLNgpE=
+ b=NmEyc8SH2CgiJ3SV+7jR0XsSbsPQXiRG8aYOMgKf9CbYoTdz+gSLEYXWzoVX5D0eA
+ E1v/xmgMRDF+KWNCwSr3BCwshSyMMqs2ozXTPku4nKQZfcUwRDfWkB33rl5IzqB1PV
+ bs3VtzMUJDrrqImmtSek0iZxzpnBj0t9yc5XydQ8=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 05/30] ASoC: sgtl5000: Fix VAG power-on handling
-Date: Thu, 30 Apr 2020 09:53:00 -0400
-Message-Id: <20200430135325.20762-5-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 09/30] ASoC: rsnd: Fix parent SSI start/stop in
+ multi-SSI mode
+Date: Thu, 30 Apr 2020 09:53:04 -0400
+Message-Id: <20200430135325.20762-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200430135325.20762-1-sashal@kernel.org>
 References: <20200430135325.20762-1-sashal@kernel.org>
@@ -74,9 +76,10 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, Fabio Estevam <festivem@gmail.com>,
- Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc: Matthias Blankertz <matthias.blankertz@cetitec.com>,
+ Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,87 +95,65 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Sebastian Reichel <sebastian.reichel@collabora.com>
+From: Matthias Blankertz <matthias.blankertz@cetitec.com>
 
-[ Upstream commit aa7812737f2877e192d57626cbe8825cc7cf6de9 ]
+[ Upstream commit a09fb3f28a60ba3e928a1fa94b0456780800299d ]
 
-As mentioned slightly out of patch context in the code, there
-is no reset routine for the chip. On boards where the chip is
-supplied by a fixed regulator, it might not even be resetted
-during (e.g. watchdog) reboot and can be in any state.
+The parent SSI of a multi-SSI setup must be fully setup, started and
+stopped since it is also part of the playback/capture setup. So only
+skip the SSI (as per commit 203cdf51f288 ("ASoC: rsnd: SSI parent cares
+SWSP bit") and commit 597b046f0d99 ("ASoC: rsnd: control SSICR::EN
+correctly")) if the SSI is parent outside of a multi-SSI setup.
 
-If the device is probed with VAG enabled, the driver's probe
-routine will generate a loud pop sound when ANA_POWER is
-being programmed. Avoid this by properly disabling just the
-VAG bit and waiting the required power down time.
-
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-Reviewed-by: Fabio Estevam <festivem@gmail.com>
-Link: https://lore.kernel.org/r/20200414181140.145825-1-sebastian.reichel@collabora.com
+Signed-off-by: Matthias Blankertz <matthias.blankertz@cetitec.com>
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/20200415141017.384017-2-matthias.blankertz@cetitec.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/sgtl5000.c | 34 ++++++++++++++++++++++++++++++++++
- sound/soc/codecs/sgtl5000.h |  1 +
- 2 files changed, 35 insertions(+)
+ sound/soc/sh/rcar/ssi.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index 896412d11a31c..7c0a06b487f74 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -1633,6 +1633,40 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
- 		dev_err(&client->dev,
- 			"Error %d initializing CHIP_CLK_CTRL\n", ret);
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index 33dc8d6ad35b2..3fe88f7743824 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -375,7 +375,7 @@ static void rsnd_ssi_config_init(struct rsnd_mod *mod,
+ 	 * We shouldn't exchange SWSP after running.
+ 	 * This means, parent needs to care it.
+ 	 */
+-	if (rsnd_ssi_is_parent(mod, io))
++	if (rsnd_ssi_is_parent(mod, io) && !rsnd_ssi_multi_slaves(io))
+ 		goto init_end;
  
-+	/* Mute everything to avoid pop from the following power-up */
-+	ret = regmap_write(sgtl5000->regmap, SGTL5000_CHIP_ANA_CTRL,
-+			   SGTL5000_CHIP_ANA_CTRL_DEFAULT);
-+	if (ret) {
-+		dev_err(&client->dev,
-+			"Error %d muting outputs via CHIP_ANA_CTRL\n", ret);
-+		goto disable_clk;
-+	}
-+
-+	/*
-+	 * If VAG is powered-on (e.g. from previous boot), it would be disabled
-+	 * by the write to ANA_POWER in later steps of the probe code. This
-+	 * may create a loud pop even with all outputs muted. The proper way
-+	 * to circumvent this is disabling the bit first and waiting the proper
-+	 * cool-down time.
-+	 */
-+	ret = regmap_read(sgtl5000->regmap, SGTL5000_CHIP_ANA_POWER, &value);
-+	if (ret) {
-+		dev_err(&client->dev, "Failed to read ANA_POWER: %d\n", ret);
-+		goto disable_clk;
-+	}
-+	if (value & SGTL5000_VAG_POWERUP) {
-+		ret = regmap_update_bits(sgtl5000->regmap,
-+					 SGTL5000_CHIP_ANA_POWER,
-+					 SGTL5000_VAG_POWERUP,
-+					 0);
-+		if (ret) {
-+			dev_err(&client->dev, "Error %d disabling VAG\n", ret);
-+			goto disable_clk;
-+		}
-+
-+		msleep(SGTL5000_VAG_POWERDOWN_DELAY);
-+	}
-+
- 	/* Follow section 2.2.1.1 of AN3663 */
- 	ana_pwr = SGTL5000_ANA_POWER_DEFAULT;
- 	if (sgtl5000->num_supplies <= VDDD) {
-diff --git a/sound/soc/codecs/sgtl5000.h b/sound/soc/codecs/sgtl5000.h
-index 18cae08bbd3a6..066517e352a70 100644
---- a/sound/soc/codecs/sgtl5000.h
-+++ b/sound/soc/codecs/sgtl5000.h
-@@ -233,6 +233,7 @@
- /*
-  * SGTL5000_CHIP_ANA_CTRL
-  */
-+#define SGTL5000_CHIP_ANA_CTRL_DEFAULT		0x0133
- #define SGTL5000_LINE_OUT_MUTE			0x0100
- #define SGTL5000_HP_SEL_MASK			0x0040
- #define SGTL5000_HP_SEL_SHIFT			6
+ 	if (rsnd_io_is_play(io))
+@@ -531,7 +531,7 @@ static int rsnd_ssi_start(struct rsnd_mod *mod,
+ 	 * EN is for data output.
+ 	 * SSI parent EN is not needed.
+ 	 */
+-	if (rsnd_ssi_is_parent(mod, io))
++	if (rsnd_ssi_is_parent(mod, io) && !rsnd_ssi_multi_slaves(io))
+ 		return 0;
+ 
+ 	ssi->cr_en = EN;
+@@ -554,7 +554,7 @@ static int rsnd_ssi_stop(struct rsnd_mod *mod,
+ 	if (!rsnd_ssi_is_run_mods(mod, io))
+ 		return 0;
+ 
+-	if (rsnd_ssi_is_parent(mod, io))
++	if (rsnd_ssi_is_parent(mod, io) && !rsnd_ssi_multi_slaves(io))
+ 		return 0;
+ 
+ 	cr  =	ssi->cr_own	|
+@@ -592,7 +592,7 @@ static int rsnd_ssi_irq(struct rsnd_mod *mod,
+ 	if (rsnd_is_gen1(priv))
+ 		return 0;
+ 
+-	if (rsnd_ssi_is_parent(mod, io))
++	if (rsnd_ssi_is_parent(mod, io) && !rsnd_ssi_multi_slaves(io))
+ 		return 0;
+ 
+ 	if (!rsnd_ssi_is_run_mods(mod, io))
 -- 
 2.20.1
 
