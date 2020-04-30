@@ -2,78 +2,94 @@ Return-Path: <SRS0=nm6W=6O=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C83F5C8300A
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 12:27:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D3FD6C8300A
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 12:42:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 53548208CA
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 12:27:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 37F8D2072A
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2020 12:42:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="H8tUwZX9";
-	dkim=pass (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="Q0aKUF2v"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 53548208CA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YU1UQ8QM";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="MyXancF3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 37F8D2072A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9B8C11671;
-	Thu, 30 Apr 2020 14:26:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B8C11671
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8787E1673;
+	Thu, 30 Apr 2020 14:41:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8787E1673
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588249628;
-	bh=zpAZ0nIS2bIGefskZcg8r8i74wv7wL9HHPAQoApg9FQ=;
-	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=H8tUwZX9oEMTimlj/r0My/CffH0qqoaUPdAIQfs1AQlmd8BJq21xrlMe5u1AmaURW
-	 3eS9kS3Rblqq/7xD5WPCMUwHZ9kj/k9uNQbViA40TE6nxEUn1FfZ9S7FWv4hOxanYY
-	 Cb+uDC3aU+1e7xpHdxbKBTh3NKu8gruHpGV6oELU=
+	s=default; t=1588250558;
+	bh=wonenQ7wT9y+YgM0paNEoVvi/OCEJAZOGjAESoOmmeU=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=YU1UQ8QMRLT0aLJfwK8Y3wGFXyMlYwtgPWDFzEpfBl1rXxs0wB/YwjHeIvqH3Tib9
+	 KRsDW6oRjRjD0c5zO9nANhMoMjdKj7FjSkNbXvbNM6yroT1gLvRoDsIupp9gDXKCQO
+	 oFpDj8yp6ZsBjKv6NPj6JluABsnhqSpFthhfNL4U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 340C7F80136;
-	Thu, 30 Apr 2020 14:26:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CCC04F80136;
+	Thu, 30 Apr 2020 14:41:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F390EF801DB; Thu, 30 Apr 2020 14:26:14 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 8CF41F801DB; Thu, 30 Apr 2020 14:41:41 +0200 (CEST)
+Received: from hqnvemgate26.nvidia.com (hqnvemgate26.nvidia.com
+ [216.228.121.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9C483F800B6
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 14:26:08 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 28D37A0049;
- Thu, 30 Apr 2020 14:26:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 28D37A0049
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1588249568; bh=4Je7mTA7ZehJ2uAL/ynWhlYd5Pmvvdol7EJU9K/jFLY=;
- h=Subject:To:References:From:Date:In-Reply-To:From;
- b=Q0aKUF2vMo7EJ8qjZjaJOp2kvmGVht59jXWgiyhS27JtpsCfkUiMft1LvoMa9CmWC
- lx6BmhHh5O4itZwUNDVDEb9dhD+3bXe7S0LYiE7xQA1vRXtzs4qccvtoDS3m9Pmf7w
- 51Yg1KwJJ8Ie6D+XYgaHM4rDqEL0KAJOp+NbJPHo=
-Received: from p50.perex-int.cz (unknown [192.168.100.94])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Thu, 30 Apr 2020 14:26:06 +0200 (CEST)
-Subject: Re: [PATCH] fix infinite draining of the rate plugin in
- SND_PCM_NONBLOCK mode
-To: sylvain.bertrand@gmail.com, alsa-devel@alsa-project.org
-References: <20200428120918.GA459@freedom>
-From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <e1c5a0f5-6dab-c042-dcf9-873a421f8085@perex.cz>
-Date: Thu, 30 Apr 2020 14:26:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6B77DF80123
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2020 14:41:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B77DF80123
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
+ header.b="MyXancF3"
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by
+ hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+ id <B5eaac76e0000>; Thu, 30 Apr 2020 05:41:18 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+ by hqpgpgate101.nvidia.com (PGP Universal service);
+ Thu, 30 Apr 2020 05:41:30 -0700
+X-PGP-Universal: processed;
+ by hqpgpgate101.nvidia.com on Thu, 30 Apr 2020 05:41:30 -0700
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 30 Apr
+ 2020 12:41:30 +0000
+Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via
+ Frontend Transport; Thu, 30 Apr 2020 12:41:30 +0000
+Received: from audio.nvidia.com (Not Verified[10.24.34.185]) by
+ rnnvemgw01.nvidia.com with Trustwave SEG (v7, 5, 8, 10121)
+ id <B5eaac7740003>; Thu, 30 Apr 2020 05:41:29 -0700
+From: Sameer Pujar <spujar@nvidia.com>
+To: <broonie@kernel.org>, <perex@perex.cz>, <tiwai@suse.com>,
+ <kuninori.morimoto.gx@renesas.com>
+Subject: [RFC] DPCM for Tegra
+Date: Thu, 30 Apr 2020 18:11:23 +0530
+Message-ID: <1588250483-10014-1-git-send-email-spujar@nvidia.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <20200428120918.GA459@freedom>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+ t=1588250478; bh=iOTBcDsLLgLJQNleti1NyLgN7hxMgJVLaYlGA0OF9uM=;
+ h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+ MIME-Version:Content-Type;
+ b=MyXancF3Zn1YW8lTjlAnrdqdJsnfZSi2IMP6aRcvGmuQldaw9Ll0QThJ9byqHBFzX
+ 2oKXdykB2Vmd6lQ4PXYhReD3K4VqdTs/lDVnZOrNuP7sbHc9KCXXf8WT3GudVwAoot
+ IHtQvJtDaGel/USTbevevWmyBh6i/pPFMU02akxvC8o7nLsEqkLTIQ69mwi1Ro3vhC
+ HdD69WSlG5WNr9DCOLV4pzqNpkrQ0jSoUwEqwPOE/gsBhVyBgGuxWZwqQBvLTFPgu9
+ 5dmqlB71yP6A8nSqrDPgTwdBtN7NIjbsLfzLbHzys6PmWfcDRtScp4YyzoCxaq8sXq
+ TzPR4cCpSgGYQ==
+Cc: nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, swarren@nvidia.com,
+ linux-kernel@vger.kernel.org, nwartikar@nvidia.com, lgirdwood@gmail.com,
+ jonathanh@nvidia.com, viswanathl@nvidia.com, sharadg@nvidia.com,
+ thierry.reding@gmail.com, atalambedu@nvidia.com, linux-tegra@vger.kernel.org,
+ digetx@gmail.com, rlokhande@nvidia.com, mkumard@nvidia.com, dramesh@nvidia.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,19 +105,149 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 28. 04. 20 v 14:09 sylvain.bertrand@gmail.com napsal(a):
-> The draining function of the rate plugin does not handle properly the
-> SND_PCM_NONBLOCK case. It can write data to the slave plugin each time the
-> function is called, but does not update its internal state in order to
-> reach a stopping condition. Use a last_commit_ptr workaround to reach such
-> condition.
-> 
-> signed-off-by: Sylvain BERTRAND <sylvain.bertrand@legeek.net>
+Hi Mark,
 
-Applied. Thank you.
+Earlier I had sent Tegra ASoC series [0] for review and writing back
+to follow up on the same.
 
-				Jaroslav
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+Background
+==========
+There were following concerns on [0]:
+
+ - Usage of mixer control overrides in each driver for PCM parameters.
+
+ - Exposure of routing controls to the user.
+
+The comments are mostly captured in [1] and [2].
+
+There was a suggestion to use DPCM for the Tegra audio requirements.
+
+Note: As of now, below does not cover specific solution for propogation
+of audio configurations or PCM parameters (like sample rate, sample size
+and channels).
+
+DPCM Testing
+============
+Since then I was looking into internals of DPCM and was trying to get it
+working with Tegra. I was able to get following things working.
+
+ - Audio playback/capture over I2S/DMIC/DSPK.
+ - Audio resampling use case.
+ - Mixing of two audio streams with resampler in the path.
+
+Objective was to understand and get audio working with DPCM. Please note
+that I used simple-card DPCM driver for a quick testing on top of the above
+Tegra Audio series. I had to tweak the simple-card driver a little, but
+currently keeping it out of the scope of current discussion.
+
+At a high level Tegra Audio HW is depicted as below.
+
+|     Front End PCMs     |  SoC DSP   |     Back End DAIs    |
+
+                         *************
+ADMAIF<0> <------------> *           * <----DAI<0>-----> I2S
+                         *           *
+ADMAIF<1> <------------> *           * <----DAI<1>-----> DMIC
+                         *    XBAR   *
+ADMAIF<2> <------------> *           * <----DAI<2>-----> DSPK
+                         *           *
+ADMAIF<N> <------------> *           * <----DAI<3>-----> SFC (Resampler)
+                         *           *
+                         *           * <----DAI<4>-----> MIXER
+                         *           *
+                         *           * <----DAI<N>-----> ...
+                         *************
+
+Note:
+-----
+
+ * XBAR is just a cross bar interconnecting one component to another.
+   Specific switch needs to be programmed for audio data to flow from
+   one component to another.
+
+ * SFC or Mixer are separate HW blocks and separate ASoC drivers are
+   written for these. These drivers were not sent earlier as part of
+   initial upstream series [0].
+
+
+Follow up queries
+=================
+Based on the above experience I do have few follow up queries and request
+for your inputs on this.
+
+ a) Can I use a DAPM Mux control to activate a BE path? This in turn can
+    program required switch in XBAR.
+
+    This is needed for following reasons:
+
+    - For an open platform like Jetson, we want to give maximum flexibility
+      for a user to customize their audio paths. Number of connected
+      components and order of these can vary depending on a use case.
+
+    - Allow re-use of audio components across multiple use cases.
+      For example, number of SFC instances are lesser than PCM playback or
+      capture devices.
+
+ b) I have modelled SFC and MIXER as backends. Is this allowed?
+
+    This was done to include SFC or MIXER HW components as part of the
+    sound card and use like below in one of the audio use cases.
+ 
+    ADMAIF1(FE) --> SFC(BE1) --> I2S(BE2) ... OR
+    ADMAIF2(FE) --> SFC(BE1) --> I2S(BE2) ...
+
+    I used following workaround to connect multiple BE components.
+    With this I can see PCM callbacks happen for all BE DAIs along the DAPM
+    path. The obective was to connect multiple components together and (a)
+    was used to connect one component to another. Each "-->" here connects
+    two components and it is a switch in XBAR. 
+
+    ---
+      sound/soc/soc-pcm.c | 2 +-
+      1 file changed, 1 insertion(+), 1 deletion(-)
+
+      diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+      index e256d43..ee7af55 100644
+      --- a/sound/soc/soc-pcm.c
+      +++ b/sound/soc/soc-pcm.c
+      @@ -1494,7 +1494,7 @@ int dpcm_path_get(struct snd_soc_pcm_runtime *fe,
+ 
+ 	  /* get number of valid DAI paths and their widgets */
+ 	  paths = snd_soc_dapm_dai_get_connected_widgets(cpu_dai, stream, list,
+      -			dpcm_end_walk_at_be);
+      +			NULL);
+ 
+ 	dev_dbg(fe->dev, "ASoC: found %d audio %s paths\n", paths,
+ 			stream ? "capture" : "playback");
+    -- 
+
+ c) Hostless mode did NOT work:
+     - Following audio path was intended to be tested:
+       I2S1 --> SFC --> I2S2
+
+     - [3] offers two options:
+         * CODEC<->CODEC: If I were to use a separate DAI link for each BE to BE
+           connection, then it will result in a similar design what we have
+           currently.
+
+         * Hostless: I did not come across references for this.
+           (Any references in this regard will be helpful)
+
+
+May be the current Tegra ASoC design is more suitable for component model as you
+had previously mentioned. I wanted to understand if above, especially (a) and (b),
+are acceptable in this regard or if there are better options to interconnect
+multiple ASoC components.
+
+Looking forward for your feedback.
+
+Thanks,
+Sameer.
+
+References
+==========
+[0] http://patchwork.ozlabs.org/project/linux-tegra/list/?series=159664&archive=both&state=*
+[1] http://patchwork.ozlabs.org/project/linux-tegra/patch/1582180492-25297-6-git-send-email-spujar@nvidia.com/
+[2] http://patchwork.ozlabs.org/project/linux-tegra/patch/1582180492-25297-4-git-send-email-spujar@nvidia.com/
+[3] https://www.kernel.org/doc/html/v5.6/sound/soc/dpcm.html
