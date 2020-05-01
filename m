@@ -2,86 +2,70 @@ Return-Path: <SRS0=J9ZO=6P=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4CD7C47254
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 May 2020 20:17:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B609C47256
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 May 2020 23:45:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6FDEB2137B
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 May 2020 20:17:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A563421835
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 May 2020 23:45:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Z1ggLioN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6FDEB2137B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NJvEbFpK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A563421835
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C145E16AB;
-	Fri,  1 May 2020 22:16:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C145E16AB
+	by alsa0.perex.cz (Postfix) with ESMTPS id EBA0D16AB;
+	Sat,  2 May 2020 01:44:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EBA0D16AB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588364257;
-	bh=DN9HjXtyNPMNzV33tIb75OYQOuAzSYlobJjZO16qERw=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Z1ggLioNP5/DcxM0RjWeVrx75xC8cO/v1uZ8anozFEhoppt6ZXAdvKx0ewDZomDys
-	 tVkkVY8SZIP8bb6zZTh1p7UjIOnKU1aFEnDesGQL/SWcf40iJcyKWAlRtfVw4Hglg3
-	 3loAsowNK8WoD7MoE/DtGWizFDFdIAleFb7LpUz4=
+	s=default; t=1588376738;
+	bh=XgROWD3iJAjCiyXnfTTw3hBCm7Q6t0uhvrgQZbpU0xs=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=NJvEbFpKiZbRBrf56xJjOMTOd1pBfqzSvMFU5HUEG1QEGmdzfSAN/A8J9bOtuVgPD
+	 +1wCuumSyJMF2CzVrSfRdxXdj2+pan5Qa5dDFOjePXAXdLXwzZiql4y5IHnJ9dDVE9
+	 3+UWUgHzdBLvzpVTFRgEGnan86VMI+UXc2SIr4sQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 432FFF800B6;
-	Fri,  1 May 2020 22:16:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 619DEF80217;
+	Sat,  2 May 2020 01:44:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A9588F8022B; Fri,  1 May 2020 22:16:44 +0200 (CEST)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ id B9D67F8022B; Sat,  2 May 2020 01:44:44 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1D779F800B6
- for <alsa-devel@alsa-project.org>; Fri,  1 May 2020 22:16:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D779F800B6
-IronPort-SDR: j0AIjFIhykOvblOETk10pFt/5DLu8pG6fCb/rehpFmP4nccjmupMQ3liU+Df0DLP403h9kPIRt
- RCOfCiNFyiyw==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6C505F800B9
+ for <alsa-devel@alsa-project.org>; Sat,  2 May 2020 01:44:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C505F800B9
+IronPort-SDR: r+m+U/qrQaiCeJuxtOy5o/NnQwXxfGWx1gB0regwzFhl2rCHoWXEWLoJDnRAujLUWgiSTADWtf
+ p0W0X9aTpM4g==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 May 2020 13:16:37 -0700
-IronPort-SDR: 1GzbZ0PLz8ewGXbhrI0UK885C79CRjvVf7gZORcwqO/LIVMBQf1s9CM8kxn22edyQqKkH8TQnh
- F4Um4u0bLAMg==
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 01 May 2020 16:44:32 -0700
+IronPort-SDR: OcdzdGaXwWBDIufava1jq7XtC1gJcQEHN8SEDdua+PupagMtBWSAg19wuOd0wrTJuFDPpx8px5
+ YOywxjywsHUw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,340,1583222400"; d="scan'208";a="276914737"
-Received: from srodrig5-mobl2.amr.corp.intel.com (HELO [10.254.111.158])
- ([10.254.111.158])
- by orsmga002.jf.intel.com with ESMTP; 01 May 2020 13:16:35 -0700
-Subject: Re: [PATCH V2] ASoC: Intel: boards: Use FS as nau8825 sysclk in
- nau88125_* machine
-To: Radoslaw Biernacki <rad@semihalf.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Jie Yang <yang.jie@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>
-References: <20200501193141.30293-1-rad@semihalf.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <3ad44b75-387f-da75-d7b2-3a16ed00550c@linux.intel.com>
-Date: Fri, 1 May 2020 15:16:35 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <20200501193141.30293-1-rad@semihalf.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: Lech Betlej <Lech.Betlej@intel.com>, alsa-devel@alsa-project.org,
- Todd Broch <tbroch@google.com>, Harshapriya <harshapriya.n@intel.com>,
- Alex Levin <levinale@google.com>, John Hsu <KCHSU0@nuvoton.com>,
- linux-kernel@vger.kernel.org, michal.sienkiewicz@intel.com,
- Ben Zhang <benzh@chromium.org>, Mac Chiang <mac.chiang@intel.com>,
- Marcin Wojtas <mw@semihalf.com>,
- Vamshi Krishna <vamshi.krishna.gopal@intel.com>, Yong Zhi <yong.zhi@intel.com>
+X-IronPort-AV: E=Sophos;i="5.73,342,1583222400"; d="scan'208";a="368571867"
+Received: from aberkov1-mobl.amr.corp.intel.com (HELO
+ yzhi-desktop.amr.corp.intel.com) ([10.255.228.218])
+ by fmsmga001.fm.intel.com with ESMTP; 01 May 2020 16:44:31 -0700
+From: Yong Zhi <yong.zhi@intel.com>
+To: broonie@kernel.org,
+	pierre-louis.bossart@linux.intel.com
+Subject: [PATCH] ASoC: max98373: reorder max98373_reset() in resume
+Date: Fri,  1 May 2020 18:44:21 -0500
+Message-Id: <1588376661-29799-1-git-send-email-yong.zhi@intel.com>
+X-Mailer: git-send-email 2.7.4
+Cc: alsa-devel@alsa-project.org, Yong Zhi <yong.zhi@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,75 +81,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+During S3 test, the following error was observed:
 
+[ 726.174237] i2c_designware i2c_designware.0: platform_pm_resume+0x0/0x3d returned 0 after 0 usecs
+[ 726.184187] max98373 i2c-MX98373:00: calling max98373_resume+0x0/0x30 [snd_soc_max98373] @ 12698, parent: i2c-11
+[ 726.195589] max98373 i2c-MX98373:00: Reset command failed. (ret:-16)
 
-On 5/1/20 2:31 PM, Radoslaw Biernacki wrote:
-> This single fix address two issues on machines with nau88125:
-> 1) Audio distortion, due to lack of required clock rate on MCLK line
-> 2) Loud audible "pops" on headphones if there is no sysclk during nau8825
->     playback power up sequence
-> 
-> Explanation for:
-> 1) Due to Skylake HW limitation, MCLK pin can only output 24MHz clk
->     rate (it can be only connected to XTAL parent clk). The BCLK pin
->     can be driven by dividers and therefore FW is able to set it to rate
->     required by chosen audio format. According to nau8825 datasheet, 256*FS
->     sysclk gives the best audio quality and the only way to achieve this
->     (taking into account the above limitations) its to regenerate the MCLK
->     from BCLK on nau8825 side by FFL. Without required clk rate, audio is
->     distorted by added harmonics.
+When calling regmap_update_bits(), since map->reg_update_bits is NULL,
+_regmap_read() is entered with the following logic:
 
-The BCLK is going to be a multiple of 50 * Fs due to clocking 
-restrictions. Can the codec regenerate a good-enough sysclk from this?
-> 
-> 2) Currently Skylake does not output MCLK/FS when the back-end DAI op
->     hw_param is called, so we cannot switch to MCLK/FS in hw_param.  This
->     patch reduces pop by letting nau8825 keep using its internal VCO clock
->     during widget power up sequence, until SNDRV_PCM_TRIGGER_START when
->     MCLK/FS is available. Once device resumes, the system will only enable
->     power sequence for playback without doing hardware parameter, audio
->     format, and PLL configure. In the mean time, the jack detecion sequence
->     has changed PLL parameters and switched to internal clock. Thus, the
->     playback signal distorted without correct PLL parameters.  That is why
->     we need to configure the PLL again in SNDRV_PCM_TRIGGER_RESUME case.
+	if (!map->cache_bypass) {
+		ret = regcache_read(map, reg, val);
+		if (ret == 0)
+			return 0;
+	}
 
-IIRC the FS can be controlled with the clk_ api with the Skylake driver, 
-as done for some KBL platforms. Or is this not supported by the firmware 
-used by this machine?
+	if (map->cache_only)
+		return -EBUSY;
 
-> -static int skylake_nau8825_hw_params(struct snd_pcm_substream *substream,
-> -	struct snd_pcm_hw_params *params)
-> +static int skylake_nau8825_trigger(struct snd_pcm_substream *substream, int cmd)
->   {
->   	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +	struct snd_pcm_runtime *runtime = substream->runtime;
->   	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
-> -	int ret;
-> -
-> -	ret = snd_soc_dai_set_sysclk(codec_dai,
-> -			NAU8825_CLK_MCLK, 24000000, SND_SOC_CLOCK_IN);
-> +	int ret = 0;
->   
-> -	if (ret < 0)
-> -		dev_err(rtd->dev, "snd_soc_dai_set_sysclk err = %d\n", ret);
-> +	switch (cmd) {
-> +	case SNDRV_PCM_TRIGGER_START:
-> +		ret = snd_soc_dai_set_sysclk(codec_dai, NAU8825_CLK_FLL_FS, 0,
-> +					     SND_SOC_CLOCK_IN);
-> +		if (ret < 0) {
-> +			dev_err(codec_dai->dev, "can't set FS clock %d\n", ret);
-> +			break;
-> +		}
-> +		ret = snd_soc_dai_set_pll(codec_dai, 0, 0, runtime->rate,
-> +					  runtime->rate * 256);
-> +		if (ret < 0)
-> +			dev_err(codec_dai->dev, "can't set FLL: %d\n", ret);
-> +		break;
-> +	case SNDRV_PCM_TRIGGER_RESUME:
-> +		ret = snd_soc_dai_set_pll(codec_dai, 0, 0, runtime->rate,
-> +					  runtime->rate * 256);
-> +		if (ret < 0)
-> +			dev_err(codec_dai->dev, "can't set FLL: %d\n", ret);
-> +		msleep(20);
+regcache_read() hits -EINVAL because MAX98373_R2000_SW_RESET is volatile,
+as map->cache_only is set by codec suspend, thus -EBUSY is returned.
+Fix by moving max98373_reset() after cache_only set to false in max98373_resume().
 
-is there a reason why you'd need a msleep for resume and not for start?
+Signed-off-by: Yong Zhi <yong.zhi@intel.com>
+---
+ sound/soc/codecs/max98373.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/max98373.c b/sound/soc/codecs/max98373.c
+index cae1def8902d..96718e3a1ad0 100644
+--- a/sound/soc/codecs/max98373.c
++++ b/sound/soc/codecs/max98373.c
+@@ -850,8 +850,8 @@ static int max98373_resume(struct device *dev)
+ {
+ 	struct max98373_priv *max98373 = dev_get_drvdata(dev);
+ 
+-	max98373_reset(max98373, dev);
+ 	regcache_cache_only(max98373->regmap, false);
++	max98373_reset(max98373, dev);
+ 	regcache_sync(max98373->regmap);
+ 	return 0;
+ }
+-- 
+2.7.4
+
