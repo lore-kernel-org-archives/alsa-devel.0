@@ -2,67 +2,66 @@ Return-Path: <SRS0=J9ZO=6P=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E8872C4724C
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 May 2020 10:28:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1512C47253
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 May 2020 10:34:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6E1CF2184D
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 May 2020 10:28:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 64434206B8
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 May 2020 10:34:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IwYW7L9k"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6E1CF2184D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="umsGgH4z"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 64434206B8
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C7172168C;
-	Fri,  1 May 2020 12:27:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7172168C
+	by alsa0.perex.cz (Postfix) with ESMTPS id B0529168C;
+	Fri,  1 May 2020 12:33:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0529168C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588328885;
-	bh=hed4NYc0Yyqh4i9xZDXPnvqFzQ7wU8/uCBiSV5qYKYY=;
+	s=default; t=1588329253;
+	bh=l4isw8EJSYnNcumH3k4gOgiN5a3dDxpEN/jcldOHbtA=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IwYW7L9kArj1ieYuXXoZrh9V3mvBVLlaoqEKW9Q6vJgUS+PYx7gIMAMUTB7q1CHgI
-	 WXZ2uMD/fqTRFksNIyHWkeLrITM1tKPRWjDqQPbFvUR6z9CTMGazkJfCPh/M0b6U2E
-	 qkqwMepbLXO/5WYpqaA5s9Yr6XBBrG+xQe4GzIi8=
+	b=umsGgH4zFiPMbKSvdMLWeYgLBUGQ0Dsm8aCAXaan7PeJyiNO0KeDgMmgz6GhfMSYJ
+	 zXK2eCYmwqD+lolHeKAaUq5TAQs/1Sk4eCJxx3Ra+o3aZ6JgNKPZjGBsKvrQ4Qk2cq
+	 vouQ6bCWppo9upKTGGiftokeDZ93Gx41DUGCUb/0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 63445F80217;
-	Fri,  1 May 2020 12:27:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 108EDF80217;
+	Fri,  1 May 2020 12:33:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AA09EF8022B; Fri,  1 May 2020 12:27:14 +0200 (CEST)
+ id 5FC33F8022B; Fri,  1 May 2020 12:33:21 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 181C4F800B9
- for <alsa-devel@alsa-project.org>; Fri,  1 May 2020 12:27:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 181C4F800B9
+ by alsa1.perex.cz (Postfix) with ESMTPS id F1966F800B9
+ for <alsa-devel@alsa-project.org>; Fri,  1 May 2020 12:33:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1966F800B9
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id C8D1FAF79;
- Fri,  1 May 2020 10:27:10 +0000 (UTC)
-Date: Fri, 01 May 2020 12:27:10 +0200
-Message-ID: <s5himhghrwh.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 34B0BAFE8;
+ Fri,  1 May 2020 10:33:17 +0000 (UTC)
+Date: Fri, 01 May 2020 12:33:17 +0200
+Message-ID: <s5hh7x0hrma.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH] ALSA: isa/wavefront: prevent out of bounds write in ioctl
-In-Reply-To: <20200501094011.GA960082@mwanda>
-References: <20200501094011.GA960082@mwanda>
+To: Jesus Ramos <jesus-ramos@live.com>
+Subject: Re: [PATCH] Add control message quirk delay for Kingston HyperX
+ headset
+In-Reply-To: <BY5PR19MB3634BA68C7CCA23D8DF428E796AF0@BY5PR19MB3634.namprd19.prod.outlook.com>
+References: <BY5PR19MB3634BA68C7CCA23D8DF428E796AF0@BY5PR19MB3634.namprd19.prod.outlook.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Armijn Hemel <armijn@tjaldur.nl>,
- Allison Randal <allison@lohutok.net>
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,51 +77,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 01 May 2020 11:40:11 +0200,
-Dan Carpenter wrote:
+On Mon, 27 Apr 2020 15:21:39 +0200,
+Jesus Ramos wrote:
 > 
-> The "header->number" comes from the ioctl and it needs to be clamped to
-> prevent out of bounds writes.
 > 
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Jesus Ramos <jesus-ramos@live.com>
 
-Applied now.  Thanks.
+Applied with a bit more patch changelog text and minor corrections.
 
+
+thanks,
 
 Takashi
-
-> ---
-> This code predates git.
-> 
->  sound/isa/wavefront/wavefront_synth.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/sound/isa/wavefront/wavefront_synth.c b/sound/isa/wavefront/wavefront_synth.c
-> index c5b1d5900eed2..d6420d224d097 100644
-> --- a/sound/isa/wavefront/wavefront_synth.c
-> +++ b/sound/isa/wavefront/wavefront_synth.c
-> @@ -1171,7 +1171,10 @@ wavefront_send_alias (snd_wavefront_t *dev, wavefront_patch_info *header)
->  				      "alias for %d\n",
->  				      header->number,
->  				      header->hdr.a.OriginalSample);
-> -    
-> +
-> +	if (header->number >= WF_MAX_SAMPLE)
-> +		return -EINVAL;
-> +
->  	munge_int32 (header->number, &alias_hdr[0], 2);
->  	munge_int32 (header->hdr.a.OriginalSample, &alias_hdr[2], 2);
->  	munge_int32 (*((unsigned int *)&header->hdr.a.sampleStartOffset),
-> @@ -1202,6 +1205,9 @@ wavefront_send_multisample (snd_wavefront_t *dev, wavefront_patch_info *header)
->  	int num_samples;
->  	unsigned char *msample_hdr;
->  
-> +	if (header->number >= WF_MAX_SAMPLE)
-> +		return -EINVAL;
-> +
->  	msample_hdr = kmalloc(WF_MSAMPLE_BYTES, GFP_KERNEL);
->  	if (! msample_hdr)
->  		return -ENOMEM;
-> -- 
-> 2.26.2
-> 
