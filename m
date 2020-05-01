@@ -6,69 +6,69 @@ X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96ADAC4724C
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 May 2020 16:48:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D36BAC47253
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 May 2020 16:48:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 23E4D206D6
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 May 2020 16:48:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5ECE120836
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 May 2020 16:48:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ODo01Px0";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="LkkvTRn6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 23E4D206D6
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WKs7rIpd";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="AkwbjJq2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5ECE120836
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9D30A16C5;
-	Fri,  1 May 2020 18:47:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D30A16C5
+	by alsa0.perex.cz (Postfix) with ESMTPS id B3FD216AD;
+	Fri,  1 May 2020 18:47:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3FD216AD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588351698;
-	bh=Iteoj9IBmz6lTyQcpwnK4Bu1UwXFaMlfQlefpG9nMBs=;
+	s=default; t=1588351722;
+	bh=GA+KXGXoObU9YSnCE9hebwVyTOhJGZIl3ym5Rx9Hw/o=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ODo01Px0uM89sIt9K5k0WeTsejaU9Ucu4ePuJTDRUvfshjk590d5bqkkpiAmcDPU4
-	 DIY34I7nV49IHQPF8rN7Crwwno/53hGw0oP0OQwzqRy5T2UN7b/zZu/YSr+KAF9anS
-	 kKJkUtlIYbUnte0ElRnVtVRBdpX/IfzPiKiS1szw=
+	b=WKs7rIpd8Xh0Sb0mDDEGBDxF6KDpXpL43/zrv6eVw6q6YEXeTIhxwHuXaHQsHGoIZ
+	 O+3gb2QTYG36beC1kYhbtVEMctyd++dNpWn7vnbdS/KspqUk7N9GAhZFGkmnyVaqPa
+	 SG/23WmMo5YDqJLgat6QtQQZDDAbgfb3Y81StVZo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A6261F8028D;
-	Fri,  1 May 2020 18:45:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B1E38F80292;
+	Fri,  1 May 2020 18:45:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 35E7EF80257; Fri,  1 May 2020 18:45:50 +0200 (CEST)
+ id 539F6F80299; Fri,  1 May 2020 18:45:56 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D5917F800B9
- for <alsa-devel@alsa-project.org>; Fri,  1 May 2020 18:45:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5917F800B9
+ by alsa1.perex.cz (Postfix) with ESMTPS id CC688F80291
+ for <alsa-devel@alsa-project.org>; Fri,  1 May 2020 18:45:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC688F80291
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="LkkvTRn6"
+ header.b="AkwbjJq2"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id CA84D24954;
- Fri,  1 May 2020 16:45:45 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id BF115206D6;
+ Fri,  1 May 2020 16:45:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1588351546;
- bh=Iteoj9IBmz6lTyQcpwnK4Bu1UwXFaMlfQlefpG9nMBs=;
+ s=default; t=1588351552;
+ bh=GA+KXGXoObU9YSnCE9hebwVyTOhJGZIl3ym5Rx9Hw/o=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=LkkvTRn6uNas0WywmWidQ2JFb8Z4zeWNUlbXKnvjdXJRe8o/qu1rKfX9YanCKNQtP
- aGHXX34ctNbrpEdOjnMDtKXG8dp0W+Ukmkey3hq7AKaym2/lemft8h1C+Lne4Nf1cn
- hYOSoEGfUdWp3rAKTYPVlgzjeJcGHH+ZvMSVDhLE=
-Date: Fri, 01 May 2020 17:45:43 +0100
+ b=AkwbjJq27wgL44OWjVR6kZ7gNrtwKzGaCO8zyArS2PGgHuSafJh9AYojz9Eo24/F7
+ 388tGq9cuZiH/+wMWl17hOG3OuTxDrCMMBsMUNJjQrFdglBBomA2gns9dUgFA5Ksks
+ AY3kTgCizOSS9m8tL5Tr4QPIkEV8fWAS8lfW19Ik=
+Date: Fri, 01 May 2020 17:45:49 +0100
 From: Mark Brown <broonie@kernel.org>
 To: alsa-devel@alsa-project.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20200501150611.15395-1-pierre-louis.bossart@linux.intel.com>
-References: <20200501150611.15395-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: boards: sof-wm8804: support for Hifiberry
+In-Reply-To: <20200501151625.17820-1-pierre-louis.bossart@linux.intel.com>
+References: <20200501151625.17820-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v2] ASoC: Intel: boards: sof-wm8804: support for Hifiberry
  Digiplus boards
-Message-Id: <158835153189.13173.9938366604623937165.b4-ty@kernel.org>
+Message-Id: <158835153189.13173.14761204750811694322.b4-ty@kernel.org>
 Cc: tiwai@suse.de, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -85,7 +85,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 1 May 2020 10:06:11 -0500, Pierre-Louis Bossart wrote:
+On Fri, 1 May 2020 10:16:25 -0500, Pierre-Louis Bossart wrote:
 > Add a new machine driver to interface with WM8804. The code is based
 > on settings found in sound/soc/bcm/hifiberry-digi.c in the Raspberry
 > PI tree.
