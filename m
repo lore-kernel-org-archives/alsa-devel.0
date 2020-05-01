@@ -3,75 +3,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D3E09C4724C
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 May 2020 16:46:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09B88C47253
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 May 2020 16:47:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5B7B6206D6
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 May 2020 16:46:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7AB0E206D6
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 May 2020 16:47:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BS7ARWrm";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nnmg1qfU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5B7B6206D6
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="i97GHBy8";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="YrnH5ScM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7AB0E206D6
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A4EE316AA;
-	Fri,  1 May 2020 18:45:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A4EE316AA
+	by alsa0.perex.cz (Postfix) with ESMTPS id ABC5C16B5;
+	Fri,  1 May 2020 18:46:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ABC5C16B5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588351597;
-	bh=EdzADl1dqA/pSkvOdRE6yygS79Beu2SuHzIiA/XyE98=;
+	s=default; t=1588351650;
+	bh=e1BLijDBGUgMHZDivuowwr5UGsmjd0hGwSXSx+iSe9g=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BS7ARWrm0uJk9G+MUjL0XacZn8t4o/99bid1Ld9wOoetGPrLMZP7eKcnVIl+ZphaX
-	 TA/tW5TY3ydmfpPDaVwKXt8CKZBCrEnPJnmvz/H9GUXDqQsTgJ4o2NoUNa8/A7sRuH
-	 jg4swziVN73ToHbHesOG8Vd5Fcf8FU5Ppjm98Y7g=
+	b=i97GHBy8zLtk2MxaxIxhOg58YCPmW1b2DFQr1h4+McbQv2FyQtSsY4Ff8lgo6zq5j
+	 Anps3Y0+R22k7k5L6ZpLC0H3YD4jMf03lzu089gmHw9FIdAGALk4FhxAefh+j3ZHBE
+	 AIsdBd+qgNQAiIadeAhfPi6YcQ36RFKEoxL3zsHM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 28ED3F8022B;
-	Fri,  1 May 2020 18:45:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B1AF7F80245;
+	Fri,  1 May 2020 18:45:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 00414F80232; Fri,  1 May 2020 18:45:44 +0200 (CEST)
+ id 904A8F8026F; Fri,  1 May 2020 18:45:48 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 21E04F800E5
- for <alsa-devel@alsa-project.org>; Fri,  1 May 2020 18:45:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21E04F800E5
+ by alsa1.perex.cz (Postfix) with ESMTPS id D7FB7F800B9
+ for <alsa-devel@alsa-project.org>; Fri,  1 May 2020 18:45:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7FB7F800B9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Nnmg1qfU"
+ header.b="YrnH5ScM"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 00FC2206D6;
- Fri,  1 May 2020 16:45:33 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id F3658206D6;
+ Fri,  1 May 2020 16:45:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1588351534;
- bh=EdzADl1dqA/pSkvOdRE6yygS79Beu2SuHzIiA/XyE98=;
+ s=default; t=1588351540;
+ bh=e1BLijDBGUgMHZDivuowwr5UGsmjd0hGwSXSx+iSe9g=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=Nnmg1qfU3BIKXxQRAWlhBw57anIewhP1elOY9tKzrynlch8MVQ6C4JjAJswbP8FpD
- 4IFQbjUETCKvIfzRPwlTiFD7MAorYdnDmWITtaxipWcnivHjNQrfanN++mx6mI9leU
- NsHB6H7HNjiC4CxW+4Deee+Dm/qre+7HYczgX0po=
-Date: Fri, 01 May 2020 17:45:31 +0100
+ b=YrnH5ScMlhgzHv5a8rueZE8PVMiIrR0v8JOMIJJosKMFUZRFLX7bM6lZ7lClR/0jq
+ 8++DPzQnvAaiE4J1gQngCMrf4yFJ6EPzljjmMvD4Z+qHVBd1/2Cla33fCo25Or7xrU
+ 8Fg6Ox/K2W8TQnIW1GoOfQXmX0mbATw/R/mZFScc=
+Date: Fri, 01 May 2020 17:45:38 +0100
 From: Mark Brown <broonie@kernel.org>
-To: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Krzysztof Kozlowski <krzk@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org
-In-Reply-To: <20200501133534.6706-1-krzk@kernel.org>
-References: <20200501133534.6706-1-krzk@kernel.org>
-Subject: Re: [PATCH] dt-bindings: sound: wm8994: Correct required supplies
- based on actual implementaion
-Message-Id: <158835153189.13173.5201387267459150176.b4-ty@kernel.org>
-Cc: patches@opensource.cirrus.com, Jonathan Bakker <xc-racer2@live.ca>,
- Lee Jones <lee.jones@linaro.org>
+To: alsa-devel@alsa-project.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20200501145850.15178-1-pierre-louis.bossart@linux.intel.com>
+References: <20200501145850.15178-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF/Intel: clarify SPDX license with GPL-2.0-only
+Message-Id: <158835153188.13173.7521228683785448870.b4-ty@kernel.org>
+Cc: tiwai@suse.de,
+ Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ Daniel Baluta <daniel.baluta@nxp.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,14 +87,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 1 May 2020 15:35:34 +0200, Krzysztof Kozlowski wrote:
-> The required supplies in bindings were actually not matching
-> implementation making the bindings incorrect and misleading.  The Linux
-> kernel driver requires all supplies to be present.  Also for wlf,wm8994
-> uses just DBVDD-supply instead of DBVDDn-supply (n: <1,3>).
+On Fri, 1 May 2020 09:58:50 -0500, Pierre-Louis Bossart wrote:
+> Remove the ambiguity with GPL-2.0 and use an explicit GPL-2.0-only
+> tag.
 > 
-> Reported-by: Jonathan Bakker <xc-racer2@live.ca>
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
+> Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+> Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 > 
 > [...]
 
@@ -104,8 +104,8 @@ Applied to
 
 Thanks!
 
-[1/1] dt-bindings: sound: wm8994: Correct required supplies based on actual implementaion
-      commit: 8c149b7d75e53be47648742f40fc90d9fc6fa63a
+[1/1] ASoC: SOF/Intel: clarify SPDX license with GPL-2.0-only
+      commit: e149ca29f3994ca79e9e77aa2f5b2e871e9f7c99
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
