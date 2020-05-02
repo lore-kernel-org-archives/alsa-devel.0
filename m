@@ -1,71 +1,84 @@
-Return-Path: <SRS0=J9ZO=6P=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=kfZ2=6Q=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B609C47256
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 May 2020 23:45:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE210C3A5A9
+	for <alsa-devel@archiver.kernel.org>; Sat,  2 May 2020 07:13:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A563421835
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 May 2020 23:45:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4847D2173E
+	for <alsa-devel@archiver.kernel.org>; Sat,  2 May 2020 07:13:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NJvEbFpK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A563421835
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HTJge+DK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4847D2173E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EBA0D16AB;
-	Sat,  2 May 2020 01:44:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EBA0D16AB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 88E8A16A8;
+	Sat,  2 May 2020 09:12:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88E8A16A8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588376738;
-	bh=XgROWD3iJAjCiyXnfTTw3hBCm7Q6t0uhvrgQZbpU0xs=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=NJvEbFpKiZbRBrf56xJjOMTOd1pBfqzSvMFU5HUEG1QEGmdzfSAN/A8J9bOtuVgPD
-	 +1wCuumSyJMF2CzVrSfRdxXdj2+pan5Qa5dDFOjePXAXdLXwzZiql4y5IHnJ9dDVE9
-	 3+UWUgHzdBLvzpVTFRgEGnan86VMI+UXc2SIr4sQ=
+	s=default; t=1588403592;
+	bh=NNG+rgERDObDXq/WY+OFTyky1L0jyCY36y++aYVODDc=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=HTJge+DKLoiSqJdbHZo3z06aBhGGwHflpurJkHew/BS0yqbTa2EQ64PAkjHND2I7+
+	 y62j6MTmANtFDoOIQf2RYMorqBuNHZyMrVuqa+eNbRcnu7D2h6VP8aZZICR6Mri7Zy
+	 tEiMOha9LrZ2BG6LNeKkZyfhP5JhVdMfTn0cOJdo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 619DEF80217;
-	Sat,  2 May 2020 01:44:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E67A6F801EB;
+	Sat,  2 May 2020 09:12:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B9D67F8022B; Sat,  2 May 2020 01:44:44 +0200 (CEST)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 1E2F9F801F7; Sat,  2 May 2020 09:12:19 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6C505F800B9
- for <alsa-devel@alsa-project.org>; Sat,  2 May 2020 01:44:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C505F800B9
-IronPort-SDR: r+m+U/qrQaiCeJuxtOy5o/NnQwXxfGWx1gB0regwzFhl2rCHoWXEWLoJDnRAujLUWgiSTADWtf
- p0W0X9aTpM4g==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 May 2020 16:44:32 -0700
-IronPort-SDR: OcdzdGaXwWBDIufava1jq7XtC1gJcQEHN8SEDdua+PupagMtBWSAg19wuOd0wrTJuFDPpx8px5
- YOywxjywsHUw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,342,1583222400"; d="scan'208";a="368571867"
-Received: from aberkov1-mobl.amr.corp.intel.com (HELO
- yzhi-desktop.amr.corp.intel.com) ([10.255.228.218])
- by fmsmga001.fm.intel.com with ESMTP; 01 May 2020 16:44:31 -0700
-From: Yong Zhi <yong.zhi@intel.com>
-To: broonie@kernel.org,
-	pierre-louis.bossart@linux.intel.com
-Subject: [PATCH] ASoC: max98373: reorder max98373_reset() in resume
-Date: Fri,  1 May 2020 18:44:21 -0500
-Message-Id: <1588376661-29799-1-git-send-email-yong.zhi@intel.com>
-X-Mailer: git-send-email 2.7.4
-Cc: alsa-devel@alsa-project.org, Yong Zhi <yong.zhi@intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2B083F800C5
+ for <alsa-devel@alsa-project.org>; Sat,  2 May 2020 09:12:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B083F800C5
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 54861AF2B;
+ Sat,  2 May 2020 07:11:59 +0000 (UTC)
+Date: Sat, 02 May 2020 09:11:58 +0200
+Message-ID: <s5h7dxuizep.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Nicholas Johnson <nicholas.johnson-opensource@outlook.com.au>
+Subject: Re: [PATCH 0/1] Fiji GPU audio register timeout when in BACO state
+In-Reply-To: <s5h1ro4kgog.wl-tiwai@suse.de>
+References: <s5hv9lkm49n.wl-tiwai@suse.de>
+ <PSXP216MB043899DC52E6C6BF728D77CD80AC0@PSXP216MB0438.KORP216.PROD.OUTLOOK.COM>
+ <s5ha72ulp2y.wl-tiwai@suse.de>
+ <PSXP216MB043822350CDE9E7EEA37730880AD0@PSXP216MB0438.KORP216.PROD.OUTLOOK.COM>
+ <CADnq5_MCQ7xHY=yhNtRW=ze0LRPzxuu-Mm7pD4kFa5R52UrGSw@mail.gmail.com>
+ <s5h1ro6jn0v.wl-tiwai@suse.de>
+ <CADnq5_Mjb_FnNOzjUfJZ7GSDzi-+Cfc1ZTuqm7UWCWVvY6DU_w@mail.gmail.com>
+ <s5hwo5xj98v.wl-tiwai@suse.de>
+ <PSXP216MB0438FE3E1CA577805BEC23C880AA0@PSXP216MB0438.KORP216.PROD.OUTLOOK.COM>
+ <s5hh7x0kiwb.wl-tiwai@suse.de>
+ <PSXP216MB04381A30909F66867E6B6BCC80AA0@PSXP216MB0438.KORP216.PROD.OUTLOOK.COM>
+ <s5h1ro4kgog.wl-tiwai@suse.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: "Zhou, David\(ChunMing\)" <David1.Zhou@amd.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+ Takashi Iwai <tiwai@suse.com>, "Deucher,
+ Alexander" <Alexander.Deucher@amd.com>, Lukas Wunner <lukas@wunner.de>,
+ Alex Deucher <alexdeucher@gmail.com>, "Koenig,
+ Christian" <Christian.Koenig@amd.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,47 +94,166 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-During S3 test, the following error was observed:
+On Thu, 30 Apr 2020 19:49:03 +0200,
+Takashi Iwai wrote:
+> 
+> On Thu, 30 Apr 2020 19:38:16 +0200,
+> Nicholas Johnson wrote:
+> > 
+> > On Thu, Apr 30, 2020 at 07:01:08PM +0200, Takashi Iwai wrote:
+> > > On Thu, 30 Apr 2020 18:52:20 +0200,
+> > > Nicholas Johnson wrote:
+> > > > 
+> > > > On Thu, Apr 30, 2020 at 05:14:56PM +0200, Takashi Iwai wrote:
+> > > > > On Wed, 29 Apr 2020 18:19:57 +0200,
+> > > > > Alex Deucher wrote:
+> > > > > > 
+> > > > > > On Wed, Apr 29, 2020 at 12:05 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > > > > > > Well, but the code path there is the runtime PM resume of the audio
+> > > > > > > device and it means that GPU must have been runtime-resumed again
+> > > > > > > beforehand via the device link.  So, it should have worked from the
+> > > > > > > beginning but in reality not -- that is, apparently some inconsistency
+> > > > > > > is found in the initial attempt of the runtime resume...
+> > > > > > 
+> > > > > > Yeah, it should be covered, but I wonder if there is something in the
+> > > > > > ELD update sequence that needs to call pm_runtime_get_sync()?  The ELD
+> > > > > > sequence on AMD GPUs doesn't work the same as on other vendors.  The
+> > > > > > GPU driver has a backdoor into the HDA device's verbs to set update
+> > > > > > the audio state rather than doing it via an ELD buffer update.  We
+> > > > > > still update the ELD buffer for consistency.  Maybe when the GPU
+> > > > > > driver sets the audio state at monitor detection time that triggers an
+> > > > > > interrupt or something on the HDA side which races with the CPU and
+> > > > > > the power down of the GPU.  That still seems unlikely though since the
+> > > > > > runtime pm on the GPU side defaults to a 5 second suspend timer.
+> > > > > 
+> > > > > I'm not sure whether it's the race between runtime suspend of GPU vs
+> > > > > runtime resume of audio.  My wild guess is rather that it's the timing
+> > > > > GPU notifies to the audio; then the audio driver notifies to
+> > > > > user-space and user-space opens the stream, which in turn invokes the
+> > > > > runtime resume of GPU. But in GPU side, it's still under processing,
+> > > > > so it proceeds before the GPU finishes its initialization job.
+> > > > > 
+> > > > > Nicholas, could you try the patch below and see whether the problem
+> > > > > still appears?  The patch artificially delays the notification and ELD
+> > > > > update for 300msec.  If this works, it means the timing problem.
+> > > > The bug still occurred after applying the patch.
+> > > > 
+> > > > But you were absolutely correct - it just needed to be increased to 
+> > > > 3000ms - then the bug stopped.
+> > > 
+> > > Interesting.  3 seconds are too long, but I guess 1 second would work
+> > > as well?
+> > 1000ms indeed worked as well.
+> > 
+> > > 
+> > > In anyway, the success with a long delay means that the sound setup
+> > > after the full runtime resume of GPU seems working.
+> > > 
+> > > > Now the question is, what do we do now that we know this?
+> > > > 
+> > > > Also, are you still interested in the contents of the ELD# files? I can 
+> > > > dump them all into a file at some specific moment in time which you 
+> > > > request, if needed.
+> > > 
+> > > Yes, please take the snapshot before plugging, right after plugging
+> > > and right after enabling.  I'm not sure whether your monitor supports
+> > > the audio, and ELD contents should show that, at least.
+> > The monitor supports the audio. There is 3.5mm audio out jack. No 
+> > inbuilt speakers, although Samsung did sell a sound bar to suit it. The 
+> > sound bar, which I do not own, presumably attaches via 3.5mm jack.
+> > 
+> > I am not sure if by plugging, you mean hot-adding Thunderbolt GPU or 
+> > plugging the monitor to the GPU, so I have covered extra cases to be 
+> > sure. I have taken the eld# files with the 1000ms patch applied, so the 
+> > error is not triggered.
+> 
+> OK, thanks.  If I understand correctly...
+> 
+> > ####
+> > Before hot-adding the Thunderbolt GPU:
+> > /proc/asound/card1 not present
+> > ####
+> > ####
+> > After hot-adding the GPU with no monitor attached:
+> > 
+> > /proc/asound/card1 contains:
+> > eld#0.0  eld#0.1  eld#0.2  eld#0.3  eld#0.4  eld#0.5
+> > 
+> > All of the above have the same contents:
+> > 
+> > monitor_present         0
+> > eld_valid               0
+> > ####
+> > ####
+> > Monitor attached to Fiji GPU but not enabled:
+> > 
+> > Same as above
+> > ####
+> > ####
+> > Monitor enabled:
+> 
+> ... the error is triggered at this moment, right?
+> 
+> 
+> > All files with same contents except for eld#0.1 which looks like:
+> > 
+> > monitor_present         1
+> > eld_valid               1
+> > monitor_name            U32E850
+> > connection_type         DisplayPort
+> > eld_version             [0x2] CEA-861D or below
+> > edid_version            [0x3] CEA-861-B, C or D
+> > manufacture_id          0x2d4c
+> > product_id              0xce3
+> > port_id                 0x0
+> > support_hdcp            0
+> > support_ai              0
+> > audio_sync_delay        0
+> > speakers                [0x1] FL/FR
+> > sad_count               1
+> > sad0_coding_type        [0x1] LPCM
+> > sad0_channels           2
+> > sad0_rates              [0xe0] 32000 44100 48000
+> > sad0_bits               [0xe0000] 16 20 24
+> 
+> So your monitor supports the audio :)
 
-[ 726.174237] i2c_designware i2c_designware.0: platform_pm_resume+0x0/0x3d returned 0 after 0 usecs
-[ 726.184187] max98373 i2c-MX98373:00: calling max98373_resume+0x0/0x30 [snd_soc_max98373] @ 12698, parent: i2c-11
-[ 726.195589] max98373 i2c-MX98373:00: Reset command failed. (ret:-16)
+Now I took a look at the actual code again, and I found that I
+remembered wrongly.  Namely, the device link isn't created in the
+audio component framework but only in the graphics side, so currently
+only i915 has it.
 
-When calling regmap_update_bits(), since map->reg_update_bits is NULL,
-_regmap_read() is entered with the following logic:
+Could you try the patch below?
 
-	if (!map->cache_bypass) {
-		ret = regcache_read(map, reg, val);
-		if (ret == 0)
-			return 0;
-	}
+Note that i915 binding has no DL_FLAG_PM_RUNTIME as it manages the
+power via get_power/put_power ops pair.
 
-	if (map->cache_only)
-		return -EBUSY;
 
-regcache_read() hits -EINVAL because MAX98373_R2000_SW_RESET is volatile,
-as map->cache_only is set by codec suspend, thus -EBUSY is returned.
-Fix by moving max98373_reset() after cache_only set to false in max98373_resume().
+thanks,
 
-Signed-off-by: Yong Zhi <yong.zhi@intel.com>
----
- sound/soc/codecs/max98373.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Takashi
 
-diff --git a/sound/soc/codecs/max98373.c b/sound/soc/codecs/max98373.c
-index cae1def8902d..96718e3a1ad0 100644
---- a/sound/soc/codecs/max98373.c
-+++ b/sound/soc/codecs/max98373.c
-@@ -850,8 +850,8 @@ static int max98373_resume(struct device *dev)
- {
- 	struct max98373_priv *max98373 = dev_get_drvdata(dev);
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -673,6 +673,12 @@ static int amdgpu_dm_audio_component_bind(struct device *kdev,
+ 	struct amdgpu_device *adev = dev->dev_private;
+ 	struct drm_audio_component *acomp = data;
  
--	max98373_reset(max98373, dev);
- 	regcache_cache_only(max98373->regmap, false);
-+	max98373_reset(max98373, dev);
- 	regcache_sync(max98373->regmap);
- 	return 0;
++	if (!device_link_add(hda_kdev, kdev, DL_FLAG_STATELESS |
++			     DL_FLAG_PM_RUNTIME)) {
++		DRM_ERROR("DM: cannot add device link to audio device\n");
++		return -ENOMEM;
++	}
++
+ 	acomp->ops = &amdgpu_dm_audio_component_ops;
+ 	acomp->dev = kdev;
+ 	adev->dm.audio_component = acomp;
+@@ -690,6 +696,8 @@ static void amdgpu_dm_audio_component_unbind(struct device *kdev,
+ 	acomp->ops = NULL;
+ 	acomp->dev = NULL;
+ 	adev->dm.audio_component = NULL;
++
++	device_link_remove(hda_kdev, kdev);
  }
--- 
-2.7.4
-
+ 
+ static const struct component_ops amdgpu_dm_audio_component_bind_ops = {
