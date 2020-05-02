@@ -2,85 +2,108 @@ Return-Path: <SRS0=kfZ2=6Q=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3775AC3A5A9
-	for <alsa-devel@archiver.kernel.org>; Sat,  2 May 2020 14:10:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7768C3A5A9
+	for <alsa-devel@archiver.kernel.org>; Sat,  2 May 2020 14:53:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B5D0D21775
-	for <alsa-devel@archiver.kernel.org>; Sat,  2 May 2020 14:10:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6F6A021835
+	for <alsa-devel@archiver.kernel.org>; Sat,  2 May 2020 14:53:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Z+YN6X/J";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="UdYTtL0t"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B5D0D21775
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vj3BChFt";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com header.i=@baylibre-com.20150623.gappssmtp.com header.b="YJr5Y8af"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6F6A021835
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F2A06167A;
-	Sat,  2 May 2020 16:09:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F2A06167A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9FEAF1686;
+	Sat,  2 May 2020 16:52:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9FEAF1686
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588428610;
-	bh=MDyVjZWnm5EvNAHWJ1mOzIJ83FG+EVxuwwcCWJaro3A=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1588431206;
+	bh=e3CLWZFr3hROFPrFKZhniu0jpeHK1UXKZfuoZ2bWAUA=;
+	h=References:From:To:Subject:In-reply-to:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Z+YN6X/JwBVbIeGFBaK/YSpPL+9FjeA7WIZ2VRVusytcWq2UNwCFR2vOtH0ecJUIl
-	 BpeR/IuQrNOYF7D86Kiey/zllv7ppF9DBQGK2x7J/hlU14Z8GE9kB7aGtwgItRVEcl
-	 qKVuklG4qyyyomWKp8UBRCJI7a45wveA/B09f7ik=
+	b=vj3BChFtTwSeJYYXcip1PzPKKyR7hO9waCEGhwBWhqF2DtViaTYxUeSrJ+s5b6I0B
+	 t9/bXq6HYYnKpbufM4Tvs80cH3fMgADbgNqLpriq29VyhHPAndU4En//263dBepFYm
+	 nfTJgOm5UP8uGOCVhtNtUiTIklVJXxQZOtazKAUI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6845EF80087;
-	Sat,  2 May 2020 16:09:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 374BEF800E5;
+	Sat,  2 May 2020 16:52:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F2A90F801F7; Sat,  2 May 2020 16:09:17 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 5D39DF801F7; Sat,  2 May 2020 16:52:23 +0200 (CEST)
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com
+ [IPv6:2a00:1450:4864:20::342])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3788EF80087
- for <alsa-devel@alsa-project.org>; Sat,  2 May 2020 16:09:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3788EF80087
+ by alsa1.perex.cz (Postfix) with ESMTPS id 58DB8F800E5
+ for <alsa-devel@alsa-project.org>; Sat,  2 May 2020 16:52:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58DB8F800E5
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="UdYTtL0t"
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl
- [83.86.89.107])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 438FC21775;
- Sat,  2 May 2020 14:09:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1588428551;
- bh=MDyVjZWnm5EvNAHWJ1mOzIJ83FG+EVxuwwcCWJaro3A=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=UdYTtL0tJm4pDAJdkk0jA2Pl4wn/Y0pmT0tkl+Ym73e1Y5SeNV26aAoSjnOADOGR3
- Z2CrMXCFV1jj8nOlb7huAU/Y1F0im1D9EjwqYX4t+p9Nh9IovYfLHgnjxvpKzLmFoM
- 3enP6QhzvOZpKMji7n7/dc0Sempgkxa07zumwe7Y=
-Date: Sat, 2 May 2020 16:09:08 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Sasha Levin <sashal@kernel.org>
-Subject: Re: stable-rc/linux-5.4.y bisection: baseline.dmesg.alert on
- meson-g12a-x96-max
-Message-ID: <20200502140908.GA10998@kroah.com>
+ dkim=pass (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com
+ header.i=@baylibre-com.20150623.gappssmtp.com header.b="YJr5Y8af"
+Received: by mail-wm1-x342.google.com with SMTP id k12so3218722wmj.3
+ for <alsa-devel@alsa-project.org>; Sat, 02 May 2020 07:52:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+ h=references:user-agent:from:to:cc:subject:in-reply-to:date
+ :message-id:mime-version;
+ bh=eUmO9lFyYnSEUotvSkDdW7nX84l9YUGsDR7MyoCN3CU=;
+ b=YJr5Y8afBHWlluBWUgx/5EYN6hyE6dcLw2z1n9vRkLHzQbpSGBhpcOfqygIy3U0gu3
+ ZU0X0/T6IEfb9apK8ibAiOkQJB8QlmXhpHVMRe9jOCvalPLCRrcDaDdUz7BHVGmDsBdG
+ u0quqzJnaF5I8H1s35iZ55qzUq6QYCjn4YnQcYk32wqe6fgKXVJnpcLkiex+yTPHan9n
+ mVgx3/aJ99LjjauFWmgwTQallkMJgpWyd89bUQVy+MrLy5YJ3z9ta+ZgPG+Kt5yzEzD+
+ h/CVwqzTMwVfGsIiYzVW3V/WuilTmu0Zdf20RW+WSqc2FJpiUV/KjciIkYOVE8Y0RaLJ
+ nMPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:references:user-agent:from:to:cc:subject
+ :in-reply-to:date:message-id:mime-version;
+ bh=eUmO9lFyYnSEUotvSkDdW7nX84l9YUGsDR7MyoCN3CU=;
+ b=hr7QmvWP93Ku7OwhFPuyHtswza/twZB29OkZmVmrS1ne5pd2HfjRNphPD/KGLGyJ/v
+ plMa/d1J5LN3xLsGNtWXtd+cdIJsSC8rbhmw2lGKIn0gNXDqPK8rFiByv9JZGa91w7ar
+ WjoeRZ4QgwVmxVdFBzYDQTEVTt6ixZUdPuA4kaIkgnqBMd07RLY9ez3eWwFSGokRqXNz
+ IfLton1jTkCH45nxgtGIUG4y00i9+MapDqpOHxRws/JHUzQTRtU43Ca90+g4b2lqnSwR
+ lOG8I3SNRoP4KfjpMvyWbZGsjM65iOZkCV8ylqdAEBECVLRuTrOj8aX6W3qtBVw0vPEc
+ quVA==
+X-Gm-Message-State: AGi0PuYHEwXaa/X3quRKM967umUEsmFBkPVvH+oRVw1wYVMBzC68ldCf
+ K4nN6wohTYPNUmhBSf9lR1vczA==
+X-Google-Smtp-Source: APiQypLQZrhbbLoB4l9/FVLUeKO9DpS30JZtXUoebbOs+GhYQzJCdHKM8cIDEnbn665XnkBqaQKeSA==
+X-Received: by 2002:a1c:6389:: with SMTP id x131mr5212531wmb.155.1588431136061; 
+ Sat, 02 May 2020 07:52:16 -0700 (PDT)
+Received: from localhost (cag06-3-82-243-161-21.fbx.proxad.net.
+ [82.243.161.21])
+ by smtp.gmail.com with ESMTPSA id 92sm10023040wrm.71.2020.05.02.07.52.15
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sat, 02 May 2020 07:52:15 -0700 (PDT)
 References: <5eabecbf.1c69fb81.2c617.628f@mx.google.com>
  <cc10812b-19bd-6bd1-75da-32082241640a@collabora.com>
- <20200501122536.GA38314@sirena.org.uk>
- <20200502134721.GH13035@sasha-vm>
+ <20200501122536.GA38314@sirena.org.uk> <20200502134721.GH13035@sasha-vm>
+ <20200502140908.GA10998@kroah.com>
+User-agent: mu4e 1.3.3; emacs 26.3
+From: Jerome Brunet <jbrunet@baylibre.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Sasha Levin <sashal@kernel.org>
+Subject: Re: stable-rc/linux-5.4.y bisection: baseline.dmesg.alert on
+ meson-g12a-x96-max
+In-reply-to: <20200502140908.GA10998@kroah.com>
+Date: Sat, 02 May 2020 16:52:14 +0200
+Message-ID: <1jd07mie3l.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200502134721.GH13035@sasha-vm>
+Content-Type: text/plain
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
  Guillaume Tucker <guillaume.tucker@collabora.com>,
  Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
  stable@vger.kernel.org, kernelci@groups.io, Mark Brown <broonie@kernel.org>,
  Kevin Hilman <khilman@baylibre.com>, linux-amlogic@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, Jerome Brunet <jbrunet@baylibre.com>
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,33 +119,53 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, May 02, 2020 at 09:47:21AM -0400, Sasha Levin wrote:
-> On Fri, May 01, 2020 at 01:25:36PM +0100, Mark Brown wrote:
-> > On Fri, May 01, 2020 at 12:57:27PM +0100, Guillaume Tucker wrote:
-> > 
-> > > The call stack is not the same as in the commit message found by
-> > > the bisection, so maybe it only fixed part of the problem:
-> > 
-> > No, it is a backport which was fixing an issue that wasn't present in
-> > v5.4.
-> > 
-> > > >   Result:     09f4294793bd3 ASoC: meson: axg-card: fix codec-to-codec link setup
-> > 
-> > As I said in reply to the AUTOSEL mail:
-> > 
-> > | > Since the addition of commit 9b5db059366a ("ASoC: soc-pcm: dpcm: Only allow
-> > | > playback/capture if supported"), meson-axg cards which have codec-to-codec
-> > | > links fail to init and Oops:
-> > 
-> > | This clearly describes the issue as only being present after the above
-> > | commit which is not in v5.6.
-> > 
-> > Probably best that this not be backported.
-> 
-> Hrm... But I never queued that commit... I wonder what's up.
 
-I saw the Fixes: tag, but missed the changelog text.  My fault.
+On Sat 02 May 2020 at 16:09, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 
-I'll go drop it from everywhere, sorry about that.
+> On Sat, May 02, 2020 at 09:47:21AM -0400, Sasha Levin wrote:
+>> On Fri, May 01, 2020 at 01:25:36PM +0100, Mark Brown wrote:
+>> > On Fri, May 01, 2020 at 12:57:27PM +0100, Guillaume Tucker wrote:
+>> > 
+>> > > The call stack is not the same as in the commit message found by
+>> > > the bisection, so maybe it only fixed part of the problem:
+>> > 
+>> > No, it is a backport which was fixing an issue that wasn't present in
+>> > v5.4.
+>> > 
+>> > > >   Result:     09f4294793bd3 ASoC: meson: axg-card: fix codec-to-codec link setup
+>> > 
+>> > As I said in reply to the AUTOSEL mail:
+>> > 
+>> > | > Since the addition of commit 9b5db059366a ("ASoC: soc-pcm: dpcm: Only allow
+>> > | > playback/capture if supported"), meson-axg cards which have codec-to-codec
+>> > | > links fail to init and Oops:
+>> > 
+>> > | This clearly describes the issue as only being present after the above
+>> > | commit which is not in v5.6.
+>> > 
+>> > Probably best that this not be backported.
+>> 
+>> Hrm... But I never queued that commit... I wonder what's up.
+>
+> I saw the Fixes: tag, but missed the changelog text.  My fault.
+>
+> I'll go drop it from everywhere, sorry about that.
+>
+> greg k-h
 
-greg k-h
+Hi everyone,
+
+Sorry for the mess this seems to have triggered.
+
+Indeed, with the Fixes tag, I understand why the patch has been picked
+up. Even I thought that a backport would be OK, since the mistake was
+quite old.
+
+If I had wrote it correctly from the start, I would have found the
+problem that was waiting for us in ASoC ... but the 2 errors cancelled
+each other out.
+
+It is only now that ASoC has been fixed that we found my mistake.
+
+Again, sorry for the mess.
+Thanks a lot for your time and effort on this
