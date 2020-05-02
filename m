@@ -2,104 +2,95 @@ Return-Path: <SRS0=kfZ2=6Q=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-5.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88279C3A5A9
-	for <alsa-devel@archiver.kernel.org>; Sat,  2 May 2020 19:34:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 97C44C3A5A9
+	for <alsa-devel@archiver.kernel.org>; Sat,  2 May 2020 19:34:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 114832071C
-	for <alsa-devel@archiver.kernel.org>; Sat,  2 May 2020 19:34:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1EDD32071C
+	for <alsa-devel@archiver.kernel.org>; Sat,  2 May 2020 19:34:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dNXRwrM0";
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HKWCM9z2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 114832071C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LOHuHVUH";
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ASvk0P7U"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1EDD32071C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6D46716BF;
-	Sat,  2 May 2020 21:33:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D46716BF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 77E0816A2;
+	Sat,  2 May 2020 21:34:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77E0816A2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588448067;
-	bh=AQ9BDEmKYDorokX2/FmlSzpBnPQPHVsgyK15S/inm9U=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=dNXRwrM0L7b5xOIuuxJ9uSqYPr3RQqm6+bdPtbSr+ujrIcGW8dcoeZB+UlyC8iQJC
-	 bwcG5OSG/KJ7NvbQt3nApcGQGPbr9Lt2cV/TJqA0kj+Jlao3RV4aScRALeMA4txJnj
-	 CBqD3txhCohvMt9nsfNFx0bybwsxCQC5JQPiQQ4o=
+	s=default; t=1588448094;
+	bh=PpsN8tdSqqhhshK11VdrusLVzcHPVOnMSjw0sMJyzdo=;
+	h=Date:From:To:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=LOHuHVUHvfXI9j40i2XreC4j4PDEzTcsfOYhbxZoWTaYnCAnDRLU3UAWQJCzHtHBG
+	 nMae5x/2wAAbYquJdoTX3GLi1IwS+PsG51Sk0faypAG+hQfArdVRbwlCH88rCVu6h4
+	 NemQfYGaXcCppLKU3dgxrE31L3eQIgW+lcIWSkiY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BD853F8028D;
-	Sat,  2 May 2020 21:31:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 15A5EF80290;
+	Sat,  2 May 2020 21:33:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 98FE3F80271; Sat,  2 May 2020 21:31:58 +0200 (CEST)
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com
- [IPv6:2607:f8b0:4864:20::642])
+ id C506BF80291; Sat,  2 May 2020 21:33:31 +0200 (CEST)
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com
+ [IPv6:2a00:1450:4864:20::436])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 40B6DF801EB
- for <alsa-devel@alsa-project.org>; Sat,  2 May 2020 21:31:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40B6DF801EB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 50CBFF801F7
+ for <alsa-devel@alsa-project.org>; Sat,  2 May 2020 21:33:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50CBFF801F7
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="HKWCM9z2"
-Received: by mail-pl1-x642.google.com with SMTP id h11so5034284plr.11
- for <alsa-devel@alsa-project.org>; Sat, 02 May 2020 12:31:48 -0700 (PDT)
+ header.b="ASvk0P7U"
+Received: by mail-wr1-x436.google.com with SMTP id d15so16016378wrx.3
+ for <alsa-devel@alsa-project.org>; Sat, 02 May 2020 12:33:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=kwZfgYU5pOSIQurozok73LbTUD8n0X6fQwE6GivlBr0=;
- b=HKWCM9z26I0XXC2hIuNY//6teoEr1cIhqWHA105b7SE1K3wJH6XnYzPUMhWph4x+KN
- vDIL2d4u+6hk5ivagHu0JqtWE1v81lqavmpE70w/3BDn8h9/6HIgp7sfKiPoR4HpSw33
- Fb9FPx+YMPSCBbwJz8tFUNbDd0J+oJCD/QrzTpioBvARhYVb2dVxi0Pp8Hpy2aNFMVio
- J7gexJncqXQ2S1gQCBXq/7XNdyPgn2Bj8covz14cJtl1W1EcfD7lpsTdMK+sVcdqG1qf
- Xm5sh2dONmVTd9NBUQJLHRLa8q3+Hb/XdTIJ5eDZt5/rkbw7jr0daV+Ug+35GTMFsOTX
- lKOg==
+ h=date:from:to:subject:message-id:mime-version:content-disposition
+ :user-agent; bh=RqPjJqg5XXAuzSwCC7dMIjWDW9y7al4LtNMzbGoOIIg=;
+ b=ASvk0P7U/PEK45DEam3Vf8z9Q/aMeWnAwFc+T+KVby37VEGKSFaExKJiSsI5X3v8fP
+ ohBS+MkuP9sUQ9K2GD+fY48I+xGnehf9FBxdGF3d2EYtR7B5SJXWaPM2H7gu3co5ikKF
+ 9aJEX+R9H3YuKahj5a1RQszc0mRDwcszSz6S8dOQGpu18z1ivrmgc6ctvS8Tyl4v6gOb
+ ALBSVF4thLr/Na9K0RXMZTq9kZjiv6+C61gH37Tc5BIlS3oQgdNFopSMYi+dGhRJsBVL
+ /kKjPoiLFjf9ain2qYAJp/lBYvSHAuFEZHP3o2ercavj7ZOSs1Rfy8b/fWkpO5WQLJUY
+ Lk3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=kwZfgYU5pOSIQurozok73LbTUD8n0X6fQwE6GivlBr0=;
- b=KKKX0gDixUJWxoovX49YrgefSpo9KhVQjnPzXjr4pNMX26MHpePGC/ewafqLcO2zVN
- c1nfk1BSoW5+Ep6yL2I8TzJImt/mVkxyWuHudWFnIlJ3FwPt2LnORaWPNq7GWQcNN6OL
- DTxi60EQTNdIQhq3tIQY3A9uJO5DAp3jXWRbWiUB5cWtmFi5uo9e+gR3mNsB/Z5b2bFs
- 60RvaauOvr8si48B+lZpvD84FxRU0qlAc86PTqOHCAV7WT5P5Z66EyD3tT1Mpzu/ZRcr
- O71FMS6dxNE29OQZqq+2J0OlaGTT0EwGLytdlq1hdh+RilWnvhwM0XOX78fUzqhXws/m
- AYyA==
-X-Gm-Message-State: AGi0PuaAVX6qFtciAssWX6iWz/WRBgJxF+OK3MYhWr84d+hm/tD6EJk9
- ewgHJ27HZ1mGCXrmq4LMdJs=
-X-Google-Smtp-Source: APiQypJA7cnL0ZZG81/fp8O3RFdgnHGYF1RPFRF6LpVhzglnxI6TECL6gOwrrNkbWNDlwvuaizFlKg==
-X-Received: by 2002:a17:902:a984:: with SMTP id
- bh4mr10379952plb.176.1588447906143; 
- Sat, 02 May 2020 12:31:46 -0700 (PDT)
-Received: from anarsoul-thinkpad.lan (216-71-213-236.dyn.novuscom.net.
- [216.71.213.236])
- by smtp.gmail.com with ESMTPSA id 138sm5034358pfz.31.2020.05.02.12.31.45
+ h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+ :content-disposition:user-agent;
+ bh=RqPjJqg5XXAuzSwCC7dMIjWDW9y7al4LtNMzbGoOIIg=;
+ b=EAtafy5EIWBwAUgGcqwm4Xt3hK5ekWG1vbtLiw9fatplSNwCrM6fGmYi74BTWnG9jh
+ OtulPLRhHr58vIL013XgDKAFJ1Kud5HPCdo222wGpcYFsOnwhELb+JRf3Bn11acAcaho
+ l3Ol1SDceUfV9KI8z6Y7HQWGrKFvyy8E2v2S46u4ginX5EvjAropH4Heo8N7t/vk0fQV
+ l2PC1ajScxhO2IJT7etbJvOLm9mtV2FtwRH80m2IC6bJbEmL5SWIvrfKDCSXZWW+A5Mc
+ /Rh2TXilXpJkeLdhpxDiIxWUF7ju2S19PTk8wRzOwc5a1cMcYqgTO1HjNeKsVBiWBetH
+ JAew==
+X-Gm-Message-State: AGi0PuZbU4k0K4WD4TgwwLUT48vIZC6qWXgQiQvSnwFFJdQfrKtoudLW
+ cFPLu6PezqdzHJME8oA/MAY/bKfZ
+X-Google-Smtp-Source: APiQypI38/WiwHIqlimZx0Oj19v4vV0l3vhc06+KCN/H3GJnKuHncMReK+GPMb4ipDcbVwE4LT8Hxg==
+X-Received: by 2002:adf:efcb:: with SMTP id i11mr10037083wrp.278.1588448004038; 
+ Sat, 02 May 2020 12:33:24 -0700 (PDT)
+Received: from localhost (108.78.124.78.rev.sfr.net. [78.124.78.108])
+ by smtp.gmail.com with ESMTPSA id i1sm10298718wrx.22.2020.05.02.12.33.23
+ for <alsa-devel@alsa-project.org>
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 02 May 2020 12:31:45 -0700 (PDT)
-From: Vasily Khoruzhick <anarsoul@gmail.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Thomas Gleixner <tglx@linutronix.de>, Pavel Machek <pavel@denx.de>,
- Allison Randal <allison@lohutok.net>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] ALSA: line6: hwdep: add support for O_NONBLOCK opening
- mode
-Date: Sat,  2 May 2020 12:31:19 -0700
-Message-Id: <20200502193120.79115-2-anarsoul@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200502193120.79115-1-anarsoul@gmail.com>
-References: <20200502193120.79115-1-anarsoul@gmail.com>
+ Sat, 02 May 2020 12:33:23 -0700 (PDT)
+Date: Sat, 2 May 2020 19:33:11 +0000
+From: sylvain.bertrand@gmail.com
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] fix snd_pcm_drain() excluding SETUP state from valid states
+Message-ID: <20200502193311.GA19340@freedom>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Vasily Khoruzhick <anarsoul@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+User-Agent: Mutt/ (2018-04-13)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -115,52 +106,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Currently line6 hwdep interface ignores O_NONBLOCK flag when
-opening device and it renders it somewhat useless when using poll.
+once draining is done, the pcm enters the SETUP state, which ought to
+be valid for snd_pcm_drain()
 
-Check for O_NONBLOCK flag when opening device and don't block read()
-if it is set.
-
-Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+signed-off-by: Sylvain BERTRAND <sylvain.bertrand@legeek.net>
 ---
- sound/usb/line6/driver.c | 4 ++++
- sound/usb/line6/driver.h | 1 +
- 2 files changed, 5 insertions(+)
 
-diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
-index 4f096685ed65..86adf87d57f0 100644
---- a/sound/usb/line6/driver.c
-+++ b/sound/usb/line6/driver.c
-@@ -550,6 +550,7 @@ static int line6_hwdep_open(struct snd_hwdep *hw, struct file *file)
- 	/* NOTE: hwdep layer provides atomicity here */
- 
- 	line6->messages.active = 1;
-+	line6->messages.nonblock = file->f_flags & O_NONBLOCK ? 1 : 0;
- 
- 	return 0;
- }
-@@ -579,6 +580,9 @@ line6_hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
- 	while (kfifo_len(&line6->messages.fifo) == 0) {
- 		mutex_unlock(&line6->messages.read_lock);
- 
-+		if (line6->messages.nonblock)
-+			return -EAGAIN;
-+
- 		rv = wait_event_interruptible(
- 			line6->messages.wait_queue,
- 			kfifo_len(&line6->messages.fifo) != 0);
-diff --git a/sound/usb/line6/driver.h b/sound/usb/line6/driver.h
-index e5e572ed5f30..1a4e3700c80c 100644
---- a/sound/usb/line6/driver.h
-+++ b/sound/usb/line6/driver.h
-@@ -163,6 +163,7 @@ struct usb_line6 {
- 		struct mutex read_lock;
- 		wait_queue_head_t wait_queue;
- 		unsigned int active:1;
-+		unsigned int nonblock:1;
- 		STRUCT_KFIFO_REC_2(LINE6_BUFSIZE_LISTEN * LINE6_RAW_MESSAGES_MAXCOUNT)
- 			fifo;
- 	} messages;
--- 
-2.26.2
+I missed this one in my previous patch because exiting with or without
+an error once draining is done was producing the same result.
 
+--- a/src/pcm/pcm.c
++++ b/src/pcm/pcm.c
+@@ -1329,7 +1329,7 @@ int snd_pcm_drain(snd_pcm_t *pcm)
+ 		SNDMSG("PCM not set up");
+ 		return -EIO;
+ 	}
+-	err = bad_pcm_state(pcm, P_STATE_RUNNABLE);
++	err = bad_pcm_state(pcm, P_STATE_RUNNABLE | P_STATE(SETUP));
+ 	if (err < 0)
+ 		return err;
+ 	/* lock handled in the callback */
