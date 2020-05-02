@@ -8,91 +8,92 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD8BAC3A5A9
-	for <alsa-devel@archiver.kernel.org>; Sat,  2 May 2020 19:33:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 88279C3A5A9
+	for <alsa-devel@archiver.kernel.org>; Sat,  2 May 2020 19:34:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 52F5220643
-	for <alsa-devel@archiver.kernel.org>; Sat,  2 May 2020 19:33:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 114832071C
+	for <alsa-devel@archiver.kernel.org>; Sat,  2 May 2020 19:34:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fXzOGL8r";
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b4TQAU3l"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 52F5220643
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dNXRwrM0";
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HKWCM9z2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 114832071C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9DBDD16A3;
-	Sat,  2 May 2020 21:32:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9DBDD16A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6D46716BF;
+	Sat,  2 May 2020 21:33:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D46716BF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588448019;
-	bh=L01Znag3i0jZqV5e6GFhujAAYklgof58nc6RYVaK/gA=;
+	s=default; t=1588448067;
+	bh=AQ9BDEmKYDorokX2/FmlSzpBnPQPHVsgyK15S/inm9U=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fXzOGL8rRMFHOf14ZUyHt9f6LVg5dSBz1Q9CDLECIWt8RcN5UM3QhZSIVWKwyMKet
-	 RcVbdDp1Uwb0PWwaC4d3vqt9VgfMclQAzOSJrIB9l+WQ7bJnZZc6b76a2OTti3SJnT
-	 QedLPnp1nthu9WT8cO9otbv6dtEpaXyjtJXjX1DM=
+	b=dNXRwrM0L7b5xOIuuxJ9uSqYPr3RQqm6+bdPtbSr+ujrIcGW8dcoeZB+UlyC8iQJC
+	 bwcG5OSG/KJ7NvbQt3nApcGQGPbr9Lt2cV/TJqA0kj+Jlao3RV4aScRALeMA4txJnj
+	 CBqD3txhCohvMt9nsfNFx0bybwsxCQC5JQPiQQ4o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A2212F80266;
-	Sat,  2 May 2020 21:31:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BD853F8028D;
+	Sat,  2 May 2020 21:31:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DFCBAF801F7; Sat,  2 May 2020 21:31:53 +0200 (CEST)
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com
- [IPv6:2607:f8b0:4864:20::1043])
+ id 98FE3F80271; Sat,  2 May 2020 21:31:58 +0200 (CEST)
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com
+ [IPv6:2607:f8b0:4864:20::642])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 564C1F80087
+ by alsa1.perex.cz (Postfix) with ESMTPS id 40B6DF801EB
  for <alsa-devel@alsa-project.org>; Sat,  2 May 2020 21:31:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 564C1F80087
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40B6DF801EB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="b4TQAU3l"
-Received: by mail-pj1-x1043.google.com with SMTP id a7so1688359pju.2
- for <alsa-devel@alsa-project.org>; Sat, 02 May 2020 12:31:49 -0700 (PDT)
+ header.b="HKWCM9z2"
+Received: by mail-pl1-x642.google.com with SMTP id h11so5034284plr.11
+ for <alsa-devel@alsa-project.org>; Sat, 02 May 2020 12:31:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=TIL2KbMxRtnATvJqUzPTFDCNwLrdBpSmmIc1wV1dEHA=;
- b=b4TQAU3lmiD8PQG+dwxpbXSHwlgPMje9VEnlG+Q/yWnaPXzbs0+oWvYmWyh9wIevPh
- hkznabwuMxJkrTsq0vpbyApI+jsejbYLhfj4JnIG/l7FH5aS1bn+B0ypxAIZ+LZs4IP/
- sh0wlwEQJ67L/Jp7OFw4xghqClyuUOd6sGPKj1SIAinSKZaANfpHRS1eELWe/DZ3iTWk
- nnC6CNSBJ2Le/CYvy1FQPX/Dp3eudXxq1UqepnRbMvp5e/9MjDPJOlACjGrBZ3nT/rvi
- u58TJt7z1vBVnh1wXZAHG8wI7Xij5SfUCBzKeP9XDiMkYE1vduykLcjPOu0L6DDTZO6p
- GARg==
+ bh=kwZfgYU5pOSIQurozok73LbTUD8n0X6fQwE6GivlBr0=;
+ b=HKWCM9z26I0XXC2hIuNY//6teoEr1cIhqWHA105b7SE1K3wJH6XnYzPUMhWph4x+KN
+ vDIL2d4u+6hk5ivagHu0JqtWE1v81lqavmpE70w/3BDn8h9/6HIgp7sfKiPoR4HpSw33
+ Fb9FPx+YMPSCBbwJz8tFUNbDd0J+oJCD/QrzTpioBvARhYVb2dVxi0Pp8Hpy2aNFMVio
+ J7gexJncqXQ2S1gQCBXq/7XNdyPgn2Bj8covz14cJtl1W1EcfD7lpsTdMK+sVcdqG1qf
+ Xm5sh2dONmVTd9NBUQJLHRLa8q3+Hb/XdTIJ5eDZt5/rkbw7jr0daV+Ug+35GTMFsOTX
+ lKOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=TIL2KbMxRtnATvJqUzPTFDCNwLrdBpSmmIc1wV1dEHA=;
- b=lKI91nOKimhuipLEv3sJ9JQ4a3Zh46j62xEuI6C0YXbXZVLwA8+4magBYIj13+AI6R
- 3X1wkL0fs2pvOPPbsL9LDbvVyNzchOr9wmMiOaDD54Z0y6YjHr5v37I/CHoyW3WtAqxH
- MwEAilPqVc7TiLL5F52Ixao0vJlDthg3qbZZjPJma/xfEE/hbY6BwYnAzezjvP0EhGBC
- JLjhq/nnZLE5VKCk6L3q8a05xtumCPapN4cAWotpqq7U7nr+I1cUJEhKWvW3wGol7g/s
- sQLSmM3Mq9vcSeotQNrRaAsU7tBheHi6cErDf6ALrrslgRPCwQ5l74ni1DrP8MW+WLXa
- hLYw==
-X-Gm-Message-State: AGi0PuZgI1EHM5HrMmVUPKlplfoOLYwTUaC0HDV2/X1SXOlgyuct/R75
- pRpbxD8ZNPOGRaYw4hClAgw=
-X-Google-Smtp-Source: APiQypLfNhHJHoTSTVVXkhevMfz86rU1oxpinZmTVTbPaayaoFIvld11z1VAQAQw+UFyVHFSEcorpw==
-X-Received: by 2002:a17:90b:8c4:: with SMTP id
- ds4mr7545166pjb.133.1588447907181; 
- Sat, 02 May 2020 12:31:47 -0700 (PDT)
+ bh=kwZfgYU5pOSIQurozok73LbTUD8n0X6fQwE6GivlBr0=;
+ b=KKKX0gDixUJWxoovX49YrgefSpo9KhVQjnPzXjr4pNMX26MHpePGC/ewafqLcO2zVN
+ c1nfk1BSoW5+Ep6yL2I8TzJImt/mVkxyWuHudWFnIlJ3FwPt2LnORaWPNq7GWQcNN6OL
+ DTxi60EQTNdIQhq3tIQY3A9uJO5DAp3jXWRbWiUB5cWtmFi5uo9e+gR3mNsB/Z5b2bFs
+ 60RvaauOvr8si48B+lZpvD84FxRU0qlAc86PTqOHCAV7WT5P5Z66EyD3tT1Mpzu/ZRcr
+ O71FMS6dxNE29OQZqq+2J0OlaGTT0EwGLytdlq1hdh+RilWnvhwM0XOX78fUzqhXws/m
+ AYyA==
+X-Gm-Message-State: AGi0PuaAVX6qFtciAssWX6iWz/WRBgJxF+OK3MYhWr84d+hm/tD6EJk9
+ ewgHJ27HZ1mGCXrmq4LMdJs=
+X-Google-Smtp-Source: APiQypJA7cnL0ZZG81/fp8O3RFdgnHGYF1RPFRF6LpVhzglnxI6TECL6gOwrrNkbWNDlwvuaizFlKg==
+X-Received: by 2002:a17:902:a984:: with SMTP id
+ bh4mr10379952plb.176.1588447906143; 
+ Sat, 02 May 2020 12:31:46 -0700 (PDT)
 Received: from anarsoul-thinkpad.lan (216-71-213-236.dyn.novuscom.net.
  [216.71.213.236])
- by smtp.gmail.com with ESMTPSA id 138sm5034358pfz.31.2020.05.02.12.31.46
+ by smtp.gmail.com with ESMTPSA id 138sm5034358pfz.31.2020.05.02.12.31.45
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 02 May 2020 12:31:46 -0700 (PDT)
+ Sat, 02 May 2020 12:31:45 -0700 (PDT)
 From: Vasily Khoruzhick <anarsoul@gmail.com>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
  Thomas Gleixner <tglx@linutronix.de>, Pavel Machek <pavel@denx.de>,
  Allison Randal <allison@lohutok.net>, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] ALSA: line6: Add poll callback for hwdep
-Date: Sat,  2 May 2020 12:31:20 -0700
-Message-Id: <20200502193120.79115-3-anarsoul@gmail.com>
+Subject: [PATCH 1/2] ALSA: line6: hwdep: add support for O_NONBLOCK opening
+ mode
+Date: Sat,  2 May 2020 12:31:19 -0700
+Message-Id: <20200502193120.79115-2-anarsoul@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200502193120.79115-1-anarsoul@gmail.com>
 References: <20200502193120.79115-1-anarsoul@gmail.com>
@@ -114,47 +115,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-At least POD HD500 uses message-based communication, both sides can
-send messages. Add poll callback so application can wait for device
-messages without using busy loop.
+Currently line6 hwdep interface ignores O_NONBLOCK flag when
+opening device and it renders it somewhat useless when using poll.
+
+Check for O_NONBLOCK flag when opening device and don't block read()
+if it is set.
 
 Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
 ---
- sound/usb/line6/driver.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ sound/usb/line6/driver.c | 4 ++++
+ sound/usb/line6/driver.h | 1 +
+ 2 files changed, 5 insertions(+)
 
 diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
-index 86adf87d57f0..7629116f570e 100644
+index 4f096685ed65..86adf87d57f0 100644
 --- a/sound/usb/line6/driver.c
 +++ b/sound/usb/line6/driver.c
-@@ -630,11 +630,27 @@ line6_hwdep_write(struct snd_hwdep *hwdep, const char __user *data, long count,
- 	return rv;
+@@ -550,6 +550,7 @@ static int line6_hwdep_open(struct snd_hwdep *hw, struct file *file)
+ 	/* NOTE: hwdep layer provides atomicity here */
+ 
+ 	line6->messages.active = 1;
++	line6->messages.nonblock = file->f_flags & O_NONBLOCK ? 1 : 0;
+ 
+ 	return 0;
  }
+@@ -579,6 +580,9 @@ line6_hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
+ 	while (kfifo_len(&line6->messages.fifo) == 0) {
+ 		mutex_unlock(&line6->messages.read_lock);
  
-+static __poll_t
-+line6_hwdep_poll(struct snd_hwdep *hwdep, struct file *file, poll_table *wait)
-+{
-+	__poll_t rv;
-+	struct usb_line6 *line6 = hwdep->private_data;
++		if (line6->messages.nonblock)
++			return -EAGAIN;
 +
-+	poll_wait(file, &line6->messages.wait_queue, wait);
-+
-+	mutex_lock(&line6->messages.read_lock);
-+	rv = kfifo_len(&line6->messages.fifo) == 0 ? 0 : EPOLLIN | EPOLLRDNORM;
-+	mutex_unlock(&line6->messages.read_lock);
-+
-+	return rv;
-+}
-+
- static const struct snd_hwdep_ops hwdep_ops = {
- 	.open    = line6_hwdep_open,
- 	.release = line6_hwdep_release,
- 	.read    = line6_hwdep_read,
- 	.write   = line6_hwdep_write,
-+	.poll    = line6_hwdep_poll,
- };
- 
- /* Insert into circular buffer */
+ 		rv = wait_event_interruptible(
+ 			line6->messages.wait_queue,
+ 			kfifo_len(&line6->messages.fifo) != 0);
+diff --git a/sound/usb/line6/driver.h b/sound/usb/line6/driver.h
+index e5e572ed5f30..1a4e3700c80c 100644
+--- a/sound/usb/line6/driver.h
++++ b/sound/usb/line6/driver.h
+@@ -163,6 +163,7 @@ struct usb_line6 {
+ 		struct mutex read_lock;
+ 		wait_queue_head_t wait_queue;
+ 		unsigned int active:1;
++		unsigned int nonblock:1;
+ 		STRUCT_KFIFO_REC_2(LINE6_BUFSIZE_LISTEN * LINE6_RAW_MESSAGES_MAXCOUNT)
+ 			fifo;
+ 	} messages;
 -- 
 2.26.2
 
