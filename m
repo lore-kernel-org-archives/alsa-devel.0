@@ -6,54 +6,54 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A5743C3A5A9
-	for <alsa-devel@archiver.kernel.org>; Sat,  2 May 2020 07:28:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 216BDC3A5A9
+	for <alsa-devel@archiver.kernel.org>; Sat,  2 May 2020 10:10:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0C5E12137B
-	for <alsa-devel@archiver.kernel.org>; Sat,  2 May 2020 07:28:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9DE4221835
+	for <alsa-devel@archiver.kernel.org>; Sat,  2 May 2020 10:10:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rX7pF7ZV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0C5E12137B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WupNTrmm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9DE4221835
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3D94516B6;
-	Sat,  2 May 2020 09:27:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D94516B6
+	by alsa0.perex.cz (Postfix) with ESMTPS id E8F3516B0;
+	Sat,  2 May 2020 12:09:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8F3516B0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588404509;
-	bh=0ooh7Tl7sQeXlk7JxmXXSXTFRcm6DyzwjJb2NXwcWXU=;
+	s=default; t=1588414211;
+	bh=bx19sZeuieZuhDDqfC3U4oRC3/sE1BpAqVQ0DPBHWhs=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rX7pF7ZVGwhIzfDOoxy/ROMssKdd18rrKLXRdvqtkunF/ohLqGo5xiDjFFUK3vvS0
-	 x8h0Me9kY8P/p2/SixDG4Vk3g4Mjk9PELcCSgMZNYs1Gu1GWd1RiAXyqZiWAUmuUpF
-	 iLb2RFaHDJcSkFs4jMt3lMjvhq+VaKpEFWWc2NRk=
+	b=WupNTrmmMj3OIkPDkxWMlLM+OlAuakqq398zNJCaWE4QTJ0b0r1Q1Y4jcIXAKCEX2
+	 c0Pv7lDRMe1jV9vn+mNt5/lrUof+l02/Rcx1ggiuDXX3yT/MGd3PMST/x71tPGGkqq
+	 7NGFdZTiU88EcoRwipr+/H5Zhw8axZ4dF4ZuuaFw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 169F7F801EB;
-	Sat,  2 May 2020 09:27:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 847DFF801EB;
+	Sat,  2 May 2020 12:09:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 03B76F801F7; Sat,  2 May 2020 09:27:37 +0200 (CEST)
+ id 884BFF801F7; Sat,  2 May 2020 12:09:19 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 912CAF80087
- for <alsa-devel@alsa-project.org>; Sat,  2 May 2020 09:27:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 912CAF80087
+ by alsa1.perex.cz (Postfix) with ESMTPS id B639FF800E5
+ for <alsa-devel@alsa-project.org>; Sat,  2 May 2020 12:09:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B639FF800E5
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 6B6B0AC91;
- Sat,  2 May 2020 07:27:32 +0000 (UTC)
-Date: Sat, 02 May 2020 09:27:31 +0200
-Message-ID: <s5h368iiyos.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id A957AAED6;
+ Sat,  2 May 2020 10:09:14 +0000 (UTC)
+Date: Sat, 02 May 2020 12:09:13 +0200
+Message-ID: <s5hpnbmhcmu.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Lukas Wunner <lukas@wunner.de>
+To: Nicholas Johnson <nicholas.johnson-opensource@outlook.com.au>
 Subject: Re: [PATCH 0/1] Fiji GPU audio register timeout when in BACO state
-In-Reply-To: <20200502071728.fn2fcqvt6aies3zu@wunner.de>
+In-Reply-To: <s5h368iiyos.wl-tiwai@suse.de>
 References: <PSXP216MB043822350CDE9E7EEA37730880AD0@PSXP216MB0438.KORP216.PROD.OUTLOOK.COM>
  <CADnq5_MCQ7xHY=yhNtRW=ze0LRPzxuu-Mm7pD4kFa5R52UrGSw@mail.gmail.com>
  <s5h1ro6jn0v.wl-tiwai@suse.de>
@@ -64,6 +64,7 @@ References: <PSXP216MB043822350CDE9E7EEA37730880AD0@PSXP216MB0438.KORP216.PROD.O
  <PSXP216MB04381A30909F66867E6B6BCC80AA0@PSXP216MB0438.KORP216.PROD.OUTLOOK.COM>
  <s5h1ro4kgog.wl-tiwai@suse.de> <s5h7dxuizep.wl-tiwai@suse.de>
  <20200502071728.fn2fcqvt6aies3zu@wunner.de>
+ <s5h368iiyos.wl-tiwai@suse.de>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -71,12 +72,12 @@ MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
 Cc: "Zhou, David\(ChunMing\)" <David1.Zhou@amd.com>,
  "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- Nicholas Johnson <nicholas.johnson-opensource@outlook.com.au>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
  Takashi Iwai <tiwai@suse.com>, "Deucher,
- Alexander" <Alexander.Deucher@amd.com>, Alex Deucher <alexdeucher@gmail.com>,
- "Koenig, Christian" <Christian.Koenig@amd.com>
+ Alexander" <Alexander.Deucher@amd.com>, Lukas Wunner <lukas@wunner.de>,
+ Alex Deucher <alexdeucher@gmail.com>, "Koenig,
+ Christian" <Christian.Koenig@amd.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,34 +93,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 02 May 2020 09:17:28 +0200,
-Lukas Wunner wrote:
+On Sat, 02 May 2020 09:27:31 +0200,
+Takashi Iwai wrote:
 > 
-> On Sat, May 02, 2020 at 09:11:58AM +0200, Takashi Iwai wrote:
-> > --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> > +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> > @@ -673,6 +673,12 @@ static int amdgpu_dm_audio_component_bind(struct device *kdev,
-> >  	struct amdgpu_device *adev = dev->dev_private;
-> >  	struct drm_audio_component *acomp = data;
-> >  
-> > +	if (!device_link_add(hda_kdev, kdev, DL_FLAG_STATELESS |
-> > +			     DL_FLAG_PM_RUNTIME)) {
-> > +		DRM_ERROR("DM: cannot add device link to audio device\n");
-> > +		return -ENOMEM;
-> > +	}
-> > +
+> On Sat, 02 May 2020 09:17:28 +0200,
+> Lukas Wunner wrote:
+> > 
+> > On Sat, May 02, 2020 at 09:11:58AM +0200, Takashi Iwai wrote:
+> > > --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> > > +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> > > @@ -673,6 +673,12 @@ static int amdgpu_dm_audio_component_bind(struct device *kdev,
+> > >  	struct amdgpu_device *adev = dev->dev_private;
+> > >  	struct drm_audio_component *acomp = data;
+> > >  
+> > > +	if (!device_link_add(hda_kdev, kdev, DL_FLAG_STATELESS |
+> > > +			     DL_FLAG_PM_RUNTIME)) {
+> > > +		DRM_ERROR("DM: cannot add device link to audio device\n");
+> > > +		return -ENOMEM;
+> > > +	}
+> > > +
+> > 
+> > Doesn't this duplicate drivers/pci/quirks.c:quirk_gpu_hda() ?
 > 
-> Doesn't this duplicate drivers/pci/quirks.c:quirk_gpu_hda() ?
+> Gah, you're right, that was the place I overlooked.
+> It was a typical "false Eureka right-after-wakeup" phenomenon :)
+> Need a vaccine aka coffee...
+> 
+> So the runtime PM dependency must be already placed there, and the
+> problem is not the lack of the dependency tree but the really other
+> timing issue.  Back to square.
 
-Gah, you're right, that was the place I overlooked.
-It was a typical "false Eureka right-after-wakeup" phenomenon :)
-Need a vaccine aka coffee...
+One interesting test is to open the stream while the mode isn't set
+yet and see whether the same problem appears.
+Namely, after the monitor is connected but no mode is set, run
+directly like
+   aplay -Dhdmi:1,0 foo.wav
+You might need to wrap the command with pasuspender if PA is active.
 
-So the runtime PM dependency must be already placed there, and the
-problem is not the lack of the dependency tree but the really other
-timing issue.  Back to square.
-
-
-thanks,
 
 Takashi
