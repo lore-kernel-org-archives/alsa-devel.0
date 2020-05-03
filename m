@@ -6,55 +6,56 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7C9BC28CBC
-	for <alsa-devel@archiver.kernel.org>; Sun,  3 May 2020 19:03:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CB45AC28CBC
+	for <alsa-devel@archiver.kernel.org>; Sun,  3 May 2020 19:04:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3C46A206EB
-	for <alsa-devel@archiver.kernel.org>; Sun,  3 May 2020 19:03:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 499C0206F1
+	for <alsa-devel@archiver.kernel.org>; Sun,  3 May 2020 19:04:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LgBbTQta"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3C46A206EB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bz00MtT2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 499C0206F1
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7E6F416BD;
-	Sun,  3 May 2020 21:02:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E6F416BD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 94C4516C7;
+	Sun,  3 May 2020 21:03:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94C4516C7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588532590;
-	bh=uPnMDiAkFm/AktGlifSunli3fraVlrpKm+e9+V5i3O0=;
+	s=default; t=1588532643;
+	bh=QbN0I1zGglkSoU4AXC8kFqgpbArmrPwdMXk1Xxk2NNE=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LgBbTQtaslLKMa06wZ4Mo9y2ex7MFL/jOcMJcBbIVHUqd9Ex7u8OuY8hldBjJXSdR
-	 u9Rb6v4O8VTVhRyjkETwbUMv77f+IjBIAmpQ40laX+a5tAFjr21ZwYGPT9jRLWYJpw
-	 2DwsgaZpBp09g9qTb6rxyw+TttfPrrYhTqYVyfAk=
+	b=bz00MtT2kKzM0pbWGM2Z0uJbNS2pArawsONKUrDHWdGasyBJTyeDklokYbYs0hNfk
+	 OzenPPVWvtfMiH+AvHSrfSpk/3taG/vw5WL78a+P19BMZUYTzl4uRHjoFby5cdoAFc
+	 Os9+kGog8VcSmbK62uymFnKYP8+s3GtMibDGuQEg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E9EC6F8015B;
-	Sun,  3 May 2020 21:02:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5317EF80171;
+	Sun,  3 May 2020 21:02:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 43941F8015F; Sun,  3 May 2020 21:02:17 +0200 (CEST)
+ id 83663F801D9; Sun,  3 May 2020 21:02:33 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 486DAF800DA
- for <alsa-devel@alsa-project.org>; Sun,  3 May 2020 21:02:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 486DAF800DA
+ by alsa1.perex.cz (Postfix) with ESMTPS id A8CFBF80162
+ for <alsa-devel@alsa-project.org>; Sun,  3 May 2020 21:02:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8CFBF80162
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 2EF28AC68;
- Sun,  3 May 2020 19:02:09 +0000 (UTC)
-Date: Sun, 03 May 2020 21:02:06 +0200
-Message-ID: <s5hbln4hmfl.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id CA185ADE2;
+ Sun,  3 May 2020 19:02:26 +0000 (UTC)
+Date: Sun, 03 May 2020 21:02:25 +0200
+Message-ID: <s5ha72ohmf2.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: Re: [PATCH 1/2] Revert "ALSA: hda/realtek: Fix pop noise on ALC225"
-In-Reply-To: <20200503152449.22761-1-kai.heng.feng@canonical.com>
+Subject: Re: [PATCH 2/2] ALSA: hda/realtek - Fix S3 pop noise on Dell Wyse
+In-Reply-To: <20200503152449.22761-2-kai.heng.feng@canonical.com>
 References: <20200503152449.22761-1-kai.heng.feng@canonical.com>
+ <20200503152449.22761-2-kai.heng.feng@canonical.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -81,19 +82,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 03 May 2020 17:24:46 +0200,
+On Sun, 03 May 2020 17:24:47 +0200,
 Kai-Heng Feng wrote:
 > 
-> This reverts commit 3b36b13d5e69d6f51ff1c55d1b404a74646c9757.
+> Commit 317d9313925c ("ALSA: hda/realtek - Set default power save node to
+> 0") makes the ALC225 have pop noise on S3 resume and cold boot.
 > 
-> Enable power save node breaks some systems with ACL225. Revert the patch
-> and use a platform specific quirk for the original issue isntead.
+> The previous fix enable power save node universally for ALC225, however
+> it makes some ALC225 systems unable to produce any sound.
 > 
-> Fixes: 3b36b13d5e69 ("ALSA: hda/realtek: Fix pop noise on ALC225")
-> BugLink: https://bugs.launchpad.net/bugs/1875916
+> So let's only enable power save node for the affected Dell Wyse
+> platform.
+> 
+> Fixes: 317d9313925c ("ALSA: hda/realtek - Set default power save node to 0")
+> BugLink: https://bugs.launchpad.net/bugs/1866357
 > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-Applied now.  Thanks.
+Applied, thanks.
 
 
 Takashi
