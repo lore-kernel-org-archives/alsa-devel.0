@@ -2,96 +2,72 @@ Return-Path: <SRS0=TVyu=6S=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB27FC3A5A9
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 09:24:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22F64C3A5A9
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 09:54:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 11F64206B9
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 09:24:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7F6592071C
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 09:54:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ub9yq2kD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 11F64206B9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZQJNzPcG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7F6592071C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 604AD16E3;
-	Mon,  4 May 2020 11:24:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 604AD16E3
+	by alsa0.perex.cz (Postfix) with ESMTPS id ADEDE16AB;
+	Mon,  4 May 2020 11:53:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ADEDE16AB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588584291;
-	bh=NewRAtZXp7UoUYEVXKnaDn1HTkwLJmgmye2c+dhlcFY=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1588586082;
+	bh=4qS3UcFPparHTec+wIFpSUv/p8kLzCgO7t+0CRsiHQk=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ub9yq2kDcFTUtIIg5hhVd9C9sSi86NkKBuPkUa9eKoBYAGbRuj6YlRh7rBzKSFlm/
-	 RsFcPIExdFGMYkfpYGUQmRA/geUUXcglf/5/9f522uDqa6jnENBT6CeJIGBZGdSoCi
-	 tz4XKSWU4PwgPKUdNY+/QIuTPU0MHwlqtwL4aZx8=
+	b=ZQJNzPcGGY3iLnC32jIvu7kq/6gO2EetoL748zeWVRvpmG7J3AxAe7OYo4K2x87Za
+	 AlawejOqkolH30Zvx6zFKhvkbqISq2qlFEGhCPzjGyS7Pu2Ekyy42qI233DSKOhyTF
+	 HKo4nlMVNsgD22eMDw+AIpZCQ40rTVv9LxFNgMKI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D2B0AF80234;
-	Mon,  4 May 2020 11:24:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 47188F80234;
+	Mon,  4 May 2020 11:53:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 217A0F80249; Mon,  4 May 2020 11:23:59 +0200 (CEST)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id B8338F80249; Mon,  4 May 2020 11:53:50 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B301FF800DE
- for <alsa-devel@alsa-project.org>; Mon,  4 May 2020 11:23:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B301FF800DE
-IronPort-SDR: fvsk9YbzwPJxKl5CaTqt7wrKiVfzrsV3sKKjxeO4VwJCYPt2MT4iQcgGHb3//eBjkd6/m8HsdH
- BLEIgGxyPFUw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 May 2020 02:23:49 -0700
-IronPort-SDR: J1Cu5dy96mFd8lt0e95yC5aH2xOFfUGHqnzHJD6rhtCYkV88/ylCCYoTfZ9K3hG60rnEgIxdrj
- BMqyUlnNnE8g==
-X-IronPort-AV: E=Sophos;i="5.73,351,1583222400"; d="scan'208";a="434044101"
-Received: from aslawinx-mobl1.ger.corp.intel.com (HELO [10.249.151.177])
- ([10.249.151.177])
- by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 May 2020 02:23:45 -0700
-Subject: Re: [PATCH] ASoC: Intel: sst: ipc command timeout
-To: "Lu, Brent" <brent.lu@intel.com>,
- "Rojewski, Cezary" <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-References: <1586506705-3194-1-git-send-email-brent.lu@intel.com>
- <4f495cf1-4740-cf3b-196f-cc850c503b43@linux.intel.com>
- <BN6PR1101MB21328B6F4147640D07F9E40A97DA0@BN6PR1101MB2132.namprd11.prod.outlook.com>
- <c8309abf-cbfb-a3db-5aa7-2e2f748a6d34@intel.com>
- <BN6PR1101MB21328C54E66082227B9F497A97D50@BN6PR1101MB2132.namprd11.prod.outlook.com>
- <5e84c48c-a5d1-b2ff-c197-5efa478c5916@linux.intel.com>
- <BN6PR1101MB2132D23B042284DDA667642A97AC0@BN6PR1101MB2132.namprd11.prod.outlook.com>
- <9d003948-a651-9920-86b6-307e912dd8ed@linux.intel.com>
- <BN6PR1101MB21325FA4FB1446DC2CAF6C6797AA0@BN6PR1101MB2132.namprd11.prod.outlook.com>
-From: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-Message-ID: <a0648aff-1c85-cc76-650c-1880381c026f@linux.intel.com>
-Date: Mon, 4 May 2020 11:23:41 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <BN6PR1101MB21325FA4FB1446DC2CAF6C6797AA0@BN6PR1101MB2132.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: Kate Stewart <kstewart@linuxfoundation.org>,
- "clang-built-linux@googlegroups.com" <clang-built-linux@googlegroups.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Richard Fontana <rfontana@redhat.com>, Mark Brown <broonie@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>, Allison Randal <allison@lohutok.net>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4FDF3F800EE
+ for <alsa-devel@alsa-project.org>; Mon,  4 May 2020 11:53:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4FDF3F800EE
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 4E576AEF9;
+ Mon,  4 May 2020 09:53:46 +0000 (UTC)
+Date: Mon, 04 May 2020 11:53:44 +0200
+Message-ID: <s5hk11sf2l3.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Sameer Pujar <spujar@nvidia.com>
+Subject: Re: [PATCH 0/3] Tegra194 HW Fixes
+In-Reply-To: <2828495a-d27a-a69b-37f5-fd3fb714188b@nvidia.com>
+References: <1588580176-2801-1-git-send-email-spujar@nvidia.com>
+ <s5ho8r4f6hx.wl-tiwai@suse.de>
+ <124d4a5c-e198-d8c0-5fb7-65d008852e32@nvidia.com>
+ <2828495a-d27a-a69b-37f5-fd3fb714188b@nvidia.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com,
+ jonathanh@nvidia.com, viswanathl@nvidia.com, sharadg@nvidia.com,
+ thierry.reding@gmail.com, atalambedu@nvidia.com, linux-tegra@vger.kernel.org,
+ rlokhande@nvidia.com, mkumard@nvidia.com, dramesh@nvidia.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,74 +83,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 4/30/2020 5:38 PM, Lu, Brent wrote:
->>
->> Hi,
->> yes that seems bit weird. It is bit better as it does not modify common code,
->> but still... Maybe going back to your original idea of replacing memcpy, try
->> replacing it with readq? It should generate one instruction read (although it is
->> only for x64_64, for 32 bit kernel we would still need to do something else).
->>
->> Thanks,
->> Amadeusz
+On Mon, 04 May 2020 10:48:46 +0200,
+Sameer Pujar wrote:
 > 
-> Hi,
 > 
-> I've compared the assembly to see if there is clue. Both kernels are using 64-bit
-> mov to read register and the only difference is optimized or not. Both
-> implementations are looking good to me. Currently I don't have answer why
-> slower kernel hits the problem while optimized one survived.
 > 
-> 1. Old kernel. Code is optimized and not able to reproduce the issue on this kernel.
+> On 5/4/2020 2:05 PM, Sameer Pujar wrote:
+> >
+> >
+> > On 5/4/2020 1:59 PM, Takashi Iwai wrote:
+> >> External email: Use caution opening links or attachments
+> >>
+> >>
+> >> On Mon, 04 May 2020 10:16:13 +0200,
+> >> Sameer Pujar wrote:
+> >>> This series proposes SW workarounds for Tegra194 HDA HW bugs.
+> >>> Following are the two issues seen:
+> >>>   1. GCAP register does not reflect true capability.
+> >>>      The actual number of SDO lines is "4", where as it reflects "2".
+> >>>   2. With 4 SDO line configuration playback fails for,
+> >>>      44.1K/48K, 2-channel, 16-bps audio stream.
+> >>>
+> >>> After fixing [1], issue [2] is uncovered.
+> >>> As per recommendation by Tegra HW team the workarounds are pushed.
+> >>>
+> >>> Testing done
+> >>> ============
+> >>>   * Verify GCAP register after registering HDA sound card
+> >>>   * Verify audio playback for 44.1K/48K, 2-channel, 16-bps.
+> >>>
+> >>> Sameer Pujar (3):
+> >>>    ALSA: hda/tegra: correct number of SDO lines for Tegra194
+> >>>    ALSA: hda: add member to store ratio for stripe control
+> >>>    ALSA: hda/tegra: workaround playback failure on Tegra194
+> >> Through a quick glance, all changes look good.
+> >>
+> >> Is the device already in market, i.e. it had hit users?  If yes, I'm
+> >> going to merge for 5.7, otherwise for 5.8.
+> >
+> > Yes the device is in the market. But has not been reported by end users.
+> > During internal resting this has been discovered. I am fine with
+> > merging this to 5.8.
 > 
-> (gdb) disas sst_shim32_read64
-> Dump of assembler code for function sst_shim32_read64:
->     0x000000000000096c <+0>:     call   0x971 <sst_shim32_read64+5>
-> => call __fentry__
->     0x0000000000000971 <+5>:     push   rbp
->     0x0000000000000972 <+6>:     mov    rbp,rsp
->     0x0000000000000975 <+9>:     mov    eax,esi
->     0x0000000000000977 <+11>:    mov    rax,QWORD PTR [rdi+rax*1]
-> => perform 64-bit mov
->     0x000000000000097b <+15>:    pop    rbp
->     0x000000000000097c <+16>:    ret
-> End of assembler dump.
-> 
+> To add, end users currently won't see this problem because things work
+> fine with 2-SDO lines. The issue is seen when Tegra194 is allowed to
+> utilize its actual capability of 4-SDO lines.
 
-Hi,
-
-That's why I would suggest trying with readq, it should also generate 
-one instruction read x86_64 platforms, I looked a bit more and there is 
-fallback to generate two 32 bit reads on 32bit platforms, so my previous 
-concern about having to write separate handling for those platforms was 
-unneeded. So I would recommend checking using it.
-
-diff --git a/sound/soc/intel/common/sst-dsp.c 
-b/sound/soc/intel/common/sst-dsp.c
-index ec66be269b69..e96f636387d9 100644
---- a/sound/soc/intel/common/sst-dsp.c
-+++ b/sound/soc/intel/common/sst-dsp.c
-@@ -34,16 +34,13 @@ EXPORT_SYMBOL_GPL(sst_shim32_read);
-
-  void sst_shim32_write64(void __iomem *addr, u32 offset, u64 value)
-  {
--       memcpy_toio(addr + offset, &value, sizeof(value));
-+       writeq(value, addr + offset);
-  }
-  EXPORT_SYMBOL_GPL(sst_shim32_write64);
-
-  u64 sst_shim32_read64(void __iomem *addr, u32 offset)
-  {
--       u64 val;
--
--       memcpy_fromio(&val, addr + offset, sizeof(val));
--       return val;
-+       return readq(addr + offset);
-  }
-  EXPORT_SYMBOL_GPL(sst_shim32_read64);
+Thanks for the information.  Then I queued all three patches now to
+for-next branch destined for 5.8.
 
 
-Thanks,
-Amadeusz
+Takashi
