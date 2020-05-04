@@ -2,68 +2,101 @@ Return-Path: <SRS0=TVyu=6S=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 108A7C3A5A9
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 08:30:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D2B2C4724C
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 08:36:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 88F63206D7
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 08:30:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7B12020735
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 08:36:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="i7R/eAGz"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 88F63206D7
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ImWe78Gu";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="EC2a+3lQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7B12020735
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D54B216E3;
-	Mon,  4 May 2020 10:29:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D54B216E3
+	by alsa0.perex.cz (Postfix) with ESMTPS id C7B9316DE;
+	Mon,  4 May 2020 10:35:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7B9316DE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588581024;
-	bh=rUYFWgH8CwXfp3k2OGz/KuqABt4Mx0nDk2DCFH6tel0=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1588581383;
+	bh=EBCXmTymFW94ja8RIoDQ8xN4imM6L5L4qPFltezK3pQ=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=i7R/eAGzhUQu85WeAhDyqUTtXu1OdyS2jWj9vCK9wtws/VBhdz2Q2OVEeatVvRr1M
-	 fzPzl6wp61BsQkhb8ZXbu+BFkLlzJeFneuPLnNC5uFQK9SbDjYLPfA6c70jZamxQcQ
-	 neVT5LcAACDChPbWYLf+irLZoVhE8AbC8B85q38Y=
+	b=ImWe78Guq3QzyrMR6nrQ80XM8nPZ1xbgKIe04BvmrIfI/18wm7HzOcW6V9iwVsgsw
+	 FraXfxEEkmghNSAm2d8lOCSZZasoDfKYIwJkk6ceSPml1trsbJU7lseObwlEvdI3c8
+	 bQcUJjH+xOzgLWeIo9o1n20M1sYbcb9Pizho2AI8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3C70EF80234;
-	Mon,  4 May 2020 10:29:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 36AD8F80234;
+	Mon,  4 May 2020 10:35:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B6511F80249; Mon,  4 May 2020 10:29:26 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 3C615F80249; Mon,  4 May 2020 10:35:31 +0200 (CEST)
+Received: from hqnvemgate24.nvidia.com (hqnvemgate24.nvidia.com
+ [216.228.121.143])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8A744F800E5
- for <alsa-devel@alsa-project.org>; Mon,  4 May 2020 10:29:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8A744F800E5
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 0F551ACF1;
- Mon,  4 May 2020 08:29:16 +0000 (UTC)
-Date: Mon, 04 May 2020 10:29:14 +0200
-Message-ID: <s5ho8r4f6hx.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Sameer Pujar <spujar@nvidia.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6D61FF800E5
+ for <alsa-devel@alsa-project.org>; Mon,  4 May 2020 10:35:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D61FF800E5
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
+ header.b="EC2a+3lQ"
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by
+ hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+ id <B5eafd34e0000>; Mon, 04 May 2020 01:33:18 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+ by hqpgpgate101.nvidia.com (PGP Universal service);
+ Mon, 04 May 2020 01:35:25 -0700
+X-PGP-Universal: processed;
+ by hqpgpgate101.nvidia.com on Mon, 04 May 2020 01:35:25 -0700
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 4 May
+ 2020 08:35:25 +0000
+Received: from [10.25.97.23] (10.124.1.5) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 4 May 2020
+ 08:35:14 +0000
 Subject: Re: [PATCH 0/3] Tegra194 HW Fixes
-In-Reply-To: <1588580176-2801-1-git-send-email-spujar@nvidia.com>
+To: Takashi Iwai <tiwai@suse.de>
 References: <1588580176-2801-1-git-send-email-spujar@nvidia.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com,
- jonathanh@nvidia.com, viswanathl@nvidia.com, sharadg@nvidia.com,
- thierry.reding@gmail.com, atalambedu@nvidia.com, linux-tegra@vger.kernel.org,
- rlokhande@nvidia.com, mkumard@nvidia.com, dramesh@nvidia.com
+ <s5ho8r4f6hx.wl-tiwai@suse.de>
+From: Sameer Pujar <spujar@nvidia.com>
+Message-ID: <124d4a5c-e198-d8c0-5fb7-65d008852e32@nvidia.com>
+Date: Mon, 4 May 2020 14:05:07 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <s5ho8r4f6hx.wl-tiwai@suse.de>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+ t=1588581198; bh=LxS7ZfO41qCLpMhFUX0mFEgCD+fiFILtv0nazI/gBKY=;
+ h=X-PGP-Universal:CC:Subject:To:References:From:Message-ID:Date:
+ User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+ X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
+ Content-Language;
+ b=EC2a+3lQ6ViudY5YFmLk7lQv+Sl4n/1ojJfqN56+K9adPBtWQM8jxiX2PZokGyZ3W
+ J3Mc6uTlS1j0isTYlOFSW4e3fDuORqun5bNUlmUcsO//FfIpTVGOZZEj9AvwXSkL5+
+ tXDApbU2d9BGio+Kg9l1fETPTQOthbOwAaIR7VjKAEw8CIyVp/WU8Qk0aOobKoyt6B
+ dDzONGILUPCQkgy/EpxfNPgPQelV0CyCYhj/v8X0L7NJWQMT+JcxFhta2UDVUX/+8H
+ ht4oAzS6pgXJGGNnILWyBBvrlzHUPDYmEN88pEReoviZCROY+PQJSJ4grPPjAaL40l
+ Vd6d8Pbo1NIbQ==
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ spujar@nvidia.com, tiwai@suse.com, jonathanh@nvidia.com, viswanathl@nvidia.com,
+ sharadg@nvidia.com, thierry.reding@gmail.com, atalambedu@nvidia.com,
+ linux-tegra@vger.kernel.org, rlokhande@nvidia.com, mkumard@nvidia.com,
+ dramesh@nvidia.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,35 +112,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 04 May 2020 10:16:13 +0200,
-Sameer Pujar wrote:
-> 
-> This series proposes SW workarounds for Tegra194 HDA HW bugs.
-> Following are the two issues seen:
->  1. GCAP register does not reflect true capability.
->     The actual number of SDO lines is "4", where as it reflects "2".
->  2. With 4 SDO line configuration playback fails for,
->     44.1K/48K, 2-channel, 16-bps audio stream.
-> 
-> After fixing [1], issue [2] is uncovered.
-> As per recommendation by Tegra HW team the workarounds are pushed.
-> 
-> Testing done
-> ============
->  * Verify GCAP register after registering HDA sound card
->  * Verify audio playback for 44.1K/48K, 2-channel, 16-bps.
-> 
-> Sameer Pujar (3):
->   ALSA: hda/tegra: correct number of SDO lines for Tegra194
->   ALSA: hda: add member to store ratio for stripe control
->   ALSA: hda/tegra: workaround playback failure on Tegra194
-
-Through a quick glance, all changes look good.
-
-Is the device already in market, i.e. it had hit users?  If yes, I'm
-going to merge for 5.7, otherwise for 5.8.
 
 
-thanks,
+On 5/4/2020 1:59 PM, Takashi Iwai wrote:
+> External email: Use caution opening links or attachments
+>
+>
+> On Mon, 04 May 2020 10:16:13 +0200,
+> Sameer Pujar wrote:
+>> This series proposes SW workarounds for Tegra194 HDA HW bugs.
+>> Following are the two issues seen:
+>>   1. GCAP register does not reflect true capability.
+>>      The actual number of SDO lines is "4", where as it reflects "2".
+>>   2. With 4 SDO line configuration playback fails for,
+>>      44.1K/48K, 2-channel, 16-bps audio stream.
+>>
+>> After fixing [1], issue [2] is uncovered.
+>> As per recommendation by Tegra HW team the workarounds are pushed.
+>>
+>> Testing done
+>> ============
+>>   * Verify GCAP register after registering HDA sound card
+>>   * Verify audio playback for 44.1K/48K, 2-channel, 16-bps.
+>>
+>> Sameer Pujar (3):
+>>    ALSA: hda/tegra: correct number of SDO lines for Tegra194
+>>    ALSA: hda: add member to store ratio for stripe control
+>>    ALSA: hda/tegra: workaround playback failure on Tegra194
+> Through a quick glance, all changes look good.
+>
+> Is the device already in market, i.e. it had hit users?  If yes, I'm
+> going to merge for 5.7, otherwise for 5.8.
 
-Takashi
+Yes the device is in the market. But has not been reported by end users.
+During internal resting this has been discovered. I am fine with merging 
+this to 5.8.
+
+Thanks,
+Sameer.
+>
+>
+> thanks,
+>
+> Takashi
+
