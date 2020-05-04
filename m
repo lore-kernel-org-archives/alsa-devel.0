@@ -6,70 +6,71 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E898C3A5A9
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 14:38:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B14C0C3A5A9
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 15:24:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AA41B2078C
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 14:38:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 411BE20735
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 15:24:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EnRKwfN2";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ej0s0UsM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AA41B2078C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jwzTE2A7";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="SoxiEpct"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 411BE20735
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ACA73836;
-	Mon,  4 May 2020 16:37:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ACA73836
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8967E1707;
+	Mon,  4 May 2020 17:23:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8967E1707
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588603084;
-	bh=NohOeRtNeFL0lR06T1iUMWsfGmgd9V5Dape+sY5k6V8=;
+	s=default; t=1588605880;
+	bh=o0Pi2RXnCXtfd+41C8gctF8KJGX1w+a7yEUtFLgby4Q=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EnRKwfN2HSXHbMt749hCLoILF6+CTy3anWWI7QaUCZha9FkwIrwoa7Wws7fGlOyVb
-	 g7qics2v5bOMntllfRmw9OA5ItQGUUCzKwUjxP6WvBeBK9OD8jvoK4HcQ6vSatkQx+
-	 L77Ota6hVNo7IjjQWv4Um8FZgejgWcmoKFHQv7i4=
+	b=jwzTE2A7lCJMAbk+Jv0vdSjB5cg3wYDP4+U77JJTeW496dJQyOPQ2Uq1WYa8iizQE
+	 CiXOFOkhTB0e3ETlJIgCdqgLmh8TQdB/s/mVdmIVPQW9O/m+5JchpsMxqJ96GjEt/W
+	 LX7mVGOS0drT5Wgnab44manYqlsrC1oP3KbqUxi8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3471DF800EE;
-	Mon,  4 May 2020 16:37:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 06F8BF80234;
+	Mon,  4 May 2020 17:23:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E3FCDF80249; Mon,  4 May 2020 16:37:06 +0200 (CEST)
+ id 45598F80258; Mon,  4 May 2020 17:23:49 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8C3F1F800E5
- for <alsa-devel@alsa-project.org>; Mon,  4 May 2020 16:37:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C3F1F800E5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 13B4EF800EE
+ for <alsa-devel@alsa-project.org>; Mon,  4 May 2020 17:23:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13B4EF800EE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Ej0s0UsM"
+ header.b="SoxiEpct"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 1645F2078C;
- Mon,  4 May 2020 14:36:59 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id C2FDE206B8;
+ Mon,  4 May 2020 15:23:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1588603020;
- bh=NohOeRtNeFL0lR06T1iUMWsfGmgd9V5Dape+sY5k6V8=;
+ s=default; t=1588605821;
+ bh=o0Pi2RXnCXtfd+41C8gctF8KJGX1w+a7yEUtFLgby4Q=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=Ej0s0UsMGR4QmPEzFKoy08PdT82NkplV0WJj+jiheFp1GR4IdpbzaF8WaE1Krkt3l
- FPpDrR65A7PtYbt1gkvNhDoiO5LJa34+AGifQMJ23xsrUIHPu4+JKSTQrAMNIwoRJt
- eESr4Ps+6TN4454QCVy/2G+0sa11B2UD7gd7CIhU=
-Date: Mon, 04 May 2020 15:36:58 +0100
+ b=SoxiEpctoghFbnidMxaGKwrIvL3G3SqfnKYa2gS0m/yIGJkiMqVBa6g9bxamBnuUu
+ Qb0KVtWGqxnWTh76x4xh0oac1W2NM/yqpbuKsFQ0hRZMF6CKRU6UKz3c9EjTIyDCZP
+ WiAsq317QrW205fyt9U6duTYFtX/DngyQonSguqs=
+Date: Mon, 04 May 2020 16:23:38 +0100
 From: Mark Brown <broonie@kernel.org>
-To: "chris.d.garren@gmail.com" <chris.d.garren@gmail.com>,
- alsa-devel@alsa-project.org
-In-Reply-To: <1588599820-57994-1-git-send-email-cdgarren@indesign-llc.com>
-References: <1588599820-57994-1-git-send-email-cdgarren@indesign-llc.com>
-Subject: Re: [PATCH] Mark the ADAU7118 reset register as volatile.
-Message-Id: <158860301792.1354.15832150395972220632.b4-ty@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.com>, Lars-Peter Clausen <lars@metafoo.de>,
- Liam Girdwood <lgirdwood@gmail.com>, Chris Garren <cdgarren@indesign-llc.com>
+To: "jack.yu@realtek.com" <jack.yu@realtek.com>, lgirdwood@gmail.com
+In-Reply-To: <20200504112013.2499-1-jack.yu@realtek.com>
+References: <20200504112013.2499-1-jack.yu@realtek.com>
+Subject: Re: [PATCH] ASoC: rt1015: Add condition to prevent SoC providing bclk
+ in ratio of 50 times of sample rate.
+Message-Id: <158860581280.26857.13925215097392595128.b4-ty@kernel.org>
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de,
+ kent_chen@realtek.com, kenny_chen@realtek.com, derek.fang@realtek.com,
+ shumingf@realtek.com, albertwang@realtek.com, flove@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,24 +86,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 4 May 2020 09:43:20 -0400, chris.d.garren@gmail.com wrote:
-> From: Chris Garren <cdgarren@indesign-llc.com>
+On Mon, 4 May 2020 19:20:13 +0800, jack.yu@realtek.com wrote:
+> From: Jack Yu <jack.yu@realtek.com>
 > 
-> Without this the previously written value was written to this reg,
-> which caused the different configuration registers to be reset.
+> Add condition to prevent SoC providing bclk in ratio of 50 times of sample rate.
 > 
-> Signed-off-by: Chris Garren <cdgarren@indesign-llc.com>
+> Signed-off-by: Jack Yu <jack.yu@realtek.com>
+> ---
+>  sound/soc/codecs/rt1015.c | 27 +++++++++++++++++++++++++++
+>  sound/soc/codecs/rt1015.h |  1 +
+>  2 files changed, 28 insertions(+)
 > 
 > [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.7
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.8
 
 Thanks!
 
-[1/1] ASoC: adau7118: Mark the ADAU7118 reset register as volatile
-      commit: f2b1e1cbd352129cfdbc1af52059482d74b4e81a
+[1/1] ASoC: rt1015: Add condition to prevent SoC providing bclk in ratio of 50 times of sample rate.
+      commit: d696a61413b405a13bbe04f31e6f4531a426fee7
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
