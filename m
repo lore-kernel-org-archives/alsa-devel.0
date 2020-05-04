@@ -2,80 +2,79 @@ Return-Path: <SRS0=TVyu=6S=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E94F9C47258
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 11:21:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BD286C3A5A9
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 11:24:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 599DE20721
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 11:21:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3F8AE20721
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 11:24:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KGY6ghsT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 599DE20721
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="h8DBg9xR";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="a8wP2WBs"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3F8AE20721
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9FEEF16EE;
-	Mon,  4 May 2020 13:20:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9FEEF16EE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9659D16F5;
+	Mon,  4 May 2020 13:23:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9659D16F5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588591294;
-	bh=iBrV7IM9uEgPX2li2IhEeyu/3IMs3ecxSA4kbOKHRCY=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=KGY6ghsT7OnjONjhz//ce/RaJZUmZywbermtzvZbmaPCemzffZ/HtzRmn0NhGuqu9
-	 kSDktKNjxU5YIqDoP/EgpRbbeA3e/nGMjK0ojnyBeL74zgL19RzFXO6PI4ZBb58Hwl
-	 4Xpps4kQiKwZtU5+DrFiyT7o75AaaZQbjGLPvsxU=
+	s=default; t=1588591442;
+	bh=0VcTrmTIO63RLKDps5wd81aJX3Moc6zHyDdTsurqaUE=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=h8DBg9xRKIBJhiWtahvMS32lPGF8rCphELK1LJkC/gAGLGGa6gP5uzQWrjpIEjRLE
+	 b5EqCO+2UlsHO+o+OSNUQ0WYte06uOP+eAzFKfB+tiOQRSbwx/zMCmjjxONkm3SMzT
+	 ODRID5/tDIm881CnvcYmpPjvCzarVWtvoDQqkpEg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3D47AF80234;
-	Mon,  4 May 2020 13:20:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3F32CF800EE;
+	Mon,  4 May 2020 13:23:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EAF52F800E5; Mon,  4 May 2020 13:20:41 +0200 (CEST)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ id A9EF9F80249; Mon,  4 May 2020 13:23:10 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id DE32DF800EE
+ for <alsa-devel@alsa-project.org>; Mon,  4 May 2020 13:23:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE32DF800EE
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="a8wP2WBs"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6DBC2F800E5
- for <alsa-devel@alsa-project.org>; Mon,  4 May 2020 13:20:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DBC2F800E5
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 044BKNsW4006080,
- This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmb06.realtek.com.tw[172.21.6.99])
- by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 044BKNsW4006080
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Mon, 4 May 2020 19:20:23 +0800
-Received: from RTEXMB01.realtek.com.tw (172.21.6.94) by
- RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Mon, 4 May 2020 19:20:23 +0800
-Received: from localhost.localdomain (172.22.102.1) by RTEXMB01.realtek.com.tw
- (172.21.6.94) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Mon, 4 May 2020
- 19:20:23 +0800
-From: <jack.yu@realtek.com>
-To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-Subject: [PATCH] ASoC: rt1015: Add condition to prevent SoC providing bclk in
- ratio of 50 times of sample rate.
-Date: Mon, 4 May 2020 19:20:13 +0800
-Message-ID: <20200504112013.2499-1-jack.yu@realtek.com>
-X-Mailer: git-send-email 2.25.1
+ by mail.kernel.org (Postfix) with ESMTPSA id CCE3220721;
+ Mon,  4 May 2020 11:23:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1588591385;
+ bh=0VcTrmTIO63RLKDps5wd81aJX3Moc6zHyDdTsurqaUE=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=a8wP2WBsvFlQjoOEQk+sxa7+/cJXHDsV+jUyX1IrZyXVuuuYM5guSfr8tX9nMNjCH
+ syLoQ78I7XgYcba0O4co0nixC4+JGrJnj/Ux0goQGiilXV28DFRqziKVgGtxSkhKWw
+ NdZ/TccQvqcB5vUMMwaTPH1tGTgSxruEYnqvipsI=
+Date: Mon, 4 May 2020 12:23:02 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Oder Chiou <oder_chiou@realtek.com>
+Subject: Re: [PATCH 1/2] ASoC: rt1308: Revise the devicetree file mode
+Message-ID: <20200504112302.GB5491@sirena.org.uk>
+References: <20200504074007.13002-1-oder_chiou@realtek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [172.22.102.1]
-X-ClientProxiedBy: RTEXMB06.realtek.com.tw (172.21.6.99) To
- RTEXMB01.realtek.com.tw (172.21.6.94)
-Cc: oder_chiou@realtek.com, Jack Yu <jack.yu@realtek.com>,
- alsa-devel@alsa-project.org, lars@metafoo.de, kent_chen@realtek.com,
- kenny_chen@realtek.com, derek.fang@realtek.com, shumingf@realtek.com,
- albertwang@realtek.com, flove@realtek.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="wzJLGUyc3ArbnUjN"
+Content-Disposition: inline
+In-Reply-To: <20200504074007.13002-1-oder_chiou@realtek.com>
+X-Cookie: My life is a patio of fun!
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com,
+ derek.fang@realtek.com, shumingf@realtek.com, flove@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,86 +90,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Jack Yu <jack.yu@realtek.com>
 
-Add condition to prevent SoC providing bclk in ratio of 50 times of sample rate.
+--wzJLGUyc3ArbnUjN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Jack Yu <jack.yu@realtek.com>
----
- sound/soc/codecs/rt1015.c | 27 +++++++++++++++++++++++++++
- sound/soc/codecs/rt1015.h |  1 +
- 2 files changed, 28 insertions(+)
+On Mon, May 04, 2020 at 03:40:06PM +0800, Oder Chiou wrote:
+> The patch changes the devicetree file mode correctly.
 
-diff --git a/sound/soc/codecs/rt1015.c b/sound/soc/codecs/rt1015.c
-index bb310bc7febd..5eb07a430ae3 100644
---- a/sound/soc/codecs/rt1015.c
-+++ b/sound/soc/codecs/rt1015.c
-@@ -780,6 +780,14 @@ static int rt1015_set_component_pll(struct snd_soc_component *component,
- 		freq_out == rt1015->pll_out)
- 		return 0;
- 
-+	if (source == RT1015_PLL_S_BCLK) {
-+		if (rt1015->bclk_ratio == 0) {
-+			dev_err(component->dev,
-+				"Can not support bclk ratio as 0.\n");
-+			return -EINVAL;
-+		}
-+	}
-+
- 	switch (source) {
- 	case RT1015_PLL_S_MCLK:
- 		snd_soc_component_update_bits(component, RT1015_CLK2,
-@@ -819,12 +827,30 @@ static int rt1015_set_component_pll(struct snd_soc_component *component,
- 	return 0;
- }
- 
-+static int rt1015_set_bclk_ratio(struct snd_soc_dai *dai, unsigned int ratio)
-+{
-+	struct snd_soc_component *component = dai->component;
-+	struct rt1015_priv *rt1015 = snd_soc_component_get_drvdata(component);
-+
-+	dev_dbg(component->dev, "%s ratio=%d\n", __func__, ratio);
-+
-+	rt1015->bclk_ratio = ratio;
-+
-+	if (ratio == 50) {
-+		dev_dbg(component->dev, "Unsupport bclk ratio\n");
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- static int rt1015_probe(struct snd_soc_component *component)
- {
- 	struct rt1015_priv *rt1015 =
- 		snd_soc_component_get_drvdata(component);
- 
- 	rt1015->component = component;
-+	rt1015->bclk_ratio = 0;
- 	snd_soc_component_write(component, RT1015_BAT_RPO_STEP1, 0x061c);
- 
- 	return 0;
-@@ -844,6 +870,7 @@ static void rt1015_remove(struct snd_soc_component *component)
- static struct snd_soc_dai_ops rt1015_aif_dai_ops = {
- 	.hw_params = rt1015_hw_params,
- 	.set_fmt = rt1015_set_dai_fmt,
-+	.set_bclk_ratio = rt1015_set_bclk_ratio,
- };
- 
- static struct snd_soc_dai_driver rt1015_dai[] = {
-diff --git a/sound/soc/codecs/rt1015.h b/sound/soc/codecs/rt1015.h
-index ef3745a4faae..6fbe802082c4 100644
---- a/sound/soc/codecs/rt1015.h
-+++ b/sound/soc/codecs/rt1015.h
-@@ -362,6 +362,7 @@ struct rt1015_priv {
- 	int sysclk_src;
- 	int lrck;
- 	int bclk;
-+	int bclk_ratio;
- 	int id;
- 	int pll_src;
- 	int pll_in;
--- 
-2.25.1
+This and patch 2 don't seem terribly related so there's no need to send
+them as part of a series, merging things into a series when it's not
+needed can slow things down if earlier patches in the series end up
+having problems.
 
+--wzJLGUyc3ArbnUjN
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6v+xUACgkQJNaLcl1U
+h9CU5gf+PVIijyJXsPRq1GoERpcGGPRqADFIR9Ak+4PEteLgrcwtIksyqUFLTeP1
+xWxYft8z3jzx9gjeOHokJkbWzbnDAUOgQ2TINm5LAGoe6b2wEBkFr4WQGoPGBlcp
+otfbde+McAAA/l4FU/YRaxvvuLeRWvOKlle1Q7BmgOB4VGt9pcAr/tV/7sKyha4r
+UmVXBs1AUE5Otg61es2Se/9oN8FH6KfLpBCEN6EI5iA8Fk7MC/XoKjvAM6/CD/5Q
+/yANqYDW5ZlVdEH8VTmgKcT2Y+k2fPSDhbhOQlnmHj7aS+yNiBnfwrxtRqWcq+zS
+GEI/sVZFQA+owWaM4iGj0Zzuz34UEw==
+=ZEQw
+-----END PGP SIGNATURE-----
+
+--wzJLGUyc3ArbnUjN--
