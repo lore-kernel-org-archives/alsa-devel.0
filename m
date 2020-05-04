@@ -4,67 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64BB4C3A5A9
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 07:36:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B4CC1C3A5A9
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 07:41:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E49DD20735
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 07:36:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 281B920735
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 07:41:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BNDWapoC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E49DD20735
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cmss.chinamobile.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="c/HoemwB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 281B920735
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 31A7416E2;
-	Mon,  4 May 2020 09:35:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31A7416E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7772C16DB;
+	Mon,  4 May 2020 09:40:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7772C16DB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588577808;
-	bh=FGBlxiagPPnLWZE5h2ji3BkVjMpN9TMxVlr6UZgGRkk=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=BNDWapoCDKDU1hn4Ielo6BOtrfg91IZg4jnj/3wL9P8hY9oyzSdY9MvjxA/yMN2Tz
-	 ESu4HCS1WeoFnZJLo89eIV9h8VMyjQgOEQRE956+uHPFypODiGvKwU+/nY1LTKPOqL
-	 Hc9SrrTaNF0kn2Y5DCYe/5LET05VNsnFJfzbVCXs=
+	s=default; t=1588578107;
+	bh=ukqHfgZgD1u8lq2KMo8VRzlvOj0EGTZq4iXPZdG850w=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=c/HoemwBkgHrVSQQE3lxKUeHWK/dU3RCBFOEh/Dh5IhCQfUp9FaVoEST0ZqM0Gz4e
+	 yqpfJTWYKWF9lZbwV9xVU0vB0EA/B93ibxLcQnpt7w4L2T7oZK4XRLr/oFsd1B/tmG
+	 Ijs+CfiIPtAkgGcPspou6apmDXA9RnElFa9z6BTI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AF543F80258;
-	Mon,  4 May 2020 09:35:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0EFFDF80249;
+	Mon,  4 May 2020 09:40:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0B01EF80259; Mon,  4 May 2020 09:35:54 +0200 (CEST)
-Received: from cmccmta3.chinamobile.com (cmccmta3.chinamobile.com
- [221.176.66.81])
- by alsa1.perex.cz (Postfix) with ESMTP id CCA51F800E5
- for <alsa-devel@alsa-project.org>; Mon,  4 May 2020 09:35:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CCA51F800E5
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.13]) by
- rmmx-syy-dmz-app11-12011 (RichMail) with SMTP id 2eeb5eafc5bf292-fd714;
- Mon, 04 May 2020 15:35:28 +0800 (CST)
-X-RM-TRANSID: 2eeb5eafc5bf292-fd714
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[112.3.182.180])
- by rmsmtp-syy-appsvr07-12007 (RichMail) with SMTP id 2ee75eafc5bddce-073a0;
- Mon, 04 May 2020 15:35:28 +0800 (CST)
-X-RM-TRANSID: 2ee75eafc5bddce-073a0
-From: Tang Bin <tangbin@cmss.chinamobile.com>
-To: broonie@kernel.org, bgoswami@codeaurora.org, plai@codeaurora.org,
- perex@perex.cz
-Subject: [PATCH] ASoC: qcom: Remove the unnecessary cast
-Date: Mon,  4 May 2020 15:35:58 +0800
-Message-Id: <20200504073558.2340-1-tangbin@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.20.1.windows.1
+ id C537DF80258; Mon,  4 May 2020 09:40:54 +0200 (CEST)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 47233F80234
+ for <alsa-devel@alsa-project.org>; Mon,  4 May 2020 09:40:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47233F80234
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 0447efL23010035,
+ This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmb06.realtek.com.tw[172.21.6.99])
+ by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 0447efL23010035
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Mon, 4 May 2020 15:40:41 +0800
+Received: from RTEXMB01.realtek.com.tw (172.21.6.94) by
+ RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Mon, 4 May 2020 15:40:41 +0800
+Received: from localhost.localdomain (172.22.102.1) by RTEXMB01.realtek.com.tw
+ (172.21.6.94) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Mon, 4 May 2020
+ 15:40:40 +0800
+From: Oder Chiou <oder_chiou@realtek.com>
+To: <broonie@kernel.org>, <lgirdwood@gmail.com>
+Subject: [PATCH 2/2] ASoC: rl6231: Add the K bypass for the PLL parameters
+Date: Mon, 4 May 2020 15:40:07 +0800
+Message-ID: <20200504074007.13002-2-oder_chiou@realtek.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200504074007.13002-1-oder_chiou@realtek.com>
+References: <20200504074007.13002-1-oder_chiou@realtek.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org,
- Zhang Shengju <zhangshengju@cmss.chinamobile.com>,
- linux-kernel@vger.kernel.org, Tang Bin <tangbin@cmss.chinamobile.com>
+Content-Type: text/plain
+X-Originating-IP: [172.22.102.1]
+X-ClientProxiedBy: RTEXMB05.realtek.com.tw (172.21.6.98) To
+ RTEXMB01.realtek.com.tw (172.21.6.94)
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com,
+ alsa-devel@alsa-project.org, derek.fang@realtek.com, shumingf@realtek.com,
+ flove@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,35 +92,124 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-It's not necessary to specify 'void const __force *' casting
-for 'drvdata->lpaif'.
+The patch adds the K bypass for the PLL parameters.
 
-Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
 ---
- sound/soc/qcom/lpass-cpu.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/rl6231.c | 29 +++++++++++++++++++----------
+ sound/soc/codecs/rl6231.h |  1 +
+ 2 files changed, 20 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index 885c1f2e7..4242f45ee 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -443,10 +443,10 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
+diff --git a/sound/soc/codecs/rl6231.c b/sound/soc/codecs/rl6231.c
+index d181c217d835..2586d1cafc0c 100644
+--- a/sound/soc/codecs/rl6231.c
++++ b/sound/soc/codecs/rl6231.c
+@@ -97,12 +97,13 @@ struct pll_calc_map {
+ 	int n;
+ 	int m;
+ 	bool m_bp;
++	bool k_bp;
+ };
  
- 	drvdata->lpaif = devm_platform_ioremap_resource_byname(pdev, 
- 						"lpass-lpaif")
--	if (IS_ERR((void const __force *)drvdata->lpaif)) {
-+	if (IS_ERR(drvdata->lpaif)) {
- 		dev_err(&pdev->dev, "error mapping reg resource: %ld\n",
--				PTR_ERR((void const __force *)drvdata->lpaif));
--		return PTR_ERR((void const __force *)drvdata->lpaif);
-+				PTR_ERR(drvdata->lpaif));
-+		return PTR_ERR(drvdata->lpaif);
- 	}
+ static const struct pll_calc_map pll_preset_table[] = {
+-	{19200000,  4096000,  23, 14, 1, false},
+-	{19200000,  24576000,  3, 30, 3, false},
+-	{3840000,   24576000,  3, 30, 0, true},
++	{19200000,  4096000,  23, 14, 1, false, false},
++	{19200000,  24576000,  3, 30, 3, false, false},
++	{3840000,   24576000,  3, 30, 0, true, false},
+ };
  
- 	lpass_cpu_regmap_config.max_register = LPAIF_WRDMAPER_REG(variant,
+ static unsigned int find_best_div(unsigned int in,
+@@ -128,7 +129,7 @@ static unsigned int find_best_div(unsigned int in,
+  * rl6231_pll_calc - Calcualte PLL M/N/K code.
+  * @freq_in: external clock provided to codec.
+  * @freq_out: target clock which codec works on.
+- * @pll_code: Pointer to structure with M, N, K and bypass flag.
++ * @pll_code: Pointer to structure with M, N, K, m_bypass and k_bypass flag.
+  *
+  * Calcualte M/N/K code to configure PLL for codec.
+  *
+@@ -143,7 +144,7 @@ int rl6231_pll_calc(const unsigned int freq_in,
+ 	unsigned int red, pll_out, in_t, out_t, div, div_t;
+ 	unsigned int red_t = abs(freq_out - freq_in);
+ 	unsigned int f_in, f_out, f_max;
+-	bool bypass = false;
++	bool m_bypass = false, k_bypass = false;
+ 
+ 	if (RL6231_PLL_INP_MAX < freq_in || RL6231_PLL_INP_MIN > freq_in)
+ 		return -EINVAL;
+@@ -154,7 +155,8 @@ int rl6231_pll_calc(const unsigned int freq_in,
+ 			k = pll_preset_table[i].k;
+ 			m = pll_preset_table[i].m;
+ 			n = pll_preset_table[i].n;
+-			bypass = pll_preset_table[i].m_bp;
++			m_bypass = pll_preset_table[i].m_bp;
++			k_bypass = pll_preset_table[i].k_bp;
+ 			pr_debug("Use preset PLL parameter table\n");
+ 			goto code_find;
+ 		}
+@@ -172,12 +174,14 @@ int rl6231_pll_calc(const unsigned int freq_in,
+ 	f_in = freq_in / div;
+ 	f_out = freq_out / div;
+ 	k = min_k;
++	if (min_k < -1)
++		min_k = -1;
+ 	for (k_t = min_k; k_t <= max_k; k_t++) {
+ 		for (n_t = 0; n_t <= max_n; n_t++) {
+ 			in_t = f_in * (n_t + 2);
+ 			pll_out = f_out * (k_t + 2);
+ 			if (in_t == pll_out) {
+-				bypass = true;
++				m_bypass = true;
+ 				n = n_t;
+ 				k = k_t;
+ 				goto code_find;
+@@ -185,7 +189,7 @@ int rl6231_pll_calc(const unsigned int freq_in,
+ 			out_t = in_t / (k_t + 2);
+ 			red = abs(f_out - out_t);
+ 			if (red < red_t) {
+-				bypass = true;
++				m_bypass = true;
+ 				n = n_t;
+ 				m = 0;
+ 				k = k_t;
+@@ -197,7 +201,7 @@ int rl6231_pll_calc(const unsigned int freq_in,
+ 				out_t = in_t / ((m_t + 2) * (k_t + 2));
+ 				red = abs(f_out - out_t);
+ 				if (red < red_t) {
+-					bypass = false;
++					m_bypass = false;
+ 					n = n_t;
+ 					m = m_t;
+ 					k = k_t;
+@@ -211,8 +215,13 @@ int rl6231_pll_calc(const unsigned int freq_in,
+ 	pr_debug("Only get approximation about PLL\n");
+ 
+ code_find:
++	if (k == -1) {
++		k_bypass = true;
++		k = 0;
++	}
+ 
+-	pll_code->m_bp = bypass;
++	pll_code->m_bp = m_bypass;
++	pll_code->k_bp = k_bypass;
+ 	pll_code->m_code = m;
+ 	pll_code->n_code = n;
+ 	pll_code->k_code = k;
+diff --git a/sound/soc/codecs/rl6231.h b/sound/soc/codecs/rl6231.h
+index 6d8ed0377296..928082750860 100644
+--- a/sound/soc/codecs/rl6231.h
++++ b/sound/soc/codecs/rl6231.h
+@@ -18,6 +18,7 @@
+ 
+ struct rl6231_pll_code {
+ 	bool m_bp; /* Indicates bypass m code or not. */
++	bool k_bp; /* Indicates bypass k code or not. */
+ 	int m_code;
+ 	int n_code;
+ 	int k_code;
 -- 
-2.20.1.windows.1
-
-
+2.25.1
 
