@@ -6,55 +6,56 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64999C3A5A9
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 06:24:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5346BC4724C
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 06:26:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ABC38206EB
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 06:24:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D75F1206EB
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 06:26:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WeO9QusB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ABC38206EB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pwtjwViX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D75F1206EB
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 08CA516BF;
-	Mon,  4 May 2020 08:23:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 08CA516BF
+	by alsa0.perex.cz (Postfix) with ESMTPS id F033916D3;
+	Mon,  4 May 2020 08:25:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F033916D3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588573467;
-	bh=REEYUk6yOXLhHEpXJDh6W0NPk9NUDe0BujaG6Wg34Xs=;
+	s=default; t=1588573559;
+	bh=zqN9lLfnvtoxX4juIdgUfGqpPTAWJ3W6D/MN7FDiJps=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WeO9QusBUMHtdAGgpM8eSAqtS+DGI8MIgxj3btK3fCJOTu67mOnlDYqwpgseX+UHe
-	 WrrlnU0mrdiVHz/gXLSiqYlgC6RBVZbfxa/dJHUQu/doGcthu3NF2i7w+q/Bh/8r4A
-	 pM8RO/2n64PSw1CXFSXbWWli/S2jsY6en1VlBGZE=
+	b=pwtjwViX/t443gikTw407LR5Ynu3ZKmO5apHWqWvIlJGQHnYLw2QZ7IAKcj5VgbV3
+	 nXh6b9J6BE14HPBnjXcyBXCzT9V330BzhtUhvR7Fjr6OQAl/SLCvehgmkoIJfL93zL
+	 B2VZ1svdiVSpUBnShTtdpVH1m8T2KRjD7FbU3Ark=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 64754F80234;
-	Mon,  4 May 2020 08:23:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8C72CF80259;
+	Mon,  4 May 2020 08:25:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3911BF800DE; Mon,  4 May 2020 08:23:34 +0200 (CEST)
+ id 8BEEAF8026F; Mon,  4 May 2020 08:25:06 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1B4E8F800DE
- for <alsa-devel@alsa-project.org>; Mon,  4 May 2020 08:23:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B4E8F800DE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 58B7EF80234
+ for <alsa-devel@alsa-project.org>; Mon,  4 May 2020 08:25:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58B7EF80234
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id BD9BCAE5E;
- Mon,  4 May 2020 06:23:29 +0000 (UTC)
-Date: Mon, 04 May 2020 08:23:27 +0200
-Message-ID: <s5h5zdcgqw0.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 9AE5DABBD;
+ Mon,  4 May 2020 06:25:04 +0000 (UTC)
+Date: Mon, 04 May 2020 08:25:02 +0200
+Message-ID: <s5h368ggqtd.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Andrew Oakley <andrew@adoakley.name>
 Subject: Re: [PATCH] ALSA: usb-audio: add mapping for ASRock TRX40 Creator
-In-Reply-To: <20200503141639.35519-1-andrew@adoakley.name>
+In-Reply-To: <s5h5zdcgqw0.wl-tiwai@suse.de>
 References: <20200503141639.35519-1-andrew@adoakley.name>
+ <s5h5zdcgqw0.wl-tiwai@suse.de>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -76,23 +77,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 03 May 2020 16:16:39 +0200,
-Andrew Oakley wrote:
+On Mon, 04 May 2020 08:23:27 +0200,
+Takashi Iwai wrote:
 > 
-> This is another TRX40 based motherboard with ALC1220-VB USB-audio
-> that requires a static mapping table.
+> On Sun, 03 May 2020 16:16:39 +0200,
+> Andrew Oakley wrote:
+> > 
+> > This is another TRX40 based motherboard with ALC1220-VB USB-audio
+> > that requires a static mapping table.
+> > 
+> > This motherboard also has a PCI device which advertises no codecs.  The
+> > PCI ID is 1022:1487 and PCI SSID is 1022:d102.  As this is using the AMD
+> > vendor ID, don't blacklist for now in case other boards have a working
+> > audio device with the same ssid.
+> > 
+> > alsa-info.sh report for this board:
+> > http://alsa-project.org/db/?f=0a742f89066527497b77ce16bca486daccf8a70c
+> > 
+> > Signed-off-by: Andrew Oakley <andrew@adoakley.name>
 > 
-> This motherboard also has a PCI device which advertises no codecs.  The
-> PCI ID is 1022:1487 and PCI SSID is 1022:d102.  As this is using the AMD
-> vendor ID, don't blacklist for now in case other boards have a working
-> audio device with the same ssid.
-> 
-> alsa-info.sh report for this board:
-> http://alsa-project.org/db/?f=0a742f89066527497b77ce16bca486daccf8a70c
-> 
-> Signed-off-by: Andrew Oakley <andrew@adoakley.name>
+> Applied now with Cc-to-stable.  Thanks.
 
-Applied now with Cc-to-stable.  Thanks.
+Fingers slipped, this wasn't with Cc to stable.
+Applied to for-linus branch as is for merging to the next pull request
+to 5.7-rc.
 
 
 Takashi
