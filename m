@@ -2,89 +2,78 @@ Return-Path: <SRS0=TVyu=6S=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6557DC3A5A9
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 11:29:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A6C0C3A5A9
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 11:36:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E127820721
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 11:29:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C2E3720752
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 11:36:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pXjkjfdX";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="V5QRijKO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E127820721
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fq1xu8JN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C2E3720752
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 320FA170D;
-	Mon,  4 May 2020 13:28:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 320FA170D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1AD7216F7;
+	Mon,  4 May 2020 13:35:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1AD7216F7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588591779;
-	bh=8dnHAlveF8oSzyRI/bshOeUXvAOZ3zOI0uKOwMIafSU=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=pXjkjfdXbOI8EJUzASKTrtQrvvPEWsLyKdnrFJ2ajmoLa1Y5oI1lrJcVHtxEwk1RP
-	 NZZTSPa9QPs0dmZutcERjQI7rAwCTxnNtwQamu5GmQooSKj33RS1tsgLIyOE/z/ZAd
-	 Ae9RoBVYRVvphRYKXReYgfakViFcdQAnaHX67WMM=
+	s=default; t=1588592167;
+	bh=pcKozLi9X/YAm6pOAYTTf2juJDEqhd+HiZiYM4nyk8k=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=fq1xu8JNiFgm/Bwo+0zN9IBYruLSWHm2N94HujqCyGWK89h1gVYJHjFljQU7dBEWc
+	 edfXnO5GeQcF4s3sdTcd/DuRD+dg0vzxZ+cj2yFi7gt+owYnooVhPbMZXrMBoe8HRR
+	 18jD1Lq5cVHkvl6sWtrO7oMm4m3FoEniDRkmxWCQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C1F62F80258;
-	Mon,  4 May 2020 13:28:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8E3AAF80249;
+	Mon,  4 May 2020 13:35:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D27E4F80259; Mon,  4 May 2020 13:28:44 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0A24EF800DE
- for <alsa-devel@alsa-project.org>; Mon,  4 May 2020 13:28:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A24EF800DE
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="V5QRijKO"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ id BF548F80258; Mon,  4 May 2020 13:35:14 +0200 (CEST)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id F190A20721;
- Mon,  4 May 2020 11:28:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1588591720;
- bh=8dnHAlveF8oSzyRI/bshOeUXvAOZ3zOI0uKOwMIafSU=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=V5QRijKOE29Jo+EKAdkh+ewKNtgdqP49U526Q2Sfxi2stgSeoXwYEeo4vzFwII7Nb
- JAqhvbWO3/mpTHvBOlkjefENX/UF/jjBUXzuHtCj1Zw4IYC4e3oA8UZbPwN0f569Yx
- 3hRVp5IdHkMViNHlTTIoUmfezAB+MvoUejMxdi6w=
-Date: Mon, 4 May 2020 12:28:37 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: stable-rc/linux-5.4.y bisection: baseline.dmesg.alert on
- meson-g12a-x96-max
-Message-ID: <20200504112837.GD5491@sirena.org.uk>
-References: <5eabecbf.1c69fb81.2c617.628f@mx.google.com>
- <cc10812b-19bd-6bd1-75da-32082241640a@collabora.com>
- <20200501122536.GA38314@sirena.org.uk>
- <20200502134721.GH13035@sasha-vm>
- <20200502140908.GA10998@kroah.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id D624DF800E5
+ for <alsa-devel@alsa-project.org>; Mon,  4 May 2020 13:35:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D624DF800E5
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 044BZ3Ag8007544,
+ This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmb06.realtek.com.tw[172.21.6.99])
+ by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 044BZ3Ag8007544
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Mon, 4 May 2020 19:35:03 +0800
+Received: from RTEXMB01.realtek.com.tw (172.21.6.94) by
+ RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Mon, 4 May 2020 19:35:02 +0800
+Received: from localhost.localdomain (172.22.102.1) by RTEXMB01.realtek.com.tw
+ (172.21.6.94) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Mon, 4 May 2020
+ 19:35:02 +0800
+From: Oder Chiou <oder_chiou@realtek.com>
+To: <broonie@kernel.org>, <lgirdwood@gmail.com>
+Subject: [v2] ASoC: rt1308: Revise the devicetree file mode
+Date: Mon, 4 May 2020 19:34:36 +0800
+Message-ID: <20200504113437.2795-1-oder_chiou@realtek.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="HWvPVVuAAfuRc6SZ"
-Content-Disposition: inline
-In-Reply-To: <20200502140908.GA10998@kroah.com>
-X-Cookie: My life is a patio of fun!
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org,
- Guillaume Tucker <guillaume.tucker@collabora.com>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- stable@vger.kernel.org, kernelci@groups.io,
- Kevin Hilman <khilman@baylibre.com>, linux-amlogic@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, Jerome Brunet <jbrunet@baylibre.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.22.102.1]
+X-ClientProxiedBy: RTEXMB06.realtek.com.tw (172.21.6.99) To
+ RTEXMB01.realtek.com.tw (172.21.6.94)
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com,
+ alsa-devel@alsa-project.org, derek.fang@realtek.com, shumingf@realtek.com,
+ flove@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,42 +89,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+The patch changes the devicetree file mode correctly.
 
---HWvPVVuAAfuRc6SZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+---
+ Documentation/devicetree/bindings/sound/rt1308.txt | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ mode change 100755 => 100644 Documentation/devicetree/bindings/sound/rt1308.txt
 
-On Sat, May 02, 2020 at 04:09:08PM +0200, Greg Kroah-Hartman wrote:
-> On Sat, May 02, 2020 at 09:47:21AM -0400, Sasha Levin wrote:
+diff --git a/Documentation/devicetree/bindings/sound/rt1308.txt b/Documentation/devicetree/bindings/sound/rt1308.txt
+old mode 100755
+new mode 100644
+-- 
+2.25.1
 
-> > > > >   Result:     09f4294793bd3 ASoC: meson: axg-card: fix codec-to-codec link setup
-
-> > > | This clearly describes the issue as only being present after the above
-> > > | commit which is not in v5.6.
-
-> > > Probably best that this not be backported.
-
-> > Hrm... But I never queued that commit... I wonder what's up.
-
-> I saw the Fixes: tag, but missed the changelog text.  My fault.
-
-> I'll go drop it from everywhere, sorry about that.
-
-Ah, that explains it - thanks for sorting this out.
-
---HWvPVVuAAfuRc6SZ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6v/GUACgkQJNaLcl1U
-h9DTqQf+J1WhHhwnr86jT/LtdmuYxn4YhdfaaW+RFSBKmakNZhXZ9BKok8utln+p
-PkdIEGrfr8QfsSuhz4WYKDcN6K72tM+U3j0c4UFrYlm9kEfpuDr5AqJrdAclL76T
-Ns2oaZFZEnIpHnkajK6KCa1Ss4Ka7AvQNuVJfZ+/d4DdAVDSUl3H9TM+1yJyR4Cz
-FjMXYnlw+kp4LGSLCUy2yMEZ6YR1dzgDi7PIae1IYwwourTFOVjsox1CQPmE2bYv
-32U+RLyE6qxAlFRwVqmhMqBWYr/ZUEmV8W026fEQWprg7jCq2oPCQxALfanL9f/X
-rKflgftgFph+o3Rxz/MB0jHdsT/FbQ==
-=KlPi
------END PGP SIGNATURE-----
-
---HWvPVVuAAfuRc6SZ--
