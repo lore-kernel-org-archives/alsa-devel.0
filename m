@@ -2,83 +2,92 @@ Return-Path: <SRS0=TVyu=6S=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81717C3A5A9
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 17:57:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 075E5C3A5A9
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 17:57:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0FC3220705
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 17:57:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8AB5A206B8
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 17:57:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hO+m0WEE";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="T/4b4jqa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0FC3220705
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fikPTH13"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8AB5A206B8
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5CAA31716;
-	Mon,  4 May 2020 19:56:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5CAA31716
+	by alsa0.perex.cz (Postfix) with ESMTPS id E2B7F172B;
+	Mon,  4 May 2020 19:57:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E2B7F172B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588615021;
-	bh=7AASLHxv2Rby4dstXR1mZull2LY1/sl46uo96ENxXog=;
+	s=default; t=1588615076;
+	bh=RmrH0Tyn43EXGoMJ7Bm/BOuH5EzONYT9jtHd20m6I60=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hO+m0WEEb3EYaGr27dNVT+IdE9u6Eyh2/efDvn0+6aK4NFLcX0oz81YEc+AvcZxQ8
-	 E8ifx4+442NXPQ6+Xj4JsYjBeMXebIlKIgGMAPlPlMT6u8dI8K4f5DtGyducs1fpHb
-	 VHhSZvBWPuNw1WBhbX4c88N5yNfL2sAnTmNw0WkY=
+	b=fikPTH13IZ6CQXe/JYKxdZ+T3yPYT5NDZCyitpe5TLBV0Fjle4StlFXCImXXkdjBr
+	 Jb0PUTJgqTq39t+lH0qFNlibBQNLrvgDctQsV8g9MUj/ABONgbJcrs6InY6RwoMC63
+	 fHIPOVibNhFGO8PNz1KQfpsqgXe5wUNg2COZSnRQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CC814F80234;
-	Mon,  4 May 2020 19:56:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 650C3F800EE;
+	Mon,  4 May 2020 19:56:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 59D1EF80249; Mon,  4 May 2020 19:56:03 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 62117F800DE
- for <alsa-devel@alsa-project.org>; Mon,  4 May 2020 19:55:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62117F800DE
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="T/4b4jqa"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ id 1890CF80291; Mon,  4 May 2020 19:56:27 +0200 (CEST)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 40165206B8;
- Mon,  4 May 2020 17:55:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1588614957;
- bh=7AASLHxv2Rby4dstXR1mZull2LY1/sl46uo96ENxXog=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=T/4b4jqaWekrwSnAOxrrDnnsqhQdyBbqnCTaU4oZvRIk1eLfkoYWFZ1ih5QvyBaPn
- /XDMyxX07GqjYgR0nbxYkb7arLT1aQCJjt4ADoIePOJItfhJ06Z1Gf3LlyxSV+FfeV
- FizZRIenSvfWO2jknmk2ojaBVX7K1p8zWc+VBTk0=
-Date: Mon, 4 May 2020 18:55:55 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Sameer Pujar <spujar@nvidia.com>
-Subject: Re: [RFC] DPCM for Tegra
-Message-ID: <20200504175555.GG5491@sirena.org.uk>
-References: <1588250483-10014-1-git-send-email-spujar@nvidia.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8CC79F800EE
+ for <alsa-devel@alsa-project.org>; Mon,  4 May 2020 19:56:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8CC79F800EE
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <ukl@pengutronix.de>)
+ id 1jVfJy-0004nF-Rx; Mon, 04 May 2020 19:56:02 +0200
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+ (envelope-from <ukl@pengutronix.de>)
+ id 1jVfJp-0002rR-TC; Mon, 04 May 2020 19:55:53 +0200
+Date: Mon, 4 May 2020 19:55:53 +0200
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+To: Sam Ravnborg <sam@ravnborg.org>
+Subject: Re: [PATCH] docs: dt: fix broken links due to txt->yaml renames
+Message-ID: <20200504175553.jdm7a7aabloevxba@pengutronix.de>
+References: <967df5c3303b478b76199d4379fe40f5094f3f9b.1588584538.git.mchehab+huawei@kernel.org>
+ <20200504174522.GA3383@ravnborg.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="ahP6B03r4gLOj5uD"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <1588250483-10014-1-git-send-email-spujar@nvidia.com>
-X-Cookie: My life is a patio of fun!
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, nwartikar@nvidia.com,
- kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org, tiwai@suse.com,
- lgirdwood@gmail.com, jonathanh@nvidia.com, viswanathl@nvidia.com,
- sharadg@nvidia.com, thierry.reding@gmail.com, atalambedu@nvidia.com,
- linux-tegra@vger.kernel.org, swarren@nvidia.com, digetx@gmail.com,
- rlokhande@nvidia.com, mkumard@nvidia.com, dramesh@nvidia.com
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200504174522.GA3383@ravnborg.org>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Olivier Moysan <olivier.moysan@st.com>,
+ Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+ David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
+ Liam Girdwood <lgirdwood@gmail.com>, Andrzej Hajda <a.hajda@samsung.com>,
+ Jonathan Corbet <corbet@lwn.net>,
+ Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+ linux-rockchip@lists.infradead.org, Sandy Huang <hjc@rock-chips.com>,
+ devicetree@vger.kernel.org, Sean Wang <sean.wang@mediatek.com>,
+ Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>,
+ linux-mediatek@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>,
+ linux-arm-kernel@lists.infradead.org,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Arnaud Pouliquen <arnaud.pouliquen@st.com>, linux-mips@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>, netdev@vger.kernel.org,
+ "David S. Miller" <davem@davemloft.net>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,87 +103,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi Sam,
 
---ahP6B03r4gLOj5uD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon, May 04, 2020 at 07:45:22PM +0200, Sam Ravnborg wrote:
+> On Mon, May 04, 2020 at 11:30:20AM +0200, Mauro Carvalho Chehab wrote:
+> > There are some new broken doc links due to yaml renames
+> > at DT. Developers should really run:
+> > 
+> > 	./scripts/documentation-file-ref-check
+> > 
+> > in order to solve those issues while submitting patches.
+> Would love if some bot could do this for me on any patches that creates
+> .yaml files or so.
+> I know I will forget this and it can be automated.
+> If I get a bot mail that my patch would broke a link I would
+> have it fixed before it hits any tree.
 
-On Thu, Apr 30, 2020 at 06:11:23PM +0530, Sameer Pujar wrote:
+What about adding a check to check_patch?
 
->  a) Can I use a DAPM Mux control to activate a BE path? This in turn can
->     program required switch in XBAR.
+Best regards
+Uwe
 
-If it works then sure, that seems sensible.
-
->  b) I have modelled SFC and MIXER as backends. Is this allowed?
->=20
->     This was done to include SFC or MIXER HW components as part of the
->     sound card and use like below in one of the audio use cases.
-> =20
->     ADMAIF1(FE) --> SFC(BE1) --> I2S(BE2) ... OR
->     ADMAIF2(FE) --> SFC(BE1) --> I2S(BE2) ...
-
-This is the sort of setup that'd be a lot happier using a component
-model.
-
->     I used following workaround to connect multiple BE components.
->     With this I can see PCM callbacks happen for all BE DAIs along the DA=
-PM
->     path. The obective was to connect multiple components together and (a)
->     was used to connect one component to another. Each "-->" here connects
->     two components and it is a switch in XBAR.=20
-
-This doesn't strike me as something that's likely to be robust but given
-that that applies to DPCM in general so long as it doesn't break anyone
-else's existing stuff I guess it should be viable, it's not like there
-are actually good options that you could use currently.  It's really
-hard to get enthusiastic about it though.
-
->  c) Hostless mode did NOT work:
->      - Following audio path was intended to be tested:
->        I2S1 --> SFC --> I2S2
-
->      - [3] offers two options:
->          * CODEC<->CODEC: If I were to use a separate DAI link for each B=
-E to BE
->            connection, then it will result in a similar design what we ha=
-ve
->            currently.
-
-This is more in line with components so will probably be easier going
-forwards.
-
->          * Hostless: I did not come across references for this.
->            (Any references in this regard will be helpful)
-
-Not sure anyone has ever done this with DPCM, could be wrong though.
-
-> May be the current Tegra ASoC design is more suitable for component model=
- as you
-> had previously mentioned. I wanted to understand if above, especially (a)=
- and (b),
-> are acceptable in this regard or if there are better options to interconn=
-ect
-> multiple ASoC components.
-
-In general most systems would be happier with components but yeah, I
-think that's particularly the case for something as powerful and
-flexible as your hardware seems to be.
-
---ahP6B03r4gLOj5uD
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6wVyoACgkQJNaLcl1U
-h9BsCQf+NDpQnXUKOhrp8OMCAs73chnv7fTrNscXnf0V+rnrqqSC7b6d0Q2tz3QL
-8HYzl1AiMtRaAmybm98BhWpdUWXMGTKdYMBM7uKX2r+uVkm6oWhhK+EST6fOMv3k
-ZvgRM35+2mIXUrSR5b62uPIi8O3mtbLuFkPb3oWkw/hT0jQm4MPKl/c6h3f9e2qb
-FY8yrgExhRQkp+NAKMSNKV4gEZbViEJG5M9w879aEjQdWWhJ4tqo2s2QQXZmg5p2
-x/uNk6mgWU+edW21BN78iaOB8urYcnac5ItgRCiVVCrhRjNeP8qhs0irsRF5l03X
-656KL7U44mgySYNW2tlLHsXV/jmJXg==
-=W0ip
------END PGP SIGNATURE-----
-
---ahP6B03r4gLOj5uD--
+-- 
+Pengutronix e.K.                           | Uwe Kleine-König            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
