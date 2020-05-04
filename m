@@ -2,90 +2,83 @@ Return-Path: <SRS0=TVyu=6S=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48E63C3A5A9
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 17:46:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81717C3A5A9
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 17:57:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CB1F2206A4
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 17:46:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0FC3220705
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 17:57:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="C91Ho+QT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CB1F2206A4
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hO+m0WEE";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="T/4b4jqa"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0FC3220705
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 118C71707;
-	Mon,  4 May 2020 19:45:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 118C71707
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5CAA31716;
+	Mon,  4 May 2020 19:56:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5CAA31716
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588614400;
-	bh=XZNLetMnlmfN4NRfhiXKOR4+mzM4m8Iz46VXDnxZSOI=;
+	s=default; t=1588615021;
+	bh=7AASLHxv2Rby4dstXR1mZull2LY1/sl46uo96ENxXog=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=C91Ho+QTvGqHiTnTRQFiA29LL54bazxXB4aFYnGcHKQJ2WbTQfsfEG4mGf2g2S5Jl
-	 zpQ6F1y51pAz2+iR23zSg8aZ/1ERBqV85JtdrTnLrv5/wBZwh1gSlPOagUUIqZQBNT
-	 9juDKHM4nT++jIKO1DihSMurY0IoQJc10nAQHoVM=
+	b=hO+m0WEEb3EYaGr27dNVT+IdE9u6Eyh2/efDvn0+6aK4NFLcX0oz81YEc+AvcZxQ8
+	 E8ifx4+442NXPQ6+Xj4JsYjBeMXebIlKIgGMAPlPlMT6u8dI8K4f5DtGyducs1fpHb
+	 VHhSZvBWPuNw1WBhbX4c88N5yNfL2sAnTmNw0WkY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 696A5F80234;
-	Mon,  4 May 2020 19:45:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CC814F80234;
+	Mon,  4 May 2020 19:56:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 51EEEF80249; Mon,  4 May 2020 19:45:47 +0200 (CEST)
-Received: from asavdk4.altibox.net (asavdk4.altibox.net [109.247.116.15])
+ id 59D1EF80249; Mon,  4 May 2020 19:56:03 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 62117F800DE
+ for <alsa-devel@alsa-project.org>; Mon,  4 May 2020 19:55:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62117F800DE
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="T/4b4jqa"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 22299F800DE
- for <alsa-devel@alsa-project.org>; Mon,  4 May 2020 19:45:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22299F800DE
-Received: from ravnborg.org (unknown [158.248.194.18])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by asavdk4.altibox.net (Postfix) with ESMTPS id 674D0804C8;
- Mon,  4 May 2020 19:45:29 +0200 (CEST)
-Date: Mon, 4 May 2020 19:45:22 +0200
-From: Sam Ravnborg <sam@ravnborg.org>
-To: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: Re: [PATCH] docs: dt: fix broken links due to txt->yaml renames
-Message-ID: <20200504174522.GA3383@ravnborg.org>
-References: <967df5c3303b478b76199d4379fe40f5094f3f9b.1588584538.git.mchehab+huawei@kernel.org>
+ by mail.kernel.org (Postfix) with ESMTPSA id 40165206B8;
+ Mon,  4 May 2020 17:55:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1588614957;
+ bh=7AASLHxv2Rby4dstXR1mZull2LY1/sl46uo96ENxXog=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=T/4b4jqaWekrwSnAOxrrDnnsqhQdyBbqnCTaU4oZvRIk1eLfkoYWFZ1ih5QvyBaPn
+ /XDMyxX07GqjYgR0nbxYkb7arLT1aQCJjt4ADoIePOJItfhJ06Z1Gf3LlyxSV+FfeV
+ FizZRIenSvfWO2jknmk2ojaBVX7K1p8zWc+VBTk0=
+Date: Mon, 4 May 2020 18:55:55 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Sameer Pujar <spujar@nvidia.com>
+Subject: Re: [RFC] DPCM for Tegra
+Message-ID: <20200504175555.GG5491@sirena.org.uk>
+References: <1588250483-10014-1-git-send-email-spujar@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="ahP6B03r4gLOj5uD"
 Content-Disposition: inline
-In-Reply-To: <967df5c3303b478b76199d4379fe40f5094f3f9b.1588584538.git.mchehab+huawei@kernel.org>
+In-Reply-To: <1588250483-10014-1-git-send-email-spujar@nvidia.com>
+X-Cookie: My life is a patio of fun!
 User-Agent: Mutt/1.10.1 (2018-07-13)
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=MOBOZvRl c=1 sm=1 tr=0
- a=UWs3HLbX/2nnQ3s7vZ42gw==:117 a=UWs3HLbX/2nnQ3s7vZ42gw==:17
- a=kj9zAlcOel0A:10 a=VwQbUJbxAAAA:8 a=7gkXJVJtAAAA:8 a=7CQSdrXTAAAA:8
- a=8AirrxEcAAAA:8 a=vzhER2c_AAAA:8 a=pGLkceISAAAA:8 a=e5mUnYsNAAAA:8
- a=bwdeMy8yTPKsQMvDTKEA:9 a=CjuIK1q_8ugA:10 a=AjGcO6oz07-iQ99wixmX:22
- a=E9Po1WZjFZOl8hwRPBS3:22 a=a-qgeE7W1pNrGK8U0ZQC:22
- a=ST-jHhOKWsTCqRlWije3:22 a=0YTRHmU2iG2pZC6F1fw2:22
- a=Vxmtnl_E_bksehYqCbjh:22
-Cc: alsa-devel@alsa-project.org, Olivier Moysan <olivier.moysan@st.com>,
- Linux Doc Mailing List <linux-doc@vger.kernel.org>,
- David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
- linux-mips@vger.kernel.org, Andrzej Hajda <a.hajda@samsung.com>,
- Jonathan Corbet <corbet@lwn.net>, linux-rockchip@lists.infradead.org,
- devicetree@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
- Sean Wang <sean.wang@mediatek.com>, Jyri Sarha <jsarha@ti.com>,
- Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org,
- Matthias Brugger <matthias.bgg@gmail.com>,
- linux-arm-kernel@lists.infradead.org,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Arnaud Pouliquen <arnaud.pouliquen@st.com>, Sandy Huang <hjc@rock-chips.com>,
- linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, netdev@vger.kernel.org,
- "David S. Miller" <davem@davemloft.net>
+Cc: nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, nwartikar@nvidia.com,
+ kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org, tiwai@suse.com,
+ lgirdwood@gmail.com, jonathanh@nvidia.com, viswanathl@nvidia.com,
+ sharadg@nvidia.com, thierry.reding@gmail.com, atalambedu@nvidia.com,
+ linux-tegra@vger.kernel.org, swarren@nvidia.com, digetx@gmail.com,
+ rlokhande@nvidia.com, mkumard@nvidia.com, dramesh@nvidia.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,155 +94,87 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Mauro.
 
-On Mon, May 04, 2020 at 11:30:20AM +0200, Mauro Carvalho Chehab wrote:
-> There are some new broken doc links due to yaml renames
-> at DT. Developers should really run:
-> 
-> 	./scripts/documentation-file-ref-check
-> 
-> in order to solve those issues while submitting patches.
-Would love if some bot could do this for me on any patches that creates
-.yaml files or so.
-I know I will forget this and it can be automated.
-If I get a bot mail that my patch would broke a link I would
-have it fixed before it hits any tree.
+--ahP6B03r4gLOj5uD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Apr 30, 2020 at 06:11:23PM +0530, Sameer Pujar wrote:
 
-> This tool can even fix most of the issues with:
-> 
-> 	./scripts/documentation-file-ref-check --fix
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+>  a) Can I use a DAPM Mux control to activate a BE path? This in turn can
+>     program required switch in XBAR.
 
-Patch looks good.
-Acked-by: Sam Ravnborg <sam@ravnborg.org>
+If it works then sure, that seems sensible.
 
-> ---
-> 
-> PS.: This patch is against today's linux-next.
-> 
-> 
->  .../devicetree/bindings/display/bridge/sii902x.txt          | 2 +-
->  .../devicetree/bindings/display/rockchip/rockchip-drm.yaml  | 2 +-
->  .../devicetree/bindings/net/mediatek-bluetooth.txt          | 2 +-
->  .../devicetree/bindings/sound/audio-graph-card.txt          | 2 +-
->  .../devicetree/bindings/sound/st,sti-asoc-card.txt          | 2 +-
->  Documentation/mips/ingenic-tcu.rst                          | 2 +-
->  MAINTAINERS                                                 | 6 +++---
->  7 files changed, 9 insertions(+), 9 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/display/bridge/sii902x.txt b/Documentation/devicetree/bindings/display/bridge/sii902x.txt
-> index 6e14e087c0d0..0d1db3f9da84 100644
-> --- a/Documentation/devicetree/bindings/display/bridge/sii902x.txt
-> +++ b/Documentation/devicetree/bindings/display/bridge/sii902x.txt
-> @@ -37,7 +37,7 @@ Optional properties:
->  	simple-card or audio-graph-card binding. See their binding
->  	documents on how to describe the way the sii902x device is
->  	connected to the rest of the audio system:
-> -	Documentation/devicetree/bindings/sound/simple-card.txt
-> +	Documentation/devicetree/bindings/sound/simple-card.yaml
->  	Documentation/devicetree/bindings/sound/audio-graph-card.txt
->  	Note: In case of the audio-graph-card binding the used port
->  	index should be 3.
-> diff --git a/Documentation/devicetree/bindings/display/rockchip/rockchip-drm.yaml b/Documentation/devicetree/bindings/display/rockchip/rockchip-drm.yaml
-> index ec8ae742d4da..7204da5eb4c5 100644
-> --- a/Documentation/devicetree/bindings/display/rockchip/rockchip-drm.yaml
-> +++ b/Documentation/devicetree/bindings/display/rockchip/rockchip-drm.yaml
-> @@ -24,7 +24,7 @@ properties:
->      description: |
->        Should contain a list of phandles pointing to display interface port
->        of vop devices. vop definitions as defined in
-> -      Documentation/devicetree/bindings/display/rockchip/rockchip-vop.txt
-> +      Documentation/devicetree/bindings/display/rockchip/rockchip-vop.yaml
->  
->  required:
->    - compatible
-> diff --git a/Documentation/devicetree/bindings/net/mediatek-bluetooth.txt b/Documentation/devicetree/bindings/net/mediatek-bluetooth.txt
-> index 219bcbd0d344..9ef5bacda8c1 100644
-> --- a/Documentation/devicetree/bindings/net/mediatek-bluetooth.txt
-> +++ b/Documentation/devicetree/bindings/net/mediatek-bluetooth.txt
-> @@ -3,7 +3,7 @@ MediaTek SoC built-in Bluetooth Devices
->  
->  This device is a serial attached device to BTIF device and thus it must be a
->  child node of the serial node with BTIF. The dt-bindings details for BTIF
-> -device can be known via Documentation/devicetree/bindings/serial/8250.txt.
-> +device can be known via Documentation/devicetree/bindings/serial/8250.yaml.
->  
->  Required properties:
->  
-> diff --git a/Documentation/devicetree/bindings/sound/audio-graph-card.txt b/Documentation/devicetree/bindings/sound/audio-graph-card.txt
-> index 269682619a70..d5f6919a2d69 100644
-> --- a/Documentation/devicetree/bindings/sound/audio-graph-card.txt
-> +++ b/Documentation/devicetree/bindings/sound/audio-graph-card.txt
-> @@ -5,7 +5,7 @@ It is based on common bindings for device graphs.
->  see ${LINUX}/Documentation/devicetree/bindings/graph.txt
->  
->  Basically, Audio Graph Card property is same as Simple Card.
-> -see ${LINUX}/Documentation/devicetree/bindings/sound/simple-card.txt
-> +see ${LINUX}/Documentation/devicetree/bindings/sound/simple-card.yaml
->  
->  Below are same as Simple-Card.
->  
-> diff --git a/Documentation/devicetree/bindings/sound/st,sti-asoc-card.txt b/Documentation/devicetree/bindings/sound/st,sti-asoc-card.txt
-> index 4d51f3f5ea98..a6ffcdec6f6a 100644
-> --- a/Documentation/devicetree/bindings/sound/st,sti-asoc-card.txt
-> +++ b/Documentation/devicetree/bindings/sound/st,sti-asoc-card.txt
-> @@ -5,7 +5,7 @@ codec or external codecs.
->  
->  sti sound drivers allows to expose sti SoC audio interface through the
->  generic ASoC simple card. For details about sound card declaration please refer to
-> -Documentation/devicetree/bindings/sound/simple-card.txt.
-> +Documentation/devicetree/bindings/sound/simple-card.yaml.
->  
->  1) sti-uniperiph-dai: audio dai device.
->  ---------------------------------------
-> diff --git a/Documentation/mips/ingenic-tcu.rst b/Documentation/mips/ingenic-tcu.rst
-> index c5a646b14450..2b75760619b4 100644
-> --- a/Documentation/mips/ingenic-tcu.rst
-> +++ b/Documentation/mips/ingenic-tcu.rst
-> @@ -68,4 +68,4 @@ and frameworks can be controlled from the same registers, all of these
->  drivers access their registers through the same regmap.
->  
->  For more information regarding the devicetree bindings of the TCU drivers,
-> -have a look at Documentation/devicetree/bindings/timer/ingenic,tcu.txt.
-> +have a look at Documentation/devicetree/bindings/timer/ingenic,tcu.yaml.
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index b6ec0b3c3125..b70842425302 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -3911,7 +3911,7 @@ L:	linux-crypto@vger.kernel.org
->  S:	Supported
->  F:	drivers/char/hw_random/cctrng.c
->  F:	drivers/char/hw_random/cctrng.h
-> -F:	Documentation/devicetree/bindings/rng/arm-cctrng.txt
-> +F:	Documentation/devicetree/bindings/rng/arm-cctrng.yaml
->  W:	https://developer.arm.com/products/system-ip/trustzone-cryptocell/cryptocell-700-family
->  
->  CEC FRAMEWORK
-> @@ -5446,7 +5446,7 @@ F:	include/uapi/drm/r128_drm.h
->  DRM DRIVER FOR RAYDIUM RM67191 PANELS
->  M:	Robert Chiras <robert.chiras@nxp.com>
->  S:	Maintained
-> -F:	Documentation/devicetree/bindings/display/panel/raydium,rm67191.txt
-> +F:	Documentation/devicetree/bindings/display/panel/raydium,rm67191.yaml
->  F:	drivers/gpu/drm/panel/panel-raydium-rm67191.c
->  
->  DRM DRIVER FOR ROCKTECH JH057N00900 PANELS
-> @@ -16294,7 +16294,7 @@ M:	Hoan Tran <hoan@os.amperecomputing.com>
->  M:	Serge Semin <fancer.lancer@gmail.com>
->  L:	linux-gpio@vger.kernel.org
->  S:	Maintained
-> -F:	Documentation/devicetree/bindings/gpio/snps-dwapb-gpio.txt
-> +F:	Documentation/devicetree/bindings/gpio/snps,dw-apb-gpio.yaml
->  F:	drivers/gpio/gpio-dwapb.c
->  
->  SYNOPSYS DESIGNWARE AXI DMAC DRIVER
-> -- 
-> 2.25.4
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+>  b) I have modelled SFC and MIXER as backends. Is this allowed?
+>=20
+>     This was done to include SFC or MIXER HW components as part of the
+>     sound card and use like below in one of the audio use cases.
+> =20
+>     ADMAIF1(FE) --> SFC(BE1) --> I2S(BE2) ... OR
+>     ADMAIF2(FE) --> SFC(BE1) --> I2S(BE2) ...
+
+This is the sort of setup that'd be a lot happier using a component
+model.
+
+>     I used following workaround to connect multiple BE components.
+>     With this I can see PCM callbacks happen for all BE DAIs along the DA=
+PM
+>     path. The obective was to connect multiple components together and (a)
+>     was used to connect one component to another. Each "-->" here connects
+>     two components and it is a switch in XBAR.=20
+
+This doesn't strike me as something that's likely to be robust but given
+that that applies to DPCM in general so long as it doesn't break anyone
+else's existing stuff I guess it should be viable, it's not like there
+are actually good options that you could use currently.  It's really
+hard to get enthusiastic about it though.
+
+>  c) Hostless mode did NOT work:
+>      - Following audio path was intended to be tested:
+>        I2S1 --> SFC --> I2S2
+
+>      - [3] offers two options:
+>          * CODEC<->CODEC: If I were to use a separate DAI link for each B=
+E to BE
+>            connection, then it will result in a similar design what we ha=
+ve
+>            currently.
+
+This is more in line with components so will probably be easier going
+forwards.
+
+>          * Hostless: I did not come across references for this.
+>            (Any references in this regard will be helpful)
+
+Not sure anyone has ever done this with DPCM, could be wrong though.
+
+> May be the current Tegra ASoC design is more suitable for component model=
+ as you
+> had previously mentioned. I wanted to understand if above, especially (a)=
+ and (b),
+> are acceptable in this regard or if there are better options to interconn=
+ect
+> multiple ASoC components.
+
+In general most systems would be happier with components but yeah, I
+think that's particularly the case for something as powerful and
+flexible as your hardware seems to be.
+
+--ahP6B03r4gLOj5uD
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6wVyoACgkQJNaLcl1U
+h9BsCQf+NDpQnXUKOhrp8OMCAs73chnv7fTrNscXnf0V+rnrqqSC7b6d0Q2tz3QL
+8HYzl1AiMtRaAmybm98BhWpdUWXMGTKdYMBM7uKX2r+uVkm6oWhhK+EST6fOMv3k
+ZvgRM35+2mIXUrSR5b62uPIi8O3mtbLuFkPb3oWkw/hT0jQm4MPKl/c6h3f9e2qb
+FY8yrgExhRQkp+NAKMSNKV4gEZbViEJG5M9w879aEjQdWWhJ4tqo2s2QQXZmg5p2
+x/uNk6mgWU+edW21BN78iaOB8urYcnac5ItgRCiVVCrhRjNeP8qhs0irsRF5l03X
+656KL7U44mgySYNW2tlLHsXV/jmJXg==
+=W0ip
+-----END PGP SIGNATURE-----
+
+--ahP6B03r4gLOj5uD--
