@@ -2,88 +2,95 @@ Return-Path: <SRS0=TVyu=6S=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3432C47247
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 10:24:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59EBAC3A5A9
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 10:24:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 20CBF20721
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 10:24:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DED302073E
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2020 10:24:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ajeyp4i0";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="oqe3zQwJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 20CBF20721
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DcL2UtD9";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="uPyrpH8/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DED302073E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 62E6616FD;
-	Mon,  4 May 2020 12:23:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 62E6616FD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4F19F16E3;
+	Mon,  4 May 2020 12:23:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F19F16E3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588587849;
-	bh=JPr0gml1nzHx+kiGl68gqk/fSvnNA0zfBdaaHX3/GXo=;
-	h=From:Date:Subject:To:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1588587882;
+	bh=+BYu54UZb1Hn39wdF2PjZDNEdRe0NffuWafcZDhnJco=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=ajeyp4i0VCwIBEUEndGeVm5Zu85IrITPLSvx415eoDg7yQFgkCEkY3FxxQwjM6LDu
-	 Eoh8Utq9gPpQn8HA5fkubIfAQFr2lsRvFfo02D8tO7Ac+ox2KriFeqVk8df9O+ojPB
-	 EfKIHZ+P+xHwVCcf+nH+YSoPvoOYEPmysMqhLkfY=
+	b=DcL2UtD9kjQXpatJDH2doyStOrlN2IPTHPzfIXILAzky61tt9olH2ig/4gyn8RW/z
+	 dFXJ145cZTXlPNC9X3zSWrTjmmUu7RZSFOrU10i+6ZNY0p2j3HdKuEyf+1jzlff50B
+	 SBMHURjmxESAxiNFqBr52sS+d2wUd8XprmZllPZM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 59191F8028F;
-	Mon,  4 May 2020 12:21:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3AF4EF80290;
+	Mon,  4 May 2020 12:21:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BABBDF800E5; Sat,  2 May 2020 17:10:30 +0200 (CEST)
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com
- [IPv6:2a00:1450:4864:20::131])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 813BAF80249; Mon,  4 May 2020 11:30:36 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 440D3F800E5
- for <alsa-devel@alsa-project.org>; Sat,  2 May 2020 17:10:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 440D3F800E5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 76F33F800DE
+ for <alsa-devel@alsa-project.org>; Mon,  4 May 2020 11:30:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76F33F800DE
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="oqe3zQwJ"
-Received: by mail-lf1-x131.google.com with SMTP id l11so6064646lfc.5
- for <alsa-devel@alsa-project.org>; Sat, 02 May 2020 08:10:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:from:date:message-id:subject:to;
- bh=WDxG6BMyNjjsPs0QZDn7toW+dX5nfJC6ewluoZAGNiY=;
- b=oqe3zQwJgXQ27jO0pH6lfQ/tHeLpEv8l3ja5+pi6C/MhWxj6fvEZWSwNvOEDfy3upn
- 5qrrxh1XA5NHZYL3597cx9wSCm8QcYzN/9yorbDZiHBAsIqvYp4V9l0UVEcH+MDdBdJ0
- 4F6WswM3xN/mF7plUHJLULpGKpmLAcOzqdW63MFVEUhlYq1DQp3z0OgqPQYv4I8KVcD5
- FlKoJREkNYjBWPWIHWSStkc4XafdeyMZt8zgFJYNPPqKQKmiFwcBkQY1x8fMBaobYg9V
- OAEk66J3kFlKNIDwEYh13D78d5xTI5NvDvQCRxBdhvSGjAt5wC4frptxX14WCW3HdAF4
- rbIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
- bh=WDxG6BMyNjjsPs0QZDn7toW+dX5nfJC6ewluoZAGNiY=;
- b=uernXFRDn1VZaN9FtGOJzBJwOMAO+wgIWh9XhO4uoELJFbl5fsYqKe3Ov9HYVJXBVS
- ROokix0xDrhJUfpFw6el5fP6B9HaAKA61corD2DSLmw99WzeDVUPm/3/ClipAMpU7u/O
- J+nCl1rEHNbjlulp8+qBwoO1tpu3l8vo3kWPsTIXHFCq45xHHEw1ZVkdUZvHXzD/U5Y8
- 1g8zTDdYjYzdHC9OwE8XZYnPMz+lyx8IXuju9tA5mbMdPJNTMuHuunXbCbcYyYP6UqzI
- KOHzq5dsdsdOnI8ohWNviLKPcF+RrvLcmOU1bI0QOJBiTu38QnNv+Nz7/ggIA0um8rlq
- HsNQ==
-X-Gm-Message-State: AGi0PuZnhGg6FelQkJOiAcWwCavXaEzhL1NloTo+StaVVqfLE8FNamJF
- cwoW8TD/YfgitJhVnfsSg97AAKglK94kg/JcL2dpuP3AWXk=
-X-Google-Smtp-Source: APiQypIi464qhmc5NUvlbxx0Y82ogzQYutIef6lBpug7OYNS1WTbUV7EkUR9oUuXkPtwf3subkUQA3x++6WG7kYXW+o=
-X-Received: by 2002:ac2:5607:: with SMTP id v7mr5713470lfd.212.1588432225649; 
- Sat, 02 May 2020 08:10:25 -0700 (PDT)
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="uPyrpH8/"
+Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de
+ [95.90.213.197])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 97460206D9;
+ Mon,  4 May 2020 09:30:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1588584627;
+ bh=+BYu54UZb1Hn39wdF2PjZDNEdRe0NffuWafcZDhnJco=;
+ h=From:To:Cc:Subject:Date:From;
+ b=uPyrpH8/aA7GlqYfmtmKUC8nrR1WumCxFk2ou/QWK9N2hkKoSg0yEQpbVqpwcwurd
+ ECe3PSkwSzkdtBsbJy91NWmjMJse+5jSs6v70glXNnurUP3J1NZI2APJkZSNxFDGMZ
+ ILP+atlr2SJ4Rqo/DCPWbsePjXXw2B9aIjLHm0zI=
+Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
+ (envelope-from <mchehab@kernel.org>)
+ id 1jVXQf-000K77-18; Mon, 04 May 2020 11:30:25 +0200
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To: Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+ Rob Herring <robh+dt@kernel.org>
+Subject: [PATCH] docs: dt: fix broken links due to txt->yaml renames
+Date: Mon,  4 May 2020 11:30:20 +0200
+Message-Id: <967df5c3303b478b76199d4379fe40f5094f3f9b.1588584538.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-From: Alexey Kuznetsov <kuznetsov.alexey@gmail.com>
-Date: Sat, 2 May 2020 18:09:49 +0300
-Message-ID: <CAO1Zr+o3L+iXeV8JL5VN=0XbLV-=U=DxKUkokmkq3n0Xaqq=zQ@mail.gmail.com>
-Subject: windows 1909 drivers update breaks ALC294 sound
-To: alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 8bit
 X-Mailman-Approved-At: Mon, 04 May 2020 12:21:36 +0200
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: alsa-devel@alsa-project.org, Olivier Moysan <olivier.moysan@st.com>,
+ =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
+ David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
+ Sandy Huang <hjc@rock-chips.com>, Andrzej Hajda <a.hajda@samsung.com>,
+ Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+ Jonathan Corbet <corbet@lwn.net>,
+ Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+ linux-rockchip@lists.infradead.org, linux-mips@vger.kernel.org,
+ devicetree@vger.kernel.org, Sean Wang <sean.wang@mediatek.com>,
+ Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>,
+ linux-mediatek@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>,
+ linux-arm-kernel@lists.infradead.org,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Arnaud Pouliquen <arnaud.pouliquen@st.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ linux-bluetooth@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
+ netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,16 +106,137 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello!
+There are some new broken doc links due to yaml renames
+at DT. Developers should really run:
 
-I recently install recent version of windows on separate partition and got
-garbaged sound on booth OS! My old version of windows was 1803 and everying
-was ok, I updated to 1909 and it got broken sound. Probably due to some
-firmware / configs / updates on sound chip. I let Windows to update drivers
-and notice my sound card driver got replaced by realtek drivers and sound
-got fixed on windows! But linux still not working propertly!
+	./scripts/documentation-file-ref-check
 
-I put more details with alsa-info output to the ubuntu bug reporter, for
-now: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1876459
+in order to solve those issues while submitting patches.
+This tool can even fix most of the issues with:
 
--- AK
+	./scripts/documentation-file-ref-check --fix
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+
+PS.: This patch is against today's linux-next.
+
+
+ .../devicetree/bindings/display/bridge/sii902x.txt          | 2 +-
+ .../devicetree/bindings/display/rockchip/rockchip-drm.yaml  | 2 +-
+ .../devicetree/bindings/net/mediatek-bluetooth.txt          | 2 +-
+ .../devicetree/bindings/sound/audio-graph-card.txt          | 2 +-
+ .../devicetree/bindings/sound/st,sti-asoc-card.txt          | 2 +-
+ Documentation/mips/ingenic-tcu.rst                          | 2 +-
+ MAINTAINERS                                                 | 6 +++---
+ 7 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/display/bridge/sii902x.txt b/Documentation/devicetree/bindings/display/bridge/sii902x.txt
+index 6e14e087c0d0..0d1db3f9da84 100644
+--- a/Documentation/devicetree/bindings/display/bridge/sii902x.txt
++++ b/Documentation/devicetree/bindings/display/bridge/sii902x.txt
+@@ -37,7 +37,7 @@ Optional properties:
+ 	simple-card or audio-graph-card binding. See their binding
+ 	documents on how to describe the way the sii902x device is
+ 	connected to the rest of the audio system:
+-	Documentation/devicetree/bindings/sound/simple-card.txt
++	Documentation/devicetree/bindings/sound/simple-card.yaml
+ 	Documentation/devicetree/bindings/sound/audio-graph-card.txt
+ 	Note: In case of the audio-graph-card binding the used port
+ 	index should be 3.
+diff --git a/Documentation/devicetree/bindings/display/rockchip/rockchip-drm.yaml b/Documentation/devicetree/bindings/display/rockchip/rockchip-drm.yaml
+index ec8ae742d4da..7204da5eb4c5 100644
+--- a/Documentation/devicetree/bindings/display/rockchip/rockchip-drm.yaml
++++ b/Documentation/devicetree/bindings/display/rockchip/rockchip-drm.yaml
+@@ -24,7 +24,7 @@ properties:
+     description: |
+       Should contain a list of phandles pointing to display interface port
+       of vop devices. vop definitions as defined in
+-      Documentation/devicetree/bindings/display/rockchip/rockchip-vop.txt
++      Documentation/devicetree/bindings/display/rockchip/rockchip-vop.yaml
+ 
+ required:
+   - compatible
+diff --git a/Documentation/devicetree/bindings/net/mediatek-bluetooth.txt b/Documentation/devicetree/bindings/net/mediatek-bluetooth.txt
+index 219bcbd0d344..9ef5bacda8c1 100644
+--- a/Documentation/devicetree/bindings/net/mediatek-bluetooth.txt
++++ b/Documentation/devicetree/bindings/net/mediatek-bluetooth.txt
+@@ -3,7 +3,7 @@ MediaTek SoC built-in Bluetooth Devices
+ 
+ This device is a serial attached device to BTIF device and thus it must be a
+ child node of the serial node with BTIF. The dt-bindings details for BTIF
+-device can be known via Documentation/devicetree/bindings/serial/8250.txt.
++device can be known via Documentation/devicetree/bindings/serial/8250.yaml.
+ 
+ Required properties:
+ 
+diff --git a/Documentation/devicetree/bindings/sound/audio-graph-card.txt b/Documentation/devicetree/bindings/sound/audio-graph-card.txt
+index 269682619a70..d5f6919a2d69 100644
+--- a/Documentation/devicetree/bindings/sound/audio-graph-card.txt
++++ b/Documentation/devicetree/bindings/sound/audio-graph-card.txt
+@@ -5,7 +5,7 @@ It is based on common bindings for device graphs.
+ see ${LINUX}/Documentation/devicetree/bindings/graph.txt
+ 
+ Basically, Audio Graph Card property is same as Simple Card.
+-see ${LINUX}/Documentation/devicetree/bindings/sound/simple-card.txt
++see ${LINUX}/Documentation/devicetree/bindings/sound/simple-card.yaml
+ 
+ Below are same as Simple-Card.
+ 
+diff --git a/Documentation/devicetree/bindings/sound/st,sti-asoc-card.txt b/Documentation/devicetree/bindings/sound/st,sti-asoc-card.txt
+index 4d51f3f5ea98..a6ffcdec6f6a 100644
+--- a/Documentation/devicetree/bindings/sound/st,sti-asoc-card.txt
++++ b/Documentation/devicetree/bindings/sound/st,sti-asoc-card.txt
+@@ -5,7 +5,7 @@ codec or external codecs.
+ 
+ sti sound drivers allows to expose sti SoC audio interface through the
+ generic ASoC simple card. For details about sound card declaration please refer to
+-Documentation/devicetree/bindings/sound/simple-card.txt.
++Documentation/devicetree/bindings/sound/simple-card.yaml.
+ 
+ 1) sti-uniperiph-dai: audio dai device.
+ ---------------------------------------
+diff --git a/Documentation/mips/ingenic-tcu.rst b/Documentation/mips/ingenic-tcu.rst
+index c5a646b14450..2b75760619b4 100644
+--- a/Documentation/mips/ingenic-tcu.rst
++++ b/Documentation/mips/ingenic-tcu.rst
+@@ -68,4 +68,4 @@ and frameworks can be controlled from the same registers, all of these
+ drivers access their registers through the same regmap.
+ 
+ For more information regarding the devicetree bindings of the TCU drivers,
+-have a look at Documentation/devicetree/bindings/timer/ingenic,tcu.txt.
++have a look at Documentation/devicetree/bindings/timer/ingenic,tcu.yaml.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index b6ec0b3c3125..b70842425302 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -3911,7 +3911,7 @@ L:	linux-crypto@vger.kernel.org
+ S:	Supported
+ F:	drivers/char/hw_random/cctrng.c
+ F:	drivers/char/hw_random/cctrng.h
+-F:	Documentation/devicetree/bindings/rng/arm-cctrng.txt
++F:	Documentation/devicetree/bindings/rng/arm-cctrng.yaml
+ W:	https://developer.arm.com/products/system-ip/trustzone-cryptocell/cryptocell-700-family
+ 
+ CEC FRAMEWORK
+@@ -5446,7 +5446,7 @@ F:	include/uapi/drm/r128_drm.h
+ DRM DRIVER FOR RAYDIUM RM67191 PANELS
+ M:	Robert Chiras <robert.chiras@nxp.com>
+ S:	Maintained
+-F:	Documentation/devicetree/bindings/display/panel/raydium,rm67191.txt
++F:	Documentation/devicetree/bindings/display/panel/raydium,rm67191.yaml
+ F:	drivers/gpu/drm/panel/panel-raydium-rm67191.c
+ 
+ DRM DRIVER FOR ROCKTECH JH057N00900 PANELS
+@@ -16294,7 +16294,7 @@ M:	Hoan Tran <hoan@os.amperecomputing.com>
+ M:	Serge Semin <fancer.lancer@gmail.com>
+ L:	linux-gpio@vger.kernel.org
+ S:	Maintained
+-F:	Documentation/devicetree/bindings/gpio/snps-dwapb-gpio.txt
++F:	Documentation/devicetree/bindings/gpio/snps,dw-apb-gpio.yaml
+ F:	drivers/gpio/gpio-dwapb.c
+ 
+ SYNOPSYS DESIGNWARE AXI DMAC DRIVER
+-- 
+2.25.4
+
