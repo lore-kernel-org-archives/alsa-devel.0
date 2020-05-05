@@ -8,88 +8,88 @@ X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1873DC47254
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 May 2020 21:02:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40F58C47247
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 May 2020 21:02:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 90E1920721
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 May 2020 21:02:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B8B752068E
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 May 2020 21:02:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Kye8jVPg";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QHBIuMVR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 90E1920721
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Jf3/bojU";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="uPJnt6v+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B8B752068E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DB0F8176A;
-	Tue,  5 May 2020 23:01:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB0F8176A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1DC2D1787;
+	Tue,  5 May 2020 23:01:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1DC2D1787
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588712527;
-	bh=x0/rjaKOAQdhKFeTgB1qrNISoDNfmOSbicSilrasUk8=;
+	s=default; t=1588712567;
+	bh=xJxUAGPZt2Uv90HX57w9RNfrxCSkJSUrLJ928RAtssE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Kye8jVPgmKNE8c+Ji40RHTV0BUC8VygR/pYkCZe24f6qi7RhBlNW2o0SRuGTjTc+s
-	 UIf1rfMaLo/hE+FN/aYPimSuh4+7m2HdXV8pivB+2fzzCPv9H16T2a+ptSZgaRG1EM
-	 KfMWy4zmvM0dB49E7es7w3R2sINQErtFr1u5JW4E=
+	b=Jf3/bojUTWYFtt7VoMKECyTMVh3ASDNyqmxTsGms3F5uvOBie89LAQUONWHSIfWc+
+	 /Ba8gJb1Dx81uXVYrYTAUuxwU0OLusgx2B5sqpenpA7PO6Z41AgKduiMr8BRpTmP17
+	 dumg2o/XiDqKJi3aMqQLltjeOvnX5suebZ+DudB8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AEE87F80328;
-	Tue,  5 May 2020 22:54:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7F8DFF80334;
+	Tue,  5 May 2020 22:54:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EB95FF802DC; Tue,  5 May 2020 22:54:05 +0200 (CEST)
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com
- [IPv6:2607:f8b0:4864:20::844])
+ id 243CAF802EB; Tue,  5 May 2020 22:54:10 +0200 (CEST)
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com
+ [IPv6:2607:f8b0:4864:20::742])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D5E31F800AD
- for <alsa-devel@alsa-project.org>; Tue,  5 May 2020 22:53:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5E31F800AD
+ by alsa1.perex.cz (Postfix) with ESMTPS id E9C12F8023E
+ for <alsa-devel@alsa-project.org>; Tue,  5 May 2020 22:53:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9C12F8023E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="QHBIuMVR"
-Received: by mail-qt1-x844.google.com with SMTP id g16so3259707qtp.11
- for <alsa-devel@alsa-project.org>; Tue, 05 May 2020 13:53:57 -0700 (PDT)
+ header.b="uPJnt6v+"
+Received: by mail-qk1-x742.google.com with SMTP id b6so3857318qkh.11
+ for <alsa-devel@alsa-project.org>; Tue, 05 May 2020 13:53:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=BbOTZKdDiTz4nkjpMFToxDcldOrzAggMFpLZjtp9ltE=;
- b=QHBIuMVRxo7pjGzu7yin/cUqpwHU5tvo1tnOXXwrxx4lV3yUEDz5lDPM0ykeZApnK5
- 0swopjegKDgiK4Hxww2kIVUXpBoDGlX+ddDHzFv6BuqBqRTItXQmM8kXqfbdYvzZQUAf
- VLQNXOa6jgrdGgrRCLn2gePFwD3qWc8iIPEK/MXd8RRbPfFEyeSmnTNU1dKg9/R6+zj6
- hlIAKP3cSzPCYmev5g+L6jGp+c5t2eXVwGDwgcKAkC7wQIQeeqNUa/G3V6i2qlhMyX67
- cgaYhXV1eAjaib+d1+LgEDg0Yg8Y7T4q/rSd1J++PPKRIsKrlkkRMefiBCCF3nfpryCl
- 86zg==
+ bh=c+eSD6JZC4THB9YwHcMFZmdVU+wdM7Rk0LOykpENBUc=;
+ b=uPJnt6v+OKPG0l3QBnfrm5lEUiiITEBit1IpQsujhU8Ecq3mkqFtdZZSMx2k1JwBdo
+ wZDQ1RiL+Y44f9C+viFRflLFsdpGPL13wrrrsBQDSEgDcSz5vKm6pglLFhshTeVhR3e8
+ qnFR3iCcj3/PAcXh7jnTVzfnSjYzgAYkcwZxnCe25uskPoePIf2nmZn+GrSPRioZ2L2m
+ gmAACYGCpDnN8Hs0kXOibvLpGL0XlXNXKu1DXNdwesCKAuKqn4N+ZD0qLnDOMy+K5mN2
+ igDzofdzUriWjueH5JESGw1sY2tLQGtRRVgBT/Gq1hg2oVbZnzeSXLrjQgmV+HZVAwFB
+ /j+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=BbOTZKdDiTz4nkjpMFToxDcldOrzAggMFpLZjtp9ltE=;
- b=FpeVbQJuKckLFv/LaS/56Z9d7SXbWmjmOMJ3+CTEDT7r7fAYa1j0GKLQXQ/L18pYFu
- rUJ9O8tLoQoNDhJBxYPqXRP62dRfXnfZXY6yGylCo3V7QZdl4wSfPRG0xhJZFgpo4eHJ
- o6QjLoXmO8X4EwjhRmTT6Dcss/64IeSWw2nHM+l8HclxSaAKmz1WNUbshL7tizNjpAk7
- RymFW+cuQ8wRTO/kuWYWEON2TTEoYaXlXi8AHUU9lLi21hDcwxrVcTpFXZ7wFndDssbM
- DozS2EN1dXz8cE2/prezXsot0gpurME5+FarpXAj1MQ90835puS7JrTWOfHhC5v1vUvs
- mBzg==
-X-Gm-Message-State: AGi0PubR4F+2Qc5CAigpInDrViqWb+OYL21/XExMcjh4pJAhCtsptK4F
- Bt01hq6hRuCtbq6pDAkDXvD/0LKR
-X-Google-Smtp-Source: APiQypKa9jlbxDvZac6TgaLgMiVGCdXHD+KvJ0LGOxn6ICx3OW2NgCKhT61xIkmdzm8YE0P63w3sTQ==
-X-Received: by 2002:ac8:4c9d:: with SMTP id j29mr5059317qtv.297.1588712035148; 
- Tue, 05 May 2020 13:53:55 -0700 (PDT)
+ bh=c+eSD6JZC4THB9YwHcMFZmdVU+wdM7Rk0LOykpENBUc=;
+ b=OsHwKQ/JbT/+lyruiNHy/SBCV6bL88Z4aJpIFrECmkRqxM8oED1BHR/mOpw2mtxK1l
+ fzHOztWFBecEgRokNQj3CQd2Hw+NmS4dQXJamUA/S1u+ZpB3ZNp3c6TqXapY3asO4lme
+ LF8CE7m9LjbFzK5uv2s6qYtM6SYiLhI3GjQp+sFVvJW3Mxhwg4sD8CKZ+N0V/1WvbZTP
+ udCQZF534SN7/5ed7fGPPawxiIo0DnJEzkesvHEfdoaoYgn9zNByW16PqpWON5DBBQ9s
+ cHBkFJLPajOiBa/V4XckQbkWsW2usec5eohRkam9GSh7C9KBg1oaFvQ7kMGJ9ZZYoLvr
+ IWkw==
+X-Gm-Message-State: AGi0PuYjULwyYKvmCJylH0a3STIDQ/nxvGT6wXr9zM4Xhwl19WR8DeYw
+ BH4AGV8wM48+IhjaU2IsWoptpnMo
+X-Google-Smtp-Source: APiQypKpkPgkH1M17qPy4bQQ2mR3+p3rDKMQA57Nr+BLm+SvC3RDN9Puwamld/72oFR2I0ao7S9F2A==
+X-Received: by 2002:a37:ae07:: with SMTP id x7mr4822569qke.13.1588712029628;
+ Tue, 05 May 2020 13:53:49 -0700 (PDT)
 Received: from tr4.amd.com (atlvpn.amd.com. [165.204.84.11])
- by smtp.gmail.com with ESMTPSA id k58sm2972513qtf.40.2020.05.05.13.53.52
+ by smtp.gmail.com with ESMTPSA id k58sm2972513qtf.40.2020.05.05.13.53.48
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 05 May 2020 13:53:54 -0700 (PDT)
+ Tue, 05 May 2020 13:53:49 -0700 (PDT)
 From: Alex Deucher <alexdeucher@gmail.com>
 X-Google-Original-From: Alex Deucher <alexander.deucher@amd.com>
 To: alsa-devel@alsa-project.org, broonie@kernel.org, vijendar.mukunda@amd.com,
  tiwai@suse.de
-Subject: [PATCH 13/14] ASoC: amd: RN machine driver using dmic
-Date: Tue,  5 May 2020 16:53:26 -0400
-Message-Id: <20200505205327.642282-14-alexander.deucher@amd.com>
+Subject: [PATCH 10/14] ASoC: amd: add ACP PDM DMA driver pm ops
+Date: Tue,  5 May 2020 16:53:23 -0400
+Message-Id: <20200505205327.642282-11-alexander.deucher@amd.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <20200505205327.642282-1-alexander.deucher@amd.com>
 References: <20200505205327.642282-1-alexander.deucher@amd.com>
@@ -114,133 +114,98 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 
-This patch adds Renoir Machine driver for dmic support.
+Add ACP PDM DMA driver pm ops.
 
 Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- sound/soc/amd/renoir/acp3x-rn.c | 112 ++++++++++++++++++++++++++++++++
- 1 file changed, 112 insertions(+)
- create mode 100644 sound/soc/amd/renoir/acp3x-rn.c
+ sound/soc/amd/renoir/acp3x-pdm-dma.c | 53 ++++++++++++++++++++++++++++
+ 1 file changed, 53 insertions(+)
 
-diff --git a/sound/soc/amd/renoir/acp3x-rn.c b/sound/soc/amd/renoir/acp3x-rn.c
-new file mode 100644
-index 000000000000..8556446637dc
---- /dev/null
-+++ b/sound/soc/amd/renoir/acp3x-rn.c
-@@ -0,0 +1,112 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+//
-+// Machine driver for AMD Renoir platform using DMIC
-+//
-+//Copyright 2020 Advanced Micro Devices, Inc.
-+
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+#include <linux/module.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <linux/io.h>
-+
-+#include "rn_acp3x.h"
-+
-+#define DRV_NAME "acp_pdm_mach"
-+
-+static int acp_pdm_hw_params(struct snd_pcm_substream *substream,
-+			     struct snd_pcm_hw_params *hw_params)
+diff --git a/sound/soc/amd/renoir/acp3x-pdm-dma.c b/sound/soc/amd/renoir/acp3x-pdm-dma.c
+index 6e8d5b85bce4..ef256c777873 100644
+--- a/sound/soc/amd/renoir/acp3x-pdm-dma.c
++++ b/sound/soc/amd/renoir/acp3x-pdm-dma.c
+@@ -8,6 +8,7 @@
+ #include <linux/module.h>
+ #include <linux/err.h>
+ #include <linux/io.h>
++#include <linux/pm_runtime.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+ #include <sound/soc-dai.h>
+@@ -457,19 +458,71 @@ static int acp_pdm_audio_probe(struct platform_device *pdev)
+ 		dev_err(&pdev->dev, "ACP PDM IRQ request failed\n");
+ 		return -ENODEV;
+ 	}
++	pm_runtime_set_autosuspend_delay(&pdev->dev, ACP_SUSPEND_DELAY_MS);
++	pm_runtime_use_autosuspend(&pdev->dev);
++	pm_runtime_enable(&pdev->dev);
++	pm_runtime_allow(&pdev->dev);
+ 	return 0;
+ }
+ 
+ static int acp_pdm_audio_remove(struct platform_device *pdev)
+ {
++	pm_runtime_disable(&pdev->dev);
+ 	return 0;
+ }
+ 
++static int acp_pdm_resume(struct device *dev)
 +{
-+	return 0;
-+}
++	struct pdm_dev_data *adata;
++	struct snd_pcm_runtime *runtime;
++	struct pdm_stream_instance *rtd;
++	u32 period_bytes, buffer_len;
 +
-+static struct snd_soc_ops acp_pdm_ops = {
-+	.hw_params = acp_pdm_hw_params,
-+};
-+
-+static int acp_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	return 0;
-+}
-+
-+SND_SOC_DAILINK_DEF(acp_pdm,
-+		    DAILINK_COMP_ARRAY(COMP_CPU("acp_rn_pdm_dma.0")));
-+
-+SND_SOC_DAILINK_DEF(dmic_codec,
-+		    DAILINK_COMP_ARRAY(COMP_CODEC("dmic-codec.0",
-+						  "dmic-hifi")));
-+
-+SND_SOC_DAILINK_DEF(platform,
-+		    DAILINK_COMP_ARRAY(COMP_PLATFORM("acp_rn_pdm_dma.0")));
-+
-+static struct snd_soc_dai_link acp_dai_pdm[] = {
-+	{
-+		.name = "acp3x-dmic-capture",
-+		.stream_name = "DMIC capture",
-+		.ops = &acp_pdm_ops,
-+		.init = acp_init,
-+		.capture_only = 1,
-+		SND_SOC_DAILINK_REG(acp_pdm, dmic_codec, platform),
-+	},
-+};
-+
-+static struct snd_soc_card acp_card = {
-+	.name = "acp",
-+	.owner = THIS_MODULE,
-+	.dai_link = acp_dai_pdm,
-+	.num_links = 1,
-+};
-+
-+static int acp_probe(struct platform_device *pdev)
-+{
-+	int ret;
-+	struct acp_pdm *machine = NULL;
-+	struct snd_soc_card *card;
-+
-+	card = &acp_card;
-+	acp_card.dev = &pdev->dev;
-+
-+	platform_set_drvdata(pdev, card);
-+	snd_soc_card_set_drvdata(card, machine);
-+	ret = devm_snd_soc_register_card(&pdev->dev, card);
-+	if (ret) {
-+		dev_err(&pdev->dev,
-+			"snd_soc_register_card(%s) failed: %d\n",
-+			acp_card.name, ret);
-+		return ret;
++	adata = dev_get_drvdata(dev);
++	if (adata->capture_stream && adata->capture_stream->runtime) {
++		runtime = adata->capture_stream->runtime;
++		rtd = runtime->private_data;
++		period_bytes = frames_to_bytes(runtime, runtime->period_size);
++		buffer_len = frames_to_bytes(runtime, runtime->buffer_size);
++		config_acp_dma(rtd, SNDRV_PCM_STREAM_CAPTURE);
++		init_pdm_ring_buffer(MEM_WINDOW_START, buffer_len, period_bytes,
++				     adata->acp_base);
 +	}
-+	if (ret) {
-+		dev_err(&pdev->dev,
-+			"snd_soc_register_card(%s) failed: %d\n",
-+			acp_card.name, ret);
-+		return ret;
-+	}
++	enable_pdm_interrupts(adata->acp_base);
 +	return 0;
 +}
 +
-+static struct platform_driver acp_mach_driver = {
-+	.driver = {
-+		.name = "acp_pdm_mach",
-+		.pm = &snd_soc_pm_ops,
-+	},
-+	.probe = acp_probe,
++static int acp_pdm_runtime_suspend(struct device *dev)
++{
++	struct pdm_dev_data *adata;
++
++	adata = dev_get_drvdata(dev);
++	disable_pdm_interrupts(adata->acp_base);
++
++	return 0;
++}
++
++static int acp_pdm_runtime_resume(struct device *dev)
++{
++	struct pdm_dev_data *adata;
++
++	adata = dev_get_drvdata(dev);
++	enable_pdm_interrupts(adata->acp_base);
++	return 0;
++}
++
++static const struct dev_pm_ops acp_pdm_pm_ops = {
++	.runtime_suspend = acp_pdm_runtime_suspend,
++	.runtime_resume = acp_pdm_runtime_resume,
++	.resume = acp_pdm_resume,
 +};
 +
-+static int __init acp_audio_init(void)
-+{
-+	platform_driver_register(&acp_mach_driver);
-+	return 0;
-+}
-+
-+static void __exit acp_audio_exit(void)
-+{
-+	platform_driver_unregister(&acp_mach_driver);
-+}
-+
-+module_init(acp_audio_init);
-+module_exit(acp_audio_exit);
-+
-+MODULE_AUTHOR("Vijendar.Mukunda@amd.com");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:" DRV_NAME);
+ static struct platform_driver acp_pdm_dma_driver = {
+ 	.probe = acp_pdm_audio_probe,
+ 	.remove = acp_pdm_audio_remove,
+ 	.driver = {
+ 		.name = "acp_rn_pdm_dma",
++		.pm = &acp_pdm_pm_ops,
+ 	},
+ };
+ 
 -- 
 2.25.4
 
