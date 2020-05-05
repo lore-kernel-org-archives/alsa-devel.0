@@ -2,101 +2,88 @@ Return-Path: <SRS0=O8MK=6T=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 003A3C47259
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 May 2020 14:25:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DB6BDC47254
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 May 2020 15:58:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 76C07206B9
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 May 2020 14:25:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5833B2073B
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 May 2020 15:58:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FisOMZsA";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=semihalf-com.20150623.gappssmtp.com header.i=@semihalf-com.20150623.gappssmtp.com header.b="x1AlWCzm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 76C07206B9
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=semihalf.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="N1iM3gSE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5833B2073B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9EB6B173B;
-	Tue,  5 May 2020 16:24:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9EB6B173B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 87B3F173C;
+	Tue,  5 May 2020 17:57:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 87B3F173C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588688702;
-	bh=bIJ1apj06ZLXXU5nmmtqF7iENw22S8OIuctSEKpn6tY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1588694321;
+	bh=sAjlnlyVHMPiWzQxcu/amnGDyttOJuDSGhLeDCfAYSk=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FisOMZsAWN/BEEvTQ7YBZFjYBjtR6dOSzW76C+N2pEMufWg8HCD1XZ2mMeZruc/Se
-	 U0S3pvf0BX8XEb1Tn1IT6F/N3fC1H6DeY3xqfVfV8qRwWbU0wTyXfZQNbvxdaYrX0m
-	 cw/OdEmb/rCxGo9TdN45NQYFa3wRKduRTUSC5f7k=
+	b=N1iM3gSEWOtBJjvQCS9Q3JUcXbu33/RCY0Xd/MRorgJTs4czIY5XihSSx5pvRNa5c
+	 dFv8b5/9vppwM4WIpnuKATkPZtCFoPEXM76hRu5//cNkkKII8nvJASxTD0zkwesWB5
+	 KeMmMq+8zxPqZVppGVbLUyHoAkf0TXjUBsIJHcXc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1ACE0F800DE;
-	Tue,  5 May 2020 16:24:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BD801F8015B;
+	Tue,  5 May 2020 17:57:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 558AEF8015F; Tue,  5 May 2020 16:24:03 +0200 (CEST)
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com
- [IPv6:2a00:1450:4864:20::441])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 9ECD2F8015F; Tue,  5 May 2020 17:57:48 +0200 (CEST)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 60745F800DE
- for <alsa-devel@alsa-project.org>; Tue,  5 May 2020 16:23:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60745F800DE
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=semihalf-com.20150623.gappssmtp.com
- header.i=@semihalf-com.20150623.gappssmtp.com header.b="x1AlWCzm"
-Received: by mail-wr1-x441.google.com with SMTP id x17so2996216wrt.5
- for <alsa-devel@alsa-project.org>; Tue, 05 May 2020 07:23:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=semihalf-com.20150623.gappssmtp.com; s=20150623;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=1Y70Nah3FzhZidtus6gd4+NBEFZJBCSZiFmzmK0CZes=;
- b=x1AlWCzm3i+12zcO6l4aukwQ6Aaof5MzjJECcmVMkipsGWsE3LSKZMf9m9jgofhDqk
- JEP67rHJ/3IuCTnaK93uk3OOdXP03ypzlV3f7xKJPsGyOkFJxvTT6CFAOU0AX3bfS0vV
- luvzHQ5DXTLwgApmTca8dEUYyqZFiqDGqhmQlkjjvRI97PPi4ru79qs3fCKOpSGNjzvM
- T/AWvaVizbhmtLgUNVM+9P74+/nfqBOHSjtU77MMzNdwkJcYDJ2IRgX/HOksz7ybaQ5j
- AgXz02KGCDDTyh+art+q9aNX9mTlNZ5lkOUxQWfKF4ZO6hvUjC9vUOldHWGNFS2LbZZg
- zI5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=1Y70Nah3FzhZidtus6gd4+NBEFZJBCSZiFmzmK0CZes=;
- b=carBYDmTKQD0JTWzoLYTvOIdG74b/gB8HSEuypJPbFSI/xW8dhHHqzQe3zP39+JZq8
- xofKtBWyu+tWPYdP8eupQeIsaIIVBYWhDsK445LcGodXIUOwoGYnXTJJ4yPYLi/AwqYQ
- mvUXqV9wXSqbDAizXNYBRvFAAt1uyjInmdXrsDfRgZj09sjSKijV8eKdzfNMvDzyu0Wp
- +YTGjVopKUapQoHyWAOJdlVYb1RaEZumKbAFZryaIkWK5XlqQeqRaKC3RF1B7T1ujGMq
- r4vA4M3IjlBP+uIHsN+GEZVXaa27uE//z2DJgFkuDc2v+bc5MJUMNt8f+i7FaZXPPxw5
- zjRw==
-X-Gm-Message-State: AGi0PuYm+Uq3jd5ODQnOAoPFSTqfMJXCf+QREQCK3b89tzbtMQfF6at7
- CY6r40R0QDKY3Yy1I/9EU98EON9ABk3jlEpnYAN5kg==
-X-Google-Smtp-Source: APiQypJJPTp1iDbmTwDsHL2WATyBtkqzx/L9mbhVjiLMShrO4SVgQQefa0T7Yi1gDN3MOa9ZBDvgUxE2/X3IZk4O0zs=
-X-Received: by 2002:adf:f1c6:: with SMTP id z6mr4004676wro.361.1588688638314; 
- Tue, 05 May 2020 07:23:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200501193141.30293-1-rad@semihalf.com>
- <3ad44b75-387f-da75-d7b2-3a16ed00550c@linux.intel.com>
-In-Reply-To: <3ad44b75-387f-da75-d7b2-3a16ed00550c@linux.intel.com>
-From: =?UTF-8?Q?Rados=C5=82aw_Biernacki?= <rad@semihalf.com>
-Date: Tue, 5 May 2020 16:23:41 +0200
-Message-ID: <CAOs-w0LPeKgooa_98x_Jkzus-Y5Kad7pDby0CriDGb6nTp_6sA@mail.gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id D2E42F800DE
+ for <alsa-devel@alsa-project.org>; Tue,  5 May 2020 17:57:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D2E42F800DE
+IronPort-SDR: ANlUiQs/AYlWt5T2QyumfxhINNKs3OyGtC0JUtAhW3HVYn/rVeE06d1e2lQopjrnhltSBSPTAp
+ 9LXqsel0B2NA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+ by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 05 May 2020 08:57:40 -0700
+IronPort-SDR: alrkhE+2C4qXPTodsAh59qKNIdgUTi4My5rtciJamlWkLe/Gs6yVOlSzDYbd6Bd6u+HzoFRuZW
+ MicWtTkTw92Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,355,1583222400"; d="scan'208";a="249494130"
+Received: from crojewsk-mobl1.ger.corp.intel.com (HELO [10.249.151.151])
+ ([10.249.151.151])
+ by fmsmga007.fm.intel.com with ESMTP; 05 May 2020 08:57:33 -0700
 Subject: Re: [PATCH V2] ASoC: Intel: boards: Use FS as nau8825 sysclk in
  nau88125_* machine
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+To: =?UTF-8?Q?Rados=c5=82aw_Biernacki?= <rad@semihalf.com>
+References: <20200501193141.30293-1-rad@semihalf.com>
+ <3ad44b75-387f-da75-d7b2-3a16ed00550c@linux.intel.com>
+ <CAOs-w0LPeKgooa_98x_Jkzus-Y5Kad7pDby0CriDGb6nTp_6sA@mail.gmail.com>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+Message-ID: <efca85c3-7078-efaa-88b5-536c8debea3d@intel.com>
+Date: Tue, 5 May 2020 17:57:32 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <CAOs-w0LPeKgooa_98x_Jkzus-Y5Kad7pDby0CriDGb6nTp_6sA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Cc: Lech Betlej <Lech.Betlej@intel.com>, alsa-devel@alsa-project.org,
- Todd Broch <tbroch@google.com>, Harshapriya <harshapriya.n@intel.com>,
- John Hsu <KCHSU0@nuvoton.com>, Alex Levin <levinale@google.com>,
- Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- "Sienkiewicz, Michal" <michal.sienkiewicz@intel.com>,
+ Todd Broch <tbroch@google.com>, Marcin Wojtas <mw@semihalf.com>,
+ Harshapriya <harshapriya.n@intel.com>, John Hsu <KCHSU0@nuvoton.com>,
+ Alex Levin <levinale@google.com>, Jie Yang <yang.jie@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.com>, "Sienkiewicz,
+ Michal" <michal.sienkiewicz@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Liam Girdwood <liam.r.girdwood@linux.intel.com>,
  Ben Zhang <benzh@chromium.org>, Mac Chiang <mac.chiang@intel.com>,
- Vamshi Krishna <vamshi.krishna.gopal@intel.com>,
- Marcin Wojtas <mw@semihalf.com>, linux-kernel@vger.kernel.org,
+ Vamshi Krishna <vamshi.krishna.gopal@intel.com>, linux-kernel@vger.kernel.org,
  Yong Zhi <yong.zhi@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -113,104 +100,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Thank you Pierre for the review!
-answers inline
+>>>
+>>> 2) Currently Skylake does not output MCLK/FS when the back-end DAI op
+>>>      hw_param is called, so we cannot switch to MCLK/FS in hw_param.  This
+>>>      patch reduces pop by letting nau8825 keep using its internal VCO clock
+>>>      during widget power up sequence, until SNDRV_PCM_TRIGGER_START when
+>>>      MCLK/FS is available. Once device resumes, the system will only enable
+>>>      power sequence for playback without doing hardware parameter, audio
+>>>      format, and PLL configure. In the mean time, the jack detecion sequence
+>>>      has changed PLL parameters and switched to internal clock. Thus, the
+>>>      playback signal distorted without correct PLL parameters.  That is why
+>>>      we need to configure the PLL again in SNDRV_PCM_TRIGGER_RESUME case.
+>>
+>> IIRC the FS can be controlled with the clk_ api with the Skylake driver,
+>> as done for some KBL platforms. Or is this not supported by the firmware
+>> used by this machine?
+> 
+> According to Ben, SKL had limitations in FW for managing the clk's
+> back in the days.
+> Can you point to the other driver you mention so we can cross check?
+> 
 
-pt., 1 maj 2020 o 22:16 Pierre-Louis Bossart
-<pierre-louis.bossart@linux.intel.com> wrote:
->
->
->
-> On 5/1/20 2:31 PM, Radoslaw Biernacki wrote:
-> > This single fix address two issues on machines with nau88125:
-> > 1) Audio distortion, due to lack of required clock rate on MCLK line
-> > 2) Loud audible "pops" on headphones if there is no sysclk during nau8825
-> >     playback power up sequence
-> >
-> > Explanation for:
-> > 1) Due to Skylake HW limitation, MCLK pin can only output 24MHz clk
-> >     rate (it can be only connected to XTAL parent clk). The BCLK pin
-> >     can be driven by dividers and therefore FW is able to set it to rate
-> >     required by chosen audio format. According to nau8825 datasheet, 256*FS
-> >     sysclk gives the best audio quality and the only way to achieve this
-> >     (taking into account the above limitations) its to regenerate the MCLK
-> >     from BCLK on nau8825 side by FFL. Without required clk rate, audio is
-> >     distorted by added harmonics.
->
-> The BCLK is going to be a multiple of 50 * Fs due to clocking
-> restrictions. Can the codec regenerate a good-enough sysclk from this?
+Skylake driver is found within:
+	/sound/soc/intel/skylake
+directory.
 
-According to Intel, silicon has a limitation, on SKL/KBL only clk_id =
-SKL_XTAL, .name = "xtal" is available for IO domain.
-As mentioned in the commit:
-MCLK is generated by using 24MHz Xtal directly or applying a divider
-(so no way of achieving the rate required by audio format).
-BCLK/FS is generated from 24MHz and uses dividers and additional
-padding bits are used to match the clock source.
-Next gen silicon has the possibility of using additional clock sources.
+"SKL had limitations in FW" - that's misleading. This is neither FW 
+issue nor HW 'limitation'. SKL is an older platform and its goals and 
+design was different than say APL+. Basically, your needs do not align 
+with what's present on SKL hw.
 
-Summing up, using MCLK from SKL to NAU88L25 is not an option.
-The only option we found is to use BCLK and regen the required clock
-rate by FLL on the NAU88l25 side.
-
-> >
-> > 2) Currently Skylake does not output MCLK/FS when the back-end DAI op
-> >     hw_param is called, so we cannot switch to MCLK/FS in hw_param.  This
-> >     patch reduces pop by letting nau8825 keep using its internal VCO clock
-> >     during widget power up sequence, until SNDRV_PCM_TRIGGER_START when
-> >     MCLK/FS is available. Once device resumes, the system will only enable
-> >     power sequence for playback without doing hardware parameter, audio
-> >     format, and PLL configure. In the mean time, the jack detecion sequence
-> >     has changed PLL parameters and switched to internal clock. Thus, the
-> >     playback signal distorted without correct PLL parameters.  That is why
-> >     we need to configure the PLL again in SNDRV_PCM_TRIGGER_RESUME case.
->
-> IIRC the FS can be controlled with the clk_ api with the Skylake driver,
-> as done for some KBL platforms. Or is this not supported by the firmware
-> used by this machine?
-
-According to Ben, SKL had limitations in FW for managing the clk's
-back in the days.
-Can you point to the other driver you mention so we can cross check?
-
->
-> > -static int skylake_nau8825_hw_params(struct snd_pcm_substream *substream,
-> > -     struct snd_pcm_hw_params *params)
-> > +static int skylake_nau8825_trigger(struct snd_pcm_substream *substream, int cmd)
-> >   {
-> >       struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> > +     struct snd_pcm_runtime *runtime = substream->runtime;
-> >       struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
-> > -     int ret;
-> > -
-> > -     ret = snd_soc_dai_set_sysclk(codec_dai,
-> > -                     NAU8825_CLK_MCLK, 24000000, SND_SOC_CLOCK_IN);
-> > +     int ret = 0;
-> >
-> > -     if (ret < 0)
-> > -             dev_err(rtd->dev, "snd_soc_dai_set_sysclk err = %d\n", ret);
-> > +     switch (cmd) {
-> > +     case SNDRV_PCM_TRIGGER_START:
-> > +             ret = snd_soc_dai_set_sysclk(codec_dai, NAU8825_CLK_FLL_FS, 0,
-> > +                                          SND_SOC_CLOCK_IN);
-> > +             if (ret < 0) {
-> > +                     dev_err(codec_dai->dev, "can't set FS clock %d\n", ret);
-> > +                     break;
-> > +             }
-> > +             ret = snd_soc_dai_set_pll(codec_dai, 0, 0, runtime->rate,
-> > +                                       runtime->rate * 256);
-> > +             if (ret < 0)
-> > +                     dev_err(codec_dai->dev, "can't set FLL: %d\n", ret);
-> > +             break;
-> > +     case SNDRV_PCM_TRIGGER_RESUME:
-> > +             ret = snd_soc_dai_set_pll(codec_dai, 0, 0, runtime->rate,
-> > +                                       runtime->rate * 256);
-> > +             if (ret < 0)
-> > +                     dev_err(codec_dai->dev, "can't set FLL: %d\n", ret);
-> > +             msleep(20);
->
-> is there a reason why you'd need a msleep for resume and not for start?
-
-No. I think we missed this.
-msleep() is needed to stabilize FLL.
-Will fix in next rev.
+Czarek
