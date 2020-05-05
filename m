@@ -2,74 +2,75 @@ Return-Path: <SRS0=O8MK=6T=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96418C47247
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 May 2020 22:07:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 874C2C47247
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 May 2020 22:08:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 16C19206B8
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 May 2020 22:07:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0BA6B206FA
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 May 2020 22:08:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IN1NvbBv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 16C19206B8
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ufKWxdkv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0BA6B206FA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 726F61762;
-	Wed,  6 May 2020 00:06:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 726F61762
+	by alsa0.perex.cz (Postfix) with ESMTPS id 586C4177E;
+	Wed,  6 May 2020 00:07:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 586C4177E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588716453;
-	bh=PkQeGxkbmXscFKocF9rMq+++TNPHxe34qLPXgLvqlRo=;
+	s=default; t=1588716479;
+	bh=6I9fdNKD7QAolFOlKFdlVIhJaa1eSYSHL3Z0G5yxcuk=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IN1NvbBvaE442M3X/JaqflTo49WWa+Xy13wdFmMGDXOaEj4w/ZEIn/1wYB7FOZ5QV
-	 TRieisHJGp6w883ecu8ki2D3mXPtSVi7mKfdZMxEYaYgD94kEvRBbMFjaWpoohiegR
-	 tl51ZtTNGq4UIg+j4a+ktCGfQmIQFzkeBn0qeINw=
+	b=ufKWxdkv/5ezPwQDECG64S7U/mhb1aJkiukrS0GHMaIzoCuz0Qer7e+vl3jq14sJp
+	 k4KTKEE5m7DlhokG7+c0mHbJL6SjsuqfGxs5Eu52yXu10I4iDQvzedcgYdD4tT19gP
+	 i0Sm/X27vkPAUbeGaEHE5BowS1/lX9WSqJs2bQW8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BD99DF80291;
-	Wed,  6 May 2020 00:05:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 49D65F8029B;
+	Wed,  6 May 2020 00:05:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 47A22F8025E; Wed,  6 May 2020 00:04:33 +0200 (CEST)
+ id AC289F800AD; Wed,  6 May 2020 00:04:34 +0200 (CEST)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DD5A7F8015B
- for <alsa-devel@alsa-project.org>; Wed,  6 May 2020 00:04:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD5A7F8015B
-IronPort-SDR: B0AYs4WUIikZDaxsmy3vIQcCCIIX1NyJh4Ck0xrBdF1vdEHtrn9rRSfoZk5umtKlXfhJmZWQ4v
- YsNYV5zd6bHg==
+ by alsa1.perex.cz (Postfix) with ESMTPS id A4AFFF8015F
+ for <alsa-devel@alsa-project.org>; Wed,  6 May 2020 00:04:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4AFFF8015F
+IronPort-SDR: Re04N8G6PRZLAVS2QSoTtoO4VE+Fz/vdcJQi/B54mocQl8kboGqbbGfEq4GFxuAwa6H5hDFfAi
+ 0bIG/+jC/hPA==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 May 2020 15:04:20 -0700
-IronPort-SDR: NZhn9tyqngAvheTArHGlxPoQg4/LLKYzgFT41JNNgiHGKQNCuRBuxjOcn6/q3Zmrfclzv02AWM
- T37BOJc2uigg==
+ 05 May 2020 15:04:23 -0700
+IronPort-SDR: mHJvBhgc4IQ8ouovqAsrTneBODrs5p7qt/WQEcA44SjmraA39ZuestZRI3x+w10+Brmn7G3rdx
+ 8ahiAZLb8MXA==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,356,1583222400"; d="scan'208";a="278022606"
+X-IronPort-AV: E=Sophos;i="5.73,356,1583222400"; d="scan'208";a="278022614"
 Received: from krogers-mobl1.amr.corp.intel.com (HELO [10.255.229.42])
  ([10.255.229.42])
- by orsmga002.jf.intel.com with ESMTP; 05 May 2020 15:04:19 -0700
-Subject: Re: [PATCH 09/14] ASoC: amd: add Renoir ACP PCI driver PM ops
+ by orsmga002.jf.intel.com with ESMTP; 05 May 2020 15:04:23 -0700
+Subject: Re: [PATCH 07/14] ASoC: amd: add acp3x pdm driver dma ops
 To: Alex Deucher <alexdeucher@gmail.com>, alsa-devel@alsa-project.org,
  broonie@kernel.org, vijendar.mukunda@amd.com, tiwai@suse.de
 References: <20200505205327.642282-1-alexander.deucher@amd.com>
- <20200505205327.642282-10-alexander.deucher@amd.com>
+ <20200505205327.642282-8-alexander.deucher@amd.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <7a675344-e5be-0570-f56e-6def475d19b8@linux.intel.com>
-Date: Tue, 5 May 2020 16:48:51 -0500
+Message-ID: <fa130cbb-412d-768e-db71-15463fa58ab1@linux.intel.com>
+Date: Tue, 5 May 2020 16:59:18 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200505205327.642282-10-alexander.deucher@amd.com>
+In-Reply-To: <20200505205327.642282-8-alexander.deucher@amd.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -91,40 +92,73 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-> diff --git a/sound/soc/amd/renoir/rn-pci-acp3x.c b/sound/soc/amd/renoir/rn-pci-acp3x.c
-> index 362409ef0d85..6d013a1bffa6 100644
-> --- a/sound/soc/amd/renoir/rn-pci-acp3x.c
-> +++ b/sound/soc/amd/renoir/rn-pci-acp3x.c
-> @@ -10,6 +10,7 @@
->   #include <linux/delay.h>
->   #include <linux/platform_device.h>
->   #include <linux/interrupt.h>
-> +#include <linux/pm_runtime.h>
+On 5/5/20 3:53 PM, Alex Deucher wrote:
+> From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+> 
+> This patch adds PDM driver DMA operations.
+> 
+> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+> Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+> ---
+>   sound/soc/amd/renoir/acp3x-pdm-dma.c | 199 +++++++++++++++++++++++++++
+>   sound/soc/amd/renoir/rn_acp3x.h      |  29 ++++
+>   2 files changed, 228 insertions(+)
+> 
+> diff --git a/sound/soc/amd/renoir/acp3x-pdm-dma.c b/sound/soc/amd/renoir/acp3x-pdm-dma.c
+> index 4ee47a85e37e..0b5dc49f42c3 100644
+> --- a/sound/soc/amd/renoir/acp3x-pdm-dma.c
+> +++ b/sound/soc/amd/renoir/acp3x-pdm-dma.c
+> @@ -16,6 +16,25 @@
 >   
->   #include "rn_acp3x.h"
+>   #define DRV_NAME "acp_rn_pdm_dma"
 >   
-> @@ -233,6 +234,12 @@ static int snd_rn_acp_probe(struct pci_dev *pci,
->   		ret = PTR_ERR(adata->pdev);
->   		goto unregister_devs;
->   	}
-> +	pm_runtime_set_autosuspend_delay(&pci->dev, ACP_SUSPEND_DELAY_MS);
-> +	pm_runtime_use_autosuspend(&pci->dev);
-> +	pm_runtime_set_active(&pci->dev);
+> +static const struct snd_pcm_hardware acp_pdm_hardware_capture = {
+> +	.info = SNDRV_PCM_INFO_INTERLEAVED |
+> +		SNDRV_PCM_INFO_BLOCK_TRANSFER |
+> +		SNDRV_PCM_INFO_BATCH | SNDRV_PCM_INFO_MMAP |
+> +		SNDRV_PCM_INFO_MMAP_VALID |
+> +	    SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME,
 
-is the set_active() needed? I haven't seen this in the other PCI audio 
-drivers?
+Can you actually resume from the same position? this seems odd when 
+combined with INFO_BATCH which means the position is only precise at 
+period boundaries.
 
-> +	pm_runtime_put_noidle(&pci->dev);
-> +	pm_runtime_enable(&pci->dev);
+> +	.formats = SNDRV_PCM_FMTBIT_S32_LE,
+> +	.channels_min = 2,
+> +	.channels_max = 2,
+> +	.rates = SNDRV_PCM_RATE_48000,
+> +	.rate_min = 48000,
+> +	.rate_max = 48000,
+> +	.buffer_bytes_max = CAPTURE_MAX_NUM_PERIODS * CAPTURE_MAX_PERIOD_SIZE,
+> +	.period_bytes_min = CAPTURE_MIN_PERIOD_SIZE,
+> +	.period_bytes_max = CAPTURE_MAX_PERIOD_SIZE,
+> +	.periods_min = CAPTURE_MIN_NUM_PERIODS,
+> +	.periods_max = CAPTURE_MAX_NUM_PERIODS,
+> +};
+> +
 
-same, is the _enable() needed()?
+[...]
 
-> +	pm_runtime_allow(&pci->dev);
->   	return 0;
->   
->   unregister_devs:
-> @@ -250,6 +257,42 @@ static int snd_rn_acp_probe(struct pci_dev *pci,
->   	return ret;
->   }
->   
+> +static snd_pcm_uframes_t acp_pdm_dma_pointer(struct snd_soc_component *comp,
+> +					     struct snd_pcm_substream *stream)
+> +{
+> +	struct pdm_stream_instance *rtd;
+> +	u32 pos, buffersize;
+> +	u64 bytescount;
+> +
+> +	rtd = stream->runtime->private_data;
+> +	pos = 0;
+> +	buffersize = 0;
+> +	bytescount = 0;
 
+these 3 inits seem unnecessary?
+> +
+> +	buffersize = frames_to_bytes(stream->runtime,
+> +				     stream->runtime->buffer_size);
+> +	bytescount = acp_pdm_get_byte_count(rtd, stream->stream);
+> +	if (bytescount > rtd->bytescount)
+> +		bytescount -= rtd->bytescount;
+> +	pos = do_div(bytescount, buffersize);
+> +	return bytes_to_frames(stream->runtime, pos);
+> +}
+> +
