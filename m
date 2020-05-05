@@ -6,70 +6,70 @@ X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C7FDC47247
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 May 2020 22:06:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BB04EC47254
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 May 2020 22:07:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AA4BF206FA
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 May 2020 22:06:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 42AD7206B8
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 May 2020 22:07:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="U5PTFi8G"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AA4BF206FA
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NDN15vx+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 42AD7206B8
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F033B1766;
-	Wed,  6 May 2020 00:05:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F033B1766
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7623316C7;
+	Wed,  6 May 2020 00:06:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7623316C7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588716376;
-	bh=lLfovNiB3PUsqPbHUudnYWp5OpVZmpmM4GnavR14tWA=;
+	s=default; t=1588716424;
+	bh=dmFCrNOg28m6biHfBUN/P7DEsOU96LSd0dxrVeOAMGw=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=U5PTFi8GWI7an28auJZf4JZ4gwFFR7XQyGDa/PoN0uxRqXLB00zzG161sger/cU4J
-	 80BMf7qWpIZ3LGCvJGP0LCrWUkjYAq0mWSN+b1I51Xbfxtvo2yR+l6asCObKcKUYCa
-	 uvlZOCuMd5G1jHR4OTumcMnyxKmAcyzu2bGgt9zk=
+	b=NDN15vx+UGBtBCIz0tA3UtKoTLEQYbWKgeObgaEyClBL1IA0AGrBHwlnMnIRGM8bD
+	 9f8iBW9nBokruvPneIB6hvbKkf70+TBT2Bi9JPcvz3nD1RtG8XQ6EaHRSDzev/Ml3U
+	 c6+jhEao6OP9WDd58HiSUvphEXUJsVlsRqeQCbAM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A46E3F8015B;
-	Wed,  6 May 2020 00:05:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8DA98F80162;
+	Wed,  6 May 2020 00:05:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E8B78F80246; Wed,  6 May 2020 00:04:33 +0200 (CEST)
+ id B5F1AF800EE; Wed,  6 May 2020 00:04:34 +0200 (CEST)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 82C9AF800EE
- for <alsa-devel@alsa-project.org>; Wed,  6 May 2020 00:04:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 82C9AF800EE
-IronPort-SDR: F6IXSjwtvjMPI06S4kjLaFdhByyBOhsYjwdCYfIUtCAwNT0keg04nqE81EC/SB1LKgpRfBFz67
- cyOwIDfoEMYw==
+ by alsa1.perex.cz (Postfix) with ESMTPS id A9B57F80171
+ for <alsa-devel@alsa-project.org>; Wed,  6 May 2020 00:04:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9B57F80171
+IronPort-SDR: G8PPpRqNS9vraz/7YOKrgxVmWLEPe1HSO5ZzUWYnSJ+OzmmxcxI826qh3i6k5wIIG6k3w5rYvs
+ kS6roldAwQjA==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 May 2020 15:04:22 -0700
-IronPort-SDR: Eq048dK3LBe/kdnLFdT1E5Xs27WOzNQKWFyrrzu9F1Ih4jNoBgeyGWO+IiLAytMW+HhkgxW2QH
- oyl/krnsHLfw==
+ 05 May 2020 15:04:25 -0700
+IronPort-SDR: hPHVeKNyDbsPLELZcpoPuQNRHLMtlay7PeJC/6bBmX4X9MNaTSmOCZCO1GzNtVBre1ZBp4XzO/
+ GZGxM/Br/58A==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,356,1583222400"; d="scan'208";a="278022610"
+X-IronPort-AV: E=Sophos;i="5.73,356,1583222400"; d="scan'208";a="278022618"
 Received: from krogers-mobl1.amr.corp.intel.com (HELO [10.255.229.42])
  ([10.255.229.42])
- by orsmga002.jf.intel.com with ESMTP; 05 May 2020 15:04:21 -0700
-Subject: Re: [PATCH 08/14] ASoC: amd: add ACP PDM DMA driver dai ops
+ by orsmga002.jf.intel.com with ESMTP; 05 May 2020 15:04:24 -0700
+Subject: Re: [PATCH 05/14] ASoC: amd: add ACP3x PDM platform driver
 To: Alex Deucher <alexdeucher@gmail.com>, alsa-devel@alsa-project.org,
  broonie@kernel.org, vijendar.mukunda@amd.com, tiwai@suse.de
 References: <20200505205327.642282-1-alexander.deucher@amd.com>
- <20200505205327.642282-9-alexander.deucher@amd.com>
+ <20200505205327.642282-6-alexander.deucher@amd.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <703519fb-de83-103e-63fc-7a6c61f7c720@linux.intel.com>
-Date: Tue, 5 May 2020 16:55:18 -0500
+Message-ID: <3fa76374-4125-ed8a-436e-7127476baedd@linux.intel.com>
+Date: Tue, 5 May 2020 17:03:18 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200505205327.642282-9-alexander.deucher@amd.com>
+In-Reply-To: <20200505205327.642282-6-alexander.deucher@amd.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -91,92 +91,95 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-> +static int start_pdm_dma(void __iomem *acp_base)
+
+> +static struct snd_soc_dai_ops acp_pdm_dai_ops = {
+> +	.hw_params = NULL,
+> +	.trigger   = NULL,
+> +};
+
+doesn't seem very useful? can you remove this pdm_dai_ops?
+
+> +
+> +static struct snd_soc_dai_driver acp_pdm_dai_driver = {
+> +	.capture = {
+> +		.rates = SNDRV_PCM_RATE_48000,
+> +		.formats = SNDRV_PCM_FMTBIT_S24_LE |
+> +			   SNDRV_PCM_FMTBIT_S32_LE,
+> +		.channels_min = 2,
+> +		.channels_max = 2,
+> +		.rate_min = 48000,
+> +		.rate_max = 48000,
+> +	},
+> +	.ops = &acp_pdm_dai_ops,
+> +};
+> +
+> +static const struct snd_soc_component_driver acp_pdm_component = {
+> +	.name		= DRV_NAME,
+> +};
+> +
+> +static int acp_pdm_audio_probe(struct platform_device *pdev)
 > +{
-> +	u32 pdm_enable;
-> +	u32 pdm_dma_enable;
-> +	int timeout;
+> +	struct resource *res;
+> +	struct pdm_dev_data *adata;
+> +	unsigned int irqflags;
+> +	int status;
 > +
-> +	pdm_enable = 0x01;
-> +	pdm_dma_enable  = 0x01;
-> +
-> +	enable_pdm_clock(acp_base);
-> +	rn_writel(pdm_enable, acp_base + ACP_WOV_PDM_ENABLE);
-> +	rn_writel(pdm_dma_enable, acp_base + ACP_WOV_PDM_DMA_ENABLE);
-> +	pdm_dma_enable = 0x00;
-> +	timeout = 0;
-> +	while (++timeout < 20000) {
-> +		pdm_dma_enable = rn_readl(acp_base + ACP_WOV_PDM_DMA_ENABLE);
-> +		if ((pdm_dma_enable & 0x02) == ACP_PDM_DMA_EN_STATUS)
-> +			return 0;
-> +		udelay(5);
+> +	if (!pdev->dev.platform_data) {
+> +		dev_err(&pdev->dev, "platform_data not retrieved\n");
+> +		return -ENODEV;
 > +	}
 
-maybe use human-readable defines for timeout and delay?
-e.g.
+is this test needed?
 
-#define TIMEOUT_MS 100
-#define DELAY_US 5
-
-> +	return -ETIMEDOUT;
-> +}
+> +	irqflags = *((unsigned int *)(pdev->dev.platform_data));
 > +
-> +static int stop_pdm_dma(void __iomem *acp_base)
-> +{
-> +	u32 pdm_enable, pdm_dma_enable, pdm_fifo_flush;
-> +	int timeout;
-> +
-> +	pdm_enable = 0x00;
-> +	pdm_dma_enable  = 0x00;
-> +	pdm_fifo_flush = 0x00;
-> +
-> +	pdm_enable = rn_readl(acp_base + ACP_WOV_PDM_ENABLE);
-> +	pdm_dma_enable = rn_readl(acp_base + ACP_WOV_PDM_DMA_ENABLE);
-> +	if (pdm_dma_enable & 0x01) {
-> +		pdm_dma_enable = 0x02;
-> +		rn_writel(pdm_dma_enable, acp_base + ACP_WOV_PDM_DMA_ENABLE);
-> +		pdm_dma_enable = 0x00;
-> +		timeout = 0;
-> +		while (++timeout < 20000) {
-> +			pdm_dma_enable = rn_readl(acp_base +
-> +						  ACP_WOV_PDM_DMA_ENABLE);
-> +			if ((pdm_dma_enable & 0x02) == 0x00)
-> +				return 0;
-> +			udelay(5);
-> +		}
-> +		if (timeout == 20000)
-
-if this test needed, it'll be always true, no?
-
-> +			return -ETIMEDOUT;
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	if (!res) {
+> +		dev_err(&pdev->dev, "IORESOURCE_MEM FAILED\n");
+> +		return -ENODEV;
 > +	}
-> +	if (pdm_enable == ACP_PDM_ENABLE) {
-> +		pdm_enable = ACP_PDM_DISABLE;
-> +		rn_writel(pdm_enable, acp_base + ACP_WOV_PDM_ENABLE);
+> +
+> +	adata = devm_kzalloc(&pdev->dev, sizeof(*adata), GFP_KERNEL);
+> +	if (!adata)
+> +		return -ENOMEM;
+> +
+> +	adata->acp_base = devm_ioremap(&pdev->dev, res->start,
+> +				       resource_size(res));
+> +	if (!adata->acp_base)
+> +		return -ENOMEM;
+> +
+> +	adata->capture_stream = NULL;
+> +
+> +	dev_set_drvdata(&pdev->dev, adata);
+> +	status = devm_snd_soc_register_component(&pdev->dev,
+> +						 &acp_pdm_component,
+> +						 &acp_pdm_dai_driver, 1);
+> +	if (status) {
+> +		dev_err(&pdev->dev, "Fail to register acp pdm dai\n");
+> +
+> +		return -ENODEV;
+
+return status;
+
 > +	}
-> +	rn_writel(0x01, acp_base + ACP_WOV_PDM_FIFO_FLUSH);
 > +	return 0;
 > +}
 > +
-
-> +static int acp_pdm_dai_hw_params(struct snd_pcm_substream *substream,
-> +				 struct snd_pcm_hw_params *params,
-> +				 struct snd_soc_dai *dai)
+> +static int acp_pdm_audio_remove(struct platform_device *pdev)
 > +{
-> +	struct pdm_stream_instance *rtd;
-> +	unsigned int ch_mask;
-> +
-> +	rtd = substream->runtime->private_data;
-> +	switch (params_channels(params)) {
-> +	case TWO_CH:
-> +	default:
-> +		ch_mask = 0x00;
-> +		break;
-> +	}
-
-the switch doesn't appear very useful at the moment?
-
-> +	config_pdm_stream_params(ch_mask, rtd->acp_base);
 > +	return 0;
 > +}
+
+not needed?
+
 > +
+> +static struct platform_driver acp_pdm_dma_driver = {
+> +	.probe = acp_pdm_audio_probe,
+> +	.remove = acp_pdm_audio_remove,
+> +	.driver = {
+> +		.name = "acp_rn_pdm_dma",
+> +	},
+> +};
+> +
+> +module_platform_driver(acp_pdm_dma_driver);
+
