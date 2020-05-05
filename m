@@ -8,88 +8,88 @@ X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 09C30C47247
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 May 2020 20:58:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8AA79C47247
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 May 2020 20:59:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 89C91206A4
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 May 2020 20:58:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 14B6120735
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 May 2020 20:59:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tFxoIfl2";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z0L8NR3X"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 89C91206A4
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aB1Kkdv5";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Eg7oMUJk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 14B6120735
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D8AD51757;
-	Tue,  5 May 2020 22:57:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8AD51757
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5B62A176A;
+	Tue,  5 May 2020 22:58:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B62A176A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588712319;
-	bh=bUAX55uxct9o/8JjJpWsBod4EjMpSrTLyXJBtxL8bdc=;
+	s=default; t=1588712340;
+	bh=OSMlVxAeryZGIvN2omNkzs9oDfXv8KrWHR0t4CCKJ2A=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tFxoIfl2drAAG/qjCKXdukG+jr7WhxbA/LMF9uEonh2aNEjcrFmoM7QqqElX9L+V2
-	 8ilMMCwEm+xBWu7RW6K9AjaJ5PYp1DjwgOO12DlvCszOZ9PQuGi+fzsiAxjQ4haUJH
-	 +d5oEGJ2Y5tepp7WY5s2KQeEIPp9gqL6rM9ZreDc=
+	b=aB1Kkdv5cnnEFAdLKnPUb01YKnBMrjMx2K+jRhWvz3hUxfEp142mxBkRvgWndb9Mn
+	 JckvGk3h8l9k9aBFFDFTSyqh6I+VhBQncSGpRvPMwUQX9j5kpqL/4hNTJWPhq6sXXD
+	 yN9TI7OiR1+T2s93klss/0h1Qrfg65n8n1fXu8Uw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 171BEF802DC;
-	Tue,  5 May 2020 22:54:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5C886F802E1;
+	Tue,  5 May 2020 22:54:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 48E3CF80299; Tue,  5 May 2020 22:53:55 +0200 (CEST)
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com
- [IPv6:2607:f8b0:4864:20::743])
+ id B9548F8029A; Tue,  5 May 2020 22:53:57 +0200 (CEST)
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com
+ [IPv6:2607:f8b0:4864:20::741])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A1FF5F8025E
- for <alsa-devel@alsa-project.org>; Tue,  5 May 2020 22:53:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1FF5F8025E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 551B6F80162
+ for <alsa-devel@alsa-project.org>; Tue,  5 May 2020 22:53:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 551B6F80162
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="Z0L8NR3X"
-Received: by mail-qk1-x743.google.com with SMTP id k81so3898867qke.5
- for <alsa-devel@alsa-project.org>; Tue, 05 May 2020 13:53:46 -0700 (PDT)
+ header.b="Eg7oMUJk"
+Received: by mail-qk1-x741.google.com with SMTP id b6so3856890qkh.11
+ for <alsa-devel@alsa-project.org>; Tue, 05 May 2020 13:53:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=ujW0nHi9xMd5qk/Iu456OfLYfIWk2zEF3Gg4EMtybLY=;
- b=Z0L8NR3XT+kkiNMgkL2qsAWfp/vZlIzOa8w2Z3218G7OxAZz7LSKH6Uui46BXiUSA3
- oStY6UktILiOEtOcrfFIYH8iBF1WzVePxjAq9M2SuWIA8Tn4kpEqn4hZvpIpWrbG48Tz
- G8yQ86qXqdqa9JJfpcQ5R5TrGaA6YmElFAo44C47PJMrrxwHN+oMIj7wers6NleSFIP4
- 8p70WGeEg8n98GkzAVFYt99Px/ZtGEEZFq9q29gyu3gojRPp/2hb/c0n0DIk9YhvzASm
- ZPECuKyY7KDhdHpuELiQuMiLXA+BcMnoCbTh4R1nOXrsyNOSycQpbpyPVAQZZ/oJgZCw
- nKjA==
+ bh=jr4QKPl9zswNTG8ncCPUGYjlDOVxBACl8jNl7qI7o7A=;
+ b=Eg7oMUJkmOS80qkb0s6wvmW9SbZpO2agses9laYBZiVC6b06Bj7rFe6ciN9v5Dzphc
+ A2QXEWhELNxrrzj66FS4DvaW8IB6gAAyX8Uk/QF5hjRXVscA4Ac3gVEHCxRtfa+rfdX8
+ FPf7IMMX9V/bQiPVcYZcjjO88LCDfT6PPc5RzfVWFhKTc3ylOcBtPlCIU31iRhssalcL
+ xtZ8avoMzUwJmYgdMXJbh5hP7btJZ2j1PMqJIcTSct26ddyQ2L1Ua7tHRGVclUFOpe7+
+ 9/T7ZVexe7+GdGxHyE1dd4N7x3u8QZiH4CZ4aw7m7XIuwWnN+DzIVAzB/n5fEEDyVXdf
+ yhYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=ujW0nHi9xMd5qk/Iu456OfLYfIWk2zEF3Gg4EMtybLY=;
- b=aqb3GcckFvIf7ak4z3ocu0CgYEEoe9gMa7n9BmgQpw0YKXYjhB/JQKGJI8vndz5Pd5
- 63ro/FYpS4VSe8X4el/Pzc5nIAcllGvuuF1nmnmvYUqW2pY84lqMmJgY1lVSQbHUXhii
- Mu5MdFPco9h7Rck24S3Tmq/GYoZvocZDk9fWAa1ZByPYWBWJLv7HjD3AWA3DsEypp4AG
- oRf0fhOwp+VHRj6xDqdBpVCORCHTVAwq+yUQyDQU866ERTjV3OFcJpXFuPTc2aiuq3WE
- 56HdeL5z/XPOsYHdejXSxv0/1zHN1romAIZx+Ulz9cFAXlnWQofWX7gZKwer5yGHsWay
- Wc9w==
-X-Gm-Message-State: AGi0PubGXsF7pbIntUnUUWGBmH/Q6E3eo4ZKLkpP2i/7nJ20mfnCnmI9
- UR3Abqj0euGK9BEzoG//P6Ze/V7W
-X-Google-Smtp-Source: APiQypJCOCSnM9yIyOIRr650TrrqZjWKpSrQnfV23KclsMxn3VcRTUG4Al0Rn58stkvFUfxNEmcEtA==
-X-Received: by 2002:a37:38e:: with SMTP id 136mr5496834qkd.247.1588712023992; 
- Tue, 05 May 2020 13:53:43 -0700 (PDT)
+ bh=jr4QKPl9zswNTG8ncCPUGYjlDOVxBACl8jNl7qI7o7A=;
+ b=HjHx7SXzHfwddDz0hyNQcCLhor4XG7TJkwo0ZziFiENiC3ssWpkDlU3tnxaeJ3/zbk
+ PmPe4CGUA4EKmlU4IH8exq4uKyHFeOiONOKbV+ZU+InNQAlG/3SWrjxHPTtylcPxYws2
+ tCJ4f1l+4fSA+J0UiC7xS4mVjkaiHYY0/RrF6OtJAUci7gpt8cVmprUIsMVsMKYucdis
+ rImoJeqROb8p1b78R6S4J30+B9eWvC92GurjXL+aKIF1tFy31jlPhKT/RVQ/PweRkzJ+
+ rHj84Xtsa20l9g8asP5EJbjw8+ky/LnqFA70QKGboeB+QRpvsjzYfIM7ZeaxISAxuyRa
+ pxgg==
+X-Gm-Message-State: AGi0PuYYW0bYjYkVtM5NhSd165DPg7ruKtobYa8mR6qIXVd+oQ+CUGjM
+ V1dW5t09t5d+Wm3CRGfytWyGfud8
+X-Google-Smtp-Source: APiQypI3u73n+0GTv8KJI4oULQCncn26MGuZOLS4JkGRkbTAuG3l6JqZ070zswgxQpp/lUfPo7FrFQ==
+X-Received: by 2002:a37:bd81:: with SMTP id n123mr5383148qkf.57.1588712020823; 
+ Tue, 05 May 2020 13:53:40 -0700 (PDT)
 Received: from tr4.amd.com (atlvpn.amd.com. [165.204.84.11])
- by smtp.gmail.com with ESMTPSA id k58sm2972513qtf.40.2020.05.05.13.53.42
+ by smtp.gmail.com with ESMTPSA id k58sm2972513qtf.40.2020.05.05.13.53.39
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 05 May 2020 13:53:43 -0700 (PDT)
+ Tue, 05 May 2020 13:53:40 -0700 (PDT)
 From: Alex Deucher <alexdeucher@gmail.com>
 X-Google-Original-From: Alex Deucher <alexander.deucher@amd.com>
 To: alsa-devel@alsa-project.org, broonie@kernel.org, vijendar.mukunda@amd.com,
  tiwai@suse.de
-Subject: [PATCH 06/14] ASoC: amd: irq handler changes for ACP3x PDM dma driver
-Date: Tue,  5 May 2020 16:53:19 -0400
-Message-Id: <20200505205327.642282-7-alexander.deucher@amd.com>
+Subject: [PATCH 04/14] ASoC: amd: create acp3x pdm platform device
+Date: Tue,  5 May 2020 16:53:17 -0400
+Message-Id: <20200505205327.642282-5-alexander.deucher@amd.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <20200505205327.642282-1-alexander.deucher@amd.com>
 References: <20200505205327.642282-1-alexander.deucher@amd.com>
@@ -114,95 +114,144 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 
-Whenever audio data equal to the PDM watermark level are
-consumed, interrupt is generated.
-Acknowledge the interrupt.
+ACP 3x IP has PDM decoder as one of IP blocks.
+Create a platform device for it, so that the PDM platform driver
+can be bound to this device.
+Pass PCI resources like MMIO, irq to this platform device.
 
 Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- sound/soc/amd/renoir/acp3x-pdm-dma.c | 38 ++++++++++++++++++++++++++++
- sound/soc/amd/renoir/rn_acp3x.h      |  2 ++
- 2 files changed, 40 insertions(+)
+ sound/soc/amd/renoir/rn-pci-acp3x.c | 61 ++++++++++++++++++++++++++++-
+ sound/soc/amd/renoir/rn_acp3x.h     |  3 ++
+ 2 files changed, 62 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/amd/renoir/acp3x-pdm-dma.c b/sound/soc/amd/renoir/acp3x-pdm-dma.c
-index 680b2505d65d..4ee47a85e37e 100644
---- a/sound/soc/amd/renoir/acp3x-pdm-dma.c
-+++ b/sound/soc/amd/renoir/acp3x-pdm-dma.c
-@@ -16,6 +16,31 @@
+diff --git a/sound/soc/amd/renoir/rn-pci-acp3x.c b/sound/soc/amd/renoir/rn-pci-acp3x.c
+index 429813f6ba1c..362409ef0d85 100644
+--- a/sound/soc/amd/renoir/rn-pci-acp3x.c
++++ b/sound/soc/amd/renoir/rn-pci-acp3x.c
+@@ -8,6 +8,8 @@
+ #include <linux/module.h>
+ #include <linux/io.h>
+ #include <linux/delay.h>
++#include <linux/platform_device.h>
++#include <linux/interrupt.h>
  
- #define DRV_NAME "acp_rn_pdm_dma"
+ #include "rn_acp3x.h"
  
-+static irqreturn_t pdm_irq_handler(int irq, void *dev_id)
-+{
-+	struct pdm_dev_data *rn_pdm_data;
-+	u16 cap_flag;
-+	u32 val;
-+
-+	rn_pdm_data = dev_id;
-+	if (!rn_pdm_data)
-+		return IRQ_NONE;
-+
-+	cap_flag = 0;
-+	val = rn_readl(rn_pdm_data->acp_base + ACP_EXTERNAL_INTR_STAT);
-+	if ((val & BIT(PDM_DMA_STAT)) && rn_pdm_data->capture_stream) {
-+		rn_writel(BIT(PDM_DMA_STAT), rn_pdm_data->acp_base +
-+			  ACP_EXTERNAL_INTR_STAT);
-+		snd_pcm_period_elapsed(rn_pdm_data->capture_stream);
-+		cap_flag = 1;
-+	}
-+
-+	if (cap_flag)
-+		return IRQ_HANDLED;
-+	else
-+		return IRQ_NONE;
-+}
-+
- static struct snd_soc_dai_ops acp_pdm_dai_ops = {
- 	.hw_params = NULL,
- 	.trigger   = NULL,
-@@ -66,6 +91,13 @@ static int acp_pdm_audio_probe(struct platform_device *pdev)
- 	if (!adata->acp_base)
- 		return -ENOMEM;
+@@ -17,6 +19,8 @@ MODULE_PARM_DESC(acp_power_gating, "Enable acp power gating");
  
-+	res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
-+	if (!res) {
-+		dev_err(&pdev->dev, "IORESOURCE_IRQ FAILED\n");
-+		return -ENODEV;
-+	}
-+
-+	adata->pdm_irq = res->start;
- 	adata->capture_stream = NULL;
+ struct acp_dev_data {
+ 	void __iomem *acp_base;
++	struct resource *res;
++	struct platform_device *pdev;
+ };
  
- 	dev_set_drvdata(&pdev->dev, adata);
-@@ -77,6 +109,12 @@ static int acp_pdm_audio_probe(struct platform_device *pdev)
+ static int rn_acp_power_on(void __iomem *acp_base)
+@@ -151,6 +155,8 @@ static int snd_rn_acp_probe(struct pci_dev *pci,
+ 			    const struct pci_device_id *pci_id)
+ {
+ 	struct acp_dev_data *adata;
++	struct platform_device_info pdevinfo;
++	unsigned int irqflags;
+ 	int ret;
+ 	u32 addr;
  
- 		return -ENODEV;
+@@ -172,20 +178,70 @@ static int snd_rn_acp_probe(struct pci_dev *pci,
+ 		goto release_regions;
  	}
-+	status = devm_request_irq(&pdev->dev, adata->pdm_irq, pdm_irq_handler,
-+				  irqflags, "ACP_PDM_IRQ", adata);
-+	if (status) {
-+		dev_err(&pdev->dev, "ACP PDM IRQ request failed\n");
-+		return -ENODEV;
+ 
++	/* check for msi interrupt support */
++	ret = pci_enable_msi(pci);
++	if (ret)
++		/* msi is not enabled */
++		irqflags = IRQF_SHARED;
++	else
++		/* msi is enabled */
++		irqflags = 0;
++
+ 	addr = pci_resource_start(pci, 0);
+ 	adata->acp_base = devm_ioremap(&pci->dev, addr,
+ 				       pci_resource_len(pci, 0));
+ 	if (!adata->acp_base) {
+ 		ret = -ENOMEM;
+-		goto release_regions;
++		goto disable_msi;
+ 	}
+ 	pci_set_master(pci);
+ 	pci_set_drvdata(pci, adata);
+ 	ret = rn_acp_init(adata->acp_base);
+ 	if (ret)
+-		goto release_regions;
++		goto disable_msi;
++
++	adata->res = devm_kzalloc(&pci->dev,
++				  sizeof(struct resource) * 2,
++				  GFP_KERNEL);
++	if (!adata->res) {
++		ret = -ENOMEM;
++		goto de_init;
++	}
++
++	adata->res[0].name = "acp_pdm_iomem";
++	adata->res[0].flags = IORESOURCE_MEM;
++	adata->res[0].start = addr;
++	adata->res[0].end = addr + (ACP_REG_END - ACP_REG_START);
++	adata->res[1].name = "acp_pdm_irq";
++	adata->res[1].flags = IORESOURCE_IRQ;
++	adata->res[1].start = pci->irq;
++	adata->res[1].end = pci->irq;
++
++	memset(&pdevinfo, 0, sizeof(pdevinfo));
++	pdevinfo.name = "acp_rn_pdm_dma";
++	pdevinfo.id = 0;
++	pdevinfo.parent = &pci->dev;
++	pdevinfo.num_res = 2;
++	pdevinfo.res = adata->res;
++	pdevinfo.data = &irqflags;
++	pdevinfo.size_data = sizeof(irqflags);
++
++	adata->pdev = platform_device_register_full(&pdevinfo);
++	if (IS_ERR(adata->pdev)) {
++		dev_err(&pci->dev, "cannot register %s device\n",
++			pdevinfo.name);
++		ret = PTR_ERR(adata->pdev);
++		goto unregister_devs;
 +	}
  	return 0;
- }
  
++unregister_devs:
++	platform_device_unregister(adata->pdev);
++de_init:
++	if (rn_acp_deinit(adata->acp_base))
++		dev_err(&pci->dev, "ACP de-init failed\n");
++disable_msi:
++	pci_disable_msi(pci);
+ release_regions:
+ 	pci_release_regions(pci);
+ disable_pci:
+@@ -200,6 +256,7 @@ static void snd_rn_acp_remove(struct pci_dev *pci)
+ 	int ret;
+ 
+ 	adata = pci_get_drvdata(pci);
++	platform_device_unregister(adata->pdev);
+ 	ret = rn_acp_deinit(adata->acp_base);
+ 	if (ret)
+ 		dev_err(&pci->dev, "ACP de-init failed\n");
 diff --git a/sound/soc/amd/renoir/rn_acp3x.h b/sound/soc/amd/renoir/rn_acp3x.h
-index 0b450882c6c4..1ad8a7845fda 100644
+index ec2a85085163..5e4fd99397d5 100644
 --- a/sound/soc/amd/renoir/rn_acp3x.h
 +++ b/sound/soc/amd/renoir/rn_acp3x.h
-@@ -28,8 +28,10 @@
+@@ -8,6 +8,9 @@
+ #include "rn_chip_offset_byte.h"
  
- #define ACP_ERROR_MASK 0x20000000
- #define ACP_EXT_INTR_STAT_CLEAR_MASK 0xFFFFFFFF
-+#define PDM_DMA_STAT 0x10
- 
- struct pdm_dev_data {
-+	u32 pdm_irq;
- 	void __iomem *acp_base;
- 	struct snd_pcm_substream *capture_stream;
- };
+ #define ACP_PHY_BASE_ADDRESS 0x1240000
++#define	ACP_REG_START	0x1240000
++#define	ACP_REG_END	0x1250200
++
+ #define ACP_DEVICE_ID 0x15E2
+ #define ACP_POWER_ON 0x00
+ #define ACP_POWER_ON_IN_PROGRESS 0x01
 -- 
 2.25.4
 
