@@ -2,84 +2,68 @@ Return-Path: <SRS0=Pn0z=6U=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48A59C28CBC
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 May 2020 17:18:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BCC44C47256
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 May 2020 17:20:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C9F4020936
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 May 2020 17:18:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4F1BB20736
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 May 2020 17:20:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bC3d54JE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C9F4020936
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ALOWtxzL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4F1BB20736
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=univ-grenoble-alpes.fr
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0E46D177C;
-	Wed,  6 May 2020 19:17:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E46D177C
+	by alsa0.perex.cz (Postfix) with ESMTPS id A0A641614;
+	Wed,  6 May 2020 19:20:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A0A641614
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588785498;
-	bh=DcJWLXvLlvZQGINW6ddP6KoaVYqK7I8DWUPMtCIs4KA=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1588785654;
+	bh=G7xx58/uXIvBRu4EQoUBy1LUvBxBkPBafK3wTmcBAQ8=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bC3d54JEi/r0j6Yr6kACStUaMs2VcgsH0myfsf+sZgMr0dm3cLtAbiSy2lbhbrxK/
-	 e6RcVhx5UfYrdB/awl7ecgyYykMX0hG2olBMtp5p/l8w1D06+EjFfRuxm+iK7fFCPB
-	 akmo2qljHwofQURJ0x7FguNi+MCDqyAluwk1vlFM=
+	b=ALOWtxzLlc7TmynnAUeyqdxYmklO5E4/Fmfhk4pahXir3vxh9QIREgFGIyl1bkfh9
+	 TvQwO5Y4OKB3rnkM7HXyjm+TIM02CyCap2t2HKt9sRGwdFriBsRDmzS1v2/ZKYMkBM
+	 QcJjDpN2hKgIm7jTA1fbQZ6Vl4C+ioDw+8FU2QRk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8EC79F800DF;
-	Wed,  6 May 2020 19:17:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F22B2F80258;
+	Wed,  6 May 2020 19:20:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A7A70F80249; Wed,  6 May 2020 19:17:25 +0200 (CEST)
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id E4A4DF8025E; Wed,  6 May 2020 19:20:01 +0200 (CEST)
+Received: from smtp.smtpout.orange.fr (smtp10.smtpout.orange.fr
+ [80.12.242.132])
+ (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2493DF800DF
- for <alsa-devel@alsa-project.org>; Wed,  6 May 2020 19:17:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2493DF800DF
-IronPort-SDR: J99daio+VHmk1UTOPVw+ugKqTE+M1VTaRRhBpPbqZCBfPliYnM/16njAIyo+Ywzkhi5o6NzuEH
- f460jZfP3gnw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 May 2020 10:17:05 -0700
-IronPort-SDR: mmH8gbA2BjBKdjfEAqXJ+Q1LVjhtJ6DpPHTVLaW5EwFCvspgIrJAS4jf3YJj2iVJ7dD+TEnUGn
- Ti3vx+20J3CQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,360,1583222400"; d="scan'208";a="249824162"
-Received: from sbhat1-mobl.amr.corp.intel.com (HELO [10.251.3.11])
- ([10.251.3.11])
- by fmsmga007.fm.intel.com with ESMTP; 06 May 2020 10:17:04 -0700
-Subject: Re: [PATCH 14/14] ASoC: amd: enable build for RN machine driver
-To: Mark Brown <broonie@kernel.org>,
- "Mukunda, Vijendar" <Vijendar.Mukunda@amd.com>
-References: <20200505205327.642282-1-alexander.deucher@amd.com>
- <20200505205327.642282-15-alexander.deucher@amd.com>
- <2a8891ec-d162-77ed-8093-6c7072b6b8f7@linux.intel.com>
- <20200506162656.GH5299@sirena.org.uk>
- <DM6PR12MB2633B92B19B337A72B64D0B397A40@DM6PR12MB2633.namprd12.prod.outlook.com>
- <20200506164345.GI5299@sirena.org.uk>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <2061b12a-cc4b-558f-6fc1-b6bf548e7603@linux.intel.com>
-Date: Wed, 6 May 2020 12:17:03 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 24433F800DE
+ for <alsa-devel@alsa-project.org>; Wed,  6 May 2020 19:19:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24433F800DE
+Received: from is232189.intra.cea.fr ([46.193.2.18]) by mwinf5d87 with ME
+ id bVKi2200W0PJwDa03VKq7o; Wed, 06 May 2020 19:19:50 +0200
+X-ME-Helo: is232189.intra.cea.fr
+X-ME-Auth: ZnJlZGVyaWMucmVjb3VsZXNAb3JhbmdlLmZy
+X-ME-Date: Wed, 06 May 2020 19:19:50 +0200
+X-ME-IP: 46.193.2.18
+From: frederic.recoules@univ-grenoble-alpes.fr
+To: alsa-devel@alsa-project.org
+Subject: [PATCH v3 4/5] pcm_dmix assembly: refactor the PIC mode
+Date: Wed,  6 May 2020 19:19:23 +0200
+Message-Id: <20200506171924.2644-4-frederic.recoules@univ-grenoble-alpes.fr>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200506171924.2644-1-frederic.recoules@univ-grenoble-alpes.fr>
+References: <20200506171924.2644-1-frederic.recoules@univ-grenoble-alpes.fr>
 MIME-Version: 1.0
-In-Reply-To: <20200506164345.GI5299@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: Alex Deucher <alexdeucher@gmail.com>, "tiwai@suse.de" <tiwai@suse.de>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Deucher,
- Alexander" <Alexander.Deucher@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: =?UTF-8?q?Fr=C3=A9d=C3=A9ric=20Recoules?= <frederic.recoules@orange.fr>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,31 +79,419 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Frédéric Recoules <frederic.recoules@orange.fr>
 
+Newer versions of GCC (> 5.0) accept that ebx is declared
+in the clobber list even in PIC mode. Meanwhile, even
+unlikely, the compiler may use ebx as base address of
+one of the memory entry, making subsequent access to
+them unreliable ('size', 'dst_step', 'src_step', 'sum_step').
 
-On 5/6/20 11:43 AM, Mark Brown wrote:
-> On Wed, May 06, 2020 at 04:33:00PM +0000, Mukunda, Vijendar wrote:
-> 
->>>>> +config SND_SOC_AMD_RENOIR_MACH
->>>>> +	tristate "AMD Renoir support for DMIC"
->>>>> +	select SND_SOC_DMIC
-> 
->>>> there could be a missing dependency if GPIOLIB is not selected
->>> (SND_SOC_DMIC
->>>> depends on it).
-> 
->>> That dependency is wrong, DMICs don't need GPIOs so while a given system
->>> might need DMIC the code should be fine with the stub gpiolib
->>> implementation.  It will mean it won't work on some boards though.
-> 
->> For our current implementation, we don't have any GPIOLIB dependency.
->> We just need a generic DMIC driver which should provide codec dai for
->> sound card registration.
-> 
-> What you've got should be fine then, you should test with a !GPIOLIB
-> build just to be sure though and ideally submit a patch fixing the
-> SND_SOC_DMIC Kconfig.
+Adding ebx in the clobber solves the problem.
+By the way, the entry 'old_ebx' is no longer required.
 
-if you don't care about gpios, then the only reason to use the dmic 
-codec would be the modeswitch and wakeup delays properties. If you don't 
-care then a dummy codec would be just fine.
+Signed-off-by: Frédéric Recoules <frederic.recoules@orange.fr>
+---
+ src/pcm/pcm_dmix_i386.h   | 93 ++++++++++++++++++++++++++++++---------
+ src/pcm/pcm_dmix_x86_64.h | 59 ++++++++++++++++++++-----
+ 2 files changed, 120 insertions(+), 32 deletions(-)
+
+diff --git a/src/pcm/pcm_dmix_i386.h b/src/pcm/pcm_dmix_i386.h
+index 5c900bf1..bd1d6644 100644
+--- a/src/pcm/pcm_dmix_i386.h
++++ b/src/pcm/pcm_dmix_i386.h
+@@ -26,6 +26,10 @@
+  *
+  */
+ 
++#if defined(__GNUC__) && __GNUC__ < 5 && defined(__PIC__)
++#  define BOUNDED_EBX
++#endif
++
+ /*
+  *  for plain i386
+  */
+@@ -34,8 +38,9 @@ static void MIX_AREAS_16(unsigned int size,
+ 			 volatile signed int *sum, size_t dst_step,
+ 			 size_t src_step, size_t sum_step)
+ {
++#ifdef BOUNDED_EBX
+ 	unsigned int old_ebx;
+-
++#endif
+ 	/*
+ 	 *  ESI - src
+ 	 *  EDI - dst
+@@ -46,8 +51,9 @@ static void MIX_AREAS_16(unsigned int size,
+ 	 */
+ 	__asm__ __volatile__ (
+ 		"\n"
+-
++#ifdef BOUNDED_EBX
+ 		"\tmovl %%ebx, %[old_ebx]\n"	/* ebx is GOT pointer (-fPIC) */
++#endif
+ 		/*
+ 		 *  initialization, load ESI, EDI, EBX registers
+ 		 */
+@@ -140,13 +146,20 @@ static void MIX_AREAS_16(unsigned int size,
+ 		"\tjnz 1b\n"
+ 
+ 		"7:"
++#ifdef BOUNDED_EBX
+ 		"\tmovl %[old_ebx], %%ebx\n"	/* ebx is GOT pointer (-fPIC) */
+-
+-		: [size] "+m" (size), [old_ebx] "=m" (old_ebx)
++#endif
++		: [size] "+m" (size)
++#ifdef BOUNDED_EBX
++		  , [old_ebx] "=m" (old_ebx)
++#endif
+ 		: [dst] "m" (dst), [src] "m" (src), [sum] "m" (sum),
+ 		  [dst_step] "m" (dst_step),  [src_step] "m" (src_step),
+ 		  [sum_step] "m" (sum_step)
+ 		: "esi", "edi", "edx", "ecx", "eax", "memory", "cc"
++#ifndef BOUNDED_EBX
++		  , "ebx"
++#endif
+ 	);
+ }
+ 
+@@ -158,8 +171,9 @@ static void MIX_AREAS_16_MMX(unsigned int size,
+ 			     volatile signed int *sum, size_t dst_step,
+ 			     size_t src_step, size_t sum_step)
+ {
++#ifdef BOUNDED_EBX
+ 	unsigned int old_ebx;
+-
++#endif
+ 	/*
+ 	 *  ESI - src
+ 	 *  EDI - dst
+@@ -170,8 +184,9 @@ static void MIX_AREAS_16_MMX(unsigned int size,
+ 	 */
+ 	__asm__ __volatile__ (
+ 		"\n"
+-
++#ifdef BOUNDED_EBX
+ 		"\tmovl %%ebx, %[old_ebx]\n"	/* ebx is GOT pointer (-fPIC) */
++#endif
+ 		/*
+ 		 *  initialization, load ESI, EDI, EBX registers
+ 		 */
+@@ -230,13 +245,20 @@ static void MIX_AREAS_16_MMX(unsigned int size,
+ 		"\tjnz 1b\n"
+ 		"\temms\n"
+                 "5:"
++#ifdef BOUNDED_EBX
+ 		"\tmovl %[old_ebx], %%ebx\n"	/* ebx is GOT pointer (-fPIC) */
+-
+-	        : [size] "+m" (size), [old_ebx] "=m" (old_ebx)
++#endif
++		: [size] "+m" (size)
++#ifdef BOUNDED_EBX
++		  , [old_ebx] "=m" (old_ebx)
++#endif
+ 		: [dst] "m" (dst), [src] "m" (src), [sum] "m" (sum),
+ 		  [dst_step] "m" (dst_step),  [src_step] "m" (src_step),
+ 		  [sum_step] "m" (sum_step)
+ 		: "esi", "edi", "edx", "ecx", "eax", "memory", "cc"
++#ifndef BOUNDED_EBX
++		  , "ebx"
++#endif
+ #ifdef HAVE_MMX
+ 		  , "mm0"
+ #else
+@@ -254,8 +276,9 @@ static void MIX_AREAS_32(unsigned int size,
+ 			 volatile signed int *sum, size_t dst_step,
+ 			 size_t src_step, size_t sum_step)
+ {
++#ifdef BOUNDED_EBX
+ 	unsigned int old_ebx;
+-
++#endif
+ 	/*
+ 	 *  ESI - src
+ 	 *  EDI - dst
+@@ -266,8 +289,9 @@ static void MIX_AREAS_32(unsigned int size,
+ 	 */
+ 	__asm__ __volatile__ (
+ 		"\n"
+-
++#ifdef BOUNDED_EBX
+ 		"\tmovl %%ebx, %[old_ebx]\n"	/* ebx is GOT pointer (-fPIC) */
++#endif
+ 		/*
+ 		 *  initialization, load ESI, EDI, EBX registers
+ 		 */
+@@ -349,13 +373,20 @@ static void MIX_AREAS_32(unsigned int size,
+ 		"\tjmp 1b\n"
+ 
+ 		"6:"
++#ifdef BOUNDED_EBX
+ 		"\tmovl %[old_ebx], %%ebx\n"	/* ebx is GOT pointer (-fPIC) */
+-
+-		: [size] "+m" (size), [old_ebx] "=m" (old_ebx)
++#endif
++		: [size] "+m" (size)
++#ifdef BOUNDED_EBX
++		  , [old_ebx] "=m" (old_ebx)
++#endif
+ 		: [dst] "m" (dst), [src] "m" (src), [sum] "m" (sum),
+ 		  [dst_step] "m" (dst_step),  [src_step] "m" (src_step),
+ 		  [sum_step] "m" (sum_step)
+ 		: "esi", "edi", "edx", "ecx", "eax", "memory", "cc"
++#ifndef BOUNDED_EBX
++		  , "ebx"
++#endif
+ 	);
+ }
+ 
+@@ -367,8 +398,9 @@ static void MIX_AREAS_24(unsigned int size,
+ 			 volatile signed int *sum, size_t dst_step,
+ 			 size_t src_step, size_t sum_step)
+ {
++#ifdef BOUNDED_EBX
+ 	unsigned int old_ebx;
+-
++#endif
+ 	/*
+ 	 *  ESI - src
+ 	 *  EDI - dst
+@@ -379,8 +411,9 @@ static void MIX_AREAS_24(unsigned int size,
+ 	 */
+ 	__asm__ __volatile__ (
+ 		"\n"
+-
++#ifdef BOUNDED_EBX
+ 		"\tmovl %%ebx, %[old_ebx]\n"	/* ebx is GOT pointer (-fPIC) */
++#endif
+ 		/*
+ 		 *  initialization, load ESI, EDI, EBX registers
+ 		 */
+@@ -455,13 +488,20 @@ static void MIX_AREAS_24(unsigned int size,
+ 		"\tjmp 1b\n"
+ 
+ 		"6:"
++#ifdef BOUNDED_EBX
+ 		"\tmovl %[old_ebx], %%ebx\n"	/* ebx is GOT pointer (-fPIC) */
+-
+-	        : [size] "+m" (size), [old_ebx] "=m" (old_ebx)
++#endif
++		: [size] "+m" (size)
++#ifdef BOUNDED_EBX
++		  , [old_ebx] "=m" (old_ebx)
++#endif
+ 		: [dst] "m" (dst), [src] "m" (src), [sum] "m" (sum),
+ 		  [dst_step] "m" (dst_step),  [src_step] "m" (src_step),
+ 		  [sum_step] "m" (sum_step)
+ 		: "esi", "edi", "edx", "ecx", "eax", "memory", "cc"
++#ifndef BOUNDED_EBX
++		  , "ebx"
++#endif
+ 	);
+ }
+ 
+@@ -473,8 +513,9 @@ static void MIX_AREAS_24_CMOV(unsigned int size,
+ 			      volatile signed int *sum, size_t dst_step,
+ 			      size_t src_step, size_t sum_step)
+ {
++#ifdef BOUNDED_EBX
+ 	unsigned int old_ebx;
+-
++#endif
+ 	/*
+ 	 *  ESI - src
+ 	 *  EDI - dst
+@@ -485,8 +526,9 @@ static void MIX_AREAS_24_CMOV(unsigned int size,
+ 	 */
+ 	__asm__ __volatile__ (
+ 		"\n"
+-
++#ifdef BOUNDED_EBX
+ 		"\tmovl %%ebx, %[old_ebx]\n"	/* ebx is GOT pointer (-fPIC) */
++#endif
+ 		/*
+ 		 *  initialization, load ESI, EDI, EBX registers
+ 		 */
+@@ -554,12 +596,23 @@ static void MIX_AREAS_24_CMOV(unsigned int size,
+ 		"\tjnz 1b\n"
+ 
+ 		"6:"
++#ifdef BOUNDED_EBX
+ 		"\tmovl %[old_ebx], %%ebx\n"	/* ebx is GOT pointer (-fPIC) */
+-
+-	        : [size] "+m" (size), [old_ebx] "=m" (old_ebx)
++#endif
++		: [size] "+m" (size)
++#ifdef BOUNDED_EBX
++		  , [old_ebx] "=m" (old_ebx)
++#endif
+ 		: [dst] "m" (dst), [src] "m" (src), [sum] "m" (sum),
+ 		  [dst_step] "m" (dst_step),  [src_step] "m" (src_step),
+ 		  [sum_step] "m" (sum_step)
+ 		: "esi", "edi", "edx", "ecx", "eax", "memory", "cc"
++#ifndef BOUNDED_EBX
++		  , "ebx"
++#endif
+ 	);
+ }
++
++#ifdef BOUNDED_EBX
++#  undef BOUNDED_EBX
++#endif
+diff --git a/src/pcm/pcm_dmix_x86_64.h b/src/pcm/pcm_dmix_x86_64.h
+index 803d3b24..fff07529 100644
+--- a/src/pcm/pcm_dmix_x86_64.h
++++ b/src/pcm/pcm_dmix_x86_64.h
+@@ -27,6 +27,10 @@
+  *
+  */
+ 
++#if defined(__GNUC__) && __GNUC__ < 5 && defined(__PIC__)
++#  define BOUNDED_RBX
++#endif
++
+ /*
+  *  MMX optimized
+  */
+@@ -35,8 +39,9 @@ static void MIX_AREAS_16(unsigned int size,
+ 			 volatile signed int *sum, size_t dst_step,
+ 			 size_t src_step, size_t sum_step)
+ {
++#ifdef BOUNDED_RBX
+ 	unsigned long long old_rbx;
+-
++#endif
+ 	/*
+ 	 *  RSI - src
+ 	 *  RDI - dst
+@@ -47,8 +52,9 @@ static void MIX_AREAS_16(unsigned int size,
+ 	 */
+ 	__asm__ __volatile__ (
+ 		"\n"
+-
++#ifdef BOUNDED_RBX
+ 		"\tmovq %%rbx, %[old_rbx]\n"
++#endif
+ 		/*
+ 		 *  initialization, load RSI, RDI, RBX registers
+ 		 */
+@@ -112,13 +118,20 @@ static void MIX_AREAS_16(unsigned int size,
+ 		"6:"
+ 
+ 		"\temms\n"
++#ifdef BOUNDED_RBX
+ 		"\tmovq %[old_rbx], %%rbx\n"
+-
+-		: [size] "+m" (size), [old_rbx] "=m" (old_rbx)
++#endif
++		: [size] "+m" (size)
++#ifdef BOUNDED_RBX
++		  , [old_rbx] "=m" (old_rbx)
++#endif
+ 	        : [dst] "m" (dst), [src] "m" (src), [sum] "m" (sum),
+ 		  [dst_step] "m" (dst_step),  [src_step] "m" (src_step),
+ 		  [sum_step] "m" (sum_step)
+ 		: "rsi", "rdi", "edx", "ecx", "eax", "memory", "cc"
++#ifndef BOUNDED_RBX
++		  , "rbx"
++#endif
+ #ifdef HAVE_MMX
+ 		  , "mm0"
+ #else
+@@ -136,8 +149,9 @@ static void MIX_AREAS_32(unsigned int size,
+ 			 volatile signed int *sum, size_t dst_step,
+ 			 size_t src_step, size_t sum_step)
+ {
++#ifdef BOUNDED_RBX
+ 	unsigned long long old_rbx;
+-
++#endif
+ 	/*
+ 	 *  RSI - src
+ 	 *  RDI - dst
+@@ -148,8 +162,9 @@ static void MIX_AREAS_32(unsigned int size,
+ 	 */
+ 	__asm__ __volatile__ (
+ 		"\n"
+-
++#ifdef BOUNDED_RBX
+ 		"\tmovq %%rbx, %[old_rbx]\n"
++#endif
+ 		/*
+ 		 *  initialization, load RSI, RDI, RBX registers
+ 		 */
+@@ -233,13 +248,20 @@ static void MIX_AREAS_32(unsigned int size,
+ 		"\tjnz 1b\n"
+ 
+ 		"6:"
++#ifdef BOUNDED_RBX
+ 		"\tmovq %[old_rbx], %%rbx\n"
+-
+-		: [size] "+m" (size), [old_rbx] "=m" (old_rbx)
++#endif
++		: [size] "+m" (size)
++#ifdef BOUNDED_RBX
++		  , [old_rbx] "=m" (old_rbx)
++#endif
+ 	        : [dst] "m" (dst), [src] "m" (src), [sum] "m" (sum),
+ 		  [dst_step] "m" (dst_step),  [src_step] "m" (src_step),
+ 		  [sum_step] "m" (sum_step)
+ 		: "rsi", "rdi", "edx", "ecx", "eax", "memory", "cc"
++#ifndef BOUNDED_RBX
++		  , "rbx"
++#endif
+ 	);
+ }
+ 
+@@ -251,8 +273,9 @@ static void MIX_AREAS_24(unsigned int size,
+ 			 volatile signed int *sum, size_t dst_step,
+ 			 size_t src_step, size_t sum_step)
+ {
++#ifdef BOUNDED_RBX
+ 	unsigned long long old_rbx;
+-
++#endif
+ 	/*
+ 	 *  RSI - src
+ 	 *  RDI - dst
+@@ -263,8 +286,9 @@ static void MIX_AREAS_24(unsigned int size,
+ 	 */
+ 	__asm__ __volatile__ (
+ 		"\n"
+-
++#ifdef BOUNDED_RBX
+ 		"\tmovq %%rbx, %[old_rbx]\n"
++#endif
+ 		/*
+ 		 *  initialization, load RSI, RDI, RBX registers
+ 		 */
+@@ -336,12 +360,23 @@ static void MIX_AREAS_24(unsigned int size,
+ 		"\tjnz 1b\n"
+ 
+ 		"6:"
++#ifdef BOUNDED_RBX
+ 		"\tmovq %[old_rbx], %%rbx\n"
+-
+-		: [size] "+m" (size), [old_rbx] "=m" (old_rbx)
++#endif
++		: [size] "+m" (size)
++#ifdef BOUNDED_RBX
++		  , [old_rbx] "=m" (old_rbx)
++#endif
+ 	        : [dst] "m" (dst), [src] "m" (src), [sum] "m" (sum),
+ 		  [dst_step] "m" (dst_step),  [src_step] "m" (src_step),
+ 		  [sum_step] "m" (sum_step)
+ 		: "rsi", "rdi", "edx", "ecx", "eax", "memory", "cc"
++#ifndef BOUNDED_RBX
++		  , "rbx"
++#endif
+ 	);
+ }
++
++#ifdef BOUNDED_RBX
++#  undef BOUNDED_RBX
++#endif
+-- 
+2.17.1
+
