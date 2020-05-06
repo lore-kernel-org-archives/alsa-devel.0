@@ -2,75 +2,82 @@ Return-Path: <SRS0=Pn0z=6U=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93EB8C28CBC
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 May 2020 16:22:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F336C47257
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 May 2020 16:28:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 168C9208DB
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 May 2020 16:22:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F1D10214D8
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 May 2020 16:28:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vQ8zuy5Y";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="RGE2eW/C"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 168C9208DB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dwFbcWs0";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="SBUsU+m0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F1D10214D8
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 596BC1743;
-	Wed,  6 May 2020 18:21:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 596BC1743
+	by alsa0.perex.cz (Postfix) with ESMTPS id 78CF21757;
+	Wed,  6 May 2020 18:27:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 78CF21757
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588782153;
-	bh=6ody89kj779DuishSNc4WgF9or+Kp0PLl0WI/a3+U/A=;
-	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
+	s=default; t=1588782479;
+	bh=gBcAALoNWFbN1OZIxWS9i2NDKgTpJvc1EOSNGincAbM=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vQ8zuy5YL2GPqXxbciYPPKZoRXjs1dbEkJnNvNBXUPbe8orprXjE12chvwHBSSCkE
-	 aY0uncyEQQW4BBgPdjpOL+7QP+vhW4qamUwsxaGrwsXDzMZq4r4Om7Bz2GVRgNwG3O
-	 C+H4uHZ+qlG3abXZ97B1dJ92Okwelif27/VmjB9k=
+	b=dwFbcWs07kd8cHBqeUc2OW1l7LXQS/fFw5SMxxMkGLQC3lr7n8eABQ71gKsHj8w85
+	 1d6JW2zY1UueEiuy4dpf3wVlwT4r3/2IHo9xP4jzR2ms3h4prheOn2kWGrJZxAnHF5
+	 ER0MXGlOMVcXS41aCOKM+W+aQuR3rMt2qo+Ns9Ew=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CCD3FF80234;
-	Wed,  6 May 2020 18:21:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 06E6CF80234;
+	Wed,  6 May 2020 18:27:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 32BAAF80249; Wed,  6 May 2020 18:21:41 +0200 (CEST)
+ id 2FAE5F80249; Wed,  6 May 2020 18:27:08 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3B3E2F800DE
- for <alsa-devel@alsa-project.org>; Wed,  6 May 2020 18:21:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3B3E2F800DE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9CAA3F800AD
+ for <alsa-devel@alsa-project.org>; Wed,  6 May 2020 18:27:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9CAA3F800AD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="RGE2eW/C"
+ header.b="SBUsU+m0"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id E66FC206B9;
- Wed,  6 May 2020 16:21:31 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 5BF922145D;
+ Wed,  6 May 2020 16:26:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1588782092;
- bh=6ody89kj779DuishSNc4WgF9or+Kp0PLl0WI/a3+U/A=;
- h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=RGE2eW/Cz9xWNS1o5nnQYukGWNJcSMJfUsYggG+0/vYsv6z34wu6QBkuIkz4wnCf/
- EKrJmh4wz5E6nomgBilmxcDZttODl3Qz7c7Hhd/gbhpfju9+D/v8T+D7ud9S0b4+Go
- medJkHZ+WxBZInnfINiQGI6Jmsr/53YJfggmvroU=
-Date: Wed, 06 May 2020 17:21:29 +0100
+ s=default; t=1588782419;
+ bh=gBcAALoNWFbN1OZIxWS9i2NDKgTpJvc1EOSNGincAbM=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=SBUsU+m09Y0oI8uOb0JDXtrabPUgmfXumf+a5f6KWvXqJO0mC9awtXRlynQl8AjUB
+ 4nD4+jLa5VwY8Lou9Hk3e7aOXkZxfGTbF87wPHzRdwsX9wp7qiOf1tR5nNj8EkK5dD
+ k1YM36UgxzQoJIZ9wuuuTXaFAFkUOOeBEAKQsGKk=
+Date: Wed, 6 May 2020 17:26:56 +0100
 From: Mark Brown <broonie@kernel.org>
-To: perex@perex.cz, matthias.bgg@gmail.com,
- Tang Bin <tangbin@cmss.chinamobile.com>, lgirdwood@gmail.com
-In-Reply-To: <20200506143009.13368-1-tangbin@cmss.chinamobile.com>
-References: <20200506143009.13368-1-tangbin@cmss.chinamobile.com>
-Subject: Re: [PATCH] ASoC: mediatek: Fix error handling
-Message-Id: <158878208991.2264.6627359892180140797.b4-ty@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 14/14] ASoC: amd: enable build for RN machine driver
+Message-ID: <20200506162656.GH5299@sirena.org.uk>
+References: <20200505205327.642282-1-alexander.deucher@amd.com>
+ <20200505205327.642282-15-alexander.deucher@amd.com>
+ <2a8891ec-d162-77ed-8093-6c7072b6b8f7@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="Dx9iWuMxHO1cCoFc"
+Content-Disposition: inline
+In-Reply-To: <2a8891ec-d162-77ed-8093-6c7072b6b8f7@linux.intel.com>
+X-Cookie: Not recommended for children.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: Alex Deucher <alexdeucher@gmail.com>, tiwai@suse.de,
+ alsa-devel@alsa-project.org, Alex Deucher <alexander.deucher@amd.com>,
+ vijendar.mukunda@amd.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,42 +93,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 6 May 2020 22:30:09 +0800, Tang Bin wrote:
-> If the function platform_get_irq() failed, the negative value
-> returned will not be detected here. So fix error handling in
-> mt6797_afe_pcm_dev_probe(). And when get irq failed, the function
-> platform_get_irq() logs an error message, so remove redundant
-> message here.
-> 
-> Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
-> 
-> [...]
 
-Applied to
+--Dx9iWuMxHO1cCoFc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.8
+On Tue, May 05, 2020 at 04:39:37PM -0500, Pierre-Louis Bossart wrote:
 
-Thanks!
+> > +config SND_SOC_AMD_RENOIR_MACH
+> > +	tristate "AMD Renoir support for DMIC"
+> > +	select SND_SOC_DMIC
 
-[1/1] ASoC: mediatek: Fix error handling
-      commit: adb69968074a22376074aaa7f7971d93636b4332
+> there could be a missing dependency if GPIOLIB is not selected (SND_SOC_DMIC
+> depends on it).
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+That dependency is wrong, DMICs don't need GPIOs so while a given system
+might need DMIC the code should be fine with the stub gpiolib
+implementation.  It will mean it won't work on some boards though.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+--Dx9iWuMxHO1cCoFc
+Content-Type: application/pgp-signature; name="signature.asc"
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+-----BEGIN PGP SIGNATURE-----
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6y5U8ACgkQJNaLcl1U
+h9CNNAf9GjeIpQMY8UoYNAFT5CsuY1lcficAmg1XO+vn4jmZiDupQ98RTTDp+APO
+Ep8qA0m4lzdpzojqljRanAtE16EmZhlSHoqQoFKtrWUTBgt+muqCwPMeMtCOgxmj
+fg0NmNS3GSGELuMs+IArN7AJ3cNY/hxBIiiTqC/ihGIX/9IKm6dRNr1YN4qJYrg+
+M5yi8OaOh62iHcxienqa04mtZJkDe0TU8Rm3nkQmZWLl9IZt1Y4OhCa6IW8Ljqnb
+DnvvdY9XvLZTc7nVYJemkMhcX3go2qrsOLFGbcmLFcKf8DCpo289oeRgxEUWJiEE
+hIEMZD1N0V9/X/gqYN3DDQmsw9IHRQ==
+=1WQ4
+-----END PGP SIGNATURE-----
 
-Thanks,
-Mark
+--Dx9iWuMxHO1cCoFc--
