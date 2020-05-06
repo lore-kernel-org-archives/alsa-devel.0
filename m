@@ -2,78 +2,68 @@ Return-Path: <SRS0=Pn0z=6U=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E057C28CBC
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 May 2020 20:31:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E6DB5C28CBC
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 May 2020 20:40:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EB2BA20747
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 May 2020 20:31:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 93B292075E
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 May 2020 20:40:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dfX9Onqn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EB2BA20747
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gifEb7/H"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 93B292075E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 43F4A17A3;
-	Wed,  6 May 2020 22:30:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 43F4A17A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id EC7E11772;
+	Wed,  6 May 2020 22:39:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC7E11772
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588797108;
-	bh=Jf9BzoKcc9ZbNmBeSisNBaoNFxCNsS6TltttqRpL32Q=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1588797614;
+	bh=Q30q9oV+ScdpwIia22hYkWbG+Dw1KvW/zlx2ZKa9Qho=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dfX9OnqnKp78/C0JYPNdXnxRVifyGXzwwWGrJzsQ09is462l9kXLy+IdIaRyu7fPy
-	 ASZPhifyL1nLhblpZ7BIk3Xe0Vc2yIA9jdso6PpEM3OrzVNJpiyZwaqwC7ciU6V0KR
-	 4Doqb+3SHjkb3CcE+5Nt5IwWnL420pAnS7xJo5KU=
+	b=gifEb7/HKDubh8/Xiohor586vg04vcdUFdyvQnsuS8iwhamSaXWYsml06ntWt3GbE
+	 tsU72pvzyDHPV1U51XLIQvLO5602AGiTfmJrfwFBYYF2OR9jRpNpwnD0THuD0x9uSm
+	 FjhVr8fCwTilyy8grG9VggMpNrETYWUbmBGJfe3o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 52909F80234;
-	Wed,  6 May 2020 22:30:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 397DDF80234;
+	Wed,  6 May 2020 22:39:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EEE6EF80249; Wed,  6 May 2020 22:30:46 +0200 (CEST)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 35948F80249; Wed,  6 May 2020 22:37:06 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5ED7CF800DF
- for <alsa-devel@alsa-project.org>; Wed,  6 May 2020 22:30:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5ED7CF800DF
-IronPort-SDR: Z6Eth5wy3gUEC/kOkAVEijNEyxjpPj7Uu8H2TCBY9IbL4QTH0gbIuraFiCwZ+2GOGlRYu1edLu
- kthUpdJaqRlg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 May 2020 13:30:25 -0700
-IronPort-SDR: 6x/2fODcDBWMbUUvv1H5JPzcMNBbGbmu6R9SKAHDExhbbdilf6lxnBTBFqj1gzr/yb5ocRpiqN
- r6NtTzAYhxmQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,360,1583222400"; d="scan'208";a="249868632"
-Received: from sbhat1-mobl.amr.corp.intel.com (HELO [10.251.3.11])
- ([10.251.3.11])
- by fmsmga007.fm.intel.com with ESMTP; 06 May 2020 13:30:24 -0700
-Subject: Re: [PATCH] Revert "ASoC: Intel: Skylake: mark HDAudio codec support
- as deprecated."
-To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
-References: <20200506195509.22307-1-cezary.rojewski@intel.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <3fe9ac1d-177c-8b99-a44a-1b6ccb1e2325@linux.intel.com>
-Date: Wed, 6 May 2020 15:30:24 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <20200506195509.22307-1-cezary.rojewski@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: broonie@kernel.org, tiwai@suse.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 62846F800DF
+ for <alsa-devel@alsa-project.org>; Wed,  6 May 2020 22:36:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62846F800DF
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id E7B0AAC68;
+ Wed,  6 May 2020 20:36:40 +0000 (UTC)
+Date: Wed, 06 May 2020 22:36:37 +0200
+Message-ID: <s5h5zd87qcq.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: frederic.recoules@univ-grenoble-alpes.fr
+Subject: Re: [PATCH v3 1/5] pcm_dmix assembly: change the token by symbolic
+ names
+In-Reply-To: <20200506171924.2644-1-frederic.recoules@univ-grenoble-alpes.fr>
+References: <20200506171924.2644-1-frederic.recoules@univ-grenoble-alpes.fr>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org,
+ =?UTF-8?B?RnLDqWTDqXJpYw==?= Recoules <frederic.recoules@orange.fr>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,41 +79,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 5/6/20 2:55 PM, Cezary Rojewski wrote:
-> This reverts commit 02701b909c2fab4b49f9c9545ab921c9b2c7a768.
+On Wed, 06 May 2020 19:19:20 +0200,
+frederic.recoules@univ-grenoble-alpes.fr wrote:
 > 
-> With 'ASoC: Intel: Skylake: Fix HDaudio and Dmic' series applied,
-> warning is no longer true. Remove it.
+> From: Frédéric Recoules <frederic.recoules@orange.fr>
 > 
-> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-> ---
->   sound/soc/intel/Kconfig | 9 +++------
->   1 file changed, 3 insertions(+), 6 deletions(-)
+> It eases the refactoring of assembly chunk since we can now
+> add/remove/move entries without worrying about maintaining
+> the token numbering in the template.
 > 
-> diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-> index c8de0bb5bed9..d6c5c68b7499 100644
-> --- a/sound/soc/intel/Kconfig
-> +++ b/sound/soc/intel/Kconfig
-> @@ -209,12 +209,9 @@ config SND_SOC_INTEL_SKYLAKE_SSP_CLK
->   config SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC
->   	bool "HDAudio codec support"
->   	help
-> -	  This option broke audio on Linus' Skylake laptop in December 2018
-> -	  and the race conditions during the probe were not fixed since.
-> -	  This option is DEPRECATED, all HDaudio codec support needs
-> -	  to be handled by the SOF driver.
-> -	  Distributions should not enable this option and there are no known
-> -	  users of this capability.
-> +	  If you have a Intel Skylake/Broxton/ApolloLake/KabyLake/
-> +	  GeminiLake or CannonLake platform with an HDaudio codec
-> +	  then enable this option by saying Y
+> Note: does not impact the binary output.
+> 
+> Signed-off-by: Frédéric Recoules <frederic.recoules@orange.fr>
 
-Yes we need to change the help text now that the issues were fixed and 
-UCM/topology are available, but I would be more comfortable if the text 
-was aligned with your patch "[PATCH] ALSA: hda: Allow SST driver on SKL 
-and KBL platforms with DMIC"
+Now I applied all five patches.
+Thanks!
 
-e.g. If you have a Intel Skylake or KabyLake plaforms with an HDaudio 
-codec+DMIC configuration then enable this option by saying Y
+Takashi
