@@ -2,82 +2,77 @@ Return-Path: <SRS0=Pn0z=6U=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E20EC28CBC
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 May 2020 18:03:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B065C28CBC
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 May 2020 18:08:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DE09F20747
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 May 2020 18:03:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 961F020747
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 May 2020 18:08:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sbOIMbDt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DE09F20747
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XacBqF6C"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 961F020747
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=univ-grenoble-alpes.fr
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3B4B61787;
-	Wed,  6 May 2020 20:02:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B4B61787
+	by alsa0.perex.cz (Postfix) with ESMTPS id CE140179D;
+	Wed,  6 May 2020 20:07:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE140179D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588788219;
-	bh=pVpK8yYX3pH6yHHM6RwU150iHkc07wgVxC6sVr6+MMw=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1588788485;
+	bh=Al3obY+rj2Hw1zWFZMTvT9NG8jigKPqSdiu3kdOEbBg=;
+	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sbOIMbDtccv4tGSSCK9btswNu+RGGeB0T5qj6c0/vKu4xZvrujOmMhLGv+gFU+a2Z
-	 fRDIeq+Iyrr67FRpzb8quOvzVlNK/6mjPArh3+kKdY/rSu097YYjIU0llTVHEW5TtQ
-	 KNWxZAzxayzVL++31cI4HQ6B1rVUu0KpSSOiHHqw=
+	b=XacBqF6C9p7yZAH0B5kuxl9OFz3HZHwB8N5JCOZ9DXTNmeokpYI0C604YyRpqZphV
+	 EWF+IcJhuaPgsWALVsu23C1mCie6gSdwhe1JpUyKsTZQ5SRQA7xqMGtxynINDoc9vt
+	 gSm+p+unYgk6NEolIPm/haCtlgHJSIymQSMJl0iI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C1184F80234;
-	Wed,  6 May 2020 20:02:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 598A7F800DE;
+	Wed,  6 May 2020 20:07:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4A0D7F80249; Wed,  6 May 2020 20:02:47 +0200 (CEST)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id D73ACF80249; Wed,  6 May 2020 20:07:12 +0200 (CEST)
+Received: from zm-mta-out-3.u-ga.fr (zm-mta-out-3.u-ga.fr [152.77.200.56])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 08E03F800DF
- for <alsa-devel@alsa-project.org>; Wed,  6 May 2020 20:02:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 08E03F800DF
-IronPort-SDR: gPvD2iqB79OQI+u1PBNIdjN7IQKWJCC4ifrRx3/ZV9Ce35k10TszejeQzffi4Ztr9kayWm5OBI
- yLY3slHdbCwQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 May 2020 11:02:39 -0700
-IronPort-SDR: c7cY8iDB0BZai8MeFOQXAmakAM+4zvQ1VM4y+inxP9fK6WsKXfXgm8fu2sTX9qMljvok4SaALR
- gSIN03jQ2XEw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,360,1583222400"; d="scan'208";a="249835278"
-Received: from sbhat1-mobl.amr.corp.intel.com (HELO [10.251.3.11])
- ([10.251.3.11])
- by fmsmga007.fm.intel.com with ESMTP; 06 May 2020 11:02:38 -0700
-Subject: Re: [PATCH 07/14] ASoC: amd: add acp3x pdm driver dma ops
-To: "Mukunda, Vijendar" <Vijendar.Mukunda@amd.com>,
- Alex Deucher <alexdeucher@gmail.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "broonie@kernel.org" <broonie@kernel.org>, "tiwai@suse.de" <tiwai@suse.de>
-References: <20200505205327.642282-1-alexander.deucher@amd.com>
- <20200505205327.642282-8-alexander.deucher@amd.com>
- <fa130cbb-412d-768e-db71-15463fa58ab1@linux.intel.com>
- <DM6PR12MB26333FCDC930138DC47CC20397A40@DM6PR12MB2633.namprd12.prod.outlook.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <13385ae5-eb6c-fa85-6177-3e7fbb39c35d@linux.intel.com>
-Date: Wed, 6 May 2020 13:02:37 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9E13BF800DE
+ for <alsa-devel@alsa-project.org>; Wed,  6 May 2020 20:07:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E13BF800DE
+Received: from zm-mta-out.u-ga.fr (zm-mta-out.u-ga.fr [152.77.200.53])
+ by zm-mta-out-3.u-ga.fr (Postfix) with ESMTP id 565014117E;
+ Wed,  6 May 2020 20:07:00 +0200 (CEST)
+Received: from zm-mbx05.u-ga.fr (zm-mbx05.u-ga.fr [152.77.200.19])
+ by zm-mta-out.u-ga.fr (Postfix) with ESMTP id 5040B80F9E;
+ Wed,  6 May 2020 20:07:00 +0200 (CEST)
+Date: Wed, 6 May 2020 20:07:00 +0200 (CEST)
+From: =?utf-8?B?RlLDiUTDiVJJQw==?= RECOULES
+ <frederic.recoules@univ-grenoble-alpes.fr>
+To: tiwai <tiwai@suse.de>
+Message-ID: <1268362089.3495441.1588788420305.JavaMail.zimbra@univ-grenoble-alpes.fr>
+In-Reply-To: <s5heerybib0.wl-tiwai@suse.de>
+References: <20200427165707.17570-1-frederic.recoules@univ-grenoble-alpes.fr>
+ <s5h4kt2ln5s.wl-tiwai@suse.de>
+ <640422029.9300033.1588239716857.JavaMail.zimbra@univ-grenoble-alpes.fr>
+ <771384288.121039.1588620316734.JavaMail.zimbra@univ-grenoble-alpes.fr>
+ <s5heerybib0.wl-tiwai@suse.de>
+Subject: Re: [PATCH] [inline assembly] fix pcm_dmix_i386.h assembly chunk
+ interfaces
 MIME-Version: 1.0
-In-Reply-To: <DM6PR12MB26333FCDC930138DC47CC20397A40@DM6PR12MB2633.namprd12.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: "Deucher, Alexander" <Alexander.Deucher@amd.com>
+X-Originating-IP: [46.193.2.18]
+X-Mailer: Zimbra 8.8.15_GA_3928 (ZimbraWebClient - FF72 (Linux)/8.8.15_GA_3928)
+Thread-Topic: fix pcm_dmix_i386.h assembly chunk interfaces
+Thread-Index: a0MVhytrvCEa+cg8LqNs9L2GTifEjA==
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: alsa-devel <alsa-devel@alsa-project.org>,
+ frederic recoules <frederic.recoules@orange.fr>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,31 +88,101 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi Takashi,=20
+
+Thanks for your comments.=20
+I addressed the style issues and I resubmitted the patches (V3).=20
+
+Note about the MMX patch:=20
+The mm1 register is read by the chunk, but its value is not used=20
+(the instruction packssdw put the value of mm1 in the high 32 bits of mm0=
+=20
+but then, only the low 32 bits are used. My tool made an over-approximation=
+=20
+but it is now fixed).=20
+
+By the way, the first 3 patches produce the same binary output as master.=
+=20
+However, I looked in the 'test' folder, but I do not know how to run a test=
+ for=20
+the pcm. For now, I have no time to investigate how alsa should be run till=
+ the=20
+next week.=20
+
+> But there were some issues with the patch format. IIRC, the=20
+> patch 2 couldn't be applied to the latest git tree cleanly (some space=20
+> etter issues?), so I had to manually modify it.=20
+
+Sorry for that, it looks like my text editor remove space at the end of the=
+ line=20
+automatically. It should not be the case with the new patches.=20
+
+Regards,=20
+Fr=C3=A9d=C3=A9ric=20
 
 
+De: "tiwai" <tiwai@suse.de>=20
+=C3=80: "FR=C3=89D=C3=89RIC RECOULES" <frederic.recoules@univ-grenoble-alpe=
+s.fr>=20
+Cc: "alsa-devel" <alsa-devel@alsa-project.org>, "frederic recoules" <freder=
+ic.recoules@orange.fr>=20
+Envoy=C3=A9: Mardi 5 Mai 2020 15:52:19=20
+Objet: Re: [PATCH] [inline assembly] fix pcm_dmix_i386.h assembly chunk int=
+erfaces=20
 
->>> +static const struct snd_pcm_hardware acp_pdm_hardware_capture = {
->>> +	.info = SNDRV_PCM_INFO_INTERLEAVED |
->>> +		SNDRV_PCM_INFO_BLOCK_TRANSFER |
->>> +		SNDRV_PCM_INFO_BATCH | SNDRV_PCM_INFO_MMAP |
->>> +		SNDRV_PCM_INFO_MMAP_VALID |
->>> +	    SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME,
->>
->> Can you actually resume from the same position? this seems odd when
->> combined with INFO_BATCH which means the position is only precise at
->> period boundaries.
->>
-> We used similar flag in Raven APU acp dma driver well.
+On Mon, 04 May 2020 21:25:16 +0200,=20
+FR=C3=89D=C3=89RIC RECOULES wrote:=20
+>=20
+> Hi Takashi,=20
+>=20
+> I would like an update on the review process ([PATCH */6 V2] [pcm_dmix=20
+> assembly])=20
+>=20
+> As a reminder, I split the changes in 6 distinct patches.=20
+> The 3 first patches produce exactly the same binary output, so they do no=
+t=20
+> need testing.=20
+> The 4th one has just some minor change due to the fact that I added an=20
+> instruction -- I am highly confident it breaks nothing.=20
 
-Takashi clarified during the early SOF days that if you cannot resume 
-from the same position, then the ALSA core will attempt a prepare and 
-restart. So if you don't support a restart from the same point, it's 
-fine to remove this flag.
+The compile tests passed with a few different compiler set, so that's=20
+good. But there were some issues with the patch format. IIRC, the=20
+patch 2 couldn't be applied to the latest git tree cleanly (some space=20
+letter issues?), so I had to manually modify it.=20
 
-> As per my understanding INFO_BATCH is more about providing period granularity when hw_ptr is queried.
-> But PDM driver DMA pointer callback returns precise hw_ptr when queried.
-> Correct me, if understanding is wrong.
+Also, some style issues:=20
 
-No, INFO_BATCH means the hw_ptr is only updated with a large 
-granularity, possibly as large as a period. if you can support precise 
-position you should not use this flag.
+- Please avoid a prefix like "[configure]" in the subject.=20
+The prefix with "[PATCH xxx]" is good, and this should remain, but=20
+the next prefix should be "configure:" instead. Otherwise the=20
+prefix with the brackets are pruned at applying a patch via git-am.=20
+
+- Please give more texts about why the change is done.=20
+In all your patches, there are no explanations why you change it.=20
+It's often more important than describing what you're changing.=20
+For example, the patch 2 "change the token by symbolic names". Why=20
+is this needed to be symbolic names? Write some more information in=20
+each patch description.=20
+
+- We usually use #ifdef without space between "#" and "ifdef".=20
+Let's keep that style consistently.=20
+
+> If you need I test the 2 last ones (that reduce the size of the produced=
+=20
+> binary), could you point me out what test I should run?=20
+
+We need at least some build tests with different compiler versions and=20
+check whether dmix actually works (not necessarily on all of them but=20
+some of those compiled results).=20
+
+> Meanwhile, my deadline comes and I would really appreciate to see the pat=
+ches=20
+> applied by wednesday night.=20
+
+If you can work on the above and resubmit v3 patchset, I'll happily=20
+apply them.=20
+
+
+Thanks!=20
+
+Takashi=20
