@@ -2,79 +2,94 @@ Return-Path: <SRS0=eFJe=6V=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CECCEC38A2A
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 May 2020 11:27:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6714EC38A24
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 May 2020 11:33:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5DBCF20725
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 May 2020 11:27:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E2BF420870
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 May 2020 11:33:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TxPcdID5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5DBCF20725
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TP1/cjjz";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ezklgun3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E2BF420870
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2B2C41810;
-	Thu,  7 May 2020 13:26:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B2C41810
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4E1861802;
+	Thu,  7 May 2020 13:32:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E1861802
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588850844;
-	bh=5lg97HhTO+n1QQL73A/+fsl0zMZeDGn4bMW7HcgtYDY=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=TxPcdID5JMMHheVLFRWM46C+UvhQ5kbctds99DM2+vW1pNd9+T5ixNd2ph+ubaVVa
-	 GaKhIV9BbvXxXGL+1N3isdu151GZbY4PNGHaAFXi7UHNRKLei3MH86iswm12gdruq2
-	 tUgDlp9vvmKDOELRf8EDD/nllKmt+9XAF9eO5L9Q=
+	s=default; t=1588851221;
+	bh=LkCRN2RVTW6bV8u2IxPJzAzzlOrbqz4YbHN97fAEQ/4=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=TP1/cjjzU+LIvqSuwr/4XFuFObAP5JXus+hdWSFWPZ5iH7cyBdTBPJp2A7lw4FXBY
+	 gFVe62CaNK95JiBRfQOJMRWC87szHq9Dmk29LHvIsce47YINyS0JFfIE+49QT7Ld0A
+	 MVmISo6mpIQypOJk0oMY/Ni3a6Zi8LJ7D6Mrjp3A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 03E70F801D9;
-	Thu,  7 May 2020 13:25:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D86ACF8011C;
+	Thu,  7 May 2020 13:32:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 62C06F800AD; Thu,  7 May 2020 13:25:41 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 80EC9F8015F; Thu,  7 May 2020 13:32:49 +0200 (CEST)
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com
+ [IPv6:2a00:1450:4864:20::442])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EA64CF800AD
- for <alsa-devel@alsa-project.org>; Thu,  7 May 2020 13:25:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA64CF800AD
-IronPort-SDR: yQ1Z6UbOtUyChgZYNCSzOiUls1N0Ma3oDb1bIIkUKUpSJY/Am90EvMAHM206PgCxAdo5tcNj+0
- fEBW+zH66emA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 May 2020 04:25:30 -0700
-IronPort-SDR: 0e+MGkVOOXFxbgA++v4CksiIKrnz3BFb1wLrlHpIJyZas9UxUVSl1KXxa/nfivws1G4r658iq1
- A0Q7Xe2hJ22A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,363,1583222400"; d="scan'208";a="284962575"
-Received: from pi-desktop.igk.intel.com ([10.237.148.102])
- by fmsmga004.fm.intel.com with ESMTP; 07 May 2020 04:25:28 -0700
-From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-To: Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Jie Yang <yang.jie@linux.intel.com>,
- Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 2/2] ASoC: Intel: Use readq to read 64 bit registers
-Date: Thu,  7 May 2020 09:34:05 -0400
-Message-Id: <20200507133405.32251-2-amadeuszx.slawinski@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200507133405.32251-1-amadeuszx.slawinski@linux.intel.com>
-References: <20200507133405.32251-1-amadeuszx.slawinski@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0D06EF8011C
+ for <alsa-devel@alsa-project.org>; Thu,  7 May 2020 13:32:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D06EF8011C
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="ezklgun3"
+Received: by mail-wr1-x442.google.com with SMTP id i15so5512126wrx.10
+ for <alsa-devel@alsa-project.org>; Thu, 07 May 2020 04:32:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id;
+ bh=miVjUF+kU459Gr4P0bFX33XFzImTaFGt5nwVSljspPk=;
+ b=ezklgun3NG8L1ZLbd0I/M8AZkRmb1NVMMIzZtOYA91JKlr7sDY4h8dRsT8fHiZr5sc
+ 2sKrYYkfWy7mm6Dop7KFiE7THZONbRDESBN5SaxRJyxxPlV75OGFN5EwIeHYNMfcUs+7
+ WHfoMElCdA+YwRMYWk7eDqMnoBRVoOdWHVwFqlgVvXodrb/6OyPVetautl0IkOlR0lSd
+ bhoqGy1Uwk+sx7DQBfov++lxLzCGHj2VbAqkaGnjQyqRWtZU9QeEENpE13pjwZsSlp0c
+ prbBP2cwXGsLBVjkN2TnjXD2QppwjO/pDiBiyJtvIxq1e2LCMS0YGWJdTZe2otTlprTs
+ k33Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id;
+ bh=miVjUF+kU459Gr4P0bFX33XFzImTaFGt5nwVSljspPk=;
+ b=d1YX3So/OB/slEzk2csySGiO9jt/T/UpMD1XW0x3qZXbJi6BLd4BUnuD1XLDbPTbdg
+ ou9hUyBAFQUaVwbUwHTIc1abjGbyjaajDDo+xMe1JsYNGz3hGNgA0nvMSr+yvS5K6AdR
+ outRdR2jl3NH5Il36czSrVMcA8mrky/miC4yw+mwLzaNka37sxBPESziVpQaZtjs7TjF
+ sJlOalQJrVJR4oUzsZJfnHQYpjWco1kP6PXO4PkRHFr6x72fCFRCvLBedkN76ykvbLNb
+ ydu+o/0jKrwL+bHfx6PtjyFnUttK+ikyiRyZ3dd0xOkZG06Imh+f9xPNiIYiq30S+vlq
+ jv/A==
+X-Gm-Message-State: AGi0PuYO9a9YyNOXk6FrFZ0F1pOAdQRQLhfhJzrgFcMO/K7v6Mi+MJMn
+ p5iDyDkZq7ZwUT/5RN5OA5A=
+X-Google-Smtp-Source: APiQypKZOjvXEiIprA5Ny63FeE9kMmGQs4HOWplnvTx4gD1ekq4zG5NManY4iny4mcyhjAje3EfW1Q==
+X-Received: by 2002:a5d:6712:: with SMTP id o18mr16171936wru.115.1588851165984; 
+ Thu, 07 May 2020 04:32:45 -0700 (PDT)
+Received: from debian.home (ip51ccf9cd.speed.planet.nl. [81.204.249.205])
+ by smtp.gmail.com with ESMTPSA id e21sm7745787wrc.1.2020.05.07.04.32.44
+ (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+ Thu, 07 May 2020 04:32:45 -0700 (PDT)
+From: Johan Jonker <jbx6244@gmail.com>
+To: heiko@sntech.de
+Subject: [PATCH v1] ASoC: rockchip-i2s: add description for rk3308
+Date: Thu,  7 May 2020 13:32:38 +0200
+Message-Id: <20200507113238.7904-1-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.11.0
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ lgirdwood@gmail.com, robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+ linux-rockchip@lists.infradead.org, broonie@kernel.org,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,51 +105,55 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-In order to fix issue described in:
-"ASoC: Intel: sst: ipc command timeout"
-https://patchwork.kernel.org/patch/11482829/
+The description below is already in use for rk3308.dtsi,
+but was somehow never added to a document, so add
+"rockchip,rk3308-i2s", "rockchip,rk3066-i2s"
+for i2s nodes on a rk3308 platform to rockchip-i2s.yaml.
+One of the rk3308 i2s nodes also has a different dma layout,
+so change that as well.
 
-use readq function, which is meant to read 64 bit values from registers.
-On 32 bit platforms it falls back to two readl calls.
-
-Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
-Reported-by: Brent Lu <brent.lu@intel.com>
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 ---
- sound/soc/intel/common/sst-dsp.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+The rk3308 i2s nodes also contain the properties
+"reset-names" and "resets". Code in the manufacturer tree is
+not yet applied in the mainline kernel, so skip them for now.
+---
+ Documentation/devicetree/bindings/sound/rockchip-i2s.yaml | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/intel/common/sst-dsp.c b/sound/soc/intel/common/sst-dsp.c
-index ec66be269b69..36c077aa386e 100644
---- a/sound/soc/intel/common/sst-dsp.c
-+++ b/sound/soc/intel/common/sst-dsp.c
-@@ -10,7 +10,7 @@
- #include <linux/interrupt.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
--#include <linux/io.h>
-+#include <linux/io-64-nonatomic-lo-hi.h>
- #include <linux/delay.h>
+diff --git a/Documentation/devicetree/bindings/sound/rockchip-i2s.yaml b/Documentation/devicetree/bindings/sound/rockchip-i2s.yaml
+index a3ba2186d..10f9d3ad0 100644
+--- a/Documentation/devicetree/bindings/sound/rockchip-i2s.yaml
++++ b/Documentation/devicetree/bindings/sound/rockchip-i2s.yaml
+@@ -24,6 +24,7 @@ properties:
+             - rockchip,rk3188-i2s
+             - rockchip,rk3228-i2s
+             - rockchip,rk3288-i2s
++            - rockchip,rk3308-i2s
+             - rockchip,rk3328-i2s
+             - rockchip,rk3366-i2s
+             - rockchip,rk3368-i2s
+@@ -47,14 +48,15 @@ properties:
+       - const: i2s_hclk
  
- #include "sst-dsp.h"
-@@ -34,16 +34,13 @@ EXPORT_SYMBOL_GPL(sst_shim32_read);
+   dmas:
+-    items:
+-      - description: TX DMA Channel
+-      - description: RX DMA Channel
++    minItems: 1
++    maxItems: 2
  
- void sst_shim32_write64(void __iomem *addr, u32 offset, u64 value)
- {
--	memcpy_toio(addr + offset, &value, sizeof(value));
-+	writeq(value, addr + offset);
- }
- EXPORT_SYMBOL_GPL(sst_shim32_write64);
+   dma-names:
+-    items:
+-      - const: tx
++    oneOf:
+       - const: rx
++      - items:
++        - const: tx
++        - const: rx
  
- u64 sst_shim32_read64(void __iomem *addr, u32 offset)
- {
--	u64 val;
--
--	memcpy_fromio(&val, addr + offset, sizeof(val));
--	return val;
-+	return readq(addr + offset);
- }
- EXPORT_SYMBOL_GPL(sst_shim32_read64);
- 
+   power-domains:
+     maxItems: 1
 -- 
-2.17.1
+2.11.0
 
