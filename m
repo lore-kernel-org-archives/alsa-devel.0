@@ -6,64 +6,62 @@ X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0AF83C54E49
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 May 2020 07:07:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53FB9C38A24
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 May 2020 07:08:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B5D4B208CA
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 May 2020 07:07:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0967A208E4
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 May 2020 07:08:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dfEDO5wP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B5D4B208CA
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bxbPw58E"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0967A208E4
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 01A5817D3;
-	Thu,  7 May 2020 09:06:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 01A5817D3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3369317E3;
+	Thu,  7 May 2020 09:07:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3369317E3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588835251;
-	bh=MUu/s2Xus/TlH5r4JBIr+auC06dYRwAJ25PKznkakJY=;
+	s=default; t=1588835310;
+	bh=e/XGDhn55W8VlYqKmPjsbTf+8uYizjRRi8p7iLdypog=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dfEDO5wPkJZa4hjUsSUfenL//i9vATSsgqt0enqLsTRvcaXfx46/rsI178+umGMVN
-	 JaldYwened5+Av9+yAPO+lv1btrqKfMOXmqQ3lmbgm1Edngt+6o4oM643ldZXdHWdN
-	 lDQJGfAGfSr09TGo1AzpStb3pU0T4DaImVh4A5ak=
+	b=bxbPw58EFABXYi87Ls8OUVqK6RunrTUrEIjWiPXf8UV9EFg/VTwmbmlpy9dXubZPI
+	 mQQ/viCwyZz+mJ7lgneGiG/DzNYCCfSCLY6ylQK8Lo49UTAeC3mvmPOOrDZMxXHVPP
+	 6sHQdj1c1veHdHa/p+OW+6EP5tVg/Sgp4SE6yJ14=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8D633F8015B;
-	Thu,  7 May 2020 09:06:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C2456F80162;
+	Thu,  7 May 2020 09:07:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 52F72F8015F; Thu,  7 May 2020 09:06:37 +0200 (CEST)
+ id 37558F80171; Thu,  7 May 2020 09:07:38 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AAE6DF800F6
- for <alsa-devel@alsa-project.org>; Thu,  7 May 2020 09:06:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AAE6DF800F6
+ by alsa1.perex.cz (Postfix) with ESMTPS id 76C9CF8015B
+ for <alsa-devel@alsa-project.org>; Thu,  7 May 2020 09:07:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76C9CF8015B
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id E9F11AAC7;
- Thu,  7 May 2020 07:06:31 +0000 (UTC)
-Date: Thu, 07 May 2020 09:06:27 +0200
-Message-ID: <s5h1rnw6x70.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id C3F98AAC7;
+ Thu,  7 May 2020 07:07:34 +0000 (UTC)
+Date: Thu, 07 May 2020 09:07:31 +0200
+Message-ID: <s5hzhak5iks.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Samuel Zou <zou_wei@huawei.com>
-Subject: Re: [PATCH -next] ALSA: sound/ppc: Use bitwise instead of arithmetic
+Subject: Re: [PATCH -next] ALSA: portman2x4: Use bitwise instead of arithmetic
  operator for flags
-In-Reply-To: <1588823647-12480-1-git-send-email-zou_wei@huawei.com>
-References: <1588823647-12480-1-git-send-email-zou_wei@huawei.com>
+In-Reply-To: <1588834135-14842-1-git-send-email-zou_wei@huawei.com>
+References: <1588834135-14842-1-git-send-email-zou_wei@huawei.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, mpe@ellerman.id.au, tiwai@suse.com,
- paulus@samba.org, benh@kernel.crashing.org, linuxppc-dev@lists.ozlabs.org,
- linux-kernel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,18 +77,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 07 May 2020 05:54:07 +0200,
+On Thu, 07 May 2020 08:48:55 +0200,
 Samuel Zou wrote:
 > 
-> Fix the following coccinelle warnings:
+> Fix the following coccinelle warning:
 > 
-> sound/ppc/pmac.c:729:57-58: WARNING: sum of probable bitmasks, consider |
-> sound/ppc/pmac.c:229:37-38: WARNING: sum of probable bitmasks, consider |
+> sound/drivers/portman2x4.c:460:34-35: WARNING: sum of probable bitmasks, consider |
 > 
 > Reported-by: Hulk Robot <hulkci@huawei.com>
 > Signed-off-by: Samuel Zou <zou_wei@huawei.com>
 
-Applied, thanks.
+Applied now.  Thanks.
 
 
 Takashi
