@@ -7,64 +7,65 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 648B4C28CBC
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 May 2020 02:32:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 88E75C28CBC
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 May 2020 03:22:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DD14C207DD
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 May 2020 02:31:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 07CA62082E
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 May 2020 03:22:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mYtlW+DK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DD14C207DD
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hTwsPzPb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 07CA62082E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2EF6A17CA;
-	Thu,  7 May 2020 04:31:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2EF6A17CA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 579FB17CE;
+	Thu,  7 May 2020 05:21:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 579FB17CE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588818718;
-	bh=Tpb7HTgpgBdGyb7boouzvuA+xp1UDNie914qOfl+ceM=;
+	s=default; t=1588821762;
+	bh=HrvcfqRG01OZUNkY/PnlUes2dBz8vWb4ewWMu1FQLd0=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=mYtlW+DKMWG0fqA4Pm5aDaxUnMLOUjjL6OOfpqzebAgrtD0D4ZEaI4yLc3tYy5hIt
-	 lMPyER9gGiEYthld7uDiPV4ud6q4Pck+ZLpva6pOiX2qSaxhobFFBxe41lw/L2XMco
-	 T/QfqUrIttiOUQ9G2csjdk7yPw24X9m+nbhyhIBw=
+	b=hTwsPzPbo+WNrGNtDZUhpcKZpX6190HNI3FLR2pfIbcibfj15F5cBWtzHqTOlHI8L
+	 lefKD15DTguMX2sAsMI3G0inUnGQFMsGdJghOa/DBWpgEWdF2SOWMFBEavjKp1mRd/
+	 PkrZd0s9atSYnPztuNa/1daIDJBhCyF+nLo5lMMk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AF56FF8015B;
-	Thu,  7 May 2020 04:31:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B9732F800AD;
+	Thu,  7 May 2020 05:21:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A5CC5F8015F; Thu,  7 May 2020 04:31:05 +0200 (CEST)
-Received: from huawei.com (szxga05-in.huawei.com [45.249.212.191])
+ id 4B54FF8015F; Thu,  7 May 2020 05:21:48 +0200 (CEST)
+Received: from huawei.com (szxga04-in.huawei.com [45.249.212.190])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 088B5F800AD
- for <alsa-devel@alsa-project.org>; Thu,  7 May 2020 04:30:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 088B5F800AD
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
- by Forcepoint Email with ESMTP id 2A5C5E98BD8581AE56CA;
- Thu,  7 May 2020 10:30:49 +0800 (CST)
-Received: from huawei.com (10.67.174.156) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Thu, 7 May 2020
- 10:30:43 +0800
-From: ChenTao <chentao107@huawei.com>
-To: <timur@kernel.org>, <nicoleotsuka@gmail.com>, <Xiubo.Lee@gmail.com>,
- <perex@perex.cz>, <tiwai@suse.com>
-Subject: [PATCH -next] soc: fsl_asrc: Make some functions static
-Date: Thu, 7 May 2020 10:29:59 +0800
-Message-ID: <20200507022959.183739-1-chentao107@huawei.com>
-X-Mailer: git-send-email 2.22.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 960DBF800AD;
+ Thu,  7 May 2020 05:21:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 960DBF800AD
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+ by Forcepoint Email with ESMTP id 5F3E26763DC8128E49C9;
+ Thu,  7 May 2020 11:19:54 +0800 (CST)
+Received: from localhost (10.166.215.154) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Thu, 7 May 2020
+ 11:19:40 +0800
+From: YueHaibing <yuehaibing@huawei.com>
+To: <pierre-louis.bossart@linux.intel.com>, <lgirdwood@gmail.com>,
+ <ranjani.sridharan@linux.intel.com>, <kai.vehmanen@linux.intel.com>,
+ <daniel.baluta@nxp.com>, <broonie@kernel.org>, <perex@perex.cz>,
+ <tiwai@suse.com>
+Subject: [PATCH -next] ASoC: SOF: Intel: Mark cht_debugfs as __maybe_unused
+Date: Thu, 7 May 2020 11:19:11 +0800
+Message-ID: <20200507031911.38644-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.67.174.156]
+X-Originating-IP: [10.166.215.154]
 X-CFilter-Loop: Reflected
-Cc: alsa-devel@alsa-project.org, festevam@gmail.com,
- linux-kernel@vger.kernel.org, chentao107@huawei.com, broonie@kernel.org,
- linuxppc-dev@lists.ozlabs.org
+Cc: alsa-devel@alsa-project.org, YueHaibing <yuehaibing@huawei.com>,
+ linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,41 +81,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Fix the following warning:
+When CONFIG_SND_SOC_SOF_BAYTRAIL is not set, gcc warns:
 
-sound/soc/fsl/fsl_asrc.c:157:5: warning:
-symbol 'fsl_asrc_request_pair' was not declared. Should it be static?
-sound/soc/fsl/fsl_asrc.c:200:6: warning:
-symbol 'fsl_asrc_release_pair' was not declared. Should it be static?
-
+sound/soc/sof/intel/byt.c:85:41: warning: ‘cht_debugfs’ defined but not used [-Wunused-const-variable=]
+ static const struct snd_sof_debugfs_map cht_debugfs[] = {
+                                         ^~~~~~~~~~~
 Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: ChenTao <chentao107@huawei.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- sound/soc/fsl/fsl_asrc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/sof/intel/byt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index 067a54ab554f..432936039de4 100644
---- a/sound/soc/fsl/fsl_asrc.c
-+++ b/sound/soc/fsl/fsl_asrc.c
-@@ -154,7 +154,7 @@ static void fsl_asrc_sel_proc(int inrate, int outrate,
-  * within range [ANCA, ANCA+ANCB-1], depends on the channels of pair A
-  * while pair A and pair C are comparatively independent.
-  */
--int fsl_asrc_request_pair(int channels, struct fsl_asrc_pair *pair)
-+static int fsl_asrc_request_pair(int channels, struct fsl_asrc_pair *pair)
- {
- 	enum asrc_pair_index index = ASRC_INVALID_PAIR;
- 	struct fsl_asrc *asrc = pair->asrc;
-@@ -197,7 +197,7 @@ int fsl_asrc_request_pair(int channels, struct fsl_asrc_pair *pair)
-  *
-  * It clears the resource from asrc and releases the occupied channels.
-  */
--void fsl_asrc_release_pair(struct fsl_asrc_pair *pair)
-+static void fsl_asrc_release_pair(struct fsl_asrc_pair *pair)
- {
- 	struct fsl_asrc *asrc = pair->asrc;
- 	enum asrc_pair_index index = pair->index;
+diff --git a/sound/soc/sof/intel/byt.c b/sound/soc/sof/intel/byt.c
+index f872bb1f2682..1c75e4220e9d 100644
+--- a/sound/soc/sof/intel/byt.c
++++ b/sound/soc/sof/intel/byt.c
+@@ -82,7 +82,7 @@ static const struct snd_sof_debugfs_map byt_debugfs[] = {
+ 	 SOF_DEBUGFS_ACCESS_ALWAYS},
+ };
+ 
+-static const struct snd_sof_debugfs_map cht_debugfs[] = {
++static const struct snd_sof_debugfs_map __maybe_unused cht_debugfs[] = {
+ 	{"dmac0", BYT_DSP_BAR, DMAC0_OFFSET, DMAC_SIZE,
+ 	 SOF_DEBUGFS_ACCESS_ALWAYS},
+ 	{"dmac1", BYT_DSP_BAR,  DMAC1_OFFSET, DMAC_SIZE,
 -- 
-2.22.0
+2.17.1
+
 
