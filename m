@@ -2,96 +2,76 @@ Return-Path: <SRS0=uvJZ=6W=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-13.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC233C38A2A
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 07:33:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19B75C38A2A
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 07:34:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6572520643
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 07:33:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 99A10208D6
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 07:34:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BS8ueEbH";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JkHuSfml"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6572520643
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hnDdFos7";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Av6UYff8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 99A10208D6
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A40F217AD;
-	Fri,  8 May 2020 09:33:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A40F217AD
+	by alsa0.perex.cz (Postfix) with ESMTPS id D8F4D1847;
+	Fri,  8 May 2020 09:34:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8F4D1847
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588923237;
-	bh=ASu/ieS8Y72mpl8mKOef8GWmIcaZP5JCToPvddluXvk=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=BS8ueEbH2P5VDtXNNSU5+HBpqZyQ+oAXOUoHF1xT5tgn8U7VWoNCzzkoyQyXle51m
-	 koRqf2xbVcAXwWGdcKGGG/s44wgTeMkYtWtXljPjB/eUH5kC+yuy5eMfd8qinI0hcb
-	 EfNlRedlLKwnR7JqVF7ZQU835xaBepl6bGC0Mb7w=
+	s=default; t=1588923291;
+	bh=C6TOslW0RPAVRj59vDbD1f7i1AMF+aeN9mPq2i49xY4=;
+	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=hnDdFos7bFkhdIXhzCSO1/eArFroOaiAKI2fTN+2vjyxrYuUHlI1+a3KUUrIishRd
+	 InG+cxo+T3hpJbU5QUSO1tkruvlmy8HweihC3fy+Vyf5wLOTlE99adYvbYwlufF4Pb
+	 zGcXTJR8dnMowhCHq6DUAvRYbsh2KwQKMDuqZqrw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 15928F800E7;
-	Fri,  8 May 2020 09:33:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A88FAF80253;
+	Fri,  8 May 2020 09:33:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DCC78F8015F; Thu,  7 May 2020 12:01:29 +0200 (CEST)
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com
- [IPv6:2a00:1450:4864:20::241])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 933D3F8015F; Thu,  7 May 2020 20:48:28 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0A5BBF800AD
- for <alsa-devel@alsa-project.org>; Thu,  7 May 2020 12:01:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A5BBF800AD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 35F5DF800F6
+ for <alsa-devel@alsa-project.org>; Thu,  7 May 2020 20:48:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35F5DF800F6
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="JkHuSfml"
-Received: by mail-lj1-x241.google.com with SMTP id l19so5614854lje.10
- for <alsa-devel@alsa-project.org>; Thu, 07 May 2020 03:01:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=P1Be+iELEaGBQtXonCwj1c6TNB0kDNwS6v3vYCB59a0=;
- b=JkHuSfml3EgARYC8FMpEd3gAeS1UEfhzcr3L/FFfyBwuVYzu5arGB1JQrQVXCSAx8o
- dKj87Um3DMpdj2UhEhYv0n8z452mqoRtxpaVW0E/fr1g7tBZfAleLPgSyfvZ6Y7sKaEn
- rn5SbK5SLZynH8v8mbhmPoALXMC7dpaJJYpjTYAk+CjTcBSjfE7yd8301n7XrNeUxLdr
- zF1yv/Hc6WbIS26fNfBbnEvCGXAOBRG3RrRvIEc+y993L6zgPv1ojRknB0PiyQIQPbD6
- qKGLrrK9SLGbfuLliVSEEOmc+oZcGGnDtpGmfi3YJ9sVVkm8TAMoUAijxsqkJEwajuJY
- 6/bA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=P1Be+iELEaGBQtXonCwj1c6TNB0kDNwS6v3vYCB59a0=;
- b=nP0QZOYgKynrVY0o6EboYWqKTkXMu/uAeFQXDp1HrYPZ9T39ajh9vUr6IYhwyN03iD
- oXUgQTipLObAexD8oKc/HXqYZrYCQwIJsOKm6fDYCiPo6j5ETe96wlGJtETVournFnUX
- Dn1NnKCAzJhDfugdsD6G/0JHV1AEG7sjjDdh68A/lta6UdQfBO2+HEKQdSyZYtPB8XtC
- WsatA6I6nOSyrLsk3uzjsx367aHelLo9XH+dhDu/iwxAMNN1Ege7MwYIbXOxhicyUL/s
- HBAVTAze6HYcpoAbuvK9m+iF8+zpbukuc5heAqGLTEBFJzN0sTe1QObpsh4UdPzQgADa
- bKWQ==
-X-Gm-Message-State: AGi0PuZo1RzdFaYm3vcR92yEW9LfneId9FAwY/93M106yqHZUWnuqifG
- ZlBVd3JPaF8KmcDG09gNIlDG2UyIvv5mEOmokOY=
-X-Google-Smtp-Source: APiQypK+mPvbELrXTbvTW39d/VBur7XHkX0v6bjIPELwPCrK3R3hHWSWXKncrvOzzO8clbdIJ6FHXDpwpK9eVZWrUqI=
-X-Received: by 2002:a2e:8949:: with SMTP id b9mr8109025ljk.108.1588845682372; 
- Thu, 07 May 2020 03:01:22 -0700 (PDT)
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="Av6UYff8"
+Received: from embeddedor (unknown [189.207.59.248])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 9965124953;
+ Thu,  7 May 2020 18:48:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1588877299;
+ bh=C6TOslW0RPAVRj59vDbD1f7i1AMF+aeN9mPq2i49xY4=;
+ h=Date:From:To:Cc:Subject:From;
+ b=Av6UYff8btecZx38Z7olbUqOwncd1TxdjTpvyo6mbOlW2ERUNIagx2GUM2EoS3l/Q
+ xgwkXNwSQ9gG/MkxpODzzimCjvPV46xbtX6v+0hpeZkwiG6Pe0SpLQ1MxWbQBXZaWx
+ iUvZIm8IwH+X2v51U5+XkvU67kuOB8t5IHNmHXs0=
+Date: Thu, 7 May 2020 13:52:45 -0500
+From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To: Clemens Ladisch <clemens@ladisch.de>,
+ Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH] ALSA: fireworks: Replace zero-length array with flexible-array
+Message-ID: <20200507185245.GA14270@embeddedor>
 MIME-Version: 1.0
-References: <CAFcO6XMWpUVK_yzzCpp8_XP7+=oUpQvuBeCbMffEDkpe8jWrfg@mail.gmail.com>
- <s5hbln05b1h.wl-tiwai@suse.de>
-In-Reply-To: <s5hbln05b1h.wl-tiwai@suse.de>
-From: butt3rflyh4ck <butterflyhuangxx@gmail.com>
-Date: Thu, 7 May 2020 18:01:11 +0800
-Message-ID: <CAFcO6XMitGEYHYykgmzWc4NWME+O+1KTXfmf2zaeN147c2y4_A@mail.gmail.com>
-Subject: Re: KASAN: use-after-free Write in snd_rawmidi_kernel_write1
-To: Takashi Iwai <tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 X-Mailman-Approved-At: Fri, 08 May 2020 09:33:05 +0200
-Cc: security@kernel.org, alsa-devel@alsa-project.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, tiwai@suse.com,
- linux-kernel@vger.kernel.org, syzkaller <syzkaller@googlegroups.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,28 +87,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-No, it's not.
+The current codebase makes use of the zero-length array language
+extension to the C90 standard, but the preferred mechanism to declare
+variable-length types such as these ones is a flexible array member[1][2],
+introduced in C99:
 
-Regards,
-  butt3rflyh4ck.
+struct foo {
+        int stuff;
+        struct boo array[];
+};
 
+By making use of the mechanism above, we will get a compiler warning
+in case the flexible array does not occur last in the structure, which
+will help us prevent some kind of undefined behavior bugs from being
+inadvertently introduced[3] to the codebase from now on.
 
-On Thu, May 7, 2020 at 5:50 PM Takashi Iwai <tiwai@suse.de> wrote:
->
-> On Thu, 07 May 2020 09:54:34 +0200,
-> butt3rflyh4ck wrote:
-> >
-> > I report a bug (in linux-5.7-rc1) found by syzkaller.
-> >
-> > kernel config:
-> > https://github.com/butterflyhack/syzkaller-fuzz/blob/master/v5.7.0-rc1.config
-> > reproducer:
-> > https://github.com/butterflyhack/syzkaller-fuzz/blob/master/repro.cprog
->
-> Is this report different from your another one?
->   https://lore.kernel.org/r/CAFcO6XMGT42wFBxEa01Ee5Msuecm+WiXnn4rc-VWkC4vTzycPg@mail.gmail.com
->
->
-> thanks,
->
-> Takashi
+Also, notice that, dynamic memory allocations won't be affected by
+this change:
+
+"Flexible array members have incomplete type, and so the sizeof operator
+may not be applied. As a quirk of the original implementation of
+zero-length arrays, sizeof evaluates to zero."[1]
+
+sizeof(flexible-array-member) triggers a warning because flexible array
+members have incomplete type[1]. There are some instances of code in
+which the sizeof operator is being incorrectly/erroneously applied to
+zero-length arrays and the result is zero. Such instances may be hiding
+some bugs. So, this work (flexible-array member conversions) will also
+help to get completely rid of those sorts of issues.
+
+This issue was found with the help of Coccinelle.
+
+[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+[2] https://github.com/KSPP/linux/issues/21
+[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ sound/firewire/fireworks/fireworks.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
+index dda797209a27..654e28a6669f 100644
+--- a/sound/firewire/fireworks/fireworks.h
++++ b/sound/firewire/fireworks/fireworks.h
+@@ -177,7 +177,7 @@ struct snd_efw_phys_meters {
+ 	u32 in_meters;
+ 	u32 reserved4;
+ 	u32 reserved5;
+-	u32 values[0];
++	u32 values[];
+ } __packed;
+ enum snd_efw_clock_source {
+ 	SND_EFW_CLOCK_SOURCE_INTERNAL	= 0,
+
