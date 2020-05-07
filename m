@@ -2,114 +2,82 @@ Return-Path: <SRS0=eFJe=6V=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60B05C38A24
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 May 2020 13:39:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CDB83C54E49
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 May 2020 14:28:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DE2BC2073A
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 May 2020 13:39:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5E61D20B1F
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 May 2020 14:28:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="R9hlCNMG";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="ULqE5Zvq";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="fpbgtasu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DE2BC2073A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Eq3jy7yK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E61D20B1F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2FD58180B;
-	Thu,  7 May 2020 15:39:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2FD58180B
+	by alsa0.perex.cz (Postfix) with ESMTPS id C0A36180F;
+	Thu,  7 May 2020 16:28:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C0A36180F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588858791;
-	bh=iKRZQnA533brtZRLUw54/TS2LcnD4krtI4KTro++i6s=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1588861731;
+	bh=Day6GtZHdG1jC0DzOroHlEzNLO0xOgl2ggrb89xNwu8=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=R9hlCNMGd8JaqFCUE9VboH0iV8uLlRXZMm84FdJdtwiaYvkhOXVJJx6aIpkHTPkmR
-	 fzd/5mMgOgFXDjX4lhAsbUeAW8iu9FjmA5FiDxjP21QPVSqreXWG6xZhybD0jVmDev
-	 LjH/rtJuKbs7ukCaaXiOqWnLesnHvUQoJTm1RV3s=
+	b=Eq3jy7yKGt37pi8DKlxI/UJTp/x8gUwrp9sx6ii7BRmvikmiGq7pTXSc2RJmIYSQ4
+	 h9Xh9vPslONk32Hp3cZkBkg+2d2S3nmUwjAhKgxsE0Q/kEhQJQhxuLgxv64OWODXXR
+	 EHtziDSFToyuUbDTSlaNvNA4zV4NkchYl7rWLLpM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A279DF8015B;
-	Thu,  7 May 2020 15:39:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4DACAF801D9;
+	Thu,  7 May 2020 16:27:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CA55FF8015F; Thu,  7 May 2020 15:38:58 +0200 (CEST)
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
- [66.111.4.26])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 42C7CF80162; Thu,  7 May 2020 16:27:57 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C3D85F800AD
- for <alsa-devel@alsa-project.org>; Thu,  7 May 2020 15:38:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3D85F800AD
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="ULqE5Zvq"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="fpbgtasu"
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
- by mailout.nyi.internal (Postfix) with ESMTP id 72BD15C0183;
- Thu,  7 May 2020 09:38:51 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
- by compute2.internal (MEProxy); Thu, 07 May 2020 09:38:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-type:in-reply-to; s=fm1; bh=AHHhvifD/GSPWS/GtBZoXg8zmD8
- PdxKlzV1xm/9zF0Y=; b=ULqE5ZvqUVkxO5VkYRS/YFlErngm5Q8KC52nxIrXBuG
- hzXmpcoH9sDaK2fHsk8SE2IpPbjxHo6pffzL8Ys1bJaYZ/WSbcwX6aM8NZeriEIQ
- TDMOvMtCgKaW+goxnjdvEBiDFlcga6hevv0s/+k9/jr0+9rkPz9o37AzznEXTbdq
- SzdD4kh5d9L05OkolEz4dP8zb5wDpOSGvFweX0xnxLeF1Q07g90eopk0jEFwEjGM
- 3XDM4L2hFivu/QnKG5P5+yMy8UsccsO26qDE8rxxcjqQCKRqqgjQyINirGij3HhO
- Ofui44uxi5WqyuiBL+EZ5UfTa3JOXfxl/ftdL8oorSQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to:x-me-proxy
- :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=AHHhvi
- fD/GSPWS/GtBZoXg8zmD8PdxKlzV1xm/9zF0Y=; b=fpbgtasuZPB6281v2lRhU3
- EBRAeTmbrAjDBsQyGnFnrXXTp7yk7DZPq6/0/pzEDdK+h4iVIfxj/jSvS9tHNcpW
- 64+PcFuqb+S5LESpf6s6H925AwPNzbrs5SSGePbdbQPFYxh7lQ6IyQWFYEg6RYKF
- a5AT5fSBwtanRnrqfQoyghcAaP1k/1zTWwaS0fCBywOuDbhA3IZqx0A+biujw9Dr
- XrAsSs869sAyn8NiA8JmYt/5sbtmsAZwBD83QWHr3NeWXzeovTES5goWQmohSF+e
- YZdnF2wE/K8T7EyonBsW/KgwbtAXGN0VNWsVSKvyRctNExnHVnnWQDsbzedKPaug
- ==
-X-ME-Sender: <xms:aw-0Xkj4EELvBkkrWnDCjT-88bQh3dK8v55h5-riF3yW792gYEDohg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrkedtgdeihecutefuodetggdotefrodftvf
- curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
- uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
- fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfgrkhgrshhh
- ihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
- eqnecuggftrfgrthhtvghrnheplefhueegvdejgfejgfdukeefudetvddtuddtueeivedt
- tdegteejkedvfeegfefhnecukfhppedukedtrddvfeehrdefrdehgeenucevlhhushhtvg
- hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhisehs
- rghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:aw-0XngOZl2gc80wqNGv0R-ueSvfY-HyAtQzhUvLABSEe6n1EBa4tw>
- <xmx:aw-0XpCWOSIiQ6dqkQW_TO-MTfGjEDdbv2S43YBkR41DOlTmdbFpVA>
- <xmx:aw-0Xn9C9xfBt6jZK_fwgaw2GTvCcB-ifTLF2jKj3iQ_R_r9gt76yg>
- <xmx:aw-0XgOq6mm8EWznLFpZjGwyJMUYkmGHCA9hhn5vmYwhQzEAsiVA9A>
-Received: from workstation (ad003054.dynamic.ppp.asahi-net.or.jp
- [180.235.3.54])
- by mail.messagingengine.com (Postfix) with ESMTPA id 300513280063;
- Thu,  7 May 2020 09:38:49 -0400 (EDT)
-Date: Thu, 7 May 2020 22:38:47 +0900
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: Scott Bahling <sbahling@suse.com>
-Subject: Re: snd_dice: Clicking artifacts with TC StudioKonnekt 48
-Message-ID: <20200507133847.GA310153@workstation>
-Mail-Followup-To: Scott Bahling <sbahling@suse.com>,
- "(alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
-References: <921a3b13-b44e-3300-bb72-84cbc9e3dd88@apparatus.de>
- <20200222012510.GA4883@laptop>
- <28e3762c1a5bc5959d90e1c34d281eeac1dce528.camel@suse.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0D6DCF8011C;
+ Thu,  7 May 2020 16:27:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D6DCF8011C
+IronPort-SDR: fOua2V/k8N7s04qIqpQWScbLVTwh4AskFH8Vlk9KzZbrQ472GsyGew5oopHBxMj/XOZg/jz50m
+ LiljjdXpD34Q==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 May 2020 07:27:44 -0700
+IronPort-SDR: FlxiV9tkifVn7SQpdJR7/GHu1h0vfLl0fpMDGosXbdVPsI4k9OWpjGR5wCx5IQQCHBfeEcRq+R
+ rvv4bnW83v2g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,364,1583222400"; d="scan'208";a="250105865"
+Received: from kawilli2-mobl.amr.corp.intel.com (HELO [10.251.4.116])
+ ([10.251.4.116])
+ by fmsmga007.fm.intel.com with ESMTP; 07 May 2020 07:27:34 -0700
+Subject: Re: [PATCH v2 -next] ASoC: SOF: Intel: Fix unused variable warning
+To: YueHaibing <yuehaibing@huawei.com>, lgirdwood@gmail.com,
+ ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
+ daniel.baluta@nxp.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+ joe@perches.com
+References: <20200507031911.38644-1-yuehaibing@huawei.com>
+ <20200507072735.16588-1-yuehaibing@huawei.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <d3641489-e3c2-e525-567a-d0348c1eab4e@linux.intel.com>
+Date: Thu, 7 May 2020 09:27:15 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <28e3762c1a5bc5959d90e1c34d281eeac1dce528.camel@suse.com>
-Cc: "\(alsa-devel@alsa-project.org\)" <alsa-devel@alsa-project.org>
+In-Reply-To: <20200507072735.16588-1-yuehaibing@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -125,120 +93,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Scott,
 
-On Wed, May 06, 2020 at 05:56:37PM +0200, Scott Bahling wrote:
-> Hi Takashi,
+
+On 5/7/20 2:27 AM, YueHaibing wrote:
+> When CONFIG_SND_SOC_SOF_BAYTRAIL is not set, gcc warns:
 > 
-> On Sat, 2020-02-22 at 10:25 +0900, Takashi Sakamoto wrote:
-> > Hi,
-> > 
-> > On Thu, Feb 20, 2020 at 09:34:02PM +0100, Mathias Buhr wrote:
-> > > Hi,
-> > > 
-> > > thanks to this group, both of my firewire interfaces are (almost)
-> > > working! Big thank you!
-> > > 
-> > > While the TC Konnekt 24D works fine (playback and recording), the
-> > > StudioKonnekt 48 produces clicking artifacts during playback when using
-> > > snd_dice. This interface is working flawless on Windows and on a
-> > > Jack/FFADO combination. This artifact occurs in all use cases (alsa via
-> > > aplay, pulseaudio and jack) and does not seem to be in recorded streams.
-> > > After recording the playback with another device, it looks like the
-> > > level of the artifact is scaling with the signal and its interval is
-> > > interestingly 256ms. Is there anything I can do to further debug this
-> > > issue? Capture firewire packets? I would love to get this device fully
-> > > working.
-> > > 
-> > > I'm using kernel version 5.5.4 but this issue has been there for a long
-> > > time.
-> > > 
-> > > Thanks,
-> > > 
-> > > Mathias
-> > 
-> > Yes. ALSA dice driver brings the issue to your unit regardless of XRUNs.
-> > I can see this issue for recent 5 years (so long time).
-> > 
-> > At present, ALSA dice driver is designed with the expectation that the
-> > devices performs 'clock-recovery' with timestamp in isochronous packets
-> > transmitted by the driver. The driver transfers PCM frames with
-> > timestamps as exactly the same number as configured sampling rate; e.g.
-> > 48,000 frames/sec or 44,096/44,104 frames/sec.
-> > 
-> > However, many devices including yours don't perform it actually. For
-> > example, all of devices from TC Electronics don't perform it:
-> > 
-> >  - Konnekt 24D (Dice II STD ASIC)
-> >  - Konnekt 8 (Dice II STD ASIC)
-> >  - Konnkt Live (Dice II STD ASIC)
-> >  - Studio Konnekt 48 (DICE II STD and DICE Mini ASICs)
-> >  - Impact Twin (DICE II STD ASIC)
-> >  - Desktop Konnekt 6 (DICE Mini ASIC)
-> >  - Digital Konnekt 32 (DICE II STD)
-> > 
-> > 
-> > They work with sampling clock independent of the timestamp from driver.
-> > Thus it's not possible to synchronize multiple devices on the same
-> > IEEE 1394 bus (this is against the 'myth' that the devices can be
-> > synchronized for its internal sampling, but it's the fact).
-> > 
-> > Instead, the device expects the driver to perform the 'clock-recovery'
-> > and transfer PCM frames as mostly the same as the calculated sampling
-> > rate. Even if the device is configured to handle 48,000 PCM frames per
-> > second, the device actually handles less or more PCM frames; e.g.
-> > 47,988, 47,992 or 48,008, 48,016. Unfortunately, current ALSA dice
-> > driver is not designed to work for it. In device internal, it handles
-> > surplus PCM frames or the lack of PCM frames for several seconds, then
-> > causes noisy sound I guess.
+> sound/soc/sof/intel/byt.c:85:41: warning: ‘cht_debugfs’ defined but not used [-Wunused-const-variable=]
+>   static const struct snd_sof_debugfs_map cht_debugfs[] = {
+>                                           ^~~~~~~~~~~
+> Move the variable inside #ifdef
 > 
-> I was just about to start a thread related to a very similar issue I'm
-> seeing with my Tascam FW-1884. But in my case I'm only running one
-> device/clock source. Could the clock-recovery issue also be affecting a
-> single FW-1884 device?
->
-> In my case I'm witnessing exactly one frame being dropped at a consistent
-> interval of about 240ms at 96000 frames per second and 480ms at 48000 frames
-> per second.
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Suggested-by: Joe Perches <joe@perches.com>
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
-Yes. Below table is the result to parse log of packet streaming from
-FW-1884 in 48.0 kHz sampling transfer frequency. The left most column is
-the total number of events (=PCM samples) in second, and the middle and
-right most are sec and cycle on IEEE 1394 isochronous communication.
-You can see the device doesn't transfers as the same packets as the
-sampling transfer frequency.
+Thanks for the patch.
 
-events | sec | cycle
-====================
- 47998 |  0  | 2817
- 47999 |  1  | 2817
- 47998 |  2  | 2817
- 47999 |  3  | 2817
- 47999 |  4  | 2817
- 47998 |  5  | 2817
- 47999 |  6  | 2817
- 47999 |  7  | 2817
-
-It's likely that the gap between 48000 and 47998-47999 causes the drop
-frame, because current implementation of ALSA IEC 61883-1/6 packet
-streaming engine transfers isochronous packets which includes exactly
-the same events as configured sampling transfer frequency.
-
-But here I have a question about your way to confirm the drop. Do you
-use any way to loopback analog/digital audio output to input or
-something else?
-
-> > The libffado2 is programmed for the 'clock-recovery'. On the other hand,
-> > it includes design mistake to aggregate several types of devices and give
-> > abstracted device to applications such as jackd. When considering the
-> > above design of actual hardware, the design is not good since each actual
-> > hardware works independent sampling clocks.
-> 
-> I have not tried FFADO yet. I will see if the issue goes away with FFADO.
-
-TASCAM FireWire series is not supported by libffado2.
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
 
-Regards
-
-Takashi Sakamoto
