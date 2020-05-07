@@ -7,64 +7,64 @@ X-Spam-Status: No, score=-13.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F5CDC38A2A
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 07:36:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E797AC38A2A
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 07:36:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9C0CA206D5
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 07:36:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 76CBB206D5
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 07:36:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cwqTtpxU";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="F4e/oI0N"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9C0CA206D5
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="r4MXwuSK";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="KJ7s41EA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 76CBB206D5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F11101844;
-	Fri,  8 May 2020 09:35:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F11101844
+	by alsa0.perex.cz (Postfix) with ESMTPS id D10351860;
+	Fri,  8 May 2020 09:35:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D10351860
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588923367;
-	bh=b1/YLFC+l6epGRK0csxeBGfOSfYmlenINjpg49VDwYs=;
+	s=default; t=1588923391;
+	bh=6u2Zjd4cCAJplBkIJArkC26yIzl29BGwwVH3o2xHtus=;
 	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=cwqTtpxUJcbVEgtr2oDVzYwLDtbI2N0PauroNx1z5QfsmGyFobqiXLujxgZYvrB0A
-	 ciBIBL5PmKuyQzZgjvBU/QQbOl8kTSKu/W11WGUyLtcRgoR1LgToVT3mo/7tBo9oon
-	 ooSdVLVWUoOHCGXSANDePc5tXZv0RaPUMz0/urCY=
+	b=r4MXwuSKDSv7YeIgiXDDn874eC3exAc1Cg5j4Fdk/Fq5bXg2dIz2GLV/urfterTz7
+	 PCDMetTRhfgwd9dPLXNDrf3gCd2ndQJn6Tk181/xZFNQ0Rw4FlZkIz9WkHIdWEAO0t
+	 08Kb1OxL4eZvIFHi4ic0IDaGFnEtLSYZ8NPRiCRc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E135FF80277;
-	Fri,  8 May 2020 09:33:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 09388F8029B;
+	Fri,  8 May 2020 09:33:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1DFE6F80162; Thu,  7 May 2020 21:18:06 +0200 (CEST)
+ id 461E0F8015F; Thu,  7 May 2020 21:18:06 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A0E4FF8011C
- for <alsa-devel@alsa-project.org>; Thu,  7 May 2020 21:17:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0E4FF8011C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6EC5EF800AD
+ for <alsa-devel@alsa-project.org>; Thu,  7 May 2020 21:18:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6EC5EF800AD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="F4e/oI0N"
+ header.b="KJ7s41EA"
 Received: from embeddedor (unknown [189.207.59.248])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 94100208D6;
- Thu,  7 May 2020 19:17:56 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id B0CF821835;
+ Thu,  7 May 2020 19:18:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1588879077;
- bh=b1/YLFC+l6epGRK0csxeBGfOSfYmlenINjpg49VDwYs=;
+ s=default; t=1588879082;
+ bh=6u2Zjd4cCAJplBkIJArkC26yIzl29BGwwVH3o2xHtus=;
  h=Date:From:To:Cc:Subject:From;
- b=F4e/oI0NaaKvrBApNt24/dZC1saXWd8uYNKxsmU5yUG+byaspmcBnOEtx5MGTrRTT
- D+SWYBU9d7o55LtwkRevIdSjZlA3cqxe9Yn3Jhph1oHpckG7n8ViaUUFsKnsYQ48TJ
- 0cGOJmJEepFSp37TN2BJZaM0vAUxKx2e+gdet7rs=
-Date: Thu, 7 May 2020 14:22:23 -0500
+ b=KJ7s41EA/KoUExDhcHun9qGSDWEpgm/fTIP9T9CzHUw4Jhqsz64KiFgt9cTc+tzQ2
+ a/1gXi4RyMPG7UC9ubhXx19jnsIbGpm6KoDr//HwybVANQgxObEtbnMIVvhgeq4bRF
+ Al/JgIZkn/n4NLqevOxa/qXJnx9tV+tHjHLz/VFI=
+Date: Thu, 7 May 2020 14:22:28 -0500
 From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH] ALSA: Replace zero-length array with flexible-array
-Message-ID: <20200507192223.GA16335@embeddedor>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: soc-core: Replace zero-length array with flexible-array
+Message-ID: <20200507192228.GA16355@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -123,80 +123,34 @@ This issue was found with the help of Coccinelle.
 
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- include/sound/control.h     |    2 +-
- include/sound/intel-nhlt.h  |    6 +++---
- sound/core/oss/pcm_plugin.h |    2 +-
- sound/usb/usx2y/usbusx2y.h  |    2 +-
- 4 files changed, 6 insertions(+), 6 deletions(-)
+ include/sound/soc-dapm.h |    2 +-
+ include/sound/soc.h      |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/sound/control.h b/include/sound/control.h
-index 11feeee31e35..aeaed2a05bae 100644
---- a/include/sound/control.h
-+++ b/include/sound/control.h
-@@ -75,7 +75,7 @@ struct snd_kcontrol {
- 	unsigned long private_value;
- 	void *private_data;
- 	void (*private_free)(struct snd_kcontrol *kcontrol);
--	struct snd_kcontrol_volatile vd[0];	/* volatile data */
-+	struct snd_kcontrol_volatile vd[];	/* volatile data */
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index 08495f8d86dc..cc3dcb815282 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -689,7 +689,7 @@ struct snd_soc_dapm_context {
+ /* A list of widgets associated with an object, typically a snd_kcontrol */
+ struct snd_soc_dapm_widget_list {
+ 	int num_widgets;
+-	struct snd_soc_dapm_widget *widgets[0];
++	struct snd_soc_dapm_widget *widgets[];
  };
  
- #define snd_kcontrol(n) list_entry(n, struct snd_kcontrol, list)
-diff --git a/include/sound/intel-nhlt.h b/include/sound/intel-nhlt.h
-index f657fd8fc0ad..743c2f442280 100644
---- a/include/sound/intel-nhlt.h
-+++ b/include/sound/intel-nhlt.h
-@@ -50,7 +50,7 @@ enum nhlt_device_type {
+ #define for_each_dapm_widgets(list, i, widget)				\
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 13458e4fbb13..3e14442de2ec 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1167,7 +1167,7 @@ struct snd_soc_pcm_runtime {
+ 	unsigned int fe_compr:1; /* for Dynamic PCM */
  
- struct nhlt_specific_cfg {
- 	u32 size;
--	u8 caps[0];
-+	u8 caps[];
- } __packed;
- 
- struct nhlt_fmt_cfg {
-@@ -60,7 +60,7 @@ struct nhlt_fmt_cfg {
- 
- struct nhlt_fmt {
- 	u8 fmt_count;
--	struct nhlt_fmt_cfg fmt_config[0];
-+	struct nhlt_fmt_cfg fmt_config[];
- } __packed;
- 
- struct nhlt_endpoint {
-@@ -80,7 +80,7 @@ struct nhlt_endpoint {
- struct nhlt_acpi_table {
- 	struct acpi_table_header header;
- 	u8 endpoint_count;
--	struct nhlt_endpoint desc[0];
-+	struct nhlt_endpoint desc[];
- } __packed;
- 
- struct nhlt_resource_desc  {
-diff --git a/sound/core/oss/pcm_plugin.h b/sound/core/oss/pcm_plugin.h
-index 8d2f7a4e3ab6..46e273bd4a78 100644
---- a/sound/core/oss/pcm_plugin.h
-+++ b/sound/core/oss/pcm_plugin.h
-@@ -64,7 +64,7 @@ struct snd_pcm_plugin {
- 	char *buf;
- 	snd_pcm_uframes_t buf_frames;
- 	struct snd_pcm_plugin_channel *buf_channels;
--	char extra_data[0];
-+	char extra_data[];
+ 	int num_components;
+-	struct snd_soc_component *components[0]; /* CPU/Codec/Platform */
++	struct snd_soc_component *components[]; /* CPU/Codec/Platform */
  };
- 
- int snd_pcm_plugin_build(struct snd_pcm_substream *handle,
-diff --git a/sound/usb/usx2y/usbusx2y.h b/sound/usb/usx2y/usbusx2y.h
-index e0f77172ce8f..144b85f57bd2 100644
---- a/sound/usb/usx2y/usbusx2y.h
-+++ b/sound/usb/usx2y/usbusx2y.h
-@@ -18,7 +18,7 @@ struct snd_usX2Y_AsyncSeq {
- struct snd_usX2Y_urbSeq {
- 	int	submitted;
- 	int	len;
--	struct urb	*urb[0];
-+	struct urb	*urb[];
- };
- 
- #include "usx2yhwdeppcm.h"
+ /* see soc_new_pcm_runtime()  */
+ #define asoc_rtd_to_cpu(rtd, n)   (rtd)->dais[n]
 
