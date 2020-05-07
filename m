@@ -2,66 +2,67 @@ Return-Path: <SRS0=eFJe=6V=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 53FB9C38A24
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 May 2020 07:08:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A3C7C38A24
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 May 2020 07:12:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0967A208E4
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 May 2020 07:08:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2E8A92075E
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 May 2020 07:12:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bxbPw58E"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0967A208E4
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IcM5QaJA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2E8A92075E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3369317E3;
-	Thu,  7 May 2020 09:07:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3369317E3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8A4C917DA;
+	Thu,  7 May 2020 09:11:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A4C917DA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588835310;
-	bh=e/XGDhn55W8VlYqKmPjsbTf+8uYizjRRi8p7iLdypog=;
+	s=default; t=1588835520;
+	bh=vSKFkM1d0ijkbqaGqhyr9vaSpPq/cVmQDNe+g53emGI=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bxbPw58EFABXYi87Ls8OUVqK6RunrTUrEIjWiPXf8UV9EFg/VTwmbmlpy9dXubZPI
-	 mQQ/viCwyZz+mJ7lgneGiG/DzNYCCfSCLY6ylQK8Lo49UTAeC3mvmPOOrDZMxXHVPP
-	 6sHQdj1c1veHdHa/p+OW+6EP5tVg/Sgp4SE6yJ14=
+	b=IcM5QaJA3qteImyM6kW7eF6MXDInH+lI8H506oJLzAmdd304WJ7N9Pxrk+0aq/hcP
+	 6G6NDc1bBQE3bFcWF+goMIH1fYzrkRjTWaXekIxzWkXAsLyqpC2m6ZzYE0QD9lkFRf
+	 k9Bpy/rNrfHXb6GmAiT7be5+QYl5teox1FfsXmcQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C2456F80162;
-	Thu,  7 May 2020 09:07:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 18B02F800F6;
+	Thu,  7 May 2020 09:11:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 37558F80171; Thu,  7 May 2020 09:07:38 +0200 (CEST)
+ id C48F2F800AD; Thu,  7 May 2020 09:11:08 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 76C9CF8015B
- for <alsa-devel@alsa-project.org>; Thu,  7 May 2020 09:07:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76C9CF8015B
+ by alsa1.perex.cz (Postfix) with ESMTPS id E0D52F800AD
+ for <alsa-devel@alsa-project.org>; Thu,  7 May 2020 09:11:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0D52F800AD
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id C3F98AAC7;
- Thu,  7 May 2020 07:07:34 +0000 (UTC)
-Date: Thu, 07 May 2020 09:07:31 +0200
-Message-ID: <s5hzhak5iks.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id B44D4AAC7;
+ Thu,  7 May 2020 07:11:04 +0000 (UTC)
+Date: Thu, 07 May 2020 09:11:01 +0200
+Message-ID: <s5hwo5o5iey.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Samuel Zou <zou_wei@huawei.com>
-Subject: Re: [PATCH -next] ALSA: portman2x4: Use bitwise instead of arithmetic
- operator for flags
-In-Reply-To: <1588834135-14842-1-git-send-email-zou_wei@huawei.com>
-References: <1588834135-14842-1-git-send-email-zou_wei@huawei.com>
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: Re: [PATCH v2] ALSA: hda: Allow SST driver on SKL and KBL platforms
+ with DMIC
+In-Reply-To: <20200506203951.6369-1-cezary.rojewski@intel.com>
+References: <20200506203951.6369-1-cezary.rojewski@intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.com,
+ pierre-louis.bossart@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,17 +78,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 07 May 2020 08:48:55 +0200,
-Samuel Zou wrote:
+On Wed, 06 May 2020 22:39:51 +0200,
+Cezary Rojewski wrote:
 > 
-> Fix the following coccinelle warning:
+> Update intel-dspcfg with FLAG_SST_ONLY_IF_DMIC option and use it for
+> Skylake and Kabylake platforms when DMIC is present.
 > 
-> sound/drivers/portman2x4.c:460:34-35: WARNING: sum of probable bitmasks, consider |
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Samuel Zou <zou_wei@huawei.com>
+> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 
-Applied now.  Thanks.
+Applied now to for-next branch.  Thanks.
 
 
 Takashi
