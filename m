@@ -5,85 +5,84 @@ X-Spam-Level:
 X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 123E7C38A24
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 May 2020 09:24:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E107DC54E4A
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 May 2020 09:25:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 68D4B2080D
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 May 2020 09:24:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6FE222078C
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 May 2020 09:25:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cNrT3Bhh";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SgpmOrWI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 68D4B2080D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bnLzV3ft";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HUQq+TWi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6FE222078C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B94D017D8;
-	Thu,  7 May 2020 11:23:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B94D017D8
+	by alsa0.perex.cz (Postfix) with ESMTPS id A1D8317EE;
+	Thu,  7 May 2020 11:24:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A1D8317EE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588843450;
-	bh=/m93O0NLOn+0BX1suSqPt2PpXTI/oRlya560DYBKHUg=;
+	s=default; t=1588843503;
+	bh=vpt9YTdcS8B7sKcr0+7JFXfrAnKXMNWahQkWSRUtJUc=;
 	h=From:Date:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=cNrT3BhhgaUdIjZO3Y0t+2RlNlR/Tcvjc/WCvmOw/fZdpP7pre7u5e6LB/dJKzPjZ
-	 SldelzJalIOm4WT9P2om2kQbc5Zl37d7H3r9+0K/zLC0NIi7G0REcNf9yL+lVuaV9L
-	 fEV9iGZWH43NJWUCCFaNfwszTLAnywT0yQsmGsWw=
+	b=bnLzV3ftcVqZBTK69wA26OgaL5nBzyxXKRAtd7joRlexyjsvVq087G8iLWKUiBcDL
+	 PDLpvXZjvQKI3ck+3chbb7heI0P3IBokDkacRb4L8W+B5iuT75AJ3Xdhy1QTD1MLq9
+	 DOw4j2BYv/OSJXtG6REAoDAuUSC0xwdJSR7firg4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1C570F8011C;
-	Thu,  7 May 2020 11:23:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 977CBF80162;
+	Thu,  7 May 2020 11:23:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 52695F8015F; Thu,  7 May 2020 09:54:51 +0200 (CEST)
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com
- [IPv6:2a00:1450:4864:20::242])
+ id AE6EBF8015F; Thu,  7 May 2020 10:04:50 +0200 (CEST)
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com
+ [IPv6:2a00:1450:4864:20::241])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 690B8F800AD
- for <alsa-devel@alsa-project.org>; Thu,  7 May 2020 09:54:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 690B8F800AD
+ by alsa1.perex.cz (Postfix) with ESMTPS id E3273F800AD
+ for <alsa-devel@alsa-project.org>; Thu,  7 May 2020 10:04:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3273F800AD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="SgpmOrWI"
-Received: by mail-lj1-x242.google.com with SMTP id b2so5260104ljp.4
- for <alsa-devel@alsa-project.org>; Thu, 07 May 2020 00:54:46 -0700 (PDT)
+ header.b="HUQq+TWi"
+Received: by mail-lj1-x241.google.com with SMTP id u15so5298643ljd.3
+ for <alsa-devel@alsa-project.org>; Thu, 07 May 2020 01:04:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=mime-version:from:date:message-id:subject:to:cc;
- bh=Te5QH27IDLyZGryYdrTT/REPxDH93svTizKDW5PkKH4=;
- b=SgpmOrWI/7YXJOegjqyG4yyYJDYE1CCc5hYJpBwA9qk7FwSib04VyHQXx1cjuKxMrZ
- WsGQq0pNSclIlnk0Fg37OqMQ4V76IS+iZLlVORCYmMHLOo5pzWnPJ+7cCaYCBXuuFIlK
- +hHHndfcutLr0dbgXHsQkOKwZEwEZZnO8LnvgA+oF0zplfRi7QoZC/GDygZAE0VmAPrE
- uTdtbA1eMMmQObeUeZGX09uYSe4JdWjB2rpAiVE1jVXqYZZmc52olEIT5TbmfqUoHltT
- YclHk4kc20nhZvE9TCONMPZi9IAhVMhfLzV8u1gwWL1wnEDL+Na1WmMvDxoF8hEOVFcs
- VmsQ==
+ bh=jFEPt2GmiBe6Ipss2u+04CS26r3/oHgWQw1wXvAx3Vc=;
+ b=HUQq+TWiPZTuLlEyrK8fwDou9qOOcf1N8PV7GI13fytSHFzdWzzm1aj8tJKv0sYfTE
+ JAZUvtez51bmRykV3GhMGo4QczmOqtsx6ej8jWQ9uZN+cdPArs7chVthQqAoWpVvHqrW
+ 3NPnAsy0eHwntoDDpkwHjjSN3Zia3Q4LXMse0rQauEJWUIjtUSphFe+QGkeVlzZsG8Ri
+ lDPpm+GC8AYvZTaaaRO0iuN9145g4dadhPWmkXY2em2ljw+CxBx3ZVq0rwQkE5ig1Bb8
+ EN83COnSnQwt1VAeAlIz8Bs608NU2NxbRhSj0/oubnVJzt3J2WZZtYBmH9DIwlkxjihb
+ f4hQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
- bh=Te5QH27IDLyZGryYdrTT/REPxDH93svTizKDW5PkKH4=;
- b=HZ03ZFX+R2aeyWV1Q4Ozjdd97hFJ6H23K25ps3oC4sQlDTxvS1Z+Ap2IbV5CkCf7n+
- A3Qb2NIEX2HRMUYynwfy8mYIZqz5FootTkyaLiM9LqxKnStEOuOXbIu91pkIr0XkGiwr
- L8Z5RM9KM74WAKIto6F3ElKMMZVxc4BbL8umxJNGoq9usy7VB30xu6960ZD3x7wu9IcF
- ZKGELiwl4tSrvb00Waxry8QwYgNgKpTYgCrEMvH922kRVfdgrnWdzXAmyJRuxffe3JAu
- 9VkZ3OLNZHQNEaylCPdsJR0YL3+plt9MMD5BtHzu3IiAK9zlIMCmqKMoyFJT+K6m3qsA
- jhLA==
-X-Gm-Message-State: AGi0Pua6NYYe7Bji62XpY/9ePugt72W4De65ksK5opNeEMfxWipi2Hug
- pbu6qJFIrqoOy0wYHsiJ2cTKAmZ2zMFcEigpfFY=
-X-Google-Smtp-Source: APiQypJWAxrgsb2y9fpR/ieEuCXUPX20OATjLg/RiHudQfbtW/vblaujs4aDWtLH/3o1uLiZ+l/QIoR0R7HxeEF51A8=
-X-Received: by 2002:a2e:3c10:: with SMTP id j16mr7455037lja.2.1588838085043;
- Thu, 07 May 2020 00:54:45 -0700 (PDT)
+ bh=jFEPt2GmiBe6Ipss2u+04CS26r3/oHgWQw1wXvAx3Vc=;
+ b=jCOK/obL6JGBKYivMzDaR+vgWLsQTKndcYEQQhyfUkcr1yetRhewASVr2VK2d4uTVB
+ k601vjg/2V5wAO5TqR+S0zZ6pfdXixmg3ksX6kMeCE0V1NXenEjJdlcBiZNd0iHF0IP3
+ n/IfjvR4qtz8UlKbQ6Qw1VmNfqTnDw1MNygSxaiu886+Nk9OGDD+SSL8ANp3uIWtPqGk
+ 1u13gwkZpx4AKuN3UrNZiMAzUTjES81JKODP8BwiJ3PCGIqpZLSGCizH9VEWl/WCHFzt
+ /TMNURjXYRcINFCaMpjxWJhwvkrr3+ZDirxs0kFDoshsI4BFH51nWoNDEHlmU4k4BYm5
+ YLzA==
+X-Gm-Message-State: AGi0PuaSkYGmrgkl1RUK/oVzugiPCNAP3LIGPdXuNnarAtzarAanVFIK
+ L9468cUhz+yquXyPlHJlnnqzIuz4J/iwXE1Tl54=
+X-Google-Smtp-Source: APiQypLtLFC/PCM1CmbsMF6jMokfdxfz+Xy73NsH/pkys6w2SxkwaSOSL40uXb+AJ/j81dvX4kQ6sZanKIVYZ+VyJcQ=
+X-Received: by 2002:a2e:a0cf:: with SMTP id f15mr7186227ljm.165.1588838686720; 
+ Thu, 07 May 2020 01:04:46 -0700 (PDT)
 MIME-Version: 1.0
 From: butt3rflyh4ck <butterflyhuangxx@gmail.com>
-Date: Thu, 7 May 2020 15:54:34 +0800
-Message-ID: <CAFcO6XMWpUVK_yzzCpp8_XP7+=oUpQvuBeCbMffEDkpe8jWrfg@mail.gmail.com>
+Date: Thu, 7 May 2020 16:04:25 +0800
+Message-ID: <CAFcO6XMGT42wFBxEa01Ee5Msuecm+WiXnn4rc-VWkC4vTzycPg@mail.gmail.com>
 Subject: KASAN: use-after-free Write in snd_rawmidi_kernel_write1
 To: security@kernel.org
-X-Mailman-Approved-At: Thu, 07 May 2020 11:23:17 +0200
 Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+X-Mailman-Approved-At: Thu, 07 May 2020 11:23:17 +0200
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  alsa-devel@alsa-project.org, syzkaller <syzkaller@googlegroups.com>,
  tiwai@suse.com, linux-kernel@vger.kernel.org
@@ -104,10 +103,8 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 I report a bug (in linux-5.7-rc1) found by syzkaller.
 
-kernel config:
-https://github.com/butterflyhack/syzkaller-fuzz/blob/master/v5.7.0-rc1.config
-reproducer:
-https://github.com/butterflyhack/syzkaller-fuzz/blob/master/repro.cprog
+kernel config: https://github.com/butterflyhack/syzkaller-fuzz/blob/master/v5.7.0-rc1.config
+reproducer: https://github.com/butterflyhack/syzkaller-fuzz/blob/master/repro.cprog
 
 I test the reproducer in linux-5.7-rc4 and crash too.
 
@@ -117,8 +114,8 @@ BUG: KASAN: use-after-free in _copy_from_user+0x113/0x1a0 lib/usercopy.c:13
 Write of size 1 at addr ffff888069da43ca by task syz-executor611/6797
 
 CPU: 0 PID: 6797 Comm: syz-executor611 Not tainted 5.7.0-rc1 #3
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1ubuntu1
-04/01/2014
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+1.10.2-1ubuntu1 04/01/2014
 Call Trace:
  __dump_stack lib/dump_stack.c:77 [inline]
  dump_stack+0x188/0x20d lib/dump_stack.c:118
@@ -137,9 +134,9 @@ Call Trace:
  do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
  entry_SYSCALL_64_after_hwframe+0x49/0xb3
 RIP: 0033:0x4553a9
-Code: 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7
-48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff
-ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+Code: 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48
+89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
 RSP: 002b:00007f556b7f5cc8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
 RAX: ffffffffffffffda RBX: 00000000006d9588 RCX: 00000000004553a9
 RDX: 00000000fffffc85 RSI: 0000000020000040 RDI: 0000000000000004
@@ -215,4 +212,4 @@ Memory state around the buggy address:
 ==================================================================
 
 Regards,
-   butt3rflyh4ck
+  butt3rflyh4ck
