@@ -2,81 +2,76 @@ Return-Path: <SRS0=eFJe=6V=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 40520C38A2A
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 May 2020 11:08:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A65C7C38A24
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 May 2020 11:26:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BF5C12053B
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 May 2020 11:08:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 110DE20870
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 May 2020 11:26:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qQ5aDPfH";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="KNeNNF7Y"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BF5C12053B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="K3PNwcfA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 110DE20870
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 133EC1802;
-	Thu,  7 May 2020 13:07:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 133EC1802
+	by alsa0.perex.cz (Postfix) with ESMTPS id 54D911802;
+	Thu,  7 May 2020 13:25:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 54D911802
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588849723;
-	bh=/mtZ5WGXzOosl2v22r9XjAbR7pSmnQHFt3goB++zb3s=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=qQ5aDPfHAIa+ZGEdz8xNE24I0Utb6lDK2x/HtjoQyS1tWrWMne7OKBxq6tvAelsDK
-	 meIKBiEY5PUOwqj/kr+W5S5ZyoKfb0x1w6OZNmyJbRTJP8nV+EkJaCU1AV8k0NC2qL
-	 2t2pr7/tcGzsvimMhOYp2q22b6Uew7o7jA1HQjQI=
+	s=default; t=1588850791;
+	bh=sj9ixqL7egR1PrNKQy2OTC8x1r/61xMdUP5Zti7x0k8=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=K3PNwcfAaHHjP8gk8YPaj25klA6Z8LqIav2y50iPPNI4DZjyJ5weMHATxIRfG57kM
+	 aMYDdIYctopsZLbkeHxPKN+N6WIj8wrJT6/c9GlPm3AAtosT0fkvxLpjW8J+ngUczx
+	 ujQ5qT5RcEraxCm19D3zbNBZvZJs3sSCdNw5IGeM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 96B72F8015B;
-	Thu,  7 May 2020 13:07:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D2B4DF8015F;
+	Thu,  7 May 2020 13:25:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 853FDF8015F; Thu,  7 May 2020 13:07:50 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4CB6FF800AD
- for <alsa-devel@alsa-project.org>; Thu,  7 May 2020 13:07:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4CB6FF800AD
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="KNeNNF7Y"
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl
- [83.86.89.107])
+ id 5B3C3F80162; Thu,  7 May 2020 13:25:39 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id BA76D20736;
- Thu,  7 May 2020 11:07:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1588849656;
- bh=/mtZ5WGXzOosl2v22r9XjAbR7pSmnQHFt3goB++zb3s=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=KNeNNF7Y/NCRmE8u/rkprCOAGhY4BJOCn/v4MIRqiuzP7rCLNghrnwhUffiou7oME
- +clc7XtcOH+NxDRlmbGawLwFU/3RNWps/8ZA6fjah+/ViKzbjSpjlIb/UQbu0275yl
- Ij9NRdR7oOID00T9O3tkqpI1oHNsAbughyNfs2Uk=
-Date: Thu, 7 May 2020 13:07:34 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Takashi Iwai <tiwai@suse.de>
-Subject: Re: KASAN: use-after-free Write in snd_rawmidi_kernel_write1
-Message-ID: <20200507110734.GA1490467@kroah.com>
-References: <CAFcO6XMGT42wFBxEa01Ee5Msuecm+WiXnn4rc-VWkC4vTzycPg@mail.gmail.com>
- <20200507082302.GF1024567@kroah.com> <s5h8si45ard.wl-tiwai@suse.de>
- <20200507101310.GA1311017@kroah.com> <s5hsggc3v4p.wl-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 11A9FF8011C
+ for <alsa-devel@alsa-project.org>; Thu,  7 May 2020 13:25:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11A9FF8011C
+IronPort-SDR: HEN8pqOecrx0+qgQxsjKaDWitPrdxrITz116/ymW4+Zg4TJb5EC6pwFWwwzR4yLQSdctFXH8OR
+ Puur+CHupvrA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 May 2020 04:25:28 -0700
+IronPort-SDR: 6FVrLs9omQwi3e5tj6xA7bugTCt+HI734MocKNjFfaiL9PHggGdrVWqCgIcA6lmVSgC3k+itXB
+ Y60MyyYBUjfw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,363,1583222400"; d="scan'208";a="284962558"
+Received: from pi-desktop.igk.intel.com ([10.237.148.102])
+ by fmsmga004.fm.intel.com with ESMTP; 07 May 2020 04:25:26 -0700
+From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+To: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jie Yang <yang.jie@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH 1/2] ASoC: Intel: baytrail: Fix register access
+Date: Thu,  7 May 2020 09:34:04 -0400
+Message-Id: <20200507133405.32251-1-amadeuszx.slawinski@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <s5hsggc3v4p.wl-tiwai@suse.de>
-Cc: security@kernel.org, alsa-devel@alsa-project.org,
- butt3rflyh4ck <butterflyhuangxx@gmail.com>, tiwai@suse.com,
- linux-kernel@vger.kernel.org, syzkaller <syzkaller@googlegroups.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,96 +87,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, May 07, 2020 at 12:19:18PM +0200, Takashi Iwai wrote:
-> On Thu, 07 May 2020 12:13:10 +0200,
-> Greg Kroah-Hartman wrote:
-> > 
-> > On Thu, May 07, 2020 at 11:56:22AM +0200, Takashi Iwai wrote:
-> > > On Thu, 07 May 2020 10:23:02 +0200,
-> > > Greg Kroah-Hartman wrote:
-> > > > 
-> > > > On Thu, May 07, 2020 at 04:04:25PM +0800, butt3rflyh4ck wrote:
-> > > > > I report a bug (in linux-5.7-rc1) found by syzkaller.
-> > > > > 
-> > > > > kernel config: https://github.com/butterflyhack/syzkaller-fuzz/blob/master/v5.7.0-rc1.config
-> > > > > reproducer: https://github.com/butterflyhack/syzkaller-fuzz/blob/master/repro.cprog
-> > > > > 
-> > > > > I test the reproducer in linux-5.7-rc4 and crash too.
-> > > > 
-> > > > Great, care to create a fix for this and send it to the proper
-> > > > maintainers?  That's the best way to get it fixed, otherwise it just
-> > > > goes in the file with the rest of the syzbot reports we are burried
-> > > > under.
-> > > 
-> > > Don't worry, I already prepared a fix patch below :)
-> > > 
-> > > 
-> > > thanks,
-> > > 
-> > > Takashi
-> > > 
-> > > -- 8< --
-> > > From: Takashi Iwai <tiwai@suse.de>
-> > > Subject: [PATCH] ALSA: rawmidi: Fix racy buffer resize under concurrent
-> > >  accesses
-> > > 
-> > > The rawmidi core allows user to resize the runtime buffer via ioctl,
-> > > and this may lead to UAF when performed during concurrent reads or
-> > > writes.
-> > > 
-> > > This patch fixes the race by introducing a reference counter for the
-> > > runtime buffer access and returns -EBUSY error when the resize is
-> > > performed concurrently.
-> > > 
-> > > Reported-by: butt3rflyh4ck <butterflyhuangxx@gmail.com>
-> > > Cc: <stable@vger.kernel.org>
-> > > Link: https://lore.kernel.org/r/CAFcO6XMWpUVK_yzzCpp8_XP7+=oUpQvuBeCbMffEDkpe8jWrfg@mail.gmail.com
-> > > Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> > > ---
-> > >  include/sound/rawmidi.h |  1 +
-> > >  sound/core/rawmidi.c    | 29 ++++++++++++++++++++++++++++-
-> > >  2 files changed, 29 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/include/sound/rawmidi.h b/include/sound/rawmidi.h
-> > > index a36b7227a15a..334842daa904 100644
-> > > --- a/include/sound/rawmidi.h
-> > > +++ b/include/sound/rawmidi.h
-> > > @@ -61,6 +61,7 @@ struct snd_rawmidi_runtime {
-> > >  	size_t avail_min;	/* min avail for wakeup */
-> > >  	size_t avail;		/* max used buffer for wakeup */
-> > >  	size_t xruns;		/* over/underruns counter */
-> > > +	int buffer_ref;		/* buffer reference count */
-> > >  	/* misc */
-> > >  	spinlock_t lock;
-> > >  	wait_queue_head_t sleep;
-> > > diff --git a/sound/core/rawmidi.c b/sound/core/rawmidi.c
-> > > index 20dd08e1f675..4185d9e81e3c 100644
-> > > --- a/sound/core/rawmidi.c
-> > > +++ b/sound/core/rawmidi.c
-> > > @@ -120,6 +120,17 @@ static void snd_rawmidi_input_event_work(struct work_struct *work)
-> > >  		runtime->event(runtime->substream);
-> > >  }
-> > >  
-> > > +/* buffer refcount management: call with runtime->lock held */
-> > > +static inline void snd_rawmidi_buffer_ref(struct snd_rawmidi_runtime *runtime)
-> > > +{
-> > > +	runtime->buffer_ref++;
-> > > +}
-> > > +
-> > > +static inline void snd_rawmidi_buffer_unref(struct snd_rawmidi_runtime *runtime)
-> > > +{
-> > > +	runtime->buffer_ref--;
-> > > +}
-> > 
-> > Why not use the reference count structure?
-> 
-> The context accessing the buffer is always with the spinlock, so we
-> don't need expensive atomic ops there.
-> 
-> Usually this kind of check can be a simple boolean flag, but in this
-> case, there is one place that goes out of lock due to
-> copy_from/to_user, so a refcount is used in this patch instead.
+Baytrail has 64 bit registers, so we should use *read64* to read from it
+and then use proper mask values to check status.
 
-Ah, ok, thanks for the explanation.
+Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+---
+ sound/soc/intel/baytrail/sst-baytrail-ipc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-greg k-h
+diff --git a/sound/soc/intel/baytrail/sst-baytrail-ipc.c b/sound/soc/intel/baytrail/sst-baytrail-ipc.c
+index 74274bd38f7a..34746fd871b0 100644
+--- a/sound/soc/intel/baytrail/sst-baytrail-ipc.c
++++ b/sound/soc/intel/baytrail/sst-baytrail-ipc.c
+@@ -666,8 +666,8 @@ static bool byt_is_dsp_busy(struct sst_dsp *dsp)
+ {
+ 	u64 ipcx;
+ 
+-	ipcx = sst_dsp_shim_read_unlocked(dsp, SST_IPCX);
+-	return (ipcx & (SST_IPCX_BUSY | SST_IPCX_DONE));
++	ipcx = sst_dsp_shim_read64_unlocked(dsp, SST_IPCX);
++	return (ipcx & (SST_BYT_IPCX_BUSY | SST_BYT_IPCX_DONE));
+ }
+ 
+ int sst_byt_dsp_init(struct device *dev, struct sst_pdata *pdata)
+-- 
+2.17.1
+
