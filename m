@@ -2,98 +2,107 @@ Return-Path: <SRS0=uvJZ=6W=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 14097C38A2A
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 14:22:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E33D9C38A2A
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 14:49:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9553C24958
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 14:22:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6978F21775
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 14:49:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="i+AGuCcM";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="fpYauYeq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9553C24958
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gqt3eRRk";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="SO3A08b4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6978F21775
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E93C6184F;
-	Fri,  8 May 2020 16:21:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E93C6184F
+	by alsa0.perex.cz (Postfix) with ESMTPS id AA0F01658;
+	Fri,  8 May 2020 16:48:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA0F01658
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588947756;
-	bh=q7BFc7khny71hhq3GM3vWfbL0yPeBXM2+3dXhEGhZdE=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=i+AGuCcMgO8AY64M7qcPdQeNwS3WvGKHFGKjZEbVMdlWz+SiIoEzPD7PmPtbgJxwV
-	 J2a+2m0XZF7mtgucMWhsQW8KrzmQp/Wfc2SyYrhyi2eZzZwvTSO+XZF9MvxAn2AfBF
-	 LCuhLtdfYicAQXMUaO1IYhy+lM6eb0DdpeDsdjHc=
+	s=default; t=1588949372;
+	bh=UaveMLkieMljSTSwtb5ak7pTAd9zwAq8sDjwEx3LzpA=;
+	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=gqt3eRRk5mWsuxySi0g/yqxNhfLVSB2aBK6xNQPKPOVV5Ss/AGu0BBBpNO7pDZb+r
+	 cpHi9BB50B0/lIfyows95ir7ar9gGpx3U294Tw8Ced/F0TsviWpocdJNbfDBp8o/GE
+	 yvF9WjGLLBpGuj47HqHoqTcraqGyz+uuFzTQCHrY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0B2E4F80234;
-	Fri,  8 May 2020 16:21:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2F9B9F80234;
+	Fri,  8 May 2020 16:48:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7C7CCF8023E; Fri,  8 May 2020 16:21:42 +0200 (CEST)
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com
- [IPv6:2607:f8b0:4864:20::142])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 4A15EF80234; Fri,  8 May 2020 16:48:40 +0200 (CEST)
+Received: from userp2130.oracle.com (userp2130.oracle.com [156.151.31.86])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 288EBF800AD
- for <alsa-devel@alsa-project.org>; Fri,  8 May 2020 16:21:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 288EBF800AD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5CA69F800E7
+ for <alsa-devel@alsa-project.org>; Fri,  8 May 2020 16:48:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5CA69F800E7
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="fpYauYeq"
-Received: by mail-il1-x142.google.com with SMTP id e8so1539369ilm.7
- for <alsa-devel@alsa-project.org>; Fri, 08 May 2020 07:21:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=Sa2y3Vsz+nSSLviY6v0J1Z5uZej9gf62ErMnBZQNmgc=;
- b=fpYauYeqMsxG1c9KBx3mvZ4WY30g6xzonh5CRRzMyitgtYpfvVnXYFRt/SWssct/dB
- yZ7Nzzf7rskACjYW76Bl+hRNV3VmMiln/EvuuTiuSmBh/60gm67z/o9EHfb6BPvE3EEl
- sUFhvV4JJncAKrYPCOzxVgRyD0oElBcch572SAJNF1TV6sm6g9yOA4/p0+C4KTTYVw8v
- hceyf6qy5SCv43536lzHTkKkGfEbkmQdmxf894Cp1rgpsb58FSSmbHKVJEhyVuyszDy+
- GHCflZiqx69Uvgp37gJAQ4oS8FpR0FD8dJ33wWc+YlpWPiMpl7PvdfvlInLYqsOd2CAY
- MVAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=Sa2y3Vsz+nSSLviY6v0J1Z5uZej9gf62ErMnBZQNmgc=;
- b=ke8h15tRpdLI/mDXfL+UUrstWFYGySpcpTWKWCfYAsRTPKUTCtiiO5cCbpCm59teNk
- 0rK/QSNcaxo63uPlemTh0v7rzsmXe0eR+WIFNbTyoSmJRbP1ftYehuqgnKj9BLLJOHnG
- h8MwMsC6J030mwxCY8MKLZJExuV6Fn1nARb/ClEeserrODQIUalEaG2bJAxss53/QWoV
- hCvr9W6xRQ2VQuxLS1ZKUwoVgYRlmbJghb/VHM2B65S/cMsERsq5gmwBlLHq5X6ysxXk
- t08TmPHX9wcWu1WsX5zN5wM9UV99V9HurlojRePAojnz1YEL5A3zVdzUffBqCPNMibgV
- agNQ==
-X-Gm-Message-State: AGi0Pubq/9txDwq4PwJj+R8xa9EuJ26pnETIUfxvbIqD3yqlNpie45T8
- 97Iu20nwUeZBgnf+LujNdqN3okiG9t+n+5z7i2UDng==
-X-Google-Smtp-Source: APiQypK68Y7JBW5h/XyV80owNQq+vD5J11YiWs5xFaln8HLPwuTdMvXcZnWkZdNUdfERvAr7jiy3rcNpoDx0AqYX/hI=
-X-Received: by 2002:a92:1d4e:: with SMTP id d75mr3111178ild.235.1588947692733; 
- Fri, 08 May 2020 07:21:32 -0700 (PDT)
+ dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com
+ header.b="SO3A08b4"
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+ by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 048ElnMD175280;
+ Fri, 8 May 2020 14:48:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
+ h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=5H4orkD2izBpWqIS8JRYFxALT5OGEhF4U5DYeNYbJqE=;
+ b=SO3A08b4wem/Yc3JPTC3wMm3HnFoPkx7u+gUwDgIdb/fNCBgII2Z9CDjhrtxTbx7WJEq
+ P94n0C5RBsV/HIjmQa7nzVpMVo6HF709SrojCtmQSo4ub34id3jLd2X0ie/QZrFkt+jF
+ DYYiPfK9lfdrFWaax9gRsL1OY+TRal/SXygAFCzJ95BkMce17s/fUrQjPIliW/XcVNII
+ XhPvjOdmJ/v/jPUgV+Gyw6oAhAAX0KHVu7y+CiJ8ydKhLboLA8APYFmBNoD5C46hS72p
+ A7A5cu1Jy4/BLbIKaskdkSwMVeOT2DKs7lGzTcOrrwhcDQPj8ZKZWjvfvv3c0xW1Mpa+ iQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+ by userp2130.oracle.com with ESMTP id 30vtewuct1-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Fri, 08 May 2020 14:48:34 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+ by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 048ElsVV155765;
+ Fri, 8 May 2020 14:48:34 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+ by userp3030.oracle.com with ESMTP id 30vtecpm3k-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Fri, 08 May 2020 14:48:34 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+ by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 048EmPl1002703;
+ Fri, 8 May 2020 14:48:31 GMT
+Received: from mwanda (/41.57.98.10) by default (Oracle Beehive Gateway v4.0)
+ with ESMTP ; Fri, 08 May 2020 07:48:24 -0700
+Date: Fri, 8 May 2020 17:48:18 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: Jaya Kumar <jayakumar.alsa@gmail.com>
+Subject: [PATCH] ALSA: cs5535audio: Fix a math error in
+ cs5535audio_build_dma_packets()
+Message-ID: <20200508144818.GA411239@mwanda>
 MIME-Version: 1.0
-References: <20200507213405.1869430-1-arnd@arndb.de>
-In-Reply-To: <20200507213405.1869430-1-arnd@arndb.de>
-From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Fri, 8 May 2020 22:21:21 +0800
-Message-ID: <CA+Px+wWPi7bNWm9UaO3K8Lt9n-XxPjVGAD2N9XQYq6KM5DCqRg@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: cros_ec_codec: allocate shash_desc dynamically
-To: Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
-Cc: ALSA development <alsa-devel@alsa-project.org>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Guenter Roeck <groeck@chromium.org>, Mark Brown <broonie@kernel.org>,
- Enric Balletbo i Serra <enric.balletbo@collabora.com>,
- Benson Leung <bleung@chromium.org>, Yu-Hsuan Hsu <yuhsuan@chromium.org>,
- Cheng-Yi Chiang <cychiang@chromium.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9614
+ signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0
+ malwarescore=0
+ mlxlogscore=999 phishscore=0 mlxscore=0 adultscore=0 suspectscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005080132
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9614
+ signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0
+ mlxscore=0 mlxlogscore=999
+ malwarescore=0 spamscore=0 priorityscore=1501 lowpriorityscore=0
+ impostorscore=0 suspectscore=0 adultscore=0 clxscore=1011 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005080132
+Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,9 +118,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, May 8, 2020 at 5:34 AM Arnd Bergmann <arnd@arndb.de> wrote:
-> Fixes: b6bc07d4360d ("ASoC: cros_ec_codec: support WoV")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
+We want to allocate enough space for CS5535AUDIO_MAX_DESCRIPTORS + 1
+elements and we also want the size to rounded up to PAGE_SIZE.  The
+"+ 1" is because we don't use the zeroeth element.
 
-LGTM.  Thanks for the fix.
+CS5535AUDIO_MAX_DESCRIPTORS is 128.  Each element is 8 bytes.  So it
+should be "(128 + 1) * 8 = 1032" but rounded up that becomes 4096.  In
+the original code, it did the "+ 1" after rounding up so so it allocated
+4097 bytes.  The DMA API will probably round this up to two pages.
+
+Fixes: 9b4ffa48ae85 ("[ALSA] Add support for the CS5535 Audio device")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ sound/pci/cs5535audio/cs5535audio_pcm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/pci/cs5535audio/cs5535audio_pcm.c b/sound/pci/cs5535audio/cs5535audio_pcm.c
+index 4032b89b1fc1d..f6324636b355f 100644
+--- a/sound/pci/cs5535audio/cs5535audio_pcm.c
++++ b/sound/pci/cs5535audio/cs5535audio_pcm.c
+@@ -100,7 +100,7 @@ static int snd_cs5535audio_playback_close(struct snd_pcm_substream *substream)
+ }
+ 
+ #define CS5535AUDIO_DESC_LIST_SIZE \
+-	PAGE_ALIGN(CS5535AUDIO_MAX_DESCRIPTORS * sizeof(struct cs5535audio_dma_desc))
++	PAGE_ALIGN((CS5535AUDIO_MAX_DESCRIPTORS + 1) * sizeof(struct cs5535audio_dma_desc))
+ 
+ static int cs5535audio_build_dma_packets(struct cs5535audio *cs5535au,
+ 					 struct cs5535audio_dma *dma,
+@@ -118,7 +118,7 @@ static int cs5535audio_build_dma_packets(struct cs5535audio *cs5535au,
+ 	if (dma->desc_buf.area == NULL) {
+ 		if (snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV,
+ 					&cs5535au->pci->dev,
+-					CS5535AUDIO_DESC_LIST_SIZE+1,
++					CS5535AUDIO_DESC_LIST_SIZE,
+ 					&dma->desc_buf) < 0)
+ 			return -ENOMEM;
+ 		dma->period_bytes = dma->periods = 0;
+-- 
+2.26.2
+
