@@ -2,69 +2,72 @@ Return-Path: <SRS0=uvJZ=6W=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DATE_IN_PAST_06_12,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DATE_IN_PAST_06_12,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C869C38A2A
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 09:43:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 49D5DC38A2A
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 09:44:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C494120870
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 09:43:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C0FE720870
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 09:44:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="U0ySn9Mu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C494120870
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Mo7jVgcj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C0FE720870
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2708C1817;
-	Fri,  8 May 2020 11:42:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2708C1817
+	by alsa0.perex.cz (Postfix) with ESMTPS id F196A1839;
+	Fri,  8 May 2020 11:43:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F196A1839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588930995;
-	bh=tlkCjAszH2EmzFnLOsNfjy/8YsyXHcd6euJ7blREeno=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=U0ySn9MuHnxknAi8OWtY3pfeymby0snox/spfDSVhuKUeu0PDpHfqydxzt4rZDRjV
-	 /v837N4P0kacoiDVkMsOxJfbcOmCbLegWAmzJ24Dj7HjDI5gK0d+vPMlCGlNXKCFw9
-	 gse9kq7UN4JGVWusTsrLcTmMvtCjHmcJWXoF26qc=
+	s=default; t=1588931048;
+	bh=mX13jf7jO/9CRW0UsieoAnCpXEV3cFoaaDn/tClp5x8=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Mo7jVgcjRF2qSuzFiUgXJ9mo7E5JHqyNIALTj9MiWp3Cu9CtfqQoASBEejKtjhgTE
+	 s1GZHQv82yAE3Ay52lyrA7ql2ejFcNlEnYL9lfy/fLbFVj6pHeE6svaYEKdQryfX0i
+	 +B989WM0cy5r8gs64JegTnRfY0evDq54D4AJdWhE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E6863F80258;
-	Fri,  8 May 2020 11:42:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D7392F8027B;
+	Fri,  8 May 2020 11:42:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 93FA4F80253; Fri,  8 May 2020 11:42:21 +0200 (CEST)
+ id 75782F8025F; Fri,  8 May 2020 11:42:25 +0200 (CEST)
 Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D1B64F800AD;
- Fri,  8 May 2020 11:42:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1B64F800AD
-IronPort-SDR: Uk6K/jMRw2V1yqfGmohFUVovEyX4SmEemdA00mp3qnY3VqwwifIW1Poct5d5+3I0P4rPt/62S1
- j+4A6qJM6tTg==
+ by alsa1.perex.cz (Postfix) with ESMTPS id B8DDDF80234;
+ Fri,  8 May 2020 11:42:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8DDDF80234
+IronPort-SDR: azrY9gV3m395YVGXfFqcoFEwlS1vPRLJJPZlXDCb3sn2SPcki5N51wkH0NgLWS7VMWcV0SfIFG
+ RLy5s3LrS8vg==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 May 2020 02:42:13 -0700
-IronPort-SDR: ijOb0DX+Rg2ipWts7P+vL37TgR+yoOYjTHNGYmaqfsdl9YTSv+sWuwb5TIJxWcbdUArlcAxIsT
- 4G4K/wTnHTVQ==
+ 08 May 2020 02:42:14 -0700
+IronPort-SDR: VOMWZ4Loj/SLuOjgrVvhZ4lQI7l92K5jX7f+PtGespmkslVLE6Q18g3d+5KsGn0tRFK0Vhnu5m
+ K5vn1gXceuSQ==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,367,1583222400"; d="scan'208";a="435619128"
+X-IronPort-AV: E=Sophos;i="5.73,367,1583222400"; d="scan'208";a="435619137"
 Received: from gliakhov-mobl2.ger.corp.intel.com (HELO
  ubuntu.ger.corp.intel.com) ([10.249.34.170])
- by orsmga005.jf.intel.com with ESMTP; 08 May 2020 02:42:12 -0700
+ by orsmga005.jf.intel.com with ESMTP; 08 May 2020 02:42:13 -0700
 From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 0/2] soundwire: remove multiple superfluous "else"
- statements
-Date: Fri,  8 May 2020 02:30:44 +0200
-Message-Id: <20200508003046.23162-1-guennadi.liakhovetski@linux.intel.com>
+Subject: [PATCH v2 1/2] soundwire: (cosmetic) remove multiple superfluous
+ "else" statements
+Date: Fri,  8 May 2020 02:30:45 +0200
+Message-Id: <20200508003046.23162-2-guennadi.liakhovetski@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200508003046.23162-1-guennadi.liakhovetski@linux.intel.com>
+References: <20200508003046.23162-1-guennadi.liakhovetski@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: Vinod Koul <vkoul@kernel.org>,
@@ -85,21 +88,64 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Two patches cleaning up the same issue for soundwire core and Intel-
-specific code.
+No need for an "else" after a "return" statement. Remove multiple such
+occurrences in bus.c.
 
-v2: split into 2 for core and Intel code
+Signed-off-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+---
+ drivers/soundwire/bus.c | 17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
 
-Guennadi Liakhovetski (2):
-  soundwire: (cosmetic) remove multiple superfluous "else" statements
-  soundwire: intel: (cosmetic) remove multiple superfluous "else"
-    statements
-
- drivers/soundwire/bus.c            | 17 ++++++++++-------
- drivers/soundwire/cadence_master.c |  8 ++++++--
- drivers/soundwire/intel_init.c     |  4 +++-
- 3 files changed, 19 insertions(+), 10 deletions(-)
-
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index 488c3c9..32de017 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -284,9 +284,10 @@ int sdw_fill_msg(struct sdw_msg *msg, struct sdw_slave *slave,
+ 	msg->flags = flags;
+ 	msg->buf = buf;
+ 
+-	if (addr < SDW_REG_NO_PAGE) { /* no paging area */
++	if (addr < SDW_REG_NO_PAGE) /* no paging area */
+ 		return 0;
+-	} else if (addr >= SDW_REG_MAX) { /* illegal addr */
++
++	if (addr >= SDW_REG_MAX) { /* illegal addr */
+ 		pr_err("SDW: Invalid address %x passed\n", addr);
+ 		return -EINVAL;
+ 	}
+@@ -306,7 +307,9 @@ int sdw_fill_msg(struct sdw_msg *msg, struct sdw_slave *slave,
+ 	if (!slave) {
+ 		pr_err("SDW: No slave for paging addr\n");
+ 		return -EINVAL;
+-	} else if (!slave->prop.paging_support) {
++	}
++
++	if (!slave->prop.paging_support) {
+ 		dev_err(&slave->dev,
+ 			"address %x needs paging but no support\n", addr);
+ 		return -EINVAL;
+@@ -375,8 +378,8 @@ static int sdw_write_no_pm(struct sdw_slave *slave, u32 addr, u8 value)
+ 	ret = sdw_transfer(bus, &msg);
+ 	if (ret < 0)
+ 		return ret;
+-	else
+-		return buf;
++
++	return buf;
+ }
+ 
+ static int
+@@ -471,8 +474,8 @@ int sdw_read(struct sdw_slave *slave, u32 addr)
+ 	ret = sdw_nread(slave, addr, 1, &buf);
+ 	if (ret < 0)
+ 		return ret;
+-	else
+-		return buf;
++
++	return buf;
+ }
+ EXPORT_SYMBOL(sdw_read);
+ 
 -- 
 1.9.3
 
