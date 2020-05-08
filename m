@@ -2,75 +2,75 @@ Return-Path: <SRS0=uvJZ=6W=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D802CC47255
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 17:15:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EEC8C38A2A
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 17:16:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5FEDF24954
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 17:15:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ABECE21974
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 17:16:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aiyyNBIQ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="pSqawFDd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5FEDF24954
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="a6TFZ61o";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="rAgyn1Az"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ABECE21974
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9F408851;
-	Fri,  8 May 2020 19:14:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F408851
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0454A82C;
+	Fri,  8 May 2020 19:15:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0454A82C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588958127;
-	bh=gLM9qUvxrYiPMfAOqRJ1PoOf5M7hFr7u2n4CEILO50I=;
+	s=default; t=1588958169;
+	bh=5t7WJiL5EwvoF0nnqVxBZir0wWe3BIQcNbcs1QJffwA=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=aiyyNBIQL+QHOihUVNdCNamxk+T8pxq11nxzSIT2JLgSdkAYHda9llcP0hwLYLHoC
-	 sFJtTt/C3xfcGTbyKBhfERBy8YdqnLPq9esJiR1s7vRQOo9/ED7Yc4qdJNcmDXlDoE
-	 FDVfb4O/UM4ya6Ak4li1z45tdf30z6p8Idupm1W8=
+	b=a6TFZ61oONFTayoWLC/gGLefEeEtaQ82L/xJfLRWaQO1Gw+4w0uYt8l8H/qTPxQjz
+	 rm341GizIu+v3ex+1zIlNoKzdjjHTKLbQ9paP5XPE+sOY0uBt10hTrTamTrhW0W5MD
+	 UYZFFK2Z4/hlnqMqNcuf2DH3938KozJv8jAc/P8k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D089AF8028F;
-	Fri,  8 May 2020 19:13:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 01D5AF80299;
+	Fri,  8 May 2020 19:13:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AAE38F8023E; Fri,  8 May 2020 19:13:35 +0200 (CEST)
+ id 232DBF8029A; Fri,  8 May 2020 19:13:45 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C0298F800F6
- for <alsa-devel@alsa-project.org>; Fri,  8 May 2020 19:13:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0298F800F6
+ by alsa1.perex.cz (Postfix) with ESMTPS id A9D82F80290
+ for <alsa-devel@alsa-project.org>; Fri,  8 May 2020 19:13:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9D82F80290
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="pSqawFDd"
+ header.b="rAgyn1Az"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id BC6892192A;
- Fri,  8 May 2020 17:13:30 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id A46242063A;
+ Fri,  8 May 2020 17:13:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1588958011;
- bh=gLM9qUvxrYiPMfAOqRJ1PoOf5M7hFr7u2n4CEILO50I=;
+ s=default; t=1588958017;
+ bh=5t7WJiL5EwvoF0nnqVxBZir0wWe3BIQcNbcs1QJffwA=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=pSqawFDd76MgRyToBM4GrmZnPrfhoRCCqOjCZp1j9YT7EJe1vdGGbozD9MIXSdw/L
- FGR6AumafkY52sb47IYMlOE06dvz2uBlovSRPbvHswEFpV2Z1mMPEN7M57zpugdQOo
- e7CH7dlCgzb3mD5q68T8j6b8yZsHdPRdACerkg4A=
-Date: Fri, 08 May 2020 18:13:28 +0100
+ b=rAgyn1AzkpzjDtU1+fwmVGaaW32AsL9fJeQxDyPG+4bENc1L72C8N/5TpqKgFGG9m
+ fVSCnRSKUlW1rqiwWnyL1VjbOfKnkKZMqOtQYKcK7yW11nTwDAQx+SjIkWmXvVeTlh
+ wIenW1KdCjcuSDpdquykMkHaJ9Bw5hXfIm1zBzdU=
+Date: Fri, 08 May 2020 18:13:34 +0100
 From: Mark Brown <broonie@kernel.org>
-To: robh@kernel.org, linus.walleij@linaro.org,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, lee.jones@linaro.org
-In-Reply-To: <20191121170509.10579-1-srinivas.kandagatla@linaro.org>
-References: <20191121170509.10579-1-srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v4 00/12] ASoC: Add support to WCD9340/WCD9341 codec
-Message-Id: <158895800277.30774.11001800526381716360.b4-ty@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- bgoswami@codeaurora.org, vinod.koul@linaro.org, spapothi@codeaurora.org,
- linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
+To: tiwai@suse.com, perex@perex.cz, s.hauer@pengutronix.de, lgirdwood@gmail.com,
+ shawnguo@kernel.org, Tang Bin <tangbin@cmss.chinamobile.com>
+In-Reply-To: <20200429094023.12856-1-tangbin@cmss.chinamobile.com>
+References: <20200429094023.12856-1-tangbin@cmss.chinamobile.com>
+Subject: Re: [PATCH] ASoC: mxs-saif: Add variable dev to simplify code
+Message-Id: <158895800277.30774.18095767521738841967.b4-ty@kernel.org>
+Cc: alsa-devel@alsa-project.org,
+ Zhang Shengju <zhangshengju@cmss.chinamobile.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,16 +86,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 21 Nov 2019 17:04:57 +0000, Srinivas Kandagatla wrote:
-> This patchset adds support to Qualcomm WCD9340/WCD9341 Codec which
-> is a standalone Hi-Fi audio codec IC.
-> This codec supports both I2S/I2C and SLIMbus audio interfaces.
-> On slimbus interface it supports two data lanes; 16 Tx ports
-> and 8 Rx ports. It has Five DACs and seven dedicated interpolators,
-> Multibutton headset control (MBHC), Active noise cancellation,
-> Sidetone paths, MAD (mic activity detection) and codec processing engine.
-> It supports Class-H differential earpiece out and stereo single
-> ended headphones out.
+On Wed, 29 Apr 2020 17:40:23 +0800, Tang Bin wrote:
+> Add variable 'dev' to make the code cleaner in the function
+> mxs_saif_probe(). And now that the function mxs_saif_mclk_init()
+> have defined the variables 'ret' as the error returned value,
+> then it should be used instead in this place.
+> 
+> Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
 > 
 > [...]
 
@@ -105,30 +103,8 @@ Applied to
 
 Thanks!
 
-[01/12] dt-bindings: SLIMBus: add slim devices optional properties
-        (no commit info)
-[02/12] ASoC: dt-bindings: add dt bindings for WCD9340/WCD9341 audio codec
-        (no commit info)
-[03/12] mfd: wcd934x: add support to wcd9340/wcd9341 codec
-        (no commit info)
-[04/12] ASoC: wcd934x: add support to wcd9340/wcd9341 codec
-        (no commit info)
-[05/12] ASoC: wcd934x: add basic controls
-        (no commit info)
-[06/12] ASoC: wcd934x: add playback dapm widgets
-        (no commit info)
-[07/12] ASoC: wcd934x: add capture dapm widgets
-        (no commit info)
-[08/12] ASoC: wcd934x: add audio routings
-        (no commit info)
-[09/12] dt-bindings: gpio: wcd934x: Add bindings for gpio
-        (no commit info)
-[10/12] gpio: wcd934x: Add support to wcd934x gpio controller
-        (no commit info)
-[11/12] ASoC: qcom: dt-bindings: Add compatible for DB845c and Lenovo Yoga
-        (no commit info)
-[12/12] ASoC: qcom: sdm845: add support to DB845c and Lenovo Yoga
-        (no commit info)
+[1/1] ASoC: mxs-saif: Add variable dev to simplify code
+      (no commit info)
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
