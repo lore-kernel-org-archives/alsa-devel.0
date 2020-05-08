@@ -2,77 +2,86 @@ Return-Path: <SRS0=uvJZ=6W=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 123ACC38A2A
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 10:30:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DC7DC38A2A
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 10:48:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 91EBA20708
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 10:30:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EA2BC208DB
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 10:48:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RYt9tVqh";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="mkRtTBNk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 91EBA20708
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Lb34SsY9";
+	dkim=pass (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="LDYLWnnq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EA2BC208DB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CD4971763;
-	Fri,  8 May 2020 12:30:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD4971763
+	by alsa0.perex.cz (Postfix) with ESMTPS id 420EC1820;
+	Fri,  8 May 2020 12:47:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 420EC1820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588933854;
-	bh=y46FFfqka43lOmkCt/b+5w/rxyZk6SrdMTEQ9yjSkX4=;
-	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
+	s=default; t=1588934888;
+	bh=FeNTjscanod1TIhqiEie593/RJljWiQeW+FklGxsMh4=;
+	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RYt9tVqhIr0OL9PmeFQBwEiL7utjcCj8ZINqenj/83JJFTL5rZP+HFkkn0Yllu7v1
-	 RTSfqUiLcg5Id0tY4r2YybMPdo5jnmUC66644M+KUg7lUN+lSXs3cuvZYJ99aMEwjF
-	 uYBvm1dYRcjEaN6lZm8EFY5Hj+Dx/cAPJoX3ytZg=
+	b=Lb34SsY9CKPpA9hDzB7JTCk6lS0jRHQmR1Lh/jOng8Nh+ZjbdD9McQKX29JGddE7a
+	 WTrBeQCm2RpjRi/HZaMVqXv5QGbgb37SIzcScc4KvqbFFHHQwWt0NiyQ7PNVWkSxGC
+	 uuUfJz/bxo0BFP5V/mF0PD4AQz20+y3OjUcYjRIM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C0519F80249;
-	Fri,  8 May 2020 12:29:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9F1BDF80234;
+	Fri,  8 May 2020 12:47:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 79DCBF8023E; Fri,  8 May 2020 12:29:06 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id DA2ECF8023E; Fri,  8 May 2020 12:47:15 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1E4C1F800E7;
- Fri,  8 May 2020 12:29:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E4C1F800E7
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="mkRtTBNk"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 657CD20708;
- Fri,  8 May 2020 10:28:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1588933738;
- bh=y46FFfqka43lOmkCt/b+5w/rxyZk6SrdMTEQ9yjSkX4=;
- h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=mkRtTBNk8qRsDmU3XrxOh7J+KgBGPBp9nNsxYCpdDVMLuLjCdp1ty1yMmV80Ojg4N
- M5Lrws/8wH9M6ySCccn9cJvPRBf2lNkAN8CFamWsrA2A1P10WtiSrl3wXZG/C4Qv5Z
- 25vWRQiGJmvL0sa+ZumR0jPFXQYqLAbsQBs33MRs=
-Date: Fri, 08 May 2020 11:28:56 +0100
-From: Mark Brown <broonie@kernel.org>
-To: pierre-louis.bossart@linux.intel.com, YueHaibing <yuehaibing@huawei.com>,
- joe@perches.com, kai.vehmanen@linux.intel.com, daniel.baluta@nxp.com,
- ranjani.sridharan@linux.intel.com, perex@perex.cz, lgirdwood@gmail.com,
- tiwai@suse.com
-In-Reply-To: <20200507072735.16588-1-yuehaibing@huawei.com>
-References: <20200507031911.38644-1-yuehaibing@huawei.com>
- <20200507072735.16588-1-yuehaibing@huawei.com>
-Subject: Re: [PATCH v2 -next] ASoC: SOF: Intel: Fix unused variable warning
-Message-Id: <158893373629.42817.5382594504318611584.b4-ty@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- sound-open-firmware@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id EBA41F800F6
+ for <alsa-devel@alsa-project.org>; Fri,  8 May 2020 12:47:09 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id A197AA004B;
+ Fri,  8 May 2020 12:47:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz A197AA004B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1588934826; bh=dQHcwvE8LwPmabefrZB9iJF/70pL3if+3+TeD/g2P/8=;
+ h=Subject:To:References:From:Date:In-Reply-To:From;
+ b=LDYLWnnqI+UDyVHRx53xTt+xDwik44bnW/j6vAipsyt6E5fE4VjpvZkY11jlFpMds
+ TsW86SQXOdEX0IswarMWPFDFW+kBuKlh+52BNOQrcIDlcdxyAYg+o5vuCkgdw63a52
+ 7GW1vHpvmVtLWMXacYzMLAnkNS1wX3p6a54NDmK0=
+Received: from p50.perex-int.cz (unknown [192.168.100.94])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Fri,  8 May 2020 12:47:02 +0200 (CEST)
+Subject: Re: [alsa-devel] [alsa-lib][RFC PATCH] ucm: reset config id of
+ condition items
+To: "Yang, Libin" <libin.yang@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ "libin.yang@linux.intel.com" <libin.yang@linux.intel.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+References: <1587607135-20106-1-git-send-email-libin.yang@linux.intel.com>
+ <4b5a1e72-9d8c-221d-f0ea-df44f1ffb1d5@linux.intel.com>
+ <79a9e97e-c58a-403a-9ffb-b9d3f9f70ad2@perex.cz>
+ <BYAPR11MB2614DF61F17186141D35059C90D00@BYAPR11MB2614.namprd11.prod.outlook.com>
+ <45ac8cce-e925-e795-0bca-4b924360cf9a@perex.cz>
+ <BYAPR11MB2614D0F1F4470C9572FBB72A90AB0@BYAPR11MB2614.namprd11.prod.outlook.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Message-ID: <f0b87412-4df9-72ed-354c-a125f0c41cc4@perex.cz>
+Date: Fri, 8 May 2020 12:47:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <BYAPR11MB2614D0F1F4470C9572FBB72A90AB0@BYAPR11MB2614.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,40 +97,73 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 7 May 2020 15:27:35 +0800, YueHaibing wrote:
-> When CONFIG_SND_SOC_SOF_BAYTRAIL is not set, gcc warns:
+Dne 01. 05. 20 v 15:44 Yang, Libin napsal(a):
+> Hi Jaroslav,
 > 
-> sound/soc/sof/intel/byt.c:85:41: warning: ‘cht_debugfs’ defined but not used [-Wunused-const-variable=]
->  static const struct snd_sof_debugfs_map cht_debugfs[] = {
->                                          ^~~~~~~~~~~
-> Move the variable inside #ifdef
+>>
+>> EnableSequence [
+>>     cmd1 arg1
+>>     cms2 arg2
+>> ]
+>>
+>> is expanded to:
+>>
+>> EnableSequence {
+>>     0 cmd1
+>>     1 arg1
+>>     2 cmd2
+>>     3 arg2
+>> }
+>>
+>> or
+>>
+>> EnableSequence.0 cmd1
+>> EnableSequence.1 arg1
+>> EnableSequence.2 cmd2
+>> EnableSequence.3 arg2
+>>
+>> So if you like to add a new sequence which is outside the declared array, then
+>> you need to add this:
+>>
+>> EnableSequence { cmdid3 cmd3 argid3 arg3 }
+>>
+>> or (maybe more readable):
+>>
+>> EnableSequence { cmdid3=cmd3 argid3=arg3 }
+>>
+>> or:
+>>
+>> EnableSequence.cmdid3 cmd3
+>> EnableSequence.argid3 arg3
+>>
+>> The ids names can be anything but they must be unique in the block (tree leaf).
+>>
+>> The declaration order matters in this context (_arg_ must be right behind _cmd_
+>> for the sequences). Note that the functions which works on top of the
+>> configuration tree (like the in-place evaluation - If blocks) are executed on top
+>> of this tree (which is parsed at first)! Keep it in the mind.
 > 
-> [...]
+> Yes, it works with your new suggestion now.
+> 
+> Do you think this patch is necessary or not? With this patch we can use the
+> style of:
+> EnableSequence [
+>      cmd1 arg1
+>      cms2 arg2
+> ]
 
-Applied to
+The patch changes the consistency in the id values for the array 
+representation in memory (so you cannot address them). I tried to move this 
+change to the right place (UCM conditions):
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.8
+https://github.com/perexg/alsa-lib/commits/array-merge
 
-Thanks!
+Could you check this tree? The last commit implements the merge operation for 
+the block from the condition tree to the parent tree. Also the "before" and 
+"after" hints should be accepted, too.
 
-[1/1] ASoC: SOF: Intel: Fix unused variable warning
-      commit: 28d4adc4257cd2e119df17aa7e9d18cdf607f23d
+					Jaroslav
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
