@@ -6,70 +6,73 @@ X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D9A3C38A2A
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 10:30:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 123ACC38A2A
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 10:30:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BFB8F20708
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 10:30:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 91EBA20708
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 10:30:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kPd+KLo8";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="eEmcNYjl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BFB8F20708
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RYt9tVqh";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="mkRtTBNk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 91EBA20708
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 06D5317FC;
-	Fri,  8 May 2020 12:29:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 06D5317FC
+	by alsa0.perex.cz (Postfix) with ESMTPS id CD4971763;
+	Fri,  8 May 2020 12:30:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD4971763
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588933802;
-	bh=+akHx3jjMTUUrTW/fRz1G1ZH9BzRzorGdvTbfueVTDg=;
+	s=default; t=1588933854;
+	bh=y46FFfqka43lOmkCt/b+5w/rxyZk6SrdMTEQ9yjSkX4=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kPd+KLo8wI0lLjJ72QCoJ4apgHAdtjr5CCbJnMLwWo6+LvuT+3fhhIUFvvyKxqHV2
-	 35puDXNd9vPTGbOc48lTrHy7H4yT+7bvi8Uc2XNQCrsLC73ZFOx2cGYAkJpNNt/wKV
-	 AM/BircS5o64RBWXGUeJT3EdTZAkk5uhjg4ayCB0=
+	b=RYt9tVqhIr0OL9PmeFQBwEiL7utjcCj8ZINqenj/83JJFTL5rZP+HFkkn0Yllu7v1
+	 RTSfqUiLcg5Id0tY4r2YybMPdo5jnmUC66644M+KUg7lUN+lSXs3cuvZYJ99aMEwjF
+	 uYBvm1dYRcjEaN6lZm8EFY5Hj+Dx/cAPJoX3ytZg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5C0F4F800AD;
-	Fri,  8 May 2020 12:29:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C0519F80249;
+	Fri,  8 May 2020 12:29:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8AD99F80249; Fri,  8 May 2020 12:29:08 +0200 (CEST)
+ id 79DCBF8023E; Fri,  8 May 2020 12:29:06 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3C4F6F800AD
- for <alsa-devel@alsa-project.org>; Fri,  8 May 2020 12:29:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C4F6F800AD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1E4C1F800E7;
+ Fri,  8 May 2020 12:29:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E4C1F800E7
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="eEmcNYjl"
+ header.b="mkRtTBNk"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 5FD0821473;
- Fri,  8 May 2020 10:29:04 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 657CD20708;
+ Fri,  8 May 2020 10:28:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1588933744;
- bh=+akHx3jjMTUUrTW/fRz1G1ZH9BzRzorGdvTbfueVTDg=;
+ s=default; t=1588933738;
+ bh=y46FFfqka43lOmkCt/b+5w/rxyZk6SrdMTEQ9yjSkX4=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=eEmcNYjl5lDnLeQwu75NRApfOp54Aqy37eZGzNCv1Q+Y3bjwlAvsJVrvg8ApQJDmW
- 2s9uHnIBnfzBIXzFJGNEB4dGt4R4zsIHfrwDGQCwa38Sb7Mz7es4EK9fHgmcSKTRgw
- 62d576YoSGgv/Ebv2bYVzXxzAOT3WKU7WNrsGVM0=
-Date: Fri, 08 May 2020 11:29:02 +0100
+ b=mkRtTBNk8qRsDmU3XrxOh7J+KgBGPBp9nNsxYCpdDVMLuLjCdp1ty1yMmV80Ojg4N
+ M5Lrws/8wH9M6ySCccn9cJvPRBf2lNkAN8CFamWsrA2A1P10WtiSrl3wXZG/C4Qv5Z
+ 25vWRQiGJmvL0sa+ZumR0jPFXQYqLAbsQBs33MRs=
+Date: Fri, 08 May 2020 11:28:56 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>
-In-Reply-To: <20200507192228.GA16355@embeddedor>
-References: <20200507192228.GA16355@embeddedor>
-Subject: Re: [PATCH] ASoC: soc-core: Replace zero-length array with
- flexible-array
-Message-Id: <158893373629.42817.8817557428869412992.b4-ty@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: pierre-louis.bossart@linux.intel.com, YueHaibing <yuehaibing@huawei.com>,
+ joe@perches.com, kai.vehmanen@linux.intel.com, daniel.baluta@nxp.com,
+ ranjani.sridharan@linux.intel.com, perex@perex.cz, lgirdwood@gmail.com,
+ tiwai@suse.com
+In-Reply-To: <20200507072735.16588-1-yuehaibing@huawei.com>
+References: <20200507031911.38644-1-yuehaibing@huawei.com>
+ <20200507072735.16588-1-yuehaibing@huawei.com>
+Subject: Re: [PATCH v2 -next] ASoC: SOF: Intel: Fix unused variable warning
+Message-Id: <158893373629.42817.5382594504318611584.b4-ty@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,16 +88,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 7 May 2020 14:22:28 -0500, Gustavo A. R. Silva wrote:
-> The current codebase makes use of the zero-length array language
-> extension to the C90 standard, but the preferred mechanism to declare
-> variable-length types such as these ones is a flexible array member[1][2],
-> introduced in C99:
+On Thu, 7 May 2020 15:27:35 +0800, YueHaibing wrote:
+> When CONFIG_SND_SOC_SOF_BAYTRAIL is not set, gcc warns:
 > 
-> struct foo {
->         int stuff;
->         struct boo array[];
-> };
+> sound/soc/sof/intel/byt.c:85:41: warning: ‘cht_debugfs’ defined but not used [-Wunused-const-variable=]
+>  static const struct snd_sof_debugfs_map cht_debugfs[] = {
+>                                          ^~~~~~~~~~~
+> Move the variable inside #ifdef
 > 
 > [...]
 
@@ -104,8 +104,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: soc-core: Replace zero-length array with flexible-array
-      commit: 2d6201ee1123325c089008570bd5ddea3c5b131a
+[1/1] ASoC: SOF: Intel: Fix unused variable warning
+      commit: 28d4adc4257cd2e119df17aa7e9d18cdf607f23d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
