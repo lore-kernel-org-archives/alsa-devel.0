@@ -2,76 +2,78 @@ Return-Path: <SRS0=uvJZ=6W=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BD89CC38A2A
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 17:17:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A5CDC38A2A
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 17:53:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4579121775
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 17:17:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BD45C214D8
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 17:53:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vplqWrCd";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="0kTPBDsV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4579121775
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qBIUeOfv";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="xtFHQ65M"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BD45C214D8
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 98480850;
-	Fri,  8 May 2020 19:16:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98480850
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1AE7914E;
+	Fri,  8 May 2020 19:52:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1AE7914E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588958228;
-	bh=Mi3mkL21mFkTxbfu4inxijc64euefMaBjgzvJAZkVr8=;
+	s=default; t=1588960402;
+	bh=EDs/lYMTR6duIghKPZbNYHj/6gUoXDqvRRCEyYxbEkI=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vplqWrCdQtNc0wDmP2CkklMX+ek9zclsnwjLxBS2WGZQIfn33JVRWRiYRzGFrz0tU
-	 8AFRD/mCY/irVrJqBKX+DhSGHX6DPXezDMqQkWVBCTaNbJJ7Cy89vfW+yCRCS6e44x
-	 ON1p0WSQsCcgwvIqh9Gyp26sydtqLAC172JWEqC8=
+	b=qBIUeOfvjIB0kuDNBSVT1pSsiHkuTzRORAgxAZN3N5Vk1/GdMoBb4qtqAVXTvBJbT
+	 gwdgiZhHcTJCz5mT9EIgTZjhAKpf6aUIWjE6L5klxV+gGvs7cGSOXakrkwrQMayZ2Z
+	 oQ1git2C8K1yDPC1wfS0XQyeruIuGCXFFgm4AyzU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BDB68F802A9;
-	Fri,  8 May 2020 19:14:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6C507F800F6;
+	Fri,  8 May 2020 19:52:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CD074F802BC; Fri,  8 May 2020 19:14:07 +0200 (CEST)
+ id 1C4B5F8023E; Fri,  8 May 2020 19:52:29 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C3E96F802A1
- for <alsa-devel@alsa-project.org>; Fri,  8 May 2020 19:14:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3E96F802A1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8E642F800F6
+ for <alsa-devel@alsa-project.org>; Fri,  8 May 2020 19:52:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E642F800F6
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="0kTPBDsV"
+ header.b="xtFHQ65M"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id C197C206D3;
- Fri,  8 May 2020 17:13:59 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 01225214D8;
+ Fri,  8 May 2020 17:52:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1588958040;
- bh=Mi3mkL21mFkTxbfu4inxijc64euefMaBjgzvJAZkVr8=;
+ s=default; t=1588960341;
+ bh=EDs/lYMTR6duIghKPZbNYHj/6gUoXDqvRRCEyYxbEkI=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=0kTPBDsV1m5zI5N7T6k4brBReXBdIzEmE0/ap0WDTIDdPHIdwKH2CuMPror9co+N+
- kR57GABl8RgrwiqR1mSCUb1pzwFyqdaiucXMqBhIoeCM6XDgzF6J1ScpEgHbDtzbzX
- zNbnMqGvsGThKWJA9++WOEDFQeeEpy0hwA9EYy24=
-Date: Fri, 08 May 2020 18:13:57 +0100
+ b=xtFHQ65M8//3Kdj9pvdEYPBRc65XqqD98KyVRpHIl5iSz5KGl1sXzJuONIQKV7kCh
+ xaPdSp4CQ5M6gseF88Y8cuya23MlgOMfVkFjj9tlpVWh5/Q1wo+SNF4KLhkTdk5fsR
+ JoMPvJrGnsLwtGyBYtp3OkLUkmK9ZBUaYWA1aDgc=
+Date: Fri, 08 May 2020 18:52:19 +0100
 From: Mark Brown <broonie@kernel.org>
-To: plai@codeaurora.org, Tang Bin <tangbin@cmss.chinamobile.com>,
- perex@perex.cz, bgoswami@codeaurora.org
-In-Reply-To: <20200504072820.5328-1-tangbin@cmss.chinamobile.com>
-References: <20200504072820.5328-1-tangbin@cmss.chinamobile.com>
-Subject: Re: [PATCH] ASoC: qcom: Use devm_platform_ioremap_resource_byname()
- to simplify code
-Message-Id: <158895800278.30774.4078741389607548443.b4-ty@kernel.org>
+To: Arnd Bergmann <arnd@arndb.de>, Cheng-Yi Chiang <cychiang@chromium.org>
+In-Reply-To: <20200507213405.1869430-1-arnd@arndb.de>
+References: <20200507213405.1869430-1-arnd@arndb.de>
+Subject: Re: [PATCH] ASoC: cros_ec_codec: allocate shash_desc dynamically
+Message-Id: <158896033901.2700.3513138380933416589.b4-ty@kernel.org>
 Cc: alsa-devel@alsa-project.org,
- Zhang Shengju <zhangshengju@cmss.chinamobile.com>,
- linux-kernel@vger.kernel.org
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Tzung-Bi Shih <tzungbi@google.com>, Takashi Iwai <tiwai@suse.com>,
+ linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+ Guenter Roeck <groeck@chromium.org>,
+ Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+ Benson Leung <bleung@chromium.org>, Yu-Hsuan Hsu <yuhsuan@chromium.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,25 +89,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 4 May 2020 15:28:20 +0800, Tang Bin wrote:
-> Use devm_platform_ioremap_resource_byname() instead of
-> platform_get_resource_byname() + devm_ioremap_resource().
+On Thu, 7 May 2020 23:33:51 +0200, Arnd Bergmann wrote:
+> The wov_hotword_model_put() function has multiple large variables on
+> its stack, the largest of which is the result of SHASH_DESC_ON_STACK().
+> In total, this exceeds the warning limit for 32-bit architectures:
 > 
-> Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
-> ---
->  sound/soc/qcom/lpass-cpu.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
+> sound/soc/codecs/cros_ec_codec.c:776:12: error: stack frame size of 1152 bytes in function 'wov_hotword_model_put' [-Werror,-Wframe-larger-than=]
 > 
-> [...]
+> The function already has a dynamic crypto_alloc_shash() allocation, so
+> using kmalloc() for the descriptor is correct as well and does not
+> introduce any additional failure scenarios. With this, the stack usage
+> of wov_hotword_model_put() gets reduced to 480 bytes in my test
+> configuration.
 
 Applied to
 
-   local tree regulator/for-5.7
+   local tree asoc/for-5.7
 
 Thanks!
 
-[1/1] ASoC: qcom: Use devm_platform_ioremap_resource_byname() to simplify code
+[1/1] ASoC: cros_ec_codec: allocate shash_desc dynamically
       (no commit info)
 
 All being well this means that it will be integrated into the linux-next
