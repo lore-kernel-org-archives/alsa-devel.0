@@ -7,101 +7,102 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 78D6DC38A2A
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 04:42:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B682C38A2A
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 04:43:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 04FD3208CA
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 04:42:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D5867206D3
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 04:43:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="D9qzOwC9";
-	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="P8fzG6Hd";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="USLyzuCb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 04FD3208CA
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="olBznPSL";
+	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="mdGwO9iE";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="gUi8+esH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D5867206D3
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 37AC91829;
-	Fri,  8 May 2020 06:42:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37AC91829
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3D8951844;
+	Fri,  8 May 2020 06:42:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D8951844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588912973;
-	bh=g2/005NuMnCSF0lCUECWRdAf0y0bfasp77dmOnOUGlM=;
+	s=default; t=1588913009;
+	bh=LwzxLb4VsEdSOR2UnrCUCOprZM5jY7l0Be+TPoutvCY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=D9qzOwC9YjVGsdcagNT0PhU60/ZB7sqUtmba5m9DK9B7qreVXpc2lPMFmq9AXoEOq
-	 EmW/0BFLOLSlcd4VpGn0Clm49Jcdkfl4qbu2SPshTSuUNuK/Vk7p4mnR83AFEddnzj
-	 zsqaaCr0dKq/SgkLM2ceEx3VXyvySZYmBMnKgRak=
+	b=olBznPSLXe8WjYTGv/MXvV+LuXEYqTZ6XbpcwLR5klS3ncPG80/e88UG6rqN5+3t/
+	 A5bnHZapkYePx4ky76SFgn8IrhEa2YbEAmn52PRAUjPe8zgUsw+68Ag3Ko6YTafXHP
+	 N4KPkoK+D1OFe+qZ/KQYKZB9dSxOh+BNNLKhBtK8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DB2CEF802F7;
-	Fri,  8 May 2020 06:37:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 17A20F802FD;
+	Fri,  8 May 2020 06:37:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 339A7F802A9; Fri,  8 May 2020 06:37:06 +0200 (CEST)
+ id 392EEF802BD; Fri,  8 May 2020 06:37:07 +0200 (CEST)
 Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com
  [64.147.123.20])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7B6E0F80259
- for <alsa-devel@alsa-project.org>; Fri,  8 May 2020 06:36:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B6E0F80259
+ by alsa1.perex.cz (Postfix) with ESMTPS id 30A4AF8028F
+ for <alsa-devel@alsa-project.org>; Fri,  8 May 2020 06:36:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30A4AF8028F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="P8fzG6Hd"; 
+ header.b="mdGwO9iE"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="USLyzuCb"
+ header.i=@messagingengine.com header.b="gUi8+esH"
 Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
- by mailout.west.internal (Postfix) with ESMTP id E108EAE7;
- Fri,  8 May 2020 00:36:47 -0400 (EDT)
+ by mailout.west.internal (Postfix) with ESMTP id 90AF7AD1;
+ Fri,  8 May 2020 00:36:50 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
- by compute2.internal (MEProxy); Fri, 08 May 2020 00:36:48 -0400
+ by compute2.internal (MEProxy); Fri, 08 May 2020 00:36:50 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm1; bh=ZaDfdM0UOnsbq
- EJyN/0oV1aGs3fa+/Rpdqc7lHET4Yo=; b=P8fzG6HdS9J7p2WGX85nY/9Hhtoz7
- s2hOBdYrDrDe34Fo5E4d07Yu2B3c9by5B20n8I0gZLYO+MaPIQs3Pb8o/JSjDHb3
- bfJ2qfMKr1opDp0W8f/JhMbZi2TkqWFjNw+QheAbX6NiGy8+kSIr99yM9Srk1kV9
- SvhCv7BU6WCS7LNipIO5tSeq+W7BD+xnMftFwEqKiL+IpCbsW/CTvF6f02dVRbOr
- ahV3dOjP4jLFq2W1sYiabspL3Sl6EMF+INAl//MthiWGhnSgOE0UzuJFSP3uRFiq
- ehvuOzYGM1t1wDtyYsjzTk9myj7FvC0Mu2Wrm7RyycOlX0YXhZMyKAXzA==
+ :mime-version:content-transfer-encoding; s=fm1; bh=bs9Wz0jd1cNWn
+ GiKe12Qd/3nKFtxCeLuIJ3TD6iWrIE=; b=mdGwO9iEROnJIs1c+8Oj7a+M4TDxy
+ 4QCS0xOncsiM9lNcqbiKyKLY9Pjw0Fv56H7AJlakPztV3Dcolhum0/hJQjFAogTN
+ tV+Cp7vR9gX7JX6SGY/7Tlu27y1hJmfqhROGYuxd+zRmZM604I8NpB2rQ3NqzqGn
+ ky7N9RJw3hs50/gX1GlGob7CQScpaQ5eJitjqNWhIB9m5P9h3sRByUGVYcXPn099
+ TqeqZRrMJz2uLWh1ApNnRZW7ZAZv6HhisunBMrMqY4+5K/aUiCloMZSfse7ziN/U
+ F0U8sBFyJ9+cOrKg0A8dNiWfqkNFcpdDXyKenZjPQnkdl3i5x9rX3jjTA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm2; bh=ZaDfdM0UOnsbqEJyN/0oV1aGs3fa+/Rpdqc7lHET4Yo=; b=USLyzuCb
- TLOp+Fbwaq+6J0ok6mxmM7YUPXezo8CVkQR8D3yZTtpcar0fAxT2LIjBbjQtRsCN
- VmYa+EzDr/qHgPPjQ5JTT4toABaNK98UvwzAOyCk0OWQd6Gx70F1QbFMynb+eJV0
- JNs1X17D8KS6SzuKhQUn//dwbDR3menTjTFYVbVRdEk+5X/Jr4/1r/s1JYVOCmD4
- 9cpHPgYbCbnT+NvWBvFJygggWCGFkIRy5DfaC79o1JI4BwhVcamA0Q2Axo9oCPzK
- WWp3zrJA9ddoqb6PjJgZrmlG4j1DXCwBaMzmKK8KTouc8RRhD0Mt1vNqvyvZJcVl
- VTpmWY0vDiQjTQ==
-X-ME-Sender: <xms:3-G0XvunKTmT1OtgNXkH2krwLZjujGeD6gw0gv4cLWakBqdKxTiwMg>
+ fm2; bh=bs9Wz0jd1cNWnGiKe12Qd/3nKFtxCeLuIJ3TD6iWrIE=; b=gUi8+esH
+ zvmCc/b2LUdhGuuGbKgEI7yH5vt2yzhHXEB+/ESyPIShrPykTbVyXR54UAa2NJzJ
+ QXoY6nX4ypYPJhcXHw7zuktEwip1hRIio8YeRe58jQU2i1eNjv293Or5aoBSPfG3
+ D/lJIAf8bQK5h/IZMP6GjQuWn5XFhJOt2HzJmHNwI9GUYjDf2+hZfs1yH5rX/vs7
+ K2WdS2Nz01OcE+jv25lQb+TPXnxkMVqw2CE+ylRFTOZFfIq8vETXCuFu62dT17yJ
+ ZGF2lEd+mvgMAORhEYT6Yiwri4MpuaDQL8S3A2rScDyjuAHjTX5RUSA3c9StxGgR
+ uy+gc8hJSFY4Cw==
+X-ME-Sender: <xms:4uG0Xr7YmcbfSJr3XXjhi5NeMRVhhcZe7mFz8kYbKxlsLDDTIvSRKw>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrkedugdekvdcutefuodetggdotefrodftvf
  curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
  uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
  ertddtnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghkrghs
- hhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpeevfefffeekte
- fgveegfeelheffhfeujedtjeevtefhkeevkedtjeejvddtjefhjeenucfkphepudektddr
- vdefhedrfedrheegnecuvehluhhsthgvrhfuihiivgepvdenucfrrghrrghmpehmrghilh
- hfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:3-G0XuDjTzRlMcbwQvm6j_iLYp4PAT45SqRjDfgKduxlUhuBef8z1w>
- <xmx:3-G0XpO07u2pchDsFVCvHdSKQ5Fd-oPZVaR78QQHpPM9z6k6O8CciA>
- <xmx:3-G0XvzIF_6NuH4iW5oJvwae7cjRycRPC7thViGbzhU294qSF6INew>
- <xmx:3-G0XmLRFRVAle3TPUw_PnoQ3ezrVMUpJEH594FvqYX2oXJXt-c5aQ>
+ hhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpefhheeijedvve
+ eljeejheejueegueegteehtdduffehgefgvddutdeikeejteehtdenucffohhmrghinhep
+ rhigrdgurghtrgdprhigrdgvvhgvnhhtshenucfkphepudektddrvdefhedrfedrheegne
+ cuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgr
+ khgrshhhihesshgrkhgrmhhotggthhhirdhjph
+X-ME-Proxy: <xmx:4uG0XgNa1tuGfxt9Y7eaZZ4nWDNSVTMPF5HxK4H5WjGoxjlxOz-huA>
+ <xmx:4uG0Xl9PnH0L9LiIpJSG97ydMO1tzW3g2rS5gyZXTDDPGEUDZBEwaQ>
+ <xmx:4uG0Xj4TjF7uWMLOr9QfLHNyETYvrPlU3ydbLIWZfdc7LAkTxJTjCg>
+ <xmx:4uG0XhVbVEO5OEz67EMKTIDZhhpH1E-dSqiYhdVa07d1cXkjETxIwQ>
 Received: from workstation.flets-east.jp (ad003054.dynamic.ppp.asahi-net.or.jp
  [180.235.3.54])
- by mail.messagingengine.com (Postfix) with ESMTPA id 930093280069;
- Fri,  8 May 2020 00:36:46 -0400 (EDT)
+ by mail.messagingengine.com (Postfix) with ESMTPA id 3DD003280065;
+ Fri,  8 May 2020 00:36:49 -0400 (EDT)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: clemens@ladisch.de,
 	tiwai@suse.de
-Subject: [PATCH 08/10] ALSA: firewire-lib: add cache for packet sequence to
- AMDTP domain structure
-Date: Fri,  8 May 2020 13:36:33 +0900
-Message-Id: <20200508043635.349339-9-o-takashi@sakamocchi.jp>
+Subject: [PATCH 10/10] ALSA: firewire-lib: use sequence of syt offset and data
+ block on pool in AMDTP domain
+Date: Fri,  8 May 2020 13:36:35 +0900
+Message-Id: <20200508043635.349339-11-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200508043635.349339-1-o-takashi@sakamocchi.jp>
 References: <20200508043635.349339-1-o-takashi@sakamocchi.jp>
@@ -123,98 +124,151 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-For future extension, storage is required to store packet sequence in
-incoming AMDTP stream to recover media clock for outgoing AMDTP stream.
+In previous commit, the sequence of syt offset and the number of data
+blocks per packet is calculated for pool in AMDTP domain structure in
+advance of processing outgoing packets.
 
-This commit adds the storage to AMDTP domain for this purpose. The
-packet sequence is represented by 'struct seq_desc' which has two
-members; syt_offset and the number of data blocks. The size of storage
-is decided according to the size of packet queue.
+This commit uses the sequence for outgoing packet processing to obsolete
+per-stream processing of the sequence.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp-stream.c | 15 ++++++++++++++-
- sound/firewire/amdtp-stream.h |  9 +++++++++
- 2 files changed, 23 insertions(+), 1 deletion(-)
+ sound/firewire/amdtp-stream.c | 56 +++++++++++++----------------------
+ sound/firewire/amdtp-stream.h |  4 ---
+ 2 files changed, 20 insertions(+), 40 deletions(-)
 
 diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index efd1f2a40cf1..f1c8611cfc70 100644
+index a2af598e9b9a..f8586f75441d 100644
 --- a/sound/firewire/amdtp-stream.c
 +++ b/sound/firewire/amdtp-stream.c
-@@ -1269,6 +1269,8 @@ int amdtp_domain_init(struct amdtp_domain *d)
- 
- 	d->events_per_period = 0;
- 
-+	d->seq_descs = NULL;
-+
- 	return 0;
+@@ -747,34 +747,30 @@ static unsigned int compute_syt(unsigned int syt_offset, unsigned int cycle,
+ 	return syt & CIP_SYT_MASK;
  }
- EXPORT_SYMBOL_GPL(amdtp_domain_init);
-@@ -1370,12 +1372,18 @@ int amdtp_domain_start(struct amdtp_domain *d, unsigned int ir_delay_cycle)
- 	queue_size = DIV_ROUND_UP(CYCLES_PER_SECOND * events_per_buffer,
- 				  amdtp_rate_table[d->irq_target->sfc]);
  
-+	d->seq_descs = kcalloc(queue_size, sizeof(*d->seq_descs), GFP_KERNEL);
-+	if (!d->seq_descs)
-+		return -ENOMEM;
-+	d->seq_size = queue_size;
-+	d->seq_tail = 0;
+-static void generate_ideal_pkt_descs(struct amdtp_stream *s,
+-				     struct pkt_desc *descs,
+-				     const __be32 *ctx_header,
+-				     unsigned int packets)
++static void generate_pkt_descs(struct amdtp_stream *s, struct pkt_desc *descs,
++			       const __be32 *ctx_header, unsigned int packets,
++			       const struct seq_desc *seq_descs,
++			       unsigned int seq_size)
+ {
+ 	unsigned int dbc = s->data_block_counter;
++	unsigned int seq_index = s->ctx_data.rx.seq_index;
+ 	int i;
+ 
+ 	for (i = 0; i < packets; ++i) {
+ 		struct pkt_desc *desc = descs + i;
+ 		unsigned int index = (s->packet_index + i) % s->queue_size;
+-		unsigned int syt_offset;
++		const struct seq_desc *seq = seq_descs + seq_index;
++		unsigned int syt;
+ 
+ 		desc->cycle = compute_it_cycle(*ctx_header, s->queue_size);
+-		syt_offset = calculate_syt_offset(
+-				&s->ctx_data.rx.last_syt_offset,
+-				&s->ctx_data.rx.syt_offset_state, s->sfc);
+-		if (syt_offset != CIP_SYT_NO_INFO) {
+-			desc->syt = compute_syt(syt_offset, desc->cycle,
+-						s->ctx_data.rx.transfer_delay);
+-		} else {
+-			desc->syt = syt_offset;
 +
- 	if (ir_delay_cycle > 0) {
- 		struct fw_card *fw_card = fw_parent_device(s->unit)->card;
++		syt = seq->syt_offset;
++		if (syt != CIP_SYT_NO_INFO) {
++			syt = compute_syt(syt, desc->cycle,
++					  s->ctx_data.rx.transfer_delay);
+ 		}
+-		desc->data_blocks =
+-			calculate_data_blocks(&s->ctx_data.rx.data_block_state,
+-					      !!(s->flags & CIP_BLOCKING),
+-					      desc->syt == CIP_SYT_NO_INFO,
+-					      s->syt_interval, s->sfc);
++		desc->syt = syt;
++		desc->data_blocks = seq->data_blocks;
  
- 		err = get_current_cycle_time(fw_card, &cycle);
- 		if (err < 0)
--			return err;
-+			goto error;
+ 		if (s->flags & CIP_DBC_IS_END_EVENT)
+ 			dbc = (dbc + desc->data_blocks) & 0xff;
+@@ -786,10 +782,13 @@ static void generate_ideal_pkt_descs(struct amdtp_stream *s,
  
- 		// No need to care overflow in cycle field because of enough
- 		// width.
-@@ -1431,6 +1439,8 @@ int amdtp_domain_start(struct amdtp_domain *d, unsigned int ir_delay_cycle)
- error:
- 	list_for_each_entry(s, &d->streams, list)
- 		amdtp_stream_stop(s);
-+	kfree(d->seq_descs);
-+	d->seq_descs = NULL;
- 	return err;
- }
- EXPORT_SYMBOL_GPL(amdtp_domain_start);
-@@ -1455,5 +1465,8 @@ void amdtp_domain_stop(struct amdtp_domain *d)
+ 		desc->ctx_payload = s->buffer.packets[index].buffer;
  
- 	d->events_per_period = 0;
- 	d->irq_target = NULL;
++		seq_index = (seq_index + 1) % seq_size;
 +
-+	kfree(d->seq_descs);
-+	d->seq_descs = NULL;
+ 		++ctx_header;
+ 	}
+ 
+ 	s->data_block_counter = dbc;
++	s->ctx_data.rx.seq_index = seq_index;
  }
- EXPORT_SYMBOL_GPL(amdtp_domain_stop);
+ 
+ static inline void cancel_stream(struct amdtp_stream *s)
+@@ -818,6 +817,7 @@ static void out_stream_callback(struct fw_iso_context *context, u32 tstamp,
+ 				void *private_data)
+ {
+ 	struct amdtp_stream *s = private_data;
++	const struct amdtp_domain *d = s->domain;
+ 	const __be32 *ctx_header = header;
+ 	unsigned int events_per_period = s->ctx_data.rx.events_per_period;
+ 	unsigned int event_count = s->ctx_data.rx.event_count;
+@@ -830,7 +830,8 @@ static void out_stream_callback(struct fw_iso_context *context, u32 tstamp,
+ 	// Calculate the number of packets in buffer and check XRUN.
+ 	packets = header_length / sizeof(*ctx_header);
+ 
+-	generate_ideal_pkt_descs(s, s->pkt_descs, ctx_header, packets);
++	generate_pkt_descs(s, s->pkt_descs, ctx_header, packets, d->seq_descs,
++			   d->seq_size);
+ 
+ 	process_ctx_payloads(s, s->pkt_descs, packets);
+ 
+@@ -1037,18 +1038,6 @@ static int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed,
+ 			      int start_cycle, unsigned int queue_size,
+ 			      unsigned int idle_irq_interval)
+ {
+-	static const struct {
+-		unsigned int data_block;
+-		unsigned int syt_offset;
+-	} *entry, initial_state[] = {
+-		[CIP_SFC_32000]  = {  4, 3072 },
+-		[CIP_SFC_48000]  = {  6, 1024 },
+-		[CIP_SFC_96000]  = { 12, 1024 },
+-		[CIP_SFC_192000] = { 24, 1024 },
+-		[CIP_SFC_44100]  = {  0,   67 },
+-		[CIP_SFC_88200]  = {  0,   67 },
+-		[CIP_SFC_176400] = {  0,   67 },
+-	};
+ 	bool is_irq_target = (s == s->domain->irq_target);
+ 	unsigned int ctx_header_size;
+ 	unsigned int max_ctx_payload_size;
+@@ -1072,12 +1061,7 @@ static int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed,
+ 
+ 		s->data_block_counter = UINT_MAX;
+ 	} else {
+-		entry = &initial_state[s->sfc];
+-
+ 		s->data_block_counter = 0;
+-		s->ctx_data.rx.data_block_state = entry->data_block;
+-		s->ctx_data.rx.syt_offset_state = entry->syt_offset;
+-		s->ctx_data.rx.last_syt_offset = TICKS_PER_CYCLE;
+ 	}
+ 
+ 	/* initialize packet buffer */
 diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
-index 477fbfe713e5..84a01efa5a85 100644
+index 11cff4cafd90..703b710aaf7f 100644
 --- a/sound/firewire/amdtp-stream.h
 +++ b/sound/firewire/amdtp-stream.h
-@@ -276,6 +276,11 @@ static inline bool amdtp_stream_wait_callback(struct amdtp_stream *s,
- 				  msecs_to_jiffies(timeout)) > 0;
- }
+@@ -140,10 +140,6 @@ struct amdtp_stream {
+ 			unsigned int transfer_delay;
+ 			unsigned int seq_index;
  
-+struct seq_desc {
-+	unsigned int syt_offset;
-+	unsigned int data_blocks;
-+};
-+
- struct amdtp_domain {
- 	struct list_head streams;
- 
-@@ -283,6 +288,10 @@ struct amdtp_domain {
- 	unsigned int events_per_buffer;
- 
- 	struct amdtp_stream *irq_target;
-+
-+	struct seq_desc *seq_descs;
-+	unsigned int seq_size;
-+	unsigned int seq_tail;
- };
- 
- int amdtp_domain_init(struct amdtp_domain *d);
+-			unsigned int data_block_state;
+-			unsigned int last_syt_offset;
+-			unsigned int syt_offset_state;
+-
+ 			// To generate CIP header.
+ 			unsigned int fdf;
+ 			int syt_override;
 -- 
 2.25.1
 
