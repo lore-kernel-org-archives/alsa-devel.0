@@ -2,117 +2,113 @@ Return-Path: <SRS0=uvJZ=6W=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46D8EC35280
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 02:28:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 88CC0C38A2A
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 04:37:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A2CCB2070B
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 02:28:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DE2D8206B9
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2020 04:37:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aBj/fxve";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="mLom0gmh";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Yq8NIafU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A2CCB2070B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VVJEMUFT";
+	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="A5xq3dCU";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Pk7UpFQH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DE2D8206B9
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 14DF0181B;
-	Fri,  8 May 2020 04:27:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 14DF0181B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1DC851813;
+	Fri,  8 May 2020 06:36:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1DC851813
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1588904926;
-	bh=imgShy6A4UtCqR4/neELfYBIFMVGqBGe0hvxYgMtebQ=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1588912664;
+	bh=5yPflB5Y9LJTLWvEsOCpS7T/YTyXVse1E7paO16DyS4=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=aBj/fxvezkhlKYrOGJO7ZZp3SSYiLsDwj/UNdHqsX2nCC2sMxc96Zxyqns0juTKcP
-	 yaOGSZYnFQH0T0Wk8sbFh9niRDpePHdUXJ2zG0BRHBBcj+l4d9l2mdiOrr82TNYXHb
-	 WsG5NhW+dGjVMVZLgoBObkBpTaxBr7JQGmaEQniE=
+	b=VVJEMUFTEeHgmo1R0CAwsE6Y2aCnIppRpDc4eueO0mttXAbczmneHvbZzU+pNFGoR
+	 WkcYLfHo+jp/081C1eF4uOVcMb5Vmixf2cK1C/lMp7MxdHCia771w7wkxqe6MzLN4P
+	 y7NSZEIVNOHDwix8klwIWYPa5geb57Ho911bnG6w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 37763F80234;
-	Fri,  8 May 2020 04:27:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E36BAF8027B;
+	Fri,  8 May 2020 06:36:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 53DFEF8023E; Fri,  8 May 2020 04:27:53 +0200 (CEST)
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com
- [64.147.123.19])
+ id 9B588F8028F; Fri,  8 May 2020 06:36:50 +0200 (CEST)
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com
+ [64.147.123.20])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B4BAAF800F6
- for <alsa-devel@alsa-project.org>; Fri,  8 May 2020 04:27:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4BAAF800F6
+ by alsa1.perex.cz (Postfix) with ESMTPS id CA441F800AD
+ for <alsa-devel@alsa-project.org>; Fri,  8 May 2020 06:36:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA441F800AD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="mLom0gmh"; 
+ header.b="A5xq3dCU"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="Yq8NIafU"
+ header.i=@messagingengine.com header.b="Pk7UpFQH"
 Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
- by mailout.west.internal (Postfix) with ESMTP id B22B4AC1;
- Thu,  7 May 2020 22:27:42 -0400 (EDT)
+ by mailout.west.internal (Postfix) with ESMTP id 26F4745D;
+ Fri,  8 May 2020 00:36:42 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
- by compute2.internal (MEProxy); Thu, 07 May 2020 22:27:43 -0400
+ by compute2.internal (MEProxy); Fri, 08 May 2020 00:36:42 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-type:in-reply-to; s=fm1; bh=JXHbhurBc2XgH5qUJKyr4SD4gSI
- tfGt7+CAU5SKeknE=; b=mLom0gmh9+Lu2QAi+LWm5GS4FKqTdMcvbVveiwhOn5D
- Llx5rzpJOan2eDXFzhVRfWV6WVhOL/HBOFANt705KeMHYDiGKrqtSmGcoB4KAC+n
- COYpW6Aa9bj9GLDamUyZVxKkZqe4tW9nRfuOR2Wxp3JyJvdgHHwxRZcW+em0oSui
- kPVmS1MZub+WThhCSPKXF4IKQR4/7vp+O5vh2D221uTjoGES66eeRXabMWDgqB01
- xk7fijtcU85Bf1DZfYyrebnuKAjQLdLDuWRhYFPqrge0t84tZwRvv1KbNwspf1nL
- UTZXVa0HdbpPwFMfPNyLrN3V7LfYgt1tJ+HsFIU5jYQ==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding; s=fm1; bh=TBxPRGDXCNp0n
+ 7Gy7fmkzwzglwselvuFDp2YKtIZupY=; b=A5xq3dCUjeru5bBCYmrV4pG1jCjHQ
+ m9IFh9/2f02kxt0HPEL7fPoDnH4t4iW72y6d/3Cv0Dh33/XpFZeLcciq7R6xLwQz
+ dM4iAL7+lU82JgFZdGjlJMA5DFmcWvidTCcqXW8AKyKZVLVjq/Vfo/61ujez05ah
+ RVIjwOwcQG8CpFiRtgoKtoXOz6QQaEpPAOm+BRb/MwR0/4I6pTQEDeI3tIRxJu9F
+ e+WhRowJuizlAuovJVRTI3eASDzcO14bukJw1uDJ9TBsSYJmEJ58F341rUCYwJce
+ YJa+yGdRLeZwvL+6UVyghiF0twLWeGd+OLJWSu+hEbhddbLtJoRmOCWqQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to:x-me-proxy
- :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=JXHbhu
- rBc2XgH5qUJKyr4SD4gSItfGt7+CAU5SKeknE=; b=Yq8NIafUCtoJD7odyVw/mC
- StgQvlRHG3/jE0V5pvltdVctApsytiRTENLjHBX5n5luxTgyf68zu6rMqRpQYnOK
- +MqampiYVkEtq7z2p3TftC7n0Wfgkn+s8EhnzzJBljky+uvUYKj6uuUJaeJi7Qg3
- yZ6HSk/6/B+rLT/bfCGeMqeIIMEgxj3cqPpk7ufNwpgvChc+hw6Fb1Ry4KPJKUiB
- OCmcncIWk34yGILYXdYZDIjw4Nnuoa8WSiI/z08HGWs6n5wThmzMzqiYolTTSg4u
- 7kawR1syPacTDM+S6oEukzbq+1cnH4yLEwFlxiKtxYYCF+XQ8Bf0Qtgbu8MEXB+g
- ==
-X-ME-Sender: <xms:ncO0Xk6rOQ8nKYx6A0zN4w9tU7fnAovlB0MYkPXd6zKFn4SmcRXfHA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrkedugdehjecutefuodetggdotefrodftvf
+ messagingengine.com; h=cc:content-transfer-encoding:date:from
+ :in-reply-to:message-id:mime-version:references:subject:to
+ :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+ fm2; bh=TBxPRGDXCNp0n7Gy7fmkzwzglwselvuFDp2YKtIZupY=; b=Pk7UpFQH
+ ULCO02CWfVhSLM8nfbfiuu8RrqCIER4yXWD7j82e/Td/bYnOBuY8nJyCMTXK02As
+ H8yq7J055ihSEJdG31KWvPZdpgSy4a3LY3m4k376UQhvWRJWOx1zshzyNsjStgIn
+ 04PkrVZjJuhPpPyh/FyErwA4AhBuoahvhzMED5n62X81dxZbyW4+fsromLV4wJjT
+ vjAEH5Hz+BaQXg1E98xDdR85x6mboOI6cU0CuTEkdjXrSxYdmxKofLT0tu9JNHUB
+ s9rVrRnTWWygHgZjdpQ+NJSiY9cz5EDA/zpoLKcRgkbqKpuyZFtK8xA0O9eLU14I
+ O77pXxk10flQBA==
+X-ME-Sender: <xms:2eG0XqfCWCzsNU-CkRsAd3qUYWhmj_6I0nXRRncnZ0Wo0_MaXs2f3w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrkedugdekvdcutefuodetggdotefrodftvf
  curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
- uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
- fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfgrkhgrshhh
- ihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
- eqnecuggftrfgrthhtvghrnhepfeejhfevvefgledujeetffduteekteffudevudejffeh
- tdelteduledukeehkefgnecuffhomhgrihhnpehgnhhurdhorhhgpdhgihhthhhusgdrtg
- homhenucfkphepudektddrvdefhedrfedrheegnecuvehluhhsthgvrhfuihiivgeptden
- ucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthh
- hirdhjph
-X-ME-Proxy: <xmx:ncO0Xh3DoiRSj3o067rLg0kkTTHbWfsqHDENxQEJELBg6-05gvd7MQ>
- <xmx:ncO0Xpm9NpyBZE47MZHxeK7yQ441RkHsavlEngwsbkYHgY5TTFPs0w>
- <xmx:ncO0XvgIWEuBQseV89SzklA0SZKHmQAoZb3Dsoc4gjkJ5CAugYzYgg>
- <xmx:nsO0XmnJGSSDBbt6bVWIU0SIL7-TtGGERFcRE7Ey2NTo24UXIAPyvA>
-Received: from workstation (ad003054.dynamic.ppp.asahi-net.or.jp
+ uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
+ ertddtnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghkrghs
+ hhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpeeiveffvdehue
+ dtlefffeegiedutedtvdejfeduteevueelheeuvdetveejtedtgeenucffohhmrghinhep
+ rhigrdgvvhgvnhhtshenucfkphepudektddrvdefhedrfedrheegnecuvehluhhsthgvrh
+ fuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihesshgr
+ khgrmhhotggthhhirdhjph
+X-ME-Proxy: <xmx:2eG0XrPshILMAZSdWXDdJoQHgAzeVXVF1lkSY4tTuKJpfbsYsBA9Tw>
+ <xmx:2eG0XnC7qF_GYP0XfJQXfjJ1TBtJHRfh5SoN6j9Nd9lVoeTwHA3K9g>
+ <xmx:2eG0XhyMQrCzFQpLaReO6iEoEDJhfxvXC3whXkuE8Q97d3QHaHusBQ>
+ <xmx:2eG0XppXjXhHHgQhzGv97ke-7GeQZU-3ALzOhjgAFTDDDjyYgedwjg>
+Received: from workstation.flets-east.jp (ad003054.dynamic.ppp.asahi-net.or.jp
  [180.235.3.54])
- by mail.messagingengine.com (Postfix) with ESMTPA id 2836B3280060;
- Thu,  7 May 2020 22:27:40 -0400 (EDT)
-Date: Fri, 8 May 2020 11:27:37 +0900
+ by mail.messagingengine.com (Postfix) with ESMTPA id D741F3280063;
+ Fri,  8 May 2020 00:36:40 -0400 (EDT)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: Re: [PATCH] ALSA: fireworks: Replace zero-length array with
- flexible-array
-Message-ID: <20200508022737.GA332087@workstation>
-Mail-Followup-To: "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
-References: <20200507185245.GA14270@embeddedor>
+To: clemens@ladisch.de,
+	tiwai@suse.de
+Subject: [PATCH 03/10] ALSA: firewire-lib: add reference to domain structure
+ from stream structure
+Date: Fri,  8 May 2020 13:36:28 +0900
+Message-Id: <20200508043635.349339-4-o-takashi@sakamocchi.jp>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200508043635.349339-1-o-takashi@sakamocchi.jp>
+References: <20200508043635.349339-1-o-takashi@sakamocchi.jp>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200507185245.GA14270@embeddedor>
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>,
- linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -128,64 +124,231 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, May 07, 2020 at 01:52:45PM -0500, Gustavo A. R. Silva wrote:
-> The current codebase makes use of the zero-length array language
-> extension to the C90 standard, but the preferred mechanism to declare
-> variable-length types such as these ones is a flexible array member[1][2],
-> introduced in C99:
-> 
-> struct foo {
->         int stuff;
->         struct boo array[];
-> };
-> 
-> By making use of the mechanism above, we will get a compiler warning
-> in case the flexible array does not occur last in the structure, which
-> will help us prevent some kind of undefined behavior bugs from being
-> inadvertently introduced[3] to the codebase from now on.
-> 
-> Also, notice that, dynamic memory allocations won't be affected by
-> this change:
-> 
-> "Flexible array members have incomplete type, and so the sizeof operator
-> may not be applied. As a quirk of the original implementation of
-> zero-length arrays, sizeof evaluates to zero."[1]
-> 
-> sizeof(flexible-array-member) triggers a warning because flexible array
-> members have incomplete type[1]. There are some instances of code in
-> which the sizeof operator is being incorrectly/erroneously applied to
-> zero-length arrays and the result is zero. Such instances may be hiding
-> some bugs. So, this work (flexible-array member conversions) will also
-> help to get completely rid of those sorts of issues.
-> 
-> This issue was found with the help of Coccinelle.
-> 
-> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-> [2] https://github.com/KSPP/linux/issues/21
-> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->  sound/firewire/fireworks/fireworks.h |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+In current implementation, AMDTP domain structure and AMDTP stream
+structure has one way of reference from the former to the latter. For
+future extension, bidirectional reference is needed.
+
+This commit adds a member into stream structure to refer to domain
+structure to which the stream belongs.
+
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/amdtp-stream.c | 75 ++++++++++-------------------------
+ sound/firewire/amdtp-stream.h |  3 ++
+ 2 files changed, 23 insertions(+), 55 deletions(-)
+
+diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
+index fcde01b54d11..ce63ff6b7f03 100644
+--- a/sound/firewire/amdtp-stream.c
++++ b/sound/firewire/amdtp-stream.c
+@@ -793,14 +793,6 @@ static void process_ctx_payloads(struct amdtp_stream *s,
+ 		update_pcm_pointers(s, pcm, pcm_frames);
+ }
  
-Acked-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+-static void amdtp_stream_master_callback(struct fw_iso_context *context,
+-					 u32 tstamp, size_t header_length,
+-					 void *header, void *private_data);
+-
+-static void amdtp_stream_master_first_callback(struct fw_iso_context *context,
+-					u32 tstamp, size_t header_length,
+-					void *header, void *private_data);
+-
+ static void out_stream_callback(struct fw_iso_context *context, u32 tstamp,
+ 				size_t header_length, void *header,
+ 				void *private_data)
+@@ -810,7 +802,6 @@ static void out_stream_callback(struct fw_iso_context *context, u32 tstamp,
+ 	unsigned int events_per_period = s->ctx_data.rx.events_per_period;
+ 	unsigned int event_count = s->ctx_data.rx.event_count;
+ 	unsigned int packets;
+-	bool is_irq_target;
+ 	int i;
+ 
+ 	if (s->packet_index < 0)
+@@ -823,10 +814,6 @@ static void out_stream_callback(struct fw_iso_context *context, u32 tstamp,
+ 
+ 	process_ctx_payloads(s, s->pkt_descs, packets);
+ 
+-	is_irq_target =
+-		!!(context->callback.sc == amdtp_stream_master_callback ||
+-		   context->callback.sc == amdtp_stream_master_first_callback);
+-
+ 	for (i = 0; i < packets; ++i) {
+ 		const struct pkt_desc *desc = s->pkt_descs + i;
+ 		unsigned int syt;
+@@ -845,7 +832,7 @@ static void out_stream_callback(struct fw_iso_context *context, u32 tstamp,
+ 				    desc->data_blocks, desc->data_block_counter,
+ 				    syt, i);
+ 
+-		if (is_irq_target) {
++		if (s == s->domain->irq_target) {
+ 			event_count += desc->data_blocks;
+ 			if (event_count >= events_per_period) {
+ 				event_count -= events_per_period;
+@@ -898,12 +885,12 @@ static void in_stream_callback(struct fw_iso_context *context, u32 tstamp,
+ 	}
+ }
+ 
+-static void amdtp_stream_master_callback(struct fw_iso_context *context,
+-					 u32 tstamp, size_t header_length,
+-					 void *header, void *private_data)
++static void irq_target_callback(struct fw_iso_context *context, u32 tstamp,
++				size_t header_length, void *header,
++				void *private_data)
+ {
+-	struct amdtp_domain *d = private_data;
+-	struct amdtp_stream *irq_target = d->irq_target;
++	struct amdtp_stream *irq_target = private_data;
++	struct amdtp_domain *d = irq_target->domain;
+ 	struct amdtp_stream *s;
+ 
+ 	out_stream_callback(context, tstamp, header_length, header, irq_target);
+@@ -952,7 +939,10 @@ static void amdtp_stream_first_callback(struct fw_iso_context *context,
+ 	} else {
+ 		cycle = compute_it_cycle(*ctx_header, s->queue_size);
+ 
+-		context->callback.sc = out_stream_callback;
++		if (s == s->domain->irq_target)
++			context->callback.sc = irq_target_callback;
++		else
++			context->callback.sc = out_stream_callback;
+ 	}
+ 
+ 	s->start_cycle = cycle;
+@@ -960,32 +950,11 @@ static void amdtp_stream_first_callback(struct fw_iso_context *context,
+ 	context->callback.sc(context, tstamp, header_length, header, s);
+ }
+ 
+-static void amdtp_stream_master_first_callback(struct fw_iso_context *context,
+-					       u32 tstamp, size_t header_length,
+-					       void *header, void *private_data)
+-{
+-	struct amdtp_domain *d = private_data;
+-	struct amdtp_stream *s = d->irq_target;
+-	const __be32 *ctx_header = header;
+-
+-	s->callbacked = true;
+-	wake_up(&s->callback_wait);
+-
+-	s->start_cycle = compute_it_cycle(*ctx_header, s->queue_size);
+-
+-	context->callback.sc = amdtp_stream_master_callback;
+-
+-	context->callback.sc(context, tstamp, header_length, header, d);
+-}
+-
+ /**
+  * amdtp_stream_start - start transferring packets
+  * @s: the AMDTP stream to start
+  * @channel: the isochronous channel on the bus
+  * @speed: firewire speed code
+- * @d: the AMDTP domain to which the AMDTP stream belongs
+- * @is_irq_target: whether isoc context for the AMDTP stream is used to generate
+- *		   hardware IRQ.
+  * @start_cycle: the isochronous cycle to start the context. Start immediately
+  *		 if negative value is given.
+  *
+@@ -994,7 +963,6 @@ static void amdtp_stream_master_first_callback(struct fw_iso_context *context,
+  * device can be started.
+  */
+ static int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed,
+-			      struct amdtp_domain *d, bool is_irq_target,
+ 			      int start_cycle)
+ {
+ 	static const struct {
+@@ -1009,15 +977,14 @@ static int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed,
+ 		[CIP_SFC_88200]  = {  0,   67 },
+ 		[CIP_SFC_176400] = {  0,   67 },
+ 	};
+-	unsigned int events_per_buffer = d->events_per_buffer;
+-	unsigned int events_per_period = d->events_per_period;
++	bool is_irq_target = (s == s->domain->irq_target);
++	unsigned int events_per_buffer;
++	unsigned int events_per_period;
+ 	unsigned int idle_irq_interval;
+ 	unsigned int ctx_header_size;
+ 	unsigned int max_ctx_payload_size;
+ 	enum dma_data_direction dir;
+ 	int type, tag, err;
+-	fw_iso_callback_t ctx_cb;
+-	void *ctx_data;
+ 
+ 	mutex_lock(&s->mutex);
+ 
+@@ -1068,6 +1035,8 @@ static int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed,
+ 	// This is a case that AMDTP streams in domain run just for MIDI
+ 	// substream. Use the number of events equivalent to 10 msec as
+ 	// interval of hardware IRQ.
++	events_per_buffer = s->domain->events_per_buffer;
++	events_per_period = s->domain->events_per_period;
+ 	if (events_per_period == 0)
+ 		events_per_period = amdtp_rate_table[s->sfc] / 100;
+ 	if (events_per_buffer == 0)
+@@ -1086,16 +1055,11 @@ static int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed,
+ 	if (is_irq_target) {
+ 		s->ctx_data.rx.events_per_period = events_per_period;
+ 		s->ctx_data.rx.event_count = 0;
+-		ctx_cb = amdtp_stream_master_first_callback;
+-		ctx_data = d;
+-	} else {
+-		ctx_cb = amdtp_stream_first_callback;
+-		ctx_data = s;
+ 	}
+ 
+ 	s->context = fw_iso_context_create(fw_parent_device(s->unit)->card,
+ 					  type, channel, speed, ctx_header_size,
+-					  ctx_cb, ctx_data);
++					  amdtp_stream_first_callback, s);
+ 	if (IS_ERR(s->context)) {
+ 		err = PTR_ERR(s->context);
+ 		if (err == -EBUSY)
+@@ -1340,6 +1304,7 @@ int amdtp_domain_add_stream(struct amdtp_domain *d, struct amdtp_stream *s,
+ 
+ 	s->channel = channel;
+ 	s->speed = speed;
++	s->domain = d;
+ 
+ 	return 0;
+ }
+@@ -1428,15 +1393,15 @@ int amdtp_domain_start(struct amdtp_domain *d, unsigned int ir_delay_cycle)
+ 		}
+ 
+ 		if (s != d->irq_target) {
+-			err = amdtp_stream_start(s, s->channel, s->speed, d,
+-						 false, cycle_match);
++			err = amdtp_stream_start(s, s->channel, s->speed,
++						 cycle_match);
+ 			if (err < 0)
+ 				goto error;
+ 		}
+ 	}
+ 
+ 	s = d->irq_target;
+-	err = amdtp_stream_start(s, s->channel, s->speed, d, true, -1);
++	err = amdtp_stream_start(s, s->channel, s->speed, -1);
+ 	if (err < 0)
+ 		goto error;
+ 
+diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
+index f2d44e2dc3c8..477fbfe713e5 100644
+--- a/sound/firewire/amdtp-stream.h
++++ b/sound/firewire/amdtp-stream.h
+@@ -108,6 +108,8 @@ typedef unsigned int (*amdtp_stream_process_ctx_payloads_t)(
+ 						const struct pkt_desc *desc,
+ 						unsigned int packets,
+ 						struct snd_pcm_substream *pcm);
++
++struct amdtp_domain;
+ struct amdtp_stream {
+ 	struct fw_unit *unit;
+ 	enum cip_flags flags;
+@@ -180,6 +182,7 @@ struct amdtp_stream {
+ 	int channel;
+ 	int speed;
+ 	struct list_head list;
++	struct amdtp_domain *domain;
+ };
+ 
+ int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
+-- 
+2.25.1
 
-> diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
-> index dda797209a27..654e28a6669f 100644
-> --- a/sound/firewire/fireworks/fireworks.h
-> +++ b/sound/firewire/fireworks/fireworks.h
-> @@ -177,7 +177,7 @@ struct snd_efw_phys_meters {
->  	u32 in_meters;
->  	u32 reserved4;
->  	u32 reserved5;
-> -	u32 values[0];
-> +	u32 values[];
->  } __packed;
->  enum snd_efw_clock_source {
->  	SND_EFW_CLOCK_SOURCE_INTERNAL	= 0,
-
-
-Thanks
-
-Takashi Sakamoto
