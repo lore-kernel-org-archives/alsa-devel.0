@@ -2,71 +2,66 @@ Return-Path: <SRS0=BytJ=6Y=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9C0CC54E49
-	for <alsa-devel@archiver.kernel.org>; Sun, 10 May 2020 10:04:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B558DC54E49
+	for <alsa-devel@archiver.kernel.org>; Sun, 10 May 2020 10:06:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0B0BD20735
-	for <alsa-devel@archiver.kernel.org>; Sun, 10 May 2020 10:04:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3686420735
+	for <alsa-devel@archiver.kernel.org>; Sun, 10 May 2020 10:06:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cYhQafWD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0B0BD20735
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bKLabQNc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3686420735
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 446E286F;
-	Sun, 10 May 2020 12:03:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 446E286F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6B4D5886;
+	Sun, 10 May 2020 12:06:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B4D5886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589105055;
-	bh=OlOTXZoC5yfNzq74Yfl3lj3pDKuviiEirDloKG5H6RY=;
+	s=default; t=1589105214;
+	bh=RPQxk8uDY0GZR9rgjuGHjHMLPAL8Pd6+8+1aL9/4q6Q=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cYhQafWDlI5zU74DQNIuHAcXCDW+fIMhcQfE1iusLtqFPY6cyz4f1oVYZGfPLXfRn
-	 h8+ixiTQf9LVboSTNS6iyCGIkgn5IH8EPJ7B2u+8/y3Qwfjm2Jyprbsm+M5b+4b/XB
-	 qE9JY4Xt8W0/FQIFanVmeXwUeDMXK0ysri9g2C30=
+	b=bKLabQNcCNslnhCvMZmiqBpTl3sgkBLHRUvQnbcn/lUID4x4qYyBBrMa3P2TKS8mQ
+	 N7584gvc/SIJK9a0n8uj5JPEZxw78rO6a7nhvVP+bol6IEzpe4A5D/e/rBk/w7AMMQ
+	 em2v0y9OH6ue14YxCckSaNHAfd69jVro+m2f3xNM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BFB9FF80148;
-	Sun, 10 May 2020 12:03:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 98B97F80148;
+	Sun, 10 May 2020 12:06:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B50C6F80158; Sun, 10 May 2020 12:03:22 +0200 (CEST)
+ id 370FEF80158; Sun, 10 May 2020 12:06:02 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ED786F800B7
- for <alsa-devel@alsa-project.org>; Sun, 10 May 2020 12:03:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED786F800B7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2BF16F800BF
+ for <alsa-devel@alsa-project.org>; Sun, 10 May 2020 12:05:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2BF16F800BF
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id BC003AF69;
- Sun, 10 May 2020 10:03:20 +0000 (UTC)
-Date: Sun, 10 May 2020 12:03:16 +0200
-Message-ID: <s5hpnbcyumz.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 80E10AF5C;
+ Sun, 10 May 2020 10:06:01 +0000 (UTC)
+Date: Sun, 10 May 2020 12:05:58 +0200
+Message-ID: <s5ho8qwyuih.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Mike Pozulp <pozulp.kernel@gmail.com>
-Subject: Re: [PATCH] ALSA: hda/realtek: Add quirk for Samsung Notebook
-In-Reply-To: <20200510032838.1989130-1-pozulp.kernel@gmail.com>
-References: <20200510032838.1989130-1-pozulp.kernel@gmail.com>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 0/6] ALSA: fireface: add support for Fireface 802 and UFX
+In-Reply-To: <20200510074301.116224-1-o-takashi@sakamocchi.jp>
+References: <20200510074301.116224-1-o-takashi@sakamocchi.jp>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>,
- Kailang Yang <kailang@realtek.com>, Tomas Espeleta <tomas.espeleta@gmail.com>,
- Sergey Bostandzhyan <jin@mediatomb.cc>,
- open list <linux-kernel@vger.kernel.org>, Chris Chiu <chiu@endlessm.com>,
- Takashi Iwai <tiwai@suse.com>, Hui Wang <hui.wang@canonical.com>,
- Jian-Hong Pan <jian-hong@endlessm.com>,
- =?UTF-8?B?TWljaGHFgiBNaXJvc8WC?= =?UTF-8?B?YXc=?= <mirq-linux@rere.qmqm.pl>
+Cc: ffado-devel@lists.sourceforge.net, alsa-devel@alsa-project.org,
+ clemens@ladisch.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,16 +77,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 10 May 2020 05:28:37 +0200,
-Mike Pozulp wrote:
+On Sun, 10 May 2020 09:42:55 +0200,
+Takashi Sakamoto wrote:
 > 
-> Some models of the Samsung Notebook 9 have very quiet and distorted
-> headphone output. This quirk changes the VREF value of the ALC298
-> codec NID 0x1a from default HIZ to new 100.
+> Hi,
 > 
-> Signed-off-by: Mike Pozulp <pozulp.kernel@gmail.com>
+> Fireface 802 was shipped by RME GmbH in 2014. This model is one of latter
+> models of Fireface series and support both of IEEE 1394 bus and USB.
+> Furthermore, it supports two types of remote control unit (Basic
+> Remote and Advanced Remote Control) with by 9pin mini-din connector.
+> 
+> This patchset adds support for this model as a part of devices available
+> by ALSA firewire stack (therefore it's not a device of USB). Userspace
+> applications can transfer PCM frames and MIDI messages via ALSA PCM
+> and Rawmidi interfaces.
+> 
+> Fireface UFX is also supported since its internal design is almost the
+> same as Fireface 802 in a point of packet communication. The support is
+> untested and the status is 'request for test'.
+> 
+> As well as the other models of RME Fireface series, audio output
+> includes periodical hissing noise. This is not solved yet.
+> 
+> Furthermore, capture of MIDI messages requires assist of userspace
+> application. For the detail, please read comment in
+> 'sound/firewire/fireface/ff-protocol-latter.c'.
+> 
+> Regards
+> 
+> Takashi Sakamoto (6):
+>   ALSA: fireface: fix configuration error for nominal sampling transfer
+>     frequency
+>   ALSA: fireface: start IR context immediately
+>   ALSA: fireface: code refactoring to add enumeration constants for
+>     model identification
+>   ALSA: fireface: code refactoring for name of sound card
+>   ALSA: fireface: add support for RME FireFace 802
+>   ALSA: fireface: add support for Fireface UFX (untested)
 
-Applied after rebasing to 5.7 and arranging the entry order.
+Would you like me merging the patches although at least one of them is
+marked untested?  The code changes look reasonable, so I have no
+problem to applying patches themselves to 5.8 branch.
 
 
 thanks,
