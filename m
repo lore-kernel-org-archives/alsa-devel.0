@@ -7,78 +7,78 @@ X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CED27C54E8A
-	for <alsa-devel@archiver.kernel.org>; Sun, 10 May 2020 07:45:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E3C39C54E49
+	for <alsa-devel@archiver.kernel.org>; Sun, 10 May 2020 07:45:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 532C6208DB
-	for <alsa-devel@archiver.kernel.org>; Sun, 10 May 2020 07:45:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6DBB020801
+	for <alsa-devel@archiver.kernel.org>; Sun, 10 May 2020 07:45:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="C9lcgVAs";
-	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="mMp7Pgo9";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="1VLO9l68"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 532C6208DB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JnC64NS0";
+	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="JJfFLNX5";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Czh9+Zxq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6DBB020801
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 678F315E2;
-	Sun, 10 May 2020 09:44:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 678F315E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id C84731665;
+	Sun, 10 May 2020 09:45:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C84731665
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589096704;
-	bh=RLbOq6LoeWZ4FnZodJB1dVoi4VDHwGnKcZ49c1auoHU=;
+	s=default; t=1589096752;
+	bh=IWklIBU/l+MaT4rY8kG+8yrRQCUTdhPNYxoJVX8UxjM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=C9lcgVAsShpwVj4/HjYnxZoPbC8S8B+0fYcBIyYFX7APh4VZHF5OCGO+jfDIcIk4t
-	 v9iObtObTWyCOt6mSRs48c427ledWm1iie/Xgrlsw8eICQj5h6Z0LZsFpJqS1Bp0cg
-	 uAzzyKVOXCVDQf1tZrC3R9IRjGRcmZl2RrwAG9xw=
+	b=JnC64NS0isEu66feIR+vxr/yyYROyW3DXcRE5HGZfxAMZBIE97k8wHpyaMBOFrtk9
+	 OChTdN1BsFaYCqg3ELVRGVGITouC9F9l6dJwJt5nHLQKoIyf40LZOTokx/ch+HUvvw
+	 HVgYTdGQzCRD3+o9r30RitRWQhb38cufVlPV3iXc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6DB67F8027D;
-	Sun, 10 May 2020 09:43:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0C499F80290;
+	Sun, 10 May 2020 09:43:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DFD3FF8027B; Sun, 10 May 2020 09:43:18 +0200 (CEST)
+ id D3ADBF8027D; Sun, 10 May 2020 09:43:20 +0200 (CEST)
 Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
  [66.111.4.29])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9AE8CF80148
- for <alsa-devel@alsa-project.org>; Sun, 10 May 2020 09:43:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9AE8CF80148
+ by alsa1.perex.cz (Postfix) with ESMTPS id 519B6F80253
+ for <alsa-devel@alsa-project.org>; Sun, 10 May 2020 09:43:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 519B6F80253
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="mMp7Pgo9"; 
+ header.b="JJfFLNX5"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="1VLO9l68"
+ header.i=@messagingengine.com header.b="Czh9+Zxq"
 Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
- by mailout.nyi.internal (Postfix) with ESMTP id B1AC25C0081;
- Sun, 10 May 2020 03:43:06 -0400 (EDT)
+ by mailout.nyi.internal (Postfix) with ESMTP id 51C805C008D;
+ Sun, 10 May 2020 03:43:08 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
- by compute2.internal (MEProxy); Sun, 10 May 2020 03:43:06 -0400
+ by compute2.internal (MEProxy); Sun, 10 May 2020 03:43:08 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm1; bh=LXOTGcRk5He84
- rg3s/Ou6yI0iMopv+DCIDPQ/wnQy0k=; b=mMp7Pgo9z6l8/T8fHV3IA1fFLVSyE
- APAwkq30C1tKl/1qXtS7aLRnmaFzEbQZvtkcoP4EvExUADW/+dI2NfG5v7RgxbRy
- 03vYHtfYl5V/+Ubaq7VTwhG9kgxcA4O+HGLeOPNFSVaxPEwbEysLkSDiPKIofDqD
- FH8INKXcP4OXtG3zKOzjpu6qgb1/9aKj0D+XFDNgFEs3RRSKX+D6p7k6NZRArjd4
- jEMqutbV2S0u2+z0kZzyMTiz23jeYX1PtQ3KzIbe0w1ny5lngvojnRSrejket/Vo
- 4oQXGpyCMFdPonB47tvRMgB/PAGnC0O4+Iky4KLCb6DGo+f8ctKUaMDLQ==
+ :mime-version:content-transfer-encoding; s=fm1; bh=M1abo0l7aBFB5
+ B5e/LqkRoptxJ7+Xxq7I7XlPHS3iCM=; b=JJfFLNX51RUSA42POH0AJTcxkD0rK
+ Ng/k7v0ODTzd9jYjqshc8jAiIw1V+917xsQxnxYLg/d9FAZwZWwVCXh4L2IHLedN
+ lZqYLWo5jLDa8Bv+cOAWBszCTZdZ7ptNMOf6ioJRVEQJZy9Wriuecm6FsPzkq9G2
+ cQbUMxX0Q+37ReOmMJObyxgYhzYUuJi4w7Y3DCoLhEEWuHFHsQIOWapylNwJbshW
+ dlXEQzmv8L8NDQLpWuF98kYJeUnOIVUcqMLIuQ7pUWz1hruJmqBQOphYnvvX/ZzT
+ SqREEMUo3fqTJuyZQwGsTrDd3MGQ9GNsx9lOLSiV/I/TNwCQTE9niOSFA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm2; bh=LXOTGcRk5He84rg3s/Ou6yI0iMopv+DCIDPQ/wnQy0k=; b=1VLO9l68
- mZ4DjJ8dpuglzQL0MgKK8Y8RNz8N2Z6lKinaOrfneKIETmyFgRL3GFQgedm1Z5Ab
- 4ieL/hSr5WsPVXXAgZ/nQL0B4Xxt9bSf+KudDlxD1r4IUTfHtiPvAKcyht9IcFND
- BdTRuTJC/Asi8qKZSY4e83YACIp+ATr/3UvbUc+BkROYRQ57W00w74iXAu4QD2ro
- YX5/EQe4G41SGYXLl9tlrfEBiFR+npMYpK0lcBqHzHOdolLf829Ug5JkjRAo8HAq
- kz8c1CpRP/WUo9ssVU8nl8i8dWGRezXhF3N32Kf0V/M3P3JlChhHcXzRMcXo2RZZ
- BuNeQsGiKWlhNQ==
-X-ME-Sender: <xms:irC3XmGiSJSa0ybK8aEX733SrIF3WtWFWC-RTmbN5UzSJ9bkoW-iXw>
+ fm2; bh=M1abo0l7aBFB5B5e/LqkRoptxJ7+Xxq7I7XlPHS3iCM=; b=Czh9+Zxq
+ rLqCyrOCWy3VzqP7USI8hMNC7v2dd4sNxf093S5l1nJlbQL8FY+5vMTxQbqkbGGw
+ sLqY1stICO4GvwzEZKTlOpidKeXZECTUEVifnhvu0jMnRb2DSDJqFbq6Sur1V98C
+ s6yJKvY+y0cBqZ8BZZq2RoWgijIINfHGFECcBVWMFa3ZCkxs+NLEix6ziz6GqSWj
+ YElxMrA5eG9h+2qzGsXU+B2XMbG+aNcbvDBpzr/Tptn8gM/rGSKLF2xcerg1yizQ
+ xB/bFPp1RRQi01BdDpFcYr1jgbBbrrtlpJi5uDqHXAZxX+aw+d9lAPmo7BiaBV6V
+ tk3P0BQeeWxjrA==
+X-ME-Sender: <xms:jLC3XnmYNuxLSyljfE4Iync1uzSpCWNz8vyF-OiO86MbO_Gxmb9tmg>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrkeejgddvkecutefuodetggdotefrodftvf
  curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
  uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
@@ -87,21 +87,20 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrkeejgddvkecutefuodetggdote
  fgveegfeelheffhfeujedtjeevtefhkeevkedtjeejvddtjefhjeenucfkphepudektddr
  vdefhedrfedrheegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
  hfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:irC3XnSKnTNt_WIk1C0HcAilJYgiUxFKktFknpcuQVOhaL5xr7McKw>
- <xmx:irC3XrtJac8OIYruMe9_Ct37VecVQ2fMSrk7H0b-lA0jH8769m1i9g>
- <xmx:irC3XlC7PmedgIIAVEt5j1xbTjkyBNUo2KvG8m8i8TTlE44WWcdsdg>
- <xmx:irC3Xtpqfnt2L3g3cn03DvckAMRVoV_6VsS7rQ290oBnUHiGZl1VIg>
+X-ME-Proxy: <xmx:jLC3Xoqv5_Y8uZskK_qswvwCucv1HvQcFnAMjXGEu1fKz-DGJCm5tA>
+ <xmx:jLC3XoHv1HSUODhOM9eEM0adKK4r3yyEy6Bu4zZNr4EyZU8hHd_JmA>
+ <xmx:jLC3XswtWgVHsR-bQgnaqAZWcAzJu1avh4-32_xLzlg1hYhGhVbYSg>
+ <xmx:jLC3XnfjJvPJ4-azle2k9txKBgX3likdJ9_-fYrbYxlxP0ovn__FVQ>
 Received: from workstation.flets-east.jp (ad003054.dynamic.ppp.asahi-net.or.jp
  [180.235.3.54])
- by mail.messagingengine.com (Postfix) with ESMTPA id 6A37A306625B;
- Sun, 10 May 2020 03:43:05 -0400 (EDT)
+ by mail.messagingengine.com (Postfix) with ESMTPA id D98493066258;
+ Sun, 10 May 2020 03:43:06 -0400 (EDT)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: clemens@ladisch.de,
 	tiwai@suse.de
-Subject: [PATCH 1/6] ALSA: fireface: fix configuration error for nominal
- sampling transfer frequency
-Date: Sun, 10 May 2020 16:42:56 +0900
-Message-Id: <20200510074301.116224-2-o-takashi@sakamocchi.jp>
+Subject: [PATCH 2/6] ALSA: fireface: start IR context immediately
+Date: Sun, 10 May 2020 16:42:57 +0900
+Message-Id: <20200510074301.116224-3-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200510074301.116224-1-o-takashi@sakamocchi.jp>
 References: <20200510074301.116224-1-o-takashi@sakamocchi.jp>
@@ -124,62 +123,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-128000 and 192000 are congruence modulo 32000, thus it's wrong to
-distinguish them as multiple of 32000 and 48000 by modulo 32000 at
-first.
+In the latter models of RME Fireface series, device start to transfer
+packets several dozens of milliseconds. On the other hand, ALSA fireface
+driver starts IR context 2 milliseconds after the start. This results
+in loss to handle incoming packets on the context.
 
-Additionally, used condition statement to detect quadruple speed can
-cause missing bit flag.
-
-Furthermore, counter to ensure the configuration is wrong and it
-causes false positive.
-
-This commit fixes the above three bugs.
+This commit changes to start IR context immediately instead of
+postponement. For Fireface 800, this affects nothing because the device
+transfer packets 100 milliseconds or so after the start and this is
+within wait timeout.
 
 Cc: <stable@vger.kernel.org>
-Fixes: 60aec494b389 ("ALSA: fireface: support allocate_resources operation in latter protocol")
+Fixes: acfedcbe1ce4 ("ALSA: firewire-lib: postpone to start IR context")
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/fireface/ff-protocol-latter.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/firewire/fireface/ff-stream.c | 10 +---------
+ 1 file changed, 1 insertion(+), 9 deletions(-)
 
-diff --git a/sound/firewire/fireface/ff-protocol-latter.c b/sound/firewire/fireface/ff-protocol-latter.c
-index 0e4c3a9ed5e4..76ae568489ef 100644
---- a/sound/firewire/fireface/ff-protocol-latter.c
-+++ b/sound/firewire/fireface/ff-protocol-latter.c
-@@ -107,18 +107,18 @@ static int latter_allocate_resources(struct snd_ff *ff, unsigned int rate)
- 	int err;
+diff --git a/sound/firewire/fireface/ff-stream.c b/sound/firewire/fireface/ff-stream.c
+index 63b79c4a5405..5452115c0ef9 100644
+--- a/sound/firewire/fireface/ff-stream.c
++++ b/sound/firewire/fireface/ff-stream.c
+@@ -184,7 +184,6 @@ int snd_ff_stream_start_duplex(struct snd_ff *ff, unsigned int rate)
+ 	 */
+ 	if (!amdtp_stream_running(&ff->rx_stream)) {
+ 		int spd = fw_parent_device(ff->unit)->max_speed;
+-		unsigned int ir_delay_cycle;
  
- 	// Set the number of data blocks transferred in a second.
--	if (rate % 32000 == 0)
--		code = 0x00;
-+	if (rate % 48000 == 0)
-+		code = 0x04;
- 	else if (rate % 44100 == 0)
- 		code = 0x02;
--	else if (rate % 48000 == 0)
--		code = 0x04;
-+	else if (rate % 32000 == 0)
-+		code = 0x00;
- 	else
- 		return -EINVAL;
+ 		err = ff->spec->protocol->begin_session(ff, rate);
+ 		if (err < 0)
+@@ -200,14 +199,7 @@ int snd_ff_stream_start_duplex(struct snd_ff *ff, unsigned int rate)
+ 		if (err < 0)
+ 			goto error;
  
- 	if (rate >= 64000 && rate < 128000)
- 		code |= 0x08;
--	else if (rate >= 128000 && rate < 192000)
-+	else if (rate >= 128000)
- 		code |= 0x10;
+-		// The device postpones start of transmission mostly for several
+-		// cycles after receiving packets firstly.
+-		if (ff->spec->protocol == &snd_ff_protocol_ff800)
+-			ir_delay_cycle = 800;	// = 100 msec
+-		else
+-			ir_delay_cycle = 16;	// = 2 msec
+-
+-		err = amdtp_domain_start(&ff->domain, ir_delay_cycle);
++		err = amdtp_domain_start(&ff->domain, 0);
+ 		if (err < 0)
+ 			goto error;
  
- 	reg = cpu_to_le32(code);
-@@ -140,7 +140,7 @@ static int latter_allocate_resources(struct snd_ff *ff, unsigned int rate)
- 		if (curr_rate == rate)
- 			break;
- 	}
--	if (count == 10)
-+	if (count > 10)
- 		return -ETIMEDOUT;
- 
- 	for (i = 0; i < ARRAY_SIZE(amdtp_rate_table); ++i) {
 -- 
 2.25.1
 
