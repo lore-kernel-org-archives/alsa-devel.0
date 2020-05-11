@@ -2,61 +2,60 @@ Return-Path: <SRS0=FWLr=6Z=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E7C4C47255
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 14:41:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 27BC8C54E8D
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 14:42:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 861AC206F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 14:41:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CFA78206F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 14:42:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iS8WRnz1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 861AC206F5
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hmUkTACN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CFA78206F5
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5585A15F2;
-	Mon, 11 May 2020 16:40:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5585A15F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3C78B9F6;
+	Mon, 11 May 2020 16:41:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C78B9F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589208087;
-	bh=SS4Uxzh2oT0noh8vYu7A7QVgTS9trSBe1+PwLiY6INk=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=iS8WRnz1dRvJy8FYKs57BM/wR0WYpnS78+OImVHhQSURiIL2uxiK1blOLX5rAitny
-	 QpKUaf8hcl111zXcLaloTrTDJ9XlSfIMIqhJDRreoPjregKgR6IIstNOgktj/XENaW
-	 EcclWRI/e1OLdSWIN7/eqxmzUDfjyeKBkIGQEkoY=
+	s=default; t=1589208135;
+	bh=NcP3a5K+AdsE/vp4QNeQm7Zm5n5Zq8T+/YrnkD5A560=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=hmUkTACN9A/PYKwxW9QHQYo6p/agjsIEx4Sr98vC2ZyAknXulSDoNy2HJs0WNTAiJ
+	 VxUjSYUfesW/0J8552YXsJxw2VTztLKcLSo53gXpKQvm83UxBgmuVZdo3pJqbjUtOf
+	 5rq/vwQ9DdgOmkebyxL4GRnFi3W6tb3yVfs7yKPg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 58278F8027B;
-	Mon, 11 May 2020 16:39:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DF3ABF8028C;
+	Mon, 11 May 2020 16:39:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 74DA2F8022D; Mon, 11 May 2020 16:39:41 +0200 (CEST)
+ id 48A2EF8027B; Mon, 11 May 2020 16:39:44 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 23785F80157
+ by alsa1.perex.cz (Postfix) with ESMTPS id 27CD6F801F2
  for <alsa-devel@alsa-project.org>; Mon, 11 May 2020 16:39:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23785F80157
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27CD6F801F2
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 8E461AF13
+ by mx2.suse.de (Postfix) with ESMTP id 525CEAEF7
  for <alsa-devel@alsa-project.org>; Mon, 11 May 2020 14:39:36 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH alsa-lib 3/3] topology: Add missing ATTRIBUTE_UNUSED
-Date: Mon, 11 May 2020 16:39:31 +0200
-Message-Id: <20200511143931.31528-4-tiwai@suse.de>
+Subject: [PATCH alsa-lib 0/3] Trivial compile warning fixes
+Date: Mon, 11 May 2020 16:39:28 +0200
+Message-Id: <20200511143931.31528-1-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20200511143931.31528-1-tiwai@suse.de>
-References: <20200511143931.31528-1-tiwai@suse.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,49 +71,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-... to shut up the compiler warnings.
+Hi,
 
-Fixes: b6c9afb4f59b ("topology: implement snd_tplg_decode")
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
+here is a few patches to shut up trivial compile warnings that have
+been introduced recently.
+
+
+Takashi
+
+===
+
+Takashi Iwai (3):
+  pcm: rate: Fix compile warning wrt bit ops and comparison
+  pcm: rate: Fix uninitialized variable warning
+  topology: Add missing ATTRIBUTE_UNUSED
+
+ src/pcm/pcm_rate.c |  4 ++--
  src/topology/pcm.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ 2 files changed, 12 insertions(+), 10 deletions(-)
 
-diff --git a/src/topology/pcm.c b/src/topology/pcm.c
-index 61159d33357c..b15b95045ab5 100644
---- a/src/topology/pcm.c
-+++ b/src/topology/pcm.c
-@@ -2053,20 +2053,22 @@ next:
- }
- 
- /* decode dai from the binary input */
--int tplg_decode_dai(snd_tplg_t *tplg,
--		    size_t pos,
--		    struct snd_soc_tplg_hdr *hdr,
--		    void *bin, size_t size)
-+int tplg_decode_dai(snd_tplg_t *tplg ATTRIBUTE_UNUSED,
-+		    size_t pos ATTRIBUTE_UNUSED,
-+		    struct snd_soc_tplg_hdr *hdr ATTRIBUTE_UNUSED,
-+		    void *bin ATTRIBUTE_UNUSED,
-+		    size_t size ATTRIBUTE_UNUSED)
- {
- 	SNDERR("not implemented");
- 	return -ENXIO;
- }
- 
- /* decode cc from the binary input */
--int tplg_decode_cc(snd_tplg_t *tplg,
--		   size_t pos,
--		   struct snd_soc_tplg_hdr *hdr,
--		   void *bin, size_t size)
-+int tplg_decode_cc(snd_tplg_t *tplg ATTRIBUTE_UNUSED,
-+		   size_t pos ATTRIBUTE_UNUSED,
-+		   struct snd_soc_tplg_hdr *hdr ATTRIBUTE_UNUSED,
-+		   void *bin ATTRIBUTE_UNUSED,
-+		   size_t size ATTRIBUTE_UNUSED)
- {
- 	SNDERR("not implemented");
- 	return -ENXIO;
 -- 
 2.16.4
 
