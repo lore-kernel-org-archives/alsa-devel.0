@@ -7,53 +7,53 @@ X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57EACC47255
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 06:05:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E595C47255
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 06:06:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D171C2080C
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 06:05:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BBB2D2080C
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 06:06:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NkDsnWEN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D171C2080C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ecM//bN0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BBB2D2080C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 35E6D166D;
-	Mon, 11 May 2020 08:05:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 35E6D166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1D1A11670;
+	Mon, 11 May 2020 08:05:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D1A11670
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589177156;
-	bh=Eb4bNYJzkT42G9YH1x6cJ/Q1mK86cQ/S+vCvgUrKIc8=;
+	s=default; t=1589177188;
+	bh=qS42HDTMyzqp/jpjPwC3AI4iFm9FSqhSAf9iWjSL1tM=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NkDsnWENkCMYBCHrsnMqljAMf6+KUbu+TKrdSe/aZy2lKa8UPOkd0aRhHXPKjScrG
-	 N7xxtjSb4qSy52y02y9a8qP6GFYQry9NTG/jXonVAkdPyZEkK1rLHCJ2CxxStLVu9s
-	 uy+uW+PGkhTwIKM/ZFSIWYnGXpUnVSuAb9Ps+vDk=
+	b=ecM//bN0rUTqJYNQd26C9aj+zdAWg55+hV6UfpbUkCA/u16RJTRUZCsOXXnwLnogQ
+	 MagUhlCtl60M5RLRBxl3vsg7Hlu/NwJrmsQg/Gx4F9PTg8gv8KaEAjo4N4v2OLpG/1
+	 1ZoOUX+3PxEwc4jDauXBM9SQaCxdXgmjKnsMSBWk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EF51FF8032A;
-	Mon, 11 May 2020 07:57:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E4D62F80335;
+	Mon, 11 May 2020 07:58:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2E6AEF8028C; Mon, 11 May 2020 07:57:55 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id D0484F80322
- for <alsa-devel@alsa-project.org>; Mon, 11 May 2020 07:57:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0484F80322
-Date: 11 May 2020 14:57:46 +0900
-X-IronPort-AV: E=Sophos;i="5.73,378,1583161200"; d="scan'208";a="46743814"
+ id 804DDF80335; Mon, 11 May 2020 07:58:00 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 7D4E4F802E7
+ for <alsa-devel@alsa-project.org>; Mon, 11 May 2020 07:57:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D4E4F802E7
+Date: 11 May 2020 14:57:51 +0900
+X-IronPort-AV: E=Sophos;i="5.73,378,1583161200"; d="scan'208";a="46530103"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 11 May 2020 14:57:46 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 11 May 2020 14:57:51 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 7032E4197FD3;
- Mon, 11 May 2020 14:57:46 +0900 (JST)
-Message-ID: <87k11j8145.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 32C7B4195499;
+ Mon, 11 May 2020 14:57:51 +0900 (JST)
+Message-ID: <87imh38140.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 15/17] ASoC: uniphier: use snd_soc_dai/component_activity()
+Subject: [PATCH 16/17] ASoC: cleanup dai / component active code
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <875zd39frp.wl-kuninori.morimoto.gx@renesas.com>
@@ -79,33 +79,58 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
+No one is using dai->active, snd_soc_component_is_active().
+Let's remove these.
+
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/uniphier/aio-cpu.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/sound/soc-component.h | 6 ------
+ include/sound/soc-dai.h       | 2 --
+ sound/soc/soc-pcm.c           | 1 -
+ 3 files changed, 9 deletions(-)
 
-diff --git a/sound/soc/uniphier/aio-cpu.c b/sound/soc/uniphier/aio-cpu.c
-index fdaa6522720f..f717daf3f820 100644
---- a/sound/soc/uniphier/aio-cpu.c
-+++ b/sound/soc/uniphier/aio-cpu.c
-@@ -424,7 +424,7 @@ static void uniphier_aio_dai_suspend(struct snd_soc_dai *dai)
- {
- 	struct uniphier_aio *aio = uniphier_priv(dai);
+diff --git a/include/sound/soc-component.h b/include/sound/soc-component.h
+index 29b0c2c1d2db..cbb7255c8e27 100644
+--- a/include/sound/soc-component.h
++++ b/include/sound/soc-component.h
+@@ -390,12 +390,6 @@ static inline void *snd_soc_component_get_drvdata(struct snd_soc_component *c)
+ 	return dev_get_drvdata(c->dev);
+ }
  
--	if (!dai->active)
-+	if (!snd_soc_dai_activity(dai))
- 		return;
+-static inline bool snd_soc_component_is_active(
+-	struct snd_soc_component *component)
+-{
+-	return component->active != 0;
+-}
+-
+ /* component pin */
+ int snd_soc_component_enable_pin(struct snd_soc_component *component,
+ 				 const char *pin);
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index 887575d59e31..502aaeb561a0 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -351,8 +351,6 @@ struct snd_soc_dai {
+ 	/* DAI runtime info */
+ 	unsigned int stream_active[SNDRV_PCM_STREAM_LAST + 1]; /* usage count */
  
- 	aio->chip->num_wup_aios--;
-@@ -448,7 +448,7 @@ static int uniphier_aio_dai_resume(struct snd_soc_dai *dai)
- 	struct uniphier_aio *aio = uniphier_priv(dai);
- 	int ret, i;
+-	unsigned int active;
+-
+ 	struct snd_soc_dapm_widget *playback_widget;
+ 	struct snd_soc_dapm_widget *capture_widget;
  
--	if (!dai->active)
-+	if (!snd_soc_dai_activity(dai))
- 		return 0;
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 420595356111..0eae9ab2a2ea 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -266,7 +266,6 @@ static void snd_soc_runtime_action(struct snd_soc_pcm_runtime *rtd,
  
- 	if (!aio->chip->active)
+ 	for_each_rtd_dais(rtd, i, dai) {
+ 		dai->stream_active[stream] += action;
+-		dai->active += action;
+ 		snd_soc_component_activity(dai->component) += action;
+ 	}
+ }
 -- 
 2.17.1
 
