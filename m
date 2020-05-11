@@ -6,53 +6,53 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE54FC47255
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 06:00:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73B28C47255
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 06:01:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6EA9B20708
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 06:00:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F0A2A207DD
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 06:01:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YasRkI0V"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6EA9B20708
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iF6iZV5/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F0A2A207DD
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CF98215F2;
-	Mon, 11 May 2020 07:59:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF98215F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 47446166A;
+	Mon, 11 May 2020 08:00:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 47446166A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589176848;
-	bh=rW2K23UfmoO+rlsW93dHG5Rj2jOBBKl9cuVTrWILJpg=;
+	s=default; t=1589176882;
+	bh=iHWUySWrwUMJhmQBwWPB8d3ObQIu6mf/qLGZzI/X3bk=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YasRkI0VOsXRtibuUyfDqQS0AS+cG7BFHMB/Jt53A16QDJshCnL2mhVhTB/cnjfVE
-	 XnIOgad/kYGbjzyMS9QNRWW+TT6KIHJqyI+b0aB5IiEuWXMzhRFCzD4IDpgHf9YLyx
-	 Of5YTH9Ut0LljTqkEt9h/Tosd7PGnIrPIdwfc3K4=
+	b=iF6iZV5/6Ev/5h5pNqos+LOTr6c5CNXHphuoegkifQhZ2VOuPPdgAcKEGCinLdVQP
+	 ivB6deRGiTT0zw7ic3utlcGlOawPiEXIiiWYYH8GbmWoQPT+v4oaT7aPrvgSVSOT8n
+	 bAqNgK+dZCl3LQ7XIplqi0f4epyVnw4J8V6/6wGc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8AB9BF802A9;
-	Mon, 11 May 2020 07:57:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CDD31F802E0;
+	Mon, 11 May 2020 07:57:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 275F5F802A2; Mon, 11 May 2020 07:57:07 +0200 (CEST)
+ id 27546F802C4; Mon, 11 May 2020 07:57:16 +0200 (CEST)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id EA518F802A0
- for <alsa-devel@alsa-project.org>; Mon, 11 May 2020 07:57:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA518F802A0
-Date: 11 May 2020 14:57:03 +0900
-X-IronPort-AV: E=Sophos;i="5.73,378,1583161200"; d="scan'208";a="46743752"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 11 May 2020 14:57:03 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 1D9B7F800B7
+ for <alsa-devel@alsa-project.org>; Mon, 11 May 2020 07:57:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D9B7F800B7
+Date: 11 May 2020 14:57:11 +0900
+X-IronPort-AV: E=Sophos;i="5.73,378,1583161200"; d="scan'208";a="46743765"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 11 May 2020 14:57:11 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 769BA4197FCC;
- Mon, 11 May 2020 14:57:03 +0900 (JST)
-Message-ID: <87wo5j815c.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id D55A24007F55;
+ Mon, 11 May 2020 14:57:11 +0900 (JST)
+Message-ID: <87tv0n8154.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 06/17] ASoC: cirrus: use snd_soc_dai/component_activity()
+Subject: [PATCH 08/17] ASoC: fsl: use snd_soc_dai/component_activity()
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <875zd39frp.wl-kuninori.morimoto.gx@renesas.com>
@@ -80,31 +80,45 @@ From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/cirrus/ep93xx-i2s.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/fsl/fsl_esai.c  | 2 +-
+ sound/soc/fsl/fsl_spdif.c | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/cirrus/ep93xx-i2s.c b/sound/soc/cirrus/ep93xx-i2s.c
-index 723f4cf19467..e5d13b73adbb 100644
---- a/sound/soc/cirrus/ep93xx-i2s.c
-+++ b/sound/soc/cirrus/ep93xx-i2s.c
-@@ -368,7 +368,7 @@ static int ep93xx_i2s_suspend(struct snd_soc_component *component)
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index 84290be778f0..18115ae82991 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -488,7 +488,7 @@ static int fsl_esai_startup(struct snd_pcm_substream *substream,
  {
- 	struct ep93xx_i2s_info *info = snd_soc_component_get_drvdata(component);
+ 	struct fsl_esai *esai_priv = snd_soc_dai_get_drvdata(dai);
  
--	if (!component->active)
-+	if (!snd_soc_component_activity(component))
- 		return 0;
+-	if (!dai->active) {
++	if (!snd_soc_dai_activity(dai)) {
+ 		/* Set synchronous mode */
+ 		regmap_update_bits(esai_priv->regmap, REG_ESAI_SAICR,
+ 				   ESAI_SAICR_SYNC, esai_priv->synchronous ?
+diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+index c711d2d93280..e4bce271a916 100644
+--- a/sound/soc/fsl/fsl_spdif.c
++++ b/sound/soc/fsl/fsl_spdif.c
+@@ -466,7 +466,7 @@ static int fsl_spdif_startup(struct snd_pcm_substream *substream,
+ 	int ret;
  
- 	ep93xx_i2s_disable(info, SNDRV_PCM_STREAM_PLAYBACK);
-@@ -381,7 +381,7 @@ static int ep93xx_i2s_resume(struct snd_soc_component *component)
- {
- 	struct ep93xx_i2s_info *info = snd_soc_component_get_drvdata(component);
+ 	/* Reset module and interrupts only for first initialization */
+-	if (!cpu_dai->active) {
++	if (!snd_soc_dai_activity(cpu_dai)) {
+ 		ret = clk_prepare_enable(spdif_priv->coreclk);
+ 		if (ret) {
+ 			dev_err(&pdev->dev, "failed to enable core clock\n");
+@@ -554,7 +554,7 @@ static void fsl_spdif_shutdown(struct snd_pcm_substream *substream,
+ 	regmap_update_bits(regmap, REG_SPDIF_SCR, mask, scr);
  
--	if (!component->active)
-+	if (!snd_soc_component_activity(component))
- 		return 0;
- 
- 	ep93xx_i2s_enable(info, SNDRV_PCM_STREAM_PLAYBACK);
+ 	/* Power down SPDIF module only if tx&rx are both inactive */
+-	if (!cpu_dai->active) {
++	if (!snd_soc_dai_activity(cpu_dai)) {
+ 		spdif_intr_status_clear(spdif_priv);
+ 		regmap_update_bits(regmap, REG_SPDIF_SCR,
+ 				SCR_LOW_POWER, SCR_LOW_POWER);
 -- 
 2.17.1
 
