@@ -2,73 +2,143 @@ Return-Path: <SRS0=FWLr=6Z=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7C56C47255
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 03:32:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21E4CC47255
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 03:33:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2DDFC20746
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 03:32:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A03052082E
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 03:33:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="R774vb0k"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2DDFC20746
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="A1AekecT";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="F0PZ8edW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A03052082E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=samsung.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8A7E01607;
-	Mon, 11 May 2020 05:31:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A7E01607
+	by alsa0.perex.cz (Postfix) with ESMTPS id E43451614;
+	Mon, 11 May 2020 05:32:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E43451614
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589167965;
-	bh=wgtV58CgVrAhWp1/Sl8bx6uIdQUbsWhZ1skPMEEHBHo=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=R774vb0kzM8ppbwSJQvzOSe75kJu2gF1Q7stcYxxZ1sHQyInuuaTh6cCW5bv4YBj3
-	 an2tLraiy0EdEpyJ/0epSnv25/DoDnAKS8G6Fe5/FYZCHhIX4P8zIAkVAmQ/b9LQnX
-	 WDFaKLsFPX6MusHsk6+NejEVnLKSGibIsaSGsRq8=
+	s=default; t=1589168005;
+	bh=yGMFMRv4f89+DameNEBteZK1rledBY0fRlmd/YsCWmI=;
+	h=From:To:Subject:Date:References:Cc:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=A1AekecT3c90s017rFod/zL91cAY2XoWAb8g3C/n45Iu0NaJvwAYHubCKgFYuIgdi
+	 QpHfbFEOhTd12naKX9rwKHjKNqyBgKS3yp4a5m+rLoT7w+Dt4NhldyXbwJBSPNuwgB
+	 PolWsQzihtJ+oxhin0eAKKHt5GeIo3Z8Aa/j+l+s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 485E3F802A7;
-	Mon, 11 May 2020 05:30:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EA8A2F8022D;
+	Mon, 11 May 2020 05:31:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0415FF802A8; Mon, 11 May 2020 05:30:00 +0200 (CEST)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id ED039F8027D; Mon, 11 May 2020 05:31:24 +0200 (CEST)
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 10019F801F2
- for <alsa-devel@alsa-project.org>; Mon, 11 May 2020 05:28:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10019F801F2
-IronPort-SDR: XvoUgjKt/454FKAk9HQSgqW56k9buJTEyWd1bB6nubLkUtSuBRDdIH8m0+28DnpD8ub2ebbDEb
- qFxsZYoeLLaw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 May 2020 20:28:55 -0700
-IronPort-SDR: yC8r2tBV5ROuMOeSXZxfwtj4MP29tz64nAcD0TaUEOHotyyUl2/VwMHPtcwR5MWeilMXiT9lD/
- E4GUtUSfZxLQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,378,1583222400"; d="scan'208";a="265024252"
-Received: from unknown (HELO jsia-HP-Z620-Workstation.png.intel.com)
- ([10.221.118.135])
- by orsmga006.jf.intel.com with ESMTP; 10 May 2020 20:28:54 -0700
-From: Sia Jee Heng <jee.heng.sia@intel.com>
-To: <alsa-devel@alsa-project.org>
-Subject: [PATCH 3/4] ASoC: Intel: Add makefiles and kconfig changes for KeemBay
-Date: Mon, 11 May 2020 11:16:03 +0800
-Message-Id: <1589166964-8985-4-git-send-email-jee.heng.sia@intel.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1589166964-8985-1-git-send-email-jee.heng.sia@intel.com>
-References: <1589166964-8985-1-git-send-email-jee.heng.sia@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, broonie@kernel.org, tiwai@suse.com,
- pierre-louis.bossart@linux.intel.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id C448BF801F2
+ for <alsa-devel@alsa-project.org>; Mon, 11 May 2020 05:31:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C448BF801F2
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com
+ header.b="F0PZ8edW"
+Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
+ by mailout4.samsung.com (KnoxPortal) with ESMTP id
+ 20200511033110epoutp0461f6259858f843d72f3ad07744b1516b~N28Ik6QS_1361313613epoutp04T
+ for <alsa-devel@alsa-project.org>; Mon, 11 May 2020 03:31:10 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com
+ 20200511033110epoutp0461f6259858f843d72f3ad07744b1516b~N28Ik6QS_1361313613epoutp04T
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+ s=mail20170921; t=1589167870;
+ bh=bchrPLaSvPE/9JeSX/j/z4iqKebq0Wx8IOr5Gw4NNWk=;
+ h=From:To:Cc:Subject:Date:References:From;
+ b=F0PZ8edWZosU8FZx50vCT8B0lUkl2jepXm8DzZ2GzOvMIlpiPQ0tS4D1zqN+VeP7Q
+ vIyG+G3jm7Z8WrRBE+Bc2SdX8NugToCnH7aMQM3eYQEwIAUStasCStzg4NvCkdCTDV
+ mHhqwQqfLmIX/R44S4B1oNByWYfHwoszDOQ8cTfM=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+ epcas2p3.samsung.com (KnoxPortal) with ESMTP id
+ 20200511033109epcas2p30ce24254813125d42701c1466a0c3e33~N28HxLvF72804428044epcas2p3q;
+ Mon, 11 May 2020 03:31:09 +0000 (GMT)
+Received: from epsmges2p4.samsung.com (unknown [182.195.40.186]) by
+ epsnrtp4.localdomain (Postfix) with ESMTP id 49L60W5DKtzMqYkZ; Mon, 11 May
+ 2020 03:31:07 +0000 (GMT)
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+ epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+ 45.14.04647.BF6C8BE5; Mon, 11 May 2020 12:31:07 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+ epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
+ 20200511033107epcas2p2465bc53295b38d2723c4bc351da77c5e~N28FzTyzo2681726817epcas2p29;
+ Mon, 11 May 2020 03:31:07 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+ epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+ 20200511033107epsmtrp2d3a201db69b0dc57633775b01440ffbb~N28FycQDY2323523235epsmtrp26;
+ Mon, 11 May 2020 03:31:07 +0000 (GMT)
+X-AuditID: b6c32a48-8a5ff70000001227-ed-5eb8c6fb1b09
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+ epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+ 62.EA.25866.BF6C8BE5; Mon, 11 May 2020 12:31:07 +0900 (KST)
+Received: from KORDO025540 (unknown [12.36.182.130]) by epsmtip1.samsung.com
+ (KnoxPortal) with ESMTPA id
+ 20200511033107epsmtip1c42cdf0019682d068bfce9831602b63d~N28Fj4O9k0947209472epsmtip1B;
+ Mon, 11 May 2020 03:31:07 +0000 (GMT)
+From: "Gyeongtaek Lee" <gt82.lee@samsung.com>
+To: <broonie@kernel.org>
+Subject: [PATCH] ASoC: soc-dai: pull out be_hw_params_fixup from
+ snd_soc_dai_hw_params
+Date: Mon, 11 May 2020 12:31:06 +0900
+Message-ID: <000001d62744$9b631670$d2294350$@samsung.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AdYnQamtqD9wwKvKSHanH5z5Y1p+gw==
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Se0hTcRTH+d17d71mq+u0PKyodSMiQ92Ws2toD4pa1B+jIqKkddGbs/Zi
+ dxtZBGpkPkiULGpWaFGGUS6Zy4xC1N4vNK2UHmRWFGvmA8VetOtd5H+fc873+zvncH4Urqgn
+ lVSO1ck7rJyZIacQ/rZFbMLPu0071X8qF7NdHa0Ye/x9P8me9JcSbP7bcpK93O3D2NGuIoy9
+ 03EeY71jVxDbnl+JrYzUe4cLSP0Nz5sIfUNdMakv89Uhfb2vmzDItpvTTDyXxTtUvDXTlpVj
+ zU5nNmw2rjbqUtSaBE0qu5RRWTkLn86s2WhIWJtjDk3EqNyc2RVKGThBYJKWpzlsLievMtkE
+ ZzrD27PMdo3GnihwFsFlzU7MtFmWadRqrS6k3GU21bR4ZXYfva8iWIby0H15CYqkgE6GX52j
+ shI0hVLQTQh6A8FwMIRg8NJhJAXDCLzBGvKf5fntgExkBd2MoKpriyT6gqD7XSUmFkg6AUbe
+ vsZFjqUBRprvY6IIp9sRfPrQRoiFGHobXG4fRSIT9AIo/FAwYZbTqXDlzXdC4mh4cKp/gnF6
+ Llz/dhqXplDB+MeLoSmoUINEKC4DSRILVcWFuNgL6KMUDNT1EpJ+DRQ0jmESx8DXe74IiZUw
+ HLxFSoZDCIJPfoULlQiKSxUSLwHfmYeY2AynF0F9c5KIQM+H9t7waNOgqO13hJSWQ1Fh2MjA
+ tYd/MCkNcNYbflsPfTf9RDma55m0o2fSjp5Jy3j+t61GRB2aydsFSzYvaO3Jk2/dgCY+a7y+
+ CbU83diKaAoxU+UGVdNOhYxzC7mWVgQUzsTKay2hlDyLy93PO2xGh8vMC61IFzpBBa6ckWkL
+ fX2r06jRaVNS1Kk6VpeiZZk4eUNUT4aCzuac/F6et/OOfz6MilTmofyXB3vds6uTa/2zHiiP
+ HXjZ4b/w4txI7KbUrXnGgbQkcO3v2RMIdB7acc8Ql6iNTj/ivOQeOjFu3JDRs0x3M+NxxW7F
+ 8oI5TIarM77owoHTzzYfdtf0rT/SaF1YYlt1ravvx6vrcVfH1q14qjFVTY8qfDQeiG64/Vnf
+ eLGkFjseQQ4yhGDiNPG4Q+D+AoTHt53CAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrGLMWRmVeSWpSXmKPExsWy7bCSnO7vYzviDH7PELK4cvEQk8XUh0/Y
+ LGZs62axaLw3gc1i9dUtTBbfrnQwWRy9uJjJYsP3tYwWRxqnMDlwemz43MTmsXPWXXaPTas6
+ 2Tz6tqxi9Fi/5SpLAGsUl01Kak5mWWqRvl0CV8bCAxtYC7YIVEx818fYwHiCt4uRk0NCwETi
+ 8r43rF2MXBxCAjsYJaZc/ccKkZCQ+DD/DDuELSxxv+UIVNFzRomHn+4zgyTYBHQlvty7A2aL
+ ADV82XWCCaSIWeAco8T2TY1sIAlhgTCJ/20tYEUsAqoSbY+bmEBsXgFLibV3P7BA2IISJ2c+
+ AbOZBbQlnt58CmXLS2x/O4cZ4goFiZ9PlwFdwQG0TE+is08CokREYnZnG/MERsFZSCbNQjJp
+ FpJJs5C0LGBkWcUomVpQnJueW2xYYJSXWq5XnJhbXJqXrpecn7uJERw1Wlo7GPes+qB3iJGJ
+ g/EQowQHs5II7/LcHXFCvCmJlVWpRfnxRaU5qcWHGKU5WJTEeb/OWhgnJJCeWJKanZpakFoE
+ k2Xi4JRqYDq8mXv58aMGfbm3n8anrAhMt6s6/ERz267JHznsdrGGn/hQ9ko6+x4XZ8BBzpxM
+ qx9N9tNijm7bNC0vdFeRTdEaBw7Fhylhbxs4Xm1e2pBxorlsxbpi64NyklNmuDmrn9t64dXs
+ 2olCcn83lga8k/q+6/V7v5dlzyfcXbvghEm8+1UtpqmvntULnD1/66a1fJX03vnfbtrY7FoQ
+ /dtxy4sGaUWeEGvdeys3bihSVzeP/DVDpFqt/KeR9eJdkd+e3dvO+kft45mcxs8HDn//6Vr2
+ WPVfenjPirwz7nn+H6ZPXtD5VOHi6exNKaeEdfOZjvgZvJq1buPdmuCjmgIC6is11rOnTT/4
+ q/rPgsRi783WSizFGYmGWsxFxYkAQpbjqQkDAAA=
+X-CMS-MailID: 20200511033107epcas2p2465bc53295b38d2723c4bc351da77c5e
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200511033107epcas2p2465bc53295b38d2723c4bc351da77c5e
+References: <CGME20200511033107epcas2p2465bc53295b38d2723c4bc351da77c5e@epcas2p2.samsung.com>
+Cc: alsa-devel@alsa-project.org, khw0178.kim@samsung.com, kimty@samsung.com,
+ tiwai@suse.com, lgirdwood@gmail.com, hmseo@samsung.com, tkjung@samsung.com,
+ pilsun.jang@samsung.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,83 +154,69 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add makefile and kconfig changes for KeemBay tlv320aic3204
-machine driver and kmb_platform driver.
+When dpcm_be_dai_hw_params() called, be_hw_params_fixup() callback is
+called with same arguments 3times.
+It is called in be_hw_params_fixup() itself and in soc_pcm_hw_params()
+for cpu dai and codec dai.
+Tested in 5.4.
 
-Signed-off-by: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
-Signed-off-by: Sia Jee Heng <jee.heng.sia@intel.com>
+Signed-off-by: Gyeongtaek Lee <gt82.lee@samsung.com>
+Cc: stable@vger.kernel.org
 ---
- sound/soc/intel/Kconfig         |  7 +++++++
- sound/soc/intel/Makefile        |  1 +
- sound/soc/intel/boards/Kconfig  | 15 +++++++++++++++
- sound/soc/intel/boards/Makefile |  4 ++++
- 4 files changed, 27 insertions(+)
+ sound/soc/soc-dai.c  | 12 ------------
+ sound/soc/soc-dapm.c | 11 +++++++++++
+ 2 files changed, 11 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index c8de0bb..bc93448 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -244,6 +244,13 @@ config SND_SOC_ACPI_INTEL_MATCH
+diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
+index 31c41559034b..4785cb6b336f 100644
+--- a/sound/soc/soc-dai.c
++++ b/sound/soc/soc-dai.c
+@@ -257,20 +257,8 @@ int snd_soc_dai_hw_params(struct snd_soc_dai *dai,
+ 			  struct snd_pcm_substream *substream,
+ 			  struct snd_pcm_hw_params *params)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	int ret;
  
- endif ## SND_SOC_INTEL_SST_TOPLEVEL || SND_SOC_SOF_INTEL_TOPLEVEL
+-	/* perform any topology hw_params fixups before DAI  */
+-	if (rtd->dai_link->be_hw_params_fixup) {
+-		ret = rtd->dai_link->be_hw_params_fixup(rtd, params);
+-		if (ret < 0) {
+-			dev_err(rtd->dev,
+-				"ASoC: hw_params topology fixup failed %d\n",
+-				ret);
+-			return ret;
+-		}
+-	}
+-
+ 	if (dai->driver->ops->hw_params) {
+ 		ret = dai->driver->ops->hw_params(substream, params, dai);
+ 		if (ret < 0) {
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index e2632841b321..d86c1cd4e8fa 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -3886,6 +3886,17 @@ snd_soc_dai_link_event_pre_pmu(struct snd_soc_dapm_widget *w,
+ 	hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS)->max
+ 		= config->channels_max;
  
-+config SND_SOC_INTEL_KEEMBAY
-+	tristate "Keembay Platforms"
-+	depends on OF && (ARM64 || COMPILE_TEST)
-+	depends on COMMON_CLK
-+	help
-+	  If you have a Intel Keembay platform then enable this option
-+	  by saying Y or m.
- 
- # ASoC codec drivers
- source "sound/soc/intel/boards/Kconfig"
-diff --git a/sound/soc/intel/Makefile b/sound/soc/intel/Makefile
-index 8160520..f5aa32b 100644
---- a/sound/soc/intel/Makefile
-+++ b/sound/soc/intel/Makefile
-@@ -7,6 +7,7 @@ obj-$(CONFIG_SND_SOC_INTEL_HASWELL) += haswell/
- obj-$(CONFIG_SND_SOC_INTEL_BAYTRAIL) += baytrail/
- obj-$(CONFIG_SND_SST_ATOM_HIFI2_PLATFORM) += atom/
- obj-$(CONFIG_SND_SOC_INTEL_SKYLAKE) += skylake/
-+obj-$(CONFIG_SND_SOC_INTEL_KEEMBAY) += keembay/
- 
- # Machine support
- obj-$(CONFIG_SND_SOC) += boards/
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index 556c310..45f9fe5 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -549,3 +549,18 @@ endif
- 
- 
- endif ## SND_SOC_INTEL_MACH
++	/* perform any topology hw_params fixups before DAI  */
++	if (rtd->dai_link->be_hw_params_fixup) {
++		ret = rtd->dai_link->be_hw_params_fixup(rtd, params);
++		if (ret < 0) {
++			dev_err(rtd->dev,
++				"ASoC: hw_params topology fixup failed %d\n",
++				ret);
++			return ret;
++		}
++	}
 +
-+if SND_SOC_INTEL_KEEMBAY
-+
-+config SND_SOC_INTEL_KEEMBAY_TLV320AIC3204_MACH
-+	tristate "Keembay with TLV320AIC3204 codec"
-+	depends on ARM64 || COMPILE_TEST
-+	depends on I2C
-+	select SND_SOC_TLV320AIC32X4
-+	select SND_SOC_TLV320AIC32X4_I2C
-+	help
-+	  This adds support for ASoC machine driver for Intel Keembay platforms
-+	  with TLV320AIC3204 codec.
-+	  Say Y if you have such a device.
-+	  If unsure select "N".
-+endif ## SND_SOC_INTEL_KEEMBAY
-diff --git a/sound/soc/intel/boards/Makefile b/sound/soc/intel/boards/Makefile
-index 1ef6e60..7201d07 100644
---- a/sound/soc/intel/boards/Makefile
-+++ b/sound/soc/intel/boards/Makefile
-@@ -69,3 +69,7 @@ obj-$(CONFIG_SND_SOC_INTEL_SKL_NAU88L25_SSM4567_MACH) += snd-soc-skl_nau88l25_ss
- obj-$(CONFIG_SND_SOC_INTEL_SKL_HDA_DSP_GENERIC_MACH) += snd-soc-skl_hda_dsp.o
- obj-$(CONFIG_SND_SOC_INTEL_SOF_DA7219_MAX98373_MACH) += snd-soc-sof_da7219_max98373.o
- obj-$(CONFIG_SND_SOC_INTEL_SOUNDWIRE_SOF_MACH) += snd-soc-sof-sdw.o
-+
-+# Intel KeemBay Machine
-+snd-soc-keembay_tlv3204-objs := kmb_tlv3204.o
-+obj-$(CONFIG_SND_SOC_INTEL_KEEMBAY_TLV320AIC3204_MACH) += snd-soc-keembay_tlv3204.o
+ 	substream->stream = SNDRV_PCM_STREAM_CAPTURE;
+ 	snd_soc_dapm_widget_for_each_source_path(w, path) {
+ 		source = path->source->priv;
+
+base-commit: f3643491bd079c973ac6c693da7966cd17506ca3
 -- 
-1.9.1
+2.21.0
+
 
