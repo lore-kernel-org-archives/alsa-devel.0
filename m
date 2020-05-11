@@ -2,80 +2,72 @@ Return-Path: <SRS0=FWLr=6Z=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-1.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA1F8C54E8D
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 11:26:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 814DEC54E8E
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 11:27:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 60DD12222D
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 11:26:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 00CB120722
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 11:27:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZEL0mnD0";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="rMLBl+BJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 60DD12222D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sCxSnR0e";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Mz06HJ8p"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 00CB120722
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A5F079F6;
-	Mon, 11 May 2020 13:25:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5F079F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6399C1662;
+	Mon, 11 May 2020 13:26:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6399C1662
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589196375;
-	bh=o9AEQI9e96zEZttG7amAYMc86awjgUg84pO3XR7DIJU=;
+	s=default; t=1589196428;
+	bh=o1IPTtc0R/fGQS5reWphEWkfAD22Xn7ko7CQvsvuZqI=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZEL0mnD0zUFBP9L9tse0iOpDLUdNBiLDr1r8gHqyVj3vW0vfo+fz1yrCLAB9D9+s1
-	 goJPUzb0fSyJLnNJ16cU0VNgzIWhrV90RpCkDDcMAKb2mhdEZEqmhpqzy9ZI8PSXrf
-	 1KvEZPMPesc/B138U87iTr/avAa92jNMZcy95i/Y=
+	b=sCxSnR0e66Re99UP9xUgjaBvJNG/akUHsSqK7nRozCp15t0e1kGjnQkQonWJUbNlr
+	 JOIyzMdDHjQ1xGygKhrOLvEwwo2eavHpXTfBmgEC5TDgW0PYk4Zb5nYssqkK03qA81
+	 Gf+i4OnOG5rYv3J50fZUsxd8891PMfMernCjGK7M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3A84FF80254;
-	Mon, 11 May 2020 13:25:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DF9EDF80291;
+	Mon, 11 May 2020 13:25:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C287DF80157; Mon, 11 May 2020 13:25:21 +0200 (CEST)
+ id 934A9F8028E; Mon, 11 May 2020 13:25:24 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EC59DF800B7;
- Mon, 11 May 2020 13:25:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC59DF800B7
+ by alsa1.perex.cz (Postfix) with ESMTPS id E9225F800B7
+ for <alsa-devel@alsa-project.org>; Mon, 11 May 2020 13:25:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9225F800B7
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="rMLBl+BJ"
+ header.b="Mz06HJ8p"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id E24F72082E;
- Mon, 11 May 2020 11:25:13 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id AF8A020722;
+ Mon, 11 May 2020 11:25:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1589196314;
- bh=o9AEQI9e96zEZttG7amAYMc86awjgUg84pO3XR7DIJU=;
+ s=default; t=1589196320;
+ bh=o1IPTtc0R/fGQS5reWphEWkfAD22Xn7ko7CQvsvuZqI=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=rMLBl+BJv/8X5nWNIxPOLW9bCIQ0iiH4T+rrJ3LNlokdYz7vyJ1T+jbd1BNahhoeO
- 3MDloWKijwzczMcVgRleCN5Dn82GfYyi9p0BrXrhWgrsWfw8RS6I7c/zX8HhYKiJF0
- zGTdx66urESUZcYG8t060Lg0adpPio3GLg+M5HaE=
-Date: Mon, 11 May 2020 12:25:11 +0100
+ b=Mz06HJ8p9Vx8iyoNriEE2F9FnDlUNpGSZ2yuw6No3trVvu9UAP4maQyiv7TlCzJEy
+ nXPH3ToMjlCV77UtcXpxGOztU9fsYpr5j7uEI/KnPFKkzNfk+tOu51vjlio73Dllkh
+ SjCsQAB5MRSvbKaVvk6rz8JZ+TE3CZtXkDXfcCbE=
+Date: Mon, 11 May 2020 12:25:17 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Daniel Baluta <daniel.baluta@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Wei Yongjun <weiyongjun1@huawei.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>
-In-Reply-To: <20200509093337.78897-1-weiyongjun1@huawei.com>
-References: <20200509093337.78897-1-weiyongjun1@huawei.com>
-Subject: Re: [PATCH -next] ASoC: SOF: core: fix error return code in
- sof_probe_continue()
-Message-Id: <158919630591.8372.2693006903071941501.b4-ty@kernel.org>
-Cc: Hulk Robot <hulkci@huawei.com>, alsa-devel@alsa-project.org,
- kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
- sound-open-firmware@alsa-project.org
+To: Tzung-Bi Shih <tzungbi@google.com>
+In-Reply-To: <20200511044000.86161-1-tzungbi@google.com>
+References: <20200511044000.86161-1-tzungbi@google.com>
+Subject: Re: [PATCH] ASoC: mediatek: mt8183-da7219: set headset button maps
+Message-Id: <158919630590.8372.12836239979738650426.b4-ty@kernel.org>
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,9 +83,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 9 May 2020 09:33:37 +0000, Wei Yongjun wrote:
-> Fix to return negative error code -ENOMEM from the IPC init error
-> handling case instead of 0, as done elsewhere in this function.
+On Mon, 11 May 2020 12:40:00 +0800, Tzung-Bi Shih wrote:
+> Sets headset button maps.
 
 Applied to
 
@@ -101,7 +92,7 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: core: fix error return code in sof_probe_continue()
+[1/1] ASoC: mediatek: mt8183-da7219: set headset button maps
       (no commit info)
 
 All being well this means that it will be integrated into the linux-next
