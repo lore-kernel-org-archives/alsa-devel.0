@@ -2,81 +2,77 @@ Return-Path: <SRS0=FWLr=6Z=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 941CFC47255
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 19:01:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1136FC47255
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 19:27:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E69C9206E6
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 19:01:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8E6BC20736
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 19:27:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="q3IKRbl8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E69C9206E6
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CY3JCAMm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8E6BC20736
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4DC43886;
-	Mon, 11 May 2020 21:00:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4DC43886
+	by alsa0.perex.cz (Postfix) with ESMTPS id D1429822;
+	Mon, 11 May 2020 21:26:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D1429822
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589223677;
-	bh=1KYHl1eE3EPv6F7db66uSpzCwGMMmrV9PN4l1EuFups=;
+	s=default; t=1589225251;
+	bh=va+Bg/mGfIf3zooDCyJ6Te8A1FGZzAbfl8KpNyZGVIg=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=q3IKRbl8UK2wT2jR2LoihmateyoT0l3G300jvEPrhebxE33XUtStfiFucf5McO/tJ
-	 +WEPq8UZd35dT6x1BZQklHOTF/u+MLgdBSNj1Y1Uzj6Ht+JuVTda8UJVrEZmqbwAbj
-	 rrSzWfBORyHRyV0sTnYMQ5TheGziM9nbGx7vIk4I=
+	b=CY3JCAMm+9waDkOZxM1DPX1CE+dG9TV0aERs7pgqtdCTrI9Jv1F6ySbtapZgS4Gp1
+	 cuqpV1ia4tELIbKHHAC8M/K3RCpBrkFQgg3h/rwY7pP2TxhhILuAJrxcsdbD6b98mF
+	 GGBkn3YlEBh2igx0LawnY05EOaIWlWz4rmwCvVm4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 69D6DF8014C;
-	Mon, 11 May 2020 21:00:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2D9E8F8014C;
+	Mon, 11 May 2020 21:26:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DFB6CF80157; Mon, 11 May 2020 21:00:23 +0200 (CEST)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ id C736CF8022D; Mon, 11 May 2020 21:26:38 +0200 (CEST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E2134F80107
- for <alsa-devel@alsa-project.org>; Mon, 11 May 2020 21:00:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2134F80107
-IronPort-SDR: NolICqrIXLLi5UNhoU3KzBweHnvolh/IQ9YUNJIeqejRNNk6a0PWzRVzNaevWkp+0UU8bTQtjt
- zBodHNF+y+3A==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1DF0AF800E3
+ for <alsa-devel@alsa-project.org>; Mon, 11 May 2020 21:26:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1DF0AF800E3
+IronPort-SDR: XdMs11kOeprclJZBIGudf+LnBktOV16JhnOoQt6Hk0ugG1XkvoTUHmGebq7UNGCI3I5hMHi5JD
+ xQOAQBomCV1w==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 May 2020 12:00:13 -0700
-IronPort-SDR: UriJ4Mj+W1dUj4SAvvtpUe2eoHnCT1YifIAyVeIXqTp9uaMsPTUvo4cyNtBzMjm2ajwrhM0nUr
- FrG7Q4XFCzEQ==
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 May 2020 12:26:28 -0700
+IronPort-SDR: PoBF/37Iog97BEDYRC4KQdmAbFup+2BeAOmci01fw202h/Z6qPZw99zVeip1HGiALKfr//K8JN
+ 8aN+BJkFPOKg==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,381,1583222400"; d="scan'208";a="261861655"
-Received: from unknown (HELO [10.254.66.92]) ([10.254.66.92])
- by orsmga003.jf.intel.com with ESMTP; 11 May 2020 12:00:11 -0700
-Subject: Re: [PATCH 3/3] soundwire: bus_type: add sdw_master_device support
-To: Vinod Koul <vkoul@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>
-References: <20200429185145.12891-1-yung-chuan.liao@linux.intel.com>
- <20200429185145.12891-4-yung-chuan.liao@linux.intel.com>
- <20200511063227.GS1375924@vkoul-mobl>
+X-IronPort-AV: E=Sophos;i="5.73,381,1583222400"; d="scan'208";a="297786521"
+Received: from mlamm-mobl1.amr.corp.intel.com (HELO [10.255.230.116])
+ ([10.255.230.116])
+ by orsmga008.jf.intel.com with ESMTP; 11 May 2020 12:26:28 -0700
+Subject: Re: [PATCH] ASoC: topology: log all headers being parsed
+To: Keyon Jie <yang.jie@linux.intel.com>, alsa-devel@alsa-project.org
+References: <20200509082248.2757-1-yang.jie@linux.intel.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <e214d308-1b92-a7a5-3c76-da05dca99cc5@linux.intel.com>
-Date: Mon, 11 May 2020 14:00:11 -0500
+Message-ID: <75fb69cc-830f-432a-c724-7449309f2eba@linux.intel.com>
+Date: Mon, 11 May 2020 13:38:01 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200511063227.GS1375924@vkoul-mobl>
+In-Reply-To: <20200509082248.2757-1-yang.jie@linux.intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
- linux-kernel@vger.kernel.org, ranjani.sridharan@linux.intel.com,
- hui.wang@canonical.com, broonie@kernel.org, srinivas.kandagatla@linaro.org,
- jank@cadence.com, mengdong.lin@intel.com, slawomir.blauciak@intel.com,
- sanyog.r.kale@intel.com, rander.wang@linux.intel.com, bard.liao@intel.com
+Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,24 +88,69 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Kind reminder to always CC: maintainers....
+
+On 5/9/20 3:22 AM, Keyon Jie wrote:
+> The check (tplg->pass == le32_to_cpu(hdr->type)) makes no sense as it is
+> comparing two different enums, remove the check and log all headers that
+> being parsed.
+
+It's true that the TYPE_MIXER should probably not be compared to 
+TPLG_PASS_MANIFEST, but one would think that e.g. the TYPE_MIXER is 
+handled in the TPLG_PASS_MIXER, no? and likewise that in the 
+TPLG_PASS_MANIFEST all TPLG_TYPE_MANIFEST are handled?
+
+Shouldn't you add a switch case to reconcile the two lists instead of 
+removing the test altogether?
+
+#define SND_SOC_TPLG_TYPE_MIXER		1
+#define SND_SOC_TPLG_TYPE_BYTES		2
+#define SND_SOC_TPLG_TYPE_ENUM		3
+#define SND_SOC_TPLG_TYPE_DAPM_GRAPH	4
+#define SND_SOC_TPLG_TYPE_DAPM_WIDGET	5
+#define SND_SOC_TPLG_TYPE_DAI_LINK	6
+#define SND_SOC_TPLG_TYPE_PCM		7
+#define SND_SOC_TPLG_TYPE_MANIFEST	8
+#define SND_SOC_TPLG_TYPE_CODEC_LINK	9
+#define SND_SOC_TPLG_TYPE_BACKEND_LINK	10
+#define SND_SOC_TPLG_TYPE_PDATA		11
+#define SND_SOC_TPLG_TYPE_DAI		12
+
+#define SOC_TPLG_PASS_MANIFEST		0
+#define SOC_TPLG_PASS_VENDOR		1
+#define SOC_TPLG_PASS_MIXER		2
+#define SOC_TPLG_PASS_WIDGET		3
+#define SOC_TPLG_PASS_PCM_DAI		4
+#define SOC_TPLG_PASS_GRAPH		5
+#define SOC_TPLG_PASS_PINS		6
+#define SOC_TPLG_PASS_BE_DAI		7
+#define SOC_TPLG_PASS_LINK		8
 
 
-
->> +	md = &bus->md;
->> +	md->dev.bus = &sdw_bus_type;
->> +	md->dev.type = &sdw_master_type;
->> +	md->dev.parent = parent;
->> +	md->dev.of_node = parent->of_node;
->> +	md->dev.fwnode = fwnode;
->> +	md->dev.dma_mask = parent->dma_mask;
->> +
->> +	dev_set_name(&md->dev, "sdw-master-%d", bus->link_id);
 > 
-> This give nice sdw-master-0. In DT this comes from reg property. I dont
-> seem to recall if the ACPI/Disco spec treats link_id as unique across
-> the system, can you check that please, if not we would need to update
-> this.
-Table 3 in the Disco for Soundwire 1.0 spec: "all LinkID values are 
-relative to the immediate parent Device."
-
-There isn't any known implementation with more than one controller.
+> Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
+> ---
+>   sound/soc/soc-topology.c | 9 ++++-----
+>   1 file changed, 4 insertions(+), 5 deletions(-)
+> 
+> diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+> index 49875978a1ce..58cf5a12af3f 100644
+> --- a/sound/soc/soc-topology.c
+> +++ b/sound/soc/soc-topology.c
+> @@ -2685,11 +2685,10 @@ static int soc_valid_header(struct soc_tplg *tplg,
+>   		return -EINVAL;
+>   	}
+>   
+> -	if (tplg->pass == le32_to_cpu(hdr->type))
+> -		dev_dbg(tplg->dev,
+> -			"ASoC: Got 0x%x bytes of type %d version %d vendor %d at pass %d\n",
+> -			hdr->payload_size, hdr->type, hdr->version,
+> -			hdr->vendor_type, tplg->pass);
+> +	dev_dbg(tplg->dev,
+> +		"ASoC: Got 0x%x bytes of type %d version %d vendor %d at pass %d\n",
+> +		hdr->payload_size, hdr->type, hdr->version,
+> +		hdr->vendor_type, tplg->pass);
+>   
+>   	return 1;
+>   }
+> 
