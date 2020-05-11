@@ -2,58 +2,62 @@ Return-Path: <SRS0=FWLr=6Z=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BDD8CC47255
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 05:56:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90103C47255
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 05:57:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1C81E20735
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 05:56:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1247B2184D
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 05:57:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nDFuoJ0b"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1C81E20735
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NsuApF6g"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1247B2184D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 60F4C86F;
-	Mon, 11 May 2020 07:56:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 60F4C86F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 610CD950;
+	Mon, 11 May 2020 07:57:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 610CD950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589176617;
-	bh=fZ0PdpTkI4TjlxVBlz931EANJEEZlDcZwTkOB+wITOA=;
-	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=nDFuoJ0bSjYMmFflD24rgwutWJ49wran1h4xgCe1acoD09yYjgfCME4wTsc1cKtSl
-	 xxv7Wbr8qgBd9nCg4+UH+/PjANsbzVGZd3yGSfSCtyuY9bq2AbE4Ygz6Nc84TrmQ2t
-	 6JGptSQkckc7qBu+VpsqFocjd4EoFX4cOLyAoiSs=
+	s=default; t=1589176670;
+	bh=WoDdoWzQjM3XYO1Xnd4soWW/J7SuMP6A2eLRWKt31q8=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=NsuApF6gzVXi3RkOsSgCWWSpBl7Dx23r6dni/wP2GIpnX+sKDpUB8c3ODg75+PxSm
+	 50iodvV/Rce8YOetdnzEKHJ+S+c8Xcmi42fOGKZQhK//dt7tmjn71YRXfcwDnbvESk
+	 XBfe2mFmFAzQHd+v7GmTFfmLHE8ij+GaLvNTHbPY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CDD94F8014C;
-	Mon, 11 May 2020 07:56:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DEA7AF80254;
+	Mon, 11 May 2020 07:56:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CB0DCF80157; Mon, 11 May 2020 07:56:04 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 665B9F80107
- for <alsa-devel@alsa-project.org>; Mon, 11 May 2020 07:55:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 665B9F80107
-Date: 11 May 2020 14:55:54 +0900
-X-IronPort-AV: E=Sophos;i="5.73,378,1583161200"; d="scan'208";a="46743655"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 11 May 2020 14:55:54 +0900
+ id 6FDF0F8027B; Mon, 11 May 2020 07:56:49 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id D9B22F800E3
+ for <alsa-devel@alsa-project.org>; Mon, 11 May 2020 07:56:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9B22F800E3
+Date: 11 May 2020 14:56:40 +0900
+X-IronPort-AV: E=Sophos;i="5.73,378,1583161200"; d="scan'208";a="46529990"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 11 May 2020 14:56:40 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 055254196E5C;
- Mon, 11 May 2020 14:55:54 +0900 (JST)
-Message-ID: <875zd39frp.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 6F1EB4007F55;
+ Mon, 11 May 2020 14:56:40 +0900 (JST)
+Message-ID: <874ksn9fqf.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 00/17] ASoC: cleanup DAI/Component activity
+Subject: [PATCH 01/17] ASoC: soc-dai: add snd_soc_dai_activity()
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <875zd39frp.wl-kuninori.morimoto.gx@renesas.com>
+References: <875zd39frp.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
@@ -73,70 +77,70 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-This patch-set cleanups DAI/Component activity operation.
-I believe these works correctly, but maybe need some tests
-or deep review.
-[17/17] patch can be apply after [03/17] patch.
+Current snd_soc_runtime_action() is counting
+dai->stream_active for Playback/Capture,
+dai->active        for DAI
 
-Kuninori Morimoto (17):
-   1 ASoC: soc-dai: add snd_soc_dai_activity()
-   2 ASoC: use snd_soc_dai/component_activity()
-   3 ASoC: soc-dai: add snd_soc_component_activity()
-   4 ASoC: atomel: use snd_soc_dai/component_activity()
-   5 ASoC: bcm: use snd_soc_dai/component_activity()
-   6 ASoC: cirrus: use snd_soc_dai/component_activity()
-   7 ASoC: codecs: use snd_soc_dai/component_activity()
-   8 ASoC: fsl: use snd_soc_dai/component_activity()
-   9 ASoC: intel: use snd_soc_dai/component_activity()
-  10 ASoC: jz4740: use snd_soc_dai/component_activity()
-  11 ASoC: mediatek: use snd_soc_dai/component_activity()
-  12 ASoC: meson: use snd_soc_dai/component_activity()
-  13 ASoC: pxa: use snd_soc_dai/component_activity()
-  14 ASoC: ti: use snd_soc_dai/component_activity()
-  15 ASoC: uniphier: use snd_soc_dai/component_activity()
-  16 ASoC: cleanup dai / component active code
-  17 ASoC: soc-dai: add snd_soc_dai_stream_activity()
+	static void snd_soc_runtime_action(...)
+	{
+		...
+		for_each_rtd_dais(rtd, i, dai) {
+			dai->stream_active[stream] += action;
+			dai->active += action;
+			...
+		}
+	}
 
- include/sound/soc-component.h                |  7 +---
- include/sound/soc-dai.h                      |  5 ++-
- sound/soc/atmel/atmel_ssc_dai.c              |  4 +--
- sound/soc/bcm/bcm2835-i2s.c                  |  6 ++--
- sound/soc/bcm/cygnus-ssp.c                   |  4 +--
- sound/soc/cirrus/ep93xx-i2s.c                |  4 +--
- sound/soc/codecs/adav80x.c                   |  4 +--
- sound/soc/codecs/arizona.c                   |  2 +-
- sound/soc/codecs/cs4271.c                    |  4 +--
- sound/soc/codecs/madera.c                    |  2 +-
- sound/soc/codecs/max98090.c                  |  6 ++--
- sound/soc/codecs/tlv320aic23.c               |  2 +-
- sound/soc/codecs/tlv320dac33.c               |  2 +-
- sound/soc/codecs/uda1380.c                   |  2 +-
- sound/soc/codecs/wl1273.c                    |  2 +-
- sound/soc/codecs/wm8711.c                    |  2 +-
- sound/soc/codecs/wm8753.c                    |  4 +--
- sound/soc/dwc/dwc-i2s.c                      |  2 +-
- sound/soc/fsl/fsl_esai.c                     |  2 +-
- sound/soc/fsl/fsl_spdif.c                    |  4 +--
- sound/soc/intel/atom/sst-mfld-platform-pcm.c | 14 ++++----
- sound/soc/jz4740/jz4740-i2s.c                |  8 ++---
- sound/soc/mediatek/mt8173/mt8173-afe-pcm.c   |  8 ++---
- sound/soc/meson/axg-tdm-interface.c          |  2 +-
- sound/soc/pxa/pxa-ssp.c                      |  8 ++---
- sound/soc/pxa/pxa2xx-i2s.c                   |  2 +-
- sound/soc/soc-compress.c                     |  4 +--
- sound/soc/soc-core.c                         | 11 ++++---
- sound/soc/soc-dai.c                          | 12 +++++++
- sound/soc/soc-dapm.c                         |  8 ++---
- sound/soc/soc-pcm.c                          | 34 ++++++++++----------
- sound/soc/ti/davinci-mcasp.c                 |  2 +-
- sound/soc/ti/omap-dmic.c                     |  4 +--
- sound/soc/ti/omap-mcbsp.c                    |  4 +--
- sound/soc/ti/omap-mcpdm.c                    |  8 ++---
- sound/soc/uniphier/aio-cpu.c                 |  4 +--
- 36 files changed, 105 insertions(+), 98 deletions(-)
+But, these are very verbose, because we can calculate
+DAI activity from stream_activity.
 
+This patch adds snd_soc_dai_activity() which calculate
+DAI activity from DAI stream_activity.
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ include/sound/soc-dai.h |  2 +-
+ sound/soc/soc-dai.c     | 12 ++++++++++++
+ 2 files changed, 13 insertions(+), 1 deletion(-)
+
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index 2a0a5af1c1ae..887575d59e31 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -137,7 +137,7 @@ int snd_soc_dai_set_tristate(struct snd_soc_dai *dai, int tristate);
+ /* Digital Audio Interface mute */
+ int snd_soc_dai_digital_mute(struct snd_soc_dai *dai, int mute,
+ 			     int direction);
+-
++int snd_soc_dai_activity(struct snd_soc_dai *dai);
+ 
+ int snd_soc_dai_get_channel_map(struct snd_soc_dai *dai,
+ 		unsigned int *tx_num, unsigned int *tx_slot,
+diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
+index 8e5fe012aa1d..aa0826136f57 100644
+--- a/sound/soc/soc-dai.c
++++ b/sound/soc/soc-dai.c
+@@ -305,6 +305,18 @@ int snd_soc_dai_digital_mute(struct snd_soc_dai *dai, int mute,
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dai_digital_mute);
+ 
++int snd_soc_dai_activity(struct snd_soc_dai *dai)
++{
++	int stream, active;
++
++	active = 0;
++	for_each_pcm_streams(stream)
++		active += dai->stream_active[stream];
++
++	return active;
++}
++EXPORT_SYMBOL_GPL(snd_soc_dai_activity);
++
+ int snd_soc_dai_hw_params(struct snd_soc_dai *dai,
+ 			  struct snd_pcm_substream *substream,
+ 			  struct snd_pcm_hw_params *params)
 -- 
 2.17.1
 
