@@ -2,71 +2,71 @@ Return-Path: <SRS0=GrjN=62=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_SANE_2 autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50B08C47255
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 May 2020 01:15:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 85B71C47255
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 May 2020 01:17:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BF7D420708
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 May 2020 01:15:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 907852070B
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 May 2020 01:17:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bNgw2BBe"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BF7D420708
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sysVKPpZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 907852070B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1A459950;
-	Tue, 12 May 2020 03:14:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A459950
+	by alsa0.perex.cz (Postfix) with ESMTPS id DA9FD846;
+	Tue, 12 May 2020 03:16:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA9FD846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589246101;
-	bh=Z/TcNKEa/6NcIaZq/U4IeraE28alwIBzAINMxlTm1hE=;
+	s=default; t=1589246253;
+	bh=kKWxQoBq4BrTeQcc4i/EIqJQloT/9PHpRe0YojkYN9k=;
 	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bNgw2BBekzEpUKupHn/y9KSFbaRNIPEst2gVGzTYlOUkPEgCdT+FDCn181UsH49kB
-	 dJ/5SmTLn56yiRbxwYddi3T/YvOixMf/G+lmDxxqMUkwRhfSmugBywQmObsGrIW8Y4
-	 xhVznVXBT3fdpi8jRwMqMio7BeK0Nv9vvqcy1I94=
+	b=sysVKPpZBY9sYJfMoooL432aHMJ1QQ8oY/y3SITe1UxRW852JA9jkE0gHF7w6Q4fq
+	 GndeRVWJno6wGaBFbRf2mQ6evgYvNgd5EqMsRu4OAqEN2jonVb2YUfxl8lzseRRrk8
+	 tF+H90AEgc5KNprE8PIzHAtyuj66PBhuj2WJrWAE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BA1D5F802D2;
-	Tue, 12 May 2020 00:42:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1F6E7F802E3;
+	Tue, 12 May 2020 00:47:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DF342F802DB; Tue, 12 May 2020 00:42:57 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ id 0977DF802E7; Tue, 12 May 2020 00:47:58 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4CAEFF802C4
- for <alsa-devel@alsa-project.org>; Tue, 12 May 2020 00:42:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4CAEFF802C4
-IronPort-SDR: ZbRo9fLKFIvZRre4GWOsP1YaT3LW9gU+aYkSbMWBirXFUZH10y/TPhXIHB8EAC6n6klpDsyAhg
- UD5eHrysAS2g==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 16171F802E2
+ for <alsa-devel@alsa-project.org>; Tue, 12 May 2020 00:47:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16171F802E2
+IronPort-SDR: XKBMizDH2Y3R+Gg36OpaezTJmgbH2S6PjycdTkKE9x5p8/pIXvjEg0lkWMFYQMntXWdtFjcwUI
+ /psGaFPMBWOg==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 May 2020 15:42:48 -0700
-IronPort-SDR: Semr7xDKJaeLTFp2AMVnyxcmV69e7biQ7dXaxkuU7uSBw/32lRc8+/lTlJPkIKfrpmx6lQ2Jxz
- AxiJTpquCm6g==
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 May 2020 15:47:49 -0700
+IronPort-SDR: 9xFWVZmseWlMyM0CJ9QVFIaHplXAstrPYJ7SC5yyv+WWC4cjhFw8qnvfWaenMzi5ZsKA/uut2X
+ CmV07FkSsiKw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,381,1583222400"; d="scan'208";a="252718118"
+X-IronPort-AV: E=Sophos;i="5.73,381,1583222400"; d="scan'208";a="252719517"
 Received: from ajgalle-mobl.amr.corp.intel.com ([10.254.179.28])
- by fmsmga008.fm.intel.com with ESMTP; 11 May 2020 15:42:48 -0700
-Message-ID: <8c0e4cc5f7e63e1cd379c3a39f6721ee0cf4c06a.camel@linux.intel.com>
-Subject: Re: [PATCH 01/17] ASoC: soc-dai: add snd_soc_dai_activity()
+ by fmsmga008.fm.intel.com with ESMTP; 11 May 2020 15:47:48 -0700
+Message-ID: <fca796666d656c06b7cf28a3a74b2a444f082cc1.camel@linux.intel.com>
+Subject: Re: [PATCH 03/17] ASoC: soc-dai: add snd_soc_component_activity()
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown
  <broonie@kernel.org>
-Date: Mon, 11 May 2020 15:42:47 -0700
-In-Reply-To: <874ksn9fqf.wl-kuninori.morimoto.gx@renesas.com>
+Date: Mon, 11 May 2020 15:47:48 -0700
+In-Reply-To: <871rnr9fq5.wl-kuninori.morimoto.gx@renesas.com>
 References: <875zd39frp.wl-kuninori.morimoto.gx@renesas.com>
- <874ksn9fqf.wl-kuninori.morimoto.gx@renesas.com>
+ <871rnr9fq5.wl-kuninori.morimoto.gx@renesas.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
 Mime-Version: 1.0
@@ -90,76 +90,45 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 On Mon, 2020-05-11 at 14:56 +0900, Kuninori Morimoto wrote:
 > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > 
-> Current snd_soc_runtime_action() is counting
-> dai->stream_active for Playback/Capture,
-> dai->active        for DAI
-> 
-> 	static void snd_soc_runtime_action(...)
-> 	{
-> 		...
-> 		for_each_rtd_dais(rtd, i, dai) {
-> 			dai->stream_active[stream] += action;
-> 			dai->active += action;
-> 			...
-> 		}
-> 	}
-> 
-> But, these are very verbose, because we can calculate
-> DAI activity from stream_activity.
-> 
-> This patch adds snd_soc_dai_activity() which calculate
-> DAI activity from DAI stream_activity.
-> 
 > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > ---
->  include/sound/soc-dai.h |  2 +-
->  sound/soc/soc-dai.c     | 12 ++++++++++++
->  2 files changed, 13 insertions(+), 1 deletion(-)
+>  include/sound/soc-component.h | 1 +
+>  sound/soc/soc-pcm.c           | 2 +-
+>  2 files changed, 2 insertions(+), 1 deletion(-)
 > 
-> diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-> index 2a0a5af1c1ae..887575d59e31 100644
-> --- a/include/sound/soc-dai.h
-> +++ b/include/sound/soc-dai.h
-> @@ -137,7 +137,7 @@ int snd_soc_dai_set_tristate(struct snd_soc_dai
-> *dai, int tristate);
->  /* Digital Audio Interface mute */
->  int snd_soc_dai_digital_mute(struct snd_soc_dai *dai, int mute,
->  			     int direction);
-> -
-> +int snd_soc_dai_activity(struct snd_soc_dai *dai);
+> diff --git a/include/sound/soc-component.h b/include/sound/soc-
+> component.h
+> index 864983b09846..29b0c2c1d2db 100644
+> --- a/include/sound/soc-component.h
+> +++ b/include/sound/soc-component.h
+> @@ -358,6 +358,7 @@ int snd_soc_component_stream_event(struct
+> snd_soc_component *component,
+>  				   int event);
+>  int snd_soc_component_set_bias_level(struct snd_soc_component
+> *component,
+>  				     enum snd_soc_bias_level level);
+> +#define snd_soc_component_activity(component)	((component)-
+> >active)
 >  
->  int snd_soc_dai_get_channel_map(struct snd_soc_dai *dai,
->  		unsigned int *tx_num, unsigned int *tx_slot,
-> diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
-> index 8e5fe012aa1d..aa0826136f57 100644
-> --- a/sound/soc/soc-dai.c
-> +++ b/sound/soc/soc-dai.c
-> @@ -305,6 +305,18 @@ int snd_soc_dai_digital_mute(struct snd_soc_dai
-> *dai, int mute,
->  }
->  EXPORT_SYMBOL_GPL(snd_soc_dai_digital_mute);
->  
-> +int snd_soc_dai_activity(struct snd_soc_dai *dai)
-> +{
-> +	int stream, active;
-> +
-> +	active = 0;
-> +	for_each_pcm_streams(stream)
-> +		active += dai->stream_active[stream];
-Morimoto-san,
+>  #ifdef CONFIG_REGMAP
+>  void snd_soc_component_init_regmap(struct snd_soc_component
+> *component,
+> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+> index e923e3746fec..420595356111 100644
+> --- a/sound/soc/soc-pcm.c
+> +++ b/sound/soc/soc-pcm.c
+> @@ -267,7 +267,7 @@ static void snd_soc_runtime_action(struct
+> snd_soc_pcm_runtime *rtd,
+>  	for_each_rtd_dais(rtd, i, dai) {
+>  		dai->stream_active[stream] += action;
+>  		dai->active += action;
+> -		dai->component->active += action;
+> +		snd_soc_component_activity(dai->component) += action;
 
-snd_soc_dai has both stream_active and active. In this function, you're
-checking stream_active. Do you think, snd_soc_dai_stream_usage_count()
-makes for a better name?
-
+This is not very easy to comprehend. Maybe we could introduce another
+macro for updating the usage count for the component and use that
+instead? something like, snd_soc_component_update_usage_count(dai-
+>component, action)?
 Thanks,
 Ranjani
-> +
-> +	return active;
-> +}
-> +EXPORT_SYMBOL_GPL(snd_soc_dai_activity);
-> +
->  int snd_soc_dai_hw_params(struct snd_soc_dai *dai,
->  			  struct snd_pcm_substream *substream,
->  			  struct snd_pcm_hw_params *params)
 
