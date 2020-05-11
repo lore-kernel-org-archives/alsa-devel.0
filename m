@@ -4,64 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 40346C38A2A
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 01:31:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41FE0C38A2A
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 01:42:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 96973207FF
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 01:31:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B7F31208CA
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 01:42:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ikdjmrbt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 96973207FF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="i38cfkkv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B7F31208CA
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DFA9986F;
-	Mon, 11 May 2020 03:30:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DFA9986F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0512E86F;
+	Mon, 11 May 2020 03:42:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0512E86F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589160680;
-	bh=uiN1N7yU2JGDAOqLJyNjwEXfTGMo8bCa858rgU2Zulc=;
+	s=default; t=1589161375;
+	bh=Ypzg2JgbjdAUuJyifqX8klIckdBTF5skTXWOqBx4ve4=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IkdjmrbtkS60Xu+hJ/mY/FGjUAoycRhQ8rwQRlCS1PtBzCEibhmHL1/rgKL3jSZXg
-	 JuyaIscKwS2u9tS7xe4I6BT6JTZSerNQ1geU/K4c9t/TPb5qPlaGFSY7lpbVeL4NlG
-	 5DMKtkePIKM5byW9YXEiVTlovtT6mfU1NKxhmiSk=
+	b=i38cfkkv6ov7UuLA8c4RNvPq4/EiXC+Px7xKSAAgDOV81ovitsdkUpuj1LyJjTqSA
+	 peRlUjzoKf7a+Edy+D4eMiG/sxzeofSdeDhGHK5RckpnhHP0kKpfVn8jRTZMtvuwT3
+	 Pe5Ivx8KTV3xCs5DEZ4frwl3W2mi1qdpZ+NmjQgQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 43825F8014C;
-	Mon, 11 May 2020 03:30:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5B18FF8014C;
+	Mon, 11 May 2020 03:42:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D512EF80157; Mon, 11 May 2020 03:30:26 +0200 (CEST)
+ id A3E75F80157; Mon, 11 May 2020 03:42:02 +0200 (CEST)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 70110F800E3
- for <alsa-devel@alsa-project.org>; Mon, 11 May 2020 03:30:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70110F800E3
-Date: 11 May 2020 10:30:15 +0900
-X-IronPort-AV: E=Sophos;i="5.73,377,1583161200"; d="scan'208";a="46714492"
+ by alsa1.perex.cz (Postfix) with ESMTP id DCB11F800E3
+ for <alsa-devel@alsa-project.org>; Mon, 11 May 2020 03:41:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DCB11F800E3
+Date: 11 May 2020 10:41:53 +0900
+X-IronPort-AV: E=Sophos;i="5.73,378,1583161200"; d="scan'208";a="46716152"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 11 May 2020 10:30:15 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 11 May 2020 10:41:53 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 1536340083C3;
- Mon, 11 May 2020 10:30:15 +0900 (JST)
-Message-ID: <87a72f9s2g.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 3586E40083D5;
+ Mon, 11 May 2020 10:41:53 +0900 (JST)
+Message-ID: <878shz9rj2.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Yongbo Zhang <giraffesnn123@gmail.com>
-Subject: Re: [PATCH] ASoC: rsnd: add interrupt support for SSI BUSIF buffer
-In-Reply-To: <20200508074753.10362-1-giraffesnn123@gmail.com>
-References: <20200508074753.10362-1-giraffesnn123@gmail.com>
+To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: Re: [PATCH] ASoC: core: Make sure component driver names are unique
+In-Reply-To: <20200427193306.31198-1-ranjani.sridharan@linux.intel.com>
+References: <20200427193306.31198-1-ranjani.sridharan@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: Chen Li <licheng0822@thundersoft.com>, alsa-devel@alsa-project.org,
- lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,45 +76,46 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Yongbo
+Hi Ranjani
 
-Thank you for the patch
-
-> SSI BUSIF buffer is possible to overflow or underflow, especially in a
-> hypervisor environment. If there is no interrupt support, it will eventually
-> lead to errors in pcm data.
-> This patch adds overflow and underflow interrupt support for SSI BUSIF buffer.
+> When registering a component, make sure that the driver names
+> are unique. This will ensure that the snd_soc_rtdcom_lookup()
+> function returns the right component based on the name.
 > 
-> Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> Reported-by: Chen Li <licheng0822@thundersoft.com>
-> Signed-off-by: Yongbo Zhang <giraffesnn123@gmail.com>
-> Tested-by: Chen Li <licheng0822@thundersoft.com>
+> Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 > ---
 (snip)
-> @@ -635,6 +713,19 @@ static int rsnd_ssi_irq(struct rsnd_mod *mod,
->  	if (enable)
->  		val = rsnd_ssi_is_dma_mode(mod) ? 0x0e000000 : 0x0f000000;
->  
-> +	if (is_tdm || is_tdm_split) {
-> +		switch (id) {
-> +		case 0:
-> +		case 1:
-> +		case 2:
-> +		case 3:
-> +		case 4:
-> +		case 9:
-> +			val |= 0xff00;
-> +			break;
+> +static bool
+> +snd_soc_component_driver_name_is_unique(const struct snd_soc_component_driver *component_driver)
+> +{
+> +	struct snd_soc_component *component;
+> +
+> +	mutex_lock(&client_mutex);
+> +	for_each_component(component)
+> +		if (!strcmp(component->driver->name, component_driver->name)) {
+> +			mutex_unlock(&client_mutex);
+> +			return false;
 > +		}
-> +	}
+> +
+> +	mutex_unlock(&client_mutex);
+> +	return true;
+> +}
 
-This is small things, but we like to have
-	- val |= 0xff00;
-	+ val |= 0x0000ff00;
+I think it will be more readable if it doesn't have
+multiple mutex_unlock().
 
-Except above
+	{
+		int ret = true;
 
-	Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+		mutex_lock();
+		for_each_component()
+			if (...) {
+				...
+				ret = false;
+			}
+		mutex_unlock();
+		return ret;
+	}
 
 Thank you for your help !!
 
