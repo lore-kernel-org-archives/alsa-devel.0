@@ -2,57 +2,62 @@ Return-Path: <SRS0=FWLr=6Z=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27BC8C54E8D
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 14:42:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C285FC47255
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 14:42:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CFA78206F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 14:42:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 480DE20722
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 14:42:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hmUkTACN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CFA78206F5
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mBoEeN0d"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 480DE20722
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3C78B9F6;
-	Mon, 11 May 2020 16:41:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C78B9F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7A85515E4;
+	Mon, 11 May 2020 16:41:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A85515E4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589208135;
-	bh=NcP3a5K+AdsE/vp4QNeQm7Zm5n5Zq8T+/YrnkD5A560=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=hmUkTACN9A/PYKwxW9QHQYo6p/agjsIEx4Sr98vC2ZyAknXulSDoNy2HJs0WNTAiJ
-	 VxUjSYUfesW/0J8552YXsJxw2VTztLKcLSo53gXpKQvm83UxBgmuVZdo3pJqbjUtOf
-	 5rq/vwQ9DdgOmkebyxL4GRnFi3W6tb3yVfs7yKPg=
+	s=default; t=1589208161;
+	bh=GXkX9xWSNXY1XODxwBSNeSUjZ5TdYeD5hu+Wk/jwoMA=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=mBoEeN0dcYsPZVjx1RjmqO49wHlouNkxJJcPCf84mVEFYdX6c8vRYoFXCj+ee0DXq
+	 vCn1OEUHPmI6siMexNrAqRd7otZpRpAh6wbuAWgM3owZXZdNR9wvm9ogMBCnDgFOrJ
+	 plzbSSpHJwsaqqhHYitt07h9N0Zow+WGlGtojT88=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DF3ABF8028C;
-	Mon, 11 May 2020 16:39:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A9432F8028E;
+	Mon, 11 May 2020 16:39:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 48A2EF8027B; Mon, 11 May 2020 16:39:44 +0200 (CEST)
+ id AF0F1F8028C; Mon, 11 May 2020 16:39:46 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 27CD6F801F2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1C56FF800B7
  for <alsa-devel@alsa-project.org>; Mon, 11 May 2020 16:39:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27CD6F801F2
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C56FF800B7
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 525CEAEF7
+ by mx2.suse.de (Postfix) with ESMTP id 5EB4FAF0F
  for <alsa-devel@alsa-project.org>; Mon, 11 May 2020 14:39:36 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH alsa-lib 0/3] Trivial compile warning fixes
-Date: Mon, 11 May 2020 16:39:28 +0200
-Message-Id: <20200511143931.31528-1-tiwai@suse.de>
+Subject: [PATCH alsa-lib 1/3] pcm: rate: Fix compile warning wrt bit ops and
+ comparison
+Date: Mon, 11 May 2020 16:39:29 +0200
+Message-Id: <20200511143931.31528-2-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
+In-Reply-To: <20200511143931.31528-1-tiwai@suse.de>
+References: <20200511143931.31528-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -71,25 +76,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+We've got a gcc warning:
+  pcm_rate.c: In function ‘snd_pcm_rate_drain’:
+  pcm_rate.c:1090:19: warning: suggest parentheses around comparison in operand of ‘&’ [-Wparentheses]
+     if (pcm->mode & SND_PCM_NONBLOCK != 0) {
+                   ^
 
-here is a few patches to shut up trivial compile warnings that have
-been introduced recently.
+Drop the zero comparison for fixing the warning and for simplicity.
 
+Fixes: 29041c522071 ("fix infinite draining of the rate plugin in SND_PCM_NONBLOCK mode")
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ src/pcm/pcm_rate.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Takashi
-
-===
-
-Takashi Iwai (3):
-  pcm: rate: Fix compile warning wrt bit ops and comparison
-  pcm: rate: Fix uninitialized variable warning
-  topology: Add missing ATTRIBUTE_UNUSED
-
- src/pcm/pcm_rate.c |  4 ++--
- src/topology/pcm.c | 18 ++++++++++--------
- 2 files changed, 12 insertions(+), 10 deletions(-)
-
+diff --git a/src/pcm/pcm_rate.c b/src/pcm/pcm_rate.c
+index 4f99a95b325f..980fa44e4023 100644
+--- a/src/pcm/pcm_rate.c
++++ b/src/pcm/pcm_rate.c
+@@ -1087,7 +1087,7 @@ static int snd_pcm_rate_drain(snd_pcm_t *pcm)
+ 				if (rate->last_commit_ptr >= pcm->boundary)
+ 					rate->last_commit_ptr = 0;
+ 			} else if (commit_err == 0) {
+-				if (pcm->mode & SND_PCM_NONBLOCK != 0) {
++				if (pcm->mode & SND_PCM_NONBLOCK) {
+ 					commit_err = -EAGAIN;
+ 					break;
+ 				}
 -- 
 2.16.4
 
