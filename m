@@ -2,88 +2,61 @@ Return-Path: <SRS0=FWLr=6Z=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 529B7C47255
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 04:41:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BDD8CC47255
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 05:56:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C745920820
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 04:41:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1C81E20735
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 05:56:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RNLBOhBf";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="LQSUUpeP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C745920820
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nDFuoJ0b"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1C81E20735
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0D1EB86F;
-	Mon, 11 May 2020 06:40:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D1EB86F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 60F4C86F;
+	Mon, 11 May 2020 07:56:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 60F4C86F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589172072;
-	bh=GVZME+h59nLbAd0SpNzsadyPp7g7KIh8wTpeVIDsnLE=;
-	h=Date:Subject:From:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1589176617;
+	bh=fZ0PdpTkI4TjlxVBlz931EANJEEZlDcZwTkOB+wITOA=;
+	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=RNLBOhBfZSUo8mZ97b3gWEczv7tYm7pbeSYojTxXnRwtBfizjDPDlhyp6LvNnXddk
-	 8KzNKTW7DwHKfO8W8lQ6HsYN5ljIm5MA9If6m66DrdTU+GtLtGrsmkyCBrSZsdsccr
-	 /SHG1VYkY8XKvjoGdIL/k04TkQn16S04Qh4w16So=
+	b=nDFuoJ0bSjYMmFflD24rgwutWJ49wran1h4xgCe1acoD09yYjgfCME4wTsc1cKtSl
+	 xxv7Wbr8qgBd9nCg4+UH+/PjANsbzVGZd3yGSfSCtyuY9bq2AbE4Ygz6Nc84TrmQ2t
+	 6JGptSQkckc7qBu+VpsqFocjd4EoFX4cOLyAoiSs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 71CC7F800B7;
-	Mon, 11 May 2020 06:40:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CDD94F8014C;
+	Mon, 11 May 2020 07:56:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D552DF80157; Mon, 11 May 2020 06:40:18 +0200 (CEST)
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com
- [IPv6:2607:f8b0:4864:20::b49])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5F97BF800E3
- for <alsa-devel@alsa-project.org>; Mon, 11 May 2020 06:40:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F97BF800E3
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="LQSUUpeP"
-Received: by mail-yb1-xb49.google.com with SMTP id e2so10251588ybm.19
- for <alsa-devel@alsa-project.org>; Sun, 10 May 2020 21:40:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=date:message-id:mime-version:subject:from:to:cc;
- bh=C7MZ5yH2EBM/QfNCjc4/3t6rGZaUYSu5xVho9M8iA1Q=;
- b=LQSUUpePxcNjOlt5h+sR5ABakGa5NZx0NKZz3ejyPx7pHQQg3Jar4l6gjZdcUqXwH9
- Ub+jWByPJjrxLmDVhnVMEYhWb01BnEENVyQs9XLdbyia0pg3tGWyVrL+7WVxbyCeJkg4
- AR+x2VZABXTKMj8tkp3px+C5MzRBuw1WcsmZ8Kv0vYZU1ZoPstpEfUD5CtHyR7j/zTkb
- Vf2Gkf44S/ddFWNk5wic6QcCfsa114wvDvmp8c+0Hvl1kuXBUF8n1qoCuIEDSX/HL4DN
- ElNiaHugmOUAYo7m+OQ+KUQVXvB/+ahLTFFryfgZ7XEfxPpZ1ZedgfKBSK2D0GOl6lwY
- 9wng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
- bh=C7MZ5yH2EBM/QfNCjc4/3t6rGZaUYSu5xVho9M8iA1Q=;
- b=SUrLagE6yA3RU87FFsbZ3J0T8X9SEIq2Hkm4tqHBUnGZYnM9j0TbqWwW1pRIUbkqxM
- iZ/q+Qa+IniDdYWUAi3r5YSn41e9iHhuxYNC4qgVu4PMbpKEBILQRFN83w0OOOE0kmfv
- KPLuNH8Fl7LF4RY+3yJRkgzz+i+VtUbVk06GkHKJDeus5vWmPRocf4KtwJMi4GCKO47z
- vyV+UMAbFCvw5bu6Nzo8l4+fcMUHv1Pnme8CgE8CyXf99eCKkFlCKG6k0cGiZ0GMxKAD
- pfGnkoGriIgEVgBPXAnBobD7mBl03xbImnBJn4of/AKY8yWVnF2HnSvSvxW0GxtbPHwH
- JCJQ==
-X-Gm-Message-State: AOAM531q7oX1QU8FwT6x3TMUql/bD1L2h6tj/mW3U2eQceXiIPHY3Eh4
- Ymd6M83RNRddWQTjLOxNNJDIhRFXSQM4
-X-Google-Smtp-Source: ABdhPJxNbXw1gOirRVLK+NVsQTYTbjgDoh82NnY2pzKgxgWowjtGP+dwP17WBQ8VQ3Q8YwgrDmml2DLCSTDo
-X-Received: by 2002:a25:d450:: with SMTP id m77mr2288500ybf.177.1589172005051; 
- Sun, 10 May 2020 21:40:05 -0700 (PDT)
-Date: Mon, 11 May 2020 12:40:00 +0800
-Message-Id: <20200511044000.86161-1-tzungbi@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.26.2.645.ge9eca65c58-goog
-Subject: [PATCH] ASoC: mediatek: mt8183-da7219: set headset button maps
-From: Tzung-Bi Shih <tzungbi@google.com>
-To: broonie@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Cc: tzungbi@google.com, alsa-devel@alsa-project.org
+ id CB0DCF80157; Mon, 11 May 2020 07:56:04 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 665B9F80107
+ for <alsa-devel@alsa-project.org>; Mon, 11 May 2020 07:55:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 665B9F80107
+Date: 11 May 2020 14:55:54 +0900
+X-IronPort-AV: E=Sophos;i="5.73,378,1583161200"; d="scan'208";a="46743655"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 11 May 2020 14:55:54 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 055254196E5C;
+ Mon, 11 May 2020 14:55:54 +0900 (JST)
+Message-ID: <875zd39frp.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH 00/17] ASoC: cleanup DAI/Component activity
+User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,52 +72,71 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Sets headset button maps.
 
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
----
- .../soc/mediatek/mt8183/mt8183-da7219-max98357.c | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
+Hi Mark
 
-diff --git a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-index 5b3dfa79b4ae..ffd7c931e7bb 100644
---- a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-@@ -6,11 +6,12 @@
- // Copyright (c) 2018 MediaTek Inc.
- // Author: Shunli Wang <shunli.wang@mediatek.com>
- 
-+#include <linux/input.h>
- #include <linux/module.h>
-+#include <linux/pinctrl/consumer.h>
-+#include <sound/jack.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
--#include <sound/jack.h>
--#include <linux/pinctrl/consumer.h>
- 
- #include "mt8183-afe-common.h"
- #include "../../codecs/da7219-aad.h"
-@@ -471,9 +472,18 @@ mt8183_da7219_max98357_headset_init(struct snd_soc_component *component)
- 	if (ret)
- 		return ret;
- 
-+	snd_jack_set_key(
-+		priv->headset_jack.jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
-+	snd_jack_set_key(
-+		priv->headset_jack.jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
-+	snd_jack_set_key(
-+		priv->headset_jack.jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
-+	snd_jack_set_key(
-+		priv->headset_jack.jack, SND_JACK_BTN_3, KEY_VOICECOMMAND);
-+
- 	da7219_aad_jack_det(component, &priv->headset_jack);
- 
--	return ret;
-+	return 0;
- }
- 
- static int mt8183_da7219_max98357_dev_probe(struct platform_device *pdev)
+This patch-set cleanups DAI/Component activity operation.
+I believe these works correctly, but maybe need some tests
+or deep review.
+[17/17] patch can be apply after [03/17] patch.
+
+Kuninori Morimoto (17):
+   1 ASoC: soc-dai: add snd_soc_dai_activity()
+   2 ASoC: use snd_soc_dai/component_activity()
+   3 ASoC: soc-dai: add snd_soc_component_activity()
+   4 ASoC: atomel: use snd_soc_dai/component_activity()
+   5 ASoC: bcm: use snd_soc_dai/component_activity()
+   6 ASoC: cirrus: use snd_soc_dai/component_activity()
+   7 ASoC: codecs: use snd_soc_dai/component_activity()
+   8 ASoC: fsl: use snd_soc_dai/component_activity()
+   9 ASoC: intel: use snd_soc_dai/component_activity()
+  10 ASoC: jz4740: use snd_soc_dai/component_activity()
+  11 ASoC: mediatek: use snd_soc_dai/component_activity()
+  12 ASoC: meson: use snd_soc_dai/component_activity()
+  13 ASoC: pxa: use snd_soc_dai/component_activity()
+  14 ASoC: ti: use snd_soc_dai/component_activity()
+  15 ASoC: uniphier: use snd_soc_dai/component_activity()
+  16 ASoC: cleanup dai / component active code
+  17 ASoC: soc-dai: add snd_soc_dai_stream_activity()
+
+ include/sound/soc-component.h                |  7 +---
+ include/sound/soc-dai.h                      |  5 ++-
+ sound/soc/atmel/atmel_ssc_dai.c              |  4 +--
+ sound/soc/bcm/bcm2835-i2s.c                  |  6 ++--
+ sound/soc/bcm/cygnus-ssp.c                   |  4 +--
+ sound/soc/cirrus/ep93xx-i2s.c                |  4 +--
+ sound/soc/codecs/adav80x.c                   |  4 +--
+ sound/soc/codecs/arizona.c                   |  2 +-
+ sound/soc/codecs/cs4271.c                    |  4 +--
+ sound/soc/codecs/madera.c                    |  2 +-
+ sound/soc/codecs/max98090.c                  |  6 ++--
+ sound/soc/codecs/tlv320aic23.c               |  2 +-
+ sound/soc/codecs/tlv320dac33.c               |  2 +-
+ sound/soc/codecs/uda1380.c                   |  2 +-
+ sound/soc/codecs/wl1273.c                    |  2 +-
+ sound/soc/codecs/wm8711.c                    |  2 +-
+ sound/soc/codecs/wm8753.c                    |  4 +--
+ sound/soc/dwc/dwc-i2s.c                      |  2 +-
+ sound/soc/fsl/fsl_esai.c                     |  2 +-
+ sound/soc/fsl/fsl_spdif.c                    |  4 +--
+ sound/soc/intel/atom/sst-mfld-platform-pcm.c | 14 ++++----
+ sound/soc/jz4740/jz4740-i2s.c                |  8 ++---
+ sound/soc/mediatek/mt8173/mt8173-afe-pcm.c   |  8 ++---
+ sound/soc/meson/axg-tdm-interface.c          |  2 +-
+ sound/soc/pxa/pxa-ssp.c                      |  8 ++---
+ sound/soc/pxa/pxa2xx-i2s.c                   |  2 +-
+ sound/soc/soc-compress.c                     |  4 +--
+ sound/soc/soc-core.c                         | 11 ++++---
+ sound/soc/soc-dai.c                          | 12 +++++++
+ sound/soc/soc-dapm.c                         |  8 ++---
+ sound/soc/soc-pcm.c                          | 34 ++++++++++----------
+ sound/soc/ti/davinci-mcasp.c                 |  2 +-
+ sound/soc/ti/omap-dmic.c                     |  4 +--
+ sound/soc/ti/omap-mcbsp.c                    |  4 +--
+ sound/soc/ti/omap-mcpdm.c                    |  8 ++---
+ sound/soc/uniphier/aio-cpu.c                 |  4 +--
+ 36 files changed, 105 insertions(+), 98 deletions(-)
+
 -- 
-2.26.2.645.ge9eca65c58-goog
+2.17.1
 
