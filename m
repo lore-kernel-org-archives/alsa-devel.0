@@ -2,95 +2,95 @@ Return-Path: <SRS0=FWLr=6Z=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3BEFC54E8F
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 21:28:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 000D8C47255
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 21:28:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 331232070B
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 21:28:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 80FE1206F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2020 21:28:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qmBhHjJe";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PFnxp1/j"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 331232070B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Shccb7OX";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ep7G1d5S"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 80FE1206F5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 944BB1666;
-	Mon, 11 May 2020 23:27:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 944BB1666
+	by alsa0.perex.cz (Postfix) with ESMTPS id E0AFC1612;
+	Mon, 11 May 2020 23:28:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E0AFC1612
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589232497;
-	bh=IYwWV2dDGl3mXZju5E9dZYNeos0WztVBOIRH6EphVAc=;
+	s=default; t=1589232531;
+	bh=ljoaQHBwZRHu55eF9o/cNmQXpqSs9ovlhMoT1Q+dd6M=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qmBhHjJecJ/sV9C2vN6Ppui8xyLmlU14HgQVuO0/AEmDnd2S6BBgEP2ZovsDeJYrY
-	 lza3GdP+7YXlr7BjJQRX5bt8dHcmhb5ld0z/f+pTwu7EXew2jLjsnd+F9jjTwujOzR
-	 jZgi7azHiXzOFAeAlhvEe67OWS61qpL58eJE2yxM=
+	b=Shccb7OXDU2zgZKiAQj7Xx3RZmbjZBaG/Y5ALPVONVHguo1/SvCPnpnfZTl+MqEGJ
+	 mKDxm5L3Igfp0+qRnRUjP+VenslLrZix+iuondbkx02xvUfRNjbHn8Ku9taI3QJk/c
+	 Z+2XatOql9jlCbNz9c04bs7sUhQY2DGlHNeeNQzw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 34E16F8031A;
-	Mon, 11 May 2020 23:21:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 11A96F8032A;
+	Mon, 11 May 2020 23:21:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7FC6CF802A8; Mon, 11 May 2020 23:20:56 +0200 (CEST)
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com
- [IPv6:2607:f8b0:4864:20::f42])
+ id E408DF802A2; Mon, 11 May 2020 23:20:56 +0200 (CEST)
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com
+ [IPv6:2607:f8b0:4864:20::f2c])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EC653F8014C
- for <alsa-devel@alsa-project.org>; Mon, 11 May 2020 23:20:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC653F8014C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 61018F801F2
+ for <alsa-devel@alsa-project.org>; Mon, 11 May 2020 23:20:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 61018F801F2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="PFnxp1/j"
-Received: by mail-qv1-xf42.google.com with SMTP id ee19so1884979qvb.11
- for <alsa-devel@alsa-project.org>; Mon, 11 May 2020 14:20:40 -0700 (PDT)
+ header.b="Ep7G1d5S"
+Received: by mail-qv1-xf2c.google.com with SMTP id di6so5291933qvb.10
+ for <alsa-devel@alsa-project.org>; Mon, 11 May 2020 14:20:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=6mOhmgwFwpfsy182LTdptBQdnrj6KEUVh7v0sY+ZhwE=;
- b=PFnxp1/jMlW7aCeiYMDMpOjBwVyljkmmtJNOn0tpShlzwcM6TtF8BkSIXJcEROrAOy
- bARU1KcpHxF0ovdjcNxTkvJq4be8EFVC/fM17TwE7PcarxmYWbt5VDMo5BH34QN1ssph
- sXt6LnA+KbUHdzLv12N8plhKdH88owczW2PUcgU/wNtUKCFmjtgrg/MIMQY6OUUsC2WL
- 0g/0ligkIU/1NI245ZTnd/iSiaabrfRFeu6dqiUj8WKmPwVdV2EgIM50VLTOXqP0y0gX
- 0Sb3y2i+E0j6VuNNUEzriqL+xmUpIQoZ8MSaMpBmcqwAvtmhUKiYIG5wzNW6tLSaYnD+
- TrYQ==
+ bh=O6yBAiNRwLbkpZxa9KOV+ZDmKElx0U2cviHhXRUQNGw=;
+ b=Ep7G1d5SttpTIYNaaMFt4Yt/l8e3A6Vbk7N/7wBzcfTqg7G2O2JkhosknzHXjmgTva
+ MYajep/fZH/13JRuuJNDp5CTOQUSo0j81bajvKE+AkVSbmp3WHdpZ/PdafRo4U6XTVAX
+ uLY4xPdTCnZu720jpiMz6+CXhiYuTg1+vzV+Q1wlSkqYtTC0NB0VHbP7kpUu/0A1uMUR
+ gpR98TisNS65622ijCI6ZJ0Vz1AdSagbtKHGNkg17Qdyixl4bLOM1imqOnLSViEKV+QH
+ c7BlnEoogNMCZzcSatPf/Iit51MehGMjXgypn8n1DJ0slVN1+hho+wpzduHav+5z0cxB
+ S91g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=6mOhmgwFwpfsy182LTdptBQdnrj6KEUVh7v0sY+ZhwE=;
- b=ouba1JZ7qlipX2vrpc0oNcLTLr33VBsIs1EluH1MFHa4xHTfW2OSLsCbhec6s5lEUv
- 4ttT12qqPMv4uOoTOuL7FUO102Dbpyi0lepwaEVBp8f1EjTuv3TXYWm4zGqpj/jE+4Jm
- LWVr0kQ/sLPdrKEtFcwKeuQ+qAqrA1u6c3cY2GSPghQ/rrnx94VHQzXpIotPvPgCT7H5
- wUSvcmB5f+eFbRdyge9yhzg6emwWGtTYBS7Yoo6gi+uuGej3R0ZSNi3JPIGrzec6tN8k
- ggxF0vNBPAmFRUmk8G64UYFVusVUSqOzm9cGO+2nIlfOF9zEBvuadUn7w/crEJU7mA5L
- PNfw==
-X-Gm-Message-State: AGi0PuYpcYfgG2AkvbQJPR4aitbeAF2lzcmSGBF9Jkpc0kxaj5ejR6+A
- 0MLTvH9hgPAAOO9BLzTO9mcCvzn+
-X-Google-Smtp-Source: APiQypLWft9a8GS8Bk3lrA6HzM7W8ZzHWOpr4xDZrw9frYi1/yoAevgHb+0hApiLJo7B7UmsyBgHMQ==
-X-Received: by 2002:a05:6214:7a7:: with SMTP id
- v7mr17796764qvz.27.1589232039537; 
- Mon, 11 May 2020 14:20:39 -0700 (PDT)
+ bh=O6yBAiNRwLbkpZxa9KOV+ZDmKElx0U2cviHhXRUQNGw=;
+ b=TJMEE/QzZWqY5SlTFM6+PUal88R2duDj6C1I0sahsAVBvOH1xZhgKHEaTKCkYIdPuX
+ CsC/CC4XJ09xZJWy14Z8WZuYpsi5gAcIF4T2VgQpK/gRAGrrzbaIjt0Lm55+c+0CUrIK
+ hVbJ7mGF86DRU+7qmmZ3KYwUOZmjME24wf1J8+6bGWtNpzcTRjHkJDEyR87GLNLF2Rto
+ UT6xn04Xo/7IU0XvYWVW05Xyt9eatO2TU7Cfel7kZdRx6eBwhsQZrAPUWe27FCs8jrr7
+ xvhMdq2YFB2yo6Ggyjkax/ZI5ukuHM2SckPMwuY9WjC53z9fP4ZTehouPsHWpHSpCwqk
+ lNcg==
+X-Gm-Message-State: AGi0PubeI8c1zrIw79Rdx4dmAnzuFPYjwTGPYPIV6z+Wp4J3tWzNRULw
+ UxDuAxjpjlTjoj2tgE3tDgdiSVaI
+X-Google-Smtp-Source: APiQypJOEP19nfM64wYRSD+Jiq58dgSsCQKiNrOXKs7WqX0sCv3wm631LWi/RRtl8qnEreoF9xtmkg==
+X-Received: by 2002:a05:6214:1152:: with SMTP id
+ b18mr5498493qvt.13.1589232040696; 
+ Mon, 11 May 2020 14:20:40 -0700 (PDT)
 Received: from tr4.amd.com (atlvpn.amd.com. [165.204.84.11])
- by smtp.gmail.com with ESMTPSA id c26sm9148691qkm.98.2020.05.11.14.20.38
+ by smtp.gmail.com with ESMTPSA id c26sm9148691qkm.98.2020.05.11.14.20.39
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 11 May 2020 14:20:38 -0700 (PDT)
+ Mon, 11 May 2020 14:20:40 -0700 (PDT)
 From: Alex Deucher <alexdeucher@gmail.com>
 X-Google-Original-From: Alex Deucher <alexander.deucher@amd.com>
 To: alsa-devel@alsa-project.org, broonie@kernel.org, vijendar.mukunda@amd.com,
  tiwai@suse.de
-Subject: [PATCH v2 13/14] ASoC: amd: RN machine driver using dmic
-Date: Mon, 11 May 2020 17:20:13 -0400
-Message-Id: <20200511212014.2359225-14-alexander.deucher@amd.com>
+Subject: [PATCH v2 14/14] ASoC: amd: enable build for RN machine driver
+Date: Mon, 11 May 2020 17:20:14 -0400
+Message-Id: <20200511212014.2359225-15-alexander.deucher@amd.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <20200511212014.2359225-1-alexander.deucher@amd.com>
 References: <20200511212014.2359225-1-alexander.deucher@amd.com>
@@ -115,131 +115,39 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 
-This patch adds Renoir Machine driver for dmic support.
+This patch enables build for RN machine driver.
 
 Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
+ sound/soc/amd/Kconfig         | 7 +++++++
+ sound/soc/amd/renoir/Makefile | 1 +
+ 2 files changed, 8 insertions(+)
 
-v2:
-- Removed redundant code
-
- sound/soc/amd/renoir/acp3x-rn.c | 106 ++++++++++++++++++++++++++++++++
- 1 file changed, 106 insertions(+)
- create mode 100644 sound/soc/amd/renoir/acp3x-rn.c
-
-diff --git a/sound/soc/amd/renoir/acp3x-rn.c b/sound/soc/amd/renoir/acp3x-rn.c
-new file mode 100644
-index 000000000000..069714035e95
---- /dev/null
-+++ b/sound/soc/amd/renoir/acp3x-rn.c
-@@ -0,0 +1,106 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+//
-+// Machine driver for AMD Renoir platform using DMIC
-+//
-+//Copyright 2020 Advanced Micro Devices, Inc.
+diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
+index 5f57a47382b4..77ffdb41bee5 100644
+--- a/sound/soc/amd/Kconfig
++++ b/sound/soc/amd/Kconfig
+@@ -42,3 +42,10 @@ config SND_SOC_AMD_RENOIR
+ 	depends on X86 && PCI
+ 	help
+ 	 This option enables ACP support for Renoir platform
 +
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+#include <linux/module.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <linux/io.h>
-+
-+#include "rn_acp3x.h"
-+
-+#define DRV_NAME "acp_pdm_mach"
-+
-+static int acp_pdm_hw_params(struct snd_pcm_substream *substream,
-+			     struct snd_pcm_hw_params *hw_params)
-+{
-+	return 0;
-+}
-+
-+static struct snd_soc_ops acp_pdm_ops = {
-+	.hw_params = acp_pdm_hw_params,
-+};
-+
-+static int acp_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	return 0;
-+}
-+
-+SND_SOC_DAILINK_DEF(acp_pdm,
-+		    DAILINK_COMP_ARRAY(COMP_CPU("acp_rn_pdm_dma.0")));
-+
-+SND_SOC_DAILINK_DEF(dmic_codec,
-+		    DAILINK_COMP_ARRAY(COMP_CODEC("dmic-codec.0",
-+						  "dmic-hifi")));
-+
-+SND_SOC_DAILINK_DEF(platform,
-+		    DAILINK_COMP_ARRAY(COMP_PLATFORM("acp_rn_pdm_dma.0")));
-+
-+static struct snd_soc_dai_link acp_dai_pdm[] = {
-+	{
-+		.name = "acp3x-dmic-capture",
-+		.stream_name = "DMIC capture",
-+		.ops = &acp_pdm_ops,
-+		.init = acp_init,
-+		.capture_only = 1,
-+		SND_SOC_DAILINK_REG(acp_pdm, dmic_codec, platform),
-+	},
-+};
-+
-+static struct snd_soc_card acp_card = {
-+	.name = "acp",
-+	.owner = THIS_MODULE,
-+	.dai_link = acp_dai_pdm,
-+	.num_links = 1,
-+};
-+
-+static int acp_probe(struct platform_device *pdev)
-+{
-+	int ret;
-+	struct acp_pdm *machine = NULL;
-+	struct snd_soc_card *card;
-+
-+	card = &acp_card;
-+	acp_card.dev = &pdev->dev;
-+
-+	platform_set_drvdata(pdev, card);
-+	snd_soc_card_set_drvdata(card, machine);
-+	ret = devm_snd_soc_register_card(&pdev->dev, card);
-+	if (ret) {
-+		dev_err(&pdev->dev,
-+			"snd_soc_register_card(%s) failed: %d\n",
-+			acp_card.name, ret);
-+		return ret;
-+	}
-+	return 0;
-+}
-+
-+static struct platform_driver acp_mach_driver = {
-+	.driver = {
-+		.name = "acp_pdm_mach",
-+		.pm = &snd_soc_pm_ops,
-+	},
-+	.probe = acp_probe,
-+};
-+
-+static int __init acp_audio_init(void)
-+{
-+	platform_driver_register(&acp_mach_driver);
-+	return 0;
-+}
-+
-+static void __exit acp_audio_exit(void)
-+{
-+	platform_driver_unregister(&acp_mach_driver);
-+}
-+
-+module_init(acp_audio_init);
-+module_exit(acp_audio_exit);
-+
-+MODULE_AUTHOR("Vijendar.Mukunda@amd.com");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:" DRV_NAME);
++config SND_SOC_AMD_RENOIR_MACH
++	tristate "AMD Renoir support for DMIC"
++	select SND_SOC_DMIC
++	depends on SND_SOC_AMD_RENOIR
++	help
++	 This option enables machine driver for DMIC
+diff --git a/sound/soc/amd/renoir/Makefile b/sound/soc/amd/renoir/Makefile
+index 43100515c7db..e4371932a55a 100644
+--- a/sound/soc/amd/renoir/Makefile
++++ b/sound/soc/amd/renoir/Makefile
+@@ -4,3 +4,4 @@ snd-rn-pci-acp3x-objs	:= rn-pci-acp3x.o
+ snd-acp3x-pdm-dma-objs	:= acp3x-pdm-dma.o
+ obj-$(CONFIG_SND_SOC_AMD_RENOIR)	 += snd-rn-pci-acp3x.o
+ obj-$(CONFIG_SND_SOC_AMD_RENOIR)	 += snd-acp3x-pdm-dma.o
++obj-$(CONFIG_SND_SOC_AMD_RENOIR_MACH)	+= acp3x-rn.o
 -- 
 2.25.4
 
