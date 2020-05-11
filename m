@@ -2,66 +2,76 @@ Return-Path: <SRS0=GrjN=62=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_SANE_2 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 490A0C47255
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 May 2020 01:13:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50B08C47255
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 May 2020 01:15:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C180A2070B
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 May 2020 01:13:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BF7D420708
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 May 2020 01:15:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hwspNhuq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C180A2070B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bNgw2BBe"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BF7D420708
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1EC9D846;
-	Tue, 12 May 2020 03:12:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1EC9D846
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1A459950;
+	Tue, 12 May 2020 03:14:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A459950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589246004;
-	bh=HFONYar99XDVWPvK/C9VlZiSJUk3jEcUn51dhTtMhgQ=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1589246101;
+	bh=Z/TcNKEa/6NcIaZq/U4IeraE28alwIBzAINMxlTm1hE=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hwspNhuq2yyHr7aYRSOp5pkIb7XF1w8KLsPYg+j/BZ0lGYGjN4Pyz6CYUQXxE3Pqt
-	 YaIZt0+8Gq+8d0hyD3hNr35/FQjnjzTBrHu04qR7Gl16lvBWhLjMk16LPrevRELFyg
-	 nZnUKcCWXxZmZ4A3S5DF7rAOrjJDDHkQ5QL9D0Pk=
+	b=bNgw2BBekzEpUKupHn/y9KSFbaRNIPEst2gVGzTYlOUkPEgCdT+FDCn181UsH49kB
+	 dJ/5SmTLn56yiRbxwYddi3T/YvOixMf/G+lmDxxqMUkwRhfSmugBywQmObsGrIW8Y4
+	 xhVznVXBT3fdpi8jRwMqMio7BeK0Nv9vvqcy1I94=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 76E4FF802E9;
-	Tue, 12 May 2020 01:54:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BA1D5F802D2;
+	Tue, 12 May 2020 00:42:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A8DDAF802F8; Tue, 12 May 2020 01:54:02 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 0F746F802EC
- for <alsa-devel@alsa-project.org>; Tue, 12 May 2020 01:53:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F746F802EC
-Date: 12 May 2020 08:53:50 +0900
-X-IronPort-AV: E=Sophos;i="5.73,381,1583161200"; d="scan'208";a="46808608"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 12 May 2020 08:53:50 +0900
-Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 9E587411671C;
- Tue, 12 May 2020 08:53:50 +0900 (JST)
-Message-ID: <87ftc681v5.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: Re: [PATCH 02/17] ASoC: use snd_soc_dai/component_activity()
-In-Reply-To: <d0850429f144f345864776afb59410693abfd33b.camel@linux.intel.com>
+ id DF342F802DB; Tue, 12 May 2020 00:42:57 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4CAEFF802C4
+ for <alsa-devel@alsa-project.org>; Tue, 12 May 2020 00:42:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4CAEFF802C4
+IronPort-SDR: ZbRo9fLKFIvZRre4GWOsP1YaT3LW9gU+aYkSbMWBirXFUZH10y/TPhXIHB8EAC6n6klpDsyAhg
+ UD5eHrysAS2g==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 May 2020 15:42:48 -0700
+IronPort-SDR: Semr7xDKJaeLTFp2AMVnyxcmV69e7biQ7dXaxkuU7uSBw/32lRc8+/lTlJPkIKfrpmx6lQ2Jxz
+ AxiJTpquCm6g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,381,1583222400"; d="scan'208";a="252718118"
+Received: from ajgalle-mobl.amr.corp.intel.com ([10.254.179.28])
+ by fmsmga008.fm.intel.com with ESMTP; 11 May 2020 15:42:48 -0700
+Message-ID: <8c0e4cc5f7e63e1cd379c3a39f6721ee0cf4c06a.camel@linux.intel.com>
+Subject: Re: [PATCH 01/17] ASoC: soc-dai: add snd_soc_dai_activity()
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown
+ <broonie@kernel.org>
+Date: Mon, 11 May 2020 15:42:47 -0700
+In-Reply-To: <874ksn9fqf.wl-kuninori.morimoto.gx@renesas.com>
 References: <875zd39frp.wl-kuninori.morimoto.gx@renesas.com>
- <8736879fqa.wl-kuninori.morimoto.gx@renesas.com>
- <d0850429f144f345864776afb59410693abfd33b.camel@linux.intel.com>
-User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+ <874ksn9fqf.wl-kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,96 +87,79 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Mon, 2020-05-11 at 14:56 +0900, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> 
+> Current snd_soc_runtime_action() is counting
+> dai->stream_active for Playback/Capture,
+> dai->active        for DAI
+> 
+> 	static void snd_soc_runtime_action(...)
+> 	{
+> 		...
+> 		for_each_rtd_dais(rtd, i, dai) {
+> 			dai->stream_active[stream] += action;
+> 			dai->active += action;
+> 			...
+> 		}
+> 	}
+> 
+> But, these are very verbose, because we can calculate
+> DAI activity from stream_activity.
+> 
+> This patch adds snd_soc_dai_activity() which calculate
+> DAI activity from DAI stream_activity.
+> 
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+>  include/sound/soc-dai.h |  2 +-
+>  sound/soc/soc-dai.c     | 12 ++++++++++++
+>  2 files changed, 13 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+> index 2a0a5af1c1ae..887575d59e31 100644
+> --- a/include/sound/soc-dai.h
+> +++ b/include/sound/soc-dai.h
+> @@ -137,7 +137,7 @@ int snd_soc_dai_set_tristate(struct snd_soc_dai
+> *dai, int tristate);
+>  /* Digital Audio Interface mute */
+>  int snd_soc_dai_digital_mute(struct snd_soc_dai *dai, int mute,
+>  			     int direction);
+> -
+> +int snd_soc_dai_activity(struct snd_soc_dai *dai);
+>  
+>  int snd_soc_dai_get_channel_map(struct snd_soc_dai *dai,
+>  		unsigned int *tx_num, unsigned int *tx_slot,
+> diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
+> index 8e5fe012aa1d..aa0826136f57 100644
+> --- a/sound/soc/soc-dai.c
+> +++ b/sound/soc/soc-dai.c
+> @@ -305,6 +305,18 @@ int snd_soc_dai_digital_mute(struct snd_soc_dai
+> *dai, int mute,
+>  }
+>  EXPORT_SYMBOL_GPL(snd_soc_dai_digital_mute);
+>  
+> +int snd_soc_dai_activity(struct snd_soc_dai *dai)
+> +{
+> +	int stream, active;
+> +
+> +	active = 0;
+> +	for_each_pcm_streams(stream)
+> +		active += dai->stream_active[stream];
+Morimoto-san,
 
-Hi Ranjani
+snd_soc_dai has both stream_active and active. In this function, you're
+checking stream_active. Do you think, snd_soc_dai_stream_usage_count()
+makes for a better name?
 
-Thank you for reviewing
+Thanks,
+Ranjani
+> +
+> +	return active;
+> +}
+> +EXPORT_SYMBOL_GPL(snd_soc_dai_activity);
+> +
+>  int snd_soc_dai_hw_params(struct snd_soc_dai *dai,
+>  			  struct snd_pcm_substream *substream,
+>  			  struct snd_pcm_hw_params *params)
 
-> > -	if (!cpu_dai->active)
-> > +	if (!snd_soc_dai_activity(cpu_dai))
-> I have a feeling this is probably incorrect. snd_soc_dai_activity()
-> checks for stream_active count which is different from snd_soc_dai's
-> active member, isnt it?
-
-OK, let me check.
-The original code is like this
-
-	static void snd_soc_runtime_action(struct snd_soc_pcm_runtime *rtd,
-					   int stream, int action)
-	{
-		...
-		for_each_rtd_dais(rtd, i, dai) {
-			dai->stream_active[stream] += action;
-			dai->active += action;
-			...
-		}
-	}
-
-	void snd_soc_runtime_activate(...)
-	{
-		snd_soc_runtime_action(rtd, stream, 1);
-	}
-
-	void snd_soc_runtime_deactivate(...)
-	{
-		snd_soc_runtime_action(rtd, stream, -1);
-	}
-
-
-Basically, ASoC calls
-snd_soc_runtime_activate()   for activate count up, and,
-snd_soc_runtime_deactivate() for activate count down.
-
-I think snd_soc_dai_activity() is correct, *so far*.
-
-Exceptions are
-soc-dapm.c :: snd_soc_dai_link_event_pre_pmu()
-soc-dapm.c :: snd_soc_dai_link_event()
-
-	snd_soc_dai_link_event_pre_pmu(...)
-	{
-		...
-		snd_soc_dapm_widget_for_each_source_path(w, path) {
-			...
-			source->active++;
-		}
-		...
-		snd_soc_dapm_widget_for_each_sink_path(w, path) {
-			...
-			sink->active++;
-		}
-		...
-	}
-
-	snd_soc_dai_link_event(...)
-	{
-		...
-		snd_soc_dapm_widget_for_each_source_path(w, path) {
-			...
-			source->active--;
-			...
-		}
-
-		snd_soc_dapm_widget_for_each_sink_path(w, path) {
-			...
-			sink->active--;
-			...
-		}
-		...
-	}
-	
-Only these directly access to dai->active, *without* thinking stream_active.
-I think it should use snd_soc_runtime_activate() / snd_soc_runtime_deactivate().
-My patch cares it... Oops !!
-I thought my patch cares it, but not enough (= [02/17]).
-
-Can you agree below ?
-	1) use runtime_activate()/deactivate() at above functions.
-	2) apply my original patches on top of 1)
-	   then, update git-log to explain above
-
-Thank you for your help !!
-
-Best regards
----
-Kuninori Morimoto
