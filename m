@@ -2,81 +2,67 @@ Return-Path: <SRS0=GrjN=62=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 36B54C54E4A
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 May 2020 09:41:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 319E3C54E4A
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 May 2020 10:08:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AD795206A3
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 May 2020 09:41:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A112F206B8
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 May 2020 10:08:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lfwkQoTI";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="EmQaEgm7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AD795206A3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FHaDfBCd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A112F206B8
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=wanadoo.fr
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F2F6E1675;
-	Tue, 12 May 2020 11:41:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F2F6E1675
+	by alsa0.perex.cz (Postfix) with ESMTPS id 04006167A;
+	Tue, 12 May 2020 12:07:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 04006167A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589276511;
-	bh=p0H+1A9ZtxK8/3CANSemNUB3JdiDXVfouvOzKgQzVM8=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=lfwkQoTIHFb65puckXZaBUpIycl7o2Sk07ZcLVG2t5H51TCkffFn1natDQRhE98p6
-	 j1q1x+UIOuqgsbhtWRRpKAS+XOUGAoax1FGv3atBde2AFJE8ezYWkPgYBSRcux/844
-	 KTI/TN/ORLvaa+WqKB6m+yCqce0Qu+uydzaDKzZY=
+	s=default; t=1589278088;
+	bh=NUQmGpTpZtcLfzxkyqreEuq4NJbIqv1WAoNZKAJeS9Q=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=FHaDfBCd3Zt5bxs0a66BH/8rVk7poHMT9o2F6/8d64YEpd+bcF+Sg9KsuB+WN29ra
+	 yJcMhmfYL0MOTCwwkU51jWr7imqmy1MiDo2tQFCP76iUHFS9eu7M2pQ/nQLchVcJJ4
+	 /ryOTzAcgBzi2htPitFLKDRLCVhj9guz+1aIaz7g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 79D5FF800E3;
-	Tue, 12 May 2020 11:41:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8540BF800AA;
+	Tue, 12 May 2020 12:07:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DE307F80112; Tue, 12 May 2020 11:40:57 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id C433DF80112; Tue, 12 May 2020 12:07:15 +0200 (CEST)
+Received: from smtp.smtpout.orange.fr (smtp02.smtpout.orange.fr
+ [80.12.242.124])
+ (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E798BF800AA
- for <alsa-devel@alsa-project.org>; Tue, 12 May 2020 11:40:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E798BF800AA
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="EmQaEgm7"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 82F2F206A3;
- Tue, 12 May 2020 09:40:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1589276452;
- bh=p0H+1A9ZtxK8/3CANSemNUB3JdiDXVfouvOzKgQzVM8=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=EmQaEgm7TTpSUNS3aPcHTk4HrhcAl4HH5Zz4oYgZujO3r1uTQ8jmPdubQCsJkmuGU
- lDqndTVtS3aejmhVBwfoQfy1nVoAwgP0wkO/5s1ritqdJ0Xqo+hexhrzhsSkRTh/3+
- qNBYVMld6gTLO3vcvEuaSugnnb7rP1+Pe1XtJcKI=
-Date: Tue, 12 May 2020 10:40:49 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Yongbo Zhang <giraffesnn123@gmail.com>
-Subject: Re: [PATCH v2] SoC: rsnd: add interrupt support for SSI BUSIF buffer
-Message-ID: <20200512094049.GA5110@sirena.org.uk>
-References: <20200511160731.GA3618@sirena.org.uk>
- <20200512093003.28332-1-giraffesnn123@gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2D178F800AA
+ for <alsa-devel@alsa-project.org>; Tue, 12 May 2020 12:07:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D178F800AA
+Received: from localhost.localdomain ([93.22.148.175]) by mwinf5d78 with ME
+ id dm782200V3nHaxZ03m78v6; Tue, 12 May 2020 12:07:11 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 12 May 2020 12:07:11 +0200
+X-ME-IP: 93.22.148.175
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+ linus.walleij@linaro.org, lee.jones@linaro.org
+Subject: [PATCH] ASoC: ux500: mop500: Fix some refcounted resources issues
+Date: Tue, 12 May 2020 12:07:05 +0200
+Message-Id: <20200512100705.246349-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="LZvS9be/3tNcYl/X"
-Content-Disposition: inline
-In-Reply-To: <20200512093003.28332-1-giraffesnn123@gmail.com>
-X-Cookie: The only perfect science is hind-sight.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Chen Li <licheng0822@thundersoft.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Content-Transfer-Encoding: 8bit
+Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+ alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,42 +78,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+There are 2 issues here:
+   - if one of the 'of_parse_phandle' fails, calling 'mop500_of_node_put()'
+     is a no-op because the 'mop500_dai_links' structure has not been
+     initialized yet, so the referenced are not decremented
+   - The reference stored in 'mop500_dai_links[i].codecs' is refcounted
+     only once in the probe and must be decremented only once.
 
---LZvS9be/3tNcYl/X
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fixes: 39013bd60e79 ("ASoC: Ux500: Dispose of device nodes correctly")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ sound/soc/ux500/mop500.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-On Tue, May 12, 2020 at 05:30:03PM +0800, Yongbo Zhang wrote:
+diff --git a/sound/soc/ux500/mop500.c b/sound/soc/ux500/mop500.c
+index 2873e8e6f02b..cdae1190b930 100644
+--- a/sound/soc/ux500/mop500.c
++++ b/sound/soc/ux500/mop500.c
+@@ -63,10 +63,11 @@ static void mop500_of_node_put(void)
+ {
+ 	int i;
+ 
+-	for (i = 0; i < 2; i++) {
++	for (i = 0; i < 2; i++)
+ 		of_node_put(mop500_dai_links[i].cpus->of_node);
+-		of_node_put(mop500_dai_links[i].codecs->of_node);
+-	}
++
++	/* Both links use the same codec, which is refcounted only once */
++	of_node_put(mop500_dai_links[0].codecs->of_node);
+ }
+ 
+ static int mop500_of_probe(struct platform_device *pdev,
+@@ -81,7 +82,9 @@ static int mop500_of_probe(struct platform_device *pdev,
+ 
+ 	if (!(msp_np[0] && msp_np[1] && codec_np)) {
+ 		dev_err(&pdev->dev, "Phandle missing or invalid\n");
+-		mop500_of_node_put();
++		for (i = 0; i < 2; i++)
++			of_node_put(msp_np[i]);
++		of_node_put(codec_np);
+ 		return -EINVAL;
+ 	}
+ 
+-- 
+2.25.1
 
-> Acked-by: Mark Brown <broonie@kernel.org>
-
-I didn't send an Acked-by...
-
-> Changes since v1:
-> - Fix build errors for sound/soc/sh/rcar/ssi.c
->=20
-> Changes since v0 (thanks for the feedback Morimoto):
-> - Replace the value of a register variable
-> ---
-
-As covered in submitting-patches.rst the inter-version changelog should
-come after the --- so they get automatically dropped by the tools when
-the patches are applied.
-
---LZvS9be/3tNcYl/X
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl66byAACgkQJNaLcl1U
-h9BJbgf+LkSOsLJXqaPOOA4t0WY7+ZFUXwq3yyiBXkB0RwzQJW6ncVLUwgCPce5E
-Dpr80WMMGZNFbJ8OywdMDqNucSc0Ivqan0lUrueq95EBHouOA0f4Ll4ehbovwg6J
-rfaY8bR+jJPGKX0XD8G8gnxvwDb5JxcjawIxJZfHFZIMzgTRmY5l/8OUIL3oAJBS
-ov+YTx5WKj6ngCzHx8cs0Sj/xn09uX+a41Qy/w5D4bTSJA0UwypN0nmH+hCseB8e
-GoT8N/Pl0l5t/WPyuAem5cy+GdH3t6CPZVHjvIHoTrSePrnE5Bwy2P9K1Rje2mKK
-VnLYgSxlm4HclknEmSHNbkXe//PE5w==
-=fVhb
------END PGP SIGNATURE-----
-
---LZvS9be/3tNcYl/X--
