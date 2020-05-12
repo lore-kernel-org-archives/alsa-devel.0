@@ -2,87 +2,75 @@ Return-Path: <SRS0=GrjN=62=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C86EFCA90AF
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 May 2020 16:44:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12495CA90AF
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 May 2020 16:45:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4F7FC206B9
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 May 2020 16:44:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8648D206B9
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 May 2020 16:45:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="L82RGhyX";
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ueizuCk9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4F7FC206B9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nru01oS8";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="nASl9Chi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8648D206B9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AAC0716B8;
-	Tue, 12 May 2020 18:43:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AAC0716B8
+	by alsa0.perex.cz (Postfix) with ESMTPS id D9D3616D3;
+	Tue, 12 May 2020 18:45:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D9D3616D3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589301866;
-	bh=aM5qmxgzabgWYNZwKOX5Fo63lOOg5hV66Ppxhqm2ozs=;
-	h=From:Date:Subject:To:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=L82RGhyXDM/kMDm+uCG5KvpIbZx2tuW1LGV2Q5yd4z5+dkWC0Yjv6Dq0Yub4APeL4
-	 U4LBpxBiEYS8aJsq7C2F6cyajEKN4AIoDaeGsWP+SByd5nOEO9b/blXZ9bqY6qJ5Sj
-	 +q24Tbc747bbQKDGbp8or7kljgJc4L01c5ae8Wf4=
+	s=default; t=1589301950;
+	bh=Trwo38OmVBD2TlImzx3c+TlSZBTuSuR0SffTOf0cwTA=;
+	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=nru01oS8sSi5rse5bw3EWzOgWumYPhgDoMWZ6XXlJ3hU5+O1MERnqiIwEhPsgpGJV
+	 8LFgygOVzPNPt15imfoGCqctX1k9nLP7k3sf0RQlxKjstZObmK5JIsJ09QjW+Gkd5D
+	 wLhSPS34MiP0MsjxAQ1zpnD274al2oijmr0IVQmQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 199B2F800B7;
-	Tue, 12 May 2020 18:43:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5D954F80158;
+	Tue, 12 May 2020 18:45:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 46F93F8014C; Tue, 12 May 2020 18:43:28 +0200 (CEST)
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com
- [IPv6:2607:f8b0:4864:20::236])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 09155F801DB; Tue, 12 May 2020 18:44:53 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3620EF800AA
- for <alsa-devel@alsa-project.org>; Tue, 12 May 2020 18:43:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3620EF800AA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0ECCDF800AA
+ for <alsa-devel@alsa-project.org>; Tue, 12 May 2020 18:44:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0ECCDF800AA
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="ueizuCk9"
-Received: by mail-oi1-x236.google.com with SMTP id c124so18571972oib.13
- for <alsa-devel@alsa-project.org>; Tue, 12 May 2020 09:43:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:from:date:message-id:subject:to;
- bh=E/GITzgNQWPv3AeU6m1DJUdktJ6XPw1zlBPGKlEVQL8=;
- b=ueizuCk9m2qYVWHMdsAsKopkEKMfyeMrbuoCw2CpR5sMexeqyyA/YNgXOVpivTJnHa
- kjheqKoL5UUAt0h2HcSEstSD2exJmwzHmHcpevAlDgpDrmnmy1EyVC+tSH6SAEk3BXGF
- zbGVPGqOGV1BKvOA7xrCeqbD5M/V27CRC32yFfCiPm+F6f0+Ya+RLa9V8h+IUU1sp35a
- plYJmrQRBndnuN6616+JAOnPrdqb+EGGE0ktqLHFTR7JzggGCgAhGuv8TH4jvxsbjbBC
- BaUDCBdWzmJf7mh7Ri1oYbx+tiptG/VzcIkBMiC/aXo3UeUYfxuUZWY+UE4JtgyrwjBZ
- LONw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
- bh=E/GITzgNQWPv3AeU6m1DJUdktJ6XPw1zlBPGKlEVQL8=;
- b=j1+Q3EvRGzEfzZ/OGGboStuSCpWyHGhvh1aRSdZnmsBQJYYAPNgmtr5kQ6w7DR0ulJ
- k2fRuncNBzoTVhPQ8Zri7YSR6229bJ3dtDtjaHLOEJr1agGBdiTqFZf3gwUS1cnIAJEs
- 28poqNJHjkci0eSQYM/9Wz/7GBbqLXIGbWfXXXqF5s/5qF9zUQq1yZG8yquIW+CmxF7X
- H7+GVOw6K4mM84ENJqFMTGrJw47Ln2qQq6WOCYhniXgKdt+ZV95fTfeDKh52zpp+tw7X
- hsOxwK0xWJRDIrm7eimhi3g0s5j5AyRnjj4zEJJmzI6AIx6sP4+P37rYoBQ6m+T+LXU0
- cuEg==
-X-Gm-Message-State: AGi0Pua/5PxvfC9KJPAaw3QkGNqLZeLy3Ps1l4a3R7bF8hEPUNjW811C
- YP+A0nM20OIkZFGfKbI2QHVuBXSgVzqeRG45hIM=
-X-Google-Smtp-Source: APiQypLfQLwKNasT5yCOj9dheqgH/S3JlBfwbjJtzQSbgTj650gMD5tsw6B4MZaa/zlC76qnyi8Raj5npPX6cDHTUoA=
-X-Received: by 2002:aca:efc5:: with SMTP id n188mr5768724oih.64.1589301802525; 
- Tue, 12 May 2020 09:43:22 -0700 (PDT)
-MIME-Version: 1.0
-From: Subhashini Rao Beerisetty <subhashbeerisetty@gmail.com>
-Date: Tue, 12 May 2020 22:13:10 +0530
-Message-ID: <CAPY=qRRFV4SpNO5pb9vF=U95dbA_gN2ngP+vm34884NMk5q8gQ@mail.gmail.com>
-Subject: sound over USB
-To: kernelnewbies <kernelnewbies@kernelnewbies.org>,
- alsa-devel@alsa-project.org, linux-usb@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="nASl9Chi"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id B1198206B9;
+ Tue, 12 May 2020 16:44:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1589301887;
+ bh=Trwo38OmVBD2TlImzx3c+TlSZBTuSuR0SffTOf0cwTA=;
+ h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+ b=nASl9ChizvQCSHZxqM5SKnNBNtsxJze1bOhEBm/r+ek96uRhxFd21jPbl4IkHLDtY
+ g/4XQcCzQEALbK6PoUnVZG1pZ0itOTInxIIrK99bvUOF9VbhlUUi/jqwiISyUndL0j
+ EemoVeSFjbqGZkFTHccsawGsW9qlKRal6xO7BUYc=
+Date: Tue, 12 May 2020 17:44:44 +0100
+From: Mark Brown <broonie@kernel.org>
+To: heiko@sntech.de, Johan Jonker <jbx6244@gmail.com>
+In-Reply-To: <20200507113238.7904-1-jbx6244@gmail.com>
+References: <20200507113238.7904-1-jbx6244@gmail.com>
+Subject: Re: [PATCH v1] ASoC: rockchip-i2s: add description for rk3308
+Message-Id: <158930188455.55827.16068992221946601782.b4-ty@kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
+ linux-rockchip@lists.infradead.org, robh+dt@kernel.org,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,63 +86,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
- Hi all,
+On Thu, 7 May 2020 13:32:38 +0200, Johan Jonker wrote:
+> The description below is already in use for rk3308.dtsi,
+> but was somehow never added to a document, so add
+> "rockchip,rk3308-i2s", "rockchip,rk3066-i2s"
+> for i2s nodes on a rk3308 platform to rockchip-i2s.yaml.
+> One of the rk3308 i2s nodes also has a different dma layout,
+> so change that as well.
 
-In my Linux machine, I connected the plantronics usb headset with mic
-and I see(with the help of dmesg) that this device detected.
+Applied to
 
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.8
 
+Thanks!
 
-[116676.507868] usb 2-2: new full-speed USB device number 5 using xhci_hcd
-[116676.923445] usb 2-2: New USB device found, idVendor=047f, idProduct=c012
- [116676.927091] usb 2-2: New USB device strings: Mfr=1, Product=2,
-SerialNumber=0
- [116676.934252] usb 2-2: Product: Plantronics .Audio 628 USB
- [116676.941445] usb 2-2: Manufacturer: Plantronics
- [116676.945731] usb 2-2: ep 0x84 - rounding interval to 64
-microframes, ep desc says 80 microframes
- [116677.078071] hidraw: raw HID events driver (C) Jiri Kosina
- [116677.159669] usbcore: registered new interface driver usbhid
- [116677.161686] usbhid: USB HID core driver
- [116677.175458] input: Plantronics Plantronics .Audio 628 USB as
-/devices/pci0000:00/0000:00:14.0/usb2/2-2/2-2:1.3/0003:047F:C012.0001/input/input4
- [116677.234588] plantronics 0003:047F:C012.0001:
-input,hiddev0,hidraw0: USB HID v1.00 Device [Plantronics Plantronics
-.Audio 628 USB] on usb-0000:00:14.0-2/input3
- [116677.281756] usbcore: registered new interface driver snd-usb-audio
+[1/1] ASoC: rockchip-i2s: add description for rk3308
+      commit: ab436c974e08d9254999d7a84d86b1d4c1749230
 
- The following nodes are present in the /dev/snd
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-$ ls -l /dev/snd/
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-total 0
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-drwxr-xr-x 2 root root       60 May 12 11:32 by-id
-
-drwxr-xr-x 2 root root       60 May 12 11:32 by-path
-
-crw-rw---- 1 root audio 116,  2 May 12 11:32 controlC1
-
-crw-rw---- 1 root audio 116,  4 May 12 11:32 pcmC1D0c
-
-crw-rw---- 1 root audio 116,  3 May 12 11:32 pcmC1D0p
-
-crw-rw---- 1 root audio 116,  1 May 12 11:32 seq
-
-crw-rw---- 1 root audio 116, 33 May 12 11:32 timer
-
-
-
-What are all these devices present in /dev/snd
-
-How do I use it for playing and recording an audio?
-
-Basically first I want to gain knowledge on set of test cases I can
-run on ALSA and then learn ALSA kernel modules stuff including
-snd_usb_audio mdule.
-
-So please guide me by providing related documentation/Steps.
-
-
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
 Thanks,
+Mark
