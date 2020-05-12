@@ -2,70 +2,85 @@ Return-Path: <SRS0=GrjN=62=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0971CC54E8B
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 May 2020 10:33:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E3D3BC54E8B
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 May 2020 10:34:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 77BB0206B9
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 May 2020 10:33:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 73028206DD
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 May 2020 10:34:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="n1k4xG1E"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 77BB0206B9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ivii+ZRG";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="lUBRFPsW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 73028206DD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D9A05167C;
-	Tue, 12 May 2020 12:32:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D9A05167C
+	by alsa0.perex.cz (Postfix) with ESMTPS id B2A6C1690;
+	Tue, 12 May 2020 12:33:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2A6C1690
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589279616;
-	bh=tQV12XdmmxRAYTNYU/a528g3IbaAYoF0XV7RuSDqvfg=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=n1k4xG1EA3HMzxobhhpwf6LnVgvX5wBirdPn/pSZsnq3cvte17n4qA94Fc08IKDgN
-	 NFi48Qkb4ZlGWTt9lg1/7L6DcDBJrvNL5vsQBaY+obrq8uY2QfksGRbR/J4YrYv+pR
-	 oZ3VIy580ESfPjiYROJZc9j7MYQqf7uvwgCkEMwU=
+	s=default; t=1589279669;
+	bh=iOtZ2eVyp6uykbgj4qii/+7h1t5fhrWXPOp64vb39Pk=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Ivii+ZRGWfj3U3qkIQ0UDiybxJkPeylrV8GXr4SpCeeOeewcJ1tjAF//ncbBzcarZ
+	 MqC0te1yblW89N+mEsrBO5OO8BYGE5EtKU1KFmjidLkUSebhj2XFY4AQ46J9s3vhsh
+	 K5vG/aS2F4gvl95J5jRsxvQZ8OposuPMYiaa/luM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 70ADDF80112;
-	Tue, 12 May 2020 12:32:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9A5C0F8015A;
+	Tue, 12 May 2020 12:33:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ADAA2F8014C; Tue, 12 May 2020 12:32:45 +0200 (CEST)
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+ id E3390F801DB; Tue, 12 May 2020 12:33:23 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 445E4F8014C
+ for <alsa-devel@alsa-project.org>; Tue, 12 May 2020 12:33:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 445E4F8014C
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="lUBRFPsW"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AA3A7F800E3
- for <alsa-devel@alsa-project.org>; Tue, 12 May 2020 12:32:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA3A7F800E3
-Received: from inva021.nxp.com (localhost [127.0.0.1])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 72DE0200F2E;
- Tue, 12 May 2020 12:32:37 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
- [165.114.16.14])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id E6ABC200F8B;
- Tue, 12 May 2020 12:32:32 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 0D4E9402BC;
- Tue, 12 May 2020 18:32:26 +0800 (SGT)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
- festevam@gmail.com, broonie@kernel.org, alsa-devel@alsa-project.org,
- lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com
-Subject: [PATCH] ASoC: fsl_asrc: Set ASR76K and ASR56K based on processing
- clock
-Date: Tue, 12 May 2020 18:22:59 +0800
-Message-Id: <1589278979-31008-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+ by mail.kernel.org (Postfix) with ESMTPSA id 1D009206DD;
+ Tue, 12 May 2020 10:33:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1589279598;
+ bh=iOtZ2eVyp6uykbgj4qii/+7h1t5fhrWXPOp64vb39Pk=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=lUBRFPsWwF1B/9EwmQHd1AszTkgFtKc1UlbdnkEZkL8PWqW/9u4peAjCF+tt6E6/k
+ E2WpIRHdC4aCOqXDTK9uUqPZlo4WtTgZZUCSs3QizExQM/zrBSNpO0mlLX1X4Nxi/Y
+ nxYlTjJe8u1e3cUxYpbX6qxs71/8IbdwTgrMks64=
+Date: Tue, 12 May 2020 11:33:16 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Steve Lee <steves.lee.maxim@gmail.com>
+Subject: Re: [PATCH 2/2] ASoC: max98390: Added Amplifier Driver
+Message-ID: <20200512103316.GB5110@sirena.org.uk>
+References: <20200509031919.9006-1-steves.lee@maximintegrated.com>
+ <20200511110346.GE8216@sirena.org.uk>
+ <CABff4NQXs622x1X6ZvNABHNZoTMS57f4Y5sdo1Cng3JeTgboCw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="gatW/ieO32f1wygP"
+Content-Disposition: inline
+In-Reply-To: <CABff4NQXs622x1X6ZvNABHNZoTMS57f4Y5sdo1Cng3JeTgboCw@mail.gmail.com>
+X-Cookie: The only perfect science is hind-sight.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, ryan.lee.maxim@gmail.com,
+ ckeepax@opensource.cirrus.com, steves.lee@maximintegrated.com,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, krzk@kernel.org,
+ lgirdwood@gmail.com, nuno.sa@analog.com, geert@linux-m68k.org, dmurphy@ti.com,
+ shumingf@realtek.com, Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+ rf@opensource.wolfsonmicro.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,49 +96,64 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The processing clock is different for platforms, so it is better
-to set ASR76K and ASR56K based on processing clock, rather than
-hard coding the value for them.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Signed-off-by: Mihai Serban <mihai.serban@nxp.com>
----
- sound/soc/fsl/fsl_asrc.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+--gatW/ieO32f1wygP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index 067a54ab554f..ca926915068f 100644
---- a/sound/soc/fsl/fsl_asrc.c
-+++ b/sound/soc/fsl/fsl_asrc.c
-@@ -858,6 +858,8 @@ static const struct regmap_config fsl_asrc_regmap_config = {
-  */
- static int fsl_asrc_init(struct fsl_asrc *asrc)
- {
-+	unsigned long ipg_rate;
-+
- 	/* Halt ASRC internal FP when input FIFO needs data for pair A, B, C */
- 	regmap_write(asrc->regmap, REG_ASRCTR, ASRCTR_ASRCEN);
- 
-@@ -875,11 +877,14 @@ static int fsl_asrc_init(struct fsl_asrc *asrc)
- 	regmap_update_bits(asrc->regmap, REG_ASRTFR1,
- 			   ASRTFR1_TF_BASE_MASK, ASRTFR1_TF_BASE(0xfc));
- 
--	/* Set the processing clock for 76KHz to 133M */
--	regmap_write(asrc->regmap, REG_ASR76K, 0x06D6);
--
--	/* Set the processing clock for 56KHz to 133M */
--	return regmap_write(asrc->regmap, REG_ASR56K, 0x0947);
-+	/*
-+	 * Set the period of the 76KHz and 56KHz sampling clocks based on
-+	 * the ASRC processing clock.
-+	 * On iMX6, ipg_clk = 133MHz, REG_ASR76K = 0x06D6, REG_ASR56K = 0x0947
-+	 */
-+	ipg_rate = clk_get_rate(asrc->ipg_clk);
-+	regmap_write(asrc->regmap, REG_ASR76K, ipg_rate / 76000);
-+	return regmap_write(asrc->regmap, REG_ASR56K, ipg_rate / 56000);
- }
- 
- /**
--- 
-2.21.0
+On Tue, May 12, 2020 at 06:13:05PM +0900, Steve Lee wrote:
+> On Mon, May 11, 2020 at 8:03 PM Mark Brown <broonie@kernel.org> wrote:
 
+> > > +static const char * const max98390_current_limit_text[] = {
+> > > +     "0.00A", "0.50A", "1.00A", "1.05A", "1.10A", "1.15A", "1.20A", "1.25A",
+> > > +     "1.30A", "1.35A", "1.40A", "1.45A", "1.50A", "1.55A", "1.60A", "1.65A",
+
+> > This looks like it should be in DT too.
+
+> Since this control  is needed while running system according to system
+> battery situation.
+> I'd keep this mixer for further use.
+
+That's...  interesting for a current limit, and sounds like it would
+have issues for the common case use of current limits to protect the
+hardware.
+
+> > > +static int max98390_dsm_calib_get(struct snd_kcontrol *kcontrol,
+> > > +             struct snd_ctl_elem_value *ucontrol)
+> > > +{
+> > > +     struct snd_soc_component *component =
+> > > +             snd_soc_kcontrol_component(kcontrol);
+> > > +
+> > > +     dev_warn(component->dev, "Get dsm_calib_get not supported\n");
+> > > +
+> > > +     return 0;
+> > > +}
+
+> > Just don't implement the operation if you can't implement it.
+
+> If this not exist as dummy operation and all mixer was not working and
+> could not implement better idea.
+
+Could you be more specific about what you mean by "not working" or how
+simply not initializing the value returned fixes things please?
+
+> Could you consider it as with warn message ?
+
+No, if there's a problem here we should fix it properly.
+
+--gatW/ieO32f1wygP
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl66e2sACgkQJNaLcl1U
+h9CQogf/R4loaD+oS7rnJp6kgm9vB0jnWzpi3rqYFNStSnuHqRBItJeYQU5jCjuT
+A+pMPMF6GX70+4mnWRA7Lj54J5JDWqGX39pARZYckUdT82q/xwi5EJdjPN18wqQn
+sP/GFgc+qi8It3N+2HJOXtHuUO+MhG12PpRVJ87lH3JVzM1pmOFsBjsb82DXTQL0
+lmq8EqokSzxiY4M1b7bNjIyEqI6Lm53IGo16zfqapaNdjbvN14Y7/Ma4oVcBUhXA
+0fezppgi5AzD8HgWAVhPHxfaCCUrIjW2mE8c31K6oHma6SkvXT+Ys045NXX4YUJw
+qz/dy7x/0rIvjJKMcOFFXHYU/KPRPw==
+=msPs
+-----END PGP SIGNATURE-----
+
+--gatW/ieO32f1wygP--
