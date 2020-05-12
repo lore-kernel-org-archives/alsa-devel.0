@@ -2,82 +2,80 @@ Return-Path: <SRS0=GrjN=62=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8508ACA90AF
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 May 2020 18:05:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B370CA90AF
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 May 2020 18:11:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ED52920673
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 May 2020 18:05:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8022320673
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 May 2020 18:11:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QQ6Y6D3z";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="tNpXKNUE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ED52920673
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QFuoNb8l"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8022320673
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4E85116D7;
-	Tue, 12 May 2020 20:04:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E85116D7
+	by alsa0.perex.cz (Postfix) with ESMTPS id E166016C2;
+	Tue, 12 May 2020 20:10:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E166016C2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589306741;
-	bh=yc6CNqoYkvluvBeb9WQbgl44Xk4YuO/iW2Z1m/hzklE=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1589307058;
+	bh=mZeel27Wd65xJxBlkroBukYBJTQJThkLSOG09DLgr1M=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QQ6Y6D3zRIP0LqIGASVkvHLOo4C2PZDwmLjacWiiUf8d+v+pZpoI4oXA/mafs3hy3
-	 Oxu3D/gOF+5Z/JarsuMJ0mXwfarUN1V+mf5x+l47LxJamAZ6+vnTBRSKJnIoYuYJK1
-	 lxHtAiEGkax15piokg8LdrfVYIcTZtiIQP0lf8qM=
+	b=QFuoNb8lia2Oq/NAYpndp1iJHPEl1bYh6oLu+ZKwk9TOyZGJK0Q9cuhN0oHsnh2rQ
+	 6/rb/XxR2cEmIx4a/XCVurmf6Ew6OPuawJMHMrnWOke6YcO1N0YLse4FaDLTZhYXz5
+	 lVznk38ItRlBAHjI/PTWGFPqOVrCqHIxK4FVepOo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B4BECF80158;
-	Tue, 12 May 2020 20:04:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5DB20F800E3;
+	Tue, 12 May 2020 20:10:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7DA4BF8015A; Tue, 12 May 2020 20:04:48 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E2ED9F80112
- for <alsa-devel@alsa-project.org>; Tue, 12 May 2020 20:04:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2ED9F80112
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="tNpXKNUE"
-Received: from embeddedor (unknown [189.207.59.248])
+ id BE43AF8014C; Tue, 12 May 2020 20:10:05 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 9F5F120673;
- Tue, 12 May 2020 18:04:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1589306684;
- bh=yc6CNqoYkvluvBeb9WQbgl44Xk4YuO/iW2Z1m/hzklE=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=tNpXKNUEIE5dTnGo7j/WYOPw9ts4Hy4qorJF73kuDy5KaME/ONw/6KEAKx6T5GI96
- Tru/3jCFPgUUstfBELSRe1dKKjcpXXZ/QXX/YINyeNntLAevi8kAit6ZbmDmJebN5r
- pPODNn38dzmbRXbjGrUsrPbWiNu5j1U6kenTEueU=
-Date: Tue, 12 May 2020 13:09:18 -0500
-From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RESEND] ASoC: Intel: Skylake: Replace zero-length array
- with flexible-array
-Message-ID: <20200512180918.GF4897@embeddedor>
-References: <20200511174647.GA17318@embeddedor>
- <158930188455.55827.14390851374340231617.b4-ty@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 689A1F800E3
+ for <alsa-devel@alsa-project.org>; Tue, 12 May 2020 20:09:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 689A1F800E3
+IronPort-SDR: PuW8fx39vehGjNL8YruK7muci+SXTRBrfu9yHC17LVcX04q6GHQ/SeW0MesQjkRIpIhvUTi1m2
+ NjaebVkbspOg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 May 2020 11:09:56 -0700
+IronPort-SDR: eIV3tl+sN+QukeaZmNiqkQ/Vocvjm+dRR/yFi88O5jDhzKS9Ix4ZkJuM/NlLKeiUl4PDEW4mT+
+ 26qRhQWuoUUw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,384,1583222400"; d="scan'208";a="340986383"
+Received: from hqiao-mobl1.ccr.corp.intel.com (HELO [10.254.215.24])
+ ([10.254.215.24])
+ by orsmga001.jf.intel.com with ESMTP; 12 May 2020 11:09:54 -0700
+Subject: Re: [PATCH] ASoC: topology: log all headers being parsed
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org
+References: <20200509082248.2757-1-yang.jie@linux.intel.com>
+ <75fb69cc-830f-432a-c724-7449309f2eba@linux.intel.com>
+ <36aab97b-a45a-de39-dea1-a1aa84c5a6d9@linux.intel.com>
+ <b00ab72b-df95-b9dc-eb94-4491b8074413@linux.intel.com>
+From: Keyon Jie <yang.jie@linux.intel.com>
+Message-ID: <f99bc5a7-981d-3ae8-a81c-1d4120280c5f@linux.intel.com>
+Date: Wed, 13 May 2020 02:10:40 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <158930188455.55827.14390851374340231617.b4-ty@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Jie Yang <yang.jie@linux.intel.com>,
- Takashi Iwai <tiwai@suse.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>
+In-Reply-To: <b00ab72b-df95-b9dc-eb94-4491b8074413@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,14 +91,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, May 12, 2020 at 05:44:50PM +0100, Mark Brown wrote:
-> 
-> Applied to
-> 
->    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.8
-> 
 
-Thanks, Mark.
+On 5/13/20 12:22 AM, Pierre-Louis Bossart wrote:
+> 
+> 
+>> I can add a function to reconcile the two list, but since we already 
+>> have "tplg->pass != SOC_TPLG_PASS_xxx" check in each xxx_load(), do 
+>> you suggest to moving the logging inside these xxx_load() to reduce 
+>> the redundant check?
+> 
+> yes, you could add a static inline sof_tplg_log_hdr(hdr); after each 
+> pass check, sounds good to me.
 
---
-Gustavo
+OK, let me drop this and will send a new one soon.
+
+Thanks,
+~Keyon
