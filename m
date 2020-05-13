@@ -2,81 +2,110 @@ Return-Path: <SRS0=BSyU=63=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02AE6C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 May 2020 17:33:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F0BADC433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 May 2020 17:40:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 28EAB2053B
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 May 2020 17:33:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2686320659
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 May 2020 17:40:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iajsOuai";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="xEvS/dWb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 28EAB2053B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VxsCedGO";
+	dkim=pass (2048-bit key) header.d=aeam.us header.i=@aeam.us header.b="KDkRFRPX";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="kTIVhiru"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2686320659
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=aeam.us
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DDE5D1615;
-	Wed, 13 May 2020 19:32:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DDE5D1615
+	by alsa0.perex.cz (Postfix) with ESMTPS id BB3381607;
+	Wed, 13 May 2020 19:39:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BB3381607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589391215;
-	bh=c5W9rpD2+UW166Uji2V1vo4DwDd8jq/A5/RA+lqaeOA=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1589391614;
+	bh=FLhLi5p0zwZDMSjvsmJOwqV+jKR3r1G2QOQIVpV/ZHc=;
+	h=In-Reply-To:References:Date:From:To:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iajsOuaiXMaCSiqH+dpZiTDF08E1pJdDQrbMkhN69QG8ApiPG6ppRNMqF6X2vZYgs
-	 31o/pefiDoKLg5cCGqgHddhZKO599JmfJJAJNkRAM8b8IjN8BQzQmBlVEdwvE39Ggo
-	 gcv+hbuHgWgKwBtt7HjQ0TbOxS1Ue/Cj/uztYPIM=
+	b=VxsCedGOb3HlXdI/Za/pAkLXeqGi3CIO7n4rhcokspORF8xl9/pGNFT8R6awkpf0i
+	 Kx6HhHkvdyCDpn3+zi12118I5CyUg8tNC77czli56eOizN7a8LW8MkvSZINuh36Lrc
+	 M9T4MaepwOICNeBdseZNvElzOhVZNlZCBJHSi3UE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 48319F8022D;
-	Wed, 13 May 2020 19:32:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DEC35F8022D;
+	Wed, 13 May 2020 19:39:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F3644F80247; Wed, 13 May 2020 19:32:40 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id 4C595F80247; Wed, 13 May 2020 17:23:15 +0200 (CEST)
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com
+ [64.147.123.25])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 17DE1F800BD
- for <alsa-devel@alsa-project.org>; Wed, 13 May 2020 19:32:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17DE1F800BD
+ by alsa1.perex.cz (Postfix) with ESMTPS id B740DF800BD
+ for <alsa-devel@alsa-project.org>; Wed, 13 May 2020 17:23:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B740DF800BD
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="xEvS/dWb"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id CEC622053B;
- Wed, 13 May 2020 17:32:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1589391154;
- bh=c5W9rpD2+UW166Uji2V1vo4DwDd8jq/A5/RA+lqaeOA=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=xEvS/dWbRyHtWlK3l/oGbVdx56XevYH1jTt0hMLnyX4/m+Aow4Q38GA3cw5/TY5c3
- k3EPy/1b02NyJiPHWx6bctoA6uFOD9fMnVNzJ3Kc/HCOMrHSugXPypnW2YbhsfqXbp
- cbujCVqTMXaI4vg+JpFD8prueEPyO5ecgFVIpKYI=
-Date: Wed, 13 May 2020 18:32:30 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Dan Murphy <dmurphy@ti.com>
-Subject: Re: [PATCH] ASoC: tlv320adcx140: Add controls for PDM clk and edge
-Message-ID: <20200513173230.GQ4803@sirena.org.uk>
-References: <20200513144746.14337-1-dmurphy@ti.com>
- <20200513153243.GO4803@sirena.org.uk>
- <d2e3741e-ba06-7578-b5f3-2af75e1e33c7@ti.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="5AmtYbcgdBTTPS58"
-Content-Disposition: inline
-In-Reply-To: <d2e3741e-ba06-7578-b5f3-2af75e1e33c7@ti.com>
-X-Cookie: Long life is in store for you.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com,
- lgirdwood@gmail.com
+ dkim=pass (2048-bit key) header.d=aeam.us header.i=@aeam.us
+ header.b="KDkRFRPX"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="kTIVhiru"
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
+ by mailout.west.internal (Postfix) with ESMTP id 9AB5E738;
+ Wed, 13 May 2020 11:23:06 -0400 (EDT)
+Received: from imap21 ([10.202.2.71])
+ by compute7.internal (MEProxy); Wed, 13 May 2020 11:23:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aeam.us; h=
+ mime-version:message-id:in-reply-to:references:date:from:to
+ :subject:content-type; s=fm1; bh=EKgBPAFq/YzpK6kpbwJl7Z5MErlNp9u
+ Wq1xHQJulkPg=; b=KDkRFRPXiJEqmsHqpJwifxD3z4gqY0w2nCjBlAPCdYCyNIu
+ 6wWlEL5neYgAqX8RV0lzxAXPBdJtC98E3hY5MsvbzgmXNVr6n8O0HtL7c6SWpa6g
+ KR15BuIVAAbAVsPmjLRaNb+O5YKos2sRYg1rJyudOx/5WWmYNaEXWkd25KVJo9iP
+ dxVqQ/rzvl7hRcp6nU9LoLyW4o/8HDA6e2xkgLv7DthXkV2/p/7fj0pgXVDRAFdl
+ I/y1RUWMJgMaiINNPT1Md/y5i1o1uD1509LvmT6WVUlNte0vBKEdfz2CIR6FFbev
+ Wvokbjp2YYgQCrEcbq5iWT4CD/Acco/xD6nCadw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to:x-me-proxy
+ :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=EKgBPA
+ Fq/YzpK6kpbwJl7Z5MErlNp9uWq1xHQJulkPg=; b=kTIVhiruzDF5OSeLjEGl50
+ wkLwBydsrYONmAy15XTTQWZRtXPma8kzzc4dly514rVPJ/SdztWaECEmN9KgPXII
+ 0If01ZdPq7a3YAQ/N5JeAPg/oyZyfjKP/DsreeMZFAKili2pBNZFGNMAkcfTyWIc
+ MUcoGBq8rnMFXFvd9fPsufbbg3OQSKlnnWT/Gp33RGMjTZTZYH7G5uT1lfP7b5Gn
+ 1F9U9ykEzBOipterFWz7xP3BVhaMyW/u5BVYiftHMUDrUUP3wVOBV0GwPRIMHnV3
+ DYGcYTRq6uScO+mOMT1gaAd16A6UgaVPiDNs151NUbNMjJLUHDzBbRkwQxJlw8nw
+ ==
+X-ME-Sender: <xms:2BC8XpqwGD6mcIvPSLVZIa7JP5MCAHJCotHpJ5pOrPzOUKjnXQbUqA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrleeggdekjecutefuodetggdotefrodftvf
+ curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+ uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+ fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedfufhiugcu
+ ufhprhihfdcuoehsihgusegrvggrmhdruhhsqeenucggtffrrghtthgvrhhnpeevgefhve
+ evteetfeetkeejjeehudffffffhfeuffelhfeuffdufeduleejfeeugfenucevlhhushht
+ vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsihgusegrvggrmhdruh
+ hs
+X-ME-Proxy: <xmx:2BC8XrqpG0E26YnVW1xRsNE_crK7cloHsWds_WnKpdqUKP3UgHhDXQ>
+ <xmx:2BC8XmO4HE7xq5bU2S2eTqBW3dSHk9KzY2LNSJCLWp3ER5jAMMCclg>
+ <xmx:2BC8Xk7gCioPcL6mUQdxEmUYFMiJdwpf_ompI40CuxuKnxyamP6Ujg>
+ <xmx:2hC8Xthe1TNOzfl1Gp9wr4t2p3zWB-mNwHYIiEv8X0az7T6ILGiEvQ>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+ id 3C39E66008C; Wed, 13 May 2020 11:23:04 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.3.0-dev0-413-g750b809-fmstable-20200507v1
+Mime-Version: 1.0
+Message-Id: <bb16e374-3d9f-427c-8470-3542dc697fdb@www.fastmail.com>
+In-Reply-To: <CAPY=qRRFV4SpNO5pb9vF=U95dbA_gN2ngP+vm34884NMk5q8gQ@mail.gmail.com>
+References: <CAPY=qRRFV4SpNO5pb9vF=U95dbA_gN2ngP+vm34884NMk5q8gQ@mail.gmail.com>
+Date: Wed, 13 May 2020 10:22:18 -0500
+From: "Sid Spry" <sid@aeam.us>
+To: "Subhashini Rao Beerisetty" <subhashbeerisetty@gmail.com>,
+ kernelnewbies <kernelnewbies@kernelnewbies.org>, alsa-devel@alsa-project.org, 
+ linux-usb@vger.kernel.org
+Subject: Re: sound over USB
+Content-Type: text/plain
+X-Mailman-Approved-At: Wed, 13 May 2020 19:39:22 +0200
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,42 +121,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Tue, May 12, 2020, at 11:43 AM, Subhashini Rao Beerisetty wrote> 
+>
+> How do I use it for playing and recording an audio?
+> 
+> Basically first I want to gain knowledge on set of test cases I can
+> run on ALSA and then learn ALSA kernel modules stuff including
+> snd_usb_audio mdule.
+> 
+> So please guide me by providing related documentation/Steps.
+> 
 
---5AmtYbcgdBTTPS58
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Hi, searching for an ALSA tutorial will get you far. However on a modern Linux distribution you will likely want to target pulseaudio. There are other libraries like RtAudio or PortAudio that may be easier to use and are cross platform.
 
-On Wed, May 13, 2020 at 12:16:03PM -0500, Dan Murphy wrote:
-> On 5/13/20 10:32 AM, Mark Brown wrote:
+ALSA seems to give the most reliable results when enumerating audio devices. This can be done when pulseaudio is installed. The pulseaudio results are harder to interpret.
 
-> > Are these (especially the clock and polarity) things that are going to
-> > vary at runtime?  I'd have expected these to come from the hardware
-> > rather than being something that could usefully change.
+In my experience, and not necessarily targeted at you, I have experienced massive difficulties getting RtAudio and PortAudio working in a reproducible way. ALSA is the most reliable but an unusual configuration, and pulseaudio is a hot complicated mess.
 
-> Some microphone support low power modes that use a slower clock.
-> Polarity will probably not change at run-time, but clock speed can change to
-> move mics from low power/low-resolution to higher power/high-resolution
-> mode.
 
-> So polarity can be made hardware specific but clocks should be configurable.
-
-> I can break these out into separate patches if you want.
-
-Please, and make the bits that can't usefully vary DT properties.
-
---5AmtYbcgdBTTPS58
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl68Ly4ACgkQJNaLcl1U
-h9CN9gf+LkILaGICghjpyYtgNi8Z1pw1uWaWndqzZEEguZbVV7lq3S55zJEgKHkG
-SEmCM4aDbuFfodDBs0RVwFZMfdCik6RgsT5rZCUev3geNx/uUGF/XiQ9xFCAXuLM
-PMuhkRked9SPFeJB0sYEJMkYMJxqkCciMNP33zmgr+zCSQeUPwhBCy0OSi8rf8wn
-LViBXCeaSV894LtQGThe+I+KPvI8kQTGW8O1nIZu+fedQqy8bi3YDy0O/Xh/s+7u
-qDUpYHACSE4fxtBAWvgEUVKVcd5oCapyixQ46e6RbsGStKUdpHhdF3VpVBOcq6jt
-g1i790FIk3cQ/QxupbQEmwo62lvntg==
-=tAtH
------END PGP SIGNATURE-----
-
---5AmtYbcgdBTTPS58--
+For what it's worth, the sound API on Linux is so pointlessly complex that I have, in the past, created a custom USB driver to avoid going through the sound API. It was easier to use libusb and get raw samples.
