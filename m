@@ -2,89 +2,79 @@ Return-Path: <SRS0=BSyU=63=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ED595C433E5
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 May 2020 15:15:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77241C433E1
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 May 2020 15:33:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B8B3F207BA
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 May 2020 14:38:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4518620690
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 May 2020 15:33:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="X238O4qu";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="U14KrHHU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B8B3F207BA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="n4UCry3m";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="n+9kSdXR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4518620690
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 003F01607;
-	Wed, 13 May 2020 16:37:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 003F01607
+	by alsa0.perex.cz (Postfix) with ESMTPS id 32A861654;
+	Wed, 13 May 2020 17:33:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32A861654
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589380720;
-	bh=h+SoyBekSKISkqys7t9OLIbUrQYEV2mRE86BLHJBVU0=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=X238O4quyWzc/RirdixFPYjq9RSdwPGV/dmgCdbSfJ1Fhk4QQhqH4VRnJc27DVLCK
-	 VT7I5YKJzchVMG8XugdJVNJWOlW3lBXIOdueF4cafsoeFR0QAR58rCqRi19qri2Hfe
-	 GYfloTuYup4VlU23A/kT22hWZP2gLzPSYZgc8/jY=
+	s=default; t=1589384034;
+	bh=C/N9FIfCZHMh9EGxSyQqk1iZZmo+/7mzHg2e3Ia0L1w=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=n4UCry3mMhekYwxwj3Xd0XdfRgoyO1Jg16OMCv8Up0ez7VEhywXznNPqHypkIMJwf
+	 c+yZIKiSoS+15GkNUT+uqncw2tlTkaFlYWQa7tc/dL0c4837toxA619Xd8EpddtSYa
+	 n4P1Ohv+2oAgnuPQuF1g54CAxrvEBZnVvYkclyTI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 72C6EF8022D;
-	Wed, 13 May 2020 16:37:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8AFDBF800B7;
+	Wed, 13 May 2020 17:33:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BCB31F80247; Wed, 13 May 2020 16:37:44 +0200 (CEST)
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+ id 856DCF80247; Wed, 13 May 2020 17:32:53 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B6F72F800BD
+ for <alsa-devel@alsa-project.org>; Wed, 13 May 2020 17:32:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6F72F800BD
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="n+9kSdXR"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 39E76F800B7
- for <alsa-devel@alsa-project.org>; Wed, 13 May 2020 16:37:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39E76F800B7
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="U14KrHHU"
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04DEbZsx007038;
- Wed, 13 May 2020 09:37:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1589380655;
- bh=y/YaegT2DGD/8Lmf/IfgyqvQ89iKHw+Iptrkg/MbCp8=;
- h=From:To:CC:Subject:Date;
- b=U14KrHHUWdqyXt9cQFRAWWnBCTwWA3fq1gBPyh6YvsRL/TQ8LZHwL39ZpFxTepJ2x
- mQRD+DuxYXLhuWxqp3cvq6KkUKbw5Tp/DmZV5c4k+G5O58YdpMHd4BAw+cPU6oefGn
- CdqyoXHULLcn46pyVoZx12+YCgkMesPkjM+PO3DI=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04DEbYoG129497
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Wed, 13 May 2020 09:37:34 -0500
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 13
- May 2020 09:37:34 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 13 May 2020 09:37:34 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04DEbYNx077984;
- Wed, 13 May 2020 09:37:34 -0500
-From: Dan Murphy <dmurphy@ti.com>
-To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
- <tiwai@suse.com>
-Subject: [PATCH] ASoC: tlv320adcx140: Fix bias config values
-Date: Wed, 13 May 2020 09:28:07 -0500
-Message-ID: <20200513142807.11802-1-dmurphy@ti.com>
-X-Mailer: git-send-email 2.26.2
+ by mail.kernel.org (Postfix) with ESMTPSA id 45EF520671;
+ Wed, 13 May 2020 15:32:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1589383966;
+ bh=C/N9FIfCZHMh9EGxSyQqk1iZZmo+/7mzHg2e3Ia0L1w=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=n+9kSdXRBx0dDZtEKjZGv+Ow0KyRX21TIcUGnkTr1KCuxteg0DhsOusf2FJrjyKp1
+ YyHEYc/jYpi7s3nxCpF3LuZpjY8K1BilGi2VUQlNmoaNN3/QQbdvsyAOEwtZy1oruu
+ fc0to2v+l7mTA4oAkS2STP57F8VP99saKHxtXRQc=
+Date: Wed, 13 May 2020 16:32:43 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Dan Murphy <dmurphy@ti.com>
+Subject: Re: [PATCH] ASoC: tlv320adcx140: Add controls for PDM clk and edge
+Message-ID: <20200513153243.GO4803@sirena.org.uk>
+References: <20200513144746.14337-1-dmurphy@ti.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Dan Murphy <dmurphy@ti.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="gqEssfNGWsEa4HfM"
+Content-Disposition: inline
+In-Reply-To: <20200513144746.14337-1-dmurphy@ti.com>
+X-Cookie: Long life is in store for you.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com,
+ lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,81 +90,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The device tree binding declares the ti,mic-bias-source and the
-ti,vref-source properties as u32.  The code reads them as u8 which is
-incorrect.  Since the device tree binding indicates them as u32 the
-conde needs to be updated to read u32.
 
-In addition the bias source needs to be shifted 4 bits to
-correctly write the register.
+--gqEssfNGWsEa4HfM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Fixes: 37bde5acf040 ("ASoC: tlv320adcx140: Add the tlv320adcx140 codec
-driver family")
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
----
- sound/soc/codecs/tlv320adcx140.c | 13 +++++++------
- sound/soc/codecs/tlv320adcx140.h |  1 +
- 2 files changed, 8 insertions(+), 6 deletions(-)
+On Wed, May 13, 2020 at 09:47:46AM -0500, Dan Murphy wrote:
 
-diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv320adcx140.c
-index 0f713efde046..1d7d7b34a46e 100644
---- a/sound/soc/codecs/tlv320adcx140.c
-+++ b/sound/soc/codecs/tlv320adcx140.c
-@@ -739,11 +739,12 @@ static int adcx140_codec_probe(struct snd_soc_component *component)
- {
- 	struct adcx140_priv *adcx140 = snd_soc_component_get_drvdata(component);
- 	int sleep_cfg_val = ADCX140_WAKE_DEV;
--	u8 bias_source;
--	u8 vref_source;
-+	u32 bias_source;
-+	u32 vref_source;
-+	u8 bias_cfg;
- 	int ret;
- 
--	ret = device_property_read_u8(adcx140->dev, "ti,mic-bias-source",
-+	ret = device_property_read_u32(adcx140->dev, "ti,mic-bias-source",
- 				      &bias_source);
- 	if (ret)
- 		bias_source = ADCX140_MIC_BIAS_VAL_VREF;
-@@ -754,7 +755,7 @@ static int adcx140_codec_probe(struct snd_soc_component *component)
- 		return -EINVAL;
- 	}
- 
--	ret = device_property_read_u8(adcx140->dev, "ti,vref-source",
-+	ret = device_property_read_u32(adcx140->dev, "ti,vref-source",
- 				      &vref_source);
- 	if (ret)
- 		vref_source = ADCX140_MIC_BIAS_VREF_275V;
-@@ -765,7 +766,7 @@ static int adcx140_codec_probe(struct snd_soc_component *component)
- 		return -EINVAL;
- 	}
- 
--	bias_source |= vref_source;
-+	bias_cfg = bias_source << ADCX140_MIC_BIAS_SHIFT | vref_source;
- 
- 	ret = adcx140_reset(adcx140);
- 	if (ret)
-@@ -785,7 +786,7 @@ static int adcx140_codec_probe(struct snd_soc_component *component)
- 
- 	ret = regmap_update_bits(adcx140->regmap, ADCX140_BIAS_CFG,
- 				ADCX140_MIC_BIAS_VAL_MSK |
--				ADCX140_MIC_BIAS_VREF_MSK, bias_source);
-+				ADCX140_MIC_BIAS_VREF_MSK, bias_cfg);
- 	if (ret)
- 		dev_err(adcx140->dev, "setting MIC bias failed %d\n", ret);
- out:
-diff --git a/sound/soc/codecs/tlv320adcx140.h b/sound/soc/codecs/tlv320adcx140.h
-index 6d055e55909e..69de52d473f4 100644
---- a/sound/soc/codecs/tlv320adcx140.h
-+++ b/sound/soc/codecs/tlv320adcx140.h
-@@ -116,6 +116,7 @@
- #define ADCX140_MIC_BIAS_VAL_VREF_1096	1
- #define ADCX140_MIC_BIAS_VAL_AVDD	6
- #define ADCX140_MIC_BIAS_VAL_MSK GENMASK(6, 4)
-+#define ADCX140_MIC_BIAS_SHIFT		4
- 
- #define ADCX140_MIC_BIAS_VREF_275V	0
- #define ADCX140_MIC_BIAS_VREF_25V	1
--- 
-2.26.2
+> +static const char * const pdmclk_text[] = {
+> +	"2.8224 MHz", "1.4112 MHz", "705.6 kHz", "5.6448 MHz"
+> +};
+> +
+> +static SOC_ENUM_SINGLE_DECL(pdmclk_select_enum, ADCX140_PDMCLK_CFG, 0,
+> +			    pdmclk_text);
+> +
+> +static const struct snd_kcontrol_new pdmclk_div_controls[] = {
+> +	SOC_DAPM_ENUM("PDM Clk Divider Select", pdmclk_select_enum),
+> +};
+> +
+> +static const char * const pdm_edge_text[] = {
+> +	"Negative", "Positive"
+> +};
 
+Are these (especially the clock and polarity) things that are going to
+vary at runtime?  I'd have expected these to come from the hardware
+rather than being something that could usefully change.
+
+--gqEssfNGWsEa4HfM
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl68ExsACgkQJNaLcl1U
+h9AYXwf8CDQMAxRVDvKQhd4vXEmLmaggMSdkYS9R7GwjxYhFwSWmXTNjDbM2lgot
+uBF+G/YhxOy96eCpN+DenbicG+no7Vu/JmzeyrlPGVH7Oks9mdENb63rvnLjnyLg
+GWM3GCrqbCwEN2IWbuQvytenhGLwliYh8tFSSoEk/y7nhc0n8uVHK+ifBnBk3sBs
+8Hs4KO+LIP+Q2DOjSJmTmbbNrZY8X5nIYtMdvbLPNSYSjAsutzCFlMi151V514sP
+f0Ui1rhafy5ekQkFRZRCrPjs6Zg4MtMmYN245ROgnuD/UuPi6g1ZSnzohkXB9A3g
+JP04uB7C/9qlvOJkktKcLRWEhifElA==
+=Ts3k
+-----END PGP SIGNATURE-----
+
+--gqEssfNGWsEa4HfM--
