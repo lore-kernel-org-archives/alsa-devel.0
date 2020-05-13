@@ -2,76 +2,76 @@ Return-Path: <SRS0=BSyU=63=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E82C3C2D0F6
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 May 2020 02:45:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 139A9C2D0F6
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 May 2020 02:46:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 696CE206E5
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 May 2020 02:45:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9589520714
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 May 2020 02:46:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Hf2VzOpC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 696CE206E5
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="g2iWp7jl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9589520714
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BC75B950;
-	Wed, 13 May 2020 04:44:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC75B950
+	by alsa0.perex.cz (Postfix) with ESMTPS id C90F015E2;
+	Wed, 13 May 2020 04:45:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C90F015E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589337915;
-	bh=v0kEQhLdT7FVnFxjgKOmMGfDWAHbax/YJldtStEgrWk=;
+	s=default; t=1589337968;
+	bh=ry+j5NcEWKM13zl6G4jgjY1b+QfNpKTXmSKtWjjlNR4=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Hf2VzOpCgUGYD6TRV/OKBeEBC95Jrx3ZFvQrB8Mds+ap7d/0tQpoaK4IWMvkkYj7p
-	 neOWU830bhz+6tVIrv6sprsd/meoaE88ywpiAaspxNaqePM/zVAOKVzktcPKTGo9Ru
-	 Mfy960bz3U09ipbEYsU6Q4zHg2TuKgqDJV6aozxk=
+	b=g2iWp7jlXIuQiI1JTsrkd06uJwrEKUTniOkEoAVuDSk0pLvyWwMp8epwt9+MEdVWL
+	 BW34F4sNLacLgffIYUCivYJfe3jkXwVrXVU75FcvROvqO37Ky+/RjImCJ0J6CApP/A
+	 9KEPEscm0GalCoOC8PYWNMdTPwKBDNvo1Z/zs8A0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 426A6F8022D;
-	Wed, 13 May 2020 04:44:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 95D32F80254;
+	Wed, 13 May 2020 04:44:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EBA04F80253; Wed, 13 May 2020 04:44:22 +0200 (CEST)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ id 33F32F80247; Wed, 13 May 2020 04:44:24 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 72166F800E3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 767D8F8022D
  for <alsa-devel@alsa-project.org>; Wed, 13 May 2020 04:44:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72166F800E3
-IronPort-SDR: 9DInigo6NiH5Fsfx5MMZAU8gH3wrLx+M+gj85kNdtRe5gJ6s+4eKvLPwZrqRsoGQe6vzpSYru2
- bTe1wcVYeIKQ==
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 767D8F8022D
+IronPort-SDR: 5HMMYYdGmMLAPor6jQt/5EmA19RU94YXJd92w+gbrr0C61YwsA2cD1xBBpuS9kjdC2IfmZMsQ8
+ AcrbmW1yuHZA==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  12 May 2020 19:44:12 -0700
-IronPort-SDR: VgJhAFyk7jqkq1LTmDAaCIDTeLhFZxo3J1WfoET14CTdjADkiRKEIkly0Zx0svTZoPttO+vOLc
- vZkc+4Ct8J0g==
+IronPort-SDR: aigzlOVqht9xezyIQRpupR4Elt1GdewL0aSUtVdkmh2LuF3UCJ5JlJ9cW/Mt/PhZgiuKEMYIW5
+ DoXrQRDc/0Og==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,385,1583222400"; d="scan'208";a="251100839"
+X-IronPort-AV: E=Sophos;i="5.73,385,1583222400"; d="scan'208";a="371764582"
 Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
- by orsmga007.jf.intel.com with ESMTP; 12 May 2020 19:44:11 -0700
+ by fmsmga001.fm.intel.com with ESMTP; 12 May 2020 19:44:11 -0700
 Received: from kbuild by lkp-server01 with local (Exim 4.89)
  (envelope-from <lkp@intel.com>)
- id 1jYhNS-0003Tr-Bx; Wed, 13 May 2020 10:44:10 +0800
-Date: Wed, 13 May 2020 10:43:23 +0800
+ id 1jYhNS-0003Uo-Gh; Wed, 13 May 2020 10:44:10 +0800
+Date: Wed, 13 May 2020 10:43:22 +0800
 From: kbuild test robot <lkp@intel.com>
 To: Keyon Jie <yang.jie@linux.intel.com>, alsa-devel@alsa-project.org
-Subject: [RFC PATCH] ASoC: topology: elem_load[] can be static
-Message-ID: <20200513024323.GA30719@f5a3dcfd553e>
+Subject: Re: [PATCH 1/2] ASoC: topology: refine and log the header in the
+ correct pass
+Message-ID: <202005131002.ruE7hdqs%lkp@intel.com>
 References: <20200512182319.118995-1-yang.jie@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20200512182319.118995-1-yang.jie@linux.intel.com>
-X-Patchwork-Hint: ignore
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Cc: tiwai@suse.de, Keyon Jie <yang.jie@linux.intel.com>, broonie@kernel.org,
  kbuild-all@lists.01.org, pierre-louis.bossart@linux.intel.com
@@ -90,22 +90,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi Keyon,
 
-Signed-off-by: kbuild test robot <lkp@intel.com>
+Thank you for the patch! Perhaps something to improve:
+
+[auto build test WARNING on asoc/for-next]
+[also build test WARNING on v5.7-rc5 next-20200512]
+[if your patch is applied to the wrong git tree, please drop us a note to help
+improve the system. BTW, we also suggest to use '--base' option to specify the
+base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+
+url:    https://github.com/0day-ci/linux/commits/Keyon-Jie/ASoC-topology-refine-and-log-the-header-in-the-correct-pass/20200513-021507
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+reproduce:
+        # apt-get install sparse
+        # sparse version: v0.6.1-191-gc51a0382-dirty
+        make ARCH=x86_64 allmodconfig
+        make C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kbuild test robot <lkp@intel.com>
+
+
+sparse warnings: (new ones prefixed by >>)
+
+>> sound/soc/soc-topology.c:2639:5: sparse: sparse: symbol 'elem_load' was not declared. Should it be static?
+
+Please review and possibly fold the followup patch.
+
 ---
- soc-topology.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index b3dae319c1086..70c0ff7ce13ff 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -2636,7 +2636,7 @@ static int soc_tplg_manifest_load(struct soc_tplg *tplg,
- 	return ret;
- }
- 
--int (*elem_load[])(struct soc_tplg *, struct snd_soc_tplg_hdr *) = {
-+static int (*elem_load[])(struct soc_tplg *, struct snd_soc_tplg_hdr *) = {
- 	[SOC_TPLG_PASS_MANIFEST]	= soc_tplg_manifest_load,
- 	[SOC_TPLG_PASS_VENDOR]		= soc_tplg_vendor_load,
- 	[SOC_TPLG_PASS_MIXER]		= soc_tplg_kcontrol_elems_load,
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
