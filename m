@@ -2,79 +2,103 @@ Return-Path: <SRS0=BSyU=63=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 139A9C2D0F6
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 May 2020 02:46:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CC9ACC2D0F8
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 May 2020 04:06:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9589520714
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 May 2020 02:46:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 59CE020718
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 May 2020 04:06:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="g2iWp7jl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9589520714
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pwIqy6yL";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X0lx+5Vg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 59CE020718
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C90F015E2;
-	Wed, 13 May 2020 04:45:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C90F015E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 91D42845;
+	Wed, 13 May 2020 06:05:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 91D42845
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589337968;
-	bh=ry+j5NcEWKM13zl6G4jgjY1b+QfNpKTXmSKtWjjlNR4=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1589342807;
+	bh=QyQu3O4TKvyKwmoKMYQOEElVYuGfAgiE7KcBxZB9/MY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=g2iWp7jlXIuQiI1JTsrkd06uJwrEKUTniOkEoAVuDSk0pLvyWwMp8epwt9+MEdVWL
-	 BW34F4sNLacLgffIYUCivYJfe3jkXwVrXVU75FcvROvqO37Ky+/RjImCJ0J6CApP/A
-	 9KEPEscm0GalCoOC8PYWNMdTPwKBDNvo1Z/zs8A0=
+	b=pwIqy6yLLBLvZKC3R7L5fV0AUj7NcpXNm3BZmcllyv/UOXb279toKAftrFsBpTKDu
+	 76/I+hZJpjhPLzK8UZMBXCXiXROhIzziYV4ucGhzR0DV2E9UJByfgNzXZr5I5rTQpo
+	 zI/8dsq+EeyiZ2MHYgnH/IEyv1PdHYXWpZgGdt58=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 95D32F80254;
-	Wed, 13 May 2020 04:44:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A4E9DF800E3;
+	Wed, 13 May 2020 06:05:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 33F32F80247; Wed, 13 May 2020 04:44:24 +0200 (CEST)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 7FD50F80247; Wed, 13 May 2020 06:05:51 +0200 (CEST)
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com
+ [IPv6:2a00:1450:4864:20::142])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 767D8F8022D
- for <alsa-devel@alsa-project.org>; Wed, 13 May 2020 04:44:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 767D8F8022D
-IronPort-SDR: 5HMMYYdGmMLAPor6jQt/5EmA19RU94YXJd92w+gbrr0C61YwsA2cD1xBBpuS9kjdC2IfmZMsQ8
- AcrbmW1yuHZA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 May 2020 19:44:12 -0700
-IronPort-SDR: aigzlOVqht9xezyIQRpupR4Elt1GdewL0aSUtVdkmh2LuF3UCJ5JlJ9cW/Mt/PhZgiuKEMYIW5
- DoXrQRDc/0Og==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,385,1583222400"; d="scan'208";a="371764582"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
- by fmsmga001.fm.intel.com with ESMTP; 12 May 2020 19:44:11 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
- (envelope-from <lkp@intel.com>)
- id 1jYhNS-0003Uo-Gh; Wed, 13 May 2020 10:44:10 +0800
-Date: Wed, 13 May 2020 10:43:22 +0800
-From: kbuild test robot <lkp@intel.com>
-To: Keyon Jie <yang.jie@linux.intel.com>, alsa-devel@alsa-project.org
-Subject: Re: [PATCH 1/2] ASoC: topology: refine and log the header in the
- correct pass
-Message-ID: <202005131002.ruE7hdqs%lkp@intel.com>
-References: <20200512182319.118995-1-yang.jie@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3E6D9F800B7
+ for <alsa-devel@alsa-project.org>; Wed, 13 May 2020 06:05:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E6D9F800B7
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="X0lx+5Vg"
+Received: by mail-lf1-x142.google.com with SMTP id u4so12390336lfm.7
+ for <alsa-devel@alsa-project.org>; Tue, 12 May 2020 21:05:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=E5DfVl3UTVTePHaLcFBtqqP4Bgt2fHKIIZV0vLdJMfw=;
+ b=X0lx+5VgRKBUjgcLIUXo0l4kNqa+HWCEuwieMLGfX7R6gJsysKdNLip/Z5aNBtqcKq
+ ZHyzngzkgSh1+R7lrCgnXihuggnUozIwQkMfxmHQW6hSS4p5Aj+8n2I+E1ahRsJ5MeYK
+ Ai74UTj4c+mDLjVlXVmkmNqcLpiXu8oLZBO4pVDmpfbtMtFyGCpm9v7QJkiiH++B1SEB
+ n2Hj93K25HcZa6GUD4ZboQ6N6RK1Wt3GxC7VdWH0JZkvdhzUKCghhPDXrnLTZ57nq3MQ
+ pJ9v2W9pKM2atx1b86GIUD+h9q7wAQeKMfPHQ5Tt5MsuX5KxcwRsAS4grZGt83d7kAfy
+ wSEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=E5DfVl3UTVTePHaLcFBtqqP4Bgt2fHKIIZV0vLdJMfw=;
+ b=FJXAMt6VzCQaCLGZKaLohUDzVFb0oi7m1qnf0X5GyQPMbw9CwYyjLxgQ/Ie81XAm28
+ ZwIBsfxJ4h0UxO1JX8ZCrfSE0vTn9n1zzWCbJ5ZtpayT6a4ShGnBUwMSglg1lP+vY6xn
+ IyPRNoRRL6kXTrDOMLMVRv2iWlv9NFxLSmUmeTqKoOBZ5QzuCTa8gb5ZPs+gH+XMrxFE
+ IojHpYnL3j3gz8x0p36nTXTOBUNz9hffOgp6LAYgoWc+0DhsKrNy80/fxc4FRw8h1k9Z
+ y83Sq0y+z0+IIL/EDyPglILZzEMMit26tw4z9dPVbS0oWC/m7VdXyW2BIlQhQ95hpsTI
+ YkuQ==
+X-Gm-Message-State: AOAM532LpzpEIigj3WMPswG2ZOlAMi0Cs+tyvlCk6TiLHp/gFhUVa1pE
+ T6LuGiX+NxTa4fVHtCx4tvYbjcbvHc0AUqoBQSM=
+X-Google-Smtp-Source: ABdhPJwVbX814H5PlLygUc2P4zM8+ColDOjxqNR+yG2t1A4WZKHAtcZSofnK2cs+OTZUhXgYDydXDZcxKnwkxgsdP0k=
+X-Received: by 2002:a19:4a97:: with SMTP id x145mr16471976lfa.66.1589342744155; 
+ Tue, 12 May 2020 21:05:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200512182319.118995-1-yang.jie@linux.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: tiwai@suse.de, Keyon Jie <yang.jie@linux.intel.com>, broonie@kernel.org,
- kbuild-all@lists.01.org, pierre-louis.bossart@linux.intel.com
+References: <20200509031919.9006-1-steves.lee@maximintegrated.com>
+ <20200511110346.GE8216@sirena.org.uk>
+ <CABff4NQXs622x1X6ZvNABHNZoTMS57f4Y5sdo1Cng3JeTgboCw@mail.gmail.com>
+ <20200512103316.GB5110@sirena.org.uk>
+In-Reply-To: <20200512103316.GB5110@sirena.org.uk>
+From: Steve Lee <steves.lee.maxim@gmail.com>
+Date: Wed, 13 May 2020 13:05:32 +0900
+Message-ID: <CABff4NTm77Cr+FwO8p0-3AKBCWOvzXaHfdbP8guzWQ2Zzcrobg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] ASoC: max98390: Added Amplifier Driver
+To: Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: jack.yu@realtek.com, ALSA development <alsa-devel@alsa-project.org>,
+ ryan.lee.maxim@gmail.com, ckeepax@opensource.cirrus.com,
+ steves.lee@maximintegrated.com,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, Krzysztof Kozlowski <krzk@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, nuno.sa@analog.com, geert@linux-m68k.org,
+ dmurphy@ti.com,
+ =?UTF-8?B?U2h1bWluZyBb6IyD5pu46YqYXQ==?= <shumingf@realtek.com>,
+ Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+ rf@opensource.wolfsonmicro.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,34 +114,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Keyon,
-
-Thank you for the patch! Perhaps something to improve:
-
-[auto build test WARNING on asoc/for-next]
-[also build test WARNING on v5.7-rc5 next-20200512]
-[if your patch is applied to the wrong git tree, please drop us a note to help
-improve the system. BTW, we also suggest to use '--base' option to specify the
-base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
-
-url:    https://github.com/0day-ci/linux/commits/Keyon-Jie/ASoC-topology-refine-and-log-the-header-in-the-correct-pass/20200513-021507
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-reproduce:
-        # apt-get install sparse
-        # sparse version: v0.6.1-191-gc51a0382-dirty
-        make ARCH=x86_64 allmodconfig
-        make C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kbuild test robot <lkp@intel.com>
-
-
-sparse warnings: (new ones prefixed by >>)
-
->> sound/soc/soc-topology.c:2639:5: sparse: sparse: symbol 'elem_load' was not declared. Should it be static?
-
-Please review and possibly fold the followup patch.
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+On Tue, May 12, 2020 at 7:33 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Tue, May 12, 2020 at 06:13:05PM +0900, Steve Lee wrote:
+> > On Mon, May 11, 2020 at 8:03 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> > > > +static const char * const max98390_current_limit_text[] = {
+> > > > +     "0.00A", "0.50A", "1.00A", "1.05A", "1.10A", "1.15A", "1.20A", "1.25A",
+> > > > +     "1.30A", "1.35A", "1.40A", "1.45A", "1.50A", "1.55A", "1.60A", "1.65A",
+>
+> > > This looks like it should be in DT too.
+>
+> > Since this control  is needed while running system according to system
+> > battery situation.
+> > I'd keep this mixer for further use.
+>
+> That's...  interesting for a current limit, and sounds like it would
+> have issues for the common case use of current limits to protect the
+> hardware.
+>
+> > > > +static int max98390_dsm_calib_get(struct snd_kcontrol *kcontrol,
+> > > > +             struct snd_ctl_elem_value *ucontrol)
+> > > > +{
+> > > > +     struct snd_soc_component *component =
+> > > > +             snd_soc_kcontrol_component(kcontrol);
+> > > > +
+> > > > +     dev_warn(component->dev, "Get dsm_calib_get not supported\n");
+> > > > +
+> > > > +     return 0;
+> > > > +}
+>
+> > > Just don't implement the operation if you can't implement it.
+>
+> > If this not exist as dummy operation and all mixer was not working and
+> > could not implement better idea.
+>
+> Could you be more specific about what you mean by "not working" or how
+> simply not initializing the value returned fixes things please?
+I mean that xhandler_get pointing to NULL makes mixer list unexpected operation.
+I will do return fixed value without warn message.
+>
+> > Could you consider it as with warn message ?
+>
+> No, if there's a problem here we should fix it properly.
+Thanks for feed back.I will do return fixed value without warn message.
