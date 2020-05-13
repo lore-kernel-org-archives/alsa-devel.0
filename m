@@ -2,99 +2,104 @@ Return-Path: <SRS0=rado=64=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C1FDDC433DF
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 07:33:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2128BC433DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 07:51:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2C879205CB
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 07:33:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A58FD20575
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 07:51:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZM6sDvOz";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="nksJk6Gj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2C879205CB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hos43l+1";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=semihalf-com.20150623.gappssmtp.com header.i=@semihalf-com.20150623.gappssmtp.com header.b="sgR1zSAR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A58FD20575
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=semihalf.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 64A891658;
-	Thu, 14 May 2020 09:32:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64A891658
+	by alsa0.perex.cz (Postfix) with ESMTPS id CB1CB1655;
+	Thu, 14 May 2020 09:50:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB1CB1655
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589441585;
-	bh=FSYEhCAaIQTHIgUzCW2IVJVJzbXeZL77BPLPtSKazJc=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=ZM6sDvOzGUbq7LNDDkQtJAXOEV+KXIFmXqpEK3gZQJBkpkdwNi1qYvyL+QVes+hf8
-	 mnJMT2hBWpfsijG9uCG89u1H5Iczs+pSSa4Ycd5xyH2d6w0k8FdCu9/gCLfUZok8IF
-	 XXTJEKEkzNvPvusnD4KSE3chvmaVNkIM6LZws3R8=
+	s=default; t=1589442702;
+	bh=oWkUzHcNQoCoHmwDTd4fBtldr842hT+e9By26IO9BWE=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=hos43l+1kk1fXCzg7sxq/AIzFWKDcs1TwHf2HGkvy+HbflV7x6q2FpAUkmjNFelxY
+	 x9LyZYVDRKeD9O1LYYrFoGkHkAqAee+KBNwWEBdux+CyLmtMX8us8/qVkZ1mXwZfA8
+	 SwIiZhYhstEcQxgsUsbpVCD2KWv/piPMZjvjVDJ0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B5D8EF8014C;
-	Thu, 14 May 2020 09:32:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5C223F8014C;
+	Thu, 14 May 2020 09:50:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4E864F80158; Thu, 14 May 2020 09:32:12 +0200 (CEST)
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com
- [IPv6:2607:f8b0:4864:20::141])
+ id 72D18F80247; Wed, 13 May 2020 21:20:35 +0200 (CEST)
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com
+ [IPv6:2a00:1450:4864:20::242])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BFFA3F80101
- for <alsa-devel@alsa-project.org>; Thu, 14 May 2020 09:32:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BFFA3F80101
+ by alsa1.perex.cz (Postfix) with ESMTPS id 21E0EF800BD
+ for <alsa-devel@alsa-project.org>; Wed, 13 May 2020 21:20:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21E0EF800BD
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="nksJk6Gj"
-Received: by mail-il1-x141.google.com with SMTP id j3so2273988ilk.11
- for <alsa-devel@alsa-project.org>; Thu, 14 May 2020 00:32:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=nZ2K4V2ivdKLfbKoVnSYBVoL3RBoX57AcCyNb6p0llo=;
- b=nksJk6GjfmfD/5RT/EYdBZA+tvS6AvDaCsOxEpxh8TCrLXJNioen89tW3J9mSLozUV
- 8BRjfBrtVal+MgGkMJT+bNTqitzhK08cT4gM706x/5gbjCqsO0Uzd20uXVdFFvIf2J1a
- j+Tp+nZp8yQGTY6q36QPA0MLgIrWrb9Bx8cQNwtqqqjrVLZnZwioDmG3eRJoerGBWkAI
- Pv3w2egzEMJa5iEv6XuTYpnI6oj1/nhi9AJ6WwGopNYX6CDQ8lwucB4+jItLY1HdnFDy
- O9HQVwX3yfsI5HB5JYh5vovN24zNu4Pc1+L5H8CQvFgwozbNSZs17x31o5XVdAxKgpEH
- a1gA==
+ dkim=pass (2048-bit key) header.d=semihalf-com.20150623.gappssmtp.com
+ header.i=@semihalf-com.20150623.gappssmtp.com header.b="sgR1zSAR"
+Received: by mail-lj1-x242.google.com with SMTP id u6so841005ljl.6
+ for <alsa-devel@alsa-project.org>; Wed, 13 May 2020 12:20:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=xJ0/kVLgd2XGmGl/2Yf51DVqklc7Fd5xTLD8Gz5eOGs=;
+ b=sgR1zSARIfNb5fmO42UIoCiOlBOwG/mW+CjWTciqdhRmacNax0zJx/8WqkW3M4LtvL
+ iioqJ6NsaRunXfeiPr9NG/jArKqHdg2jNzHvOdJnqI813AK8ktGknxDkeDjYtqMTzrgt
+ X6jAUwDbQURSF0gCNRt8YlUykbf+MxlnauLPHqUNMjWvBCckfwH5ISARtErxudxCwQRX
+ St1fXVglOdzssSF2uGH8Od6/8Yx3aOJltIPPheBeqCGNhxaas/QirBJomNKVosyHPjnT
+ zAgS2gRk3/Vo9xToor1UCNa9aXQ0V7msn3kiMNgSeUpZOUxNngUAX42VW9SJzjF3WhY0
+ PYEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=nZ2K4V2ivdKLfbKoVnSYBVoL3RBoX57AcCyNb6p0llo=;
- b=HrEqoq5wYltbsdW9GnXrQoTGpS19JrSuUJ26vsoTfO9WLfSG8ZlNs6fCalVrwSRyti
- 59BXSl00wEMTRXE+MOjmd/5uhGETakA3r0r0qJFKGHWZvnNuixVjD5UOv/Xtvham+qUQ
- cZfSDx3HTloA3oVc+xA9EZzX14uPJQk4YIJzvhLqzRALtaYBZT6vzogZjA/k2S7GZMIN
- DeBJ5TXvMJbOyKsirlLYFDwpa9z80XF1OpYWD6xvrqaV7XIJMupV7PspkwREFBSaixQk
- Spn0UBSGcS8obS7Uz9R7Vsv3DpZjlx318xpbu/FsryT0QtnRWpO8kFiohy7Wv3dLD/Qc
- 0Hig==
-X-Gm-Message-State: AOAM533vrOoNHEiumia4xW0YmDB8LQ8rVFBRGl3mdYY+PMbgDhfGbb8h
- ZgvvLMT4Uj2MfIP7t+srR3Zfa/gDQTPYbcc8LKhxaA==
-X-Google-Smtp-Source: ABdhPJyEf6dDNquRbPI7mEEjgyU7b8EI011IFLAx5lKqSQzM2yVPc6Ws5teiQOo/jZXJs8/jCxOFZasj4dXdjy3nlyA=
-X-Received: by 2002:a92:8747:: with SMTP id d7mr3395657ilm.235.1589441523625; 
- Thu, 14 May 2020 00:32:03 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=xJ0/kVLgd2XGmGl/2Yf51DVqklc7Fd5xTLD8Gz5eOGs=;
+ b=LH12p5wsghwpYlnXJEdzUD+o4KIcIvc+9WxM7c+6BL332RnH7god6EAQc1SykbEl1t
+ UE4w570tSMop4Pbr3g+B+FkvTiNGcIvhDaeBd397jMLP/0Hy04gvUf2cfGo/FaAfhTWm
+ hcFK6LUPqGbO+2k070Wyq9IH8mnqg0TtNxaNLHZ1VKcFFYj2EvkOw0IP8r3bd+ja6Ig2
+ JL5s43+8wYDlIl+kAVwU323B5UiKnbcuOUlSTHC5bAlee7bGpbh6r39q/1x4Gvg8h3Ks
+ m73EHAo63S0pGY7a8hO8TNqadushVRjb1N8MFMmRHbc5KQnhnu4TT/8zv3M4aiqjpHjO
+ Tcpw==
+X-Gm-Message-State: AOAM533jc2MMS6kJcr0qMHcRLLIRfzsUep5e0Fv/Bi3YXeosmmaBpu1s
+ PCOCKD7BK3iTk63JScwl5OLfgA==
+X-Google-Smtp-Source: ABdhPJwW/lpo7amvDkWje0tqgAbIdqAjf3MAmxRXMtrXK4vDjdOhT9zw+Cb1MxqnGbgyJxozl1DWrg==
+X-Received: by 2002:a05:651c:490:: with SMTP id
+ s16mr374721ljc.152.1589397626676; 
+ Wed, 13 May 2020 12:20:26 -0700 (PDT)
+Received: from deadpool.semihalf.local (89-70-221-122.dynamic.chello.pl.
+ [89.70.221.122])
+ by smtp.gmail.com with ESMTPSA id w24sm288397lfk.47.2020.05.13.12.20.25
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 13 May 2020 12:20:26 -0700 (PDT)
+From: Lukasz Majczak <lma@semihalf.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Jie Yang <yang.jie@linux.intel.com>
+Subject: [PATCH] ASoC: Intel: kbl_rt5663_rt5514_max98927: Split
+ be_hw_params_fixup function
+Date: Wed, 13 May 2020 21:20:20 +0200
+Message-Id: <20200513192020.544928-1-lma@semihalf.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20200513074523.21086-1-steves.lee@maximintegrated.com>
-In-Reply-To: <20200513074523.21086-1-steves.lee@maximintegrated.com>
-From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Thu, 14 May 2020 15:31:52 +0800
-Message-ID: <CA+Px+wV7o1P41ZdidpwNFtwWL1-RYcwV3dU9R7PG+66k1L_p_A@mail.gmail.com>
-Subject: Re: [V3 PATCH 2/2] ASoC: max98390: Added Amplifier Driver
-To: Steve Lee <steves.lee.maxim@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Cc: jack.yu@realtek.com, ALSA development <alsa-devel@alsa-project.org>,
- ryan.lee.maxim@gmail.com, ckeepax@opensource.cirrus.com,
- ryans.lee@maximintegrated.com, steves.lee@maximintegrated.com,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Krzysztof Kozlowski <krzk@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, nuno.sa@analog.com,
- Mark Brown <broonie@kernel.org>, geert@linux-m68k.org, dmurphy@ti.com,
- =?UTF-8?B?U2h1bWluZyBb6IyD5pu46YqYXQ==?= <shumingf@realtek.com>,
- Srini Kandagatla <srinivas.kandagatla@linaro.org>,
- rf@opensource.wolfsonmicro.com
+Content-Transfer-Encoding: 8bit
+X-Mailman-Approved-At: Thu, 14 May 2020 09:50:50 +0200
+Cc: alsa-devel@alsa-project.org, Radoslaw Biernacki <rad@semihalf.com>,
+ Ross Zwisler <zwisler@google.com>, linux-kernel@vger.kernel.org,
+ Bob Brandt <brndt@google.com>, Marcin Wojtas <mw@semihalf.com>,
+ Alex Levin <levinale@chromium.org>, Lukasz Majczak <lma@semihalf.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -110,50 +115,136 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, May 13, 2020 at 3:47 PM Steve Lee <steves.lee.maxim@gmail.com> wrote:
-> +++ b/sound/soc/codecs/max98390.c
-> @@ -0,0 +1,1030 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * max98390.c  --  MAX98390 ALSA Soc Audio driver
-> + *
-> + * Copyright (C) 2020 Maxim Integrated Products
-> + *
-> + */
+Split be_hw_params_fixup function for different codecs as current common
+function, leads to crash while trying to get snd_soc_dpcm with
+container_of() macro in kabylake_ssp_fixup().
+The crash call path looks as below:
+soc_pcm_hw_params()
+snd_soc_dai_hw_params(codec_dai, substream, &codec_params);
+rtd->dai_link->be_hw_params_fixup(rtd, params)
+kabylake_ssp_fixup()
+In this case, codec_params is just a copy of an internal structure and is
+not embedded into struct snd_soc_dpcm thus we cannot use
+container_of() on it.
 
-My previous comments on Gerrit may confuse you.  Please use C++ style
-comments (i.e. // for all lines) here as the maintainer asked.
+Signed-off-by: Lukasz Majczak <lma@semihalf.com>
+---
+ .../intel/boards/kbl_rt5663_rt5514_max98927.c | 68 +++++++++++--------
+ 1 file changed, 39 insertions(+), 29 deletions(-)
 
-Mark, may I ask why we need to do so?  Is it also applicable to header files?
+diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+index 1b1f8d7a4ea3..2e0ae724122c 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+@@ -328,46 +328,55 @@ static const struct snd_soc_ops kabylake_rt5663_fe_ops = {
+ 	.startup = kbl_fe_startup,
+ };
+ 
+-static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
+-					struct snd_pcm_hw_params *params)
++static void kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
++	struct snd_pcm_hw_params *params, snd_pcm_format_t pcm_fmt)
+ {
+ 	struct snd_interval *rate = hw_param_interval(params,
+ 			SNDRV_PCM_HW_PARAM_RATE);
+-	struct snd_interval *chan = hw_param_interval(params,
++	struct snd_interval *channels = hw_param_interval(params,
+ 			SNDRV_PCM_HW_PARAM_CHANNELS);
+ 	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
+-	struct snd_soc_dpcm *dpcm = container_of(
+-			params, struct snd_soc_dpcm, hw_params);
+-	struct snd_soc_dai_link *fe_dai_link = dpcm->fe->dai_link;
+-	struct snd_soc_dai_link *be_dai_link = dpcm->be->dai_link;
+ 
+ 	/*
+ 	 * The ADSP will convert the FE rate to 48k, stereo, 24 bit
+ 	 */
+-	if (!strcmp(fe_dai_link->name, "Kbl Audio Port") ||
+-	    !strcmp(fe_dai_link->name, "Kbl Audio Headset Playback") ||
+-	    !strcmp(fe_dai_link->name, "Kbl Audio Capture Port")) {
+-		rate->min = rate->max = 48000;
+-		chan->min = chan->max = 2;
+-		snd_mask_none(fmt);
+-		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S24_LE);
+-	} else if (!strcmp(fe_dai_link->name, "Kbl Audio DMIC cap")) {
+-		if (params_channels(params) == 2 ||
+-				DMIC_CH(dmic_constraints) == 2)
+-			chan->min = chan->max = 2;
+-		else
+-			chan->min = chan->max = 4;
+-	}
+-	/*
+-	 * The speaker on the SSP0 supports S16_LE and not S24_LE.
+-	 * thus changing the mask here
+-	 */
+-	if (!strcmp(be_dai_link->name, "SSP0-Codec"))
+-		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S16_LE);
+ 
++	rate->min = rate->max = 48000;
++	channels->min = channels->max = 2;
++
++	snd_mask_none(fmt);
++	snd_mask_set_format(fmt, pcm_fmt);
++}
++
++static int kabylake_ssp0_fixup(struct snd_soc_pcm_runtime *rtd,
++	struct snd_pcm_hw_params *params)
++{
++	kabylake_ssp_fixup(rtd, params, SNDRV_PCM_FORMAT_S16_LE);
+ 	return 0;
+ }
+ 
++static int kabylake_ssp1_fixup(struct snd_soc_pcm_runtime *rtd,
++	struct snd_pcm_hw_params *params)
++{
++
++	kabylake_ssp_fixup(rtd, params, SNDRV_PCM_FORMAT_S24_LE);
++	return 0;
++}
++
++static int kabylake_dmic_cap_fixup(struct snd_soc_pcm_runtime *rtd,
++	struct snd_pcm_hw_params *params)
++{
++	struct snd_interval *channels = hw_param_interval(params,
++			SNDRV_PCM_HW_PARAM_CHANNELS);
++
++	if (params_channels(params) == 2 ||
++			DMIC_CH(dmic_constraints) == 2)
++		channels->min = channels->max = 2;
++	else
++		channels->min = channels->max = 4;
++
++	return 0;
++}
+ static int kabylake_rt5663_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params)
+ {
+@@ -582,6 +591,7 @@ static struct snd_soc_dai_link kabylake_dais[] = {
+ 		.dpcm_capture = 1,
+ 		.nonatomic = 1,
+ 		.dynamic = 1,
++		.be_hw_params_fixup = kabylake_dmic_cap_fixup,
+ 		.ops = &kabylake_dmic_ops,
+ 		SND_SOC_DAILINK_REG(dmic, dummy, platform),
+ 	},
+@@ -618,7 +628,7 @@ static struct snd_soc_dai_link kabylake_dais[] = {
+ 			SND_SOC_DAIFMT_NB_NF |
+ 			SND_SOC_DAIFMT_CBS_CFS,
+ 		.ignore_pmdown_time = 1,
+-		.be_hw_params_fixup = kabylake_ssp_fixup,
++		.be_hw_params_fixup = kabylake_ssp0_fixup,
+ 		.dpcm_playback = 1,
+ 		.dpcm_capture = 1,
+ 		.ops = &kabylake_ssp0_ops,
+@@ -632,7 +642,7 @@ static struct snd_soc_dai_link kabylake_dais[] = {
+ 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+ 			SND_SOC_DAIFMT_CBS_CFS,
+ 		.ignore_pmdown_time = 1,
+-		.be_hw_params_fixup = kabylake_ssp_fixup,
++		.be_hw_params_fixup = kabylake_ssp1_fixup,
+ 		.ops = &kabylake_rt5663_ops,
+ 		.dpcm_playback = 1,
+ 		.dpcm_capture = 1,
+-- 
+2.25.1
 
-> +static int max98390_dsm_calib_get(struct snd_kcontrol *kcontrol,
-> +               struct snd_ctl_elem_value *ucontrol)
-> +{
-> +       /* Do nothing. */
-> +
-> +       return 0;
-> +}
-
-This is an intentional NOP.
-
-> +static int max98390_dsm_calib_put(struct snd_kcontrol *kcontrol,
-> +               struct snd_ctl_elem_value *ucontrol)
-> +{
-> +       struct snd_soc_component *component =
-> +               snd_soc_kcontrol_component(kcontrol);
-> +
-> +       max98390_dsm_calibrate(component);
-> +
-> +       return 0;
-> +}
-
-Entry point from userspace to start to calibrate.
-
-> +++ b/sound/soc/codecs/max98390.h
-> @@ -0,0 +1,663 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (c) 2020, Maxim Integrated.
-> + */
-
-I guess these block would also need to use C++ style comment.
