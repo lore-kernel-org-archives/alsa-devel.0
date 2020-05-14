@@ -6,55 +6,56 @@ X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A505C433E4
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 09:22:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D7DCCC433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 09:23:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 981212065D
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 09:22:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E86072065D
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 09:23:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Boy9bJzz"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 981212065D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="g5yOXYZS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E86072065D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E7DC31655;
-	Thu, 14 May 2020 11:21:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E7DC31655
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0E6FC165E;
+	Thu, 14 May 2020 11:22:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E6FC165E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589448120;
-	bh=gIhsZW6yCPCmO9IqJvoJ16WiFv4ysu3CyxLugJm/DOo=;
+	s=default; t=1589448226;
+	bh=glT9mHhKikCTkGkQtXw13ts9zyKG7hsleuPR6RGb818=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Boy9bJzzfRFsr2UG37/zrlHn8RXFaFmYbkBRQePg1npXdvm1+FPTxFcVIZdwiJZUF
-	 dYhR1ahF+pMtu2txhYyA1alNL8OtZUa3NKMpbBLb2R7Z9uKgnf+Qy39P77vXjIqQEx
-	 FD5G0m1TCZWyfa3JuJw8E1a8C96EYzDOKHfYhS2Y=
+	b=g5yOXYZSAJoA0q83CvPP3ZQYSnrc0uhNxJMWD+5gITz86uPoypyw5k/j0U1l33kso
+	 q6mr67mspMaC9E1i5GU9hyngTRnQqc9XrDVor2wL9NhiuqbXrwd7F0u8Yct/JHy/Nk
+	 FHIeq5TKCmFQdimuU+4IvFppKTVqi2ikbF2HvaI0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 46D52F800E3;
-	Thu, 14 May 2020 11:21:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6F6C5F80158;
+	Thu, 14 May 2020 11:22:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 48D54F80158; Thu, 14 May 2020 11:21:07 +0200 (CEST)
+ id AA797F80158; Thu, 14 May 2020 11:22:53 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 325E7F800E3
- for <alsa-devel@alsa-project.org>; Thu, 14 May 2020 11:21:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 325E7F800E3
+ by alsa1.perex.cz (Postfix) with ESMTPS id AA9EBF800E3
+ for <alsa-devel@alsa-project.org>; Thu, 14 May 2020 11:22:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA9EBF800E3
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id BE94AAF68;
- Thu, 14 May 2020 09:21:02 +0000 (UTC)
-Date: Thu, 14 May 2020 11:20:59 +0200
-Message-ID: <s5h5zcyswhw.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 01292AF69;
+ Thu, 14 May 2020 09:22:49 +0000 (UTC)
+Date: Thu, 14 May 2020 11:22:46 +0200
+Message-ID: <s5h4ksiswex.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: changjoon.lee@lge.com
 Subject: Re: [PATCH 0/1] Documentation update
-In-Reply-To: <20200514090716.39413-1-changjoon.lee@lge.com>
+In-Reply-To: <s5h5zcyswhw.wl-tiwai@suse.de>
 References: <20200514090716.39413-1-changjoon.lee@lge.com>
+ <s5h5zcyswhw.wl-tiwai@suse.de>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -77,27 +78,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 14 May 2020 11:07:15 +0200,
-changjoon.lee@lge.com wrote:
+On Thu, 14 May 2020 11:20:59 +0200,
+Takashi Iwai wrote:
 > 
-> From: ChangJoon Lee <changjoon.lee@lge.com>
+> On Thu, 14 May 2020 11:07:15 +0200,
+> changjoon.lee@lge.com wrote:
+> > 
+> > From: ChangJoon Lee <changjoon.lee@lge.com>
+> > 
+> > Hi, ALSA Teams,
+> > 
+> > This is documentation update purpose patch.
+> > This patch does NOT alter any of operations.
+> > 
+> > This patch allows an application engineer to understand why they received negative return
+> > such as -EIO, -EBADFD, -ENOSYS, -ESTRPIPE and etc which are not fully documented on documentation site.
+> > 
+> > This patch also exposes Expected Status of PCM based on bad_pcm_state() with P_STATE to help engineer to understand API behavior to the documentation site.
+> > 
+> > TODO :
+> > We may need improve consistency of return value especially for snd_pcm_hw_params_current().
+> > It returns -EBADFD when PCM is not setup while other API returns -EIO in this case.
 > 
-> Hi, ALSA Teams,
-> 
-> This is documentation update purpose patch.
-> This patch does NOT alter any of operations.
-> 
-> This patch allows an application engineer to understand why they received negative return
-> such as -EIO, -EBADFD, -ENOSYS, -ESTRPIPE and etc which are not fully documented on documentation site.
-> 
-> This patch also exposes Expected Status of PCM based on bad_pcm_state() with P_STATE to help engineer to understand API behavior to the documentation site.
-> 
-> TODO :
-> We may need improve consistency of return value especially for snd_pcm_hw_params_current().
-> It returns -EBADFD when PCM is not setup while other API returns -EIO in this case.
+> Could you put those explanations rather into the patch description,
+> not (only) in the cover letter?
 
-Could you put those explanations rather into the patch description,
-not (only) in the cover letter?
+Also, when you resubmit with some changes, it's helpful to add a
+prefix like "v2" to the subject line, e.g.
+  [PATCH v2] Fix something ....
+
+Additionally it's often helpful to mention concisely what you changed
+from the previous submission.
 
 
 thanks,
