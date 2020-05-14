@@ -2,77 +2,99 @@ Return-Path: <SRS0=rado=64=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	FAKE_REPLY_C,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 20458C433DF
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 05:07:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1FDDC433DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 07:33:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AEB62206D4
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 05:07:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2C879205CB
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 07:33:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SpBpFJwM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AEB62206D4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZM6sDvOz";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="nksJk6Gj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2C879205CB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E87061612;
-	Thu, 14 May 2020 07:07:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E87061612
+	by alsa0.perex.cz (Postfix) with ESMTPS id 64A891658;
+	Thu, 14 May 2020 09:32:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64A891658
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589432871;
-	bh=x1rZ9emTUTb7VZT0A2MBseQTRK+HDU7Aw+gyHXfarN8=;
-	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=SpBpFJwM68FCHJIMwgs6UjF2Cjs223G6IligQmYxaEklLt2UraVkSt8ap8AAKitzX
-	 PkqEjRtNIzMG9MpAtqmnU7qUWZa00iqa95iHEv9BAfbzOdYo8K6GsOQ6zuMRc3QRaX
-	 HtTZ2jiraqUtYu0XWAP7cms2D6pVWcX+ZUxHBIQM=
+	s=default; t=1589441585;
+	bh=FSYEhCAaIQTHIgUzCW2IVJVJzbXeZL77BPLPtSKazJc=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ZM6sDvOzGUbq7LNDDkQtJAXOEV+KXIFmXqpEK3gZQJBkpkdwNi1qYvyL+QVes+hf8
+	 mnJMT2hBWpfsijG9uCG89u1H5Iczs+pSSa4Ycd5xyH2d6w0k8FdCu9/gCLfUZok8IF
+	 XXTJEKEkzNvPvusnD4KSE3chvmaVNkIM6LZws3R8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 67A51F8014C;
-	Thu, 14 May 2020 07:07:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B5D8EF8014C;
+	Thu, 14 May 2020 09:32:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E9D01F80158; Thu, 14 May 2020 07:06:54 +0200 (CEST)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 4E864F80158; Thu, 14 May 2020 09:32:12 +0200 (CEST)
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com
+ [IPv6:2607:f8b0:4864:20::141])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6C18EF80101
- for <alsa-devel@alsa-project.org>; Thu, 14 May 2020 07:06:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C18EF80101
-IronPort-SDR: 5Lbnwm32X7HJuN0gYNLUrye8y9xd197GBjICyyuX7P845xiNjLFfDKOzaoOV7AOpxmrwpMVZCa
- eTw8lYeQa1RQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 May 2020 22:06:38 -0700
-IronPort-SDR: Ld+CK9qNKosZQtvOxFuPzaJLTXHIq9sceY/xp801FUfLYHhooPczvWclV/CkbxPUCDSgORoR5H
- NK9w0KYpbfpQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,390,1583222400"; d="scan'208";a="464192388"
-Received: from xsang-optiplex-9020.sh.intel.com (HELO xsang-OptiPlex-9020)
- ([10.239.159.140])
- by fmsmga005.fm.intel.com with ESMTP; 13 May 2020 22:06:35 -0700
-Date: Thu, 14 May 2020 13:16:35 +0800
-From: kbuild test robot <lkp@intel.com>
-To: Yongbo Zhang <giraffesnn123@gmail.com>, broonie@kernel.org,
- lgirdwood@gmail.com
-Subject: Re: [PATCH v1] ASoC: rsnd: add interrupt support for SSI BUSIF buffer
-Message-ID: <20200514051635.GA24840@xsang-OptiPlex-9020>
+ by alsa1.perex.cz (Postfix) with ESMTPS id BFFA3F80101
+ for <alsa-devel@alsa-project.org>; Thu, 14 May 2020 09:32:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BFFA3F80101
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
+ header.b="nksJk6Gj"
+Received: by mail-il1-x141.google.com with SMTP id j3so2273988ilk.11
+ for <alsa-devel@alsa-project.org>; Thu, 14 May 2020 00:32:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=nZ2K4V2ivdKLfbKoVnSYBVoL3RBoX57AcCyNb6p0llo=;
+ b=nksJk6GjfmfD/5RT/EYdBZA+tvS6AvDaCsOxEpxh8TCrLXJNioen89tW3J9mSLozUV
+ 8BRjfBrtVal+MgGkMJT+bNTqitzhK08cT4gM706x/5gbjCqsO0Uzd20uXVdFFvIf2J1a
+ j+Tp+nZp8yQGTY6q36QPA0MLgIrWrb9Bx8cQNwtqqqjrVLZnZwioDmG3eRJoerGBWkAI
+ Pv3w2egzEMJa5iEv6XuTYpnI6oj1/nhi9AJ6WwGopNYX6CDQ8lwucB4+jItLY1HdnFDy
+ O9HQVwX3yfsI5HB5JYh5vovN24zNu4Pc1+L5H8CQvFgwozbNSZs17x31o5XVdAxKgpEH
+ a1gA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=nZ2K4V2ivdKLfbKoVnSYBVoL3RBoX57AcCyNb6p0llo=;
+ b=HrEqoq5wYltbsdW9GnXrQoTGpS19JrSuUJ26vsoTfO9WLfSG8ZlNs6fCalVrwSRyti
+ 59BXSl00wEMTRXE+MOjmd/5uhGETakA3r0r0qJFKGHWZvnNuixVjD5UOv/Xtvham+qUQ
+ cZfSDx3HTloA3oVc+xA9EZzX14uPJQk4YIJzvhLqzRALtaYBZT6vzogZjA/k2S7GZMIN
+ DeBJ5TXvMJbOyKsirlLYFDwpa9z80XF1OpYWD6xvrqaV7XIJMupV7PspkwREFBSaixQk
+ Spn0UBSGcS8obS7Uz9R7Vsv3DpZjlx318xpbu/FsryT0QtnRWpO8kFiohy7Wv3dLD/Qc
+ 0Hig==
+X-Gm-Message-State: AOAM533vrOoNHEiumia4xW0YmDB8LQ8rVFBRGl3mdYY+PMbgDhfGbb8h
+ ZgvvLMT4Uj2MfIP7t+srR3Zfa/gDQTPYbcc8LKhxaA==
+X-Google-Smtp-Source: ABdhPJyEf6dDNquRbPI7mEEjgyU7b8EI011IFLAx5lKqSQzM2yVPc6Ws5teiQOo/jZXJs8/jCxOFZasj4dXdjy3nlyA=
+X-Received: by 2002:a92:8747:: with SMTP id d7mr3395657ilm.235.1589441523625; 
+ Thu, 14 May 2020 00:32:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200511100415.12502-1-giraffesnn123@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Chen Li <licheng0822@thundersoft.com>, alsa-devel@alsa-project.org,
- kbuild-all@lists.01.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- Yongbo Zhang <giraffesnn123@gmail.com>
+References: <20200513074523.21086-1-steves.lee@maximintegrated.com>
+In-Reply-To: <20200513074523.21086-1-steves.lee@maximintegrated.com>
+From: Tzung-Bi Shih <tzungbi@google.com>
+Date: Thu, 14 May 2020 15:31:52 +0800
+Message-ID: <CA+Px+wV7o1P41ZdidpwNFtwWL1-RYcwV3dU9R7PG+66k1L_p_A@mail.gmail.com>
+Subject: Re: [V3 PATCH 2/2] ASoC: max98390: Added Amplifier Driver
+To: Steve Lee <steves.lee.maxim@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: jack.yu@realtek.com, ALSA development <alsa-devel@alsa-project.org>,
+ ryan.lee.maxim@gmail.com, ckeepax@opensource.cirrus.com,
+ ryans.lee@maximintegrated.com, steves.lee@maximintegrated.com,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, Krzysztof Kozlowski <krzk@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, nuno.sa@analog.com,
+ Mark Brown <broonie@kernel.org>, geert@linux-m68k.org, dmurphy@ti.com,
+ =?UTF-8?B?U2h1bWluZyBb6IyD5pu46YqYXQ==?= <shumingf@realtek.com>,
+ Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+ rf@opensource.wolfsonmicro.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,139 +110,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Yongbo,
+On Wed, May 13, 2020 at 3:47 PM Steve Lee <steves.lee.maxim@gmail.com> wrote:
+> +++ b/sound/soc/codecs/max98390.c
+> @@ -0,0 +1,1030 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * max98390.c  --  MAX98390 ALSA Soc Audio driver
+> + *
+> + * Copyright (C) 2020 Maxim Integrated Products
+> + *
+> + */
 
-Thank you for the patch! Perhaps something to improve:
+My previous comments on Gerrit may confuse you.  Please use C++ style
+comments (i.e. // for all lines) here as the maintainer asked.
 
-[auto build test WARNING on asoc/for-next]
-[also build test WARNING on v5.7-rc5 next-20200511]
-[if your patch is applied to the wrong git tree, please drop us a note to help
-improve the system. BTW, we also suggest to use '--base' option to specify the
-base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+Mark, may I ask why we need to do so?  Is it also applicable to header files?
 
-url:    https://github.com/0day-ci/linux/commits/Yongbo-Zhang/ASoC-rsnd-add-interrupt-support-for-SSI-BUSIF-buffer/20200511-184903
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-reproduce:
-        # apt-get install sparse
-        # sparse version: v0.6.1-191-gc51a0382-dirty
-        make ARCH=x86_64 allmodconfig
-        make C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
-:::::: branch date: 8 hours ago
-:::::: commit date: 8 hours ago
+> +static int max98390_dsm_calib_get(struct snd_kcontrol *kcontrol,
+> +               struct snd_ctl_elem_value *ucontrol)
+> +{
+> +       /* Do nothing. */
+> +
+> +       return 0;
+> +}
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kbuild test robot <lkp@intel.com>
+This is an intentional NOP.
 
+> +static int max98390_dsm_calib_put(struct snd_kcontrol *kcontrol,
+> +               struct snd_ctl_elem_value *ucontrol)
+> +{
+> +       struct snd_soc_component *component =
+> +               snd_soc_kcontrol_component(kcontrol);
+> +
+> +       max98390_dsm_calibrate(component);
+> +
+> +       return 0;
+> +}
 
-sparse warnings: (new ones prefixed by >>)
+Entry point from userspace to start to calibrate.
 
-   sound/soc/sh/rcar/ssi.c:596:1: sparse: sparse: mixing declarations and code
-   include/sound/pcm_params.h:377:0: sparse: sparse: Expected } at end of function
-   include/sound/pcm_params.h:377:0: sparse: sparse: got end-of-input
->> sound/soc/sh/rcar/ssi.c:798:56: sparse: sparse: not enough arguments for function rsnd_mod_write
+> +++ b/sound/soc/codecs/max98390.h
+> @@ -0,0 +1,663 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (c) 2020, Maxim Integrated.
+> + */
 
-# https://github.com/0day-ci/linux/commit/23aaae15fe2b41fd05caf5e0773d41021bc03e27
-git remote add linux-review https://github.com/0day-ci/linux
-git remote update linux-review
-git checkout 23aaae15fe2b41fd05caf5e0773d41021bc03e27
-vim +798 sound/soc/sh/rcar/ssi.c
-
-615fb6c7b13b7f Kuninori Morimoto 2016-02-18  733  
-d8d9b9730cd62c Kuninori Morimoto 2017-12-11  734  static bool rsnd_ssi_pio_interrupt(struct rsnd_mod *mod,
-d8d9b9730cd62c Kuninori Morimoto 2017-12-11  735  				   struct rsnd_dai_stream *io);
-bfc0cfe6b7acb1 Kuninori Morimoto 2015-06-15  736  static void __rsnd_ssi_interrupt(struct rsnd_mod *mod,
-bfc0cfe6b7acb1 Kuninori Morimoto 2015-06-15  737  				 struct rsnd_dai_stream *io)
-ae5c322303fff5 Kuninori Morimoto 2013-07-21  738  {
-690602fcd85385 Kuninori Morimoto 2015-01-15  739  	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
-2b62786951ca38 Kuninori Morimoto 2018-02-13  740  	struct device *dev = rsnd_priv_to_dev(priv);
-765ae7c8dda7d0 Kuninori Morimoto 2015-01-15  741  	int is_dma = rsnd_ssi_is_dma_mode(mod);
-02299d9875bab5 Kuninori Morimoto 2015-05-21  742  	u32 status;
-75defee0f1b3fc Kuninori Morimoto 2015-06-15  743  	bool elapsed = false;
-6a25c8da00284f Kuninori Morimoto 2016-01-26  744  	bool stop = false;
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  745  	int is_tdm, is_tdm_split;
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  746  
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  747  	is_tdm		= rsnd_runtime_is_tdm(io);
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  748  	is_tdm_split	= rsnd_runtime_is_tdm_split(io);
-02299d9875bab5 Kuninori Morimoto 2015-05-21  749  
-02299d9875bab5 Kuninori Morimoto 2015-05-21  750  	spin_lock(&priv->lock);
-ae5c322303fff5 Kuninori Morimoto 2013-07-21  751  
-02299d9875bab5 Kuninori Morimoto 2015-05-21  752  	/* ignore all cases if not working */
-d5bbe7de563ccc Kuninori Morimoto 2015-06-15  753  	if (!rsnd_io_is_working(io))
-02299d9875bab5 Kuninori Morimoto 2015-05-21  754  		goto rsnd_ssi_interrupt_out;
-02299d9875bab5 Kuninori Morimoto 2015-05-21  755  
-6a25c8da00284f Kuninori Morimoto 2016-01-26  756  	status = rsnd_ssi_status_get(mod);
-4e7d606cd52aa8 Kuninori Morimoto 2014-11-27  757  
-4e7d606cd52aa8 Kuninori Morimoto 2014-11-27  758  	/* PIO only */
-d8d9b9730cd62c Kuninori Morimoto 2017-12-11  759  	if (!is_dma && (status & DIRQ))
-d8d9b9730cd62c Kuninori Morimoto 2017-12-11  760  		elapsed = rsnd_ssi_pio_interrupt(mod, io);
-ae5c322303fff5 Kuninori Morimoto 2013-07-21  761  
-12927a8f802642 Kuninori Morimoto 2015-06-15  762  	/* DMA only */
-2b62786951ca38 Kuninori Morimoto 2018-02-13  763  	if (is_dma && (status & (UIRQ | OIRQ))) {
-c0ea089dbad47a Kuninori Morimoto 2018-10-30  764  		rsnd_dbg_irq_status(dev, "%s err status : 0x%08x\n",
-c0ea089dbad47a Kuninori Morimoto 2018-10-30  765  			rsnd_mod_name(mod), status);
-2b62786951ca38 Kuninori Morimoto 2018-02-13  766  
-6a25c8da00284f Kuninori Morimoto 2016-01-26  767  		stop = true;
-2b62786951ca38 Kuninori Morimoto 2018-02-13  768  	}
-69e32a58bde674 Kuninori Morimoto 2015-10-26  769  
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  770  	status = 0;
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  771  
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  772  	if (is_tdm || is_tdm_split) {
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  773  		switch (id) {
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  774  		case 0:
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  775  		case 1:
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  776  		case 2:
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  777  		case 3:
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  778  		case 4:
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  779  			for (i = 0; i < 4; i++) {
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  780  				status = rsnd_mod_read(mod,
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  781  						       SSI_SYS_STATUS(i * 2));
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  782  				status &= 0xf << (id * 4);
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  783  
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  784  				if (status) {
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  785  					rsnd_dbg_irq_status(dev,
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  786  						"%s err status : 0x%08x\n",
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  787  						rsnd_mod_name(mod), status);
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  788  					rsnd_mod_write(mod,
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  789  						       SSI_SYS_STATUS(i * 2),
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  790  						       0xf << (id * 4));
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  791  					stop = true;
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  792  					break;
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  793  				}
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  794  			}
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  795  			break;
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  796  		case 9:
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  797  			for (i = 0; i < 4; i++) {
-23aaae15fe2b41 Yongbo Zhang      2020-05-11 @798  				status = rsnd_mod_write(mod,
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  799  						SSI_SYS_STATUS((i * 2) + 1));
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  800  				status &= 0xf << 4;
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  801  
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  802  				if (status) {
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  803  					rsnd_dbg_irq_status(dev,
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  804  						"%s err status : 0x%08x\n",
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  805  						rsnd_mod_name(mod), status);
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  806  					rsnd_mod_write(mod,
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  807  						SSI_SYS_STATUS((i * 2) + 1),
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  808  						0xf << 4);
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  809  					stop = true;
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  810  					break;
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  811  				}
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  812  			}
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  813  			break;
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  814  		}
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  815  	}
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  816  
-5342dff2326393 Kuninori Morimoto 2015-11-26  817  	rsnd_ssi_status_clear(mod);
-02299d9875bab5 Kuninori Morimoto 2015-05-21  818  rsnd_ssi_interrupt_out:
-02299d9875bab5 Kuninori Morimoto 2015-05-21  819  	spin_unlock(&priv->lock);
-02299d9875bab5 Kuninori Morimoto 2015-05-21  820  
-75defee0f1b3fc Kuninori Morimoto 2015-06-15  821  	if (elapsed)
-75defee0f1b3fc Kuninori Morimoto 2015-06-15  822  		rsnd_dai_period_elapsed(io);
-6a25c8da00284f Kuninori Morimoto 2016-01-26  823  
-6a25c8da00284f Kuninori Morimoto 2016-01-26  824  	if (stop)
-6a25c8da00284f Kuninori Morimoto 2016-01-26  825  		snd_pcm_stop_xrun(io->substream);
-6a25c8da00284f Kuninori Morimoto 2016-01-26  826  
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
+I guess these block would also need to use C++ style comment.
