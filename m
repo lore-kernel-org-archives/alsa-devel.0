@@ -2,99 +2,89 @@ Return-Path: <SRS0=rado=64=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80CEFC433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 12:19:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 159FAC433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 12:44:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 05F60206A5
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 12:19:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5F34A20722
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 12:44:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FyhQBlLx";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="PDd3krMH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 05F60206A5
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Oy74ob9A";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="jneSebl7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5F34A20722
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 58CE2166D;
-	Thu, 14 May 2020 14:19:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 58CE2166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9517C1662;
+	Thu, 14 May 2020 14:43:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9517C1662
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589458796;
-	bh=u7m7yZydd84J+TeKfYBV5csBieY0xQR52Uxx3Tdm+fE=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=FyhQBlLxUZxrlanvy+8gpQASHs/+NG9hYD7IiSlc9hF7EDragifK2agC/QHXkd4BU
-	 ZWWEa6o8U3zrgbmw1ADTQOj6QA5vgtd0+1+NCfklAKUXTVT5cRlRKticHgsxCKgy/i
-	 PQLu2yITsI2cXMjUTFtELE2VtPUG7VRu1TVeEYD0=
+	s=default; t=1589460257;
+	bh=MNKwdcrgNFT3SwxIPAgqmrVmpkn9h+0YNyOscvqufgU=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Oy74ob9AXjDBgd7SVXFmWkT3BpyVJbj+WTbbkBi/YxSgIHyy8sYfT8g3aq3tIRt0Q
+	 bpeNcV3hkhLKAOxZY8qEgYUT4nh9f55ir+NA6X0OrT29BuUbMppESv9JMbtmJRnBLo
+	 sofL2tNMZAELa6yYPQ82RxLon6XxMLq1uqNx+Y/8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E2254F80101;
-	Thu, 14 May 2020 14:19:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0BFF0F8014C;
+	Thu, 14 May 2020 14:43:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 42B97F8015A; Thu, 14 May 2020 14:19:04 +0200 (CEST)
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+ id BF844F800BD; Thu, 14 May 2020 14:43:25 +0200 (CEST)
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 80F2CF80101
- for <alsa-devel@alsa-project.org>; Thu, 14 May 2020 14:18:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80F2CF80101
+ by alsa1.perex.cz (Postfix) with ESMTPS id D601CF8014C
+ for <alsa-devel@alsa-project.org>; Thu, 14 May 2020 14:43:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D601CF8014C
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="PDd3krMH"
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04ECIsMf118638;
- Thu, 14 May 2020 07:18:55 -0500
+ dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="jneSebl7"
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04EChB9A128213;
+ Thu, 14 May 2020 07:43:11 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1589458735;
- bh=voTy57HPP7kdBOyeAtwz0qnAjpwohc6zTYtH4JaYx9E=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=PDd3krMHKaSrLQmWOV2qyOX+ULVGjpan6iz7kXWCxMDvtIstcNCpK2CX8pPmPaGJh
- 2hNz9wmVyk4E6SbWEe7/EZYGHddk96NIC3cGGKNT8LIy0rYJ6HAKiyOjutHkgHGLG6
- CwlDDn5HGo74UXxGbRPxtUIKGgT4AkxsqwqS8SV4=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04ECIsJf127530
+ s=ti-com-17Q1; t=1589460191;
+ bh=yY/LsSZIBi414qmKI1QeADfQF07kR8esflMsRRh0bLs=;
+ h=From:To:CC:Subject:Date;
+ b=jneSebl7NqXDTM8Jh6ybrZf+/0jIVV7Jpitgb9atH0qfGrZIK2LSlUtDQO66TBc0D
+ rgp9UB8BBi/13H84VM9hrSV3M3ta6YVt736qbI0ljbXC11MdqWm3a6fqPyfYlHV8SY
+ 0WwcGbQGA3EWWcur+pdSW5UXM89AhEjiABxkn8d4=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04EChBPE121673
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Thu, 14 May 2020 07:18:54 -0500
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ Thu, 14 May 2020 07:43:11 -0500
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 14
- May 2020 07:18:54 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ May 2020 07:43:10 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 14 May 2020 07:18:54 -0500
-Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04ECIspR116786;
- Thu, 14 May 2020 07:18:54 -0500
-Subject: Re: [PATCH v2 2/3] ASoC: tlv320adcx140: Add device tree property for
- PDM edges
-To: Ricard Wanderlof <ricardw@axis.com>
-References: <20200513200549.12213-1-dmurphy@ti.com>
- <20200513200549.12213-2-dmurphy@ti.com>
- <alpine.DEB.2.20.2005141006450.30387@lnxricardw1.se.axis.com>
+ Frontend Transport; Thu, 14 May 2020 07:43:10 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04EChA9a030574;
+ Thu, 14 May 2020 07:43:10 -0500
 From: Dan Murphy <dmurphy@ti.com>
-Message-ID: <27145913-cd16-850b-dcfc-01fcffc72d0e@ti.com>
-Date: Thu, 14 May 2020 07:09:23 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+ <tiwai@suse.com>
+Subject: [PATCH v3 1/3] ASoC: tlv320adcx140: Add controls for PDM clk
+Date: Thu, 14 May 2020 07:33:36 -0500
+Message-ID: <20200514123338.20392-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.20.2005141006450.30387@lnxricardw1.se.axis.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-Cc: Rob Herring <robh@kernel.org>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
- "broonie@kernel.org" <broonie@kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Dan Murphy <dmurphy@ti.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -110,63 +100,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Richard
+Add ALSA controls to configure the PDM clocks.
+The clocks need to be configurable to accommodate various microphones
+that use clocks for low power/low resolution modes to high power/high
+resolution modes.
 
-On 5/14/20 3:09 AM, Ricard Wanderlof wrote:
-> On Wed, 13 May 2020, Dan Murphy wrote:
->
->> Add a device tree property to configure the PDM sampling edge for each
->> digital microphone.
->>
->> CC: Rob Herring <robh@kernel.org>
->> Signed-off-by: Dan Murphy <dmurphy@ti.com>
->> ---
->>   .../devicetree/bindings/sound/tlv320adcx140.yaml   | 14 ++++++++++++++
->>   1 file changed, 14 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
->> b/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
->> index ab2268c0ee67..55668c7d261d 100644
->> --- a/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
->> +++ b/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
->> @@ -63,6 +63,19 @@ properties:
->>         - $ref: /schemas/types.yaml#/definitions/uint32
->>         - enum: [0, 1, 2]
->>   
->> +  ti,pdm-edge-select:
->> +    description: |
->> +       Defines the sampling edge configuration for the PDM inputs.  This is
->> an
->> +       array defined as <PDMIN1 PDMIN2 PDMIN3 PDMIN4>. 0 (default) is
->> negative
->> +       sampling edge and 1 is positive sampling edge.
-> A bit of a nitpick, but I would think of the edges as
-> negative-going/positive-going, or rising/falling. Not sure if anyone would
-> misunderstand 'negative edge' in practice though.
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
+ sound/soc/codecs/tlv320adcx140.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-I will re-write the description to be more descriptive.
+diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv320adcx140.c
+index 0f713efde046..97634e0ca0ba 100644
+--- a/sound/soc/codecs/tlv320adcx140.c
++++ b/sound/soc/codecs/tlv320adcx140.c
+@@ -180,6 +180,17 @@ static const struct snd_kcontrol_new decimation_filter_controls[] = {
+ 	SOC_DAPM_ENUM("Decimation Filter", decimation_filter_enum),
+ };
+ 
++static const char * const pdmclk_text[] = {
++	"2.8224 MHz", "1.4112 MHz", "705.6 kHz", "5.6448 MHz"
++};
++
++static SOC_ENUM_SINGLE_DECL(pdmclk_select_enum, ADCX140_PDMCLK_CFG, 0,
++			    pdmclk_text);
++
++static const struct snd_kcontrol_new pdmclk_div_controls[] = {
++	SOC_DAPM_ENUM("PDM Clk Divider Select", pdmclk_select_enum),
++};
++
+ static const char * const resistor_text[] = {
+ 	"2.5 kOhm", "10 kOhm", "20 kOhm"
+ };
+@@ -416,6 +427,9 @@ static const struct snd_soc_dapm_widget adcx140_dapm_widgets[] = {
+ 	SND_SOC_DAPM_MUX("IN4 Analog Mic Resistor", SND_SOC_NOPM, 0, 0,
+ 			in4_resistor_controls),
+ 
++	SND_SOC_DAPM_MUX("PDM Clk Div Select", SND_SOC_NOPM, 0, 0,
++			pdmclk_div_controls),
++
+ 	SND_SOC_DAPM_MUX("Decimation Filter", SND_SOC_NOPM, 0, 0,
+ 			decimation_filter_controls),
+ };
+@@ -493,6 +507,11 @@ static const struct snd_soc_dapm_route adcx140_audio_map[] = {
+ 	{"IN4 Analog Mic Resistor", "10 kOhm", "MIC4M Input Mux"},
+ 	{"IN4 Analog Mic Resistor", "20 kOhm", "MIC4M Input Mux"},
+ 
++	{"PDM Clk Div Select", "2.8224 MHz", "MIC1P Input Mux"},
++	{"PDM Clk Div Select", "1.4112 MHz", "MIC1P Input Mux"},
++	{"PDM Clk Div Select", "705.6 kHz", "MIC1P Input Mux"},
++	{"PDM Clk Div Select", "5.6448 MHz", "MIC1P Input Mux"},
++
+ 	{"MIC1 Analog Mux", "Line In", "MIC1P"},
+ 	{"MIC2 Analog Mux", "Line In", "MIC2P"},
+ 	{"MIC3 Analog Mux", "Line In", "MIC3P"},
+-- 
+2.26.2
 
->> +    allOf:
->> +      - $ref: /schemas/types.yaml#/definitions/uint32-array
->> +      - minItems: 1
->> +        maxItems: 4
->> +        items:
->> +          maximum: 1
->> +        default: [0, 0, 0, 0]
->> +
->>   required:
->>     - compatible
->>     - reg
->> @@ -77,6 +90,7 @@ examples:
->>           compatible = "ti,tlv320adc5140";
->>           reg = <0x4c>;
->>           ti,mic-bias-source = <6>;
->> +        ti,pdm-edge-select = < 0 1 0 1>;
-> Should there really be a space between < and 0 ?
-
-I will remove the space
-
-Dan
-
->
-> /Ricard
