@@ -2,104 +2,72 @@ Return-Path: <SRS0=rado=64=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2128BC433DF
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 07:51:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E8D42C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 07:52:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A58FD20575
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 07:51:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 72A702065D
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 07:52:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hos43l+1";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=semihalf-com.20150623.gappssmtp.com header.i=@semihalf-com.20150623.gappssmtp.com header.b="sgR1zSAR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A58FD20575
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=semihalf.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XTiSr6Jf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 72A702065D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lgepartner.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CB1CB1655;
-	Thu, 14 May 2020 09:50:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB1CB1655
+	by alsa0.perex.cz (Postfix) with ESMTPS id AA5411666;
+	Thu, 14 May 2020 09:51:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA5411666
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589442702;
-	bh=oWkUzHcNQoCoHmwDTd4fBtldr842hT+e9By26IO9BWE=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=hos43l+1kk1fXCzg7sxq/AIzFWKDcs1TwHf2HGkvy+HbflV7x6q2FpAUkmjNFelxY
-	 x9LyZYVDRKeD9O1LYYrFoGkHkAqAee+KBNwWEBdux+CyLmtMX8us8/qVkZ1mXwZfA8
-	 SwIiZhYhstEcQxgsUsbpVCD2KWv/piPMZjvjVDJ0=
+	s=default; t=1589442755;
+	bh=TXokse3URleA/uYDACk1bd2lfnidVUHQ6T8rVDKIcD8=;
+	h=Subject:From:In-Reply-To:Date:References:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=XTiSr6JfSL3+lNc0JA0Dn5gpVG0l6ut9J4cVChbjknkBcxG5y4xWpv9EaZcFLIWyn
+	 iOSjNOrmcdZu2YYAr8zibLomOp1B0iiG1b7vahjTXljQ3D/dYJk9kr7rvxwwL41d3Y
+	 XEE0VbDzJ9dsvhxvRqDyS/UA4ws/vkQBMt0yZYFY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5C223F8014C;
-	Thu, 14 May 2020 09:50:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3993BF8015A;
+	Thu, 14 May 2020 09:50:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 72D18F80247; Wed, 13 May 2020 21:20:35 +0200 (CEST)
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com
- [IPv6:2a00:1450:4864:20::242])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 21E0EF800BD
- for <alsa-devel@alsa-project.org>; Wed, 13 May 2020 21:20:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21E0EF800BD
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=semihalf-com.20150623.gappssmtp.com
- header.i=@semihalf-com.20150623.gappssmtp.com header.b="sgR1zSAR"
-Received: by mail-lj1-x242.google.com with SMTP id u6so841005ljl.6
- for <alsa-devel@alsa-project.org>; Wed, 13 May 2020 12:20:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=semihalf-com.20150623.gappssmtp.com; s=20150623;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=xJ0/kVLgd2XGmGl/2Yf51DVqklc7Fd5xTLD8Gz5eOGs=;
- b=sgR1zSARIfNb5fmO42UIoCiOlBOwG/mW+CjWTciqdhRmacNax0zJx/8WqkW3M4LtvL
- iioqJ6NsaRunXfeiPr9NG/jArKqHdg2jNzHvOdJnqI813AK8ktGknxDkeDjYtqMTzrgt
- X6jAUwDbQURSF0gCNRt8YlUykbf+MxlnauLPHqUNMjWvBCckfwH5ISARtErxudxCwQRX
- St1fXVglOdzssSF2uGH8Od6/8Yx3aOJltIPPheBeqCGNhxaas/QirBJomNKVosyHPjnT
- zAgS2gRk3/Vo9xToor1UCNa9aXQ0V7msn3kiMNgSeUpZOUxNngUAX42VW9SJzjF3WhY0
- PYEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=xJ0/kVLgd2XGmGl/2Yf51DVqklc7Fd5xTLD8Gz5eOGs=;
- b=LH12p5wsghwpYlnXJEdzUD+o4KIcIvc+9WxM7c+6BL332RnH7god6EAQc1SykbEl1t
- UE4w570tSMop4Pbr3g+B+FkvTiNGcIvhDaeBd397jMLP/0Hy04gvUf2cfGo/FaAfhTWm
- hcFK6LUPqGbO+2k070Wyq9IH8mnqg0TtNxaNLHZ1VKcFFYj2EvkOw0IP8r3bd+ja6Ig2
- JL5s43+8wYDlIl+kAVwU323B5UiKnbcuOUlSTHC5bAlee7bGpbh6r39q/1x4Gvg8h3Ks
- m73EHAo63S0pGY7a8hO8TNqadushVRjb1N8MFMmRHbc5KQnhnu4TT/8zv3M4aiqjpHjO
- Tcpw==
-X-Gm-Message-State: AOAM533jc2MMS6kJcr0qMHcRLLIRfzsUep5e0Fv/Bi3YXeosmmaBpu1s
- PCOCKD7BK3iTk63JScwl5OLfgA==
-X-Google-Smtp-Source: ABdhPJwW/lpo7amvDkWje0tqgAbIdqAjf3MAmxRXMtrXK4vDjdOhT9zw+Cb1MxqnGbgyJxozl1DWrg==
-X-Received: by 2002:a05:651c:490:: with SMTP id
- s16mr374721ljc.152.1589397626676; 
- Wed, 13 May 2020 12:20:26 -0700 (PDT)
-Received: from deadpool.semihalf.local (89-70-221-122.dynamic.chello.pl.
- [89.70.221.122])
- by smtp.gmail.com with ESMTPSA id w24sm288397lfk.47.2020.05.13.12.20.25
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 13 May 2020 12:20:26 -0700 (PDT)
-From: Lukasz Majczak <lma@semihalf.com>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Jie Yang <yang.jie@linux.intel.com>
-Subject: [PATCH] ASoC: Intel: kbl_rt5663_rt5514_max98927: Split
- be_hw_params_fixup function
-Date: Wed, 13 May 2020 21:20:20 +0200
-Message-Id: <20200513192020.544928-1-lma@semihalf.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+ id 10278F80158; Thu, 14 May 2020 04:47:32 +0200 (CEST)
+Received: from lgeamrelo11.lge.com (lgeamrelo12.lge.com [156.147.23.52])
+ by alsa1.perex.cz (Postfix) with ESMTP id 9834FF800BD
+ for <alsa-devel@alsa-project.org>; Thu, 14 May 2020 04:47:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9834FF800BD
+Received: from unknown (HELO lgeamrelo04.lge.com) (156.147.1.127)
+ by 156.147.23.52 with ESMTP; 14 May 2020 11:47:08 +0900
+X-Original-SENDERIP: 156.147.1.127
+X-Original-MAILFROM: changjoon.lee@lgepartner.com
+Received: from unknown (HELO ?10.157.161.30?) (10.157.161.30)
+ by 156.147.1.127 with ESMTP; 14 May 2020 11:47:08 +0900
+X-Original-SENDERIP: 10.157.161.30
+X-Original-MAILFROM: changjoon.lee@lgepartner.com
+Content-Type: text/plain;
+	charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: [PATCH 1/1] Updated negative return values for documentation
+ update.
+From: CJ Lee <changjoon.lee@lgepartner.com>
+In-Reply-To: <20200512090547.76991-2-changjoon.lee@lge.com>
+Date: Thu, 14 May 2020 11:47:08 +0900
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <323558A8-0209-42EF-8E02-43F76D3AB6A5@lgepartner.com>
+References: <20200512090547.76991-1-changjoon.lee@lge.com>
+ <20200512090547.76991-2-changjoon.lee@lge.com>
+To: tiwai@suse.de
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
 X-Mailman-Approved-At: Thu, 14 May 2020 09:50:50 +0200
-Cc: alsa-devel@alsa-project.org, Radoslaw Biernacki <rad@semihalf.com>,
- Ross Zwisler <zwisler@google.com>, linux-kernel@vger.kernel.org,
- Bob Brandt <brndt@google.com>, Marcin Wojtas <mw@semihalf.com>,
- Alex Levin <levinale@chromium.org>, Lukasz Majczak <lma@semihalf.com>
+Cc: alsa-devel@alsa-project.org, linux@endlessm.com,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -115,136 +83,347 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Split be_hw_params_fixup function for different codecs as current common
-function, leads to crash while trying to get snd_soc_dpcm with
-container_of() macro in kabylake_ssp_fixup().
-The crash call path looks as below:
-soc_pcm_hw_params()
-snd_soc_dai_hw_params(codec_dai, substream, &codec_params);
-rtd->dai_link->be_hw_params_fixup(rtd, params)
-kabylake_ssp_fixup()
-In this case, codec_params is just a copy of an internal structure and is
-not embedded into struct snd_soc_dpcm thus we cannot use
-container_of() on it.
+Dear Tiwai san,
 
-Signed-off-by: Lukasz Majczak <lma@semihalf.com>
----
- .../intel/boards/kbl_rt5663_rt5514_max98927.c | 68 +++++++++++--------
- 1 file changed, 39 insertions(+), 29 deletions(-)
+First of all, thank you very much all those years you contributed on =
+ALSA.
 
-diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-index 1b1f8d7a4ea3..2e0ae724122c 100644
---- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-@@ -328,46 +328,55 @@ static const struct snd_soc_ops kabylake_rt5663_fe_ops = {
- 	.startup = kbl_fe_startup,
- };
- 
--static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
--					struct snd_pcm_hw_params *params)
-+static void kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
-+	struct snd_pcm_hw_params *params, snd_pcm_format_t pcm_fmt)
- {
- 	struct snd_interval *rate = hw_param_interval(params,
- 			SNDRV_PCM_HW_PARAM_RATE);
--	struct snd_interval *chan = hw_param_interval(params,
-+	struct snd_interval *channels = hw_param_interval(params,
- 			SNDRV_PCM_HW_PARAM_CHANNELS);
- 	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
--	struct snd_soc_dpcm *dpcm = container_of(
--			params, struct snd_soc_dpcm, hw_params);
--	struct snd_soc_dai_link *fe_dai_link = dpcm->fe->dai_link;
--	struct snd_soc_dai_link *be_dai_link = dpcm->be->dai_link;
- 
- 	/*
- 	 * The ADSP will convert the FE rate to 48k, stereo, 24 bit
- 	 */
--	if (!strcmp(fe_dai_link->name, "Kbl Audio Port") ||
--	    !strcmp(fe_dai_link->name, "Kbl Audio Headset Playback") ||
--	    !strcmp(fe_dai_link->name, "Kbl Audio Capture Port")) {
--		rate->min = rate->max = 48000;
--		chan->min = chan->max = 2;
--		snd_mask_none(fmt);
--		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S24_LE);
--	} else if (!strcmp(fe_dai_link->name, "Kbl Audio DMIC cap")) {
--		if (params_channels(params) == 2 ||
--				DMIC_CH(dmic_constraints) == 2)
--			chan->min = chan->max = 2;
--		else
--			chan->min = chan->max = 4;
--	}
--	/*
--	 * The speaker on the SSP0 supports S16_LE and not S24_LE.
--	 * thus changing the mask here
--	 */
--	if (!strcmp(be_dai_link->name, "SSP0-Codec"))
--		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S16_LE);
- 
-+	rate->min = rate->max = 48000;
-+	channels->min = channels->max = 2;
-+
-+	snd_mask_none(fmt);
-+	snd_mask_set_format(fmt, pcm_fmt);
-+}
-+
-+static int kabylake_ssp0_fixup(struct snd_soc_pcm_runtime *rtd,
-+	struct snd_pcm_hw_params *params)
-+{
-+	kabylake_ssp_fixup(rtd, params, SNDRV_PCM_FORMAT_S16_LE);
- 	return 0;
- }
- 
-+static int kabylake_ssp1_fixup(struct snd_soc_pcm_runtime *rtd,
-+	struct snd_pcm_hw_params *params)
-+{
-+
-+	kabylake_ssp_fixup(rtd, params, SNDRV_PCM_FORMAT_S24_LE);
-+	return 0;
-+}
-+
-+static int kabylake_dmic_cap_fixup(struct snd_soc_pcm_runtime *rtd,
-+	struct snd_pcm_hw_params *params)
-+{
-+	struct snd_interval *channels = hw_param_interval(params,
-+			SNDRV_PCM_HW_PARAM_CHANNELS);
-+
-+	if (params_channels(params) == 2 ||
-+			DMIC_CH(dmic_constraints) == 2)
-+		channels->min = channels->max = 2;
-+	else
-+		channels->min = channels->max = 4;
-+
-+	return 0;
-+}
- static int kabylake_rt5663_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
- {
-@@ -582,6 +591,7 @@ static struct snd_soc_dai_link kabylake_dais[] = {
- 		.dpcm_capture = 1,
- 		.nonatomic = 1,
- 		.dynamic = 1,
-+		.be_hw_params_fixup = kabylake_dmic_cap_fixup,
- 		.ops = &kabylake_dmic_ops,
- 		SND_SOC_DAILINK_REG(dmic, dummy, platform),
- 	},
-@@ -618,7 +628,7 @@ static struct snd_soc_dai_link kabylake_dais[] = {
- 			SND_SOC_DAIFMT_NB_NF |
- 			SND_SOC_DAIFMT_CBS_CFS,
- 		.ignore_pmdown_time = 1,
--		.be_hw_params_fixup = kabylake_ssp_fixup,
-+		.be_hw_params_fixup = kabylake_ssp0_fixup,
- 		.dpcm_playback = 1,
- 		.dpcm_capture = 1,
- 		.ops = &kabylake_ssp0_ops,
-@@ -632,7 +642,7 @@ static struct snd_soc_dai_link kabylake_dais[] = {
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 			SND_SOC_DAIFMT_CBS_CFS,
- 		.ignore_pmdown_time = 1,
--		.be_hw_params_fixup = kabylake_ssp_fixup,
-+		.be_hw_params_fixup = kabylake_ssp1_fixup,
- 		.ops = &kabylake_rt5663_ops,
- 		.dpcm_playback = 1,
- 		.dpcm_capture = 1,
--- 
-2.25.1
+Couple of days ago I emailed you over updating remark fields.
+The purpose of edit was providing more error and meaning to application =
+engineers.
+
+For example, when snd_pcm_writei returned -EIO, application engineer =
+didn=E2=80=99t understand what it means because the documentation =
+didn=E2=80=99t include -EIO comment.
+
+Would you please let me know if I need to do something to apply these =
+changes?
+I=E2=80=99m very new to linux community, and I thought create a patch =
+and email to relevant recipients.
+However, it looks like I=E2=80=99m missing something here. :)
+
+FYI, I have not changed any code.=20
+
+Thank you.
+
+Best regards,
+CJ Lee
+
+
+> 2020. 5. 12. =EC=98=A4=ED=9B=84 6:05, changjoon.lee@lge.com =EC=9E=91=EC=
+=84=B1:
+>=20
+> From: ChangJoon Lee <changjoon.lee@lge.com>
+>=20
+> Signed-off-by: ChangJoon Lee <changjoon.lee@lge.com>
+> ---
+> src/pcm/pcm.c | 57 ++++++++++++++++++++++++++++++++++++++++++++++++---
+> 1 file changed, 54 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
+> index 1064044c..b53797a6 100644
+> --- a/src/pcm/pcm.c
+> +++ b/src/pcm/pcm.c
+> @@ -820,6 +820,7 @@ int snd_pcm_nonblock(snd_pcm_t *pcm, int nonblock)
+>  * \param sig Signal to raise: < 0 disable, 0 default (SIGIO)
+>  * \param pid Process ID to signal: 0 current
+>  * \return 0 on success otherwise a negative error code
+> + * \return -ENOSYS Async is not supported on this PCM
+>  *
+>  * A signal is raised every period.
+>  */
+> @@ -850,6 +851,7 @@ int snd_pcm_async(snd_pcm_t *pcm, int sig, pid_t =
+pid)
+>  * \param pcm PCM handle
+>  * \param info Information container
+>  * \return 0 on success otherwise a negative error code
+> + * \return -ENOSYS Info is not supported on this PCM
+>  */
+> int snd_pcm_info(snd_pcm_t *pcm, snd_pcm_info_t *info)
+> {
+> @@ -867,6 +869,7 @@ int snd_pcm_info(snd_pcm_t *pcm, snd_pcm_info_t =
+*info)
+>  * \param pcm PCM handle
+>  * \param params Configuration space definition container
+>  * \return 0 on success otherwise a negative error code
+> + * \return -EBADFD PCM has not been setup (PCM isn't configured yet, =
+or lifecycle of PCM has been ended)
+>  */
+> int snd_pcm_hw_params_current(snd_pcm_t *pcm, snd_pcm_hw_params_t =
+*params)
+> {
+> @@ -933,6 +936,7 @@ int snd_pcm_hw_params(snd_pcm_t *pcm, =
+snd_pcm_hw_params_t *params)
+> /** \brief Remove PCM hardware configuration and free associated =
+resources
+>  * \param pcm PCM handle
+>  * \return 0 on success otherwise a negative error code
+> + * \return -ENOSYS Hw_free is not supported on this PCM
+>  */
+> int snd_pcm_hw_free(snd_pcm_t *pcm)
+> {
+> @@ -960,7 +964,9 @@ int snd_pcm_hw_free(snd_pcm_t *pcm)
+>  * \param pcm PCM handle
+>  * \param params Configuration container
+>  * \return 0 on success otherwise a negative error code
+> - *
+> + * \retval -EIO PCM has not been setup (PCM isn't configured yet, or =
+lifecycle of PCM has been ended)
+> + * \retval -EINVAL Incorrect parameter, avail_min cannot be 0
+> + *=20
+>  * The software parameters can be changed at any time.
+>  * The hardware parameters cannot be changed when the stream is
+>  * running (active).
+> @@ -1017,6 +1023,7 @@ int snd_pcm_sw_params(snd_pcm_t *pcm, =
+snd_pcm_sw_params_t *params)
+>  * \param pcm PCM handle
+>  * \param status Status container
+>  * \return 0 on success otherwise a negative error code
+> + * \return -ENOSYS Status is not supported on this PCM
+>  *
+>  * The function is thread-safe when built with the proper option.
+>  */
+> @@ -1060,7 +1067,8 @@ snd_pcm_state_t snd_pcm_state(snd_pcm_t *pcm)
+>  * \brief (DEPRECATED) Synchronize stream position with hardware
+>  * \param pcm PCM handle
+>  * \return 0 on success otherwise a negative error code
+> - *
+> + * \retval -EIO PCM has not been setup (PCM isn't configured yet, or =
+lifecycle of PCM has been ended)
+> + *=20
+>  * Note this function does not update the actual r/w pointer
+>  * for applications. The function #snd_pcm_avail_update()
+>  * have to be called before any mmap begin+commit operation.
+> @@ -1089,6 +1097,7 @@ int snd_pcm_hwsync(snd_pcm_t *pcm)
+>  * \param pcm PCM handle
+>  * \param delayp Returned delay in frames
+>  * \return 0 on success otherwise a negative error code
+> + * \retval -EIO PCM has not been setup (PCM isn't configured yet, or =
+lifecycle of PCM has been ended)
+>  *
+>  * For playback the delay is defined as the time that a frame that is =
+written
+>  * to the PCM stream shortly after this call will take to be actually
+> @@ -1133,6 +1142,7 @@ int snd_pcm_delay(snd_pcm_t *pcm, =
+snd_pcm_sframes_t *delayp)
+>  * \brief Resume from suspend, no samples are lost
+>  * \param pcm PCM handle
+>  * \return 0 on success otherwise a negative error code
+> + * \retval -EIO    PCM has not been setup (PCM isn't configured yet, =
+or lifecycle of PCM has been ended)
+>  * \retval -EAGAIN resume can't be proceed immediately (audio hardware =
+is probably still suspended)
+>  * \retval -ENOSYS hardware doesn't support this feature
+>  *
+> @@ -1166,6 +1176,8 @@ int snd_pcm_resume(snd_pcm_t *pcm)
+>  * \param avail Number of available frames when timestamp was grabbed
+>  * \param tstamp Hi-res timestamp
+>  * \return 0 on success otherwise a negative error code
+> + * \retval -EIO    PCM has not been setup (PCM isn't configured yet, =
+or lifecycle of PCM has been ended)
+> + * \retval -ENOSYS Hi-res timestamp is not supported on this system.
+>  *
+>  * Note this function does not update the actual r/w pointer
+>  * for applications.
+> @@ -1194,6 +1206,9 @@ int snd_pcm_htimestamp(snd_pcm_t *pcm, =
+snd_pcm_uframes_t *avail, snd_htimestamp_
+>  * \brief Prepare PCM for use
+>  * \param pcm PCM handle
+>  * \return 0 on success otherwise a negative error code
+> + * \retval -EIO    PCM has not been setup (PCM isn't configured yet, =
+or lifecycle of PCM has been ended)
+> + * \retval -ENOSYS Prepare is not supported on this PCM
+> + * \retval -EBADFD PCM is not in the right state =
+(#SND_PCM_STATE_DISCONNECTED)
+>  *
+>  * The function is thread-safe when built with the proper option.
+>  */
+> @@ -1222,6 +1237,8 @@ int snd_pcm_prepare(snd_pcm_t *pcm)
+>  * \brief Reset PCM position
+>  * \param pcm PCM handle
+>  * \return 0 on success otherwise a negative error code
+> + * \retval -EIO    PCM has not been setup (PCM isn't configured yet, =
+or lifecycle of PCM has been ended)
+> + * \retval -ENOSYS Reset is not supported on this PCM
+>  *
+>  * Reduce PCM delay to 0.
+>  *
+> @@ -1249,6 +1266,8 @@ int snd_pcm_reset(snd_pcm_t *pcm)
+>  * \brief Start a PCM
+>  * \param pcm PCM handle
+>  * \return 0 on success otherwise a negative error code
+> + * \retval -EIO    PCM has not been setup (PCM isn't configured yet, =
+or lifecycle of PCM has been ended)
+> + * \retval -EBADFD PCM is not in the right state =
+(#SND_PCM_STATE_PREPARED)
+>  *
+>  * The function is thread-safe when built with the proper option.
+>  */
+> @@ -1274,6 +1293,8 @@ int snd_pcm_start(snd_pcm_t *pcm)
+>  * \brief Stop a PCM dropping pending frames
+>  * \param pcm PCM handle
+>  * \return 0 on success otherwise a negative error code
+> + * \retval -EIO    PCM has not been setup (PCM isn't configured yet, =
+or lifecycle of PCM has been ended)
+> + * \retval -EBADFD PCM is not in the right state (Should be =
+PREPARED,RUNNING,XRUN,PAUSED,DRAINING,SETUP or SUSPENDED)
+>  *
+>  * This function stops the PCM <i>immediately</i>.
+>  * The pending samples on the buffer are ignored.
+> @@ -1309,7 +1330,10 @@ int snd_pcm_drop(snd_pcm_t *pcm)
+>  * \brief Stop a PCM preserving pending frames
+>  * \param pcm PCM handle
+>  * \return 0 on success otherwise a negative error code
+> + * \retval -EIO    PCM has not been setup (PCM isn't configured yet, =
+or lifecycle of PCM has been ended)
+> + * \retval -EBADFD PCM is not in the right state (Should be =
+PREPARED,RUNNING,XRUN,PAUSED or DRAINING,SETUP or SUSPENDED)
+>  * \retval -ESTRPIPE a suspend event occurred
+> + * \retval -ENOSYS Drain is not supported on this PCM
+>  *
+>  * For playback wait for all pending frames to be played and then stop
+>  * the PCM.
+> @@ -1345,6 +1369,10 @@ int snd_pcm_drain(snd_pcm_t *pcm)
+>  * \param pcm PCM handle
+>  * \param enable 0 =3D resume, 1 =3D pause
+>  * \return 0 on success otherwise a negative error code
+> + * \retval -EIO    PCM has not been setup (PCM isn't configured yet, =
+or lifecycle of PCM has been ended)
+> + * \retval -EBADFD PCM is not in the right state (Should be =
+PREPARED,RUNNING,XRUN,PAUSED or DRAINING)
+> + * \retval -ESTRPIPE a suspend event occurred
+> + * \retval -ENOSYS Pause is not supported on this PCM
+>  *
+>  * Note that this function works only on the hardware which supports
+>  * pause feature.  You can check it via \link =
+::snd_pcm_hw_params_can_pause() \endlink
+> @@ -1377,6 +1405,10 @@ int snd_pcm_pause(snd_pcm_t *pcm, int enable)
+>  * \brief Get safe count of frames which can be rewinded
+>  * \param pcm PCM handle
+>  * \return a positive number of frames or negative error code
+> + * \retval -EIO    PCM has not been setup (PCM isn't configured yet, =
+or lifecycle of PCM has been ended)
+> + * \retval -EBADFD PCM is not in the right state (Should be =
+PREPARED,RUNNING,XRUN,PAUSED or DRAINING)
+> + * \retval -ESTRPIPE a suspend event occurred
+> + * \retval -ENOSYS Rewindable is not supported on this PCM
+>  *
+>  * Note: The snd_pcm_rewind() can accept bigger value than returned
+>  * by this function. But it is not guaranteed that output stream
+> @@ -1412,6 +1444,9 @@ snd_pcm_sframes_t snd_pcm_rewindable(snd_pcm_t =
+*pcm)
+>  * \param frames wanted displacement in frames
+>  * \return a positive number for actual displacement otherwise a
+>  * negative error code
+> + * \retval -EIO    PCM has not been setup (PCM isn't configured yet, =
+or lifecycle of PCM has been ended)
+> + * \retval -EBADFD PCM is not in the right state (Should be =
+PREPARED,RUNNING,XRUN,PAUSED or DRAINING)
+> + * \retval -ENOSYS Rewind is not supported on this PCM
+>  *
+>  * The function is thread-safe when built with the proper option.
+>  */
+> @@ -1443,6 +1478,9 @@ snd_pcm_sframes_t snd_pcm_rewind(snd_pcm_t *pcm, =
+snd_pcm_uframes_t frames)
+>  * \brief Get safe count of frames which can be forwarded
+>  * \param pcm PCM handle
+>  * \return a positive number of frames or negative error code
+> + * \retval -EIO    PCM has not been setup (PCM isn't configured yet, =
+or lifecycle of PCM has been ended)
+> + * \retval -EBADFD PCM is not in the right state (Should be =
+PREPARED,RUNNING,XRUN,PAUSED or DRAINING)
+> + * \retval -ENOSYS Forwardable is not supported on this PCM
+>  *
+>  * Note: The snd_pcm_forward() can accept bigger value than returned
+>  * by this function. But it is not guaranteed that output stream
+> @@ -1478,6 +1516,9 @@ snd_pcm_sframes_t snd_pcm_forwardable(snd_pcm_t =
+*pcm)
+>  * \param frames wanted skip in frames
+>  * \return a positive number for actual skip otherwise a negative =
+error code
+>  * \retval 0 means no action
+> + * \retval -EIO    PCM has not been setup (PCM isn't configured yet, =
+or lifecycle of PCM has been ended)
+> + * \retval -EBADFD PCM is not in the right state (Should be =
+PREPARED,RUNNING,XRUN,PAUSED or DRAINING)
+> + * \retval -ENOSYS Forward is not supported on this PCM
+>  *
+>  * The function is thread-safe when built with the proper option.
+>  */
+> @@ -1517,6 +1558,8 @@ use_default_symbol_version(__snd_pcm_forward, =
+snd_pcm_forward, ALSA_0.9.0rc8);
+>  * \param size frames to be written
+>  * \return a positive number of frames actually written otherwise a
+>  * negative error code
+> + * \retval -EIO    PCM has not been setup (PCM isn't configured yet, =
+or lifecycle of PCM has been ended)
+> + * \retval -EINVAL Access type is not Interleave type.
+>  * \retval -EBADFD PCM is not in the right state =
+(#SND_PCM_STATE_PREPARED or #SND_PCM_STATE_RUNNING)
+>  * \retval -EPIPE an underrun occurred
+>  * \retval -ESTRPIPE a suspend event occurred (stream is suspended and =
+waiting for an application recovery)
+> @@ -1556,6 +1599,8 @@ snd_pcm_sframes_t snd_pcm_writei(snd_pcm_t *pcm, =
+const void *buffer, snd_pcm_ufr
+>  * \param size frames to be written
+>  * \return a positive number of frames actually written otherwise a
+>  * negative error code
+> + * \retval -EIO    PCM has not been setup (PCM isn't configured yet, =
+or lifecycle of PCM has been ended)
+> + * \retval -EINVAL Access type is not Non-Interleave type.
+>  * \retval -EBADFD PCM is not in the right state =
+(#SND_PCM_STATE_PREPARED or #SND_PCM_STATE_RUNNING)
+>  * \retval -EPIPE an underrun occurred
+>  * \retval -ESTRPIPE a suspend event occurred (stream is suspended and =
+waiting for an application recovery)
+> @@ -1595,6 +1640,8 @@ snd_pcm_sframes_t snd_pcm_writen(snd_pcm_t *pcm, =
+void **bufs, snd_pcm_uframes_t
+>  * \param size frames to be read
+>  * \return a positive number of frames actually read otherwise a
+>  * negative error code
+> + * \retval -EIO PCM has not been setup (PCM isn't configured yet, or =
+lifecycle of PCM has been ended)
+> + * \retval -EINVAL Access type is not Interleave type.
+>  * \retval -EBADFD PCM is not in the right state =
+(#SND_PCM_STATE_PREPARED or #SND_PCM_STATE_RUNNING)
+>  * \retval -EPIPE an overrun occurred
+>  * \retval -ESTRPIPE a suspend event occurred (stream is suspended and =
+waiting for an application recovery)
+> @@ -1634,6 +1681,8 @@ snd_pcm_sframes_t snd_pcm_readi(snd_pcm_t *pcm, =
+void *buffer, snd_pcm_uframes_t
+>  * \param size frames to be read
+>  * \return a positive number of frames actually read otherwise a
+>  * negative error code
+> + * \retval -EIO PCM has not been setup (PCM isn't configured yet, or =
+lifecycle of PCM has been ended)
+> + * \retval -EINVAL Access type is not Non-Interleave type.
+>  * \retval -EBADFD PCM is not in the right state =
+(#SND_PCM_STATE_PREPARED or #SND_PCM_STATE_RUNNING)
+>  * \retval -EPIPE an overrun occurred
+>  * \retval -ESTRPIPE a suspend event occurred (stream is suspended and =
+waiting for an application recovery)
+> @@ -1669,8 +1718,9 @@ snd_pcm_sframes_t snd_pcm_readn(snd_pcm_t *pcm, =
+void **bufs, snd_pcm_uframes_t s
+> /**
+>  * \brief Link two PCMs
+>  * \param pcm1 first PCM handle
+> - * \param pcm2 first PCM handle
+> + * \param pcm2 second PCM handle
+>  * \return 0 on success otherwise a negative error code
+> + * \retval -ENOSYS Link is not supported on pcm1
+>  *
+>  * The two PCMs will start/stop/prepare in sync.
+>  */=20
+> @@ -1691,6 +1741,7 @@ int snd_pcm_link(snd_pcm_t *pcm1, snd_pcm_t =
+*pcm2)
+>  * \brief Remove a PCM from a linked group
+>  * \param pcm PCM handle
+>  * \return 0 on success otherwise a negative error code
+> + * \retval -ENOSYS Unlink is not supported on this PCM.
+>  */
+> int snd_pcm_unlink(snd_pcm_t *pcm)
+> {
+> --=20
+> 2.26.2
+>=20
 
