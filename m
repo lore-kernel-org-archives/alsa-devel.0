@@ -7,53 +7,53 @@ X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41E35C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 08:48:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 37460C433E3
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 08:49:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BAEAC20575
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 08:48:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A3A94206DC
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 08:49:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Yi3pEYUq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BAEAC20575
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QIs7Ju6u"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A3A94206DC
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1E59F1687;
-	Thu, 14 May 2020 10:48:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E59F1687
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0CDC61665;
+	Thu, 14 May 2020 10:48:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0CDC61665
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589446130;
-	bh=c2vYOCBzKrT2yRL8rB6R3DETj7e3qY9pNu1ixUvNIfE=;
+	s=default; t=1589446161;
+	bh=P/nmBfulp7GqEIa8UJrv7R2Nk3+JRlVLya7nMIU6WiQ=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Yi3pEYUqUQfemD7rH6XqK7ehHBTk2Qk2WL5iyDEp0p+y4wcp6E0Hsvp950ARWWmhe
-	 NIY8OsNiaUolBStF61QbPV/DW+3+YO/+QdPTDThr4ZhphilO4Yqt/pvYo4kGPNt3ze
-	 z1PymXD7yiUKW+O6naudBcG9OWITLWteItlAX3Fw=
+	b=QIs7Ju6uyksWTvA+qak5Q8ZWI/8Bcas+JxRxZ/Kp1CvnyuJSAcu7DDPuFnQ2MERO/
+	 H/9S+onedhunfPeMWUVWslXNogfHq0kmkcYlymKNONbc9kPpkgyhyXrHop6AFwa2Uu
+	 WixdY5c5YxRJZugtbu6KgfEYBrG+sTIpMvJpwBVE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 82C12F802FF;
-	Thu, 14 May 2020 10:43:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E8BBEF80304;
+	Thu, 14 May 2020 10:43:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0D4B8F80303; Thu, 14 May 2020 10:43:24 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 6649AF802FB
- for <alsa-devel@alsa-project.org>; Thu, 14 May 2020 10:43:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6649AF802FB
-Date: 14 May 2020 17:43:20 +0900
-X-IronPort-AV: E=Sophos;i="5.73,390,1583161200"; d="scan'208";a="47069768"
+ id 6236FF80304; Thu, 14 May 2020 10:43:41 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id BA375F8015A
+ for <alsa-devel@alsa-project.org>; Thu, 14 May 2020 10:43:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA375F8015A
+Date: 14 May 2020 17:43:37 +0900
+X-IronPort-AV: E=Sophos;i="5.73,390,1583161200"; d="scan'208";a="46856074"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 14 May 2020 17:43:20 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 14 May 2020 17:43:37 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 3567541EAF12;
- Thu, 14 May 2020 17:43:20 +0900 (JST)
-Message-ID: <87k11e7vpz.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 7991F41EB078;
+ Thu, 14 May 2020 17:43:37 +0900 (JST)
+Message-ID: <87imgy7vpi.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v2 19/21] ASoC: uniphier: use snd_soc_xxx_active()
+Subject: [PATCH v2 20/21] ASoC: dwc: use snd_soc_xxx_active()
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87blmq9alx.wl-kuninori.morimoto.gx@renesas.com>
@@ -87,31 +87,22 @@ Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 v1 -> v2
 	- adjust to latest patch-set
 
- sound/soc/uniphier/aio-cpu.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/dwc/dwc-i2s.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/uniphier/aio-cpu.c b/sound/soc/uniphier/aio-cpu.c
-index fdaa6522720f..25c40c28eba4 100644
---- a/sound/soc/uniphier/aio-cpu.c
-+++ b/sound/soc/uniphier/aio-cpu.c
-@@ -424,7 +424,7 @@ static void uniphier_aio_dai_suspend(struct snd_soc_dai *dai)
- {
- 	struct uniphier_aio *aio = uniphier_priv(dai);
+diff --git a/sound/soc/dwc/dwc-i2s.c b/sound/soc/dwc/dwc-i2s.c
+index 515f88456dbd..fd4160289fac 100644
+--- a/sound/soc/dwc/dwc-i2s.c
++++ b/sound/soc/dwc/dwc-i2s.c
+@@ -429,7 +429,7 @@ static int dw_i2s_resume(struct snd_soc_component *component)
  
--	if (!dai->active)
-+	if (!snd_soc_dai_active(dai))
- 		return;
+ 	for_each_component_dais(component, dai) {
+ 		for_each_pcm_streams(stream)
+-			if (dai->stream_active[stream])
++			if (snd_soc_dai_stream_active(dai, stream))
+ 				dw_i2s_config(dev, stream);
+ 	}
  
- 	aio->chip->num_wup_aios--;
-@@ -448,7 +448,7 @@ static int uniphier_aio_dai_resume(struct snd_soc_dai *dai)
- 	struct uniphier_aio *aio = uniphier_priv(dai);
- 	int ret, i;
- 
--	if (!dai->active)
-+	if (!snd_soc_dai_active(dai))
- 		return 0;
- 
- 	if (!aio->chip->active)
 -- 
 2.17.1
 
