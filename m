@@ -7,53 +7,53 @@ X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05DAEC433DF
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 08:42:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 14CDEC433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 08:43:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7AC2820709
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 08:42:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 969F4206B6
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 08:43:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uLdXemYO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7AC2820709
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tSPB0zUT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 969F4206B6
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D9694165E;
-	Thu, 14 May 2020 10:41:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D9694165E
+	by alsa0.perex.cz (Postfix) with ESMTPS id DE4A91676;
+	Thu, 14 May 2020 10:42:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE4A91676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589445754;
-	bh=FHxCgWWvgLiiuUrX9DlEcQqgkIEVIlng2xMq1i1VYpQ=;
+	s=default; t=1589445787;
+	bh=G0zuFHphVIjt8rEpULOkzc1Zea2Y35cCK6O1PmJb8o8=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uLdXemYO9k0p0qaYz6mDh1Vmgerj0DM4hkNPDM4IPjFSHU/680lDOBbIrUrYMlO86
-	 zyBhVyGriUpOAUcmSJ/5eATZd3i6p/cw++NUDZtK89k1UVeBV7rmyV4zf8plCOC3mm
-	 yhqFySKDRKsdv8i905e1i9HX9Ixz3tGZgv3Q46fM=
+	b=tSPB0zUTqXszyO2k2jt/u9JniwMylMZDXlxkZXwRNXPn9DnCgbK34aNoJCzxyNsg3
+	 diMDyTM8UK52jUURR8v3a/ZAbm3IouQR+LQXfswNp1bAwNemD9r0KoFFPu3qIkVZsN
+	 OM6N70T5TJuvinGRbLdZW8KylqbJeZd4BtXId+ps=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6F129F80158;
-	Thu, 14 May 2020 10:41:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F03DCF80291;
+	Thu, 14 May 2020 10:41:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 12454F80291; Thu, 14 May 2020 10:41:05 +0200 (CEST)
+ id 4010AF80292; Thu, 14 May 2020 10:41:16 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 75398F8028E
- for <alsa-devel@alsa-project.org>; Thu, 14 May 2020 10:41:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75398F8028E
-Date: 14 May 2020 17:41:01 +0900
-X-IronPort-AV: E=Sophos;i="5.73,390,1583161200"; d="scan'208";a="46855802"
+ by alsa1.perex.cz (Postfix) with ESMTP id 34619F8014C
+ for <alsa-devel@alsa-project.org>; Thu, 14 May 2020 10:41:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34619F8014C
+Date: 14 May 2020 17:41:13 +0900
+X-IronPort-AV: E=Sophos;i="5.73,390,1583161200"; d="scan'208";a="46855820"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 14 May 2020 17:41:01 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 14 May 2020 17:41:13 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 4D6FF41EA42B;
- Thu, 14 May 2020 17:41:01 +0900 (JST)
-Message-ID: <87zhaa7vtu.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 0EA1A41EA42B;
+ Thu, 14 May 2020 17:41:13 +0900 (JST)
+Message-ID: <87y2pu7vti.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v2 08/21] ASoC: atomel: use snd_soc_xxx_active()
+Subject: [PATCH v2 09/21] ASoC: bcm: use snd_soc_xxx_active()
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87blmq9alx.wl-kuninori.morimoto.gx@renesas.com>
@@ -87,31 +87,63 @@ Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 v1 -> v2
 	- adjust to latest patch-set
 
- sound/soc/atmel/atmel_ssc_dai.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/bcm/bcm2835-i2s.c | 6 +++---
+ sound/soc/bcm/cygnus-ssp.c  | 4 ++--
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-index 1073f468f21f..0f18dfb85bfe 100644
---- a/sound/soc/atmel/atmel_ssc_dai.c
-+++ b/sound/soc/atmel/atmel_ssc_dai.c
-@@ -765,7 +765,7 @@ static int atmel_ssc_suspend(struct snd_soc_component *component)
- 	struct atmel_ssc_info *ssc_p;
- 	struct platform_device *pdev = to_platform_device(component->dev);
+diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
+index e6a12e271b07..d80b570e950e 100644
+--- a/sound/soc/bcm/bcm2835-i2s.c
++++ b/sound/soc/bcm/bcm2835-i2s.c
+@@ -653,7 +653,7 @@ static void bcm2835_i2s_stop(struct bcm2835_i2s_dev *dev,
+ 			BCM2835_I2S_CS_A_REG, mask, 0);
  
--	if (!component->active)
-+	if (!snd_soc_component_active(component))
+ 	/* Stop also the clock when not SND_SOC_DAIFMT_CONT */
+-	if (!dai->active && !(dev->fmt & SND_SOC_DAIFMT_CONT))
++	if (!snd_soc_dai_active(dai) && !(dev->fmt & SND_SOC_DAIFMT_CONT))
+ 		bcm2835_i2s_stop_clock(dev);
+ }
+ 
+@@ -695,7 +695,7 @@ static int bcm2835_i2s_startup(struct snd_pcm_substream *substream,
+ {
+ 	struct bcm2835_i2s_dev *dev = snd_soc_dai_get_drvdata(dai);
+ 
+-	if (dai->active)
++	if (snd_soc_dai_active(dai))
  		return 0;
  
- 	ssc_p = &ssc_info[pdev->id];
-@@ -793,7 +793,7 @@ static int atmel_ssc_resume(struct snd_soc_component *component)
- 	struct platform_device *pdev = to_platform_device(component->dev);
- 	u32 cr;
+ 	/* Should this still be running stop it */
+@@ -723,7 +723,7 @@ static void bcm2835_i2s_shutdown(struct snd_pcm_substream *substream,
+ 	bcm2835_i2s_stop(dev, substream, dai);
  
--	if (!component->active)
-+	if (!snd_soc_component_active(component))
+ 	/* If both streams are stopped, disable module and clock */
+-	if (dai->active)
++	if (snd_soc_dai_active(dai))
+ 		return;
+ 
+ 	/* Disable the module */
+diff --git a/sound/soc/bcm/cygnus-ssp.c b/sound/soc/bcm/cygnus-ssp.c
+index 257f5048061e..6e634b448293 100644
+--- a/sound/soc/bcm/cygnus-ssp.c
++++ b/sound/soc/bcm/cygnus-ssp.c
+@@ -1056,7 +1056,7 @@ static int __cygnus_ssp_suspend(struct snd_soc_dai *cpu_dai)
+ {
+ 	struct cygnus_aio_port *aio = cygnus_dai_get_portinfo(cpu_dai);
+ 
+-	if (!cpu_dai->active)
++	if (!snd_soc_dai_active(cpu_dai))
  		return 0;
  
- 	ssc_p = &ssc_info[pdev->id];
+ 	if (!aio->is_slave) {
+@@ -1097,7 +1097,7 @@ static int __cygnus_ssp_resume(struct snd_soc_dai *cpu_dai)
+ 	struct cygnus_aio_port *aio = cygnus_dai_get_portinfo(cpu_dai);
+ 	int error;
+ 
+-	if (!cpu_dai->active)
++	if (!snd_soc_dai_active(cpu_dai))
+ 		return 0;
+ 
+ 	if (!aio->is_slave) {
 -- 
 2.17.1
 
