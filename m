@@ -2,58 +2,58 @@ Return-Path: <SRS0=rado=64=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1870C433DF
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 08:45:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE046C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 08:45:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 78E5A20575
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 08:45:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7364220575
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 08:45:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Hx1JegxJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 78E5A20575
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mHwnUW2f"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7364220575
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D9772167C;
-	Thu, 14 May 2020 10:44:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D9772167C
+	by alsa0.perex.cz (Postfix) with ESMTPS id C404E1676;
+	Thu, 14 May 2020 10:45:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C404E1676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589445919;
-	bh=oJj2QpoJYxI6EdOKnmXessBcvi99NYDXNmdRLlA/HCs=;
+	s=default; t=1589445956;
+	bh=aszOpaZQ5ZMFPZF9QbTj8y6kFRzPgmfYTLATZVXShLg=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Hx1JegxJuckAW5h2A3jco+f0BebLpNq9tgBrcZ7YIWzFb/qkVWRhJomMN4FwDYAR2
-	 gVoDYckLwIiChzipOjIeAXV4kFZhbqVD99oVpPCPBoOmZEQ9bORCPh6LCFo3R0BUIC
-	 Aw8we/NpTsHbbmLe6i0kKMTqKHXPLD+MH+cyCx40=
+	b=mHwnUW2fZkwwVIx9cZr0k3RV+d6jrId+hUrnsMAxKhZA6jJUAZ3eK79SAXP1ufIZZ
+	 //4YHTZ/M9dPJFE2b82ycHL+bLXRwK0dP15QexErQX5BlfGFSC/Icu5fkCkx+rYLdH
+	 594vm9QE1nmbDaWu+6GyTtLpnR8im5gFk8VJZZnM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 71AF2F802C4;
-	Thu, 14 May 2020 10:42:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4EE0EF802DC;
+	Thu, 14 May 2020 10:42:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BAE08F802D2; Thu, 14 May 2020 10:42:18 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 0E8BCF802BE
- for <alsa-devel@alsa-project.org>; Thu, 14 May 2020 10:42:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0E8BCF802BE
-Date: 14 May 2020 17:42:14 +0900
-X-IronPort-AV: E=Sophos;i="5.73,390,1583161200"; d="scan'208";a="47069647"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 14 May 2020 17:42:14 +0900
+ id 27A9AF802DF; Thu, 14 May 2020 10:42:30 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 6F311F802DC
+ for <alsa-devel@alsa-project.org>; Thu, 14 May 2020 10:42:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F311F802DC
+Date: 14 May 2020 17:42:26 +0900
+X-IronPort-AV: E=Sophos;i="5.73,390,1583161200"; d="scan'208";a="46855944"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 14 May 2020 17:42:26 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id BE08641EAEF0;
- Thu, 14 May 2020 17:42:14 +0900 (JST)
-Message-ID: <87sgg27vrt.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 3CBE7400966E;
+ Thu, 14 May 2020 17:42:26 +0900 (JST)
+Message-ID: <87r1vm7vrh.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v2 13/21] ASoC: intel: use snd_soc_xxx_active()
+Subject: [PATCH v2 14/21] ASoC: jz4740: use snd_soc_xxx_active()
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87blmq9alx.wl-kuninori.morimoto.gx@renesas.com>
@@ -87,76 +87,49 @@ Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 v1 -> v2
 	- adjust to latest patch-set
 
- sound/soc/intel/atom/sst-mfld-platform-pcm.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ sound/soc/jz4740/jz4740-i2s.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-index 2e9222ed9daa..8817eaae6bb7 100644
---- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-+++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-@@ -392,7 +392,7 @@ static int sst_enable_ssp(struct snd_pcm_substream *substream,
- {
- 	int ret = 0;
+diff --git a/sound/soc/jz4740/jz4740-i2s.c b/sound/soc/jz4740/jz4740-i2s.c
+index 6f6f8dad0356..403630b121f6 100644
+--- a/sound/soc/jz4740/jz4740-i2s.c
++++ b/sound/soc/jz4740/jz4740-i2s.c
+@@ -129,7 +129,7 @@ static int jz4740_i2s_startup(struct snd_pcm_substream *substream,
+ 	uint32_t conf, ctrl;
+ 	int ret;
  
--	if (!dai->active) {
-+	if (!snd_soc_dai_active(dai)) {
- 		ret = sst_handle_vb_timer(dai, true);
- 		sst_fill_ssp_defaults(dai);
- 	}
-@@ -405,7 +405,7 @@ static int sst_be_hw_params(struct snd_pcm_substream *substream,
- {
- 	int ret = 0;
- 
--	if (dai->active == 1)
-+	if (snd_soc_dai_active(dai) == 1)
- 		ret = send_ssp_cmd(dai, dai->name, 1);
- 	return ret;
- }
-@@ -414,7 +414,7 @@ static int sst_set_format(struct snd_soc_dai *dai, unsigned int fmt)
- {
- 	int ret = 0;
- 
--	if (!dai->active)
-+	if (!snd_soc_dai_active(dai))
+-	if (dai->active)
++	if (snd_soc_dai_active(dai))
  		return 0;
  
- 	ret = sst_fill_ssp_config(dai, fmt);
-@@ -429,7 +429,7 @@ static int sst_platform_set_ssp_slot(struct snd_soc_dai *dai,
- 			int slots, int slot_width) {
- 	int ret = 0;
+ 	ctrl = jz4740_i2s_read(i2s, JZ_REG_AIC_CTRL);
+@@ -153,7 +153,7 @@ static void jz4740_i2s_shutdown(struct snd_pcm_substream *substream,
+ 	struct jz4740_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+ 	uint32_t conf;
  
--	if (!dai->active)
-+	if (!snd_soc_dai_active(dai))
+-	if (dai->active)
++	if (snd_soc_dai_active(dai))
+ 		return;
+ 
+ 	conf = jz4740_i2s_read(i2s, JZ_REG_AIC_CONF);
+@@ -332,7 +332,7 @@ static int jz4740_i2s_suspend(struct snd_soc_component *component)
+ 	struct jz4740_i2s *i2s = snd_soc_component_get_drvdata(component);
+ 	uint32_t conf;
+ 
+-	if (component->active) {
++	if (snd_soc_component_active(component)) {
+ 		conf = jz4740_i2s_read(i2s, JZ_REG_AIC_CONF);
+ 		conf &= ~JZ_AIC_CONF_ENABLE;
+ 		jz4740_i2s_write(i2s, JZ_REG_AIC_CONF, conf);
+@@ -355,7 +355,7 @@ static int jz4740_i2s_resume(struct snd_soc_component *component)
+ 	if (ret)
  		return ret;
  
- 	ret = sst_fill_ssp_slot(dai, tx_mask, rx_mask, slots, slot_width);
-@@ -442,7 +442,7 @@ static int sst_platform_set_ssp_slot(struct snd_soc_dai *dai,
- static void sst_disable_ssp(struct snd_pcm_substream *substream,
- 			struct snd_soc_dai *dai)
- {
--	if (!dai->active) {
-+	if (!snd_soc_dai_active(dai)) {
- 		send_ssp_cmd(dai, dai->name, 0);
- 		sst_handle_vb_timer(dai, false);
- 	}
-@@ -743,7 +743,7 @@ static int sst_soc_prepare(struct device *dev)
- 	for_each_card_rtds(drv->soc_card, rtd) {
- 		struct snd_soc_dai *dai = asoc_rtd_to_cpu(rtd, 0);
- 
--		if (dai->active) {
-+		if (snd_soc_dai_active(dai)) {
- 			send_ssp_cmd(dai, dai->name, 0);
- 			sst_handle_vb_timer(dai, false);
- 		}
-@@ -764,7 +764,7 @@ static void sst_soc_complete(struct device *dev)
- 	for_each_card_rtds(drv->soc_card, rtd) {
- 		struct snd_soc_dai *dai = asoc_rtd_to_cpu(rtd, 0);
- 
--		if (dai->active) {
-+		if (snd_soc_dai_active(dai)) {
- 			sst_handle_vb_timer(dai, true);
- 			send_ssp_cmd(dai, dai->name, 1);
- 		}
+-	if (component->active) {
++	if (snd_soc_component_active(component)) {
+ 		ret = clk_prepare_enable(i2s->clk_i2s);
+ 		if (ret) {
+ 			clk_disable_unprepare(i2s->clk_aic);
 -- 
 2.17.1
 
