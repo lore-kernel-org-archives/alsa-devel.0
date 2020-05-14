@@ -2,100 +2,67 @@ Return-Path: <SRS0=rado=64=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 87C34C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 21:07:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73319C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 23:36:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0AA46206F1
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 21:07:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E79982065C
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 23:36:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rDBYdBCc";
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nBkru1r8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0AA46206F1
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nDlswwIZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E79982065C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 74FAC1614;
-	Thu, 14 May 2020 23:06:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 74FAC1614
+	by alsa0.perex.cz (Postfix) with ESMTPS id 401DF1614;
+	Fri, 15 May 2020 01:35:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 401DF1614
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589490453;
-	bh=95YNAO/GElQpC9lPB+2OWTxLluIGuKrkVElP0YOfVIM=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1589499392;
+	bh=xxNIpWmo6roavEIUNT99X8Y2mpPjgr6Sx5lASpdlfOo=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rDBYdBCcfF6WzqGvILZ8i9dMl2qGFvywE/xVqSkBoyrYRwePsjYYMo5Blcx8VnGJr
-	 xsu32dOoZOj1fbGpb16hCJmECJ0X+DSOXJHhx33XzqKdWLeB+JTUmFdI4Xq/hd/N3S
-	 +KNKue4PXJXKjy3d+oVxpgiXLYZ5A0J1nv0YzzOQ=
+	b=nDlswwIZz9UoIk3qszaiKcooJqLALdcAhBnySNxsCWw6TWj1IRv7UwD8A5sXzDDTM
+	 CMT7bSFE7aWO+dLaBLlqxv2s/ulQlw0Jc366iUVkqVk3BNHXRjGbYCS9R+uQNToODB
+	 JBtDsPxKl+ZrOBgyZPZflV4pJkrOJzmGDWbsdNOA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DA9A2F8014C;
-	Thu, 14 May 2020 23:06:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B7E8EF8014C;
+	Fri, 15 May 2020 01:35:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B9F37F80158; Thu, 14 May 2020 23:06:40 +0200 (CEST)
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com
- [IPv6:2a00:1450:4864:20::432])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C7056F80101
- for <alsa-devel@alsa-project.org>; Thu, 14 May 2020 23:06:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7056F80101
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="nBkru1r8"
-Received: by mail-wr1-x432.google.com with SMTP id l11so612542wru.0
- for <alsa-devel@alsa-project.org>; Thu, 14 May 2020 14:06:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to:user-agent;
- bh=BA7cVkNpKOrpPx7yQhIyrjLAKuR6y1K/Cf/HhdYZT5I=;
- b=nBkru1r8etEn0gHEaSW+Rwdz7g6lokLnooGTN4Lfu5eTLRZPq4bZcuTuEanBaX9x3d
- Qz9aU94WOgE9TNiWAs1O0Wu8TTrIyaFLnbvNmWySW8LVKhBqCiq91K0ONdV+DY3mFjd1
- nU0cgckmPHzTVW1BJ2JXppM/e6hLDUDorKB80sbUAaRjLvrkzYwS5awV/yyzWyJpMS+z
- I/90TyEu74096M9SrU70o1HrX6A/BJ1Di3Lwv3S+62siJuP90fBCEE4n0zjjQuQxzfQU
- 6HbIhRctKHJn+wzjF4+K7dwJIaPPOz+7XKWwXXIdlGGEMUVJjz2n2MhaDK0ClZsFfBif
- KncA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=BA7cVkNpKOrpPx7yQhIyrjLAKuR6y1K/Cf/HhdYZT5I=;
- b=J8yqtDU5QBjKXHkS3Ubp7iXsqak6AuBK33jRCCA6DW9bmFo+De15m6Kdd9mCXCDBZW
- KVAPlPWjKeARhvGVWSHPLeNInB5HtbTrubxmdm4S2aS1WKjdWwku6F6xbqkbA1PzJr8B
- eJhDjKMT3mLhigqFXmqQWecRdFuFHd4+JLN++ZP3qhdvQCMvvl1KeaAqP6XEEn6b7zNM
- 8XNpeDB1PLhMxv8/qvzdZC5hj7KBjxdgLOesfIxgGM6oes7zc91AwH+n1zEj5ZGgD3pY
- Ib7LpALnANBUzv1EyNnqAK5evPOZN9PTdVHuim6sOaC2AbUa7JPw3tGU6eEnGDa0mCfV
- 3uwQ==
-X-Gm-Message-State: AOAM532SLqmfR8kFyvseMUHJ5WDCS+SivSyoFr/NRPFITG1H1IaRzs/H
- 7Y+b02zNmOhiqZK5CFGbHJg=
-X-Google-Smtp-Source: ABdhPJzPGjaYcvPnqEVwnJp2/XK4kCXE2oqNZX6Lu+VJwKDcgR743N9WTR/4rvigsI5Mi74suPfZUA==
-X-Received: by 2002:a5d:6448:: with SMTP id d8mr415137wrw.118.1589490396962;
- Thu, 14 May 2020 14:06:36 -0700 (PDT)
-Received: from localhost (108.78.124.78.rev.sfr.net. [78.124.78.108])
- by smtp.gmail.com with ESMTPSA id o2sm416450wmc.21.2020.05.14.14.06.36
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 14 May 2020 14:06:36 -0700 (PDT)
-Date: Thu, 14 May 2020 21:06:07 +0000
-From: sylvain.bertrand@gmail.com
-To: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] fix snd_pcm_drain() excluding SETUP state from valid
- states
-Message-ID: <20200514210607.GA6081@freedom>
-References: <20200502193311.GA19340@freedom>
- <47281cd6-2ae5-309e-f1a9-8906ff50c9cc@perex.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <47281cd6-2ae5-309e-f1a9-8906ff50c9cc@perex.cz>
-User-Agent: Mutt/ (2018-04-13)
-Cc: alsa-devel@alsa-project.org
+ id 4C751F80158; Fri, 15 May 2020 01:35:40 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 71872F800BD
+ for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 01:35:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71872F800BD
+Date: 15 May 2020 08:35:22 +0900
+X-IronPort-AV: E=Sophos;i="5.73,392,1583161200"; d="scan'208";a="46901609"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 15 May 2020 08:35:22 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id E016D411A121;
+ Fri, 15 May 2020 08:35:21 +0900 (JST)
+Message-ID: <87eerm6qfa.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 01/21] ASoC: soc-pcm: replace
+ snd_soc_runtime_activate()/deactivate() to macro
+In-Reply-To: <20200514104115.GE5127@sirena.org.uk>
+References: <87blmq9alx.wl-kuninori.morimoto.gx@renesas.com>
+ <87a72a9ak3.wl-kuninori.morimoto.gx@renesas.com>
+ <20200514104115.GE5127@sirena.org.uk>
+User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,23 +78,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, May 14, 2020 at 03:52:25PM +0200, Jaroslav Kysela wrote:
-> NAK: You should not call drain when the PCM handle is in the SETUP field.
-> It's an obvious caller problem. The streaming should be active somehow.
 
-The pb here is the non-blocking calls of the drain function: in my test case,
-the first call to the drain function switches the pcm in draining state, but
-the pcm will be switched to the setup state somewhen in between 2 drain function
-calls! Naively, I was calling the drain function on a regular time basis to see
-if the draining was finished, namely expecting 0 to be returned.
+Hi Mark
 
-Then if I understood you well, the right way(tm) to use the drain function in
-non-block mode, is to call only once the drain function, then inspect the state
-of the pcm till it not anymore in the draining state. 
+> > snd_soc_runtime_activate()/deactivate() are implemented by global funtion
+> > which are just calling snd_soc_runtime_action().
+> > We can replace it to macro, and this patch do it.
+> > This patch is prepare for xxx_active cleanup.
+> 
+> It'd be better to use static inline functions rather than macros -
+> unlike the loop iterators there's no C syntax reason not to use an
+> inline and inline functions provide better type safety and namespacing.
 
-Am I right? Or did I miss something again?
+Oh, yes, indeed.
+Will post v3 patch
 
-regards,
+Thank you for your help !!
 
--- 
-Sylvain
+Best regards
+---
+Kuninori Morimoto
