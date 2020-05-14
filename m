@@ -2,92 +2,99 @@ Return-Path: <SRS0=rado=64=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0D81C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 12:46:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DEE22C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 12:46:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 654D92065D
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 12:46:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 62E392065D
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 12:46:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OhGxqx9C";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="ZzYL2yj4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 654D92065D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="W2JfIEDr";
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EXWf9rqV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 62E392065D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 96BE29F6;
-	Thu, 14 May 2020 14:45:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 96BE29F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id A29781665;
+	Thu, 14 May 2020 14:45:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A29781665
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589460358;
-	bh=B4xpKbOEwunkDybNxLoKMmQlDU/GVAVtv1tPc43J8TQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1589460384;
+	bh=v7cPFaO4kK7Zs87lVIL/zERszLa3A1W3zQEDFM4/azc=;
+	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OhGxqx9Cpky7H4mz6QsSCh0h5wmNZuwW6kgmYPQAbRFbtMdAiYgjFstYtDDgyvzJN
-	 Z/4nG2QmzOZvZ14RZFd0p0kH+XDm6/aabL4iIYY76IF6A/xvlZFCT3OuH55QsYm2sB
-	 hmj5piLOFk+9cJ3DdnkkounQr4VfKsYrjaDSizms=
+	b=W2JfIEDrS4ki0NppgFYKgZgoDCA/zSYHAw58ZCZT7OdhjHYrAUw+Z9TaQtYzK6Lo3
+	 Gic9icHk0gRSXx/eP8WfkzmVPQHeLCZmH7gUyZkfjTguiihvNc7tQIyt5TwhMbk9OE
+	 PXsiG8ViekNovCe4pVFV86tt3LT3tOA50FdiXEuw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8B07FF8027B;
-	Thu, 14 May 2020 14:43:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7A66BF80291;
+	Thu, 14 May 2020 14:43:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 47109F8027D; Thu, 14 May 2020 14:43:35 +0200 (CEST)
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 3AC32F80292; Thu, 14 May 2020 14:43:45 +0200 (CEST)
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com
+ [IPv6:2a00:1450:4864:20::342])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 37E44F80274
- for <alsa-devel@alsa-project.org>; Thu, 14 May 2020 14:43:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 37E44F80274
+ by alsa1.perex.cz (Postfix) with ESMTPS id 44A0AF8028F
+ for <alsa-devel@alsa-project.org>; Thu, 14 May 2020 14:43:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44A0AF8028F
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="ZzYL2yj4"
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04EChLJW068221;
- Thu, 14 May 2020 07:43:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1589460201;
- bh=e5oLHvSAcu1wID8AuM4YdTSx1fGtweYfUrxREiY/l9M=;
- h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=ZzYL2yj4lW+zhLcKMjsSTdTS2fE29lTKlJ8Ggipl0k8j3MPxk5B3VZXMxQJYjqbya
- 7CXtPd1IQRbCKiqb7+1bbug0Fp2QmrztoxTl2a2AL9D7ku42OwaRNIO2P67p5TPKfa
- gXpaubt1qVABlteXdF/td+vUct15nOCJzrupxfZ8=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04EChLME122019
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Thu, 14 May 2020 07:43:21 -0500
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 14
- May 2020 07:43:21 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 14 May 2020 07:43:21 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04EChLrv030975;
- Thu, 14 May 2020 07:43:21 -0500
-From: Dan Murphy <dmurphy@ti.com>
-To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
- <tiwai@suse.com>
-Subject: [PATCH v3 3/3] ASoC: tlv320adcx140: Configure PDM sampling edge
-Date: Thu, 14 May 2020 07:33:38 -0500
-Message-ID: <20200514123338.20392-3-dmurphy@ti.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200514123338.20392-1-dmurphy@ti.com>
-References: <20200514123338.20392-1-dmurphy@ti.com>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="EXWf9rqV"
+Received: by mail-wm1-x342.google.com with SMTP id w19so17714055wmc.1
+ for <alsa-devel@alsa-project.org>; Thu, 14 May 2020 05:43:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=date:from:to:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to:user-agent;
+ bh=5528EI9vmR3zRoZjoDmz5h0VbxtL0f47zTjCRlw8gwk=;
+ b=EXWf9rqVpttbzvJV2VsY1Vj8+lle5TKiWfN5ZNt6FyDsS28M12N2StM5cUxyTHy2OT
+ R+R1WEIGUQ0MI34TeJE5TR0Vxp8XANMI4JaF9/knkzrpksz82id9O7OGII9L7HgRQoCK
+ bZUtL4z6ZpXwfCk2R4G3ahWx7+R7738JTFApceb/uGYG6B5uEz+j2XYFHXEMOzK/Xeld
+ /goqzxryXlrQ1OvK9w8hzMLYc7hHR0uYoQVWAacgsRkeX+sN49d9pB++Mg+iawl/0Xkb
+ S2+eE3Nni6H+0ZAPxLLumo7uZvGLGDyJhqztnwmnRGob4hXywtTMv2qTyKYVO2s8SSy9
+ 0Ggg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=5528EI9vmR3zRoZjoDmz5h0VbxtL0f47zTjCRlw8gwk=;
+ b=ivngpFWJk4s9iiWPvWjIQ0GtzHuRxLktW9vnr1mbRl1l+U7n3UZN9PZpo3r9yUFgLb
+ VGxaaVu4Inq5M9j8zYOa3FJt3Du6TZMrhIH7VC1L6pFilGsozi2buLVVMz+mriK3HuRS
+ Z34dOgukcUBfpAkJhJfAAP8H6DIgLxwlh6vTeAVxVpmSC59RnsETO2LM/iAX9Bkm7HBF
+ C/gWCUsfPpoL2G77brHgsCTlD8CumJMOoQ9GmUd9BCL+jzpuu84IImtjYwLl12dir1Tx
+ WlffxxJt9xyGsb2IAVKJkI5YRcY1AAbbD0NmQr9Y/bGnhaB3zdjPkDrVcy1Kb10GywZn
+ s2tA==
+X-Gm-Message-State: AGi0PubR/nmic4qtj8tYug46wX/9blOoo0/mD+77yl+tzFKhMTMJCplL
+ zfWzcL2O9f8bvgJZuK4UIqyxgjZ3
+X-Google-Smtp-Source: APiQypIoJrAfmS0UJbvd33MwBHyfJrATYhcNAZ3mYwwqAeRfG1OxndrzHc+b6Ck3gbNlKoCbRpjXnQ==
+X-Received: by 2002:a1c:7513:: with SMTP id o19mr36443868wmc.104.1589460221030; 
+ Thu, 14 May 2020 05:43:41 -0700 (PDT)
+Received: from localhost (108.78.124.78.rev.sfr.net. [78.124.78.108])
+ by smtp.gmail.com with ESMTPSA id w15sm3767092wrl.73.2020.05.14.05.43.40
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 14 May 2020 05:43:40 -0700 (PDT)
+Date: Thu, 14 May 2020 12:43:11 +0000
+From: sylvain.bertrand@gmail.com
+To: alsa-devel@alsa-project.org
+Subject: Re: [PATCH] fix snd_pcm_drain() excluding SETUP state from valid
+ states
+Message-ID: <20200514124311.GA1308@freedom>
+References: <20200502193311.GA19340@freedom>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Dan Murphy <dmurphy@ti.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200502193311.GA19340@freedom>
+User-Agent: Mutt/ (2018-04-13)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -103,66 +110,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Configure the PDM sampling edges based on the values from the firmware.
+ping?
 
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
----
- sound/soc/codecs/tlv320adcx140.c | 22 ++++++++++++++++++++++
- sound/soc/codecs/tlv320adcx140.h |  3 +++
- 2 files changed, 25 insertions(+)
-
-diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv320adcx140.c
-index 97634e0ca0ba..140a5802a9a9 100644
---- a/sound/soc/codecs/tlv320adcx140.c
-+++ b/sound/soc/codecs/tlv320adcx140.c
-@@ -760,6 +760,10 @@ static int adcx140_codec_probe(struct snd_soc_component *component)
- 	int sleep_cfg_val = ADCX140_WAKE_DEV;
- 	u8 bias_source;
- 	u8 vref_source;
-+	int pdm_count;
-+	u32 pdm_edges[ADCX140_NUM_PDM_EDGES];
-+	u32 pdm_edge_val = 0;
-+	int i;
- 	int ret;
- 
- 	ret = device_property_read_u8(adcx140->dev, "ti,mic-bias-source",
-@@ -786,6 +790,24 @@ static int adcx140_codec_probe(struct snd_soc_component *component)
- 
- 	bias_source |= vref_source;
- 
-+	pdm_count = device_property_count_u32(adcx140->dev,
-+					      "ti,pdm-edge-select");
-+	if (pdm_count <= ADCX140_NUM_PDM_EDGES && pdm_count > 0) {
-+		ret = device_property_read_u32_array(adcx140->dev,
-+						     "ti,pdm-edge-select",
-+						     pdm_edges, pdm_count);
-+		if (ret)
-+			return ret;
-+
-+		for (i = 0; i < pdm_count; i++)
-+			pdm_edge_val |= pdm_edges[i] << (ADCX140_PDM_EDGE_SHIFT - i);
-+
-+		ret = regmap_write(adcx140->regmap, ADCX140_PDM_CFG,
-+				   pdm_edge_val);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	ret = adcx140_reset(adcx140);
- 	if (ret)
- 		goto out;
-diff --git a/sound/soc/codecs/tlv320adcx140.h b/sound/soc/codecs/tlv320adcx140.h
-index 6d055e55909e..432eaf25d1a7 100644
---- a/sound/soc/codecs/tlv320adcx140.h
-+++ b/sound/soc/codecs/tlv320adcx140.h
-@@ -128,4 +128,7 @@
- 
- #define ADCX140_TX_OFFSET_MASK		GENMASK(4, 0)
- 
-+#define ADCX140_NUM_PDM_EDGES		4
-+#define ADCX140_PDM_EDGE_SHIFT		7
-+
- #endif /* _TLV320ADCX140_ */
 -- 
-2.26.2
-
+Sylvain
