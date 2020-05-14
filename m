@@ -2,94 +2,83 @@ Return-Path: <SRS0=rado=64=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E781C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 16:44:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78962C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 16:45:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EB1B2206A5
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 16:44:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EF5392065F
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 16:45:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oXNb+x1U";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mg.codeaurora.org header.i=@mg.codeaurora.org header.b="N8+ktV2F"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EB1B2206A5
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kUai5l7l";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="dfmv5ixe"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EF5392065F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 59CBF1678;
-	Thu, 14 May 2020 18:43:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 59CBF1678
+	by alsa0.perex.cz (Postfix) with ESMTPS id 525751662;
+	Thu, 14 May 2020 18:44:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 525751662
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589474668;
-	bh=DRKUy6+fbp7+B6u3m+ee7rRBjESLw220q0Q9rT32sH8=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1589474730;
+	bh=/Woo2rbtVtqFaQbIP71cYFRtkvxNZGYitF1KhNpibss=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oXNb+x1UKu79nWOhaYjm+eISZDbbi9tl+mEryfUTU9Lx6D3UqaF3ciqlJ5oXCjeA0
-	 uc8rHsTkog75xMeNN3sofKOMjnZxn21Zu0gp0ITHMLNRnfJUiGUtwQjEUGZ22eJlrt
-	 k+YR5qruZ95pK3AnWq0nyseahaacLQowVLI5aZ74=
+	b=kUai5l7l7msrLdgWdday22Air/KFGYzIPULHO8iSz3onJD44Nh3seyab5Qa+XbojX
+	 YhveCLcAKalTuBGpwM++Z0wgL7uMYhSJ1wYzcVVz6fiKFtZyoFRV60v+C/PR/GmE2r
+	 3J9kQ15UiDf+EAlpS5ODCRwKGb6R6vIHgeSIzA0s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D0819F802E2;
-	Thu, 14 May 2020 18:40:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E9966F800BD;
+	Thu, 14 May 2020 18:44:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AF837F802E2; Thu, 14 May 2020 18:40:46 +0200 (CEST)
-Received: from mail27.static.mailgun.info (mail27.static.mailgun.info
- [104.130.122.27])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id CF081F8014C; Thu, 14 May 2020 18:44:36 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E9EBCF802DF
- for <alsa-devel@alsa-project.org>; Thu, 14 May 2020 18:40:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9EBCF802DF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7A09FF800BD
+ for <alsa-devel@alsa-project.org>; Thu, 14 May 2020 18:44:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A09FF800BD
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=mg.codeaurora.org
- header.i=@mg.codeaurora.org header.b="N8+ktV2F"
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
- q=dns/txt; 
- s=smtp; t=1589474445; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=i5T+01NesX4JAdr1b1nGj/ncRYyzjRnXX+hWqJ5jSwg=;
- b=N8+ktV2FsTaggJBqig/poluOzdDNqe86ZEn4h1eUpbic+dmlo9QoMC/MZqLoa1dvGTAEv+v1
- cu2PrZuhxyhEFfQK87i696i4OhMmHfAOFLjj0FKsYYPVel3WEp1vmMJ3QYzqLea6YAC6S6HE
- h8zTQJHUMr0km3LJGMp7W8NhYco=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5ebd7479.7fa94a00ad88-smtp-out-n03;
- Thu, 14 May 2020 16:40:25 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id 703E9C433F2; Thu, 14 May 2020 16:40:24 +0000 (UTC)
-Received: from c-ajitp-linux.qualcomm.com
- (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: ajitp)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id 76FC6C433D2;
- Thu, 14 May 2020 16:40:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 76FC6C433D2
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- spf=none smtp.mailfrom=ajitp@codeaurora.org
-From: Ajit Pandey <ajitp@codeaurora.org>
-To: broonie@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
- srinivas.kandagatla@linaro.org
-Subject: [PATCH v2 6/7] device-tree: bindings: sound: lpass-cpu: Add new
- compatible soc
-Date: Thu, 14 May 2020 22:08:17 +0530
-Message-Id: <1589474298-29437-7-git-send-email-ajitp@codeaurora.org>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1589474298-29437-1-git-send-email-ajitp@codeaurora.org>
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="dfmv5ixe"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 0435D206A5;
+ Thu, 14 May 2020 16:44:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1589474672;
+ bh=/Woo2rbtVtqFaQbIP71cYFRtkvxNZGYitF1KhNpibss=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=dfmv5ixegX3iiK3uzXEug99JwwHoTDf1sL57KPmn56/npYXt5zvRBBgVbCFRgqVlx
+ 3cOJoqsDx93Hm30YC1N4wvj4mTwaHc8joXc32zkOCThyqPMPhayrG4es7AtyxZ4WIT
+ bWVT+snwLdrr7CmKERzG17YSIeeHJ/wa1lyGor1M=
+Date: Thu, 14 May 2020 17:44:29 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Ajit Pandey <ajitp@codeaurora.org>
+Subject: Re: [PATCH v2 1/7] Documentation: device-tree: sound: Update
+ lpass-cpu driver binding
+Message-ID: <20200514164429.GJ5127@sirena.org.uk>
 References: <“1586592171-31644-1-git-send-email-ajitp@codeaurora.org”>
  <1589474298-29437-1-git-send-email-ajitp@codeaurora.org>
+ <1589474298-29437-2-git-send-email-ajitp@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="/0P/MvzTfyTu5j9Q"
+Content-Disposition: inline
+In-Reply-To: <1589474298-29437-2-git-send-email-ajitp@codeaurora.org>
+X-Cookie: I think we're in trouble.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Ajit Pandey <ajitp@codeaurora.org>
+ bgoswami@codeaurora.org, plai@codeaurora.org, linux-kernel@vger.kernel.org,
+ srinivas.kandagatla@linaro.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,71 +94,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-SC7180 soc variants of LPASS uses lpass-cpu node but required few extra
-devictree configuration. Update bindings documents with sc7180 compatible
-string specific dts properties.
 
-Signed-off-by: Ajit Pandey <ajitp@codeaurora.org>
----
- .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  | 25 +++++++++++++++++++++-
- 1 file changed, 24 insertions(+), 1 deletion(-)
+--/0P/MvzTfyTu5j9Q
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
-index f2bcafc..5246d59 100644
---- a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
-+++ b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
-@@ -21,6 +21,7 @@ properties:
-     enum:
-       - qcom,lpass-cpu
-       - qcom,apq8016-lpass-cpu
-+      - qcom,lpass-cpu-sc7180
- 
-   reg:
-     items:
-@@ -66,6 +67,14 @@ properties:
-     maxItems: 1
-     description: Phandle for the audio DSP node
- 
-+  iommus:
-+    maxItems: 1
-+    description: Phandle to apps_smmu node with sid mask
-+
-+  power-domains:
-+    maxItems: 1
-+    description: Phandle for power domain node
-+
-   '#sound-dai-cells':
-     const: 1
- 
-@@ -102,6 +111,17 @@ required:
- optional:
-   - qcom,adsp
- 
-+if:
-+  properties:
-+    compatible:
-+      contains:
-+        const: qcom,lpass-cpu-sc7180
-+
-+then:
-+  required:
-+    - iommus
-+    - power-domains
-+
- examples:
-   lpass@28100000 {
- 	compatible = "qcom,lpass-cpu";
-@@ -114,7 +134,10 @@ examples:
- 		      "mi2s-bit-clk";
- 
- 	interrupts = <0 85 1>;
--	interrupt-names = "lpass-irq-lpaif";
-+        interrupt-names = "lpass-irq-lpaif";
-+
-+	iommus = <&apps_smmu 0x1020 0>;
-+	power-domains = <&lpass_hm LPASS_CORE_HM_GDSCR>;
- 
- 	reg = <0x28100000 0x10000>;
- 	reg-names = "lpass-lpaif";
--- 
-('The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,\na Linux Foundation Collaborative Project')
+On Thu, May 14, 2020 at 10:08:12PM +0530, Ajit Pandey wrote:
+> Done the required cleanups to update lpass-cpu binding with newer
+> yaml formats.
+
+Please do YAML conversions as the last thing in any patch series, there
+is quite a big backlog of reviews of YAML conversions so they can slow
+down the code development.  It's good to do them, just try to make sure
+other patches don't depend on them.
+
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+There's no need to resubmit to fix this alone.
+
+--/0P/MvzTfyTu5j9Q
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl69dWwACgkQJNaLcl1U
+h9AXrwf/UUMyxPnGMZgJjf6Tb9WX8m9q0VXIk1y6rqsRtvKb8K7tSvC+euLhGJPr
++HbOhL0c30dJZls75X9x927Bo/rpNx5gTNFxUW45xK53cf1exNqMo26U0NSaY2Sn
+VLu5juCg0M5hjZwi2unBjzE5Qu0JDGaVMMNfJrDm7bVIZUBWxWdTcT8ixsUYUjKc
+iHvjM46lUpATtdr4lheFBFd4gS/kaHHWyI+dbjcfdBWht94Y91mZ+m7Azq+uAcdQ
+uX1KkYLVtGcWzl9WNPpl8xSiFS9I/xXJ4/b/oECLyNxF2gW9TdrPPEVUVkpmDC1N
+waON7hD0lep1WQst50p2Pm6GokaqLQ==
+=V1P7
+-----END PGP SIGNATURE-----
+
+--/0P/MvzTfyTu5j9Q--
