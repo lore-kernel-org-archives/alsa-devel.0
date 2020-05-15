@@ -2,70 +2,69 @@ Return-Path: <SRS0=lMNw=7A=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3778EC433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 May 2020 14:16:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ACFC3C433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 May 2020 14:19:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AB41520674
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 May 2020 14:16:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3A4F620674
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 May 2020 14:19:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dunp/Vwu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AB41520674
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ja++oLci"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3A4F620674
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=2n.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0E31E16DB;
-	Mon, 18 May 2020 16:15:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E31E16DB
+	by alsa0.perex.cz (Postfix) with ESMTPS id A019616DB;
+	Mon, 18 May 2020 16:18:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A019616DB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589811380;
-	bh=LuJMuAG4bkfqMLKrq9osNHAxqPX7MeTukouuryQWIE4=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=dunp/VwuTNLsiyXudTfns/LlEAgWwyqsxqCPe3N1F47Q310EklIGFcFa/SIirAM0T
-	 cYamypdgXV6dNPrhQu1huZtDUIUNsChqU4NtvV1+vlEi6oeupD2qJErbPNmeTP9R1o
-	 GvsP6uc93VNG85rvQjnN6Es6yVEN+3dKkXH8MESA=
+	s=default; t=1589811542;
+	bh=bCjOyNRKUkTpcOLhAepu3z2mXkjIylErXdaWaUYvqIM=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=ja++oLciMDg4eDX/cts7YOw1pOVH4+uWVTzY5Ecbk8p1WArInxopcFJvCfwZ4m8eO
+	 zdvgKIyqvi5Y1QG/p0NCo7Gb5D5yFOw8lgSRKPhvlibTXOVRGQK0rkfLZr0M6OqqUl
+	 +cHBDt4SrSbWU/68zGQDBKgrBy2Wztua9w6xVaew=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 701B2F800C9;
-	Mon, 18 May 2020 16:15:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4416DF801D8;
+	Mon, 18 May 2020 16:18:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CB638F801DA; Mon, 18 May 2020 16:15:27 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id D1A85F80247; Fri, 15 May 2020 14:08:49 +0200 (CEST)
+Received: from smtp2.axis.com (smtp2.axis.com [195.60.68.18])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3532AF800C9
- for <alsa-devel@alsa-project.org>; Mon, 18 May 2020 16:15:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3532AF800C9
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 05948AD75;
- Mon, 18 May 2020 14:15:20 +0000 (UTC)
-Date: Mon, 18 May 2020 16:15:17 +0200
-Message-ID: <s5hsgfxib2i.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Pshou <pshou@realtek.com>
-Subject: Re: =?UTF-8?B?5Zue6KaGOg==?= CLEVO uses the model name and SSID
- list of Realtek audio CODEC ALC1220
-In-Reply-To: <dd45ef275b494538a4d4748480698c78@realtek.com>
-References: <63d2069dd6394e0195739bd9dd3de5d0@realtek.com>
- <s5hsgg1mszs.wl-tiwai@suse.de>
- <dd45ef275b494538a4d4748480698c78@realtek.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=UTF-8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 142E6F80101
+ for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 14:08:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 142E6F80101
+IronPort-SDR: q9alwId5W8m0r9X2VOQUlpwyRooVztQwp8kEj22x64xLioJSvH0oU9PTSIJmOt001z9J3gns2R
+ bi3WqNJ1GDiwVWCtLA6Xn+XxtZYWQ/4ZvXpSP6iAPqtDbdun4ctIOkrgUkvF579vaQdZFySchY
+ VH/bUzqGrCHgHs29SMfgAK2w18Vt1ApHMa4+kAP2A7Sz610QfIjUkyXOBUlK5mjv7lEfxaIsf0
+ aBN+pOEMc/UcV9EwkQBQF+SxOSc6LUafm5/uvZN5YlkfUexYmPrt/fNinD39hozDVIbjPgNV3n
+ IvQ=
+X-IronPort-AV: E=Sophos;i="5.73,395,1583190000"; 
+   d="scan'208";a="8523670"
+From: Pavel Dobias <dobias@2n.cz>
+To: <alsa-devel@alsa-project.org>
+Subject: [PATCH] ASoC: max9867: fix volume controls
+Date: Fri, 15 May 2020 14:07:57 +0200
+Message-ID: <20200515120757.24669-1-dobias@2n.cz>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- Kailang <kailang@realtek.com>, "tiwai@suse.com" <tiwai@suse.com>
+Content-Type: text/plain
+X-Originating-IP: [10.0.5.60]
+X-ClientProxiedBy: XBOX03.axis.com (10.0.5.17) To XBOX02.axis.com (10.0.5.16)
+X-Mailman-Approved-At: Mon, 18 May 2020 16:18:11 +0200
+Cc: ladis@linux-mips.org, broonie@kernel.org, lgirdwood@gmail.com,
+ Pavel Dobias <dobias@2n.cz>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,66 +80,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 18 May 2020 11:13:48 +0200,
-Pshou wrote:
-> 
-> Hi Takash:
-> 
-> I have added the "Signed-off-by" line.
-> Can you see if you can?
-> 
-> Signed-off-by: Pshou <pshou@realtek.com>
+The xmax values for Master Playback Volume and Mic Boost
+Capture Volume are specified incorrectly (one greater)
+which results in the wrong dB gain being shown to the user
+in the case of Master Playback Volume.
 
-We need a real full name here to Signed-off-by line.  It's a legal
-requirement.  Could you fill it and resend?
+Signed-off-by: Pavel Dobias <dobias@2n.cz>
+---
+ sound/soc/codecs/max9867.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
+index 8600c5439e1e..2e4aa23b5a60 100644
+--- a/sound/soc/codecs/max9867.c
++++ b/sound/soc/codecs/max9867.c
+@@ -46,13 +46,13 @@ static const SNDRV_CTL_TLVD_DECLARE_DB_RANGE(max9867_micboost_tlv,
+ 
+ static const struct snd_kcontrol_new max9867_snd_controls[] = {
+ 	SOC_DOUBLE_R_TLV("Master Playback Volume", MAX9867_LEFTVOL,
+-			MAX9867_RIGHTVOL, 0, 41, 1, max9867_master_tlv),
++			MAX9867_RIGHTVOL, 0, 40, 1, max9867_master_tlv),
+ 	SOC_DOUBLE_R_TLV("Line Capture Volume", MAX9867_LEFTLINELVL,
+ 			MAX9867_RIGHTLINELVL, 0, 15, 1, max9867_line_tlv),
+ 	SOC_DOUBLE_R_TLV("Mic Capture Volume", MAX9867_LEFTMICGAIN,
+ 			MAX9867_RIGHTMICGAIN, 0, 20, 1, max9867_mic_tlv),
+ 	SOC_DOUBLE_R_TLV("Mic Boost Capture Volume", MAX9867_LEFTMICGAIN,
+-			MAX9867_RIGHTMICGAIN, 5, 4, 0, max9867_micboost_tlv),
++			MAX9867_RIGHTMICGAIN, 5, 3, 0, max9867_micboost_tlv),
+ 	SOC_SINGLE("Digital Sidetone Volume", MAX9867_SIDETONE, 0, 31, 1),
+ 	SOC_SINGLE_TLV("Digital Playback Volume", MAX9867_DACLEVEL, 0, 15, 1,
+ 			max9867_dac_tlv),
+-- 
+2.20.1
 
-thanks,
-
-Takashi
-
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> 
-> Best regards
-> Pshou
-> 
-> -----原始郵件-----
-> 寄件者: Takashi Iwai <tiwai@suse.de> 
-> 寄件日期: 2020年5月15日 17:45
-> 收件者: Pshou <pshou@realtek.com>
-> 副本: tiwai@suse.com; Kailang <kailang@realtek.com>
-> 主旨: Re: CLEVO uses the model name and SSID list of Realtek audio CODEC ALC1220
-> 
-> On Fri, 15 May 2020 11:24:45 +0200,
-> Pshou wrote:
-> > 
-> > Hi Takashi:
-> > 
-> > Can you help me add some source code to patch_realtek.c?
-> > 
-> > Add some CLEVO SSID in the alc1220.
-> > 
-> >         SND_PCI_QUIRK(0x1558, 0x67d1, "Clevo PB71[ER][CDF]", 
-> > ALC1220_FIXUP_CLEVO_PB51ED_PINS),
-> > 
-> > +      SND_PCI_QUIRK(0x1558, 0x50d3, "Clevo PC50[ER][CDF]",
-> > ALC1220_FIXUP_CLEVO_PB51ED_PINS),
-> > 
-> > +      SND_PCI_QUIRK(0x1558, 0x70d1, "Clevo PC70[ER][CDF]",
-> > ALC1220_FIXUP_CLEVO_PB51ED_PINS),
-> > 
-> > +      SND_PCI_QUIRK(0x1558, 0x7714, "Clevo X170",
-> > ALC1220_FIXUP_CLEVO_PB51ED_PINS),
-> > 
-> >       SND_PCI_QUIRK_VENDOR(0x1558, "Clevo laptop", ALC882_FIXUP_EAPD),
-> 
-> Sure, could you give your Signed-off-by line, so that I can rearrange, submit to alsa-devel and merge to upstream?
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> ------Please consider the environment before printing this e-mail.
-> [2 0001-Add-several-Clevo-SSID-in-the-ALC1220.patch <application/octet-stream (base64)>]
-> 
