@@ -2,93 +2,79 @@ Return-Path: <SRS0=wzGW=65=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42F62C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 06:51:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90687C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 07:05:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BFC5A206F1
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 06:51:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1870620671
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 07:05:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="V1PC/sDl";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="eslx7QGZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BFC5A206F1
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SsEZVd6C";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="RMRETnVn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1870620671
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1E1B315F9;
-	Fri, 15 May 2020 08:50:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E1B315F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 68D5F1655;
+	Fri, 15 May 2020 09:04:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 68D5F1655
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589525507;
-	bh=AtT1Xb4FVNXxUa7zelIhmActhDAjhmCTL8gtRaQVJyU=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1589526349;
+	bh=upNdoDczq0LfOqv/wUOK/hzajMfTetVf10l01Gag/Tk=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=V1PC/sDlNB6N+sJL9EzzkD2aDWM4IOWLWPOS74gfuXZC4tQifpmZas23LjT3RBWu9
-	 D4+iH5qh1rc66mDWHd2spJxcZYTfoSM1O5VclX2590l1ndAtjcTwJ3G/LFpRlOFoTS
-	 kHVAy4H6CXK/qDSsz2YZFVtkGOhGMQM/9DKGGQQA=
+	b=SsEZVd6CHUbl0zq3q30tZxK/FFTwt31xI34CrnP97wJrQYalk4CXX9txrHVDNsVi/
+	 92xA9PBT7wo3dwJlGTpbWca1AfRZY96AlIoS48+cAp2UTp0MhQOX8wYys/W5jPPbZg
+	 USu5O7UTtLlpuQu1YdEDnhDPF0aGGCgA+Ug2xnxc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 798BBF80255;
-	Fri, 15 May 2020 08:50:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EEC3AF8022D;
+	Fri, 15 May 2020 09:04:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7AB4BF80255; Fri, 15 May 2020 08:50:54 +0200 (CEST)
+ id B5F34F80247; Fri, 15 May 2020 09:04:57 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A4DF0F8022D
- for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 08:50:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4DF0F8022D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 51E09F800B8
+ for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 09:04:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51E09F800B8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="eslx7QGZ"
-Received: from mail-io1-f53.google.com (mail-io1-f53.google.com
- [209.85.166.53])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ header.b="RMRETnVn"
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl
+ [83.86.89.107])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id AA9CA20728
- for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 06:50:45 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 45F27206F1;
+ Fri, 15 May 2020 07:04:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1589525445;
- bh=AtT1Xb4FVNXxUa7zelIhmActhDAjhmCTL8gtRaQVJyU=;
- h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=eslx7QGZztOTgl8QYMht0TptLxUHnG2GPL/1P6nqfU8fQOBTLiBcr75aDZ9irutry
- ZcDE8b7Hi7YMaxYuhGeUSR1tfbP51B60lBNhUd9fhpsMRnpDJCWW9rNnErkcY82a49
- xwcgTi5wQbejXQWcZQ6Y0U+EsKdTcaoK+O9F/J1U=
-Received: by mail-io1-f53.google.com with SMTP id k18so1553454ion.0
- for <alsa-devel@alsa-project.org>; Thu, 14 May 2020 23:50:45 -0700 (PDT)
-X-Gm-Message-State: AOAM530sDxzGWG4O57F/CoJD1O7yvLQjj/QYsypLhaCmng/9VjdZ0lA0
- w6An2k5GqfFfiJTqfJ3TVqDrSDzhb6eXV/qTF5U=
-X-Google-Smtp-Source: ABdhPJxEuuhR6MxWM8ezQwkPv6OGKtL1O+Amag2jK6walSq9689P55HMsQDKuNhKhm7kto3w1BfQaTGnCLFiB65f5hs=
-X-Received: by 2002:a02:c6b4:: with SMTP id o20mr1803136jan.134.1589525445079; 
- Thu, 14 May 2020 23:50:45 -0700 (PDT)
+ s=default; t=1589526288;
+ bh=upNdoDczq0LfOqv/wUOK/hzajMfTetVf10l01Gag/Tk=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=RMRETnVnkQEW3dtg+dPNVeiStdHFenIHmCY1Ph/Z4njZNYmMxKKz/M2LnoFVvBdvz
+ Ng36mEKLZka2tF5ACfdGCWOoKN4tA4x495KM3lyewy5VCA9K9QeLTDZ4ViAIwUru9B
+ fTNTF76NRSSrxVoHbF9GuZL3p4YUgtOIvPeK9TSI=
+Date: Fri, 15 May 2020 09:04:46 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Brent Lu <brent.lu@intel.com>
+Subject: Re: [PATCH] ALSA: pcm: fix incorrect hw_base increase
+Message-ID: <20200515070446.GA1226131@kroah.com>
+References: <1589515779-20987-1-git-send-email-brent.lu@intel.com>
 MIME-Version: 1.0
-References: <20200514161847.6240-1-ardb@kernel.org>
- <20200514162548.GA141824@google.com>
- <CA+Px+wWps5d5qpL_0ed2jrD5bMKgd=8p1rbcRH28J-1SpgVz0Q@mail.gmail.com>
- <CAMj1kXE2KsCoDrH5nY7vmGA6K4ekDTX=v-stj1uh7UHNqquJMg@mail.gmail.com>
- <CA+Px+wV1w4gFcV+ABtK44ec0aPTT9APkpFMUyLMUh5tStgHstQ@mail.gmail.com>
-In-Reply-To: <CA+Px+wV1w4gFcV+ABtK44ec0aPTT9APkpFMUyLMUh5tStgHstQ@mail.gmail.com>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Fri, 15 May 2020 08:50:34 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXEkUetEX4XG1CkS9nBa2e7J4LsM1vL7FvSoBUgVjz51mQ@mail.gmail.com>
-Message-ID: <CAMj1kXEkUetEX4XG1CkS9nBa2e7J4LsM1vL7FvSoBUgVjz51mQ@mail.gmail.com>
-Subject: Re: [PATCH] SoC: cros_ec_codec: switch to library API for SHA-256
-To: Tzung-Bi Shih <tzungbi@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Cc: ALSA development <alsa-devel@alsa-project.org>,
- Herbert Xu <herbert@gondor.apana.org.au>, Arnd Bergmann <arnd@arndb.de>,
- Liam Girdwood <lgirdwood@gmail.com>, Eric Biggers <ebiggers@kernel.org>,
- Guenter Roeck <groeck@chromium.org>, Mark Brown <broonie@kernel.org>,
- Enric Balletbo i Serra <enric.balletbo@collabora.com>,
- Benson Leung <bleung@google.com>, Benson Leung <bleung@chromium.org>,
- Cheng-Yi Chiang <cychiang@chromium.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1589515779-20987-1-git-send-email-brent.lu@intel.com>
+Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>,
+ Baolin Wang <baolin.wang@linaro.org>, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Richard Fontana <rfontana@redhat.com>,
+ Thomas Gleixner <tglx@linutronix.de>, paulhsia <paulhsia@chromium.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,39 +90,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 15 May 2020 at 08:40, Tzung-Bi Shih <tzungbi@google.com> wrote:
->
-> On Fri, May 15, 2020 at 2:04 PM Ard Biesheuvel <ardb@kernel.org> wrote:
-> > > > > Looking at the code, I was wondering if the SHA-256 is really required
-> > > > > here? It looks like it is using it as some kind of fingerprint to decide
-> > > > > whether the provided file is identical to the one that has already been
-> > > > > loaded. If this is the case, we should probably just use CRC32 instead.
-> > >
-> > > No, the binary blob carries data and possibly code.  We are not only
-> > > using the hash as a fingerprint but also an integrity check.
-> > >
-> >
-> > But does it have to be cryptographically strong? Why is CRC32 not sufficient?
->
-> Please see https://crrev.com/c/1490800/26/include/ec_commands.h#4744
-> for our original decision.
->
+On Fri, May 15, 2020 at 12:09:39PM +0800, Brent Lu wrote:
+> The hw_base will be increased by runtime->buffer_size frames
+> unconditionally if the runtime->status->hw_ptr is not updated for over
+> half of buffer time. As the hw_base increases, so does the
+> runtime->status->hw_ptr which could lead to invalid return value when
+> user space program calls snd_pcm_avail() function.
+> 
+> By updating runtime->hw_ptr_jiffies each time the HWSYNC is called,
+> the hw_base will keep the same when buffer stall happens, so does the
+> hw_ptr.
+> 
+> Signed-off-by: Brent Lu <brent.lu@intel.com>
+> ---
+>  sound/core/pcm_lib.c | 1 +
+>  1 file changed, 1 insertion(+)
 
-In this case, you are using the digest to decide whether the same code
-has already been loaded, right?
+Is this a bugfix needed for older kernels as well?  When did this issue
+show up?
 
-So it makes sense to think about the threat model here: if you are
-able to defeat the strong hash, what does that buy an attacker? If an
-attacker is able to create a different piece of code that has the same
-digest as the code that was already loaded, the only thing that
-happens is that the loader will ignore it. If that is a threat you
-want to protect yourself against, then you need sha256. Otherwise, a
-crc is sufficient.
+thanks,
 
-
-> Also would like to let you know that the data path to call
-> calculate_sha256( ) is in-frequent (1~2 times) if you think it is too
-> expensive to use SHA256
-
-In general, you shouldn't use crypto at all unless you can explain why
-it is necessary.
+greg k-h
