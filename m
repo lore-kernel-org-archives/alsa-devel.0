@@ -2,90 +2,71 @@ Return-Path: <SRS0=wzGW=65=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A21EC433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 13:31:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8098C433E1
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 14:01:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 700DF20758
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 13:31:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 35A5D20671
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 14:01:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="P1UVgVNy";
-	dkim=pass (1024-bit key) header.d=precisionplanting.com header.i=@precisionplanting.com header.b="WefS8Yr2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 700DF20758
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=precisionplanting.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Uc6M1TLP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 35A5D20671
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A22DE1607;
-	Fri, 15 May 2020 15:30:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A22DE1607
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7F38A1655;
+	Fri, 15 May 2020 16:00:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F38A1655
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589549501;
-	bh=xKSRvgkS7o8TiZ3PKuU3Q7gAdmGM1gzawdcUnNqG5Vw=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=P1UVgVNyWz0kqVEqfIksmhkgf3aZbIDiTt8bLZFSnwI7wvRfKuwxF/L9016TsFmmr
-	 e9IgOFL8NMaQZarcE9rlU9nZb5l5tdkevM2mJ7a3PvaiidSW/6CRxV0iQ9neTX6B32
-	 7Jfn+6DmnPiCh2Uq87RNKfI0MEiPJB9XbIimPrQk=
+	s=default; t=1589551282;
+	bh=s8bMPlVCeVdZNyq2lNRMj0HzGNkZFHOn87U0v3j6l54=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Uc6M1TLPtbnXt/v+MXt3Az6J906CmCH7eW4jwgWTvd/BpG80tF0Gf/xBY3rJ4pBJl
+	 nwW6QCOk04Xb/iBetpMrV8pPEgQ5LglIKNngX0XwXci+lxIp4ES34u/sdPiVZr6HRg
+	 yjghI2ju1qenrYWWASJsGvPDNJCzPUuRho17m5vY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 16DEEF8022D;
-	Fri, 15 May 2020 15:30:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E7B71F800E3;
+	Fri, 15 May 2020 16:00:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 436EDF80247; Fri, 15 May 2020 15:30:46 +0200 (CEST)
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com
- [IPv6:2a00:1450:4864:20::229])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id AB4C6F80247; Fri, 15 May 2020 16:00:29 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 24F1AF800B8
- for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 15:30:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24F1AF800B8
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=precisionplanting.com
- header.i=@precisionplanting.com header.b="WefS8Yr2"
-Received: by mail-lj1-x229.google.com with SMTP id w10so2274147ljo.0
- for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 06:30:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=precisionplanting.com; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=Kl876/BdSn9RYxcTJT3LSQEtfYDYRnHoZtHgwfFJNqI=;
- b=WefS8Yr2Z2puEIwrjS69yuD8OYhAJEeTjOiC4QCEVTPGQTXfls9hK7njYaBi1c/M2i
- u95g2OP9vhE26Gbs/EnygIHWHengbgMSc9LMw4ODRWCDLJQS+T5F6yuWVgafRWUOAGv9
- MwvP6HEl+nal7Qe8OMEROpXNxv7hgyQtRCkD0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=Kl876/BdSn9RYxcTJT3LSQEtfYDYRnHoZtHgwfFJNqI=;
- b=OCVSPOf7C4bP2B3cw8QjQhCpQd3l6gEEt4f9i1rcta0GxjVvbxnYuMZQo3zXyh7WJR
- enemoljU/1v7Vii2mSWfOvnO86P7sef3NF4ODuWjCqHQ2Tr8chHxS472XSh1mv0hoqGo
- QPekqiIbbQOnAkHISYTAKk/cGoPKOYfq1j52ucoY931+90myJ5ZS9o8QqExGM5fcRqjv
- lYL3/D98wXnAkoAlOlLZVOuaNcyaRGWf8JGkDxHMfIrvurzbow6XHTWOE6+eg6iL3sh9
- A1BflpY73G+fzREKhIj7sOadBs842FgobeCc9qlAGuS1UBkNgHptkfrK5hmTiWHBTBME
- 0EFw==
-X-Gm-Message-State: AOAM532EgXcRYyetEF2H+WcZnr22GDLRJy7hykd+Go42Kfm6/Gcw14s7
- cYLhoc5Ga8rYVxt1Wndgq5dn4mZbpy/5qGRXPWHFgQ==
-X-Google-Smtp-Source: ABdhPJwGUZfw5nP6185CYbJgXkdO0SMZO6b4G8qv3V3k7xqT5vQVOynj59RMuXSsjdP6LrmzoZObb7EwMo3jazC1D7U=
-X-Received: by 2002:a2e:b4d0:: with SMTP id r16mr2379718ljm.129.1589549436506; 
- Fri, 15 May 2020 06:30:36 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 084BDF800E3
+ for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 16:00:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 084BDF800E3
+IronPort-SDR: LlEusUsGIuOzVCSMcbtD2oACkUuZA9pcXhh/pCbPG2abmm1A61Yq4K5Pm3+LrsRNzVSilrlDha
+ uSRTGQWNplJA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 May 2020 07:00:14 -0700
+IronPort-SDR: jXAmpiLneVNbRWfoh5aK+IfiJ2ZMbL4hi4lH1YLbt0zaR59E0CAZIYCc3mUy3uXr/6FWjxpAtQ
+ Bll+4w4fFMVw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,395,1583222400"; d="scan'208";a="266610930"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+ by orsmga006.jf.intel.com with ESMTP; 15 May 2020 07:00:13 -0700
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+To: alsa-devel@alsa-project.org,
+	broonie@kernel.org
+Subject: [PATCH 0/8] ASoC: SOF: Intel and IMX updates for 5.8
+Date: Fri, 15 May 2020 16:59:50 +0300
+Message-Id: <20200515135958.17511-1-kai.vehmanen@linux.intel.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-References: <CAOyfbRXsKi-7bvnRNhoR6Vu7ET1oM5CJ6tEKwcDchy48ExpFvQ@mail.gmail.com>
- <s5hsgg1odpw.wl-tiwai@suse.de>
-In-Reply-To: <s5hsgg1odpw.wl-tiwai@suse.de>
-From: Dexter Travis <dexter.travis@precisionplanting.com>
-Date: Fri, 15 May 2020 08:30:25 -0500
-Message-ID: <CAOyfbRVwrjFHzDhim1dXgOHgGQkWJ5Czn4ANWe+L4JWwqnrq8g@mail.gmail.com>
-Subject: Re: core: snd_card_disconnect/snd_card_free: hang when card
- unregistered
-To: Takashi Iwai <tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-Cc: alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Cc: daniel.baluta@nxp.com, pierre-louis.bossart@linux.intel.com,
+ kai.vehmanen@linux.intel.com, ranjani.sridharan@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,73 +82,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Takashi,
+Hi,
 
-Thank you.  That is helpful.  In my case we are embedded deeply enough
-that there is only one application playing sounds so it may be
-possible to improve our user space side to properly close down the
-sound.
+here's a series of minor fixes and improvements to SOF. Add support
+for smart amplifier component type. Cover more systems by relaxing
+match rules for the generic Soundwire machine driver. Fix issues with
+driver unload and address a few compiler warnings.
 
-When power comes back I do not need to resume playing the previous
-sound.  From the kernel side is it possible to force the sound to
-abort or stop?
+Daniel Baluta (2):
+  ASoC: SOF: Do nothing when DSP PM callbacks are not set
+  ASoC: SOF: define INFO_ flags in dsp_ops
 
-How do more easily removed sound devices handle this?  For example a
-USB or other hot-pluggable sound device?
+Keyon Jie (1):
+  ASoC: SOF: topology: add support to smart amplifier
 
+Marcin Rajwa (2):
+  ASoC: SOF: add a power_down_notify method
+  ASoC: SOF: inform DSP that driver is going to be removed
 
+Pierre-Louis Bossart (2):
+  ASoC: SOF: imx: make dsp_ops static
+  ASoC: SOF: imx: make imx8m_dsp_ops static
 
-Regards,
+randerwang (1):
+  ASoC: SOF: Intel: sdw: relax sdw machine select constraints
 
+ include/sound/sof/topology.h |  2 ++
+ sound/soc/sof/core.c         |  6 ++++++
+ sound/soc/sof/imx/imx8.c     |  2 +-
+ sound/soc/sof/imx/imx8m.c    |  8 +++++++-
+ sound/soc/sof/intel/hda.c    | 10 +++++++++-
+ sound/soc/sof/pm.c           | 19 +++++++++++++++++--
+ sound/soc/sof/sof-priv.h     |  1 +
+ sound/soc/sof/topology.c     |  1 +
+ 8 files changed, 44 insertions(+), 5 deletions(-)
 
-Dexter
+-- 
+2.26.0
 
-On Fri, May 15, 2020 at 2:32 AM Takashi Iwai <tiwai@suse.de> wrote:
->
-> On Thu, 14 May 2020 23:04:09 +0200,
-> Dexter Travis wrote:
-> >
-> > In my system during certain power events the power rail for the
-> > TLV320AIC3120 goes away and may come back.
-> >
-> > To accommodate this I have added a call to snd_soc_unregister_card as
-> > soon as I notice via GPIO that this power has been removed.  I then
-> > call snd_soc_register_card to re-install the sound card after power is
-> > restored.
-> >
-> > If no sound is playing when the asynchronous power removal occurs this
-> > works fine.
-> >
-> > If a sound is playing one of two things will occur.  In the first case
-> > the sound driver comes back and sound is restored when power is
-> > restored. In the second case my deferred work function which calls the
-> > snd_soc_unregister_card function gets hung and does not return.
-> >
-> > I have traced the difference to the wait_for_completion call in
-> > snd_card_free.  if snd_card_disconnect adds files to shutdown_files
-> > list then wait_for_completion will hang forever.
-> >
-> > Any suggestions on how to further debug this?
-> >
-> > How to force the immediate unregister of the card even if a sound is playing?
->
-> You can unregister the devices, i.e. they disappear from the
-> user-space.  However, the old stream and the belonging objects are
-> still alive, hence you can't release the resources entirely until the
-> user-space closes and drops the remaining one.  The completion is
-> waiting for the release of those remaining handles.  So, if you try to
-> register again the same objects, it'll conflict.
->
-> IOW, it'll be really messy if you try to disconnect and release the
-> whole resources temporarily and restore again.  I guess the current
-> best would be to limit a part of components somehow during the
-> temporary absence.
->
-> The temporary stop of a stream isn't well handled in the core API,
-> admittedly, it's a known problem.  We're considering to introduce a
-> new state, but it's still under evaluation.
->
->
-> thanks,
->
-> Takashi
