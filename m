@@ -2,66 +2,65 @@ Return-Path: <SRS0=wzGW=65=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE0A0C433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 07:33:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 20F50C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 08:20:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4818820657
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 07:33:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CA89C20643
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 08:20:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nT3D50I5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4818820657
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Xuhed9N0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CA89C20643
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A323B1658;
-	Fri, 15 May 2020 09:32:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A323B1658
+	by alsa0.perex.cz (Postfix) with ESMTPS id 08F4E950;
+	Fri, 15 May 2020 10:19:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 08F4E950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589528006;
-	bh=BicccZDqjS/4vS8aeOFSo+QtTgvgDQOushWVcRciEDo=;
+	s=default; t=1589530840;
+	bh=iKv62kC+TycbvEkZ7NmKGr1qiwgF5RfOY0Jb6icPcro=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nT3D50I5Y1DLkVHfSBwSsKEix0QnH0yFuS+CE3Aj55UxSvA2ttZ6QNEixJMZ64G6T
-	 +ErUBLGIJIQBO7LqbFnUA3eMDV2RRpcgX/HDMcYW2OnRvaJeKtTFc3y1jjOTzlJ4tt
-	 C+efpmmgwZ5c0K/+siIkI/iEVqVICaujx+Izuymg=
+	b=Xuhed9N06Ok234Ns6AcE43q5ZnUyKaNKWzg9EYNXwEzpwotuKg8/YputTLY4bum0T
+	 EiePguuuBWFXgHhwCjDEbNIsPS+DepFeZZQFHLybuZzNekDWfrsH+60/VlwnrT7rCN
+	 L22nj6mad7QV+UQN2/JLLdFQTGuICGSR+KhUgpBo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1B6EDF8022D;
-	Fri, 15 May 2020 09:32:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4CF04F800B8;
+	Fri, 15 May 2020 10:19:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 09763F80247; Fri, 15 May 2020 09:32:34 +0200 (CEST)
+ id 81D16F80247; Fri, 15 May 2020 10:19:45 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D09E8F800E3
- for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 09:32:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D09E8F800E3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 42192F800B8
+ for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 10:19:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42192F800B8
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 8D1E5AF6F;
- Fri, 15 May 2020 07:32:30 +0000 (UTC)
-Date: Fri, 15 May 2020 09:32:27 +0200
-Message-ID: <s5hsgg1odpw.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 9F439AFCA;
+ Fri, 15 May 2020 08:19:39 +0000 (UTC)
+Date: Fri, 15 May 2020 10:19:36 +0200
+Message-ID: <s5hftc1objb.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Dexter Travis <dexter.travis@precisionplanting.com>
-Subject: Re: core: snd_card_disconnect/snd_card_free: hang when card
- unregistered
-In-Reply-To: <CAOyfbRXsKi-7bvnRNhoR6Vu7ET1oM5CJ6tEKwcDchy48ExpFvQ@mail.gmail.com>
-References: <CAOyfbRXsKi-7bvnRNhoR6Vu7ET1oM5CJ6tEKwcDchy48ExpFvQ@mail.gmail.com>
+To: Thomas Ebeling <penguins@bollie.de>
+Subject: Re: [PATCH v2] RME Babyface Pro mixer patch: Fixing max vol
+In-Reply-To: <20200514171555.67rqof74ubns3dmx@bollie.ca9.eu>
+References: <20200514171555.67rqof74ubns3dmx@bollie.ca9.eu>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,48 +76,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 14 May 2020 23:04:09 +0200,
-Dexter Travis wrote:
+On Thu, 14 May 2020 19:16:07 +0200,
+Thomas Ebeling wrote:
 > 
-> In my system during certain power events the power rail for the
-> TLV320AIC3120 goes away and may come back.
+> Added mixer quirks to allow controlling the internal DSP of the
+> RME Babyface Pro and its successor Babyface Pro FS.
 > 
-> To accommodate this I have added a call to snd_soc_unregister_card as
-> soon as I notice via GPIO that this power has been removed.  I then
-> call snd_soc_register_card to re-install the sound card after power is
-> restored.
+> v2 fixes the initially wrong upper limit of the volume control.
 > 
-> If no sound is playing when the asynchronous power removal occurs this
-> works fine.
-> 
-> If a sound is playing one of two things will occur.  In the first case
-> the sound driver comes back and sound is restored when power is
-> restored. In the second case my deferred work function which calls the
-> snd_soc_unregister_card function gets hung and does not return.
-> 
-> I have traced the difference to the wait_for_completion call in
-> snd_card_free.  if snd_card_disconnect adds files to shutdown_files
-> list then wait_for_completion will hang forever.
-> 
-> Any suggestions on how to further debug this?
-> 
-> How to force the immediate unregister of the card even if a sound is playing?
+> Signed-off-by: Thomas Ebeling <penguins@bollie.de>
 
-You can unregister the devices, i.e. they disappear from the
-user-space.  However, the old stream and the belonging objects are
-still alive, hence you can't release the resources entirely until the
-user-space closes and drops the remaining one.  The completion is
-waiting for the release of those remaining handles.  So, if you try to
-register again the same objects, it'll conflict.
-
-IOW, it'll be really messy if you try to disconnect and release the
-whole resources temporarily and restore again.  I guess the current
-best would be to limit a part of components somehow during the
-temporary absence.
-
-The temporary stop of a stream isn't well handled in the core API,
-admittedly, it's a known problem.  We're considering to introduce a
-new state, but it's still under evaluation.
+The v1 patch has been already merged to for-next branch.  Could you
+submit an incremental patch to just correct the max value?
 
 
 thanks,
