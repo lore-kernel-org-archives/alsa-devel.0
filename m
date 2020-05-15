@@ -4,72 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3422C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 14:03:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4C31C433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 14:03:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2C4C320671
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 14:03:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4A19320759
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 14:03:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="h1ffXPMj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2C4C320671
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KOJOJK7W"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4A19320759
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7C0EE1675;
-	Fri, 15 May 2020 16:02:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7C0EE1675
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8F1D91663;
+	Fri, 15 May 2020 16:02:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F1D91663
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589551383;
-	bh=TJAayxupbpQYqp5S5DAiYfvtO2zlYGcV9KIZut84aoE=;
+	s=default; t=1589551407;
+	bh=CR1mbUST0xnzRSEtk9BjrCTNnNZ0Etz2f5v6MjpYWAk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=h1ffXPMjDP9MA9XviotDasdSutAdVVAtl/2Dn9BGRu4zjLWYAqqlb8p7Z3fg3eP4s
-	 FoqjB+MMl+WCU03WLJ3rGItIBKxkMBNr9A5KAruCeCoT690RnP6u8FDQ51K7xXxQtr
-	 EPbz2/qbfTqI7jmQEQz0AgXfFAGS7nTkNmAReLpw=
+	b=KOJOJK7W2zAWT2TyB0ZHC41Xb6FgKSmVTOMMpp+0OVIb33Ti1rjRQeSvejDlC+uiq
+	 UHmIVvgh0gxSoE3ONs5A+qOcShIX9PJhKIIFu+RPtha0Y1BaZ7NuZ1DpKGkZdeHk+w
+	 E/uEHWTDWAoQQcIOacv1e1mqLUqs0y7krzLnR9m8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D7DFDF8028F;
-	Fri, 15 May 2020 16:00:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D9D42F80291;
+	Fri, 15 May 2020 16:00:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 92303F8028F; Fri, 15 May 2020 16:00:45 +0200 (CEST)
+ id E1F64F80254; Fri, 15 May 2020 16:00:45 +0200 (CEST)
 Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2A1F0F80254
- for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 16:00:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2A1F0F80254
-IronPort-SDR: xZUf4ULhDpEv7h+lvX/xXJ/imDsV+r7103gWLucYVDiN7uVXslL/M+Qw6/6Ka779dLrZOOJahe
- mXgpvMzNXhyQ==
+ by alsa1.perex.cz (Postfix) with ESMTPS id EC2E1F8022D
+ for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 16:00:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC2E1F8022D
+IronPort-SDR: 7o/giA17gbBlw6HNZKART0sOtETztodFrxlNS3Gc6yzhjQIZCNnPth2c7sLMHLEstec1jaOVzU
+ 1JiQ6gOri8AA==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 May 2020 07:00:29 -0700
-IronPort-SDR: biaoOxSBPW4y6hvyf5r9VJKiwpO6r02dEEh2j5ypLqKBqazpvUsEehvDCz9x9RSovZWZ7kRVTm
- E4+rrEKTK0Vw==
+ 15 May 2020 07:00:35 -0700
+IronPort-SDR: M0gDuCwr2lfFETuyCe3p+Or6GgyIL36GE4F0uWmoU76tdhvJrWvkf1FRFQt1SFBEYCZliVxWX0
+ XMmtntiLzwQQ==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,395,1583222400"; d="scan'208";a="266611048"
+X-IronPort-AV: E=Sophos;i="5.73,395,1583222400"; d="scan'208";a="266611095"
 Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by orsmga006.jf.intel.com with ESMTP; 15 May 2020 07:00:27 -0700
+ by orsmga006.jf.intel.com with ESMTP; 15 May 2020 07:00:33 -0700
 From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH 2/8] ASoC: SOF: add a power_down_notify method
-Date: Fri, 15 May 2020 16:59:52 +0300
-Message-Id: <20200515135958.17511-3-kai.vehmanen@linux.intel.com>
+Subject: [PATCH 4/8] ASoC: SOF: topology: add support to smart amplifier
+Date: Fri, 15 May 2020 16:59:54 +0300
+Message-Id: <20200515135958.17511-5-kai.vehmanen@linux.intel.com>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200515135958.17511-1-kai.vehmanen@linux.intel.com>
 References: <20200515135958.17511-1-kai.vehmanen@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Marcin Rajwa <marcin.rajwa@linux.intel.com>, daniel.baluta@nxp.com,
+Cc: Keyon Jie <yang.jie@linux.intel.com>, daniel.baluta@nxp.com,
  pierre-louis.bossart@linux.intel.com, kai.vehmanen@linux.intel.com,
  ranjani.sridharan@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
@@ -87,52 +87,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Marcin Rajwa <marcin.rajwa@linux.intel.com>
+From: Keyon Jie <yang.jie@linux.intel.com>
 
-This patch adds a snd_sof_dsp_power_down_notify() method which aims to
-prepare the DSP for the upcoming power down.
-This new function make use of SOF_IPC_PM_CTX_SAVE message.
+Add smart amplifier component support, which is designed as another new
+type of process component and used for speaker protection algorithm
+integration.
 
-Signed-off-by: Marcin Rajwa <marcin.rajwa@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/soc/sof/pm.c       | 9 +++++++++
- sound/soc/sof/sof-priv.h | 1 +
- 2 files changed, 10 insertions(+)
+ include/sound/sof/topology.h | 2 ++
+ sound/soc/sof/topology.c     | 1 +
+ 2 files changed, 3 insertions(+)
 
-diff --git a/sound/soc/sof/pm.c b/sound/soc/sof/pm.c
-index 119e4d644ef4..5e804a7728f5 100644
---- a/sound/soc/sof/pm.c
-+++ b/sound/soc/sof/pm.c
-@@ -256,6 +256,15 @@ static int sof_suspend(struct device *dev, bool runtime_suspend)
- 	return ret;
- }
+diff --git a/include/sound/sof/topology.h b/include/sound/sof/topology.h
+index 872de52b3144..f56e80d09b32 100644
+--- a/include/sound/sof/topology.h
++++ b/include/sound/sof/topology.h
+@@ -38,6 +38,7 @@ enum sof_comp_type {
+ 	SOF_COMP_DEMUX,
+ 	SOF_COMP_ASRC,		/**< Asynchronous sample rate converter */
+ 	SOF_COMP_DCBLOCK,
++	SOF_COMP_SMART_AMP,             /**< smart amplifier component */
+ 	/* keep FILEREAD/FILEWRITE as the last ones */
+ 	SOF_COMP_FILEREAD = 10000,	/**< host test based file IO */
+ 	SOF_COMP_FILEWRITE = 10001,	/**< host test based file IO */
+@@ -220,6 +221,7 @@ enum sof_ipc_process_type {
+ 	SOF_PROCESS_MUX,
+ 	SOF_PROCESS_DEMUX,
+ 	SOF_PROCESS_DCBLOCK,
++	SOF_PROCESS_SMART_AMP,	/**< Smart Amplifier */
+ };
  
-+int snd_sof_dsp_power_down_notify(struct snd_sof_dev *sdev)
-+{
-+	/* Notify DSP of upcoming power down */
-+	if (sof_ops(sdev)->remove)
-+		return sof_send_pm_ctx_ipc(sdev, SOF_IPC_PM_CTX_SAVE);
-+
-+	return 0;
-+}
-+
- int snd_sof_runtime_suspend(struct device *dev)
- {
- 	return sof_suspend(dev, true);
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index a34dbae9f971..3ed39b887214 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -453,6 +453,7 @@ int snd_sof_runtime_resume(struct device *dev);
- int snd_sof_runtime_idle(struct device *dev);
- int snd_sof_resume(struct device *dev);
- int snd_sof_suspend(struct device *dev);
-+int snd_sof_dsp_power_down_notify(struct snd_sof_dev *sdev);
- int snd_sof_prepare(struct device *dev);
- void snd_sof_complete(struct device *dev);
+ /* generic "effect", "codec" or proprietary processing component */
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index 0259537d3740..6a9703e5ff60 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -431,6 +431,7 @@ static const struct sof_process_types sof_process[] = {
+ 	{"MUX", SOF_PROCESS_MUX, SOF_COMP_MUX},
+ 	{"DEMUX", SOF_PROCESS_DEMUX, SOF_COMP_DEMUX},
+ 	{"DCBLOCK", SOF_PROCESS_DCBLOCK, SOF_COMP_DCBLOCK},
++	{"SMART_AMP", SOF_PROCESS_SMART_AMP, SOF_COMP_SMART_AMP},
+ };
  
+ static enum sof_ipc_process_type find_process(const char *name)
 -- 
 2.26.0
 
