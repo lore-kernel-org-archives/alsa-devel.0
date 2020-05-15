@@ -2,80 +2,103 @@ Return-Path: <SRS0=wzGW=65=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 71873C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 08:56:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E574C433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 09:03:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ED4F0206F1
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 08:56:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 87D64206B6
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 09:03:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tPIOkTYX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ED4F0206F1
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="njYThJYB";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="H/qbFr5r"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 87D64206B6
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 50DD2165E;
-	Fri, 15 May 2020 10:55:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50DD2165E
+	by alsa0.perex.cz (Postfix) with ESMTPS id D7F2B165F;
+	Fri, 15 May 2020 11:02:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D7F2B165F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589532994;
-	bh=0H0csaOPoV/TsgAJYpomXTRHtmRbxy/+oUYHmyKgzEg=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1589533429;
+	bh=3jXIaHprCVElwGYgr4C7LV2Sj+ymV78LwFuHzy7ajwY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tPIOkTYXiwljnDXovqPJOGxhsQJSURbjwR8Taw1WmKKQRnE/JP72SPx83aQLNwegh
-	 ksiP1ss8azcfomJmZNEvT698NrgZSZo6SQd8zKhEm4MrPf3HKg0FbtscZwCFo/yojS
-	 rdDd5MGwhWkG0iZ+fPvWxxqIkEYfrpEH0hHwnC48=
+	b=njYThJYBRkNwtqAfb3xSM7RZ6dxm/u/ad5hZ7KKxTqG9MqgeJkVR35x43DLtRoQh+
+	 LpWQcjUApThHvxUM3ZvAjubVr0Dce/6Mt21t3rDWVh2BmjrCBQb62+qYxdhMZHZhcE
+	 8FItWa3iujtMUYKSx3k2RIG1tPV/zV1NRvIfMF3k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E52EDF80247;
-	Fri, 15 May 2020 10:55:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 730ADF8022D;
+	Fri, 15 May 2020 11:02:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E6140F80253; Fri, 15 May 2020 10:55:42 +0200 (CEST)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 87D6EF80247; Fri, 15 May 2020 11:02:56 +0200 (CEST)
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com
+ [IPv6:2607:f8b0:4864:20::d41])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D2174F80101
- for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 10:55:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D2174F80101
-IronPort-SDR: zdHfnyyUmweB0M12NHVEyiNHcRmxe2P3wmVdC9CW/0cFXszGpOVwu+xKcXbR534I9lYJbzGf5k
- kaOH/st0n4mg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 May 2020 01:55:32 -0700
-IronPort-SDR: OYcxG3Hc1inxMMHokdwKAoRJFGHINEKQZADBDL6g6wNsD60i/EgCStuggwLLw0fNjKEphWEfac
- TathJfso66vA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,394,1583222400"; d="scan'208";a="410405904"
-Received: from crojewsk-mobl1.ger.corp.intel.com (HELO [10.213.20.127])
- ([10.213.20.127])
- by orsmga004.jf.intel.com with ESMTP; 15 May 2020 01:55:30 -0700
-Subject: Re: [RESEND PATCH v2] ALSA: hda: Allow SST driver on SKL and KBL
- platforms with DMIC
-To: Takashi Iwai <tiwai@suse.de>
-References: <20200515084934.28156-1-cezary.rojewski@intel.com>
- <s5h7dxdo9yg.wl-tiwai@suse.de>
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-Message-ID: <77fcab56-b3fc-c839-f61b-2659b98aa513@intel.com>
-Date: Fri, 15 May 2020 10:55:29 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id E1D6AF800E3
+ for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 11:02:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1D6AF800E3
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
+ header.b="H/qbFr5r"
+Received: by mail-io1-xd41.google.com with SMTP id d7so1835894ioq.5
+ for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 02:02:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=cKM5+1eerHoxHCYTkL75schYrAhugNMkBpRUDg5jmss=;
+ b=H/qbFr5rhsFWHW1Ul+LO7uT94igdi4uQXL6IaWkH8xfLxj40Qo9cy07/nakkMizsTI
+ RsxySkLaO2rzrwIQTiVbY6AfqCTxqWqCxl0U0v5WstPFbCWO058sx/MN9pimbMZCc/aN
+ k2LccTwwrYAw7oTbmL5jMY+pDGUiNflkCGEsalOCFYrRctBuI92JFyKWk8B1MXWgtm8A
+ I44S7WQz1y7VOPgwIdP1Hen6kJXHHBVnD7bDH4a3SeDnvfiZVb5p9TuwUZrRG1D+Tkua
+ f9GuI23usJ4XQtyer7G06vswurPiSd9zb2XyYpSUZdPAmUcQRzs1l6m1xHhA4a7nHh+a
+ Mihg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=cKM5+1eerHoxHCYTkL75schYrAhugNMkBpRUDg5jmss=;
+ b=HumzonsFVmNhMnkxCtrkQJmQGFwqBzx2uvFC7nBzSvDSIHu6vq6ZxNqdsBcKyZbIER
+ zudVWpUaddn0hgwcx+WDSyvQ+wZ74yxP7KUS3mO22T6v53pagUqorsOY2qeSW9DwyKo9
+ Imo+Xge05VSY3Xz9rVq3jA+k/Wikb1F6nJV15HVucVj8mpZdzygWQ+O6+tUiNdTzzvRC
+ jJ8KKUsdAeZu4P0W8yBcnDkyeDy0sXmXq8rf0pjgKcE9HYz7G+zf2EC3rVRJr4s/yyQb
+ cecpXeAXOrCmcPzGjgWKbZSCVKZcPd/qE1NiphqA5TWqwx273SN2CXMWA9xGaWNvZj7o
+ hHRg==
+X-Gm-Message-State: AOAM531WwAhEp4BUY3ar/xFt9mPBkcfwql/JZWNI3qSdVc0PiMNAz6Yn
+ 8NOwaJHmZ1NphVDKEewht6nEru9QmxuLUa/HKkZFAw==
+X-Google-Smtp-Source: ABdhPJybL4iDJKI46D/krUR9YfY4KGNJL3OjsHpMyGzNVoecAyXK43k5XIYrXWf2C16sTe32N/Vh1pgpJcfdPkMYKTI=
+X-Received: by 2002:a05:6638:1014:: with SMTP id
+ r20mr2201565jab.29.1589533369690; 
+ Fri, 15 May 2020 02:02:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <s5h7dxdo9yg.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.com,
- pierre-louis.bossart@linux.intel.com
+References: <20200514161847.6240-1-ardb@kernel.org>
+ <20200514162548.GA141824@google.com>
+ <CA+Px+wWps5d5qpL_0ed2jrD5bMKgd=8p1rbcRH28J-1SpgVz0Q@mail.gmail.com>
+ <CAMj1kXE2KsCoDrH5nY7vmGA6K4ekDTX=v-stj1uh7UHNqquJMg@mail.gmail.com>
+ <CA+Px+wV1w4gFcV+ABtK44ec0aPTT9APkpFMUyLMUh5tStgHstQ@mail.gmail.com>
+ <CAMj1kXEkUetEX4XG1CkS9nBa2e7J4LsM1vL7FvSoBUgVjz51mQ@mail.gmail.com>
+In-Reply-To: <CAMj1kXEkUetEX4XG1CkS9nBa2e7J4LsM1vL7FvSoBUgVjz51mQ@mail.gmail.com>
+From: Tzung-Bi Shih <tzungbi@google.com>
+Date: Fri, 15 May 2020 17:02:38 +0800
+Message-ID: <CA+Px+wXFpGZJx6yRJWQPsT0=8uWPduWW1_EierRxEJhjLFHjTw@mail.gmail.com>
+Subject: Re: [PATCH] SoC: cros_ec_codec: switch to library API for SHA-256
+To: Ard Biesheuvel <ardb@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: ALSA development <alsa-devel@alsa-project.org>,
+ Nicolas Boichat <drinkcat@chromium.org>,
+ Herbert Xu <herbert@gondor.apana.org.au>, Arnd Bergmann <arnd@arndb.de>,
+ Liam Girdwood <lgirdwood@gmail.com>, Eric Biggers <ebiggers@kernel.org>,
+ Guenter Roeck <groeck@chromium.org>, Mark Brown <broonie@kernel.org>,
+ Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+ Benson Leung <bleung@google.com>, Benson Leung <bleung@chromium.org>,
+ Cheng-Yi Chiang <cychiang@chromium.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,26 +114,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 2020-05-15 10:53 AM, Takashi Iwai wrote:
-> On Fri, 15 May 2020 10:49:34 +0200,
-> Cezary Rojewski wrote:
->>
->> Update intel-dspcfg with FLAG_SST_ONLY_IF_DMIC option and use it for
->> Skylake and Kabylake platforms when DMIC is present.
->>
->> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
->> Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> 
-> The patch was already merged in for-next branch in the last week.
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
+On Fri, May 15, 2020 at 2:50 PM Ard Biesheuvel <ardb@kernel.org> wrote:
+> In this case, you are using the digest to decide whether the same code
+> has already been loaded, right?
+>
+> So it makes sense to think about the threat model here: if you are
+> able to defeat the strong hash, what does that buy an attacker? If an
+> attacker is able to create a different piece of code that has the same
+> digest as the code that was already loaded, the only thing that
+> happens is that the loader will ignore it. If that is a threat you
+> want to protect yourself against, then you need sha256. Otherwise, a
+> crc is sufficient.
 
-Sorry for spam then, Takashi.
-Seen "Applied" from Mark, guess I missed the hda part.
+My original intention is to:
+- avoid transmitting duplicate data if remote processor already has
+the same binary blob (be reminded that the transmission may be costly)
+- check integrity if any transmission error
 
-Thanks,
-Czarek
+Not considering preventing an attacker in the original design.  If an
+attacker can send arbitrary binary blobs to the remote processor (via
+a dedicated SPI or a specific memory region), the attacker should
+already "root" the kernel and the device.
+
+I understand your point that CRC should be sufficient in the use case.
+However here are my considerations:
+- as the payload is possibly executable, I would like to use stronger
+hash to pay more attention
+- calling calculate_sha256() is in-frequent, I don't really see a
+drawback if it is almost one time effort
+
+If we want to switch to use CRC32, we cannot change the kernel code
+only.  There is an implementation of a remote processor that also
+needs to modify accordingly.  I will keep in mind whether to switch to
+use CRC32 next time when we are revisiting the design.
+
+> In general, you shouldn't use crypto at all unless you can explain why
+> it is necessary.
+
+When you are mentioning "crypto", do you refer to both crc32 and
+sha256 in the case?
