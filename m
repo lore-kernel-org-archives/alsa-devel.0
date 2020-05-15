@@ -2,86 +2,85 @@ Return-Path: <SRS0=wzGW=65=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FB76C433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 12:03:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BBFE1C433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 12:30:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6198B206D4
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 12:03:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 625FA20709
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 12:30:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="afxxhEnP";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="H1CM5bvn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6198B206D4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nPK8buF3";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="0zrjkXD5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 625FA20709
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B736E1658;
-	Fri, 15 May 2020 14:02:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B736E1658
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9F33C1655;
+	Fri, 15 May 2020 14:30:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F33C1655
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589544189;
-	bh=Y7uB1bIleNW6mFx/+hFe9NbEEizMHc/2/XgSGrEcb88=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1589545857;
+	bh=TSw0eQ4WFON1EfGnsaXykmfInnksvvWfn5CeBUYDKZ8=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=afxxhEnP4mygahqXQk37zrKZkc98oXVO0iMHh2uM9bvRxaws6RTvVmeQerXBfnENn
-	 vgPPN8ch4hrMS9Nwk7OlZ2UrrI8p7c6QBmCbWwAMvGMyyo4Lim47eXm8W9VpqgvwaT
-	 bXXY7SQXm+0wtrkTpQ0rNytGR+Hqpm/igOjnQOyY=
+	b=nPK8buF357GTuHj8e13wQg9ZZ1EbC7rz0mfv6kU0X4L5iABDGSG4xqJfeTYMboWyY
+	 U6UL1dRaGprcmH6vyik+/AFxWZXl9bg7vGcdCxUbBfKl+XLbcgHHKA9RPfKjC+cy7a
+	 TF6/KcGtaCnJmjRCN5jngfj/au5Y2c3p03QX7y7g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4CFD7F800E3;
-	Fri, 15 May 2020 14:02:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E62EAF800E3;
+	Fri, 15 May 2020 14:30:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E6593F80247; Fri, 15 May 2020 14:02:16 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ id 113AAF80247; Fri, 15 May 2020 14:30:00 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1BFBFF80101
- for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 14:02:09 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 17599A004B;
- Fri, 15 May 2020 14:02:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 17599A004B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1589544129; bh=BSPQw7ZsQTM9qcuNnNNGa3TUk61bcBxmr+5Zb7SXb3k=;
- h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
- b=H1CM5bvnktpNfAz3IAga9bNh/b2OcwZBtSlsVek+Ha8mJPsdnpDNGE801xj1Pdu+g
- IIFKpDBjbeD8swsnCxKfR7+K++XN9kzm18xEUl/OtM9U4rM03tPINQBhjvFPCNHzwO
- 17LkqcYiTTVRKQWLO+74MYTVT/6QMdTSUP5JXt0U=
-Received: from p50.perex-int.cz (unknown [192.168.100.94])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Fri, 15 May 2020 14:01:57 +0200 (CEST)
-Subject: Re: [PATCH] ALSA: pcm: fix incorrect hw_base increase
-To: Takashi Iwai <tiwai@suse.de>
-References: <1589515779-20987-1-git-send-email-brent.lu@intel.com>
- <20200515070446.GA1226131@kroah.com>
- <BN6PR1101MB21327687327440F1DB7CB75F97BD0@BN6PR1101MB2132.namprd11.prod.outlook.com>
- <ce215f76-89c3-3543-c6ed-bc9b81af50a0@perex.cz>
- <s5hk11dmqhn.wl-tiwai@suse.de>
-From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <6f98358d-99f1-3b54-ae1a-5e938d383c32@perex.cz>
-Date: Fri, 15 May 2020 14:01:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 054B5F80101
+ for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 14:29:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 054B5F80101
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="0zrjkXD5"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id D5F1C20709;
+ Fri, 15 May 2020 12:29:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1589545791;
+ bh=TSw0eQ4WFON1EfGnsaXykmfInnksvvWfn5CeBUYDKZ8=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=0zrjkXD5prKmI21EFxcPboIH8No7ixNf15Rsmdnc2qtfHdsB/Hp0ApaqPdfJYJi81
+ 6dNOLkRVMEi53mRtc+X0lelK5wpjUInjMNu6VJS3Sypur771BaG9XXE6emWPQfPcM3
+ Dvh1O3AFYAGqoE+WXqTPU6yT1aYhcQjX8HFTzhVc=
+Date: Fri, 15 May 2020 13:29:48 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [V5 PATCH 2/2] ASoC: max98390: Added Amplifier Driver
+Message-ID: <20200515122948.GD5066@sirena.org.uk>
+References: <20200515070742.14151-1-steves.lee@maximintegrated.com>
+ <CAJKOXPf-Q-e_K-puR-N2NRwQCmaKD=EczzON4rBymvV2CyoiTg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <s5hk11dmqhn.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- Arnd Bergmann <arnd@arndb.de>, Baolin Wang <baolin.wang@linaro.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="F8dlzb82+Fcn6AgP"
+Content-Disposition: inline
+In-Reply-To: <CAJKOXPf-Q-e_K-puR-N2NRwQCmaKD=EczzON4rBymvV2CyoiTg@mail.gmail.com>
+X-Cookie: Avoid contact with eyes.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, ryan.lee.maxim@gmail.com,
+ ckeepax@opensource.cirrus.com, ryans.lee@maximintegrated.com,
+ lgirdwood@gmail.com, steves.lee@maximintegrated.com,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Richard Fontana <rfontana@redhat.com>, Thomas Gleixner <tglx@linutronix.de>,
- paulhsia <paulhsia@chromium.org>, "Lu, Brent" <brent.lu@intel.com>
+ Steve Lee <steves.lee.maxim@gmail.com>, tiwai@suse.com, geert@linux-m68k.org,
+ dmurphy@ti.com, shumingf@realtek.com, srinivas.kandagatla@linaro.org,
+ nuno.sa@analog.com, rf@opensource.wolfsonmicro.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,67 +96,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 15. 05. 20 v 12:39 Takashi Iwai napsal(a):
-> On Fri, 15 May 2020 11:30:54 +0200,
-> Jaroslav Kysela wrote:
->>
->> Dne 15. 05. 20 v 11:04 Lu, Brent napsal(a):
->>>>
->>>> Is this a bugfix needed for older kernels as well?  When did this issue show
->>>> up?
->>>>
->>>> thanks,
->>>>
->>>> greg k-h
->>>
->>> It happens when DMA stop moving data from host to DSP/DAI for a long time
->>> (> half of buffer time). I know host driver should do something about it. But if
->>> not, the HWSYNC will keep increasing the hw_base and hw_ptr and confuses
->>> user space program.
->>
->> I'm afraid, but with this code, you turn off the hw_ptr jiffies
->> code. It would be better to fix the driver in this case (return the
->> updated / estimated DMA pointer, increase DMA buffer size etc.). This
->> "lag" is unacceptable.
-> 
-> The problem is obviously in the driver's side and it's best to be
-> addressed there.  But, I think it's still worth to apply this change.
-> 
-> The hw_ptr jiffies check is performed basically in two places: one is
-> snd_pcm_period_elapsed() call from ISR, and another is with the
-> no_period_wakeup flag.  In both cases, it calculates the diff of
-> jiffies from the previous update, and corrects the hw_ptr_base if that
-> exceeds the threshold.
-> 
-> And the bug here is that the "previous" jiffies is kept as long as the
-> hwptr itself is updated.  What we need is the correction of the base
-> when it really has processed the period size; i.e. hwptr got the same
-> value (with no_period_wakeup) and yet the jiffies diff is big.  For
-> this check, it's correct to update hw_ptr_jiffies at each call no
-> matter whether hwptr moved or not; we need to evaluate from the
-> previous update, after all.
-> 
-> But I might overlook something.  Jaroslav, could you check it again?
-> The jiffies check code is your black magic :)
 
-I tried to imagine a negative impact for this hw_ptr_jiffies update when the 
-DMA position is not updated from the driver and I haven't found any so far.
+--F8dlzb82+Fcn6AgP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Let's apply this and we'll see in future :-)
+On Fri, May 15, 2020 at 10:42:24AM +0200, Krzysztof Kozlowski wrote:
 
-And yes, the patch description should be improved (DMA ptr is not updated / 
-streaming is inactive).
+> Your "From" address still does not match the Signed-off-by. Set the
+> author of commit to the signed-off person.
 
-Reviewed-by: Jaroslav Kysela <perex@perex.cz>
+git commit --amend --author='foo <foo@example.com>'
 
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
+--F8dlzb82+Fcn6AgP
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6+izwACgkQJNaLcl1U
+h9CR8gf+O5UGnkbhnV4MHHRYgchqTnJBXc/DysgCP0lEx+qj2ycTVhqvpCK0662l
+RTBrIQ7JkSbGhHji7PzXkwjd/R8mr9eFuyxA7SkHzzR3q+cdChWg8kkKthwpp0FT
+3LZItFkIDVziTwPVtZH0WYQLbAeesYTeGHg46c6WiZScn0IOUclODGkOs6lhXVBT
+HctDZoXRtP8muMUOwEmaprVOdJXM6rlJNUS1uYJVBSSuN7gvyKhkmDkX0En/l0IC
+u5UJacONloOu5ZYcutPJM/oqanR7dLkRX34VKru20jaXUYXvrO+P1lwtcfFeT10D
+rvWdiGqqPMdak6i5Ej4HnPpXNvup1w==
+=UNQm
+-----END PGP SIGNATURE-----
+
+--F8dlzb82+Fcn6AgP--
