@@ -7,63 +7,63 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 13E79C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 14:05:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2234BC433E1
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 14:06:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8F27320657
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 14:05:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A030120657
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 14:06:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YwTp2v+b"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F27320657
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dLfDpr0q"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A030120657
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 053E5166B;
-	Fri, 15 May 2020 16:04:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 053E5166B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 08B7F166A;
+	Fri, 15 May 2020 16:05:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 08B7F166A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589551542;
-	bh=6S/43w1l9+/+y+YvvpP2mj8a4LlskEu9z9gXvYisrfM=;
+	s=default; t=1589551584;
+	bh=F+yr955C7MQOALiyhkLrkEOW5AWxB+3ROt+ULrK0Y24=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YwTp2v+bVsE+PRrOVwH5oDEDckshvI/HKAjVnmzcHazc3B51xIhFwyrt+HbZoA5kW
-	 EvtfSA3X31OApO3L99TmvGOt7LKGj/DVSauUetYyS4JXi4lrwhiypgfCPUFCE4aQzv
-	 fjH0CWfSNas694o3EHkQezyXM0WGbxEWDYVKXsMo=
+	b=dLfDpr0qI5DD8Vu9Hkd+TTXDdndgwX8R5LLxTJtWTbbHMlipWJdjLRgv7Su0cwCQN
+	 rKmbMX3fyb9rq8Fg0678XWYS77EX2u587gSJor80rHjy6QKSHkq3c4pfgUAWcXWOCy
+	 9ekW0ceBwYaU9uJrw3YEUzkENMvmDZnuPgUN+Uj4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2C35DF802E2;
-	Fri, 15 May 2020 16:01:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 77CD9F802E8;
+	Fri, 15 May 2020 16:01:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2492AF802A1; Fri, 15 May 2020 16:00:55 +0200 (CEST)
+ id 6B174F802E8; Fri, 15 May 2020 16:01:00 +0200 (CEST)
 Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2AC15F80254
- for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 16:00:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2AC15F80254
-IronPort-SDR: V0qp/cGFMlGjCqy/kwoZxISLvNQfst4JLcyDCkbE6Lhp/L3wwQpxJwsywAU+r3/QWLKjNT94Ss
- 1rnf1p6Lt0eg==
+ by alsa1.perex.cz (Postfix) with ESMTPS id D293EF800B8
+ for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 16:00:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D293EF800B8
+IronPort-SDR: qox9ViTW3DeavCyxzJnTYiFKxGivOjH32jcejSPXH/UnAZXAJtr6x2YBXop5TtnQez7JpefjyP
+ wPNsbl741fbg==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 May 2020 07:00:46 -0700
-IronPort-SDR: jYZhb/aDaqkDjSa7AUuHsOLIF1FZT9GTD00PmhSrOrpoxCRu1aPu2qlqb3RlIC+0kO0oxzhOQS
- iuZbqsY1RchQ==
+ 15 May 2020 07:00:49 -0700
+IronPort-SDR: 1e0r0X+muLS71O7pG/3dxsWBqcIv59ulzu2tR3rNfBkBY4AvyfqpCXJS6OFqkQaoAlb8MHeSVE
+ lX0NLUudWIyA==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,395,1583222400"; d="scan'208";a="266611164"
+X-IronPort-AV: E=Sophos;i="5.73,395,1583222400"; d="scan'208";a="266611190"
 Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by orsmga006.jf.intel.com with ESMTP; 15 May 2020 07:00:45 -0700
+ by orsmga006.jf.intel.com with ESMTP; 15 May 2020 07:00:48 -0700
 From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH 7/8] ASoC: SOF: imx: make dsp_ops static
-Date: Fri, 15 May 2020 16:59:57 +0300
-Message-Id: <20200515135958.17511-8-kai.vehmanen@linux.intel.com>
+Subject: [PATCH 8/8] ASoC: SOF: imx: make imx8m_dsp_ops static
+Date: Fri, 15 May 2020 16:59:58 +0300
+Message-Id: <20200515135958.17511-9-kai.vehmanen@linux.intel.com>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200515135958.17511-1-kai.vehmanen@linux.intel.com>
 References: <20200515135958.17511-1-kai.vehmanen@linux.intel.com>
@@ -88,27 +88,27 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-This was in the SOF tree but lost in upstream contributions
+This was in the SOF tree but lost in upstream contributions.
 
-Fixes: 202acc565a1f05 ("ASoC: SOF: imx: Add i.MX8 HW support")
+Fixes: afb93d716533dd ("ASoC: SOF: imx: Add i.MX8M HW support")
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/soc/sof/imx/imx8.c | 2 +-
+ sound/soc/sof/imx/imx8m.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/imx/imx8.c b/sound/soc/sof/imx/imx8.c
-index 68b2edccd791..63f9c20a1bac 100644
---- a/sound/soc/sof/imx/imx8.c
-+++ b/sound/soc/sof/imx/imx8.c
-@@ -119,7 +119,7 @@ static void imx8_dsp_handle_request(struct imx_dsp_ipc *ipc)
+diff --git a/sound/soc/sof/imx/imx8m.c b/sound/soc/sof/imx/imx8m.c
+index f83581041cf3..fa86a9e2990f 100644
+--- a/sound/soc/sof/imx/imx8m.c
++++ b/sound/soc/sof/imx/imx8m.c
+@@ -92,7 +92,7 @@ static void imx8m_dsp_handle_request(struct imx_dsp_ipc *ipc)
  	snd_sof_ipc_msgs_rx(priv->sdev);
  }
  
--struct imx_dsp_ops dsp_ops = {
-+static struct imx_dsp_ops dsp_ops = {
- 	.handle_reply		= imx8_dsp_handle_reply,
- 	.handle_request		= imx8_dsp_handle_request,
+-struct imx_dsp_ops imx8m_dsp_ops = {
++static struct imx_dsp_ops imx8m_dsp_ops = {
+ 	.handle_reply		= imx8m_dsp_handle_reply,
+ 	.handle_request		= imx8m_dsp_handle_request,
  };
 -- 
 2.26.0
