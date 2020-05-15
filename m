@@ -2,58 +2,57 @@ Return-Path: <SRS0=wzGW=65=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A1B7C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 00:56:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 51B5DC433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 00:57:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 22B1E20748
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 00:56:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C7A3A20748
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 00:57:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jmoZCMP6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 22B1E20748
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UrRH02Sm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C7A3A20748
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7D2321671;
-	Fri, 15 May 2020 02:55:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D2321671
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3E37B1679;
+	Fri, 15 May 2020 02:56:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E37B1679
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589504187;
-	bh=uMgCA+kancTj5qJOx/Atg/gIvh3e0daS2y/lCN01se0=;
+	s=default; t=1589504232;
+	bh=MkCykC5emYAJGhtO2FyDhFf4p0K82eM2avG4Sf/7HeA=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jmoZCMP6nZYvfDMYKnuhVvQrQjPJETUa7yjlyyzrQk+vk8kAZEMD6pzlN18aC5j6S
-	 1OQioK92r9VjOq6nBs137JMQ+Yj1ZJkFh5+IqYyAz3Ns1ralPAGLSHoeRl2oSgq3C7
-	 u7zr6wxYUUUn/2olYJlV3ypgIWDEX/pbmxlnnFX0=
+	b=UrRH02SmvOQHyLfPMkYWDMLM/DYGe0jDQu0SoP8mjGiz4h+e6Q9hYsqMdSe8F2w8b
+	 DXnDH27FcIqoY9gqnxDKah7+G82tDsmNUW67YSJtG8dq0uf8slQVG21aMtiD8yGpBt
+	 CM82VFXdFSb6cMya6JrmRspwWebQbQwYTW2b9adg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CC01FF8033D;
-	Fri, 15 May 2020 02:47:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5E54CF80328;
+	Fri, 15 May 2020 02:47:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 430CEF8033E; Fri, 15 May 2020 02:47:47 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id A3838F8027B
- for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 02:47:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3838F8027B
-Date: 15 May 2020 09:47:36 +0900
-X-IronPort-AV: E=Sophos;i="5.73,393,1583161200"; d="scan'208";a="47121421"
+ id D021FF80344; Fri, 15 May 2020 02:47:51 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 9AB09F80328
+ for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 02:47:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9AB09F80328
+Date: 15 May 2020 09:47:41 +0900
+X-IronPort-AV: E=Sophos;i="5.73,393,1583161200"; d="scan'208";a="46907643"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 15 May 2020 09:47:36 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 15 May 2020 09:47:41 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 69A91413ED7F;
- Fri, 15 May 2020 09:47:36 +0900 (JST)
-Message-ID: <87pnb658if.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 08144413ED7F;
+ Fri, 15 May 2020 09:47:41 +0900 (JST)
+Message-ID: <87o8qq58ia.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v3 16/21] ASoC: meson: use snd_soc_xxx_active()
+Subject: [PATCH v3 17/21] ASoC: pxa: use snd_soc_xxx_active()
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 To: Mark Brown <broonie@kernel.org>
@@ -85,22 +84,63 @@ This patch uses it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/meson/axg-tdm-interface.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/pxa/pxa-ssp.c    | 8 ++++----
+ sound/soc/pxa/pxa2xx-i2s.c | 2 +-
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/meson/axg-tdm-interface.c b/sound/soc/meson/axg-tdm-interface.c
-index d51f3344be7c..6de27238e9df 100644
---- a/sound/soc/meson/axg-tdm-interface.c
-+++ b/sound/soc/meson/axg-tdm-interface.c
-@@ -149,7 +149,7 @@ static int axg_tdm_iface_startup(struct snd_pcm_substream *substream,
- 	}
+diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
+index e615acaa0199..6a72cc1665b7 100644
+--- a/sound/soc/pxa/pxa-ssp.c
++++ b/sound/soc/pxa/pxa-ssp.c
+@@ -94,7 +94,7 @@ static int pxa_ssp_startup(struct snd_pcm_substream *substream,
+ 	struct snd_dmaengine_dai_dma_data *dma;
+ 	int ret = 0;
  
- 	/* Apply component wide rate symmetry */
--	if (dai->component->active) {
-+	if (snd_soc_component_active(dai->component)) {
- 		ret = snd_pcm_hw_constraint_single(substream->runtime,
- 						   SNDRV_PCM_HW_PARAM_RATE,
- 						   iface->rate);
+-	if (!cpu_dai->active) {
++	if (!snd_soc_dai_active(cpu_dai)) {
+ 		clk_prepare_enable(ssp->clk);
+ 		pxa_ssp_disable(ssp);
+ 	}
+@@ -119,7 +119,7 @@ static void pxa_ssp_shutdown(struct snd_pcm_substream *substream,
+ 	struct ssp_priv *priv = snd_soc_dai_get_drvdata(cpu_dai);
+ 	struct ssp_device *ssp = priv->ssp;
+ 
+-	if (!cpu_dai->active) {
++	if (!snd_soc_dai_active(cpu_dai)) {
+ 		pxa_ssp_disable(ssp);
+ 		clk_disable_unprepare(ssp->clk);
+ 	}
+@@ -138,7 +138,7 @@ static int pxa_ssp_suspend(struct snd_soc_component *component)
+ 	struct ssp_priv *priv = snd_soc_component_get_drvdata(component);
+ 	struct ssp_device *ssp = priv->ssp;
+ 
+-	if (!component->active)
++	if (!snd_soc_component_active(component))
+ 		clk_prepare_enable(ssp->clk);
+ 
+ 	priv->cr0 = __raw_readl(ssp->mmio_base + SSCR0);
+@@ -165,7 +165,7 @@ static int pxa_ssp_resume(struct snd_soc_component *component)
+ 	__raw_writel(priv->to,  ssp->mmio_base + SSTO);
+ 	__raw_writel(priv->psp, ssp->mmio_base + SSPSP);
+ 
+-	if (component->active)
++	if (snd_soc_component_active(component))
+ 		pxa_ssp_enable(ssp);
+ 	else
+ 		clk_disable_unprepare(ssp->clk);
+diff --git a/sound/soc/pxa/pxa2xx-i2s.c b/sound/soc/pxa/pxa2xx-i2s.c
+index 9a32bf72127a..03102e938ba1 100644
+--- a/sound/soc/pxa/pxa2xx-i2s.c
++++ b/sound/soc/pxa/pxa2xx-i2s.c
+@@ -101,7 +101,7 @@ static int pxa2xx_i2s_startup(struct snd_pcm_substream *substream,
+ 	if (IS_ERR(clk_i2s))
+ 		return PTR_ERR(clk_i2s);
+ 
+-	if (!cpu_dai->active)
++	if (!snd_soc_dai_active(cpu_dai))
+ 		SACR0 = 0;
+ 
+ 	return 0;
 -- 
 2.17.1
 
