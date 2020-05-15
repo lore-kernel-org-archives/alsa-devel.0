@@ -2,77 +2,97 @@ Return-Path: <SRS0=wzGW=65=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DDF3FC433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 10:04:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 396C5C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 10:17:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 642D72065C
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 10:04:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AD1D920709
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 10:17:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uL5msEIl";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="BUwzPDn2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 642D72065C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aewqRNDX";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="hg8+Jv48"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AD1D920709
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AF8C01663;
-	Fri, 15 May 2020 12:03:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF8C01663
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0408E844;
+	Fri, 15 May 2020 12:16:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0408E844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589537057;
-	bh=WFiRc7YvYN4B8uiMApInOU8daivBlYrasIhah8qZRX4=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=uL5msEIlJ6A7V3oQBHXGVcXKy3Qb3nswgNFwZcD5fuhmGBlrRXsY9MeoMZ6FciLjP
-	 oFLzx4NpUiUNR9Opu/NhzZYUq8bQugMEOQxNwfRydWeqkEgjLrQoE8C0S69WExBHiG
-	 DMVdf4JPYmKRAvUxPeWQ7n1HGi2qjxzjYfD8FBAY=
+	s=default; t=1589537861;
+	bh=YOHyHt/9yJ9cIXM0YEkb8saEuSaYaNven2d/oO5FvgM=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=aewqRNDXRSgxIdIo+fDlj5o4dq6o9Lwm4lksV0EOnICikd3z3ffST7Z8udmpc5oyK
+	 s5LraWE5nu7bkha6mlf4qtQymLG4M/9mqQ/PL3HuoHVT9EQOQ195pdhm0wkID3zQAi
+	 PktCcFQCfFsksmGjTa0lKMMujA9YnWf9XA4exxG4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 50D75F80253;
-	Fri, 15 May 2020 12:03:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D5AADF8022D;
+	Fri, 15 May 2020 12:16:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A3C26F80254; Fri, 15 May 2020 12:03:25 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D747BF80101
- for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 12:03:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D747BF80101
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="BUwzPDn2"
-Received: from e123331-lin.nice.arm.com
- (amontpellier-657-1-18-247.w109-210.abo.wanadoo.fr [109.210.65.247])
+ id C4BE1F80247; Fri, 15 May 2020 12:16:48 +0200 (CEST)
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com
+ [IPv6:2607:f8b0:4864:20::d41])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id C6AFA20709;
- Fri, 15 May 2020 10:03:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1589536996;
- bh=WFiRc7YvYN4B8uiMApInOU8daivBlYrasIhah8qZRX4=;
- h=From:To:Cc:Subject:Date:From;
- b=BUwzPDn2XmHF93iX5B/obLYrj8mrH+on8y8F06txbiv/q8QaeCSOT1RiTk7Nz8/U9
- 2/wOLI+UiIPsMLi0Nkv/bBo6s3nd4Dxa7ikHlwntOGLculPnmZzwo6/uWTLru3N/lN
- Xd28KuGFWjqU226Y1cNVPYww+g7KdGmA2zyrzm1E=
-From: Ard Biesheuvel <ardb@kernel.org>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH v2] ASoC: cros_ec_codec: switch to library API for SHA-256
-Date: Fri, 15 May 2020 12:03:09 +0200
-Message-Id: <20200515100309.20795-1-ardb@kernel.org>
-X-Mailer: git-send-email 2.17.1
-Cc: Herbert Xu <herbert@gondor.apana.org.au>, Arnd Bergmann <arnd@arndb.de>,
- Tzung-Bi Shih <tzungbi@google.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Eric Biggers <ebiggers@kernel.org>, Guenter Roeck <groeck@chromium.org>,
- Mark Brown <broonie@kernel.org>,
+ by alsa1.perex.cz (Postfix) with ESMTPS id CE8DFF800B8
+ for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 12:16:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE8DFF800B8
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
+ header.b="hg8+Jv48"
+Received: by mail-io1-xd41.google.com with SMTP id k18so2116006ion.0
+ for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 03:16:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=YOHyHt/9yJ9cIXM0YEkb8saEuSaYaNven2d/oO5FvgM=;
+ b=hg8+Jv48vda0Q8CZa2JDbMP8vSVn32fmSqcGjARW4yCuPto2xFDzdwKNtA3q3AIttp
+ XSQhMJqQueKD1ZkeBC0odnJ0V7mpZz9zR8vmnalLwcCvAf/K92vZvLXbL1MMUxUMqpMk
+ ESb6mA5GlcQK83l9KnaZP/NMpAZH80ruDkNVbhrdAVto5cqOTrpAJszC47Z71MbLXCDo
+ 1HNejEbIpSJGcnV9iURjgATgodSrQ2hyqau6JnvqboR6wrozUvGUMU86el1IPQ56Z3Tq
+ 6zzFpN0zUqoRnwthRH5o2Ne+0YHPJh8tdJ3UIW5QwO32kejr2uxnHEpucWNXvfe9ahPn
+ ysuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=YOHyHt/9yJ9cIXM0YEkb8saEuSaYaNven2d/oO5FvgM=;
+ b=swM4hBkzIVF0hZ0Zme5QbAkvI6ZEahJ7UFnX65vewwEZiLnHgb35AX1IkQ5Pp//piv
+ 6I4FJ8pIWCowxfRpvuA9m0WfCCKZWXgCK7UbRdiWK+wsqrZF0vSgvXXQjAUWMjPhJLiW
+ T+fK/IvQblukofd32JTTbeMLP9mWE0qIOjqQlN/NcalwImLDHjS3E4MmIV5+8DqdZ/qB
+ Z6lcnXmTE4b8qispMlC4gWfN5jBws7nmXld/O+hpcHHu4tu3+0n0IXtTUJLbjs6ZQd03
+ kWyQL+QKGyTJLhqkfYx031K/i28wdxxVDGdTNKFlWD4+A53e9tTrmjifaqEjIHho45Yq
+ itrg==
+X-Gm-Message-State: AOAM5335Oc7905IqmrWTQZvn5TMpUSWsR6vehnlFQqBq12UeAnrtaFPv
+ QMY90s85PmN1jaeuSu4orX0RmP9HQ4aowJGrUW5g3A==
+X-Google-Smtp-Source: ABdhPJzWEWhgqRkp/Sy2dUm7FKBpIXJpWVCJjh9m0xPKXm1nMlvygEJKrNNynHVhI1/J0v07SlNpwMzJFFD5cEsF8+c=
+X-Received: by 2002:a05:6638:1014:: with SMTP id
+ r20mr2446737jab.29.1589537797461; 
+ Fri, 15 May 2020 03:16:37 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200515100309.20795-1-ardb@kernel.org>
+In-Reply-To: <20200515100309.20795-1-ardb@kernel.org>
+From: Tzung-Bi Shih <tzungbi@google.com>
+Date: Fri, 15 May 2020 18:16:26 +0800
+Message-ID: <CA+Px+wUpYaUfA1saEWePuy+CmCX8mPiH+-Mg23P6c+jhM_yxHQ@mail.gmail.com>
+Subject: Re: [PATCH v2] ASoC: cros_ec_codec: switch to library API for SHA-256
+To: Ard Biesheuvel <ardb@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: ALSA development <alsa-devel@alsa-project.org>,
+ Herbert Xu <herbert@gondor.apana.org.au>, Arnd Bergmann <arnd@arndb.de>,
+ Liam Girdwood <lgirdwood@gmail.com>, Eric Biggers <ebiggers@kernel.org>,
+ Guenter Roeck <groeck@chromium.org>, Mark Brown <broonie@kernel.org>,
  Enric Balletbo i Serra <enric.balletbo@collabora.com>,
- Benson Leung <bleung@chromium.org>, Ard Biesheuvel <ardb@kernel.org>,
- Cheng-Yi Chiang <cychiang@chromium.org>
+ Benson Leung <bleung@chromium.org>, Cheng-Yi Chiang <cychiang@chromium.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,87 +108,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The CrOS EC codec driver uses SHA-256 explicitly, and not in a
-performance critical manner, so there is really no point in using
-the SHASH crypto API here. Let's switch to the library API instead.
+On Fri, May 15, 2020 at 6:03 PM Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> The CrOS EC codec driver uses SHA-256 explicitly, and not in a
+> performance critical manner, so there is really no point in using
+> the SHASH crypto API here. Let's switch to the library API instead.
+>
+> Cc: Cheng-Yi Chiang <cychiang@chromium.org>
+> Cc: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> Cc: Guenter Roeck <groeck@chromium.org>
+> Cc: Benson Leung <bleung@chromium.org>
+> Cc: Liam Girdwood <lgirdwood@gmail.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Eric Biggers <ebiggers@kernel.org>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: Tzung-Bi Shih <tzungbi@google.com>
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 
-Cc: Cheng-Yi Chiang <cychiang@chromium.org>
-Cc: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc: Guenter Roeck <groeck@chromium.org>
-Cc: Benson Leung <bleung@chromium.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Eric Biggers <ebiggers@kernel.org>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Tzung-Bi Shih <tzungbi@google.com>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
-v2:
-- rebase onto sound/for-5.8
-- drop pointless memzero_explicit()
-- drop include of crypto/hash.h
-
- sound/soc/codecs/Kconfig         |  3 +--
- sound/soc/codecs/cros_ec_codec.c | 23 ++++----------------
- 2 files changed, 5 insertions(+), 21 deletions(-)
-
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 44b8c4cde4f3..2d4f1b4bc011 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -538,8 +538,7 @@ config SND_SOC_CQ0093VC
- config SND_SOC_CROS_EC_CODEC
- 	tristate "codec driver for ChromeOS EC"
- 	depends on CROS_EC
--	select CRYPTO
--	select CRYPTO_SHA256
-+	select CRYPTO_LIB_SHA256
- 	help
- 	  If you say yes here you will get support for the
- 	  ChromeOS Embedded Controller's Audio Codec.
-diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/codecs/cros_ec_codec.c
-index 1948bc6971f6..8d45c628e988 100644
---- a/sound/soc/codecs/cros_ec_codec.c
-+++ b/sound/soc/codecs/cros_ec_codec.c
-@@ -8,7 +8,6 @@
-  * EC for audio function.
-  */
- 
--#include <crypto/hash.h>
- #include <crypto/sha.h>
- #include <linux/acpi.h>
- #include <linux/delay.h>
-@@ -107,25 +106,11 @@ static int send_ec_host_command(struct cros_ec_device *ec_dev, uint32_t cmd,
- static int calculate_sha256(struct cros_ec_codec_priv *priv,
- 			    uint8_t *buf, uint32_t size, uint8_t *digest)
- {
--	struct crypto_shash *tfm;
--	struct shash_desc *desc;
-+	struct sha256_state sctx;
- 
--	tfm = crypto_alloc_shash("sha256", CRYPTO_ALG_TYPE_SHASH, 0);
--	if (IS_ERR(tfm)) {
--		dev_err(priv->dev, "can't alloc shash\n");
--		return PTR_ERR(tfm);
--	}
--	desc = kmalloc(sizeof(*desc) + crypto_shash_descsize(tfm), GFP_KERNEL);
--	if (!desc) {
--		crypto_free_shash(tfm);
--		return -ENOMEM;
--	}
--	desc->tfm = tfm;
--	crypto_shash_digest(desc, buf, size, digest);
--	shash_desc_zero(desc);
--
--	kfree(desc);
--	crypto_free_shash(tfm);
-+	sha256_init(&sctx);
-+	sha256_update(&sctx, buf, size);
-+	sha256_final(&sctx, digest);
- 
- #ifdef DEBUG
- 	{
--- 
-2.17.1
-
+Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
