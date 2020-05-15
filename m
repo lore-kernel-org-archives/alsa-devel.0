@@ -2,70 +2,66 @@ Return-Path: <SRS0=wzGW=65=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 84F79C433E2
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 07:22:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE0A0C433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 07:33:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E42652065F
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 07:22:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4818820657
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 07:33:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YSxnHt2W"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E42652065F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nT3D50I5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4818820657
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 374521655;
-	Fri, 15 May 2020 09:21:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 374521655
+	by alsa0.perex.cz (Postfix) with ESMTPS id A323B1658;
+	Fri, 15 May 2020 09:32:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A323B1658
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589527333;
-	bh=Pm8sUSkOd5fbLB3ESsCstYH3fzoUjLYkmzCbVN2PCuc=;
+	s=default; t=1589528006;
+	bh=BicccZDqjS/4vS8aeOFSo+QtTgvgDQOushWVcRciEDo=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YSxnHt2WIQTDfeVyq8kp+k9b0o0M5ADH7Pyuhox9z+3SQINZ2Zmr5y2fupLbrGrts
-	 KZK/4OYiqetqzkHAzS1AauqLgVWnI2hreWdQ9SfSDUGWBV2JylO6XB43Hxs4EGY9tI
-	 E2gamAAKizO2a1ZsYZT0BlVISi3NnX1plePAw+AU=
+	b=nT3D50I5Y1DLkVHfSBwSsKEix0QnH0yFuS+CE3Aj55UxSvA2ttZ6QNEixJMZ64G6T
+	 +ErUBLGIJIQBO7LqbFnUA3eMDV2RRpcgX/HDMcYW2OnRvaJeKtTFc3y1jjOTzlJ4tt
+	 C+efpmmgwZ5c0K/+siIkI/iEVqVICaujx+Izuymg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A17D2F8022D;
-	Fri, 15 May 2020 09:21:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1B6EDF8022D;
+	Fri, 15 May 2020 09:32:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 54D78F800E3; Fri, 15 May 2020 09:21:21 +0200 (CEST)
+ id 09763F80247; Fri, 15 May 2020 09:32:34 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DE873F800E3
- for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 09:21:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE873F800E3
+ by alsa1.perex.cz (Postfix) with ESMTPS id D09E8F800E3
+ for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 09:32:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D09E8F800E3
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 3553AACC5;
- Fri, 15 May 2020 07:21:14 +0000 (UTC)
-Date: Fri, 15 May 2020 09:21:10 +0200
-Message-ID: <s5htv0hoe8p.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 8D1E5AF6F;
+ Fri, 15 May 2020 07:32:30 +0000 (UTC)
+Date: Fri, 15 May 2020 09:32:27 +0200
+Message-ID: <s5hsgg1odpw.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Brent Lu <brent.lu@intel.com>
-Subject: Re: [PATCH] ALSA: pcm: fix incorrect hw_base increase
-In-Reply-To: <1589515779-20987-1-git-send-email-brent.lu@intel.com>
-References: <1589515779-20987-1-git-send-email-brent.lu@intel.com>
+To: Dexter Travis <dexter.travis@precisionplanting.com>
+Subject: Re: core: snd_card_disconnect/snd_card_free: hang when card
+ unregistered
+In-Reply-To: <CAOyfbRXsKi-7bvnRNhoR6Vu7ET1oM5CJ6tEKwcDchy48ExpFvQ@mail.gmail.com>
+References: <CAOyfbRXsKi-7bvnRNhoR6Vu7ET1oM5CJ6tEKwcDchy48ExpFvQ@mail.gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>,
- Baolin Wang <baolin.wang@linaro.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>,
- Richard Fontana <rfontana@redhat.com>, Thomas Gleixner <tglx@linutronix.de>,
- paulhsia <paulhsia@chromium.org>, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,52 +77,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 15 May 2020 06:09:39 +0200,
-Brent Lu wrote:
+On Thu, 14 May 2020 23:04:09 +0200,
+Dexter Travis wrote:
 > 
-> The hw_base will be increased by runtime->buffer_size frames
-> unconditionally if the runtime->status->hw_ptr is not updated for over
-> half of buffer time. As the hw_base increases, so does the
-> runtime->status->hw_ptr which could lead to invalid return value when
-> user space program calls snd_pcm_avail() function.
+> In my system during certain power events the power rail for the
+> TLV320AIC3120 goes away and may come back.
 > 
-> By updating runtime->hw_ptr_jiffies each time the HWSYNC is called,
-> the hw_base will keep the same when buffer stall happens, so does the
-> hw_ptr.
+> To accommodate this I have added a call to snd_soc_unregister_card as
+> soon as I notice via GPIO that this power has been removed.  I then
+> call snd_soc_register_card to re-install the sound card after power is
+> restored.
+> 
+> If no sound is playing when the asynchronous power removal occurs this
+> works fine.
+> 
+> If a sound is playing one of two things will occur.  In the first case
+> the sound driver comes back and sound is restored when power is
+> restored. In the second case my deferred work function which calls the
+> snd_soc_unregister_card function gets hung and does not return.
+> 
+> I have traced the difference to the wait_for_completion call in
+> snd_card_free.  if snd_card_disconnect adds files to shutdown_files
+> list then wait_for_completion will hang forever.
+> 
+> Any suggestions on how to further debug this?
+> 
+> How to force the immediate unregister of the card even if a sound is playing?
 
-Updating hw_ptr_jiffies at that code path looks correct, but it still
-leaves the question why this condition happens.  It means that the
-actual hwptr isn't changed and yet only jiffies increase
-significantly; it means that the hardware can't report proper pointer,
-and it should have set SNDRV_PCM_INFO_BATCH flag, then the jiffies
-check is skipped.
+You can unregister the devices, i.e. they disappear from the
+user-space.  However, the old stream and the belonging objects are
+still alive, hence you can't release the resources entirely until the
+user-space closes and drops the remaining one.  The completion is
+waiting for the release of those remaining handles.  So, if you try to
+register again the same objects, it'll conflict.
 
-With which hardware and under which situation did it happen (and the
-patch fixed)?
+IOW, it'll be really messy if you try to disconnect and release the
+whole resources temporarily and restore again.  I guess the current
+best would be to limit a part of components somehow during the
+temporary absence.
+
+The temporary stop of a stream isn't well handled in the core API,
+admittedly, it's a known problem.  We're considering to introduce a
+new state, but it's still under evaluation.
 
 
 thanks,
 
 Takashi
-
-> 
-> Signed-off-by: Brent Lu <brent.lu@intel.com>
-> ---
->  sound/core/pcm_lib.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-> index 872a852..d531e1b 100644
-> --- a/sound/core/pcm_lib.c
-> +++ b/sound/core/pcm_lib.c
-> @@ -433,6 +433,7 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
->  
->   no_delta_check:
->  	if (runtime->status->hw_ptr == new_hw_ptr) {
-> +		runtime->hw_ptr_jiffies = curr_jiffies;
->  		update_audio_tstamp(substream, &curr_tstamp, &audio_tstamp);
->  		return 0;
->  	}
-> -- 
-> 2.7.4
-> 
