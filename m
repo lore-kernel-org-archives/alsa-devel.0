@@ -2,68 +2,66 @@ Return-Path: <SRS0=wzGW=65=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AF47C433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 14:36:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DC1F3C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 15:09:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 035B620671
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 14:36:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6C6C3207C4
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 15:09:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bSdns1pw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 035B620671
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NBLSbBFD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C6C3207C4
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5D6649F6;
-	Fri, 15 May 2020 16:35:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D6649F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id B681F1607;
+	Fri, 15 May 2020 17:08:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B681F1607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589553367;
-	bh=mbmrutEZIcXpKlw2O/bH/VhUmWiH25OO+Uifgd0UpTQ=;
+	s=default; t=1589555374;
+	bh=OKLLj5SwchjisXB6LslGh37xx/Sm38esIcCCXjDBUUI=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bSdns1pwPXjvkt2gZZOW11+AxFYZRQiwMVvsXcP67sc81b9ww74PNx7p9rVH0lwxS
-	 ncpVcWxOB9ojz+ZnxaE19uGQPWn825RNkncbRUtckkxzcWb9Xt+uQhNRYwSdYQdaN9
-	 1GievbBg8cZR1L6umWrjlXTwQJrP/ceXgakQi+Ag=
+	b=NBLSbBFDZ8P8ZWgFOJEUbSTHYggQSoP2KY6CF1ZGfcZx9DcTDGOnMTd6LGPN1KV8l
+	 Bfr4g8QNKFUbQrpBUEj192OQUsLfGw5iZZrxLr8Oq9ZhWFT71GYGKQZutaj99mV6Ya
+	 7+ZSFSuky5STwPFmp3B6pARR7lO5rOdvs727vcPs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E1A49F800B8;
-	Fri, 15 May 2020 16:35:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 46DCFF8022D;
+	Fri, 15 May 2020 17:08:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9F096F80247; Fri, 15 May 2020 16:35:14 +0200 (CEST)
+ id 325B7F80247; Fri, 15 May 2020 17:08:43 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A7E22F800B8
- for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 16:35:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7E22F800B8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4B8DFF800E3
+ for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 17:08:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B8DFF800E3
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 3D19FABCE;
- Fri, 15 May 2020 14:35:05 +0000 (UTC)
-Date: Fri, 15 May 2020 16:35:01 +0200
-Message-ID: <s5h3681mfl6.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id D771AAE38;
+ Fri, 15 May 2020 15:08:33 +0000 (UTC)
+Date: Fri, 15 May 2020 17:08:30 +0200
+Message-ID: <s5hzha9kzgx.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Dexter Travis <dexter.travis@precisionplanting.com>
-Subject: Re: core: snd_card_disconnect/snd_card_free: hang when card
- unregistered
-In-Reply-To: <CAOyfbRVwrjFHzDhim1dXgOHgGQkWJ5Czn4ANWe+L4JWwqnrq8g@mail.gmail.com>
-References: <CAOyfbRXsKi-7bvnRNhoR6Vu7ET1oM5CJ6tEKwcDchy48ExpFvQ@mail.gmail.com>
- <s5hsgg1odpw.wl-tiwai@suse.de>
- <CAOyfbRVwrjFHzDhim1dXgOHgGQkWJ5Czn4ANWe+L4JWwqnrq8g@mail.gmail.com>
+To: Thomas Ebeling <penguins@bollie.de>
+Subject: Re: [PATCH] ALSA: fixing upper volume limit for RME Babyface Pro
+ routing crosspoints.
+In-Reply-To: <20200515114556.vtspnonzvp4xp44m@bollie.ca9.eu>
+References: <20200515114556.vtspnonzvp4xp44m@bollie.ca9.eu>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,89 +77,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 15 May 2020 15:30:25 +0200,
-Dexter Travis wrote:
+On Fri, 15 May 2020 13:46:05 +0200,
+Thomas Ebeling wrote:
 > 
-> Takashi,
+> In my initial patch, these were set too low.
 > 
-> Thank you.  That is helpful.  In my case we are embedded deeply enough
-> that there is only one application playing sounds so it may be
-> possible to improve our user space side to properly close down the
-> sound.
-> 
-> When power comes back I do not need to resume playing the previous
-> sound.  From the kernel side is it possible to force the sound to
-> abort or stop?
+> Signed-off-by: Thomas Ebeling <penguins@bollie.de>
 
-That can be done by calling snd_pcm_stop().  The function needs the
-stream locking.  You can use snd_pcm_stop_xrun() instead, although
-it's no XRUN, strictly speaking. 
-
-> How do more easily removed sound devices handle this?  For example a
-> USB or other hot-pluggable sound device?
-
-In the case of actually removed device, the whole device is gone, and
-at re-plugging, a new device gets created, hence no conflicts between
-them.  They are two different devices, after all.
+Applied now.  Thanks.
 
 
 Takashi
-
-> 
-> 
-> 
-> Regards,
-> 
-> 
-> Dexter
-> 
-> On Fri, May 15, 2020 at 2:32 AM Takashi Iwai <tiwai@suse.de> wrote:
-> >
-> > On Thu, 14 May 2020 23:04:09 +0200,
-> > Dexter Travis wrote:
-> > >
-> > > In my system during certain power events the power rail for the
-> > > TLV320AIC3120 goes away and may come back.
-> > >
-> > > To accommodate this I have added a call to snd_soc_unregister_card as
-> > > soon as I notice via GPIO that this power has been removed.  I then
-> > > call snd_soc_register_card to re-install the sound card after power is
-> > > restored.
-> > >
-> > > If no sound is playing when the asynchronous power removal occurs this
-> > > works fine.
-> > >
-> > > If a sound is playing one of two things will occur.  In the first case
-> > > the sound driver comes back and sound is restored when power is
-> > > restored. In the second case my deferred work function which calls the
-> > > snd_soc_unregister_card function gets hung and does not return.
-> > >
-> > > I have traced the difference to the wait_for_completion call in
-> > > snd_card_free.  if snd_card_disconnect adds files to shutdown_files
-> > > list then wait_for_completion will hang forever.
-> > >
-> > > Any suggestions on how to further debug this?
-> > >
-> > > How to force the immediate unregister of the card even if a sound is playing?
-> >
-> > You can unregister the devices, i.e. they disappear from the
-> > user-space.  However, the old stream and the belonging objects are
-> > still alive, hence you can't release the resources entirely until the
-> > user-space closes and drops the remaining one.  The completion is
-> > waiting for the release of those remaining handles.  So, if you try to
-> > register again the same objects, it'll conflict.
-> >
-> > IOW, it'll be really messy if you try to disconnect and release the
-> > whole resources temporarily and restore again.  I guess the current
-> > best would be to limit a part of components somehow during the
-> > temporary absence.
-> >
-> > The temporary stop of a stream isn't well handled in the core API,
-> > admittedly, it's a known problem.  We're considering to introduce a
-> > new state, but it's still under evaluation.
-> >
-> >
-> > thanks,
-> >
-> > Takashi
-> 
