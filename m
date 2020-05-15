@@ -6,62 +6,62 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE14DC433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 21:14:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B5A9C433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 21:16:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4C54E205CB
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 21:14:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B4CC2205CB
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 21:16:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="H8Hydqzd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4C54E205CB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jDeG/iGL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B4CC2205CB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AFD231672;
-	Fri, 15 May 2020 23:13:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AFD231672
+	by alsa0.perex.cz (Postfix) with ESMTPS id 229BA1607;
+	Fri, 15 May 2020 23:15:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 229BA1607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589577245;
-	bh=PHPmH50k5vZUR94M0RIU7heAetiOwSug+iZrRAsvxL8=;
+	s=default; t=1589577404;
+	bh=2yacj7lXigeQfd0d8EIUwA773RhwNUC5ae04EGbR79s=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=H8Hydqzds2TTNOkUE8WQBPZaxJwYi01Hz3AjIvC4wERoVEl/j4sjtKK7ety9ybSb4
-	 8q05qDIU5yyc8yriPHNX+tHsshs9E2skZo8Ykvhl3cZxjCDg9ePLmeUm6rDjxGrMx/
-	 1lmLjT0t3WkRT7uf/zNoO0FroE23MjW+oMulRJZA=
+	b=jDeG/iGLVF4cwpBgrkHea5gHMWHUJRFXeHYvfzQvFe9HtEWh1bbsJQtcaN1N4Cjoa
+	 AOgNvPZBVsKS1yZyzZkA58WlcWcXdy3xX6QGjk5Lq2Kmq7UPBq8oj6+5ldl03dOPjk
+	 tjUk6UQcFMgG4A23sHd2cGM0tMo5+4iw7McPiBOE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 970F7F802A7;
-	Fri, 15 May 2020 23:10:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 99E88F800B8;
+	Fri, 15 May 2020 23:15:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 42E99F80247; Fri, 15 May 2020 23:08:45 +0200 (CEST)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ id C20E6F800B8; Fri, 15 May 2020 23:15:52 +0200 (CEST)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 240E6F800B8
- for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 23:07:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 240E6F800B8
-IronPort-SDR: mjP/ENr7pxx/Vte2zNGS7WZMwPtqX1qN5KYXwd7kBr4p6XhKpHeEd9FJvU0D3ayEQV5FR0MLZM
- ZFibHmSGhoAw==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9BA1DF800B8
+ for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 23:15:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9BA1DF800B8
+IronPort-SDR: tC4y/y0nte+6fYLHG32XwgIHca2D/GQFYO4WKTey4vsJPC5B1pqTa7IaQG1fQ9783lbmcQWA2J
+ t/RPT3UBuoNA==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 May 2020 14:07:55 -0700
-IronPort-SDR: zod3VTfx3x+1zYV8CN6iwWjkGTQIkVi6T/5n8R2mnEblTcmPLQUXRxNsNlQgDuN7HNTwIqE0xy
- 23FHBfhp+JAQ==
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 May 2020 14:15:46 -0700
+IronPort-SDR: Ok7XX4KIah8nE6TOF2o5QuSP45BhWbADsaNNIF1ItyHXQIeXu8a/CZHjFbapGXRgROQPLtw9wz
+ CTFhsuxll0wg==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,396,1583222400"; d="scan'208";a="410589909"
+X-IronPort-AV: E=Sophos;i="5.73,396,1583222400"; d="scan'208";a="438454469"
 Received: from btchambe-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.254.66.225])
- by orsmga004.jf.intel.com with ESMTP; 15 May 2020 14:07:54 -0700
+ by orsmga005.jf.intel.com with ESMTP; 15 May 2020 14:15:46 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 0/5] ASoC: Intel: minor fixes to machine drivers
-Date: Fri, 15 May 2020 16:07:26 -0500
-Message-Id: <20200515210731.10942-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 0/3] ASoC: codecs: rt*-sdw: memory leaks and simplifications
+Date: Fri, 15 May 2020 16:15:28 -0500
+Message-Id: <20200515211531.11416-1-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -82,23 +82,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Minor button remap changes, inspired by recent Chromebook patches,
-typo in component string reported by Jaroslav and driver name change
-not submitted in last wm8804 contribution.
+While debugging unrelated memory corruption errors, I detected issues
+related to the interaction with the SoundWire and ASoC cores, here are
+3 small patches to fix all this.
 
-Pierre-Louis Bossart (5):
-  ASoC: Intel: soc-acpi: change machine driver name for WM8804 platforms
-  ASoC: Intel: sof_sdw: fix typo in components string
-  ASoC: Intel: sof_sdw_rt711: remap buttons
-  ASoC: Intel: sof_sdw_rt700: remap buttons
-  ASoC: Intel: cht_bsw_nau8824: remap BTN_0 as KEY_PLAYPAUSE
+Pierre-Louis Bossart (3):
+  ASoC: codecs: rt*-sdw: don't assign slave_ops
+  ASoC: codecs: rt*-sdw: fix memory leak in set_sdw_stream()
+  ASoC: codecs: rt1308-sdw: remove duplicate allocation
 
- sound/soc/intel/boards/cht_bsw_nau8824.c          | 4 ++--
- sound/soc/intel/boards/sof_sdw.c                  | 2 +-
- sound/soc/intel/boards/sof_sdw_rt700.c            | 8 ++++----
- sound/soc/intel/boards/sof_sdw_rt711.c            | 8 ++++----
- sound/soc/intel/common/soc-acpi-intel-bxt-match.c | 2 +-
- 5 files changed, 12 insertions(+), 12 deletions(-)
+ sound/soc/codecs/rt1308-sdw.c | 11 +++--------
+ sound/soc/codecs/rt5682-sdw.c |  3 ---
+ sound/soc/codecs/rt5682.c     |  3 +++
+ sound/soc/codecs/rt700-sdw.c  |  3 ---
+ sound/soc/codecs/rt700.c      |  3 +++
+ sound/soc/codecs/rt711-sdw.c  |  3 ---
+ sound/soc/codecs/rt711.c      |  3 +++
+ sound/soc/codecs/rt715-sdw.c  |  3 ---
+ sound/soc/codecs/rt715.c      |  3 +++
+ 9 files changed, 15 insertions(+), 20 deletions(-)
 
 
 base-commit: d731c1a0f935dbebf4a851e072f8c7309eb2b8c5
