@@ -2,75 +2,67 @@ Return-Path: <SRS0=wzGW=65=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 793F5C433E1
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 10:23:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EC69C433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 10:23:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 00D3D2074D
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 10:23:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3EF6B206B6
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 10:23:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YpLaHFWY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 00D3D2074D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KnRwgaB6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3EF6B206B6
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 50E56167A;
-	Fri, 15 May 2020 12:22:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50E56167A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 89B3D1669;
+	Fri, 15 May 2020 12:22:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89B3D1669
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589538188;
-	bh=vvhXhbFp3W8BOYxKse4liDIRLBKwv3B1yB0kBojxQr4=;
-	h=From:To:Subject:Date:In-Reply-To:References:In-Reply-To:
-	 References:Cc:List-Id:List-Unsubscribe:List-Archive:List-Post:
-	 List-Help:List-Subscribe:From;
-	b=YpLaHFWYhdBDGqKIVG9S8GTRAyX+4Z6JFq1QiZQZeUpSHHyIp7EUgBmVzPgZCHKMY
-	 yefGMoPj3hHwdqbh5yU2kWqavYj+s5gY+9b771TZl2/c2+lSSzSAFFTJmN6iwcI9km
-	 lnpaQjtYI3BoL2sVLQvoAWzCMo+p3KQQ1Ty8pfgM=
+	s=default; t=1589538212;
+	bh=06PaDN0YfES/tKcWyvhoD2EMscQX7+wCcP00Uos8faE=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=KnRwgaB6ugJRbCerbQ2MaNy+ix7MfQy5gbRD3/Wg7orP2pgkpX6Bpkc7pNvE29Bee
+	 EjFlhqVoIitgilyBUSmC8koxk3SMruHcyB2g8d1Csm5BKJN5k/sGSIL6QD8ja8sRrR
+	 +NII5cb5BQLyQeYiz7tXFTBT1FsmWc89xmzw8fc4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C0E38F8027B;
-	Fri, 15 May 2020 12:20:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 97013F8022D;
+	Fri, 15 May 2020 12:21:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CE4B4F8022D; Fri, 15 May 2020 12:20:41 +0200 (CEST)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 60A21F80292; Fri, 15 May 2020 12:21:27 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 055A5F8022D
- for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 12:20:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 055A5F8022D
-Received: from inva020.nxp.com (localhost [127.0.0.1])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 872241A068B;
- Fri, 15 May 2020 12:20:31 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
- [165.114.16.14])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 179421A06A7;
- Fri, 15 May 2020 12:20:26 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id A61F940318;
- Fri, 15 May 2020 18:20:19 +0800 (SGT)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
- festevam@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- alsa-devel@alsa-project.org, lgirdwood@gmail.com, robh+dt@kernel.org,
- devicetree@vger.kernel.org
-Subject: [PATCH v2 1/2] ASoC: fsl_esai: introduce SoC specific data
-Date: Fri, 15 May 2020 18:10:50 +0800
-Message-Id: <c188279975bd216995904f9bf8a84c7887b759a0.1589537601.git.shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1589537601.git.shengjiu.wang@nxp.com>
-References: <cover.1589537601.git.shengjiu.wang@nxp.com>
-In-Reply-To: <cover.1589537601.git.shengjiu.wang@nxp.com>
-References: <cover.1589537601.git.shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 76D3CF8028F
+ for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 12:21:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76D3CF8028F
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 5B867AB89;
+ Fri, 15 May 2020 10:21:25 +0000 (UTC)
+Date: Fri, 15 May 2020 12:21:22 +0200
+Message-ID: <s5ho8qpmrbx.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Thomas Ebeling <penguins@bollie.de>
+Subject: Re: [PATCH v2] RME Babyface Pro mixer patch: Fixing max vol
+In-Reply-To: <741e37a9-013f-4f90-2c16-6f388b624f35@bollie.de>
+References: <20200514171555.67rqof74ubns3dmx@bollie.ca9.eu>
+ <s5hftc1objb.wl-tiwai@suse.de>
+ <741e37a9-013f-4f90-2c16-6f388b624f35@bollie.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,126 +78,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Introduce a SoC specific data structure which contains the
-differences between the different SoCs.
-This makes it easier to support more differences without having
-to introduce a new if/else each time.
+On Fri, 15 May 2020 11:45:44 +0200,
+Thomas Ebeling wrote:
+> 
+> 
+> On 15.05.20 10:19, Takashi Iwai wrote:
+> > The v1 patch has been already merged to for-next branch.  Could you
+> > submit an incremental patch to just correct the max value?
+> 
+> Sure. Shall I keep alsa-devel as recipient?
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
----
- sound/soc/fsl/fsl_esai.c | 46 ++++++++++++++++++++++++++++++++--------
- 1 file changed, 37 insertions(+), 9 deletions(-)
+Yes, and put me to Cc as usual.
 
-diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-index 84290be778f0..bac65ba7fbad 100644
---- a/sound/soc/fsl/fsl_esai.c
-+++ b/sound/soc/fsl/fsl_esai.c
-@@ -21,6 +21,17 @@
- 				SNDRV_PCM_FMTBIT_S20_3LE | \
- 				SNDRV_PCM_FMTBIT_S24_LE)
- 
-+/**
-+ * fsl_esai_soc_data: soc specific data
-+ *
-+ * @imx: for imx platform
-+ * @reset_at_xrun: flags for enable reset operaton
-+ */
-+struct fsl_esai_soc_data {
-+	bool imx;
-+	bool reset_at_xrun;
-+};
-+
- /**
-  * fsl_esai: ESAI private data
-  *
-@@ -33,6 +44,7 @@
-  * @fsysclk: system clock source to derive HCK, SCK and FS
-  * @spbaclk: SPBA clock (optional, depending on SoC design)
-  * @task: tasklet to handle the reset operation
-+ * @soc: soc specific data
-  * @lock: spin lock between hw_reset() and trigger()
-  * @fifo_depth: depth of tx/rx FIFO
-  * @slot_width: width of each DAI slot
-@@ -44,7 +56,6 @@
-  * @sck_div: if using PSR/PM dividers for SCKx clock
-  * @slave_mode: if fully using DAI slave mode
-  * @synchronous: if using tx/rx synchronous mode
-- * @reset_at_xrun: flags for enable reset operaton
-  * @name: driver name
-  */
- struct fsl_esai {
-@@ -57,6 +68,7 @@ struct fsl_esai {
- 	struct clk *fsysclk;
- 	struct clk *spbaclk;
- 	struct tasklet_struct task;
-+	const struct fsl_esai_soc_data *soc;
- 	spinlock_t lock; /* Protect hw_reset and trigger */
- 	u32 fifo_depth;
- 	u32 slot_width;
-@@ -70,10 +82,24 @@ struct fsl_esai {
- 	bool sck_div[2];
- 	bool slave_mode;
- 	bool synchronous;
--	bool reset_at_xrun;
- 	char name[32];
- };
- 
-+static struct fsl_esai_soc_data fsl_esai_vf610 = {
-+	.imx = false,
-+	.reset_at_xrun = true,
-+};
-+
-+static struct fsl_esai_soc_data fsl_esai_imx35 = {
-+	.imx = true,
-+	.reset_at_xrun = true,
-+};
-+
-+static struct fsl_esai_soc_data fsl_esai_imx6ull = {
-+	.imx = true,
-+	.reset_at_xrun = false,
-+};
-+
- static irqreturn_t esai_isr(int irq, void *devid)
- {
- 	struct fsl_esai *esai_priv = (struct fsl_esai *)devid;
-@@ -85,7 +111,7 @@ static irqreturn_t esai_isr(int irq, void *devid)
- 	regmap_read(esai_priv->regmap, REG_ESAI_SAISR, &saisr);
- 
- 	if ((saisr & (ESAI_SAISR_TUE | ESAI_SAISR_ROE)) &&
--	    esai_priv->reset_at_xrun) {
-+	    esai_priv->soc->reset_at_xrun) {
- 		dev_dbg(&pdev->dev, "reset module for xrun\n");
- 		regmap_update_bits(esai_priv->regmap, REG_ESAI_TCR,
- 				   ESAI_xCR_xEIE_MASK, 0);
-@@ -936,9 +962,11 @@ static int fsl_esai_probe(struct platform_device *pdev)
- 	esai_priv->pdev = pdev;
- 	snprintf(esai_priv->name, sizeof(esai_priv->name), "%pOFn", np);
- 
--	if (of_device_is_compatible(np, "fsl,vf610-esai") ||
--	    of_device_is_compatible(np, "fsl,imx35-esai"))
--		esai_priv->reset_at_xrun = true;
-+	esai_priv->soc = of_device_get_match_data(&pdev->dev);
-+	if (!esai_priv->soc) {
-+		dev_err(&pdev->dev, "failed to get soc data\n");
-+		return -ENODEV;
-+	}
- 
- 	/* Get the addresses and IRQ */
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-@@ -1063,9 +1091,9 @@ static int fsl_esai_remove(struct platform_device *pdev)
- }
- 
- static const struct of_device_id fsl_esai_dt_ids[] = {
--	{ .compatible = "fsl,imx35-esai", },
--	{ .compatible = "fsl,vf610-esai", },
--	{ .compatible = "fsl,imx6ull-esai", },
-+	{ .compatible = "fsl,imx35-esai", .data = &fsl_esai_imx35 },
-+	{ .compatible = "fsl,vf610-esai", .data = &fsl_esai_vf610 },
-+	{ .compatible = "fsl,imx6ull-esai", .data = &fsl_esai_imx6ull },
- 	{}
- };
- MODULE_DEVICE_TABLE(of, fsl_esai_dt_ids);
--- 
-2.21.0
 
+Takashi
