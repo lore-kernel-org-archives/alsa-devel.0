@@ -2,66 +2,77 @@ Return-Path: <SRS0=wzGW=65=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 10298C433E1
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 17:14:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E8E46C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 21:10:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 89771206C0
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 17:14:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 71D0E206D4
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 21:10:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dHT19Zn7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 89771206C0
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lhgRDh1Q"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 71D0E206D4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DF7361607;
-	Fri, 15 May 2020 19:13:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF7361607
+	by alsa0.perex.cz (Postfix) with ESMTPS id B93BA1607;
+	Fri, 15 May 2020 23:09:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B93BA1607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589562872;
-	bh=S2AE0aUw4L0uRUqinGP+Mfu7uaDB8a9xmnzs0wS3rDU=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1589577047;
+	bh=I3J1aQyqlPXw8xs4Ni6kzvcm1NbijvkDAxk1UePeqfU=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dHT19Zn7avsq5B8x9umSJxkl4dsgfED9oka/R7ZitaO/e01B6knNHy1BrthUq72HU
-	 Rhv9SJWQMHB+lhdYEzuZ/H+LUb3ycwBwymbc00Mz8qSjK0+AglVTkNcq8LQ9YA6pp6
-	 HPOPuha2dLylqOEnk5hR04Ur5P6pqiwkUJWOVcrA=
+	b=lhgRDh1Q446TE0Bs4/nJbGhKlGylZT/tUPsd92ti5eaRM38T9qwgrBIdHpYFY366Z
+	 dScVzH+vA3SMVla4eeZc+IYil579Zdt43Fvg5ZLdMBus2+9j59K47X6jv/iRWFNcq9
+	 KsNU8X0dW2w8tpW6C3Cq4BjQJpGDWmChroFH69H8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 57416F8022D;
-	Fri, 15 May 2020 19:13:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 29EF4F8022D;
+	Fri, 15 May 2020 23:09:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 64932F80247; Fri, 15 May 2020 19:13:40 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 4D226F80278; Fri, 15 May 2020 23:08:24 +0200 (CEST)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C975FF80101
- for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 19:13:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C975FF80101
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id A6B97AF7E;
- Fri, 15 May 2020 17:13:33 +0000 (UTC)
-Date: Fri, 15 May 2020 19:13:30 +0200
-Message-ID: <s5hr1vlktol.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Erwin Burema <e.burema@freedom.nl>
-Subject: Re: [PATCH] Add duplex sound support for USB devices using implicit
- feedback
-In-Reply-To: <2410739.SCZni40SNb@alpha-wolf>
-References: <2410739.SCZni40SNb@alpha-wolf>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4FDAFF8022D
+ for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 23:08:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4FDAFF8022D
+IronPort-SDR: aKkh2aT1ILNXn5JGAPLRhB2PkGSB6LMD4scqk0W44dOrokjFFC5OJy//7eLAa90wl7Ta8zkb0l
+ fM5moGF0grsA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 May 2020 14:07:56 -0700
+IronPort-SDR: x2nbXZH0/WwLz6wlOZkoSogzpL+0vamnpi6tx+9TJ+dkmLD6cYfZeVfhJCm1pNiR1SSbR1gfE7
+ AN/52HX+QD5w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,396,1583222400"; d="scan'208";a="410589917"
+Received: from btchambe-mobl.amr.corp.intel.com (HELO
+ pbossart-mobl3.amr.corp.intel.com) ([10.254.66.225])
+ by orsmga004.jf.intel.com with ESMTP; 15 May 2020 14:07:55 -0700
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 1/5] ASoC: Intel: soc-acpi: change machine driver name for
+ WM8804 platforms
+Date: Fri, 15 May 2020 16:07:27 -0500
+Message-Id: <20200515210731.10942-2-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200515210731.10942-1-pierre-louis.bossart@linux.intel.com>
+References: <20200515210731.10942-1-pierre-louis.bossart@linux.intel.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: tiwai@suse.de, broonie@kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,16 +88,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 10 May 2020 20:29:11 +0200,
-Erwin Burema wrote:
-> 
-> For USB sound devices using implicit feedback the endpoint used for this feedback should be able to be opened twice, once for required feedback and second time for audio data. This way these devices can be put in duplex audio mode. Since this only works if the settings of the endpoint don't change a check is included for this.
-> 
-> This fixes bug 207023 ("MOTU M2 regression on duplex audio") and should also fix bug 103751 ("M-Audio Fast Track Ultra usb audio device will not operate full-duplex")
-> 
-> Signed-off-by: Erwin Burema <e.burema@gmail.com>
+Remove obsolete reference to Broxton since the machine driver will be
+reused on other platforms, e.g. Up Extreme.
 
-Applied now to for-next branch.  Thanks!
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+---
+ sound/soc/intel/common/soc-acpi-intel-bxt-match.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
+index 68758e7a16d8..32f77e29c2ff 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
+@@ -71,7 +71,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_bxt_machines[] = {
+ 	},
+ 	{
+ 		.id = "1AEC8804",
+-		.drv_name = "bxt-wm8804",
++		.drv_name = "sof-wm8804",
+ 		.sof_fw_filename = "sof-apl.ri",
+ 		.sof_tplg_filename = "sof-apl-wm8804.tplg",
+ 	},
+-- 
+2.20.1
 
-Takashi
