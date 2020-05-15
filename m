@@ -7,63 +7,63 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CB6CC433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 21:12:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 14AEDC433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 21:12:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8AD0B2065C
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 21:12:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8F58D205CB
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 21:12:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ufW/UuPW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8AD0B2065C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IdBnvdQg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F58D205CB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B01C01669;
-	Fri, 15 May 2020 23:11:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B01C01669
+	by alsa0.perex.cz (Postfix) with ESMTPS id DB8FD166B;
+	Fri, 15 May 2020 23:12:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB8FD166B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589577148;
-	bh=gyjtKQ0ygUBmtZaFAHBY2Selg/N/5ibzxfY/EwTSlLQ=;
+	s=default; t=1589577172;
+	bh=wHuy/bkayl7V6Bi38WIgOa4PZE8lbPNcejt5EXWKYeY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ufW/UuPWKTW1LF2TlcB1bgJYrp0Tbw9qagy8GFIfnErN3hxsKYdBRig8H7GTTNni1
-	 +6NQsUKc1teVKdKWHopsmKLlSnVpKr2KImGd/vEnO149zkFb4TH4VhnxxTVYvuosaI
-	 HJbN0hdwY0GsEEHc6/7ROc8E41yVKN6LdOVWYU0k=
+	b=IdBnvdQgWc1GmNqLGXVdnhW1Za+LHPAmaeHnkBZ19O2D+nn3JzdMMDzUTCHhemYue
+	 r//Bc7Kqja3kFJbNZkLkq61jGVLUV9JfS5G/Vek5ll2mgAG1k1MGIVRnDFASzC8aJv
+	 eyMvBHOybrW1SwCouEauXDU+XAhDbzd+3wfM8fKY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3EA69F8027B;
-	Fri, 15 May 2020 23:10:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 49F92F8028E;
+	Fri, 15 May 2020 23:10:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2D988F80253; Fri, 15 May 2020 23:08:32 +0200 (CEST)
+ id 3A743F80247; Fri, 15 May 2020 23:08:33 +0200 (CEST)
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9B4B2F80101
- for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 23:08:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B4B2F80101
-IronPort-SDR: 65cvv7BDLE6FmfrfDpnnrECysoRd/7LX9vSAmt68I1v1ZXBYPA7niaZubsb7LxSkyydDjBROPu
- YNfcjjoqHomA==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 46B84F80254
+ for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 23:08:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46B84F80254
+IronPort-SDR: cpDaGyxugrA2gV++IRWoaTEu5QUpwHvcHeWP7xQUELbGkmlkxJ8iQ6Dj+8OQdSdIqsoQhVXMiq
+ +Onpd0FEUgCA==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 May 2020 14:07:57 -0700
-IronPort-SDR: JZHECuqh+Ap1ZKYuEtJDdaQCjO1apB+hJY9K2+cgMnRQiqO0zUeHshuB1snMglF+uW+AkQ1wuJ
- LIQfFlVUb4jA==
+ 15 May 2020 14:07:58 -0700
+IronPort-SDR: YtWtWeI6WCtrMViDmeDqlosht+xpk+6i0JiOjv3Hy7hTij+jt8AUWEzM2d+8soTZcQxngr4CVb
+ p27/Y9y3dMyw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,396,1583222400"; d="scan'208";a="410589928"
+X-IronPort-AV: E=Sophos;i="5.73,396,1583222400"; d="scan'208";a="410589936"
 Received: from btchambe-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.254.66.225])
  by orsmga004.jf.intel.com with ESMTP; 15 May 2020 14:07:57 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 3/5] ASoC: Intel: sof_sdw_rt711: remap buttons
-Date: Fri, 15 May 2020 16:07:29 -0500
-Message-Id: <20200515210731.10942-4-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 4/5] ASoC: Intel: sof_sdw_rt700: remap buttons
+Date: Fri, 15 May 2020 16:07:30 -0500
+Message-Id: <20200515210731.10942-5-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200515210731.10942-1-pierre-louis.bossart@linux.intel.com>
 References: <20200515210731.10942-1-pierre-louis.bossart@linux.intel.com>
@@ -99,14 +99,14 @@ Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 ---
- sound/soc/intel/boards/sof_sdw_rt711.c | 8 ++++----
+ sound/soc/intel/boards/sof_sdw_rt700.c | 8 ++++----
  1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_sdw_rt711.c b/sound/soc/intel/boards/sof_sdw_rt711.c
-index 1ded5d9895cf..d4d75c8dc6b7 100644
---- a/sound/soc/intel/boards/sof_sdw_rt711.c
-+++ b/sound/soc/intel/boards/sof_sdw_rt711.c
-@@ -119,10 +119,10 @@ static int rt711_rtd_init(struct snd_soc_pcm_runtime *rtd)
+diff --git a/sound/soc/intel/boards/sof_sdw_rt700.c b/sound/soc/intel/boards/sof_sdw_rt700.c
+index 5515f397a3dd..5f50491ba5ee 100644
+--- a/sound/soc/intel/boards/sof_sdw_rt700.c
++++ b/sound/soc/intel/boards/sof_sdw_rt700.c
+@@ -95,10 +95,10 @@ static int rt700_rtd_init(struct snd_soc_pcm_runtime *rtd)
  
  	jack = &ctx->sdw_headset;
  
@@ -120,7 +120,7 @@ index 1ded5d9895cf..d4d75c8dc6b7 100644
 +	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
  
  	ret = snd_soc_component_set_jack(component, jack, NULL);
- 
+ 	if (ret)
 -- 
 2.20.1
 
