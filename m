@@ -2,97 +2,69 @@ Return-Path: <SRS0=wzGW=65=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 396C5C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 10:17:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FE0FC433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 10:21:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AD1D920709
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 10:17:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0B7E5206B6
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 10:21:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aewqRNDX";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="hg8+Jv48"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AD1D920709
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uZmIrLrN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0B7E5206B6
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0408E844;
-	Fri, 15 May 2020 12:16:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0408E844
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7469315F9;
+	Fri, 15 May 2020 12:20:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7469315F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589537861;
-	bh=YOHyHt/9yJ9cIXM0YEkb8saEuSaYaNven2d/oO5FvgM=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=aewqRNDXRSgxIdIo+fDlj5o4dq6o9Lwm4lksV0EOnICikd3z3ffST7Z8udmpc5oyK
-	 s5LraWE5nu7bkha6mlf4qtQymLG4M/9mqQ/PL3HuoHVT9EQOQ195pdhm0wkID3zQAi
-	 PktCcFQCfFsksmGjTa0lKMMujA9YnWf9XA4exxG4=
+	s=default; t=1589538087;
+	bh=EXxW8nra0kNRWCx+Rlbb8YpFusKQLaonK2rX3nV2fEM=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=uZmIrLrNG4ot6dSB/8qY+uuRqXkn7++CuzTuDppl8EANTTjJFU9qHAD1aLt0VHppq
+	 aX+okqVFoTrjqACZYd7VbWySdxTG4SmFDbY/luYpDdnyEtfszSItC+R6jS1+xVjfWr
+	 6ymqJUus3y2VVnaCCDXRkgo2N6DPqzlxgeoHGe1A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D5AADF8022D;
-	Fri, 15 May 2020 12:16:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0A1CAF80253;
+	Fri, 15 May 2020 12:20:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C4BE1F80247; Fri, 15 May 2020 12:16:48 +0200 (CEST)
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com
- [IPv6:2607:f8b0:4864:20::d41])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 16A7AF80254; Fri, 15 May 2020 12:20:36 +0200 (CEST)
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CE8DFF800B8
- for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 12:16:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE8DFF800B8
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="hg8+Jv48"
-Received: by mail-io1-xd41.google.com with SMTP id k18so2116006ion.0
- for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 03:16:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=YOHyHt/9yJ9cIXM0YEkb8saEuSaYaNven2d/oO5FvgM=;
- b=hg8+Jv48vda0Q8CZa2JDbMP8vSVn32fmSqcGjARW4yCuPto2xFDzdwKNtA3q3AIttp
- XSQhMJqQueKD1ZkeBC0odnJ0V7mpZz9zR8vmnalLwcCvAf/K92vZvLXbL1MMUxUMqpMk
- ESb6mA5GlcQK83l9KnaZP/NMpAZH80ruDkNVbhrdAVto5cqOTrpAJszC47Z71MbLXCDo
- 1HNejEbIpSJGcnV9iURjgATgodSrQ2hyqau6JnvqboR6wrozUvGUMU86el1IPQ56Z3Tq
- 6zzFpN0zUqoRnwthRH5o2Ne+0YHPJh8tdJ3UIW5QwO32kejr2uxnHEpucWNXvfe9ahPn
- ysuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=YOHyHt/9yJ9cIXM0YEkb8saEuSaYaNven2d/oO5FvgM=;
- b=swM4hBkzIVF0hZ0Zme5QbAkvI6ZEahJ7UFnX65vewwEZiLnHgb35AX1IkQ5Pp//piv
- 6I4FJ8pIWCowxfRpvuA9m0WfCCKZWXgCK7UbRdiWK+wsqrZF0vSgvXXQjAUWMjPhJLiW
- T+fK/IvQblukofd32JTTbeMLP9mWE0qIOjqQlN/NcalwImLDHjS3E4MmIV5+8DqdZ/qB
- Z6lcnXmTE4b8qispMlC4gWfN5jBws7nmXld/O+hpcHHu4tu3+0n0IXtTUJLbjs6ZQd03
- kWyQL+QKGyTJLhqkfYx031K/i28wdxxVDGdTNKFlWD4+A53e9tTrmjifaqEjIHho45Yq
- itrg==
-X-Gm-Message-State: AOAM5335Oc7905IqmrWTQZvn5TMpUSWsR6vehnlFQqBq12UeAnrtaFPv
- QMY90s85PmN1jaeuSu4orX0RmP9HQ4aowJGrUW5g3A==
-X-Google-Smtp-Source: ABdhPJzWEWhgqRkp/Sy2dUm7FKBpIXJpWVCJjh9m0xPKXm1nMlvygEJKrNNynHVhI1/J0v07SlNpwMzJFFD5cEsF8+c=
-X-Received: by 2002:a05:6638:1014:: with SMTP id
- r20mr2446737jab.29.1589537797461; 
- Fri, 15 May 2020 03:16:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200515100309.20795-1-ardb@kernel.org>
-In-Reply-To: <20200515100309.20795-1-ardb@kernel.org>
-From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Fri, 15 May 2020 18:16:26 +0800
-Message-ID: <CA+Px+wUpYaUfA1saEWePuy+CmCX8mPiH+-Mg23P6c+jhM_yxHQ@mail.gmail.com>
-Subject: Re: [PATCH v2] ASoC: cros_ec_codec: switch to library API for SHA-256
-To: Ard Biesheuvel <ardb@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Cc: ALSA development <alsa-devel@alsa-project.org>,
- Herbert Xu <herbert@gondor.apana.org.au>, Arnd Bergmann <arnd@arndb.de>,
- Liam Girdwood <lgirdwood@gmail.com>, Eric Biggers <ebiggers@kernel.org>,
- Guenter Roeck <groeck@chromium.org>, Mark Brown <broonie@kernel.org>,
- Enric Balletbo i Serra <enric.balletbo@collabora.com>,
- Benson Leung <bleung@chromium.org>, Cheng-Yi Chiang <cychiang@chromium.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id DE14BF80101
+ for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 12:20:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE14BF80101
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 6D8DE200758;
+ Fri, 15 May 2020 12:20:30 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
+ [165.114.16.14])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 3103F200754;
+ Fri, 15 May 2020 12:20:25 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 63CC5402ED;
+ Fri, 15 May 2020 18:20:18 +0800 (SGT)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+ festevam@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+ alsa-devel@alsa-project.org, lgirdwood@gmail.com, robh+dt@kernel.org,
+ devicetree@vger.kernel.org
+Subject: [PATCH v2 0/2] ASoC: fsl_esai: Add support for imx8qm
+Date: Fri, 15 May 2020 18:10:49 +0800
+Message-Id: <cover.1589537601.git.shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,22 +80,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, May 15, 2020 at 6:03 PM Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> The CrOS EC codec driver uses SHA-256 explicitly, and not in a
-> performance critical manner, so there is really no point in using
-> the SHASH crypto API here. Let's switch to the library API instead.
->
-> Cc: Cheng-Yi Chiang <cychiang@chromium.org>
-> Cc: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> Cc: Guenter Roeck <groeck@chromium.org>
-> Cc: Benson Leung <bleung@chromium.org>
-> Cc: Liam Girdwood <lgirdwood@gmail.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Eric Biggers <ebiggers@kernel.org>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: Tzung-Bi Shih <tzungbi@google.com>
-> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Add support for imx8qm.
 
-Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
+Shengjiu Wang (2):
+  ASoC: fsl_esai: introduce SoC specific data
+  ASoC: fsl_esai: Add new compatible string for imx8qm
+
+Changes in v2
+- drop the 0002 patch in v1, the dma relate limitation should
+  be done in dma driver, or define a new DMA API for it.
+
+
+ .../devicetree/bindings/sound/fsl,esai.txt    |  1 +
+ sound/soc/fsl/fsl_esai.c                      | 46 +++++++++++++++----
+ 2 files changed, 38 insertions(+), 9 deletions(-)
+
+-- 
+2.21.0
+
