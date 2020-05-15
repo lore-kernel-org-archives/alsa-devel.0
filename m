@@ -1,4 +1,4 @@
-Return-Path: <SRS0=rado=64=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=wzGW=65=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
@@ -6,59 +6,53 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 73319C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 23:36:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8243C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 00:47:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E79982065C
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2020 23:36:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2FD8A206B6
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 00:47:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nDlswwIZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E79982065C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="o5jCFBVo"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2FD8A206B6
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 401DF1614;
-	Fri, 15 May 2020 01:35:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 401DF1614
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7C74A1614;
+	Fri, 15 May 2020 02:46:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7C74A1614
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589499392;
-	bh=xxNIpWmo6roavEIUNT99X8Y2mpPjgr6Sx5lASpdlfOo=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=nDlswwIZz9UoIk3qszaiKcooJqLALdcAhBnySNxsCWw6TWj1IRv7UwD8A5sXzDDTM
-	 CMT7bSFE7aWO+dLaBLlqxv2s/ulQlw0Jc366iUVkqVk3BNHXRjGbYCS9R+uQNToODB
-	 JBtDsPxKl+ZrOBgyZPZflV4pJkrOJzmGDWbsdNOA=
+	s=default; t=1589503618;
+	bh=FuwOMLhMfDhNJj3XBK4i5kJvdT+/DJIfAwWhKgFjgFU=;
+	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=o5jCFBVoha+hEEV1LJvUqu7xUbS3ve8NKTrwFJo838aVFvwkn7704ZDI2slXAy9fT
+	 zG63cn6QXlkVqhKmwERg5YqwXvAUfMJQlwXxrjKWZXcFoWqPrC60pIXOHLpibm8kZ7
+	 suFIyGhna0PBsin/K0GqPo7lmsuQtIjmkG3O4pZM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B7E8EF8014C;
-	Fri, 15 May 2020 01:35:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ED01CF8014C;
+	Fri, 15 May 2020 02:46:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4C751F80158; Fri, 15 May 2020 01:35:40 +0200 (CEST)
+ id 650C9F80158; Fri, 15 May 2020 02:46:05 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 71872F800BD
- for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 01:35:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71872F800BD
-Date: 15 May 2020 08:35:22 +0900
-X-IronPort-AV: E=Sophos;i="5.73,392,1583161200"; d="scan'208";a="46901609"
+ by alsa1.perex.cz (Postfix) with ESMTP id 3FE5AF800BD
+ for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 02:45:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3FE5AF800BD
+Date: 15 May 2020 09:45:39 +0900
+X-IronPort-AV: E=Sophos;i="5.73,393,1583161200"; d="scan'208";a="46907436"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 15 May 2020 08:35:22 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 15 May 2020 09:45:39 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id E016D411A121;
- Fri, 15 May 2020 08:35:21 +0900 (JST)
-Message-ID: <87eerm6qfa.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id B2EB5413DFBF;
+ Fri, 15 May 2020 09:45:39 +0900 (JST)
+Message-ID: <87d0766n64.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 01/21] ASoC: soc-pcm: replace
- snd_soc_runtime_activate()/deactivate() to macro
-In-Reply-To: <20200514104115.GE5127@sirena.org.uk>
-References: <87blmq9alx.wl-kuninori.morimoto.gx@renesas.com>
- <87a72a9ak3.wl-kuninori.morimoto.gx@renesas.com>
- <20200514104115.GE5127@sirena.org.uk>
+Subject: [PATCH v3 00/21] ASoC: cleanup DAI/Component activity
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -81,20 +75,85 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Hi Mark
 
-> > snd_soc_runtime_activate()/deactivate() are implemented by global funtion
-> > which are just calling snd_soc_runtime_action().
-> > We can replace it to macro, and this patch do it.
-> > This patch is prepare for xxx_active cleanup.
-> 
-> It'd be better to use static inline functions rather than macros -
-> unlike the loop iterators there's no C syntax reason not to use an
-> inline and inline functions provide better type safety and namespacing.
+These are v3 of DAI/Component activity cleanup.
 
-Oh, yes, indeed.
-Will post v3 patch
+This patch-set exchanges soc-dapm.c :: snd_soc_dai_link_event_xxx()
+behavior which updates dai->active but not cares other actives.
+But I think original code was wrong.
+So, I believe these works correctly, but maybe need some tests or deep review.
 
-Thank you for your help !!
+v1 -> v2
+	- function naming "activity" -> "active"
 
-Best regards
----
-Kuninori Morimoto
+v2 -> v3
+	- macro -> inline function
+	- added Reviewed-by from Ranjani, Acked-by from Peter
+
+Link: https://lore.kernel.org/r/875zd39frp.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87blmq9alx.wl-kuninori.morimoto.gx@renesas.com
+
+Kuninori Morimoto (21):
+  ASoC: soc-pcm: replace snd_soc_runtime_activate()/deactivate() to macro
+  ASoC: soc-dai: add snd_soc_dai_action()
+  ASoC: soc-dapm: use snd_soc_dai_activate()/deactivate()
+  ASoC: soc-dai: add snd_soc_dai_active()
+  ASoC: soc-component: add snd_soc_component_active()
+  ASoC: soc-dai: add snd_soc_dai_stream_active()
+  ASoC: use snd_soc_xxx_active()
+  ASoC: atomel: use snd_soc_xxx_active()
+  ASoC: bcm: use snd_soc_xxx_active()
+  ASoC: cirrus: use snd_soc_xxx_active()
+  ASoC: codecs: use snd_soc_xxx_active()
+  ASoC: fsl: use snd_soc_xxx_active()
+  ASoC: intel: use snd_soc_xxx_active()
+  ASoC: jz4740: use snd_soc_xxx_active()
+  ASoC: mediatek: use snd_soc_xxx_active()
+  ASoC: meson: use snd_soc_xxx_active()
+  ASoC: pxa: use snd_soc_xxx_active()
+  ASoC: ti: use snd_soc_xxx_active()
+  ASoC: uniphier: use snd_soc_xxx_active()
+  ASoC: dwc: use snd_soc_xxx_active()
+  ASoC: cleanup dai / component active code
+
+ include/sound/soc-component.h                |  6 +-
+ include/sound/soc-dai.h                      | 21 +++++-
+ include/sound/soc.h                          | 15 ++++-
+ sound/soc/atmel/atmel_ssc_dai.c              |  4 +-
+ sound/soc/bcm/bcm2835-i2s.c                  |  6 +-
+ sound/soc/bcm/cygnus-ssp.c                   |  4 +-
+ sound/soc/cirrus/ep93xx-i2s.c                |  4 +-
+ sound/soc/codecs/adav80x.c                   |  4 +-
+ sound/soc/codecs/arizona.c                   |  2 +-
+ sound/soc/codecs/cs4271.c                    |  4 +-
+ sound/soc/codecs/madera.c                    |  2 +-
+ sound/soc/codecs/max98090.c                  |  6 +-
+ sound/soc/codecs/tlv320aic23.c               |  2 +-
+ sound/soc/codecs/tlv320dac33.c               |  2 +-
+ sound/soc/codecs/uda1380.c                   |  2 +-
+ sound/soc/codecs/wl1273.c                    |  2 +-
+ sound/soc/codecs/wm8711.c                    |  2 +-
+ sound/soc/codecs/wm8753.c                    |  4 +-
+ sound/soc/dwc/dwc-i2s.c                      |  2 +-
+ sound/soc/fsl/fsl_esai.c                     |  2 +-
+ sound/soc/fsl/fsl_spdif.c                    |  4 +-
+ sound/soc/intel/atom/sst-mfld-platform-pcm.c | 14 ++--
+ sound/soc/jz4740/jz4740-i2s.c                |  8 +--
+ sound/soc/mediatek/mt8173/mt8173-afe-pcm.c   |  8 +--
+ sound/soc/meson/axg-tdm-interface.c          |  2 +-
+ sound/soc/pxa/pxa-ssp.c                      |  8 +--
+ sound/soc/pxa/pxa2xx-i2s.c                   |  2 +-
+ sound/soc/soc-compress.c                     |  4 +-
+ sound/soc/soc-core.c                         | 11 +--
+ sound/soc/soc-dai.c                          | 23 +++++++
+ sound/soc/soc-dapm.c                         |  8 +--
+ sound/soc/soc-pcm.c                          | 70 +++++++-------------
+ sound/soc/ti/davinci-mcasp.c                 |  2 +-
+ sound/soc/ti/omap-dmic.c                     |  4 +-
+ sound/soc/ti/omap-mcbsp.c                    |  4 +-
+ sound/soc/ti/omap-mcpdm.c                    |  8 +--
+ sound/soc/uniphier/aio-cpu.c                 |  4 +-
+ 37 files changed, 155 insertions(+), 125 deletions(-)
+
+-- 
+2.17.1
+
