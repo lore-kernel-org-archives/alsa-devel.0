@@ -2,71 +2,78 @@ Return-Path: <SRS0=wzGW=65=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B5A9C433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 21:16:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E0185C433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 21:17:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B4CC2205CB
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 21:16:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6958E20643
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 21:17:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jDeG/iGL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B4CC2205CB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Vrrd9Bt/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6958E20643
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 229BA1607;
-	Fri, 15 May 2020 23:15:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 229BA1607
+	by alsa0.perex.cz (Postfix) with ESMTPS id B38531662;
+	Fri, 15 May 2020 23:16:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B38531662
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589577404;
-	bh=2yacj7lXigeQfd0d8EIUwA773RhwNUC5ae04EGbR79s=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=jDeG/iGLVF4cwpBgrkHea5gHMWHUJRFXeHYvfzQvFe9HtEWh1bbsJQtcaN1N4Cjoa
-	 AOgNvPZBVsKS1yZyzZkA58WlcWcXdy3xX6QGjk5Lq2Kmq7UPBq8oj6+5ldl03dOPjk
-	 tjUk6UQcFMgG4A23sHd2cGM0tMo5+4iw7McPiBOE=
+	s=default; t=1589577456;
+	bh=FqEqC3aXoxYfo2A7MrQOa7+R4i66/yAR/N+dtkzO8iA=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Vrrd9Bt/kjbOxwteT2LZcZjqSzi1xybVQqVpaAPBpu0v/5e/wPrkUHZ4tEiBXfBRv
+	 /osLzXh175bUQVLfrUV954oiklTNC+sun+hxCGO95cjVTqTn/UjgnLjdqFkbAs0o8F
+	 RgY+ZmAMQwSI2oW+0spEb0sZCzdsJTWtcDG1zcnE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 99E88F800B8;
-	Fri, 15 May 2020 23:15:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7F706F80101;
+	Fri, 15 May 2020 23:16:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C20E6F800B8; Fri, 15 May 2020 23:15:52 +0200 (CEST)
+ id EF6E8F80278; Fri, 15 May 2020 23:15:59 +0200 (CEST)
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9BA1DF800B8
- for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 23:15:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9BA1DF800B8
-IronPort-SDR: tC4y/y0nte+6fYLHG32XwgIHca2D/GQFYO4WKTey4vsJPC5B1pqTa7IaQG1fQ9783lbmcQWA2J
- t/RPT3UBuoNA==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9F15CF8022D
+ for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 23:15:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F15CF8022D
+IronPort-SDR: ln3TuxhbVowrmkXed9u4/PNzrI7UcrDyL8OZMy/BDnJ4WwJhpF2OunKIIkaSU6mHZZySMXruXB
+ TfV+VY/EIMMw==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 May 2020 14:15:46 -0700
-IronPort-SDR: Ok7XX4KIah8nE6TOF2o5QuSP45BhWbADsaNNIF1ItyHXQIeXu8a/CZHjFbapGXRgROQPLtw9wz
- CTFhsuxll0wg==
+ 15 May 2020 14:15:49 -0700
+IronPort-SDR: JuF3Jyi7bu/ssYlfQFnOzvD8RItDlH9qXDKOFmiOnuz6wHcppTO9n3zd7lxatOGwiS6m8gYfFw
+ +7ejcXwQuqIw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,396,1583222400"; d="scan'208";a="438454469"
+X-IronPort-AV: E=Sophos;i="5.73,396,1583222400"; d="scan'208";a="438454493"
 Received: from btchambe-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.254.66.225])
- by orsmga005.jf.intel.com with ESMTP; 15 May 2020 14:15:46 -0700
+ by orsmga005.jf.intel.com with ESMTP; 15 May 2020 14:15:47 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 0/3] ASoC: codecs: rt*-sdw: memory leaks and simplifications
-Date: Fri, 15 May 2020 16:15:28 -0500
-Message-Id: <20200515211531.11416-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 2/3] ASoC: codecs: rt*-sdw: fix memory leak in set_sdw_stream()
+Date: Fri, 15 May 2020 16:15:30 -0500
+Message-Id: <20200515211531.11416-3-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200515211531.11416-1-pierre-louis.bossart@linux.intel.com>
+References: <20200515211531.11416-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>,
+ Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>, tiwai@suse.de,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Rander Wang <rander.wang@intel.com>, broonie@kernel.org,
+ Shuming Fan <shumingf@realtek.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,28 +89,99 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-While debugging unrelated memory corruption errors, I detected issues
-related to the interaction with the SoundWire and ASoC cores, here are
-3 small patches to fix all this.
+Now that the sdw_stream is allocated in machine driver,
+set_sdw_stream() is also called with a NULL argument during the
+dailink shutdown.
 
-Pierre-Louis Bossart (3):
-  ASoC: codecs: rt*-sdw: don't assign slave_ops
-  ASoC: codecs: rt*-sdw: fix memory leak in set_sdw_stream()
-  ASoC: codecs: rt1308-sdw: remove duplicate allocation
+In this case, the drivers should not allocate any memory, and just
+return.
 
- sound/soc/codecs/rt1308-sdw.c | 11 +++--------
- sound/soc/codecs/rt5682-sdw.c |  3 ---
- sound/soc/codecs/rt5682.c     |  3 +++
- sound/soc/codecs/rt700-sdw.c  |  3 ---
- sound/soc/codecs/rt700.c      |  3 +++
- sound/soc/codecs/rt711-sdw.c  |  3 ---
- sound/soc/codecs/rt711.c      |  3 +++
- sound/soc/codecs/rt715-sdw.c  |  3 ---
- sound/soc/codecs/rt715.c      |  3 +++
- 9 files changed, 15 insertions(+), 20 deletions(-)
+Detected with KASAN/kmemleak.
 
+Cc: Oder Chiou <oder_chiou@realtek.com>
+Cc: Shuming Fan <shumingf@realtek.com>
+Cc: Jack Yu <jack.yu@realtek.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+---
+ sound/soc/codecs/rt1308-sdw.c | 3 +++
+ sound/soc/codecs/rt5682.c     | 3 +++
+ sound/soc/codecs/rt700.c      | 3 +++
+ sound/soc/codecs/rt711.c      | 3 +++
+ sound/soc/codecs/rt715.c      | 3 +++
+ 5 files changed, 15 insertions(+)
 
-base-commit: d731c1a0f935dbebf4a851e072f8c7309eb2b8c5
+diff --git a/sound/soc/codecs/rt1308-sdw.c b/sound/soc/codecs/rt1308-sdw.c
+index 4b88fa8efb27..91cc5a15c211 100644
+--- a/sound/soc/codecs/rt1308-sdw.c
++++ b/sound/soc/codecs/rt1308-sdw.c
+@@ -482,6 +482,9 @@ static int rt1308_set_sdw_stream(struct snd_soc_dai *dai, void *sdw_stream,
+ {
+ 	struct sdw_stream_data *stream;
+ 
++	if (!sdw_stream)
++		return 0;
++
+ 	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
+ 	if (!stream)
+ 		return -ENOMEM;
+diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
+index 5d3b11756a34..046e6110de73 100644
+--- a/sound/soc/codecs/rt5682.c
++++ b/sound/soc/codecs/rt5682.c
+@@ -2935,6 +2935,9 @@ static int rt5682_set_sdw_stream(struct snd_soc_dai *dai, void *sdw_stream,
+ {
+ 	struct sdw_stream_data *stream;
+ 
++	if (!sdw_stream)
++		return 0;
++
+ 	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
+ 	if (!stream)
+ 		return -ENOMEM;
+diff --git a/sound/soc/codecs/rt700.c b/sound/soc/codecs/rt700.c
+index ff68f0e4f629..687ac2153666 100644
+--- a/sound/soc/codecs/rt700.c
++++ b/sound/soc/codecs/rt700.c
+@@ -860,6 +860,9 @@ static int rt700_set_sdw_stream(struct snd_soc_dai *dai, void *sdw_stream,
+ {
+ 	struct sdw_stream_data *stream;
+ 
++	if (!sdw_stream)
++		return 0;
++
+ 	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
+ 	if (!stream)
+ 		return -ENOMEM;
+diff --git a/sound/soc/codecs/rt711.c b/sound/soc/codecs/rt711.c
+index 2daed7692a3b..65b59dbfb43c 100644
+--- a/sound/soc/codecs/rt711.c
++++ b/sound/soc/codecs/rt711.c
+@@ -906,6 +906,9 @@ static int rt711_set_sdw_stream(struct snd_soc_dai *dai, void *sdw_stream,
+ {
+ 	struct sdw_stream_data *stream;
+ 
++	if (!sdw_stream)
++		return 0;
++
+ 	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
+ 	if (!stream)
+ 		return -ENOMEM;
+diff --git a/sound/soc/codecs/rt715.c b/sound/soc/codecs/rt715.c
+index 2cbc57b16b13..099c8bd20006 100644
+--- a/sound/soc/codecs/rt715.c
++++ b/sound/soc/codecs/rt715.c
+@@ -530,6 +530,9 @@ static int rt715_set_sdw_stream(struct snd_soc_dai *dai, void *sdw_stream,
+ 
+ 	struct sdw_stream_data *stream;
+ 
++	if (!sdw_stream)
++		return 0;
++
+ 	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
+ 	if (!stream)
+ 		return -ENOMEM;
 -- 
 2.20.1
 
