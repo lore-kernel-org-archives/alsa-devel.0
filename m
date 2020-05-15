@@ -6,63 +6,69 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EC69C433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 10:23:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01EFBC433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 10:40:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3EF6B206B6
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 10:23:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 565322065C
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 10:40:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KnRwgaB6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3EF6B206B6
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="K+/VAt/H"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 565322065C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 89B3D1669;
-	Fri, 15 May 2020 12:22:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89B3D1669
+	by alsa0.perex.cz (Postfix) with ESMTPS id 96E1515F9;
+	Fri, 15 May 2020 12:39:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 96E1515F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589538212;
-	bh=06PaDN0YfES/tKcWyvhoD2EMscQX7+wCcP00Uos8faE=;
+	s=default; t=1589539239;
+	bh=LPQG/IV+N66jJBgu71XNh4Ljeej9hD6+dy7HxLqcWC8=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KnRwgaB6ugJRbCerbQ2MaNy+ix7MfQy5gbRD3/Wg7orP2pgkpX6Bpkc7pNvE29Bee
-	 EjFlhqVoIitgilyBUSmC8koxk3SMruHcyB2g8d1Csm5BKJN5k/sGSIL6QD8ja8sRrR
-	 +NII5cb5BQLyQeYiz7tXFTBT1FsmWc89xmzw8fc4=
+	b=K+/VAt/HOUdG6o5gJf0tu+JEP3xMqxqOA3FyP5icdLZEXYXKzvWZ6+GoEUsndNzKX
+	 G7iu1kRIxJ+oYRfHSIl8d1P5wOGE8hNInlS1iFqFNNeSimcjVKf7AH3hnAJMlh8xyL
+	 kUlN/viS79sTp8ZXik32UcQSeMtmNIHflLz/Sy10=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 97013F8022D;
-	Fri, 15 May 2020 12:21:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1F82BF800B8;
+	Fri, 15 May 2020 12:39:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 60A21F80292; Fri, 15 May 2020 12:21:27 +0200 (CEST)
+ id 726D7F80247; Fri, 15 May 2020 12:39:47 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 76D3CF8028F
- for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 12:21:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76D3CF8028F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1347DF800B8
+ for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 12:39:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1347DF800B8
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 5B867AB89;
- Fri, 15 May 2020 10:21:25 +0000 (UTC)
-Date: Fri, 15 May 2020 12:21:22 +0200
-Message-ID: <s5ho8qpmrbx.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id D4CD4AC5F;
+ Fri, 15 May 2020 10:39:35 +0000 (UTC)
+Date: Fri, 15 May 2020 12:39:32 +0200
+Message-ID: <s5hk11dmqhn.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Thomas Ebeling <penguins@bollie.de>
-Subject: Re: [PATCH v2] RME Babyface Pro mixer patch: Fixing max vol
-In-Reply-To: <741e37a9-013f-4f90-2c16-6f388b624f35@bollie.de>
-References: <20200514171555.67rqof74ubns3dmx@bollie.ca9.eu>
- <s5hftc1objb.wl-tiwai@suse.de>
- <741e37a9-013f-4f90-2c16-6f388b624f35@bollie.de>
+To: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] ALSA: pcm: fix incorrect hw_base increase
+In-Reply-To: <ce215f76-89c3-3543-c6ed-bc9b81af50a0@perex.cz>
+References: <1589515779-20987-1-git-send-email-brent.lu@intel.com>
+ <20200515070446.GA1226131@kroah.com>
+ <BN6PR1101MB21327687327440F1DB7CB75F97BD0@BN6PR1101MB2132.namprd11.prod.outlook.com>
+ <ce215f76-89c3-3543-c6ed-bc9b81af50a0@perex.cz>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, tiwai@suse.com
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ Arnd Bergmann <arnd@arndb.de>, Baolin Wang <baolin.wang@linaro.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Richard Fontana <rfontana@redhat.com>, Thomas Gleixner <tglx@linutronix.de>,
+ paulhsia <paulhsia@chromium.org>, "Lu, Brent" <brent.lu@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,17 +84,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 15 May 2020 11:45:44 +0200,
-Thomas Ebeling wrote:
+On Fri, 15 May 2020 11:30:54 +0200,
+Jaroslav Kysela wrote:
 > 
+> Dne 15. 05. 20 v 11:04 Lu, Brent napsal(a):
+> >>
+> >> Is this a bugfix needed for older kernels as well?  When did this issue show
+> >> up?
+> >>
+> >> thanks,
+> >>
+> >> greg k-h
+> >
+> > It happens when DMA stop moving data from host to DSP/DAI for a long time
+> > (> half of buffer time). I know host driver should do something about it. But if
+> > not, the HWSYNC will keep increasing the hw_base and hw_ptr and confuses
+> > user space program.
 > 
-> On 15.05.20 10:19, Takashi Iwai wrote:
-> > The v1 patch has been already merged to for-next branch.  Could you
-> > submit an incremental patch to just correct the max value?
-> 
-> Sure. Shall I keep alsa-devel as recipient?
+> I'm afraid, but with this code, you turn off the hw_ptr jiffies
+> code. It would be better to fix the driver in this case (return the
+> updated / estimated DMA pointer, increase DMA buffer size etc.). This
+> "lag" is unacceptable.
 
-Yes, and put me to Cc as usual.
+The problem is obviously in the driver's side and it's best to be
+addressed there.  But, I think it's still worth to apply this change.
 
+The hw_ptr jiffies check is performed basically in two places: one is
+snd_pcm_period_elapsed() call from ISR, and another is with the
+no_period_wakeup flag.  In both cases, it calculates the diff of
+jiffies from the previous update, and corrects the hw_ptr_base if that
+exceeds the threshold.
+
+And the bug here is that the "previous" jiffies is kept as long as the
+hwptr itself is updated.  What we need is the correction of the base
+when it really has processed the period size; i.e. hwptr got the same
+value (with no_period_wakeup) and yet the jiffies diff is big.  For
+this check, it's correct to update hw_ptr_jiffies at each call no
+matter whether hwptr moved or not; we need to evaluate from the
+previous update, after all.
+
+But I might overlook something.  Jaroslav, could you check it again?
+The jiffies check code is your black magic :)
+
+
+thanks,
 
 Takashi
