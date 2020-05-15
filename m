@@ -2,57 +2,58 @@ Return-Path: <SRS0=wzGW=65=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57753C433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 00:54:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A9E7C433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 00:54:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CEE4620709
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 00:54:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C15572065F
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2020 00:54:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rjTRaOfj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CEE4620709
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="U4xZ6tDj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C15572065F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 27FE21662;
-	Fri, 15 May 2020 02:53:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 27FE21662
+	by alsa0.perex.cz (Postfix) with ESMTPS id E5DA9166A;
+	Fri, 15 May 2020 02:53:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E5DA9166A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589504053;
-	bh=UAcvRZ3pqM59qs4ICISNkGsVPapBBsKchc1/rP/0kcg=;
+	s=default; t=1589504077;
+	bh=tNDTn4Z/3QaXdMmUB/qBUB8nLj6n6k2iMoYrw+N+YI4=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rjTRaOfj/7QZGrlxCXzDzDqZJ4IftOIhSlOl7Y8vPNtLeJyq1fYAPz/c6sMZcnxjT
-	 Fve/qIDsju/E7nmOnJVnkHBCHU5f9cYsh7WWzxdVs8ICph2oeWNibhKLgyzDYOYTbN
-	 LPPjWGS/9bUFcuuk1X7aIoQa8/lToHxySJQFQ3UM=
+	b=U4xZ6tDjHCIQupqS86N1wbOwrTOTIitXEao9qVO4gYQy4tWEGPkNkN4zcjL4VVXyV
+	 9d233RfCdvkGTdikF9Xc9q3XUJgP69AZIWai/hClKg2xv8IZkg9plXiPp6qycAMWSI
+	 x2JP+ZVlKkZWXDVNy/gAlgb0i2RBP933l1s+i66I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 942ABF80306;
-	Fri, 15 May 2020 02:47:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5924AF80316;
+	Fri, 15 May 2020 02:47:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1671AF80305; Fri, 15 May 2020 02:47:38 +0200 (CEST)
+ id 219A9F80158; Fri, 15 May 2020 02:47:38 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 4811EF8027B
- for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 02:46:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4811EF8027B
-Date: 15 May 2020 09:46:37 +0900
-X-IronPort-AV: E=Sophos;i="5.73,393,1583161200"; d="scan'208";a="46907524"
+ by alsa1.perex.cz (Postfix) with ESMTP id 9972DF802DD
+ for <alsa-devel@alsa-project.org>; Fri, 15 May 2020 02:47:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9972DF802DD
+Date: 15 May 2020 09:47:11 +0900
+X-IronPort-AV: E=Sophos;i="5.73,393,1583161200"; d="scan'208";a="46907602"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 15 May 2020 09:46:37 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 15 May 2020 09:47:11 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 45CD5413DFC0;
- Fri, 15 May 2020 09:46:37 +0900 (JST)
-Message-ID: <877dxe6n4i.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 1E521413EB66;
+ Fri, 15 May 2020 09:47:11 +0900 (JST)
+Message-ID: <87wo5e58j4.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v3 04/21] ASoC: soc-dai: add snd_soc_dai_active()
+Subject: [PATCH v3 11/21] ASoC: codecs: use snd_soc_xxx_active()
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 To: Mark Brown <broonie@kernel.org>
@@ -78,66 +79,207 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Current snd_soc_dai_action() is updating
-dai->stream_active for Playback/Capture (A),
-dai->active        for DAI (B)
-
-        void snd_soc_dai_action(struct snd_soc_dai *dai,
-                                int stream, int action)
-        {
-(A)             dai->stream_active[stream]      += action;
-(B)             dai->active                     += action;
-                dai->component->active          += action;
-        }
-
-But, these are very verbose, because we can calculate
-DAI active from stream_active.
-
-This patch adds snd_soc_dai_active() which calculate
-DAI active from DAI stream_active.
+We have snd_soc_dai/dai_stream/component_active() macro
+This patch uses it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- include/sound/soc-dai.h |  1 +
- sound/soc/soc-dai.c     | 12 ++++++++++++
- 2 files changed, 13 insertions(+)
+ sound/soc/codecs/adav80x.c     | 4 ++--
+ sound/soc/codecs/arizona.c     | 2 +-
+ sound/soc/codecs/cs4271.c      | 4 ++--
+ sound/soc/codecs/madera.c      | 2 +-
+ sound/soc/codecs/max98090.c    | 6 +++---
+ sound/soc/codecs/tlv320aic23.c | 2 +-
+ sound/soc/codecs/tlv320dac33.c | 2 +-
+ sound/soc/codecs/uda1380.c     | 2 +-
+ sound/soc/codecs/wl1273.c      | 2 +-
+ sound/soc/codecs/wm8711.c      | 2 +-
+ sound/soc/codecs/wm8753.c      | 4 ++--
+ 11 files changed, 16 insertions(+), 16 deletions(-)
 
-diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index 800d7aa8523e..2c74c41f9447 100644
---- a/include/sound/soc-dai.h
-+++ b/include/sound/soc-dai.h
-@@ -173,6 +173,7 @@ static inline void snd_soc_dai_deactivate(struct snd_soc_dai *dai,
- {
- 	snd_soc_dai_action(dai, stream, -1);
- }
-+int snd_soc_dai_active(struct snd_soc_dai *dai);
+diff --git a/sound/soc/codecs/adav80x.c b/sound/soc/codecs/adav80x.c
+index 7cea398ec392..c4b9722c3d8f 100644
+--- a/sound/soc/codecs/adav80x.c
++++ b/sound/soc/codecs/adav80x.c
+@@ -725,7 +725,7 @@ static int adav80x_dai_startup(struct snd_pcm_substream *substream,
+ 	struct snd_soc_component *component = dai->component;
+ 	struct adav80x *adav80x = snd_soc_component_get_drvdata(component);
  
- int snd_soc_pcm_dai_probe(struct snd_soc_pcm_runtime *rtd, int order);
- int snd_soc_pcm_dai_remove(struct snd_soc_pcm_runtime *rtd, int order);
-diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
-index 3208f244c1b8..de2981fa5372 100644
---- a/sound/soc/soc-dai.c
-+++ b/sound/soc/soc-dai.c
-@@ -397,6 +397,18 @@ void snd_soc_dai_action(struct snd_soc_dai *dai,
- }
- EXPORT_SYMBOL_GPL(snd_soc_dai_action);
+-	if (!snd_soc_component_is_active(component) || !adav80x->rate)
++	if (!snd_soc_component_active(component) || !adav80x->rate)
+ 		return 0;
  
-+int snd_soc_dai_active(struct snd_soc_dai *dai)
-+{
-+	int stream, active;
-+
-+	active = 0;
-+	for_each_pcm_streams(stream)
-+		active += dai->stream_active[stream];
-+
-+	return active;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_dai_active);
-+
- int snd_soc_pcm_dai_probe(struct snd_soc_pcm_runtime *rtd, int order)
- {
- 	struct snd_soc_dai *dai;
+ 	return snd_pcm_hw_constraint_single(substream->runtime,
+@@ -738,7 +738,7 @@ static void adav80x_dai_shutdown(struct snd_pcm_substream *substream,
+ 	struct snd_soc_component *component = dai->component;
+ 	struct adav80x *adav80x = snd_soc_component_get_drvdata(component);
+ 
+-	if (!snd_soc_component_is_active(component))
++	if (!snd_soc_component_active(component))
+ 		adav80x->rate = 0;
+ }
+ 
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index 70341b30f567..9716c9624a89 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -1926,7 +1926,7 @@ static int arizona_dai_set_sysclk(struct snd_soc_dai *dai,
+ 	if (clk_id == dai_priv->clk)
+ 		return 0;
+ 
+-	if (dai->active) {
++	if (snd_soc_dai_active(dai)) {
+ 		dev_err(component->dev, "Can't change clock on active DAI %d\n",
+ 			dai->id);
+ 		return -EBUSY;
+diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
+index 62f412d6f9f2..d43762ae8f3d 100644
+--- a/sound/soc/codecs/cs4271.c
++++ b/sound/soc/codecs/cs4271.c
+@@ -356,9 +356,9 @@ static int cs4271_hw_params(struct snd_pcm_substream *substream,
+ 		 */
+ 
+ 		if ((substream->stream == SNDRV_PCM_STREAM_PLAYBACK &&
+-		     !dai->stream_active[SNDRV_PCM_STREAM_CAPTURE]) ||
++		     !snd_soc_dai_stream_active(dai, SNDRV_PCM_STREAM_CAPTURE)) ||
+ 		    (substream->stream == SNDRV_PCM_STREAM_CAPTURE &&
+-		     !dai->stream_active[SNDRV_PCM_STREAM_PLAYBACK])) {
++		     !snd_soc_dai_stream_active(dai, SNDRV_PCM_STREAM_PLAYBACK))) {
+ 			ret = regmap_update_bits(cs4271->regmap, CS4271_MODE2,
+ 						 CS4271_MODE2_PDN,
+ 						 CS4271_MODE2_PDN);
+diff --git a/sound/soc/codecs/madera.c b/sound/soc/codecs/madera.c
+index a448d2a2918a..ec380b0b2d4e 100644
+--- a/sound/soc/codecs/madera.c
++++ b/sound/soc/codecs/madera.c
+@@ -3279,7 +3279,7 @@ static int madera_dai_set_sysclk(struct snd_soc_dai *dai,
+ 	if (is_sync == madera_is_syncclk(dai_priv->clk))
+ 		return 0;
+ 
+-	if (dai->active) {
++	if (snd_soc_dai_active(dai)) {
+ 		dev_err(component->dev, "Can't change clock on active DAI %d\n",
+ 			dai->id);
+ 		return -EBUSY;
+diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
+index 032adc14562d..e2cc1ad8cb0a 100644
+--- a/sound/soc/codecs/max98090.c
++++ b/sound/soc/codecs/max98090.c
+@@ -2039,7 +2039,7 @@ static int max98090_dai_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+-		if (!max98090->master && dai->active == 1)
++		if (!max98090->master && snd_soc_dai_active(dai) == 1)
+ 			queue_delayed_work(system_power_efficient_wq,
+ 					   &max98090->pll_det_enable_work,
+ 					   msecs_to_jiffies(10));
+@@ -2047,7 +2047,7 @@ static int max98090_dai_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+-		if (!max98090->master && dai->active == 1)
++		if (!max98090->master && snd_soc_dai_active(dai) == 1)
+ 			schedule_work(&max98090->pll_det_disable_work);
+ 		break;
+ 	default:
+@@ -2109,7 +2109,7 @@ static void max98090_pll_work(struct max98090_priv *max98090)
+ 	unsigned int pll;
+ 	int i;
+ 
+-	if (!snd_soc_component_is_active(component))
++	if (!snd_soc_component_active(component))
+ 		return;
+ 
+ 	dev_info_ratelimited(component->dev, "PLL unlocked\n");
+diff --git a/sound/soc/codecs/tlv320aic23.c b/sound/soc/codecs/tlv320aic23.c
+index f8e2f4b74db3..9868fb22323c 100644
+--- a/sound/soc/codecs/tlv320aic23.c
++++ b/sound/soc/codecs/tlv320aic23.c
+@@ -394,7 +394,7 @@ static void tlv320aic23_shutdown(struct snd_pcm_substream *substream,
+ 	struct aic23 *aic23 = snd_soc_component_get_drvdata(component);
+ 
+ 	/* deactivate */
+-	if (!snd_soc_component_is_active(component)) {
++	if (!snd_soc_component_active(component)) {
+ 		udelay(50);
+ 		snd_soc_component_write(component, TLV320AIC23_ACTIVE, 0x0);
+ 	}
+diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
+index 808654b10deb..d905e03aaec7 100644
+--- a/sound/soc/codecs/tlv320dac33.c
++++ b/sound/soc/codecs/tlv320dac33.c
+@@ -449,7 +449,7 @@ static int dac33_set_fifo_mode(struct snd_kcontrol *kcontrol,
+ 	if (dac33->fifo_mode == ucontrol->value.enumerated.item[0])
+ 		return 0;
+ 	/* Do not allow changes while stream is running*/
+-	if (snd_soc_component_is_active(component))
++	if (snd_soc_component_active(component))
+ 		return -EPERM;
+ 
+ 	if (ucontrol->value.enumerated.item[0] >= DAC33_FIFO_LAST_MODE)
+diff --git a/sound/soc/codecs/uda1380.c b/sound/soc/codecs/uda1380.c
+index 26b2ee428aee..89f2bfeeb70e 100644
+--- a/sound/soc/codecs/uda1380.c
++++ b/sound/soc/codecs/uda1380.c
+@@ -110,7 +110,7 @@ static int uda1380_write(struct snd_soc_component *component, unsigned int reg,
+ 	/* the interpolator & decimator regs must only be written when the
+ 	 * codec DAI is active.
+ 	 */
+-	if (!snd_soc_component_is_active(component) && (reg >= UDA1380_MVOL))
++	if (!snd_soc_component_active(component) && (reg >= UDA1380_MVOL))
+ 		return 0;
+ 	pr_debug("uda1380: hw write %x val %x\n", reg, value);
+ 	if (i2c_master_send(uda1380->i2c, data, 3) == 3) {
+diff --git a/sound/soc/codecs/wl1273.c b/sound/soc/codecs/wl1273.c
+index b30bfcd6a125..c56b9329240f 100644
+--- a/sound/soc/codecs/wl1273.c
++++ b/sound/soc/codecs/wl1273.c
+@@ -183,7 +183,7 @@ static int snd_wl1273_set_audio_route(struct snd_kcontrol *kcontrol,
+ 		return 0;
+ 
+ 	/* Do not allow changes while stream is running */
+-	if (snd_soc_component_is_active(component))
++	if (snd_soc_component_active(component))
+ 		return -EPERM;
+ 
+ 	if (ucontrol->value.enumerated.item[0] >=  ARRAY_SIZE(wl1273_audio_route))
+diff --git a/sound/soc/codecs/wm8711.c b/sound/soc/codecs/wm8711.c
+index 8036b18fdeb9..5ad905dd78b7 100644
+--- a/sound/soc/codecs/wm8711.c
++++ b/sound/soc/codecs/wm8711.c
+@@ -198,7 +198,7 @@ static void wm8711_shutdown(struct snd_pcm_substream *substream,
+ 	struct snd_soc_component *component = dai->component;
+ 
+ 	/* deactivate */
+-	if (!snd_soc_component_is_active(component)) {
++	if (!snd_soc_component_active(component)) {
+ 		udelay(50);
+ 		snd_soc_component_write(component, WM8711_ACTIVE, 0x0);
+ 	}
+diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
+index 95a12718f3af..8753c55c73fa 100644
+--- a/sound/soc/codecs/wm8753.c
++++ b/sound/soc/codecs/wm8753.c
+@@ -241,7 +241,7 @@ static int wm8753_set_dai(struct snd_kcontrol *kcontrol,
+ 	if (wm8753->dai_func == ucontrol->value.enumerated.item[0])
+ 		return 0;
+ 
+-	if (snd_soc_component_is_active(component))
++	if (snd_soc_component_active(component))
+ 		return -EBUSY;
+ 
+ 	ioctl = snd_soc_component_read32(component, WM8753_IOCTL);
+@@ -1304,7 +1304,7 @@ static int wm8753_mute(struct snd_soc_dai *dai, int mute)
+ 	/* the digital mute covers the HiFi and Voice DAC's on the WM8753.
+ 	 * make sure we check if they are not both active when we mute */
+ 	if (mute && wm8753->dai_func == 1) {
+-		if (!snd_soc_component_is_active(component))
++		if (!snd_soc_component_active(component))
+ 			snd_soc_component_write(component, WM8753_DAC, mute_reg | 0x8);
+ 	} else {
+ 		if (mute)
 -- 
 2.17.1
 
