@@ -1,100 +1,58 @@
-Return-Path: <SRS0=yPb/=66=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=lt5Z=67=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 69AFBC433DF
-	for <alsa-devel@archiver.kernel.org>; Sat, 16 May 2020 18:15:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41E5DC433DF
+	for <alsa-devel@archiver.kernel.org>; Sun, 17 May 2020 15:21:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E998C20756
-	for <alsa-devel@archiver.kernel.org>; Sat, 16 May 2020 18:15:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B9BA4207BB
+	for <alsa-devel@archiver.kernel.org>; Sun, 17 May 2020 15:21:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hD5Ff/wm";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mg.codeaurora.org header.i=@mg.codeaurora.org header.b="wFadF8/B"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E998C20756
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LrC5JUrG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B9BA4207BB
+Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4225B165E;
-	Sat, 16 May 2020 20:14:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4225B165E
+	by alsa0.perex.cz (Postfix) with ESMTPS id EC0B3166D;
+	Sun, 17 May 2020 17:20:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC0B3166D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589652936;
-	bh=eaBb0tvFdGUN0HDnvVOBc9VcDBN6Hdp1PCcG71na2mU=;
-	h=Subject:To:References:From:Date:Cc:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=hD5Ff/wmbSYHmtA/8xBoXhh13+P6MGLUtNeWbeytF/dXwlrdQna6vOLuXgWlpMWnw
-	 J/+7DZDTavL+eZCKXLHfammznSPmClTUI66pr+4jQ/5sU94XyvdhneR0DNWv80eFV8
-	 gDuLAUncoBfHPO2ySLA/m2Z/QfBFtLh11Aq+UuxU=
+	s=default; t=1589728860;
+	bh=aFXWYb07I9HTFf34JgetxNBAIMOU1D+n7XAGG6v/R/Q=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=LrC5JUrGHJPvB+1uH8t9duLmWZQOTMS6MD6Wtfcmv4XJplf9womN8wallaItnoSSR
+	 Pz/PTlUmQYD2BqijDYT0qtn2/gwD65YswtwdrILWle1AxzwdsyQW+cVUoFPgZfZq3T
+	 bH53bv0OG/qKqc0dmLx3CVwK7taycWGtt00yrNJM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A9E76F8014C;
-	Sat, 16 May 2020 20:14:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7F07BF80161;
+	Sun, 17 May 2020 17:20:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4B863F80158; Sat, 16 May 2020 20:14:44 +0200 (CEST)
-Received: from mail26.static.mailgun.info (mail26.static.mailgun.info
- [104.130.122.26])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E3211F800E3
- for <alsa-devel@alsa-project.org>; Sat, 16 May 2020 20:14:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3211F800E3
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=mg.codeaurora.org
- header.i=@mg.codeaurora.org header.b="wFadF8/B"
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
- q=dns/txt; 
- s=smtp; t=1589652880; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Date: Message-ID: From: References: Cc: To: Subject:
- Sender; bh=vHhfQLbmGkqdEq+nyD31PZJUA6mXrkeSkvttzWXp73g=;
- b=wFadF8/Bd4a3AYkVpsmOO0yLzn/fo0V9mI9PqkieVCYbqf+GPeufyYi+lyI4MFejO7iJsfAE
- 1JQqBD6FuXESoDkFgxH5wcD59rCqIEqfEFuePLmJHer06+iPnBsMUStALUKCKO2/wxhaU5W+
- nzTrXajdYImZ8ZCRLVzts9tuMgQ=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5ec02d8d.7f3ee3d7ea78-smtp-out-n03;
- Sat, 16 May 2020 18:14:37 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id 9D23CC432C2; Sat, 16 May 2020 18:14:37 +0000 (UTC)
-Received: from [10.86.13.83]
- (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: ajitp)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id 5641BC433D2;
- Sat, 16 May 2020 18:14:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5641BC433D2
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- spf=none smtp.mailfrom=ajitp@codeaurora.org
-Subject: Re: [PATCH v2 5/7] include: dt-bindings: sound: Add sc7180-lpass
- bindings header
-To: Mark Brown <broonie@kernel.org>
-References: =?UTF-8?Q?=3c=1c1586592171-31644-1-git-send-email-ajitp=40codeau?=
- =?UTF-8?Q?rora=2eorg=ef=bf=bd=3e_=3c1589474298-29437-1-git-send-email-ajitp?=
- =?UTF-8?Q?=40codeaurora=2eorg=3e_=3c1589474298-29437-6-git-send-email-ajitp?=
- =?UTF-8?Q?=40codeaurora=2eorg=3e_=3c20200514164828=2eGL5127=40sirena=2eorg?=
- =?UTF-8?Q?=2euk=3e?=
-From: Ajit Pandey <ajitp@codeaurora.org>
-Message-ID: <9b02abcd-23a0-8edb-674a-44358a516015@codeaurora.org>
-Date: Sat, 16 May 2020 23:44:32 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ id E1168F801A3; Sun, 17 May 2020 17:20:06 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 2847CF800E3
+ for <alsa-devel@alsa-project.org>; Sun, 17 May 2020 17:19:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2847CF800E3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- bgoswami@codeaurora.org, plai@codeaurora.org, linux-kernel@vger.kernel.org,
- srinivas.kandagatla@linaro.org
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1589728798821706057-webhooks-bot@alsa-project.org>
+References: <1589728798821706057-webhooks-bot@alsa-project.org>
+Subject: no audio when using the dshare plugin
+Message-Id: <20200517152006.E1168F801A3@alsa1.perex.cz>
+Date: Sun, 17 May 2020 17:20:06 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -110,17 +68,55 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 5/14/2020 10:18 PM, Mark Brown wrote:
-> On Thu, May 14, 2020 at 10:08:16PM +0530, Ajit Pandey wrote:
->
->> +#define MI2S_PRIMARY	0
->> +#define MI2S_SECONDARY	1
->> +
->> +#define LPASS_MCLK0	0
-> These look like they could use namespacing.  Is primary/secondary
-> perhaps something that could be a boolean property?
+alsa-project/alsa-lib issue #51 was opened from bondagit:
 
-Primary/secondary is a dai id and can be from 0-4 (SC7180 soc driver 
-support only 0-1 at present). Such id is mainly used in dtsi and machine 
-driver to do dai id based configuration for a soc hence we placed them 
-in dt headers file for now.
+Hi all,
+
+I am currently working on an open source project on GitHub [AES67 Linux daemon implementation](https://github.com/bondagit/aes67-linux-daemon).
+This project uses the [Merging Technologies ALSA RAVENNA/AES67 Linux Driver](https://bitbucket.org/MergingTechnologies/ravenna-alsa-lkm/src/master).
+This ALSA driver does support the mmap access using the indirect PCM data transfer.
+
+The driver is working properly when used directly but not when it's used via the **dshare** plugin.
+See issue [No sound using dshare in asound.conf](https://github.com/bondagit/aes67-linux-daemon/issues/7) in the AES67 Linux daemon project.
+
+For all my tests I used the **Linux Kernel 5.3.0-51** and the **alsa-lib v1.1.9** but I get same results with most recent kernel and with the **alsa-lib** on the master branch.
+
+Basically when I playback a sample PCM audio using the ALSA RAVENNA/AES67 HW device directly via mmap I get a proper playout. 
+Ex: `aplay -D hw:1 sample.raw -M`
+But if I do the same using the dshare plugin I do always get no audio (silence):
+Ex: `aplay -D mydshare sample.raw -M`
+
+After a number of tests trying to compare the behavior of the **alsa-lib** when using the ALSA driver directly (aplay -D hw:1) and when using the plugin (aplay -D mydshare) I realized that in the second case the  **SNDRV_PCM_IOCTL_SYNC_PTR ioctl**  is never triggered in the audio loop by the **alsa-lib** . (I could easily capture this by using strace).
+I would expect the `snd_pcm_dshare_mmap_commit() `function of **alsa-lib** to invoke the above ioctl but this is not happening.
+The result is that in the ALSA driver the **ack()** callback is not called to indicate that the **appl_ptr** is updated and this causes the problem we have.
+
+In the Linux kernel when the ioctl SNDRV_PCM_IOCTL_SYNC_PTR is called the following functions are called: 
+`snd_pcm_sync_ptr() -> pcm_lib_apply_appl_ptr() -> substream->ops->ack() `
+but as stated above this is happening only if the ALSA driver is used directly (aplay -D hw:1) and not when it's used via the plugin (aplay -D mydshare).
+
+I could fix the issue applying the following temporary fix to the `alsa-lib`:
+```
+diff --git a/src/pcm/pcm_dshare.c b/src/pcm/pcm_dshare.c
+index f135b5df..1f103414 100644
+--- a/src/pcm/pcm_dshare.c
++++ b/src/pcm/pcm_dshare.c
+@@ -562,6 +562,7 @@ static snd_pcm_sframes_t snd_pcm_dshare_mmap_commit(snd_pcm_t *pcm,
+                /* clear timer queue to avoid a bogus return from poll */
+                if (snd_pcm_mmap_playback_avail(pcm) < pcm->avail_min)
+                        snd_pcm_direct_clear_timer_queue(dshare);
++               dshare->spcm->fast_ops->mmap_commit(dshare->spcm, offset, size);
+        }
+        return size;
+ }
+```
+The fix basically triggers the call to the `snd_pcm_hw_mmap_commit()` function of the slave pcm of the dshare plugin. This function invokes the ` issue_applptr() ` and then the `sync_ptr1()` that finally calls the SNDRV_PCM_IOCTL_SYNC_PTR ioctl to update the **appl_ptr** in the kernel.
+
+After applying this fix I can properly hear the audio.
+
+I am available to provide any additional information and to do additional tests.
+Since I don't have much experience with the `alsa-lib` it can be that the problem is related to some misconfiguration but at present I managed to solve the issue only by applying the above fix.
+
+Thanks in advance for your help.
+
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/51
+Repository URL: https://github.com/alsa-project/alsa-lib
