@@ -7,53 +7,53 @@ X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F28AC433E0
-	for <alsa-devel@archiver.kernel.org>; Sun, 17 May 2020 15:21:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E9825C433E0
+	for <alsa-devel@archiver.kernel.org>; Sun, 17 May 2020 15:22:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BAF02204EC
-	for <alsa-devel@archiver.kernel.org>; Sun, 17 May 2020 15:21:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6D923204EC
+	for <alsa-devel@archiver.kernel.org>; Sun, 17 May 2020 15:22:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pl7OUC3z"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BAF02204EC
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SOcHWFBH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6D923204EC
 Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E7161167D;
-	Sun, 17 May 2020 17:21:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E7161167D
+	by alsa0.perex.cz (Postfix) with ESMTPS id CB09D1687;
+	Sun, 17 May 2020 17:21:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB09D1687
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589728913;
+	s=default; t=1589728960;
 	bh=TD3Yffju96qiwFC9PDPZ5kEQesZD1g96j4cTkne1x8g=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pl7OUC3zgmSJH9UyEwcgXsMwtj/IZDZPxhAN4v9HubE36VVb6hLeUdtE7FqEq1ZDh
-	 H2He4UVIFKh0TIAB80P+QqiBVvr1TnU5eFdQppX6HLFWhI1JuvjOpsRT0xUIjeZ9Aq
-	 mTJop+C1FoDmGqhBOk3CpQ0cnfWQ8mNrrSyCWRQ0=
+	b=SOcHWFBHllDeFkp2eTNw/IY6/8ZaZWYCJyaCYueIvJfGpI2Ik6ImJSZmEy+GdgAdZ
+	 AR5q5RrkP0dGEoC5O2zwgi/UmmHx5Ivh5zAk+DkV3Vf+0Ae8x3GDLr4+GC9ZE1L17Z
+	 xNqoTYThDyLQ8nxJ/BNe77reDf9XLeWPkXa1PkRk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F2444F80229;
-	Sun, 17 May 2020 17:20:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 19A0DF80264;
+	Sun, 17 May 2020 17:20:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 06757F80256; Sun, 17 May 2020 17:20:33 +0200 (CEST)
+ id 999C9F8027D; Sun, 17 May 2020 17:20:44 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id ED3CFF800E3
- for <alsa-devel@alsa-project.org>; Sun, 17 May 2020 17:20:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED3CFF800E3
+ by alsa1.perex.cz (Postfix) with ESMTP id 122BCF801F8
+ for <alsa-devel@alsa-project.org>; Sun, 17 May 2020 17:20:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 122BCF801F8
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1589728829700229883-webhooks-bot@alsa-project.org>
-References: <1589728829700229883-webhooks-bot@alsa-project.org>
-Subject: no audio when using the dshare plugin with a ALSA driver using
- indirect PCM data transfer
-Message-Id: <20200517152033.06757F80256@alsa1.perex.cz>
-Date: Sun, 17 May 2020 17:20:33 +0200 (CEST)
+In-Reply-To: <1589728841897551060-webhooks-bot@alsa-project.org>
+References: <1589728841897551060-webhooks-bot@alsa-project.org>
+Subject: no audio when using the dshare plugin with ALSA driver using indirect
+ PCM data transfer
+Message-Id: <20200517152044.999C9F8027D@alsa1.perex.cz>
+Date: Sun, 17 May 2020 17:20:44 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
