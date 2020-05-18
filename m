@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 534F9C433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 May 2020 17:21:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 006EAC433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 May 2020 17:22:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D0405204EC
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 May 2020 17:21:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7FCC42070A
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 May 2020 17:22:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mrrYhtax";
-	dkim=pass (1024-bit key) header.d=amdcloud.onmicrosoft.com header.i=@amdcloud.onmicrosoft.com header.b="bNgsRdC7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D0405204EC
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dj+yX6a9";
+	dkim=pass (1024-bit key) header.d=amdcloud.onmicrosoft.com header.i=@amdcloud.onmicrosoft.com header.b="LSpNUwqk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7FCC42070A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=amd.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 28EAB1729;
-	Mon, 18 May 2020 19:20:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28EAB1729
+	by alsa0.perex.cz (Postfix) with ESMTPS id B9E471744;
+	Mon, 18 May 2020 19:21:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9E471744
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589822492;
-	bh=w/K6V3pkoVhc5lXWSxhg5reCKxXMnUHDAnZiVNVWuwY=;
+	s=default; t=1589822532;
+	bh=jLwFtK/csV9DfuGb6qmfOcHdTFsqFVN2sqpyBYzKErY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mrrYhtax9go1sVb12qBHpbikNFgttsa6WnBlrSV8lZFFbB3oFJKyPpYMUHwdetDuI
-	 TwMot7E5Hx6uj1VY1T2vdTbxT3VR9YDEq/H0dsIgNl5bib9xplCBZNGC+S5Y9jq81e
-	 VAlctORCly4d7/GBh0iNWdqS3L1Oc+ssWHkr/38w=
+	b=dj+yX6a9UjOu0VV2mCOVjl3EfELD0wTJEMVXrmK+p8XhvW7bXIG5rRW2u3v1qDDaH
+	 /yEjKOcjCMpJgdSL2nFhcizV6QP2x6S/hqm+FLAb9yD8USfTh51M7mn+NLwlgb3gkZ
+	 BSbKYsmti1aNpfJhl6jM2CXUvXMcnEv2pYh/5S+0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E2FB2F802DC;
-	Mon, 18 May 2020 19:17:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0814CF802DF;
+	Mon, 18 May 2020 19:17:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 14E44F802C4; Mon, 18 May 2020 19:17:33 +0200 (CEST)
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com
- (mail-co1nam11on2071.outbound.protection.outlook.com [40.107.220.71])
+ id B9FC0F80213; Mon, 18 May 2020 19:17:33 +0200 (CEST)
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com
+ (mail-dm6nam11on2060.outbound.protection.outlook.com [40.107.223.60])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D9673F8027D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 29AB1F80213
  for <alsa-devel@alsa-project.org>; Mon, 18 May 2020 19:17:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9673F8027D
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 29AB1F80213
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=amdcloud.onmicrosoft.com
- header.i=@amdcloud.onmicrosoft.com header.b="bNgsRdC7"
+ header.i=@amdcloud.onmicrosoft.com header.b="LSpNUwqk"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JK/KKCGKFz+Hqh9CUJEwJCbL1ca5ERLV+jv1Rn1VdRBN9YX0atg3IQc6WQzHDEfKfLpjW0zC+1oTuxXj1CgGLXJR6wbFer6XU3sSiwyVL0NYM+QVZCmLWDBppUfBuYBfiF3cykYHtuowYZDks2q+cbiQuxOlWDaAwlx1w24vB9QVc/yRBiumti5LBBZtcTjN9cMQlHkTTlbklKEcARzx2ACM2NkR6GHn/SLCnbmSXPqceHj3tIMSaJYU7jb5OCPphGEsiCqDv1I42QqA8V1kIlgFr81dFgOKpbDLBjj1ldI+uCwLwrE7GvreI9fHw+0AumyjzE3dLmBQ8HULlcNFWg==
+ b=CHTYswTgtCPGSdxpnfDM0xmNfuYQ957bSEXP23DXSLP1ZQyVHRGkacPNNZ+vzrFrcheXb3W6G9RoXCVALcCB5vHgkjGxrjS9WweXtD8YO2AbIbpbNYOLx2/SPETHLzDT/p7pXwOoOfkSfdX2GUOab8AOzUZm+yOai+ZDX5YZmKVguZqIe/URgQ7ofgp1sFzGEvvXMgE8JELK2OW6YG9wTdnAyl+Ygr547zK0EuyYaMzknl5SmfGz20Zd6iViDrv7DEQAvpiIorqzHMGjF8IqW6qAR9zErvs0BfEQMaEUR0EiG53KDPTjmpJw0cewFmarNZopvTT0B4eiHp9nF5hYlA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PxEIrQmz+0eX/Xx32A7alTbq9ZbZXvk/Yoruh+fIU7s=;
- b=ViVaqKvow6Bs1aeOKth+wihtmc5WbBQMpz3Gh2CDiof6vs1k2Y5PXCg9p263vfqiZhhveXl2HSB63ikBOLi+zMy370OxfzjRbN48GC8+7DIi4llHYSO/k64jsZp5CIbOAeyOpFcaPTvEHg9xDmbMaWoyXVjmHS7y5Ha+yuD1M5Y+8EQagQHDQOZq0uYksfhLo1gqv63nnLcNQgWM+vpUqFvfI9JkR+VmSg1/euKJHlvAtA4MtIc+Jr+7jgBUHcPioTt9V4DhO12B23UbAUQ+DaNuU/rk4wxzYQPquOWOD9CHVCV8HJ5Z9gPIoX9h9HbYpoZF+eQgrFcqmUJ+S4jGIw==
+ bh=o2IFhCrOv7HBYq0YMXJA07ZCZEGuMW53IP0NhL17iDI=;
+ b=NMk9OF9+gV87LoYJNitw2LC8J8CAyamSPZcPOEB8Ggnh7fI65WKUmk/ZZ/O+YZaqzg+EI9o/VRgcAuc9Sl39a+PpWR1o0by6V20aae4XsmRngI9qLm1f8+1QhrYWZoKGZUWRpbkVrJGaAKPItmHkx6Y87cjPsj68JID3TBrIQNrhqJTOht2mivRQS0FRAcm3QT2lS57vNFT7S6MdTYaWWkkxvXnI/YEeaOGTkwkYuC6rhyg4gU0iBRIiFj3PtAJgX/jHr2WjcQfWUTarQn6yVKPIKxVyGUhPqhYlfliBBYcQuMg6VyZDvbcfPhAxALX2P3dAxM6nXVSl4YoFzmHT1A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none (sender ip is
  165.204.84.17) smtp.rcpttodomain=alsa-project.org smtp.mailfrom=amd.com;
  dmarc=permerror action=none header.from=amd.com; dkim=none (message not
@@ -64,44 +64,43 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PxEIrQmz+0eX/Xx32A7alTbq9ZbZXvk/Yoruh+fIU7s=;
- b=bNgsRdC7A/uWX31mn6OLfmPBgHHZ5IFvJGNLghFj9GgZFwRlo2ooccR7yi+w5z15+gQgwYGOSR89gsCkpvffYUyVPSlXJQyVRo1xv7U3SYi5pw2nCZnQZeSmQdJ+NmxxvoBxpEuDOLXepLhmrRfWUW4dpDmvgLltd9zuTnjYnhE=
-Received: from DM5PR10CA0007.namprd10.prod.outlook.com (2603:10b6:4:2::17) by
- CH2PR12MB4071.namprd12.prod.outlook.com (2603:10b6:610:7b::16) with
- Microsoft
+ bh=o2IFhCrOv7HBYq0YMXJA07ZCZEGuMW53IP0NhL17iDI=;
+ b=LSpNUwqkH9CLhvXtoS/F/yjqLTC5bQK4i6YrHtBadfFpOAZ2iV8I/hFvcO4WvpyfIPR+D3lYEnIkJmTi+glpYztc2VDm5fGOeTFpfo1ak9Y4wl90pUEPWCTaZU1qVDrGhzZyL1NZWmgiowfR11x8lzN9Z6vtSaQ1IaD2HKE2H18=
+Received: from CO2PR06CA0059.namprd06.prod.outlook.com (2603:10b6:104:3::17)
+ by DM5PR12MB1515.namprd12.prod.outlook.com (2603:10b6:4:6::9) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3000.20; Mon, 18 May 2020 17:17:18 +0000
-Received: from DM6NAM11FT014.eop-nam11.prod.protection.outlook.com
- (2603:10b6:4:2:cafe::da) by DM5PR10CA0007.outlook.office365.com
- (2603:10b6:4:2::17) with Microsoft SMTP Server (version=TLS1_2,
+ 15.20.3000.20; Mon, 18 May 2020 17:17:21 +0000
+Received: from CO1NAM11FT005.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:104:3:cafe::ee) by CO2PR06CA0059.outlook.office365.com
+ (2603:10b6:104:3::17) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.20 via Frontend
- Transport; Mon, 18 May 2020 17:17:18 +0000
-Authentication-Results: spf=none (sender IP is 165.204.84.17)
+ Transport; Mon, 18 May 2020 17:17:21 +0000
+X-MS-Exchange-Authentication-Results: spf=none (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; alsa-project.org; dkim=none (message not signed)
  header.d=none;alsa-project.org; dmarc=permerror action=none
  header.from=amd.com;
 Received-SPF: None (protection.outlook.com: amd.com does not designate
  permitted sender hosts)
-Received: from SATLEXMB01.amd.com (165.204.84.17) by
- DM6NAM11FT014.mail.protection.outlook.com (10.13.173.132) with Microsoft SMTP
+Received: from SATLEXMB02.amd.com (165.204.84.17) by
+ CO1NAM11FT005.mail.protection.outlook.com (10.13.174.147) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3000.19 via Frontend Transport; Mon, 18 May 2020 17:17:17 +0000
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB01.amd.com
- (10.181.40.142) with Microsoft SMTP Server (version=TLS1_2,
+ 15.20.3000.19 via Frontend Transport; Mon, 18 May 2020 17:17:20 +0000
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB02.amd.com
+ (10.181.40.143) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Mon, 18 May
- 2020 12:17:16 -0500
+ 2020 12:17:20 -0500
 Received: from SATLEXMB02.amd.com (10.181.40.143) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Mon, 18 May
- 2020 12:17:16 -0500
+ 2020 12:17:20 -0500
 Received: from atgasia02.amd.com (10.180.168.240) by SATLEXMB02.amd.com
  (10.181.40.143) with Microsoft SMTP Server id 15.1.1713.5 via Frontend
- Transport; Mon, 18 May 2020 12:17:15 -0500
+ Transport; Mon, 18 May 2020 12:17:18 -0500
 From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 To: <alsa-devel@alsa-project.org>, <broonie@kernel.org>, <tiwai@suse.de>
-Subject: [PATCH v3 05/14] ASoC: amd: add ACP3x PDM platform driver
-Date: Tue, 19 May 2020 01:16:55 +0800
-Message-ID: <20200518171704.24999-6-Vijendar.Mukunda@amd.com>
+Subject: [PATCH v3 07/14] ASoC: amd: add acp3x pdm driver dma ops
+Date: Tue, 19 May 2020 01:16:57 +0800
+Message-ID: <20200518171704.24999-8-Vijendar.Mukunda@amd.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200518171704.24999-1-Vijendar.Mukunda@amd.com>
 References: <20200518171704.24999-1-Vijendar.Mukunda@amd.com>
@@ -111,27 +110,27 @@ Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-Office365-Filtering-HT: Tenant
 X-Forefront-Antispam-Report: CIP:165.204.84.17; CTRY:US; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:SATLEXMB01.amd.com; PTR:InfoDomainNonexistent; CAT:NONE;
+ IPV:NLI; SFV:NSPM; H:SATLEXMB02.amd.com; PTR:InfoDomainNonexistent; CAT:NONE;
  SFTY:;
- SFS:(4636009)(376002)(346002)(136003)(39860400002)(396003)(46966005)(36756003)(5660300002)(82740400003)(6666004)(4326008)(86362001)(356005)(81166007)(82310400002)(1076003)(186003)(7696005)(54906003)(110136005)(316002)(8936002)(26005)(8676002)(47076004)(2616005)(2906002)(336012)(478600001)(70586007)(70206006)(426003)(32563001);
+ SFS:(4636009)(346002)(39860400002)(136003)(396003)(376002)(46966005)(4326008)(8936002)(336012)(426003)(316002)(7696005)(82310400002)(2906002)(356005)(186003)(1076003)(36756003)(81166007)(82740400003)(5660300002)(70586007)(70206006)(110136005)(47076004)(478600001)(86362001)(26005)(6666004)(54906003)(2616005)(8676002)(42413003)(32563001);
  DIR:OUT; SFP:1101; 
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b959cd63-ccdf-4d54-2db0-08d7fb4f50d9
-X-MS-TrafficTypeDiagnostic: CH2PR12MB4071:
-X-Microsoft-Antispam-PRVS: <CH2PR12MB407117E435E8E3809193746D97B80@CH2PR12MB4071.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:42;
+X-MS-Office365-Filtering-Correlation-Id: e83d37e6-3ddd-4424-30b1-08d7fb4f5316
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1515:
+X-Microsoft-Antispam-PRVS: <DM5PR12MB151598F1FBB8A15D701D22E897B80@DM5PR12MB1515.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
 X-Forefront-PRVS: 04073E895A
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JjnBe2jHP9pFfU4pEBceVI7vaSVn/5swmGY8xOF8B9r2DlrQ5FE3MBH67CDCQzsav7/7PNY2awUwv6e7b7ImQwTNhkv8K5mSEgStBaUvtllYXpS6JQi2d+uhGwW+ZlyDYQ3x9Q1SY3RjJu/9k38omVKwmOOQ01IJzfEOQ2DNfNeFoeFg5ojri5bIWyhWHZFZn8S5VNgS+1tN+vLBoD+h/k7OBAJMGX5amAjGtrVwXY0fX85134n39TeW5dhEiMdwyCiIUeSf3n1ws7OcBUaQATVQj6l1nAKZkFeyRzuf0cqGHVU4wBq8cAOyD8AaYIvVdLBWAEMQVfusy32krCdLCExPVoNX49SwpH/ErGGuzHSj18aBR87RjoytmY3xEMEDOD2l1F7g7dXTpK1o52+QiNoqv7DoOMm4XRTdqHKmiA0S7mh/kNQxlowgkYPddY74lVmSrs9emGrnX9my5ramSgLAIq3Rw4U9XcLqm8FGsmP1EdCXD1WE+3kjkjWNHrNxtnf/kgYYC7q5GdvIWRg/0zzAWJqqEfBwj7wrQ9p1sXo=
+X-Microsoft-Antispam-Message-Info: +sOa8w0F59TZlstw73NpJIfMUOUNuIoH3ET0zeD3PErdHvOnYE5XYpxXs8aptsz1lsa3cfJIQFxI1NGlqZDGzY5mAA2RtDNuULgDRbOgTCOd2owFJPiT0H3WXwnzY9mewS7Wpc75O4zhxyv7P4Dli99YDdvLrkJOLvoMuqtwdYgBlSs+mMtoPccfYGXXg1IuU9NgT5X7D3I1Zqds4MPOB/bQ9rkTRXg2nozv6G0v861PDR3vFgDX+SnglxStgVk3Bai67ccJ3OflCotM6/F/m6VwIHjhd73wv9Ph2afhIkM/2NsKKCmBLTPdS+SsnxUaXFm+fHF4aboX2ERisk36t8QL6QPRmJdXWrlSxMtXFVYehUyeQO7ZECYreLSHN29chTthyQ6fKE63Cg/wpIwWIw7oV7pccSCNV5FWxqukXYE+g7ANJv3bWAcCyTZJCGLXEgq4fOPtS2vDRSzDlm0lhYulh4Ol6/p+Gl6yUnuM+6aieNYyJoSpQ8Zq3DgHSaaODIIYHRMk5nZgtTHEkFRYKWWEiNOzuoJvb8011prOk+GvfgX9oDHFrUTvUx3t66j1
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 May 2020 17:17:17.2703 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: b959cd63-ccdf-4d54-2db0-08d7fb4f50d9
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 May 2020 17:17:20.9456 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: e83d37e6-3ddd-4424-30b1-08d7fb4f5316
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d; Ip=[165.204.84.17];
- Helo=[SATLEXMB01.amd.com]
+ Helo=[SATLEXMB02.amd.com]
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4071
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1515
 Cc: Alexander.Deucher@amd.com, Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -148,129 +147,276 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-PDM platform driver binds to the platform device created by
-ACP3x PCI device. PDM driver registers ALSA DMA and CPU DAI
-components with ASoC framework.
+This patch adds PDM driver DMA operations.
 
 Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 ---
- sound/soc/amd/renoir/acp3x-pdm-dma.c | 95 ++++++++++++++++++++++++++++
- sound/soc/amd/renoir/rn_acp3x.h      |  5 ++
- 2 files changed, 100 insertions(+)
- create mode 100644 sound/soc/amd/renoir/acp3x-pdm-dma.c
+ sound/soc/amd/renoir/acp3x-pdm-dma.c | 195 +++++++++++++++++++++++++++
+ sound/soc/amd/renoir/rn_acp3x.h      |  29 ++++
+ 2 files changed, 224 insertions(+)
 
 diff --git a/sound/soc/amd/renoir/acp3x-pdm-dma.c b/sound/soc/amd/renoir/acp3x-pdm-dma.c
-new file mode 100644
-index 000000000000..1dda8cf2edd2
---- /dev/null
+index fdac2c1e3acd..8bb03fa5b4a5 100644
+--- a/sound/soc/amd/renoir/acp3x-pdm-dma.c
 +++ b/sound/soc/amd/renoir/acp3x-pdm-dma.c
-@@ -0,0 +1,95 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+//
-+// AMD ALSA SoC PDM Driver
-+//
-+//Copyright 2020 Advanced Micro Devices, Inc.
-+
-+#include <linux/platform_device.h>
-+#include <linux/module.h>
-+#include <linux/err.h>
-+#include <linux/io.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dai.h>
-+
-+#include "rn_acp3x.h"
-+
-+#define DRV_NAME "acp_rn_pdm_dma"
-+
-+static struct snd_soc_dai_driver acp_pdm_dai_driver = {
-+	.capture = {
-+		.rates = SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S24_LE |
-+			   SNDRV_PCM_FMTBIT_S32_LE,
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.rate_min = 48000,
-+		.rate_max = 48000,
-+	},
+@@ -16,6 +16,25 @@
+ 
+ #define DRV_NAME "acp_rn_pdm_dma"
+ 
++static const struct snd_pcm_hardware acp_pdm_hardware_capture = {
++	.info = SNDRV_PCM_INFO_INTERLEAVED |
++		SNDRV_PCM_INFO_BLOCK_TRANSFER |
++		SNDRV_PCM_INFO_MMAP |
++		SNDRV_PCM_INFO_MMAP_VALID |
++		SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME,
++	.formats = SNDRV_PCM_FMTBIT_S32_LE,
++	.channels_min = 2,
++	.channels_max = 2,
++	.rates = SNDRV_PCM_RATE_48000,
++	.rate_min = 48000,
++	.rate_max = 48000,
++	.buffer_bytes_max = CAPTURE_MAX_NUM_PERIODS * CAPTURE_MAX_PERIOD_SIZE,
++	.period_bytes_min = CAPTURE_MIN_PERIOD_SIZE,
++	.period_bytes_max = CAPTURE_MAX_PERIOD_SIZE,
++	.periods_min = CAPTURE_MIN_NUM_PERIODS,
++	.periods_max = CAPTURE_MAX_NUM_PERIODS,
 +};
 +
-+static const struct snd_soc_component_driver acp_pdm_component = {
-+	.name		= DRV_NAME,
-+};
-+
-+static int acp_pdm_audio_probe(struct platform_device *pdev)
+ static irqreturn_t pdm_irq_handler(int irq, void *dev_id)
+ {
+ 	struct pdm_dev_data *rn_pdm_data;
+@@ -41,6 +60,176 @@ static irqreturn_t pdm_irq_handler(int irq, void *dev_id)
+ 		return IRQ_NONE;
+ }
+ 
++static void init_pdm_ring_buffer(u32 physical_addr,
++				 u32 buffer_size,
++				 u32 watermark_size,
++				 void __iomem *acp_base)
 +{
-+	struct resource *res;
++	rn_writel(physical_addr, acp_base + ACP_WOV_RX_RINGBUFADDR);
++	rn_writel(buffer_size, acp_base + ACP_WOV_RX_RINGBUFSIZE);
++	rn_writel(watermark_size, acp_base + ACP_WOV_RX_INTR_WATERMARK_SIZE);
++	rn_writel(0x01, acp_base + ACPAXI2AXI_ATU_CTRL);
++}
++
++static void enable_pdm_interrupts(void __iomem *acp_base)
++{
++	u32 ext_int_ctrl;
++
++	ext_int_ctrl = rn_readl(acp_base + ACP_EXTERNAL_INTR_CNTL);
++	ext_int_ctrl |= PDM_DMA_INTR_MASK;
++	rn_writel(ext_int_ctrl, acp_base + ACP_EXTERNAL_INTR_CNTL);
++}
++
++static void disable_pdm_interrupts(void __iomem *acp_base)
++{
++	u32 ext_int_ctrl;
++
++	ext_int_ctrl = rn_readl(acp_base + ACP_EXTERNAL_INTR_CNTL);
++	ext_int_ctrl |= ~PDM_DMA_INTR_MASK;
++	rn_writel(ext_int_ctrl, acp_base + ACP_EXTERNAL_INTR_CNTL);
++}
++
++static void config_acp_dma(struct pdm_stream_instance *rtd, int direction)
++{
++	u16 page_idx;
++	u32 low, high, val;
++	dma_addr_t addr;
++
++	addr = rtd->dma_addr;
++	val = 0;
++
++	/* Group Enable */
++	rn_writel(ACP_SRAM_PTE_OFFSET | BIT(31), rtd->acp_base +
++		  ACPAXI2AXI_ATU_BASE_ADDR_GRP_1);
++	rn_writel(PAGE_SIZE_4K_ENABLE, rtd->acp_base +
++		  ACPAXI2AXI_ATU_PAGE_SIZE_GRP_1);
++
++	for (page_idx = 0; page_idx < rtd->num_pages; page_idx++) {
++		/* Load the low address of page int ACP SRAM through SRBM */
++		low = lower_32_bits(addr);
++		high = upper_32_bits(addr);
++
++		rn_writel(low, rtd->acp_base + ACP_SCRATCH_REG_0 + val);
++		high |= BIT(31);
++		rn_writel(high, rtd->acp_base + ACP_SCRATCH_REG_0 + val + 4);
++		val += 8;
++		addr += PAGE_SIZE;
++	}
++}
++
++static int acp_pdm_dma_open(struct snd_soc_component *component,
++			    struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime;
 +	struct pdm_dev_data *adata;
-+	unsigned int irqflags;
-+	int status;
++	struct pdm_stream_instance *pdm_data;
++	int ret;
 +
-+	if (!pdev->dev.platform_data) {
-+		dev_err(&pdev->dev, "platform_data not retrieved\n");
-+		return -ENODEV;
++	runtime = substream->runtime;
++	adata = dev_get_drvdata(component->dev);
++	pdm_data = kzalloc(sizeof(*pdm_data), GFP_KERNEL);
++	if (!pdm_data)
++		return -EINVAL;
++
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++		runtime->hw = acp_pdm_hardware_capture;
++
++	ret = snd_pcm_hw_constraint_integer(runtime,
++					    SNDRV_PCM_HW_PARAM_PERIODS);
++	if (ret < 0) {
++		dev_err(component->dev, "set integer constraint failed\n");
++		kfree(pdm_data);
++		return ret;
 +	}
-+	irqflags = *((unsigned int *)(pdev->dev.platform_data));
 +
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!res) {
-+		dev_err(&pdev->dev, "IORESOURCE_MEM FAILED\n");
-+		return -ENODEV;
-+	}
++	enable_pdm_interrupts(adata->acp_base);
 +
-+	adata = devm_kzalloc(&pdev->dev, sizeof(*adata), GFP_KERNEL);
-+	if (!adata)
-+		return -ENOMEM;
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++		adata->capture_stream = substream;
 +
-+	adata->acp_base = devm_ioremap(&pdev->dev, res->start,
-+				       resource_size(res));
-+	if (!adata->acp_base)
-+		return -ENOMEM;
-+
-+	adata->capture_stream = NULL;
-+
-+	dev_set_drvdata(&pdev->dev, adata);
-+	status = devm_snd_soc_register_component(&pdev->dev,
-+						 &acp_pdm_component,
-+						 &acp_pdm_dai_driver, 1);
-+	if (status) {
-+		dev_err(&pdev->dev, "Fail to register acp pdm dai\n");
-+
-+		return -ENODEV;
-+	}
-+	return 0;
++	pdm_data->acp_base = adata->acp_base;
++	runtime->private_data = pdm_data;
++	return ret;
 +}
 +
-+static int acp_pdm_audio_remove(struct platform_device *pdev)
++static int acp_pdm_dma_hw_params(struct snd_soc_component *component,
++				 struct snd_pcm_substream *substream,
++				 struct snd_pcm_hw_params *params)
 +{
++	struct pdm_stream_instance *rtd;
++	size_t size, period_bytes;
++
++	rtd = substream->runtime->private_data;
++	if (!rtd)
++		return -EINVAL;
++	size = params_buffer_bytes(params);
++	period_bytes = params_period_bytes(params);
++	rtd->dma_addr = substream->dma_buffer.addr;
++	rtd->num_pages = (PAGE_ALIGN(size) >> PAGE_SHIFT);
++	config_acp_dma(rtd, substream->stream);
++	init_pdm_ring_buffer(MEM_WINDOW_START, size, period_bytes,
++			     rtd->acp_base);
 +	return 0;
 +}
 +
-+static struct platform_driver acp_pdm_dma_driver = {
-+	.probe = acp_pdm_audio_probe,
-+	.remove = acp_pdm_audio_remove,
-+	.driver = {
-+		.name = "acp_rn_pdm_dma",
-+	},
-+};
++static u64 acp_pdm_get_byte_count(struct pdm_stream_instance *rtd,
++				  int direction)
++{
++	union acp_pdm_dma_count byte_count;
 +
-+module_platform_driver(acp_pdm_dma_driver);
++	byte_count.bcount.high =
++			rn_readl(rtd->acp_base +
++				 ACP_WOV_RX_LINEARPOSITIONCNTR_HIGH);
++	byte_count.bcount.low =
++			rn_readl(rtd->acp_base +
++				 ACP_WOV_RX_LINEARPOSITIONCNTR_LOW);
++	return byte_count.bytescount;
++}
 +
-+MODULE_AUTHOR("Vijendar.Mukunda@amd.com");
-+MODULE_DESCRIPTION("AMD ACP3x Renior PDM Driver");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:" DRV_NAME);
++static snd_pcm_uframes_t acp_pdm_dma_pointer(struct snd_soc_component *comp,
++					     struct snd_pcm_substream *stream)
++{
++	struct pdm_stream_instance *rtd;
++	u32 pos, buffersize;
++	u64 bytescount;
++
++	rtd = stream->runtime->private_data;
++	buffersize = frames_to_bytes(stream->runtime,
++				     stream->runtime->buffer_size);
++	bytescount = acp_pdm_get_byte_count(rtd, stream->stream);
++	if (bytescount > rtd->bytescount)
++		bytescount -= rtd->bytescount;
++	pos = do_div(bytescount, buffersize);
++	return bytes_to_frames(stream->runtime, pos);
++}
++
++static int acp_pdm_dma_new(struct snd_soc_component *component,
++			   struct snd_soc_pcm_runtime *rtd)
++{
++	struct device *parent = component->dev->parent;
++
++	snd_pcm_set_managed_buffer_all(rtd->pcm, SNDRV_DMA_TYPE_DEV,
++				       parent, MIN_BUFFER, MAX_BUFFER);
++	return 0;
++}
++
++static int acp_pdm_dma_mmap(struct snd_soc_component *component,
++			    struct snd_pcm_substream *substream,
++			    struct vm_area_struct *vma)
++{
++	return snd_pcm_lib_default_mmap(substream, vma);
++}
++
++static int acp_pdm_dma_close(struct snd_soc_component *component,
++			     struct snd_pcm_substream *substream)
++{
++	struct pdm_dev_data *adata = dev_get_drvdata(component->dev);
++
++	disable_pdm_interrupts(adata->acp_base);
++	adata->capture_stream = NULL;
++	return 0;
++}
++
+ static struct snd_soc_dai_driver acp_pdm_dai_driver = {
+ 	.capture = {
+ 		.rates = SNDRV_PCM_RATE_48000,
+@@ -55,6 +244,12 @@ static struct snd_soc_dai_driver acp_pdm_dai_driver = {
+ 
+ static const struct snd_soc_component_driver acp_pdm_component = {
+ 	.name		= DRV_NAME,
++	.open		= acp_pdm_dma_open,
++	.close		= acp_pdm_dma_close,
++	.hw_params	= acp_pdm_dma_hw_params,
++	.pointer	= acp_pdm_dma_pointer,
++	.mmap		= acp_pdm_dma_mmap,
++	.pcm_construct	= acp_pdm_dma_new,
+ };
+ 
+ static int acp_pdm_audio_probe(struct platform_device *pdev)
 diff --git a/sound/soc/amd/renoir/rn_acp3x.h b/sound/soc/amd/renoir/rn_acp3x.h
-index 5e4fd99397d5..0b450882c6c4 100644
+index 1ad8a7845fda..3536d24374f3 100644
 --- a/sound/soc/amd/renoir/rn_acp3x.h
 +++ b/sound/soc/amd/renoir/rn_acp3x.h
-@@ -29,6 +29,11 @@
+@@ -29,13 +29,42 @@
  #define ACP_ERROR_MASK 0x20000000
  #define ACP_EXT_INTR_STAT_CLEAR_MASK 0xFFFFFFFF
+ #define PDM_DMA_STAT 0x10
++#define PDM_DMA_INTR_MASK  0x10000
++#define ACP_ERROR_STAT 29
  
-+struct pdm_dev_data {
++#define ACP_SRAM_PTE_OFFSET	0x02050000
++#define PAGE_SIZE_4K_ENABLE     0x2
++#define MEM_WINDOW_START	0x4000000
++
++#define CAPTURE_MIN_NUM_PERIODS     4
++#define CAPTURE_MAX_NUM_PERIODS     4
++#define CAPTURE_MAX_PERIOD_SIZE     8192
++#define CAPTURE_MIN_PERIOD_SIZE     4096
++
++#define MAX_BUFFER (CAPTURE_MAX_PERIOD_SIZE * CAPTURE_MAX_NUM_PERIODS)
++#define MIN_BUFFER MAX_BUFFER
+ struct pdm_dev_data {
+ 	u32 pdm_irq;
+ 	void __iomem *acp_base;
+ 	struct snd_pcm_substream *capture_stream;
+ };
+ 
++struct pdm_stream_instance {
++	u16 num_pages;
++	u16 channels;
++	dma_addr_t dma_addr;
++	u64 bytescount;
 +	void __iomem *acp_base;
-+	struct snd_pcm_substream *capture_stream;
++};
++
++union acp_pdm_dma_count {
++	struct {
++	u32 low;
++	u32 high;
++	} bcount;
++	u64 bytescount;
 +};
 +
  static inline u32 rn_readl(void __iomem *base_addr)
