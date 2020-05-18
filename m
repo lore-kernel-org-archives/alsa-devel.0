@@ -2,81 +2,73 @@ Return-Path: <SRS0=lMNw=7A=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-6.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F0D5C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 May 2020 16:40:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DAE4CC433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 May 2020 16:42:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1F44A207D8
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 May 2020 16:40:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6211C20809
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 May 2020 16:42:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hj4/foXp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1F44A207D8
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IRkKCySn";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="PLjQYaj4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6211C20809
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3A2541716;
-	Mon, 18 May 2020 18:39:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A2541716
+	by alsa0.perex.cz (Postfix) with ESMTPS id B5DDC16FC;
+	Mon, 18 May 2020 18:41:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5DDC16FC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589820029;
-	bh=3uswkptaJ9f1GsZmaEQSmifHoruEyTDd51+UTrimOQA=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1589820124;
+	bh=1mORd+n7+hjWf6dF3uFh+kuCN5qO/5gF28hOZXdPev4=;
+	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hj4/foXpnusfxAibFU8MS/nW9GN/81XAVcVZ2VN1nbLO9PPmmSdAywEpBNZ1cy12A
-	 ayVM5RlyZvG3g9w6ddV7fkGpNE0F3CZHU3lZY3jrIss5baQ+jE7vMv7cETlwajk9LV
-	 3xU+mOlY5ZBQ4c1HH6Xun4DV9Mv0Mf5BYPW+hrpg=
+	b=IRkKCySn+kxWj7VYU6SiuirFlibjj9o1SS55HayzB8Eo1rey70ZIje+jwEyjd5p20
+	 x6S1b8ytaAnxE9Bos42QTokyNlflrh5hTpzmnzea+bA1DRiezZzvjJJtRyu5XFpqNd
+	 2MqeTgMrMs/2f3sQbA+XHNvZVXL7dwF/pxm03mss=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 27E93F80274;
-	Mon, 18 May 2020 18:39:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4C251F800C9;
+	Mon, 18 May 2020 18:41:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A849BF8028F; Mon, 18 May 2020 18:39:06 +0200 (CEST)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ id 97F64F80213; Mon, 18 May 2020 18:41:12 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6BDCDF800C9
+ for <alsa-devel@alsa-project.org>; Mon, 18 May 2020 18:41:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6BDCDF800C9
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="PLjQYaj4"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E40ADF8027D
- for <alsa-devel@alsa-project.org>; Mon, 18 May 2020 18:38:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E40ADF8027D
-IronPort-SDR: T7gx+UGrkv5oz3IROya4a3vuPtzbASEslQmUHAaqrjGDMmkPye2eTMUcxy1EB1OjuzKI4Zy76x
- TPndBa83/hJQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 May 2020 09:38:55 -0700
-IronPort-SDR: Uca8JzZQYfZr5EHQKa/ie0sQrsASRuLsbacp1WCg4pyOZFxyHLjg7vAyZkYkZjzcIFFHxw03Jo
- k2cs2fXZPHBg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,407,1583222400"; d="scan'208";a="465641609"
-Received: from iremsen-mobl1.amr.corp.intel.com (HELO [10.254.66.150])
- ([10.254.66.150])
- by fmsmga005.fm.intel.com with ESMTP; 18 May 2020 09:38:54 -0700
-Subject: Re: [PATCH] ASoC: Intel: bytcr_rt5640: Add quirk for Toshiba Encore
- WT8-A tablet
-To: Hans de Goede <hdegoede@redhat.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
-References: <20200518072416.5348-1-hdegoede@redhat.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <ab73e509-deaa-d5ea-46ed-b54713eca474@linux.intel.com>
-Date: Mon, 18 May 2020 09:52:52 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <20200518072416.5348-1-hdegoede@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org
+ by mail.kernel.org (Postfix) with ESMTPSA id C254720758;
+ Mon, 18 May 2020 16:41:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1589820061;
+ bh=1mORd+n7+hjWf6dF3uFh+kuCN5qO/5gF28hOZXdPev4=;
+ h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+ b=PLjQYaj4MViTn37+76iGdU40xkyJk1/SYPFw4+6dY/7V8Bt3C/U71wT9JTVk41hKj
+ xSW3uB2LQMi82GfX8JYYHIktkXifXD/GEAGpPcsDOtyuDOLFP/fVt9Htwmrsjkx0si
+ Pd8J5UG/+7+OmsSXVIlMhfgy1EgmVU76qawvc8yg=
+Date: Mon, 18 May 2020 17:40:58 +0100
+From: Mark Brown <broonie@kernel.org>
+To: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>
+In-Reply-To: <20200515135958.17511-1-kai.vehmanen@linux.intel.com>
+References: <20200515135958.17511-1-kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH 0/8] ASoC: SOF: Intel and IMX updates for 5.8
+Message-Id: <158982005876.28736.6270537965994775713.b4-ty@kernel.org>
+Cc: daniel.baluta@nxp.com, ranjani.sridharan@linux.intel.com,
+ pierre-louis.bossart@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,48 +84,56 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 5/18/20 2:24 AM, Hans de Goede wrote:
-> The Toshiba Encore WT8-A tablet almost fully works with the default
-> settings for non-CR Bay Trail devices. The only problem is that its
-> jack-detect switch is not inverted (it is active high instead of
-> the normal active low).
+On Fri, 15 May 2020 16:59:50 +0300, Kai Vehmanen wrote:
+> here's a series of minor fixes and improvements to SOF. Add support
+> for smart amplifier component type. Cover more systems by relaxing
+> match rules for the generic Soundwire machine driver. Fix issues with
+> driver unload and address a few compiler warnings.
 > 
-> Add a quirk for this model using the default settings +
-> BYT_RT5640_JD_NOT_INV.
+> Daniel Baluta (2):
+>   ASoC: SOF: Do nothing when DSP PM callbacks are not set
+>   ASoC: SOF: define INFO_ flags in dsp_ops
 > 
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> [...]
 
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Applied to
 
-Thanks Hans!
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.8
 
-> ---
->   sound/soc/intel/boards/bytcr_rt5640.c | 12 ++++++++++++
->   1 file changed, 12 insertions(+)
-> 
-> diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-> index 08f4ae964b02..fbfd53874b47 100644
-> --- a/sound/soc/intel/boards/bytcr_rt5640.c
-> +++ b/sound/soc/intel/boards/bytcr_rt5640.c
-> @@ -742,6 +742,18 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
->   					BYT_RT5640_SSP0_AIF1 |
->   					BYT_RT5640_MCLK_EN),
->   	},
-> +	{	/* Toshiba Encore WT8-A */
-> +		.matches = {
-> +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "TOSHIBA"),
-> +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "TOSHIBA WT8-A"),
-> +		},
-> +		.driver_data = (void *)(BYT_RT5640_DMIC1_MAP |
-> +					BYT_RT5640_JD_SRC_JD2_IN4N |
-> +					BYT_RT5640_OVCD_TH_2000UA |
-> +					BYT_RT5640_OVCD_SF_0P75 |
-> +					BYT_RT5640_JD_NOT_INV |
-> +					BYT_RT5640_MCLK_EN),
-> +	},
->   	{	/* Catch-all for generic Insyde tablets, must be last */
->   		.matches = {
->   			DMI_MATCH(DMI_SYS_VENDOR, "Insyde"),
-> 
+Thanks!
+
+[1/8] ASoC: SOF: Do nothing when DSP PM callbacks are not set
+      commit: c26fde3b15ed41f5f452f1da727795f787833287
+[2/8] ASoC: SOF: add a power_down_notify method
+      commit: 3541aef1b83fa3a13e9c4ecc0919156ff2ec9c22
+[3/8] ASoC: SOF: inform DSP that driver is going to be removed
+      commit: 9f369f7e4660d05b5318aa413db199a70dfb2c4f
+[4/8] ASoC: SOF: topology: add support to smart amplifier
+      commit: 82e8c00fa18a3ef0ad3087dcad1d82637a738e30
+[5/8] ASoC: SOF: Intel: sdw: relax sdw machine select constraints
+      commit: 7d1952bceb8a1a2372a1cb86ab109c6ec8772c5c
+[6/8] ASoC: SOF: define INFO_ flags in dsp_ops
+      commit: 5c2c3cb1ca7875a2685c8cc65f08a1238e00cedb
+[7/8] ASoC: SOF: imx: make dsp_ops static
+      commit: 35e7c09d1edd6c60bfa98070b657986500819fd6
+[8/8] ASoC: SOF: imx: make imx8m_dsp_ops static
+      commit: 99cb681e7b8eec917ddb34b76e303aa20b2d1c1a
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
