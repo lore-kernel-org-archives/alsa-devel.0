@@ -2,66 +2,74 @@ Return-Path: <SRS0=hLTZ=7B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.6 required=3.0 tests=DATE_IN_PAST_06_12,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BCBBC433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 04:21:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BB08C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 05:39:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DC06820708
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 04:21:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7279420708
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 05:39:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="l8XkEhLy"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DC06820708
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="h9N5uFrR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7279420708
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3A25417AF;
-	Tue, 19 May 2020 06:21:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A25417AF
+	by alsa0.perex.cz (Postfix) with ESMTPS id BD0C417BE;
+	Tue, 19 May 2020 07:38:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD0C417BE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589862112;
-	bh=Q+VsyRILuWievHojkheZfxxrfOkMnp9wzrBNbK95u0Y=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=l8XkEhLyOjHB2vQjlQz9/svPzpP2EYzAOVKuTCTvAeGUCNsX69Crf2xVZZQGTlz3Q
-	 RxP9Zb9Le7B7Zy1k+o3A/AGTWF3H+vVM7+Wu5N4KzceoQlJfjGmWYoLplsYHr91Qqy
-	 9hg8uZFEpTyVqQELo8TUpsiSnBVWfsWvJkYUW7r8=
+	s=default; t=1589866761;
+	bh=gduQhM5jnPbYFPT1uRsw9d+e5CCxciFv0QdSt4sz0k4=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=h9N5uFrRToIp+XaS7Y1Fi4ilbs5DcMigKH6tDe8GwJCZnJGD7O3L5AnwHyewEbFx9
+	 IV9Mbo4c7W1EjxbhwrPtjd0D15k2QoMVOGMPLFUwLX9H4FFdTyLQwBxBtTxe19h6Bp
+	 ZcHp7mO7QpdTzmOB81Cx7cWtl7tMLxpr3XsHzi28=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A769CF80110;
-	Tue, 19 May 2020 06:21:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1EC8FF801A3;
+	Tue, 19 May 2020 07:38:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0B98DF801A3; Tue, 19 May 2020 06:21:00 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 847ABF80110
- for <alsa-devel@alsa-project.org>; Tue, 19 May 2020 06:20:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 847ABF80110
-Date: 19 May 2020 13:20:52 +0900
-X-IronPort-AV: E=Sophos;i="5.73,408,1583161200"; d="scan'208";a="47223094"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 19 May 2020 13:20:52 +0900
-Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 68619400387F;
- Tue, 19 May 2020 13:20:52 +0900 (JST)
-Message-ID: <87r1vg4kt7.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: Re: [PATCH 1/7] ASoC: add soc-link.c
-In-Reply-To: <afb8d24d294a1c03541e279b95d2c7d740fe3c91.camel@linux.intel.com>
-References: <877dx868op.wl-kuninori.morimoto.gx@renesas.com>
- <875zcs68m4.wl-kuninori.morimoto.gx@renesas.com>
- <afb8d24d294a1c03541e279b95d2c7d740fe3c91.camel@linux.intel.com>
-User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+ id C333DF801A3; Tue, 19 May 2020 07:38:23 +0200 (CEST)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C01D4F80110
+ for <alsa-devel@alsa-project.org>; Tue, 19 May 2020 07:38:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C01D4F80110
+IronPort-SDR: AiUtRbyGF3zizctbSe/mb/YH2L3yCxf15mxa/ycYgQDethOhzlyfmo+pZ5Psk/m//Rjqr5N+ii
+ azLW7dKHfE7g==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 18 May 2020 22:38:06 -0700
+IronPort-SDR: N+3DXfa7REA6Lxc8dVmdsiyma4Gf3XTYenGfx9UEfzHaqG5TFpRRL6oIQAIpeo88DQb6QnqFL/
+ dUwQJieYZcKQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,409,1583222400"; d="scan'208";a="288836499"
+Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
+ by fmsmga004.fm.intel.com with ESMTP; 18 May 2020 22:38:02 -0700
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
+To: alsa-devel@alsa-project.org,
+	vkoul@kernel.org
+Subject: [PATCH v2 0/5] soundwire: bus_type: add sdw_master_device support
+Date: Tue, 19 May 2020 01:43:17 +0800
+Message-Id: <20200518174322.31561-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
+Cc: pierre-louis.bossart@linux.intel.com, vinod.koul@linaro.org, tiwai@suse.de,
+ gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+ ranjani.sridharan@linux.intel.com, hui.wang@canonical.com, broonie@kernel.org,
+ srinivas.kandagatla@linaro.org, jank@cadence.com, mengdong.lin@intel.com,
+ slawomir.blauciak@intel.com, sanyog.r.kale@intel.com,
+ rander.wang@linux.intel.com, bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,33 +85,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+This series adds sdw master devices support.
 
-Hi Ranjani
+changes in v2:
+ - Allocate sdw_master_device dynamically
+ - Use unique bus id as master id
+ - Keep checking parent devices
+ - Enable runtime_pm on Master device
 
-> > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> > 
-> > Current ALSA SoC has many dai_link->xxx() functions.
-> > But, it is implemented randomly at random place.
-> > 
-> > This patch creates new soc-link.c to collect dai_link related
-> > operation into it.
-> > 
-> > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> > ---
-(snip)
-> >  #include <sound/soc-component.h>
-> > +#include <sound/soc-link.h>
-> Why do we need to include this in soc.h? Is it to ensure that soc-
-> link.h included in all files that include soc.h?
-> 
-> I think the right way to do this would be include soc-link.h where it
-> is needed, say for example in soc-pcm.c etc.
+Bard Liao (2):
+  soundwire: bus: add unique bus id
+  soundwire: master: add runtime pm support
 
-OK.
-Will check and update it in v2
+Pierre-Louis Bossart (3):
+  soundwire: bus: rename sdw_bus_master_add/delete, add arguments
+  soundwire: bus_type: introduce sdw_slave_type and sdw_master_type
+  soundwire: bus_type: add sdw_master_device support
 
-Thank you for your help !!
+ .../driver-api/soundwire/summary.rst          |  7 +-
+ drivers/soundwire/Makefile                    |  2 +-
+ drivers/soundwire/bus.c                       | 47 ++++++++--
+ drivers/soundwire/bus.h                       |  3 +
+ drivers/soundwire/bus_type.c                  | 19 ++--
+ drivers/soundwire/intel.c                     |  9 +-
+ drivers/soundwire/master.c                    | 88 +++++++++++++++++++
+ drivers/soundwire/qcom.c                      |  7 +-
+ drivers/soundwire/slave.c                     |  8 +-
+ include/linux/soundwire/sdw.h                 | 24 ++++-
+ include/linux/soundwire/sdw_type.h            |  9 +-
+ 11 files changed, 191 insertions(+), 32 deletions(-)
+ create mode 100644 drivers/soundwire/master.c
 
-Best regards
----
-Kuninori Morimoto
+-- 
+2.17.1
+
