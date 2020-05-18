@@ -6,65 +6,64 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF1D5C433E1
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 May 2020 07:54:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D3DBC433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 May 2020 07:55:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6D6AA207D3
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 May 2020 07:54:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EF13E20787
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 May 2020 07:55:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vskE0+T0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6D6AA207D3
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DxtVSIB9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EF13E20787
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C4D9516BA;
-	Mon, 18 May 2020 09:53:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C4D9516BA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4A6FC16D1;
+	Mon, 18 May 2020 09:54:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A6FC16D1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589788462;
-	bh=toRNgYL9zszUCvNYiNqBkp1HFH/VYzuJJQqVCMWScSY=;
+	s=default; t=1589788517;
+	bh=9D4fmO9sJ1HgyBY4d/KQQGwVvWPuRMQj0oKPnpJdY7I=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vskE0+T0longzUq+EAPkyVfS/yowBg2fC4mRQfvtJdzh7+pnnSbTde1gjjhqhQ+ui
-	 SeNMKdV7jJpv8OeKGyXYKm11hgqkcxJYp1mPq5MHGzI1zkb6tzSg4Tb1wZ5Sdx6SHM
-	 TnLEQIHVipsthMVWLp+TBIUE+E0YHmfwENvpH1E0=
+	b=DxtVSIB9xq5VLHJtcazZZabZpdMpXaC499KyMj4ZHXkj+shBNxMVt2kHi/sW6+HW1
+	 bZrmkdPwJLEqu0FQaPag96R7V9Gfu4DwkAbrB4kNldQG6158mjU+Qu3xjTAPLVSEhM
+	 5GwuGN8sDhaRiw4R76x5OVyLDMMe5CJlGxv9v3sY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5D5A0F8015C;
-	Mon, 18 May 2020 09:53:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D91A6F801F9;
+	Mon, 18 May 2020 09:54:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1B5CDF801DA; Mon, 18 May 2020 09:53:30 +0200 (CEST)
+ id 21B8EF80213; Mon, 18 May 2020 09:54:25 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A3B40F80086
- for <alsa-devel@alsa-project.org>; Mon, 18 May 2020 09:53:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3B40F80086
+ by alsa1.perex.cz (Postfix) with ESMTPS id F1E10F801F9;
+ Mon, 18 May 2020 09:54:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1E10F801F9
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id DE496AE67;
- Mon, 18 May 2020 07:53:25 +0000 (UTC)
-Date: Mon, 18 May 2020 09:53:21 +0200
-Message-ID: <s5hv9ktk7bi.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 48198AD7C;
+ Mon, 18 May 2020 07:54:24 +0000 (UTC)
+Date: Mon, 18 May 2020 09:54:21 +0200
+Message-ID: <s5htv0dk79u.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Brent Lu <brent.lu@intel.com>
-Subject: Re: [PATCH v2] ALSA: pcm: fix incorrect hw_base increase
-In-Reply-To: <1589776238-23877-1-git-send-email-brent.lu@intel.com>
-References: <1589776238-23877-1-git-send-email-brent.lu@intel.com>
+To: Christian Lachner <gladiac@gmail.com>
+Subject: Re: [PATCH 1/1] ALSA: hda/realtek - Fix silent output on Gigabyte
+ X570 Aorus Xtreme
+In-Reply-To: <20200518053844.42743-2-gladiac@gmail.com>
+References: <20200518053844.42743-1-gladiac@gmail.com>
+ <20200518053844.42743-2-gladiac@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>,
- Baolin Wang <baolin.wang@linaro.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>,
- Richard Fontana <rfontana@redhat.com>, Thomas Gleixner <tglx@linutronix.de>,
- paulhsia <paulhsia@chromium.org>, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, patch@alsa-project.org, tiwai@suse.com,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,63 +79,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 18 May 2020 06:30:38 +0200,
-Brent Lu wrote:
+On Mon, 18 May 2020 07:38:44 +0200,
+Christian Lachner wrote:
 > 
-> There is a corner case that ALSA keeps increasing the hw_ptr but DMA
-> already stop working/updating the position for a long time.
+> The Gigabyte X570 Aorus Xtreme motherboard with ALC1220 codec
+> requires a similar workaround for Clevo laptops to enforce the
+> DAC/mixer connection path. Set up a quirk entry for that.
 > 
-> In following log we can see the position returned from DMA driver does
-> not move at all but the hw_ptr got increased at some point of time so
-> snd_pcm_avail() will return a large number which seems to be a buffer
-> underrun event from user space program point of view. The program
-> thinks there is space in the buffer and fill more data.
-> 
-> [  418.510086] sound pcmC0D5p: pos 96 hw_ptr 96 appl_ptr 4096 avail 12368
-> [  418.510149] sound pcmC0D5p: pos 96 hw_ptr 96 appl_ptr 6910 avail 9554
-> ...
-> [  418.681052] sound pcmC0D5p: pos 96 hw_ptr 96 appl_ptr 15102 avail 1362
-> [  418.681130] sound pcmC0D5p: pos 96 hw_ptr 96 appl_ptr 16464 avail 0
-> [  418.726515] sound pcmC0D5p: pos 96 hw_ptr 16464 appl_ptr 16464 avail 16368
-> 
-> This is because the hw_base will be increased by runtime->buffer_size
-> frames unconditionally if the hw_ptr is not updated for over half of
-> buffer time. As the hw_base increases, so does the hw_ptr increased
-> by the same number.
-> 
-> The avail value returned from snd_pcm_avail() could exceed the limit
-> (buffer_size) easily becase the hw_ptr itself got increased by same
-> buffer_size samples when the corner case happens. In following log,
-> the buffer_size is 16368 samples but the avail is 21810 samples so
-> CRAS server complains about it.
-> 
-> [  418.851755] sound pcmC0D5p: pos 96 hw_ptr 16464 appl_ptr 27390 avail 5442
-> [  418.926491] sound pcmC0D5p: pos 96 hw_ptr 32832 appl_ptr 27390 avail 21810
-> 
-> cras_server[1907]: pcm_avail returned frames larger than buf_size:
-> sof-glkda7219max: :0,5: 21810 > 16368
-> 
-> By updating runtime->hw_ptr_jiffies each time the HWSYNC is called,
-> the hw_base will keep the same when buffer stall happens at long as
-> the interval between each HWSYNC call is shorter than half of buffer
-> time.
-> 
-> Following is a log captured by a patched kernel. The hw_base/hw_ptr
-> value is fixed in this corner case and user space program should be
-> aware of the buffer stall and handle it.
-> 
-> [  293.525543] sound pcmC0D5p: pos 96 hw_ptr 96 appl_ptr 4096 avail 12368
-> [  293.525606] sound pcmC0D5p: pos 96 hw_ptr 96 appl_ptr 6880 avail 9584
-> [  293.525975] sound pcmC0D5p: pos 96 hw_ptr 96 appl_ptr 10976 avail 5488
-> [  293.611178] sound pcmC0D5p: pos 96 hw_ptr 96 appl_ptr 15072 avail 1392
-> [  293.696429] sound pcmC0D5p: pos 96 hw_ptr 96 appl_ptr 16464 avail 0
-> ...
-> [  381.139517] sound pcmC0D5p: pos 96 hw_ptr 96 appl_ptr 16464 avail 0
-> 
-> Signed-off-by: Brent Lu <brent.lu@intel.com>
+> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=205275
+> Signed-off-by: Christian Lachner <gladiac@gmail.com>
 
-Thanks, applied now with Reviewed-by tag from Jaroslav.
-I also put Cc to stable, as it can fix the actual issues.
+Applied now.
 
+
+thanks,
 
 Takashi
