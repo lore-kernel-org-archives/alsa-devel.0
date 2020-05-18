@@ -2,61 +2,61 @@ Return-Path: <SRS0=lMNw=7A=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34C5FC433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 May 2020 17:25:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 91478C433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 May 2020 17:26:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B57CD20674
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 May 2020 17:25:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1C1452070A
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 May 2020 17:26:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RPN+oBU8";
-	dkim=pass (1024-bit key) header.d=amdcloud.onmicrosoft.com header.i=@amdcloud.onmicrosoft.com header.b="GDFuRb1N"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B57CD20674
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tnARfHh1";
+	dkim=pass (1024-bit key) header.d=amdcloud.onmicrosoft.com header.i=@amdcloud.onmicrosoft.com header.b="4XaHGZQU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1C1452070A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=amd.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0EFB61776;
-	Mon, 18 May 2020 19:24:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0EFB61776
+	by alsa0.perex.cz (Postfix) with ESMTPS id 771471773;
+	Mon, 18 May 2020 19:25:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 771471773
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589822743;
-	bh=WjaZtelEbjALlN5+S6imYkzMnNM/t5G/jQK3RbpMMFk=;
+	s=default; t=1589822781;
+	bh=nSMzMtfH9razOAFGUdZ2AeDzZNlloSe+ZS0Vwbgf3Wg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RPN+oBU8/N3A9oRi9SSM3+Bq0c2WLnz1TUcYVHGNwNriKGfhkMGI3Vt4CW7WYq8dY
-	 7EPMPfdsua0YFjhzCLwBo9+st2IdUI+SaO5e1bIQSO9LYceU26V5xVdU0UBkgwhsf1
-	 Rw5fUQC/kZypiPw0jCDHvWJpmXlxY5TzJ/9lHW9Q=
+	b=tnARfHh1YizU+vsARlwWk9Gqg6ZIEMiZ2sTnTbt0fT0h86aVOHF6GrvcvrQAxXoRv
+	 hil4I4KIVwFhUI3iPyrGJvuAsNeYAK6JniiiM2qcXCHLnQkmOmIzP099o9/1ATi97u
+	 Hz+EqDseDy5lfduo0V7jxEOiD8vqiRdGnOyr/+OI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 833DEF80334;
-	Mon, 18 May 2020 19:17:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6EDBEF8033E;
+	Mon, 18 May 2020 19:17:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5FD33F802E2; Mon, 18 May 2020 19:17:43 +0200 (CEST)
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com
- (mail-dm6nam12on2054.outbound.protection.outlook.com [40.107.243.54])
+ id 1D195F802FB; Mon, 18 May 2020 19:17:46 +0200 (CEST)
+Received: from NAM04-SN1-obe.outbound.protection.outlook.com
+ (mail-eopbgr700062.outbound.protection.outlook.com [40.107.70.62])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 67018F80299
- for <alsa-devel@alsa-project.org>; Mon, 18 May 2020 19:17:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67018F80299
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7E3B5F8028E
+ for <alsa-devel@alsa-project.org>; Mon, 18 May 2020 19:17:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E3B5F8028E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=amdcloud.onmicrosoft.com
- header.i=@amdcloud.onmicrosoft.com header.b="GDFuRb1N"
+ header.i=@amdcloud.onmicrosoft.com header.b="4XaHGZQU"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fVYuEOD+mCAXDLOKsmEzaIW5qlHHc5yudmqFcFr7SOwrIBtBaHT6NgPFOTKyOXGKcvsEQfg3pvgmn1vgBdPyLmv87YPl9AfVSBwf/WTFUsQSFfUcod67kWYj98q3mRcR894ZFAX42SNYC+2eiUiwG+nJh4Qdxqmz8B+lLGZ54JcqK1c2gOHT+XES6w/HSe2x0AYM+SZHDRlEL/CiEyQECiioxnzCqWEAlIZ7A2895FRJyCY47nGZEvQF5ju61kUhqsRy78YPJ7AKBEzGbVDpDIv+pGFywW4Chbi7AA5EGw0w6T+XeXX8dZK7mViCFNfdRfpciJyD76tLTQFGQN+KzQ==
+ b=FvBYC92qnqoWmlEq2lG6R7HgRfSOlrKlgL/FxNlWkSJubs8M14d/tI9aXg2c9O+SQwnE+1CIoJBobJA5o8B2P2iffhoD/g4R/e0IXcYzqltS/ZThc/boekklQ3BcaT94jsParIuwPfEq0OULO2d3JXWcsf7pL5AlqHbYdSVNbg9OrOVEyDkKoxl2knPNiLSKDKBbQLeJgxOMFUB+IkA1ZZqoc6FGsez+5Ji1SBn/2dJpGBFzSqw8beJq5bdVp/KWrmUzSDRy8yoripcwx71RrNIWfHtxOmbtJLl852Wi4/E+tiqdoGppKEq5kIflcTcCLn+VGqg8X0p0k8fTzVbx8w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bNxJqwpnt8Ux3YayoEw17Lz5syPZ1gkWLYK5/CyH2bQ=;
- b=CyU9Ae7Ayx+vMQjaKwKbaljW2kPnrIDrDiXsXbYNY2Hh0G4sj5AVDuyy60OpTHAKeaSJuFRc0ZWxm9vEYndCsQqbVXkvNTK+Y2OLxUtQtRES9zCK00Roc85vEYPJQggOXzVTTZFOeP54aFzvq3v/tfiDcDwaLfC3b8bijv29CeJijNqSbcIN0zjAiIHIl6kzDvNQ8w28qkRCoqlUTEftI1wYoYZ0JLYVKoW0ATRlsZaB/p5d+J5BtGNf7Jjyhq53QkUVABc6EVmxWL2Mx+Jz5bjJMK2txM8q0KSSjxzyJ/GsX/a31CIf6ZKFrIKzDDmK04r24yhSTIcTQ69ANqAXuA==
+ bh=cc4f2MMr82xbcpSzOdH/z7PlpBGrO1vetbm1NCQZzhw=;
+ b=TQIPUGXRvbVLqjYyaJaLK+UZk0zsiB6RcTJoeCVz7hK8q9At2NdECZvWDLmA3wwqBsPxkTYD3Fy+8eB1O8iRZfMs9seQitFGlcE+RPW/TfS3EmMnW+iVjCFqXdQfoHInd6piYC22SU1KFrKWbxaGhrj7d8ETHIFzPd+YfxjxjotpuBTO/qb9Cl/sEhUo/wFgWhXLgjwGe0/YzdQK2yQCeo450oMrrewCNoQcnCIIxo7RTpHt9a8nrBQPD9bboPPtnHuQQLKMXO+WZSkYbU1vpaf9JmjR8a7KNYTYuC5nVDofMpc/UbGTtvWx/XhdMsxWsDcwt+OrHGY+zO2Sk1wv+A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none (sender ip is
  165.204.84.17) smtp.rcpttodomain=alsa-project.org smtp.mailfrom=amd.com;
  dmarc=permerror action=none header.from=amd.com; dkim=none (message not
@@ -64,44 +64,40 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bNxJqwpnt8Ux3YayoEw17Lz5syPZ1gkWLYK5/CyH2bQ=;
- b=GDFuRb1NT/YSBwXkjFqeCqbwfOTHTRkfnI+2T653jWaYIj1O3hr7R5PeewNSztNZBEMSQEVB6P65Qi0G5pYgiQ03HBY3WNy6qOE/ixL2KDCpAwRU8RU/a0GmPir9civQHmcQ9fUo3sm74L9RV1TJbNbqClaEgAXs8R9nP/xi//g=
-Received: from DM6PR08CA0035.namprd08.prod.outlook.com (2603:10b6:5:80::48) by
- MN2PR12MB3918.namprd12.prod.outlook.com (2603:10b6:208:162::23) with
+ bh=cc4f2MMr82xbcpSzOdH/z7PlpBGrO1vetbm1NCQZzhw=;
+ b=4XaHGZQUm8ly5mOpZBUlvqWg4lPJIYcGRL+Pb7KHxuN0QHuDRuvQYmcr1w+QptCoqbuvDthLbylQwYGWRPdP8WsirDpuikk/KLhHA9ikPWHSxV3lXqA5tB/mSmjejZ0nzKO2cXCL+NuxcrI5tl9NxP/j/7iYCnCazwyDsWlFwCg=
+Received: from MWHPR11CA0021.namprd11.prod.outlook.com (2603:10b6:301:1::31)
+ by BYAPR12MB2710.namprd12.prod.outlook.com (2603:10b6:a03:68::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.26; Mon, 18 May
- 2020 17:17:35 +0000
-Received: from DM6NAM11FT065.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:80:cafe::3c) by DM6PR08CA0035.outlook.office365.com
- (2603:10b6:5:80::48) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.24; Mon, 18 May
+ 2020 17:17:31 +0000
+Received: from CO1NAM11FT012.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:301:1:cafe::56) by MWHPR11CA0021.outlook.office365.com
+ (2603:10b6:301:1::31) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.25 via Frontend
- Transport; Mon, 18 May 2020 17:17:34 +0000
+ Transport; Mon, 18 May 2020 17:17:31 +0000
 X-MS-Exchange-Authentication-Results: spf=none (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; alsa-project.org; dkim=none (message not signed)
  header.d=none;alsa-project.org; dmarc=permerror action=none
  header.from=amd.com;
 Received-SPF: None (protection.outlook.com: amd.com does not designate
  permitted sender hosts)
-Received: from SATLEXMB01.amd.com (165.204.84.17) by
- DM6NAM11FT065.mail.protection.outlook.com (10.13.172.109) with Microsoft SMTP
+Received: from SATLEXMB02.amd.com (165.204.84.17) by
+ CO1NAM11FT012.mail.protection.outlook.com (10.13.175.192) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3000.19 via Frontend Transport; Mon, 18 May 2020 17:17:33 +0000
-Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB01.amd.com
- (10.181.40.142) with Microsoft SMTP Server (version=TLS1_2,
+ 15.20.3000.19 via Frontend Transport; Mon, 18 May 2020 17:17:30 +0000
+Received: from SATLEXMB02.amd.com (10.181.40.143) by SATLEXMB02.amd.com
+ (10.181.40.143) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Mon, 18 May
- 2020 12:17:33 -0500
-Received: from SATLEXMB02.amd.com (10.181.40.143) by SATLEXMB06.amd.com
- (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Mon, 18 May
- 2020 12:17:33 -0500
+ 2020 12:17:29 -0500
 Received: from atgasia02.amd.com (10.180.168.240) by SATLEXMB02.amd.com
  (10.181.40.143) with Microsoft SMTP Server id 15.1.1713.5 via Frontend
- Transport; Mon, 18 May 2020 12:17:31 -0500
+ Transport; Mon, 18 May 2020 12:17:27 -0500
 From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 To: <alsa-devel@alsa-project.org>, <broonie@kernel.org>, <tiwai@suse.de>
-Subject: [PATCH v3 14/14] ASoC: amd: enable build for RN machine driver
-Date: Tue, 19 May 2020 01:17:04 +0800
-Message-ID: <20200518171704.24999-15-Vijendar.Mukunda@amd.com>
+Subject: [PATCH v3 12/14] ASoC: amd: create platform devices for Renoir
+Date: Tue, 19 May 2020 01:17:02 +0800
+Message-ID: <20200518171704.24999-13-Vijendar.Mukunda@amd.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200518171704.24999-1-Vijendar.Mukunda@amd.com>
 References: <20200518171704.24999-1-Vijendar.Mukunda@amd.com>
@@ -111,27 +107,27 @@ Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-Office365-Filtering-HT: Tenant
 X-Forefront-Antispam-Report: CIP:165.204.84.17; CTRY:US; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:SATLEXMB01.amd.com; PTR:InfoDomainNonexistent; CAT:NONE;
+ IPV:NLI; SFV:NSPM; H:SATLEXMB02.amd.com; PTR:InfoDomainNonexistent; CAT:NONE;
  SFTY:;
- SFS:(4636009)(376002)(396003)(39860400002)(136003)(346002)(46966005)(478600001)(36756003)(110136005)(336012)(316002)(47076004)(6666004)(4326008)(2616005)(8936002)(426003)(70586007)(70206006)(2906002)(186003)(26005)(7696005)(8676002)(81166007)(356005)(86362001)(82310400002)(82740400003)(54906003)(5660300002)(1076003);
+ SFS:(4636009)(346002)(396003)(136003)(39860400002)(376002)(46966005)(8936002)(2616005)(82310400002)(316002)(426003)(356005)(54906003)(2906002)(7696005)(86362001)(110136005)(8676002)(336012)(81166007)(70586007)(186003)(82740400003)(6666004)(70206006)(47076004)(26005)(36756003)(1076003)(478600001)(5660300002)(4326008);
  DIR:OUT; SFP:1101; 
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 30ff6ac0-e174-4f4b-4f0e-08d7fb4f5aaf
-X-MS-TrafficTypeDiagnostic: MN2PR12MB3918:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB3918DB638C6AA1141FF5D55C97B80@MN2PR12MB3918.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1227;
+X-MS-Office365-Filtering-Correlation-Id: 899e4ee5-03ee-4eca-fcf0-08d7fb4f589a
+X-MS-TrafficTypeDiagnostic: BYAPR12MB2710:
+X-Microsoft-Antispam-PRVS: <BYAPR12MB271063DE48A6943A9639873C97B80@BYAPR12MB2710.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:86;
 X-Forefront-PRVS: 04073E895A
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: aNT7yfzsYwzr+dGKwod49DDKp0IcbnoP7Fx26ReLR5/MEts5leZ2MOglLpyk2rtMfcFmT9+x82Vh3TsyfJI3oO/BdcqY9OGvQ6RMxW5HSbwnp+gRQdLoeUky8M6lM8CWUXBynBxVNwPQs4YAOdjMsUzC93BOaHrIKyPwip6lmWNWyvEFwrRLAW+9RJOvbYDxQzXrkOmPu8g8F1nMnOsMFYjx9uyWNTcA9l2BicWzgJC/ChCsUSjOwyqlT30Gz67Q9f1zNFe3VHl6RP58Q2xPpxXUixsUd1J4zLKmnHsVXf3XgIuoTe1ZMaXAWXonntC33FFEFo4lJSRn0HPs7OWFAZnZCw5TErmF43FTQHDSz82Ec4YCxUUtGAU59uCRESHHbDWamNKLZlb8e1DNTu3100pw0eEE8M7Si0xf/WnF0GPgy9wZ3f0mZ9hYxsbw65JkxwcKwr/PGPiVHsgaT6GcGh0Eb0igqtlz+QXcwASgIaHbiurUvVP7MclXeLWKoExMeT3v3Sy/p54/TRzcGhgwxA==
+X-Microsoft-Antispam-Message-Info: zKvCVZixQ5cyP0UHXQTqpv6tWUFxZ1cIjjuwRAYFx6wqcOoZ/FOov78paFSRn9JGHDK0EQ9m05MsqLRGMJZa1W3dyASDMUbmJRh32xTU1Ofa04f0nE5Osslnln72RbhY/K5ph5aRQOWdYMd8TIFk6NCewUO/uNqD+RwiGv2uAzzuAZncnfo4lcakaECMnqqFGJ/lLHyMEdbFcV6yxv4Gc8js49saxctLTEmvi4wtIzCHmwobqmCFmqvL47Jy8qB4GFaU7rkGZiINaLuGfcVclKVr4RlRNoWIig4eK1CvebDlJqrsqUob44mRVJZswYabQpUHP5lJ7cQ0JKYkuHmpJjAZsLK6ALAtwuhfRBWxqfSgtHEgWPVEqRo7hyQtom2mvhRuuwUkJNgWVTeGh8ZDPTyff4susZ1Fy8JT5r+iSH2POQLYCo2vtk0VKe03ib1JG0O9XIxwrwMh4e5c1vPancJrz+WUXlBqjKJcVyn6UjHhY5Uz2cqYYpz1+9XBVtX0JFvydLq5XgKZaYqkFk6hEg==
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 May 2020 17:17:33.7731 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 30ff6ac0-e174-4f4b-4f0e-08d7fb4f5aaf
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 May 2020 17:17:30.2175 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 899e4ee5-03ee-4eca-fcf0-08d7fb4f589a
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d; Ip=[165.204.84.17];
- Helo=[SATLEXMB01.amd.com]
+ Helo=[SATLEXMB02.amd.com]
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3918
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB2710
 Cc: Alexander.Deucher@amd.com, Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -148,38 +144,121 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch enables build for RN machine driver.
+Create platform devices for generic dmic codec driver
+and machine driver.
+These platform devices required for creation of sound card.
 
 Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 ---
- sound/soc/amd/Kconfig         | 7 +++++++
- sound/soc/amd/renoir/Makefile | 1 +
- 2 files changed, 8 insertions(+)
+ sound/soc/amd/renoir/rn-pci-acp3x.c | 51 ++++++++++++++++++-----------
+ sound/soc/amd/renoir/rn_acp3x.h     |  1 +
+ 2 files changed, 32 insertions(+), 20 deletions(-)
 
-diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
-index 5f57a47382b4..77ffdb41bee5 100644
---- a/sound/soc/amd/Kconfig
-+++ b/sound/soc/amd/Kconfig
-@@ -42,3 +42,10 @@ config SND_SOC_AMD_RENOIR
- 	depends on X86 && PCI
- 	help
- 	 This option enables ACP support for Renoir platform
+diff --git a/sound/soc/amd/renoir/rn-pci-acp3x.c b/sound/soc/amd/renoir/rn-pci-acp3x.c
+index 71bfae644372..502c3f794ba0 100644
+--- a/sound/soc/amd/renoir/rn-pci-acp3x.c
++++ b/sound/soc/amd/renoir/rn-pci-acp3x.c
+@@ -21,7 +21,7 @@ MODULE_PARM_DESC(acp_power_gating, "Enable acp power gating");
+ struct acp_dev_data {
+ 	void __iomem *acp_base;
+ 	struct resource *res;
+-	struct platform_device *pdev;
++	struct platform_device *pdev[ACP_DEVS];
+ };
+ 
+ static int rn_acp_power_on(void __iomem *acp_base)
+@@ -156,9 +156,9 @@ static int snd_rn_acp_probe(struct pci_dev *pci,
+ 			    const struct pci_device_id *pci_id)
+ {
+ 	struct acp_dev_data *adata;
+-	struct platform_device_info pdevinfo;
++	struct platform_device_info pdevinfo[ACP_DEVS];
+ 	unsigned int irqflags;
+-	int ret;
++	int ret, index;
+ 	u32 addr;
+ 
+ 	if (pci_enable_device(pci)) {
+@@ -219,20 +219,29 @@ static int snd_rn_acp_probe(struct pci_dev *pci,
+ 	adata->res[1].end = pci->irq;
+ 
+ 	memset(&pdevinfo, 0, sizeof(pdevinfo));
+-	pdevinfo.name = "acp_rn_pdm_dma";
+-	pdevinfo.id = 0;
+-	pdevinfo.parent = &pci->dev;
+-	pdevinfo.num_res = 2;
+-	pdevinfo.res = adata->res;
+-	pdevinfo.data = &irqflags;
+-	pdevinfo.size_data = sizeof(irqflags);
+-
+-	adata->pdev = platform_device_register_full(&pdevinfo);
+-	if (IS_ERR(adata->pdev)) {
+-		dev_err(&pci->dev, "cannot register %s device\n",
+-			pdevinfo.name);
+-		ret = PTR_ERR(adata->pdev);
+-		goto unregister_devs;
++	pdevinfo[0].name = "acp_rn_pdm_dma";
++	pdevinfo[0].id = 0;
++	pdevinfo[0].parent = &pci->dev;
++	pdevinfo[0].num_res = 2;
++	pdevinfo[0].res = adata->res;
++	pdevinfo[0].data = &irqflags;
++	pdevinfo[0].size_data = sizeof(irqflags);
 +
-+config SND_SOC_AMD_RENOIR_MACH
-+	tristate "AMD Renoir support for DMIC"
-+	select SND_SOC_DMIC
-+	depends on SND_SOC_AMD_RENOIR
-+	help
-+	 This option enables machine driver for DMIC
-diff --git a/sound/soc/amd/renoir/Makefile b/sound/soc/amd/renoir/Makefile
-index 43100515c7db..e4371932a55a 100644
---- a/sound/soc/amd/renoir/Makefile
-+++ b/sound/soc/amd/renoir/Makefile
-@@ -4,3 +4,4 @@ snd-rn-pci-acp3x-objs	:= rn-pci-acp3x.o
- snd-acp3x-pdm-dma-objs	:= acp3x-pdm-dma.o
- obj-$(CONFIG_SND_SOC_AMD_RENOIR)	 += snd-rn-pci-acp3x.o
- obj-$(CONFIG_SND_SOC_AMD_RENOIR)	 += snd-acp3x-pdm-dma.o
-+obj-$(CONFIG_SND_SOC_AMD_RENOIR_MACH)	+= acp3x-rn.o
++	pdevinfo[1].name = "dmic-codec";
++	pdevinfo[1].id = 0;
++	pdevinfo[1].parent = &pci->dev;
++	pdevinfo[2].name = "acp_pdm_mach";
++	pdevinfo[2].id = 0;
++	pdevinfo[2].parent = &pci->dev;
++	for (index = 0; index < ACP_DEVS; index++) {
++		adata->pdev[index] =
++				platform_device_register_full(&pdevinfo[index]);
++		if (IS_ERR(adata->pdev[index])) {
++			dev_err(&pci->dev, "cannot register %s device\n",
++				pdevinfo[index].name);
++			ret = PTR_ERR(adata->pdev[index]);
++			goto unregister_devs;
++		}
+ 	}
+ 	pm_runtime_set_autosuspend_delay(&pci->dev, ACP_SUSPEND_DELAY_MS);
+ 	pm_runtime_use_autosuspend(&pci->dev);
+@@ -241,7 +250,8 @@ static int snd_rn_acp_probe(struct pci_dev *pci,
+ 	return 0;
+ 
+ unregister_devs:
+-	platform_device_unregister(adata->pdev);
++	for (index = 0; index < ACP_DEVS; index++)
++		platform_device_unregister(adata->pdev[index]);
+ de_init:
+ 	if (rn_acp_deinit(adata->acp_base))
+ 		dev_err(&pci->dev, "ACP de-init failed\n");
+@@ -294,10 +304,11 @@ static const struct dev_pm_ops rn_acp_pm = {
+ static void snd_rn_acp_remove(struct pci_dev *pci)
+ {
+ 	struct acp_dev_data *adata;
+-	int ret;
++	int ret, index;
+ 
+ 	adata = pci_get_drvdata(pci);
+-	platform_device_unregister(adata->pdev);
++	for (index = 0; index < ACP_DEVS; index++)
++		platform_device_unregister(adata->pdev[index]);
+ 	ret = rn_acp_deinit(adata->acp_base);
+ 	if (ret)
+ 		dev_err(&pci->dev, "ACP de-init failed\n");
+diff --git a/sound/soc/amd/renoir/rn_acp3x.h b/sound/soc/amd/renoir/rn_acp3x.h
+index 6e1888167fb3..75228e306e0b 100644
+--- a/sound/soc/amd/renoir/rn_acp3x.h
++++ b/sound/soc/amd/renoir/rn_acp3x.h
+@@ -7,6 +7,7 @@
+ 
+ #include "rn_chip_offset_byte.h"
+ 
++#define ACP_DEVS		3
+ #define ACP_PHY_BASE_ADDRESS 0x1240000
+ #define	ACP_REG_START	0x1240000
+ #define	ACP_REG_END	0x1250200
 -- 
 2.26.2
 
