@@ -2,102 +2,69 @@ Return-Path: <SRS0=lMNw=7A=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 393B1C433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 May 2020 00:49:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FEA8C433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 May 2020 02:31:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B42BE207ED
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 May 2020 00:49:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E86F220758
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 May 2020 02:31:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CgJ0vPbo";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NtsuPBBf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B42BE207ED
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mEca6mZB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E86F220758
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0FC5D1676;
-	Mon, 18 May 2020 02:48:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FC5D1676
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1DF82167F;
+	Mon, 18 May 2020 04:30:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1DF82167F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589762952;
-	bh=99zfnT+jlIhxeXf7C8eEbI957pcTZl11keR9XegYgeE=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=CgJ0vPboVW4ncqJYTxvB4agNkbWczigkmTlnRAqnUNRfno5RE7M+P6byhi+kwFjyS
-	 YttEVrJuEWtAy1K5Gtn7NkcrODrSIde3TIwQQPx2BRtA2biLyjUUwkNQqqVp5TSq+g
-	 wTZMF1JsGlefYTDDbrXN3M3UUYmGAq4c97EmJShU=
+	s=default; t=1589769078;
+	bh=pb9OiqTXRWzAZUsTLMc20YQ27Gegcbh6vGUX92ziMkQ=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=mEca6mZBbQr4YaKNyseljBP9C9ng9cQbzYvXhvstdTqAAmHkjZO5zab4GvA1SNYH2
+	 y6reaWSGGootV5Ibb4qw8NGw2JTj2YO8cjVRoB21KPy57BQUVquiEnpjA9w6kU1bZB
+	 hC7Wj5K+b2wDxqgZQf97sdC3HSeVcs2xqEloKXjA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 55777F80161;
-	Mon, 18 May 2020 02:48:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A46B4F80213;
+	Mon, 18 May 2020 04:30:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 82E2BF801A3; Mon, 18 May 2020 02:48:19 +0200 (CEST)
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com
- [IPv6:2a00:1450:4864:20::242])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 8B6C3F80273; Mon, 18 May 2020 04:30:25 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7652CF8015C
- for <alsa-devel@alsa-project.org>; Mon, 18 May 2020 02:48:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7652CF8015C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="NtsuPBBf"
-Received: by mail-lj1-x242.google.com with SMTP id v16so3950641ljc.8
- for <alsa-devel@alsa-project.org>; Sun, 17 May 2020 17:48:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=99zfnT+jlIhxeXf7C8eEbI957pcTZl11keR9XegYgeE=;
- b=NtsuPBBfeEL33RNoTJvk4KDKHPZxPoL5nT8FBW6cqNeNkd2tdfKBLWF/Nofnr2TfkR
- WfPGJL65Oxi+rSWIbNRQ+VQWLZkPj2HXThR5EhgWhs0xwaypVZWO4gkM+DpzfZaOdd1h
- 1eQfW+hzDVDhZddBFOw9o9Zg5geXUxs4j/uWk/VGX3jKIT2hbAuPv+kZtEXZGFLk4OGH
- hrNX5qQ6YrIZRWuf8yPYeNLo9qzT5sWv9+QrD56DdGtymCQm64pwXV0FqQh4H+gAZZsg
- tsROiqfGaUH5judBbY0i96U1WP7c9IrGjk9k6iGrO60hh+gw9Y6V+KPx0tsVY7a3uIB+
- 9KaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=99zfnT+jlIhxeXf7C8eEbI957pcTZl11keR9XegYgeE=;
- b=nz5rTyYocOk1HwF+E/bOd/W3Hp3xP9DJuUX99JdOXWLCn9NwDx+0G5YdyDuJ030B5m
- QDX6mWh2kqmhVDtuHZ9bBVRDGn2WuJ+cJq4+0uPMmdGYeLPxUWtg0z5Ayb6wyP9ypOGM
- X1xWHfxIGYYwhDzO/RuYVQ2R8j2PVBGf38+69bYUPV0P2S/Srh/MjCQ9WJZdoRAcodHP
- mMtb7z+j3nA4NkVcPlOvxBrFd8yuJdQmaFMWpcOg1QW72Mx7GxBQJCvvgnLN7txiudng
- Q/hzZQ7GGSySALq7uoZqQ3fnrgvKtYiziKToYgC3IQPDACPEO108yfn471teDWztEJ1r
- NP8A==
-X-Gm-Message-State: AOAM532W8YhEiL1DyH+gBcUlzwNZofzP4WrK6YUnRfwo6Dcyqx0EzcFb
- eBNG7q8LfG++2LtPIwErM8WHWjAPbqVuyFhJg0g=
-X-Google-Smtp-Source: ABdhPJwtWVqQezl+R0G++NNh4poFaGzeaFqxE4QFP8wtthGe2uE9QL06bgdch8juVQ20JTz/gbJq+ymyF1xss2G2R40=
-X-Received: by 2002:a2e:4952:: with SMTP id b18mr8867279ljd.41.1589762895194; 
- Sun, 17 May 2020 17:48:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200515070742.14151-1-steves.lee@maximintegrated.com>
- <CAJKOXPf-Q-e_K-puR-N2NRwQCmaKD=EczzON4rBymvV2CyoiTg@mail.gmail.com>
- <20200515122948.GD5066@sirena.org.uk>
-In-Reply-To: <20200515122948.GD5066@sirena.org.uk>
-From: Steve Lee <steves.lee.maxim@gmail.com>
-Date: Mon, 18 May 2020 09:48:04 +0900
-Message-ID: <CABff4NSSpK5bZg9WRJ77+QzR_Z_eNaNcMviAOiNWxHCch_S6sw@mail.gmail.com>
-Subject: Re: [V5 PATCH 2/2] ASoC: max98390: Added Amplifier Driver
-To: Mark Brown <broonie@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Cc: jack.yu@realtek.com, ALSA development <alsa-devel@alsa-project.org>,
- ryan.lee.maxim@gmail.com, ckeepax@opensource.cirrus.com,
- ryans.lee@maximintegrated.com, steves.lee@maximintegrated.com,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Krzysztof Kozlowski <krzk@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, nuno.sa@analog.com, geert@linux-m68k.org,
- dmurphy@ti.com,
- =?UTF-8?B?U2h1bWluZyBb6IyD5pu46YqYXQ==?= <shumingf@realtek.com>,
- Srini Kandagatla <srinivas.kandagatla@linaro.org>,
- rf@opensource.wolfsonmicro.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id F0166F800B6
+ for <alsa-devel@alsa-project.org>; Mon, 18 May 2020 04:30:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0166F800B6
+IronPort-SDR: DOCk5TySxB3jnVXKpfFnLb7/2w60tuhowpbyEZie9x6ljhe0MT2fPMNDnzfiDoJxfJU5k+2b5V
+ nLTLdnrRkHvw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 17 May 2020 19:30:09 -0700
+IronPort-SDR: GBO8vF7MfHWjeFiGyZkm5gp3emYHPo8vaHvB6iTQS8oG8WF1v//Dt4JFUh9x7mgXk4nml+jnxj
+ dn0nekS8zjfA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,405,1583222400"; d="scan'208";a="307972062"
+Received: from unknown (HELO jsia-HP-Z620-Workstation.png.intel.com)
+ ([10.221.118.135])
+ by FMSMGA003.fm.intel.com with ESMTP; 17 May 2020 19:30:07 -0700
+From: Sia Jee Heng <jee.heng.sia@intel.com>
+To: <alsa-devel@alsa-project.org>
+Subject: [PATCH v2 0/4] ASoC: Intel: Add KeemBay ASoC driver
+Date: Mon, 18 May 2020 10:17:18 +0800
+Message-Id: <1589768242-4594-1-git-send-email-jee.heng.sia@intel.com>
+X-Mailer: git-send-email 1.9.1
+Cc: liam.r.girdwood@linux.intel.com, broonie@kernel.org, tiwai@suse.com,
+ pierre-louis.bossart@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -113,13 +80,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, May 15, 2020 at 9:29 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Fri, May 15, 2020 at 10:42:24AM +0200, Krzysztof Kozlowski wrote:
->
-> > Your "From" address still does not match the Signed-off-by. Set the
-> > author of commit to the signed-off person.
->
-> git commit --amend --author='foo <foo@example.com>'
+The below series of patches support the KeemBay ASoC driver.
+It enabled the tlv320aic3204 machine driver and the platform driver initialize
+the i2s to capture and playback the pcm data on the ARM. The i2s is running
+in polling mode.
 
- Thanks. I will resend patch with matching email with signed off by.
+There is no DSP in the KeemBay SoC. Users are rely on the Gstreamer plugin
+to perform some Audio preprocessing.
+
+Change History:
+v2:
+- Corrected I2S naming for DT binding.
+  
+v1:
+- Initial version.
+
+Sia Jee Heng (4):
+  ASoC: Intel: Add KeemBay platform driver
+  ASoC: Intel: Boards: Add KeemBay machine driver
+  ASoC: Intel: Add makefiles and kconfig changes for KeemBay
+  dt-bindings: sound: Add documentation for KeemBay sound card and i2s
+
+ .../bindings/sound/intel,keembay-i2s.yaml          |  57 ++
+ .../bindings/sound/intel,keembay-sound-card.yaml   |  30 +
+ sound/soc/intel/Kconfig                            |   7 +
+ sound/soc/intel/Makefile                           |   1 +
+ sound/soc/intel/boards/Kconfig                     |  15 +
+ sound/soc/intel/boards/Makefile                    |   4 +
+ sound/soc/intel/boards/kmb_tlv3204.c               | 144 ++++
+ sound/soc/intel/keembay/Makefile                   |   4 +
+ sound/soc/intel/keembay/kmb_platform.c             | 746 +++++++++++++++++++++
+ sound/soc/intel/keembay/kmb_platform.h             | 145 ++++
+ 10 files changed, 1153 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/intel,keembay-i2s.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/intel,keembay-sound-card.yaml
+ create mode 100644 sound/soc/intel/boards/kmb_tlv3204.c
+ create mode 100644 sound/soc/intel/keembay/Makefile
+ create mode 100644 sound/soc/intel/keembay/kmb_platform.c
+ create mode 100644 sound/soc/intel/keembay/kmb_platform.h
+
+-- 
+1.9.1
+
