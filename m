@@ -2,97 +2,132 @@ Return-Path: <SRS0=lMNw=7A=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MSGID_FROM_MTA_HEADER,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B627AC433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 May 2020 14:20:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 31CDDC433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 May 2020 14:21:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4236B20787
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 May 2020 14:20:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 91F5820657
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 May 2020 14:21:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="K3i1ASzL";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d/bFl9zc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4236B20787
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RGzOtwKP";
+	dkim=pass (1024-bit key) header.d=maximintegrated.onmicrosoft.com header.i=@maximintegrated.onmicrosoft.com header.b="GsmJaSzV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 91F5820657
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=maximintegrated.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8B31016EE;
-	Mon, 18 May 2020 16:19:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8B31016EE
+	by alsa0.perex.cz (Postfix) with ESMTPS id E3BFD16EF;
+	Mon, 18 May 2020 16:20:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3BFD16EF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589811643;
-	bh=ZT8rqF0UbU/sPA1r2pcmHraexsk64Q/96MaWzYPuPbA=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=K3i1ASzL5R2VHbpu415Q9Ut86nyeUpgqQeRF8fnyKCt3i7UA8db81MsRPLZeqyEvh
-	 35CrCI1/KcdZF3hYBor1AxXPtmtSGVKxvfz3050yv/ypAM2H0soagy31toBjV0VrEV
-	 Ve7l8PqhiDfEz5fNplgNHX9ijXaTqLIsWlfFPk+E=
+	s=default; t=1589811669;
+	bh=bAT/o3wh1Q11NCH7shjvPoqrCJGFpPFKWyyriBusprU=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=RGzOtwKPv1US7mfjCKQVjUpPHY2wZjoOOj8xACPBC34oBMqyGjGh3wWMHlVVo4A6J
+	 O1AebxT/PnNdEY6oUjKE6z9ydrn4EDmI75pzsSjUTSEbTwPH6QBlHtKymuT5yV3J8y
+	 i4jpa5Pi5l2hjCjLJpQ8sM3p8M3cmMdVj8pft8j0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CD867F800C9;
-	Mon, 18 May 2020 16:18:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2FDABF8027D;
+	Mon, 18 May 2020 16:18:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CDE70F801A3; Sun, 17 May 2020 18:43:43 +0200 (CEST)
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com
- [IPv6:2607:f8b0:4864:20::d41])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 1920FF801F8; Mon, 18 May 2020 02:50:11 +0200 (CEST)
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com
+ (mail-bn8nam11on2097.outbound.protection.outlook.com [40.107.236.97])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CFD19F800E3
- for <alsa-devel@alsa-project.org>; Sun, 17 May 2020 18:43:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CFD19F800E3
+ by alsa1.perex.cz (Postfix) with ESMTPS id EFD13F8015C
+ for <alsa-devel@alsa-project.org>; Mon, 18 May 2020 02:50:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EFD13F8015C
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="d/bFl9zc"
-Received: by mail-io1-xd41.google.com with SMTP id s10so8010240iog.7
- for <alsa-devel@alsa-project.org>; Sun, 17 May 2020 09:43:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=bW2tMhxWyyjNncTb2G7OX7x0LZat/kQuDZNZwydNgqI=;
- b=d/bFl9zc2OyPGpLznpmI7A+ZDvS789Kbw8lTq2WEMKo+Oi/9p7s+GtNlQtjyzAAHWs
- 3xz2VcLzijw/7uk3s2hE8szH+6A9PFoNPbF5GzOAXXPCexmAwQu/qBbf+PcNfCRxEMDO
- x+QH6O02AYW3LjPO6VG2z8b/gDDlPMSBBJG1PlJMSsGuP7oNUilHi3uZnDU+sjOqnpay
- /jHs8xzHBCUGY4ALEcrBqEonOR0KpSKjcy//YuiZ9/l/Okvq6rfaXddyJGk8ufKmEXJG
- JcoxOqF4dXi/hTMstDEBPtdW330tAhbx/o9s7N84zN7yw6vXHKMCxOYgrfuHn/t2qkwi
- V8gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=bW2tMhxWyyjNncTb2G7OX7x0LZat/kQuDZNZwydNgqI=;
- b=KQq2jHsXVXjbhqowPr05eaKK1iSsdUtqQsyEixtvmar5A8cquyd6oJSKUl1d2CYrI6
- kRUis1WSNoalIRb/4dXS6Zej7emzObLsreJgAmmnHi0XhI/uc4KA5f7Jebcr0xjKIxY1
- 2bLnUjG1Qd49RgyLB49XxrwmQLYUj/DUxE8/IzNGq/b2hqGjHztm1Xi8xQxrp7HJXgp5
- RvvTBlGAHij6dSeDhVvttc3GBWFvfc6ts2OGqI+vu3i6lS2BdyEEy8hpnVitMWbDEj+m
- E21f6XurJXFlHMBaDjiATX6OFm0YvuqzYW1XG1/hPuEU413OKX7/6q0bsSbbkTYjsUIk
- /T/Q==
-X-Gm-Message-State: AOAM532nvXll3I66fud6jK12y88wsYyRo/vJI3WnFGhDA36m5i4tCGXN
- Kj3EHW5rRExmrq3mTO4TENngrjMI2WLsfDwoDu8=
-X-Google-Smtp-Source: ABdhPJzqbU5i3pOsh9QTXXqsMPl4e4nnE4VT8jwhh5K7/GgAT+qqtvyWdOaHb1xfeVtbgJbnihxKRLuVNNoF7TrLW3Q=
-X-Received: by 2002:a5e:8d17:: with SMTP id m23mr11036234ioj.11.1589733813147; 
- Sun, 17 May 2020 09:43:33 -0700 (PDT)
+ dkim=pass (1024-bit key) header.d=maximintegrated.onmicrosoft.com
+ header.i=@maximintegrated.onmicrosoft.com header.b="GsmJaSzV"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nmTOEYtMHscxsSjIDsF3ZOzlUyoBMbHc35ZAnKdS00YPjDMVDdM8HblXzuY58dBp/0sLQMDGCJRNyeQDc70gYa4J461blQomQsr0qnUNlXQ0BCe0n+tCrH5p+tRP1D5PozytMX/RmPuetyJh8yrtbgoGEG49TSX2PxfM1rrqKqwuWISsrupf6PZYLeMzxX80lU/bV+/6PpbIZoAl/6cPyBmMZS2tdsiKguhmMOwk3T5bC3QJQT68Ky8OyoPARAk/sq7xiTRvdJWNEtZk9/cQcWauiNM14KLLYo0vj6rYPQAEKBcK+wA01TswMsGEMXHFS0PR4gcVJzVHIkl7goDM9g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=M7hX/J76tBtL7VRebaHJrw9xmZRzEx8WmpLsqjkC1B4=;
+ b=jDtEw7gaOxBQaU4Fcyh8ppBTyiKNxpPkUVqxRzQiDdn0TIhlz73iSA18rMtEgxkzd1qMQWlrpEwhMzkR2f3xnGPfE15MzDsCB6BnjUrrnwMXxL78si4Sl/exyteaMWIVPazjvOnOFbSJFLJZo7jE6uVZDqLIjZpkJOHhfrEbUDP+/z9G+n+NKh58/wnIl0LCEALHfKJg1qWouuANL+KSQwjUmg1ex1DmjP/i/OqySud/6d2xjFBAslWCtsPvPXNSCAecBy0f0Rll7OBBU+f7Bs0kY1sNopik5pcoQfnb/kDBG16zj1HTafD7GrDJVI9PFsLFXK59KPZNtGR4ZDNhMg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=maximintegrated.com; dmarc=pass action=none
+ header.from=maximintegrated.com; dkim=pass header.d=maximintegrated.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=maximintegrated.onmicrosoft.com;
+ s=selector2-maximintegrated-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=M7hX/J76tBtL7VRebaHJrw9xmZRzEx8WmpLsqjkC1B4=;
+ b=GsmJaSzV1LzoLbs76nyiiWbMTl1iZvYhU4QQdNIv4gVdY9pMhefuLnzGXTHLlF0/lFqz1gb+YDeVJn42cbckFwJvMxz+/0n4X5QSgMfHAqYUFLpasywXHMzq4g5A6DcO6nYY5ci1Nu3A1kl3YPS2IINGUD/48fTMWKAcxXYEGqk=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none
+ header.from=maximintegrated.com;
+Received: from MWHPR11MB2047.namprd11.prod.outlook.com (2603:10b6:300:2a::12)
+ by MWHPR11MB1518.namprd11.prod.outlook.com (2603:10b6:301:c::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.25; Mon, 18 May
+ 2020 00:49:59 +0000
+Received: from MWHPR11MB2047.namprd11.prod.outlook.com
+ ([fe80::994e:6a48:f660:f363]) by MWHPR11MB2047.namprd11.prod.outlook.com
+ ([fe80::994e:6a48:f660:f363%5]) with mapi id 15.20.3000.033; Mon, 18 May 2020
+ 00:49:59 +0000
+From: Steve Lee <steves.lee@maximintegrated.com>
+To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
+ alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: [RESEND][V5 PATCH 1/2] dt-bindings: Added device tree binding for
+ max98390
+Date: Mon, 18 May 2020 09:49:30 +0900
+Message-Id: <20200518004930.20973-1-steves.lee@maximintegrated.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: SL2P216CA0024.KORP216.PROD.OUTLOOK.COM
+ (2603:1096:100:18::34) To MWHPR11MB2047.namprd11.prod.outlook.com
+ (2603:10b6:300:2a::12)
 MIME-Version: 1.0
-References: <20200516173934.31527-1-oscar.carter@gmx.com>
-In-Reply-To: <20200516173934.31527-1-oscar.carter@gmx.com>
-From: "Lev R. Oshvang ." <levonshe@gmail.com>
-Date: Sun, 17 May 2020 19:43:21 +0300
-Message-ID: <CAP22eLF2Q3O+=tnHRKE5q=jn9gw2G1rjAKiewM4qGsf4WYvP0Q@mail.gmail.com>
-Subject: Re: [PATCH] firewire: Remove function callback casts
-To: Oscar Carter <oscar.carter@gmx.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (2001:2d8:e88d:1f5a:d5fe:3ea6:5791:c8e8)
+ by SL2P216CA0024.KORP216.PROD.OUTLOOK.COM (2603:1096:100:18::34) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.25 via Frontend
+ Transport; Mon, 18 May 2020 00:49:56 +0000
+X-Mailer: git-send-email 2.17.1
+X-Originating-IP: [2001:2d8:e88d:1f5a:d5fe:3ea6:5791:c8e8]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 3b911071-ebf0-43ce-eafd-08d7fac5643b
+X-MS-TrafficTypeDiagnostic: MWHPR11MB1518:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR11MB151862D19404858831403F9B92B80@MWHPR11MB1518.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-Forefront-PRVS: 04073E895A
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0cgsxysXqCuPh7UdADl+RImBRtFFgfLga52gHtcwdLwps8lzmSaxmVQ2e5zltIo4+20Bq96WtxdGHDq+TFY6QQko95FFNDXTJ8bXAXQOroVCDY+aS98TYlccD7p6ltmZGyvrwMTnjmDDCajzt58dBNWUy4lxNUSi6wsh0j4wXGRq9VBLFI4Ew3b/jWAOP968Y98V+reXecoaD47Ke0DdKHLaRcWwRuvWEbahX8U7T5x5JmkuucOqe9tcIS6ioxUM2Zcnyx09Aq8RfEi5c1JMpHR1kfK05JBTdAxNgwmKLtCZ6XwE4vtRKJ/eBdy/V9AKeskJuIU7pcT5Bu6S6Jewwc3sDysLp3Ke1xhjeOwut+BGAigI9T4yw+nkfdF26LcMy4qViU2vNjEMm9frE8oFzU4GTuMTxoGHx9IjS6MoWYYYv2+Q9+uQ4C4c+wDBfg3Qzm+JdN6PK54uDs7Z0ktNT8yDV9pdCAUXuP0bj6lhqKAQ/NMOT3u8fIgteF16Gl/c
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:MWHPR11MB2047.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFTY:;
+ SFS:(4636009)(366004)(346002)(136003)(376002)(39860400002)(396003)(16526019)(8676002)(66476007)(66946007)(66556008)(6486002)(2906002)(6512007)(478600001)(6666004)(52116002)(1076003)(36756003)(86362001)(107886003)(316002)(2616005)(6506007)(186003)(69590400007)(4326008)(8936002)(5660300002);
+ DIR:OUT; SFP:1102; 
+X-MS-Exchange-AntiSpam-MessageData: Wh8kQakzQ8afaRAtT0y+00FSzb7vrj4N1oxnH+Cb6pA53Y3vlds/4t0PM+3QGsn2AU6aRfcLF+REmfL5M2cYCEPBXa0KYsWh4OQvVv0hDQMtFsMPbPveC9m5D5tFJz+fImi7oB6svySS0z46LNzEGnZwlRDi/q4pKCTROnW5rl1yRGC6wzPbM5tFtDZFeiYEZx9hBiHT8IhyW79QVM/xWyhNjyg3olTG8AuZH6BkXt2JQgq8Dz78c1zknkXotzzsyNlhKXJq/mw3O22r7Gj81+D+YgQYlFcLTjkexNxBuEPkfuZp3FH+EA6bddePdqA6Z9958Ch9MbA1r5nDXzo6G/YxNwg5/q0a8eWjc3GoRZ6t3L/37KEbjHfTUfTPTzRHgxmPgOEosWWk/+2E3zTV1cj9JRYcNbzMirtrgG7SAhPmm94XDPppFpigALTKnnEnt0WxQrnQW1zbBW0f80j38nUgFGuD798R9ocnVn1SaAF4T8ZyLAaUe2OVVca5f4x9UQ6/7NZerP+kOAv0SLu7RjdBTB3CbBWGzmJAveoCVzs=
+X-OriginatorOrg: maximintegrated.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3b911071-ebf0-43ce-eafd-08d7fac5643b
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 May 2020 00:49:59.6842 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fbd909df-ea69-4788-a554-f24b7854ad03
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Wm7AfAkiW/r2j6xxyeu4B7/BpxmSUK5po/qb/Tv+hp0n8jobCr0ICTFzPeYvW3MWRpNVizDM2sejtEHzVijVlW/fHdA4azv8lt5zxh2unUg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1518
 X-Mailman-Approved-At: Mon, 18 May 2020 16:18:11 +0200
-Cc: alsa-devel@alsa-project.org, Kees Cook <keescook@chromium.org>,
- kernel-hardening@lists.openwall.com, linux-kernel@vger.kernel.org,
- Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.com>,
- Stefan Richter <stefanr@s5r6.in-berlin.de>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- linux1394-devel@lists.sourceforge.net, linux-media@vger.kernel.org
+Cc: ryan.lee.maxim@gmail.com, Steve Lee <steves.lee@maximintegrated.com>,
+ ryans.lee@maximintegrated.com, steves.lee.maxim@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,188 +143,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, May 16, 2020 at 8:40 PM Oscar Carter <oscar.carter@gmx.com> wrote:
->
-> In an effort to enable -Wcast-function-type in the top-level Makefile to
-> support Control Flow Integrity builds, remove all the function callback
-> casts.
->
-> To do this, modify the "fw_iso_context_create" function prototype adding
-> a new parameter for the multichannel callback. Also, fix all the
-> function calls accordingly.
->
-> Signed-off-by: Oscar Carter <oscar.carter@gmx.com>
-> ---
->  drivers/firewire/core-cdev.c        | 12 +++++++-----
->  drivers/firewire/core-iso.c         | 10 ++++++++--
->  drivers/firewire/net.c              |  2 +-
->  drivers/media/firewire/firedtv-fw.c |  3 ++-
->  include/linux/firewire.h            |  3 ++-
->  sound/firewire/amdtp-stream.c       |  2 +-
->  sound/firewire/isight.c             |  4 ++--
->  7 files changed, 23 insertions(+), 13 deletions(-)
->
-> diff --git a/drivers/firewire/core-cdev.c b/drivers/firewire/core-cdev.c
-> index 6e291d8f3a27..cc368b35be2e 100644
-> --- a/drivers/firewire/core-cdev.c
-> +++ b/drivers/firewire/core-cdev.c
-> @@ -957,7 +957,8 @@ static int ioctl_create_iso_context(struct client *client, union ioctl_arg *arg)
->  {
->         struct fw_cdev_create_iso_context *a = &arg->create_iso_context;
->         struct fw_iso_context *context;
-> -       fw_iso_callback_t cb;
-> +       fw_iso_callback_t cb_sc = NULL;
-> +       fw_iso_mc_callback_t cb_mc = NULL;
->         int ret;
->
->         BUILD_BUG_ON(FW_CDEV_ISO_CONTEXT_TRANSMIT != FW_ISO_CONTEXT_TRANSMIT ||
-> @@ -970,7 +971,7 @@ static int ioctl_create_iso_context(struct client *client, union ioctl_arg *arg)
->                 if (a->speed > SCODE_3200 || a->channel > 63)
->                         return -EINVAL;
->
-> -               cb = iso_callback;
-> +               cb_sc = iso_callback;
->                 break;
->
->         case FW_ISO_CONTEXT_RECEIVE:
-> @@ -978,11 +979,11 @@ static int ioctl_create_iso_context(struct client *client, union ioctl_arg *arg)
->                     a->channel > 63)
->                         return -EINVAL;
->
-> -               cb = iso_callback;
-> +               cb_sc = iso_callback;
->                 break;
->
->         case FW_ISO_CONTEXT_RECEIVE_MULTICHANNEL:
-> -               cb = (fw_iso_callback_t)iso_mc_callback;
-> +               cb_mc = iso_mc_callback;
->                 break;
->
->         default:
-> @@ -990,7 +991,8 @@ static int ioctl_create_iso_context(struct client *client, union ioctl_arg *arg)
->         }
->
->         context = fw_iso_context_create(client->device->card, a->type,
-> -                       a->channel, a->speed, a->header_size, cb, client);
-> +                       a->channel, a->speed, a->header_size, cb_sc, cb_mc,
-> +                       client);
->         if (IS_ERR(context))
->                 return PTR_ERR(context);
->         if (client->version < FW_CDEV_VERSION_AUTO_FLUSH_ISO_OVERFLOW)
-> diff --git a/drivers/firewire/core-iso.c b/drivers/firewire/core-iso.c
-> index 185b0b78b3d6..3b8e349704f8 100644
-> --- a/drivers/firewire/core-iso.c
-> +++ b/drivers/firewire/core-iso.c
-> @@ -131,7 +131,8 @@ size_t fw_iso_buffer_lookup(struct fw_iso_buffer *buffer, dma_addr_t completed)
->
->  struct fw_iso_context *fw_iso_context_create(struct fw_card *card,
->                 int type, int channel, int speed, size_t header_size,
-> -               fw_iso_callback_t callback, void *callback_data)
-> +               fw_iso_callback_t cb_sc, fw_iso_mc_callback_t cb_mc,
-> +               void *callback_data)
->  {
->         struct fw_iso_context *ctx;
->
-> @@ -145,7 +146,12 @@ struct fw_iso_context *fw_iso_context_create(struct fw_card *card,
->         ctx->channel = channel;
->         ctx->speed = speed;
->         ctx->header_size = header_size;
-> -       ctx->callback.sc = callback;
-> +
-> +       if (cb_sc)
-> +               ctx->callback.sc = cb_sc;
-> +       else
-> +               ctx->callback.mc = cb_mc;
-> +
->         ctx->callback_data = callback_data;
->
->         return ctx;
-> diff --git a/drivers/firewire/net.c b/drivers/firewire/net.c
-> index 715e491dfbc3..c5cc0a311aa0 100644
-> --- a/drivers/firewire/net.c
-> +++ b/drivers/firewire/net.c
-> @@ -1136,7 +1136,7 @@ static int fwnet_broadcast_start(struct fwnet_device *dev)
->         context = fw_iso_context_create(dev->card, FW_ISO_CONTEXT_RECEIVE,
->                                         IEEE1394_BROADCAST_CHANNEL,
->                                         dev->card->link_speed, 8,
-> -                                       fwnet_receive_broadcast, dev);
-> +                                       fwnet_receive_broadcast, NULL, dev);
->         if (IS_ERR(context)) {
->                 retval = PTR_ERR(context);
->                 goto failed;
-> diff --git a/drivers/media/firewire/firedtv-fw.c b/drivers/media/firewire/firedtv-fw.c
-> index 97144734eb05..d2940adefd8c 100644
-> --- a/drivers/media/firewire/firedtv-fw.c
-> +++ b/drivers/media/firewire/firedtv-fw.c
-> @@ -141,7 +141,8 @@ int fdtv_start_iso(struct firedtv *fdtv)
->
->         ctx->context = fw_iso_context_create(device->card,
->                         FW_ISO_CONTEXT_RECEIVE, fdtv->isochannel,
-> -                       device->max_speed, ISO_HEADER_SIZE, handle_iso, fdtv);
-> +                       device->max_speed, ISO_HEADER_SIZE,
-> +                       handle_iso, NULL, fdtv);
->         if (IS_ERR(ctx->context)) {
->                 err = PTR_ERR(ctx->context);
->                 goto fail_free;
-> diff --git a/include/linux/firewire.h b/include/linux/firewire.h
-> index aec8f30ab200..3a0b5e18e140 100644
-> --- a/include/linux/firewire.h
-> +++ b/include/linux/firewire.h
-> @@ -452,7 +452,8 @@ struct fw_iso_context {
->
->  struct fw_iso_context *fw_iso_context_create(struct fw_card *card,
->                 int type, int channel, int speed, size_t header_size,
-> -               fw_iso_callback_t callback, void *callback_data);
-> +               fw_iso_callback_t cb_sc, fw_iso_mc_callback_t cb_mc,
-> +               void *callback_data);
->  int fw_iso_context_set_channels(struct fw_iso_context *ctx, u64 *channels);
->  int fw_iso_context_queue(struct fw_iso_context *ctx,
->                          struct fw_iso_packet *packet,
-> diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-> index 37d38efb4c87..8629ab3e2c64 100644
-> --- a/sound/firewire/amdtp-stream.c
-> +++ b/sound/firewire/amdtp-stream.c
-> @@ -1093,7 +1093,7 @@ static int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed,
->
->         s->context = fw_iso_context_create(fw_parent_device(s->unit)->card,
->                                           type, channel, speed, ctx_header_size,
-> -                                         ctx_cb, ctx_data);
-> +                                         ctx_cb, NULL, ctx_data);
->         if (IS_ERR(s->context)) {
->                 err = PTR_ERR(s->context);
->                 if (err == -EBUSY)
-> diff --git a/sound/firewire/isight.c b/sound/firewire/isight.c
-> index 6655af53b367..51cc37fca736 100644
-> --- a/sound/firewire/isight.c
-> +++ b/sound/firewire/isight.c
-> @@ -361,8 +361,8 @@ static int isight_start_streaming(struct isight *isight)
->         isight->context = fw_iso_context_create(isight->device->card,
->                                                 FW_ISO_CONTEXT_RECEIVE,
->                                                 isight->resources.channel,
-> -                                               isight->device->max_speed,
-> -                                               4, isight_packet, isight);
-> +                                               isight->device->max_speed, 4,
-> +                                               isight_packet, NULL, isight);
->         if (IS_ERR(isight->context)) {
->                 err = PTR_ERR(isight->context);
->                 isight->context = NULL;
-> --
-> 2.20.1
->
+Add documentation for DT binding of max98390 amplifier driver.
 
-Hi Oscar,
-I would recommend to explicitly set NULL to _cb and use if elif to
-exclude the case where botm _cb paraneters are passed as NULLs :
-> +
-  ctx->callback.mc =NULL:
-  ctx->callback.sc = NULL;
-> +       if (cb_sc)
-> +               ctx->callback.sc = cb_sc;
+Signed-off-by: Steve Lee <steves.lee@maximintegrated.com>
+---
 
-> +       elif (cb_ms)
-> +               ctx->callback.mc = cb_mc;
-> +         else
-                    return -EINVAL;
 
-Hope you get the point.
-Lev
+Changed since V4:
+	* No changes.
+Changed since V3:
+	* No changes.
+Changed since V2:
+	* No changes.
+Changed since V1:
+	* Modified sample text in example
+
+ .../devicetree/bindings/sound/max98390.txt    | 26 +++++++++++++++++++
+ 1 file changed, 26 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/max98390.txt
+
+diff --git a/Documentation/devicetree/bindings/sound/max98390.txt b/Documentation/devicetree/bindings/sound/max98390.txt
+new file mode 100644
+index 000000000000..0ddd4c6ae55e
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/max98390.txt
+@@ -0,0 +1,26 @@
++Maxim Integrated MAX98390 Speaker Amplifier
++
++This device supports I2C.
++
++Required properties:
++
++ - compatible : "maxim,max98390"
++
++ - reg : the I2C address of the device.
++
++Optional properties:
++
++- maxim,temperature_calib
++  u32. The calculated temperature data was measured while doing the calibration. Data : Temp / 100 * 2^12
++
++- maxim,r0_calib
++  u32. This is r0 calibration data which was measured in factory mode.
++
++Example:
++
++codec: max98390@38 {
++	compatible = "maxim,max98390";
++	reg = <0x38>;
++	maxim,temperature_calib = <1024>;
++	maxim,r0_calib = <100232>;
++};
+-- 
+2.17.1
+
