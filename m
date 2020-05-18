@@ -2,133 +2,130 @@ Return-Path: <SRS0=lMNw=7A=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MSGID_FROM_MTA_HEADER,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E957C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 May 2020 14:21:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D0512C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 May 2020 14:22:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3D70320657
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 May 2020 14:21:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 51D3220657
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 May 2020 14:22:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pHj9Axlp";
-	dkim=pass (1024-bit key) header.d=maximintegrated.onmicrosoft.com header.i=@maximintegrated.onmicrosoft.com header.b="hWV5aOpN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3D70320657
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=maximintegrated.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fValOTgJ";
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="rZWIxvWS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 51D3220657
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7F1F316FB;
-	Mon, 18 May 2020 16:20:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F1F316FB
+	by alsa0.perex.cz (Postfix) with ESMTPS id A6D191705;
+	Mon, 18 May 2020 16:21:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6D191705
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589811706;
-	bh=9nSW36XdsJnoTasTkI0cR6eZ5T6wKq621ByDyz+bTp8=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=pHj9AxlptdVtFf4D0WRkHjJqy/3MhZK7S01H9yDybi5Zmd58FUpKyo+RLRB1YXnZN
-	 /PxpqLLLRQN9RDeSudKMvyQXCwrhzoR8TH6v0INB2R3dAaKH0rHyTtADvjqxXxwyv+
-	 30rW6BHzvdjlGiWbEEQ870nKcSsfMEJZnEd9yOlQ=
+	s=default; t=1589811744;
+	bh=vsUz1msV1GEbu1UYDLHdeLahA4Mes1IytICh7uBLGHQ=;
+	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=fValOTgJ5Ye1dSFIZ1Ujt8OyRymXGkJxeySJMsRv3NVf6kQ7TqC5nCayvpYhA21Sc
+	 s7xdvFqetETDv7Xy7oUUE8p06K/ojuX8l3eNhsBzUYfZS1bmpMrbJbfHZ+4Ojjx02T
+	 WDBNbrajc6FePda6JyvTfpyP1lDw1uk2FHr0UIB8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C2189F802A9;
-	Mon, 18 May 2020 16:18:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0CC75F802C2;
+	Mon, 18 May 2020 16:18:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 29BA6F801A3; Mon, 18 May 2020 02:51:49 +0200 (CEST)
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com
- (mail-bn8nam11on2090.outbound.protection.outlook.com [40.107.236.90])
+ id B4EB2F80216; Mon, 18 May 2020 11:11:59 +0200 (CEST)
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com
+ (mail-eopbgr60069.outbound.protection.outlook.com [40.107.6.69])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 04A6DF8015C
- for <alsa-devel@alsa-project.org>; Mon, 18 May 2020 02:51:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04A6DF8015C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9710BF8015C
+ for <alsa-devel@alsa-project.org>; Mon, 18 May 2020 11:11:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9710BF8015C
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=maximintegrated.onmicrosoft.com
- header.i=@maximintegrated.onmicrosoft.com header.b="hWV5aOpN"
+ dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com
+ header.b="rZWIxvWS"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gbSSHUWfsPGYs+lHlQ3zAw7PA+2Q0K4Hm64XuT8G285PRAmBRVk62U0iXz46Cz8wUayIf8+kFhcmkAfqfM/4e+HnLUMCIEaX54fz2DyqAp3Gc83xp9Al9tkNTkejka2b9FhvoEShzjWKKlxTTdnV/OoMqaZLi8DZGfJ++mubeO8kOUdK0v8nQicl86jGaOcHIetPpYERZokmBsKrbtRpREjryg7jG97zMLq774kLwvQG81dBBmsDvEreNRpfly5ZOK1/K+Xvh8A8sBqGTkGDV8HlcQod5jRj4Q6P5kiNn3fHD5Hw3C2OLJFLaKCfO9qCCPBy3MhvTaTQUluX2GrTAA==
+ b=BP+57A5T2FB0ttmjX5/8nDEj6CKQVlhBiUHwJ0YlfEoROoieJdViMr45OdZxq8+4ARzZyGaj3vP8Q3eEtdbAF904hTY83svCxl5Hy3srD0dw2IIrV+mAGaG9mi3kuTM6NiMRwMyk501a77f2MD56XPAhtWMu5onGYjrCNdV1w54Fc0yObP5UlBlq9JwbTmHPwYMid7CHOVds6g8R8qVRzIUUiVK1o1p0jyfkaCr7I6QF0kHuAH9OIfJ6jaRG1K1qzQaNT2f57jcbE1kfYbU9y8iU8tW24/NTUzAw6OH9zJQ7tMb0HmOkEJLTWB3wdKO/Z1Gq905/NkB0MQ6JU2/MRw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jYb/ioHt13fYd8L/uMhoyE56YeNl4vnNxBnN8ts0gsQ=;
- b=gkxMa5DGmQqsiaL7wFz+0Q9KTkxIwfkkDFkSnVPxGaXwkS6j9PPkcDf8CUeF8MqQ7h0RKDqy0la9cQpUnlPEUu3jC8cwvpkturoEPmtzmzwKrwzig9A21zGsdtbAcNyDvryI3rT1i5IkHiOcjYiOOVHUolzQ3KOmUqHoXf3Qd+UNU+a/hFjsbfyGs6EjoIdO6bSzTYr318y6H8cBWaDz+hIBa+7A7ySFDxEpEkqj7QYEuH1ml6inp7LMXvrsOEcUE56JCXujbWv3saZB2GmoUaZ8GGr724ALv7v7DUIWB1fHBqZFuRZrLrUPyTqyPsyrXEzAehBBeKWZbtb2ZGOKvg==
+ bh=vsUz1msV1GEbu1UYDLHdeLahA4Mes1IytICh7uBLGHQ=;
+ b=Yne+pX2bkN3v75gxSS05kllp93Ji6OxE54euUW2PI4xq0wvXPpaKOAM2fYQB8c87IdQ9WmMgd0tUnPTK7rjp+XGO+spmtXhbgMKG7BNOk+hEpHYF8gFWrTj2znTiIuyd5aUkMDpNcfrjpW3TKczEsjNa2/ElqPM+2TXYEgK+MyqqzjjTNHfaLf3QCXJ7puPdg50vR6eXZJcQI4v50HoGxuL1dR880qHecT4OmHs4MEqnboED/WL5gvVYVhlN3DTNULVkFLKPqdgDD/F3vmw3Ro+hVXlrvAID8uLSuk3nc12T/xdtOJRCyEIpuirZvqs4KUg2XE7U1+Hhf3ZPE6HkUA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=maximintegrated.com; dmarc=pass action=none
- header.from=maximintegrated.com; dkim=pass header.d=maximintegrated.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=maximintegrated.onmicrosoft.com;
- s=selector2-maximintegrated-onmicrosoft-com;
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2; 
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jYb/ioHt13fYd8L/uMhoyE56YeNl4vnNxBnN8ts0gsQ=;
- b=hWV5aOpNhgNbNWu+t+BG/bH7eoYO59spySezUHkO2l+WXqd1ptx8sTyNFTefJsOgzld/q18cToZCcK4mJMvEkCjPyMIMMd3j217hM2u7uubrHCT7N3Edlf9f5qbuE1LoD3ScIMpf5qMHh96Ve6oqS1iX8BErkkVM27+q1U7/vjQ=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none
- header.from=maximintegrated.com;
-Received: from MWHPR11MB2047.namprd11.prod.outlook.com (2603:10b6:300:2a::12)
- by MWHPR11MB1518.namprd11.prod.outlook.com (2603:10b6:301:c::10) with
+ bh=vsUz1msV1GEbu1UYDLHdeLahA4Mes1IytICh7uBLGHQ=;
+ b=rZWIxvWSlqHfQ2WotqvxbO/zNlUi9X4W8pH6+CfXrAiTqZ2v5354ceYJxzF1idUg17UGx3MbqW92bniDnP5NRsWYmHpdF10wkUej8VQ582KyK94+NO2H+f2wzZGsr0mr7/Ip3cg3TdN/vMUxQCeReQ3n24KNfY1Z6Xd30Uwa5jQ=
+Received: from AM6PR04MB4966.eurprd04.prod.outlook.com (2603:10a6:20b:2::14)
+ by AM6PR04MB5509.eurprd04.prod.outlook.com (2603:10a6:20b:28::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.25; Mon, 18 May
- 2020 00:51:34 +0000
-Received: from MWHPR11MB2047.namprd11.prod.outlook.com
- ([fe80::994e:6a48:f660:f363]) by MWHPR11MB2047.namprd11.prod.outlook.com
- ([fe80::994e:6a48:f660:f363%5]) with mapi id 15.20.3000.033; Mon, 18 May 2020
- 00:51:34 +0000
-From: Steve Lee <steves.lee@maximintegrated.com>
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- ckeepax@opensource.cirrus.com, geert@linux-m68k.org,
- rf@opensource.wolfsonmicro.com, shumingf@realtek.com,
- srinivas.kandagatla@linaro.org, krzk@kernel.org, dmurphy@ti.com,
- jack.yu@realtek.com, nuno.sa@analog.com, steves.lee@maximintegrated.com,
- linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: [RESEND][V5 PATCH 2/2] ASoC: max98390: Added Amplifier Driver
-Date: Mon, 18 May 2020 09:50:38 +0900
-Message-Id: <20200518005038.21074-1-steves.lee@maximintegrated.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-ClientProxiedBy: SLXP216CA0004.KORP216.PROD.OUTLOOK.COM
- (2603:1096:100:6::14) To MWHPR11MB2047.namprd11.prod.outlook.com
- (2603:10b6:300:2a::12)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (2001:2d8:e88d:1f5a:d5fe:3ea6:5791:c8e8)
- by SLXP216CA0004.KORP216.PROD.OUTLOOK.COM (2603:1096:100:6::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.24 via Frontend
- Transport; Mon, 18 May 2020 00:51:29 +0000
-X-Mailer: git-send-email 2.17.1
-X-Originating-IP: [2001:2d8:e88d:1f5a:d5fe:3ea6:5791:c8e8]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: fc10b374-d046-43aa-a15d-08d7fac59c43
-X-MS-TrafficTypeDiagnostic: MWHPR11MB1518:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR11MB15187FAE07651ED23576968592B80@MWHPR11MB1518.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:628;
-X-Forefront-PRVS: 04073E895A
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UsKbEovARsHoWDc6pM23HK7hD+TWvhkIqIqeauppUgkoDDEr5LdZT5PvdCunoKzJ8tVNQPuEIkFAgTa8bmMnV+hQgjWaJLgOyKYeKMGgxEqYBhEe9Rjq/EN4xLK54wzFZN3xCXzvaPEGKxXAfaEE8pyhkngtGHDhV7oHlyDU6LQc1n/YopOeNRfR0Me3NyhgIg8we4Y3yljRdeU3UMevlc7D+1vQhctX3nUOB1lxsLUVcbp8EifCSUSknCxvIUpBjmrzUqGqCa09qiDg5LMJUqrRCMm70rnpPthlfNBSe5eTRJ0HBpSe1Ktb6Ql9YsGD6FmsHZ033eU4WbUPbr+p7vDw6gapfpm8Q1M3nz44Mn70KeB+tn9bRzzQinUOBwPM5xfILyMmHqFgr2KnPjccGL7l9hGcWu8NAsyfupp7qmU1rZ3p5rUQXVwZJz39UMg9Ea6z1W3z0d0uh5QD+9CWD/oPxhe8vMdMIjKQ+IdTajW+D3ZLZTgxOdzcE46Q3SznMC0J682sL6oVueGRE3tSxw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:MWHPR11MB2047.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.27; Mon, 18 May
+ 2020 09:11:44 +0000
+Received: from AM6PR04MB4966.eurprd04.prod.outlook.com
+ ([fe80::3c6c:a0e9:9a4e:c51d]) by AM6PR04MB4966.eurprd04.prod.outlook.com
+ ([fe80::3c6c:a0e9:9a4e:c51d%7]) with mapi id 15.20.3000.033; Mon, 18 May 2020
+ 09:11:44 +0000
+From: Aisheng Dong <aisheng.dong@nxp.com>
+To: "tharvey@gateworks.com" <tharvey@gateworks.com>, Timur Tabi
+ <timur@kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li
+ <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>, Stephen Boyd
+ <sboyd@kernel.org>, Michael Turquette <mturquette@baylibre.com>, Shawn Guo
+ <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, dl-linux-imx
+ <linux-imx@nxp.com>, Peng Fan <peng.fan@nxp.com>, Anson Huang
+ <anson.huang@nxp.com>, Abel Vesa <abel.vesa@nxp.com>, Daniel Baluta
+ <daniel.baluta@nxp.com>
+Subject: RE: imx8mm fsl_sai clock config failing
+Thread-Topic: imx8mm fsl_sai clock config failing
+Thread-Index: AQHWJ99T4rEGeMnnt0C/Oc8qp4CAsaitmJIQ
+Date: Mon, 18 May 2020 09:11:44 +0000
+Message-ID: <AM6PR04MB4966BF44BCECB83835CA0A4F80B80@AM6PR04MB4966.eurprd04.prod.outlook.com>
+References: <CAJ+vNU3ekA76nXE7UV+kxA1DtbSMiRCnhTOy6RwixOrj1AoJug@mail.gmail.com>
+In-Reply-To: <CAJ+vNU3ekA76nXE7UV+kxA1DtbSMiRCnhTOy6RwixOrj1AoJug@mail.gmail.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gateworks.com; dkim=none (message not signed)
+ header.d=none;gateworks.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.66]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: eaea4214-a4b3-4048-ff4e-08d7fb0b7c8a
+x-ms-traffictypediagnostic: AM6PR04MB5509:
+x-ld-processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM6PR04MB5509EFD04B4EC5DF60A0C53680B80@AM6PR04MB5509.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-forefront-prvs: 04073E895A
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Zr9NSCxDLR9KTSMEzbVTpCCgptSR6Ntubv7Py7uLlT1sAdCXLl/Uj83/Qg3SigIMhm7ZNG6ERmPtI8RYpgVDBsmKR74RvxkCIZNcBdW28x4gQ7sxzWasu6OgsR5ys0r2xqMFz8uZBN89aEdC3BtRxUOowkbOeFNk0ntJ/njFEpx0bQQcwLXe1/JvttqTImoMVXmhwtNKhulWd28zW3vSkO4jytyHO0RdkwA4ry9+MbbitEd29yq9sszgYl8BsW5WtmnCP6zI6a1alo11fgQ/J5iJoyGO1m4emjKQeQtd09t2GLlibJTODvQwQsgtI7fP/wT1du75wrq20+qPSCiuF0GjjJe5Yrbt4WBjD2Gg1cqk3oPnTOsTmzAmU3ct9NybkrBiVur5KEJPj4p/KH+43AvjjTTYZ+V3Ykm4dgHxXcynfUnvWPHvePfYjzqkrt/3qkbZz6Cg1bJ6tEx4ncVXx6MxpHNJk4WjP3XHmuN9TsXNOmv+LQbJKkcAYRhIl2eC
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:AM6PR04MB4966.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
  SFTY:;
- SFS:(4636009)(366004)(346002)(136003)(376002)(39860400002)(396003)(16526019)(8676002)(66476007)(66946007)(66556008)(6486002)(2906002)(6512007)(478600001)(6666004)(52116002)(1076003)(36756003)(86362001)(7416002)(107886003)(316002)(2616005)(6506007)(186003)(69590400007)(4326008)(8936002)(30864003)(5660300002)(921003)(559001)(579004);
- DIR:OUT; SFP:1102; 
-X-MS-Exchange-AntiSpam-MessageData: 8SnaFzfdE9/anWVl0k2wMafSMNPpwc0tR5Nu5WChwf/kF3S++d5KouEDjyJZ+2XinGzgtph+IlLf9wzmIXhw5p+d1kCSD67Ukla5qC4lwc1u1bapooKvtjgkSqe6IFIH/P5FUxTG07xis9c/TU+IXy2VuF257IqCoMuEtEvwXu17iN6TVrc9GQPCl4pa+d1iSR8AmNtGMEbL/dd3ns8aMFu6WED0uHg4gozbwCr8vPHplJQDEbw6DSsas7fWsMCf2op7pxyXPHAR6Wgu8/ING0v3Jc2OCmbWvhA4xh/g6hIpk7U2Hr6wPlTaB2kt+wD/CtZ6unrA88g2K47g8lxxb3r4HN0K/DZ1Wgdqt5X3xzlNdBz5PWtxrQSwxJtQASAu3UTDW9AORGXqyPuhqEc7OPKYSYcF+wx94Y7BQFJdwWj7yVGLxyomWtTLF6iRKPoPKPHlSzKewXrNRvUi7uUkljhASY3FzhAZF5rrKvN5wlv88FUQDAqF7G3w5WU4SUi2HwuXzNuVKiBz+18ygMVuRVE9KyGqcwuGnghx86iSMEc=
-X-OriginatorOrg: maximintegrated.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fc10b374-d046-43aa-a15d-08d7fac59c43
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 May 2020 00:51:33.9351 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: fbd909df-ea69-4788-a554-f24b7854ad03
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ZQxkN2qRFFIWkeRgnHaij0MIBdE8yRIMvXuP+ZJZMKF1sBADerqfgYKddG8MVTA0piUx3tTGnzdrJ3pmxpVmialdrpE9L8SUvr6BTdVrH64=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1518
+ SFS:(4636009)(136003)(396003)(366004)(376002)(346002)(39860400002)(5660300002)(55016002)(8936002)(8676002)(26005)(186003)(71200400001)(6506007)(9686003)(7416002)(4326008)(478600001)(7696005)(316002)(110136005)(6636002)(86362001)(44832011)(66476007)(33656002)(64756008)(2906002)(76116006)(66446008)(52536014)(66946007)(66556008)(921003)(32563001);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata: EwCqf+B/76Q0CMlT8YkKCWN5WPV7kFxv2v9+rBdmajri2PGJ9x35QiWMTAFx69TacMB6hlOyvVWTLeu60LcEkbnB9eXfo2JnbasdhDGoDh2bBcc0IGrLlprVG/N+vlyu07Lc3aNlBLmsgDZE9z0uC2ntLfUS9skDrf24AMnnJxziOylCm7Q/DM3wrd2avhRrSwSQdMUnNp5H5dSIpqrLptjUtUGQm9nqL509GJenMCy/CeogM2ltjwhgaJde9S8Oy7YVbbVYtsB3DgSAHopt5MoKA3RCFF2oFDZz3xiQ5EgX5W8ML+giq5IUlBS4P3c7QXH4LU7lTVHRvWIfM3+8fdIV+6mKFdHX/5Voe4+bSIE8DY+aDoaSZ4/MyVDQhZ+nLzmbZAk1PycDL0e7dUzYKq7jrDwZ0aH9QQhvW21PN/h5DShuhVyEV4E3SxRXY22nKzPicPuOvLjDWtffcesqLdXN0wZaXDa6q1ETZqOMfyN+K3dz0TaehytfgauGNCMT
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: eaea4214-a4b3-4048-ff4e-08d7fb0b7c8a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 May 2020 09:11:44.8011 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: vhr4pqnThkHlqTY1en2PIdrvWNXZP8YH+jp3JXSnn78MvnNPUu1V8gn760zYx1I2h0LDlKLLuGTP+A2FOzeCpg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB5509
 X-Mailman-Approved-At: Mon, 18 May 2020 16:18:11 +0200
-Cc: ryan.lee.maxim@gmail.com, ryans.lee@maximintegrated.com
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -144,1799 +141,116 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This is the initial amplifier driver for max98390.
-
-Signed-off-by: Steve Lee <steves.lee@maximintegrated.com>
----
-
-Changes since V4:
-	* Revert return calibration status in max98390_dsm_calib_get:
-		There is no need to return calibration status in get function 
-		because there is mixer control lock protecting mixer control access.
-		And set function of DSM calib finishes calibration synchronously.
-	* Fix sprintf in max98390_dsm_init func:
-		Use snprintf to avoid any unreasonable value from DMI.
-Changes since V3:
-	* Add operation at max98390_dsm_calib_get:
-		Add cal_running variable at max98390_priv structure
-		Add return cal_running at max98390_dsm_calib_get
-		Update cal_running value during calibration
-	* Update max98390_dsm_init func
-		Add dsm_param bin name can select upon vendor and product name.
-Changes since V2:
-	* Removed warn massage in max98390_dsm_calib_get func 
-	  and add comment.
-Changes since V1:
-	* Updated according to Mark's comments.
-	* Updated according to Tzung-Bi's comments.
-	* Removed Enum structure and use TLV data for Volume control
-
- sound/soc/codecs/Kconfig    |    5 +
- sound/soc/codecs/Makefile   |    2 +
- sound/soc/codecs/max98390.c | 1040 +++++++++++++++++++++++++++++++++++
- sound/soc/codecs/max98390.h |  663 ++++++++++++++++++++++
- 4 files changed, 1710 insertions(+)
- create mode 100644 sound/soc/codecs/max98390.c
- create mode 100644 sound/soc/codecs/max98390.h
-
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index e60e0b6a689c..93f88cd9970a 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -116,6 +116,7 @@ config SND_SOC_ALL_CODECS
- 	imply SND_SOC_MAX98926
- 	imply SND_SOC_MAX98927
- 	imply SND_SOC_MAX98373
-+	imply SND_SOC_MAX98390
- 	imply SND_SOC_MAX9850
- 	imply SND_SOC_MAX9860
- 	imply SND_SOC_MAX9759
-@@ -867,6 +868,10 @@ config SND_SOC_MAX98373
- 	tristate "Maxim Integrated MAX98373 Speaker Amplifier"
- 	depends on I2C
- 
-+config SND_SOC_MAX98390
-+	tristate "Maxim Integrated MAX98390 Speaker Amplifier"
-+	depends on I2C
-+
- config SND_SOC_MAX9850
- 	tristate
- 	depends on I2C
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 03533157cda6..e7c17f701529 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -115,6 +115,7 @@ snd-soc-max98925-objs := max98925.o
- snd-soc-max98926-objs := max98926.o
- snd-soc-max98927-objs := max98927.o
- snd-soc-max98373-objs := max98373.o
-+snd-soc-max98390-objs := max98390.o
- snd-soc-max9850-objs := max9850.o
- snd-soc-max9860-objs := max9860.o
- snd-soc-mc13783-objs := mc13783.o
-@@ -415,6 +416,7 @@ obj-$(CONFIG_SND_SOC_MAX98925)	+= snd-soc-max98925.o
- obj-$(CONFIG_SND_SOC_MAX98926)	+= snd-soc-max98926.o
- obj-$(CONFIG_SND_SOC_MAX98927)	+= snd-soc-max98927.o
- obj-$(CONFIG_SND_SOC_MAX98373)	+= snd-soc-max98373.o
-+obj-$(CONFIG_SND_SOC_MAX98390)	+= snd-soc-max98390.o
- obj-$(CONFIG_SND_SOC_MAX9850)	+= snd-soc-max9850.o
- obj-$(CONFIG_SND_SOC_MAX9860)	+= snd-soc-max9860.o
- obj-$(CONFIG_SND_SOC_MC13783)	+= snd-soc-mc13783.o
-diff --git a/sound/soc/codecs/max98390.c b/sound/soc/codecs/max98390.c
-new file mode 100644
-index 000000000000..b9ce44dda886
---- /dev/null
-+++ b/sound/soc/codecs/max98390.c
-@@ -0,0 +1,1040 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * max98390.c  --  MAX98390 ALSA Soc Audio driver
-+ *
-+ * Copyright (C) 2020 Maxim Integrated Products
-+ *
-+ */
-+
-+#include <linux/acpi.h>
-+#include <linux/cdev.h>
-+#include <linux/dmi.h>
-+#include <linux/firmware.h>
-+#include <linux/gpio.h>
-+#include <linux/i2c.h>
-+#include <linux/module.h>
-+#include <linux/of_gpio.h>
-+#include <linux/regmap.h>
-+#include <linux/slab.h>
-+#include <linux/time.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/tlv.h>
-+
-+#include "max98390.h"
-+
-+static struct reg_default max98390_reg_defaults[] = {
-+	{MAX98390_INT_EN1, 0xf0},
-+	{MAX98390_INT_EN2, 0x00},
-+	{MAX98390_INT_EN3, 0x00},
-+	{MAX98390_INT_FLAG_CLR1, 0x00},
-+	{MAX98390_INT_FLAG_CLR2, 0x00},
-+	{MAX98390_INT_FLAG_CLR3, 0x00},
-+	{MAX98390_IRQ_CTRL, 0x01},
-+	{MAX98390_CLK_MON, 0x6d},
-+	{MAX98390_DAT_MON, 0x03},
-+	{MAX98390_WDOG_CTRL, 0x00},
-+	{MAX98390_WDOG_RST, 0x00},
-+	{MAX98390_MEAS_ADC_THERM_WARN_THRESH, 0x75},
-+	{MAX98390_MEAS_ADC_THERM_SHDN_THRESH, 0x8c},
-+	{MAX98390_MEAS_ADC_THERM_HYSTERESIS, 0x08},
-+	{MAX98390_PIN_CFG, 0x55},
-+	{MAX98390_PCM_RX_EN_A, 0x00},
-+	{MAX98390_PCM_RX_EN_B, 0x00},
-+	{MAX98390_PCM_TX_EN_A, 0x00},
-+	{MAX98390_PCM_TX_EN_B, 0x00},
-+	{MAX98390_PCM_TX_HIZ_CTRL_A, 0xff},
-+	{MAX98390_PCM_TX_HIZ_CTRL_B, 0xff},
-+	{MAX98390_PCM_CH_SRC_1, 0x00},
-+	{MAX98390_PCM_CH_SRC_2, 0x00},
-+	{MAX98390_PCM_CH_SRC_3, 0x00},
-+	{MAX98390_PCM_MODE_CFG, 0xc0},
-+	{MAX98390_PCM_MASTER_MODE, 0x1c},
-+	{MAX98390_PCM_CLK_SETUP, 0x44},
-+	{MAX98390_PCM_SR_SETUP, 0x08},
-+	{MAX98390_ICC_RX_EN_A, 0x00},
-+	{MAX98390_ICC_RX_EN_B, 0x00},
-+	{MAX98390_ICC_TX_EN_A, 0x00},
-+	{MAX98390_ICC_TX_EN_B, 0x00},
-+	{MAX98390_ICC_HIZ_MANUAL_MODE, 0x00},
-+	{MAX98390_ICC_TX_HIZ_EN_A, 0x00},
-+	{MAX98390_ICC_TX_HIZ_EN_B, 0x00},
-+	{MAX98390_ICC_LNK_EN, 0x00},
-+	{MAX98390_R2039_AMP_DSP_CFG, 0x0f},
-+	{MAX98390_R203A_AMP_EN, 0x81},
-+	{MAX98390_TONE_GEN_DC_CFG, 0x00},
-+	{MAX98390_SPK_SRC_SEL, 0x00},
-+	{MAX98390_SSM_CFG, 0x85},
-+	{MAX98390_MEAS_EN, 0x03},
-+	{MAX98390_MEAS_DSP_CFG, 0x0f},
-+	{MAX98390_BOOST_CTRL0, 0x1c},
-+	{MAX98390_BOOST_CTRL3, 0x01},
-+	{MAX98390_BOOST_CTRL1, 0x40},
-+	{MAX98390_MEAS_ADC_CFG, 0x07},
-+	{MAX98390_MEAS_ADC_BASE_MSB, 0x00},
-+	{MAX98390_MEAS_ADC_BASE_LSB, 0x23},
-+	{MAX98390_ADC_CH0_DIVIDE, 0x00},
-+	{MAX98390_ADC_CH1_DIVIDE, 0x00},
-+	{MAX98390_ADC_CH2_DIVIDE, 0x00},
-+	{MAX98390_ADC_CH0_FILT_CFG, 0x00},
-+	{MAX98390_ADC_CH1_FILT_CFG, 0x00},
-+	{MAX98390_ADC_CH2_FILT_CFG, 0x00},
-+	{MAX98390_PWR_GATE_CTL, 0x2c},
-+	{MAX98390_BROWNOUT_EN, 0x00},
-+	{MAX98390_BROWNOUT_INFINITE_HOLD, 0x00},
-+	{MAX98390_BROWNOUT_INFINITE_HOLD_CLR, 0x00},
-+	{MAX98390_BROWNOUT_LVL_HOLD, 0x00},
-+	{MAX98390_BROWNOUT_LVL1_THRESH, 0x00},
-+	{MAX98390_BROWNOUT_LVL2_THRESH, 0x00},
-+	{MAX98390_BROWNOUT_LVL3_THRESH, 0x00},
-+	{MAX98390_BROWNOUT_LVL4_THRESH, 0x00},
-+	{MAX98390_BROWNOUT_THRESH_HYSTERYSIS, 0x00},
-+	{MAX98390_BROWNOUT_AMP_LIMITER_ATK_REL, 0x1f},
-+	{MAX98390_BROWNOUT_AMP_GAIN_ATK_REL, 0x00},
-+	{MAX98390_BROWNOUT_AMP1_CLIP_MODE, 0x00},
-+	{MAX98390_BROWNOUT_LVL1_CUR_LIMIT, 0x00},
-+	{MAX98390_BROWNOUT_LVL1_AMP1_CTRL1, 0x00},
-+	{MAX98390_BROWNOUT_LVL1_AMP1_CTRL2, 0x00},
-+	{MAX98390_BROWNOUT_LVL1_AMP1_CTRL3, 0x00},
-+	{MAX98390_BROWNOUT_LVL2_CUR_LIMIT, 0x00},
-+	{MAX98390_BROWNOUT_LVL2_AMP1_CTRL1, 0x00},
-+	{MAX98390_BROWNOUT_LVL2_AMP1_CTRL2, 0x00},
-+	{MAX98390_BROWNOUT_LVL2_AMP1_CTRL3, 0x00},
-+	{MAX98390_BROWNOUT_LVL3_CUR_LIMIT, 0x00},
-+	{MAX98390_BROWNOUT_LVL3_AMP1_CTRL1, 0x00},
-+	{MAX98390_BROWNOUT_LVL3_AMP1_CTRL2, 0x00},
-+	{MAX98390_BROWNOUT_LVL3_AMP1_CTRL3, 0x00},
-+	{MAX98390_BROWNOUT_LVL4_CUR_LIMIT, 0x00},
-+	{MAX98390_BROWNOUT_LVL4_AMP1_CTRL1, 0x00},
-+	{MAX98390_BROWNOUT_LVL4_AMP1_CTRL2, 0x00},
-+	{MAX98390_BROWNOUT_LVL4_AMP1_CTRL3, 0x00},
-+	{MAX98390_BROWNOUT_ILIM_HLD, 0x00},
-+	{MAX98390_BROWNOUT_LIM_HLD, 0x00},
-+	{MAX98390_BROWNOUT_CLIP_HLD, 0x00},
-+	{MAX98390_BROWNOUT_GAIN_HLD, 0x00},
-+	{MAX98390_ENV_TRACK_VOUT_HEADROOM, 0x0f},
-+	{MAX98390_ENV_TRACK_BOOST_VOUT_DELAY, 0x80},
-+	{MAX98390_ENV_TRACK_REL_RATE, 0x07},
-+	{MAX98390_ENV_TRACK_HOLD_RATE, 0x07},
-+	{MAX98390_ENV_TRACK_CTRL, 0x01},
-+	{MAX98390_BOOST_BYPASS1, 0x49},
-+	{MAX98390_BOOST_BYPASS2, 0x2b},
-+	{MAX98390_BOOST_BYPASS3, 0x08},
-+	{MAX98390_FET_SCALING1, 0x00},
-+	{MAX98390_FET_SCALING2, 0x03},
-+	{MAX98390_FET_SCALING3, 0x00},
-+	{MAX98390_FET_SCALING4, 0x07},
-+	{MAX98390_SPK_SPEEDUP, 0x00},
-+	{DSMIG_WB_DRC_RELEASE_TIME_1, 0x00},
-+	{DSMIG_WB_DRC_RELEASE_TIME_2, 0x00},
-+	{DSMIG_WB_DRC_ATTACK_TIME_1, 0x00},
-+	{DSMIG_WB_DRC_ATTACK_TIME_2, 0x00},
-+	{DSMIG_WB_DRC_COMPRESSION_RATIO, 0x00},
-+	{DSMIG_WB_DRC_COMPRESSION_THRESHOLD, 0x00},
-+	{DSMIG_WB_DRC_MAKEUPGAIN, 0x00},
-+	{DSMIG_WB_DRC_NOISE_GATE_THRESHOLD, 0x00},
-+	{DSMIG_WBDRC_HPF_ENABLE, 0x00},
-+	{DSMIG_WB_DRC_TEST_SMOOTHER_OUT_EN, 0x00},
-+	{DSMIG_PPR_THRESHOLD, 0x00},
-+	{DSM_STEREO_BASS_CHANNEL_SELECT, 0x00},
-+	{DSM_TPROT_THRESHOLD_BYTE0, 0x00},
-+	{DSM_TPROT_THRESHOLD_BYTE1, 0x00},
-+	{DSM_TPROT_ROOM_TEMPERATURE_BYTE0, 0x00},
-+	{DSM_TPROT_ROOM_TEMPERATURE_BYTE1, 0x00},
-+	{DSM_TPROT_RECIP_RDC_ROOM_BYTE0, 0x00},
-+	{DSM_TPROT_RECIP_RDC_ROOM_BYTE1, 0x00},
-+	{DSM_TPROT_RECIP_RDC_ROOM_BYTE2, 0x00},
-+	{DSM_TPROT_RECIP_TCONST_BYTE0, 0x00},
-+	{DSM_TPROT_RECIP_TCONST_BYTE1, 0x00},
-+	{DSM_TPROT_RECIP_TCONST_BYTE2, 0x00},
-+	{DSM_THERMAL_ATTENUATION_SETTINGS, 0x00},
-+	{DSM_THERMAL_PILOT_TONE_ATTENUATION, 0x00},
-+	{DSM_TPROT_PG_TEMP_THRESH_BYTE0, 0x00},
-+	{DSM_TPROT_PG_TEMP_THRESH_BYTE1, 0x00},
-+	{DSMIG_DEBUZZER_THRESHOLD, 0x00},
-+	{DSMIG_DEBUZZER_ALPHA_COEF_TEST_ONLY, 0x08},
-+	{DSM_VOL_ENA, 0x20},
-+	{DSM_VOL_CTRL, 0xa0},
-+	{DSMIG_EN, 0x00},
-+	{MAX98390_R23E1_DSP_GLOBAL_EN, 0x00},
-+	{MAX98390_R23FF_GLOBAL_EN, 0x00},
-+};
-+
-+static int max98390_dsm_calibrate(struct snd_soc_component *component);
-+
-+static int max98390_dai_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
-+{
-+	struct snd_soc_component *component = codec_dai->component;
-+	struct max98390_priv *max98390 =
-+		snd_soc_component_get_drvdata(component);
-+	unsigned int mode;
-+	unsigned int format;
-+	unsigned int invert = 0;
-+
-+	dev_dbg(component->dev, "%s: fmt 0x%08X\n", __func__, fmt);
-+
-+	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-+	case SND_SOC_DAIFMT_CBS_CFS:
-+		mode = MAX98390_PCM_MASTER_MODE_SLAVE;
-+		break;
-+	case SND_SOC_DAIFMT_CBM_CFM:
-+		max98390->master = true;
-+		mode = MAX98390_PCM_MASTER_MODE_MASTER;
-+		break;
-+	default:
-+		dev_err(component->dev, "DAI clock mode unsupported\n");
-+		return -EINVAL;
-+	}
-+
-+	regmap_update_bits(max98390->regmap,
-+		MAX98390_PCM_MASTER_MODE,
-+		MAX98390_PCM_MASTER_MODE_MASK,
-+		mode);
-+
-+	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-+	case SND_SOC_DAIFMT_NB_NF:
-+		break;
-+	case SND_SOC_DAIFMT_IB_NF:
-+		invert = MAX98390_PCM_MODE_CFG_PCM_BCLKEDGE;
-+		break;
-+	default:
-+		dev_err(component->dev, "DAI invert mode unsupported\n");
-+		return -EINVAL;
-+	}
-+
-+	regmap_update_bits(max98390->regmap,
-+		MAX98390_PCM_MODE_CFG,
-+		MAX98390_PCM_MODE_CFG_PCM_BCLKEDGE,
-+		invert);
-+
-+	/* interface format */
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_I2S:
-+		format = MAX98390_PCM_FORMAT_I2S;
-+		break;
-+	case SND_SOC_DAIFMT_LEFT_J:
-+		format = MAX98390_PCM_FORMAT_LJ;
-+		break;
-+	case SND_SOC_DAIFMT_DSP_A:
-+		format = MAX98390_PCM_FORMAT_TDM_MODE1;
-+		break;
-+	case SND_SOC_DAIFMT_DSP_B:
-+		format = MAX98390_PCM_FORMAT_TDM_MODE0;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	regmap_update_bits(max98390->regmap,
-+		MAX98390_PCM_MODE_CFG,
-+		MAX98390_PCM_MODE_CFG_FORMAT_MASK,
-+		format << MAX98390_PCM_MODE_CFG_FORMAT_SHIFT);
-+
-+	return 0;
-+}
-+
-+static int max98390_get_bclk_sel(int bclk)
-+{
-+	int i;
-+	/* BCLKs per LRCLK */
-+	static int bclk_sel_table[] = {
-+		32, 48, 64, 96, 128, 192, 256, 320, 384, 512,
-+	};
-+	/* match BCLKs per LRCLK */
-+	for (i = 0; i < ARRAY_SIZE(bclk_sel_table); i++) {
-+		if (bclk_sel_table[i] == bclk)
-+			return i + 2;
-+	}
-+	return 0;
-+}
-+
-+static int max98390_set_clock(struct snd_soc_component *component,
-+		struct snd_pcm_hw_params *params)
-+{
-+	struct max98390_priv *max98390 =
-+		snd_soc_component_get_drvdata(component);
-+	/* codec MCLK rate in master mode */
-+	static int rate_table[] = {
-+		5644800, 6000000, 6144000, 6500000,
-+		9600000, 11289600, 12000000, 12288000,
-+		13000000, 19200000,
-+	};
-+	/* BCLK/LRCLK ratio calculation */
-+	int blr_clk_ratio = params_channels(params)
-+		* snd_pcm_format_width(params_format(params));
-+	int value;
-+
-+	if (max98390->master) {
-+		int i;
-+		/* match rate to closest value */
-+		for (i = 0; i < ARRAY_SIZE(rate_table); i++) {
-+			if (rate_table[i] >= max98390->sysclk)
-+				break;
-+		}
-+		if (i == ARRAY_SIZE(rate_table)) {
-+			dev_err(component->dev, "failed to find proper clock rate.\n");
-+			return -EINVAL;
-+		}
-+
-+		regmap_update_bits(max98390->regmap,
-+			MAX98390_PCM_MASTER_MODE,
-+			MAX98390_PCM_MASTER_MODE_MCLK_MASK,
-+			i << MAX98390_PCM_MASTER_MODE_MCLK_RATE_SHIFT);
-+	}
-+
-+	if (!max98390->tdm_mode) {
-+		/* BCLK configuration */
-+		value = max98390_get_bclk_sel(blr_clk_ratio);
-+		if (!value) {
-+			dev_err(component->dev, "format unsupported %d\n",
-+				params_format(params));
-+			return -EINVAL;
-+		}
-+
-+		regmap_update_bits(max98390->regmap,
-+			MAX98390_PCM_CLK_SETUP,
-+			MAX98390_PCM_CLK_SETUP_BSEL_MASK,
-+			value);
-+	}
-+	return 0;
-+}
-+
-+static int max98390_dai_hw_params(struct snd_pcm_substream *substream,
-+		struct snd_pcm_hw_params *params,
-+		struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_component *component =
-+		dai->component;
-+	struct max98390_priv *max98390 =
-+		snd_soc_component_get_drvdata(component);
-+
-+	unsigned int sampling_rate;
-+	unsigned int chan_sz;
-+
-+	/* pcm mode configuration */
-+	switch (snd_pcm_format_width(params_format(params))) {
-+	case 16:
-+		chan_sz = MAX98390_PCM_MODE_CFG_CHANSZ_16;
-+		break;
-+	case 24:
-+		chan_sz = MAX98390_PCM_MODE_CFG_CHANSZ_24;
-+		break;
-+	case 32:
-+		chan_sz = MAX98390_PCM_MODE_CFG_CHANSZ_32;
-+		break;
-+	default:
-+		dev_err(component->dev, "format unsupported %d\n",
-+			params_format(params));
-+		goto err;
-+	}
-+
-+	regmap_update_bits(max98390->regmap,
-+		MAX98390_PCM_MODE_CFG,
-+		MAX98390_PCM_MODE_CFG_CHANSZ_MASK, chan_sz);
-+
-+	dev_dbg(component->dev, "format supported %d",
-+		params_format(params));
-+
-+	/* sampling rate configuration */
-+	switch (params_rate(params)) {
-+	case 8000:
-+		sampling_rate = MAX98390_PCM_SR_SET1_SR_8000;
-+		break;
-+	case 11025:
-+		sampling_rate = MAX98390_PCM_SR_SET1_SR_11025;
-+		break;
-+	case 12000:
-+		sampling_rate = MAX98390_PCM_SR_SET1_SR_12000;
-+		break;
-+	case 16000:
-+		sampling_rate = MAX98390_PCM_SR_SET1_SR_16000;
-+		break;
-+	case 22050:
-+		sampling_rate = MAX98390_PCM_SR_SET1_SR_22050;
-+		break;
-+	case 24000:
-+		sampling_rate = MAX98390_PCM_SR_SET1_SR_24000;
-+		break;
-+	case 32000:
-+		sampling_rate = MAX98390_PCM_SR_SET1_SR_32000;
-+		break;
-+	case 44100:
-+		sampling_rate = MAX98390_PCM_SR_SET1_SR_44100;
-+		break;
-+	case 48000:
-+		sampling_rate = MAX98390_PCM_SR_SET1_SR_48000;
-+		break;
-+	default:
-+		dev_err(component->dev, "rate %d not supported\n",
-+			params_rate(params));
-+		goto err;
-+	}
-+
-+	/* set DAI_SR to correct LRCLK frequency */
-+	regmap_update_bits(max98390->regmap,
-+		MAX98390_PCM_SR_SETUP,
-+		MAX98390_PCM_SR_SET1_SR_MASK,
-+		sampling_rate);
-+
-+	return max98390_set_clock(component, params);
-+err:
-+	return -EINVAL;
-+}
-+
-+static int max98390_dai_tdm_slot(struct snd_soc_dai *dai,
-+		unsigned int tx_mask, unsigned int rx_mask,
-+		int slots, int slot_width)
-+{
-+	struct snd_soc_component *component = dai->component;
-+	struct max98390_priv *max98390 =
-+		snd_soc_component_get_drvdata(component);
-+
-+	int bsel;
-+	unsigned int chan_sz;
-+
-+	if (!tx_mask && !rx_mask && !slots && !slot_width)
-+		max98390->tdm_mode = false;
-+	else
-+		max98390->tdm_mode = true;
-+
-+	dev_dbg(component->dev,
-+		"Tdm mode : %d\n", max98390->tdm_mode);
-+
-+	/* BCLK configuration */
-+	bsel = max98390_get_bclk_sel(slots * slot_width);
-+	if (!bsel) {
-+		dev_err(component->dev, "BCLK %d not supported\n",
-+			slots * slot_width);
-+		return -EINVAL;
-+	}
-+
-+	regmap_update_bits(max98390->regmap,
-+		MAX98390_PCM_CLK_SETUP,
-+		MAX98390_PCM_CLK_SETUP_BSEL_MASK,
-+		bsel);
-+
-+	/* Channel size configuration */
-+	switch (slot_width) {
-+	case 16:
-+		chan_sz = MAX98390_PCM_MODE_CFG_CHANSZ_16;
-+		break;
-+	case 24:
-+		chan_sz = MAX98390_PCM_MODE_CFG_CHANSZ_24;
-+		break;
-+	case 32:
-+		chan_sz = MAX98390_PCM_MODE_CFG_CHANSZ_32;
-+		break;
-+	default:
-+		dev_err(component->dev, "format unsupported %d\n",
-+			slot_width);
-+		return -EINVAL;
-+	}
-+
-+	regmap_update_bits(max98390->regmap,
-+		MAX98390_PCM_MODE_CFG,
-+		MAX98390_PCM_MODE_CFG_CHANSZ_MASK, chan_sz);
-+
-+	/* Rx slot configuration */
-+	regmap_write(max98390->regmap,
-+		MAX98390_PCM_RX_EN_A,
-+		rx_mask & 0xFF);
-+	regmap_write(max98390->regmap,
-+		MAX98390_PCM_RX_EN_B,
-+		(rx_mask & 0xFF00) >> 8);
-+
-+	/* Tx slot Hi-Z configuration */
-+	regmap_write(max98390->regmap,
-+		MAX98390_PCM_TX_HIZ_CTRL_A,
-+		~tx_mask & 0xFF);
-+	regmap_write(max98390->regmap,
-+		MAX98390_PCM_TX_HIZ_CTRL_B,
-+		(~tx_mask & 0xFF00) >> 8);
-+
-+	return 0;
-+}
-+
-+static int max98390_dai_set_sysclk(struct snd_soc_dai *dai,
-+		int clk_id, unsigned int freq, int dir)
-+{
-+	struct snd_soc_component *component = dai->component;
-+	struct max98390_priv *max98390 =
-+		snd_soc_component_get_drvdata(component);
-+
-+	max98390->sysclk = freq;
-+	return 0;
-+}
-+
-+static const struct snd_soc_dai_ops max98390_dai_ops = {
-+	.set_sysclk = max98390_dai_set_sysclk,
-+	.set_fmt = max98390_dai_set_fmt,
-+	.hw_params = max98390_dai_hw_params,
-+	.set_tdm_slot = max98390_dai_tdm_slot,
-+};
-+
-+static int max98390_dac_event(struct snd_soc_dapm_widget *w,
-+		struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_component *component =
-+		snd_soc_dapm_to_component(w->dapm);
-+	struct max98390_priv *max98390 =
-+		snd_soc_component_get_drvdata(component);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		regmap_update_bits(max98390->regmap,
-+			MAX98390_R203A_AMP_EN,
-+			MAX98390_AMP_EN_MASK, 1);
-+		regmap_update_bits(max98390->regmap,
-+			MAX98390_R23FF_GLOBAL_EN,
-+			MAX98390_GLOBAL_EN_MASK, 1);
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		regmap_update_bits(max98390->regmap,
-+			MAX98390_R23FF_GLOBAL_EN,
-+			MAX98390_GLOBAL_EN_MASK, 0);
-+		regmap_update_bits(max98390->regmap,
-+			MAX98390_R203A_AMP_EN,
-+			MAX98390_AMP_EN_MASK, 0);
-+		break;
-+	}
-+	return 0;
-+}
-+
-+static const char * const max98390_switch_text[] = {
-+	"Left", "Right", "LeftRight"};
-+
-+static const char * const max98390_boost_voltage_text[] = {
-+	"6.5V", "6.625V", "6.75V", "6.875V", "7V", "7.125V", "7.25V", "7.375V",
-+	"7.5V", "7.625V", "7.75V", "7.875V", "8V", "8.125V", "8.25V", "8.375V",
-+	"8.5V", "8.625V", "8.75V", "8.875V", "9V", "9.125V", "9.25V", "9.375V",
-+	"9.5V", "9.625V", "9.75V", "9.875V", "10V"
-+};
-+
-+static SOC_ENUM_SINGLE_DECL(max98390_boost_voltage,
-+		MAX98390_BOOST_CTRL0, 0,
-+		max98390_boost_voltage_text);
-+
-+static DECLARE_TLV_DB_SCALE(max98390_spk_tlv, 300, 300, 0);
-+static DECLARE_TLV_DB_SCALE(max98390_digital_tlv, -8000, 50, 0);
-+
-+static const char * const max98390_current_limit_text[] = {
-+	"0.00A", "0.50A", "1.00A", "1.05A", "1.10A", "1.15A", "1.20A", "1.25A",
-+	"1.30A", "1.35A", "1.40A", "1.45A", "1.50A", "1.55A", "1.60A", "1.65A",
-+	"1.70A", "1.75A", "1.80A", "1.85A", "1.90A", "1.95A", "2.00A", "2.05A",
-+	"2.10A", "2.15A", "2.20A", "2.25A", "2.30A", "2.35A", "2.40A", "2.45A",
-+	"2.50A", "2.55A", "2.60A", "2.65A", "2.70A", "2.75A", "2.80A", "2.85A",
-+	"2.90A", "2.95A", "3.00A", "3.05A", "3.10A", "3.15A", "3.20A", "3.25A",
-+	"3.30A", "3.35A", "3.40A", "3.45A", "3.50A", "3.55A", "3.60A", "3.65A",
-+	"3.70A", "3.75A", "3.80A", "3.85A", "3.90A", "3.95A", "4.00A", "4.05A",
-+	"4.10A"
-+};
-+
-+static SOC_ENUM_SINGLE_DECL(max98390_current_limit,
-+		MAX98390_BOOST_CTRL1, 0,
-+		max98390_current_limit_text);
-+
-+static int max98390_ref_rdc_put(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component =
-+		snd_soc_kcontrol_component(kcontrol);
-+	struct max98390_priv *max98390 =
-+		snd_soc_component_get_drvdata(component);
-+
-+	max98390->ref_rdc_value = ucontrol->value.integer.value[0];
-+
-+	regmap_write(max98390->regmap, DSM_TPROT_RECIP_RDC_ROOM_BYTE0,
-+		max98390->ref_rdc_value & 0x000000ff);
-+	regmap_write(max98390->regmap, DSM_TPROT_RECIP_RDC_ROOM_BYTE1,
-+		(max98390->ref_rdc_value >> 8) & 0x000000ff);
-+	regmap_write(max98390->regmap, DSM_TPROT_RECIP_RDC_ROOM_BYTE2,
-+		(max98390->ref_rdc_value >> 16) & 0x000000ff);
-+
-+	return 0;
-+}
-+
-+static int max98390_ref_rdc_get(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component =
-+		snd_soc_kcontrol_component(kcontrol);
-+	struct max98390_priv *max98390 =
-+		snd_soc_component_get_drvdata(component);
-+
-+	ucontrol->value.integer.value[0] = max98390->ref_rdc_value;
-+
-+	return 0;
-+}
-+
-+static int max98390_ambient_temp_put(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component =
-+		snd_soc_kcontrol_component(kcontrol);
-+	struct max98390_priv *max98390 =
-+		snd_soc_component_get_drvdata(component);
-+
-+	max98390->ambient_temp_value = ucontrol->value.integer.value[0];
-+
-+	regmap_write(max98390->regmap, DSM_TPROT_ROOM_TEMPERATURE_BYTE1,
-+		(max98390->ambient_temp_value >> 8) & 0x000000ff);
-+	regmap_write(max98390->regmap, DSM_TPROT_ROOM_TEMPERATURE_BYTE0,
-+		(max98390->ambient_temp_value) & 0x000000ff);
-+
-+	return 0;
-+}
-+
-+static int max98390_ambient_temp_get(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component =
-+		snd_soc_kcontrol_component(kcontrol);
-+	struct max98390_priv *max98390 =
-+		snd_soc_component_get_drvdata(component);
-+
-+	ucontrol->value.integer.value[0] = max98390->ambient_temp_value;
-+
-+	return 0;
-+}
-+
-+static int max98390_adaptive_rdc_put(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component =
-+		snd_soc_kcontrol_component(kcontrol);
-+
-+	dev_warn(component->dev, "Put adaptive rdc not supported\n");
-+
-+	return 0;
-+}
-+
-+static int max98390_adaptive_rdc_get(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	int rdc, rdc0;
-+	struct snd_soc_component *component =
-+		snd_soc_kcontrol_component(kcontrol);
-+	struct max98390_priv *max98390 =
-+		snd_soc_component_get_drvdata(component);
-+
-+	regmap_read(max98390->regmap, THERMAL_RDC_RD_BACK_BYTE1, &rdc);
-+	regmap_read(max98390->regmap, THERMAL_RDC_RD_BACK_BYTE0, &rdc0);
-+	ucontrol->value.integer.value[0] = rdc0 | rdc << 8;
-+
-+	return 0;
-+}
-+
-+static int max98390_dsm_calib_get(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	/* Do nothing */
-+	return 0;
-+}
-+
-+static int max98390_dsm_calib_put(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component =
-+		snd_soc_kcontrol_component(kcontrol);
-+
-+	max98390_dsm_calibrate(component);
-+
-+	return 0;
-+}
-+
-+static const struct snd_kcontrol_new max98390_snd_controls[] = {
-+	SOC_SINGLE_TLV("Digital Volume", DSM_VOL_CTRL,
-+		0, 184, 0,
-+		max98390_digital_tlv),
-+	SOC_SINGLE_TLV("Speaker Volume", MAX98390_R203D_SPK_GAIN,
-+		0, 6, 0,
-+		max98390_spk_tlv),
-+	SOC_SINGLE("Ramp Up Bypass Switch", MAX98390_R2039_AMP_DSP_CFG,
-+		MAX98390_AMP_DSP_CFG_RMP_UP_SHIFT, 1, 0),
-+	SOC_SINGLE("Ramp Down Bypass Switch", MAX98390_R2039_AMP_DSP_CFG,
-+		MAX98390_AMP_DSP_CFG_RMP_DN_SHIFT, 1, 0),
-+	SOC_SINGLE("Boost Clock Phase", MAX98390_BOOST_CTRL3,
-+		MAX98390_BOOST_CLK_PHASE_CFG_SHIFT, 3, 0),
-+	SOC_ENUM("Boost Output Voltage", max98390_boost_voltage),
-+	SOC_ENUM("Current Limit", max98390_current_limit),
-+	SOC_SINGLE_EXT("DSM Rdc", SND_SOC_NOPM, 0, 0xffffff, 0,
-+		max98390_ref_rdc_get, max98390_ref_rdc_put),
-+	SOC_SINGLE_EXT("DSM Ambient Temp", SND_SOC_NOPM, 0, 0xffff, 0,
-+		max98390_ambient_temp_get, max98390_ambient_temp_put),
-+	SOC_SINGLE_EXT("DSM Adaptive Rdc", SND_SOC_NOPM, 0, 0xffff, 0,
-+		max98390_adaptive_rdc_get, max98390_adaptive_rdc_put),
-+	SOC_SINGLE_EXT("DSM Calibration", SND_SOC_NOPM, 0, 1, 0,
-+		max98390_dsm_calib_get, max98390_dsm_calib_put),
-+};
-+
-+static const struct soc_enum dai_sel_enum =
-+	SOC_ENUM_SINGLE(MAX98390_PCM_CH_SRC_1,
-+		MAX98390_PCM_RX_CH_SRC_SHIFT,
-+		3, max98390_switch_text);
-+
-+static const struct snd_kcontrol_new max98390_dai_controls =
-+	SOC_DAPM_ENUM("DAI Sel", dai_sel_enum);
-+
-+static const struct snd_soc_dapm_widget max98390_dapm_widgets[] = {
-+	SND_SOC_DAPM_DAC_E("Amp Enable", "HiFi Playback",
-+		MAX98390_R203A_AMP_EN, 0, 0, max98390_dac_event,
-+		SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
-+	SND_SOC_DAPM_MUX("DAI Sel Mux", SND_SOC_NOPM, 0, 0,
-+		&max98390_dai_controls),
-+	SND_SOC_DAPM_OUTPUT("BE_OUT"),
-+};
-+
-+static const struct snd_soc_dapm_route max98390_audio_map[] = {
-+	/* Plabyack */
-+	{"DAI Sel Mux", "Left", "Amp Enable"},
-+	{"DAI Sel Mux", "Right", "Amp Enable"},
-+	{"DAI Sel Mux", "LeftRight", "Amp Enable"},
-+	{"BE_OUT", NULL, "DAI Sel Mux"},
-+};
-+
-+static bool max98390_readable_register(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case MAX98390_SOFTWARE_RESET ... MAX98390_INT_EN3:
-+	case MAX98390_IRQ_CTRL ... MAX98390_WDOG_CTRL:
-+	case MAX98390_MEAS_ADC_THERM_WARN_THRESH
-+		... MAX98390_BROWNOUT_INFINITE_HOLD:
-+	case MAX98390_BROWNOUT_LVL_HOLD ... THERMAL_COILTEMP_RD_BACK_BYTE0:
-+	case DSMIG_DEBUZZER_THRESHOLD ... MAX98390_R24FF_REV_ID:
-+		return true;
-+	default:
-+		return false;
-+	}
-+};
-+
-+static bool max98390_volatile_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case MAX98390_SOFTWARE_RESET ... MAX98390_INT_EN3:
-+	case MAX98390_MEAS_ADC_CH0_READ ... MAX98390_MEAS_ADC_CH2_READ:
-+	case MAX98390_PWR_GATE_STATUS ... MAX98390_BROWNOUT_STATUS:
-+	case MAX98390_BROWNOUT_LOWEST_STATUS:
-+	case MAX98390_ENV_TRACK_BOOST_VOUT_READ:
-+	case DSM_STBASS_HPF_B0_BYTE0 ... DSM_DEBUZZER_ATTACK_TIME_BYTE2:
-+	case THERMAL_RDC_RD_BACK_BYTE1 ... THERMAL_COILTEMP_RD_BACK_BYTE0:
-+	case DSM_THERMAL_GAIN ... DSM_WBDRC_GAIN:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+#define MAX98390_RATES SNDRV_PCM_RATE_8000_48000
-+
-+#define MAX98390_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | \
-+	SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
-+
-+static struct snd_soc_dai_driver max98390_dai[] = {
-+	{
-+		.name = "max98390-aif1",
-+		.playback = {
-+			.stream_name = "HiFi Playback",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = MAX98390_RATES,
-+			.formats = MAX98390_FORMATS,
-+		},
-+		.capture = {
-+			.stream_name = "HiFi Capture",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = MAX98390_RATES,
-+			.formats = MAX98390_FORMATS,
-+		},
-+		.ops = &max98390_dai_ops,
-+	}
-+};
-+
-+static int max98390_dsm_init(struct snd_soc_component *component)
-+{
-+	int ret;
-+	char filename[128];
-+	const char *vendor, *product;
-+	struct max98390_priv *max98390 =
-+		snd_soc_component_get_drvdata(component);
-+	const struct firmware *fw;
-+	char *dsm_param;
-+
-+	vendor = dmi_get_system_info(DMI_SYS_VENDOR);
-+	product = dmi_get_system_info(DMI_PRODUCT_NAME);
-+
-+	if (vendor && product) {
-+		snprintf(filename, sizeof(filename), "dsm_param_%s_%s.bin",
-+			vendor, product);
-+	} else {
-+		sprintf(filename, "dsm_param.bin");
-+	}
-+	ret = request_firmware(&fw, filename, component->dev);
-+	if (ret) {
-+		ret = request_firmware(&fw, "dsm_param.bin", component->dev);
-+		if (ret)
-+			goto err;
-+	}
-+
-+	dev_dbg(component->dev,
-+		"max98390: param fw size %ld\n",
-+		fw->size);
-+	dsm_param = (char *)fw->data;
-+	dsm_param += MAX98390_DSM_PAYLOAD_OFFSET;
-+	regmap_bulk_write(max98390->regmap, DSM_EQ_BQ1_B0_BYTE0,
-+		dsm_param,
-+		fw->size - MAX98390_DSM_PAYLOAD_OFFSET);
-+	release_firmware(fw);
-+	regmap_write(max98390->regmap, MAX98390_R23E1_DSP_GLOBAL_EN, 0x01);
-+
-+err:
-+	return ret;
-+}
-+
-+static int max98390_dsm_calibrate(struct snd_soc_component *component)
-+{
-+	unsigned int rdc, rdc_cal_result, temp;
-+	unsigned int rdc_integer, rdc_factor;
-+	struct max98390_priv *max98390 =
-+		snd_soc_component_get_drvdata(component);
-+
-+	regmap_write(max98390->regmap, MAX98390_R203A_AMP_EN, 0x81);
-+	regmap_write(max98390->regmap, MAX98390_R23FF_GLOBAL_EN, 0x01);
-+
-+	regmap_read(max98390->regmap,
-+		THERMAL_RDC_RD_BACK_BYTE1, &rdc);
-+	regmap_read(max98390->regmap,
-+		THERMAL_RDC_RD_BACK_BYTE0, &rdc_cal_result);
-+	rdc_cal_result |= (rdc << 8) & 0x0000FFFF;
-+	if (rdc_cal_result)
-+		max98390->ref_rdc_value = 268435456U / rdc_cal_result;
-+
-+	regmap_read(max98390->regmap, MAX98390_MEAS_ADC_CH2_READ, &temp);
-+	max98390->ambient_temp_value = temp * 52 - 1188;
-+
-+	rdc_integer =  rdc_cal_result * 937  / 65536;
-+	rdc_factor = ((rdc_cal_result * 937 * 100) / 65536)
-+					- (rdc_integer * 100);
-+
-+	dev_info(component->dev, "rdc resistance about %d.%02d ohm, reg=0x%X temp reg=0x%X\n",
-+		 rdc_integer, rdc_factor, rdc_cal_result, temp);
-+
-+	regmap_write(max98390->regmap, MAX98390_R23FF_GLOBAL_EN, 0x00);
-+	regmap_write(max98390->regmap, MAX98390_R203A_AMP_EN, 0x80);
-+
-+	return 0;
-+}
-+
-+static int max98390_probe(struct snd_soc_component *component)
-+{
-+	struct max98390_priv *max98390 =
-+		snd_soc_component_get_drvdata(component);
-+
-+	regmap_write(max98390->regmap, MAX98390_SOFTWARE_RESET, 0x01);
-+	/* Sleep reset settle time */
-+	msleep(20);
-+	/* Update dsm bin param */
-+	max98390_dsm_init(component);
-+
-+	/* Amp Setting */
-+	regmap_write(max98390->regmap, MAX98390_CLK_MON, 0x6f);
-+	regmap_write(max98390->regmap, MAX98390_PCM_RX_EN_A, 0x03);
-+	regmap_write(max98390->regmap, MAX98390_PWR_GATE_CTL, 0x2d);
-+	regmap_write(max98390->regmap, MAX98390_ENV_TRACK_VOUT_HEADROOM, 0x0e);
-+	regmap_write(max98390->regmap, MAX98390_BOOST_BYPASS1, 0x46);
-+	regmap_write(max98390->regmap, MAX98390_FET_SCALING3, 0x03);
-+
-+	/* Dsm Setting */
-+	regmap_write(max98390->regmap, DSM_VOL_CTRL, 0x94);
-+	regmap_write(max98390->regmap, DSMIG_EN, 0x19);
-+	regmap_write(max98390->regmap, MAX98390_R203A_AMP_EN, 0x80);
-+	if (max98390->ref_rdc_value) {
-+		regmap_write(max98390->regmap, DSM_TPROT_RECIP_RDC_ROOM_BYTE0,
-+			max98390->ref_rdc_value & 0x000000ff);
-+		regmap_write(max98390->regmap, DSM_TPROT_RECIP_RDC_ROOM_BYTE1,
-+			(max98390->ref_rdc_value >> 8) & 0x000000ff);
-+		regmap_write(max98390->regmap, DSM_TPROT_RECIP_RDC_ROOM_BYTE2,
-+			(max98390->ref_rdc_value >> 16) & 0x000000ff);
-+	}
-+	if (max98390->ambient_temp_value) {
-+		regmap_write(max98390->regmap, DSM_TPROT_ROOM_TEMPERATURE_BYTE1,
-+			(max98390->ambient_temp_value >> 8) & 0x000000ff);
-+		regmap_write(max98390->regmap, DSM_TPROT_ROOM_TEMPERATURE_BYTE0,
-+			(max98390->ambient_temp_value) & 0x000000ff);
-+	}
-+
-+	return 0;
-+}
-+
-+#ifdef CONFIG_PM_SLEEP
-+static int max98390_suspend(struct device *dev)
-+{
-+	struct max98390_priv *max98390 = dev_get_drvdata(dev);
-+
-+	dev_dbg(dev, "%s:Enter\n", __func__);
-+
-+	regcache_cache_only(max98390->regmap, true);
-+	regcache_mark_dirty(max98390->regmap);
-+
-+	return 0;
-+}
-+
-+static int max98390_resume(struct device *dev)
-+{
-+	struct max98390_priv *max98390 = dev_get_drvdata(dev);
-+
-+	dev_dbg(dev, "%s:Enter\n", __func__);
-+
-+	regcache_cache_only(max98390->regmap, false);
-+	regcache_sync(max98390->regmap);
-+
-+	return 0;
-+}
-+#endif
-+
-+static const struct dev_pm_ops max98390_pm = {
-+	SET_SYSTEM_SLEEP_PM_OPS(max98390_suspend, max98390_resume)
-+};
-+
-+static const struct snd_soc_component_driver soc_codec_dev_max98390 = {
-+	.probe			= max98390_probe,
-+	.controls		= max98390_snd_controls,
-+	.num_controls		= ARRAY_SIZE(max98390_snd_controls),
-+	.dapm_widgets		= max98390_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(max98390_dapm_widgets),
-+	.dapm_routes		= max98390_audio_map,
-+	.num_dapm_routes	= ARRAY_SIZE(max98390_audio_map),
-+	.idle_bias_on		= 1,
-+	.use_pmdown_time	= 1,
-+	.endianness		= 1,
-+	.non_legacy_dai_naming	= 1,
-+};
-+
-+static const struct regmap_config max98390_regmap = {
-+	.reg_bits         = 16,
-+	.val_bits         = 8,
-+	.max_register     = MAX98390_R24FF_REV_ID,
-+	.reg_defaults     = max98390_reg_defaults,
-+	.num_reg_defaults = ARRAY_SIZE(max98390_reg_defaults),
-+	.readable_reg	  = max98390_readable_register,
-+	.volatile_reg	  = max98390_volatile_reg,
-+	.cache_type       = REGCACHE_RBTREE,
-+};
-+
-+#ifdef CONFIG_OF
-+static const struct of_device_id max98390_dt_ids[] = {
-+	{ .compatible = "maxim,max98390", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, max98390_dt_ids);
-+#endif
-+
-+static int max98390_i2c_probe(struct i2c_client *i2c,
-+		const struct i2c_device_id *id)
-+{
-+	int ret = 0;
-+	int reg = 0;
-+
-+	struct max98390_priv *max98390 = NULL;
-+	struct i2c_adapter *adapter = to_i2c_adapter(i2c->dev.parent);
-+
-+	ret = i2c_check_functionality(adapter,
-+		I2C_FUNC_SMBUS_BYTE
-+		| I2C_FUNC_SMBUS_BYTE_DATA);
-+	if (!ret) {
-+		dev_err(&i2c->dev, "I2C check functionality failed\n");
-+		return -ENXIO;
-+	}
-+
-+	max98390 = devm_kzalloc(&i2c->dev, sizeof(*max98390), GFP_KERNEL);
-+	if (!max98390) {
-+		ret = -ENOMEM;
-+		return ret;
-+	}
-+	i2c_set_clientdata(i2c, max98390);
-+
-+	ret = device_property_read_u32(&i2c->dev, "maxim,temperature_calib",
-+				       &max98390->ambient_temp_value);
-+	if (ret) {
-+		dev_info(&i2c->dev,
-+			 "no optional property 'temperature_calib' found, default:\n");
-+	}
-+	ret = device_property_read_u32(&i2c->dev, "maxim,r0_calib",
-+				       &max98390->ref_rdc_value);
-+	if (ret) {
-+		dev_info(&i2c->dev,
-+			 "no optional property 'r0_calib' found, default:\n");
-+	}
-+
-+	dev_info(&i2c->dev,
-+		"%s: r0_calib: 0x%x,temperature_calib: 0x%x",
-+		__func__, max98390->ref_rdc_value,
-+		max98390->ambient_temp_value);
-+
-+	/* regmap initialization */
-+	max98390->regmap = devm_regmap_init_i2c(i2c, &max98390_regmap);
-+	if (IS_ERR(max98390->regmap)) {
-+		ret = PTR_ERR(max98390->regmap);
-+		dev_err(&i2c->dev,
-+			"Failed to allocate regmap: %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* Check Revision ID */
-+	ret = regmap_read(max98390->regmap,
-+		MAX98390_R24FF_REV_ID, &reg);
-+	if (ret) {
-+		dev_err(&i2c->dev,
-+			"ret=%d, Failed to read: 0x%02X\n",
-+			ret, MAX98390_R24FF_REV_ID);
-+		return ret;
-+	}
-+	dev_info(&i2c->dev, "MAX98390 revisionID: 0x%02X\n", reg);
-+
-+	ret = devm_snd_soc_register_component(&i2c->dev,
-+			&soc_codec_dev_max98390,
-+			max98390_dai, ARRAY_SIZE(max98390_dai));
-+
-+	return ret;
-+}
-+
-+static const struct i2c_device_id max98390_i2c_id[] = {
-+	{ "max98390", 0},
-+	{},
-+};
-+
-+MODULE_DEVICE_TABLE(i2c, max98390_i2c_id);
-+
-+#if defined(CONFIG_OF)
-+static const struct of_device_id max98390_of_match[] = {
-+	{ .compatible = "maxim,max98390", },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, max98390_of_match);
-+#endif
-+
-+#ifdef CONFIG_ACPI
-+static const struct acpi_device_id max98390_acpi_match[] = {
-+	{ "MX98390", 0 },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(acpi, max98390_acpi_match);
-+#endif
-+
-+static struct i2c_driver max98390_i2c_driver = {
-+	.driver = {
-+		.name = "max98390",
-+		.of_match_table = of_match_ptr(max98390_of_match),
-+		.acpi_match_table = ACPI_PTR(max98390_acpi_match),
-+		.pm = &max98390_pm,
-+	},
-+	.probe = max98390_i2c_probe,
-+	.id_table = max98390_i2c_id,
-+};
-+
-+module_i2c_driver(max98390_i2c_driver)
-+
-+MODULE_DESCRIPTION("ALSA SoC MAX98390 driver");
-+MODULE_AUTHOR("Steve Lee <steves.lee@maximintegrated.com>");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/max98390.h b/sound/soc/codecs/max98390.h
-new file mode 100644
-index 000000000000..f59cb114d957
---- /dev/null
-+++ b/sound/soc/codecs/max98390.h
-@@ -0,0 +1,663 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (c) 2020, Maxim Integrated.
-+ */
-+
-+#ifndef _MAX98390_H
-+#define _MAX98390_H
-+
-+/* MAX98390 Register Address */
-+#define MAX98390_SOFTWARE_RESET 0x2000
-+#define MAX98390_INT_RAW1 0x2002
-+#define MAX98390_INT_RAW2 0x2003
-+#define MAX98390_INT_RAW3 0x2004
-+#define MAX98390_INT_STATE1 0x2005
-+#define MAX98390_INT_STATE2 0x2006
-+#define MAX98390_INT_STATE3 0x2007
-+#define MAX98390_INT_FLAG1 0x2008
-+#define MAX98390_INT_FLAG2 0x2009
-+#define MAX98390_INT_FLAG3 0x200a
-+#define MAX98390_INT_EN1 0x200b
-+#define MAX98390_INT_EN2 0x200c
-+#define MAX98390_INT_EN3 0x200d
-+#define MAX98390_INT_FLAG_CLR1 0x200e
-+#define MAX98390_INT_FLAG_CLR2 0x200f
-+#define MAX98390_INT_FLAG_CLR3 0x2010
-+#define MAX98390_IRQ_CTRL 0x2011
-+#define MAX98390_CLK_MON 0x2012
-+#define MAX98390_DAT_MON 0x2014
-+#define MAX98390_WDOG_CTRL 0x2015
-+#define MAX98390_WDOG_RST 0x2016
-+#define MAX98390_MEAS_ADC_THERM_WARN_THRESH 0x2017
-+#define MAX98390_MEAS_ADC_THERM_SHDN_THRESH 0x2018
-+#define MAX98390_MEAS_ADC_THERM_HYSTERESIS 0x2019
-+#define MAX98390_PIN_CFG 0x201a
-+#define MAX98390_PCM_RX_EN_A 0x201b
-+#define MAX98390_PCM_RX_EN_B 0x201c
-+#define MAX98390_PCM_TX_EN_A 0x201d
-+#define MAX98390_PCM_TX_EN_B 0x201e
-+#define MAX98390_PCM_TX_HIZ_CTRL_A 0x201f
-+#define MAX98390_PCM_TX_HIZ_CTRL_B 0x2020
-+#define MAX98390_PCM_CH_SRC_1 0x2021
-+#define MAX98390_PCM_CH_SRC_2 0x2022
-+#define MAX98390_PCM_CH_SRC_3 0x2023
-+#define MAX98390_PCM_MODE_CFG 0x2024
-+#define MAX98390_PCM_MASTER_MODE 0x2025
-+#define MAX98390_PCM_CLK_SETUP 0x2026
-+#define MAX98390_PCM_SR_SETUP 0x2027
-+#define MAX98390_ICC_RX_EN_A 0x202c
-+#define MAX98390_ICC_RX_EN_B 0x202d
-+#define MAX98390_ICC_TX_EN_A 0x202e
-+#define MAX98390_ICC_TX_EN_B 0x202f
-+#define MAX98390_ICC_HIZ_MANUAL_MODE 0x2030
-+#define MAX98390_ICC_TX_HIZ_EN_A 0x2031
-+#define MAX98390_ICC_TX_HIZ_EN_B 0x2032
-+#define MAX98390_ICC_LNK_EN 0x2033
-+#define MAX98390_R2039_AMP_DSP_CFG 0x2039
-+#define MAX98390_R203A_AMP_EN 0x203a
-+#define MAX98390_TONE_GEN_DC_CFG 0x203b
-+#define MAX98390_SPK_SRC_SEL 0x203c
-+#define MAX98390_R203D_SPK_GAIN 0x203d
-+#define MAX98390_SSM_CFG 0x203e
-+#define MAX98390_MEAS_EN 0x203f
-+#define MAX98390_MEAS_DSP_CFG 0x2040
-+#define MAX98390_BOOST_CTRL0 0x2041
-+#define MAX98390_BOOST_CTRL3 0x2042
-+#define MAX98390_BOOST_CTRL1 0x2043
-+#define MAX98390_MEAS_ADC_CFG 0x2044
-+#define MAX98390_MEAS_ADC_BASE_MSB 0x2045
-+#define MAX98390_MEAS_ADC_BASE_LSB 0x2046
-+#define MAX98390_ADC_CH0_DIVIDE 0x2047
-+#define MAX98390_ADC_CH1_DIVIDE 0x2048
-+#define MAX98390_ADC_CH2_DIVIDE 0x2049
-+#define MAX98390_ADC_CH0_FILT_CFG 0x204a
-+#define MAX98390_ADC_CH1_FILT_CFG 0x204b
-+#define MAX98390_ADC_CH2_FILT_CFG 0x204c
-+#define MAX98390_MEAS_ADC_CH0_READ 0x204d
-+#define MAX98390_MEAS_ADC_CH1_READ 0x204e
-+#define MAX98390_MEAS_ADC_CH2_READ 0x204f
-+#define MAX98390_PWR_GATE_CTL 0x2050
-+#define MAX98390_PWR_GATE_STATUS 0x2051
-+#define MAX98390_VBAT_LOW_STATUS 0x2052
-+#define MAX98390_PVDD_LOW_STATUS 0x2053
-+#define MAX98390_BROWNOUT_STATUS 0x2054
-+#define MAX98390_BROWNOUT_EN 0x2055
-+#define MAX98390_BROWNOUT_INFINITE_HOLD 0x2056
-+#define MAX98390_BROWNOUT_INFINITE_HOLD_CLR 0x2057
-+#define MAX98390_BROWNOUT_LVL_HOLD 0x2058
-+#define MAX98390_BROWNOUT_LVL1_THRESH 0x2059
-+#define MAX98390_BROWNOUT_LVL2_THRESH 0x205a
-+#define MAX98390_BROWNOUT_LVL3_THRESH 0x205b
-+#define MAX98390_BROWNOUT_LVL4_THRESH 0x205c
-+#define MAX98390_BROWNOUT_THRESH_HYSTERYSIS 0x205d
-+#define MAX98390_BROWNOUT_AMP_LIMITER_ATK_REL 0x205e
-+#define MAX98390_BROWNOUT_AMP_GAIN_ATK_REL 0x205f
-+#define MAX98390_BROWNOUT_AMP1_CLIP_MODE 0x2060
-+#define MAX98390_BROWNOUT_LVL1_CUR_LIMIT 0x2061
-+#define MAX98390_BROWNOUT_LVL1_AMP1_CTRL1 0x2062
-+#define MAX98390_BROWNOUT_LVL1_AMP1_CTRL2 0x2063
-+#define MAX98390_BROWNOUT_LVL1_AMP1_CTRL3 0x2064
-+#define MAX98390_BROWNOUT_LVL2_CUR_LIMIT 0x2065
-+#define MAX98390_BROWNOUT_LVL2_AMP1_CTRL1 0x2066
-+#define MAX98390_BROWNOUT_LVL2_AMP1_CTRL2 0x2067
-+#define MAX98390_BROWNOUT_LVL2_AMP1_CTRL3 0x2068
-+#define MAX98390_BROWNOUT_LVL3_CUR_LIMIT 0x2069
-+#define MAX98390_BROWNOUT_LVL3_AMP1_CTRL1 0x206a
-+#define MAX98390_BROWNOUT_LVL3_AMP1_CTRL2 0x206b
-+#define MAX98390_BROWNOUT_LVL3_AMP1_CTRL3 0x206c
-+#define MAX98390_BROWNOUT_LVL4_CUR_LIMIT 0x206d
-+#define MAX98390_BROWNOUT_LVL4_AMP1_CTRL1 0x206e
-+#define MAX98390_BROWNOUT_LVL4_AMP1_CTRL2 0x206f
-+#define MAX98390_BROWNOUT_LVL4_AMP1_CTRL3 0x2070
-+#define MAX98390_BROWNOUT_LOWEST_STATUS 0x2071
-+#define MAX98390_BROWNOUT_ILIM_HLD 0x2072
-+#define MAX98390_BROWNOUT_LIM_HLD 0x2073
-+#define MAX98390_BROWNOUT_CLIP_HLD 0x2074
-+#define MAX98390_BROWNOUT_GAIN_HLD 0x2075
-+#define MAX98390_ENV_TRACK_VOUT_HEADROOM 0x2076
-+#define MAX98390_ENV_TRACK_BOOST_VOUT_DELAY 0x2077
-+#define MAX98390_ENV_TRACK_REL_RATE 0x2078
-+#define MAX98390_ENV_TRACK_HOLD_RATE 0x2079
-+#define MAX98390_ENV_TRACK_CTRL 0x207a
-+#define MAX98390_ENV_TRACK_BOOST_VOUT_READ 0x207b
-+#define MAX98390_BOOST_BYPASS1 0x207c
-+#define MAX98390_BOOST_BYPASS2 0x207d
-+#define MAX98390_BOOST_BYPASS3 0x207e
-+#define MAX98390_FET_SCALING1 0x207f
-+#define MAX98390_FET_SCALING2 0x2080
-+#define MAX98390_FET_SCALING3 0x2081
-+#define MAX98390_FET_SCALING4 0x2082
-+#define MAX98390_SPK_SPEEDUP 0x2084
-+
-+#define DSM_STBASS_HPF_B0_BYTE0 0x2101
-+#define DSM_STBASS_HPF_B0_BYTE1 0x2102
-+#define DSM_STBASS_HPF_B0_BYTE2 0x2103
-+#define DSM_STBASS_HPF_B1_BYTE0 0x2105
-+#define DSM_STBASS_HPF_B1_BYTE1 0x2106
-+#define DSM_STBASS_HPF_B1_BYTE2 0x2107
-+#define DSM_STBASS_HPF_B2_BYTE0 0x2109
-+#define DSM_STBASS_HPF_B2_BYTE1 0x210a
-+#define DSM_STBASS_HPF_B2_BYTE2 0x210b
-+#define DSM_STBASS_HPF_A1_BYTE0 0x210d
-+#define DSM_STBASS_HPF_A1_BYTE1 0x210e
-+#define DSM_STBASS_HPF_A1_BYTE2 0x210f
-+#define DSM_STBASS_HPF_A2_BYTE0 0x2111
-+#define DSM_STBASS_HPF_A2_BYTE1 0x2112
-+#define DSM_STBASS_HPF_A2_BYTE2 0x2113
-+#define DSM_STBASS_LPF_B0_BYTE0 0x2115
-+#define DSM_STBASS_LPF_B0_BYTE1 0x2116
-+#define DSM_STBASS_LPF_B0_BYTE2 0x2117
-+#define DSM_STBASS_LPF_B1_BYTE0 0x2119
-+#define DSM_STBASS_LPF_B1_BYTE1 0x211a
-+#define DSM_STBASS_LPF_B1_BYTE2 0x211b
-+#define DSM_STBASS_LPF_B2_BYTE0 0x211d
-+#define DSM_STBASS_LPF_B2_BYTE1 0x211e
-+#define DSM_STBASS_LPF_B2_BYTE2 0x211f
-+#define DSM_STBASS_LPF_A1_BYTE0 0x2121
-+#define DSM_STBASS_LPF_A1_BYTE1 0x2122
-+#define DSM_STBASS_LPF_A1_BYTE2 0x2123
-+#define DSM_STBASS_LPF_A2_BYTE0 0x2125
-+#define DSM_STBASS_LPF_A2_BYTE1 0x2126
-+#define DSM_STBASS_LPF_A2_BYTE2 0x2127
-+#define DSM_EQ_BQ1_B0_BYTE0 0x2129
-+#define DSM_EQ_BQ1_B0_BYTE1 0x212a
-+#define DSM_EQ_BQ1_B0_BYTE2 0x212b
-+#define DSM_EQ_BQ1_B1_BYTE0 0x212d
-+#define DSM_EQ_BQ1_B1_BYTE1 0x212e
-+#define DSM_EQ_BQ1_B1_BYTE2 0x212f
-+#define DSM_EQ_BQ1_B2_BYTE0 0x2131
-+#define DSM_EQ_BQ1_B2_BYTE1 0x2132
-+#define DSM_EQ_BQ1_B2_BYTE2 0x2133
-+#define DSM_EQ_BQ1_A1_BYTE0 0x2135
-+#define DSM_EQ_BQ1_A1_BYTE1 0x2136
-+#define DSM_EQ_BQ1_A1_BYTE2 0x2137
-+#define DSM_EQ_BQ1_A2_BYTE0 0x2139
-+#define DSM_EQ_BQ1_A2_BYTE1 0x213a
-+#define DSM_EQ_BQ1_A2_BYTE2 0x213b
-+#define DSM_EQ_BQ2_B0_BYTE0 0x213d
-+#define DSM_EQ_BQ2_B0_BYTE1 0x213e
-+#define DSM_EQ_BQ2_B0_BYTE2 0x213f
-+#define DSM_EQ_BQ2_B1_BYTE0 0x2141
-+#define DSM_EQ_BQ2_B1_BYTE1 0x2142
-+#define DSM_EQ_BQ2_B1_BYTE2 0x2143
-+#define DSM_EQ_BQ2_B2_BYTE0 0x2145
-+#define DSM_EQ_BQ2_B2_BYTE1 0x2146
-+#define DSM_EQ_BQ2_B2_BYTE2 0x2147
-+#define DSM_EQ_BQ2_A1_BYTE0 0x2149
-+#define DSM_EQ_BQ2_A1_BYTE1 0x214a
-+#define DSM_EQ_BQ2_A1_BYTE2 0x214b
-+#define DSM_EQ_BQ2_A2_BYTE0 0x214d
-+#define DSM_EQ_BQ2_A2_BYTE1 0x214e
-+#define DSM_EQ_BQ2_A2_BYTE2 0x214f
-+#define DSM_EQ_BQ3_B0_BYTE0 0x2151
-+#define DSM_EQ_BQ3_B0_BYTE1 0x2152
-+#define DSM_EQ_BQ3_B0_BYTE2 0x2153
-+#define DSM_EQ_BQ3_B1_BYTE0 0x2155
-+#define DSM_EQ_BQ3_B1_BYTE1 0x2156
-+#define DSM_EQ_BQ3_B1_BYTE2 0x2157
-+#define DSM_EQ_BQ3_B2_BYTE0 0x2159
-+#define DSM_EQ_BQ3_B2_BYTE1 0x215a
-+#define DSM_EQ_BQ3_B2_BYTE2 0x215b
-+#define DSM_EQ_BQ3_A1_BYTE0 0x215d
-+#define DSM_EQ_BQ3_A1_BYTE1 0x215e
-+#define DSM_EQ_BQ3_A1_BYTE2 0x215f
-+#define DSM_EQ_BQ3_A2_BYTE0 0x2161
-+#define DSM_EQ_BQ3_A2_BYTE1 0x2162
-+#define DSM_EQ_BQ3_A2_BYTE2 0x2163
-+#define DSM_EQ_BQ4_B0_BYTE0 0x2165
-+#define DSM_EQ_BQ4_B0_BYTE1 0x2166
-+#define DSM_EQ_BQ4_B0_BYTE2 0x2167
-+#define DSM_EQ_BQ4_B1_BYTE0 0x2169
-+#define DSM_EQ_BQ4_B1_BYTE1 0x216a
-+#define DSM_EQ_BQ4_B1_BYTE2 0x216b
-+#define DSM_EQ_BQ4_B2_BYTE0 0x216d
-+#define DSM_EQ_BQ4_B2_BYTE1 0x216e
-+#define DSM_EQ_BQ4_B2_BYTE2 0x216f
-+#define DSM_EQ_BQ4_A1_BYTE0 0x2171
-+#define DSM_EQ_BQ4_A1_BYTE1 0x2172
-+#define DSM_EQ_BQ4_A1_BYTE2 0x2173
-+#define DSM_EQ_BQ4_A2_BYTE0 0x2175
-+#define DSM_EQ_BQ4_A2_BYTE1 0x2176
-+#define DSM_EQ_BQ4_A2_BYTE2 0x2177
-+#define DSM_EQ_BQ5_B0_BYTE0 0x2179
-+#define DSM_EQ_BQ5_B0_BYTE1 0x217a
-+#define DSM_EQ_BQ5_B0_BYTE2 0x217b
-+#define DSM_EQ_BQ5_B1_BYTE0 0x217d
-+#define DSM_EQ_BQ5_B1_BYTE1 0x217e
-+#define DSM_EQ_BQ5_B1_BYTE2 0x217f
-+#define DSM_EQ_BQ5_B2_BYTE0 0x2181
-+#define DSM_EQ_BQ5_B2_BYTE1 0x2182
-+#define DSM_EQ_BQ5_B2_BYTE2 0x2183
-+#define DSM_EQ_BQ5_A1_BYTE0 0x2185
-+#define DSM_EQ_BQ5_A1_BYTE1 0x2186
-+#define DSM_EQ_BQ5_A1_BYTE2 0x2187
-+#define DSM_EQ_BQ5_A2_BYTE0 0x2189
-+#define DSM_EQ_BQ5_A2_BYTE1 0x218a
-+#define DSM_EQ_BQ5_A2_BYTE2 0x218b
-+#define DSM_EQ_BQ6_B0_BYTE0 0x218d
-+#define DSM_EQ_BQ6_B0_BYTE1 0x218e
-+#define DSM_EQ_BQ6_B0_BYTE2 0x218f
-+#define DSM_EQ_BQ6_B1_BYTE0 0x2191
-+#define DSM_EQ_BQ6_B1_BYTE1 0x2192
-+#define DSM_EQ_BQ6_B1_BYTE2 0x2193
-+#define DSM_EQ_BQ6_B2_BYTE0 0x2195
-+#define DSM_EQ_BQ6_B2_BYTE1 0x2196
-+#define DSM_EQ_BQ6_B2_BYTE2 0x2197
-+#define DSM_EQ_BQ6_A1_BYTE0 0x2199
-+#define DSM_EQ_BQ6_A1_BYTE1 0x219a
-+#define DSM_EQ_BQ6_A1_BYTE2 0x219b
-+#define DSM_EQ_BQ6_A2_BYTE0 0x219d
-+#define DSM_EQ_BQ6_A2_BYTE1 0x219e
-+#define DSM_EQ_BQ6_A2_BYTE2 0x219f
-+#define DSM_EQ_BQ7_B0_BYTE0 0x21a1
-+#define DSM_EQ_BQ7_B0_BYTE1 0x21a2
-+#define DSM_EQ_BQ7_B0_BYTE2 0x21a3
-+#define DSM_EQ_BQ7_B1_BYTE0 0x21a5
-+#define DSM_EQ_BQ7_B1_BYTE1 0x21a6
-+#define DSM_EQ_BQ7_B1_BYTE2 0x21a7
-+#define DSM_EQ_BQ7_B2_BYTE0 0x21a9
-+#define DSM_EQ_BQ7_B2_BYTE1 0x21aa
-+#define DSM_EQ_BQ7_B2_BYTE2 0x21ab
-+#define DSM_EQ_BQ7_A1_BYTE0 0x21ad
-+#define DSM_EQ_BQ7_A1_BYTE1 0x21ae
-+#define DSM_EQ_BQ7_A1_BYTE2 0x21af
-+#define DSM_EQ_BQ7_A2_BYTE0 0x21b1
-+#define DSM_EQ_BQ7_A2_BYTE1 0x21b2
-+#define DSM_EQ_BQ7_A2_BYTE2 0x21b3
-+#define DSM_EQ_BQ8_B0_BYTE0 0x21b5
-+#define DSM_EQ_BQ8_B0_BYTE1 0x21b6
-+#define DSM_EQ_BQ8_B0_BYTE2 0x21b7
-+#define DSM_EQ_BQ8_B1_BYTE0 0x21b9
-+#define DSM_EQ_BQ8_B1_BYTE1 0x21ba
-+#define DSM_EQ_BQ8_B1_BYTE2 0x21bb
-+#define DSM_EQ_BQ8_B2_BYTE0 0x21bd
-+#define DSM_EQ_BQ8_B2_BYTE1 0x21be
-+#define DSM_EQ_BQ8_B2_BYTE2 0x21bf
-+#define DSM_EQ_BQ8_A1_BYTE0 0x21c1
-+#define DSM_EQ_BQ8_A1_BYTE1 0x21c2
-+#define DSM_EQ_BQ8_A1_BYTE2 0x21c3
-+#define DSM_EQ_BQ8_A2_BYTE0 0x21c5
-+#define DSM_EQ_BQ8_A2_BYTE1 0x21c6
-+#define DSM_EQ_BQ8_A2_BYTE2 0x21c7
-+#define DSM_LFX_BQ_B0_BYTE0 0x21c9
-+#define DSM_LFX_BQ_B0_BYTE1 0x21ca
-+#define DSM_LFX_BQ_B0_BYTE2 0x21cb
-+#define DSM_LFX_BQ_B1_BYTE0 0x21cd
-+#define DSM_LFX_BQ_B1_BYTE1 0x21ce
-+#define DSM_LFX_BQ_B1_BYTE2 0x21cf
-+#define DSM_LFX_BQ_B2_BYTE0 0x21d1
-+#define DSM_LFX_BQ_B2_BYTE1 0x21d2
-+#define DSM_LFX_BQ_B2_BYTE2 0x21d3
-+#define DSM_LFX_BQ_A1_BYTE0 0x21d5
-+#define DSM_LFX_BQ_A1_BYTE1 0x21d6
-+#define DSM_LFX_BQ_A1_BYTE2 0x21d7
-+#define DSM_LFX_BQ_A2_BYTE0 0x21d9
-+#define DSM_LFX_BQ_A2_BYTE1 0x21da
-+#define DSM_LFX_BQ_A2_BYTE2 0x21db
-+#define DSM_PPR_HPF_B0_BYTE0 0x21dd
-+#define DSM_PPR_HPF_B0_BYTE1 0x21de
-+#define DSM_PPR_HPF_B0_BYTE2 0x21df
-+#define DSM_PPR_HPF_B1_BYTE0 0x21e1
-+#define DSM_PPR_HPF_B1_BYTE1 0x21e2
-+#define DSM_PPR_HPF_B1_BYTE2 0x21e3
-+#define DSM_PPR_HPF_B2_BYTE0 0x21e5
-+#define DSM_PPR_HPF_B2_BYTE1 0x21e6
-+#define DSM_PPR_HPF_B2_BYTE2 0x21e7
-+#define DSM_PPR_HPF_A1_BYTE0 0x21e9
-+#define DSM_PPR_HPF_A1_BYTE1 0x21ea
-+#define DSM_PPR_HPF_A1_BYTE2 0x21eb
-+#define DSM_PPR_HPF_A2_BYTE0 0x21ed
-+#define DSM_PPR_HPF_A2_BYTE1 0x21ee
-+#define DSM_PPR_HPF_A2_BYTE2 0x21ef
-+#define DSM_PPR_LPF_B0_BYTE0 0x21f1
-+#define DSM_PPR_LPF_B0_BYTE1 0x21f2
-+#define DSM_PPR_LPF_B0_BYTE2 0x21f3
-+#define DSM_PPR_LPF_B1_BYTE0 0x21f5
-+#define DSM_PPR_LPF_B1_BYTE1 0x21f6
-+#define DSM_PPR_LPF_B1_BYTE2 0x21f7
-+#define DSM_PPR_LPF_B2_BYTE0 0x21f9
-+#define DSM_PPR_LPF_B2_BYTE1 0x21fa
-+#define DSM_PPR_LPF_B2_BYTE2 0x21fb
-+#define DSM_PPR_LPF_A1_BYTE0 0x21fd
-+#define DSM_PPR_LPF_A1_BYTE1 0x21fe
-+#define DSM_PPR_LPF_A1_BYTE2 0x21ff
-+#define DSM_PPR_LPF_A2_BYTE0 0x2201
-+#define DSM_PPR_LPF_A2_BYTE1 0x2202
-+#define DSM_PPR_LPF_A2_BYTE2 0x2203
-+#define DSM_SPL_BQ_B0_BYTE0 0x2205
-+#define DSM_SPL_BQ_B0_BYTE1 0x2206
-+#define DSM_SPL_BQ_B0_BYTE2 0x2207
-+#define DSM_SPL_BQ_B1_BYTE0 0x2209
-+#define DSM_SPL_BQ_B1_BYTE1 0x220a
-+#define DSM_SPL_BQ_B1_BYTE2 0x220b
-+#define DSM_SPL_BQ_B2_BYTE0 0x220d
-+#define DSM_SPL_BQ_B2_BYTE1 0x220e
-+#define DSM_SPL_BQ_B2_BYTE2 0x220f
-+#define DSM_SPL_BQ_A1_BYTE0 0x2211
-+#define DSM_SPL_BQ_A1_BYTE1 0x2212
-+#define DSM_SPL_BQ_A1_BYTE2 0x2213
-+#define DSM_SPL_BQ_A2_BYTE0 0x2215
-+#define DSM_SPL_BQ_A2_BYTE1 0x2216
-+#define DSM_SPL_BQ_A2_BYTE2 0x2217
-+#define DSM_EXCUR_BQ_B0_BYTE0 0x2219
-+#define DSM_EXCUR_BQ_B0_BYTE1 0x221a
-+#define DSM_EXCUR_BQ_B0_BYTE2 0x221b
-+#define DSM_EXCUR_BQ_B1_BYTE0 0x221d
-+#define DSM_EXCUR_BQ_B1_BYTE1 0x221e
-+#define DSM_EXCUR_BQ_B1_BYTE2 0x221f
-+#define DSM_EXCUR_BQ_B2_BYTE0 0x2221
-+#define DSM_EXCUR_BQ_B2_BYTE1 0x2222
-+#define DSM_EXCUR_BQ_B2_BYTE2 0x2223
-+#define DSM_EXCUR_BQ_A1_BYTE0 0x2225
-+#define DSM_EXCUR_BQ_A1_BYTE1 0x2226
-+#define DSM_EXCUR_BQ_A1_BYTE2 0x2227
-+#define DSM_EXCUR_BQ_A2_BYTE0 0x2229
-+#define DSM_EXCUR_BQ_A2_BYTE1 0x222a
-+#define DSM_EXCUR_BQ_A2_BYTE2 0x222b
-+#define DSM_EXCPROT_HPF1_B0_BYTE0 0x222d
-+#define DSM_EXCPROT_HPF1_B0_BYTE1 0x222e
-+#define DSM_EXCPROT_HPF1_B0_BYTE2 0x222f
-+#define DSM_EXCPROT_HPF1_B1_BYTE0 0x2231
-+#define DSM_EXCPROT_HPF1_B1_BYTE1 0x2232
-+#define DSM_EXCPROT_HPF1_B1_BYTE2 0x2233
-+#define DSM_EXCPROT_HPF1_B2_BYTE0 0x2235
-+#define DSM_EXCPROT_HPF1_B2_BYTE1 0x2236
-+#define DSM_EXCPROT_HPF1_B2_BYTE2 0x2237
-+#define DSM_EXCPROT_HPF1_A1_BYTE0 0x2239
-+#define DSM_EXCPROT_HPF1_A1_BYTE1 0x223a
-+#define DSM_EXCPROT_HPF1_A1_BYTE2 0x223b
-+#define DSM_EXCPROT_HPF1_A2_BYTE0 0x223d
-+#define DSM_EXCPROT_HPF1_A2_BYTE1 0x223e
-+#define DSM_EXCPROT_HPF1_A2_BYTE2 0x223f
-+#define DSM_EXCPROT_HPF2_B0_BYTE0 0x2241
-+#define DSM_EXCPROT_HPF2_B0_BYTE1 0x2242
-+#define DSM_EXCPROT_HPF2_B0_BYTE2 0x2243
-+#define DSM_EXCPROT_HPF2_B1_BYTE0 0x2245
-+#define DSM_EXCPROT_HPF2_B1_BYTE1 0x2246
-+#define DSM_EXCPROT_HPF2_B1_BYTE2 0x2247
-+#define DSM_EXCPROT_HPF2_B2_BYTE0 0x2249
-+#define DSM_EXCPROT_HPF2_B2_BYTE1 0x224a
-+#define DSM_EXCPROT_HPF2_B2_BYTE2 0x224b
-+#define DSM_EXCPROT_HPF2_A1_BYTE0 0x224d
-+#define DSM_EXCPROT_HPF2_A1_BYTE1 0x224e
-+#define DSM_EXCPROT_HPF2_A1_BYTE2 0x224f
-+#define DSM_EXCPROT_HPF2_A2_BYTE0 0x2251
-+#define DSM_EXCPROT_HPF2_A2_BYTE1 0x2252
-+#define DSM_EXCPROT_HPF2_A2_BYTE2 0x2253
-+#define DSM_EXCPROT_HPF3_B0_BYTE0 0x2255
-+#define DSM_EXCPROT_HPF3_B0_BYTE1 0x2256
-+#define DSM_EXCPROT_HPF3_B0_BYTE2 0x2257
-+#define DSM_EXCPROT_HPF3_B1_BYTE0 0x2259
-+#define DSM_EXCPROT_HPF3_B1_BYTE1 0x225a
-+#define DSM_EXCPROT_HPF3_B1_BYTE2 0x225b
-+#define DSM_EXCPROT_HPF3_B2_BYTE0 0x225d
-+#define DSM_EXCPROT_HPF3_B2_BYTE1 0x225e
-+#define DSM_EXCPROT_HPF3_B2_BYTE2 0x225f
-+#define DSM_EXCPROT_HPF3_A1_BYTE0 0x2261
-+#define DSM_EXCPROT_HPF3_A1_BYTE1 0x2262
-+#define DSM_EXCPROT_HPF3_A1_BYTE2 0x2263
-+#define DSM_EXCPROT_HPF3_A2_BYTE0 0x2265
-+#define DSM_EXCPROT_HPF3_A2_BYTE1 0x2266
-+#define DSM_EXCPROT_HPF3_A2_BYTE2 0x2267
-+#define DSM_EXCPROT_HPF4_B0_BYTE0 0x2269
-+#define DSM_EXCPROT_HPF4_B0_BYTE1 0x226a
-+#define DSM_EXCPROT_HPF4_B0_BYTE2 0x226b
-+#define DSM_EXCPROT_HPF4_B1_BYTE0 0x226d
-+#define DSM_EXCPROT_HPF4_B1_BYTE1 0x226e
-+#define DSM_EXCPROT_HPF4_B1_BYTE2 0x226f
-+#define DSM_EXCPROT_HPF4_B2_BYTE0 0x2271
-+#define DSM_EXCPROT_HPF4_B2_BYTE1 0x2272
-+#define DSM_EXCPROT_HPF4_B2_BYTE2 0x2273
-+#define DSM_EXCPROT_HPF4_A1_BYTE0 0x2275
-+#define DSM_EXCPROT_HPF4_A1_BYTE1 0x2276
-+#define DSM_EXCPROT_HPF4_A1_BYTE2 0x2277
-+#define DSM_EXCPROT_HPF4_A2_BYTE0 0x2279
-+#define DSM_EXCPROT_HPF4_A2_BYTE1 0x227a
-+#define DSM_EXCPROT_HPF4_A2_BYTE2 0x227b
-+#define DSM_EXCPROT_HPF5_B0_BYTE0 0x227d
-+#define DSM_EXCPROT_HPF5_B0_BYTE1 0x227e
-+#define DSM_EXCPROT_HPF5_B0_BYTE2 0x227f
-+#define DSM_EXCPROT_HPF5_B1_BYTE0 0x2281
-+#define DSM_EXCPROT_HPF5_B1_BYTE1 0x2282
-+#define DSM_EXCPROT_HPF5_B1_BYTE2 0x2283
-+#define DSM_EXCPROT_HPF5_B2_BYTE0 0x2285
-+#define DSM_EXCPROT_HPF5_B2_BYTE1 0x2286
-+#define DSM_EXCPROT_HPF5_B2_BYTE2 0x2287
-+#define DSM_EXCPROT_HPF5_A1_BYTE0 0x2289
-+#define DSM_EXCPROT_HPF5_A1_BYTE1 0x228a
-+#define DSM_EXCPROT_HPF5_A1_BYTE2 0x228b
-+#define DSM_EXCPROT_HPF5_A2_BYTE0 0x228d
-+#define DSM_EXCPROT_HPF5_A2_BYTE1 0x228e
-+#define DSM_EXCPROT_HPF5_A2_BYTE2 0x228f
-+#define DSM_DEBUZZ_BPF_B0_BYTE0 0x2291
-+#define DSM_DEBUZZ_BPF_B0_BYTE1 0x2292
-+#define DSM_DEBUZZ_BPF_B0_BYTE2 0x2293
-+#define DSM_DEBUZZ_BPF_B1_BYTE0 0x2295
-+#define DSM_DEBUZZ_BPF_B1_BYTE1 0x2296
-+#define DSM_DEBUZZ_BPF_B1_BYTE2 0x2297
-+#define DSM_DEBUZZ_BPF_B2_BYTE0 0x2299
-+#define DSM_DEBUZZ_BPF_B2_BYTE1 0x229a
-+#define DSM_DEBUZZ_BPF_B2_BYTE2 0x229b
-+#define DSM_DEBUZZ_BPF_A1_BYTE0 0x229d
-+#define DSM_DEBUZZ_BPF_A1_BYTE1 0x229e
-+#define DSM_DEBUZZ_BPF_A1_BYTE2 0x229f
-+#define DSM_DEBUZZ_BPF_A2_BYTE0 0x22a1
-+#define DSM_DEBUZZ_BPF_A2_BYTE1 0x22a2
-+#define DSM_DEBUZZ_BPF_A2_BYTE2 0x22a3
-+#define DSM_DEBUZZ_PORT_B0_BYTE0 0x22a5
-+#define DSM_DEBUZZ_PORT_B0_BYTE1 0x22a6
-+#define DSM_DEBUZZ_PORT_B0_BYTE2 0x22a7
-+#define DSM_DEBUZZ_PORT_B1_BYTE0 0x22a9
-+#define DSM_DEBUZZ_PORT_B1_BYTE1 0x22aa
-+#define DSM_DEBUZZ_PORT_B1_BYTE2 0x22ab
-+#define DSM_DEBUZZ_PORT_B2_BYTE0 0x22ad
-+#define DSM_DEBUZZ_PORT_B2_BYTE1 0x22ae
-+#define DSM_DEBUZZ_PORT_B2_BYTE2 0x22af
-+#define DSM_DEBUZZ_PORT_A1_BYTE0 0x22b1
-+#define DSM_DEBUZZ_PORT_A1_BYTE1 0x22b2
-+#define DSM_DEBUZZ_PORT_A1_BYTE2 0x22b3
-+#define DSM_DEBUZZ_PORT_A2_BYTE0 0x22b5
-+#define DSM_DEBUZZ_PORT_A2_BYTE1 0x22b6
-+#define DSM_DEBUZZ_PORT_A2_BYTE2 0x22b7
-+#define DSM_DEBUZZ_NOTCH_B0_BYTE0 0x22b9
-+#define DSM_DEBUZZ_NOTCH_B0_BYTE1 0x22ba
-+#define DSM_DEBUZZ_NOTCH_B0_BYTE2 0x22bb
-+#define DSM_DEBUZZ_NOTCH_B1_BYTE0 0x22bd
-+#define DSM_DEBUZZ_NOTCH_B1_BYTE1 0x22be
-+#define DSM_DEBUZZ_NOTCH_B1_BYTE2 0x22bf
-+#define DSM_DEBUZZ_NOTCH_B2_BYTE0 0x22c1
-+#define DSM_DEBUZZ_NOTCH_B2_BYTE1 0x22c2
-+#define DSM_DEBUZZ_NOTCH_B2_BYTE2 0x22c3
-+#define DSM_DEBUZZ_NOTCH_A1_BYTE0 0x22c5
-+#define DSM_DEBUZZ_NOTCH_A1_BYTE1 0x22c6
-+#define DSM_DEBUZZ_NOTCH_A1_BYTE2 0x22c7
-+#define DSM_DEBUZZ_NOTCH_A2_BYTE0 0x22c9
-+#define DSM_DEBUZZ_NOTCH_A2_BYTE1 0x22ca
-+#define DSM_DEBUZZ_NOTCH_A2_BYTE2 0x22cb
-+#define DSM_THERMAL_BQ_B0_BYTE0 0x22cd
-+#define DSM_THERMAL_BQ_B0_BYTE1 0x22ce
-+#define DSM_THERMAL_BQ_B0_BYTE2 0x22cf
-+#define DSM_THERMAL_BQ_B1_BYTE0 0x22d1
-+#define DSM_THERMAL_BQ_B1_BYTE1 0x22d2
-+#define DSM_THERMAL_BQ_B1_BYTE2 0x22d3
-+#define DSM_THERMAL_BQ_B2_BYTE0 0x22d5
-+#define DSM_THERMAL_BQ_B2_BYTE1 0x22d6
-+#define DSM_THERMAL_BQ_B2_BYTE2 0x22d7
-+#define DSM_THERMAL_BQ_A1_BYTE0 0x22d9
-+#define DSM_THERMAL_BQ_A1_BYTE1 0x22da
-+#define DSM_THERMAL_BQ_A1_BYTE2 0x22db
-+#define DSM_THERMAL_BQ_A2_BYTE0 0x22dd
-+#define DSM_THERMAL_BQ_A2_BYTE1 0x22de
-+#define DSM_THERMAL_BQ_A2_BYTE2 0x22df
-+#define DSM_WBDRC_FILT1_B0_BYTE0 0x22e1
-+#define DSM_WBDRC_FILT1_B0_BYTE1 0x22e2
-+#define DSM_WBDRC_FILT1_B0_BYTE2 0x22e3
-+#define DSM_WBDRC_FILT1_B1_BYTE0 0x22e5
-+#define DSM_WBDRC_FILT1_B1_BYTE1 0x22e6
-+#define DSM_WBDRC_FILT1_B1_BYTE2 0x22e7
-+#define DSM_WBDRC_FILT1_B2_BYTE0 0x22e9
-+#define DSM_WBDRC_FILT1_B2_BYTE1 0x22ea
-+#define DSM_WBDRC_FILT1_B2_BYTE2 0x22eb
-+#define DSM_WBDRC_FILT1_A1_BYTE0 0x22ed
-+#define DSM_WBDRC_FILT1_A1_BYTE1 0x22ee
-+#define DSM_WBDRC_FILT1_A1_BYTE2 0x22ef
-+#define DSM_WBDRC_FILT1_A2_BYTE0 0x22f1
-+#define DSM_WBDRC_FILT1_A2_BYTE1 0x22f2
-+#define DSM_WBDRC_FILT1_A2_BYTE2 0x22f3
-+#define DSM_WBDRC_FILT2_B0_BYTE0 0x22f5
-+#define DSM_WBDRC_FILT2_B0_BYTE1 0x22f6
-+#define DSM_WBDRC_FILT2_B0_BYTE2 0x22f7
-+#define DSM_WBDRC_FILT2_B1_BYTE0 0x22f9
-+#define DSM_WBDRC_FILT2_B1_BYTE1 0x22fa
-+#define DSM_WBDRC_FILT2_B1_BYTE2 0x22fb
-+#define DSM_WBDRC_FILT2_B2_BYTE0 0x22fd
-+#define DSM_WBDRC_FILT2_B2_BYTE1 0x22fe
-+#define DSM_WBDRC_FILT2_B2_BYTE2 0x22ff
-+#define DSM_WBDRC_FILT2_A1_BYTE0 0x2301
-+#define DSM_WBDRC_FILT2_A1_BYTE1 0x2302
-+#define DSM_WBDRC_FILT2_A1_BYTE2 0x2303
-+#define DSM_WBDRC_FILT2_A2_BYTE0 0x2305
-+#define DSM_WBDRC_FILT2_A2_BYTE1 0x2306
-+#define DSM_WBDRC_FILT2_A2_BYTE2 0x2307
-+#define DSM_PPR_RELEASE_TIME_BYTE0 0x2309
-+#define DSM_PPR_RELEASE_TIME_BYTE1 0x230a
-+#define DSM_PPR_RELEASE_TIME_BYTE2 0x230b
-+#define DSM_PPR_ATTACK_TIME_BYTE0 0x230d
-+#define DSM_PPR_ATTACK_TIME_BYTE1 0x230e
-+#define DSM_PPR_ATTACK_TIME_BYTE2 0x230f
-+#define DSM_DEBUZZER_RELEASE_TIME_BYTE0 0x2311
-+#define DSM_DEBUZZER_RELEASE_TIME_BYTE1 0x2312
-+#define DSM_DEBUZZER_RELEASE_TIME_BYTE2 0x2313
-+#define DSM_DEBUZZER_ATTACK_TIME_BYTE0 0x2315
-+#define DSM_DEBUZZER_ATTACK_TIME_BYTE1 0x2316
-+#define DSM_DEBUZZER_ATTACK_TIME_BYTE2 0x2317
-+
-+#define DSMIG_WB_DRC_RELEASE_TIME_1 0x2380
-+#define DSMIG_WB_DRC_RELEASE_TIME_2 0x2381
-+#define DSMIG_WB_DRC_ATTACK_TIME_1 0x2382
-+#define DSMIG_WB_DRC_ATTACK_TIME_2 0x2383
-+#define DSMIG_WB_DRC_COMPRESSION_RATIO 0x2384
-+#define DSMIG_WB_DRC_COMPRESSION_THRESHOLD 0x2385
-+#define DSMIG_WB_DRC_MAKEUPGAIN 0x2386
-+#define DSMIG_WB_DRC_NOISE_GATE_THRESHOLD 0x2387
-+#define DSMIG_WBDRC_HPF_ENABLE 0x2388
-+#define DSMIG_WB_DRC_TEST_SMOOTHER_OUT_EN 0x2389
-+#define DSMIG_PPR_THRESHOLD 0x238b
-+#define DSM_STEREO_BASS_CHANNEL_SELECT 0x238d
-+#define DSM_TPROT_THRESHOLD_BYTE0 0x238e
-+#define DSM_TPROT_THRESHOLD_BYTE1 0x238f
-+#define DSM_TPROT_ROOM_TEMPERATURE_BYTE0 0x2390
-+#define DSM_TPROT_ROOM_TEMPERATURE_BYTE1 0x2391
-+#define DSM_TPROT_RECIP_RDC_ROOM_BYTE0 0x2392
-+#define DSM_TPROT_RECIP_RDC_ROOM_BYTE1 0x2393
-+#define DSM_TPROT_RECIP_RDC_ROOM_BYTE2 0x2394
-+#define DSM_TPROT_RECIP_TCONST_BYTE0 0x2395
-+#define DSM_TPROT_RECIP_TCONST_BYTE1 0x2396
-+#define DSM_TPROT_RECIP_TCONST_BYTE2 0x2397
-+#define DSM_THERMAL_ATTENUATION_SETTINGS 0x2398
-+#define DSM_THERMAL_PILOT_TONE_ATTENUATION 0x2399
-+#define DSM_TPROT_PG_TEMP_THRESH_BYTE0 0x239a
-+#define DSM_TPROT_PG_TEMP_THRESH_BYTE1 0x239b
-+
-+#define THERMAL_RDC_RD_BACK_BYTE1 0x239c
-+#define THERMAL_RDC_RD_BACK_BYTE0 0x239d
-+#define THERMAL_COILTEMP_RD_BACK_BYTE1 0x239e
-+#define THERMAL_COILTEMP_RD_BACK_BYTE0 0x239f
-+
-+#define DSMIG_DEBUZZER_THRESHOLD 0x23b5
-+#define DSMIG_DEBUZZER_ALPHA_COEF_TEST_ONLY 0x23b6
-+#define DSM_VOL_ENA 0x23b9
-+#define DSM_VOL_CTRL 0x23ba
-+
-+#define DSMIG_EN 0x23e0
-+#define MAX98390_R23E1_DSP_GLOBAL_EN 0x23e1
-+
-+#define DSM_THERMAL_GAIN 0x23f0
-+#define DSM_PPR_GAIN 0x23f1
-+#define DSM_DBZ_GAIN 0x23f2
-+#define DSM_WBDRC_GAIN 0x23f3
-+
-+#define MAX98390_R23FF_GLOBAL_EN 0x23FF
-+#define MAX98390_R24FF_REV_ID 0x24FF
-+
-+/* MAX98390_R2021_PCM_RX_SRC_1 */
-+#define MAX98390_PCM_RX_CH_SRC_SHIFT (0)
-+#define MAX98390_PCM_RX_CH_SRC_BASS_SHIFT (4)
-+
-+/* MAX98390_R2022_PCM_TX_SRC_1 */
-+#define MAX98390_PCM_TX_CH_SRC_A_V_SHIFT (0)
-+#define MAX98390_PCM_TX_CH_SRC_A_I_SHIFT (4)
-+
-+/* MAX98390_R2024_PCM_DATA_FMT_CFG */
-+#define MAX98390_PCM_MODE_CFG_FORMAT_MASK (0x7 << 3)
-+#define MAX98390_PCM_MODE_CFG_FORMAT_SHIFT (3)
-+#define MAX98390_PCM_TX_CH_INTERLEAVE_MASK (0x1 << 2)
-+#define MAX98390_PCM_FORMAT_I2S (0x0 << 0)
-+#define MAX98390_PCM_FORMAT_LJ (0x1 << 0)
-+#define MAX98390_PCM_FORMAT_TDM_MODE0 (0x3 << 0)
-+#define MAX98390_PCM_FORMAT_TDM_MODE1 (0x4 << 0)
-+#define MAX98390_PCM_FORMAT_TDM_MODE2 (0x5 << 0)
-+#define MAX98390_PCM_MODE_CFG_CHANSZ_MASK (0x3 << 6)
-+#define MAX98390_PCM_MODE_CFG_CHANSZ_16 (0x1 << 6)
-+#define MAX98390_PCM_MODE_CFG_CHANSZ_24 (0x2 << 6)
-+#define MAX98390_PCM_MODE_CFG_CHANSZ_32 (0x3 << 6)
-+
-+/* MAX98390_R2039_AMP_DSP_CFG */
-+#define MAX98390_AMP_DSP_CFG_RMP_UP_SHIFT (4)
-+#define MAX98390_AMP_DSP_CFG_RMP_DN_SHIFT (5)
-+
-+/* MAX98390_R203A_AMP_EN */
-+#define MAX98390_R203A_AMP_EN_SHIFT (0)
-+
-+/* MAX98390_PCM_MASTER_MODE */
-+#define MAX98390_PCM_MASTER_MODE_MASK (0x3 << 0)
-+#define MAX98390_PCM_MASTER_MODE_SLAVE (0x0 << 0)
-+#define MAX98390_PCM_MASTER_MODE_MASTER (0x3 << 0)
-+
-+#define MAX98390_PCM_MASTER_MODE_MCLK_MASK (0xF << 2)
-+#define MAX98390_PCM_MASTER_MODE_MCLK_RATE_SHIFT (2)
-+
-+/* PCM_CLK_SETUP */
-+#define MAX98390_PCM_MODE_CFG_PCM_BCLKEDGE (0x1 << 2)
-+#define MAX98390_PCM_CLK_SETUP_BSEL_MASK (0xF << 0)
-+
-+/* PCM_SR_SETUP */
-+#define MAX98390_PCM_SR_SET1_SR_MASK (0xF << 0)
-+#define MAX98390_PCM_SR_SET1_SR_8000 (0x0 << 0)
-+#define MAX98390_PCM_SR_SET1_SR_11025 (0x1 << 0)
-+#define MAX98390_PCM_SR_SET1_SR_12000 (0x2 << 0)
-+#define MAX98390_PCM_SR_SET1_SR_16000 (0x3 << 0)
-+#define MAX98390_PCM_SR_SET1_SR_22050 (0x4 << 0)
-+#define MAX98390_PCM_SR_SET1_SR_24000 (0x5 << 0)
-+#define MAX98390_PCM_SR_SET1_SR_32000 (0x6 << 0)
-+#define MAX98390_PCM_SR_SET1_SR_44100 (0x7 << 0)
-+#define MAX98390_PCM_SR_SET1_SR_48000 (0x8 << 0)
-+
-+/* PCM_TO_SPK_MONO_MIX_1 */
-+#define MAX98390_PCM_TO_SPK_MONOMIX_CFG_MASK (0x3 << 6)
-+#define MAX98390_PCM_TO_SPK_MONOMIX_CFG_SHIFT (6)
-+#define MAX98390_PCM_TO_SPK_CH0_SRC_MASK (0xF << 0)
-+#define MAX98390_PCM_TO_SPK_CH1_SRC_MASK (0xF << 4)
-+
-+/* MAX98390_BOOST_CTRL3 */
-+#define MAX98390_BOOST_CLK_PHASE_CFG_SHIFT (2)
-+
-+/* SOFT_RESET */
-+#define MAX98390_SOFT_RESET_MASK (0x1 << 0)
-+
-+#define MAX98390_GLOBAL_EN_MASK (0x1 << 0)
-+#define MAX98390_AMP_EN_MASK (0x1 << 0)
-+
-+/* DSM register offset */
-+#define MAX98390_DSM_PAYLOAD_OFFSET 16
-+#define MAX98390_DSM_PAYLOAD_OFFSET_2 495
-+
-+struct max98390_priv {
-+	struct regmap *regmap;
-+	unsigned int sysclk;
-+	unsigned int master;
-+	unsigned int tdm_mode;
-+	unsigned int ref_rdc_value;
-+	unsigned int ambient_temp_value;
-+};
-+#endif
--- 
-2.17.1
-
+PiBGcm9tOiBUaW0gSGFydmV5IDx0aGFydmV5QGdhdGV3b3Jrcy5jb20+DQo+IFNlbnQ6IFR1ZXNk
+YXksIE1heSAxMiwgMjAyMCA1OjU4IEFNDQo+IA0KPiBHcmVldGluZ3MsDQo+IA0KPiBJJ20gdHJ5
+aW5nIHRvIGdldCBpbXg4bW0gc2FpIHdvcmtpbmcgd2l0aCBhIHRsdjMyMGFpYzN4IGNvZGVjIG9u
+IGEgbmV3IGJvYXJkDQo+IGFuZCBhbSBmaW5kaW5nIHRoYXQgdGhlIHNhaTMgYnVzIGNsb2NrIGlz
+IGdldHRpbmcgZGVyaXZlZCBmcm9tIHRoZSB3cm9uZyBzb3VyY2UNCj4gbGVhZGluZyBod19wYXJh
+bXMoKSB0byBmYWlsIHdpdGggJ2ZzbC1zYWkNCj4gMzAwMzAwMDAuc2FpOiBmYWlsZWQgdG8gZGVy
+aXZlIHJlcXVpcmVkIFR4IHJhdGU6IDMwNzIwMDAnDQo+IA0KPiBJbiBjb21wYXJpc29uIHRvIHRo
+ZSBpbXg4bW0tZXZrIEkgZmluZCBpdCdzIGNsb2NrIGdldHMgY29uZmlndXJlZCBhcyBkZXNpcmVk
+IHlldA0KPiBJIGhhdmUgdGhlIHNhbWUgZGV2aWNlLXRyZWUgY29uZmlndXJhdGlvbiBmb3Igc2Fp
+My4NCj4gDQo+IEhlcmUgaXMgbXkgYm9hcmQncyBkdHM6DQo+IC8gew0KPiAuLi4NCj4gICAgICAg
+ICBzb3VuZCB7DQo+ICAgICAgICAgICAgICAgICBjb21wYXRpYmxlID0gInNpbXBsZS1hdWRpby1j
+YXJkIjsNCj4gICAgICAgICAgICAgICAgIHNpbXBsZS1hdWRpby1jYXJkLG5hbWUgPSAidGx2MzIw
+LWF1ZGlvIjsNCj4gICAgICAgICAgICAgICAgIHNpbXBsZS1hdWRpby1jYXJkLGZvcm1hdCA9ICJp
+MnMiOw0KPiAgICAgICAgICAgICAgICAgc2ltcGxlLWF1ZGlvLWNhcmQsZnJhbWUtbWFzdGVyID0g
+PCZjcHVkYWk+Ow0KPiAgICAgICAgICAgICAgICAgc2ltcGxlLWF1ZGlvLWNhcmQsYml0Y2xvY2st
+bWFzdGVyID0gPCZjcHVkYWk+Ow0KPiAgICAgICAgICAgICAgICAgc2ltcGxlLWF1ZGlvLWNhcmQs
+d2lkZ2V0cyA9DQo+ICAgICAgICAgICAgICAgICAgICAgICAgICJMaW5lIiwgIkxlZnQgTGluZSBP
+dXQgSmFjayIsDQo+ICAgICAgICAgICAgICAgICAgICAgICAgICJMaW5lIiwgIlJpZ2h0IExpbmUg
+T3V0IEphY2siOw0KPiAgICAgICAgICAgICAgICAgc2ltcGxlLWF1ZGlvLWNhcmQscm91dGluZyA9
+DQo+ICAgICAgICAgICAgICAgICAgICAgICAgICJMZWZ0IExpbmUgT3V0IEphY2siLCAiTExPVVQi
+LA0KPiAgICAgICAgICAgICAgICAgICAgICAgICAiUmlnaHQgTGluZSBPdXQgSmFjayIsICJSTE9V
+VCI7DQo+IA0KPiAgICAgICAgICAgICAgICAgY3B1ZGFpOiBzaW1wbGUtYXVkaW8tY2FyZCxjcHUg
+ew0KPiAgICAgICAgICAgICAgICAgICAgICAgICBzb3VuZC1kYWkgPSA8JnNhaTM+Ow0KPiAgICAg
+ICAgICAgICAgICAgICAgICAgICBkYWktdGRtLXNsb3QtbnVtID0gPDI+Ow0KPiAgICAgICAgICAg
+ICAgICAgICAgICAgICBkYWktdGRtLXNsb3Qtd2lkdGggPSA8MzI+Ow0KPiAgICAgICAgICAgICAg
+ICAgfTsNCj4gDQo+ICAgICAgICAgICAgICAgICBzaW1wbGUtYXVkaW8tY2FyZCxjb2RlYyB7DQo+
+ICAgICAgICAgICAgICAgICAgICAgICAgIHNvdW5kLWRhaSA9IDwmdGx2MzIwYWljMzEwNT47DQo+
+ICAgICAgICAgICAgICAgICAgICAgICAgIGNsb2NrcyA9IDwmY2xrIElNWDhNTV9DTEtfU0FJM19S
+T09UPjsNCj4gICAgICAgICAgICAgICAgIH07DQo+ICAgICAgICAgfTsNCj4gfTsNCj4gDQo+ICZp
+MmMyIHsNCj4gLi4uDQo+ICAgICAgICAgdGx2MzIwYWljMzEwNTogY29kZWNAMTggew0KPiAgICAg
+ICAgICAgICAgICAgI3NvdW5kLWRhaS1jZWxscyA9IDwwPjsNCj4gICAgICAgICAgICAgICAgIHBp
+bmN0cmwtbmFtZXMgPSAiZGVmYXVsdCI7DQo+ICAgICAgICAgICAgICAgICBwaW5jdHJsLTAgPSA8
+JnBpbmN0cmxfdGx2PjsNCj4gICAgICAgICAgICAgICAgIGNvbXBhdGlibGUgPSAidGksdGx2MzIw
+YWljM3giOw0KPiAgICAgICAgICAgICAgICAgcmVnID0gPDB4MTg+Ow0KPiAgICAgICAgICAgICAg
+ICAgcmVzZXQtZ3Bpb3MgPSA8JmdwaW80IDQgR1BJT19BQ1RJVkVfTE9XPjsNCj4gICAgICAgICAg
+ICAgICAgIGFpM3gtbWljYmlhcy12ZyA9IDwyPjsgLyogTUlDQklBU18yXzVWICovDQo+ICAgICAg
+ICAgICAgICAgICAvKiBSZWd1bGF0b3JzICovDQo+ICAgICAgICAgICAgICAgICBEUlZERC1zdXBw
+bHkgPSA8JnJlZ18zcDN2PjsNCj4gICAgICAgICAgICAgICAgIEFWREQtc3VwcGx5ID0gPCZyZWdf
+M3Azdj47DQo+ICAgICAgICAgICAgICAgICBJT1ZERC1zdXBwbHkgPSA8JnJlZ18zcDN2PjsNCj4g
+ICAgICAgICAgICAgICAgIERWREQtc3VwcGx5ID0gPCZyZWdfMXA4dj47DQo+ICAgICAgICAgfTsN
+Cj4gfQ0KPiANCj4gJnNhaTMgew0KPiAgICAgICAgIHBpbmN0cmwtbmFtZXMgPSAiZGVmYXVsdCI7
+DQo+ICAgICAgICAgcGluY3RybC0wID0gPCZwaW5jdHJsX3NhaTM+Ow0KPiAgICAgICAgIGFzc2ln
+bmVkLWNsb2NrcyA9IDwmY2xrIElNWDhNTV9DTEtfU0FJMz47DQo+ICAgICAgICAgYXNzaWduZWQt
+Y2xvY2stcGFyZW50cyA9IDwmY2xrIElNWDhNTV9BVURJT19QTEwxX09VVD47DQo+ICAgICAgICAg
+YXNzaWduZWQtY2xvY2stcmF0ZXMgPSA8MjQ1NzYwMDA+Ow0KPiAgICAgICAgIHN0YXR1cyA9ICJv
+a2F5IjsNCj4gfTsNCj4gDQo+IGFuZCAvc3lzL2tlcm5lbC9kZWJ1Zy9jbGsvY2xrX3N1bW1hcnkg
+ZnJvbSBteSBib2FyZDoNCj4gIG9zY18yNG0gICAgICAgICAgICAgICAgICAgICAgICAgICAgICA3
+ICAgICAgIDEwICAgICAgICAwDQo+IDI0MDAwMDAwDQo+ICAgICAgICAgMCAgICAgMCAgNTAwMDAN
+Cj4gLi4uDQo+ICAgICBhdWRpb19wbGwxX3JlZl9zZWwgICAgICAgICAgICAgICAgMCAgICAgICAg
+MCAgICAgICAgMA0KPiAyNDAwMDAwMA0KPiAgICAgICAgIDAgICAgIDAgIDUwMDAwDQo+ICAgICAg
+ICBhdWRpb19wbGwxICAgICAgICAgICAgICAgICAgICAgMCAgICAgICAgMCAgICAgICAgMA0KPiA2
+NTAwMDAwMDANCj4gICAgICAgICAwICAgICAwICA1MDAwMA0KPiAgICAgICAgICAgYXVkaW9fcGxs
+MV9ieXBhc3MgICAgICAgICAgIDAgICAgICAgIDAgICAgICAgIDANCj4gNjUwMDAwMDAwDQo+ICAg
+ICAgICAgMCAgICAgMCAgNTAwMDANCj4gICAgICAgICAgICAgIGF1ZGlvX3BsbDFfb3V0ICAgICAg
+ICAgICAwICAgICAgICAwICAgICAgICAwDQo+IDY1MDAwMDAwMA0KPiAgICAgICAgIDAgICAgIDAg
+IDUwMDAwDQo+ICAgICAgICAgICAgICAgICBzYWkzICAgICAgICAgICAgICAgICAgMCAgICAgICAg
+MCAgICAgICAgMA0KPiAyNTAwMDAwMA0KPiAgICAgICAgIDAgICAgIDAgIDUwMDAwDQo+ICAgICAg
+ICAgICAgICAgICAgICBzYWkzX3Jvb3RfY2xrICAgICAgIDAgICAgICAgIDAgICAgICAgIDANCj4g
+MjUwMDAwMDANCj4gICAgICAgICAgMCAgICAgMCAgNTAwMDANCj4gXl5eXiBub3RlIDI1MDAwMDAw
+IGluc3RlYWQgb2YgcmVxdWVzdGVkIDI0NTc2MDAwDQo+IA0KPiBBbmQgSGVyZSBpcyB0aGUgaW14
+OG1tLWV2ayBkdHM6DQo+IC8gew0KPiAuLi4NCj4gICAgICAgICB3bTg1MjQ6IGF1ZGlvLWNvZGVj
+IHsNCj4gICAgICAgICAgICAgICAgICNzb3VuZC1kYWktY2VsbHMgPSA8MD47DQo+ICAgICAgICAg
+ICAgICAgICBjb21wYXRpYmxlID0gIndsZix3bTg1MjQiOw0KPiAgICAgICAgICAgICAgICAgcGlu
+Y3RybC1uYW1lcyA9ICJkZWZhdWx0IjsNCj4gICAgICAgICAgICAgICAgIHBpbmN0cmwtMCA9IDwm
+cGluY3RybF9ncGlvX3dsZj47DQo+ICAgICAgICAgICAgICAgICB3bGYsbXV0ZS1ncGlvcyA9IDwm
+Z3BpbzUgMjEgR1BJT19BQ1RJVkVfTE9XPjsNCj4gICAgICAgICB9Ow0KPiANCj4gICAgICAgICBz
+b3VuZC13bTg1MjQgew0KPiAgICAgICAgICAgICAgICAgY29tcGF0aWJsZSA9ICJzaW1wbGUtYXVk
+aW8tY2FyZCI7DQo+ICAgICAgICAgICAgICAgICBzaW1wbGUtYXVkaW8tY2FyZCxuYW1lID0gIndt
+ODUyNC1hdWRpbyI7DQo+ICAgICAgICAgICAgICAgICBzaW1wbGUtYXVkaW8tY2FyZCxmb3JtYXQg
+PSAiaTJzIjsNCj4gICAgICAgICAgICAgICAgIHNpbXBsZS1hdWRpby1jYXJkLGZyYW1lLW1hc3Rl
+ciA9IDwmY3B1ZGFpPjsNCj4gICAgICAgICAgICAgICAgIHNpbXBsZS1hdWRpby1jYXJkLGJpdGNs
+b2NrLW1hc3RlciA9IDwmY3B1ZGFpPjsNCj4gICAgICAgICAgICAgICAgIHNpbXBsZS1hdWRpby1j
+YXJkLHdpZGdldHMgPQ0KPiAgICAgICAgICAgICAgICAgICAgICAgICAiTGluZSIsICJMZWZ0IExp
+bmUgT3V0IEphY2siLA0KPiAgICAgICAgICAgICAgICAgICAgICAgICAiTGluZSIsICJSaWdodCBM
+aW5lIE91dCBKYWNrIjsNCj4gICAgICAgICAgICAgICAgIHNpbXBsZS1hdWRpby1jYXJkLHJvdXRp
+bmcgPQ0KPiAgICAgICAgICAgICAgICAgICAgICAgICAiTGVmdCBMaW5lIE91dCBKYWNrIiwgIkxJ
+TkVWT1VUTCIsDQo+ICAgICAgICAgICAgICAgICAgICAgICAgICJSaWdodCBMaW5lIE91dCBKYWNr
+IiwgIkxJTkVWT1VUUiI7DQo+IA0KPiAgICAgICAgICAgICAgICAgY3B1ZGFpOiBzaW1wbGUtYXVk
+aW8tY2FyZCxjcHUgew0KPiAgICAgICAgICAgICAgICAgICAgICAgICBzb3VuZC1kYWkgPSA8JnNh
+aTM+Ow0KPiAgICAgICAgICAgICAgICAgICAgICAgICBkYWktdGRtLXNsb3QtbnVtID0gPDI+Ow0K
+PiAgICAgICAgICAgICAgICAgICAgICAgICBkYWktdGRtLXNsb3Qtd2lkdGggPSA8MzI+Ow0KPiAg
+ICAgICAgICAgICAgICAgfTsNCj4gDQo+ICAgICAgICAgICAgICAgICBzaW1wbGUtYXVkaW8tY2Fy
+ZCxjb2RlYyB7DQo+ICAgICAgICAgICAgICAgICAgICAgICAgIHNvdW5kLWRhaSA9IDwmd204NTI0
+PjsNCj4gICAgICAgICAgICAgICAgICAgICAgICAgY2xvY2tzID0gPCZjbGsgSU1YOE1NX0NMS19T
+QUkzX1JPT1Q+Ow0KPiAgICAgICAgICAgICAgICAgfTsNCj4gICAgICAgICB9Ow0KPiB9Ow0KPiAN
+Cj4gJnNhaTMgew0KPiAgICAgICAgIHBpbmN0cmwtbmFtZXMgPSAiZGVmYXVsdCI7DQo+ICAgICAg
+ICAgcGluY3RybC0wID0gPCZwaW5jdHJsX3NhaTM+Ow0KPiAgICAgICAgIGFzc2lnbmVkLWNsb2Nr
+cyA9IDwmY2xrIElNWDhNTV9DTEtfU0FJMz47DQo+ICAgICAgICAgYXNzaWduZWQtY2xvY2stcGFy
+ZW50cyA9IDwmY2xrIElNWDhNTV9BVURJT19QTEwxX09VVD47DQo+ICAgICAgICAgYXNzaWduZWQt
+Y2xvY2stcmF0ZXMgPSA8MjQ1NzYwMDA+Ow0KPiAgICAgICAgIHN0YXR1cyA9ICJva2F5IjsNCj4g
+fTsNCj4gDQo+IGFuZCAvc3lzL2tlcm5lbC9kZWJ1Zy9jbGsvY2xrX3N1bW1hcnkgZnJvbSBpbXg4
+bW1fZXZrOg0KPiAgb3NjXzI0bSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDcgICAgICAg
+MTAgICAgICAgIDANCj4gMjQwMDAwMDANCj4gICAgICAgICAwICAgICAwICA1MDAwMA0KPiAuLi4N
+Cj4gICAgIGF1ZGlvX3BsbDFfcmVmX3NlbCAgICAgICAgICAgICAgICAwICAgICAgICAwICAgICAg
+ICAwDQo+IDI0MDAwMDAwDQo+ICAgICAgICAgMCAgICAgMCAgNTAwMDANCj4gICAgICAgIGF1ZGlv
+X3BsbDEgICAgICAgICAgICAgICAgICAgICAwICAgICAgICAwICAgICAgICAwDQo+IDM5MzIxNTk5
+NQ0KPiAgICAgICAgIDAgICAgIDAgIDUwMDAwDQo+ICAgICAgICAgICBhdWRpb19wbGwxX2J5cGFz
+cyAgICAgICAgICAgMCAgICAgICAgMCAgICAgICAgMA0KPiAzOTMyMTU5OTUNCj4gICAgICAgICAw
+ICAgICAwICA1MDAwMA0KPiAgICAgICAgICAgICAgYXVkaW9fcGxsMV9vdXQgICAgICAgICAgIDAg
+ICAgICAgIDAgICAgICAgIDANCj4gMzkzMjE1OTk1DQo+ICAgICAgICAgMCAgICAgMCAgNTAwMDAN
+Cj4gICAgICAgICAgICAgICAgIHNhaTMgICAgICAgICAgICAgICAgICAwICAgICAgICAwICAgICAg
+ICAwDQo+IDI0NTc2MDAwDQo+ICAgICAgICAgMCAgICAgMCAgNTAwMDANCj4gICAgICAgICAgICAg
+ICAgICAgIHNhaTNfcm9vdF9jbGsgICAgICAgMCAgICAgICAgMCAgICAgICAgMA0KPiAyNDU3NjAw
+MA0KPiAgICAgICAgICAwICAgICAwICA1MDAwMA0KPiBeXl5eIG5vdGUgMjQ1NzYwMDAgYXMgcmVx
+dWVzdGVkDQo+IA0KPiBBbnkgaWRlYXMgd2hhdCBJJ20gZG9pbmcgd3JvbmcgaGVyZT8NCj4gDQo+
+IE5vdGUgdGhhdCBldmVuIHRob3VnaCB0aGUgaW14OG1tLWV2ayBhcHBlYXJzIHRvIGNvbmZpZ3Vy
+ZSBpdHMgY2xvY2sgY29ycmVjdGx5IEkNCj4gc3RpbGwgaGF2ZSBub3QgYmVlbiBhYmxlIHRvIHBs
+YXkgYXVkaW8gb3V0IHRoZSB3bTg1MjQgYW5kIHRoZSBzeXN0ZW0gYXBwZWFycw0KPiB0byBoYW5n
+IGR1cmluZyBwbGF5YmFjayBhcyBpZiBCQ0xLL01DTEsgd2VyZSBub3QgY2xvY2tpbmcuDQo+IA0K
+PiBQZXJoYXBzIHRoZXJlIGlzIHNvbWV0aGluZyBub3Qgc3VwcG9ydGVkIHlldCB1cHN0cmVhbSB3
+aXRoIHJlZ2FyZHMgdG8NCj4gSU1YOE1NIFNBST8NCj4gDQoNCkNvcHkgRGFuaWVsIGluIGNhc2Ug
+aGUgaGFzIHNvbWUgY29tbWVudHMuDQoNClJlZ2FyZHMNCkFpc2hlbmcNCg0KPiBCZXN0IFJlZ2Fy
+ZHMsDQo+IA0KPiBUaW0NCg==
