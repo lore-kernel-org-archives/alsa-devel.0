@@ -7,64 +7,63 @@ X-Spam-Status: No, score=-8.6 required=3.0 tests=DATE_IN_PAST_06_12,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9D16C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 05:41:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19AD5C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 05:42:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3197E20708
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 05:41:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8DB8B2075F
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 05:42:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jwNt/JUm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3197E20708
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="B70suoeY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8DB8B2075F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7D81A17C9;
-	Tue, 19 May 2020 07:40:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D81A17C9
+	by alsa0.perex.cz (Postfix) with ESMTPS id CEF3D17D3;
+	Tue, 19 May 2020 07:41:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CEF3D17D3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589866889;
-	bh=Mv7cM1rn5Q4sADrKgwXvCgsSghKGeJtyJVay+I23NXs=;
+	s=default; t=1589866925;
+	bh=AKqRxWb2ky8aioMfXcwVpba06MKB1Sr/AGTl8wT1oQg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jwNt/JUmysU9bFX7GxWs2E8VYR9/qwp87K3cs4QgRqCL08hs634PcB+oKq9+IjXEG
-	 wIM+ncMoKUUzZH/efMTjF0vP2v8uuc4zygZvqQ2hH1Km4ArWpr50eWm4De4D4pcJ9w
-	 XSa7GMwe18w29Ir4IHJiF7WTCtM7JY+I0sDPx4TE=
+	b=B70suoeYPjVYiBL6dMYGgXAzRAUwN11gzIcFz67Bx+DZCr3tXT8K7MjJpztsD3kH8
+	 Z16hwcLG7UoFC5+s/OPHE/XJitq4VNefDrxeP9q0W1OJbqowtBeWVm6kBMfuRD25cc
+	 4kuvJBEaoEKxoc/fzJwmawqP9gVe47l+p1XgLxmk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C9594F80299;
-	Tue, 19 May 2020 07:38:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 82A70F802A9;
+	Tue, 19 May 2020 07:38:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 25825F8028F; Tue, 19 May 2020 07:38:40 +0200 (CEST)
+ id D65FAF802A2; Tue, 19 May 2020 07:38:44 +0200 (CEST)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 42DFCF80229
- for <alsa-devel@alsa-project.org>; Tue, 19 May 2020 07:38:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42DFCF80229
-IronPort-SDR: /8UjL3AdCeGRvWW+ANV9hdVIo/H3Dmjh4Qdq1T54nwnotQ1IHUywOonoI+uQxXVdw1rg+wuaeT
- w8XMpGWfsxkg==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 972FEF800C9
+ for <alsa-devel@alsa-project.org>; Tue, 19 May 2020 07:38:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 972FEF800C9
+IronPort-SDR: ke2pNKSNbxou8S/QjtYhjMJSK1mVOAoQH42TUnaYJ9+AAHlNRsi0EnQLu5VP37xJVLM8GX51aA
+ hWs0KUU4qSRA==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 May 2020 22:38:20 -0700
-IronPort-SDR: lHa8Znfx1O88e98NTvU1zeVfkYqnk1fJelUbCQldmBTjbWNvDWJWmvQEK+jENbUVm+iJw15fF+
- ab5ZMKvPHxnA==
+ 18 May 2020 22:38:34 -0700
+IronPort-SDR: rprKud2ASA/3Nc7i0qLhTHu3lEEKQpIJh3WEGfILRP9ubQiQVmzCkXJtlbDjxKz5a5DwoWHZ8V
+ AMAaCIhloYXQ==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,409,1583222400"; d="scan'208";a="288836546"
+X-IronPort-AV: E=Sophos;i="5.73,409,1583222400"; d="scan'208";a="288836611"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
- by fmsmga004.fm.intel.com with ESMTP; 18 May 2020 22:38:16 -0700
+ by fmsmga004.fm.intel.com with ESMTP; 18 May 2020 22:38:30 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH v2 2/5] soundwire: bus_type: introduce sdw_slave_type and
- sdw_master_type
-Date: Tue, 19 May 2020 01:43:19 +0800
-Message-Id: <20200518174322.31561-3-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH v2 5/5] soundwire: master: add runtime pm support
+Date: Tue, 19 May 2020 01:43:22 +0800
+Message-Id: <20200518174322.31561-6-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200518174322.31561-1-yung-chuan.liao@linux.intel.com>
 References: <20200518174322.31561-1-yung-chuan.liao@linux.intel.com>
@@ -89,125 +88,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+We need to enable runtime_pm on master device with generic helpers,
+so that a Slave-initiated wake is propagated to the bus parent.
 
-this is a preparatory patch before the introduction of the
-sdw_master_type. The SoundWire slave support is slightly modified with
-the use of a sdw_slave_type, and the uevent handling move to
-slave.c (since it's not necessary for the master).
-
-No functionality change other than moving code around.
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/bus_type.c       | 19 +++++++++++++------
- drivers/soundwire/slave.c          |  8 +++++++-
- include/linux/soundwire/sdw_type.h |  9 ++++++++-
- 3 files changed, 28 insertions(+), 8 deletions(-)
+ drivers/soundwire/master.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/soundwire/bus_type.c b/drivers/soundwire/bus_type.c
-index 17f096dd6806..2c1a19caba51 100644
---- a/drivers/soundwire/bus_type.c
-+++ b/drivers/soundwire/bus_type.c
-@@ -33,13 +33,21 @@ sdw_get_device_id(struct sdw_slave *slave, struct sdw_driver *drv)
+diff --git a/drivers/soundwire/master.c b/drivers/soundwire/master.c
+index 6be0a027def7..5411791e6aff 100644
+--- a/drivers/soundwire/master.c
++++ b/drivers/soundwire/master.c
+@@ -3,6 +3,7 @@
  
- static int sdw_bus_match(struct device *dev, struct device_driver *ddrv)
- {
--	struct sdw_slave *slave = dev_to_sdw_dev(dev);
--	struct sdw_driver *drv = drv_to_sdw_driver(ddrv);
-+	struct sdw_slave *slave;
-+	struct sdw_driver *drv;
-+	int ret = 0;
-+
-+	if (is_sdw_slave(dev)) {
-+		slave = dev_to_sdw_dev(dev);
-+		drv = drv_to_sdw_driver(ddrv);
- 
--	return !!sdw_get_device_id(slave, drv);
-+		ret = !!sdw_get_device_id(slave, drv);
-+	}
-+	return ret;
+ #include <linux/device.h>
+ #include <linux/acpi.h>
++#include <linux/pm_runtime.h>
+ #include <linux/soundwire/sdw.h>
+ #include <linux/soundwire/sdw_type.h>
+ #include "bus.h"
+@@ -14,9 +15,15 @@ static void sdw_master_device_release(struct device *dev)
+ 	kfree(md);
  }
  
--int sdw_slave_modalias(const struct sdw_slave *slave, char *buf, size_t size)
-+static int sdw_slave_modalias(const struct sdw_slave *slave, char *buf,
-+			      size_t size)
- {
- 	/* modalias is sdw:m<mfg_id>p<part_id> */
- 
-@@ -47,7 +55,7 @@ int sdw_slave_modalias(const struct sdw_slave *slave, char *buf, size_t size)
- 			slave->id.mfg_id, slave->id.part_id);
- }
- 
--static int sdw_uevent(struct device *dev, struct kobj_uevent_env *env)
-+int sdw_slave_uevent(struct device *dev, struct kobj_uevent_env *env)
- {
- 	struct sdw_slave *slave = dev_to_sdw_dev(dev);
- 	char modalias[32];
-@@ -63,7 +71,6 @@ static int sdw_uevent(struct device *dev, struct kobj_uevent_env *env)
- struct bus_type sdw_bus_type = {
- 	.name = "soundwire",
- 	.match = sdw_bus_match,
--	.uevent = sdw_uevent,
- };
- EXPORT_SYMBOL_GPL(sdw_bus_type);
- 
-diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
-index aace57fae7f8..ed068a004bd9 100644
---- a/drivers/soundwire/slave.c
-+++ b/drivers/soundwire/slave.c
-@@ -14,6 +14,12 @@ static void sdw_slave_release(struct device *dev)
- 	kfree(slave);
- }
- 
-+struct device_type sdw_slave_type = {
-+	.name =		"sdw_slave",
-+	.release =	sdw_slave_release,
-+	.uevent =	sdw_slave_uevent,
++static const struct dev_pm_ops master_dev_pm = {
++	SET_RUNTIME_PM_OPS(pm_generic_runtime_suspend,
++			   pm_generic_runtime_resume, NULL)
 +};
 +
- static int sdw_slave_add(struct sdw_bus *bus,
- 			 struct sdw_slave_id *id, struct fwnode_handle *fwnode)
- {
-@@ -41,9 +47,9 @@ static int sdw_slave_add(struct sdw_bus *bus,
- 			     id->class_id, id->unique_id);
- 	}
- 
--	slave->dev.release = sdw_slave_release;
- 	slave->dev.bus = &sdw_bus_type;
- 	slave->dev.of_node = of_node_get(to_of_node(fwnode));
-+	slave->dev.type = &sdw_slave_type;
- 	slave->bus = bus;
- 	slave->status = SDW_SLAVE_UNATTACHED;
- 	init_completion(&slave->enumeration_complete);
-diff --git a/include/linux/soundwire/sdw_type.h b/include/linux/soundwire/sdw_type.h
-index aaa7f4267c14..52eb66cd11bc 100644
---- a/include/linux/soundwire/sdw_type.h
-+++ b/include/linux/soundwire/sdw_type.h
-@@ -5,6 +5,13 @@
- #define __SOUNDWIRE_TYPES_H
- 
- extern struct bus_type sdw_bus_type;
-+extern struct device_type sdw_slave_type;
-+extern struct device_type sdw_master_type;
-+
-+static inline int is_sdw_slave(const struct device *dev)
-+{
-+	return dev->type == &sdw_slave_type;
-+}
- 
- #define drv_to_sdw_driver(_drv) container_of(_drv, struct sdw_driver, driver)
- 
-@@ -14,7 +21,7 @@ extern struct bus_type sdw_bus_type;
- int __sdw_register_driver(struct sdw_driver *drv, struct module *owner);
- void sdw_unregister_driver(struct sdw_driver *drv);
- 
--int sdw_slave_modalias(const struct sdw_slave *slave, char *buf, size_t size);
-+int sdw_slave_uevent(struct device *dev, struct kobj_uevent_env *env);
+ struct device_type sdw_master_type = {
+ 	.name =		"soundwire_master",
+ 	.release =	sdw_master_device_release,
++	.pm = &master_dev_pm,
+ };
  
  /**
-  * module_sdw_driver() - Helper macro for registering a Soundwire driver
 -- 
 2.17.1
 
