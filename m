@@ -4,55 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB1E8C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 01:04:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A954DC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 01:05:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 42F6420674
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 01:04:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 355CA20674
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 01:05:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cAJ9CMS7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 42F6420674
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="piC9I6xi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 355CA20674
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9E88317A9;
-	Tue, 19 May 2020 03:03:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E88317A9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8C90F17B1;
+	Tue, 19 May 2020 03:04:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C90F17B1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589850261;
-	bh=Fz7iqHPyZeUHFm3mfmH+534JMOuiB2NeFHP5brFi9eo=;
+	s=default; t=1589850304;
+	bh=xNTxo7wABjDtkWBLO3hNhG+R/0ysXgV5c01AoQzHgm8=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cAJ9CMS7AsfarHAb0Ia4Gu8j4SH3dKHdq4y5W01MRVCxex+Me6i74WlWTrE0/4oa/
-	 4UbDC5pNUkEb/7dyKugELUctA0otPmTX1cCZRi6QxgDafK3bE3LRCP7S/Gb6yLS/o9
-	 AEMCO8xTvwpJ/80ZB/AOZFafFh0509X8ikZ4jeUc=
+	b=piC9I6xiW4t1Th7lITevaT+UEQXg+25J6SU8u97aycpGzhpI3P4qCc8PnnCIWfxm6
+	 7Ohlbyuc8HOO8Fzfiwew53L2w6UbwYFTOF2St/FqNc93iswhbZAoGFNyZztJv+q3DO
+	 tW1NV+z2yYxtMS0BA9KNXyYmFBppe34Gbv/9uG78=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D3228F802A8;
-	Tue, 19 May 2020 03:02:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C9AAAF802BE;
+	Tue, 19 May 2020 03:02:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 01179F802A1; Tue, 19 May 2020 03:02:16 +0200 (CEST)
+ id B4CA5F802A9; Tue, 19 May 2020 03:02:23 +0200 (CEST)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 7EB96F802A1
- for <alsa-devel@alsa-project.org>; Tue, 19 May 2020 03:02:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7EB96F802A1
-Date: 19 May 2020 10:02:10 +0900
-X-IronPort-AV: E=Sophos;i="5.73,408,1583161200"; d="scan'208";a="47413265"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 19 May 2020 10:02:10 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 55721F802A1
+ for <alsa-devel@alsa-project.org>; Tue, 19 May 2020 03:02:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55721F802A1
+Date: 19 May 2020 10:02:16 +0900
+X-IronPort-AV: E=Sophos;i="5.73,408,1583161200"; d="scan'208";a="47413281"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 19 May 2020 10:02:16 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 166C3416357B;
- Tue, 19 May 2020 10:02:10 +0900 (JST)
-Message-ID: <87zha44u0d.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id DE3A34000FA6;
+ Tue, 19 May 2020 10:02:16 +0900 (JST)
+Message-ID: <87y2po4u07.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 5/7] ASoC: soc-link: add snd_soc_link_compr_startup()
+Subject: [PATCH 6/7] ASoC: soc-link: add snd_soc_link_compr_shutdown()
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <877dx868op.wl-kuninori.morimoto.gx@renesas.com>
@@ -79,89 +80,68 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
 dai_link related function should be implemented at soc-link.c.
-This patch adds snd_soc_link_compr_startup().
+This patch adds snd_soc_link_compr_shutdown().
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- include/sound/soc-link.h |  3 +++
- sound/soc/soc-compress.c | 23 ++++++-----------------
- sound/soc/soc-link.c     | 13 +++++++++++++
- 3 files changed, 22 insertions(+), 17 deletions(-)
+ include/sound/soc-link.h | 2 ++
+ sound/soc/soc-compress.c | 6 ++----
+ sound/soc/soc-link.c     | 9 +++++++++
+ 3 files changed, 13 insertions(+), 4 deletions(-)
 
 diff --git a/include/sound/soc-link.h b/include/sound/soc-link.h
-index aae72f668de6..c152576cbd87 100644
+index c152576cbd87..83ca7301c91b 100644
 --- a/include/sound/soc-link.h
 +++ b/include/sound/soc-link.h
-@@ -20,4 +20,7 @@ int snd_soc_link_hw_params(struct snd_pcm_substream *substream,
- void snd_soc_link_hw_free(struct snd_pcm_substream *substream);
- int snd_soc_link_trigger(struct snd_pcm_substream *substream, int cmd);
+@@ -22,5 +22,7 @@ int snd_soc_link_trigger(struct snd_pcm_substream *substream, int cmd);
  
-+int snd_soc_link_compr_startup(struct snd_soc_pcm_runtime *rtd,
-+			       struct snd_compr_stream *cstream);
-+
+ int snd_soc_link_compr_startup(struct snd_soc_pcm_runtime *rtd,
+ 			       struct snd_compr_stream *cstream);
++void snd_soc_link_compr_shutdown(struct snd_soc_pcm_runtime *rtd,
++				 struct snd_compr_stream *cstream);
+ 
  #endif /* __SOC_LINK_H */
 diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index 62ece729e425..35b0af86325a 100644
+index 35b0af86325a..9db7810bbe04 100644
 --- a/sound/soc/soc-compress.c
 +++ b/sound/soc/soc-compress.c
-@@ -95,15 +95,9 @@ static int soc_compr_open(struct snd_compr_stream *cstream)
- 	if (ret < 0)
- 		goto machine_err;
+@@ -226,8 +226,7 @@ static int soc_compr_free(struct snd_compr_stream *cstream)
+ 	if (!snd_soc_dai_active(codec_dai))
+ 		codec_dai->rate = 0;
  
--	if (rtd->dai_link->compr_ops && rtd->dai_link->compr_ops->startup) {
--		ret = rtd->dai_link->compr_ops->startup(cstream);
--		if (ret < 0) {
--			dev_err(rtd->dev,
--				"Compress ASoC: %s startup failed: %d\n",
--				rtd->dai_link->name, ret);
--			goto machine_err;
--		}
--	}
-+	ret = snd_soc_link_compr_startup(rtd, cstream);
-+	if (ret < 0)
-+		goto machine_err;
+-	if (rtd->dai_link->compr_ops && rtd->dai_link->compr_ops->shutdown)
+-		rtd->dai_link->compr_ops->shutdown(cstream);
++	snd_soc_link_compr_shutdown(rtd, cstream);
  
- 	snd_soc_runtime_activate(rtd, cstream->direction);
+ 	soc_compr_components_free(cstream, NULL);
  
-@@ -179,14 +173,9 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
- 	if (ret < 0)
- 		goto open_err;
+@@ -282,8 +281,7 @@ static int soc_compr_free_fe(struct snd_compr_stream *cstream)
  
--	if (fe->dai_link->compr_ops && fe->dai_link->compr_ops->startup) {
--		ret = fe->dai_link->compr_ops->startup(cstream);
--		if (ret < 0) {
--			pr_err("Compress ASoC: %s startup failed: %d\n",
--			       fe->dai_link->name, ret);
--			goto machine_err;
--		}
--	}
-+	ret = snd_soc_link_compr_startup(fe, cstream);
-+	if (ret < 0)
-+		goto machine_err;
+ 	fe->dpcm[stream].runtime = NULL;
  
- 	dpcm_clear_pending_state(fe, stream);
- 	dpcm_path_put(&list);
+-	if (fe->dai_link->compr_ops && fe->dai_link->compr_ops->shutdown)
+-		fe->dai_link->compr_ops->shutdown(cstream);
++	snd_soc_link_compr_shutdown(fe, cstream);
+ 
+ 	soc_compr_components_free(cstream, NULL);
+ 
 diff --git a/sound/soc/soc-link.c b/sound/soc/soc-link.c
-index a735b3ba2385..dddc4a35a0ac 100644
+index dddc4a35a0ac..bad719176379 100644
 --- a/sound/soc/soc-link.c
 +++ b/sound/soc/soc-link.c
-@@ -112,3 +112,16 @@ int snd_soc_link_trigger(struct snd_pcm_substream *substream, int cmd)
- 
+@@ -125,3 +125,12 @@ int snd_soc_link_compr_startup(struct snd_soc_pcm_runtime *rtd,
  	return soc_link_ret(rtd, ret);
  }
+ EXPORT_SYMBOL_GPL(snd_soc_link_compr_startup);
 +
-+int snd_soc_link_compr_startup(struct snd_soc_pcm_runtime *rtd,
-+			       struct snd_compr_stream *cstream)
++void snd_soc_link_compr_shutdown(struct snd_soc_pcm_runtime *rtd,
++				 struct snd_compr_stream *cstream)
 +{
-+	int ret = 0;
-+
 +	if (rtd->dai_link->compr_ops &&
-+	    rtd->dai_link->compr_ops->startup)
-+		ret = rtd->dai_link->compr_ops->startup(cstream);
-+
-+	return soc_link_ret(rtd, ret);
++	    rtd->dai_link->compr_ops->shutdown)
++		rtd->dai_link->compr_ops->shutdown(cstream);
 +}
-+EXPORT_SYMBOL_GPL(snd_soc_link_compr_startup);
++EXPORT_SYMBOL_GPL(snd_soc_link_compr_shutdown);
 -- 
 2.17.1
 
