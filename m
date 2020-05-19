@@ -7,78 +7,78 @@ X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 123D2C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 11:21:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 547ECC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 11:22:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8BF0D20758
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 11:21:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D0FE820758
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 11:22:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rDlhNB7D";
-	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="eDOrFKZD";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="nR9L9RI2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8BF0D20758
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="T15EDpaf";
+	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="O+/oNa/o";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="LEfeb7uB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D0FE820758
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EAC3E173A;
-	Tue, 19 May 2020 13:20:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EAC3E173A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 36D001776;
+	Tue, 19 May 2020 13:21:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36D001776
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589887269;
-	bh=p2pWQvMYTa1or3xbYR9l+KdbDEVtYn9QdFqrsJsjQBA=;
+	s=default; t=1589887321;
+	bh=Enq9iXh0qYGy+RnWKjGN1fjkoPJvI/vkiRf0hvwKvYw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rDlhNB7DaqM3uYaPhu74E2T60gm46deSA03ladGV14PNRIHhVU/XpoZoloqKTTIHa
-	 TCToM6PTmMqvo4p8mm6BVKviRidewKTojXQycUQKLZiWyHfoeZricCD8EQLxK6EGTv
-	 yVBuMLhR0xU9+irgCjYmCUEjXoujerYK52yEbtsE=
+	b=T15EDpafvuQSCycehuQZyt5U7itCYthbB0v4WUrHxIcoZx0cyDzp31k6pjLsXBkdy
+	 Yg54+UfeSRldgHGTrPP+Wy4EJ6IB5xuSxo0As/KOhiKdizvVpMpKtzqbmXkvO8Bg88
+	 qGNTKyMNRo8uhP2xS09A7uXa8vnxqDErxy6yO4z0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 29051F802A0;
-	Tue, 19 May 2020 13:17:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 28A52F802E3;
+	Tue, 19 May 2020 13:17:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 03844F8029A; Tue, 19 May 2020 13:17:04 +0200 (CEST)
+ id F3E21F8029A; Tue, 19 May 2020 13:17:06 +0200 (CEST)
 Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
  [66.111.4.25])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 63B73F800C9
- for <alsa-devel@alsa-project.org>; Tue, 19 May 2020 13:16:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63B73F800C9
+ by alsa1.perex.cz (Postfix) with ESMTPS id B45D3F80110
+ for <alsa-devel@alsa-project.org>; Tue, 19 May 2020 13:16:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B45D3F80110
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="eDOrFKZD"; 
+ header.b="O+/oNa/o"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="nR9L9RI2"
+ header.i=@messagingengine.com header.b="LEfeb7uB"
 Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
- by mailout.nyi.internal (Postfix) with ESMTP id 9220C5C0132;
- Tue, 19 May 2020 07:16:55 -0400 (EDT)
+ by mailout.nyi.internal (Postfix) with ESMTP id E246E5C00FC;
+ Tue, 19 May 2020 07:16:56 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
- by compute2.internal (MEProxy); Tue, 19 May 2020 07:16:55 -0400
+ by compute2.internal (MEProxy); Tue, 19 May 2020 07:16:56 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm1; bh=02z9KJEPcMiW6
- D4zcPtuipaedn7zRDaK0tBe7ykdR0Q=; b=eDOrFKZDT+E5+C20aXzpV4f2OzbWS
- HUhbpYZUTcKWulJ0IEs2fZhtIS/DSkGHK4v7G0mQMRqpLjfKcFhUOTFYDtqX6NpN
- e3V8nN6u6hTeDRkDJhUAFr3OXhGj+EM5CSaiUHrj05H88iHnZc69TwIl6JwKPGjT
- yWuzKNhDEcl9vYuk8dLSb29yVBPGXHrypEoJmEiIeIYkjwVhWzCtzNJyOsSkzdVW
- H1HoT3rIOLVTC/5d+le2IBq/3INRSI2cUukwJzHR19SX74UYGoZLi89gzdSFF42Y
- 56OcHBrZdBfZqFNVlf7YHyHghV6AilOppeofagnsSwnjpE8nA94DsL+lA==
+ :mime-version:content-transfer-encoding; s=fm1; bh=Fn7lNUvRnaI4n
+ WZYb0E92+7/bwfth1HSDNvejKkIbHg=; b=O+/oNa/owdQ+8w+frCbQnluTEiHIs
+ vSxihYi4vk5wVt3Bs7kKKivCxbyj8V848vLAASauw0VmyeereZV3ciQSzk48BHW0
+ CS1ilozrcPDC12D35SdHGWSC6oYgxPabO4y3+mcip/g8BFWmH+Lnane203cgtZ7Q
+ Hv8uYdLoRDzHGWRiBaXGeIYuflRp6zFjC00TsZ++izAq/MLg13enyoxFxQ+5exr7
+ UtFrp2rcPfKkfA/2XvPDhlseQiPWQOEOZzv0ZhvvXLg+BIvN+1/JmGlguxylKCD5
+ 7IvJ90weq2TSA3a4F1Sh+iY6XnmthR3avnNwOJZbnge6kOyBxZlQKD12A==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm2; bh=02z9KJEPcMiW6D4zcPtuipaedn7zRDaK0tBe7ykdR0Q=; b=nR9L9RI2
- dyCGoD0fqrMdpaYg8kND4fNO8flmg1u3CDSH2xUOMmHlfo4fYHSZecyHJ4FHN174
- NbEKabRglnL99bMSwGhQlwmUKUgaMyRy27Gu9z0MHxkSiaOYuqVSB4yA9mSn00Eq
- 9v+HBKBH1jUOMKUx3C2S65Jz8KkiGtiuV94BHeFWI4mHgDCJ9YG2eNag1b+1Nls4
- QKb/I02P9LA5z2KkJaTPlE/JcIh5IHbVPOlIO1veOK66KFIQKpqcC8bLYs3qQw1U
- f/KU1imYpb27ZeI7pQJ3ATgAuv6MZ1HIvMlC7w+xIhRRkkQUMRvmsJ/U8zfxhpDt
- PlLZbDPH8a66sA==
-X-ME-Sender: <xms:J8DDXluiMgFhymTh_KNQMELrQ5EBKyoIPYMjfc-qowaMBQQbnHfNeA>
+ fm2; bh=Fn7lNUvRnaI4nWZYb0E92+7/bwfth1HSDNvejKkIbHg=; b=LEfeb7uB
+ RuYuDqx0jklhOKlTyFStrXcLCMK1k+XyofFNeNZLLtrNVFPuw5eGuOj1iuQg46qa
+ WM6na77HNN8tOk55BtprXFofBMlJdu/FsNBlBGdL6oKjZpu5iLSDbU93ep/xAz3I
+ X6XWXsSoVkpDgeSLlCxQQZFAkykyXBj2RYMXqaHu4zximwvO/ukhX5feJUuzSDZ7
+ LSS/NcX5cASCAgHNGa9lREmsM0xGYp+KtbiPO46j2f+QUkPRWoO4Ak6zHn7x8qEm
+ Aa8LJeERULXDx7dIiuyV1g2QWuBX5EJ4t5usOGCTjxhTkDc4Qcm/OAVvrLK7t61O
+ DnDIdi9c7V5rWg==
+X-ME-Sender: <xms:KMDDXm0dY_fn0APnMqGfdiavaCnMBLJzWR3DN287rSfCmL0sFA_rQw>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedruddtjedgfeejucetufdoteggodetrfdotf
  fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
  uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
@@ -87,21 +87,21 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedruddtjedgfeejucetufdoteggod
  etgfevgeefleehfffhueejtdejveethfekveektdejjedvtdejhfejnecukfhppedukedt
  rddvfeehrdefrdehgeenucevlhhushhtvghrufhiiigvpeegnecurfgrrhgrmhepmhgrih
  hlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:J8DDXuf-Rt6h2ZM3jGbgbfF1j8WjkCW2xK_iB-JyZPnMWOD0_gmSPA>
- <xmx:J8DDXoxqkrMMvSMa877w1VdTP06ytQH6BaLWI9SJ3Wb3DHzEYio6Yg>
- <xmx:J8DDXsORBOe-5m3mkbu0OGOOE05Zf9Pmoy0sBw9tuSMI-ehN0aHY4w>
- <xmx:J8DDXqKHn3-0TA0DusU3-XBUXfKdDS6pFE0Kz3nGyu-D5o1nRENLoQ>
+X-ME-Proxy: <xmx:KMDDXpGRFVA3-sUUvsmYL6Wh1QaP5WvpElJ-0NLR6C_iBmB2lfxv5Q>
+ <xmx:KMDDXu6YA2GfF5rKcYwrBYsrihtqpwK-pX_kllBSOv4gXMNLiAWzbA>
+ <xmx:KMDDXn1dOS5u2v396hY1_t0TC83aaBuONgzgP4M-Z2qj6wq1x8HJxw>
+ <xmx:KMDDXowF6kBWev5mMf38Vb-sBLrqlt6z2HiXME98PpXy2xsMRAraQA>
 Received: from workstation.flets-east.jp (ad003054.dynamic.ppp.asahi-net.or.jp
  [180.235.3.54])
- by mail.messagingengine.com (Postfix) with ESMTPA id 692A03280060;
- Tue, 19 May 2020 07:16:54 -0400 (EDT)
+ by mail.messagingengine.com (Postfix) with ESMTPA id C9B3A328005E;
+ Tue, 19 May 2020 07:16:55 -0400 (EDT)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: clemens@ladisch.de,
 	tiwai@suse.de
-Subject: [PATCH 06/14] ALSA: firewire-motu: add model-specific table of chunk
- count
-Date: Tue, 19 May 2020 20:16:33 +0900
-Message-Id: <20200519111641.123211-7-o-takashi@sakamocchi.jp>
+Subject: [PATCH 07/14] ALSA: firewire-motu: add alternative functions to
+ detect packet format for protocol v2
+Date: Tue, 19 May 2020 20:16:34 +0900
+Message-Id: <20200519111641.123211-8-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200519111641.123211-1-o-takashi@sakamocchi.jp>
 References: <20200519111641.123211-1-o-takashi@sakamocchi.jp>
@@ -123,113 +123,137 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-In MOTU protocol, data block consists of SPH and 24-bit chunks
-aligned to quadlet. The number of chunks per data block is specific
-to model. For models with optical interface, the number differs
-depending on I/O settings for the interface (ADAT, TOSLINK).
-
-Currently the number is calculated from flags in model-specific
-data. However this is weak in the case that the model has quirks.
-Actually, for quirks of some models, flags are used against their
-original meanings.
-
-This commit adds model-specific table of chunk count. For future
-integration, this table is based on the calculation.
+This commit adds alternative functions to detect packet format so that
+each function corresponds to each model.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/motu/motu-protocol-v2.c | 10 ++++++++--
- sound/firewire/motu/motu-protocol-v3.c |  7 ++++++-
- sound/firewire/motu/motu.h             |  3 +++
- 3 files changed, 17 insertions(+), 3 deletions(-)
+ sound/firewire/motu/motu-protocol-v2.c | 72 +++++++++++++++++++++++---
+ sound/firewire/motu/motu.h             |  1 +
+ 2 files changed, 67 insertions(+), 6 deletions(-)
 
 diff --git a/sound/firewire/motu/motu-protocol-v2.c b/sound/firewire/motu/motu-protocol-v2.c
-index e2913cb54da8..6cd7a5f1f46c 100644
+index 6cd7a5f1f46c..cd409efe3350 100644
 --- a/sound/firewire/motu/motu-protocol-v2.c
 +++ b/sound/firewire/motu/motu-protocol-v2.c
-@@ -306,7 +306,8 @@ const struct snd_motu_spec snd_motu_spec_828mk2 = {
- 		 SND_MOTU_SPEC_HAS_OPT_IFACE_A |
- 		 SND_MOTU_SPEC_RX_MIDI_2ND_Q |
- 		 SND_MOTU_SPEC_TX_MIDI_2ND_Q,
+@@ -164,7 +164,7 @@ int snd_motu_protocol_v2_switch_fetching_mode(struct snd_motu *motu,
+ 	if (enable)
+ 		data |= V2_CLOCK_FETCH_ENABLE;
+ 
+-	if (motu->spec->flags & SND_MOTU_SPEC_SUPPORT_CLOCK_X4) {
++	if (motu->spec == &snd_motu_spec_traveler) {
+ 		// Expected for Traveler and 896HD, which implements Altera
+ 		// Cyclone EP1C3.
+ 		data |= V2_CLOCK_MODEL_SPECIFIC;
+@@ -193,8 +193,6 @@ static void calculate_fixed_part(struct snd_motu_packet_format *formats,
+ {
+ 	unsigned char pcm_chunks[3] = {0, 0, 0};
+ 
+-	formats->msg_chunks = 2;
 -
-+	.tx_fixed_pcm_chunks = {14, 14, 0},
-+	.rx_fixed_pcm_chunks = {14, 14, 0},
- 	.analog_in_ports = 8,
- 	.analog_out_ports = 8,
- };
-@@ -321,7 +322,8 @@ const struct snd_motu_spec snd_motu_spec_traveler = {
- 		 SND_MOTU_SPEC_HAS_OPT_IFACE_A |
- 		 SND_MOTU_SPEC_RX_MIDI_2ND_Q |
- 		 SND_MOTU_SPEC_TX_MIDI_2ND_Q,
--
-+	.tx_fixed_pcm_chunks = {14, 14, 8},
-+	.rx_fixed_pcm_chunks = {14, 14, 8},
- 	.analog_in_ports = 8,
- 	.analog_out_ports = 8,
- };
-@@ -335,6 +337,8 @@ const struct snd_motu_spec snd_motu_spec_ultralite = {
- 		 SND_MOTU_SPEC_RX_MIDI_2ND_Q |
- 		 SND_MOTU_SPEC_TX_MIDI_2ND_Q |
- 		 SND_MOTU_SPEC_RX_SEPARATED_MAIN,
-+	.tx_fixed_pcm_chunks = {14, 14, 0},
-+	.rx_fixed_pcm_chunks = {14, 14, 0},
- 	.analog_in_ports = 8,
- 	.analog_out_ports = 8,
- };
-@@ -349,6 +353,8 @@ const struct snd_motu_spec snd_motu_spec_8pre = {
- 		 SND_MOTU_SPEC_HAS_OPT_IFACE_B |
- 		 SND_MOTU_SPEC_RX_MIDI_2ND_Q |
- 		 SND_MOTU_SPEC_TX_MIDI_2ND_Q,
-+	.tx_fixed_pcm_chunks = {10, 6, 0},
-+	.rx_fixed_pcm_chunks = {10, 6, 0},
- 	.analog_in_ports = 8,
- 	.analog_out_ports = 2,
- };
-diff --git a/sound/firewire/motu/motu-protocol-v3.c b/sound/firewire/motu/motu-protocol-v3.c
-index 8192bcdd1b37..370d22da276e 100644
---- a/sound/firewire/motu/motu-protocol-v3.c
-+++ b/sound/firewire/motu/motu-protocol-v3.c
-@@ -324,7 +324,8 @@ const struct snd_motu_spec snd_motu_spec_828mk3 = {
- 		 SND_MOTU_SPEC_HAS_OPT_IFACE_B |
- 		 SND_MOTU_SPEC_RX_MIDI_3RD_Q |
- 		 SND_MOTU_SPEC_TX_MIDI_3RD_Q,
--
-+	.tx_fixed_pcm_chunks = {18, 18, 14},
-+	.rx_fixed_pcm_chunks = {14, 14, 10},
- 	.analog_in_ports = 8,
- 	.analog_out_ports = 8,
- };
-@@ -338,6 +339,8 @@ const struct snd_motu_spec snd_motu_spec_audio_express = {
- 		 SND_MOTU_SPEC_RX_SEPARATED_MAIN |
- 		 SND_MOTU_SPEC_RX_MIDI_2ND_Q |
- 		 SND_MOTU_SPEC_TX_MIDI_3RD_Q,
-+	.tx_fixed_pcm_chunks = {10, 10, 0},
-+	.rx_fixed_pcm_chunks = {10, 10, 0},
- 	.analog_in_ports = 2,
- 	.analog_out_ports = 4,
- };
-@@ -349,6 +352,8 @@ const struct snd_motu_spec snd_motu_spec_4pre = {
- 		 SND_MOTU_SPEC_TX_MICINST_CHUNK |
- 		 SND_MOTU_SPEC_TX_RETURN_CHUNK |
- 		 SND_MOTU_SPEC_RX_SEPARATED_MAIN,
-+	.tx_fixed_pcm_chunks = {10, 10, 0},
-+	.rx_fixed_pcm_chunks = {10, 10, 0},
- 	.analog_in_ports = 2,
- 	.analog_out_ports = 2,
- };
+ 	pcm_chunks[0] = analog_ports;
+ 	pcm_chunks[1] = analog_ports;
+ 	if (flags & SND_MOTU_SPEC_SUPPORT_CLOCK_X4)
+@@ -268,12 +266,69 @@ static void calculate_differed_part(struct snd_motu_packet_format *formats,
+ 	formats->differed_part_pcm_chunks[1] = pcm_chunks[1];
+ }
+ 
++static int detect_packet_formats_828mk2(struct snd_motu *motu, u32 data)
++{
++	if (((data & V2_OPT_IN_IFACE_MASK) >> V2_OPT_IN_IFACE_SHIFT) ==
++	    V2_OPT_IFACE_MODE_ADAT) {
++		motu->tx_packet_formats.pcm_chunks[0] += 8;
++		motu->tx_packet_formats.pcm_chunks[1] += 4;
++	}
++
++	if (((data & V2_OPT_OUT_IFACE_MASK) >> V2_OPT_OUT_IFACE_SHIFT) ==
++	    V2_OPT_IFACE_MODE_ADAT) {
++		motu->rx_packet_formats.pcm_chunks[0] += 8;
++		motu->rx_packet_formats.pcm_chunks[1] += 4;
++	}
++
++	return 0;
++}
++
++static int detect_packet_formats_traveler(struct snd_motu *motu, u32 data)
++{
++	if (((data & V2_OPT_IN_IFACE_MASK) >> V2_OPT_IN_IFACE_SHIFT) ==
++	    V2_OPT_IFACE_MODE_ADAT) {
++		motu->tx_packet_formats.pcm_chunks[0] += 8;
++		motu->tx_packet_formats.pcm_chunks[1] += 4;
++	}
++
++	if (((data & V2_OPT_OUT_IFACE_MASK) >> V2_OPT_OUT_IFACE_SHIFT) ==
++	    V2_OPT_IFACE_MODE_ADAT) {
++		motu->rx_packet_formats.pcm_chunks[0] += 8;
++		motu->rx_packet_formats.pcm_chunks[1] += 4;
++	}
++
++	return 0;
++}
++
++static int detect_packet_formats_8pre(struct snd_motu *motu, u32 data)
++{
++	if (((data & V2_OPT_IN_IFACE_MASK) >> V2_OPT_IN_IFACE_SHIFT) ==
++	    V2_OPT_IFACE_MODE_ADAT) {
++		motu->tx_packet_formats.pcm_chunks[0] += 8;
++		motu->tx_packet_formats.pcm_chunks[1] += 8;
++	}
++
++	if (((data & V2_OPT_OUT_IFACE_MASK) >> V2_OPT_OUT_IFACE_SHIFT) ==
++	    V2_OPT_IFACE_MODE_ADAT) {
++		motu->rx_packet_formats.pcm_chunks[0] += 8;
++		motu->rx_packet_formats.pcm_chunks[1] += 8;
++	}
++
++	return 0;
++}
++
+ int snd_motu_protocol_v2_cache_packet_formats(struct snd_motu *motu)
+ {
+ 	__be32 reg;
+ 	u32 data;
+ 	int err;
+ 
++	motu->tx_packet_formats.pcm_byte_offset = 10;
++	motu->rx_packet_formats.pcm_byte_offset = 10;
++
++	motu->tx_packet_formats.msg_chunks = 2;
++	motu->rx_packet_formats.msg_chunks = 2;
++
+ 	err = snd_motu_transaction_read(motu, V2_IN_OUT_CONF_OFFSET, &reg,
+ 					sizeof(reg));
+ 	if (err < 0)
+@@ -290,10 +345,15 @@ int snd_motu_protocol_v2_cache_packet_formats(struct snd_motu *motu)
+ 	calculate_differed_part(&motu->rx_packet_formats, motu->spec->flags,
+ 			data, V2_OPT_OUT_IFACE_MASK, V2_OPT_OUT_IFACE_SHIFT);
+ 
+-	motu->tx_packet_formats.pcm_byte_offset = 10;
+-	motu->rx_packet_formats.pcm_byte_offset = 10;
+ 
+-	return 0;
++	if (motu->spec == &snd_motu_spec_828mk2)
++		return detect_packet_formats_828mk2(motu, data);
++	else if (motu->spec == &snd_motu_spec_traveler)
++		return detect_packet_formats_traveler(motu, data);
++	else if (motu->spec == &snd_motu_spec_8pre)
++		return detect_packet_formats_8pre(motu, data);
++	else
++		return 0;
+ }
+ 
+ const struct snd_motu_spec snd_motu_spec_828mk2 = {
 diff --git a/sound/firewire/motu/motu.h b/sound/firewire/motu/motu.h
-index f8274ed94766..790aa34d396f 100644
+index 790aa34d396f..d071b2342f11 100644
 --- a/sound/firewire/motu/motu.h
 +++ b/sound/firewire/motu/motu.h
-@@ -118,6 +118,9 @@ struct snd_motu_spec {
- 	enum snd_motu_protocol_version protocol_version;
- 	enum snd_motu_spec_flags flags;
+@@ -36,6 +36,7 @@ struct snd_motu_packet_format {
+ 	unsigned char pcm_byte_offset;
  
-+	unsigned char tx_fixed_pcm_chunks[3];
-+	unsigned char rx_fixed_pcm_chunks[3];
-+
- 	unsigned char analog_in_ports;
- 	unsigned char analog_out_ports;
+ 	unsigned char msg_chunks;
++	unsigned char pcm_chunks[3];
+ 	unsigned char fixed_part_pcm_chunks[3];
+ 	unsigned char differed_part_pcm_chunks[3];
  };
 -- 
 2.25.1
