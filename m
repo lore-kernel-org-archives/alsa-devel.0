@@ -2,140 +2,78 @@ Return-Path: <SRS0=hLTZ=7B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 40E5EC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 11:38:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4ACB0C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 11:39:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B0DA0207D3
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 11:38:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BDF38207D3
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 11:39:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ejl/zHbv";
-	dkim=pass (1024-bit key) header.d=amdcloud.onmicrosoft.com header.i=@amdcloud.onmicrosoft.com header.b="LCAX9NP6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B0DA0207D3
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=amd.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EpKgPV00";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="jILmREc8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BDF38207D3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0451E168F;
-	Tue, 19 May 2020 13:37:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0451E168F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1EFCB175C;
+	Tue, 19 May 2020 13:38:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1EFCB175C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589888321;
-	bh=5CQcoYxj/2WRLhLbD8848tsUsTIlM3kz62fq7smJ+uM=;
-	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1589888380;
+	bh=V4Pf3G0nJRIZxOcmlYms33+AVzNlgwE6TdTiO0dJCH4=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ejl/zHbvXOtoVCcf4SmOZh0PAEh0gdqaqM3b8PnNAQVkr/NzlRURV6hbv4DS69KPZ
-	 A1KJzLxw9cpX/OB/gqElvYvdEVbkXcae0G7Y7OFF1T93uIuDSQUzxbpbG9bZLwiFcz
-	 rg5I7ejJJOe00pylpQg7cVN4EpabJ4GpVdSb3q3c=
+	b=EpKgPV00rWFJueftmKMiWtvPnHmaTk7zYJl/v552Sj6KjXSAL4WkK02KpUxK+066l
+	 dig7j7MO3B1/7u1LOTaCvpjPCBb8OoMzX9pdCwjLr2lWBNb3se3STU//9MvINn8aB7
+	 ShdSuI/Cui7g1RdLqSDLrTTiKNzrYBInNyaXUzEA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 651FCF80161;
-	Tue, 19 May 2020 13:37:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 12DDBF80132;
+	Tue, 19 May 2020 13:38:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 24808F801A3; Tue, 19 May 2020 13:37:49 +0200 (CEST)
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com
- (mail-bn8nam12on2083.outbound.protection.outlook.com [40.107.237.83])
+ id 25511F80229; Tue, 19 May 2020 13:38:48 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 97A1BF80132
+ for <alsa-devel@alsa-project.org>; Tue, 19 May 2020 13:38:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97A1BF80132
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="jILmREc8"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8DBD6F80132
- for <alsa-devel@alsa-project.org>; Tue, 19 May 2020 13:37:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8DBD6F80132
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=amdcloud.onmicrosoft.com
- header.i=@amdcloud.onmicrosoft.com header.b="LCAX9NP6"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kdToXIMT8vJ39Bis/Cu2gp3S7xDTZGsm07olNk11MoyB/M0o+Y7P9msxLMtRbxEx74EBshec3oiIJhHorhiUbVXEzwU/mUjeu9PiAIgXouf/s3ZER63trT8Woqd8PcO6Ezb0Ca95OMioS8o4d7uYbBxhCX/E+h9KXVQYq4K281KoRWHh6Wx0+cd0T6Qv8OnSUh9/Tc7HPP1MGPN2WGZkkLxM+bxBLHnfRadYiW3kduh4yAG65kM39F3cN8R0T7lbQo0V0f13rjo5KJT/E2JMoUGijHTPfGe+f1IeACvpkV7dkF3wsZRkx0vM1KAfth3iqtpGEw/ab1jGZycAvLyE9Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=v+OtcP1MZRr/eSOd1/rDkC1JEI0fOdYQWjGoxGNrb7I=;
- b=B3eWrIN5yCXtBNqr7QBLTbKAuOYhdf8gB7y8CHNxF4yXKx3bHdgc8weJfr9xdL3r9v4AwqoLLrp8QffoFC3Agc0U8bilOX+3mntypaZrWsvgCNpzsI/F4Dk4lE4PIcYhqdGtyz7GEbh9esP5WxHbpWBL4cVX6lOBURMzxUUj5oIIma0CP3iIoqZv+1KWmfTdg+87PhbgciDC9s//P50pECgQsLb5bWaLtqPmpJJikceifo462Bmg3q++0UOOZeOFhWWtvOgVinccsdd/Lf2BiEPqbVuCSOKSwfG5XHzuPtU9iGTg3vi9PWzLD0W3TSOEUZ+23Lt7y9VMwe0p33ltcg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=v+OtcP1MZRr/eSOd1/rDkC1JEI0fOdYQWjGoxGNrb7I=;
- b=LCAX9NP6I0VdqXrTFhcC0U+soJQ2ilUoBGe3En/nEvAVWARfE8wqci1Vd8CwZi3oHS/Rdaq8U6+eF+aqV+jtT53iBW5AGhxm6ROXCbm+agId/M/7ipFttuXYj+3fuil1Qt0NkGeH3lm/Vn9wdHav7Q+N6IdIQmt+4R38BJWQm7U=
-Received: from DM6PR12MB2633.namprd12.prod.outlook.com (2603:10b6:5:50::11) by
- DM6PR12MB3690.namprd12.prod.outlook.com (2603:10b6:5:149::20) with
- Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3000.26; Tue, 19 May 2020 11:37:39 +0000
-Received: from DM6PR12MB2633.namprd12.prod.outlook.com
- ([fe80::ecbc:404f:23ae:616b]) by DM6PR12MB2633.namprd12.prod.outlook.com
- ([fe80::ecbc:404f:23ae:616b%5]) with mapi id 15.20.3000.034; Tue, 19 May 2020
- 11:37:39 +0000
-From: "Mukunda, Vijendar" <Vijendar.Mukunda@amd.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: RE: [PATCH v3 08/14] ASoC: amd: add ACP PDM DMA driver dai ops
-Thread-Topic: [PATCH v3 08/14] ASoC: amd: add ACP PDM DMA driver dai ops
-Thread-Index: AQHWLTg89daDZ+DNCUWdMtLWrSoGoqivRC6AgAAAl6A=
-Date: Tue, 19 May 2020 11:37:39 +0000
-Message-ID: <DM6PR12MB2633954F20E044F44CA89D5497B90@DM6PR12MB2633.namprd12.prod.outlook.com>
+ by mail.kernel.org (Postfix) with ESMTPSA id C4984207D8;
+ Tue, 19 May 2020 11:38:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1589888323;
+ bh=V4Pf3G0nJRIZxOcmlYms33+AVzNlgwE6TdTiO0dJCH4=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=jILmREc8+Z2lbS/poYuDLRxLVoih6LdoFDizQyRTi2iD1hLa7uGGp8K1efoTS7vFN
+ cPW7OW1qGTVZnB8pJO1eeHbZV6SA/iYT18MC/F85evulxzRzBaibO6vCvcjcxKUzan
+ TqrM/NzlzNgE66QJ4zeCp5ywqnsMamIhVjbPle2I=
+Date: Tue, 19 May 2020 12:38:40 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Subject: Re: [PATCH v3 00/14] Add Renoir ACP driver
+Message-ID: <20200519113840.GG4611@sirena.org.uk>
 References: <20200518171704.24999-1-Vijendar.Mukunda@amd.com>
- <20200518171704.24999-9-Vijendar.Mukunda@amd.com>
- <20200519111907.GD4611@sirena.org.uk>
-In-Reply-To: <20200519111907.GD4611@sirena.org.uk>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f2ed062d-8486-4f50-a4f1-3cce0dd00d64_Enabled=true;
- MSIP_Label_f2ed062d-8486-4f50-a4f1-3cce0dd00d64_SetDate=2020-05-19T11:21:19Z; 
- MSIP_Label_f2ed062d-8486-4f50-a4f1-3cce0dd00d64_Method=Privileged;
- MSIP_Label_f2ed062d-8486-4f50-a4f1-3cce0dd00d64_Name=Non-Business;
- MSIP_Label_f2ed062d-8486-4f50-a4f1-3cce0dd00d64_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
- MSIP_Label_f2ed062d-8486-4f50-a4f1-3cce0dd00d64_ActionId=c4237311-7f07-4089-b0db-0000493c6a1b;
- MSIP_Label_f2ed062d-8486-4f50-a4f1-3cce0dd00d64_ContentBits=0
-msip_label_f2ed062d-8486-4f50-a4f1-3cce0dd00d64_enabled: true
-msip_label_f2ed062d-8486-4f50-a4f1-3cce0dd00d64_setdate: 2020-05-19T11:37:37Z
-msip_label_f2ed062d-8486-4f50-a4f1-3cce0dd00d64_method: Privileged
-msip_label_f2ed062d-8486-4f50-a4f1-3cce0dd00d64_name: Non-Business
-msip_label_f2ed062d-8486-4f50-a4f1-3cce0dd00d64_siteid: 3dd8961f-e488-4e60-8e11-a82d994e183d
-msip_label_f2ed062d-8486-4f50-a4f1-3cce0dd00d64_actionid: 381bd59a-8a8e-4679-82a1-00009b282616
-msip_label_f2ed062d-8486-4f50-a4f1-3cce0dd00d64_contentbits: 0
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
-x-originating-ip: [124.123.31.218]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 6f725035-b300-4ebd-4d3d-08d7fbe9091b
-x-ms-traffictypediagnostic: DM6PR12MB3690:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR12MB36902D0C111F55B9AB5E749497B90@DM6PR12MB3690.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-forefront-prvs: 040866B734
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: GyQwgs0CeXF2WYy/y1uFbV4zDrQbh+tT2nS3Kta5ZnE+919tsQ8JE6BJxdicyoX4TOrCqz9O3okLpY7Rad3dRVenixz10hLsXGam3EPkE4mejBQVQncFUfh2xZqLsYOkGn2/cg6hL5SVO0wJcbTyb77ZtQ5f1r8ZBgH7aO+ZkaH0+f6dgzljyArgkY+MMj5QmCp/AisfTG8+N5uVI7zSM5z8fPhFW8XZRaeEnQnvo5Vg2Rtsi+6qWavclPJTfIfOkDbdjTWTKfk0UDTNJgKdpjscNlOHOR6hc8TPE1LHUYLJs6PAvysb2v3GpU0fcm+sVzzveg3v1313OLKXdF80LTxT2Ig6Wb1BtwrXBqxInhl/AcSSgwxbxnf9Igkf6iDs/TuBb0i5yxsG2TpAvJRAhq7+R9Vwe64lxfV/27EWrl7jfEOf9PmNC/SmyBcJO/Zt
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:DM6PR12MB2633.namprd12.prod.outlook.com; PTR:; CAT:NONE;
- SFTY:;
- SFS:(4636009)(346002)(376002)(396003)(366004)(136003)(39860400002)(26005)(52536014)(5660300002)(8936002)(71200400001)(54906003)(316002)(66946007)(76116006)(86362001)(66476007)(66556008)(66446008)(64756008)(186003)(478600001)(53546011)(33656002)(4326008)(6506007)(55016002)(8676002)(2906002)(6916009)(9686003)(7696005);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata: VZGYwbKloHMO2NtkRmXQs4eTQVFvwuYka+vw4M8NhqrAx9wu03NON4iNx5EvhNBc4YBdapA0kWl87iDHHulBF4wGYEGCyEf/XwYWhXWW6ZWBId0gvNzNrrpR8roKa8ICXGnvD3NqxlU66+UbAllQkUDwlINiYVmo5yCsS6R43xcrQs6ni+u3IdsNAwxrSTPxLsr5HN7TaQs+TUISazZKEwn1MAWOQGw2YgI5lEfb0oK1hW5LTMgo4YrsFqEl/7ohZjiQv643jyY/KMxWCdyEzuG87joTRv4dQJcyy5sxuhA0BKYUbYdJpuVpDlsYeRE0BMa9VpigJ1t1rktjg+T8dlzERAI1wROlu4SFXW/x+GLAOeUrdQTW96wE1OpBFrY/Edx9592bVJf+8WGSetCustzc7cTB0CgEDY8zmpXHvZ3yfY8uMrQVGPX1Gp+rvUw8Ua0i9vy6PrCjj32ZmXpeJlt7mtV04pLhhZDSMGVf8PL90KB/+pkT3K616RvCXFjH
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6f725035-b300-4ebd-4d3d-08d7fbe9091b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 May 2020 11:37:39.3581 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: OewIY1h5eDEreqOJT+EGdkDUmr7a7i2PjYlfbkaz6wz7K/sUsGHWQ3xQ/WZDwunYudl/C9Iv+33XnO4gfId+jQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3690
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "Deucher,
- Alexander" <Alexander.Deucher@amd.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="p7qwJlK53pWzbayA"
+Content-Disposition: inline
+In-Reply-To: <20200518171704.24999-1-Vijendar.Mukunda@amd.com>
+X-Cookie: Do not write below this line.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: tiwai@suse.de, Alexander.Deucher@amd.com, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -152,49 +90,31 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+--p7qwJlK53pWzbayA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> -----Original Message-----
-> From: Mark Brown <broonie@kernel.org>
-> Sent: Tuesday, May 19, 2020 4:49 PM
-> To: Mukunda, Vijendar <Vijendar.Mukunda@amd.com>
-> Cc: alsa-devel@alsa-project.org; tiwai@suse.de; Deucher, Alexander
-> <Alexander.Deucher@amd.com>
-> Subject: Re: [PATCH v3 08/14] ASoC: amd: add ACP PDM DMA driver dai ops
->=20
-> On Tue, May 19, 2020 at 01:16:58AM +0800, Vijendar Mukunda wrote:
->=20
-> > +static int acp_pdm_dai_hw_params(struct snd_pcm_substream *substream,
-> > +				 struct snd_pcm_hw_params *params,
-> > +				 struct snd_soc_dai *dai)
-> > +{
-> > +	struct pdm_stream_instance *rtd;
-> > +	unsigned int ch_mask;
-> > +
-> > +	rtd =3D substream->runtime->private_data;
-> > +	switch (params_channels(params)) {
-> > +	case TWO_CH:
-> > +	default:
-> > +		ch_mask =3D 0x00;
-> > +		break;
-> > +	}
->=20
-> The TWO_CH define isn't adding anything, and I'd expect there to be
-> invalid channel configurations this is rejecting - at the minute this
-> just boils down to an assignment.
+On Tue, May 19, 2020 at 01:16:50AM +0800, Vijendar Mukunda wrote:
+> This adds an ASoC driver for the ACP (Audio CoProcessor)
+> block on AMD Renoir APUs.
 
-Currently we have added two channel support.=20
-As of today, as we restricted no of channels to 2 , there is no point=20
-to check invalid configuration.
-It kept for future expansion to support more than two channels.
+The issues I found here were relatively minor so I'll go ahead and
+apply, overall this looks good - please submit incremental patches for
+the issues.
 
->=20
-> > +	config_pdm_stream_params(ch_mask, rtd->acp_base);
->=20
-> Does this function have any other callers - is there a need for it to be
-> a separate function?
-Current ask is only to support 48Khz, 2 Channel streams.
-This is kept for future reference.
-This API works as place holder to expand the logic to support multiple
-sample rates and no of channels.
-Even we can discard this API , do in it calling API itself.
+--p7qwJlK53pWzbayA
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7DxUAACgkQJNaLcl1U
+h9CUswf/WHrQr6LYKQS8lVQMn2moWhuW8TTxK3xAXztG/uMSjZwtGjRz2gtY7kRM
+4vyosEuXSdzLwk6zPyPgqZ0FBa6FonsK/E4Vf1NjP8zyfkk4MWfAQIUDwEViHbKT
+PWZMF24/qs5R8L4KcHIuHgdRGCchgsnJXXpcRfgES5xZa1Q7NNgYARYkvKE20nvv
+eValp/iG3CBhf4WBgBlf7dJHdYrjY9F+8umOS4S7JoVuhZbnBCjW4fMz9afqDL14
+mGtMzxFnR4Z6+vZP6KlrfxLDvRrSXegpiq123pEC32FJGAtUhZS+ru4/xLSYzSxb
+UfEWVPgE3vHl0AAbgXoLwuFF/HiGtw==
+=jIbR
+-----END PGP SIGNATURE-----
+
+--p7qwJlK53pWzbayA--
