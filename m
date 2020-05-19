@@ -6,58 +6,58 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D986C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 04:19:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BCBBC433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 04:21:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DA1CA2072C
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 04:19:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DC06820708
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 04:21:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HbOcjfqX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DA1CA2072C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="l8XkEhLy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DC06820708
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4471B17B0;
-	Tue, 19 May 2020 06:18:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4471B17B0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3A25417AF;
+	Tue, 19 May 2020 06:21:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A25417AF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589861973;
-	bh=hQClPzy5lFXuqKaZyq268npxCrFPzHSumoSUnrCLoDY=;
+	s=default; t=1589862112;
+	bh=Q+VsyRILuWievHojkheZfxxrfOkMnp9wzrBNbK95u0Y=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HbOcjfqX3nh+73KT8PNve0q7/fWQw/MDjAda9RQ/sIk3jfjNj/nEjgNIuVmd6pLGG
-	 rxOE0395Zw+dCTmBvKZ5QJ3GM8Vycm68GA30+HdpPrOcottgzPEd8KijPG/6kCDDpt
-	 jvV8/GZ7W4QhxPua1tkKxuPQBBrGoXQBc4KpBbHg=
+	b=l8XkEhLyOjHB2vQjlQz9/svPzpP2EYzAOVKuTCTvAeGUCNsX69Crf2xVZZQGTlz3Q
+	 RxP9Zb9Le7B7Zy1k+o3A/AGTWF3H+vVM7+Wu5N4KzceoQlJfjGmWYoLplsYHr91Qqy
+	 9hg8uZFEpTyVqQELo8TUpsiSnBVWfsWvJkYUW7r8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CFF64F80110;
-	Tue, 19 May 2020 06:18:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A769CF80110;
+	Tue, 19 May 2020 06:21:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9C2A3F801A3; Tue, 19 May 2020 06:18:41 +0200 (CEST)
+ id 0B98DF801A3; Tue, 19 May 2020 06:21:00 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 6AC3CF80110
- for <alsa-devel@alsa-project.org>; Tue, 19 May 2020 06:18:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6AC3CF80110
-Date: 19 May 2020 13:18:24 +0900
-X-IronPort-AV: E=Sophos;i="5.73,408,1583161200"; d="scan'208";a="47222845"
+ by alsa1.perex.cz (Postfix) with ESMTP id 847ABF80110
+ for <alsa-devel@alsa-project.org>; Tue, 19 May 2020 06:20:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 847ABF80110
+Date: 19 May 2020 13:20:52 +0900
+X-IronPort-AV: E=Sophos;i="5.73,408,1583161200"; d="scan'208";a="47223094"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 19 May 2020 13:18:24 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 19 May 2020 13:20:52 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 857D540062AD;
- Tue, 19 May 2020 13:18:24 +0900 (JST)
-Message-ID: <87sgfw4kxb.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 68619400387F;
+ Tue, 19 May 2020 13:20:52 +0900 (JST)
+Message-ID: <87r1vg4kt7.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: Re: [PATCH 5/7] ASoC: soc-link: add snd_soc_link_compr_startup()
-In-Reply-To: <820348bcf4956e42fc856bf80db198b9521eb951.camel@linux.intel.com>
+Subject: Re: [PATCH 1/7] ASoC: add soc-link.c
+In-Reply-To: <afb8d24d294a1c03541e279b95d2c7d740fe3c91.camel@linux.intel.com>
 References: <877dx868op.wl-kuninori.morimoto.gx@renesas.com>
- <87zha44u0d.wl-kuninori.morimoto.gx@renesas.com>
- <820348bcf4956e42fc856bf80db198b9521eb951.camel@linux.intel.com>
+ <875zcs68m4.wl-kuninori.morimoto.gx@renesas.com>
+ <afb8d24d294a1c03541e279b95d2c7d740fe3c91.camel@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -82,18 +82,25 @@ Hi Ranjani
 
 > > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > > 
-> > dai_link related function should be implemented at soc-link.c.
-> > This patch adds snd_soc_link_compr_startup().
+> > Current ALSA SoC has many dai_link->xxx() functions.
+> > But, it is implemented randomly at random place.
+> > 
+> > This patch creates new soc-link.c to collect dai_link related
+> > operation into it.
 > > 
 > > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > > ---
 (snip)
-> > +int snd_soc_link_compr_startup(struct snd_soc_pcm_runtime *rtd,
-> > +			       struct snd_compr_stream *cstream)
-> Can we do the same think as for pcm substream and remove the rtd param?
+> >  #include <sound/soc-component.h>
+> > +#include <sound/soc-link.h>
+> Why do we need to include this in soc.h? Is it to ensure that soc-
+> link.h included in all files that include soc.h?
+> 
+> I think the right way to do this would be include soc-link.h where it
+> is needed, say for example in soc-pcm.c etc.
 
-Yes, Indeed !
-Will update it in v2
+OK.
+Will check and update it in v2
 
 Thank you for your help !!
 
