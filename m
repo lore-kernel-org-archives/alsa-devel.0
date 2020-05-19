@@ -1,78 +1,62 @@
-Return-Path: <SRS0=lMNw=7A=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=hLTZ=7B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2E90C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 May 2020 19:24:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BD3DC433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 01:00:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1ED3D20756
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 May 2020 19:24:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C6B0C20674
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 01:00:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LnXJ4FQk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1ED3D20756
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QBo/hZ/t"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C6B0C20674
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 73BED1780;
-	Mon, 18 May 2020 21:23:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73BED1780
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2253A1770;
+	Tue, 19 May 2020 03:00:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2253A1770
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589829884;
-	bh=4D1+aNUe7QfnO2HpiOltYHSIRBtsaJf9NFsnpwZ3Am0=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=LnXJ4FQkXBgJvML0KUhG7G9O9Pb/pude0XzWYmPSLjAa+j6+T1wjf7x6eS8TaaiR2
-	 I5daeyBH48YmldGbZVVmpDoGdDNIGOao+tEhQaB+5WP6vkq+Fq4Cpr8ULGd7Q89F76
-	 7H3fWbQNFiYJssXbFNkLbsgh1wDqC+MYH4KqMKyg=
+	s=default; t=1589850057;
+	bh=bAbdj7Hktj2Zt+T5qX/GKzPIitXQK61eNxzG1QJJCzk=;
+	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=QBo/hZ/tDC06prVjXN1OmwM7+2QIup7JcqqAteHL0knMyFeJQyubYGWLBTXnTsLzi
+	 L/CyfcxzJAEkqS/f4f7iKShGMex5haUnmqjX81df7VXO/OsHQsp7ywsmaCbimpSiKQ
+	 RYcooDFYL3TPm0oxtLLg6g2vJqUIjZ6G6v9x5GQY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BBC3BF801D8;
-	Mon, 18 May 2020 21:23:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8A8DCF801D8;
+	Tue, 19 May 2020 03:00:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E8CAAF801DA; Mon, 18 May 2020 21:23:51 +0200 (CEST)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 74532F80086
- for <alsa-devel@alsa-project.org>; Mon, 18 May 2020 21:23:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74532F80086
-IronPort-SDR: Buu+w3LV3etE+PfpfeRj93LmiG1k//wHSqGC86YqGlnTSd/vsdvYvBHzGpFSkjRdBhG7HC/AbZ
- +qIsIj85n7NQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 May 2020 12:23:41 -0700
-IronPort-SDR: Kmm2rgOH556Z7cn8Z4zGzYBTW/0FayI+P7NCGQvfATSGxBtzbkbOi3ZPkjyfj0CtxYlWPffg1m
- ENVX1nKR7YQw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,407,1583222400"; d="scan'208";a="465696512"
-Received: from iremsen-mobl1.amr.corp.intel.com (HELO [10.254.66.150])
- ([10.254.66.150])
- by fmsmga005.fm.intel.com with ESMTP; 18 May 2020 12:23:40 -0700
-Subject: Re: [PATCH v3 00/14] Add Renoir ACP driver
-To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>, alsa-devel@alsa-project.org, 
- broonie@kernel.org, tiwai@suse.de
-References: <20200518171704.24999-1-Vijendar.Mukunda@amd.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <1f9edc27-fe32-ee74-9882-66e9e553d4de@linux.intel.com>
-Date: Mon, 18 May 2020 12:31:39 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <20200518171704.24999-1-Vijendar.Mukunda@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: Alexander.Deucher@amd.com
+ id A5501F801DA; Tue, 19 May 2020 03:00:03 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id D17C4F8015C
+ for <alsa-devel@alsa-project.org>; Tue, 19 May 2020 02:59:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D17C4F8015C
+Date: 19 May 2020 09:59:50 +0900
+X-IronPort-AV: E=Sophos;i="5.73,408,1583161200"; d="scan'208";a="47199742"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 19 May 2020 09:59:50 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 83AF540078B6;
+ Tue, 19 May 2020 09:59:50 +0900 (JST)
+Message-ID: <877dx868op.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH 0/7] ASoC: add soc-link
+User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,58 +73,37 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+Hi Mark
 
-On 5/18/20 12:16 PM, Vijendar Mukunda wrote:
-> This adds an ASoC driver for the ACP (Audio CoProcessor)
-> block on AMD Renoir APUs.
+Current ALSA SoC is handling dai_link related operation,
+but it is implmemented directly without using function/macro,
+and at random place.
 
-All my feedback was taken into account and I didn't see any new issues so:
+This patch-set creates new snd_soc_link_xxx() functions
+which handle dai_link related operation,
+and implmement these at new soc-link.c.
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Kuninori Morimoto (7):
+  ASoC: add soc-link.c
+  ASoC: soc-link: move soc_rtd_xxx()
+  ASoC: soc-link: remove unneeded parameter from snd_soc_link_xxx()
+  ASoC: soc-link: add snd_soc_link_be_hw_params_fixup()
+  ASoC: soc-link: add snd_soc_link_compr_startup()
+  ASoC: soc-link: add snd_soc_link_compr_shutdown()
+  ASoC: soc-link: add snd_soc_link_compr_set_params()
 
-I wouldn't hurt to have additional reviewers though.
+ include/sound/soc-link.h |  30 ++++++++
+ include/sound/soc.h      |   1 +
+ sound/soc/Makefile       |   2 +-
+ sound/soc/soc-compress.c |  45 ++++--------
+ sound/soc/soc-core.c     |  17 +++--
+ sound/soc/soc-dai.c      |   8 +--
+ sound/soc/soc-link.c     | 149 +++++++++++++++++++++++++++++++++++++++
+ sound/soc/soc-pcm.c      |  86 ++++------------------
+ 8 files changed, 220 insertions(+), 118 deletions(-)
+ create mode 100644 include/sound/soc-link.h
+ create mode 100644 sound/soc/soc-link.c
 
-> V3:
-> - Changed PCI driver PM runtime sequence
-> - Removed redundant code in Renoir machine driver
-> 
-> V2:
-> - Removed empty declaration of dai_ops
-> - Removed SNDRV_PCM_INFO_BATCH flag
-> - Defined Macros for delay and counter and corrected dma stop sequence.
-> - Changed PCI driver pm runtime sequence
-> - Removed redundant code
-> 
-> 
-> Vijendar Mukunda (14):
->    ASoC: amd: add Renoir ACP3x IP register header
->    ASoC: amd: add Renoir ACP PCI driver
->    ASoC: amd: add acp init/de-init functions
->    ASoC: amd: create acp3x pdm platform device
->    ASoC: amd: add ACP3x PDM platform driver
->    ASoC: amd: irq handler changes for ACP3x PDM dma driver
->    ASoC: amd: add acp3x pdm driver dma ops
->    ASoC: amd: add ACP PDM DMA driver dai ops
->    ASoC: amd: add Renoir ACP PCI driver PM ops
->    ASoC: amd: add ACP PDM DMA driver pm ops
->    ASoC: amd: enable Renoir acp3x drivers build
->    ASoC: amd: create platform devices for Renoir
->    ASoC: amd: RN machine driver using dmic
->    ASoC: amd: enable build for RN machine driver
-> 
->   sound/soc/amd/Kconfig                      |  13 +
->   sound/soc/amd/Makefile                     |   1 +
->   sound/soc/amd/renoir/Makefile              |   7 +
->   sound/soc/amd/renoir/acp3x-pdm-dma.c       | 530 +++++++++++++++++++++
->   sound/soc/amd/renoir/acp3x-rn.c            |  77 +++
->   sound/soc/amd/renoir/rn-pci-acp3x.c        | 344 +++++++++++++
->   sound/soc/amd/renoir/rn_acp3x.h            |  88 ++++
->   sound/soc/amd/renoir/rn_chip_offset_byte.h | 349 ++++++++++++++
->   8 files changed, 1409 insertions(+)
->   create mode 100644 sound/soc/amd/renoir/Makefile
->   create mode 100644 sound/soc/amd/renoir/acp3x-pdm-dma.c
->   create mode 100644 sound/soc/amd/renoir/acp3x-rn.c
->   create mode 100644 sound/soc/amd/renoir/rn-pci-acp3x.c
->   create mode 100644 sound/soc/amd/renoir/rn_acp3x.h
->   create mode 100644 sound/soc/amd/renoir/rn_chip_offset_byte.h
-> 
+-- 
+2.17.1
+
