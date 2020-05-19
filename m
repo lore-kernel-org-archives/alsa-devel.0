@@ -7,101 +7,101 @@ X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BC652C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 11:25:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E554FC433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 11:26:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4676420578
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 11:25:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 42E17206C3
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 11:26:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NVzMWA4q";
-	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="x8f3/72+";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="dA/2mYlY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4676420578
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LCiKtP/B";
+	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="reXLBSRk";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="LtpCb4BW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 42E17206C3
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A5CCF1785;
-	Tue, 19 May 2020 13:24:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5CCF1785
+	by alsa0.perex.cz (Postfix) with ESMTPS id A7F6B4E;
+	Tue, 19 May 2020 13:25:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A7F6B4E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589887523;
-	bh=K1VPGpNvVFsNcIzkxIcrl+hz1MPDPDsk+TMtMw82/4w=;
+	s=default; t=1589887567;
+	bh=3OJqTre4+SACSDyul5EqYyQtzlDj0ozdFZh4HDtiOA8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NVzMWA4qrTjT8bBkgLm5eBu/f9b8PxN6+W9DGe0PCAgeEWhHHcWeKOqa+Unwodp/x
-	 Do3+dwjkEGbNXs99pyxvFyhTLQbjF6BT0E1c4jHRbCP6tRn639vO4ZK0FGQt3vTSyI
-	 66O86+b66EaRnDGnWJ1FnHmn6UapuVJTnbD4JRow=
+	b=LCiKtP/BVvXs3XVmJUWopZrwobQwycynWIQav11lobk+xXQJnW7qTbZhqjs0USWhI
+	 VfLSGzgy7w05mdO3pikm81Ran/Y0C/32roRoWfEQLxy9xZm4LKJzUlBIXGWF5TBYLg
+	 XL9/sRBTYWB8jraewNpGqDvERJ8fWcByPs8Mm5aM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 88547F80331;
-	Tue, 19 May 2020 13:17:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F063DF80338;
+	Tue, 19 May 2020 13:17:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 14CB4F802A9; Tue, 19 May 2020 13:17:18 +0200 (CEST)
+ id 6DA78F802A7; Tue, 19 May 2020 13:17:18 +0200 (CEST)
 Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
  [66.111.4.25])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 25F0DF8025E
- for <alsa-devel@alsa-project.org>; Tue, 19 May 2020 13:17:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25F0DF8025E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 85BA3F802A0
+ for <alsa-devel@alsa-project.org>; Tue, 19 May 2020 13:17:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85BA3F802A0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="x8f3/72+"; 
+ header.b="reXLBSRk"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="dA/2mYlY"
+ header.i=@messagingengine.com header.b="LtpCb4BW"
 Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
- by mailout.nyi.internal (Postfix) with ESMTP id 1E6B45C00FC;
- Tue, 19 May 2020 07:17:04 -0400 (EDT)
+ by mailout.nyi.internal (Postfix) with ESMTP id A83305C0073;
+ Tue, 19 May 2020 07:17:06 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
- by compute2.internal (MEProxy); Tue, 19 May 2020 07:17:04 -0400
+ by compute2.internal (MEProxy); Tue, 19 May 2020 07:17:06 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm1; bh=nlcOHwjmQzo9t
- erwl+BHtdrwPd4jxMe/9BOXUe8GfEY=; b=x8f3/72+hlbOtdbJnTquX5cViS9eJ
- cciOLKVMaMuX+ddZpHTUfPbLEVrUGuz197xyo/4LaFsfHoN4CvB1g9gKe6DDgDlP
- kjgK0579lCeWgBD7415tNBr+HUwsTTBwmzn4iZEHlblcvuHvh2oHYDdncdj7qCek
- pD+bk0Z/cbUXlzswhHKdWoDnDFHO2N/+eKktFrq/jpVT/P73K8pEprnGRq1nU72K
- erqWwcyogvxwg+TC8O/nUWpKmhmXmabcQ1UUhdUGBMSH87oBRNuq8ctrmHysqVKI
- N++nsPWlyPsCWFjIUogfhmQxtB0oz1+orriPAMmscPmMrCxHtEq0x+Pqg==
+ :mime-version:content-transfer-encoding; s=fm1; bh=jsO78a0+N+/Kq
+ aB13ge5VvYlFiXaFv333wp2egRbLHg=; b=reXLBSRk/V9KOtcVxj1z13rC/1Or3
+ z/VKX1h+K05hyEiy+y4aAaAGUq++icwQF8d8NTGlPQbcM4fgLwib2tfePBPF4iqZ
+ TLjfiPUPhJpZhon2gFBfGM4dk2LI0wOBpkMIghSmgGmQk5W5Kh4/EAm+kmbaW0um
+ Y35cpbWXvgY+cg1/cRosXrgvxrz6TqC3T7cF/Kq6PNJ8r7NdmJA/eRqLbvmAq0zI
+ iWspw7WQpLJ+ta52yIFArm5qAbi11O6r6su6FTHb0Tt5B29rcVKs+jYabnDQ3AEH
+ 14buQDd7mDXZ0vWaKd8hrtr7OSDhGsIC9xT3HhFhPnCFeA45tq5IyDGwA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm2; bh=nlcOHwjmQzo9terwl+BHtdrwPd4jxMe/9BOXUe8GfEY=; b=dA/2mYlY
- /5AxQVXnPnV0K/hgaVyzvFy+WMtGmb5VsP/HZA3UqK3xIwKwVXIgvDovTTy3j3/7
- BCOzLZ/zmFGtHyFRnEipCvU/YsNhKrUMdOh1NNmyXTo0Il8aTaDeErTtac1RrZ1q
- ctDumMTIKMx4SOas1gi98JlVyU2TNlVyLMwp7QA90fvazh89GHU+eOHwusF8bx6e
- rLMSU1VN0MsiB602qCQQKFvLggth9mjIjmWMVwH9qB1+FhCi2HgyC7Ogi3Z3huDv
- /lLc/hHmtYhoeJ66IKvWnFkyS09WiW1SIMFIPg44SfyQRWuXXTmL1Z0kNfloHVRd
- clBoKrYyWZGJDQ==
-X-ME-Sender: <xms:MMDDXgQEBzld__xY3qs5l7jFDMC6obUV96EfHjgjWU_CnBWgNG9auQ>
+ fm2; bh=jsO78a0+N+/KqaB13ge5VvYlFiXaFv333wp2egRbLHg=; b=LtpCb4BW
+ Z/RobPMmZstXuVul1qkms+WIwnHastfvSiT8uqQItxqac2l/4x0Kuvpcgfd44sK+
+ Z4JY98Jz6hgyGM7c+EGP89+lAb5mMxUukHve8VdgXfnfJF5IZNDDZHj2GMOCPajk
+ 26Tc//TSJRLkQ8Do5FtB+GXdcdGENo3MsaasuAwu+hZQpcfLeHYTCGU3diRIDHA2
+ UP1cef9OuAm/1pKVcCCnT6WlDhN7h2Mr/b4i86euky6hhyprQIYTMnOlBJHfcnVZ
+ /4siE7Fto8sqj/hX/NMJIPON6XfBERC9K9BZJNkTxZqecqWBRriWLJZd57HO+cXO
+ 8PU7u80n9xqrFg==
+X-ME-Sender: <xms:MsDDXkxFIe1KD9aT4v-HVwPGDvKMpNap_GYKel7z4-qhju25YX19FA>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedruddtjedgfeejucetufdoteggodetrfdotf
  fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
  uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
  dtredttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgr
  shhhihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepveefffefke
  etgfevgeefleehfffhueejtdejveethfekveektdejjedvtdejhfejnecukfhppedukedt
- rddvfeehrdefrdehgeenucevlhhushhtvghrufhiiigvpeeknecurfgrrhgrmhepmhgrih
- hlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:MMDDXtxpPgmjuiRTCbiruz6_0SRXEv3dDG7uEQLrZnkgv06570x08g>
- <xmx:MMDDXt0S31jTXkgfIF6_KcYrDsXFjtFz_zv0DRAI8oOTLYOqsyhJAA>
- <xmx:MMDDXkACjZAesVQEd90wM-qN6uiGxUVpxD_QVBCrU-H609Fvuv3KVA>
- <xmx:MMDDXjd8W1XDCAkCgYMMPunryY5uUuDOjXyB_PFOR7vl63hQsRPt8Q>
+ rddvfeehrdefrdehgeenucevlhhushhtvghrufhiiigvpeduvdenucfrrghrrghmpehmrg
+ hilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
+X-ME-Proxy: <xmx:MsDDXoTlcu133Xxa9nCinrDzGsknxUACUhO3kQFu3MVtI57-P0IVMg>
+ <xmx:MsDDXmWpMFkihrQg6agkygOuc2lSQIZ1_8328Mxt9jyKUJQIRnIK0A>
+ <xmx:MsDDXihK6LUzjKj_rEtK2SKBjVjVi7jV36zf2U_E1hmDjSgKsIq32w>
+ <xmx:MsDDXt_ENJBr8pSKrjWDJq6Jms8vP2RyvxnRbLM9AI_Z9ln4ALQP9g>
 Received: from workstation.flets-east.jp (ad003054.dynamic.ppp.asahi-net.or.jp
  [180.235.3.54])
- by mail.messagingengine.com (Postfix) with ESMTPA id 196E33280068;
- Tue, 19 May 2020 07:17:02 -0400 (EDT)
+ by mail.messagingengine.com (Postfix) with ESMTPA id 9D6343280064;
+ Tue, 19 May 2020 07:17:05 -0400 (EDT)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: clemens@ladisch.de,
 	tiwai@suse.de
-Subject: [PATCH 12/14] ALSA: firewire-motu: refactoring protocol v2 for clock
- source getter
-Date: Tue, 19 May 2020 20:16:39 +0900
-Message-Id: <20200519111641.123211-13-o-takashi@sakamocchi.jp>
+Subject: [PATCH 14/14] ALSA: firewire-motu: refactoring protocol v2 for
+ fetching mode switch
+Date: Tue, 19 May 2020 20:16:41 +0900
+Message-Id: <20200519111641.123211-15-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200519111641.123211-1-o-takashi@sakamocchi.jp>
 References: <20200519111641.123211-1-o-takashi@sakamocchi.jp>
@@ -123,86 +123,118 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This commit splits the method to get clock source for protocol
+This commit splits the method to switch fetching mode for protocol
 version 2 so that model-dependent operations are explicitly defined.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/motu/motu-protocol-v2.c | 48 +++++++++++++++++++++-----
- 1 file changed, 40 insertions(+), 8 deletions(-)
+ sound/firewire/motu/motu-protocol-v2.c | 77 ++++++++++++++++----------
+ 1 file changed, 47 insertions(+), 30 deletions(-)
 
 diff --git a/sound/firewire/motu/motu-protocol-v2.c b/sound/firewire/motu/motu-protocol-v2.c
-index 1bdc905e8e22..2e6c3cc8a9e1 100644
+index 2e6c3cc8a9e1..e59e69ab1538 100644
 --- a/sound/firewire/motu/motu-protocol-v2.c
 +++ b/sound/firewire/motu/motu-protocol-v2.c
-@@ -78,14 +78,10 @@ int snd_motu_protocol_v2_set_clock_rate(struct snd_motu *motu,
- 					  sizeof(reg));
+@@ -170,52 +170,69 @@ int snd_motu_protocol_v2_get_clock_source(struct snd_motu *motu,
+ 	return get_clock_source(motu, be32_to_cpu(reg), src);
  }
  
--static int get_clock_source(struct snd_motu *motu, u32 data,
--			    enum snd_motu_clock_source *src)
-+static int detect_clock_source_optical_model(struct snd_motu *motu, u32 data,
-+					     enum snd_motu_clock_source *src)
+-int snd_motu_protocol_v2_switch_fetching_mode(struct snd_motu *motu,
+-					      bool enable)
++// Expected for Traveler and 896HD, which implements Altera Cyclone EP1C3.
++static int switch_fetching_mode_cyclone(struct snd_motu *motu, u32 *data,
++					bool enable)
  {
--	unsigned int index = data & V2_CLOCK_SRC_MASK;
--	if (index > 5)
--		return -EIO;
--
--	switch (index) {
-+	switch (data) {
- 	case 0:
- 		*src = SND_MOTU_CLOCK_SOURCE_INTERNAL;
- 		break;
-@@ -118,12 +114,48 @@ static int get_clock_source(struct snd_motu *motu, u32 data,
- 		*src = SND_MOTU_CLOCK_SOURCE_ADAT_ON_DSUB;
- 		break;
- 	default:
--		return -EIO;
-+		*src = SND_MOTU_CLOCK_SOURCE_UNKNOWN;
-+		break;
-+	}
+-	enum snd_motu_clock_source src;
+-	__be32 reg;
+-	u32 data;
+-	int err = 0;
++	*data |= V2_CLOCK_MODEL_SPECIFIC;
+ 
+-	// 828mkII implements Altera ACEX 1K EP1K30. Nothing to do.
+-	if (motu->spec == &snd_motu_spec_828mk2)
+-		return 0;
++	return 0;
++}
+ 
+-	err = snd_motu_transaction_read(motu, V2_CLOCK_STATUS_OFFSET, &reg,
+-					sizeof(reg));
++// For UltraLite and 8pre, which implements Xilinx Spartan XC3S200.
++static int switch_fetching_mode_spartan(struct snd_motu *motu, u32 *data,
++					bool enable)
++{
++	unsigned int rate;
++	enum snd_motu_clock_source src;
++	int err;
 +
++	err = get_clock_source(motu, *data, &src);
+ 	if (err < 0)
+ 		return err;
+-	data = be32_to_cpu(reg);
+ 
+-	err = get_clock_source(motu, data, &src);
++	err = get_clock_rate(*data, &rate);
+ 	if (err < 0)
+ 		return err;
+ 
+-	data &= ~(V2_CLOCK_FETCH_ENABLE | V2_CLOCK_MODEL_SPECIFIC);
+-	if (enable)
+-		data |= V2_CLOCK_FETCH_ENABLE;
++	if (src == SND_MOTU_CLOCK_SOURCE_SPH && rate > 48000)
++		*data |= V2_CLOCK_MODEL_SPECIFIC;
+ 
+-	if (motu->spec == &snd_motu_spec_traveler) {
+-		// Expected for Traveler and 896HD, which implements Altera
+-		// Cyclone EP1C3.
+-		data |= V2_CLOCK_MODEL_SPECIFIC;
 +	return 0;
 +}
 +
-+static int v2_detect_clock_source(struct snd_motu *motu, u32 data,
-+				  enum snd_motu_clock_source *src)
++int snd_motu_protocol_v2_switch_fetching_mode(struct snd_motu *motu,
++					      bool enable)
 +{
-+	switch (data) {
-+	case 0:
-+		*src = SND_MOTU_CLOCK_SOURCE_INTERNAL;
-+		break;
-+	case 2:
-+		*src = SND_MOTU_CLOCK_SOURCE_SPDIF_ON_COAX;
-+		break;
-+	case 3:
-+		*src = SND_MOTU_CLOCK_SOURCE_SPH;
-+		break;
-+	case 4:
-+		*src = SND_MOTU_CLOCK_SOURCE_WORD_ON_BNC;
-+		break;
-+	default:
-+		*src = SND_MOTU_CLOCK_SOURCE_UNKNOWN;
-+		break;
- 	}
++	if (motu->spec == &snd_motu_spec_828mk2) {
++		// 828mkII implements Altera ACEX 1K EP1K30. Nothing to do.
++		return 0;
+ 	} else {
+-		// For UltraLite and 8pre, which implements Xilinx Spartan
+-		// XC3S200.
+-		unsigned int rate;
++		__be32 reg;
++		u32 data;
++		int err;
  
- 	return 0;
+-		err = get_clock_rate(data, &rate);
++		err = snd_motu_transaction_read(motu, V2_CLOCK_STATUS_OFFSET,
++						&reg, sizeof(reg));
+ 		if (err < 0)
+ 			return err;
++		data = be32_to_cpu(reg);
+ 
+-		if (src == SND_MOTU_CLOCK_SOURCE_SPH && rate > 48000)
+-			data |= V2_CLOCK_MODEL_SPECIFIC;
+-	}
++		data &= ~(V2_CLOCK_FETCH_ENABLE | V2_CLOCK_MODEL_SPECIFIC);
++		if (enable)
++			data |= V2_CLOCK_FETCH_ENABLE;
+ 
+-	reg = cpu_to_be32(data);
+-	return snd_motu_transaction_write(motu, V2_CLOCK_STATUS_OFFSET, &reg,
+-					  sizeof(reg));
++		if (motu->spec == &snd_motu_spec_traveler)
++			err = switch_fetching_mode_cyclone(motu, &data, enable);
++		else
++			err = switch_fetching_mode_spartan(motu, &data, enable);
++		if (err < 0)
++			return err;
++
++		reg = cpu_to_be32(data);
++		return snd_motu_transaction_write(motu, V2_CLOCK_STATUS_OFFSET,
++						  &reg, sizeof(reg));
++	}
  }
  
-+static int get_clock_source(struct snd_motu *motu, u32 data,
-+			    enum snd_motu_clock_source *src)
-+{
-+	data &= V2_CLOCK_SRC_MASK;
-+	if (motu->spec == &snd_motu_spec_828mk2 ||
-+	    motu->spec == &snd_motu_spec_traveler)
-+		return detect_clock_source_optical_model(motu, data, src);
-+	else
-+		return v2_detect_clock_source(motu, data, src);
-+}
-+
- int snd_motu_protocol_v2_get_clock_source(struct snd_motu *motu,
- 					  enum snd_motu_clock_source *src)
- {
+ static int detect_packet_formats_828mk2(struct snd_motu *motu, u32 data)
 -- 
 2.25.1
 
