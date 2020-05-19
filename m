@@ -2,83 +2,59 @@ Return-Path: <SRS0=hLTZ=7B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E74EC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 06:48:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 206B2C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 06:51:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E2317207D8
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 06:48:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 95D9520758
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 06:51:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kU8X3byQ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="UUFWnT71"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E2317207D8
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LG5zeXK0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 95D9520758
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3FF49176B;
-	Tue, 19 May 2020 08:47:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3FF49176B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 056AB17DB;
+	Tue, 19 May 2020 08:50:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 056AB17DB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589870911;
-	bh=UVuEP2pXAj0/lD39W+LAWjKWSZAMPnmRqxj8VygJ+fk=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=kU8X3byQCCKQPPstsgi6l2jauowpyYfE8UeX722YCu+hrvBba0eHYvoY/MzirGyho
-	 OMk43kdMX6Yq5JE0VsXsKQTLBu+hUZZ+UIxN+FrbZ/N0kK9nGWpPgG9m8pevaOfklk
-	 8MXzgZq55Ybq96qq1da7WkhQrCpZE5Ni0yVxFjOI=
+	s=default; t=1589871080;
+	bh=X1hLDJ3yiw/SdSuzb9otP1oLGNTcWAZtApgCthyTNnE=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=LG5zeXK0DgoBOC4M7iLWdEaIGTVU/HJoJpdCFoRQrYULYm4RhM07McIt3jGb/n0Gh
+	 6TUl1Y84fYptCny81CqtBqNhTqo/GQgi+8sxAOonULTm4zHJiEws2XhVFS31OE+hUb
+	 slXDuzofRGBjz00CKzc5QDgjpfNPxUs+P5pE5upI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 91419F80161;
-	Tue, 19 May 2020 08:47:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 86D7CF80161;
+	Tue, 19 May 2020 08:50:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 53C0BF801A3; Tue, 19 May 2020 08:47:33 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ id 90B29F801A3; Tue, 19 May 2020 08:50:27 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CAFCAF80110
- for <alsa-devel@alsa-project.org>; Tue, 19 May 2020 08:47:21 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id CDFD4A003F;
- Tue, 19 May 2020 08:47:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz CDFD4A003F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1589870840; bh=pQ3wORf2jqZ8g7HnW11X9V+drcvq8Y92kOSzANz/7lE=;
- h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
- b=UUFWnT71rm2ZlIIi7q0jNjd4TbRrAyPj0W4xsI3tetb06R7jeZFyaYvzgfPle9BC6
- JYIaqJpXXJ9HgcN8sW9IvvvRIfJ/AyKatNPvUaaonpo+nDbabgIWwYy+tFWuxIzSm9
- KKsEJxDDOPBg2cU1xyAmr95m/Bz0FJmSr0pz2yv4=
-Received: from p50.perex-int.cz (unknown [192.168.100.94])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Tue, 19 May 2020 08:47:02 +0200 (CEST)
-Subject: Re: [PATCH v2 0/5] soundwire: bus_type: add sdw_master_device support
-To: Bard Liao <yung-chuan.liao@linux.intel.com>, alsa-devel@alsa-project.org, 
- vkoul@kernel.org
-References: <20200518174322.31561-1-yung-chuan.liao@linux.intel.com>
-From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <c3817139-4a2f-57cc-94dc-efc1d0457288@perex.cz>
-Date: Tue, 19 May 2020 08:47:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <20200518174322.31561-1-yung-chuan.liao@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: vinod.koul@linaro.org, tiwai@suse.de, gregkh@linuxfoundation.org,
- ranjani.sridharan@linux.intel.com, pierre-louis.bossart@linux.intel.com,
- hui.wang@canonical.com, broonie@kernel.org, srinivas.kandagatla@linaro.org,
- bard.liao@intel.com, jank@cadence.com, mengdong.lin@intel.com,
- slawomir.blauciak@intel.com, sanyog.r.kale@intel.com,
- rander.wang@linux.intel.com, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id A9654F80132
+ for <alsa-devel@alsa-project.org>; Tue, 19 May 2020 08:50:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9654F80132
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 2B096AC64;
+ Tue, 19 May 2020 06:50:17 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: hda/realtek - Add more fixup entries for Clevo machines
+Date: Tue, 19 May 2020 08:50:12 +0200
+Message-Id: <20200519065012.13119-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
+Cc: PeiSen Hou <pshou@realtek.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,46 +70,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 18. 05. 20 v 19:43 Bard Liao napsal(a):
-> This series adds sdw master devices support.
-> 
-> changes in v2:
->   - Allocate sdw_master_device dynamically
->   - Use unique bus id as master id
->   - Keep checking parent devices
->   - Enable runtime_pm on Master device
-> 
-> Bard Liao (2):
->    soundwire: bus: add unique bus id
->    soundwire: master: add runtime pm support
-> 
-> Pierre-Louis Bossart (3):
->    soundwire: bus: rename sdw_bus_master_add/delete, add arguments
->    soundwire: bus_type: introduce sdw_slave_type and sdw_master_type
->    soundwire: bus_type: add sdw_master_device support
-> 
->   .../driver-api/soundwire/summary.rst          |  7 +-
->   drivers/soundwire/Makefile                    |  2 +-
->   drivers/soundwire/bus.c                       | 47 ++++++++--
->   drivers/soundwire/bus.h                       |  3 +
->   drivers/soundwire/bus_type.c                  | 19 ++--
->   drivers/soundwire/intel.c                     |  9 +-
->   drivers/soundwire/master.c                    | 88 +++++++++++++++++++
->   drivers/soundwire/qcom.c                      |  7 +-
->   drivers/soundwire/slave.c                     |  8 +-
->   include/linux/soundwire/sdw.h                 | 24 ++++-
->   include/linux/soundwire/sdw_type.h            |  9 +-
->   11 files changed, 191 insertions(+), 32 deletions(-)
->   create mode 100644 drivers/soundwire/master.c
-> 
+From: PeiSen Hou <pshou@realtek.com>
 
-The code looks really clean now. Thank you for your work.
+A few known Clevo machines (PC50, PC70, X170) with ALC1220 codec need
+the existing quirk for pins for PB51 and co.
 
-Acked-by: Jaroslav Kysela <perex@perex.cz>
+Signed-off-by: PeiSen Hou <pshou@realtek.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_realtek.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-
-				Jaroslav
-
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 23315b69ac38..041d2a32059b 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -2473,6 +2473,9 @@ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1558, 0x97e1, "Clevo P970[ER][CDFN]", ALC1220_FIXUP_CLEVO_P950),
+ 	SND_PCI_QUIRK(0x1558, 0x65d1, "Clevo PB51[ER][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x67d1, "Clevo PB71[ER][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
++	SND_PCI_QUIRK(0x1558, 0x50d3, "Clevo PC50[ER][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
++	SND_PCI_QUIRK(0x1558, 0x70d1, "Clevo PC70[ER][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
++	SND_PCI_QUIRK(0x1558, 0x7714, "Clevo X170", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK_VENDOR(0x1558, "Clevo laptop", ALC882_FIXUP_EAPD),
+ 	SND_PCI_QUIRK(0x161f, 0x2054, "Medion laptop", ALC883_FIXUP_EAPD),
+ 	SND_PCI_QUIRK(0x17aa, 0x3a0d, "Lenovo Y530", ALC882_FIXUP_LENOVO_Y530),
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+2.16.4
+
