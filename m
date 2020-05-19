@@ -6,80 +6,62 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 991E2C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 13:34:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5A4FC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 13:47:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 21B8C20825
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 13:34:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3CF8E20709
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 13:47:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PGW9NUQr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 21B8C20825
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tXdjjwjR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3CF8E20709
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 66ABB1776;
-	Tue, 19 May 2020 15:34:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66ABB1776
+	by alsa0.perex.cz (Postfix) with ESMTPS id 80E521752;
+	Tue, 19 May 2020 15:46:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 80E521752
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589895293;
-	bh=coLMXIiwFAB3SjqQUq/Qm5lexdIpuR5TxU5tCYGwRLI=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1589896034;
+	bh=+g34Nutf/LuFx2zOGZKX77/5m5M3hPpH6AJljNVAztE=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PGW9NUQrwuvQTEZD1Q+pyWl/nUDmV8jXc02+mPKdAViA9VRKT5nxc/sGUENtlPhBr
-	 O4jsrD7A0I6CP3iGVJhW/MxJKFIsdKaaCxoY/9qRpX87mx8/h2SW4o5AHDplUX8yqd
-	 FvVcyYf9Y+V7oI+SWnWcwT/nDH+Syrn7ZjNxrkZ4=
+	b=tXdjjwjRFPEKpBWHeioS7SRChAyG4skbCNGBnTLfo2JIhTq67d/jRgy+YvmYs3ppb
+	 tXNdC7LyjEU1Qf0BZdEN5U03LZUdXkkoBAn5GrcpRF5qBwUb7prq2qkd0hJIrdJagU
+	 LmC4tLPnzjxUY6tzlNsD5pKAi1EyEsE7cTDHDw0E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B1A36F8028E;
-	Tue, 19 May 2020 15:33:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 18644F80161;
+	Tue, 19 May 2020 15:46:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D6EE2F8028F; Tue, 19 May 2020 15:33:20 +0200 (CEST)
-Received: from mail-ot1-f67.google.com (mail-ot1-f67.google.com
- [209.85.210.67])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 3F809F801A3; Tue, 19 May 2020 15:46:22 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CB1E2F8025E
- for <alsa-devel@alsa-project.org>; Tue, 19 May 2020 15:33:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB1E2F8025E
-Received: by mail-ot1-f67.google.com with SMTP id g25so5334734otp.13
- for <alsa-devel@alsa-project.org>; Tue, 19 May 2020 06:33:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=tfjq0+2TvhTDPcTzKAYSuLPQPlCSitYKtY6JkPINn/o=;
- b=CzmDu/hkfyuFlg1JlpLCwFn66U6SepFg0XQRbKkLNdKkWpAUYrP+EGozqWwUROBs+t
- R1NY2a6Avn16xiwmFEt9NVDKXcQhOfWVUQoKw1rh/J1lXQysO6RLJiI5lz9xgTUrd2se
- 7Esz7ZE/iJUIFgmEokHVIhuTQk4jAFp7zKUAMKbSlOfYNO5UqQ9X8hApFAD2CVYXt9Oh
- jgMB0K3Qd7bjBhWx96nI2TSsPW875Te+3BW2s4rudSbxWL8DyaaoOMZtN0lMHVqoEMnt
- 0Lb2AsGsmoVB4cB27RxIzoNHPdzzOQIaVDVjmCSB7mw6IycV3bhRMfHGcwQiIcZc7CGd
- EDGg==
-X-Gm-Message-State: AOAM532xQjMcWNrdNALR93ByGOtotJq3qGgqDaJvBpeXDp3wneWd6ezU
- 42tJbFbsBrm9QmkuofmXf9Mc5vbCvAM8erII5qQ=
-X-Google-Smtp-Source: ABdhPJyAt8NmTZFbYZI4yPgmGZfB2oiwlkINlsEI5ZmOA2fK+9EJ+dJOLJ7AaVOzaxgpBhwWAcngv4M7f+TntDTKrRI=
-X-Received: by 2002:a9d:7e92:: with SMTP id m18mr15739186otp.145.1589895192859; 
- Tue, 19 May 2020 06:33:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200519075858.27869-1-geert+renesas@glider.be>
- <20200519124714.GA45550@sirena.org.uk>
-In-Reply-To: <20200519124714.GA45550@sirena.org.uk>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 19 May 2020 15:33:01 +0200
-Message-ID: <CAMuHMdUHHzBNFHy07hgdryJEeHUDMOCP8XauCn7TmUK7uGZcFg@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: fsi: Add missing properties to DT bindings
-To: Mark Brown <broonie@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Cc: "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>,
- ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
- Rob Herring <robh+dt@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 61DD6F800C9
+ for <alsa-devel@alsa-project.org>; Tue, 19 May 2020 15:46:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 61DD6F800C9
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id CB17DAC5B;
+ Tue, 19 May 2020 13:46:15 +0000 (UTC)
+Date: Tue, 19 May 2020 15:46:12 +0200
+Message-ID: <s5hzha4dom3.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Maarten Baert <maarten-baert@hotmail.com>
+Subject: Re: Lock-free dmix considered harmful
+In-Reply-To: <HE1P191MB015371D61AF81262BD242966E2BD0@HE1P191MB0153.EURP191.PROD.OUTLOOK.COM>
+References: <HE1P191MB015371D61AF81262BD242966E2BD0@HE1P191MB0153.EURP191.PROD.OUTLOOK.COM>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,28 +77,84 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Mark,
+On Fri, 15 May 2020 17:46:03 +0200,
+Maarten Baert wrote:
+> 
+> I'm in the process of adding monitoring support to dmix (i.e. the ability for applications to capture the sound being played back through the speakers) - expect patches for this soon. However while reading the dmix source code I came across something weird. Dmix uses a lock-free mixing implementation based on (architecture-dependent) atomic operations such as atomic addition and compare-exchange. However at the same time dmix also uses a semaphore to prevent multiple processes from accessing the shared memory buffers simultaneously. This is redundant and makes the lock-free implementation rather pointless.
 
-On Tue, May 19, 2020 at 2:47 PM Mark Brown <broonie@kernel.org> wrote:
-> On Tue, May 19, 2020 at 09:58:58AM +0200, Geert Uytterhoeven wrote:
-> > make dtbs_check:
-> >
-> >     arch/arm/boot/dts/r8a7740-armadillo800eva.dt.yaml: sound@fe1f0000: '#sound-dai-cells', 'clocks', 'power-domains' do not match any of the regexes: 'pinctrl-[0-9]+'
->
-> This doesn't apply against current code, please check and resend.
+Indeed, this was rather a bug and introduced in the commit
+267d7c728196286726b47df45736eba18d78822a
+    Add support of little-endian on i386/x86_64 dmix
 
-It indeed doesn't apply to your sound/for-next branch.
-It does apply to robh/for-next, which has commit 9f60a65bc5e6cd88
-("dt-bindings: Clean-up schema indentation formatting"), so I guess
-Rob will have to take it.
+It's a really old bug, since 2007.  The semaphore down/up should
+have been controlled with the dynamic flag instead of the
+conditional build.
 
-Gr{oetje,eeting}s,
+So, practically seen, people have been never bothered by this pthread
+mutex :)
 
-                        Geert
+> Out of curiosity I decided to measure the time it takes to execute snd_pcm_dmix_sync_area for these three cases:
+> 
+> - A simple locked implementation, which acquires the semaphore and then does mixing using the non-concurrent code from pcm_dmix_generic.c.
+> - The current (redundant) implementation, which acquires the semaphore 
+> and then does atomic mixing.
+> - A lock-free implementation, which does not acquire the semaphore and does atomic mixing.
+> 
+> The resulting sound is identical in all three cases. (As a sanity check I also tested the 4th case, non-concurrent code without locking, which as expected produces audio with glitches.)
+> 
+> I tested each case with 1, 4 and 20 simultaneous playback streams (multiple instances of 'aplay') on a system with 4 physical CPU cores (Intel Core i7-4770). You can see the results here:
+> 
+> https://misc.maartenbaert.be/dmix_perf_locked_atomic.png
+> 
+> The results are quite surprising:
+> 
+> - The locked implementation is 3 to 6 times *faster* than the current redundant implementation.
+> - The lock-free implementation is usually about as fast as the current 
+> redundant implementation, but has extreme outliers that are up to 3 times *slower* than the redundant implementation when there are multiple threads.
+> 
+> It seems that the overhead of the atomic operations is so high that it completely negates the theoretical advantage of being able to mix from multiple threads simultaneously. This may be the result of 'false sharing' when multiple threads are accessing different words in the same cache line (which is almost impossible to avoid when mixing audio).
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Yes, that's a known drawback of the current lockless implementation.
+Rather the surprising (or infamous) point is that the buffer access
+costs very much.  I guess the difference became more significant on
+the modern CPUs.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Also, such an effect is more visible when the allocated memory has a
+non-cached attribute.  I experienced the almost unacceptable delay by
+dmix on Atom HDMI playback, for example.
+
+> On a related note, I believe that I have also found a bug in the lock-free implementation. The logic which is used to clear the 'sum' buffer is as follows:
+> 
+> sample = *src;
+> old_sample = *sum;
+> if (ARCH_CMPXCHG(dst, 0, 1) == 0)
+>     sample -= old_sample;
+> ARCH_ADD(sum, sample);
+> 
+> This takes advantage of the fact that the hardware driver clears the playback buffer after reading it. However it does not account for the possibility that 'dst' might be zero for other reasons, such as:
+> 
+> - An application plays back silence.
+> - An application plays back sound, but then rewinds it.
+> - Multiple applications play back sound which just happens to sum to zero occasionally.
+> 
+> These all result in situations where 'dst' is changed from 0 to 1 by the compare-exchange operation, but then changed back to zero later, resulting in the classic 'ABA problem'. However this problem is currently hidden by the fact that the lock-free implementation is in fact still locked.
+
+Hm, I'm not sure whether whether this really leads to the deadlock,
+but I can't exclude such a possibility in some corner cases.
+
+> Because of these reasons I think it would be better to drop the lock-free implementation entirely and just use the existing non-concurrent architecture-independent implementation from pcm_dmix_generic.c. Aside from being faster, it would also eliminate a lot of architecture-dependent code and inline assembly. Should I submit a patch for this?
+
+The advantage of lockless dmix implementation isn't about its CPU usage
+but the nature where a stream isn't prevented by other streams, which
+assures the very low latency, too.  That is, with the generic dmix, a
+stream can be still halted when another stream stalls in the middle,
+and there is no way to recover from it.
+
+So, IMO, we can start with a dynamic configuration to choose the
+behavior and add a configure option to choose the implementations.
+The default behavior should be still an open question, though.
+
+
+thanks,
+
+Takashi
