@@ -2,77 +2,98 @@ Return-Path: <SRS0=hLTZ=7B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DATE_IN_PAST_06_12,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B9AEEC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 05:42:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A62BC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 06:03:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4007520708
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 05:42:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DC19220709
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 06:03:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="e61CxTao"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4007520708
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nI9E46fm";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gjsfYuTu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DC19220709
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A382517E1;
-	Tue, 19 May 2020 07:41:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A382517E1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3122E17D0;
+	Tue, 19 May 2020 08:02:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3122E17D0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589866964;
-	bh=nqa8As8qbS2BHjr/hhEL85+WVNnRvvvXeCc/1NXQ0i8=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=e61CxTaoZaAXELNlI2o+Q/6esi+fpWVFosvgrg0XBqHsRbKsoMpzAkKOYgMATn4+J
-	 yz2Kj91NPmVQcafSsJl6n6PvuCV+hhavSPDgNsK7x9LmoZk407rfHs3BW3iKXP/R4I
-	 S4pyL0CXiSct6m8zpfIObQj4bW3LWdpZMfQFJ2Zk=
+	s=default; t=1589868200;
+	bh=OqIBWNSJHlNsv0sqsxzj+TzAyCFQDlux8lm+RJdyWdY=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=nI9E46fmP+d14v94iIX0yyrY7wO3eMCzt0IysjBROKYszafyat61JeToFL3ujLHWs
+	 56s4KOf50F1bAZNS61Lyo4TuJtPa65tPYHSkj+aU+N/Dc6iEKAEsSpp4gWwDIUMzX+
+	 t16r79RUAunx5kjB3Vp+lifFH10HBswNR4qN2IWE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E7600F802BD;
-	Tue, 19 May 2020 07:38:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BE539F80161;
+	Tue, 19 May 2020 08:02:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E5025F8025E; Tue, 19 May 2020 07:38:44 +0200 (CEST)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 3E9A8F801A3; Tue, 19 May 2020 08:02:28 +0200 (CEST)
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com
+ [IPv6:2607:f8b0:4864:20::641])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 81054F8025E
- for <alsa-devel@alsa-project.org>; Tue, 19 May 2020 07:38:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81054F8025E
-IronPort-SDR: JJ40k79UQHXLnyaBnVCnrKlF3rTD54IIn1a72UvWd71SOPWjAft/Mc7xLw1lKy5oW8bTMg7U9o
- ZUJi2lW/1J2Q==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 May 2020 22:38:29 -0700
-IronPort-SDR: 7npQDKArIOpl2T6RIyzFgUTxC7a7NA3h7toIWcaMXLSidSKXSNIToIveBq5zrYpYSzUL2VxAA0
- +7x9ykiCc3vg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,409,1583222400"; d="scan'208";a="288836600"
-Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
- by fmsmga004.fm.intel.com with ESMTP; 18 May 2020 22:38:25 -0700
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	vkoul@kernel.org
-Subject: [PATCH v2 4/5] soundwire: bus_type: add sdw_master_device support
-Date: Tue, 19 May 2020 01:43:21 +0800
-Message-Id: <20200518174322.31561-5-yung-chuan.liao@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 53C2CF80110
+ for <alsa-devel@alsa-project.org>; Tue, 19 May 2020 08:02:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53C2CF80110
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="gjsfYuTu"
+Received: by mail-pl1-x641.google.com with SMTP id t7so5192807plr.0
+ for <alsa-devel@alsa-project.org>; Mon, 18 May 2020 23:02:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id;
+ bh=phw+ielG3h+twIh3+qC+uo7yVbqWNCPg00mlIiD4UHs=;
+ b=gjsfYuTu8PAT+FvT1/83g1h42fMsJePfLqLBnkLkj0T9JkS9Z69yuMASMs4XFZ6aRZ
+ VWraKaQS4fXUFWkbCKKLA6S7cYa5ZFfhJd6dEaYOrB7uxth9GpaeNzO/kgJjmJINUED4
+ 4+FmCdDnz2NjHnGdMwG2WDHaKDwUgGMzSZmFaMsbnKItpGZonzv0c3FUFFlLN9FjTQ67
+ CGYe7lcQv8yCKbdswXtcPL3FgUg6yZxr+d6OeVFVno5w9gTRNB2giB9hRyUuZrEqYedI
+ bpPcPLTcAeDyFqDROev80HriN6ME9WGn8j9+JWEbHJZOpF8qOqbcC78EX+tyVmhJbDkv
+ 0LJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id;
+ bh=phw+ielG3h+twIh3+qC+uo7yVbqWNCPg00mlIiD4UHs=;
+ b=UpY1YnbVIva+GbFEg7YBkZSBcNxQi34WoXyM0oqvok+HlqB8fpfYg6SRevhKZHQdvo
+ 1upn5i1YmFqRcBH0bZ6C26rha1F9Ws239GK6g28l6yJ3MfX4L802cqb596HjZ/M6kqmT
+ O3QM8/oXvbKU84gAWJUm6jLfFr7V7walpeNAn10VOqAx2TBt7dE5UOftrf9Ee7/397I5
+ nbuMSrAqQtUi9MaX5r8tzAspP/FeUF04hG7RKcpvsXDc0kO2HsSp1BFzowqQzLqy0T2O
+ FzCH26D3jVXXI/MWTw3G6zHGylp14N7jxXI06HLNLHq4QkPIccNGIfkKK7JYr03fKB2S
+ KMtA==
+X-Gm-Message-State: AOAM533g7RBopKvF7kovCoKRlDnO5wNGEB2vTVtz4HQLewUbQjqqbkUq
+ jtLv7uqYJPCvtdgCfHKq643N4g==
+X-Google-Smtp-Source: ABdhPJyzQ2VvmOCBqhr8snFJgOcvnVL3Uvm9uz3bv/va427vuT/JWSbCDVgucf/Vlf0BFjwLeZCOuQ==
+X-Received: by 2002:a17:902:aa8c:: with SMTP id
+ d12mr19440179plr.265.1589868137670; 
+ Mon, 18 May 2020 23:02:17 -0700 (PDT)
+Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
+ by smtp.gmail.com with ESMTPSA id
+ ce21sm1112650pjb.51.2020.05.18.23.02.16
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 18 May 2020 23:02:17 -0700 (PDT)
+From: John Stultz <john.stultz@linaro.org>
+To: lkml <linux-kernel@vger.kernel.org>
+Subject: [RESEND][PATCH] sound: qcom: Kconfig: Tweak dependencies on
+ SND_SOC_SDM845
+Date: Tue, 19 May 2020 06:02:11 +0000
+Message-Id: <20200519060211.83491-1-john.stultz@linaro.org>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200518174322.31561-1-yung-chuan.liao@linux.intel.com>
-References: <20200518174322.31561-1-yung-chuan.liao@linux.intel.com>
-Cc: pierre-louis.bossart@linux.intel.com, vinod.koul@linaro.org, tiwai@suse.de,
- gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
- ranjani.sridharan@linux.intel.com, hui.wang@canonical.com, broonie@kernel.org,
- srinivas.kandagatla@linaro.org, jank@cadence.com, mengdong.lin@intel.com,
- slawomir.blauciak@intel.com, sanyog.r.kale@intel.com,
- rander.wang@linux.intel.com, bard.liao@intel.com
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
+ John Stultz <john.stultz@linaro.org>, Patrick Lai <plai@codeaurora.org>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Rohit kumar <rohitkr@codeaurora.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,256 +109,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+CROS_EC isn't strictly required for audio to work
+on other SDM845 platforms (like the Dragonboard 845c).
 
-In the existing SoundWire code, Master Devices are not explicitly
-represented - only SoundWire Slave Devices are exposed (the use of
-capital letters follows the SoundWire specification conventions).
+So lets remove the dependency and select the related
+CROS_EC options if CROS_EC is already enabled.
 
-With the existing code, the bus is handled without using a proper device,
-and bus->dev typically points to a platform device. The right thing to
-do as discussed in multiple reviews is use a device for each bus.
-
-The sdw_master_device addition is done with minimal internal plumbing
-and not exposed externally. The existing API based on
-sdw_bus_master_add() and sdw_bus_master_delete() will deal with the
-sdw_master_device life cycle, which minimizes changes to existing
-drivers.
-
-Note that the Intel code will be modified in follow-up patches (no
-impact on any platform since the connection with ASoC is not supported
-upstream so far).
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Rohit kumar <rohitkr@codeaurora.org>
+Cc: Patrick Lai <plai@codeaurora.org>
+Cc: Banajit Goswami <bgoswami@codeaurora.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org
+Signed-off-by: John Stultz <john.stultz@linaro.org>
 ---
- drivers/soundwire/Makefile    |  2 +-
- drivers/soundwire/bus.c       | 14 ++++--
- drivers/soundwire/bus.h       |  3 ++
- drivers/soundwire/intel.c     |  1 -
- drivers/soundwire/master.c    | 81 +++++++++++++++++++++++++++++++++++
- drivers/soundwire/qcom.c      |  1 -
- include/linux/soundwire/sdw.h | 17 +++++++-
- 7 files changed, 112 insertions(+), 7 deletions(-)
- create mode 100644 drivers/soundwire/master.c
+ sound/soc/qcom/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
-index e2cdff990e9f..7319918e0aec 100644
---- a/drivers/soundwire/Makefile
-+++ b/drivers/soundwire/Makefile
-@@ -4,7 +4,7 @@
- #
+diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+index f51b28d1b94d..0434f2c7d746 100644
+--- a/sound/soc/qcom/Kconfig
++++ b/sound/soc/qcom/Kconfig
+@@ -99,12 +99,12 @@ config SND_SOC_MSM8996
  
- #Bus Objs
--soundwire-bus-objs := bus_type.o bus.o slave.o mipi_disco.o stream.o
-+soundwire-bus-objs := bus_type.o bus.o master.o slave.o mipi_disco.o stream.o
- obj-$(CONFIG_SOUNDWIRE) += soundwire-bus.o
- 
- ifdef CONFIG_DEBUG_FS
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index 2d24f183061d..c31a1c2788a9 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -37,14 +37,21 @@ int sdw_bus_master_add(struct sdw_bus *bus, struct device *parent,
- 	struct sdw_master_prop *prop = NULL;
- 	int ret;
- 
--	if (!bus->dev) {
--		pr_err("SoundWire bus has no device\n");
-+	if (!parent) {
-+		pr_err("SoundWire parent device is not set\n");
- 		return -ENODEV;
- 	}
- 
- 	ret = sdw_get_id(bus);
- 	if (ret) {
--		dev_err(bus->dev, "Failed to get bus id\n");
-+		dev_err(parent, "Failed to get bus id\n");
-+		return ret;
-+	}
-+
-+	ret = sdw_master_device_add(bus, parent, fwnode);
-+	if (ret) {
-+		dev_err(parent, "Failed to add master device at link %d\n",
-+			bus->link_id);
- 		return ret;
- 	}
- 
-@@ -161,6 +168,7 @@ static int sdw_delete_slave(struct device *dev, void *data)
- void sdw_bus_master_delete(struct sdw_bus *bus)
- {
- 	device_for_each_child(bus->dev, NULL, sdw_delete_slave);
-+	sdw_master_device_del(bus);
- 
- 	sdw_bus_debugfs_exit(bus);
- 	ida_free(&sdw_ida, bus->id);
-diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
-index 204204a26db8..93ab0234a491 100644
---- a/drivers/soundwire/bus.h
-+++ b/drivers/soundwire/bus.h
-@@ -19,6 +19,9 @@ static inline int sdw_acpi_find_slaves(struct sdw_bus *bus)
- int sdw_of_find_slaves(struct sdw_bus *bus);
- void sdw_extract_slave_id(struct sdw_bus *bus,
- 			  u64 addr, struct sdw_slave_id *id);
-+int sdw_master_device_add(struct sdw_bus *bus, struct device *parent,
-+			  struct fwnode_handle *fwnode);
-+int sdw_master_device_del(struct sdw_bus *bus);
- 
- #ifdef CONFIG_DEBUG_FS
- void sdw_bus_debugfs_init(struct sdw_bus *bus);
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 210459390046..3562f2106e30 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -1099,7 +1099,6 @@ static int intel_probe(struct platform_device *pdev)
- 	sdw->cdns.registers = sdw->link_res->registers;
- 	sdw->cdns.instance = sdw->instance;
- 	sdw->cdns.msg_count = 0;
--	sdw->cdns.bus.dev = &pdev->dev;
- 	sdw->cdns.bus.link_id = pdev->id;
- 
- 	sdw_cdns_probe(&sdw->cdns);
-diff --git a/drivers/soundwire/master.c b/drivers/soundwire/master.c
-new file mode 100644
-index 000000000000..6be0a027def7
---- /dev/null
-+++ b/drivers/soundwire/master.c
-@@ -0,0 +1,81 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+// Copyright(c) 2019-2020 Intel Corporation.
-+
-+#include <linux/device.h>
-+#include <linux/acpi.h>
-+#include <linux/soundwire/sdw.h>
-+#include <linux/soundwire/sdw_type.h>
-+#include "bus.h"
-+
-+static void sdw_master_device_release(struct device *dev)
-+{
-+	struct sdw_master_device *md = dev_to_sdw_master_device(dev);
-+
-+	kfree(md);
-+}
-+
-+struct device_type sdw_master_type = {
-+	.name =		"soundwire_master",
-+	.release =	sdw_master_device_release,
-+};
-+
-+/**
-+ * sdw_master_device_add() - create a Linux Master Device representation.
-+ * @bus: SDW bus instance
-+ * @parent: parent device
-+ * @fwnode: firmware node handle
-+ */
-+int sdw_master_device_add(struct sdw_bus *bus, struct device *parent,
-+			  struct fwnode_handle *fwnode)
-+{
-+	struct sdw_master_device *md;
-+	int ret;
-+
-+	if (!parent)
-+		return -EINVAL;
-+
-+	md = kzalloc(sizeof(*md), GFP_KERNEL);
-+	if (!md)
-+		return -ENOMEM;
-+
-+	md->dev.bus = &sdw_bus_type;
-+	md->dev.type = &sdw_master_type;
-+	md->dev.parent = parent;
-+	md->dev.of_node = parent->of_node;
-+	md->dev.fwnode = fwnode;
-+	md->dev.dma_mask = parent->dma_mask;
-+
-+	dev_set_name(&md->dev, "sdw-master-%d", bus->id);
-+
-+	ret = device_register(&md->dev);
-+	if (ret) {
-+		dev_err(parent, "Failed to add master: ret %d\n", ret);
-+		/*
-+		 * On err, don't free but drop ref as this will be freed
-+		 * when release method is invoked.
-+		 */
-+		put_device(&md->dev);
-+		goto device_register_err;
-+	}
-+
-+	/* add shortcuts to improve code readability/compactness */
-+	md->bus = bus;
-+	bus->dev = &md->dev;
-+	bus->md = md;
-+
-+device_register_err:
-+	return ret;
-+}
-+
-+/**
-+ * sdw_master_device_del() - delete a Linux Master Device representation.
-+ * @bus: bus handle
-+ *
-+ * This function is the dual of sdw_master_device_add()
-+ */
-+int sdw_master_device_del(struct sdw_bus *bus)
-+{
-+	device_unregister(bus->dev);
-+
-+	return 0;
-+}
-diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-index 401811d6627e..1c335ab1cd3f 100644
---- a/drivers/soundwire/qcom.c
-+++ b/drivers/soundwire/qcom.c
-@@ -784,7 +784,6 @@ static int qcom_swrm_probe(struct platform_device *pdev)
- 	mutex_init(&ctrl->port_lock);
- 	INIT_WORK(&ctrl->slave_work, qcom_swrm_slave_wq);
- 
--	ctrl->bus.dev = dev;
- 	ctrl->bus.ops = &qcom_swrm_ops;
- 	ctrl->bus.port_ops = &qcom_swrm_port_ops;
- 	ctrl->bus.compute_params = &qcom_swrm_compute_params;
-diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index a32cb26f1815..7658d9698dd5 100644
---- a/include/linux/soundwire/sdw.h
-+++ b/include/linux/soundwire/sdw.h
-@@ -632,6 +632,19 @@ struct sdw_slave {
- 
- #define dev_to_sdw_dev(_dev) container_of(_dev, struct sdw_slave, dev)
- 
-+/**
-+ * struct sdw_master_device - SoundWire 'Master Device' representation
-+ * @dev: Linux device for this Master
-+ * @bus: Bus handle shortcut
-+ */
-+struct sdw_master_device {
-+	struct device dev;
-+	struct sdw_bus *bus;
-+};
-+
-+#define dev_to_sdw_master_device(d)	\
-+	container_of(d, struct sdw_master_device, dev)
-+
- struct sdw_driver {
- 	const char *name;
- 
-@@ -787,7 +800,8 @@ struct sdw_master_ops {
- 
- /**
-  * struct sdw_bus - SoundWire bus
-- * @dev: Master linux device
-+ * @dev: Shortcut to &bus->md->dev to avoid changing the entire code.
-+ * @md: Master device
-  * @link_id: Link id number, can be 0 to N, unique for each Master
-  * @id: bus system-wide unique id
-  * @slaves: list of Slaves on this bus
-@@ -813,6 +827,7 @@ struct sdw_master_ops {
-  */
- struct sdw_bus {
- 	struct device *dev;
-+	struct sdw_master_device *md;
- 	unsigned int link_id;
- 	int id;
- 	struct list_head slaves;
+ config SND_SOC_SDM845
+ 	tristate "SoC Machine driver for SDM845 boards"
+-	depends on QCOM_APR && CROS_EC && I2C && SOUNDWIRE
++	depends on QCOM_APR && I2C && SOUNDWIRE
+ 	select SND_SOC_QDSP6
+ 	select SND_SOC_QCOM_COMMON
+ 	select SND_SOC_RT5663
+ 	select SND_SOC_MAX98927
+-	select SND_SOC_CROS_EC_CODEC
++	select SND_SOC_CROS_EC_CODEC if CROS_EC
+ 	help
+ 	  To add support for audio on Qualcomm Technologies Inc.
+ 	  SDM845 SoC-based systems.
 -- 
 2.17.1
 
