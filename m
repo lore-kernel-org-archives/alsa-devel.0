@@ -2,72 +2,66 @@ Return-Path: <SRS0=hLTZ=7B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 858F2C433E1
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 13:21:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 696C9C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 13:33:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 13D2C207FB
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 13:21:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E1E3C207FB
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 13:33:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CcUsL20c";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="GS5vku5m"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 13D2C207FB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qOyjyCOE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E1E3C207FB
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 58ED01744;
-	Tue, 19 May 2020 15:20:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 58ED01744
+	by alsa0.perex.cz (Postfix) with ESMTPS id 426821752;
+	Tue, 19 May 2020 15:33:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 426821752
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589894504;
-	bh=KRSa9IJ47fCLosOIhsxHFJ/JgWRhGI+fYORqZHYGZqA=;
-	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
+	s=default; t=1589895234;
+	bh=fly/O/piS2At4wGOqD/ds25cvKv3bwXJQ5eOPeARCjY=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CcUsL20c6xOi0+SgU5Fns3Gzdccfpu1XPJpq3KfSXXawAlYPHbxDJYDP3NVCHRAVi
-	 +SaluliPOleJi/F5wTdmy3wljCak4EsYmeKpNysSjp1acLtGHGdGfQpWL5OZAOOgWt
-	 GKRVcZpwX55tLTwxkLFcvl9iBJ74txQawTkwZqEc=
+	b=qOyjyCOEAawIhbCEW7oXit7Mh/IyscQxKO4GHBpzKZTl6Bwh+bWCnqHuuzVc+F3h8
+	 iHq0Ez6CYrjJjcIbz7kJ7+iRFZUgqOaNJaqIoZ4bCL1Q+CZKPALH3mRDCRBm2RUJTd
+	 43fAujLBfYPtNnkPF+KOyrwYKf5UA3afIAtcoRbo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 42B3DF80274;
-	Tue, 19 May 2020 15:19:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A99C6F80161;
+	Tue, 19 May 2020 15:33:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5D1D7F8027D; Tue, 19 May 2020 15:19:21 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id EB165F801A3; Tue, 19 May 2020 15:33:00 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B7431F80256
- for <alsa-devel@alsa-project.org>; Tue, 19 May 2020 15:19:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7431F80256
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="GS5vku5m"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id ABCA720823;
- Tue, 19 May 2020 13:19:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1589894357;
- bh=KRSa9IJ47fCLosOIhsxHFJ/JgWRhGI+fYORqZHYGZqA=;
- h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=GS5vku5mNSGAGhjngCXIbBsuNokJZVDbKrFEukYB+TOuP2BNRiWEYUA6zrRyw69nG
- FUO0rjORAMLjFAW47ck3bql4YnOQRTf87CGQ0HpodnIxlBSXLJPQpdr5Zye7Zb2Ije
- MF+Rv3v6rqn6Dm/XoEjpYUMsjrb78uRTgv5e2hUc=
-Date: Tue, 19 May 2020 14:19:14 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Fabio Estevam <festevam@gmail.com>
-In-Reply-To: <20200518185448.6116-1-festevam@gmail.com>
-References: <20200518185448.6116-1-festevam@gmail.com>
-Subject: Re: [PATCH 1/2] ASoC: fsl_micfil: Remove unneeded ifdef's
-Message-Id: <158989434292.51282.5322095026958371316.b4-ty@kernel.org>
-Cc: cosmin.samoila@nxp.com, alsa-devel@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 59813F80132
+ for <alsa-devel@alsa-project.org>; Tue, 19 May 2020 15:32:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59813F80132
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 5AB08B1C1;
+ Tue, 19 May 2020 13:32:58 +0000 (UTC)
+Date: Tue, 19 May 2020 15:32:55 +0200
+Message-ID: <s5h1rngf3so.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Maarten Baert <maarten-baert@hotmail.com>
+Subject: Re: [PATCH] pcm: dmix: fix incorrect boundary handling in
+ snd_pcm_dmix_sync_area
+In-Reply-To: <HE1P191MB0153D35FC0B82F7F6D2E409AE2BD0@HE1P191MB0153.EURP191.PROD.OUTLOOK.COM>
+References: <HE1P191MB0153D35FC0B82F7F6D2E409AE2BD0@HE1P191MB0153.EURP191.PROD.OUTLOOK.COM>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,37 +77,71 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 18 May 2020 15:54:47 -0300, Fabio Estevam wrote:
-> There is no need to use ifdef's around the power managament
-> related functions, as they are already using the __maybe_unused
-> notation.
+On Fri, 15 May 2020 18:24:08 +0200,
+Maarten Baert wrote:
+> 
+> The available size calculation did not handle wraparound correctly. Also, the
+> underrun handling code confused slave_buffer_size with slave_boundary, causing
+> another integer overflow that results in too many samples being skipped.
+> 
+> Signed-off-by: Maarten Baert <maarten-baert@hotmail.com>
 
-Applied to
+Thanks, the code change looks correct but the embedded patch isn't
+applicable.  Indeed the patch seems somehow malformed.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.8
+Could you repost the proper one, at best with git-send-email?
 
-Thanks!
 
-[1/2] ASoC: fsl_micfil: Remove unneeded ifdef's
-      commit: 1a90a659865299c04ba97b299ab02238dc392d5f
-[2/2] ASoC: fsl_micfil: Do not pass irq numbers in comments
-      commit: a62ed9606aaebef00ca32da01e552bc0162c29b5
+thanks,
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+Takashi
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+> ---
+>  src/pcm/pcm_dmix.c | 16 +++++++++-------
+>  1 file changed, 9 insertions(+), 7 deletions(-)
+> 
+> diff --git a/src/pcm/pcm_dmix.c b/src/pcm/pcm_dmix.c
+> index 843fa316..b5fdb240 100644
+> --- a/src/pcm/pcm_dmix.c
+> +++ b/src/pcm/pcm_dmix.c
+> @@ -315,11 +315,12 @@ static void snd_pcm_dmix_sync_area(snd_pcm_t *pcm)
+>  	/* check the available size in the local buffer
+>  	 * last_appl_ptr keeps the last updated position
+>  	 */
+> -	size = dmix->appl_ptr - dmix->last_appl_ptr;
+> +	if (dmix->appl_ptr >= dmix->last_appl_ptr)
+> +		size = dmix->appl_ptr - dmix->last_appl_ptr;
+> +	else
+> +		size = dmix->appl_ptr + (pcm->boundary - dmix->last_appl_ptr);
+>  	if (! size)
+>  		return;
+> -	if (size >= pcm->boundary / 2)
+> -		size = pcm->boundary - size;
+>  	/* the slave_app_ptr can be far behind the slave_hw_ptr */
+>  	/* reduce mixing and errors here - just skip not catched writes */
+> @@ -328,18 +329,19 @@ static void snd_pcm_dmix_sync_area(snd_pcm_t *pcm)
+>  	else
+>  		slave_size = dmix->slave_appl_ptr + (dmix->slave_boundary - dmix->slave_hw_ptr);
+>  	if (slave_size > dmix->slave_buffer_size) {
+> -		transfer = dmix->slave_buffer_size - slave_size;
+> +		transfer = dmix->slave_boundary - slave_size;
+>  		if (transfer > size)
+>  			transfer = size;
+>  		dmix->last_appl_ptr += transfer;
+>  		dmix->last_appl_ptr %= pcm->boundary;
+>  		dmix->slave_appl_ptr += transfer;
+>  		dmix->slave_appl_ptr %= dmix->slave_boundary;
+> -		size = dmix->appl_ptr - dmix->last_appl_ptr;
+> +		if (dmix->appl_ptr >= dmix->last_appl_ptr)
+> +			size = dmix->appl_ptr - dmix->last_appl_ptr;
+> +		else
+> +			size = dmix->appl_ptr + (pcm->boundary - dmix->last_appl_ptr);
+>  		if (! size)
+>  			return;
+> -		if (size >= pcm->boundary / 2)
+> -			size = pcm->boundary - size;
+>  	}
+>  	/* check the available size in the slave PCM buffer */
+> -- 
+> 2.26.2
+> 
