@@ -7,100 +7,101 @@ X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B1CE3C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 11:20:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 123D2C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 11:21:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3880720708
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 11:20:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8BF0D20758
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 May 2020 11:21:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="k+Y7iLrf";
-	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="vM0rsoP3";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="qL6R0th3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3880720708
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rDlhNB7D";
+	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="eDOrFKZD";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="nR9L9RI2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8BF0D20758
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9C9B81757;
-	Tue, 19 May 2020 13:19:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C9B81757
+	by alsa0.perex.cz (Postfix) with ESMTPS id EAC3E173A;
+	Tue, 19 May 2020 13:20:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EAC3E173A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589887224;
-	bh=ImtTN9USe2m7HtFLbLK7BdnLFpKOihzuywwg1uiBVBU=;
+	s=default; t=1589887269;
+	bh=p2pWQvMYTa1or3xbYR9l+KdbDEVtYn9QdFqrsJsjQBA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=k+Y7iLrfVW+fDWJfuvq0xsz+qdXjRT8+MgiWnn04IO9gFww4Z7cBa6yHQ5q0KXzhf
-	 dDhVv8tPBnqCihbN1hNYg+anJYbgw7EuHI7jSF79vmibsYsYi9P+cmhAPsV2MyAT69
-	 aY+EGaN2TauQExE81ph90ex8CQ1DriZLZ4vqUD40=
+	b=rDlhNB7DaqM3uYaPhu74E2T60gm46deSA03ladGV14PNRIHhVU/XpoZoloqKTTIHa
+	 TCToM6PTmMqvo4p8mm6BVKviRidewKTojXQycUQKLZiWyHfoeZricCD8EQLxK6EGTv
+	 yVBuMLhR0xU9+irgCjYmCUEjXoujerYK52yEbtsE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2754FF8028F;
-	Tue, 19 May 2020 13:17:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 29051F802A0;
+	Tue, 19 May 2020 13:17:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9F92AF80292; Tue, 19 May 2020 13:17:04 +0200 (CEST)
+ id 03844F8029A; Tue, 19 May 2020 13:17:04 +0200 (CEST)
 Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
  [66.111.4.25])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B0BCFF801A3
- for <alsa-devel@alsa-project.org>; Tue, 19 May 2020 13:16:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0BCFF801A3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 63B73F800C9
+ for <alsa-devel@alsa-project.org>; Tue, 19 May 2020 13:16:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63B73F800C9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="vM0rsoP3"; 
+ header.b="eDOrFKZD"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="qL6R0th3"
+ header.i=@messagingengine.com header.b="nR9L9RI2"
 Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
- by mailout.nyi.internal (Postfix) with ESMTP id CB2895C0132;
- Tue, 19 May 2020 07:16:49 -0400 (EDT)
+ by mailout.nyi.internal (Postfix) with ESMTP id 9220C5C0132;
+ Tue, 19 May 2020 07:16:55 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
- by compute2.internal (MEProxy); Tue, 19 May 2020 07:16:49 -0400
+ by compute2.internal (MEProxy); Tue, 19 May 2020 07:16:55 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm1; bh=VwXi+fzIMYj+r
- nqBMXnd6IpSL+bWCpTy8F5gbfX8d8s=; b=vM0rsoP35cSSbGcXLv2OwZuJ8FT7/
- k90RuYbKNkqMAWoP2iuH2sH8xb7G7p6hFDy/d4ma8ueMCDh2lyk/GzQw2Qy2ZDut
- hXZtd1zL/swEo7kFd7iWJ3YbXCgjdC3UPEJB61rh+HBA/4+I0pdkmhuxI9m6NPen
- LWVd/BNzoXXCWbY/ACBEzIvAU3By5vyiA1fU7weld7wHFo2nz/KRC9YTzToaRvfm
- Osas1cJ4WFVlhA1jsLWeK/VU74ZUycJet6vy15zFhSOVw8btibT7z5Z1wfZV1DJu
- VuR4VvlEMjXcd2wXGdjnaS2OMSi3399Zmyuika7JQE9lieKDnUZOT0frg==
+ :mime-version:content-transfer-encoding; s=fm1; bh=02z9KJEPcMiW6
+ D4zcPtuipaedn7zRDaK0tBe7ykdR0Q=; b=eDOrFKZDT+E5+C20aXzpV4f2OzbWS
+ HUhbpYZUTcKWulJ0IEs2fZhtIS/DSkGHK4v7G0mQMRqpLjfKcFhUOTFYDtqX6NpN
+ e3V8nN6u6hTeDRkDJhUAFr3OXhGj+EM5CSaiUHrj05H88iHnZc69TwIl6JwKPGjT
+ yWuzKNhDEcl9vYuk8dLSb29yVBPGXHrypEoJmEiIeIYkjwVhWzCtzNJyOsSkzdVW
+ H1HoT3rIOLVTC/5d+le2IBq/3INRSI2cUukwJzHR19SX74UYGoZLi89gzdSFF42Y
+ 56OcHBrZdBfZqFNVlf7YHyHghV6AilOppeofagnsSwnjpE8nA94DsL+lA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm2; bh=VwXi+fzIMYj+rnqBMXnd6IpSL+bWCpTy8F5gbfX8d8s=; b=qL6R0th3
- 9SZNsH7wcsU1miBwUxZSqQZS/KJIx6BBomNAFH2rIyvCgobekUudSaDTZqv2sAv9
- zHYwTwp+wVyGRV2G6L5QZH0iXluIPyl5LjNvOOSiLlmz5VrU/HZHGrOU29h1VQPG
- pT0uz8st9XgqM4X1z55Xgyo6sBNeBZl6GQ8mEzAukH+3g4/rtFGOI8s16V06WF6N
- 2tobY++i/ms9KAY+xlvGgB4klsuJmDrpnCNOnE83V77KweIDkEGV+LARt97+mlfc
- ZsNw2wofAy9jiWoBeb9rtBcypWqnLaMOdDh/fGGmk9XvU8UNMKW/vwZRU0hHPDjv
- X/CvCQ2pyitvEQ==
-X-ME-Sender: <xms:IcDDXhDQ2f26vQ-kAzzutdBURF-3QeUU4oSGmBFeettTaWvG6Y9j5A>
+ fm2; bh=02z9KJEPcMiW6D4zcPtuipaedn7zRDaK0tBe7ykdR0Q=; b=nR9L9RI2
+ dyCGoD0fqrMdpaYg8kND4fNO8flmg1u3CDSH2xUOMmHlfo4fYHSZecyHJ4FHN174
+ NbEKabRglnL99bMSwGhQlwmUKUgaMyRy27Gu9z0MHxkSiaOYuqVSB4yA9mSn00Eq
+ 9v+HBKBH1jUOMKUx3C2S65Jz8KkiGtiuV94BHeFWI4mHgDCJ9YG2eNag1b+1Nls4
+ QKb/I02P9LA5z2KkJaTPlE/JcIh5IHbVPOlIO1veOK66KFIQKpqcC8bLYs3qQw1U
+ f/KU1imYpb27ZeI7pQJ3ATgAuv6MZ1HIvMlC7w+xIhRRkkQUMRvmsJ/U8zfxhpDt
+ PlLZbDPH8a66sA==
+X-ME-Sender: <xms:J8DDXluiMgFhymTh_KNQMELrQ5EBKyoIPYMjfc-qowaMBQQbnHfNeA>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedruddtjedgfeejucetufdoteggodetrfdotf
  fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
  uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
  dtredttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgr
  shhhihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepveefffefke
  etgfevgeefleehfffhueejtdejveethfekveektdejjedvtdejhfejnecukfhppedukedt
- rddvfeehrdefrdehgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+ rddvfeehrdefrdehgeenucevlhhushhtvghrufhiiigvpeegnecurfgrrhgrmhepmhgrih
  hlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:IcDDXvgSYr2b5Ms5TNT85bE9b4sBKLbu-NV5jSiQ-DlcDbtC2YgLWQ>
- <xmx:IcDDXsk7zUN02c2fAlovkKaUWLv0B7YiuPmrYZ75MbZERTQrv1yW2w>
- <xmx:IcDDXrx2SPK82AUETmsCkXepM5CDYU68-UQy009O9pKgtHYu3gMzfw>
- <xmx:IcDDXtOsCImeXa0WFOF4KilXTLXPMBPQ5WHmwdpyzjcrDTBNVZN0WA>
+X-ME-Proxy: <xmx:J8DDXuf-Rt6h2ZM3jGbgbfF1j8WjkCW2xK_iB-JyZPnMWOD0_gmSPA>
+ <xmx:J8DDXoxqkrMMvSMa877w1VdTP06ytQH6BaLWI9SJ3Wb3DHzEYio6Yg>
+ <xmx:J8DDXsORBOe-5m3mkbu0OGOOE05Zf9Pmoy0sBw9tuSMI-ehN0aHY4w>
+ <xmx:J8DDXqKHn3-0TA0DusU3-XBUXfKdDS6pFE0Kz3nGyu-D5o1nRENLoQ>
 Received: from workstation.flets-east.jp (ad003054.dynamic.ppp.asahi-net.or.jp
  [180.235.3.54])
- by mail.messagingengine.com (Postfix) with ESMTPA id A19A73280063;
- Tue, 19 May 2020 07:16:48 -0400 (EDT)
+ by mail.messagingengine.com (Postfix) with ESMTPA id 692A03280060;
+ Tue, 19 May 2020 07:16:54 -0400 (EDT)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: clemens@ladisch.de,
 	tiwai@suse.de
-Subject: [PATCH 02/14] ALSA: firewire-motu: move spec data to v3 protocol file
-Date: Tue, 19 May 2020 20:16:29 +0900
-Message-Id: <20200519111641.123211-3-o-takashi@sakamocchi.jp>
+Subject: [PATCH 06/14] ALSA: firewire-motu: add model-specific table of chunk
+ count
+Date: Tue, 19 May 2020 20:16:33 +0900
+Message-Id: <20200519111641.123211-7-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200519111641.123211-1-o-takashi@sakamocchi.jp>
 References: <20200519111641.123211-1-o-takashi@sakamocchi.jp>
@@ -122,151 +123,114 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The most of members in spec data is used in each protocol file. It's
-better to capsulate the data to the file.
+In MOTU protocol, data block consists of SPH and 24-bit chunks
+aligned to quadlet. The number of chunks per data block is specific
+to model. For models with optical interface, the number differs
+depending on I/O settings for the interface (ADAT, TOSLINK).
 
-This commit moves the data to the file for protocol version 3.
+Currently the number is calculated from flags in model-specific
+data. However this is weak in the case that the model has quirks.
+Actually, for quirks of some models, flags are used against their
+original meanings.
+
+This commit adds model-specific table of chunk count. For future
+integration, this table is based on the calculation.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/motu/motu-protocol-v3.c | 42 ++++++++++++++++++++++
- sound/firewire/motu/motu.c             | 50 +++-----------------------
- sound/firewire/motu/motu.h             |  4 +++
- 3 files changed, 50 insertions(+), 46 deletions(-)
+ sound/firewire/motu/motu-protocol-v2.c | 10 ++++++++--
+ sound/firewire/motu/motu-protocol-v3.c |  7 ++++++-
+ sound/firewire/motu/motu.h             |  3 +++
+ 3 files changed, 17 insertions(+), 3 deletions(-)
 
+diff --git a/sound/firewire/motu/motu-protocol-v2.c b/sound/firewire/motu/motu-protocol-v2.c
+index e2913cb54da8..6cd7a5f1f46c 100644
+--- a/sound/firewire/motu/motu-protocol-v2.c
++++ b/sound/firewire/motu/motu-protocol-v2.c
+@@ -306,7 +306,8 @@ const struct snd_motu_spec snd_motu_spec_828mk2 = {
+ 		 SND_MOTU_SPEC_HAS_OPT_IFACE_A |
+ 		 SND_MOTU_SPEC_RX_MIDI_2ND_Q |
+ 		 SND_MOTU_SPEC_TX_MIDI_2ND_Q,
+-
++	.tx_fixed_pcm_chunks = {14, 14, 0},
++	.rx_fixed_pcm_chunks = {14, 14, 0},
+ 	.analog_in_ports = 8,
+ 	.analog_out_ports = 8,
+ };
+@@ -321,7 +322,8 @@ const struct snd_motu_spec snd_motu_spec_traveler = {
+ 		 SND_MOTU_SPEC_HAS_OPT_IFACE_A |
+ 		 SND_MOTU_SPEC_RX_MIDI_2ND_Q |
+ 		 SND_MOTU_SPEC_TX_MIDI_2ND_Q,
+-
++	.tx_fixed_pcm_chunks = {14, 14, 8},
++	.rx_fixed_pcm_chunks = {14, 14, 8},
+ 	.analog_in_ports = 8,
+ 	.analog_out_ports = 8,
+ };
+@@ -335,6 +337,8 @@ const struct snd_motu_spec snd_motu_spec_ultralite = {
+ 		 SND_MOTU_SPEC_RX_MIDI_2ND_Q |
+ 		 SND_MOTU_SPEC_TX_MIDI_2ND_Q |
+ 		 SND_MOTU_SPEC_RX_SEPARATED_MAIN,
++	.tx_fixed_pcm_chunks = {14, 14, 0},
++	.rx_fixed_pcm_chunks = {14, 14, 0},
+ 	.analog_in_ports = 8,
+ 	.analog_out_ports = 8,
+ };
+@@ -349,6 +353,8 @@ const struct snd_motu_spec snd_motu_spec_8pre = {
+ 		 SND_MOTU_SPEC_HAS_OPT_IFACE_B |
+ 		 SND_MOTU_SPEC_RX_MIDI_2ND_Q |
+ 		 SND_MOTU_SPEC_TX_MIDI_2ND_Q,
++	.tx_fixed_pcm_chunks = {10, 6, 0},
++	.rx_fixed_pcm_chunks = {10, 6, 0},
+ 	.analog_in_ports = 8,
+ 	.analog_out_ports = 2,
+ };
 diff --git a/sound/firewire/motu/motu-protocol-v3.c b/sound/firewire/motu/motu-protocol-v3.c
-index d1545e2b5caa..947fab7905fe 100644
+index 8192bcdd1b37..370d22da276e 100644
 --- a/sound/firewire/motu/motu-protocol-v3.c
 +++ b/sound/firewire/motu/motu-protocol-v3.c
-@@ -314,3 +314,45 @@ const struct snd_motu_protocol snd_motu_protocol_v3 = {
- 	.switch_fetching_mode	= v3_switch_fetching_mode,
- 	.cache_packet_formats	= v3_cache_packet_formats,
+@@ -324,7 +324,8 @@ const struct snd_motu_spec snd_motu_spec_828mk3 = {
+ 		 SND_MOTU_SPEC_HAS_OPT_IFACE_B |
+ 		 SND_MOTU_SPEC_RX_MIDI_3RD_Q |
+ 		 SND_MOTU_SPEC_TX_MIDI_3RD_Q,
+-
++	.tx_fixed_pcm_chunks = {18, 18, 14},
++	.rx_fixed_pcm_chunks = {14, 14, 10},
+ 	.analog_in_ports = 8,
+ 	.analog_out_ports = 8,
  };
-+
-+const struct snd_motu_spec snd_motu_spec_828mk3 = {
-+	.name = "828mk3",
-+	.protocol = &snd_motu_protocol_v3,
-+	.flags = SND_MOTU_SPEC_SUPPORT_CLOCK_X2 |
-+		 SND_MOTU_SPEC_SUPPORT_CLOCK_X4 |
-+		 SND_MOTU_SPEC_TX_MICINST_CHUNK |
-+		 SND_MOTU_SPEC_TX_RETURN_CHUNK |
-+		 SND_MOTU_SPEC_TX_REVERB_CHUNK |
-+		 SND_MOTU_SPEC_RX_SEPARATED_MAIN |
-+		 SND_MOTU_SPEC_HAS_OPT_IFACE_A |
-+		 SND_MOTU_SPEC_HAS_OPT_IFACE_B |
-+		 SND_MOTU_SPEC_RX_MIDI_3RD_Q |
-+		 SND_MOTU_SPEC_TX_MIDI_3RD_Q,
-+
-+	.analog_in_ports = 8,
-+	.analog_out_ports = 8,
-+};
-+
-+const struct snd_motu_spec snd_motu_spec_audio_express = {
-+	.name = "AudioExpress",
-+	.protocol = &snd_motu_protocol_v3,
-+	.flags = SND_MOTU_SPEC_SUPPORT_CLOCK_X2 |
-+		 SND_MOTU_SPEC_TX_MICINST_CHUNK |
-+		 SND_MOTU_SPEC_TX_RETURN_CHUNK |
-+		 SND_MOTU_SPEC_RX_SEPARATED_MAIN |
-+		 SND_MOTU_SPEC_RX_MIDI_2ND_Q |
-+		 SND_MOTU_SPEC_TX_MIDI_3RD_Q,
-+	.analog_in_ports = 2,
-+	.analog_out_ports = 4,
-+};
-+
-+const struct snd_motu_spec snd_motu_spec_4pre = {
-+	.name = "4pre",
-+	.protocol = &snd_motu_protocol_v3,
-+	.flags = SND_MOTU_SPEC_SUPPORT_CLOCK_X2 |
-+		 SND_MOTU_SPEC_TX_MICINST_CHUNK |
-+		 SND_MOTU_SPEC_TX_RETURN_CHUNK |
-+		 SND_MOTU_SPEC_RX_SEPARATED_MAIN,
-+	.analog_in_ports = 2,
-+	.analog_out_ports = 2,
-+};
-diff --git a/sound/firewire/motu/motu.c b/sound/firewire/motu/motu.c
-index b3533526f7e5..e5b6f634aa35 100644
---- a/sound/firewire/motu/motu.c
-+++ b/sound/firewire/motu/motu.c
-@@ -172,48 +172,6 @@ static void motu_bus_update(struct fw_unit *unit)
- 	snd_motu_transaction_reregister(motu);
- }
- 
--static const struct snd_motu_spec motu_828mk3 = {
--	.name = "828mk3",
--	.protocol = &snd_motu_protocol_v3,
--	.flags = SND_MOTU_SPEC_SUPPORT_CLOCK_X2 |
--		 SND_MOTU_SPEC_SUPPORT_CLOCK_X4 |
--		 SND_MOTU_SPEC_TX_MICINST_CHUNK |
--		 SND_MOTU_SPEC_TX_RETURN_CHUNK |
--		 SND_MOTU_SPEC_TX_REVERB_CHUNK |
--		 SND_MOTU_SPEC_RX_SEPARATED_MAIN |
--		 SND_MOTU_SPEC_HAS_OPT_IFACE_A |
--		 SND_MOTU_SPEC_HAS_OPT_IFACE_B |
--		 SND_MOTU_SPEC_RX_MIDI_3RD_Q |
--		 SND_MOTU_SPEC_TX_MIDI_3RD_Q,
--
--	.analog_in_ports = 8,
--	.analog_out_ports = 8,
--};
--
--static const struct snd_motu_spec motu_audio_express = {
--	.name = "AudioExpress",
--	.protocol = &snd_motu_protocol_v3,
--	.flags = SND_MOTU_SPEC_SUPPORT_CLOCK_X2 |
--		 SND_MOTU_SPEC_TX_MICINST_CHUNK |
--		 SND_MOTU_SPEC_TX_RETURN_CHUNK |
--		 SND_MOTU_SPEC_RX_SEPARATED_MAIN |
--		 SND_MOTU_SPEC_RX_MIDI_2ND_Q |
--		 SND_MOTU_SPEC_TX_MIDI_3RD_Q,
--	.analog_in_ports = 2,
--	.analog_out_ports = 4,
--};
--
--static const struct snd_motu_spec motu_4pre = {
--	.name = "4pre",
--	.protocol = &snd_motu_protocol_v3,
--	.flags = SND_MOTU_SPEC_SUPPORT_CLOCK_X2 |
--		 SND_MOTU_SPEC_TX_MICINST_CHUNK |
--		 SND_MOTU_SPEC_TX_RETURN_CHUNK |
--		 SND_MOTU_SPEC_RX_SEPARATED_MAIN,
--	.analog_in_ports = 2,
--	.analog_out_ports = 2,
--};
--
- #define SND_MOTU_DEV_ENTRY(model, data)			\
- {							\
- 	.match_flags	= IEEE1394_MATCH_VENDOR_ID |	\
-@@ -230,10 +188,10 @@ static const struct ieee1394_device_id motu_id_table[] = {
- 	SND_MOTU_DEV_ENTRY(0x000009, &snd_motu_spec_traveler),
- 	SND_MOTU_DEV_ENTRY(0x00000d, &snd_motu_spec_ultralite),
- 	SND_MOTU_DEV_ENTRY(0x00000f, &snd_motu_spec_8pre),
--	SND_MOTU_DEV_ENTRY(0x000015, &motu_828mk3),	/* FireWire only. */
--	SND_MOTU_DEV_ENTRY(0x000035, &motu_828mk3),	/* Hybrid. */
--	SND_MOTU_DEV_ENTRY(0x000033, &motu_audio_express),
--	SND_MOTU_DEV_ENTRY(0x000045, &motu_4pre),
-+	SND_MOTU_DEV_ENTRY(0x000015, &snd_motu_spec_828mk3), // FireWire only.
-+	SND_MOTU_DEV_ENTRY(0x000035, &snd_motu_spec_828mk3), // Hybrid.
-+	SND_MOTU_DEV_ENTRY(0x000033, &snd_motu_spec_audio_express),
-+	SND_MOTU_DEV_ENTRY(0x000045, &snd_motu_spec_4pre),
- 	{ }
+@@ -338,6 +339,8 @@ const struct snd_motu_spec snd_motu_spec_audio_express = {
+ 		 SND_MOTU_SPEC_RX_SEPARATED_MAIN |
+ 		 SND_MOTU_SPEC_RX_MIDI_2ND_Q |
+ 		 SND_MOTU_SPEC_TX_MIDI_3RD_Q,
++	.tx_fixed_pcm_chunks = {10, 10, 0},
++	.rx_fixed_pcm_chunks = {10, 10, 0},
+ 	.analog_in_ports = 2,
+ 	.analog_out_ports = 4,
  };
- MODULE_DEVICE_TABLE(ieee1394, motu_id_table);
+@@ -349,6 +352,8 @@ const struct snd_motu_spec snd_motu_spec_4pre = {
+ 		 SND_MOTU_SPEC_TX_MICINST_CHUNK |
+ 		 SND_MOTU_SPEC_TX_RETURN_CHUNK |
+ 		 SND_MOTU_SPEC_RX_SEPARATED_MAIN,
++	.tx_fixed_pcm_chunks = {10, 10, 0},
++	.rx_fixed_pcm_chunks = {10, 10, 0},
+ 	.analog_in_ports = 2,
+ 	.analog_out_ports = 2,
+ };
 diff --git a/sound/firewire/motu/motu.h b/sound/firewire/motu/motu.h
-index ead6cc840d50..7774c23f1637 100644
+index f8274ed94766..790aa34d396f 100644
 --- a/sound/firewire/motu/motu.h
 +++ b/sound/firewire/motu/motu.h
-@@ -135,6 +135,10 @@ extern const struct snd_motu_spec snd_motu_spec_traveler;
- extern const struct snd_motu_spec snd_motu_spec_ultralite;
- extern const struct snd_motu_spec snd_motu_spec_8pre;
+@@ -118,6 +118,9 @@ struct snd_motu_spec {
+ 	enum snd_motu_protocol_version protocol_version;
+ 	enum snd_motu_spec_flags flags;
  
-+extern const struct snd_motu_spec snd_motu_spec_828mk3;
-+extern const struct snd_motu_spec snd_motu_spec_audio_express;
-+extern const struct snd_motu_spec snd_motu_spec_4pre;
++	unsigned char tx_fixed_pcm_chunks[3];
++	unsigned char rx_fixed_pcm_chunks[3];
 +
- int amdtp_motu_init(struct amdtp_stream *s, struct fw_unit *unit,
- 		    enum amdtp_stream_direction dir,
- 		    const struct snd_motu_protocol *const protocol);
+ 	unsigned char analog_in_ports;
+ 	unsigned char analog_out_ports;
+ };
 -- 
 2.25.1
 
