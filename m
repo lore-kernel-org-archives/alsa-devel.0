@@ -2,65 +2,81 @@ Return-Path: <SRS0=qDfi=7C=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ED830C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 May 2020 11:52:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C17DC433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 May 2020 11:58:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6A5D1207C4
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 May 2020 11:52:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 786CB207D4
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 May 2020 11:58:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JHtxgpPC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6A5D1207C4
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=surriel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="P98YoHfm";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="alR7aWRz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 786CB207D4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BB67417EC;
-	Wed, 20 May 2020 13:51:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BB67417EC
+	by alsa0.perex.cz (Postfix) with ESMTPS id BA67E17D3;
+	Wed, 20 May 2020 13:57:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA67E17D3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589975530;
-	bh=rJKI5KOw/P0DOI1eKou8pLex8CljJXr1baDb6mvdJXQ=;
-	h=Subject:From:To:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=JHtxgpPCbHpQDDqmZPdT0fXvyWvhNGBg9flI3PgRXxRgb/+QG3sx+7fkPpkN4p4A4
-	 fnPEPpewmq4AhsjzsyCu0x+/UQA3CfJhOsljox9VbDeycUeWsF7LK6cFHSO7bBDgar
-	 45vjCYcTtX8CEFQ05sTmH0CXqXX1FajMG6xC5OLc=
+	s=default; t=1589975887;
+	bh=iykMISmEA3B2cWlO05h0kvztgbh5MJtjGLS9pgY5hRs=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=P98YoHfmPEpoibwfUTGMMxz6J+JuAFQ3bfgK0I1vow7quottYyrHYc/7C7Z1LNkJw
+	 nHPXgvKaB9H7AObN1iR/AUlHBMSUcRVfxv0Y3JY9fLVJeq5VqaN5282i5HTuCBU5Nh
+	 CN6j2sFvdWJPiPcXIvK77ted3U9/jgW+Cz65udDg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CD415F80274;
-	Wed, 20 May 2020 13:50:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 51867F80132;
+	Wed, 20 May 2020 13:57:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 664F2F801F9; Wed, 20 May 2020 13:27:12 +0200 (CEST)
-Received: from shelob.surriel.com (shelob.surriel.com [96.67.55.147])
+ id E9847F801F9; Wed, 20 May 2020 13:57:15 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 322D3F80132
+ for <alsa-devel@alsa-project.org>; Wed, 20 May 2020 13:57:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 322D3F80132
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="alR7aWRz"
+Received: from localhost (unknown [122.178.227.40])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 486CCF80132
- for <alsa-devel@alsa-project.org>; Wed, 20 May 2020 13:27:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 486CCF80132
-Received: from imladris.surriel.com ([96.67.55.152])
- by shelob.surriel.com with esmtpsa (TLS1.2) tls
- TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.93)
- (envelope-from <riel@shelob.surriel.com>)
- id 1jbMsE-0003xQ-7J; Wed, 20 May 2020 07:26:58 -0400
-Message-ID: <273cc1c074cc4a4058f31afe487fb233f5cf0351.camel@surriel.com>
-Subject: XHCI vs PCM2903B/PCM2904 part 2
-From: Rik van Riel <riel@surriel.com>
-To: linux-usb <linux-usb@vger.kernel.org>
-Date: Wed, 20 May 2020 07:26:57 -0400
-Content-Type: multipart/signed; micalg="pgp-sha256";
- protocol="application/pgp-signature"; boundary="=-KZ0PlQuw8u0ClyxHg+lW"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+ by mail.kernel.org (Postfix) with ESMTPSA id E5CE1206BE;
+ Wed, 20 May 2020 11:57:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1589975830;
+ bh=iykMISmEA3B2cWlO05h0kvztgbh5MJtjGLS9pgY5hRs=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=alR7aWRzrS+FUgCnAxm/sAtv2qosqZMo77Ks9sqnj8L+o+zNCJoLgsuxpeH7mvBuq
+ HMHacczQmUyiUYrF6//cLN8VHogYz2F87uT78h/dpMQc5pfJ0EqymqYF9T0LKUQIEQ
+ EJH1lp05zfFm/aJ26v144OcgYqsGwmzqSOENwLtU=
+Date: Wed, 20 May 2020 17:27:05 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Bard Liao <yung-chuan.liao@linux.intel.com>
+Subject: Re: [PATCH 3/3] soundwire: add Slave sysfs support
+Message-ID: <20200520115705.GV374218@vkoul-mobl.Dlink>
+References: <20200518203551.2053-1-yung-chuan.liao@linux.intel.com>
+ <20200518203551.2053-4-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
-X-Mailman-Approved-At: Wed, 20 May 2020 13:50:17 +0200
-Cc: alsa-devel@alsa-project.org, Mathias Nyman <mathias.nyman@intel.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200518203551.2053-4-yung-chuan.liao@linux.intel.com>
+Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
+ tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+ ranjani.sridharan@linux.intel.com, hui.wang@canonical.com, broonie@kernel.org,
+ srinivas.kandagatla@linaro.org, jank@cadence.com, mengdong.lin@intel.com,
+ slawomir.blauciak@intel.com, sanyog.r.kale@intel.com,
+ rander.wang@linux.intel.com, bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,112 +92,133 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On 19-05-20, 04:35, Bard Liao wrote:
 
---=-KZ0PlQuw8u0ClyxHg+lW
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+> +int sdw_slave_sysfs_init(struct sdw_slave *slave)
+> +{
+> +	int ret;
+> +
+> +	ret = devm_device_add_groups(&slave->dev, slave_groups);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = devm_device_add_group(&slave->dev, &sdw_slave_dev_attr_group);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	if (slave->prop.dp0_prop) {
+> +		ret = devm_device_add_group(&slave->dev, &dp0_group);
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+> +
+> +	if (slave->prop.source_ports || slave->prop.sink_ports) {
+> +		ret = sdw_slave_sysfs_dpn_init(slave);
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
 
-After a few more weeks of digging, I have come to the tentative
-conclusion that either the XHCI driver, or the USB sound driver,
-or both, fail to handle USB errors correctly.
+We have trailing line here
 
-I have some questions at the bottom, after a (brief-ish) explanation
-of exactly what seems to go wrong.
+> +static int add_all_attributes(struct device *dev, int N, int dir)
+> +{
+> +	struct attribute **dpn_attrs;
+> +	struct attribute_group *dpn_group;
+> +	int i = 0;
+> +	int ret;
+> +
+> +	/* allocate attributes, last one is NULL */
+> +	dpn_attrs = devm_kcalloc(dev, SDW_DPN_ATTRIBUTES + 1,
+> +				 sizeof(struct attribute *),
+> +				 GFP_KERNEL);
+> +	if (!dpn_attrs)
+> +		return -ENOMEM;
+> +
+> +	ret = max_word_attribute_alloc(dev, &dpn_attrs[i++],
+> +				       N, dir, "%d\n");
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = min_word_attribute_alloc(dev, &dpn_attrs[i++],
+> +				       N, dir, "%d\n");
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = words_attribute_alloc(dev, &dpn_attrs[i++],
+> +				    N, dir, "%d\n");
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = type_attribute_alloc(dev, &dpn_attrs[i++],
+> +				   N, dir, "%d\n");
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = max_grouping_attribute_alloc(dev, &dpn_attrs[i++],
+> +					   N, dir, "%d\n");
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = simple_ch_prep_sm_attribute_alloc(dev, &dpn_attrs[i++],
+> +						N, dir, "%d\n");
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = ch_prep_timeout_attribute_alloc(dev, &dpn_attrs[i++],
+> +					      N, dir, "%d\n");
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = imp_def_interrupts_attribute_alloc(dev, &dpn_attrs[i++],
+> +						 N, dir, "0x%x\n");
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = min_ch_attribute_alloc(dev, &dpn_attrs[i++],
+> +				     N, dir, "%d\n");
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = max_ch_attribute_alloc(dev, &dpn_attrs[i++],
+> +				     N, dir, "%d\n");
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = channels_attribute_alloc(dev, &dpn_attrs[i++],
+> +				       N, dir, "%d\n");
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = ch_combinations_attribute_alloc(dev, &dpn_attrs[i++],
+> +					      N, dir, "%d\n");
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = max_async_buffer_attribute_alloc(dev, &dpn_attrs[i++],
+> +					       N, dir, "%d\n");
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = block_pack_mode_attribute_alloc(dev, &dpn_attrs[i++],
+> +					      N, dir, "%d\n");
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = port_encoding_attribute_alloc(dev, &dpn_attrs[i++],
+> +					    N, dir, "%d\n");
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	/* paranioa check for editing mistakes */
 
-TL;DR: arecord from a misbehaving device can hang forever
-after a USB error, due to poll on /dev/snd/timer never returning.
+s/paranioa/paranoia
 
-The details: under some mysterious circumstances, the PCM290x
-family sound chips can send more data than expected during an
-isochronous transfer, leading to a babble error. Those
-circumstances seem to in part depend on the USB host controller
-and/or the electrical environment, since the chips work just
-fine for most people.
+I found only these two nitpicks so I will go ahead and apply these and
+fix them up.
 
-Receiving data past the end of the isochronous transfer window
-scheduled for a device results in the XHCI controller throwing
-a babble error, which moves the endpoint into halted state.
-
-This is followed by the host controller software sending a
-reset endpoint command, and moving the endpoint into stopped
-state, as specified on pages 164-165 of the XHCI specification.
-
-However, the USB sound driver seems to have no idea that this
-error happened. The function retire_capture_urb looks at the
-status of each isochronous frame, but seems to be under the
-assumption that the sound device just keeps on running.
-
-The function snd_complete_urb seems to only detect that the
-device is not running if usb_submit_urb returns a failure.
-
-        err =3D usb_submit_urb(urb, GFP_ATOMIC);
-        if (err =3D=3D 0)
-                return;
-
-        usb_audio_err(ep->chip, "cannot submit urb (err =3D %d)\n", err);
-
-        if (ep->data_subs && ep->data_subs->pcm_substream) {
-                substream =3D ep->data_subs->pcm_substream;
-                snd_pcm_stop_xrun(substream);
-        }
-
-However, the XHCI driver will happily submit an URB to a
-stopped device. Looking at the call trace usb_submit_urb ->
-xhci_urb_enqueue -> xhci_queue_isoc_tx_prepare -> prepare_ring,
-you can see this code:
-
-        /* Make sure the endpoint has been added to xHC schedule */
-        switch (ep_state) {
-...
-        case EP_STATE_HALTED:
-                xhci_dbg(xhci, "WARN halted endpoint, queueing URB anyway.\=
-n");
-        case EP_STATE_STOPPED:
-        case EP_STATE_RUNNING:
-                break;
-
-This leads me to a few questions:
-- should retire_capture_urb call snd_pcm_stop_xrun,
-  or another function like it, if it sees certain
-  errors in the iso frame in the URB?
-- should snd_complete_urb do something with these
-  errors, too, in case they happen on the sync frames
-  and not the data frames?
-- does the XHCI code need to ring the doorbell when
-  submitting an URB to a stopped device, or is it
-  always up to the higher-level driver to fully reset
-  the device before it can do anything useful?
-- if a device in stopped state does not do anything
-  useful, should usb_submit_urb return an error?
-- how should the USB sound driver recover from these
-  occasional and/or one-off errors? stop the sound
-  stream, or try to reinitialize the device and start
-  recording again?
-
-I am willing to write patches and can test with my
-setup, but both the sound code and the USB code are
-new to me so I would like to know what direction I
-should go in :)
-
---=20
-All Rights Reversed.
-
---=-KZ0PlQuw8u0ClyxHg+lW
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAl7FFAEACgkQznnekoTE
-3oM+AAf+JhbuACD7UFirucp8tydQbMb1EuABebzvTo+DuA0miaAAYbfZu8o1g3P1
-gg7edPquFrT88411j4qWGfHSBvG9n3WhF8qLm1aIdLB83K9Vi0R1oxDgizg8I4IR
-R/EO16XdMWsOKAsv4yiKtuDGUZ8Y+TuGivRts6bTKjwqxABOVeX82zCPmHOPe6dI
-z2EXhqmduk4W2Hfswz5ouBMHyNpPeMEMPWxlIwhU+d6a/5ZkhDcoWvaxC8sr5LRC
-W4LhSZINZsMt+tzjy1dv7EkTQz/gGBKU+ZnTrA5XZxLAT83Y2YmdQd+76UUmSyzl
-c9N17a9S0hnZ6luq73BDEh7vsj/ZZA==
-=8U/0
------END PGP SIGNATURE-----
-
---=-KZ0PlQuw8u0ClyxHg+lW--
-
+-- 
+~Vinod
