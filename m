@@ -7,63 +7,64 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23CDDC433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 May 2020 17:03:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C1B6C433E4
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 May 2020 17:03:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 932C7206B6
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 May 2020 17:03:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 189D620709
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 May 2020 17:03:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hSViUXJp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 932C7206B6
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GtDFDyrg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 189D620709
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ED3E11812;
-	Wed, 20 May 2020 19:02:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ED3E11812
+	by alsa0.perex.cz (Postfix) with ESMTPS id 63EE11807;
+	Wed, 20 May 2020 19:02:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63EE11807
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589994182;
-	bh=KbsaQSj9zMD6i/sJHtr+ut7s5Ffd82I8gbNiODWWZEM=;
+	s=default; t=1589994226;
+	bh=rQLY5OGQWianGR9AISL8Ulv85IIlX0a4ZdSr+/6a9mc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hSViUXJpJ7GdlMEQ2uD6dXoh/wx20vR5e3V3REITFY2YVM2RYSeh+jPYe36NrFjtz
-	 lFV4cmGUtzrOwUej4d2piTmOw/AtY50QVEINc0QNWGRJ4nLhbPuESehQOuzqPO87yF
-	 +NpicfK3Fcr/Lh1KZCk2DlRYBoJscPNTAUL1EHEc=
+	b=GtDFDyrg6HJM1VAmyEUUdnkgvBqB1saNMXDuq46Y+GOqDqncdlY+8S0leyKwmMyaY
+	 Z/IhQ9Z4CHHhM+p/I2gkq78HLtXC7wZJzJQS+o/VKKJ7Nwh4MUiuTUOltEjNDgYZ92
+	 1V94Rxv+i3P2aL+x1MibQU9aJ7dvnYMvVLRzeCOs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CD477F8029B;
-	Wed, 20 May 2020 18:59:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 062F8F802A7;
+	Wed, 20 May 2020 18:59:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 68E54F8025E; Wed, 20 May 2020 18:59:38 +0200 (CEST)
+ id A7A4DF8026F; Wed, 20 May 2020 18:59:39 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6225EF801F9
- for <alsa-devel@alsa-project.org>; Wed, 20 May 2020 18:59:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6225EF801F9
-IronPort-SDR: KR81/IpZerF4DtKHrgaDUlhY1A0qRgXHSh1Ea51QiXjV//t8LKPrrCDiw44yTUvU0HYYzgnJEy
- SIGz1n7dW1zQ==
+ by alsa1.perex.cz (Postfix) with ESMTPS id B9958F80216
+ for <alsa-devel@alsa-project.org>; Wed, 20 May 2020 18:59:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9958F80216
+IronPort-SDR: kKk/DgmWuQGE3V6RmjLrqZm090oLE+PFRq5ftGFHXgaH/ThIoCSRl1n3bUQzvY2BVur3WQA3KJ
+ cFAxeWBpK/jA==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 May 2020 09:59:27 -0700
-IronPort-SDR: RrqN2sJzWVNoNA4+IsoXn6WOEuV8wvHDRRep9uPtb8uo5GVEJeoK9DCD0XGDXlJNmUkOJmaWuH
- 877CBv+H8sDg==
+ 20 May 2020 09:59:18 -0700
+IronPort-SDR: ipf1thPuIUxNC9V+xZ8E9QqPUbuskCGT4qqcgYgNv+0tG4DJrFOqQBMIZaQNtpAsEDI4DBbe3T
+ LDGWvV+kYqDQ==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,414,1583222400"; d="scan'208";a="412085934"
+X-IronPort-AV: E=Sophos;i="5.73,414,1583222400"; d="scan'208";a="412085889"
 Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by orsmga004.jf.intel.com with ESMTP; 20 May 2020 09:59:25 -0700
+ by orsmga004.jf.intel.com with ESMTP; 20 May 2020 09:59:17 -0700
 From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH 4/5] ASoC: SOF: ext_manifest: parse windows
-Date: Wed, 20 May 2020 19:59:10 +0300
-Message-Id: <20200520165911.21696-5-kai.vehmanen@linux.intel.com>
+Subject: [PATCH 1/5] ASoC: SOF: loader: Adjust validation condition for
+ fw_offset
+Date: Wed, 20 May 2020 19:59:07 +0300
+Message-Id: <20200520165911.21696-2-kai.vehmanen@linux.intel.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200520165911.21696-1-kai.vehmanen@linux.intel.com>
 References: <20200520165911.21696-1-kai.vehmanen@linux.intel.com>
@@ -90,98 +91,45 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Karol Trzcinski <karolx.trzcinski@linux.intel.com>
 
-The window description can be extracted from the extended manifest
-content. This information known at build time does not need to be
-provided in a mailbox.
+Condition in if statement should be same as trace message
+and FW size equal to zero (after skipping offset) should
+be marked as invalid.
 
 Signed-off-by: Karol Trzcinski <karolx.trzcinski@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- include/sound/sof/ext_manifest.h |  8 ++++++++
- sound/soc/sof/loader.c           | 25 +++++++++++++++++++++++--
- 2 files changed, 31 insertions(+), 2 deletions(-)
+ sound/soc/sof/intel/hda-loader.c | 2 +-
+ sound/soc/sof/loader.c           | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/sound/sof/ext_manifest.h b/include/sound/sof/ext_manifest.h
-index 6ed787eb788c..0001fc5779ef 100644
---- a/include/sound/sof/ext_manifest.h
-+++ b/include/sound/sof/ext_manifest.h
-@@ -58,6 +58,7 @@ struct sof_ext_man_header {
- /* Extended manifest elements types */
- enum sof_ext_man_elem_type {
- 	SOF_EXT_MAN_ELEM_FW_VERSION		= 0,
-+	SOF_EXT_MAN_ELEM_WINDOW			= SOF_IPC_EXT_WINDOW,
- };
+diff --git a/sound/soc/sof/intel/hda-loader.c b/sound/soc/sof/intel/hda-loader.c
+index d762b3e1ce4a..441d05cda604 100644
+--- a/sound/soc/sof/intel/hda-loader.c
++++ b/sound/soc/sof/intel/hda-loader.c
+@@ -293,7 +293,7 @@ int hda_dsp_cl_boot_firmware(struct snd_sof_dev *sdev)
  
- /* extended manifest element header */
-@@ -76,4 +77,11 @@ struct sof_ext_man_fw_version {
- 	uint32_t flags;
- } __packed;
+ 	chip_info = desc->chip_info;
  
-+/* extended data memory windows for IPC, trace and debug */
-+struct sof_ext_man_window {
-+	struct sof_ext_man_elem_header hdr;
-+	/* use sof_ipc struct because of code re-use */
-+	struct sof_ipc_window ipc_window;
-+} __packed;
-+
- #endif /* __SOF_FIRMWARE_EXT_MANIFEST_H__ */
+-	if (plat_data->fw->size < plat_data->fw_offset) {
++	if (plat_data->fw->size <= plat_data->fw_offset) {
+ 		dev_err(sdev->dev, "error: firmware size must be greater than firmware offset\n");
+ 		return -EINVAL;
+ 	}
 diff --git a/sound/soc/sof/loader.c b/sound/soc/sof/loader.c
-index 8b42613304a7..6e92a1285b91 100644
+index 4a5b57ecf359..eed3d1e65685 100644
 --- a/sound/soc/sof/loader.c
 +++ b/sound/soc/sof/loader.c
-@@ -20,13 +20,21 @@ static int get_ext_windows(struct snd_sof_dev *sdev,
- {
- 	const struct sof_ipc_window *w =
- 		container_of(ext_hdr, struct sof_ipc_window, ext_hdr);
-+	size_t w_size = struct_size(w, window, w->num_windows);
+@@ -385,7 +385,7 @@ static int check_header(struct snd_sof_dev *sdev, const struct firmware *fw,
+ 	struct snd_sof_fw_header *header;
+ 	size_t fw_size = fw->size - fw_offset;
  
- 	if (w->num_windows == 0 || w->num_windows > SOF_IPC_MAX_ELEMS)
+-	if (fw->size < fw_offset) {
++	if (fw->size <= fw_offset) {
+ 		dev_err(sdev->dev, "error: firmware size must be greater than firmware offset\n");
  		return -EINVAL;
- 
-+	if (sdev->info_window) {
-+		if (memcmp(sdev->info_window, w, w_size)) {
-+			dev_err(sdev->dev, "error: mismatch between window descriptor from extended manifest and mailbox");
-+			return -EINVAL;
-+		}
-+		return 0;
-+	}
-+
- 	/* keep a local copy of the data */
--	sdev->info_window = kmemdup(w, struct_size(w, window, w->num_windows),
--				    GFP_KERNEL);
-+	sdev->info_window = kmemdup(w, w_size, GFP_KERNEL);
- 	if (!sdev->info_window)
- 		return -ENOMEM;
- 
-@@ -140,6 +148,16 @@ static int ext_man_get_fw_version(struct snd_sof_dev *sdev,
- 	return snd_sof_ipc_valid(sdev);
- }
- 
-+static int ext_man_get_windows(struct snd_sof_dev *sdev,
-+			       const struct sof_ext_man_elem_header *hdr)
-+{
-+	const struct sof_ext_man_window *w;
-+
-+	w = container_of(hdr, struct sof_ext_man_window, hdr);
-+
-+	return get_ext_windows(sdev, &w->ipc_window.ext_hdr);
-+}
-+
- static ssize_t snd_sof_ext_man_size(const struct firmware *fw)
- {
- 	const struct sof_ext_man_header *head;
-@@ -213,6 +231,9 @@ static int snd_sof_fw_ext_man_parse(struct snd_sof_dev *sdev,
- 		case SOF_EXT_MAN_ELEM_FW_VERSION:
- 			ret = ext_man_get_fw_version(sdev, elem_hdr);
- 			break;
-+		case SOF_EXT_MAN_ELEM_WINDOW:
-+			ret = ext_man_get_windows(sdev, elem_hdr);
-+			break;
- 		default:
- 			dev_warn(sdev->dev, "warning: unknown sof_ext_man header type %d size 0x%X\n",
- 				 elem_hdr->type, elem_hdr->size);
+ 	}
 -- 
 2.26.2
 
