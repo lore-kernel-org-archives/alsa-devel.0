@@ -7,63 +7,63 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E8760C433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 May 2020 17:02:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F2105C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 May 2020 17:02:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 76200206B6
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 May 2020 17:02:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6852020709
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 May 2020 17:02:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hdrUaszz"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 76200206B6
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UTNgG41T"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6852020709
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C7B031806;
-	Wed, 20 May 2020 19:01:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7B031806
+	by alsa0.perex.cz (Postfix) with ESMTPS id AAA8F17FA;
+	Wed, 20 May 2020 19:01:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AAA8F17FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589994128;
-	bh=9gA7cc3aO+lrIEEumzEoK1sj97bLGb4dqtWj5opbimg=;
+	s=default; t=1589994154;
+	bh=RNZbed4QxEFQ//CldDPEJhrds/gcw7tGhaJ9C9FSBSs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hdrUaszzeG0Obf/oxpUh9lOI11zil28y+Cfw+X9wImL3kRS4M9fP/0kG4kRL9qGAI
-	 +x27uuDyNRxD3OMqRO4ywzHMQdYGZQnOTsiu5P+EYbamEWB+gTrC28U4GBm4mtUDxJ
-	 7h5fb4F8qPrMwd9NavRePcRgz6HpMBrwW+LrQs28=
+	b=UTNgG41TBB5bFI2EceYYBm3IabliRymc/si1IcfDIoyR8V5mn3ILhsTDq5a15KCZL
+	 u7rGYT4iYGhJ+d4cgYT0MzmUm3YO4qXSRs/QenLcj+/OfXVVsqOMCXkKATeZVEBhl+
+	 /tSLbDh3ja74ES1cdz6rtt/IsuzqCV1Kh4pbsLa8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6FD18F80274;
-	Wed, 20 May 2020 18:59:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E6000F8027D;
+	Wed, 20 May 2020 18:59:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F34C2F80274; Wed, 20 May 2020 18:59:37 +0200 (CEST)
+ id 5F1C1F801DA; Wed, 20 May 2020 18:59:38 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A29F8F801DA
- for <alsa-devel@alsa-project.org>; Wed, 20 May 2020 18:59:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A29F8F801DA
-IronPort-SDR: 6zu4LJpFJnByRzbRiRTDQvZkmKtB8fftKSHraceNTib2MareCkzEWO2sbbcIHXPpb4GZr+Cyp5
- aZfO55CqUJvA==
+ by alsa1.perex.cz (Postfix) with ESMTPS id A531CF8025E
+ for <alsa-devel@alsa-project.org>; Wed, 20 May 2020 18:59:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A531CF8025E
+IronPort-SDR: pvveplYW/nzgP7Vi073UojMcYXbBStX8SJjfkS5aGJ5G3g7kagIl4Cm4vjLAlb1EnZHYXVP54a
+ 3GN6J9+LMuWQ==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 May 2020 09:59:24 -0700
-IronPort-SDR: t/HqF9wvxIaNGCD0aeMxgGYT0hwEMxB27bIY2Tel2Zq+rljSJe46HlvxJP0ewVkd81ggR8z2cB
- EPhSwsvNRbTQ==
+ 20 May 2020 09:59:29 -0700
+IronPort-SDR: 3upNoxWm2KMQan/N7EpQOk1n3bWXS9lGjI/UV/I39mvoIEEbxe657gjS6KXTuIT0FhYXRE0a83
+ sP/h+wOyjomg==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,414,1583222400"; d="scan'208";a="412085923"
+X-IronPort-AV: E=Sophos;i="5.73,414,1583222400"; d="scan'208";a="412085943"
 Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by orsmga004.jf.intel.com with ESMTP; 20 May 2020 09:59:22 -0700
+ by orsmga004.jf.intel.com with ESMTP; 20 May 2020 09:59:28 -0700
 From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH 3/5] ASoC: SOF: ext_manifest: parse firmware version
-Date: Wed, 20 May 2020 19:59:09 +0300
-Message-Id: <20200520165911.21696-4-kai.vehmanen@linux.intel.com>
+Subject: [PATCH 5/5] ASoC: SOF: ext_manifest: parse compiler version
+Date: Wed, 20 May 2020 19:59:11 +0300
+Message-Id: <20200520165911.21696-6-kai.vehmanen@linux.intel.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200520165911.21696-1-kai.vehmanen@linux.intel.com>
 References: <20200520165911.21696-1-kai.vehmanen@linux.intel.com>
@@ -90,8 +90,8 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Karol Trzcinski <karolx.trzcinski@linux.intel.com>
 
-The firmware version can be extracted from the extended
-manifest content. This information known at build time
+The compiler version and description can be extracted from the
+extended manifest content. This information known at build time
 does not need to be provided in a mailbox.
 
 Signed-off-by: Karol Trzcinski <karolx.trzcinski@linux.intel.com>
@@ -99,77 +99,76 @@ Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- include/sound/sof/ext_manifest.h | 14 ++++++++++++++
- sound/soc/sof/loader.c           | 16 ++++++++++++++++
- 2 files changed, 30 insertions(+)
+ include/sound/sof/ext_manifest.h |  8 ++++++++
+ sound/soc/sof/loader.c           | 21 +++++++++++++++++++++
+ 2 files changed, 29 insertions(+)
 
 diff --git a/include/sound/sof/ext_manifest.h b/include/sound/sof/ext_manifest.h
-index 5c1f03603919..6ed787eb788c 100644
+index 0001fc5779ef..04359cda92dc 100644
 --- a/include/sound/sof/ext_manifest.h
 +++ b/include/sound/sof/ext_manifest.h
-@@ -19,6 +19,7 @@
- #include <linux/bits.h>
- #include <linux/compiler.h>
- #include <linux/types.h>
-+#include <sound/sof/info.h>
+@@ -59,6 +59,7 @@ struct sof_ext_man_header {
+ enum sof_ext_man_elem_type {
+ 	SOF_EXT_MAN_ELEM_FW_VERSION		= 0,
+ 	SOF_EXT_MAN_ELEM_WINDOW			= SOF_IPC_EXT_WINDOW,
++	SOF_EXT_MAN_ELEM_CC_VERSION		= SOF_IPC_EXT_CC_INFO,
+ };
  
- /* In ASCII `XMan` */
- #define SOF_EXT_MAN_MAGIC_NUMBER	0x6e614d58
-@@ -54,6 +55,11 @@ struct sof_ext_man_header {
- 
- /* Now define extended manifest elements */
- 
-+/* Extended manifest elements types */
-+enum sof_ext_man_elem_type {
-+	SOF_EXT_MAN_ELEM_FW_VERSION		= 0,
-+};
-+
  /* extended manifest element header */
- struct sof_ext_man_elem_header {
- 	uint32_t type;		/*< SOF_EXT_MAN_ELEM_ */
-@@ -62,4 +68,12 @@ struct sof_ext_man_elem_header {
- 	/* just after this header should be type dependent content */
+@@ -84,4 +85,11 @@ struct sof_ext_man_window {
+ 	struct sof_ipc_window ipc_window;
  } __packed;
  
-+/* FW version */
-+struct sof_ext_man_fw_version {
++/* Used C compiler description */
++struct sof_ext_man_cc_version {
 +	struct sof_ext_man_elem_header hdr;
 +	/* use sof_ipc struct because of code re-use */
-+	struct sof_ipc_fw_version version;
-+	uint32_t flags;
++	struct sof_ipc_cc_version cc_version;
 +} __packed;
 +
  #endif /* __SOF_FIRMWARE_EXT_MANIFEST_H__ */
 diff --git a/sound/soc/sof/loader.c b/sound/soc/sof/loader.c
-index a2c2dc17e9ab..8b42613304a7 100644
+index 6e92a1285b91..b94fa5f5d480 100644
 --- a/sound/soc/sof/loader.c
 +++ b/sound/soc/sof/loader.c
-@@ -127,6 +127,19 @@ int snd_sof_fw_parse_ext_data(struct snd_sof_dev *sdev, u32 bar, u32 offset)
- }
- EXPORT_SYMBOL(snd_sof_fw_parse_ext_data);
+@@ -49,6 +49,14 @@ static int get_cc_info(struct snd_sof_dev *sdev,
+ 	const struct sof_ipc_cc_version *cc =
+ 		container_of(ext_hdr, struct sof_ipc_cc_version, ext_hdr);
  
-+static int ext_man_get_fw_version(struct snd_sof_dev *sdev,
-+				  const struct sof_ext_man_elem_header *hdr)
++	if (sdev->cc_version) {
++		if (memcmp(sdev->cc_version, cc, cc->ext_hdr.hdr.size)) {
++			dev_err(sdev->dev, "error: receive diverged cc_version descriptions");
++			return -EINVAL;
++		}
++		return 0;
++	}
++
+ 	dev_dbg(sdev->dev, "Firmware info: used compiler %s %d:%d:%d%s used optimization flags %s\n",
+ 		cc->name, cc->major, cc->minor, cc->micro, cc->desc,
+ 		cc->optim);
+@@ -158,6 +166,16 @@ static int ext_man_get_windows(struct snd_sof_dev *sdev,
+ 	return get_ext_windows(sdev, &w->ipc_window.ext_hdr);
+ }
+ 
++static int ext_man_get_cc_info(struct snd_sof_dev *sdev,
++			       const struct sof_ext_man_elem_header *hdr)
 +{
-+	const struct sof_ext_man_fw_version *v =
-+		container_of(hdr, struct sof_ext_man_fw_version, hdr);
++	const struct sof_ext_man_cc_version *cc;
 +
-+	memcpy(&sdev->fw_ready.version, &v->version, sizeof(v->version));
-+	sdev->fw_ready.flags = v->flags;
++	cc = container_of(hdr, struct sof_ext_man_cc_version, hdr);
 +
-+	/* log ABI versions and check FW compatibility */
-+	return snd_sof_ipc_valid(sdev);
++	return get_cc_info(sdev, &cc->cc_version.ext_hdr);
 +}
 +
  static ssize_t snd_sof_ext_man_size(const struct firmware *fw)
  {
  	const struct sof_ext_man_header *head;
-@@ -197,6 +210,9 @@ static int snd_sof_fw_ext_man_parse(struct snd_sof_dev *sdev,
- 
- 		/* process structure data */
- 		switch (elem_hdr->type) {
-+		case SOF_EXT_MAN_ELEM_FW_VERSION:
-+			ret = ext_man_get_fw_version(sdev, elem_hdr);
+@@ -234,6 +252,9 @@ static int snd_sof_fw_ext_man_parse(struct snd_sof_dev *sdev,
+ 		case SOF_EXT_MAN_ELEM_WINDOW:
+ 			ret = ext_man_get_windows(sdev, elem_hdr);
+ 			break;
++		case SOF_EXT_MAN_ELEM_CC_VERSION:
++			ret = ext_man_get_cc_info(sdev, elem_hdr);
 +			break;
  		default:
  			dev_warn(sdev->dev, "warning: unknown sof_ext_man header type %d size 0x%X\n",
