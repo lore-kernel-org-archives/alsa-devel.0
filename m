@@ -2,125 +2,114 @@ Return-Path: <SRS0=qDfi=7C=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A1862C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 May 2020 06:17:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3577EC433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 May 2020 06:48:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E7E9A20748
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 May 2020 06:17:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7D82A205CB
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 May 2020 06:48:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="C+RxVD/8";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="boZgr2GG";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="kvz2/Wez"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E7E9A20748
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EpwiZAMi";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="lbAvaMGU";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="mW2PZna9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7D82A205CB
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4B68E179B;
-	Wed, 20 May 2020 08:16:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B68E179B
+	by alsa0.perex.cz (Postfix) with ESMTPS id C0F471768;
+	Wed, 20 May 2020 08:47:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C0F471768
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589955462;
-	bh=NNCIrvBC9TBA0WD+xBeUzlOlKiYBvj2IpQbiVkJQMBM=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1589957321;
+	bh=40JeB6zr3ki+wXE2lTlNhowV/pqJbpy7G1TxjB9xMnE=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=C+RxVD/8ZKidnDv0OW1y7Q7sB7KwcvLjZ7t/Ew+ryul/29kSmIs/Pa1chMWtXUFbh
-	 3wOjx3Xwk4ii5BCKRY5DsFLkmF+BpM9Sb0jwbScRlp02j43m+6wsXs0YMxlkkJ8q8a
-	 C+EWFLXyT6xnhXJgSLrKU2aJ4qjdGaEpUiazOzRs=
+	b=EpwiZAMiymbK+no+oFO9P9UU54GSJA8jp42kUOaqNUIO/LKnLqwq4lr17HQtdPT8d
+	 klZaHEh2EbULKuuLyNKrSgAH3S9m9mu9c6+iMWomQnoGupeAgtbVJMpdo0Z+6RoXO3
+	 a06P3SOei6EBCv/cYMohwAbDqOiq6Q4jDzyULKuo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B5622F801DA;
-	Wed, 20 May 2020 08:16:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 52E3FF801DA;
+	Wed, 20 May 2020 08:47:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 03692F801F9; Wed, 20 May 2020 08:16:48 +0200 (CEST)
+ id 698C3F80216; Wed, 20 May 2020 08:47:49 +0200 (CEST)
 Received: from wnew4-smtp.messagingengine.com (wnew4-smtp.messagingengine.com
  [64.147.123.18])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EDDA3F80090
- for <alsa-devel@alsa-project.org>; Wed, 20 May 2020 08:16:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EDDA3F80090
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9C1C6F801F9
+ for <alsa-devel@alsa-project.org>; Wed, 20 May 2020 08:47:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C1C6F801F9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="boZgr2GG"; 
+ header.b="lbAvaMGU"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="kvz2/Wez"
+ header.i=@messagingengine.com header.b="mW2PZna9"
 Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
- by mailnew.west.internal (Postfix) with ESMTP id 4A81EC4E;
- Wed, 20 May 2020 02:16:35 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
- by compute2.internal (MEProxy); Wed, 20 May 2020 02:16:36 -0400
+ by mailnew.west.internal (Postfix) with ESMTP id 47E40C36;
+ Wed, 20 May 2020 02:47:38 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute2.internal (MEProxy); Wed, 20 May 2020 02:47:39 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-type:in-reply-to; s=fm1; bh=3XNYaKnp2YGCe91EplwF85srPK8
- 6i5OIm/TZfO+r/A4=; b=boZgr2GGEoSCPOnQyY7adWYwLGs6cKNwB4tPIHroF9Q
- 6nBi0D14HFNTaPEDK3mIToWgpFD/SoE7jIoA7nd1Ehuqfj2nkYSu+jP+xit2P2md
- XyTPT8i1+WR8EI2wlndxzZ0JCoY2jwiZnEzCWg0NvPuRyoDazEcAnX0KRzebYOeh
- EVRIWQ0WD1GjnazMVjqf/Ab6PxSId5ikiYxDPAipIlx+4a5HXOeE1cQFGijcK+4Z
- ro7MyN64kh82CxC5mgEKPkcegXkk23zwMsIVa12ZzhglXUSQa+C08eKEbhYQ3M8h
- svQd995a84sj/zPAqYjaoID1dZyUcdtTmLgXBJ1n/1g==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding; s=fm1; bh=0x5Q9TMW/pcKY
+ WBvmhtdapFpEqLWfDSRp7i7zc3uhac=; b=lbAvaMGUu03zDg6XsB+E7tS/ZgFDS
+ B9IW9lYWm1mPP35CksdGb8t8x6QtnpgQsBsAZglzJ8ALb23UQSzZcgEqHFM450GD
+ QxTd5Iyk7sVkAGVrdy4xDkNa6Lr99YXYkuZiR3tAJyoACsXPfFndcRQtLgA5PxTy
+ hYOT6t0zXZaLYNNc80LdkMFFjW/c4FK6/tClhlKckNlYXB3tkHXZD27MisR+Omy0
+ F8aIOiBn/WhKTfdAnQvMATTv0K4iPZNtFv4IDOmbnOL42ItbXWFyO0rrXqSPSKtO
+ 6tE4FYdQFkyIkUdDiLgSnesGo1v9mPsEDdTubeAnBtc53GkdLGZYKjRPw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to:x-me-proxy
- :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=3XNYaK
- np2YGCe91EplwF85srPK86i5OIm/TZfO+r/A4=; b=kvz2/WezRA3U7KeAYIoye/
- GsK/JdQkFZfgnTnjy2U5r+nWxYV6BqcjDpSfSvImK33U8NDqHQjjWgIddB9ItzE5
- VQoDX9qFU83BCNZmvLoTQJxyRMkt/SBkeuaDt6CGdf22EfiLsSvhWCjXL0WoaOWk
- G5jP6/vgh7y54m0i6/oDos61fHKztdduCD99IIrEyuVmehl96QhRMEnhO2T+4zxM
- mrEi/nZR2z10IjvG0j3QEp6j/7Tf+5KyCS0BRWTIBwlN0LIkwsudGJ9r4vB+Kz9F
- mWRnnA6e+WTUa1SICCmLKb+BxjRygr+OCe+Nvn1RFo54RJDyhj0Q4OjeYX7twCiw
- ==
-X-ME-Sender: <xms:PMvEXtybO761tUOfUtM1Uqz2bHplKGTEmVGoIF0G3kzcLSXeGp8BQQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedruddtkedguddtvdcutefuodetggdotefrod
+ messagingengine.com; h=cc:content-transfer-encoding:date:from
+ :in-reply-to:message-id:mime-version:references:subject:to
+ :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+ fm2; bh=0x5Q9TMW/pcKYWBvmhtdapFpEqLWfDSRp7i7zc3uhac=; b=mW2PZna9
+ P52SNXpQ4GT1sVkxxFVXYND/OrmTBBQsAAAgIL9iGW1SnOqlj+iL7D9ZuCji+SCk
+ VX06hnTqqk9xbmVaXVcWDLfU17TkG7boVHkqcEoM2irzCcknwqeJnirg7lOd7WMn
+ TWtGGnk+ivqzH9VDVVNcUPIBxH5aaxZAAwVyqDJqv6tx9QZvUBBD+HescazjOFSZ
+ paLwV3snjUqBgIetXUnO+0RocXKBCGvoBEpinWDpzyjUMXq7HDLqMaIsFXOq1DSn
+ EvGxEOqcNg56oaWF45WQsw7q7u4DjpIGoEBUiAczGcyQguUIlXFc+Cl5/+BRASXQ
+ ulx3SZeF+1HXxw==
+X-ME-Sender: <xms:idLEXpgzOGWeZyZRSIivUMEEDbBal43yeAVVInaoqjg31e7JrFRKNA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedruddtkedguddtlecutefuodetggdotefrod
  ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
- necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
- enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfgrkhgr
- shhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhird
- hjpheqnecuggftrfgrthhtvghrnheplefhueegvdejgfejgfdukeefudetvddtuddtueei
- vedttdegteejkedvfeegfefhnecukfhppedukedtrddvfeehrdefrdehgeenucevlhhush
+ necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtke
+ ertdertddtnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghk
+ rghshhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpeduuefffe
+ eiteeludevieetgeeiueelfeeifffhheetveeiveelfeetheeuhfektdenucffohhmrghi
+ nhepkhgvrhhnvghlrdhorhhgnecukfhppedukedtrddvfeehrdefrdehgeenucevlhhush
  htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhi
  sehsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:PMvEXtQgL0xVSCOkaJchdgOBsjqZ2eLoEvsuUCzy-o2rOR9gqAeSCg>
- <xmx:PMvEXnXKX9pr1U5wgNkSMjZe8QCjXPg31XSMjzBCpwtmJubMfnKZXw>
- <xmx:PMvEXvi9bWn-4QBYxqXPK1RYyfQElyNhwIe9R9yz2xMB1_c_Ji2mjg>
- <xmx:QsvEXrtMztEFg7yl7BxqGmfpINuyC9xWvXo4xPA7p_oJD80NbveZlEi0-BA>
-Received: from workstation (ad003054.dynamic.ppp.asahi-net.or.jp
+X-ME-Proxy: <xmx:idLEXuCjXj_Lee-SQyRtkYRmn9Ac6gEZkXb-kFovtUnXqpuK60s8Sw>
+ <xmx:idLEXpFeZ0z21DI0kinkZOuCVhN3ZePb4rS9TBApRO3D3b0YvbVi5A>
+ <xmx:idLEXuT1iJf6XmzAhAmA8bggY1V0FQWQ-Im9qPPV0OMCOszpqIQqqg>
+ <xmx:idLEXqdXF5To2ccakZPDISGatrzHmWIIEhrQ8CPoJGGxKfrkXB2JGHnh-qA>
+Received: from workstation.flets-east.jp (ad003054.dynamic.ppp.asahi-net.or.jp
  [180.235.3.54])
- by mail.messagingengine.com (Postfix) with ESMTPA id 42D9C3066434;
- Wed, 20 May 2020 02:16:26 -0400 (EDT)
-Date: Wed, 20 May 2020 15:16:24 +0900
+ by mail.messagingengine.com (Postfix) with ESMTPA id 0A9473280065;
+ Wed, 20 May 2020 02:47:34 -0400 (EDT)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: Oscar Carter <oscar.carter@gmx.com>
-Subject: Re: [PATCH v2] firewire: Remove function callback casts
-Message-ID: <20200520061624.GA25690@workstation>
-Mail-Followup-To: Oscar Carter <oscar.carter@gmx.com>,
- Kees Cook <keescook@chromium.org>,
- Stefan Richter <stefanr@s5r6.in-berlin.de>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Clemens Ladisch <clemens@ladisch.de>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- kernel-hardening@lists.openwall.com,
- linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
- linux-media@vger.kernel.org, alsa-devel@alsa-project.org,
- "Lev R . Oshvang ." <levonshe@gmail.com>
-References: <20200519173425.4724-1-oscar.carter@gmx.com>
+To: oscar.carter@gmx.com, keescook@chromium.org, mchehab@kernel.org,
+ clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
+Subject: [PATCH 2/2] firewire-core: obsolete cast of function callback
+Date: Wed, 20 May 2020 15:47:26 +0900
+Message-Id: <20200520064726.31838-3-o-takashi@sakamocchi.jp>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200520064726.31838-1-o-takashi@sakamocchi.jp>
+References: <20200520064726.31838-1-o-takashi@sakamocchi.jp>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200519173425.4724-1-oscar.carter@gmx.com>
-Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net,
- Kees Cook <keescook@chromium.org>, kernel-hardening@lists.openwall.com,
- linux-kernel@vger.kernel.org, Clemens Ladisch <clemens@ladisch.de>,
- Takashi Iwai <tiwai@suse.com>, Stefan Richter <stefanr@s5r6.in-berlin.de>,
- "Lev R . Oshvang ." <levonshe@gmail.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>, linux-media@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, kernel-hardening@lists.openwall.com,
+ linux-kernel@vger.kernel.org, stefanr@s5r6.in-berlin.de, levonshe@gmail.com,
+ linux1394-devel@lists.sourceforge.net, linux-media@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -136,55 +125,84 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+This commit obsoletes cast of function callback to assist attempt of
+Control Flow Integrity builds.
 
-On Tue, May 19, 2020 at 07:34:25PM +0200, Oscar Carter wrote:
-> In an effort to enable -Wcast-function-type in the top-level Makefile to
-> support Control Flow Integrity builds, remove all the function callback
-> casts.
-> 
-> To do this, modify the "fw_iso_context_create" function prototype adding
-> a new parameter for the multichannel callback. Also, fix all the
-> function calls accordingly.
-> 
-> In the "fw_iso_context_create" function return an error code if both
-> callback parameters are NULL and also set the "ctx->callback.sc"
-> explicity to NULL in this case. It is not necessary set to NULL the
-> "ctx->callback.mc" variable because this and "ctx->callback.sc" are an
-> union and setting one implies setting the other one to the same value.
-> 
-> Signed-off-by: Oscar Carter <oscar.carter@gmx.com>
-> ---
-> Changelog v1->v2
-> -Set explicity to NULL the "ctx->callback.sc" variable and return an error
->  code in "fw_iso_context_create" function if both callback parameters are
->  NULL as Lev R. Oshvang suggested.
-> -Modify the commit changelog accordingly.
-> 
->  drivers/firewire/core-cdev.c        | 12 +++++++-----
->  drivers/firewire/core-iso.c         | 14 ++++++++++++--
->  drivers/firewire/net.c              |  2 +-
->  drivers/media/firewire/firedtv-fw.c |  3 ++-
->  include/linux/firewire.h            |  3 ++-
->  sound/firewire/amdtp-stream.c       |  2 +-
->  sound/firewire/isight.c             |  4 ++--
->  7 files changed, 27 insertions(+), 13 deletions(-)
+Reported-by: Oscar Carter <oscar.carter@gmx.com>
+Reference: https://lore.kernel.org/lkml/20200519173425.4724-1-oscar.carter@gmx.com/
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ drivers/firewire/core-cdev.c | 44 +++++++++++++++++++-----------------
+ 1 file changed, 23 insertions(+), 21 deletions(-)
 
-I'm an author of ALSA firewire stack and thanks for the patch. I agree with
-your intention to remove the cast of function callback toward CFI build.
+diff --git a/drivers/firewire/core-cdev.c b/drivers/firewire/core-cdev.c
+index 6e291d8f3a27..f1e83396dd22 100644
+--- a/drivers/firewire/core-cdev.c
++++ b/drivers/firewire/core-cdev.c
+@@ -957,7 +957,6 @@ static int ioctl_create_iso_context(struct client *client, union ioctl_arg *arg)
+ {
+ 	struct fw_cdev_create_iso_context *a = &arg->create_iso_context;
+ 	struct fw_iso_context *context;
+-	fw_iso_callback_t cb;
+ 	int ret;
+ 
+ 	BUILD_BUG_ON(FW_CDEV_ISO_CONTEXT_TRANSMIT != FW_ISO_CONTEXT_TRANSMIT ||
+@@ -965,32 +964,35 @@ static int ioctl_create_iso_context(struct client *client, union ioctl_arg *arg)
+ 		     FW_CDEV_ISO_CONTEXT_RECEIVE_MULTICHANNEL !=
+ 					FW_ISO_CONTEXT_RECEIVE_MULTICHANNEL);
+ 
+-	switch (a->type) {
+-	case FW_ISO_CONTEXT_TRANSMIT:
+-		if (a->speed > SCODE_3200 || a->channel > 63)
+-			return -EINVAL;
+-
+-		cb = iso_callback;
+-		break;
++	if (a->type != FW_ISO_CONTEXT_RECEIVE_MULTICHANNEL) {
++		fw_iso_callback_t cb;
+ 
+-	case FW_ISO_CONTEXT_RECEIVE:
+-		if (a->header_size < 4 || (a->header_size & 3) ||
+-		    a->channel > 63)
+-			return -EINVAL;
++		switch (a->type) {
++		case FW_ISO_CONTEXT_TRANSMIT:
++			if (a->speed > SCODE_3200 || a->channel > 63)
++				return -EINVAL;
+ 
+-		cb = iso_callback;
+-		break;
++			cb = iso_callback;
++			break;
+ 
+-	case FW_ISO_CONTEXT_RECEIVE_MULTICHANNEL:
+-		cb = (fw_iso_callback_t)iso_mc_callback;
+-		break;
++		case FW_ISO_CONTEXT_RECEIVE:
++			if (a->header_size < 4 || (a->header_size & 3) ||
++			    a->channel > 63)
++				return -EINVAL;
+ 
+-	default:
+-		return -EINVAL;
+-	}
++			cb = iso_callback;
++			break;
++		default:
++			return -EINVAL;
++		}
+ 
+-	context = fw_iso_context_create(client->device->card, a->type,
++		context = fw_iso_context_create(client->device->card, a->type,
+ 			a->channel, a->speed, a->header_size, cb, client);
++	} else {
++		context = fw_iso_mc_context_create(client->device->card,
++				a->type, a->channel, a->speed, a->header_size,
++				iso_mc_callback, client);
++	}
+ 	if (IS_ERR(context))
+ 		return PTR_ERR(context);
+ 	if (client->version < FW_CDEV_VERSION_AUTO_FLUSH_ISO_OVERFLOW)
+-- 
+2.25.1
 
-Practically, the isochronous context with FW_ISO_CONTEXT_RECEIVE_MULTICHANNEL
-is never used by in-kernel drivers. Here, I propose to leave current
-kernel API (fw_iso_context_create() with fw_iso_callback_t) as is.
-Alternatively, a new kernel API for the context (e.g.
-fw_iso_mc_context_create() with fw_iso_mc_callback_t). This idea leaves
-current drivers as is and the change is done inner firewire-core driver,
-therefore existent kernel API is not changed.
-
-Later I post two patches for the proposal. I'd like you to review it and
-I'm glad to receive your comments.
-
-
-Regards
-
-Takashi Sakamoto
