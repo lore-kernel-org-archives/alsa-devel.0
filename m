@@ -2,63 +2,65 @@ Return-Path: <SRS0=qDfi=7C=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A300DC433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 May 2020 11:51:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED830C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 May 2020 11:52:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2449E20873
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 May 2020 11:51:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6A5D1207C4
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 May 2020 11:52:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Xh5+fRhR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2449E20873
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JHtxgpPC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6A5D1207C4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=surriel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1907A17E6;
-	Wed, 20 May 2020 13:50:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1907A17E6
+	by alsa0.perex.cz (Postfix) with ESMTPS id BB67417EC;
+	Wed, 20 May 2020 13:51:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BB67417EC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1589975482;
-	bh=D3Fkn151Kd850inf1kFwTDY74KV2AL1RkzRv1fI6bbY=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Xh5+fRhRDMISsb4JXqXd1SACgIszfYYu2sS8LOFCDvCqo+G6bQX2VYjTWPHwO4daj
-	 oCe4YMYD3uEan8Am1D8uck7TBif1Q2itTI0mVghD1veG2LCHP9NOvJYgyAlRSW0CZh
-	 vBztq9Vf3lLUMO/rDBA6L6bYSx1g9/RZjXGsPX4M=
+	s=default; t=1589975530;
+	bh=rJKI5KOw/P0DOI1eKou8pLex8CljJXr1baDb6mvdJXQ=;
+	h=Subject:From:To:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=JHtxgpPCbHpQDDqmZPdT0fXvyWvhNGBg9flI3PgRXxRgb/+QG3sx+7fkPpkN4p4A4
+	 fnPEPpewmq4AhsjzsyCu0x+/UQA3CfJhOsljox9VbDeycUeWsF7LK6cFHSO7bBDgar
+	 45vjCYcTtX8CEFQ05sTmH0CXqXX1FajMG6xC5OLc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E62B0F80216;
-	Wed, 20 May 2020 13:50:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CD415F80274;
+	Wed, 20 May 2020 13:50:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 34E09F801F9; Wed, 20 May 2020 13:00:08 +0200 (CEST)
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 664F2F801F9; Wed, 20 May 2020 13:27:12 +0200 (CEST)
+Received: from shelob.surriel.com (shelob.surriel.com [96.67.55.147])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1CFD1F80090
- for <alsa-devel@alsa-project.org>; Wed, 20 May 2020 13:00:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1CFD1F80090
-Received: by ozlabs.org (Postfix, from userid 1034)
- id 49RqX81vz0z9sT3; Wed, 20 May 2020 20:59:52 +1000 (AEST)
-From: Michael Ellerman <patch-notifications@ellerman.id.au>
-To: Benjamin Herrenschmidt <benh@kernel.crashing.org>,
- Michael Ellerman <mpe@ellerman.id.au>,
- Christophe Leroy <christophe.leroy@c-s.fr>, Paul Mackerras <paulus@samba.org>
-In-Reply-To: <a5945463f86c984151962a475a3ee56a2893e85d.1587407777.git.christophe.leroy@c-s.fr>
-References: <a5945463f86c984151962a475a3ee56a2893e85d.1587407777.git.christophe.leroy@c-s.fr>
-Subject: Re: [PATCH 1/5] drivers/powerpc: Replace _ALIGN_UP() by ALIGN()
-Message-Id: <158997212813.943180.8258248178215435632.b4-ty@ellerman.id.au>
-Date: Wed, 20 May 2020 20:59:52 +1000 (AEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 486CCF80132
+ for <alsa-devel@alsa-project.org>; Wed, 20 May 2020 13:27:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 486CCF80132
+Received: from imladris.surriel.com ([96.67.55.152])
+ by shelob.surriel.com with esmtpsa (TLS1.2) tls
+ TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.93)
+ (envelope-from <riel@shelob.surriel.com>)
+ id 1jbMsE-0003xQ-7J; Wed, 20 May 2020 07:26:58 -0400
+Message-ID: <273cc1c074cc4a4058f31afe487fb233f5cf0351.camel@surriel.com>
+Subject: XHCI vs PCM2903B/PCM2904 part 2
+From: Rik van Riel <riel@surriel.com>
+To: linux-usb <linux-usb@vger.kernel.org>
+Date: Wed, 20 May 2020 07:26:57 -0400
+Content-Type: multipart/signed; micalg="pgp-sha256";
+ protocol="application/pgp-signature"; boundary="=-KZ0PlQuw8u0ClyxHg+lW"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+MIME-Version: 1.0
 X-Mailman-Approved-At: Wed, 20 May 2020 13:50:17 +0200
-Cc: linux-fbdev@vger.kernel.org, kvm@vger.kernel.org,
- alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Cc: alsa-devel@alsa-project.org, Mathias Nyman <mathias.nyman@intel.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,23 +76,112 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 20 Apr 2020 18:36:34 +0000 (UTC), Christophe Leroy wrote:
-> _ALIGN_UP() is specific to powerpc
-> ALIGN() is generic and does the same
-> 
-> Replace _ALIGN_UP() by ALIGN()
 
-Applied to powerpc/next.
+--=-KZ0PlQuw8u0ClyxHg+lW
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-[1/5] drivers/powerpc: Replace _ALIGN_UP() by ALIGN()
-      https://git.kernel.org/powerpc/c/7bfc3c84cbf5167d943cff9b3d2619dab0b7894c
-[2/5] powerpc: Replace _ALIGN_DOWN() by ALIGN_DOWN()
-      https://git.kernel.org/powerpc/c/e96d904ede6756641563d27daa746875b478a6c8
-[3/5] powerpc: Replace _ALIGN_UP() by ALIGN()
-      https://git.kernel.org/powerpc/c/b711531641038f3ff3723914f3d5ba79848d347e
-[4/5] powerpc: Replace _ALIGN() by ALIGN()
-      https://git.kernel.org/powerpc/c/d3f3d3bf76cfb04e73436a15e3987d3573e7523a
-[5/5] powerpc: Remove _ALIGN_UP(), _ALIGN_DOWN() and _ALIGN()
-      https://git.kernel.org/powerpc/c/4cdb2da654033d76e1b1cb4ac427d9193dce816b
+After a few more weeks of digging, I have come to the tentative
+conclusion that either the XHCI driver, or the USB sound driver,
+or both, fail to handle USB errors correctly.
 
-cheers
+I have some questions at the bottom, after a (brief-ish) explanation
+of exactly what seems to go wrong.
+
+TL;DR: arecord from a misbehaving device can hang forever
+after a USB error, due to poll on /dev/snd/timer never returning.
+
+The details: under some mysterious circumstances, the PCM290x
+family sound chips can send more data than expected during an
+isochronous transfer, leading to a babble error. Those
+circumstances seem to in part depend on the USB host controller
+and/or the electrical environment, since the chips work just
+fine for most people.
+
+Receiving data past the end of the isochronous transfer window
+scheduled for a device results in the XHCI controller throwing
+a babble error, which moves the endpoint into halted state.
+
+This is followed by the host controller software sending a
+reset endpoint command, and moving the endpoint into stopped
+state, as specified on pages 164-165 of the XHCI specification.
+
+However, the USB sound driver seems to have no idea that this
+error happened. The function retire_capture_urb looks at the
+status of each isochronous frame, but seems to be under the
+assumption that the sound device just keeps on running.
+
+The function snd_complete_urb seems to only detect that the
+device is not running if usb_submit_urb returns a failure.
+
+        err =3D usb_submit_urb(urb, GFP_ATOMIC);
+        if (err =3D=3D 0)
+                return;
+
+        usb_audio_err(ep->chip, "cannot submit urb (err =3D %d)\n", err);
+
+        if (ep->data_subs && ep->data_subs->pcm_substream) {
+                substream =3D ep->data_subs->pcm_substream;
+                snd_pcm_stop_xrun(substream);
+        }
+
+However, the XHCI driver will happily submit an URB to a
+stopped device. Looking at the call trace usb_submit_urb ->
+xhci_urb_enqueue -> xhci_queue_isoc_tx_prepare -> prepare_ring,
+you can see this code:
+
+        /* Make sure the endpoint has been added to xHC schedule */
+        switch (ep_state) {
+...
+        case EP_STATE_HALTED:
+                xhci_dbg(xhci, "WARN halted endpoint, queueing URB anyway.\=
+n");
+        case EP_STATE_STOPPED:
+        case EP_STATE_RUNNING:
+                break;
+
+This leads me to a few questions:
+- should retire_capture_urb call snd_pcm_stop_xrun,
+  or another function like it, if it sees certain
+  errors in the iso frame in the URB?
+- should snd_complete_urb do something with these
+  errors, too, in case they happen on the sync frames
+  and not the data frames?
+- does the XHCI code need to ring the doorbell when
+  submitting an URB to a stopped device, or is it
+  always up to the higher-level driver to fully reset
+  the device before it can do anything useful?
+- if a device in stopped state does not do anything
+  useful, should usb_submit_urb return an error?
+- how should the USB sound driver recover from these
+  occasional and/or one-off errors? stop the sound
+  stream, or try to reinitialize the device and start
+  recording again?
+
+I am willing to write patches and can test with my
+setup, but both the sound code and the USB code are
+new to me so I would like to know what direction I
+should go in :)
+
+--=20
+All Rights Reversed.
+
+--=-KZ0PlQuw8u0ClyxHg+lW
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAl7FFAEACgkQznnekoTE
+3oM+AAf+JhbuACD7UFirucp8tydQbMb1EuABebzvTo+DuA0miaAAYbfZu8o1g3P1
+gg7edPquFrT88411j4qWGfHSBvG9n3WhF8qLm1aIdLB83K9Vi0R1oxDgizg8I4IR
+R/EO16XdMWsOKAsv4yiKtuDGUZ8Y+TuGivRts6bTKjwqxABOVeX82zCPmHOPe6dI
+z2EXhqmduk4W2Hfswz5ouBMHyNpPeMEMPWxlIwhU+d6a/5ZkhDcoWvaxC8sr5LRC
+W4LhSZINZsMt+tzjy1dv7EkTQz/gGBKU+ZnTrA5XZxLAT83Y2YmdQd+76UUmSyzl
+c9N17a9S0hnZ6luq73BDEh7vsj/ZZA==
+=8U/0
+-----END PGP SIGNATURE-----
+
+--=-KZ0PlQuw8u0ClyxHg+lW--
+
