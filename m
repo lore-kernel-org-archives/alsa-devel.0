@@ -2,74 +2,75 @@ Return-Path: <SRS0=D4yB=7D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 09FB6C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 May 2020 18:26:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8452AC433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 May 2020 18:53:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3611520823
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 May 2020 18:26:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 10E8820823
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 May 2020 18:53:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZD4vX/Yh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3611520823
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="joLGkIhM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 10E8820823
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=free.fr
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 89654183A;
-	Thu, 21 May 2020 20:25:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89654183A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4A8BB181D;
+	Thu, 21 May 2020 20:52:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A8BB181D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590085582;
-	bh=B4ShNZgO5goC/dtaFT/PFGIWmqsvBiKHxtDUUxMlllc=;
-	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1590087210;
+	bh=jJnOwckoweEITglTHvvzlvf1cFLNDuW07zU73xe1Jwk=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZD4vX/YhYO8eS5FSSJwKvW/1gfR+sLONKAlSrYK5eC+9PZ7oh5otsa4zzGEW8u+jm
-	 mQIt3uaiNzH1dn97CyG5tPFYjmqmZ6OW5m7565cx3+M04vPkEbjHxkXMPCff6juW1S
-	 84brUdHH8P8oeb89yO0N75t8UV49QobJSKgkC0IM=
+	b=joLGkIhMu6rj3jY1LCSVw4F135mril0tS+2+2w5+EEYEf6uoS4a8F9+kvmUQlyVN+
+	 H4PQPBpD5EFMDxCp9HwXS7AqvBR5oTMPbYppCA+Ntw262YPUfRsQWikmDrWvS7MtIG
+	 hjH1giw2a+icm1sAwdy1/5Ikjq3pflPpRgU3x8zk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0B814F801A3;
-	Thu, 21 May 2020 20:25:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CED09F801A3;
+	Thu, 21 May 2020 20:52:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BF931F801D8; Thu, 21 May 2020 20:25:29 +0200 (CEST)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 72CF2F80229; Thu, 21 May 2020 20:52:38 +0200 (CEST)
+Received: from smtp.smtpout.orange.fr (smtp05.smtpout.orange.fr
+ [80.12.242.127])
+ (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 881EAF80111
- for <alsa-devel@alsa-project.org>; Thu, 21 May 2020 20:25:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 881EAF80111
-IronPort-SDR: i64rkLd26RRFg1PkZNrOUCI+zFHKMJ6TH7IzJQ6HEX6ED8IZQWdcYmnAcoTJNWIqV+DS12kmM8
- 3Ytn4ZnDfUrA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 May 2020 11:25:18 -0700
-IronPort-SDR: ihzWGxkf5YDH3NuBOKUq0UMm3JkoogHCO8ioRw1kXo+aK2z0s0uhdJOyijtX/MxFIqdnpnVUGw
- biR0wSiQ2NYQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,418,1583222400"; d="scan'208";a="466895369"
-Received: from dclifton-mobl.amr.corp.intel.com ([10.251.134.247])
- by fmsmga005.fm.intel.com with ESMTP; 21 May 2020 11:25:18 -0700
-Message-ID: <7626c159ca13b65d6caf87f7d195ade69586e4ff.camel@linux.intel.com>
-Subject: Re: [PATCH v2 0/7] ASoC: add soc-link
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown
- <broonie@kernel.org>
-Date: Thu, 21 May 2020 11:25:17 -0700
-In-Reply-To: <874ksa59wc.wl-kuninori.morimoto.gx@renesas.com>
-References: <874ksa59wc.wl-kuninori.morimoto.gx@renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id C5401F801A3
+ for <alsa-devel@alsa-project.org>; Thu, 21 May 2020 20:52:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5401F801A3
+Received: from belgarion.home ([86.210.245.36]) by mwinf5d28 with ME
+ id hWsG220030nqnCN03WsWKT; Thu, 21 May 2020 20:52:31 +0200
+X-ME-Helo: belgarion.home
+X-ME-Auth: amFyem1pay5yb2JlcnRAb3JhbmdlLmZy
+X-ME-Date: Thu, 21 May 2020 20:52:31 +0200
+X-ME-IP: 86.210.245.36
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+List-Id: <soc.lore.kernel.org>
+To: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ soc@kernel.org
+Subject: [PATCH v3 2/3] MAINTAINERS: pxa: remove Compulab arm/pxa support
+Date: Thu, 21 May 2020 20:51:38 +0200
+Message-Id: <20200521185140.27276-2-robert.jarzmik@free.fr>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200521185140.27276-1-robert.jarzmik@free.fr>
+References: <20200521185140.27276-1-robert.jarzmik@free.fr>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Arnd Bergmann <arnd@arndb.de>, alsa-devel@alsa-project.org,
+ Mike Rapoport <rppt@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,39 +86,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 2020-05-21 at 10:55 +0900, Kuninori Morimoto wrote:
-> Hi Mark
-> 
-> Current ALSA SoC is handling dai_link related operation,
-> but it is implmemented directly without using function/macro,
-> and at random place.
-> 
-> This v2 patch-set creates new snd_soc_link_xxx() functions
-> which handles dai_link related operation,
-> and implmement these at new soc-link.c.
-> 
-> v1 -> v2
-> 	- #include <sound/soc-link.h> is added on each c source file
-> 	  instead of soc.h
-> 	- not have extra error message after snd_soc_link_xxx(),
-> 	  because it already indicate it via snc_link_ret()
-> 	- snd_soc_link_compr_xxx() doesn't have rtd parameter,
-> 	  because it can be created from cstream
-> 
-> Link: 
-> https://lore.kernel.org/r/877dx868op.wl-kuninori.morimoto.gx@renesas.com
-> 
-> Kuninori Morimoto (7):
->   ASoC: add soc-link.c
->   ASoC: soc-link: move soc_rtd_xxx()
->   ASoC: soc-link: remove unneeded parameter from snd_soc_link_xxx()
->   ASoC: soc-link: add snd_soc_link_be_hw_params_fixup()
->   ASoC: soc-link: add snd_soc_link_compr_startup()
->   ASoC: soc-link: add snd_soc_link_compr_shutdown()
->   ASoC: soc-link: add snd_soc_link_compr_set_params()
+These boards support is removed from the kernel, so remove the
+MAINTAINERS entry for them.
 
-The series LGTM except for the missing include for soc-link.h in soc-
-link.c. Thanks, Morimoto-san.
+Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+Acked-by: Mike Rapoport <rppt@kernel.org>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+---
+ MAINTAINERS | 5 -----
+ 1 file changed, 5 deletions(-)
 
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 091ec22c1a23..ad58388fa822 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -1684,11 +1684,6 @@ S:	Maintained
+ T:	git git://git.armlinux.org.uk/~rmk/linux-arm.git clkdev
+ F:	drivers/clk/clkdev.c
+ 
+-ARM/COMPULAB CM-X270/EM-X270 and CM-X300 MACHINE SUPPORT
+-M:	Mike Rapoport <mike@compulab.co.il>
+-L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+-S:	Maintained
+-
+ ARM/CONEXANT DIGICOLOR MACHINE SUPPORT
+ M:	Baruch Siach <baruch@tkos.co.il>
+ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+-- 
+2.26.2
 
