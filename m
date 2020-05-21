@@ -2,75 +2,107 @@ Return-Path: <SRS0=D4yB=7D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F77DC433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 May 2020 07:39:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 38359C433DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 May 2020 11:31:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CF7482065F
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 May 2020 07:39:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ACE4D2072C
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 May 2020 11:31:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cRKlZQUy"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CF7482065F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LGkX61Sq";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MqYN+vMi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ACE4D2072C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2959A183C;
-	Thu, 21 May 2020 09:38:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2959A183C
+	by alsa0.perex.cz (Postfix) with ESMTPS id B359F1821;
+	Thu, 21 May 2020 13:30:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B359F1821
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590046783;
-	bh=q2ASjOdq4QP2I6jr8bdVZbhcU/sR9zuGYALdnUrrGcY=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1590060685;
+	bh=jcaWu+akgBksgemcnhImuWq+XQDwj7Yn5GhLPQnDb/M=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cRKlZQUyznKO2UjE4VRGYOcRZrtahT7iVcAqpBiFshaDgbfphN1cLz/mMqR8l9CC6
-	 2FkQ3G1ieYr5Wxsgq4nLaPEEGCUgeqoy/mdHkOAOPZHOVXyeAAA/1vZhqtUv3hvidS
-	 owIbxhIMIrubAvXPhY+4KIurQHPaYIrxE6OP1No8=
+	b=LGkX61SqQAgap/nbK6RLJruoJ3rTvpa/1krTvYbBUOU55Kx/3AqwHBxf/PbgCDn1w
+	 +2cUOnUepiZ1VkSUMcKdaCapvWPZSo9O5b8PEEHyw2MfnWYx4m+j0MrwYnhudFvrAz
+	 0WiNZrTJaSwL/yjCnHvmdhYCf7I39pDZIV5RZKZU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4C6FEF80274;
-	Thu, 21 May 2020 09:37:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2EE1FF801A3;
+	Thu, 21 May 2020 13:30:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 13D97F801A3; Thu, 21 May 2020 09:37:14 +0200 (CEST)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id D382FF801D8; Thu, 21 May 2020 13:30:32 +0200 (CEST)
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com
+ [IPv6:2607:f8b0:4864:20::744])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D8AC2F801A3
- for <alsa-devel@alsa-project.org>; Thu, 21 May 2020 09:37:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8AC2F801A3
-IronPort-SDR: OWKsmfzOxrZ8GcsxyXLc2Ke8OuszL0k0XEFeCZ+rYAGHl/Rl3piddO+8hpya+EvUki2ltK1WiB
- vCGfN4BwodHQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 May 2020 00:37:05 -0700
-IronPort-SDR: NWmtzfKW0SoS5+FFNmFBfTtft7eXZxDOAl6mqqaYM2MnI+0OpGqE0kPXrBQguRXJ4n/zoYbO6G
- jYt4SaYdaLWA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,417,1583222400"; d="scan'208";a="268548062"
-Received: from keyon-x299.sh.intel.com ([10.239.159.75])
- by orsmga006.jf.intel.com with ESMTP; 21 May 2020 00:37:02 -0700
-From: Keyon Jie <yang.jie@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 2/2] ASoC: topology: remove the redundant pass checks
-Date: Thu, 21 May 2020 15:48:47 +0800
-Message-Id: <20200521074847.71406-3-yang.jie@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200521074847.71406-1-yang.jie@linux.intel.com>
-References: <20200521074847.71406-1-yang.jie@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 973C3F80111
+ for <alsa-devel@alsa-project.org>; Thu, 21 May 2020 13:30:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 973C3F80111
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="MqYN+vMi"
+Received: by mail-qk1-x744.google.com with SMTP id f189so6812790qkd.5
+ for <alsa-devel@alsa-project.org>; Thu, 21 May 2020 04:30:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc:content-transfer-encoding;
+ bh=mVnGuA/c41po031/Zyo9z05iki6LpXCl3bw26UlV5Og=;
+ b=MqYN+vMiHTEaW4UwLRy16WRoYfu+LJ4pOncpItD4O1GRnxH8TmktN6T6b2PcHxyEwB
+ /Ls2IApWVfXgN0RNquNulhQ49MIzfMO2KbQlpew/gmesTLhSAFACIhd9NN5hvF8aTXrJ
+ 9dGZyhMELfyMK2fbiMTxbSKpZ8EVlDN75FSZjN4lYOI29EfHTi0l6te+3DGNqlishUcI
+ ufFCYzDFtCRCTDhyOG4tSbItgT3oIdpuWbG9YF8aGWnFAtPl3K8qizsCVOk3/weuXndt
+ nd8yUP/5mHGC7HDR1cjV9fJCWbl4EUH4bqfDeIq+Fhmmrdj99nMfB4lAH2i7rVf5TT9v
+ sLsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=mVnGuA/c41po031/Zyo9z05iki6LpXCl3bw26UlV5Og=;
+ b=FQsG4BJVoNuYrhD3fZwV0SWNGc2l2llY7rZgdwQfEzGuWeJ8ibwnRF9yKfJ7QudHor
+ OUCvdqtlJ4eb3aMNxlb+4zvmjqC8qisuYj9S28tquEJRGTxx+YYbf10YjVytFUpPuLVa
+ dqcwiLOyUj6az3ruFwYiCa3PeFxW2NNR3bz18UQfqaBPGAdsA8uBHUr/f5dnuIG9Ndcd
+ 5alUWFHBF4nDcxEDGN0x/Z3WqfIU3InvYXDRDL0ABBlQdOrsD4k3cpuAAbuX4JlY4KEI
+ wk0iRCpkRFuIilmlbEKniokNyLCzO3SzFM2ow8Y4X3bCbdrsjpZJFKTsd3QNQGXS/6X5
+ H2gg==
+X-Gm-Message-State: AOAM531fMhk3bdwcFR5DdBq0Rkw+v1pZ32mLVutbuQIMfK2YeH1CkVwi
+ o2c2wfkmimwNRWDuMKoC1rfF5FqAOVfsg0VuL0k=
+X-Google-Smtp-Source: ABdhPJyt/PrPu0HyLCBNIAlcBPVwQP3EdSaZpX3l0+ThMZQ3Nc11G0djVdAg3aM+jm8BukBsG/8Iq0VgME50WXdM3Aw=
+X-Received: by 2002:a37:a50d:: with SMTP id o13mr9327701qke.121.1590060626064; 
+ Thu, 21 May 2020 04:30:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: cezary.rojewski@intel.com, tiwai@suse.de,
- Keyon Jie <yang.jie@linux.intel.com>, pierre-louis.bossart@linux.intel.com,
- ranjani.sridharan@linux.intel.com, broonie@kernel.org
+References: <1589881301-4143-1-git-send-email-shengjiu.wang@nxp.com>
+ <0866cd8cdb0c22f0b2a6814c4dafa29202aad5f3.camel@pengutronix.de>
+ <CAA+D8APhHvA39wmCayeCsAEKmOJ0n7qOQiT1tZmFHr4+yASgTw@mail.gmail.com>
+ <53258cd99caaf1199036737f8fad6cc097939567.camel@pengutronix.de>
+ <CAA+D8APAMRwtVneqFsuBgAhozmQo3R0AQi0bVdUCQO4Af4xVfw@mail.gmail.com>
+ <20200520123850.GE4823@sirena.org.uk>
+In-Reply-To: <20200520123850.GE4823@sirena.org.uk>
+From: Shengjiu Wang <shengjiu.wang@gmail.com>
+Date: Thu, 21 May 2020 19:30:04 +0800
+Message-ID: <CAA+D8AOiVVi3B4dzU8r=rCMz=6w9R=wxBkzAQ=0=RAQLKCWy8Q@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: fsl: imx-pcm-dma: Don't request dma channel in probe
+To: Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Cc: Sumit Semwal <sumit.semwal@linaro.org>, linaro-mm-sig@lists.linaro.org,
+ Linux-ALSA <alsa-devel@alsa-project.org>, linuxppc-dev@lists.ozlabs.org,
+ linux-kernel <linux-kernel@vger.kernel.org>, Timur Tabi <timur@kernel.org>,
+ Xiubo Li <Xiubo.Lee@gmail.com>, shawnguo@kernel.org,
+ Shengjiu Wang <shengjiu.wang@nxp.com>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, dri-devel@lists.freedesktop.org,
+ Nicolin Chen <nicoleotsuka@gmail.com>, linux-imx@nxp.com,
+ kernel@pengutronix.de, linux-media@vger.kernel.org,
+ Fabio Estevam <festevam@gmail.com>, s.hauer@pengutronix.de,
+ linux-arm-kernel@lists.infradead.org, Lucas Stach <l.stach@pengutronix.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,130 +118,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-As we have check the 'pass' in the soc_elem_pass_load(), so no need to
-check it again in each specific elem_load function, at the same time,
-the tplg->pos will be reset to the next header base when the pass is
-mismatched, so the increasing of the tplg->pos in these cases made no
-sense. Here remove all of them.
+On Wed, May 20, 2020 at 8:38 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Wed, May 20, 2020 at 07:22:19PM +0800, Shengjiu Wang wrote:
+>
+> > I see some driver also request dma channel in open() or hw_params().
+> > how can they avoid the defer probe issue?
+> > for example=EF=BC=9A
+> > sound/arm/pxa2xx-pcm-lib.c
+> > sound/soc/sprd/sprd-pcm-dma.c
+>
+> Other drivers having problems means those drivers should be fixed, not
+> that we should copy the problems.  In the case of the PXA driver that's
+> very old code which predates deferred probe by I'd guess a decade.
 
-Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
----
- sound/soc/soc-topology.c | 46 ++--------------------------------------
- 1 file changed, 2 insertions(+), 44 deletions(-)
+Thanks.
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 70c0ff7ce13f..6f4269ffd84f 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -246,8 +246,8 @@ static inline void soc_control_err(struct soc_tplg *tplg,
- }
- 
- /* pass vendor data to component driver for processing */
--static int soc_tplg_vendor_load_(struct soc_tplg *tplg,
--	struct snd_soc_tplg_hdr *hdr)
-+static int soc_tplg_vendor_load(struct soc_tplg *tplg,
-+				struct snd_soc_tplg_hdr *hdr)
- {
- 	int ret = 0;
- 
-@@ -268,16 +268,6 @@ static int soc_tplg_vendor_load_(struct soc_tplg *tplg,
- 	return ret;
- }
- 
--/* pass vendor data to component driver for processing */
--static int soc_tplg_vendor_load(struct soc_tplg *tplg,
--	struct snd_soc_tplg_hdr *hdr)
--{
--	if (tplg->pass != SOC_TPLG_PASS_VENDOR)
--		return 0;
--
--	return soc_tplg_vendor_load_(tplg, hdr);
--}
--
- /* optionally pass new dynamic widget to component driver. This is mainly for
-  * external widgets where we can assign private data/ops */
- static int soc_tplg_widget_load(struct soc_tplg *tplg,
-@@ -1127,12 +1117,6 @@ static int soc_tplg_kcontrol_elems_load(struct soc_tplg *tplg,
- 	int ret;
- 	int i;
- 
--	if (tplg->pass != SOC_TPLG_PASS_MIXER) {
--		tplg->pos += le32_to_cpu(hdr->size) +
--			le32_to_cpu(hdr->payload_size);
--		return 0;
--	}
--
- 	dev_dbg(tplg->dev, "ASoC: adding %d kcontrols at 0x%lx\n", hdr->count,
- 		soc_tplg_get_offset(tplg));
- 
-@@ -1204,14 +1188,6 @@ static int soc_tplg_dapm_graph_elems_load(struct soc_tplg *tplg,
- 
- 	count = le32_to_cpu(hdr->count);
- 
--	if (tplg->pass != SOC_TPLG_PASS_GRAPH) {
--		tplg->pos +=
--			le32_to_cpu(hdr->size) +
--			le32_to_cpu(hdr->payload_size);
--
--		return 0;
--	}
--
- 	if (soc_tplg_check_elem_count(tplg,
- 		sizeof(struct snd_soc_tplg_dapm_graph_elem),
- 		count, le32_to_cpu(hdr->payload_size), "graph")) {
-@@ -1741,9 +1717,6 @@ static int soc_tplg_dapm_widget_elems_load(struct soc_tplg *tplg,
- 
- 	count = le32_to_cpu(hdr->count);
- 
--	if (tplg->pass != SOC_TPLG_PASS_WIDGET)
--		return 0;
--
- 	dev_dbg(tplg->dev, "ASoC: adding %d DAPM widgets\n", count);
- 
- 	for (i = 0; i < count; i++) {
-@@ -2101,9 +2074,6 @@ static int soc_tplg_pcm_elems_load(struct soc_tplg *tplg,
- 
- 	count = le32_to_cpu(hdr->count);
- 
--	if (tplg->pass != SOC_TPLG_PASS_PCM_DAI)
--		return 0;
--
- 	/* check the element size and count */
- 	pcm = (struct snd_soc_tplg_pcm *)tplg->pos;
- 	size = le32_to_cpu(pcm->size);
-@@ -2386,12 +2356,6 @@ static int soc_tplg_link_elems_load(struct soc_tplg *tplg,
- 
- 	count = le32_to_cpu(hdr->count);
- 
--	if (tplg->pass != SOC_TPLG_PASS_LINK) {
--		tplg->pos += le32_to_cpu(hdr->size) +
--			le32_to_cpu(hdr->payload_size);
--		return 0;
--	}
--
- 	/* check the element size and count */
- 	link = (struct snd_soc_tplg_link_config *)tplg->pos;
- 	size = le32_to_cpu(link->size);
-@@ -2528,9 +2492,6 @@ static int soc_tplg_dai_elems_load(struct soc_tplg *tplg,
- 
- 	count = le32_to_cpu(hdr->count);
- 
--	if (tplg->pass != SOC_TPLG_PASS_BE_DAI)
--		return 0;
--
- 	/* config the existing BE DAIs */
- 	for (i = 0; i < count; i++) {
- 		dai = (struct snd_soc_tplg_dai *)tplg->pos;
-@@ -2610,9 +2571,6 @@ static int soc_tplg_manifest_load(struct soc_tplg *tplg,
- 	bool abi_match;
- 	int ret = 0;
- 
--	if (tplg->pass != SOC_TPLG_PASS_MANIFEST)
--		return 0;
--
- 	manifest = (struct snd_soc_tplg_manifest *)tplg->pos;
- 
- 	/* check ABI version by size, create a new manifest if abi not match */
--- 
-2.25.1
+For the FE-BE case, do you have any suggestion for how fix it?
 
+With DMA1->ASRC->DMA2->ESAI case, the DMA1->ASRC->DMA2
+is in FE,  ESAI is in BE.  When ESAI drvier probe,  DMA3 channel is
+created with ESAI's "dma:tx" (DMA3 channel
+is not used in this FE-BE case).    When FE-BE startup, DMA2
+channel is created, it needs the ESAI's "dma:tx", so the warning
+comes out.
+
+best regards
+wang shengjiu
