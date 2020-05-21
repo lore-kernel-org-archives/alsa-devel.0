@@ -2,65 +2,93 @@ Return-Path: <SRS0=D4yB=7D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B1E4C433DF
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 May 2020 03:56:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC4BAC433DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 May 2020 04:38:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E0DDB20748
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 May 2020 03:56:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 330C220738
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 May 2020 04:38:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="K6Ors3xf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E0DDB20748
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="L5A68yXb";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="nxn0djuS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 330C220738
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3A2A01818;
-	Thu, 21 May 2020 05:55:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A2A01818
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7ADC217E1;
+	Thu, 21 May 2020 06:37:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7ADC217E1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590033360;
-	bh=yUBxHYXAK510PlRpdkL2Wp5mn95nwujzuy/XEwzcSJE=;
-	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=K6Ors3xf7bgWpWVRXIw4/VXIXawD9vGgeWXMMpRqXnNGP3Wnxs35zXQbyz8uGvyEo
-	 /F5MhA3qLP0fZbOWCkyoryaVK7yLPwQqcwQ9xFU4AE1WS0xN5ileFwVaSFBvxJxl8j
-	 4Lca3i/DSK+GHigjam4BQZJhyNpRuiI7aM9nMtEo=
+	s=default; t=1590035881;
+	bh=MA7haufr2rOvAnUOgYCt9oKAn9zrsqgUr5NKmHSkYiA=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=L5A68yXbEAm2lin3rLUWFWh4yVRasN53l7d+Bht54t5a1rhVG9NZ6ruLhRAOFW6Ci
+	 W0e3sWdWFKEpQDF/m1T76+WAUTBaLVi//ouXNZc8QMr5EnglY76YjM0rIxjwqc/d2/
+	 TOvBc2YfEU6bsJI7VA7aTY4OlhrhlqBpMXnfIt3o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BBCF6F80161;
-	Thu, 21 May 2020 05:55:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F31D9F801A3;
+	Thu, 21 May 2020 06:37:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E85C5F801D8; Thu, 21 May 2020 05:55:07 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id D3257F80161
- for <alsa-devel@alsa-project.org>; Thu, 21 May 2020 05:54:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3257F80161
-Date: 21 May 2020 12:54:56 +0900
-X-IronPort-AV: E=Sophos;i="5.73,416,1583161200"; d="scan'208";a="47634878"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 21 May 2020 12:54:56 +0900
-Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id AA6604181866;
- Thu, 21 May 2020 12:54:56 +0900 (JST)
-Message-ID: <87pnay3ptb.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH] ASoC: dt-bindings: simple-card: care missing address
- #address-cells
-User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+ id 1E36EF801D8; Thu, 21 May 2020 06:37:09 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 60E1FF80111
+ for <alsa-devel@alsa-project.org>; Thu, 21 May 2020 06:37:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60E1FF80111
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="nxn0djuS"
+Received: from localhost (unknown [106.200.226.100])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 39F3E206D4;
+ Thu, 21 May 2020 04:36:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1590035819;
+ bh=MA7haufr2rOvAnUOgYCt9oKAn9zrsqgUr5NKmHSkYiA=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=nxn0djuSvW5KFjPJ+JBsOrpo+bc5SYjBYZ+jiODEMYp2NZp8DstO4wfXYNrWAX53Z
+ /RExFCtZpbMhO79mpPuIetbBzA6IJCo3slD+bvcowFTp3VdMxRrEQ1bUfFrlO90+Zj
+ BhE342TjjZ1I1DYMtkH3H26ERD5mi4K0wj1Gx3mQ=
+Date: Thu, 21 May 2020 10:06:55 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: "Liao, Bard" <bard.liao@intel.com>
+Subject: Re: [PATCH 2/2] soundwire: intel: transition to 3 steps initialization
+Message-ID: <20200521043655.GA374218@vkoul-mobl.Dlink>
+References: <20200519191903.6557-1-yung-chuan.liao@linux.intel.com>
+ <20200519191903.6557-2-yung-chuan.liao@linux.intel.com>
+ <20200520135425.GX374218@vkoul-mobl.Dlink>
+ <DM6PR11MB4074165599273350FF7CA83EFFB70@DM6PR11MB4074.namprd11.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM6PR11MB4074165599273350FF7CA83EFFB70@DM6PR11MB4074.namprd11.prod.outlook.com>
+Cc: "pierre-louis.bossart@linux.intel.com"
+ <pierre-louis.bossart@linux.intel.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "tiwai@suse.de" <tiwai@suse.de>,
+ "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "ranjani.sridharan@linux.intel.com" <ranjani.sridharan@linux.intel.com>,
+ "hui.wang@canonical.com" <hui.wang@canonical.com>,
+ "broonie@kernel.org" <broonie@kernel.org>,
+ "srinivas.kandagatla@linaro.org" <srinivas.kandagatla@linaro.org>,
+ "jank@cadence.com" <jank@cadence.com>, "Lin,
+ Mengdong" <mengdong.lin@intel.com>, "Blauciak,
+ Slawomir" <slawomir.blauciak@intel.com>, "Kale,
+ Sanyog R" <sanyog.r.kale@intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ "rander.wang@linux.intel.com" <rander.wang@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,120 +104,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+On 21-05-20, 02:23, Liao, Bard wrote:
+> > -----Original Message-----
+> > From: Vinod Koul <vkoul@kernel.org>
+> > Sent: Wednesday, May 20, 2020 9:54 PM
+> > To: Bard Liao <yung-chuan.liao@linux.intel.com>
+> > Cc: alsa-devel@alsa-project.org; linux-kernel@vger.kernel.org; tiwai@suse.de;
+> > broonie@kernel.org; gregkh@linuxfoundation.org; jank@cadence.com;
+> > srinivas.kandagatla@linaro.org; rander.wang@linux.intel.com;
+> > ranjani.sridharan@linux.intel.com; hui.wang@canonical.com; pierre-
+> > louis.bossart@linux.intel.com; Kale, Sanyog R <sanyog.r.kale@intel.com>;
+> > Blauciak, Slawomir <slawomir.blauciak@intel.com>; Lin, Mengdong
+> > <mengdong.lin@intel.com>; Liao, Bard <bard.liao@intel.com>
+> > Subject: Re: [PATCH 2/2] soundwire: intel: transition to 3 steps initialization
+> > 
+> > On 20-05-20, 03:19, Bard Liao wrote:
+> > > From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> > >
+> > > Rather than a plain-vanilla init/exit, this patch provides 3 steps in
+> > > the initialization (ACPI scan, probe, startup) which makes it easier to
+> > > detect platform support for SoundWire, allocate required resources as
+> > > early as possible, and conversely help make the startup() callback
+> > > lighter-weight with only hardware register setup.
+> > 
+> > Okay but can you add details in changelog on what each step would do?
+> 
+> Sure. Will do.
+> 
+> > 
+> > > @@ -1134,25 +1142,15 @@ static int intel_probe(struct platform_device
+> > *pdev)
+> > >
+> > >  	intel_pdi_ch_update(sdw);
+> > >
+> > > -	/* Acquire IRQ */
+> > > -	ret = request_threaded_irq(sdw->link_res->irq,
+> > > -				   sdw_cdns_irq, sdw_cdns_thread,
+> > > -				   IRQF_SHARED, KBUILD_MODNAME, &sdw-
+> > >cdns);
+> > 
+> > This is removed here but not added anywhere else, do we have no irq
+> > after this patch?
+> 
+> We use a single irq for all Intel Audio DSP events and it will
+> be requested in the SOF driver.
 
-Current simple-card will get below error,
-because it doesn't care about #address-cells at some part.
+And how will the irq be propagated to sdw/cdns drivers here?
 
-	DTC     Documentation/devicetree/bindings/sound/simple-card.example.dt.yaml
-	Documentation/devicetree/bindings/sound/simple-card.example.dts:171.46-173.15: \
-		Warning (unit_address_vs_reg): /example-4/sound/simple-audio-card,cpu@0: \
-		node has a unit name, but no reg or ranges property
-	Documentation/devicetree/bindings/sound/simple-card.example.dts:175.37-177.15: \
-		Warning (unit_address_vs_reg): /example-4/sound/simple-audio-card,cpu@1: \
-		node has a unit name, but no reg or ranges property
-	...
-
-This patch fixup this issue.
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
----
- .../bindings/sound/simple-card.yaml           | 25 ++++++++++++++++++-
- 1 file changed, 24 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/sound/simple-card.yaml b/Documentation/devicetree/bindings/sound/simple-card.yaml
-index cb2bb5fac0e1..6c4c2c6d6d3c 100644
---- a/Documentation/devicetree/bindings/sound/simple-card.yaml
-+++ b/Documentation/devicetree/bindings/sound/simple-card.yaml
-@@ -208,6 +208,11 @@ patternProperties:
-       reg:
-         maxItems: 1
- 
-+      "#address-cells":
-+        const: 1
-+      "#size-cells":
-+        const: 0
-+
-       # common properties
-       frame-master:
-         $ref: "#/definitions/frame-master"
-@@ -288,7 +293,6 @@ examples:
- 
-         #address-cells = <1>;
-         #size-cells = <0>;
--
-         simple-audio-card,dai-link@0 {		/* I2S - HDMI */
-             reg = <0>;
-             format = "i2s";
-@@ -392,11 +396,15 @@ examples:
-         simple-audio-card,routing = "ak4642 Playback", "DAI0 Playback",
-                                     "ak4642 Playback", "DAI1 Playback";
- 
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-         dpcmcpu: simple-audio-card,cpu@0 {
-+            reg = <0>;
-             sound-dai = <&rcar_sound 0>;
-         };
- 
-         simple-audio-card,cpu@1 {
-+            reg = <1>;
-             sound-dai = <&rcar_sound 1>;
-         };
- 
-@@ -427,7 +435,12 @@ examples:
-             "pcm3168a Playback", "DAI3 Playback",
-             "pcm3168a Playback", "DAI4 Playback";
- 
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-         simple-audio-card,dai-link@0 {
-+            reg = <0>;
-+
-             format = "left_j";
-             bitclock-master = <&sndcpu0>;
-             frame-master = <&sndcpu0>;
-@@ -441,22 +454,30 @@ examples:
-         };
- 
-         simple-audio-card,dai-link@1 {
-+            reg = <1>;
-+
-             format = "i2s";
-             bitclock-master = <&sndcpu1>;
-             frame-master = <&sndcpu1>;
- 
-             convert-channels = <8>; /* TDM Split */
- 
-+            #address-cells = <1>;
-+            #size-cells = <0>;
-             sndcpu1: cpu@0 {
-+                reg = <0>;
-                 sound-dai = <&rcar_sound 1>;
-             };
-             cpu@1 {
-+                reg = <1>;
-                 sound-dai = <&rcar_sound 2>;
-             };
-             cpu@2 {
-+                reg = <2>;
-                 sound-dai = <&rcar_sound 3>;
-             };
-             cpu@3 {
-+                reg = <3>;
-                 sound-dai = <&rcar_sound 4>;
-             };
-             codec {
-@@ -468,6 +489,8 @@ examples:
-         };
- 
-         simple-audio-card,dai-link@2 {
-+            reg = <2>;
-+
-             format = "i2s";
-             bitclock-master = <&sndcpu2>;
-             frame-master = <&sndcpu2>;
 -- 
-2.17.1
-
+~Vinod
