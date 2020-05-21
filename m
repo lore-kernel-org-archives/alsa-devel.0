@@ -4,56 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0AAA6C433DF
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 May 2020 01:57:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DDC18C433DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 May 2020 01:58:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8D3C320709
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 May 2020 01:57:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 65ACA20709
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 May 2020 01:58:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ix1ITt6h"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8D3C320709
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AJe91qpm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 65ACA20709
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B90A51816;
-	Thu, 21 May 2020 03:56:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B90A51816
+	by alsa0.perex.cz (Postfix) with ESMTPS id B21911824;
+	Thu, 21 May 2020 03:57:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B21911824
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590026263;
-	bh=CgHygf5xEXrtdhilIZXmP9Q5O/UAmD1v3VOJzIrmYOI=;
+	s=default; t=1590026311;
+	bh=3xNZD0U8xqRVd1KHIAJQPqFqTOHTNh3blaFhtL0Wgz0=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ix1ITt6hp9swOL2ZT0RyrVsQ3pWXqz4W+GvPhw1yIDN5AqfV+dfxYDlusdDVFUWQu
-	 tEKrD8e71riQOxCdTglM3QK+g9tKU8BAbQtwkpDmpW0b9Kh7Z3LdXJnchJM7tweRvM
-	 pQBlpsLKRMUaOIj4MmZASG3I0F75Bn9+42r4kk8s=
+	b=AJe91qpmaOF7ArGfJc7tzP7tr6Rg6qVxX8fCGrFIZRIxvqpML+Im9hcYjVFr5/tHp
+	 ZOcAynscokpCHaDbD3sWk6ouR/Xety/rMolIRBX6MM4N0eFg7eMI3MKFCkD0PUSXlF
+	 SOvomNVY2qfQBuCqYmcaniRLX0YM0OxWEY4LVEZU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 71369F80229;
-	Thu, 21 May 2020 03:56:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D3147F80111;
+	Thu, 21 May 2020 03:57:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 361A3F80256; Thu, 21 May 2020 03:56:29 +0200 (CEST)
+ id 06963F80259; Thu, 21 May 2020 03:56:58 +0200 (CEST)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id CC083F800E1
- for <alsa-devel@alsa-project.org>; Thu, 21 May 2020 03:56:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC083F800E1
-Date: 21 May 2020 10:56:21 +0900
-X-IronPort-AV: E=Sophos;i="5.73,416,1583161200"; d="scan'208";a="47622466"
+ by alsa1.perex.cz (Postfix) with ESMTP id 002C4F80111
+ for <alsa-devel@alsa-project.org>; Thu, 21 May 2020 03:56:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 002C4F80111
+Date: 21 May 2020 10:56:50 +0900
+X-IronPort-AV: E=Sophos;i="5.73,416,1583161200"; d="scan'208";a="47622510"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 21 May 2020 10:56:21 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 21 May 2020 10:56:50 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 99EAF400C448;
- Thu, 21 May 2020 10:56:21 +0900 (JST)
-Message-ID: <87367u59ve.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id C5034400C448;
+ Thu, 21 May 2020 10:56:50 +0900 (JST)
+Message-ID: <871rne59ul.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v2 1/7] ASoC: add soc-link.c
+Subject: [PATCH v2 2/7] ASoC: soc-link: move soc_rtd_xxx()
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <874ksa59wc.wl-kuninori.morimoto.gx@renesas.com>
@@ -79,125 +78,286 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Current ALSA SoC has many dai_link->xxx() functions.
-But, it is implemented randomly at random place.
-
-This patch creats new soc-link.c and collect dai_link related
-operation into it.
+dai_link related function should be implemented at
+soc-link.c.
+This patch moves soc-pcm soc_rtd_xxx()
+to soc-link as snd_soc_link_xxx()
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- include/sound/soc-link.h | 13 +++++++++++++
- sound/soc/Makefile       |  2 +-
- sound/soc/soc-core.c     | 12 ++++--------
- sound/soc/soc-link.c     | 36 ++++++++++++++++++++++++++++++++++++
- 4 files changed, 54 insertions(+), 9 deletions(-)
- create mode 100644 include/sound/soc-link.h
- create mode 100644 sound/soc/soc-link.c
+ include/sound/soc-link.h | 13 ++++++
+ sound/soc/soc-link.c     | 65 +++++++++++++++++++++++++++++
+ sound/soc/soc-pcm.c      | 88 ++++++----------------------------------
+ 3 files changed, 91 insertions(+), 75 deletions(-)
 
 diff --git a/include/sound/soc-link.h b/include/sound/soc-link.h
-new file mode 100644
-index 000000000000..7fc5cead5942
---- /dev/null
+index 7fc5cead5942..689aa93be78e 100644
+--- a/include/sound/soc-link.h
 +++ b/include/sound/soc-link.h
-@@ -0,0 +1,13 @@
-+/* SPDX-License-Identifier: GPL-2.0
-+ *
-+ * soc-link.h
-+ *
-+ * Copyright (C) 2019 Renesas Electronics Corp.
-+ * Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-+ */
-+#ifndef __SOC_LINK_H
-+#define __SOC_LINK_H
-+
-+int snd_soc_link_init(struct snd_soc_pcm_runtime *rtd);
-+
-+#endif /* __SOC_LINK_H */
-diff --git a/sound/soc/Makefile b/sound/soc/Makefile
-index 861a21b79484..70a5f19ea3a1 100644
---- a/sound/soc/Makefile
-+++ b/sound/soc/Makefile
-@@ -1,6 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- snd-soc-core-objs := soc-core.o soc-dapm.o soc-jack.o soc-utils.o soc-dai.o soc-component.o
--snd-soc-core-objs += soc-pcm.o soc-io.o soc-devres.o soc-ops.o
-+snd-soc-core-objs += soc-pcm.o soc-io.o soc-devres.o soc-ops.o soc-link.o
- snd-soc-core-$(CONFIG_SND_SOC_COMPRESS) += soc-compress.o
+@@ -9,5 +9,18 @@
+ #define __SOC_LINK_H
  
- ifneq ($(CONFIG_SND_SOC_TOPOLOGY),)
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index e697258d2ffc..955e175643d7 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -38,6 +38,7 @@
- #include <sound/soc.h>
- #include <sound/soc-dpcm.h>
- #include <sound/soc-topology.h>
-+#include <sound/soc-link.h>
- #include <sound/initval.h>
+ int snd_soc_link_init(struct snd_soc_pcm_runtime *rtd);
++int snd_soc_link_startup(struct snd_soc_pcm_runtime *rtd,
++			 struct snd_pcm_substream *substream);
++void snd_soc_link_shutdown(struct snd_soc_pcm_runtime *rtd,
++			   struct snd_pcm_substream *substream);
++int snd_soc_link_prepare(struct snd_soc_pcm_runtime *rtd,
++			 struct snd_pcm_substream *substream);
++int snd_soc_link_hw_params(struct snd_soc_pcm_runtime *rtd,
++			   struct snd_pcm_substream *substream,
++			   struct snd_pcm_hw_params *params);
++void snd_soc_link_hw_free(struct snd_soc_pcm_runtime *rtd,
++			  struct snd_pcm_substream *substream);
++int snd_soc_link_trigger(struct snd_soc_pcm_runtime *rtd,
++			 struct snd_pcm_substream *substream, int cmd);
  
- #define CREATE_TRACE_POINTS
-@@ -1049,14 +1050,9 @@ static int soc_init_pcm_runtime(struct snd_soc_card *card,
- 	rtd->pmdown_time = pmdown_time;
- 
- 	/* do machine specific initialization */
--	if (dai_link->init) {
--		ret = dai_link->init(rtd);
--		if (ret < 0) {
--			dev_err(card->dev, "ASoC: failed to init %s: %d\n",
--				dai_link->name, ret);
--			return ret;
--		}
--	}
-+	ret = snd_soc_link_init(rtd);
-+	if (ret < 0)
-+		return ret;
- 
- 	if (dai_link->dai_fmt) {
- 		ret = snd_soc_runtime_set_dai_fmt(rtd, dai_link->dai_fmt);
+ #endif /* __SOC_LINK_H */
 diff --git a/sound/soc/soc-link.c b/sound/soc/soc-link.c
-new file mode 100644
-index 000000000000..4bdd8d0dd93a
---- /dev/null
+index 4bdd8d0dd93a..be6a6ecfc9dc 100644
+--- a/sound/soc/soc-link.c
 +++ b/sound/soc/soc-link.c
-@@ -0,0 +1,36 @@
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// soc-link.c
-+//
-+// Copyright (C) 2019 Renesas Electronics Corp.
-+// Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-+//
-+#include <sound/soc.h>
+@@ -34,3 +34,68 @@ int snd_soc_link_init(struct snd_soc_pcm_runtime *rtd)
+ 
+ 	return soc_link_ret(rtd, ret);
+ }
 +
-+#define soc_link_ret(rtd, ret) _soc_link_ret(rtd, __func__, ret)
-+static inline int _soc_link_ret(struct snd_soc_pcm_runtime *rtd,
-+				const char *func, int ret)
-+{
-+	switch (ret) {
-+	case -EPROBE_DEFER:
-+	case -ENOTSUPP:
-+	case 0:
-+		break;
-+	default:
-+		dev_err(rtd->dev,
-+			"ASoC: error at %s on %s: %d\n",
-+			func, rtd->dai_link->name, ret);
-+	}
-+
-+	return ret;
-+}
-+
-+int snd_soc_link_init(struct snd_soc_pcm_runtime *rtd)
++int snd_soc_link_startup(struct snd_soc_pcm_runtime *rtd,
++			 struct snd_pcm_substream *substream)
 +{
 +	int ret = 0;
 +
-+	if (rtd->dai_link->init)
-+		ret = rtd->dai_link->init(rtd);
++	if (rtd->dai_link->ops &&
++	    rtd->dai_link->ops->startup)
++		ret = rtd->dai_link->ops->startup(substream);
 +
 +	return soc_link_ret(rtd, ret);
 +}
++
++void snd_soc_link_shutdown(struct snd_soc_pcm_runtime *rtd,
++			   struct snd_pcm_substream *substream)
++{
++	if (rtd->dai_link->ops &&
++	    rtd->dai_link->ops->shutdown)
++		rtd->dai_link->ops->shutdown(substream);
++}
++
++int snd_soc_link_prepare(struct snd_soc_pcm_runtime *rtd,
++			 struct snd_pcm_substream *substream)
++{
++	int ret = 0;
++
++	if (rtd->dai_link->ops &&
++	    rtd->dai_link->ops->prepare)
++		ret = rtd->dai_link->ops->prepare(substream);
++
++	return soc_link_ret(rtd, ret);
++}
++
++int snd_soc_link_hw_params(struct snd_soc_pcm_runtime *rtd,
++			   struct snd_pcm_substream *substream,
++			   struct snd_pcm_hw_params *params)
++{
++	int ret = 0;
++
++	if (rtd->dai_link->ops &&
++	    rtd->dai_link->ops->hw_params)
++		ret = rtd->dai_link->ops->hw_params(substream, params);
++
++	return soc_link_ret(rtd, ret);
++}
++
++void snd_soc_link_hw_free(struct snd_soc_pcm_runtime *rtd,
++			  struct snd_pcm_substream *substream)
++{
++	if (rtd->dai_link->ops &&
++	    rtd->dai_link->ops->hw_free)
++		rtd->dai_link->ops->hw_free(substream);
++}
++
++int snd_soc_link_trigger(struct snd_soc_pcm_runtime *rtd,
++			 struct snd_pcm_substream *substream, int cmd)
++{
++	int ret = 0;
++
++	if (rtd->dai_link->ops &&
++	    rtd->dai_link->ops->trigger)
++		ret = rtd->dai_link->ops->trigger(substream, cmd);
++
++	return soc_link_ret(rtd, ret);
++}
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index b7899da4217e..f79e2305dcc9 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -24,6 +24,7 @@
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+ #include <sound/soc-dpcm.h>
++#include <sound/soc-link.h>
+ #include <sound/initval.h>
+ 
+ #define DPCM_MAX_BE_USERS	8
+@@ -202,60 +203,6 @@ static inline void dpcm_remove_debugfs_state(struct snd_soc_dpcm *dpcm)
+ }
+ #endif
+ 
+-static int soc_rtd_startup(struct snd_soc_pcm_runtime *rtd,
+-			   struct snd_pcm_substream *substream)
+-{
+-	if (rtd->dai_link->ops &&
+-	    rtd->dai_link->ops->startup)
+-		return rtd->dai_link->ops->startup(substream);
+-	return 0;
+-}
+-
+-static void soc_rtd_shutdown(struct snd_soc_pcm_runtime *rtd,
+-			     struct snd_pcm_substream *substream)
+-{
+-	if (rtd->dai_link->ops &&
+-	    rtd->dai_link->ops->shutdown)
+-		rtd->dai_link->ops->shutdown(substream);
+-}
+-
+-static int soc_rtd_prepare(struct snd_soc_pcm_runtime *rtd,
+-			   struct snd_pcm_substream *substream)
+-{
+-	if (rtd->dai_link->ops &&
+-	    rtd->dai_link->ops->prepare)
+-		return rtd->dai_link->ops->prepare(substream);
+-	return 0;
+-}
+-
+-static int soc_rtd_hw_params(struct snd_soc_pcm_runtime *rtd,
+-			     struct snd_pcm_substream *substream,
+-			     struct snd_pcm_hw_params *params)
+-{
+-	if (rtd->dai_link->ops &&
+-	    rtd->dai_link->ops->hw_params)
+-		return rtd->dai_link->ops->hw_params(substream, params);
+-	return 0;
+-}
+-
+-static void soc_rtd_hw_free(struct snd_soc_pcm_runtime *rtd,
+-			    struct snd_pcm_substream *substream)
+-{
+-	if (rtd->dai_link->ops &&
+-	    rtd->dai_link->ops->hw_free)
+-		rtd->dai_link->ops->hw_free(substream);
+-}
+-
+-static int soc_rtd_trigger(struct snd_soc_pcm_runtime *rtd,
+-			   struct snd_pcm_substream *substream,
+-			   int cmd)
+-{
+-	if (rtd->dai_link->ops &&
+-	    rtd->dai_link->ops->trigger)
+-		return rtd->dai_link->ops->trigger(substream, cmd);
+-	return 0;
+-}
+-
+ /**
+  * snd_soc_runtime_action() - Increment/Decrement active count for
+  * PCM runtime components
+@@ -736,7 +683,7 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
+ 	for_each_rtd_dais(rtd, i, dai)
+ 		snd_soc_dai_shutdown(dai, substream);
+ 
+-	soc_rtd_shutdown(rtd, substream);
++	snd_soc_link_shutdown(rtd, substream);
+ 
+ 	soc_pcm_components_close(substream);
+ 
+@@ -783,12 +730,9 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 	if (ret < 0)
+ 		goto component_err;
+ 
+-	ret = soc_rtd_startup(rtd, substream);
+-	if (ret < 0) {
+-		pr_err("ASoC: %s startup failed: %d\n",
+-		       rtd->dai_link->name, ret);
++	ret = snd_soc_link_startup(substream);
++	if (ret < 0)
+ 		goto rtd_startup_err;
+-	}
+ 
+ 	/* startup the audio subsystem */
+ 	for_each_rtd_dais(rtd, i, dai) {
+@@ -870,7 +814,7 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 	for_each_rtd_dais(rtd, i, dai)
+ 		snd_soc_dai_shutdown(dai, substream);
+ 
+-	soc_rtd_shutdown(rtd, substream);
++	snd_soc_link_shutdown(rtd, substream);
+ rtd_startup_err:
+ 	soc_pcm_components_close(substream);
+ component_err:
+@@ -912,12 +856,9 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
+ 
+ 	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
+ 
+-	ret = soc_rtd_prepare(rtd, substream);
+-	if (ret < 0) {
+-		dev_err(rtd->card->dev,
+-			"ASoC: machine prepare error: %d\n", ret);
++	ret = snd_soc_link_prepare(substream);
++	if (ret < 0)
+ 		goto out;
+-	}
+ 
+ 	for_each_rtd_components(rtd, i, component) {
+ 		ret = snd_soc_component_prepare(component, substream);
+@@ -1002,12 +943,9 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	if (ret)
+ 		goto out;
+ 
+-	ret = soc_rtd_hw_params(rtd, substream, params);
+-	if (ret < 0) {
+-		dev_err(rtd->card->dev,
+-			"ASoC: machine hw_params failed: %d\n", ret);
++	ret = snd_soc_link_hw_params(substream, params);
++	if (ret < 0)
+ 		goto out;
+-	}
+ 
+ 	for_each_rtd_codec_dais(rtd, i, codec_dai) {
+ 		struct snd_pcm_hw_params codec_params;
+@@ -1117,7 +1055,7 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		codec_dai->rate = 0;
+ 	}
+ 
+-	soc_rtd_hw_free(rtd, substream);
++	snd_soc_link_hw_free(rtd, substream);
+ 
+ 	mutex_unlock(&rtd->card->pcm_mutex);
+ 	return ret;
+@@ -1149,7 +1087,7 @@ static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
+ 	}
+ 
+ 	/* free any machine hw params */
+-	soc_rtd_hw_free(rtd, substream);
++	snd_soc_link_hw_free(rtd, substream);
+ 
+ 	/* free any component resources */
+ 	soc_pcm_components_hw_free(substream, NULL);
+@@ -1172,7 +1110,7 @@ static int soc_pcm_trigger_start(struct snd_pcm_substream *substream, int cmd)
+ 	struct snd_soc_component *component;
+ 	int i, ret;
+ 
+-	ret = soc_rtd_trigger(rtd, substream, cmd);
++	ret = snd_soc_link_trigger(rtd, substream, cmd);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -1201,7 +1139,7 @@ static int soc_pcm_trigger_stop(struct snd_pcm_substream *substream, int cmd)
+ 			return ret;
+ 	}
+ 
+-	ret = soc_rtd_trigger(rtd, substream, cmd);
++	ret = snd_soc_link_trigger(rtd, substream, cmd);
+ 	if (ret < 0)
+ 		return ret;
+ 
 -- 
 2.17.1
 
