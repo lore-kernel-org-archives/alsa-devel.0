@@ -1,67 +1,62 @@
-Return-Path: <SRS0=D4yB=7D=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=jkt5=7E=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BBFE1C433DF
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 May 2020 23:18:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53BDCC433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 May 2020 00:14:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3A545208A9
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 May 2020 23:18:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B8071206BE
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 May 2020 00:14:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FshcpKU8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3A545208A9
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QsYC8kI9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B8071206BE
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7214B184D;
-	Fri, 22 May 2020 01:17:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7214B184D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0BC9B1850;
+	Fri, 22 May 2020 02:13:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0BC9B1850
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590103119;
-	bh=/K2loy5ia0KFqn5mGifXGUdqJkAQovGVeluOyFxisKA=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=FshcpKU8R3faoaoQBeYRUTH9Udvqv5veR9qsIVzK7eOB75JE2+f3LFwvLJnbjFd/5
-	 lb/o7W9ovB6QZLvJpnJogibof0NNtzzYohgXgpXhani4Fwbttt/ndxWmx9H46JM17/
-	 yZLJN0Er7GhGUmGL21XA1LeMcRwtj8/SqYqiv6Pc=
+	s=default; t=1590106441;
+	bh=ukGnkq0kaLj8j30KC6YVuBIe7D7UXUxWKaU/GkSgFWs=;
+	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=QsYC8kI9u/rF/JVhuoQf1pEJ3B7oGEDYBK2iGc3c61rEL5v/oHNS2BYVDpdldpeb8
+	 g0CyXDuoEBt/HFxn8eP6Oyy5cQvNWrOSdizLWy50kqOWT2f9uhYvfiF+GjZ9msKors
+	 4bHFc+C4+yqVqcrGH2D42xSsiB4b4kU2qIIDK2zw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F23E2F801A3;
-	Fri, 22 May 2020 01:17:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 93B9EF80111;
+	Fri, 22 May 2020 02:13:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0F48FF801D8; Fri, 22 May 2020 01:17:47 +0200 (CEST)
+ id 2BEC8F801D8; Fri, 22 May 2020 02:13:09 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 9B0AFF800E1
- for <alsa-devel@alsa-project.org>; Fri, 22 May 2020 01:17:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B0AFF800E1
-Date: 22 May 2020 08:17:34 +0900
-X-IronPort-AV: E=Sophos;i="5.73,419,1583161200"; d="scan'208";a="47497287"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 22 May 2020 08:17:34 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id CEE72F80111
+ for <alsa-devel@alsa-project.org>; Fri, 22 May 2020 02:13:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CEE72F80111
+Date: 22 May 2020 09:13:00 +0900
+X-IronPort-AV: E=Sophos;i="5.73,419,1583161200"; d="scan'208";a="47501800"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 22 May 2020 09:13:00 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id EA12B412B19B;
- Fri, 22 May 2020 08:17:33 +0900 (JST)
-Message-ID: <87o8qg514i.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id A29D2400A0FE;
+ Fri, 22 May 2020 09:13:00 +0900 (JST)
+Message-ID: <87lflk4yk3.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: Re: [PATCH v2 1/7] ASoC: add soc-link.c
-In-Reply-To: <51622f63fdde93142e5df1867b8fd0a3676654db.camel@linux.intel.com>
-References: <874ksa59wc.wl-kuninori.morimoto.gx@renesas.com>
- <87367u59ve.wl-kuninori.morimoto.gx@renesas.com>
- <51622f63fdde93142e5df1867b8fd0a3676654db.camel@linux.intel.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: [PATCH v3 0/7] ASoC: add soc-link
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,28 +73,57 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Ranjani
+Hi Mark
 
-Thank you for the review
+Current ALSA SoC is handling dai_link related operation,
+but it is implmemented directly without using function/macro,
+and at random place.
 
-> > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> > 
-> > Current ALSA SoC has many dai_link->xxx() functions.
-> > But, it is implemented randomly at random place.
-> > 
-> > This patch creats new soc-link.c and collect dai_link related
-> > operation into it.
-> > 
-> > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> > ---
-(snip)
-> > +#include <sound/soc.h>
-> Morimoto-san,
-> 
-> Dont we also need to include soc-link.h in soc-link.c?
+This v3 patch-set creates new snd_soc_link_xxx() functions
+which handles dai_link related operation,
+and implmement these at new soc-link.c.
 
-Ah, Yes, indeed, Thanks.
-Will fix it in v3
+v2 -> v3
+
+	- add missing #include <sound/soc-link.h> in soc-link.c
+
+v1 -> v2
+	- #include <sound/soc-link.h> is added on each c source file
+	  instead of soc.h
+	- not have extra error message after snd_soc_link_xxx(),
+	  because it already indicate it via snc_link_ret()
+	- snd_soc_link_compr_xxx() doesn't have rtd parameter,
+	  because it can be created from cstream
+
+Link: https://lore.kernel.org/r/874ksa59wc.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/877dx868op.wl-kuninori.morimoto.gx@renesas.com
+
+Kuninori Morimoto (7):
+  ASoC: add soc-link.c
+  ASoC: soc-link: move soc_rtd_xxx()
+  ASoC: soc-link: remove unneeded parameter from snd_soc_link_xxx()
+  ASoC: soc-link: add snd_soc_link_be_hw_params_fixup()
+  ASoC: soc-link: add snd_soc_link_compr_startup()
+  ASoC: soc-link: add snd_soc_link_compr_shutdown()
+  ASoC: soc-link: add snd_soc_link_compr_set_params()
+
+ include/sound/soc-link.h |  27 +++++++
+ sound/soc/Makefile       |   2 +-
+ sound/soc/soc-compress.c |  46 ++++--------
+ sound/soc/soc-core.c     |  18 ++---
+ sound/soc/soc-dai.c      |   9 ++-
+ sound/soc/soc-link.c     | 150 +++++++++++++++++++++++++++++++++++++++
+ sound/soc/soc-pcm.c      |  86 ++++------------------
+ 7 files changed, 219 insertions(+), 119 deletions(-)
+ create mode 100644 include/sound/soc-link.h
+ create mode 100644 sound/soc/soc-link.c
+
+-- 
+2.17.1
+
+
+
+
 
 Thank you for your help !!
 
