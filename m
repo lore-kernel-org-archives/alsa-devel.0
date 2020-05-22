@@ -2,124 +2,94 @@ Return-Path: <SRS0=YV0t=7H=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD78AC433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 May 2020 09:28:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A2894C433E1
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 May 2020 09:29:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6AF0E20787
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 May 2020 09:28:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 32BA52071A
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 May 2020 09:29:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KzsR87nD";
-	dkim=pass (1024-bit key) header.d=northeastern.edu header.i=@northeastern.edu header.b="inG1LE7v"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6AF0E20787
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=northeastern.edu
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kWbCZxp5";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E0yQyxpL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 32BA52071A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BE2BA1658;
-	Mon, 25 May 2020 11:27:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE2BA1658
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9B39D1721;
+	Mon, 25 May 2020 11:28:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B39D1721
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590398920;
-	bh=mLACu41ixPjhiVnnexzcUkc2jt1s1ANaVQMbqYSVQQ8=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=KzsR87nDNcCKHkctlmnTfcRQ90KCnrC9GZSpLqlnsi2OluGeW0E/VPNQa3NEKw9Y5
-	 82jJut3f77nLiI4xY9W2GE0n3nlZ8tXZvrQZydUiJqd+JiuxqSx55GmXdy9s5rYaGp
-	 TNRrJPDS/ATb0Hr+yMifMKNPZQQpBdZ7sIqrd8XM=
+	s=default; t=1590398964;
+	bh=awnFbT9PDjr32bGjeSJTX5LFwGvS+qaxOdB2NDN3cFU=;
+	h=References:In-Reply-To:From:Date:Subject:To:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=kWbCZxp5EWme0lTZhCHCIyqB+3BI3ATGmykA7VSdt5RvnPZ3dBj7dXXtBgSp8Of26
+	 UD7KONgW7yd8YxeP1FLQYGB2YTC2kEm0kENj0WQLsHA6jGT3Ip/st2Lh18ZzZCPuIZ
+	 GbcrhQ5Vyq6wsCohclIq3HNR38kh+p5IBhC/Qhz8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4A9E7F802A0;
-	Mon, 25 May 2020 11:25:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 92D45F802A8;
+	Mon, 25 May 2020 11:25:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F01FCF801D8; Fri, 22 May 2020 01:32:13 +0200 (CEST)
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com
- (mail-dm6nam10on2072d.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:7e88::72d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 61142F801F9; Fri, 22 May 2020 11:07:34 +0200 (CEST)
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com
+ [IPv6:2607:f8b0:4864:20::e41])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 02009F80161
- for <alsa-devel@alsa-project.org>; Fri, 22 May 2020 01:32:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02009F80161
+ by alsa1.perex.cz (Postfix) with ESMTPS id E0DECF80111
+ for <alsa-devel@alsa-project.org>; Fri, 22 May 2020 11:07:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0DECF80111
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=northeastern.edu header.i=@northeastern.edu
- header.b="inG1LE7v"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iYDvt8UcXZPAfXRmj98fd9tDi7FA4ZnSJW0e1/+7cu2hmZsiiKt8SDBkE+1v8Y6Wbq+hVzQDLQ8Iz0RCcY1rt6XaYsZi69BxFnX8lz8SXXGrhQHDQKcaH5jkPOTHkh4rlvYy0/qXcqjh6+i6IFn0mLO2QsV1j1Vxvpz4SOfdnJph/V6Yu/zKU6/yJu2a5TIIuXMuLrk2tPn/z8V4SZz2nkt9SxUITJVhhm1Y6Uoq/WbA7YyqiHcpd3nAM36NLbZUbxLA2NRZV3+ioORLoc4Rn870Df81Xt2VXB8BNiLZ0Nd8OMGuAGX40hP658Td571X63XCsUEMIcWbwZuQVnJajw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mLACu41ixPjhiVnnexzcUkc2jt1s1ANaVQMbqYSVQQ8=;
- b=Eu9ZPP/hbYMbEbTWgqx40lqf6o0ZgBXN/PiqQiQTibwlF7M/wn4abbIOwQaD8MRWkU2a2AVPKkcIfctFfX/Ml1tyUaHkRnCaaxCBrgG3+rRRrOc/xVyaZyune64AjpQ77WLuOixeXxtiYb8Jh8NuU2RhQGsVBicfG9uGR9pD9h4fao3eIiKa5GF1qAMEebQrfPqFnHygb3pQeo+G4Hoi92MZX9+EPhvikXHIkGfCt9sMXEyrVZNcF1GyBmGybinBaw1Z8ix5oSfjUQeCZ3eZ+1mPvGqo0aSDhQSQi6BZizpt7ZQr99zGhnOmUyx9BvNje5ZZYsuG3LluS8KShkeBPw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=northeastern.edu; dmarc=pass action=none
- header.from=northeastern.edu; dkim=pass header.d=northeastern.edu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=northeastern.edu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mLACu41ixPjhiVnnexzcUkc2jt1s1ANaVQMbqYSVQQ8=;
- b=inG1LE7v0+nVu8Q5b71RUZOL8z7kSdVYnTzlGKNmf06VS+rCsWOKKrKe8AXHhK2elZClCH90zdcY6CoGIRHTQw7I5vDNYyzk1M7rDfB/IZihfBrT5KY/eCRoJsVwDf3hXyIDw7Wj2mCZOVHMTR4DIs0f/Hnv3p5xQGdIpP/Z7JU=
-Received: from BL0PR06MB4548.namprd06.prod.outlook.com (2603:10b6:208:56::26)
- by BL0PR06MB5092.namprd06.prod.outlook.com (2603:10b6:208:68::15)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.24; Thu, 21 May
- 2020 23:32:00 +0000
-Received: from BL0PR06MB4548.namprd06.prod.outlook.com
- ([fe80::fd87:3891:70a2:bc5d]) by BL0PR06MB4548.namprd06.prod.outlook.com
- ([fe80::fd87:3891:70a2:bc5d%3]) with mapi id 15.20.3021.024; Thu, 21 May 2020
- 23:32:00 +0000
-From: Changming Liu <liu.changm@northeastern.edu>
-To: "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>
-Subject: [Bug Report]Sound: sound/core/hwdep.c undefined result by left
- shifting 1 by 31 
-Thread-Topic: [Bug Report]Sound: sound/core/hwdep.c undefined result by left
- shifting 1 by 31 
-Thread-Index: AdYvxyMM7rMGCavGQk29qC9H1Ig8+A==
-Date: Thu, 21 May 2020 23:32:00 +0000
-Message-ID: <BL0PR06MB4548066F35C44C55459B3F60E5B70@BL0PR06MB4548.namprd06.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: perex.cz; dkim=none (message not signed)
- header.d=none;perex.cz; dmarc=none action=none header.from=northeastern.edu;
-x-originating-ip: [128.227.216.118]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 5da83242-8bef-49ed-3629-08d7fddf2945
-x-ms-traffictypediagnostic: BL0PR06MB5092:
-x-ld-processed: a8eec281-aaa3-4dae-ac9b-9a398b9215e7,ExtFwd
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BL0PR06MB5092F5C465E927E652C0F186E5B70@BL0PR06MB5092.namprd06.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-forefront-prvs: 041032FF37
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: PiF+mt2zGjQuhvRVEKfLrg8Yqt4CoW7EYZREUVGcIKKhpsOZ231PmhPUndCS/PM9iB6pn3tsx7gYUcoRRLLPA2sgDLsMKIe2ygQUYTdAh0mW9bMfoccRlKNVBXURQdAYs3y7X6TT69SPepHJ+OFgn0S53R9CIZW8CvAe/zCWBqqus7Qi5fj+DcziiA8FqVvm9cwr00BNgrtNCz/jiAInWKLcPTaT1a6anNtAVqKAvVzjsD55jS7Qsyeq4TmeS+zoYV+auyPrSYPJCYby+5lFcMpIYxMMn0nDqXZIzWSGIFvvFCP8FhWh3R7GdXJWGmMT
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:BL0PR06MB4548.namprd06.prod.outlook.com; PTR:; CAT:NONE;
- SFTY:;
- SFS:(4636009)(376002)(366004)(346002)(396003)(136003)(39860400002)(71200400001)(9686003)(55016002)(66476007)(66946007)(186003)(76116006)(2906002)(478600001)(4744005)(8676002)(66446008)(8936002)(64756008)(66556008)(5660300002)(6506007)(316002)(786003)(75432002)(7696005)(4743002)(33656002)(110136005)(4326008)(54906003)(26005)(86362001)(52536014);
- DIR:OUT; SFP:1102; 
-x-ms-exchange-antispam-messagedata: zZe3m/bEH4GhbC4xNIpf7ObBVD3x2gm2jXSRhps0IVMVCJIYT7DRsWdPcGTHi2XaSHTRmsinkBysfn8LrPFctDdua8I7aVv4yApU3kWPFSUCgTSiYVetNzFdLLxUVAyZCJa5oPEhfI3LuEQtZ4LMr/43hnbLaxUarC68rQjM4vQEO+KWnWrJdUuhyySMLQRrlDsyYKvp1sDhxTjblEToic7QuF6LX5Sk8+wPZ7kzU4jIL4JovrqVB3mEHgVMzGZyriFiTt/yU9yHyQ7uRdambXxqisYLjrUMHM8Dcn4UTKUzhx3LHOe/9W25c9TN4uKIpTzYmiBUnIOe6zhYJ0moOZaJmRo+3De4ZD5OWmNWtMmHicjBim+3IN9ML3cWtvjV3J5kN9iRnSpu0e974y7bM/ZY2nDCDPWthO3RjrBTdW3rikAZzqaK09ZacIOyWaEPTCmH3/3TkmAcSdyMLXxbsQ0lItVcESQ+QRdLRDFX5nCZkm4KLA1HleQOqxUJ+yTS
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="E0yQyxpL"
+Received: by mail-vs1-xe41.google.com with SMTP id b28so3615609vsa.5
+ for <alsa-devel@alsa-project.org>; Fri, 22 May 2020 02:07:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+ bh=2mq1SiogaI44X8IkumH4BAaJVRu+DHqlM5vSKZxWPF4=;
+ b=E0yQyxpL0q7kKLbEmPWmRbtTZWGHfAQGNFDsAf+kqN6igaxa8a8s+rmqT0oXr5guYF
+ h4WGeui+FC8oFsxD/IGYVF6R8bIqO44+470WqCeohlz9ocdI9cOZMb2uySGNTDmdywvu
+ 9jHHJ+oKq40WVnM6w9sl7jAW6AeQpySjKUAcNkbmzNonWZjVxnreUEjzJJ4fHjaF8CZv
+ LiwKvFBFMxJzu7Ys42rG8r0Ue3XHo8W3LIEaRYotYJ+0lzeDFOXZQb2zySLvhT2J2FJH
+ GPVH6T5KeO4O6H9nkzkucczZmyHD9GMQiPALw8fffqWHWijfiH7fWg70o4E0jqQZc9ki
+ sQ7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to;
+ bh=2mq1SiogaI44X8IkumH4BAaJVRu+DHqlM5vSKZxWPF4=;
+ b=rNdq2ZS0+cqCY8xcbK6SvVoA4uUcbjC8OWFVfmwraeSD68K4hjbe9usQ7sKPhK4n5q
+ gRG4YkRi9oN2sIymHKfIokcGBIRygGGCs2/ISOgDR1D0qYjCL9mCpVUcy5t9R5u/Yi16
+ pwLibXubiL3K3ol5wPnImrJAwdiwZbk3xkrMU57HosmMGvvhswgEX7LtbwyjtAwA5P+b
+ AQLBvKBAMUyGdwRj/QgiMntSG4dQ5JPkkfLScDpNf4xtsSXz6hsBfXV7G7+vzIMQGrEN
+ 5R5/050OUi8+VnxTdL0yX0mtBLmiBsTbHQkcV3cj9j2Oz/4o5BgrzVTyIKsdPW0JSnHR
+ 3k2w==
+X-Gm-Message-State: AOAM530Cka1sFgcewxmVZ7Es4ziRauYVQeANyfWrV3jboMNXAf3ZoK63
+ BcsTD6M61ansZj7WOqtFMV3xuI5A1LFdIObmVo0=
+X-Google-Smtp-Source: ABdhPJwLogIGT0hE2PqVRQzKanLxr1PxhMejtbW0JzuLlJbARxrTR9RDTnaSGu97ZgGi0wKn+GG8VRWuksrCXKxQMfM=
+X-Received: by 2002:a67:db0d:: with SMTP id z13mr10437928vsj.155.1590138438693; 
+ Fri, 22 May 2020 02:07:18 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: northeastern.edu
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5da83242-8bef-49ed-3629-08d7fddf2945
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 May 2020 23:32:00.6571 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a8eec281-aaa3-4dae-ac9b-9a398b9215e7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 8JAZn/KeT9a+bpoCboJGZhUdmUVLpcS3VUn6kYhyQerX3AaWLqWSl1KXYuWGV+sYhcfxScz/9OVGSIyzStVcX01QnEpDt5N0/K/ppyPKBls=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR06MB5092
-X-Mailman-Approved-At: Mon, 25 May 2020 11:25:08 +0200
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Lu,
- Long" <l.lu@northeastern.edu>, "yaohway@gmail.com" <yaohway@gmail.com>
+References: <276893435.728967.1590133905081.JavaMail.administrator@n7.nabble.com>
+ <20200522081047.GA105169@workstation>
+In-Reply-To: <20200522081047.GA105169@workstation>
+From: Pascal Bomel <bomelp@gmail.com>
+Date: Fri, 22 May 2020 13:07:06 +0400
+Message-ID: <CALic0i3=qUMQxK_E1oFA_=K0+ABk0LJwF3hGZumA0nU8PQV4tw@mail.gmail.com>
+Subject: Re: Dice firewire support
+To: pascal bomel <bomelp@gmail.com>, alsa-devel@alsa-project.org, mail@mel.vin
+X-Mailman-Approved-At: Mon, 25 May 2020 11:25:07 +0200
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -135,28 +105,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Jaroslav, Takashi:
-Greetings, I'm a first year PhD student who is interested in using UBSan fo=
-r linux.=20
-After some experiments, I found that in sound/core/hwdep.c function snd_hwd=
-ep_dsp_load=20
-there might be an undefined behavior that might cause unexpected result.
+Thank you so much Takashi.
+Actually i have a debian 4.9.12 "stretch" release with 4.9.211 kernel
+version (uname -v)
+This kernel has snd-dice module inside isn't it ?
+I am not very familiar with linux, that's why i appreciate your help.
 
-More specifically, in this function,info was fetched from user space and,
-info.index was checked if it's greater than or equal to 32.
-If not then it's used as number of left shift bits to string literal 1.
+Regards,
 
-The problem is, since string literal 1 is by default signed int, so 1 << 31=
- cannot be represented as a valid integer and
- the result might be undefined across different platforms. So I guess chang=
-e 1 to 1U might help?
+Pascal Bomel
 
-Due to the lack of knowledge of the interaction between this module and oth=
-ers, I'm not able to assess if=20
-this is critical or worth fixing. I'd appreciate if for your comment on thi=
-s bug. This can help me understand UB a lot!
 
-Looking forward to your response.
 
-Best,
-Changming Liu
+Le ven. 22 mai 2020 =C3=A0 12:10, Takashi Sakamoto <o-takashi@sakamocchi.jp=
+> a
+=C3=A9crit :
+
+> Hi Pascal,
+>
+> On Fri, May 22, 2020 at 12:51:45AM -0700, bomelp@gmail.com wrote:
+> > Hi Takashi,
+> >
+> > Sorry if i bother you about my mail.
+> > Actually, i try to enable a mytek  dsd-192 dac via its firewire port on
+> a debian 4.9.12.
+> > I saw you worked on snd-dice module.Do you have a step-by-step
+> documentation to help me do that ?
+> >
+> > Best regards
+> > Pascal
+> > France
+>
+> Although I don't test the device, Melvin Vermeeren added support for
+> Mytek Stereo 192 DSD-DAC in Linux kernel v4.18 firstly. It's not
+> available in your kernel.
+> https://www.alsa-project.org/pipermail/alsa-devel/2018-May/136194.html
+>
+> If you can't work with the device just by loading snd-dice module in
+> recent Linux kernel, please contact to me or Melvin ;)
+>
+>
+> Regards
+>
+> Takashi Sakamoto
+>
