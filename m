@@ -2,61 +2,61 @@ Return-Path: <SRS0=jkt5=7E=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34436C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 May 2020 14:33:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EBF9C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 May 2020 14:33:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8EF7422AAD
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 May 2020 14:33:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1454822AAD
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 May 2020 14:33:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SfAytdXI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8EF7422AAD
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="p0cFvorj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1454822AAD
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=2n.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E21B218A4;
-	Fri, 22 May 2020 16:32:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E21B218A4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 628A3188F;
+	Fri, 22 May 2020 16:33:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 628A3188F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590158013;
-	bh=4xG2gxD1VNoTHAsgthAivOkA8vIh+UV6w6+zhMJTZdk=;
+	s=default; t=1590158035;
+	bh=me/FtoiZZthCP3M8vq4Qd2lWoCw7fdIoYpt/ON/gddA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SfAytdXI3mtFhJpe7zRH7/toTgywxCOr5mKjzvjEbi18Xb0HQgLgv9wXRLAcvLzU8
-	 Rnl7C0Y0yGJemuVYWQK8WFsf6MdeDPYj9oNRG5q/L1G4RusSgW/rJTsLtr39od4xiB
-	 gtHKYdBBJqQWJAfZhODnSJPgSQ16blRqnJLEQevU=
+	b=p0cFvorjbNDbBrXEE2TPJMxd/IQs/TSf2lG5ILRe3GdcEFo376mfoAt7A9v8hfL1n
+	 wD6YltUQx0FDlRTWwcbmp7QAA4RzIUXJGF2jWzgR2RbEoQ7fi7n+Dtb5nV0uDk199B
+	 vZcDm627ooy55VLxTMexTdbNzEKWF51KDOop1J6Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 81046F80111;
-	Fri, 22 May 2020 16:31:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ADE04F80291;
+	Fri, 22 May 2020 16:31:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 512D6F8028F; Fri, 22 May 2020 16:31:06 +0200 (CEST)
+ id 6F33AF8028E; Fri, 22 May 2020 16:31:06 +0200 (CEST)
 Received: from smtp2.axis.com (smtp2.axis.com [195.60.68.18])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 08299F80140
+ by alsa1.perex.cz (Postfix) with ESMTPS id 98045F80111
  for <alsa-devel@alsa-project.org>; Fri, 22 May 2020 16:30:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 08299F80140
-IronPort-SDR: M8gdB4I53cLmwJGwSgDe/g4CdnQq8/sKT2M0Q86IgE/tyZJORYsYBOTbW9ZG8LcnYpx55kb3QN
- fQm0ewLbBvqAPwawTON5aWuj/oiDjT1HnL6Jhz0lm4UuaW7m+ds4Dq9iWXZI4GP+oUMejBExqZ
- LuZ5gFCPHogzFaibafJFuiMPyav29wAjL7vzu9H8MDiuU9/zfQL1+Hnajh+fzY5DKI4WMlBMWs
- l+ez+t/rMtqq3TtpoCNyJ+DtscHtNgc6d8IaxRsKKL2X9Hc94m/X5VNkud1iMtdXYeu+2QfTbS
- X7w=
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98045F80111
+IronPort-SDR: m+dNbQ3pT5y9VsRxrpJJRY2dWOtBfUw2Vm/j0nbPdAjlYR8UiqQJarvlOmuhXiMRJ6yqAeo4h2
+ 9ySB3Zl44aTtKIbmkIWtYCGTBr3joY9R8hSbbpAY24ZdhkwRbG679FpQv8i2ipLwCYBYJacbGL
+ i8mkPVVrfoEWaYCJBM784aGDqNjEchHwqVh5WcXEXlgtdXkBOO2P7Sth6Oug+0fpCfpdXQQM1d
+ U6KBn4Eu2a43FL78rW/+iK2EtaPsNczBF5b53ASN4hDfDs3setN/WcbmkDrgO6DMxuqLcYkvy6
+ bJg=
 X-IronPort-AV: E=Sophos;i="5.73,422,1583190000"; 
-   d="scan'208";a="8756862"
+   d="scan'208";a="8756857"
 From: Pavel Dobias <dobias@2n.cz>
 To: <alsa-devel@alsa-project.org>
-Subject: [PATCH v2 2/2] ASoC: max9867: keep ADCs and DACs always on
-Date: Fri, 22 May 2020 16:29:57 +0200
-Message-ID: <20200522142957.18364-3-dobias@2n.cz>
+Subject: [PATCH v2 1/2] ASoC: max9867: add digital microphone controls
+Date: Fri, 22 May 2020 16:29:56 +0200
+Message-ID: <20200522142957.18364-2-dobias@2n.cz>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200522142957.18364-1-dobias@2n.cz>
 References: <20200520130131.GG4823@sirena.org.uk>
@@ -82,85 +82,69 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Updating power management register requires toggling the shutdown
-bit otherwise it causes unexpected behavior of the codec.
-However, toggling the shutdown bit results in loud speaker crackling.
-Setup the power management register only at startup to avoid that.
+MAX9867 codec has a possibility of connecting digital microphones.
+Add DAPM controls to be able to enable them.
 
 Signed-off-by: Pavel Dobias <dobias@2n.cz>
 ---
- sound/soc/codecs/max9867.c | 19 +++++++++----------
- sound/soc/codecs/max9867.h |  1 -
- 2 files changed, 9 insertions(+), 11 deletions(-)
+ sound/soc/codecs/max9867.c | 26 ++++++++++++++++++++++++--
+ 1 file changed, 24 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
-index 3efaa6d8dc3f..c72cb2888c21 100644
+index 7e58c73552c7..3efaa6d8dc3f 100644
 --- a/sound/soc/codecs/max9867.c
 +++ b/sound/soc/codecs/max9867.c
-@@ -125,8 +125,8 @@ static const struct snd_soc_dapm_widget max9867_dapm_widgets[] = {
+@@ -104,10 +104,24 @@ static const struct snd_kcontrol_new max9867_line_out_control =
+ 	SOC_DAPM_DOUBLE_R("Switch",
+ 			  MAX9867_LEFTVOL, MAX9867_RIGHTVOL, 6, 1, 1);
+ 
++/* DMIC mux */
++static const char *const dmic_mux_text[] = {
++	"ADC", "DMIC"
++};
++static SOC_ENUM_SINGLE_DECL(left_dmic_mux_enum,
++			    MAX9867_MICCONFIG, 5, dmic_mux_text);
++static SOC_ENUM_SINGLE_DECL(right_dmic_mux_enum,
++			    MAX9867_MICCONFIG, 4, dmic_mux_text);
++static const struct snd_kcontrol_new max9867_left_dmic_mux =
++	SOC_DAPM_ENUM("DMICL Mux", left_dmic_mux_enum);
++static const struct snd_kcontrol_new max9867_right_dmic_mux =
++	SOC_DAPM_ENUM("DMICR Mux", right_dmic_mux_enum);
+ 
+ static const struct snd_soc_dapm_widget max9867_dapm_widgets[] = {
+ 	SND_SOC_DAPM_INPUT("MICL"),
+ 	SND_SOC_DAPM_INPUT("MICR"),
++	SND_SOC_DAPM_INPUT("DMICL"),
++	SND_SOC_DAPM_INPUT("DMICR"),
  	SND_SOC_DAPM_INPUT("LINL"),
  	SND_SOC_DAPM_INPUT("LINR"),
  
--	SND_SOC_DAPM_PGA("Left Line Input", MAX9867_PWRMAN, 6, 0, NULL, 0),
--	SND_SOC_DAPM_PGA("Right Line Input", MAX9867_PWRMAN, 5, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("Left Line Input", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("Right Line Input", SND_SOC_NOPM, 0, 0, NULL, 0),
+@@ -116,6 +130,10 @@ static const struct snd_soc_dapm_widget max9867_dapm_widgets[] = {
  	SND_SOC_DAPM_MIXER_NAMED_CTL("Input Mixer", SND_SOC_NOPM, 0, 0,
  				     max9867_input_mixer_controls,
  				     ARRAY_SIZE(max9867_input_mixer_controls)),
-@@ -134,8 +134,8 @@ static const struct snd_soc_dapm_widget max9867_dapm_widgets[] = {
- 			 &max9867_left_dmic_mux),
- 	SND_SOC_DAPM_MUX("DMICR Mux", SND_SOC_NOPM, 0, 0,
- 			 &max9867_right_dmic_mux),
--	SND_SOC_DAPM_ADC("ADCL", "HiFi Capture", MAX9867_PWRMAN, 1, 0),
--	SND_SOC_DAPM_ADC("ADCR", "HiFi Capture", MAX9867_PWRMAN, 0, 0),
-+	SND_SOC_DAPM_ADC("ADCL", "HiFi Capture", SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_ADC("ADCR", "HiFi Capture", SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_MUX("DMICL Mux", SND_SOC_NOPM, 0, 0,
++			 &max9867_left_dmic_mux),
++	SND_SOC_DAPM_MUX("DMICR Mux", SND_SOC_NOPM, 0, 0,
++			 &max9867_right_dmic_mux),
+ 	SND_SOC_DAPM_ADC("ADCL", "HiFi Capture", MAX9867_PWRMAN, 1, 0),
+ 	SND_SOC_DAPM_ADC("ADCR", "HiFi Capture", MAX9867_PWRMAN, 0, 0),
  
- 	SND_SOC_DAPM_MIXER("Digital", SND_SOC_NOPM, 0, 0,
- 			   max9867_sidetone_mixer_controls,
-@@ -143,8 +143,8 @@ static const struct snd_soc_dapm_widget max9867_dapm_widgets[] = {
- 	SND_SOC_DAPM_MIXER_NAMED_CTL("Output Mixer", SND_SOC_NOPM, 0, 0,
- 				     max9867_output_mixer_controls,
- 				     ARRAY_SIZE(max9867_output_mixer_controls)),
--	SND_SOC_DAPM_DAC("DACL", "HiFi Playback", MAX9867_PWRMAN, 3, 0),
--	SND_SOC_DAPM_DAC("DACR", "HiFi Playback", MAX9867_PWRMAN, 2, 0),
-+	SND_SOC_DAPM_DAC("DACL", "HiFi Playback", SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_DAC("DACR", "HiFi Playback", SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_SWITCH("Master Playback", SND_SOC_NOPM, 0, 0,
- 			    &max9867_line_out_control),
- 	SND_SOC_DAPM_OUTPUT("LOUT"),
-@@ -452,15 +452,14 @@ static int max9867_set_bias_level(struct snd_soc_component *component,
- 			if (err)
- 				return err;
+@@ -140,8 +158,12 @@ static const struct snd_soc_dapm_route max9867_audio_map[] = {
+ 	{"Input Mixer", "Mic Capture Switch", "MICR"},
+ 	{"Input Mixer", "Line Capture Switch", "Left Line Input"},
+ 	{"Input Mixer", "Line Capture Switch", "Right Line Input"},
+-	{"ADCL", NULL, "Input Mixer"},
+-	{"ADCR", NULL, "Input Mixer"},
++	{"DMICL Mux", "DMIC", "DMICL"},
++	{"DMICR Mux", "DMIC", "DMICR"},
++	{"DMICL Mux", "ADC", "Input Mixer"},
++	{"DMICR Mux", "ADC", "Input Mixer"},
++	{"ADCL", NULL, "DMICL Mux"},
++	{"ADCR", NULL, "DMICR Mux"},
  
--			err = regmap_update_bits(max9867->regmap, MAX9867_PWRMAN,
--						 MAX9867_SHTDOWN, MAX9867_SHTDOWN);
-+			err = regmap_write(max9867->regmap,
-+					   MAX9867_PWRMAN, 0xff);
- 			if (err)
- 				return err;
- 		}
- 		break;
- 	case SND_SOC_BIAS_OFF:
--		err = regmap_update_bits(max9867->regmap, MAX9867_PWRMAN,
--					 MAX9867_SHTDOWN, 0);
-+		err = regmap_write(max9867->regmap, MAX9867_PWRMAN, 0);
- 		if (err)
- 			return err;
- 
-diff --git a/sound/soc/codecs/max9867.h b/sound/soc/codecs/max9867.h
-index d459d49449cb..3092c3b99075 100644
---- a/sound/soc/codecs/max9867.h
-+++ b/sound/soc/codecs/max9867.h
-@@ -58,7 +58,6 @@
- #define MAX9867_MICCONFIG    0x15
- #define MAX9867_MODECONFIG   0x16
- #define MAX9867_PWRMAN       0x17
--#define MAX9867_SHTDOWN      0x80
- #define MAX9867_REVISION     0xff
- 
- #define MAX9867_CACHEREGNUM 10
+ 	{"Digital", "Sidetone Switch", "ADCL"},
+ 	{"Digital", "Sidetone Switch", "ADCR"},
 -- 
 2.20.1
 
