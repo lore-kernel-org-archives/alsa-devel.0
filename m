@@ -6,71 +6,71 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7C08C433E1
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 May 2020 14:51:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF5C3C433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 May 2020 14:52:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 71A6A221FF
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 May 2020 14:51:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4D0DA20756
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 May 2020 14:52:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="s4tIqbXJ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="gmn0CcJv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 71A6A221FF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="a3/aFiWn";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZsAJlHgP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4D0DA20756
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C389716D5;
-	Fri, 22 May 2020 16:50:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C389716D5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 89ED118A0;
+	Fri, 22 May 2020 16:51:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89ED118A0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590159072;
-	bh=kl7MXkBZJGC6s8thZUM2YDAIP7k2Z9xNDyBuU/WLlk8=;
+	s=default; t=1590159125;
+	bh=jFxbb1Qy0B8oBFayjiw1lbTMGXYARxdCVgI0rLUhIzY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=s4tIqbXJCejbqCyghwd3E85m2yXCt2gXGAM8MGynRHr42oIrn5BUeZEniosRGN1CU
-	 695T5BMLOV6qyRznzWheeec69O3g/4hOWfr3hKmWdHMDSeYEeNvXklr2Ms1o4RRJjb
-	 seE/6u8ikUP+NZ8hnJAQu/yfc3ndj08HEx/oRj+g=
+	b=a3/aFiWn7WqnqGr1NPPVXHOcZTR8yaCj1AatApa+2n4Za+vwXkVCDaKpWXl2BLsux
+	 Ca0okjOATW9KwDlhOicPA0Y1xnWJayQj+UnUtrx97vC4EnOT1r9azrSG4yirYw/oEs
+	 BGFF4JHfH20f5easiswor+GLqU+FJzRYzHM0BoYI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3ACAFF801DA;
-	Fri, 22 May 2020 16:50:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 563FFF80216;
+	Fri, 22 May 2020 16:51:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 696A5F801F9; Fri, 22 May 2020 16:50:20 +0200 (CEST)
+ id 9A52CF8025E; Fri, 22 May 2020 16:51:02 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7364DF80140
- for <alsa-devel@alsa-project.org>; Fri, 22 May 2020 16:50:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7364DF80140
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4EFB1F80140
+ for <alsa-devel@alsa-project.org>; Fri, 22 May 2020 16:50:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4EFB1F80140
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="gmn0CcJv"
+ header.b="ZsAJlHgP"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id B25402145D;
- Fri, 22 May 2020 14:50:09 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 3062F223E0;
+ Fri, 22 May 2020 14:50:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1590159010;
- bh=kl7MXkBZJGC6s8thZUM2YDAIP7k2Z9xNDyBuU/WLlk8=;
+ s=default; t=1590159054;
+ bh=jFxbb1Qy0B8oBFayjiw1lbTMGXYARxdCVgI0rLUhIzY=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=gmn0CcJvqJvzQD15hicbSugeIXRsLPrcTQHosx5sPnowKWXTkoNXfBn5ejrWC+jr8
- SAqu1b1L9+2oqORt0a/4pp7dnDBEiQlmn9G0/zuaaxJ837Oze971VkCt6a67HgMyFp
- FgJr9IWeJuNciZ0ILOz2fDHWovhuw+H/r59pK05c=
+ b=ZsAJlHgPftTELpveXztHYobUhFzzsoHYCu1G9I+MI2pXmmF71TfZjpFwj2RSdRVhM
+ AjLiHJYYyw9uzLXdjtk4kvzvB/p+FgSRQgEjzKQUNfy4lQv60wlGHljwXF0Z7TZQXd
+ dKIFb+UbaNeNtpDej+oluB+236rZ+R2sU9i7Cx4s=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 09/41] ALSA: usb-audio: add mapping for ASRock
+Subject: [PATCH AUTOSEL 5.4 08/32] ALSA: usb-audio: add mapping for ASRock
  TRX40 Creator
-Date: Fri, 22 May 2020 10:49:26 -0400
-Message-Id: <20200522144959.434379-9-sashal@kernel.org>
+Date: Fri, 22 May 2020 10:50:20 -0400
+Message-Id: <20200522145044.434677-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200522144959.434379-1-sashal@kernel.org>
-References: <20200522144959.434379-1-sashal@kernel.org>
+In-Reply-To: <20200522145044.434677-1-sashal@kernel.org>
+References: <20200522145044.434677-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -117,10 +117,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 6 insertions(+)
 
 diff --git a/sound/usb/mixer_maps.c b/sound/usb/mixer_maps.c
-index 0260c750e156..bfdc6ad52785 100644
+index 39d6c6fa5e33..2255f9abd7a5 100644
 --- a/sound/usb/mixer_maps.c
 +++ b/sound/usb/mixer_maps.c
-@@ -549,6 +549,11 @@ static const struct usbmix_ctl_map usbmix_ctl_maps[] = {
+@@ -529,6 +529,11 @@ static struct usbmix_ctl_map usbmix_ctl_maps[] = {
  		.map = trx40_mobo_map,
  		.connector_map = trx40_mobo_connector_map,
  	},
