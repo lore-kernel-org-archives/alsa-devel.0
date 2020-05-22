@@ -6,77 +6,75 @@ X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5D77C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 May 2020 11:01:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C80C9C433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 May 2020 11:09:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6CEBC206DD
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 May 2020 11:01:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 57219206DD
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 May 2020 11:09:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LBqnkCQO";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="sj4dVWdG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6CEBC206DD
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vu4BKJJf";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="0MFbpk+E"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 57219206DD
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B6B921873;
-	Fri, 22 May 2020 13:00:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B6B921873
+	by alsa0.perex.cz (Postfix) with ESMTPS id A1ADC186E;
+	Fri, 22 May 2020 13:08:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A1ADC186E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590145288;
-	bh=tfBbqScwZyNvJWHpGRHVjG8LGXJ7tH0t1I8qXOHhuyI=;
+	s=default; t=1590145751;
+	bh=bIHJaG5iemRX6gaZmHvv9BNrNgZLSGZUC919UPUBGTY=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LBqnkCQOUY6vupnJG4QkfAxT4gMSm2uC5jE3tux7Xlepshf4hAdhPuhyGhq5waJOz
-	 yumydAEO11hfHQjX9V9ZkWG7o2o/hTBAFqoItSfQouwFjsf4JeSU6n92FgpZHvyFUz
-	 DSAEmRLhSmxPMTPeSoMLoNkz3q6yzHpEub45hfa4=
+	b=vu4BKJJfy6hYY0sLghtfQBMVz4QJUQKo5+1ix7OA9SVcX/TNkVMMHnIJSkn6aO/xu
+	 Rt9F4T4NkZidsIJ/lJZL8k7LhFxeFtAC1XU0Qxhu9U46nzMZoNck9iW3a3KsaNv8Z1
+	 MKb8auOhmK3lQ8RoBqn7E+jbZwt6HHjd5kXjCkT4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3ED92F801DA;
-	Fri, 22 May 2020 13:00:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 16844F801DA;
+	Fri, 22 May 2020 13:08:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 42932F801F9; Fri, 22 May 2020 13:00:36 +0200 (CEST)
+ id BF275F80111; Fri, 22 May 2020 13:08:19 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 77D51F80111
- for <alsa-devel@alsa-project.org>; Fri, 22 May 2020 13:00:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77D51F80111
+ by alsa1.perex.cz (Postfix) with ESMTPS id EACB1F80111
+ for <alsa-devel@alsa-project.org>; Fri, 22 May 2020 13:08:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EACB1F80111
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="sj4dVWdG"
+ header.b="0MFbpk+E"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id E117820679;
- Fri, 22 May 2020 11:00:28 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 4C2E0206B6;
+ Fri, 22 May 2020 11:08:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1590145229;
- bh=tfBbqScwZyNvJWHpGRHVjG8LGXJ7tH0t1I8qXOHhuyI=;
+ s=default; t=1590145693;
+ bh=bIHJaG5iemRX6gaZmHvv9BNrNgZLSGZUC919UPUBGTY=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=sj4dVWdGvA+RNyt8m7etvr9KpPIAtsxLZfRSLzM6F+7Y+TffmS8FFGuA13r7NMnSs
- eu1gWYyoP94VaO7WYwatQuG6S9iOAmgmPFH1IG7Kdx64nnwQZ4uHGBwBor9W6mDxMU
- Cn+OTtj0jCTx5g3auftvJE4HEaFsEqxWwOZhWScs=
-Date: Fri, 22 May 2020 12:00:26 +0100
+ b=0MFbpk+ElFzl+/gU0fhGCZmAo8+Z2cmtDBTiJUSvjlbaxICLSfZj3S9n+EFrL5bvS
+ Ywq2Phkw3nYaUB25uiTEi0del0GMaaJiGxWnR2GZ1lerfqPYsrZnCL06s8GeOAiCJ0
+ xKEmMC+Kltsqp1E3wd15vlDqiW+zzhQ39KqT467A=
+Date: Fri, 22 May 2020 12:08:11 +0100
 From: Mark Brown <broonie@kernel.org>
 To: Hui Wang <hui.wang@canonical.com>
-Subject: Re: [PATCH for-5.8] ASoC: amd: doesn't print error log if the return
- value is EPROBE_DEFER
-Message-ID: <20200522110026.GA5801@sirena.org.uk>
-References: <20200521144434.14442-1-hui.wang@canonical.com>
- <20200521154356.GD4770@sirena.org.uk>
- <9062728e-cd0b-ec1c-e001-f191f3a351bc@canonical.com>
+Subject: Re: [PATCH v2] ASoC: amd: put off registering mach platform_dev to
+ avoid -517 err
+Message-ID: <20200522110811.GB5801@sirena.org.uk>
+References: <20200522081738.11636-1-hui.wang@canonical.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="rwEMma7ioTxnRzrJ"
+ protocol="application/pgp-signature"; boundary="hQiwHBbRI9kgIhsi"
 Content-Disposition: inline
-In-Reply-To: <9062728e-cd0b-ec1c-e001-f191f3a351bc@canonical.com>
+In-Reply-To: <20200522081738.11636-1-hui.wang@canonical.com>
 X-Cookie: C for yourself.
 User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Vijendar.Mukunda@amd.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,40 +91,33 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---rwEMma7ioTxnRzrJ
+--hQiwHBbRI9kgIhsi
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, May 22, 2020 at 03:47:22PM +0800, Hui Wang wrote:
+On Fri, May 22, 2020 at 04:17:38PM +0800, Hui Wang wrote:
+> If the mach driver's probe is called ahead of codec driver's probe,
+> the kernel will print -517 error message although the audio still
+> works finally:
+> acp_pdm_mach acp_pdm_mach.0: snd_soc_register_card(acp) failed: -517
 
-> There are many modules in the kernel, no other modules print the -517 error
+This is just a bodge which will be at best unrelaible, it might work
+around your problem right now on your specific system but it may well
+introduce issues on someone else's.
 
-This is quite simply not true.
-
-> or warning, so if this driver prints it, it really confuses users (according
-> to my test, the audio works but the kernel prints this error with 100%
-> chance, and within ubuntu, the error message is read color, it is very
-> easily caught by users).
-
-> How about we put off the registering the machine device, this can guarantee
-> everything is ready when machine driver's probe is called. I will send a V2
-> according to this idea.
-
-You could also lower the severity of the message when deferring.
-
---rwEMma7ioTxnRzrJ
+--hQiwHBbRI9kgIhsi
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7HsMoACgkQJNaLcl1U
-h9ArMwf+LaC2zjWEnFPDcpxtlHJfUsYrioyY+4cwuvdVtDTJUDaljGgt5WWTukZC
-jQgmq2eLyBKoU+0ILrY+PSihkuEP5LZ86f3KXFPhD7JmuEGRtfAijfXBsMlkePmJ
-//X450rZIv6LY5R8kWMNM+ZJES5PPAueVlayDXZ+1gwnSeWIHfN8RTZNUJaXxdoE
-NrHH4rtLC8YX0KEHj0XbmKfB5+3uQkhL9qUBaIU7mrGf5uwwTjkOPd92Rp3Z0I/9
-nfqb5jTxn9C/aNtGud5K8I04mMvq4av5LCuw/VHu63AOGOZhGl3Rjsh7XxmEsHj4
-8C4tB3ZjSHpJhqbzBk7ujYBacbKvEA==
-=8b+d
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7HspoACgkQJNaLcl1U
+h9BoQQf/Xp45HQkhgO3Mfw386E5DY3rRRdebkon6RMeIbhGL+KwjX8zTZQUonwiy
+xfNUYPZSSnw0a6+4fhC1txnQDi2MxHsaft2EYCY1rqlbtzqF29WrGCzkrY6M3JAm
+yXgR0bqYIrhn6vW95dFEbrnVT1t7Pij7ebqBGUtyDPlkaBZT312zDOlj2a0GJv7y
+IXUHHcN00ybVmOsRMIyP+bcb+XFk1Xt6GQmdjbsK3JJyEGCfgxAQzo2Sd+I/iUlT
+4LLNUKtDoz6nbgadiYXaqIuag6pC4/6aVJPQym6Sz0TBHfwCDQ4sRmSC0g2Wx3Cq
+mt41i5FXdv7qHceqNElXilve6hkVLA==
+=7kUk
 -----END PGP SIGNATURE-----
 
---rwEMma7ioTxnRzrJ--
+--hQiwHBbRI9kgIhsi--
