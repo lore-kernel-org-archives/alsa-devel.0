@@ -2,78 +2,73 @@ Return-Path: <SRS0=jkt5=7E=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DA00C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 May 2020 19:01:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50B1EC433E1
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 May 2020 19:02:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AADDB2070A
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 May 2020 19:01:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D7C892070A
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 May 2020 19:02:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pYsJaYP2";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="2KgpT1ak"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AADDB2070A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jcQ9rbe5";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dmtnwcwh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D7C892070A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0FCF31887;
-	Fri, 22 May 2020 21:00:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FCF31887
+	by alsa0.perex.cz (Postfix) with ESMTPS id 169BB1898;
+	Fri, 22 May 2020 21:01:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 169BB1898
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590174099;
-	bh=cZksGg1oeYNuGZ1ChsW09N1isYUNMgsbYUB9aXYGbBc=;
+	s=default; t=1590174152;
+	bh=OGWY9S1a+s497w6nAoQWV1xChrUf4zarBWqyMWAxvXw=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pYsJaYP2wDvCtcujJn5jUSfQIpOrbS8dZ3Mkyfo8qIB/j5Wyp5GNIP6/trtnCCmDz
-	 SQwGBlRmwUBCgdW4DdZfbRwDaiNCoaQ0oz7S65bc+02X0QHt01iqA0vccKRGRJzuTU
-	 UzTEcXlMftdKF78V0P9+xfDoPCbNB344BnXxVJ74=
+	b=jcQ9rbe53qEsXmhbUheMs3Xv3meeGgzeUTfMa34Gqwu6Eo+OWtSGNg4j9ujv//pOX
+	 /79RVXsSpKae2MwNkRdJuziL2YqoqKpQPB9yHevUHLBw1NObkEjMrebYJER45v2y07
+	 Pa5NIo7b1Xj4A6x4ItNq8nKFIB/SMx0gxJ+9iyjk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 98032F801DA;
-	Fri, 22 May 2020 21:00:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8F87EF80213;
+	Fri, 22 May 2020 21:00:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 11C1AF801F9; Fri, 22 May 2020 21:00:47 +0200 (CEST)
+ id CFED0F80111; Fri, 22 May 2020 21:00:50 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 54C38F80121
- for <alsa-devel@alsa-project.org>; Fri, 22 May 2020 21:00:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54C38F80121
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1EF9FF80111
+ for <alsa-devel@alsa-project.org>; Fri, 22 May 2020 21:00:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1EF9FF80111
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="2KgpT1ak"
+ header.b="Dmtnwcwh"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 661F32070A;
- Fri, 22 May 2020 19:00:40 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 35A1F207D8;
+ Fri, 22 May 2020 19:00:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1590174041;
- bh=cZksGg1oeYNuGZ1ChsW09N1isYUNMgsbYUB9aXYGbBc=;
- h=Date:From:List-Id:To:Cc:In-Reply-To:References:Subject:From;
- b=2KgpT1akwW1t15sCSCOFuWDlpc8/796efM9j7xc69wnypaV7uSN+DwZ+t1bRKiABi
- Yhj3h/fcV5W6MLUMCGDMazcgsW74HKk4unGiSQbBsZFFZtuMl1mIvkujnhMsT+2AmN
- kArnXHIAlLuGEYnOkTFsZ9QlMMi/1qh4OOwsyEg0=
-Date: Fri, 22 May 2020 20:00:38 +0100
+ s=default; t=1590174046;
+ bh=OGWY9S1a+s497w6nAoQWV1xChrUf4zarBWqyMWAxvXw=;
+ h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+ b=Dmtnwcwhr43Mf15Kh5n0l5aHsw+WClHXCWfE9P+CAVrkSb3dXLVesSVi20OnZv0Pc
+ dlZnZuv9qniu6Eim3FDMwAr0AlAWz8KOP/B3l/FgfVeLMGm4Pjl6e+ZiLEj9vvMCTS
+ o3EqyBefLTBlZYK/2b6H4APXHCEwMIKkssN8C5dM=
+Date: Fri, 22 May 2020 20:00:44 +0100
 From: Mark Brown <broonie@kernel.org>
-List-Id: <soc.lore.kernel.org>
-To: soc@kernel.org, Daniel Mack <daniel@zonque.org>,
- Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>,
- Takashi Iwai <tiwai@suse.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
- Haojian Zhuang <haojian.zhuang@gmail.com>
-In-Reply-To: <20200521185140.27276-1-robert.jarzmik@free.fr>
-References: <20200521185140.27276-1-robert.jarzmik@free.fr>
-Subject: Re: [PATCH v3 1/3] ARM: pxa: remove Compulab pxa2xx boards
-Message-Id: <159017403821.20813.3053695214331756106.b4-ty@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org, Mike Rapoport <rppt@kernel.org>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Arnd Bergmann <arnd@arndb.de>
+To: Pavel Dobias <dobias@2n.cz>, alsa-devel@alsa-project.org
+In-Reply-To: <20200522142957.18364-1-dobias@2n.cz>
+References: <20200520130131.GG4823@sirena.org.uk>
+ <20200522142957.18364-1-dobias@2n.cz>
+Subject: Re: [PATCH v2 0/2] ASoC: max9867: keep ADCs and DACs always on
+Message-Id: <159017403821.20813.10891179590864759431.b4-ty@kernel.org>
+Cc: ladis@linux-mips.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,13 +84,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 21 May 2020 20:51:37 +0200, Robert Jarzmik wrote:
-> As these boards have no more users nor testers, and patching them has
-> become a burden, be that because of the PCI part or the MTD NAND
-> support, let's remove them.
+On Fri, 22 May 2020 16:29:55 +0200, Pavel Dobias wrote:
+> On 20. 05. 20 15:01, Mark Brown wrote:
+> > On Wed, May 20, 2020 at 09:19:02AM +0200, Pavel Dobias wrote:
+> >> Codec requires enabling of left and right ADCs in the same I2C write
+> >> operation which isn't fullfilled when controlled from DAPM and
+> >> causes unexpected behaviour of codec. The similar applies to DACs.
+> >> Enable ADCs and DACs once at startup and never switch them off
+> >> to solve the issue.
+> > It will be normally when the two channels are updated simultaneously
+> > though that doesn't stop the user doing something to update them
+> > separately.  In any case this would be better handled through moving the
+> > power control to either supply widgets or event callbacks rather than
+> > just giving up on power control entirely.
 > 
-> The cm-x300 will for now remain and represent Compulab boards at its
-> best in the PXA department.
+> [...]
 
 Applied to
 
@@ -103,8 +106,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: pxa: remove Compulab pxa2xx boards
-      commit: 168aac9de09551bb0ac9bd3b7a311cd681894fc3
+[1/2] ASoC: max9867: add digital microphone controls
+      commit: 980b63f8d040a791e8d751b8065d12ad7865f976
+[2/2] ASoC: max9867: keep ADCs and DACs always on
+      commit: 29c859df7b52080f0809b8a0b9d7b86fff379ef9
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
