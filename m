@@ -2,71 +2,81 @@ Return-Path: <SRS0=jkt5=7E=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EBF9C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 May 2020 14:33:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7C08C433E1
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 May 2020 14:51:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1454822AAD
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 May 2020 14:33:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 71A6A221FF
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 May 2020 14:51:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="p0cFvorj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1454822AAD
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=2n.cz
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="s4tIqbXJ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="gmn0CcJv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 71A6A221FF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 628A3188F;
-	Fri, 22 May 2020 16:33:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 628A3188F
+	by alsa0.perex.cz (Postfix) with ESMTPS id C389716D5;
+	Fri, 22 May 2020 16:50:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C389716D5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590158035;
-	bh=me/FtoiZZthCP3M8vq4Qd2lWoCw7fdIoYpt/ON/gddA=;
+	s=default; t=1590159072;
+	bh=kl7MXkBZJGC6s8thZUM2YDAIP7k2Z9xNDyBuU/WLlk8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=p0cFvorjbNDbBrXEE2TPJMxd/IQs/TSf2lG5ILRe3GdcEFo376mfoAt7A9v8hfL1n
-	 wD6YltUQx0FDlRTWwcbmp7QAA4RzIUXJGF2jWzgR2RbEoQ7fi7n+Dtb5nV0uDk199B
-	 vZcDm627ooy55VLxTMexTdbNzEKWF51KDOop1J6Y=
+	b=s4tIqbXJCejbqCyghwd3E85m2yXCt2gXGAM8MGynRHr42oIrn5BUeZEniosRGN1CU
+	 695T5BMLOV6qyRznzWheeec69O3g/4hOWfr3hKmWdHMDSeYEeNvXklr2Ms1o4RRJjb
+	 seE/6u8ikUP+NZ8hnJAQu/yfc3ndj08HEx/oRj+g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ADE04F80291;
-	Fri, 22 May 2020 16:31:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3ACAFF801DA;
+	Fri, 22 May 2020 16:50:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6F33AF8028E; Fri, 22 May 2020 16:31:06 +0200 (CEST)
-Received: from smtp2.axis.com (smtp2.axis.com [195.60.68.18])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 696A5F801F9; Fri, 22 May 2020 16:50:20 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 98045F80111
- for <alsa-devel@alsa-project.org>; Fri, 22 May 2020 16:30:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98045F80111
-IronPort-SDR: m+dNbQ3pT5y9VsRxrpJJRY2dWOtBfUw2Vm/j0nbPdAjlYR8UiqQJarvlOmuhXiMRJ6yqAeo4h2
- 9ySB3Zl44aTtKIbmkIWtYCGTBr3joY9R8hSbbpAY24ZdhkwRbG679FpQv8i2ipLwCYBYJacbGL
- i8mkPVVrfoEWaYCJBM784aGDqNjEchHwqVh5WcXEXlgtdXkBOO2P7Sth6Oug+0fpCfpdXQQM1d
- U6KBn4Eu2a43FL78rW/+iK2EtaPsNczBF5b53ASN4hDfDs3setN/WcbmkDrgO6DMxuqLcYkvy6
- bJg=
-X-IronPort-AV: E=Sophos;i="5.73,422,1583190000"; 
-   d="scan'208";a="8756857"
-From: Pavel Dobias <dobias@2n.cz>
-To: <alsa-devel@alsa-project.org>
-Subject: [PATCH v2 1/2] ASoC: max9867: add digital microphone controls
-Date: Fri, 22 May 2020 16:29:56 +0200
-Message-ID: <20200522142957.18364-2-dobias@2n.cz>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200522142957.18364-1-dobias@2n.cz>
-References: <20200520130131.GG4823@sirena.org.uk>
- <20200522142957.18364-1-dobias@2n.cz>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7364DF80140
+ for <alsa-devel@alsa-project.org>; Fri, 22 May 2020 16:50:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7364DF80140
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="gmn0CcJv"
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
+ [73.47.72.35])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id B25402145D;
+ Fri, 22 May 2020 14:50:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1590159010;
+ bh=kl7MXkBZJGC6s8thZUM2YDAIP7k2Z9xNDyBuU/WLlk8=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=gmn0CcJvqJvzQD15hicbSugeIXRsLPrcTQHosx5sPnowKWXTkoNXfBn5ejrWC+jr8
+ SAqu1b1L9+2oqORt0a/4pp7dnDBEiQlmn9G0/zuaaxJ837Oze971VkCt6a67HgMyFp
+ FgJr9IWeJuNciZ0ILOz2fDHWovhuw+H/r59pK05c=
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.6 09/41] ALSA: usb-audio: add mapping for ASRock
+ TRX40 Creator
+Date: Fri, 22 May 2020 10:49:26 -0400
+Message-Id: <20200522144959.434379-9-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200522144959.434379-1-sashal@kernel.org>
+References: <20200522144959.434379-1-sashal@kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.0.5.60]
-X-ClientProxiedBy: XBOX01.axis.com (10.0.5.15) To XBOX04.axis.com (10.0.5.18)
-Cc: broonie@kernel.org, ladis@linux-mips.org, Pavel Dobias <dobias@2n.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+ alsa-devel@alsa-project.org, Andrew Oakley <andrew@adoakley.name>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,69 +92,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-MAX9867 codec has a possibility of connecting digital microphones.
-Add DAPM controls to be able to enable them.
+From: Andrew Oakley <andrew@adoakley.name>
 
-Signed-off-by: Pavel Dobias <dobias@2n.cz>
+[ Upstream commit da7a8f1a8fc3e14c6dcc52b4098bddb8f20390be ]
+
+This is another TRX40 based motherboard with ALC1220-VB USB-audio
+that requires a static mapping table.
+
+This motherboard also has a PCI device which advertises no codecs.  The
+PCI ID is 1022:1487 and PCI SSID is 1022:d102.  As this is using the AMD
+vendor ID, don't blacklist for now in case other boards have a working
+audio device with the same ssid.
+
+alsa-info.sh report for this board:
+http://alsa-project.org/db/?f=0a742f89066527497b77ce16bca486daccf8a70c
+
+Signed-off-by: Andrew Oakley <andrew@adoakley.name>
+Link: https://lore.kernel.org/r/20200503141639.35519-1-andrew@adoakley.name
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/max9867.c | 26 ++++++++++++++++++++++++--
- 1 file changed, 24 insertions(+), 2 deletions(-)
+ sound/usb/mixer_maps.c   | 5 +++++
+ sound/usb/quirks-table.h | 1 +
+ 2 files changed, 6 insertions(+)
 
-diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
-index 7e58c73552c7..3efaa6d8dc3f 100644
---- a/sound/soc/codecs/max9867.c
-+++ b/sound/soc/codecs/max9867.c
-@@ -104,10 +104,24 @@ static const struct snd_kcontrol_new max9867_line_out_control =
- 	SOC_DAPM_DOUBLE_R("Switch",
- 			  MAX9867_LEFTVOL, MAX9867_RIGHTVOL, 6, 1, 1);
+diff --git a/sound/usb/mixer_maps.c b/sound/usb/mixer_maps.c
+index 0260c750e156..bfdc6ad52785 100644
+--- a/sound/usb/mixer_maps.c
++++ b/sound/usb/mixer_maps.c
+@@ -549,6 +549,11 @@ static const struct usbmix_ctl_map usbmix_ctl_maps[] = {
+ 		.map = trx40_mobo_map,
+ 		.connector_map = trx40_mobo_connector_map,
+ 	},
++	{	/* Asrock TRX40 Creator */
++		.id = USB_ID(0x26ce, 0x0a01),
++		.map = trx40_mobo_map,
++		.connector_map = trx40_mobo_connector_map,
++	},
+ 	{ 0 } /* terminator */
+ };
  
-+/* DMIC mux */
-+static const char *const dmic_mux_text[] = {
-+	"ADC", "DMIC"
-+};
-+static SOC_ENUM_SINGLE_DECL(left_dmic_mux_enum,
-+			    MAX9867_MICCONFIG, 5, dmic_mux_text);
-+static SOC_ENUM_SINGLE_DECL(right_dmic_mux_enum,
-+			    MAX9867_MICCONFIG, 4, dmic_mux_text);
-+static const struct snd_kcontrol_new max9867_left_dmic_mux =
-+	SOC_DAPM_ENUM("DMICL Mux", left_dmic_mux_enum);
-+static const struct snd_kcontrol_new max9867_right_dmic_mux =
-+	SOC_DAPM_ENUM("DMICR Mux", right_dmic_mux_enum);
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index 8c2f5c23e1b4..aa4c16ce0e57 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -3647,6 +3647,7 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
+ ALC1220_VB_DESKTOP(0x0414, 0xa002), /* Gigabyte TRX40 Aorus Pro WiFi */
+ ALC1220_VB_DESKTOP(0x0db0, 0x0d64), /* MSI TRX40 Creator */
+ ALC1220_VB_DESKTOP(0x0db0, 0x543d), /* MSI TRX40 */
++ALC1220_VB_DESKTOP(0x26ce, 0x0a01), /* Asrock TRX40 Creator */
+ #undef ALC1220_VB_DESKTOP
  
- static const struct snd_soc_dapm_widget max9867_dapm_widgets[] = {
- 	SND_SOC_DAPM_INPUT("MICL"),
- 	SND_SOC_DAPM_INPUT("MICR"),
-+	SND_SOC_DAPM_INPUT("DMICL"),
-+	SND_SOC_DAPM_INPUT("DMICR"),
- 	SND_SOC_DAPM_INPUT("LINL"),
- 	SND_SOC_DAPM_INPUT("LINR"),
- 
-@@ -116,6 +130,10 @@ static const struct snd_soc_dapm_widget max9867_dapm_widgets[] = {
- 	SND_SOC_DAPM_MIXER_NAMED_CTL("Input Mixer", SND_SOC_NOPM, 0, 0,
- 				     max9867_input_mixer_controls,
- 				     ARRAY_SIZE(max9867_input_mixer_controls)),
-+	SND_SOC_DAPM_MUX("DMICL Mux", SND_SOC_NOPM, 0, 0,
-+			 &max9867_left_dmic_mux),
-+	SND_SOC_DAPM_MUX("DMICR Mux", SND_SOC_NOPM, 0, 0,
-+			 &max9867_right_dmic_mux),
- 	SND_SOC_DAPM_ADC("ADCL", "HiFi Capture", MAX9867_PWRMAN, 1, 0),
- 	SND_SOC_DAPM_ADC("ADCR", "HiFi Capture", MAX9867_PWRMAN, 0, 0),
- 
-@@ -140,8 +158,12 @@ static const struct snd_soc_dapm_route max9867_audio_map[] = {
- 	{"Input Mixer", "Mic Capture Switch", "MICR"},
- 	{"Input Mixer", "Line Capture Switch", "Left Line Input"},
- 	{"Input Mixer", "Line Capture Switch", "Right Line Input"},
--	{"ADCL", NULL, "Input Mixer"},
--	{"ADCR", NULL, "Input Mixer"},
-+	{"DMICL Mux", "DMIC", "DMICL"},
-+	{"DMICR Mux", "DMIC", "DMICR"},
-+	{"DMICL Mux", "ADC", "Input Mixer"},
-+	{"DMICR Mux", "ADC", "Input Mixer"},
-+	{"ADCL", NULL, "DMICL Mux"},
-+	{"ADCR", NULL, "DMICR Mux"},
- 
- 	{"Digital", "Sidetone Switch", "ADCL"},
- 	{"Digital", "Sidetone Switch", "ADCR"},
+ #undef USB_DEVICE_VENDOR_SPEC
 -- 
-2.20.1
+2.25.1
 
