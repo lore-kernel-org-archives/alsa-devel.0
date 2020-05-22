@@ -2,77 +2,105 @@ Return-Path: <SRS0=jkt5=7E=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34C57C433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 May 2020 15:35:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AA34BC433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 May 2020 17:37:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A87B620823
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 May 2020 15:35:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2D3A220723
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 May 2020 17:37:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="R5SOW5aG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A87B620823
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="R+lLGau3";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="BeLXgfkA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2D3A220723
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gmx.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0FA0F18A5;
-	Fri, 22 May 2020 17:34:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FA0F18A5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 813651882;
+	Fri, 22 May 2020 19:36:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 813651882
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590161703;
-	bh=KGO6qH30UKyRPIxAT2XxQoa119qalE875QRBh7LHYCE=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1590169034;
+	bh=L8OHkKiGCB/f+IXGOvXlrA5dVZpPxKv0KWhPeCEfQiU=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=R5SOW5aGhuEu/ZCOW6sCubWydgYohxgC9Cu1nZNvuvHBl0jTbavQQJLatfNG0JUXP
-	 vAYdTD0SS7ZQymzIgVf75IkljfBsGAaXrvxC2QmKWShb+oM1ZdawyLIktXI4GADl6p
-	 YMEllKSjeQbunacFioBqfkZvkM+UkWJn1J0iUKnw=
-Received: from vmi242170.contaboserver.net (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A78DEF80121;
-	Fri, 22 May 2020 17:34:12 +0200 (CEST)
+	b=R+lLGau3eDKofYwCeQDA25WctfHQq4cJdGaTXe1CcYS47iZ/yhCxIUcPxQ6sxMiix
+	 P/61t9e93W1KGGD/BhaeoC2pMIDcQC0Y1RNZShSrBZ1PnXd03NARv79UnjcsDjy5bb
+	 beJD5NfLGdrtwinyh/OVO0Dr/y/vCOtLwZ3RiWWw=
+Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
+	by alsa1.perex.cz (Postfix) with ESMTP id 034CBF801F9;
+	Fri, 22 May 2020 19:36:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 93363F80216; Fri, 22 May 2020 17:34:05 +0200 (CEST)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ id 6270AF80213; Fri, 22 May 2020 19:36:22 +0200 (CEST)
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 06D35F80111
- for <alsa-devel@alsa-project.org>; Fri, 22 May 2020 17:33:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06D35F80111
-IronPort-SDR: xcp999XkQvyUKd0HKlZZEhS3v5fubznrhd8mvYziZbwAMvENMYxqvs5cl6w3G2kDixlWoq8aSA
- P+N9UcB0XL1Q==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 May 2020 08:33:53 -0700
-IronPort-SDR: EsgQ/86ZrGYCLQ0ivYKO1LN5ulBRXkUGm+lOETxWDQMWvNUm6dclvajrE9geKfHg0ULa6XCaVJ
- pdyZZWAJ1p+A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,422,1583222400"; d="scan'208";a="255621362"
-Received: from kaparr-mobl1.amr.corp.intel.com (HELO [10.252.133.17])
- ([10.252.133.17])
- by fmsmga008.fm.intel.com with ESMTP; 22 May 2020 08:33:53 -0700
-Subject: Re: [PATCH v3 0/7] ASoC: add soc-link
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Mark Brown <broonie@kernel.org>
-References: <87lflk4yk3.wl-kuninori.morimoto.gx@renesas.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <75365f38-708d-32f1-a5e2-a3d1352687bd@linux.intel.com>
-Date: Fri, 22 May 2020 09:36:28 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0AFEFF80140
+ for <alsa-devel@alsa-project.org>; Fri, 22 May 2020 19:36:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0AFEFF80140
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net
+ header.b="BeLXgfkA"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+ s=badeba3b8450; t=1590168963;
+ bh=L8OHkKiGCB/f+IXGOvXlrA5dVZpPxKv0KWhPeCEfQiU=;
+ h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+ b=BeLXgfkAIYebk7dPy/b/dHEAFaJjpOKqtoTzjnKVAW06ogNORfIBepC20GqIxMD4h
+ zFf8XH+aqqUE9rOOAVt7tRhQ8iAzw1u9Fn/jzKYz3gz5wy76dVx5rnFmiyYWgXqG/8
+ zS41n3XBx7P/lOPsGptgJBPdUEv4ekgyuFVGwTos=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ubuntu ([83.52.229.196]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MmULr-1jCEVO1rBh-00iRzC; Fri, 22
+ May 2020 19:36:03 +0200
+Date: Fri, 22 May 2020 19:35:49 +0200
+From: Oscar Carter <oscar.carter@gmx.com>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, keescook@chromium.org,
+ mchehab@kernel.org, clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
+Subject: Re: [PATCH 0/2] firewire: obsolete cast of function callback toward
+ CFI
+Message-ID: <20200522173549.GA3059@ubuntu>
+References: <20200520064726.31838-1-o-takashi@sakamocchi.jp>
 MIME-Version: 1.0
-In-Reply-To: <87lflk4yk3.wl-kuninori.morimoto.gx@renesas.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200520064726.31838-1-o-takashi@sakamocchi.jp>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Provags-ID: V03:K1:FBWJEV1Z+urCsYOxGe/qn+1ueZnIfzXJgXzE4sYXx2E6pTYxzTv
+ z+vuWi/c+ugAv7NWN04Ae5Py94IM94abNLP1X0yCKYKEFIpu63slErlj9Fhy71e4OHzYglB
+ +lQqRKUx5IjQ07W1dZ28vMOnrvIxckwJzFlxHK/OLsyentYpWqqW6H0z/J+wo+Rho3M4EOR
+ yy6Jf31X/2ADUl48LCMBA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:qQZnxhBV1OE=:rHKO2Cr/IEWABaxDAPPKV6
+ o3uezfePqPg8YTDyafPdmkb+4ckMJPNxVRQkNHKzYeHo+Os6qkNQUSxxTHCmQFDhfBQb0jNHh
+ BdBqwZG+aGRrCkMv5CdCwkQ/d4GyQt9bgCR4jlFZ3jv49X5MW7L0b7Dmpbpa8g1BZ6mcyNDVH
+ JFRDJGUlEAZFnnpwaHhJCBD3LS5z+DD4ubbcGszKZYshC6FDJERTbifdP0VSzin5thJm4wMLl
+ s+Pqk3W+LI/3M2B2Ot5cHoHa2TmxhrYXisqjRtZNNrvr2G9PUbJxPUV2jRf/9MlCz7zvtx7w2
+ IhWpaXJbAvi/KoT2F5zMykbYL3rrOmkRqwmvw8cQZmEtJgUUIBZdOEgJU0WVGBTf4IQou6u8y
+ yfBXCYXnSXmc7UqZn+Xr+wkFqRiBd4AEjqzDYOIMOOproICCTYf3XOvSuf+jdUXvW8nbbY3M9
+ 3lvNG0t8kNHp/P/0p5WO3EsA7AObaFik3wTY32uWwIJH4b8U4h7wbNSR+0TWc76+PLLSZWnnw
+ WFpv4AzhWrXeSCXgpeabnNO9lDgc3aDUW3oMeIO8NTErhmEJztO/Md2W3YtHrt4rXPankumz9
+ lMAQTUARY+TKYggs6JnZQrfRsmfP4N/6EjPWvVbp4Xi333kuxYEGyoMLu4yHcXZJHi4mAaihJ
+ EfJyvM+pNSejc0KDT/mrCEuZ7ODbAXJsIo6FYU83i7jv+2kVtURdOgPdsTv3bgnC/9gU5Wo2p
+ qO8l/TM+osXKI7V7SBWWh8XsBndANr8TxGGJ9SS4gFG2ZmV5cXw5KsganYsF0rT/b804BTW/p
+ bL0mRLhw5i+gXNVqYUrA7hfSTNq83sw1cJHT6P6L+T+VHC6QLeQo1X+scEuKtTeQIL+A/zibh
+ aikX9N2HOSiKma4BOujmTmP2sFZbygP3CmxmYE5oI1eg8fsxyzzT1fsM4MaKQ1VwueAxyPxv/
+ QLQUlcvW09MYGaIgN2THxOeQSa8zuDJWMglQ19+o3DqtjSGi/H0BAtvukYx46jFOUu1kwDtTg
+ ooprer23ED/ADxKx4B7Ym+/ptHya3yxwKz/9nJ1xPgCMd7p8bbbtKAnowRofqh5PdmFBWuryE
+ sIkYM2rpcNAYV4c+6ui8wgVr9kWwnSx8bqUTEKF2biSG45/AE4bEItsUyOXejHsTjvmTSQZ4m
+ opPsBqRorwR0fA0Y4Xif41sZWA/dty4A+hdK2FyzhaEC5O4xhBisLmMxCbRO/tAqcGH+ysXFZ
+ ZmLIFobfRvFTtpOLP
+Content-Transfer-Encoding: quoted-printable
+Cc: alsa-devel@alsa-project.org, Oscar Carter <oscar.carter@gmx.com>,
+ kernel-hardening@lists.openwall.com, linux-kernel@vger.kernel.org,
+ stefanr@s5r6.in-berlin.de, levonshe@gmail.com,
+ linux1394-devel@lists.sourceforge.net, linux-media@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,57 +116,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi,
 
+On Wed, May 20, 2020 at 03:47:24PM +0900, Takashi Sakamoto wrote:
+> Hi,
+>
+> Oscar Carter works for Control Flow Integrity build. Any cast
+> of function callback is inconvenient for the work. Unfortunately,
+> current code of firewire-core driver includes the cast[1] and Oscar
+> posted some patches to remove it[2]. The patch is itself good. However,
+> it includes changes existent kernel API and all of drivers as user
+> of the API get affects from the change.
+>
+> This patchset is an alternative idea to add a new kernel API specific
+> for multichannel isoc context. The existent kernel API and drivers is
+> left as is.
+>
+> Practically, no in-kernel drivers use the additional API. Although the
+> API is exported in the patchset, it's better to discuss about unexportin=
+g
+> the API.
+>
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/t=
+ree/drivers/firewire/core-cdev.c#n985
+> [2] https://lore.kernel.org/lkml/20200519173425.4724-1-oscar.carter@gmx.=
+com/
+>
+> Regards
+>
+> Takashi Sakamoto (2):
+>   firewire-core: add kernel API to construct multichannel isoc context
+>   firewire-core: obsolete cast of function callback
+>
+>  drivers/firewire/core-cdev.c | 44 +++++++++++++++++++-----------------
+>  drivers/firewire/core-iso.c  | 17 ++++++++++++++
+>  include/linux/firewire.h     |  3 +++
+>  3 files changed, 43 insertions(+), 21 deletions(-)
+>
+> --
+> 2.25.1
+>
+Thanks for your work and new proposal. I've done a test build an it cleans=
+ the
+-Wcast-function-type warning without the need to change the current API. S=
+o, it
+looks good to me.
 
-On 5/21/20 7:13 PM, Kuninori Morimoto wrote:
-> 
-> Hi Mark
-> 
-> Current ALSA SoC is handling dai_link related operation,
-> but it is implmemented directly without using function/macro,
-> and at random place.
-> 
-> This v3 patch-set creates new snd_soc_link_xxx() functions
-> which handles dai_link related operation,
-> and implmement these at new soc-link.c.
-
-For the series
-
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-> 
-> v2 -> v3
-> 
-> 	- add missing #include <sound/soc-link.h> in soc-link.c
-> 
-> v1 -> v2
-> 	- #include <sound/soc-link.h> is added on each c source file
-> 	  instead of soc.h
-> 	- not have extra error message after snd_soc_link_xxx(),
-> 	  because it already indicate it via snc_link_ret()
-> 	- snd_soc_link_compr_xxx() doesn't have rtd parameter,
-> 	  because it can be created from cstream
-> 
-> Link: https://lore.kernel.org/r/874ksa59wc.wl-kuninori.morimoto.gx@renesas.com
-> Link: https://lore.kernel.org/r/877dx868op.wl-kuninori.morimoto.gx@renesas.com
-> 
-> Kuninori Morimoto (7):
->    ASoC: add soc-link.c
->    ASoC: soc-link: move soc_rtd_xxx()
->    ASoC: soc-link: remove unneeded parameter from snd_soc_link_xxx()
->    ASoC: soc-link: add snd_soc_link_be_hw_params_fixup()
->    ASoC: soc-link: add snd_soc_link_compr_startup()
->    ASoC: soc-link: add snd_soc_link_compr_shutdown()
->    ASoC: soc-link: add snd_soc_link_compr_set_params()
-> 
->   include/sound/soc-link.h |  27 +++++++
->   sound/soc/Makefile       |   2 +-
->   sound/soc/soc-compress.c |  46 ++++--------
->   sound/soc/soc-core.c     |  18 ++---
->   sound/soc/soc-dai.c      |   9 ++-
->   sound/soc/soc-link.c     | 150 +++++++++++++++++++++++++++++++++++++++
->   sound/soc/soc-pcm.c      |  86 ++++------------------
->   7 files changed, 219 insertions(+), 119 deletions(-)
->   create mode 100644 include/sound/soc-link.h
->   create mode 100644 sound/soc/soc-link.c
-> 
+Thanks,
+Oscar Carter
