@@ -2,62 +2,61 @@ Return-Path: <SRS0=jkt5=7E=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DBA18C433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 May 2020 00:18:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F0E4DC433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 May 2020 00:22:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6958D2072C
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 May 2020 00:18:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 58D4C2072C
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 May 2020 00:22:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BZCDf3zh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6958D2072C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="e8bnv7G/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 58D4C2072C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C6DAB182D;
-	Fri, 22 May 2020 02:17:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C6DAB182D
+	by alsa0.perex.cz (Postfix) with ESMTPS id BD1D4184D;
+	Fri, 22 May 2020 02:21:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD1D4184D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590106699;
-	bh=rIHrQPeO9wo1lLMVbRT3bHd5Nqh0t7x2+q4sIoR1sdU=;
-	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1590106918;
+	bh=uT7hnFWaIGKyyHNwUHRpTqlvOGWCrZai5nsxIQA1HL0=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BZCDf3zhXIbtx8sbLJGnSOWhKe6Bdm62d4Ek2VUtL4Vqm3cffYOOLF8tP8y2Bll3H
-	 M1R9o4uP1EAWyIAbkwoFz/di+txERTaddBIVFJEF9w+Krq1A6cWTVT8YkXZ95T6Ah2
-	 9shG/OiDS4ws80EU7si3ONFemV7NqbPgRvUkzIvo=
+	b=e8bnv7G/wJKJ9sImOasYSxN7UMqI1J5jrL/gDWWDDljUYXx21JgBQRm1UxANh7kLO
+	 xa2/Ph3J/dsBoWuNQ18XRIeaJOd3aDhLWqGVVA7eLjn2aR3CvboPB6qqEOa/wcbBa4
+	 e4ckNb2QjKhR6WtsrszUsld0N6L2WxRQh3PaCbq8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9010DF802DF;
-	Fri, 22 May 2020 02:14:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4AF6BF801A3;
+	Fri, 22 May 2020 02:21:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 037F3F802C4; Fri, 22 May 2020 02:14:26 +0200 (CEST)
+ id BC5F7F801D8; Fri, 22 May 2020 02:21:06 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id B5E60F802A9
- for <alsa-devel@alsa-project.org>; Fri, 22 May 2020 02:14:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5E60F802A9
-Date: 22 May 2020 09:14:18 +0900
-X-IronPort-AV: E=Sophos;i="5.73,419,1583161200"; d="scan'208";a="47501910"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 22 May 2020 09:14:18 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id C6CA0F80111
+ for <alsa-devel@alsa-project.org>; Fri, 22 May 2020 02:21:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6CA0F80111
+Date: 22 May 2020 09:21:02 +0900
+X-IronPort-AV: E=Sophos;i="5.73,419,1583161200"; d="scan'208";a="47502404"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 22 May 2020 09:21:02 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 9CAAF4142B65;
- Fri, 22 May 2020 09:14:18 +0900 (JST)
-Message-ID: <87d06w4yhx.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 515CF400A88E;
+ Fri, 22 May 2020 09:21:02 +0900 (JST)
+Message-ID: <87a7204y6p.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v3 6/7] ASoC: soc-link: add snd_soc_link_compr_shutdown()
-User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 0/7] ASoC: add soc-link
 In-Reply-To: <87lflk4yk3.wl-kuninori.morimoto.gx@renesas.com>
 References: <87lflk4yk3.wl-kuninori.morimoto.gx@renesas.com>
+User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
@@ -77,71 +76,32 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Hi Mark
 
-dai_link related function should be implemented at soc-link.c.
-This patch adds snd_soc_link_compr_shutdown().
+> Current ALSA SoC is handling dai_link related operation,
+> but it is implmemented directly without using function/macro,
+> and at random place.
+> 
+> This v3 patch-set creates new snd_soc_link_xxx() functions
+> which handles dai_link related operation,
+> and implmement these at new soc-link.c.
+> 
+> v2 -> v3
+> 
+> 	- add missing #include <sound/soc-link.h> in soc-link.c
+> 
+> v1 -> v2
+> 	- #include <sound/soc-link.h> is added on each c source file
+> 	  instead of soc.h
+> 	- not have extra error message after snd_soc_link_xxx(),
+> 	  because it already indicate it via snc_link_ret()
+> 	- snd_soc_link_compr_xxx() doesn't have rtd parameter,
+> 	  because it can be created from cstream
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+I forgot to add Ranjani's Acked-by on this patch-set.
+
+Thank you for your help !!
+
+Best regards
 ---
- include/sound/soc-link.h |  1 +
- sound/soc/soc-compress.c |  6 ++----
- sound/soc/soc-link.c     | 10 ++++++++++
- 3 files changed, 13 insertions(+), 4 deletions(-)
-
-diff --git a/include/sound/soc-link.h b/include/sound/soc-link.h
-index 20fe46f31e33..9ada62f8186f 100644
---- a/include/sound/soc-link.h
-+++ b/include/sound/soc-link.h
-@@ -21,5 +21,6 @@ void snd_soc_link_hw_free(struct snd_pcm_substream *substream);
- int snd_soc_link_trigger(struct snd_pcm_substream *substream, int cmd);
- 
- int snd_soc_link_compr_startup(struct snd_compr_stream *cstream);
-+void snd_soc_link_compr_shutdown(struct snd_compr_stream *cstream);
- 
- #endif /* __SOC_LINK_H */
-diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index ddc6c6f69d2f..327bec052954 100644
---- a/sound/soc/soc-compress.c
-+++ b/sound/soc/soc-compress.c
-@@ -227,8 +227,7 @@ static int soc_compr_free(struct snd_compr_stream *cstream)
- 	if (!snd_soc_dai_active(codec_dai))
- 		codec_dai->rate = 0;
- 
--	if (rtd->dai_link->compr_ops && rtd->dai_link->compr_ops->shutdown)
--		rtd->dai_link->compr_ops->shutdown(cstream);
-+	snd_soc_link_compr_shutdown(cstream);
- 
- 	soc_compr_components_free(cstream, NULL);
- 
-@@ -283,8 +282,7 @@ static int soc_compr_free_fe(struct snd_compr_stream *cstream)
- 
- 	fe->dpcm[stream].runtime = NULL;
- 
--	if (fe->dai_link->compr_ops && fe->dai_link->compr_ops->shutdown)
--		fe->dai_link->compr_ops->shutdown(cstream);
-+	snd_soc_link_compr_shutdown(cstream);
- 
- 	soc_compr_components_free(cstream, NULL);
- 
-diff --git a/sound/soc/soc-link.c b/sound/soc/soc-link.c
-index 7f0fb53c435a..2cfe7f88b809 100644
---- a/sound/soc/soc-link.c
-+++ b/sound/soc/soc-link.c
-@@ -126,3 +126,13 @@ int snd_soc_link_compr_startup(struct snd_compr_stream *cstream)
- 	return soc_link_ret(rtd, ret);
- }
- EXPORT_SYMBOL_GPL(snd_soc_link_compr_startup);
-+
-+void snd_soc_link_compr_shutdown(struct snd_compr_stream *cstream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
-+
-+	if (rtd->dai_link->compr_ops &&
-+	    rtd->dai_link->compr_ops->shutdown)
-+		rtd->dai_link->compr_ops->shutdown(cstream);
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_link_compr_shutdown);
--- 
-2.17.1
-
+Kuninori Morimoto
