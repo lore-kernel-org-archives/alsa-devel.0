@@ -2,64 +2,77 @@ Return-Path: <SRS0=jkt5=7E=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0E4DC433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 May 2020 00:22:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE62FC433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 May 2020 07:29:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 58D4C2072C
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 May 2020 00:22:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3B213206DD
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 May 2020 07:29:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="e8bnv7G/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 58D4C2072C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XVr44sYi";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="quDWI+OJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3B213206DD
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BD1D4184D;
-	Fri, 22 May 2020 02:21:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD1D4184D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8C65C1861;
+	Fri, 22 May 2020 09:28:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C65C1861
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590106918;
-	bh=uT7hnFWaIGKyyHNwUHRpTqlvOGWCrZai5nsxIQA1HL0=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1590132576;
+	bh=a+GWZTXoEmAqJ588Ld4QrK6+dfifuM37WVBYkefXSgA=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=e8bnv7G/wJKJ9sImOasYSxN7UMqI1J5jrL/gDWWDDljUYXx21JgBQRm1UxANh7kLO
-	 xa2/Ph3J/dsBoWuNQ18XRIeaJOd3aDhLWqGVVA7eLjn2aR3CvboPB6qqEOa/wcbBa4
-	 e4ckNb2QjKhR6WtsrszUsld0N6L2WxRQh3PaCbq8=
+	b=XVr44sYiE3gSZSYYqWo9Ny23q4ADWHQvXcwNqYg658XB0qDadtxBIjpv1D17pfhfK
+	 /3Xrgphy/wWhuoeftCLpP/8DeEV3QDS269LmSMjgrUMp+q/CAwZm8Yx1IGIG/X9sPF
+	 ZKrCzeIH0w8jPJIXApHDnB9w+2FaTZybkjZc9O6Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4AF6BF801A3;
-	Fri, 22 May 2020 02:21:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0B938F801DA;
+	Fri, 22 May 2020 09:28:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BC5F7F801D8; Fri, 22 May 2020 02:21:06 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id C6CA0F80111
- for <alsa-devel@alsa-project.org>; Fri, 22 May 2020 02:21:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6CA0F80111
-Date: 22 May 2020 09:21:02 +0900
-X-IronPort-AV: E=Sophos;i="5.73,419,1583161200"; d="scan'208";a="47502404"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 22 May 2020 09:21:02 +0900
-Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 515CF400A88E;
- Fri, 22 May 2020 09:21:02 +0900 (JST)
-Message-ID: <87a7204y6p.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 0/7] ASoC: add soc-link
-In-Reply-To: <87lflk4yk3.wl-kuninori.morimoto.gx@renesas.com>
-References: <87lflk4yk3.wl-kuninori.morimoto.gx@renesas.com>
-User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+ id F05D8F801F9; Fri, 22 May 2020 09:28:42 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 575AEF80111
+ for <alsa-devel@alsa-project.org>; Fri, 22 May 2020 09:28:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 575AEF80111
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="quDWI+OJ"
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl
+ [83.86.89.107])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 94223206DD;
+ Fri, 22 May 2020 07:28:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1590132514;
+ bh=a+GWZTXoEmAqJ588Ld4QrK6+dfifuM37WVBYkefXSgA=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=quDWI+OJ7MZQgBlI9ukwhi9CNgoNFN6Y9tPAex3fnyo7GLU8VnsHkTa7ArhP2vU4v
+ 6Gul75XflD0bDuPoiv4fGUh+EGcWwuDr8oQkFpY/ulcP2N4/GKtIGR0A2xqdIdA8lG
+ j+IdQd3iTsR9e3UpBG8Zzoaljfcvwbw7+g0fvjZ8=
+Date: Fri, 22 May 2020 09:27:51 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Vinod Koul <vkoul@kernel.org>
+Subject: Re: [GIT PULL] soundwire updates for v5.8-rc1
+Message-ID: <20200522072751.GA853066@kroah.com>
+References: <20200521142739.GB374218@vkoul-mobl.Dlink>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200521142739.GB374218@vkoul-mobl.Dlink>
+Cc: alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,33 +88,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-Hi Mark
-
-> Current ALSA SoC is handling dai_link related operation,
-> but it is implmemented directly without using function/macro,
-> and at random place.
+On Thu, May 21, 2020 at 07:57:39PM +0530, Vinod Koul wrote:
+> Hi Greg,
 > 
-> This v3 patch-set creates new snd_soc_link_xxx() functions
-> which handles dai_link related operation,
-> and implmement these at new soc-link.c.
+> Please pull to receive updates for soundwire. The big news the
+> sdw_master_device getting completed along with sysfs attributes for
+> master and slave devices. That closes the long cleanup work done by
+> Pierre and Bard for the devices.
 > 
-> v2 -> v3
+> The following changes since commit 8f3d9f354286745c751374f5f1fcafee6b3f3136:
 > 
-> 	- add missing #include <sound/soc-link.h> in soc-link.c
+>   Linux 5.7-rc1 (2020-04-12 12:35:55 -0700)
 > 
-> v1 -> v2
-> 	- #include <sound/soc-link.h> is added on each c source file
-> 	  instead of soc.h
-> 	- not have extra error message after snd_soc_link_xxx(),
-> 	  because it already indicate it via snc_link_ret()
-> 	- snd_soc_link_compr_xxx() doesn't have rtd parameter,
-> 	  because it can be created from cstream
+> are available in the Git repository at:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/soundwire.git tags/soundwire-5.8-rc1
 
-I forgot to add Ranjani's Acked-by on this patch-set.
+Pulled and pushed out, thanks.
 
-Thank you for your help !!
-
-Best regards
----
-Kuninori Morimoto
+greg k-h
