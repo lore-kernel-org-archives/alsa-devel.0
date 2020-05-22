@@ -2,130 +2,88 @@ Return-Path: <SRS0=PMZM=7F=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4483EC433E1
-	for <alsa-devel@archiver.kernel.org>; Sat, 23 May 2020 08:00:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80830C433E0
+	for <alsa-devel@archiver.kernel.org>; Sat, 23 May 2020 09:37:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A4743206C3
-	for <alsa-devel@archiver.kernel.org>; Sat, 23 May 2020 08:00:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D3051206C3
+	for <alsa-devel@archiver.kernel.org>; Sat, 23 May 2020 09:37:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="X5Sve4FW";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="H3rWb5HU";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="CcVRcc9i"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A4743206C3
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="O+fMQW8o";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=krude.de header.i=@krude.de header.b="D1/+Likt"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D3051206C3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=krude.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0B8FF1860;
-	Sat, 23 May 2020 09:59:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B8FF1860
+	by alsa0.perex.cz (Postfix) with ESMTPS id 10CF01852;
+	Sat, 23 May 2020 11:36:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 10CF01852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590220807;
-	bh=HZxkaD1E5jYXlzH7DRwnRQfcG1Qhb3qPGW+J3IHahcM=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1590226640;
+	bh=IP1yQeGuHyFbvO9JocIkhl9Z2YWDtJ/0AAFGaIhZxvc=;
+	h=Resent-From:Resent-Date:Resent-To:Date:From:To:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=X5Sve4FW+SKDVvFOWLW0cB1fZiEevsE3bnLN9/fFiBPrOU4KYyySAcHOmqkyiklHs
-	 I7p2TtfoR8kGXAjY4U7Mi77NFcgoGo3PxDtrvUeGFVuYDqyzSAzxqgyOtPhQus4S3O
-	 H/cGHk3ACmrN3jWCR9uOJMoxuS6rYdTNrNlbuOhc=
+	b=O+fMQW8oUcD9n2vVw3YZzg4Ir6BnZt5pUvpJYJOaaDeNrHV+8Z4hCkhyhRK9MlNto
+	 TE0wdat5dRaksZ+J6QmDTRIvof4qkoZorqACKMLY/hJ+OMbVRcZwK8V1QoibeVx6uS
+	 gCxYgexgDcE1n0VuHa8Ptayk3QN/+7DvnQb5Tl+w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6A7F8F801A3;
-	Sat, 23 May 2020 09:59:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7E818F80121;
+	Sat, 23 May 2020 11:36:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B09E5F801D8; Sat, 23 May 2020 09:59:13 +0200 (CEST)
-Received: from wnew1-smtp.messagingengine.com (wnew1-smtp.messagingengine.com
- [64.147.123.26])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id BFF9DF801D8; Sat, 23 May 2020 11:36:26 +0200 (CEST)
+Received: from smtp.noc-kru.de (smtp.noc-kru.de [88.218.226.4])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7E646F80121
- for <alsa-devel@alsa-project.org>; Sat, 23 May 2020 09:59:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E646F80121
+ by alsa1.perex.cz (Postfix) with ESMTPS id E912AF80121
+ for <alsa-devel@alsa-project.org>; Sat, 23 May 2020 11:36:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E912AF80121
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="H3rWb5HU"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="CcVRcc9i"
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
- by mailnew.west.internal (Postfix) with ESMTP id A0D13874;
- Sat, 23 May 2020 03:59:01 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
- by compute2.internal (MEProxy); Sat, 23 May 2020 03:59:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-type:in-reply-to; s=fm1; bh=K9bdneoooJ1uSBw5jkomBqz3iW0
- HsoKgOxHBuN88dzA=; b=H3rWb5HUYcQn7iZXb7kBxoSo164u2D2hVvlNCeXfw33
- vPfXrucVHEPaNFgPKynsNfLu9sswkct6TBU+ulxNIaw6VejbT3wIjZSh1SBgRWed
- 37G/3vgYwnuytM7AUt8VmRelj55JNfHGl1DFJBnkktNp8gbthsSgRqUD1vb3Dioo
- oApBMjnbaUmoQHmdsXR/FXiAtvFI3xc/C56alJZluumRtFOFuQWhJ6VtYXGn29mx
- /uHQLUxc7EcEWeJSmD0RVHQVwxL4y6E+vJ36WC4ktDt+GWzQYna8G67frcbar58V
- WkkaAGX9eKQ7ZdE0czbjq4KF00ZmXPj+KX9G9WSf7qA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to:x-me-proxy
- :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=K9bdne
- oooJ1uSBw5jkomBqz3iW0HsoKgOxHBuN88dzA=; b=CcVRcc9iulo5FrFWsvMwNI
- lnO1f6CwgY494tKBtmumqn8rFALyNsIivbS9xjEuFDxNvieYN9l7bH8WRLr+piIR
- Hj1jylf3k9X9SMeOYOzEMKd1s/EJHu1VdQ7/+FqtPUVATE/KUoEHME8/ctLx+itm
- eagXQ48TrSjcTD6En5e10/SVYN8DPtqRQZIwzDFDZ6T4+ggwg+Z5pKCf5SwFjZNy
- H1xpeXO1XhBuis4MzAWZOClWQIJIggq4HU8TTMcNqQr+dMJbbRE/O5YaYggluu+v
- hkouwGdlZiV8+Gw6yhghDLUytmFQ+kUM8upUDnJlv3Gq1dPGRi5Cmr7Q6VFMCqQA
- ==
-X-ME-Sender: <xms:xNfIXpIYAmfqIChvyJM_rKIA0yUIxHG6Z0AgyhTnotb0mwkBuTquYA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedruddugedguddvvdcutefuodetggdotefrod
- ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
- necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
- enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfgrkhgr
- shhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhird
- hjpheqnecuggftrfgrthhtvghrnhephfefleekfeevgffhhfehudetkeeivdeuvdelgeej
- jefhffegkeffffdugfevudetnecuffhomhgrihhnpehgihhthhhusgdrtghomhdprghlsh
- grqdhprhhojhgvtghtrdhorhhgnecukfhppedukedtrddvfeehrdefrdehgeenucevlhhu
- shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshh
- hisehsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:xNfIXlK-hUj2c_B-TJAeEP4Nv8ItDjNR79jB0y4kcSeRYV0cYVe9Ng>
- <xmx:xNfIXhsN6JBRk4ydpuWG_Wqdcl1Uy2vhIKaqbVVFOHa-B7fcj_lI2w>
- <xmx:xNfIXqZCW_JuSxoblr1zefmM5ZBES2YNtOCd4SmdkHLQMAoGY4rc-Q>
- <xmx:xdfIXqDiHCJPhSs3amiBVLQ9b3oEfEyPZLCS9vGA9sPVJvr-kmK65UXOCtI>
-Received: from workstation (ad003054.dynamic.ppp.asahi-net.or.jp
- [180.235.3.54])
- by mail.messagingengine.com (Postfix) with ESMTPA id 747FB328005E;
- Sat, 23 May 2020 03:58:56 -0400 (EDT)
-Date: Sat, 23 May 2020 16:58:54 +0900
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v2] firewire: Remove function callback casts
-Message-ID: <20200523075854.GA170441@workstation>
-Mail-Followup-To: Greg KH <gregkh@linuxfoundation.org>,
- Oscar Carter <oscar.carter@gmx.com>,
- stable <stable@vger.kernel.org>, Kees Cook <keescook@chromium.org>,
- Stefan Richter <stefanr@s5r6.in-berlin.de>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Clemens Ladisch <clemens@ladisch.de>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- kernel-hardening@lists.openwall.com,
- linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
- linux-media@vger.kernel.org, alsa-devel@alsa-project.org,
- "Lev R . Oshvang ." <levonshe@gmail.com>
-References: <20200519173425.4724-1-oscar.carter@gmx.com>
- <20200520061624.GA25690@workstation> <20200522174308.GB3059@ubuntu>
- <20200523061033.GB3131938@kroah.com>
+ dkim=pass (1024-bit key) header.d=krude.de header.i=@krude.de
+ header.b="D1/+Likt"
+Received: from localhost (localhost.localdomain [127.0.0.1])
+ by mx.noc-kru.de (Postfix) with ESMTP id 25AA65A22A3
+ for <alsa-devel@alsa-project.org>; Sat, 23 May 2020 11:36:19 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at idefix.krude.de
+Received: from smtp.noc-kru.de ([88.218.226.4])
+ by localhost (idefix.noc-kru.de [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id H1jKc0P9hDgp for <alsa-devel@alsa-project.org>;
+ Sat, 23 May 2020 11:36:16 +0200 (CEST)
+Received: from phlox.h.transitiv.net
+ (2001-4dd0-2d41-0-6d82-45af-e777-e8a7.ipv6dyn.netcologne.de
+ [IPv6:2001:4dd0:2d41:0:6d82:45af:e777:e8a7])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest
+ SHA256) (Client did not present a certificate)
+ by mx.noc-kru.de (Postfix) with ESMTPSA id 8D1DB5A2148
+ for <alsa-devel@alsa-project.org>; Sat, 23 May 2020 11:36:16 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=krude.de; s=mail;
+ t=1590226576; bh=IP1yQeGuHyFbvO9JocIkhl9Z2YWDtJ/0AAFGaIhZxvc=;
+ h=Resent-From:Resent-Date:Resent-To:Date:From:To:Cc:Subject:From;
+ b=D1/+LiktRwiMBhMfSF6vW7B9NHtJwRcZAWgH7G1a7uHkK8LjfJ6hnXK+bHLWWpna2
+ UdD+33fzAOo3cTFy+BZWL1C/jge366R7HTRXT5oykIqOa34Oc/l0Scgh70waAeXmKj
+ 7vG7QIanbV/wsNwQmoOn6x+IbNfgAXEHwPElsTRA=
+Resent-From: Johannes Krude <johannes@krude.de>
+Resent-Date: Sat, 23 May 2020 11:36:12 +0200
+Resent-Message-ID: <20200523093612.GA2921@phlox.h.transitiv.net>
+Resent-To: alsa-devel@alsa-project.org
+Date: Fri, 22 May 2020 17:08:34 +0200
+From: Johannes Krude <johannes@krude.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ASoC: only first codec is master in multicodec setup
+Message-ID: <20200522150829.GA115766@phlox.h.transitiv.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200523061033.GB3131938@kroah.com>
-Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net,
- Oscar Carter <oscar.carter@gmx.com>, Kees Cook <keescook@chromium.org>,
- kernel-hardening@lists.openwall.com, linux-kernel@vger.kernel.org,
- Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.com>,
- stable <stable@vger.kernel.org>, Stefan Richter <stefanr@s5r6.in-berlin.de>,
- "Lev R . Oshvang ." <levonshe@gmail.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>, linux-media@vger.kernel.org
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -141,48 +99,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Greg,
+When using multiple codecs, at most one codec should generate the master
+clock. All codecs except the first are therefore configured for slave
+mode.
 
-On Sat, May 23, 2020 at 08:10:33AM +0200, Greg KH wrote:
-> On Fri, May 22, 2020 at 07:43:08PM +0200, Oscar Carter wrote:
-> > Hi,
-> > 
-> > On Wed, May 20, 2020 at 03:16:24PM +0900, Takashi Sakamoto wrote:
-> > > Hi,
-> > >
-> > > I'm an author of ALSA firewire stack and thanks for the patch. I agree with
-> > > your intention to remove the cast of function callback toward CFI build.
-> > >
-> > > Practically, the isochronous context with FW_ISO_CONTEXT_RECEIVE_MULTICHANNEL
-> > > is never used by in-kernel drivers. Here, I propose to leave current
-> > > kernel API (fw_iso_context_create() with fw_iso_callback_t) as is.
-> 
-> If it's not used by anyone, why is it still there?  Can't we just delete
-> it?
+Signed-off-by: Johannes Krude <johannes@krude.de>
+---
+ sound/soc/soc-core.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-For this patchset, I followed to the theory to keep backward compatibility
-when adding any change, and it's what I'd like to discuss.
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index e697258d2..13a7d5b52 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1417,7 +1417,15 @@ int snd_soc_runtime_set_dai_fmt(struct snd_soc_pcm_runtime *rtd,
+ 	int ret;
+ 
+ 	for_each_rtd_codec_dais(rtd, i, codec_dai) {
+-		ret = snd_soc_dai_set_fmt(codec_dai, dai_fmt);
++		unsigned int codec_dai_fmt = dai_fmt;
++
++		// there can only be one master when using multiple codecs
++		if (i && (codec_dai_fmt & SND_SOC_DAIFMT_MASTER_MASK)) {
++			codec_dai_fmt &= ~SND_SOC_DAIFMT_MASTER_MASK;
++			codec_dai_fmt |= SND_SOC_DAIFMT_CBS_CFS;
++		}
++
++		ret = snd_soc_dai_set_fmt(codec_dai, codec_dai_fmt);
+ 		if (ret != 0 && ret != -ENOTSUPP) {
+ 			dev_warn(codec_dai->dev,
+ 				 "ASoC: Failed to set DAI format: %d\n", ret);
+-- 
+2.25.1
 
-The isoc context of multichannel mode is also available for userspace
-applications, and libhinoko[1] uses it. In a point of backward
-compatibility for userspace, we can't delete the mode.
-
-(Practically, the mode is useful for the purpose of packet sniffing in
-bus and helpful to my work for development of ALSA firewire stack[2].)
-
-On the other hand, there's no unit driver to use the mode in upstream
-kernel. It's unlikely to use the mode for unit driver since the mode is
-not specific to unit functionality. In my opinion, it's reasonable to
-lose backward compatibility slightly by hiding the multichannel mode
-from in-kernel unit driver.
-
-I'll post v2 patchset later and I'd like you to merge them if no
-objections from the others for the loss of backward compatibility.
-
-[1] https://github.com/takaswie/libhinoko
-[2] https://mailman.alsa-project.org/pipermail/alsa-devel/2019-April/147862.html
-
-
-Regards
-
-Takashi Sakamoto
