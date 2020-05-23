@@ -6,99 +6,66 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4429DC433E0
-	for <alsa-devel@archiver.kernel.org>; Sat, 23 May 2020 06:11:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 45500C433E0
+	for <alsa-devel@archiver.kernel.org>; Sat, 23 May 2020 06:12:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AF7A2207F7
-	for <alsa-devel@archiver.kernel.org>; Sat, 23 May 2020 06:11:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B1584207F7
+	for <alsa-devel@archiver.kernel.org>; Sat, 23 May 2020 06:12:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VTsjJfnu";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b="kAPKJBbB";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="o3LniShn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AF7A2207F7
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=kroah.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="omjmqnbc";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="LITQkm19"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B1584207F7
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0BBEB1853;
-	Sat, 23 May 2020 08:10:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0BBEB1853
+	by alsa0.perex.cz (Postfix) with ESMTPS id DC8B1186E;
+	Sat, 23 May 2020 08:11:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC8B1186E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590214286;
+	s=default; t=1590214339;
 	bh=0ftU1TTGfhFEpNW3NsbgYUbiFGGQHnZ3H3HOeSMeYD4=;
-	h=From:Date:To:Subject:References:In-Reply-To:Cc:List-Id:
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VTsjJfnu41/U/RjvOcDvZlEQhxl6O5Apxx2E3YjXbxT1uxGEoXEn9vZpwmzWpYKd5
-	 BKxdyop4zEWaUlUrztpTRrxCjcLVpG2a3BY+tzy0NQIxY4Z+QCpPNjkzd78ooZxTzj
-	 fOOV7Upm66D2DfJj1Uu39IGWmT3qnMeUbl3Nw/PU=
+	b=omjmqnbc6CJ7CrGMbrNlKLOjRobdYjHkBN7sQ6YLxGVh3/mBzEJpn4FDnvjAX+5a9
+	 pZsoFw3dHFT0nsEyWRzsUC1teGJXjpSrKL87PAUQYoXMSRJOsKkL0/lLSPYzcHyXNY
+	 OIAmtY31DjF/hudmbrRQ8eoGOEe4jKZN52c/JSNI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 84FAAF801A3;
-	Sat, 23 May 2020 08:10:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AB4F7F8021D;
+	Sat, 23 May 2020 08:10:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 59409F801D8; Sat, 23 May 2020 08:10:34 +0200 (CEST)
-Received: from wnew4-smtp.messagingengine.com (wnew4-smtp.messagingengine.com
- [64.147.123.18])
+ id B64B6F80229; Sat, 23 May 2020 08:10:41 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 924ACF80121
- for <alsa-devel@alsa-project.org>; Sat, 23 May 2020 08:10:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 924ACF80121
+ by alsa1.perex.cz (Postfix) with ESMTPS id ED9D1F800EE
+ for <alsa-devel@alsa-project.org>; Sat, 23 May 2020 08:10:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED9D1F800EE
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com
- header.b="kAPKJBbB"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="o3LniShn"
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
- by mailnew.west.internal (Postfix) with ESMTP id B27D18CB;
- Sat, 23 May 2020 02:10:24 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
- by compute1.internal (MEProxy); Sat, 23 May 2020 02:10:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
- from:date:to:cc:subject:message-id:references:mime-version
- :content-type:in-reply-to; s=fm3; bh=LrrYTVFkm9x5WAtV96l5QFTVfXK
- 7jcQpg5sr70HsgwE=; b=kAPKJBbB3e4aBtF2OcbBUICIud8yPLH22RFoStnp4e8
- yDZXaIlUHk0hzMRsWVU1tHFiy4j0L0oLLRjDEWOTmhX/S/kyk3zo4JPIGMqvBvu/
- pVHsRR8shbwejVVYYURo0N2WYAO0gpTmU1ZNWJ2HUmC1oVxu4P8anVPVK5dPa3D3
- VCtDB+/zUbFUwYk4BMaqAjLO9JlrzQtA/2FPzETfMh6ca94xQ5B/gQDe0te1qzXw
- /DdP9SgJLR7qZbBpupaF2rfmz2uUpswbVzE6RAxliD1hVZEC6Cxme/m7h+bltlXo
- sgi1B50yNPN4u/lqaF3ofGVVEz6iGA+UFhvCDk9u8bg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to:x-me-proxy
- :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=LrrYTV
- Fkm9x5WAtV96l5QFTVfXK7jcQpg5sr70HsgwE=; b=o3LniShnRlpl+p+BDDClSJ
- gFgFe65lkZbszodtwx+k48xiTCURwK42S+Fty6srSnJabd4skcMtn27IN77BBB4t
- 0m6wvn6WSvufHru66KSihYcVKdZmLEv188Rj/+jHrpJRk7vef08ZiRmu6xJzZeUb
- brmvvzvNucIVMlzSlDVdJOwBLrzodmiQwcIIvPxG2miwdgmgYaS1xK3qbGXy0b/B
- 0gwn3JDRJH9RlFMvMAS5WoQy9X9IX7E6Zbaj4Oc+/Nc8SxPoasIiShar3D91kh21
- l8/i2gHtlYm6pgY2gXS1A6QnKUZM07e1CXyuBXaMoKSP1JNtmNR25lY6c3PjWSTg
- ==
-X-ME-Sender: <xms:T77IXlv6y-F4jWSN-g0qsuwh-D2FgNmSuQkyix1z2-REyP1dBZ1AQw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedruddugedguddttdcutefuodetggdotefrod
- ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
- necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
- enucfjughrpefhfffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepghhrvghg
- sehkrhhorghhrdgtohhmnecuggftrfgrthhtvghrnheptdehveeuieekuddvjefhlefgke
- dugeeffeffjeetieefgfduveehfedvheeludfhnecukfhppeekfedrkeeirdekledruddt
- jeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrh
- gvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:T77IXud2oWQcXqtjJpYSLzcm7xfysXz80uywdWroCd0IuG6WeZsNvQ>
- <xmx:T77IXoyC589Z7sLJ5OoU5m3ZDXiWXru70tkQEr2CPDnobSrWxGnt4Q>
- <xmx:T77IXsPJz4o-qG0QNang-l9w2SYk8cE6fRSpM7EiEVXr9iU2A99IVg>
- <xmx:UL7IXsVykN8rG8y8fgoGUWZ6glDMhYsF3Sub3bpYfEABCX_YO4a-ML45vUs>
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="LITQkm19"
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl
  [83.86.89.107])
- by mail.messagingengine.com (Postfix) with ESMTPA id CFB1530664D9;
- Sat, 23 May 2020 02:10:22 -0400 (EDT)
-From: greg@kroah.com
-Date: Sat, 23 May 2020 08:10:18 +0200
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 377EF2071C;
+ Sat, 23 May 2020 06:10:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1590214235;
+ bh=0ftU1TTGfhFEpNW3NsbgYUbiFGGQHnZ3H3HOeSMeYD4=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=LITQkm19MZP146obm5P6vkC9xld35coDBA1g8vKO6/E+elDtZwY3jC4Hmew8a+eAP
+ oWyKx01bUx/e+iFq8Zmsx59bpMeroPipa4jiZoms+az3hHYq0YQQ88KQoUKyT6jNak
+ UH+SIwYpV+e+o83w34Hi8YuKyAC4XOPoCHF4FBiM=
+Date: Sat, 23 May 2020 08:10:33 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
 To: Oscar Carter <oscar.carter@gmx.com>
 Subject: Re: [PATCH v2] firewire: Remove function callback casts
-Message-ID: <20200523061018.GA3131938@kroah.com>
+Message-ID: <20200523061033.GB3131938@kroah.com>
 References: <20200519173425.4724-1-oscar.carter@gmx.com>
  <20200520061624.GA25690@workstation> <20200522174308.GB3059@ubuntu>
 MIME-Version: 1.0
