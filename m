@@ -1,4 +1,4 @@
-Return-Path: <SRS0=PMZM=7F=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=kpQv=7G=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
@@ -6,85 +6,66 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A39D2C433DF
-	for <alsa-devel@archiver.kernel.org>; Sat, 23 May 2020 18:10:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C1D9C433E0
+	for <alsa-devel@archiver.kernel.org>; Sun, 24 May 2020 07:00:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3059E2067B
-	for <alsa-devel@archiver.kernel.org>; Sat, 23 May 2020 18:10:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 23B6A2078B
+	for <alsa-devel@archiver.kernel.org>; Sun, 24 May 2020 07:00:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vSoo75B9";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=freedom.nl header.i=@freedom.nl header.b="jGW0Hnq3";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=freedom.nl header.i=@freedom.nl header.b="FGChJb+P"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3059E2067B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=freedom.nl
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ol1pqLhj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 23B6A2078B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 63912176D;
-	Sat, 23 May 2020 20:09:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63912176D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 627711746;
+	Sun, 24 May 2020 08:59:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 627711746
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590257440;
-	bh=BK8HAdLjFXGObR2hRfPvjyhE6vfmJkJ+GrrLtYOVciU=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1590303624;
+	bh=V6cbEejH+b4+NKgxwjb3COMDMnFTSAy/JSOvQ4aJLO8=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vSoo75B9OryWugfOt+6bWDwuSOSo6DieWAeiSLiKPAlg+ayb+arZUNbsHzKpLfjRf
-	 h/Yie2KEIsKO4uelTrg7FMvM18dW0SfkLKjrMwOwewqWluuGoZYltguxTRx9h9gK6R
-	 wThQnDOeKnpe6fe7XVgZAJE2cLgutEauvp1n3iNI=
+	b=ol1pqLhjQzfAVa5wY0cqgu951+5dtd+OH7OfZ9T4GhsBC2XxqY29g+5ei7rhZV1L2
+	 nj2DQ7i1CO7wuns3ijRfB5iJSS2Hh8T5RRaVC1khIw/NrVJdZI1ia173gwqaPlyr8V
+	 UUoHMw8p1ob95K2XLE8b2L9VoXzw12cTAol1L4ow=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 76841F801A3;
-	Sat, 23 May 2020 20:09:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DA1D7F80150;
+	Sun, 24 May 2020 08:59:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 37358F801D8; Sat, 23 May 2020 20:09:45 +0200 (CEST)
-Received: from outbound.soverin.net (outbound.soverin.net [116.202.65.215])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id BABE6F8015C; Sun, 24 May 2020 08:59:31 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 197C8F800EE
- for <alsa-devel@alsa-project.org>; Sat, 23 May 2020 20:09:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 197C8F800EE
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=freedom.nl header.i=@freedom.nl
- header.b="jGW0Hnq3"; 
- dkim=pass (1024-bit key) header.d=freedom.nl header.i=@freedom.nl
- header.b="FGChJb+P"
-Received: from smtp.freedom.nl (unknown [10.10.3.36])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
- (No client certificate requested)
- by outbound.soverin.net (Postfix) with ESMTPS id 3D2AA61224;
- Sat, 23 May 2020 18:09:39 +0000 (UTC)
-Received: from smtp.freedom.nl (smtp.freedom.nl [116.202.65.211]) by
- soverin.net
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=freedom.nl; s=default;
- t=1590257378; bh=BK8HAdLjFXGObR2hRfPvjyhE6vfmJkJ+GrrLtYOVciU=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=jGW0Hnq3/XMBTtWwNxSIMxKymhJO1jTM9epDr9DrVSepYh4ge4eS6ZpB5+XR7MXI3
- FqSjwL/KlJxXGPIz8tYFxHQqjDV1Xtxy+u9MWSa46GZfUDVIP0o4yHmbNigo0fFH9t
- OtA/6F3amgTDBd9Z1gn6NK8Y2IYFaLq1WVLbnMs4=
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=freedom.nl; s=default;
- t=1590257379; bh=BK8HAdLjFXGObR2hRfPvjyhE6vfmJkJ+GrrLtYOVciU=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=FGChJb+P4PUdP1P4zdCkiNuNXTe+MxwmCuTvKm5GXpLh6J6mkUkd7IuKscEQxBOHt
- d5lmZjhLdy2Dz8R/CenSKTp/QJpW1CAeuHU3RYW4zwdh9KftldJXF6WnV7z7s3cFlq
- E1MtkyzTP9tpfToZ+h48gDFqBnp9lGIRBJwNTIAU=
-From: Erwin Burema <e.burema@freedom.nl>
-To: alsa-devel@alsa-project.org, Alexander Tsoy <alexander@tsoy.me>
-Subject: Re: [PATCH] Add duplex sound support for USB devices using implicit
- feedback
-Date: Sat, 23 May 2020 20:09:31 +0200
-Message-ID: <1674042.U9NR2fmVFg@alpha-wolf>
-In-Reply-To: <6103f3aba91020ea345e9146da82e52823b7c298.camel@tsoy.me>
-References: <2410739.SCZni40SNb@alpha-wolf>
- <6103f3aba91020ea345e9146da82e52823b7c298.camel@tsoy.me>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Virus-Scanned: clamav-milter 0.102.3 at c03mi01
-X-Virus-Status: Clean
-Content-Type: text/plain; charset="UTF-8"
-Cc: Takashi Iwai <tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 50682F8013C
+ for <alsa-devel@alsa-project.org>; Sun, 24 May 2020 08:59:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50682F8013C
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 5E24BB04F;
+ Sun, 24 May 2020 06:59:28 +0000 (UTC)
+Date: Sun, 24 May 2020 08:59:22 +0200
+Message-ID: <s5hftbpx1h1.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Vasily Khoruzhick <anarsoul@gmail.com>
+Subject: Re: [PATCH v2] ALSA: line6: add hw monitor volume control for POD
+ HD500
+In-Reply-To: <20200523174957.6294-1-anarsoul@gmail.com>
+References: <20200523174957.6294-1-anarsoul@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Pavel Machek <pavel@denx.de>, Takashi Iwai <tiwai@suse.com>,
+ Kai-Heng Feng <kai.heng.feng@canonical.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Allison Randal <allison@lohutok.net>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,137 +81,80 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On zaterdag 23 mei 2020 19:53:49 CEST Alexander Tsoy wrote:
-> =D0=92 =D0=92=D1=81, 10/05/2020 =D0=B2 20:29 +0200, Erwin Burema =D0=BF=
-=D0=B8=D1=88=D0=B5=D1=82:
-> > For USB sound devices using implicit feedback the endpoint used for
-> > this feedback should be able to be opened twice, once for required
-> > feedback and second time for audio data. This way these devices can
-> > be put in duplex audio mode. Since this only works if the settings of
-> > the endpoint don't change a check is included for this.
-> >=20
-> > This fixes bug 207023 ("MOTU M2 regression on duplex audio") and
-> > should also fix bug 103751 ("M-Audio Fast Track Ultra usb audio
-> > device will not operate full-duplex")
-> >=20
-> > Signed-off-by: Erwin Burema <e.burema@gmail.com>
-> > ---
->=20
-> This patch seems to cause kernel panic on my system. This happens
-> during boot when gdm (with pulseaudio) is starting up.
->
+On Sat, 23 May 2020 19:49:57 +0200,
+Vasily Khoruzhick wrote:
+> 
+> Add hw monitor volume control for POD HD500. The same change may
+> work for HD500X but I don't have it to test.
+> 
+> Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+> ---
+> v2: clamp volume value to [0, ARRAY_SIZE() -1] in
+>     podhd_set_monitor_level()
 
-That's interesting, not running gnome (and thus also not running gdm,=20
-currently KDE with SDDM) here so would need to take some time troubleshooti=
-ng.=20
-Suspect I missed something in the check if both input and output are simila=
-rly=20
-configured.
+Thanks for the patch.
+The basic implementation looks good, but I see a few issues.
+Below are the comments:
 
-Will see if I can reproduce it and where exactly it goes wrong, in the=20
-meantime would it be possible to test if 5.6 or later show the same issue=20
-since I intially developed the patch against that release?
+> @@ -132,6 +132,7 @@ static int line6_send_raw_message(struct usb_line6 *line6, const char *buffer,
+>  
+>  	return done;
+>  }
+> +EXPORT_SYMBOL(line6_send_raw_message);
 
-> $ grep CONFIG_IRQ_FORCED_THREADING /boot/config-5.4.42-gentoo
-> CONFIG_IRQ_FORCED_THREADING=3Dy
->=20
-> $ grep threadirqs /proc/cmdline
-> BOOT_IMAGE=3D/vmlinuz-5.4.42-gentoo root=3D/dev/mapper/vg_system-root ro
-> rd.md.uuid=3Dcdf11511:cf0ca8c5:cc165dc3:3d3d248f
-> rd.luks.uuid=3Da5a6e532-af4e-49b2-8178-95e54c293799 rd.lvm.lv=3Dvg_system=
-/root
-> rd.lvm.lv=3Dvg_system/swap rd.lvm.lv=3Dvg_system/usr
-> resume=3D/dev/mapper/vg_system-swap
-> rootflags=3Drelatime,logbufs=3D8,logbsize=3D256k rootfstype=3Dxfs
-> init=3D/lib/systemd/systemd noautogroup loglevel=3D5 console=3DttyS1,1152=
-00
-> console=3Dtty0 threadirqs mgag200.modeset=3D1
->=20
-> [   60.563598] BUG: unable to handle page fault for address:
-> ffffb80602983ff0 [   60.570478] #PF: supervisor write access in kernel mo=
-de
-> [   60.575701] #PF: error_code(0x0002) - not-present page
-> [   60.580833] PGD 813498067 P4D 813498067 PUD 813499067 PMD 80e0e0067 PT=
-E 0
-> [   60.587619] Oops: 0002 [#1] PREEMPT SMP NOPTI
-> [   60.591979] CPU: 4 PID: 242 Comm: irq/34-xhci_hcd Tainted: G          =
- O=20
->   T 5.4.42-gentoo #1 [   60.600585] Hardware name: Supermicro H8SCM/H8SCM,
-> BIOS 3.5b       03/18/2016 [   60.607723] RIP: 0010:__memcpy+0x12/0x20
-> [   60.611646] Code: c1 e2 20 48 09 c2 48 31 d3 e9 71 ff ff ff 90 90 90 90
-> 90 90 90 90 90 90 0f 1f 44 00 00 48 89 f8 48 89 d1 48 c1 e9 03 83 e2 07
-> <f3> 48 a5 89 d1 f3 a4 c3 66 0f 1f 44 00 00 48 89 f8 48 89 d1 f3 a4 [ =20
-> 60.630401] RSP: 0018:ffffb806004a3c80 EFLAGS: 00010046
-> [   60.635628] RAX: ffffb80602983ff0 RBX: 0000000000000010 RCX:
-> 000000000000000a [   60.642759] RDX: 0000000000000000 RSI: ffff9d5f6659b0=
-00
-> RDI: ffffb80602983ff0 [   60.649883] RBP: ffff9d5f62c38c00 R08:
-> 0000000000000002 R09: 0000000000000000 [   60.657017] R10: 00000000000000=
-02
-> R11: 0000000000000001 R12: 0000000000000050 [   60.664160] R13:
-> 0000000000000000 R14: 0000000000079ff0 R15: ffff9d608c1d4908 [   60.67129=
-3]
-> FS:  0000000000000000(0000) GS:ffff9d6096b00000(0000)
-> knlGS:0000000000000000 [   60.679380] CS:  0010 DS: 0000 ES: 0000 CR0:
-> 0000000080050033
-> [   60.685125] CR2: ffffb80602983ff0 CR3: 000000080f55c000 CR4:
-> 00000000000406e0 [   60.692258] Call Trace:
-> [   60.694719]  retire_capture_urb+0x201/0x270 [snd_usb_audio]
-> [   60.700288]  snd_complete_urb+0x1b7/0x270 [snd_usb_audio]
-> [   60.705686]  __usb_hcd_giveback_urb+0x77/0xe0
-> [   60.710054]  xhci_giveback_urb_in_irq.isra.0+0x6d/0x100
-> [   60.715278]  xhci_td_cleanup+0xc4/0xe0
-> [   60.719032]  xhci_irq+0x825/0x1780
-> [   60.722438]  ? __schedule+0x2c3/0x650
-> [   60.726105]  ? irq_finalize_oneshot.part.0+0xd0/0xd0
-> [   60.731071]  irq_forced_thread_fn+0x25/0x70
-> [   60.735257]  irq_thread+0xea/0x170
-> [   60.738672]  ? wake_threads_waitq+0x30/0x30
-> [   60.742859]  kthread+0xf8/0x130
-> [   60.746005]  ? irq_thread_check_affinity+0x90/0x90
-> [   60.750805]  ? kthread_park+0x90/0x90
-> [   60.754473]  ret_from_fork+0x22/0x40
-> [   60.758053] Modules linked in: ebtable_filter ebtables bridge stp llc
-> netconsole wireguard ip6_udp_tunnel udp_tunnel xt_limit xt_comment
-> xt_recent xt_multiport xt_MASQUERADE iptable_nat nf_nat
-> nf_conntrack_netbios_ns nf_conntrack_broadcast xt_CT ip6table_raw
-> iptable_raw snd_seq_midi snd_seq_midi_event amd64_edac_mod kvm_amd kvm
-> pcspkr irqbypass uvcvideo videobuf2_vmalloc videobuf2_memops videobuf2_v4=
-l2
-> videodev snd_hda_codec_hdmi videobuf2_common snd_hda_intel joydev
-> snd_intel_nhlt snd_hda_codec snd_usb_audio sp5100_tco snd_usbmidi_lib
-> snd_rawmidi snd_hwdep e1000e snd_hda_core snd_pcm nfsd tcp_yeah tcp_vegas
-> sch_fq_codel uas amdgpu crc32c_intel mgag200 drm_vram_helper gpu_sched ttm
-> vhost_scsi target_core_mod configfs vhost_net tun tap vhost vhba(O) jc42
-> ipmi_si ipmi_devintf ipmi_msghandler fuse eeprom [   60.828924] CR2:
-> ffffb80602983ff0
-> [   60.832245] ---[ end trace 1945ea8b50798a03 ]---
-> [   60.836862] RIP: 0010:__memcpy+0x12/0x20
-> [   60.840797] Code: c1 e2 20 48 09 c2 48 31 d3 e9 71 ff ff ff 90 90 90 90
-> 90 90 90 90 90 90 0f 1f 44 00 00 48 89 f8 48 89 d1 48 c1 e9 03 83 e2 07
-> <f3> 48 a5 89 d1 f3 a4 c3 66 0f 1f 44 00 00 48 89 f8 48 89 d1 f3 a4 [ =20
-> 60.859553] RSP: 0018:ffffb806004a3c80 EFLAGS: 00010046
-> [   60.864778] RAX: ffffb80602983ff0 RBX: 0000000000000010 RCX:
-> 000000000000000a [   60.871911] RDX: 0000000000000000 RSI: ffff9d5f6659b0=
-00
-> RDI: ffffb80602983ff0 [   60.879036] RBP: ffff9d5f62c38c00 R08:
-> 0000000000000002 R09: 0000000000000000 [   60.886168] R10: 00000000000000=
-02
-> R11: 0000000000000001 R12: 0000000000000050 [   60.893301] R13:
-> 0000000000000000 R14: 0000000000079ff0 R15: ffff9d608c1d4908 [   60.90045=
-3]
-> FS:  0000000000000000(0000) GS:ffff9d6096b00000(0000)
-> knlGS:0000000000000000 [   60.908538] CS:  0010 DS: 0000 ES: 0000 CR0:
-> 0000000080050033
-> [   60.914276] CR2: ffffb80602983ff0 CR3: 000000080f55c000 CR4:
-> 00000000000406e0 [   60.921411] Kernel panic - not syncing: Fatal excepti=
-on
-> in interrupt [   60.927783] Kernel Offset: 0x21000000 from
-> 0xffffffff81000000 (relocation range:
-> 0xffffffff80000000-0xffffffffbfffffff) [   60.938554] ---[ end Kernel pan=
-ic
-> - not syncing: Fatal exception in interrupt ]---
+Let's use EXPORT_SYMBOL_GPL() instead.
 
 
+> +static const unsigned int float_zero_to_one_lookup[] = {
+> +0x00000000, 0x3C23D70A, 0x3CA3D70A, 0x3CF5C28F, 0x3D23D70A, 0x3D4CCCCD,
+> +0x3D75C28F, 0x3D8F5C29, 0x3DA3D70A, 0x3DB851EC, 0x3DCCCCCD, 0x3DE147AE,
+> +0x3DF5C28F, 0x3E051EB8, 0x3E0F5C29, 0x3E19999A, 0x3E23D70A, 0x3E2E147B,
+> +0x3E3851EC, 0x3E428F5C, 0x3E4CCCCD, 0x3E570A3D, 0x3E6147AE, 0x3E6B851F,
+> +0x3E75C28F, 0x3E800000, 0x3E851EB8, 0x3E8A3D71, 0x3E8F5C29, 0x3E947AE1,
+> +0x3E99999A, 0x3E9EB852, 0x3EA3D70A, 0x3EA8F5C3, 0x3EAE147B, 0x3EB33333,
+> +0x3EB851EC, 0x3EBD70A4, 0x3EC28F5C, 0x3EC7AE14, 0x3ECCCCCD, 0x3ED1EB85,
+> +0x3ED70A3D, 0x3EDC28F6, 0x3EE147AE, 0x3EE66666, 0x3EEB851F, 0x3EF0A3D7,
+> +0x3EF5C28F, 0x3EFAE148, 0x3F000000, 0x3F028F5C, 0x3F051EB8, 0x3F07AE14,
+> +0x3F0A3D71, 0x3F0CCCCD, 0x3F0F5C29, 0x3F11EB85, 0x3F147AE1, 0x3F170A3D,
+> +0x3F19999A, 0x3F1C28F6, 0x3F1EB852, 0x3F2147AE, 0x3F23D70A, 0x3F266666,
+> +0x3F28F5C3, 0x3F2B851F, 0x3F2E147B, 0x3F30A3D7, 0x3F333333, 0x3F35C28F,
+> +0x3F3851EC, 0x3F3AE148, 0x3F3D70A4, 0x3F400000, 0x3F428F5C, 0x3F451EB8,
+> +0x3F47AE14, 0x3F4A3D71, 0x3F4CCCCD, 0x3F4F5C29, 0x3F51EB85, 0x3F547AE1,
+> +0x3F570A3D, 0x3F59999A, 0x3F5C28F6, 0x3F5EB852, 0x3F6147AE, 0x3F63D70A,
+> +0x3F666666, 0x3F68F5C3, 0x3F6B851F, 0x3F6E147B, 0x3F70A3D7, 0x3F733333,
+> +0x3F75C28F, 0x3F7851EC, 0x3F7AE148, 0x3F7D70A4, 0x3F800000
+
+Just nitpick: better to align with lower hex letters (a-f).
 
 
+> +};
+> +
+> +static void podhd_set_monitor_level(struct usb_line6_podhd *podhd, int value)
+> +{
+> +	unsigned int fl;
+> +	static const unsigned char msg[16] = {
+> +		/* Chunk is 0xc bytes (without first word) */
+> +		0x0c, 0x00,
+> +		/* First chunk in the message */
+> +		0x01, 0x00,
+> +		/* Message size is 2 4-byte words */
+> +		0x02, 0x00,
+> +		/* Unknown */
+> +		0x04, 0x41,
+> +		/* Unknown */
+> +		0x04, 0x00, 0x13, 0x00,
+> +		/* Volume, LE float32, 0.0 - 1.0 */
+> +		0x00, 0x00, 0x00, 0x00
+> +	};
+> +	unsigned char *buf;
+> +
+> +	buf = kmalloc(sizeof(msg), GFP_ATOMIC);
+
+Is this function called from the irq context like the urb callback?
+I saw that it's called from the mixer put callback, and it's in the
+normal sleepable context, hence GFP_KERNEL can be used safely.
+
+
+thanks,
+
+Takashi
