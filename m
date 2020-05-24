@@ -6,61 +6,61 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8E0CC433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 May 2020 09:29:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C6B09C433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 May 2020 09:30:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 632DE20787
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 May 2020 09:29:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 53C302071A
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 May 2020 09:30:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TLTPKRKG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 632DE20787
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dzfq41Ps"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 53C302071A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mel.vin
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B8ABE1707;
-	Mon, 25 May 2020 11:29:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B8ABE1707
+	by alsa0.perex.cz (Postfix) with ESMTPS id A58841728;
+	Mon, 25 May 2020 11:29:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A58841728
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590398992;
-	bh=flKECIQlU0aEnkV9D0q/b02j/YXWCtYQLTGOHQb16Ko=;
+	s=default; t=1590399021;
+	bh=Jq+ZUX4P7qhaQ9O/zuOBnGnGSC3SaDtCUaDHM8Fw+CI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TLTPKRKGiYCYJ+pHbuFKaDNrfAY2TtVefrijDs9Gspb4VPF7/lj1NsJiyTs29LWP6
-	 rS82JLnRGfbEpePm42PP0Lwe3Q6eEAJiO2N4h/XnYF51xscOohf2MoQt7D5AWg042M
-	 DW30c+EFp3C1fMifYgkhHjp3epDOjNs2fDsjEkg4=
+	b=dzfq41Ps/N9cDRVk7SsS3AYbv/kbDbGRvP3+7IZiP86bLK29wy/klhJBXbjKrANzD
+	 IjOokK3KgHiemLcW5xg//0UUjZDO8aiDmkbdvuFmOVPlbMsdIB0OwcOxb5v49aIU5+
+	 dQGrloZ6ItwTaxbdPT9jcofYBd+7PxzfiK5vHkoY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BA4CDF802BE;
-	Mon, 25 May 2020 11:25:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2C756F802C4;
+	Mon, 25 May 2020 11:25:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EB8EDF80140; Fri, 22 May 2020 13:36:25 +0200 (CEST)
+ id 3734FF801D8; Sun, 24 May 2020 02:24:52 +0200 (CEST)
 Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.141])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 24573F80140
- for <alsa-devel@alsa-project.org>; Fri, 22 May 2020 13:36:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24573F80140
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3CE16F80140
+ for <alsa-devel@alsa-project.org>; Sun, 24 May 2020 02:24:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3CE16F80140
 Received: from submission (posteo.de [89.146.220.130]) 
- by mout01.posteo.de (Postfix) with ESMTPS id 6D9E5160063
- for <alsa-devel@alsa-project.org>; Fri, 22 May 2020 13:36:21 +0200 (CEST)
+ by mout01.posteo.de (Postfix) with ESMTPS id 3704C16005C
+ for <alsa-devel@alsa-project.org>; Sun, 24 May 2020 02:24:42 +0200 (CEST)
 Received: from customer (localhost [127.0.0.1])
- by submission (posteo.de) with ESMTPSA id 49T4FJ2CxJz9rxY;
- Fri, 22 May 2020 13:36:19 +0200 (CEST)
+ by submission (posteo.de) with ESMTPSA id 49V1FQ2TN6z6tmP;
+ Sun, 24 May 2020 02:24:41 +0200 (CEST)
 From: Melvin Vermeeren <mail@mel.vin>
-To: Pascal Bomel <bomelp@gmail.com>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 Subject: Re: Dice firewire support
-Date: Fri, 22 May 2020 13:36:13 +0200
-Message-ID: <4243350.MNUmLrt7UK@verm-r4e>
-In-Reply-To: <CALic0i3=qUMQxK_E1oFA_=K0+ABk0LJwF3hGZumA0nU8PQV4tw@mail.gmail.com>
+Date: Sun, 24 May 2020 02:24:33 +0200
+Message-ID: <2204634.7cJeLMavbB@verm-r4e>
+In-Reply-To: <4243350.MNUmLrt7UK@verm-r4e>
 References: <276893435.728967.1590133905081.JavaMail.administrator@n7.nabble.com>
- <20200522081047.GA105169@workstation>
  <CALic0i3=qUMQxK_E1oFA_=K0+ABk0LJwF3hGZumA0nU8PQV4tw@mail.gmail.com>
+ <4243350.MNUmLrt7UK@verm-r4e>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart2045970.BcCf8ka06L";
+Content-Type: multipart/signed; boundary="nextPart1875152.F0jBVD7ps7";
  micalg="pgp-sha512"; protocol="application/pgp-signature"
 X-Mailman-Approved-At: Mon, 25 May 2020 11:25:08 +0200
 Cc: alsa-devel@alsa-project.org
@@ -79,78 +79,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
---nextPart2045970.BcCf8ka06L
+--nextPart1875152.F0jBVD7ps7
 Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
 
-Hi all,
+Hi Takashi,
 
-On Friday, 22 May 2020 11:07:06 CEST Pascal Bomel wrote:
-> Thank you so much Takashi.
-> Actually i have a debian 4.9.12 "stretch" release with 4.9.211 kernel
-> version (uname -v)
-> This kernel has snd-dice module inside isn't it ?
-> I am not very familiar with linux, that's why i appreciate your help.
+On Friday, 22 May 2020 13:36:13 CEST Melvin Vermeeren wrote:
+> Since I am running 5.5.17
+> (buster-backports) kernel right now I will do some testing later today to
+> see if there are still any issues in this version, the Mytek is still used
+> daily.
 
-You can either upgrade to Debian buster, which has 4.19, or install a kernel 
-from stretch-backports, which is also 4.19. Assuming you have amd64 hardware 
-that would be https://packages.debian.org/stretch-backports/linux-image-amd64.
-See also https://backports.debian.org/Instructions/ for more instructions.
+I have just tested it with 5.5.17 and can confirm this issue still exists. It 
+is not very noticeable when playing music but it instantly apparent when 
+playing a 500hz tone for a few seconds. It sounds there is some small ticking 
+in the background instead of a pure tone. Happens every few hundred 
+milliseconds or so and is fully consistent, as if a timing or cycle issue.
 
-Some background information below, from how I remember things. Do note that 
-there were many details and I may be mistaken about some of them.
+Next I checked with current master v5.7-rc2-1808-g40e1763b6246 (snd_dice and 
+snd_firewire_lib) with the same results. I believe the status is the same 
+posted in 2018[1][2]. The old out-of-tree have served me well throughout the 
+years, so I will probably keep using them for now. Perhaps this final issue 
+will be found one day, if I can help you with anything please let me know.
 
-At the time of 4.18 there was some issue with the timing that caused non-bit-
-perfect playback, resulting in audio artefacts that were hard to detect as it 
-was near perfect. DSD over PCM (DoP) mode however made it very obvious this 
-issue existed, as it would not work reliably at all. It was also noticeable 
-when listening to a fixed Hz tone, it wasn't perfectly smooth.
+[1] https://www.alsa-project.org/pipermail/alsa-devel/2018-June/136829.html
+[2] https://www.alsa-project.org/pipermail/alsa-devel/2018-June/137160.html
 
-I believe there was some significant refactoring going on with snd_dice at the 
-cause, which caused some previously working things to stop working as snd_dice 
-became more compliant with device's listed features and protocols.
-
-Older versions "just sent a new stream" when frequency changed (iirc), which 
-actually caused the DAC to sometimes not catch the signal and made it silent. 
-You then had to restart jack (or ALSA stream) a few times. The new version 
-used proper lock mechanism (AMDTP?) meaning it worked 100% of the time, except 
-for the non-bit-perfect issue.
-
-Since those days of experimenting I have been running snd_dice and 
-snd_firewire_lib from sound-4.4-rc7-692-g2eb65d67afbf out of tree, with minor 
-patches to make them compatible with modern kernels and overrides for the DAC.
-
-Thanks for the mention Takashi, I appreciate it. Since I am running 5.5.17 
-(buster-backports) kernel right now I will do some testing later today to see 
-if there are still any issues in this version, the Mytek is still used daily.
-
-Cheers,
+Thanks,
 
 -- 
 Melvin Vermeeren
---nextPart2045970.BcCf8ka06L
+--nextPart1875152.F0jBVD7ps7
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part.
 Content-Transfer-Encoding: 7Bit
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEETnzUjuV5O+rCrz6nRiwQnTrHuFkFAl7HuS0ACgkQRiwQnTrH
-uFm6wA/8CzU77sjW2p8L53jhZd2A0UAuCulbZ46I3WecPAIswzHTl5ssy9YhNbVx
-1RAIQ+9YRKjb0US7XucTncvG/BvTq6BvQEQzwH24bybjUghSk6QrRpOo/N4/+vfy
-pJlqIPUIoRq5tcZCB8AFb03V16VvtuxGk2BlgbTV2Q13Sw9q90oBreq5J9zp00PR
-Apo5szF5QIYNMMQdDxaa+QbGpFFF3zmgzuEFJJhbj+UaZqZH1u8lCuWm97adzEx2
-VutHWARjy84R6MBTsXc5RetoV72kBE3HzwfjUL2JBLqaL0lJHiwZmB+Oq6t8Ur37
-0I7qAi5VxV+BMnWQrjaqjUVTpIsMvdG71JhBcS/tMoFFgk6rvptiY6GHg0Q1QrlN
-Sws10vzVkEodwW0aQQskl+ALVB4swxS7qJ0diA4Q4q56RtkldBKnFJOhF9xOynTG
-vWxiFCzoez6r85smaLL5YxDNbOTY8byPXyXNXfXp4lInhW0Pxqm47N+E2sKrbiAh
-fG88XXgRyNJY1c7vJdtiDV/KZu9/DaqQ220DHdQaIV6jgQPCtIz/01b8cHasylik
-NCfrUpEav4upWueHnKHSyEtMmVp8oKzt+d1Bwuy+nY44TaTuDKUgogIG1shD4Uu5
-2vRuzBLWt7kW6ZItntdWuxh+DTc+JnSkEB4t5nly+RFMLHNvKqc=
-=GWye
+iQIzBAABCgAdFiEETnzUjuV5O+rCrz6nRiwQnTrHuFkFAl7JvsEACgkQRiwQnTrH
+uFmDRw//eM+1QB0bYeDbDQHHhuxqqUp5fnu/UWfCsfFzvCBvegCOcpjj20Fzjm8T
+J17PZsj4kTSGhtfzjsrXUkdZ3ismVssJCyDdNyOlCGnc5zLOr3mT7uNP/q2dtT/E
+JByZyqqwR2maDlHXaeKRUa57W5giLy4ui8xJ+P47HEtW42VcjPFxYfOsd6JgI3IS
+6I+JoHRtvPgnuiPKEelFcUNaF/ppDPUTiKXc1gLruQdMHIbbSHsAltzlBu51sbee
+w/mWqaSTKkoikPRsE71YYtwd+5IyqJxvrJpE0Lr9lQ963Uy03QvpIeq+zY1g2Jza
+gs5MNF/5AQhI8pjxBtwTfYCJZB0xEFvSpYqHaajcIO0wX+XUsKSCuLTkiNGQ5owk
+QX7zyQ8sZWRQ5T2KzrV3C08wlfgf+GXJ4dsiMkjTAj3YBQjJZgNqXSJkuTgYMbnf
+beKLNekambyH4zJNGjiltk/z+fhwnr7ZL1rvS08COddqHhEYrw/fH5MtwVJL2YNE
+bcEZlt7nF9ZyN4d7id4BiHgdp3igDxYD0XdZ94tffTy4YS+TM5BXHMrVPe2MEkg/
+RtYNZWq5WABZT886UPodhk7FcUhsZ0XFqFPw6gNSQsD2HGpelI/LHgy2p/1tEG4B
+eTZ3qiWwOF0Ltn5hunF+zCznDuunWhM3Qt0rrjwvbfWcLxcm8Co=
+=efdP
 -----END PGP SIGNATURE-----
 
---nextPart2045970.BcCf8ka06L--
+--nextPart1875152.F0jBVD7ps7--
 
 
 
