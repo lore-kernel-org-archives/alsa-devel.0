@@ -6,66 +6,65 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C1D9C433E0
-	for <alsa-devel@archiver.kernel.org>; Sun, 24 May 2020 07:00:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 090B0C433DF
+	for <alsa-devel@archiver.kernel.org>; Sun, 24 May 2020 08:38:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 23B6A2078B
-	for <alsa-devel@archiver.kernel.org>; Sun, 24 May 2020 07:00:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 804D92076C
+	for <alsa-devel@archiver.kernel.org>; Sun, 24 May 2020 08:38:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ol1pqLhj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 23B6A2078B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Q6S85ywv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 804D92076C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 627711746;
-	Sun, 24 May 2020 08:59:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 627711746
+	by alsa0.perex.cz (Postfix) with ESMTPS id B69A11730;
+	Sun, 24 May 2020 10:37:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B69A11730
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590303624;
-	bh=V6cbEejH+b4+NKgxwjb3COMDMnFTSAy/JSOvQ4aJLO8=;
+	s=default; t=1590309513;
+	bh=WY8mtjZCSHbo6LcrJoCH5pMZ3A2KJqEYElpFNNvz2FA=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ol1pqLhjQzfAVa5wY0cqgu951+5dtd+OH7OfZ9T4GhsBC2XxqY29g+5ei7rhZV1L2
-	 nj2DQ7i1CO7wuns3ijRfB5iJSS2Hh8T5RRaVC1khIw/NrVJdZI1ia173gwqaPlyr8V
-	 UUoHMw8p1ob95K2XLE8b2L9VoXzw12cTAol1L4ow=
+	b=Q6S85ywvB1ct3QRpkRPw3x9otRWUDQp3lCWZFkpIDaM+ylZuoZwTuVjjnjIrkBQeA
+	 Ok+em7oZyxL0Z2uLaahywKAuNhcTA8oDsltABUWJs4RgmX89Dyp0Q6HW2TCwKEDDHZ
+	 Nabx1Wk4wMFQ31XJlfe2ZgyXuGIr8vhzQmKDoR1w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DA1D7F80150;
-	Sun, 24 May 2020 08:59:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2000EF8013C;
+	Sun, 24 May 2020 10:37:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BABE6F8015C; Sun, 24 May 2020 08:59:31 +0200 (CEST)
+ id 8CBF8F8015C; Sun, 24 May 2020 10:37:41 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 50682F8013C
- for <alsa-devel@alsa-project.org>; Sun, 24 May 2020 08:59:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50682F8013C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4BDAAF8013C
+ for <alsa-devel@alsa-project.org>; Sun, 24 May 2020 10:37:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4BDAAF8013C
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 5E24BB04F;
- Sun, 24 May 2020 06:59:28 +0000 (UTC)
-Date: Sun, 24 May 2020 08:59:22 +0200
-Message-ID: <s5hftbpx1h1.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id D376CAC6D;
+ Sun, 24 May 2020 08:37:38 +0000 (UTC)
+Date: Sun, 24 May 2020 10:37:34 +0200
+Message-ID: <s5ha71xwwxd.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: Re: [PATCH v2] ALSA: line6: add hw monitor volume control for POD
- HD500
-In-Reply-To: <20200523174957.6294-1-anarsoul@gmail.com>
-References: <20200523174957.6294-1-anarsoul@gmail.com>
+To: Erwin Burema <e.burema@freedom.nl>
+Subject: Re: [PATCH] Add duplex sound support for USB devices using implicit
+ feedback
+In-Reply-To: <1674042.U9NR2fmVFg@alpha-wolf>
+References: <2410739.SCZni40SNb@alpha-wolf>
+ <6103f3aba91020ea345e9146da82e52823b7c298.camel@tsoy.me>
+ <1674042.U9NR2fmVFg@alpha-wolf>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Pavel Machek <pavel@denx.de>, Takashi Iwai <tiwai@suse.com>,
- Kai-Heng Feng <kai.heng.feng@canonical.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Thomas Gleixner <tglx@linutronix.de>, Allison Randal <allison@lohutok.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Alexander Tsoy <alexander@tsoy.me>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,80 +80,59 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 23 May 2020 19:49:57 +0200,
-Vasily Khoruzhick wrote:
+On Sat, 23 May 2020 20:09:31 +0200,
+Erwin Burema wrote:
 > 
-> Add hw monitor volume control for POD HD500. The same change may
-> work for HD500X but I don't have it to test.
+> On zaterdag 23 mei 2020 19:53:49 CEST Alexander Tsoy wrote:
+> > В Вс, 10/05/2020 в 20:29 +0200, Erwin Burema пишет:
+> > > For USB sound devices using implicit feedback the endpoint used for
+> > > this feedback should be able to be opened twice, once for required
+> > > feedback and second time for audio data. This way these devices can
+> > > be put in duplex audio mode. Since this only works if the settings of
+> > > the endpoint don't change a check is included for this.
+> > > 
+> > > This fixes bug 207023 ("MOTU M2 regression on duplex audio") and
+> > > should also fix bug 103751 ("M-Audio Fast Track Ultra usb audio
+> > > device will not operate full-duplex")
+> > > 
+> > > Signed-off-by: Erwin Burema <e.burema@gmail.com>
+> > > ---
+> > 
+> > This patch seems to cause kernel panic on my system. This happens
+> > during boot when gdm (with pulseaudio) is starting up.
+> >
 > 
-> Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
-> ---
-> v2: clamp volume value to [0, ARRAY_SIZE() -1] in
->     podhd_set_monitor_level()
+> That's interesting, not running gnome (and thus also not running gdm, 
+> currently KDE with SDDM) here so would need to take some time troubleshooting. 
+> Suspect I missed something in the check if both input and output are similarly 
+> configured.
+> 
+> Will see if I can reproduce it and where exactly it goes wrong, in the 
+> meantime would it be possible to test if 5.6 or later show the same issue 
+> since I intially developed the patch against that release?
 
-Thanks for the patch.
-The basic implementation looks good, but I see a few issues.
-Below are the comments:
+Judging from the point triggering the bug (memset()), this can be a
+leftover URB handling that is performed even after the capture stream
+is closed.  If so, the procedure would be:
+ - start capture
+ - start playback
+ - stop capture while keeping playback running
 
-> @@ -132,6 +132,7 @@ static int line6_send_raw_message(struct usb_line6 *line6, const char *buffer,
->  
->  	return done;
->  }
-> +EXPORT_SYMBOL(line6_send_raw_message);
-
-Let's use EXPORT_SYMBOL_GPL() instead.
-
-
-> +static const unsigned int float_zero_to_one_lookup[] = {
-> +0x00000000, 0x3C23D70A, 0x3CA3D70A, 0x3CF5C28F, 0x3D23D70A, 0x3D4CCCCD,
-> +0x3D75C28F, 0x3D8F5C29, 0x3DA3D70A, 0x3DB851EC, 0x3DCCCCCD, 0x3DE147AE,
-> +0x3DF5C28F, 0x3E051EB8, 0x3E0F5C29, 0x3E19999A, 0x3E23D70A, 0x3E2E147B,
-> +0x3E3851EC, 0x3E428F5C, 0x3E4CCCCD, 0x3E570A3D, 0x3E6147AE, 0x3E6B851F,
-> +0x3E75C28F, 0x3E800000, 0x3E851EB8, 0x3E8A3D71, 0x3E8F5C29, 0x3E947AE1,
-> +0x3E99999A, 0x3E9EB852, 0x3EA3D70A, 0x3EA8F5C3, 0x3EAE147B, 0x3EB33333,
-> +0x3EB851EC, 0x3EBD70A4, 0x3EC28F5C, 0x3EC7AE14, 0x3ECCCCCD, 0x3ED1EB85,
-> +0x3ED70A3D, 0x3EDC28F6, 0x3EE147AE, 0x3EE66666, 0x3EEB851F, 0x3EF0A3D7,
-> +0x3EF5C28F, 0x3EFAE148, 0x3F000000, 0x3F028F5C, 0x3F051EB8, 0x3F07AE14,
-> +0x3F0A3D71, 0x3F0CCCCD, 0x3F0F5C29, 0x3F11EB85, 0x3F147AE1, 0x3F170A3D,
-> +0x3F19999A, 0x3F1C28F6, 0x3F1EB852, 0x3F2147AE, 0x3F23D70A, 0x3F266666,
-> +0x3F28F5C3, 0x3F2B851F, 0x3F2E147B, 0x3F30A3D7, 0x3F333333, 0x3F35C28F,
-> +0x3F3851EC, 0x3F3AE148, 0x3F3D70A4, 0x3F400000, 0x3F428F5C, 0x3F451EB8,
-> +0x3F47AE14, 0x3F4A3D71, 0x3F4CCCCD, 0x3F4F5C29, 0x3F51EB85, 0x3F547AE1,
-> +0x3F570A3D, 0x3F59999A, 0x3F5C28F6, 0x3F5EB852, 0x3F6147AE, 0x3F63D70A,
-> +0x3F666666, 0x3F68F5C3, 0x3F6B851F, 0x3F6E147B, 0x3F70A3D7, 0x3F733333,
-> +0x3F75C28F, 0x3F7851EC, 0x3F7AE148, 0x3F7D70A4, 0x3F800000
-
-Just nitpick: better to align with lower hex letters (a-f).
-
-
-> +};
-> +
-> +static void podhd_set_monitor_level(struct usb_line6_podhd *podhd, int value)
-> +{
-> +	unsigned int fl;
-> +	static const unsigned char msg[16] = {
-> +		/* Chunk is 0xc bytes (without first word) */
-> +		0x0c, 0x00,
-> +		/* First chunk in the message */
-> +		0x01, 0x00,
-> +		/* Message size is 2 4-byte words */
-> +		0x02, 0x00,
-> +		/* Unknown */
-> +		0x04, 0x41,
-> +		/* Unknown */
-> +		0x04, 0x00, 0x13, 0x00,
-> +		/* Volume, LE float32, 0.0 - 1.0 */
-> +		0x00, 0x00, 0x00, 0x00
-> +	};
-> +	unsigned char *buf;
-> +
-> +	buf = kmalloc(sizeof(msg), GFP_ATOMIC);
-
-Is this function called from the irq context like the urb callback?
-I saw that it's called from the mixer put callback, and it's in the
-normal sleepable context, hence GFP_KERNEL can be used safely.
+If my guess is correct, can the patch below work around the issue?
 
 
 thanks,
 
 Takashi
+
+---
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -1782,6 +1782,7 @@ static int snd_usb_substream_capture_trigger(struct snd_pcm_substream *substream
+ 		return 0;
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 		stop_endpoints(subs);
++		subs->data_endpoint->retire_data_urb = NULL;
+ 		subs->running = 0;
+ 		return 0;
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
