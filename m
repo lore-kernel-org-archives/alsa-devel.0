@@ -6,70 +6,69 @@ X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02F8FC433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 May 2020 14:59:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1411BC433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 May 2020 15:00:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 80E4C20899
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 May 2020 14:59:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 922F120878
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 May 2020 15:00:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rVjgQMzs";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="J5NUkowx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 80E4C20899
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qj8JZRd0";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Mv0X+lME"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 922F120878
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E477B173C;
-	Mon, 25 May 2020 16:58:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E477B173C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0378C1727;
+	Mon, 25 May 2020 16:59:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0378C1727
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590418780;
-	bh=lNQnpMwKOSsceTf5wn8YZ0Kyu+yOL0dohR21xmwWsI0=;
+	s=default; t=1590418823;
+	bh=8WVLyXr0Odhzbow2buRRMTNNClxPsS9poOAULwszdI8=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rVjgQMzszq+XE2T6MKTqv108UneAspnp1NSPrZlNh7ljD/i//irILaHL6+9zYvzUY
-	 ES+vn+UvkUjhT17S9BgUVZjqS9GcLNNd52hPReExu3S8HVfEdPILo32JLXqC3B+dL2
-	 9jH5tc4wZbSQ8XwYELJEX4PCbZqmnSDdcTQczXv8=
+	b=qj8JZRd0JNm30q5GPb/A17T9MJcmc5xqZtjrqy3yt5e/tMOM33geEyMV5XhygKwgn
+	 FwuzsdSkt6bLhT4SOphRSBPOG77IJzxk7m/bZLgLSkfyH3rUZ7zLVQaUkLA2b1sGFC
+	 7gL0krt7xXTrrImednxa6bfXV5u6ALoPgWfj+TAo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 72C25F80291;
-	Mon, 25 May 2020 16:57:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E6A11F802A2;
+	Mon, 25 May 2020 16:57:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8AC13F80240; Mon, 25 May 2020 16:57:15 +0200 (CEST)
+ id 89F21F802A7; Mon, 25 May 2020 16:57:21 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C0F9BF80240
- for <alsa-devel@alsa-project.org>; Mon, 25 May 2020 16:57:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0F9BF80240
+ by alsa1.perex.cz (Postfix) with ESMTPS id BA40CF8029A
+ for <alsa-devel@alsa-project.org>; Mon, 25 May 2020 16:57:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA40CF8029A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="J5NUkowx"
+ header.b="Mv0X+lME"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id B68CC20890;
- Mon, 25 May 2020 14:57:10 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id AA1EE20888;
+ Mon, 25 May 2020 14:57:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1590418631;
- bh=lNQnpMwKOSsceTf5wn8YZ0Kyu+yOL0dohR21xmwWsI0=;
+ s=default; t=1590418637;
+ bh=8WVLyXr0Odhzbow2buRRMTNNClxPsS9poOAULwszdI8=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=J5NUkowxAWg9OxdwePf3UF19YTawnWizamkm7d6fmxY2wta0uJBJI6eSNgo6MDmHM
- FalRaOQw1DgxDia/roPZviZdXE794l6vKEsjY93Oy50RE5K/IkFAFI1tJVvw+PZXjI
- YgDzeBFLncu4YxWAVZiqhkjamNT9N/AXKNbWA1E0=
-Date: Mon, 25 May 2020 15:57:08 +0100
+ b=Mv0X+lMEX/4sKlmT8Oq8axAWmCWw9vrtKPhZe8rBpeouyRAyK1PtLK1la/Ni5ihcE
+ C68VtPIl4/tu1DZ3lwzEuBqJcwzPPJdw8roWBj5ktAtHrkXV4RdBotNrXW/WaWPUjd
+ AFSb/MGSq3hg0/jWg6uDzNGjJ9jV9bpqisZAklNs=
+Date: Mon, 25 May 2020 15:57:14 +0100
 From: Mark Brown <broonie@kernel.org>
 To: Xiubo.Lee@gmail.com, Shengjiu Wang <shengjiu.wang@nxp.com>,
  lgirdwood@gmail.com, festevam@gmail.com, timur@kernel.org, perex@perex.cz,
  alsa-devel@alsa-project.org, nicoleotsuka@gmail.com, tiwai@suse.com
-In-Reply-To: <1590141444-28668-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1590141444-28668-1-git-send-email-shengjiu.wang@nxp.com>
-Subject: Re: [PATCH] ASoC: fsl_asrc: Merge suspend/resume function to
- runtime_suspend/resume
-Message-Id: <159041861696.1370.11311962714558356940.b4-ty@kernel.org>
+In-Reply-To: <1590397412-12966-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1590397412-12966-1-git-send-email-shengjiu.wang@nxp.com>
+Subject: Re: [PATCH] ASoC: fsl_asrc: Fix -Wmissing-prototypes warning
+Message-Id: <159041861696.1370.8723738708251102724.b4-ty@kernel.org>
 Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -86,12 +85,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 22 May 2020 17:57:24 +0800, Shengjiu Wang wrote:
-> With dedicated power domain for asrc, power can be disabled after
-> probe and pm runtime suspend, then the value of all registers need to
-> be restored in pm runtime resume. So we can merge suspend/resume function
-> to runtime_suspend/resume function and enable regcache only in end of
-> probe.
+On Mon, 25 May 2020 17:03:32 +0800, Shengjiu Wang wrote:
+> COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=x86_64
+> 
+> sound/soc/fsl/fsl_asrc.c:557:18: warning: no previous prototype for function 'fsl_asrc_get_dma_channel' [-Wmissing-prototypes]
+> struct dma_chan *fsl_asrc_get_dma_channel(struct fsl_asrc_pair *pair, bool dir)
+>                  ^
+> sound/soc/fsl/fsl_asrc.c:557:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+> struct dma_chan *fsl_asrc_get_dma_channel(struct fsl_asrc_pair *pair, bool dir)
+> ^
+> static
 
 Applied to
 
@@ -99,8 +102,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: fsl_asrc: Merge suspend/resume function to runtime_suspend/resume
-      commit: 393dc21d0f25e8fcde8baca78b8a38afe61db2a7
+[1/1] ASoC: fsl_asrc: Fix -Wmissing-prototypes warning
+      commit: cff1f8b4f8e119a9dbd9872d7a04fedef8d0c1a2
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
