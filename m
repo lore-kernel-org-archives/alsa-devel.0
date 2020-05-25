@@ -2,72 +2,80 @@ Return-Path: <SRS0=YV0t=7H=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 300AEC433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 May 2020 15:01:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A5D0C433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 May 2020 18:45:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A648F2078B
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 May 2020 15:01:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CF3342071C
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 May 2020 18:45:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qu5yj2zV";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="qPMvZuoS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A648F2078B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FstQx/BH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CF3342071C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 13403173F;
-	Mon, 25 May 2020 17:00:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13403173F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 076B2170A;
+	Mon, 25 May 2020 20:45:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 076B2170A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590418879;
-	bh=8j51kK8u7Q0f/pNDsQoq3sxz4kUuPW/Z5+57Ri4ec6I=;
-	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
+	s=default; t=1590432351;
+	bh=jLsodt6l4Jgyg1RMBwwnhkggxD4Otr/GfOyGxDO72ok=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qu5yj2zV9fIoFGs+VRE+B99RzB4Yhelo3bJ2VNKNULtmaYZ+IxBk1mxiLr5aQYDfg
-	 jPjB8Ksddf3K3xnKLqqAJ1YUg1uuIURReOHi6DK2zKLmBYI1P0cL1XrTK6lppJANmh
-	 Ra1EPsHRM8a1BcyoBQIXtEQkBpTLvB0wDBhFoRsk=
+	b=FstQx/BHlarADbL3ELIT/clxs4B8f/qBERVSESRaw0S76zI9WEQIfJGZsCDPX/Zuq
+	 Sdnh9jE4B+aG8tauOS+lB4NQ4Ua4r3nb2zlMNXyJd9a3U+D1asuokqseMP6Jsr51W/
+	 eCOVcMclWuqqjWw/0wBVOSTXM1eOo/VeVJUcx4JU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2FAA7F802C2;
-	Mon, 25 May 2020 16:57:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6C4CFF8014E;
+	Mon, 25 May 2020 20:45:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B870FF802D2; Mon, 25 May 2020 16:57:32 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5990EF802A9
- for <alsa-devel@alsa-project.org>; Mon, 25 May 2020 16:57:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5990EF802A9
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="qPMvZuoS"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ id 38E50F8016F; Mon, 25 May 2020 20:44:59 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 504F120899;
- Mon, 25 May 2020 14:57:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1590418648;
- bh=8j51kK8u7Q0f/pNDsQoq3sxz4kUuPW/Z5+57Ri4ec6I=;
- h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=qPMvZuoSYCgE2OHOzDU7MdLqSYagwXd4J4MFXpm44PR5jfpolLDefkxw0e2+X8YWr
- LOqJXjRsOBP+DJ8U1pO8BgcZ+ZZX10m4jJyi3DKUI/tHC5mCZHaPsa4/MI01bJmrb2
- +SJEiIXHTNiBgczkkqxJc9Mud9giLSSHUgAOCvrE=
-Date: Mon, 25 May 2020 15:57:26 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87367o4ysz.wl-kuninori.morimoto.gx@renesas.com>
-References: <87367o4ysz.wl-kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH v4 0/7] ASoC: add soc-link
-Message-Id: <159041861696.1370.2546270776221948194.b4-ty@kernel.org>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id DA6FCF80149
+ for <alsa-devel@alsa-project.org>; Mon, 25 May 2020 20:44:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA6FCF80149
+IronPort-SDR: /sla/+u9zHlr6E7zF46xVbUKmJFmSsaHxjBt0tQjde935BBu0ArZez+Qdm7ycvMuwUKtgcCviz
+ bzDNYnyYcP4g==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 May 2020 11:44:48 -0700
+IronPort-SDR: yUA6AGsEvWdifmfpQ+pUAKlfTL/2FPPfRroao5MqZP1089PTl7MBCv5Ho+o6w7tWBVVuUcwUjZ
+ 1zRxL6R/IK/A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,434,1583222400"; d="scan'208";a="301880649"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+ by orsmga008.jf.intel.com with ESMTP; 25 May 2020 11:44:46 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+ (envelope-from <lkp@intel.com>)
+ id 1jdI5e-000HzL-2k; Tue, 26 May 2020 02:44:46 +0800
+Date: Tue, 26 May 2020 02:43:51 +0800
+From: kbuild test robot <lkp@intel.com>
+To: Sven Van Asbroeck <thesven73@gmail.com>
+Subject: [PATCH] ASoC: fix semicolon.cocci warnings
+Message-ID: <20200525184351.GA37386@5cf39b9a5cc3>
+References: <202005260227.no1AzpN2%lkp@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202005260227.no1AzpN2%lkp@intel.com>
+X-Patchwork-Hint: ignore
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: alsa-devel@alsa-project.org, kbuild-all@lists.01.org,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,53 +91,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 25 May 2020 09:56:44 +0900, Kuninori Morimoto wrote:
-> Current ALSA SoC is handling dai_link related operation,
-> but it is implmemented directly without using function/macro,
-> and at random place.
-> 
-> This v4 patch-set creates new snd_soc_link_xxx() functions
-> which handles dai_link related operation,
-> and implmement these at new soc-link.c.
-> 
-> [...]
+From: kbuild test robot <lkp@intel.com>
 
-Applied to
+sound/soc/codecs/zl38060.c:298:2-3: Unneeded semicolon
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Thanks!
+ Remove unneeded semicolon.
 
-[1/7] ASoC: add soc-link.c
-      commit: 02e756363fc936917bed7320199c80729b2a825c
-[2/7] ASoC: soc-link: move soc_rtd_xxx()
-      commit: a5e6c1090001b8a14e797364dde7c84236465fc7
-[3/7] ASoC: soc-link: remove unneeded parameter from snd_soc_link_xxx()
-      commit: 7cf3c5b4a04f4b27d964089630290beccc115f9f
-[4/7] ASoC: soc-link: add snd_soc_link_be_hw_params_fixup()
-      commit: 0cbbf8a0399518e5b865f9a1320d704c1d621703
-[5/7] ASoC: soc-link: add snd_soc_link_compr_startup()
-      commit: 9ab711cb84d4b77fb3929fabc5e3756d5010af14
-[6/7] ASoC: soc-link: add snd_soc_link_compr_shutdown()
-      commit: 0e532c99b468d6e4fc4e1d29b45ffe2749db6d07
-[7/7] ASoC: soc-link: add snd_soc_link_compr_set_params()
-      commit: eab810f37ff5fd76172ac903e5e732d6b72fc834
+Generated by: scripts/coccinelle/misc/semicolon.cocci
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+Fixes: 52e8a94baf90 ("ASoC: Add initial ZL38060 driver")
+CC: Sven Van Asbroeck <thesven73@gmail.com>
+Signed-off-by: kbuild test robot <lkp@intel.com>
+---
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.8
+head:   f202272cabf276441174dc05ad8b94d3c1174877
+commit: 52e8a94baf9026276fcdc9ff21a50dc2ca0bc94b [26/131] ASoC: Add initial ZL38060 driver
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+ zl38060.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+--- a/sound/soc/codecs/zl38060.c
++++ b/sound/soc/codecs/zl38060.c
+@@ -295,7 +295,7 @@ static int zl38_hw_params(struct snd_pcm
+ 		break;
+ 	default:
+ 		return -EINVAL;
+-	};
++	}
+ 
+ 	err = regmap_update_bits(priv->regmap, REG_TDMA_CFG_CLK,
+ 				 CFG_CLK_FSRATE_MASK, fsrate);
