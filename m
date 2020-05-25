@@ -2,68 +2,200 @@ Return-Path: <SRS0=+ZhY=7J=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E28E4C433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2020 07:07:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D652C433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2020 07:11:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6876A2078C
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2020 07:07:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 08515207D3
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2020 07:11:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gM7J5bo7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6876A2078C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ukbay0kC";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=monstr-eu.20150623.gappssmtp.com header.i=@monstr-eu.20150623.gappssmtp.com header.b="PRa845S1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 08515207D3
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=monstr.eu
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A8FCF16F7;
-	Wed, 27 May 2020 09:06:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A8FCF16F7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 35AA216F7;
+	Wed, 27 May 2020 09:10:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 35AA216F7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590563221;
-	bh=iwIgeL/vI+oS8TXiagIfsEfdTONLlg6QmNhSl1Z4Gog=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1590563478;
+	bh=aH1iOm6wgyjRs852yaQItc+V2BtflwKJMsIP6fzWGz8=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gM7J5bo7VD79Rnzuhz7icXfPm3/I+/MKWrsvrxPWieghjTu9ZA8x4ovo194M8tvAc
-	 QCMk2c/0+JQgD3eAfksO4IGKkFv8F7BJX4XLUyYCFPoDyX0IpzYhLBhsSTJKuGho+j
-	 +0Qu6vLgXjrrhT5bLHr6MXa9GCGauLnPdiWWIlFg=
+	b=ukbay0kCM5H82Nxq7VdVkOuAoXaccozAe5rtwhoFonBOe4MFsXe3dC4v/ZSDq2TgP
+	 ibGClkbQZxanM55+FkpRiElfN4nOqGqe6Q2zAzUqUzN4cbYNJBtSjlHQ2gmI7FWll/
+	 T5Wcp2VT7TaVUKkMBgwJxe8sg5I/6p4r2vGglVk0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2B4C3F80149;
-	Wed, 27 May 2020 09:06:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C07D1F80149;
+	Wed, 27 May 2020 09:10:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 23B17F80146; Wed, 27 May 2020 09:06:09 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 29EB8F8016F; Mon, 25 May 2020 12:04:17 +0200 (CEST)
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com
+ [IPv6:2a00:1450:4864:20::643])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A64C7F80146
- for <alsa-devel@alsa-project.org>; Wed, 27 May 2020 09:06:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A64C7F80146
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 5676BAC77;
- Wed, 27 May 2020 07:06:07 +0000 (UTC)
-Date: Wed, 27 May 2020 09:06:04 +0200
-Message-ID: <s5h1rn5rh5v.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Erwin Burema <e.burema@freedom.nl>
-Subject: Re: [PATCH] Add duplex sound support for USB devices using implicit
- feedback
-In-Reply-To: <2281380.D2QAToNirg@alpha-wolf>
-References: <2410739.SCZni40SNb@alpha-wolf> <1674042.U9NR2fmVFg@alpha-wolf>
- <s5ha71xwwxd.wl-tiwai@suse.de> <2281380.D2QAToNirg@alpha-wolf>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Alexander Tsoy <alexander@tsoy.me>
+ by alsa1.perex.cz (Postfix) with ESMTPS id BB2BBF8014A
+ for <alsa-devel@alsa-project.org>; Mon, 25 May 2020 12:04:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB2BBF8014A
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=monstr-eu.20150623.gappssmtp.com
+ header.i=@monstr-eu.20150623.gappssmtp.com header.b="PRa845S1"
+Received: by mail-ej1-x643.google.com with SMTP id x20so19868774ejb.11
+ for <alsa-devel@alsa-project.org>; Mon, 25 May 2020 03:04:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=monstr-eu.20150623.gappssmtp.com; s=20150623;
+ h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+ :mime-version:in-reply-to;
+ bh=Bjt/zSvbXa/zu/1DqeLV5lkZpCwQXQz9zkdRE2Kh4GU=;
+ b=PRa845S1NN0YeDKOqeAHa3kqlCwnoooouV1cZ+G6BBnG96nUPAm/ebcjOSOr5qDpTT
+ soZ+8TO5xdR5n8tORoXobEbN3nKld1ngJYT0qhbzE83/zyZldV3MtSyqK80hNwsONMht
+ hAOnNBBfl8qGqnlLyO8WT7Ju660Ju2UPk+y+hTNwg5MfBzE2wo974r6ecaNCDYDXaROz
+ L7FjW+aKtnJyoAGsURp4NLLpGIvroOB1a0jv+JKCjL8QbiKGeqKfyMN3Qdwc+xuXHz5r
+ N3PhvKT1/staJFIvMRiGyIRXQOKXLoIl9NjbipTsT72cnT6n7IxeQgn8ZhFAdWMzK2a3
+ U7Kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+ :message-id:date:user-agent:mime-version:in-reply-to;
+ bh=Bjt/zSvbXa/zu/1DqeLV5lkZpCwQXQz9zkdRE2Kh4GU=;
+ b=XmiIHOoNSaaV9BdyQwxqK4zio9H0+U8qT6kARRa+2YKo0Ox8vqveZvNXlYjOkp0z3B
+ QyVeus8v8ZDdPzDCGaZ6m4GmthUMoRy3JYr4uVGcuM2X2vy+6AFMMEODCStcKOlELH3G
+ fZvXbsXfZZmdw29sBNcaOUZh4jqLVL6ukK0buE7e5Lc2jSLpa3ALun0SpgGsxvc2+R8G
+ TL8XtG/LnAjCI34RPtb1sgZVmUEMYC6NgS+XslpB6nnUYjdVmyXwywVsr4yb8FAyhDG+
+ DjiJ64fgtiXdoeJ9R3K/4S2rJ3iTzu5UwzfzGI66qtqZzXTyniWTTho2T3KvTkMij7Ar
+ hjOw==
+X-Gm-Message-State: AOAM532BYdTJeKey+/RO31jtu4Q7T3jbfRRWgCUOmBz2+xyr8CbMU8xy
+ 461hzzLvgr42uoQE1l+KAM9eRQ==
+X-Google-Smtp-Source: ABdhPJyr7VQDLjiXcu1rBWC+AkC7vUK0rv8TotJBxTILv3QquVzKAVS1v4aq0BBifjQxKXY7BLeYqQ==
+X-Received: by 2002:a17:906:e0c7:: with SMTP id
+ gl7mr17760988ejb.306.1590401048997; 
+ Mon, 25 May 2020 03:04:08 -0700 (PDT)
+Received: from [74.125.143.109] ([149.199.62.129])
+ by smtp.gmail.com with ESMTPSA id g21sm15433704edw.9.2020.05.25.03.03.49
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Mon, 25 May 2020 03:04:07 -0700 (PDT)
+Subject: Re: [PATCH v2 0/2] powerpc: Remove support for ppc405/440 Xilinx
+ platforms
+To: Michal Simek <michal.simek@xilinx.com>, Takashi Iwai <tiwai@suse.de>,
+ Michael Ellerman <mpe@ellerman.id.au>
+References: <cover.1585575111.git.michal.simek@xilinx.com>
+ <87imikufes.fsf@mpe.ellerman.id.au>
+ <12db51d6-d848-118e-5ec1-a4172bd47aa4@xilinx.com>
+ <87y2rftrx7.fsf@mpe.ellerman.id.au> <s5hk12z4hj5.wl-tiwai@suse.de>
+ <02e7f790-b105-de67-799c-0fe065e58320@xilinx.com>
+From: Michal Simek <monstr@monstr.eu>
+Autocrypt: addr=monstr@monstr.eu; keydata=
+ xsFNBFFuvDEBEAC9Amu3nk79+J+4xBOuM5XmDmljuukOc6mKB5bBYOa4SrWJZTjeGRf52VMc
+ howHe8Y9nSbG92obZMqsdt+d/hmRu3fgwRYiiU97YJjUkCN5paHXyBb+3IdrLNGt8I7C9RMy
+ svSoH4WcApYNqvB3rcMtJIna+HUhx8xOk+XCfyKJDnrSuKgx0Svj446qgM5fe7RyFOlGX/wF
+ Ae63Hs0RkFo3I/+hLLJP6kwPnOEo3lkvzm3FMMy0D9VxT9e6Y3afe1UTQuhkg8PbABxhowzj
+ SEnl0ICoqpBqqROV/w1fOlPrm4WSNlZJunYV4gTEustZf8j9FWncn3QzRhnQOSuzTPFbsbH5
+ WVxwDvgHLRTmBuMw1sqvCc7CofjsD1XM9bP3HOBwCxKaTyOxbPJh3D4AdD1u+cF/lj9Fj255
+ Es9aATHPvoDQmOzyyRNTQzupN8UtZ+/tB4mhgxWzorpbdItaSXWgdDPDtssJIC+d5+hskys8
+ B3jbv86lyM+4jh2URpnL1gqOPwnaf1zm/7sqoN3r64cml94q68jfY4lNTwjA/SnaS1DE9XXa
+ XQlkhHgjSLyRjjsMsz+2A4otRLrBbumEUtSMlPfhTi8xUsj9ZfPIUz3fji8vmxZG/Da6jx/c
+ a0UQdFFCL4Ay/EMSoGbQouzhC69OQLWNH3rMQbBvrRbiMJbEZwARAQABzR9NaWNoYWwgU2lt
+ ZWsgPG1vbnN0ckBtb25zdHIuZXU+wsGBBBMBAgArAhsDBgsJCAcDAgYVCAIJCgsEFgIDAQIe
+ AQIXgAIZAQUCWq+GEgUJDuRkWQAKCRA3fH8h/j0fkW9/D/9IBoykgOWah2BakL43PoHAyEKb
+ Wt3QxWZSgQjeV3pBys08uQDxByChT1ZW3wsb30GIQSTlzQ7juacoUosje1ygaLHR4xoFMAT9
+ L6F4YzZaPwW6aLI8pUJad63r50sWiGDN/UlhvPrHa3tinhReTEgSCoPCFg3TjjT4nI/NSxUS
+ 5DAbL9qpJyr+dZNDUNX/WnPSqMc4q5R1JqVUxw2xuKPtH0KI2YMoMZ4BC+qfIM+hz+FTQAzk
+ nAfA0/fbNi0gi4050wjouDJIN+EEtgqEewqXPxkJcFd3XHZAXcR7f5Q1oEm1fH3ecyiMJ3ye
+ Paim7npOoIB5+wL24BQ7IrMn3NLeFLdFMYZQDSBIUMe4NNyTfvrHPiwZzg2+9Z+OHvR9hv+r
+ +u/iQ5t5IJrnZQIHm4zEsW5TD7HaWLDx6Uq/DPUf2NjzKk8lPb1jgWbCUZ0ccecESwpgMg35
+ jRxodat/+RkFYBqj7dpxQ91T37RyYgSqKV9EhkIL6F7Whrt9o1cFxhlmTL86hlflPuSs+/Em
+ XwYVS+bO454yo7ksc54S+mKhyDQaBpLZBSh/soJTxB/nCOeJUji6HQBGXdWTPbnci1fnUhF0
+ iRNmR5lfyrLYKp3CWUrpKmjbfePnUfQS+njvNjQG+gds5qnIk2glCvDsuAM1YXlM5mm5Yh+v
+ z47oYKzXe87A4gRRb3+lEQQAsBOQdv8t1nkdEdIXWuD6NPpFewqhTpoFrxUtLnyTb6B+gQ1+
+ /nXPT570UwNw58cXr3/HrDml3e3Iov9+SI771jZj9+wYoZiO2qop9xp0QyDNHMucNXiy265e
+ OAPA0r2eEAfxZCi8i5D9v9EdKsoQ9jbII8HVnis1Qu4rpuZVjW8AoJ6xN76kn8yT225eRVly
+ PnX9vTqjBACUlfoU6cvse3YMCsJuBnBenGYdxczU4WmNkiZ6R0MVYIeh9X0LqqbSPi0gF5/x
+ D4azPL01d7tbxmJpwft3FO9gpvDqq6n5l+XHtSfzP7Wgooo2rkuRJBntMCwZdymPwMChiZgh
+ kN/sEvsNnZcWyhw2dCcUekV/eu1CGq8+71bSFgP/WPaXAwXfYi541g8rLwBrgohJTE0AYbQD
+ q5GNF6sDG/rNQeDMFmr05H+XEbV24zeHABrFpzWKSfVy3+J/hE5eWt9Nf4dyto/S55cS9qGB
+ caiED4NXQouDXaSwcZ8hrT34xrf5PqEAW+3bn00RYPFNKzXRwZGQKRDte8aCds+GHufCwa0E
+ GAECAA8CGwIFAlqvhnkFCQ7joU8AUgkQN3x/If49H5FHIAQZEQIABgUCUW9/pQAKCRDKSWXL
+ KUoMITzqAJ9dDs41goPopjZu2Au7zcWRevKP9gCgjNkNe7MxC9OeNnup6zNeTF0up/nEYw/9
+ Httigv2cYu0Q6jlftJ1zUAHadoqwChliMgsbJIQYvRpUYchv+11ZAjcWMlmW/QsS0arrkpA3
+ RnXpWg3/Y0kbm9dgqX3edGlBvPsw3gY4HohkwptSTE/h3UHS0hQivelmf4+qUTJZzGuE8TUN
+ obSIZOvB4meYv8z1CLy0EVsLIKrzC9N05gr+NP/6u2x0dw0WeLmVEZyTStExbYNiWSpp+SGh
+ MTyqDR/lExaRHDCVaveuKRFHBnVf9M5m2O0oFlZefzG5okU3lAvEioNCd2MJQaFNrNn0b0zl
+ SjbdfFQoc3m6e6bLtBPfgiA7jLuf5MdngdWaWGti9rfhVL/8FOjyG19agBKcnACYj3a3WCJS
+ oi6fQuNboKdTATDMfk9P4lgL94FD/Y769RtIvMHDi6FInfAYJVS7L+BgwTHu6wlkGtO9ZWJj
+ ktVy3CyxR0dycPwFPEwiRauKItv/AaYxf6hb5UKAPSE9kHGI4H1bK2R2k77gR2hR1jkooZxZ
+ UjICk2bNosqJ4Hidew1mjR0rwTq05m7Z8e8Q0FEQNwuw/GrvSKfKmJ+xpv0rQHLj32/OAvfH
+ L+sE5yV0kx0ZMMbEOl8LICs/PyNpx6SXnigRPNIUJH7Xd7LXQfRbSCb3BNRYpbey+zWqY2Wu
+ LHR1TS1UI9Qzj0+nOrVqrbV48K4Y78sajt7OwU0EUW68MQEQAJeqJfmHggDTd8k7CH7zZpBZ
+ 4dUAQOmMPMrmFJIlkMTnko/xuvUVmuCuO9D0xru2FK7WZuv7J14iqg7X+Ix9kD4MM+m+jqSx
+ yN6nXVs2FVrQmkeHCcx8c1NIcMyr05cv1lmmS7/45e1qkhLMgfffqnhlRQHlqxp3xTHvSDiC
+ Yj3Z4tYHMUV2XJHiDVWKznXU2fjzWWwM70tmErJZ6VuJ/sUoq/incVE9JsG8SCHvVXc0MI+U
+ kmiIeJhpLwg3e5qxX9LX5zFVvDPZZxQRkKl4dxjaqxAASqngYzs8XYbqC3Mg4FQyTt+OS7Wb
+ OXHjM/u6PzssYlM4DFBQnUceXHcuL7G7agX1W/XTX9+wKam0ABQyjsqImA8u7xOw/WaKCg6h
+ JsZQxHSNClRwoXYvaNo1VLq6l282NtGYWiMrbLoD8FzpYAqG12/z97T9lvKJUDv8Q3mmFnUa
+ 6AwnE4scnV6rDsNDkIdxJDls7HRiOaGDg9PqltbeYHXD4KUCfGEBvIyx8GdfG+9yNYg+cFWU
+ HZnRgf+CLMwN0zRJr8cjP6rslHteQYvgxh4AzXmbo7uGQIlygVXsszOQ0qQ6IJncTQlgOwxe
+ +aHdLgRVYAb5u4D71t4SUKZcNxc8jg+Kcw+qnCYs1wSE9UxB+8BhGpCnZ+DW9MTIrnwyz7Rr
+ 0vWTky+9sWD1ABEBAAHCwWUEGAECAA8CGwwFAlqvhmUFCQ7kZLEACgkQN3x/If49H5H4OhAA
+ o5VEKY7zv6zgEknm6cXcaARHGH33m0z1hwtjjLfVyLlazarD1VJ79RkKgqtALUd0n/T1Cwm+
+ NMp929IsBPpC5Ql3FlgQQsvPL6Ss2BnghoDr4wHVq+0lsaPIRKcQUOOBKqKaagfG2L5zSr3w
+ rl9lAZ5YZTQmI4hCyVaRp+x9/l3dma9G68zY5fw1aYuqpqSpV6+56QGpb+4WDMUb0A/o+Xnt
+ R//PfnDsh1KH48AGfbdKSMI83IJd3V+N7FVR2BWU1rZ8CFDFAuWj374to8KinC7BsJnQlx7c
+ 1CzxB6Ht93NvfLaMyRtqgc7Yvg2fKyO/+XzYPOHAwTPM4xrlOmCKZNI4zkPleVeXnrPuyaa8
+ LMGqjA52gNsQ5g3rUkhp61Gw7g83rjDDZs5vgZ7Q2x3CdH0mLrQPw2u9QJ8K8OVnXFtiKt8Q
+ L3FaukbCKIcP3ogCcTHJ3t75m4+pwH50MM1yQdFgqtLxPgrgn3U7fUVS9x4MPyO57JDFPOG4
+ oa0OZXydlVP7wrnJdi3m8DnljxyInPxbxdKGN5XnMq/r9Y70uRVyeqwp97sKLXd9GsxuaSg7
+ QJKUaltvN/i7ng1UOT/xsKeVdfXuqDIIElZ+dyEVTweDM011Zv0NN3OWFz6oD+GzyBetuBwD
+ 0Z1MQlmNcq2bhOMzTxuXX2NDzUZs4aqEyZQ=
+Message-ID: <c22540fb-1c54-b718-9045-3ee645c30322@monstr.eu>
+Date: Mon, 25 May 2020 12:03:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <02e7f790-b105-de67-799c-0fe065e58320@xilinx.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="d5ehDgV0ucjEpZ4HrapLBQRqHy1IvdMvB"
+X-Mailman-Approved-At: Wed, 27 May 2020 09:10:26 +0200
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: Kate Stewart <kstewart@linuxfoundation.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ "Desnes A. Nunes do Rosario" <desnesn@linux.ibm.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>, linux-doc@vger.kernel.org,
+ Benjamin Herrenschmidt <benh@kernel.crashing.org>, alsa-devel@alsa-project.org,
+ dri-devel@lists.freedesktop.org, Richard Fontana <rfontana@redhat.com>,
+ Paul Mackerras <paulus@samba.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+ Fabio Estevam <festevam@gmail.com>, Sasha Levin <sashal@kernel.org>,
+ sfr@canb.auug.org.au, Jonathan Corbet <corbet@lwn.net>, maz@kernel.org,
+ Masahiro Yamada <masahiroy@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ YueHaibing <yuehaibing@huawei.com>, Krzysztof Kozlowski <krzk@kernel.org>,
+ Allison Randal <allison@lohutok.net>,
+ Matt Porter <mporter@kernel.crashing.org>,
+ linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+ Andrew Donnellan <ajd@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Alistair Popple <alistair@popple.id.au>, linuxppc-dev@lists.ozlabs.org,
+ Nicholas Piggin <npiggin@gmail.com>, Alexios Zavras <alexios.zavras@intel.com>,
+ Mark Brown <broonie@kernel.org>, git@xilinx.com, linux-fbdev@vger.kernel.org,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Dmitry Vyukov <dvyukov@google.com>, Christophe Leroy <christophe.leroy@c-s.fr>,
+ Wei Hu <weh@microsoft.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Nick Desaulniers <ndesaulniers@google.com>, linux-kernel@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>, Enrico Weigelt <info@metux.net>,
+ "David S. Miller" <davem@davemloft.net>,
+ Thiago Jung Bauermann <bauerman@linux.ibm.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,92 +211,153 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 26 May 2020 23:04:44 +0200,
-Erwin Burema wrote:
-> 
-> On zondag 24 mei 2020 10:37:34 CEST Takashi Iwai wrote:
-> > On Sat, 23 May 2020 20:09:31 +0200,
-> > 
-> > Erwin Burema wrote:
-> > > On zaterdag 23 mei 2020 19:53:49 CEST Alexander Tsoy wrote:
-> > > > В Вс, 10/05/2020 в 20:29 +0200, Erwin Burema пишет:
-> > > > > For USB sound devices using implicit feedback the endpoint used for
-> > > > > this feedback should be able to be opened twice, once for required
-> > > > > feedback and second time for audio data. This way these devices can
-> > > > > be put in duplex audio mode. Since this only works if the settings of
-> > > > > the endpoint don't change a check is included for this.
-> > > > > 
-> > > > > This fixes bug 207023 ("MOTU M2 regression on duplex audio") and
-> > > > > should also fix bug 103751 ("M-Audio Fast Track Ultra usb audio
-> > > > > device will not operate full-duplex")
-> > > > > 
-> > > > > Signed-off-by: Erwin Burema <e.burema@gmail.com>
-> > > > > ---
-> > > > 
-> > > > This patch seems to cause kernel panic on my system. This happens
-> > > > during boot when gdm (with pulseaudio) is starting up.
-> > > 
-> > > That's interesting, not running gnome (and thus also not running gdm,
-> > > currently KDE with SDDM) here so would need to take some time
-> > > troubleshooting. Suspect I missed something in the check if both input
-> > > and output are similarly configured.
-> > > 
-> > > Will see if I can reproduce it and where exactly it goes wrong, in the
-> > > meantime would it be possible to test if 5.6 or later show the same issue
-> > > since I intially developed the patch against that release?
-> > 
-> > Judging from the point triggering the bug (memset()), this can be a
-> > leftover URB handling that is performed even after the capture stream
-> > is closed.  If so, the procedure would be:
-> >  - start capture
-> >  - start playback
-> >  - stop capture while keeping playback running
-> > 
-> > If my guess is correct, can the patch below work around the issue?
-> > 
-> 
-> Have spend a large part of my free time trying to replicate it without any 
-> luck, might be due to tryin it in a VM with USB passtrough (but wanted to be 
-> able to quickly itterate and easier to get debug info), so haven't been able 
-> to try out the patch.
-> 
-> Next step is to see if I can replicate it on my HW, if that doesn't work it 
-> might be time to rethink this whole initial patch and might need to do 
-> something at substream level instead of endpoint level.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--d5ehDgV0ucjEpZ4HrapLBQRqHy1IvdMvB
+From: Michal Simek <monstr@monstr.eu>
+To: Michal Simek <michal.simek@xilinx.com>, Takashi Iwai <tiwai@suse.de>,
+ Michael Ellerman <mpe@ellerman.id.au>
+Cc: linux-kernel@vger.kernel.org, git@xilinx.com, sfr@canb.auug.org.au,
+ maz@kernel.org, Alexios Zavras <alexios.zavras@intel.com>,
+ Alistair Popple <alistair@popple.id.au>, Allison Randal
+ <allison@lohutok.net>, Andrew Donnellan <ajd@linux.ibm.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Arnd Bergmann <arnd@arndb.de>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ Christophe Leroy <christophe.leroy@c-s.fr>,
+ "David S. Miller" <davem@davemloft.net>,
+ "Desnes A. Nunes do Rosario" <desnesn@linux.ibm.com>,
+ Dmitry Vyukov <dvyukov@google.com>, Enrico Weigelt <info@metux.net>,
+ Fabio Estevam <festevam@gmail.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jaroslav Kysela <perex@perex.cz>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ Jonathan Corbet <corbet@lwn.net>, Kate Stewart
+ <kstewart@linuxfoundation.org>, Krzysztof Kozlowski <krzk@kernel.org>,
+ Mark Brown <broonie@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Masahiro Yamada <masahiroy@kernel.org>,
+ Matt Porter <mporter@kernel.crashing.org>,
+ Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Nicholas Piggin <npiggin@gmail.com>,
+ Nick Desaulniers <ndesaulniers@google.com>, Paul Mackerras
+ <paulus@samba.org>, Richard Fontana <rfontana@redhat.com>,
+ Rob Herring <robh+dt@kernel.org>, Sasha Levin <sashal@kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, Thiago Jung Bauermann
+ <bauerman@linux.ibm.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Wei Hu <weh@microsoft.com>, YueHaibing <yuehaibing@huawei.com>,
+ alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
+ linux-doc@vger.kernel.org, linux-fbdev@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org
+Message-ID: <c22540fb-1c54-b718-9045-3ee645c30322@monstr.eu>
+Subject: Re: [PATCH v2 0/2] powerpc: Remove support for ppc405/440 Xilinx
+ platforms
+References: <cover.1585575111.git.michal.simek@xilinx.com>
+ <87imikufes.fsf@mpe.ellerman.id.au>
+ <12db51d6-d848-118e-5ec1-a4172bd47aa4@xilinx.com>
+ <87y2rftrx7.fsf@mpe.ellerman.id.au> <s5hk12z4hj5.wl-tiwai@suse.de>
+ <02e7f790-b105-de67-799c-0fe065e58320@xilinx.com>
+In-Reply-To: <02e7f790-b105-de67-799c-0fe065e58320@xilinx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-I believe the check for EP is right.  The original code has already
-the EP refcount in EP management, so such a linked use case should
-have been considered.
+Hi Michael,
 
-Let's see whether Alexander can test the patch.
+On 01. 04. 20 13:30, Michal Simek wrote:
+> On 01. 04. 20 12:38, Takashi Iwai wrote:
+>> On Wed, 01 Apr 2020 12:35:16 +0200,
+>> Michael Ellerman wrote:
+>>>
+>>> Michal Simek <michal.simek@xilinx.com> writes:
+>>>> On 01. 04. 20 4:07, Michael Ellerman wrote:
+>>>>> Michal Simek <michal.simek@xilinx.com> writes:
+>>>>>> Hi,
+>>>>>>
+>>>>>> recently we wanted to update xilinx intc driver and we found that =
+function
+>>>>>> which we wanted to remove is still wired by ancient Xilinx PowerPC=
+
+>>>>>> platforms. Here is the thread about it.
+>>>>>> https://lore.kernel.org/linux-next/48d3232d-0f1d-42ea-3109-f44bbab=
+fa2e8@xilinx.com/
+>>>>>>
+>>>>>> I have been talking about it internally and there is no interest i=
+n these
+>>>>>> platforms and it is also orphan for quite a long time. None is rea=
+lly
+>>>>>> running/testing these platforms regularly that's why I think it ma=
+kes sense
+>>>>>> to remove them also with drivers which are specific to this platfo=
+rm.
+>>>>>>
+>>>>>> U-Boot support was removed in 2017 without anybody complain about =
+it
+>>>>>> https://github.com/Xilinx/u-boot-xlnx/commit/98f705c9cefdfdba62c06=
+9821bbba10273a0a8ed
+>>>>>>
+>>>>>> Based on current ppc/next.
+>>>>>>
+>>>>>> If anyone has any objection about it, please let me know.
+>>>>>
+>>>>> Thanks for taking the time to find all this code and remove it.
+>>>>>
+>>>>> I'm not going to take this series for v5.7, it was posted too close=
+ to
+>>>>> the merge window, and doing so wouldn't give people much time to ob=
+ject,
+>>>>> especially given people are distracted at the moment.
+>>>>>
+>>>>> I'm happy to take it for v5.8, assuming there's no major objections=
+=2E
+>>>>
+>>>> Sure. Just to let you know Christophe Leroy included this patch in h=
+is
+>>>> series about ppc405 removal. It should be the same.
+>>>>
+>>>> If you don't want to take that alsa patch I can send it separately a=
+nd
+>>>> this patch can be taken from his series. I don't really mind but ple=
+ase
+>>>> let me know what way you prefer.
+>>>
+>>> It's better to keep it all together, so I'm happy take the alsa patch=
+ as
+>>> well, it's already been acked.
+>>
+>> Sure, please go ahead.
+>=20
+>=20
+> g8.
+
+Can you please take this series? I know that there is v5 from Christophe
+which has this 1/2 as 1/13. But I need this alsa patch too and I would
+like to close this because it is around for almost 2 months and none
+raised a concern about removing just these Xilinx platforms.
+
+Thanks,
+Michal
+
+--=20
+Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
+w: www.monstr.eu p: +42-0-721842854
+Maintainer of Linux kernel - Xilinx Microblaze
+Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
+U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
 
 
-thanks,
 
-Takashi
+--d5ehDgV0ucjEpZ4HrapLBQRqHy1IvdMvB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-> 
-> Regards,
-> 
-> Erwin Burema
-> 
-> > 
-> > thanks,
-> > 
-> > Takashi
-> > 
-> > ---
-> > --- a/sound/usb/pcm.c
-> > +++ b/sound/usb/pcm.c
-> > @@ -1782,6 +1782,7 @@ static int snd_usb_substream_capture_trigger(struct
-> > snd_pcm_substream *substream return 0;
-> >  	case SNDRV_PCM_TRIGGER_STOP:
-> >  		stop_endpoints(subs);
-> > +		subs->data_endpoint->retire_data_urb = NULL;
-> >  		subs->running = 0;
-> >  		return 0;
-> >  	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-> 
-> 
-> 
-> 
+-----BEGIN PGP SIGNATURE-----
+
+iF0EARECAB0WIQQbPNTMvXmYlBPRwx7KSWXLKUoMIQUCXsuYAAAKCRDKSWXLKUoM
+IcbUAJwITUY181qEg4Mi7BRwVMsvUpJUyACeOKkODc6Yf0+BNw4WlPCdG0HcOyI=
+=V/1K
+-----END PGP SIGNATURE-----
+
+--d5ehDgV0ucjEpZ4HrapLBQRqHy1IvdMvB--
