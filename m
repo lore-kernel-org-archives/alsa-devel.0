@@ -2,80 +2,128 @@ Return-Path: <SRS0=YV0t=7H=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D5067C433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 May 2020 09:33:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A4E4C433E1
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 May 2020 09:36:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 61C212071A
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 May 2020 09:33:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 09737206DD
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 May 2020 09:36:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tdjS9i2M"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 61C212071A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WY5WkY2V"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 09737206DD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C40C3172D;
-	Mon, 25 May 2020 11:32:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C40C3172D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5F5C71703;
+	Mon, 25 May 2020 11:35:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5F5C71703
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590399186;
-	bh=zerTkJBHTSQa4CDWGG4ozUv0nrrSLVlk5sUFtSj8Om0=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=tdjS9i2Mx49XH49CTkWct7VK8PpSCMmVFFyoqsubhQ35oVjaWYlBIWROLg0Z4xDLK
-	 WR4H/4NziVz43UxTV3Oy/sMRepUS5qclLg6vRcu/NUoK6wPgg3HcYu8gMVJl1VDfsQ
-	 Zwxq50p8RTWkHMU9WdmgZgxzfJBmhpuZfMMmQkrE=
+	s=default; t=1590399365;
+	bh=pFJrhJ7RzVkr+9AEcKvzZE6fPi6O/1/sB6LNMKbqTl8=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=WY5WkY2VwAMpldm6uSSy1TQ/SABa+WeCn3FAOAmryrOe7IxFDjtBJwhbtlSYZmrMe
+	 wVRsoxWWfOKSc02hU9sV91M8Ywz5tZNSC1hxNhBZvmGeSUnrU8jGWq8zBpzeTYvYuj
+	 C8EtzyJvgX91y2ItR14PBHCgtcu05nzpnU/8eAQQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5C3DCF802FF;
-	Mon, 25 May 2020 11:25:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EC58AF8014E;
+	Mon, 25 May 2020 11:35:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A08BBF8016F; Mon, 25 May 2020 10:59:12 +0200 (CEST)
-Received: from zju.edu.cn (spam.zju.edu.cn [61.164.42.155])
- by alsa1.perex.cz (Postfix) with ESMTP id 56CE2F8014A
- for <alsa-devel@alsa-project.org>; Mon, 25 May 2020 10:58:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56CE2F8014A
-Received: from localhost.localdomain (unknown [222.205.77.158])
- by mail-app4 (Coremail) with SMTP id cS_KCgB3EATJiMteScwEAA--.13210S4;
- Mon, 25 May 2020 16:58:52 +0800 (CST)
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
-To: dinghao.liu@zju.edu.cn,
-	kjlu@umn.edu
-Subject: [PATCH] [v2] ASoC: ti: Fix runtime PM imbalance in
- omap2_mcbsp_set_clks_src
-Date: Mon, 25 May 2020 16:58:48 +0800
-Message-Id: <20200525085848.4227-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cS_KCgB3EATJiMteScwEAA--.13210S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrKw4UCw4UCF45tryfWFWkXrb_yoWDXFXE9a
- 1Durn8Zr9Fyr42k3yjya909a4SvFWDCr1DGrZ2qr47tFWUCr1rKF1rAFnxur43W3y8uryU
- JwnY9F9xAFyjkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
- 9fnUUIcSsGvfJTRUUUb-xFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
- wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
- vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26rxl6s0DM28EF7xvwVC2z280
- aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07
- x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15
- McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr4
- 1lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY04v7MxkIecxEwVAF
- wVW8ZwCF04k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26r4fKr1UJr1l4I8I3I0E4I
- kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
- WwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
- 0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWr
- Jr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r
- 4UJbIYCTnIWIevJa73UjIFyTuYvjfUOnmRUUUUU
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgEJBlZdtORShQA4s4
-X-Mailman-Approved-At: Mon, 25 May 2020 11:25:08 +0200
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>,
- Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+ id CFC67F8016F; Mon, 25 May 2020 11:35:12 +0200 (CEST)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 435B9F8014A
+ for <alsa-devel@alsa-project.org>; Mon, 25 May 2020 11:35:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 435B9F8014A
+IronPort-SDR: xd5aXZ5B4bksZk7zWM5BklFLWF6eDP1lP/bIrAvctky1S5FafBWBFuK1BDfcnakU91iziWpQy4
+ uqpmAsZC0uug==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 May 2020 02:35:05 -0700
+IronPort-SDR: s2mRJViqRijEz4iKeHkFIfGs6U+YlRRVdTfMczX/TID3cqD7FFW3MgoomPPC8WN7rVetaoSZf0
+ voNBsL3Zu9ug==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,433,1583222400"; d="scan'208";a="467914372"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.170])
+ ([10.237.72.170])
+ by fmsmga005.fm.intel.com with ESMTP; 25 May 2020 02:35:03 -0700
+Subject: Re: XHCI vs PCM2903B/PCM2904 part 2
+To: Rik van Riel <riel@surriel.com>, Alan Stern <stern@rowland.harvard.edu>
+References: <273cc1c074cc4a4058f31afe487fb233f5cf0351.camel@surriel.com>
+ <20200520163840.GA11084@rowland.harvard.edu>
+ <667d8d156fa5d8420ef1c3b1d08b94a10d2398cc.camel@surriel.com>
+ <20200520203417.GA23602@rowland.harvard.edu>
+ <d75c3a3cda51149a054838652243de2b8ac20854.camel@surriel.com>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=mathias.nyman@linux.intel.com; prefer-encrypt=mutual; keydata=
+ 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 fiD/
+Message-ID: <059878e7-75b8-e033-ec9f-7e6b73df8f78@linux.intel.com>
+Date: Mon, 25 May 2020 12:37:58 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
+MIME-Version: 1.0
+In-Reply-To: <d75c3a3cda51149a054838652243de2b8ac20854.camel@surriel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Mathias Nyman <mathias.nyman@intel.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ linux-usb <linux-usb@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,45 +139,88 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When clk_set_parent() returns an error code, a pairing
-runtime PM usage counter increment is needed to keep the
-counter balanced.
+On 21.5.2020 6.45, Rik van Riel wrote:
+> On Wed, 2020-05-20 at 16:34 -0400, Alan Stern wrote:
+>> On Wed, May 20, 2020 at 03:21:44PM -0400, Rik van Riel wrote:
+>>>
+>>> Interesting. That makes me really curious why things are
+>>> getting stuck, now...
+>>
+>> This could be a bug in xhci-hcd.  Perhaps the controller's endpoint 
+>> state needs to be updated after one of these errors occurs.  Mathias 
+>> will know all about that.
+> 
+> I am seeing something potentially interesting in the
+> giant trace. First the final enqueue/dequeue before
+> the babble error:
+> 
+>           <idle>-0     [005] d.s. 776367.638233: xhci_inc_enq: ISOC
+> 0000000033a6879e: enq 0x0000001014070420(0x0000001014070000) deq
+> 0x0000001014070360(0x0000001014070000) segs 2 stream 0 free_trbs 497
+> bounce 196 cycle 1
+> 
+> The next reference to 0x0000001014070360 is the babble error,
+> and some info on the ISOC buffer itself:
+> 
+>           <idle>-0     [005] d.h. 776367.639187: xhci_handle_event:
+> EVENT: TRB 0000001014070360 status 'Babble Detected' len 196 slot 15 ep
+> 9 type 'Transfer Event' flags e:C
+>           <idle>-0     [005] d.h. 776367.639195: xhci_handle_transfer:
+> ISOC: Buffer 0000000e2676f400 length 196 TD size 0 intr 0 type 'Isoch'
+> flags b:i:I:c:s:I:e:C
+>n
+> Immediately after the babble error, the next request is enqueued,
+> and the doorbell is rung:
+> 
+>           <idle>-0     [005] d.h. 776367.639196: xhci_inc_deq: ISOC 0000000033a6879e: enq 0x0000001014070420(0x0000001014070000) deq 0x0000001014070370(0x0000001014070000) segs 2 stream 0 free_trbs 498 bounce 196 cycle 1
+>           <idle>-0     [005] d.h. 776367.639197: xhci_urb_giveback: ep4in-isoc: urb 0000000072126553 pipe 135040 slot 15 length 196/196 sgs 0/0 stream 0 flags 00000206
+>           <idle>-0     [005] d.h. 776367.639197: xhci_inc_deq: EVENT 0000000097f84b16: enq 0x00000010170b5000(0x00000010170b5000) deq 0x00000010170b5670(0x00000010170b5000) segs 1 stream 0 free_trbs 254 bounce 0 cycle 1
+>           <idle>-0     [005] ..s. 776367.639212: xhci_urb_enqueue: ep4in-isoc: urb 0000000072126553 pipe 135040 slot 15 length 0/196 sgs 0/0 stream 0 flags 00000206
+>           <idle>-0     [005] d.s. 776367.639214: xhci_queue_trb: ISOC: Buffer 0000000e2676f400 length 196 TD size 0 intr 0 type 'Isoch' flags b:i:I:c:s:I:e:c
+>           <idle>-0     [005] d.s. 776367.639214: xhci_inc_enq: ISOC 0000000033a6879e: enq 0x0000001014070430(0x0000001014070000) deq 0x0000001014070370(0x0000001014070000) segs 2 stream 0 free_trbs 497 bounce 196 cycle 1
+>           <idle>-0     [005] d.s. 776367.639215: xhci_ring_ep_doorbell: Ring doorbell for Slot 15 ep4in
+> 
+> However, after that point, no more xhci_handle_transfer: ISOC
+> lines ar seen in the log. The doorbell line above is the last
+> line in the log for ep4in.
+> 
+> Is this some area where USB3 and USB2 behave differently?
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
+It acts as if the endpoint is no longer running.
 
-Changelog:
+If the endpoint would be halted then xhci_requires_manual_halt_cleanup() should
+reset the endpoints and it would show in the traces.
 
-v2: - Fix this in a cleaner way.
----
- sound/soc/ti/omap-mcbsp.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+Could you add the code below and take new traces, it will show the endpoint
+state after the Babble error.
 
-diff --git a/sound/soc/ti/omap-mcbsp.c b/sound/soc/ti/omap-mcbsp.c
-index 3d41ca2238d4..d7406cc3c2a5 100644
---- a/sound/soc/ti/omap-mcbsp.c
-+++ b/sound/soc/ti/omap-mcbsp.c
-@@ -77,18 +77,15 @@ static int omap2_mcbsp_set_clks_src(struct omap_mcbsp *mcbsp, u8 fck_src_id)
- 	pm_runtime_put_sync(mcbsp->dev);
+diff --git a/drivers/usb/host/xhci-ring.c b/drivers/usb/host/xhci-ring.c
+index 0fda0c0f4d31..373d89ef7275 100644
+--- a/drivers/usb/host/xhci-ring.c
++++ b/drivers/usb/host/xhci-ring.c
+@@ -2455,6 +2455,7 @@ static int handle_tx_event(struct xhci_hcd *xhci,
+ 	case COMP_BABBLE_DETECTED_ERROR:
+ 		xhci_dbg(xhci, "Babble error for slot %u ep %u on endpoint\n",
+ 			 slot_id, ep_index);
++		trace_xhci_handle_tx_event(ep_ctx);
+ 		status = -EOVERFLOW;
+ 		break;
+ 	/* Completion codes for endpoint error state */
+diff --git a/drivers/usb/host/xhci-trace.h b/drivers/usb/host/xhci-trace.h
+index b19582b2a72c..5081df079f4a 100644
+--- a/drivers/usb/host/xhci-trace.h
++++ b/drivers/usb/host/xhci-trace.h
+@@ -360,6 +360,11 @@ DEFINE_EVENT(xhci_log_ep_ctx, xhci_add_endpoint,
+ 	TP_ARGS(ctx)
+ );
  
- 	r = clk_set_parent(mcbsp->fclk, fck_src);
--	if (r) {
-+	if (r)
- 		dev_err(mcbsp->dev, "CLKS: could not clk_set_parent() to %s\n",
- 			src);
--		clk_put(fck_src);
--		return r;
--	}
- 
- 	pm_runtime_get_sync(mcbsp->dev);
- 
- 	clk_put(fck_src);
- 
--	return 0;
-+	return r;
- }
- 
- static irqreturn_t omap_mcbsp_irq_handler(int irq, void *data)
--- 
-2.17.1
++DEFINE_EVENT(xhci_log_ep_ctx, xhci_handle_tx_event,
++	TP_PROTO(struct xhci_ep_ctx *ctx),
++	TP_ARGS(ctx)
++);
++
+ DECLARE_EVENT_CLASS(xhci_log_slot_ctx,
+ 	TP_PROTO(struct xhci_slot_ctx *ctx),
+ 	TP_ARGS(ctx),
+
 
