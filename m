@@ -2,58 +2,61 @@ Return-Path: <SRS0=YV0t=7H=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5390AC433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 May 2020 00:57:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3749FC433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 May 2020 00:58:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CC8672076C
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 May 2020 00:57:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B3F5B2076C
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 May 2020 00:58:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Plx/Q3KB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC8672076C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ivQ4tfcs"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B3F5B2076C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 09BD216F2;
-	Mon, 25 May 2020 02:56:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09BD216F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id BE7021700;
+	Mon, 25 May 2020 02:57:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE7021700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590368268;
-	bh=zDDXeWH3S4BJrzDQBzQgoUFZIAkBXVnTHHNboq6hhlE=;
-	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Plx/Q3KBygIrHxPJioAeZa1S0P1vO3nOySx2iF0T88j9dKI20qgZUt0ECYcT9PJax
-	 PAYCtivkP8n9HwCyl2jreZUodzRoGUBbg1sY4NWJeP23kafoloKIcQt5rQbFfRgoDC
-	 KfbbWBS9fC9qStuipUb+Q+wrcNiGqd3AkofaXjNM=
+	s=default; t=1590368320;
+	bh=g5EUtrhqqyHRcFxAwgWQea/PZ+0FMl9pa0RaAtVTn40=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ivQ4tfcsmYhgx2P+a7wVgGyw14ufAPKOskoT2DfD1h8H/kfiFK7YRlIHCztP4lWuW
+	 OGQm3aVf6Px1IsGdc3pvoLXTm4y/dW0h95KktYX5X/dlYMT1TgKWkRieDDiN+qHTyz
+	 P51ROCPXa6ygKIkrvkFbh3Nr6WLOWUj135ce7h2k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 17FFCF80140;
-	Mon, 25 May 2020 02:56:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 907F3F80161;
+	Mon, 25 May 2020 02:57:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3584CF8015C; Mon, 25 May 2020 02:56:55 +0200 (CEST)
+ id 11C09F80254; Mon, 25 May 2020 02:57:24 +0200 (CEST)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 0526FF80140
- for <alsa-devel@alsa-project.org>; Mon, 25 May 2020 02:56:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0526FF80140
-Date: 25 May 2020 09:56:44 +0900
-X-IronPort-AV: E=Sophos;i="5.73,431,1583161200"; d="scan'208";a="47904391"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 25 May 2020 09:56:44 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 953CFF8013C
+ for <alsa-devel@alsa-project.org>; Mon, 25 May 2020 02:57:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 953CFF8013C
+Date: 25 May 2020 09:57:14 +0900
+X-IronPort-AV: E=Sophos;i="5.73,431,1583161200"; d="scan'208";a="47904419"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 25 May 2020 09:57:14 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id DE0C84000C9A;
- Mon, 25 May 2020 09:56:44 +0900 (JST)
-Message-ID: <87367o4ysz.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 5CF144122183;
+ Mon, 25 May 2020 09:57:14 +0900 (JST)
+Message-ID: <871rn84ys5.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH v4 0/7] ASoC: add soc-link
+Subject: [PATCH v4 1/7] ASoC: add soc-link.c
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <87367o4ysz.wl-kuninori.morimoto.gx@renesas.com>
+References: <87367o4ysz.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
@@ -73,66 +76,130 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Current ALSA SoC is handling dai_link related operation,
-but it is implmemented directly without using function/macro,
-and at random place.
+Current ALSA SoC has many dai_link->xxx() functions.
+But, it is implemented randomly at random place.
 
-This v4 patch-set creates new snd_soc_link_xxx() functions
-which handles dai_link related operation,
-and implmement these at new soc-link.c.
+This patch creats new soc-link.c and collect dai_link related
+operation into it.
 
-v3 -> v4
-
-	- add Reviewed-by from Ranjani and Pierre-Louis
-	- fix bisection error at [2/7]
-
-v2 -> v3
-
-	- add missing #include <sound/soc-link.h> in soc-link.c
-
-v1 -> v2
-	- #include <sound/soc-link.h> is added on each c source file
-	  instead of soc.h
-	- not have extra error message after snd_soc_link_xxx(),
-	  because it already indicate it via snc_link_ret()
-	- snd_soc_link_compr_xxx() doesn't have rtd parameter,
-	  because it can be created from cstream
-
-Link: https://lore.kernel.org/r/87lflk4yk3.wl-kuninori.morimoto.gx@renesas.com
-Link: https://lore.kernel.org/r/874ksa59wc.wl-kuninori.morimoto.gx@renesas.com
-Link: https://lore.kernel.org/r/877dx868op.wl-kuninori.morimoto.gx@renesas.com
-
-Kuninori Morimoto (7):
-  ASoC: add soc-link.c
-  ASoC: soc-link: move soc_rtd_xxx()
-  ASoC: soc-link: remove unneeded parameter from snd_soc_link_xxx()
-  ASoC: soc-link: add snd_soc_link_be_hw_params_fixup()
-  ASoC: soc-link: add snd_soc_link_compr_startup()
-  ASoC: soc-link: add snd_soc_link_compr_shutdown()
-  ASoC: soc-link: add snd_soc_link_compr_set_params()
-
- include/sound/soc-link.h |  27 +++++++
- sound/soc/Makefile       |   2 +-
- sound/soc/soc-compress.c |  46 ++++--------
- sound/soc/soc-core.c     |  18 ++---
- sound/soc/soc-dai.c      |   9 ++-
- sound/soc/soc-link.c     | 150 +++++++++++++++++++++++++++++++++++++++
- sound/soc/soc-pcm.c      |  86 ++++------------------
- 7 files changed, 219 insertions(+), 119 deletions(-)
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ include/sound/soc-link.h | 13 +++++++++++++
+ sound/soc/Makefile       |  2 +-
+ sound/soc/soc-core.c     | 12 ++++--------
+ sound/soc/soc-link.c     | 37 +++++++++++++++++++++++++++++++++++++
+ 4 files changed, 55 insertions(+), 9 deletions(-)
  create mode 100644 include/sound/soc-link.h
  create mode 100644 sound/soc/soc-link.c
 
+diff --git a/include/sound/soc-link.h b/include/sound/soc-link.h
+new file mode 100644
+index 000000000000..7fc5cead5942
+--- /dev/null
++++ b/include/sound/soc-link.h
+@@ -0,0 +1,13 @@
++/* SPDX-License-Identifier: GPL-2.0
++ *
++ * soc-link.h
++ *
++ * Copyright (C) 2019 Renesas Electronics Corp.
++ * Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
++ */
++#ifndef __SOC_LINK_H
++#define __SOC_LINK_H
++
++int snd_soc_link_init(struct snd_soc_pcm_runtime *rtd);
++
++#endif /* __SOC_LINK_H */
+diff --git a/sound/soc/Makefile b/sound/soc/Makefile
+index 861a21b79484..70a5f19ea3a1 100644
+--- a/sound/soc/Makefile
++++ b/sound/soc/Makefile
+@@ -1,6 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
+ snd-soc-core-objs := soc-core.o soc-dapm.o soc-jack.o soc-utils.o soc-dai.o soc-component.o
+-snd-soc-core-objs += soc-pcm.o soc-io.o soc-devres.o soc-ops.o
++snd-soc-core-objs += soc-pcm.o soc-io.o soc-devres.o soc-ops.o soc-link.o
+ snd-soc-core-$(CONFIG_SND_SOC_COMPRESS) += soc-compress.o
+ 
+ ifneq ($(CONFIG_SND_SOC_TOPOLOGY),)
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index e697258d2ffc..955e175643d7 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -38,6 +38,7 @@
+ #include <sound/soc.h>
+ #include <sound/soc-dpcm.h>
+ #include <sound/soc-topology.h>
++#include <sound/soc-link.h>
+ #include <sound/initval.h>
+ 
+ #define CREATE_TRACE_POINTS
+@@ -1049,14 +1050,9 @@ static int soc_init_pcm_runtime(struct snd_soc_card *card,
+ 	rtd->pmdown_time = pmdown_time;
+ 
+ 	/* do machine specific initialization */
+-	if (dai_link->init) {
+-		ret = dai_link->init(rtd);
+-		if (ret < 0) {
+-			dev_err(card->dev, "ASoC: failed to init %s: %d\n",
+-				dai_link->name, ret);
+-			return ret;
+-		}
+-	}
++	ret = snd_soc_link_init(rtd);
++	if (ret < 0)
++		return ret;
+ 
+ 	if (dai_link->dai_fmt) {
+ 		ret = snd_soc_runtime_set_dai_fmt(rtd, dai_link->dai_fmt);
+diff --git a/sound/soc/soc-link.c b/sound/soc/soc-link.c
+new file mode 100644
+index 000000000000..bba6f35af0ad
+--- /dev/null
++++ b/sound/soc/soc-link.c
+@@ -0,0 +1,37 @@
++// SPDX-License-Identifier: GPL-2.0
++//
++// soc-link.c
++//
++// Copyright (C) 2019 Renesas Electronics Corp.
++// Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
++//
++#include <sound/soc.h>
++#include <sound/soc-link.h>
++
++#define soc_link_ret(rtd, ret) _soc_link_ret(rtd, __func__, ret)
++static inline int _soc_link_ret(struct snd_soc_pcm_runtime *rtd,
++				const char *func, int ret)
++{
++	switch (ret) {
++	case -EPROBE_DEFER:
++	case -ENOTSUPP:
++	case 0:
++		break;
++	default:
++		dev_err(rtd->dev,
++			"ASoC: error at %s on %s: %d\n",
++			func, rtd->dai_link->name, ret);
++	}
++
++	return ret;
++}
++
++int snd_soc_link_init(struct snd_soc_pcm_runtime *rtd)
++{
++	int ret = 0;
++
++	if (rtd->dai_link->init)
++		ret = rtd->dai_link->init(rtd);
++
++	return soc_link_ret(rtd, ret);
++}
 -- 
 2.17.1
 
-
-
-
-
-Thank you for your help !!
-
-Best regards
----
-Kuninori Morimoto
