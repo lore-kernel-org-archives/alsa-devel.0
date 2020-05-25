@@ -2,68 +2,83 @@ Return-Path: <SRS0=YV0t=7H=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C6B09C433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 May 2020 09:30:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A6A7DC433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 May 2020 09:31:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 53C302071A
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 May 2020 09:30:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3033F2071A
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 May 2020 09:31:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dzfq41Ps"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 53C302071A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mel.vin
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZNWLcmkr"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3033F2071A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A58841728;
-	Mon, 25 May 2020 11:29:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A58841728
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8D0B2172D;
+	Mon, 25 May 2020 11:30:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D0B2172D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590399021;
-	bh=Jq+ZUX4P7qhaQ9O/zuOBnGnGSC3SaDtCUaDHM8Fw+CI=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=dzfq41Ps/N9cDRVk7SsS3AYbv/kbDbGRvP3+7IZiP86bLK29wy/klhJBXbjKrANzD
-	 IjOokK3KgHiemLcW5xg//0UUjZDO8aiDmkbdvuFmOVPlbMsdIB0OwcOxb5v49aIU5+
-	 dQGrloZ6ItwTaxbdPT9jcofYBd+7PxzfiK5vHkoY=
+	s=default; t=1590399063;
+	bh=YsH0IvlpbgP+PbFVSBzx1Ic+yOd8Yoj2pmo6Nls9448=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=ZNWLcmkrc/taypdiTGZIjq10iWMrKzlIdu8aTPLiP2kwMehdt6XZJQC5306DUQLC5
+	 2NW44BV9mHkGEADi3YYZS/XzMumODvjQDDRxcbYTSOKCOAhLM9rdKu10xsYYODmTbm
+	 SoVBEwq45uc6K3+X76tFZ47Njabo2n1D4mApCYAQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2C756F802C4;
-	Mon, 25 May 2020 11:25:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 602B7F802E0;
+	Mon, 25 May 2020 11:25:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3734FF801D8; Sun, 24 May 2020 02:24:52 +0200 (CEST)
-Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.141])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3CE16F80140
- for <alsa-devel@alsa-project.org>; Sun, 24 May 2020 02:24:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3CE16F80140
-Received: from submission (posteo.de [89.146.220.130]) 
- by mout01.posteo.de (Postfix) with ESMTPS id 3704C16005C
- for <alsa-devel@alsa-project.org>; Sun, 24 May 2020 02:24:42 +0200 (CEST)
-Received: from customer (localhost [127.0.0.1])
- by submission (posteo.de) with ESMTPSA id 49V1FQ2TN6z6tmP;
- Sun, 24 May 2020 02:24:41 +0200 (CEST)
-From: Melvin Vermeeren <mail@mel.vin>
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: Dice firewire support
-Date: Sun, 24 May 2020 02:24:33 +0200
-Message-ID: <2204634.7cJeLMavbB@verm-r4e>
-In-Reply-To: <4243350.MNUmLrt7UK@verm-r4e>
-References: <276893435.728967.1590133905081.JavaMail.administrator@n7.nabble.com>
- <CALic0i3=qUMQxK_E1oFA_=K0+ABk0LJwF3hGZumA0nU8PQV4tw@mail.gmail.com>
- <4243350.MNUmLrt7UK@verm-r4e>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart1875152.F0jBVD7ps7";
- micalg="pgp-sha512"; protocol="application/pgp-signature"
+ id 1F277F8016F; Mon, 25 May 2020 09:07:23 +0200 (CEST)
+Received: from zju.edu.cn (mail.zju.edu.cn [61.164.42.155])
+ by alsa1.perex.cz (Postfix) with ESMTP id 6AAF1F8014A
+ for <alsa-devel@alsa-project.org>; Mon, 25 May 2020 09:07:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6AAF1F8014A
+Received: from localhost.localdomain (unknown [222.205.77.158])
+ by mail-app4 (Coremail) with SMTP id cS_KCgDXyCyVbsteklsDAA--.9986S4;
+ Mon, 25 May 2020 15:07:04 +0800 (CST)
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+To: dinghao.liu@zju.edu.cn,
+	kjlu@umn.edu
+Subject: [PATCH] ASoC: Intel: sst: Fix runtime PM imbalance in
+ sst_power_control
+Date: Mon, 25 May 2020 15:06:59 +0800
+Message-Id: <20200525070701.3888-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cS_KCgDXyCyVbsteklsDAA--.9986S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7XrW7tw4DGF1xXrWkZr43Jrb_yoWfCFc_Kw
+ 4F9as5Xa95GrWSg34UuF43ZFn5Aa97GryfJF18Kr43AFWYgrZY9w1DXF97ur1fWr48Xr1a
+ 9wn0gr4ayrW8CjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+ 9fnUUIcSsGvfJTRUUUb-8Fc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+ wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+ vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26rxl6s0DM28EF7xvwVC2z280
+ aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07
+ x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18
+ McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr4
+ 1lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY04v7MxkIecxEwVAF
+ wVW8CwCF04k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26r4fKr1UJr1l4I8I3I0E4I
+ kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
+ WwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
+ 0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWr
+ Zr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr
+ 1UYxBIdaVFxhVjvjDU0xZFpf9x0JUBpB-UUUUU=
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgEJBlZdtORShQAlsl
 X-Mailman-Approved-At: Mon, 25 May 2020 11:25:08 +0200
-Cc: alsa-devel@alsa-project.org
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, linux-kernel@vger.kernel.org,
+ alsa-devel@alsa-project.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Takashi Iwai <tiwai@suse.com>, Jie Yang <yang.jie@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Alexios Zavras <alexios.zavras@intel.com>, Mark Brown <broonie@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Allison Randal <allison@lohutok.net>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,60 +94,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
---nextPart1875152.F0jBVD7ps7
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+When sst_load_fw() returns an error code, a pairing runtime
+PM usage counter decrement is needed to keep the counter
+balanced.
 
-Hi Takashi,
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ sound/soc/intel/atom/sst/sst_drv_interface.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-On Friday, 22 May 2020 13:36:13 CEST Melvin Vermeeren wrote:
-> Since I am running 5.5.17
-> (buster-backports) kernel right now I will do some testing later today to
-> see if there are still any issues in this version, the Mytek is still used
-> daily.
-
-I have just tested it with 5.5.17 and can confirm this issue still exists. It 
-is not very noticeable when playing music but it instantly apparent when 
-playing a 500hz tone for a few seconds. It sounds there is some small ticking 
-in the background instead of a pure tone. Happens every few hundred 
-milliseconds or so and is fully consistent, as if a timing or cycle issue.
-
-Next I checked with current master v5.7-rc2-1808-g40e1763b6246 (snd_dice and 
-snd_firewire_lib) with the same results. I believe the status is the same 
-posted in 2018[1][2]. The old out-of-tree have served me well throughout the 
-years, so I will probably keep using them for now. Perhaps this final issue 
-will be found one day, if I can help you with anything please let me know.
-
-[1] https://www.alsa-project.org/pipermail/alsa-devel/2018-June/136829.html
-[2] https://www.alsa-project.org/pipermail/alsa-devel/2018-June/137160.html
-
-Thanks,
-
+diff --git a/sound/soc/intel/atom/sst/sst_drv_interface.c b/sound/soc/intel/atom/sst/sst_drv_interface.c
+index 762495385d5c..3897985b254f 100644
+--- a/sound/soc/intel/atom/sst/sst_drv_interface.c
++++ b/sound/soc/intel/atom/sst/sst_drv_interface.c
+@@ -150,6 +150,7 @@ static int sst_power_control(struct device *dev, bool state)
+ 		if ((ctx->sst_state == SST_RESET) && (usage_count == 1)) {
+ 			ret = sst_load_fw(ctx);
+ 			if (ret) {
++				pm_runtime_put_sync(dev);
+ 				dev_err(dev, "FW download fail %d\n", ret);
+ 				sst_set_fw_state_locked(ctx, SST_RESET);
+ 				ret = sst_pm_runtime_put(ctx);
 -- 
-Melvin Vermeeren
---nextPart1875152.F0jBVD7ps7
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEETnzUjuV5O+rCrz6nRiwQnTrHuFkFAl7JvsEACgkQRiwQnTrH
-uFmDRw//eM+1QB0bYeDbDQHHhuxqqUp5fnu/UWfCsfFzvCBvegCOcpjj20Fzjm8T
-J17PZsj4kTSGhtfzjsrXUkdZ3ismVssJCyDdNyOlCGnc5zLOr3mT7uNP/q2dtT/E
-JByZyqqwR2maDlHXaeKRUa57W5giLy4ui8xJ+P47HEtW42VcjPFxYfOsd6JgI3IS
-6I+JoHRtvPgnuiPKEelFcUNaF/ppDPUTiKXc1gLruQdMHIbbSHsAltzlBu51sbee
-w/mWqaSTKkoikPRsE71YYtwd+5IyqJxvrJpE0Lr9lQ963Uy03QvpIeq+zY1g2Jza
-gs5MNF/5AQhI8pjxBtwTfYCJZB0xEFvSpYqHaajcIO0wX+XUsKSCuLTkiNGQ5owk
-QX7zyQ8sZWRQ5T2KzrV3C08wlfgf+GXJ4dsiMkjTAj3YBQjJZgNqXSJkuTgYMbnf
-beKLNekambyH4zJNGjiltk/z+fhwnr7ZL1rvS08COddqHhEYrw/fH5MtwVJL2YNE
-bcEZlt7nF9ZyN4d7id4BiHgdp3igDxYD0XdZ94tffTy4YS+TM5BXHMrVPe2MEkg/
-RtYNZWq5WABZT886UPodhk7FcUhsZ0XFqFPw6gNSQsD2HGpelI/LHgy2p/1tEG4B
-eTZ3qiWwOF0Ltn5hunF+zCznDuunWhM3Qt0rrjwvbfWcLxcm8Co=
-=efdP
------END PGP SIGNATURE-----
-
---nextPart1875152.F0jBVD7ps7--
-
-
+2.17.1
 
