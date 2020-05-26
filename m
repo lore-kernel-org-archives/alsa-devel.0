@@ -6,53 +6,53 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F2EFC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 01:23:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 27D77C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 01:24:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8B493206D5
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 01:23:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A4AF3206D5
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 01:24:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vAEfU8ps"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8B493206D5
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HAAg15iJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A4AF3206D5
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EEF52171A;
-	Tue, 26 May 2020 03:23:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EEF52171A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0D2061750;
+	Tue, 26 May 2020 03:23:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D2061750
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590456232;
-	bh=QwRT55M989q0mpfTDywSlWz+fcwShnehjM0EpO9vK5Q=;
+	s=default; t=1590456272;
+	bh=fqJxiWxahY2m7VIU2gZvT1RJZxrbw1B6CpJMjvbLR5s=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vAEfU8psUhisn9cH8KpyA6i3Tei1gZ4WuJdw9MXXD6CE0wS898W7QcGhLDXkycD/b
-	 4habwY/kav6gLD+esYp9RhwwrdI817Kp1Rgqj5wHXWsupevntv73ls1Ip8QygxL26W
-	 1iTit5P0AghCgZr4XA+CKs7Zts/5jbQwAAx+h/hk=
+	b=HAAg15iJGa88CbqCEXg4MkF+i8VeJej42Uq6VkArlYdnvaA75MVBMLWGpW6gvj9z2
+	 /5hKB7teYFpnHju4rvo88a7jhV6x51g2oUs+o/ykwSBNNFIcWMRGMiV3Smp3C4RQ1g
+	 hZyG7gN6OkocF7bWwwu5qJ2U1EuBQ8We6m/R3JYQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C23E7F80299;
-	Tue, 26 May 2020 03:18:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CC697F80308;
+	Tue, 26 May 2020 03:18:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D125BF80299; Tue, 26 May 2020 03:18:23 +0200 (CEST)
+ id 41101F80308; Tue, 26 May 2020 03:18:42 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 0B138F802F7
- for <alsa-devel@alsa-project.org>; Tue, 26 May 2020 03:18:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B138F802F7
-Date: 26 May 2020 10:18:18 +0900
-X-IronPort-AV: E=Sophos;i="5.73,435,1583161200"; d="scan'208";a="47788479"
+ by alsa1.perex.cz (Postfix) with ESMTP id 5CA9AF80306
+ for <alsa-devel@alsa-project.org>; Tue, 26 May 2020 03:18:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5CA9AF80306
+Date: 26 May 2020 10:18:31 +0900
+X-IronPort-AV: E=Sophos;i="5.73,435,1583161200"; d="scan'208";a="47788496"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 26 May 2020 10:18:18 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 26 May 2020 10:18:31 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id CB29D4004194;
- Tue, 26 May 2020 10:18:18 +0900 (JST)
-Message-ID: <87zh9v1okl.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 2B0EA400419A;
+ Tue, 26 May 2020 10:18:31 +0900 (JST)
+Message-ID: <87y2pf1ok8.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 12/19] ASoC: soc-card: add probed bit field to snd_soc_card
+Subject: [PATCH 13/19] ASoC: soc-card: add snd_soc_card_probe()
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87h7w3339l.wl-kuninori.morimoto.gx@renesas.com>
@@ -78,102 +78,77 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-We have bit field to control snd_soc_card.
-Let's add probed field on it instead of local variable.
+Card related function should be implemented at soc-card now.
+This patch adds it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- include/sound/soc.h  |  1 +
- sound/soc/soc-core.c | 18 ++++++++----------
- 2 files changed, 9 insertions(+), 10 deletions(-)
+ include/sound/soc-card.h |  2 ++
+ sound/soc/soc-card.c     | 20 ++++++++++++++++++++
+ sound/soc/soc-core.c     |  9 +++------
+ 3 files changed, 25 insertions(+), 6 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 060c01c32547..74868436ac79 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1096,6 +1096,7 @@ struct snd_soc_card {
- 	unsigned int topology_shortname_created:1;
- 	unsigned int fully_routed:1;
- 	unsigned int disable_route_checks:1;
-+	unsigned int probed:1;
+diff --git a/include/sound/soc-card.h b/include/sound/soc-card.h
+index a54711b5c58f..38bb25428446 100644
+--- a/include/sound/soc-card.h
++++ b/include/sound/soc-card.h
+@@ -24,6 +24,8 @@ int snd_soc_card_suspend_post(struct snd_soc_card *card);
+ int snd_soc_card_resume_pre(struct snd_soc_card *card);
+ int snd_soc_card_resume_post(struct snd_soc_card *card);
  
- 	void *drvdata;
- };
++int snd_soc_card_probe(struct snd_soc_card *card);
++
+ /* device driver data */
+ static inline void snd_soc_card_set_drvdata(struct snd_soc_card *card,
+ 					    void *data)
+diff --git a/sound/soc/soc-card.c b/sound/soc/soc-card.c
+index e3b75e0640ab..49516fe7c54c 100644
+--- a/sound/soc/soc-card.c
++++ b/sound/soc/soc-card.c
+@@ -119,3 +119,23 @@ int snd_soc_card_resume_post(struct snd_soc_card *card)
+ 
+ 	return soc_card_ret(card, ret);
+ }
++
++int snd_soc_card_probe(struct snd_soc_card *card)
++{
++	if (card->probe) {
++		int ret = card->probe(card);
++
++		if (ret < 0)
++			return soc_card_ret(card, ret);
++
++		/*
++		 * set probed here
++		 * see
++		 *	snd_soc_bind_card()
++		 *	snd_soc_card_late_probe()
++		 */
++		card->probed = 1;
++	}
++
++	return 0;
++}
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 02147acf6547..7cfb3ee6ff4f 100644
+index 7cfb3ee6ff4f..13a7d5158534 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -1723,8 +1723,7 @@ static void __soc_setup_card_name(char *name, int len,
- 	}
- }
+@@ -1825,12 +1825,9 @@ static int snd_soc_bind_card(struct snd_soc_card *card)
+ 		goto probe_end;
  
--static void soc_cleanup_card_resources(struct snd_soc_card *card,
--				       int card_probed)
-+static void soc_cleanup_card_resources(struct snd_soc_card *card)
- {
- 	struct snd_soc_pcm_runtime *rtd, *n;
- 
-@@ -1748,8 +1747,9 @@ static void soc_cleanup_card_resources(struct snd_soc_card *card,
- 	soc_cleanup_card_debugfs(card);
- 
- 	/* remove the card */
--	if (card_probed && card->remove)
-+	if (card->probed && card->remove)
- 		card->remove(card);
-+	card->probed = 0;
- 
- 	if (card->snd_card) {
- 		snd_card_free(card->snd_card);
-@@ -1760,12 +1760,10 @@ static void soc_cleanup_card_resources(struct snd_soc_card *card,
- static void snd_soc_unbind_card(struct snd_soc_card *card, bool unregister)
- {
- 	if (card->instantiated) {
--		int card_probed = 1;
--
- 		card->instantiated = false;
- 		snd_soc_flush_all_delayed_work(card);
- 
--		soc_cleanup_card_resources(card, card_probed);
-+		soc_cleanup_card_resources(card);
- 		if (!unregister)
- 			list_add(&card->list, &unbind_card_list);
- 	} else {
-@@ -1779,7 +1777,7 @@ static int snd_soc_bind_card(struct snd_soc_card *card)
- 	struct snd_soc_pcm_runtime *rtd;
- 	struct snd_soc_component *component;
- 	struct snd_soc_dai_link *dai_link;
--	int ret, i, card_probed = 0;
-+	int ret, i;
- 
- 	mutex_lock(&client_mutex);
- 	mutex_lock_nested(&card->mutex, SND_SOC_CARD_CLASS_INIT);
-@@ -1831,7 +1829,7 @@ static int snd_soc_bind_card(struct snd_soc_card *card)
- 		ret = card->probe(card);
- 		if (ret < 0)
- 			goto probe_end;
--		card_probed = 1;
-+		card->probed = 1;
- 	}
+ 	/* initialise the sound card only once */
+-	if (card->probe) {
+-		ret = card->probe(card);
+-		if (ret < 0)
+-			goto probe_end;
+-		card->probed = 1;
+-	}
++	ret = snd_soc_card_probe(card);
++	if (ret < 0)
++		goto probe_end;
  
  	/* probe all components used by DAI links on this card */
-@@ -1923,7 +1921,7 @@ static int snd_soc_bind_card(struct snd_soc_card *card)
- 			goto probe_end;
- 		}
- 	}
--	card_probed = 1;
-+	card->probed = 1;
- 
- 	snd_soc_dapm_new_widgets(card);
- 
-@@ -1945,7 +1943,7 @@ static int snd_soc_bind_card(struct snd_soc_card *card)
- 
- probe_end:
- 	if (ret < 0)
--		soc_cleanup_card_resources(card, card_probed);
-+		soc_cleanup_card_resources(card);
- 
- 	mutex_unlock(&card->mutex);
- 	mutex_unlock(&client_mutex);
+ 	ret = soc_probe_link_components(card);
 -- 
 2.17.1
 
