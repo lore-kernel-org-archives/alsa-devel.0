@@ -2,77 +2,78 @@ Return-Path: <SRS0=6DhY=7I=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D046EC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 20:41:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 97C31C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 20:42:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 55838207CB
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 20:41:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 230F1207CB
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 20:42:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QRZV8rQB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 55838207CB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="M5FBJcMB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 230F1207CB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B3501177A;
-	Tue, 26 May 2020 22:41:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3501177A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 87DEF1794;
+	Tue, 26 May 2020 22:41:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 87DEF1794
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590525711;
-	bh=11z3RDeXNS/VhQwdl8+zDEWpaBGjVLYOIvZPBuLjLcQ=;
+	s=default; t=1590525730;
+	bh=M/+0zgw00LVMs3nbKJXc6JMZDGT2JDgAs+ziCroz2QQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QRZV8rQBULzqnSAYECkOWbc3NV0Beo3IS3lCNLra+EEmJemrX9cpmtDEJAMV2TzU8
-	 OolaxBqOl1ZAyvmxIDUTI14iupkoDx4HBYpQWfFn6MfJHDb4S+0Vcru7inebmV5Gdp
-	 RlguWNI3ZbqMkGC07dYu0itDVnY/GLabIw/iUB7g=
+	b=M5FBJcMBok1CGrJ/Tg1KaxFEQ3hqXVjw9w/wevalyQNstxp/IKPLqc3qvr25pqlXa
+	 9i4+4JMKXMbhDa/ew7GNENMlKv+b//MjN4k6BPSFZJlFjQUXhULMbThTrVf7mviELF
+	 kJnCoW/WVdG7GJOsJT+wI0I9xgcy4vEPTfliZWEY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 182AEF802DD;
-	Tue, 26 May 2020 22:37:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 36389F802DF;
+	Tue, 26 May 2020 22:37:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D6199F80299; Tue, 26 May 2020 22:37:05 +0200 (CEST)
+ id 5C1FDF802A9; Tue, 26 May 2020 22:37:08 +0200 (CEST)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 51282F8015D
- for <alsa-devel@alsa-project.org>; Tue, 26 May 2020 22:36:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51282F8015D
-IronPort-SDR: CVx9l6CPFqRv8IrXNIddhTlEd3E90bSSwBYRmf5HyUkwPG61CdFnmMyCd1EKApf8uo2AyuyTRc
- wt2+HC/ohCaA==
+ by alsa1.perex.cz (Postfix) with ESMTPS id A04E4F8026A
+ for <alsa-devel@alsa-project.org>; Tue, 26 May 2020 22:36:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A04E4F8026A
+IronPort-SDR: hf6RPU6GQ/o4QZE4oxX5+mUqYMX2KLYmohJnfNH4pWnNNJoJEM42FEkX5aa3bLDcvu9JVGgX6D
+ oR6GjtyozcfA==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 May 2020 13:36:50 -0700
-IronPort-SDR: xaF/x1ZGbedq+t8GHwdmPqXacxQSmTkWPWOpDrWtkT6sc9J+XgTiXo/Td1a1A8yGipwo++/GxU
- 6AvWU2mj+20Q==
+ 26 May 2020 13:36:52 -0700
+IronPort-SDR: TJHkmKuMOKJT44nUHT8Vb4ZOzssfeyKiPJLXgHgllXkabZ99hj12au864T42EanpMKQ6RzrHJB
+ 8PKNd8f672XQ==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,437,1583222400"; d="scan'208";a="270208885"
+X-IronPort-AV: E=Sophos;i="5.73,437,1583222400"; d="scan'208";a="270208892"
 Received: from lfnguyen-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.255.229.61])
- by orsmga006.jf.intel.com with ESMTP; 26 May 2020 13:36:50 -0700
+ by orsmga006.jf.intel.com with ESMTP; 26 May 2020 13:36:51 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 5/8] ASoC: SOF: ipc: ignore DSP replies received when they are
- not expected
-Date: Tue, 26 May 2020 15:36:37 -0500
-Message-Id: <20200526203640.25980-6-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 7/8] ASoC: SOF: Intel: BYT: mask BUSY or DONE interrupts in
+ handler
+Date: Tue, 26 May 2020 15:36:39 -0500
+Message-Id: <20200526203640.25980-8-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200526203640.25980-1-pierre-louis.bossart@linux.intel.com>
 References: <20200526203640.25980-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Enric Balletbo i Serra <enric.balletbo@collabora.com>,
- broonie@kernel.org, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, Keyon Jie <yang.jie@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
+ Enric Balletbo i Serra <enric.balletbo@collabora.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,63 +89,100 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+The DSP may send the same interrupt multiple times before it's handled
+in the interrupt thread. Rather than masking it in the thread, mask it
+in the handler directly.
 
-We currently ignore the reply messages from the DSP
-when they are not expected but call it out as an error.
-Change the error message to a debug message.
+This patch also removes useless checks that cannot happen, and masks
+that are set don't need to be re-tested.
 
+BugLink: https://github.com/thesofproject/linux/issues/1492
+Suggested-by: Keyon Jie <yang.jie@linux.intel.com>
 Tested-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/ipc.c      | 9 ++++-----
- sound/soc/sof/sof-priv.h | 2 +-
- 2 files changed, 5 insertions(+), 6 deletions(-)
+ sound/soc/sof/intel/byt.c | 46 +++++++++++++++++++++------------------
+ 1 file changed, 25 insertions(+), 21 deletions(-)
 
-diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
-index f7a0353596fb..36e2d4d43da4 100644
---- a/sound/soc/sof/ipc.c
-+++ b/sound/soc/sof/ipc.c
-@@ -335,21 +335,20 @@ int sof_ipc_tx_message_no_pm(struct snd_sof_ipc *ipc, u32 header,
- EXPORT_SYMBOL(sof_ipc_tx_message_no_pm);
- 
- /* handle reply message from DSP */
--int snd_sof_ipc_reply(struct snd_sof_dev *sdev, u32 msg_id)
-+void snd_sof_ipc_reply(struct snd_sof_dev *sdev, u32 msg_id)
+diff --git a/sound/soc/sof/intel/byt.c b/sound/soc/sof/intel/byt.c
+index 8784c7319098..c6ac914ee56c 100644
+--- a/sound/soc/sof/intel/byt.c
++++ b/sound/soc/sof/intel/byt.c
+@@ -160,13 +160,31 @@ static void byt_dump(struct snd_sof_dev *sdev, u32 flags)
+ static irqreturn_t byt_irq_handler(int irq, void *context)
  {
- 	struct snd_sof_ipc_msg *msg = &sdev->ipc->msg;
+ 	struct snd_sof_dev *sdev = context;
+-	u64 isr;
++	u64 ipcx, ipcd;
+ 	int ret = IRQ_NONE;
  
- 	if (msg->ipc_complete) {
--		dev_err(sdev->dev, "error: no reply expected, received 0x%x",
-+		dev_dbg(sdev->dev,
-+			"no reply expected, received 0x%x, will be ignored",
- 			msg_id);
--		return -EINVAL;
-+		return;
+-	/* Interrupt arrived, check src */
+-	isr = snd_sof_dsp_read64(sdev, BYT_DSP_BAR, SHIM_ISRX);
+-	if (isr & (SHIM_ISRX_DONE | SHIM_ISRX_BUSY))
++	ipcx = snd_sof_dsp_read64(sdev, BYT_DSP_BAR, SHIM_IPCX);
++	ipcd = snd_sof_dsp_read64(sdev, BYT_DSP_BAR, SHIM_IPCD);
++
++	if (ipcx & SHIM_BYT_IPCX_DONE) {
++
++		/* reply message from DSP, Mask Done interrupt first */
++		snd_sof_dsp_update_bits64_unlocked(sdev, BYT_DSP_BAR,
++						   SHIM_IMRX,
++						   SHIM_IMRX_DONE,
++						   SHIM_IMRX_DONE);
+ 		ret = IRQ_WAKE_THREAD;
++	}
++
++	if (ipcd & SHIM_BYT_IPCD_BUSY) {
++
++		/* new message from DSP, Mask Busy interrupt first */
++		snd_sof_dsp_update_bits64_unlocked(sdev, BYT_DSP_BAR,
++						   SHIM_IMRX,
++						   SHIM_IMRX_BUSY,
++						   SHIM_IMRX_BUSY);
++		ret = IRQ_WAKE_THREAD;
++	}
+ 
+ 	return ret;
+ }
+@@ -175,19 +193,12 @@ static irqreturn_t byt_irq_thread(int irq, void *context)
+ {
+ 	struct snd_sof_dev *sdev = context;
+ 	u64 ipcx, ipcd;
+-	u64 imrx;
+ 
+-	imrx = snd_sof_dsp_read64(sdev, BYT_DSP_BAR, SHIM_IMRX);
+ 	ipcx = snd_sof_dsp_read64(sdev, BYT_DSP_BAR, SHIM_IPCX);
++	ipcd = snd_sof_dsp_read64(sdev, BYT_DSP_BAR, SHIM_IPCD);
+ 
+ 	/* reply message from DSP */
+-	if (ipcx & SHIM_BYT_IPCX_DONE &&
+-	    !(imrx & SHIM_IMRX_DONE)) {
+-		/* Mask Done interrupt before first */
+-		snd_sof_dsp_update_bits64_unlocked(sdev, BYT_DSP_BAR,
+-						   SHIM_IMRX,
+-						   SHIM_IMRX_DONE,
+-						   SHIM_IMRX_DONE);
++	if (ipcx & SHIM_BYT_IPCX_DONE) {
+ 
+ 		spin_lock_irq(&sdev->ipc_lock);
+ 
+@@ -207,14 +218,7 @@ static irqreturn_t byt_irq_thread(int irq, void *context)
  	}
  
- 	/* wake up and return the error if we have waiters on this message ? */
- 	msg->ipc_complete = true;
- 	wake_up(&msg->waitq);
--
--	return 0;
- }
- EXPORT_SYMBOL(snd_sof_ipc_reply);
+ 	/* new message from DSP */
+-	ipcd = snd_sof_dsp_read64(sdev, BYT_DSP_BAR, SHIM_IPCD);
+-	if (ipcd & SHIM_BYT_IPCD_BUSY &&
+-	    !(imrx & SHIM_IMRX_BUSY)) {
+-		/* Mask Busy interrupt before return */
+-		snd_sof_dsp_update_bits64_unlocked(sdev, BYT_DSP_BAR,
+-						   SHIM_IMRX,
+-						   SHIM_IMRX_BUSY,
+-						   SHIM_IMRX_BUSY);
++	if (ipcd & SHIM_BYT_IPCD_BUSY) {
  
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index 3ed39b887214..64f28e082049 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -480,7 +480,7 @@ int snd_sof_fw_parse_ext_data(struct snd_sof_dev *sdev, u32 bar, u32 offset);
-  */
- struct snd_sof_ipc *snd_sof_ipc_init(struct snd_sof_dev *sdev);
- void snd_sof_ipc_free(struct snd_sof_dev *sdev);
--int snd_sof_ipc_reply(struct snd_sof_dev *sdev, u32 msg_id);
-+void snd_sof_ipc_reply(struct snd_sof_dev *sdev, u32 msg_id);
- void snd_sof_ipc_msgs_rx(struct snd_sof_dev *sdev);
- int snd_sof_ipc_stream_pcm_params(struct snd_sof_dev *sdev,
- 				  struct sof_ipc_pcm_params *params);
+ 		/* Handle messages from DSP Core */
+ 		if ((ipcd & SOF_IPC_PANIC_MAGIC_MASK) == SOF_IPC_PANIC_MAGIC) {
 -- 
 2.20.1
 
