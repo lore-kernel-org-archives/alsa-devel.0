@@ -6,53 +6,53 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4785EC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 01:27:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A483FC433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 01:27:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C7E05206D5
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 01:27:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 227D6206D5
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 01:27:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IxBAUr9j"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C7E05206D5
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="O7dJerJj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 227D6206D5
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3C0F11770;
-	Tue, 26 May 2020 03:26:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C0F11770
+	by alsa0.perex.cz (Postfix) with ESMTPS id 64C781767;
+	Tue, 26 May 2020 03:27:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64C781767
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590456434;
-	bh=Z+GuLQgborPa0Qtvz4WAdZDfC4uoMGnsb7MS91kSHdc=;
+	s=default; t=1590456470;
+	bh=HgBkBj5W62EDayXnu5g7IsClbJja9f42PoQ1WaO/rSA=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IxBAUr9jwk2sNm8K3XgjD+hAwFYE8offOzIW6kOMMXK1hquENAa/Xe/TJFUmv7hl9
-	 +6HJQe0i/KuCL6fz/qfJsGXhrMr9rwEZ+3VnEtE74lwYkrE1/W+zDmwc+8OdJcrrlD
-	 qIL0m3w5VngCDZ41AWyP9sxm/IxTmLX4tLv/m8ac=
+	b=O7dJerJjgi05yhR5M6Mp40LmQHl/9ATaLyaILeR14jrLBZyTGYC8MBBU0cOMT7CaD
+	 4xzFritGpACx33owf3A80o4a9KXUUbAYAbw90oXs1RFY9fQFeE9f0Iv00pVWg7eUCT
+	 c49TmNezME93wt2u5lbaUSXrcpeRWHidHmXloixI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0B8D0F80334;
-	Tue, 26 May 2020 03:19:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 15A87F80338;
+	Tue, 26 May 2020 03:19:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DBF22F80335; Tue, 26 May 2020 03:19:22 +0200 (CEST)
+ id F2CEBF80337; Tue, 26 May 2020 03:19:27 +0200 (CEST)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 98E1FF80332
- for <alsa-devel@alsa-project.org>; Tue, 26 May 2020 03:19:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98E1FF80332
-Date: 26 May 2020 10:19:15 +0900
-X-IronPort-AV: E=Sophos;i="5.73,435,1583161200"; d="scan'208";a="48000724"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 26 May 2020 10:19:15 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 0A7D8F80337
+ for <alsa-devel@alsa-project.org>; Tue, 26 May 2020 03:19:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A7D8F80337
+Date: 26 May 2020 10:19:24 +0900
+X-IronPort-AV: E=Sophos;i="5.73,435,1583161200"; d="scan'208";a="48000739"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 26 May 2020 10:19:24 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 6A673412D824;
- Tue, 26 May 2020 10:19:15 +0900 (JST)
-Message-ID: <87r1v71oj0.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 97D134004194;
+ Tue, 26 May 2020 10:19:24 +0900 (JST)
+Message-ID: <87pnar1oir.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 18/19] ASoC: soc-card: add snd_soc_card_add_dai_link()
+Subject: [PATCH 19/19] ASoC: soc-card: add snd_soc_card_remove_dai_link()
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87h7w3339l.wl-kuninori.morimoto.gx@renesas.com>
@@ -83,61 +83,54 @@ This patch adds it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- include/sound/soc-card.h |  3 +++
- sound/soc/soc-card.c     | 12 ++++++++++++
- sound/soc/soc-core.c     |  5 +++--
- 3 files changed, 18 insertions(+), 2 deletions(-)
+ include/sound/soc-card.h | 2 ++
+ sound/soc/soc-card.c     | 8 ++++++++
+ sound/soc/soc-core.c     | 3 +--
+ 3 files changed, 11 insertions(+), 2 deletions(-)
 
 diff --git a/include/sound/soc-card.h b/include/sound/soc-card.h
-index 54341e4d818a..501d3d5b6efb 100644
+index 501d3d5b6efb..267f613b6690 100644
 --- a/include/sound/soc-card.h
 +++ b/include/sound/soc-card.h
-@@ -35,6 +35,9 @@ int snd_soc_card_set_bias_level_post(struct snd_soc_card *card,
- 				     struct snd_soc_dapm_context *dapm,
- 				     enum snd_soc_bias_level level);
+@@ -37,6 +37,8 @@ int snd_soc_card_set_bias_level_post(struct snd_soc_card *card,
  
-+int snd_soc_card_add_dai_link(struct snd_soc_card *card,
-+			      struct snd_soc_dai_link *dai_link);
-+
+ int snd_soc_card_add_dai_link(struct snd_soc_card *card,
+ 			      struct snd_soc_dai_link *dai_link);
++void snd_soc_card_remove_dai_link(struct snd_soc_card *card,
++				  struct snd_soc_dai_link *dai_link);
+ 
  /* device driver data */
  static inline void snd_soc_card_set_drvdata(struct snd_soc_card *card,
- 					    void *data)
 diff --git a/sound/soc/soc-card.c b/sound/soc/soc-card.c
-index 8db3b98d1c80..3886e6f2dbc3 100644
+index 3886e6f2dbc3..1d5c5b460e39 100644
 --- a/sound/soc/soc-card.c
 +++ b/sound/soc/soc-card.c
-@@ -196,3 +196,15 @@ int snd_soc_card_set_bias_level_post(struct snd_soc_card *card,
- 
+@@ -208,3 +208,11 @@ int snd_soc_card_add_dai_link(struct snd_soc_card *card,
  	return soc_card_ret(card, ret);
  }
+ EXPORT_SYMBOL_GPL(snd_soc_card_add_dai_link);
 +
-+int snd_soc_card_add_dai_link(struct snd_soc_card *card,
-+			      struct snd_soc_dai_link *dai_link)
++void snd_soc_card_remove_dai_link(struct snd_soc_card *card,
++				  struct snd_soc_dai_link *dai_link)
 +{
-+	int ret = 0;
-+
-+	if (card->add_dai_link)
-+		ret = card->add_dai_link(card, dai_link);
-+
-+	return soc_card_ret(card, ret);
++	if (card->remove_dai_link)
++		card->remove_dai_link(card, dai_link);
 +}
-+EXPORT_SYMBOL_GPL(snd_soc_card_add_dai_link);
++EXPORT_SYMBOL_GPL(snd_soc_card_remove_dai_link);
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 136ff7237a80..d238b47252a5 100644
+index d238b47252a5..b07eca2c6ccc 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -978,8 +978,9 @@ int snd_soc_add_pcm_runtime(struct snd_soc_card *card,
+@@ -947,8 +947,7 @@ void snd_soc_remove_pcm_runtime(struct snd_soc_card *card,
  	/*
- 	 * Notify the machine driver for extra initialization
+ 	 * Notify the machine driver for extra destruction
  	 */
--	if (card->add_dai_link)
--		card->add_dai_link(card, dai_link);
-+	ret = snd_soc_card_add_dai_link(card, dai_link);
-+	if (ret < 0)
-+		return ret;
+-	if (card->remove_dai_link)
+-		card->remove_dai_link(card, rtd->dai_link);
++	snd_soc_card_remove_dai_link(card, rtd->dai_link);
  
- 	if (dai_link->ignore)
- 		return 0;
+ 	soc_free_pcm_runtime(rtd);
+ }
 -- 
 2.17.1
 
