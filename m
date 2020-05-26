@@ -2,58 +2,61 @@ Return-Path: <SRS0=6DhY=7I=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05F66C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 01:16:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C69F5C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 01:17:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7C8C12068D
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 01:16:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 544622068D
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 01:17:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hjBIbYmv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7C8C12068D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="p/awW2UN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 544622068D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C3FBB170A;
-	Tue, 26 May 2020 03:15:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3FBB170A
+	by alsa0.perex.cz (Postfix) with ESMTPS id A17BA171C;
+	Tue, 26 May 2020 03:16:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A17BA171C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590455796;
-	bh=pcPakj8bq80TnL8ecLQRByF5wyu25in/WD0cF77S23E=;
-	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=hjBIbYmvoN/Yt0prK9gJifEUoQMFzy75XswJjyUDaPf+40LC9txaZ4NToZpuUFxLW
-	 XnnEShK16LxAb90mN4HtekgBQxJPpDfAvO52O8v32z0k6BhSQkBvDFS20rn4t1MiJc
-	 Je6jKf7xRpZhHqVnG7EOXFrbpQ9mIp5XRpV3cFn4=
+	s=default; t=1590455849;
+	bh=hbkK8SEZAaxdFPa8uMh6h+DsO2j5oZH+rK25Jm7oZA8=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=p/awW2UNmeqGMsXBpLyGNGXLPL1HSSHI02y2pGQgEqHlWlCEn1TmiDUKTaQt963qU
+	 rO+HSZpI1JBDWG/Ec67EPcGWL8lBIpjO8LKGIYPKhlecTH4LSYamSrxPW+a6KrLfW4
+	 DLbUaG1h5lkzSehy+RQnEQ0cbADwNq+DB7hU01Jg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 44FA5F8014E;
-	Tue, 26 May 2020 03:15:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 04287F80227;
+	Tue, 26 May 2020 03:16:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6F79BF8016F; Tue, 26 May 2020 03:15:44 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 9B5D1F80149
- for <alsa-devel@alsa-project.org>; Tue, 26 May 2020 03:15:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B5D1F80149
-Date: 26 May 2020 10:15:34 +0900
-X-IronPort-AV: E=Sophos;i="5.73,435,1583161200"; d="scan'208";a="48000404"
+ id A051FF80240; Tue, 26 May 2020 03:16:32 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id D989AF80100
+ for <alsa-devel@alsa-project.org>; Tue, 26 May 2020 03:16:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D989AF80100
+Date: 26 May 2020 10:16:23 +0900
+X-IronPort-AV: E=Sophos;i="5.73,435,1583161200"; d="scan'208";a="47788338"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 26 May 2020 10:15:34 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 26 May 2020 10:16:23 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id D81E34008C4B;
- Tue, 26 May 2020 10:15:34 +0900 (JST)
-Message-ID: <87h7w3339l.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 19F874003ED0;
+ Tue, 26 May 2020 10:16:23 +0900 (JST)
+Message-ID: <87ftbn3388.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 00/19] ASoC: add soc-card
+Subject: [PATCH 01/19] ASoC: soc.h: convert bool to bit field for snd_soc_card
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <87h7w3339l.wl-kuninori.morimoto.gx@renesas.com>
+References: <87h7w3339l.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
@@ -73,48 +76,60 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Current ALSA SoC is handling snd_soc_card related operation,
-but it is implmemented directly without using function/macro,
-and at random place.
+snd_soc_card has many bool, but it can be bit field.
 
-This patch-set creates new snd_soc_card_xxx() functions
-which handles snd_soc_card related operation,
-and implmement these at new soc-card.c.
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ include/sound/soc.h | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-Kuninori Morimoto (19):
-  ASoC: soc.h: convert bool to bit field for snd_soc_card
-  ASoC: add soc-card.c
-  ASoC: soc-card: move snd_soc_card_get_kcontrol() to soc-card
-  ASoC: soc-card: move snd_soc_card_jack_new() to soc-card
-  ASoC: soc-card: move snd_soc_card_set/get_drvdata() to soc-card
-  ASoC: soc-card: move snd_soc_card_get_codec_dai() to soc-card
-  ASoC: soc-card: move snd_soc_card_subclass to soc-card
-  ASoC: soc-card: add snd_soc_card_suspend_pre()
-  ASoC: soc-card: add snd_soc_card_suspend_post()
-  ASoC: soc-card: add snd_soc_card_resume_pre()
-  ASoC: soc-card: add snd_soc_card_resume_post()
-  ASoC: soc-card: add probed bit field to snd_soc_card
-  ASoC: soc-card: add snd_soc_card_probe()
-  ASoC: soc-card: add snd_soc_card_late_probe()
-  ASoC: soc-card: add snd_soc_card_remove()
-  ASoC: soc-card: add snd_soc_card_set_bias_level()
-  ASoC: soc-card: add snd_soc_card_set_bias_level_post()
-  ASoC: soc-card: add snd_soc_card_add_dai_link()
-  ASoC: soc-card: add snd_soc_card_remove_dai_link()
-
- include/sound/soc-card.h |  69 +++++++++++++
- include/sound/soc.h      |  53 ++--------
- sound/soc/Makefile       |   2 +-
- sound/soc/soc-card.c     | 218 +++++++++++++++++++++++++++++++++++++++
- sound/soc/soc-core.c     |  71 ++++---------
- sound/soc/soc-dapm.c     |   8 +-
- sound/soc/soc-jack.c     |  38 -------
- 7 files changed, 320 insertions(+), 139 deletions(-)
- create mode 100644 include/sound/soc-card.h
- create mode 100644 sound/soc/soc-card.c
-
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index a7fa64260108..11ee3ed87aa1 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -820,7 +820,7 @@ struct snd_soc_dai_link {
+ 	const struct snd_soc_compr_ops *compr_ops;
+ 
+ 	/* Mark this pcm with non atomic ops */
+-	bool nonatomic;
++	unsigned int nonatomic:1;
+ 
+ 	/* For unidirectional dai links */
+ 	unsigned int playback_only:1;
+@@ -1016,9 +1016,6 @@ struct snd_soc_card {
+ 
+ 	spinlock_t dpcm_lock;
+ 
+-	bool instantiated;
+-	bool topology_shortname_created;
+-
+ 	int (*probe)(struct snd_soc_card *card);
+ 	int (*late_probe)(struct snd_soc_card *card);
+ 	int (*remove)(struct snd_soc_card *card);
+@@ -1079,8 +1076,6 @@ struct snd_soc_card {
+ 	int num_of_dapm_widgets;
+ 	const struct snd_soc_dapm_route *of_dapm_routes;
+ 	int num_of_dapm_routes;
+-	bool fully_routed;
+-	bool disable_route_checks;
+ 
+ 	/* lists of probed devices belonging to this card */
+ 	struct list_head component_dev_list;
+@@ -1107,6 +1102,12 @@ struct snd_soc_card {
+ #endif
+ 	u32 pop_time;
+ 
++	/* bit field */
++	unsigned int instantiated:1;
++	unsigned int topology_shortname_created:1;
++	unsigned int fully_routed:1;
++	unsigned int disable_route_checks:1;
++
+ 	void *drvdata;
+ };
+ #define for_each_card_prelinks(card, i, link)				\
 -- 
 2.17.1
 
