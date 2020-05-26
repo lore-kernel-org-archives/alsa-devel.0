@@ -2,76 +2,76 @@ Return-Path: <SRS0=6DhY=7I=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90715C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 20:38:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D3ACC433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 20:39:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0A5AC207CB
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 20:38:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B9DE820888
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 20:39:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Op7nBWag"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0A5AC207CB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XGu2qV4m"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B9DE820888
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0FE1B1775;
-	Tue, 26 May 2020 22:37:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FE1B1775
+	by alsa0.perex.cz (Postfix) with ESMTPS id ECF6C1780;
+	Tue, 26 May 2020 22:38:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ECF6C1780
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590525521;
-	bh=59pID7u+TJ440DqeaHqm4DkFHAGqt0+raVHcdGXVTIc=;
+	s=default; t=1590525570;
+	bh=CeNo+MJjcqRa6VK7vE4l5MaIgpmkRUK1jLqUgS+RPfQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Op7nBWagL5lOLCCf/VHong/H2ZGuZH5NkKu0E+rvv0114+RPtEf6A644UkNA+bcXf
-	 /AHY8qk92PMNc/s0DrW7xqc+DjmFpay4+ltyHcWb5jkGfxTbVC8vsLDHkLCvN9AJhO
-	 v946VAJ4Antrl/7yBGDodoSGbEVJ0OsTYD5X9zmE=
+	b=XGu2qV4mgrm+/AtPjkJ0/Epm84XB1FSPCV7yo2hqh0laztQMAm5ZBdGYHYxJ227MU
+	 h90AgDG/cEtaO8lEJ0caHhb9LtPGOyeMFlHPH3PewXdVUuN2CxOyV/bXa1pQSlpOB7
+	 Pkik1jqmCH1fUCK6TXQscjYIBqEMc7Y2LgmoOBxI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 09ABDF80100;
-	Tue, 26 May 2020 22:37:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7DF4EF8015C;
+	Tue, 26 May 2020 22:37:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CDF1DF80299; Tue, 26 May 2020 22:36:59 +0200 (CEST)
+ id A5B4EF80299; Tue, 26 May 2020 22:37:02 +0200 (CEST)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9A2AAF80131
- for <alsa-devel@alsa-project.org>; Tue, 26 May 2020 22:36:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A2AAF80131
-IronPort-SDR: 5weGWO9S1gzlWl2gNA6MLxeSn8iC5XEuTL8/iItAOSJJmPaRU2f6l7Wt1Q/ejbCbBRLx142xRu
- s370CTEVKidQ==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 05480F80150
+ for <alsa-devel@alsa-project.org>; Tue, 26 May 2020 22:36:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05480F80150
+IronPort-SDR: Z/aWCagyNm98nlwgxu2tK3d8x7wQabd7n9cFEotS1XgxIQJERJgPJK52Boq/tOzCKMXN+pF4fF
+ bUzsiol/J2dw==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 May 2020 13:36:48 -0700
-IronPort-SDR: 0Abt75TlpTE+P3VBmayFgNqfW/UsYEgSyabscLNsRAz4o0oQ9H8Qw3BrfJiIFEcRYfqwHJjAXV
- iXfhxBu103SQ==
+ 26 May 2020 13:36:49 -0700
+IronPort-SDR: o2pRXH+3HLm+tw4JisqTGc3rzAhBoGBW5qVUVyiwKbE2v7cuJw7uudWLus8WbYJ5JXRvx9w6eC
+ 0CIutSohS5Og==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,437,1583222400"; d="scan'208";a="270208868"
+X-IronPort-AV: E=Sophos;i="5.73,437,1583222400"; d="scan'208";a="270208877"
 Received: from lfnguyen-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.255.229.61])
- by orsmga006.jf.intel.com with ESMTP; 26 May 2020 13:36:47 -0700
+ by orsmga006.jf.intel.com with ESMTP; 26 May 2020 13:36:48 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/8] ASoC: SOF: Intel: byt: Add PM callbacks
-Date: Tue, 26 May 2020 15:36:33 -0500
-Message-Id: <20200526203640.25980-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 3/8] ASoC: Intel: bytcr_rt5640/51: remove .ignore_suspend
+Date: Tue, 26 May 2020 15:36:35 -0500
+Message-Id: <20200526203640.25980-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200526203640.25980-1-pierre-louis.bossart@linux.intel.com>
 References: <20200526203640.25980-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Enric Balletbo i Serra <enric.balletbo@collabora.com>,
- broonie@kernel.org, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, broonie@kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,78 +87,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Low-power playback was never enabled on Baytrail devices, remove what
+looks like copy/paste from other machine drivers which were never
+submitted upstream.
 
-Add the PM callbacks for BYT/CHT platforms.
-
-Tested-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/intel/byt.c | 36 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
+ sound/soc/intel/boards/bytcr_rt5640.c | 4 ----
+ sound/soc/intel/boards/bytcr_rt5651.c | 3 ---
+ 2 files changed, 7 deletions(-)
 
-diff --git a/sound/soc/sof/intel/byt.c b/sound/soc/sof/intel/byt.c
-index 3747f2c2c28b..457da8fcc6a0 100644
---- a/sound/soc/sof/intel/byt.c
-+++ b/sound/soc/sof/intel/byt.c
-@@ -428,6 +428,34 @@ static void byt_set_mach_params(const struct snd_soc_acpi_mach *mach,
- 	mach_params->platform = dev_name(dev);
- }
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index fbfd53874b47..d7e42bd9b308 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -910,9 +910,6 @@ static int byt_rt5640_init(struct snd_soc_pcm_runtime *runtime)
+ 	if (ret)
+ 		return ret;
  
-+static void byt_reset_dsp_disable_int(struct snd_sof_dev *sdev)
-+{
-+	/* Disable Interrupt from both sides */
-+	snd_sof_dsp_update_bits64(sdev, BYT_DSP_BAR, SHIM_IMRX, 0x3, 0x3);
-+	snd_sof_dsp_update_bits64(sdev, BYT_DSP_BAR, SHIM_IMRD, 0x3, 0x3);
-+
-+	/* Put DSP into reset, set reset vector */
-+	snd_sof_dsp_update_bits64(sdev, BYT_DSP_BAR, SHIM_CSR,
-+				  SHIM_BYT_CSR_RST | SHIM_BYT_CSR_VECTOR_SEL,
-+				  SHIM_BYT_CSR_RST | SHIM_BYT_CSR_VECTOR_SEL);
-+}
-+
-+static int byt_suspend(struct snd_sof_dev *sdev, u32 target_state)
-+{
-+	byt_reset_dsp_disable_int(sdev);
-+
-+	return 0;
-+}
-+
-+static int byt_resume(struct snd_sof_dev *sdev)
-+{
-+	/* Enable Interrupt from both sides */
-+	snd_sof_dsp_update_bits64(sdev, BYT_DSP_BAR, SHIM_IMRX, 0x3, 0x0);
-+	snd_sof_dsp_update_bits64(sdev, BYT_DSP_BAR, SHIM_IMRD, 0x3, 0x0);
-+
-+	return 0;
-+}
-+
- /* Baytrail DAIs */
- static struct snd_soc_dai_driver byt_dai[] = {
- {
-@@ -832,6 +860,10 @@ const struct snd_sof_dsp_ops sof_byt_ops = {
- 	/*Firmware loading */
- 	.load_firmware	= snd_sof_load_firmware_memcpy,
+-	snd_soc_dapm_ignore_suspend(&card->dapm, "Headphone");
+-	snd_soc_dapm_ignore_suspend(&card->dapm, "Speaker");
+-
+ 	if (byt_rt5640_quirk & BYT_RT5640_MCLK_EN) {
+ 		/*
+ 		 * The firmware might enable the clock at
+@@ -1065,7 +1062,6 @@ static struct snd_soc_dai_link byt_rt5640_dais[] = {
+ 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
+ 						| SND_SOC_DAIFMT_CBS_CFS,
+ 		.be_hw_params_fixup = byt_rt5640_codec_fixup,
+-		.ignore_suspend = 1,
+ 		.nonatomic = true,
+ 		.dpcm_playback = 1,
+ 		.dpcm_capture = 1,
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index 214ef41e23e6..0468fc35445f 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -601,8 +601,6 @@ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
+ 		dev_err(card->dev, "unable to add card controls\n");
+ 		return ret;
+ 	}
+-	snd_soc_dapm_ignore_suspend(&card->dapm, "Headphone");
+-	snd_soc_dapm_ignore_suspend(&card->dapm, "Speaker");
  
-+	/* PM */
-+	.suspend = byt_suspend,
-+	.resume = byt_resume,
-+
- 	/* DAI drivers */
- 	.drv = byt_dai,
- 	.num_drv = 3, /* we have only 3 SSPs on byt*/
-@@ -906,6 +938,10 @@ const struct snd_sof_dsp_ops sof_cht_ops = {
- 	/*Firmware loading */
- 	.load_firmware	= snd_sof_load_firmware_memcpy,
- 
-+	/* PM */
-+	.suspend = byt_suspend,
-+	.resume = byt_resume,
-+
- 	/* DAI drivers */
- 	.drv = byt_dai,
- 	/* all 6 SSPs may be available for cherrytrail */
+ 	if (byt_rt5651_quirk & BYT_RT5651_MCLK_EN) {
+ 		/*
+@@ -775,7 +773,6 @@ static struct snd_soc_dai_link byt_rt5651_dais[] = {
+ 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
+ 						| SND_SOC_DAIFMT_CBS_CFS,
+ 		.be_hw_params_fixup = byt_rt5651_codec_fixup,
+-		.ignore_suspend = 1,
+ 		.nonatomic = true,
+ 		.dpcm_playback = 1,
+ 		.dpcm_capture = 1,
 -- 
 2.20.1
 
