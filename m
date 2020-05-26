@@ -2,66 +2,59 @@ Return-Path: <SRS0=6DhY=7I=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BBCCC433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 06:23:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E9E7C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 06:25:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DB26220776
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 06:23:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1B4D5207D8
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 06:25:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="K4vkDL7w"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DB26220776
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MJTX3UFy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1B4D5207D8
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 47C0A171A;
-	Tue, 26 May 2020 08:22:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 47C0A171A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 76CC9170D;
+	Tue, 26 May 2020 08:24:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 76CC9170D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590474185;
-	bh=637ECOTlPYUEH+Lpz55/BsnFdzn8CZCZ37GqvUvHFk0=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=K4vkDL7wDTJ6okEt0DmAPIrTHwLVkrp3inTfgbaLWNImjONeYZFtNTpDsGVEohvkY
-	 eHymsK+QeSVmPb0chl9Br0jaGnS0b0LR7y/pZ1/in32K2FPFUbsiJNGy5sJKfCMYEO
-	 dwdAmjmiUAbL+MjefpM3De3x0cRiVGjZ5xi3Sp+Q=
+	s=default; t=1590474317;
+	bh=bsokGtFfMhLwDOzFkEAEdcDVafcBSCwXgv61P3R+gaI=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=MJTX3UFyNm5elMQkiyOk3OfYNiZBrALmKPNpnr5LssKJdI++kCIHK1UWW4DPxofNH
+	 jlMLu12SpZo6tIBD93GBu6ROwwpgYxrPDVlXrWyIG13jUJ4SQ1Ka2Mmbkxp57siU7s
+	 U1EuAY7zb/EIvRBjVy12YDKRQtcPXoWKNWbAcyho=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C1054F8014A;
-	Tue, 26 May 2020 08:22:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8ED8AF8014A;
+	Tue, 26 May 2020 08:24:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DBA36F80150; Tue, 26 May 2020 08:22:12 +0200 (CEST)
+ id 48CB2F80150; Tue, 26 May 2020 08:24:23 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A7557F80131
- for <alsa-devel@alsa-project.org>; Tue, 26 May 2020 08:22:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7557F80131
+ by alsa1.perex.cz (Postfix) with ESMTPS id AF685F80100
+ for <alsa-devel@alsa-project.org>; Tue, 26 May 2020 08:24:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF685F80100
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 5A16CAD85;
- Tue, 26 May 2020 06:22:07 +0000 (UTC)
-Date: Tue, 26 May 2020 08:22:04 +0200
-Message-ID: <s5ha71vtdv7.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 34F3DABE4
+ for <alsa-devel@alsa-project.org>; Tue, 26 May 2020 06:24:13 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
-To: Changming Liu <liu.changm@northeastern.edu>
-Subject: Re: [PATCH] ALSA: hwdep: fix a left shifting 1 by 31 UB bug
-In-Reply-To: <BL0PR06MB4548170B842CB055C9AF695DE5B00@BL0PR06MB4548.namprd06.prod.outlook.com>
-References: <BL0PR06MB4548170B842CB055C9AF695DE5B00@BL0PR06MB4548.namprd06.prod.outlook.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: hda/realtek - Add a model for Thinkpad T570 without DAC
+ workaround
+Date: Tue, 26 May 2020 08:24:06 +0200
+Message-Id: <20200526062406.9799-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,53 +70,115 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 26 May 2020 02:39:21 +0200,
-Changming Liu wrote:
-> 
-> The "info.index" variable can be 31 in "1 << info.index".
-> This might trigger an undefined behavior since 1 is signed.
-> 
-> Fix this by casting 1 to 1u just to be sure "1u << 31" is defined.
-> 
-> Signed-off-by: Changming Liu <liu.changm@northeastern.edu>
+We fixed the regression of the speaker volume for some Thinkpad models
+(e.g. T570) by the commit 54947cd64c1b ("ALSA: hda/realtek - Fix
+speaker output regression on Thinkpad T570").  Essentially it fixes
+the DAC / pin pairing by a static table.  It was confirmed and merged
+to stable kernel later.
 
-Thanks for the patch.
+Now, interestingly, we got another regression report for the very same
+model (T570) about the similar problem, and the commit above was the
+culprit.  That is, by some reason, there are devices that prefer the
+DAC1, and another device DAC2!
 
-Unfortunately it seems that your MUA modified in quoted-printable and
-inapplicable with git-am as is.  Since the changes are so small, I
-manually applied it now.
+Unfortunately those have the same ID and we have no idea what can
+differentiate, in this patch, a new fixup model "tpt470-dock-fix" is
+provided, so that users with such a machine can apply it manually.
+When model=tpt470-dock-fix option is passed to snd-hda-intel module,
+it avoids the fixed DAC pairing and the DAC1 is assigned to the
+speaker like the earlier versions.
 
-Please fix the setup of your MUA at the next time, or better to try
-git-send-email to submit directly.
+Fixes: 54947cd64c1b ("ALSA: hda/realtek - Fix speaker output regression on Thinkpad T570")
+BugLink: https://apibugzilla.suse.com/show_bug.cgi?id=1172017
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_realtek.c | 36 ++++++++++++++++++++++++++----------
+ 1 file changed, 26 insertions(+), 10 deletions(-)
 
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 041d2a32059b..92c6e58c3862 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5484,18 +5484,9 @@ static void alc_fixup_tpt470_dock(struct hda_codec *codec,
+ 		{ 0x19, 0x21a11010 }, /* dock mic */
+ 		{ }
+ 	};
+-	/* Assure the speaker pin to be coupled with DAC NID 0x03; otherwise
+-	 * the speaker output becomes too low by some reason on Thinkpads with
+-	 * ALC298 codec
+-	 */
+-	static const hda_nid_t preferred_pairs[] = {
+-		0x14, 0x03, 0x17, 0x02, 0x21, 0x02,
+-		0
+-	};
+ 	struct alc_spec *spec = codec->spec;
+ 
+ 	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
+-		spec->gen.preferred_dacs = preferred_pairs;
+ 		spec->parse_flags = HDA_PINCFG_NO_HP_FIXUP;
+ 		snd_hda_apply_pincfgs(codec, pincfgs);
+ 	} else if (action == HDA_FIXUP_ACT_INIT) {
+@@ -5508,6 +5499,23 @@ static void alc_fixup_tpt470_dock(struct hda_codec *codec,
+ 	}
+ }
+ 
++static void alc_fixup_tpt470_dacs(struct hda_codec *codec,
++				  const struct hda_fixup *fix, int action)
++{
++	/* Assure the speaker pin to be coupled with DAC NID 0x03; otherwise
++	 * the speaker output becomes too low by some reason on Thinkpads with
++	 * ALC298 codec
++	 */
++	static const hda_nid_t preferred_pairs[] = {
++		0x14, 0x03, 0x17, 0x02, 0x21, 0x02,
++		0
++	};
++	struct alc_spec *spec = codec->spec;
++
++	if (action == HDA_FIXUP_ACT_PRE_PROBE)
++		spec->gen.preferred_dacs = preferred_pairs;
++}
++
+ static void alc_shutup_dell_xps13(struct hda_codec *codec)
+ {
+ 	struct alc_spec *spec = codec->spec;
+@@ -6063,6 +6071,7 @@ enum {
+ 	ALC700_FIXUP_INTEL_REFERENCE,
+ 	ALC274_FIXUP_DELL_BIND_DACS,
+ 	ALC274_FIXUP_DELL_AIO_LINEOUT_VERB,
++	ALC298_FIXUP_TPT470_DOCK_FIX,
+ 	ALC298_FIXUP_TPT470_DOCK,
+ 	ALC255_FIXUP_DUMMY_LINEOUT_VERB,
+ 	ALC255_FIXUP_DELL_HEADSET_MIC,
+@@ -6994,12 +7003,18 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC274_FIXUP_DELL_BIND_DACS
+ 	},
+-	[ALC298_FIXUP_TPT470_DOCK] = {
++	[ALC298_FIXUP_TPT470_DOCK_FIX] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc_fixup_tpt470_dock,
+ 		.chained = true,
+ 		.chain_id = ALC293_FIXUP_LENOVO_SPK_NOISE
+ 	},
++	[ALC298_FIXUP_TPT470_DOCK] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc_fixup_tpt470_dacs,
++		.chained = true,
++		.chain_id = ALC298_FIXUP_TPT470_DOCK_FIX
++	},
+ 	[ALC255_FIXUP_DUMMY_LINEOUT_VERB] = {
+ 		.type = HDA_FIXUP_PINS,
+ 		.v.pins = (const struct hda_pintbl[]) {
+@@ -7638,6 +7653,7 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
+ 	{.id = ALC292_FIXUP_TPT440_DOCK, .name = "tpt440-dock"},
+ 	{.id = ALC292_FIXUP_TPT440, .name = "tpt440"},
+ 	{.id = ALC292_FIXUP_TPT460, .name = "tpt460"},
++	{.id = ALC298_FIXUP_TPT470_DOCK_FIX, .name = "tpt470-dock-fix"},
+ 	{.id = ALC298_FIXUP_TPT470_DOCK, .name = "tpt470-dock"},
+ 	{.id = ALC233_FIXUP_LENOVO_MULTI_CODECS, .name = "dual-codecs"},
+ 	{.id = ALC700_FIXUP_INTEL_REFERENCE, .name = "alc700-ref"},
+-- 
+2.16.4
 
-thanks,
-
-Takashi
-
-> ---
->  sound/core/hwdep.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/core/hwdep.c b/sound/core/hwdep.c
-> index b412d3b3d5ff..21edb8ac95eb 100644
-> --- a/sound/core/hwdep.c
-> +++ b/sound/core/hwdep.c
-> @@ -216,12 +216,12 @@ static int snd_hwdep_dsp_load(struct snd_hwdep *hw,
->         if (info.index >= 32)
->                 return -EINVAL;
->         /* check whether the dsp was already loaded */
-> -       if (hw->dsp_loaded & (1 << info.index))
-> +       if (hw->dsp_loaded & (1u << info.index))
->                 return -EBUSY;
->         err = hw->ops.dsp_load(hw, &info);
->         if (err < 0)
->                 return err;
-> -       hw->dsp_loaded |= (1 << info.index);
-> +       hw->dsp_loaded |= (1u << info.index);
->         return 0;
->  }
-> 
-> --
-> 2.17.1
-> 
