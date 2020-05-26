@@ -6,53 +6,53 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CEC39C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 01:22:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EAAAC433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 01:23:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5B82920706
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 01:22:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A3C01206D5
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 01:23:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tm++gmwQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5B82920706
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SRUbZzfq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A3C01206D5
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A88DB173B;
-	Tue, 26 May 2020 03:21:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A88DB173B
+	by alsa0.perex.cz (Postfix) with ESMTPS id D34461744;
+	Tue, 26 May 2020 03:22:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D34461744
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590456162;
-	bh=KHBNXnGnfbqxR+qJaBBPV/lsn5sInDBy24KwqDeNnuA=;
+	s=default; t=1590456198;
+	bh=4cSvCEenobvhjdvrFED0I94cIT3pqmMWNqe4PWkGhT0=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tm++gmwQYECRAMykFJBIUGZkZKeH30SX6SQyGgqhngMCzX7vS/uDcMAR85Cl/OXUb
-	 P5XDCNnL9+2t+rz4QvgyaUpZ86OUe7qHOxm4og6souLCJ9Xe/mLja/UFxAvTBZ7vTo
-	 m7iExH7iTLOgrk3d9lq0SdEVfUk8aIr0ju7v691k=
+	b=SRUbZzfq1CzIB93w/GSWnWhLyGdYXgyZ/tk7UqmvQ43v3ZbmWLP0v6gQ6wSWzBba+
+	 GwAvX2g68TmtJ93zQZYQqrgZhN0ly4rQvHqakh8etjslloNR+0Jipjz+x0TZe+3NnA
+	 BOp+PNmujgfIiIug7++f2YkPB8fc2wh0tFpQE2Rc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 67869F802E9;
-	Tue, 26 May 2020 03:18:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E3E55F802EA;
+	Tue, 26 May 2020 03:18:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 819CDF802EB; Tue, 26 May 2020 03:18:06 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 93716F802E9
- for <alsa-devel@alsa-project.org>; Tue, 26 May 2020 03:17:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93716F802E9
-Date: 26 May 2020 10:17:58 +0900
-X-IronPort-AV: E=Sophos;i="5.73,435,1583161200"; d="scan'208";a="47788444"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 26 May 2020 10:17:58 +0900
+ id 6C472F802F7; Tue, 26 May 2020 03:18:17 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id A8CD7F802EA
+ for <alsa-devel@alsa-project.org>; Tue, 26 May 2020 03:18:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8CD7F802EA
+Date: 26 May 2020 10:18:09 +0900
+X-IronPort-AV: E=Sophos;i="5.73,435,1583161200"; d="scan'208";a="48000617"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 26 May 2020 10:18:09 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 69591412CB67;
- Tue, 26 May 2020 10:17:58 +0900 (JST)
-Message-ID: <87367n335l.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 5480D400418C;
+ Tue, 26 May 2020 10:18:09 +0900 (JST)
+Message-ID: <871rn7335a.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 10/19] ASoC: soc-card: add snd_soc_card_resume_pre()
+Subject: [PATCH 11/19] ASoC: soc-card: add snd_soc_card_resume_post()
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87h7w3339l.wl-kuninori.morimoto.gx@renesas.com>
@@ -89,49 +89,49 @@ Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
  3 files changed, 12 insertions(+), 2 deletions(-)
 
 diff --git a/include/sound/soc-card.h b/include/sound/soc-card.h
-index 4a6787a7021f..0d4837f3f182 100644
+index 0d4837f3f182..a54711b5c58f 100644
 --- a/include/sound/soc-card.h
 +++ b/include/sound/soc-card.h
-@@ -21,6 +21,7 @@ int snd_soc_card_jack_new(struct snd_soc_card *card, const char *id, int type,
- 
+@@ -22,6 +22,7 @@ int snd_soc_card_jack_new(struct snd_soc_card *card, const char *id, int type,
  int snd_soc_card_suspend_pre(struct snd_soc_card *card);
  int snd_soc_card_suspend_post(struct snd_soc_card *card);
-+int snd_soc_card_resume_pre(struct snd_soc_card *card);
+ int snd_soc_card_resume_pre(struct snd_soc_card *card);
++int snd_soc_card_resume_post(struct snd_soc_card *card);
  
  /* device driver data */
  static inline void snd_soc_card_set_drvdata(struct snd_soc_card *card,
 diff --git a/sound/soc/soc-card.c b/sound/soc/soc-card.c
-index 1853c7aa0dfd..a5c83363b611 100644
+index a5c83363b611..e3b75e0640ab 100644
 --- a/sound/soc/soc-card.c
 +++ b/sound/soc/soc-card.c
-@@ -99,3 +99,13 @@ int snd_soc_card_suspend_post(struct snd_soc_card *card)
+@@ -109,3 +109,13 @@ int snd_soc_card_resume_pre(struct snd_soc_card *card)
  
  	return soc_card_ret(card, ret);
  }
 +
-+int snd_soc_card_resume_pre(struct snd_soc_card *card)
++int snd_soc_card_resume_post(struct snd_soc_card *card)
 +{
 +	int ret = 0;
 +
-+	if (card->resume_pre)
-+		ret = card->resume_pre(card);
++	if (card->resume_post)
++		ret = card->resume_post(card);
 +
 +	return soc_card_ret(card, ret);
 +}
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index c0327995efc1..540ee055a1e8 100644
+index 540ee055a1e8..02147acf6547 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -660,8 +660,7 @@ static void soc_resume_deferred(struct work_struct *work)
- 	/* Bring us up into D2 so that DAPM starts enabling things */
- 	snd_power_change_state(card->snd_card, SNDRV_CTL_POWER_D2);
+@@ -692,8 +692,7 @@ static void soc_resume_deferred(struct work_struct *work)
+ 		}
+ 	}
  
--	if (card->resume_pre)
--		card->resume_pre(card);
-+	snd_soc_card_resume_pre(card);
+-	if (card->resume_post)
+-		card->resume_post(card);
++	snd_soc_card_resume_post(card);
  
- 	for_each_card_components(card, component) {
- 		if (snd_soc_component_is_suspended(component))
+ 	dev_dbg(card->dev, "ASoC: resume work completed\n");
+ 
 -- 
 2.17.1
 
