@@ -2,78 +2,123 @@ Return-Path: <SRS0=6DhY=7I=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88217C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 15:37:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E6D7C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 16:07:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0F901206D5
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 15:37:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1C749206D5
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 16:07:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GoezomBE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0F901206D5
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mDK0LVSX";
+	dkim=pass (1024-bit key) header.d=northeastern.edu header.i=@northeastern.edu header.b="c1OVKVrC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1C749206D5
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=northeastern.edu
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 576051763;
-	Tue, 26 May 2020 17:36:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 576051763
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6A5141742;
+	Tue, 26 May 2020 18:06:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A5141742
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590507462;
-	bh=JbgoX9Vsm0jGxmMvbPKGkAKFtsH3r0KdAIIAhIuy6f8=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1590509226;
+	bh=xI+PVp/LpKRT4FzzU9cQkQrWVpPGqdjJetfOZSyHJOQ=;
+	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GoezomBENfn96vHfz/AdcxAhnOEUJKTy2vu4pF0xviDUMcJ3vExAfOxDs/0zKK3wl
-	 qqKARN6kXCMB9ZN1BvMTYDeA9aRN9nh1U8dGeQ/2Pkry/Mlji7s7lYuV3zMJ2HzGs3
-	 uQOq+6NRu6gB/rXBg5isdlS3zJD+ldHRycDcuDJI=
+	b=mDK0LVSXZ0rrghuU5BeXyvxfvykPDbQ9LbdpbuDMQnVPmt4EF9DHPQPZwwqDzAso9
+	 iTU15MumDyEha0TqF0ajE+6+USc3Hpun8EMGdYqCSWHExOLaGnxmOdiuGCXwY9weBt
+	 sX223NmTAWGzReMxtJmHh0s1Ltu41W2E1lLDYuhg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C474DF80278;
-	Tue, 26 May 2020 17:35:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E2044F8014A;
+	Tue, 26 May 2020 18:06:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5D207F8028F; Tue, 26 May 2020 17:35:14 +0200 (CEST)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ id 452B0F80150; Tue, 26 May 2020 18:06:14 +0200 (CEST)
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com
+ (mail-co1nam11on2137.outbound.protection.outlook.com [40.107.220.137])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2E883F8014A
- for <alsa-devel@alsa-project.org>; Tue, 26 May 2020 17:35:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E883F8014A
-IronPort-SDR: Md+Id5Tm5UywUBhqnNgJBP+ZXdo8RtIjuBvOmqWmVKWP9o66/1ALiaIyTCTf9J0gGLPOM4OQSN
- gv/y4XHn1cxA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 May 2020 08:35:00 -0700
-IronPort-SDR: pjPHKxd/P5T7xeu4lzneg9Arje37jbdhiP6STCXGEhF9l/OP0m4zX1CDnBX/FnXgXrMrpL0To0
- g2FhOqZ2gcOw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,437,1583222400"; d="scan'208";a="291234633"
-Received: from unknown (HELO [10.254.102.121]) ([10.254.102.121])
- by fmsmga004.fm.intel.com with ESMTP; 26 May 2020 08:35:00 -0700
-Subject: Re: [PATCH 12/19] ASoC: soc-card: add probed bit field to snd_soc_card
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Mark Brown <broonie@kernel.org>
-References: <87h7w3339l.wl-kuninori.morimoto.gx@renesas.com>
- <87zh9v1okl.wl-kuninori.morimoto.gx@renesas.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <9d5d8e40-c39e-5533-5ccc-8d79fafc1168@linux.intel.com>
-Date: Tue, 26 May 2020 09:08:05 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <87zh9v1okl.wl-kuninori.morimoto.gx@renesas.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1C205F80131
+ for <alsa-devel@alsa-project.org>; Tue, 26 May 2020 18:06:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C205F80131
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=northeastern.edu header.i=@northeastern.edu
+ header.b="c1OVKVrC"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Z/iYPvxMdeGd9qui/5pxDQMZPEYcN4EUNCJ0rBiVUkSMz6uunI3PFRWrAinAGrXnaYTDpaov3amQI8TYiUyO4YmAR5mBUwRVZk58DNOj2pR3qRuOP92Rl7fheeimVoVg4ksPkxt/8DSjNqQ+6FmRmxE2bBP7ypvpivj4GEarDMlu5i+3Pin8WtO3TvnHPTW8o4bfxzXy5t+m/3tNO85O6vWa0yr1hrYE0oh3KXA7oITjcaAHi7NZhWVDi2E1zzjvrU1yF4XN2gk7+S1cwQWrPgEw6+x5vtwBqtGKiu6wndigfrrsikUHb0B15AhE9cCtkg8X8lBGb/RvqtmF6J1bOw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ng5g/gSdRtVGN9s89ut8hzRp3qbI+CGG9FAcNiZJmX8=;
+ b=OJVmTmyJXC1uY9LgMgvzJ9oh17qrzzaVjzEYEfqjsCX8tLVFajY8XrH8kp8C5uGtJNeMVD3RgRlLbOJr7s7IjIlriW6qpYBDWYSRNf9BfLTfBMegs+9Jum5z3dmfiZrSaTz2chJLgAPS4UEta4TLuOmbeqnosq7kJfwdko3CXilZNMwcRaM7UZN67D6CvOan5LoT9dY+BAdqwrxYC+UDhSAhzNbJKs7ROiBO8+LeRpAD2YBHr9h3r6Z4I3lVTXw0TxZ1GbnSOChOgQE62tOLFKJTFakFnA+SBEg6BNfXLjr/WY6u3I1drytDUUpCvYbGHvIHkZZ7cJ1Gfk6bL7TTng==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=northeastern.edu; dmarc=pass action=none
+ header.from=northeastern.edu; dkim=pass header.d=northeastern.edu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=northeastern.edu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ng5g/gSdRtVGN9s89ut8hzRp3qbI+CGG9FAcNiZJmX8=;
+ b=c1OVKVrCsQ856b5vu2kZFRVYiaEzaXAK0FtlmCRit87B56hfAWMddFzW/grvMsjfAq/EhCd9hR/R3LAVIA2KYy+6e2QeG0PPcAj6dNaeRZ8wn8I9vEuFViepl5TGDgbT8PZoddHQoy35geWqmKce2q4LZvmQwCt2I4Zi2oaLD/4=
+Received: from BL0PR06MB4548.namprd06.prod.outlook.com (2603:10b6:208:56::26)
+ by BL0PR06MB4500.namprd06.prod.outlook.com (2603:10b6:208:52::27)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.27; Tue, 26 May
+ 2020 16:06:02 +0000
+Received: from BL0PR06MB4548.namprd06.prod.outlook.com
+ ([fe80::fd87:3891:70a2:bc5d]) by BL0PR06MB4548.namprd06.prod.outlook.com
+ ([fe80::fd87:3891:70a2:bc5d%3]) with mapi id 15.20.3021.029; Tue, 26 May 2020
+ 16:06:02 +0000
+From: Changming Liu <liu.changm@northeastern.edu>
+To: Takashi Iwai <tiwai@suse.de>
+Subject: RE: [PATCH] ALSA: hwdep: fix a left shifting 1 by 31 UB bug
+Thread-Topic: [PATCH] ALSA: hwdep: fix a left shifting 1 by 31 UB bug
+Thread-Index: AdYy9F48QYRXqNjTTWulqJQ/P/wZiQAMZrcAABQkmzA=
+Date: Tue, 26 May 2020 16:06:02 +0000
+Message-ID: <BL0PR06MB4548B6B3A1109920AAC7422CE5B00@BL0PR06MB4548.namprd06.prod.outlook.com>
+References: <BL0PR06MB4548170B842CB055C9AF695DE5B00@BL0PR06MB4548.namprd06.prod.outlook.com>
+ <s5ha71vtdv7.wl-tiwai@suse.de>
+In-Reply-To: <s5ha71vtdv7.wl-tiwai@suse.de>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: suse.de; dkim=none (message not signed)
+ header.d=none;suse.de; dmarc=none action=none header.from=northeastern.edu;
+x-originating-ip: [128.227.216.118]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 613ac0ea-0d80-49e6-2fa9-08d8018eb00b
+x-ms-traffictypediagnostic: BL0PR06MB4500:
+x-microsoft-antispam-prvs: <BL0PR06MB4500FEF2B1FA42DD69EDF0BFE5B00@BL0PR06MB4500.namprd06.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-forefront-prvs: 041517DFAB
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: CxAWoDzSHErcNe64FETgugIKYkUsfWccnuz1Rjf7jZ4aR7X/4DwN6FRNkh0cvvBMGD2C8X/75j0V2j379i6tfsL/raKLfli9N/E7tMW8FlrD43YmzAXBowORYUhQ+7UgqkcUxk/iuQkOsIltNydRKpLUsgfeTDtSYtH1E6HM8wLvJmMDvdoAGolvAgCNuREgTgDAYE/JXVZOv3LbO32FwpF8KIl8/7LA/Z0HlBdHjiWLkbgk1gUvEXBo5Af7IVSPonoLZ5BUTkuT0u9LpLAEGwUYW6iS2wdi4lO3L8dS0MIuECyCAsMgrpTvGtr7MlRDIcHyQ1XWk3LjpelX/c3l6Q==
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:BL0PR06MB4548.namprd06.prod.outlook.com; PTR:; CAT:NONE;
+ SFTY:;
+ SFS:(4636009)(136003)(376002)(366004)(396003)(39860400002)(346002)(2906002)(8676002)(71200400001)(7696005)(8936002)(55016002)(9686003)(52536014)(4326008)(33656002)(186003)(5660300002)(26005)(316002)(786003)(54906003)(75432002)(66446008)(64756008)(66556008)(76116006)(478600001)(66476007)(66946007)(86362001)(6506007)(53546011)(6916009);
+ DIR:OUT; SFP:1102; 
+x-ms-exchange-antispam-messagedata: zfEcZIiKm44Dq+q0KzfTswr/0Iusb7hjIKTun4+9LfsR3s80RMCJPzPDSSq+MXhlsaG2qlOIYRsHzBeNSeEO9rG751AHDZeExKLPKuUlufHJ67pMa6biZzhJ4XkirOD+sJqPBg2l4QC3dQgqw47qQYeD+AWxC6UGJHg/SRJ/cET42ndKfhVs46h6/MEJMIUP3rO4t4+6U+bhsxYKwuEh9WAMCJ8McB0NXFXaqEW31ghfw21HpXe1A6XonObXC49GSG+bhmrRxJGjzND2opGjRhguEdMiShV0/EKfavZ3f3oeDuzBljXcf4SDFfM86dYxYGv+aS1A/1Y80JaYQ1cl3ReepyE615Q5aQRfcECVn6rDUVcx1tIymU5uW3jLmIe4VuplX13isV4dgyujLT3SoveW7XktXjHYZOXf+F1Ergw9nHAbCKUBZAbNIZtA+c/Tb3cGI28OKjCyw4HGmnURu/qn3Kuqb4FxKwI3fqwk/b50AuNbzDDHvX6rFcgue9bo
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: northeastern.edu
+X-MS-Exchange-CrossTenant-Network-Message-Id: 613ac0ea-0d80-49e6-2fa9-08d8018eb00b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 May 2020 16:06:02.2942 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a8eec281-aaa3-4dae-ac9b-9a398b9215e7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: jNmLAs5TdGcib5CEqUi5UQn5l/HUN/LSHjL6NY3NpU4wtEIyZWVdTo1tDDVUNv16qhSscNyNZAumIMo95qVAkqFGb6gU46LKzWXnVzTRHuw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR06MB4500
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,113 +134,63 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+> From: Takashi Iwai <tiwai@suse.de>
+> Sent: Tuesday, May 26, 2020 2:22 AM
+> To: Changming Liu <liu.changm@northeastern.edu>
+> Cc: perex@perex.cz; alsa-devel@alsa-project.org
+> Subject: Re: [PATCH] ALSA: hwdep: fix a left shifting 1 by 31 UB bug
+>=20
+> On Tue, 26 May 2020 02:39:21 +0200,
+> Changming Liu wrote:
+> >
+> > The "info.index" variable can be 31 in "1 << info.index".
+> > This might trigger an undefined behavior since 1 is signed.
+> >
+> > Fix this by casting 1 to 1u just to be sure "1u << 31" is defined.
+> >
+> > Signed-off-by: Changming Liu <liu.changm@northeastern.edu>
+>=20
+> Thanks for the patch.
+>=20
+> Unfortunately it seems that your MUA modified in quoted-printable and
+> inapplicable with git-am as is.  Since the changes are so small, I
+> manually applied it now.
+>
+I see, thank you very much for pointing out this problem,=20
+I'll never use my MUA to send patch again.
+Also thank you for this manual modification.=20
 
-
-On 5/25/20 8:18 PM, Kuninori Morimoto wrote:
-> 
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> 
-> We have bit field to control snd_soc_card.
-> Let's add probed field on it instead of local variable.
-> 
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
->   include/sound/soc.h  |  1 +
->   sound/soc/soc-core.c | 18 ++++++++----------
->   2 files changed, 9 insertions(+), 10 deletions(-)
-> 
-> diff --git a/include/sound/soc.h b/include/sound/soc.h
-> index 060c01c32547..74868436ac79 100644
-> --- a/include/sound/soc.h
-> +++ b/include/sound/soc.h
-> @@ -1096,6 +1096,7 @@ struct snd_soc_card {
->   	unsigned int topology_shortname_created:1;
->   	unsigned int fully_routed:1;
->   	unsigned int disable_route_checks:1;
-> +	unsigned int probed:1;
->   
->   	void *drvdata;
->   };
-> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index 02147acf6547..7cfb3ee6ff4f 100644
-> --- a/sound/soc/soc-core.c
-> +++ b/sound/soc/soc-core.c
-> @@ -1723,8 +1723,7 @@ static void __soc_setup_card_name(char *name, int len,
->   	}
->   }
->   
-> -static void soc_cleanup_card_resources(struct snd_soc_card *card,
-> -				       int card_probed)
-> +static void soc_cleanup_card_resources(struct snd_soc_card *card)
->   {
->   	struct snd_soc_pcm_runtime *rtd, *n;
->   
-> @@ -1748,8 +1747,9 @@ static void soc_cleanup_card_resources(struct snd_soc_card *card,
->   	soc_cleanup_card_debugfs(card);
->   
->   	/* remove the card */
-> -	if (card_probed && card->remove)
-> +	if (card->probed && card->remove)
->   		card->remove(card);
-> +	card->probed = 0;
->   
->   	if (card->snd_card) {
->   		snd_card_free(card->snd_card);
-> @@ -1760,12 +1760,10 @@ static void soc_cleanup_card_resources(struct snd_soc_card *card,
->   static void snd_soc_unbind_card(struct snd_soc_card *card, bool unregister)
->   {
->   	if (card->instantiated) {
-> -		int card_probed = 1;
-> -
-
-This looks like a change, now soc_cleanup_card_resources() is called 
-without setting the card_probed bitfield?
-
-everywhere else I see a 1:1 mapping between variable and bitfield usage, 
-not here, is this intentional?
-
->   		card->instantiated = false;
->   		snd_soc_flush_all_delayed_work(card);
->   
-> -		soc_cleanup_card_resources(card, card_probed);
-> +		soc_cleanup_card_resources(card);
->   		if (!unregister)
->   			list_add(&card->list, &unbind_card_list);
->   	} else {
-> @@ -1779,7 +1777,7 @@ static int snd_soc_bind_card(struct snd_soc_card *card)
->   	struct snd_soc_pcm_runtime *rtd;
->   	struct snd_soc_component *component;
->   	struct snd_soc_dai_link *dai_link;
-> -	int ret, i, card_probed = 0;
-> +	int ret, i;
->   
->   	mutex_lock(&client_mutex);
->   	mutex_lock_nested(&card->mutex, SND_SOC_CARD_CLASS_INIT);
-> @@ -1831,7 +1829,7 @@ static int snd_soc_bind_card(struct snd_soc_card *card)
->   		ret = card->probe(card);
->   		if (ret < 0)
->   			goto probe_end;
-> -		card_probed = 1;
-> +		card->probed = 1;
->   	}
->   
->   	/* probe all components used by DAI links on this card */
-> @@ -1923,7 +1921,7 @@ static int snd_soc_bind_card(struct snd_soc_card *card)
->   			goto probe_end;
->   		}
->   	}
-> -	card_probed = 1;
-> +	card->probed = 1;
->   
->   	snd_soc_dapm_new_widgets(card);
->   
-> @@ -1945,7 +1943,7 @@ static int snd_soc_bind_card(struct snd_soc_card *card)
->   
->   probe_end:
->   	if (ret < 0)
-> -		soc_cleanup_card_resources(card, card_probed);
-> +		soc_cleanup_card_resources(card);
->   
->   	mutex_unlock(&card->mutex);
->   	mutex_unlock(&client_mutex);
-> 
+> Please fix the setup of your MUA at the next time, or better to try
+> git-send-email to submit directly.
+>=20
+Sorry that I cannot configure my university email to work on git-send-email=
+,
+I'll use my gmail to send patch via git next time.
+=20
+> > ---
+> >  sound/core/hwdep.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/sound/core/hwdep.c b/sound/core/hwdep.c
+> > index b412d3b3d5ff..21edb8ac95eb 100644
+> > --- a/sound/core/hwdep.c
+> > +++ b/sound/core/hwdep.c
+> > @@ -216,12 +216,12 @@ static int snd_hwdep_dsp_load(struct snd_hwdep
+> *hw,
+> >         if (info.index >=3D 32)
+> >                 return -EINVAL;
+> >         /* check whether the dsp was already loaded */
+> > -       if (hw->dsp_loaded & (1 << info.index))
+> > +       if (hw->dsp_loaded & (1u << info.index))
+> >                 return -EBUSY;
+> >         err =3D hw->ops.dsp_load(hw, &info);
+> >         if (err < 0)
+> >                 return err;
+> > -       hw->dsp_loaded |=3D (1 << info.index);
+> > +       hw->dsp_loaded |=3D (1u << info.index);
+> >         return 0;
+> >  }
+> >
+> > --
+> > 2.17.1
+> >
