@@ -2,67 +2,80 @@ Return-Path: <SRS0=6DhY=7I=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D5C7C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 10:54:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 361B7C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 12:39:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C76762086A
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 10:54:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B19642073B
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 12:39:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iniaWqpt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C76762086A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ijR7p5zL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B19642073B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 09026171C;
-	Tue, 26 May 2020 12:53:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09026171C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0E1E61720;
+	Tue, 26 May 2020 14:38:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E1E61720
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590490462;
-	bh=8yUOlndPaESOZUnp0AdZTAudDlgP7oYMkjYzSFTj1Dk=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1590496778;
+	bh=2n9O10q9FlnjLKFE1laBR1TEFD4AAu1pdg0fdLeHpkE=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iniaWqptRniFCo2APxy/lnr2TfmC4rFNUqMmh7Y1wHV5IzjJ4E/IeAoCAWFQeRjw4
-	 UpPWxcAolG5Qnd8jSW/eHk8oBVsu/913NzLMBQRhJbaRhO5EH0e/IeFPLiVQjWv4Fh
-	 CE9uC91O9IgDj2mFewoYf/FR7kBFKWaNXiRpRhYY=
+	b=ijR7p5zL/h8tnQl7waWpLeIyPz3P87iJ5E+IRu/LGzkunEvxI1PzqVQewPqlkWD9F
+	 ByfBOQvHzhcucm8pJfAwWEtxUsmgmjiB7uZMwIRWBZrxoGLax/SbTUec3WckzqpbZT
+	 zFp1MM/pZlbFfh9Ny/I7tKRaW/BHencfOSKYI+xY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 860E6F80131;
-	Tue, 26 May 2020 12:53:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 90E29F80146;
+	Tue, 26 May 2020 14:38:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2454FF80150; Tue, 26 May 2020 12:53:30 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 7600CF80150; Tue, 26 May 2020 14:38:45 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 76538F80131
- for <alsa-devel@alsa-project.org>; Tue, 26 May 2020 12:53:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76538F80131
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 886DCB234;
- Tue, 26 May 2020 10:53:25 +0000 (UTC)
-Date: Tue, 26 May 2020 12:53:22 +0200
-Message-ID: <s5himgjrmql.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Mark Pearson <mpearson@lenovo.com>
-Subject: Re: [External] [PATCH] ALSA: hda/realtek - Add a model for Thinkpad
- T570 without DAC workaround
-In-Reply-To: <SG2PR03MB33246200560A5E167DC209C7BDB00@SG2PR03MB3324.apcprd03.prod.outlook.com>
-References: <20200526062406.9799-1-tiwai@suse.de>
- <SG2PR03MB33246200560A5E167DC209C7BDB00@SG2PR03MB3324.apcprd03.prod.outlook.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 45351F80146
+ for <alsa-devel@alsa-project.org>; Tue, 26 May 2020 14:38:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45351F80146
+IronPort-SDR: nOgNwSL8LSVQXyW/Vvo9GYS4J/9kju8RXcrg/Uky0DwsqkLooqsuqyWezYgWfhRjQGyJii1PiL
+ IGoWHPqtSJ5g==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 May 2020 05:38:35 -0700
+IronPort-SDR: yPL+3QZbIxGUnzhrP62xMu+eVww930PWCQxjOvv96tfgrkBzZ1wmxadwnwWnHQQ/bgqtLXbwWt
+ WnNQITL++l5w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,437,1583222400"; d="scan'208";a="468280364"
+Received: from crojewsk-mobl1.ger.corp.intel.com (HELO [10.213.10.59])
+ ([10.213.10.59])
+ by fmsmga005.fm.intel.com with ESMTP; 26 May 2020 05:38:33 -0700
+Subject: Re: [PATCH v2 1/2] ASoC: topology: refine and log the header in the
+ correct pass
+To: Keyon Jie <yang.jie@linux.intel.com>, alsa-devel@alsa-project.org
+References: <20200521074847.71406-1-yang.jie@linux.intel.com>
+ <20200521074847.71406-2-yang.jie@linux.intel.com>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+Message-ID: <4c05fcc4-2f94-1ca0-2148-af70ef739d00@intel.com>
+Date: Tue, 26 May 2020 14:38:32 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+In-Reply-To: <20200521074847.71406-2-yang.jie@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: tiwai@suse.de, broonie@kernel.org, pierre-louis.bossart@linux.intel.com,
+ ranjani.sridharan@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,39 +91,133 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 26 May 2020 12:48:20 +0200,
-Mark Pearson wrote:
+On 2020-05-21 9:48 AM, Keyon Jie wrote:
+> The check (tplg->pass == le32_to_cpu(hdr->type)) makes no sense as it is
+> comparing two different enums, refine the element loading functions, and
+> log the information when the header is being parsed in the corresponding
+> parsing pass.
 > 
-> Hi
+> Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
+> ---
+>   sound/soc/soc-topology.c | 53 +++++++++++++++++++++++++++++++---------
+>   1 file changed, 42 insertions(+), 11 deletions(-)
 > 
-> > -----Original Message-----
-> > From: Alsa-devel <alsa-devel-bounces@alsa-project.org> On Behalf Of
-> > Takashi Iwai
-> > Sent: Tuesday, May 26, 2020 2:24 AM
-> > 
-> > We fixed the regression of the speaker volume for some Thinkpad models
-> > (e.g. T570) by the commit 54947cd64c1b ("ALSA: hda/realtek - Fix
-> > speaker output regression on Thinkpad T570").  Essentially it fixes
-> > the DAC / pin pairing by a static table.  It was confirmed and merged
-> > to stable kernel later.
-> > 
-> > Now, interestingly, we got another regression report for the very same
-> > model (T570) about the similar problem, and the commit above was the
-> > culprit.  That is, by some reason, there are devices that prefer the
-> > DAC1, and another device DAC2!
-> > 
-> > Unfortunately those have the same ID and we have no idea what can
-> > differentiate, in this patch, a new fixup model "tpt470-dock-fix" is
-> > provided, so that users with such a machine can apply it manually.
-> > When model=tpt470-dock-fix option is passed to snd-hda-intel module,
-> > it avoids the fixed DAC pairing and the DAC1 is assigned to the
-> > speaker like the earlier versions.
-> > 
-> That's interesting - let me follow up with the HW team and see if I can
-> find out why this is. It would be nice to have something that works for 
-> all cases automatically.
+> diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+> index 49875978a1ce..70c0ff7ce13f 100644
+> --- a/sound/soc/soc-topology.c
+> +++ b/sound/soc/soc-topology.c
+> @@ -2636,6 +2636,17 @@ static int soc_tplg_manifest_load(struct soc_tplg *tplg,
+>   	return ret;
+>   }
+>   
+> +static int (*elem_load[])(struct soc_tplg *, struct snd_soc_tplg_hdr *) = {
+> +	[SOC_TPLG_PASS_MANIFEST]	= soc_tplg_manifest_load,
+> +	[SOC_TPLG_PASS_VENDOR]		= soc_tplg_vendor_load,
+> +	[SOC_TPLG_PASS_MIXER]		= soc_tplg_kcontrol_elems_load,
+> +	[SOC_TPLG_PASS_WIDGET]		= soc_tplg_dapm_widget_elems_load,
+> +	[SOC_TPLG_PASS_PCM_DAI]		= soc_tplg_pcm_elems_load,
+> +	[SOC_TPLG_PASS_GRAPH]		= soc_tplg_dapm_graph_elems_load,
+> +	[SOC_TPLG_PASS_BE_DAI]		= soc_tplg_dai_elems_load,
+> +	[SOC_TPLG_PASS_LINK]		= soc_tplg_link_elems_load,
+> +};
+> +
 
-That'd be appreciated, thanks!
+Do we really need private array for this? There is a separate 
+soc_tplg_load_header function already. By separate, I mean an isolate 
+scope for single task only - validating tplg headers. While I agree with 
+the idea behind second patch of the series - removal of individual 
+checks in favor of generic one - I believe said checks could be 
+"inlined". See below.
 
+>   /* validate header magic, size and type */
+>   static int soc_valid_header(struct soc_tplg *tplg,
+>   	struct snd_soc_tplg_hdr *hdr)
+> @@ -2685,19 +2696,31 @@ static int soc_valid_header(struct soc_tplg *tplg,
+>   		return -EINVAL;
+>   	}
+>   
+> -	if (tplg->pass == le32_to_cpu(hdr->type))
+> +	return 1;
+> +}
+> +
+> +/* check and load the element for the current pass */
+> +static int soc_pass_load(struct soc_tplg *tplg,
+> +			 struct snd_soc_tplg_hdr *hdr,
+> +			 unsigned int hdr_pass)
+> +{
+> +	if (tplg->pass == hdr_pass) {
+>   		dev_dbg(tplg->dev,
+>   			"ASoC: Got 0x%x bytes of type %d version %d vendor %d at pass %d\n",
+>   			hdr->payload_size, hdr->type, hdr->version,
+>   			hdr->vendor_type, tplg->pass);
+> +		return elem_load[hdr_pass](tplg, hdr);
+> +	}
+>   
+> -	return 1;
+> +	return 0;
+>   }
 
-Takashi
+Remove the function and merge its body into soc_tplg_load_header.
+
+>   
+>   /* check header type and call appropriate handler */
+>   static int soc_tplg_load_header(struct soc_tplg *tplg,
+>   	struct snd_soc_tplg_hdr *hdr)
+>   {
+> +	unsigned int hdr_pass;
+> +
+>   	tplg->pos = tplg->hdr_pos + sizeof(struct snd_soc_tplg_hdr);
+>   
+>   	/* check for matching ID */
+> @@ -2711,27 +2734,35 @@ static int soc_tplg_load_header(struct soc_tplg *tplg,
+>   	case SND_SOC_TPLG_TYPE_MIXER:
+>   	case SND_SOC_TPLG_TYPE_ENUM:
+>   	case SND_SOC_TPLG_TYPE_BYTES:
+> -		return soc_tplg_kcontrol_elems_load(tplg, hdr);
+> +		hdr_pass = SOC_TPLG_PASS_MIXER;
+> +		break;
+>   	case SND_SOC_TPLG_TYPE_DAPM_GRAPH:
+> -		return soc_tplg_dapm_graph_elems_load(tplg, hdr);
+> +		hdr_pass = SOC_TPLG_PASS_GRAPH;
+> +		break;
+>   	case SND_SOC_TPLG_TYPE_DAPM_WIDGET:
+> -		return soc_tplg_dapm_widget_elems_load(tplg, hdr);
+> +		hdr_pass = SOC_TPLG_PASS_WIDGET;
+> +		break;
+>   	case SND_SOC_TPLG_TYPE_PCM:
+> -		return soc_tplg_pcm_elems_load(tplg, hdr);
+> +		hdr_pass = SOC_TPLG_PASS_PCM_DAI;
+> +		break;
+>   	case SND_SOC_TPLG_TYPE_DAI:
+> -		return soc_tplg_dai_elems_load(tplg, hdr);
+> +		hdr_pass = SOC_TPLG_PASS_BE_DAI;
+> +		break;
+>   	case SND_SOC_TPLG_TYPE_DAI_LINK:
+>   	case SND_SOC_TPLG_TYPE_BACKEND_LINK:
+>   		/* physical link configurations */
+> -		return soc_tplg_link_elems_load(tplg, hdr);
+> +		hdr_pass = SOC_TPLG_PASS_LINK;
+> +		break;
+>   	case SND_SOC_TPLG_TYPE_MANIFEST:
+> -		return soc_tplg_manifest_load(tplg, hdr);
+> +		hdr_pass = SOC_TPLG_PASS_MANIFEST;
+> +		break;
+>   	default:
+>   		/* bespoke vendor data object */
+> -		return soc_tplg_vendor_load(tplg, hdr);
+> +		hdr_pass = SOC_TPLG_PASS_VENDOR;
+> +		break;
+>   	}
+>   
+> -	return 0;
+> +	return soc_pass_load(tplg, hdr, hdr_pass);
+
+By having "log" code here we have one place for hdr validation, rather 
+than two (the second being just an "if" to be fair..) and private array 
+is no longer necessary. Local func ptr variable would take care of 
+storing adequate function to call.
+
+>   }
+>   
+>   /* process the topology file headers */
+> 
