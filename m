@@ -6,53 +6,53 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32658C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 01:26:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 887FEC433DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 01:26:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AE68F206D5
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 01:26:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 166F4206D5
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2020 01:26:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mG8mThEI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AE68F206D5
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CDY/oiAx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 166F4206D5
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 13D6116F3;
-	Tue, 26 May 2020 03:25:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13D6116F3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 824351727;
+	Tue, 26 May 2020 03:25:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 824351727
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590456372;
-	bh=jGAzx4TY4912qEEbzugSt+NqMvAIAwR8S4I/CrcZui4=;
+	s=default; t=1590456401;
+	bh=+DdDTBaxAy0an5kKzvfkjdrV6DRgNaV65VesTocojAc=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mG8mThEIDf521BWD30giSObM0aIp9K97I4uZD9MffJkPaqAA22Nfy9mivH8kVrLIM
-	 ktuysEcJY+o6OTbCy+XMWYso0CmASHU0xpjIHxTzxl10JPGq73TYNFNHXTy7fOd9PB
-	 VmLXR70DF20kgJm+25LRVTzi1VX2DvYmkHM9cLXg=
+	b=CDY/oiAxQlOa26w34pROVoRaIn3MzfWYO7wky8GxT6N9OntowNLUGW2uR9Y5upSU9
+	 g3ItShiT2ifDYzorqtFrZsiRTCatCgkJQpSDTe2GCHEu9Tni7WiKlcQRwWfBlB1r3i
+	 SQZwixyJPdQbNuDhO/rTg1mzBOmLZ5R3BKSy2hig=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4144AF80329;
-	Tue, 26 May 2020 03:19:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 533AAF80292;
+	Tue, 26 May 2020 03:19:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 42E6DF80331; Tue, 26 May 2020 03:19:07 +0200 (CEST)
+ id 4B7D2F80332; Tue, 26 May 2020 03:19:15 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id B9E48F80328
- for <alsa-devel@alsa-project.org>; Tue, 26 May 2020 03:19:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9E48F80328
-Date: 26 May 2020 10:18:59 +0900
-X-IronPort-AV: E=Sophos;i="5.73,435,1583161200"; d="scan'208";a="47788528"
+ by alsa1.perex.cz (Postfix) with ESMTP id A471FF80292
+ for <alsa-devel@alsa-project.org>; Tue, 26 May 2020 03:19:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A471FF80292
+Date: 26 May 2020 10:19:07 +0900
+X-IronPort-AV: E=Sophos;i="5.73,435,1583161200"; d="scan'208";a="47788541"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 26 May 2020 10:18:59 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 26 May 2020 10:19:07 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 8D902412D77C;
- Tue, 26 May 2020 10:18:59 +0900 (JST)
-Message-ID: <87tv031ojg.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 7CF91412D823;
+ Tue, 26 May 2020 10:19:07 +0900 (JST)
+Message-ID: <87sgfn1oj8.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 16/19] ASoC: soc-card: add snd_soc_card_set_bias_level()
+Subject: [PATCH 17/19] ASoC: soc-card: add snd_soc_card_set_bias_level_post()
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87h7w3339l.wl-kuninori.morimoto.gx@renesas.com>
@@ -83,60 +83,59 @@ This patch adds it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- include/sound/soc-card.h |  4 ++++
+ include/sound/soc-card.h |  3 +++
  sound/soc/soc-card.c     | 12 ++++++++++++
  sound/soc/soc-dapm.c     |  4 ++--
- 3 files changed, 18 insertions(+), 2 deletions(-)
+ 3 files changed, 17 insertions(+), 2 deletions(-)
 
 diff --git a/include/sound/soc-card.h b/include/sound/soc-card.h
-index b338bbd08219..4bcdc1d382bf 100644
+index 4bcdc1d382bf..54341e4d818a 100644
 --- a/include/sound/soc-card.h
 +++ b/include/sound/soc-card.h
-@@ -28,6 +28,10 @@ int snd_soc_card_probe(struct snd_soc_card *card);
- int snd_soc_card_late_probe(struct snd_soc_card *card);
- int snd_soc_card_remove(struct snd_soc_card *card);
+@@ -31,6 +31,9 @@ int snd_soc_card_remove(struct snd_soc_card *card);
+ int snd_soc_card_set_bias_level(struct snd_soc_card *card,
+ 				struct snd_soc_dapm_context *dapm,
+ 				enum snd_soc_bias_level level);
++int snd_soc_card_set_bias_level_post(struct snd_soc_card *card,
++				     struct snd_soc_dapm_context *dapm,
++				     enum snd_soc_bias_level level);
  
-+int snd_soc_card_set_bias_level(struct snd_soc_card *card,
-+				struct snd_soc_dapm_context *dapm,
-+				enum snd_soc_bias_level level);
-+
  /* device driver data */
  static inline void snd_soc_card_set_drvdata(struct snd_soc_card *card,
- 					    void *data)
 diff --git a/sound/soc/soc-card.c b/sound/soc/soc-card.c
-index 449f6cc86859..a9f25b6a4c67 100644
+index a9f25b6a4c67..8db3b98d1c80 100644
 --- a/sound/soc/soc-card.c
 +++ b/sound/soc/soc-card.c
-@@ -172,3 +172,15 @@ int snd_soc_card_remove(struct snd_soc_card *card)
+@@ -184,3 +184,15 @@ int snd_soc_card_set_bias_level(struct snd_soc_card *card,
  
  	return soc_card_ret(card, ret);
  }
 +
-+int snd_soc_card_set_bias_level(struct snd_soc_card *card,
-+				struct snd_soc_dapm_context *dapm,
-+				enum snd_soc_bias_level level)
++int snd_soc_card_set_bias_level_post(struct snd_soc_card *card,
++				     struct snd_soc_dapm_context *dapm,
++				     enum snd_soc_bias_level level)
 +{
 +	int ret = 0;
 +
-+	if (card->set_bias_level)
-+		ret = card->set_bias_level(card, dapm, level);
++	if (card->set_bias_level_post)
++		ret = card->set_bias_level_post(card, dapm, level);
 +
 +	return soc_card_ret(card, ret);
 +}
 diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index a4de3e4bc2ef..add39d24a583 100644
+index add39d24a583..af457ee5ef83 100644
 --- a/sound/soc/soc-dapm.c
 +++ b/sound/soc/soc-dapm.c
-@@ -725,8 +725,8 @@ static int snd_soc_dapm_set_bias_level(struct snd_soc_dapm_context *dapm,
- 
- 	trace_snd_soc_bias_level_start(card, level);
- 
--	if (card && card->set_bias_level)
--		ret = card->set_bias_level(card, dapm, level);
-+	if (card)
-+		ret = snd_soc_card_set_bias_level(card, dapm, level);
+@@ -736,8 +736,8 @@ static int snd_soc_dapm_set_bias_level(struct snd_soc_dapm_context *dapm,
  	if (ret != 0)
  		goto out;
+ 
+-	if (card && card->set_bias_level_post)
+-		ret = card->set_bias_level_post(card, dapm, level);
++	if (card)
++		ret = snd_soc_card_set_bias_level_post(card, dapm, level);
+ out:
+ 	trace_snd_soc_bias_level_done(card, level);
  
 -- 
 2.17.1
