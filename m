@@ -6,72 +6,70 @@ X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CE16C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2020 14:59:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D5735C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2020 15:00:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 85721207CB
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2020 14:59:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5331920787
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2020 15:00:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="toiuvtjA";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="g+O7JhSe"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 85721207CB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rOSbMS/Z";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="kmFYNI8v"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5331920787
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9803C17C1;
-	Wed, 27 May 2020 16:58:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9803C17C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8868617CB;
+	Wed, 27 May 2020 16:59:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8868617CB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590591585;
-	bh=UlnnGaH1loGBWdcS+XPAxuzzJn8SjhbfQG6BtGVkfm8=;
+	s=default; t=1590591633;
+	bh=u2lDoZzGDayxtcZjIvEEOU3TwyrSTCxS9YF+ccmxFgI=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=toiuvtjAsK0dzmih4dY6RcSeqAL+nzKZ7cgKQbdNirUtNCLgBNCLG/D638VhWj9Wq
-	 pZfcbNAqsA2TTFd5RI1rmO8IBpEEyj7V2YHBDaO+e4u+3p3j4kX3JFqMF3B6UnvsYJ
-	 SYmb4oF4TLXlSNXEmReJ4ylAeQRIImZA5LRsKkss=
+	b=rOSbMS/ZHTxK3HolDfjvuJgujcTxW/55mcAeo2DsxNIa/vZTUN+1LuP7lT3Q5XTUW
+	 YKu0/6yOveXdfUjnrdFFDFF5qnasUpdRtUQCO7gR3hPH3HJbG1wO/28R2WdiGZ3vJ+
+	 KTS551H/tQEuZCAjuaAOgsxFWIwyU3Qjijfz8DV8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 69C09F8021E;
-	Wed, 27 May 2020 16:58:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 87A52F8016F;
+	Wed, 27 May 2020 16:58:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 683A5F80227; Wed, 27 May 2020 16:58:05 +0200 (CEST)
+ id 955B2F8028F; Wed, 27 May 2020 16:58:11 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B7BAAF8016F
- for <alsa-devel@alsa-project.org>; Wed, 27 May 2020 16:58:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7BAAF8016F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1F073F8016F
+ for <alsa-devel@alsa-project.org>; Wed, 27 May 2020 16:58:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F073F8016F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="g+O7JhSe"
+ header.b="kmFYNI8v"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id E2A8C20899;
- Wed, 27 May 2020 14:58:00 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 03D56207CB;
+ Wed, 27 May 2020 14:58:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1590591481;
- bh=UlnnGaH1loGBWdcS+XPAxuzzJn8SjhbfQG6BtGVkfm8=;
+ s=default; t=1590591487;
+ bh=u2lDoZzGDayxtcZjIvEEOU3TwyrSTCxS9YF+ccmxFgI=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=g+O7JhSeyz45eEKyHq2F8s2Hy5XQwPHiLUs5arg3G3apZji0K5+lJ+G5LogaAu6gN
- fWjY9yqH5TksMWSoxKo21r3jF7mMhQOmYc3l4KPgQII8Twso8Vb3VjL4lZac73UZWw
- vsgjH6wWERyguMHpuMO8cqdVk37w8edH05BvxduU=
-Date: Wed, 27 May 2020 15:57:59 +0100
+ b=kmFYNI8vmreNjgNmLh7kzEKqFdOwBfTIO/weUhPifpJjOaXfr5hc9W0JU/97B7wfl
+ 4C4Um1kgnay0VTQKlDKaQw75Z0u//XA11up42fz+ZwR9syaSwEsDxU/ZgX6ZeOYaJh
+ V6qoD4rJSSo1HSePBbm88Xjn8ioZWZuihv8ftsLk=
+Date: Wed, 27 May 2020 15:58:04 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Dinghao Liu <dinghao.liu@zju.edu.cn>, kjlu@umn.edu
-In-Reply-To: <20200527024625.9937-1-dinghao.liu@zju.edu.cn>
-References: <20200527024625.9937-1-dinghao.liu@zju.edu.cn>
-Subject: Re: [PATCH] ASoC: wm8962: Fix runtime PM imbalance on error
-Message-Id: <159059147353.50918.8954305558972118700.b4-ty@kernel.org>
-Cc: Kate Stewart <kstewart@linuxfoundation.org>, alsa-devel@alsa-project.org,
- Liam Girdwood <lgirdwood@gmail.com>, patches@opensource.cirrus.com,
- Shengjiu Wang <shengjiu.wang@nxp.com>, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Thomas Gleixner <tglx@linutronix.de>,
- Enrico Weigelt <info@metux.net>
+To: lgirdwood@gmail.com, tiwai@suse.com, Dan Murphy <dmurphy@ti.com>,
+ perex@perex.cz
+In-Reply-To: <20200526175247.15309-1-dmurphy@ti.com>
+References: <20200526175247.15309-1-dmurphy@ti.com>
+Subject: Re: [PATCH] ASoC: tlv320adcx140: Fix warnings when using W=1
+Message-Id: <159059147354.50918.15790917523378380090.b4-ty@kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, kbuild test robot <lkp@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,10 +85,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 27 May 2020 10:46:22 +0800, Dinghao Liu wrote:
-> pm_runtime_get_sync() increments the runtime PM usage counter even
-> the call returns an error code. Thus a pairing decrement is needed
-> on the error handling path to keep the counter balanced.
+On Tue, 26 May 2020 12:52:47 -0500, Dan Murphy wrote:
+> Fix the warnings when using the W=1 compiler flag.
+> 
+> sound/soc/codecs/tlv320adcx140.c: In function ‘adcx140_reset’:
+> sound/soc/codecs/tlv320adcx140.c:570:6: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
+>   570 |  int ret = 0;
+>       |      ^~~
+> 
+> [...]
 
 Applied to
 
@@ -98,8 +101,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: wm8962: Fix runtime PM imbalance on error
-      commit: 920bef64cc5fa0e955be357bfc876179729df216
+[1/1] ASoC: tlv320adcx140: Fix warnings when using W=1
+      commit: 850ba84b5c6d4ad4d1259584ebc0338eb769f2ef
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
