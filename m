@@ -2,75 +2,92 @@ Return-Path: <SRS0=+ZhY=7J=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E205C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2020 15:02:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D32AC433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2020 16:00:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 92499207CB
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2020 15:02:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B69692075F
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2020 16:00:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="StTBS9nD";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="JLb9Di3h"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 92499207CB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pz079sGQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B69692075F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F103B17C1;
-	Wed, 27 May 2020 17:02:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F103B17C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 07B7B1790;
+	Wed, 27 May 2020 17:59:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 07B7B1790
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590591775;
-	bh=kDy9pO4LzmtkB5iN/9Ch9VxCGoXaCAw5htQMHM1X4BE=;
-	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
+	s=default; t=1590595249;
+	bh=PdlvnwDutjb/77XkEtD1r65LredhRAMtRfD2KGF4Q+g=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=StTBS9nDbVsnuB9Udm0QgEU7pj7EPIokN/Xuy+Jjikts1kronDqfOcqpCzZ31oh8H
-	 C0InkFBiRAVC4SKniUq04EokKw5WzIIffhe1svA56E/77LRF1txbVBDeA5J+5w8RE9
-	 GXT1QvR46Cs2iTJHxBQE7/Bl5bkaQ33Ntn0vGWbc=
+	b=pz079sGQD6ZevLDxJmlzcbQZHQ7YTaGQssG6N2TVgwAXCFnYgjNMBNJUl8BU3Aw+p
+	 4Arj7iJN/HAynjE7B/akBE9P2rkvg4bitEOmhltw79D6GFrHXCaVii8WH/5UGav8dc
+	 i2vVNdcrJ8EOghCghfu3s1+KC7OfNhxCtH1DVJUY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5F30FF802DD;
-	Wed, 27 May 2020 16:58:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9E681F80149;
+	Wed, 27 May 2020 17:59:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C0670F802DF; Wed, 27 May 2020 16:58:32 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5D01DF802DB
- for <alsa-devel@alsa-project.org>; Wed, 27 May 2020 16:58:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D01DF802DB
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="JLb9Di3h"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ id 83E0DF8014E; Wed, 27 May 2020 17:59:56 +0200 (CEST)
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.13])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 5BCF42100A;
- Wed, 27 May 2020 14:58:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1590591508;
- bh=kDy9pO4LzmtkB5iN/9Ch9VxCGoXaCAw5htQMHM1X4BE=;
- h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=JLb9Di3hNPhp2su7hddjGhB4TV632CaznWN8N3mBXK1BsFuX3T/QGyaONLhRFlyqc
- al+homf9kTkUecOs20h5s4pckYqwNvI+E63cZZBUwvaWKr4l++hTw2QkXiQz4ZlxXG
- 5mt83VCzt+EVZ0RtPuZcNfw541gyHs5X9pHdalt4=
-Date: Wed, 27 May 2020 15:58:26 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Dinghao Liu <dinghao.liu@zju.edu.cn>, kjlu@umn.edu
-In-Reply-To: <20200527084610.4790-1-dinghao.liu@zju.edu.cn>
-References: <20200527084610.4790-1-dinghao.liu@zju.edu.cn>
-Subject: Re: [PATCH] ASoC: img-spdif-out: Fix runtime PM imbalance on error
-Message-Id: <159059147353.50918.4160762882932440054.b4-ty@kernel.org>
-Cc: alsa-devel@alsa-project.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
- Thomas Gleixner <tglx@linutronix.de>, Allison Randal <allison@lohutok.net>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 40249F800FF
+ for <alsa-devel@alsa-project.org>; Wed, 27 May 2020 17:59:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40249F800FF
+Received: from mail-qk1-f182.google.com ([209.85.222.182]) by
+ mrelayeu.kundenserver.de (mreue108 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MXGzQ-1jVpV11YnW-00YjZ7 for <alsa-devel@alsa-project.org>; Wed, 27 May
+ 2020 17:59:53 +0200
+Received: by mail-qk1-f182.google.com with SMTP id c185so10718951qke.7
+ for <alsa-devel@alsa-project.org>; Wed, 27 May 2020 08:59:53 -0700 (PDT)
+X-Gm-Message-State: AOAM532V9JxHTDR8rC5HD1VyCUiN44WMejQYGpAvUaB8OgoKLfo+LvnY
+ BNXZPcdd+Hp9U51DsdPaeqUPZdrZ/KPsAFhCJG0=
+X-Google-Smtp-Source: ABdhPJxDutw7MBd/EYBIKtYxOivFQlLGm+KC5RbbRJSXfuIwQcc5opcAUQCuxjh5ZJMaChtg/SMDmArapoMUIIqUbag=
+X-Received: by 2002:ae9:c10d:: with SMTP id z13mr4427434qki.3.1590595192185;
+ Wed, 27 May 2020 08:59:52 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200527134151.834555-1-arnd@arndb.de>
+ <20200527134743.GH5308@sirena.org.uk>
+In-Reply-To: <20200527134743.GH5308@sirena.org.uk>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Wed, 27 May 2020 17:59:35 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3fmQSTAKehsjZX8CEEEK7oHoGdviLKY2JE4=tTccGkyQ@mail.gmail.com>
+Message-ID: <CAK8P3a3fmQSTAKehsjZX8CEEEK7oHoGdviLKY2JE4=tTccGkyQ@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: amd: rt5682: fix soundwire dependencies
+To: Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:PItm1Ki0Bka0tZVzj9YTLHwNK/raKV3Q/gElHh3fueRkhBikag9
+ HoeazUcOr2apHb42XmRsDOnVYZ5sbAwNjVfBddFqLGgTIICnjm8ahU2ZmCI0QL4GaeUA/nA
+ RMefk1PmMXZxtPdHDDOiwH53gI44x/u1mnIN+7KXF0ubacvY6koIziFqDL71r5YQmNVPAqT
+ JDs/oLoZXM+MIINkCHvSg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:K8RV9tx35bI=:VcZnVH+wWuLiJR/KkdZcTR
+ gwaso36jXTxHZomdjN6nRgMCiWcORPC97NHewkpkwG24sEAAy04L2ZmyhyeqM+2bfV73kUjj9
+ XRDXkfoK/xH3aMq74cxvz6D1h4Va0HaiGUw0NTpwMlhxi0CUUyCr0UWV2hoXPtdnuUeD3/abZ
+ YNOC2yygO5afLynUp7Ua6FIh7mlVvT4D4w+OpZZUyh0nTk52L/qzXRJURI74lhxwvnHwOFhAr
+ GSyKKZEe77nvXrHSxAkamZtATwXx8KqheQ8XPJKZfqGDMGtiFpONYI7kTe76Cupl4Z8sHy4f6
+ K3ZZlYRLeUSgZSUJZL7COPm06oZIzdzFuUZ/kE6aEDqRkrRMAWd+OYvnt8AOrKODJAhKj/jRk
+ e4UaNSDzo6v6iYLng5pY+p0UCQEHpkMp03jJgttqAP874pApmcV7JK5Kh/Sq66ii/pztObiwP
+ JwcjA8ETvni0v4vAN82zScORO+6wxbC5WKpTMKT2AZs/8H/8EOymIQ0aeu3Z9e+cE8vGNaJ5Q
+ krSMgaXvVwWCsrr2CPDvcdR7kjS28spfYkW9xQso8/tkxxGlxSofxZg2ZITXhgujgc7UEiAk5
+ 3fCZ0d9SHbI0qRyLHZO/YHbOyUJjaUnrKBPf3kkXsMCm1FIEc1SWfonWipEc88SqNe6FRH9jN
+ rR7//G0JmtjX44AaGARK7K69J1bd5SDReZelveVKIP1UVoy3TopJMIhqzy7d/whLzYo1huqZs
+ tow1mLyzAz5YfVPemuDF/avXtcvyRpIHmVqnEA4siSK/TGSwngi0ZK1XK+Aj6Siz3k3Ts5VtD
+ 7VCV6NGo/B0BpVB8tb8gtvFp6eHuoWPrpVD38nn9Eh6t4Bq/Ig=
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+ Akshu Agrawal <akshu.agrawal@amd.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,35 +103,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 27 May 2020 16:46:08 +0800, Dinghao Liu wrote:
-> pm_runtime_get_sync() increments the runtime PM usage counter even
-> the call returns an error code. Thus a pairing decrement is needed
-> on the error handling path to keep the counter balanced.
+On Wed, May 27, 2020 at 3:47 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Wed, May 27, 2020 at 03:41:26PM +0200, Arnd Bergmann wrote:
+>
+> > Maybe the SND_SOC_RT5682 driver itself can be reworked so that
+> > the common part depends on neither soundwire nor i2c and the two
+> > bus specific options can be loadable modules when the common part
+> > is built-in.
+>
+> Yes, please do that.
 
-Applied to
+It took me longer than I thought it would, but I have a patch now.
+I'll send it after it passes more randconfig builds to ensure it covers
+all corner cases.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: img-spdif-out: Fix runtime PM imbalance on error
-      commit: 9ad61b5c804090022444719d1f16e1029e002430
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+      Arnd
