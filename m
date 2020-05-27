@@ -2,79 +2,78 @@ Return-Path: <SRS0=+ZhY=7J=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB0F3C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2020 02:47:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C6698C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2020 02:50:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 645C920787
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2020 02:47:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4D1B1207CB
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2020 02:50:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TiTZk1cB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 645C920787
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nr+r23In"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4D1B1207CB
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=grossmann-venter.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B336D1780;
-	Wed, 27 May 2020 04:46:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B336D1780
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9A9A81780;
+	Wed, 27 May 2020 04:49:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A9A81780
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590547656;
-	bh=WIUvatlwz16X1lnGHWIzpxFLu2g6/icmBtup+ZG+XRY=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1590547832;
+	bh=/Ii+G3fBOKe1Z/JZuKgsReWyAyznLTeORE/DLd8u8/w=;
+	h=Date:From:To:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=TiTZk1cBZCF4pYmP9Zha/UeGR3cU2DIIKMjnWtMmtrd84vKO+edrLFSrIFJCdJ2T1
-	 roDinYNnkX0op697b/rsfrUJfJLe9HR+FkZD11X7diKT64tTgintD5h9j0FZTZjyuU
-	 Wg84xCOriZuj11PxCiP1fPBDbWcmKwNm8nP7IYto=
+	b=nr+r23InFg/UmZFfSswhKB1jvkOm45irSV7jV6AAtaxmS/qj5GhiMZz/jz+uIwjop
+	 QRc1zIrrwrUP162KQOs9AFLDlStANW+O/oJQ0dag7jqBPm2hp+c0YalaWF+nyhzXxH
+	 SxgHQnr1enwoPFzDkzd29adwMCzs0fj0K269drRc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D6768F80149;
-	Wed, 27 May 2020 04:46:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 15C14F80149;
+	Wed, 27 May 2020 04:49:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 02431F8014E; Wed, 27 May 2020 04:46:44 +0200 (CEST)
-Received: from zju.edu.cn (spam.zju.edu.cn [61.164.42.155])
- by alsa1.perex.cz (Postfix) with ESMTP id E6098F80146
- for <alsa-devel@alsa-project.org>; Wed, 27 May 2020 04:46:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6098F80146
-Received: from localhost.localdomain (unknown [222.205.60.151])
- by mail-app2 (Coremail) with SMTP id by_KCgC3fuyB1M1e7XMdAA--.25698S4;
- Wed, 27 May 2020 10:46:29 +0800 (CST)
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
-To: dinghao.liu@zju.edu.cn,
-	kjlu@umn.edu
-Subject: [PATCH] ASoC: wm8962: Fix runtime PM imbalance on error
-Date: Wed, 27 May 2020 10:46:22 +0800
-Message-Id: <20200527024625.9937-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: by_KCgC3fuyB1M1e7XMdAA--.25698S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrKrWrZF15CFyUGr4xXF1UKFg_yoWDZFX_Gr
- s8u39FvwsxKrW7XrZrXa1YvrZ3ZF9rCF1UKF4vvF17AFWjvFs5Jry8Ars5CrWxWw48Z3Wa
- q3ZI9FyxArWqkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
- 9fnUUIcSsGvfJTRUUUb-xFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
- wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
- vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
- jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
- x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
- GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
- 8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2xKxwCY02Avz4vE
- 14v_Gr1l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMxC20s026x
- CaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_
- JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r
- 1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_
- WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r
- 4UJbIYCTnIWIevJa73UjIFyTuYvjfUO_MaUUUUU
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAg0MBlZdtOUT6wAKst
-Cc: Kate Stewart <kstewart@linuxfoundation.org>, alsa-devel@alsa-project.org,
- patches@opensource.cirrus.com, Shengjiu Wang <shengjiu.wang@nxp.com>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- Enrico Weigelt <info@metux.net>, linux-kernel@vger.kernel.org
+ id 9D860F8014E; Wed, 27 May 2020 04:49:39 +0200 (CEST)
+Received: from server54-3.web-hosting.com (server54-3.web-hosting.com
+ [198.54.126.119])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 07D28F80146
+ for <alsa-devel@alsa-project.org>; Wed, 27 May 2020 04:49:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07D28F80146
+Received: from [::1] (port=56998 helo=server54.web-hosting.com)
+ by server54.web-hosting.com with esmtpa (Exim 4.93)
+ (envelope-from <admin@grossmann-venter.com>) id 1jdm8E-001NZN-E1
+ for alsa-devel@alsa-project.org; Tue, 26 May 2020 22:49:30 -0400
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date: Tue, 26 May 2020 22:49:26 -0400
+From: liebrecht@grossmann-venter.com
+To: alsa-devel@alsa-project.org
+Subject: Alsa Midi Driver Question/Issue
+Message-ID: <770a8eb1beaf66e2ac4d3f12e42adda5@grossmann-venter.com>
+X-Sender: admin@grossmann-venter.com
+User-Agent: Roundcube Webmail/1.3.8
+X-OutGoing-Spam-Status: No, score=-1.0
+X-AntiAbuse: This header was added to track abuse,
+ please include it with any abuse report
+X-AntiAbuse: Primary Hostname - server54.web-hosting.com
+X-AntiAbuse: Original Domain - alsa-project.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - grossmann-venter.com
+X-Get-Message-Sender-Via: server54.web-hosting.com: authenticated_id:
+ liebrecht@grossmann-venter.com
+X-Authenticated-Sender: server54.web-hosting.com: liebrecht@grossmann-venter.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-From-Rewrite: rewritten was: [admin@grossmann-venter.com],
+ actual sender does not match
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,35 +89,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-pm_runtime_get_sync() increments the runtime PM usage counter even
-the call returns an error code. Thus a pairing decrement is needed
-on the error handling path to keep the counter balanced.
+This is not really a straight forward user question and thereby I post 
+it in the developer forum.
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
- sound/soc/codecs/wm8962.c | 2 ++
- 1 file changed, 2 insertions(+)
+My Problem:
+I use Alsa/Jack/Pulseaudio to run quite an extensive audio interface to 
+DAW with involved Jack routings of both Audio and Midi.
+The system runs like greased lightning and I can do things on Linux that 
+I could never do on windows period.
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index d9d59f45833f..bb806b195d10 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -2881,6 +2881,7 @@ static int wm8962_set_fll(struct snd_soc_component *component, int fll_id, int s
- 
- 	ret = pm_runtime_get_sync(component->dev);
- 	if (ret < 0) {
-+		pm_runtime_put_noidle(component->dev);
- 		dev_err(component->dev, "Failed to resume device: %d\n", ret);
- 		return ret;
- 	}
-@@ -3013,6 +3014,7 @@ static irqreturn_t wm8962_irq(int irq, void *data)
- 
- 	ret = pm_runtime_get_sync(dev);
- 	if (ret < 0) {
-+		pm_runtime_put_noidle(dev);
- 		dev_err(dev, "Failed to resume: %d\n", ret);
- 		return IRQ_NONE;
- 	}
--- 
-2.17.1
+The problem is that there exist applicatio9ns that is not ALSA/JACK Midi 
+friendly.
+One such Application is Bitwig for Linux
 
+1) Bitwig absolutely requires to have exclusive access to a USB pad 
+Controller in order to recognise the controller.
+2) We all know that the Alsa Midi driver forwards ALL Midi devices it 
+finds to Jack where the  aj2midid daemon provides a bridge to jack and 
+the midi devices are then elegantly routed with jack to jack enabled 
+programs. The alsa midi and jack bridge is a thing of beauty.
+3) However Bitwig to be able to use a midi pad controller DEMANDS that 
+you DISABLE alsa midi driver before it recognizes the midi controller.
+4) This is very unfortunate and very W$ndish approach to devices.
+5) So at the moment I can either use Bitwig with a pad controller and 
+absolutely no other midi through Alsa/Jack will work, or my alsa/jack 
+routings work but I cannot use Bitwig with a Midi Controller.
+
+My Question
+1) Is it in any way possible to configure the Alsa Midi driver tgo 
+ignore a specific Midi device in order that my Alsa/Jack routings can be 
+used in conjunction with Bitwig using its pad-controller.
+2) To summarize my question, I need to somehow blacklist the midi 
+controller to not be touched or accessed ihn any way. Basically totally 
+forget about its existence.
+3) I am sure this must be possible as there are a lot of W$ndish style 
+programs like this developed to need exclusive access to a midi device.
+4) I tried to convince the developers of Bitwig to make Bitwig Jack 
+aware, but it is seemingly not going to happen. That would have been the 
+right way.
+
+I sincerely hope you will have a recommendation I can work on and 
+impliment.
+
+Thank you.
