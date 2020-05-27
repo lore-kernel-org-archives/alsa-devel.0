@@ -2,76 +2,81 @@ Return-Path: <SRS0=+ZhY=7J=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 29E3DC433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2020 00:27:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 069D6C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2020 01:07:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A540E207CB
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2020 00:27:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8A1582088E
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2020 01:06:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="imF+Pm7r"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A540E207CB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="u4OLbKd+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8A1582088E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 058351771;
-	Wed, 27 May 2020 02:26:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 058351771
+	by alsa0.perex.cz (Postfix) with ESMTPS id E30101752;
+	Wed, 27 May 2020 03:06:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E30101752
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590539225;
-	bh=m7xEY3oMG8iAUInoNtcvof7Rkqkh7/KC6FVQPDTw9RQ=;
-	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1590541618;
+	bh=BC8ptv/vEdPN0UqUAbvA9yHOqU6ZJNz6KqrCQ8FCxnw=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=imF+Pm7rLh0Wb9vYJL9kkBV8GT2A4xs5Q8xA4MC5OygaTDMYI2o7uWXJHBAoycmle
-	 LAErpNNcVhqawMJ5GXmrzd6HFkbHBLaP6l0gP1udKEMoIEzhmaDdTiwuicqH4ZljGl
-	 INYhvgQrjjzzB1n9/4HB+9azDKxETI3neAwrUOe0=
+	b=u4OLbKd+x9Zc6FkKtyn04Uc9lSvK0ZL8iNhkSKY5ms0K7rkSfIrD9WvLTfgLcefDP
+	 b7V8kAEl+/aFHoPJNuOMfve3g4NW1gloy8ac/jAvcAKRQ0LGakKcufz+889dn/xIZk
+	 YkNzXp3zVqhYBL2Qs37mQX5TAwfWSBgmszPQz674=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8FAA8F80131;
-	Wed, 27 May 2020 02:26:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 519B4F8014A;
+	Wed, 27 May 2020 03:06:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7C63FF8015C; Wed, 27 May 2020 02:26:13 +0200 (CEST)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ id 350D9F80150; Wed, 27 May 2020 03:06:05 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AA127F80131
- for <alsa-devel@alsa-project.org>; Wed, 27 May 2020 02:26:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA127F80131
-IronPort-SDR: oCb+JP5u3R93AtxSn0IDpfi3AP4kK5an7XjdJ8bMvlYQVsLs3VTdjW07auY9JNS9hb17jEPHv9
- hUyjqdtd1qhw==
+ by alsa1.perex.cz (Postfix) with ESMTPS id DD587F80146
+ for <alsa-devel@alsa-project.org>; Wed, 27 May 2020 03:05:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD587F80146
+IronPort-SDR: iYXtNQCe2BT7hO/+RIHmCU4dCcez7uvU9hInIIAeqzQdCMHSGiY9R4nG65s4JDqfhkO1BdMJyZ
+ UBD6v4ethuXA==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 May 2020 17:26:03 -0700
-IronPort-SDR: ObYCgt1MtabYB00HYWdkN+76K5Kh3aF4Ii3DgdAVqXx8tg4TSG42x1cd2ZfYzKL0hTX7lnqQKF
- GO+TCruwE7WA==
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 May 2020 18:05:49 -0700
+IronPort-SDR: S/mcQUygiuf+vPV3ktb5nM26m1P/lgg2ZilE6VzPGtNO/grl3gJIE1yfm+vuF7BDw5FFyZNXJB
+ H6wZhYY4068w==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,439,1583222400"; d="scan'208";a="255312584"
-Received: from vivienne-mobl.ger.corp.intel.com ([10.251.132.190])
- by fmsmga007.fm.intel.com with ESMTP; 26 May 2020 17:26:02 -0700
-Message-ID: <c8f57c0ff243997075769f67761708e8bad45e8e.camel@linux.intel.com>
-Subject: Re: [PATCH 02/19] ASoC: add soc-card.c
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown
- <broonie@kernel.org>
-Date: Tue, 26 May 2020 17:26:02 -0700
-In-Reply-To: <87eer7337h.wl-kuninori.morimoto.gx@renesas.com>
-References: <87h7w3339l.wl-kuninori.morimoto.gx@renesas.com>
- <87eer7337h.wl-kuninori.morimoto.gx@renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+X-IronPort-AV: E=Sophos;i="5.73,439,1583222400"; d="scan'208";a="345361056"
+Received: from xgu17-mobl.ccr.corp.intel.com (HELO [10.254.210.123])
+ ([10.254.210.123])
+ by orsmga001.jf.intel.com with ESMTP; 26 May 2020 18:05:47 -0700
+Subject: Re: [PATCH v2 0/2] ASoC topology header parsing refinement
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
+References: <20200521074847.71406-1-yang.jie@linux.intel.com>
+ <32df1cf8-8a57-7fc8-c694-6ddcc03fffca@intel.com>
+ <00e9e16f-87be-5585-3751-d605a2ceb326@linux.intel.com>
+From: Keyon Jie <yang.jie@linux.intel.com>
+Message-ID: <2bea8103-1587-f337-3350-2d88297094ce@linux.intel.com>
+Date: Wed, 27 May 2020 09:05:45 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <00e9e16f-87be-5585-3751-d605a2ceb326@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+Cc: tiwai@suse.de, "M R, Sathya Prakash" <sathya.prakash.m.r@intel.com>,
+ broonie@kernel.org, ranjani.sridharan@linux.intel.com,
+ vamshi.krishna.gopal@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,60 +92,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 2020-05-26 at 10:16 +0900, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> 
-> Current ALSA SoC has some snd_soc_card_xxx() functions,
-> and card->xxx() callbacks.
-> But, it is implemented randomly at random place.
-> 
-> To collect all card related functions into one place,
-> this patch creats new soc-card.c.
-> 
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
->  include/sound/soc-card.h | 11 +++++++++++
->  include/sound/soc.h      |  1 +
->  sound/soc/Makefile       |  2 +-
->  sound/soc/soc-card.c     | 26 ++++++++++++++++++++++++++
->  4 files changed, 39 insertions(+), 1 deletion(-)
->  create mode 100644 include/sound/soc-card.h
->  create mode 100644 sound/soc/soc-card.c
-> 
-> diff --git a/include/sound/soc-card.h b/include/sound/soc-card.h
-> new file mode 100644
-> index 000000000000..997809bb3afb
-> --- /dev/null
-> +++ b/include/sound/soc-card.h
-> @@ -0,0 +1,11 @@
-> +/* SPDX-License-Identifier: GPL-2.0
-> + *
-> + * soc-card.h
-> + *
-> + * Copyright (C) 2019 Renesas Electronics Corp.
-> + * Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> + */
-> +#ifndef __SOC_CARD_H
-> +#define __SOC_CARD_H
-> +
-> +#endif /* __SOC_CARD_H */
-> diff --git a/include/sound/soc.h b/include/sound/soc.h
-> index 11ee3ed87aa1..5b880e29d106 100644
-> --- a/include/sound/soc.h
-> +++ b/include/sound/soc.h
-> @@ -1450,5 +1450,6 @@ static inline void
-> snd_soc_dapm_mutex_unlock(struct snd_soc_dapm_context *dapm)
->  }
->  
->  #include <sound/soc-component.h>
-> +#include <sound/soc-card.h>
-Morimoto-san,
 
-soc-card.h should be added where it is needed. For example, in this
-patch, it should be included in soc-card.c and in the following
-patches, it should be included in soc-core.c, soc-dapm.c etc where it
-is needed.
+
+On 5/26/20 9:29 PM, Pierre-Louis Bossart wrote:
+> 
+> 
+> On 5/26/20 7:40 AM, Cezary Rojewski wrote:
+>> On 2020-05-21 9:48 AM, Keyon Jie wrote:
+>>> This small series is to optimize the header logging during the topology
+>>> parsing. This is verified work fine on both SOF and SST drivers
+>>> (bxt_rt298 with dfw_sst.bin).
+>>>
+>>> Change History:
+>>> v2:
+>>> - Change the internal used array to be 'static' to fix the issue
+>>>    reported by: kbuild test robot <lkp@intel.com>
+>>> - Add testing coverage including Intel SST driver also.
+>>>
+>>> v1:
+>>> - Initial version.
+>>>
+>>> Keyon Jie (2):
+>>>    ASoC: topology: refine and log the header in the correct pass
+>>>    ASoC: topology: remove the redundant pass checks
+>>>
+>>>   sound/soc/soc-topology.c | 99 ++++++++++++++++++----------------------
+>>>   1 file changed, 44 insertions(+), 55 deletions(-)
+>>>
+>>
+>> No regression after applying these and running through SST CI on cAVS 
+>> 1.5+ (GLK) and 1.8 (CNL).
+> 
+> Can the tests be run on SKL/KBL? That's where the cAVS driver will be 
+> used and where this patchset will have an impact.
+> Thanks!
+
+Yes, they were just tested on KBL Chrome book with cAVS driver by Vamshi 
+and Sathya.
+
+Tested-by: Vamshi Kerishna Gopal <vamshi.krishna.gopal@intel.com>
 
 Thanks,
-Ranjani
+~Keyon
 
+> 
+>> Given some comments on 1/2 though, believe it could be simplified.
+>>
+>> Czarek
