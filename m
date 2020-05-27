@@ -2,69 +2,85 @@ Return-Path: <SRS0=+ZhY=7J=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A0098C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2020 07:14:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 65D06C433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2020 07:39:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 249ED208B8
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2020 07:14:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E3CE2207CB
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2020 07:39:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cniXJwGQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 249ED208B8
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bp.renesas.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oONdYr1a"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E3CE2207CB
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7052C17A8;
-	Wed, 27 May 2020 09:13:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7052C17A8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 23BBB179F;
+	Wed, 27 May 2020 09:38:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23BBB179F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590563639;
-	bh=v8dzY4mlUCp0zkIRhu5s2HR57Of8trJ7gU5O5nZvb8E=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1590565163;
+	bh=bukU5Y2JeNDhw8USqAJVbTP9WF7GP/tu5Ai1G/EvfwA=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cniXJwGQCY+Pqv4636L549adEvCQAvkEVgT3J1k3vm7dHr2J7YEDcJ9ZqCYK2yg+a
-	 kNHbNFNV5Zzg8gFRwbLGLmNStGCYEDcm55B6kwoZWs6JkYNZuYv+FgZOfwL3CZRTI7
-	 C06b69BXFOKz3rfpBjPeEhdilQ2HGBfpTIF8AUnI=
+	b=oONdYr1aEAP1DxjFDlPBKbHg2ZwgKS2/WaupwubTrYnCPpE5xkKChK40/Z6L8lWK0
+	 wr0DSxlVBgVpNITK5jMXLrqJs32zz8w1rLb0qFNsZm/QUkiryaMayqLg0oOeJm55I4
+	 4aipscIb45ly5U2aMAj9l4OPvA7czgMc/OrJGgnU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C72C6F802BC;
-	Wed, 27 May 2020 09:10:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A2AB7F80149;
+	Wed, 27 May 2020 09:38:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 53F69F80150; Tue, 26 May 2020 23:02:13 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 463BFF80131
- for <alsa-devel@alsa-project.org>; Tue, 26 May 2020 23:02:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 463BFF80131
-X-IronPort-AV: E=Sophos;i="5.73,437,1583161200"; d="scan'208";a="47867543"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 27 May 2020 06:02:05 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 2D4BC40DB28B;
- Wed, 27 May 2020 06:02:02 +0900 (JST)
-From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To: Geert Uytterhoeven <geert+renesas@glider.be>,
- Magnus Damm <magnus.damm@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH 2/2] ARM: dts: r8a7742: Add audio support
-Date: Tue, 26 May 2020 22:01:44 +0100
-Message-Id: <1590526904-13855-3-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1590526904-13855-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ id E4051F8014E; Wed, 27 May 2020 09:38:29 +0200 (CEST)
+Received: from mail-ot1-f68.google.com (mail-ot1-f68.google.com
+ [209.85.210.68])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 51C9DF80146
+ for <alsa-devel@alsa-project.org>; Wed, 27 May 2020 09:38:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51C9DF80146
+Received: by mail-ot1-f68.google.com with SMTP id v17so18529767ote.0
+ for <alsa-devel@alsa-project.org>; Wed, 27 May 2020 00:38:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=PNLv5z8EKY1yuhWqFKsZJ0tNJNt2riKYrmpKQdpJCq4=;
+ b=WeXGsjbWWyB/XU6kMVQjGyjcua692B+sf3F7xY1N8Lyat+NS0aO4SlXhtYva5yPxTw
+ LORPAFf0SpoviOgwmcW4PKWJaug61FwlFLup/xB5o4WDXF3yVwJXI1axXfcayX91EJ5e
+ nCZxOEPKaPzDgI0B7qlQW+z6FvrpykRtGAm9EEj9ozx0JUyJOWOzUQDbZjyeno0nR6zP
+ m25S5HAy+M/Y32dvUv1Q0cPQ5jgX2uSAwxWoWIsX8dlPjVf02hnTYIB77pO3rAi8KI3p
+ Y8RBHd8lDSN9q58HNvqIjV3XiEJymr2WoA6ml18PHaPSroeZpL/qJpytAq49zFlIQZM6
+ nk1A==
+X-Gm-Message-State: AOAM531Azt/5czp5LspeP2YYazRbULJmnK7k4FgCkzYaGOAhb6+0oc9O
+ ybJt0YqU7xmfWyMRrPboTik886Physwyf6cFFVA=
+X-Google-Smtp-Source: ABdhPJxm2iQnKGPaQ8cudthAdTY+DMCSTWHl/gI3LFICJOmziwdjskV5xtEX0AQPODgatzLU0HkSgXSO28tDFRH9NJs=
+X-Received: by 2002:a9d:7e92:: with SMTP id m18mr3628517otp.145.1590565100227; 
+ Wed, 27 May 2020 00:38:20 -0700 (PDT)
+MIME-Version: 1.0
 References: <1590526904-13855-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailman-Approved-At: Wed, 27 May 2020 09:10:26 +0200
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org,
- Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
- linux-renesas-soc@vger.kernel.org, Prabhakar <prabhakar.csengg@gmail.com>
+ <1590526904-13855-2-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <1590526904-13855-2-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Wed, 27 May 2020 09:38:08 +0200
+Message-ID: <CAMuHMdVZJoRYTohMs+Qt9oYF+2MSHVNDa56BNj6VJNnqPXPvhw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: ASoC: renesas,rsnd: Add r8a7742 support
+To: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Magnus Damm <magnus.damm@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+ Prabhakar <prabhakar.csengg@gmail.com>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,318 +96,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add sound support for the RZ/G1H SoC (a.k.a. R8A7742).
+On Tue, May 26, 2020 at 11:02 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Document RZ/G1H (R8A7742) SoC bindings.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
 
-This work is based on similar work done on the R8A7744 SoC.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
----
- arch/arm/boot/dts/r8a7742.dtsi | 284 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 284 insertions(+)
+Gr{oetje,eeting}s,
 
-diff --git a/arch/arm/boot/dts/r8a7742.dtsi b/arch/arm/boot/dts/r8a7742.dtsi
-index 3a9c67b..3ed05c6 100644
---- a/arch/arm/boot/dts/r8a7742.dtsi
-+++ b/arch/arm/boot/dts/r8a7742.dtsi
-@@ -15,6 +15,27 @@
- 	#address-cells = <2>;
- 	#size-cells = <2>;
- 
-+	/*
-+	 * The external audio clocks are configured as 0 Hz fixed frequency
-+	 * clocks by default.
-+	 * Boards that provide audio clocks should override them.
-+	 */
-+	audio_clk_a: audio_clk_a {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <0>;
-+	};
-+	audio_clk_b: audio_clk_b {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <0>;
-+	};
-+	audio_clk_c: audio_clk_c {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <0>;
-+	};
-+
- 	cpus {
- 		#address-cells = <1>;
- 		#size-cells = <0>;
-@@ -821,6 +842,269 @@
- 			status = "disabled";
- 		};
- 
-+		rcar_sound: sound@ec500000 {
-+			/*
-+			 * #sound-dai-cells is required
-+			 *
-+			 * Single DAI : #sound-dai-cells = <0>;         <&rcar_sound>;
-+			 * Multi  DAI : #sound-dai-cells = <1>;         <&rcar_sound N>;
-+			 */
-+			compatible = "renesas,rcar_sound-r8a7742",
-+				     "renesas,rcar_sound-gen2";
-+			reg = <0 0xec500000 0 0x1000>, /* SCU */
-+			      <0 0xec5a0000 0 0x100>,  /* ADG */
-+			      <0 0xec540000 0 0x1000>, /* SSIU */
-+			      <0 0xec541000 0 0x280>,  /* SSI */
-+			      <0 0xec740000 0 0x200>;  /* Audio DMAC peri peri*/
-+			reg-names = "scu", "adg", "ssiu", "ssi", "audmapp";
-+
-+			clocks = <&cpg CPG_MOD 1005>,
-+				 <&cpg CPG_MOD 1006>, <&cpg CPG_MOD 1007>,
-+				 <&cpg CPG_MOD 1008>, <&cpg CPG_MOD 1009>,
-+				 <&cpg CPG_MOD 1010>, <&cpg CPG_MOD 1011>,
-+				 <&cpg CPG_MOD 1012>, <&cpg CPG_MOD 1013>,
-+				 <&cpg CPG_MOD 1014>, <&cpg CPG_MOD 1015>,
-+				 <&cpg CPG_MOD 1022>, <&cpg CPG_MOD 1023>,
-+				 <&cpg CPG_MOD 1024>, <&cpg CPG_MOD 1025>,
-+				 <&cpg CPG_MOD 1026>, <&cpg CPG_MOD 1027>,
-+				 <&cpg CPG_MOD 1028>, <&cpg CPG_MOD 1029>,
-+				 <&cpg CPG_MOD 1030>, <&cpg CPG_MOD 1031>,
-+				 <&cpg CPG_MOD 1021>, <&cpg CPG_MOD 1020>,
-+				 <&cpg CPG_MOD 1021>, <&cpg CPG_MOD 1020>,
-+				 <&cpg CPG_MOD 1019>, <&cpg CPG_MOD 1018>,
-+				 <&audio_clk_a>, <&audio_clk_b>, <&audio_clk_c>,
-+				 <&cpg CPG_CORE R8A7742_CLK_M2>;
-+			clock-names = "ssi-all",
-+				      "ssi.9", "ssi.8", "ssi.7", "ssi.6",
-+				      "ssi.5", "ssi.4", "ssi.3", "ssi.2",
-+				      "ssi.1", "ssi.0",
-+				      "src.9", "src.8", "src.7", "src.6",
-+				      "src.5", "src.4", "src.3", "src.2",
-+				      "src.1", "src.0",
-+				      "ctu.0", "ctu.1",
-+				      "mix.0", "mix.1",
-+				      "dvc.0", "dvc.1",
-+				      "clk_a", "clk_b", "clk_c", "clk_i";
-+			power-domains = <&sysc R8A7742_PD_ALWAYS_ON>;
-+			resets = <&cpg 1005>,
-+				 <&cpg 1006>, <&cpg 1007>,
-+				 <&cpg 1008>, <&cpg 1009>,
-+				 <&cpg 1010>, <&cpg 1011>,
-+				 <&cpg 1012>, <&cpg 1013>,
-+				 <&cpg 1014>, <&cpg 1015>;
-+			reset-names = "ssi-all",
-+				      "ssi.9", "ssi.8", "ssi.7", "ssi.6",
-+				      "ssi.5", "ssi.4", "ssi.3", "ssi.2",
-+				      "ssi.1", "ssi.0";
-+
-+			status = "disabled";
-+
-+			rcar_sound,dvc {
-+				dvc0: dvc-0 {
-+					dmas = <&audma1 0xbc>;
-+					dma-names = "tx";
-+				};
-+				dvc1: dvc-1 {
-+					dmas = <&audma1 0xbe>;
-+					dma-names = "tx";
-+				};
-+			};
-+
-+			rcar_sound,mix {
-+				mix0: mix-0 { };
-+				mix1: mix-1 { };
-+			};
-+
-+			rcar_sound,ctu {
-+				ctu00: ctu-0 { };
-+				ctu01: ctu-1 { };
-+				ctu02: ctu-2 { };
-+				ctu03: ctu-3 { };
-+				ctu10: ctu-4 { };
-+				ctu11: ctu-5 { };
-+				ctu12: ctu-6 { };
-+				ctu13: ctu-7 { };
-+			};
-+
-+			rcar_sound,src {
-+				src0: src-0 {
-+					interrupts = <GIC_SPI 352 IRQ_TYPE_LEVEL_HIGH>;
-+					dmas = <&audma0 0x85>, <&audma1 0x9a>;
-+					dma-names = "rx", "tx";
-+				};
-+				src1: src-1 {
-+					interrupts = <GIC_SPI 353 IRQ_TYPE_LEVEL_HIGH>;
-+					dmas = <&audma0 0x87>, <&audma1 0x9c>;
-+					dma-names = "rx", "tx";
-+				};
-+				src2: src-2 {
-+					interrupts = <GIC_SPI 354 IRQ_TYPE_LEVEL_HIGH>;
-+					dmas = <&audma0 0x89>, <&audma1 0x9e>;
-+					dma-names = "rx", "tx";
-+				};
-+				src3: src-3 {
-+					interrupts = <GIC_SPI 355 IRQ_TYPE_LEVEL_HIGH>;
-+					dmas = <&audma0 0x8b>, <&audma1 0xa0>;
-+					dma-names = "rx", "tx";
-+				};
-+				src4: src-4 {
-+					interrupts = <GIC_SPI 356 IRQ_TYPE_LEVEL_HIGH>;
-+					dmas = <&audma0 0x8d>, <&audma1 0xb0>;
-+					dma-names = "rx", "tx";
-+				};
-+				src5: src-5 {
-+					interrupts = <GIC_SPI 357 IRQ_TYPE_LEVEL_HIGH>;
-+					dmas = <&audma0 0x8f>, <&audma1 0xb2>;
-+					dma-names = "rx", "tx";
-+				};
-+				src6: src-6 {
-+					interrupts = <GIC_SPI 358 IRQ_TYPE_LEVEL_HIGH>;
-+					dmas = <&audma0 0x91>, <&audma1 0xb4>;
-+					dma-names = "rx", "tx";
-+				};
-+				src7: src-7 {
-+					interrupts = <GIC_SPI 359 IRQ_TYPE_LEVEL_HIGH>;
-+					dmas = <&audma0 0x93>, <&audma1 0xb6>;
-+					dma-names = "rx", "tx";
-+				};
-+				src8: src-8 {
-+					interrupts = <GIC_SPI 360 IRQ_TYPE_LEVEL_HIGH>;
-+					dmas = <&audma0 0x95>, <&audma1 0xb8>;
-+					dma-names = "rx", "tx";
-+				};
-+				src9: src-9 {
-+					interrupts = <GIC_SPI 361 IRQ_TYPE_LEVEL_HIGH>;
-+					dmas = <&audma0 0x97>, <&audma1 0xba>;
-+					dma-names = "rx", "tx";
-+				};
-+			};
-+
-+			rcar_sound,ssi {
-+				ssi0: ssi-0 {
-+					interrupts = <GIC_SPI 370 IRQ_TYPE_LEVEL_HIGH>;
-+					dmas = <&audma0 0x01>, <&audma1 0x02>,
-+					       <&audma0 0x15>, <&audma1 0x16>;
-+					dma-names = "rx", "tx", "rxu", "txu";
-+				};
-+				ssi1: ssi-1 {
-+					 interrupts = <GIC_SPI 371 IRQ_TYPE_LEVEL_HIGH>;
-+					dmas = <&audma0 0x03>, <&audma1 0x04>,
-+					       <&audma0 0x49>, <&audma1 0x4a>;
-+					dma-names = "rx", "tx", "rxu", "txu";
-+				};
-+				ssi2: ssi-2 {
-+					interrupts = <GIC_SPI 372 IRQ_TYPE_LEVEL_HIGH>;
-+					dmas = <&audma0 0x05>, <&audma1 0x06>,
-+					       <&audma0 0x63>, <&audma1 0x64>;
-+					dma-names = "rx", "tx", "rxu", "txu";
-+				};
-+				ssi3: ssi-3 {
-+					interrupts = <GIC_SPI 373 IRQ_TYPE_LEVEL_HIGH>;
-+					dmas = <&audma0 0x07>, <&audma1 0x08>,
-+					       <&audma0 0x6f>, <&audma1 0x70>;
-+					dma-names = "rx", "tx", "rxu", "txu";
-+				};
-+				ssi4: ssi-4 {
-+					interrupts = <GIC_SPI 374 IRQ_TYPE_LEVEL_HIGH>;
-+					dmas = <&audma0 0x09>, <&audma1 0x0a>,
-+					       <&audma0 0x71>, <&audma1 0x72>;
-+					dma-names = "rx", "tx", "rxu", "txu";
-+				};
-+				ssi5: ssi-5 {
-+					interrupts = <GIC_SPI 375 IRQ_TYPE_LEVEL_HIGH>;
-+					dmas = <&audma0 0x0b>, <&audma1 0x0c>,
-+					       <&audma0 0x73>, <&audma1 0x74>;
-+					dma-names = "rx", "tx", "rxu", "txu";
-+				};
-+				ssi6: ssi-6 {
-+					interrupts = <GIC_SPI 376 IRQ_TYPE_LEVEL_HIGH>;
-+					dmas = <&audma0 0x0d>, <&audma1 0x0e>,
-+					       <&audma0 0x75>, <&audma1 0x76>;
-+					dma-names = "rx", "tx", "rxu", "txu";
-+				};
-+				ssi7: ssi-7 {
-+					interrupts = <GIC_SPI 377 IRQ_TYPE_LEVEL_HIGH>;
-+					dmas = <&audma0 0x0f>, <&audma1 0x10>,
-+					       <&audma0 0x79>, <&audma1 0x7a>;
-+					dma-names = "rx", "tx", "rxu", "txu";
-+				};
-+				ssi8: ssi-8 {
-+					interrupts = <GIC_SPI 378 IRQ_TYPE_LEVEL_HIGH>;
-+					dmas = <&audma0 0x11>, <&audma1 0x12>,
-+					       <&audma0 0x7b>, <&audma1 0x7c>;
-+					dma-names = "rx", "tx", "rxu", "txu";
-+				};
-+				ssi9: ssi-9 {
-+					interrupts = <GIC_SPI 379 IRQ_TYPE_LEVEL_HIGH>;
-+					dmas = <&audma0 0x13>, <&audma1 0x14>,
-+					       <&audma0 0x7d>, <&audma1 0x7e>;
-+					dma-names = "rx", "tx", "rxu", "txu";
-+				};
-+			};
-+		};
-+
-+		audma0: dma-controller@ec700000 {
-+			compatible = "renesas,dmac-r8a7742",
-+				     "renesas,rcar-dmac";
-+			reg = <0 0xec700000 0 0x10000>;
-+			interrupts = <GIC_SPI 346 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 320 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 321 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 322 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 323 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 324 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 325 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 326 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 327 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 328 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 329 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 330 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 331 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 332 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "error",
-+					  "ch0", "ch1", "ch2", "ch3",
-+					  "ch4", "ch5", "ch6", "ch7",
-+					  "ch8", "ch9", "ch10", "ch11",
-+					  "ch12";
-+			clocks = <&cpg CPG_MOD 502>;
-+			clock-names = "fck";
-+			power-domains = <&sysc R8A7742_PD_ALWAYS_ON>;
-+			resets = <&cpg 502>;
-+			#dma-cells = <1>;
-+			dma-channels = <13>;
-+		};
-+
-+		audma1: dma-controller@ec720000 {
-+			compatible = "renesas,dmac-r8a7742",
-+				     "renesas,rcar-dmac";
-+			reg = <0 0xec720000 0 0x10000>;
-+			interrupts = <GIC_SPI 347 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 333 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 334 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 335 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 336 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 337 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 338 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 339 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 340 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 341 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 342 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 343 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 344 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 345 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "error",
-+					  "ch0", "ch1", "ch2", "ch3",
-+					  "ch4", "ch5", "ch6", "ch7",
-+					  "ch8", "ch9", "ch10", "ch11",
-+					  "ch12";
-+			clocks = <&cpg CPG_MOD 501>;
-+			clock-names = "fck";
-+			power-domains = <&sysc R8A7742_PD_ALWAYS_ON>;
-+			resets = <&cpg 501>;
-+			#dma-cells = <1>;
-+			dma-channels = <13>;
-+		};
-+
- 		xhci: usb@ee000000 {
- 			compatible = "renesas,xhci-r8a7742",
- 				     "renesas,rcar-gen2-xhci";
+                        Geert
+
 -- 
-2.7.4
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
