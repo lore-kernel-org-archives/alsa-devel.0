@@ -2,65 +2,68 @@ Return-Path: <SRS0=+ZhY=7J=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27FA3C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2020 06:55:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E28E4C433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2020 07:07:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CD362207CB
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2020 06:55:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6876A2078C
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2020 07:07:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vj/PGsWk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CD362207CB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gM7J5bo7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6876A2078C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 976061787;
-	Wed, 27 May 2020 08:54:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 976061787
+	by alsa0.perex.cz (Postfix) with ESMTPS id A8FCF16F7;
+	Wed, 27 May 2020 09:06:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A8FCF16F7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590562520;
-	bh=GrjkmZNdlSRcG2HVBmVUn19gFJQwlO7wjDG7acuZXEk=;
+	s=default; t=1590563221;
+	bh=iwIgeL/vI+oS8TXiagIfsEfdTONLlg6QmNhSl1Z4Gog=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vj/PGsWk3SiBf4JBQY1sIW/UrAffuf/f+664Ex4gves1U0YprZ6BU28gOAxL/M3yV
-	 0AupcbgHUrQkb3xziSlcBWpO4wVvj0cUGQ08PE8kOt0/KmEdApo5HFv0DGmeUzmoGl
-	 N631d3mxZ7h9rYgXreGfVmAUQ7CjMfN6nPoOdH+Q=
+	b=gM7J5bo7VD79Rnzuhz7icXfPm3/I+/MKWrsvrxPWieghjTu9ZA8x4ovo194M8tvAc
+	 QCMk2c/0+JQgD3eAfksO4IGKkFv8F7BJX4XLUyYCFPoDyX0IpzYhLBhsSTJKuGho+j
+	 +0Qu6vLgXjrrhT5bLHr6MXa9GCGauLnPdiWWIlFg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3813FF80149;
-	Wed, 27 May 2020 08:54:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2B4C3F80149;
+	Wed, 27 May 2020 09:06:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6CEB6F8014E; Wed, 27 May 2020 08:54:28 +0200 (CEST)
+ id 23B17F80146; Wed, 27 May 2020 09:06:09 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8C3ADF800FF
- for <alsa-devel@alsa-project.org>; Wed, 27 May 2020 08:54:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C3ADF800FF
+ by alsa1.perex.cz (Postfix) with ESMTPS id A64C7F80146
+ for <alsa-devel@alsa-project.org>; Wed, 27 May 2020 09:06:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A64C7F80146
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 4765AAC37;
- Wed, 27 May 2020 06:54:27 +0000 (UTC)
-Date: Wed, 27 May 2020 08:54:23 +0200
-Message-ID: <s5h5zchrhpc.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 5676BAC77;
+ Wed, 27 May 2020 07:06:07 +0000 (UTC)
+Date: Wed, 27 May 2020 09:06:04 +0200
+Message-ID: <s5h1rn5rh5v.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Kailang <kailang@realtek.com>
-Subject: Re: Add new codec supported for ALC287
-In-Reply-To: <dcf5ce5507104d0589a917cbb71dc3c6@realtek.com>
-References: <dcf5ce5507104d0589a917cbb71dc3c6@realtek.com>
+To: Erwin Burema <e.burema@freedom.nl>
+Subject: Re: [PATCH] Add duplex sound support for USB devices using implicit
+ feedback
+In-Reply-To: <2281380.D2QAToNirg@alpha-wolf>
+References: <2410739.SCZni40SNb@alpha-wolf> <1674042.U9NR2fmVFg@alpha-wolf>
+ <s5ha71xwwxd.wl-tiwai@suse.de> <2281380.D2QAToNirg@alpha-wolf>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: " \(alsa-devel@alsa-project.org\)" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Alexander Tsoy <alexander@tsoy.me>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,15 +79,92 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 27 May 2020 08:14:25 +0200,
-Kailang wrote:
+On Tue, 26 May 2020 23:04:44 +0200,
+Erwin Burema wrote:
 > 
-> Hi Takashi,
+> On zondag 24 mei 2020 10:37:34 CEST Takashi Iwai wrote:
+> > On Sat, 23 May 2020 20:09:31 +0200,
+> > 
+> > Erwin Burema wrote:
+> > > On zaterdag 23 mei 2020 19:53:49 CEST Alexander Tsoy wrote:
+> > > > В Вс, 10/05/2020 в 20:29 +0200, Erwin Burema пишет:
+> > > > > For USB sound devices using implicit feedback the endpoint used for
+> > > > > this feedback should be able to be opened twice, once for required
+> > > > > feedback and second time for audio data. This way these devices can
+> > > > > be put in duplex audio mode. Since this only works if the settings of
+> > > > > the endpoint don't change a check is included for this.
+> > > > > 
+> > > > > This fixes bug 207023 ("MOTU M2 regression on duplex audio") and
+> > > > > should also fix bug 103751 ("M-Audio Fast Track Ultra usb audio
+> > > > > device will not operate full-duplex")
+> > > > > 
+> > > > > Signed-off-by: Erwin Burema <e.burema@gmail.com>
+> > > > > ---
+> > > > 
+> > > > This patch seems to cause kernel panic on my system. This happens
+> > > > during boot when gdm (with pulseaudio) is starting up.
+> > > 
+> > > That's interesting, not running gnome (and thus also not running gdm,
+> > > currently KDE with SDDM) here so would need to take some time
+> > > troubleshooting. Suspect I missed something in the check if both input
+> > > and output are similarly configured.
+> > > 
+> > > Will see if I can reproduce it and where exactly it goes wrong, in the
+> > > meantime would it be possible to test if 5.6 or later show the same issue
+> > > since I intially developed the patch against that release?
+> > 
+> > Judging from the point triggering the bug (memset()), this can be a
+> > leftover URB handling that is performed even after the capture stream
+> > is closed.  If so, the procedure would be:
+> >  - start capture
+> >  - start playback
+> >  - stop capture while keeping playback running
+> > 
+> > If my guess is correct, can the patch below work around the issue?
+> > 
 > 
-> Attach patch was new codec supported.
-> Many Thanks.
+> Have spend a large part of my free time trying to replicate it without any 
+> luck, might be due to tryin it in a VM with USB passtrough (but wanted to be 
+> able to quickly itterate and easier to get debug info), so haven't been able 
+> to try out the patch.
+> 
+> Next step is to see if I can replicate it on my HW, if that doesn't work it 
+> might be time to rethink this whole initial patch and might need to do 
+> something at substream level instead of endpoint level.
 
-Applied now.  Thanks.
+I believe the check for EP is right.  The original code has already
+the EP refcount in EP management, so such a linked use case should
+have been considered.
 
+Let's see whether Alexander can test the patch.
+
+
+thanks,
 
 Takashi
+
+> 
+> Regards,
+> 
+> Erwin Burema
+> 
+> > 
+> > thanks,
+> > 
+> > Takashi
+> > 
+> > ---
+> > --- a/sound/usb/pcm.c
+> > +++ b/sound/usb/pcm.c
+> > @@ -1782,6 +1782,7 @@ static int snd_usb_substream_capture_trigger(struct
+> > snd_pcm_substream *substream return 0;
+> >  	case SNDRV_PCM_TRIGGER_STOP:
+> >  		stop_endpoints(subs);
+> > +		subs->data_endpoint->retire_data_urb = NULL;
+> >  		subs->running = 0;
+> >  		return 0;
+> >  	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+> 
+> 
+> 
+> 
