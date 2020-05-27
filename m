@@ -2,81 +2,74 @@ Return-Path: <SRS0=+ZhY=7J=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EEF95C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2020 13:48:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F25CC433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2020 13:50:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6B9C32078C
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2020 13:48:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0002C20787
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2020 13:50:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jAgL59eI";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="eyo9QQOp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6B9C32078C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OQkBJCbA";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="RJNvaSMU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0002C20787
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C3D3317AB;
-	Wed, 27 May 2020 15:47:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3D3317AB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 65A1217B3;
+	Wed, 27 May 2020 15:49:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 65A1217B3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590587322;
-	bh=qYSYXseydU1Jl/FMCMZsu00a3c88OPa9IaYxEBjkW44=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1590587429;
+	bh=uMgur9fSeLKrBpTOlJ0CmQ/inX4ifFut+KsI9NagPpg=;
+	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jAgL59eIkju0RQDZ7vjs0LgcrTsTjSxut3tibh7UTO/hfeQmBom6sdBtD6eKPSsVY
-	 toAs5KXG3qLEsWEzuIsWEriDhQj410TCbMfMGJTDaizt9yV8lKIyqbONXrHnjVPiLq
-	 P75NKgKTnCgDBEpUD5Jtn/TFmtpZgxevZq2HrvPY=
+	b=OQkBJCbAJti1U2nsXK2a6xtG2RFGuIBextPn83MrIzkwNeqWXjWgA+eMw1I3qYKyC
+	 F/7sjNVo3VDKBMoiZshSHasPOlOVoOkT3BRwrMGIE/2dcG9zvdskGw0rJEhSUshFAL
+	 Z9q8t8FSdkEzhYhsHrm71NzEKye3gF1Aha0CgGyk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5596BF80149;
-	Wed, 27 May 2020 15:47:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 92DB2F80149;
+	Wed, 27 May 2020 15:49:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A06DBF8014E; Wed, 27 May 2020 15:47:51 +0200 (CEST)
+ id 23D92F8014E; Wed, 27 May 2020 15:49:37 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B1A01F800FF
- for <alsa-devel@alsa-project.org>; Wed, 27 May 2020 15:47:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1A01F800FF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 390ABF800FF
+ for <alsa-devel@alsa-project.org>; Wed, 27 May 2020 15:49:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 390ABF800FF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="eyo9QQOp"
+ header.b="RJNvaSMU"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 92C882078C;
- Wed, 27 May 2020 13:47:45 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 357992078C;
+ Wed, 27 May 2020 13:49:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1590587266;
- bh=qYSYXseydU1Jl/FMCMZsu00a3c88OPa9IaYxEBjkW44=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=eyo9QQOpWhRfR0asYM+i5Txt1or/d7KRnBjpggOx5OgZH0GO2KTu0oxSC6GNNHFp/
- qrKuUj/lWKiq7FUDDHXBkQydTuSyv0FC+3lN5K+UDDtG7V+hR/uu5gMjRVUXOUSfnE
- 0aR0jbD0hH0UVzXytvukYJs/6JRmGJZHb+N4Y4x4=
-Date: Wed, 27 May 2020 14:47:43 +0100
+ s=default; t=1590587372;
+ bh=uMgur9fSeLKrBpTOlJ0CmQ/inX4ifFut+KsI9NagPpg=;
+ h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+ b=RJNvaSMUIm4T+Jz47+hN6nC7Q+GHUWKVgxrLD9cI6LlEhZfa8ttldvEno1K5q5C2m
+ UhJXBPu5W0z904x/N/aCi06PRs3C7H7nw0ScmAQcGLqBr5cfow/+b8UA+yO6AaAANz
+ 2twQYRj0dRT7nf0K/b5RaSaFoh4cALHL9rqOzr8M=
+Date: Wed, 27 May 2020 14:49:30 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] ASoC: amd: rt5682: fix soundwire dependencies
-Message-ID: <20200527134743.GH5308@sirena.org.uk>
-References: <20200527134151.834555-1-arnd@arndb.de>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="nFBW6CQlri5Qm8JQ"
-Content-Disposition: inline
-In-Reply-To: <20200527134151.834555-1-arnd@arndb.de>
-X-Cookie: Drop in any mailbox.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
- Akshu Agrawal <akshu.agrawal@amd.com>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+In-Reply-To: <20200526161930.30759-1-ckeepax@opensource.cirrus.com>
+References: <20200526161930.30759-1-ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH] ASoC: dapm: Move dai_link widgets to runtime to fix use
+ after free
+Message-Id: <159058737039.56986.1556152236392295649.b4-ty@kernel.org>
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,33 +85,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Tue, 26 May 2020 17:19:30 +0100, Charles Keepax wrote:
+> The newly added CODEC to CODEC DAI link widget pointers in
+> snd_soc_dai_link are better placed in snd_soc_pcm_runtime.
+> snd_soc_dai_link is really intended for static configuration of
+> the DAI, and the runtime for dynamic data.  The snd_soc_dai_link
+> structures are not destroyed if the card is unbound. The widgets
+> are cleared up on unbind, however if the card is rebound as the
+> snd_soc_dai_link structures are reused these pointers will be left at
+> their old values, causing access to freed memory.
 
---nFBW6CQlri5Qm8JQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Applied to
 
-On Wed, May 27, 2020 at 03:41:26PM +0200, Arnd Bergmann wrote:
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-> Maybe the SND_SOC_RT5682 driver itself can be reworked so that
-> the common part depends on neither soundwire nor i2c and the two
-> bus specific options can be loadable modules when the common part
-> is built-in.
+Thanks!
 
-Yes, please do that.
+[1/1] ASoC: dapm: Move dai_link widgets to runtime to fix use after free
+      commit: f4aa5e214eeaf7f1c7f157526a5aa29784cb6a1f
 
---nFBW6CQlri5Qm8JQ
-Content-Type: application/pgp-signature; name="signature.asc"
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
------BEGIN PGP SIGNATURE-----
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7Ob34ACgkQJNaLcl1U
-h9Au/Af/ToAlo8MIFiY0pB1HedOb/UPzvkcA2KB3IzxEpvf6D/CM9anQAjdbDqYv
-RdpDzNNKLxv5msIIMdK2k+T0kRTIaYwCNcqj2n3N3QQrqB2EkneZ8++/J14Sydkc
-cZSRseQFFvGOcXkzQE9IKwTUp9b4pkwZ1DlUS+ZUcHtrQIp7EsqK1ji8mtRCzAM1
-sK+MNyknZ+mnPgHHEYkjWq1v8lJCID+RQ2HqLZmAiaGbtfb+xM4+GRrQuFPfM1Wq
-P6PuCDeIWw0ypRcY702tt2KEoYw7ztu0jER0jpkunDYOybDBStZfOG42+lbsgB94
-IsODB/lf4WgAsdbGTa+RT0EZs9NfaQ==
-=oGtp
------END PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---nFBW6CQlri5Qm8JQ--
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
