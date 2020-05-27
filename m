@@ -2,74 +2,66 @@ Return-Path: <SRS0=+ZhY=7J=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C62BC433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2020 23:26:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D1DCDC433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2020 23:59:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7CD872078C
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2020 23:25:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 56090206A1
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2020 23:59:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nB1xI1r6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7CD872078C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="e6R4vBjm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 56090206A1
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B7FE317BE;
-	Thu, 28 May 2020 01:25:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B7FE317BE
+	by alsa0.perex.cz (Postfix) with ESMTPS id B5B4A17BD;
+	Thu, 28 May 2020 01:58:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5B4A17BD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590621957;
-	bh=JoBIKgv128YmmJaQar75Iqr45ezfSHjBtodHM+UBuZU=;
+	s=default; t=1590623967;
+	bh=UVh/OaAAgta4nMAd4OvQDgUyudwTxCSD4+MC7DTonUw=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nB1xI1r6YqAGxFMn+zJkr7KQL/lZqaKcSQUU5IIUYUrt8v8TQkAvfiGZNClrXYT4m
-	 UhaaYtghuSwOx9BxMwenOfXbWf5NjeUg2qyKfWojfzOtZzLEU3l1EmjeGL1FrOnS/U
-	 sutymLBDTcMSLCSehgcvDNBGvihyvRLOzZAV+kcY=
+	b=e6R4vBjm//8ak1jFcewpmCrDC2BxoEH/Fy1Ql0f1RNW6wcL5ea1AwUkbMqn9mVZFY
+	 LfH9vz4rys3R3kSKqPO0G89jKigdWJjr3GWJK2mWIhvs/kMQ873pSorWjf2ysaJWal
+	 M1xeCbWTPAsoAikh7QqT19Vl+rX+O+VPybYN9n5Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 52110F80149;
-	Thu, 28 May 2020 01:25:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3B0E3F80149;
+	Thu, 28 May 2020 01:58:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E0D8EF80149; Thu, 28 May 2020 01:25:03 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 233E7F800FF
- for <alsa-devel@alsa-project.org>; Thu, 28 May 2020 01:24:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 233E7F800FF
-Date: 28 May 2020 08:24:49 +0900
-X-IronPort-AV: E=Sophos;i="5.73,442,1583161200"; d="scan'208";a="47971639"
+ id CE091F8014E; Thu, 28 May 2020 01:58:34 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 1C2B1F800CD
+ for <alsa-devel@alsa-project.org>; Thu, 28 May 2020 01:58:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C2B1F800CD
+Date: 28 May 2020 08:58:22 +0900
+X-IronPort-AV: E=Sophos;i="5.73,442,1583161200"; d="scan'208";a="48186309"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 28 May 2020 08:24:49 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 28 May 2020 08:58:22 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id CF343411CEA4;
- Thu, 28 May 2020 08:24:49 +0900 (JST)
-Message-ID: <87lfld0xmm.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id C5A514132723;
+ Thu, 28 May 2020 08:58:22 +0900 (JST)
+Message-ID: <87k10x0w2p.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 2/2] ARM: dts: r8a7742: Add audio support
-In-Reply-To: <CAMuHMdWQ5i4QiMuSEPrHC4i6fDGa2aJrKO5gzyrsc=uCCdYAhQ@mail.gmail.com>
-References: <1590526904-13855-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1590526904-13855-3-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CAMuHMdWQ5i4QiMuSEPrHC4i6fDGa2aJrKO5gzyrsc=uCCdYAhQ@mail.gmail.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 12/19] ASoC: soc-card: add probed bit field to snd_soc_card
+In-Reply-To: <9d5d8e40-c39e-5533-5ccc-8d79fafc1168@linux.intel.com>
+References: <87h7w3339l.wl-kuninori.morimoto.gx@renesas.com>
+ <87zh9v1okl.wl-kuninori.morimoto.gx@renesas.com>
+ <9d5d8e40-c39e-5533-5ccc-8d79fafc1168@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>,
- ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Magnus Damm <magnus.damm@gmail.com>,
- Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
- Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
- Prabhakar <prabhakar.csengg@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,19 +78,68 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi
+Hi Pierre-Louis
 
-> > Add sound support for the RZ/G1H SoC (a.k.a. R8A7742).
-> >
-> > This work is based on similar work done on the R8A7744 SoC.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+Thank you for the review
+
+> > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> > 
+> > We have bit field to control snd_soc_card.
+> > Let's add probed field on it instead of local variable.
+> > 
+> > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> > ---
+(snip)
+> > @@ -1760,12 +1760,10 @@ static void soc_cleanup_card_resources(struct snd_soc_card *card,
+> >   static void snd_soc_unbind_card(struct snd_soc_card *card, bool unregister)
+> >   {
+> >   	if (card->instantiated) {
+> > -		int card_probed = 1;
+> > -
 > 
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> i.e. will queue in renesas-devel for v5.9.
+> This looks like a change, now soc_cleanup_card_resources() is called
+> without setting the card_probed bitfield?
+> 
+> everywhere else I see a 1:1 mapping between variable and bitfield
+> usage, not here, is this intentional?
 
-Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+This is a little bit confusable point for reviewing.
+I will explain, so, please double check it.
+
+This "soc_cleanup_card_resources()" will be called from
+snd_soc_unbind_card() as "formal cleanup" or,
+snd_soc_bind_card()   as "error handling" (D).
+
+For "error handling" purpose, it needed to have "card_probed"
+flags as parameter.
+
+This "card->instantiated" will be set at (A) if
+all probe functions were called (B) without error.
+By this patch, "probed" is handled by "card".
+Thus, it already has card->probed flag if
+card has instantiated flag.
+
+	static int snd_soc_bind_card(struct snd_soc_card *card)
+	{
+		...
+	(B)	ret = snd_soc_card_probe(card);
+		if (ret < 0)
+			goto probe_end;
+		...
+	(B)	ret = snd_soc_card_late_probe(card);
+		if (ret < 0)
+			goto probe_end;
+		...
+	(A)	card->instantiated = 1;
+		...
+	probe_end:
+		if (ret < 0)
+	(D)		soc_cleanup_card_resources();
+		...
+	}
+
+But indeed patch and log are confusable.
+I will try to add such explanation at git-log area.
 
 Thank you for your help !!
 
