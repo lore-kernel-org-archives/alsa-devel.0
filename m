@@ -2,59 +2,59 @@ Return-Path: <SRS0=Hwg1=7K=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-3.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 72E89C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 May 2020 01:50:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 91E23C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 May 2020 01:51:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F0512207CB
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 May 2020 01:50:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 172EF207CB
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 May 2020 01:51:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZTT3VC9z"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F0512207CB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sDgd3tY+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 172EF207CB
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 55AC117D1;
-	Thu, 28 May 2020 03:50:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 55AC117D1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 722F117D4;
+	Thu, 28 May 2020 03:50:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 722F117D4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590630651;
-	bh=ks7ngGWESlfi1nvZWbfvht3v3QupPPQQSCjMsu+MOiE=;
+	s=default; t=1590630694;
+	bh=+v5Ki4XIruqrxuixCuPSkDGhjwQ3Bq8GGGVaiH/TnY8=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZTT3VC9ziowYaeCxoKS0mr/prAkDTZjt+oWUXlwQPqS++PrDTZuGBwyV66dAo7ETn
-	 4gjV4ZUDhe1HpFQH1gITcSWxPB1pjWtr+RqF/ETBZdTDvO2W+R+fm1UkqY3G0jdhSc
-	 ODFwqR633QepCPLbEgcy2deaZebNHJzfgl3TRqTI=
+	b=sDgd3tY+3PyqD0aM0QQgKr0+B0NmnM56B9N9p+OUCRIxxdAwBxnQZwTtRcMg1eHis
+	 qfEe9srGbbyxzY6r9yHGH8784XubCaBjzckQ88qxZ9W1kzr8m4Z/E/c0+skSpufyE/
+	 iNdQ45dfwVNMo/WbUcvAZlcS0wWsSP3/4HT8fiqk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 715CFF802A9;
-	Thu, 28 May 2020 03:48:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DAC51F802BE;
+	Thu, 28 May 2020 03:48:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 92C2CF802BC; Thu, 28 May 2020 03:48:12 +0200 (CEST)
+ id 2A380F802C2; Thu, 28 May 2020 03:48:19 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 81D46F802A7
- for <alsa-devel@alsa-project.org>; Thu, 28 May 2020 03:48:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81D46F802A7
-Date: 28 May 2020 10:48:03 +0900
-X-IronPort-AV: E=Sophos;i="5.73,443,1583161200"; d="scan'208";a="47985112"
+ by alsa1.perex.cz (Postfix) with ESMTP id 24912F802A7
+ for <alsa-devel@alsa-project.org>; Thu, 28 May 2020 03:48:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24912F802A7
+Date: 28 May 2020 10:48:11 +0900
+X-IronPort-AV: E=Sophos;i="5.73,443,1583161200"; d="scan'208";a="47985131"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 28 May 2020 10:48:03 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 28 May 2020 10:48:11 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id C7AC5416EE9B;
- Thu, 28 May 2020 10:48:03 +0900 (JST)
-Message-ID: <878shc25kc.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id AEBFC416EFC7;
+ Thu, 28 May 2020 10:48:11 +0900 (JST)
+Message-ID: <877dww25k4.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v2 04/19] ASoC: soc-card: move snd_soc_card_jack_new() to
- soc-card
+Subject: [PATCH v2 05/19] ASoC: soc-card: move snd_soc_card_set/get_drvdata()
+ to soc-card
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87eer425lw.wl-kuninori.morimoto.gx@renesas.com>
@@ -84,143 +84,55 @@ This patch moves it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- include/sound/soc-card.h |  3 +++
- include/sound/soc.h      |  4 ----
- sound/soc/soc-card.c     | 39 +++++++++++++++++++++++++++++++++++++++
- sound/soc/soc-jack.c     | 38 --------------------------------------
- 4 files changed, 42 insertions(+), 42 deletions(-)
+ include/sound/soc-card.h | 12 ++++++++++++
+ include/sound/soc.h      | 13 -------------
+ 2 files changed, 12 insertions(+), 13 deletions(-)
 
 diff --git a/include/sound/soc-card.h b/include/sound/soc-card.h
-index c601eddf0975..775c08d056ae 100644
+index 775c08d056ae..e60ad39b87bd 100644
 --- a/include/sound/soc-card.h
 +++ b/include/sound/soc-card.h
-@@ -10,5 +10,8 @@
+@@ -14,4 +14,16 @@ int snd_soc_card_jack_new(struct snd_soc_card *card, const char *id, int type,
+ 			  struct snd_soc_jack *jack,
+ 			  struct snd_soc_jack_pin *pins, unsigned int num_pins);
  
- struct snd_kcontrol *snd_soc_card_get_kcontrol(struct snd_soc_card *soc_card,
- 					       const char *name);
-+int snd_soc_card_jack_new(struct snd_soc_card *card, const char *id, int type,
-+			  struct snd_soc_jack *jack,
-+			  struct snd_soc_jack_pin *pins, unsigned int num_pins);
- 
++/* device driver data */
++static inline void snd_soc_card_set_drvdata(struct snd_soc_card *card,
++					    void *data)
++{
++	card->drvdata = data;
++}
++
++static inline void *snd_soc_card_get_drvdata(struct snd_soc_card *card)
++{
++	return card->drvdata;
++}
++
  #endif /* __SOC_CARD_H */
 diff --git a/include/sound/soc.h b/include/sound/soc.h
-index f93827c6be51..38b21e815a28 100644
+index 38b21e815a28..3072298e756a 100644
 --- a/include/sound/soc.h
 +++ b/include/sound/soc.h
-@@ -509,10 +509,6 @@ int snd_soc_set_runtime_hwparams(struct snd_pcm_substream *substream,
- 	const struct snd_pcm_hardware *hw);
- 
- /* Jack reporting */
--int snd_soc_card_jack_new(struct snd_soc_card *card, const char *id, int type,
--	struct snd_soc_jack *jack, struct snd_soc_jack_pin *pins,
--	unsigned int num_pins);
--
- void snd_soc_jack_report(struct snd_soc_jack *jack, int status, int mask);
- int snd_soc_jack_add_pins(struct snd_soc_jack *jack, int count,
- 			  struct snd_soc_jack_pin *pins);
-diff --git a/sound/soc/soc-card.c b/sound/soc/soc-card.c
-index 340ab682cc76..aa9dbb89f8a1 100644
---- a/sound/soc/soc-card.c
-+++ b/sound/soc/soc-card.c
-@@ -6,6 +6,7 @@
- // Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
- //
- #include <sound/soc.h>
-+#include <sound/jack.h>
- 
- #define soc_card_ret(dai, ret) _soc_card_ret(dai, __func__, ret)
- static inline int _soc_card_ret(struct snd_soc_card *card,
-@@ -40,3 +41,41 @@ struct snd_kcontrol *snd_soc_card_get_kcontrol(struct snd_soc_card *soc_card,
- 	return NULL;
- }
- EXPORT_SYMBOL_GPL(snd_soc_card_get_kcontrol);
-+
-+/**
-+ * snd_soc_card_jack_new - Create a new jack
-+ * @card:  ASoC card
-+ * @id:    an identifying string for this jack
-+ * @type:  a bitmask of enum snd_jack_type values that can be detected by
-+ *         this jack
-+ * @jack:  structure to use for the jack
-+ * @pins:  Array of jack pins to be added to the jack or NULL
-+ * @num_pins: Number of elements in the @pins array
-+ *
-+ * Creates a new jack object.
-+ *
-+ * Returns zero if successful, or a negative error code on failure.
-+ * On success jack will be initialised.
-+ */
-+int snd_soc_card_jack_new(struct snd_soc_card *card, const char *id, int type,
-+			  struct snd_soc_jack *jack,
-+			  struct snd_soc_jack_pin *pins, unsigned int num_pins)
-+{
-+	int ret;
-+
-+	mutex_init(&jack->mutex);
-+	jack->card = card;
-+	INIT_LIST_HEAD(&jack->pins);
-+	INIT_LIST_HEAD(&jack->jack_zones);
-+	BLOCKING_INIT_NOTIFIER_HEAD(&jack->notifier);
-+
-+	ret = snd_jack_new(card->snd_card, id, type, &jack->jack, false, false);
-+	if (ret)
-+		goto end;
-+
-+	if (num_pins)
-+		ret = snd_soc_jack_add_pins(jack, num_pins, pins);
-+end:
-+	return soc_card_ret(card, ret);
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_card_jack_new);
-diff --git a/sound/soc/soc-jack.c b/sound/soc/soc-jack.c
-index b5748dcd490f..0f1820f36b4d 100644
---- a/sound/soc/soc-jack.c
-+++ b/sound/soc/soc-jack.c
-@@ -23,44 +23,6 @@ struct jack_gpio_tbl {
- 	struct snd_soc_jack_gpio *gpios;
+@@ -1260,19 +1260,6 @@ struct soc_enum {
+ #endif
  };
  
--/**
-- * snd_soc_card_jack_new - Create a new jack
-- * @card:  ASoC card
-- * @id:    an identifying string for this jack
-- * @type:  a bitmask of enum snd_jack_type values that can be detected by
-- *         this jack
-- * @jack:  structure to use for the jack
-- * @pins:  Array of jack pins to be added to the jack or NULL
-- * @num_pins: Number of elements in the @pins array
-- *
-- * Creates a new jack object.
-- *
-- * Returns zero if successful, or a negative error code on failure.
-- * On success jack will be initialised.
-- */
--int snd_soc_card_jack_new(struct snd_soc_card *card, const char *id, int type,
--	struct snd_soc_jack *jack, struct snd_soc_jack_pin *pins,
--	unsigned int num_pins)
+-/* device driver data */
+-
+-static inline void snd_soc_card_set_drvdata(struct snd_soc_card *card,
+-		void *data)
 -{
--	int ret;
--
--	mutex_init(&jack->mutex);
--	jack->card = card;
--	INIT_LIST_HEAD(&jack->pins);
--	INIT_LIST_HEAD(&jack->jack_zones);
--	BLOCKING_INIT_NOTIFIER_HEAD(&jack->notifier);
--
--	ret = snd_jack_new(card->snd_card, id, type, &jack->jack, false, false);
--	if (ret)
--		return ret;
--
--	if (num_pins)
--		return snd_soc_jack_add_pins(jack, num_pins, pins);
--
--	return 0;
+-	card->drvdata = data;
 -}
--EXPORT_SYMBOL_GPL(snd_soc_card_jack_new);
 -
- /**
-  * snd_soc_jack_report - Report the current status for a jack
-  *
+-static inline void *snd_soc_card_get_drvdata(struct snd_soc_card *card)
+-{
+-	return card->drvdata;
+-}
+-
+ static inline bool snd_soc_volsw_is_stereo(struct soc_mixer_control *mc)
+ {
+ 	if (mc->reg == mc->rreg && mc->shift == mc->rshift)
 -- 
 2.17.1
 
