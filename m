@@ -2,90 +2,88 @@ Return-Path: <SRS0=Hwg1=7K=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C07DAC433DF
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 May 2020 14:34:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7C75C433DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 May 2020 14:48:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4826B207D3
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 May 2020 14:34:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 47C1D207D3
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 May 2020 14:48:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ajyh2oeQ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="b+vldjs4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4826B207D3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XHJKFUJD";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="fj2mj9If"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 47C1D207D3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2ED3016DA;
-	Thu, 28 May 2020 16:33:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2ED3016DA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 94D771759;
+	Thu, 28 May 2020 16:47:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94D771759
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590676453;
-	bh=UN2rnZyWpLMqF8ExVnHsDsnDlZA39XDQP/BvQVtEDTo=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Ajyh2oeQnWL/IKTLwO8gMJY+KiMN9WvTTIU8fwaaS+e3vR0M23d+dJQBYs22aAnpO
-	 XA79LoDEJ2fspD/OEDqz4bF/oE0iHWkAAc1uc2QJ7ubL36i6KFBRe1hEBD0xCJbOnW
-	 1psYvbMZJ6lp8wYg3tN0mJc79DMWHkRksgM666Kg=
+	s=default; t=1590677300;
+	bh=w8COkpKY66V4buBHB4kIcPiG7+GCDd0b+LlP/vI9eNI=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=XHJKFUJDzOGUJS9C4g8lQAUpcVx/a5RgMLfXywZvQnNvE6wvJPTIPCasHA+XbfRSw
+	 yys+BaI2YCrJUI487JghUffSSafHGsKuploEtXR/PNxhL3Oty76rlXGnrRFiPl5lU+
+	 R4ta51CJyszVsYwNR8xAu9W5BsgUeoCn/uJ5phLc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A271DF800E4;
-	Thu, 28 May 2020 16:33:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2268CF8014A;
+	Thu, 28 May 2020 16:47:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C4C72F80150; Thu, 28 May 2020 16:33:19 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 07D3DF80150; Thu, 28 May 2020 16:47:29 +0200 (CEST)
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8F8F0F800E4
- for <alsa-devel@alsa-project.org>; Thu, 28 May 2020 16:33:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F8F0F800E4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 79992F800E4
+ for <alsa-devel@alsa-project.org>; Thu, 28 May 2020 16:47:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79992F800E4
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="b+vldjs4"
-Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com
- [209.85.210.42])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 0FC9620897
- for <alsa-devel@alsa-project.org>; Thu, 28 May 2020 14:33:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1590676391;
- bh=UN2rnZyWpLMqF8ExVnHsDsnDlZA39XDQP/BvQVtEDTo=;
- h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=b+vldjs4gnjLoWxmvcqq5AyLYuS5kZtIwnn6GUD7lv0/EVgVH5QvYHaHIH4okfxxE
- jWafMsKhTdQxjZBr+xr/yGkBFyOu4z0hlYzwxdkavv0guaQM663BHhp7sQRwGCJa9Q
- lthAll+uCepibhP0gjK4Hy/3z3rgfcgIEMQva0t4=
-Received: by mail-ot1-f42.google.com with SMTP id z3so2488744otp.9
- for <alsa-devel@alsa-project.org>; Thu, 28 May 2020 07:33:11 -0700 (PDT)
-X-Gm-Message-State: AOAM531LUvomndTzu/jAbHFd6fP3wYMMwd9hLmGZLJ8Biywy/jd2zkk7
- NdbFY4pFNFf5uni2uYNLGLG9TWJMdWeAslYuJw==
-X-Google-Smtp-Source: ABdhPJzSac9fblEg4fvh1xMALOim19c1Ul+G+BxgigsqfG3+dwRkFMrik7yaQaER/EVzB2pW8mIWcXlAZrXsUMHziys=
-X-Received: by 2002:a05:6830:18d9:: with SMTP id
- v25mr2288369ote.107.1590676390311; 
- Thu, 28 May 2020 07:33:10 -0700 (PDT)
+ dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="fj2mj9If"
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04SElEkQ065813;
+ Thu, 28 May 2020 09:47:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1590677234;
+ bh=CwsQyU0kGD7NKy6DRPmze5/2bojdN83sfQuVVs2kAlw=;
+ h=From:To:CC:Subject:Date;
+ b=fj2mj9If70OikaVh3UgLkqEuc8IfCIg4Q1JfcGqO0Xi5Sp786sjeg7apqi3GZZDD6
+ NQDrViI4Gm2x9gNUpKOvUrtNiFS59qpcQm5G7P2fC/jaf/GgLWMP2RDHX4BVO16qsk
+ u6glrZNzpuKwO+DGg3HMVmCGefjXR3xnKPwHVCBY=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+ by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04SElEs3082844;
+ Thu, 28 May 2020 09:47:14 -0500
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 28
+ May 2020 09:47:13 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 28 May 2020 09:47:13 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04SElCKp108735;
+ Thu, 28 May 2020 09:47:13 -0500
+From: Dan Murphy <dmurphy@ti.com>
+To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+ <tiwai@suse.com>, <robh@kernel.org>
+Subject: [PATCH] dt-bindings: sound: tlv320adcx140: Fix dt-binding-check issue
+Date: Thu, 28 May 2020 09:47:11 -0500
+Message-ID: <20200528144711.18065-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200526200917.10385-1-dmurphy@ti.com>
- <20200528140525.GA4166160@bogus>
- <23500301-1076-ac47-327e-f7731525657c@ti.com>
-In-Reply-To: <23500301-1076-ac47-327e-f7731525657c@ti.com>
-From: Rob Herring <robh@kernel.org>
-Date: Thu, 28 May 2020 08:32:58 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLPDahwYakepLP4b-Cf4fRAYrGoW0qit_ET3AKbYOYERg@mail.gmail.com>
-Message-ID: <CAL_JsqLPDahwYakepLP4b-Cf4fRAYrGoW0qit_ET3AKbYOYERg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: sound: tlv320adcx140: Add GPI config
- property
-To: Dan Murphy <dmurphy@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-Cc: devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Dan Murphy <dmurphy@ti.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,26 +99,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, May 28, 2020 at 8:20 AM Dan Murphy <dmurphy@ti.com> wrote:
->
-> Rob
->
-> On 5/28/20 9:05 AM, Rob Herring wrote:
-> > On Tue, May 26, 2020 at 03:09:16PM -0500, Dan Murphy wrote:
-> >> Add an array property that configures the General Purpose Input (GPI)
-> >> register.  The device has 4 GPI pins and each pin can be configured in 1
-> >> of 7 different ways.
-> > Dan seems to have trouble running get_maintainers.pl and Cc'ing the DT
-> > list. Running 'make dt_binding_check' also seems to be a problem. Now
-> > linux-next has these warnings:
->
-> I don't have an issue with doing get_maintainers.  All the maintainers
-> listed were added to the patch.
->
-> And devicetree@vger.kernel.org was cc'd.
+Fix dt-binding-check issue
 
-Indeed, sorry for my rant. Some reason my search didn't find it.
+ti,gpi-config:0:0: 4 is greater than the maximum of 1
+ti,gpi-config:0:1: 5 is greater than the maximum of 1
+ti,gpi-config:0:2: 6 is greater than the maximum of 1
+ti,gpi-config:0:3: 7 is greater than the maximum of 1
 
-Not sure why my tester didn't flag this either...
+Reported-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
+ Documentation/devicetree/bindings/sound/tlv320adcx140.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Rob
+diff --git a/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml b/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
+index e8a69b1c7ca9..306ac3d006dc 100644
+--- a/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
++++ b/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
+@@ -109,7 +109,7 @@ properties:
+       - minItems: 1
+         maxItems: 4
+         items:
+-          maximum: 1
++          maximum: 7
+         default: [0, 0, 0, 0]
+ 
+ required:
+-- 
+2.26.2
+
