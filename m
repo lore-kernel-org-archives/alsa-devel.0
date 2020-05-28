@@ -3,72 +3,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1B42C433DF
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 May 2020 13:05:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D3C69C433DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 May 2020 13:05:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 72FA2206C3
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 May 2020 13:05:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5F2F2206C3
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 May 2020 13:05:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EX+UXAgH";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hwjvmpet"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 72FA2206C3
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jp0gD5xV";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZLmVI24e"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5F2F2206C3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CAE6D17D8;
-	Thu, 28 May 2020 15:04:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CAE6D17D8
+	by alsa0.perex.cz (Postfix) with ESMTPS id A5B0317D6;
+	Thu, 28 May 2020 15:04:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5B0317D6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590671127;
-	bh=Cc7Ez2FTnEVe9mVi0XRAGO+B55CjnD6FpLRvrlsoSi0=;
+	s=default; t=1590671139;
+	bh=nXbWr2Tw9L1UbIy+5d+wXv012jFCyTCD/5cTKR5sVDw=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EX+UXAgHzg2aZisSzk9SoYsZPM4Sa7kxujP6n2VAnwFpbcbkQkCVXPCUb+xOLkAIk
-	 oNaSv8uWf7mtOswV9vlJgwb5UtWDaOHaUkirkqnRgbyPvJE/FN+nielTjYyyKiEERg
-	 pqV7DaDgTqcHG16kPLpd5XfqVgHNzUA1tLtEsxL8=
+	b=jp0gD5xVC4lKZhFjX5lcKQ+JmcZDs0MbRmxhIH2pPlIvQkvELlwnM1gpcuz5+CWjy
+	 hQaiUBMzvbV/sWOIhPYy/e126XEMCeviUJIBqsGs6c6fs7a31gDb4MHjoo54cBO5VZ
+	 a0GokqxGYWUb+THVumeXREEt6zR6TaEH/xF5vBKQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 69BB9F802A2;
-	Thu, 28 May 2020 15:02:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 695F7F802BC;
+	Thu, 28 May 2020 15:02:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DA95BF802A7; Thu, 28 May 2020 15:02:27 +0200 (CEST)
+ id 32670F802BD; Thu, 28 May 2020 15:02:34 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6CCAAF802A1
- for <alsa-devel@alsa-project.org>; Thu, 28 May 2020 15:02:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6CCAAF802A1
+ by alsa1.perex.cz (Postfix) with ESMTPS id BC086F802A7
+ for <alsa-devel@alsa-project.org>; Thu, 28 May 2020 15:02:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC086F802A7
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Hwjvmpet"
+ header.b="ZLmVI24e"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 1AA38207F5;
- Thu, 28 May 2020 13:02:22 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id C1C7C207F5;
+ Thu, 28 May 2020 13:02:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1590670943;
- bh=Cc7Ez2FTnEVe9mVi0XRAGO+B55CjnD6FpLRvrlsoSi0=;
+ s=default; t=1590670950;
+ bh=nXbWr2Tw9L1UbIy+5d+wXv012jFCyTCD/5cTKR5sVDw=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=HwjvmpetjbwDwCZhm/gyi2wky783acBxHuHHtBg+4T0XeeqzP9cx11gl1G2oW7VNN
- 9Njm0afft0CtUxKHf8hksNf5CcTVFwLzd7aE1c278stTLUuKohyEpRJJ/1ywnU6VTi
- zEN+YaByhAYaWFJjoiaSFBTkOwCHk9T4J0B/QdZo=
-Date: Thu, 28 May 2020 14:02:20 +0100
+ b=ZLmVI24eKu4IK+8K9qtk08xenvbQAsBvJ33auFYY8bBHhbOY265RGfMxdqcXyrEbC
+ mewHqKA4qkt2YxW0PQLD5e0EsfOvS+CHoRQAuBsk5yXHQw0BZgbe5B/E+wTpjS+utS
+ 68hBgoVlk/TSaPS/qrCHcF13FxY3jrJfT0by7WM8=
+Date: Thu, 28 May 2020 14:02:27 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Chuhong Yuan <hslester96@gmail.com>
-In-Reply-To: <20200528102004.911653-1-hslester96@gmail.com>
-References: <20200528102004.911653-1-hslester96@gmail.com>
-Subject: Re: [PATCH] ASoC: sta32x: add missed function calls in error paths
-Message-Id: <159067091850.53762.2058034425301081343.b4-ty@kernel.org>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
- linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Seven Lee <wtli@nuvoton.com>
+In-Reply-To: <20200528070510.29959-1-wtli@nuvoton.com>
+References: <20200528070510.29959-1-wtli@nuvoton.com>
+Subject: Re: [PATCH] add I2C device and compatible ID
+Message-Id: <159067091850.53762.2822362951156783187.b4-ty@kernel.org>
+Cc: YHCHuang@nuvoton.com, alsa-devel@alsa-project.org, KCHSU0@nuvoton.comgit,
+ CTLIN0@nuvoton.com, lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,9 +84,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 28 May 2020 18:20:04 +0800, Chuhong Yuan wrote:
-> sta32x_probe() forgets to call undo functions when it fails, add
-> the missed function calls to fix it.
+On Thu, 28 May 2020 15:05:10 +0800, Seven Lee wrote:
+> The nau8810 driver can also compatible with nau8812 and nau8814.
 
 Applied to
 
@@ -94,8 +93,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: sta32x: add missed function calls in error paths
-      commit: 8dc1011470315501914a4527276b7b93301f3d38
+[1/1] ASoC: nau8810: add I2C device and compatible ID
+      commit: 2b1878afc8fb778a881e9a1d7d17b14e13f579dc
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
