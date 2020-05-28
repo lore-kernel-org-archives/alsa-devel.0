@@ -2,67 +2,61 @@ Return-Path: <SRS0=Hwg1=7K=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41396C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 May 2020 00:36:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98AF8C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 May 2020 01:48:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AF297206DF
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 May 2020 00:36:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1E325208DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 May 2020 01:48:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UHI9Cd64"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AF297206DF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rcK0ILQ2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1E325208DB
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1030917C9;
-	Thu, 28 May 2020 02:35:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1030917C9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 43A3117BF;
+	Thu, 28 May 2020 03:47:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 43A3117BF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590626166;
-	bh=c3ZqnQC1EN1GlCaZMKdxwLWQZX2Yg13UB8bDKcfqp7I=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=UHI9Cd64fPbO/9mM89FSYa9gAF/G+RMDSmwxT+Z7UHKB82ubSgdRc9S2V7JMk5neP
-	 VB++4BeGGYRrD3slENohsp05/XKyMuN72LmSpRywEzywL/ma+tbKzs4tLYtWlJoiU6
-	 nogPQoT/dm5L80hUxTGmG5CjHFlmHjC0h+b2/DBQ=
+	s=default; t=1590630490;
+	bh=55vh262n8bnp2qZhLnn0LdIcrzI9z4LZ0oeeZlKvS4s=;
+	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=rcK0ILQ24GKhnLAFCFGHGsUMESjgo0ieNc4PZLmwi7oei5VIrf+FpxcUQeKhqUH6t
+	 tRjdA98I9LVK5/FQa0+mefu5lAzPXh0dY1FOFrnYc9TkE4ecCxNnXjlVcaT3yBLVbD
+	 svkCqOqqLqYyuFOdSYusbgijmZTDpbgUKnduMWc0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8F489F80149;
-	Thu, 28 May 2020 02:35:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C471EF8014A;
+	Thu, 28 May 2020 03:47:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0FF9BF8014E; Thu, 28 May 2020 02:35:15 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id B104AF800FF
- for <alsa-devel@alsa-project.org>; Thu, 28 May 2020 02:35:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B104AF800FF
-Date: 28 May 2020 09:35:03 +0900
-X-IronPort-AV: E=Sophos;i="5.73,442,1583161200"; d="scan'208";a="48189966"
+ id 55691F80150; Thu, 28 May 2020 03:47:18 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id D4780F800E4
+ for <alsa-devel@alsa-project.org>; Thu, 28 May 2020 03:47:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D4780F800E4
+Date: 28 May 2020 10:47:07 +0900
+X-IronPort-AV: E=Sophos;i="5.73,443,1583161200"; d="scan'208";a="47985020"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 28 May 2020 09:35:03 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 28 May 2020 10:47:07 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id BDFE2400C744;
- Thu, 28 May 2020 09:35:03 +0900 (JST)
-Message-ID: <87ftbk28y0.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 9470B4006CA5;
+ Thu, 28 May 2020 10:47:07 +0900 (JST)
+Message-ID: <87eer425lw.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: Re: [PATCH 02/19] ASoC: add soc-card.c
-In-Reply-To: <87h7w10vu1.wl-kuninori.morimoto.gx@renesas.com>
-References: <87h7w3339l.wl-kuninori.morimoto.gx@renesas.com>
- <87eer7337h.wl-kuninori.morimoto.gx@renesas.com>
- <c8f57c0ff243997075769f67761708e8bad45e8e.camel@linux.intel.com>
- <87h7w10vu1.wl-kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH v2 00/19] ASoC: add soc-card
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,39 +73,56 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Ranjani, again
+Hi Mark
 
-> > > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> > > 
-> > > Current ALSA SoC has some snd_soc_card_xxx() functions,
-> > > and card->xxx() callbacks.
-> > > But, it is implemented randomly at random place.
-> > > 
-> > > To collect all card related functions into one place,
-> > > this patch creats new soc-card.c.
-> > > 
-> > > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> > > ---
-> (snip)
-> > >  #include <sound/soc-component.h>
-> > > +#include <sound/soc-card.h>
-> > Morimoto-san,
-> > 
-> > soc-card.h should be added where it is needed. For example, in this
-> > patch, it should be included in soc-card.c and in the following
-> > patches, it should be included in soc-core.c, soc-dapm.c etc where it
-> > is needed.
+Current ALSA SoC is handling snd_soc_card related operation,
+but it is implmemented directly without using function/macro,
+and at random place.
 
-Hmm.... it seesm too many drivers are using snd_soc_card_xxx().
-This means, I / this patch-set need to add too many #included <sound/soc-card.h>
-line at too many files...
+This v2 patch-set creates new snd_soc_card_xxx() functions
+which handles snd_soc_card related operation,
+and implmement these at new soc-card.c.
 
-soc-component already did, but keeping it at soc.h is
-more simple for some of them.
-So, I want to keep it in v2
+v1 -> v2
 
-Thank you for your help !!
+	- careed scripts/checkpatch.pl except for MAINTAINERS file update
+	- added detail log at git-log, and/or comment at file.
+	- cares "if (card)" under snd_soc_card_xxx()
 
-Best regards
----
-Kuninori Morimoto
+Link: https://lore.kernel.org/r/87h7w3339l.wl-kuninori.morimoto.gx@renesas.com
+
+Kuninori Morimoto (19):
+   1 ASoC: soc.h: convert bool to bit field for snd_soc_card
+   2 ASoC: add soc-card.c
+   3 ASoC: soc-card: move snd_soc_card_get_kcontrol() to soc-card
+   4 ASoC: soc-card: move snd_soc_card_jack_new() to soc-card
+   5 ASoC: soc-card: move snd_soc_card_set/get_drvdata() to soc-card
+   6 ASoC: soc-card: move snd_soc_card_get_codec_dai() to soc-card
+   7 ASoC: soc-card: move snd_soc_card_subclass to soc-card
+   8 ASoC: soc-card: add snd_soc_card_suspend_pre()
+   9 ASoC: soc-card: add snd_soc_card_suspend_post()
+  10 ASoC: soc-card: add snd_soc_card_resume_pre()
+  11 ASoC: soc-card: add snd_soc_card_resume_post()
+  12 ASoC: soc-card: add probed bit field to snd_soc_card
+  13 ASoC: soc-card: add snd_soc_card_probe()
+  14 ASoC: soc-card: add snd_soc_card_late_probe()
+  15 ASoC: soc-card: add snd_soc_card_remove()
+  16 ASoC: soc-card: add snd_soc_card_set_bias_level()
+  17 ASoC: soc-card: add snd_soc_card_set_bias_level_post()
+  18 ASoC: soc-card: add snd_soc_card_add_dai_link()
+  19 ASoC: soc-card: add snd_soc_card_remove_dai_link()
+
+ include/sound/soc-card.h |  69 ++++++++++++
+ include/sound/soc.h      |  53 ++-------
+ sound/soc/Makefile       |   2 +-
+ sound/soc/soc-card.c     | 225 +++++++++++++++++++++++++++++++++++++++
+ sound/soc/soc-core.c     |  71 ++++--------
+ sound/soc/soc-dapm.c     |   6 +-
+ sound/soc/soc-jack.c     |  38 -------
+ 7 files changed, 325 insertions(+), 139 deletions(-)
+ create mode 100644 include/sound/soc-card.h
+ create mode 100644 sound/soc/soc-card.c
+
+-- 
+2.17.1
+
