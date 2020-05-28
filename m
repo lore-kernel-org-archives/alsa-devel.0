@@ -7,53 +7,53 @@ X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 12B23C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 May 2020 01:59:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B4865C433E3
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 May 2020 01:59:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8AEDB207CB
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 May 2020 01:59:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 380EB207CB
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 May 2020 01:59:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="r25/DvBh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8AEDB207CB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fwIj8Wqw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 380EB207CB
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EAC3E1812;
-	Thu, 28 May 2020 03:58:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EAC3E1812
+	by alsa0.perex.cz (Postfix) with ESMTPS id 92CAA181B;
+	Thu, 28 May 2020 03:58:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 92CAA181B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590631139;
-	bh=vDJy8EB5mqjDHUWR6wlF1xyMXgwa4SjXi6czpdJa5K8=;
+	s=default; t=1590631166;
+	bh=5NAiqxyz6q/Bjv+rbt4r3lVCmK/GAMQoQ+YaLPOPth4=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=r25/DvBhyKDLbS3Pfaqend53YDcIrjLP4lARvw6S4IsHghjG6h07izpTmYiv9DDBL
-	 1XSjS+MkjwrGEYr4RQoO7htcItw/dfDKFvFvhJnTy4b+kYRi+SOaDix3P2MRkeCsdb
-	 dLQ5MMMZPsefe9VcuR6hj+Psh3xnPNMqIQgaNaFI=
+	b=fwIj8WqwhDrvCQ5NUmCpsmYE54izGhEY7aPPiDIEx9IZitnYtdAAEsK1LIUVbOwTK
+	 gnGuN+KnNsR7lgDsM2WwbIQenSHqRCZqhn+WRW1/dARTvm923WOChkc32tpmxagkh2
+	 PyGnkC8zS7yKsgW0tk/tSoQ26ud7aOVRsGQgI7d0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 56993F802A8;
-	Thu, 28 May 2020 03:50:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 398DAF80337;
+	Thu, 28 May 2020 03:50:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BD6E7F802A2; Thu, 28 May 2020 03:50:48 +0200 (CEST)
+ id D9CCAF80338; Thu, 28 May 2020 03:50:53 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 402E9F80334
- for <alsa-devel@alsa-project.org>; Thu, 28 May 2020 03:50:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 402E9F80334
-Date: 28 May 2020 10:50:41 +0900
-X-IronPort-AV: E=Sophos;i="5.73,443,1583161200"; d="scan'208";a="47985356"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 28 May 2020 10:50:41 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 443F8F802A0
+ for <alsa-devel@alsa-project.org>; Thu, 28 May 2020 03:50:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 443F8F802A0
+Date: 28 May 2020 10:50:46 +0900
+X-IronPort-AV: E=Sophos;i="5.73,443,1583161200"; d="scan'208";a="47985361"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 28 May 2020 10:50:46 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id C29DA400D0EA;
- Thu, 28 May 2020 10:50:41 +0900 (JST)
-Message-ID: <87o8q8zv2m.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id CCBB941706E4;
+ Thu, 28 May 2020 10:50:46 +0900 (JST)
+Message-ID: <87mu5szv2h.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v2 18/19] ASoC: soc-card: add snd_soc_card_add_dai_link()
+Subject: [PATCH v2 19/19] ASoC: soc-card: add snd_soc_card_remove_dai_link()
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87eer425lw.wl-kuninori.morimoto.gx@renesas.com>
@@ -82,65 +82,56 @@ From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Card related function should be implemented at soc-card now.
 This patch adds it.
 
-This patch adds missing return when error case.
-
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- include/sound/soc-card.h |  3 +++
- sound/soc/soc-card.c     | 12 ++++++++++++
- sound/soc/soc-core.c     |  5 +++--
- 3 files changed, 18 insertions(+), 2 deletions(-)
+ include/sound/soc-card.h | 2 ++
+ sound/soc/soc-card.c     | 8 ++++++++
+ sound/soc/soc-core.c     | 3 +--
+ 3 files changed, 11 insertions(+), 2 deletions(-)
 
 diff --git a/include/sound/soc-card.h b/include/sound/soc-card.h
-index e35f777fd8cc..f7e5c0ec5dc5 100644
+index f7e5c0ec5dc5..4f2cc4fb56b7 100644
 --- a/include/sound/soc-card.h
 +++ b/include/sound/soc-card.h
-@@ -35,6 +35,9 @@ int snd_soc_card_set_bias_level_post(struct snd_soc_card *card,
- 				     struct snd_soc_dapm_context *dapm,
- 				     enum snd_soc_bias_level level);
+@@ -37,6 +37,8 @@ int snd_soc_card_set_bias_level_post(struct snd_soc_card *card,
  
-+int snd_soc_card_add_dai_link(struct snd_soc_card *card,
-+			      struct snd_soc_dai_link *dai_link);
-+
+ int snd_soc_card_add_dai_link(struct snd_soc_card *card,
+ 			      struct snd_soc_dai_link *dai_link);
++void snd_soc_card_remove_dai_link(struct snd_soc_card *card,
++				  struct snd_soc_dai_link *dai_link);
+ 
  /* device driver data */
  static inline void snd_soc_card_set_drvdata(struct snd_soc_card *card,
- 					    void *data)
 diff --git a/sound/soc/soc-card.c b/sound/soc/soc-card.c
-index 5bc2832b3505..ba84a55fa80d 100644
+index ba84a55fa80d..41c586b86dc3 100644
 --- a/sound/soc/soc-card.c
 +++ b/sound/soc/soc-card.c
-@@ -203,3 +203,15 @@ int snd_soc_card_set_bias_level_post(struct snd_soc_card *card,
- 
+@@ -215,3 +215,11 @@ int snd_soc_card_add_dai_link(struct snd_soc_card *card,
  	return soc_card_ret(card, ret);
  }
+ EXPORT_SYMBOL_GPL(snd_soc_card_add_dai_link);
 +
-+int snd_soc_card_add_dai_link(struct snd_soc_card *card,
-+			      struct snd_soc_dai_link *dai_link)
++void snd_soc_card_remove_dai_link(struct snd_soc_card *card,
++				  struct snd_soc_dai_link *dai_link)
 +{
-+	int ret = 0;
-+
-+	if (card->add_dai_link)
-+		ret = card->add_dai_link(card, dai_link);
-+
-+	return soc_card_ret(card, ret);
++	if (card->remove_dai_link)
++		card->remove_dai_link(card, dai_link);
 +}
-+EXPORT_SYMBOL_GPL(snd_soc_card_add_dai_link);
++EXPORT_SYMBOL_GPL(snd_soc_card_remove_dai_link);
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 136ff7237a80..d238b47252a5 100644
+index d238b47252a5..b07eca2c6ccc 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -978,8 +978,9 @@ int snd_soc_add_pcm_runtime(struct snd_soc_card *card,
+@@ -947,8 +947,7 @@ void snd_soc_remove_pcm_runtime(struct snd_soc_card *card,
  	/*
- 	 * Notify the machine driver for extra initialization
+ 	 * Notify the machine driver for extra destruction
  	 */
--	if (card->add_dai_link)
--		card->add_dai_link(card, dai_link);
-+	ret = snd_soc_card_add_dai_link(card, dai_link);
-+	if (ret < 0)
-+		return ret;
+-	if (card->remove_dai_link)
+-		card->remove_dai_link(card, rtd->dai_link);
++	snd_soc_card_remove_dai_link(card, rtd->dai_link);
  
- 	if (dai_link->ignore)
- 		return 0;
+ 	soc_free_pcm_runtime(rtd);
+ }
 -- 
 2.17.1
 
