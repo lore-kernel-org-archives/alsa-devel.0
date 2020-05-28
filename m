@@ -6,79 +6,75 @@ X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 997B9C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 May 2020 11:43:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD837C433DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 May 2020 11:47:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 25CAA2088E
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 May 2020 11:43:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5049420888
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 May 2020 11:47:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FMj9zBwB";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="j1pHwIIn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 25CAA2088E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tFu0X+w4";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xm22UQSY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5049420888
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C5EE517BC;
-	Thu, 28 May 2020 13:43:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C5EE517BC
+	by alsa0.perex.cz (Postfix) with ESMTPS id ACA2D17C4;
+	Thu, 28 May 2020 13:46:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ACA2D17C4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590666235;
-	bh=dtzMfsSfVshidYNHSmPWv2FMnmJz2lCkiMLmmsPTSXY=;
+	s=default; t=1590666452;
+	bh=8BTCUMLGE2jM0HCnOdk+q+R6SLabFZgOKEweVzYFFDA=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FMj9zBwBP8X8W2MDroFpRPcdt0I7DaZqXmYoQuN492OcdTQhzZe8MFTY6IGgMFOTw
-	 2/tbnjRdbU0KVWRjeIQA0rkdyT0F8baKMoEPX5XKk+rcb7ursjVBt+xYNiOFVGTl5p
-	 hDYAFf7UwVKFaSbWbY164eBxtPSLw1ExOs0DKEds=
+	b=tFu0X+w4Fufo29vutkCitUT2jWcFpR/nhobQj3XvSQAU02nc7NSB6+azv+QtuFRw1
+	 Fj+SRqOnlWyhVSK4JpDzxi30b+K4gTG7tDGNglIUFmIILe+EW2o1wAC1HeuT/I1qrd
+	 8ID6Xf5Ehv/+UbcXNeDmW/Dn8rMh/uqITcOM1o9Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 460ABF8014A;
-	Thu, 28 May 2020 13:43:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2B410F8014A;
+	Thu, 28 May 2020 13:46:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0AAF6F800E4; Thu, 28 May 2020 13:43:02 +0200 (CEST)
+ id 37515F80150; Thu, 28 May 2020 13:46:41 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E1049F800E4
- for <alsa-devel@alsa-project.org>; Thu, 28 May 2020 13:42:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1049F800E4
+ by alsa1.perex.cz (Postfix) with ESMTPS id DF7D9F80107
+ for <alsa-devel@alsa-project.org>; Thu, 28 May 2020 13:46:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF7D9F80107
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="j1pHwIIn"
+ header.b="Xm22UQSY"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 634702088E;
- Thu, 28 May 2020 11:42:47 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id D3A5420888;
+ Thu, 28 May 2020 11:46:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1590666167;
- bh=dtzMfsSfVshidYNHSmPWv2FMnmJz2lCkiMLmmsPTSXY=;
+ s=default; t=1590666388;
+ bh=8BTCUMLGE2jM0HCnOdk+q+R6SLabFZgOKEweVzYFFDA=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=j1pHwIIn+7acJF4bQkizS5XEuTFfBr+LTUJEdErBiDqFlMp8zl1ncg9FX6AcbrKhp
- i7dXLLYiaSQ4B8pQsG3si4DEJAxH/LiqwT6LLkrID1UvfYt/qPUER8U4wMEKH0jW2+
- y2AxN3BvotPcF3rj6Qt7XBsqJP0lGxo3ug8zjKW4=
-Date: Thu, 28 May 2020 12:42:45 +0100
+ b=Xm22UQSYowIkAffquBoTn13+eY3dfB5FWFDNOgYA7iGYxw1UeHMhlJ9z2Rh4Fupk3
+ o7g7CWtqsDCUVcSZI+LLEgAx8zkpQQ7eSmqpWCozUeJFeh+k9cEwZrr/dHaLFLpI8S
+ D3m7AQTBKu8JtMVrwsfW7wiUu/c2e9BoMnzufFvE=
+Date: Thu, 28 May 2020 12:46:25 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Akshu Agrawal <akshu.agrawal@amd.com>
-Subject: Re: [v2] ASoC: AMD: Use mixer control to switch between DMICs
-Message-ID: <20200528114245.GA3606@sirena.org.uk>
-References: <20200528060242.24945-1-akshu.agrawal@amd.com>
+To: Seven Lee <wtli@nuvoton.com>
+Subject: Re: [PATCH] add I2C device and compatible ID
+Message-ID: <20200528114625.GA20331@sirena.org.uk>
+References: <20200528070510.29959-1-wtli@nuvoton.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="x+6KMIRAuhnl3hBn"
+ protocol="application/pgp-signature"; boundary="3MwIy2ne0vdjdPXF"
 Content-Disposition: inline
-In-Reply-To: <20200528060242.24945-1-akshu.agrawal@amd.com>
-X-Cookie: Small is beautiful.
+In-Reply-To: <20200528070510.29959-1-wtli@nuvoton.com>
+X-Cookie: Available while quantities last.
 User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
- <alsa-devel@alsa-project.org>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>,
- YueHaibing <yuehaibing@huawei.com>, Takashi Iwai <tiwai@suse.com>,
- yuhsuan@chromium.org
+Cc: YHCHuang@nuvoton.com, alsa-devel@alsa-project.org, KCHSU0@nuvoton.comgit,
+ CTLIN0@nuvoton.com, lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,36 +91,32 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---x+6KMIRAuhnl3hBn
+--3MwIy2ne0vdjdPXF
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, May 28, 2020 at 11:32:30AM +0530, Akshu Agrawal wrote:
+On Thu, May 28, 2020 at 03:05:10PM +0800, Seven Lee wrote:
+> The nau8810 driver can also compatible with nau8812 and nau8814.
 
-> @@ -307,6 +295,7 @@ static const struct snd_kcontrol_new acp3x_mc_controls[] = {
->  	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
->  	SOC_DAPM_PIN_SWITCH("Spk"),
->  	SOC_DAPM_PIN_SWITCH("Headset Mic"),
-> +	SOC_SINGLE_BOOL_EXT("DMIC Switch", 0, dmic_get, dmic_set),
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+There's no need to resubmit to fix this alone.
 
-This now looks like a mute for the DMIC which is not accurate.  I really
-do think this would be better as a mux, rather than labelling it with
-positions on the case you could follow what other drivers do and label
-it with the connections on the device.
-
---x+6KMIRAuhnl3hBn
+--3MwIy2ne0vdjdPXF
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7Po7QACgkQJNaLcl1U
-h9COAgf+PoJVGILg2JFoP6A3vbP+3kX5PehTYV31b0PiK7XzhhNGQdb02C6Z597f
-Caqhjgofozl7LyHsEetlNs0bxxrs6YMzmQqnKd+jQ4Fx8DfMvb2XwrWsIG+OluM6
-7dQx832oXpfVcMre8toqfNk5//M8/AlVXl5a9jtgl3LZJ4MXg/jxUF153L/csVMN
-Hch+BBKkgEW99XSrq9/WPGSIfHTLk0ZtBiqfk31oipkS5Gko2MKAiSNb2pwSMHsD
-VcxnUB/XU0zWDDrQRYny6fRbBVvCvdDbNlggYDUMVlv1bbxqg7ubpzpgT6ifzHWt
-Q5UsdEeMzVdFisKthaxyyPA4iEslrA==
-=KuLc
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7PpJAACgkQJNaLcl1U
+h9Bj7gf/dTfOv/mlPlq1CzJ1uBYztzbx6khsmJ0D4z0VsViOZb0SwwaDoy7uJWQl
+fLDAe4Vgm+pwG1Yi3tmMEUbRKi+0CjRMZJdwsbLoHLxOo9bm9p4aO+LtDADFCXPV
+8tyS0qZW/MOb8b4mAWVKr3sHykoFpHypLCyWnY4d40jxcoiOdjrAsfJgvxaHB+9i
+87go9Yb6qxmXcdwPf4vN6gWZQxDj9CQNE6YXPN27LEPhEjobq8OWuiaGNtxOVFbK
+IByfL+K96g254uJBQrKICj53stoQFoOt5lhvHiiUI/1TU4CyF0G2jx9Ny4JZEvxX
+mG3Cbi3Ltik9Z7QiFm3zW2Kr0mwt7Q==
+=Ug8C
 -----END PGP SIGNATURE-----
 
---x+6KMIRAuhnl3hBn--
+--3MwIy2ne0vdjdPXF--
