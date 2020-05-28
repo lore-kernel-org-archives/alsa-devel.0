@@ -6,58 +6,59 @@ X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82CF0C433DF
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 May 2020 00:04:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41396C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 May 2020 00:36:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 07D67207D3
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 May 2020 00:04:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AF297206DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 May 2020 00:36:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fNRrefdc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 07D67207D3
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UHI9Cd64"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AF297206DF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0616B17D6;
-	Thu, 28 May 2020 02:03:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0616B17D6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1030917C9;
+	Thu, 28 May 2020 02:35:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1030917C9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590624285;
-	bh=gyXDI5y1upEa9686mi/IPor+FtUbKWn5Rxrl8bR1w6A=;
+	s=default; t=1590626166;
+	bh=c3ZqnQC1EN1GlCaZMKdxwLWQZX2Yg13UB8bDKcfqp7I=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fNRrefdcnzrs1sN7u5rL4Nrh02364Vrn8+nipwta6mpAeP2trf8GUZC0KsIMDCQZh
-	 qBFzVu2G96GBccFIJuslyqw1w7RoiPgtQbn6Bb7Ez79p1Ygt90N2GsbXrCzoTsNkEa
-	 OaIkYU6IFvwYorfAt6qTwrOWY+Ou4uHaoMCOPOIs=
+	b=UHI9Cd64fPbO/9mM89FSYa9gAF/G+RMDSmwxT+Z7UHKB82ubSgdRc9S2V7JMk5neP
+	 VB++4BeGGYRrD3slENohsp05/XKyMuN72LmSpRywEzywL/ma+tbKzs4tLYtWlJoiU6
+	 nogPQoT/dm5L80hUxTGmG5CjHFlmHjC0h+b2/DBQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 42F83F800CD;
-	Thu, 28 May 2020 02:03:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8F489F80149;
+	Thu, 28 May 2020 02:35:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5D638F8021E; Thu, 28 May 2020 02:03:43 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id E6A78F800CD
- for <alsa-devel@alsa-project.org>; Thu, 28 May 2020 02:03:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6A78F800CD
-Date: 28 May 2020 09:03:34 +0900
-X-IronPort-AV: E=Sophos;i="5.73,442,1583161200"; d="scan'208";a="47974876"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 28 May 2020 09:03:34 +0900
+ id 0FF9BF8014E; Thu, 28 May 2020 02:35:15 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id B104AF800FF
+ for <alsa-devel@alsa-project.org>; Thu, 28 May 2020 02:35:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B104AF800FF
+Date: 28 May 2020 09:35:03 +0900
+X-IronPort-AV: E=Sophos;i="5.73,442,1583161200"; d="scan'208";a="48189966"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 28 May 2020 09:35:03 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 637274135224;
- Thu, 28 May 2020 09:03:34 +0900 (JST)
-Message-ID: <87h7w10vu1.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id BDFE2400C744;
+ Thu, 28 May 2020 09:35:03 +0900 (JST)
+Message-ID: <87ftbk28y0.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Subject: Re: [PATCH 02/19] ASoC: add soc-card.c
-In-Reply-To: <c8f57c0ff243997075769f67761708e8bad45e8e.camel@linux.intel.com>
+In-Reply-To: <87h7w10vu1.wl-kuninori.morimoto.gx@renesas.com>
 References: <87h7w3339l.wl-kuninori.morimoto.gx@renesas.com>
  <87eer7337h.wl-kuninori.morimoto.gx@renesas.com>
  <c8f57c0ff243997075769f67761708e8bad45e8e.camel@linux.intel.com>
+ <87h7w10vu1.wl-kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -78,30 +79,36 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Ranjani
+Hi Ranjani, again
 
-> > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> > > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> > > 
+> > > Current ALSA SoC has some snd_soc_card_xxx() functions,
+> > > and card->xxx() callbacks.
+> > > But, it is implemented randomly at random place.
+> > > 
+> > > To collect all card related functions into one place,
+> > > this patch creats new soc-card.c.
+> > > 
+> > > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> > > ---
+> (snip)
+> > >  #include <sound/soc-component.h>
+> > > +#include <sound/soc-card.h>
+> > Morimoto-san,
 > > 
-> > Current ALSA SoC has some snd_soc_card_xxx() functions,
-> > and card->xxx() callbacks.
-> > But, it is implemented randomly at random place.
-> > 
-> > To collect all card related functions into one place,
-> > this patch creats new soc-card.c.
-> > 
-> > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> > ---
-(snip)
-> >  #include <sound/soc-component.h>
-> > +#include <sound/soc-card.h>
-> Morimoto-san,
-> 
-> soc-card.h should be added where it is needed. For example, in this
-> patch, it should be included in soc-card.c and in the following
-> patches, it should be included in soc-core.c, soc-dapm.c etc where it
-> is needed.
+> > soc-card.h should be added where it is needed. For example, in this
+> > patch, it should be included in soc-card.c and in the following
+> > patches, it should be included in soc-core.c, soc-dapm.c etc where it
+> > is needed.
 
-OK, will fixup in v2
+Hmm.... it seesm too many drivers are using snd_soc_card_xxx().
+This means, I / this patch-set need to add too many #included <sound/soc-card.h>
+line at too many files...
+
+soc-component already did, but keeping it at soc.h is
+more simple for some of them.
+So, I want to keep it in v2
 
 Thank you for your help !!
 
