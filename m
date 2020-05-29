@@ -2,74 +2,76 @@ Return-Path: <SRS0=qQ1O=7L=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 03609C433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 May 2020 16:56:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2677AC433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 May 2020 16:56:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 827452075A
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 May 2020 16:56:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 989EE20814
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 May 2020 16:56:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uBn4E+7o";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="lRjSuEGg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 827452075A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rw2SoOEe";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="pKHsDS2Q"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 989EE20814
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C603A17C4;
-	Fri, 29 May 2020 18:55:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C603A17C4
+	by alsa0.perex.cz (Postfix) with ESMTPS id F2EFD167F;
+	Fri, 29 May 2020 18:55:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F2EFD167F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590771361;
-	bh=wDOgXiUXzoQ6Bq5OMWIXk6kS9dOgRJeZtkbpCNUiQCU=;
+	s=default; t=1590771380;
+	bh=jKG+5WL5Zz7Oc177GyWEevQ9Pkd1eVJDyNJVuDzt2SU=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uBn4E+7ofh0j01BYU73106E9uuFN3Mxd2Ja+5X0eFnX0rjIF9gOTbKo+N9VW0tejm
-	 pFXC4uAqrJuwfZf+UEqsVrJVub5qEbzTp5hFi/TXUPUmAYAaCDhKYOA13OWyPl5vd+
-	 Rbe9b/LFl4yCZ6eX5PIZnVQw0LdKRw/zwc+j00QI=
+	b=rw2SoOEerezvEwtb3zgRIyhVJ50rVimSqplCLht8kGxh8TARvbhun8fmdDkiRQ12O
+	 k+e9f33YNuKNaEtvxVO5ihfY54nKcvC22hWO3SUXz1py9U2670pNhLPa3uyilObkih
+	 EapgsTY3XVrlirXW6KynC02nVhlo9hDQCfRP2Gjo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7B5FCF802DD;
-	Fri, 29 May 2020 18:51:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2C738F802E2;
+	Fri, 29 May 2020 18:51:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6A021F802DF; Fri, 29 May 2020 18:51:43 +0200 (CEST)
+ id 83BD1F802E3; Fri, 29 May 2020 18:51:49 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 901E1F802BC
- for <alsa-devel@alsa-project.org>; Fri, 29 May 2020 18:51:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 901E1F802BC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9E9B4F802DF
+ for <alsa-devel@alsa-project.org>; Fri, 29 May 2020 18:51:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E9B4F802DF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="lRjSuEGg"
+ header.b="pKHsDS2Q"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 913C820897;
- Fri, 29 May 2020 16:51:38 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 945C32077D;
+ Fri, 29 May 2020 16:51:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1590771099;
- bh=wDOgXiUXzoQ6Bq5OMWIXk6kS9dOgRJeZtkbpCNUiQCU=;
+ s=default; t=1590771105;
+ bh=jKG+5WL5Zz7Oc177GyWEevQ9Pkd1eVJDyNJVuDzt2SU=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=lRjSuEGgh1ZU15VcJ+R4EwUGO4kKf8XlhBuKu8bO3j7RE/LajrGWe0/X6aueiE6aS
- a1fXiTUEv0az4q22hIdd3UCcRrVwK6Oyfy4A8q9f3UgGbHtY21FBAxoQCINg1xmcCw
- LrjI298PXwi9aBrfK+C7Tvab9meGhnBedUaklyOY=
-Date: Fri, 29 May 2020 17:51:36 +0100
+ b=pKHsDS2Q5gl+vblIPVNdkkz0MICmKAsHj2pAZ3S66PNQW1dcJSQluuI+YJgH7Wep2
+ Jv4Nlr/hvBR/m7Nr/92YCoC1vK/SmBBrBncdtl/nel1Pv5PfX+rTJY+iNN9FMGWFi8
+ Nf1xcBf2S0YcBD4M/WF5CJt55czRi1glkmEeZMDk=
+Date: Fri, 29 May 2020 17:51:42 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org
-In-Reply-To: <20200529150408.17236-1-pierre-louis.bossart@linux.intel.com>
-References: <20200529150408.17236-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: Intel: Baytrail: fix 'defined but not used'
- warnings
-Message-Id: <159077105221.28617.15722905655179477031.b4-ty@kernel.org>
-Cc: tiwai@suse.de, Stephen Rothwell <sfr@canb.auug.org.au>
+To: Dinghao Liu <dinghao.liu@zju.edu.cn>, kjlu@umn.edu
+In-Reply-To: <20200529012230.5863-1-dinghao.liu@zju.edu.cn>
+References: <20200529012230.5863-1-dinghao.liu@zju.edu.cn>
+Subject: Re: [PATCH] ASoC: img-i2s-out: Fix runtime PM imbalance on error
+Message-Id: <159077105220.28617.10412316877041225353.b4-ty@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Allison Randal <allison@lohutok.net>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,13 +87,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 29 May 2020 10:04:08 -0500, Pierre-Louis Bossart wrote:
-> With the allmodconfig option, CONFIG_SND_SOC_SOF_BAYTRAIL is disabled
-> due to mutual exclusion with the legacy driver. This generates
-> 'defined by not used' warnings.
-> 
-> suspend/resume/remove are only supported for Baytrail for now, so move
-> the code under the CONFIG_SND_SOC_SOF_BAYTRAIL checks.
+On Fri, 29 May 2020 09:22:28 +0800, Dinghao Liu wrote:
+> pm_runtime_get_sync() increments the runtime PM usage counter even
+> the call returns an error code. Thus a pairing decrement is needed
+> on the error handling path to keep the counter balanced.
 
 Applied to
 
@@ -99,8 +98,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: Intel: Baytrail: fix 'defined but not used' warnings
-      commit: af89e7dac521f5e087b6b2706bb0623107f74c83
+[1/1] ASoC: img-i2s-out: Fix runtime PM imbalance on error
+      commit: 65bd91dd6957390c42a0491b9622cf31a2cdb140
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
