@@ -2,101 +2,97 @@ Return-Path: <SRS0=qQ1O=7L=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C4BFC433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 May 2020 08:05:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA20FC433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 May 2020 08:07:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BE9C7207BC
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 May 2020 08:05:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 516E0206A4
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 May 2020 08:07:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vi7c5qUe";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MQJ/t30z"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BE9C7207BC
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OX7ew5g0";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ARuHTCHv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 516E0206A4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1B22B178D;
-	Fri, 29 May 2020 10:04:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B22B178D
+	by alsa0.perex.cz (Postfix) with ESMTPS id A1CF4178D;
+	Fri, 29 May 2020 10:06:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A1CF4178D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590739547;
-	bh=LKZzrM+l9OMB4esFD8ZN4IW1RFKvKR/dJC1crxtDzaM=;
+	s=default; t=1590739656;
+	bh=qtbvRgQ992/6DwUv85jCmgMKyL1TTshvKHnzn3SRoxk=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vi7c5qUeP4TBV+6GNvqJrOOP5m87AOgQDdW0duZ+3Ce0THvL3bmbwkyPLVFxP1LEq
-	 psDvDmoKYt/SAnJ9GDQx45Ac07fyIUD7E89UrAvk7chtU0924boVJY9glL60qchOOs
-	 +L+5GsqvMd0vFMFodvX1uLyx+A2tWkna+sLK0fU0=
+	b=OX7ew5g039+rLP/gupRwq8K6EidP9vpdk7CgAI7mXcnMNNiXRBwp/4KQJjGx6iJiN
+	 HRjEqthms7+s6YpNA7/4tGy+B6uWwOb2cbfvljWGm7Z/81PcRiLj9DmNB/WjeFTjy2
+	 luDZ0PgEd5X8uE5jWCABrZyA9AeqgpJBuvMYBgGk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8F74FF80149;
-	Fri, 29 May 2020 10:04:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3B8DFF8014E;
+	Fri, 29 May 2020 10:06:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 30837F8014E; Fri, 29 May 2020 10:04:55 +0200 (CEST)
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com
- [IPv6:2a00:1450:4864:20::244])
+ id 63A5FF8016F; Fri, 29 May 2020 10:06:44 +0200 (CEST)
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com
+ [IPv6:2a00:1450:4864:20::144])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 13655F80107
- for <alsa-devel@alsa-project.org>; Fri, 29 May 2020 10:04:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13655F80107
+ by alsa1.perex.cz (Postfix) with ESMTPS id AE07FF80125
+ for <alsa-devel@alsa-project.org>; Fri, 29 May 2020 10:06:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE07FF80125
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="MQJ/t30z"
-Received: by mail-lj1-x244.google.com with SMTP id z6so1425330ljm.13
- for <alsa-devel@alsa-project.org>; Fri, 29 May 2020 01:04:48 -0700 (PDT)
+ header.b="ARuHTCHv"
+Received: by mail-lf1-x144.google.com with SMTP id u16so751515lfl.8
+ for <alsa-devel@alsa-project.org>; Fri, 29 May 2020 01:06:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=1Xro8I38WGB1vy4pn7r6IuOsUYoevHSF9a+82U3l5yY=;
- b=MQJ/t30zQcK6C9mw2k6k+xRtyvza3+g5NHHI4THl99n7ec9e17BtB1OzrvB3OB0g1z
- hjHnr9kYPJ2ZERhidkb3XANBk69T4Rko1VbwMrvGx8fLS0Ic+tvmb0XpEAk9YY6rQMTY
- ayDFinZWg5ZRmGs2MuOFArBSEAHcGNiI+u/6lGC+OLJ/mTmJEu88Be1AauOpQagHG+0C
- GNRD+wA8yFdvgTABgxdXFOlwvwnVh45gZH8raON/pp/zqqua/DgS0gO6J7XKsX1NiQzE
- jJoqqT4wAD3c6YO+T+InW1bDZsZpU/7PVAVAV7K1j+Y3YI41CVPPUeKGZbsJIY2iZ0KN
- U+HA==
+ :cc; bh=sOxRbojjekNIVLIANuIbdPZ8vuRLDilJnBU5D6z6Gc0=;
+ b=ARuHTCHvzl5pI1r2ksiKnlv/XQf2ZuP2puBHRogWZpZ+JSDk6spsZ6+Mi0HStWbjXp
+ RwKrapD/bAonIza1jawgeaHmEp75nantmy/WX1mK7jeJZz6C56ATAKBtO11qN7BECv7Z
+ D0rYzXDzvdn8VtHfMOuCM8Wyun1eLSue6t6iIBOvoh6D+6PifhHsutIgZ9GyWHfHcZL/
+ ZsM9igl7Uohtzye+ZVK+DQr9vz/lSscpBm3Q+fPjhFde3yFgzTtQLjWyEn0ZQr/E/Dt+
+ 5QRGtr2efv0o59DkZlGinPFhE2tiD4eTO6cAOT07rMGXA8a+2uMjgRXCX2Aeyfmg3j8G
+ 2DPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=1Xro8I38WGB1vy4pn7r6IuOsUYoevHSF9a+82U3l5yY=;
- b=GcfhWvLXQYGgzmTBZDwamsas8fuEzyhxcLkLMJ4Dtpsego1qOEpSE0QtlfB+fWXhmB
- BEIhYW9A1jhvNBhLVCPSY0pdhu2E0m0H2YvPtfZPQo8AHz+R6a9vXSXv0iVTTeB3Q3Xr
- +4hvpcS7M+vkQYY+6gRmV8951XZq3kF8kjOdvWS7B2O+dspx7/OQZy5p1XlXQkU+mdpy
- v3/drADR4q+F7o3z8e/J2gMXCegkUvxQJON+nnSnDdHTSqcwTJ6LQTHRGWHIlo+RH/D/
- FEuPUm1f9jexsFQcTI4Q6numEa/aRM9gwBu4y+WQLk+ZxZCtYBCNwILH0F5KqtiIqdqP
- YB3w==
-X-Gm-Message-State: AOAM533ZokbsaYX4+sHWAMGe/Wo1HF/8ZEZ7cddLT53wHSCa6egfIXqJ
- Jrd/nyZm0V6vAHPdHcEovDHCWnvWbmNcPEj/k18=
-X-Google-Smtp-Source: ABdhPJwyA+BHbVbYT1WVanqisX6tqpuXN2oOqrt/1LkU+5dRO5m92sc1wnozuX8q5uyeHHTICQA6kmzYrqyxuhrwL84=
-X-Received: by 2002:a2e:5712:: with SMTP id l18mr1246986ljb.87.1590739487819; 
- Fri, 29 May 2020 01:04:47 -0700 (PDT)
+ bh=sOxRbojjekNIVLIANuIbdPZ8vuRLDilJnBU5D6z6Gc0=;
+ b=LB1Deltg+ZF6L6qnMqA1Qbl4ubgZsTRaWjM22IfAfV1PA8+0Nm8LvLgMlUX2wW+nU2
+ aIthGsd39F/2V4r7tPsNMv6i6DcmPSlypjvvXjAxCRHPR64d46IUIQd0WkE2HL3r+6qg
+ 4jpb47e16Il2a7TzUY2ACidGzm1TaIvN2liulXNLPmuFf5jANAUiZKKIjwPaS8sewXXj
+ TGTVRm979qs/vhfw+xH5x4XK9y0tgGNAt0Xd123a30HuC7IHp0aivZmDqABh8u7vMz9e
+ kz/yG2KdLZqalkkUBn1OYcmBqwIH/zJLP2oiCPbRgNlEWYdffplm0idJtX5Tx6Nbzu8d
+ WpZw==
+X-Gm-Message-State: AOAM530CtnB0svqUw0f3R8E+jS418fV+Bqoc4uu/K28lWJFf7SmgK1W6
+ j2hBqpfpn6uYpknjo9fP9S6n1SsbyDRcf37zpSs=
+X-Google-Smtp-Source: ABdhPJwNGmSiyiqlfKOfqM6p+BHUruML1hsN7pjim5eRRpQvgIZUZhgXAjo9nWuTkMHvfN6OZzHb0HtACLwONLoR4Lg=
+X-Received: by 2002:a19:6a09:: with SMTP id u9mr3726110lfu.65.1590739596512;
+ Fri, 29 May 2020 01:06:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200528103942.17432-1-steves.lee@maximintegrated.com>
- <20200528115408.GA15800@sirena.org.uk>
-In-Reply-To: <20200528115408.GA15800@sirena.org.uk>
+References: <20200528103755.17381-1-steves.lee@maximintegrated.com>
+ <20200528141542.GA4186430@bogus>
+In-Reply-To: <20200528141542.GA4186430@bogus>
 From: Steve Lee <steves.lee.maxim@gmail.com>
-Date: Fri, 29 May 2020 17:04:36 +0900
-Message-ID: <CABff4NSc6oW9dt-2VbdKUnk=+8Tc52m8f2irr1P4_cGyXNq41A@mail.gmail.com>
-Subject: Re: [V6 PATCH 2/2] ASoC: max98390: Added Amplifier Driver
-To: Mark Brown <broonie@kernel.org>
+Date: Fri, 29 May 2020 17:06:24 +0900
+Message-ID: <CABff4NRCfxo7MFvk72bOjPN5iJg5HaQk_U1nFpdPrJZ9nm5Jhw@mail.gmail.com>
+Subject: Re: [V6 PATCH 1/2] dt-bindings: Added device tree binding for max98390
+To: Rob Herring <robh@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Cc: jack.yu@realtek.com, ALSA development <alsa-devel@alsa-project.org>,
- ryan.lee.maxim@gmail.com, ckeepax@opensource.cirrus.com,
- ryans.lee@maximintegrated.com,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Krzysztof Kozlowski <krzk@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, nuno.sa@analog.com,
- Srini Kandagatla <srinivas.kandagatla@linaro.org>, geert@linux-m68k.org,
- dmurphy@ti.com,
- =?UTF-8?B?U2h1bWluZyBb6IyD5pu46YqYXQ==?= <shumingf@realtek.com>,
- Steve Lee <steves.lee@maximintegrated.com>, rf@opensource.wolfsonmicro.com
+Cc: devicetree@vger.kernel.org, ALSA development <alsa-devel@alsa-project.org>,
+ ryan.lee.maxim@gmail.com, Steve Lee <steves.lee@maximintegrated.com>,
+ ryans.lee@maximintegrated.com, Liam Girdwood <lgirdwood@gmail.com>,
+ robh+dt@kernel.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,22 +108,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, May 28, 2020 at 8:54 PM Mark Brown <broonie@kernel.org> wrote:
+On Thu, May 28, 2020 at 11:15 PM Rob Herring <robh@kernel.org> wrote:
 >
-> On Thu, May 28, 2020 at 07:39:42PM +0900, Steve Lee wrote:
-> > This is the initial amplifier driver for max98390.
+> On Thu, 28 May 2020 19:37:55 +0900, Steve Lee wrote:
+> > Add DT binding of max98390 amplifier driver.
+> >
+> > Signed-off-by: Steve Lee <steves.lee@maximintegrated.com>
+> > ---
+> > Changed since V5:
+> >       * Change txt to yaml and fix up the examples.
+> > Changed since V4:
+> >       * No changes.
+> > Changed since V3:
+> >       * No changes.
+> > Changed since V2:
+> >       * No changes.
+> > Changed since V1:
+> >       * Modified sample text in example
+> >
+> >  .../bindings/sound/maxim,max98390.yaml        | 39 +++++++++++++++++++
+> >  1 file changed, 39 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/sound/maxim,max98390.yaml
+> >
 >
-> Please do not submit new versions of already applied patches, please
-> submit incremental updates to the existing code.  Modifying existing
-> commits creates problems for other users building on top of those
-> commits so it's best practice to only change pubished git commits if
-> absolutely essential.
 >
-
-  Thanks for feedback. I will send incremental patches.
-
-> > Reported-by: kbuild test robot <lkp@intel.com>
+> My bot found errors running 'make dt_binding_check' on your patch:
 >
-> Don't think the lkp bot asked for this driver! :P
-
-  Thanks, I will send split patch for this.
+> Documentation/devicetree/bindings/sound/maxim,max98390.yaml:  mapping values are not allowed in this context
+>   in "<unicode string>", line 22, column 97
+> Documentation/devicetree/bindings/Makefile:12: recipe for target 'Documentation/devicetree/bindings/sound/maxim,max98390.example.dts' failed
+> make[1]: *** [Documentation/devicetree/bindings/sound/maxim,max98390.example.dts] Error 1
+> make[1]: *** Waiting for unfinished jobs....
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/maxim,max98390.yaml: ignoring, error parsing file
+> warning: no schema found in file: ./Documentation/devicetree/bindings/sound/maxim,max98390.yaml
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/maxim,max98390.yaml: ignoring, error parsing file
+> warning: no schema found in file: ./Documentation/devicetree/bindings/sound/maxim,max98390.yaml
+> Makefile:1300: recipe for target 'dt_binding_check' failed
+> make: *** [dt_binding_check] Error 2
+>
+> See https://patchwork.ozlabs.org/patch/1299651
+>
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure dt-schema is up to date:
+>
+> pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+>
+> Please check and re-submit.
+>
+ Thanks for feedback. I re-submit with after dt binding check again.
