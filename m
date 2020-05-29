@@ -2,75 +2,73 @@ Return-Path: <SRS0=qQ1O=7L=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A5463C433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 May 2020 16:54:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5121C433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 May 2020 16:55:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2523E2077D
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 May 2020 16:54:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 45664207BC
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 May 2020 16:55:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RIPSktMN";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="xTh6HGyQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2523E2077D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HUDqskVo";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="dgr7442Y"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 45664207BC
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7780F17D0;
-	Fri, 29 May 2020 18:53:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7780F17D0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 885D717BC;
+	Fri, 29 May 2020 18:54:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 885D717BC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590771274;
-	bh=8hJyhwyGGs/0tKnBqIAqpCQeA1UaPiuW2q/Yba8rG2A=;
+	s=default; t=1590771319;
+	bh=CM8lMzcigJDeJNrpdnzh/BYaIp1O0I07VF67/OQDqIQ=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RIPSktMNkY28FPYviuC6H2NaQx45jaF3x+Nk9pkSavWyB5laULkfIse35cQOSO3mQ
-	 TO6QbOaLZ5tw4Tj+L0IWCH/RBEQLS9953mdBWN9y2zJWnK1SpErS6FEam/91OB50FS
-	 2zFdon4IcVsjjeoABUw0gyKqwOHpULa4Z6o0Lc00=
+	b=HUDqskVo6t+qF9Ay/FUDySADw32Hk9W5M7lLDxABa+iTG8SApn7TUZztz66pXrVZX
+	 rjbia1qa9BcULaNX81lFwEoOktD4gof60YtzXXHaIYLciXMxZiPyVmXAqd2bhN3SVO
+	 7E/ucFuHMeZYhXMfDtMzVwbHNrj4CwQkBiBmge9Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 30A51F8028F;
-	Fri, 29 May 2020 18:51:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 73FC7F802A8;
+	Fri, 29 May 2020 18:51:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4CF4AF802A1; Fri, 29 May 2020 18:51:29 +0200 (CEST)
+ id B9760F802A9; Fri, 29 May 2020 18:51:36 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 832BFF8028F
- for <alsa-devel@alsa-project.org>; Fri, 29 May 2020 18:51:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 832BFF8028F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1884BF802A7
+ for <alsa-devel@alsa-project.org>; Fri, 29 May 2020 18:51:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1884BF802A7
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="xTh6HGyQ"
+ header.b="dgr7442Y"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 1FD032075A;
- Fri, 29 May 2020 16:51:23 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 0C02F207F5;
+ Fri, 29 May 2020 16:51:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1590771084;
- bh=8hJyhwyGGs/0tKnBqIAqpCQeA1UaPiuW2q/Yba8rG2A=;
+ s=default; t=1590771092;
+ bh=CM8lMzcigJDeJNrpdnzh/BYaIp1O0I07VF67/OQDqIQ=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=xTh6HGyQlX4zqwbUrNz3iAsu6j6fKl+92as/zI12pq54MScl2Ktl8fu8CGKmQCdb2
- VQk1U53m8s0saNnDXaHJgcUFZ+V9ko7YAFCzOl9D1v+ztOuu+p/9fCRGqtpg+XlbXP
- FnUOJmDlzVpC+yu9ph8me/CTVidt5YGREPmixYXU=
-Date: Fri, 29 May 2020 17:51:21 +0100
+ b=dgr7442Y1N0HHZZW6gdMDe5EEv8wEurjRkdRLERuu3V6CV+/bz80HHVXLCCZ2+jl1
+ Gp5wQatYXP2lWtodeMDC1gzpiNO+2lom3AbQqdhwR87ADUyZugvh+pZu7SAbAE3yt4
+ ZpcmGsUEwpj4KtM44aOfb4KO1a8BdXntbNfnHvlE=
+Date: Fri, 29 May 2020 17:51:29 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Dan Murphy <dmurphy@ti.com>, lgirdwood@gmail.com, perex@perex.cz,
- robh@kernel.org, tiwai@suse.com
-In-Reply-To: <20200528144711.18065-1-dmurphy@ti.com>
-References: <20200528144711.18065-1-dmurphy@ti.com>
-Subject: Re: [PATCH] dt-bindings: sound: tlv320adcx140: Fix dt-binding-check
- issue
-Message-Id: <159077105220.28617.4274589938858936015.b4-ty@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+To: lgirdwood@gmail.com, 朱灿灿 <zhucancan@vivo.com>, perex@perex.cz, linux-kernel@vger.kernel.org, tiwai@suse.com, alsa-devel@alsa-project.org
+In-Reply-To: <ALMAWwB5CP9aAcKXCU5FzqqF.1.1590747164172.Hmail.zhucancan@vivo.com>
+References: <ALMAWwB5CP9aAcKXCU5FzqqF.1.1590747164172.Hmail.zhucancan@vivo.com>
+Subject: Re: Subject: [PATCH v2] ASoC: soc-pcm: fix BE dai not hw_free and
+ shutdown during mixer update
+Message-Id: <159077105221.28617.13718283164712388833.b4-ty@kernel.org>
+Cc: kernel <kernel@vivo.com>, 王文虎 <wenhu.wang@vivo.com>, trivial@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,13 +84,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 28 May 2020 09:47:11 -0500, Dan Murphy wrote:
-> Fix dt-binding-check issue
+On Fri, 29 May 2020 18:12:44 +0800 (GMT+08:00), 朱灿灿 wrote:
+> FE state is SND_SOC_DPCM_STATE_PREPARE now, BE1 is
+> used by FE.
 > 
-> ti,gpi-config:0:0: 4 is greater than the maximum of 1
-> ti,gpi-config:0:1: 5 is greater than the maximum of 1
-> ti,gpi-config:0:2: 6 is greater than the maximum of 1
-> ti,gpi-config:0:3: 7 is greater than the maximum of 1
+> Later when new BE2 is added to FE by mixer update,
+> it will call dpcm_run_update_startup() to update
+> BE2's state, but unfortunately BE2 .prepare() meets
+> error, it will disconnect all non started BE.
+> 
+> [...]
 
 Applied to
 
@@ -100,8 +101,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: tlv320adcx140: Fix dt-binding-check issue
-      commit: c8b47d63ad8755780b6b70dbe57ab8333bcc4a0f
+[1/1] Subject: [PATCH v2] ASoC: soc-pcm: fix BE dai not hw_free and shutdown during mixer update
+      commit: 68f8043ed13e636c6f04ac1c0831e17681d392ab
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
