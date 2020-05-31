@@ -7,64 +7,63 @@ X-Spam-Status: No, score=-8.6 required=3.0 tests=DATE_IN_PAST_06_12,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FAA5C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jun 2020 06:18:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41BF5C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jun 2020 06:19:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D126C2074B
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jun 2020 06:18:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BC4942074B
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jun 2020 06:19:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HE7iNmnk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D126C2074B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tTcIe7yx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BC4942074B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 42D7B1711;
-	Mon,  1 Jun 2020 08:17:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 42D7B1711
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2E89816FB;
+	Mon,  1 Jun 2020 08:18:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E89816FB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590992305;
-	bh=YIGJoo1moEuRH6AifjC8D3R8r3wSeIB7taEFNFgZHUM=;
+	s=default; t=1590992349;
+	bh=POwb/B2PFVR3fI7AEfuf9OecdSbxda4RJFDyden0V7s=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HE7iNmnknPgU9cyQLkhQBb40OYtmC14KRkxNVPYQb5OCnlYiRrsBM+O0kF6pjv0WB
-	 ZIlXuyrUM1tDESGl3Mic1x+2MqA2FJkCLfn5jH61m6IPOu3Qixa06ohMePznscKyeD
-	 dNU41MIHk1/aaD6LjiE6OBLmUTIN8XrjWvtACIQ4=
+	b=tTcIe7yxDwk2cAdsZa+15dKdTAzAfmzwhDBkvYzlI0K1csAPJjdWXLNDX5zFJ2KXz
+	 bn1ARMuI3i69DSLDD/uOEGycFGnwEbNrI96QJzprVfMbrX7jm5OJfHB8Fnn07wVzoY
+	 Ihp25s8QjoqEZDQimn/QJGdH4pEp4obUIvwRc5Fc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 09506F802A2;
-	Mon,  1 Jun 2020 08:16:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8102DF802A9;
+	Mon,  1 Jun 2020 08:16:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8C948F802A7; Mon,  1 Jun 2020 08:16:00 +0200 (CEST)
+ id 96E73F802A8; Mon,  1 Jun 2020 08:16:03 +0200 (CEST)
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3CAD9F80227
- for <alsa-devel@alsa-project.org>; Mon,  1 Jun 2020 08:15:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3CAD9F80227
-IronPort-SDR: XiK97Z+u9gjUxRMcOuFwXjUo7kNVlYeyLosG+PQr3RNFsRwDAfijWznPQZr+/Vb1TcXTvm/7WY
- bB+B6k28d9JA==
+ by alsa1.perex.cz (Postfix) with ESMTPS id D0AFDF8023F
+ for <alsa-devel@alsa-project.org>; Mon,  1 Jun 2020 08:15:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0AFDF8023F
+IronPort-SDR: 3GsDMtnT1Gc6w1rGovcVH9pWa4yOAwByEYTO5GEkQ/ba+DzS+QQqrQPLFWagtOc9AQlEaj0PRy
+ 14H0YElymoOA==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 May 2020 23:15:50 -0700
-IronPort-SDR: kY4MRX8sMRIu5aP+evIIJ94CSZpmrlDv+NscNT89L+z99aRxJ/ymUHbQZaIgZUUBdFB0bgmrg+
- 98Bp+0wfa0gA==
+ 31 May 2020 23:15:54 -0700
+IronPort-SDR: O7gmNHc31Mak2m0Yhm2AnEs9jCfICPfblORTa8tUH7dPyrALlHo5mJAIghw6g+zOm2D+YXjGBJ
+ 68sz0cBdpQHQ==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,459,1583222400"; d="scan'208";a="470208655"
+X-IronPort-AV: E=Sophos;i="5.73,459,1583222400"; d="scan'208";a="470208707"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
- by fmsmga005.fm.intel.com with ESMTP; 31 May 2020 23:15:45 -0700
+ by fmsmga005.fm.intel.com with ESMTP; 31 May 2020 23:15:49 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH v2 2/6] soundwire: intel: clarify drvdata and remove more
- indirections
-Date: Mon,  1 Jun 2020 02:20:58 +0800
-Message-Id: <20200531182102.27840-3-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH v2 3/6] soundwire: intel_init: remove useless test
+Date: Mon,  1 Jun 2020 02:20:59 +0800
+Message-Id: <20200531182102.27840-4-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200531182102.27840-1-yung-chuan.liao@linux.intel.com>
 References: <20200531182102.27840-1-yung-chuan.liao@linux.intel.com>
@@ -91,128 +90,28 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-The use of drvdata mixes two structures. There was no harm the first
-structure is embedded as the first element of the second, but that's
-not good. Make sure all drvdata is based on the 'sdw_cdns' structure.
+No need to test link_mask twice
 
-While we are at it, remove indirections for 'dev' and 'cdns' to make
-the code more readable.
-
+Suggested-by: Rander Wang <rander.wang@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/intel.c | 38 +++++++++++++++++++-------------------
- 1 file changed, 19 insertions(+), 19 deletions(-)
+ drivers/soundwire/intel_init.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 10e55c708694..ef1196ea93a4 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -1077,6 +1077,7 @@ static int intel_master_probe(struct platform_device *pdev)
- 	struct sdw_cdns_stream_config config;
- 	struct device *dev = &pdev->dev;
- 	struct sdw_intel *sdw;
-+	struct sdw_cdns *cdns;
- 	struct sdw_bus *bus;
- 	int ret;
+diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
+index de0405359db5..e87f17240547 100644
+--- a/drivers/soundwire/intel_init.c
++++ b/drivers/soundwire/intel_init.c
+@@ -109,7 +109,7 @@ static struct sdw_intel_ctx
  
-@@ -1084,24 +1085,26 @@ static int intel_master_probe(struct platform_device *pdev)
- 	if (!sdw)
- 		return -ENOMEM;
- 
--	bus = &sdw->cdns.bus;
-+	cdns = &sdw->cdns;
-+	bus = &cdns->bus;
- 
- 	sdw->instance = pdev->id;
- 	sdw->link_res = dev_get_platdata(dev);
--	sdw->cdns.dev = dev;
--	sdw->cdns.registers = sdw->link_res->registers;
--	sdw->cdns.instance = sdw->instance;
--	sdw->cdns.msg_count = 0;
-+	cdns->dev = dev;
-+	cdns->registers = sdw->link_res->registers;
-+	cdns->instance = sdw->instance;
-+	cdns->msg_count = 0;
-+
- 	bus->link_id = pdev->id;
- 
--	sdw_cdns_probe(&sdw->cdns);
-+	sdw_cdns_probe(cdns);
- 
- 	/* Set property read ops */
- 	sdw_intel_ops.read_prop = intel_prop_read;
- 	bus->ops = &sdw_intel_ops;
- 
- 	/* set driver data, accessed by snd_soc_dai_get_drvdata() */
--	platform_set_drvdata(pdev, sdw);
-+	dev_set_drvdata(dev, cdns);
- 
- 	ret = sdw_bus_master_add(bus, dev, dev->fwnode);
- 	if (ret) {
-@@ -1123,7 +1126,7 @@ static int intel_master_probe(struct platform_device *pdev)
- 
- 	/* Read the PDI config and initialize cadence PDI */
- 	intel_pdi_init(sdw, &config);
--	ret = sdw_cdns_pdi_init(&sdw->cdns, config);
-+	ret = sdw_cdns_pdi_init(cdns, config);
- 	if (ret)
- 		goto err_init;
- 
-@@ -1132,20 +1135,20 @@ static int intel_master_probe(struct platform_device *pdev)
- 	/* Acquire IRQ */
- 	ret = request_threaded_irq(sdw->link_res->irq,
- 				   sdw_cdns_irq, sdw_cdns_thread,
--				   IRQF_SHARED, KBUILD_MODNAME, &sdw->cdns);
-+				   IRQF_SHARED, KBUILD_MODNAME, cdns);
- 	if (ret < 0) {
- 		dev_err(dev, "unable to grab IRQ %d, disabling device\n",
- 			sdw->link_res->irq);
- 		goto err_init;
- 	}
- 
--	ret = sdw_cdns_enable_interrupt(&sdw->cdns, true);
-+	ret = sdw_cdns_enable_interrupt(cdns, true);
- 	if (ret < 0) {
- 		dev_err(dev, "cannot enable interrupts\n");
- 		goto err_init;
- 	}
- 
--	ret = sdw_cdns_exit_reset(&sdw->cdns);
-+	ret = sdw_cdns_exit_reset(cdns);
- 	if (ret < 0) {
- 		dev_err(dev, "unable to exit bus reset sequence\n");
- 		goto err_interrupt;
-@@ -1164,7 +1167,7 @@ static int intel_master_probe(struct platform_device *pdev)
- 	return 0;
- 
- err_interrupt:
--	sdw_cdns_enable_interrupt(&sdw->cdns, false);
-+	sdw_cdns_enable_interrupt(cdns, false);
- 	free_irq(sdw->link_res->irq, sdw);
- err_init:
- 	sdw_bus_master_delete(bus);
-@@ -1174,16 +1177,13 @@ static int intel_master_probe(struct platform_device *pdev)
- static int intel_master_remove(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
--	struct sdw_intel *sdw;
--	struct sdw_bus *bus;
--
--	sdw = platform_get_drvdata(pdev);
--
--	bus = &sdw->cdns.bus;
-+	struct sdw_cdns *cdns = dev_get_drvdata(dev);
-+	struct sdw_intel *sdw = cdns_to_intel(cdns);
-+	struct sdw_bus *bus = &cdns->bus;
- 
- 	if (!bus->prop.hw_disabled) {
- 		intel_debugfs_exit(sdw);
--		sdw_cdns_enable_interrupt(&sdw->cdns, false);
-+		sdw_cdns_enable_interrupt(cdns, false);
- 		free_irq(sdw->link_res->irq, sdw);
- 		snd_soc_unregister_component(dev);
- 	}
+ 	/* Create SDW Master devices */
+ 	for (i = 0; i < count; i++) {
+-		if (link_mask && !(link_mask & BIT(i))) {
++		if (!(link_mask & BIT(i))) {
+ 			dev_dbg(&adev->dev,
+ 				"Link %d masked, will not be enabled\n", i);
+ 			link++;
 -- 
 2.17.1
 
