@@ -7,63 +7,64 @@ X-Spam-Status: No, score=-8.6 required=3.0 tests=DATE_IN_PAST_06_12,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C349C433E1
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jun 2020 06:19:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C47EC433DF
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jun 2020 06:20:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E8AB0206E2
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jun 2020 06:19:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 166652074B
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jun 2020 06:20:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cVYumNlg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E8AB0206E2
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ULBOT5ia"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 166652074B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 63B551708;
-	Mon,  1 Jun 2020 08:18:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63B551708
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9753E1707;
+	Mon,  1 Jun 2020 08:19:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9753E1707
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590992363;
-	bh=6d1nwMMhSZFP/DxO1bAeh2YvRwE4yo99ESMXAD+y4bU=;
+	s=default; t=1590992405;
+	bh=6t3LgQbCg5z7w9LwiwK7oRmbPApSWrMEFhfi39sJpkM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cVYumNlgFcRMAFtpKrS83Kf6VqNZAUG7+Z3PFGxj4eiUw+0hwNgPuw2vE8fLtjzxe
-	 HCEd3mOcRVsDHRJlV84HTK29TppQ0jnIylMtvBdsV5nufz4dv8r68m+8NPxLqzYSgB
-	 wBXtqGeycDfiYIyy3a6WWzLYBFHgRRimuJUdKc/M=
+	b=ULBOT5iamEqaJgFdCaW3wJCrDnPTvnRM1tF51+oE/bM9FwqxLmTE/TVc3fuX0OL/k
+	 qBr7CiTUJ0n6j7yL7E1FKgegcMaZZkZYQDBmYVe0ePMSS71EWizLOzRRGh1FdmMtUu
+	 z2DvoThJnMOmgvkgOazDZc/l+oedKuurCUKWmQFs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5DC26F802C4;
-	Mon,  1 Jun 2020 08:16:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6AFDEF802DC;
+	Mon,  1 Jun 2020 08:16:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 69971F802BC; Mon,  1 Jun 2020 08:16:06 +0200 (CEST)
+ id 89CAAF802DD; Mon,  1 Jun 2020 08:16:13 +0200 (CEST)
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 12322F8029B
- for <alsa-devel@alsa-project.org>; Mon,  1 Jun 2020 08:15:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 12322F8029B
-IronPort-SDR: uFaauVCeBvD6Dkui4GVT81Dp3fGGs/sFXBWY2Hg7Gu4qpEx3YiUaPPRN0+N90Z8o9IPIy5bExl
- nSavAptHziAg==
+ by alsa1.perex.cz (Postfix) with ESMTPS id D0D87F802A7
+ for <alsa-devel@alsa-project.org>; Mon,  1 Jun 2020 08:16:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0D87F802A7
+IronPort-SDR: m9Ky2KSs+5anfD/Mmurs7Dyr3JAc22YkgsQ5ajDGqiEMWokv49d8aSPzkSO9+ffd7FKf7216rV
+ NmMN4dASekgA==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 May 2020 23:15:58 -0700
-IronPort-SDR: nmadn5veDRO5Dv6gVAXiuAbigDySDzXCE866r6js5rSatxxVjSRwGTEPx6Ygr+XH/v6QcUcxgT
- JTLQzeas+k2g==
+ 31 May 2020 23:16:03 -0700
+IronPort-SDR: k+oWiXyC15/n5k4A3sqbzXGeEPXe/u+NhXVKNCbX1+TPpJq0Q3lJpkJVTuSTwgW04HiZ6uTfsT
+ tBcSYzyuhDAQ==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,459,1583222400"; d="scan'208";a="470208739"
+X-IronPort-AV: E=Sophos;i="5.73,459,1583222400"; d="scan'208";a="470208758"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
- by fmsmga005.fm.intel.com with ESMTP; 31 May 2020 23:15:54 -0700
+ by fmsmga005.fm.intel.com with ESMTP; 31 May 2020 23:15:58 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH v2 4/6] soundwire: intel_init: use devm_ allocation
-Date: Mon,  1 Jun 2020 02:21:00 +0800
-Message-Id: <20200531182102.27840-5-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH v2 5/6] soundwire: intel_init: pass link information as
+ platform data
+Date: Mon,  1 Jun 2020 02:21:01 +0800
+Message-Id: <20200531182102.27840-6-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200531182102.27840-1-yung-chuan.liao@linux.intel.com>
 References: <20200531182102.27840-1-yung-chuan.liao@linux.intel.com>
@@ -90,66 +91,28 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Make error handling simpler with devm_ allocation.
+It's not clear how this code ever worked, the link information is used
+in intel.c but never passed as platform_data.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/intel_init.c | 14 +++++---------
- 1 file changed, 5 insertions(+), 9 deletions(-)
+ drivers/soundwire/intel_init.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
-index e87f17240547..f9d190157c47 100644
+index f9d190157c47..ff1017e64abd 100644
 --- a/drivers/soundwire/intel_init.c
 +++ b/drivers/soundwire/intel_init.c
-@@ -42,9 +42,6 @@ static int sdw_intel_cleanup_pdev(struct sdw_intel_ctx *ctx)
- 		link++;
- 	}
+@@ -128,6 +128,8 @@ static struct sdw_intel_ctx
+ 		pdevinfo.name = "int-sdw";
+ 		pdevinfo.id = i;
+ 		pdevinfo.fwnode = acpi_fwnode_handle(adev);
++		pdevinfo.data = link;
++		pdevinfo.size_data = sizeof(*link);
  
--	kfree(ctx->links);
--	ctx->links = NULL;
--
- 	return 0;
- }
- 
-@@ -96,14 +93,15 @@ static struct sdw_intel_ctx
- 
- 	dev_dbg(&adev->dev, "Creating %d SDW Link devices\n", count);
- 
--	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
-+	ctx = devm_kzalloc(&adev->dev, sizeof(*ctx), GFP_KERNEL);
- 	if (!ctx)
- 		return NULL;
- 
- 	ctx->count = count;
--	ctx->links = kcalloc(ctx->count, sizeof(*ctx->links), GFP_KERNEL);
-+	ctx->links = devm_kcalloc(&adev->dev, ctx->count,
-+				  sizeof(*ctx->links), GFP_KERNEL);
- 	if (!ctx->links)
--		goto link_err;
-+		return NULL;
- 
- 	link = ctx->links;
- 
-@@ -146,9 +144,8 @@ static struct sdw_intel_ctx
- 	return ctx;
- 
- pdev_err:
-+	ctx->count = i;
- 	sdw_intel_cleanup_pdev(ctx);
--link_err:
--	kfree(ctx);
- 	return NULL;
- }
- 
-@@ -216,7 +213,6 @@ void *sdw_intel_init(acpi_handle *parent_handle, struct sdw_intel_res *res)
- void sdw_intel_exit(struct sdw_intel_ctx *ctx)
- {
- 	sdw_intel_cleanup_pdev(ctx);
--	kfree(ctx);
- }
- EXPORT_SYMBOL(sdw_intel_exit);
- 
+ 		pdev = platform_device_register_full(&pdevinfo);
+ 		if (IS_ERR(pdev)) {
 -- 
 2.17.1
 
