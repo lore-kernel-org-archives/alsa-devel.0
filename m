@@ -6,54 +6,53 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 256E1C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jun 2020 01:38:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6015C433DF
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jun 2020 01:39:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A424220810
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jun 2020 01:38:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 41B8620801
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jun 2020 01:39:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hDVrsRwB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A424220810
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DBpzFsvQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 41B8620801
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2D54515E0;
-	Mon,  1 Jun 2020 03:37:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D54515E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id AA8F916C3;
+	Mon,  1 Jun 2020 03:38:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA8F916C3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590975515;
-	bh=hRe+XMzIPsPHjWIRvfVVzDgHFtPs0h0dLLFMTjZ05+A=;
+	s=default; t=1590975551;
+	bh=2jwzbsH5ddZDYWCZwHDNdXB657sw5wTQUhVo6GAN9fs=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hDVrsRwBMlBuxgd/xUPtVM7v7A88d9hahpDALmTdD2jxNJGS+PLUiE2vUt2S6dcO6
-	 B0+x5I5xI/Woh2A9ysM/uFfqdU19Gh9Te9PKIKbfGL7fAqmlVJJZtg4g8hTgk8+AOb
-	 L7e1HP3sXcYTlH8V3+5UGp3uFJyVXhRgkYwGhbtE=
+	b=DBpzFsvQzl0z+UUqLBn1ks6mOXENz7EC6fi94NV5I4DlO03KjcQq8WKhySTBFvqIY
+	 iosgXyfEZ7NsMQv1bwiDo5mQbSoHNc77MwM0JKSOUeLKK1axSUlxcS7Zl30vjloKEM
+	 KDu+m5+MoyC67uzpF+aTw4/4RdE3GZKguNq/aC5s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BB4A3F8029B;
-	Mon,  1 Jun 2020 03:36:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 16879F802A8;
+	Mon,  1 Jun 2020 03:36:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 058FEF80259; Mon,  1 Jun 2020 03:36:12 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 5E8BAF80212
- for <alsa-devel@alsa-project.org>; Mon,  1 Jun 2020 03:36:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E8BAF80212
-Date: 01 Jun 2020 10:36:02 +0900
-X-IronPort-AV: E=Sophos;i="5.73,458,1583161200"; d="scan'208";a="48486468"
+ id 8DC63F8023F; Mon,  1 Jun 2020 03:36:15 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 5FC27F80227
+ for <alsa-devel@alsa-project.org>; Mon,  1 Jun 2020 03:36:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5FC27F80227
+Date: 01 Jun 2020 10:36:10 +0900
+X-IronPort-AV: E=Sophos;i="5.73,458,1583161200"; d="scan'208";a="48274527"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 01 Jun 2020 10:36:02 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 01 Jun 2020 10:36:10 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 34EB840083F3;
- Mon,  1 Jun 2020 10:36:02 +0900 (JST)
-Message-ID: <877dwrzhx9.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id E3C9B4005177;
+ Mon,  1 Jun 2020 10:36:10 +0900 (JST)
+Message-ID: <874krvzhx1.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 02/24] ASoC: soc-component: move
- snd_soc_component_xxx_regmap() to soc-component
+Subject: [PATCH 04/24] ASoC: soc-component: add soc_component_err()
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87a71nzhy2.wl-kuninori.morimoto.gx@renesas.com>
@@ -76,152 +75,357 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-soc-component is handling snd_soc_component_xxx().
-Move snd_soc_component_xxx_regmap() to it.
+At soc-component.c, it is good idea to indicate error function and
+its component name if there was error.
+This patch adds soc_component_err() for it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- include/sound/soc-component.h |  1 +
- sound/soc/soc-component.c     | 50 +++++++++++++++++++++++++++++++++++
- sound/soc/soc-core.c          | 50 -----------------------------------
- 3 files changed, 51 insertions(+), 50 deletions(-)
+ sound/soc/soc-component.c | 162 +++++++++++++++++++++++++++-----------
+ 1 file changed, 116 insertions(+), 46 deletions(-)
 
-diff --git a/include/sound/soc-component.h b/include/sound/soc-component.h
-index 5663891148e3..481132141dc2 100644
---- a/include/sound/soc-component.h
-+++ b/include/sound/soc-component.h
-@@ -359,6 +359,7 @@ int snd_soc_component_stream_event(struct snd_soc_component *component,
- int snd_soc_component_set_bias_level(struct snd_soc_component *component,
- 				     enum snd_soc_bias_level level);
- 
-+void snd_soc_component_setup_regmap(struct snd_soc_component *component);
- #ifdef CONFIG_REGMAP
- void snd_soc_component_init_regmap(struct snd_soc_component *component,
- 				   struct regmap *regmap);
 diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
-index 76f4b953563c..3c96a1adaa8b 100644
+index 5bf2e71d3d83..6d29c2de3b24 100644
 --- a/sound/soc/soc-component.c
 +++ b/sound/soc/soc-component.c
-@@ -302,6 +302,56 @@ int snd_soc_component_of_xlate_dai_name(struct snd_soc_component *component,
- 	return -ENOTSUPP;
- }
+@@ -8,6 +8,28 @@
+ #include <linux/module.h>
+ #include <sound/soc.h>
  
-+void snd_soc_component_setup_regmap(struct snd_soc_component *component)
++#define soc_component_ret(dai, ret) _soc_component_ret(dai, __func__, ret)
++static inline int _soc_component_ret(struct snd_soc_component *component,
++				     const char *func, int ret)
 +{
-+	int val_bytes = regmap_get_val_bytes(component->regmap);
++	/* Positive/Zero values are not errors */
++	if (ret >= 0)
++		return ret;
 +
-+	/* Errors are legitimate for non-integer byte multiples */
-+	if (val_bytes > 0)
-+		component->val_bytes = val_bytes;
++	/* Negative values might be errors */
++	switch (ret) {
++	case -EPROBE_DEFER:
++	case -ENOTSUPP:
++		break;
++	default:
++		dev_err(component->dev,
++			"ASoC: error at %s on %s: %d\n",
++			func, component->name, ret);
++	}
++
++	return ret;
 +}
 +
-+#ifdef CONFIG_REGMAP
-+
-+/**
-+ * snd_soc_component_init_regmap() - Initialize regmap instance for the
-+ *                                   component
-+ * @component: The component for which to initialize the regmap instance
-+ * @regmap: The regmap instance that should be used by the component
-+ *
-+ * This function allows deferred assignment of the regmap instance that is
-+ * associated with the component. Only use this if the regmap instance is not
-+ * yet ready when the component is registered. The function must also be called
-+ * before the first IO attempt of the component.
-+ */
-+void snd_soc_component_init_regmap(struct snd_soc_component *component,
-+				   struct regmap *regmap)
-+{
-+	component->regmap = regmap;
-+	snd_soc_component_setup_regmap(component);
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_component_init_regmap);
-+
-+/**
-+ * snd_soc_component_exit_regmap() - De-initialize regmap instance for the
-+ *                                   component
-+ * @component: The component for which to de-initialize the regmap instance
-+ *
-+ * Calls regmap_exit() on the regmap instance associated to the component and
-+ * removes the regmap instance from the component.
-+ *
-+ * This function should only be used if snd_soc_component_init_regmap() was used
-+ * to initialize the regmap instance.
-+ */
-+void snd_soc_component_exit_regmap(struct snd_soc_component *component)
-+{
-+	regmap_exit(component->regmap);
-+	component->regmap = NULL;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_component_exit_regmap);
-+
-+#endif
-+
- int snd_soc_pcm_component_pointer(struct snd_pcm_substream *substream)
+ int snd_soc_component_initialize(struct snd_soc_component *component,
+ 				 const struct snd_soc_component_driver *driver,
+ 				 struct device *dev, const char *name)
+@@ -38,11 +60,13 @@ int snd_soc_component_set_sysclk(struct snd_soc_component *component,
+ 				 int clk_id, int source, unsigned int freq,
+ 				 int dir)
  {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index b07eca2c6ccc..8e90426d2770 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -2381,56 +2381,6 @@ static int snd_soc_component_initialize(struct snd_soc_component *component,
- 	return 0;
++	int ret = -ENOTSUPP;
++
+ 	if (component->driver->set_sysclk)
+-		return component->driver->set_sysclk(component, clk_id, source,
++		ret = component->driver->set_sysclk(component, clk_id, source,
+ 						     freq, dir);
+ 
+-	return -ENOTSUPP;
++	return soc_component_ret(component, ret);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_component_set_sysclk);
+ 
+@@ -60,11 +84,13 @@ int snd_soc_component_set_pll(struct snd_soc_component *component, int pll_id,
+ 			      int source, unsigned int freq_in,
+ 			      unsigned int freq_out)
+ {
++	int ret = -EINVAL;
++
+ 	if (component->driver->set_pll)
+-		return component->driver->set_pll(component, pll_id, source,
++		ret = component->driver->set_pll(component, pll_id, source,
+ 						  freq_in, freq_out);
+ 
+-	return -EINVAL;
++	return soc_component_ret(component, ret);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_component_set_pll);
+ 
+@@ -78,19 +104,23 @@ void snd_soc_component_seq_notifier(struct snd_soc_component *component,
+ int snd_soc_component_stream_event(struct snd_soc_component *component,
+ 				   int event)
+ {
++	int ret = 0;
++
+ 	if (component->driver->stream_event)
+-		return component->driver->stream_event(component, event);
++		ret = component->driver->stream_event(component, event);
+ 
+-	return 0;
++	return soc_component_ret(component, ret);
  }
  
--static void snd_soc_component_setup_regmap(struct snd_soc_component *component)
--{
--	int val_bytes = regmap_get_val_bytes(component->regmap);
+ int snd_soc_component_set_bias_level(struct snd_soc_component *component,
+ 				     enum snd_soc_bias_level level)
+ {
++	int ret = 0;
++
+ 	if (component->driver->set_bias_level)
+-		return component->driver->set_bias_level(component, level);
++		ret = component->driver->set_bias_level(component, level);
+ 
+-	return 0;
++	return soc_component_ret(component, ret);
+ }
+ 
+ static int soc_component_pin(struct snd_soc_component *component,
+@@ -103,17 +133,21 @@ static int soc_component_pin(struct snd_soc_component *component,
+ 	char *full_name;
+ 	int ret;
+ 
+-	if (!component->name_prefix)
+-		return pin_func(dapm, pin);
++	if (!component->name_prefix) {
++		ret = pin_func(dapm, pin);
++		goto end;
++	}
+ 
+ 	full_name = kasprintf(GFP_KERNEL, "%s %s", component->name_prefix, pin);
+-	if (!full_name)
+-		return -ENOMEM;
++	if (!full_name) {
++		ret = -ENOMEM;
++		goto end;
++	}
+ 
+ 	ret = pin_func(dapm, full_name);
+ 	kfree(full_name);
 -
--	/* Errors are legitimate for non-integer byte multiples */
--	if (val_bytes > 0)
--		component->val_bytes = val_bytes;
--}
--
--#ifdef CONFIG_REGMAP
--
--/**
-- * snd_soc_component_init_regmap() - Initialize regmap instance for the
-- *                                   component
-- * @component: The component for which to initialize the regmap instance
-- * @regmap: The regmap instance that should be used by the component
-- *
-- * This function allows deferred assignment of the regmap instance that is
-- * associated with the component. Only use this if the regmap instance is not
-- * yet ready when the component is registered. The function must also be called
-- * before the first IO attempt of the component.
-- */
--void snd_soc_component_init_regmap(struct snd_soc_component *component,
--	struct regmap *regmap)
--{
--	component->regmap = regmap;
--	snd_soc_component_setup_regmap(component);
--}
--EXPORT_SYMBOL_GPL(snd_soc_component_init_regmap);
--
--/**
-- * snd_soc_component_exit_regmap() - De-initialize regmap instance for the
-- *                                   component
-- * @component: The component for which to de-initialize the regmap instance
-- *
-- * Calls regmap_exit() on the regmap instance associated to the component and
-- * removes the regmap instance from the component.
-- *
-- * This function should only be used if snd_soc_component_init_regmap() was used
-- * to initialize the regmap instance.
-- */
--void snd_soc_component_exit_regmap(struct snd_soc_component *component)
--{
--	regmap_exit(component->regmap);
--	component->regmap = NULL;
--}
--EXPORT_SYMBOL_GPL(snd_soc_component_exit_regmap);
--
--#endif
--
- #define ENDIANNESS_MAP(name) \
- 	(SNDRV_PCM_FMTBIT_##name##LE | SNDRV_PCM_FMTBIT_##name##BE)
- static u64 endianness_format_map[] = {
+-	return ret;
++end:
++	return soc_component_ret(component, ret);
+ }
+ 
+ int snd_soc_component_enable_pin(struct snd_soc_component *component,
+@@ -191,21 +225,25 @@ EXPORT_SYMBOL_GPL(snd_soc_component_force_enable_pin_unlocked);
+ int snd_soc_component_set_jack(struct snd_soc_component *component,
+ 			       struct snd_soc_jack *jack, void *data)
+ {
++	int ret = -ENOTSUPP;
++
+ 	if (component->driver->set_jack)
+-		return component->driver->set_jack(component, jack, data);
++		ret = component->driver->set_jack(component, jack, data);
+ 
+-	return -ENOTSUPP;
++	return soc_component_ret(component, ret);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_component_set_jack);
+ 
+ int snd_soc_component_module_get(struct snd_soc_component *component,
+ 				 int upon_open)
+ {
++	int ret = 0;
++
+ 	if (component->driver->module_get_upon_open == !!upon_open &&
+ 	    !try_module_get(component->dev->driver->owner))
+-		return -ENODEV;
++		ret = -ENODEV;
+ 
+-	return 0;
++	return soc_component_ret(component, ret);
+ }
+ 
+ void snd_soc_component_module_put(struct snd_soc_component *component,
+@@ -218,52 +256,70 @@ void snd_soc_component_module_put(struct snd_soc_component *component,
+ int snd_soc_component_open(struct snd_soc_component *component,
+ 			   struct snd_pcm_substream *substream)
+ {
++	int ret = 0;
++
+ 	if (component->driver->open)
+-		return component->driver->open(component, substream);
+-	return 0;
++		ret = component->driver->open(component, substream);
++
++	return soc_component_ret(component, ret);
+ }
+ 
+ int snd_soc_component_close(struct snd_soc_component *component,
+ 			    struct snd_pcm_substream *substream)
+ {
++	int ret = 0;
++
+ 	if (component->driver->close)
+-		return component->driver->close(component, substream);
+-	return 0;
++		ret = component->driver->close(component, substream);
++
++	return soc_component_ret(component, ret);
+ }
+ 
+ int snd_soc_component_prepare(struct snd_soc_component *component,
+ 			      struct snd_pcm_substream *substream)
+ {
++	int ret = 0;
++
+ 	if (component->driver->prepare)
+-		return component->driver->prepare(component, substream);
+-	return 0;
++		ret = component->driver->prepare(component, substream);
++
++	return soc_component_ret(component, ret);
+ }
+ 
+ int snd_soc_component_hw_params(struct snd_soc_component *component,
+ 				struct snd_pcm_substream *substream,
+ 				struct snd_pcm_hw_params *params)
+ {
++	int ret = 0;
++
+ 	if (component->driver->hw_params)
+-		return component->driver->hw_params(component,
+-						    substream, params);
+-	return 0;
++		ret = component->driver->hw_params(component,
++						   substream, params);
++
++	return soc_component_ret(component, ret);
+ }
+ 
+ int snd_soc_component_hw_free(struct snd_soc_component *component,
+ 			       struct snd_pcm_substream *substream)
+ {
++	int ret = 0;
++
+ 	if (component->driver->hw_free)
+-		return component->driver->hw_free(component, substream);
+-	return 0;
++		ret = component->driver->hw_free(component, substream);
++
++	return soc_component_ret(component, ret);
+ }
+ 
+ int snd_soc_component_trigger(struct snd_soc_component *component,
+ 			      struct snd_pcm_substream *substream,
+ 			      int cmd)
+ {
++	int ret = 0;
++
+ 	if (component->driver->trigger)
+-		return component->driver->trigger(component, substream, cmd);
+-	return 0;
++		ret = component->driver->trigger(component, substream, cmd);
++
++	return soc_component_ret(component, ret);
+ }
+ 
+ void snd_soc_component_suspend(struct snd_soc_component *component)
+@@ -287,10 +343,12 @@ int snd_soc_component_is_suspended(struct snd_soc_component *component)
+ 
+ int snd_soc_component_probe(struct snd_soc_component *component)
+ {
++	int ret = 0;
++
+ 	if (component->driver->probe)
+-		return component->driver->probe(component);
++		ret = component->driver->probe(component);
+ 
+-	return 0;
++	return soc_component_ret(component, ret);
+ }
+ 
+ void snd_soc_component_remove(struct snd_soc_component *component)
+@@ -302,20 +360,25 @@ void snd_soc_component_remove(struct snd_soc_component *component)
+ int snd_soc_component_of_xlate_dai_id(struct snd_soc_component *component,
+ 				      struct device_node *ep)
+ {
++	int ret = -ENOTSUPP;
++
+ 	if (component->driver->of_xlate_dai_id)
+-		return component->driver->of_xlate_dai_id(component, ep);
++		ret = component->driver->of_xlate_dai_id(component, ep);
+ 
+-	return -ENOTSUPP;
++	return soc_component_ret(component, ret);
+ }
+ 
+ int snd_soc_component_of_xlate_dai_name(struct snd_soc_component *component,
+ 					struct of_phandle_args *args,
+ 					const char **dai_name)
+ {
++	int ret = -ENOTSUPP;
++
+ 	if (component->driver->of_xlate_dai_name)
+-		return component->driver->of_xlate_dai_name(component,
+-						     args, dai_name);
+-	return -ENOTSUPP;
++		ret = component->driver->of_xlate_dai_name(component,
++							   args, dai_name);
++
++	return soc_component_ret(component, ret);
+ }
+ 
+ void snd_soc_component_setup_regmap(struct snd_soc_component *component)
+@@ -392,8 +455,10 @@ int snd_soc_pcm_component_ioctl(struct snd_pcm_substream *substream,
+ 	/* FIXME: use 1st ioctl */
+ 	for_each_rtd_components(rtd, i, component)
+ 		if (component->driver->ioctl)
+-			return component->driver->ioctl(component, substream,
+-							cmd, arg);
++			return soc_component_ret(
++				component,
++				component->driver->ioctl(component,
++							 substream, cmd, arg));
+ 
+ 	return snd_pcm_lib_ioctl(substream, cmd, arg);
+ }
+@@ -409,7 +474,7 @@ int snd_soc_pcm_component_sync_stop(struct snd_pcm_substream *substream)
+ 			ret = component->driver->sync_stop(component,
+ 							   substream);
+ 			if (ret < 0)
+-				return ret;
++				soc_component_ret(component, ret);
+ 		}
+ 	}
+ 
+@@ -427,8 +492,11 @@ int snd_soc_pcm_component_copy_user(struct snd_pcm_substream *substream,
+ 	/* FIXME. it returns 1st copy now */
+ 	for_each_rtd_components(rtd, i, component)
+ 		if (component->driver->copy_user)
+-			return component->driver->copy_user(
+-				component, substream, channel, pos, buf, bytes);
++			return soc_component_ret(
++				component,
++				component->driver->copy_user(
++					component, substream, channel,
++					pos, buf, bytes));
+ 
+ 	return -EINVAL;
+ }
+@@ -464,8 +532,10 @@ int snd_soc_pcm_component_mmap(struct snd_pcm_substream *substream,
+ 	/* FIXME. it returns 1st mmap now */
+ 	for_each_rtd_components(rtd, i, component)
+ 		if (component->driver->mmap)
+-			return component->driver->mmap(component,
+-						       substream, vma);
++			soc_component_ret(
++				component,
++				component->driver->mmap(component,
++							substream, vma));
+ 
+ 	return -EINVAL;
+ }
+@@ -480,7 +550,7 @@ int snd_soc_pcm_component_new(struct snd_soc_pcm_runtime *rtd)
+ 		if (component->driver->pcm_construct) {
+ 			ret = component->driver->pcm_construct(component, rtd);
+ 			if (ret < 0)
+-				return ret;
++				soc_component_ret(component, ret);
+ 		}
+ 	}
+ 
 -- 
 2.17.1
 
