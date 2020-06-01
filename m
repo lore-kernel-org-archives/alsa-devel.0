@@ -4,74 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 967EEC433DF
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jun 2020 19:02:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C01A1C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jun 2020 20:51:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 166C0206E2
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jun 2020 19:02:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 42C8520734
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jun 2020 20:51:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Jx4G58e/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 166C0206E2
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BkoKseIw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 42C8520734
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A42FF166E;
-	Mon,  1 Jun 2020 21:01:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A42FF166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id C9AF515E0;
+	Mon,  1 Jun 2020 22:50:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C9AF515E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591038149;
-	bh=46PoFz8BLZqxr8QEIMoKPmOT440vcuSfxzENVYiFLVs=;
-	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1591044683;
+	bh=FgbJoYoUnaNT2Be+7L9+6vp7itS9Q2Wm5Kmyiwc/xRM=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Jx4G58e/Nzmn2rH444FmwusEgWu4LLYzU14LEzxfALq+eNn0iugwNMDhq2oVMYnXs
-	 NIB3XU/5EV/MpJQpayfaRhiTZkfZLekHjn3C9c492k45G0gjeOkmeQyiT/Z6mUd58U
-	 0tKz/hkHHSK6BH8NBlP6NU5UkWK+wZLoQQyRYQqA=
+	b=BkoKseIwlQfnqqLL+RVyB2zkQdIPa6Rq+2Hn0lJKAxEUwwmsZKhx5vtOA5F1ZrlNG
+	 QLSPTyCw1p1FZjJ/zPXcrIVC1i2Lnd90uJ1YmGsz2e3C9VsumPoKSwikIZQtm1G5ha
+	 M1SYiqaf7pa5vQ4cUrt0+4t4XAJyUi8ZgNMtmz14=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 238FCF801EC;
-	Mon,  1 Jun 2020 21:01:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 40713F800B8;
+	Mon,  1 Jun 2020 22:50:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BBCDDF801ED; Mon,  1 Jun 2020 21:01:36 +0200 (CEST)
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ id 7E2CDF801ED; Mon,  1 Jun 2020 22:50:30 +0200 (CEST)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 36F7CF800B8
- for <alsa-devel@alsa-project.org>; Mon,  1 Jun 2020 21:01:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36F7CF800B8
-IronPort-SDR: 8srvMMtJnsqVLji750QOwHlyHgvtSDLFZkQnqN6nyFfa1P56ypPwDysdjyDws/c7Hm+rUlkE+P
- 4/3D7+fQ3DHQ==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6EB84F80159
+ for <alsa-devel@alsa-project.org>; Mon,  1 Jun 2020 22:50:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6EB84F80159
+IronPort-SDR: zdFrBczNuv2Ds9E1KCuVh8158rGYQUyHiwxgmG9CV9xg/Ty350mcfkd9sNG4hMSobVB3SUOtpX
+ rnk/dpeKGv+w==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
- by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Jun 2020 12:01:26 -0700
-IronPort-SDR: 47SkH+yvV3oSFR9hKGqX7KE+VojUk0Q2HYFltruU2KHo+OaDR2Pr1/5+e+EjKcaxIPaUbUrmCh
- fibLZnviuKCw==
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 01 Jun 2020 13:50:15 -0700
+IronPort-SDR: bTUm3amk7QMCFwB2VTG76Lhz3xQiMTgOilKl0Norwi6VrvskLOxHpyrYURhD4p2u+PkUzLd+uh
+ I0r78hlFKpHw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,461,1583222400"; d="scan'208";a="347137707"
-Received: from wisniew1-desk.ger.corp.intel.com ([10.254.183.35])
- by orsmga001.jf.intel.com with ESMTP; 01 Jun 2020 12:01:25 -0700
-Message-ID: <6c8189c811df911a3c697b510bcc893e53e565bc.camel@linux.intel.com>
-Subject: Re: [PATCH 09/24] ASoC: soc-component: add
- snd_soc_component_compr_open()
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown
- <broonie@kernel.org>
-Date: Mon, 01 Jun 2020 12:01:25 -0700
-In-Reply-To: <87wo4ry3bz.wl-kuninori.morimoto.gx@renesas.com>
-References: <87a71nzhy2.wl-kuninori.morimoto.gx@renesas.com>
- <87wo4ry3bz.wl-kuninori.morimoto.gx@renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
+X-IronPort-AV: E=Sophos;i="5.73,462,1583222400"; d="scan'208";a="257376265"
+Received: from fwong2-mobl.amr.corp.intel.com (HELO [10.251.12.107])
+ ([10.251.12.107])
+ by orsmga007.jf.intel.com with ESMTP; 01 Jun 2020 13:50:14 -0700
+Subject: Re: [PATCH] soundwire: clarify SPDX use of GPL-2.0
+To: Greg KH <gregkh@linuxfoundation.org>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
+References: <20200531172807.27042-1-yung-chuan.liao@linux.intel.com>
+ <20200601053809.GA1420218@kroah.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <686345af-4fda-4bc1-c3bf-da31406e806b@linux.intel.com>
+Date: Mon, 1 Jun 2020 15:50:13 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+In-Reply-To: <20200601053809.GA1420218@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Cc: alsa-devel@alsa-project.org, vinod.koul@linaro.org, tiwai@suse.de,
+ mengdong.lin@intel.com, ranjani.sridharan@linux.intel.com,
+ linux-kernel@vger.kernel.org, hui.wang@canonical.com, vkoul@kernel.org,
+ broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com,
+ slawomir.blauciak@intel.com, sanyog.r.kale@intel.com,
+ rander.wang@linux.intel.com, bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,19 +94,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 2020-06-01 at 10:36 +0900, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+
+
+On 6/1/20 12:38 AM, Greg KH wrote:
+> On Mon, Jun 01, 2020 at 01:28:07AM +0800, Bard Liao wrote:
+>> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>>
+>> Change SPDX from GPL-2.0 to GPL-2.0-only for Intel-contributed
+>> code. This was explicit before the transition to SPDX and lost in
+>> translation.
 > 
-> component related function should be implemented at
-> soc-component.c.
-> This patch moves soc-compress soc_compr_components_open()
-> to soc-component as snd_soc_component_compr_open().
-Morimoto-san,
+> It is also explicit in the "GPL-2.0" lines as well, did you read the
+> LICENSES/preferred/GPL-2.0 file for the allowed tags to be used for this
+> license?
+> 
+> So this doesn't change anything, and we are trying to cut down on this
+> type of churn until, maybe, after the whole kernel has proper SPDX
+> lines.
 
-This is change is justified in one way but it also feels like maybe
-because the functions are so specific to compr devices, it is best to
-leave them here. Maybe others should also chime in.
+My commit message was misleading, sorry. For SoundWire, we recently 
+added new files with GPL-2.0-only (master + sysfs), as recommended since 
+the short GPL-2.0 identifier is deprecated 
+(https://spdx.org/licenses/GPL-2.0.html https://spdx.org/licenses/).
 
-Thanks,
-Ranjani
+Intel does not mind if we delay this change, you are right that this 
+doesn't change anything license-wise. I just felt it was a good time to 
+align old and new contributions to avoid having half of the files with 
+GPL-2.0 and half with GPL-2.0-only.
+
+We still have quite a few patches for SoundWire (~80 coming w/ 7k lines 
+changed), so those changes are really minimal in comparison with the 
+actual 'churn' to fix programming sequences, power management, 
+multi-link management and bit allocation.
+
+Oh and this was not intended to be added to 5.8 btw or pulled as a fix, 
+really nothing to do with the merge window.
+
+If you prefer us to keep this change on the back burner, that's fine, 
+the only intent was to keep all SoundWire-related files consistent.
+
 
