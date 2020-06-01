@@ -2,66 +2,76 @@ Return-Path: <SRS0=kaWB=7O=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AAFA2C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jun 2020 18:46:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 967EEC433DF
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jun 2020 19:02:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 36C86206C3
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jun 2020 18:46:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 166C0206E2
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jun 2020 19:02:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fc6Z6dpC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 36C86206C3
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Jx4G58e/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 166C0206E2
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 525F516D2;
-	Mon,  1 Jun 2020 20:45:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 525F516D2
+	by alsa0.perex.cz (Postfix) with ESMTPS id A42FF166E;
+	Mon,  1 Jun 2020 21:01:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A42FF166E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591037196;
-	bh=wB5JLhTUv2XQpChCGBCoLpcfK8diRVVb/Nkdf/J2Owo=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1591038149;
+	bh=46PoFz8BLZqxr8QEIMoKPmOT440vcuSfxzENVYiFLVs=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fc6Z6dpCpUVt8X28WlgRsPSXQQEiz7Qm48FbJrrneZCVkS0l4dCVLjYtr0ZM7szDZ
-	 k8U1Mvi5LOeKp4z4rKC5OA8h/5NALvobQ0Z8mpfwGwo0Vk0DgBvKITfkTEZct66dNV
-	 GZKsQgedxevqUgaG6Y+4hQBtu/ShHh2wMcrscJ1A=
+	b=Jx4G58e/Nzmn2rH444FmwusEgWu4LLYzU14LEzxfALq+eNn0iugwNMDhq2oVMYnXs
+	 NIB3XU/5EV/MpJQpayfaRhiTZkfZLekHjn3C9c492k45G0gjeOkmeQyiT/Z6mUd58U
+	 0tKz/hkHHSK6BH8NBlP6NU5UkWK+wZLoQQyRYQqA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 569B9F80212;
-	Mon,  1 Jun 2020 20:45:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 238FCF801EC;
+	Mon,  1 Jun 2020 21:01:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0EB39F80227; Mon,  1 Jun 2020 20:45:03 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id BBCDDF801ED; Mon,  1 Jun 2020 21:01:36 +0200 (CEST)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 56C34F801ED
- for <alsa-devel@alsa-project.org>; Mon,  1 Jun 2020 20:44:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56C34F801ED
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id BB81AAB3D;
- Mon,  1 Jun 2020 18:44:57 +0000 (UTC)
-Date: Mon, 01 Jun 2020 20:44:55 +0200
-Message-ID: <s5hblm2iq1k.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [GIT PULL] ASoC updates for v5.8
-In-Reply-To: <20200601121323.GB45647@sirena.org.uk>
-References: <20200601121323.GB45647@sirena.org.uk>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 36F7CF800B8
+ for <alsa-devel@alsa-project.org>; Mon,  1 Jun 2020 21:01:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36F7CF800B8
+IronPort-SDR: 8srvMMtJnsqVLji750QOwHlyHgvtSDLFZkQnqN6nyFfa1P56ypPwDysdjyDws/c7Hm+rUlkE+P
+ 4/3D7+fQ3DHQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 01 Jun 2020 12:01:26 -0700
+IronPort-SDR: 47SkH+yvV3oSFR9hKGqX7KE+VojUk0Q2HYFltruU2KHo+OaDR2Pr1/5+e+EjKcaxIPaUbUrmCh
+ fibLZnviuKCw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,461,1583222400"; d="scan'208";a="347137707"
+Received: from wisniew1-desk.ger.corp.intel.com ([10.254.183.35])
+ by orsmga001.jf.intel.com with ESMTP; 01 Jun 2020 12:01:25 -0700
+Message-ID: <6c8189c811df911a3c697b510bcc893e53e565bc.camel@linux.intel.com>
+Subject: Re: [PATCH 09/24] ASoC: soc-component: add
+ snd_soc_component_compr_open()
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown
+ <broonie@kernel.org>
+Date: Mon, 01 Jun 2020 12:01:25 -0700
+In-Reply-To: <87wo4ry3bz.wl-kuninori.morimoto.gx@renesas.com>
+References: <87a71nzhy2.wl-kuninori.morimoto.gx@renesas.com>
+ <87wo4ry3bz.wl-kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,38 +87,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 01 Jun 2020 14:13:23 +0200,
-Mark Brown wrote:
+On Mon, 2020-06-01 at 10:36 +0900, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > 
-> The following changes since commit 9cb1fd0efd195590b828b9b865421ad345a4a145:
-> 
->   Linux 5.7-rc7 (2020-05-24 15:32:54 -0700)
-> 
-> are available in the Git repository at:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-v5.8
-> 
-> for you to fetch changes up to 358c7c61fd04d324f83d7968daf8dd9a6ff86a9a:
-> 
->   Merge remote-tracking branch 'asoc/for-5.8' into asoc-linus (2020-06-01 13:01:15 +0100)
-> 
-> ----------------------------------------------------------------
-> ASoC: Updates for v5.8
-> 
-> This has been another very active release with a bunch of new drivers,
-> lots of fixes everywhere and continued core improvements from
-> Morimoto-san:
-> 
->  - Lots of core cleanups and refactorings from Morimoto-san, factoring
->    out common operations and making the card abstraction more solid.
->  - Continued work on cleaning up and improving the Intel drivers, along
->    with some new platform support for them.
->  - Fixes to make the Marvell SSPA driver work upstream.
->  - Support for AMD Renoir ACP, Dialog DA7212, Freescale EASRC and
->    i.MX8M, Intel Elkhard Lake, Maxim MAX98390, Nuvoton NAU8812 and
->    NAU8814 and Realtek RT1016.
+> component related function should be implemented at
+> soc-component.c.
+> This patch moves soc-compress soc_compr_components_open()
+> to soc-component as snd_soc_component_compr_open().
+Morimoto-san,
 
-Pulled now.  Thanks.
+This is change is justified in one way but it also feels like maybe
+because the functions are so specific to compr devices, it is best to
+leave them here. Maybe others should also chime in.
 
+Thanks,
+Ranjani
 
-Takashi
