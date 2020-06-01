@@ -2,58 +2,62 @@ Return-Path: <SRS0=kaWB=7O=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E4D9C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jun 2020 01:36:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4563DC433DF
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jun 2020 01:37:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DFDFE20810
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jun 2020 01:36:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C6B5C2074A
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jun 2020 01:37:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eT3uGb6D"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DFDFE20810
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IqvoDDtS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C6B5C2074A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6E2061682;
-	Mon,  1 Jun 2020 03:35:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E2061682
+	by alsa0.perex.cz (Postfix) with ESMTPS id 57D8116AC;
+	Mon,  1 Jun 2020 03:36:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57D8116AC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1590975396;
-	bh=BsKA53wPaN2LjgJgYu15PkbtZ7ubKdqmT6PYcuuepGE=;
-	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=eT3uGb6DRd22ckEwgg+r0AZHewr7xrvD9A8xANyU4PjOVUPaMVZIwc9AgQegkKiZm
-	 IMZde1NBVafhZQSd0yLA97HWQFiIWF6gqfjAKJ5Nd3HOKsqof1mdUNwGDpmV7lwiJA
-	 T7gODvRO9rRxWvRUniG4y7HSMA1jd5+U8C75RgwI=
+	s=default; t=1590975449;
+	bh=utXQX0LcoW3WPA1pQxKa3ob4fkMSGVc4kI3b/iJvAdw=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=IqvoDDtSQS1RmmRJqzDYu5AoThfV9mbizLhgXkFhsZelKfgvSmr4KqqIEyl66b/UA
+	 VjvP3t9WugjOlcIoWHcHMr40Mnh5U1nQx1Dg8COX+TLZ7h55fCJMnthtDpAWXsUB65
+	 TVp9d2oFkxowCreTXglvaRTPk5iM+jUVF1D2SBzY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A22CBF801EC;
-	Mon,  1 Jun 2020 03:35:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DB327F80212;
+	Mon,  1 Jun 2020 03:36:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9F0E4F801ED; Mon,  1 Jun 2020 03:35:42 +0200 (CEST)
+ id 95A8AF80259; Mon,  1 Jun 2020 03:36:06 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 737BEF80159
- for <alsa-devel@alsa-project.org>; Mon,  1 Jun 2020 03:35:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 737BEF80159
-Date: 01 Jun 2020 10:35:33 +0900
-X-IronPort-AV: E=Sophos;i="5.73,458,1583161200"; d="scan'208";a="48274457"
+ by alsa1.perex.cz (Postfix) with ESMTP id 373D6F801ED
+ for <alsa-devel@alsa-project.org>; Mon,  1 Jun 2020 03:35:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 373D6F801ED
+Date: 01 Jun 2020 10:35:57 +0900
+X-IronPort-AV: E=Sophos;i="5.73,458,1583161200"; d="scan'208";a="48274493"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 01 Jun 2020 10:35:33 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 01 Jun 2020 10:35:57 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id A981C4005177;
- Mon,  1 Jun 2020 10:35:33 +0900 (JST)
-Message-ID: <87a71nzhy2.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id BB29440083F3;
+ Mon,  1 Jun 2020 10:35:57 +0900 (JST)
+Message-ID: <878sh7zhxe.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 00/24] ASoC: soc-component: collect component functions
+Subject: [PATCH 01/24] ASoC: soc-component: add soc_component_pin() and share
+ code
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <87a71nzhy2.wl-kuninori.morimoto.gx@renesas.com>
+References: <87a71nzhy2.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
@@ -72,49 +76,245 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Hi Mark
+soc-component has too many snd_soc_component_xxx_pin_xxx() functions.
+The difference between these functions are used function name and
+enable/disable.
+This patch adds common soc_component_pin() and share code.
 
-We have soc-component.c now, but still many component related
-functions are implemented many place.
-This patch-set collect these into soc-component.c.
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ sound/soc/soc-component.c | 152 +++++---------------------------------
+ 1 file changed, 20 insertions(+), 132 deletions(-)
 
-Kuninori Morimoto (24):
-  ASoC: soc-component: add soc_component_pin() and share code
-  ASoC: soc-component: move snd_soc_component_xxx_regmap() to soc-component
-  ASoC: soc-component: move snd_soc_component_initialize() to soc-component.c
-  ASoC: soc-component: add soc_component_err()
-  ASoC: soc-component: add snd_soc_pcm_component_prepare()
-  ASoC: soc-component: add snd_soc_pcm_component_hw_params()
-  ASoC: soc-component: add snd_soc_pcm_component_hw_free()
-  ASoC: soc-component: add snd_soc_pcm_component_trigger()
-  ASoC: soc-component: add snd_soc_component_compr_open()
-  ASoC: soc-component: add snd_soc_component_compr_free()
-  ASoC: soc-component: add snd_soc_component_compr_trigger()
-  ASoC: soc-component: add snd_soc_component_compr_set_params()
-  ASoC: soc-component: add snd_soc_component_compr_get_params()
-  ASoC: soc-component: add snd_soc_component_compr_get_caps()
-  ASoC: soc-component: add snd_soc_component_compr_get_codec_caps()
-  ASoC: soc-component: add snd_soc_component_compr_ack()
-  ASoC: soc-component: add snd_soc_component_compr_pointer()
-  ASoC: soc-component: add snd_soc_component_compr_copy()
-  ASoC: soc-component: add snd_soc_component_compr_set_metadata()
-  ASoC: soc-component: add snd_soc_component_compr_get_metadata()
-  ASoC: soc-component: add snd_soc_component_init()
-  ASoC: soc-component: merge soc-io.c into soc-component.c
-  ASoC: soc-component: merge soc_pcm_trigger_start/stop()
-  ASoC: soc-component: tidyup Copyright
-
- include/sound/soc-component.h |  51 +-
- sound/soc/Makefile            |   2 +-
- sound/soc/soc-component.c     | 912 ++++++++++++++++++++++++++--------
- sound/soc/soc-compress.c      | 223 ++-------
- sound/soc/soc-core.c          | 102 +---
- sound/soc/soc-io.c            | 202 --------
- sound/soc/soc-pcm.c           | 115 ++---
- 7 files changed, 830 insertions(+), 777 deletions(-)
- delete mode 100644 sound/soc/soc-io.c
-
+diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
+index 785a0385cc7f..76f4b953563c 100644
+--- a/sound/soc/soc-component.c
++++ b/sound/soc/soc-component.c
+@@ -77,8 +77,10 @@ int snd_soc_component_set_bias_level(struct snd_soc_component *component,
+ 	return 0;
+ }
+ 
+-int snd_soc_component_enable_pin(struct snd_soc_component *component,
+-				 const char *pin)
++static int soc_component_pin(struct snd_soc_component *component,
++			     const char *pin,
++			     int (*pin_func)(struct snd_soc_dapm_context *dapm,
++					     const char *pin))
+ {
+ 	struct snd_soc_dapm_context *dapm =
+ 		snd_soc_component_get_dapm(component);
+@@ -86,170 +88,71 @@ int snd_soc_component_enable_pin(struct snd_soc_component *component,
+ 	int ret;
+ 
+ 	if (!component->name_prefix)
+-		return snd_soc_dapm_enable_pin(dapm, pin);
++		return pin_func(dapm, pin);
+ 
+ 	full_name = kasprintf(GFP_KERNEL, "%s %s", component->name_prefix, pin);
+ 	if (!full_name)
+ 		return -ENOMEM;
+ 
+-	ret = snd_soc_dapm_enable_pin(dapm, full_name);
++	ret = pin_func(dapm, full_name);
+ 	kfree(full_name);
+ 
+ 	return ret;
+ }
++
++int snd_soc_component_enable_pin(struct snd_soc_component *component,
++				 const char *pin)
++{
++	return soc_component_pin(component, pin, snd_soc_dapm_enable_pin);
++}
+ EXPORT_SYMBOL_GPL(snd_soc_component_enable_pin);
+ 
+ int snd_soc_component_enable_pin_unlocked(struct snd_soc_component *component,
+ 					  const char *pin)
+ {
+-	struct snd_soc_dapm_context *dapm =
+-		snd_soc_component_get_dapm(component);
+-	char *full_name;
+-	int ret;
+-
+-	if (!component->name_prefix)
+-		return snd_soc_dapm_enable_pin_unlocked(dapm, pin);
+-
+-	full_name = kasprintf(GFP_KERNEL, "%s %s", component->name_prefix, pin);
+-	if (!full_name)
+-		return -ENOMEM;
+-
+-	ret = snd_soc_dapm_enable_pin_unlocked(dapm, full_name);
+-	kfree(full_name);
+-
+-	return ret;
++	return soc_component_pin(component, pin, snd_soc_dapm_enable_pin_unlocked);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_component_enable_pin_unlocked);
+ 
+ int snd_soc_component_disable_pin(struct snd_soc_component *component,
+ 				  const char *pin)
+ {
+-	struct snd_soc_dapm_context *dapm =
+-		snd_soc_component_get_dapm(component);
+-	char *full_name;
+-	int ret;
+-
+-	if (!component->name_prefix)
+-		return snd_soc_dapm_disable_pin(dapm, pin);
+-
+-	full_name = kasprintf(GFP_KERNEL, "%s %s", component->name_prefix, pin);
+-	if (!full_name)
+-		return -ENOMEM;
+-
+-	ret = snd_soc_dapm_disable_pin(dapm, full_name);
+-	kfree(full_name);
+-
+-	return ret;
++	return soc_component_pin(component, pin, snd_soc_dapm_disable_pin);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_component_disable_pin);
+ 
+ int snd_soc_component_disable_pin_unlocked(struct snd_soc_component *component,
+ 					   const char *pin)
+ {
+-	struct snd_soc_dapm_context *dapm =
+-		snd_soc_component_get_dapm(component);
+-	char *full_name;
+-	int ret;
+-
+-	if (!component->name_prefix)
+-		return snd_soc_dapm_disable_pin_unlocked(dapm, pin);
+-
+-	full_name = kasprintf(GFP_KERNEL, "%s %s", component->name_prefix, pin);
+-	if (!full_name)
+-		return -ENOMEM;
+-
+-	ret = snd_soc_dapm_disable_pin_unlocked(dapm, full_name);
+-	kfree(full_name);
+-
+-	return ret;
++	return soc_component_pin(component, pin, snd_soc_dapm_disable_pin_unlocked);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_component_disable_pin_unlocked);
+ 
+ int snd_soc_component_nc_pin(struct snd_soc_component *component,
+ 			     const char *pin)
+ {
+-	struct snd_soc_dapm_context *dapm =
+-		snd_soc_component_get_dapm(component);
+-	char *full_name;
+-	int ret;
+-
+-	if (!component->name_prefix)
+-		return snd_soc_dapm_nc_pin(dapm, pin);
+-
+-	full_name = kasprintf(GFP_KERNEL, "%s %s", component->name_prefix, pin);
+-	if (!full_name)
+-		return -ENOMEM;
+-
+-	ret = snd_soc_dapm_nc_pin(dapm, full_name);
+-	kfree(full_name);
+-
+-	return ret;
++	return soc_component_pin(component, pin, snd_soc_dapm_nc_pin);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_component_nc_pin);
+ 
+ int snd_soc_component_nc_pin_unlocked(struct snd_soc_component *component,
+ 				      const char *pin)
+ {
+-	struct snd_soc_dapm_context *dapm =
+-		snd_soc_component_get_dapm(component);
+-	char *full_name;
+-	int ret;
+-
+-	if (!component->name_prefix)
+-		return snd_soc_dapm_nc_pin_unlocked(dapm, pin);
+-
+-	full_name = kasprintf(GFP_KERNEL, "%s %s", component->name_prefix, pin);
+-	if (!full_name)
+-		return -ENOMEM;
+-
+-	ret = snd_soc_dapm_nc_pin_unlocked(dapm, full_name);
+-	kfree(full_name);
+-
+-	return ret;
++	return soc_component_pin(component, pin, snd_soc_dapm_nc_pin_unlocked);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_component_nc_pin_unlocked);
+ 
+ int snd_soc_component_get_pin_status(struct snd_soc_component *component,
+ 				     const char *pin)
+ {
+-	struct snd_soc_dapm_context *dapm =
+-		snd_soc_component_get_dapm(component);
+-	char *full_name;
+-	int ret;
+-
+-	if (!component->name_prefix)
+-		return snd_soc_dapm_get_pin_status(dapm, pin);
+-
+-	full_name = kasprintf(GFP_KERNEL, "%s %s", component->name_prefix, pin);
+-	if (!full_name)
+-		return -ENOMEM;
+-
+-	ret = snd_soc_dapm_get_pin_status(dapm, full_name);
+-	kfree(full_name);
+-
+-	return ret;
++	return soc_component_pin(component, pin, snd_soc_dapm_get_pin_status);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_component_get_pin_status);
+ 
+ int snd_soc_component_force_enable_pin(struct snd_soc_component *component,
+ 				       const char *pin)
+ {
+-	struct snd_soc_dapm_context *dapm =
+-		snd_soc_component_get_dapm(component);
+-	char *full_name;
+-	int ret;
+-
+-	if (!component->name_prefix)
+-		return snd_soc_dapm_force_enable_pin(dapm, pin);
+-
+-	full_name = kasprintf(GFP_KERNEL, "%s %s", component->name_prefix, pin);
+-	if (!full_name)
+-		return -ENOMEM;
+-
+-	ret = snd_soc_dapm_force_enable_pin(dapm, full_name);
+-	kfree(full_name);
+-
+-	return ret;
++	return soc_component_pin(component, pin, snd_soc_dapm_force_enable_pin);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_component_force_enable_pin);
+ 
+@@ -257,22 +160,7 @@ int snd_soc_component_force_enable_pin_unlocked(
+ 	struct snd_soc_component *component,
+ 	const char *pin)
+ {
+-	struct snd_soc_dapm_context *dapm =
+-		snd_soc_component_get_dapm(component);
+-	char *full_name;
+-	int ret;
+-
+-	if (!component->name_prefix)
+-		return snd_soc_dapm_force_enable_pin_unlocked(dapm, pin);
+-
+-	full_name = kasprintf(GFP_KERNEL, "%s %s", component->name_prefix, pin);
+-	if (!full_name)
+-		return -ENOMEM;
+-
+-	ret = snd_soc_dapm_force_enable_pin_unlocked(dapm, full_name);
+-	kfree(full_name);
+-
+-	return ret;
++	return soc_component_pin(component, pin, snd_soc_dapm_force_enable_pin_unlocked);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_component_force_enable_pin_unlocked);
+ 
 -- 
 2.17.1
 
