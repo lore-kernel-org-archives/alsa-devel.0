@@ -2,83 +2,69 @@ Return-Path: <SRS0=kaWB=7O=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C01A1C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jun 2020 20:51:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AA459C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jun 2020 21:19:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 42C8520734
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jun 2020 20:51:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3171D2073B
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jun 2020 21:19:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BkoKseIw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 42C8520734
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ta6XWSGo"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3171D2073B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C9AF515E0;
-	Mon,  1 Jun 2020 22:50:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C9AF515E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id B0AB615E2;
+	Mon,  1 Jun 2020 23:18:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0AB615E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591044683;
-	bh=FgbJoYoUnaNT2Be+7L9+6vp7itS9Q2Wm5Kmyiwc/xRM=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1591046340;
+	bh=9es0b1yZOCGkje3d1fMoi8QSi9+lxBGKcX9JF2nYG7I=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BkoKseIwlQfnqqLL+RVyB2zkQdIPa6Rq+2Hn0lJKAxEUwwmsZKhx5vtOA5F1ZrlNG
-	 QLSPTyCw1p1FZjJ/zPXcrIVC1i2Lnd90uJ1YmGsz2e3C9VsumPoKSwikIZQtm1G5ha
-	 M1SYiqaf7pa5vQ4cUrt0+4t4XAJyUi8ZgNMtmz14=
+	b=Ta6XWSGokHdGSiCQcH625iMgb6m4+j+HtQSZW9WEBodij5Sw/qAQ+unX7gXaaR7L1
+	 TYxZlayVrrLJ77C9SNlWssrdS7r1EMWbeiju/Mx12XYE5hoa52ccWydeQlFaEFtdWS
+	 sIzXRFBtglww2fYCP8LgIoQHEwRLiXY4vXMOXPRI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 40713F800B8;
-	Mon,  1 Jun 2020 22:50:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 24FCCF801EC;
+	Mon,  1 Jun 2020 23:18:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7E2CDF801ED; Mon,  1 Jun 2020 22:50:30 +0200 (CEST)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id C48F4F801ED; Mon,  1 Jun 2020 23:18:07 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6EB84F80159
- for <alsa-devel@alsa-project.org>; Mon,  1 Jun 2020 22:50:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6EB84F80159
-IronPort-SDR: zdFrBczNuv2Ds9E1KCuVh8158rGYQUyHiwxgmG9CV9xg/Ty350mcfkd9sNG4hMSobVB3SUOtpX
- rnk/dpeKGv+w==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Jun 2020 13:50:15 -0700
-IronPort-SDR: bTUm3amk7QMCFwB2VTG76Lhz3xQiMTgOilKl0Norwi6VrvskLOxHpyrYURhD4p2u+PkUzLd+uh
- I0r78hlFKpHw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,462,1583222400"; d="scan'208";a="257376265"
-Received: from fwong2-mobl.amr.corp.intel.com (HELO [10.251.12.107])
- ([10.251.12.107])
- by orsmga007.jf.intel.com with ESMTP; 01 Jun 2020 13:50:14 -0700
-Subject: Re: [PATCH] soundwire: clarify SPDX use of GPL-2.0
-To: Greg KH <gregkh@linuxfoundation.org>,
- Bard Liao <yung-chuan.liao@linux.intel.com>
-References: <20200531172807.27042-1-yung-chuan.liao@linux.intel.com>
- <20200601053809.GA1420218@kroah.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <686345af-4fda-4bc1-c3bf-da31406e806b@linux.intel.com>
-Date: Mon, 1 Jun 2020 15:50:13 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200601053809.GA1420218@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, vinod.koul@linaro.org, tiwai@suse.de,
- mengdong.lin@intel.com, ranjani.sridharan@linux.intel.com,
- linux-kernel@vger.kernel.org, hui.wang@canonical.com, vkoul@kernel.org,
- broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com,
- slawomir.blauciak@intel.com, sanyog.r.kale@intel.com,
- rander.wang@linux.intel.com, bard.liao@intel.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0EF62F80159
+ for <alsa-devel@alsa-project.org>; Mon,  1 Jun 2020 23:18:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0EF62F80159
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 4FD63AC52;
+ Mon,  1 Jun 2020 21:18:02 +0000 (UTC)
+Date: Mon, 01 Jun 2020 23:17:59 +0200
+Message-ID: <s5h8sh6iiyg.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [GIT PULL] ASoC updates for v5.8
+In-Reply-To: <s5hblm2iq1k.wl-tiwai@suse.de>
+References: <20200601121323.GB45647@sirena.org.uk>
+ <s5hblm2iq1k.wl-tiwai@suse.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Steve Lee <steves.lee@maximintegrated.com>,
+ Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,43 +80,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 6/1/20 12:38 AM, Greg KH wrote:
-> On Mon, Jun 01, 2020 at 01:28:07AM +0800, Bard Liao wrote:
->> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->>
->> Change SPDX from GPL-2.0 to GPL-2.0-only for Intel-contributed
->> code. This was explicit before the transition to SPDX and lost in
->> translation.
+On Mon, 01 Jun 2020 20:44:55 +0200,
+Takashi Iwai wrote:
 > 
-> It is also explicit in the "GPL-2.0" lines as well, did you read the
-> LICENSES/preferred/GPL-2.0 file for the allowed tags to be used for this
-> license?
+> On Mon, 01 Jun 2020 14:13:23 +0200,
+> Mark Brown wrote:
+> > 
+> > The following changes since commit 9cb1fd0efd195590b828b9b865421ad345a4a145:
+> > 
+> >   Linux 5.7-rc7 (2020-05-24 15:32:54 -0700)
+> > 
+> > are available in the Git repository at:
+> > 
+> >   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-v5.8
+> > 
+> > for you to fetch changes up to 358c7c61fd04d324f83d7968daf8dd9a6ff86a9a:
+> > 
+> >   Merge remote-tracking branch 'asoc/for-5.8' into asoc-linus (2020-06-01 13:01:15 +0100)
+> > 
+> > ----------------------------------------------------------------
+> > ASoC: Updates for v5.8
+> > 
+> > This has been another very active release with a bunch of new drivers,
+> > lots of fixes everywhere and continued core improvements from
+> > Morimoto-san:
+> > 
+> >  - Lots of core cleanups and refactorings from Morimoto-san, factoring
+> >    out common operations and making the card abstraction more solid.
+> >  - Continued work on cleaning up and improving the Intel drivers, along
+> >    with some new platform support for them.
+> >  - Fixes to make the Marvell SSPA driver work upstream.
+> >  - Support for AMD Renoir ACP, Dialog DA7212, Freescale EASRC and
+> >    i.MX8M, Intel Elkhard Lake, Maxim MAX98390, Nuvoton NAU8812 and
+> >    NAU8814 and Realtek RT1016.
 > 
-> So this doesn't change anything, and we are trying to cut down on this
-> type of churn until, maybe, after the whole kernel has proper SPDX
-> lines.
+> Pulled now.  Thanks.
 
-My commit message was misleading, sorry. For SoundWire, we recently 
-added new files with GPL-2.0-only (master + sysfs), as recommended since 
-the short GPL-2.0 identifier is deprecated 
-(https://spdx.org/licenses/GPL-2.0.html https://spdx.org/licenses/).
+BTW, this pull request caused a compile warning:
+  sound/soc/codecs/max98390.c: In function ‘max98390_dsm_init’:
+  sound/soc/codecs/max98390.c:781:3: warning: format ‘%ld’ expects argument of type ‘long int’, but argument 4 has type ‘size_t {aka const unsigned int}’ [-Wformat=]
 
-Intel does not mind if we delay this change, you are right that this 
-doesn't change anything license-wise. I just felt it was a good time to 
-align old and new contributions to avoid having half of the files with 
-GPL-2.0 and half with GPL-2.0-only.
-
-We still have quite a few patches for SoundWire (~80 coming w/ 7k lines 
-changed), so those changes are really minimal in comparison with the 
-actual 'churn' to fix programming sequences, power management, 
-multi-link management and bit allocation.
-
-Oh and this was not intended to be added to 5.8 btw or pulled as a fix, 
-really nothing to do with the merge window.
-
-If you prefer us to keep this change on the back burner, that's fine, 
-the only intent was to keep all SoundWire-related files consistent.
+This should be fixed by the correct qualifier 'z' instead of 'l'.
 
 
+Takashi
