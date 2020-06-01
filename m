@@ -2,63 +2,63 @@ Return-Path: <SRS0=kaWB=7O=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 20667C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jun 2020 23:13:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AA1D3C433DF
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jun 2020 23:17:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A0E08207BB
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jun 2020 23:13:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1C7AE207BB
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jun 2020 23:17:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="g/EMY2B0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A0E08207BB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SO8lxpOB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1C7AE207BB
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 21B24950;
-	Tue,  2 Jun 2020 01:12:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21B24950
+	by alsa0.perex.cz (Postfix) with ESMTPS id 98717827;
+	Tue,  2 Jun 2020 01:16:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98717827
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591053196;
-	bh=+eBspv4iNfzLNn5eJaOLWbuOfTsnl4KzsYrTGEH7Gb4=;
+	s=default; t=1591053422;
+	bh=jSxGaCUK39CFhupKRiP8X8Qh7BAH/8rZNgVYVurRb1I=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=g/EMY2B0cayGI231e+8pZ8T+RTIXyCnYxxY8dlnM3zhvzDNoZoCIjYuSShTW+Yjw+
-	 Dkp0tClH2CuWzMxOmBJAforkDA3N9B9T4CG/v4p2x14oIjc1i00/AZKgRfNWK6W3nJ
-	 yBqnZLcdIut6XlHx7XLccFa1DJQfbZFQ5QYbiYZU=
+	b=SO8lxpOBppbnZwIJlZ1JBVn+vncSdOC00TpQ9ILxs6EMbmvkyd0EXeKbQODs9xRRc
+	 5UXmOK6uYqnYSntTwCQLEIokoAhg4XjCpUShOpR4iVn50eAj7CG+DYfkGLxGxxoXFe
+	 GeCfYrR4Xnb28p28xZXXWUlKmvGJ21yQjBPiHxxI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A20B2F80159;
-	Tue,  2 Jun 2020 01:12:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 15336F801EC;
+	Tue,  2 Jun 2020 01:16:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8983DF801ED; Tue,  2 Jun 2020 01:12:23 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id F1271F80159
- for <alsa-devel@alsa-project.org>; Tue,  2 Jun 2020 01:12:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1271F80159
-Date: 02 Jun 2020 08:12:10 +0900
-X-IronPort-AV: E=Sophos;i="5.73,462,1583161200"; d="scan'208";a="48359249"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 02 Jun 2020 08:12:10 +0900
+ id 741DDF801ED; Tue,  2 Jun 2020 01:16:10 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id C35ABF8013D
+ for <alsa-devel@alsa-project.org>; Tue,  2 Jun 2020 01:16:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C35ABF8013D
+Date: 02 Jun 2020 08:16:00 +0900
+X-IronPort-AV: E=Sophos;i="5.73,462,1583161200"; d="scan'208";a="48571209"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 02 Jun 2020 08:16:00 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id DCE03413163E;
- Tue,  2 Jun 2020 08:12:10 +0900 (JST)
-Message-ID: <87a71mxtx1.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id AB8764001B5F;
+ Tue,  2 Jun 2020 08:16:00 +0900 (JST)
+Message-ID: <878sh6xtqn.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: Re: [PATCH 05/24] ASoC: soc-component: add
- snd_soc_pcm_component_prepare()
-In-Reply-To: <b5420b0e0f33a8bfa1b9b625afa0b429d97fa9c5.camel@linux.intel.com>
+Subject: Re: [PATCH 09/24] ASoC: soc-component: add
+ snd_soc_component_compr_open()
+In-Reply-To: <6c8189c811df911a3c697b510bcc893e53e565bc.camel@linux.intel.com>
 References: <87a71nzhy2.wl-kuninori.morimoto.gx@renesas.com>
- <87367fzhwx.wl-kuninori.morimoto.gx@renesas.com>
- <b5420b0e0f33a8bfa1b9b625afa0b429d97fa9c5.camel@linux.intel.com>
+ <87wo4ry3bz.wl-kuninori.morimoto.gx@renesas.com>
+ <6c8189c811df911a3c697b510bcc893e53e565bc.camel@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -80,40 +80,25 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 Hi Ranjani
-
-Thank you for reviewing
+Cc Mark
 
 > > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > > 
-> > We have 2 type of component functions
-> > snd_soc_component_xxx()     is focusing to component itself,
-> > snd_soc_pcm_component_xxx() is focusing to rtd related component.
-> > 
-> > Now we can update snd_soc_component_prepare() to
-> > snd_soc_pcm_component_prepare(). This patch do it.
-> > 
-> > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> > ---
-(snip)
-> > -	for_each_rtd_components(rtd, i, component) {
-> > -		ret = snd_soc_component_prepare(component, substream);
-> > -		if (ret < 0) {
-> > -			dev_err(component->dev,
-> > -				"ASoC: platform prepare error: %d\n",
-> > ret);
-> > -			goto out;
-> > -		}
-> > +	ret = snd_soc_pcm_component_prepare(substream);
-> > +	if (ret < 0) {
-> > +		dev_err(rtd->dev,
-> > +			"ASoC: platform prepare error: %d\n", ret);
+> > component related function should be implemented at
+> > soc-component.c.
+> > This patch moves soc-compress soc_compr_components_open()
+> > to soc-component as snd_soc_component_compr_open().
 > Morimoto-san,
-> We should remove this. This will be a duplicate error message as
-> snd_soc_pcm_component_prepare() would already print the error before
-> returning.
+> 
+> This is change is justified in one way but it also feels like maybe
+> because the functions are so specific to compr devices, it is best to
+> leave them here. Maybe others should also chime in.
 
-Ohh, yes.
-will fix in v2
+Hmm.. I'm not sure.
+Such kind of functions are already has been changed...
+Let's ask to Maintainer.
+
+Mark, what do you think ?
 
 Thank you for your help !!
 
