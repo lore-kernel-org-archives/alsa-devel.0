@@ -2,70 +2,69 @@ Return-Path: <SRS0=S7Ib=7P=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38AA9C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jun 2020 15:16:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 48E6FC433DF
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jun 2020 16:43:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B826D20659
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jun 2020 15:16:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C1A312068D
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jun 2020 16:43:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZwzllMz0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B826D20659
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kWAbUG9o"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C1A312068D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 50FC51615;
-	Tue,  2 Jun 2020 17:15:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50FC51615
+	by alsa0.perex.cz (Postfix) with ESMTPS id 533EE1612;
+	Tue,  2 Jun 2020 18:42:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 533EE1612
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591111006;
-	bh=cCy8PmTFhbqrxD5Ows2EQLrQOX3kRGnKzXFxxvZFrSM=;
+	s=default; t=1591116206;
+	bh=FaFhbxtLsRlYrlm+f+IxhZdPaYHN2sPrJBskAb8FFp4=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZwzllMz0bRkVx2lC1i4vze1sj1S17axlB/o/A+t6pqZbNPNQ2arsdmiy6vh/gjuUz
-	 nVCPQjXxdFhqEyHSu/HgSj8eJmL1JClj18RbikGa+Xg/LRnaxclb1CgUJTFkUX9dgY
-	 qw0K7QkVyg1S5KX0005F8wStxygrR54vMIV93pWo=
+	b=kWAbUG9oL87vlhYcv48XPelZJNh6Un3qK2RsVvXlQGssfSJECPzamLsDmHxq/EYbe
+	 chkf1Ia7Ax00tPKdjmokI+b56IykHcA0j897Ze7TNp+TJ4hpG86OXOffU+XC3p7x1e
+	 n0yUrtSp6NxU0XtLilAOLwKb1juP0Mhgj76PKTIc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BDF58F80260;
-	Tue,  2 Jun 2020 17:15:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CB404F80260;
+	Tue,  2 Jun 2020 18:42:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 51683F8026F; Tue,  2 Jun 2020 17:15:53 +0200 (CEST)
+ id 510B4F8026F; Tue,  2 Jun 2020 18:42:33 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EA788F800B8
- for <alsa-devel@alsa-project.org>; Tue,  2 Jun 2020 17:15:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA788F800B8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6AD6EF800BC
+ for <alsa-devel@alsa-project.org>; Tue,  2 Jun 2020 18:42:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6AD6EF800BC
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id DE0F4AC50;
- Tue,  2 Jun 2020 15:15:49 +0000 (UTC)
-Date: Tue, 02 Jun 2020 17:15:47 +0200
-Message-ID: <s5h4krth524.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 3CBAAAEC2;
+ Tue,  2 Jun 2020 16:42:28 +0000 (UTC)
+Date: Tue, 02 Jun 2020 18:42:25 +0200
+Message-ID: <s5hv9k9fmha.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Alexander Tsoy <alexander@tsoy.me>
-Subject: Re: [PATCH] Add duplex sound support for USB devices using implicit
- feedback
-In-Reply-To: <91ff53c08ddbb84ca0fcf9f16c86d890f8e06277.camel@tsoy.me>
-References: <2410739.SCZni40SNb@alpha-wolf>
- <6103f3aba91020ea345e9146da82e52823b7c298.camel@tsoy.me>
- <1674042.U9NR2fmVFg@alpha-wolf> <s5ha71xwwxd.wl-tiwai@suse.de>
- <91ff53c08ddbb84ca0fcf9f16c86d890f8e06277.camel@tsoy.me>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [GIT PULL] ASoC updates for v5.8
+In-Reply-To: <s5h8sh6iiyg.wl-tiwai@suse.de>
+References: <20200601121323.GB45647@sirena.org.uk>
+ <s5hblm2iq1k.wl-tiwai@suse.de> <s5h8sh6iiyg.wl-tiwai@suse.de>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Erwin Burema <e.burema@freedom.nl>
+Cc: alsa-devel@alsa-project.org, Steve Lee <steves.lee@maximintegrated.com>,
+ Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,69 +80,93 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 01 Jun 2020 18:37:38 +0200,
-Alexander Tsoy wrote:
+On Mon, 01 Jun 2020 23:17:59 +0200,
+Takashi Iwai wrote:
 > 
-> В Вс, 24/05/2020 в 10:37 +0200, Takashi Iwai пишет:
-> > On Sat, 23 May 2020 20:09:31 +0200,
-> > Erwin Burema wrote:
-> > > On zaterdag 23 mei 2020 19:53:49 CEST Alexander Tsoy wrote:
-> > > > В Вс, 10/05/2020 в 20:29 +0200, Erwin Burema пишет:
-> > > > > For USB sound devices using implicit feedback the endpoint used
-> > > > > for
-> > > > > this feedback should be able to be opened twice, once for
-> > > > > required
-> > > > > feedback and second time for audio data. This way these devices
-> > > > > can
-> > > > > be put in duplex audio mode. Since this only works if the
-> > > > > settings of
-> > > > > the endpoint don't change a check is included for this.
-> > > > > 
-> > > > > This fixes bug 207023 ("MOTU M2 regression on duplex audio")
-> > > > > and
-> > > > > should also fix bug 103751 ("M-Audio Fast Track Ultra usb audio
-> > > > > device will not operate full-duplex")
-> > > > > 
-> > > > > Signed-off-by: Erwin Burema <e.burema@gmail.com>
-> > > > > ---
-> > > > 
-> > > > This patch seems to cause kernel panic on my system. This happens
-> > > > during boot when gdm (with pulseaudio) is starting up.
-> > > > 
-> > > 
-> > > That's interesting, not running gnome (and thus also not running
-> > > gdm, 
-> > > currently KDE with SDDM) here so would need to take some time
-> > > troubleshooting. 
-> > > Suspect I missed something in the check if both input and output
-> > > are similarly 
-> > > configured.
-> > > 
-> > > Will see if I can reproduce it and where exactly it goes wrong, in
-> > > the 
-> > > meantime would it be possible to test if 5.6 or later show the same
-> > > issue 
-> > > since I intially developed the patch against that release?
+> On Mon, 01 Jun 2020 20:44:55 +0200,
+> Takashi Iwai wrote:
 > > 
-> > Judging from the point triggering the bug (memset()), this can be a
-> > leftover URB handling that is performed even after the capture stream
-> > is closed.  If so, the procedure would be:
-> >  - start capture
-> >  - start playback
-> >  - stop capture while keeping playback running
+> > On Mon, 01 Jun 2020 14:13:23 +0200,
+> > Mark Brown wrote:
+> > > 
+> > > The following changes since commit 9cb1fd0efd195590b828b9b865421ad345a4a145:
+> > > 
+> > >   Linux 5.7-rc7 (2020-05-24 15:32:54 -0700)
+> > > 
+> > > are available in the Git repository at:
+> > > 
+> > >   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-v5.8
+> > > 
+> > > for you to fetch changes up to 358c7c61fd04d324f83d7968daf8dd9a6ff86a9a:
+> > > 
+> > >   Merge remote-tracking branch 'asoc/for-5.8' into asoc-linus (2020-06-01 13:01:15 +0100)
+> > > 
+> > > ----------------------------------------------------------------
+> > > ASoC: Updates for v5.8
+> > > 
+> > > This has been another very active release with a bunch of new drivers,
+> > > lots of fixes everywhere and continued core improvements from
+> > > Morimoto-san:
+> > > 
+> > >  - Lots of core cleanups and refactorings from Morimoto-san, factoring
+> > >    out common operations and making the card abstraction more solid.
+> > >  - Continued work on cleaning up and improving the Intel drivers, along
+> > >    with some new platform support for them.
+> > >  - Fixes to make the Marvell SSPA driver work upstream.
+> > >  - Support for AMD Renoir ACP, Dialog DA7212, Freescale EASRC and
+> > >    i.MX8M, Intel Elkhard Lake, Maxim MAX98390, Nuvoton NAU8812 and
+> > >    NAU8814 and Realtek RT1016.
 > > 
-> > If my guess is correct, can the patch below work around the issue?
+> > Pulled now.  Thanks.
 > 
-> Unfortunately, I can no longer reproduce kernel panic, so can't really
-> test this patch. That's interesting, because it was 100% reproducible
-> on my hw a week ago.
+> BTW, this pull request caused a compile warning:
+>   sound/soc/codecs/max98390.c: In function ‘max98390_dsm_init’:
+>   sound/soc/codecs/max98390.c:781:3: warning: format ‘%ld’ expects argument of type ‘long int’, but argument 4 has type ‘size_t {aka const unsigned int}’ [-Wformat=]
+> 
+> This should be fixed by the correct qualifier 'z' instead of 'l'.
 
-It's a pity, but interesting.  If so, it might be different from what
-I've though in the above, and we might need a different fix...
+Since no one reacts: below is the quick fix.  I'll resubmit later via
+git-send-email.
 
-Let me know if you can trigger the bug more or less reliably.
+But, looking more at the code around that line, I could spot many
+other bugs.  You cannot trust the firmware file and you must check the
+size.  The current code can trigger out-of-bound accesses and crash
+very easily when a malformed firmware file is tossed; e.g. just put an
+empty file (or a huge file) as dsm_param.bin.
+
+Steve, could you fix it quickly, so that we can cover it for rc1?
 
 
 thanks,
 
 Takashi
+
+-- 8< --
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ASoC: max98390: Fix incorrect printf qualifier
+
+This patch addresses a compile warning:
+  sound/soc/codecs/max98390.c:781:3: warning: format ‘%ld’ expects argument of type ‘long int’, but argument 4 has type ‘size_t {aka const unsigned int}’ [-Wformat=]
+
+Fixes: a6e3f4f34cdb ("ASoC: max98390: Added Amplifier Driver")
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/soc/codecs/max98390.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/max98390.c b/sound/soc/codecs/max98390.c
+index b9ce44dda886..be7cd0aeb6a6 100644
+--- a/sound/soc/codecs/max98390.c
++++ b/sound/soc/codecs/max98390.c
+@@ -778,7 +778,7 @@ static int max98390_dsm_init(struct snd_soc_component *component)
+ 	}
+ 
+ 	dev_dbg(component->dev,
+-		"max98390: param fw size %ld\n",
++		"max98390: param fw size %zd\n",
+ 		fw->size);
+ 	dsm_param = (char *)fw->data;
+ 	dsm_param += MAX98390_DSM_PAYLOAD_OFFSET;
+-- 
+2.16.4
+
