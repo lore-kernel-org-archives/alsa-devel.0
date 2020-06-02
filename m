@@ -2,92 +2,70 @@ Return-Path: <SRS0=S7Ib=7P=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,
-	USER_AGENT_SANE_2 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 135A6C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jun 2020 13:17:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 38AA9C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jun 2020 15:16:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8E6F22074B
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jun 2020 13:17:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B826D20659
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jun 2020 15:16:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ANBo/Tmk";
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="BB6Bogdy"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8E6F22074B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZwzllMz0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B826D20659
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0C3791699;
-	Tue,  2 Jun 2020 15:16:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C3791699
+	by alsa0.perex.cz (Postfix) with ESMTPS id 50FC51615;
+	Tue,  2 Jun 2020 17:15:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50FC51615
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591103852;
-	bh=4h8fafRuCGTyIr/VCDupUiRjNszwNbo9UU/ty3wLFYg=;
-	h=Subject:From:To:Date:In-Reply-To:References:List-Id:
+	s=default; t=1591111006;
+	bh=cCy8PmTFhbqrxD5Ows2EQLrQOX3kRGnKzXFxxvZFrSM=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ANBo/TmkCLoIPXn7ibZs9JfkDBWathKQEmUcLwO91N88dINCDU7ezRp8waUUlgVCA
-	 uei6tLXX1ilx1w+wIM5K+1EczV8jsLcISu/p4gp53xGUqpbqLhd9ake1ZMg8biMkJK
-	 YFhXkVdtu1lLVLJDA3j3rAkesLWxrZKgnMpKb/qk=
+	b=ZwzllMz0bRkVx2lC1i4vze1sj1S17axlB/o/A+t6pqZbNPNQ2arsdmiy6vh/gjuUz
+	 nVCPQjXxdFhqEyHSu/HgSj8eJmL1JClj18RbikGa+Xg/LRnaxclb1CgUJTFkUX9dgY
+	 qw0K7QkVyg1S5KX0005F8wStxygrR54vMIV93pWo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 30EF4F802F7;
-	Tue,  2 Jun 2020 15:11:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BDF58F80260;
+	Tue,  2 Jun 2020 17:15:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1F429F8013D; Tue,  2 Jun 2020 14:19:25 +0200 (CEST)
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
- by alsa1.perex.cz (Postfix) with ESMTP id E9AA1F800BC
- for <alsa-devel@alsa-project.org>; Tue,  2 Jun 2020 14:19:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9AA1F800BC
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com
- header.b="BB6Bogdy"
-X-UUID: 737c847b080d486a9aaa17344788bb94-20200602
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com;
- s=dk; 
- h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:To:From:Subject:Message-ID;
- bh=4h8fafRuCGTyIr/VCDupUiRjNszwNbo9UU/ty3wLFYg=; 
- b=BB6BogdypJebp2/YbfZk+8Pm2yPYmPU/qlQJKVt+/SfUJ1srvKxmfwtE7f7uXs/psdx6V5ThbEQywmEhtk9NoIPq95235ujRejWTgtmH16QQ1vvQn24vKSUNG4WTODUbipnMbSJs1aDCjQs1nxZQKylOrDpc+AMO5fXCmefny+k=;
-X-UUID: 737c847b080d486a9aaa17344788bb94-20200602
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
- (envelope-from <macpaul.lin@mediatek.com>)
- (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
- with ESMTP id 241703546; Tue, 02 Jun 2020 20:19:10 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 2 Jun 2020 20:19:00 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 2 Jun 2020 20:19:00 +0800
-Message-ID: <1591100342.23525.8.camel@mtkswgap22>
-Subject: Re: [PATCH] sound: usb: pcm: fix incorrect power state when playing
- sound after PM_AUTO suspend
-From: Macpaul Lin <macpaul.lin@mediatek.com>
-To: Jaroslav Kysela <perex@perex.cz>, Alexander Tsoy <alexander@tsoy.me>,
- Johan Hovold <johan@kernel.org>, Hui Wang <hui.wang@canonical.com>, Szabolcs
- =?UTF-8?Q?Sz=C5=91ke?= <szszoke.code@gmail.com>,
- <alsa-devel@alsa-project.org>, <linux-usb@vger.kernel.org>, "Mediatek WSD
- Upstream" <wsd_upstream@mediatek.com>, Macpaul Lin <macpaul.lin@gmail.com>,
- <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-mediatek@lists.infradead.org>, Matthias Brugger
- <matthias.bgg@gmail.com>, Takashi Iwai <tiwai@suse.com>
-Date: Tue, 2 Jun 2020 20:19:02 +0800
-In-Reply-To: <1591098821-17910-1-git-send-email-macpaul.lin@mediatek.com>
-References: <linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org>
- <1591098821-17910-1-git-send-email-macpaul.lin@mediatek.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
-MIME-Version: 1.0
-X-TM-SNTS-SMTP: 12C71F8E9B7B63D4DF6727041F40092E70F89D4579A111C8EDEBB373FBDFE0332000:8
-X-MTK: N
-Content-Transfer-Encoding: base64
-X-Mailman-Approved-At: Tue, 02 Jun 2020 15:10:44 +0200
+ id 51683F8026F; Tue,  2 Jun 2020 17:15:53 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id EA788F800B8
+ for <alsa-devel@alsa-project.org>; Tue,  2 Jun 2020 17:15:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA788F800B8
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id DE0F4AC50;
+ Tue,  2 Jun 2020 15:15:49 +0000 (UTC)
+Date: Tue, 02 Jun 2020 17:15:47 +0200
+Message-ID: <s5h4krth524.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Alexander Tsoy <alexander@tsoy.me>
+Subject: Re: [PATCH] Add duplex sound support for USB devices using implicit
+ feedback
+In-Reply-To: <91ff53c08ddbb84ca0fcf9f16c86d890f8e06277.camel@tsoy.me>
+References: <2410739.SCZni40SNb@alpha-wolf>
+ <6103f3aba91020ea345e9146da82e52823b7c298.camel@tsoy.me>
+ <1674042.U9NR2fmVFg@alpha-wolf> <s5ha71xwwxd.wl-tiwai@suse.de>
+ <91ff53c08ddbb84ca0fcf9f16c86d890f8e06277.camel@tsoy.me>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Erwin Burema <e.burema@freedom.nl>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -103,75 +81,69 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-T24gVHVlLCAyMDIwLTA2LTAyIGF0IDE5OjUzICswODAwLCBNYWNwYXVsIExpbiB3cm90ZToNCj4g
-VGhpcyBwYXRjaCBmaXggaW5jb3JyZWN0IHBvd2VyIHN0YXRlIGNoYW5nZWQgYnkgdXNiX2F1ZGlv
-X3N1c3BlbmQoKQ0KPiB3aGVuIENPTkZJR19QTSBpcyBlbmFibGVkLg0KPiANCj4gQWZ0ZXIgcmVj
-ZWl2aW5nIHN1c3BlbmQgUE0gbWVzc2FnZSB3aXRoIGF1dG8gZmxhZywgdXNiX2F1ZGlvX3N1c3Bl
-bmQoKQ0KPiBjaGFuZ2UgY2FyZCdzIHBvd2VyIHN0YXRlIHRvIFNORFJWX0NUTF9QT1dFUl9EM2hv
-dC4gT25seSB3aGVuIHRoZSBvdGhlcg0KPiByZXN1bWUgUE0gbWVzc2FnZSB3aXRoIGF1dG8gZmxh
-ZyBjYW4gY2hhbmdlIHBvd2VyIHN0YXRlIHRvDQo+IFNORFJWX0NUTF9QT1dFUl9EMCBpbiBfX3Vz
-Yl9hdWRpb19yZXN1bWUoKS4NCj4gDQo+IEhvd2V2ZXIsIHdoZW4gc3lzdGVtIGlzIG5vdCB1bmRl
-ciBhdXRvIHN1c3BlbmQsIHJlc3VtZSBQTSBtZXNzYWdlIHdpdGgNCj4gYXV0byBmbGFnIG1pZ2h0
-IG5vdCBiZSBhYmxlIHRvIHJlY2VpdmUgb24gdGltZSB3aGljaCBjYXVzZSB0aGUgcG93ZXINCj4g
-c3RhdGUgd2FzIGluY29ycmVjdC4gQXQgdGhpcyB0aW1lLCBpZiBhIHBsYXllciBzdGFydHMgdG8g
-cGxheSBzb3VuZCwNCj4gd2lsbCBjYXVzZSBzbmRfdXNiX3BjbV9vcGVuKCkgdG8gYWNjZXNzIHRo
-ZSBjYXJkIGFuZCBzZXR1cF9od19pbmZvKCkgd2lsbA0KPiByZXN1bWUgdGhlIGNhcmQuDQo+IA0K
-PiBCdXQgZXZlbiB0aGUgY2FyZCBpcyBiYWNrIHRvIHdvcmsgYW5kIGFsbCBmdW5jdGlvbiBub3Jt
-YWwsIHRoZSBwb3dlcg0KPiBzdGF0ZSBpcyBzdGlsbCBpbiBTTkRSVl9DVExfUE9XRVJfRDNob3Qu
-IFdoaWNoIGNhdXNlIHRoZSBpbmZpbml0ZSBsb29wDQo+IGhhcHBlbmVkIGluIHNuZF9wb3dlcl93
-YWl0KCkgdG8gY2hlY2sgdGhlIHBvd2VyIHN0YXRlLiBUaHVzIHRoZQ0KPiBzdWNjZXNzaXZlIHNl
-dHRpbmcgaW9jdGwgY2Fubm90IGJlIHBhc3NlZCB0byBjYXJkLg0KPiANCj4gSGVuY2Ugd2Ugc3Vn
-Z2VzdCB0byBjaGFuZ2UgcG93ZXIgc3RhdGUgdG8gU05EUlZfQ1RMX1BPV0VSX0QwIHdoZW4gY2Fy
-ZA0KPiBoYXMgYmVlbiByZXN1bWVkIHN1Y2Nlc3NmdWxseS4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6
-IE1hY3BhdWwgTGluIDxtYWNwYXVsLmxpbkBtZWRpYXRlay5jb20+DQo+IC0tLQ0KPiAgc291bmQv
-dXNiL3BjbS5jIHwgICAxMSArKysrKysrKysrK2xpbnV4LXVzYkB2Z2VyLmtlcm5lbC5vcmcsDQo+
-ICAxIGZpbGUgY2hhbmdlZCwgMTEgaW5zZXJ0aW9ucygrKQ0KPiANCj4gZGlmZiAtLWdpdCBhL3Nv
-dW5kL3VzYi9wY20uYyBiL3NvdW5kL3VzYi9wY20uYw0KPiBpbmRleCBhNGU0MDY0Li5kNjY3ZWNi
-IDEwMDY0NA0KPiAtLS0gYS9zb3VuZC91c2IvcGNtLmMNCj4gKysrIGIvc291bmQvdXNiL3BjbS5j
-DQo+IEBAIC0xMzIyLDYgKzEzMjIsMTcgQEAgc3RhdGljIGludCBzZXR1cF9od19pbmZvKHN0cnVj
-dCBzbmRfcGNtX3J1bnRpbWUgKnJ1bnRpbWUsIHN0cnVjdCBzbmRfdXNiX3N1YnN0cmUNCj4gIAlp
-ZiAoZXJyIDwgMCkNCj4gIAkJcmV0dXJuIGVycjsNCj4gIA0KPiArCS8qIGZpeCBpbmNvcnJlY3Qg
-cG93ZXIgc3RhdGUgd2hlbiByZXN1bWluZyBieSBvcGVuIGFuZCBsYXRlciBpb2N0bHMgKi8NCj4g
-KwlpZiAoSVNfRU5BQkxFRChDT05GSUdfUE0pICYmDQo+ICsJCXNuZF9wb3dlcl9nZXRfc3RhdGUo
-c3Vicy0+c3RyZWFtLT5jaGlwLT5jYXJkKQ0KPiArCQkJPT0gU05EUlZfQ1RMX1BPV0VSX0QzaG90
-KSB7DQo+ICsJCS8qIHNldCB0aGVzZSB2YXJpYWJsZXMgZm9yIHBvd2VyIHN0YXRlIGNvcnJlY3Rp
-b24gKi8NCj4gKwkJc3Vicy0+c3RyZWFtLT5jaGlwLT5hdXRvc3VzcGVuZGVkID0gMDsNCj4gKwkJ
-c3Vicy0+c3RyZWFtLT5jaGlwLT5udW1fc3VzcGVuZGVkX2ludGYgPSAxOw0KPiArCQlkZXZfaW5m
-bygmc3Vicy0+ZGV2LT5kZXYsDQo+ICsJCQkiY2hhbmdlIHBvd2VyIHN0YXRlIGZyb20gRDNob3Qg
-dG8gRDBcbiIpOw0KPiArCX0NCj4gKw0KPiAgCXJldHVybiBzbmRfdXNiX2F1dG9yZXN1bWUoc3Vi
-cy0+c3RyZWFtLT5jaGlwKTsNCj4gIH0NCj4gIA0KDQpUaGUgaXNzdWUgd2FzIGZvdW5kIG9uIGtl
-cm5lbCA0LjE0IChhbmRyb2lkIHRyZWUpLiBUaGUgdGVzdCBpcyB0byBhZGQNCmRlYnVnIGxvZyBp
-biBzb3VuZC9jb3JlL2luaXQuYyB0byBjaGVjayBpZiB0aGUgcG93ZXIgc3RhdGUgaXMNClNORFJW
-X0NUTF9QT1dFUl9EM2hvdC4NCg0KZGlmZiAtLWdpdCBhL3NvdW5kL2NvcmUvaW5pdC5jIGIvc291
-bmQvY29yZS9pbml0LmMNCmluZGV4IGIwMmE5OTcuLmEwYmVlNzYgMTAwNjQ0DQotLS0gYS9zb3Vu
-ZC9jb3JlL2luaXQuYw0KKysrIGIvc291bmQvY29yZS9pbml0LmMNCkBAIC0xMDExLDYgKzEwMTEs
-OCBAQCBpbnQgc25kX3Bvd2VyX3dhaXQoc3RydWN0IHNuZF9jYXJkICpjYXJkLCB1bnNpZ25lZA0K
-aW50IHBvd2VyX3N0YXRlKQ0KIAkJaWYgKHNuZF9wb3dlcl9nZXRfc3RhdGUoY2FyZCkgPT0gcG93
-ZXJfc3RhdGUpDQogCQkJYnJlYWs7DQogCQlzZXRfY3VycmVudF9zdGF0ZShUQVNLX1VOSU5URVJS
-VVBUSUJMRSk7DQorCQlwcl9pbmZvKCIlcyBzbmRfcG93ZXJfZ2V0X3N0YXRlWyV4XVxuIiwgX19m
-dW5jX18sDQorCQkJc25kX3Bvd2VyX2dldF9zdGF0ZShjYXJkKSk7DQogCQlzY2hlZHVsZV90aW1l
-b3V0KDMwICogSFopOw0KIAl9DQogCXJlbW92ZV93YWl0X3F1ZXVlKCZjYXJkLT5wb3dlcl9zbGVl
-cCwgJndhaXQpOw0KDQpBZnRlciBhcHBsaWVkIGEgd29yayBhcm91bmQgYnkgZm9yY2luZyB0aGUg
-cG93ZXIgc3RhdGUsIHBjbSByZWxhdGVkDQppb2N0bCBhbmQgcGFyYW1ldGVyIHNldHRpbmdzIGNh
-biBiZSBzZXQgdG8gdXNiIHNvdW5kIGNhcmQgY29ycmVjdGx5Lg0KT3RoZXJ3aXNlIGEgaW5maW5p
-dGUgbG9vcCB3aWxsIGhhcHBlbmVkIGluIHNuZF9wb3dlcl93YWl0KCkuDQoNCkhlcmUgaXMgdGhl
-IG9yaWdpbiB3b3JrIGFyb3VuZCBmb3IgdmVyaWZ5aW5nIHRoaXMgcG93ZXIgc3RhdGUgaXNzdWUg
-b24NCmtlcm5lbCA0LjE0Lg0KDQpkaWZmIC0tZ2l0IGEvc291bmQvdXNiL3BjbS5jIGIvc291bmQv
-dXNiL3BjbS5jDQppbmRleCA5MzNhZGNkN2FmODEuLjlhY2Q1MGRkNzE1NSAxMDA2NDQNCi0tLSBh
-L3NvdW5kL3VzYi9wY20uYw0KKysrIGIvc291bmQvdXNiL3BjbS5jDQpAQCAtMTI3NCw2ICsxMjc0
-LDE2IEBAIHN0YXRpYyBpbnQgc2V0dXBfaHdfaW5mbyhzdHJ1Y3Qgc25kX3BjbV9ydW50aW1lDQoq
-cnVudGltZSwgc3RydWN0IHNuZF91c2Jfc3Vic3RyZQ0KIAlpZiAoZXJyIDwgMCkNCiAJCXJldHVy
-biBlcnI7DQogDQorCS8qIGF2b2lkIGluY29ycmVjdCBwb3dlciBzdGF0ZSB3aGVuIGV4ZWN1dGlu
-ZyBJT0NUTCAqLw0KKwlpZiAoSVNfRU5BQkxFRChDT05GSUdfUE0pICYmDQorCQlzbmRfcG93ZXJf
-Z2V0X3N0YXRlKHN1YnMtPnN0cmVhbS0+Y2hpcC0+Y2FyZCkNCisJCQk9PSBTTkRSVl9DVExfUE9X
-RVJfRDNob3QpIHsNCisJCWRldl9pbmZvKCZzdWJzLT5kZXYtPmRldiwNCisJCQkiY2hhbmdlIHBv
-d2VyIHN0YXRlIGZyb20gRDNob3QgdG8gRDBcbiIpOw0KKwkJc25kX3Bvd2VyX2NoYW5nZV9zdGF0
-ZShzdWJzLT5zdHJlYW0tPmNoaXAtPmNhcmQsDQorCQkJCQlTTkRSVl9DVExfUE9XRVJfRDApOw0K
-Kwl9DQorDQogCXBhcmFtX3BlcmlvZF90aW1lX2lmX25lZWRlZCA9IFNORFJWX1BDTV9IV19QQVJB
-TV9QRVJJT0RfVElNRTsNCiAJaWYgKHN1YnMtPnNwZWVkID09IFVTQl9TUEVFRF9GVUxMKQ0KIAkJ
-LyogZnVsbCBzcGVlZCBkZXZpY2VzIGhhdmUgZml4ZWQgZGF0YSBwYWNrZXQgaW50ZXJ2YWwgKi8N
-Cg0KSG93ZXZlciwgdGhlIHBhdGNoIEkndmUgc2VuZCBpcyBtZWFudCB0byBtYWtlIHN1cmUgdGhl
-IHBvd2VyIHN0YXRlIHdpbGwNCmJlIGNvcnJlY3RlZCBiZWZvcmUgc25kX3VzYl9hdXRvcmVzdW1l
-KCksIEl0IHNob3VsZCBiZSBhZGFwdCB0byBrZXJuZWwNCjQuMTQgYW5kIGxhdGVyLg0KDQpUaGFu
-a3MuDQpNYWNwYXVsIExpbg0KDQo=
+On Mon, 01 Jun 2020 18:37:38 +0200,
+Alexander Tsoy wrote:
+> 
+> В Вс, 24/05/2020 в 10:37 +0200, Takashi Iwai пишет:
+> > On Sat, 23 May 2020 20:09:31 +0200,
+> > Erwin Burema wrote:
+> > > On zaterdag 23 mei 2020 19:53:49 CEST Alexander Tsoy wrote:
+> > > > В Вс, 10/05/2020 в 20:29 +0200, Erwin Burema пишет:
+> > > > > For USB sound devices using implicit feedback the endpoint used
+> > > > > for
+> > > > > this feedback should be able to be opened twice, once for
+> > > > > required
+> > > > > feedback and second time for audio data. This way these devices
+> > > > > can
+> > > > > be put in duplex audio mode. Since this only works if the
+> > > > > settings of
+> > > > > the endpoint don't change a check is included for this.
+> > > > > 
+> > > > > This fixes bug 207023 ("MOTU M2 regression on duplex audio")
+> > > > > and
+> > > > > should also fix bug 103751 ("M-Audio Fast Track Ultra usb audio
+> > > > > device will not operate full-duplex")
+> > > > > 
+> > > > > Signed-off-by: Erwin Burema <e.burema@gmail.com>
+> > > > > ---
+> > > > 
+> > > > This patch seems to cause kernel panic on my system. This happens
+> > > > during boot when gdm (with pulseaudio) is starting up.
+> > > > 
+> > > 
+> > > That's interesting, not running gnome (and thus also not running
+> > > gdm, 
+> > > currently KDE with SDDM) here so would need to take some time
+> > > troubleshooting. 
+> > > Suspect I missed something in the check if both input and output
+> > > are similarly 
+> > > configured.
+> > > 
+> > > Will see if I can reproduce it and where exactly it goes wrong, in
+> > > the 
+> > > meantime would it be possible to test if 5.6 or later show the same
+> > > issue 
+> > > since I intially developed the patch against that release?
+> > 
+> > Judging from the point triggering the bug (memset()), this can be a
+> > leftover URB handling that is performed even after the capture stream
+> > is closed.  If so, the procedure would be:
+> >  - start capture
+> >  - start playback
+> >  - stop capture while keeping playback running
+> > 
+> > If my guess is correct, can the patch below work around the issue?
+> 
+> Unfortunately, I can no longer reproduce kernel panic, so can't really
+> test this patch. That's interesting, because it was 100% reproducible
+> on my hw a week ago.
 
+It's a pity, but interesting.  If so, it might be different from what
+I've though in the above, and we might need a different fix...
+
+Let me know if you can trigger the bug more or less reliably.
+
+
+thanks,
+
+Takashi
