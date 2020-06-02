@@ -2,70 +2,117 @@ Return-Path: <SRS0=S7Ib=7P=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34A88C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jun 2020 12:00:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 05953C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jun 2020 12:15:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B34BC206E2
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jun 2020 12:00:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 80F7520678
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jun 2020 12:15:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="B1+7gOgt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B34BC206E2
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=t.poki.me
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rIh+yQfP";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="gBXOsgmf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 80F7520678
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0593C1664;
-	Tue,  2 Jun 2020 13:59:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0593C1664
+	by alsa0.perex.cz (Postfix) with ESMTPS id DD7D61614;
+	Tue,  2 Jun 2020 14:14:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DD7D61614
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591099232;
-	bh=xDMqWyPA6Yg9BwVj4WXUJkQieCSekhRsGYQKyX4kifI=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1591100139;
+	bh=0c/30qhcE9mSrHrT9oEUwk7Ou1uMirUM4LTuX6G/F18=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=B1+7gOgtwVb1pLiVGgxLMWr4AGXaWTPnaIPDw1azEbWE0mLi03rvjpEMCg1qiG3sU
-	 BeN1iu7QZi8ZAcAgmhkKZdQkTkIQTQ9e7FHFnK/nLUXndPWUqwyj/bq7p8wNHjUDgW
-	 ei2wfjJetrdE26fznHAHRtFFr+9GXsT6W/7lWm5A=
+	b=rIh+yQfPdxl2M4hsdQGSvbOv9JvgF8XQPk3mjPXgwfWEoi9WC2kaaH/S0NYPyqY9B
+	 rqhcKYNx7Cm1+uUy3yCPvaFgqPgnIF38fa/lfJntRCdS8C6enG9OtICV0HQ7opDJy8
+	 hIe/CH8MBZFscxGMmZQFWJH16xlcTLf3MPtjHOkE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A0EB3F80273;
-	Tue,  2 Jun 2020 13:59:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7B51EF80260;
+	Tue,  2 Jun 2020 14:14:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C4E6DF80274; Tue,  2 Jun 2020 13:59:38 +0200 (CEST)
-Received: from mx.slunecnicejitka.cz (rosemary.pkrn.net [31.31.72.173])
- by alsa1.perex.cz (Postfix) with ESMTP id 88855F8013D
- for <alsa-devel@alsa-project.org>; Tue,  2 Jun 2020 13:59:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88855F8013D
-Received: from [172.31.0.131] (ip-94-112-38-60.net.upcbroadband.cz
- [94.112.38.60])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ id 04D2DF8026F; Tue,  2 Jun 2020 14:14:44 +0200 (CEST)
+Received: from aserp2120.oracle.com (aserp2120.oracle.com [141.146.126.78])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- (Authenticated sender: poki@poki.me)
- by mx.slunecnicejitka.cz (Postfix) with ESMTPSA id DE7554148A;
- Tue,  2 Jun 2020 13:59:28 +0200 (CEST)
-Subject: Re: Lenovo P520/Realtek ALC662 - front jack & mic in [FIXED]
-To: alsa-devel@alsa-project.org
-References: <ebbabedc-195b-afb7-d1e6-ce5523f92530@poki.me>
- <e523ea58-892d-4ab7-58aa-beb3c94a10a3@poki.me>
- <b25fc548-981e-5ae6-2895-ef9eb85912e1@poki.me>
-From: Jan Pokorny <lists@t.poki.me>
-Message-ID: <f9cdb458-9e2e-c23b-675b-8b3ea55a8b51@poki.me>
-Date: Tue, 2 Jun 2020 13:59:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id E2512F8013D
+ for <alsa-devel@alsa-project.org>; Tue,  2 Jun 2020 14:14:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2512F8013D
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com
+ header.b="gBXOsgmf"
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+ by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 052C8YZ6140455;
+ Tue, 2 Jun 2020 12:14:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
+ h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=NBE5+I4CqSHnayNrwmdJkxTE42E3YIjg8dJCdAw1TJU=;
+ b=gBXOsgmf8FV/AzhHnNbmOfepIOv0bn23ch5lZ5gXg2RoRNBZ3i9IMHxyDXG3NfSj7lmE
+ OeT66XV6gaNNzQRYJRV/W/ZXc5UPAjjbTYk0oS8Zr0ruHRfM3E0Oz+ErB9n+2lEBjGmP
+ WvV0M/x/exOU5ccpNbFMyzfBSWZm+Uqw7oSlOR4qQMz0yg4ZFvEuO78meDkJMApLcmei
+ NJqc8sqdtyw4scElos6VsVNYSPQAt3aiJAP1mzQqFn1liAoh2rCw8aBMvGRzQwMSLGJL
+ qayqxwY22iPO3Enxg4xZdNAZMIjFwE28OLdIEc1dc98RxhtSF6daaAi0LymCV5nDiX/e ew== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+ by aserp2120.oracle.com with ESMTP id 31bfem3n7r-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 02 Jun 2020 12:14:37 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+ by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 052CDwcT120702;
+ Tue, 2 Jun 2020 12:14:36 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+ by userp3020.oracle.com with ESMTP id 31dju1as04-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Tue, 02 Jun 2020 12:14:36 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+ by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 052CERfW006908;
+ Tue, 2 Jun 2020 12:14:32 GMT
+Received: from kadam (/41.57.98.10) by default (Oracle Beehive Gateway v4.0)
+ with ESMTP ; Tue, 02 Jun 2020 05:14:26 -0700
+Date: Tue, 2 Jun 2020 15:14:17 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: Vaibhav Agarwal <vaibhav.sr@gmail.com>
+Subject: Re: [RESEND PATCH v1 2/6] staging: greybus: audio: Maintain jack
+ list within GB Audio module
+Message-ID: <20200602121417.GE30374@kadam>
+References: <cover.1591040859.git.vaibhav.sr@gmail.com>
+ <ccb39352a30ab39df1534efafc9415aa89b156fa.1591040859.git.vaibhav.sr@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <b25fc548-981e-5ae6-2895-ef9eb85912e1@poki.me>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-Cc: Kailang Yang <kailang@realtek.com>, Mark Pearson <mpearson@lenovo.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ccb39352a30ab39df1534efafc9415aa89b156fa.1591040859.git.vaibhav.sr@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9639
+ signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0
+ mlxlogscore=999
+ phishscore=0 malwarescore=0 mlxscore=0 adultscore=0 bulkscore=0
+ suspectscore=2 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006020087
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9639
+ signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0
+ suspectscore=2
+ mlxlogscore=999 priorityscore=1501 bulkscore=0 phishscore=0 clxscore=1015
+ impostorscore=0 adultscore=0 spamscore=0 mlxscore=0 lowpriorityscore=0
+ cotscore=-2147483648 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006020087
+Cc: devel@driverdev.osuosl.org, alsa-devel@alsa-project.org,
+ Alex Elder <elder@kernel.org>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Greer <mgreer@animalcreek.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>,
+ greybus-dev@lists.linaro.org, Mark Brown <broonie@kernel.org>,
+ Johan Hovold <johan@kernel.org>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,81 +128,195 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Problem solved!
-
-The solution was as simple as installing alsa-ucm package.
-(Extra credit to Mark Pearson for pointing some recent changes
-in that project out to me.)
-
-Color me very embarrassed.
-
-Perhaps the intention of keeping the package set minimal backfired
-(EDIT: nope, nothing seems to be actively associated with that
-package incl. opt-in ones), but frankly, have never needed this package,
-not even heard about it before.
-
-I wonder why there are no pointers anywhere, at least in alsa-info.sh
-output that would perhaps make the case clear for the experts amongst
-you.  Or somewhere else, where it could be raised as a suggestion:
-
-   It appears as if you have a card/coded that relies on UCM for it
-   to be used to the full extent, and UCM does not appear to be
-   installed.  Try installing that software, commonly packaged as
-   alsa-ucm.  Having it up-to-date may also help.
-
-[if not anything else, perhaps at least this makes it on-topic for
-the list]
-
-Perhaps even close relationship between alsa-utils and alsa-ucm,
-on the suggests/recommends level or something like that?
-
-On the whole it seems more enlightenment towards users is advisable,
-on more than one front, mainly for the ignorants like me :-)
-
-Now, all seems to be working:
-
-On 6/1/20 11:36 PM, Jan Pokorny wrote:
-> On 5/31/20 6:07 PM, Jan Pokorny wrote:
->> So, what can be done about getting these work?
->>
->> * front panel headset jack
->>    - headphones mode only
->>    - headset
-
-"mic only" mode doesn't seem to work, but it was perhaps never
-intended, since there is always:
-
->> * rear mic jack for the mic
-
-that works as well
-
->> * internal speaker without said noise, just in case it is
->>    ever needed as a backup ... it definitely worked rather
->>    well under Windows
-
-irrelevant now, either do not load (default as mentioned) or
-do not enable in the mixer/pavucontrol.
-
-> Ah, this last one can be marked as checked, suddenly noticed
-> that graphical terminal generated "nice" alarm just resounded
-> unexpectedly :-)
+On Tue, Jun 02, 2020 at 10:51:11AM +0530, Vaibhav Agarwal wrote:
+> As per the current implementation for GB codec driver, a jack list is
+> maintained for each module. And it expects the list to be populated by
+> the snd_soc_jack structure which would require modifications in
+> mainstream code.
 > 
-> Sadly, this snd_pcsp appears to be a prerequisite and it is
-> not loaded automatically in this Fedora Rawhide installation
-> and with this audio HW (~ no out of the box experience,
-> not sure where to forward this after more testing, cannot
-> immediately as it cannot be unloaded for being in use).
+> However, this is not a necessary requirement and the list can be easily
+> maintained within gbaudio_module_info as well. This patch provides the
+> relevant changes for the same.
+> 
+> Signed-off-by: Vaibhav Agarwal <vaibhav.sr@gmail.com>
+> ---
+>  drivers/staging/greybus/audio_codec.c  | 76 ++++++++++++++------------
+>  drivers/staging/greybus/audio_codec.h  | 10 +++-
+>  drivers/staging/greybus/audio_module.c | 20 ++++---
+>  3 files changed, 60 insertions(+), 46 deletions(-)
+> 
+> diff --git a/drivers/staging/greybus/audio_codec.c b/drivers/staging/greybus/audio_codec.c
+> index ebf8484f0ae7..a2ee587e5a79 100644
+> --- a/drivers/staging/greybus/audio_codec.c
+> +++ b/drivers/staging/greybus/audio_codec.c
+> @@ -712,7 +712,7 @@ static int gbaudio_init_jack(struct gbaudio_module_info *module,
+>  			     struct snd_soc_card *card)
+>  {
+>  	int ret;
+> -
+> +	struct gbaudio_jack *gba_jack, *n;
+>  	struct snd_soc_jack *jack;
 
-negative, the prerequisite was this alsa-ucm package
+Because we got rid of the jack pointer then we can re-use the name here.
 
-> The noisy sound will only appear when a separate (not
-> present unless snd_pcsp is loaded) PC-Speaker (Master)
-> channel gets unmuted.  Maybe I even confused cause and
-> effect about this, it's all, well, confusing, so sorry
-> if that was the case.
-There was definitely a lot of confusion on my side.
+	struct gbaudio_jack *jack, *n;
 
-Sorry about that and have a great day
+We still don't want the "struct snd_soc_jack *jack;" pointer.
 
--- 
-Jan
+>  	struct snd_soc_jack_pin *headset, *button;
+>  
+> @@ -728,7 +728,8 @@ static int gbaudio_init_jack(struct gbaudio_module_info *module,
+>  
+>  	headset->pin = module->jack_name;
+>  	headset->mask = module->jack_mask;
+> -	jack = &module->headset_jack;
+> +	gba_jack = &module->headset;
+> +	jack = &gba_jack->jack;
+
+Use module->headset.jack directly.
+
+>  
+>  	ret = snd_soc_card_jack_new(card, module->jack_name, module->jack_mask,
+>  				    jack, headset, 1);
+> @@ -737,6 +738,9 @@ static int gbaudio_init_jack(struct gbaudio_module_info *module,
+>  		return ret;
+>  	}
+>  
+> +	/* Add to module's jack list */
+> +	list_add(&gba_jack->list, &module->jack_list);
+
+
+Here as well.
+
+> +
+>  	if (!module->button_mask)
+>  		return 0;
+>  
+> @@ -745,20 +749,24 @@ static int gbaudio_init_jack(struct gbaudio_module_info *module,
+>  	button = devm_kzalloc(module->dev, sizeof(*headset), GFP_KERNEL);
+>  	if (!button) {
+>  		ret = -ENOMEM;
+> -		goto free_headset;
+> +		goto free_jack;
+
+Let's call the label "free_jacks" (plural).
+
+>  	}
+>  
+>  	button->pin = module->button_name;
+>  	button->mask = module->button_mask;
+> -	jack = &module->button_jack;
+> +	gba_jack = &module->button;
+> +	jack = &gba_jack->jack;
+>  
+>  	ret = snd_soc_card_jack_new(card, module->button_name,
+>  				    module->button_mask, jack, button, 1);
+>  	if (ret) {
+>  		dev_err(module->dev, "Failed to create button jack\n");
+> -		goto free_headset;
+> +		goto free_jack;
+>  	}
+>  
+> +	/* Add to module's jack list */
+> +	list_add(&gba_jack->list, &module->jack_list);
+> +
+>  	/*
+>  	 * Currently, max 4 buttons are supported with following key mapping
+>  	 * BTN_0 = KEY_MEDIA
+> @@ -768,58 +776,55 @@ static int gbaudio_init_jack(struct gbaudio_module_info *module,
+>  	 */
+>  
+>  	if (module->button_mask & SND_JACK_BTN_0) {
+> -		ret = snd_jack_set_key(module->button_jack.jack, SND_JACK_BTN_0,
+> +		ret = snd_jack_set_key(jack->jack, SND_JACK_BTN_0,
+>  				       KEY_MEDIA);
+>  		if (ret) {
+>  			dev_err(module->dev, "Failed to set BTN_0\n");
+> -			goto free_button;
+> +			goto free_jack;
+>  		}
+>  	}
+>  
+>  	if (module->button_mask & SND_JACK_BTN_1) {
+> -		ret = snd_jack_set_key(module->button_jack.jack, SND_JACK_BTN_1,
+> +		ret = snd_jack_set_key(jack->jack, SND_JACK_BTN_1,
+>  				       KEY_VOICECOMMAND);
+>  		if (ret) {
+>  			dev_err(module->dev, "Failed to set BTN_1\n");
+> -			goto free_button;
+> +			goto free_jack;
+>  		}
+>  	}
+>  
+>  	if (module->button_mask & SND_JACK_BTN_2) {
+> -		ret = snd_jack_set_key(module->button_jack.jack, SND_JACK_BTN_2,
+> +		ret = snd_jack_set_key(jack->jack, SND_JACK_BTN_2,
+>  				       KEY_VOLUMEUP);
+>  		if (ret) {
+>  			dev_err(module->dev, "Failed to set BTN_2\n");
+> -			goto free_button;
+> +			goto free_jack;
+>  		}
+>  	}
+>  
+>  	if (module->button_mask & SND_JACK_BTN_3) {
+> -		ret = snd_jack_set_key(module->button_jack.jack, SND_JACK_BTN_3,
+> +		ret = snd_jack_set_key(jack->jack, SND_JACK_BTN_3,
+>  				       KEY_VOLUMEDOWN);
+>  		if (ret) {
+>  			dev_err(module->dev, "Failed to set BTN_0\n");
+> -			goto free_button;
+> +			goto free_jack;
+>  		}
+>  	}
+>  
+>  	/* FIXME
+>  	 * verify if this is really required
+>  	set_bit(INPUT_PROP_NO_DUMMY_RELEASE,
+> -		module->button_jack.jack->input_dev->propbit);
+> +		module->button->jack->jack->input_dev->propbit);
+>  	*/
+>  
+>  	return 0;
+>  
+> -free_button:
+> -	jack = &module->button_jack;
+> -	snd_device_free(card->snd_card, jack->jack);
+> -	list_del(&jack->list);
+> -
+> -free_headset:
+> -	jack = &module->headset_jack;
+> -	snd_device_free(card->snd_card, jack->jack);
+> -	list_del(&jack->list);
+> +free_jack:
+> +	list_for_each_entry_safe(gba_jack, n, &module->jack_list, list) {
+> +		jack = &gba_jack->jack;
+> +		snd_device_free(card->snd_card, jack->jack);
+
+Since we renamed "gba_jack" to "jack" then this becomes:
+
+		snd_device_free(card->snd_card, jack->jack.jack);
+
+Which is sort of weird, but still okay.
+
+> +		list_del(&gba_jack->list);
+> +	}
+>  
+>  	return ret;
+>  }
+> @@ -829,6 +834,7 @@ int gbaudio_register_module(struct gbaudio_module_info *module)
+>  	int ret;
+>  	struct snd_soc_codec *codec;
+>  	struct snd_card *card;
+> +	struct gbaudio_jack *gba_jack = NULL;
+
+Don't introduce unused assignments.  It just silences static checker
+warnings about uninitialized variables and introduces bugs.
+
+Anyway, the same comments for the rest of the patch.  Please don't
+introduce so many variables which aren't required and which hurt
+grep-ability.
+
+regards,
+dan carpenter
+
