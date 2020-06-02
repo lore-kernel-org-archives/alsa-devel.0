@@ -2,107 +2,57 @@ Return-Path: <SRS0=S7Ib=7P=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2AA0C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jun 2020 09:52:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F080C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jun 2020 10:26:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 72F9C20679
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jun 2020 09:52:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4F7FF206C3
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jun 2020 10:26:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LQi4KHaj";
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hkNFQ0ha"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 72F9C20679
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LfqYTu4y"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4F7FF206C3
+Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D65081615;
-	Tue,  2 Jun 2020 11:52:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D65081615
+	by alsa0.perex.cz (Postfix) with ESMTPS id DB68C1615;
+	Tue,  2 Jun 2020 12:25:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB68C1615
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591091576;
-	bh=VmpwKzLho4jynNt6PxxCluH9VpZXAsaIQOcWzmyCjw4=;
-	h=To:From:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=LQi4KHaj/e75yU+qpTRDdLKe0jqOpVc9OGPUVPxXS+ryWmOxI5vffcRnYoDbc3dBg
-	 rEAXoGL+eV2XtnNcDqcqHdaV0aBnhlGINjHlg101sG40MCskf3LY/cVatYZrSv/4JG
-	 VYK380+/qxG/DNKwhU8DlWvHvvCIvhUM/+qsvshY=
+	s=default; t=1591093579;
+	bh=GdK2lI8+4s2QKvd+0T5wR0B50aMJmms6D8Hzjv+z2y4=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=LfqYTu4yRELY4c9GTW2f7a6m6RPQf7seFIWRsvFHgeAuR2zK75nBtMvXB7VCZooCc
+	 QRzxEbY3qE060RIHpI9RvEqfHuv1hoGRyejkQMX0S1UStMgDVC6AOspcUaUdylF2py
+	 2myZiECXFxbY6qKlA0Up7A6W8dqLDbrEeD/q5MsU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3F8EAF80260;
-	Tue,  2 Jun 2020 11:52:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 756F0F8013D;
+	Tue,  2 Jun 2020 12:25:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A77B3F800BC; Tue,  2 Jun 2020 11:52:04 +0200 (CEST)
-Received: from us-smtp-1.mimecast.com (us-smtp-delivery-1.mimecast.com
- [207.211.31.120])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4DBB1F800BC
- for <alsa-devel@alsa-project.org>; Tue,  2 Jun 2020 11:51:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4DBB1F800BC
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="hkNFQ0ha"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1591091515;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=VmpwKzLho4jynNt6PxxCluH9VpZXAsaIQOcWzmyCjw4=;
- b=hkNFQ0hadP/JvUl/vo1jBIDhr+yG9ES1F1S7Mngdyqi5QHDQqmz4qOA6mCc1xYZeHTlnA8
- Ma3jMo23cjEbysfvrAb7Mf6/JX/g6kvpeEmVwDQVeTCzm2F9eHE88PwbwyJ6uTEegZIiNI
- q4k2ivnNlr/MePw3XB8ORQywLwZl7so=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-395-Utk_dd4oOuCfRHLE2WLMkw-1; Tue, 02 Jun 2020 05:51:52 -0400
-X-MC-Unique: Utk_dd4oOuCfRHLE2WLMkw-1
-Received: by mail-ed1-f71.google.com with SMTP id g10so6339573edt.3
- for <alsa-devel@alsa-project.org>; Tue, 02 Jun 2020 02:51:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:to:from:subject:cc:message-id:date:user-agent
- :mime-version:content-language:content-transfer-encoding;
- bh=VmpwKzLho4jynNt6PxxCluH9VpZXAsaIQOcWzmyCjw4=;
- b=F0QhPI3OrrC+jUaw6tZUOZB7h8mqxHjkiwmZ/9+EFd7VhMurEheSSPqclCK4OToD4R
- tG367GgqF/aDi/zb4ceM4+RgFlo+oEIZcnxkWpMn3ZZffMtlhodadMAUIv1RJdRWoUbg
- hX1oDDa64OldYMeUbroYehYyLcnJZ+HQoa9B6tdfSwlj78xqUZk2XhShe05B+5hMNcB8
- CcJvqwUb4qUuZo9fLw6C/KRB23mEngfs/Yl4cFlsLaaRqOT3bJ9AaMI1foU05lPhQbCu
- +1BsQ+tV3C2zEyFO2kV+yKPLUgiCdPLo9NAC27uv/a9veZlp6H7RQCbLlynsQNPlFhJH
- Mk9g==
-X-Gm-Message-State: AOAM532TthbJAKNIEP9NaX0sXiP3cew2CjocyW5NVPlH76C7R36yfIeJ
- 7cwGpS3JFDQim6oYH87xHsV0Gjxzt+nytHY9gtopm7y3yTt8fvSlGj+Hj9x4OnSzneDE2Vo8zql
- vxr4vwEFIgE35Z5WZ4OdQ2ZE=
-X-Received: by 2002:aa7:da4f:: with SMTP id w15mr17546125eds.384.1591091510918; 
- Tue, 02 Jun 2020 02:51:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyHwT7wqWXyIaZvrVhuWObV3ybluXXWdHNl2Z1RWRxOO+ekfDD2mcIN/088UTIKmeDDjj5pBg==
-X-Received: by 2002:aa7:da4f:: with SMTP id w15mr17546112eds.384.1591091510762; 
- Tue, 02 Jun 2020 02:51:50 -0700 (PDT)
-Received: from x1.localdomain
- (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl.
- [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
- by smtp.gmail.com with ESMTPSA id s18sm1326757edi.45.2020.06.02.02.51.49
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 02 Jun 2020 02:51:50 -0700 (PDT)
-To: Takashi Iwai <tiwai@suse.com>, c <kai.heng.feng@canonical.com>
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: Fixing sound on Asus UX534F / some UX533 models
-Message-ID: <808c7b46-c86f-a3de-b645-c47e658e8abb@redhat.com>
-Date: Tue, 2 Jun 2020 11:51:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ id F4156F8026F; Tue,  2 Jun 2020 12:25:26 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 2C3BEF8013D
+ for <alsa-devel@alsa-project.org>; Tue,  2 Jun 2020 12:25:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C3BEF8013D
 MIME-Version: 1.0
-Content-Language: en-US
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, nuno.dias@gmail.com
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1591093521068892956-webhooks-bot@alsa-project.org>
+References: <1591093521068892956-webhooks-bot@alsa-project.org>
+Subject: Db845c
+Message-Id: <20200602102526.F4156F8026F@alsa1.perex.cz>
+Date: Tue,  2 Jun 2020 12:25:26 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -118,27 +68,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Kai-Heng Feng, Takashi,
+alsa-project/alsa-ucm-conf pull request #29 was opened from Srinivas-Kandagatla:
 
-I see that you are on the notification list for this bug:
-https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1850439
+Hi Jaroslav Kysela,
 
-So you may have already seen this. Some owners of affected
-laptops (which have non working speakers / headphone output atm),
-have done some heroic debugging work and come up with a set of
-2 hda-verb commands which fix this.
+I removed Lenovo ucm2 configs for now, are you okay to pull DragonBoard DB845c ucm2 for now till we resolve in general naming issues with DT.  All the drivers and DT are already in mainline since 5.6.
 
-I'm not all that familiar with writing hda quirks, so I was hoping
-that one of you 2 can come up with a patch to fix this at the
-kernel level.
+Thanks,
+srini
+Changes sinc v2:
+- remove Lenovo ucm2
+- remove cdev references.
 
-This would also resolve these 2 bugs, which I believe are the
-same bug really:
-
-https://bugzilla.kernel.org/show_bug.cgi?id=206289
-https://bugzilla.redhat.com/show_bug.cgi?id=1834751
-
-Regards,
-
-Hans
-
+Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/29
+Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/29.patch
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
