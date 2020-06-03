@@ -2,73 +2,83 @@ Return-Path: <SRS0=5Ozn=7Q=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 22158C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Jun 2020 10:39:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16F33C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Jun 2020 10:41:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A0C6920679
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Jun 2020 10:39:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9333B20679
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Jun 2020 10:41:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WR/d5Jhm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A0C6920679
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="b+oaWVzZ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="nit2eKNL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9333B20679
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 41B461678;
-	Wed,  3 Jun 2020 12:38:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41B461678
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2AB0E1661;
+	Wed,  3 Jun 2020 12:40:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2AB0E1661
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591180772;
-	bh=t8ounHzhcJw+1pj7cc5aRN037BLlYjmZzew5a5AxtfM=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1591180867;
+	bh=rLlkn0WHucra3mhBqotY8ITULWrZDo+dbxfSOi67iCE=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WR/d5JhmhoSC1CACfPjSIiBo68H+uEdy7TbWEt2O0qhmTh073lb/ockHFlMfiZRFu
-	 WjhfT9TR9ZI5mLRqgsQCjifoAGYvCjo8HhD/o9wcQEz3eVhUIf624IUDw/LyUYplq0
-	 cnHYU5FeR+gbDx6AOci+negJFeAISksBkQbMOzuk=
+	b=b+oaWVzZbWxbsI4a74C2lW15zi01XkecqD2dDiDP3CgAzv0VmoqUdnM5iypI6ynoH
+	 ijOfXIpzoCccrOI/hiPoaLScDbZj4mdY7lhWBxZJawdl3zABM+5UY/5s2ZRgMx8br9
+	 tdbYpGVUK71ll7Q/xihdxe2vxLc+/srGhXugUA4Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8C259F801F5;
-	Wed,  3 Jun 2020 12:37:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B6801F801EC;
+	Wed,  3 Jun 2020 12:40:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8A13CF801EC; Wed,  3 Jun 2020 12:37:45 +0200 (CEST)
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+ id 06BA6F801EC; Wed,  3 Jun 2020 12:40:15 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 91E50F801ED
+ for <alsa-devel@alsa-project.org>; Wed,  3 Jun 2020 12:40:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91E50F801ED
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="nit2eKNL"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6E78BF801EC
- for <alsa-devel@alsa-project.org>; Wed,  3 Jun 2020 12:37:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E78BF801EC
-Received: from inva021.nxp.com (localhost [127.0.0.1])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 77BD5200E03;
- Wed,  3 Jun 2020 12:37:34 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
- [165.114.16.14])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 3D04F200DFE;
- Wed,  3 Jun 2020 12:37:29 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 80710402B1;
- Wed,  3 Jun 2020 18:37:22 +0800 (SGT)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: perex@perex.cz, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org,
- ckeepax@opensource.cirrus.com, allison@lohutok.net, info@metux.net,
- tglx@linutronix.de, patches@opensource.cirrus.com,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- robh+dt@kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH 2/2] ASoC: wm8960: Support headphone jack detection function
-Date: Wed,  3 Jun 2020 18:26:53 +0800
-Message-Id: <1591180013-12416-2-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1591180013-12416-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1591180013-12416-1-git-send-email-shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+ by mail.kernel.org (Postfix) with ESMTPSA id E1A41206A2;
+ Wed,  3 Jun 2020 10:40:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1591180805;
+ bh=rLlkn0WHucra3mhBqotY8ITULWrZDo+dbxfSOi67iCE=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=nit2eKNL283U3qRKqwsnKH4oFwbkPf4ECN05ennqpvcsDdCR52GdV6lMNcIAeR4zt
+ sFO7xqgJwyZrq16n20+HcXJ+jiqeU1mDRifKymHMpXUW1lJJXgdvhJO+q0ikLkyg35
+ 5azkJlVDvC8NyWmXiZqZ6WDkBEJcI/lIjBAQ+A6E=
+Date: Wed, 3 Jun 2020 11:40:03 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 09/24] ASoC: soc-component: add
+ snd_soc_component_compr_open()
+Message-ID: <20200603104003.GB5327@sirena.org.uk>
+References: <87a71nzhy2.wl-kuninori.morimoto.gx@renesas.com>
+ <87wo4ry3bz.wl-kuninori.morimoto.gx@renesas.com>
+ <6c8189c811df911a3c697b510bcc893e53e565bc.camel@linux.intel.com>
+ <878sh6xtqn.wl-kuninori.morimoto.gx@renesas.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="8P1HSweYDcXXzwPJ"
+Content-Disposition: inline
+In-Reply-To: <878sh6xtqn.wl-kuninori.morimoto.gx@renesas.com>
+X-Cookie: Your supervisor is thinking about you.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,83 +94,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add two platform variables for headphone jack detection.
-"hp_cfg" is for configuration of heaphone jack detection.
-"gpio_cfg" is for configuration of gpio, the gpio is used
-for plug & unplug interrupt on SoC.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- include/sound/wm8960.h    | 17 +++++++++++++++++
- sound/soc/codecs/wm8960.c | 20 ++++++++++++++++++++
- 2 files changed, 37 insertions(+)
+--8P1HSweYDcXXzwPJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/include/sound/wm8960.h b/include/sound/wm8960.h
-index d22e84805025..275fd5b201ce 100644
---- a/include/sound/wm8960.h
-+++ b/include/sound/wm8960.h
-@@ -16,6 +16,23 @@ struct wm8960_data {
- 	bool capless;  /* Headphone outputs configured in capless mode */
- 
- 	bool shared_lrclk;  /* DAC and ADC LRCLKs are wired together */
-+
-+	/*
-+	 * Setup for headphone detection
-+	 *
-+	 * hp_cfg[0]: HPSEL[1:0] of R48 (Additional Control 4)
-+	 * hp_cfg[1]: {HPSWEN:HPSWPOL} of R24 (Additional Control 2).
-+	 * hp_cfg[2]: {TOCLKSEL:TOEN} of R23 (Additional Control 1).
-+	 */
-+	u32 hp_cfg[3];
-+
-+	/*
-+	 * Setup for gpio configuration
-+	 *
-+	 * gpio_cfg[0]: ALRCGPIO of R9 (Audio interface)
-+	 * gpio_cfg[1]: {GPIOPOL:GPIOSEL[2:0]} of R48 (Additional Control 4).
-+	 */
-+	u32 gpio_cfg[2];
- };
- 
- #endif
-diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index 6cf0f6612bda..2f7f0493144a 100644
---- a/sound/soc/codecs/wm8960.c
-+++ b/sound/soc/codecs/wm8960.c
-@@ -1389,6 +1389,12 @@ static void wm8960_set_pdata_from_of(struct i2c_client *i2c,
- 
- 	if (of_property_read_bool(np, "wlf,shared-lrclk"))
- 		pdata->shared_lrclk = true;
-+
-+	of_property_read_u32_array(np, "wlf,gpio-cfg", pdata->gpio_cfg,
-+				   ARRAY_SIZE(pdata->gpio_cfg));
-+
-+	of_property_read_u32_array(np, "wlf,hp-cfg", pdata->hp_cfg,
-+				   ARRAY_SIZE(pdata->hp_cfg));
- }
- 
- static int wm8960_i2c_probe(struct i2c_client *i2c,
-@@ -1446,6 +1452,20 @@ static int wm8960_i2c_probe(struct i2c_client *i2c,
- 	regmap_update_bits(wm8960->regmap, WM8960_LOUT2, 0x100, 0x100);
- 	regmap_update_bits(wm8960->regmap, WM8960_ROUT2, 0x100, 0x100);
- 
-+	/* ADCLRC pin configured as GPIO. */
-+	regmap_update_bits(wm8960->regmap, WM8960_IFACE2, 1 << 6,
-+			   wm8960->pdata.gpio_cfg[0] << 6);
-+	regmap_update_bits(wm8960->regmap, WM8960_ADDCTL4, 0xF << 4,
-+			   wm8960->pdata.gpio_cfg[1] << 4);
-+
-+	/* Enable headphone jack detect */
-+	regmap_update_bits(wm8960->regmap, WM8960_ADDCTL4, 3 << 2,
-+			   wm8960->pdata.hp_cfg[0] << 2);
-+	regmap_update_bits(wm8960->regmap, WM8960_ADDCTL2, 3 << 5,
-+			   wm8960->pdata.hp_cfg[1] << 5);
-+	regmap_update_bits(wm8960->regmap, WM8960_ADDCTL1, 3,
-+			   wm8960->pdata.hp_cfg[2]);
-+
- 	i2c_set_clientdata(i2c, wm8960);
- 
- 	ret = devm_snd_soc_register_component(&i2c->dev,
--- 
-2.21.0
+On Tue, Jun 02, 2020 at 08:16:00AM +0900, Kuninori Morimoto wrote:
+> > > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
+> > > component related function should be implemented at
+> > > soc-component.c.
+> > > This patch moves soc-compress soc_compr_components_open()
+> > > to soc-component as snd_soc_component_compr_open().
+
+> > This is change is justified in one way but it also feels like maybe
+> > because the functions are so specific to compr devices, it is best to
+> > leave them here. Maybe others should also chime in.
+
+> Hmm.. I'm not sure.
+> Such kind of functions are already has been changed...
+> Let's ask to Maintainer.
+
+> Mark, what do you think ?
+
+I don't think there's one right answer here.  I guess if we have to pick
+we should do the same as is being done for PCM for compressed open but
+either option is fine I think.
+
+--8P1HSweYDcXXzwPJ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7XfgIACgkQJNaLcl1U
+h9B+VQf9Gjz8KE2WX/+HCpzTbCrDNTrLPAq21cKVbPA4UOo+KObAu7iEV1+ueT6D
+2Xn0RARtn5F2IZdncbN39yfso2zCElnySy+X8yYFdYPDhaOUgBknDEGFrVWyAs79
+MGSRhGYTBNDbx9IIKtaOt6vIKccY9rvaiPJBmscD+m/z3l4HmgolVqJpgvjz3CVs
++SqeVcxffclm7KgzXfUmCBbRVTm5Pg8T3ejxldM/u6BLI7gTSE/sf/EKYUBXXE2R
+uXKGNVg+tXr+ulyjfKUsS4dQciQK6K+edenLIov0/KtJi0JtDg9Ov88FDtw6w7JB
+ceY3oP66Q+HL3sOmqV6qr9V09ABQfw==
+=ezU+
+-----END PGP SIGNATURE-----
+
+--8P1HSweYDcXXzwPJ--
