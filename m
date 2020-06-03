@@ -2,71 +2,68 @@ Return-Path: <SRS0=5Ozn=7Q=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A57BBC433E0
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Jun 2020 09:35:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 57E20C433DF
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Jun 2020 09:40:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2F2F820734
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Jun 2020 09:35:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CBDDB2065C
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Jun 2020 09:40:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hzbe/gQ0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2F2F820734
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IkNl3Ex5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CBDDB2065C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A1FE6845;
-	Wed,  3 Jun 2020 11:34:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A1FE6845
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5102E845;
+	Wed,  3 Jun 2020 11:39:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5102E845
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591176940;
-	bh=AlNpyi5bjcMNXeIlFpsNnaG2OTkkkn0N1RZ0EC34XzY=;
+	s=default; t=1591177229;
+	bh=abJxR/fub2BBhkO+TPSTWK7IoctaJAeEJnLLTj/owOA=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hzbe/gQ0vII7VWfsBkve8LOqd4Q301gHoPqvJJowMhfqUA7omW84lWTimzYFjH9on
-	 Py7oOEJ++L04e24MStgHvipODX2L0OEm9pahe/1+w99vKqUfeVebtnIbneGBGA4o1S
-	 PEwUSWeqLuRAjC/qEBpCXdiLnp+x+SFN0R/omm4k=
+	b=IkNl3Ex53Y0O+pDV9X0PdR6eKWGsit9aIbGMHC5XgR4X1UtxMR3LhOEQUSjjE8zAJ
+	 m4LPmU28AolskMcQMM8Zf8CR8PX+5VvRTfkalfpkq0gCSCGyPJwf6wwuOCE/yyvoXI
+	 qz4fSGgtRlC7jFCYQqQh3+Zd4rIo81Hp9ur2tOLY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 32E08F800BC;
-	Wed,  3 Jun 2020 11:34:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D7A1DF801EC;
+	Wed,  3 Jun 2020 11:39:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2C777F801ED; Wed,  3 Jun 2020 11:34:48 +0200 (CEST)
+ id 6814EF801ED; Wed,  3 Jun 2020 11:39:37 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0F572F800BC
- for <alsa-devel@alsa-project.org>; Wed,  3 Jun 2020 11:34:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F572F800BC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 728A1F8013D
+ for <alsa-devel@alsa-project.org>; Wed,  3 Jun 2020 11:39:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 728A1F8013D
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id A5609ACC5;
- Wed,  3 Jun 2020 09:34:42 +0000 (UTC)
-Date: Wed, 03 Jun 2020 11:34:38 +0200
-Message-ID: <s5htuzsebm9.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 275DDACC5;
+ Wed,  3 Jun 2020 09:39:32 +0000 (UTC)
+Date: Wed, 03 Jun 2020 11:39:28 +0200
+Message-ID: <s5hsgfcebe7.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Hui Wang <hui.wang@canonical.com>
-Subject: Re: alsa-project alsa-ucm : Audio endpoint is not switching when
- external mic connected
-In-Reply-To: <da8b6e1e-fd29-fb99-07a7-d5fd8c7b78f9@canonical.com>
-References: <DM6PR12MB26332026A8F345F742B5E9FF978B0@DM6PR12MB2633.namprd12.prod.outlook.com>
- <d149204b-1e2d-1ee9-fbb4-c6f8874e369a@perex.cz>
- <da8b6e1e-fd29-fb99-07a7-d5fd8c7b78f9@canonical.com>
+To: Alex Deucher <alexdeucher@gmail.com>
+Subject: Re: [PATCH] sound/pci/hda: add sienna_cichlid audio asic id for
+ sienna_cichlid up
+In-Reply-To: <20200603013137.1849404-1-alexander.deucher@amd.com>
+References: <20200603013137.1849404-1-alexander.deucher@amd.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Mukunda,
- Vijendar" <Vijendar.Mukunda@amd.com>
+Content-Type: text/plain; charset=US-ASCII
+Cc: Alex Deucher <alexander.deucher@amd.com>, alsa-devel@alsa-project.org,
+ Hersen Wu <hersenxs.wu@amd.com>, amd-gfx@lists.freedesktop.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,51 +79,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 03 Jun 2020 02:36:25 +0200,
-Hui Wang wrote:
+On Wed, 03 Jun 2020 03:31:37 +0200,
+Alex Deucher wrote:
 > 
+> From: Hersen Wu <hersenxs.wu@amd.com>
 > 
-> On 2020/6/3 上午3:39, Jaroslav Kysela wrote:
-> > Dne 02. 06. 20 v 19:57 Mukunda, Vijendar napsal(a):
-> >> We recently up streamed ACP PDM driver for Renoir APU.
-> >>
-> >> Our ACP IP has an internal PDM Decoder block where DMIC is directly
-> >> connected.
-> >> There are no KControls defined for PDM Driver.
-> >>
-> >> Our platform supports on board DMIC and South bridge Azalia (HD
-> >> Audio ) endpoint .
-> >> By default, DMIC endpoint is used as audio input device.
-> >> When Headset Mic jack connected, it's not switching to External Mic.
-> >
-> > Make sure that the Headset Mic priority port in pulseaudio is is
-> > greater than the one for DMIC.
-> >
-> >> How does audio endpoint will switch in gnome when external mic is
-> >> connected?
-> >>> From our understanding, UCM conf file for HDA driver is also
-> >>> required for 
-> >> configuring mixer controls for HD Audio capture device.
-> >> Similarly when External Mic is removed , it has to switch to
-> >> internal dmic .
-> >
-> > An configuration example for UCM (DMIC connected to DSP, HDA codec
-> > for rest):
-> >
-> > https://github.com/alsa-project/alsa-ucm-conf/tree/master/ucm2/sof-hda-dsp
-> >
-> > If you need a help to create a new configuration for your hardware,
-> > show the output from the alsa-info.sh script, please.
-> >
-> >                     Jaroslav
+> dp/hdmi ati hda is not shown in audio settings
 > 
-> This audio design is  a bit different from sof-hda-dsp, the dmic is on
-> a standalone sound card. Please see the alsa-info.txt:
-> 
-> https://pastebin.ubuntu.com/p/4kprhDZYbg/
+> Signed-off-by: Hersen Wu <hersenxs.wu@amd.com>
+> Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+> Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 
-And that's an interesting case.  Can we manage multiple cards in a
-single UCM profile?
+Applied now with a slight rearrangement with the sorted order and Cc
+to stable.
 
+But also wondering whether do we have a device with 1002:ab30?
+It's missing between this one and the next one.
+
+
+thanks,
 
 Takashi
+
+> ---
+>  sound/pci/hda/hda_intel.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> index 92a042e34d3e..4188bc4bd4e2 100644
+> --- a/sound/pci/hda/hda_intel.c
+> +++ b/sound/pci/hda/hda_intel.c
+> @@ -2643,6 +2643,9 @@ static const struct pci_device_id azx_ids[] = {
+>  	{ PCI_DEVICE(0x1002, 0xab38),
+>  	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
+>  	  AZX_DCAPS_PM_RUNTIME },
+> +	{ PCI_DEVICE(0x1002, 0xab28),
+> +	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
+> +	  AZX_DCAPS_PM_RUNTIME },
+>  	/* VIA VT8251/VT8237A */
+>  	{ PCI_DEVICE(0x1106, 0x3288), .driver_data = AZX_DRIVER_VIA },
+>  	/* VIA GFX VT7122/VX900 */
+> -- 
+> 2.25.4
+> 
