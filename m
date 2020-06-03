@@ -2,72 +2,71 @@ Return-Path: <SRS0=5Ozn=7Q=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C5F9C433DF
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Jun 2020 10:36:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 097FCC433E1
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Jun 2020 10:38:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CC72B20679
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Jun 2020 10:36:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 872DA20679
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Jun 2020 10:38:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WSeknbBq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC72B20679
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mU+5QRmt"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 872DA20679
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 614941655;
-	Wed,  3 Jun 2020 12:35:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 614941655
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1666C1658;
+	Wed,  3 Jun 2020 12:37:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1666C1658
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591180602;
-	bh=ZbBdPDLpa5dra1BRNDBfelYgdyAHii+CZErFZ+MSfjw=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=WSeknbBq23H9nQ92GsFHcRqaDCji95WrW/v39m5/GvRXsmxmRH3dc12aoSXhLaZBE
-	 S9ZhRUMLmqdAyhXQgQ2gBzokWA/3kvXPD2Oz1a0Ww0mn1m6++8KHdHR2tuIUXyBAUD
-	 R35uH9SRR6cACX2b5mmOkf6niVSDFAiN/WxPPhLI=
+	s=default; t=1591180713;
+	bh=SH8Qhc/YbmlK/T9vpodXazLR5M2/xD9795u+G+TCKXI=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=mU+5QRmtPk/pCqK5BY+NwEOWh/2CRRm9me7biZXJ7pTdh2u1szBuja3Y82e0QKl7n
+	 96BjIg4Mt2DlFbTtFCkAas3vpx41Opwdbgv0+scTaFXaYY5nX2ImK/9QP5l0HIU8b2
+	 cDK30BlD+wCqaoIWqCdzPmbykbZG+m0irqDlRpUo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ECD0DF800D0;
-	Wed,  3 Jun 2020 12:35:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AD87BF800BC;
+	Wed,  3 Jun 2020 12:37:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 97489F801ED; Wed,  3 Jun 2020 12:35:50 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 6ACB8F80212; Wed,  3 Jun 2020 12:37:40 +0200 (CEST)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 75FB7F800D0
- for <alsa-devel@alsa-project.org>; Wed,  3 Jun 2020 12:35:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75FB7F800D0
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id E706CB18D;
- Wed,  3 Jun 2020 10:35:44 +0000 (UTC)
-Date: Wed, 03 Jun 2020 12:35:41 +0200
-Message-ID: <s5hftbce8si.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: "Mukunda, Vijendar" <Vijendar.Mukunda@amd.com>
-Subject: Re: alsa-project alsa-ucm : Audio endpoint is not switching when
- external mic connected
-In-Reply-To: <DM6PR12MB263397E76403D68BA6FE383E97880@DM6PR12MB2633.namprd12.prod.outlook.com>
-References: <DM6PR12MB26332026A8F345F742B5E9FF978B0@DM6PR12MB2633.namprd12.prod.outlook.com>
- <d149204b-1e2d-1ee9-fbb4-c6f8874e369a@perex.cz>
- <da8b6e1e-fd29-fb99-07a7-d5fd8c7b78f9@canonical.com>
- <s5htuzsebm9.wl-tiwai@suse.de>
- <DM6PR12MB263397E76403D68BA6FE383E97880@DM6PR12MB2633.namprd12.prod.outlook.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Hui Wang <hui.wang@canonical.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 10B54F800D0
+ for <alsa-devel@alsa-project.org>; Wed,  3 Jun 2020 12:37:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10B54F800D0
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 40D181A0101;
+ Wed,  3 Jun 2020 12:37:33 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
+ [165.114.16.14])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 0588A1A00FE;
+ Wed,  3 Jun 2020 12:37:28 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 408FA40299;
+ Wed,  3 Jun 2020 18:37:21 +0800 (SGT)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: perex@perex.cz, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org,
+ ckeepax@opensource.cirrus.com, allison@lohutok.net, info@metux.net,
+ tglx@linutronix.de, patches@opensource.cirrus.com,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ robh+dt@kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH 1/2] ASoC: bindings: wm8960: Add property for headphone
+ detection
+Date: Wed,  3 Jun 2020 18:26:52 +0800
+Message-Id: <1591180013-12416-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,87 +82,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 03 Jun 2020 12:32:41 +0200,
-Mukunda, Vijendar wrote:
-> 
-> 
-> 
-> > -----Original Message-----
-> > From: Takashi Iwai <tiwai@suse.de>
-> > Sent: Wednesday, June 3, 2020 3:05 PM
-> > To: Hui Wang <hui.wang@canonical.com>
-> > Cc: Jaroslav Kysela <perex@perex.cz>; Mukunda, Vijendar
-> > <Vijendar.Mukunda@amd.com>; alsa-devel@alsa-project.org
-> > Subject: Re: alsa-project alsa-ucm : Audio endpoint is not switching when
-> > external mic connected
-> > 
-> > On Wed, 03 Jun 2020 02:36:25 +0200,
-> > Hui Wang wrote:
-> > >
-> > >
-> > > On 2020/6/3 上午3:39, Jaroslav Kysela wrote:
-> > > > Dne 02. 06. 20 v 19:57 Mukunda, Vijendar napsal(a):
-> > > >> We recently up streamed ACP PDM driver for Renoir APU.
-> > > >>
-> > > >> Our ACP IP has an internal PDM Decoder block where DMIC is directly
-> > > >> connected.
-> > > >> There are no KControls defined for PDM Driver.
-> > > >>
-> > > >> Our platform supports on board DMIC and South bridge Azalia (HD
-> > > >> Audio ) endpoint .
-> > > >> By default, DMIC endpoint is used as audio input device.
-> > > >> When Headset Mic jack connected, it's not switching to External Mic.
-> > > >
-> > > > Make sure that the Headset Mic priority port in pulseaudio is is
-> > > > greater than the one for DMIC.
-> > > >
-> > > >> How does audio endpoint will switch in gnome when external mic is
-> > > >> connected?
-> > > >>> From our understanding, UCM conf file for HDA driver is also
-> > > >>> required for
-> > > >> configuring mixer controls for HD Audio capture device.
-> > > >> Similarly when External Mic is removed , it has to switch to
-> > > >> internal dmic .
-> > > >
-> > > > An configuration example for UCM (DMIC connected to DSP, HDA codec
-> > > > for rest):
-> > > >
-> > > >
-> > https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgithub
-> > .com%2Falsa-project%2Falsa-ucm-conf%2Ftree%2Fmaster%2Fucm2%2Fsof-
-> > hda-
-> > dsp&amp;data=02%7C01%7CVijendar.Mukunda%40amd.com%7C5fbb3a516d5
-> > 24c73568d08d807a157a1%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C
-> > 0%7C637267736827671946&amp;sdata=0aO7dbLATuW%2BIeJsjWoWCGOaYEO
-> > WQaVwI9izppB3v7k%3D&amp;reserved=0
-> > > >
-> > > > If you need a help to create a new configuration for your hardware,
-> > > > show the output from the alsa-info.sh script, please.
-> > > >
-> > > >                     Jaroslav
-> > >
-> > > This audio design is  a bit different from sof-hda-dsp, the dmic is on
-> > > a standalone sound card. Please see the alsa-info.txt:
-> > >
-> > >
-> > https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fpasteb
-> > in.ubuntu.com%2Fp%2F4kprhDZYbg%2F&amp;data=02%7C01%7CVijendar.Mu
-> > kunda%40amd.com%7C5fbb3a516d524c73568d08d807a157a1%7C3dd8961fe4
-> > 884e608e11a82d994e183d%7C0%7C0%7C637267736827671946&amp;sdata=Q
-> > 50xNbF1KSqasNa0UyKzUFAzOc9KPIguBjgYHr1XSbg%3D&amp;reserved=0
-> > 
-> > And that's an interesting case.  Can we manage multiple cards in a
-> > single UCM profile?
-> > 
-> > 
-> > Takashi
-> 
-> I am not much familiar with UCM files creation.
-> As per my understanding, UCM entries will program the mixer controls
-> depending up on the use case and selected device.
+Add two properties for headphone detection.
 
-UCM is more than that.  It manages which PCM device is chosen, which
-jack control corresponds, etc, too.
+wlf,hp-cfg: A list of headphone jack detect configuration register values
+wlf,gpio-cfg: A list of GPIO configuration register values
 
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ Documentation/devicetree/bindings/sound/wm8960.txt | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-Takashi
+diff --git a/Documentation/devicetree/bindings/sound/wm8960.txt b/Documentation/devicetree/bindings/sound/wm8960.txt
+index 6d29ac3750ee..85d3b287108c 100644
+--- a/Documentation/devicetree/bindings/sound/wm8960.txt
++++ b/Documentation/devicetree/bindings/sound/wm8960.txt
+@@ -21,6 +21,17 @@ Optional properties:
+ 	enabled and disabled together with HP_L and HP_R pins in response to jack
+ 	detect events.
+ 
++  - wlf,hp-cfg: A list of headphone jack detect configuration register values.
++		The list must be 3 entries long.
++		hp-cfg[0]: HPSEL[1:0] of R48 (Additional Control 4).
++		hp-cfg[1]: {HPSWEN:HPSWPOL} of R24 (Additional Control 2).
++		hp-cfg[2]: {TOCLKSEL:TOEN} of R23 (Additional Control 1).
++
++  - wlf,gpio-cfg: A list of GPIO configuration register values.
++		  The list must be 2 entries long.
++		  gpio-cfg[0]: ALRCGPIO of R9 (Audio interface)
++		  gpio-cfg[1]: {GPIOPOL:GPIOSEL[2:0]} of R48 (Additional Control 4).
++
+ Example:
+ 
+ wm8960: codec@1a {
+-- 
+2.21.0
+
