@@ -2,68 +2,66 @@ Return-Path: <SRS0=5Ozn=7Q=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57E20C433DF
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Jun 2020 09:40:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D5792C433DF
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Jun 2020 09:42:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CBDDB2065C
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Jun 2020 09:40:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8942320734
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Jun 2020 09:42:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IkNl3Ex5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CBDDB2065C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="b8iABazd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8942320734
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5102E845;
-	Wed,  3 Jun 2020 11:39:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5102E845
+	by alsa0.perex.cz (Postfix) with ESMTPS id 152761655;
+	Wed,  3 Jun 2020 11:41:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 152761655
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591177229;
-	bh=abJxR/fub2BBhkO+TPSTWK7IoctaJAeEJnLLTj/owOA=;
+	s=default; t=1591177330;
+	bh=biUk5xnNKFudU6VYyLjr7VrSfM/myZNtbFPfvkid1ko=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IkNl3Ex53Y0O+pDV9X0PdR6eKWGsit9aIbGMHC5XgR4X1UtxMR3LhOEQUSjjE8zAJ
-	 m4LPmU28AolskMcQMM8Zf8CR8PX+5VvRTfkalfpkq0gCSCGyPJwf6wwuOCE/yyvoXI
-	 qz4fSGgtRlC7jFCYQqQh3+Zd4rIo81Hp9ur2tOLY=
+	b=b8iABazdh+hMJOmFNR8NXtf3OjazB3KPldN2AxIB+BSoZlU69NpWotnsMoKtBmqDi
+	 lFLyFDWBVA9k9dNUdJW8AlWkVIjMWyPVMYoKOmej6mwHz8Jz0k368yOXRtU1+BjPOv
+	 S2ttrdJyiXWqWzovmozKLFXZIzjMo9vrOPRpwznI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D7A1DF801EC;
-	Wed,  3 Jun 2020 11:39:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 85904F801F5;
+	Wed,  3 Jun 2020 11:41:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6814EF801ED; Wed,  3 Jun 2020 11:39:37 +0200 (CEST)
+ id 5A378F80212; Wed,  3 Jun 2020 11:41:18 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 728A1F8013D
- for <alsa-devel@alsa-project.org>; Wed,  3 Jun 2020 11:39:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 728A1F8013D
+ by alsa1.perex.cz (Postfix) with ESMTPS id C9B8CF800BC
+ for <alsa-devel@alsa-project.org>; Wed,  3 Jun 2020 11:41:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9B8CF800BC
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 275DDACC5;
- Wed,  3 Jun 2020 09:39:32 +0000 (UTC)
-Date: Wed, 03 Jun 2020 11:39:28 +0200
-Message-ID: <s5hsgfcebe7.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 4F378ACC5;
+ Wed,  3 Jun 2020 09:41:18 +0000 (UTC)
+Date: Wed, 03 Jun 2020 11:41:14 +0200
+Message-ID: <s5hpnagebb9.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Alex Deucher <alexdeucher@gmail.com>
-Subject: Re: [PATCH] sound/pci/hda: add sienna_cichlid audio asic id for
- sienna_cichlid up
-In-Reply-To: <20200603013137.1849404-1-alexander.deucher@amd.com>
-References: <20200603013137.1849404-1-alexander.deucher@amd.com>
+To: Chuhong Yuan <hslester96@gmail.com>
+Subject: Re: [PATCH] ALSA: es1688: Add the missed snd_card_free()
+In-Reply-To: <20200603092459.1424093-1-hslester96@gmail.com>
+References: <20200603092459.1424093-1-hslester96@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: Alex Deucher <alexander.deucher@amd.com>, alsa-devel@alsa-project.org,
- Hersen Wu <hersenxs.wu@amd.com>, amd-gfx@lists.freedesktop.org
+Cc: linux-kernel@vger.kernel.org, Krzysztof Helt <krzysztof.h1@wp.pl>,
+ Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,46 +77,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 03 Jun 2020 03:31:37 +0200,
-Alex Deucher wrote:
+On Wed, 03 Jun 2020 11:24:59 +0200,
+Chuhong Yuan wrote:
 > 
-> From: Hersen Wu <hersenxs.wu@amd.com>
+> snd_es968_pnp_detect() misses a snd_card_free() in a failed path.
+> Add the missed function call to fix it.
 > 
-> dp/hdmi ati hda is not shown in audio settings
-> 
-> Signed-off-by: Hersen Wu <hersenxs.wu@amd.com>
-> Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
-> Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+> Fixes: a20971b201ac ("ALSA: Merge es1688 and es968 drivers")
+> Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
 
-Applied now with a slight rearrangement with the sorted order and Cc
-to stable.
+Thanks, applied now with Cc-to-stable.
 
-But also wondering whether do we have a device with 1002:ab30?
-It's missing between this one and the next one.
-
-
-thanks,
 
 Takashi
-
-> ---
->  sound/pci/hda/hda_intel.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> index 92a042e34d3e..4188bc4bd4e2 100644
-> --- a/sound/pci/hda/hda_intel.c
-> +++ b/sound/pci/hda/hda_intel.c
-> @@ -2643,6 +2643,9 @@ static const struct pci_device_id azx_ids[] = {
->  	{ PCI_DEVICE(0x1002, 0xab38),
->  	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
->  	  AZX_DCAPS_PM_RUNTIME },
-> +	{ PCI_DEVICE(0x1002, 0xab28),
-> +	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
-> +	  AZX_DCAPS_PM_RUNTIME },
->  	/* VIA VT8251/VT8237A */
->  	{ PCI_DEVICE(0x1106, 0x3288), .driver_data = AZX_DRIVER_VIA },
->  	/* VIA GFX VT7122/VX900 */
-> -- 
-> 2.25.4
-> 
