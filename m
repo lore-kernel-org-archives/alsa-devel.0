@@ -2,71 +2,57 @@ Return-Path: <SRS0=e91y=7R=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B36E5C433DF
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jun 2020 04:24:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2DB7AC433E0
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jun 2020 04:53:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3F54E206C3
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jun 2020 04:24:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D11CA206DC
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jun 2020 04:53:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lJaJ+eHU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3F54E206C3
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="T7d5nDqy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D11CA206DC
+Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C78BE165D;
-	Thu,  4 Jun 2020 06:23:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C78BE165D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5EDE81658;
+	Thu,  4 Jun 2020 06:52:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5EDE81658
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591244655;
-	bh=EcHSpr/gYj4OfjSGW8lfNMLuiXqEzw9aRxnE1qQE2WI=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1591246383;
+	bh=OuHqk0/9Td0/b5XEyOeyt4ybdKEWLmcXPtceCuH2ai0=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lJaJ+eHUFTGvLCq7ecg9xcx/bXUhythz9w+cyHDZFz/4SMCUVzQuZtiJ0YfFBSdWs
-	 49SptTdKNRzMahSbUjYo0uq29uIc4eFP9vUfAL78FiMoMdw7vY90f/1q3dkUICcKYQ
-	 KfaaE1pkPrbz+x6UA4yHID/h5glSDNHNiTUGukP4=
+	b=T7d5nDqydCzyzB0E1Xbrn0nf+MjAY0WdC3mMKyCGZqUraXOD43zAugvf/PPfZOudz
+	 dDL0ZVPSNdenLRZhPmn+u0Lg8vgh0yOODFRSWRDFBbkZY+7/BvNZP72OCrdQH/Kpvb
+	 xEdMZDTV0bxvF+UlAOaVPjJ2Z4VFI6IO+gzb9kWo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 49092F8023F;
-	Thu,  4 Jun 2020 06:23:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D62BCF8023F;
+	Thu,  4 Jun 2020 06:52:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2BE6AF80254; Thu,  4 Jun 2020 06:23:21 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 5FB8FF80108
- for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2020 06:23:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5FB8FF80108
-Date: 04 Jun 2020 13:23:04 +0900
-X-IronPort-AV: E=Sophos;i="5.73,471,1583161200"; d="scan'208";a="48799278"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 04 Jun 2020 13:23:04 +0900
-Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 621B34178CD2;
- Thu,  4 Jun 2020 13:23:04 +0900 (JST)
-Message-ID: <87wo4nwjbr.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 09/24] ASoC: soc-component: add
- snd_soc_component_compr_open()
-In-Reply-To: <874krry7nq.wl-kuninori.morimoto.gx@renesas.com>
-References: <87a71nzhy2.wl-kuninori.morimoto.gx@renesas.com>
- <87wo4ry3bz.wl-kuninori.morimoto.gx@renesas.com>
- <6c8189c811df911a3c697b510bcc893e53e565bc.camel@linux.intel.com>
- <878sh6xtqn.wl-kuninori.morimoto.gx@renesas.com>
- <20200603104003.GB5327@sirena.org.uk>
- <874krry7nq.wl-kuninori.morimoto.gx@renesas.com>
-User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+ id 48836F80254; Thu,  4 Jun 2020 06:52:09 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 70708F8013C
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2020 06:52:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70708F8013C
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1591246317915641069-webhooks-bot@alsa-project.org>
+References: <1591246317915641069-webhooks-bot@alsa-project.org>
+Subject: UCM file required for Multiple sound card scenario for Renoir APU
+Message-Id: <20200604045209.48836F80254@alsa1.perex.cz>
+Date: Thu,  4 Jun 2020 06:52:09 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,31 +68,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+alsa-project/alsa-ucm-conf issue #30 was opened from VijendarReddy:
 
-Hi Mark, Ranjani again
+We recently upstreamed PDM Driver for Renoir APU.
 
-> > > > This is change is justified in one way but it also feels like maybe
-> > > > because the functions are so specific to compr devices, it is best to
-> > > > leave them here. Maybe others should also chime in.
-> (snip)
-> > I don't think there's one right answer here.  I guess if we have to pick
-> > we should do the same as is being done for PCM for compressed open but
-> > either option is fine I think.
-> 
-> I re-checked the patch.
-> The original code is soc_compr_xxx() and doing compress things.
-> I agree to keeping original code at original file.
-> I will remove these patched from v2 patch-set.
+Renoir APU platform has Onboard DMIC + Southbridge AZ (HD Audio Endpoint) support.
+When External Mic connected,  Device switching should happen from Internal DMIC to external Mic.
 
-I re-re-checked.
-I will drop this patch this time, but might post it again in the future.
-Because we already have same/similar functon for DAI (= snd_soc_dai_compr_xxx()).
+Need UCM file to support Multiple sound cards for Renoir APU. 
 
-And I plan to add snd_soc_component_xxx() specific future, and
-compr can use it.
+Alsa info link:  https://pastebin.ubuntu.com/p/4kprhDZYbg/
 
-Thank you for your help !!
+Created Ticket based on discussion on the below-mentioned thread.
+https://www.alsa-project.org/pipermail/alsa-devel/2020-June/168527.html
 
-Best regards
----
-Kuninori Morimoto
+Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/30
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
