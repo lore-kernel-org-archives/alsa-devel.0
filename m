@@ -7,54 +7,54 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F3413C433DF
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jun 2020 08:10:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C29ADC433DF
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jun 2020 08:10:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7DB25206C3
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jun 2020 08:10:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 485CF206C3
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jun 2020 08:10:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="myZfjC1/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7DB25206C3
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fxCqJa8p"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 485CF206C3
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1B39A1676;
-	Thu,  4 Jun 2020 10:09:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B39A1676
+	by alsa0.perex.cz (Postfix) with ESMTPS id CF3F3167F;
+	Thu,  4 Jun 2020 10:10:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF3F3167F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591258206;
-	bh=oIKqw//y4DCE+EjuXwT/sTP1hZ05xWYXSfPwwlFHS1g=;
+	s=default; t=1591258254;
+	bh=q+9pbo6Ysu6B6FuaGvLb8iYxYFDqeGe3JHZYZqG+5gs=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=myZfjC1/CaIBKHo2VdogtICrlhV0hPS8ihL/tauqySCrkoVtvshr0LEye+v+NLXYE
-	 GYhWa5X/6L8k7/HrKJQ6ua+HK8ahYFxny3N5tbztQhchza4wJXv9VmdTlj6mxzzCfN
-	 nDMyoCey8lhLJ6jw2Nz0BqoXoAgP6dYJoUCsMNXU=
+	b=fxCqJa8p3f+KsIXc3k2ZO89s5yKOxTqIksnHSIDGM2YZ1IW6lU7fSQgCH1IG1lnhG
+	 /oLm9WS1X6EqCVR9dlXiT2uOUFMS4SdmzTgPn18Q+xvXuagxHvnnUDybq7hz7WOkWW
+	 f0/TYMvcyxeoOnozWamQSmBU9XWykQ4Vi2ySI/Hc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 76FC0F802BC;
-	Thu,  4 Jun 2020 10:07:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 265A3F802E7;
+	Thu,  4 Jun 2020 10:07:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8FC6FF802D2; Thu,  4 Jun 2020 10:07:06 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id AFA98F802BC
- for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2020 10:06:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AFA98F802BC
-Date: 04 Jun 2020 17:06:58 +0900
-X-IronPort-AV: E=Sophos;i="5.73,471,1583161200"; d="scan'208";a="48607872"
+ id 53DB3F802E8; Thu,  4 Jun 2020 10:07:19 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 4ABF9F802E0
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2020 10:07:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4ABF9F802E0
+Date: 04 Jun 2020 17:07:11 +0900
+X-IronPort-AV: E=Sophos;i="5.73,471,1583161200"; d="scan'208";a="48819310"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 04 Jun 2020 17:06:58 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 04 Jun 2020 17:07:11 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 7E75041D4008;
- Thu,  4 Jun 2020 17:06:58 +0900 (JST)
-Message-ID: <87o8pzw8yl.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 1647A41D4306;
+ Thu,  4 Jun 2020 17:07:11 +0900 (JST)
+Message-ID: <87mu5jw8y8.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v2 05/12] ASoC: soc-component: add
- snd_soc_pcm_component_prepare()
+Subject: [PATCH v2 06/12] ASoC: soc-component: add
+ snd_soc_pcm_component_hw_params()
 User-Agent: Wanderlust/2.15.9 Emacs/25.2 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87v9k7w90s.wl-kuninori.morimoto.gx@renesas.com>
@@ -83,109 +83,114 @@ We have 2 type of component functions
 snd_soc_component_xxx()     is focusing to component itself,
 snd_soc_pcm_component_xxx() is focusing to rtd related component.
 
-Now we can update snd_soc_component_prepare() to
-snd_soc_pcm_component_prepare(). This patch do it.
+Now we can update snd_soc_component_hw_params() to
+snd_soc_pcm_component_hw_params(). This patch do it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- include/sound/soc-component.h |  3 +--
- sound/soc/soc-component.c     | 28 +++++++++++++++++-----------
- sound/soc/soc-pcm.c           | 12 +++---------
- 3 files changed, 21 insertions(+), 22 deletions(-)
+ include/sound/soc-component.h |  6 +++---
+ sound/soc/soc-component.c     | 36 ++++++++++++++++++++++-------------
+ sound/soc/soc-pcm.c           | 13 +++----------
+ 3 files changed, 29 insertions(+), 26 deletions(-)
 
 diff --git a/include/sound/soc-component.h b/include/sound/soc-component.h
-index cb0d34fa77c6..fc287e910240 100644
+index fc287e910240..a2898bdd0a3c 100644
 --- a/include/sound/soc-component.h
 +++ b/include/sound/soc-component.h
-@@ -426,8 +426,6 @@ int snd_soc_component_open(struct snd_soc_component *component,
+@@ -426,9 +426,6 @@ int snd_soc_component_open(struct snd_soc_component *component,
  			   struct snd_pcm_substream *substream);
  int snd_soc_component_close(struct snd_soc_component *component,
  			    struct snd_pcm_substream *substream);
--int snd_soc_component_prepare(struct snd_soc_component *component,
--			      struct snd_pcm_substream *substream);
- int snd_soc_component_hw_params(struct snd_soc_component *component,
- 				struct snd_pcm_substream *substream,
- 				struct snd_pcm_hw_params *params);
-@@ -460,5 +458,6 @@ int snd_soc_pcm_component_mmap(struct snd_pcm_substream *substream,
- 			       struct vm_area_struct *vma);
+-int snd_soc_component_hw_params(struct snd_soc_component *component,
+-				struct snd_pcm_substream *substream,
+-				struct snd_pcm_hw_params *params);
+ int snd_soc_component_hw_free(struct snd_soc_component *component,
+ 			      struct snd_pcm_substream *substream);
+ int snd_soc_component_trigger(struct snd_soc_component *component,
+@@ -459,5 +456,8 @@ int snd_soc_pcm_component_mmap(struct snd_pcm_substream *substream,
  int snd_soc_pcm_component_new(struct snd_soc_pcm_runtime *rtd);
  void snd_soc_pcm_component_free(struct snd_soc_pcm_runtime *rtd);
-+int snd_soc_pcm_component_prepare(struct snd_pcm_substream *substream);
+ int snd_soc_pcm_component_prepare(struct snd_pcm_substream *substream);
++int snd_soc_pcm_component_hw_params(struct snd_pcm_substream *substream,
++				    struct snd_pcm_hw_params *params,
++				    struct snd_soc_component **last);
  
  #endif /* __SOC_COMPONENT_H */
 diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
-index 6d29c2de3b24..1bc155bc8e5e 100644
+index 1bc155bc8e5e..56341968fe6d 100644
 --- a/sound/soc/soc-component.c
 +++ b/sound/soc/soc-component.c
-@@ -275,17 +275,6 @@ int snd_soc_component_close(struct snd_soc_component *component,
+@@ -275,19 +275,6 @@ int snd_soc_component_close(struct snd_soc_component *component,
  	return soc_component_ret(component, ret);
  }
  
--int snd_soc_component_prepare(struct snd_soc_component *component,
--			      struct snd_pcm_substream *substream)
+-int snd_soc_component_hw_params(struct snd_soc_component *component,
+-				struct snd_pcm_substream *substream,
+-				struct snd_pcm_hw_params *params)
 -{
 -	int ret = 0;
 -
--	if (component->driver->prepare)
--		ret = component->driver->prepare(component, substream);
+-	if (component->driver->hw_params)
+-		ret = component->driver->hw_params(component,
+-						   substream, params);
 -
 -	return soc_component_ret(component, ret);
 -}
 -
- int snd_soc_component_hw_params(struct snd_soc_component *component,
- 				struct snd_pcm_substream *substream,
- 				struct snd_pcm_hw_params *params)
-@@ -569,3 +558,20 @@ void snd_soc_pcm_component_free(struct snd_soc_pcm_runtime *rtd)
- 		if (component->driver->pcm_destruct)
- 			component->driver->pcm_destruct(component, rtd->pcm);
+ int snd_soc_component_hw_free(struct snd_soc_component *component,
+ 			       struct snd_pcm_substream *substream)
+ {
+@@ -575,3 +562,26 @@ int snd_soc_pcm_component_prepare(struct snd_pcm_substream *substream)
+ 
+ 	return 0;
  }
 +
-+int snd_soc_pcm_component_prepare(struct snd_pcm_substream *substream)
++int snd_soc_pcm_component_hw_params(struct snd_pcm_substream *substream,
++				    struct snd_pcm_hw_params *params,
++				    struct snd_soc_component **last)
 +{
 +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 +	struct snd_soc_component *component;
 +	int i, ret;
 +
 +	for_each_rtd_components(rtd, i, component) {
-+		if (component->driver->prepare) {
-+			ret = component->driver->prepare(component, substream);
-+			if (ret < 0)
++		if (component->driver->hw_params) {
++			ret = component->driver->hw_params(component,
++							   substream, params);
++			if (ret < 0) {
++				*last = component;
 +				return soc_component_ret(component, ret);
++			}
 +		}
 +	}
 +
++	*last = NULL;
 +	return 0;
 +}
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 276505fb9d50..e8911b83600b 100644
+index e8911b83600b..d1e429699c6a 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -850,7 +850,6 @@ static void codec2codec_close_delayed_work(struct snd_soc_pcm_runtime *rtd)
- static int soc_pcm_prepare(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_component *component;
- 	struct snd_soc_dai *dai;
- 	int i, ret = 0;
- 
-@@ -860,14 +859,9 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
- 	if (ret < 0)
- 		goto out;
+@@ -1009,16 +1009,9 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		snd_soc_dapm_update_dai(substream, params, cpu_dai);
+ 	}
  
 -	for_each_rtd_components(rtd, i, component) {
--		ret = snd_soc_component_prepare(component, substream);
+-		ret = snd_soc_component_hw_params(component, substream, params);
 -		if (ret < 0) {
 -			dev_err(component->dev,
--				"ASoC: platform prepare error: %d\n", ret);
--			goto out;
+-				"ASoC: %s hw params failed: %d\n",
+-				component->name, ret);
+-			goto component_err;
 -		}
 -	}
-+	ret = snd_soc_pcm_component_prepare(substream);
+-	component = NULL;
++	ret = snd_soc_pcm_component_hw_params(substream, params, &component);
 +	if (ret < 0)
-+		goto out;
++		goto component_err;
  
- 	ret = snd_soc_pcm_dai_prepare(substream);
- 	if (ret < 0) {
+ out:
+ 	mutex_unlock(&rtd->card->pcm_mutex);
 -- 
 2.17.1
 
