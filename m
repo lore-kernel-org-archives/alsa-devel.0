@@ -2,57 +2,80 @@ Return-Path: <SRS0=e91y=7R=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 71670C433E1
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jun 2020 08:59:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01B8DC433DF
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jun 2020 10:35:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 259C2206C3
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jun 2020 08:59:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7362D20738
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jun 2020 10:35:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="j0QgJce5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 259C2206C3
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BnID9d+k";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ib7SHA56"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7362D20738
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A545E86E;
-	Thu,  4 Jun 2020 10:58:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A545E86E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 04903165E;
+	Thu,  4 Jun 2020 12:34:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 04903165E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591261172;
-	bh=MlQcAGK2cLCPuBRo18o9Zm0Zda/TSxAnAC2Srsf3U6g=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1591266903;
+	bh=ml0TSme6cwPJFcsMzPbSkhZNqOuWYZXZIbIdkDTqu0M=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=j0QgJce5Ul5zY2eJ6tw3h0AYYhYfIaxFkEocuhJrUS/d6sKvVBWulJIZLVUiXlXhX
-	 I7DsMseoSbgLAAZxPwRvUVQwP760mp7Qo4nFjh5PQwAXly480hSba8tKqO+L1cVx2H
-	 J6AJeNppiuUQBdlt+MMwzCI8UqfnC/6l42pgIpMQ=
+	b=BnID9d+k9qJXxldBsSqAYPRXbLOifUNQBrLN/+qKCq0J8O0vf9LPBi1pvJlq1LvS3
+	 gFPoxi645AnxHJLvCuXypuCUDM5xnzx3gEDzf4QSKhIk2vUeugeYnl54I8cxtxLBT6
+	 8Chr2id0y1rZg9u7uIqx7nRQEWuJJwlRPAT0ja+I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 32D90F8013C;
-	Thu,  4 Jun 2020 10:58:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6B23AF8023F;
+	Thu,  4 Jun 2020 12:34:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5092DF8023F; Thu,  4 Jun 2020 10:58:40 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id C1EE0F800BC
- for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2020 10:58:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1EE0F800BC
+ id 9608DF80254; Thu,  4 Jun 2020 12:34:10 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E77C4F8013C
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2020 12:34:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E77C4F8013C
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="ib7SHA56"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 835622074B;
+ Thu,  4 Jun 2020 10:34:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1591266841;
+ bh=ml0TSme6cwPJFcsMzPbSkhZNqOuWYZXZIbIdkDTqu0M=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=ib7SHA56hnoNxXEB3RVG+tQ4oeiz2yi+hrv6ZKVV+AWSJx+cpfoz+WeKC4o4na5LR
+ ZT4TZ+MzCY2GnYNX1KDwgvV+6vBj5/QnFBLwnHEmU5vxPKOwVWU+lfdl7dqqa317dq
+ 4k6cEBdwgIjmijZ6EdTn8Rk2Joecbln7Eg2V3q1g=
+Date: Thu, 4 Jun 2020 11:33:58 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Xiaoming Ni <nixiaoming@huawei.com>
+Subject: Re: [PATCH] ASoC: max98390: fix build warning detected by -Wformat
+Message-ID: <20200604103358.GA6644@sirena.org.uk>
+References: <1591260574-12717-1-git-send-email-nixiaoming@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1591261115147284031-webhooks-bot@alsa-project.org>
-References: <1591261115147284031-webhooks-bot@alsa-project.org>
-Subject: alsa-gobject: ctl: fulfill documentation for ALSACtl
-Message-Id: <20200604085840.5092DF8023F@alsa1.perex.cz>
-Date: Thu,  4 Jun 2020 10:58:40 +0200 (CEST)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="6c2NcOVqGQ03X4Wi"
+Content-Disposition: inline
+In-Reply-To: <1591260574-12717-1-git-send-email-nixiaoming@huawei.com>
+X-Cookie: VMS version 2.0 ==>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: alsa-devel@alsa-project.org, steves.lee@maximintegrated.com,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com,
+ alex.huangjianhui@huawei.com, dylix.dailei@huawei.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,10 +91,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-gobject pull request #22 was opened from takaswie:
 
-This patch fulfills alsactl documentation for GObject-derived objects and boxed objects.
+--6c2NcOVqGQ03X4Wi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Request URL   : https://github.com/alsa-project/alsa-gobject/pull/22
-Patch URL     : https://github.com/alsa-project/alsa-gobject/pull/22.patch
-Repository URL: https://github.com/alsa-project/alsa-gobject
+On Thu, Jun 04, 2020 at 04:49:34PM +0800, Xiaoming Ni wrote:
+> Fix build warning:
+> 	sound/soc/codecs/max98390.c:781:3: warning: format '%ld' expects
+> 	argument of type 'long int', but argument 4 has type 'size_t {aka
+> 	const unsigned int}' [-Wformat=]
+
+Thanks but this was already fixed.
+
+--6c2NcOVqGQ03X4Wi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7YzhMACgkQJNaLcl1U
+h9A53wf8DLWNHAYxxJtyck1M+jV6nQK+GVYUrVtteiTM0qIor6RzV2EFpLde1I1P
+gWa5qE5gs36x9WZRwUVfqrRyxATRWNDBDXVGr1yi1Nr1uRiMxRa2OBH6AIUeeKVQ
+Py5pUwDCLokOkWu5OoMraUubXIBC7mMTDO639djf4TLUdN3iVo7ZvNZuzYPWzLPd
+siuQIuJR0slgTIRVrv4ILKKQnFUvfoGZ7E1n/h0327qhZsSDzofHO1E2b/h5vKuE
+jJ7raMnK1kS6tzy0ekKYAOHb8xR+B7hBUDlPox83eAKbIKJk+6J/kFFtE6VOr+Jy
+ypnhcWmJymrH7PP7xd7tbJfD0zCn5w==
+=mHCk
+-----END PGP SIGNATURE-----
+
+--6c2NcOVqGQ03X4Wi--
