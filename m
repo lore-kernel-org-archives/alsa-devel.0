@@ -6,68 +6,70 @@ X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3A31C433DF
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jun 2020 14:07:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3F21C433DF
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jun 2020 14:07:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4A320207D8
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jun 2020 14:07:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 456BB207DF
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jun 2020 14:07:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eWXT85ff";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="fjV8DTBY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4A320207D8
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MLzlVlju";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="wLMQLIkj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 456BB207DF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BEEDF1671;
-	Thu,  4 Jun 2020 16:06:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BEEDF1671
+	by alsa0.perex.cz (Postfix) with ESMTPS id D6CFE1679;
+	Thu,  4 Jun 2020 16:07:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D6CFE1679
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591279629;
-	bh=rE8aAOiPtU8yD/qqa4h0pT5TUBIYMvSrikKyYxDXOx4=;
+	s=default; t=1591279677;
+	bh=puRP5BmHybku3S6uqSnFGQ4cJaKeECmJKij/ujNAxQY=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eWXT85ffiPTgUWTFZX3GOvzYOpr/dhjVA24reR6Bi6xFDN26AdB732E2G0tglchV9
-	 yidtCRqyh7w+6vpGfKKE+ntBJ5YW6C5DHA/Eudt7aBa3mW8VU9hSbQwp0Y0Ifs75dQ
-	 ev37Sc0shH1Lxi8kQ67bKe1B0WW4r8fkQGyy0jNk=
+	b=MLzlVljuoDzRhCNzNGHMRy3LXe5ldYLMMMAfuyAuMFQiPqUtF1sOineLfTeimFokB
+	 YCRQ46qO3VKIByQVruyZ2MgG8Z7z8Vm6+OujQZKnLc9i2s9t5nyNNTWlWa2tHdOjgx
+	 eDigLdwqkR34TGTuvtQwRyoTCSlxNgkm2QvzssAE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 46565F80260;
-	Thu,  4 Jun 2020 16:05:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9C32EF80273;
+	Thu,  4 Jun 2020 16:05:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CD82CF8013C; Thu,  4 Jun 2020 16:05:25 +0200 (CEST)
+ id 5528EF800BC; Thu,  4 Jun 2020 16:05:31 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 01CC8F8013C
- for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2020 16:05:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01CC8F8013C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 31060F800BC
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2020 16:05:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31060F800BC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="fjV8DTBY"
+ header.b="wLMQLIkj"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 30604207D8;
- Thu,  4 Jun 2020 14:05:21 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 3413F20772;
+ Thu,  4 Jun 2020 14:05:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1591279521;
- bh=rE8aAOiPtU8yD/qqa4h0pT5TUBIYMvSrikKyYxDXOx4=;
+ s=default; t=1591279526;
+ bh=puRP5BmHybku3S6uqSnFGQ4cJaKeECmJKij/ujNAxQY=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=fjV8DTBYXuw8JkuCq50bbkuPqgA3hAMXcJbp05ldtOMKAOZvHQsEE+C0KtMIuB/PB
- 7yPo3iQBQ4Kt6ObTzaBm/LC4myiQdWe1+qt8xxuE75MLekTlvQyZZ+Ed4tvQtF6dGN
- Pg7BeAij4fgCe7Prl3ZZyBP0K7dLkrUpuoqJFKOI=
-Date: Thu, 04 Jun 2020 15:05:19 +0100
+ b=wLMQLIkjJMbFT1zlo1Jy8DZU6PmmZS+cMO8DG4VrDuPyqfNe3DwaKUSTQeHlRMItz
+ pqDY8ORRWyKY+2RACCHgrP3CG8jr+/fU2qNPMA35SZFmoFpGd5876fOgopi4n2FwmG
+ Qm5aI8iGSomjw/G1eGl8im511lsAungElS87HrfM=
+Date: Thu, 04 Jun 2020 15:05:24 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Takashi Iwai <tiwai@suse.de>
-In-Reply-To: <20200602164453.29925-1-tiwai@suse.de>
-References: <20200602164453.29925-1-tiwai@suse.de>
-Subject: Re: [PATCH] ASoC: max98390: Fix incorrect printf qualifier
-Message-Id: <159127951452.54171.3413134466723891598.b4-ty@kernel.org>
-Cc: alsa-devel@alsa-project.org, Steve Lee <steves.lee@maximintegrated.com>
+To: Oder Chiou <oder_chiou@realtek.com>, lgirdwood@gmail.com
+In-Reply-To: <20200604071016.3981-1-oder_chiou@realtek.com>
+References: <20200604071016.3981-1-oder_chiou@realtek.com>
+Subject: Re: [PATCH] ASoC: rl6231: Modify the target DMIC clock rate
+Message-Id: <159127951452.54171.4011264535234053661.b4-ty@kernel.org>
+Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, cychiang@google.com,
+ albertchen@realtek.com, derek.fang@realtek.com, shumingf@realtek.com,
+ flove@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,9 +85,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 2 Jun 2020 18:44:53 +0200, Takashi Iwai wrote:
-> This patch addresses a compile warning:
->   sound/soc/codecs/max98390.c:781:3: warning: format ‘%ld’ expects argument of type ‘long int’, but argument 4 has type ‘size_t {aka const unsigned int}’ [-Wformat=]
+On Thu, 4 Jun 2020 15:10:16 +0800, Oder Chiou wrote:
+> Some DMIC components will not work correctly in the clock rate 3.072MHz.
+> We recommend the clock rate 1.536MHz in the gerenal case.
 
 Applied to
 
@@ -93,8 +95,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: max98390: Fix incorrect printf qualifier
-      commit: 678916ec54f38406032462dc466fd36cdfea4e3c
+[1/1] ASoC: rl6231: Modify the target DMIC clock rate
+      commit: d605cbb64252071d6a74b4fbb626e1473d91838d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
