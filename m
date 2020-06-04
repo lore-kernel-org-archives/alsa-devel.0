@@ -3,72 +3,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88162C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jun 2020 06:50:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8ACCFC433DF
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jun 2020 07:06:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E7A8C206C3
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jun 2020 06:50:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 05B732074B
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jun 2020 07:06:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oeH6LuDq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E7A8C206C3
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fXV0oYgY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 05B732074B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7EC971655;
-	Thu,  4 Jun 2020 08:49:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7EC971655
+	by alsa0.perex.cz (Postfix) with ESMTPS id 77ED71655;
+	Thu,  4 Jun 2020 09:05:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77ED71655
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591253440;
-	bh=0fSMewA6KdvU1JvM/cOUsTEhlSp9DoP4EAlQxXoZVRQ=;
+	s=default; t=1591254389;
+	bh=jvgWG8H1/AVFmHwyU3Mc8Klff9M2pWgvnDdBnLggufA=;
 	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oeH6LuDq3BiQopZcepSB/b48Q35CxJFhjQiJrJblJf8wuYQ0dZo8TyaH07sMm1upa
-	 V5Sj0jNBnbyKXDAXnzPoSDjBeunG/usV/PQU8UazhBLe56jiwGbEbKVX+JllqwtIy1
-	 gsu3BulTNAAt1bvF3gFJXv4cCqmKuXx7dyMioeL0=
+	b=fXV0oYgYbvud6oPGlQXD3no7u4oNLycE16j5FkM0ymNCehiSTp+P+/VcPt1/YtW51
+	 CakEkuVVbuaaarrJw9bvO0kCZH2nhi27mO336ZMu0nv2+MhVLyFwqgNS59BZvqCbzH
+	 zoRGw7VYyW4E2wmymuza0B1/1PflvueXMGFeEnJI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 09ADFF8023F;
-	Thu,  4 Jun 2020 08:49:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F138FF8023F;
+	Thu,  4 Jun 2020 09:05:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8E3B9F80254; Thu,  4 Jun 2020 08:49:41 +0200 (CEST)
+ id 53A9CF80254; Thu,  4 Jun 2020 09:05:32 +0200 (CEST)
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 55077F8013C
- for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2020 08:49:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55077F8013C
+ by alsa1.perex.cz (Postfix) with ESMTPS id B0DE7F8013C
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2020 09:05:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0DE7F8013C
 Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 0546nLD71026379,
+X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 05475DHU0029908,
  This message is accepted by code: ctloc85258
 Received: from mail.realtek.com (rtexmb06.realtek.com.tw[172.21.6.99])
- by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 0546nLD71026379
+ by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 05475DHU0029908
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 4 Jun 2020 14:49:21 +0800
-Received: from RTEXDAG02.realtek.com.tw (172.21.6.101) by
+ Thu, 4 Jun 2020 15:05:13 +0800
+Received: from RTEXMB02.realtek.com.tw (172.21.6.95) by
  RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 4 Jun 2020 14:49:21 +0800
+ 15.1.1779.2; Thu, 4 Jun 2020 15:05:12 +0800
 Received: from RTEXMB01.realtek.com.tw (172.21.6.94) by
- RTEXDAG02.realtek.com.tw (172.21.6.101) with Microsoft SMTP Server
+ RTEXMB02.realtek.com.tw (172.21.6.95) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 4 Jun 2020 14:49:20 +0800
+ 15.1.1779.2; Thu, 4 Jun 2020 15:05:12 +0800
 Received: from RTEXMB01.realtek.com.tw ([fe80::d53a:d9a5:318:7cd8]) by
  RTEXMB01.realtek.com.tw ([fe80::d53a:d9a5:318:7cd8%5]) with mapi id
- 15.01.1779.005; Thu, 4 Jun 2020 14:49:20 +0800
+ 15.01.1779.005; Thu, 4 Jun 2020 15:05:12 +0800
 From: Kailang <kailang@realtek.com>
 To: Takashi Iwai <tiwai@suse.de>, Hans de Goede <hdegoede@redhat.com>
 Subject: RE: Fixing sound on Asus UX534F / some UX533 models
 Thread-Topic: Fixing sound on Asus UX534F / some UX533 models
-Thread-Index: AQHWONs22CJOa0S3f0amUcGxmmQQZKjIBMWA
-Date: Thu, 4 Jun 2020 06:49:20 +0000
-Message-ID: <b647b169111f4c46a7c81ec80c551498@realtek.com>
+Thread-Index: AQHWONs22CJOa0S3f0amUcGxmmQQZKjICpOg
+Date: Thu, 4 Jun 2020 07:05:12 +0000
+Message-ID: <e8f566b59e38494ea8bc58669ac148be@realtek.com>
 References: <808c7b46-c86f-a3de-b645-c47e658e8abb@redhat.com>
  <s5hr1uxhc6k.wl-tiwai@suse.de>
 In-Reply-To: <s5hr1uxhc6k.wl-tiwai@suse.de>
@@ -97,16 +97,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Hans de Goede,
-
-Please test below.
+Hi Takashi,
 
 hda-verb /dev/snd/hwC0D0 0x20 0x500 0xf
 hda-verb /dev/snd/hwC0D0 0x20 0x400 0x7774
-hda-verb /dev/snd/hwC0D0 0x20 0x500 0x45
-hda-verb /dev/snd/hwC0D0 0x20 0x400 0x5289
 
-I think Headset Mic will work.
+This will enable HP out. Asus more platform use this.
 
 BR,
 Kailang
