@@ -2,119 +2,70 @@ Return-Path: <SRS0=e91y=7R=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB611C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jun 2020 06:13:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F665C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jun 2020 06:37:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 75FC62072E
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jun 2020 06:13:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E252D206C3
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jun 2020 06:37:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MxBTGYqn";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="GI4BOJdI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 75FC62072E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ASzX2yLW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E252D206C3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0C44C167E;
-	Thu,  4 Jun 2020 08:12:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C44C167E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 707D882C;
+	Thu,  4 Jun 2020 08:36:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 707D882C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591251195;
-	bh=HEbuUuqzYKRzFAwS9qP/euNBCXXIojtAorAtB55RG+g=;
-	h=From:To:Subject:In-Reply-To:References:Date:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=MxBTGYqn6GPzDZP9sXzIL+UqxiURq8l2sEwqkf281+ZAO/eD6noK8c/Q4HYUisq0g
-	 N0QQF+rjYxOuxF57msc9UiJWVzpcVT0HUspShJSxYVrrGWHKtFbmBPJGOytJNcsRnK
-	 xZW6aHgEY2N4rB3/G7CxSc1rX2VEJ5+C8HkhUL/4=
+	s=default; t=1591252628;
+	bh=Dabg8KXjjqQTABtKM6T4IxtW3qXpfOKXr8cAIoX8eA4=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=ASzX2yLWxFLBHhIZr7hFc+nsYZblSUpJl2pi8JEdAPQXB1ARmNywtv+/DEgMyY4UX
+	 yBzhd13yZFKm/8QhmxQyw6a4OgbufI1Kb3tO7Km5j7aa5AzY58GQdKlZbci370Ejyz
+	 kBmskA5/miBtTPJxE4iC7j//p8+ValSragQscuM8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B8228F802A2;
-	Thu,  4 Jun 2020 08:09:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 981EFF8023F;
+	Thu,  4 Jun 2020 08:36:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A14C8F801ED; Wed,  3 Jun 2020 12:52:15 +0200 (CEST)
-Received: from ozlabs.org (ozlabs.org [203.11.71.1])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 0B1F2F80254; Thu,  4 Jun 2020 08:36:11 +0200 (CEST)
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 98254F800D0
- for <alsa-devel@alsa-project.org>; Wed,  3 Jun 2020 12:52:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98254F800D0
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au
- header.b="GI4BOJdI"
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest
- SHA256) (No client certificate requested)
- by mail.ozlabs.org (Postfix) with ESMTPSA id 49cQhG1cflz9sPF;
- Wed,  3 Jun 2020 20:51:42 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
- s=201909; t=1591181513;
- bh=HEbuUuqzYKRzFAwS9qP/euNBCXXIojtAorAtB55RG+g=;
- h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
- b=GI4BOJdI7R9phxlk9/LTfiVhHEoI1zIW/xMxkhszVjxonI1SySK9IBC78y3O/4vDf
- eDoCS1hCFhiIYou6IKgadBDdl5sdOlAMjQC1875eHFGwk92+YhsxEXxQeo65cXx+7q
- w4oK9KvmKJ1GhlrJO3nt+9OXCwfLwm5X2U9SOzYjAbNe0KzJOOKaMq1ONpfm0tBBM3
- fH45gWmBBXN7fZIiP0s3Sgnn2FkHp5kQh4anTXDctIZyBr8OZVRgP+1o8SdAdmUCX0
- gNwbf+nfmQfigEhG0OEKVTeNnYZzewHe51L+YkLeIayUTLrVNDdhXqJak/DOs8mdcD
- LbJXwhVjiT3UA==
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>,
- Michal Simek <michal.simek@xilinx.com>, Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH v2 0/2] powerpc: Remove support for ppc405/440 Xilinx
- platforms
-In-Reply-To: <aad5c6c5-b84a-7a6d-3f07-f45dd1dd85d1@csgroup.eu>
-References: <cover.1585575111.git.michal.simek@xilinx.com>
- <87imikufes.fsf@mpe.ellerman.id.au>
- <12db51d6-d848-118e-5ec1-a4172bd47aa4@xilinx.com>
- <87y2rftrx7.fsf@mpe.ellerman.id.au> <s5hk12z4hj5.wl-tiwai@suse.de>
- <02e7f790-b105-de67-799c-0fe065e58320@xilinx.com>
- <c22540fb-1c54-b718-9045-3ee645c30322@monstr.eu>
- <87wo4yerom.fsf@mpe.ellerman.id.au>
- <4b807ebc-8d8f-ad76-f5e2-9ce8410dc70c@xilinx.com>
- <aad5c6c5-b84a-7a6d-3f07-f45dd1dd85d1@csgroup.eu>
-Date: Wed, 03 Jun 2020 20:52:07 +1000
-Message-ID: <87wo4oh160.fsf@mpe.ellerman.id.au>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Mailman-Approved-At: Thu, 04 Jun 2020 08:09:47 +0200
-Cc: Kate Stewart <kstewart@linuxfoundation.org>,
- Mark Rutland <mark.rutland@arm.com>,
- "Desnes A. Nunes do Rosario" <desnesn@linux.ibm.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>, linux-doc@vger.kernel.org,
- Benjamin Herrenschmidt <benh@kernel.crashing.org>, alsa-devel@alsa-project.org,
- dri-devel@lists.freedesktop.org, Richard Fontana <rfontana@redhat.com>,
- Paul Mackerras <paulus@samba.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
- Fabio Estevam <festevam@gmail.com>, Sasha Levin <sashal@kernel.org>,
- sfr@canb.auug.org.au, Jonathan Corbet <corbet@lwn.net>, maz@kernel.org,
- Masahiro Yamada <masahiroy@kernel.org>, Takashi Iwai <tiwai@suse.com>,
- YueHaibing <yuehaibing@huawei.com>, Krzysztof Kozlowski <krzk@kernel.org>,
- Allison Randal <allison@lohutok.net>,
- Matt Porter <mporter@kernel.crashing.org>,
- linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
- Andrew Donnellan <ajd@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- Alistair Popple <alistair@popple.id.au>, linuxppc-dev@lists.ozlabs.org,
- Nicholas Piggin <npiggin@gmail.com>, Alexios Zavras <alexios.zavras@intel.com>,
- Mark Brown <broonie@kernel.org>, git@xilinx.com, linux-fbdev@vger.kernel.org,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>,
- Thomas Gleixner <tglx@linutronix.de>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Dmitry Vyukov <dvyukov@google.com>, Christophe Leroy <christophe.leroy@c-s.fr>,
- Wei Hu <weh@microsoft.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Nick Desaulniers <ndesaulniers@google.com>, linux-kernel@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, Enrico Weigelt <info@metux.net>,
- "David S. Miller" <davem@davemloft.net>,
- Thiago Jung Bauermann <bauerman@linux.ibm.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id B04FDF8013C
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2020 08:36:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B04FDF8013C
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id BF60B20116D;
+ Thu,  4 Jun 2020 08:36:02 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
+ [165.114.16.14])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 4017C201020;
+ Thu,  4 Jun 2020 08:35:58 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 25296402A5;
+ Thu,  4 Jun 2020 14:35:52 +0800 (SGT)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+ festevam@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+ perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+ linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: fsl-asoc-card: Defer probe when fail to find codec
+ device
+Date: Thu,  4 Jun 2020 14:25:30 +0800
+Message-Id: <1591251930-4111-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -130,104 +81,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> Hi,
->
-> Le 03/06/2020 =C3=A0 10:10, Michal Simek a =C3=A9crit=C2=A0:
->> Hi Michael,
->>=20
->> On 26. 05. 20 15:44, Michael Ellerman wrote:
->>> Michal Simek <monstr@monstr.eu> writes:
->>>> Hi Michael,
->>>>
->>>> On 01. 04. 20 13:30, Michal Simek wrote:
->>>>> On 01. 04. 20 12:38, Takashi Iwai wrote:
->>>>>> On Wed, 01 Apr 2020 12:35:16 +0200,
->>>>>> Michael Ellerman wrote:
->>>>>>>
->>>>>>> Michal Simek <michal.simek@xilinx.com> writes:
->>>>>>>> On 01. 04. 20 4:07, Michael Ellerman wrote:
->>>>>>>>> Michal Simek <michal.simek@xilinx.com> writes:
->>>>>>>>>> Hi,
->>>>>>>>>>
->>>>>>>>>> recently we wanted to update xilinx intc driver and we found tha=
-t function
->>>>>>>>>> which we wanted to remove is still wired by ancient Xilinx Power=
-PC
->>>>>>>>>> platforms. Here is the thread about it.
->>>>>>>>>> https://lore.kernel.org/linux-next/48d3232d-0f1d-42ea-3109-f44bb=
-abfa2e8@xilinx.com/
->>>>>>>>>>
->>>>>>>>>> I have been talking about it internally and there is no interest=
- in these
->>>>>>>>>> platforms and it is also orphan for quite a long time. None is r=
-eally
->>>>>>>>>> running/testing these platforms regularly that's why I think it =
-makes sense
->>>>>>>>>> to remove them also with drivers which are specific to this plat=
-form.
->>>>>>>>>>
->>>>>>>>>> U-Boot support was removed in 2017 without anybody complain abou=
-t it
->>>>>>>>>> https://github.com/Xilinx/u-boot-xlnx/commit/98f705c9cefdfdba62c=
-069821bbba10273a0a8ed
->>>>>>>>>>
->>>>>>>>>> Based on current ppc/next.
->>>>>>>>>>
->>>>>>>>>> If anyone has any objection about it, please let me know.
->>>>>>>>>
->>>>>>>>> Thanks for taking the time to find all this code and remove it.
->>>>>>>>>
->>>>>>>>> I'm not going to take this series for v5.7, it was posted too clo=
-se to
->>>>>>>>> the merge window, and doing so wouldn't give people much time to =
-object,
->>>>>>>>> especially given people are distracted at the moment.
->>>>>>>>>
->>>>>>>>> I'm happy to take it for v5.8, assuming there's no major objectio=
-ns.
->>>>>>>>
->>>>>>>> Sure. Just to let you know Christophe Leroy included this patch in=
- his
->>>>>>>> series about ppc405 removal. It should be the same.
->>>>>>>>
->>>>>>>> If you don't want to take that alsa patch I can send it separately=
- and
->>>>>>>> this patch can be taken from his series. I don't really mind but p=
-lease
->>>>>>>> let me know what way you prefer.
->>>>>>>
->>>>>>> It's better to keep it all together, so I'm happy take the alsa pat=
-ch as
->>>>>>> well, it's already been acked.
->>>>
->>>> Can you please take this series? I know that there is v5 from Christop=
-he
->>>> which has this 1/2 as 1/13. But I need this alsa patch too and I would
->>>> like to close this because it is around for almost 2 months and none
->>>> raised a concern about removing just these Xilinx platforms.
->>>
->>> Sorry I meant to reply to your last mail.
->>>
->>> I have Christophe's series in my testing branch, planning for it to be
->>> in v5.8.
->>>
->>> Even if the rest of his series doesn't make it for some reason, as you
->>> say the Xilinx removal is uncontroversial so I'll keep that in.
->>>
->>> I forgot about the sound patch, I'll pick that up as well.
->>=20
->> I took a look at your
->> https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git repo
->> and I can't see any branch with my patches.
->> Also was checking linux-next and my patches are also not there.
->> That's why I am curious if this will be go v5.8 in MW.
->
-> I see them in=20
-> https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git in=20
-> next-test branch.
+Defer probe when fail to find codec device, because the codec
+device maybe probed later than machine driver.
 
-Which =3D=3D the next branch, which is what will go into v5.8, all going
-well.
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/fsl/fsl-asoc-card.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-cheers
+diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+index cf4feb835743..00be73900888 100644
+--- a/sound/soc/fsl/fsl-asoc-card.c
++++ b/sound/soc/fsl/fsl-asoc-card.c
+@@ -581,7 +581,7 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 
+ 	if (!fsl_asoc_card_is_ac97(priv) && !codec_dev) {
+ 		dev_err(&pdev->dev, "failed to find codec device\n");
+-		ret = -EINVAL;
++		ret = -EPROBE_DEFER;
+ 		goto asrc_fail;
+ 	}
+ 
+-- 
+2.21.0
+
