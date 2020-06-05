@@ -2,88 +2,84 @@ Return-Path: <SRS0=S+eB=7S=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF266C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 Jun 2020 03:50:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64DB2C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 Jun 2020 03:51:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4526B2074B
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 Jun 2020 03:50:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D92782074B
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 Jun 2020 03:51:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sP5MjWg+";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="iEeR6W2z"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4526B2074B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZvYGmStc";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="Qr8NpwFv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D92782074B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C3442165F;
-	Fri,  5 Jun 2020 05:50:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3442165F
+	by alsa0.perex.cz (Postfix) with ESMTPS id EC5801674;
+	Fri,  5 Jun 2020 05:50:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC5801674
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591329050;
-	bh=o8eN7Ip3GhPQm9+q8UAF124M82JET3zPFcT2otbA/aY=;
-	h=Date:In-Reply-To:References:Subject:From:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=sP5MjWg+QJit9dKTe3sM0mj75nU5MC52KiQSQaGEFrwEbAY0OS4dRHCAFWC4lLRZS
-	 gboOs4ktGY/8HXUu2bOq/u0OMFSTw/k1He3Sjgeimj6byJ/lM5j84p3WK1xiZSlqNY
-	 vFvV13DQ1HgSZKagBARP+y/Fwt/eETFK3/XRLDls=
+	s=default; t=1591329105;
+	bh=MkZlFvOHEWdmiGXUz+8nFcd3BMsmvXHkOZhZ94yHBlY=;
+	h=Date:Subject:From:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=ZvYGmStckO1LLtrF38+DYG5JTxgbnGA261tAT/Rj+je0dgKGNsovcABNI+QjMYvxL
+	 q8RzvtlOFu7SFphJRTwvthOtwFREJlhsY4eHjvnDsy0t2lYlj2P90V4C/EPu6X4WuW
+	 iNfAk/tYOwEvgLgUUUcAfyxNvisfZnzUeL1g6F7A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2DB90F801EC;
-	Fri,  5 Jun 2020 05:50:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 22740F801ED;
+	Fri,  5 Jun 2020 05:50:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8D745F801EC; Fri,  5 Jun 2020 05:49:55 +0200 (CEST)
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com
- [IPv6:2607:f8b0:4864:20::b4a])
+ id 6EEA1F80212; Fri,  5 Jun 2020 05:49:55 +0200 (CEST)
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com
+ [IPv6:2607:f8b0:4864:20::f49])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0E459F801EC
- for <alsa-devel@alsa-project.org>; Fri,  5 Jun 2020 05:49:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0E459F801EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 57D8DF80108
+ for <alsa-devel@alsa-project.org>; Fri,  5 Jun 2020 05:49:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57D8DF80108
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="iEeR6W2z"
-Received: by mail-yb1-xb4a.google.com with SMTP id c3so10486686ybp.8
- for <alsa-devel@alsa-project.org>; Thu, 04 Jun 2020 20:49:49 -0700 (PDT)
+ header.b="Qr8NpwFv"
+Received: by mail-qv1-xf49.google.com with SMTP id z7so6304621qve.0
+ for <alsa-devel@alsa-project.org>; Thu, 04 Jun 2020 20:49:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=date:in-reply-to:message-id:mime-version:references:subject:from:to
- :cc; bh=zUE/Cjgd6DbqupxIZO5zw+HWjN1NKeI0i0EBJrWyE6E=;
- b=iEeR6W2zBV70R/bSFM5f67tGDL5bjIdJVzxdVKjDRIcswzlpTMD2r1+VhZH215sTeW
- ARcypWqIcdFd7pBT5fHJpqMwUukfjyIpUpNkoZExv3yWU8/vXgAemGS1w/ZB+9i0EC2w
- NDclYfYgUW4QFI6vBRl6kmjj2DBBF49gdLpf0/vCA+Fa70gh9btjmLGqyGlBpmny7Md3
- 9SoUMsOya1hV2THbF0/91/RKedBrppN+A0ePooopPRyO4P/nmu6bSAYv7MTLtjxWI60k
- 6kIpxuT2Bmod7HwnLbo1l5dFYMy1TtOBONFm7hOi9JYmK5JBgGiCga7cnDUrBPC+Q8Hm
- 86aA==
+ h=date:message-id:mime-version:subject:from:to:cc;
+ bh=p99Rcfl/aySHjDwEOcdqr/T7gyuhzsbPgf2F8y+KRrM=;
+ b=Qr8NpwFvc3m9a8cy0y5TtAb4IB8DeLYGbb5haVvGLrrIhrFzjWhUZG+O7YWpolGP/m
+ emRGlm6vQIu4bhiMnPzS3XI7I0NN8pfpy7tMgIvMNzEe+otgQ1ujviH2F3XFKena5k1A
+ lk9L29WsMJ2j4+g1S/qhEb/j50xEr7r4AEAZYltFaaHEF5i0JDY2F/MYuGpmsEMWQgeW
+ Fn0MrtUBzpF4+So2nVUjMu5s080UbTmKdtniHMszTuFDp3E67ISB2M2qmrbr9B3vpBm1
+ OsIES6bjYs7zrhCFPdlObvlg1koBj7YXguwpGyd9ll4NE6BDiEnfuMiCJiMC+KTgBFsq
+ EbCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:date:in-reply-to:message-id:mime-version
- :references:subject:from:to:cc;
- bh=zUE/Cjgd6DbqupxIZO5zw+HWjN1NKeI0i0EBJrWyE6E=;
- b=eDe64VfpCiyeaxr3ELIRfkEOg3Z5LRT4DPl/1V82GurWDGig8EGlfOEctLFDf5nabr
- EqbYj3HO4joQmVXFRf0hhhaTqM6Y0Lktg/w4GXyEyrIspp9MGN4yujj7n1y6IQm55HXf
- D+vNCWczlXlsUzqhpFUGQbeeRhpZaDqaZVov9zfdYq5TwqzJaoDk/YJ+C23GUZykHnpL
- v0rAHYmT4D23Ff4TJronRLp3mm2d53lIxi+lneJXNgfpoy2gWY5Z51MbwJzwpvpFeFYu
- vz86x1d9zkgyDe2B7faAmETm/Uu/AurZETIvgE2bpR0nqK7yw19dUDuAeMCVzjHUzX8q
- 2TdA==
-X-Gm-Message-State: AOAM530iINKBi0CAFmT1lVv6w41mhop/2wrXZC3j+yt0hykoiNaGMITZ
- wOV7AFouwdFf8w8XENchhDTcS65PLdJ4
-X-Google-Smtp-Source: ABdhPJzO/LSnH/eEpFBjZnM01ecU94C3EIsJHao8zGgAC2ui2MTGomIhL7w7dptKMtO9fpRBcKf7amP1I5Uo
-X-Received: by 2002:a25:ba03:: with SMTP id t3mr12723512ybg.425.1591328987534; 
- Thu, 04 Jun 2020 20:49:47 -0700 (PDT)
-Date: Fri,  5 Jun 2020 11:49:30 +0800
-In-Reply-To: <20200605034931.107713-1-tzungbi@google.com>
-Message-Id: <20200605034931.107713-2-tzungbi@google.com>
+ h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+ bh=p99Rcfl/aySHjDwEOcdqr/T7gyuhzsbPgf2F8y+KRrM=;
+ b=KN8S0jkdeer4/OfNy+b0+XwZPCAHV6JdJNdnostALdRjW8m2zfuqefmTyCpyHOCOOV
+ YD0zDY/y3Pi8hgZg6/uPhh38t/KRTy8hHnvX2jA7qqz+BZhzTHvg3rF4JHTaxgtMEyaF
+ 3qYtoXNHh8mBaJJbHRn26TfGaamGPFNAQY3Njgeewl9EuRI6ATdh4g7tGLZrT5Ac3FvA
+ xbtXV1HHgiurTJvROSrJ2LqpqkWA+4apYgt+0hFkHRBEecoi8bg95TEDUJmjk6ZpUhqr
+ L+WwZzSdeB1Ot8VTQNQF3VnSLe4f2jGpp6r1RChH/7xKiXPimlYqG7AfkxIrKc5c01sI
+ OxLA==
+X-Gm-Message-State: AOAM530esT68Bws4PUSWGqOZTj9kJpDgB+JQndgmrrHuhORoUkaLX8dB
+ cqIcuVKF1lFZfpMQTXRf51G6MmTM/G4j
+X-Google-Smtp-Source: ABdhPJxzfWFy3s0SB1OW0cA/iS6Ny7DmGwdbwtZRhHwnw5nDvPgbtvrU9FgFjoR2KGH+jpeHJmPDGmB/ugty
+X-Received: by 2002:ad4:4725:: with SMTP id l5mr5042459qvz.120.1591328984178; 
+ Thu, 04 Jun 2020 20:49:44 -0700 (PDT)
+Date: Fri,  5 Jun 2020 11:49:29 +0800
+Message-Id: <20200605034931.107713-1-tzungbi@google.com>
 Mime-Version: 1.0
-References: <20200605034931.107713-1-tzungbi@google.com>
 X-Mailer: git-send-email 2.27.0.278.ge193c7cf3a9-goog
-Subject: [PATCH 1/2] ASoC: max98357a: add compatible string for MAX98360A
+Subject: [PATCH 0/2] ASoC: max98357a: support MAX98360A in OF
 From: Tzung-Bi Shih <tzungbi@google.com>
 To: broonie@kernel.org, robh+dt@kernel.org
 Content-Type: text/plain; charset="UTF-8"
@@ -103,26 +99,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Maxim MAX98360A audio amplifier is functionally identical to MAX98357A.
-Adds compatible string "maxim,max98360a" for driver reuse.
+Commit 1a0f2433d738 ("ASoC: max98357a: Add ACPI HID MAX98360A") supports
+MAX98360A in ACPI world.  This series supports MAX98360A in OF world.
 
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
----
- sound/soc/codecs/max98357a.c | 1 +
- 1 file changed, 1 insertion(+)
+Tzung-Bi Shih (2):
+  ASoC: max98357a: add compatible string for MAX98360A
+  ASoC: dt-bindings: add compatible string for MAX98360A
 
-diff --git a/sound/soc/codecs/max98357a.c b/sound/soc/codecs/max98357a.c
-index a8bd793a7867..4f431133d0bb 100644
---- a/sound/soc/codecs/max98357a.c
-+++ b/sound/soc/codecs/max98357a.c
-@@ -125,6 +125,7 @@ static int max98357a_platform_probe(struct platform_device *pdev)
- #ifdef CONFIG_OF
- static const struct of_device_id max98357a_device_id[] = {
- 	{ .compatible = "maxim,max98357a" },
-+	{ .compatible = "maxim,max98360a" },
- 	{}
- };
- MODULE_DEVICE_TABLE(of, max98357a_device_id);
+ .../devicetree/bindings/sound/max98357a.txt          | 12 +++++++++---
+ sound/soc/codecs/max98357a.c                         |  1 +
+ 2 files changed, 10 insertions(+), 3 deletions(-)
+
 -- 
 2.27.0.278.ge193c7cf3a9-goog
 
