@@ -2,67 +2,92 @@ Return-Path: <SRS0=S+eB=7S=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D9A78C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 Jun 2020 15:58:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89EA9C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 Jun 2020 17:19:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8F1BE206DC
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 Jun 2020 15:58:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A465E207D3
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 Jun 2020 17:19:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oRG6lKK+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F1BE206DC
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Jd699b6R";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="Q/hodN43"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A465E207D3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 114661607;
-	Fri,  5 Jun 2020 17:57:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 114661607
+	by alsa0.perex.cz (Postfix) with ESMTPS id 113F11616;
+	Fri,  5 Jun 2020 19:19:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 113F11616
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591372683;
-	bh=UXQS0jMV/6KDFhbVw5BdNgAoYMlQjrhHpb3BSGGj8Zg=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=oRG6lKK+t29PC0vtsDDjjeWnnBKFpvmfuN+G4V6Ft+TID3Gs4hC3Jnks9VS1Lfz51
-	 0rITkteeNSn0w8JxXg9NmlBrp/Mlxv0PqAEYZK/bxM3YY9+GffIBD5w1TgbE9uax2l
-	 IHx/5nR8WpZ4Bv3ITbq6Ka9ZTp/q3keat8DeNYPY=
+	s=default; t=1591377597;
+	bh=KL6NZchdhHCsC6aeKtwE9tXwR48hj45OeNo+R++QU1Y=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Jd699b6R/gb7417BZdof3LOE53HOMREnMylseATT9TkmheeH6+cHR5EIQZpmxcu2P
+	 pReyn5xOgXTmGJKr39CsHzB12BbTg1j6DIJsM4ash380CVFGmBaECWOSBGdtxeXshM
+	 ZCILyldZoXwmQO9ufC/f03aZ/S3tW5rgK/sow9a0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 85965F80108;
-	Fri,  5 Jun 2020 17:57:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 805ACF801EC;
+	Fri,  5 Jun 2020 19:19:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DF6BFF801ED; Fri,  5 Jun 2020 17:57:09 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 190C6F801ED; Fri,  5 Jun 2020 19:19:05 +0200 (CEST)
+Received: from hqnvemgate26.nvidia.com (hqnvemgate26.nvidia.com
+ [216.228.121.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A7802F80108
- for <alsa-devel@alsa-project.org>; Fri,  5 Jun 2020 17:57:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7802F80108
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 68FB1ACB8;
- Fri,  5 Jun 2020 15:57:08 +0000 (UTC)
-Date: Fri, 05 Jun 2020 17:57:04 +0200
-Message-ID: <s5hbllx7bfz.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH] ALSA: emu10k1: delete an unnecessary condition
-In-Reply-To: <20200605110134.GC978434@mwanda>
-References: <20200605110134.GC978434@mwanda>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: Hariprasad Kelam <hariprasad.kelam@gmail.com>,
- kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- alsa-devel@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id B6BB7F80132
+ for <alsa-devel@alsa-project.org>; Fri,  5 Jun 2020 19:18:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6BB7F80132
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
+ header.b="Q/hodN43"
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by
+ hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+ id <B5eda7e730000>; Fri, 05 Jun 2020 10:18:43 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+ by hqpgpgate101.nvidia.com (PGP Universal service);
+ Fri, 05 Jun 2020 10:18:54 -0700
+X-PGP-Universal: processed;
+ by hqpgpgate101.nvidia.com on Fri, 05 Jun 2020 10:18:54 -0700
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Jun
+ 2020 17:18:54 +0000
+Received: from krypton.plattnerplace.us.com (172.20.13.39) by
+ HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server id
+ 15.0.1473.3 via Frontend Transport; Fri, 5 Jun 2020 17:18:54 +0000
+From: Aaron Plattner <aplattner@nvidia.com>
+To: Takashi Iwai <tiwai@suse.com>, <alsa-devel@alsa-project.org>, "Jaroslav
+ Kysela" <perex@perex.cz>
+Subject: [PATCH] ALSA: hda: Add NVIDIA codec IDs 9a & 9d through a0 to patch
+ table
+Date: Fri, 5 Jun 2020 10:17:07 -0700
+Message-ID: <20200605171707.8587-1-aplattner@nvidia.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+ t=1591377523; bh=4vKiQC0k5/Y1e+l/fdi2Rbr4+Z932FCpGYPw+w3DM5A=;
+ h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+ MIME-Version:X-NVConfidentiality:Content-Transfer-Encoding:
+ Content-Type;
+ b=Q/hodN43vB/JJ3Z1HVP78W2LrW5ptEfI+AadaKDc98LaW/DiCjP/X48fLbvxNQf6E
+ lOnUqFXJMV0BlEToT4paVoVM8Zg6Y5HvBw1e14Ij1qW59tpzaed6KTbqCBIpCjunnn
+ 5uBt5oYjSpphbY4BuomJA8jA6G5EZaPse5Oz0B14z8o/VM4dZdW7lz1FnHgXkNsgtV
+ nzfZJYjcpuIw+39Z/8HQt//wqMvbVlhGONGc4a8BocC1/zTXnjHDZIvO8KzLwntH4v
+ mmBBkwq+T3GUsMyNq+95h9hTfKyp48+2e4UOtmoGcv7ZSohl1aRHP4/RiMFMqyz8XG
+ 9axOYzYUtpHtA==
+Cc: Nikhil Mahale <nmahale@nvidia.com>, linux-kernel@vger.kernel.org, Aaron
+ Plattner <aplattner@nvidia.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,15 +103,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 05 Jun 2020 13:01:34 +0200,
-Dan Carpenter wrote:
-> 
-> The "val" variable is an unsigned int so it's always <= UINT_MAX.  This
-> check is always true so it can be removed.
-> 
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Aaron Plattner <aplattner@nvidia.com>
+---
+ sound/pci/hda/patch_hdmi.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Applied, thanks.
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index fbd7cc6026d8..e2b21ef5d7d1 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -4145,6 +4145,11 @@ HDA_CODEC_ENTRY(0x10de0095, "GPU 95 HDMI/DP",	patch_=
+nvhdmi),
+ HDA_CODEC_ENTRY(0x10de0097, "GPU 97 HDMI/DP",	patch_nvhdmi),
+ HDA_CODEC_ENTRY(0x10de0098, "GPU 98 HDMI/DP",	patch_nvhdmi),
+ HDA_CODEC_ENTRY(0x10de0099, "GPU 99 HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de009a, "GPU 9a HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de009d, "GPU 9d HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de009e, "GPU 9e HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de009f, "GPU 9f HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de00a0, "GPU a0 HDMI/DP",	patch_nvhdmi),
+ HDA_CODEC_ENTRY(0x10de8001, "MCP73 HDMI",	patch_nvhdmi_2ch),
+ HDA_CODEC_ENTRY(0x10de8067, "MCP67/68 HDMI",	patch_nvhdmi_2ch),
+ HDA_CODEC_ENTRY(0x11069f80, "VX900 HDMI/DP",	patch_via_hdmi),
+--=20
+2.27.0
 
-
-Takashi
