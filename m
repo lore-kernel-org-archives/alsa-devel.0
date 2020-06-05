@@ -2,87 +2,108 @@ Return-Path: <SRS0=S+eB=7S=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MIME_BASE64_TEXT,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A4449C433DF
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 Jun 2020 10:59:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43721C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 Jun 2020 11:02:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2677A207D0
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 Jun 2020 10:59:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C27D5207D5
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 Jun 2020 11:02:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZCYpqDTI";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="q5kzpTKE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2677A207D0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kZNf1aKH";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="kyOWvtGb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C27D5207D5
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A2D07167A;
-	Fri,  5 Jun 2020 12:58:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A2D07167A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2638A1655;
+	Fri,  5 Jun 2020 13:02:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2638A1655
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591354777;
-	bh=aftpXunH1eDQjPXFO8QI2IEzKcVO0kd6k1ZnXlRllyc=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=ZCYpqDTIHoMHD4eKbYhMbiNcse3jjq18JyOsX+nVXKfzNBjplVgn9+27ZRSSTN5AN
-	 W6qkqymQ9c1T4cyz4oIJPXxPI9Bkbn6vr/QRG+no0s5Xq6A0ZUxDAuKqK1WrDvDor6
-	 s8RbA9c6j3nzFFI8LdVz4ZFfl/HU+G5Ja+nt8zxs=
+	s=default; t=1591354975;
+	bh=D7ETs0PIbOrtxRkTAyntNG1MlqDJOvpMcBV7CmFZwxM=;
+	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=kZNf1aKHOR/FKdng8T+Ie/F9DfCWdxCxpXRFa4k8P0N75RPV62EKyj1dBIExOjlOG
+	 4nWbQYM04RG8jvl96a+MQiFcIbePxvrItIIw9hZjKSxB1qY+9/JZ98vRS9w7KKSiNT
+	 4xUUy/iaZePuowSVUs6nicZ9o0GcAIwOJCmdHd74=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F30C6F80212;
-	Fri,  5 Jun 2020 12:58:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6D975F801EC;
+	Fri,  5 Jun 2020 13:01:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 021F0F8028A; Fri,  5 Jun 2020 12:58:29 +0200 (CEST)
-Received: from mailgw02.mediatek.com (unknown [1.203.163.81])
- by alsa1.perex.cz (Postfix) with ESMTP id 90FBEF801EC
- for <alsa-devel@alsa-project.org>; Fri,  5 Jun 2020 12:58:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90FBEF801EC
+ id E4A17F801ED; Fri,  5 Jun 2020 13:01:54 +0200 (CEST)
+Received: from userp2120.oracle.com (userp2120.oracle.com [156.151.31.85])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1E517F80132
+ for <alsa-devel@alsa-project.org>; Fri,  5 Jun 2020 13:01:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E517F80132
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com
- header.b="q5kzpTKE"
-X-UUID: 5a23448968a6405aa6d23791e456fa95-20200605
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com;
- s=dk; 
- h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
- bh=aftpXunH1eDQjPXFO8QI2IEzKcVO0kd6k1ZnXlRllyc=; 
- b=q5kzpTKE1GnRrlfGC5KCRFDhLvUfLRl0CYVPAWH2+mWbTHODnekQlMoGXww0khiUM15wKDDM287u4OxakLmQgsuVEQmkq7YsM0FQ6+/zG0ubtxVBC9DsI7LUF/RYnk9fqSgUZoxgAXtN2pKTCxncYiMqGsnreTrpvdtOmP0XuCI=;
-X-UUID: 5a23448968a6405aa6d23791e456fa95-20200605
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
- (envelope-from <jiaxin.yu@mediatek.com>)
- (mailgw01.mediatek.com ESMTP with TLS)
- with ESMTP id 1655380788; Fri, 05 Jun 2020 17:55:53 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- MTKMBS31N1.mediatek.inc (172.27.4.69) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 5 Jun 2020 17:55:52 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 5 Jun 2020 17:55:51 +0800
-From: Jiaxin Yu <jiaxin.yu@mediatek.com>
-To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <tiwai@suse.com>,
- <matthias.bgg@gmail.com>, <hariprasad.kelam@gmail.com>
-Subject: [v2, 2/2] ASoC: dt-bindings: mediatek: mt6358: add dmic-mode property
-Date: Fri, 5 Jun 2020 17:53:45 +0800
-Message-ID: <1591350825-18152-2-git-send-email-jiaxin.yu@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1591350825-18152-1-git-send-email-jiaxin.yu@mediatek.com>
-References: <1591350825-18152-1-git-send-email-jiaxin.yu@mediatek.com>
+ dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com
+ header.b="kyOWvtGb"
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+ by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 055AwQWk161962;
+ Fri, 5 Jun 2020 11:01:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
+ h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=Mx+BqpuuCLvvrJLCUOoA+Q1GJiz6R0T3Bxyce55kH4U=;
+ b=kyOWvtGbYmNJIt0vi4iJK6j6Uo94Y+kZBGbwmKCp7Chalm9j9h5dKflZmwerZjpHBxmh
+ 2F7m1mrVh5BNXp0buCo+eY7wHjbNaPOd0gKmwsFaG4rDfInIE9rZNOfqQRJyYGH/RPen
+ zwzD2cBZFDr5Ud44Goou8ov7u1vGeS0rkUd/+LSBi/Cgxt33Cd9Q7H5+puh99cxH6t88
+ VF7UOIeSy4JmcTDH3k2lBKAL0begjMHGmqUBDmWkoVGaXPLt0jz2L2KKcCNFcG1mKntR
+ IN632+w+4qSL6b2fNSvxsvtwDDCEiwmHcdYhvp6xdIl0OKqh8aRcGpcrCwtFe9BxYDB1 UA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+ by userp2120.oracle.com with ESMTP id 31f9262a04-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Fri, 05 Jun 2020 11:01:48 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+ by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 055Avdp9010100;
+ Fri, 5 Jun 2020 11:01:47 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+ by aserp3030.oracle.com with ESMTP id 31f925a5jv-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Fri, 05 Jun 2020 11:01:47 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+ by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 055B1fGt029976;
+ Fri, 5 Jun 2020 11:01:44 GMT
+Received: from mwanda (/41.57.98.10) by default (Oracle Beehive Gateway v4.0)
+ with ESMTP ; Fri, 05 Jun 2020 04:01:41 -0700
+Date: Fri, 5 Jun 2020 14:01:34 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: Jaroslav Kysela <perex@perex.cz>
+Subject: [PATCH] ALSA: emu10k1: delete an unnecessary condition
+Message-ID: <20200605110134.GC978434@mwanda>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: DA84537A393A2A092512B040C0A414505375F5DBD6BEBB53201491E8557FD55F2000:8
-X-MTK: N
-Content-Transfer-Encoding: base64
-Cc: alsa-devel@alsa-project.org, howie.huang@mediatek.com,
- linux-kernel@vger.kernel.org, Jiaxin Yu <jiaxin.yu@mediatek.com>,
- tzungbi@google.com, linux-mediatek@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9642
+ signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0
+ mlxlogscore=999
+ malwarescore=0 bulkscore=0 mlxscore=0 spamscore=0 suspectscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006050084
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9642
+ signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0
+ adultscore=0
+ suspectscore=0 cotscore=-2147483648 bulkscore=0 clxscore=1011
+ impostorscore=0 priorityscore=1501 malwarescore=0 mlxlogscore=999
+ spamscore=0 lowpriorityscore=0 mlxscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006050084
+Cc: Hariprasad Kelam <hariprasad.kelam@gmail.com>,
+ kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,21 +119,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-QWRkcyBkbWljLW1vZGUgcHJvcGVydHkgYW5kIHVwZGF0ZXMgZXhhbXBsZS4NCg0KU2lnbmVkLW9m
-Zi1ieTogSmlheGluIFl1IDxqaWF4aW4ueXVAbWVkaWF0ZWsuY29tPg0KLS0tDQogRG9jdW1lbnRh
-dGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL210NjM1OC50eHQgfCA2ICsrKysrKw0KIDEg
-ZmlsZSBjaGFuZ2VkLCA2IGluc2VydGlvbnMoKykNCg0KZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRp
-b24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9tdDYzNTgudHh0IGIvRG9jdW1lbnRhdGlvbi9k
-ZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL210NjM1OC50eHQNCmluZGV4IDU0NjU3MzAuLjU5YTcz
-ZmYgMTAwNjQ0DQotLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQv
-bXQ2MzU4LnR4dA0KKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5k
-L210NjM1OC50eHQNCkBAIC0xMCw5ICsxMCwxNSBAQCBSZXF1aXJlZCBwcm9wZXJ0aWVzOg0KIC0g
-Y29tcGF0aWJsZSA6ICJtZWRpYXRlayxtdDYzNTgtc291bmQiLg0KIC0gQXZkZC1zdXBwbHkgOiBw
-b3dlciBzb3VyY2Ugb2YgQVZERA0KIA0KK09wdGlvbmFsIHByb3BlcnRpZXM6DQorLSBtZWRpYXRl
-ayxkbWljLW1vZGUgOiBJbmRpY2F0ZXMgaG93IG1hbnkgZGF0YSBwaW5zIGFyZSB1c2VkIHRvIHRy
-YW5zbWl0IHR3bw0KKwljaGFubmVscyBvZiBQRE0gc2lnbmFsLiAwIG1lYW5zIHR3byB3aXJlcywg
-MSBtZWFucyBvbmUgd2lyZS4gRGVmYXVsdA0KKwl2YWx1ZSBpcyAwLg0KKw0KIEV4YW1wbGU6DQog
-DQogbXQ2MzU4X3NuZCB7DQogCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2MzU4LXNvdW5kIjsN
-CiAJQXZkZC1zdXBwbHkgPSA8Jm10NjM1OF92YXVkMjhfcmVnPjsNCisJbWVkaWF0ZWssZG1pYy1t
-b2RlID0gPDA+Ow0KIH07DQotLSANCjEuOC4xLjEuZGlydHkNCg==
+The "val" variable is an unsigned int so it's always <= UINT_MAX.  This
+check is always true so it can be removed.
+
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ sound/pci/emu10k1/emu10k1x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/pci/emu10k1/emu10k1x.c b/sound/pci/emu10k1/emu10k1x.c
+index ddb7c2ce3f7c9..def8161cde4c2 100644
+--- a/sound/pci/emu10k1/emu10k1x.c
++++ b/sound/pci/emu10k1/emu10k1x.c
+@@ -1040,7 +1040,7 @@ static void snd_emu10k1x_proc_reg_write(struct snd_info_entry *entry,
+ 		if (sscanf(line, "%x %x %x", &reg, &channel_id, &val) != 3)
+ 			continue;
+ 
+-		if (reg < 0x49 && val <= 0xffffffff && channel_id <= 2)
++		if (reg < 0x49 && channel_id <= 2)
+ 			snd_emu10k1x_ptr_write(emu, reg, channel_id, val);
+ 	}
+ }
+-- 
+2.26.2
 
