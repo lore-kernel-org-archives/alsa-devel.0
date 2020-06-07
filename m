@@ -7,52 +7,52 @@ X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5279C433E0
-	for <alsa-devel@archiver.kernel.org>; Sun,  7 Jun 2020 16:48:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1EF2C433E0
+	for <alsa-devel@archiver.kernel.org>; Sun,  7 Jun 2020 16:52:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 93D382073B
-	for <alsa-devel@archiver.kernel.org>; Sun,  7 Jun 2020 16:48:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9E08220663
+	for <alsa-devel@archiver.kernel.org>; Sun,  7 Jun 2020 16:52:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ggpLJVgm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 93D382073B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HGe1yl6h"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9E08220663
 Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0DE8A83B;
-	Sun,  7 Jun 2020 18:47:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0DE8A83B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 32ACF83B;
+	Sun,  7 Jun 2020 18:51:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32ACF83B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591548497;
-	bh=ymRiSmHByQlUz+FTvuSPgwVr8dvGPeG1hgjiaGyDSQs=;
+	s=default; t=1591548731;
+	bh=l6VTBOMSLE5MU3qbi4584UTx8UcsuEqK/UArZ1SJtQw=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ggpLJVgm239nxrEHP7n6uprKcqiMWbPLthco0AQnqvl1hVQstJJL3WjLReHWoWoY0
-	 Hf/46DciEtg4k0OQysOIwaTRTJnXtx8wMvyjhdBr8VfKHEUqzwkUEHt5awhB76dBe4
-	 uPtPMtdbqBNvmp3+rhLC5xSOLGsEDhviXpN5A+6E=
+	b=HGe1yl6hpHeS83U/Z00KwLlixKyWyyrv4RcRhQuDsdItkhjHNVcc/gZ1V86fAzb+j
+	 f0B3g1PsybPNqqAv3eEX5l/29o9St8c3J+NfYb0SEyBOFIaYRx6WqwcMAOc6gAzk1e
+	 kZdK6jm9F5SIjbEytlQoPqf153PuZU1iDvv6JXvQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7B7E2F80126;
-	Sun,  7 Jun 2020 18:47:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AA909F80131;
+	Sun,  7 Jun 2020 18:51:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 22110F80140; Sun,  7 Jun 2020 18:47:25 +0200 (CEST)
+ id EF6E9F80140; Sun,  7 Jun 2020 18:51:18 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 9781AF80126
- for <alsa-devel@alsa-project.org>; Sun,  7 Jun 2020 18:47:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9781AF80126
+ by alsa1.perex.cz (Postfix) with ESMTP id 2DC87F80122
+ for <alsa-devel@alsa-project.org>; Sun,  7 Jun 2020 18:51:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2DC87F80122
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
+From: GitHub pull_request - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1591548441905286074-webhooks-bot@alsa-project.org>
-References: <1591548441905286074-webhooks-bot@alsa-project.org>
+In-Reply-To: <1591548675031008959-webhooks-bot@alsa-project.org>
+References: <1591548675031008959-webhooks-bot@alsa-project.org>
 Subject: config for Renoir APU
-Message-Id: <20200607164725.22110F80140@alsa1.perex.cz>
-Date: Sun,  7 Jun 2020 18:47:25 +0200 (CEST)
+Message-Id: <20200607165118.EF6E9F80140@alsa1.perex.cz>
+Date: Sun,  7 Jun 2020 18:51:18 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,9 +68,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #31 was opened from perexg:
+alsa-project/alsa-ucm-conf pull request #31 was edited from perexg:
 
 This is just a test config (not for merge).
+
+BEWARE: This configuration is not intended for the broad use at the moment. It will broke other HDA Intel hardware.
 
 Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/31
 Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/31.patch
