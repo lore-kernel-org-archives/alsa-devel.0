@@ -2,78 +2,77 @@ Return-Path: <SRS0=1fsy=7W=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.9 required=3.0 tests=DATE_IN_PAST_06_12,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UPPERCASE_50_75,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CF4F3C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jun 2020 08:48:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0ACEDC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jun 2020 08:50:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 57AAA2078D
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jun 2020 08:48:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8AA3A20812
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jun 2020 08:50:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Yk67PASA";
-	dkim=pass (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="JBnzBn8z"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 57AAA2078D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kBE6gwKZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8AA3A20812
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E60461685;
-	Tue,  9 Jun 2020 10:47:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E60461685
+	by alsa0.perex.cz (Postfix) with ESMTPS id F1FB11681;
+	Tue,  9 Jun 2020 10:49:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F1FB11681
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591692513;
-	bh=p9NdsQwuuqm4JYEzcebI7ce+1u0J+19lgndur3qrAJk=;
-	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
+	s=default; t=1591692607;
+	bh=AXza4TfyHoz2WT8FVQFT404YIGsHcT/Bd3GEO8A+Qgo=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Yk67PASAYyfbqOVEcmqwgoldE1MGoNJLw9acwS3G0svc9fW9VRFtQ24Pjxe5AlRmN
-	 HgmK/N7rdnRtTK9Nm/N9yqvoxqIT4m+Cb1bGynrPQOkQ0cZjRY4nc936WxTnhR2lkf
-	 pLRQCp0agX7DoHh0ghJJ7NvZwFD41ZxsWhcfsQPI=
+	b=kBE6gwKZQeUxLyAhTCH/2cuZMfrBtDtois+/4KIphRni0PASDjmH4+WdZ7A4CUxTK
+	 8VqDaTAFDzfHa96kZfvreZThEzLyx1AqUzqWyj7x8RH7EQeWT0+BzwmtNOXZEKh8bq
+	 1QSA1RswlImqo4QFGuH+e0/+yzCF2zVugbIpcTAs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 83055F8028C;
-	Tue,  9 Jun 2020 10:47:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7C168F80291;
+	Tue,  9 Jun 2020 10:49:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E24ECF80291; Tue,  9 Jun 2020 10:47:40 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 19263F80088; Tue,  9 Jun 2020 10:49:15 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DCAC9F80278
- for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2020 10:47:34 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 90D0EA0040;
- Tue,  9 Jun 2020 10:47:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 90D0EA0040
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1591692453; bh=k+ZVmPxEVYWRMAV/dpT+Wskt+q2PgEwMo5c1ouGbYAk=;
- h=Subject:To:References:From:Date:In-Reply-To:From;
- b=JBnzBn8zN9hLcM0czn4AOPTG2hS72DAm7NSTaEAi0jFC7OJkvMB55xqOgUVxGVLob
- X6z7mFUPzGfVdROKiUWMy4lotTSGUFugVjXi3+GYpIsnUjtWv5ANw42waWd4alhbqJ
- SmAc+iLGUcTSwxGg/8xg7DJJ5aH42nsPFifYkfiY=
-Received: from p50.perex-int.cz (unknown [192.168.100.94])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Tue,  9 Jun 2020 10:47:31 +0200 (CEST)
-Subject: Re: [PATCH alsa-lib] conf: USB-Audio: Add HP Thunderbolt Dock in the
- IEC958 blacklist
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>, alsa-devel@alsa-project.org
-References: <20200608070923.11614-1-kai.heng.feng@canonical.com>
-From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <daf0223e-6ec0-c59e-daa6-99341ffaf68d@perex.cz>
-Date: Tue, 9 Jun 2020 10:47:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200608070923.11614-1-kai.heng.feng@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7B246F80088
+ for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2020 10:49:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B246F80088
+IronPort-SDR: qfIQKeZdk5X+htK8RqA9mm+KnI7SDl4q/AWdxcZlcxFdabetmESM8Z66XUQXViON5R2PCU/WyA
+ G1IJltubiJnQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Jun 2020 01:48:56 -0700
+IronPort-SDR: 8HJEABwRbp8PbmsJaiz9pJMCjWLzgu01R4yJQS/Q5BTBoJIHUa663NQl073yd8rQC1wgCssRmK
+ 3KZCOOjP/W1Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,491,1583222400"; d="scan'208";a="473001837"
+Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
+ by fmsmga005.fm.intel.com with ESMTP; 09 Jun 2020 01:48:52 -0700
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
+To: alsa-devel@alsa-project.org,
+	vkoul@kernel.org
+Subject: [PATCH 1/4] soundwire: add definitions for 1.2 spec
+Date: Tue,  9 Jun 2020 04:54:33 +0800
+Message-Id: <20200608205436.2402-2-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200608205436.2402-1-yung-chuan.liao@linux.intel.com>
+References: <20200608205436.2402-1-yung-chuan.liao@linux.intel.com>
+Cc: pierre-louis.bossart@linux.intel.com, vinod.koul@linaro.org, tiwai@suse.de,
+ gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+ ranjani.sridharan@linux.intel.com, hui.wang@canonical.com, broonie@kernel.org,
+ srinivas.kandagatla@linaro.org, jank@cadence.com, mengdong.lin@intel.com,
+ slawomir.blauciak@intel.com, sanyog.r.kale@intel.com,
+ rander.wang@linux.intel.com, bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,34 +88,164 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 08. 06. 20 v 9:09 Kai-Heng Feng napsal(a):
-> Both headset and speaker on HP Thunderbolt Dock don't support IEC958
-> interface.
-> 
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> ---
->   src/conf/cards/USB-Audio.conf | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/src/conf/cards/USB-Audio.conf b/src/conf/cards/USB-Audio.conf
-> index 735079e3..01664abf 100644
-> --- a/src/conf/cards/USB-Audio.conf
-> +++ b/src/conf/cards/USB-Audio.conf
-> @@ -62,6 +62,8 @@ USB-Audio.pcm.iec958_device {
->   	"Scarlett 2i4 USB" 999
->   	"Sennheiser USB headset" 999
->   	"SWTOR Gaming Headset by Razer" 999
-> +	"Thunderbolt Dock Audio Headset" 999
-> +	"Thunderbolt Dock Audio Module" 999
->   	"USB Device 0x46d_0x821" 999
->   	"USB Device 0x46d_0x992" 999
->   	"WD15 Dock" 999
-> 
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Applied to the alsa-lib's repo. Thank you.
+Add definitions for register offsets and bit fields from the MIPI
+SoundWire 1.2 specification (available to MIPI members at
+https://members.mipi.org/wg/All-Members/document/download/78371)
 
-					Jaroslav
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+---
+ include/linux/soundwire/sdw_registers.h | 107 +++++++++++++++++++++++-
+ 1 file changed, 106 insertions(+), 1 deletion(-)
 
+diff --git a/include/linux/soundwire/sdw_registers.h b/include/linux/soundwire/sdw_registers.h
+index a686f7988156..12f9ffc3eb3b 100644
+--- a/include/linux/soundwire/sdw_registers.h
++++ b/include/linux/soundwire/sdw_registers.h
+@@ -12,7 +12,7 @@
+ #define SDW_REG_SHIFT(n)			(ffs(n) - 1)
+ 
+ /*
+- * SDW registers as defined by MIPI 1.1 Spec
++ * SDW registers as defined by MIPI 1.2 Spec
+  */
+ #define SDW_REGADDR				GENMASK(14, 0)
+ #define SDW_SCP_ADDRPAGE2_MASK			GENMASK(22, 15)
+@@ -43,6 +43,8 @@
+ #define SDW_DP0_INT_TEST_FAIL			BIT(0)
+ #define SDW_DP0_INT_PORT_READY			BIT(1)
+ #define SDW_DP0_INT_BRA_FAILURE			BIT(2)
++#define SDW_DP0_SDCA_CASCADE			BIT(3)
++/* BIT(4) not allocated in SoundWire specification 1.2 */
+ #define SDW_DP0_INT_IMPDEF1			BIT(5)
+ #define SDW_DP0_INT_IMPDEF2			BIT(6)
+ #define SDW_DP0_INT_IMPDEF3			BIT(7)
+@@ -106,6 +108,10 @@
+ #define SDW_SCP_ADDRPAGE2			0x49
+ #define SDW_SCP_KEEPEREN			0x4A
+ #define SDW_SCP_BANKDELAY			0x4B
++#define SDW_SCP_COMMIT				0x4C
++#define SDW_SCP_BUS_CLOCK_BASE			0x4D
++#define SDW_SCP_BASE_CLOCK_FREQ			GENMASK(2, 0)
++/* 0x4E is not allocated in SoundWire specification 1.2 */
+ #define SDW_SCP_TESTMODE			0x4F
+ #define SDW_SCP_DEVID_0				0x50
+ #define SDW_SCP_DEVID_1				0x51
+@@ -114,12 +120,111 @@
+ #define SDW_SCP_DEVID_4				0x54
+ #define SDW_SCP_DEVID_5				0x55
+ 
++/* Both INT and STATUS register are same */
++#define SDW_SCP_SDCA_INT1			0x58
++#define SDW_SCP_SDCA_INT_SDCA_0			BIT(0)
++#define SDW_SCP_SDCA_INT_SDCA_1			BIT(1)
++#define SDW_SCP_SDCA_INT_SDCA_2			BIT(2)
++#define SDW_SCP_SDCA_INT_SDCA_3			BIT(3)
++#define SDW_SCP_SDCA_INT_SDCA_4			BIT(4)
++#define SDW_SCP_SDCA_INT_SDCA_5			BIT(5)
++#define SDW_SCP_SDCA_INT_SDCA_6			BIT(6)
++#define SDW_SCP_SDCA_INT_SDCA_7			BIT(7)
++
++#define SDW_SCP_SDCA_INT2			0x59
++#define SDW_SCP_SDCA_INT_SDCA_8			BIT(0)
++#define SDW_SCP_SDCA_INT_SDCA_9			BIT(1)
++#define SDW_SCP_SDCA_INT_SDCA_10		BIT(2)
++#define SDW_SCP_SDCA_INT_SDCA_11		BIT(3)
++#define SDW_SCP_SDCA_INT_SDCA_12		BIT(4)
++#define SDW_SCP_SDCA_INT_SDCA_13		BIT(5)
++#define SDW_SCP_SDCA_INT_SDCA_14		BIT(6)
++#define SDW_SCP_SDCA_INT_SDCA_15		BIT(7)
++
++#define SDW_SCP_SDCA_INT3			0x5A
++#define SDW_SCP_SDCA_INT_SDCA_16		BIT(0)
++#define SDW_SCP_SDCA_INT_SDCA_17		BIT(1)
++#define SDW_SCP_SDCA_INT_SDCA_18		BIT(2)
++#define SDW_SCP_SDCA_INT_SDCA_19		BIT(3)
++#define SDW_SCP_SDCA_INT_SDCA_20		BIT(4)
++#define SDW_SCP_SDCA_INT_SDCA_21		BIT(5)
++#define SDW_SCP_SDCA_INT_SDCA_22		BIT(6)
++#define SDW_SCP_SDCA_INT_SDCA_23		BIT(7)
++
++#define SDW_SCP_SDCA_INT4			0x5B
++#define SDW_SCP_SDCA_INT_SDCA_24		BIT(0)
++#define SDW_SCP_SDCA_INT_SDCA_25		BIT(1)
++#define SDW_SCP_SDCA_INT_SDCA_26		BIT(2)
++#define SDW_SCP_SDCA_INT_SDCA_27		BIT(3)
++#define SDW_SCP_SDCA_INT_SDCA_28		BIT(4)
++#define SDW_SCP_SDCA_INT_SDCA_29		BIT(5)
++#define SDW_SCP_SDCA_INT_SDCA_30		BIT(6)
++/* BIT(7) not allocated in SoundWire 1.2 specification */
++
++#define SDW_SCP_SDCA_INTMASK1			0x5C
++#define SDW_SCP_SDCA_INTMASK_SDCA_0		BIT(0)
++#define SDW_SCP_SDCA_INTMASK_SDCA_1		BIT(1)
++#define SDW_SCP_SDCA_INTMASK_SDCA_2		BIT(2)
++#define SDW_SCP_SDCA_INTMASK_SDCA_3		BIT(3)
++#define SDW_SCP_SDCA_INTMASK_SDCA_4		BIT(4)
++#define SDW_SCP_SDCA_INTMASK_SDCA_5		BIT(5)
++#define SDW_SCP_SDCA_INTMASK_SDCA_6		BIT(6)
++#define SDW_SCP_SDCA_INTMASK_SDCA_7		BIT(7)
++
++#define SDW_SCP_SDCA_INTMASK2			0x5D
++#define SDW_SCP_SDCA_INTMASK_SDCA_8		BIT(0)
++#define SDW_SCP_SDCA_INTMASK_SDCA_9		BIT(1)
++#define SDW_SCP_SDCA_INTMASK_SDCA_10		BIT(2)
++#define SDW_SCP_SDCA_INTMASK_SDCA_11		BIT(3)
++#define SDW_SCP_SDCA_INTMASK_SDCA_12		BIT(4)
++#define SDW_SCP_SDCA_INTMASK_SDCA_13		BIT(5)
++#define SDW_SCP_SDCA_INTMASK_SDCA_14		BIT(6)
++#define SDW_SCP_SDCA_INTMASK_SDCA_15		BIT(7)
++
++#define SDW_SCP_SDCA_INTMASK3			0x5E
++#define SDW_SCP_SDCA_INTMASK_SDCA_16		BIT(0)
++#define SDW_SCP_SDCA_INTMASK_SDCA_17		BIT(1)
++#define SDW_SCP_SDCA_INTMASK_SDCA_18		BIT(2)
++#define SDW_SCP_SDCA_INTMASK_SDCA_19		BIT(3)
++#define SDW_SCP_SDCA_INTMASK_SDCA_20		BIT(4)
++#define SDW_SCP_SDCA_INTMASK_SDCA_21		BIT(5)
++#define SDW_SCP_SDCA_INTMASK_SDCA_22		BIT(6)
++#define SDW_SCP_SDCA_INTMASK_SDCA_23		BIT(7)
++
++#define SDW_SCP_SDCA_INTMASK4			0x5F
++#define SDW_SCP_SDCA_INTMASK_SDCA_24		BIT(0)
++#define SDW_SCP_SDCA_INTMASK_SDCA_25		BIT(1)
++#define SDW_SCP_SDCA_INTMASK_SDCA_26		BIT(2)
++#define SDW_SCP_SDCA_INTMASK_SDCA_27		BIT(3)
++#define SDW_SCP_SDCA_INTMASK_SDCA_28		BIT(4)
++#define SDW_SCP_SDCA_INTMASK_SDCA_29		BIT(5)
++#define SDW_SCP_SDCA_INTMASK_SDCA_30		BIT(6)
++/* BIT(7) not allocated in SoundWire 1.2 specification */
++
+ /* Banked Registers */
+ #define SDW_SCP_FRAMECTRL_B0			0x60
+ #define SDW_SCP_FRAMECTRL_B1			(0x60 + SDW_BANK1_OFFSET)
+ #define SDW_SCP_NEXTFRAME_B0			0x61
+ #define SDW_SCP_NEXTFRAME_B1			(0x61 + SDW_BANK1_OFFSET)
+ 
++#define SDW_SCP_BUSCLOCK_SCALE_B0		0x62
++#define SDW_SCP_BUSCLOCK_SCALE_B1		(0x62 + SDW_BANK1_OFFSET)
++#define SDW_SCP_CLOCK_SCALE			GENMASK(3, 0)
++
++/* PHY registers - CTRL and STAT are the same address */
++#define SDW_SCP_PHY_OUT_CTRL_0			0x80
++#define SDW_SCP_PHY_OUT_CTRL_1			0x81
++#define SDW_SCP_PHY_OUT_CTRL_2			0x82
++#define SDW_SCP_PHY_OUT_CTRL_3			0x83
++#define SDW_SCP_PHY_OUT_CTRL_4			0x84
++#define SDW_SCP_PHY_OUT_CTRL_5			0x85
++#define SDW_SCP_PHY_OUT_CTRL_6			0x86
++#define SDW_SCP_PHY_OUT_CTRL_7			0x87
++
++#define SDW_SCP_CAP_LOAD_CTRL			GENMASK(2, 0)
++#define SDW_SCP_DRIVE_STRENGTH_CTRL		GENMASK(5, 3)
++#define SDW_SCP_SLEW_TIME_CTRL			GENMASK(7, 6)
++
+ /* Both INT and STATUS register is same */
+ #define SDW_DPN_INT(n)				(0x0 + SDW_DPN_SIZE * (n))
+ #define SDW_DPN_INTMASK(n)			(0x1 + SDW_DPN_SIZE * (n))
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+2.17.1
+
