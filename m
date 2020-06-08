@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 61A1EC433DF
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Jun 2020 23:19:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C616C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Jun 2020 23:19:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DE70020872
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Jun 2020 23:19:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 05FB420885
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Jun 2020 23:19:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gLXHQEYG";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Pfy2QRSJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DE70020872
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="q0hVzysU";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="xIpvUNol"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 05FB420885
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7B4C01607;
-	Tue,  9 Jun 2020 01:18:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B4C01607
+	by alsa0.perex.cz (Postfix) with ESMTPS id 999841670;
+	Tue,  9 Jun 2020 01:18:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 999841670
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591658361;
-	bh=JnivCYcVOZ73WwbFWkQucbsHSKqUdGvKU95EX62tYBQ=;
+	s=default; t=1591658384;
+	bh=D+iRbQC6z8MOvPf+wJ8QtqomMFjyJtXjEcd/jU/C5hg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gLXHQEYGNUuSPCGzDkk+RVNg+slblgdhwEiobhnLGwhD7C1Ap/at1/3ndqZQTgyds
-	 SI2vKVtO11DCPFlLFkPsvmRi/btZmhFXrr929k3ax0x/FN3teDCDR3aMA6YZFMpd6+
-	 hhl00WBil781hhT/ZQPAdNBk/HT7ZJGxCMqgQTKs=
+	b=q0hVzysUxzT87ZbY3+bW/953X3XpoZ6BrBbU3/KZcUx0YayOEq2CwJFf+L4oDb1x1
+	 4QXRs4qs7KZdRrzmQzyaPPOHYVNpxyiWJ6TsjkYi9/YZnbPEtcAIKY91EUTHdFYEc6
+	 t42sL+XGjNX1gcbElt7U98MREugp4Y6ToZNRMyT8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 38136F802FD;
-	Tue,  9 Jun 2020 01:15:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 23360F802E9;
+	Tue,  9 Jun 2020 01:15:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 18B1FF8021E; Tue,  9 Jun 2020 01:15:08 +0200 (CEST)
+ id 74263F801EB; Tue,  9 Jun 2020 01:15:09 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0553EF80252
- for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2020 01:14:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0553EF80252
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3A7AEF801EB
+ for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2020 01:15:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A7AEF801EB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Pfy2QRSJ"
+ header.b="xIpvUNol"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id E2FFA21534;
- Mon,  8 Jun 2020 23:14:56 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 1310B21532;
+ Mon,  8 Jun 2020 23:14:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1591658097;
- bh=JnivCYcVOZ73WwbFWkQucbsHSKqUdGvKU95EX62tYBQ=;
+ s=default; t=1591658098;
+ bh=D+iRbQC6z8MOvPf+wJ8QtqomMFjyJtXjEcd/jU/C5hg=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=Pfy2QRSJUgcTMqjQr0g11kIETH6v3yyxrywI0DE1WWMoAg4uSq6Jbk+uqo1m6eXWD
- yrMknGtYka4FruzoNuSn/ViLokkCa2s5uAfaOFRV+rrWPR0naqMcymp7QGlgX25FQ/
- hMqMrJqkctGZ3cuPTKslUTZpRxB01pU+vv164T1k=
+ b=xIpvUNolhX/wA/4iDCt0rNSSJX1h0cfPNIR0yt29tZ5v3hNMbnJl7uVIKJ8TLc/x4
+ Vwd+rVDK/1J5bqSsFDi8+Vl7ccMwAfn0JeoDn2t1yNhdWMaWR2f3baZ+N8kmRFAiCa
+ x/MzRQ8vPbXO5YMenm7P/FLVz6ZVE5aqsVdEDC9M=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 139/606] ALSA: hda/realtek - Enable headset mic of
- ASUS UX550GE with ALC295
-Date: Mon,  8 Jun 2020 19:04:24 -0400
-Message-Id: <20200608231211.3363633-139-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.6 140/606] ALSA: hda/realtek: Enable headset mic of
+ ASUS UX581LV with ALC295
+Date: Mon,  8 Jun 2020 19:04:25 -0400
+Message-Id: <20200608231211.3363633-140-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
 References: <20200608231211.3363633-1-sashal@kernel.org>
@@ -76,8 +76,7 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Takashi Iwai <tiwai@suse.de>, Jian-Hong Pan <jian-hong@endlessm.com>,
- alsa-devel@alsa-project.org, Sasha Levin <sashal@kernel.org>,
- Daniel Drake <drake@endlessm.com>
+ alsa-devel@alsa-project.org, Sasha Levin <sashal@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,35 +94,32 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Jian-Hong Pan <jian-hong@endlessm.com>
 
-[ Upstream commit ad97d667854c2fbce05a004e107f358ef4b04cf6 ]
+[ Upstream commit 7900e81797613b92f855f9921392a7430cbdf88c ]
 
-The ASUS laptop UX550GE with ALC295 can't detect the headset microphone
-until ALC295_FIXUP_ASUS_MIC_NO_PRESENCE quirk applied.
+The ASUS UX581LV laptop's audio (1043:19e1) with ALC295 can't detect the
+headset microphone until ALC295_FIXUP_ASUS_MIC_NO_PRESENCE quirk
+applied.
 
 Signed-off-by: Jian-Hong Pan <jian-hong@endlessm.com>
-Signed-off-by: Daniel Drake <drake@endlessm.com>
-Link: https://lore.kernel.org/r/20200512061525.133985-2-jian-hong@endlessm.com
+Link: https://lore.kernel.org/r/20200512061525.133985-3-jian-hong@endlessm.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_realtek.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index f92cd420e98d..ece762d0c714 100644
+index ece762d0c714..dc2302171a71 100644
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -8050,6 +8050,10 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
- 		{0x12, 0x90a60130},
- 		{0x17, 0x90170110},
- 		{0x21, 0x03211020}),
-+	SND_HDA_PIN_QUIRK(0x10ec0295, 0x1043, "ASUS", ALC295_FIXUP_ASUS_MIC_NO_PRESENCE,
-+		{0x12, 0x90a60120},
-+		{0x17, 0x90170110},
-+		{0x21, 0x04211030}),
- 	SND_HDA_PIN_QUIRK(0x10ec0295, 0x1043, "ASUS", ALC295_FIXUP_ASUS_MIC_NO_PRESENCE,
- 		{0x12, 0x90a60130},
- 		{0x17, 0x90170110},
+@@ -7436,6 +7436,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1043, 0x18b1, "Asus MJ401TA", ALC256_FIXUP_ASUS_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x18f1, "Asus FX505DT", ALC256_FIXUP_ASUS_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x19ce, "ASUS B9450FA", ALC294_FIXUP_ASUS_HPE),
++	SND_PCI_QUIRK(0x1043, 0x19e1, "ASUS UX581LV", ALC295_FIXUP_ASUS_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1043, 0x1a13, "Asus G73Jw", ALC269_FIXUP_ASUS_G73JW),
+ 	SND_PCI_QUIRK(0x1043, 0x1a30, "ASUS X705UD", ALC256_FIXUP_ASUS_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x1b11, "ASUS UX431DA", ALC294_FIXUP_ASUS_COEF_1B),
 -- 
 2.25.1
 
