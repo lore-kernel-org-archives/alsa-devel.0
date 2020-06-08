@@ -2,71 +2,78 @@ Return-Path: <SRS0=Yvqk=7V=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EBF63C433DF
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Jun 2020 19:45:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DD622C433DF
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Jun 2020 19:46:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 71C2C2074B
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Jun 2020 19:45:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 68400206D5
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Jun 2020 19:46:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XcPUGFj/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 71C2C2074B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SH3lCcOH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 68400206D5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 08EB315E4;
-	Mon,  8 Jun 2020 21:44:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 08EB315E4
+	by alsa0.perex.cz (Postfix) with ESMTPS id BF576166C;
+	Mon,  8 Jun 2020 21:45:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF576166C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591645520;
-	bh=oXPLta8h6ke+n8/Dkm39sD8M8iu5cVfFoJiUlHtjGzg=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=XcPUGFj/2mu/hB95FF2qLpIlxrOy43tbaen6xyRfJNiUnW2fWvo6E5FegvMEkLcZM
-	 73YKimIQ8U/mdXn5qZ4s822ekR+o7/kJjXiTlq4VxSXVMS/tjDuMBuUzre6OZ/JAj8
-	 0xGarz+JMZ7VWbvPSroJp/XAK20IIQIgWCFok8+g=
+	s=default; t=1591645572;
+	bh=iYnLUUoT7QjsntA8aDmigolLBVQKuYk1TXnaGMKewYk=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=SH3lCcOHOTItT3o8lxqZFRQDiRxga5nJ96tul0bZeLgeGxpY0nUIcZ5+I22VX7TMp
+	 2RY51HaOKwy556fqg/hMEBVkNXHg1F6piDwtexWOD8JOhKatEg/6txnLQcYuXoJezI
+	 V2DZlMdGRkv8oloN6JETGWXEwxC20pbvvJAj8x/Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 45F5EF80252;
-	Mon,  8 Jun 2020 21:44:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E5B8AF80276;
+	Mon,  8 Jun 2020 21:44:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B726BF80252; Mon,  8 Jun 2020 21:44:27 +0200 (CEST)
+ id 934F0F802A1; Mon,  8 Jun 2020 21:44:31 +0200 (CEST)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D7911F801EB
- for <alsa-devel@alsa-project.org>; Mon,  8 Jun 2020 21:44:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7911F801EB
-IronPort-SDR: d6m9+RU88Ohi47CYqnylRQpdChLdJkd9rBk2Upm7+dJVRl4t8Io1ax1F5Z2XB2LlSI7QTRDpNV
- KKOTa46bq/rw==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 09700F80124
+ for <alsa-devel@alsa-project.org>; Mon,  8 Jun 2020 21:44:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 09700F80124
+IronPort-SDR: iy/1yviSck7gFewjsqT/KsLXsgvgH8WwANaJI1vHfrfPTi212jHa7aBpD7zRiMy5wlCi5SXWER
+ r+8G3HLqhJHQ==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Jun 2020 12:44:20 -0700
-IronPort-SDR: 3G+K0ioGlBTeYapc9jtn0+Y/ecuqAC1R98HF+NAI+TO7SoR05jMj0QQrC8cZBZZVMnlG7pUQIW
- w9dyTVfXjqlg==
+ 08 Jun 2020 12:44:21 -0700
+IronPort-SDR: njzU0ryGkkqGIbbNgi0fn6gOAL77h5n9VT5F/tRa+pGA/VvpASzKFaEz+uwJXqnQ6nJOzESrQu
+ 61cCjSn1GwUw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,487,1583222400"; d="scan'208";a="305939476"
+X-IronPort-AV: E=Sophos;i="5.73,487,1583222400"; d="scan'208";a="305939478"
 Received: from skarmaka-mobl2.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.254.104.56])
  by fmsmga002.fm.intel.com with ESMTP; 08 Jun 2020 12:44:20 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 0/4] ASoC: Fix dailink checks for DPCM
-Date: Mon,  8 Jun 2020 14:44:11 -0500
-Message-Id: <20200608194415.4663-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 1/4] ASoC: soc-pcm: dpcm: fix playback/capture checks
+Date: Mon,  8 Jun 2020 14:44:12 -0500
+Message-Id: <20200608194415.4663-2-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200608194415.4663-1-pierre-louis.bossart@linux.intel.com>
+References: <20200608194415.4663-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ Daniel Baluta <daniel.baluta@gmail.com>, tiwai@suse.de,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,29 +89,83 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We've had a couple of changes that introduce regressions with the
-multi-cpu DAI solutions, and while trying to fix them we found
-additional inconsistencies that should also go to stable branches.
+Recent changes in the ASoC core prevent multi-cpu BE dailinks from
+being used. DPCM does support multi-cpu DAIs for BE Dailinks, but not
+for FE.
 
-Bard Liao (1):
-  ASoC: core: only convert non DPCM link to DPCM link
+Handle the FE checks first, and make sure all DAIs support the same
+capabilities within the same dailink.
 
-Pierre-Louis Bossart (3):
-  ASoC: soc-pcm: dpcm: fix playback/capture checks
-  ASoC: Intel: boards: replace capture_only by dpcm_capture
-  ASoC: SOF: nocodec: conditionally set dpcm_capture/dpcm_playback flags
+BugLink: https://github.com/thesofproject/linux/issues/2031
+Fixes: 9b5db059366ae2 ("ASoC: soc-pcm: dpcm: Only allow playback/capture if supported")
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Daniel Baluta <daniel.baluta@gmail.com>
+---
+ sound/soc/soc-pcm.c | 44 ++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 34 insertions(+), 10 deletions(-)
 
- sound/soc/intel/boards/glk_rt5682_max98357a.c |  2 +-
- sound/soc/intel/boards/kbl_da7219_max98927.c  |  4 +-
- sound/soc/intel/boards/kbl_rt5663_max98927.c  |  2 +-
- .../intel/boards/kbl_rt5663_rt5514_max98927.c |  2 +-
- sound/soc/soc-core.c                          | 22 ++++++++--
- sound/soc/soc-pcm.c                           | 44 ++++++++++++++-----
- sound/soc/sof/nocodec.c                       |  6 ++-
- 7 files changed, 62 insertions(+), 20 deletions(-)
-
-
-base-commit: 8a9144c1cf523221b37dd3393827253c91fcbf54
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 276505fb9d50..2c114b4542ce 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2789,20 +2789,44 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ 	struct snd_pcm *pcm;
+ 	char new_name[64];
+ 	int ret = 0, playback = 0, capture = 0;
++	int stream;
+ 	int i;
+ 
++	if (rtd->dai_link->dynamic && rtd->num_cpus > 1) {
++		dev_err(rtd->dev,
++			"DPCM doesn't support Multi CPU for Front-Ends yet\n");
++		return -EINVAL;
++	}
++
+ 	if (rtd->dai_link->dynamic || rtd->dai_link->no_pcm) {
+-		cpu_dai = asoc_rtd_to_cpu(rtd, 0);
+-		if (rtd->num_cpus > 1) {
+-			dev_err(rtd->dev,
+-				"DPCM doesn't support Multi CPU yet\n");
+-			return -EINVAL;
++		if (rtd->dai_link->dpcm_playback) {
++			stream = SNDRV_PCM_STREAM_PLAYBACK;
++
++			for_each_rtd_cpu_dais(rtd, i, cpu_dai)
++				if (!snd_soc_dai_stream_valid(cpu_dai,
++							      stream)) {
++					dev_err(rtd->card->dev,
++						"CPU DAI %s for rtd %s does not support playback\n",
++						cpu_dai->name,
++						rtd->dai_link->stream_name);
++					return -EINVAL;
++				}
++			playback = 1;
++		}
++		if (rtd->dai_link->dpcm_capture) {
++			stream = SNDRV_PCM_STREAM_CAPTURE;
++
++			for_each_rtd_cpu_dais(rtd, i, cpu_dai)
++				if (!snd_soc_dai_stream_valid(cpu_dai,
++							      stream)) {
++					dev_err(rtd->card->dev,
++						"CPU DAI %s for rtd %s does not support capture\n",
++						cpu_dai->name,
++						rtd->dai_link->stream_name);
++					return -EINVAL;
++				}
++			capture = 1;
+ 		}
+-
+-		playback = rtd->dai_link->dpcm_playback &&
+-			   snd_soc_dai_stream_valid(cpu_dai, SNDRV_PCM_STREAM_PLAYBACK);
+-		capture = rtd->dai_link->dpcm_capture &&
+-			  snd_soc_dai_stream_valid(cpu_dai, SNDRV_PCM_STREAM_CAPTURE);
+ 	} else {
+ 		/* Adapt stream for codec2codec links */
+ 		int cpu_capture = rtd->dai_link->params ?
 -- 
 2.20.1
 
