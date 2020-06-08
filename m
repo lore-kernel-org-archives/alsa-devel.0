@@ -2,66 +2,67 @@ Return-Path: <SRS0=Yvqk=7V=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1890C433DF
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Jun 2020 13:04:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AAF98C433E1
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Jun 2020 13:36:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A45E62076A
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Jun 2020 13:04:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3875C206C3
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Jun 2020 13:36:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VM/bDDH9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A45E62076A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YLeOMFHt"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3875C206C3
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4123215E2;
-	Mon,  8 Jun 2020 15:03:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4123215E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id AF64E15E2;
+	Mon,  8 Jun 2020 15:35:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF64E15E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591621477;
-	bh=1I/9gKuBHClxZfIDUYz48L1J0H5p16iekkGgRz9NC3o=;
+	s=default; t=1591623403;
+	bh=5LS40918utfv2r+WYIYWKVpQHjWnzmhgEZ+P6FC0RIc=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VM/bDDH9sIvXVm9EuoimKT3Z86JqcbWuFewZKul9AkTXDKwkiC+m0dcgnbB9FMj8T
-	 GNrLFYZupFaAwBDsDOiFJ+muMa4mNPpflzTNYlJZX2DIzLH/I6sKGAAhMPOMsxCE7V
-	 FvJ8GHOPsOJSvUWwOaWJTrd1CtvCxEiYvx4SoAfQ=
+	b=YLeOMFHtkYfKSyACX2nnbBedWNK1TbRwA9newCYnJWMe1whBU/hBPniPRbUbU0wIx
+	 Yj0pLjjYGztw+1yupUoGpqGhBOq26M38SsrWpNroxO9pX+ZBpTBoIMcRajkMSeexiJ
+	 xmZaoCOlAdzrYoUzLHI6TJEeVmXL2hcWGhsgPnW4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DC281F8021C;
-	Mon,  8 Jun 2020 15:03:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 21BEFF801F7;
+	Mon,  8 Jun 2020 15:35:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D064EF8021E; Mon,  8 Jun 2020 15:03:45 +0200 (CEST)
+ id 29308F8021C; Mon,  8 Jun 2020 15:35:50 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 01B82F801EB
- for <alsa-devel@alsa-project.org>; Mon,  8 Jun 2020 15:03:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01B82F801EB
+ by alsa1.perex.cz (Postfix) with ESMTPS id BBB44F80125
+ for <alsa-devel@alsa-project.org>; Mon,  8 Jun 2020 15:35:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BBB44F80125
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 2B923AC24;
- Mon,  8 Jun 2020 13:03:43 +0000 (UTC)
-Date: Mon, 08 Jun 2020 15:03:39 +0200
-Message-ID: <s5h1rmp676c.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 36F9CAC2D;
+ Mon,  8 Jun 2020 13:35:48 +0000 (UTC)
+Date: Mon, 08 Jun 2020 15:35:44 +0200
+Message-ID: <s5htuzl4r4f.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Hui Wang <hui.wang@canonical.com>
-Subject: Re: [PATCH] ALSA: hda/realtek - add a pintbl quirk for several Lenovo
- machines
-In-Reply-To: <20200608115541.9531-1-hui.wang@canonical.com>
-References: <20200608115541.9531-1-hui.wang@canonical.com>
+To: Thomas Ebeling <penguins@bollie.de>
+Subject: Re: Clock sync problem?
+In-Reply-To: <14f91307-c121-a9f8-4045-1319ee0ca49e@bollie.de>
+References: <20200607133959.kmljpqdwefuio3mk@overdrive.tratt.net>
+ <s5hk10i58io.wl-tiwai@suse.de>
+ <14f91307-c121-a9f8-4045-1319ee0ca49e@bollie.de>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,18 +78,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 08 Jun 2020 13:55:41 +0200,
-Hui Wang wrote:
+On Mon, 08 Jun 2020 10:32:24 +0200,
+Thomas Ebeling wrote:
 > 
-> A couple of Lenovo ThinkCentre machines all have 2 front mics and they
-> use the same codec alc623 and have the same pin config, so add a
-> pintbl entry for those machines to apply the fixup
-> ALC283_FIXUP_HEADSET_MIC.
 > 
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Hui Wang <hui.wang@canonical.com>
+> On 08.06.20 09:19, Takashi Iwai wrote:
+> > On Sun, 07 Jun 2020 15:39:59 +0200,
+> > Laurence Tratt wrote:
+> >> Hello,
+> >>
+> >> I've found an interesting issue with an SSL2+ audio interface -- it plays and
+> >> records fine (and, for the money, the sound quality is excellent!), but
+> >> recording slowly but surely drifts over time. For example, if I record a
+> >> click track in Audacity (or Ardour), play it through the interface and record
+> >> it, and then line up the start of the recorded click track with the original,
+> >> the two tracks will be around 5ms out of alignment after 30s. Interestingly,
+> >> this problem does not happen with OpenBSD, where the two tracks line up
+> >> precisely.
+> >>
+> > The recent change in USB-audio might help for a case like yours.
+> > Try my sound git tree (for-linus branch) or Linus' tree.  The former
+> > should be pullable onto 5.7 kernel cleanly.
+> 
+> Since I recently had clock drift issues with Audient devices, I'm
+> intrigued by this. @Takashi Can you quickly elaborate, what you think,
+> Laurance's issue might be and what has changed in that tree that might
+> help him fix it? Is there some general issue with the current (stable)
+> sound/usb implementation?
 
-Applied now.  Thanks.
+The frame size calculation in USB-audio driver wasn't accurate enough
+because of the computation in Q16.16 format.  It works OK for async
+mode, but for others, it can accumulate rounding errors.  The recent
+change corrected it for a more precise way.
 
 
 Takashi
