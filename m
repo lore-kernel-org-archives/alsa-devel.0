@@ -2,86 +2,100 @@ Return-Path: <SRS0=Yvqk=7V=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 14849C433DF
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Jun 2020 13:46:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B84EFC433E0
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Jun 2020 13:54:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 92A23206C3
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Jun 2020 13:46:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 45C1D206C3
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Jun 2020 13:54:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gb0lwVk9";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="lrbYsQ4C"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 92A23206C3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PaFd/UH+";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=yahoo.ca header.i=@yahoo.ca header.b="KtH6DbBt"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 45C1D206C3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=yahoo.ca
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 20F4E74C;
-	Mon,  8 Jun 2020 15:45:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20F4E74C
+	by alsa0.perex.cz (Postfix) with ESMTPS id CE0F415E5;
+	Mon,  8 Jun 2020 15:53:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE0F415E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591624007;
-	bh=qiecchmIWbrt0Nxzq9q3HyJJNNZ8ZsZPPg0EEpB3wLU=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1591624481;
+	bh=+lO5rhCh9+fUN7MvvqOtweNDVyY6Q/kFyUZrMiU+luk=;
+	h=Date:From:Subject:To:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gb0lwVk9ukS2Tu7V2MAER+lkzdD7Zs95Wr2eUiH/N6oL3MkNU4nZcXNGn7dUS4/Wi
-	 imJrxNQra+1LzmSx0zhrwuRsV+f/9ArR2g9InrvxTyHJuPCTsURHUoDgbmIkmdWYwq
-	 jb2JSLQo+km+XuoBsHa5jGmm8K4u0mN9llyPVXbE=
+	b=PaFd/UH+QTV9alD0b1LhRJPVoru3xEJItU84C1xD9tPlmSOlNG5qDPuzzpT603bjX
+	 NnHahfSsaVr3Glujhqo04kusCYWcjRt/RVQXcJWvQCbMfWCpnndDwWUEyHx9+txwSa
+	 tYctqgK28t/e2saao18W3Xw7oskRHWOJ7fRruyBE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A5D1DF801F7;
-	Mon,  8 Jun 2020 15:45:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6CFDFF801F7;
+	Mon,  8 Jun 2020 15:53:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 78A46F8021C; Mon,  8 Jun 2020 15:45:55 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 51465F8021C; Mon,  8 Jun 2020 15:53:48 +0200 (CEST)
+Received: from sonic315-54.consmr.mail.gq1.yahoo.com
+ (sonic315-54.consmr.mail.gq1.yahoo.com [98.137.65.30])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C402DF80124
- for <alsa-devel@alsa-project.org>; Mon,  8 Jun 2020 15:45:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C402DF80124
+ by alsa1.perex.cz (Postfix) with ESMTPS id 62412F80124
+ for <alsa-devel@alsa-project.org>; Mon,  8 Jun 2020 15:53:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62412F80124
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="lrbYsQ4C"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id C78C7206C3;
- Mon,  8 Jun 2020 13:45:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1591623949;
- bh=qiecchmIWbrt0Nxzq9q3HyJJNNZ8ZsZPPg0EEpB3wLU=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=lrbYsQ4C6zf/CNN6TOZLVIAE9nQq2fRWei/vojInFog5x3/u8kGlozX6ZC+9C3RO1
- jtHfURXJTpcE1WHpZ6a9Pr864zofd/5gGsWJFHCMGFh/aD8kPuwLHkXA1X/qTW/7pM
- F+LymKvYvvanScEd5E6LlI2sDrgudip8gRpExMCs=
-Date: Mon, 8 Jun 2020 14:45:46 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Phil Burk <philburk@google.com>
-Subject: Re: [PATCH 0/2 v4] ALSA: pcm: anonymous dup implementation
-Message-ID: <20200608134546.GG4593@sirena.org.uk>
-References: <20190204093910.23878-1-perex@perex.cz>
- <20190326140928.GC10898@sirena.org.uk>
- <s5hva0567vs.wl-tiwai@suse.de>
- <CACL=Q7we61BwO81W7tQFvb9ohkBZkk34DSXL2B-Ky2B6zfWk1A@mail.gmail.com>
- <f5b429c6-803c-b624-6d39-5001c76e892f@perex.cz>
- <s5hd0lcppbn.wl-tiwai@suse.de>
- <CACL=Q7xSpeqyQzDyexCr+Nxs+nf3o9doaHGxiu-y8biK9w_9YQ@mail.gmail.com>
+ dkim=pass (2048-bit key) header.d=yahoo.ca header.i=@yahoo.ca
+ header.b="KtH6DbBt"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.ca; s=s2048;
+ t=1591624417; bh=vPdSC9RDi96NLOsNFr4cII1XXBVFfG4RFcgJU7lzBr8=;
+ h=Date:From:Subject:To:Cc:References:In-Reply-To:From:Subject;
+ b=KtH6DbBtit5olgOZtTxegWp/7HWrpwdOCvcrN1j1GwUQy1CQIGp7qznZ4EhLTKXAf7AQnCPZBe8abrjThPLhhkgsP0dW9VjxZzUPg8vrEFN8yBYNsEkihTW1lwISIEVn5eJcZrovOfXHdEFcOUWEElK/3nU4YByGpdxM/KUaMEymk/H/Le8bS4URa69DXTmNWG+P7ixC92u3Ar+qqA48ecG9zhbU0WUTJfTGIMeIWEWahqn8IgDzMyhvutzncqdXcAXpaBmabkuDfbDuo3sPnUmLMFv+i5kA8u1oBJqe7U0ZAmSs9WpR7GYev28c0mcU7qvoG+N1aeY2P5be2WP44g==
+X-YMail-OSG: KWOfl5gVM1lx_Pq.Vy9gypwnAmgIRXKJ6qHlvgPn5Plidk5SOt.dJJbx8OOKSFp
+ EK7FgREj18k94yIzvaozi_UrzDr.yhDQwc5A1_qV9SGeWnr_AiHYRUeIR_pegP5qqgNjLDHF3t_H
+ lQxTEYJ_Mhtj7lgEyDz81zsCRM0aW9YoFyi16yrA4lWnaLROgGL9fVaBrtxAKd6ixeeeOYPiI7a2
+ 3jIyZl9VTG0iD2j8MjJYv.RgysP0_OYuGOHfuw1GCggUYULvomcJJaQDKTgW46412zhbph.9SpZG
+ rPaMs_dT1N6gQ8sACwD8Pkw_zuzKgBny6YT6xLzBsFG_oI1rvd6bdKgShN4jPhmMiRI6PPuto4eq
+ F7YOrNtCTAPIPpuJgpu9f5kO9.2BdCEwKQxTfwcTZ_BSu3xnq4mcBv4l7HQ7Sp479cjkTV2ZU5jZ
+ wcSKbv.gR_iMeIgruYTwFfMw3H.XlBro9DYKeBhsdY_2UqzcHIi8_6HCs2glxc6dsg4bynWGRqfZ
+ uqpml26N8NTrUxbCXPahXC65DCCvqVhiY4fcgp8KONEemVsTegXfAYNwUKShmKhb0yYJ3o4DH.9g
+ xsscqZGexdIPuFS0uULYlEJQ2gUXV3Si_ptC.HoRjxw.on6yUvDGWFYDCTVEPqcft1WfP2L8xxpb
+ ogaUVEv_subbu8z..FZ5HDh8AzrP_hFSlUPjnsSuYjdKZR7VlbkKSzqyRfrTOlSpo_reMktIU3Je
+ VD0XYA5jYUDPQk7YJylAH4w7AHUOGS51iA0pOjiletpEOqRJ8UcyQKzNTteGDA.6BsQmEC0Lw_sz
+ IOsMnwAHqNCIcEEscQNJ9b5BrS_dPYO5qWUefzjdoN5mRdt0zFKPg5AfSsqfWTLU3VKaDkWFPka9
+ 1K0qXK6p2JPzsgclGwFMP9WdluMfLbazSgA.qD74bUjoScE8iF3YA5uRXX1DfPNVVf08M6sXLpvV
+ ltMhWxBXTSv1VNEYL9raRHaOdGZauMjxk5C7JpRlofFDKeKhNaW8tsDshwHljW.Jlg0vwfKi0TE8
+ wP.N77DChpGqIoyFXH048GLZ.Xnr5jdgfQb5UgT_wa.JZsst9FMFResrMKTlEMN2jI3ubrpcA50I
+ 5jgMQ08VEuhBPL2L3JjehjGOclx.WZuuuQRKyMOdC3abS3ZXVNeyO_I0Ocmbt.tajimZ15wIVj1A
+ kUH57Wj58gpWJNXRudqy5vZF9CwxtgrtvEAA_POEn9yVerWYTqQLtDQj6yaw2Z5kCicr8PAEpotb
+ yu6B8Sd44Btpn7fRUmY6TXdjie_9f1KVqiD.Ecofp7pu0CSxyvGVixKedv9_dD.GC3DVlVla0q.p
+ nZ1Gr8v6EtcSj6yikEVsoIVjFZGEMDOFKgtbMBC6VDNSPP5908V9Ut4wnvUBZvkdH4vOJOOMIIUL
+ g4usrgBmxrbad4Qk-
+Received: from sonic.gate.mail.ne1.yahoo.com by
+ sonic315.consmr.mail.gq1.yahoo.com with HTTP; Mon, 8 Jun 2020 13:53:37 +0000
+Received: by smtp432.mail.bf1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA
+ ID 41c78898e8df852c9e385165cee1cd32; 
+ Mon, 08 Jun 2020 13:53:34 +0000 (UTC)
+Date: Mon, 08 Jun 2020 09:53:30 -0400
+From: "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
+Subject: Re: next-0519 on thinkpad x60: sound related? window manager crash
+To: Christoph Hellwig <hch@lst.de>
+References: <20200520111136.GA3802@amd>
+ <1591545088.74ii116nf2.none@localhost> <20200608061950.GA17476@lst.de>
+In-Reply-To: <20200608061950.GA17476@lst.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="zGQnqpIoxlsbsOfg"
-Content-Disposition: inline
-In-Reply-To: <CACL=Q7xSpeqyQzDyexCr+Nxs+nf3o9doaHGxiu-y8biK9w_9YQ@mail.gmail.com>
-X-Cookie: I'm rated PG-34!!
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: ALSA development <alsa-devel@alsa-project.org>,
- Baolin Wang <baolin.wang@linaro.org>, Takashi Iwai <tiwai@suse.de>,
- Zach Riggle <riggle@google.com>, Leo Yan <leo.yan@linaro.org>
+Message-Id: <1591624340.z01ejtod28.none@localhost>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: WebService/1.1.16072 hermes_yahoo Apache-HttpAsyncClient/4.1.4
+ (Java/11.0.6)
+Cc: alsa-devel@alsa-project.org, x86@kernel.org, rientjes@google.com,
+ tiwai@suse.com, linux-kernel@vger.kernel.org, hch@infradead.org,
+ mingo@redhat.com, bp@alien8.de, Pavel Machek <pavel@ucw.cz>, hpa@zytor.com,
+ tglx@linutronix.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,36 +111,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
---zGQnqpIoxlsbsOfg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Apr 23, 2019 at 01:11:50PM -0700, Phil Burk wrote:
-> Hello Takashi,
+Excerpts from Christoph Hellwig's message of June 8, 2020 2:19 am:
+> Can you do a listing using gdb where this happens?
 >=20
-> Sorry for the late reply. I got pulled off on some other projects.
+> gdb vmlinux
 >=20
-> We will try to test this in-house but we will need Qualcomm's help.
-> I will also try to get some of our SOC partners to help with testing.
+> l *(snd_pcm_hw_params+0x3f3)
+>=20
+> ?
+>=20
 
-Did anything ever happen with this testing?  These anonymous mmap
-patches never got merged.
-
---zGQnqpIoxlsbsOfg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7eQQoACgkQJNaLcl1U
-h9A7Qwf8DyNjLGP4pPUMoOay1AxSc5YiXWn/ho+W6UpFz0j0We35xmphbHyKYfOd
-Ao9UzE6n+3OI/upTIop//jLZJ92Dmwhj+iMJHvQdFRNGlLqLFzs3K7oIacEaI2hx
-Cs0z4cZjEmHJVDVbeZU14x9wYN3l/KXPaFafzQZes0w3M8rUChbM6flzzDnIL/a1
-8fuQWbxVUkc0efP0dOyKZ2D0g5ajfatwNyVYQlKcYA7qgLTidtAM84B9N4nr93tN
-5E5KTpveyREePCqVTY+INBiHyftMe2Ye6WsGpg+sMscMSJaded8Js2MF0O6SGwxg
-rQMmsuvXh9NP3gi1PG4WaAsCssysKA==
-=sDlO
------END PGP SIGNATURE-----
-
---zGQnqpIoxlsbsOfg--
+(gdb) l *(snd_pcm_hw_params+0x3f3)
+0xffffffff817efc85 is in snd_pcm_hw_params (.../linux/sound/core/pcm_native=
+.c:749).
+744             while (runtime->boundary * 2 <=3D LONG_MAX - runtime->buffe=
+r_size)
+745                     runtime->boundary *=3D 2;
+746
+747             /* clear the buffer for avoiding possible kernel info leaks=
+ */
+748             if (runtime->dma_area && !substream->ops->copy_user)
+749                     memset(runtime->dma_area, 0, runtime->dma_bytes);
+750
+751             snd_pcm_timer_resolution_change(substream);
+752             snd_pcm_set_state(substream, SNDRV_PCM_STATE_SETUP);
+753
