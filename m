@@ -2,83 +2,79 @@ Return-Path: <SRS0=Yvqk=7V=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54CB3C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Jun 2020 09:39:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9549C433DF
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Jun 2020 10:07:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D3508206D5
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Jun 2020 09:39:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 44BD3206D5
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Jun 2020 10:07:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PHUtwDS9";
-	dkim=pass (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="i4bziiLM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D3508206D5
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mgo4c02u";
+	dkim=pass (2048-bit key) header.d=rere.qmqm.pl header.i=@rere.qmqm.pl header.b="AND0CpYe"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 44BD3206D5
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=rere.qmqm.pl
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 44DD54E;
-	Mon,  8 Jun 2020 11:38:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 44DD54E
+	by alsa0.perex.cz (Postfix) with ESMTPS id BE5FB15E2;
+	Mon,  8 Jun 2020 12:06:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE5FB15E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591609187;
-	bh=PeIeS7Fd/D8pJD7iPcdjZXceR9MKEOeGyyuNpZ5F4PI=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1591610852;
+	bh=CDrLC2kySs5OBNJvqoPu46VZEBqI3bBc1GI8m0d56kY=;
+	h=Date:In-Reply-To:References:From:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PHUtwDS9/KlFSn8nsWbfwJIhFzOJ4Q9zEsYmmEQYLo44PAu1IK7Gi1hvjO4mEztq6
-	 5z0/jQL4yFAso6R+7hYyjFq9qmDp58dvLjX2yIXBP6WVwBz1ihkps/gPHEsRVkY64x
-	 7kh905r6rtZg15gqREmGCRD+8XDxQfVJDUe3H35Y=
+	b=mgo4c02uDGqIp1EBL14fdj+zIqZ0xytZhzhzZR0cKkWUHzh4v4IfpeULWvIPqM56y
+	 II6sA8H1zUmFn5PMf9q4UQXjxYTOAlR3pKiZVSamY1HJ8ouoaxWqRRjuoznksDMDpl
+	 zBwdc12Kq2k3z06kjehTWmVlcoEz4fJbFV+wlc4s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A775AF801F7;
-	Mon,  8 Jun 2020 11:38:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5A549F801F7;
+	Mon,  8 Jun 2020 12:06:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D89FCF8021C; Mon,  8 Jun 2020 11:38:54 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 72E02F8024A; Mon,  8 Jun 2020 12:06:40 +0200 (CEST)
+Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A8470F801EB
- for <alsa-devel@alsa-project.org>; Mon,  8 Jun 2020 11:38:47 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 65A2CA0040;
- Mon,  8 Jun 2020 11:38:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 65A2CA0040
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1591609124; bh=dEd7WgjJIUko1k8kcy1rF6rTksyJvoFHywWYy8Vx/CE=;
- h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
- b=i4bziiLMMa6sNRjk3sBy6GmvbsRnTqBSQfb3FI1lq+g6/EjnryXPp5GFI036fi3pF
- 5UVsuHcn5hM2DsHopxTLfoEBYiXacnSy0m8e90u2hh4KEMe6CU3GIBqicCMjpmk/Of
- 5M2KhGwUAEXwh+s7qARDdWZbR/AD0QmHx+j3s5r4=
-Received: from p50.perex-int.cz (unknown [192.168.100.94])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Mon,  8 Jun 2020 11:38:41 +0200 (CEST)
-Subject: Re: [PATCH] ALSA: usb-audio: Use the new macro for HP Dock rename
- quirks
-To: Takashi Iwai <tiwai@suse.de>
-References: <20200608071513.570-1-tiwai@suse.de>
- <3d4e9e2f-eec9-8018-7964-c09ab81c1240@perex.cz>
- <s5hd06a54mi.wl-tiwai@suse.de>
- <0b36a395-0bf3-c853-1640-6356a01e2200@perex.cz>
- <s5ha71d6hfn.wl-tiwai@suse.de>
-From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <5ac86691-e2bd-1036-015e-eae87aad589a@perex.cz>
-Date: Mon, 8 Jun 2020 11:38:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 793FEF801F7
+ for <alsa-devel@alsa-project.org>; Mon,  8 Jun 2020 12:06:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 793FEF801F7
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=rere.qmqm.pl header.i=@rere.qmqm.pl
+ header.b="AND0CpYe"
+Received: from remote.user (localhost [127.0.0.1])
+ by rere.qmqm.pl (Postfix) with ESMTPSA id 49gTRs19bxzY4;
+ Mon,  8 Jun 2020 12:06:33 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+ t=1591610793; bh=CDrLC2kySs5OBNJvqoPu46VZEBqI3bBc1GI8m0d56kY=;
+ h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
+ b=AND0CpYeEW677MDFgvTIx8zReIBMkD6olRKBzvkZOdeyRXBwmQTvOWiGG/iBeA7BS
+ yX8DP+UguZnDbIuxjkyajal9FqWaBgxqph/knGrmulPBWffp38IYQXNa+8Eyrs2QOT
+ NiAbq3Jsu+A9w3670L59ZP33sK2Y5CnpiPZoXyAvuu7GA6GsqC2v8qltNdO1cKlkzr
+ bKsQ2v33ERBu5+zVjsyp6hZpSvWcgm4Y5pfZ3Z0EfC2ez9HSTQWz+dlBAfx0wsfHGb
+ a401+jf5+fn4MHv3268WB6TYdDLlI5e07znuu+kblHpbo7wWoBxUFw9sPNHXyvC948
+ w4BOzftnZDgNQ==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+Date: Mon, 08 Jun 2020 12:06:32 +0200
+Message-Id: <37252c65941e58473b1219ca9fab03d48f47e3e3.1591610330.git.mirq-linux@rere.qmqm.pl>
+In-Reply-To: <cover.1591610329.git.mirq-linux@rere.qmqm.pl>
+References: <cover.1591610329.git.mirq-linux@rere.qmqm.pl>
+From: =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
+Subject: [PATCH 2/2] ALSA: pcm: fix snd_pcm_link() lockdep splat
 MIME-Version: 1.0
-In-Reply-To: <s5ha71d6hfn.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, Kai-Heng Feng <kai.heng.feng@canonical.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+To: Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,73 +90,82 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 08. 06. 20 v 11:22 Takashi Iwai napsal(a):
-> On Mon, 08 Jun 2020 11:01:43 +0200,
-> Jaroslav Kysela wrote:
->>
->> Dne 08. 06. 20 v 10:44 Takashi Iwai napsal(a):
->>> On Mon, 08 Jun 2020 10:37:12 +0200,
->>> Jaroslav Kysela wrote:
->>>>
->>>> Dne 08. 06. 20 v 9:15 Takashi Iwai napsal(a):
->>>>> Replace the open-code with the new QUIRK_DEVICE_PROFILE() macro for
->>>>> simplicity.
->>>>>
->>>>> Fixes: 0c5086f56999 ("ALSA: usb-audio: Add vendor, product and profile name for HP Thunderbolt Dock")
->>>>> Signed-off-by: Takashi Iwai <tiwai@suse.de>
->>>>> ---
->>>>
->>>> Takashi, could we export the profile (hint) for new USB cards via the
->>>> components string - snd_component_add()? The long name seems not
->>>> appropriate for this. It's a GUI string (which is mangled now).
->>>
->>> It's possible, and maybe we should move to it, but we'd need to
->>> provide in card->longname for now because the component support in
->>> user-space side isn't in major releases yet.  The longname is ugly,
->>> but that's the only way that works stably right now.
->>>
->>> Also, we need a common helper function for adding the component string
->>> in the kernel side, too, not specific to USB-audio.
->>
->> There is already snd_component_add() function, so we need to settle
->> only the identification prefix for those "model" strings.
->>
->> It would be nice to duplicate this info for the moment (the components
->> string should be shorter than used for long name).
-> 
-> Yes, what we need a concrete definition.  The implementation in
-> kernel-side must be easy :)
-> 
->> Perhaps, we can just add "hw:<hint>" component string for the more
->> finer hardware identification, like:
->>
->> $ amixer -c 0 info
->> Components	: 'USB0bda:58fe hw:VideoMic'
-> 
-> I don't mind what form, but would the example above work as a UCM
-> profile properly?
+Add and use snd_pcm_stream_lock_nested() in snd_pcm_link/unlink
+implementation.  The code is fine, but generates a lockdep complaint:
 
-It should work for UCM2. UCM2 can compare the components string and load or 
-use the appropriate piece of configuration. So it means that 
-ucm2/USB-Audio/USB-Audio.conf will handle this.
+============================================
+WARNING: possible recursive locking detected
+5.7.1mq+ #381 Tainted: G           O
+--------------------------------------------
+pulseaudio/4180 is trying to acquire lock:
+ffff888402d6f508 (&group->lock){-...}-{2:2}, at: snd_pcm_common_ioctl+0xda8/0xee0 [snd_pcm]
 
-I also added the possibility to extract 'VideoMic' (regex) from the 
-'hw:VideoMic' string and include the file from the custom path (syntax 3 in 
-UCM2). So we can end with the ucm2/USB-Audio/HiFi-VideoMic.conf file.
+but task is already holding lock:
+ffff8883f7a8cf18 (&group->lock){-...}-{2:2}, at: snd_pcm_common_ioctl+0xe4e/0xee0 [snd_pcm]
 
-So basically, the prefix may be driver specific but consistent, so we can do a 
-match against it in the user space. Or we may use 'hint:<hwid>' or so.
+other info that might help us debug this:
+ Possible unsafe locking scenario:
 
-					Jaroslav
+       CPU0
+       ----
+  lock(&group->lock);
+  lock(&group->lock);
 
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
+ *** DEADLOCK ***
 
+ May be due to missing lock nesting notation
 
+2 locks held by pulseaudio/4180:
+ #0: ffffffffa1a05190 (snd_pcm_link_rwsem){++++}-{3:3}, at: snd_pcm_common_ioctl+0xca0/0xee0 [snd_pcm]
+ #1: ffff8883f7a8cf18 (&group->lock){-...}-{2:2}, at: snd_pcm_common_ioctl+0xe4e/0xee0 [snd_pcm]
+[...]
+
+Cc: stable@vger.kernel.org
+Fixes: f57f3df03a8e ("ALSA: pcm: More fine-grained PCM link locking")
+Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+---
+ sound/core/pcm_native.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 3ad399cb6f30..5b36881f7095 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -138,6 +138,16 @@ void snd_pcm_stream_lock_irq(struct snd_pcm_substream *substream)
+ }
+ EXPORT_SYMBOL_GPL(snd_pcm_stream_lock_irq);
+ 
++static void snd_pcm_stream_lock_nested(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_group *group = &substream->self_group;
++
++	if (substream->pcm->nonatomic)
++		mutex_lock_nested(&group->mutex, SINGLE_DEPTH_NESTING);
++	else
++		spin_lock_nested(&group->lock, SINGLE_DEPTH_NESTING);
++}
++
+ /**
+  * snd_pcm_stream_unlock_irq - Unlock the PCM stream
+  * @substream: PCM substream
+@@ -2200,7 +2210,7 @@ static int snd_pcm_link(struct snd_pcm_substream *substream, int fd)
+ 	snd_pcm_stream_unlock_irq(substream);
+ 
+ 	snd_pcm_group_lock_irq(target_group, nonatomic);
+-	snd_pcm_stream_lock(substream1);
++	snd_pcm_stream_lock_nested(substream1);
+ 	snd_pcm_group_assign(substream1, target_group);
+ 	refcount_inc(&target_group->refs);
+ 	snd_pcm_stream_unlock(substream1);
+@@ -2216,7 +2226,7 @@ static int snd_pcm_link(struct snd_pcm_substream *substream, int fd)
+ 
+ static void relink_to_local(struct snd_pcm_substream *substream)
+ {
+-	snd_pcm_stream_lock(substream);
++	snd_pcm_stream_lock_nested(substream);
+ 	snd_pcm_group_assign(substream, &substream->self_group);
+ 	snd_pcm_stream_unlock(substream);
+ }
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+2.20.1
+
