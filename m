@@ -6,67 +6,68 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F13E9C433DF
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Jun 2020 23:21:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9ADABC433DF
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Jun 2020 23:21:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 82B532087E
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Jun 2020 23:21:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2C3CF2086A
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Jun 2020 23:21:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HO7mPwv+";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ynS49tf0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 82B532087E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RaJIM0ot";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="iWN5uKWX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2C3CF2086A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0C00415E5;
-	Tue,  9 Jun 2020 01:20:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C00415E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id B29E4167E;
+	Tue,  9 Jun 2020 01:20:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B29E4167E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591658466;
-	bh=ht8J4MKA9ie5UsO0kJgPE0k/HNLasbq4/TqN7ewjmWU=;
+	s=default; t=1591658490;
+	bh=JDqyFxjKdcM1wY6hHTeFzWvesMjNPNf2pdW9sTpT0eo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HO7mPwv+pUmw7UCxAhDG4/D0vYLRGPP5ijOFyb7/zcwgweCaWRMjfm/sCCSibIEkP
-	 i8xEeHBTfAWH3LsZ/Vy9tt0VauHoaKWP5hOSEuw+Oo87SrA51NZRONcvpNkSHH/Fqo
-	 SYBiP6qgElhLJjVxjgVwjUgq49TVv/Yreup3W424=
+	b=RaJIM0otNPvmTTzBP/STuyLOJFiwPmkDU0+8ndGC8YOhZNh1K3TTGNzOkMxZ3NLw1
+	 xwY38uT8rP8Owqa7UCYEZ0soysDwgf8bO4NAIf9ltScWlLNotB8IGUYBzPeBbUcQ1G
+	 ne9H6YyiN4fRr9ga8y8Ajlb0zrYttm0jSB2QQGDA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 31E4CF80321;
-	Tue,  9 Jun 2020 01:15:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0872BF80329;
+	Tue,  9 Jun 2020 01:15:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DEBA7F80304; Tue,  9 Jun 2020 01:15:14 +0200 (CEST)
+ id 69E21F80306; Tue,  9 Jun 2020 01:15:15 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 41FB5F802E9
- for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2020 01:15:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41FB5F802E9
+ by alsa1.perex.cz (Postfix) with ESMTPS id BA44FF802EB
+ for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2020 01:15:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA44FF802EB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ynS49tf0"
+ header.b="iWN5uKWX"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 6C54C217A0;
- Mon,  8 Jun 2020 23:15:03 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id B988121534;
+ Mon,  8 Jun 2020 23:15:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1591658104;
- bh=ht8J4MKA9ie5UsO0kJgPE0k/HNLasbq4/TqN7ewjmWU=;
+ s=default; t=1591658106;
+ bh=JDqyFxjKdcM1wY6hHTeFzWvesMjNPNf2pdW9sTpT0eo=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ynS49tf0bglpWhV6UNOkD6E9WBw2mZlP4S9ZVZfaO1GUSYV4J55LIEbtnSvOTV7sP
- N3QMBHWT87gopggzXheX1fKUZHbvedvuhqSrYlVJOfbHgoYRWVoPjXm31nnV+6UUMA
- C7QLxrtX7WeSgTLIYPqUJ+l1njlkBNsC1QXx8NWw=
+ b=iWN5uKWXmr553UlTyqLi0g6CLzPXhXu6vVMok72KrhZLepVFi/o+ytH52ZhdgsIj6
+ 0+mvprbPZWWqihB/lioGODEJry2PDonETyw23k67Mdn3YIfscVpnZ/mTPorKv0d+Li
+ yrVeNh2LHf/VRRPvQwl6y7EWoDRXZGF+9rMv934s=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 144/606] ALSA: pcm: fix incorrect hw_base increase
-Date: Mon,  8 Jun 2020 19:04:29 -0400
-Message-Id: <20200608231211.3363633-144-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.6 146/606] ALSA: hda/realtek - Add more fixup
+ entries for Clevo machines
+Date: Mon,  8 Jun 2020 19:04:31 -0400
+Message-Id: <20200608231211.3363633-146-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
 References: <20200608231211.3363633-1-sashal@kernel.org>
@@ -74,9 +75,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Takashi Iwai <tiwai@suse.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org,
- Brent Lu <brent.lu@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, PeiSen Hou <pshou@realtek.com>,
+ alsa-devel@alsa-project.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,82 +92,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Brent Lu <brent.lu@intel.com>
+From: PeiSen Hou <pshou@realtek.com>
 
-commit e7513c5786f8b33f0c107b3759e433bc6cbb2efa upstream.
+commit 259eb82475316672a5d682a94dc8bdd53cf8d8c3 upstream.
 
-There is a corner case that ALSA keeps increasing the hw_ptr but DMA
-already stop working/updating the position for a long time.
+A few known Clevo machines (PC50, PC70, X170) with ALC1220 codec need
+the existing quirk for pins for PB51 and co.
 
-In following log we can see the position returned from DMA driver does
-not move at all but the hw_ptr got increased at some point of time so
-snd_pcm_avail() will return a large number which seems to be a buffer
-underrun event from user space program point of view. The program
-thinks there is space in the buffer and fill more data.
-
-[  418.510086] sound pcmC0D5p: pos 96 hw_ptr 96 appl_ptr 4096 avail 12368
-[  418.510149] sound pcmC0D5p: pos 96 hw_ptr 96 appl_ptr 6910 avail 9554
-...
-[  418.681052] sound pcmC0D5p: pos 96 hw_ptr 96 appl_ptr 15102 avail 1362
-[  418.681130] sound pcmC0D5p: pos 96 hw_ptr 96 appl_ptr 16464 avail 0
-[  418.726515] sound pcmC0D5p: pos 96 hw_ptr 16464 appl_ptr 16464 avail 16368
-
-This is because the hw_base will be increased by runtime->buffer_size
-frames unconditionally if the hw_ptr is not updated for over half of
-buffer time. As the hw_base increases, so does the hw_ptr increased
-by the same number.
-
-The avail value returned from snd_pcm_avail() could exceed the limit
-(buffer_size) easily becase the hw_ptr itself got increased by same
-buffer_size samples when the corner case happens. In following log,
-the buffer_size is 16368 samples but the avail is 21810 samples so
-CRAS server complains about it.
-
-[  418.851755] sound pcmC0D5p: pos 96 hw_ptr 16464 appl_ptr 27390 avail 5442
-[  418.926491] sound pcmC0D5p: pos 96 hw_ptr 32832 appl_ptr 27390 avail 21810
-
-cras_server[1907]: pcm_avail returned frames larger than buf_size:
-sof-glkda7219max: :0,5: 21810 > 16368
-
-By updating runtime->hw_ptr_jiffies each time the HWSYNC is called,
-the hw_base will keep the same when buffer stall happens at long as
-the interval between each HWSYNC call is shorter than half of buffer
-time.
-
-Following is a log captured by a patched kernel. The hw_base/hw_ptr
-value is fixed in this corner case and user space program should be
-aware of the buffer stall and handle it.
-
-[  293.525543] sound pcmC0D5p: pos 96 hw_ptr 96 appl_ptr 4096 avail 12368
-[  293.525606] sound pcmC0D5p: pos 96 hw_ptr 96 appl_ptr 6880 avail 9584
-[  293.525975] sound pcmC0D5p: pos 96 hw_ptr 96 appl_ptr 10976 avail 5488
-[  293.611178] sound pcmC0D5p: pos 96 hw_ptr 96 appl_ptr 15072 avail 1392
-[  293.696429] sound pcmC0D5p: pos 96 hw_ptr 96 appl_ptr 16464 avail 0
-...
-[  381.139517] sound pcmC0D5p: pos 96 hw_ptr 96 appl_ptr 16464 avail 0
-
-Signed-off-by: Brent Lu <brent.lu@intel.com>
-Reviewed-by: Jaroslav Kysela <perex@perex.cz>
+Signed-off-by: PeiSen Hou <pshou@realtek.com>
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/1589776238-23877-1-git-send-email-brent.lu@intel.com
+Link: https://lore.kernel.org/r/20200519065012.13119-1-tiwai@suse.de
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/core/pcm_lib.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/pci/hda/patch_realtek.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index 872a852de75c..d531e1bc2b81 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -433,6 +433,7 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
- 
-  no_delta_check:
- 	if (runtime->status->hw_ptr == new_hw_ptr) {
-+		runtime->hw_ptr_jiffies = curr_jiffies;
- 		update_audio_tstamp(substream, &curr_tstamp, &audio_tstamp);
- 		return 0;
- 	}
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 23315b69ac38..041d2a32059b 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -2473,6 +2473,9 @@ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1558, 0x97e1, "Clevo P970[ER][CDFN]", ALC1220_FIXUP_CLEVO_P950),
+ 	SND_PCI_QUIRK(0x1558, 0x65d1, "Clevo PB51[ER][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x67d1, "Clevo PB71[ER][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
++	SND_PCI_QUIRK(0x1558, 0x50d3, "Clevo PC50[ER][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
++	SND_PCI_QUIRK(0x1558, 0x70d1, "Clevo PC70[ER][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
++	SND_PCI_QUIRK(0x1558, 0x7714, "Clevo X170", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK_VENDOR(0x1558, "Clevo laptop", ALC882_FIXUP_EAPD),
+ 	SND_PCI_QUIRK(0x161f, 0x2054, "Medion laptop", ALC883_FIXUP_EAPD),
+ 	SND_PCI_QUIRK(0x17aa, 0x3a0d, "Lenovo Y530", ALC882_FIXUP_LENOVO_Y530),
 -- 
 2.25.1
 
