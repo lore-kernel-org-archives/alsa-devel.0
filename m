@@ -2,89 +2,71 @@ Return-Path: <SRS0=1fsy=7W=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6AF94C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jun 2020 14:53:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80A07C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jun 2020 15:13:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E843F2078C
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jun 2020 14:53:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0D3EB20734
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jun 2020 15:13:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DtVuwKPd";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="veRzg7YP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E843F2078C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CEGWqgp3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0D3EB20734
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7DDC91660;
-	Tue,  9 Jun 2020 16:52:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7DDC91660
+	by alsa0.perex.cz (Postfix) with ESMTPS id 75F04950;
+	Tue,  9 Jun 2020 17:12:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75F04950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591714393;
-	bh=frSxncoUsXeEhtq3dnIBdl5+VLSojaLCPVEIVgbQJL8=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=DtVuwKPd/pU8DzdvYG/dgtCbh5bX9t6xiHRE/BKStYEblqiso6IiGRKbDLjRIQ4+I
-	 kmrhWDQcZU9KcsfcLPYRO8dMMEMFZX2JOseu0aZIbN4euWqciEuYYcQvtGo4DhvPdY
-	 P+Wxn9GLYaHP7QF6IKD5Jb9tJaOxHi2w/t7TgWYI=
+	s=default; t=1591715619;
+	bh=m0paYYzomVO+Z2FI2AVnpkBSfv8t6K9A07UzKF2EB4U=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=CEGWqgp3NPwPeGgGdfrMAVgF0H4pKNwbl7QTBW4K82KbwfDynGzW4ave+URPVnh3A
+	 RnuWfo6pcCqRV2rNb38lTl3z483ixMPgU1erV3BrfIEdmQMZn8MKQ1/Pct5MSVwXHa
+	 iCHEEgaaLin8T+hCmfzI5a5YS6IwyaZeG4BEn33g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D6BD8F80088;
-	Tue,  9 Jun 2020 16:52:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 00EC7F80088;
+	Tue,  9 Jun 2020 17:12:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 73D77F8028C; Tue,  9 Jun 2020 16:52:21 +0200 (CEST)
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id D5AFFF8028C; Tue,  9 Jun 2020 17:12:47 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1AE41F80088
- for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2020 16:52:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1AE41F80088
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="veRzg7YP"
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 059Eq9iv041085;
- Tue, 9 Jun 2020 09:52:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1591714329;
- bh=9QaCiUxj4mSvuZ/Cn2p5J78g4wgMb6uovS5qJwTPoL4=;
- h=From:To:CC:Subject:Date;
- b=veRzg7YPdCEVp8Ghx4Dm+mf6nTcUDP4rkGMpYBGKxSmfmHQFU6hsQ+wcu7d2PurBx
- XXWBchz532icNB5vpAeDqgN8pr76agVwmpuAGYumItP4wDyfgXSuLCsLz5oab9mNwy
- QMpfWohikfZsXTjHks8D2i81gwwLd2eqGNpSDCCs=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 059Eq941070973
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 9 Jun 2020 09:52:09 -0500
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 9 Jun
- 2020 09:52:09 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 9 Jun 2020 09:52:09 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 059Eq9m0099963;
- Tue, 9 Jun 2020 09:52:09 -0500
-From: Dan Murphy <dmurphy@ti.com>
-To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
- <tiwai@suse.com>, <robh@kernel.org>
-Subject: [PATCH v2] dt-bindings: tas2562: Convert the tas2562 binding to yaml
-Date: Tue, 9 Jun 2020 09:52:02 -0500
-Message-ID: <20200609145202.14460-1-dmurphy@ti.com>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Dan Murphy <dmurphy@ti.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8B626F80088
+ for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2020 17:12:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B626F80088
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id B30BBAE0A;
+ Tue,  9 Jun 2020 15:12:45 +0000 (UTC)
+Date: Tue, 09 Jun 2020 17:12:41 +0200
+Message-ID: <s5hr1uogtna.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
+Subject: Re: next-0519 on thinkpad x60: sound related? window manager crash
+In-Reply-To: <20200609114733.GA1621@lst.de>
+References: <20200520111136.GA3802@amd> <1591545088.74ii116nf2.none@localhost>
+ <20200608061950.GA17476@lst.de>
+ <1591624340.z01ejtod28.none@localhost>
+ <20200609114733.GA1621@lst.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, x86@kernel.org, rientjes@google.com,
+ tiwai@suse.com, linux-kernel@vger.kernel.org, hch@infradead.org,
+ mingo@redhat.com, bp@alien8.de, Pavel Machek <pavel@ucw.cz>, hpa@zytor.com,
+ tglx@linutronix.de, Christoph Hellwig <hch@lst.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,127 +82,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Convert the TAS2562 text file to yaml format.
+On Tue, 09 Jun 2020 13:47:33 +0200,
+Christoph Hellwig wrote:
+> 
+> Alex, can you try this patch?
 
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
----
- .../devicetree/bindings/sound/tas2562.txt     | 34 ----------
- .../devicetree/bindings/sound/tas2562.yaml    | 65 +++++++++++++++++++
- 2 files changed, 65 insertions(+), 34 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/tas2562.txt
- create mode 100644 Documentation/devicetree/bindings/sound/tas2562.yaml
+Also could you check whether just papering over the memset() call
+alone avoids the crash like below?  For PulseAudio and dmix/dsnoop,
+it's the only code path that accesses the vmapped buffer, I believe.
 
-diff --git a/Documentation/devicetree/bindings/sound/tas2562.txt b/Documentation/devicetree/bindings/sound/tas2562.txt
-deleted file mode 100644
-index 94796b547184..000000000000
---- a/Documentation/devicetree/bindings/sound/tas2562.txt
-+++ /dev/null
-@@ -1,34 +0,0 @@
--Texas Instruments TAS2562 Smart PA
--
--The TAS2562 is a mono, digital input Class-D audio amplifier optimized for
--efficiently driving high peak power into small loudspeakers.
--Integrated speaker voltage and current sense provides for
--real time monitoring of loudspeaker behavior.
--
--Required properties:
-- - #address-cells  - Should be <1>.
-- - #size-cells     - Should be <0>.
-- - compatible:	   - Should contain "ti,tas2562", "ti,tas2563".
-- - reg:		   - The i2c address. Should be 0x4c, 0x4d, 0x4e or 0x4f.
-- - ti,imon-slot-no:- TDM TX current sense time slot.
--
--Optional properties:
--- interrupt-parent: phandle to the interrupt controller which provides
--                    the interrupt.
--- interrupts: (GPIO) interrupt to which the chip is connected.
--- shut-down: GPIO used to control the state of the device.
--
--Examples:
--tas2562@4c {
--        #address-cells = <1>;
--        #size-cells = <0>;
--        compatible = "ti,tas2562";
--        reg = <0x4c>;
--
--        interrupt-parent = <&gpio1>;
--        interrupts = <14>;
--
--	shut-down = <&gpio1 15 0>;
--        ti,imon-slot-no = <0>;
--};
--
-diff --git a/Documentation/devicetree/bindings/sound/tas2562.yaml b/Documentation/devicetree/bindings/sound/tas2562.yaml
-new file mode 100644
-index 000000000000..c6168aa32954
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/tas2562.yaml
-@@ -0,0 +1,65 @@
-+# SPDX-License-Identifier: (GPL-2.0+ OR BSD-2-Clause)
-+# Copyright (C) 2019 Texas Instruments Incorporated
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/sound/tas2562.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-+
-+title: Texas Instruments TAS2562 Smart PA
-+
-+maintainers:
-+  - Dan Murphy <dmurphy@ti.com>
-+
-+description: |
-+  The TAS2562 is a mono, digital input Class-D audio amplifier optimized for
-+  efficiently driving high peak power into small loudspeakers.
-+  Integrated speaker voltage and current sense provides for
-+  real time monitoring of loudspeaker behavior.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - ti,tas2562
-+      - ti,tas2563
-+
-+  reg:
-+    maxItems: 1
-+    description: |
-+       I2C address of the device can be one of these 0x4c, 0x4d, 0x4e or 0x4f
-+
-+  shut-down:
-+    description: GPIO used to control the state of the device.
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  ti,imon-slot-no:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: TDM TX current sense time slot.
-+
-+  '#sound-dai-cells':
-+    const: 1
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+   #include <dt-bindings/gpio/gpio.h>
-+   i2c0 {
-+     #address-cells = <1>;
-+     #size-cells = <0>;
-+     codec: codec@4c {
-+       compatible = "ti,tas2562";
-+       reg = <0x4c>;
-+       #sound-dai-cells = <1>;
-+       interrupt-parent = <&gpio1>;
-+       interrupts = <14>;
-+       shut-down = <&gpio1 15 0>;
-+       ti,imon-slot-no = <0>;
-+     };
-+   };
-+
--- 
-2.26.2
+If this works more or less, I'll cook a more comprehensive fix.
 
+
+thanks,
+
+Takashi
+
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -754,9 +754,11 @@ static int snd_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	while (runtime->boundary * 2 <= LONG_MAX - runtime->buffer_size)
+ 		runtime->boundary *= 2;
+ 
++#if 0
+ 	/* clear the buffer for avoiding possible kernel info leaks */
+ 	if (runtime->dma_area && !substream->ops->copy_user)
+ 		memset(runtime->dma_area, 0, runtime->dma_bytes);
++#endif
+ 
+ 	snd_pcm_timer_resolution_change(substream);
+ 	snd_pcm_set_state(substream, SNDRV_PCM_STATE_SETUP);
