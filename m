@@ -2,71 +2,77 @@ Return-Path: <SRS0=1fsy=7W=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80A07C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jun 2020 15:13:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3528C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jun 2020 15:29:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0D3EB20734
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jun 2020 15:13:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3ADB72072F
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jun 2020 15:29:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CEGWqgp3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0D3EB20734
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mNZvLZsY";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="sVPA8/e2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3ADB72072F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 75F04950;
-	Tue,  9 Jun 2020 17:12:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75F04950
+	by alsa0.perex.cz (Postfix) with ESMTPS id BDE071660;
+	Tue,  9 Jun 2020 17:28:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BDE071660
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591715619;
-	bh=m0paYYzomVO+Z2FI2AVnpkBSfv8t6K9A07UzKF2EB4U=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1591716574;
+	bh=nQ51rqGb4s3DMzpx5/tEQ5vWRgZw1/ly56m8v8m/A/c=;
+	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CEGWqgp3NPwPeGgGdfrMAVgF0H4pKNwbl7QTBW4K82KbwfDynGzW4ave+URPVnh3A
-	 RnuWfo6pcCqRV2rNb38lTl3z483ixMPgU1erV3BrfIEdmQMZn8MKQ1/Pct5MSVwXHa
-	 iCHEEgaaLin8T+hCmfzI5a5YS6IwyaZeG4BEn33g=
+	b=mNZvLZsYSg0DAVy5SO1XQX1dhD4hE/SB+d6CacqEHINK8Mo55e2ubeEOT2RGAgu8Q
+	 fl26Ztco3eFrGvnqM/zZdMR5LbmERykWlOoWcZaHdj6taKqjdlQZJ3yV46pm7BIVHQ
+	 lVDt1MGQWYz6chNx6xIwtFwpy8EjGq/rk6xN2Dbo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 00EC7F80088;
-	Tue,  9 Jun 2020 17:12:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F2DDBF80278;
+	Tue,  9 Jun 2020 17:28:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D5AFFF8028C; Tue,  9 Jun 2020 17:12:47 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id 11318F8028C; Tue,  9 Jun 2020 17:28:38 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8B626F80088
- for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2020 17:12:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B626F80088
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id B30BBAE0A;
- Tue,  9 Jun 2020 15:12:45 +0000 (UTC)
-Date: Tue, 09 Jun 2020 17:12:41 +0200
-Message-ID: <s5hr1uogtna.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
-Subject: Re: next-0519 on thinkpad x60: sound related? window manager crash
-In-Reply-To: <20200609114733.GA1621@lst.de>
-References: <20200520111136.GA3802@amd> <1591545088.74ii116nf2.none@localhost>
- <20200608061950.GA17476@lst.de>
- <1591624340.z01ejtod28.none@localhost>
- <20200609114733.GA1621@lst.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, x86@kernel.org, rientjes@google.com,
- tiwai@suse.com, linux-kernel@vger.kernel.org, hch@infradead.org,
- mingo@redhat.com, bp@alien8.de, Pavel Machek <pavel@ucw.cz>, hpa@zytor.com,
- tglx@linutronix.de, Christoph Hellwig <hch@lst.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8224EF80088
+ for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2020 17:28:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8224EF80088
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="sVPA8/e2"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 1AEE02072F;
+ Tue,  9 Jun 2020 15:28:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1591716510;
+ bh=nQ51rqGb4s3DMzpx5/tEQ5vWRgZw1/ly56m8v8m/A/c=;
+ h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+ b=sVPA8/e2Nv/Ov87Mz1d/akLrTWoN/KWGAHfMT1Y1ATSIjYKmMc0BTUD7j/3T87j16
+ m6YR0SPwd7BNW8lkZVaj/vzJoEAQFF7HHDBsQNf94wKssoYOpMMv4dMKcawVwyD2+y
+ ovnaqe59ul0C45x45lmFuZuM8Y1lF2BPMLSR4HgE=
+Date: Tue, 09 Jun 2020 16:28:28 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Hans de Goede <hdegoede@redhat.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Jie Yang <yang.jie@linux.intel.com>
+In-Reply-To: <20200608204634.93407-1-hdegoede@redhat.com>
+References: <20200608204634.93407-1-hdegoede@redhat.com>
+Subject: Re: [PATCH 1/2] ASoC: Intel: bytcr_rt5640: Add quirk for Toshiba
+ Encore WT10-A tablet
+Message-Id: <159171650846.43267.12643195115095945105.b4-ty@kernel.org>
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,33 +88,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 09 Jun 2020 13:47:33 +0200,
-Christoph Hellwig wrote:
+On Mon, 8 Jun 2020 22:46:33 +0200, Hans de Goede wrote:
+> The Toshiba Encore WT10-A tablet almost fully works with the default
+> settings for Bay Trail CR devices. The only issue is that it uses a
+> digital mic. connected the the DMIC1 input instead of an analog mic.
 > 
-> Alex, can you try this patch?
+> Add a quirk for this model using the default settings with the input-map
+> replaced with BYT_RT5640_DMIC1_MAP.
 
-Also could you check whether just papering over the memset() call
-alone avoids the crash like below?  For PulseAudio and dmix/dsnoop,
-it's the only code path that accesses the vmapped buffer, I believe.
+Applied to
 
-If this works more or less, I'll cook a more comprehensive fix.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
+Thanks!
 
-thanks,
+[1/2] ASoC: Intel: bytcr_rt5640: Add quirk for Toshiba Encore WT10-A tablet
+      commit: 199a5e8fda54ab3c8c6f6bf980c004e97ebf5ccb
+[2/2] ASoC: rt5645: Add platform-data for Asus T101HA
+      commit: 79d4f823a06796656289f97b922493da5690e46c
 
-Takashi
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -754,9 +754,11 @@ static int snd_pcm_hw_params(struct snd_pcm_substream *substream,
- 	while (runtime->boundary * 2 <= LONG_MAX - runtime->buffer_size)
- 		runtime->boundary *= 2;
- 
-+#if 0
- 	/* clear the buffer for avoiding possible kernel info leaks */
- 	if (runtime->dma_area && !substream->ops->copy_user)
- 		memset(runtime->dma_area, 0, runtime->dma_bytes);
-+#endif
- 
- 	snd_pcm_timer_resolution_change(substream);
- 	snd_pcm_set_state(substream, SNDRV_PCM_STATE_SETUP);
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
