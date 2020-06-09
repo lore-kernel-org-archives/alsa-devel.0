@@ -6,87 +6,85 @@ X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C8A5C433E2
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jun 2020 18:07:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 25907C433E3
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jun 2020 18:08:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A032E20812
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jun 2020 18:07:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A91D220734
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jun 2020 18:08:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CL4OXI2w";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="oRqgEQNf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A032E20812
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OH4zi1lx";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="f5XnrPJs"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A91D220734
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 170D21660;
-	Tue,  9 Jun 2020 20:07:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 170D21660
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3885A167B;
+	Tue,  9 Jun 2020 20:08:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3885A167B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591726072;
-	bh=k/McQfB2lEQxeVRZ6MGo0ZSBodW9VlS0l1gTmUK3Kc8=;
+	s=default; t=1591726131;
+	bh=mxgKmqUETv8d6ijU1XMCso/RsJ2MsebjbNl9/8PiGEg=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CL4OXI2wonfF+7AWunbgM8FKs0OiK27Af+Mt95NvT3mgNKjljNeS8mUEXFNZxeg3u
-	 avd4MkOVBRjK3LTkazuOc5g95BkeE9UPrSpc43Q5Vd42K2MDYv3MGVVLIR7l9BlDlX
-	 hxys+dnXT+iTI7TxdED5LKIGXffvhXYwUHqHIPXg=
+	b=OH4zi1lxF17wa/+t9STXA+/OK+mFIRPI0leKiR+imF8HCok0E7QIgdKG5o9RFpzcW
+	 ViHn3RRVygDmOMOAxojdkMTzqcvzpCa5u173SiBiLnAaVzndPrPBxolXnZMw424Fph
+	 rn9WFIXTUhPkmgySXBj9SXde7O5WdJUm3u+RLm5E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7B89FF80278;
-	Tue,  9 Jun 2020 20:07:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B82AFF8028C;
+	Tue,  9 Jun 2020 20:07:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DDAF5F8028C; Tue,  9 Jun 2020 20:06:59 +0200 (CEST)
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+ id 3D689F80291; Tue,  9 Jun 2020 20:07:58 +0200 (CEST)
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 95DBEF80124
- for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2020 20:06:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95DBEF80124
+ by alsa1.perex.cz (Postfix) with ESMTPS id A77D9F80088
+ for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2020 20:07:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A77D9F80088
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="oRqgEQNf"
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 059I6rtO068877;
- Tue, 9 Jun 2020 13:06:53 -0500
+ dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="f5XnrPJs"
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 059I7reh053985;
+ Tue, 9 Jun 2020 13:07:53 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1591726013;
- bh=xSfKR8MnxMrg+HE8ph5OJ1uYPhsGztBaHv6HeUzvjsg=;
+ s=ti-com-17Q1; t=1591726073;
+ bh=cm2RuIQ71UrmMw+X34myMwl7z6ENm3bU422kS2bPHGA=;
  h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=oRqgEQNf8s6fMmWqKU2Y16ZgyesitluWmLQ1OVFCf20DGT2WvROwStJwzsaZ2vDDZ
- jJQRnDxMnFlghP6eEhYSAok7gReQhOomhx112hUn+bUb26ft902EQj4bhAtabZZZgT
- GBdmO1nLkUOpojhglC0AAweIyeBvn7BqJ3WuGx5A=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 059I6r0a034979;
- Tue, 9 Jun 2020 13:06:53 -0500
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ b=f5XnrPJs4w2Wo3RbXRbUSSWUchDqz65sZXYm8RgxcPxtSRoPugfzAsuRu1O3bXhb7
+ naz1VTXM5GrtUAGtnVS6BcLUtTcSNlTQ2ItxFZwU0VG9rLz1yC262gDzxYArDGbNXn
+ VZ1Y5gvtf/DrguwAwzXcBNO1YuSzLUkB7BAEQ1UY=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 059I7rHB096669
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 9 Jun 2020 13:07:53 -0500
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 9 Jun
- 2020 13:06:53 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ 2020 13:07:52 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 9 Jun 2020 13:06:52 -0500
+ Frontend Transport; Tue, 9 Jun 2020 13:07:52 -0500
 Received: from [10.250.65.13] (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 059I6o70086650;
- Tue, 9 Jun 2020 13:06:51 -0500
-Subject: Re: [RFC PATCH 1/2] dt-bindings: tas2562: Add firmware support for
- tas2563
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 059I7pnU088442;
+ Tue, 9 Jun 2020 13:07:51 -0500
+Subject: Re: [RFC PATCH 0/2] TAS2563 DSP Firmware Loader
 To: Mark Brown <broonie@kernel.org>
 References: <20200609172841.22541-1-dmurphy@ti.com>
- <20200609172841.22541-2-dmurphy@ti.com> <20200609173143.GN4583@sirena.org.uk>
- <bb7cff87-f814-1b37-c9eb-e68919e3c077@ti.com>
- <20200609175852.GQ4583@sirena.org.uk>
+ <20200609175203.GP4583@sirena.org.uk>
 From: Dan Murphy <dmurphy@ti.com>
-Message-ID: <414a2d73-6d09-1e76-59c8-4943c0e8f720@ti.com>
-Date: Tue, 9 Jun 2020 13:06:50 -0500
+Message-ID: <6d6aaed3-dac8-e1ec-436c-9b04273df2b3@ti.com>
+Date: Tue, 9 Jun 2020 13:07:50 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200609175852.GQ4583@sirena.org.uk>
+In-Reply-To: <20200609175203.GP4583@sirena.org.uk>
 Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Cc: robh@kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
@@ -108,41 +106,18 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Mark
 
-On 6/9/20 12:58 PM, Mark Brown wrote:
-> On Tue, Jun 09, 2020 at 12:35:50PM -0500, Dan Murphy wrote:
->> On 6/9/20 12:31 PM, Mark Brown wrote:
->>> Why not just use a standard name for the firmware?  If the firmwares
->>> vary per-board then building it using the machine compatible (or DMI
->>> info) could handle that, with a fallback to a standard name for a
->>> default setup.
->> The number of firmwares can vary per IC on the board itself.  So you may
->> have X number of firmware files all with different names all targets for
->> different TAS2563 ICs.
->> Also TI will not be providing the individual binaries to the customer.
->> There is a customer tool that the user uses to create the binaries.
->> So the output names are arbitrary.
->> I was going to mention this in the cover letter but did not think mentioning
->> the user tool had any value
-> That's all fairly standard for this sort of device.  You could still
-> cope with this by including the I2C address in the default name
-> requested - do something like tas2562/myboard-addr.fw or whatever.  The
-> concern here is that someone shouldn't have to replace their DT if they
-> decide they want to start using the DSP, and someone making a distro
-> shouldn't be stuck dealing with what happens if multiple vendors decide
-> to just reuse the same name (eg, just calling everything tas2562
-> regardless of plastics).
+On 6/9/20 12:52 PM, Mark Brown wrote:
+> On Tue, Jun 09, 2020 at 12:28:39PM -0500, Dan Murphy wrote:
+>
+>> These programs and configurations are selectable via files under the I2C dev
+>> node.  There may be a better way to select this through ALSA controls but I was
+>> unable to find a good example of this.  This is why this is an RFC patchset.
+> I think you can just use enums for most of this - what you want to do I
+> think is parse the firmware, build templates for the controls and then
+> add them with snd_soc_add_component_controls().  Userspace *should* cope
+> with controls being hotplugged.
 
-I could make a default as you suggested to include i2c address and bus 
-in the name.  But the TAS2563 does not need the firmware to operate and 
-the 2562 does not have a DSP.
-
-What if there was an ALSA control instead that passed in the firmware 
-name from the user space instead of using the DT?
-
-Then the control can load and parse the firmware and wait for the user 
-to select the program.
-
-This would solve a user from having ot update the DT to use a firmware.
+Yes this was my concern if userspace could cope with dynamic controls.
 
 Dan
 
