@@ -2,75 +2,71 @@ Return-Path: <SRS0=1fsy=7W=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BCAB0C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jun 2020 11:05:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B73FC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jun 2020 11:32:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 45D3E207ED
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jun 2020 11:05:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D2A3C206A4
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jun 2020 11:32:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CaYkTu28"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 45D3E207ED
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RtO/ERbX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D2A3C206A4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CD8DF168F;
-	Tue,  9 Jun 2020 13:04:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD8DF168F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6F4001693;
+	Tue,  9 Jun 2020 13:31:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F4001693
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591700704;
-	bh=E5/Qa6dOcxZoJ/LVMrWhn7oyHEheeZabli3t2pxdva0=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1591702343;
+	bh=otMUrX4Pmh3xtQaMkhPj2rF6ziTy5JcY5OKCfoE9StI=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CaYkTu28BtvMEPr55x+7CzoiVYqXajDbOiiT6nMBfJiRjiosL1pKw1wYbAYLeBuE4
-	 FL33FpUL8wlpFzXkmFfNh/FjyyCFnMsUdUeIs3S/E0NFU4k9OO6/Y0C3wZjxU5A9ET
-	 L/0nGpgdMSstapirpNauNCTNUokyIUB+jGgWOHdg=
+	b=RtO/ERbXRnH1F3SLn1TssIP9VEkkUx6lyxDhorjZ+utfd/vA70fC4M8Kl/82obhWe
+	 +mz+Y413N7z6GvJ7jG0BShv3azlul+7O9uiRgBkYywBP9HQKa6dC3T2y3KxchGeuuM
+	 LNTqTXErvgwlxYDimOYeaMl7rMm/FfUPFrb7yoRI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3F8B3F80278;
-	Tue,  9 Jun 2020 13:04:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F33A7F80278;
+	Tue,  9 Jun 2020 13:31:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BC4E6F8028C; Tue,  9 Jun 2020 13:02:54 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id 9C1BAF8028C; Tue,  9 Jun 2020 13:31:30 +0200 (CEST)
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D7E9FF800F1
- for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2020 13:02:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7E9FF800F1
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id B66DFACF2;
- Tue,  9 Jun 2020 11:02:52 +0000 (UTC)
-Date: Tue, 09 Jun 2020 13:02:46 +0200
-Message-ID: <s5h8sgwijs9.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Christoph Hellwig <hch@lst.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id E2CE3F800F1
+ for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2020 13:31:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2CE3F800F1
+Received: by verein.lst.de (Postfix, from userid 2407)
+ id E3C5D68B02; Tue,  9 Jun 2020 13:31:23 +0200 (CEST)
+Date: Tue, 9 Jun 2020 13:31:23 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: Takashi Iwai <tiwai@suse.de>
 Subject: Re: next-0519 on thinkpad x60: sound related? window manager crash
-In-Reply-To: <s5hh7vkio0n.wl-tiwai@suse.de>
-References: <20200520111136.GA3802@amd> <1591545088.74ii116nf2.none@localhost>
- <20200608061950.GA17476@lst.de>
- <1591624340.z01ejtod28.none@localhost>
+Message-ID: <20200609113123.GA547@lst.de>
+References: <1591545088.74ii116nf2.none@localhost>
+ <20200608061950.GA17476@lst.de> <1591624340.z01ejtod28.none@localhost>
  <alpine.DEB.2.22.394.2006081928070.148886@chino.kir.corp.google.com>
  <20200609054306.GA9606@lst.de> <s5hsgf4irzt.wl-tiwai@suse.de>
  <20200609084305.GA21671@lst.de> <s5hlfkwip1h.wl-tiwai@suse.de>
  <20200609091727.GA23814@lst.de> <s5hh7vkio0n.wl-tiwai@suse.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, x86@kernel.org,
- David Rientjes <rientjes@google.com>, tiwai@suse.com,
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <s5hh7vkio0n.wl-tiwai@suse.de>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+Cc: alsa-devel@alsa-project.org, x86@kernel.org, hpa@zytor.com, tiwai@suse.com,
  linux-kernel@vger.kernel.org, "Alex Xu \(Hello71\)" <alex_y_xu@yahoo.ca>,
  hch@infradead.org, mingo@redhat.com, bp@alien8.de, Pavel Machek <pavel@ucw.cz>,
- hpa@zytor.com, tglx@linutronix.de
+ David Rientjes <rientjes@google.com>, tglx@linutronix.de,
+ Christoph Hellwig <hch@lst.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,38 +82,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 09 Jun 2020 11:31:20 +0200,
-Takashi Iwai wrote:
-> 
-> On Tue, 09 Jun 2020 11:17:27 +0200,
-> Christoph Hellwig wrote:
-> > 
-> > On Tue, Jun 09, 2020 at 11:09:14AM +0200, Takashi Iwai wrote:
-> > > On Tue, 09 Jun 2020 10:43:05 +0200,
-> > > Christoph Hellwig wrote:
-> > > > 
-> > > > On Tue, Jun 09, 2020 at 10:05:26AM +0200, Takashi Iwai wrote:
-> > > > > > >From the disassembly it seems like a vmalloc allocation is NULL, which
-> > > > > > seems really weird as this patch shouldn't make a difference for them,
-> > > > > > and I also only see a single places that allocates the field, and that
-> > > > > > checks for an allocation failure.  But the sound code is a little
-> > > > > > hard to unwind sometimes.
-> > > > > 
-> > > > > It's not clear which sound device being affected, but if it's
-> > > > > HD-audio on x86, runtime->dma_area points to a vmapped buffer from
-> > > > > SG-pages allocated by dma_alloc_coherent().
-> > > > > 
-> > > > > OTOH, if it's a USB-audio, runtime->dma_area is a buffer by
-> > > > > vmalloc().
-> > > > 
-> > > > Err, you can't just vmap a buffer returned from dma_alloc_coherent,
-> > > > dma_alloc_coherent returns values are opaque and can't be used
-> > > > for virt_to_page.  Whatever that code did has already been broken
-> > > > per the DMA API contract and on many architectures and just happend
-> > > > to work on x86 by accident.
-> > > 
-> > > Hmm, that's bad.
-> > > 
+On Tue, Jun 09, 2020 at 11:31:20AM +0200, Takashi Iwai wrote:
 > > > How would be a proper way to get the virtually mapped SG-buffer pages
 > > > with coherent memory?  (Also allowing user-space mmap, too)
 > > 
@@ -126,9 +91,5 @@ Takashi Iwai wrote:
 > 
 > And that's the missing piece right now...  :-<
 
-BTW, this kind of usage is not specific to sound, but also V4L also
-does vmap() over SG pages from dma_alloc_coherent().  It seems done
-only on selected devices, though.
-
-
-Takashi
+Can you point me to the relevant places (allocation and vmap mostly)
+so that I can take a look at how to fix this mess?
