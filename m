@@ -2,58 +2,74 @@ Return-Path: <SRS0=1fsy=7W=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A63CBC433DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jun 2020 09:09:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 100DFC433DF
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jun 2020 09:10:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 59F91207C3
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jun 2020 09:09:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 801A2207ED
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jun 2020 09:10:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rFvBwpsQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 59F91207C3
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jOaQs3b+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 801A2207ED
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E244B1684;
-	Tue,  9 Jun 2020 11:08:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E244B1684
+	by alsa0.perex.cz (Postfix) with ESMTPS id 14ED3168D;
+	Tue,  9 Jun 2020 11:09:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 14ED3168D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591693742;
-	bh=lSyo51taR74q2+ycK9QSiYQEJJuXUxVX9FP2NuPhFsc=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1591693815;
+	bh=IJWtTPDp8/CjJmSGWTDLK4Hkr2yb2TV7D2jBS+DyCbQ=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rFvBwpsQDIXWbrgJPHQ6nMtsqkAP0mlBEgDmBDOr8pyU7hid4qVl32nq0ZuAN9HzO
-	 oF6rhCI+q+STIZPHlWaRFIJ1cKWgrizXVYQeq6r1F1PIxkMl3i6NjkQfz6Vxt2cdSZ
-	 7hsUFLa8jPLf/IutvhxFJSr7sxT9PGTabH5Ne5Fo=
+	b=jOaQs3b+9xBlswQGTZtvvTdVCRguatSD9sS0/ixuwE1apPt7DMAZ3QRYoiCsDH6e7
+	 kKY+dJzu7x5nXRxov7a70O/PYTfEVCwas83ts+JVeViFEXxcRmYQpSkN10v9ZiHCxE
+	 bRojg++c0VEl8MV7wVQElG5/YiZozGh1JJIK3oXI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6FB19F80278;
-	Tue,  9 Jun 2020 11:08:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9943CF8028C;
+	Tue,  9 Jun 2020 11:09:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 83737F8028C; Tue,  9 Jun 2020 11:08:09 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id B1B35F80124
- for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2020 11:08:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1B35F80124
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1591693685913017988-webhooks-bot@alsa-project.org>
-References: <1591693685913017988-webhooks-bot@alsa-project.org>
-Subject: alsa-gobject: timer: add global method to retrieve current source of
- timestamp
-Message-Id: <20200609090809.83737F8028C@alsa1.perex.cz>
-Date: Tue,  9 Jun 2020 11:08:09 +0200 (CEST)
+ id 1FA90F80088; Tue,  9 Jun 2020 11:09:23 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 913F5F80088
+ for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2020 11:09:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 913F5F80088
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id C6C40ADCE;
+ Tue,  9 Jun 2020 09:09:18 +0000 (UTC)
+Date: Tue, 09 Jun 2020 11:09:14 +0200
+Message-ID: <s5hlfkwip1h.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Christoph Hellwig <hch@lst.de>
+Subject: Re: next-0519 on thinkpad x60: sound related? window manager crash
+In-Reply-To: <20200609084305.GA21671@lst.de>
+References: <20200520111136.GA3802@amd> <1591545088.74ii116nf2.none@localhost>
+ <20200608061950.GA17476@lst.de>
+ <1591624340.z01ejtod28.none@localhost>
+ <alpine.DEB.2.22.394.2006081928070.148886@chino.kir.corp.google.com>
+ <20200609054306.GA9606@lst.de> <s5hsgf4irzt.wl-tiwai@suse.de>
+ <20200609084305.GA21671@lst.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, x86@kernel.org,
+ David Rientjes <rientjes@google.com>, tiwai@suse.com,
+ linux-kernel@vger.kernel.org, "Alex Xu \(Hello71\)" <alex_y_xu@yahoo.ca>,
+ hch@infradead.org, mingo@redhat.com, bp@alien8.de, Pavel Machek <pavel@ucw.cz>,
+ hpa@zytor.com, tglx@linutronix.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -69,12 +85,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-gobject pull request #27 was opened from takaswie:
+On Tue, 09 Jun 2020 10:43:05 +0200,
+Christoph Hellwig wrote:
+> 
+> On Tue, Jun 09, 2020 at 10:05:26AM +0200, Takashi Iwai wrote:
+> > > >From the disassembly it seems like a vmalloc allocation is NULL, which
+> > > seems really weird as this patch shouldn't make a difference for them,
+> > > and I also only see a single places that allocates the field, and that
+> > > checks for an allocation failure.  But the sound code is a little
+> > > hard to unwind sometimes.
+> > 
+> > It's not clear which sound device being affected, but if it's
+> > HD-audio on x86, runtime->dma_area points to a vmapped buffer from
+> > SG-pages allocated by dma_alloc_coherent().
+> > 
+> > OTOH, if it's a USB-audio, runtime->dma_area is a buffer by
+> > vmalloc().
+> 
+> Err, you can't just vmap a buffer returned from dma_alloc_coherent,
+> dma_alloc_coherent returns values are opaque and can't be used
+> for virt_to_page.  Whatever that code did has already been broken
+> per the DMA API contract and on many architectures and just happend
+> to work on x86 by accident.
 
-ALSA snd_timer kernel module has a parameter for source of timestamping. Applications cannot refer to the parameter via UAPI of Linux kernel, however it's possible via sysfs.
+Hmm, that's bad.
 
-This patch adds an API to refer to the parameter.
+How would be a proper way to get the virtually mapped SG-buffer pages
+with coherent memory?  (Also allowing user-space mmap, too)
 
-Request URL   : https://github.com/alsa-project/alsa-gobject/pull/27
-Patch URL     : https://github.com/alsa-project/alsa-gobject/pull/27.patch
-Repository URL: https://github.com/alsa-project/alsa-gobject
+
+thanks,
+
+Takashi
