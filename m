@@ -2,69 +2,69 @@ Return-Path: <SRS0=1fsy=7W=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FE73C433DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jun 2020 08:31:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B39D6C433DF
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jun 2020 08:44:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A36472078D
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jun 2020 08:31:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 40E71207C3
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jun 2020 08:44:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eHY5I0Bt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A36472078D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WhgkaLj9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 40E71207C3
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2B5FC1674;
-	Tue,  9 Jun 2020 10:30:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B5FC1674
+	by alsa0.perex.cz (Postfix) with ESMTPS id AAE621677;
+	Tue,  9 Jun 2020 10:43:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AAE621677
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591691477;
-	bh=t1Iynn6IjN9S9PFzGu0qI1RbUrdSLGLKt0Aqt+hoCgs=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=eHY5I0Bt+uRT7HdZ+K+IYeT06P0zsGO7R5rt/f4DgaCzLn9L2wxFyssxo+1YTalTm
-	 GbUdOkzuMKRqZbjrib0tVrTJ2A+2Twhef+3NR8OVILsJY8JMLfV1jX6UQxToof/QD8
-	 OjiOxjNBSlFBLdqhXf3qbHGI9AQS+EV2vkOIsZ5I=
+	s=default; t=1591692243;
+	bh=Sc/iVJAY8hoMbAZtgpT7R0/GbU3L8aFtBkYyFSGcXAA=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=WhgkaLj9x1mGlSo4/aqpvv9i8W9xy2z3zz3orf1FoIiQrXZxrsi731AfYpmA9SnNd
+	 8EriZnXGjNpjOohMNzR94RYBY73QrD0wdvYyZiuYqpsRgYQdewTS5ycnMxzbZBqKM6
+	 86QEZaXuKS6lB7zIhJqzhW7ybucVTPJ/Uc7FSOf8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A3E8DF80124;
-	Tue,  9 Jun 2020 10:30:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3F3B4F80278;
+	Tue,  9 Jun 2020 10:43:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 393D6F8028C; Tue,  9 Jun 2020 10:30:25 +0200 (CEST)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id A683BF8028C; Tue,  9 Jun 2020 10:43:11 +0200 (CEST)
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1DA00F80124
- for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2020 10:30:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1DA00F80124
-Received: from inva020.nxp.com (localhost [127.0.0.1])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 596BB1A12E4;
- Tue,  9 Jun 2020 10:30:17 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
- [165.114.16.14])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 305FC1A274D;
- Tue,  9 Jun 2020 10:30:13 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 8AACC4033E;
- Tue,  9 Jun 2020 16:30:04 +0800 (SGT)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
- festevam@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: fsl_ssi: Fix bclk calculation for mono channel
-Date: Tue,  9 Jun 2020 16:19:28 +0800
-Message-Id: <1591690768-1691-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 48E28F80088
+ for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2020 10:43:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48E28F80088
+Received: by verein.lst.de (Postfix, from userid 2407)
+ id D38BC68AFE; Tue,  9 Jun 2020 10:43:05 +0200 (CEST)
+Date: Tue, 9 Jun 2020 10:43:05 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: Takashi Iwai <tiwai@suse.de>
+Subject: Re: next-0519 on thinkpad x60: sound related? window manager crash
+Message-ID: <20200609084305.GA21671@lst.de>
+References: <20200520111136.GA3802@amd> <1591545088.74ii116nf2.none@localhost>
+ <20200608061950.GA17476@lst.de> <1591624340.z01ejtod28.none@localhost>
+ <alpine.DEB.2.22.394.2006081928070.148886@chino.kir.corp.google.com>
+ <20200609054306.GA9606@lst.de> <s5hsgf4irzt.wl-tiwai@suse.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <s5hsgf4irzt.wl-tiwai@suse.de>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+Cc: alsa-devel@alsa-project.org, x86@kernel.org, hpa@zytor.com, tiwai@suse.com,
+ linux-kernel@vger.kernel.org, "Alex Xu \(Hello71\)" <alex_y_xu@yahoo.ca>,
+ hch@infradead.org, mingo@redhat.com, bp@alien8.de, Pavel Machek <pavel@ucw.cz>,
+ David Rientjes <rientjes@google.com>, tglx@linutronix.de,
+ Christoph Hellwig <hch@lst.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,36 +80,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-For mono channel, ssi will switch to normal mode. In normal
-mode, the Word Length Control bits control the word length
-divider in clock generator, which is different with I2S master
-mode, the word length is fixed to 32bit.
+On Tue, Jun 09, 2020 at 10:05:26AM +0200, Takashi Iwai wrote:
+> > >From the disassembly it seems like a vmalloc allocation is NULL, which
+> > seems really weird as this patch shouldn't make a difference for them,
+> > and I also only see a single places that allocates the field, and that
+> > checks for an allocation failure.  But the sound code is a little
+> > hard to unwind sometimes.
+> 
+> It's not clear which sound device being affected, but if it's
+> HD-audio on x86, runtime->dma_area points to a vmapped buffer from
+> SG-pages allocated by dma_alloc_coherent().
+> 
+> OTOH, if it's a USB-audio, runtime->dma_area is a buffer by
+> vmalloc().
 
-So we refine the famula for mono channel, otherwise there
-will be sound issue for S24_LE.
-
-Fixes: b0a7043d5c2c ("ASoC: fsl_ssi: Caculate bit clock rate using slot number and width")
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/fsl_ssi.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index bad89b0d129e..e347776590f7 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -695,6 +695,11 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
- 	/* Generate bit clock based on the slot number and slot width */
- 	freq = slots * slot_width * params_rate(hw_params);
- 
-+	/* The slot_width is not fixed to 32 for normal mode */
-+	if (params_channels(hw_params) == 1)
-+		freq = (slots <= 1 ? 2 : slots) * params_width(hw_params) *
-+		       params_rate(hw_params);
-+
- 	/* Don't apply it to any non-baudclk circumstance */
- 	if (IS_ERR(ssi->baudclk))
- 		return -EINVAL;
--- 
-2.21.0
-
+Err, you can't just vmap a buffer returned from dma_alloc_coherent,
+dma_alloc_coherent returns values are opaque and can't be used
+for virt_to_page.  Whatever that code did has already been broken
+per the DMA API contract and on many architectures and just happend
+to work on x86 by accident.
