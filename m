@@ -2,78 +2,89 @@ Return-Path: <SRS0=lC1U=7X=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A5935C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Jun 2020 14:14:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7424CC433DF
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Jun 2020 14:29:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 311B52067B
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Jun 2020 14:14:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F1D2A20734
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Jun 2020 14:29:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CNTFQ0V1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 311B52067B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ovh4DYCL";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="cTCwi9MC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F1D2A20734
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A5CCA166F;
-	Wed, 10 Jun 2020 16:13:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5CCA166F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 784F515E2;
+	Wed, 10 Jun 2020 16:28:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 784F515E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591798451;
-	bh=SKjYSMyhMk/KfMQALV4t8Rgr6OC7zA2wtp0LNxPKgI4=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1591799355;
+	bh=SssoMY0PrbC8NZYL8hnhXQqlnOAu8G3HtlO7aJa2fL4=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CNTFQ0V1IwSqbZIXZZvoSiboz6enExnPQaJ9E8Z0HfHeDO+E+dCgQoc4rxcs77SNI
-	 cTCw2l0jAhTjIzP2Gbkrjx+k+i6RbNmRjmziPEmfrfPsygmpUlcr+hynw1Geqe2LrZ
-	 MhIHI1+QBAgBh7KDCatNdpKPVU0wBRJVH3ZWgWHw=
+	b=Ovh4DYCLWv9/fNxTfWM8yx/JSUBoQyZS3x1MokgKYBGqtY3xb1dDBooG6IOy4dBlD
+	 NMd6NalKEaeipDWPZMbn6N4BiXeWA/m2G8CyAW57BOtxzdk6cLmJ1nqoK/auC76TI2
+	 Dkdevg6Ih7PqnDlwEh78G3bLpYAxMVrKntujx1hM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8BBBAF80058;
-	Wed, 10 Jun 2020 16:12:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 04F77F801F7;
+	Wed, 10 Jun 2020 16:28:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E21A1F8024A; Wed, 10 Jun 2020 16:12:49 +0200 (CEST)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ id 41C9EF8021C; Wed, 10 Jun 2020 16:28:20 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 14B5FF800E0
+ for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2020 16:28:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14B5FF800E0
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="cTCwi9MC"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 95ABAF80058
- for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2020 16:12:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95ABAF80058
-IronPort-SDR: 8RjnLnjdGbFWSFhO7/igpT8rXQkXpd6/5KdEvxaJQukwBnHGupIWi5F6iENOAIS1PgweVNohPp
- l39cmC0d/GxA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Jun 2020 07:12:39 -0700
-IronPort-SDR: fKrJXsTqhlPXdaj5uo+Plq6f24Ee0V34xRBDERFPAU1oT+dwqd1TjgEWVneFvEOvOqdcHz0O1c
- x2BU4QuL/X4A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,496,1583222400"; d="scan'208";a="473350013"
-Received: from opolat-mobl.amr.corp.intel.com (HELO [10.251.2.3])
- ([10.251.2.3])
- by fmsmga006.fm.intel.com with ESMTP; 10 Jun 2020 07:12:38 -0700
-Subject: Re: [RFC PATCH] ALSA: compress: Fix gapless playback state machine
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, vkoul@kernel.org
-References: <20200610100729.362-1-srinivas.kandagatla@linaro.org>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <694dd437-3453-7328-f544-28106c1c366d@linux.intel.com>
-Date: Wed, 10 Jun 2020 07:56:05 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ by mail.kernel.org (Postfix) with ESMTPSA id 0EE302067B;
+ Wed, 10 Jun 2020 14:28:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1591799293;
+ bh=SssoMY0PrbC8NZYL8hnhXQqlnOAu8G3HtlO7aJa2fL4=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=cTCwi9MCuyazL5XefSTUHGnMKhLIwl80cvs11td6qe8C3D69DMBkyrYGat8L5dWY9
+ Fa+c8YpHEFZk2f1Dd/kgwiPGzNU4MgYhyISpk8hS8R2+XSwvmAzOLEGjUwXsJyA6DQ
+ 2DYELyD9AyVfw1fvQXLrj7qo1gDxAP9j9S2TdN9k=
+Date: Wed, 10 Jun 2020 15:28:11 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Dan Murphy <dmurphy@ti.com>
+Subject: Re: [RFC PATCH 1/2] dt-bindings: tas2562: Add firmware support for
+ tas2563
+Message-ID: <20200610142811.GH5005@sirena.org.uk>
+References: <20200609172841.22541-1-dmurphy@ti.com>
+ <20200609172841.22541-2-dmurphy@ti.com>
+ <20200609173143.GN4583@sirena.org.uk>
+ <bb7cff87-f814-1b37-c9eb-e68919e3c077@ti.com>
+ <20200609175852.GQ4583@sirena.org.uk>
+ <414a2d73-6d09-1e76-59c8-4943c0e8f720@ti.com>
+ <20200609184734.GS4583@sirena.org.uk>
+ <014b85b5-677b-569a-4eb2-74526d3f00bc@ti.com>
+ <20200610102920.GC5005@sirena.org.uk>
+ <84a6dd5f-cc3e-adb4-ae94-b4fe389adfd9@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20200610100729.362-1-srinivas.kandagatla@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org,
- linux-kernel@vger.kernel.org, tiwai@suse.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="l06SQqiZYCi8rTKz"
+Content-Disposition: inline
+In-Reply-To: <84a6dd5f-cc3e-adb4-ae94-b4fe389adfd9@ti.com>
+X-Cookie: fortune: No such file or directory
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: robh@kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,61 +101,67 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+--l06SQqiZYCi8rTKz
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 6/10/20 5:07 AM, Srinivas Kandagatla wrote:
-> For gapless playback call to snd_compr_drain_notify() after
-> partial drain should put the state to SNDRV_PCM_STATE_RUNNING
-> rather than SNDRV_PCM_STATE_SETUP as the driver is ready to
-> process the buffers for new track.
-> 
-> With existing code, if we are playing 3 tracks in gapless, after
+On Wed, Jun 10, 2020 at 09:12:15AM -0500, Dan Murphy wrote:
+> On 6/10/20 5:29 AM, Mark Brown wrote:
 
-The gapless playback only deals with transitions between two tracks of 
-identical format. I am not sure what the reference to 3 tracks means.
+> > I'm not *completely* opposed to having the ability to suggest a name in
+> > firmware, the big problem is making use of the DSP completely dependent
+> > on having a DT property or doing some non-standard dance in userspace.
 
-> partial drain finished on previous track 1 the state is set to
-> SNDRV_PCM_STATE_SETUP which is then moved to SNDRV_PCM_STATE_PREPARED
-> after data write. With this state calls to snd_compr_next_track() and
-> few other calls will fail as they expect the state to be in
-> SNDRV_PCM_STATE_RUNNING.
-> 
-> Here is the sequence of events and state transitions:
-> 
-> 1. set_params (Track 1), state =  SNDRV_PCM_STATE_SETUP
-> 2. set_metadata (Track 1), no state change, state = SNDRV_PCM_STATE_SETUP
-> 3. fill and trigger start (Track 1), state = SNDRV_PCM_STATE_RUNNING
-> 4. set_next_track (Track 2), state = SNDRV_PCM_STATE_RUNNING
-> 5. partial_drain (Track 1), state = SNDRV_PCM_STATE_SETUP
-> 6  snd_compr_drain_notify (Track 1), state = SNDRV_PCM_STATE_SETUP
-> 7. fill data (Track 2), state = SNDRV_PCM_STATE_PREPARED
-> 8. set_metadata (Track 3), no state change, state = SNDRV_PCM_STATE_PREPARED
-> 9. set_next_track (Track 3), !! FAILURE as state != SNDRV_PCM_STATE_RUNNING
-> 
-> Fixes: f44f2a5417b2 ("ALSA: compress: fix drain calls blocking other compress functions (v6)")
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
-> 
-> I wonder who did gapless work on upstream so far?
+> Well from what I see we have 4 options.
 
-IIRC the only users of gapless playback are Android platforms, where the 
-HAL deals with the transitions. I am not aware of any plain vanilla 
-Linux solution.
+These are not mutually exclusive approaches.
 
-> 
->   include/sound/compress_driver.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
-> index 6ce8effa0b12..eabac33864c2 100644
-> --- a/include/sound/compress_driver.h
-> +++ b/include/sound/compress_driver.h
-> @@ -182,7 +182,7 @@ static inline void snd_compr_drain_notify(struct snd_compr_stream *stream)
->   	if (snd_BUG_ON(!stream))
->   		return;
->   
-> -	stream->runtime->state = SNDRV_PCM_STATE_SETUP;
-> +	stream->runtime->state = SNDRV_PCM_STATE_RUNNING;
->   
->   	wake_up(&stream->runtime->sleep);
->   }
-> 
+> 1.=A0 We can have a DT node like RFC'd (Need Rob's comments here)
+
+This is compatible with any hardcoding option.
+
+> 2.=A0 We can have a defconfig flag that hard codes the name (This will
+> probably be met with some resistance if not some really bad reactions and=
+ I
+> don't prefer to do it this way)
+
+This is even worse than the ALSA control suggestion.
+
+> 3.=A0 We can hard code the name of the firmware in the c file.
+
+> 4.=A0 Dynamically derive a file name based on the I2C bus-address-device =
+so it
+> would be expected to be "2_4c_tas2563.bin".=A0 Just need to figure out ho=
+w to
+> get the bus number.
+
+> Again only option 1 allows us to have different firmware binaries per IC
+> instance and also denotes the use of the DSP.=A0 The DSP is not programmed
+
+No, this is not the case at all - a per-device generated file allows
+this just as well.
+
+> So special audio handling is very explicit in the user space.=A0 More then
+> likely most standard distributions will not even use the DSP for this dev=
+ice
+> it is more of a specialized use case for each product.
+
+People do things like make AOSP derived distributions for phones.
+
+--l06SQqiZYCi8rTKz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7g7foACgkQJNaLcl1U
+h9DkTwf/dnxODE9jlK7rqZaP9/fgmsXcrTn+c5SE7VmNv+ButQXrB22OYVH1AJiv
+p2l0ucEqZtrVD/GJGGgjgkfLgwZxx5byaSfBjyszg80Zgpsc16g1YU9xDAoI0pmv
+rkGPrh9WXHB746szBsc2PA46wKtjSgnRkq6cOvxGciuysAdxagYyKvyVgzFopAO+
+O9ZVXw//Yg0jf9atCfpXWA+0Z4Mza0UitJBP7ydpG0siJzXW5qY5dExlM/jromgk
+Wl5Y3oBYKl04j6Y4Yh3ZG/DbLVTsyHMGoD3lYgm6zp4HFxlKcpzcMS6Mdvh1uny1
+dX3NZZwyD4qjL9eOc/p3x08Dreii9A==
+=Iqc2
+-----END PGP SIGNATURE-----
+
+--l06SQqiZYCi8rTKz--
