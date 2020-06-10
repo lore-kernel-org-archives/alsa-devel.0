@@ -2,96 +2,69 @@ Return-Path: <SRS0=lC1U=7X=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7ADEC433DF
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Jun 2020 10:09:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 723F5C433E2
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Jun 2020 10:17:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 54D7320734
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Jun 2020 10:09:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 005012078D
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Jun 2020 10:17:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="I4WhHODM";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DvnUv3KU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 54D7320734
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="f8ikWWbi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 005012078D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CC055822;
-	Wed, 10 Jun 2020 12:08:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC055822
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8D13C15E4;
+	Wed, 10 Jun 2020 12:16:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D13C15E4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591783773;
-	bh=rTYYQzi6+u4P8XdgsIltFuVZXj5TrAlU7/DVwDQxYQo=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1591784256;
+	bh=6W9F6jmzx/wRLyRT2WOEXH7pGOv1UTnxsP/hHPv8qkg=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=I4WhHODMsy8dlPMQGAYoWCJKHzf1wP0dXqMc3m3ikYlRLSuDs3pS8X66JGUrZMMCe
-	 EDS4C7Tu3De7Nch9vSLXOh11XJ8qTg833F6WfalfA1FrVm9jmuxrOpu6iuKl+MQdaG
-	 JdR3Mt5HFGIzSH+eTh/DLJUDwx4p8hGoAwEhFCOY=
+	b=f8ikWWbi+iD84zMyRf69YokqBllcdRWVSoPwfFHXhU5rZreAV4gUlyvk4zpUXk5LZ
+	 WF3oqogwSqzmOdqSMeF7Zij11QttzFNlavG22rrsXC0skxASLRGbKcReA0U7PjmVL3
+	 DQ+NziexQjQdpG7e1MfdX+NaiJchtNfxmrU875Mo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 69C84F801F7;
-	Wed, 10 Jun 2020 12:08:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 16405F80228;
+	Wed, 10 Jun 2020 12:16:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D79F0F80088; Wed, 10 Jun 2020 12:08:38 +0200 (CEST)
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
- [IPv6:2a00:1450:4864:20::444])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 833F1F8021E; Wed, 10 Jun 2020 12:16:44 +0200 (CEST)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EF41EF80088
- for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2020 12:08:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF41EF80088
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="DvnUv3KU"
-Received: by mail-wr1-x444.google.com with SMTP id c3so1546135wru.12
- for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2020 03:08:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=4WcGKmG4Em8CGRb1sOMBrhLYqKdA8bExoZ3wWUVyJW4=;
- b=DvnUv3KU4S8Lh5Uv8DrTXTyD2Uj2tPoCzCpgSJuoIIi5t8AAL6UWyXNqU6dvIfmiVP
- 5ewlP1kMqc2IQyDUCGfTmoSGbTIdCHvOdbzKVlaYO+cBe3jKihid/K3MxumsSXd3PJgn
- pfaAQ/6v6vV79Nsm2WX4v4XsXm/5tP1gl9vALFZ5Yw2wMuaBbiQ+7jjIqAfG3PVowqGo
- PE3Rq4djozkWLBSSO/0hFnCh3edPks5UY4kHeeM/T5ejDkYUWJTV2Sip3DdDB+PNegNO
- Y0iPXY/M/Gt++1lOp4EebQ/1EdyqmlpnLB2QQre5lYnaD7Ig5AxPa+mtI9E13T+fuwEF
- EUyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=4WcGKmG4Em8CGRb1sOMBrhLYqKdA8bExoZ3wWUVyJW4=;
- b=tDairnm97JJx8cZQ81scEv4q7ixUv2u5hh195Eoy5shMsFanKS5aabG/uthE9NxWgV
- TVYq6V4ywfLFMDi/K932TOoLv1b+uVokIBhPBfD5SIPQsU4xbGIl+vMvZX3J84H5+BEH
- 1tZ6291GwBzgtUvqWbcZVC/IEx+j0XdjN3SXb/IC7a7KEpsiGBr6ng6uzJ1y8A38jKWm
- tG2Vv2k7wUGiPYsTkoNu7V+IyWpnOeYeBgprpuYlueS2iPNY8gUZFIDuYgnxwtCLaPJR
- N6eS2qeyDuhSO8D1mIpo0NFVDl9fo0b1PTFAb11b+FlOFZjuvmknJaMU47zoTkimq+v3
- K57g==
-X-Gm-Message-State: AOAM532Gx2xPTwkTyFceTHI6dc7lwcmRyu/nzu6uBtdTLQSlpNkjqSQv
- B4H5I2TlVKsQvTlvRt7Pjxd5sg==
-X-Google-Smtp-Source: ABdhPJw09wktHVTyjsGCacuk2gE1D/IgwGZO8zvrddmzIg9nGy2ATklylYksTfUUgBkSifQjEwm+hw==
-X-Received: by 2002:adf:e40c:: with SMTP id g12mr2808457wrm.121.1591783709471; 
- Wed, 10 Jun 2020 03:08:29 -0700 (PDT)
-Received: from srini-hackbox.lan
- (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
- by smtp.gmail.com with ESMTPSA id b14sm2755955wmb.20.2020.06.10.03.08.28
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 10 Jun 2020 03:08:28 -0700 (PDT)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: vkoul@kernel.org
-Subject: [RFC PATCH] ALSA: compress: Fix gapless playback state machine
-Date: Wed, 10 Jun 2020 11:07:29 +0100
-Message-Id: <20200610100729.362-1-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com,
- broonie@kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2A29BF80058
+ for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2020 12:16:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2A29BF80058
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 408921A0482;
+ Wed, 10 Jun 2020 12:16:41 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
+ [165.114.16.14])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 5E6251A02CE;
+ Wed, 10 Jun 2020 12:16:36 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id E5B81402FB;
+ Wed, 10 Jun 2020 18:16:29 +0800 (SGT)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: lars@metafoo.de, perex@perex.cz, tiwai@suse.com, lgirdwood@gmail.com,
+ broonie@kernel.org, timur@kernel.org, nicoleotsuka@gmail.com,
+ Xiubo.Lee@gmail.com, festevam@gmail.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [RFC PATCH v2 0/3] ASoC: fsl_asrc_dma: Reuse the dma channel if
+ available in Back-End
+Date: Wed, 10 Jun 2020 18:05:46 +0800
+Message-Id: <cover.1591783089.git.shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,52 +80,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-For gapless playback call to snd_compr_drain_notify() after
-partial drain should put the state to SNDRV_PCM_STATE_RUNNING
-rather than SNDRV_PCM_STATE_SETUP as the driver is ready to
-process the buffers for new track.
+Reuse the dma channel if available in Back-End
 
-With existing code, if we are playing 3 tracks in gapless, after
-partial drain finished on previous track 1 the state is set to
-SNDRV_PCM_STATE_SETUP which is then moved to SNDRV_PCM_STATE_PREPARED
-after data write. With this state calls to snd_compr_next_track() and
-few other calls will fail as they expect the state to be in
-SNDRV_PCM_STATE_RUNNING.
+Shengjiu Wang (3):
+  ASoC: soc-card: export snd_soc_lookup_component_nolocked
+  ASoC: dmaengine_pcm: export soc_component_to_pcm
+  ASoC: fsl_asrc_dma: Reuse the dma channel if available in Back-End
 
-Here is the sequence of events and state transitions:
+changes in v2:
+- update according to Mark's comments and split the patch
 
-1. set_params (Track 1), state =  SNDRV_PCM_STATE_SETUP
-2. set_metadata (Track 1), no state change, state = SNDRV_PCM_STATE_SETUP
-3. fill and trigger start (Track 1), state = SNDRV_PCM_STATE_RUNNING
-4. set_next_track (Track 2), state = SNDRV_PCM_STATE_RUNNING
-5. partial_drain (Track 1), state = SNDRV_PCM_STATE_SETUP
-6  snd_compr_drain_notify (Track 1), state = SNDRV_PCM_STATE_SETUP
-7. fill data (Track 2), state = SNDRV_PCM_STATE_PREPARED
-8. set_metadata (Track 3), no state change, state = SNDRV_PCM_STATE_PREPARED
-9. set_next_track (Track 3), !! FAILURE as state != SNDRV_PCM_STATE_RUNNING
 
-Fixes: f44f2a5417b2 ("ALSA: compress: fix drain calls blocking other compress functions (v6)")
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
+ include/sound/dmaengine_pcm.h         | 11 ++++++
+ include/sound/soc.h                   |  2 ++
+ sound/soc/fsl/fsl_asrc_common.h       |  2 ++
+ sound/soc/fsl/fsl_asrc_dma.c          | 52 ++++++++++++++++++++-------
+ sound/soc/soc-core.c                  |  3 +-
+ sound/soc/soc-generic-dmaengine-pcm.c | 12 -------
+ 6 files changed, 57 insertions(+), 25 deletions(-)
 
-I wonder who did gapless work on upstream so far?
-
- include/sound/compress_driver.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
-index 6ce8effa0b12..eabac33864c2 100644
---- a/include/sound/compress_driver.h
-+++ b/include/sound/compress_driver.h
-@@ -182,7 +182,7 @@ static inline void snd_compr_drain_notify(struct snd_compr_stream *stream)
- 	if (snd_BUG_ON(!stream))
- 		return;
- 
--	stream->runtime->state = SNDRV_PCM_STATE_SETUP;
-+	stream->runtime->state = SNDRV_PCM_STATE_RUNNING;
- 
- 	wake_up(&stream->runtime->sleep);
- }
 -- 
 2.21.0
 
