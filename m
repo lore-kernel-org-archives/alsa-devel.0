@@ -2,95 +2,89 @@ Return-Path: <SRS0=5dB9=7Y=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 950E0C433DF
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Jun 2020 18:10:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13BD1C433E1
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Jun 2020 18:13:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 12D7C206DC
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Jun 2020 18:10:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C096720792
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Jun 2020 18:13:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TRTLgEMf";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="qo9rJTEz"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 12D7C206DC
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ko4a77A1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C096720792
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8C14D167A;
-	Thu, 11 Jun 2020 20:09:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C14D167A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 438F81679;
+	Thu, 11 Jun 2020 20:13:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 438F81679
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591898999;
-	bh=+NcKMlwbAgAG7wuNdyrwogMDWL2KMjMAjfkRWXaC994=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1591899235;
+	bh=3dcycSN1pzs0IExZs9Kb+Py7q/ZZ0GFqj/DbNs72leg=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TRTLgEMfvy3OaPiMPLF5ukEfTC00jSceDeYo+99JRry3WvFcrYoWnMJJ45HGjKENx
-	 FpTUghlEQ+xY+Iue8Gtr3JhxyASd7mLEKiv8wBJhMBq2t8Cjv6MXyjkTC4Ku9IhGfi
-	 HAkzsRVY1nPLFbnjmkncZEMuPAgxQ51pl3Eo1sU4=
+	b=Ko4a77A1T0+G4GxSDVcEMrcIWrufEhNZdEkJi2FXq80wXfwOKZ+95cNycBnVQVlpT
+	 9HUq0aIbVJ48JiGEm3sewg/9YqIx+Yb3tEQUnZXFlFwhUDIW0iWqd7CTnCbaKBfv++
+	 IhbOtjdXGRtc9H0IaGZWAOy47lpXlb6WGdySBnGI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0DEF4F800CC;
-	Thu, 11 Jun 2020 20:09:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D0C12F80278;
+	Thu, 11 Jun 2020 20:13:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5EF0AF8028C; Thu, 11 Jun 2020 20:09:07 +0200 (CEST)
-Received: from hqnvemgate24.nvidia.com (hqnvemgate24.nvidia.com
- [216.228.121.143])
+ id 7F0EFF8028C; Thu, 11 Jun 2020 20:13:03 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8BD32F800CC
- for <alsa-devel@alsa-project.org>; Thu, 11 Jun 2020 20:08:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8BD32F800CC
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
- header.b="qo9rJTEz"
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by
- hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
- id <B5ee272db0000>; Thu, 11 Jun 2020 11:07:23 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
- by hqpgpgate102.nvidia.com (PGP Universal service);
- Thu, 11 Jun 2020 11:08:56 -0700
-X-PGP-Universal: processed;
- by hqpgpgate102.nvidia.com on Thu, 11 Jun 2020 11:08:56 -0700
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 11 Jun
- 2020 18:08:56 +0000
-Received: from krypton.plattnerplace.us.com (10.124.1.5) by
- HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server id
- 15.0.1473.3 via Frontend Transport; Thu, 11 Jun 2020 18:08:56 +0000
-From: Aaron Plattner <aplattner@nvidia.com>
-To: Takashi Iwai <tiwai@suse.com>, <alsa-devel@alsa-project.org>, "Jaroslav
- Kysela" <perex@perex.cz>
-Subject: [PATCH v2] ALSA: hda: Add NVIDIA codec IDs 9a & 9d through a0 to
- patch table
-Date: Thu, 11 Jun 2020 11:08:45 -0700
-Message-ID: <20200611180845.39942-1-aplattner@nvidia.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <s5hftb1eqgv.wl-tiwai@suse.de>
-References: <s5hftb1eqgv.wl-tiwai@suse.de>
-MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
- t=1591898843; bh=rm+GjnPU8lOpFbupdg69GElGbE3u5xiSIV8BSqvs+GI=;
- h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
- In-Reply-To:References:MIME-Version:X-NVConfidentiality:
- Content-Transfer-Encoding:Content-Type;
- b=qo9rJTEz3DVg2f8fWh+nGcpFveWbP/jse78tRkKCkntNCxlo5tgU7UoNeDPQBAC8R
- eHXXrZcFd+721D8AVW+XS0XMZOOC9/lGwC6tL9/BfNVROTu/Gba/tghJV2H1E3vrfX
- ntRvieMq0ButdQIZouEBXdGDBCPm8n2afooHJZ9yjZQtdqChb4dDIrm2d8dl9/1Q//
- NK7F434ZmuU31zPcuZ6CxNxBo4tZth5GFi3+OnhyY646UtqP9XoS5FDh9w9TEz94iQ
- 7SufgR+qoiqgAPJzOrI6zEiKF/qoqz81/myx2Ym2PEMzMJ0o9itz+5U94B6ToZS9/f
- qKnEvdbjoLiLA==
-Cc: Nikhil Mahale <nmahale@nvidia.com>, linux-kernel@vger.kernel.org, Aaron
- Plattner <aplattner@nvidia.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id B98E9F80058
+ for <alsa-devel@alsa-project.org>; Thu, 11 Jun 2020 20:12:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B98E9F80058
+IronPort-SDR: Ie8cLxE5VPsXQMl3uRo0seWJWlpoYTLveVm42vn92kts5LSzvA4rOgN42Sur/O/zMXsmr7wlcV
+ E4KsAKDslA+Q==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 Jun 2020 11:12:54 -0700
+IronPort-SDR: sgGeycKqS49OljXzUmElxdqto92wMSFKg9+yX1gughcpFA1byNZuzBPzJ+vRJabTr/S1Wb8+DX
+ 0OH2e2Ii1Fig==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,500,1583222400"; d="scan'208";a="289624840"
+Received: from ttvo1-mobl.amr.corp.intel.com ([10.251.138.170])
+ by orsmga002.jf.intel.com with ESMTP; 11 Jun 2020 11:12:53 -0700
+Message-ID: <ccccab4d074878cd8fc3b3c4313025e54f78b65a.camel@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF: Intel: hda: unsolicited RIRB response
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+To: Takashi Iwai <tiwai@suse.de>, "Lu, Brent" <brent.lu@intel.com>
+Date: Thu, 11 Jun 2020 11:12:53 -0700
+In-Reply-To: <s5h5zbxeb5t.wl-tiwai@suse.de>
+References: <1591883073-17190-1-git-send-email-brent.lu@intel.com>
+ <b7e0b822a9deea506acaa40e0e31cc9f488bb446.camel@linux.intel.com>
+ <DM6PR11MB4316108BCF449D52E49C7E4297800@DM6PR11MB4316.namprd11.prod.outlook.com>
+ <s5h5zbxeb5t.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "sound-open-firmware@alsa-project.orgDRIVERS"
+ <sound-open-firmware@alsa-project.orgDRIVERS>, "commit_signer:6/16=38%,
+ authored:6/16=38%, added_lines:123/248=50%, removed_lines:36/84=43%, Kai
+ Vehmanen DRIVERS \)" <kai.vehmanen@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>, "Rojewski, 
+ Cezary" <cezary.rojewski@intel.com>, Takashi Iwai <tiwai@suse.com>,
+ Keyon Jie <yang.jie@linux.intel.com>,
+ Pierre-Louis Bossart DRIVERS <pierre-louis.bossart@linux.intel.com>,
+ "authored:2/16=12%, added_lines:21/248=8%, removed_lines:5/84=6%, \), Liam	 	
+ Girdwood DRIVERS \)" <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ "Daniel Baluta DRIVERS \)" <daniel.baluta@nxp.com>,
+ Zhu Yingjiang <yingjiang.zhu@linux.intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,32 +100,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-These IDs are for upcoming NVIDIA chips with audio functions that are large=
-ly
-similar to the existing ones.
+On Thu, 2020-06-11 at 19:59 +0200, Takashi Iwai wrote:
+> On Thu, 11 Jun 2020 19:09:08 +0200,
+> Lu, Brent wrote:
+> > 
+> > > Hi Brent,
+> > > 
+> > > Thanks for the patch. Is this fix for a specific issue you're
+> > > seeing?
+> > > If so, could you please give us some details about it?
+> > > 
+> > > Thanks,
+> > > Ranjani
+> > 
+> > Hi Ranjani,
+> > 
+> > It's reported to happen on GLK Chromebook 'Fleex' that sometimes it
+> > cannot output the audio stream to external display. The kernel is
+> > Chrome v4.14 branch. Following is the reproduce step provided by
+> > ODM but I could reproduce it simply running aplay or
+> > cras_test_client
+> > so I think it's not about the cable plug/unplug handling.
+> > 
+> > What steps will reproduce the problem?
+> > 1.      Play YouTube video on Chromebook and connect it to external
+> > monitor with Type C to DP dongle
+> > 2.      Press monitor power button to turn off the monitor
+> > 3.      Press monitor power button again to turn on the monitor
+> > 4.      Continue to play YouTube video and check audio playback
+> > 5.      No sound comes out from built-in speaker of external
+> > monitor when turn on external monitor
+> > 
+> > I added debug messages to print the RIRBWP register and realize
+> > that
+> > response could come between the read of RIRBWP in the
+> > snd_hdac_bus_update_rirb() function and the interrupt clear in the
+> > hda_dsp_stream_interrupt() function. The response is not handled
+> > but
+> > the interrupt is already cleared. It will cause timeout unless more
+> > responses coming to RIRB.
+> 
+> Now I noticed that the legacy driver already addressed it recently
+> via
+> commit 6d011d5057ff
+>     ALSA: hda: Clear RIRB status before reading WP
+> 
+> We should have checked SOF at the same time, too...
 
-Signed-off-by: Aaron Plattner <aplattner@nvidia.com>
----
- sound/pci/hda/patch_hdmi.c | 5 +++++
- 1 file changed, 5 insertions(+)
+Thanks, Takashi. But the legacy driver but doesnt remove the loop. The
+loop added in the SOF driver was based on the legacy driver and
+specifically to handle missed stream interrupts. Is there any harm in
+keeping the loop?
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index fbd7cc6026d8..e2b21ef5d7d1 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -4145,6 +4145,11 @@ HDA_CODEC_ENTRY(0x10de0095, "GPU 95 HDMI/DP",	patch_=
-nvhdmi),
- HDA_CODEC_ENTRY(0x10de0097, "GPU 97 HDMI/DP",	patch_nvhdmi),
- HDA_CODEC_ENTRY(0x10de0098, "GPU 98 HDMI/DP",	patch_nvhdmi),
- HDA_CODEC_ENTRY(0x10de0099, "GPU 99 HDMI/DP",	patch_nvhdmi),
-+HDA_CODEC_ENTRY(0x10de009a, "GPU 9a HDMI/DP",	patch_nvhdmi),
-+HDA_CODEC_ENTRY(0x10de009d, "GPU 9d HDMI/DP",	patch_nvhdmi),
-+HDA_CODEC_ENTRY(0x10de009e, "GPU 9e HDMI/DP",	patch_nvhdmi),
-+HDA_CODEC_ENTRY(0x10de009f, "GPU 9f HDMI/DP",	patch_nvhdmi),
-+HDA_CODEC_ENTRY(0x10de00a0, "GPU a0 HDMI/DP",	patch_nvhdmi),
- HDA_CODEC_ENTRY(0x10de8001, "MCP73 HDMI",	patch_nvhdmi_2ch),
- HDA_CODEC_ENTRY(0x10de8067, "MCP67/68 HDMI",	patch_nvhdmi_2ch),
- HDA_CODEC_ENTRY(0x11069f80, "VX900 HDMI/DP",	patch_via_hdmi),
---=20
-2.27.0
+Thanks,
+Ranjani
 
