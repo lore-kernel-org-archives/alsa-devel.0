@@ -2,58 +2,69 @@ Return-Path: <SRS0=5dB9=7Y=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E8846C433DF
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Jun 2020 11:25:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B0E6AC433DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Jun 2020 12:29:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6FE642078D
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Jun 2020 11:25:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 39B232072F
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Jun 2020 12:29:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IC97UbXx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6FE642078D
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jD8jo+6M"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 39B232072F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0A959167F;
-	Thu, 11 Jun 2020 13:24:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A959167F
+	by alsa0.perex.cz (Postfix) with ESMTPS id BF5A81679;
+	Thu, 11 Jun 2020 14:29:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF5A81679
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591874721;
-	bh=+9M69bNXuUJz3cRzKazZy0fEvV/AcejM8SZ/Xxzz5MY=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1591878591;
+	bh=4CfqzjRsMkh3uWeNkXj8W4KvsYowuY8DhYHv1XAQ0Kc=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IC97UbXxYWDyBDyaPTwiFrIv/DT7a0bENCnRVLWoc0gMtKEJExII+w5ZR7HyzKkpt
-	 /cuC6dPylQXHvw2nFDjQKxaFcl3QQyoQo5L8eb354pe2n+FpzQEixigJidM+FqEKXf
-	 hjmGsFyvKAB/ZSaTKsYJQY6Yh+xfV0PeXkuyLLvE=
+	b=jD8jo+6MmqR9/IEJ6uOuXawbRziEls8MziJveACgD53BBuE3iRmlXKL22U7Tx7rNH
+	 GVKPx+xy9KtGKKj+lCYLOr8ak4P7nJkltBe2Rk25mAtZZRO64lRfPeWn5zCrYWasMI
+	 HwebOl6dx26jG1rjf7l42Ud+GhSEcP6Z1mcaLBG4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 963C9F800CC;
-	Thu, 11 Jun 2020 13:24:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4E695F800CC;
+	Thu, 11 Jun 2020 14:29:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DCA19F8028C; Thu, 11 Jun 2020 13:24:28 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 5AD2CF800CC
- for <alsa-devel@alsa-project.org>; Thu, 11 Jun 2020 13:24:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5AD2CF800CC
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1591874664591289043-webhooks-bot@alsa-project.org>
-References: <1591874664591289043-webhooks-bot@alsa-project.org>
-Subject: alsa-gobject: obsolete abstract class for `snd_timer_read` and
- `snd_timer_tread` structure
-Message-Id: <20200611112428.DCA19F8028C@alsa1.perex.cz>
-Date: Thu, 11 Jun 2020 13:24:28 +0200 (CEST)
+ id B5E45F8028C; Thu, 11 Jun 2020 14:28:56 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 86D41F80149
+ for <alsa-devel@alsa-project.org>; Thu, 11 Jun 2020 14:28:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86D41F80149
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 560C8AD09;
+ Thu, 11 Jun 2020 12:28:52 +0000 (UTC)
+Date: Thu, 11 Jun 2020 14:28:48 +0200
+Message-ID: <s5hftb1eqgv.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Aaron Plattner <aplattner@nvidia.com>
+Subject: Re: [PATCH] ALSA: hda: Add NVIDIA codec IDs 9a & 9d through a0 to
+ patch table
+In-Reply-To: <b64129f4-dfd2-1e1c-4034-6d784d6c41ab@nvidia.com>
+References: <20200605171707.8587-1-aplattner@nvidia.com>
+ <s5h36787heo.wl-tiwai@suse.de>
+ <b64129f4-dfd2-1e1c-4034-6d784d6c41ab@nvidia.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.com>, Nikhil Mahale <nmahale@nvidia.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -69,16 +80,62 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-gobject pull request #31 was opened from takaswie:
+On Wed, 10 Jun 2020 19:39:51 +0200,
+Aaron Plattner wrote:
+> 
+> On 6/6/20 1:00 AM, Takashi Iwai wrote:
+> > On Fri, 05 Jun 2020 19:17:07 +0200,
+> > Aaron Plattner wrote:
+> >>
+> >> Signed-off-by: Aaron Plattner <aplattner@nvidia.com>
+> >
+> > Could you give a bit more information?
+> 
+> Hi Takashi. Sorry for the slow reply and the terse commit message. I
+> can't say a whole lot about these but I can say that they're for
+> upcoming chips with audio functions that are largely similar to the
+> existing ones.
 
-In UAPI of Linux sound subsystem, two types of event is read from ALSA Timer character device; snd_timer_read and snd_timer_tread. Before attached to any timer device, an user instance can select which type of event is expected.
+Could you resubmit a patch with such a description?
 
-ALSATimer.UserInstance uses one GObject signal to handle these events. These events are defined as derived object from abstract class, ALSATimer.EventData. However, the design pattern is not convenient for some language bindings.
 
-For example, in Rust language, class-based inheritance is not supported. Gtk-rs project produces mechanism to upcast/downcast between super/sub classes and handles GObject class system. In my opinion, the code to upcast/downcast is a bit complicated to handle derivatives.
+thanks,
 
-This patchset obsoletes usage of abstract class for ALSATimer.EventData. Instead, ALSATimer.Event is defined as concrete class and the instance of class is passed to the GObject signal. Applications use APIs to pick up expected type of data from the instance.
+Takashi
 
-Request URL   : https://github.com/alsa-project/alsa-gobject/pull/31
-Patch URL     : https://github.com/alsa-project/alsa-gobject/pull/31.patch
-Repository URL: https://github.com/alsa-project/alsa-gobject
+> 
+> -- Aaron
+> 
+> > We have no idea whether they've tested, whether they are already in
+> > market, whether any feature changes on those chips or compatible with
+> > others, etc.
+> >
+> >
+> > thanks,
+> >
+> > Takashi
+> >
+> >> ---
+> >>   sound/pci/hda/patch_hdmi.c | 5 +++++
+> >>   1 file changed, 5 insertions(+)
+> >>
+> >> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+> >> index fbd7cc6026d8..e2b21ef5d7d1 100644
+> >> --- a/sound/pci/hda/patch_hdmi.c
+> >> +++ b/sound/pci/hda/patch_hdmi.c
+> >> @@ -4145,6 +4145,11 @@ HDA_CODEC_ENTRY(0x10de0095, "GPU 95 HDMI/DP",	patch_nvhdmi),
+> >>   HDA_CODEC_ENTRY(0x10de0097, "GPU 97 HDMI/DP",	patch_nvhdmi),
+> >>   HDA_CODEC_ENTRY(0x10de0098, "GPU 98 HDMI/DP",	patch_nvhdmi),
+> >>   HDA_CODEC_ENTRY(0x10de0099, "GPU 99 HDMI/DP",	patch_nvhdmi),
+> >> +HDA_CODEC_ENTRY(0x10de009a, "GPU 9a HDMI/DP",	patch_nvhdmi),
+> >> +HDA_CODEC_ENTRY(0x10de009d, "GPU 9d HDMI/DP",	patch_nvhdmi),
+> >> +HDA_CODEC_ENTRY(0x10de009e, "GPU 9e HDMI/DP",	patch_nvhdmi),
+> >> +HDA_CODEC_ENTRY(0x10de009f, "GPU 9f HDMI/DP",	patch_nvhdmi),
+> >> +HDA_CODEC_ENTRY(0x10de00a0, "GPU a0 HDMI/DP",	patch_nvhdmi),
+> >>   HDA_CODEC_ENTRY(0x10de8001, "MCP73 HDMI",	patch_nvhdmi_2ch),
+> >>   HDA_CODEC_ENTRY(0x10de8067, "MCP67/68 HDMI",	patch_nvhdmi_2ch),
+> >>   HDA_CODEC_ENTRY(0x11069f80, "VX900 HDMI/DP",	patch_via_hdmi),
+> >> -- 
+> >> 2.27.0
+> >>
+> 
