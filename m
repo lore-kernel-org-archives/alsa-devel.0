@@ -7,87 +7,88 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DE71C433DF
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Jun 2020 12:44:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7C35C433E2
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Jun 2020 12:45:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 25D652078D
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Jun 2020 12:44:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 44D2A2078D
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Jun 2020 12:45:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FHJcPZPq";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="V4h1Ca5n"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 25D652078D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZO+OEHrb";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="L4Yx9htZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 44D2A2078D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 90DA21692;
-	Thu, 11 Jun 2020 14:43:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 90DA21692
+	by alsa0.perex.cz (Postfix) with ESMTPS id D5C281688;
+	Thu, 11 Jun 2020 14:44:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D5C281688
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591879480;
-	bh=lOgsJP+8QmzeAyx4ajOTZd9m6uCeUnihaH/7WfP9ZRU=;
+	s=default; t=1591879506;
+	bh=J2MJ/duH2bS5U1Y0T+/jkmjX+XL5hlBX5Sdwc59rfgg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FHJcPZPqRof0+GLRNvQXeaT9ccci9aNNLgDoCQugnQnvDj2DM2oJSzHY4GpSk00Mf
-	 fyWu0PAVIu/HO0/CNIdPjJT4Zmhcu2ZgxWNYcr+4jmmbV9E2I+hPWQ9bvaYFGaYvap
-	 PzoKSJ42PumstBnbJ+8Y5t4xdmdpKBnxUrW8i3zw=
+	b=ZO+OEHrbBpVsAFQjgVfGf+13L4/QbDKBGfu2YSo4nCc+loxqaAt1f4RaYmMg5WKFn
+	 Y6s7LbLbb5hrRdW5MionkTJP6KDZBUcgTuytbiERhsYbTGk9gjeNRAVnRUGWHfy8Ml
+	 VG5gT8kG810nKZY1S8+HIUvouoohISme8lqkFEjA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CA684F802A1;
-	Thu, 11 Jun 2020 14:42:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C718EF8028D;
+	Thu, 11 Jun 2020 14:42:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DE9BAF802A8; Thu, 11 Jun 2020 14:42:12 +0200 (CEST)
+ id 38A97F802C2; Thu, 11 Jun 2020 14:42:16 +0200 (CEST)
 Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com
  [IPv6:2a00:1450:4864:20::442])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3AD0DF8028C
- for <alsa-devel@alsa-project.org>; Thu, 11 Jun 2020 14:42:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3AD0DF8028C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 71FBCF80292
+ for <alsa-devel@alsa-project.org>; Thu, 11 Jun 2020 14:42:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71FBCF80292
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="V4h1Ca5n"
-Received: by mail-wr1-x442.google.com with SMTP id x14so6013662wrp.2
- for <alsa-devel@alsa-project.org>; Thu, 11 Jun 2020 05:42:05 -0700 (PDT)
+ header.b="L4Yx9htZ"
+Received: by mail-wr1-x442.google.com with SMTP id l11so6025504wru.0
+ for <alsa-devel@alsa-project.org>; Thu, 11 Jun 2020 05:42:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=DNGruM6B9mSP+joziG19q2cWIhnj5b++piG0JMa2V6w=;
- b=V4h1Ca5nmbkGj2hladouj3f0enZ42GxqHryh272WGrCyPuT8xAqb5wtLULOLNDb+kC
- 4nQJutDNKmqUgli3yOe3RjfHFZaSVQ19vyaJsIfIPTBQY8Djk8nvgmc+cLynOwY483hE
- +j/KXAsI6qxCx/3+go7O4EV+4+zHdi9amag7lzmPK6C1Pc0f5/gueHRHXHCloSoGx5wE
- oQw5gZFdYR3DQEGt4IpZC6IyjcxKMBtvidnKZ4MoZXG42gGEyoM7bHwuHH5p0KoFSjTv
- JSKm5hl4tsRxMY0LiWiW2QKqLF2UTBI0Tz96AH8b2WczI3be44UTQa/le2UeX/qI5JgH
- Nw+A==
+ bh=89ssfiDaoOJSnjV248d4sDefUT+7TO0HxUeigRg/Xi8=;
+ b=L4Yx9htZSgsTyGH9/nBWmXvvG7pSc20Jy88SyQfOe1gfupZBVpYa1iRsAhT6DE1x+T
+ iJL4j5tDVV53t5lrkAGU4pxi+6l1wyC1l7yW+Y+MmVNKPBTG36Cv9DoBeJEAYSfNu+ym
+ LsWcOh66+ThBt872nbMRSHlCwUp4XrIfrcpHrlMAdihSQ8xesNaGtk74fjiFDlCku8Sr
+ zraTcuSRY4BWGd8bf2kBpWhkExwzfHAcfkMT7k5YgPHZfNw/I0Y7r3ZneZ+haejBSWXH
+ AvCUzgQmW9hdccTSc1vrbfrdxOfruBq/CwZSIHBH8dMsbHJczW7ouqt2sWba7k/h64Mm
+ UPZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=DNGruM6B9mSP+joziG19q2cWIhnj5b++piG0JMa2V6w=;
- b=KvzpUaWqnWVefhRL4u1yjRL+1/55uZyM1LHBBScRluP06X/tdE9Lv097wdg/HFjVam
- e4JlJ8Hlm7ft7Ig6Drexklr6paxgoK3x/M4QsFqo9U1ORDMcxdTtfx4I2RRq74Iggh3X
- 59i6kI5AOn8csYrq0/ihqpYBTm2qOpTtWM1Uj624ZizYaJdcYs+pwSu6B2GjT4NgAd5c
- P9yipBravnDV/5Xh1GeyeOi+P0EDWEy/9GF9YUSoV8ab+R/2kCyU6HcwELUt0KC3bXvp
- WpmMaktJVgJ5K4PXwueWyHXzWR//ZcfGeQSjI89w1gjK4bDynKeA09683twgIMUgj5mm
- Cm+g==
-X-Gm-Message-State: AOAM533IYRPYUSK4eQODGN+v6BRa4AeE4Rm3I1ipi9Crhnm6OednWRjB
- aflV7eRsF1BDfYnmNu2LWwaJLg==
-X-Google-Smtp-Source: ABdhPJz4z+o5PKHUFnC5aUpJgoVQGqDgO8B3X+8NJKRrokT1gn4IjQF8Z7a2PR+JqR94h+2kLxN8eA==
-X-Received: by 2002:a5d:5585:: with SMTP id i5mr9200628wrv.112.1591879325343; 
- Thu, 11 Jun 2020 05:42:05 -0700 (PDT)
+ bh=89ssfiDaoOJSnjV248d4sDefUT+7TO0HxUeigRg/Xi8=;
+ b=q2+MExvV4hCMdBBIJjTeZ4pLIkOgkK5ok1FbdYxgjqUTnv31DiN6CNOwaqJWZqtBAf
+ xOPSqNWYIRwCaNHObwbMZ1jtR5htJ7g6P5PVyTVsS5ojhAYSlw5QINUIZ0v9BQZm3Y4P
+ 9ZRYQWa9si9CEZ93o0q5Aw05kxU2frW92stHYjYLbWDzMANmdr1VEmRkoTyvTLFBzqSK
+ tyBFb3tWbDhXl10DCyKST3S4NvC6T0qTFcmCpGnARQ3jbO+9pwo1C66Bg6hKkUXCPiDA
+ q6IBQLR60pGSwx9MXZK1HWLbY2NFaYb+tCHxC8p2oMJE+yXjw2ljA7+r1xD2GSO2sq9q
+ Mxbw==
+X-Gm-Message-State: AOAM531xb126+YQeOh+LTOrXofWCdNqlsSI2ccdstycjljidfb41m35r
+ FBBBRUzgyiH99u8/9LeMFsSd4A==
+X-Google-Smtp-Source: ABdhPJyErYeOzDKPbvAE9DmcVdq0rdmLobsuWCwfpgj8VuPZq7x6FcvEpRgs8yytZ/OEKGkn1EpUzg==
+X-Received: by 2002:a05:6000:1289:: with SMTP id
+ f9mr9541801wrx.5.1591879328901; 
+ Thu, 11 Jun 2020 05:42:08 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
- by smtp.gmail.com with ESMTPSA id q13sm4810355wrn.84.2020.06.11.05.42.04
+ by smtp.gmail.com with ESMTPSA id q13sm4810355wrn.84.2020.06.11.05.42.07
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 11 Jun 2020 05:42:04 -0700 (PDT)
+ Thu, 11 Jun 2020 05:42:08 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH 2/8] ASoC: q6asm: handle EOS correctly
-Date: Thu, 11 Jun 2020 13:41:53 +0100
-Message-Id: <20200611124159.20742-3-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 5/8] ASoC: q6asm: use flags directly from asm-dai
+Date: Thu, 11 Jun 2020 13:41:56 +0100
+Message-Id: <20200611124159.20742-6-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20200611124159.20742-1-srinivas.kandagatla@linaro.org>
 References: <20200611124159.20742-1-srinivas.kandagatla@linaro.org>
@@ -111,50 +112,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Successful send of EOS command does not indicate that EOS is actually
-finished, correct event to wait EOS is finished is EOS_RENDERED event.
-EOS_RENDERED means that the DSP has finished processing all the buffers
-for that particular session and stream.
+use flags set by asm-dais directly!
 
-This patch fixes EOS handling!
+This will be useful gapless case where write needs a special flag to indicate
+that last buffer.
 
-Fixes: 68fd8480bb7b ("ASoC: qdsp6: q6asm: Add support to audio stream apis")
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/qdsp6/q6asm.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ sound/soc/qcom/qdsp6/q6asm.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
 diff --git a/sound/soc/qcom/qdsp6/q6asm.c b/sound/soc/qcom/qdsp6/q6asm.c
-index 0ce70a5c7d9e..e0983970cba9 100644
+index f5d1f3c2c1ec..d6728304ce6a 100644
 --- a/sound/soc/qcom/qdsp6/q6asm.c
 +++ b/sound/soc/qcom/qdsp6/q6asm.c
-@@ -25,6 +25,7 @@
- #define ASM_STREAM_CMD_FLUSH			0x00010BCE
- #define ASM_SESSION_CMD_PAUSE			0x00010BD3
- #define ASM_DATA_CMD_EOS			0x00010BDB
-+#define ASM_DATA_EVENT_RENDERED_EOS		0x00010C1C
- #define ASM_NULL_POPP_TOPOLOGY			0x00010C68
- #define ASM_STREAM_CMD_FLUSH_READBUFS		0x00010C09
- #define ASM_STREAM_CMD_SET_ENCDEC_PARAM		0x00010C10
-@@ -622,9 +623,6 @@ static int32_t q6asm_stream_callback(struct apr_device *adev,
- 		case ASM_SESSION_CMD_SUSPEND:
- 			client_event = ASM_CLIENT_EVENT_CMD_SUSPEND_DONE;
- 			break;
--		case ASM_DATA_CMD_EOS:
--			client_event = ASM_CLIENT_EVENT_CMD_EOS_DONE;
--			break;
- 		case ASM_STREAM_CMD_FLUSH:
- 			client_event = ASM_CLIENT_EVENT_CMD_FLUSH_DONE;
- 			break;
-@@ -727,6 +725,9 @@ static int32_t q6asm_stream_callback(struct apr_device *adev,
- 			spin_unlock_irqrestore(&ac->lock, flags);
- 		}
+@@ -1546,10 +1546,7 @@ int q6asm_write_async(struct audio_client *ac, uint32_t stream_id, uint32_t len,
+ 	write->mem_map_handle =
+ 	    ac->port[SNDRV_PCM_STREAM_PLAYBACK].mem_map_handle;
  
-+		break;
-+	case ASM_DATA_EVENT_RENDERED_EOS:
-+		client_event = ASM_CLIENT_EVENT_CMD_EOS_DONE;
- 		break;
- 	}
+-	if (wflags == NO_TIMESTAMP)
+-		write->flags = (wflags & 0x800000FF);
+-	else
+-		write->flags = (0x80000000 | wflags);
++	write->flags = wflags;
+ 
+ 	port->dsp_buf++;
  
 -- 
 2.21.0
