@@ -2,90 +2,73 @@ Return-Path: <SRS0=5dB9=7Y=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C0ACC433DF
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Jun 2020 15:22:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FB77C433E2
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Jun 2020 15:30:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8F552206DC
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Jun 2020 15:22:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2E3F0206C3
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Jun 2020 15:30:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Et8QSfue";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="N5Tn1Zgb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F552206DC
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="G4NczFVa";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="xX9SUKIi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2E3F0206C3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D6F99168A;
-	Thu, 11 Jun 2020 17:21:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D6F99168A
+	by alsa0.perex.cz (Postfix) with ESMTPS id A43BD1689;
+	Thu, 11 Jun 2020 17:29:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A43BD1689
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591888924;
-	bh=fU4053E/gEMjOvm/1ax+QwbZU9nEqKq0J4A2Bf6dWHQ=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1591889403;
+	bh=fLkyOBJQDjmnRQSyH8H/HsxFUNXTfAnE6ogJem2ztkU=;
+	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Et8QSfueHMkKZWwWK/2rIyt3B+Ceb9qNoKrn7udKFSB+207HaEsMsFFVE4ZoexRAV
-	 5hjBKs4Un2j2xhddqV5V/21gd+gZUMOFcEGymzwMFSrRgRQOyr5ECrua+6DWkpG8nT
-	 34AnQsKyLIeRZJ44HZ1X16vvuGLWlMDp4FVxflR8=
+	b=G4NczFVatWXZTb8WyoSZTm6udqf28EX2MOdx0Hq45JYulhQmab/9Ofs4ZTdBqZ1nf
+	 z7Pf/iY6Nu7mZS8U80mHjaSi1VWoDuo2GJErq2BxqEn2lDuF2nr+2GOkiBiBlN29E6
+	 C+xcLT67LklPttXDMiFnFMJSs4MFsM8RJd50fmWI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 66C34F80290;
-	Thu, 11 Jun 2020 17:21:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F1B0BF80278;
+	Thu, 11 Jun 2020 17:29:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0D9BAF80299; Thu, 11 Jun 2020 17:21:13 +0200 (CEST)
+ id 729D4F8028C; Thu, 11 Jun 2020 17:29:08 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 97BD1F80291
- for <alsa-devel@alsa-project.org>; Thu, 11 Jun 2020 17:21:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97BD1F80291
+ by alsa1.perex.cz (Postfix) with ESMTPS id 380EBF80149
+ for <alsa-devel@alsa-project.org>; Thu, 11 Jun 2020 17:28:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 380EBF80149
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="N5Tn1Zgb"
+ header.b="xX9SUKIi"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 2DDE22067B;
- Thu, 11 Jun 2020 15:21:05 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 1C188206C3;
+ Thu, 11 Jun 2020 15:28:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1591888865;
- bh=fU4053E/gEMjOvm/1ax+QwbZU9nEqKq0J4A2Bf6dWHQ=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=N5Tn1ZgbQacjixDiubcV1IE5JEiq9iPEMWmGtJ2uM8xzzrHlI2gqPF2Q5iGG1JqLI
- A52kNMFN/6DvyS/5oAyXPU5yFTgGxFM4wQGGa3Q8/cyJWLM0NjP0KLKhMCXgaEEl3/
- wxbew7LG7ar+YC4EVflLnlWgU9cUn3sgLjAXk7+8=
-Date: Thu, 11 Jun 2020 16:21:03 +0100
+ s=default; t=1591889337;
+ bh=fLkyOBJQDjmnRQSyH8H/HsxFUNXTfAnE6ogJem2ztkU=;
+ h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+ b=xX9SUKIiphda5w11zEjEpTM339FbXhZIMbbKcXbFsgeupaAdlUDPYbeLiZvfSu41K
+ NvpShiP+V6p2mDBLoxvaDMsVWMsqjv1p6qqzcxbwNnIfOGiArYN0fTP2oBzv3Myl4V
+ QSAseghuNGr2k1vVb6kaf5wDFwsiIzdBvLH7qstQ=
+Date: Thu, 11 Jun 2020 16:28:55 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH] dt-bindings: Fix more incorrect 'reg' property sizes in
- examples
-Message-ID: <20200611152103.GJ4671@sirena.org.uk>
-References: <20200611151923.1102796-1-robh@kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="pMCBjikF2xGw87uL"
-Content-Disposition: inline
-In-Reply-To: <20200611151923.1102796-1-robh@kernel.org>
-X-Cookie: I like your SNOOPY POSTER!!
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Liam Girdwood <lgirdwood@gmail.com>,
- Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
- Kishon Vijay Abraham I <kishon@ti.com>, Richard Weinberger <richard@nod.at>,
- linux-kernel@vger.kernel.org, Bjorn Andersson <bjorn.andersson@linaro.org>,
- linux-rockchip@lists.infradead.org, Vinod Koul <vkoul@kernel.org>,
- netdev@vger.kernel.org, linux-mtd@lists.infradead.org,
- Philipp Zabel <p.zabel@pengutronix.de>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Ezequiel Garcia <ezequiel@collabora.com>,
- "David S. Miller" <davem@davemloft.net>, linux-media@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <20200611124159.20742-1-srinivas.kandagatla@linaro.org>
+References: <20200611124159.20742-1-srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH 0/8] ASoC: qcom: q6asm: few fixes and enhancements.
+Message-Id: <159188933509.47193.8263889711751900487.b4-ty@kernel.org>
+Cc: lgirdwood@gmail.com, vkoul@kernel.org, linux-kernel@vger.kernel.org,
+ alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,31 +84,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Thu, 11 Jun 2020 13:41:51 +0100, Srinivas Kandagatla wrote:
+> While trying out gapless playback, I found few issues with the existing code
+> This patchset has few fixes and some enhancement to the code to handle
+> multiple streams per asm session and also handle buffers that are not aligned
+> to period sizes.
+> 
+> I will send Gapless support patches once compressed gapless state machine is fixed.
+> 
+> [...]
 
---pMCBjikF2xGw87uL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Applied to
 
-On Thu, Jun 11, 2020 at 09:19:23AM -0600, Rob Herring wrote:
-> The examples template is a 'simple-bus' with a size of 1 cell for
-> had between 2 and 4 cells which really only errors on I2C or SPI type
-> devices with a single cell.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Acked-by: Mark Brown <broonie@kernel.org>
+Thanks!
 
---pMCBjikF2xGw87uL
-Content-Type: application/pgp-signature; name="signature.asc"
+[1/1] ASoC: q6asm: handle EOS correctly
+      commit: 6476b60f32866be49d05e2e0163f337374c55b06
 
------BEGIN PGP SIGNATURE-----
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7iS94ACgkQJNaLcl1U
-h9ALwgf9FJflzTQOP828gD9dhJPBLf9uqdG6GFRFf/iGqCG+0EHh1MxRNIBXMNFU
-pFc2qOrOXnTCvFmSwYib4Ic2S+mc1j9JMhrEjEp6ybbJzWwTmqImDlCydJ81it+0
-mJ2ohVbaOo8OsZprM11pEL6wflKweqzJgzQWsg7IgWJUebFsrzEXOKt0nElgxHwM
-DxIkj39TRFocuWU1NqkIBefPYWejxr1I8DppfhMBZnAI74UaODz+zAo+EYGPsj+a
-OFde9BISP8NNn/skIz7L+4sPP/vkKIw4NoG376dcODKCA88n9Z1clhYE5CkYLhlx
-c/Of3H7INUOo4nh6sqkC+DMhtfn58g==
-=GWWY
------END PGP SIGNATURE-----
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---pMCBjikF2xGw87uL--
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
