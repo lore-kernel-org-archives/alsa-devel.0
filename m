@@ -2,68 +2,68 @@ Return-Path: <SRS0=DU/y=7Z=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B44EC433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Jun 2020 20:43:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73DC9C433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Jun 2020 20:43:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 87EE0207F7
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Jun 2020 20:42:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E782A207ED
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Jun 2020 20:43:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JkjipKGp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 87EE0207F7
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FTp6T2QS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E782A207ED
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E93051679;
-	Fri, 12 Jun 2020 22:42:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E93051679
+	by alsa0.perex.cz (Postfix) with ESMTPS id 53E33168C;
+	Fri, 12 Jun 2020 22:42:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 53E33168C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591994578;
-	bh=unaBrrPcwH0903joTDh0IrNLYv+R/e860NWlRhmsDEo=;
+	s=default; t=1591994626;
+	bh=BYPfl7NdqaYyAfFxZGaF491RYz3JbDqsEHgSM4nBs0E=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JkjipKGpK2uaawZSde2NGqDQ5lzfLkmPVg8gxUu+QJF3wTJvYQF3cuRvq5B7lEgrW
-	 y0DtZEEStZsgLvzkh/NGl10uOq5Um5m3z1GB5VGsYiBkBmGaKRMMkcFUBc/2h8yZ4Y
-	 VxQ1xa0m9jqTSDu++J1XQ74RfKhKCE0Izg16upGc=
+	b=FTp6T2QSeiEeW2D+j95pKHvMAh9SCem5aHp1Ye6k4+gd/QueU1cTOWfdKcB/9RPre
+	 Jv6a+f/D6QZsn2OGsHC+h3XKfi+fQ5Ka7QXHll9bOpJgSdGzdGgFKfvLRIt6+vW3xt
+	 xcLtyMc1wPLODoJZFpWQA9yhUTQ4ymwod+67T+/4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 57E31F800C7;
-	Fri, 12 Jun 2020 22:41:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1FA3CF80259;
+	Fri, 12 Jun 2020 22:41:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B5D9CF80228; Fri, 12 Jun 2020 22:41:19 +0200 (CEST)
+ id 051F8F80228; Fri, 12 Jun 2020 22:41:20 +0200 (CEST)
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CA9FFF801F7
- for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2020 22:41:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA9FFF801F7
-IronPort-SDR: nm5QDK10JTiWyKMdvJ5G6uplOQuQHrwNchrjIsjuHR0iN/kjtSJ3/2oL+E1Hr/lk+n8Q+9+7wy
- LIU8HareHCvg==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 90EFEF80058
+ for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2020 22:41:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90EFEF80058
+IronPort-SDR: K5eeH3QsrgcaZ9NMI103iLEVA6KNMa6gZWRvrIXSMdZ98+OQFnr43ZBmDzGj4JzbCtGXdZzUHl
+ M1gNCUv6mNrA==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Jun 2020 13:41:07 -0700
-IronPort-SDR: KvJVZ1P7roDSoHMkIpfGD0So3jhL0HZ2rXoKOCg2LTvUSfUBvOLU6o96SbJLBG79UNyVtUyrVF
- kQ7tZ831PITQ==
+ 12 Jun 2020 13:41:08 -0700
+IronPort-SDR: 66kb3WPlCZ91rmYgRuUulhz6Ug32MA9VZFxEx1GlH//yHnCOSLnjeb+VLfHsu+CLjdCe1i1O4R
+ Fct4ziduvQdA==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,504,1583222400"; d="scan'208";a="272022964"
+X-IronPort-AV: E=Sophos;i="5.73,504,1583222400"; d="scan'208";a="272022966"
 Received: from tcampell-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.255.231.137])
  by orsmga003.jf.intel.com with ESMTP; 12 Jun 2020 13:41:07 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/3] ASoC: soc-core: reduce verbosity of BE override message
-Date: Fri, 12 Jun 2020 15:40:48 -0500
-Message-Id: <20200612204050.25901-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 2/3] ASoC: soc-pcm: improve error messages in soc_pcm_new()
+Date: Fri, 12 Jun 2020 15:40:49 -0500
+Message-Id: <20200612204050.25901-3-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200612204050.25901-1-pierre-louis.bossart@linux.intel.com>
 References: <20200612204050.25901-1-pierre-louis.bossart@linux.intel.com>
@@ -88,40 +88,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-With dynamic debug not enabled, we still see this sort of messages:
-
-[   47.656671] sof_sdw sof_sdw: info: override BE DAI link SDW0-Playback
-[   47.656677] sof_sdw sof_sdw: info: override BE DAI link SDW0-Capture
-[   47.656682] sof_sdw sof_sdw: info: override BE DAI link SDW1-Playback
-[   47.656686] sof_sdw sof_sdw: info: override BE DAI link SDW3-Capture
-[   47.656691] sof_sdw sof_sdw: info: override BE DAI link iDisp1
-[   47.656695] sof_sdw sof_sdw: info: override BE DAI link iDisp2
-[   47.656699] sof_sdw sof_sdw: info: override BE DAI link iDisp3
-
-This is not really helpful for most users, move to dev_dbg.
+Provide an explicit dmesg trace with the PCM 'new_name', dailink name
+and error code to help with debug.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/soc/soc-core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/soc-pcm.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 0f30f5aabaa8..e607a4927933 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1638,8 +1638,8 @@ static void soc_check_tplg_fes(struct snd_soc_card *card)
- 				continue;
- 			}
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 2c114b4542ce..08e3daf16384 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2891,8 +2891,8 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ 			capture, &pcm);
+ 	}
+ 	if (ret < 0) {
+-		dev_err(rtd->card->dev, "ASoC: can't create pcm for %s\n",
+-			rtd->dai_link->name);
++		dev_err(rtd->card->dev, "ASoC: can't create pcm %s for dailink %s: %d\n",
++			new_name, rtd->dai_link->name, ret);
+ 		return ret;
+ 	}
+ 	dev_dbg(rtd->card->dev, "ASoC: registered pcm #%d %s\n",num, new_name);
+@@ -2957,7 +2957,8 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
  
--			dev_info(card->dev, "info: override BE DAI link %s\n",
--				 card->dai_link[i].name);
-+			dev_dbg(card->dev, "info: override BE DAI link %s\n",
-+				card->dai_link[i].name);
+ 	ret = snd_soc_pcm_component_new(rtd);
+ 	if (ret < 0) {
+-		dev_err(rtd->dev, "ASoC: pcm constructor failed: %d\n", ret);
++		dev_err(rtd->dev, "ASoC: pcm %s constructor failed for dailink %s: %d\n",
++			new_name, rtd->dai_link->name, ret);
+ 		return ret;
+ 	}
  
- 			/* override platform component */
- 			if (!dai_link->platforms) {
 -- 
 2.20.1
 
