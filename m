@@ -2,80 +2,77 @@ Return-Path: <SRS0=DU/y=7Z=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A075AC433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Jun 2020 05:19:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A3F3C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Jun 2020 06:07:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 123E720836
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Jun 2020 05:19:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9ED64207F7
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Jun 2020 06:07:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Jsmru7NG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 123E720836
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FQT2Xcmp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9ED64207F7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9F330167D;
-	Fri, 12 Jun 2020 07:18:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F330167D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 110C41676;
+	Fri, 12 Jun 2020 08:06:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 110C41676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591939188;
-	bh=D4N+Bc4pnpQnOE37qwfIujo4d4aggTOju433eFPymJ4=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Jsmru7NGCihhxH7tZ4sruilds4SyIQyuPD2op20d/L1TZWg9eS9+D4NWKT9rdNkVU
-	 BGfV6eoHmpthOcWqm8HX0LJdGJvvMnw/rWavjoT7BTC5UwfUiBcs2GVMd7d2MMnVqp
-	 QOPp5c5OsTXOkx9dl6kQJcoSG4jyrTcUuIWmcsAg=
+	s=default; t=1591942063;
+	bh=eRoJVQdb0HCivHezpWvAl+OVUBUUkio5x3njFnQWq/U=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=FQT2Xcmpyh2nRvjJOt1U8DjJaFbBKHkkcJDRV3R87hhW/k4VKuuWLQsIY10RG5p/9
+	 GLDXw1oCG1Ynmf9dP3tp6ya/CIP0QPAeUH3yXa3e0DOUuzkyJrr3U/IplnvyWIk3VO
+	 FHX4neP/BiMYVIXzhCjrZr4QO7jDDmzwdbL8Yqm0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DE87DF802DD;
-	Fri, 12 Jun 2020 07:16:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 71C08F80058;
+	Fri, 12 Jun 2020 08:06:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4D26AF802DF; Fri, 12 Jun 2020 07:16:22 +0200 (CEST)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ id A0381F8021C; Fri, 12 Jun 2020 08:06:49 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8ADD2F80058
- for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2020 07:16:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8ADD2F80058
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 05C5FtxE6027422,
- This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmb06.realtek.com.tw[172.21.6.99])
- by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 05C5FtxE6027422
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Fri, 12 Jun 2020 13:15:55 +0800
-Received: from RTEXMB01.realtek.com.tw (172.21.6.94) by
- RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Fri, 12 Jun 2020 13:15:55 +0800
-Received: from derek-pvm.localdomain (172.22.234.205) by
- RTEXMB01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Fri, 12 Jun 2020 13:15:55 +0800
-From: <derek.fang@realtek.com>
-To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-Subject: [PATCH 4/5] ASoC: rt5682: DAI wclk supports 44100 Hz output
-Date: Fri, 12 Jun 2020 13:15:24 +0800
-Message-ID: <1591938925-1070-4-git-send-email-derek.fang@realtek.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id D303BF800CC;
+ Fri, 12 Jun 2020 08:06:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D303BF800CC
+IronPort-SDR: NUM9z3aUfOB9UlBv2WrW/jmfTZPpGfZsZ6iszj+qiy83ddCWjl0IqX6/YLNlkfVeFrIqPxUM6j
+ 8xhNdD/74wYg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 Jun 2020 23:06:35 -0700
+IronPort-SDR: t2oR15pPScZH7yIFwN9eLEB+YnIWO4LXheA7PMMH6XUiA6mgEok6PLUVsgBPntobo7EceaVyzQ
+ 2mPBceX+rm7g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,502,1583222400"; d="scan'208";a="289783286"
+Received: from brentlu-desk0.itwn.intel.com ([10.5.253.11])
+ by orsmga002.jf.intel.com with ESMTP; 11 Jun 2020 23:06:30 -0700
+From: Brent Lu <brent.lu@intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH v2] ASoC: SOF: Intel: hda: unsolicited RIRB response
+Date: Fri, 12 Jun 2020 14:01:09 +0800
+Message-Id: <1591941669-28683-1-git-send-email-brent.lu@intel.com>
 X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1591938925-1070-1-git-send-email-derek.fang@realtek.com>
-References: <1591938925-1070-1-git-send-email-derek.fang@realtek.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.22.234.205]
-X-ClientProxiedBy: RTEXMB05.realtek.com.tw (172.21.6.98) To
- RTEXMB01.realtek.com.tw (172.21.6.94)
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
- lars@metafoo.de, albertchen@realtek.com, derek.fang@realtek.com,
- shumingf@realtek.com, flove@realtek.com
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, linux-kernel@vger.kernel.org,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
+ Keyon Jie <yang.jie@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>,
+ Zhu Yingjiang <yingjiang.zhu@linux.intel.com>, Brent Lu <brent.lu@intel.com>,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,119 +88,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: "derek.fang" <derek.fang@realtek.com>
+Port commit 6d011d5057ff ("ALSA: hda: Clear RIRB status before reading
+WP") from legacy HDA driver to fix the get response timeout issue.
+Current SOF driver does not suffer from this issue because sync write
+is enabled in hda_init. The issue will come back if the sync write is
+disabled for some reason.
 
-DAI Wclk of rt5682 only supports 48000Hz output so far,
-this patch lets it support 44100Hz.
-
-Signed-off-by: derek.fang <derek.fang@realtek.com>
+Signed-off-by: Brent Lu <brent.lu@intel.com>
 ---
- sound/soc/codecs/rt5682.c | 49 ++++++++++++++++++++++++++++++-----------------
- 1 file changed, 31 insertions(+), 18 deletions(-)
+ sound/soc/sof/intel/hda-stream.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
-index 5959b6a..f9d8d8c 100644
---- a/sound/soc/codecs/rt5682.c
-+++ b/sound/soc/codecs/rt5682.c
-@@ -2461,8 +2461,8 @@ static int rt5682_set_bias_level(struct snd_soc_component *component,
- 
- #ifdef CONFIG_COMMON_CLK
- #define CLK_PLL2_FIN 48000000
--#define CLK_PLL2_FOUT 24576000
- #define CLK_48 48000
-+#define CLK_44 44100
- 
- static bool rt5682_clk_check(struct rt5682_priv *rt5682)
- {
-@@ -2544,13 +2544,22 @@ static unsigned long rt5682_wclk_recalc_rate(struct clk_hw *hw,
- 	struct rt5682_priv *rt5682 =
- 		container_of(hw, struct rt5682_priv,
- 			     dai_clks_hw[RT5682_DAI_WCLK_IDX]);
-+	struct snd_soc_component *component = rt5682->component;
-+	const char * const clk_name = __clk_get_name(hw->clk);
- 
- 	if (!rt5682_clk_check(rt5682))
- 		return 0;
- 	/*
--	 * Only accept to set wclk rate to 48kHz temporarily.
-+	 * Only accept to set wclk rate to 44.1k or 48kHz.
- 	 */
--	return CLK_48;
-+	if (rt5682->lrck[RT5682_AIF1] != CLK_48 &&
-+	    rt5682->lrck[RT5682_AIF1] != CLK_44) {
-+		dev_warn(component->dev, "%s: clk %s only support %d or %d Hz output\n",
-+			__func__, clk_name, CLK_44, CLK_48);
-+		return 0;
-+	}
-+
-+	return rt5682->lrck[RT5682_AIF1];
- }
- 
- static long rt5682_wclk_round_rate(struct clk_hw *hw, unsigned long rate,
-@@ -2559,13 +2568,22 @@ static long rt5682_wclk_round_rate(struct clk_hw *hw, unsigned long rate,
- 	struct rt5682_priv *rt5682 =
- 		container_of(hw, struct rt5682_priv,
- 			     dai_clks_hw[RT5682_DAI_WCLK_IDX]);
-+	struct snd_soc_component *component = rt5682->component;
-+	const char * const clk_name = __clk_get_name(hw->clk);
- 
- 	if (!rt5682_clk_check(rt5682))
- 		return -EINVAL;
- 	/*
--	 * Only accept to set wclk rate to 48kHz temporarily.
-+	 * Only accept to set wclk rate to 44.1k or 48kHz.
-+	 * It will force to 48kHz if not both.
- 	 */
--	return CLK_48;
-+	if (rate != CLK_48 && rate != CLK_44) {
-+		dev_warn(component->dev, "%s: clk %s only support %d or %d Hz output\n",
-+			__func__, clk_name, CLK_44, CLK_48);
-+		rate = CLK_48;
-+	}
-+
-+	return rate;
- }
- 
- static int rt5682_wclk_set_rate(struct clk_hw *hw, unsigned long rate,
-@@ -2578,6 +2596,7 @@ static int rt5682_wclk_set_rate(struct clk_hw *hw, unsigned long rate,
- 	struct clk *parent_clk;
- 	const char * const clk_name = __clk_get_name(hw->clk);
- 	int pre_div;
-+	unsigned int clk_pll2_out;
- 
- 	if (!rt5682_clk_check(rt5682))
- 		return -EINVAL;
-@@ -2600,23 +2619,17 @@ static int rt5682_wclk_set_rate(struct clk_hw *hw, unsigned long rate,
- 			clk_name, CLK_PLL2_FIN);
- 
- 	/*
--	 * It's a temporary limitation. Only accept to set wclk rate to 48kHz.
--	 * It will force wclk to 48kHz even it's not.
--	 */
--	if (rate != CLK_48) {
--		dev_warn(component->dev, "clk %s only support %d Hz output\n",
--			clk_name, CLK_48);
--		rate = CLK_48;
--	}
--
--	/*
--	 * To achieve the rate conversion from 48MHz to 48kHz, PLL2 is needed.
-+	 * To achieve the rate conversion from 48MHz to 44.1k or 48kHz,
-+	 * PLL2 is needed.
- 	 */
-+	clk_pll2_out = rate * 512;
- 	rt5682_set_component_pll(component, RT5682_PLL2, RT5682_PLL2_S_MCLK,
--		CLK_PLL2_FIN, CLK_PLL2_FOUT);
-+		CLK_PLL2_FIN, clk_pll2_out);
- 
- 	rt5682_set_component_sysclk(component, RT5682_SCLK_S_PLL2, 0,
--		CLK_PLL2_FOUT, SND_SOC_CLOCK_IN);
-+		clk_pll2_out, SND_SOC_CLOCK_IN);
-+
-+	rt5682->lrck[RT5682_AIF1] = rate;
- 
- 	pre_div = rl6231_get_clk_info(rt5682->sysclk, rate);
- 
+diff --git a/sound/soc/sof/intel/hda-stream.c b/sound/soc/sof/intel/hda-stream.c
+index 7f65dcc..1bda14c 100644
+--- a/sound/soc/sof/intel/hda-stream.c
++++ b/sound/soc/sof/intel/hda-stream.c
+@@ -653,11 +653,16 @@ irqreturn_t hda_dsp_stream_threaded_handler(int irq, void *context)
+ 		if (status & AZX_INT_CTRL_EN) {
+ 			rirb_status = snd_hdac_chip_readb(bus, RIRBSTS);
+ 			if (rirb_status & RIRB_INT_MASK) {
++				/*
++				 * Clearing the interrupt status here ensures
++				 * that no interrupt gets masked after the RIRB
++				 * wp is read in snd_hdac_bus_update_rirb.
++				 */
++				snd_hdac_chip_writeb(bus, RIRBSTS,
++						     RIRB_INT_MASK);
+ 				active = true;
+ 				if (rirb_status & RIRB_INT_RESPONSE)
+ 					snd_hdac_bus_update_rirb(bus);
+-				snd_hdac_chip_writeb(bus, RIRBSTS,
+-						     RIRB_INT_MASK);
+ 			}
+ 		}
+ #endif
 -- 
 2.7.4
 
