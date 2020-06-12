@@ -2,89 +2,93 @@ Return-Path: <SRS0=DU/y=7Z=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54B49C433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Jun 2020 09:01:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 36928C433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Jun 2020 09:27:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CC32B206D7
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Jun 2020 09:01:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B47832068E
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Jun 2020 09:27:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GxY4uN2g";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="PN8Fa7m6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC32B206D7
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZjcCXpAp";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="JdtW/YSl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B47832068E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5C445167C;
-	Fri, 12 Jun 2020 11:01:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C445167C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 29AAF1670;
+	Fri, 12 Jun 2020 11:26:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29AAF1670
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591952513;
-	bh=xCyjRdfMPjNVrpmOw5Q3dIVmDF/TyrxX1vtkr4RrJ1k=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1591954054;
+	bh=8YbxVkkmbztJ8PV+C7ftxLm/93dt6trJ2p37qscenlw=;
+	h=Subject:From:To:References:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GxY4uN2gxzu4iZTZF5DloxCpjY8ZzCDHf4vx3d0BP8ZPm8yR7ir16ChOu7ZwsQIy+
-	 dZ5DOjtz9ZgS0N9vaeX1IBSIRfDBrvyWms78wceo92bgqm03e5VLc2KRDKvrwoAsH2
-	 yt2dhzCT9RTU1vM/AleiWR4ri8s29mY/1W1bFIEE=
+	b=ZjcCXpApMhSQ6/CXKkerQs1m+4lvsZpsshsIgIZlUg8RMeE3O65jgHCcMcNtKLmBp
+	 6OF5d163sKFqsWDGzVgIeQHa1kaG2Bb2mWh2qstJOJf2SNiEIc3byHmNkhhlpXcDSB
+	 dpHbNkKp4egmpqGitphnvIY04H3LD3QlzefLa+Ag=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2064FF802C4;
-	Fri, 12 Jun 2020 10:58:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A059BF801F7;
+	Fri, 12 Jun 2020 11:26:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B5AB0F802A8; Fri, 12 Jun 2020 10:58:42 +0200 (CEST)
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+ id A3CC9F8021C; Fri, 12 Jun 2020 11:26:42 +0200 (CEST)
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C2D61F801F7
- for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2020 10:58:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2D61F801F7
+ by alsa1.perex.cz (Postfix) with ESMTPS id C3830F80058
+ for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2020 11:26:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3830F80058
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="PN8Fa7m6"
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05C8wTQT028269;
- Fri, 12 Jun 2020 03:58:29 -0500
+ dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="JdtW/YSl"
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05C9QWNO042251;
+ Fri, 12 Jun 2020 04:26:32 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1591952309;
- bh=QNmeMQyKl4jFho/kD8thbFnWAIjnHv8u0oyEyvPnF3o=;
- h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=PN8Fa7m6Zp40igM/1AlPqCMDXSVz+iH7Hl9ge4rWEOq695SLzdGuSkUHhGzcINLUp
- t6JlNCezJheg0tRYDVZKMmZvYP33f6vO70NV2gl4CYpnqRs2hBhTd0lNG/CzgnvlB8
- VhXpO41tju8u5dpMf+wKWoXDUx0tpwaHtNU5CkBc=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05C8wTxs124774
+ s=ti-com-17Q1; t=1591953992;
+ bh=plg66SGaAwE+4oegw51dtOB9rPV3OE8eIAPCaci5HNM=;
+ h=Subject:From:To:CC:References:Date:In-Reply-To;
+ b=JdtW/YSlg86wXbEQgxn2L0qNpVB2zuM5aY5zJHKuQ2Osl+OGFcqRJn+skJj7vtOnv
+ nkLEwuacDCchzDj5ZCYw/oreRxQxIALwBZgcoaav1iQ0wjgPRc+mzdsH2b+zEIicm1
+ ahdnVgPmrRw4OwAxQwwggc87OKer9Inw1fR9/uMQ=
+Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05C9QWwp051439
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Fri, 12 Jun 2020 03:58:29 -0500
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ Fri, 12 Jun 2020 04:26:32 -0500
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 12
- Jun 2020 03:58:28 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ Jun 2020 04:26:32 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 12 Jun 2020 03:58:28 -0500
-Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05C8wMML036678;
- Fri, 12 Jun 2020 03:58:27 -0500
+ Frontend Transport; Fri, 12 Jun 2020 04:26:32 -0500
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05C9QU3Q104797;
+ Fri, 12 Jun 2020 04:26:30 -0500
+Subject: Re: [PATCH v3 3/3] ASoC: ti: Add custom machine driver for j721e EVM
+ (CPB and IVI)
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
 To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <robh+dt@kernel.org>
-Subject: [PATCH v3 2/3] ASoC: dt-bindings: Add documentation for TI j721e EVM
- (CPB and IVI)
-Date: Fri, 12 Jun 2020 11:59:08 +0300
-Message-ID: <20200612085909.15018-3-peter.ujfalusi@ti.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200612085909.15018-1-peter.ujfalusi@ti.com>
 References: <20200612085909.15018-1-peter.ujfalusi@ti.com>
+ <20200612085909.15018-4-peter.ujfalusi@ti.com>
+X-Pep-Version: 2.0
+Message-ID: <7f2c4297-3ad9-5b8f-c9a5-5120078120c6@ti.com>
+Date: Fri, 12 Jun 2020 12:27:17 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+In-Reply-To: <20200612085909.15018-4-peter.ujfalusi@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org
@@ -103,284 +107,143 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The audio support on the Common Processor Board board is using
-pcm3168a codec connected to McASP10 serializers in parallel setup.
 
-The Infotainment board plugs into the Common Processor Board, the support
-of the extension board is extending the CPB audio support by adding
-the two codecs on the expansion board.
 
-The audio support on the Infotainment Expansion Board consists of McASP0
-connected to two pcm3168a codecs with dedicated set of serializers to each.
-The SCKI for pcm3168a is sourced from j721e AUDIO_REFCLK0 pin.
+On 12/06/2020 11.59, Peter Ujfalusi wrote:
+> The audio support on the board is using pcm3168a codec connected to McA=
+SP10
+> serializers in parallel setup.
+> The pcm3168a SCKI clock is coming via the j721e AUDIO_REFCLK2 pin.
+> In order to support 48KHz and 44.1KHz family of sampling rates the pare=
+nt clock
+> for AUDIO_REFCLK2 needs to be changed between PLL4 (for 48KHz) and PLL1=
+5 (for
+> 44.1KHz). The same PLLs are used for McASP10's AUXCLK clock via differe=
+nt
+> HSDIVIDER.
+>=20
+> Generic card can not be used for the board as we need to switch between=
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- .../bindings/sound/ti,j721e-cpb-audio.yaml    |  95 +++++++++++
- .../sound/ti,j721e-cpb-ivi-audio.yaml         | 150 ++++++++++++++++++
- 2 files changed, 245 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/ti,j721e-cpb-audio.yaml
- create mode 100644 Documentation/devicetree/bindings/sound/ti,j721e-cpb-ivi-audio.yaml
+> clock paths for different sampling rate families and also need to chang=
+e
+> the slot_width between 16 and 24 bit audio.
+>=20
+> The audio support on the Infotainment Expansion Board consists of McASP=
+0
+> connected to two pcm3168a codecs with dedicated set of serializers to e=
+ach.
+> The SCKI for pcm3168a is sourced from j721e AUDIO_REFCLK0 pin.
+> It is extending the audio support on the CPB.
+>=20
+> Due to the fact that the same PLL4/15 is used by both domains (CPB/IVI)=
 
-diff --git a/Documentation/devicetree/bindings/sound/ti,j721e-cpb-audio.yaml b/Documentation/devicetree/bindings/sound/ti,j721e-cpb-audio.yaml
-new file mode 100644
-index 000000000000..6f2be6503401
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/ti,j721e-cpb-audio.yaml
-@@ -0,0 +1,95 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/ti,j721e-cpb-audio.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Texas Instruments J721e Common Processor Board Audio Support
-+
-+maintainers:
-+  - Peter Ujfalusi <peter.ujfalusi@ti.com>
-+
-+description: |
-+  The audio support on the board is using pcm3168a codec connected to McASP10
-+  serializers in parallel setup.
-+  The pcm3168a SCKI clock is sourced from j721e AUDIO_REFCLK2 pin.
-+  In order to support 48KHz and 44.1KHz family of sampling rates the parent
-+  clock for AUDIO_REFCLK2 needs to be changed between PLL4 (for 48KHz) and
-+  PLL15 (for 44.1KHz). The same PLLs are used for McASP10's AUXCLK clock via
-+  different HSDIVIDER.
-+
-+  Clocking setup for 48KHz family:
-+  PLL4 ---> PLL4_HSDIV0 ---> MCASP10_AUXCLK ---> McASP10.auxclk
-+        |-> PLL4_HSDIV2 ---> AUDIO_REFCLK2  ---> pcm3168a.SCKI
-+
-+  Clocking setup for 44.1KHz family:
-+  PLL15 ---> PLL15_HSDIV0 ---> MCASP10_AUXCLK ---> McASP10.auxclk
-+         |-> PLL15_HSDIV2 ---> AUDIO_REFCLK2  ---> pcm3168a.SCKI
-+
-+properties:
-+  compatible:
-+    items:
-+      - const: ti,j721e-cpb-audio
-+
-+  model:
-+    $ref: /schemas/types.yaml#/definitions/string
-+    description: User specified audio sound card name
-+
-+  ti,cpb-mcasp:
-+    description: phandle to McASP used on CPB
-+    allOf:
-+      - $ref: /schemas/types.yaml#/definitions/phandle
-+
-+  ti,cpb-codec:
-+    description: phandle to the pcm3168a codec used on the CPB
-+    allOf:
-+      - $ref: /schemas/types.yaml#/definitions/phandle
-+
-+  clocks:
-+    items:
-+      - description: AUXCLK clock for McASP used by CPB audio
-+      - description: Parent for CPB_McASP auxclk (for 48KHz)
-+      - description: Parent for CPB_McASP auxclk (for 44.1KHz)
-+      - description: SCKI clock for the pcm3168a codec on CPB
-+      - description: Parent for CPB_SCKI clock (for 48KHz)
-+      - description: Parent for CPB_SCKI clock (for 44.1KHz)
-+
-+  clock-names:
-+    items:
-+      - const: cpb-mcasp-auxclk
-+      - const: cpb-mcasp-auxclk-48000
-+      - const: cpb-mcasp-auxclk-44100
-+      - const: cpb-codec-scki
-+      - const: cpb-codec-scki-48000
-+      - const: cpb-codec-scki-44100
-+
-+required:
-+  - compatible
-+  - model
-+  - ti,cpb-mcasp
-+  - ti,cpb-codec
-+  - clocks
-+  - clock-names
-+
-+additionalProperties: false
-+
-+examples:
-+  - |+
-+    sound {
-+        compatible = "ti,j721e-cpb-audio";
-+        model = "j721e-cpb";
-+
-+        status = "okay";
-+
-+        ti,cpb-mcasp = <&mcasp10>;
-+        ti,cpb-codec = <&pcm3168a_1>;
-+
-+        clocks = <&k3_clks 184 1>,
-+                 <&k3_clks 184 2>, <&k3_clks 184 4>,
-+                 <&k3_clks 157 371>,
-+                 <&k3_clks 157 400>, <&k3_clks 157 401>;
-+        clock-names = "cpb-mcasp-auxclk",
-+                      "cpb-mcasp-auxclk-48000", "cpb-mcasp-auxclk-44100",
-+                      "cpb-codec-scki",
-+                      "cpb-codec-scki-48000", "cpb-codec-scki-44100";
-+    };
-diff --git a/Documentation/devicetree/bindings/sound/ti,j721e-cpb-ivi-audio.yaml b/Documentation/devicetree/bindings/sound/ti,j721e-cpb-ivi-audio.yaml
-new file mode 100644
-index 000000000000..e0b88470a502
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/ti,j721e-cpb-ivi-audio.yaml
-@@ -0,0 +1,150 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/ti,j721e-cpb-ivi-audio.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Texas Instruments J721e Common Processor Board Audio Support
-+
-+maintainers:
-+  - Peter Ujfalusi <peter.ujfalusi@ti.com>
-+
-+description: |
-+  The Infotainment board plugs into the Common Processor Board, the support of the
-+  extension board is extending the CPB audio support, decribed in:
-+  sound/ti,j721e-cpb-audio.txt
-+
-+  The audio support on the Infotainment Expansion Board consists of McASP0
-+  connected to two pcm3168a codecs with dedicated set of serializers to each.
-+  The SCKI for pcm3168a is sourced from j721e AUDIO_REFCLK0 pin.
-+
-+  In order to support 48KHz and 44.1KHz family of sampling rates the parent clock
-+  for AUDIO_REFCLK0 needs to be changed between PLL4 (for 48KHz) and PLL15 (for
-+  44.1KHz). The same PLLs are used for McASP0's AUXCLK clock via different
-+  HSDIVIDER.
-+
-+  Note: the same PLL4 and PLL15 is used by the audio support on the CPB!
-+
-+  Clocking setup for 48KHz family:
-+  PLL4 ---> PLL4_HSDIV0 ---> MCASP10_AUXCLK ---> McASP10.auxclk
-+        |                |-> MCASP0_AUXCLK  ---> McASP0.auxclk
-+        |
-+        |-> PLL4_HSDIV2 ---> AUDIO_REFCLK2  ---> pcm3168a.SCKI
-+                         |-> AUDIO_REFCLK0  ---> pcm3168a_a/b.SCKI
-+
-+  Clocking setup for 44.1KHz family:
-+  PLL15 ---> PLL15_HSDIV0 ---> MCASP10_AUXCLK ---> McASP10.auxclk
-+        |                  |-> MCASP0_AUXCLK  ---> McASP0.auxclk
-+        |
-+        |-> PLL15_HSDIV2 ---> AUDIO_REFCLK2   ---> pcm3168a.SCKI
-+                          |-> AUDIO_REFCLK0   ---> pcm3168a_a/b.SCKI
-+
-+properties:
-+  compatible:
-+    items:
-+      - const: ti,j721e-cpb-ivi-audio
-+
-+  model:
-+    $ref: /schemas/types.yaml#/definitions/string
-+    description: User specified audio sound card name
-+
-+  ti,cpb-mcasp:
-+    description: phandle to McASP used on CPB
-+    allOf:
-+      - $ref: /schemas/types.yaml#/definitions/phandle
-+
-+  ti,cpb-codec:
-+    description: phandle to the pcm3168a codec used on the CPB
-+    allOf:
-+      - $ref: /schemas/types.yaml#/definitions/phandle
-+
-+  ti,ivi-mcasp:
-+    description: phandle to McASP used on IVI
-+    allOf:
-+      - $ref: /schemas/types.yaml#/definitions/phandle
-+
-+  ti,ivi-codec-a:
-+    description: phandle to the pcm3168a-A codec on the expansion board
-+    allOf:
-+      - $ref: /schemas/types.yaml#/definitions/phandle
-+
-+  ti,ivi-codec-b:
-+    description: phandle to the pcm3168a-B codec on the expansion board
-+    allOf:
-+      - $ref: /schemas/types.yaml#/definitions/phandle
-+
-+  clocks:
-+    items:
-+      - description: AUXCLK clock for McASP used by CPB audio
-+      - description: Parent for CPB_McASP auxclk (for 48KHz)
-+      - description: Parent for CPB_McASP auxclk (for 44.1KHz)
-+      - description: SCKI clock for the pcm3168a codec on CPB
-+      - description: Parent for CPB_SCKI clock (for 48KHz)
-+      - description: Parent for CPB_SCKI clock (for 44.1KHz)
-+      - description: AUXCLK clock for McASP used by IVI audio
-+      - description: Parent for IVI_McASP auxclk (for 48KHz)
-+      - description: Parent for IVI_McASP auxclk (for 44.1KHz)
-+      - description: SCKI clock for the pcm3168a codec on IVI
-+      - description: Parent for IVI_SCKI clock (for 48KHz)
-+      - description: Parent for IVI_SCKI clock (for 44.1KHz)
-+
-+  clock-names:
-+    items:
-+      - const: cpb-mcasp-auxclk
-+      - const: cpb-mcasp-auxclk-48000
-+      - const: cpb-mcasp-auxclk-44100
-+      - const: cpb-codec-scki
-+      - const: cpb-codec-scki-48000
-+      - const: cpb-codec-scki-44100
-+      - const: ivi-mcasp-auxclk
-+      - const: ivi-mcasp-auxclk-48000
-+      - const: ivi-mcasp-auxclk-44100
-+      - const: ivi-codec-scki
-+      - const: ivi-codec-scki-48000
-+      - const: ivi-codec-scki-44100
-+
-+required:
-+  - compatible
-+  - model
-+  - ti,cpb-mcasp
-+  - ti,cpb-codec
-+  - ti,ivi-mcasp
-+  - ti,ivi-codec-a
-+  - ti,ivi-codec-b
-+  - clocks
-+  - clock-names
-+
-+additionalProperties: false
-+
-+examples:
-+  - |+
-+    sound {
-+        compatible = "ti,j721e-cpb-ivi-audio";
-+        model = "j721e-cpb-ivi";
-+
-+        status = "okay";
-+
-+        ti,cpb-mcasp = <&mcasp10>;
-+        ti,cpb-codec = <&pcm3168a_1>;
-+
-+        ti,ivi-mcasp = <&mcasp0>;
-+        ti,ivi-codec-a = <&pcm3168a_a>;
-+        ti,ivi-codec-b = <&pcm3168a_b>;
-+
-+        clocks = <&k3_clks 184 1>,
-+                 <&k3_clks 184 2>, <&k3_clks 184 4>,
-+                 <&k3_clks 157 371>,
-+                 <&k3_clks 157 400>, <&k3_clks 157 401>,
-+                 <&k3_clks 174 1>,
-+                 <&k3_clks 174 2>, <&k3_clks 174 4>,
-+                 <&k3_clks 157 301>,
-+                 <&k3_clks 157 330>, <&k3_clks 157 331>;
-+        clock-names = "cpb-mcasp-auxclk",
-+                      "cpb-mcasp-auxclk-48000", "cpb-mcasp-auxclk-44100",
-+                      "cpb-codec-scki",
-+                      "cpb-codec-scki-48000", "cpb-codec-scki-44100",
-+                      "ivi-mcasp-auxclk",
-+                      "ivi-mcasp-auxclk-48000", "ivi-mcasp-auxclk-44100",
-+                      "ivi-codec-scki",
-+                      "ivi-codec-scki-48000", "ivi-codec-scki-44100";
-+    };
--- 
-Peter
+> there are cross restriction on sampling rates.
+>=20
+> The IVI side is represented as multicodec setup.
+>=20
+> PCMs available on a plain CPB (no IVI addon):
+> hw:0,0 - cpb playback (8 channels)
+> hw:0,1 - cpb capture (6 channels)
+>=20
+> When the IVI addon is present, additional two PCMs will be present:
+> hw:0,2 - ivi multicodec playback (16 channels)
+> hw:0,3 - ivi multicodec capture (12 channels)
+>=20
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> ---
+>  sound/soc/ti/Kconfig     |   8 +
+>  sound/soc/ti/Makefile    |   2 +
+>  sound/soc/ti/j721e-evm.c | 887 +++++++++++++++++++++++++++++++++++++++=
+
+>  3 files changed, 897 insertions(+)
+>  create mode 100644 sound/soc/ti/j721e-evm.c
+
+> diff --git a/sound/soc/ti/j721e-evm.c b/sound/soc/ti/j721e-evm.c
+> new file mode 100644
+> index 000000000000..096f045a1120
+> --- /dev/null
+> +++ b/sound/soc/ti/j721e-evm.c
+
+=2E..
+
+> +static int j721e_get_clocks(struct device *dev,
+> +			    struct j721e_audio_clocks *clocks, char *prefix)
+> +{
+> +	struct clk *parent;
+> +	char *clk_name;
+> +	int ret;
+> +
+> +	clocks->target =3D devm_clk_get(dev, prefix);
+> +	if (IS_ERR(clocks->target)) {
+> +		ret =3D PTR_ERR(clocks->target);
+> +		if (ret !=3D -EPROBE_DEFER)
+> +			dev_err(dev, "failed to acquire %s': %d\n",
+
+Looks like I have extra "'" in the prints...
+
+> +				prefix, ret);
+> +		return ret;
+> +	}
+> +
+> +	clk_name =3D kasprintf(GFP_KERNEL, "%s-48000", prefix);
+> +	if (clk_name) {
+> +		parent =3D devm_clk_get(dev, clk_name);
+> +		kfree(clk_name);
+> +		if (IS_ERR(parent)) {
+> +			ret =3D PTR_ERR(parent);
+> +			if (ret !=3D -EPROBE_DEFER)
+> +				dev_err(dev, "failed to acquire %s': %d\n",
+> +					prefix, ret);
+> +			return ret;
+
+It should be like this to really not fail with single PLL (from DT), but
+it is not documented and supported officially.
+
+if (ret =3D=3D -EPROBE_DEFER)
+	return ret;
+
+dev_dbg(dev, "no 48KHz parent for %s: %d\n", prefix, ret);
+parent =3D NULL;
+
+> +		}
+> +		clocks->parent[J721E_CLK_PARENT_48000] =3D parent;
+> +	} else {
+> +		return -ENOMEM;
+> +	}
+> +
+> +	clk_name =3D kasprintf(GFP_KERNEL, "%s-44100", prefix);
+> +	if (clk_name) {
+> +		parent =3D devm_clk_get(dev, clk_name);
+> +		kfree(clk_name);
+> +		if (IS_ERR(parent)) {
+> +			ret =3D PTR_ERR(parent);
+> +			if (ret !=3D -EPROBE_DEFER)
+> +				dev_err(dev, "failed to acquire %s': %d\n",
+> +					prefix, ret);
+> +			return ret;
+
+and here
+
+> +		}
+> +		clocks->parent[J721E_CLK_PARENT_44100] =3D parent;
+> +	} else {
+> +		return -ENOMEM;
+> +	}
+
+then:
+
+if (!clocks->parent[J721E_CLK_PARENT_44100] &&
+    !clocks->parent[J721E_CLK_PARENT_48000]) {
+	dev_err(dev, "At least on parent clock is needed for %s\n",
+		prefix);
+	return -EINVAL;
+}
+
+> +
+> +	return 0;
+> +}
+
+- P=C3=A9ter
 
 Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
 Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
