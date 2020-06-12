@@ -2,129 +2,82 @@ Return-Path: <SRS0=DU/y=7Z=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MSGID_FROM_MTA_HEADER,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AA5FC433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Jun 2020 16:32:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC32BC433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Jun 2020 16:35:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 027E1207ED
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Jun 2020 16:32:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 46F6B207F7
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Jun 2020 16:35:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Tmif6LDW";
-	dkim=pass (1024-bit key) header.d=amdcloud.onmicrosoft.com header.i=@amdcloud.onmicrosoft.com header.b="osPVkyY/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 027E1207ED
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=amd.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JUzWzA2Y";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="2WB72oxs"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 46F6B207F7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 78BA51675;
-	Fri, 12 Jun 2020 18:32:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 78BA51675
+	by alsa0.perex.cz (Postfix) with ESMTPS id D83CF166F;
+	Fri, 12 Jun 2020 18:34:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D83CF166F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591979573;
-	bh=c7zag5jijQqBkuAREjhv3Qzi84mf/Bd01E2oL1Lr/wM=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Tmif6LDW8aFmKppqH31OdTN4T/w6v+1+kUoWMxF+AL429g1+0rzZvFoa9auFFMpNj
-	 HHmZ9xE6QJgKy77+uIzCw2zQkx6ubY2p64xsXeXJputa2BklZ7+vTeJrVxTgYy9aTe
-	 nR8zKtCtmFcQsfZ/z1xDtHJUOA6GYB29HdsCFfBI=
+	s=default; t=1591979719;
+	bh=L/66D9w5PWgrjPupjgMN8jneXeXB+Jo5RE3BP+FQTTk=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=JUzWzA2Y0AdxQMhxE87fi9Or2LqtNJlxfin0vVikVLkl5MSUsEJ6irgZIYd4JeyTe
+	 dmP9sOaPX4cOMsR3Sup6waZo04SYSdPmVaJpqjAv9OILbhfmQOeTPcADhLIEyaUya9
+	 WA8MkDnO99DIOechbMX9/eVYKwajbH8jHUpcip80=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 03831F8021C;
-	Fri, 12 Jun 2020 18:32:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 75D34F801F7;
+	Fri, 12 Jun 2020 18:34:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CABFBF8021C; Fri, 12 Jun 2020 18:32:00 +0200 (CEST)
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com
- (mail-bn8nam11on2053.outbound.protection.outlook.com [40.107.236.53])
+ id 7D888F8021C; Fri, 12 Jun 2020 18:34:28 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1A9D0F800CC
+ for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2020 18:34:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A9D0F800CC
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="2WB72oxs"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B040DF801F7
- for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2020 18:31:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B040DF801F7
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=amdcloud.onmicrosoft.com
- header.i=@amdcloud.onmicrosoft.com header.b="osPVkyY/"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RxuUZ6daiwQDdxwjUiIg4iXqjYs8YvYBYF36j9W+fj2GOOxOK6BZE/Hriw0hXRYtNpfJgfc36nKGv3gp8Sjryr1SRTT2AZQWRuWt694P5/N88Law8KjYOZyTLXpkjLC3DEyWr0v09++jEADWIzbfYHIYQh8ZVDPO0VjKIKVi9wuVU6HyIFT9de/DOKll3eeZB7/TLUT+A9hZ0kV9oejrsWO7jwZZJcXU4hUzN/P1A2UG4Zv6fZmuHhFTcNL6SOGnRtf9yP/uLVbPUT1RXqfiYGbkux9duVM/YWiybuij2OxQsWuiKxsbUhEwm548VrkgpzhMpbtaiTUtctOxAsswZA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QWYCOq5ichBtzOcLqhLn9mA0IaPvK6Mx+89H2sEAqRs=;
- b=CsH+nKu71+0j+prR/TA/34VULpbw5J0ZGzA+Iw3ZHD4MV2+O16MKfjGXeJyT6MQ9qc3Pcqcx6JsrvkTTyug9v1plsNnmLnPuBjGJTNKoX5sFA3Lu4NbR7Nj0kJNm4KQL1Z6oRBi/kXFe1ihjLfpISDpDSP/I609jlNOLfSk0C09DfzwxwFlfxw2zFUyafQwtwiFZ9NEyFHVokG/4k5Uza5xI6hCUdynJtnMrttTXsYeDPwL88n/1x9Nd92LBCCwQy6m/g3NLKEp60gRe2DhpoOdSbbw105qm4DQsy7dT2Lr7mLhMeTglPZZnh1Nupt4bYdUFOYg2hgOgONgOoF96Ww==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QWYCOq5ichBtzOcLqhLn9mA0IaPvK6Mx+89H2sEAqRs=;
- b=osPVkyY/yZH+W0rcRMP48CDg8fItt3xo1BE7fHVbmtGhZmN48DGpvA9w1O7flVi9HZ/qIttU1M5YT9H5b2MLl9xGArjOswhH+BhfQiALyHX3nxNGGmBsy9r373cJey7twpxCsmIM0kPdTmwGgNpu7SXCUFLndW+DYRTATSheF+s=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR12MB1337.namprd12.prod.outlook.com (2603:10b6:3:6e::11) by
- DM6PR12MB2940.namprd12.prod.outlook.com (2603:10b6:5:15f::19) with
- Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3066.18; Fri, 12 Jun 2020 16:31:51 +0000
-Received: from DM5PR12MB1337.namprd12.prod.outlook.com
- ([fe80::f51a:1689:5079:c01b]) by DM5PR12MB1337.namprd12.prod.outlook.com
- ([fe80::f51a:1689:5079:c01b%11]) with mapi id 15.20.3088.025; Fri, 12 Jun
- 2020 16:31:50 +0000
-From: Akshu Agrawal <akshu.agrawal@amd.com>
-To: 
-Subject: [PATCH] ASoC: rt5682: Register clocks even when mclk is NULL
-Date: Fri, 12 Jun 2020 22:01:11 +0530
-Message-Id: <20200612163111.11730-1-akshu.agrawal@amd.com>
-X-Mailer: git-send-email 2.20.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: MAXPR01CA0098.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a00:5d::16) To DM5PR12MB1337.namprd12.prod.outlook.com
- (2603:10b6:3:6e::11)
+ by mail.kernel.org (Postfix) with ESMTPSA id E5755207ED;
+ Fri, 12 Jun 2020 16:34:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1591979664;
+ bh=L/66D9w5PWgrjPupjgMN8jneXeXB+Jo5RE3BP+FQTTk=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=2WB72oxsVSbKDCYu9szi+iBvsuMz8j9lFjkRzEYleNJjnccD5AFohXTqE0cMMpqPq
+ aDFFGi5io14zkc6qyt9VAhp8AwJCi3qrQ2iSUFZvlvDNsyR19anip0937+UR/+14Xv
+ LT+ugjdMZIUPmTCjKKGUFfgz8Bkcf3GMLxpU6eyA=
+Date: Fri, 12 Jun 2020 17:34:21 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Akshu Agrawal <akshu.agrawal@amd.com>
+Subject: Re: [PATCH] ASoC: rt5682: Register clocks even when mclk is NULL
+Message-ID: <20200612163421.GO5396@sirena.org.uk>
+References: <20200612163111.11730-1-akshu.agrawal@amd.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from akshu-HP-EliteBook-745-G4.dlink.router (122.171.36.38) by
- MAXPR01CA0098.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:5d::16) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3088.19 via Frontend Transport; Fri, 12 Jun 2020 16:31:40 +0000
-X-Mailer: git-send-email 2.20.1
-X-Originating-IP: [122.171.36.38]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: e9e914be-eb8b-47da-4bfd-08d80eee1bb6
-X-MS-TrafficTypeDiagnostic: DM6PR12MB2940:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB29403800A3F1DC975444AFD9F8810@DM6PR12MB2940.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-Forefront-PRVS: 0432A04947
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 5I3nuFhni4pPxhajP9ItJfMXf0bVCJGuFfYbY3ssiRApIgOG4cDNgDn+xSmw9C/i+7AmCAzvldDEyNesAoETLjMXpNXVH10wl6WzZ0koqfHO9jAUUK08bWuTRoHPTB6prJN1X8kBlHjnxFTF3wT2XsVzGWwhu8Q7iRkPO7z+EO9I996GoNYM8Vw4KHAU39gFNeg2pgsesb0x/1SMFKYOagwJ4wHzhDbhUcoz8swXWLQUmOqUHhu9qwQMnveFGr5B2ObFHf2m59EJGtMPXiN6wiIyPNaWEWcanmkV0QY6fw3YQgn1/EtBlm1PQSfOI58OIW4w659ZPp04kALSoVE7KDpBy5/OZftubM/kXKCALUWKhqkHnt3GO1tQenffXTEe
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:DM5PR12MB1337.namprd12.prod.outlook.com; PTR:; CAT:NONE;
- SFTY:;
- SFS:(4636009)(39860400002)(396003)(366004)(346002)(376002)(136003)(6666004)(52116002)(6486002)(5660300002)(4326008)(956004)(2616005)(36756003)(44832011)(186003)(16526019)(83380400001)(66476007)(478600001)(6506007)(6512007)(4744005)(2906002)(86362001)(66946007)(54906003)(66556008)(26005)(8676002)(316002)(7416002)(1076003)(109986005)(8936002)(266003);
- DIR:OUT; SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData: nNZTm48gi20vh6OGaWXQpRiPN4HYGnourdWuW7J/mkSI7DH/hnHHUdigdb/+sdDczfwvr8zhHkyyHV/nirjANz7WgOv0d0n/lHdOjJrz0ZKutSileBJm0eo/SLRfWoPugoTl+SVaA/jpZqbYjMQmWP5HJPhC7B9iR91Q4/P/ahfxJs0hYJEkiyTtcbsgj7CXJAhAo3yJD8DAutC5j5eBYWx5nbIA8QUfViTD9B6Hl1Q34rqpDlx+CUl4MBoRVbPjRy03u7UCjbaJnpldM1lavQrobm4g5Jgx+anzUASAaD5TKjPx19ehD6yI/dlaEItHd/VOeE5e8BGmwbFp8AwZObd2ZRQyZsyjj4y8+CGSvLrhHIaAPLbK2Arrt3kmH8M4ySzJAsR3RPp0VU3rZ3qDKEEyDIXG3RFS0Jot3dcbGqJbaVfZMrDoVHe7ixt4Mi4DY54Qx30EDxTIY+6c/AouAQMNS0VT51KUh6/dunvXbbg=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e9e914be-eb8b-47da-4bfd-08d80eee1bb6
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jun 2020 16:31:50.7860 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hbosULiYIpiCcKiQpJWLVVrAjD47Dwy78e8yaqbmD37T56gKzhJ/Y2Qgk/36fXyRwklZesjKHFCfEjSM4m2ADg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2940
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="3snK74p7ddXn3Qrx"
+Content-Disposition: inline
+In-Reply-To: <20200612163111.11730-1-akshu.agrawal@amd.com>
+X-Cookie: As seen on TV.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Cc: Oder Chiou <oder_chiou@realtek.com>,
  "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
- <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- yuhsuan@chromium.org, albertchen@realtek.com, Mark Brown <broonie@kernel.org>,
- derek.fang@realtek.com, akshu.agrawal@amd.com
+ <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ yuhsuan@chromium.org, albertchen@realtek.com, derek.fang@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -140,36 +93,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Fixes kernel crash on platforms which do not have mclk exposed
-in CCF framework. For these platforms have mclk as NULL and
-continue to register clocks.
 
-Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
----
- sound/soc/codecs/rt5682.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+--3snK74p7ddXn3Qrx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
-index d3245123101d..7c8b8d839db8 100644
---- a/sound/soc/codecs/rt5682.c
-+++ b/sound/soc/codecs/rt5682.c
-@@ -2829,12 +2829,11 @@ static int rt5682_probe(struct snd_soc_component *component)
- 				return ret;
- 			}
- 			rt5682->mclk = NULL;
--		} else {
--			/* Register CCF DAI clock control */
--			ret = rt5682_register_dai_clks(component);
--			if (ret)
--				return ret;
- 		}
-+		/* Register CCF DAI clock control */
-+		ret = rt5682_register_dai_clks(component);
-+		if (ret)
-+			return ret;
- 		/* Initial setup for CCF */
- 		rt5682->lrck[RT5682_AIF1] = CLK_48;
- #endif
--- 
-2.20.1
+On Fri, Jun 12, 2020 at 10:01:11PM +0530, Akshu Agrawal wrote:
+> Fixes kernel crash on platforms which do not have mclk exposed
+> in CCF framework. For these platforms have mclk as NULL and
+> continue to register clocks.
 
+Derek already submitted this:
+
+    https://lore.kernel.org/alsa-devel/1591938925-1070-5-git-send-email-derek.fang@realtek.com/T/#u
+
+--3snK74p7ddXn3Qrx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7jrowACgkQJNaLcl1U
+h9DhtQf/W6wAWiy0Be5YPFAbq8u/x9HyjuNGc0oFVWM19OqtJzFCw4L+1oUe6oD+
+uensM/lznoIPZTPdaey8niws1eRHFedflX4yhd2nHptRAswaFstK01FqZmQTXtca
+ktWQeC+OIJvAwL3JUU7W8SI5hMWdeHfikrOI35wrmefjp7jW69orxHiBbKX5PdlQ
+bIeudAohj8PyAx/IonmaieZNW+Vw4UvZ7UUk7Yuztk8rmIomzxW/pSSjIgSVbJmt
+gVeNgRx/G2ivUsXbmSG0aC3CwMwV9Al+PSASLmhO5Rk8L2mIb6lglHd5UlrXV4mV
+bRpOPPlyhG3LifoCx9EZmjnijdFEcw==
+=jECX
+-----END PGP SIGNATURE-----
+
+--3snK74p7ddXn3Qrx--
