@@ -2,88 +2,107 @@ Return-Path: <SRS0=DU/y=7Z=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A5A0C433E1
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Jun 2020 15:11:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B838C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Jun 2020 15:38:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A517620835
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Jun 2020 15:11:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B833E20838
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Jun 2020 15:38:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uT/fd6mS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A517620835
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="h24xtril";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OhXfN3AB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B833E20838
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1953F167A;
-	Fri, 12 Jun 2020 17:11:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1953F167A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 39645166F;
+	Fri, 12 Jun 2020 17:37:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39645166F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591974717;
-	bh=t6dtLZNEGznbzIXH2Lnx85ryBuz4UqpYTkyQ/UlDpY0=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1591976311;
+	bh=zC1RlXUjFL4ErYnGrV8z4rOVC2hccUQKPpcIEKwiVTg=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uT/fd6mS7rTyu8gM7tcOE20/I2lOMTKXkZL1vqOJElgy/IrltXNz1WrfhKRGO/GZN
-	 gBkpaEu+44HkCaHAMKKjsTkJPkcsDjZ8X6Xd4ITSqRvFc/gvC1eXtLoiL0rw/MOkKv
-	 4trvl0JiBlBdzZAiL66JuOoqOqBNi3wYe2WLJ0MU=
+	b=h24xtrilahbnvFAq0HzLBQVBDdDj+zPuH+d6rFQe2TF1nAs2DRBjHrZvCfJbAlt4+
+	 bn0+GNpwdar+44K1QtihFW8p0qWB9AUp0mf7hGbdMOOIMuptLCCw7W9w/IApe1G0gZ
+	 VGdrwDLf1cNQMgb0oiGr+F90J5DLOYpNdCRhbQKM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 06D65F80228;
-	Fri, 12 Jun 2020 17:11:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9FACFF801F7;
+	Fri, 12 Jun 2020 17:37:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 98CB7F8021C; Fri, 12 Jun 2020 17:11:01 +0200 (CEST)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id D0C45F8021C; Fri, 12 Jun 2020 17:37:38 +0200 (CEST)
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com
+ [IPv6:2607:f8b0:4864:20::444])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 93771F800CC;
- Fri, 12 Jun 2020 17:10:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93771F800CC
-IronPort-SDR: /Eitfc4LX1NHzw1dDt3TgJ+r6td7ZK84VYJALAJC1xHq5eXAqTKJqInMvTN67M6LRVTSTkSPfB
- qP3oRbgzB4cQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Jun 2020 08:10:49 -0700
-IronPort-SDR: 4JkrYmtVboNNLbg7cW9Y+q1f7vsTRdAMJ04hamINWV9k6cd5qkRCTTwAchhXdS1BfCUaJTaJy9
- zmnTBKNCk9KA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,503,1583222400"; d="scan'208";a="315152617"
-Received: from rrhill-mobl1.amr.corp.intel.com (HELO [10.254.71.222])
- ([10.254.71.222])
- by FMSMGA003.fm.intel.com with ESMTP; 12 Jun 2020 08:10:47 -0700
-Subject: Re: [Sound-open-firmware] [PATCH v3] ASoC: SOF: Intel: hda: Clear
- RIRB status before reading WP
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>, Takashi Iwai <tiwai@suse.de>
-References: <1591959048-15813-1-git-send-email-brent.lu@intel.com>
- <s5h5zbwczuk.wl-tiwai@suse.de>
- <alpine.DEB.2.22.394.2006121522440.3186@eliteleevi.tm.intel.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <8530e0d0-de78-3f60-a849-99ef4f577ae0@linux.intel.com>
-Date: Fri, 12 Jun 2020 09:45:38 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id E5A73F800CC
+ for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2020 17:37:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5A73F800CC
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="OhXfN3AB"
+Received: by mail-pf1-x444.google.com with SMTP id 23so4455484pfw.10
+ for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2020 08:37:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to:user-agent;
+ bh=yeQePqg3uWAwrie1fUmEupGOkhDXHe9EBr4w1yLk0WI=;
+ b=OhXfN3AB8RZ9P+/tL0HI8nayoWUxdl956odNAbxbgFNQnDcB0NrFtAFhFM4Dj8pWCM
+ t3QKzk7C1GXr731BMbQdOe5yt0G5m8VSAp6wYHBRXLeF6sogLntHKxC4mlVkuQuOCQgB
+ fUfHsLR5S7YsIyHs7tWJUQJ7LsGYJXLqT5Ls3P5dqNr6vPBS8tR3GSeq5zzWOHCIOgR8
+ bYH5khodwPW6SrRuQ5kYp8N/VkE6StVpyG6Tp2RLdyHTfK5rffkraKb46aQdFQePecyY
+ OhLTzwyZpzd5WQU+a3oMkRxZcl4ZLwkWvGyeYflfcs7Crq2X8DBG5UdesonwEFd+35UK
+ AlVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=yeQePqg3uWAwrie1fUmEupGOkhDXHe9EBr4w1yLk0WI=;
+ b=ZMb7YNy3mRSS+n0dzLB+abxTvTsbvuCzYrw4a29Pc63I4sUZkyZA61UovH/iT5zsYF
+ LBTMz0n6m5NXkYCmoa9YftMVKZkwc9VxKgF7tIH+e4KMpyjvsjGuviQ+ws9aQpOF6bR4
+ RBwozs/YSZc/CAJIMK+/DXVK+YkDVwz4itvcMVZtMdRlR++OwoIk7uGaq4tVT4xtEUqC
+ kSFFGbB6JuH7sxcqWISB6PxlN/t50IRaKhU1N+zYhyaDtQYmv1d3axQb+OJVd+gZyI3E
+ Ehida3mSNdEgGsHYBwjsEmW0yVIJ/dHhIk3B0HJWWXp3t2h+Pi5GC4dqhpMy+XsifMhE
+ Qtxw==
+X-Gm-Message-State: AOAM531RHkiZ3HJGCev2aNcIcCogmpvK8zvOQi/4BEqeKlykX0930Cll
+ +7qemZmQhPrHCo7bRsmY01siV+YjzVwqVFKt
+X-Google-Smtp-Source: ABdhPJx3K+XSpLrzivT/rI9+MH+R35M6XFdycVvYMHz1m+33OwfD46jZYe6e76uYodfTAJXUy5H9gQ==
+X-Received: by 2002:a63:9347:: with SMTP id w7mr11155653pgm.409.1591976252287; 
+ Fri, 12 Jun 2020 08:37:32 -0700 (PDT)
+Received: from gmail.com (jfdmzpr06-ext.jf.intel.com. [134.134.137.75])
+ by smtp.gmail.com with ESMTPSA id 140sm6457374pfy.95.2020.06.12.08.37.27
+ (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+ Fri, 12 Jun 2020 08:37:31 -0700 (PDT)
+Date: Fri, 12 Jun 2020 21:07:24 +0530
+From: Vaibhav Agarwal <vaibhav.sr@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 0/6] Enable Greybus Audio codec driver
+Message-ID: <20200612153722.GB26807@gmail.com>
+References: <cover.1591802243.git.vaibhav.sr@gmail.com>
+ <20200610173711.GK5005@sirena.org.uk>
+ <20200610182322.GC21465@gmail.com>
+ <20200611082616.GA4671@sirena.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.22.394.2006121522440.3186@eliteleevi.tm.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Daniel Baluta <daniel.baluta@nxp.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Keyon Jie <yang.jie@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Zhu Yingjiang <yingjiang.zhu@linux.intel.com>, Brent Lu <brent.lu@intel.com>,
- sound-open-firmware@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200611082616.GA4671@sirena.org.uk>
+User-Agent: Mutt/1.10.1+3 (f9293d646485) (2018-09-22)
+Cc: devel@driverdev.osuosl.org, alsa-devel@alsa-project.org,
+ Alex Elder <elder@kernel.org>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Greer <mgreer@animalcreek.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>,
+ greybus-dev@lists.linaro.org, Johan Hovold <johan@kernel.org>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,32 +118,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 6/12/20 7:24 AM, Kai Vehmanen wrote:
-> Hey Brent,
+On Thu, Jun 11, 2020 at 09:26:16AM +0100, Mark Brown wrote:
+> On Wed, Jun 10, 2020 at 11:53:24PM +0530, Vaibhav Agarwal wrote:
 > 
-> On Fri, 12 Jun 2020, Takashi Iwai wrote:
+> > With patch#6 in this series, I'm proposing some of the (dummy) helper 
+> > APIs required to link DAPM DAI widgets for the GB Audio modules 
+> > added/removed dynamically.
 > 
->> On Fri, 12 Jun 2020 12:50:48 +0200, Brent Lu wrote:
->>>
->>> Port commit 6d011d5057ff ("ALSA: hda: Clear RIRB status before reading
->>> WP") from legacy HDA driver to fix the get response timeout issue.
->>> Current SOF driver does not suffer from this issue because sync write
->>> is enabled in hda_init. The issue will come back if the sync write is
->>> disabled for some reason.
->>>
->>> Signed-off-by: Brent Lu <brent.lu@intel.com>
->>
->> Reviewed-by: Takashi Iwai <tiwai@suse.de>
+> > Eventually, I would like to propose relevant changes in snd-soc APIs to 
+> > enable dynamic linking of DAI widgets for the modules added and 
+> > remove/free component controls for the module removed.
 > 
-> thanks, looks good now:
+> > I'm seeking your opinion on the proposed changes. And as per the 
+> > recommendation I'm sharing the changes with ASoC mailing list as well.
 > 
-> Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+> These are proposed incremental changes to an out of tree driver that has
+> never been submitted.  I don't know what the current code looks like,
+> what it's supposed to be doing or anything like that so I've no idea
+> what's going on or why.
+> 
+> > Kindly suggest me the preferred way to follow on this thread. 
+> 
+> This is effectively out of tree code, until someone submits it properly
+> I'm not sure it's useful to submit incremental patches upstream.
 
-CI results initiated by Kai don't show any regression and change looks 
-good so:
+Thanks for the suggestion Mark. I'll create a separate patchset aligned 
+to the ASoC tree in next ~2 weeks and share them separately.
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Hi Greg,
 
-Thanks Brent!
+Do you think the current patchset can be considered for the purpose of 
+resolving componentization issue raised by Alexandre?
+
+--
+Regards,
+Vaibhav
