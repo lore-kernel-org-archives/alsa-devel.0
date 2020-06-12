@@ -2,82 +2,101 @@ Return-Path: <SRS0=DU/y=7Z=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+X-Spam-Status: No, score=-8.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50028C433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Jun 2020 17:47:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7303FC433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Jun 2020 19:31:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CD91F207F7
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Jun 2020 17:47:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EFC31206D7
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Jun 2020 19:31:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iY65IQHc";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="S6N2mh/9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CD91F207F7
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="h52Tk6y8";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MrnP4M4K"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EFC31206D7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4A7431666;
-	Fri, 12 Jun 2020 19:47:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A7431666
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6EDE61664;
+	Fri, 12 Jun 2020 21:30:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6EDE61664
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591984074;
-	bh=T2ujSUMcw4VznKUQ1es+CI7i3QTbNB8CVewQY5nNbNI=;
+	s=default; t=1591990259;
+	bh=tp5IWUyotW+T5shk3CQSPIWwuz8oGz8bxMaBulbtFfQ=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iY65IQHcKpajVT2Kw5t0TgCgocfVSikXO+L7W/YKMJfFfdyQSUL4PbIURYCV6HnHT
-	 tQudNGfldz+QOhagRSCtWbXN9zx1buiVW4GEqysbjcx6boIk+Xo+Fo9ixIiQylwEZQ
-	 o6wmL+QsGCMV3cOkdt/EO9BI/EFjmiw34DJ84Jf0=
+	b=h52Tk6y81Be1L5XfP4znPJb56YIfxOcpb3g0ukB+WpcPpixPW2Kq3NwRGFQ1u4Hnj
+	 fbVdXQbukz610VIRraOeQVeLaoyqXTuYDPmklC7zuqaokJiVHZWrxmNlvfArEp+xFL
+	 FAZmgMHx6wax9pXg2+GYAYmerlQwy2+wFT3WtyIA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C3C2CF801F7;
-	Fri, 12 Jun 2020 19:47:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D7932F801F7;
+	Fri, 12 Jun 2020 21:30:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2C18FF8021C; Fri, 12 Jun 2020 19:47:02 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id D5558F8021C; Fri, 12 Jun 2020 21:30:04 +0200 (CEST)
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com
+ [IPv6:2607:f8b0:4864:20::444])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 14024F800CC
- for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2020 19:46:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14024F800CC
+ by alsa1.perex.cz (Postfix) with ESMTPS id CDA91F800C7
+ for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2020 21:29:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CDA91F800C7
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="S6N2mh/9"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id EE3D4207F7;
- Fri, 12 Jun 2020 17:46:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1591984015;
- bh=T2ujSUMcw4VznKUQ1es+CI7i3QTbNB8CVewQY5nNbNI=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=S6N2mh/90Xu0MjOiCpqZWkF6PpPcmr1PDAz+Gl5c1U+4/1oooNbiJZh4TZBkxNxX0
- KGRHd2UGLYovhrhZCV95FWPBxQjOuBmh0EFuWTC/Df9tkIocYfscJ+NJBx5UAu+Ixf
- xQ4woHSijHizGRYsLjkDEsxqODznfDDbsIL0TAag=
-Date: Fri, 12 Jun 2020 18:46:52 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Dan Murphy <dmurphy@ti.com>
-Subject: Re: [RFC PATCH 2/2] ASoc: tas2563: DSP Firmware loading support
-Message-ID: <20200612174652.GQ5396@sirena.org.uk>
-References: <20200609172841.22541-1-dmurphy@ti.com>
- <20200609172841.22541-3-dmurphy@ti.com>
- <20200609175000.GO4583@sirena.org.uk>
- <f9601516-2091-322b-85ff-7cea484fd933@ti.com>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="MrnP4M4K"
+Received: by mail-pf1-x444.google.com with SMTP id j1so4773490pfe.4
+ for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2020 12:29:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to:user-agent;
+ bh=a4a2Pl1CFSq1GWe8QgYdCA4ph+xymGtgDfDZzT+4IG4=;
+ b=MrnP4M4KchL7FJOLTbUbPeOpodea9cEMKXenI/A9XfvsliD4gdI1bSGbPo1HCq+PeH
+ oUhU47XbIwNvM0D9ph7ctwVBwr6W40VlCNZqs43FVd5nzcvHLD8M3/uHBHRYkXCtQEHA
+ cxH82FsGLEeN7WqHFmUaIBmBaCyCejKE+QWjR20w+l2Bu/ILF2kFdtUMYtYx8UjGpkZN
+ wUnCINgTl53WsnF/rjdzmuwWp7QCP+QFIaJdK85+DncHWScwDNghqbdUEfYwLtmHe+XC
+ MiRMHphwN+URaJvMgL+HNSAasFx3k3VYwsdevmtFcSaot4+UFugcdAPD0ynpq9es6vxi
+ WVeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=a4a2Pl1CFSq1GWe8QgYdCA4ph+xymGtgDfDZzT+4IG4=;
+ b=lsWjuLd74blRv/1BZHVx213KAJKCGNtNsxHknKrNM1ajM+qZThMBzgNuweXSzRst8P
+ m8pIRa9onQrZQh+0zewJp/NNwo+Q9d7o+TTVBNdyc4HGRK0PszhNkDiQL8K93mFevirW
+ k/NNn0GNuoUzDNen6epj/TO6Pv9UnEl/hx7JX3AQgIh97MIRg257RBi92/pC+WjJFyD+
+ SpjJguionZBQMJ44JOxOKW8as3Ub6JvV4yL5LtWe+mj1NBqdV9HbaEo9S/Fz8y2UYSg9
+ mgWRUdihi+vTJEJGpOAGLHfBVURIvcmGg2r+SBVVkztHhH1pwGzEcfhZtfOyX5DLCyao
+ nYEg==
+X-Gm-Message-State: AOAM533acAdhFfu/0CprE5yE3I4mL43nGPJw1T4YaHUYPTrRIAS8F5BI
+ XtBwRzbplFHn1YqcXC+DPtc=
+X-Google-Smtp-Source: ABdhPJwseWqOvjBDHGRP7yoAe1UiXi1K4/GCKgBeAGhWekH7P5Vblc/Zm0oGbIJRoz6jgvwLhh+5gA==
+X-Received: by 2002:a65:5349:: with SMTP id w9mr12392157pgr.281.1591990194780; 
+ Fri, 12 Jun 2020 12:29:54 -0700 (PDT)
+Received: from Asurada-Nvidia (searspoint.nvidia.com. [216.228.112.21])
+ by smtp.gmail.com with ESMTPSA id c1sm6977123pfo.197.2020.06.12.12.29.54
+ (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+ Fri, 12 Jun 2020 12:29:54 -0700 (PDT)
+Date: Fri, 12 Jun 2020 12:29:43 -0700
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+To: Shengjiu Wang <shengjiu.wang@nxp.com>
+Subject: Re: [PATCH] ASoC: fsl_ssi: Fix bclk calculation for mono channel
+Message-ID: <20200612192942.GA26587@Asurada-Nvidia>
+References: <1591690768-1691-1-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="PPxI8paQBs33t8dK"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f9601516-2091-322b-85ff-7cea484fd933@ti.com>
-X-Cookie: As seen on TV.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: robh@kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com
+In-Reply-To: <1591690768-1691-1-git-send-email-shengjiu.wang@nxp.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+Cc: alsa-devel@alsa-project.org, timur@kernel.org, Xiubo.Lee@gmail.com,
+ linuxppc-dev@lists.ozlabs.org, tiwai@suse.com, broonie@kernel.org,
+ festevam@gmail.com, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,96 +112,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Tue, Jun 09, 2020 at 04:19:28PM +0800, Shengjiu Wang wrote:
+> For mono channel, ssi will switch to normal mode. In normal
+> mode, the Word Length Control bits control the word length
+> divider in clock generator, which is different with I2S master
+> mode, the word length is fixed to 32bit.
+> 
+> So we refine the famula for mono channel, otherwise there
+> will be sound issue for S24_LE.
+> 
+> Fixes: b0a7043d5c2c ("ASoC: fsl_ssi: Caculate bit clock rate using slot number and width")
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> ---
+>  sound/soc/fsl/fsl_ssi.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+> index bad89b0d129e..e347776590f7 100644
+> --- a/sound/soc/fsl/fsl_ssi.c
+> +++ b/sound/soc/fsl/fsl_ssi.c
+> @@ -695,6 +695,11 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
+>  	/* Generate bit clock based on the slot number and slot width */
+>  	freq = slots * slot_width * params_rate(hw_params);
+>  
+> +	/* The slot_width is not fixed to 32 for normal mode */
+> +	if (params_channels(hw_params) == 1)
 
---PPxI8paQBs33t8dK
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This function has a local variable that you can reuse here:
+	unsigned int slots = params_channels(hw_params);
 
-On Fri, Jun 12, 2020 at 12:30:29PM -0500, Dan Murphy wrote:
-> On 6/9/20 12:50 PM, Mark Brown wrote:
-> > On Tue, Jun 09, 2020 at 12:28:41PM -0500, Dan Murphy wrote:
+> +		freq = (slots <= 1 ? 2 : slots) * params_width(hw_params) *
+> +		       params_rate(hw_params);
 
-> > > +		/* Reset Page to 0 */
-> > > +		ret =3D regmap_write(tas2562->regmap, TAS2562_PAGE_CTRL, 0);
-> > > +		if (ret)
-> > > +			return ret;
-
-> > Why?
-
-> Well the reason to set this back to page 0 is that is where the book
-> register is.
-
-> So setting this back to page 0 set the Book register appropriately.
-
-Oh dear, usually the paging register is always visible :/
-
-> > This manual paging doesn't fill me with with joy especially with regard
-> > to caching and doing the books behind the back of regmap.  I didn't spot
-> > anything disabling cache or anything in the code.  I think you should
-> > either bypass the cache while doing this or teach regmap about the
-> > books (which may require core updates, I can't remember if the range
-> > code copes with nested levels of paging - I remember thinking about it).
-
-> Yeah. After reading this and thinking about this for a couple days.=A0 Th=
-is
-> actually has contention issues with the ALSA controls.
-
-> There needs to also be some locks put into place.
-
-That's not too surprising for something like this.
-
-> I prefer to disable the cache.=A0 Not sure how many other devices use Boo=
-ks
-> and pages for register maps besides TI.
-
-> Adding that to regmap might be to specific to our devices.
-
-Single level pages are in there already, TI is a big user but I've seen
-this from other vendors too.  I do remember some discussion of multi
-level paging before, I think with a TI part, and I *think* it already
-happens to work without needing to do anything but I'd need to go back
-and check and it's 7pm on a Friday night.  IIRC if one paging register
-is within another paged region the code manages to recurse and sort
-things out, but I could be wrong.  I agree that it's a bit specialist if
-it needs anything non-trivial and something driver local would be
-reasonable.
-
-> > > +	tas2562->fw_data->fw_hdr =3D devm_kzalloc(tas2562->dev, hdr_size,
-> > > +						GFP_KERNEL);
-> > > +	if (!tas2562->fw_data->fw_hdr)
-> > > +		return -ENOMEM;
-> > > +
-> > > +	memcpy(tas2562->fw_data->fw_hdr, &fw->data[0], hdr_size);
-
-> > Should validate that the firmware is actually at least hdr_size big, and
-> > similarly for all the other lengths we get from the header we should
-> > check that there's actually enough data in the file.  ATM we just
-> > blindly copy.
-
-> I will have to look into doing this.=A0 I blindly copy this data because =
-there
-> is really not a viable and reliable way to check sizes against the
-> structures.
-
-Yeah, that's reasonable - I was just thinking about checking it against
-the size of the file to make sure it doesn't actually overflow the
-buffer and corrupt things or crash.  Obviously sanity checking is good
-but there's limits on what's sensible.
-
---PPxI8paQBs33t8dK
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7jv4sACgkQJNaLcl1U
-h9BMlwf/cj1YHjgwLNHXDgZjBK7TERfRpzfITO0GwHt/Qh5/Rm3okvB6pnAZOVqO
-OUCX2lQJnVWAavciTR5byOJjB2I5dPrNYgPzOoFtm4N99uLVDecWckSJMw8OK0+k
-FoVcg2KRbKEllkA757zrQccDj8j8nG6Q9jPNMgS3AO7tBG4nz1c0px6mkIs9WK3L
-V56H/5IzZyCVnFEYJfMMlGPTiIBGHRRfKDuDMfJZJ1YdGMH2TonKZtgVkgvRHAWG
-r/m6zWIx6ZK1JTMzMtA8RpItA4zjOULJjl+OJvqDw3r9r8VCTGzDXugk+md0HJcg
-Q4u3PD3TpzBfB3cl6wWBYmrmgLPbtw==
-=Stm+
------END PGP SIGNATURE-----
-
---PPxI8paQBs33t8dK--
+We have a small section of slots and slot_width calculation
+at the top of this function where we can squash these in.
