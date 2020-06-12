@@ -7,49 +7,49 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48B2AC433DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Jun 2020 05:18:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AB4CC433DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Jun 2020 05:18:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A06FB20836
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Jun 2020 05:17:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ADEEA20801
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Jun 2020 05:18:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rkSczFWy"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A06FB20836
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZlS3FWt2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ADEEA20801
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2F176167A;
-	Fri, 12 Jun 2020 07:17:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F176167A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 34C011690;
+	Fri, 12 Jun 2020 07:17:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 34C011690
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1591939078;
-	bh=pyi1PL6m34EEjFiiQB1NLjOCIvY1R4cvNgq9K7gNIzI=;
+	s=default; t=1591939126;
+	bh=HLyQwD3CAKmly+k87Yd28TNCs7HKSIf7GvQkOuFhf7U=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rkSczFWyuGnqcefAGgz5cWONWhfERrHDdHMVI5ABCAmdH9iLaCtkNDQpUug5jd9uO
-	 qgVn8CN9IXw+ClDXKAYsVBncWCJd9qkT5nqkP+5PUKpZIGzuOP1/jSklI/ICljM921
-	 8jOg0rzPZZwYFkpuzerMzsnvKMoapCXcbkPOTFzw=
+	b=ZlS3FWt20xOmGvJme9CpKWPgzretS2VOplQSfH9Zu/mn0GeyeFfunADRh5RsjqPEg
+	 /ZNf6elgQrVKaymg/+LqQXlyFn5KCQjCc7tbGon4ftlcxSIu2rYi+ZxVzL2nlYCuiE
+	 HgwNsZ2hN9iznfn27g6lvQtUXkvGQa/zSWdHsiBg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E3822F80259;
-	Fri, 12 Jun 2020 07:16:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C47F4F800C7;
+	Fri, 12 Jun 2020 07:16:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 229B2F8024A; Fri, 12 Jun 2020 07:16:12 +0200 (CEST)
+ id 0F280F8021E; Fri, 12 Jun 2020 07:16:17 +0200 (CEST)
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8E76BF801F7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9A3D2F8021E
  for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2020 07:16:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E76BF801F7
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A3D2F8021E
 Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 05C5FtxC6027422,
+X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 05C5FtvZ6027415,
  This message is accepted by code: ctloc85258
 Received: from mail.realtek.com (rtexmb06.realtek.com.tw[172.21.6.99])
- by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 05C5FtxC6027422
+ by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 05C5FtvZ6027415
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
  Fri, 12 Jun 2020 13:15:55 +0800
 Received: from RTEXMB01.realtek.com.tw (172.21.6.94) by
@@ -62,10 +62,9 @@ Received: from derek-pvm.localdomain (172.22.234.205) by
  15.1.1779.2; Fri, 12 Jun 2020 13:15:54 +0800
 From: <derek.fang@realtek.com>
 To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-Subject: [PATCH 3/5] ASoC: rt5682: Let PLL2 support the freq conversion for
- 44100Hz sample rate
-Date: Fri, 12 Jun 2020 13:15:23 +0800
-Message-ID: <1591938925-1070-3-git-send-email-derek.fang@realtek.com>
+Subject: [PATCH 2/5] ASoC: rl6231: Add new supports on rl6231
+Date: Fri, 12 Jun 2020 13:15:22 +0800
+Message-ID: <1591938925-1070-2-git-send-email-derek.fang@realtek.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1591938925-1070-1-git-send-email-derek.fang@realtek.com>
 References: <1591938925-1070-1-git-send-email-derek.fang@realtek.com>
@@ -94,59 +93,27 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: "derek.fang" <derek.fang@realtek.com>
 
-PLL2 of rt5682 only supports the freq conversion for 48000Hz
-sample rate so far, this patch lets it support 44100Hz.
+Add pll preset maps for Realtek codecs' PLL2 freq conversions.
 
 Signed-off-by: derek.fang <derek.fang@realtek.com>
 ---
- sound/soc/codecs/rt5682.c | 9 ++++++++-
- sound/soc/codecs/rt5682.h | 4 ++++
- 2 files changed, 12 insertions(+), 1 deletion(-)
+ sound/soc/codecs/rl6231.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
-index ca8e1f2..5959b6a 100644
---- a/sound/soc/codecs/rt5682.c
-+++ b/sound/soc/codecs/rt5682.c
-@@ -2246,7 +2246,7 @@ static int rt5682_set_component_pll(struct snd_soc_component *component,
- {
- 	struct rt5682_priv *rt5682 = snd_soc_component_get_drvdata(component);
- 	struct rl6231_pll_code pll_code, pll2f_code, pll2b_code;
--	unsigned int pll2_fout1;
-+	unsigned int pll2_fout1, pll2_ps_val;
- 	int ret;
+diff --git a/sound/soc/codecs/rl6231.c b/sound/soc/codecs/rl6231.c
+index 8c9daf3..d1fc170 100644
+--- a/sound/soc/codecs/rl6231.c
++++ b/sound/soc/codecs/rl6231.c
+@@ -103,7 +103,9 @@ struct pll_calc_map {
+ static const struct pll_calc_map pll_preset_table[] = {
+ 	{19200000,  4096000,  23, 14, 1, false, false},
+ 	{19200000,  24576000,  3, 30, 3, false, false},
++	{48000000,  3840000,  23,  2, 0, false, false},
+ 	{3840000,   24576000,  3, 30, 0, true, false},
++	{3840000,   22579200,  3,  5, 0, true, false},
+ };
  
- 	if (source == rt5682->pll_src[pll_id] &&
-@@ -2315,8 +2315,15 @@ static int rt5682_set_component_pll(struct snd_soc_component *component,
- 			pll2b_code.n_code);
- 		snd_soc_component_write(component, RT5682_PLL2_CTRL_3,
- 			pll2f_code.n_code << RT5682_PLL2F_N_SFT);
-+
-+		if (freq_out == 22579200)
-+			pll2_ps_val = 1 << RT5682_PLL2B_SEL_PS_SFT;
-+		else
-+			pll2_ps_val = 1 << RT5682_PLL2B_PS_BYP_SFT;
- 		snd_soc_component_update_bits(component, RT5682_PLL2_CTRL_4,
-+			RT5682_PLL2B_SEL_PS_MASK | RT5682_PLL2B_PS_BYP_MASK |
- 			RT5682_PLL2B_M_BP_MASK | RT5682_PLL2F_M_BP_MASK | 0xf,
-+			pll2_ps_val |
- 			(pll2b_code.m_bp ? 1 : 0) << RT5682_PLL2B_M_BP_SFT |
- 			(pll2f_code.m_bp ? 1 : 0) << RT5682_PLL2F_M_BP_SFT |
- 			0xf);
-diff --git a/sound/soc/codecs/rt5682.h b/sound/soc/codecs/rt5682.h
-index f172c9e..6d94327 100644
---- a/sound/soc/codecs/rt5682.h
-+++ b/sound/soc/codecs/rt5682.h
-@@ -1080,6 +1080,10 @@
- #define RT5682_PLL2F_N_SFT			8
- 
- /* PLL2 M/N/K Code Control 2 (0x009e) */
-+#define RT5682_PLL2B_SEL_PS_MASK		(0x1 << 13)
-+#define RT5682_PLL2B_SEL_PS_SFT			13
-+#define RT5682_PLL2B_PS_BYP_MASK		(0x1 << 12)
-+#define RT5682_PLL2B_PS_BYP_SFT			12
- #define RT5682_PLL2B_M_BP_MASK			(0x1 << 11)
- #define RT5682_PLL2B_M_BP_SFT			11
- #define RT5682_PLL2F_M_BP_MASK			(0x1 << 7)
+ static unsigned int find_best_div(unsigned int in,
 -- 
 2.7.4
 
