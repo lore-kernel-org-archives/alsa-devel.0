@@ -7,111 +7,110 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6208EC433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 06:27:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EB4FC433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 06:28:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E407D20707
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 06:27:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 080F320707
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 06:28:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tRiAKy56";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=umn.edu header.i=@umn.edu header.b="bOdSaBZJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E407D20707
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TGY+y9+w";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=umn.edu header.i=@umn.edu header.b="Ardg8aLx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 080F320707
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=umn.edu
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7E36D1660;
-	Mon, 15 Jun 2020 08:27:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E36D1660
+	by alsa0.perex.cz (Postfix) with ESMTPS id 72A5E167D;
+	Mon, 15 Jun 2020 08:27:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 72A5E167D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592202475;
-	bh=lWj6OROVeKEZk09wCHJnuP62vbUo6KyU9qMQKdtmGuo=;
+	s=default; t=1592202523;
+	bh=bSDKJ7Wz9350883ZHG6/OQT1KtQYL7W4anOUutvOqlQ=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=tRiAKy56hU9C2ancBOpOzKwmnLHzaimHGCItNyDL8Ox61L9M1vXRTPKS/l7eOe61x
-	 5OtA3A0SopvzV5psDOpIeJrZJtaSUYnbgCXq3IZngUrm3koA13tfMJM9ONLoDbWPbs
-	 2asmVfHe7pVFutDGf3k6UDDNc3RWen9PW8GsCyhA=
+	b=TGY+y9+w/fwdXcHAe2wkVmZWpY6ORjN7+nd0UHm13WVQLgz3r6HKBNKQp8xLqM1At
+	 5ZkBcTmX/o+22jOGuClMYo7k5HamEbBkSFcurRc+goe1BsIn6xcm1ikGR8hFxefeTO
+	 x06V0rp8J0q5DSd7+5Xh3Q140v+6od4uC+4Ufy5c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3264FF801ED;
-	Mon, 15 Jun 2020 08:26:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 70240F802A1;
+	Mon, 15 Jun 2020 08:26:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 43B6DF80279; Sat, 13 Jun 2020 22:44:41 +0200 (CEST)
-Received: from mta-p8.oit.umn.edu (mta-p8.oit.umn.edu [134.84.196.208])
+ id 1A53CF80279; Sat, 13 Jun 2020 22:52:17 +0200 (CEST)
+Received: from mta-p6.oit.umn.edu (mta-p6.oit.umn.edu [134.84.196.206])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C4538F800CD
- for <alsa-devel@alsa-project.org>; Sat, 13 Jun 2020 22:44:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4538F800CD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 02E80F800CD
+ for <alsa-devel@alsa-project.org>; Sat, 13 Jun 2020 22:52:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02E80F800CD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=umn.edu header.i=@umn.edu
- header.b="bOdSaBZJ"
+ header.b="Ardg8aLx"
 Received: from localhost (unknown [127.0.0.1])
- by mta-p8.oit.umn.edu (Postfix) with ESMTP id 49kqMf6zTwz9vC9N
- for <alsa-devel@alsa-project.org>; Sat, 13 Jun 2020 20:44:30 +0000 (UTC)
+ by mta-p6.oit.umn.edu (Postfix) with ESMTP id 49kqXR4KtHz9vCFn
+ for <alsa-devel@alsa-project.org>; Sat, 13 Jun 2020 20:52:07 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at umn.edu
-Received: from mta-p8.oit.umn.edu ([127.0.0.1])
- by localhost (mta-p8.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id E9Wf4i3Pi3CH for <alsa-devel@alsa-project.org>;
- Sat, 13 Jun 2020 15:44:30 -0500 (CDT)
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com
- [209.85.166.198])
+Received: from mta-p6.oit.umn.edu ([127.0.0.1])
+ by localhost (mta-p6.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 9OM2j5bi0JPd for <alsa-devel@alsa-project.org>;
+ Sat, 13 Jun 2020 15:52:07 -0500 (CDT)
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com
+ [209.85.166.70])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mta-p8.oit.umn.edu (Postfix) with ESMTPS id 49kqMf5HDDz9vBtg
- for <alsa-devel@alsa-project.org>; Sat, 13 Jun 2020 15:44:30 -0500 (CDT)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mta-p8.oit.umn.edu 49kqMf5HDDz9vBtg
-DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p8.oit.umn.edu 49kqMf5HDDz9vBtg
-Received: by mail-il1-f198.google.com with SMTP id s4so9122174ilc.7
- for <alsa-devel@alsa-project.org>; Sat, 13 Jun 2020 13:44:30 -0700 (PDT)
+ by mta-p6.oit.umn.edu (Postfix) with ESMTPS id 49kqXR2m3Jz9vCGM
+ for <alsa-devel@alsa-project.org>; Sat, 13 Jun 2020 15:52:06 -0500 (CDT)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mta-p6.oit.umn.edu 49kqXR2m3Jz9vCGM
+DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p6.oit.umn.edu 49kqXR2m3Jz9vCGM
+Received: by mail-io1-f70.google.com with SMTP id t23so8599117iog.21
+ for <alsa-devel@alsa-project.org>; Sat, 13 Jun 2020 13:52:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=umn.edu; s=google;
  h=from:to:cc:subject:date:message-id;
- bh=b+iEIISmV4Ee/AXAA3HOB7wr+a6MNiCQ3dfMd9OfhgA=;
- b=bOdSaBZJyTwhn3YzlHvp7XflMqAXEC1LpqwMml0xxBo5lSuHSEclQyM/T+uTA3IZzc
- HEO/kBe9rFXMiKJRk3a8ITNQhwu+BCUnLYS+hBSKoK8Ku25nLty0vAuqscqrUK76nYvV
- TuYLPgp7WsAg5VrDyySlBlUZzgOt8QDJLcJJ0xqXFrTUQzlLDWOt80HDhJRJaJ1BOeH6
- AhJl+Hl4QQQV2/JQZWVLX2BVdaba0VD3zbvqjFDl1Xkdwc0JL713elOt7Gvu3nrdWcCQ
- bReuBufMwdFIEVOhMswp6HS4S/OL/jnNj5MuyrwVJ9/g1IzBA/sxtlaCU+At7lFPgC4T
- PGUg==
+ bh=UkcroixAl0qAjD6GgNgyzou/IsN1STk9p+xVVDcmeP0=;
+ b=Ardg8aLxFj2jA4QjL4csIbDmbF7Qv6ioBUq9BFwPAzpqdsP+ivgI2B8v6vEDSmF5Kq
+ T+VI+cMiJyrltzxL2KJ+S2WHTXIUF/tzDx+Hy6iiCbHiebDtommqrsorIxWsJtD5Xxfl
+ rSzCIoMmPWNRk35WVAw7LbUcN+FwnWoL2ov7l39z+On9rB0EWpXx0pMhwvIoyqrXUaxN
+ SVjXxR5F+7oT+/CflVUIQ8BF6ijShRJTLfKceESF3Hx+zZ8lX0oXaFdA9bCViMHOZw8e
+ x1Ek4ACuuHNQSXcdq2kYUQsZrqkPdIsjq0SIXmIxXnf4IToCmyoJ83/4UJ3PDAddESUD
+ Xw8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=b+iEIISmV4Ee/AXAA3HOB7wr+a6MNiCQ3dfMd9OfhgA=;
- b=mFhDpksS5AKwZF4DysgzsDw5O3SCZvucw+chtwMyPNL6x4gS/H2JR/d+7b2LWewyAV
- tDp7fVh7u3/6up5gTbreLfaO3MHalIoPVPYFlh9BQeI3QQZ5fzUgyxbNbVZPKh7gzWyo
- 6/jpZGBptL+YT9/9EHnp+v1KwdGfwdpiPVoPo7HEs7byKcj3xUBbGnbzYrC8a9du/jd+
- J+fbeI6AyJvbHWhEBKuFUxQ91knf7WT94zw+HXUrokP4VjDSweLX7TYPSz9zAGZz9MON
- b1qWhDXCkHZ9vlSz/xA7rgrGwhvuoLZLcUFVEU/J4o8SGxVwsY2kAgyZF4iEpDtAQj57
- rjdw==
-X-Gm-Message-State: AOAM532/lPX54KphY5SWgUyVDZcSnkl9gh0h7lPze7yeBDjdbVWKil6V
- saAl2bKXm+39WeODSJEV0LuZQtAvWCTw1a1GfPaWxKipxi2VS7jpzrlheE/4jPD2mTTmtl1lhJi
- nyBguZprSFADDSk5h1heDX59O9os=
-X-Received: by 2002:a05:6602:491:: with SMTP id
- y17mr20185655iov.72.1592081069821; 
- Sat, 13 Jun 2020 13:44:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzuUH0JGzr6A1aKGQO/t0YzwjO1OxoyYGiXTl5u65tMnE63FPrdxzR6es2yGQb9rtR6FHN2PQ==
-X-Received: by 2002:a05:6602:491:: with SMTP id
- y17mr20185631iov.72.1592081069282; 
- Sat, 13 Jun 2020 13:44:29 -0700 (PDT)
+ bh=UkcroixAl0qAjD6GgNgyzou/IsN1STk9p+xVVDcmeP0=;
+ b=BXfv05sYdKacd92hkc6N6e8VcGYvLdNdHQvdUgF7N2PkvKBGzTJIJSvKwoRtrNcAly
+ vPn9hXaMY5PC0XHOi5UnKkKCpkeXRE3pal3LYn1HH+MKmhV7EoxUElwmTaS+c5UG7wMn
+ BR0QYv8GPmJZNZjOZFCSn1pHCoug15fiuYrTMT3luV7jwYcxJShnwvWjvTpqpc7bsSpo
+ J7+PXoPAlqPjV7yfBa3pM0RsP8SAvGjUwoLlGiNgJnHLG9q8cjOOWiOr/36gNhusJuwR
+ 4bufTFtNfvoKUJ+kiNIktQaEFrvmb7i/plXQAfcP8oXxDZzxjlT6ihMGVGsAFShDVIOX
+ f7tw==
+X-Gm-Message-State: AOAM533KkdCqyfdj2D7GbGx9FnmaMjENis3VMNL+VgDrFtV6vuKU2vi1
+ Mj81YCuoMBkTO1zvMTrWtIlXnJKL4sVfCIsojbPMPm9fq3iCUNZqj/TuIyAjZ/jtH8xx3Vc+aIy
+ LZKrwONVJ8hcLFDCEe25joOGmErQ=
+X-Received: by 2002:a05:6e02:542:: with SMTP id
+ i2mr19700887ils.203.1592081526552; 
+ Sat, 13 Jun 2020 13:52:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyWlEJFk6HoO+GE9Acy8SKo/fFC/orEpAve7+rluozITdaEPrSwu9DbTGUy6wx6oKsMcR3TDA==
+X-Received: by 2002:a05:6e02:542:: with SMTP id
+ i2mr19700858ils.203.1592081526162; 
+ Sat, 13 Jun 2020 13:52:06 -0700 (PDT)
 Received: from qiushi.cs.umn.edu ([2607:ea00:101:3c74:4874:45:bcb4:df60])
- by smtp.gmail.com with ESMTPSA id t14sm5083251ilp.73.2020.06.13.13.44.27
+ by smtp.gmail.com with ESMTPSA id c1sm5138369ilh.35.2020.06.13.13.52.04
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 13 Jun 2020 13:44:28 -0700 (PDT)
+ Sat, 13 Jun 2020 13:52:05 -0700 (PDT)
 From: wu000273@umn.edu
 To: kjlu@umn.edu
-Subject: [PATCH] ASoC: tegra: Fix reference count leaks.
-Date: Sat, 13 Jun 2020 15:44:19 -0500
-Message-Id: <20200613204422.24484-1-wu000273@umn.edu>
+Subject: [PATCH] ASoC: rockchip: Fix a reference count leak.
+Date: Sat, 13 Jun 2020 15:51:58 -0500
+Message-Id: <20200613205158.27296-1-wu000273@umn.edu>
 X-Mailer: git-send-email 2.17.1
 X-Mailman-Approved-At: Mon, 15 Jun 2020 08:26:10 +0200
-Cc: Jonathan Hunter <jonathanh@nvidia.com>, alsa-devel@alsa-project.org,
- Edward Cragg <edward.cragg@codethink.co.uk>, linux-kernel@vger.kernel.org,
- YueHaibing <yuehaibing@huawei.com>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Thierry Reding <thierry.reding@gmail.com>, wu000273@umn.edu,
- linux-tegra@vger.kernel.org, Ben Dooks <ben.dooks@codethink.co.uk>
+Cc: alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Sugar Zhang <sugar.zhang@rock-chips.com>,
+ linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>,
+ wu000273@umn.edu, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -133,17 +132,17 @@ Calling pm_runtime_get_sync increments the counter even in case of
 failure, causing incorrect ref count if pm_runtime_put is not called in
 error handling paths. Call pm_runtime_put if pm_runtime_get_sync fails.
 
+Fixes: fc05a5b22253 ("ASoC: rockchip: add support for pdm controller")
 Signed-off-by: Qiushi Wu <wu000273@umn.edu>
 ---
- sound/soc/tegra/tegra30_ahub.c | 4 +++-
- sound/soc/tegra/tegra30_i2s.c  | 4 +++-
- 2 files changed, 6 insertions(+), 2 deletions(-)
+ sound/soc/rockchip/rockchip_pdm.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
-index 635eacbd28d4..156e3b9d613c 100644
---- a/sound/soc/tegra/tegra30_ahub.c
-+++ b/sound/soc/tegra/tegra30_ahub.c
-@@ -643,8 +643,10 @@ static int tegra30_ahub_resume(struct device *dev)
+diff --git a/sound/soc/rockchip/rockchip_pdm.c b/sound/soc/rockchip/rockchip_pdm.c
+index 7cd42fcfcf38..1707414cfa92 100644
+--- a/sound/soc/rockchip/rockchip_pdm.c
++++ b/sound/soc/rockchip/rockchip_pdm.c
+@@ -590,8 +590,10 @@ static int rockchip_pdm_resume(struct device *dev)
  	int ret;
  
  	ret = pm_runtime_get_sync(dev);
@@ -152,24 +151,8 @@ index 635eacbd28d4..156e3b9d613c 100644
 +		pm_runtime_put(dev);
  		return ret;
 +	}
- 	ret = regcache_sync(ahub->regmap_ahub);
- 	ret |= regcache_sync(ahub->regmap_apbif);
- 	pm_runtime_put(dev);
-diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
-index d59882ec48f1..db5a8587bfa4 100644
---- a/sound/soc/tegra/tegra30_i2s.c
-+++ b/sound/soc/tegra/tegra30_i2s.c
-@@ -567,8 +567,10 @@ static int tegra30_i2s_resume(struct device *dev)
- 	int ret;
  
- 	ret = pm_runtime_get_sync(dev);
--	if (ret < 0)
-+	if (ret < 0) {
-+		pm_runtime_put(dev);
- 		return ret;
-+	}
- 	ret = regcache_sync(i2s->regmap);
- 	pm_runtime_put(dev);
+ 	ret = regcache_sync(pdm->regmap);
  
 -- 
 2.17.1
