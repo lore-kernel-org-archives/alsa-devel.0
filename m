@@ -3,74 +3,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 01F56C433E0
-	for <alsa-devel@archiver.kernel.org>; Sun, 14 Jun 2020 15:41:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A711C433DF
+	for <alsa-devel@archiver.kernel.org>; Sun, 14 Jun 2020 15:43:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7EE2C206D7
-	for <alsa-devel@archiver.kernel.org>; Sun, 14 Jun 2020 15:41:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1869620747
+	for <alsa-devel@archiver.kernel.org>; Sun, 14 Jun 2020 15:43:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sONy5VXs"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7EE2C206D7
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Q4NyN8IH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1869620747
+Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 08AF31665;
-	Sun, 14 Jun 2020 17:40:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 08AF31665
+	by alsa0.perex.cz (Postfix) with ESMTPS id 911BB165E;
+	Sun, 14 Jun 2020 17:42:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 911BB165E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592149282;
-	bh=FbqNeUHB88bMkq8ydL3k4dJjR7QNPnft+GqvlHyiAWI=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1592149394;
+	bh=BS1PttcuCCP5emJj12gtfchD1/YrA1BBHOIzp3P9N2A=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sONy5VXsnaurakvIrOVmbm7Lpa06tFM8aANdv1KopOCoOXA1g+6sWrmOTi4xNwWpa
-	 BZ8YmWpcatz9TgVja/xIgBlIjue7mFf2CKwgUj5CXjG98M6RPVFc003lETFN3124a/
-	 zXq5mS0Slm/dQHzguh9XcI0gkEtwecjZ/+yC3iW8=
+	b=Q4NyN8IHgoCAdP3GZSOMOBdQHM3yAIRnG26n7F7+b7cz/7SGTLH8eLLhHKXoq5rML
+	 R+PWvlBT3UmK1/5h4+qzH3glE0bT3RCWYE9lbrjhoyTlBUMBuNxyi5IabBKnvCil5u
+	 EV9FAU2//AZKcUrjDJP76VvNw7Jym70fgOCidgaY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5FD34F80217;
-	Sun, 14 Jun 2020 17:40:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 28D1EF80217;
+	Sun, 14 Jun 2020 17:42:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 21D73F8022B; Sun, 14 Jun 2020 17:40:28 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 87E83F8011E
- for <alsa-devel@alsa-project.org>; Sun, 14 Jun 2020 17:40:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87E83F8011E
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 4E443ABCF;
- Sun, 14 Jun 2020 15:40:26 +0000 (UTC)
-Date: Sun, 14 Jun 2020 17:40:21 +0200
-Message-ID: <s5hr1uhac62.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
-Subject: Re: next-0519 on thinkpad x60: sound related? window manager crash
-In-Reply-To: <1592135950.lcpn6p9fh0.none@localhost>
-References: <20200520111136.GA3802@amd> <1591545088.74ii116nf2.none@localhost>
- <20200608061950.GA17476@lst.de>
- <1591624340.z01ejtod28.none@localhost>
- <20200609114733.GA1621@lst.de> <s5hr1uogtna.wl-tiwai@suse.de>
- <s5h8sgtede5.wl-tiwai@suse.de>
- <1592065395.r5zwoblr15.none@localhost>
- <s5hv9ju9dmd.wl-tiwai@suse.de>
- <1592135950.lcpn6p9fh0.none@localhost>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, x86@kernel.org, rientjes@google.com,
- tiwai@suse.com, linux-kernel@vger.kernel.org, hch@infradead.org,
- mingo@redhat.com, bp@alien8.de, Pavel Machek <pavel@ucw.cz>, hpa@zytor.com,
- tglx@linutronix.de, Christoph Hellwig <hch@lst.de>
+ id 2EA08F80232; Sun, 14 Jun 2020 17:42:22 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 91A95F80217
+ for <alsa-devel@alsa-project.org>; Sun, 14 Jun 2020 17:42:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91A95F80217
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1592149337283436060-webhooks-bot@alsa-project.org>
+References: <1592149337283436060-webhooks-bot@alsa-project.org>
+Subject: alsa usb problem
+Message-Id: <20200614154222.2EA08F80232@alsa1.perex.cz>
+Date: Sun, 14 Jun 2020 17:42:22 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,83 +68,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 14 Jun 2020 14:07:48 +0200,
-Alex Xu (Hello71) wrote:
-> 
-> Excerpts from Takashi Iwai's message of June 14, 2020 5:54 am:
-> > On Sat, 13 Jun 2020 18:25:22 +0200,
-> > Alex Xu (Hello71) wrote:
-> >> 
-> >> Excerpts from Takashi Iwai's message of June 11, 2020 1:11 pm:
-> >> > Thanks, so something still missing in the mmap handling, I guess.
-> >> > 
-> >> > I've worked on two different branches for potential fixes of your
-> >> > problems.  Could you test topic/dma-fix and topic/dma-fix2 branches?
-> >> >   git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
-> >> > Just pull one of them onto Linus' git HEAD.
-> >> > 
-> >> > I guess we'll go with David's new patch, but still it's interesting
-> >> > whether my changes do anything good actually.
-> >> > 
-> >> > 
-> >> > Takashi
-> >> > 
-> >> 
-> >> On torvalds 623f6dc593, topic/dma-fix causes sound to be output as 
-> >> alternating half-second bursts of noise and a few seconds of silence. 
-> >> topic/dma-fix2 appears to work properly.
-> > 
-> > OK, thanks for the feedback!  Just to make sure, you're using
-> > PulseAudio, right?
-> > If so, it was still something wrong about mmap, and the secondary
-> > method (the fallback to the continuous page) looks like a safer
-> > approach in the end.
-> > 
-> > I suppose that David's fix will be merged sooner or later.  Meanwhile
-> > I'll work on the change in the sound driver side to make things a bit
-> > more robust.  They don't conflict and both good applicable.
-> > 
-> > 
-> > thanks,
-> > 
-> > Takashi
-> > 
-> 
-> Ah, no, I think that wasn't clear. I use ALSA directly with mostly 
-> default configuration, except an asym sets separate default playback and 
-> record devices.
-> 
-> asound.conf:
-> 
-> defaults.pcm.card 1
-> defaults.ctl.card 1
-> 
-> pcm.!default {
->     type asym
->     playback.pcm
->     {
->         type plug
->         slave.pcm "dmix"
->     }
->     capture.pcm
->     {
->         type plug
->         slave.pcm {
->             type dsnoop
->             ipc_key 6793
->             slave.pcm "hw:U0x46d0x81d"
->         }
->     }
-> }
-> 
-> I think I wasn't able to set defaults.pcm.dmix.card and 
-> defaults.pcm.dsnoop.card for some reason, not sure why. I can try that, 
-> but I don't think it will affect this mmap issue.
+alsa-project/alsa-lib issue #59 was opened from texstar:
 
-The dmix is an implementation exclusively with mmap, so yes, it's
-still about the mmap.  This also shows the same problem.
+Plugging in a usb microphone causes pulse audio to crash with alsa-lib 1.2.3.
 
-
-thanks,
-
-Takashi
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/59
+Repository URL: https://github.com/alsa-project/alsa-lib
