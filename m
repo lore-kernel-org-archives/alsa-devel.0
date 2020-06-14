@@ -2,72 +2,73 @@ Return-Path: <SRS0=ak/3=73=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2986C433E0
-	for <alsa-devel@archiver.kernel.org>; Sun, 14 Jun 2020 09:46:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A24FC433DF
+	for <alsa-devel@archiver.kernel.org>; Sun, 14 Jun 2020 09:51:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 53E3A206D7
-	for <alsa-devel@archiver.kernel.org>; Sun, 14 Jun 2020 09:46:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 00D6F20714
+	for <alsa-devel@archiver.kernel.org>; Sun, 14 Jun 2020 09:51:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Tf7lQ453"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 53E3A206D7
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=t.poki.me
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="J/RBpYL2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 00D6F20714
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CBB8215E2;
-	Sun, 14 Jun 2020 11:45:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CBB8215E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7F81B165E;
+	Sun, 14 Jun 2020 11:50:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F81B165E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592127997;
-	bh=EjXFK6+m+nlDE0Z4mD/1zFjcodx5Ywxc1UTYokfucs0=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1592128269;
+	bh=VsydCKcQm7XQsvUx95/s4nThwf8TEm6CCeGPqcASw3o=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Tf7lQ4535uSRa4F8zxbZXBeib+67jPU76mmfukW+EdZPKSIClnJgoGRTEDc2njqFA
-	 sBcLQAtGpi7gg95mvPtW+vh/JLG5jMm7vMFdAHOndH6sLRi6P7hOCzIPX1G5+XSn/r
-	 0quO0mqWsN/SjlKwgJvzaY6iAc4iTYtYkpajhvBE=
+	b=J/RBpYL2P8CuEOzEdKetPQpFfWAtZ+ejHMIBooc3GNzIopOLYNjgCl3AOniQwAE9Q
+	 phYmlPOSSUWy6mEZCymlJ3TcNQon2Q/RnSgFdp8Gh8QMrGmzYi3o4/0S1aPebS1SbF
+	 VQmt6eRj7XbKIAa52LcVtXr5YHQEJdlyvepNFhEg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4F7E2F80217;
-	Sun, 14 Jun 2020 11:45:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1073FF80217;
+	Sun, 14 Jun 2020 11:50:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5ED6CF8022B; Sun, 14 Jun 2020 11:45:45 +0200 (CEST)
-Received: from mx.slunecnicejitka.cz (rosemary.pkrn.net [31.31.72.173])
- by alsa1.perex.cz (Postfix) with ESMTP id 9029CF8011E
- for <alsa-devel@alsa-project.org>; Sun, 14 Jun 2020 11:45:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9029CF8011E
-Received: from [172.31.0.131] (ip-94-112-38-60.net.upcbroadband.cz
- [94.112.38.60])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ id CDBACF8022B; Sun, 14 Jun 2020 11:50:16 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- (Authenticated sender: poki@poki.me)
- by mx.slunecnicejitka.cz (Postfix) with ESMTPSA id A685C40381;
- Sun, 14 Jun 2020 11:45:34 +0200 (CEST)
-Subject: Re: Lenovo P520/Realtek ALC662 - front jack & mic in [FIXED]
-To: alsa-devel@alsa-project.org
-References: <ebbabedc-195b-afb7-d1e6-ce5523f92530@poki.me>
- <e523ea58-892d-4ab7-58aa-beb3c94a10a3@poki.me>
- <b25fc548-981e-5ae6-2895-ef9eb85912e1@poki.me>
- <f9cdb458-9e2e-c23b-675b-8b3ea55a8b51@poki.me>
- <70ccd2ef-8d72-221d-defe-6eb498e9f21e@perex.cz>
-From: Jan Pokorny <lists@t.poki.me>
-Message-ID: <3862bdf5-b526-b38e-465e-b2489ad364e0@poki.me>
-Date: Sun, 14 Jun 2020 11:45:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <70ccd2ef-8d72-221d-defe-6eb498e9f21e@perex.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-Cc: Kailang Yang <kailang@realtek.com>, Mark Pearson <mpearson@lenovo.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2F729F8011E
+ for <alsa-devel@alsa-project.org>; Sun, 14 Jun 2020 11:50:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F729F8011E
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 0134DB066;
+ Sun, 14 Jun 2020 09:50:12 +0000 (UTC)
+Date: Sun, 14 Jun 2020 11:50:07 +0200
+Message-ID: <s5hwo4a9dtc.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: "Yick W. Tse" <y_w_tse@yahoo.com.hk>
+Subject: Re: [PATCH] ALSA: usb-audio: add quirk for Denon DCD-1500RE
+In-Reply-To: <1373857985.210365.1592048406997@mail.yahoo.com>
+References: <1373857985.210365.1592048406997.ref@mail.yahoo.com>
+ <1373857985.210365.1592048406997@mail.yahoo.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: "jussi@sonarnerd.net" <jussi@sonarnerd.net>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "crwulff@gmail.com" <crwulff@gmail.com>, "tiwai@suse.com" <tiwai@suse.com>,
+ "alexander@tsoy.me" <alexander@tsoy.me>,
+ "mickflemm@gmail.com" <mickflemm@gmail.com>,
+ "jesus-ramos@live.com" <jesus-ramos@live.com>,
+ "dmitry@d-systems.ee" <dmitry@d-systems.ee>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,58 +84,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello,
-
-On 6/5/20 11:44 AM, Jaroslav Kysela wrote:
-> Dne 02. 06. 20 v 13:59 Jan Pokorny napsal(a):
->> Problem solved!
->>
->> The solution was as simple as installing alsa-ucm package.
->> (Extra credit to Mark Pearson for pointing some recent changes
->> in that project out to me.)
->>
->> Color me very embarrassed.
->>
->> Perhaps the intention of keeping the package set minimal backfired
->> (EDIT: nope, nothing seems to be actively associated with that
->> package incl. opt-in ones), but frankly, have never needed this package,
->> not even heard about it before.
->>
->> I wonder why there are no pointers anywhere, at least in alsa-info.sh
->> output that would perhaps make the case clear for the experts amongst
->> you.  Or somewhere else, where it could be raised as a suggestion:
->>
->>     It appears as if you have a card/coded that relies on UCM for it
->>     to be used to the full extent, and UCM does not appear to be
->>     installed.  Try installing that software, commonly packaged as
->>     alsa-ucm.  Having it up-to-date may also help.
->>
->> [if not anything else, perhaps at least this makes it on-topic for
->> the list]
->>
->> Perhaps even close relationship between alsa-utils and alsa-ucm,
->> on the suggests/recommends level or something like that?
->>
->> On the whole it seems more enlightenment towards users is advisable,
->> on more than one front, mainly for the ignorants like me :-)
+On Sat, 13 Jun 2020 13:40:06 +0200,
+Yick W. Tse wrote:
 > 
-> Thanks for this analysis. Please, create a Fedora bug for this for the 
-> further analysis / fixes. The alsa-ucm is installed for the workstation 
-> GUIs:
+> fix error "clock source 41 is not valid, cannot use"
 > 
-> https://pagure.io/fedora-comps/blob/master/f/comps-f33.xml.in
 > 
-> See "Fedora Workstation", "LXDE Desktop", "LXQt Desktop" etc. All 
-> depends on the "multimedia" package group which contains alsa-ucm.
+> [] New USB device found, idVendor=154e, idProduct=1002, bcdDevice= 1.00
+> [] New USB device strings: Mfr=1, Product=2, SerialNumber=0
+> [] Product: DCD-1500RE
+> [] Manufacturer: D & M Holdings Inc.
+> []
+> [] clock source 41 is not valid, cannot use
+> [] usbcore: registered new interface driver snd-usb-audio
 > 
-> Anyway, it's a distro problem, so move the discussion to the right place.
+> 
+> Signed-off-by: Yick W. Tse <y_w_tse@yahoo.com.hk>
 
-Yes, filed this wish to have actual functional dependencies more visible
-at the distro _and_ deployment level against Fedora:
+Thanks, applied with Cc to stable.
 
-https://bugzilla.redhat.com/show_bug.cgi?id=1846787
 
-Thanks everyone for the inputs so far
-
--- 
-Jan {poki)
+Takashi
