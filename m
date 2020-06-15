@@ -6,72 +6,72 @@ X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 667A6C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 12:15:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F2B06C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 12:18:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DAE0820679
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 12:14:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 750F5206D7
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 12:18:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jtbMQYFc";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cc0Dcebb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DAE0820679
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lcVncxFF";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="rmNQ9tTA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 750F5206D7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 67B611607;
-	Mon, 15 Jun 2020 14:14:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 67B611607
+	by alsa0.perex.cz (Postfix) with ESMTPS id 047DB1615;
+	Mon, 15 Jun 2020 14:17:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 047DB1615
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592223298;
-	bh=SeO45nafpNrqNLAigKnrSNTvi4D8+s00hYG6wlDqxv8=;
+	s=default; t=1592223496;
+	bh=E0QJlUiW3KelkV3st2etVXx/PPOef+phNsAHwnyw1hM=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jtbMQYFcOT6Qo/hj3rt7YVG38T7TZNrvcbhjNhSxYlWqoD2/lyiZrTHY36dQEPv+s
-	 tlST9JR6BySaXtf38sjOFnWUwilNJ7QYfR/mYM4x6ZugypO8MMAAGpCkyHfO++Io7I
-	 TbYcG0jOBbauz1I9Mm9HmByrVetRMFE21F90v6Mk=
+	b=lcVncxFFLhO09n63FU9QBj++1TsSxjG6Mx8s1dlvKg3zs9TRiwig1TThrMqbPFGz+
+	 po4KyeH0lmrDZ7sJfnoRe397iqDkodt9JExluWqoMfukQ1+feY9fFYXPRVlGimRqwl
+	 0+TQNRc/CdG0TEXqNJLXbyJ1vEUTuoEaUIOhZixU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DF4E1F80162;
-	Mon, 15 Jun 2020 14:14:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 838A8F80162;
+	Mon, 15 Jun 2020 14:17:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 351A4F80171; Mon, 15 Jun 2020 14:14:06 +0200 (CEST)
+ id 052DFF80171; Mon, 15 Jun 2020 14:17:24 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1DA55F800EF
- for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2020 14:13:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1DA55F800EF
+ by alsa1.perex.cz (Postfix) with ESMTPS id BCA5BF800EF
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2020 14:17:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BCA5BF800EF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Cc0Dcebb"
+ header.b="rmNQ9tTA"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 108A920679;
- Mon, 15 Jun 2020 12:13:56 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 77B94206B7;
+ Mon, 15 Jun 2020 12:17:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1592223237;
- bh=SeO45nafpNrqNLAigKnrSNTvi4D8+s00hYG6wlDqxv8=;
+ s=default; t=1592223435;
+ bh=E0QJlUiW3KelkV3st2etVXx/PPOef+phNsAHwnyw1hM=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=Cc0DcebbMjDEL3CjM/ijLclP/AWSsll98fqcBtIAQbkJTW7cyNrsFm/msWwokMbMh
- ZogCJ5ltMb5HE+bHz0VH3OhwhgKtUVqYA5YwRkSWADMDqEfU/6DP44vyaiAi8vI4LN
- e3rO2+hYfe38xF36OMMrkERvkJ3eUIE6X/OPhE+U=
-Date: Mon, 15 Jun 2020 13:13:55 +0100
+ b=rmNQ9tTAGNEH3pYhtsLofMFKZqF9i0CKFfCjKGxtvEsM6jwfKwVCCHIdwRzUqugNP
+ uI4bmURZJlxNl/euVvJew/I9kcTS3ISkrM8Q9TGn5CR9hRiuc84nkjM+wcpp1n+yeP
+ Ek4g5rnEWWI948eksuCN1FPNX7WncC5KonUQ9ABI=
+Date: Mon, 15 Jun 2020 13:17:12 +0100
 From: Mark Brown <broonie@kernel.org>
 To: jack.yu@realtek.com
-Subject: Re: [PATCH 1/2] ASoC: rt1015: Update rt1015 default register value
- according to spec modification.
-Message-ID: <20200615121355.GM4447@sirena.org.uk>
+Subject: Re: [PATCH 2/2] ASoC: rt1015: Flush DAC data before playback.
+Message-ID: <20200615121712.GN4447@sirena.org.uk>
 References: <20200615032433.31061-1-jack.yu@realtek.com>
+ <20200615032433.31061-2-jack.yu@realtek.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="6CiRFyVmOOJ3DkBX"
+ protocol="application/pgp-signature"; boundary="SgT04PEqo/+yUDw3"
 Content-Disposition: inline
-In-Reply-To: <20200615032433.31061-1-jack.yu@realtek.com>
+In-Reply-To: <20200615032433.31061-2-jack.yu@realtek.com>
 X-Cookie: Offer may end without notice.
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de,
@@ -93,32 +93,40 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---6CiRFyVmOOJ3DkBX
+--SgT04PEqo/+yUDw3
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jun 15, 2020 at 11:24:32AM +0800, jack.yu@realtek.com wrote:
-> From: Jack Yu <jack.yu@realtek.com>
->=20
-> Update rt1015 default register value according to spec modification.
+On Mon, Jun 15, 2020 at 11:24:33AM +0800, jack.yu@realtek.com wrote:
 
-Do we also need a register patch to ensure that early silicon has the
-correct values or was this just a software bug?
+> +enum {
+> +	Enable_Boost,
+> +	Bypass_Boost,
+> +};
 
---6CiRFyVmOOJ3DkBX
+This cleanup is nice but you should namespace the values here to ensure
+they don't collide with anything.  We'd also tend to use all caps for
+enum items, same as macro names.
+
+You should probably also explicitly assign the values for the constants
+to make sure it's clear how they line up with the control the user can
+see, eg:
+
+	RT1015_ENABLE_BOOST = 0,
+
+--SgT04PEqo/+yUDw3
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7nZgIACgkQJNaLcl1U
-h9D+zAf+KcIsrJVCkuHDQxYRMkVagPbh0vY5H4um1h8xkb86Fhp1xo0l4wE0k938
-pomcyFIEDuWYSe3FFROE7V+Uf2g+SWvLbg4TkVer+4kSXFPe5NM5OMVVOlOOA7tN
-cmjXkyQB/+7NNQhNYgvcHEDwGYSRtpn11h+bJlcW7JTFaS2AqWyXQShdrl1ej+op
-QaErSn+Oohi3rU8noPq9j2drIP1R4Ic64V9giwSTdJHpV5ha2XP2Ex8b50OuLCK3
-a8K29UV+q5VDBOcDCw8xyW1iN+9YZ6irFrNudmF2pmEt0uI4vA7PsA1lT0lx57kf
-YJsxd30PzUHno6QHdHFVgiouGFkYCQ==
-=ifh7
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7nZsgACgkQJNaLcl1U
+h9ApJgf+Ng4GEn++AGKusHc/x7x66zDS/KtlfixXvJD0b4zjn6pY64DP5mNkZjzH
+mJE+EKN/HzJEHl3VuL0HYwjUjhzAtBWg8jMQppFrWgdVsHeyV64l//6XHgmMtwku
+tbAbRHiONTvcV7qBYIdzFdhG4DyEPlj2ayOlwbpjkri8tkHhSXqI6J/P48JbLUKS
+8CLL25B4cz+WncvXmcrkfIre40tqxFhXH8jng/Z09lsnft0FPu/IScZrAjg7v5fK
+tGhFsGrrZAXT16aLQFgPiyLa7V5C+bNSssbUZqTvmDqZ8TI7AhrrMXJ5k3qLPjkz
+Oe+qFrFb36wrajIU7CYZsGKYqCQoFg==
+=SHGh
 -----END PGP SIGNATURE-----
 
---6CiRFyVmOOJ3DkBX--
+--SgT04PEqo/+yUDw3--
