@@ -2,61 +2,85 @@ Return-Path: <SRS0=afjW=74=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DF68C433E1
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 16:04:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DC832C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 17:36:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2657420679
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 16:04:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 664B2207DD
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 17:36:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="exPQqaNQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2657420679
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FQaaUaGk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 664B2207DD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B0A2A1665;
-	Mon, 15 Jun 2020 18:03:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0A2A1665
+	by alsa0.perex.cz (Postfix) with ESMTPS id DDCAA1607;
+	Mon, 15 Jun 2020 19:35:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DDCAA1607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592237065;
-	bh=0zuBWB+YJ2/CgXmPYAQvN+VS5/OdBlzp1askvRMxp8E=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1592242593;
+	bh=vXGquYxK0P69MvJ2UUsi8bv6LfZSIpAfP0EzfruFDVU=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=exPQqaNQJfIEtccCnvB6wZEDxSlXPzb0iSQfMPqGg5Z0/lqmIQByAfsavDrSvvoSR
-	 gWWX3T8/ebvCpdKnf5A5/yt8gF59N84v960VrAfy8Dmp3NrPT09cCYkNF6aUhn7c3G
-	 oY1I5KoZnLZCvx0Xfz89OOV+gvKOoYAiPYGjkzE0=
-Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D3AA8F802DD;
-	Mon, 15 Jun 2020 18:01:04 +0200 (CEST)
+	b=FQaaUaGkkSpQn2TVK3DVPazKxJo0Gm1CGbIESbpqSdYyf1R+Ct8GC7IlhebgXPdPp
+	 JiuyrmiISS6kZ1qA2gHD+Xz2RToM/h2bJu9TlO3WphJxP13okJ5P7VeHeyFS2/k91b
+	 1LQaK+l3IP11AtmaAEY3VA27wR3br+Ah6LFpCxBY=
+Received: from vmi242170.contaboserver.net (localhost.localdomain [127.0.0.1])
+	by alsa1.perex.cz (Postfix) with ESMTP id 7AB09F80162;
+	Mon, 15 Jun 2020 19:35:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8B58CF802A1; Mon, 15 Jun 2020 18:01:00 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 24F87F801D9; Mon, 15 Jun 2020 19:35:37 +0200 (CEST)
+Received: from mail-io1-f68.google.com (mail-io1-f68.google.com
+ [209.85.166.68])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 64B26F801D9
- for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2020 18:00:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64B26F801D9
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 365FDAD85
- for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2020 16:00:51 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/4] ALSA: pcm: Use dma_mmap_coherent() on x86, too
-Date: Mon, 15 Jun 2020 18:00:42 +0200
-Message-Id: <20200615160045.2703-2-tiwai@suse.de>
-X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20200615160045.2703-1-tiwai@suse.de>
-References: <20200615160045.2703-1-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 53EA3F800EF
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2020 19:35:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53EA3F800EF
+Received: by mail-io1-f68.google.com with SMTP id p20so18758316iop.11
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2020 10:35:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=1JiCuZIwRbQkXmLhUt7LtNnEibrkpGANtdOy2K9pN/A=;
+ b=iHTd+AvEkqMZTBxdZk2xXLY9pALCSZhPpWcfW/NTrukxkrQooE7VexHO6cwIA52uXx
+ mI4jcyVV3XZtk1LlX9XC2ygv02CQ7WhLxsxs9qvUJ2Xq7kV/zrywB4n9ApY++F6w0d2B
+ JXJ/PGVHixTbo9btgOKEpTs1azndFXfRM6C4wAzO2KEBsOaN6nNw1gmEnyh+CDReUzyN
+ eEIssxwcI/aZtTeTsiEP78Wo5RbEJlWG6rS3Ufabvm48HIcPQDib60zdyAf0mSKnuF42
+ /8pThcvyW8iPTeBUV6m0zJcmWzSnOXgcKxNXH/QEyIeJVGT/N1R1HK4r8NcYK/zjMIYB
+ CbkA==
+X-Gm-Message-State: AOAM532MERBVzIz5Ubk4P0/5OEQonHVI3pRDgh9KQdhCVqgZdxt8YWTk
+ fIouL+MWAcnivzQQcDbkSw==
+X-Google-Smtp-Source: ABdhPJzmcCoxavzPmy5alBS5FHSzUeC93JuwlINmuFrp1yRWunDiT9BIk4RqZaXq2VXnwXR00TbBwA==
+X-Received: by 2002:a6b:39d7:: with SMTP id g206mr29016266ioa.31.1592242532219; 
+ Mon, 15 Jun 2020 10:35:32 -0700 (PDT)
+Received: from xps15 ([64.188.179.251])
+ by smtp.gmail.com with ESMTPSA id f22sm8284533iob.18.2020.06.15.10.35.31
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 15 Jun 2020 10:35:31 -0700 (PDT)
+Received: (nullmailer pid 2007945 invoked by uid 1000);
+ Mon, 15 Jun 2020 17:35:30 -0000
+Date: Mon, 15 Jun 2020 11:35:30 -0600
+From: Rob Herring <robh@kernel.org>
+To: Tzung-Bi Shih <tzungbi@google.com>
+Subject: Re: [PATCH 2/2] ASoC: dt-bindings: add compatible string for MAX98360A
+Message-ID: <20200615173530.GB2006513@bogus>
+References: <20200605034931.107713-1-tzungbi@google.com>
+ <20200605034931.107713-3-tzungbi@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200605034931.107713-3-tzungbi@google.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,40 +96,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We avoided the explicit use of dma_mmap_coherent() on x86 because of a
-spurious warning in x86 APT code in the past.  However, this blindly
-assumes that the pages allocated via dma_alloc_coherent() on x86 are
-the ones convertible via virt_to_page() (that is used in the default
-mmap handler), and it's no longer true; with the indirect DMA ops,
-this can be handled differently.  The only certain way for doing mmap
-such pages is the dma_mmap_coherent(), and the warning seems already
-gone in the recent code, so let's use it consistently.
+On Fri, Jun 05, 2020 at 11:49:31AM +0800, Tzung-Bi Shih wrote:
+> Maxim MAX98360A audio amplifier is functionally identical to MAX98357A.
+> Adds compatible string "maxim,max98360a" for driver reuse.
+> 
+> Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
+> ---
+>  .../devicetree/bindings/sound/max98357a.txt          | 12 +++++++++---
+>  1 file changed, 9 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/max98357a.txt b/Documentation/devicetree/bindings/sound/max98357a.txt
+> index 4bce14ce806f..75db84d06240 100644
+> --- a/Documentation/devicetree/bindings/sound/max98357a.txt
+> +++ b/Documentation/devicetree/bindings/sound/max98357a.txt
+> @@ -1,9 +1,10 @@
+> -Maxim MAX98357A audio DAC
+> +Maxim MAX98357A/MAX98360A audio DAC
+>  
+> -This node models the Maxim MAX98357A DAC.
+> +This node models the Maxim MAX98357A/MAX98360A DAC.
+>  
+>  Required properties:
+> -- compatible   : "maxim,max98357a"
+> +- compatible   : "maxim,max98357a" for MAX98357A.
+> +                 "maxim,max98360a" for MAX98360A.
+>  
+>  Optional properties:
+>  - sdmode-gpios : GPIO specifier for the chip's SD_MODE pin.
+> @@ -20,3 +21,8 @@ max98357a {
+>  	compatible = "maxim,max98357a";
+>  	sdmode-gpios = <&qcom_pinmux 25 0>;
+>  };
+> +
+> +max98360a {
+> +	compatible = "maxim,max98360a";
+> +	sdmode-gpios = <&qcom_pinmux 25 0>;
+> +};
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/pcm_native.c | 2 --
- 1 file changed, 2 deletions(-)
+Nothing new here, you don't need another example.
 
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 9630d2523948..1e51c849d3d4 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -3713,7 +3713,6 @@ int snd_pcm_lib_default_mmap(struct snd_pcm_substream *substream,
- 				area->vm_end - area->vm_start, area->vm_page_prot);
- 	}
- #endif /* CONFIG_GENERIC_ALLOCATOR */
--#ifndef CONFIG_X86 /* for avoiding warnings arch/x86/mm/pat.c */
- 	if (IS_ENABLED(CONFIG_HAS_DMA) && !substream->ops->page &&
- 	    (substream->dma_buffer.dev.type == SNDRV_DMA_TYPE_DEV ||
- 	     substream->dma_buffer.dev.type == SNDRV_DMA_TYPE_DEV_UC))
-@@ -3722,7 +3721,6 @@ int snd_pcm_lib_default_mmap(struct snd_pcm_substream *substream,
- 					 substream->runtime->dma_area,
- 					 substream->runtime->dma_addr,
- 					 substream->runtime->dma_bytes);
--#endif /* CONFIG_X86 */
- 	/* mmap with fault handler */
- 	area->vm_ops = &snd_pcm_vm_ops_data_fault;
- 	return 0;
--- 
-2.16.4
-
+> -- 
+> 2.27.0.278.ge193c7cf3a9-goog
+> 
