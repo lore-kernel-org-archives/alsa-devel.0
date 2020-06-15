@@ -2,74 +2,61 @@ Return-Path: <SRS0=afjW=74=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 556AAC433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 15:09:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18E2FC433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 16:01:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C9CF020739
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 15:09:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9732F20679
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 16:01:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="o8zZ8V9d";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="szNzxCWU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C9CF020739
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="W7IlFGoq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9732F20679
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6E940166C;
-	Mon, 15 Jun 2020 17:09:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E940166C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1F7C31607;
+	Mon, 15 Jun 2020 18:00:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F7C31607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592233793;
-	bh=OTLgPo+ey8vWrk85z+vPQi706mBEQnrrnU/gJ011Lo0=;
-	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
+	s=default; t=1592236907;
+	bh=XN+QOQKRWc7wKuAbtB+v29aBQtC0V9NSH/eTUqs2DIk=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=o8zZ8V9d7gaWjCjRtQHoAcQVSqCfx37M3pZXH1CylneaMSEnmctlVFlCveBXxuO4t
-	 5lWla21zLZ361eBrQjDOCihmYIA/5JpQMcvz7dhLNuI2k0RYscU6WmdLAMussCtAxZ
-	 0exgOtY+JoHAoBizmmUQenXiLYoQOlN/SwSFv9f8=
+	b=W7IlFGoqrZSvGNHUq8uchm+l9oqjVBqaPahPHi59X+lVbHsuvof7DmREtKhvp2crP
+	 FPyd3ldCFuyGjCUAsACjiIaHj+fZuuZ1Li1s3ppv774YWoqsCmJA8GmKCfI+raJpdb
+	 GwmIcmsJwAgzXEBU/twYkT1YNl/Uy521uHH8ngiQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6F413F802E8;
-	Mon, 15 Jun 2020 17:06:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 78331F801EB;
+	Mon, 15 Jun 2020 18:00:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A7D81F802DC; Mon, 15 Jun 2020 17:06:02 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id 9000BF8025F; Mon, 15 Jun 2020 18:00:54 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6733AF802E0
- for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2020 17:05:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6733AF802E0
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="szNzxCWU"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 8E5862078E;
- Mon, 15 Jun 2020 15:05:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1592233558;
- bh=OTLgPo+ey8vWrk85z+vPQi706mBEQnrrnU/gJ011Lo0=;
- h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=szNzxCWURmoRZnB3TCcg1IR8wI0bPdM+kaZkmj0eCYR9O0s3UcoPmzo5+tboq8xlk
- ZdnPerNpVzkefMyOwseGxzemUtwUEAgS0w9NSdoqaZATqkrK7ysjVD2AoCSvC5H9/B
- aa79s0TI2ih7IC257mmQgwNHdCfQJpnQaoWDLUBU=
-Date: Mon, 15 Jun 2020 16:05:55 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org
-In-Reply-To: <20200612203507.25621-1-pierre-louis.bossart@linux.intel.com>
-References: <20200612203507.25621-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: soc-pcm: fix checks for multi-cpu FE dailinks
-Message-Id: <159223353044.8967.584162671987051442.b4-ty@kernel.org>
-Cc: tiwai@suse.de, Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 68203F8013E
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2020 18:00:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68203F8013E
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 57506AE0D
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2020 16:00:51 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 4/4] ALSA: pcm: Use SG-buffer only when direct DMA is available
+Date: Mon, 15 Jun 2020 18:00:45 +0200
+Message-Id: <20200615160045.2703-5-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
+In-Reply-To: <20200615160045.2703-1-tiwai@suse.de>
+References: <20200615160045.2703-1-tiwai@suse.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,40 +72,59 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 12 Jun 2020 15:35:07 -0500, Pierre-Louis Bossart wrote:
-> soc_dpcm_fe_runtime_update() is called for all dailinks, and we want
-> to first discard all back-ends, then deal with front-ends.
-> 
-> The existing code first reports an error with multi-cpu front-ends,
-> and that check needs to be moved after we know that we are dealing
-> with a front-end.
-> 
-> [...]
+The DMA-coherent SG-buffer is tricky to use, as it does need the
+mapping.  It used to work stably on x86 over years (and that's why we
+had enabled SG-buffer on solely x86) with the default mmap handler and
+vmap(), but our luck seems no forever success.  The chance of breakage
+is high when the special DMA handling is introduced in the arch side.
 
-Applied to
+In this patch, we change the buffer allocation to use the SG-buffer
+only when the device in question is with the direct DMA.  It's a bit
+hackish, but it's currently the only condition that may work (more or
+less) reliably with the default mmap and vmap() for mapping the pages
+that are deduced via virt_to_page().
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+In theory, we can apply the similar hack in the sound/core memory
+allocation helper, too; but it's used by SOF for allocating SG pages
+without re-mapping via vmap() or mmap, and it's fine to use it in that
+way, so let's keep it and adds the workaround in PCM side.
 
-Thanks!
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/pcm_memory.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-[1/1] ASoC: soc-pcm: fix checks for multi-cpu FE dailinks
-      commit: 96bf62f018f40cb5d4e4bed95e50fd990a2354af
+diff --git a/sound/core/pcm_memory.c b/sound/core/pcm_memory.c
+index 860935e3aea4..8326d16d3596 100644
+--- a/sound/core/pcm_memory.c
++++ b/sound/core/pcm_memory.c
+@@ -11,6 +11,7 @@
+ #include <linux/moduleparam.h>
+ #include <linux/vmalloc.h>
+ #include <linux/export.h>
++#include <linux/dma-mapping.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/info.h>
+@@ -39,6 +40,18 @@ static int do_alloc_pages(struct snd_card *card, int type, struct device *dev,
+ 	if (max_alloc_per_card &&
+ 	    card->total_pcm_alloc_bytes + size > max_alloc_per_card)
+ 		return -ENOMEM;
++
++	if (IS_ENABLED(CONFIG_SND_DMA_SGBUF) &&
++	    (type == SNDRV_DMA_TYPE_DEV_SG || type == SNDRV_DMA_TYPE_DEV_UC_SG) &&
++	    !dma_is_direct(get_dma_ops(dev))) {
++		/* mutate to continuous page allocation */
++		dev_dbg(dev, "Use continuous page allocator\n");
++		if (type == SNDRV_DMA_TYPE_DEV_SG)
++			type = SNDRV_DMA_TYPE_DEV;
++		else
++			type = SNDRV_DMA_TYPE_DEV_UC;
++	}
++
+ 	err = snd_dma_alloc_pages(type, dev, size, dmab);
+ 	if (!err) {
+ 		mutex_lock(&card->memory_mutex);
+-- 
+2.16.4
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
