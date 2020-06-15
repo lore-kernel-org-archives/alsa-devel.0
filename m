@@ -2,57 +2,58 @@ Return-Path: <SRS0=afjW=74=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 53FDBC433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 05:23:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 61CAFC433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 05:58:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 05AF7206E2
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 05:23:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1583A20663
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 05:58:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="p2eW1iw9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 05AF7206E2
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fC5vzya8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1583A20663
 Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8F26F1615;
-	Mon, 15 Jun 2020 07:22:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F26F1615
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8FB5615E5;
+	Mon, 15 Jun 2020 07:57:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8FB5615E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592198609;
-	bh=IuBX4Aw/TPtTZgXkVJoFKi88LJZ0a1XdKEA3/6CMgZ4=;
+	s=default; t=1592200709;
+	bh=ggezopmOSctdZQ9XozfPWDHvV/0KsWYDQ9Wot00KZvU=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=p2eW1iw9v9lJe82pnzVkwFFm4fXNAQgobcgPc6duUvOhJQjL6S5OluSknzSOkl0CO
-	 kl2DgJaGAB+wzKhGr4SDxftfGOXsxz8UEODeC4h+2o55EF1RK6r5jSk0K6JI7UReM2
-	 ol3iYO1NCQ+8tg6uHDTzaPbOBqTSwNQyxyuUixkE=
+	b=fC5vzya8F5do1VRF/yYgGq17AlAG7w0ciDrmiiCPL30qc1hJk8xergGELiHtvonxs
+	 6yRS+mQ/51Jg26aipZtgmtYL3AnoSK3X/Hh9EW8nT3hjmCCfsPnLV0Zfc3L0QvZYdS
+	 Hhh0YQb1lZ6qlXLzE46EfL8auF//rPZLxWOjXn9c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E4A1BF80162;
-	Mon, 15 Jun 2020 07:22:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1706CF80162;
+	Mon, 15 Jun 2020 07:57:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DC392F8013E; Mon, 15 Jun 2020 07:22:35 +0200 (CEST)
+ id 0CB2EF80171; Mon, 15 Jun 2020 07:57:37 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id C7325F8013E
- for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2020 07:22:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7325F8013E
+ by alsa1.perex.cz (Postfix) with ESMTP id 10261F800CD
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2020 07:57:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10261F800CD
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub pull_request - opened <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1592198545331270933-webhooks-bot@alsa-project.org>
-References: <1592198545331270933-webhooks-bot@alsa-project.org>
-Subject: sof-hda-dsp: add initial kcontrol values
-Message-Id: <20200615052235.DC392F8013E@alsa1.perex.cz>
-Date: Mon, 15 Jun 2020 07:22:35 +0200 (CEST)
+In-Reply-To: <1592200651655518055-webhooks-bot@alsa-project.org>
+References: <1592200651655518055-webhooks-bot@alsa-project.org>
+Subject: alsa-gobject: seq/timer: use (inout) annotation for API to retrieve
+ status
+Message-Id: <20200615055737.0CB2EF80171@alsa1.perex.cz>
+Date: Mon, 15 Jun 2020 07:57:37 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,12 +69,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #35 was opened from libinyang:
+alsa-project/alsa-gobject pull request #38 was opened from takaswie:
 
-This patch adds the initial values of sof-hda-dsp card.
+It's probable to retrieve status for something several times in runtime, and it's convenient for the runtime to use pre-allocated instance for the status.
 
-Signed-off-by: Libin Yang <libin.yang@intel.com>
-
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/35
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/35.patch
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+Request URL   : https://github.com/alsa-project/alsa-gobject/pull/38
+Patch URL     : https://github.com/alsa-project/alsa-gobject/pull/38.patch
+Repository URL: https://github.com/alsa-project/alsa-gobject
