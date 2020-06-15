@@ -3,79 +3,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D273AC433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 11:20:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A35C2C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 11:58:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5C0C22068E
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 11:20:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2142520707
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 11:58:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jRmC8yZI";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y9XD9p0M"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5C0C22068E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CLUG+NEy";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="2i3T7ir8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2142520707
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D07C71607;
-	Mon, 15 Jun 2020 13:19:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D07C71607
+	by alsa0.perex.cz (Postfix) with ESMTPS id 987B915E5;
+	Mon, 15 Jun 2020 13:57:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 987B915E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592220030;
-	bh=09YCLJTSpwXYksfyCYSJl2k+cwsJ7qFx3Cq3UzjbGyI=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1592222329;
+	bh=rpbnAOKtxA3+nfUXJkVdH+zEnfJWigejr23KttLO5UY=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jRmC8yZItkaDUlEgxAp/ZPm82aTJCGULXdY0eRSh8mlq1l0wILZkzUncZo5jPvnd7
-	 sbk0JeDvPoTPWaRiaiIoH1JTQr2lhFSbflsu0UEmBI3q4k7LHT07HL7MqvdeH3lbpN
-	 1rAeqbTzWFjriuieljCSEuwLDvB6DaWFtNI7+5Wg=
+	b=CLUG+NEyfLW8OjN4MUAc4twsxsT+KmOm4IWcAOB5tZXGHv5QaozFPhOUOjw+2t/N1
+	 eWSBuh/qqRIf6EC1SOh103mE+Ar2BhOFJdNTgS68U4btzYce32uF2kIArFFp3d2ju9
+	 Kq0W1hDaJNKv7fX8ff8XOEQVdATeE7XoCnfA8bXw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 52AFEF80162;
-	Mon, 15 Jun 2020 13:19:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 026F0F8013E;
+	Mon, 15 Jun 2020 13:57:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A6E01F80171; Mon, 15 Jun 2020 13:19:38 +0200 (CEST)
+ id 91961F80171; Mon, 15 Jun 2020 13:57:57 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 82983F800CD
- for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2020 13:19:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 82983F800CD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 34447F8013E
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2020 13:57:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34447F8013E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Y9XD9p0M"
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ header.b="2i3T7ir8"
+Received: from coco.lan (ip5f5ad5c5.dynamic.kabel-deutschland.de
+ [95.90.213.197])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 058D020679;
- Mon, 15 Jun 2020 11:19:28 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id C6E9420707;
+ Mon, 15 Jun 2020 11:57:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1592219969;
- bh=09YCLJTSpwXYksfyCYSJl2k+cwsJ7qFx3Cq3UzjbGyI=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=Y9XD9p0MeL4taa2ELATHmZjnxuB2Qwom8k1ILpzM+ZKmgHncRSrZRkWHzXJoKUZYG
- RVzFdcjhfF4+7tviRu0Z7J7pql7QVnbcy5lmyaFqXh1wKUMpINf6iGMDn+vhj+ObwV
- iv9FZnGvAGdOWuUFB1fqKEZG7JlfMHbBDSJzRm08=
-Date: Mon, 15 Jun 2020 12:19:27 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+ s=default; t=1592222267;
+ bh=rpbnAOKtxA3+nfUXJkVdH+zEnfJWigejr23KttLO5UY=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+ b=2i3T7ir8nRePtjA7yM7lTLP8N5Mg8pTCb0g5sSudBtMQUXuSInrQXbPvspRlwfi3D
+ e6dqCc5qQw1g9wuB2qHFB+MBvKWAfMx91pxYWrRiBAjO+LwOWTqj1ALsYLAOHXl0yW
+ zvCtLuwvkqCilQiWyGUQ4B1EJBkYVMVC7zPzP+bg=
+Date: Mon, 15 Jun 2020 13:57:39 +0200
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH 13/29] dt: fix broken links due to txt->yaml renames
-Message-ID: <20200615111927.GC4447@sirena.org.uk>
+Message-ID: <20200615135739.798f4489@coco.lan>
+In-Reply-To: <20200615111927.GC4447@sirena.org.uk>
 References: <cover.1592203542.git.mchehab+huawei@kernel.org>
  <0e4a7f0b7efcc8109c8a41a2e13c8adde4d9c6b9.1592203542.git.mchehab+huawei@kernel.org>
+ <20200615111927.GC4447@sirena.org.uk>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="WfZ7S8PLGjBY9Voh"
-Content-Disposition: inline
-In-Reply-To: <0e4a7f0b7efcc8109c8a41a2e13c8adde4d9c6b9.1592203542.git.mchehab+huawei@kernel.org>
-X-Cookie: Offer may end without notice.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Cc: alsa-devel@alsa-project.org,
- Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
+ Heiko =?UTF-8?B?U3TDvGJuZXI=?= <heiko@sntech.de>,
  Linux Doc Mailing List <linux-doc@vger.kernel.org>,
  David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
  linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
@@ -104,31 +104,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi Mark,
 
---WfZ7S8PLGjBY9Voh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Em Mon, 15 Jun 2020 12:19:27 +0100
+Mark Brown <broonie@kernel.org> escreveu:
 
-On Mon, Jun 15, 2020 at 08:46:52AM +0200, Mauro Carvalho Chehab wrote:
-> There are some new broken doc links due to yaml renames
-> at DT. Developers should really run:
+> On Mon, Jun 15, 2020 at 08:46:52AM +0200, Mauro Carvalho Chehab wrote:
+> > There are some new broken doc links due to yaml renames
+> > at DT. Developers should really run:  
+> 
+> I also previously acked this one in 20200504100822.GA5491@sirena.org.uk.
+> Has anything changed here to cause the ack to be dropped?
 
-I also previously acked this one in 20200504100822.GA5491@sirena.org.uk.
-Has anything changed here to cause the ack to be dropped?
+Both patches are the same. I forgot to add your acks on my tree. 
 
---WfZ7S8PLGjBY9Voh
-Content-Type: application/pgp-signature; name="signature.asc"
+My bad!
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7nWT4ACgkQJNaLcl1U
-h9BSJQf9FR8Vke3pe9Gs5pnWmw6vzxds7jfidCUpXIKPoosgfYfzYQrN1G9m2fSm
-pLlYWjhQBEAU+w9oq7WktfEZ8r736noKsRW4hd5a+Zf2koBr0M9O7ull4h7WlHvr
-asCHlWuqJvpVevxf1ag9x0dAA9NRMqh8xxd8ah/ENWTbXmzZPir0Pa6Q+9lzG2Ld
-aqgHcA+WbonAUk4BqLRSasRy6AkO3zUbYWqVecAV8xRPcVjiWd/PkhEQ/BV67wG9
-Kh/sFCs6+PalKQu5PDZP70apmaRPYHwPZmkNu5Y8rAUsjsQradS2JB1zFlWDSxZk
-0qIWVDJdY+FIcxlqt8Rda5akpjL2SQ==
-=51fv
------END PGP SIGNATURE-----
-
---WfZ7S8PLGjBY9Voh--
+Thanks,
+Mauro
