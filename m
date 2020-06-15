@@ -2,101 +2,75 @@ Return-Path: <SRS0=afjW=74=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 706A5C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 23:10:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED114C433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 23:40:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EF2272074D
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 23:10:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7880A207D3
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 23:40:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="U7B2kfn0";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="s8SbpV8W"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EF2272074D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SBsbuEBq";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="zFMg8y0f"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7880A207D3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7D22985D;
-	Tue, 16 Jun 2020 01:09:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D22985D
+	by alsa0.perex.cz (Postfix) with ESMTPS id E4C991607;
+	Tue, 16 Jun 2020 01:40:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4C991607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592262633;
-	bh=uGUperKe5bl9+DwrvJSAR5yJta3pexSEwk7ZPgimw5I=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1592264453;
+	bh=SQlV530bPjjPvR30LwWFKM4Pz8BNs9PTNsVr0NiaVwM=;
+	h=Date:From:To:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=U7B2kfn0rGp1ZGawWV3YjO7gucTC/uAnKBAkh0Rqn4KvotlwKwSCFXyM/t+c/+vOq
-	 uvkwJ3Q8agiMhvoLGJgVGC2SinJCGOD6NvAhoalFxC5CNhviCrqvZzRYpnH7DcPU2+
-	 Tenna3irWTbR3qkO1l/ltk67c+tRB/2v0wMzS35M=
+	b=SBsbuEBqWzFUwJQQkNxL5JxrB/JtvkZC511NpuXRWWGl/JSWtVFYrd1GPBdMfpiWt
+	 sXS9C0PMGX+Pfu6GhgXnc2U/WrjBYYj+nF4otVqdx/fV5BB+X2O/l7gINIHt8TzsdX
+	 IBVogxUnPsAvC7nZKHwzqmYC4g5qc4pDBvOfElII=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F1734F80162;
-	Tue, 16 Jun 2020 01:09:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D9E0DF80162;
+	Tue, 16 Jun 2020 01:40:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 16C1AF80171; Tue, 16 Jun 2020 01:09:41 +0200 (CEST)
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com
- [IPv6:2607:f8b0:4864:20::643])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id CDAA3F80171; Tue, 16 Jun 2020 01:39:59 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4BE60F800EF
- for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2020 01:09:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4BE60F800EF
+ by alsa1.perex.cz (Postfix) with ESMTPS id EB038F800CD
+ for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2020 01:39:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB038F800CD
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="s8SbpV8W"
-Received: by mail-pl1-x643.google.com with SMTP id j4so4234922plk.3
- for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2020 16:09:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to:user-agent;
- bh=CZIooZOYrM4oHys2Fguf/RcobpmlQgsMJE5D3+t8a3E=;
- b=s8SbpV8WwE+0uXdhNI+KLlpCRXLu8JhAicTSsZd0QWEyp3xzmM+kv6/b09cNFeZR9b
- NyDyr9O3fHTyZZJbC35tGVkkhhhK4fQrNJKWcNsYu1cqWPa2Nz8U4H8G8oMx1/titCIq
- vcri45A7ClhV3TX54H+qbPHW+B7ZDeh0gkkggjoSwyWs2jF2GB8i5k3qHHKv8cndJBg+
- TLQZ+Rmd/pUaljPEbAAPV2TfUCqTa10psxgQqGI6kclZPUFV4zdvu09hIwCikTBLrFqD
- fjjTXYau6ovMG3DnPd9pHdBQcwxKgHebLUrUIckOzZroEG5NFovC9Qt/FA7t3JC07Dax
- 8ZyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=CZIooZOYrM4oHys2Fguf/RcobpmlQgsMJE5D3+t8a3E=;
- b=AajCy4LE/s1SYKQz/DbeHdh6XXcpED5uHtroWbG3SbNTwUUdSN13+46NzoFCZC7jrh
- Fne87hI6q7WoDcoOrZq4wyvHDxVQ54Q2I9sDNUqkYxJKLHpfRoTqa6JVNy6WZZXfvNuC
- O6lTQHjP8v2WX+V7fVzuaC88oXPMzu1TkHNZBs7/GJoT9DPq7KA6ijQLZ9jFUDNlzaWL
- 4XbYfEYTDT1FlEXIExKem0+zs8ekXOl6b8QG6aEM93vgVYEpCwL1HnXIdNPSeE3o1I/D
- 1M4TK4S1jjzWfKGIeoDEZuaYA4oYQydSDEID13xxFNOlYlx4bhzZHD8ugz5pJKnVy/3z
- NyUQ==
-X-Gm-Message-State: AOAM530JiptM1bZ2y3wGUQHU0e9KQ3BeW4xdrHhBFOyA71gr/tmdaXlx
- ue7VRnVAIGvJ6j+K047GuCQ=
-X-Google-Smtp-Source: ABdhPJzYmMCqNo7Tvi3y7s2FcqEPRPMQmasSc/gLlXeb0diBiZXjM3JRbdNbuH7POcVtectfAliYtA==
-X-Received: by 2002:a17:90b:18c:: with SMTP id t12mr218974pjs.53.1592262570188; 
- Mon, 15 Jun 2020 16:09:30 -0700 (PDT)
-Received: from Asurada-Nvidia (searspoint.nvidia.com. [216.228.112.21])
- by smtp.gmail.com with ESMTPSA id u4sm466277pjn.42.2020.06.15.16.09.29
- (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
- Mon, 15 Jun 2020 16:09:29 -0700 (PDT)
-Date: Mon, 15 Jun 2020 16:09:13 -0700
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-To: Shengjiu Wang <shengjiu.wang@nxp.com>
-Subject: Re: [PATCH v2] ASoC: fsl_ssi: Fix bclk calculation for mono channel
-Message-ID: <20200615230912.GA16681@Asurada-Nvidia>
-References: <b5cf5e3cc39c62f6bb3660b7588b037ffc57f780.1592200690.git.shengjiu.wang@nxp.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b5cf5e3cc39c62f6bb3660b7588b037ffc57f780.1592200690.git.shengjiu.wang@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-Cc: alsa-devel@alsa-project.org, timur@kernel.org, Xiubo.Lee@gmail.com,
- linuxppc-dev@lists.ozlabs.org, tiwai@suse.com, broonie@kernel.org,
- festevam@gmail.com, linux-kernel@vger.kernel.org
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="zFMg8y0f"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 90444207D3;
+ Mon, 15 Jun 2020 23:39:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1592264394;
+ bh=SQlV530bPjjPvR30LwWFKM4Pz8BNs9PTNsVr0NiaVwM=;
+ h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+ b=zFMg8y0fAGwftTta/tytvxkoiu9LWJZQt1Qfg9MninHiG2+X1yuLl/CnsNkDBry9J
+ PSKKJ3QnS0PpaLn2+rxYSm2kyHLM8q91kW+0ymlwCEPSv5DkSEuXdRd50Kyy/QBgZe
+ 3ex/l52wIPcCBJSyu5J/IxAhaX2iCTVbkRS7QAwA=
+Date: Tue, 16 Jun 2020 00:39:51 +0100
+From: Mark Brown <broonie@kernel.org>
+To: robh+dt@kernel.org, s.nawrocki@samsung.com, perex@perex.cz,
+ lgirdwood@gmail.com, alsa-devel@alsa-project.org, sbkim73@samsung.com,
+ Jonathan Bakker <xc-racer2@live.ca>, krzk@kernel.org,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, devicetree@vger.kernel.org
+In-Reply-To: <BN6PR04MB066019A8783D22F1C4A588B7A39F0@BN6PR04MB0660.namprd04.prod.outlook.com>
+References: <20200614202411.27843-1-xc-racer2@live.ca>
+ <BN6PR04MB066019A8783D22F1C4A588B7A39F0@BN6PR04MB0660.namprd04.prod.outlook.com>
+Subject: Re: [PATCH 1/3] dt-bindings: sound: Document wm8994 endpoints
+Message-Id: <159226439190.27409.3267651095489204522.b4-ty@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,98 +86,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Jun 15, 2020 at 01:56:18PM +0800, Shengjiu Wang wrote:
-> For mono channel, SSI will switch to Normal mode.
-> 
-> In Normal mode and Network mode, the Word Length Control bits
-> control the word length divider in clock generator, which is
-> different with I2S Master mode (the word length is fixed to
-> 32bit), it should be the value of params_width(hw_params).
-> 
-> The condition "slots == 2" is not good for I2S Master mode,
-> because for Network mode and Normal mode, the slots can also
-> be 2. Then we need to use (ssi->i2s_net & SSI_SCR_I2S_MODE_MASK)
-> to check if it is I2S Master mode.
+On Sun, 14 Jun 2020 13:24:09 -0700, Jonathan Bakker wrote:
+> The wm8994 exposes several inputs and outputs that can be used by
+> machine drivers in their routing.  Add them to the documention so
+> they don't have been duplicated in any machine drivers bindings.
 
-The fsl_ssi_set_bclk is only called when fsl_ssi_is_i2s_master,
-though I agree that that line of comments sounds confusing now.
+Applied to
 
-> So we refine the famula for mono channel, otherwise there
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-famula => formula?
+Thanks!
 
-> will be sound issue for S24_LE.
-> 
-> Fixes: b0a7043d5c2c ("ASoC: fsl_ssi: Caculate bit clock rate using slot number and width")
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
-> changes in v2
-> - refine patch for Network mode and Normal mode.
-> 
->  sound/soc/fsl/fsl_ssi.c | 15 +++++++++++----
->  1 file changed, 11 insertions(+), 4 deletions(-)
-> 
-> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-> index bad89b0d129e..cbf67d132fda 100644
-> --- a/sound/soc/fsl/fsl_ssi.c
-> +++ b/sound/soc/fsl/fsl_ssi.c
-> @@ -678,7 +678,8 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
->  	struct regmap *regs = ssi->regs;
->  	u32 pm = 999, div2, psr, stccr, mask, afreq, factor, i;
->  	unsigned long clkrate, baudrate, tmprate;
-> -	unsigned int slots = params_channels(hw_params);
-> +	unsigned int channels = params_channels(hw_params);
-> +	unsigned int slots;
->  	unsigned int slot_width = 32;
->  	u64 sub, savesub = 100000;
->  	unsigned int freq;
-> @@ -688,9 +689,15 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
->  	/* Override slots and slot_width if being specifically set... */
->  	if (ssi->slots)
->  		slots = ssi->slots;
-> -	/* ...but keep 32 bits if slots is 2 -- I2S Master mode */
-> -	if (ssi->slot_width && slots != 2)
-> -		slot_width = ssi->slot_width;
-> +	else
-> +		/* Apply two slots for mono channel, because DC = 2 */
-> +		slots = (channels == 1) ? 2 : channels;
-> +
-> +	/* ...but keep 32 bits if I2S Master mode */
-> +	if ((ssi->i2s_net & SSI_SCR_I2S_MODE_MASK) != SSI_SCR_I2S_MODE_MASTER ||
-> +	    channels == 1)
-> +		slot_width = ssi->slot_width ? ssi->slot_width :
+[1/3] ASoC: Document wm8994 endpoints
+      commit: 3f2ec71cb8f5c9605b5d45918ceefcde9b97b672
+[2/3] ASoC: Add bindings for Samsung Aries audio complex
+      commit: 14ebd62c12dc89a0087bf86e79548ee9a6d93625
+[3/3] ASoC: samsung: Add driver for Aries boards
+      commit: 7a3a7671fa6c7e90aff5f4242add2a40587b85ef
 
-This looks very complicated...can you review and try mine?
-(Basically, take 32-bit out of default but force it later)
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-@@ -678,8 +678,9 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
-        struct regmap *regs = ssi->regs;
-        u32 pm = 999, div2, psr, stccr, mask, afreq, factor, i;
-        unsigned long clkrate, baudrate, tmprate;
--       unsigned int slots = params_channels(hw_params);
--       unsigned int slot_width = 32;
-+       unsigned int channels = params_channels(hw_params);
-+       unsigned int slot_width = params_width(hw_params);
-+       unsigned int slots = 2;
-        u64 sub, savesub = 100000;
-        unsigned int freq;
-        bool baudclk_is_used;
-@@ -688,10 +689,16 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
-        /* Override slots and slot_width if being specifically set... */
-        if (ssi->slots)
-                slots = ssi->slots;
--       /* ...but keep 32 bits if slots is 2 -- I2S Master mode */
--       if (ssi->slot_width && slots != 2)
-+       if (ssi->slot_width)
-                slot_width = ssi->slot_width;
- 
-+       /*
-+        * ...but force 32 bits for stereo audio. Note that mono audio is also
-+        * sent in 2 slots via NORMAL mode, so check both slots and channels.
-+        */
-+       if (slots == 2 && channels == 2)
-+               slot_width = 32;
-+
-        /* Generate bit clock based on the slot number and slot width */
-        freq = slots * slot_width * params_rate(hw_params);
- 
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
