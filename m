@@ -3,73 +3,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E3C6C433DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 15:07:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B5B5C433DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 15:08:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CD5282063A
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 15:07:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A8F3E2063A
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jun 2020 15:08:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TrSBk23M";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="IHNPQmqX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CD5282063A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fonbE0ym";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="oiTmzD1I"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A8F3E2063A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 58A961678;
-	Mon, 15 Jun 2020 17:06:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 58A961678
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2E2891674;
+	Mon, 15 Jun 2020 17:07:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E2891674
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1592233651;
-	bh=iQxR19VvnbxFvIXIUb0hXUuSs206NScmeWUhnXmjM9M=;
+	s=default; t=1592233693;
+	bh=sN3Bz1ArwLZ57cbhXnAQRcV8BrVBCwaTj6BNwFFv7kE=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TrSBk23MbbBxy/Wrj6LIf3jyfwFc7EqgwL/JUBF/l7+TdU0x+AuZ+re6VTaD7YFGO
-	 MCHRtciWVq2laRAILZyzK/s/ph4JByHm4sMOb8cOCBlQFIPpr/DtLzSCQjYfH+KmZp
-	 FgCN+v9z50+rdfiItgVc+f1r1gbJUtIz9cT5yvx0=
+	b=fonbE0ymkLPiU46HGrbh0/YzYZnOcXp+fxtta9jOPEHyerSMggBAksSpJkXmR7l89
+	 f3Qx2D6sGjuq6efkJIMt4nO9DY6/tiJZgyK/FiLKBAcuW0PCz8jqanIvJN6vUKEKdo
+	 xXmvrfhAUhGAcqJ8ya92izHMrKExn2P5W4t9r0wA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D70A6F802A2;
-	Mon, 15 Jun 2020 17:05:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 60B77F802BD;
+	Mon, 15 Jun 2020 17:05:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 278DAF8013E; Mon, 15 Jun 2020 17:05:42 +0200 (CEST)
+ id 84E58F802BE; Mon, 15 Jun 2020 17:05:50 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1E6FFF8013E
- for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2020 17:05:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E6FFF8013E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 43DA7F802A8
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2020 17:05:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43DA7F802A8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="IHNPQmqX"
+ header.b="oiTmzD1I"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 4962520739;
- Mon, 15 Jun 2020 15:05:37 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 4A48620739;
+ Mon, 15 Jun 2020 15:05:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1592233537;
- bh=iQxR19VvnbxFvIXIUb0hXUuSs206NScmeWUhnXmjM9M=;
+ s=default; t=1592233542;
+ bh=sN3Bz1ArwLZ57cbhXnAQRcV8BrVBCwaTj6BNwFFv7kE=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=IHNPQmqX1tGZkLo5Ha6lNSoK2zKTaLBn3QCA8GwvAGOwBfH+xUM1xb0Krd0TuKkJV
- PsVYgYjiPqcHDNVfD5OHLLMmEQ3qeAsWcj+DuLqLNCOH2mOfq26+g/uCK8rBxTLtKz
- aAUKTiqPJg7c82OFgzYsPdXy3pvWHEkc5tOnv5xE=
-Date: Mon, 15 Jun 2020 16:05:35 +0100
+ b=oiTmzD1I8zYxp3Z8B25BdF5tZH+komfDtiHgmhnMaFCCqulL9USpYsSC3AWhYjLfI
+ Hja4d4PIQoyUrmISr+esFj3Kn8vIJ2Y4Oc4ywQmWDe5EVihYoYlptUzKBo2s9GjB2d
+ GnaVpiajbCNtCl6imkX2CAQQpr7OwhLiK8u9X/Vo=
+Date: Mon, 15 Jun 2020 16:05:40 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20200612123711.29130-1-srinivas.kandagatla@linaro.org>
-References: <20200612123711.29130-1-srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH 1/2] ASoc: q6afe: add support to get port direction
-Message-Id: <159223353044.8967.4267093488191293280.b4-ty@kernel.org>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.com,
- linux-kernel@vger.kernel.org, vkoul@kernel.org,
- John Stultz <john.stultz@linaro.org>
+To: lgirdwood@gmail.com, "derek.fang@realtek.com" <derek.fang@realtek.com>
+In-Reply-To: <1591938925-1070-1-git-send-email-derek.fang@realtek.com>
+References: <1591938925-1070-1-git-send-email-derek.fang@realtek.com>
+Subject: Re: [PATCH 1/5] ASoC: rt5682: Enable Vref2 under using PLL2
+Message-Id: <159223353043.8967.11796262898694869884.b4-ty@kernel.org>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
+ lars@metafoo.de, albertchen@realtek.com, shumingf@realtek.com,
+ flove@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,10 +85,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 12 Jun 2020 13:37:10 +0100, Srinivas Kandagatla wrote:
-> This patch adds support to q6afe_is_rx_port() to get direction
-> of DSP BE dai port, this is useful for setting dailink
-> directions correctly.
+On Fri, 12 Jun 2020 13:15:21 +0800, derek.fang@realtek.com wrote:
+> Enable Vref2 under long term using PLL2 to avoid clock unstable.
 
 Applied to
 
@@ -96,10 +94,16 @@ Applied to
 
 Thanks!
 
-[1/2] ASoc: q6afe: add support to get port direction
-      commit: 4a95737440d426e93441d49d11abf4c6526d4666
-[2/2] ASoC: qcom: common: set correct directions for dailinks
-      commit: a2120089251f1fe221305e88df99af16f940e236
+[1/5] ASoC: rt5682: Enable Vref2 under using PLL2
+      (no commit info)
+[2/5] ASoC: rl6231: Add new supports on rl6231
+      (no commit info)
+[3/5] ASoC: rt5682: Let PLL2 support the freq conversion for 44100Hz sample rate
+      (no commit info)
+[4/5] ASoC: rt5682: DAI wclk supports 44100 Hz output
+      (no commit info)
+[5/5] ASoC: rt5682: Let dai clks be registered whether mclk exists or not
+      commit: 19ab0f005b165146ea4a93f71e9cb5e71de9c0ce
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
